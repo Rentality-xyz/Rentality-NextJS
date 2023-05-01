@@ -1,6 +1,4 @@
 import Footer from "@/components/footer/footer";
-import Header from "@/components/header";
-import Layout from "@/components/layout";
 import styles from "@/styles/Home.module.css";
 import Head from "next/head";
 
@@ -17,7 +15,7 @@ export default function Home() {
       </Head>
       <div className="flex flex-col w-full bg-blue-200">
         <div className="flex flex-col w-full place-self-center bg-blue-200">
-          <Header />
+          {/* <Header /> */}
           <div className="flex w-full h-full min-h-0 bg-red-100  md:bg-orange-300">
             <div>main</div>
           </div>
