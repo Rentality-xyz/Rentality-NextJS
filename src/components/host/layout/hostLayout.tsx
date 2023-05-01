@@ -1,7 +1,6 @@
 import Footer from "@/components/footer/footer";
 import HostHeader from "@/components/host/header/hostHeader";
 import HostSideNavMenu from "@/components/host/sideNavMenu/hostSideNavMenu";
-import styles from './hostLayout.module.css'
 
 type Props = {
   children?: React.ReactNode;
@@ -21,10 +20,10 @@ export default function HostLayout({ children }: Props) {
         <Footer />
       </div> */}
 
-      <div className={styles.mainGrid + " w-full h-full bg-red-400 text-white"}>
-        <HostSideNavMenu />
+      <div className="main-grid w-full h-full bg-red-400 text-white">
         <HostHeader />
-        <main className="main w-full h-full bg-orange-300">{children}</main>
+        <HostSideNavMenu />
+        <main className="w-full h-full bg-orange-300">{children}</main>
         <Footer />
       </div>
     </>
