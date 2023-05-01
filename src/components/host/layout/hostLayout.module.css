@@ -1,0 +1,23 @@
+.mainGrid {
+  display: grid;
+  grid: auto-flow min-content / 1fr;
+  grid-template-areas:  "header"
+                        "aside"
+                        "main"
+                        "footer";
+}
+
+.mainGrid > header {  grid-area: header; }
+.mainGrid > aside {  grid-area: aside; }
+.mainGrid > main {  grid-area: main; }
+.mainGrid > footer {  grid-area: footer; }
+
+@media (min-width: 1024px) {
+  .mainGrid {
+    display: grid;
+    grid: auto-flow min-content / 1fr 4fr;
+    grid-template-areas:  "aside header"
+                          "aside main"
+                          "footer footer";
+  }
+}

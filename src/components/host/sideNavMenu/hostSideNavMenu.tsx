@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function HostSideNavMenu() {
   return (
-    <aside className="w-1/5 h-auto pr-4 py-8 bg-yellow-300">
+    <aside className="w-full h-auto pr-4 py-8 bg-yellow-300">
       <Image className="pr-6" src={logo} alt="" />
       <nav className="pt-4">
         <div className="pt-4">
