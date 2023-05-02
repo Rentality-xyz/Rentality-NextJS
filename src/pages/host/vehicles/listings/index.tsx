@@ -1,21 +1,43 @@
 import HostLayout from "@/components/host/layout/hostLayout";
-import ListingItem from "@/components/host/listingItem";
+import ListingItem, { CarInfo } from "@/components/host/listingItem";
+import useMyListings from "@/hooks/useMyListings";
 
 export default function Listings() {
+  const { dataFetched, myListings } = useMyListings();
+
   return (
     <HostLayout>
-      <div className="flex flex-col pl-8 pt-4">
-        <div className="flex flex-row mr-16 place-content-between">
-          <div className="text-2xl">Listing</div>
-          <button>Add Listing</button>
+      <div className="flex flex-col px-8 pt-4">
+        <div className="flex flex-row justify-between items-center">
+          <div className="text-2xl">
+            <strong>Listings</strong>
+          </div>
+          <button className="w-56 h-16 bg-violet-700 rounded-md">
+            Add Listing
+          </button>
         </div>
-        <div className="grid grid-cols-1 xl:grid-cols-2">
-          <ListingItem />
-          <ListingItem />
-          <ListingItem />
-          <ListingItem />
-          <ListingItem />
-        </div>
+        {!dataFetched ? (
+          <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
+            Loading...
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 my-4">
+            {myListings != null && myListings.length > 0 ? (
+              myListings.map((value) => {
+                return (
+                  <ListingItem
+                    key={value.tokenId}
+                    carInfo={value}
+                  ></ListingItem>
+                );
+              })
+            ) : (
+              <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
+                You dont have listed cars
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </HostLayout>
   );
