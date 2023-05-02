@@ -63,7 +63,7 @@ body {
 @media (min-width: 1024px) {
   .main-grid {
     display: grid;
-    grid: auto-flow min-content / 1fr 4fr;
+    grid: min-content 1fr min-content / min-content 4fr;
     grid-template-areas: "aside header"
       "aside main"
       "footer footer";
