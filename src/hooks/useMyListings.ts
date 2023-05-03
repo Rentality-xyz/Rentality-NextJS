@@ -98,7 +98,6 @@ const useMyListings = () => {
               )?.value ?? "",
             pricePerDay: price,
           };
-          console.log("getMyListings item:" + JSON.stringify(item));
           return item;
         })
       );

@@ -33,9 +33,12 @@ export default function ListingItem({ carInfo }: Props) {
           </div>
           <div>{carInfo.licensePlate}</div>
         </div>
-        <div className="flex flex-col">
-          <strong className="text-xl">{`$${carInfo.pricePerDay}/day`}</strong>
-          <div>{`$${carInfo.pricePerDay} est. total`}</div>
+        <div className="flex flex-row justify-between items-end">
+          <div className="flex flex-col">
+            <strong className="text-xl">{`$${carInfo.pricePerDay}/day`}</strong>
+            <div className="text-sm">{`$${carInfo.pricePerDay} est. total`}</div>
+          </div>
+          <div className="text-gray-600">Listing</div>
         </div>
       </div>
     </div>

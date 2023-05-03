@@ -1,6 +1,7 @@
 import HostLayout from "@/components/host/layout/hostLayout";
 import ListingItem, { CarInfo } from "@/components/host/listingItem";
 import useMyListings from "@/hooks/useMyListings";
+import Link from "next/link";
 
 export default function Listings() {
   const { dataFetched, myListings } = useMyListings();
@@ -12,9 +13,11 @@ export default function Listings() {
           <div className="text-2xl">
             <strong>Listings</strong>
           </div>
-          <button className="w-56 h-16 bg-violet-700 rounded-md">
-            Add Listing
-          </button>
+          <Link href="/host/vehicles/add">
+            <button className="w-56 h-16 bg-violet-700 rounded-md">
+              Add Listing
+            </button>
+          </Link>
         </div>
         {!dataFetched ? (
           <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">

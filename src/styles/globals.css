@@ -20,18 +20,24 @@
 
 body {
   min-width: 640px;
+  font-family: 'Montserrat', Arial, sans-serif;
   color: rgb(var(--foreground-rgb));
   background-image: url("../images/bg.png");
-  background-position: center;
-  background-repeat: no-repeat;
+  background-position: top;
+  background-repeat: repeat;
   background-size: cover;
-  font-family: 'Montserrat', Arial, sans-serif;
   /* background: linear-gradient(
       to bottom,
       transparent,
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb)); */
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
 }
 
 .main-grid {
@@ -63,7 +69,7 @@ body {
 @media (min-width: 1024px) {
   .main-grid {
     display: grid;
-    grid: min-content 1fr min-content / min-content 4fr;
+    grid: min-content 1fr min-content / min-content 1fr;
     grid-template-areas: "aside header"
       "aside main"
       "footer footer";

@@ -14,7 +14,7 @@ export default function HostHeader() {
   }
 
   return (
-    <header className="flex flex-row flex-shrink-0 w-full h-24 justify-stretch bg-emerald-300">
+    <header className="flex flex-row w-full h-24 justify-stretch bg-gray-200 bg-opacity-60">
       {/* <div
         className="burger-icon"
         ref={burgerMenuRef}
@@ -24,7 +24,7 @@ export default function HostHeader() {
         <div className="burger-icon-bar2"></div>
         <div className="burger-icon-bar3"></div>
       </div> */}
-      <div className="flex flex-row w-full justify-end">
+      <div className="flex flex-row w-full px-8 py-4 justify-end border-b-2 border-gray-400">
         <div className="flex flex-row mr-16 items-center">
           <span>Guest (</span>
           <input type="checkbox"></input>
@@ -32,10 +32,12 @@ export default function HostHeader() {
         </div>
         <div className="flex flex-row ml-16 items-center">
           <div className="flex flex-col m-2">
-            <div>UserName UserSurname</div>
+            <div>Name Surname</div>
             <div className="text-sm">address</div>
           </div>
-          <div className="m-2">avatar</div>
+          <div className="flex flex-col w-20 h-20 m-2 rounded-2xl items-center justify-center bg-gray-500">
+            <div className="">Photo</div>
+          </div>
         </div>
       </div>
     </header>
