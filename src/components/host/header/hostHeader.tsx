@@ -14,7 +14,7 @@ export default function HostHeader() {
   }
 
   return (
-    <header className="flex flex-row w-full h-24 justify-stretch bg-gray-200 bg-opacity-60">
+    <header className="bg-gray-200 bg-opacity-60">
       {/* <div
         className="burger-icon"
         ref={burgerMenuRef}

@@ -20,10 +20,10 @@ export default function HostLayout({ children }: Props) {
         <Footer />
       </div> */}
 
-      <div className="main-grid w-full h-full min-h-screen">
+      <div className="main-grid">
         <HostHeader />
         <HostSideNavMenu />
-        <main className="w-full h-full bg-gray-200 bg-opacity-60">{children}</main>
+        <main className="bg-gray-200 bg-opacity-60">{children}</main>
         <Footer />
       </div>
     </>
