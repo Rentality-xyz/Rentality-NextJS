@@ -122,7 +122,7 @@ const useMyListings = () => {
       .catch(() => setDataFetched(true));
   }, []);
 
-  return {dataFetched, myListings};
+  return [dataFetched, myListings] as const;
 };
 
 export default useMyListings;

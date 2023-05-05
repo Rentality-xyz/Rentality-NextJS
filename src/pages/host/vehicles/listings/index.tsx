@@ -4,7 +4,7 @@ import useMyListings from "@/hooks/useMyListings";
 import Link from "next/link";
 
 export default function Listings() {
-  const { dataFetched, myListings } = useMyListings();
+  const [dataFetched, myListings] = useMyListings();
 
   return (
     <HostLayout>
