@@ -1,55 +1,115 @@
 import HostLayout from "@/components/host/layout/hostLayout";
-import { useRef, useState } from "react";
-
-type NewCarInfo = {
-  vinNumber: string;
-  brand: string;
-  model: string;
-  releaseYear: string;
-  image: string;
-  name: string;
-  licensePlate: string;
-  state: string;
-  seatsNumber:string;
-  doorsNumber: string;
-  fuelType: string;
-  tankVolumeInGal: string;
-  wheelDrive: string;
-  transmission: string;
-  trunkSize: string;
-  color: string;
-  bodyType:string;
-  description: string;
-  pricePerDay:string;
-  distanceIncludedInMi: string;
-};
+import useAddCar, { NewCarInfo } from "@/hooks/useAddCar";
+import { uploadFileToIPFS } from "@/utils/pinata";
+import { verify } from "crypto";
+import { useEffect, useRef, useState } from "react";
 
 export default function AddCar() {
-  const emptyNewCarInfo = {
-    vinNumber: "",
-    brand: "",
-    model: "",
-    releaseYear: "",
-    image: "",
-    name: "",
-    licensePlate: "",
-    state: "",
-    seatsNumber:"",
-    doorsNumber: "",
-    fuelType: "",
-    tankVolumeInGal: "",
-    wheelDrive: "",
-    transmission: "",
-    trunkSize: "",
-    color: "",
-    bodyType:"",
-    description: "",
-    pricePerDay:"",
-    distanceIncludedInMi: "",
+  const [
+    carInfoFormParams,
+    setCarInfoFormParams,
+    verifyCar,
+    dataSaved,
+    sentCarToServer,
+  ] = useAddCar();
+
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [message, setMessage] = useState<string>("");
+  const saveButtonRef = useRef<HTMLButtonElement>(null);
+  const uploadImageRef = useRef<HTMLImageElement>(null);
+
+  const resizeImageToSquare = async (file: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+
+      img.onload = () => {
+        const size = 1000;
+        canvas.width = size;
+        canvas.height = size;
+        ctx.fillStyle = "transparent";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const scaleFactor = size / Math.max(img.width, img.height);
+        const scaledWidth = img.width * scaleFactor;
+        const scaledHeight = img.height * scaleFactor;
+        ctx.drawImage(
+          img,
+          (size - scaledWidth) / 2,
+          (size - scaledHeight) / 2,
+          scaledWidth,
+          scaledHeight
+        );
+        canvas.toBlob(
+          (blob) => {
+            const resizedFile = new File([blob as BlobPart], file.name, {
+              type: "image/png",
+            });
+            resolve(resizedFile);
+          },
+          "image/png",
+          1
+        );
+      };
+
+      img.onerror = reject;
+    });
   };
 
-  const [carInfoFormParams, setCarInfoFormParams] = useState<NewCarInfo>(emptyNewCarInfo)
-  const saveButtonRef = useRef();
+  const onChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) {
+      return;
+    }
+
+    const file = e.target.files[0];
+    const resizedImage = await resizeImageToSquare(file);
+    setImageFile(resizedImage);
+
+    var reader = new FileReader();
+
+    reader.onload = function (event) {
+      if (uploadImageRef.current) {
+        uploadImageRef.current.src = event.target?.result?.toString() ?? "";
+      }
+    };
+
+    reader.readAsDataURL(resizedImage);
+  };
+
+  const saveCar = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    if (!imageFile) {
+      alert("Image is not upoaded");
+      return;
+    }
+
+    try {
+      setMessage("Please wait.. uploading (upto 5 mins)");
+      if (saveButtonRef.current) {
+        saveButtonRef.current.disabled = true;
+      }
+      sentCarToServer(imageFile);
+
+      alert("Successfully listed your car!");
+      setMessage("");
+
+      window.location.replace("/");
+    } catch (e) {
+      alert("Upload error" + e);
+      if (saveButtonRef.current) {
+        saveButtonRef.current.disabled = false;
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (saveButtonRef.current) {
+      saveButtonRef.current.disabled = imageFile === null || !verifyCar();
+    }
+  }, [imageFile, carInfoFormParams.pricePerDay, verifyCar]);
 
   return (
     <HostLayout>
@@ -66,12 +126,13 @@ export default function AddCar() {
             <div className="flex flex-col w-full lg:w-min">
               <label htmlFor="vinNumber">VIN number</label>
               <input
+                id="vinNumber"
                 type="text"
                 placeholder="e.g. 4Y1SL65848Z411439"
                 onChange={(e) =>
                   setCarInfoFormParams({
                     ...carInfoFormParams,
-                    name: e.target.value,
+                    vinNumber: e.target.value,
                   })
                 }
                 value={carInfoFormParams.vinNumber}
@@ -80,6 +141,7 @@ export default function AddCar() {
             <div className="flex flex-col w-full lg:w-min">
               <label htmlFor="brand">Brand</label>
               <input
+                id="brand"
                 type="text"
                 placeholder="e.g. Shelby"
                 onChange={(e) =>
@@ -92,8 +154,9 @@ export default function AddCar() {
               />
             </div>
             <div className="flex flex-col w-full lg:w-min">
-              <label  htmlFor="model">Model</label>
+              <label htmlFor="model">Model</label>
               <input
+                id="model"
                 type="text"
                 placeholder="e.g. Mustang GT500"
                 onChange={(e) =>
@@ -108,6 +171,7 @@ export default function AddCar() {
             <div className="flex flex-col w-full lg:w-min">
               <label htmlFor="releaseYear">Year of manufacture</label>
               <input
+                id="releaseYear"
                 type="text"
                 placeholder="e.g. 2023"
                 onChange={(e) =>
@@ -125,8 +189,14 @@ export default function AddCar() {
           <div className="text-lg mb-4">
             <strong>Photo</strong>
           </div>
-          <button className="w-40 h-16 bg-violet-700 rounded-md">Upload</button>
-          <div className="w-80 h-80 rounded-2xl mt-8 bg-gray-200"></div>
+          {/* <button className="w-40 h-16 bg-violet-700 rounded-md">Upload</button> */}
+          <label className="flex w-40 h-16 bg-violet-700 rounded-md justify-center items-center cursor-pointer">
+            <input className="hidden" type="file" onChange={onChangeFile} />
+            Upload
+          </label>
+          <div className="w-80 h-80 rounded-2xl mt-8 bg-gray-200 bg-opacity-40">
+            <img ref={uploadImageRef} />
+          </div>
         </div>
         <div className="add-car-block">
           <div className="text-lg mb-4">
@@ -134,24 +204,49 @@ export default function AddCar() {
           </div>
           <div className="flex flex-wrap gap-4">
             <div className="flex flex-col">
-              <div>Car name</div>
-              <input type="text" />
+              <label htmlFor="name">Car name</label>
+              <input
+                id="name"
+                type="text"
+                placeholder="e.g. Eleanor"
+                onChange={(e) =>
+                  setCarInfoFormParams({
+                    ...carInfoFormParams,
+                    name: e.target.value,
+                  })
+                }
+                value={carInfoFormParams.name}
+              />
             </div>
             <div className="flex flex-col">
-              <div>License plate number</div>
-              <input type="text" 
-              placeholder="e.g. Eleanor"
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  name: e.target.value,
-                })
-              }
-              value={carInfoFormParams.name}/>
+              <label htmlFor="licensePlate">License plate number</label>
+              <input
+                id="licensePlate"
+                type="text"
+                placeholder="e.g. ABC-12D"
+                onChange={(e) =>
+                  setCarInfoFormParams({
+                    ...carInfoFormParams,
+                    licensePlate: e.target.value,
+                  })
+                }
+                value={carInfoFormParams.licensePlate}
+              />
             </div>
             <div className="flex flex-col">
-              <div>State</div>
-              <input type="text" />
+              <label htmlFor="state">State</label>
+              <input
+                id="state"
+                type="text"
+                placeholder="e.g. New Jersey"
+                onChange={(e) =>
+                  setCarInfoFormParams({
+                    ...carInfoFormParams,
+                    state: e.target.value,
+                  })
+                }
+                value={carInfoFormParams.state}
+              />
             </div>
           </div>
         </div>
@@ -162,28 +257,100 @@ export default function AddCar() {
           {/* <div className="flex flex-col lg:flex-row"> */}
           <div className="details flex flex-wrap gap-4">
             <div className="flex flex-col w-2/5 lg:w-min">
-              <div>Number of seats</div>
-              <input type="text" />
+              <label htmlFor="seatsNumber">Number of seats</label>
+              <input
+                id="seatsNumber"
+                type="text"
+                placeholder="e.g. 5"
+                onChange={(e) =>
+                  setCarInfoFormParams({
+                    ...carInfoFormParams,
+                    seatsNumber: e.target.value,
+                  })
+                }
+                value={carInfoFormParams.seatsNumber}
+              />
             </div>
             <div className="flex flex-col w-1/2 lg:w-min">
-              <div>Number of doors</div>
-              <input type="text" />
+              <label htmlFor="doorsNumber">Number of doors</label>
+              <input
+                id="doorsNumber"
+                type="text"
+                placeholder="e.g. 2"
+                onChange={(e) =>
+                  setCarInfoFormParams({
+                    ...carInfoFormParams,
+                    doorsNumber: e.target.value,
+                  })
+                }
+                value={carInfoFormParams.doorsNumber}
+              />
             </div>
             <div className="flex flex-col w-full lg:w-min">
-              <div>Fuel type</div>
-              <input type="text" />
+              <label htmlFor="fuelType">Fuel type</label>
+              <select
+                id="fuelType"
+                onChange={(e) =>
+                  setCarInfoFormParams({
+                    ...carInfoFormParams,
+                    fuelType: e.target.value,
+                  })
+                }
+                value={carInfoFormParams.fuelType}
+              >
+                <option className="hidden" disabled selected></option>
+                <option value="Gasoline">Gasoline</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Bio-diesel">Bio-diesel</option>
+                <option value="Electro">Electro</option>
+              </select>
             </div>
             <div className="flex flex-col w-full lg:w-min">
-              <div>Tank size</div>
-              <input type="text" />
+              <label htmlFor="tankVolumeInGal">Tank size</label>
+              <input
+                id="tankVolumeInGal"
+                type="text"
+                placeholder="e.g. 16"
+                onChange={(e) =>
+                  setCarInfoFormParams({
+                    ...carInfoFormParams,
+                    tankVolumeInGal: e.target.value,
+                  })
+                }
+                value={carInfoFormParams.tankVolumeInGal}
+              />
             </div>
             <div className="flex flex-col w-full lg:w-min">
-              <div>Transmission</div>
-              <input type="text" />
+              <label htmlFor="transmission">Transmission</label>
+              <select
+                id="transmission"
+                onChange={(e) =>
+                  setCarInfoFormParams({
+                    ...carInfoFormParams,
+                    transmission: e.target.value,
+                  })
+                }
+                value={carInfoFormParams.transmission}
+              >
+                <option disabled selected> -- select an option -- </option>
+                <option value="Manual" selected>Manual</option>
+                <option value="Automatic">Automatic</option>
+              </select>
             </div>
             <div className="flex flex-col w-full lg:w-min">
-              <div>Color</div>
-              <input type="text" />
+              <label htmlFor="color">Color</label>
+              <input
+                id="color"
+                type="text"
+                placeholder="e.g. Grey"
+                onChange={(e) =>
+                  setCarInfoFormParams({
+                    ...carInfoFormParams,
+                    color: e.target.value,
+                  })
+                }
+                value={carInfoFormParams.color}
+              />
             </div>
           </div>
         </div>
@@ -192,7 +359,18 @@ export default function AddCar() {
             <strong>More about the car</strong>
           </div>
           <div className="flex flex-col">
-            <input className="about-input" type="text" aria-multiline="true" />
+            <textarea
+              rows={5}
+              id="description"
+              placeholder="e.g. Dupont Pepper Grey 1967 Ford Mustang fastback"
+              onChange={(e) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  description: e.target.value,
+                })
+              }
+              value={carInfoFormParams.description}
+            />
           </div>
         </div>
         <div className="add-car-block">
@@ -203,8 +381,20 @@ export default function AddCar() {
               </div>
               <div className="flex flex-col">
                 <div className="flex flex-col">
-                  <div>Rental price</div>
-                  <input type="text" />
+                  <label htmlFor="pricePerDay">Rental price</label>
+                  <input
+                    id="pricePerDay"
+                    type="text"
+                    placeholder="e.g. 100"
+                    step="1"
+                    onChange={(e) =>
+                      setCarInfoFormParams({
+                        ...carInfoFormParams,
+                        pricePerDay: e.target.value,
+                      })
+                    }
+                    value={carInfoFormParams.pricePerDay}
+                  />
                 </div>
               </div>
             </div>
@@ -214,15 +404,35 @@ export default function AddCar() {
               </div>
               <div className="flex flex-col">
                 <div className="flex flex-col">
-                  <div>Number of miles per day</div>
-                  <input type="text" />
+                  <label htmlFor="distanceIncludedInMi">
+                    Number of miles per day
+                  </label>
+                  <input
+                    id="distanceIncludedInMi"
+                    type="text"
+                    placeholder="e.g. 200"
+                    onChange={(e) =>
+                      setCarInfoFormParams({
+                        ...carInfoFormParams,
+                        distanceIncludedInMi: e.target.value,
+                      })
+                    }
+                    value={carInfoFormParams.distanceIncludedInMi}
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div className="add-car-block mb-8 mt-8">
-          <button className="w-40 h-16 bg-violet-700 rounded-md">Save</button>
+          <label>{message}</label>
+          <button
+            className="w-40 h-16 bg-violet-700 disabled:bg-gray-500 rounded-md"
+            ref={saveButtonRef}
+            onClick={saveCar}
+          >
+            Save
+          </button>
         </div>
       </div>
     </HostLayout>
