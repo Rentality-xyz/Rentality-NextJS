@@ -95,12 +95,12 @@ export default function AddCar() {
       }
       const result = await sentCarToServer(imageFile);
 
-      if (!result){ 
-        throw new Error('sentCarToServer error');
+      if (!result) {
+        throw new Error("sentCarToServer error");
       }
       alert("Successfully listed your car!");
-      setMessage("");  
-      router.push('/host/vehicles')
+      setMessage("");
+      router.push("/host/vehicles");
     } catch (e) {
       alert("Upload error" + e);
       if (saveButtonRef.current) {

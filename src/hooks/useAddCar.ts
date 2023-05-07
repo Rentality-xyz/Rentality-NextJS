@@ -209,9 +209,8 @@ const useAddCar = () => {
       !isEmpty(carInfoFormParams.description) &&
       !isEmpty(carInfoFormParams.pricePerDay) &&
       !isEmpty(carInfoFormParams.distanceIncludedInMi)
-
     );
-  }
+  };
 
   const saveCar = async (image: File) => {
     try {
