@@ -189,7 +189,6 @@ const useAddCar = () => {
     return !str || str.length === 0;
   };
   const verifyCar = () => {
-
     return (
       !isEmpty(carInfoFormParams.vinNumber) &&
       !isEmpty(carInfoFormParams.brand) &&
@@ -216,20 +215,19 @@ const useAddCar = () => {
 
   const saveCar = async (image: File) => {
     try {
-      alert("DATA: " + JSON.stringify(carInfoFormParams));
       const response = await uploadFileToIPFS(image);
 
       if (response.success !== true) {
         console.error("Uploaded image to Pinata error");
         return false;
       }
-      alert("image pinata: " + response.pinataURL);
 
       console.log("Uploaded image to Pinata: ", response.pinataURL);
-      setCarInfoFormParams({
+      const dataToSave = {
         ...carInfoFormParams,
         image: response.pinataURL,
-      });
+      };
+      setCarInfoFormParams(dataToSave);
 
       const rentalityContract = await getRentalityContract();
 
@@ -237,12 +235,10 @@ const useAddCar = () => {
         console.error("saveCar error: contract is null");
         return false;
       }
-
-      alert("DATA: " + JSON.stringify(carInfoFormParams));
-      const metadataURL = await uploadMetadataToIPFS(carInfoFormParams);
+      const metadataURL = await uploadMetadataToIPFS(dataToSave);
 
       var doubleNumber = Number(
-        carInfoFormParams.pricePerDay.replace(/[^0-9.]+/g, "")
+        dataToSave.pricePerDay.replace(/[^0-9.]+/g, "")
       );
       let pricePerDay = ((doubleNumber * 100) | 0).toString();
 

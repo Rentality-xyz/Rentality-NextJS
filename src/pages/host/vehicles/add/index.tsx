@@ -3,6 +3,7 @@ import useAddCar, { NewCarInfo } from "@/hooks/useAddCar";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { verify } from "crypto";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
 
 export default function AddCar() {
   const [
@@ -17,6 +18,7 @@ export default function AddCar() {
   const [message, setMessage] = useState<string>("");
   const saveButtonRef = useRef<HTMLButtonElement>(null);
   const uploadImageRef = useRef<HTMLImageElement>(null);
+  const router = useRouter();
 
   const resizeImageToSquare = async (file: File): Promise<File> => {
     return new Promise((resolve, reject) => {
@@ -91,12 +93,14 @@ export default function AddCar() {
       if (saveButtonRef.current) {
         saveButtonRef.current.disabled = true;
       }
-      sentCarToServer(imageFile);
+      const result = await sentCarToServer(imageFile);
 
+      if (!result){ 
+        throw new Error('sentCarToServer error');
+      }
       alert("Successfully listed your car!");
-      setMessage("");
-
-      window.location.replace("/");
+      setMessage("");  
+      router.push('/host/vehicles')
     } catch (e) {
       alert("Upload error" + e);
       if (saveButtonRef.current) {
@@ -332,8 +336,8 @@ export default function AddCar() {
                 }
                 value={carInfoFormParams.transmission}
               >
-                <option disabled selected> -- select an option -- </option>
-                <option value="Manual" selected>Manual</option>
+                <option className="hidden" disabled selected></option>
+                <option value="Manual">Manual</option>
                 <option value="Automatic">Automatic</option>
               </select>
             </div>
