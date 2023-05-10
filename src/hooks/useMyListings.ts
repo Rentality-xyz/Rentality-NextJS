@@ -74,7 +74,11 @@ const useMyListings = () => {
             validateContractCarToRent(i);
           }
           const tokenURI = await rentalityContract.tokenURI(i.tokenId);
-          const response = await fetch(tokenURI);
+          const response = await fetch(tokenURI, {
+            headers: {
+              'Accept': 'application/json',
+            },
+          });
           const meta = await response.json();
 
           const price = Number(i.pricePerDayInUsdCents) / 100;
