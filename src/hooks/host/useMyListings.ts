@@ -1,7 +1,10 @@
 import { Contract, BrowserProvider } from "ethers";
 import { useEffect, useState } from "react";
 import RentCarJSON from "../../abis";
-import { ContractCarToRent, validateContractCarToRent } from "@/model/blockchain/ContractCarToRent";
+import {
+  ContractCarToRent,
+  validateContractCarToRent,
+} from "@/model/blockchain/ContractCarToRent";
 import { CarInfo } from "@/model/CarInfo";
 
 const useMyListings = () => {
@@ -33,43 +36,47 @@ const useMyListings = () => {
       const myListingsView: ContractCarToRent[] =
         await rentalityContract.getMyCars();
 
-      const myListingsData = await Promise.all(
-        myListingsView.map(async (i: ContractCarToRent, index) => {
-          if (index === 0) {
-            validateContractCarToRent(i);
-          }
-          const tokenURI = await rentalityContract.tokenURI(i.tokenId);
-          const response = await fetch(tokenURI, {
-            headers: {
-              'Accept': 'application/json',
-            },
-          });
-          const meta = await response.json();
+      const myListingsData =
+        myListingsView.length === 0
+          ? []
+          : await Promise.all(
+              myListingsView.map(async (i: ContractCarToRent, index) => {
+                if (index === 0) {
+                  validateContractCarToRent(i);
+                }
+                const tokenURI = await rentalityContract.tokenURI(i.tokenId);
+                const response = await fetch(tokenURI, {
+                  headers: {
+                    Accept: "application/json",
+                  },
+                });
+                const meta = await response.json();
 
-          const price = Number(i.pricePerDayInUsdCents) / 100;
+                const price = Number(i.pricePerDayInUsdCents) / 100;
 
-          let item: CarInfo = {
-            tokenId: Number(i.tokenId),
-            owner: i.owner.toString(),
-            image: meta.image,
-            brand:
-              meta.attributes?.find((x: any) => x.trait_type === "Brand")
-                ?.value ?? "",
-            model:
-              meta.attributes?.find((x: any) => x.trait_type === "Model")
-                ?.value ?? "",
-            year:
-              meta.attributes?.find((x: any) => x.trait_type === "Release year")
-                ?.value ?? "",
-            licensePlate:
-              meta.attributes?.find(
-                (x: any) => x.trait_type === "License plate"
-              )?.value ?? "",
-            pricePerDay: price,
-          };
-          return item;
-        })
-      );
+                let item: CarInfo = {
+                  tokenId: Number(i.tokenId),
+                  owner: i.owner.toString(),
+                  image: meta.image,
+                  brand:
+                    meta.attributes?.find((x: any) => x.trait_type === "Brand")
+                      ?.value ?? "",
+                  model:
+                    meta.attributes?.find((x: any) => x.trait_type === "Model")
+                      ?.value ?? "",
+                  year:
+                    meta.attributes?.find(
+                      (x: any) => x.trait_type === "Release year"
+                    )?.value ?? "",
+                  licensePlate:
+                    meta.attributes?.find(
+                      (x: any) => x.trait_type === "License plate"
+                    )?.value ?? "",
+                  pricePerDay: price,
+                };
+                return item;
+              })
+            );
 
       return myListingsData;
     } catch (e) {
