@@ -7,23 +7,8 @@ import { useRef } from "react";
 export default function HostHeader() {
   const burgerMenuRef = useRef<HTMLDivElement>(null);
 
-  function toggleBurgerMenu(): void {
-    if (burgerMenuRef.current == null) return;
-
-    burgerMenuRef.current.classList.toggle("change");
-  }
-
   return (
     <header className="bg-gray-200 bg-opacity-60">
-      {/* <div
-        className="burger-icon"
-        ref={burgerMenuRef}
-        onClick={() => toggleBurgerMenu()}
-      >
-        <div className="burger-icon-bar1"></div>
-        <div className="burger-icon-bar2"></div>
-        <div className="burger-icon-bar3"></div>
-      </div> */}
       <div className="flex flex-row w-full px-8 py-4 justify-end border-b-2 border-gray-400">
         <div className="flex flex-row mr-16 items-center">
           <span>Guest (</span>
