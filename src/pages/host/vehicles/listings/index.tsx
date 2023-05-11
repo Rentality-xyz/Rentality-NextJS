@@ -1,6 +1,6 @@
 import HostLayout from "@/components/host/layout/hostLayout";
-import ListingItem, { CarInfo } from "@/components/host/listingItem";
-import useMyListings from "@/hooks/useMyListings";
+import ListingItem from "@/components/host/listingItem";
+import useMyListings from "@/hooks/host/useMyListings";
 import Link from "next/link";
 
 export default function Listings() {

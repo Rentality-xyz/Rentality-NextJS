@@ -1,18 +1,8 @@
+import { CarInfo } from "@/model/CarInfo";
 import Image from "next/image";
 
 type Props = {
   carInfo: CarInfo;
-};
-
-export type CarInfo = {
-  tokenId: number;
-  owner: string;
-  image: string;
-  brand: string;
-  model: string;
-  year: string;
-  licensePlate: string;
-  pricePerDay: number;
 };
 
 export default function ListingItem({ carInfo }: Props) {

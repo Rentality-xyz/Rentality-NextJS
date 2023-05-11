@@ -1,47 +1,12 @@
 import { Contract, BrowserProvider } from "ethers";
 import { useEffect, useState } from "react";
-import RentCarJSON from "../abis";
-import { CarInfo } from "@/components/host/listingItem";
+import RentCarJSON from "../../abis";
+import { TripInfo, TripStatus } from "@/components/host/tripItem";
+import { ContractCarToRent, validateContractCarToRent } from "@/model/blockchain/ContractCarToRent";
 
-type ContractCarToRent = {
-  tokenId: number;
-  carId: number;
-  owner: string;
-  pricePerDayInUsdCents: string;
-  currentlyListed: boolean;
-};
-
-function validateContractCarToRent(
-  obj: ContractCarToRent
-): obj is ContractCarToRent {
-  if (typeof obj !== "object" || obj === null) return false;
-
-  if (obj.tokenId === undefined) {
-    console.error("obj does not contain property tokenId");
-    return false;
-  }
-  if (obj.carId === undefined) {
-    console.error("obj does not contain property carId");
-    return false;
-  }
-  if (obj.owner === undefined) {
-    console.error("obj does not contain property owner");
-    return false;
-  }
-  if (obj.pricePerDayInUsdCents === undefined) {
-    console.error("obj does not contain property pricePerDayInUsdCents");
-    return false;
-  }
-  if (obj.currentlyListed === undefined) {
-    console.error("obj does not contain property currentlyListed");
-    return false;
-  }
-  return true;
-}
-
-const useMyListings = () => {
+const useTripsBooked = () => {
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
-  const [myListings, setMyListings] = useState<CarInfo[]>([]);
+  const [tripsBooked, setTripsBooked] = useState<TripInfo[]>([]);
 
   const getRentalityContract = async () => {
     try {
@@ -59,33 +24,33 @@ const useMyListings = () => {
     }
   };
 
-  const getMyListings = async (rentalityContract: Contract) => {
+  const getTripsBooked = async (rentalityContract: Contract) => {
     try {
       if (rentalityContract === null) {
-        console.error("getMyListings error: contract is null");
+        console.error("getTripsBooked error: contract is null");
         return;
       }
-      const myListingsView: ContractCarToRent[] =
+      const tripsBookedView: ContractCarToRent[] =
         await rentalityContract.getMyCars();
 
-      const myListingsData = await Promise.all(
-        myListingsView.map(async (i: ContractCarToRent, index) => {
+      const tripsBookedData = await Promise.all(
+        tripsBookedView.map(async (i: ContractCarToRent, index) => {
           if (index === 0) {
             validateContractCarToRent(i);
           }
           const tokenURI = await rentalityContract.tokenURI(i.tokenId);
           const response = await fetch(tokenURI, {
             headers: {
-              'Accept': 'application/json',
+              Accept: "application/json",
             },
           });
           const meta = await response.json();
 
           const price = Number(i.pricePerDayInUsdCents) / 100;
 
-          let item: CarInfo = {
-            tokenId: Number(i.tokenId),
-            owner: i.owner.toString(),
+          let item: TripInfo = {
+            tripId: Number(i.tokenId),
+            carId: Number(i.tokenId),
             image: meta.image,
             brand:
               meta.attributes?.find((x: any) => x.trait_type === "Brand")
@@ -100,15 +65,19 @@ const useMyListings = () => {
               meta.attributes?.find(
                 (x: any) => x.trait_type === "License plate"
               )?.value ?? "",
-            pricePerDay: price,
+            tripStart: "April 10, 4:00 AM",
+            tripEnd: "April 10, 4:00 AM",
+            locationStart: "Miami, CA, USA",
+            locationEnd: "Miami, CA, USA",
+            status: TripStatus.Pending,
           };
           return item;
         })
       );
 
-      return myListingsData;
+      return tripsBookedData;
     } catch (e) {
-      console.error("getMyListings error:" + e);
+      console.error("getTripsBooked error:" + e);
     }
   };
 
@@ -116,17 +85,17 @@ const useMyListings = () => {
     getRentalityContract()
       .then((contract) => {
         if (contract !== undefined) {
-          return getMyListings(contract);
+          return getTripsBooked(contract);
         }
       })
       .then((data) => {
-        setMyListings(data ?? []);
+        setTripsBooked(data ?? []);
         setDataFetched(true);
       })
       .catch(() => setDataFetched(true));
   }, []);
 
-  return [dataFetched, myListings] as const;
+  return [dataFetched, tripsBooked] as const;
 };
 
-export default useMyListings;
+export default useTripsBooked;

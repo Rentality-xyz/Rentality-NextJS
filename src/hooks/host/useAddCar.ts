@@ -1,7 +1,7 @@
 import { Contract, BrowserProvider } from "ethers";
 import { useCallback, useState } from "react";
-import RentCarJSON from "../abis";
-import { uploadFileToIPFS, uploadJSONToIPFS } from "../utils/pinata";
+import RentCarJSON from "../../abis";
+import { uploadFileToIPFS, uploadJSONToIPFS } from "../../utils/pinata";
 
 export type NewCarInfo = {
   vinNumber: string;

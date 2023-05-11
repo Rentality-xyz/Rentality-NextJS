@@ -1,5 +1,5 @@
 import HostLayout from "@/components/host/layout/hostLayout";
-import useAddCar, { NewCarInfo } from "@/hooks/useAddCar";
+import useAddCar, { NewCarInfo } from "@/hooks/host/useAddCar";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { verify } from "crypto";
 import { useEffect, useRef, useState } from "react";

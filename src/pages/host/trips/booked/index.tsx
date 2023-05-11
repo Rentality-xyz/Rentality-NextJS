@@ -1,6 +1,6 @@
 import HostLayout from "@/components/host/layout/hostLayout";
 import TripItem, { TripInfo, TripStatus } from "@/components/host/tripItem";
-import useTripsBooked from "@/hooks/useTripsBooked";
+import useTripsBooked from "@/hooks/host/useTripsBooked";
 
 export default function Booked() {
   const [dataFetched, tripsBooked] = useTripsBooked();
