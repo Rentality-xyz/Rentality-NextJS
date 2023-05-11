@@ -1,5 +1,5 @@
 import Footer from "@/components/footer/footer";
-import HostHeader from "@/components/host/header/hostHeader";
+import Header from "@/components/header/header";
 import HostSideNavMenu from "@/components/host/sideNavMenu/hostSideNavMenu";
 
 type Props = {
@@ -21,7 +21,7 @@ export default function HostLayout({ children }: Props) {
       </div> */}
 
       <div className="main-grid">
-        <HostHeader />
+        <Header />
         <HostSideNavMenu />
         <main className="bg-gray-200 bg-opacity-60">{children}</main>
         <Footer />
