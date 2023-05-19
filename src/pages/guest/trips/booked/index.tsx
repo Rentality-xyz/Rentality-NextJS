@@ -17,9 +17,7 @@ export default function Booked() {
           <div className="flex flex-col gap-4 pr-4 my-4">
             {tripsBooked != null && tripsBooked.length > 0 ? (
               tripsBooked.map((value) => {
-                return (
-                  <TripItem key={value.tripId} tripInfo={value}></TripItem>
-                );
+                return <TripItem key={value.tripId} tripInfo={value} />;
               })
             ) : (
               <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">

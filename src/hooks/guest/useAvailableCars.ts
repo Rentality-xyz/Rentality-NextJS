@@ -1,10 +1,10 @@
 import { Contract, BrowserProvider } from "ethers";
 import { useEffect, useState } from "react";
-import RentCarJSON from "../../abis";
+import {rentalityJSON} from "../../abis";
 import {
-  ContractCarToRent,
-  validateContractCarToRent,
-} from "@/model/blockchain/ContractCarToRent";
+  ContractCarInfo,
+  validateContractCarInfo,
+} from "@/model/blockchain/ContractCarInfo";
 import { CarInfo } from "@/model/CarInfo";
 
 const useAvailableCars = () => {
@@ -21,7 +21,7 @@ const useAvailableCars = () => {
 
       const provider = new BrowserProvider(ethereum);
       const signer = await provider.getSigner();
-      return new Contract(RentCarJSON.address, RentCarJSON.abi, signer);
+      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer);
     } catch (e) {
       console.error("getRentalityContract error:" + e);
     }
@@ -33,18 +33,18 @@ const useAvailableCars = () => {
         console.error("getAvailableCars error: contract is null");
         return;
       }
-      const availableCarsView: ContractCarToRent[] =
-        await rentalityContract.getAllAvailableCars();
+      const availableCarsView: ContractCarInfo[] =
+        await rentalityContract.getAllAvailableCarsForUser(rentalityContract.runner);
 
       const availableCarsData =
         availableCarsView.length === 0
           ? []
           : await Promise.all(
-              availableCarsView.map(async (i: ContractCarToRent, index) => {
+              availableCarsView.map(async (i: ContractCarInfo, index) => {
                 if (index === 0) {
-                  validateContractCarToRent(i);
+                  validateContractCarInfo(i);
                 }
-                const tokenURI = await rentalityContract.tokenURI(i.tokenId);
+                const tokenURI = await rentalityContract.tokenURI(i.carId);
                 const response = await fetch(tokenURI, {
                   headers: {
                     Accept: "application/json",
@@ -55,8 +55,8 @@ const useAvailableCars = () => {
                 const price = Number(i.pricePerDayInUsdCents) / 100;
 
                 let item: CarInfo = {
-                  tokenId: Number(i.tokenId),
-                  owner: i.owner.toString(),
+                  tokenId: Number(i.carId),
+                  owner: i.createdBy.toString(),
                   image: meta.image,
                   brand:
                     meta.attributes?.find((x: any) => x.trait_type === "Brand")
@@ -84,6 +84,26 @@ const useAvailableCars = () => {
     }
   };
 
+  const sendRentCarRequest = async (carId:number, totalPrice:number, daysToRent:number) => {
+    try {
+      const rentalityContract = await getRentalityContract();
+      if (rentalityContract === null || rentalityContract === undefined) {
+        console.error("sendRentCarRequest error: contract is null");
+        return;
+      }
+
+      const rentPriceInUsdCents = (totalPrice * 100) | 0;
+      const rentPriceInEth = await rentalityContract.getEthFromUsd(rentPriceInUsdCents);
+
+      let transaction = await rentalityContract.rentCar(carId, daysToRent, {
+        value: rentPriceInEth,
+      });
+      await transaction.wait();
+    } catch (e) {
+      console.error("getAvailableCars error:" + e);
+    }
+  };
+
   useEffect(() => {
     getRentalityContract()
       .then((contract) => {
@@ -98,7 +118,7 @@ const useAvailableCars = () => {
       .catch(() => setDataFetched(true));
   }, []);
 
-  return [dataFetched, availableCars] as const;
+  return [dataFetched, availableCars, sendRentCarRequest] as const;
 };
 
 export default useAvailableCars;

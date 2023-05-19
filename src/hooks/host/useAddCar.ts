@@ -1,6 +1,6 @@
 import { Contract, BrowserProvider } from "ethers";
 import { useCallback, useState } from "react";
-import RentCarJSON from "../../abis";
+import {rentalityJSON} from "../../abis";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "../../utils/pinata";
 
 export type NewCarInfo = {
@@ -64,7 +64,7 @@ const useAddCar = () => {
 
       const provider = new BrowserProvider(ethereum);
       const signer = await provider.getSigner();
-      return new Contract(RentCarJSON.address, RentCarJSON.abi, signer);
+      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer);
     } catch (e) {
       console.error("getRentalityContract error:" + e);
     }
@@ -240,11 +240,15 @@ const useAddCar = () => {
         dataToSave.pricePerDay.replace(/[^0-9.]+/g, "")
       );
       let pricePerDay = ((doubleNumber * 100) | 0).toString();
-
+      
       let transaction = await rentalityContract.addCar(
         metadataURL,
-        pricePerDay
+        carInfoFormParams.vinNumber,
+        pricePerDay,
+        carInfoFormParams.tankVolumeInGal,
+        carInfoFormParams.distanceIncludedInMi
       );
+
       alert("transaction: " + JSON.stringify(transaction));
       const result = await transaction.wait();
       alert("result: " + JSON.stringify(result));

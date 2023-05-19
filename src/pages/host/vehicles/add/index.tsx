@@ -300,9 +300,10 @@ export default function AddCar() {
                     fuelType: e.target.value,
                   })
                 }
+                defaultValue = {""}
                 value={carInfoFormParams.fuelType}
               >
-                <option className="hidden" disabled selected></option>
+                <option className="hidden" disabled></option>
                 <option value="Gasoline">Gasoline</option>
                 <option value="Diesel">Diesel</option>
                 <option value="Bio-diesel">Bio-diesel</option>

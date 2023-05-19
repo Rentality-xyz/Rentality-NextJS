@@ -27,12 +27,7 @@ export default function Listings() {
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 my-4">
             {myListings != null && myListings.length > 0 ? (
               myListings.map((value) => {
-                return (
-                  <ListingItem
-                    key={value.tokenId}
-                    carInfo={value}
-                  ></ListingItem>
-                );
+                return <ListingItem key={value.tokenId} carInfo={value} />;
               })
             ) : (
               <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">

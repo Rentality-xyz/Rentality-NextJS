@@ -1,11 +1,11 @@
 import { Contract, BrowserProvider } from "ethers";
 import { useEffect, useState } from "react";
-import RentCarJSON from "../../abis";
+import { rentalityJSON } from "../../abis";
 import { TripInfo, TripStatus } from "@/components/guest/tripItem";
 import {
-  ContractCarToRent,
-  validateContractCarToRent,
-} from "@/model/blockchain/ContractCarToRent";
+  ContractTrip,
+  validateContractTrip,
+} from "@/model/blockchain/ContractTrip";
 
 const useTripsBooked = () => {
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
@@ -21,7 +21,7 @@ const useTripsBooked = () => {
 
       const provider = new BrowserProvider(ethereum);
       const signer = await provider.getSigner();
-      return new Contract(RentCarJSON.address, RentCarJSON.abi, signer);
+      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer);
     } catch (e) {
       console.error("getRentalityContract error:" + e);
     }
@@ -33,18 +33,18 @@ const useTripsBooked = () => {
         console.error("getTripsBooked error: contract is null");
         return;
       }
-      const tripsBookedView: ContractCarToRent[] =
-        await rentalityContract.getMyCars();
+      const tripsBookedView: ContractTrip[] =
+        await rentalityContract.getTripsByHost(rentalityContract.runner);
 
       const tripsBookedData =
         tripsBookedView.length === 0
           ? []
           : await Promise.all(
-              tripsBookedView.map(async (i: ContractCarToRent, index) => {
+              tripsBookedView.map(async (i: ContractTrip, index) => {
                 if (index === 0) {
-                  validateContractCarToRent(i);
+                  validateContractTrip(i);
                 }
-                const tokenURI = await rentalityContract.tokenURI(i.tokenId);
+                const tokenURI = await rentalityContract.tokenURI(i.carId);
                 const response = await fetch(tokenURI, {
                   headers: {
                     Accept: "application/json",
@@ -52,11 +52,11 @@ const useTripsBooked = () => {
                 });
                 const meta = await response.json();
 
-                const price = Number(i.pricePerDayInUsdCents) / 100;
+                const price = Number(i.totalDayPrice) / 100;
 
                 let item: TripInfo = {
-                  tripId: Number(i.tokenId),
-                  carId: Number(i.tokenId),
+                  tripId: Number(i.carId),
+                  carId: Number(i.carId),
                   image: meta.image,
                   brand:
                     meta.attributes?.find((x: any) => x.trait_type === "Brand")

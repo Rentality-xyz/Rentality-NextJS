@@ -1,10 +1,10 @@
 import { Contract, BrowserProvider } from "ethers";
 import { useEffect, useState } from "react";
-import RentCarJSON from "../../abis";
+import { rentalityJSON } from "../../abis";
 import {
-  ContractCarToRent,
-  validateContractCarToRent,
-} from "@/model/blockchain/ContractCarToRent";
+  ContractCarInfo,
+  validateContractCarInfo,
+} from "@/model/blockchain/ContractCarInfo";
 import { CarInfo } from "@/model/CarInfo";
 
 const useMyListings = () => {
@@ -21,7 +21,7 @@ const useMyListings = () => {
 
       const provider = new BrowserProvider(ethereum);
       const signer = await provider.getSigner();
-      return new Contract(RentCarJSON.address, RentCarJSON.abi, signer);
+      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer);
     } catch (e) {
       console.error("getRentalityContract error:" + e);
     }
@@ -33,18 +33,22 @@ const useMyListings = () => {
         console.error("getMyListings error: contract is null");
         return;
       }
-      const myListingsView: ContractCarToRent[] =
+      console.error(
+        "getMyListings contract address is:",
+        await rentalityContract.getAddress()
+      );
+      const myListingsView: ContractCarInfo[] =
         await rentalityContract.getMyCars();
 
       const myListingsData =
         myListingsView.length === 0
           ? []
           : await Promise.all(
-              myListingsView.map(async (i: ContractCarToRent, index) => {
+              myListingsView.map(async (i: ContractCarInfo, index) => {
                 if (index === 0) {
-                  validateContractCarToRent(i);
+                  validateContractCarInfo(i);
                 }
-                const tokenURI = await rentalityContract.tokenURI(i.tokenId);
+                const tokenURI = await rentalityContract.tokenURI(i.carId);
                 const response = await fetch(tokenURI, {
                   headers: {
                     Accept: "application/json",
@@ -55,8 +59,8 @@ const useMyListings = () => {
                 const price = Number(i.pricePerDayInUsdCents) / 100;
 
                 let item: CarInfo = {
-                  tokenId: Number(i.tokenId),
-                  owner: i.owner.toString(),
+                  tokenId: Number(i.carId),
+                  owner: i.createdBy.toString(),
                   image: meta.image,
                   brand:
                     meta.attributes?.find((x: any) => x.trait_type === "Brand")

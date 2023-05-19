@@ -3,9 +3,45 @@ import Image from "next/image";
 
 type Props = {
   carInfo: CarInfo;
+  sendRentCarRequest:(carId:number, totalPrice:number, daysToRent:number) => void
 };
 
-export default function carSearchItem({ carInfo }: Props) {
+export default function CarSearchItem({ carInfo }: Props) {
+  
+  // const sendRentCarRequest = async (tokenId) => {
+  //   try {
+  //     const ethers = require("ethers");
+  //     //After adding your Hardhat network to your metamask, this code will get providers and signers
+  //     const provider = new ethers.providers.Web3Provider(window.ethereum);
+  //     const signer = provider.getSigner();
+
+  //     //Pull the deployed contract instance
+  //     let contract = new ethers.Contract(
+  //       RentCarJSON.address,
+  //       RentCarJSON.abi,
+  //       signer
+  //     );
+
+  //     const rentPriceInUsdCents = (totalPrice * 100) | 0;
+  //     const rentPriceInEth = await contract.getEthFromUsd(rentPriceInUsdCents);
+
+  //     setMessage("Renting the car... Please Wait (Upto 5 mins)");
+  //     rentCarButtonRef.current.disabled = true;
+  //     //run the executeSale function
+  //     let transaction = await contract.rentCar(tokenId, daysToRent, {
+  //       value: rentPriceInEth,
+  //     });
+  //     await transaction.wait();
+
+  //     alert("You successfully send request to rent this car!");
+  //     setMessage("");
+  //     window.location.replace("/");
+  //   } catch (e) {
+  //     alert("Upload Error" + e);
+  //     rentCarButtonRef.current.disabled = false;
+  //   }
+  // };
+
   return (
     <div className="flex flex-row rounded-xl bg-pink-100">
       <div className="w-60 h-56 bg-slate-400 rounded-l-xl flex-shrink-0">
