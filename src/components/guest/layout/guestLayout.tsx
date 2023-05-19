@@ -10,7 +10,7 @@ export default function GuestLayout({ children }: Props) {
   return (
     <>
       <div className="main-grid">
-        <Header />
+        <Header  isHost={false} />
         <GuestSideNavMenu />
         <main className="bg-gray-200 bg-opacity-60">{children}</main>
         <Footer />
