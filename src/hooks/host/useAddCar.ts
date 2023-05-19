@@ -249,9 +249,8 @@ const useAddCar = () => {
         carInfoFormParams.distanceIncludedInMi
       );
 
-      alert("transaction: " + JSON.stringify(transaction));
       const result = await transaction.wait();
-      alert("result: " + JSON.stringify(result));
+      console.log("result: " + JSON.stringify(result));
       setCarInfoFormParams(emptyNewCarInfo);
       setDataSaved(true);
       return true;

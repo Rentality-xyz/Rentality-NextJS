@@ -2,11 +2,11 @@ import { BaseCarInfo } from "@/model/BaseCarInfo";
 import Image from "next/image";
 
 type Props = {
-  sendRentCarRequest:(carId:number, totalPrice:number, daysToRent:number) => void
   carInfo: BaseCarInfo;
+  sendRentCarRequest:(carInfo: BaseCarInfo) => void
 };
 
-export default function CarSearchItem({ carInfo }: Props) {
+export default function CarSearchItem({ carInfo, sendRentCarRequest }: Props) {
   
   // const sendRentCarRequest = async (tokenId) => {
   //   try {
@@ -64,7 +64,9 @@ export default function CarSearchItem({ carInfo }: Props) {
             <strong className="text-xl">{`$${carInfo.pricePerDay}/day`}</strong>
             <div className="text-sm">{`$${carInfo.pricePerDay} est. total`}</div>
           </div>
-          <div className="text-gray-600">Listing</div>
+          <button className="px-4 w-36 h-12 bg-violet-700 rounded-md" onClick={() => sendRentCarRequest(carInfo)}>
+            Rent now
+          </button>
         </div>
       </div>
     </div>

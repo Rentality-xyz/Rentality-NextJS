@@ -1,14 +1,29 @@
 import { Contract, BrowserProvider } from "ethers";
 import { useEffect, useState } from "react";
-import {rentalityJSON} from "../../abis";
+import { rentalityJSON, rentalityCurrencyConverterJSON } from "../../abis";
 import {
   ContractCarInfo,
   validateContractCarInfo,
 } from "@/model/blockchain/ContractCarInfo";
 import { BaseCarInfo } from "@/model/BaseCarInfo";
 
+export type CarRequest = {
+  carId: number;
+  host: string;
+  startDateTime: number;
+  endDateTime: number;
+  startLocation: string;
+  endLocation: string;
+  totalDayPriceInUsdCents: number;
+  taxPriceInUsdCents: number;
+  depositInUsdCents: number;
+  ethToCurrencyRate: number;
+  ethToCurrencyDecimals: number;
+};
+
 const useAvailableCars = () => {
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
+  const [dataSaved, setDataSaved] = useState<Boolean>(false);
   const [availableCars, setAvailableCars] = useState<BaseCarInfo[]>([]);
 
   const getRentalityContract = async () => {
@@ -27,6 +42,26 @@ const useAvailableCars = () => {
     }
   };
 
+  const getRentalityCurrencyConverterContract = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (!ethereum) {
+        console.error("Ethereum wallet is not found");
+      }
+
+      const provider = new BrowserProvider(ethereum);
+      const signer = await provider.getSigner();
+      return new Contract(
+        rentalityCurrencyConverterJSON.address,
+        rentalityCurrencyConverterJSON.abi,
+        signer
+      );
+    } catch (e) {
+      console.error("getRentalityCurrencyConverter error:" + e);
+    }
+  };
+
   const getAvailableCars = async (rentalityContract: Contract) => {
     try {
       if (rentalityContract === null) {
@@ -34,7 +69,7 @@ const useAvailableCars = () => {
         return;
       }
       const availableCarsView: ContractCarInfo[] =
-        await rentalityContract.getAllAvailableCarsForUser(rentalityContract.runner);
+        await rentalityContract.getAvailableCars();
 
       const availableCarsData =
         availableCarsView.length === 0
@@ -44,16 +79,15 @@ const useAvailableCars = () => {
                 if (index === 0) {
                   validateContractCarInfo(i);
                 }
-                const response = await fetch(tokenURI, {
-                  headers: {
-                    Accept: "application/json",
-                  },
-                });
                 const tokenURI = await rentalityContract.getCarMetadataURI(
                   i.carId
                 );
+                const ulr = "/api/pinata/getMetadataJson?tokenURI=" + tokenURI;
+                console.log("call ulr: " + ulr);
+                const response = await fetch(ulr);
                 const meta = await response.json();
 
+                console.log("meta: " + JSON.stringify(meta));
                 const price = Number(i.pricePerDayInUsdCents) / 100;
 
                 let item: BaseCarInfo = {
@@ -86,23 +120,64 @@ const useAvailableCars = () => {
     }
   };
 
-  const sendRentCarRequest = async (carId:number, totalPrice:number, daysToRent:number) => {
+  const createTripRequest = async (
+    carId: number,
+    host: string,
+    startDateTime: number,
+    endDateTime: number,
+    startLocation: string,
+    endLocation: string,
+    totalDayPriceInUsdCents: number,
+    taxPriceInUsdCents: number,
+    depositInUsdCents: number
+  ) => {
     try {
       const rentalityContract = await getRentalityContract();
+      const rentalityCurrencyConverterContract =
+        await getRentalityCurrencyConverterContract();
       if (rentalityContract === null || rentalityContract === undefined) {
-        console.error("sendRentCarRequest error: contract is null");
-        return;
+        console.error("createTripRequest error: contract is null");
+        return false;
       }
+      if (
+        rentalityCurrencyConverterContract === null ||
+        rentalityCurrencyConverterContract === undefined
+      ) {
+        console.error("createTripRequest error: contract is null");
+        return false;
+      }
+      const [ ethToCurrencyRate, ethToCurrencyDecimals ] =
+        await rentalityCurrencyConverterContract.getEthToUsdPrice();
+      const rentPriceInUsdCents = (totalDayPriceInUsdCents * 100) | 0;
+      const rentPriceInEth =
+        await rentalityCurrencyConverterContract.getEthFromUsd(
+          rentPriceInUsdCents
+        );
 
-      const rentPriceInUsdCents = (totalPrice * 100) | 0;
-      const rentPriceInEth = await rentalityContract.getEthFromUsd(rentPriceInUsdCents);
-
-      let transaction = await rentalityContract.rentCar(carId, daysToRent, {
+      const tripRequest: CarRequest = {
+        carId: carId,
+        host: host,
+        startDateTime: startDateTime,
+        endDateTime: endDateTime,
+        startLocation: startLocation,
+        endLocation: endLocation,
+        totalDayPriceInUsdCents: rentPriceInUsdCents,
+        taxPriceInUsdCents: taxPriceInUsdCents,
+        depositInUsdCents: depositInUsdCents,
+        ethToCurrencyRate: Number(ethToCurrencyRate),
+        ethToCurrencyDecimals: Number(ethToCurrencyDecimals),
+      };
+      alert("request:" + JSON.stringify(tripRequest) + " | rentPriceInEth: " + rentPriceInEth);
+      let transaction = await rentalityContract.createTripRequest(tripRequest, {
         value: rentPriceInEth,
       });
-      await transaction.wait();
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      setDataSaved(true);
+      return true;
     } catch (e) {
-      console.error("getAvailableCars error:" + e);
+      console.error("createTripRequest error:" + e);
+      return false;
     }
   };
 
@@ -120,7 +195,7 @@ const useAvailableCars = () => {
       .catch(() => setDataFetched(true));
   }, []);
 
-  return [dataFetched, availableCars, sendRentCarRequest] as const;
+  return [dataFetched, availableCars, dataSaved, createTripRequest] as const;
 };
 
 export default useAvailableCars;

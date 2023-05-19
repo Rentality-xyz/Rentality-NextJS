@@ -5,7 +5,34 @@ import Link from "next/link";
 import { BaseCarInfo } from "@/model/BaseCarInfo";
 
 export default function Search() {
-  const [dataFetched, availableCars, sendRentCarRequest] = useAvailableCars();
+  const [dataFetched, availableCars, dataSaved, createTripRequest] =
+    useAvailableCars();
+
+  const sendRentCarRequest = async (carInfo: BaseCarInfo) => {
+    try {
+      const startDateTime = new Date();
+      const endDateTime = new Date(
+        startDateTime.getTime() + 1000 * 60 * 60 * 24
+      );
+
+      const result = await createTripRequest(
+        carInfo.carId,
+        carInfo.ownerAddress,
+        startDateTime.getTime(),
+        endDateTime.getTime(),
+        "Start location name",
+        "End location name",
+        carInfo.pricePerDay,
+        0,
+        0
+      );
+      if (!result) {
+        alert("sendRentCarRequest error!");
+      }
+    } catch (e) {
+      console.error("sendRentCarRequest error:" + e);
+    }
+  };
 
   return (
     <GuestLayout>
@@ -21,7 +48,9 @@ export default function Search() {
           </div>
         ) : (
           <>
-            <div>Found {availableCars?.length ?? 0} car(s)</div>
+            <div className="font-bold text-l">
+              {availableCars?.length ?? 0} car(s) available
+            </div>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 my-4">
               {availableCars != null && availableCars.length > 0 ? (
                 availableCars.map((value) => {
