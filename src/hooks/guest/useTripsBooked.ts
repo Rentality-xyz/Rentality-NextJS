@@ -44,7 +44,7 @@ const useTripsBooked = () => {
                 if (index === 0) {
                   validateContractTrip(i);
                 }
-                const tokenURI = await rentalityContract.tokenURI(i.carId);
+                const tokenURI = await rentalityContract.getCarMetadataURI(i.carId);
                 const response = await fetch(tokenURI, {
                   headers: {
                     Accept: "application/json",

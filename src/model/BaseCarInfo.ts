@@ -1,6 +1,6 @@
-export type CarInfo = {
-    tokenId: number;
-    owner: string;
+export type BaseCarInfo = {
+    carId: number;
+    ownerAddress: string;
     image: string;
     brand: string;
     model: string;

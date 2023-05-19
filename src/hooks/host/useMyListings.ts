@@ -5,11 +5,11 @@ import {
   ContractCarInfo,
   validateContractCarInfo,
 } from "@/model/blockchain/ContractCarInfo";
-import { CarInfo } from "@/model/CarInfo";
+import { BaseCarInfo } from "@/model/BaseCarInfo";
 
 const useMyListings = () => {
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
-  const [myListings, setMyListings] = useState<CarInfo[]>([]);
+  const [myListings, setMyListings] = useState<BaseCarInfo[]>([]);
 
   const getRentalityContract = async () => {
     try {
@@ -48,7 +48,7 @@ const useMyListings = () => {
                 if (index === 0) {
                   validateContractCarInfo(i);
                 }
-                const tokenURI = await rentalityContract.tokenURI(i.carId);
+                const tokenURI = await rentalityContract.getCarMetadataURI(i.carId);
                 const response = await fetch(tokenURI, {
                   headers: {
                     Accept: "application/json",
@@ -58,9 +58,9 @@ const useMyListings = () => {
 
                 const price = Number(i.pricePerDayInUsdCents) / 100;
 
-                let item: CarInfo = {
-                  tokenId: Number(i.carId),
-                  owner: i.createdBy.toString(),
+                let item: BaseCarInfo = {
+                  carId: Number(i.carId),
+                  ownerAddress: i.createdBy.toString(),
                   image: meta.image,
                   brand:
                     meta.attributes?.find((x: any) => x.trait_type === "Brand")

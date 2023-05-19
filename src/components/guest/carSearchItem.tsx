@@ -1,9 +1,9 @@
-import { CarInfo } from "@/model/CarInfo";
+import { BaseCarInfo } from "@/model/BaseCarInfo";
 import Image from "next/image";
 
 type Props = {
-  carInfo: CarInfo;
   sendRentCarRequest:(carId:number, totalPrice:number, daysToRent:number) => void
+  carInfo: BaseCarInfo;
 };
 
 export default function CarSearchItem({ carInfo }: Props) {

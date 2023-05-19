@@ -1,8 +1,8 @@
-import { CarInfo } from "@/model/CarInfo";
+import { BaseCarInfo } from "@/model/BaseCarInfo";
 import Image from "next/image";
 
 type Props = {
-  carInfo: CarInfo;
+  carInfo: BaseCarInfo;
 };
 
 export default function ListingItem({ carInfo }: Props) {

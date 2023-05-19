@@ -2,6 +2,7 @@ import GuestLayout from "@/components/guest/layout/guestLayout";
 import CarSearchItem from "@/components/guest/carSearchItem";
 import useAvailableCars from "@/hooks/guest/useAvailableCars";
 import Link from "next/link";
+import { BaseCarInfo } from "@/model/BaseCarInfo";
 
 export default function Search() {
   const [dataFetched, availableCars, sendRentCarRequest] = useAvailableCars();
@@ -24,7 +25,13 @@ export default function Search() {
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 my-4">
               {availableCars != null && availableCars.length > 0 ? (
                 availableCars.map((value) => {
-                  return <CarSearchItem key={value.tokenId} carInfo={value} sendRentCarRequest={sendRentCarRequest} />;
+                  return (
+                    <CarSearchItem
+                      key={value.carId}
+                      carInfo={value}
+                      sendRentCarRequest={sendRentCarRequest}
+                    />
+                  );
                 })
               ) : (
                 <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
