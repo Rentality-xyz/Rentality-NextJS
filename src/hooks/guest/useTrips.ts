@@ -7,9 +7,32 @@ import {
   validateContractTrip,
 } from "@/model/blockchain/ContractTrip";
 
-const useTripsBooked = () => {
+const getTripStatus = (status: number) => {
+  switch (status) {
+    case 0:
+      return TripStatus.Pending;
+    case 1:
+      return TripStatus.Comfirmed;
+    case 2:
+      return TripStatus.StartedByHost;
+    case 3:
+      return TripStatus.Started;
+    case 4:
+      return TripStatus.FinishedByGuest;
+    case 5:
+      return TripStatus.Finished;
+    case 6:
+      return TripStatus.Closed;
+    case 7:
+    default:
+      return TripStatus.Rejected;
+  }
+};
+
+const useTrips = () => {
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
   const [tripsBooked, setTripsBooked] = useState<TripInfo[]>([]);
+  const [tripsHistory, setTripsHistory] = useState<TripInfo[]>([]);
 
   const getRentalityContract = async () => {
     try {
@@ -27,14 +50,14 @@ const useTripsBooked = () => {
     }
   };
 
-  const getTripsBooked = async (rentalityContract: Contract) => {
+  const getTrips = async (rentalityContract: Contract) => {
     try {
       if (rentalityContract == null) {
-        console.error("getTripsBooked error: contract is null");
+        console.error("getTrips error: contract is null");
         return;
       }
       const tripsBookedView: ContractTrip[] =
-        await rentalityContract.getTripsByHost(rentalityContract.runner);
+        await rentalityContract.getTripsAsGuest();
 
       const tripsBookedData =
         tripsBookedView.length === 0
@@ -44,7 +67,10 @@ const useTripsBooked = () => {
                 if (index === 0) {
                   validateContractTrip(i);
                 }
-                const tokenURI = await rentalityContract.getCarMetadataURI(i.carId);
+
+                const tokenURI = await rentalityContract.getCarMetadataURI(
+                  i.carId
+                );
                 const response = await fetch(tokenURI, {
                   headers: {
                     Accept: "application/json",
@@ -52,10 +78,8 @@ const useTripsBooked = () => {
                 });
                 const meta = await response.json();
 
-                const price = Number(i.totalDayPrice) / 100;
-
                 let item: TripInfo = {
-                  tripId: Number(i.carId),
+                  tripId: Number(i.tripId),
                   carId: Number(i.carId),
                   image: meta.image,
                   brand:
@@ -72,11 +96,11 @@ const useTripsBooked = () => {
                     meta.attributes?.find(
                       (x: any) => x.trait_type === "License plate"
                     )?.value ?? "",
-                  tripStart: "April 10, 4:00 AM",
-                  tripEnd: "April 10, 4:00 AM",
-                  locationStart: "Miami, CA, USA",
-                  locationEnd: "Miami, CA, USA",
-                  status: TripStatus.Pending,
+                  tripStart: new Date(Number(i.startDateTime)),
+                  tripEnd: new Date(Number(i.endDateTime)),
+                  locationStart: i.startLocation,
+                  locationEnd: i.endLocation,
+                  status: getTripStatus(Number(i.status)),
                 };
                 return item;
               })
@@ -84,25 +108,50 @@ const useTripsBooked = () => {
 
       return tripsBookedData;
     } catch (e) {
-      console.error("getTripsBooked error:" + e);
+      console.error("getTrips error:" + e);
     }
   };
+
+  const finishTrip = async (tripId:number) => {
+    try {
+      const rentalityContract = await getRentalityContract();
+
+      if (!rentalityContract) {
+        console.error("acceptRequest error: contract is null");
+        return false;
+      }
+
+      let transaction = await rentalityContract.finishTrip(tripId);
+
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      return true;
+    } catch (e) {
+      alert("Upload error" + e);
+      return false;
+    }
+  }
+
+  const isTripBooked = (status:TripStatus) => {
+    return status !== TripStatus.Rejected && status !== TripStatus.Finished && status !== TripStatus.Closed;
+  }
 
   useEffect(() => {
     getRentalityContract()
       .then((contract) => {
         if (contract !== undefined) {
-          return getTripsBooked(contract);
+          return getTrips(contract);
         }
       })
       .then((data) => {
-        setTripsBooked(data ?? []);
+        setTripsBooked(data?.filter((i) => {return isTripBooked(i.status);}) ?? []);
+        setTripsHistory(data?.filter((i) => {return !isTripBooked(i.status);}) ?? []);
         setDataFetched(true);
       })
       .catch(() => setDataFetched(true));
   }, []);
 
-  return [dataFetched, tripsBooked] as const;
+  return [dataFetched, tripsBooked, tripsHistory, finishTrip] as const;
 };
 
-export default useTripsBooked;
+export default useTrips;

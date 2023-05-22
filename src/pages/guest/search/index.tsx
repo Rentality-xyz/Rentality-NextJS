@@ -3,10 +3,12 @@ import CarSearchItem from "@/components/guest/carSearchItem";
 import useAvailableCars from "@/hooks/guest/useAvailableCars";
 import Link from "next/link";
 import { BaseCarInfo } from "@/model/BaseCarInfo";
+import { useRouter } from "next/router";
 
 export default function Search() {
   const [dataFetched, availableCars, dataSaved, createTripRequest] =
     useAvailableCars();
+    const router = useRouter();
 
   const sendRentCarRequest = async (carInfo: BaseCarInfo) => {
     try {
@@ -28,6 +30,7 @@ export default function Search() {
       );
       if (!result) {
         alert("sendRentCarRequest error!");
+        router.push("/guest/trips");
       }
     } catch (e) {
       console.error("sendRentCarRequest error:" + e);
