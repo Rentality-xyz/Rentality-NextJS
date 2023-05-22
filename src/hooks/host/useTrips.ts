@@ -28,9 +28,10 @@ const getTripStatus = (status: number) => {
       return TripStatus.Rejected;
   }
 };
-const useTripsBooked = () => {
+const useTrips = () => {
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
   const [tripsBooked, setTripsBooked] = useState<TripInfo[]>([]);
+  const [tripsHistory, setTripsHistory] = useState<TripInfo[]>([]);
 
   const getRentalityContract = async () => {
     try {
@@ -48,10 +49,10 @@ const useTripsBooked = () => {
     }
   };
 
-  const getTripsBooked = async (rentalityContract: Contract) => {
+  const getTrips = async (rentalityContract: Contract) => {
     try {
       if (rentalityContract == null) {
-        console.error("getTripsBooked error: contract is null");
+        console.error("getTrips error: contract is null");
         return;
       }
       const tripsBookedView: ContractTrip[] =
@@ -106,7 +107,7 @@ const useTripsBooked = () => {
 
       return tripsBookedData;
     } catch (e) {
-      console.error("getTripsBooked error:" + e);
+      console.error("getTrips error:" + e);
     }
   };
 
@@ -169,21 +170,26 @@ const useTripsBooked = () => {
     }
   }
 
+  const isTripBooked = (status:TripStatus) => {
+    return status !== TripStatus.Rejected && status !== TripStatus.Finished && status !== TripStatus.Closed;
+  }
+
   useEffect(() => {
     getRentalityContract()
       .then((contract) => {
         if (contract !== undefined) {
-          return getTripsBooked(contract);
+          return getTrips(contract);
         }
       })
       .then((data) => {
-        setTripsBooked(data ?? []);
+        setTripsBooked(data?.filter((i) => {return isTripBooked(i.status);}) ?? []);
+        setTripsHistory(data?.filter((i) => {return !isTripBooked(i.status);}) ?? []);
         setDataFetched(true);
       })
       .catch(() => setDataFetched(true));
   }, []);
 
-  return [dataFetched, tripsBooked,  acceptRequest, rejectRequest, finishTrip] as const;
+  return [dataFetched, tripsBooked, tripsHistory, acceptRequest, rejectRequest, finishTrip] as const;
 };
 
-export default useTripsBooked;
+export default useTrips;

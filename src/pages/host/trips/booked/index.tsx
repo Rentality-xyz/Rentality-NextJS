@@ -1,11 +1,10 @@
 import HostLayout from "@/components/host/layout/hostLayout";
 import TripItem, { TripInfo, TripStatus } from "@/components/host/tripItem";
-import useTripsBooked from "@/hooks/host/useTripsBooked";
+import useTrips from "@/hooks/host/useTrips";
 import { useRouter } from "next/router";
 
 export default function Booked() {
-  const [dataFetched, tripsBooked, acceptRequest, rejectRequest, finishTrip] =
-    useTripsBooked();
+  const [dataFetched, tripsBooked, _ ,acceptRequest, rejectRequest, finishTrip] = useTrips();
   const router = useRouter();
 
   const acceptTripRequest = async (tripId: number) => {

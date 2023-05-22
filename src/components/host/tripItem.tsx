@@ -38,8 +38,6 @@ type Props = {
 };
 
 export default function TripItem({ tripInfo, acceptRequest, rejectRequest, finishTrip }: Props) {
-
-  
   const getButtonsFromStatus = (tripId:number, tripStatus: TripStatus) => {
     return (
       <>
