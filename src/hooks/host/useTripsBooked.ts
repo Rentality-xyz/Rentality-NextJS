@@ -76,10 +76,8 @@ const useTripsBooked = () => {
                 });
                 const meta = await response.json();
 
-                const price = Number(i.totalDayPrice) / 100;
-
                 let item: TripInfo = {
-                  tripId: Number(i.tripRequestId),
+                  tripId: Number(i.tripId),
                   carId: Number(i.carId),
                   image: meta.image,
                   brand:
@@ -112,6 +110,65 @@ const useTripsBooked = () => {
     }
   };
 
+  const acceptRequest = async (tripId:number) => {
+    try {
+      const rentalityContract = await getRentalityContract();
+
+      if (!rentalityContract) {
+        console.error("acceptRequest error: contract is null");
+        return false;
+      }
+
+      let transaction = await rentalityContract.approveTripRequest(tripId);
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      return true;
+    } catch (e) {
+      alert("acceptRequest error:" + e);
+      return false;
+    }
+  }
+
+  const rejectRequest = async (tripId:number) => {
+    try {
+      const rentalityContract = await getRentalityContract();
+
+      if (!rentalityContract) {
+        console.error("acceptRequest error: contract is null");
+        return false;
+      }
+
+      let transaction = await rentalityContract.rejectTripRequest(tripId);
+
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      return true;
+    } catch (e) {
+      alert("rejectRequest error:" + e);
+      return false;
+    }
+  }
+
+  const finishTrip = async (tripId:number) => {
+    try {
+      const rentalityContract = await getRentalityContract();
+
+      if (!rentalityContract) {
+        console.error("acceptRequest error: contract is null");
+        return false;
+      }
+
+      let transaction = await rentalityContract.finishTrip(tripId);
+
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      return true;
+    } catch (e) {
+      alert("Upload error" + e);
+      return false;
+    }
+  }
+
   useEffect(() => {
     getRentalityContract()
       .then((contract) => {
@@ -126,7 +183,7 @@ const useTripsBooked = () => {
       .catch(() => setDataFetched(true));
   }, []);
 
-  return [dataFetched, tripsBooked] as const;
+  return [dataFetched, tripsBooked,  acceptRequest, rejectRequest, finishTrip] as const;
 };
 
 export default useTripsBooked;

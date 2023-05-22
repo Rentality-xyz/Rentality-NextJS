@@ -1,6 +1,6 @@
 export type ContractTrip = {
-  carId: number;
-  tripRequestId: number;
+  tripId: bigint;
+  carId: bigint;
   status: number; //TripStatus
   guest: string;
   host: string;
@@ -9,10 +9,8 @@ export type ContractTrip = {
   startLocation: string;
   endLocation: string;
   milesIncluded: number;
-  totalDayPrice: number;
-  taxPrice: number;
-  deposit: number;
-  isAccepted: boolean;
+  paymentInfo: PaymentInfo;
+  approvedDateTime: number;
   checkedInByHostDateTime: number;
   startFuelLevel: number;
   startOdometr: number;
@@ -21,9 +19,20 @@ export type ContractTrip = {
   endFuelLevel: number;
   endOdometr: number;
   checkedOutByHostDateTime: number;
-  resolveAmount: number;
+  resolveAmount: bigint;
 };
 
+type PaymentInfo = {
+  tripRequestId: bigint;
+  from: string;
+  to: string;
+  totalDayPriceInUsdCents: bigint;
+  taxPriceInUsdCents: bigint;
+  depositInUsdCents: bigint;
+  currencyType: number;
+  ethToCurrencyRate: bigint;
+  ethToCurrencyDecimals: bigint;
+};
 
 export function validateContractTrip(obj: ContractTrip): obj is ContractTrip {
   if (typeof obj !== "object" || obj == null) return false;
