@@ -64,7 +64,7 @@ const useAvailableCars = () => {
 
   const getAvailableCars = async (rentalityContract: Contract) => {
     try {
-      if (rentalityContract === null) {
+      if (rentalityContract == null) {
         console.error("getAvailableCars error: contract is null");
         return;
       }
@@ -135,14 +135,11 @@ const useAvailableCars = () => {
       const rentalityContract = await getRentalityContract();
       const rentalityCurrencyConverterContract =
         await getRentalityCurrencyConverterContract();
-      if (rentalityContract === null || rentalityContract === undefined) {
+      if (rentalityContract == null) {
         console.error("createTripRequest error: contract is null");
         return false;
       }
-      if (
-        rentalityCurrencyConverterContract === null ||
-        rentalityCurrencyConverterContract === undefined
-      ) {
+      if (rentalityCurrencyConverterContract == null) {
         console.error("createTripRequest error: contract is null");
         return false;
       }
@@ -167,7 +164,6 @@ const useAvailableCars = () => {
         ethToCurrencyRate: Number(ethToCurrencyRate),
         ethToCurrencyDecimals: Number(ethToCurrencyDecimals),
       };
-      alert("request:" + JSON.stringify(tripRequest) + " | rentPriceInEth: " + rentPriceInEth);
       let transaction = await rentalityContract.createTripRequest(tripRequest, {
         value: rentPriceInEth,
       });

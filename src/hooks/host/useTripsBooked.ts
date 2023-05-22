@@ -29,7 +29,7 @@ const useTripsBooked = () => {
 
   const getTripsBooked = async (rentalityContract: Contract) => {
     try {
-      if (rentalityContract === null) {
+      if (rentalityContract == null) {
         console.error("getTripsBooked error: contract is null");
         return;
       }

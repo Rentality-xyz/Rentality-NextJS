@@ -29,14 +29,10 @@ const useMyListings = () => {
 
   const getMyListings = async (rentalityContract: Contract) => {
     try {
-      if (rentalityContract === null) {
+      if (rentalityContract == null) {
         console.error("getMyListings error: contract is null");
         return;
       }
-      console.error(
-        "getMyListings contract address is:",
-        await rentalityContract.getAddress()
-      );
       const myListingsView: ContractCarInfo[] =
         await rentalityContract.getMyCars();
 

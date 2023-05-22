@@ -11,7 +11,7 @@ export type ContractCarInfo = {
 export function validateContractCarInfo(
   obj: ContractCarInfo
 ): obj is ContractCarInfo {
-  if (typeof obj !== "object" || obj === null) return false;
+  if (typeof obj !== "object" || obj == null) return false;
 
   if (obj.carId === undefined) {
     console.error("obj does not contain property carId");

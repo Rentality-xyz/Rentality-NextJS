@@ -111,7 +111,7 @@ export default function AddCar() {
 
   useEffect(() => {
     if (saveButtonRef.current) {
-      saveButtonRef.current.disabled = imageFile === null || !verifyCar();
+      saveButtonRef.current.disabled = imageFile == null || !verifyCar();
     }
   }, [imageFile, carInfoFormParams.pricePerDay, verifyCar]);
 

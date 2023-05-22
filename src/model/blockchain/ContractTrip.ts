@@ -24,8 +24,9 @@ export type ContractTrip = {
   resolveAmount: number;
 };
 
+
 export function validateContractTrip(obj: ContractTrip): obj is ContractTrip {
-  if (typeof obj !== "object" || obj === null) return false;
+  if (typeof obj !== "object" || obj == null) return false;
 
   if (obj.carId === undefined) {
     console.error("obj does not contain property carId");
