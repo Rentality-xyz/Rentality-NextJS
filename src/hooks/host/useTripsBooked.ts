@@ -7,6 +7,27 @@ import {
   validateContractTrip,
 } from "@/model/blockchain/ContractTrip";
 
+const getTripStatus = (status: number) => {
+  switch (status) {
+    case 0:
+      return TripStatus.Pending;
+    case 1:
+      return TripStatus.Comfirmed;
+    case 2:
+      return TripStatus.StartedByHost;
+    case 3:
+      return TripStatus.Started;
+    case 4:
+      return TripStatus.FinishedByGuest;
+    case 5:
+      return TripStatus.Finished;
+    case 6:
+      return TripStatus.Closed;
+    case 7:
+    default:
+      return TripStatus.Rejected;
+  }
+};
 const useTripsBooked = () => {
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
   const [tripsBooked, setTripsBooked] = useState<TripInfo[]>([]);
@@ -34,7 +55,7 @@ const useTripsBooked = () => {
         return;
       }
       const tripsBookedView: ContractTrip[] =
-        await rentalityContract.getTripsByHost(rentalityContract.runner);
+        await rentalityContract.getTripsAsHost();
 
       const tripsBookedData =
         tripsBookedView.length === 0
@@ -44,7 +65,10 @@ const useTripsBooked = () => {
                 if (index === 0) {
                   validateContractTrip(i);
                 }
-                const tokenURI = await rentalityContract.getCarMetadataURI(i.carId);
+
+                const tokenURI = await rentalityContract.getCarMetadataURI(
+                  i.carId
+                );
                 const response = await fetch(tokenURI, {
                   headers: {
                     Accept: "application/json",
@@ -72,11 +96,11 @@ const useTripsBooked = () => {
                     meta.attributes?.find(
                       (x: any) => x.trait_type === "License plate"
                     )?.value ?? "",
-                  tripStart: "April 10, 4:00 AM",
-                  tripEnd: "April 10, 4:00 AM",
-                  locationStart: "Miami, CA, USA",
-                  locationEnd: "Miami, CA, USA",
-                  status: TripStatus.Pending,
+                  tripStart: new Date(Number(i.startDateTime)),
+                  tripEnd: new Date(Number(i.endDateTime)),
+                  locationStart: i.startLocation,
+                  locationEnd: i.endLocation,
+                  status: getTripStatus(Number(i.status)),
                 };
                 return item;
               })
