@@ -9,27 +9,28 @@ import { dateToHtmlDateFormat } from "@/utils/datetimeFormatters";
 import { TripSearchInfo } from "@/model/TripSearchInfo";
 
 export default function Search() {
-  const [dataFetched, availableCars, updateData, dataSaved, createTripRequest] = useAvailableCars();
+  const emptyTripSearchInfo: TripSearchInfo = {
+    location: "Miami, FI, United States",
+    dateFrom: dateToHtmlDateFormat(new Date()),
+    dateTo: dateToHtmlDateFormat(new Date()),
+  };
+
+  const [dataFetched, availableCars, updateData, dataSaved, createTripRequest] =
+    useAvailableCars();
   const [tripDays, setTripDays] = useState(1);
-  const [searchParams, setSearchParams] = useState<TripSearchInfo>({
-    location: "Miami, FI, United States",
-    dateFrom: dateToHtmlDateFormat(new Date()),
-    dateTo: dateToHtmlDateFormat(new Date())
-  });
-  const [enteredSearchParams, setEnteredSearchParams] = useState<TripSearchInfo>({
-    location: "Miami, FI, United States",
-    dateFrom: dateToHtmlDateFormat(new Date()),
-    dateTo: dateToHtmlDateFormat(new Date())
-  });
+  const [searchParams, setSearchParams] =
+    useState<TripSearchInfo>(emptyTripSearchInfo);
+  const [enteredSearchParams, setEnteredSearchParams] =
+    useState<TripSearchInfo>(emptyTripSearchInfo);
   const router = useRouter();
 
   const calculateDays = (dateFrom: Date, dateTo: Date) => {
     let difference = dateTo.getTime() - dateFrom.getTime();
-    let TotalDays = Math.ceil(difference / (1000 * 3600 * 24));
-    return TotalDays;
+    let totalDays = Math.ceil(difference / (1000 * 3600 * 24));
+    return totalDays;
   };
 
-  const search = async () => {
+  const searchCars = async () => {
     const startDateTime = new Date(enteredSearchParams.dateFrom);
     const endDateTime = new Date(enteredSearchParams.dateTo);
     let days = calculateDays(startDateTime, endDateTime) + 1;
@@ -37,7 +38,7 @@ export default function Search() {
       days = 0;
     }
 
-    await updateData();
+    await updateData(enteredSearchParams.location, startDateTime, endDateTime);
 
     setSearchParams(enteredSearchParams);
     setTripDays(days);
@@ -90,7 +91,7 @@ export default function Search() {
 
     setEnteredSearchParams({
       ...enteredSearchParams,
-      [name]: value
+      [name]: value,
     });
   }
 
@@ -134,7 +135,7 @@ export default function Search() {
           <button
             className="h-16 w-56 self-end rounded-md bg-violet-700"
             onClick={() => {
-              search();
+              searchCars();
             }}
           >
             Search

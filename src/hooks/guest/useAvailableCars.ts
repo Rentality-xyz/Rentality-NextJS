@@ -120,7 +120,7 @@ const useAvailableCars = () => {
     }
   };
 
-  const updateData = async ( ) => {
+  const updateData = async (location: string, dateFrom: Date, dateTo: Date) => {
     try {
       setDataFetched(false);
       const rentalityContract = await getRentalityContract();
@@ -128,7 +128,7 @@ const useAvailableCars = () => {
         console.error("createTripRequest error: contract is null");
         return false;
       }
-      let data = await getAvailableCars(rentalityContract);      
+      let data = await getAvailableCars(rentalityContract);
       setAvailableCars(data ?? []);
       setDataFetched(true);
       return true;
@@ -161,7 +161,7 @@ const useAvailableCars = () => {
         console.error("createTripRequest error: contract is null");
         return false;
       }
-      const [ ethToCurrencyRate, ethToCurrencyDecimals ] =
+      const [ethToCurrencyRate, ethToCurrencyDecimals] =
         await rentalityCurrencyConverterContract.getEthToUsdPrice();
       const rentPriceInUsdCents = (totalDayPriceInUsdCents * 100) | 0;
       const rentPriceInEth =
@@ -209,7 +209,13 @@ const useAvailableCars = () => {
   //     .catch(() => setDataFetched(true));
   // }, []);
 
-  return [dataFetched, availableCars, updateData, dataSaved, createTripRequest] as const;
+  return [
+    dataFetched,
+    availableCars,
+    updateData,
+    dataSaved,
+    createTripRequest,
+  ] as const;
 };
 
 export default useAvailableCars;
