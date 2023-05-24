@@ -22,7 +22,7 @@ export type CarRequest = {
 };
 
 const useAvailableCars = () => {
-  const [dataFetched, setDataFetched] = useState<Boolean>(false);
+  const [dataFetched, setDataFetched] = useState<Boolean>(true);
   const [dataSaved, setDataSaved] = useState<Boolean>(false);
   const [availableCars, setAvailableCars] = useState<BaseCarInfo[]>([]);
 
@@ -120,6 +120,24 @@ const useAvailableCars = () => {
     }
   };
 
+  const updateData = async ( ) => {
+    try {
+      setDataFetched(false);
+      const rentalityContract = await getRentalityContract();
+      if (rentalityContract == null) {
+        console.error("createTripRequest error: contract is null");
+        return false;
+      }
+      let data = await getAvailableCars(rentalityContract);      
+      setAvailableCars(data ?? []);
+      setDataFetched(true);
+      return true;
+    } catch (e) {
+      console.error("updateData error:" + e);
+      setDataFetched(true);
+      return false;
+    }
+  };
   const createTripRequest = async (
     carId: number,
     host: string,
@@ -177,21 +195,21 @@ const useAvailableCars = () => {
     }
   };
 
-  useEffect(() => {
-    getRentalityContract()
-      .then((contract) => {
-        if (contract !== undefined) {
-          return getAvailableCars(contract);
-        }
-      })
-      .then((data) => {
-        setAvailableCars(data ?? []);
-        setDataFetched(true);
-      })
-      .catch(() => setDataFetched(true));
-  }, []);
+  // useEffect(() => {
+  //   getRentalityContract()
+  //     .then((contract) => {
+  //       if (contract !== undefined) {
+  //         return getAvailableCars(contract);
+  //       }
+  //     })
+  //     .then((data) => {
+  //       setAvailableCars(data ?? []);
+  //       setDataFetched(true);
+  //     })
+  //     .catch(() => setDataFetched(true));
+  // }, []);
 
-  return [dataFetched, availableCars, dataSaved, createTripRequest] as const;
+  return [dataFetched, availableCars, updateData, dataSaved, createTripRequest] as const;
 };
 
 export default useAvailableCars;

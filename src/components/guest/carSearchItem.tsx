@@ -3,10 +3,11 @@ import Image from "next/image";
 
 type Props = {
   carInfo: BaseCarInfo;
+  tripDays: number;
   sendRentCarRequest:(carInfo: BaseCarInfo) => void
 };
 
-export default function CarSearchItem({ carInfo, sendRentCarRequest }: Props) {
+export default function CarSearchItem({ carInfo, tripDays, sendRentCarRequest }: Props) {
   
   // const sendRentCarRequest = async (tokenId) => {
   //   try {
@@ -62,10 +63,10 @@ export default function CarSearchItem({ carInfo, sendRentCarRequest }: Props) {
         <div className="flex flex-row justify-between items-end">
           <div className="flex flex-col">
             <strong className="text-xl">{`$${carInfo.pricePerDay}/day`}</strong>
-            <div className="text-sm">{`$${carInfo.pricePerDay} est. total`}</div>
+            <div className="text-sm">{`$${carInfo.pricePerDay * tripDays} est. total`}</div>
           </div>
-          <button className="px-4 w-36 h-12 bg-violet-700 rounded-md" onClick={() => sendRentCarRequest(carInfo)}>
-            Rent now
+          <button className="px-4 w-44 h-12 bg-violet-700 rounded-md" onClick={() => sendRentCarRequest(carInfo)}>
+            Rent for {tripDays} day(s)
           </button>
         </div>
       </div>
