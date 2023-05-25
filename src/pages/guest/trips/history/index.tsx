@@ -1,9 +1,9 @@
 import GuestLayout from "@/components/guest/layout/guestLayout";
 import TripItem from "@/components/guest/tripItem";
-import useTrips from "@/hooks/guest/useTrips";
+import useGuestTrips from "@/hooks/guest/useGuestTrips";
 
 export default function History() {
-  const [dataFetched, _, tripsHistory] = useTrips();
+  const [dataFetched, _, tripsHistory] = useGuestTrips();
 
   return (
     <GuestLayout>

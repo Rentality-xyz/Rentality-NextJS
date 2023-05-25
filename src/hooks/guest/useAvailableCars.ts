@@ -1,27 +1,13 @@
 import { Contract, BrowserProvider } from "ethers";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { rentalityJSON, rentalityCurrencyConverterJSON } from "../../abis";
 import {
   ContractCarInfo,
   validateContractCarInfo,
 } from "@/model/blockchain/ContractCarInfo";
-import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { SearchCarInfo } from "@/model/SearchCarInfo";
 import { calculateDays } from "@/utils/date";
-
-export type CarRequest = {
-  carId: number;
-  host: string;
-  startDateTime: number;
-  endDateTime: number;
-  startLocation: string;
-  endLocation: string;
-  totalDayPriceInUsdCents: number;
-  taxPriceInUsdCents: number;
-  depositInUsdCents: number;
-  ethToCurrencyRate: number;
-  ethToCurrencyDecimals: number;
-};
+import { ContractCarRequest } from "@/model/blockchain/ContractCarRequest";
 
 const useAvailableCars = () => {
   const [dataFetched, setDataFetched] = useState<Boolean>(true);
@@ -178,8 +164,8 @@ const useAvailableCars = () => {
           rentPriceInUsdCents
         );
 
-      const tripRequest: CarRequest = {
-        carId: carId,
+      const tripRequest: ContractCarRequest = {
+        carId: BigInt(carId),
         host: host,
         startDateTime: startDateTime,
         endDateTime: endDateTime,
@@ -188,7 +174,7 @@ const useAvailableCars = () => {
         totalDayPriceInUsdCents: rentPriceInUsdCents,
         taxPriceInUsdCents: taxPriceInUsdCents,
         depositInUsdCents: depositInUsdCents,
-        ethToCurrencyRate: Number(ethToCurrencyRate),
+        ethToCurrencyRate: BigInt(ethToCurrencyRate),
         ethToCurrencyDecimals: Number(ethToCurrencyDecimals),
       };
       let transaction = await rentalityContract.createTripRequest(tripRequest, {

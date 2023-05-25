@@ -1,9 +1,9 @@
 import HostLayout from "@/components/host/layout/hostLayout";
 import TripItem, { TripInfo, TripStatus } from "@/components/host/tripItem";
-import useTrips from "@/hooks/host/useTrips";
+import useHostTrips from "@/hooks/host/useHostTrips";
 
 export default function History() {
-  const [dataFetched, _, tripsHistory] = useTrips();
+  const [dataFetched, _, tripsHistory] = useHostTrips();
   return (
     <HostLayout>
       <div className="flex flex-col px-8 pt-4">

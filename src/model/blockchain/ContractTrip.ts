@@ -1,3 +1,5 @@
+import { TripStatus } from "../TripInfo";
+
 export type ContractTrip = {
   tripId: bigint;
   carId: bigint;
@@ -33,6 +35,29 @@ type PaymentInfo = {
   ethToCurrencyRate: bigint;
   ethToCurrencyDecimals: bigint;
 };
+
+export const getTripStatusFromContract = (status: number) => {
+  switch (status) {
+    case 0:
+      return TripStatus.Pending;
+    case 1:
+      return TripStatus.Comfirmed;
+    case 2:
+      return TripStatus.StartedByHost;
+    case 3:
+      return TripStatus.Started;
+    case 4:
+      return TripStatus.FinishedByGuest;
+    case 5:
+      return TripStatus.Finished;
+    case 6:
+      return TripStatus.Closed;
+    case 7:
+    default:
+      return TripStatus.Rejected;
+  }
+};
+
 
 export function validateContractTrip(obj: ContractTrip): obj is ContractTrip {
   if (typeof obj !== "object" || obj == null) return false;
