@@ -43,11 +43,11 @@ export const getTripStatusFromContract = (status: number) => {
     case 1:
       return TripStatus.Comfirmed;
     case 2:
-      return TripStatus.StartedByHost;
+      return TripStatus.CheckedInByHost;
     case 3:
       return TripStatus.Started;
     case 4:
-      return TripStatus.FinishedByGuest;
+      return TripStatus.CheckedOutByGuest;
     case 5:
       return TripStatus.Finished;
     case 6:
@@ -55,28 +55,6 @@ export const getTripStatusFromContract = (status: number) => {
     case 7:
     default:
       return TripStatus.Rejected;
-  }
-};
-
-export const getTripStatusTextFromContract = (status: number) => {
-  switch (status) {
-    case 0:
-      return "Pending";
-    case 1:
-      return "Comfirmed";
-    case 2:
-      return "StartedByHost";
-    case 3:
-      return "Started";
-    case 4:
-      return "FinishedByGuest";
-    case 5:
-      return "Finished";
-    case 6:
-      return "Closed";
-    case 7:
-    default:
-      return "Rejected";
   }
 };
 

@@ -3,12 +3,13 @@ import { useEffect, useState } from "react";
 import { rentalityJSON } from "../../abis";
 import {
   ContractTrip,
-  getTripStatusTextFromContract,
+  getTripStatusFromContract,
   validateContractTrip,
 } from "@/model/blockchain/ContractTrip";
 import {
   TripInfo,
   AllowedChangeTripAction,
+  TripStatus,
 } from "@/model/TripInfo";
 
 const useHostTrips = () => {
@@ -82,7 +83,11 @@ const useHostTrips = () => {
       const startFuelLevel = 0;
       const startOdometr = 0;
 
-      let transaction = await rentalityContract.checkInByHost(tripId, startFuelLevel, startOdometr);
+      let transaction = await rentalityContract.checkInByHost(
+        tripId,
+        startFuelLevel,
+        startOdometr
+      );
 
       const result = await transaction.wait();
       console.log("result: " + JSON.stringify(result));
@@ -105,7 +110,11 @@ const useHostTrips = () => {
       const endFuelLevel = 0;
       const endOdometr = 0;
 
-      let transaction = await rentalityContract.checkOutByHost(tripId, endFuelLevel, endOdometr);
+      let transaction = await rentalityContract.checkOutByHost(
+        tripId,
+        endFuelLevel,
+        endOdometr
+      );
 
       const result = await transaction.wait();
       console.log("result: " + JSON.stringify(result));
@@ -146,7 +155,10 @@ const useHostTrips = () => {
       }
 
       const fuelPricePerGal = 0;
-      let transaction = await rentalityContract.resolveIssue(tripId, fuelPricePerGal);
+      let transaction = await rentalityContract.resolveIssue(
+        tripId,
+        fuelPricePerGal
+      );
 
       const result = await transaction.wait();
       console.log("result: " + JSON.stringify(result));
@@ -157,31 +169,31 @@ const useHostTrips = () => {
     }
   };
 
-  const getAllowedActions = (statusText: string) => {
+  const getAllowedActions = (tripStatus: TripStatus) => {
     const result: AllowedChangeTripAction[] = [];
 
-    switch (statusText) {
-      case "Pending":
+    switch (tripStatus) {
+      case TripStatus.Pending:
         result.push({ text: "Confirm", action: acceptRequest });
         result.push({ text: "Reject", action: rejectRequest });
         break;
-      case "Comfirmed":
-        result.push({ text: "Check-in", action: checkInTrip });
+      case TripStatus.Comfirmed:
+        result.push({ text: "Start", action: checkInTrip });
         break;
-      case "StartedByHost":
+      case TripStatus.CheckedInByHost:
         break;
-      case "Started":
+      case TripStatus.Started:
         break;
-      case "FinishedByGuest":
-        result.push({ text: "Check-out", action: checkOutTrip });
+      case TripStatus.CheckedOutByGuest:
+        result.push({ text: "Finish", action: checkOutTrip });
         break;
-      case "Finished":
-        result.push({ text: "Finish trip", action: finishTrip });
+      case TripStatus.Finished:
+        result.push({ text: "Complete", action: finishTrip });
         result.push({ text: "Report issue", action: reportIssue });
         break;
-      case "Closed":
+      case TripStatus.Closed:
         break;
-      case "Rejected":
+      case TripStatus.Rejected:
       default:
         break;
     }
@@ -215,9 +227,7 @@ const useHostTrips = () => {
                   },
                 });
                 const meta = await response.json();
-                const statusText = getTripStatusTextFromContract(
-                  Number(i.status)
-                );
+                const tripStatus = getTripStatusFromContract(Number(i.status));
 
                 let item: TripInfo = {
                   tripId: Number(i.tripId),
@@ -241,8 +251,8 @@ const useHostTrips = () => {
                   tripEnd: new Date(Number(i.endDateTime)),
                   locationStart: i.startLocation,
                   locationEnd: i.endLocation,
-                  statusText: statusText,
-                  allowedActions: getAllowedActions(statusText),
+                  status: tripStatus,
+                  allowedActions: getAllowedActions(tripStatus),
                 };
                 return item;
               })
@@ -254,12 +264,8 @@ const useHostTrips = () => {
     }
   };
 
-  const isTripBooked = (status: string) => {
-    return (
-      status !== "Rejected" &&
-      status !== "Finished" &&
-      status !== "Closed"
-    );
+  const isTripBooked = (status: TripStatus) => {
+    return status !== TripStatus.Rejected && status !== TripStatus.Closed;
   };
 
   useEffect(() => {
@@ -271,25 +277,25 @@ const useHostTrips = () => {
       })
       .then((data) => {
         setTripsBooked(
-          data?.filter((i) => {
-            return isTripBooked(i.statusText);
-          }) ?? []
+          data
+            ?.filter((i) => {
+              return isTripBooked(i.status);
+            })
+            .reverse() ?? []
         );
         setTripsHistory(
-          data?.filter((i) => {
-            return !isTripBooked(i.statusText);
-          }) ?? []
+          data
+            ?.filter((i) => {
+              return !isTripBooked(i.status);
+            })
+            .reverse() ?? []
         );
         setDataFetched(true);
       })
       .catch(() => setDataFetched(true));
   }, []);
 
-  return [
-    dataFetched,
-    tripsBooked,
-    tripsHistory
-  ] as const;
+  return [dataFetched, tripsBooked, tripsHistory] as const;
 };
 
 export default useHostTrips;

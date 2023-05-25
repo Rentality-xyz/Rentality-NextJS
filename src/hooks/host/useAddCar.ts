@@ -1,6 +1,6 @@
 import { Contract, BrowserProvider } from "ethers";
 import { useCallback, useState } from "react";
-import {rentalityJSON} from "../../abis";
+import { rentalityJSON } from "../../abis";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "../../utils/pinata";
 
 export type NewCarInfo = {
@@ -240,7 +240,7 @@ const useAddCar = () => {
         dataToSave.pricePerDay.replace(/[^0-9.]+/g, "")
       );
       let pricePerDay = ((doubleNumber * 100) | 0).toString();
-      
+
       let transaction = await rentalityContract.addCar(
         metadataURL,
         carInfoFormParams.vinNumber,

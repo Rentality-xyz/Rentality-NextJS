@@ -3,7 +3,7 @@ import Image from "next/image";
 import logo from "../../images/logo.png";
 import Link from "next/link";
 import { dateFormat } from "@/utils/datetimeFormatters";
-import { TripInfo } from "@/model/TripInfo";
+import { TripInfo, getTripStatusTextFromStatus } from "@/model/TripInfo";
 
 type Props = {
   tripInfo: TripInfo;
@@ -21,7 +21,7 @@ export default function TripItem({ tripInfo, changeStatusCallback }: Props) {
           className="h-full w-full rounded-lg object-cover"
         />
         <div className="absolute right-8 top-4">
-          <strong className="text-l">{`${tripInfo.statusText}`}</strong>
+          <strong className="text-l">{`${getTripStatusTextFromStatus(tripInfo.status)}`}</strong>
         </div>
       </div>
       <div className="flex flex-1 flex-col justify-between gap-2 p-4">

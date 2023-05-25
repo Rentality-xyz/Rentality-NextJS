@@ -1,14 +1,35 @@
 export enum TripStatus {
   Pending = "pending",
   Comfirmed = "comfirmed",
-  StartedByHost = "startedByHost",
+  CheckedInByHost = "checkedInByHost",
   Started = "started",
-  FinishedByGuest = "finishedByGuest",
+  CheckedOutByGuest = "checkedOutByGuest",
   Finished = "finished",
   Closed = "closed",
   Rejected = "rejected",
 }
 
+export const getTripStatusTextFromStatus = (status: TripStatus) => {
+  switch (status) {
+    case TripStatus.Pending:
+      return "Pending";
+    case TripStatus.Comfirmed:
+      return "Comfirmed";
+    case TripStatus.CheckedInByHost:
+      return "Started";
+    case TripStatus.Started:
+      return "On the trip";
+    case TripStatus.CheckedOutByGuest:
+      return "Finished";
+    case TripStatus.Finished:
+      return "Finished";
+    case TripStatus.Closed:
+      return "Completed";
+    case TripStatus.Rejected:
+    default:
+      return "Rejected";
+  }
+};
 export type TripInfo = {
   tripId: number;
   carId: number;
@@ -21,7 +42,7 @@ export type TripInfo = {
   tripEnd: Date;
   locationStart: string;
   locationEnd: string;
-  statusText: string;
+  status: TripStatus;
   allowedActions:AllowedChangeTripAction[]
 };
 

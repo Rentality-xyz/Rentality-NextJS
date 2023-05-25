@@ -1,10 +1,10 @@
 import { Contract, BrowserProvider } from "ethers";
 import { useEffect, useState } from "react";
 import { rentalityJSON } from "../abis";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 
 const useEtherProvider = () => {
-  const router = useRouter()
+  const router = useRouter();
   const [userWeb3Address, setUserWeb3Address] = useState("Not connected");
   const [userConnected, setUserConnected] = useState(false);
 
@@ -41,7 +41,7 @@ const useEtherProvider = () => {
       });
   };
 
-  const getAddress = async () => {    
+  const getAddress = async () => {
     try {
       const { ethereum } = window;
 
@@ -58,13 +58,13 @@ const useEtherProvider = () => {
     }
   };
 
-  const formatAddress = (address:string) => {
+  const formatAddress = (address: string) => {
     if (address == null || address.length < 16) return address;
     return address.substr(0, 6) + ".." + address.substr(address.length - 8);
   };
 
   const withdrawTips = async () => {
-    try {      
+    try {
       const rentalityContract = await getRentalityContract();
 
       if (!rentalityContract) {
@@ -82,7 +82,7 @@ const useEtherProvider = () => {
   };
 
   const handleAccountsChanged = () => {
-    router.reload()
+    router.reload();
   };
 
   useEffect(() => {

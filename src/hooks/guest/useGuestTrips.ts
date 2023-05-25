@@ -3,12 +3,13 @@ import { useEffect, useState } from "react";
 import { rentalityJSON } from "../../abis";
 import {
   ContractTrip,
-  getTripStatusTextFromContract,
+  getTripStatusFromContract,
   validateContractTrip,
 } from "@/model/blockchain/ContractTrip";
 import {
   TripInfo,
   AllowedChangeTripAction,
+  TripStatus,
 } from "@/model/TripInfo";
 
 const useGuestTrips = () => {
@@ -43,7 +44,11 @@ const useGuestTrips = () => {
       const startFuelLevel = 0;
       const startOdometr = 0;
 
-      let transaction = await rentalityContract.checkInByGuest(tripId, startFuelLevel, startOdometr);
+      let transaction = await rentalityContract.checkInByGuest(
+        tripId,
+        startFuelLevel,
+        startOdometr
+      );
 
       const result = await transaction.wait();
       console.log("result: " + JSON.stringify(result));
@@ -66,7 +71,11 @@ const useGuestTrips = () => {
       const endFuelLevel = 0;
       const endOdometr = 0;
 
-      let transaction = await rentalityContract.checkOutByGuest(tripId, endFuelLevel, endOdometr);
+      let transaction = await rentalityContract.checkOutByGuest(
+        tripId,
+        endFuelLevel,
+        endOdometr
+      );
 
       const result = await transaction.wait();
       console.log("result: " + JSON.stringify(result));
@@ -77,27 +86,26 @@ const useGuestTrips = () => {
     }
   };
 
-  const getAllowedActions = (statusText: string) => {
+  const getAllowedActions = (tripStatus: TripStatus) => {
     const result: AllowedChangeTripAction[] = [];
-
-    switch (statusText) {
-      case "Pending":
+    switch (tripStatus) {
+      case TripStatus.Pending:
         break;
-      case "Comfirmed":
+      case TripStatus.Comfirmed:
         break;
-      case "StartedByHost":
-        result.push({ text: "Check-in", action: checkInTrip });
+      case TripStatus.CheckedInByHost:
+        result.push({ text: "Start", action: checkInTrip });
         break;
-      case "Started":
-        result.push({ text: "Check-out", action: checkOutTrip });
+      case TripStatus.Started:
+        result.push({ text: "Finish", action: checkOutTrip });
         break;
-      case "FinishedByGuest":
+      case TripStatus.CheckedOutByGuest:
         break;
-      case "Finished":
+      case TripStatus.Finished:
         break;
-      case "Closed":
+      case TripStatus.Closed:
         break;
-      case "Rejected":
+      case TripStatus.Rejected:
       default:
         break;
     }
@@ -131,9 +139,7 @@ const useGuestTrips = () => {
                   },
                 });
                 const meta = await response.json();
-                const statusText = getTripStatusTextFromContract(
-                  Number(i.status)
-                );
+                const tripStatus = getTripStatusFromContract(Number(i.status));
 
                 let item: TripInfo = {
                   tripId: Number(i.tripId),
@@ -157,8 +163,8 @@ const useGuestTrips = () => {
                   tripEnd: new Date(Number(i.endDateTime)),
                   locationStart: i.startLocation,
                   locationEnd: i.endLocation,
-                  statusText: statusText,
-                  allowedActions: getAllowedActions(statusText),
+                  status: tripStatus,
+                  allowedActions: getAllowedActions(tripStatus),
                 };
                 return item;
               })
@@ -170,12 +176,8 @@ const useGuestTrips = () => {
     }
   };
 
-  const isTripBooked = (status: string) => {
-    return (
-      status !== "Rejected" &&
-      status !== "Finished" &&
-      status !== "Closed"
-    );
+  const isTripBooked = (status: TripStatus) => {
+    return status !== TripStatus.Rejected && status !== TripStatus.Closed;
   };
 
   useEffect(() => {
@@ -186,8 +188,20 @@ const useGuestTrips = () => {
         }
       })
       .then((data) => {
-        setTripsBooked(data?.filter((i) => {return isTripBooked(i.statusText);}) ?? []);
-        setTripsHistory(data?.filter((i) => {return !isTripBooked(i.statusText);}) ?? []);
+        setTripsBooked(
+          data
+            ?.filter((i) => {
+              return isTripBooked(i.status);
+            })
+            .reverse() ?? []
+        );
+        setTripsHistory(
+          data
+            ?.filter((i) => {
+              return !isTripBooked(i.status);
+            })
+            .reverse() ?? []
+        );
         setDataFetched(true);
       })
       .catch(() => setDataFetched(true));
