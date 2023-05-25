@@ -1,55 +1,23 @@
 import HostLayout from "@/components/host/layout/hostLayout";
-import TripItem, { TripInfo, TripStatus } from "@/components/host/tripItem";
+import TripItem from "@/components/host/tripItem";
 import useHostTrips from "@/hooks/host/useHostTrips";
 import { useRouter } from "next/router";
 
 export default function Booked() {
-  const [dataFetched, tripsBooked, _ ,acceptRequest, rejectRequest, finishTrip] = useHostTrips();
+  const [dataFetched, tripsBooked, _ ] = useHostTrips();
   const router = useRouter();
 
-  const acceptTripRequest = async (tripId: number) => {
-    //e.preventDefault();
-
+  const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
     try {
-      //setMessage("Please wait.. uploading (upto 5 mins)");
-      // if (saveButtonRef.current) {
-      //   saveButtonRef.current.disabled = true;
-      // }
-      const result = await acceptRequest(tripId);
+      const result = await changeStatus();
 
       if (!result) {
-        throw new Error("acceptRequest error");
+        throw new Error("changeStatus error");
       }
-      alert("Successfully accepted car request!");
+      alert("Status successfully changed!");
       router.reload();
     } catch (e) {
-      alert("acceptTripRequest error" + e);
-      // if (saveButtonRef.current) {
-      //   saveButtonRef.current.disabled = false;
-      // }
-    }
-  };
-
-  const rejectTripRequest = async (tripId: number) => {
-    //e.preventDefault();
-
-    try {
-      //setMessage("Please wait.. uploading (upto 5 mins)");
-      // if (saveButtonRef.current) {
-      //   saveButtonRef.current.disabled = true;
-      // }
-      const result = await rejectRequest(tripId);
-
-      if (!result) {
-        throw new Error("rejectRequest error");
-      }
-      alert("Successfully accepted car request!");
-      router.reload();
-    } catch (e) {
-      alert("rejectTripRequest error" + e);
-      // if (saveButtonRef.current) {
-      //   saveButtonRef.current.disabled = false;
-      // }
+      alert("changeStatus error" + e);
     }
   };
 
@@ -69,9 +37,7 @@ export default function Booked() {
                   <TripItem
                     key={value.tripId}
                     tripInfo={value}
-                    acceptRequest={acceptTripRequest}
-                    rejectRequest={rejectTripRequest}
-                    finishTrip={finishTrip}
+                    changeStatusCallback = {changeStatusCallback}
                   />
                 );
               })

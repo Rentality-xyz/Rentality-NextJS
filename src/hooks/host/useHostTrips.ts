@@ -3,10 +3,13 @@ import { useEffect, useState } from "react";
 import { rentalityJSON } from "../../abis";
 import {
   ContractTrip,
-  getTripStatusFromContract,
+  getTripStatusTextFromContract,
   validateContractTrip,
 } from "@/model/blockchain/ContractTrip";
-import { TripInfo, TripStatus } from "@/model/TripInfo";
+import {
+  TripInfo,
+  AllowedChangeTripAction,
+} from "@/model/TripInfo";
 
 const useHostTrips = () => {
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
@@ -27,6 +30,162 @@ const useHostTrips = () => {
     } catch (e) {
       console.error("getRentalityContract error:" + e);
     }
+  };
+
+  const acceptRequest = async (tripId: number) => {
+    try {
+      const rentalityContract = await getRentalityContract();
+
+      if (!rentalityContract) {
+        console.error("acceptRequest error: contract is null");
+        return false;
+      }
+
+      let transaction = await rentalityContract.approveTripRequest(tripId);
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      return true;
+    } catch (e) {
+      alert("acceptRequest error:" + e);
+      return false;
+    }
+  };
+
+  const rejectRequest = async (tripId: number) => {
+    try {
+      const rentalityContract = await getRentalityContract();
+
+      if (!rentalityContract) {
+        console.error("rejectRequest error: contract is null");
+        return false;
+      }
+
+      let transaction = await rentalityContract.rejectTripRequest(tripId);
+
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      return true;
+    } catch (e) {
+      alert("rejectRequest error:" + e);
+      return false;
+    }
+  };
+
+  const checkInTrip = async (tripId: number) => {
+    try {
+      const rentalityContract = await getRentalityContract();
+
+      if (!rentalityContract) {
+        console.error("checkInTrip error: contract is null");
+        return false;
+      }
+      const startFuelLevel = 0;
+      const startOdometr = 0;
+
+      let transaction = await rentalityContract.checkInByHost(tripId, startFuelLevel, startOdometr);
+
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      return true;
+    } catch (e) {
+      alert("checkInTrip error:" + e);
+      return false;
+    }
+  };
+
+  const checkOutTrip = async (tripId: number) => {
+    try {
+      const rentalityContract = await getRentalityContract();
+
+      if (!rentalityContract) {
+        console.error("checkOutTrip error: contract is null");
+        return false;
+      }
+
+      const endFuelLevel = 0;
+      const endOdometr = 0;
+
+      let transaction = await rentalityContract.checkOutByHost(tripId, endFuelLevel, endOdometr);
+
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      return true;
+    } catch (e) {
+      alert("checkOutTrip error:" + e);
+      return false;
+    }
+  };
+
+  const finishTrip = async (tripId: number) => {
+    try {
+      const rentalityContract = await getRentalityContract();
+
+      if (!rentalityContract) {
+        console.error("finishTrip error: contract is null");
+        return false;
+      }
+
+      let transaction = await rentalityContract.finishTrip(tripId);
+
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      return true;
+    } catch (e) {
+      alert("finishTrip error" + e);
+      return false;
+    }
+  };
+
+  const reportIssue = async (tripId: number) => {
+    try {
+      const rentalityContract = await getRentalityContract();
+
+      if (!rentalityContract) {
+        console.error("reportIssue error: contract is null");
+        return false;
+      }
+
+      const fuelPricePerGal = 0;
+      let transaction = await rentalityContract.resolveIssue(tripId, fuelPricePerGal);
+
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      return true;
+    } catch (e) {
+      alert("reportIssue error" + e);
+      return false;
+    }
+  };
+
+  const getAllowedActions = (statusText: string) => {
+    const result: AllowedChangeTripAction[] = [];
+
+    switch (statusText) {
+      case "Pending":
+        result.push({ text: "Confirm", action: acceptRequest });
+        result.push({ text: "Reject", action: rejectRequest });
+        break;
+      case "Comfirmed":
+        result.push({ text: "Check-in", action: checkInTrip });
+        break;
+      case "StartedByHost":
+        break;
+      case "Started":
+        break;
+      case "FinishedByGuest":
+        result.push({ text: "Check-out", action: checkOutTrip });
+        break;
+      case "Finished":
+        result.push({ text: "Finish trip", action: finishTrip });
+        result.push({ text: "Report issue", action: reportIssue });
+        break;
+      case "Closed":
+        break;
+      case "Rejected":
+      default:
+        break;
+    }
+    return result;
   };
 
   const getTrips = async (rentalityContract: Contract) => {
@@ -56,6 +215,9 @@ const useHostTrips = () => {
                   },
                 });
                 const meta = await response.json();
+                const statusText = getTripStatusTextFromContract(
+                  Number(i.status)
+                );
 
                 let item: TripInfo = {
                   tripId: Number(i.tripId),
@@ -79,7 +241,8 @@ const useHostTrips = () => {
                   tripEnd: new Date(Number(i.endDateTime)),
                   locationStart: i.startLocation,
                   locationEnd: i.endLocation,
-                  status: getTripStatusFromContract(Number(i.status)),
+                  statusText: statusText,
+                  allowedActions: getAllowedActions(statusText),
                 };
                 return item;
               })
@@ -91,68 +254,13 @@ const useHostTrips = () => {
     }
   };
 
-  const acceptRequest = async (tripId:number) => {
-    try {
-      const rentalityContract = await getRentalityContract();
-
-      if (!rentalityContract) {
-        console.error("acceptRequest error: contract is null");
-        return false;
-      }
-
-      let transaction = await rentalityContract.approveTripRequest(tripId);
-      const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
-      return true;
-    } catch (e) {
-      alert("acceptRequest error:" + e);
-      return false;
-    }
-  }
-
-  const rejectRequest = async (tripId:number) => {
-    try {
-      const rentalityContract = await getRentalityContract();
-
-      if (!rentalityContract) {
-        console.error("acceptRequest error: contract is null");
-        return false;
-      }
-
-      let transaction = await rentalityContract.rejectTripRequest(tripId);
-
-      const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
-      return true;
-    } catch (e) {
-      alert("rejectRequest error:" + e);
-      return false;
-    }
-  }
-
-  const finishTrip = async (tripId:number) => {
-    try {
-      const rentalityContract = await getRentalityContract();
-
-      if (!rentalityContract) {
-        console.error("acceptRequest error: contract is null");
-        return false;
-      }
-
-      let transaction = await rentalityContract.finishTrip(tripId);
-
-      const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
-      return true;
-    } catch (e) {
-      alert("Upload error" + e);
-      return false;
-    }
-  }
-
-  const isTripBooked = (status:TripStatus) => {
-    return status !== TripStatus.Rejected && status !== TripStatus.Finished && status !== TripStatus.Closed;
-  }
+  const isTripBooked = (status: string) => {
+    return (
+      status !== "Rejected" &&
+      status !== "Finished" &&
+      status !== "Closed"
+    );
+  };
 
   useEffect(() => {
     getRentalityContract()
@@ -162,14 +270,26 @@ const useHostTrips = () => {
         }
       })
       .then((data) => {
-        setTripsBooked(data?.filter((i) => {return isTripBooked(i.status);}) ?? []);
-        setTripsHistory(data?.filter((i) => {return !isTripBooked(i.status);}) ?? []);
+        setTripsBooked(
+          data?.filter((i) => {
+            return isTripBooked(i.statusText);
+          }) ?? []
+        );
+        setTripsHistory(
+          data?.filter((i) => {
+            return !isTripBooked(i.statusText);
+          }) ?? []
+        );
         setDataFetched(true);
       })
       .catch(() => setDataFetched(true));
   }, []);
 
-  return [dataFetched, tripsBooked, tripsHistory, acceptRequest, rejectRequest, finishTrip] as const;
+  return [
+    dataFetched,
+    tripsBooked,
+    tripsHistory
+  ] as const;
 };
 
 export default useHostTrips;

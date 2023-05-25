@@ -3,71 +3,26 @@ import Image from "next/image";
 import logo from "../../images/logo.png";
 import Link from "next/link";
 import { dateFormat } from "@/utils/datetimeFormatters";
-import { TripInfo, TripStatus } from "@/model/TripInfo";
+import { TripInfo } from "@/model/TripInfo";
 
 type Props = {
   tripInfo: TripInfo;
-  finishTrip: (tripId:number) => void;
+  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<void>;
 };
 
-export default function TripItem({ tripInfo, finishTrip }: Props) {
-  const getButtonsFromStatus = (tripId:number, tripStatus: TripStatus) => {
-    return (
-      <>
-        {/* {tripStatus === TripStatus.Pending ? (
-          <button className="h-16 w-full rounded-md bg-violet-700 px-4" onClick={() => {acceptRequest(tripId)}}>
-            Confirm
-          </button>
-        ) : null}
-        {tripStatus === TripStatus.Pending ? (
-          <button className="h-16 w-full rounded-md bg-violet-700 px-4" onClick={() => {rejectRequest(tripId)}}>
-            Reject
-          </button>
-        ) : null} */}
-        {tripStatus === TripStatus.Comfirmed ? (
-          <button className="h-16 w-full  rounded-md bg-violet-700 px-4" onClick={() => {finishTrip(tripId)}}>
-            Finish trip{/* Check-in */}
-          </button>
-        ) : null}
-        {/* (tripStatus === TripStatus.StartedByHost) ? <button></button> : null */}
-        {/* (tripStatus === TripStatus.Started) ? <button></button> : null */}
-        {tripStatus === TripStatus.FinishedByGuest ? (
-          <button className="h-16 w-full  rounded-md bg-violet-700 px-4" onClick={() => {finishTrip(tripId)}}>
-            Finish trip{/* Check-out */}
-          </button>
-        ) : null}
-        {tripStatus === TripStatus.Finished ? (
-          <button className="h-16 w-full  rounded-md bg-violet-700 px-4" onClick={() => {finishTrip(tripId)}}>
-            Finish trip
-          </button>
-        ) : null}
-        {/* {tripStatus === TripStatus.Closed ? (
-          <button className="h-16 w-full  rounded-md bg-violet-700 px-4">
-            Report issue
-          </button>
-        ) : null} */}
-        {/*         
-        <button className="w-56 h-16 bg-violet-700 rounded-md">
-              Add Listing
-            </button> */}
-        {/* (tripStatus === TripStatus.Closed) ? <button></button> : null */}
-        {/* (tripStatus === TripStatus.Rejected) ? <button></button> : null */}
-      </>
-    );
-  };
-
+export default function TripItem({ tripInfo, changeStatusCallback }: Props) {
   return (
     <div className="flex flex-wrap rounded-xl bg-pink-100">
-      <div className="h-56 w-60 flex-shrink-0 rounded-l-xl bg-slate-400 relative text-center">
+      <div className="relative h-56 w-60 flex-shrink-0 rounded-l-xl bg-slate-400 text-center">
         {/* <Image src={carInfo.image} alt="" width={240} height={192} className="w-60 h-48 rounded-lg object-cover" /> */}
         <img
           src={tripInfo.image}
           alt=""
           className="h-full w-full rounded-lg object-cover"
         />
-        <div className="absolute top-4 right-8">
-            <strong className="text-l">{`${tripInfo.status}`}</strong>
-          </div>
+        <div className="absolute right-8 top-4">
+          <strong className="text-l">{`${tripInfo.statusText}`}</strong>
+        </div>
       </div>
       <div className="flex flex-1 flex-col justify-between gap-2 p-4">
         <div className="flex flex-col">
@@ -77,7 +32,21 @@ export default function TripItem({ tripInfo, finishTrip }: Props) {
           <div>{tripInfo.licensePlate}</div>
         </div>
         <div className="flex flex-row gap-4">
-          {getButtonsFromStatus(tripInfo.tripId, tripInfo.status)}
+          {tripInfo.allowedActions.map((action) => {
+            return (
+              <button
+                key={action.text}
+                className="h-16 w-full rounded-md bg-violet-700 px-4"
+                onClick={() => {
+                  changeStatusCallback(() => {
+                    return action.action(tripInfo.tripId);
+                  });
+                }}
+              >
+                {action.text}
+              </button>
+            );
+          })}
         </div>
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">

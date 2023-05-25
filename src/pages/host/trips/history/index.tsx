@@ -1,9 +1,13 @@
 import HostLayout from "@/components/host/layout/hostLayout";
-import TripItem, { TripInfo, TripStatus } from "@/components/host/tripItem";
+import TripItem from "@/components/host/tripItem";
 import useHostTrips from "@/hooks/host/useHostTrips";
 
 export default function History() {
   const [dataFetched, _, tripsHistory] = useHostTrips();
+
+  const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
+  };
+
   return (
     <HostLayout>
       <div className="flex flex-col px-8 pt-4">
@@ -20,9 +24,7 @@ export default function History() {
                   <TripItem
                     key={value.tripId}
                     tripInfo={value}
-                    acceptRequest={(i)=>{}}
-                    rejectRequest={(i)=>{}}
-                    finishTrip={(i)=>{}}
+                    changeStatusCallback = {changeStatusCallback}
                   />
                 );
               })

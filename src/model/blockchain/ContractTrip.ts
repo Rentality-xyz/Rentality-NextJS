@@ -58,6 +58,28 @@ export const getTripStatusFromContract = (status: number) => {
   }
 };
 
+export const getTripStatusTextFromContract = (status: number) => {
+  switch (status) {
+    case 0:
+      return "Pending";
+    case 1:
+      return "Comfirmed";
+    case 2:
+      return "StartedByHost";
+    case 3:
+      return "Started";
+    case 4:
+      return "FinishedByGuest";
+    case 5:
+      return "Finished";
+    case 6:
+      return "Closed";
+    case 7:
+    default:
+      return "Rejected";
+  }
+};
+
 
 export function validateContractTrip(obj: ContractTrip): obj is ContractTrip {
   if (typeof obj !== "object" || obj == null) return false;

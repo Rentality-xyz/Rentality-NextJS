@@ -21,5 +21,11 @@ export type TripInfo = {
   tripEnd: Date;
   locationStart: string;
   locationEnd: string;
-  status: TripStatus;
+  statusText: string;
+  allowedActions:AllowedChangeTripAction[]
 };
+
+export type AllowedChangeTripAction = {
+  text:string;
+  action:(tripId: number) => Promise<boolean>
+}

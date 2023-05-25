@@ -5,6 +5,9 @@ import useGuestTrips from "@/hooks/guest/useGuestTrips";
 export default function History() {
   const [dataFetched, _, tripsHistory] = useGuestTrips();
 
+  const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
+  };
+
   return (
     <GuestLayout>
       <div className="flex flex-col px-8 pt-4">
@@ -21,7 +24,7 @@ export default function History() {
                   <TripItem
                     key={value.tripId}
                     tripInfo={value}
-                    finishTrip={()=>{}}
+                    changeStatusCallback = {changeStatusCallback}
                   />
                 );
               })

@@ -4,29 +4,20 @@ import useGuestTrips from "@/hooks/guest/useGuestTrips";
 import { useRouter } from "next/router";
 
 export default function Booked() {
-  const [dataFetched, tripsBooked, _, finishTrip] = useGuestTrips();
+  const [dataFetched, tripsBooked, _] = useGuestTrips();
   const router = useRouter();
 
-  const finishTripRequest = async (tripId: number) => {
-    //e.preventDefault();
-
+  const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
     try {
-      //setMessage("Please wait.. uploading (upto 5 mins)");
-      // if (saveButtonRef.current) {
-      //   saveButtonRef.current.disabled = true;
-      // }
-      const result = await finishTrip(tripId);
+      const result = await changeStatus();
 
       if (!result) {
-        throw new Error("finishTrip error");
+        throw new Error("changeStatus error");
       }
-      alert("Successfully finished trip!");
+      alert("Status successfully changed!");
       router.reload();
     } catch (e) {
-      alert("finishTripRequest error" + e);
-      // if (saveButtonRef.current) {
-      //   saveButtonRef.current.disabled = false;
-      // }
+      alert("changeStatus error" + e);
     }
   };
 
@@ -46,7 +37,7 @@ export default function Booked() {
                   <TripItem
                     key={value.tripId}
                     tripInfo={value}
-                    finishTrip={finishTrip}
+                    changeStatusCallback = {changeStatusCallback}
                   />
                 );
               })
