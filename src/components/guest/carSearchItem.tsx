@@ -1,13 +1,12 @@
-import { BaseCarInfo } from "@/model/BaseCarInfo";
+import { SearchCarInfo } from "@/model/SearchCarInfo";
 import Image from "next/image";
 
 type Props = {
-  carInfo: BaseCarInfo;
-  tripDays: number;
-  sendRentCarRequest:(carInfo: BaseCarInfo) => void
+  searchInfo: SearchCarInfo;
+  sendRentCarRequest:(carInfo: SearchCarInfo) => void
 };
 
-export default function CarSearchItem({ carInfo, tripDays, sendRentCarRequest }: Props) {
+export default function CarSearchItem({ searchInfo, sendRentCarRequest }: Props) {
   
   // const sendRentCarRequest = async (tokenId) => {
   //   try {
@@ -46,9 +45,9 @@ export default function CarSearchItem({ carInfo, tripDays, sendRentCarRequest }:
   return (
     <div className="flex flex-row rounded-xl bg-pink-100">
       <div className="w-60 h-56 bg-slate-400 rounded-l-xl flex-shrink-0">
-        {/* <Image src={carInfo.image} alt="" width={240} height={192} className="w-60 h-48 rounded-lg object-cover" /> */}
+        {/* <Image src={searchInfo.image} alt="" width={240} height={192} className="w-60 h-48 rounded-lg object-cover" /> */}
         <img
-          src={carInfo.image}
+          src={searchInfo.image}
           alt=""
           className="w-full h-full rounded-lg object-cover"
         />
@@ -56,17 +55,17 @@ export default function CarSearchItem({ carInfo, tripDays, sendRentCarRequest }:
       <div className="w-full flex flex-col justify-between p-4">
         <div className="flex flex-row justify-between items-baseline">
           <div>
-            <strong className="text-xl">{`${carInfo.brand} ${carInfo.model} ${carInfo.year}`}</strong>
+            <strong className="text-xl">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>
           </div>
-          <div>{carInfo.licensePlate}</div>
+          <div>{searchInfo.licensePlate}</div>
         </div>
         <div className="flex flex-row justify-between items-end">
           <div className="flex flex-col">
-            <strong className="text-xl">{`$${carInfo.pricePerDay}/day`}</strong>
-            <div className="text-sm">{`$${carInfo.pricePerDay * tripDays} est. total`}</div>
+            <strong className="text-xl">{`$${searchInfo.pricePerDay}/day`}</strong>
+            <div className="text-sm">{`$${searchInfo.totalPrice} est. total`}</div>
           </div>
-          <button className="px-4 w-44 h-12 bg-violet-700 rounded-md" onClick={() => sendRentCarRequest(carInfo)}>
-            Rent for {tripDays} day(s)
+          <button className="px-4 w-44 h-12 bg-violet-700 rounded-md" onClick={() => sendRentCarRequest(searchInfo)}>
+            Rent for {searchInfo.days} day(s)
           </button>
         </div>
       </div>

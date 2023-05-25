@@ -1,10 +1,10 @@
 export type ContractCarInfo = {
-  carId: number;
+  carId: bigint;
   carVinNumber: string;
   createdBy: string;
-  pricePerDayInUsdCents: number;
-  tankVolumeInGal: number;
-  distanceIncludedInMi: number;
+  pricePerDayInUsdCents: bigint;
+  tankVolumeInGal: bigint;
+  distanceIncludedInMi: bigint;
   currentlyListed: boolean;
 };
 

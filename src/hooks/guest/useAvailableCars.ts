@@ -6,6 +6,8 @@ import {
   validateContractCarInfo,
 } from "@/model/blockchain/ContractCarInfo";
 import { BaseCarInfo } from "@/model/BaseCarInfo";
+import { SearchCarInfo } from "@/model/SearchCarInfo";
+import { calculateDays } from "@/utils/date";
 
 export type CarRequest = {
   carId: number;
@@ -24,7 +26,7 @@ export type CarRequest = {
 const useAvailableCars = () => {
   const [dataFetched, setDataFetched] = useState<Boolean>(true);
   const [dataSaved, setDataSaved] = useState<Boolean>(false);
-  const [availableCars, setAvailableCars] = useState<BaseCarInfo[]>([]);
+  const [availableCars, setAvailableCars] = useState<SearchCarInfo[]>([]);
 
   const getRentalityContract = async () => {
     try {
@@ -62,7 +64,7 @@ const useAvailableCars = () => {
     }
   };
 
-  const getAvailableCars = async (rentalityContract: Contract) => {
+  const getAvailableCars = async (rentalityContract: Contract, location: string, dateFrom: Date, dateTo: Date) => {
     try {
       if (rentalityContract == null) {
         console.error("getAvailableCars error: contract is null");
@@ -88,9 +90,11 @@ const useAvailableCars = () => {
                 const meta = await response.json();
 
                 console.log("meta: " + JSON.stringify(meta));
-                const price = Number(i.pricePerDayInUsdCents) / 100;
+                const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
+                let tripDays = calculateDays(dateFrom, dateTo) + 1;
+                const totalPrice = pricePerDay * tripDays;
 
-                let item: BaseCarInfo = {
+                let item: SearchCarInfo = {
                   carId: Number(i.carId),
                   ownerAddress: i.createdBy.toString(),
                   image: meta.image,
@@ -108,7 +112,12 @@ const useAvailableCars = () => {
                     meta.attributes?.find(
                       (x: any) => x.trait_type === "License plate"
                     )?.value ?? "",
-                  pricePerDay: price,
+                  pricePerDay: pricePerDay,
+                  location:location,
+                  dateFrom:dateFrom,
+                  dateTo:dateTo,
+                  days:tripDays,
+                  totalPrice:totalPrice
                 };
                 return item;
               })
@@ -120,7 +129,7 @@ const useAvailableCars = () => {
     }
   };
 
-  const updateData = async (location: string, dateFrom: Date, dateTo: Date) => {
+  const searchAvailableCars = async (location: string, dateFrom: Date, dateTo: Date) => {
     try {
       setDataFetched(false);
       const rentalityContract = await getRentalityContract();
@@ -128,7 +137,7 @@ const useAvailableCars = () => {
         console.error("createTripRequest error: contract is null");
         return false;
       }
-      let data = await getAvailableCars(rentalityContract);
+      let data = await getAvailableCars(rentalityContract, location, dateFrom, dateTo);
       setAvailableCars(data ?? []);
       setDataFetched(true);
       return true;
@@ -212,7 +221,7 @@ const useAvailableCars = () => {
   return [
     dataFetched,
     availableCars,
-    updateData,
+    searchAvailableCars,
     dataSaved,
     createTripRequest,
   ] as const;

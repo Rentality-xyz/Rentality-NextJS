@@ -2,11 +2,12 @@ import GuestLayout from "@/components/guest/layout/guestLayout";
 import CarSearchItem from "@/components/guest/carSearchItem";
 import useAvailableCars from "@/hooks/guest/useAvailableCars";
 import Link from "next/link";
-import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { dateToHtmlDateFormat } from "@/utils/datetimeFormatters";
 import { TripSearchInfo } from "@/model/TripSearchInfo";
+import { SearchCarInfo } from "@/model/SearchCarInfo";
+import { calculateDays } from "@/utils/date";
 
 export default function Search() {
   const emptyTripSearchInfo: TripSearchInfo = {
@@ -15,7 +16,7 @@ export default function Search() {
     dateTo: dateToHtmlDateFormat(new Date()),
   };
 
-  const [dataFetched, availableCars, updateData, dataSaved, createTripRequest] =
+  const [dataFetched, availableCars, searchAvailableCars, dataSaved, createTripRequest] =
     useAvailableCars();
   const [tripDays, setTripDays] = useState(1);
   const [searchParams, setSearchParams] =
@@ -23,12 +24,6 @@ export default function Search() {
   const [enteredSearchParams, setEnteredSearchParams] =
     useState<TripSearchInfo>(emptyTripSearchInfo);
   const router = useRouter();
-
-  const calculateDays = (dateFrom: Date, dateTo: Date) => {
-    let difference = dateTo.getTime() - dateFrom.getTime();
-    let totalDays = Math.ceil(difference / (1000 * 3600 * 24));
-    return totalDays;
-  };
 
   const searchCars = async () => {
     const startDateTime = new Date(enteredSearchParams.dateFrom);
@@ -38,13 +33,13 @@ export default function Search() {
       days = 0;
     }
 
-    await updateData(enteredSearchParams.location, startDateTime, endDateTime);
+    await searchAvailableCars(enteredSearchParams.location, startDateTime, endDateTime);
 
     setSearchParams(enteredSearchParams);
     setTripDays(days);
   };
 
-  const sendRentCarRequest = async (carInfo: BaseCarInfo) => {
+  const sendRentCarRequest = async (carInfo: SearchCarInfo) => {
     try {
       if (searchParams.dateFrom == null) {
         alert("Please enter Date From");
@@ -161,8 +156,7 @@ export default function Search() {
                   return (
                     <CarSearchItem
                       key={value.carId}
-                      carInfo={value}
-                      tripDays={tripDays}
+                      searchInfo={value}
                       sendRentCarRequest={sendRentCarRequest}
                     />
                   );
