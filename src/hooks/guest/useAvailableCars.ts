@@ -147,6 +147,7 @@ const useAvailableCars = () => {
       return false;
     }
   };
+
   const createTripRequest = async (
     carId: number,
     host: string,
@@ -172,7 +173,8 @@ const useAvailableCars = () => {
       }
       const [ethToCurrencyRate, ethToCurrencyDecimals] =
         await rentalityCurrencyConverterContract.getEthToUsdPrice();
-      const rentPriceInUsdCents = (totalDayPriceInUsdCents * 100) | 0;
+      const rentPriceInUsdCents =
+        (totalDayPriceInUsdCents + taxPriceInUsdCents + depositInUsdCents) | 0;
       const rentPriceInEth =
         await rentalityCurrencyConverterContract.getEthFromUsd(
           rentPriceInUsdCents
@@ -185,7 +187,7 @@ const useAvailableCars = () => {
         endDateTime: endDateTime,
         startLocation: startLocation,
         endLocation: endLocation,
-        totalDayPriceInUsdCents: rentPriceInUsdCents,
+        totalDayPriceInUsdCents: totalDayPriceInUsdCents,
         taxPriceInUsdCents: taxPriceInUsdCents,
         depositInUsdCents: depositInUsdCents,
         ethToCurrencyRate: BigInt(ethToCurrencyRate),

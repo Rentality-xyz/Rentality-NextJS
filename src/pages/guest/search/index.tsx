@@ -57,7 +57,8 @@ export default function Search() {
         alert("Date to must be greater than Date from");
         return;
       }
-      const totalPrice = carInfo.pricePerDay * tripDays;
+      const totalPriceInUsdCents = carInfo.pricePerDay * 100 * tripDays;
+      const depositInUsdCents = 100*100;
 
       const result = await createTripRequest(
         carInfo.carId,
@@ -66,9 +67,9 @@ export default function Search() {
         endDateTime.getTime(),
         searchParams.location,
         searchParams.location,
-        totalPrice,
+        totalPriceInUsdCents,
         0,
-        0
+        depositInUsdCents
       );
       if (!result) {
         alert("sendRentCarRequest error!");
