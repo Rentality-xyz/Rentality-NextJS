@@ -6,6 +6,7 @@ import {
   validateContractCarInfo,
 } from "@/model/blockchain/ContractCarInfo";
 import { BaseCarInfo } from "@/model/BaseCarInfo";
+import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
 
 const useMyListings = () => {
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
@@ -45,7 +46,8 @@ const useMyListings = () => {
                   validateContractCarInfo(i);
                 }
                 const tokenURI = await rentalityContract.getCarMetadataURI(i.carId);
-                const response = await fetch(tokenURI, {
+                const ipfsURI = getIpfsURIfromPinata(tokenURI);
+                const response = await fetch(ipfsURI, {
                   headers: {
                     Accept: "application/json",
                   },
@@ -57,7 +59,7 @@ const useMyListings = () => {
                 let item: BaseCarInfo = {
                   carId: Number(i.carId),
                   ownerAddress: i.createdBy.toString(),
-                  image: meta.image,
+                  image: getIpfsURIfromPinata(meta.image),
                   brand:
                     meta.attributes?.find((x: any) => x.trait_type === "Brand")
                       ?.value ?? "",

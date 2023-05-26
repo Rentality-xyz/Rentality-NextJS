@@ -11,6 +11,7 @@ import {
   AllowedChangeTripAction,
   TripStatus,
 } from "@/model/TripInfo";
+import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
 
 const useGuestTrips = () => {
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
@@ -130,10 +131,9 @@ const useGuestTrips = () => {
                   validateContractTrip(i);
                 }
 
-                const tokenURI = await rentalityContract.getCarMetadataURI(
-                  i.carId
-                );
-                const response = await fetch(tokenURI, {
+                const tokenURI = await rentalityContract.getCarMetadataURI(i.carId);
+                const ipfsURI = getIpfsURIfromPinata(tokenURI);
+                const response = await fetch(ipfsURI, {
                   headers: {
                     Accept: "application/json",
                   },
@@ -144,7 +144,7 @@ const useGuestTrips = () => {
                 let item: TripInfo = {
                   tripId: Number(i.tripId),
                   carId: Number(i.carId),
-                  image: meta.image,
+                  image: getIpfsURIfromPinata(meta.image),
                   brand:
                     meta.attributes?.find((x: any) => x.trait_type === "Brand")
                       ?.value ?? "",
