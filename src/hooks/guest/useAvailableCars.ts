@@ -108,6 +108,22 @@ const useAvailableCars = () => {
                     meta.attributes?.find(
                       (x: any) => x.trait_type === "License plate"
                     )?.value ?? "",
+                  seatsNumber:
+                    meta.attributes?.find(
+                      (x: any) => x.trait_type === "Seats number"
+                    )?.value ?? "",
+                  transmission:
+                    meta.attributes?.find(
+                      (x: any) => x.trait_type === "Transmission"
+                    )?.value ?? "",
+                  fuelType:
+                    meta.attributes?.find(
+                      (x: any) => x.trait_type === "Fuel type"
+                    )?.value ?? "",
+                  distanceIncludedInMi:
+                    meta.attributes?.find(
+                      (x: any) => x.trait_type === "Distance included(mi)"
+                    )?.value ?? "",
                   pricePerDay: pricePerDay,
                   location: location,
                   dateFrom: dateFrom,

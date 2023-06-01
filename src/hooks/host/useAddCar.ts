@@ -1,5 +1,5 @@
 import { Contract, BrowserProvider } from "ethers";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { rentalityJSON } from "../../abis";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "../../utils/pinata";
 
@@ -188,6 +188,7 @@ const useAddCar = () => {
   const isEmpty = (str: string) => {
     return !str || str.length === 0;
   };
+  
   const verifyCar = () => {
     return (
       !isEmpty(carInfoFormParams.vinNumber) &&

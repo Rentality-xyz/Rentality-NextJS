@@ -3,11 +3,13 @@ import Image from "next/image";
 
 type Props = {
   searchInfo: SearchCarInfo;
-  sendRentCarRequest:(carInfo: SearchCarInfo) => void
+  sendRentCarRequest: (carInfo: SearchCarInfo) => void;
 };
 
-export default function CarSearchItem({ searchInfo, sendRentCarRequest }: Props) {
-  
+export default function CarSearchItem({
+  searchInfo,
+  sendRentCarRequest,
+}: Props) {
   // const sendRentCarRequest = async (tokenId) => {
   //   try {
   //     const ethers = require("ethers");
@@ -52,19 +54,32 @@ export default function CarSearchItem({ searchInfo, sendRentCarRequest }: Props)
           className="h-full w-full rounded-lg object-cover"
         /> */}
       </div>
-      <div className="w-full flex flex-col justify-between p-4">
-        <div className="flex flex-row justify-between items-baseline">
+      <div className="flex w-full flex-col justify-between p-4">
+        <div className="flex flex-row items-baseline justify-between">
           <div>
             <strong className="text-xl">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>
           </div>
           <div>{searchInfo.licensePlate}</div>
         </div>
-        <div className="flex flex-row justify-between items-end">
+        <div className="grid grid-cols-2">
+          <div className="flex flex-col">
+            <div>- {searchInfo.fuelType}</div>
+            <div>- {searchInfo.transmission}</div>
+          </div>
+          <div className="flex flex-col">
+            <div>- {searchInfo.seatsNumber} seats</div>
+            <div>- {searchInfo.distanceIncludedInMi} mi included</div>
+          </div>
+        </div>
+        <div className="flex flex-row items-end justify-between">
           <div className="flex flex-col">
             <strong className="text-xl">{`$${searchInfo.pricePerDay}/day`}</strong>
             <div className="text-sm">{`$${searchInfo.totalPrice} est. total`}</div>
           </div>
-          <button className="px-4 w-44 h-12 bg-violet-700 rounded-md" onClick={() => sendRentCarRequest(searchInfo)}>
+          <button
+            className="h-12 w-44 rounded-md bg-violet-700 px-4"
+            onClick={() => sendRentCarRequest(searchInfo)}
+          >
             Rent for {searchInfo.days} day(s)
           </button>
         </div>
