@@ -15,13 +15,14 @@ export default function TripItem({ tripInfo, changeStatusCallback }: Props) {
     <div className="flex flex-wrap rounded-xl bg-pink-100">
       <div className="relative h-56 w-60 flex-shrink-0 rounded-l-xl bg-slate-400 text-center">
         {/* <Image src={carInfo.image} alt="" width={240} height={192} className="w-60 h-48 rounded-lg object-cover" /> */}
-        <img
+        <Image src={tripInfo.image} alt="" width={1000} height={1000} className="h-full w-full rounded-lg object-cover" />
+        {/* <img
           src={tripInfo.image}
           alt=""
           className="h-full w-full rounded-lg object-cover"
-        />
-        <div className="absolute right-8 top-4">
-          <strong className="text-l">{`${getTripStatusTextFromStatus(tripInfo.status)}`}</strong>
+        /> */}
+        <div className="absolute right-0 top-2 px-8 py-2 text-gray-100 bg-gray-600 rounded-l-3xl">
+          <strong className="text-m">{`${getTripStatusTextFromStatus(tripInfo.status)}`}</strong>
         </div>
       </div>
       <div className="flex flex-1 flex-col justify-between gap-2 p-4">

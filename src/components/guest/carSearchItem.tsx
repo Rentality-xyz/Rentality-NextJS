@@ -44,13 +44,13 @@ export default function CarSearchItem({ searchInfo, sendRentCarRequest }: Props)
 
   return (
     <div className="flex flex-row rounded-xl bg-pink-100">
-      <div className="w-60 h-56 bg-slate-400 rounded-l-xl flex-shrink-0">
-        {/* <Image src={searchInfo.image} alt="" width={240} height={192} className="w-60 h-48 rounded-lg object-cover" /> */}
-        <img
+      <div className="h-56 w-60 flex-shrink-0 rounded-l-xl bg-slate-400">
+        <Image src={searchInfo.image} alt="" width={1000} height={1000} className="h-full w-full rounded-lg object-cover" />
+        {/* <img
           src={searchInfo.image}
           alt=""
-          className="w-full h-full rounded-lg object-cover"
-        />
+          className="h-full w-full rounded-lg object-cover"
+        /> */}
       </div>
       <div className="w-full flex flex-col justify-between p-4">
         <div className="flex flex-row justify-between items-baseline">
