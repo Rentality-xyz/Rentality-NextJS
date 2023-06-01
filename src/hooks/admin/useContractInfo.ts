@@ -1,7 +1,7 @@
 import { Contract, BrowserProvider, formatEther } from "ethers";
 import { useEffect, useState } from "react";
 import { rentalityJSON } from "../../abis";
-import { RentalityContract } from "@/model/blockchain/RentalityContract";
+import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractCarInfo } from "@/model/blockchain/ContractCarInfo";
 
 export type AdminContractInfo = {
@@ -62,7 +62,7 @@ const useContractInfo = () => {
     provider: BrowserProvider
   ) => {
     const contractAddress = await contract.getAddress();
-    const rentalityContract = contract as unknown as RentalityContract;
+    const rentalityContract = contract as unknown as IRentalityContract;
     const ownerAddress = await rentalityContract.owner();
     const balance = (await provider.getBalance(contractAddress)) ?? 0;
     const rentalityCommission = 30; //(await rentalityContract.getPlatformFeeInPPM())/1000.0 ?? 0;
