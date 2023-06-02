@@ -32,6 +32,7 @@ const useContractInfo = () => {
   const [adminContractInfo, setAdminContractInfo] = useState<AdminContractInfo>(
     emptyAdminContractInfo
   );
+  const [dataUpdated, setDataUpdated] = useState(false);
 
   const getRentalityContract = async () => {
     try {
@@ -65,11 +66,16 @@ const useContractInfo = () => {
     const rentalityContract = contract as unknown as IRentalityContract;
     const ownerAddress = await rentalityContract.owner();
     const balance = (await provider.getBalance(contractAddress)) ?? 0;
-    const rentalityCommission = 30; //(await rentalityContract.getPlatformFeeInPPM())/1000.0 ?? 0;
-    const currencyConverterContractAddress = "0x"; //await rentalityContract.getCurrencyConverterServiceAddress();
-    const userServiceContractAddress = "0x"; //await rentalityContract.getUserServiceAddress();
-    const tripServiceContractAddress = "0x"; //await rentalityContract.getTripServiceAddress();
-    const carServiceContractAddress = "0x"; //await rentalityContract.getCarServiceAddress();
+    const rentalityCommission =
+      Number(await rentalityContract.getPlatformFeeInPPM()) / 10_000.0 ?? 0;
+    const currencyConverterContractAddress =
+      await rentalityContract.getCurrencyConverterServiceAddress();
+    const userServiceContractAddress =
+      await rentalityContract.getUserServiceAddress();
+    const tripServiceContractAddress =
+      await rentalityContract.getTripServiceAddress();
+    const carServiceContractAddress =
+      await rentalityContract.getCarServiceAddress();
 
     const result: AdminContractInfo = {
       contractAddress: contractAddress,
@@ -85,29 +91,150 @@ const useContractInfo = () => {
     return result;
   };
 
-  const withdrawFromPlatform = async (value: bigint) => {};
+  const withdrawFromPlatform = async (value: bigint) => {
+    try {
+      const { contract, provider } = await getRentalityContract();
+      const rentalityContract = contract as unknown as IRentalityContract;
 
-  const setPlatformFeeInPPM = async (value: number) => {};
+      if (!rentalityContract) {
+        console.error("setPlatformFeeInPPM error: contract is null");
+        return false;
+      }
 
-  const updateUserService = async (address: string) => {};
+      let transaction = await rentalityContract.withdrawFromPlatform(value);
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      setDataUpdated(false);
+      return true;
+    } catch (e) {
+      alert("withdrawFromPlatform error" + e);
+      return false;
+    }
+  };
 
-  const updateCarService = async (address: string) => {};
+  const setPlatformFeeInPPM = async (value: bigint) => {
+    try {
+      const { contract, provider } = await getRentalityContract();
+      const rentalityContract = contract as unknown as IRentalityContract;
 
-  const updateTripService = async (address: string) => {};
+      if (!rentalityContract) {
+        console.error("setPlatformFeeInPPM error: contract is null");
+        return false;
+      }
 
-  const updateCurrencyConverterService = async (address: string) => {};
+      let transaction = await rentalityContract.setPlatformFeeInPPM(value);
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      setDataUpdated(false);
+      return true;
+    } catch (e) {
+      alert("setPlatformFeeInPPM error" + e);
+      return false;
+    }
+  };
+
+  const updateUserService = async (address: string) => {
+    try {
+      const { contract, provider } = await getRentalityContract();
+      const rentalityContract = contract as unknown as IRentalityContract;
+
+      if (!rentalityContract) {
+        console.error("updateUserService error: contract is null");
+        return false;
+      }
+
+      let transaction = await rentalityContract.updateUserService(address);
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      setDataUpdated(false);
+      return true;
+    } catch (e) {
+      alert("updateUserService error" + e);
+      return false;
+    }
+  };
+
+  const updateCarService = async (address: string) => {
+    try {
+      const { contract, provider } = await getRentalityContract();
+      const rentalityContract = contract as unknown as IRentalityContract;
+
+      if (!rentalityContract) {
+        console.error("updateCarService error: contract is null");
+        return false;
+      }
+
+      let transaction = await rentalityContract.updateCarService(address);
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      setDataUpdated(false);
+      return true;
+    } catch (e) {
+      alert("updateCarService error" + e);
+      return false;
+    }
+  };
+
+  const updateTripService = async (address: string) => {
+    try {
+      const { contract, provider } = await getRentalityContract();
+      const rentalityContract = contract as unknown as IRentalityContract;
+
+      if (!rentalityContract) {
+        console.error("updateTripService error: contract is null");
+        return false;
+      }
+
+      let transaction = await rentalityContract.updateTripService(address);
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      setDataUpdated(false);
+      return true;
+    } catch (e) {
+      alert("updateTripService error" + e);
+      return false;
+    }
+  };
+
+  const updateCurrencyConverterService = async (address: string) => {
+    try {
+      const { contract, provider } = await getRentalityContract();
+      const rentalityContract = contract as unknown as IRentalityContract;
+
+      if (!rentalityContract) {
+        console.error("updateCurrencyConverterService error: contract is null");
+        return false;
+      }
+
+      let transaction = await rentalityContract.updateCurrencyConverterService(
+        address
+      );
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      setDataUpdated(false);
+      return true;
+    } catch (e) {
+      alert("updateCurrencyConverterService error" + e);
+      return false;
+    }
+  };
 
   useEffect(() => {
+    if (dataUpdated) return;
+
     getRentalityContract()
       .then(({ contract, provider }) => {
-        if (contract != undefined) {
+        if (contract != undefined) {      
           return getAdminContractInfo(contract, provider);
         }
       })
       .then((data) => {
-        if (data != null) setAdminContractInfo(data);
+        if (data != null) {
+          setAdminContractInfo(data);
+          setDataUpdated(true);
+        }
       });
-  }, []);
+  }, [dataUpdated]);
 
   return [
     adminContractInfo,

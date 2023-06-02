@@ -65,12 +65,12 @@ export default function Admin() {
   const setPlatformCommission = async () => {
     if (newPlatformCommission == null) return;
     const value = Number.parseFloat(newPlatformCommission);
-    if (value < 0 || value > 100) {
-      alert("value should be more then 0% and less than 100%");
+    if (value < 0.0001 || value > 100) {
+      alert("value should be more then 0% and less than 100% (min value is 0.0001%)");
       return;
     }
     try {
-      await setPlatformFeeInPPM(value*1000);
+      await setPlatformFeeInPPM(BigInt(Math.round(value*10_000)));
     } catch (e) {
       alert("setPlatformCommission error:" + e);
     }
