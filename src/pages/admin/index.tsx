@@ -1,11 +1,9 @@
 import AdminLayout from "@/components/admin/layout/adminLayout";
-import Button from "@/components/common/button";
 import InputBlock from "@/components/inputBlock";
 import InputBlockWithButton from "@/components/inputBlock/inputBlockWithButton";
 import useContractInfo from "@/hooks/admin/useContractInfo";
-import useRentalityContract from "@/hooks/useRentalityContract";
-import { ethers, formatEther } from "ethers";
-import { useEffect, useState } from "react";
+import { parseEther } from "ethers";
+import { useState } from "react";
 
 export default function Admin() {
   const [
@@ -56,7 +54,11 @@ export default function Admin() {
       return;
     }
     try {
-      await withdrawFromPlatform(BigInt(value));
+      
+      const valueToWithdrawInWei = parseEther(ethToWithdraw);
+      console.log("ethToWithdraw", ethToWithdraw);
+      console.log("valueToWithdrawInWei", valueToWithdrawInWei);
+      await withdrawFromPlatform(BigInt(valueToWithdrawInWei));
     } catch (e) {
       alert("withdraw error:" + e);
     }
