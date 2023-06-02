@@ -192,12 +192,11 @@ const useAvailableCars = () => {
         console.error("createTripRequest error: contract is null");
         return false;
       }
-      const [ethToCurrencyRate, ethToCurrencyDecimals] =
-        await rentalityCurrencyConverterContract.getEthToUsdPrice();
+
       const rentPriceInUsdCents =
         (totalDayPriceInUsdCents + taxPriceInUsdCents + depositInUsdCents) | 0;
-      const rentPriceInEth =
-        await rentalityCurrencyConverterContract.getEthFromUsd(
+      const[ rentPriceInEth, ethToCurrencyRate, ethToCurrencyDecimals] =
+        await rentalityCurrencyConverterContract.getEthFromUsdLatest(
           rentPriceInUsdCents
         );
 
