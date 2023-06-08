@@ -4,6 +4,8 @@ import { ContractCreateTripRequest } from "./ContractCreateTripRequest";
 import { ContractTrip } from "./ContractTrip";
 
 export interface IRentalityContract {
+  
+  ///admin functions
   owner(): Promise<string>;
   getCarServiceAddress(): Promise<string>;
   updateCarService(contractAddress: string): Promise<ContractTransactionResponse>;
@@ -16,7 +18,11 @@ export interface IRentalityContract {
   withdrawFromPlatform(amount: bigint): Promise<ContractTransactionResponse>;
   withdrawAllFromPlatform(): Promise<ContractTransactionResponse>;
   getPlatformFeeInPPM(): Promise<bigint>;
-  setPlatformFeeInPPM(valueInPPM:bigint): Promise<ContractTransactionResponse>;
+  setPlatformFeeInPPM(valueInPPM:bigint): Promise<ContractTransactionResponse>;  
+  getDepositePriceInUsdCents(): Promise<bigint>;
+  setDepositePriceInUsdCents(valueInUsdCents:bigint): Promise<ContractTransactionResponse>;
+  getFuelPricePerGalInUsdCents(): Promise<bigint>;
+  setFuelPricePerGalInUsdCents(valueInUsdCents:bigint): Promise<ContractTransactionResponse>;
 
   ///host functions
   addCar(

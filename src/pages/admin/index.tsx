@@ -10,6 +10,8 @@ export default function Admin() {
     adminContractInfo,
     withdrawFromPlatform,
     setPlatformFeeInPPM,
+    setDepositePriceInUsdCents,
+    setFuelPricePerGalInUsdCents,
     updateUserService,
     updateCarService,
     updateTripService,
@@ -17,6 +19,8 @@ export default function Admin() {
   ] = useContractInfo();
   const [ethToWithdraw, setEthToWithdraw] = useState("0");
   const [newPlatformCommission, setNewPlatformCommission] = useState("0");
+  const [newPlatformDeposite, setNewPlatformDeposite] = useState("0");
+  const [newPlatformFuelPrice, setNewPlatformFuelPrice] = useState("0");
   const [newUserServiceAddress, setNewUserServiceAddress] = useState("0x");
   const [newCarServiceAddress, setNewCarServiceAddress] = useState("0x");
   const [newTripsServiceAddress, setNewTripsServiceAddress] = useState("0x");
@@ -75,6 +79,28 @@ export default function Admin() {
       await setPlatformFeeInPPM(BigInt(Math.round(value*10_000)));
     } catch (e) {
       alert("setPlatformCommission error:" + e);
+    }
+  };
+
+  const setPlatformDeposite = async () => {
+    if (newPlatformDeposite == null) return;
+    const value = Number.parseFloat(newPlatformDeposite);
+    
+    try {
+      await setDepositePriceInUsdCents(BigInt(Math.round(value*100)));
+    } catch (e) {
+      alert("setPlatformDeposite error:" + e);
+    }
+  };
+
+  const setPlatformFuelPrice = async () => {
+    if (newPlatformFuelPrice == null) return;
+    const value = Number.parseFloat(newPlatformFuelPrice);
+    
+    try {
+      await setFuelPricePerGalInUsdCents(BigInt(Math.round(value*100)));
+    } catch (e) {
+      alert("setPlatformFuelPrice error:" + e);
     }
   };
 
@@ -189,6 +215,46 @@ export default function Admin() {
             buttonDisabled={!Number.parseFloat(newPlatformCommission)}
             onButtonClick={() => {
               setPlatformCommission();
+            }}
+          />
+          <InputBlock
+            id="deposite"
+            label="Default platform deposite in USD:"
+            value={"$" + adminContractInfo.rentalityDeposite.toString()}
+            readOnly={true}
+          />
+          <InputBlockWithButton
+            id="depositeSet"
+            placeholder="$100"
+            label="Set new default deposite (USD):"
+            value={newPlatformDeposite}
+            onValueChange={(e) => {
+              setNewPlatformDeposite(e.target.value);
+            }}
+            buttonText="Save"
+            buttonDisabled={!Number.parseFloat(newPlatformDeposite)}
+            onButtonClick={() => {
+              setPlatformDeposite();
+            }}
+          />
+          <InputBlock
+            id="fuelPrice"
+            label="Default platform fuel price in USD:"
+            value={"$" + adminContractInfo.rentalityFuelPricePerGal.toString()}
+            readOnly={true}
+          />
+          <InputBlockWithButton
+            id="fuelPriceSet"
+            placeholder="4.50"
+            label="Set new default fuel price (USD):"
+            value={newPlatformFuelPrice}
+            onValueChange={(e) => {
+              setNewPlatformFuelPrice(e.target.value);
+            }}
+            buttonText="Save"
+            buttonDisabled={!Number.parseFloat(newPlatformFuelPrice)}
+            onButtonClick={() => {
+              setPlatformFuelPrice();
             }}
           />
           <InputBlock

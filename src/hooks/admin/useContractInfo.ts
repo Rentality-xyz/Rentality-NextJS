@@ -10,6 +10,8 @@ export type AdminContractInfo = {
   contractBalance: bigint;
   contractBalanceString: string;
   rentalityCommission: number;
+  rentalityDeposite: number;
+  rentalityFuelPricePerGal: number;
   currencyConverterContractAddress: string;
   userServiceContractAddress: string;
   tripServiceContractAddress: string;
@@ -23,6 +25,8 @@ const useContractInfo = () => {
     contractBalance: BigInt(0),
     contractBalanceString: "0",
     rentalityCommission: 0,
+    rentalityDeposite: 0,
+    rentalityFuelPricePerGal: 0,
     currencyConverterContractAddress: "",
     userServiceContractAddress: "",
     tripServiceContractAddress: "",
@@ -68,6 +72,10 @@ const useContractInfo = () => {
     const balance = (await provider.getBalance(contractAddress)) ?? 0;
     const rentalityCommission =
       Number(await rentalityContract.getPlatformFeeInPPM()) / 10_000.0 ?? 0;
+    const rentalityDeposite =
+      Number(await rentalityContract.getDepositePriceInUsdCents()) / 100.0 ?? 0;
+    const rentalityFuelPricePerGal =
+      Number(await rentalityContract.getFuelPricePerGalInUsdCents()) / 100.0 ?? 0;
     const currencyConverterContractAddress =
       await rentalityContract.getCurrencyConverterServiceAddress();
     const userServiceContractAddress =
@@ -83,6 +91,8 @@ const useContractInfo = () => {
       contractBalance: balance,
       contractBalanceString: formatEther(balance),
       rentalityCommission: rentalityCommission,
+      rentalityDeposite: rentalityDeposite,
+      rentalityFuelPricePerGal: rentalityFuelPricePerGal,
       currencyConverterContractAddress: currencyConverterContractAddress,
       userServiceContractAddress: userServiceContractAddress,
       tripServiceContractAddress: tripServiceContractAddress,
@@ -129,6 +139,48 @@ const useContractInfo = () => {
       return true;
     } catch (e) {
       alert("setPlatformFeeInPPM error" + e);
+      return false;
+    }
+  };
+
+  const setDepositePriceInUsdCents = async (value: bigint) => {
+    try {
+      const { contract, provider } = await getRentalityContract();
+      const rentalityContract = contract as unknown as IRentalityContract;
+
+      if (!rentalityContract) {
+        console.error("setDepositePriceInUsdCents error: contract is null");
+        return false;
+      }
+
+      let transaction = await rentalityContract.setDepositePriceInUsdCents(value);
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      setDataUpdated(false);
+      return true;
+    } catch (e) {
+      alert("setDepositePriceInUsdCents error" + e);
+      return false;
+    }
+  };
+
+  const setFuelPricePerGalInUsdCents = async (value: bigint) => {
+    try {
+      const { contract, provider } = await getRentalityContract();
+      const rentalityContract = contract as unknown as IRentalityContract;
+
+      if (!rentalityContract) {
+        console.error("setFuelPricePerGalInUsdCents error: contract is null");
+        return false;
+      }
+
+      let transaction = await rentalityContract.setFuelPricePerGalInUsdCents(value);
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      setDataUpdated(false);
+      return true;
+    } catch (e) {
+      alert("setFuelPricePerGalInUsdCents error" + e);
       return false;
     }
   };
@@ -224,7 +276,7 @@ const useContractInfo = () => {
 
     getRentalityContract()
       .then(({ contract, provider }) => {
-        if (contract != undefined) {      
+        if (contract != undefined) {
           return getAdminContractInfo(contract, provider);
         }
       })
@@ -240,6 +292,8 @@ const useContractInfo = () => {
     adminContractInfo,
     withdrawFromPlatform,
     setPlatformFeeInPPM,
+    setDepositePriceInUsdCents,
+    setFuelPricePerGalInUsdCents,
     updateUserService,
     updateCarService,
     updateTripService,
