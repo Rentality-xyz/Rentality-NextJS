@@ -2,6 +2,7 @@ import { Contract, BrowserProvider } from "ethers";
 import { useState } from "react";
 import { rentalityJSON } from "../../abis";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "../../utils/pinata";
+import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 
 export type NewCarInfo = {
   vinNumber: string;
@@ -64,7 +65,11 @@ const useAddCar = () => {
 
       const provider = new BrowserProvider(ethereum);
       const signer = await provider.getSigner();
-      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer);
+      return new Contract(
+        rentalityJSON.address,
+        rentalityJSON.abi,
+        signer
+      ) as unknown as IRentalityContract;
     } catch (e) {
       console.error("getRentalityContract error:" + e);
     }
@@ -188,7 +193,7 @@ const useAddCar = () => {
   const isEmpty = (str: string) => {
     return !str || str.length === 0;
   };
-  
+
   const verifyCar = () => {
     return (
       !isEmpty(carInfoFormParams.vinNumber) &&
@@ -240,14 +245,18 @@ const useAddCar = () => {
       var doubleNumber = Number(
         dataToSave.pricePerDay.replace(/[^0-9.]+/g, "")
       );
-      let pricePerDay = ((doubleNumber * 100) | 0).toString();
+      const pricePerDay = BigInt((doubleNumber * 100) | 0);
+      const tankVolumeInGal = BigInt(carInfoFormParams.tankVolumeInGal);
+      const distanceIncludedInMi = BigInt(
+        carInfoFormParams.distanceIncludedInMi
+      );
 
       let transaction = await rentalityContract.addCar(
         metadataURL,
         carInfoFormParams.vinNumber,
         pricePerDay,
-        carInfoFormParams.tankVolumeInGal,
-        carInfoFormParams.distanceIncludedInMi
+        tankVolumeInGal,
+        distanceIncludedInMi
       );
 
       const result = await transaction.wait();

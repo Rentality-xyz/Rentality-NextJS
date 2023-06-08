@@ -12,6 +12,7 @@ import {
   TripStatus,
 } from "@/model/TripInfo";
 import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
+import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 
 const useGuestTrips = () => {
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
@@ -28,13 +29,17 @@ const useGuestTrips = () => {
 
       const provider = new BrowserProvider(ethereum);
       const signer = await provider.getSigner();
-      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer);
+      return new Contract(
+        rentalityJSON.address,
+        rentalityJSON.abi,
+        signer
+      ) as unknown as IRentalityContract;
     } catch (e) {
       console.error("getRentalityContract error:" + e);
     }
   };
 
-  const checkInTrip = async (tripId: number, params:string[]) => {
+  const checkInTrip = async (tripId: bigint, params: string[]) => {
     try {
       const rentalityContract = await getRentalityContract();
 
@@ -42,8 +47,8 @@ const useGuestTrips = () => {
         console.error("checkInTrip error: contract is null");
         return false;
       }
-      const startFuelLevel = Number(params[0]);
-      const startOdometr = Number(params[1]);
+      const startFuelLevel = BigInt(params[0]);
+      const startOdometr = BigInt(params[1]);
 
       let transaction = await rentalityContract.checkInByGuest(
         tripId,
@@ -60,7 +65,7 @@ const useGuestTrips = () => {
     }
   };
 
-  const checkOutTrip = async (tripId: number, params:string[]) => {
+  const checkOutTrip = async (tripId: bigint, params: string[]) => {
     try {
       const rentalityContract = await getRentalityContract();
 
@@ -69,8 +74,8 @@ const useGuestTrips = () => {
         return false;
       }
 
-      const endFuelLevel = Number(params[0]);
-      const endOdometr = Number(params[1]);
+      const endFuelLevel = BigInt(params[0]);
+      const endOdometr = BigInt(params[1]);
 
       let transaction = await rentalityContract.checkOutByGuest(
         tripId,
@@ -113,7 +118,7 @@ const useGuestTrips = () => {
     return result;
   };
 
-  const getTrips = async (rentalityContract: Contract) => {
+  const getTrips = async (rentalityContract: IRentalityContract) => {
     try {
       if (rentalityContract == null) {
         console.error("getTrips error: contract is null");
@@ -131,7 +136,9 @@ const useGuestTrips = () => {
                   validateContractTrip(i);
                 }
 
-                const tokenURI = await rentalityContract.getCarMetadataURI(i.carId);
+                const tokenURI = await rentalityContract.getCarMetadataURI(
+                  i.carId
+                );
                 const ipfsURI = getIpfsURIfromPinata(tokenURI);
                 const response = await fetch(ipfsURI, {
                   headers: {
@@ -165,7 +172,9 @@ const useGuestTrips = () => {
                   locationEnd: i.endLocation,
                   status: tripStatus,
                   allowedActions: getAllowedActions(tripStatus),
-                  totalPrice:(Number(i.paymentInfo.totalDayPriceInUsdCents) / 100).toString(),
+                  totalPrice: (
+                    Number(i.paymentInfo.totalDayPriceInUsdCents) / 100
+                  ).toString(),
                 };
                 return item;
               })

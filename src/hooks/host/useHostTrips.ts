@@ -12,6 +12,7 @@ import {
   TripStatus,
 } from "@/model/TripInfo";
 import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
+import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 
 const useHostTrips = () => {
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
@@ -28,13 +29,17 @@ const useHostTrips = () => {
 
       const provider = new BrowserProvider(ethereum);
       const signer = await provider.getSigner();
-      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer);
+      return new Contract(
+        rentalityJSON.address,
+        rentalityJSON.abi,
+        signer
+      ) as unknown as IRentalityContract;
     } catch (e) {
       console.error("getRentalityContract error:" + e);
     }
   };
 
-  const acceptRequest = async (tripId: number, params: string[]) => {
+  const acceptRequest = async (tripId: bigint, params: string[]) => {
     try {
       const rentalityContract = await getRentalityContract();
 
@@ -53,7 +58,7 @@ const useHostTrips = () => {
     }
   };
 
-  const rejectRequest = async (tripId: number, params: string[]) => {
+  const rejectRequest = async (tripId: bigint, params: string[]) => {
     try {
       const rentalityContract = await getRentalityContract();
 
@@ -73,7 +78,7 @@ const useHostTrips = () => {
     }
   };
 
-  const checkInTrip = async (tripId: number, params: string[]) => {
+  const checkInTrip = async (tripId: bigint, params: string[]) => {
     try {
       const rentalityContract = await getRentalityContract();
 
@@ -81,8 +86,8 @@ const useHostTrips = () => {
         console.error("checkInTrip error: contract is null");
         return false;
       }
-      const startFuelLevel = Number(params[0]);
-      const startOdometr = Number(params[1]);
+      const startFuelLevel = BigInt(params[0]);
+      const startOdometr = BigInt(params[1]);
 
       let transaction = await rentalityContract.checkInByHost(
         tripId,
@@ -99,7 +104,7 @@ const useHostTrips = () => {
     }
   };
 
-  const checkOutTrip = async (tripId: number, params: string[]) => {
+  const checkOutTrip = async (tripId: bigint, params: string[]) => {
     try {
       const rentalityContract = await getRentalityContract();
 
@@ -108,8 +113,8 @@ const useHostTrips = () => {
         return false;
       }
 
-      const endFuelLevel = Number(params[0]);
-      const endOdometr = Number(params[1]);
+      const endFuelLevel = BigInt(params[0]);
+      const endOdometr = BigInt(params[1]);
 
       let transaction = await rentalityContract.checkOutByHost(
         tripId,
@@ -126,7 +131,7 @@ const useHostTrips = () => {
     }
   };
 
-  const finishTrip = async (tripId: number, params: string[]) => {
+  const finishTrip = async (tripId: bigint, params: string[]) => {
     try {
       const rentalityContract = await getRentalityContract();
 
@@ -213,7 +218,7 @@ const useHostTrips = () => {
     return result;
   };
 
-  const getTrips = async (rentalityContract: Contract) => {
+  const getTrips = async (rentalityContract: IRentalityContract) => {
     try {
       if (rentalityContract == null) {
         console.error("getTrips error: contract is null");

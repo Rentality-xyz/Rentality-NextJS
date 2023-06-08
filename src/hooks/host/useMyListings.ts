@@ -7,6 +7,7 @@ import {
 } from "@/model/blockchain/ContractCarInfo";
 import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
+import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 
 const useMyListings = () => {
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
@@ -22,13 +23,17 @@ const useMyListings = () => {
 
       const provider = new BrowserProvider(ethereum);
       const signer = await provider.getSigner();
-      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer);
+      return new Contract(
+        rentalityJSON.address,
+        rentalityJSON.abi,
+        signer
+      ) as unknown as IRentalityContract;
     } catch (e) {
       console.error("getRentalityContract error:" + e);
     }
   };
 
-  const getMyListings = async (rentalityContract: Contract) => {
+  const getMyListings = async (rentalityContract: IRentalityContract) => {
     try {
       if (rentalityContract == null) {
         console.error("getMyListings error: contract is null");
@@ -45,7 +50,9 @@ const useMyListings = () => {
                 if (index === 0) {
                   validateContractCarInfo(i);
                 }
-                const tokenURI = await rentalityContract.getCarMetadataURI(i.carId);
+                const tokenURI = await rentalityContract.getCarMetadataURI(
+                  i.carId
+                );
                 const ipfsURI = getIpfsURIfromPinata(tokenURI);
                 const response = await fetch(ipfsURI, {
                   headers: {

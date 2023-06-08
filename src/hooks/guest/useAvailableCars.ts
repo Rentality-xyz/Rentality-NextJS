@@ -7,8 +7,9 @@ import {
 } from "@/model/blockchain/ContractCarInfo";
 import { SearchCarInfo } from "@/model/SearchCarInfo";
 import { calculateDays } from "@/utils/date";
-import { ContractCarRequest } from "@/model/blockchain/ContractCarRequest";
 import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
+import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
+import { ContractCreateTripRequest } from "@/model/blockchain/ContractCreateTripRequest";
 
 const useAvailableCars = () => {
   const [dataFetched, setDataFetched] = useState<Boolean>(true);
@@ -25,7 +26,11 @@ const useAvailableCars = () => {
 
       const provider = new BrowserProvider(ethereum);
       const signer = await provider.getSigner();
-      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer);
+      return new Contract(
+        rentalityJSON.address,
+        rentalityJSON.abi,
+        signer
+      ) as unknown as IRentalityContract;
     } catch (e) {
       console.error("getRentalityContract error:" + e);
     }
@@ -52,7 +57,7 @@ const useAvailableCars = () => {
   };
 
   const getAvailableCars = async (
-    rentalityContract: Contract,
+    rentalityContract: IRentalityContract,
     location: string,
     dateFrom: Date,
     dateTo: Date
@@ -73,7 +78,9 @@ const useAvailableCars = () => {
                 if (index === 0) {
                   validateContractCarInfo(i);
                 }
-                const tokenURI = await rentalityContract.getCarMetadataURI(i.carId);
+                const tokenURI = await rentalityContract.getCarMetadataURI(
+                  i.carId
+                );
                 const ipfsURI = getIpfsURIfromPinata(tokenURI);
                 // const ulr = "/api/pinata/getMetadataJson?tokenURI=" + tokenURI;
                 // console.log("call ulr: " + ulr);
@@ -195,12 +202,12 @@ const useAvailableCars = () => {
 
       const rentPriceInUsdCents =
         (totalDayPriceInUsdCents + taxPriceInUsdCents + depositInUsdCents) | 0;
-      const[ rentPriceInEth, ethToCurrencyRate, ethToCurrencyDecimals] =
+      const [rentPriceInEth, ethToCurrencyRate, ethToCurrencyDecimals] =
         await rentalityCurrencyConverterContract.getEthFromUsdLatest(
           rentPriceInUsdCents
         );
 
-      const tripRequest: ContractCarRequest = {
+      const tripRequest: ContractCreateTripRequest = {
         carId: BigInt(carId),
         host: host,
         startDateTime: startDateTime,

@@ -4,6 +4,8 @@ import { ContractCreateTripRequest } from "./ContractCreateTripRequest";
 import { ContractTrip } from "./ContractTrip";
 
 export interface IRentalityContract {
+
+  getAddress(): Promise<string>;
   
   ///admin functions
   owner(): Promise<string>;
@@ -44,7 +46,7 @@ export interface IRentalityContract {
 
   ///guest functions
   getAvailableCars(): ContractCarInfo[];
-  createTripRequest(request: ContractCreateTripRequest): Promise<ContractTransactionResponse>;
+  createTripRequest(request: ContractCreateTripRequest, value: object): Promise<ContractTransactionResponse>;
   getTripsAsGuest(): Promise<ContractTrip[]>;
   getCarsRentedByMe(): Promise<ContractCarInfo[]>;
   checkInByGuest(tripId: bigint,startFuelLevel: bigint,startOdometr: bigint): Promise<ContractTransactionResponse>;

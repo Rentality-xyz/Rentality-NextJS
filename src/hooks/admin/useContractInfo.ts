@@ -53,7 +53,7 @@ const useContractInfo = () => {
           rentalityJSON.address,
           rentalityJSON.abi,
           signer
-        ),
+        ) as unknown as IRentalityContract,
         provider,
       };
     } catch (e) {
@@ -63,27 +63,23 @@ const useContractInfo = () => {
   };
 
   const getAdminContractInfo = async (
-    contract: Contract,
+    contract: IRentalityContract,
     provider: BrowserProvider
   ) => {
     const contractAddress = await contract.getAddress();
-    const rentalityContract = contract as unknown as IRentalityContract;
-    const ownerAddress = await rentalityContract.owner();
+    const ownerAddress = await contract.owner();
     const balance = (await provider.getBalance(contractAddress)) ?? 0;
     const rentalityCommission =
-      Number(await rentalityContract.getPlatformFeeInPPM()) / 10_000.0 ?? 0;
+      Number(await contract.getPlatformFeeInPPM()) / 10_000.0 ?? 0;
     const rentalityDeposite =
-      Number(await rentalityContract.getDepositePriceInUsdCents()) / 100.0 ?? 0;
+      Number(await contract.getDepositePriceInUsdCents()) / 100.0 ?? 0;
     const rentalityFuelPricePerGal =
-      Number(await rentalityContract.getFuelPricePerGalInUsdCents()) / 100.0 ?? 0;
+      Number(await contract.getFuelPricePerGalInUsdCents()) / 100.0 ?? 0;
     const currencyConverterContractAddress =
-      await rentalityContract.getCurrencyConverterServiceAddress();
-    const userServiceContractAddress =
-      await rentalityContract.getUserServiceAddress();
-    const tripServiceContractAddress =
-      await rentalityContract.getTripServiceAddress();
-    const carServiceContractAddress =
-      await rentalityContract.getCarServiceAddress();
+      await contract.getCurrencyConverterServiceAddress();
+    const userServiceContractAddress = await contract.getUserServiceAddress();
+    const tripServiceContractAddress = await contract.getTripServiceAddress();
+    const carServiceContractAddress = await contract.getCarServiceAddress();
 
     const result: AdminContractInfo = {
       contractAddress: contractAddress,
@@ -153,7 +149,9 @@ const useContractInfo = () => {
         return false;
       }
 
-      let transaction = await rentalityContract.setDepositePriceInUsdCents(value);
+      let transaction = await rentalityContract.setDepositePriceInUsdCents(
+        value
+      );
       const result = await transaction.wait();
       console.log("result: " + JSON.stringify(result));
       setDataUpdated(false);
@@ -174,7 +172,9 @@ const useContractInfo = () => {
         return false;
       }
 
-      let transaction = await rentalityContract.setFuelPricePerGalInUsdCents(value);
+      let transaction = await rentalityContract.setFuelPricePerGalInUsdCents(
+        value
+      );
       const result = await transaction.wait();
       console.log("result: " + JSON.stringify(result));
       setDataUpdated(false);

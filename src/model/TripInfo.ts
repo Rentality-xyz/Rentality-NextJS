@@ -50,5 +50,5 @@ export type TripInfo = {
 export type AllowedChangeTripAction = {
   text:string;
   params:string[];
-  action:(tripId: number,  params:string[]) => Promise<boolean>
+  action:(tripId: bigint,  params:string[]) => Promise<boolean>
 }
