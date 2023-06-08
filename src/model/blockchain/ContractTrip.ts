@@ -11,6 +11,7 @@ export type ContractTrip = {
   startLocation: string;
   endLocation: string;
   milesIncluded: number;
+  fuelPricePerGalInUsdCents: bigint;
   paymentInfo: PaymentInfo;
   approvedDateTime: number;
   checkedInByHostDateTime: number;
@@ -21,7 +22,7 @@ export type ContractTrip = {
   endFuelLevel: number;
   endOdometr: number;
   checkedOutByHostDateTime: number;
-  resolveAmount: bigint;
+  resolveAmountInUsdCents: bigint;
 };
 
 type PaymentInfo = {

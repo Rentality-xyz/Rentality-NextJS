@@ -11,6 +11,7 @@ export type SearchCarInfo = {
   fuelType: string;
   distanceIncludedInMi: string;
   pricePerDay: number;
+  fuelPricePerGalInUsdCents: number;
   location: string;
   dateFrom: Date;
   dateTo: Date;

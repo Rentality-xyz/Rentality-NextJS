@@ -64,7 +64,7 @@ export default function TripItem({ tripInfo, changeStatusCallback }: Props) {
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
                         changeStatusCallback(() => {
-                          return action.action(tripInfo.tripId, []);
+                          return action.action(BigInt(tripInfo.tripId), []);
                         });
                       } else {
                         setIsAdditionalActionHidden(false);
@@ -157,7 +157,7 @@ export default function TripItem({ tripInfo, changeStatusCallback }: Props) {
             onClick={() => {
               changeStatusCallback(() => {
                 return tripInfo.allowedActions[0].action(
-                  tripInfo.tripId,
+                  BigInt(tripInfo.tripId),
                   inputParams
                 );
               });

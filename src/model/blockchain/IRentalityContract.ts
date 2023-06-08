@@ -42,7 +42,6 @@ export interface IRentalityContract {
   checkInByHost(tripId: bigint,startFuelLevel: bigint,startOdometr: bigint): Promise<ContractTransactionResponse>;
   checkOutByHost(tripId: bigint,endFuelLevel: bigint,endOdometr: bigint): Promise<ContractTransactionResponse>;
   finishTrip(tripId: bigint): Promise<ContractTransactionResponse>;
-  resolveIssue(tripId: bigint, fuelPricePerGal: bigint): Promise<ContractTransactionResponse>;
 
   ///guest functions
   getAvailableCars(): ContractCarInfo[];

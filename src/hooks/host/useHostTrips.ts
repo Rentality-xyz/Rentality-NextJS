@@ -151,30 +151,6 @@ const useHostTrips = () => {
     }
   };
 
-  const reportIssue = async (tripId: number, params: string[]) => {
-    try {
-      const rentalityContract = await getRentalityContract();
-
-      if (!rentalityContract) {
-        console.error("reportIssue error: contract is null");
-        return false;
-      }
-
-      const fuelPricePerGal = Number(params[0]);
-      let transaction = await rentalityContract.resolveIssue(
-        tripId,
-        fuelPricePerGal
-      );
-
-      const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
-      return true;
-    } catch (e) {
-      alert("reportIssue error" + e);
-      return false;
-    }
-  };
-
   const getAllowedActions = (tripStatus: TripStatus, i: ContractTrip) => {
     const result: AllowedChangeTripAction[] = [];
 
@@ -202,11 +178,6 @@ const useHostTrips = () => {
         });
         break;
       case TripStatus.Finished:
-        result.push({
-          text: "Report issue",
-          params: ["Fuel price (in USD cents)"],
-          action: reportIssue,
-        });
         result.push({ text: "Complete", params: [], action: finishTrip });
         break;
       case TripStatus.Closed:

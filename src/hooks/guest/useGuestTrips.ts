@@ -100,10 +100,18 @@ const useGuestTrips = () => {
       case TripStatus.Comfirmed:
         break;
       case TripStatus.CheckedInByHost:
-        result.push({ text: "Start", params:["Fuel level (0..8)", "Odometr"], action: checkInTrip });
+        result.push({
+          text: "Start",
+          params: ["Fuel level (0..8)", "Odometr"],
+          action: checkInTrip,
+        });
         break;
       case TripStatus.Started:
-        result.push({ text: "Finish", params:["Fuel level (0..8)", "Odometr"], action: checkOutTrip });
+        result.push({
+          text: "Finish",
+          params: ["Fuel level (0..8)", "Odometr"],
+          action: checkOutTrip,
+        });
         break;
       case TripStatus.CheckedOutByGuest:
         break;
