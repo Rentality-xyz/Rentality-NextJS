@@ -34,7 +34,7 @@ const useGuestTrips = () => {
     }
   };
 
-  const checkInTrip = async (tripId: number) => {
+  const checkInTrip = async (tripId: number, params:string[]) => {
     try {
       const rentalityContract = await getRentalityContract();
 
@@ -42,8 +42,8 @@ const useGuestTrips = () => {
         console.error("checkInTrip error: contract is null");
         return false;
       }
-      const startFuelLevel = 0;
-      const startOdometr = 0;
+      const startFuelLevel = Number(params[0]);
+      const startOdometr = Number(params[1]);
 
       let transaction = await rentalityContract.checkInByGuest(
         tripId,
@@ -60,7 +60,7 @@ const useGuestTrips = () => {
     }
   };
 
-  const checkOutTrip = async (tripId: number) => {
+  const checkOutTrip = async (tripId: number, params:string[]) => {
     try {
       const rentalityContract = await getRentalityContract();
 
@@ -69,8 +69,8 @@ const useGuestTrips = () => {
         return false;
       }
 
-      const endFuelLevel = 0;
-      const endOdometr = 0;
+      const endFuelLevel = Number(params[0]);
+      const endOdometr = Number(params[1]);
 
       let transaction = await rentalityContract.checkOutByGuest(
         tripId,
@@ -95,10 +95,10 @@ const useGuestTrips = () => {
       case TripStatus.Comfirmed:
         break;
       case TripStatus.CheckedInByHost:
-        result.push({ text: "Start", action: checkInTrip });
+        result.push({ text: "Start", params:["Fuel level (0..8)", "Odometr"], action: checkInTrip });
         break;
       case TripStatus.Started:
-        result.push({ text: "Finish", action: checkOutTrip });
+        result.push({ text: "Finish", params:["Fuel level (0..8)", "Odometr"], action: checkOutTrip });
         break;
       case TripStatus.CheckedOutByGuest:
         break;
@@ -165,6 +165,7 @@ const useGuestTrips = () => {
                   locationEnd: i.endLocation,
                   status: tripStatus,
                   allowedActions: getAllowedActions(tripStatus),
+                  totalPrice:(Number(i.paymentInfo.totalDayPriceInUsdCents) / 100).toString(),
                 };
                 return item;
               })

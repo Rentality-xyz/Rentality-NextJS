@@ -34,7 +34,7 @@ const useHostTrips = () => {
     }
   };
 
-  const acceptRequest = async (tripId: number) => {
+  const acceptRequest = async (tripId: number, params: string[]) => {
     try {
       const rentalityContract = await getRentalityContract();
 
@@ -53,7 +53,7 @@ const useHostTrips = () => {
     }
   };
 
-  const rejectRequest = async (tripId: number) => {
+  const rejectRequest = async (tripId: number, params: string[]) => {
     try {
       const rentalityContract = await getRentalityContract();
 
@@ -73,7 +73,7 @@ const useHostTrips = () => {
     }
   };
 
-  const checkInTrip = async (tripId: number) => {
+  const checkInTrip = async (tripId: number, params: string[]) => {
     try {
       const rentalityContract = await getRentalityContract();
 
@@ -81,8 +81,8 @@ const useHostTrips = () => {
         console.error("checkInTrip error: contract is null");
         return false;
       }
-      const startFuelLevel = 0;
-      const startOdometr = 0;
+      const startFuelLevel = Number(params[0]);
+      const startOdometr = Number(params[1]);
 
       let transaction = await rentalityContract.checkInByHost(
         tripId,
@@ -99,7 +99,7 @@ const useHostTrips = () => {
     }
   };
 
-  const checkOutTrip = async (tripId: number) => {
+  const checkOutTrip = async (tripId: number, params: string[]) => {
     try {
       const rentalityContract = await getRentalityContract();
 
@@ -108,8 +108,8 @@ const useHostTrips = () => {
         return false;
       }
 
-      const endFuelLevel = 0;
-      const endOdometr = 0;
+      const endFuelLevel = Number(params[0]);
+      const endOdometr = Number(params[1]);
 
       let transaction = await rentalityContract.checkOutByHost(
         tripId,
@@ -126,7 +126,7 @@ const useHostTrips = () => {
     }
   };
 
-  const finishTrip = async (tripId: number) => {
+  const finishTrip = async (tripId: number, params: string[]) => {
     try {
       const rentalityContract = await getRentalityContract();
 
@@ -146,7 +146,7 @@ const useHostTrips = () => {
     }
   };
 
-  const reportIssue = async (tripId: number) => {
+  const reportIssue = async (tripId: number, params: string[]) => {
     try {
       const rentalityContract = await getRentalityContract();
 
@@ -155,7 +155,7 @@ const useHostTrips = () => {
         return false;
       }
 
-      const fuelPricePerGal = 0;
+      const fuelPricePerGal = Number(params[0]);
       let transaction = await rentalityContract.resolveIssue(
         tripId,
         fuelPricePerGal
@@ -170,27 +170,39 @@ const useHostTrips = () => {
     }
   };
 
-  const getAllowedActions = (tripStatus: TripStatus) => {
+  const getAllowedActions = (tripStatus: TripStatus, i: ContractTrip) => {
     const result: AllowedChangeTripAction[] = [];
 
     switch (tripStatus) {
       case TripStatus.Pending:
-        result.push({ text: "Confirm", action: acceptRequest });
-        result.push({ text: "Reject", action: rejectRequest });
+        result.push({ text: "Confirm", params: [], action: acceptRequest });
+        result.push({ text: "Reject", params: [], action: rejectRequest });
         break;
       case TripStatus.Comfirmed:
-        result.push({ text: "Start", action: checkInTrip });
+        result.push({
+          text: "Start",
+          params: ["Fuel level (0..8)", "Odometr"],
+          action: checkInTrip,
+        });
         break;
       case TripStatus.CheckedInByHost:
         break;
       case TripStatus.Started:
         break;
       case TripStatus.CheckedOutByGuest:
-        result.push({ text: "Finish", action: checkOutTrip });
+        result.push({
+          text: "Finish",
+          params: ["Fuel level (0..8)", "Odometr"],
+          action: checkOutTrip,
+        });
         break;
       case TripStatus.Finished:
-        result.push({ text: "Complete", action: finishTrip });
-        result.push({ text: "Report issue", action: reportIssue });
+        result.push({
+          text: "Report issue",
+          params: ["Fuel price (in USD cents)"],
+          action: reportIssue,
+        });
+        result.push({ text: "Complete", params: [], action: finishTrip });
         break;
       case TripStatus.Closed:
         break;
@@ -219,7 +231,9 @@ const useHostTrips = () => {
                   validateContractTrip(i);
                 }
 
-                const tokenURI = await rentalityContract.getCarMetadataURI(i.carId);
+                const tokenURI = await rentalityContract.getCarMetadataURI(
+                  i.carId
+                );
                 const ipfsURI = getIpfsURIfromPinata(tokenURI);
                 const response = await fetch(ipfsURI, {
                   headers: {
@@ -252,7 +266,10 @@ const useHostTrips = () => {
                   locationStart: i.startLocation,
                   locationEnd: i.endLocation,
                   status: tripStatus,
-                  allowedActions: getAllowedActions(tripStatus),
+                  allowedActions: getAllowedActions(tripStatus, i),
+                  totalPrice: (
+                    Number(i.paymentInfo.totalDayPriceInUsdCents) / 100
+                  ).toString(),
                 };
                 return item;
               })

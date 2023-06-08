@@ -43,10 +43,12 @@ export type TripInfo = {
   locationStart: string;
   locationEnd: string;
   status: TripStatus;
-  allowedActions:AllowedChangeTripAction[]
+  allowedActions:AllowedChangeTripAction[];
+  totalPrice: string;
 };
 
 export type AllowedChangeTripAction = {
   text:string;
-  action:(tripId: number) => Promise<boolean>
+  params:string[];
+  action:(tripId: number,  params:string[]) => Promise<boolean>
 }
