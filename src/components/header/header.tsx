@@ -10,7 +10,7 @@ type Props = {
 };
 
 export default function Header({ isHost }: Props) {
-  const [userConnected, userWeb3Address, withdrawTips, formatAddress] =
+  const [userConnected, userWeb3Address, formatAddress, connectMetaMask] =
     useEtherProvider();
   const burgerMenuRef = useRef<HTMLDivElement>(null);
   isHost = isHost ?? true;
@@ -51,15 +51,26 @@ export default function Header({ isHost }: Props) {
             </Link>
           )}
         </div>
-        <div className="flex flex-row ml-16 items-center">
-          <div className="flex flex-col m-2">
-            <div>Name Surname</div>
-            <div className="text-sm">{formatAddress(userWeb3Address)}</div>
+        {userConnected ? (
+          <div className="flex flex-row ml-16 items-center">
+            <div className="flex flex-col m-2">
+              <div>Name Surname</div>
+              <div className="text-sm">{formatAddress(userWeb3Address)}</div>
+            </div>
+            <div className="flex flex-col w-20 h-20 m-2 rounded-2xl items-center justify-center bg-gray-500">
+              <div className="">Photo</div>
+            </div>
           </div>
-          <div className="flex flex-col w-20 h-20 m-2 rounded-2xl items-center justify-center bg-gray-500">
-            <div className="">Photo</div>
-          </div>
-        </div>
+        ) : (
+          <button
+            className="w-40 h-10 bg-violet-700 rounded-md"
+            onClick={() => {
+              connectMetaMask();
+            }}
+          >
+            Connect MetaMask
+          </button>
+        )}
       </div>
     </header>
   );
