@@ -58,7 +58,7 @@ export default function Search() {
         return;
       }
       const totalPriceInUsdCents = carInfo.pricePerDay * 100 * tripDays;
-      const depositInUsdCents = 100*100;
+      const depositInUsdCents = carInfo.deposit *100;
       const fuelPricePerGalInUsdCents = BigInt(carInfo.fuelPricePerGalInUsdCents);
 
       const result = await createTripRequest(

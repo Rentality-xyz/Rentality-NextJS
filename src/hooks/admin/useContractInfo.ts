@@ -10,7 +10,7 @@ export type AdminContractInfo = {
   contractBalance: bigint;
   contractBalanceString: string;
   rentalityCommission: number;
-  rentalityDeposite: number;
+  rentalityDeposit: number;
   rentalityFuelPricePerGal: number;
   currencyConverterContractAddress: string;
   userServiceContractAddress: string;
@@ -25,7 +25,7 @@ const useContractInfo = () => {
     contractBalance: BigInt(0),
     contractBalanceString: "0",
     rentalityCommission: 0,
-    rentalityDeposite: 0,
+    rentalityDeposit: 0,
     rentalityFuelPricePerGal: 0,
     currencyConverterContractAddress: "",
     userServiceContractAddress: "",
@@ -71,7 +71,7 @@ const useContractInfo = () => {
     const balance = (await provider.getBalance(contractAddress)) ?? 0;
     const rentalityCommission =
       Number(await contract.getPlatformFeeInPPM()) / 10_000.0 ?? 0;
-    const rentalityDeposite =
+    const rentalityDeposit =
       Number(await contract.getDepositePriceInUsdCents()) / 100.0 ?? 0;
     const rentalityFuelPricePerGal =
       Number(await contract.getFuelPricePerGalInUsdCents()) / 100.0 ?? 0;
@@ -87,7 +87,7 @@ const useContractInfo = () => {
       contractBalance: balance,
       contractBalanceString: formatEther(balance),
       rentalityCommission: rentalityCommission,
-      rentalityDeposite: rentalityDeposite,
+      rentalityDeposit: rentalityDeposit,
       rentalityFuelPricePerGal: rentalityFuelPricePerGal,
       currencyConverterContractAddress: currencyConverterContractAddress,
       userServiceContractAddress: userServiceContractAddress,
@@ -139,13 +139,13 @@ const useContractInfo = () => {
     }
   };
 
-  const setDepositePriceInUsdCents = async (value: bigint) => {
+  const setDepositPriceInUsdCents = async (value: bigint) => {
     try {
       const { contract, provider } = await getRentalityContract();
       const rentalityContract = contract as unknown as IRentalityContract;
 
       if (!rentalityContract) {
-        console.error("setDepositePriceInUsdCents error: contract is null");
+        console.error("setDepositPriceInUsdCents error: contract is null");
         return false;
       }
 
@@ -157,7 +157,7 @@ const useContractInfo = () => {
       setDataUpdated(false);
       return true;
     } catch (e) {
-      alert("setDepositePriceInUsdCents error" + e);
+      alert("setDepositPriceInUsdCents error" + e);
       return false;
     }
   };
@@ -292,7 +292,7 @@ const useContractInfo = () => {
     adminContractInfo,
     withdrawFromPlatform,
     setPlatformFeeInPPM,
-    setDepositePriceInUsdCents,
+    setDepositPriceInUsdCents,
     setFuelPricePerGalInUsdCents,
     updateUserService,
     updateCarService,

@@ -99,6 +99,7 @@ const useAvailableCars = () => {
                 const fuelPricePerGalInUsdCents = Number(
                   await rentalityContract.getFuelPricePerGalInUsdCents()
                 );
+                const deposit = Number(await rentalityContract.getDepositePriceInUsdCents()) / 100;
 
                 let item: SearchCarInfo = {
                   carId: Number(i.carId),
@@ -141,6 +142,7 @@ const useAvailableCars = () => {
                   dateTo: dateTo,
                   days: tripDays,
                   totalPrice: totalPrice,
+                  deposit: deposit,
                 };
                 return item;
               })

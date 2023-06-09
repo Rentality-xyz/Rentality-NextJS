@@ -17,4 +17,5 @@ export type SearchCarInfo = {
   dateTo: Date;
   days: number;
   totalPrice: number;
+  deposit: number;
 };

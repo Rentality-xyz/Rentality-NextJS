@@ -10,7 +10,7 @@ export default function Admin() {
     adminContractInfo,
     withdrawFromPlatform,
     setPlatformFeeInPPM,
-    setDepositePriceInUsdCents,
+    setDepositPriceInUsdCents,
     setFuelPricePerGalInUsdCents,
     updateUserService,
     updateCarService,
@@ -19,7 +19,7 @@ export default function Admin() {
   ] = useContractInfo();
   const [ethToWithdraw, setEthToWithdraw] = useState("0");
   const [newPlatformCommission, setNewPlatformCommission] = useState("0");
-  const [newPlatformDeposite, setNewPlatformDeposite] = useState("0");
+  const [newPlatformDeposit, setNewPlatformDeposit] = useState("0");
   const [newPlatformFuelPrice, setNewPlatformFuelPrice] = useState("0");
   const [newUserServiceAddress, setNewUserServiceAddress] = useState("0x");
   const [newCarServiceAddress, setNewCarServiceAddress] = useState("0x");
@@ -63,6 +63,7 @@ export default function Admin() {
       console.log("ethToWithdraw", ethToWithdraw);
       console.log("valueToWithdrawInWei", valueToWithdrawInWei);
       await withdrawFromPlatform(BigInt(valueToWithdrawInWei));
+      setEthToWithdraw("0");
     } catch (e) {
       alert("withdraw error:" + e);
     }
@@ -77,19 +78,21 @@ export default function Admin() {
     }
     try {
       await setPlatformFeeInPPM(BigInt(Math.round(value*10_000)));
+      setNewPlatformCommission("0");
     } catch (e) {
       alert("setPlatformCommission error:" + e);
     }
   };
 
-  const setPlatformDeposite = async () => {
-    if (newPlatformDeposite == null) return;
-    const value = Number.parseFloat(newPlatformDeposite);
+  const setPlatformDeposit = async () => {
+    if (newPlatformDeposit == null) return;
+    const value = Number.parseFloat(newPlatformDeposit);
     
     try {
-      await setDepositePriceInUsdCents(BigInt(Math.round(value*100)));
+      await setDepositPriceInUsdCents(BigInt(Math.round(value*100)));
+      setNewPlatformDeposit("0");
     } catch (e) {
-      alert("setPlatformDeposite error:" + e);
+      alert("setPlatformDeposit error:" + e);
     }
   };
 
@@ -99,6 +102,7 @@ export default function Admin() {
     
     try {
       await setFuelPricePerGalInUsdCents(BigInt(Math.round(value*100)));
+      setNewPlatformFuelPrice("0");
     } catch (e) {
       alert("setPlatformFuelPrice error:" + e);
     }
@@ -112,6 +116,7 @@ export default function Admin() {
     }
     try {
       await updateUserService(newUserServiceAddress);
+      setNewUserServiceAddress("0x");
     } catch (e) {
       alert("setUserService error:" + e);
     }
@@ -125,6 +130,7 @@ export default function Admin() {
     }
     try {
       await updateCarService(newCarServiceAddress);
+      setNewCarServiceAddress("0x");
     } catch (e) {
       alert("setCarService error:" + e);
     }
@@ -138,6 +144,7 @@ export default function Admin() {
     }
     try {
       await updateTripService(newTripsServiceAddress);
+      setNewTripsServiceAddress("0x");
     } catch (e) {
       alert("setTripsService error:" + e);
     }
@@ -151,6 +158,7 @@ export default function Admin() {
     }
     try {
       await updateCurrencyConverterService(newCurrencyConverterServiceAddress);
+      setNewCurrencyConverterServiceAddress("0x");
     } catch (e) {
       alert("setCurrencyConverterService error:" + e);
     }
@@ -218,23 +226,23 @@ export default function Admin() {
             }}
           />
           <InputBlock
-            id="deposite"
-            label="Default platform deposite in USD:"
-            value={"$" + adminContractInfo.rentalityDeposite.toString()}
+            id="deposit"
+            label="Default platform deposit in USD:"
+            value={"$" + adminContractInfo.rentalityDeposit.toString()}
             readOnly={true}
           />
           <InputBlockWithButton
-            id="depositeSet"
+            id="depositSet"
             placeholder="$100"
-            label="Set new default deposite (USD):"
-            value={newPlatformDeposite}
+            label="Set new default deposit (USD):"
+            value={newPlatformDeposit}
             onValueChange={(e) => {
-              setNewPlatformDeposite(e.target.value);
+              setNewPlatformDeposit(e.target.value);
             }}
             buttonText="Save"
-            buttonDisabled={!Number.parseFloat(newPlatformDeposite)}
+            buttonDisabled={!Number.parseFloat(newPlatformDeposit)}
             onButtonClick={() => {
-              setPlatformDeposite();
+              setPlatformDeposit();
             }}
           />
           <InputBlock
