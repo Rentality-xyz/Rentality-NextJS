@@ -1,0 +1,138 @@
+import { Contract, BrowserProvider } from "ethers";
+import { useEffect, useState } from "react";
+import { rentalityJSON } from "../abis";
+import {
+  ContractTrip,
+  getTripStatusFromContract,
+} from "@/model/blockchain/ContractTrip";
+import {
+  getTripStatusTextFromStatus,
+} from "@/model/TripInfo";
+import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
+import { TripDetails } from "@/model/TripDetails";
+
+const useTripDetails = (tripId: bigint) => {
+  const emptyDetails: TripDetails = {
+    tripId: BigInt(0),
+    carId: BigInt(0),
+    status: "",
+    guest: "",
+    host: "",
+    startDateTime: new Date(),
+    endDateTime: new Date(),
+    startLocation: "",
+    endLocation: "",
+    milesIncluded: 0,
+    fuelPricePerGalInUsd: 0,
+    approvedDateTime: undefined,
+    checkedInByHostDateTime:undefined,
+    startFuelLevel: undefined,
+    startOdometr: undefined,
+    checkedInByGuestDateTime: undefined,
+    checkedOutByGuestDateTime: undefined,
+    endFuelLevel: undefined,
+    endOdometr: undefined,
+    checkedOutByHostDateTime: undefined,
+    resolveAmountInUsd: undefined,
+
+    paymentFrom: "",
+    paymentTo: "",
+    totalDayPriceInUsd: 0,
+    taxPriceInUsd: 0,
+    depositInUsd: 0,
+    currencyType: 0,
+    ethToCurrencyRate:0,
+  };
+
+  const [dataFetched, setDataFetched] = useState<Boolean>(false);
+  const [tripDetails, setTripDetails] = useState<TripDetails>(emptyDetails);
+
+  const getRentalityContract = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (!ethereum) {
+        console.error("Ethereum wallet is not found");
+      }
+
+      const provider = new BrowserProvider(ethereum);
+      const signer = await provider.getSigner();
+      return new Contract(
+        rentalityJSON.address,
+        rentalityJSON.abi,
+        signer
+      ) as unknown as IRentalityContract;
+    } catch (e) {
+      console.error("getRentalityContract error:" + e);
+    }
+  };
+
+  const getTrip = async (
+    rentalityContract: IRentalityContract,
+    tripId: bigint
+  ) => {
+    try {
+      if (rentalityContract == null) {
+        console.error("getTrip error: contract is null");
+        return;
+      }      
+      const trip: ContractTrip = await rentalityContract.getTrip(tripId);
+
+      if (trip == null) return;
+
+      let details: TripDetails = {
+        tripId: trip.tripId,
+        carId: trip.carId,
+        status: getTripStatusTextFromStatus(getTripStatusFromContract(Number(trip.status))),
+        guest: trip.guest,
+        host: trip.host,
+        startDateTime: new Date(Number(trip.startDateTime)),
+        endDateTime: new Date(Number(trip.endDateTime)),
+        startLocation: trip.startLocation,
+        endLocation: trip.endLocation,
+        milesIncluded: trip.milesIncluded,
+        fuelPricePerGalInUsd: Number(trip.fuelPricePerGalInUsdCents)/100.0,
+        approvedDateTime: trip.approvedDateTime > 0 ? new Date(Number(trip.approvedDateTime)*1000) : undefined,
+        checkedInByHostDateTime: trip.checkedInByHostDateTime > 0 ? new Date(Number(trip.checkedInByHostDateTime)*1000) : undefined,
+        startFuelLevel: trip.startFuelLevel > 0 ? trip.startFuelLevel:undefined,
+        startOdometr: trip.startOdometr > 0 ? trip.startOdometr : undefined,
+        checkedInByGuestDateTime: trip.checkedInByGuestDateTime > 0 ? new Date(Number(trip.checkedInByGuestDateTime)*1000): undefined,
+        checkedOutByGuestDateTime: trip.checkedOutByGuestDateTime > 0 ? new Date(Number(trip.checkedOutByGuestDateTime)*1000): undefined,
+        endFuelLevel: trip.endFuelLevel > 0 ? trip.endFuelLevel: undefined,
+        endOdometr: trip.endOdometr > 0 ? trip.endOdometr: undefined,
+        checkedOutByHostDateTime: trip.checkedOutByHostDateTime > 0 ? new Date(Number(trip.checkedOutByHostDateTime)*1000): undefined,
+        resolveAmountInUsd: trip.resolveAmountInUsdCents > 0 ? Number(trip.resolveAmountInUsdCents)/100.0: undefined,
+
+        paymentFrom: trip.paymentInfo.from,
+        paymentTo: trip.paymentInfo.to,
+        totalDayPriceInUsd:  Number(trip.paymentInfo.totalDayPriceInUsdCents)/100.0,
+        taxPriceInUsd:  Number(trip.paymentInfo.taxPriceInUsdCents)/100.0,
+        depositInUsd:  Number(trip.paymentInfo.depositInUsdCents)/100.0,
+        currencyType: trip.paymentInfo.currencyType,
+        ethToCurrencyRate: Number(trip.paymentInfo.ethToCurrencyRate) / 10**Number(trip.paymentInfo.ethToCurrencyDecimals),
+        //ethToCurrencyDecimals: trip.paymentInfo.ethToCurrencyDecimals,
+      };
+      return details;
+    } catch (e) {
+      console.error("getTrip error:" + e);
+    }
+  };
+
+  useEffect(() => {
+    getRentalityContract()
+      .then((contract) => {
+        if (contract !== undefined) { 
+          return getTrip(contract, tripId);
+        }
+      })
+      .then((data) => {
+        setTripDetails(data ?? emptyDetails);
+        setDataFetched(true);
+      })
+      .catch(() => setDataFetched(true));
+  }, [tripId]);
+
+  return [dataFetched, tripDetails] as const;
+};
+
+export default useTripDetails;

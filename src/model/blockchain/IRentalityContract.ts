@@ -50,4 +50,6 @@ export interface IRentalityContract {
   getCarsRentedByMe(): Promise<ContractCarInfo[]>;
   checkInByGuest(tripId: bigint,startFuelLevel: bigint,startOdometr: bigint): Promise<ContractTransactionResponse>;
   checkOutByGuest(tripId: bigint,endFuelLevel: bigint,endOdometr: bigint): Promise<ContractTransactionResponse>;
+
+  getTrip(tripId: bigint): Promise<ContractTrip>;
 };

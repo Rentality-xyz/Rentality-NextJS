@@ -98,24 +98,33 @@ export default function TripItem({ tripInfo, changeStatusCallback }: Props) {
             {/* <div>April 05, 4:00 AM</div> */}
           </div>
         </div>
-        <div className="flex flex-1 flex-col gap-2 p-4">
-          <div className="flex flex-col">
-            <div>
-              <strong className="text-l whitespace-nowrap">
-                📍 Pickup location
-              </strong>
+        <div className="flex flex-col flex-1 justify-between p-4">
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col">
+              <div>
+                <strong className="text-l whitespace-nowrap">
+                  📍 Pickup location
+                </strong>
+              </div>
+              <div>{tripInfo.locationStart}</div>
+              {/* <div>Miami, CA, USA</div> */}
             </div>
-            <div>{tripInfo.locationStart}</div>
-            {/* <div>Miami, CA, USA</div> */}
+            <div className="flex flex-col">
+              <div>
+                <strong className="text-l whitespace-nowrap">
+                  📍 Return location
+                </strong>
+              </div>
+              <div>{tripInfo.locationEnd}</div>
+              {/* <div>Miami, CA, USA</div> */}
+            </div>
           </div>
-          <div className="flex flex-col">
-            <div>
-              <strong className="text-l whitespace-nowrap">
-                📍 Return location
-              </strong>
-            </div>
-            <div>{tripInfo.locationEnd}</div>
-            {/* <div>Miami, CA, USA</div> */}
+          <div className="w-full self-end">
+            <Link href={`/tripInfo/${tripInfo.tripId}`}>
+              <Button className="w-full h-16 bg-violet-700 rounded-md px-4">
+                Details
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
