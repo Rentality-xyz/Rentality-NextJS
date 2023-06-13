@@ -99,7 +99,7 @@ const useAvailableCars = () => {
                 const fuelPricePerGalInUsdCents = Number(
                   await rentalityContract.getFuelPricePerGalInUsdCents()
                 );
-                const deposit = Number(await rentalityContract.getDepositePriceInUsdCents()) / 100;
+                const deposit = Number(await rentalityContract.getDepositPriceInUsdCents()) / 100;
 
                 let item: SearchCarInfo = {
                   carId: Number(i.carId),
@@ -191,8 +191,7 @@ const useAvailableCars = () => {
     endLocation: string,
     totalDayPriceInUsdCents: number,
     taxPriceInUsdCents: number,
-    depositInUsdCents: number,
-    fuelPricePerGalInUsdCents: bigint
+    depositInUsdCents: number
   ) => {
     try {
       const rentalityContract = await getRentalityContract();
@@ -226,7 +225,6 @@ const useAvailableCars = () => {
         depositInUsdCents: depositInUsdCents,
         ethToCurrencyRate: BigInt(ethToCurrencyRate),
         ethToCurrencyDecimals: Number(ethToCurrencyDecimals),
-        fuelPricePerGalInUsdCents: fuelPricePerGalInUsdCents,
       };
       let transaction = await rentalityContract.createTripRequest(tripRequest, {
         value: rentPriceInEth,

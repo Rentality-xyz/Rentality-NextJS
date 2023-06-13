@@ -59,7 +59,6 @@ export default function Search() {
       }
       const totalPriceInUsdCents = carInfo.pricePerDay * 100 * tripDays;
       const depositInUsdCents = carInfo.deposit *100;
-      const fuelPricePerGalInUsdCents = BigInt(carInfo.fuelPricePerGalInUsdCents);
 
       const result = await createTripRequest(
         carInfo.carId,
@@ -70,8 +69,7 @@ export default function Search() {
         searchParams.location,
         totalPriceInUsdCents,
         0,
-        depositInUsdCents,
-        fuelPricePerGalInUsdCents
+        depositInUsdCents
       );
       if (!result) {
         alert("sendRentCarRequest error!");

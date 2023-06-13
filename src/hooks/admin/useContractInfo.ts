@@ -72,7 +72,7 @@ const useContractInfo = () => {
     const rentalityCommission =
       Number(await contract.getPlatformFeeInPPM()) / 10_000.0 ?? 0;
     const rentalityDeposit =
-      Number(await contract.getDepositePriceInUsdCents()) / 100.0 ?? 0;
+      Number(await contract.getDepositPriceInUsdCents()) / 100.0 ?? 0;
     const rentalityFuelPricePerGal =
       Number(await contract.getFuelPricePerGalInUsdCents()) / 100.0 ?? 0;
     const currencyConverterContractAddress =
@@ -149,7 +149,7 @@ const useContractInfo = () => {
         return false;
       }
 
-      let transaction = await rentalityContract.setDepositePriceInUsdCents(
+      let transaction = await rentalityContract.setDepositPriceInUsdCents(
         value
       );
       const result = await transaction.wait();

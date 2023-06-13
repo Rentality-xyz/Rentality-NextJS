@@ -47,12 +47,12 @@ const useGuestTrips = () => {
         console.error("checkInTrip error: contract is null");
         return false;
       }
-      const startFuelLevel = BigInt(params[0]);
+      const startFuelLevelInPermille = BigInt(params[0]) * BigInt(125);
       const startOdometr = BigInt(params[1]);
 
       let transaction = await rentalityContract.checkInByGuest(
         tripId,
-        startFuelLevel,
+        startFuelLevelInPermille,
         startOdometr
       );
 
@@ -74,12 +74,12 @@ const useGuestTrips = () => {
         return false;
       }
 
-      const endFuelLevel = BigInt(params[0]);
+      const endFuelLevelInPermille = BigInt(params[0]) * BigInt(125);
       const endOdometr = BigInt(params[1]);
 
       let transaction = await rentalityContract.checkOutByGuest(
         tripId,
-        endFuelLevel,
+        endFuelLevelInPermille,
         endOdometr
       );
 

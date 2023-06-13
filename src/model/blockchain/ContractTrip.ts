@@ -6,6 +6,7 @@ export type ContractTrip = {
   status: number; //TripStatus
   guest: string;
   host: string;
+  pricePerDayInUsdCents: bigint;
   startDateTime: number;
   endDateTime: number;
   startLocation: string;
@@ -15,23 +16,23 @@ export type ContractTrip = {
   paymentInfo: PaymentInfo;
   approvedDateTime: number;
   checkedInByHostDateTime: number;
-  startFuelLevel: number;
+  startFuelLevelInGal: number;
   startOdometr: number;
   checkedInByGuestDateTime: number;
   checkedOutByGuestDateTime: number;
-  endFuelLevel: number;
+  endFuelLevelInGal: number;
   endOdometr: number;
   checkedOutByHostDateTime: number;
-  resolveAmountInUsdCents: bigint;
 };
 
 type PaymentInfo = {
-  tripRequestId: bigint;
+  tripId: bigint;
   from: string;
   to: string;
   totalDayPriceInUsdCents: bigint;
   taxPriceInUsdCents: bigint;
   depositInUsdCents: bigint;
+  resolveAmountInUsdCents: bigint;
   currencyType: number;
   ethToCurrencyRate: bigint;
   ethToCurrencyDecimals: bigint;
@@ -58,7 +59,6 @@ export const getTripStatusFromContract = (status: number) => {
       return TripStatus.Rejected;
   }
 };
-
 
 export function validateContractTrip(obj: ContractTrip): obj is ContractTrip {
   if (typeof obj !== "object" || obj == null) return false;

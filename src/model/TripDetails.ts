@@ -12,17 +12,18 @@ export type TripDetails = {
   fuelPricePerGalInUsd: number;
   approvedDateTime: Date | undefined;
   checkedInByHostDateTime: Date | undefined;
-  startFuelLevel: number | undefined;
+  startFuelLevelInGal: number | undefined;
   startOdometr: number | undefined;
   checkedInByGuestDateTime: Date | undefined;
   checkedOutByGuestDateTime: Date | undefined;
-  endFuelLevel: number | undefined;
+  endFuelLevelInGal: number | undefined;
   endOdometr: number | undefined;
   checkedOutByHostDateTime: Date | undefined;
   resolveAmountInUsd: number | undefined;
   
   paymentFrom: string;
   paymentTo: string;
+  pricePerDayInUsdCents: number;
   totalDayPriceInUsd: number;
   taxPriceInUsd: number;
   depositInUsd: number;

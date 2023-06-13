@@ -103,8 +103,8 @@ export default function TripDetails() {
             />
             <InputBlock
               id="startFuelLevel"
-              label="Start fuel level:"
-              value={tripDetails.startFuelLevel?.toString()??"-"}
+              label="Start fuel level in gal:"
+              value={tripDetails.startFuelLevelInGal?.toString()??"-"}
               readOnly={true}
             />
             <InputBlock
@@ -127,8 +127,8 @@ export default function TripDetails() {
             />
             <InputBlock
               id="endFuelLevel"
-              label="End fuel level:"
-              value={tripDetails.endFuelLevel?.toString()??"-"}
+              label="End fuel level in gal:"
+              value={tripDetails.endFuelLevelInGal?.toString()??"-"}
               readOnly={true}
             />
             <InputBlock
@@ -153,6 +153,12 @@ export default function TripDetails() {
               id="paymentTo"
               label="Payment to:"
               value={tripDetails.paymentTo}
+              readOnly={true}
+            />
+            <InputBlock
+              id="pricePerDayInUsdCents"
+              label="Price per day in USD:"
+              value={tripDetails.pricePerDayInUsdCents.toString()}
               readOnly={true}
             />
             <InputBlock
