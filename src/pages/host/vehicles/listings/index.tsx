@@ -1,5 +1,6 @@
 import HostLayout from "@/components/host/layout/hostLayout";
 import ListingItem from "@/components/host/listingItem";
+import PageTitle from "@/components/pageTitle/pageTitle";
 import useMyListings from "@/hooks/host/useMyListings";
 import Link from "next/link";
 
@@ -8,17 +9,8 @@ export default function Listings() {
 
   return (
     <HostLayout>
-      <div className="flex flex-col px-8 pt-4">
-        <div className="flex flex-row justify-between items-center">
-          <div className="text-2xl">
-            <strong>Listings</strong>
-          </div>
-          <Link href="/host/vehicles/add">
-            <button className="w-56 h-16 bg-violet-700 rounded-md">
-              Add Listing
-            </button>
-          </Link>
-        </div>
+      <div className="flex flex-col px-8 pt-4">        
+        <PageTitle title="Listings" actions={[{text:"Add Listing", link:"/host/vehicles/add"}]}/>
         {!dataFetched ? (
           <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
             Loading...

@@ -1,6 +1,7 @@
 import HostLayout from "@/components/host/layout/hostLayout";
 import InputBlock from "@/components/inputBlock";
 import useTripDetails from "@/hooks/useTripInfo";
+import PageTitle from "../pageTitle/pageTitle";
 
 type Props = {
   tripId: bigint;
@@ -14,7 +15,7 @@ export default function TripDetails({ tripId }: Props) {
   return (
     <>
       <div className="flex flex-col px-8 pt-4">
-        <div className="text-2xl">Trip #{tripId.toString()} details</div>
+        <PageTitle title={`Trip #${tripId.toString()} details`}/>
         {!dataFetched ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
             Loading...

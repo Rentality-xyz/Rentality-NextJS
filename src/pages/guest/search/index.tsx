@@ -8,6 +8,7 @@ import { dateToHtmlDateFormat } from "@/utils/datetimeFormatters";
 import { TripSearchInfo } from "@/model/TripSearchInfo";
 import { SearchCarInfo } from "@/model/SearchCarInfo";
 import { calculateDays } from "@/utils/date";
+import PageTitle from "@/components/pageTitle/pageTitle";
 
 export default function Search() {
   const emptyTripSearchInfo: TripSearchInfo = {
@@ -94,6 +95,7 @@ export default function Search() {
   return (
     <GuestLayout>
       <div className="flex flex-col px-8 pt-4">
+        <PageTitle title="Search"/>
         <div className="search mb-8 flex flex-row">
           <div className="flex w-1/2 flex-col p-2">
             <label htmlFor="location">Pick up & Return Location</label>
@@ -136,11 +138,6 @@ export default function Search() {
           >
             Search
           </button>
-        </div>
-        <div className="flex flex-row items-center justify-between">
-          <div className="text-2xl">
-            <strong>Search</strong>
-          </div>
         </div>
         {!dataFetched ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">

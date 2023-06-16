@@ -1,6 +1,7 @@
 import AdminLayout from "@/components/admin/layout/adminLayout";
 import InputBlock from "@/components/inputBlock";
 import InputBlockWithButton from "@/components/inputBlock/inputBlockWithButton";
+import PageTitle from "@/components/pageTitle/pageTitle";
 import useContractInfo from "@/hooks/admin/useContractInfo";
 import { parseEther } from "ethers";
 import { useState } from "react";
@@ -167,6 +168,7 @@ export default function Admin() {
   return (
     <AdminLayout>
       <div className="flex flex-col px-8 py-4">
+        <PageTitle title="Contract info"/>
         <div className="flex flex-row justify-between items-center">
           <div className="text-2xl">
             <strong>Contract info</strong>

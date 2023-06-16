@@ -1,5 +1,6 @@
 import HostLayout from "@/components/host/layout/hostLayout";
 import TripItem from "@/components/host/tripItem";
+import PageTitle from "@/components/pageTitle/pageTitle";
 import useHostTrips from "@/hooks/host/useHostTrips";
 
 export default function History() {
@@ -11,7 +12,7 @@ export default function History() {
   return (
     <HostLayout>
       <div className="flex flex-col px-8 pt-4">
-        <div className="text-2xl">Booked</div>
+        <PageTitle title="History"/>
         {!dataFetched ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
             Loading...

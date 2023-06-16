@@ -4,6 +4,7 @@ import { uploadFileToIPFS } from "@/utils/pinata";
 import { verify } from "crypto";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
+import PageTitle from "@/components/pageTitle/pageTitle";
 
 export default function AddCar() {
   const [
@@ -118,9 +119,7 @@ export default function AddCar() {
   return (
     <HostLayout>
       <div className="add-car flex flex-col px-8 pt-4">
-        <div className="text-2xl">
-          <strong>Add a car</strong>
-        </div>
+        <PageTitle title="Add a car"/>
         <div className="add-car-block">
           <div className="text-lg mb-4">
             <strong>Car</strong>
