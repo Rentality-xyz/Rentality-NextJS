@@ -32,45 +32,54 @@ export default function Header({ isHost }: Props) {
         <div className="burger-icon-bar2"></div>
         <div className="burger-icon-bar3"></div>
       </div> */}
-      <div className="flex flex-row w-full px-8 py-4 justify-end border-b-2 border-gray-400">
+      <div className="flex flex-row w-full px-8 py-4 justify-between border-b-2 border-gray-400">
         <div className="flex flex-row mr-16 items-center">
-          {/* <span>Guest (</span>
-          <input type="checkbox"></input>
-          <span>) Host</span> */}
           {isHost ? (
-            <Link href="/guest">
-              <button className="w-40 h-10 bg-violet-700 rounded-md">
-                Switch to Guest
-              </button>
-            </Link>
+            <div className="font-bold text-3xl">Host account</div>
           ) : (
-            <Link href="/host">
-              <button className="w-40 h-10 bg-violet-700 rounded-md">
-                Switch to Host
-              </button>
-            </Link>
+            <div className="font-bold text-3xl">Guest account</div>
           )}
         </div>
-        {userConnected ? (
-          <div className="flex flex-row ml-16 items-center">
-            <div className="flex flex-col m-2">
-              <div>Name Surname</div>
-              <div className="text-sm">{formatAddress(userWeb3Address)}</div>
-            </div>
-            <div className="flex flex-col w-20 h-20 m-2 rounded-2xl items-center justify-center bg-gray-500">
-              <div className="">Photo</div>
-            </div>
+        <div className="flex flex-row">
+          <div className="flex flex-row mr-16 items-center">
+            {/* <span>Guest (</span>
+          <input type="checkbox"></input>
+          <span>) Host</span> */}
+            {isHost ? (
+              <Link href="/guest">
+                <button className="w-40 h-10 bg-violet-700 rounded-md">
+                  Switch to Guest
+                </button>
+              </Link>
+            ) : (
+              <Link href="/host">
+                <button className="w-40 h-10 bg-violet-700 rounded-md">
+                  Switch to Host
+                </button>
+              </Link>
+            )}
           </div>
-        ) : (
-          <button
-            className="w-40 h-10 bg-violet-700 rounded-md"
-            onClick={() => {
-              connectMetaMask();
-            }}
-          >
-            Connect MetaMask
-          </button>
-        )}
+          {userConnected ? (
+            <div className="flex flex-row ml-16 items-center">
+              <div className="flex flex-col m-2">
+                <div>Name Surname</div>
+                <div className="text-sm">{formatAddress(userWeb3Address)}</div>
+              </div>
+              <div className="flex flex-col w-20 h-20 m-2 rounded-2xl items-center justify-center bg-gray-500">
+                <div className="">Photo</div>
+              </div>
+            </div>
+          ) : (
+            <button
+              className="w-40 h-10 bg-violet-700 rounded-md"
+              onClick={() => {
+                connectMetaMask();
+              }}
+            >
+              Connect MetaMask
+            </button>
+          )}
+        </div>
       </div>
     </header>
   );
