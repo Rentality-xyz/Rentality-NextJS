@@ -1,20 +1,20 @@
 import HostLayout from "@/components/host/layout/hostLayout";
 import InputBlock from "@/components/inputBlock";
 import useTripDetails from "@/hooks/useTripInfo";
-import { useRouter } from "next/router";
 
-export default function TripDetails() {
-  const router = useRouter();
-  const { tripId } = router.query;
-  const tripIdBigInt = BigInt((tripId as string) ?? "0");
-  const [dataFetched, tripDetails] = useTripDetails(tripIdBigInt);
+type Props = {
+  tripId: bigint;
+};
 
-  if (tripId == null) return null;
+export default function TripDetails({ tripId }: Props) {
+  const [dataFetched, tripDetails] = useTripDetails(tripId);
+
+  if (tripId == null || tripId === BigInt(0)) return null;
 
   return (
-    <HostLayout>
+    <>
       <div className="flex flex-col px-8 pt-4">
-        <div className="text-2xl">Trip #{tripId} details</div>
+        <div className="text-2xl">Trip #{tripId.toString()} details</div>
         {!dataFetched ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
             Loading...
@@ -194,6 +194,6 @@ export default function TripDetails() {
           </div>
         )}
       </div>
-    </HostLayout>
+    </>
   );
 }

@@ -1,6 +1,4 @@
-import Head from "next/head";
 import Image from "next/image";
-import logo from "../../images/logo.png";
 import Link from "next/link";
 import { dateFormat } from "@/utils/datetimeFormatters";
 import { TripInfo, getTripStatusTextFromStatus } from "@/model/TripInfo";
@@ -120,7 +118,7 @@ export default function TripItem({ tripInfo, changeStatusCallback }: Props) {
             </div>
           </div>
           <div className="w-full self-end">
-            <Link href={`/tripInfo/${tripInfo.tripId}`}>
+            <Link href={`/host/trips/tripInfo/${tripInfo.tripId}`}>
               <Button className="w-full h-16 bg-violet-700 rounded-md px-4">
                 Details
               </Button>
