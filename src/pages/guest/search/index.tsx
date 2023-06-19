@@ -4,7 +4,7 @@ import useAvailableCars from "@/hooks/guest/useAvailableCars";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { dateToHtmlDateFormat } from "@/utils/datetimeFormatters";
+import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
 import { TripSearchInfo } from "@/model/TripSearchInfo";
 import { SearchCarInfo } from "@/model/SearchCarInfo";
 import { calculateDays } from "@/utils/date";
@@ -13,8 +13,8 @@ import PageTitle from "@/components/pageTitle/pageTitle";
 export default function Search() {
   const emptyTripSearchInfo: TripSearchInfo = {
     location: "Miami, FI, United States",
-    dateFrom: dateToHtmlDateFormat(new Date()),
-    dateTo: dateToHtmlDateFormat(new Date()),
+    dateFrom: dateToHtmlDateTimeFormat(new Date()),
+    dateTo: dateToHtmlDateTimeFormat(new Date()),
   };
 
   const [dataFetched, availableCars, searchAvailableCars, dataSaved, createTripRequest] =
@@ -52,7 +52,7 @@ export default function Search() {
       }
       const startDateTime = new Date(searchParams.dateFrom);
       const endDateTime = new Date(searchParams.dateTo);
-
+      
       const days = calculateDays(startDateTime, endDateTime);
       if (days < 0) {
         alert("Date to must be greater than Date from");
@@ -114,7 +114,7 @@ export default function Search() {
               id="dateFrom"
               name="dateFrom"
               className="w-full"
-              type="date"
+              type="datetime-local"
               value={enteredSearchParams.dateFrom}
               onChange={handleChange}
             />
@@ -125,7 +125,7 @@ export default function Search() {
               id="dateTo"
               name="dateTo"
               className="w-full"
-              type="date"
+              type="datetime-local"
               value={enteredSearchParams.dateTo}
               onChange={handleChange}
             />
