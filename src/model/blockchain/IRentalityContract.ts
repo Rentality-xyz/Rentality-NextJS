@@ -2,6 +2,7 @@ import { ContractTransactionResponse} from "ethers";
 import { ContractCarInfo } from "./ContractCarInfo";
 import { ContractCreateTripRequest } from "./ContractCreateTripRequest";
 import { ContractTrip } from "./ContractTrip";
+import { ContractCreateCarRequest } from "./ContractCreateCarRequest";
 
 export interface IRentalityContract {
 
@@ -27,13 +28,7 @@ export interface IRentalityContract {
   setFuelPricePerGalInUsdCents(valueInUsdCents:bigint): Promise<ContractTransactionResponse>;
 
   ///host functions
-  addCar(
-    tokenUri: string,
-    carVinNumber: string,
-    pricePerDayInUsdCents: bigint,
-    tankVolumeInGal: bigint,
-    milesIncludedPerDay: bigint
-  ): Promise<ContractTransactionResponse>;
+  addCar(request:ContractCreateCarRequest): Promise<ContractTransactionResponse>;
   getCarMetadataURI(carId: bigint): Promise<string>;
   getMyCars(): Promise<ContractCarInfo[]>;
   getTripsAsHost(): Promise<ContractTrip[]>;

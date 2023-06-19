@@ -5,6 +5,7 @@ import { verify } from "crypto";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import PageTitle from "@/components/pageTitle/pageTitle";
+import InputBlock from "@/components/inputBlock";
 
 export default function AddCar() {
   const [
@@ -116,78 +117,73 @@ export default function AddCar() {
     }
   }, [imageFile, carInfoFormParams.pricePerDay, verifyCar]);
 
+  // !isEmpty(carInfoFormParams.securityDeposit)&&
+  // !isEmpty(carInfoFormParams.fuelPricePerGal)&&
+
   return (
     <HostLayout>
       <div className="add-car flex flex-col px-8 pt-4">
-        <PageTitle title="Add a car"/>
+        <PageTitle title="Add a car" />
         <div className="add-car-block">
           <div className="text-lg mb-4">
             <strong>Car</strong>
           </div>
           <div className="flex flex-wrap gap-4">
-            {/* <div className="w-full grid grid-rows-1 grid-flow-row auto-rows-min"> */}
-            <div className="flex flex-col w-full lg:w-min">
-              <label htmlFor="vinNumber">VIN number</label>
-              <input
-                id="vinNumber"
-                type="text"
-                placeholder="e.g. 4Y1SL65848Z411439"
-                onChange={(e) =>
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    vinNumber: e.target.value,
-                  })
-                }
-                value={carInfoFormParams.vinNumber}
-              />
-            </div>
-            <div className="flex flex-col w-full lg:w-min">
-              <label htmlFor="brand">Brand</label>
-              <input
-                id="brand"
-                type="text"
-                placeholder="e.g. Shelby"
-                onChange={(e) =>
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    brand: e.target.value,
-                  })
-                }
-                value={carInfoFormParams.brand}
-              />
-            </div>
-            <div className="flex flex-col w-full lg:w-min">
-              <label htmlFor="model">Model</label>
-              <input
-                id="model"
-                type="text"
-                placeholder="e.g. Mustang GT500"
-                onChange={(e) =>
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    model: e.target.value,
-                  })
-                }
-                value={carInfoFormParams.model}
-              />
-            </div>
-            <div className="flex flex-col w-full lg:w-min">
-              <label htmlFor="releaseYear">Year of manufacture</label>
-              <input
-                id="releaseYear"
-                type="text"
-                placeholder="e.g. 2023"
-                onChange={(e) =>
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    releaseYear: e.target.value,
-                  })
-                }
-                value={carInfoFormParams.releaseYear}
-              />
-            </div>
+            <InputBlock
+              className="lg:w-min"
+              id="vinNumber"
+              label="VIN number"
+              placeholder="e.g. 4Y1SL65848Z411439"
+              value={carInfoFormParams.vinNumber}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  vinNumber: newValue,
+                })
+              }
+            />
+            <InputBlock
+              className="lg:w-min"
+              id="brand"
+              label="Brand"
+              placeholder="e.g. Shelby"
+              value={carInfoFormParams.brand}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  brand: newValue,
+                })
+              }
+            />
+            <InputBlock
+              className="lg:w-min"
+              id="model"
+              label="Model"
+              placeholder="e.g. Mustang GT500"
+              value={carInfoFormParams.model}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  model: newValue,
+                })
+              }
+            />
+            <InputBlock
+              className="lg:w-min"
+              id="releaseYear"
+              label="Year of manufacture"
+              placeholder="e.g. 2023"
+              value={carInfoFormParams.releaseYear}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  releaseYear: newValue,
+                })
+              }
+            />
           </div>
         </div>
+
         <div className="add-car-block">
           <div className="text-lg mb-4">
             <strong>Photo</strong>
@@ -201,56 +197,103 @@ export default function AddCar() {
             <img ref={uploadImageRef} />
           </div>
         </div>
+
         <div className="add-car-block">
           <div className="text-lg mb-4">
             <strong>Car Basics</strong>
           </div>
           <div className="flex flex-wrap gap-4">
-            <div className="flex flex-col">
-              <label htmlFor="name">Car name</label>
-              <input
-                id="name"
-                type="text"
-                placeholder="e.g. Eleanor"
-                onChange={(e) =>
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    name: e.target.value,
-                  })
-                }
-                value={carInfoFormParams.name}
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="licensePlate">License plate number</label>
-              <input
-                id="licensePlate"
-                type="text"
-                placeholder="e.g. ABC-12D"
-                onChange={(e) =>
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    licensePlate: e.target.value,
-                  })
-                }
-                value={carInfoFormParams.licensePlate}
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="state">State</label>
-              <input
-                id="state"
-                type="text"
-                placeholder="e.g. New Jersey"
-                onChange={(e) =>
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    state: e.target.value,
-                  })
-                }
-                value={carInfoFormParams.state}
-              />
-            </div>
+            <InputBlock
+              className="lg:w-min"
+              id="name"
+              label="Car name"
+              placeholder="e.g. Eleanor"
+              value={carInfoFormParams.name}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  name: newValue,
+                })
+              }
+            />
+            <InputBlock
+              className="lg:w-min"
+              id="licensePlate"
+              label="License plate number"
+              placeholder="e.g. ABC-12D"
+              value={carInfoFormParams.licensePlate}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  licensePlate: newValue,
+                })
+              }
+            />
+            <InputBlock
+              className="lg:w-min"
+              id="country"
+              label="Country"
+              placeholder="USA"
+              value={carInfoFormParams.country}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  country: newValue,
+                })
+              }
+            />
+            <InputBlock
+              className="lg:w-min"
+              id="state"
+              label="State"
+              placeholder="e.g. Florida"
+              value={carInfoFormParams.state}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  state: newValue,
+                })
+              }
+            />
+            <InputBlock
+              className="lg:w-min"
+              id="city"
+              label="City"
+              placeholder="e.g. Miami"
+              value={carInfoFormParams.city}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  city: newValue,
+                })
+              }
+            />
+            <InputBlock
+              className="lg:w-min"
+              id="locationLatitude"
+              label="Car location latitude"
+              placeholder="e.g. 42.12345"
+              value={carInfoFormParams.locationLatitude}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  locationLatitude: newValue,
+                })
+              }
+            />
+            <InputBlock
+              className="lg:w-min"
+              id="locationLongitude"
+              label="Car location longitude"
+              placeholder="e.g. 42.12345"
+              value={carInfoFormParams.locationLongitude}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  locationLongitude: newValue,
+                })
+              }
+            />
           </div>
         </div>
         <div className="add-car-block">
@@ -259,38 +302,36 @@ export default function AddCar() {
           </div>
           {/* <div className="flex flex-col lg:flex-row"> */}
           <div className="details flex flex-wrap gap-4">
-            <div className="flex flex-col w-2/5 lg:w-min">
-              <label htmlFor="seatsNumber">Number of seats</label>
-              <input
-                id="seatsNumber"
-                type="text"
-                placeholder="e.g. 5"
-                onChange={(e) =>
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    seatsNumber: e.target.value,
-                  })
-                }
-                value={carInfoFormParams.seatsNumber}
-              />
-            </div>
-            <div className="flex flex-col w-1/2 lg:w-min">
-              <label htmlFor="doorsNumber">Number of doors</label>
-              <input
-                id="doorsNumber"
-                type="text"
-                placeholder="e.g. 2"
-                onChange={(e) =>
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    doorsNumber: e.target.value,
-                  })
-                }
-                value={carInfoFormParams.doorsNumber}
-              />
-            </div>
+            <InputBlock
+              className="w-2/5 lg:w-min"
+              id="seatsNumber"
+              label="Number of seats"
+              placeholder="e.g. 5"
+              value={carInfoFormParams.seatsNumber}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  seatsNumber: newValue,
+                })
+              }
+            />
+            <InputBlock
+              className="w-1/2 lg:w-min"
+              id="doorsNumber"
+              label="Number of doors"
+              placeholder="e.g. 2"
+              value={carInfoFormParams.doorsNumber}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  doorsNumber: newValue,
+                })
+              }
+            />
             <div className="flex flex-col w-full lg:w-min">
-              <label htmlFor="fuelType">Fuel type</label>
+              <label className="mb-1" htmlFor="fuelType">
+                Fuel type
+              </label>
               <select
                 id="fuelType"
                 onChange={(e) =>
@@ -299,7 +340,7 @@ export default function AddCar() {
                     fuelType: e.target.value,
                   })
                 }
-                defaultValue = {""}
+                defaultValue={""}
                 value={carInfoFormParams.fuelType}
               >
                 <option className="hidden" disabled></option>
@@ -309,23 +350,23 @@ export default function AddCar() {
                 <option value="Electro">Electro</option>
               </select>
             </div>
+            <InputBlock
+              className="w-full lg:w-min"
+              id="tankVolumeInGal"
+              label="Tank size in gal"
+              placeholder="e.g. 16"
+              value={carInfoFormParams.tankVolumeInGal}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  tankVolumeInGal: newValue,
+                })
+              }
+            />
             <div className="flex flex-col w-full lg:w-min">
-              <label htmlFor="tankVolumeInGal">Tank size</label>
-              <input
-                id="tankVolumeInGal"
-                type="text"
-                placeholder="e.g. 16"
-                onChange={(e) =>
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    tankVolumeInGal: e.target.value,
-                  })
-                }
-                value={carInfoFormParams.tankVolumeInGal}
-              />
-            </div>
-            <div className="flex flex-col w-full lg:w-min">
-              <label htmlFor="transmission">Transmission</label>
+              <label className="mb-1" htmlFor="transmission">
+                Transmission
+              </label>
               <select
                 id="transmission"
                 onChange={(e) =>
@@ -341,21 +382,19 @@ export default function AddCar() {
                 <option value="Automatic">Automatic</option>
               </select>
             </div>
-            <div className="flex flex-col w-full lg:w-min">
-              <label htmlFor="color">Color</label>
-              <input
-                id="color"
-                type="text"
-                placeholder="e.g. Grey"
-                onChange={(e) =>
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    color: e.target.value,
-                  })
-                }
-                value={carInfoFormParams.color}
-              />
-            </div>
+            <InputBlock
+              className="w-full lg:w-min"
+              id="color"
+              label="Color"
+              placeholder="e.g. 16"
+              value={carInfoFormParams.color}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  color: newValue,
+                })
+              }
+            />
           </div>
         </div>
         <div className="add-car-block">
@@ -377,55 +416,74 @@ export default function AddCar() {
             />
           </div>
         </div>
+        
         <div className="add-car-block">
+          <div className="text-lg  mb-4">
+            <strong>Enabled distance</strong>
+          </div>
+          {/* <div className="flex flex-col lg:flex-row"> */}
           <div className="flex flex-wrap gap-4">
-            <div className="flex flex-col">
-              <div className="text-lg mb-4">
-                <strong>Price</strong>
-              </div>
-              <div className="flex flex-col">
-                <div className="flex flex-col">
-                  <label htmlFor="pricePerDay">Rental price</label>
-                  <input
-                    id="pricePerDay"
-                    type="text"
-                    placeholder="e.g. 100"
-                    step="1"
-                    onChange={(e) =>
-                      setCarInfoFormParams({
-                        ...carInfoFormParams,
-                        pricePerDay: e.target.value,
-                      })
-                    }
-                    value={carInfoFormParams.pricePerDay}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="text-lg  mb-4">
-                <strong>Enabled distance</strong>
-              </div>
-              <div className="flex flex-col">
-                <div className="flex flex-col">
-                  <label htmlFor="milesIncludedPerDay">
-                    Number of miles per day
-                  </label>
-                  <input
-                    id="milesIncludedPerDay"
-                    type="text"
-                    placeholder="e.g. 200"
-                    onChange={(e) =>
-                      setCarInfoFormParams({
-                        ...carInfoFormParams,
-                        milesIncludedPerDay: e.target.value,
-                      })
-                    }
-                    value={carInfoFormParams.milesIncludedPerDay}
-                  />
-                </div>
-              </div>
-            </div>
+            <InputBlock
+              className="lg:w-min"
+              id="milesIncludedPerDay"
+              label="Number of miles per day"
+              placeholder="e.g. 200"
+              value={carInfoFormParams.milesIncludedPerDay}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  milesIncludedPerDay: newValue,
+                })
+              }
+            />
+          </div>
+        </div>
+
+        <div className="add-car-block">
+          <div className="text-lg  mb-4">
+            <strong>Price</strong>
+          </div>
+          {/* <div className="flex flex-col lg:flex-row"> */}
+          <div className="flex flex-wrap gap-4">
+            <InputBlock
+              className="lg:w-min"
+              id="pricePerDay"
+              label="Rental price"
+              placeholder="e.g. 100"
+              value={carInfoFormParams.pricePerDay}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  pricePerDay: newValue,
+                })
+              }
+            />
+            <InputBlock
+              className="lg:w-min"
+              id="securityDeposit"
+              label="Security deposit"
+              placeholder="e.g. 300"
+              value={carInfoFormParams.securityDeposit}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  securityDeposit: newValue,
+                })
+              }
+            />
+            <InputBlock
+              className="lg:w-min"
+              id="fuelPricePerGal"
+              label="Fuel price per gal"
+              placeholder="e.g. 5.00"
+              value={carInfoFormParams.fuelPricePerGal}
+              setValue={(newValue) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  fuelPricePerGal: newValue,
+                })
+              }
+            />
           </div>
         </div>
         <div className="add-car-block mb-8 mt-8">

@@ -169,12 +169,7 @@ export default function Admin() {
     <AdminLayout>
       <div className="flex flex-col px-8 py-4">
         <PageTitle title="Contract info"/>
-        <div className="flex flex-row justify-between items-center">
-          <div className="text-2xl">
-            <strong>Contract info</strong>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4 mt-4">
+        <div className="grid grid-cols-2 gap-4 mt-4 text-lg">
           <InputBlock
             id="balance"
             label="Rentality contract balance:"

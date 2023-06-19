@@ -3,6 +3,7 @@ import { useState } from "react";
 import { rentalityJSON } from "../../abis";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "../../utils/pinata";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
+import { ContractCreateCarRequest } from "@/model/blockchain/ContractCreateCarRequest";
 
 export type NewCarInfo = {
   vinNumber: string;
@@ -25,6 +26,12 @@ export type NewCarInfo = {
   description: string;
   pricePerDay: string;
   milesIncludedPerDay: string;
+  securityDeposit: string;
+  fuelPricePerGal: string;
+  country: string;
+  city: string;
+  locationLatitude: string;
+  locationLongitude: string;
 };
 
 const useAddCar = () => {
@@ -49,6 +56,12 @@ const useAddCar = () => {
     description: "",
     pricePerDay: "",
     milesIncludedPerDay: "",
+    securityDeposit: "",
+    fuelPricePerGal: "",
+    country: "",
+    city: "",
+    locationLatitude: "",
+    locationLongitude: "",
   };
 
   const [carInfoFormParams, setCarInfoFormParams] =
@@ -96,6 +109,12 @@ const useAddCar = () => {
     description,
     pricePerDay,
     milesIncludedPerDay,
+    securityDeposit,
+    fuelPricePerGal,
+    country,
+    city,
+    locationLatitude,
+    locationLongitude
   }: NewCarInfo) => {
     if (!verifyCar()) {
       return;
@@ -169,7 +188,7 @@ const useAddCar = () => {
       {
         trait_type: "Price per Day (USD cents)",
         value: pricePerDay,
-      },
+      }
     ];
     const nftJSON = {
       name,
@@ -214,7 +233,13 @@ const useAddCar = () => {
       //!isEmpty(carInfoFormParams.bodyType) &&
       !isEmpty(carInfoFormParams.description) &&
       !isEmpty(carInfoFormParams.pricePerDay) &&
-      !isEmpty(carInfoFormParams.milesIncludedPerDay)
+      !isEmpty(carInfoFormParams.milesIncludedPerDay)&&
+      !isEmpty(carInfoFormParams.securityDeposit)&&
+      !isEmpty(carInfoFormParams.fuelPricePerGal)&&
+      !isEmpty(carInfoFormParams.country)&&
+      !isEmpty(carInfoFormParams.city)&&
+      !isEmpty(carInfoFormParams.locationLatitude)&&
+      !isEmpty(carInfoFormParams.locationLongitude)
     );
   };
 
@@ -242,22 +267,36 @@ const useAddCar = () => {
       }
       const metadataURL = await uploadMetadataToIPFS(dataToSave);
 
-      var doubleNumber = Number(
-        dataToSave.pricePerDay.replace(/[^0-9.]+/g, "")
-      );
-      const pricePerDay = BigInt((doubleNumber * 100) | 0);
-      const tankVolumeInGal = BigInt(carInfoFormParams.tankVolumeInGal);
-      const milesIncludedPerDay = BigInt(
-        carInfoFormParams.milesIncludedPerDay
-      );
+      var pricePerDayDouble = Number(dataToSave.pricePerDay.replace(/[^0-9.]+/g, ""));
+      const pricePerDayInUsdCents = BigInt((pricePerDayDouble * 100) | 0);
 
-      let transaction = await rentalityContract.addCar(
-        metadataURL,
-        carInfoFormParams.vinNumber,
-        pricePerDay,
-        tankVolumeInGal,
-        milesIncludedPerDay
-      );
+      var securityDepositPerTripDouble = Number(dataToSave.securityDeposit.replace(/[^0-9.]+/g, ""));
+      const securityDepositPerTripInUsdCents = BigInt((securityDepositPerTripDouble * 100) | 0);
+
+      var fuelPricePerGalDouble = Number(dataToSave.fuelPricePerGal.replace(/[^0-9.]+/g, ""));
+      const fuelPricePerGalInUsdCents = BigInt((fuelPricePerGalDouble * 100) | 0);
+
+      var locationLatitudeDouble = Number(dataToSave.locationLatitude.replace(/[^0-9.]+/g, ""));
+      const locationLatitudeInPPM = BigInt((locationLatitudeDouble * 1000000) | 0);
+      var locationLongitudeDouble = Number(dataToSave.locationLongitude.replace(/[^0-9.]+/g, ""));
+      const locationLongitudeInPPM = BigInt((locationLongitudeDouble * 1000000) | 0);
+
+      const request: ContractCreateCarRequest = {
+        tokenUri: metadataURL,
+        carVinNumber: carInfoFormParams.vinNumber,
+        pricePerDayInUsdCents: pricePerDayInUsdCents,
+        securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
+        tankVolumeInGal: BigInt(carInfoFormParams.tankVolumeInGal),
+        fuelPricePerGalInUsdCents: fuelPricePerGalInUsdCents,
+        milesIncludedPerDay: BigInt(carInfoFormParams.milesIncludedPerDay),
+        country: carInfoFormParams.country,
+        state: carInfoFormParams.state,
+        city: carInfoFormParams.city,
+        locationLatitudeInPPM: locationLatitudeInPPM,
+        locationLongitudeInPPM: locationLongitudeInPPM,
+      };
+
+      let transaction = await rentalityContract.addCar(request);
 
       const result = await transaction.wait();
       console.log("result: " + JSON.stringify(result));

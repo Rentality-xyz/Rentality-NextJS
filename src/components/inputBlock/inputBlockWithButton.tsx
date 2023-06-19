@@ -34,7 +34,7 @@ export default function InputBlockWithButton<T extends string | number | readonl
   return (
     <div className={c}>
       {label != null ? (
-        <label className="whitespace-nowrap mb-2 text-lg" htmlFor={id}>
+        <label className="whitespace-nowrap mb-1" htmlFor={id}>
           {label}
         </label>
       ) : null}
