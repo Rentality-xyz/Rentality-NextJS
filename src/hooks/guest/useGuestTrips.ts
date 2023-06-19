@@ -39,6 +39,26 @@ const useGuestTrips = () => {
     }
   };
 
+  const rejectRequest = async (tripId: bigint, params: string[]) => {
+    try {
+      const rentalityContract = await getRentalityContract();
+
+      if (!rentalityContract) {
+        console.error("rejectRequest error: contract is null");
+        return false;
+      }
+
+      let transaction = await rentalityContract.rejectTripRequest(tripId);
+
+      const result = await transaction.wait();
+      console.log("result: " + JSON.stringify(result));
+      return true;
+    } catch (e) {
+      alert("rejectRequest error:" + e);
+      return false;
+    }
+  };
+
   const checkInTrip = async (tripId: bigint, params: string[]) => {
     try {
       const rentalityContract = await getRentalityContract();
@@ -96,6 +116,7 @@ const useGuestTrips = () => {
     const result: AllowedChangeTripAction[] = [];
     switch (tripStatus) {
       case TripStatus.Pending:
+        result.push({ text: "Reject", params: [], action: rejectRequest });
         break;
       case TripStatus.Comfirmed:
         break;
