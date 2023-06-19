@@ -24,7 +24,7 @@ export type NewCarInfo = {
   bodyType: string;
   description: string;
   pricePerDay: string;
-  distanceIncludedInMi: string;
+  milesIncludedPerDay: string;
 };
 
 const useAddCar = () => {
@@ -48,7 +48,7 @@ const useAddCar = () => {
     bodyType: "",
     description: "",
     pricePerDay: "",
-    distanceIncludedInMi: "",
+    milesIncludedPerDay: "",
   };
 
   const [carInfoFormParams, setCarInfoFormParams] =
@@ -95,7 +95,7 @@ const useAddCar = () => {
     bodyType,
     description,
     pricePerDay,
-    distanceIncludedInMi,
+    milesIncludedPerDay,
   }: NewCarInfo) => {
     if (!verifyCar()) {
       return;
@@ -164,7 +164,7 @@ const useAddCar = () => {
       },
       {
         trait_type: "Distance included(mi)",
-        value: distanceIncludedInMi,
+        value: milesIncludedPerDay,
       },
       {
         trait_type: "Price per Day (USD cents)",
@@ -214,7 +214,7 @@ const useAddCar = () => {
       //!isEmpty(carInfoFormParams.bodyType) &&
       !isEmpty(carInfoFormParams.description) &&
       !isEmpty(carInfoFormParams.pricePerDay) &&
-      !isEmpty(carInfoFormParams.distanceIncludedInMi)
+      !isEmpty(carInfoFormParams.milesIncludedPerDay)
     );
   };
 
@@ -247,8 +247,8 @@ const useAddCar = () => {
       );
       const pricePerDay = BigInt((doubleNumber * 100) | 0);
       const tankVolumeInGal = BigInt(carInfoFormParams.tankVolumeInGal);
-      const distanceIncludedInMi = BigInt(
-        carInfoFormParams.distanceIncludedInMi
+      const milesIncludedPerDay = BigInt(
+        carInfoFormParams.milesIncludedPerDay
       );
 
       let transaction = await rentalityContract.addCar(
@@ -256,7 +256,7 @@ const useAddCar = () => {
         carInfoFormParams.vinNumber,
         pricePerDay,
         tankVolumeInGal,
-        distanceIncludedInMi
+        milesIncludedPerDay
       );
 
       const result = await transaction.wait();

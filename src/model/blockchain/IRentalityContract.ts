@@ -32,7 +32,7 @@ export interface IRentalityContract {
     carVinNumber: string,
     pricePerDayInUsdCents: bigint,
     tankVolumeInGal: bigint,
-    distanceIncludedInMi: bigint
+    milesIncludedPerDay: bigint
   ): Promise<ContractTransactionResponse>;
   getCarMetadataURI(carId: bigint): Promise<string>;
   getMyCars(): Promise<ContractCarInfo[]>;

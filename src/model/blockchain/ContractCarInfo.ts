@@ -4,7 +4,7 @@ export type ContractCarInfo = {
   createdBy: string;
   pricePerDayInUsdCents: bigint;
   tankVolumeInGal: bigint;
-  distanceIncludedInMi: bigint;
+  milesIncludedPerDay: bigint;
   currentlyListed: boolean;
 };
 

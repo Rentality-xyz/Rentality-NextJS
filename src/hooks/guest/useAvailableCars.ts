@@ -131,7 +131,7 @@ const useAvailableCars = () => {
                     meta.attributes?.find(
                       (x: any) => x.trait_type === "Fuel type"
                     )?.value ?? "",
-                  distanceIncludedInMi:
+                  milesIncludedPerDay:
                     meta.attributes?.find(
                       (x: any) => x.trait_type === "Distance included(mi)"
                     )?.value ?? "",

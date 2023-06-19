@@ -408,20 +408,20 @@ export default function AddCar() {
               </div>
               <div className="flex flex-col">
                 <div className="flex flex-col">
-                  <label htmlFor="distanceIncludedInMi">
+                  <label htmlFor="milesIncludedPerDay">
                     Number of miles per day
                   </label>
                   <input
-                    id="distanceIncludedInMi"
+                    id="milesIncludedPerDay"
                     type="text"
                     placeholder="e.g. 200"
                     onChange={(e) =>
                       setCarInfoFormParams({
                         ...carInfoFormParams,
-                        distanceIncludedInMi: e.target.value,
+                        milesIncludedPerDay: e.target.value,
                       })
                     }
-                    value={carInfoFormParams.distanceIncludedInMi}
+                    value={carInfoFormParams.milesIncludedPerDay}
                   />
                 </div>
               </div>

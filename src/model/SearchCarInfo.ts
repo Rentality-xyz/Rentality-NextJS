@@ -9,7 +9,7 @@ export type SearchCarInfo = {
   seatsNumber: string;
   transmission: string;
   fuelType: string;
-  distanceIncludedInMi: string;
+  milesIncludedPerDay: string;
   pricePerDay: number;
   fuelPricePerGalInUsdCents: number;
   location: string;

@@ -68,7 +68,7 @@ export default function CarSearchItem({
           </div>
           <div className="flex flex-col">
             <div>- {searchInfo.seatsNumber} seats</div>
-            <div>- {searchInfo.distanceIncludedInMi} mi included</div>
+            <div>- {searchInfo.milesIncludedPerDay} mi included</div>
           </div>
         </div>
         <div className="flex flex-row items-end justify-between">
