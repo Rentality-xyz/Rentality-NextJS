@@ -58,14 +58,17 @@ export default function Search() {
         alert("Date to must be greater than Date from");
         return;
       }
+      
+      const startUnixTime = startDateTime.getTime()/1000;
+      const endUnixTime = endDateTime.getTime()/1000;
       const totalPriceInUsdCents = carInfo.pricePerDay * 100 * tripDays;
       const depositInUsdCents = carInfo.deposit *100;
 
       const result = await createTripRequest(
         carInfo.carId,
         carInfo.ownerAddress,
-        startDateTime.getTime(),
-        endDateTime.getTime(),
+        startUnixTime,
+        endUnixTime,
         searchParams.location,
         searchParams.location,
         totalPriceInUsdCents,

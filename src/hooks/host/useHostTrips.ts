@@ -113,7 +113,7 @@ const useHostTrips = () => {
         return false;
       }
 
-      const endFuelLevelInPermille = BigInt(params[0])* BigInt(125);
+      const endFuelLevelInPermille = BigInt(params[0]) * BigInt(125);
       const endOdometr = BigInt(params[1]);
 
       let transaction = await rentalityContract.checkOutByHost(
@@ -237,8 +237,8 @@ const useHostTrips = () => {
                     meta.attributes?.find(
                       (x: any) => x.trait_type === "License plate"
                     )?.value ?? "",
-                  tripStart: new Date(Number(i.startDateTime)),
-                  tripEnd: new Date(Number(i.endDateTime)),
+                  tripStart: new Date(i.startDateTime * 1000),
+                  tripEnd: new Date(i.endDateTime * 1000),
                   locationStart: i.startLocation,
                   locationEnd: i.endLocation,
                   status: tripStatus,

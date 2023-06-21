@@ -173,7 +173,7 @@ const useAvailableCars = () => {
         dateTo
       );
       setAvailableCars(data ?? []);
-      setDataFetched(true);
+      setDataFetched(true);      
       return true;
     } catch (e) {
       console.error("updateData error:" + e);
