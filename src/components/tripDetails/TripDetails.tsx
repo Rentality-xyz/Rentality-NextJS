@@ -81,7 +81,7 @@ export default function TripDetails({ tripId }: Props) {
             <InputBlock
               id="milesIncluded"
               label="Miles included:"
-              value={tripDetails.milesIncluded.toString()}
+              value={tripDetails.milesIncludedPerDay.toString()}
               readOnly={true}
             />
             <InputBlock

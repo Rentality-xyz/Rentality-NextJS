@@ -7,22 +7,22 @@ export type ContractTrip = {
   guest: string;
   host: string;
   pricePerDayInUsdCents: bigint;
-  startDateTime: number;
-  endDateTime: number;
+  startDateTime: bigint;
+  endDateTime: bigint;
   startLocation: string;
   endLocation: string;
-  milesIncluded: number;
+  milesIncludedPerDay: number;
   fuelPricePerGalInUsdCents: bigint;
   paymentInfo: PaymentInfo;
-  approvedDateTime: number;
-  checkedInByHostDateTime: number;
+  approvedDateTime: bigint;
+  checkedInByHostDateTime: bigint;
   startFuelLevelInGal: number;
   startOdometr: number;
-  checkedInByGuestDateTime: number;
-  checkedOutByGuestDateTime: number;
+  checkedInByGuestDateTime: bigint;
+  checkedOutByGuestDateTime: bigint;
   endFuelLevelInGal: number;
   endOdometr: number;
-  checkedOutByHostDateTime: number;
+  checkedOutByHostDateTime: bigint;
 };
 
 type PaymentInfo = {

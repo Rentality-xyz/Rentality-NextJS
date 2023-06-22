@@ -8,7 +8,7 @@ export type TripDetails = {
   endDateTime: Date;
   startLocation: string;
   endLocation: string;
-  milesIncluded: number;
+  milesIncludedPerDay: number;
   fuelPricePerGalInUsd: number;
   approvedDateTime: Date | undefined;
   checkedInByHostDateTime: Date | undefined;

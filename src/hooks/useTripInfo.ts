@@ -20,7 +20,7 @@ const useTripDetails = (tripId: bigint) => {
     endDateTime: new Date(),
     startLocation: "",
     endLocation: "",
-    milesIncluded: 0,
+    milesIncludedPerDay: 0,
     fuelPricePerGalInUsd: 0,
     approvedDateTime: undefined,
     checkedInByHostDateTime: undefined,
@@ -87,37 +87,37 @@ const useTripDetails = (tripId: bigint) => {
         ),
         guest: trip.guest,
         host: trip.host,
-        startDateTime: new Date(trip.startDateTime * 1000),
-        endDateTime: new Date(trip.endDateTime * 1000),
+        startDateTime: new Date(Number(trip.startDateTime) * 1000),
+        endDateTime: new Date(Number(trip.endDateTime) * 1000),
         startLocation: trip.startLocation,
         endLocation: trip.endLocation,
-        milesIncluded: trip.milesIncluded,
+        milesIncludedPerDay: trip.milesIncludedPerDay,
         fuelPricePerGalInUsd: Number(trip.fuelPricePerGalInUsdCents) / 100.0,
         approvedDateTime:
           trip.approvedDateTime > 0
-            ? new Date(trip.approvedDateTime * 1000)
+            ? new Date(Number(trip.approvedDateTime) * 1000)
             : undefined,
         checkedInByHostDateTime:
           trip.checkedInByHostDateTime > 0
-            ? new Date(trip.checkedInByHostDateTime * 1000)
+            ? new Date(Number(trip.checkedInByHostDateTime) * 1000)
             : undefined,
         startFuelLevelInGal:
           trip.startFuelLevelInGal > 0 ? trip.startFuelLevelInGal : undefined,
         startOdometr: trip.startOdometr > 0 ? trip.startOdometr : undefined,
         checkedInByGuestDateTime:
           trip.checkedInByGuestDateTime > 0
-            ? new Date(trip.checkedInByGuestDateTime * 1000)
+            ? new Date(Number(trip.checkedInByGuestDateTime) * 1000)
             : undefined,
         checkedOutByGuestDateTime:
           trip.checkedOutByGuestDateTime > 0
-            ? new Date(trip.checkedOutByGuestDateTime * 1000)
+            ? new Date(Number(trip.checkedOutByGuestDateTime) * 1000)
             : undefined,
         endFuelLevelInGal:
           trip.endFuelLevelInGal > 0 ? trip.endFuelLevelInGal : undefined,
         endOdometr: trip.endOdometr > 0 ? trip.endOdometr : undefined,
         checkedOutByHostDateTime:
           trip.checkedOutByHostDateTime > 0
-            ? new Date(trip.checkedOutByHostDateTime * 1000)
+            ? new Date(Number(trip.checkedOutByHostDateTime) * 1000)
             : undefined,
 
         paymentFrom: trip.paymentInfo.from,

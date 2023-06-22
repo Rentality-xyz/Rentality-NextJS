@@ -237,8 +237,8 @@ const useHostTrips = () => {
                     meta.attributes?.find(
                       (x: any) => x.trait_type === "License plate"
                     )?.value ?? "",
-                  tripStart: new Date(i.startDateTime * 1000),
-                  tripEnd: new Date(i.endDateTime * 1000),
+                  tripStart: new Date(Number(i.startDateTime) * 1000),
+                  tripEnd: new Date(Number(i.endDateTime) * 1000),
                   locationStart: i.startLocation,
                   locationEnd: i.endLocation,
                   status: tripStatus,
