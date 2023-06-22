@@ -16,8 +16,13 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 
 const useGuestTrips = () => {
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
+  const [updateRequired, setUpdateRequired] = useState<Boolean>(true);
   const [tripsBooked, setTripsBooked] = useState<TripInfo[]>([]);
   const [tripsHistory, setTripsHistory] = useState<TripInfo[]>([]);
+
+  const updateData = () => {
+    setUpdateRequired(true);
+  }
 
   const getRentalityContract = async () => {
     try {
@@ -216,6 +221,11 @@ const useGuestTrips = () => {
   };
 
   useEffect(() => {
+    if (!updateRequired) return;
+
+    setUpdateRequired(false);
+    setDataFetched(false);
+    
     getRentalityContract()
       .then((contract) => {
         if (contract !== undefined) {
@@ -240,9 +250,9 @@ const useGuestTrips = () => {
         setDataFetched(true);
       })
       .catch(() => setDataFetched(true));
-  }, []);
+  }, [updateRequired]);
 
-  return [dataFetched, tripsBooked, tripsHistory] as const;
+  return [dataFetched, tripsBooked, tripsHistory, updateData] as const;
 };
 
 export default useGuestTrips;

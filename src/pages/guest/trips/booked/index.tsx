@@ -5,8 +5,8 @@ import useGuestTrips from "@/hooks/guest/useGuestTrips";
 import { useRouter } from "next/router";
 
 export default function Booked() {
-  const [dataFetched, tripsBooked, _] = useGuestTrips();
-  const router = useRouter();
+  const [dataFetched, tripsBooked, _, updateData] = useGuestTrips();
+  //const router = useRouter();
 
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
     try {
@@ -16,7 +16,8 @@ export default function Booked() {
         throw new Error("changeStatus error");
       }
       alert("Status successfully changed!");
-      router.reload();
+      updateData();
+      //router.reload();
     } catch (e) {
       alert("changeStatus error" + e);
     }
