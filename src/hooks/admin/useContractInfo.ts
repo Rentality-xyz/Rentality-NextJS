@@ -99,7 +99,6 @@ const useContractInfo = () => {
 
       let transaction = await rentalityContract.withdrawFromPlatform(value);
       const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
       setDataUpdated(false);
       return true;
     } catch (e) {
@@ -120,7 +119,6 @@ const useContractInfo = () => {
 
       let transaction = await rentalityContract.setPlatformFeeInPPM(value);
       const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
       setDataUpdated(false);
       return true;
     } catch (e) {
@@ -141,7 +139,6 @@ const useContractInfo = () => {
 
       let transaction = await rentalityContract.updateUserService(address);
       const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
       setDataUpdated(false);
       return true;
     } catch (e) {
@@ -162,7 +159,6 @@ const useContractInfo = () => {
 
       let transaction = await rentalityContract.updateCarService(address);
       const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
       setDataUpdated(false);
       return true;
     } catch (e) {
@@ -183,7 +179,6 @@ const useContractInfo = () => {
 
       let transaction = await rentalityContract.updateTripService(address);
       const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
       setDataUpdated(false);
       return true;
     } catch (e) {
@@ -206,7 +201,6 @@ const useContractInfo = () => {
         address
       );
       const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
       setDataUpdated(false);
       return true;
     } catch (e) {

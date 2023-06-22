@@ -73,7 +73,7 @@ const useEtherProvider = () => {
     const chainId = await window.ethereum.request({ method: "eth_chainId" });
 
     if (chainId !== requiredChainId) {
-      console.log(`wallet_switchEthereumChain call. Current:${chainId}, required:${requiredChainId}`);
+      //console.log(`wallet_switchEthereumChain call. Current:${chainId}, required:${requiredChainId}`);
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
         params: [{ chainId: requiredChainId }],

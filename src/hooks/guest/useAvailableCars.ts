@@ -92,7 +92,6 @@ const useAvailableCars = () => {
                 });
                 const meta = await response.json();
 
-                console.log("meta: " + JSON.stringify(meta));
                 const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
                 let tripDays = calculateDays(dateFrom, dateTo) + 1;
                 const totalPrice = pricePerDay * tripDays;
@@ -230,7 +229,6 @@ const useAvailableCars = () => {
         value: rentPriceInEth,
       });
       const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
       setDataSaved(true);
       return true;
     } catch (e) {

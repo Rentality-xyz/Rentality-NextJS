@@ -10,7 +10,7 @@ export default async function handler(
       res.status(404).json({});
       return;
     }
-    console.log("getMetadataJson: tokenURI:", tokenURI);
+    //console.log("getMetadataJson: tokenURI:", tokenURI);
     //const { tokenURI } = req.body;
     const result = await fetch(tokenURI, {
       headers: {
@@ -21,7 +21,7 @@ export default async function handler(
     const meta = await result.json();
     res.status(200).json({ ...meta });
   } catch (err) {
-    console.log("getMetadataJson handler error: ", err);
+    console.error("getMetadataJson handler error: ", err);
     res.status(500).json({ error: "failed to load data" });
   }
 }

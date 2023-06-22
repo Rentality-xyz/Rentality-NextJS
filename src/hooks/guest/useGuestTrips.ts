@@ -51,7 +51,6 @@ const useGuestTrips = () => {
       let transaction = await rentalityContract.rejectTripRequest(tripId);
 
       const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
       return true;
     } catch (e) {
       alert("rejectRequest error:" + e);
@@ -77,7 +76,6 @@ const useGuestTrips = () => {
       );
 
       const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
       return true;
     } catch (e) {
       alert("checkInTrip error:" + e);
@@ -104,7 +102,6 @@ const useGuestTrips = () => {
       );
 
       const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
       return true;
     } catch (e) {
       alert("checkOutTrip error:" + e);
@@ -164,7 +161,6 @@ const useGuestTrips = () => {
                 if (index === 0) {
                   validateContractTrip(i);
                 }
-
                 const tokenURI = await rentalityContract.getCarMetadataURI(
                   i.carId
                 );

@@ -56,8 +56,6 @@ export default function Admin() {
     }
     try {
       const valueToWithdrawInWei = parseEther(ethToWithdraw);
-      console.log("ethToWithdraw", ethToWithdraw);
-      console.log("valueToWithdrawInWei", valueToWithdrawInWei);
       await withdrawFromPlatform(BigInt(valueToWithdrawInWei));
       setEthToWithdraw("0");
     } catch (e) {

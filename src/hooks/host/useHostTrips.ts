@@ -26,7 +26,6 @@ const useHostTrips = () => {
       if (!ethereum) {
         console.error("Ethereum wallet is not found");
       }
-
       const provider = new BrowserProvider(ethereum);
       const signer = await provider.getSigner();
       return new Contract(
@@ -50,7 +49,6 @@ const useHostTrips = () => {
 
       let transaction = await rentalityContract.approveTripRequest(tripId);
       const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
       return true;
     } catch (e) {
       alert("acceptRequest error:" + e);
@@ -70,7 +68,6 @@ const useHostTrips = () => {
       let transaction = await rentalityContract.rejectTripRequest(tripId);
 
       const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
       return true;
     } catch (e) {
       alert("rejectRequest error:" + e);
@@ -96,7 +93,6 @@ const useHostTrips = () => {
       );
 
       const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
       return true;
     } catch (e) {
       alert("checkInTrip error:" + e);
@@ -123,7 +119,6 @@ const useHostTrips = () => {
       );
 
       const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
       return true;
     } catch (e) {
       alert("checkOutTrip error:" + e);
@@ -143,7 +138,6 @@ const useHostTrips = () => {
       let transaction = await rentalityContract.finishTrip(tripId);
 
       const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
       return true;
     } catch (e) {
       alert("finishTrip error" + e);

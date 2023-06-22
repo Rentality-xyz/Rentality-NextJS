@@ -204,7 +204,7 @@ const useAddCar = () => {
         return response.pinataURL;
       }
     } catch (e) {
-      console.log("error uploading JSON metadata:", e);
+      console.error("error uploading JSON metadata:", e);
       alert("error uploading JSON metadata: " + e);
     }
   };
@@ -299,7 +299,6 @@ const useAddCar = () => {
       let transaction = await rentalityContract.addCar(request);
 
       const result = await transaction.wait();
-      console.log("result: " + JSON.stringify(result));
       setCarInfoFormParams(emptyNewCarInfo);
       setDataSaved(true);
       return true;
