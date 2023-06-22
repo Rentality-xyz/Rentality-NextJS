@@ -96,10 +96,8 @@ const useAvailableCars = () => {
                 const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
                 let tripDays = calculateDays(dateFrom, dateTo) + 1;
                 const totalPrice = pricePerDay * tripDays;
-                const fuelPricePerGalInUsdCents = Number(
-                  await rentalityContract.getFuelPricePerGalInUsdCents()
-                );
-                const deposit = Number(await rentalityContract.getDepositPriceInUsdCents()) / 100;
+                const fuelPricePerGal = Number(i.fuelPricePerGalInUsdCents) / 100;
+                const securityDeposit = Number(i.securityDepositPerTripInUsdCents) / 100;
 
                 let item: SearchCarInfo = {
                   carId: Number(i.carId),
@@ -136,13 +134,13 @@ const useAvailableCars = () => {
                       (x: any) => x.trait_type === "Distance included(mi)"
                     )?.value ?? "",
                   pricePerDay: pricePerDay,
-                  fuelPricePerGalInUsdCents: fuelPricePerGalInUsdCents,
+                  fuelPricePerGal: fuelPricePerGal,
                   location: location,
                   dateFrom: dateFrom,
                   dateTo: dateTo,
                   days: tripDays,
                   totalPrice: totalPrice,
-                  deposit: deposit,
+                  securityDeposit: securityDeposit,
                 };
                 return item;
               })
@@ -173,7 +171,7 @@ const useAvailableCars = () => {
         dateTo
       );
       setAvailableCars(data ?? []);
-      setDataFetched(true);      
+      setDataFetched(true);
       return true;
     } catch (e) {
       console.error("updateData error:" + e);
@@ -191,7 +189,8 @@ const useAvailableCars = () => {
     endLocation: string,
     totalDayPriceInUsdCents: number,
     taxPriceInUsdCents: number,
-    depositInUsdCents: number
+    depositInUsdCents: number,
+    fuelPricePerGalInUsdCents: number
   ) => {
     try {
       const rentalityContract = await getRentalityContract();
@@ -223,6 +222,7 @@ const useAvailableCars = () => {
         totalDayPriceInUsdCents: totalDayPriceInUsdCents,
         taxPriceInUsdCents: taxPriceInUsdCents,
         depositInUsdCents: depositInUsdCents,
+        fuelPricePerGalInUsdCents: fuelPricePerGalInUsdCents,
         ethToCurrencyRate: BigInt(ethToCurrencyRate),
         ethToCurrencyDecimals: Number(ethToCurrencyDecimals),
       };

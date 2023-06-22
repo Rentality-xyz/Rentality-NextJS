@@ -3,8 +3,15 @@ export type ContractCarInfo = {
   carVinNumber: string;
   createdBy: string;
   pricePerDayInUsdCents: bigint;
+  securityDepositPerTripInUsdCents: bigint;
   tankVolumeInGal: bigint;
+  fuelPricePerGalInUsdCents: bigint;
   milesIncludedPerDay: bigint;
+  country: string;
+  state: string;
+  city: string;
+  locationLatitudeInPPM: bigint;
+  locationLongitudeInPPM: bigint;
   currentlyListed: boolean;
 };
 

@@ -11,11 +11,11 @@ export type SearchCarInfo = {
   fuelType: string;
   milesIncludedPerDay: string;
   pricePerDay: number;
-  fuelPricePerGalInUsdCents: number;
+  fuelPricePerGal: number;
   location: string;
   dateFrom: Date;
   dateTo: Date;
   days: number;
   totalPrice: number;
-  deposit: number;
+  securityDeposit: number;
 };

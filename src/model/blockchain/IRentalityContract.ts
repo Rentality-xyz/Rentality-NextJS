@@ -22,10 +22,6 @@ export interface IRentalityContract {
   withdrawAllFromPlatform(): Promise<ContractTransactionResponse>;
   getPlatformFeeInPPM(): Promise<bigint>;
   setPlatformFeeInPPM(valueInPPM:bigint): Promise<ContractTransactionResponse>;
-  getDepositPriceInUsdCents(): Promise<bigint>;
-  setDepositPriceInUsdCents(valueInUsdCents:bigint): Promise<ContractTransactionResponse>;
-  getFuelPricePerGalInUsdCents(): Promise<bigint>;
-  setFuelPricePerGalInUsdCents(valueInUsdCents:bigint): Promise<ContractTransactionResponse>;
 
   ///host functions
   addCar(request:ContractCreateCarRequest): Promise<ContractTransactionResponse>;

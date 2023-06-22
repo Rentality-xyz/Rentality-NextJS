@@ -74,13 +74,13 @@ export default function CarSearchItem({
         <div className="flex flex-row items-end justify-between">
           <div className="flex flex-col">
             <strong className="text-xl">{`$${searchInfo.pricePerDay}/day`}</strong>
-            <div className="text-sm">{`+ $${searchInfo.deposit} deposit`}</div>
+            <div className="text-sm">{`+ $${searchInfo.securityDeposit} deposit`}</div>
           </div>
           <button
             className="h-12 w-44 rounded-md bg-violet-700 px-4"
             onClick={() => sendRentCarRequest(searchInfo)}
           >
-            Rent for {searchInfo.days} day(s) for ${searchInfo.totalPrice + searchInfo.deposit}
+            Rent for {searchInfo.days} day(s) for ${searchInfo.totalPrice + searchInfo.securityDeposit}
           </button>
         </div>
       </div>

@@ -11,8 +11,6 @@ export default function Admin() {
     adminContractInfo,
     withdrawFromPlatform,
     setPlatformFeeInPPM,
-    setDepositPriceInUsdCents,
-    setFuelPricePerGalInUsdCents,
     updateUserService,
     updateCarService,
     updateTripService,
@@ -20,8 +18,6 @@ export default function Admin() {
   ] = useContractInfo();
   const [ethToWithdraw, setEthToWithdraw] = useState("0");
   const [newPlatformCommission, setNewPlatformCommission] = useState("0");
-  const [newPlatformDeposit, setNewPlatformDeposit] = useState("0");
-  const [newPlatformFuelPrice, setNewPlatformFuelPrice] = useState("0");
   const [newUserServiceAddress, setNewUserServiceAddress] = useState("0x");
   const [newCarServiceAddress, setNewCarServiceAddress] = useState("0x");
   const [newTripsServiceAddress, setNewTripsServiceAddress] = useState("0x");
@@ -59,7 +55,6 @@ export default function Admin() {
       return;
     }
     try {
-      
       const valueToWithdrawInWei = parseEther(ethToWithdraw);
       console.log("ethToWithdraw", ethToWithdraw);
       console.log("valueToWithdrawInWei", valueToWithdrawInWei);
@@ -74,44 +69,25 @@ export default function Admin() {
     if (newPlatformCommission == null) return;
     const value = Number.parseFloat(newPlatformCommission);
     if (value < 0.0001 || value > 100) {
-      alert("value should be more then 0% and less than 100% (min value is 0.0001%)");
+      alert(
+        "value should be more then 0% and less than 100% (min value is 0.0001%)"
+      );
       return;
     }
     try {
-      await setPlatformFeeInPPM(BigInt(Math.round(value*10_000)));
+      await setPlatformFeeInPPM(BigInt(Math.round(value * 10_000)));
       setNewPlatformCommission("0");
     } catch (e) {
       alert("setPlatformCommission error:" + e);
     }
   };
 
-  const setPlatformDeposit = async () => {
-    if (newPlatformDeposit == null) return;
-    const value = Number.parseFloat(newPlatformDeposit);
-    
-    try {
-      await setDepositPriceInUsdCents(BigInt(Math.round(value*100)));
-      setNewPlatformDeposit("0");
-    } catch (e) {
-      alert("setPlatformDeposit error:" + e);
-    }
-  };
-
-  const setPlatformFuelPrice = async () => {
-    if (newPlatformFuelPrice == null) return;
-    const value = Number.parseFloat(newPlatformFuelPrice);
-    
-    try {
-      await setFuelPricePerGalInUsdCents(BigInt(Math.round(value*100)));
-      setNewPlatformFuelPrice("0");
-    } catch (e) {
-      alert("setPlatformFuelPrice error:" + e);
-    }
-  };
-
   const setUserService = async () => {
     if (newUserServiceAddress == null) return;
-    if (newUserServiceAddress.length != 42 || !newUserServiceAddress.startsWith("0x")) {
+    if (
+      newUserServiceAddress.length != 42 ||
+      !newUserServiceAddress.startsWith("0x")
+    ) {
       alert("Address should start with 0x and contain 40 symbols");
       return;
     }
@@ -125,7 +101,10 @@ export default function Admin() {
 
   const setCarService = async () => {
     if (newCarServiceAddress == null) return;
-    if (newCarServiceAddress.length != 42 || !newCarServiceAddress.startsWith("0x")) {
+    if (
+      newCarServiceAddress.length != 42 ||
+      !newCarServiceAddress.startsWith("0x")
+    ) {
       alert("Address should start with 0x and contain 40 symbols");
       return;
     }
@@ -139,7 +118,10 @@ export default function Admin() {
 
   const setTripsService = async () => {
     if (newTripsServiceAddress == null) return;
-    if (newTripsServiceAddress.length != 42 || !newTripsServiceAddress.startsWith("0x")) {
+    if (
+      newTripsServiceAddress.length != 42 ||
+      !newTripsServiceAddress.startsWith("0x")
+    ) {
       alert("Address should start with 0x and contain 40 symbols");
       return;
     }
@@ -153,7 +135,10 @@ export default function Admin() {
 
   const setCurrencyConverterService = async () => {
     if (newCurrencyConverterServiceAddress == null) return;
-    if (newCurrencyConverterServiceAddress.length != 42 || !newCurrencyConverterServiceAddress.startsWith("0x")) {
+    if (
+      newCurrencyConverterServiceAddress.length != 42 ||
+      !newCurrencyConverterServiceAddress.startsWith("0x")
+    ) {
       alert("Address should start with 0x and contain 40 symbols");
       return;
     }
@@ -168,7 +153,7 @@ export default function Admin() {
   return (
     <AdminLayout>
       <div className="flex flex-col px-8 py-4">
-        <PageTitle title="Contract info"/>
+        <PageTitle title="Contract info" />
         <div className="grid grid-cols-2 gap-4 mt-4 text-lg">
           <InputBlock
             id="balance"
@@ -220,46 +205,6 @@ export default function Admin() {
             buttonDisabled={!Number.parseFloat(newPlatformCommission)}
             onButtonClick={() => {
               setPlatformCommission();
-            }}
-          />
-          <InputBlock
-            id="deposit"
-            label="Default platform deposit in USD:"
-            value={"$" + adminContractInfo.rentalityDeposit.toString()}
-            readOnly={true}
-          />
-          <InputBlockWithButton
-            id="depositSet"
-            placeholder="$100"
-            label="Set new default deposit (USD):"
-            value={newPlatformDeposit}
-            onValueChange={(e) => {
-              setNewPlatformDeposit(e.target.value);
-            }}
-            buttonText="Save"
-            buttonDisabled={!Number.parseFloat(newPlatformDeposit)}
-            onButtonClick={() => {
-              setPlatformDeposit();
-            }}
-          />
-          <InputBlock
-            id="fuelPrice"
-            label="Default platform fuel price in USD:"
-            value={"$" + adminContractInfo.rentalityFuelPricePerGal.toString()}
-            readOnly={true}
-          />
-          <InputBlockWithButton
-            id="fuelPriceSet"
-            placeholder="4.50"
-            label="Set new default fuel price (USD):"
-            value={newPlatformFuelPrice}
-            onValueChange={(e) => {
-              setNewPlatformFuelPrice(e.target.value);
-            }}
-            buttonText="Save"
-            buttonDisabled={!Number.parseFloat(newPlatformFuelPrice)}
-            onButtonClick={() => {
-              setPlatformFuelPrice();
             }}
           />
           <InputBlock

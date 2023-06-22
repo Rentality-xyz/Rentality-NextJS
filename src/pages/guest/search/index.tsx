@@ -17,8 +17,13 @@ export default function Search() {
     dateTo: dateToHtmlDateTimeFormat(new Date()),
   };
 
-  const [dataFetched, availableCars, searchAvailableCars, dataSaved, createTripRequest] =
-    useAvailableCars();
+  const [
+    dataFetched,
+    availableCars,
+    searchAvailableCars,
+    dataSaved,
+    createTripRequest,
+  ] = useAvailableCars();
   const [tripDays, setTripDays] = useState(1);
   const [searchParams, setSearchParams] =
     useState<TripSearchInfo>(emptyTripSearchInfo);
@@ -34,7 +39,11 @@ export default function Search() {
       days = 0;
     }
 
-    await searchAvailableCars(enteredSearchParams.location, startDateTime, endDateTime);
+    await searchAvailableCars(
+      enteredSearchParams.location,
+      startDateTime,
+      endDateTime
+    );
 
     setSearchParams(enteredSearchParams);
     setTripDays(days);
@@ -52,17 +61,18 @@ export default function Search() {
       }
       const startDateTime = new Date(searchParams.dateFrom);
       const endDateTime = new Date(searchParams.dateTo);
-      
+
       const days = calculateDays(startDateTime, endDateTime);
       if (days < 0) {
         alert("Date to must be greater than Date from");
         return;
       }
-      
-      const startUnixTime = startDateTime.getTime()/1000;
-      const endUnixTime = endDateTime.getTime()/1000;
+
+      const startUnixTime = startDateTime.getTime() / 1000;
+      const endUnixTime = endDateTime.getTime() / 1000;
       const totalPriceInUsdCents = carInfo.pricePerDay * 100 * tripDays;
-      const depositInUsdCents = carInfo.deposit *100;
+      const depositInUsdCents = carInfo.securityDeposit * 100;
+      const fuelPricePerGalInUsdCents = carInfo.fuelPricePerGal * 100;
 
       const result = await createTripRequest(
         carInfo.carId,
@@ -73,7 +83,8 @@ export default function Search() {
         searchParams.location,
         totalPriceInUsdCents,
         0,
-        depositInUsdCents
+        depositInUsdCents,
+        fuelPricePerGalInUsdCents
       );
       if (!result) {
         alert("sendRentCarRequest error!");
@@ -98,7 +109,7 @@ export default function Search() {
   return (
     <GuestLayout>
       <div className="flex flex-col px-8 pt-4">
-        <PageTitle title="Search"/>
+        <PageTitle title="Search" />
         <div className="search mb-8 flex flex-row">
           <div className="flex w-1/2 flex-col p-2">
             <label htmlFor="location">Pick up & Return Location</label>
