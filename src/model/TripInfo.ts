@@ -49,6 +49,13 @@ export type TripInfo = {
 
 export type AllowedChangeTripAction = {
   text:string;
-  params:string[];
+  readonly:boolean;
+  params:ChangeTripParams[];
   action:(tripId: bigint,  params:string[]) => Promise<boolean>
+}
+
+export type ChangeTripParams ={
+  text:string;
+  value:string;
+  type:string;
 }

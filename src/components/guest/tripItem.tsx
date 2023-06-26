@@ -5,6 +5,8 @@ import { TripInfo, getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { useState } from "react";
 import InputBlock from "../inputBlock";
 import Button from "../common/button";
+import Checkbox from "../common/checkbox";
+import SelectBlock from "../inputBlock/selectBlock";
 
 type Props = {
   tripInfo: TripInfo;
@@ -14,7 +16,39 @@ type Props = {
 export default function TripItem({ tripInfo, changeStatusCallback }: Props) {
   const [isAdditionalActionHidden, setIsAdditionalActionHidden] =
     useState(true);
-  const [inputParams, setInputParams] = useState<string[]>([]);
+  const defaultValues =
+    tripInfo?.allowedActions?.length > 0
+      ? tripInfo?.allowedActions[0].params.map((i) => {
+          return i.value;
+        })
+      : [];
+  const [inputParams, setInputParams] = useState<string[]>(defaultValues);
+  const [confirmParams, setConfirmParams] = useState<boolean[]>([]);
+
+  const handleButtonClick = () => {
+    if (
+      tripInfo == null ||
+      tripInfo.allowedActions == null ||
+      tripInfo.allowedActions.length == 0
+    ) {
+      return;
+    }
+
+    if (
+      tripInfo.allowedActions[0].readonly &&
+      (confirmParams.length != defaultValues.length ||
+        !confirmParams.every((i) => i === true))
+    ) {
+      return;
+    }
+
+    changeStatusCallback(() => {
+      return tripInfo.allowedActions[0].action(
+        BigInt(tripInfo.tripId),
+        inputParams
+      );
+    });
+  };
 
   return (
     <div className="flex flex-col  rounded-xl bg-pink-100">
@@ -138,39 +172,79 @@ export default function TripItem({ tripInfo, changeStatusCallback }: Props) {
           <hr />
           <div>
             <strong className="text-xl">
-              Please enter data to change status:
+              Please {tripInfo.allowedActions[0].readonly ? "confirm" : "enter"} data to change status:
             </strong>
           </div>
           <div className="w-1/2 flex flex-col py-4">
             {tripInfo.allowedActions[0].params.map((param, index) => {
               return (
-                <InputBlock
-                  className="py-2"
-                  key={param}
-                  id={param}
-                  label={param}
-                  value={inputParams[index]}
-                  setValue={(newValue) => {
-                    setInputParams((prev) => {
-                      const copy = [...prev];
-                      copy[index] = newValue;
-                      return copy;
-                    });
-                  }}
-                />
+                <div className="flex flex-row items-end" key={param.text}>
+                  {param.type === "fuel" ? (
+                    <SelectBlock
+                      className="py-2"
+                      id={param.text}
+                      label={param.text}
+                      readOnly={tripInfo.allowedActions[0].readonly}
+                      value={inputParams[index]}
+                      setValue={(newValue) => {
+                        setInputParams((prev) => {
+                          const copy = [...prev];
+                          copy[index] = newValue;
+                          return copy;
+                        });
+                      }}
+                    >                     
+                      <option className="hidden" disabled></option>
+                      <option value="0">0</option>
+                      <option value="0.125">1/8</option>
+                      <option value="0.25">1/4</option>
+                      <option value="0.375">3/8</option>
+                      <option value="0.5">1/2</option>
+                      <option value="0.625">5/8</option>
+                      <option value="0.75">3/4</option>
+                      <option value="0.875">7/8</option>
+                      <option value="1">full</option>
+                    </SelectBlock>
+                  ) : (
+                    <InputBlock
+                      className="py-2"
+                      id={param.text}
+                      label={param.text}
+                      readOnly={tripInfo.allowedActions[0].readonly}
+                      value={inputParams[index]}
+                      setValue={(newValue) => {
+                        setInputParams((prev) => {
+                          const copy = [...prev];
+                          copy[index] = newValue;
+                          return copy;
+                        });
+                      }}
+                    />
+                  )}
+
+                  {tripInfo.allowedActions[0].readonly ? (
+                    <Checkbox
+                      className="ml-4"
+                      title="Confirm"
+                      value={confirmParams[index]}
+                      onChange={(newValue) => {
+                        setConfirmParams((prev) => {
+                          const copy = [...prev];
+                          console.log(
+                            "newValue.target.checked",
+                            newValue.target.checked
+                          );
+                          copy[index] = newValue.target.checked;
+                          return copy;
+                        });
+                      }}
+                    />
+                  ) : null}
+                </div>
               );
             })}
           </div>
-          <Button
-            onClick={() => {
-              changeStatusCallback(() => {
-                return tripInfo.allowedActions[0].action(
-                  BigInt(tripInfo.tripId),
-                  inputParams
-                );
-              });
-            }}
-          >
+          <Button onClick={handleButtonClick}>
             {tripInfo.allowedActions[0].text}
           </Button>
         </div>

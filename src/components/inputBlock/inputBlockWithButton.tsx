@@ -40,7 +40,7 @@ export default function InputBlockWithButton<T extends string | number | readonl
       ) : null}
       <div className="flex flex-row gap-4">
         <input
-          className="w-full h-12 border-2 rounded-md pl-4"
+          className="w-full h-12 border-2 rounded-md pl-4  disabled:bg-gray-300 disabled:text-gray-600"
           id={id}
           type={type}
           readOnly={readOnly}

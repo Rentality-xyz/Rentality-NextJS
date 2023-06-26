@@ -277,9 +277,9 @@ const useAddCar = () => {
       const fuelPricePerGalInUsdCents = BigInt((fuelPricePerGalDouble * 100) | 0);
 
       var locationLatitudeDouble = Number(dataToSave.locationLatitude.replace(/[^0-9.]+/g, ""));
-      const locationLatitudeInPPM = BigInt((locationLatitudeDouble * 1000000) | 0);
+      const locationLatitudeInPPM = BigInt((locationLatitudeDouble * 1_000_000) | 0);
       var locationLongitudeDouble = Number(dataToSave.locationLongitude.replace(/[^0-9.]+/g, ""));
-      const locationLongitudeInPPM = BigInt((locationLongitudeDouble * 1000000) | 0);
+      const locationLongitudeInPPM = BigInt((locationLongitudeDouble * 1_000_000) | 0);
 
       const request: ContractCreateCarRequest = {
         tokenUri: metadataURL,

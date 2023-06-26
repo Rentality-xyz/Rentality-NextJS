@@ -22,7 +22,7 @@ const useHostTrips = () => {
 
   const updateData = () => {
     setUpdateRequired(true);
-  }
+  };
 
   const getRentalityContract = async () => {
     try {
@@ -88,7 +88,7 @@ const useHostTrips = () => {
         console.error("checkInTrip error: contract is null");
         return false;
       }
-      const startFuelLevelInPermille = BigInt(params[0]) * BigInt(125);
+      const startFuelLevelInPermille = BigInt(Number(params[0]) * 1000);
       const startOdometr = BigInt(params[1]);
 
       let transaction = await rentalityContract.checkInByHost(
@@ -114,7 +114,7 @@ const useHostTrips = () => {
         return false;
       }
 
-      const endFuelLevelInPermille = BigInt(params[0]) * BigInt(125);
+      const endFuelLevelInPermille = BigInt(Number(params[0]) * 1000);
       const endOdometr = BigInt(params[1]);
 
       let transaction = await rentalityContract.checkOutByHost(
@@ -150,18 +150,42 @@ const useHostTrips = () => {
     }
   };
 
-  const getAllowedActions = (tripStatus: TripStatus, i: ContractTrip) => {
+  const convernFuelInLevel = (fuelLevelInGal: bigint, fuelTank: number) => {
+    const levelInPercents =
+      Math.ceil((8 * Number(fuelLevelInGal)) / fuelTank) * 0.125;
+    return levelInPercents.toString();
+  };
+
+  const getAllowedActions = (
+    tripStatus: TripStatus,
+    trip: ContractTrip,
+    tankSize: number
+  ) => {
     const result: AllowedChangeTripAction[] = [];
 
     switch (tripStatus) {
       case TripStatus.Pending:
-        result.push({ text: "Confirm", params: [], action: acceptRequest });
-        result.push({ text: "Reject", params: [], action: rejectRequest });
+        result.push({
+          text: "Confirm",
+          readonly: false,
+          params: [],
+          action: acceptRequest,
+        });
+        result.push({
+          text: "Reject",
+          readonly: false,
+          params: [],
+          action: rejectRequest,
+        });
         break;
       case TripStatus.Comfirmed:
         result.push({
           text: "Start",
-          params: ["Fuel level (0..8)", "Odometr"],
+          readonly: false,
+          params: [
+            { text: "Fuel level", value: "", type: "fuel" },
+            { text: "Odometr", value: "", type: "text" },
+          ],
           action: checkInTrip,
         });
         break;
@@ -172,12 +196,29 @@ const useHostTrips = () => {
       case TripStatus.CheckedOutByGuest:
         result.push({
           text: "Finish",
-          params: ["Fuel level (0..8)", "Odometr"],
+          readonly: true,
+          params: [
+            {
+              text: "Fuel level",
+              value: convernFuelInLevel(trip.endFuelLevelInGal, tankSize),
+              type: "fuel",
+            },
+            {
+              text: "Odometr",
+              value: trip.endOdometr.toString(),
+              type: "text",
+            },
+          ],
           action: checkOutTrip,
         });
         break;
       case TripStatus.Finished:
-        result.push({ text: "Complete", params: [], action: finishTrip });
+        result.push({
+          text: "Complete",
+          readonly: false,
+          params: [],
+          action: finishTrip,
+        });
         break;
       case TripStatus.Closed:
         break;
@@ -217,6 +258,11 @@ const useHostTrips = () => {
                 });
                 const meta = await response.json();
                 const tripStatus = getTripStatusFromContract(Number(i.status));
+                const tankSize = Number(
+                  meta.attributes?.find(
+                    (x: any) => x.trait_type === "Tank volume(gal)"
+                  )?.value ?? "0"
+                );
 
                 let item: TripInfo = {
                   tripId: Number(i.tripId),
@@ -241,7 +287,7 @@ const useHostTrips = () => {
                   locationStart: i.startLocation,
                   locationEnd: i.endLocation,
                   status: tripStatus,
-                  allowedActions: getAllowedActions(tripStatus, i),
+                  allowedActions: getAllowedActions(tripStatus, i, tankSize),
                   totalPrice: (
                     Number(i.paymentInfo.totalDayPriceInUsdCents) / 100
                   ).toString(),

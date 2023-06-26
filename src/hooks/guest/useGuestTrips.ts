@@ -22,7 +22,7 @@ const useGuestTrips = () => {
 
   const updateData = () => {
     setUpdateRequired(true);
-  }
+  };
 
   const getRentalityContract = async () => {
     try {
@@ -71,7 +71,7 @@ const useGuestTrips = () => {
         console.error("checkInTrip error: contract is null");
         return false;
       }
-      const startFuelLevelInPermille = BigInt(params[0]) * BigInt(125);
+      const startFuelLevelInPermille = BigInt(Number(params[0]) * 1000);
       const startOdometr = BigInt(params[1]);
 
       let transaction = await rentalityContract.checkInByGuest(
@@ -97,7 +97,7 @@ const useGuestTrips = () => {
         return false;
       }
 
-      const endFuelLevelInPermille = BigInt(params[0]) * BigInt(125);
+      const endFuelLevelInPermille = BigInt(Number(params[0]) * 1000);
       const endOdometr = BigInt(params[1]);
 
       let transaction = await rentalityContract.checkOutByGuest(
@@ -114,25 +114,57 @@ const useGuestTrips = () => {
     }
   };
 
-  const getAllowedActions = (tripStatus: TripStatus) => {
+  const convernFuelInLevel = (fuelLevelInGal: bigint, fuelTank: number) => {
+    const levelInPercents =
+      Math.ceil((8 * Number(fuelLevelInGal)) / fuelTank) * 0.125;
+    return levelInPercents.toString();
+  };
+
+  const getAllowedActions = (
+    tripStatus: TripStatus,
+    trip: ContractTrip,
+    tankSize: number
+  ) => {
     const result: AllowedChangeTripAction[] = [];
+
     switch (tripStatus) {
       case TripStatus.Pending:
-        result.push({ text: "Reject", params: [], action: rejectRequest });
+        result.push({
+          text: "Reject",
+          readonly: false,
+          params: [],
+          action: rejectRequest,
+        });
         break;
       case TripStatus.Comfirmed:
         break;
       case TripStatus.CheckedInByHost:
         result.push({
           text: "Start",
-          params: ["Fuel level (0..8)", "Odometr"],
+          readonly: true,
+          params: [
+            {
+              text: "Fuel level",
+              value: convernFuelInLevel(trip.startFuelLevelInGal, tankSize),
+              type: "fuel",
+            },
+            {
+              text: "Odometr",
+              value: trip.startOdometr.toString(),
+              type: "text",
+            },
+          ],
           action: checkInTrip,
         });
         break;
       case TripStatus.Started:
         result.push({
           text: "Finish",
-          params: ["Fuel level (0..8)", "Odometr"],
+          readonly: false,
+          params: [
+            { text: "Fuel level", value: "", type: "fuel" },
+            { text: "Odometr", value: "", type: "text" },
+          ],
           action: checkOutTrip,
         });
         break;
@@ -177,6 +209,11 @@ const useGuestTrips = () => {
                 });
                 const meta = await response.json();
                 const tripStatus = getTripStatusFromContract(Number(i.status));
+                const tankSize = Number(
+                  meta.attributes?.find(
+                    (x: any) => x.trait_type === "Tank volume(gal)"
+                  )?.value ?? "0"
+                );
 
                 let item: TripInfo = {
                   tripId: Number(i.tripId),
@@ -201,7 +238,7 @@ const useGuestTrips = () => {
                   locationStart: i.startLocation,
                   locationEnd: i.endLocation,
                   status: tripStatus,
-                  allowedActions: getAllowedActions(tripStatus),
+                  allowedActions: getAllowedActions(tripStatus, i, tankSize),
                   totalPrice: (
                     Number(i.paymentInfo.totalDayPriceInUsdCents) / 100
                   ).toString(),
@@ -225,7 +262,7 @@ const useGuestTrips = () => {
 
     setUpdateRequired(false);
     setDataFetched(false);
-    
+
     getRentalityContract()
       .then((contract) => {
         if (contract !== undefined) {

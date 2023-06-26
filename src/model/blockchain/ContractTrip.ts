@@ -16,12 +16,12 @@ export type ContractTrip = {
   paymentInfo: PaymentInfo;
   approvedDateTime: bigint;
   checkedInByHostDateTime: bigint;
-  startFuelLevelInGal: number;
-  startOdometr: number;
+  startFuelLevelInGal: bigint;
+  startOdometr: bigint;
   checkedInByGuestDateTime: bigint;
   checkedOutByGuestDateTime: bigint;
-  endFuelLevelInGal: number;
-  endOdometr: number;
+  endFuelLevelInGal: bigint;
+  endOdometr: bigint;
   checkedOutByHostDateTime: bigint;
 };
 

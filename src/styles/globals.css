@@ -183,3 +183,72 @@ body {
 /*"w-full lg:w-60 h-12 border-2 rounded-md border-gray-400"*/
 
 /* footer */
+
+/* controls */
+/* checkbox */
+ /* Customize the label (the container) */
+ .rentality-checkbox {
+  display: block;
+  position: relative;
+  padding-left: 3.25rem;
+  margin-bottom: 1.25rem;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.rentality-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.rentality-checkmark {
+  position: absolute;
+  top: -0.5rem;
+  left: 0;
+  height: 2.5rem;
+  width: 2.5rem;
+  background-color: #fff;
+}
+
+/* On mouse-over, add a grey background color */
+.rentality-checkbox:hover input ~ .rentality-checkmark {
+  background-color: #bbb;
+}
+
+/* When the checkbox is checked, add a blue background */
+.rentality-checkbox input:checked ~ .rentality-checkmark {
+  background-color: #6c29d9;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.rentality-checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.rentality-checkbox input:checked ~ .rentality-checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.rentality-checkbox .rentality-checkmark:after {
+  left: 14px;
+  top: 6px;
+  width: 10px;
+  height: 20px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+} 

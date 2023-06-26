@@ -1,9 +1,9 @@
 import { twMerge } from "tailwind-merge";
 
 type Props = {
+  children?: React.ReactNode;
   className?: string;
   id: string;
-  type?: string;
   label?: string;
   placeholder?: string;
   readOnly?: boolean;
@@ -11,17 +11,16 @@ type Props = {
   setValue?: (newValue: string) => void;
 };
 
-export default function InputBlock({
+export default function SelectBlock({
+  children,
   className,
   id,
   label,
   placeholder,
-  type,
   value,
   readOnly,
   setValue,
 }: Props) {
-  type = type ?? "text";
   const c = twMerge("flex flex-col w-full", className);
   return (
     <div className={c}>
@@ -30,16 +29,16 @@ export default function InputBlock({
           {label}
         </label>
       ) : null}
-      <input
-        className="w-full h-12 border-2 rounded-md pl-4 disabled:bg-gray-300 disabled:text-gray-600"
+      <select
+        className="w-full h-12 border-2 rounded-md pl-4 bg-white disabled:bg-gray-300 disabled:text-gray-600"
         id={id}
-        type={type}
-        readOnly={readOnly}
         disabled={readOnly}
         placeholder={placeholder}
         onChange={(e) => setValue != null && setValue(e.target.value)}
         value={value}
-      />
+      >
+        {children}
+      </select>
     </div>
   );
 }

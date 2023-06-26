@@ -102,8 +102,8 @@ const useTripDetails = (tripId: bigint) => {
             ? new Date(Number(trip.checkedInByHostDateTime) * 1000)
             : undefined,
         startFuelLevelInGal:
-          trip.startFuelLevelInGal > 0 ? trip.startFuelLevelInGal : undefined,
-        startOdometr: trip.startOdometr > 0 ? trip.startOdometr : undefined,
+          trip.startFuelLevelInGal > 0 ? Number(trip.startFuelLevelInGal) : undefined,
+        startOdometr: trip.startOdometr > 0 ? Number(trip.startOdometr) : undefined,
         checkedInByGuestDateTime:
           trip.checkedInByGuestDateTime > 0
             ? new Date(Number(trip.checkedInByGuestDateTime) * 1000)
@@ -113,8 +113,8 @@ const useTripDetails = (tripId: bigint) => {
             ? new Date(Number(trip.checkedOutByGuestDateTime) * 1000)
             : undefined,
         endFuelLevelInGal:
-          trip.endFuelLevelInGal > 0 ? trip.endFuelLevelInGal : undefined,
-        endOdometr: trip.endOdometr > 0 ? trip.endOdometr : undefined,
+          trip.endFuelLevelInGal > 0 ? Number(trip.endFuelLevelInGal) : undefined,
+        endOdometr: trip.endOdometr > 0 ? Number(trip.endOdometr) : undefined,
         checkedOutByHostDateTime:
           trip.checkedOutByHostDateTime > 0
             ? new Date(Number(trip.checkedOutByHostDateTime) * 1000)
