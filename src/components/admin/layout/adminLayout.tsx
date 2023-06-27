@@ -11,7 +11,7 @@ export default function AdminLayout({ children }: Props) {
   return (
     <>
       <div className="main-grid">
-        <Header  isHost={false} />
+        <Header accountType="Admin" />
         <AdminSideNavMenu />
         <main className="bg-gray-200 bg-opacity-60">{children}</main>
         <Footer />

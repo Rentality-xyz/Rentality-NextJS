@@ -6,14 +6,15 @@ import { useRef } from "react";
 import useEtherProvider from "@/hooks/useEtherProvider";
 
 type Props = {
-  isHost: boolean;
+  accountType: string;
 };
 
-export default function Header({ isHost }: Props) {
+export default function Header({ accountType }: Props) {
   const [userConnected, userWeb3Address, formatAddress, connectMetaMask] =
     useEtherProvider();
   const burgerMenuRef = useRef<HTMLDivElement>(null);
-  isHost = isHost ?? true;
+  accountType = accountType ?? "Host";
+  const isHost = accountType === "Host";
 
   function toggleBurgerMenu(): void {
     if (burgerMenuRef.current == null) return;
@@ -34,11 +35,7 @@ export default function Header({ isHost }: Props) {
       </div> */}
       <div className="flex flex-row w-full px-8 py-4 justify-between border-b-2 border-gray-400">
         <div className="flex flex-row mr-16 items-center">
-          {isHost ? (
-            <div className="font-bold text-3xl">Host account</div>
-          ) : (
-            <div className="font-bold text-3xl">Guest account</div>
-          )}
+          <div className="font-bold text-3xl">{accountType} account</div>
         </div>
         <div className="flex flex-row">
           <div className="flex flex-row mr-16 items-center">

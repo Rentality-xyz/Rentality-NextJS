@@ -21,7 +21,7 @@ export default function HostLayout({ children }: Props) {
       </div> */}
 
       <div className="main-grid">
-        <Header isHost={true} />
+        <Header accountType="Host" />
         <HostSideNavMenu />
         <main className="bg-gray-200 bg-opacity-60">{children}</main>
         <Footer />
