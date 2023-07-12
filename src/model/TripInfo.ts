@@ -1,6 +1,6 @@
 export enum TripStatus {
   Pending = "pending",
-  Comfirmed = "comfirmed",
+  Confirmed = "confirmed",
   CheckedInByHost = "checkedInByHost",
   Started = "started",
   CheckedOutByGuest = "checkedOutByGuest",
@@ -13,8 +13,8 @@ export const getTripStatusTextFromStatus = (status: TripStatus) => {
   switch (status) {
     case TripStatus.Pending:
       return "Pending";
-    case TripStatus.Comfirmed:
-      return "Comfirmed";
+    case TripStatus.Confirmed:
+      return "Confirmed";
     case TripStatus.CheckedInByHost:
       return "Started";
     case TripStatus.Started:

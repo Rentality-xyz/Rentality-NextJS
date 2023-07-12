@@ -43,7 +43,7 @@ export const getTripStatusFromContract = (status: number) => {
     case 0:
       return TripStatus.Pending;
     case 1:
-      return TripStatus.Comfirmed;
+      return TripStatus.Confirmed;
     case 2:
       return TripStatus.CheckedInByHost;
     case 3:

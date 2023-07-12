@@ -136,7 +136,7 @@ const useGuestTrips = () => {
           action: rejectRequest,
         });
         break;
-      case TripStatus.Comfirmed:
+      case TripStatus.Confirmed:
         break;
       case TripStatus.CheckedInByHost:
         result.push({

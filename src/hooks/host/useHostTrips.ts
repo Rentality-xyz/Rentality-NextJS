@@ -178,7 +178,7 @@ const useHostTrips = () => {
           action: rejectRequest,
         });
         break;
-      case TripStatus.Comfirmed:
+      case TripStatus.Confirmed:
         result.push({
           text: "Start",
           readonly: false,

@@ -229,10 +229,6 @@ export default function TripItem({ tripInfo, changeStatusCallback }: Props) {
                       onChange={(newValue) => {
                         setConfirmParams((prev) => {
                           const copy = [...prev];
-                          console.log(
-                            "newValue.target.checked",
-                            newValue.target.checked
-                          );
                           copy[index] = newValue.target.checked;
                           return copy;
                         });
