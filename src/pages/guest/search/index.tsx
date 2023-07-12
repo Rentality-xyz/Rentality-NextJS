@@ -183,7 +183,7 @@ export default function Search() {
                 })
               ) : (
                 <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-                  You dont have listed cars
+                  No cars were found for your request
                 </div>
               )}
             </div>

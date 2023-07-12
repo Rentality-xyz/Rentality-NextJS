@@ -109,6 +109,7 @@ export default function AddCar() {
       alert("Upload error" + e);
 
       setCarSaving(false);
+      setMessage("");
     }
   };
 
@@ -341,7 +342,6 @@ export default function AddCar() {
                     fuelType: e.target.value,
                   })
                 }
-                defaultValue={""}
                 value={carInfoFormParams.fuelType}
               >
                 <option className="hidden" disabled></option>
@@ -378,7 +378,7 @@ export default function AddCar() {
                 }
                 value={carInfoFormParams.transmission}
               >
-                <option className="hidden" disabled selected></option>
+                <option className="hidden" disabled></option>
                 <option value="Manual">Manual</option>
                 <option value="Automatic">Automatic</option>
               </select>
@@ -387,7 +387,7 @@ export default function AddCar() {
               className="w-full lg:w-min"
               id="color"
               label="Color"
-              placeholder="e.g. 16"
+              placeholder="e.g. Green"
               value={carInfoFormParams.color}
               setValue={(newValue) =>
                 setCarInfoFormParams({
@@ -488,7 +488,6 @@ export default function AddCar() {
           </div>
         </div>
         <div className="add-car-block mb-8 mt-8">
-          <label>{message}</label>
           <button
             className="w-40 h-16 bg-violet-700 disabled:bg-gray-500 rounded-md"
             ref={saveButtonRef}
@@ -496,6 +495,7 @@ export default function AddCar() {
           >
             Save
           </button>
+          <label>{message}</label>
         </div>
       </div>
     </HostLayout>
