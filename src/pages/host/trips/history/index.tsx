@@ -26,6 +26,7 @@ export default function History() {
                     key={value.tripId}
                     tripInfo={value}
                     changeStatusCallback = {changeStatusCallback}
+                    disableButton={true}
                   />
                 );
               })
