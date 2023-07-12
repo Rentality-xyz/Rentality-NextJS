@@ -23,7 +23,7 @@ export default function Header({ accountType }: Props) {
   }
 
   return (
-    <header className="bg-gray-200 bg-opacity-60">
+    <header className="bg-gray-200 bg-opacity-60 text-gray-900">
       {/* <div
         className="burger-icon"
         ref={burgerMenuRef}

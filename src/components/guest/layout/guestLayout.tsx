@@ -12,7 +12,7 @@ export default function GuestLayout({ children }: Props) {
       <div className="main-grid">
         <Header accountType="Guest" />
         <GuestSideNavMenu />
-        <main className="bg-gray-200 bg-opacity-60">{children}</main>
+        <main className="bg-gray-200 bg-opacity-60 text-gray-900">{children}</main>
         <Footer />
       </div>
     </>
