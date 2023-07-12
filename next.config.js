@@ -9,6 +9,12 @@ const nextConfig = {
         port: '',
         pathname: '/ipfs/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'ivory-specific-mink-961.mypinata.cloud',
+        port: '',
+        pathname: '/ipfs/**',
+      },
     ],
   },
 }

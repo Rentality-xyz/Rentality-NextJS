@@ -7,7 +7,7 @@ import {
 } from "@/model/blockchain/ContractCarInfo";
 import { SearchCarInfo } from "@/model/SearchCarInfo";
 import { calculateDays } from "@/utils/date";
-import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
+import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractCreateTripRequest } from "@/model/blockchain/ContractCreateTripRequest";
 
@@ -81,16 +81,7 @@ const useAvailableCars = () => {
                 const tokenURI = await rentalityContract.getCarMetadataURI(
                   i.carId
                 );
-                const ipfsURI = getIpfsURIfromPinata(tokenURI);
-                // const ulr = "/api/pinata/getMetadataJson?tokenURI=" + tokenURI;
-                // console.log("call ulr: " + ulr);
-                // const response = await fetch(ulr);
-                const response = await fetch(ipfsURI, {
-                  headers: {
-                    Accept: "application/json",
-                  },
-                });
-                const meta = await response.json();
+                const meta = await getMetaDataFromIpfs(tokenURI);
 
                 const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
                 let tripDays = calculateDays(dateFrom, dateTo) + 1;

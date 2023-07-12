@@ -11,7 +11,7 @@ import {
   AllowedChangeTripAction,
   TripStatus,
 } from "@/model/TripInfo";
-import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
+import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 
 const useHostTrips = () => {
@@ -250,13 +250,7 @@ const useHostTrips = () => {
                 const tokenURI = await rentalityContract.getCarMetadataURI(
                   i.carId
                 );
-                const ipfsURI = getIpfsURIfromPinata(tokenURI);
-                const response = await fetch(ipfsURI, {
-                  headers: {
-                    Accept: "application/json",
-                  },
-                });
-                const meta = await response.json();
+                const meta = await getMetaDataFromIpfs(tokenURI);
                 const tripStatus = getTripStatusFromContract(Number(i.status));
                 const tankSize = Number(
                   meta.attributes?.find(

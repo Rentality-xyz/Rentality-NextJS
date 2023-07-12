@@ -6,7 +6,7 @@ import {
   validateContractCarInfo,
 } from "@/model/blockchain/ContractCarInfo";
 import { BaseCarInfo } from "@/model/BaseCarInfo";
-import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
+import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 
 const useMyListings = () => {
@@ -53,13 +53,7 @@ const useMyListings = () => {
                 const tokenURI = await rentalityContract.getCarMetadataURI(
                   i.carId
                 );
-                const ipfsURI = getIpfsURIfromPinata(tokenURI);
-                const response = await fetch(ipfsURI, {
-                  headers: {
-                    Accept: "application/json",
-                  },
-                });
-                const meta = await response.json();
+                const meta = await getMetaDataFromIpfs(tokenURI);
 
                 const price = Number(i.pricePerDayInUsdCents) / 100;
 
