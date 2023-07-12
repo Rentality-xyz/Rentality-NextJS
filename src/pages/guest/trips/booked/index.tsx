@@ -3,23 +3,30 @@ import TripItem from "@/components/guest/tripItem";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useGuestTrips from "@/hooks/guest/useGuestTrips";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 export default function Booked() {
   const [dataFetched, tripsBooked, _, updateData] = useGuestTrips();
+  const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
   //const router = useRouter();
 
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
     try {
+      setTripStatusChanging(true);
       const result = await changeStatus();
 
       if (!result) {
         throw new Error("changeStatus error");
       }
       alert("Status successfully changed!");
+      
+      setTripStatusChanging(false);
       updateData();
       //router.reload();
     } catch (e) {
       alert("changeStatus error" + e);
+      
+      setTripStatusChanging(false);
     }
   };
 
@@ -40,6 +47,7 @@ export default function Booked() {
                     key={value.tripId}
                     tripInfo={value}
                     changeStatusCallback = {changeStatusCallback}
+                    disableButton = {tripStatusChanging}
                   />
                 );
               })

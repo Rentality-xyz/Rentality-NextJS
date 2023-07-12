@@ -66,7 +66,7 @@ const useAddCar = () => {
 
   const [carInfoFormParams, setCarInfoFormParams] =
     useState<NewCarInfo>(emptyNewCarInfo);
-  const [dataSaved, setDataSaved] = useState<Boolean>(false);
+  const [dataSaved, setDataSaved] = useState<Boolean>(true);
 
   const getRentalityContract = async () => {
     try {
@@ -244,11 +244,14 @@ const useAddCar = () => {
   };
 
   const saveCar = async (image: File) => {
-    try {
+    try {      
+      setDataSaved(false);
       const response = await uploadFileToIPFS(image);
 
       if (response.success !== true) {
         console.error("Uploaded image to Pinata error");
+        
+        setDataSaved(true);
         return false;
       }
 
@@ -263,6 +266,7 @@ const useAddCar = () => {
 
       if (!rentalityContract) {
         console.error("saveCar error: contract is null");
+        setDataSaved(true);
         return false;
       }
       const metadataURL = await uploadMetadataToIPFS(dataToSave);
@@ -304,6 +308,7 @@ const useAddCar = () => {
       return true;
     } catch (e) {
       alert("Upload error" + e);
+      setDataSaved(true);
       return false;
     }
   };

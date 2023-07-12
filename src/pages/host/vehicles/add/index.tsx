@@ -18,6 +18,7 @@ export default function AddCar() {
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [message, setMessage] = useState<string>("");
+  const [carSaving, setCarSaving] = useState<boolean>(false);
   const saveButtonRef = useRef<HTMLButtonElement>(null);
   const uploadImageRef = useRef<HTMLImageElement>(null);
   const router = useRouter();
@@ -90,32 +91,32 @@ export default function AddCar() {
       return;
     }
 
+    setCarSaving(true);
+
     try {
       setMessage("Please wait.. uploading (upto 5 mins)");
-      if (saveButtonRef.current) {
-        saveButtonRef.current.disabled = true;
-      }
       const result = await sentCarToServer(imageFile);
 
       if (!result) {
         throw new Error("sentCarToServer error");
       }
       alert("Successfully listed your car!");
+
+      setCarSaving(false);
       setMessage("");
       router.push("/host/vehicles");
     } catch (e) {
       alert("Upload error" + e);
-      if (saveButtonRef.current) {
-        saveButtonRef.current.disabled = false;
-      }
+
+      setCarSaving(false);
     }
   };
 
   useEffect(() => {
     if (saveButtonRef.current) {
-      saveButtonRef.current.disabled = imageFile == null || !verifyCar();
+      saveButtonRef.current.disabled = imageFile == null || !verifyCar() || carSaving;
     }
-  }, [imageFile, carInfoFormParams.pricePerDay, verifyCar]);
+  }, [imageFile, carInfoFormParams.pricePerDay, verifyCar, carSaving]);
 
   // !isEmpty(carInfoFormParams.securityDeposit)&&
   // !isEmpty(carInfoFormParams.fuelPricePerGal)&&
@@ -188,8 +189,8 @@ export default function AddCar() {
           <div className="text-lg mb-4">
             <strong>Photo</strong>
           </div>
-          {/* <button className="w-40 h-16 bg-violet-700 rounded-md">Upload</button> */}
-          <label className="flex w-40 h-16 bg-violet-700 rounded-md justify-center items-center cursor-pointer">
+          {/* <button className="w-40 h-16 bg-violet-700  rounded-md">Upload</button> */}
+          <label className="flex w-40 h-16 bg-violet-700 disabled:bg-gray-500 rounded-md justify-center items-center cursor-pointer">
             <input className="hidden" type="file" onChange={onChangeFile} />
             Upload
           </label>

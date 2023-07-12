@@ -11,9 +11,10 @@ import SelectBlock from "../inputBlock/selectBlock";
 type Props = {
   tripInfo: TripInfo;
   changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<void>;
+  disableButton:boolean;
 };
 
-export default function TripItem({ tripInfo, changeStatusCallback }: Props) {
+export default function TripItem({ tripInfo, changeStatusCallback, disableButton}: Props) {
   const [isAdditionalActionHidden, setIsAdditionalActionHidden] =
     useState(true);
   const defaultValues =
@@ -92,7 +93,8 @@ export default function TripItem({ tripInfo, changeStatusCallback }: Props) {
                 return (
                   <button
                     key={action.text}
-                    className="h-16 w-full rounded-md bg-violet-700 px-4"
+                    className="h-16 w-full rounded-md bg-violet-700 disabled:bg-gray-500 px-4"
+                    disabled={disableButton}
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
                         changeStatusCallback(() => {
@@ -153,7 +155,7 @@ export default function TripItem({ tripInfo, changeStatusCallback }: Props) {
           </div>
           <div className="w-full self-end">
             <Link href={`/host/trips/tripInfo/${tripInfo.tripId}`}>
-              <Button className="w-full h-16 bg-violet-700 rounded-md px-4">
+              <Button className="w-full h-16 bg-violet-700 disabled:bg-gray-500 rounded-md px-4">
                 Details
               </Button>
             </Link>
@@ -239,7 +241,7 @@ export default function TripItem({ tripInfo, changeStatusCallback }: Props) {
               );
             })}
           </div>
-          <Button onClick={handleButtonClick}>
+          <Button onClick={handleButtonClick} disabled={disableButton}>
             {tripInfo.allowedActions[0].text}
           </Button>
         </div>

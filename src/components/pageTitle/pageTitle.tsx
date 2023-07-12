@@ -21,7 +21,7 @@ export default function PageTitle({ title, actions }: Props) {
         : actions.map((action) => {
             return (
               <Link key={action.text} href={action.link}>
-                <button className="w-56 h-16 bg-violet-700 rounded-md">
+                <button className="w-56 h-16 bg-violet-700 disabled:bg-gray-500 rounded-md">
                   {action.text}
                 </button>
               </Link>

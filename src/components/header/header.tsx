@@ -44,13 +44,13 @@ export default function Header({ accountType }: Props) {
           <span>) Host</span> */}
             {isHost ? (
               <Link href="/guest">
-                <button className="w-40 h-10 bg-violet-700 rounded-md">
+                <button className="w-40 h-10 bg-violet-700 disabled:bg-gray-500 rounded-md">
                   Switch to Guest
                 </button>
               </Link>
             ) : (
               <Link href="/host">
-                <button className="w-40 h-10 bg-violet-700 rounded-md">
+                <button className="w-40 h-10 bg-violet-700 disabled:bg-gray-500 rounded-md">
                   Switch to Host
                 </button>
               </Link>
@@ -68,7 +68,7 @@ export default function Header({ accountType }: Props) {
             </div>
           ) : (
             <button
-              className="w-40 h-10 bg-violet-700 rounded-md"
+              className="w-40 h-10 bg-violet-700 disabled:bg-gray-500 rounded-md"
               onClick={() => {
                 connectMetaMask();
               }}

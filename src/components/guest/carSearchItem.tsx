@@ -4,11 +4,13 @@ import Image from "next/image";
 type Props = {
   searchInfo: SearchCarInfo;
   sendRentCarRequest: (carInfo: SearchCarInfo) => void;
+  disableButton:boolean;
 };
 
 export default function CarSearchItem({
   searchInfo,
   sendRentCarRequest,
+  disableButton,
 }: Props) {
   // const sendRentCarRequest = async (tokenId) => {
   //   try {
@@ -77,8 +79,9 @@ export default function CarSearchItem({
             <div className="text-sm">{`+ $${searchInfo.securityDeposit} deposit`}</div>
           </div>
           <button
-            className="h-12 w-44 rounded-md bg-violet-700 px-4"
+            className="h-12 w-44 rounded-md bg-violet-700 disabled:bg-gray-500 px-4"
             onClick={() => sendRentCarRequest(searchInfo)}
+            disabled={disableButton}
           >
             Rent for {searchInfo.days} day(s) for ${searchInfo.totalPrice + searchInfo.securityDeposit}
           </button>

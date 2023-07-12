@@ -29,6 +29,7 @@ export default function Search() {
     useState<TripSearchInfo>(emptyTripSearchInfo);
   const [enteredSearchParams, setEnteredSearchParams] =
     useState<TripSearchInfo>(emptyTripSearchInfo);
+  const [requestSending, setRequestSending] = useState<boolean>(false);
   const router = useRouter();
 
   const searchCars = async () => {
@@ -67,6 +68,7 @@ export default function Search() {
         alert("Date to must be greater than Date from");
         return;
       }
+      setRequestSending(true);
 
       const startUnixTime = startDateTime.getTime() / 1000;
       const endUnixTime = endDateTime.getTime() / 1000;
@@ -88,11 +90,16 @@ export default function Search() {
       );
       if (!result) {
         alert("sendRentCarRequest error!");
+        setRequestSending(false);
         return;
       }
+
+      setRequestSending(false);
       router.push("/guest/trips");
     } catch (e) {
       console.error("sendRentCarRequest error:" + e);
+      
+      setRequestSending(false);
     }
   };
 
@@ -145,7 +152,7 @@ export default function Search() {
             />
           </div>
           <button
-            className="h-16 w-56 self-end rounded-md bg-violet-700"
+            className="h-16 w-56 self-end rounded-md bg-violet-700 disabled:bg-gray-500"
             onClick={() => {
               searchCars();
             }}
@@ -170,6 +177,7 @@ export default function Search() {
                       key={value.carId}
                       searchInfo={value}
                       sendRentCarRequest={sendRentCarRequest}
+                      disableButton={requestSending}
                     />
                   );
                 })
