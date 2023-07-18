@@ -283,8 +283,15 @@ const useHostTrips = () => {
                   status: tripStatus,
                   allowedActions: getAllowedActions(tripStatus, i, tankSize),
                   totalPrice: (
-                    Number(i.paymentInfo.totalDayPriceInUsdCents) / 100
-                  ).toString(),
+                    Number(i.paymentInfo.totalDayPriceInUsdCents) / 100).toString(),
+                  tankVolumeInGal:tankSize,
+                  startFuelLevelInGal: Number(i.startFuelLevelInGal),
+                  endFuelLevelInGal: Number(i.endFuelLevelInGal),
+                  fuelPricePerGal: Number(i.fuelPricePerGalInUsdCents) / 100,
+                  milesIncludedPerDay: Number(i.milesIncludedPerDay),
+                  startOdometr: Number(i.startOdometr),
+                  endOdometr: Number(i.endOdometr),
+                  overmilePrice: Number(i.pricePerDayInUsdCents) / Number(i.milesIncludedPerDay) / 100,
                 };
                 return item;
               })

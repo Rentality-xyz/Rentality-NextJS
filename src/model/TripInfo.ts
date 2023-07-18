@@ -45,7 +45,19 @@ export type TripInfo = {
   status: TripStatus;
   allowedActions:AllowedChangeTripAction[];
   totalPrice: string;
+  tankVolumeInGal:number;
+  startFuelLevelInGal:number;
+  endFuelLevelInGal:number;
+  fuelPricePerGal: number;
+  milesIncludedPerDay:number;
+  startOdometr:number;
+  endOdometr:number;
+  overmilePrice: number;
 };
+
+export function getGalsFromFuelLevel(tripInfo: TripInfo, fuelLevel:number):number {
+  return Math.floor(fuelLevel * tripInfo.tankVolumeInGal) ;
+}
 
 export type AllowedChangeTripAction = {
   text:string;
