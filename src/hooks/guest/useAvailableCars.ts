@@ -85,9 +85,9 @@ const useAvailableCars = () => {
         Math.floor(endDateTime.getTime() / 1000)
       );
       const contractSearchCarParams: ContractSearchCarParams = {
-        country: searchCarRequest.country ?? "",
-        state: searchCarRequest.state ?? "",
-        city: searchCarRequest.city ?? "",
+        country:  "",
+        state: "",
+        city:  "",
         brand: searchCarRequest.brand ?? "",
         model: searchCarRequest.model ?? "",
         yearOfProductionFrom: BigInt(
