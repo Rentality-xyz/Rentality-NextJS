@@ -4,7 +4,6 @@ import useAvailableCars from "@/hooks/guest/useAvailableCars";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
-import { TripSearchInfo } from "@/model/TripSearchInfo";
 import { calculateDays } from "@/utils/date";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import SlidingPanel from "react-sliding-side-panel";
@@ -17,8 +16,9 @@ import {
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 
 export default function Search() {
-  const emptyTripSearchInfo: TripSearchInfo = {
-    location: "Miami, FI, United States",
+  const customEmptySearchCarRequest: SearchCarRequest = {
+    ...emptySearchCarRequest,
+    city: "Miami",
     dateFrom: dateToHtmlDateTimeFormat(new Date()),
     dateTo: dateToHtmlDateTimeFormat(new Date()),
   };
@@ -30,12 +30,7 @@ export default function Search() {
     dataSaved,
     createTripRequest,
   ] = useAvailableCars();
-  const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>({
-    ...emptySearchCarRequest,
-    city: "Miami",
-    dateFrom: dateToHtmlDateTimeFormat(new Date()),
-    dateTo: dateToHtmlDateTimeFormat(new Date()),
-  });
+  const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(customEmptySearchCarRequest);
 
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const router = useRouter();
@@ -316,7 +311,7 @@ export default function Search() {
                   Apply
                 </Button>
                 <Button
-                  onClick={() => setSearchCarRequest(emptySearchCarRequest)}
+                  onClick={() => setSearchCarRequest(customEmptySearchCarRequest)}
                 >
                   Reset filters
                 </Button>
