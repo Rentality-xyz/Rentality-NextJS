@@ -67,7 +67,7 @@ export default function Search() {
       );
       const endDateTime = new Date(searchCarsResult.searchCarRequest.dateTo);
 
-      const days = calculateDays(startDateTime, endDateTime);
+      const days = calculateDays(startDateTime, endDateTime) + 1;
       if (days < 0) {
         alert("Date to must be greater than Date from");
         return;
