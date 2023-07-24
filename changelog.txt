@@ -1,0 +1,34 @@
+[0.13] - 2023-07-24
+
+Added
+    Added refuel and overmiles info when finish trip
+    Added search filters for guest  
+    New bugs
+Changed
+    change payable(address).send(amount) to more secure payable(address).call{value: amount}("")
+Fixed
+    Other fixes and adjustments
+
+------------------------------------------
+
+[0.12.1] - 2023-07-12
+
+Added
+    Disable buttons to avoid initializing multiple transactions
+    New bugs
+Changed
+Fixed
+    Spelling errors for statuses
+    Text color for dark theme
+    Image error with IPFS gateway
+    Other fixes and adjustments
+
+------------------------------------------
+
+[0.12] - 2023-06-27
+
+Added
+    New bugs
+Changed
+Fixed
+    Other fixes and adjustments
