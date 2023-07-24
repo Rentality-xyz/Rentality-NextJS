@@ -5,16 +5,24 @@ import {
   ContractCarInfo,
   validateContractCarInfo,
 } from "@/model/blockchain/ContractCarInfo";
-import { SearchCarInfo } from "@/model/SearchCarInfo";
 import { calculateDays } from "@/utils/date";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractCreateTripRequest } from "@/model/blockchain/ContractCreateTripRequest";
+import {
+  SearchCarInfo,
+  SearchCarsResult,
+  emptySearchCarsResult,
+} from "@/model/SearchCarsResult";
+import { SearchCarRequest } from "@/model/SearchCarRequest";
+import { ContractSearchCarParams } from "@/model/blockchain/ContractSearchCarParams";
 
 const useAvailableCars = () => {
   const [dataFetched, setDataFetched] = useState<Boolean>(true);
   const [dataSaved, setDataSaved] = useState<Boolean>(false);
-  const [availableCars, setAvailableCars] = useState<SearchCarInfo[]>([]);
+  const [searchCarsResult, setSearchCarsResult] = useState<SearchCarsResult>(
+    emptySearchCarsResult
+  );
 
   const getRentalityContract = async () => {
     try {
@@ -56,19 +64,50 @@ const useAvailableCars = () => {
     }
   };
 
-  const getAvailableCars = async (
+  const searchAvailableCarsFromBlockChain = async (
     rentalityContract: IRentalityContract,
-    location: string,
-    dateFrom: Date,
-    dateTo: Date
-  ) => {
+    searchCarRequest: SearchCarRequest
+  ): Promise<SearchCarsResult | undefined> => {
     try {
       if (rentalityContract == null) {
         console.error("getAvailableCars error: contract is null");
         return;
       }
+      console.log("searchCarRequest:", JSON.stringify(searchCarRequest));
+
+      const startDateTime = new Date(searchCarRequest.dateFrom);
+      const endDateTime = new Date(searchCarRequest.dateTo);
+
+      const contractDateFrom = BigInt(
+        Math.floor(startDateTime.getTime() / 1000)
+      );
+      const contractDateTo = BigInt(
+        Math.floor(endDateTime.getTime() / 1000)
+      );
+      const contractSearchCarParams: ContractSearchCarParams = {
+        country: searchCarRequest.country ?? "",
+        state: searchCarRequest.state ?? "",
+        city: searchCarRequest.city ?? "",
+        brand: searchCarRequest.brand ?? "",
+        model: searchCarRequest.model ?? "",
+        yearOfProductionFrom: BigInt(
+          searchCarRequest.yearOfProductionFrom ?? "0"
+        ),
+        yearOfProductionTo: BigInt(searchCarRequest.yearOfProductionTo ?? "0"),
+        pricePerDayInUsdCentsFrom: BigInt(
+          Number(searchCarRequest.pricePerDayInUsdFrom) * 100 ?? "0"
+        ),
+        pricePerDayInUsdCentsTo: BigInt(
+          Number(searchCarRequest.pricePerDayInUsdTo) * 100 ?? "0"
+        ),
+      };
+
       const availableCarsView: ContractCarInfo[] =
-        await rentalityContract.getAvailableCars();
+        await rentalityContract.searchAvailableCars(
+          contractDateFrom,
+          contractDateTo,
+          contractSearchCarParams
+        );
 
       const availableCarsData =
         availableCarsView.length === 0
@@ -84,10 +123,16 @@ const useAvailableCars = () => {
                 const meta = await getMetaDataFromIpfs(tokenURI);
 
                 const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
-                let tripDays = calculateDays(dateFrom, dateTo) + 1;
+                let tripDays =
+                  calculateDays(
+                    startDateTime,
+                    endDateTime
+                  ) + 1;
                 const totalPrice = pricePerDay * tripDays;
-                const fuelPricePerGal = Number(i.fuelPricePerGalInUsdCents) / 100;
-                const securityDeposit = Number(i.securityDepositPerTripInUsdCents) / 100;
+                const fuelPricePerGal =
+                  Number(i.fuelPricePerGalInUsdCents) / 100;
+                const securityDeposit =
+                  Number(i.securityDepositPerTripInUsdCents) / 100;
 
                 let item: SearchCarInfo = {
                   carId: Number(i.carId),
@@ -125,9 +170,6 @@ const useAvailableCars = () => {
                     )?.value ?? "",
                   pricePerDay: pricePerDay,
                   fuelPricePerGal: fuelPricePerGal,
-                  location: location,
-                  dateFrom: dateFrom,
-                  dateTo: dateTo,
                   days: tripDays,
                   totalPrice: totalPrice,
                   securityDeposit: securityDeposit,
@@ -136,17 +178,16 @@ const useAvailableCars = () => {
               })
             );
 
-      return availableCarsData;
+      return {
+        searchCarRequest: searchCarRequest,
+        carInfos: availableCarsData,
+      };
     } catch (e) {
       console.error("getAvailableCars error:" + e);
     }
   };
 
-  const searchAvailableCars = async (
-    location: string,
-    dateFrom: Date,
-    dateTo: Date
-  ) => {
+  const searchAvailableCars = async (searchCarRequest: SearchCarRequest) => {
     try {
       setDataFetched(false);
       const rentalityContract = await getRentalityContract();
@@ -154,13 +195,11 @@ const useAvailableCars = () => {
         console.error("createTripRequest error: contract is null");
         return false;
       }
-      let data = await getAvailableCars(
+      let data = await searchAvailableCarsFromBlockChain(
         rentalityContract,
-        location,
-        dateFrom,
-        dateTo
+        searchCarRequest
       );
-      setAvailableCars(data ?? []);
+      setSearchCarsResult(data ?? emptySearchCarsResult);
       setDataFetched(true);
       return true;
     } catch (e) {
@@ -244,7 +283,7 @@ const useAvailableCars = () => {
 
   return [
     dataFetched,
-    availableCars,
+    searchCarsResult,
     searchAvailableCars,
     dataSaved,
     createTripRequest,

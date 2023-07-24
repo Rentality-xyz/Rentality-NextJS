@@ -3,6 +3,7 @@ import { ContractCarInfo } from "./ContractCarInfo";
 import { ContractCreateTripRequest } from "./ContractCreateTripRequest";
 import { ContractTrip } from "./ContractTrip";
 import { ContractCreateCarRequest } from "./ContractCreateCarRequest";
+import { ContractSearchCarParams } from "./ContractSearchCarParams";
 
 export interface IRentalityContract {
 
@@ -36,6 +37,8 @@ export interface IRentalityContract {
 
   ///guest functions
   getAvailableCars(): ContractCarInfo[];
+  searchAvailableCars(startDateTime:bigint, endDateTime:bigint, searchParams:ContractSearchCarParams): ContractCarInfo[];
+
   createTripRequest(request: ContractCreateTripRequest, value: object): Promise<ContractTransactionResponse>;
   getTripsAsGuest(): Promise<ContractTrip[]>;
   getCarsRentedByMe(): Promise<ContractCarInfo[]>;

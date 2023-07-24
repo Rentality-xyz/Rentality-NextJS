@@ -1,4 +1,4 @@
-import { SearchCarInfo } from "@/model/SearchCarInfo";
+import { SearchCarInfo } from "@/model/SearchCarsResult";
 import Image from "next/image";
 
 type Props = {

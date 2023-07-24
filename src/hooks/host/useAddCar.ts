@@ -288,6 +288,9 @@ const useAddCar = () => {
       const request: ContractCreateCarRequest = {
         tokenUri: metadataURL,
         carVinNumber: carInfoFormParams.vinNumber,
+        brand: carInfoFormParams.brand,
+        model: carInfoFormParams.model,
+        yearOfProduction: carInfoFormParams.releaseYear,
         pricePerDayInUsdCents: pricePerDayInUsdCents,
         securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
         tankVolumeInGal: BigInt(carInfoFormParams.tankVolumeInGal),

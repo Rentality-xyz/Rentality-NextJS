@@ -1,3 +1,10 @@
+import { emptySearchCarRequest, SearchCarRequest } from "./SearchCarRequest";
+
+export type SearchCarsResult = {
+  searchCarRequest: SearchCarRequest;
+  carInfos: SearchCarInfo[];
+};
+
 export type SearchCarInfo = {
   carId: number;
   ownerAddress: string;
@@ -12,10 +19,12 @@ export type SearchCarInfo = {
   milesIncludedPerDay: string;
   pricePerDay: number;
   fuelPricePerGal: number;
-  location: string;
-  dateFrom: Date;
-  dateTo: Date;
   days: number;
   totalPrice: number;
   securityDeposit: number;
+};
+
+export const emptySearchCarsResult: SearchCarsResult = {
+  searchCarRequest: emptySearchCarRequest,
+  carInfos: [],
 };
