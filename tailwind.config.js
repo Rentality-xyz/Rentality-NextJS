@@ -13,11 +13,22 @@ module.exports = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       colors: {
-        'filter-bg-color': '#1e1e30',
         'rentality-bg-dark': '#0b0b0d',
-        'rentality-action-light': '#7da2f6',
-        'rentality-action-medium': '#7f5ee7',
-        'rentality-action-dark': '#593ec0',        
+
+        'rentality-bg': '#1e1e30', //menu bg, filter, your chat msg bg
+        'rentality-primary': '#6600cd', // menu selected bg, other chat msg bg
+        'rentality-primary2': '#7c58d7', // menu notifacation
+        'rentality-secondary': '#22d7d3', //sale bg, some (i) text, 
+        'rentality-icons': '#c0aeff',
+        
+        'rentality-button-light': '#7da2f6',
+        'rentality-button-medium': '#7f5ee7',
+        'rentality-button-dark': '#593ec0',
+
+        'status-pending': '#7c58d7',
+        'status-on-trip': '#220e50',
+        'status-completed': '#22d7d3',
+        
       },
     },
   },

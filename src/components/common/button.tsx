@@ -1,7 +1,3 @@
-import Head from "next/head";
-import Image from "next/image";
-import logo from "../../images/logo.png";
-import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 import { MouseEventHandler } from "react";
 
