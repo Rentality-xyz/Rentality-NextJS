@@ -1,6 +1,6 @@
 import AdminLayout from "@/components/admin/layout/adminLayout";
-import InputBlock from "@/components/inputBlock";
-import InputBlockWithButton from "@/components/inputBlock/inputBlockWithButton";
+import RntInput from "@/components/common/rntInput";
+import RntInputWithButton from "@/components/common/rntInputWithButton";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useContractInfo from "@/hooks/admin/useContractInfo";
 import { parseEther } from "ethers";
@@ -153,18 +153,18 @@ export default function Admin() {
       <div className="flex flex-col px-8 py-4">
         <PageTitle title="Contract info" />
         <div className="grid grid-cols-2 gap-4 mt-4 text-lg">
-          <InputBlock
+          <RntInput
             id="balance"
             label="Rentality contract balance:"
             value={adminContractInfo.contractBalanceString + " ETH"}
             readOnly={true}
           />
-          <InputBlockWithButton
+          <RntInputWithButton
             id="withdraw"
             placeholder="0.00 ETH"
             label="Withdraw from Rentality contract balance:"
             value={ethToWithdraw}
-            onValueChange={(e) => {
+            onChange={(e) => {
               setEthToWithdraw(e.target.value);
             }}
             buttonText="Withdraw"
@@ -173,30 +173,30 @@ export default function Admin() {
               withdraw();
             }}
           />
-          <InputBlock
+          <RntInput
             id="contract"
             label="Rentality contract address:"
             value={adminContractInfo.contractAddress}
             readOnly={true}
           />
-          <InputBlock
+          <RntInput
             id="owner"
             label="Contract owner address:"
             value={adminContractInfo.contractOwnerAddress}
             readOnly={true}
           />
-          <InputBlock
+          <RntInput
             id="commission"
             label="Rentality platform commission:"
             value={adminContractInfo.rentalityCommission.toString() + "%"}
             readOnly={true}
           />
-          <InputBlockWithButton
+          <RntInputWithButton
             id="commissionSet"
             placeholder="10%"
             label="Set new platform commission (%):"
             value={newPlatformCommission}
-            onValueChange={(e) => {
+            onChange={(e) => {
               setNewPlatformCommission(e.target.value);
             }}
             buttonText="Save"
@@ -205,18 +205,18 @@ export default function Admin() {
               setPlatformCommission();
             }}
           />
-          <InputBlock
+          <RntInput
             id="userService"
             label="User service contract address:"
             value={adminContractInfo.userServiceContractAddress}
             readOnly={true}
           />
-          <InputBlockWithButton
+          <RntInputWithButton
             id="userServiceSet"
             placeholder="0x"
             label="Set user service contract address:"
             value={newUserServiceAddress}
-            onValueChange={(e) => {
+            onChange={(e) => {
               setNewUserServiceAddress(e.target.value);
             }}
             buttonText="Save"
@@ -225,18 +225,18 @@ export default function Admin() {
               setUserService();
             }}
           />
-          <InputBlock
+          <RntInput
             id="carService"
             label="Car new service contract address:"
             value={adminContractInfo.carServiceContractAddress}
             readOnly={true}
           />
-          <InputBlockWithButton
+          <RntInputWithButton
             id="carServiceSet"
             placeholder="0x"
             label="Set new car service contract address:"
             value={newCarServiceAddress}
-            onValueChange={(e) => {
+            onChange={(e) => {
               setNewCarServiceAddress(e.target.value);
             }}
             buttonText="Save"
@@ -245,18 +245,18 @@ export default function Admin() {
               setCarService();
             }}
           />
-          <InputBlock
+          <RntInput
             id="tripService"
             label="Trips service contract address:"
             value={adminContractInfo.tripServiceContractAddress}
             readOnly={true}
           />
-          <InputBlockWithButton
+          <RntInputWithButton
             id="tripServiceSet"
             placeholder="0x"
             label="Set new trips service contract address:"
             value={newTripsServiceAddress}
-            onValueChange={(e) => {
+            onChange={(e) => {
               setNewTripsServiceAddress(e.target.value);
             }}
             buttonText="Save"
@@ -265,18 +265,18 @@ export default function Admin() {
               setTripsService();
             }}
           />
-          <InputBlock
+          <RntInput
             id="currencyConverter"
             label="Currency converter contract address:"
             value={adminContractInfo.currencyConverterContractAddress}
             readOnly={true}
           />
-          <InputBlockWithButton
+          <RntInputWithButton
             id="currencyConverterSet"
             placeholder="0x"
             label="Set new currency converter contract address:"
             value={newCurrencyConverterServiceAddress}
-            onValueChange={(e) => {
+            onChange={(e) => {
               setNewCurrencyConverterServiceAddress(e.target.value);
             }}
             buttonText="Save"

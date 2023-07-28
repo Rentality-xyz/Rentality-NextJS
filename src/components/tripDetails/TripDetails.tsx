@@ -1,7 +1,6 @@
-import HostLayout from "@/components/host/layout/hostLayout";
-import InputBlock from "@/components/inputBlock";
 import useTripDetails from "@/hooks/useTripInfo";
 import PageTitle from "../pageTitle/pageTitle";
+import RntInput from "../common/rntInput";
 
 type Props = {
   tripId: bigint;
@@ -23,170 +22,170 @@ export default function TripDetails({ tripId }: Props) {
         ) : (
           <div className="my-4 grid grid-cols-2 gap-4 pr-4">
             <div className="flex flex-row gap-4">
-              <InputBlock
+              <RntInput
                 id="tripId"
                 label="Trip id:"
                 value={tripDetails.tripId.toString()}
                 readOnly={true}
               />
-              <InputBlock
+              <RntInput
                 id="carId"
                 label="Car id:"
                 value={tripDetails.carId.toString()}
                 readOnly={true}
               />
             </div>
-            <InputBlock
+            <RntInput
               id="status"
               label="Status:"
               value={tripDetails.status}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="host"
               label="Host address:"
               value={tripDetails.host}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="guest"
               label="Guest address:"
               value={tripDetails.guest}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="startDateTime"
               label="Start date and time:"
               value={tripDetails.startDateTime.toUTCString()}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="endDateTime"
               label="End date and time:"
               value={tripDetails.endDateTime.toUTCString()}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="startLocation"
               label="Start Location:"
               value={tripDetails.startLocation}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="endLocation"
               label="End Location:"
               value={tripDetails.endLocation}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="milesIncluded"
               label="Miles included:"
               value={tripDetails.milesIncludedPerDay.toString()}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="fuelPricePerGalInUsdCents"
               label="Fuel price per gal in USD:"
               value={tripDetails.fuelPricePerGalInUsd.toString()}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="approvedDateTime"
               label="Approved date and time:"
               value={tripDetails.approvedDateTime?.toUTCString()??"-"}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="checkedInByHostDateTime"
               label="Checked-in by host date and time:"
               value={tripDetails.checkedInByHostDateTime?.toUTCString()??"-"}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="startFuelLevel"
               label="Start fuel level in gal:"
               value={tripDetails.startFuelLevelInGal?.toString()??"-"}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="startOdometr"
               label="Start odometr:"
               value={tripDetails.startOdometr?.toString()??"-"}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="checkedInByGuestDateTime"
               label="Checked-in by guest date and time:"
               value={tripDetails.checkedInByGuestDateTime?.toUTCString()??"-"}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="checkedOutByGuestDateTime"
               label="Checked-out by guest date and time:"
               value={tripDetails.checkedOutByGuestDateTime?.toUTCString()??"-"}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="endFuelLevel"
               label="End fuel level in gal:"
               value={tripDetails.endFuelLevelInGal?.toString()??"-"}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="endOdometr"
               label="End odometr:"
               value={tripDetails.endOdometr?.toString()??"-"}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="checkedOutByHostDateTime"
               label="Checked-out by host date and time:"
               value={tripDetails.checkedOutByHostDateTime?.toUTCString()??"-"}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="paymentFrom"
               label="Payment from:"
               value={tripDetails.paymentFrom}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="paymentTo"
               label="Payment to:"
               value={tripDetails.paymentTo}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="pricePerDayInUsdCents"
               label="Price per day in USD:"
               value={tripDetails.pricePerDayInUsdCents.toString()}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="totalDayPriceInUsdCents"
               label="Total day price in USD:"
               value={tripDetails.totalDayPriceInUsd.toString()}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="taxPriceInUsdCents"
               label="Tax price in USD:"
               value={tripDetails.taxPriceInUsd.toString()}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="depositInUsdCents"
               label="Deposit in USD:"
               value={tripDetails.depositInUsd.toString()}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="ethToCurrencyRate"
               label="ETH to currency rate:"
               value={tripDetails.ethToCurrencyRate.toString()}
               readOnly={true}
             />
-            <InputBlock
+            <RntInput
               id="resolveAmountInUsdCents"
               label="Resolve amount in USD:"
               value={tripDetails.resolveAmountInUsd?.toString()??"-"}

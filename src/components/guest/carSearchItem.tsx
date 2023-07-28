@@ -1,10 +1,11 @@
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 import Image from "next/image";
+import RntButton from "../common/rntButton";
 
 type Props = {
   searchInfo: SearchCarInfo;
   sendRentCarRequest: (carInfo: SearchCarInfo) => void;
-  disableButton:boolean;
+  disableButton: boolean;
 };
 
 export default function CarSearchItem({
@@ -49,7 +50,13 @@ export default function CarSearchItem({
   return (
     <div className="flex flex-row rounded-xl bg-pink-100">
       <div className="h-56 w-60 flex-shrink-0 rounded-l-xl bg-slate-400">
-        <Image src={searchInfo.image} alt="" width={1000} height={1000} className="h-full w-full rounded-lg object-cover" />
+        <Image
+          src={searchInfo.image}
+          alt=""
+          width={1000}
+          height={1000}
+          className="h-full w-full rounded-lg object-cover"
+        />
         {/* <img
           src={searchInfo.image}
           alt=""
@@ -78,13 +85,14 @@ export default function CarSearchItem({
             <strong className="text-xl">{`$${searchInfo.pricePerDay}/day`}</strong>
             <div className="text-sm">{`+ $${searchInfo.securityDeposit} deposit`}</div>
           </div>
-          <button
-            className="h-12 w-44 rounded-md bg-violet-700 disabled:bg-gray-500 px-4"
+          <RntButton
+            className="h-14 w-44 px-4 text-base"
             onClick={() => sendRentCarRequest(searchInfo)}
             disabled={disableButton}
           >
-            Rent for {searchInfo.days} day(s) for ${searchInfo.totalPrice + searchInfo.securityDeposit}
-          </button>
+            Rent for {searchInfo.days} day(s) for $
+            {searchInfo.totalPrice + searchInfo.securityDeposit}
+          </RntButton>
         </div>
       </div>
     </div>

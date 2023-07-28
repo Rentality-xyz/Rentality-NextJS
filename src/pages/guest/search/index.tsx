@@ -7,13 +7,14 @@ import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
 import { calculateDays } from "@/utils/date";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import SlidingPanel from "react-sliding-side-panel";
-import InputBlock from "@/components/inputBlock";
 import Button from "@/components/common/button";
 import {
   SearchCarRequest,
   emptySearchCarRequest,
 } from "@/model/SearchCarRequest";
 import { SearchCarInfo } from "@/model/SearchCarsResult";
+import RntInput from "@/components/common/rntInput";
+import RntButton from "@/components/common/rntButton";
 
 export default function Search() {
   const customEmptySearchCarRequest: SearchCarRequest = {
@@ -30,7 +31,9 @@ export default function Search() {
     dataSaved,
     createTripRequest,
   ] = useAvailableCars();
-  const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(customEmptySearchCarRequest);
+  const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(
+    customEmptySearchCarRequest
+  );
 
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const router = useRouter();
@@ -122,8 +125,8 @@ export default function Search() {
     state = state != null && state.length > 0 ? state + ", " : "";
     country = country != null && country.length > 0 ? country + ", " : "";
     const location = `${city}${state}${country}`;
-    if (location.length > 2){
-      return location.slice(0,-2)
+    if (location.length > 2) {
+      return location.slice(0, -2);
     }
 
     return location;
@@ -134,50 +137,40 @@ export default function Search() {
       <div className="flex flex-col px-8 pt-4">
         <PageTitle title="Search" />
         <div className="search mb-2 flex flex-row items-end">
-          <Button
-            className="h-12 w-40 mb-2"
+          <RntButton
+            className="w-40 m-2"
             onClick={() => setOpenFilterPanel(true)}
           >
             Filters
-          </Button>
-          <div className="flex w-1/2 flex-col p-2">
-            <label htmlFor="location">Pick up & Return Location</label>
-            <input
-              id="location"
-              name="location"
-              className="w-full"
-              type="text"
-              value={formatLocation(
-                searchCarRequest.city,
-                searchCarRequest.state,
-                searchCarRequest.country
-              )}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="flex w-1/4 flex-col p-2">
-            <label htmlFor="dateFrom">From</label>
-            <input
-              id="dateFrom"
-              name="dateFrom"
-              className="w-full"
-              type="datetime-local"
-              value={searchCarRequest.dateFrom}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="flex w-1/4 flex-col p-2">
-            <label htmlFor="dateTo">To</label>
-            <input
-              id="dateTo"
-              name="dateTo"
-              className="w-full"
-              type="datetime-local"
-              value={searchCarRequest.dateTo}
-              onChange={handleChange}
-            />
-          </div>
-          <Button onClick={() => searchCars()}>Search</Button>
+          </RntButton>
+          <RntInput
+            className="w-1/2 m-2"
+            id="location"
+            label="Pick up & Return Location"
+            value={formatLocation(
+              searchCarRequest.city,
+              searchCarRequest.state,
+              searchCarRequest.country
+            )}
+            onChange={handleChange}
+          />
+          <RntInput
+            className="w-1/4 m-2"
+            id="dateFrom"
+            label="From"
+            type="datetime-local"
+            value={searchCarRequest.dateFrom}
+            onChange={handleChange}
+          />
+          <RntInput
+            className="w-1/4 m-2"
+            id="dateTo"
+            label="To"
+            type="datetime-local"
+            value={searchCarRequest.dateTo}
+            onChange={handleChange}
+          />
+          <RntButton className="m-2" onClick={() => searchCars()}>Search</RntButton>
         </div>
         <div className="mb-8 flex flex-row"></div>
         {!dataFetched ? (
@@ -228,33 +221,34 @@ export default function Search() {
               ></i>
             </div>
             <div className="flex flex-col gap-4 px-16 mt-4">
-              <InputBlock
+              <RntInput
                 id="filter-brand"
                 label="Car brand"
                 value={searchCarRequest.brand}
-                setValue={(newValue) =>
+                onChange={(e) =>
                   setSearchCarRequest({
                     ...searchCarRequest,
-                    brand: newValue,
+                    brand: e.target.value,
                   })
                 }
               />
-              <InputBlock
+              <RntInput
                 id="filter-model"
                 label="Car model"
                 value={searchCarRequest.model}
-                setValue={(newValue) =>
+                onChange={(e) =>
                   setSearchCarRequest({
                     ...searchCarRequest,
-                    model: newValue,
+                    model: e.target.value,
                   })
                 }
               />
-              <InputBlock
+              <RntInput
                 id="filter-year-from"
                 label="Model year from"
                 value={searchCarRequest.yearOfProductionFrom}
-                setValue={(newValue) => {
+                onChange={(e) => {
+                  const newValue = e.target.value;
                   if (isNaN(Number(newValue)) && newValue !== "") return;
 
                   setSearchCarRequest({
@@ -263,11 +257,12 @@ export default function Search() {
                   });
                 }}
               />
-              <InputBlock
+              <RntInput
                 id="filter-year-yo"
                 label="Model year to"
                 value={searchCarRequest.yearOfProductionTo}
-                setValue={(newValue) => {
+                onChange={(e) => {
+                  const newValue = e.target.value;
                   if (isNaN(Number(newValue)) && newValue !== "") return;
 
                   setSearchCarRequest({
@@ -276,11 +271,12 @@ export default function Search() {
                   });
                 }}
               />
-              <InputBlock
+              <RntInput
                 id="filter-price-from"
                 label="Price per day from"
                 value={searchCarRequest.pricePerDayInUsdFrom}
-                setValue={(newValue) => {
+                onChange={(e) => {
+                  const newValue = e.target.value;
                   if (isNaN(Number(newValue)) && newValue !== "") return;
                   setSearchCarRequest({
                     ...searchCarRequest,
@@ -288,11 +284,12 @@ export default function Search() {
                   });
                 }}
               />
-              <InputBlock
+              <RntInput
                 id="filter-price-yo"
                 label="Price per day to"
                 value={searchCarRequest.pricePerDayInUsdTo}
-                setValue={(newValue) => {
+                onChange={(e) => {
+                  const newValue = e.target.value;
                   if (isNaN(Number(newValue)) && newValue !== "") return;
 
                   setSearchCarRequest({
@@ -302,19 +299,21 @@ export default function Search() {
                 }}
               />
               <div className="flex flex-row gap-8 justify-between">
-                <Button
+                <RntButton
                   onClick={() => {
                     setOpenFilterPanel(false);
                     searchCars();
                   }}
                 >
                   Apply
-                </Button>
-                <Button
-                  onClick={() => setSearchCarRequest(customEmptySearchCarRequest)}
+                </RntButton>
+                <RntButton
+                  onClick={() =>
+                    setSearchCarRequest(customEmptySearchCarRequest)
+                  }
                 >
                   Reset filters
-                </Button>
+                </RntButton>
               </div>
             </div>
           </div>

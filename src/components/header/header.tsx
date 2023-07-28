@@ -1,9 +1,7 @@
-import Head from "next/head";
-import Image from "next/image";
-import logo from "../../images/logo.png";
 import Link from "next/link";
 import { useRef } from "react";
 import useEtherProvider from "@/hooks/useEtherProvider";
+import RntButton from "../common/rntButton";
 
 type Props = {
   accountType: string;
@@ -24,35 +22,22 @@ export default function Header({ accountType }: Props) {
 
   return (
     <header className="bg-gray-200 bg-opacity-60 text-gray-900">
-      {/* <div
-        className="burger-icon"
-        ref={burgerMenuRef}
-        onClick={() => toggleBurgerMenu()}
-      >
-        <div className="burger-icon-bar1"></div>
-        <div className="burger-icon-bar2"></div>
-        <div className="burger-icon-bar3"></div>
-      </div> */}
-      <div className="flex flex-row w-full px-8 py-4 justify-between border-b-2 border-gray-400">
+      <div className="flex flex-row w-full px-8 py-2 min-h-[6rem] justify-between border-b-2 border-gray-400">
         <div className="flex flex-row mr-16 items-center">
           <div className="font-bold text-3xl">{accountType} account</div>
         </div>
-        <div className="flex flex-row">
-          <div className="flex flex-row mr-16 items-center">
+        <div className="flex flex-row items-center">
+          <div className="flex flex-row mr-16">
             {/* <span>Guest (</span>
           <input type="checkbox"></input>
           <span>) Host</span> */}
             {isHost ? (
               <Link href="/guest">
-                <button className="w-40 h-10 bg-violet-700 disabled:bg-gray-500 rounded-md">
-                  Switch to Guest
-                </button>
+                <RntButton className="w-48 h-10">Switch to Guest</RntButton>
               </Link>
             ) : (
               <Link href="/host">
-                <button className="w-40 h-10 bg-violet-700 disabled:bg-gray-500 rounded-md">
-                  Switch to Host
-                </button>
+                <RntButton className="w-48 h-10">Switch to Host</RntButton>
               </Link>
             )}
           </div>
@@ -67,14 +52,14 @@ export default function Header({ accountType }: Props) {
               </div>
             </div>
           ) : (
-            <button
-              className="w-40 h-10 bg-violet-700 disabled:bg-gray-500 rounded-md"
+            <RntButton
+              className="w-40 h-10 text-md"
               onClick={() => {
                 connectMetaMask();
               }}
             >
               Connect MetaMask
-            </button>
+            </RntButton>
           )}
         </div>
       </div>

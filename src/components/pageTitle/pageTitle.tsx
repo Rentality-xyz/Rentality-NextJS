@@ -1,4 +1,5 @@
 import Link from "next/link";
+import RntButton from "../common/rntButton";
 
 export type PageTitleLink = {
   text: string;
@@ -21,9 +22,9 @@ export default function PageTitle({ title, actions }: Props) {
         : actions.map((action) => {
             return (
               <Link key={action.text} href={action.link}>
-                <button className="w-56 h-16 bg-violet-700 disabled:bg-gray-500 rounded-md">
+                <RntButton className="w-56 h-16">
                   {action.text}
-                </button>
+                </RntButton>
               </Link>
             );
           })}

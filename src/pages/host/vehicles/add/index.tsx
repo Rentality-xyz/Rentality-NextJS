@@ -1,11 +1,11 @@
 import HostLayout from "@/components/host/layout/hostLayout";
 import useAddCar, { NewCarInfo } from "@/hooks/host/useAddCar";
-import { uploadFileToIPFS } from "@/utils/pinata";
-import { verify } from "crypto";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import PageTitle from "@/components/pageTitle/pageTitle";
-import InputBlock from "@/components/inputBlock";
+import RntInput from "@/components/common/rntInput";
+import RntSelect from "@/components/common/rntSelect";
+import RntButton from "@/components/common/rntButton";
 
 export default function AddCar() {
   const [
@@ -19,7 +19,7 @@ export default function AddCar() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [message, setMessage] = useState<string>("");
   const [carSaving, setCarSaving] = useState<boolean>(false);
-  const saveButtonRef = useRef<HTMLButtonElement>(null);
+  const [isButtonSaveDisabled, setIsButtonSaveDisabled] = useState<boolean>(false);
   const uploadImageRef = useRef<HTMLImageElement>(null);
   const router = useRouter();
 
@@ -114,9 +114,7 @@ export default function AddCar() {
   };
 
   useEffect(() => {
-    if (saveButtonRef.current) {
-      saveButtonRef.current.disabled = imageFile == null || !verifyCar() || carSaving;
-    }
+    setIsButtonSaveDisabled(imageFile == null || !verifyCar() || carSaving);
   }, [imageFile, carInfoFormParams.pricePerDay, verifyCar, carSaving]);
 
   // !isEmpty(carInfoFormParams.securityDeposit)&&
@@ -126,71 +124,68 @@ export default function AddCar() {
     <HostLayout>
       <div className="add-car flex flex-col px-8 pt-4">
         <PageTitle title="Add a car" />
-        <div className="add-car-block">
+        <div className="add-car-block mt-4">
           <div className="text-lg mb-4">
             <strong>Car</strong>
           </div>
           <div className="flex flex-wrap gap-4">
-            <InputBlock
-              className="lg:w-min"
+            <RntInput 
+              className="lg:w-60"
               id="vinNumber"
               label="VIN number"
               placeholder="e.g. 4Y1SL65848Z411439"
               value={carInfoFormParams.vinNumber}
-              setValue={(newValue) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  vinNumber: newValue,
-                })
-              }
+              onChange={(e) => setCarInfoFormParams({
+                ...carInfoFormParams,
+                vinNumber: e.target.value,
+              })}
             />
-            <InputBlock
-              className="lg:w-min"
+            <RntInput
+              className="lg:w-60"
               id="brand"
               label="Brand"
               placeholder="e.g. Shelby"
               value={carInfoFormParams.brand}
-              setValue={(newValue) =>
+              onChange={(e) =>
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  brand: newValue,
+                  brand: e.target.value,
                 })
               }
             />
-            <InputBlock
-              className="lg:w-min"
+            <RntInput
+              className="lg:w-60"
               id="model"
               label="Model"
               placeholder="e.g. Mustang GT500"
               value={carInfoFormParams.model}
-              setValue={(newValue) =>
+              onChange={(e) =>
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  model: newValue,
+                  model: e.target.value,
                 })
               }
             />
-            <InputBlock
-              className="lg:w-min"
+            <RntInput
+              className="lg:w-60"
               id="releaseYear"
               label="Year of manufacture"
               placeholder="e.g. 2023"
               value={carInfoFormParams.releaseYear}
-              setValue={(newValue) =>
+              onChange={(e) =>
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  releaseYear: newValue,
+                  releaseYear: e.target.value,
                 })
               }
             />
           </div>
         </div>
 
-        <div className="add-car-block">
+        <div className="add-car-block mt-4">
           <div className="text-lg mb-4">
             <strong>Photo</strong>
           </div>
-          {/* <button className="w-40 h-16 bg-violet-700  rounded-md">Upload</button> */}
           <label className="flex w-40 h-16 bg-violet-700 disabled:bg-gray-500 rounded-md justify-center items-center cursor-pointer">
             <input className="hidden" type="file" onChange={onChangeFile} />
             Upload
@@ -200,210 +195,223 @@ export default function AddCar() {
           </div>
         </div>
 
-        <div className="add-car-block">
+        <div className="add-car-block mt-4">
           <div className="text-lg mb-4">
-            <strong>Car Basics</strong>
+            <strong>Location of vehicle availability</strong>
           </div>
           <div className="flex flex-wrap gap-4">
-            <InputBlock
-              className="lg:w-min"
-              id="name"
-              label="Car name"
-              placeholder="e.g. Eleanor"
-              value={carInfoFormParams.name}
-              setValue={(newValue) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  name: newValue,
-                })
-              }
-            />
-            <InputBlock
-              className="lg:w-min"
-              id="licensePlate"
-              label="License plate number"
-              placeholder="e.g. ABC-12D"
-              value={carInfoFormParams.licensePlate}
-              setValue={(newValue) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  licensePlate: newValue,
-                })
-              }
-            />
-            <InputBlock
-              className="lg:w-min"
+            <RntInput
+              className="lg:w-60"
               id="country"
               label="Country"
               placeholder="USA"
               value={carInfoFormParams.country}
-              setValue={(newValue) =>
+              onChange={(e) =>
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  country: newValue,
+                  country: e.target.value,
                 })
               }
             />
-            <InputBlock
-              className="lg:w-min"
+            <RntInput
+              className="lg:w-60"
               id="state"
               label="State"
               placeholder="e.g. Florida"
               value={carInfoFormParams.state}
-              setValue={(newValue) =>
+              onChange={(e) =>
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  state: newValue,
+                  state: e.target.value,
                 })
               }
             />
-            <InputBlock
-              className="lg:w-min"
+            <RntInput
+              className="lg:w-60"
               id="city"
               label="City"
               placeholder="e.g. Miami"
               value={carInfoFormParams.city}
-              setValue={(newValue) =>
+              onChange={(e) =>
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  city: newValue,
+                  city: e.target.value,
                 })
               }
             />
-            <InputBlock
-              className="lg:w-min"
+            <RntInput
+              className="w-[48%] lg:w-60"
               id="locationLatitude"
               label="Car location latitude"
               placeholder="e.g. 42.12345"
               value={carInfoFormParams.locationLatitude}
-              setValue={(newValue) =>
+              onChange={(e) =>
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  locationLatitude: newValue,
+                  locationLatitude: e.target.value,
                 })
               }
             />
-            <InputBlock
-              className="lg:w-min"
+            <RntInput
+              className="w-[48%] lg:w-60"
               id="locationLongitude"
               label="Car location longitude"
               placeholder="e.g. 42.12345"
               value={carInfoFormParams.locationLongitude}
-              setValue={(newValue) =>
+              onChange={(e) =>
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  locationLongitude: newValue,
+                  locationLongitude: e.target.value,
                 })
               }
             />
           </div>
         </div>
-        <div className="add-car-block">
+
+        <div className="add-car-block mt-4">
+          <div className="text-lg mb-4">
+            <strong>Car Basics</strong>
+          </div>
+          <div className="flex flex-wrap gap-4">
+            <RntInput
+              className="lg:w-60"
+              id="name"
+              label="Car name"
+              placeholder="e.g. Eleanor"
+              value={carInfoFormParams.name}
+              onChange={(e) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  name: e.target.value,
+                })
+              }
+            />
+            <RntInput
+              className="lg:w-60"
+              id="licensePlate"
+              label="License plate number"
+              placeholder="e.g. ABC-12D"
+              value={carInfoFormParams.licensePlate}
+              onChange={(e) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  licensePlate: e.target.value,
+                })
+              }
+            />
+            <RntInput
+              className="lg:w-60"
+              id="state"
+              label="State"
+              placeholder="e.g. Florida"
+              value={carInfoFormParams.state}
+              onChange={(e) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  state: e.target.value,
+                })
+              }
+            />
+          </div>
+        </div>
+        <div className="add-car-block mt-4">
           <div className="text-lg  mb-4">
             <strong>Basic car details</strong>
           </div>
-          {/* <div className="flex flex-col lg:flex-row"> */}
           <div className="details flex flex-wrap gap-4">
-            <InputBlock
-              className="w-2/5 lg:w-min"
+            <RntInput
+              className="w-[48%] lg:w-40"
               id="seatsNumber"
               label="Number of seats"
               placeholder="e.g. 5"
               value={carInfoFormParams.seatsNumber}
-              setValue={(newValue) =>
+              onChange={(e) =>
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  seatsNumber: newValue,
+                  seatsNumber: e.target.value,
                 })
               }
             />
-            <InputBlock
-              className="w-1/2 lg:w-min"
+            <RntInput
+              className="w-[48%] lg:w-40"
               id="doorsNumber"
               label="Number of doors"
               placeholder="e.g. 2"
               value={carInfoFormParams.doorsNumber}
-              setValue={(newValue) =>
+              onChange={(e) =>
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  doorsNumber: newValue,
+                  doorsNumber: e.target.value,
                 })
               }
             />
-            <div className="flex flex-col w-full lg:w-min">
-              <label className="mb-1" htmlFor="fuelType">
-                Fuel type
-              </label>
-              <select
-                id="fuelType"
-                onChange={(e) =>
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    fuelType: e.target.value,
-                  })
-                }
-                value={carInfoFormParams.fuelType}
-              >
-                <option className="hidden" disabled></option>
-                <option value="Gasoline">Gasoline</option>
-                <option value="Diesel">Diesel</option>
-                <option value="Bio-diesel">Bio-diesel</option>
-                <option value="Electro">Electro</option>
-              </select>
-            </div>
-            <InputBlock
-              className="w-full lg:w-min"
+            <RntSelect
+              className="w-[48%] lg:w-40"
+              id="fuelType"
+              label="Fuel type"
+              value={carInfoFormParams.fuelType}
+              onChange={(e) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  fuelType: e.target.value,
+                })
+              }>
+              <option className="hidden" disabled></option>
+              <option value="Gasoline">Gasoline</option>
+              <option value="Diesel">Diesel</option>
+              <option value="Bio-diesel">Bio-diesel</option>
+              <option value="Electro">Electro</option>
+            </RntSelect>
+            <RntInput
+              className="w-[48%] lg:w-40"
               id="tankVolumeInGal"
               label="Tank size in gal"
               placeholder="e.g. 16"
               value={carInfoFormParams.tankVolumeInGal}
-              setValue={(newValue) =>
+              onChange={(e) =>
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  tankVolumeInGal: newValue,
+                  tankVolumeInGal: e.target.value,
                 })
               }
             />
-            <div className="flex flex-col w-full lg:w-min">
-              <label className="mb-1" htmlFor="transmission">
-                Transmission
-              </label>
-              <select
-                id="transmission"
-                onChange={(e) =>
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    transmission: e.target.value,
-                  })
-                }
-                value={carInfoFormParams.transmission}
-              >
-                <option className="hidden" disabled></option>
-                <option value="Manual">Manual</option>
-                <option value="Automatic">Automatic</option>
-              </select>
-            </div>
-            <InputBlock
-              className="w-full lg:w-min"
+            <RntSelect
+              className="w-[48%] lg:w-40"
+              id="transmission"
+              label="Transmission"
+              value={carInfoFormParams.transmission}
+              onChange={(e) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  transmission: e.target.value,
+                })
+              }>
+              <option className="hidden" disabled></option>
+              <option value="Manual">Manual</option>
+              <option value="Automatic">Automatic</option>
+            </RntSelect>
+            <RntInput
+              className="w-[48%] lg:w-40"
               id="color"
               label="Color"
               placeholder="e.g. Green"
               value={carInfoFormParams.color}
-              setValue={(newValue) =>
+              onChange={(e) =>
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  color: newValue,
+                  color: e.target.value,
                 })
               }
             />
           </div>
         </div>
-        <div className="add-car-block">
+        <div className="add-car-block mt-4">
           <div className="text-lg  mb-4">
             <strong>More about the car</strong>
           </div>
           <div className="flex flex-col">
             <textarea
+              className="w-full px-4 py-2 rounded-2xl"
               rows={5}
               id="description"
               placeholder="e.g. Dupont Pepper Grey 1967 Ford Mustang fastback"
@@ -418,83 +426,78 @@ export default function AddCar() {
           </div>
         </div>
         
-        <div className="add-car-block">
+        <div className="add-car-block mt-4">
           <div className="text-lg  mb-4">
             <strong>Enabled distance</strong>
           </div>
           {/* <div className="flex flex-col lg:flex-row"> */}
           <div className="flex flex-wrap gap-4">
-            <InputBlock
-              className="lg:w-min"
+            <RntInput
+              className="lg:w-60"
               id="milesIncludedPerDay"
               label="Number of miles per day"
               placeholder="e.g. 200"
               value={carInfoFormParams.milesIncludedPerDay}
-              setValue={(newValue) =>
+              onChange={(e) =>
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  milesIncludedPerDay: newValue,
+                  milesIncludedPerDay: e.target.value,
                 })
               }
             />
           </div>
         </div>
 
-        <div className="add-car-block">
+        <div className="add-car-block mt-4">
           <div className="text-lg  mb-4">
             <strong>Price</strong>
           </div>
-          {/* <div className="flex flex-col lg:flex-row"> */}
           <div className="flex flex-wrap gap-4">
-            <InputBlock
-              className="lg:w-min"
+            <RntInput
+              className="lg:w-60"
               id="pricePerDay"
               label="Rental price"
               placeholder="e.g. 100"
               value={carInfoFormParams.pricePerDay}
-              setValue={(newValue) =>
+              onChange={(e) =>
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  pricePerDay: newValue,
+                  pricePerDay: e.target.value,
                 })
               }
             />
-            <InputBlock
-              className="lg:w-min"
+            <RntInput
+              className="lg:w-60"
               id="securityDeposit"
               label="Security deposit"
               placeholder="e.g. 300"
               value={carInfoFormParams.securityDeposit}
-              setValue={(newValue) =>
+              onChange={(e) =>
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  securityDeposit: newValue,
+                  securityDeposit: e.target.value,
                 })
               }
             />
-            <InputBlock
-              className="lg:w-min"
+            <RntInput
+              className="lg:w-60"
               id="fuelPricePerGal"
               label="Fuel price per gal"
               placeholder="e.g. 5.00"
               value={carInfoFormParams.fuelPricePerGal}
-              setValue={(newValue) =>
+              onChange={(e) =>
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  fuelPricePerGal: newValue,
+                  fuelPricePerGal: e.target.value,
                 })
               }
             />
           </div>
         </div>
-        <div className="add-car-block mb-8 mt-8">
-          <button
-            className="w-40 h-16 bg-violet-700 disabled:bg-gray-500 rounded-md"
-            ref={saveButtonRef}
-            onClick={saveCar}
-          >
+        <div className="mb-8 mt-8">
+          <RntButton className="w-40 h-16" disabled={isButtonSaveDisabled} onClick={saveCar}>
             Save
-          </button>
+          </RntButton>
           <label>{message}</label>
         </div>
       </div>
