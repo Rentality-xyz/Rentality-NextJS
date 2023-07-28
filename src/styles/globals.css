@@ -19,7 +19,7 @@
 /* body */
 
 body {
-  min-width: 640px;
+  min-width: 320px;
   font-family: 'Montserrat', Arial, sans-serif;
   color: rgb(var(--foreground-rgb));
   background-image: url("../images/bg.png");

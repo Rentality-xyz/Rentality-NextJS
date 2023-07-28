@@ -58,11 +58,11 @@ export default function Header({ accountType }: Props) {
           </div>
           {userConnected ? (
             <div className="flex flex-row ml-16 items-center">
-              <div className="flex flex-col m-2">
+              <div className=" flex-col m-2 hidden lg:flex">
                 <div>Name Surname</div>
                 <div className="text-sm">{formatAddress(userWeb3Address)}</div>
               </div>
-              <div className="flex flex-col w-20 h-20 m-2 rounded-2xl items-center justify-center bg-gray-500">
+              <div className="flex flex-col w-20 h-20 m-2 rounded-full items-center justify-center bg-gray-500">
                 <div className="">Photo</div>
               </div>
             </div>
