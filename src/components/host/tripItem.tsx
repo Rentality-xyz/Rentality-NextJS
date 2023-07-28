@@ -10,6 +10,7 @@ import { useState } from "react";
 import Button from "../common/button";
 import Checkbox from "../common/checkbox";
 import { calculateDays } from "@/utils/date";
+import { twMerge } from "tailwind-merge";
 import RntSelect from "../common/rntSelect";
 import RntInput from "../common/rntInput";
 import RntButton from "../common/rntButton";
@@ -69,6 +70,37 @@ export default function TripItem({
       );
     });
   };
+  let statusBgColor = "";
+  switch (tripInfo.status) {
+    case TripStatus.Pending:
+      statusBgColor = "bg-yellow-600";
+      break;
+    case TripStatus.Confirmed:
+      statusBgColor = "bg-lime-500";
+      break;
+    case TripStatus.CheckedInByHost:
+      statusBgColor = "bg-blue-600";
+      break;
+    case TripStatus.Started:
+      statusBgColor = "bg-blue-800";
+      break;
+    case TripStatus.CheckedOutByGuest:
+      statusBgColor = "bg-purple-600";
+      break;
+    case TripStatus.Finished:
+      statusBgColor = "bg-purple-800";
+      break;
+    case TripStatus.Closed:
+      statusBgColor = "bg-fuchsia-700";
+      break;
+    case TripStatus.Rejected:
+      statusBgColor = "bg-red-500";
+      break;
+  }
+  const statusClassName = twMerge(
+    "absolute right-0 top-2 px-8 py-2 text-gray-100 bg-purple-600 rounded-l-3xl",
+    statusBgColor
+  );
 
   return (
     <div className="flex flex-col  rounded-xl bg-pink-100">
@@ -87,7 +119,7 @@ export default function TripItem({
           alt=""
           className="h-full w-full rounded-lg object-cover"
         /> */}
-          <div className="absolute right-0 top-2 px-8 py-2 text-gray-100 bg-purple-600 rounded-l-3xl">
+          <div className={statusClassName}>
             <strong className="text-m">{`${getTripStatusTextFromStatus(
               tripInfo.status
             )}`}</strong>
