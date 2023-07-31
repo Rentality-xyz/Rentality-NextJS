@@ -5,6 +5,7 @@ import PageTitle from "@/components/pageTitle/pageTitle";
 import RntButton from "@/components/common/rntButton";
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
 import useEditCarInfo from "@/hooks/host/useEditCarInfo";
+import Link from "next/link";
 
 export default function EditCar() {
   const router = useRouter();
@@ -66,7 +67,9 @@ export default function EditCar() {
             Loading...
           </div>
         ) : carInfoFormParams.carId === -1 ? (
-          <h1 className="py-8 text-2xl font-bold text-red-800">Sorry, but you can not edit this car</h1>
+          <h1 className="py-8 text-2xl font-bold text-red-800">
+            Sorry, but you can not edit this car
+          </h1>
         ) : (
           <>
             <CarEditForm
@@ -76,7 +79,7 @@ export default function EditCar() {
               isNewCar={false}
             />
 
-            <div className="mb-8 mt-8">
+            <div className="flex flex-row gap-4 mb-8 mt-8 items-center">
               <RntButton
                 className="w-40 h-16"
                 disabled={isButtonSaveDisabled}
@@ -84,6 +87,9 @@ export default function EditCar() {
               >
                 Save
               </RntButton>
+              <Link href={`/host/vehicles/listings`}>
+                <RntButton className="w-40 h-16">Back</RntButton>
+              </Link>
               <label>{message}</label>
             </div>
           </>

@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import RntButton from "@/components/common/rntButton";
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
+import Link from "next/link";
 
 export default function AddCar() {
   const [
@@ -129,7 +130,7 @@ export default function AddCar() {
           isNewCar={true}
         />
 
-        <div className="mb-8 mt-8">
+        <div className="flex flex-row gap-4 mb-8 mt-8 items-center">
           <RntButton
             className="w-40 h-16"
             disabled={isButtonSaveDisabled}
@@ -137,6 +138,9 @@ export default function AddCar() {
           >
             Save
           </RntButton>
+          <Link href={`/host/vehicles/listings`}>
+            <RntButton className="w-40 h-16">Back</RntButton>
+          </Link>
           <label>{message}</label>
         </div>
       </div>
