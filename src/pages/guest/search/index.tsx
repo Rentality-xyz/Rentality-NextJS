@@ -2,7 +2,7 @@ import GuestLayout from "@/components/guest/layout/guestLayout";
 import CarSearchItem from "@/components/guest/carSearchItem";
 import useAvailableCars from "@/hooks/guest/useAvailableCars";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
 import { calculateDays } from "@/utils/date";
 import PageTitle from "@/components/pageTitle/pageTitle";
@@ -38,6 +38,8 @@ export default function Search() {
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const router = useRouter();
   const [openFilterPanel, setOpenFilterPanel] = useState(false);
+  const [searchButtonDisabled, setSearchButtonDisabled] =
+    useState<boolean>(false);
 
   const searchCars = async () => {
     const startDateTime = new Date(searchCarRequest.dateFrom);
@@ -132,19 +134,21 @@ export default function Search() {
     return location;
   }
 
+  useEffect(() => {
+    const isDataValid =
+      formatLocation?.length > 0 &&
+      new Date(searchCarRequest.dateFrom) >= new Date() &&
+      new Date(searchCarRequest.dateTo) > new Date(searchCarRequest.dateFrom);
+    setSearchButtonDisabled(!isDataValid);
+  }, [searchCarRequest]);
+
   return (
     <GuestLayout>
       <div className="flex flex-col px-8 pt-4">
         <PageTitle title="Search" />
-        <div className="search mb-2 flex flex-row items-end">
-          <RntButton
-            className="w-40 m-2"
-            onClick={() => setOpenFilterPanel(true)}
-          >
-            Filters
-          </RntButton>
+        <div className="search my-2 flex flex-row gap-2 items-end">
           <RntInput
-            className="w-1/2 m-2"
+            className="w-1/2"
             id="location"
             label="Pick up & Return Location"
             value={formatLocation(
@@ -155,7 +159,7 @@ export default function Search() {
             onChange={handleChange}
           />
           <RntInput
-            className="w-1/4 m-2"
+            className="w-1/4"
             id="dateFrom"
             label="From"
             type="datetime-local"
@@ -163,15 +167,24 @@ export default function Search() {
             onChange={handleChange}
           />
           <RntInput
-            className="w-1/4 m-2"
+            className="w-1/4"
             id="dateTo"
             label="To"
             type="datetime-local"
             value={searchCarRequest.dateTo}
             onChange={handleChange}
           />
-          <RntButton className="m-2" onClick={() => searchCars()}>Search</RntButton>
+          <RntButton
+            className="w-40"
+            disabled={searchButtonDisabled}
+            onClick={() => searchCars()}
+          >
+            Search
+          </RntButton>
         </div>
+        <RntButton className="w-40 mt-2" onClick={() => setOpenFilterPanel(true)}>
+          Filters
+        </RntButton>
         <div className="mb-8 flex flex-row"></div>
         {!dataFetched ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
