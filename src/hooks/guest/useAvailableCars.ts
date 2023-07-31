@@ -73,7 +73,6 @@ const useAvailableCars = () => {
         console.error("getAvailableCars error: contract is null");
         return;
       }
-      console.log("searchCarRequest:", JSON.stringify(searchCarRequest));
 
       const startDateTime = new Date(searchCarRequest.dateFrom);
       const endDateTime = new Date(searchCarRequest.dateTo);
