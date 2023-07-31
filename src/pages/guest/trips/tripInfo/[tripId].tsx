@@ -11,11 +11,6 @@ export default function GuestTripDetails() {
   return (
     <GuestLayout>
       <TripDetails tripId={tripIdBigInt} />
-      <div className="flex flex-row gap-4 mb-8 mt-4 items-center px-8">
-        <RntButton className="w-40 h-16" onClick={() => router.back()}>
-          Back
-        </RntButton>
-      </div>
     </GuestLayout>
   );
 }
