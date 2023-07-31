@@ -232,7 +232,6 @@ const useAddCar = () => {
         ...carInfoFormParams,
         image: response.pinataURL,
       };
-      setCarInfoFormParams(dataToSave);
 
       const rentalityContract = await getRentalityContract();
 
@@ -259,18 +258,18 @@ const useAddCar = () => {
 
       const request: ContractCreateCarRequest = {
         tokenUri: metadataURL,
-        carVinNumber: carInfoFormParams.vinNumber,
-        brand: carInfoFormParams.brand,
-        model: carInfoFormParams.model,
-        yearOfProduction: carInfoFormParams.releaseYear,
+        carVinNumber: dataToSave.vinNumber,
+        brand: dataToSave.brand,
+        model: dataToSave.model,
+        yearOfProduction: dataToSave.releaseYear,
         pricePerDayInUsdCents: pricePerDayInUsdCents,
         securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
-        tankVolumeInGal: BigInt(carInfoFormParams.tankVolumeInGal),
+        tankVolumeInGal: BigInt(dataToSave.tankVolumeInGal),
         fuelPricePerGalInUsdCents: fuelPricePerGalInUsdCents,
-        milesIncludedPerDay: BigInt(carInfoFormParams.milesIncludedPerDay),
-        country: carInfoFormParams.country,
-        state: carInfoFormParams.state,
-        city: carInfoFormParams.city,
+        milesIncludedPerDay: BigInt(dataToSave.milesIncludedPerDay),
+        country: dataToSave.country,
+        state: dataToSave.state,
+        city: dataToSave.city,
         locationLatitudeInPPM: locationLatitudeInPPM,
         locationLongitudeInPPM: locationLongitudeInPPM,
       };
