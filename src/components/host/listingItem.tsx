@@ -1,5 +1,7 @@
 import { BaseCarInfo } from "@/model/BaseCarInfo";
 import Image from "next/image";
+import RntButton from "../common/rntButton";
+import Link from "next/link";
 
 type Props = {
   carInfo: BaseCarInfo;
@@ -9,7 +11,13 @@ export default function ListingItem({ carInfo }: Props) {
   return (
     <div className="flex flex-row rounded-xl bg-pink-100">
       <div className="w-60 h-56 bg-slate-400 rounded-l-xl flex-shrink-0">
-        <Image src={carInfo.image} alt="" width={1000} height={1000} className="h-full w-full rounded-lg object-cover" />
+        <Image
+          src={carInfo.image}
+          alt=""
+          width={1000}
+          height={1000}
+          className="h-full w-full rounded-lg object-cover"
+        />
         {/* <img
           src={carInfo.image}
           alt=""
@@ -28,7 +36,9 @@ export default function ListingItem({ carInfo }: Props) {
             <strong className="text-xl">{`$${carInfo.pricePerDay}/day`}</strong>
             <div className="text-sm">{`$${carInfo.pricePerDay} est. total`}</div>
           </div>
-          <div className="text-gray-600">Listing</div>
+          <Link href={`/host/vehicles/edit/${carInfo.carId}`}>
+            <RntButton className="w-28 h-12">Edit</RntButton>
+          </Link>
         </div>
       </div>
     </div>

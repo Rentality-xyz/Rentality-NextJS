@@ -26,7 +26,21 @@ export interface IRentalityContract {
 
   ///host functions
   addCar(request:ContractCreateCarRequest): Promise<ContractTransactionResponse>;
+  updateCarInfo(
+    carId: bigint,
+    pricePerDayInUsdCents: bigint,
+    securityDepositPerTripInUsdCents: bigint,
+    fuelPricePerGalInUsdCents: bigint,
+    milesIncludedPerDay: bigint,
+    country: string,
+    state: string,
+    city: string,
+    locationLatitudeInPPM: bigint,
+    locationLongitudeInPPM: bigint,
+    currentlyListed: boolean
+  ): Promise<ContractTransactionResponse>;
   getCarMetadataURI(carId: bigint): Promise<string>;
+  getCarInfoById(carId: bigint): Promise<ContractCarInfo>;
   getMyCars(): Promise<ContractCarInfo[]>;
   getTripsAsHost(): Promise<ContractTrip[]>;
   approveTripRequest(tripId: bigint): Promise<ContractTransactionResponse>;

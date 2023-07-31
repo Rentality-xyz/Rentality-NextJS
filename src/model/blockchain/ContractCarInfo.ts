@@ -2,6 +2,9 @@ export type ContractCarInfo = {
   carId: bigint;
   carVinNumber: string;
   createdBy: string;
+  brand: string;
+  model: string;
+  yearOfProduction: bigint;
   pricePerDayInUsdCents: bigint;
   securityDepositPerTripInUsdCents: bigint;
   tankVolumeInGal: bigint;

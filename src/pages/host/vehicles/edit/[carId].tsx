@@ -1,0 +1,94 @@
+import HostLayout from "@/components/host/layout/hostLayout";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import PageTitle from "@/components/pageTitle/pageTitle";
+import RntButton from "@/components/common/rntButton";
+import CarEditForm from "@/components/host/carEditForm/carEditForm";
+import useEditCarInfo from "@/hooks/host/useEditCarInfo";
+
+export default function EditCar() {
+  const router = useRouter();
+  const { carId } = router.query;
+
+  const carIdNumber = Number(carId) ?? -1;
+
+  const [
+    dataFetched,
+    carInfoFormParams,
+    setCarInfoFormParams,
+    verifyCar,
+    dataSaved,
+    saveCarInfo,
+  ] = useEditCarInfo(carIdNumber);
+
+  const [message, setMessage] = useState<string>("");
+  const [carSaving, setCarSaving] = useState<boolean>(false);
+  const [isButtonSaveDisabled, setIsButtonSaveDisabled] =
+    useState<boolean>(false);
+
+  const saveChanges = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    setCarSaving(true);
+
+    try {
+      setMessage("Please wait.. uploading (upto 5 mins)");
+      const result = await saveCarInfo();
+
+      if (!result) {
+        throw new Error("saveCarInfo error");
+      }
+      alert("Successfully edited your car info!");
+
+      setCarSaving(false);
+      setMessage("");
+      router.push("/host/vehicles");
+    } catch (e) {
+      alert("Save error" + e);
+
+      setCarSaving(false);
+      setMessage("");
+    }
+  };
+
+  useEffect(() => {
+    setIsButtonSaveDisabled(!verifyCar() || carSaving);
+  }, [carInfoFormParams.pricePerDay, verifyCar, carSaving]);
+
+  if (!carId) return null;
+
+  return (
+    <HostLayout>
+      <div className="add-car flex flex-col px-8 pt-4">
+        <PageTitle title="Edit your car" />
+        {!dataFetched ? (
+          <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
+            Loading...
+          </div>
+        ) : carInfoFormParams.carId === -1 ? (
+          <h1 className="py-8 text-2xl font-bold text-red-800">Sorry, but you can not edit this car</h1>
+        ) : (
+          <>
+            <CarEditForm
+              carInfoFormParams={carInfoFormParams}
+              setCarInfoFormParams={setCarInfoFormParams}
+              onImageFileChange={async (e) => {}}
+              isNewCar={false}
+            />
+
+            <div className="mb-8 mt-8">
+              <RntButton
+                className="w-40 h-16"
+                disabled={isButtonSaveDisabled}
+                onClick={saveChanges}
+              >
+                Save
+              </RntButton>
+              <label>{message}</label>
+            </div>
+          </>
+        )}
+      </div>
+    </HostLayout>
+  );
+}

@@ -4,38 +4,12 @@ import { rentalityJSON } from "../../abis";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "../../utils/pinata";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractCreateCarRequest } from "@/model/blockchain/ContractCreateCarRequest";
-
-export type NewCarInfo = {
-  vinNumber: string;
-  brand: string;
-  model: string;
-  releaseYear: string;
-  image: string;
-  name: string;
-  licensePlate: string;
-  state: string;
-  seatsNumber: string;
-  doorsNumber: string;
-  fuelType: string;
-  tankVolumeInGal: string;
-  wheelDrive: string;
-  transmission: string;
-  trunkSize: string;
-  color: string;
-  bodyType: string;
-  description: string;
-  pricePerDay: string;
-  milesIncludedPerDay: string;
-  securityDeposit: string;
-  fuelPricePerGal: string;
-  country: string;
-  city: string;
-  locationLatitude: string;
-  locationLongitude: string;
-};
+import { HostCarInfo } from "@/model/HostCarInfo";
 
 const useAddCar = () => {
   const emptyNewCarInfo = {
+    carId: 0,
+    ownerAddress: "",
     vinNumber: "",
     brand: "",
     model: "",
@@ -43,7 +17,7 @@ const useAddCar = () => {
     image: "",
     name: "",
     licensePlate: "",
-    state: "",
+    licenseState: "",
     seatsNumber: "",
     doorsNumber: "",
     fuelType: "",
@@ -59,13 +33,14 @@ const useAddCar = () => {
     securityDeposit: "",
     fuelPricePerGal: "",
     country: "",
+    state: "",
     city: "",
     locationLatitude: "",
     locationLongitude: "",
   };
 
   const [carInfoFormParams, setCarInfoFormParams] =
-    useState<NewCarInfo>(emptyNewCarInfo);
+    useState<HostCarInfo>(emptyNewCarInfo);
   const [dataSaved, setDataSaved] = useState<Boolean>(true);
 
   const getRentalityContract = async () => {
@@ -96,7 +71,7 @@ const useAddCar = () => {
     image,
     name,
     licensePlate,
-    state,
+    licenseState,
     seatsNumber,
     doorsNumber,
     fuelType,
@@ -106,16 +81,8 @@ const useAddCar = () => {
     trunkSize,
     color,
     bodyType,
-    description,
-    pricePerDay,
-    milesIncludedPerDay,
-    securityDeposit,
-    fuelPricePerGal,
-    country,
-    city,
-    locationLatitude,
-    locationLongitude
-  }: NewCarInfo) => {
+    description
+  }: HostCarInfo) => {
     if (!verifyCar()) {
       return;
     }
@@ -130,9 +97,13 @@ const useAddCar = () => {
         value: licensePlate,
       },
       {
-        trait_type: "State",
-        value: state,
+        trait_type: "License state",
+        value: licenseState,
       },
+      // {
+      //   trait_type: "State",
+      //   value: state,
+      // },
       {
         trait_type: "Brand",
         value: brand,
@@ -181,14 +152,14 @@ const useAddCar = () => {
         trait_type: "Tank volume(gal)",
         value: tankVolumeInGal,
       },
-      {
-        trait_type: "Distance included(mi)",
-        value: milesIncludedPerDay,
-      },
-      {
-        trait_type: "Price per Day (USD cents)",
-        value: pricePerDay,
-      }
+      // {
+      //   trait_type: "Distance included(mi)",
+      //   value: milesIncludedPerDay,
+      // },
+      // {
+      //   trait_type: "Price per Day (USD cents)",
+      //   value: pricePerDay,
+      // }
     ];
     const nftJSON = {
       name,
@@ -221,7 +192,7 @@ const useAddCar = () => {
       !isEmpty(carInfoFormParams.releaseYear) &&
       !isEmpty(carInfoFormParams.name) &&
       !isEmpty(carInfoFormParams.licensePlate) &&
-      !isEmpty(carInfoFormParams.state) &&
+      !isEmpty(carInfoFormParams.licenseState) &&
       !isEmpty(carInfoFormParams.seatsNumber) &&
       !isEmpty(carInfoFormParams.doorsNumber) &&
       !isEmpty(carInfoFormParams.fuelType) &&
@@ -237,6 +208,7 @@ const useAddCar = () => {
       !isEmpty(carInfoFormParams.securityDeposit)&&
       !isEmpty(carInfoFormParams.fuelPricePerGal)&&
       !isEmpty(carInfoFormParams.country)&&
+      !isEmpty(carInfoFormParams.state) &&
       !isEmpty(carInfoFormParams.city)&&
       !isEmpty(carInfoFormParams.locationLatitude)&&
       !isEmpty(carInfoFormParams.locationLongitude)
