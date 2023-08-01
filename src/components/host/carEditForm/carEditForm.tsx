@@ -21,7 +21,7 @@ export default function CarEditForm({
 }: Props) {
   return (
     <>
-      <div className="add-car-block mt-4">
+      <div className="mt-4">
         <div className="text-lg mb-4">
           <strong>Car</strong>
         </div>
@@ -85,7 +85,7 @@ export default function CarEditForm({
         </div>
       </div>
 
-      <div className="add-car-block mt-4">
+      <div className="mt-4">
         <div className="text-lg mb-4">
           <strong>Photo</strong>
         </div>
@@ -109,7 +109,7 @@ export default function CarEditForm({
         </div>
       </div>
 
-      <div className="add-car-block mt-4">
+      <div className="mt-4">
         <div className="text-lg mb-4">
           <strong>Location of vehicle availability</strong>
         </div>
@@ -182,7 +182,7 @@ export default function CarEditForm({
         </div>
       </div>
 
-      <div className="add-car-block mt-4">
+      <div className="mt-4">
         <div className="text-lg mb-4">
           <strong>Car Basics</strong>
         </div>
@@ -232,7 +232,7 @@ export default function CarEditForm({
         </div>
       </div>
 
-      <div className="add-car-block mt-4">
+      <div className="mt-4">
         <div className="text-lg  mb-4">
           <strong>Basic car details</strong>
         </div>
@@ -332,7 +332,7 @@ export default function CarEditForm({
         </div>
       </div>
 
-      <div className="add-car-block mt-4">
+      <div className="mt-4">
         <div className="text-lg  mb-4">
           <strong>More about the car</strong>
         </div>
@@ -354,7 +354,7 @@ export default function CarEditForm({
         </div>
       </div>
 
-      <div className="add-car-block mt-4">
+      <div className="mt-4">
         <div className="text-lg  mb-4">
           <strong>Enabled distance</strong>
         </div>
@@ -376,7 +376,7 @@ export default function CarEditForm({
         </div>
       </div>
 
-      <div className="add-car-block mt-4">
+      <div className="mt-4">
         <div className="text-lg  mb-4">
           <strong>Price</strong>
         </div>

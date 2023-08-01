@@ -10,7 +10,9 @@ export default function GuestTripDetails() {
 
   return (
     <GuestLayout>
-      <TripDetails tripId={tripIdBigInt} />
+      <div className="flex flex-col">
+        <TripDetails tripId={tripIdBigInt} />
+      </div>
     </GuestLayout>
   );
 }

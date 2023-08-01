@@ -29,7 +29,7 @@ export default function Admin() {
   if (adminContractInfo == null) {
     return (
       <AdminLayout>
-        <div className="flex flex-col px-8 pt-4">
+        <div className="flex flex-col">
           <div className="flex flex-row justify-between items-center">
             <div className="text-2xl">
               <strong>Contract info</strong>
@@ -150,7 +150,7 @@ export default function Admin() {
 
   return (
     <AdminLayout>
-      <div className="flex flex-col px-8 py-4">
+      <div className="flex flex-col">
         <PageTitle title="Contract info" />
         <div className="grid grid-cols-2 gap-4 mt-4 text-lg">
           <RntInput

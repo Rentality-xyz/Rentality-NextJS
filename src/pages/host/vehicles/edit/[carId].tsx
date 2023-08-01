@@ -60,7 +60,7 @@ export default function EditCar() {
 
   return (
     <HostLayout>
-      <div className="add-car flex flex-col px-8 pt-4">
+      <div className="flex flex-col">
         <PageTitle title="Edit your car" />
         {!dataFetched ? (
           <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">

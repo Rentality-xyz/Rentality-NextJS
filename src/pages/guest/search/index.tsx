@@ -144,7 +144,7 @@ export default function Search() {
 
   return (
     <GuestLayout>
-      <div className="flex flex-col px-8 pt-4">
+      <div className="flex flex-col">
         <PageTitle title="Search" />
         <div className="search my-2 flex flex-row gap-2 items-end">
           <RntInput

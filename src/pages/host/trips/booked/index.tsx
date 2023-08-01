@@ -33,7 +33,7 @@ export default function Booked() {
 
   return (
     <HostLayout>
-      <div className="flex flex-col px-8 pt-4">
+      <div className="flex flex-col">
         <PageTitle title="Booked"/>
         {!dataFetched ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">

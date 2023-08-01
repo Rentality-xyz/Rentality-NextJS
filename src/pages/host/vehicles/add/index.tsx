@@ -120,7 +120,7 @@ export default function AddCar() {
 
   return (
     <HostLayout>
-      <div className="add-car flex flex-col px-8 pt-4">
+      <div className="flex flex-col">
         <PageTitle title="Add a car" />
 
         <CarEditForm
