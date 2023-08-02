@@ -137,6 +137,12 @@ const useGuestTrips = () => {
         });
         break;
       case TripStatus.Confirmed:
+        result.push({
+          text: "Reject",
+          readonly: false,
+          params: [],
+          action: rejectRequest,
+        });
         break;
       case TripStatus.CheckedInByHost:
         result.push({
@@ -155,6 +161,12 @@ const useGuestTrips = () => {
             },
           ],
           action: checkInTrip,
+        });
+        result.push({
+          text: "Reject",
+          readonly: false,
+          params: [],
+          action: rejectRequest,
         });
         break;
       case TripStatus.Started:

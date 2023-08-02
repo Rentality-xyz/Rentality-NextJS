@@ -323,13 +323,28 @@ export default function TripItem({
               );
             })}
           </div>
-          <RntButton
-            className="h-16 px-4"
-            onClick={handleButtonClick}
-            disabled={disableButton}
-          >
-            {tripInfo.allowedActions[0].text}
-          </RntButton>
+          <div className="flex flex-row gap-4">
+            {tripInfo.allowedActions.map((action) => {
+              return (
+                <RntButton
+                  key={action.text}
+                  className="h-16 px-4"
+                  disabled={disableButton}
+                  onClick={() => {
+                    if (action.params == null || action.params.length == 0) {
+                      changeStatusCallback(() => {
+                        return action.action(BigInt(tripInfo.tripId), []);
+                      });
+                    } else {
+                      handleButtonClick();
+                    }
+                  }}
+                >
+                  {action.text}
+                </RntButton>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
