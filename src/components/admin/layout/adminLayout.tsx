@@ -1,7 +1,6 @@
 import Footer from "@/components/footer/footer";
-import AdminSideNavMenu from "../sideNavMenu/adminSideNavMenu";
 import Header from "@/components/header/header";
-import useEtherProvider from "@/hooks/useEtherProvider";
+import AdminSideNavMenu from "@/components/sideNavMenu/adminSideNavMenu";
 
 type Props = {
   children?: React.ReactNode;

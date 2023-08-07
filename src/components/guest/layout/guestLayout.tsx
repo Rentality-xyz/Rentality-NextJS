@@ -1,6 +1,6 @@
 import Footer from "@/components/footer/footer";
-import GuestSideNavMenu from "../sideNavMenu/guestSideNavMenu";
 import Header from "@/components/header/header";
+import GuestSideNavMenu from "@/components/sideNavMenu/guestSideNavMenu";
 
 type Props = {
   children?: React.ReactNode;
