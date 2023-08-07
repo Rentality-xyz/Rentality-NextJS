@@ -53,6 +53,7 @@ body {
 }
 
 .main-grid>header {
+  @apply bg-rnt-temp-header-bg bg-opacity-60 text-rnt-temp-header-text;
   grid-area: header;
   width: 100%;
   display: flex;
@@ -61,12 +62,14 @@ body {
 }
 
 .main-grid>aside {
+  @apply bg-rnt-temp-sidemenu-bg bg-opacity-60 text-rnt-temp-sidemenu-text;
   grid-area: aside;
   width: 100%;
   height: auto;
 }
 
 .main-grid>main {
+  @apply bg-rnt-temp-main-bg bg-opacity-60 text-rnt-temp-main-text;
   grid-area: main;
   height: 100%;
   width: 100%;
@@ -74,11 +77,28 @@ body {
 }
 
 .main-grid>footer {
+  @apply bg-rnt-temp-footer-bg bg-opacity-30 text-rnt-temp-footer-text;
   grid-area: footer;
   width: 100%;
   height: auto;
   display: flex;
   flex-direction: column;
+}
+
+.main-grid .rnt-card {
+  @apply bg-rnt-temp-card-bg text-rnt-temp-card-text;
+}
+
+main img {
+  @apply bg-rnt-temp-image-bg;
+}
+
+.sliding-panel-container {
+  @apply bg-rnt-temp-slide-panel-container-bg bg-opacity-50;
+}
+
+.sliding-panel {
+  @apply bg-rnt-temp-slide-panel-bg bg-opacity-90;
 }
 
 @media (min-width: 1024px) {
@@ -136,9 +156,7 @@ body {
 
 /* main */
 
-@media (min-width: 1024px) {
-
-}
+@media (min-width: 1024px) {}
 
 /*"w-full lg:w-60 h-12 border-2 rounded-md border-gray-400"*/
 
@@ -146,8 +164,8 @@ body {
 
 /* controls */
 /* checkbox */
- /* Customize the label (the container) */
- .rentality-checkbox {
+/* Customize the label (the container) */
+.rentality-checkbox {
   display: block;
   position: relative;
   padding-left: 3.25rem;
@@ -179,12 +197,12 @@ body {
 }
 
 /* On mouse-over, add a grey background color */
-.rentality-checkbox:hover input ~ .rentality-checkmark {
+.rentality-checkbox:hover input~.rentality-checkmark {
   background-color: #bbb;
 }
 
 /* When the checkbox is checked, add a blue background */
-.rentality-checkbox input:checked ~ .rentality-checkmark {
+.rentality-checkbox input:checked~.rentality-checkmark {
   background-color: #6c29d9;
 }
 
@@ -196,7 +214,7 @@ body {
 }
 
 /* Show the checkmark when checked */
-.rentality-checkbox input:checked ~ .rentality-checkmark:after {
+.rentality-checkbox input:checked~.rentality-checkmark:after {
   display: block;
 }
 

@@ -7,7 +7,6 @@ import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
 import { calculateDays } from "@/utils/date";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import SlidingPanel from "react-sliding-side-panel";
-import Button from "@/components/common/button";
 import {
   SearchCarRequest,
   emptySearchCarRequest,
@@ -217,19 +216,19 @@ export default function Search() {
           </>
         )}
       </div>
-      <div className="w-full fixed top-0 left-0 bg-gray-500 bg-opacity-50 bg">
+      <div className="sliding-panel-container w-full fixed top-0 left-0">
         <SlidingPanel
           type={"left"}
           isOpen={openFilterPanel}
           size={30}
           noBackdrop={false}
           backdropClicked={() => setOpenFilterPanel(false)}
-          panelContainerClassName="bg-gray-400 bg-opacity-90" //bg-[#1e1e30]
+          panelContainerClassName="sliding-panel"
         >
           <div className="flex flex-col py-8">
             <div className="self-end mr-8">
               <i
-                className="fi fi-br-cross text-white"
+                className="fi fi-br-cross"
                 onClick={() => setOpenFilterPanel(false)}
               ></i>
             </div>

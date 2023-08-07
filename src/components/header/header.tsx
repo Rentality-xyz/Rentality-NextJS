@@ -21,7 +21,7 @@ export default function Header({ accountType }: Props) {
   }
 
   return (
-    <header className="bg-gray-200 bg-opacity-60 text-gray-900">
+    <header className="">
       <div className="flex flex-row w-full px-8 py-2 min-h-[7rem] justify-between">
         <div className="flex flex-row mr-16 items-center">
           <div className="font-bold text-3xl">{accountType} account</div>

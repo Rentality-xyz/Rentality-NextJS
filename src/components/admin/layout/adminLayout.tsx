@@ -12,7 +12,7 @@ export default function AdminLayout({ children }: Props) {
       <div className="main-grid">
         <Header accountType="Admin" />
         <AdminSideNavMenu />
-        <main className="px-8 py-4 bg-gray-200 bg-opacity-60 text-gray-900">{children}</main>
+        <main className="px-8 py-4">{children}</main>
         <Footer />
       </div>
     </>

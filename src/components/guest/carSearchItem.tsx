@@ -48,20 +48,15 @@ export default function CarSearchItem({
   // };
 
   return (
-    <div className="flex flex-row rounded-xl bg-pink-100">
-      <div className="h-56 w-60 flex-shrink-0 rounded-l-xl bg-slate-400">
+    <div className="rnt-card flex flex-row rounded-xl overflow-hidden">
+      <div className="h-56 w-60 flex-shrink-0">
         <Image
           src={searchInfo.image}
           alt=""
           width={1000}
           height={1000}
-          className="h-full w-full rounded-lg object-cover"
+          className="h-full w-full object-cover"
         />
-        {/* <img
-          src={searchInfo.image}
-          alt=""
-          className="h-full w-full rounded-lg object-cover"
-        /> */}
       </div>
       <div className="flex w-full flex-col justify-between p-4">
         <div className="flex flex-row items-baseline justify-between">

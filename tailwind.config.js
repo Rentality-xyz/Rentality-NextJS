@@ -28,7 +28,21 @@ module.exports = {
         'status-pending': '#7c58d7',
         'status-on-trip': '#220e50',
         'status-completed': '#22d7d3',
-        
+
+        'rnt-temp-header-bg': '#e5e7eb',      //#e5e7eb bg-gray-200
+        'rnt-temp-header-text': '#0f172a',    //#0f172a text-gray-900
+        'rnt-temp-sidemenu-bg': '#4b5563',    //#4b5563 bg-gray-600
+        'rnt-temp-sidemenu-text': '#ffffff',  //#ffffff text-white
+        'rnt-temp-main-bg': '#e5e7eb',        //#e5e7eb bg-gray-200
+        'rnt-temp-main-text': '#0f172a',      //#0f172a text-gray-900
+        'rnt-temp-card-bg': '#fce7f3',        //#fce7f3 bg-pink-100
+        'rnt-temp-card-text': '#0f172a',      //#0f172a text-gray-900
+        'rnt-temp-footer-bg': '#93c5fd',      //#93c5fd bg-blue-300
+        'rnt-temp-footer-text': '#ffffff',    //#ffffff text-white
+        'rnt-temp-status-text': '#ffffff',    //#ffffff text-white
+        'rnt-temp-image-bg': '#94a3b8',       //#94a3b8 bg-slate-400
+        'rnt-temp-slide-panel-container-bg': '#6b7280', //#6b7280 bg-gray-500
+        'rnt-temp-slide-panel-bg': '#9ca3af', //#9ca3af bg-gray-400
       },
     },
   },

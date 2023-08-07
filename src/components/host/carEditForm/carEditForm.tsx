@@ -96,7 +96,7 @@ export default function CarEditForm({
         >
           Upload
         </RntFileButton>
-        <div className="w-80 h-80 rounded-2xl mt-8 bg-gray-200 bg-opacity-40">
+        <div className="w-80 h-80 rounded-2xl mt-8 overflow-hidden bg-gray-200 bg-opacity-40">
           {carInfoFormParams.image != null &&
           carInfoFormParams.image.length > 0 ? (
             <Image

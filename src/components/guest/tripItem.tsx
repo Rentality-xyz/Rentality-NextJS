@@ -8,7 +8,6 @@ import {
   getTripStatusTextFromStatus,
 } from "@/model/TripInfo";
 import { useState } from "react";
-import Button from "../common/button";
 import Checkbox from "../common/checkbox";
 import { calculateDays } from "@/utils/date";
 import { twMerge } from "tailwind-merge";
@@ -92,26 +91,21 @@ export default function TripItem({
       break;
   }
   const statusClassName = twMerge(
-    "absolute right-0 top-2 px-8 py-2 text-gray-100 bg-purple-600 rounded-l-3xl",
+    "absolute right-0 top-2 px-8 py-2 rounded-l-3xl bg-purple-600 text-rnt-temp-status-text",
     statusBgColor
   );
 
   return (
-    <div className="flex flex-col  rounded-xl bg-pink-100">
+    <div className="rnt-card flex flex-col rounded-xl overflow-hidden">
       <div className="flex flex-wrap">
-        <div className="relative h-56 w-60 flex-shrink-0 rounded-l-xl bg-slate-400 text-center">
+        <div className="relative h-56 w-60 flex-shrink-0">
           <Image
             src={tripInfo.image}
             alt=""
             width={1000}
             height={1000}
-            className="h-full w-full rounded-lg object-cover"
+            className="h-full w-full object-cover"
           />
-          {/* <img
-          src={tripInfo.image}
-          alt=""
-          className="h-full w-full rounded-lg object-cover"
-        /> */}
           <div className={statusClassName}>
             <strong className="text-m">{`${getTripStatusTextFromStatus(
               tripInfo.status
