@@ -16,11 +16,14 @@ import RntInput from "@/components/common/rntInput";
 import RntButton from "@/components/common/rntButton";
 
 export default function Search() {
+  const dateNow = new Date();
+  const dateFrom = new Date(dateNow.getTime() + (1*60*60*1000)); //dateNow + 1 hour
+  const dateTo = new Date(dateNow.getTime() + (24*60*60*1000));   //dateNow + 1 day and 1 hour
   const customEmptySearchCarRequest: SearchCarRequest = {
     ...emptySearchCarRequest,
     city: "Miami",
-    dateFrom: dateToHtmlDateTimeFormat(new Date()),
-    dateTo: dateToHtmlDateTimeFormat(new Date()),
+    dateFrom: dateToHtmlDateTimeFormat(dateFrom),
+    dateTo: dateToHtmlDateTimeFormat(dateTo),
   };
 
   const [
