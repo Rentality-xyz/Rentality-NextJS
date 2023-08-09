@@ -37,7 +37,7 @@ export default function TripItem({
   const [confirmParams, setConfirmParams] = useState<boolean[]>([]);
   var refuelValue = tripInfo.startFuelLevelInGal - tripInfo.endFuelLevelInGal;
   refuelValue = refuelValue > 0 ? refuelValue : 0;
-  
+
   const tripDays = calculateDays(tripInfo.tripStart, tripInfo.tripEnd);
   var overmileValue =
     tripInfo.endOdometr -
@@ -97,7 +97,7 @@ export default function TripItem({
       break;
   }
   const statusClassName = twMerge(
-    "absolute right-0 top-2 px-8 py-2 rounded-l-3xl bg-purple-600 text-rnt-temp-status-text",
+    "absolute right-0 top-2 px-8 py-2 rounded-l-3xl bg-purple-600 text-rnt-temp-status-text text-end",
     statusBgColor
   );
 

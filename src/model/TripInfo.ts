@@ -20,7 +20,7 @@ export const getTripStatusTextFromStatus = (status: TripStatus) => {
     case TripStatus.Started:
       return "On the trip";
     case TripStatus.CheckedOutByGuest:
-      return "Finished";
+      return "Finished by guest";
     case TripStatus.Finished:
       return "Finished";
     case TripStatus.Closed:

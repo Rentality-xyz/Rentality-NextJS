@@ -91,7 +91,7 @@ export default function TripItem({
       break;
   }
   const statusClassName = twMerge(
-    "absolute right-0 top-2 px-8 py-2 rounded-l-3xl bg-purple-600 text-rnt-temp-status-text",
+    "absolute right-0 top-2 px-8 py-2 rounded-l-3xl bg-purple-600 text-rnt-temp-status-text text-end",
     statusBgColor
   );
 
@@ -110,6 +110,9 @@ export default function TripItem({
             <strong className="text-m">{`${getTripStatusTextFromStatus(
               tripInfo.status
             )}`}</strong>
+            {tripInfo.status === TripStatus.CheckedOutByGuest ? (
+              <div className="text-black text-xs">Pending finish by host and deposit refund</div>
+            ) : null}
           </div>
         </div>
         <div className="flex flex-1 flex-col justify-between gap-2 p-4">
