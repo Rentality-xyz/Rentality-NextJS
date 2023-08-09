@@ -43,6 +43,23 @@ module.exports = {
         'rnt-temp-image-bg': '#94a3b8',       //#94a3b8 bg-slate-400
         'rnt-temp-slide-panel-container-bg': '#6b7280', //#6b7280 bg-gray-500
         'rnt-temp-slide-panel-bg': '#9ca3af', //#9ca3af bg-gray-400
+        'rnt-temp-textbox-bg': '#ffffff',    //#ffffff text-white
+
+        // 'rnt-temp-header-bg': '#1C1038',      //#e5e7eb bg-gray-200 transparent
+        // 'rnt-temp-header-text': '#ffffff',    //#0f172a text-gray-900
+        // 'rnt-temp-sidemenu-bg': '#1e1e30',    //#4b5563 bg-gray-600
+        // 'rnt-temp-sidemenu-text': '#ffffff',  //#ffffff text-white
+        // 'rnt-temp-main-bg': '#1C1038',        //#e5e7eb bg-gray-200
+        // 'rnt-temp-main-text': '#ffffff',      //#0f172a text-gray-900
+        // 'rnt-temp-card-bg': '#1e1e30',        //#fce7f3 bg-pink-100
+        // 'rnt-temp-card-text': '#ffffff',      //#0f172a text-gray-900
+        // 'rnt-temp-footer-bg': '#1C1038',      //#93c5fd bg-blue-300
+        // 'rnt-temp-footer-text': '#ffffff',    //#ffffff text-white
+        // 'rnt-temp-status-text': '#ffffff',    //#ffffff text-white
+        // 'rnt-temp-image-bg': '#94a3b8',       //#94a3b8 bg-slate-400
+        // 'rnt-temp-slide-panel-container-bg': '#6b7280', //#6b7280 bg-gray-500
+        // 'rnt-temp-slide-panel-bg': '#1e1e30', //#9ca3af bg-gray-400
+        // 'rnt-temp-textbox-bg': 'transparent', //#9ca3af bg-gray-400
       },
     },
   },
