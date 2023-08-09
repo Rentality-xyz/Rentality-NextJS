@@ -13,43 +13,9 @@ export default function CarSearchItem({
   sendRentCarRequest,
   disableButton,
 }: Props) {
-  // const sendRentCarRequest = async (tokenId) => {
-  //   try {
-  //     const ethers = require("ethers");
-  //     //After adding your Hardhat network to your metamask, this code will get providers and signers
-  //     const provider = new ethers.providers.Web3Provider(window.ethereum);
-  //     const signer = provider.getSigner();
-
-  //     //Pull the deployed contract instance
-  //     let contract = new ethers.Contract(
-  //       RentCarJSON.address,
-  //       RentCarJSON.abi,
-  //       signer
-  //     );
-
-  //     const rentPriceInUsdCents = (totalPrice * 100) | 0;
-  //     const rentPriceInEth = await contract.getEthFromUsd(rentPriceInUsdCents);
-
-  //     setMessage("Renting the car... Please Wait (Upto 5 mins)");
-  //     rentCarButtonRef.current.disabled = true;
-  //     //run the executeSale function
-  //     let transaction = await contract.rentCar(tokenId, daysToRent, {
-  //       value: rentPriceInEth,
-  //     });
-  //     await transaction.wait();
-
-  //     alert("You successfully send request to rent this car!");
-  //     setMessage("");
-  //     window.location.replace("/");
-  //   } catch (e) {
-  //     alert("Upload Error" + e);
-  //     rentCarButtonRef.current.disabled = false;
-  //   }
-  // };
-
   return (
     <div className="rnt-card flex flex-row rounded-xl overflow-hidden">
-      <div className="h-56 w-60 flex-shrink-0">
+      <div className="h-full min-h-[14rem] w-60 flex-shrink-0">
         <Image
           src={searchInfo.image}
           alt=""
@@ -59,27 +25,26 @@ export default function CarSearchItem({
         />
       </div>
       <div className="flex w-full flex-col justify-between p-4">
-        <div className="flex flex-row items-baseline justify-between">
-          <div>
-            <strong className="text-xl">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>
+        <div className="flex flex-row items-baseline justify-between ">
+          <div className="w-9/12 overflow-hidden">
+            <strong className="text-lg">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>
           </div>
           <div>{searchInfo.licensePlate}</div>
         </div>
-        <div className="grid grid-cols-2">
+        <div className="grid grid-cols-[2fr_1fr] text-xs mt-2">
+          <div className="flex flex-col">
+            <div><strong>Total price ${searchInfo.totalPrice}</strong></div>
+            <div className="mt-2"><strong>{searchInfo.days} days</strong> trip for <strong>${searchInfo.pricePerDay} per day</strong></div>
+            <div>{searchInfo.milesIncludedPerDay} mi included per day</div>
+            <div>Additionally security deposit ${searchInfo.securityDeposit} per trip</div>
+          </div>
           <div className="flex flex-col">
             <div>- {searchInfo.fuelType}</div>
             <div>- {searchInfo.transmission}</div>
-          </div>
-          <div className="flex flex-col">
             <div>- {searchInfo.seatsNumber} seats</div>
-            <div>- {searchInfo.milesIncludedPerDay} mi included</div>
           </div>
         </div>
-        <div className="flex flex-row items-end justify-between">
-          <div className="flex flex-col">
-            <strong className="text-xl">{`$${searchInfo.pricePerDay}/day`}</strong>
-            <div className="text-sm">{`+ $${searchInfo.securityDeposit} deposit`}</div>
-          </div>
+        <div className="flex flex-row-reverse items-end">
           <RntButton
             className="h-14 w-44 px-4 text-base"
             onClick={() => sendRentCarRequest(searchInfo)}
