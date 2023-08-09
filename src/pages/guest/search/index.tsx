@@ -18,7 +18,7 @@ import RntButton from "@/components/common/rntButton";
 export default function Search() {
   const dateNow = new Date();
   const dateFrom = new Date(dateNow.getTime() + (1*60*60*1000)); //dateNow + 1 hour
-  const dateTo = new Date(dateNow.getTime() + (24*60*60*1000));   //dateNow + 1 day and 1 hour
+  const dateTo = new Date(dateNow.getTime() + (25*60*60*1000));   //dateNow + 1 day and 1 hour
   const customEmptySearchCarRequest: SearchCarRequest = {
     ...emptySearchCarRequest,
     city: "Miami",
@@ -46,7 +46,7 @@ export default function Search() {
   const searchCars = async () => {
     const startDateTime = new Date(searchCarRequest.dateFrom);
     const endDateTime = new Date(searchCarRequest.dateTo);
-    let days = calculateDays(startDateTime, endDateTime) + 1;
+    let days = calculateDays(startDateTime, endDateTime);
     if (days < 0) {
       days = 0;
     }
@@ -69,7 +69,7 @@ export default function Search() {
       );
       const endDateTime = new Date(searchCarsResult.searchCarRequest.dateTo);
 
-      const days = calculateDays(startDateTime, endDateTime) + 1;
+      const days = calculateDays(startDateTime, endDateTime);
       if (days < 0) {
         alert("Date to must be greater than Date from");
         return;

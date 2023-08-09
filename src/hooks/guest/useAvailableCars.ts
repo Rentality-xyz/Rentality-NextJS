@@ -126,7 +126,7 @@ const useAvailableCars = () => {
                   calculateDays(
                     startDateTime,
                     endDateTime
-                  ) + 1;
+                  );
                 const totalPrice = pricePerDay * tripDays;
                 const fuelPricePerGal =
                   Number(i.fuelPricePerGalInUsdCents) / 100;
