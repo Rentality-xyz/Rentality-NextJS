@@ -14,6 +14,8 @@ import { twMerge } from "tailwind-merge";
 import RntSelect from "../common/rntSelect";
 import RntInput from "../common/rntInput";
 import RntButton from "../common/rntButton";
+import AllowedActionsForStatusStarted from "./allowedActionsForStatusStarted";
+import AllowedActions from "./allowedActions";
 
 type Props = {
   tripInfo: TripInfo;
@@ -36,8 +38,6 @@ export default function TripItem({
       : [];
   const [inputParams, setInputParams] = useState<string[]>(defaultValues);
   const [confirmParams, setConfirmParams] = useState<boolean[]>([]);
-  const [refuelValue, setRefuelValue] = useState<number>(0);
-  const [overmileValue, setOvermileValue] = useState<number>(0);
 
   const handleButtonClick = () => {
     if (
@@ -111,7 +111,9 @@ export default function TripItem({
               tripInfo.status
             )}`}</strong>
             {tripInfo.status === TripStatus.CheckedOutByGuest ? (
-              <div className="text-black text-xs">Pending finish by host and deposit refund</div>
+              <div className="text-black text-xs">
+                Pending finish by host and deposit refund
+              </div>
             ) : null}
           </div>
         </div>
@@ -218,133 +220,22 @@ export default function TripItem({
               data to change status:
             </strong>
           </div>
-          <div className="flex flex-col py-4">
-            {tripInfo.allowedActions[0].params.map((param, index) => {
-              return (
-                <div className="flex flex-row items-end" key={param.text}>
-                  {param.type === "fuel" ? (
-                    <RntSelect
-                      className="w-1/3 py-2"
-                      id={param.text}
-                      label={param.text}
-                      readOnly={tripInfo.allowedActions[0].readonly}
-                      value={inputParams[index]}
-                      onChange={(e) => {
-                        const newValue = e.target.value;
-
-                        setInputParams((prev) => {
-                          const copy = [...prev];
-                          copy[index] = newValue;
-                          return copy;
-                        });
-
-                        if (tripInfo.status === TripStatus.Started) {
-                          const endLevel = Number(newValue) ?? 0;
-                          const endLevelInGals = getGalsFromFuelLevel(
-                            tripInfo,
-                            endLevel
-                          );
-                          const fuelDiffs =
-                            tripInfo.startFuelLevelInGal - endLevelInGals;
-                          if (fuelDiffs >= 0) {
-                            setRefuelValue(fuelDiffs);
-                          }
-                        }
-                      }}
-                    >
-                      <option className="hidden" disabled></option>
-                      <option value="0">0</option>
-                      <option value="0.125">1/8</option>
-                      <option value="0.25">1/4</option>
-                      <option value="0.375">3/8</option>
-                      <option value="0.5">1/2</option>
-                      <option value="0.625">5/8</option>
-                      <option value="0.75">3/4</option>
-                      <option value="0.875">7/8</option>
-                      <option value="1">full</option>
-                    </RntSelect>
-                  ) : (
-                    <RntInput
-                      className="w-1/3 py-2"
-                      id={param.text}
-                      label={param.text}
-                      readOnly={tripInfo.allowedActions[0].readonly}
-                      value={inputParams[index]}
-                      onChange={(e) => {
-                        const newValue = e.target.value;
-
-                        setInputParams((prev) => {
-                          const copy = [...prev];
-                          copy[index] = newValue;
-                          return copy;
-                        });
-                        if (tripInfo.status === TripStatus.Started) {
-                          const endOdometr = Number(newValue) ?? 0;
-                          const tripDays = calculateDays(
-                            tripInfo.tripStart,
-                            tripInfo.tripEnd
-                          );
-                          let overMiles =
-                            endOdometr -
-                            tripInfo.startOdometr -
-                            tripInfo.milesIncludedPerDay * tripDays;
-                          overMiles = overMiles > 0 ? overMiles : 0;
-                          setOvermileValue(overMiles);
-                        }
-                      }}
-                    />
-                  )}
-
-                  {tripInfo.status === TripStatus.Started ? (
-                    param.type === "fuel" ? (
-                      <div className="w-1/3 grid grid-cols-2 mx-8 text-sm">
-                        <span className="font-bold col-span-2">
-                          Reimbursement charge:
-                        </span>
-                        <span>ReFuel:</span>
-                        <span>{refuelValue} gal</span>
-                        <span>Gal price:</span>
-                        <span>${tripInfo.fuelPricePerGal.toFixed(2)}</span>
-                        <span>Charge:</span>
-                        <span>
-                          ${(refuelValue * tripInfo.fuelPricePerGal).toFixed(2)}
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="w-1/3 grid grid-cols-2 mx-8 text-sm">
-                        <span className="font-bold col-span-2">
-                          Reimbursement charge:
-                        </span>
-                        <span>Overmiles:</span>
-                        <span>{overmileValue}</span>
-                        <span>Overmile price:</span>
-                        <span>${tripInfo.overmilePrice.toFixed(4)}</span>
-                        <span>Charge:</span>
-                        <span>
-                          ${(overmileValue * tripInfo.overmilePrice).toFixed(2)}
-                        </span>
-                      </div>
-                    )
-                  ) : null}
-
-                  {tripInfo.allowedActions[0].readonly ? (
-                    <Checkbox
-                      className="ml-4"
-                      title="Confirm"
-                      value={confirmParams[index]}
-                      onChange={(newValue) => {
-                        setConfirmParams((prev) => {
-                          const copy = [...prev];
-                          copy[index] = newValue.target.checked;
-                          return copy;
-                        });
-                      }}
-                    />
-                  ) : null}
-                </div>
-              );
-            })}
-          </div>
+          {tripInfo.status === TripStatus.Started ? (
+            <AllowedActionsForStatusStarted
+              tripInfo={tripInfo}
+              params={tripInfo.allowedActions[0].params}
+              inputParams={inputParams}
+              setInputParams={setInputParams}
+            />
+          ) : (
+            <AllowedActions
+              tripInfo={tripInfo}
+              inputParams={inputParams}
+              setInputParams={setInputParams}
+              confirmParams={confirmParams}
+              setConfirmParams={setConfirmParams}
+            />
+          )}
 
           <div className="flex flex-row gap-4">
             {tripInfo.allowedActions.map((action) => {

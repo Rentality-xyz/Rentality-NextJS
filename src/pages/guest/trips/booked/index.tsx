@@ -2,7 +2,6 @@ import GuestLayout from "@/components/guest/layout/guestLayout";
 import TripItem from "@/components/guest/tripItem";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useGuestTrips from "@/hooks/guest/useGuestTrips";
-import { useRouter } from "next/router";
 import { useState } from "react";
 
 export default function Booked() {
