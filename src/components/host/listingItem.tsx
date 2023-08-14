@@ -10,7 +10,7 @@ type Props = {
 export default function ListingItem({ carInfo }: Props) {
   return (
     <div className="rnt-card flex flex-row rounded-xl overflow-hidden">
-      <div className="w-60 h-56 flex-shrink-0">
+      {/* <div className="w-60 h-56 flex-shrink-0">
         <Image
           src={carInfo.image}
           alt=""
@@ -18,7 +18,11 @@ export default function ListingItem({ carInfo }: Props) {
           height={1000}
           className="h-full w-full object-cover"
         />
-      </div>
+      </div> */}
+      <div
+        style={{ backgroundImage: `url(${carInfo.image})` }}
+        className="relative w-64 min-h-[12rem] flex-shrink-0 bg-center bg-cover"
+      />
       <div className="w-full flex flex-col justify-between p-4">
         <div className="flex flex-row justify-between items-baseline">
           <div>

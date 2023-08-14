@@ -15,7 +15,7 @@ export default function CarSearchItem({
 }: Props) {
   return (
     <div className="rnt-card flex flex-row rounded-xl overflow-hidden">
-      <div className="h-full min-h-[14rem] w-60 flex-shrink-0">
+      {/* <div className="w-60 h-full min-h-[14rem] flex-shrink-0">
         <Image
           src={searchInfo.image}
           alt=""
@@ -23,7 +23,11 @@ export default function CarSearchItem({
           height={1000}
           className="h-full w-full object-cover"
         />
-      </div>
+      </div> */}
+      <div
+        style={{ backgroundImage: `url(${searchInfo.image})` }}
+        className="relative w-64 min-h-[12rem] flex-shrink-0 bg-center bg-cover"
+      />
       <div className="flex w-full flex-col justify-between p-4">
         <div className="flex flex-row items-baseline justify-between ">
           <div className="w-9/12 overflow-hidden">

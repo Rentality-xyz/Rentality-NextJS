@@ -4,15 +4,10 @@ import { dateFormat } from "@/utils/datetimeFormatters";
 import {
   TripInfo,
   TripStatus,
-  getGalsFromFuelLevel,
   getTripStatusTextFromStatus,
 } from "@/model/TripInfo";
 import { useState } from "react";
-import Checkbox from "../common/checkbox";
-import { calculateDays } from "@/utils/date";
 import { twMerge } from "tailwind-merge";
-import RntSelect from "../common/rntSelect";
-import RntInput from "../common/rntInput";
 import RntButton from "../common/rntButton";
 import AllowedActionsForStatusStarted from "./allowedActionsForStatusStarted";
 import AllowedActions from "./allowedActions";
@@ -98,14 +93,18 @@ export default function TripItem({
   return (
     <div className="rnt-card flex flex-col rounded-xl overflow-hidden">
       <div className="flex flex-wrap">
-        <div className="relative h-56 w-60 flex-shrink-0">
+        {/* <div className="relative h-56 w-60 flex-shrink-0">
           <Image
             src={tripInfo.image}
             alt=""
             width={1000}
             height={1000}
             className="h-full w-full object-cover"
-          />
+          /> */}
+        <div
+          style={{ backgroundImage: `url(${tripInfo.image})` }}
+          className="relative w-64 min-h-[12rem] flex-shrink-0 bg-center bg-cover"
+        >
           <div className={statusClassName}>
             <strong className="text-m">{`${getTripStatusTextFromStatus(
               tripInfo.status
