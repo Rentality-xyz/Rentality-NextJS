@@ -158,7 +158,8 @@ export default function TripItem({
         <div className="flex flex-1 flex-col gap-2 p-4">
           <div className="flex flex-col">
             <div>
-              <strong className="text-l">📅 Trip start</strong>
+              <i className="fi fi-rs-calendar pr-1  text-rentality-icons"></i>
+              <strong className="text-l">Trip start</strong>
             </div>
             <div className="whitespace-nowrap">
               {dateFormat(tripInfo.tripStart)}
@@ -167,7 +168,8 @@ export default function TripItem({
           </div>
           <div className="flex flex-col">
             <div>
-              <strong className="text-l">📅 Trip end</strong>
+              <i className="fi fi-rs-calendar pr-1  text-rentality-icons"></i>
+              <strong className="text-l">Trip end</strong>
             </div>
             <div className="whitespace-nowrap">
               {dateFormat(tripInfo.tripEnd)}
@@ -179,8 +181,9 @@ export default function TripItem({
           <div className="flex flex-col gap-2">
             <div className="flex flex-col">
               <div>
+                <i className="fi fi-rs-marker pr-1  text-rentality-icons"></i>
                 <strong className="text-l whitespace-nowrap">
-                  📍 Pickup location
+                  Pickup location
                 </strong>
               </div>
               <div>{tripInfo.locationStart}</div>
@@ -188,17 +191,18 @@ export default function TripItem({
             </div>
             <div className="flex flex-col">
               <div>
+                <i className="fi fi-rs-marker pr-1 text-rentality-icons"></i>
                 <strong className="text-l whitespace-nowrap">
-                  📍 Return location
+                  Return location
                 </strong>
               </div>
               <div>{tripInfo.locationEnd}</div>
               {/* <div>Miami, CA, USA</div> */}
             </div>
           </div>
-          <div className="w-full self-end">
+          <div className="w-full self-end mt-4">
             <Link href={`/guest/trips/tripInfo/${tripInfo.tripId}`}>
-              <RntButton className="h-16 px-4">Details</RntButton>
+              <RntButton className="h-16">Details</RntButton>
             </Link>
           </div>
         </div>

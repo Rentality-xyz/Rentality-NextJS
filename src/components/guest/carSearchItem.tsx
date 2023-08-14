@@ -37,10 +37,18 @@ export default function CarSearchItem({
         </div>
         <div className="grid grid-cols-[2fr_1fr] text-xs mt-2">
           <div className="flex flex-col">
-            <div><strong>Total price ${searchInfo.totalPrice}</strong></div>
-            <div className="mt-2"><strong>{searchInfo.days} days</strong> trip for <strong>${searchInfo.pricePerDay} per day</strong></div>
+            <div>
+              <strong>Total price ${searchInfo.totalPrice}</strong>
+            </div>
+            <div className="mt-2">
+              <strong>{searchInfo.days} days</strong> trip for{" "}
+              <strong>${searchInfo.pricePerDay} per day</strong>
+            </div>
             <div>{searchInfo.milesIncludedPerDay} mi included per day</div>
-            <div>Additionally security deposit ${searchInfo.securityDeposit} per trip</div>
+            <div>
+              Additionally security deposit ${searchInfo.securityDeposit} per
+              trip
+            </div>
           </div>
           <div className="flex flex-col">
             <div>- {searchInfo.fuelType}</div>
@@ -48,14 +56,14 @@ export default function CarSearchItem({
             <div>- {searchInfo.seatsNumber} seats</div>
           </div>
         </div>
-        <div className="flex flex-row-reverse items-end">
+        <div className="flex flex-row-reverse items-end mt-2">
           <RntButton
-            className="h-14 w-44 px-4 text-base"
+            className="h-14 w-44 text-base"
             onClick={() => sendRentCarRequest(searchInfo)}
             disabled={disableButton}
           >
-            Rent for {searchInfo.days} day(s) for $
-            {searchInfo.totalPrice + searchInfo.securityDeposit}
+            <div>Rent for {searchInfo.days} day(s)</div>
+            <div>for ${searchInfo.totalPrice + searchInfo.securityDeposit}</div>
           </RntButton>
         </div>
       </div>
