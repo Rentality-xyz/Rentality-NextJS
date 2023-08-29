@@ -10,6 +10,8 @@ export default function GuestSideNavMenu() {
         <SideNavMenuItem text="Booked" href="/guest/trips/booked" />
         <SideNavMenuItem text="History" href="/guest/trips/history" />
       </SideNavMenuGroup>
+      <hr/>
+      <SideNavMenuGroup title="Profile settings" href="/guest/profile" />
     </BaseSideNavMenu>
   );
 }

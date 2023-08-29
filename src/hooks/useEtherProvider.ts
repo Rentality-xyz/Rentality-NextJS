@@ -1,7 +1,6 @@
-import { Contract, BrowserProvider } from "ethers";
 import { useCallback, useEffect, useState } from "react";
-import { rentalityJSON } from "../abis";
 import { useRouter } from "next/router";
+import { formatAddress } from "@/utils/addressFormatters";
 
 const useEtherProvider = () => {
   const requiredChainId =
@@ -45,13 +44,9 @@ const useEtherProvider = () => {
   //   }
   // };
 
-  const formatAddress = (address: string) => {
-    if (address == null || address.length < 16) return address;
-    return address.substr(0, 6) + ".." + address.substr(address.length - 8);
-  };
 
   const handleAccountsChanged = useCallback(() => {
-    router.reload();
+    //router.reload();
   }, []);
 
   // useEffect(() => {

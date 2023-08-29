@@ -2,14 +2,21 @@ import Link from "next/link";
 import { useRef } from "react";
 import useEtherProvider from "@/hooks/useEtherProvider";
 import RntButton from "../common/rntButton";
+import { useUserInfo } from "@/contexts/userInfoContext";
+import { useRentality } from "@/contexts/rentalityContext";
+import { formatAddress } from "@/utils/addressFormatters";
+import { Avatar } from "@mui/material";
+import { isEmpty } from "@/utils/string";
 
 type Props = {
   accountType: string;
 };
 
 export default function Header({ accountType }: Props) {
-  const [userConnected, userWeb3Address, formatAddress, connectMetaMask] =
-    useEtherProvider();
+  // const [userConnected, userWeb3Address, formatAddress, connectMetaMask] =
+  //   useEtherProvider();
+  const rentalityInfo = useRentality();
+  const userInfo = useUserInfo();
   const burgerMenuRef = useRef<HTMLDivElement>(null);
   accountType = accountType ?? "Host";
   const isHost = accountType === "Host";
@@ -41,21 +48,29 @@ export default function Header({ accountType }: Props) {
               </Link>
             )}
           </div>
-          {userConnected ? (
+          {rentalityInfo?.isWalletConnected ? (
             <div className="flex flex-row gap-4 ml-16 items-center">
               <div className=" flex-col hidden lg:flex">
-                <div>Name Surname</div>
-                <div className="text-sm">{formatAddress(userWeb3Address)}</div>
-              </div>
-              <div className="flex flex-col w-20 h-20 rounded-full items-center justify-center bg-gray-500">
-                <div className="">Photo</div>
-              </div>
+                <div>{userInfo.firstName} {userInfo.lastName}</div>
+                <div className="text-sm">{formatAddress(rentalityInfo?.walletAddress)}</div>
+              </div>              
+              <Avatar
+                alt={`${userInfo.firstName} ${userInfo.lastName}`}
+                src={userInfo.profilePhotoUrl}
+                sx={{ width: "5rem", height: "5rem" }}
+              >
+                {!isEmpty(userInfo.firstName) ||
+                !isEmpty(userInfo.lastName)
+                  ? userInfo.firstName?.slice(0, 1).toUpperCase() +
+                  userInfo.lastName?.slice(0, 1).toUpperCase()
+                  : null}
+              </Avatar>
             </div>
           ) : (
             <RntButton
               className="w-40 h-10 text-md"
               onClick={() => {
-                connectMetaMask();
+                rentalityInfo?.connectWallet();
               }}
             >
               Connect MetaMask

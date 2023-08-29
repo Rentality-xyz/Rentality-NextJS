@@ -9,6 +9,9 @@ import Link from "next/link";
 import RntDialogs from "@/components/common/rntDialogs";
 import useRntDialogs from "@/hooks/useRntDialogs";
 import { resizeImage } from "@/utils/image";
+import { isEmpty } from "@/utils/string";
+import { Button } from "@mui/material";
+import { useUserInfo } from "@/contexts/userInfoContext";
 
 export default function AddCar() {
   const [
@@ -27,6 +30,7 @@ export default function AddCar() {
   const router = useRouter();
   const [dialogState, showInfo, showError, showMessager, hideSnackbar] =
     useRntDialogs();
+  const userInfo = useUserInfo();
 
   const onChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) {
@@ -51,6 +55,27 @@ export default function AddCar() {
 
   const saveCar = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    if (isEmpty(userInfo.drivingLicense)) {
+      const action = (
+        <>
+          <Button
+            color="secondary"
+            size="small"
+            onClick={() => {
+              router.push("/host/profile");
+            }}
+          >
+            My profile
+          </Button>
+        </>
+      );
+      showError(
+        "In order to save a car, please enter user information",
+        action
+      );
+      return;
+    }
 
     if (!imageFile) {
       showError("Image is not uploaded");
@@ -82,6 +107,29 @@ export default function AddCar() {
   useEffect(() => {
     setIsButtonSaveDisabled(imageFile == null || !verifyCar() || carSaving);
   }, [imageFile, carInfoFormParams.pricePerDay, verifyCar, carSaving]);
+
+  useEffect(() => {
+    if (isEmpty(userInfo.drivingLicense)) {
+      const action = (
+        <>
+          <Button
+            color="secondary"
+            size="small"
+            onClick={() => {
+              router.push("/host/profile");
+            }}
+          >
+            My profile
+          </Button>
+        </>
+      );
+      showError(
+        "In order to save a car, please enter user information",
+        action
+      );
+      return;
+    }
+  }, []);
 
   return (
     <HostLayout>

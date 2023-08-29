@@ -5,6 +5,7 @@ import { uploadFileToIPFS, uploadJSONToIPFS } from "../../utils/pinata";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractCreateCarRequest } from "@/model/blockchain/ContractCreateCarRequest";
 import { HostCarInfo } from "@/model/HostCarInfo";
+import { isEmpty } from "@/utils/string";
 
 const useAddCar = () => {
   const emptyNewCarInfo = {
@@ -177,10 +178,6 @@ const useAddCar = () => {
     } catch (e) {
       console.error("error uploading JSON metadata:", e);
     }
-  };
-
-  const isEmpty = (str: string) => {
-    return !str || str.length === 0;
   };
 
   const verifyCar = () => {

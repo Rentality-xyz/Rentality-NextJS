@@ -53,6 +53,8 @@ export type TripInfo = {
   startOdometr: number;
   endOdometr: number;
   overmilePrice: number;
+  hostMobileNumber: string;
+  guestMobileNumber: string;
 };
 
 export function getGalsFromFuelLevel(

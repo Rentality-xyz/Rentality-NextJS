@@ -2,7 +2,7 @@ import GuestLayout from "@/components/guest/layout/guestLayout";
 import CarSearchItem from "@/components/guest/carSearchItem";
 import useAvailableCars from "@/hooks/guest/useAvailableCars";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
 import { calculateDays } from "@/utils/date";
 import PageTitle from "@/components/pageTitle/pageTitle";
@@ -16,19 +16,14 @@ import RntInput from "@/components/common/rntInput";
 import RntButton from "@/components/common/rntButton";
 import RntDialogs from "@/components/common/rntDialogs";
 import useRntDialogs from "@/hooks/useRntDialogs";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
+import { useUserInfo } from "@/contexts/userInfoContext";
+import { isEmpty } from "@/utils/string";
+import { Button } from "@mui/material";
 
 export default function Search() {
   const dateNow = new Date();
-  const dateFrom = new Date(dateNow.getTime() + (1*60*60*1000)); //dateNow + 1 hour
-  const dateTo = new Date(dateNow.getTime() + (25*60*60*1000));   //dateNow + 1 day and 1 hour
+  const dateFrom = new Date(dateNow.getTime() + 1 * 60 * 60 * 1000); //dateNow + 1 hour
+  const dateTo = new Date(dateNow.getTime() + 25 * 60 * 60 * 1000); //dateNow + 1 day and 1 hour
   const customEmptySearchCarRequest: SearchCarRequest = {
     ...emptySearchCarRequest,
     city: "Miami",
@@ -54,6 +49,7 @@ export default function Search() {
     useState<boolean>(false);
   const [dialogState, showInfo, showError, showMessager, hideSnackbar] =
     useRntDialogs();
+  const userInfo = useUserInfo();
 
   const searchCars = async () => {
     const startDateTime = new Date(searchCarRequest.dateFrom);
@@ -68,6 +64,27 @@ export default function Search() {
 
   const sendRentCarRequest = async (carInfo: SearchCarInfo) => {
     try {
+      if (isEmpty(userInfo.drivingLicense)) {
+        const action = (
+          <>
+            <Button
+              color="secondary"
+              size="small"
+              onClick={() => {
+                router.push("/guest/profile");
+              }}
+            >
+              My profile
+            </Button>
+          </>
+        );
+        showError(
+          "In order to rent a car, please enter user information",
+          action
+        );
+        return;
+      }
+      
       if (searchCarsResult.searchCarRequest.dateFrom == null) {
         showError("Please enter 'Date from'");
         return;

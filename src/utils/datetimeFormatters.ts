@@ -11,7 +11,9 @@ export const dateFormat = (value: Date) => {
   return `${dateString}, ${timeString}`;
 };
 
-export const dateToHtmlDateFormat = (value: Date) => {
+export const dateToHtmlDateFormat = (value: Date| undefined) => {
+  if (value === undefined) return "";
+  
   let day = value.getDate().toString();
   if (day.length === 1) {
     day = "0" + day;
@@ -24,7 +26,9 @@ export const dateToHtmlDateFormat = (value: Date) => {
   return `${year}-${month}-${day}`;
 };
 
-export const dateToHtmlDateTimeFormat = (value: Date) => {
+export const dateToHtmlDateTimeFormat = (value: Date | undefined) => {
+  if (value === undefined) return "";
+  
   let day = value.getDate().toString();
   if (day.length === 1) {
     day = "0" + day;

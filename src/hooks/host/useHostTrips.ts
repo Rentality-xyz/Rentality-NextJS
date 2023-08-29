@@ -250,6 +250,9 @@ const useHostTrips = () => {
                 const tokenURI = await rentalityContract.getCarMetadataURI(
                   i.carId
                 );
+                const tripContactInfo = await rentalityContract.getTripContactInfo(
+                  i.carId
+                );
                 const meta = await getMetaDataFromIpfs(tokenURI);
                 const tripStatus = getTripStatusFromContract(Number(i.status));
                 const tankSize = Number(
@@ -292,6 +295,8 @@ const useHostTrips = () => {
                   startOdometr: Number(i.startOdometr),
                   endOdometr: Number(i.endOdometr),
                   overmilePrice: Number(i.pricePerDayInUsdCents) / Number(i.milesIncludedPerDay) / 100,
+                  hostMobileNumber: tripContactInfo.hostPhoneNumber,
+                  guestMobileNumber: tripContactInfo.guestPhoneNumber
                 };
                 return item;
               })

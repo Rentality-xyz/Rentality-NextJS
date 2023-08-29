@@ -12,6 +12,8 @@ export default function HostSideNavMenu() {
       <SideNavMenuGroup title="Vehicles">
         <SideNavMenuItem text="Listing" href="/host/vehicles/listings" />
       </SideNavMenuGroup>
+      <hr/>
+      <SideNavMenuGroup title="Profile settings" href="/host/profile" />
     </BaseSideNavMenu>
   );
 }
