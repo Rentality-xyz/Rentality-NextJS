@@ -6,6 +6,8 @@ import RntButton from "@/components/common/rntButton";
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
 import useEditCarInfo from "@/hooks/host/useEditCarInfo";
 import Link from "next/link";
+import useRntDialogs from "@/hooks/useRntDialogs";
+import RntDialogs from "@/components/common/rntDialogs";
 
 export default function EditCar() {
   const router = useRouter();
@@ -26,6 +28,8 @@ export default function EditCar() {
   const [carSaving, setCarSaving] = useState<boolean>(false);
   const [isButtonSaveDisabled, setIsButtonSaveDisabled] =
     useState<boolean>(false);
+  const [dialogState, showInfo, showError, showMessager, hideSnackbar] =
+    useRntDialogs();
 
   const saveChanges = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -39,13 +43,13 @@ export default function EditCar() {
       if (!result) {
         throw new Error("saveCarInfo error");
       }
-      alert("Successfully edited your car info!");
+      showInfo("Successfully edited your car info!");
 
       setCarSaving(false);
       setMessage("");
       router.push("/host/vehicles");
     } catch (e) {
-      alert("Save error" + e);
+      showError("Edit car request failed. Please try again");
 
       setCarSaving(false);
       setMessage("");
@@ -95,6 +99,7 @@ export default function EditCar() {
           </>
         )}
       </div>
+      <RntDialogs state={dialogState} hide={hideSnackbar} />
     </HostLayout>
   );
 }

@@ -1,8 +1,10 @@
 import AdminLayout from "@/components/admin/layout/adminLayout";
+import RntDialogs from "@/components/common/rntDialogs";
 import RntInput from "@/components/common/rntInput";
 import RntInputWithButton from "@/components/common/rntInputWithButton";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useContractInfo from "@/hooks/admin/useContractInfo";
+import useRntDialogs from "@/hooks/useRntDialogs";
 import { parseEther } from "ethers";
 import { useState } from "react";
 
@@ -25,6 +27,8 @@ export default function Admin() {
     newCurrencyConverterServiceAddress,
     setNewCurrencyConverterServiceAddress,
   ] = useState("0x");
+  const [dialogState, showInfo, showError, showMessager, hideSnackbar] =
+    useRntDialogs();
 
   if (adminContractInfo == null) {
     return (
@@ -47,11 +51,11 @@ export default function Admin() {
     if (ethToWithdraw == null) return;
     const value = Number.parseFloat(ethToWithdraw);
     if (value < 0) {
-      alert("value should be more then 0");
+      showError("value should be more then 0");
       return;
     }
     if (value > adminContractInfo.contractBalance) {
-      alert("value should be less then contract balance");
+      showError("value should be less then contract balance");
       return;
     }
     try {
@@ -59,7 +63,7 @@ export default function Admin() {
       await withdrawFromPlatform(BigInt(valueToWithdrawInWei));
       setEthToWithdraw("0");
     } catch (e) {
-      alert("withdraw error:" + e);
+      showError("withdraw error:" + e);
     }
   };
 
@@ -67,7 +71,7 @@ export default function Admin() {
     if (newPlatformCommission == null) return;
     const value = Number.parseFloat(newPlatformCommission);
     if (value < 0.0001 || value > 100) {
-      alert(
+      showError(
         "value should be more then 0% and less than 100% (min value is 0.0001%)"
       );
       return;
@@ -76,7 +80,7 @@ export default function Admin() {
       await setPlatformFeeInPPM(BigInt(Math.round(value * 10_000)));
       setNewPlatformCommission("0");
     } catch (e) {
-      alert("setPlatformCommission error:" + e);
+      showError("setPlatformCommission error:" + e);
     }
   };
 
@@ -86,14 +90,14 @@ export default function Admin() {
       newUserServiceAddress.length != 42 ||
       !newUserServiceAddress.startsWith("0x")
     ) {
-      alert("Address should start with 0x and contain 40 symbols");
+      showError("Address should start with 0x and contain 40 symbols");
       return;
     }
     try {
       await updateUserService(newUserServiceAddress);
       setNewUserServiceAddress("0x");
     } catch (e) {
-      alert("setUserService error:" + e);
+      showError("setUserService error:" + e);
     }
   };
 
@@ -103,14 +107,14 @@ export default function Admin() {
       newCarServiceAddress.length != 42 ||
       !newCarServiceAddress.startsWith("0x")
     ) {
-      alert("Address should start with 0x and contain 40 symbols");
+      showError("Address should start with 0x and contain 40 symbols");
       return;
     }
     try {
       await updateCarService(newCarServiceAddress);
       setNewCarServiceAddress("0x");
     } catch (e) {
-      alert("setCarService error:" + e);
+      showError("setCarService error:" + e);
     }
   };
 
@@ -120,14 +124,14 @@ export default function Admin() {
       newTripsServiceAddress.length != 42 ||
       !newTripsServiceAddress.startsWith("0x")
     ) {
-      alert("Address should start with 0x and contain 40 symbols");
+      showError("Address should start with 0x and contain 40 symbols");
       return;
     }
     try {
       await updateTripService(newTripsServiceAddress);
       setNewTripsServiceAddress("0x");
     } catch (e) {
-      alert("setTripsService error:" + e);
+      showError("setTripsService error:" + e);
     }
   };
 
@@ -137,14 +141,14 @@ export default function Admin() {
       newCurrencyConverterServiceAddress.length != 42 ||
       !newCurrencyConverterServiceAddress.startsWith("0x")
     ) {
-      alert("Address should start with 0x and contain 40 symbols");
+      showError("Address should start with 0x and contain 40 symbols");
       return;
     }
     try {
       await updateCurrencyConverterService(newCurrencyConverterServiceAddress);
       setNewCurrencyConverterServiceAddress("0x");
     } catch (e) {
-      alert("setCurrencyConverterService error:" + e);
+      showError("setCurrencyConverterService error:" + e);
     }
   };
 
@@ -291,6 +295,7 @@ export default function Admin() {
           <div className="font-bold">{adminContractInfo.contractAddress}</div>
         </div> */}
       </div>
+      <RntDialogs state={dialogState} hide={hideSnackbar} />
     </AdminLayout>
   );
 }

@@ -1,29 +1,37 @@
+import RntDialogs from "@/components/common/rntDialogs";
 import GuestLayout from "@/components/guest/layout/guestLayout";
 import TripItem from "@/components/guest/tripItem";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useGuestTrips from "@/hooks/guest/useGuestTrips";
+import useRntDialogs from "@/hooks/useRntDialogs";
 import { useState } from "react";
 
 export default function Booked() {
   const [dataFetched, tripsBooked, _, updateData] = useGuestTrips();
   const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
   //const router = useRouter();
+  const [dialogState, showInfo, showError, showMessager, hideSnackbar] =
+  useRntDialogs();
 
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
     try {
       setTripStatusChanging(true);
+      
+      showInfo(
+        "Please confirm the transaction with your wallet and wait for the transaction to be processed"
+      );
       const result = await changeStatus();
 
       if (!result) {
         throw new Error("changeStatus error");
       }
-      alert("Status successfully changed!");
+      showInfo("Status successfully changed!");
       
       setTripStatusChanging(false);
       updateData();
       //router.reload();
     } catch (e) {
-      alert("changeStatus error" + e);
+      showError("Change trip status request failed. Please try again");
       
       setTripStatusChanging(false);
     }
@@ -58,6 +66,7 @@ export default function Booked() {
           </div>
         )}
       </div>
+      <RntDialogs state={dialogState} hide={hideSnackbar} />
     </GuestLayout>
   );
 }

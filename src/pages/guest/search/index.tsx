@@ -14,6 +14,16 @@ import {
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 import RntInput from "@/components/common/rntInput";
 import RntButton from "@/components/common/rntButton";
+import RntDialogs from "@/components/common/rntDialogs";
+import useRntDialogs from "@/hooks/useRntDialogs";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 
 export default function Search() {
   const dateNow = new Date();
@@ -42,6 +52,8 @@ export default function Search() {
   const [openFilterPanel, setOpenFilterPanel] = useState(false);
   const [searchButtonDisabled, setSearchButtonDisabled] =
     useState<boolean>(false);
+  const [dialogState, showInfo, showError, showMessager, hideSnackbar] =
+    useRntDialogs();
 
   const searchCars = async () => {
     const startDateTime = new Date(searchCarRequest.dateFrom);
@@ -57,11 +69,11 @@ export default function Search() {
   const sendRentCarRequest = async (carInfo: SearchCarInfo) => {
     try {
       if (searchCarsResult.searchCarRequest.dateFrom == null) {
-        alert("Please enter Date From");
+        showError("Please enter 'Date from'");
         return;
       }
       if (searchCarsResult.searchCarRequest.dateTo == null) {
-        alert("Please enter Date To");
+        showError("Please enter 'Date to'");
         return;
       }
       const startDateTime = new Date(
@@ -71,7 +83,7 @@ export default function Search() {
 
       const days = calculateDays(startDateTime, endDateTime);
       if (days < 0) {
-        alert("Date to must be greater than Date from");
+        showError("'Date to' must be greater than 'Date from'");
         return;
       }
       setRequestSending(true);
@@ -83,6 +95,9 @@ export default function Search() {
       const fuelPricePerGalInUsdCents = carInfo.fuelPricePerGal * 100;
       const location = `${searchCarsResult.searchCarRequest.city}, ${searchCarsResult.searchCarRequest.state}, ${searchCarsResult.searchCarRequest.country}`;
 
+      showInfo(
+        "Please confirm the transaction with your wallet and wait for the transaction to be processed"
+      );
       const result = await createTripRequest(
         carInfo.carId,
         carInfo.ownerAddress,
@@ -95,15 +110,20 @@ export default function Search() {
         depositInUsdCents,
         fuelPricePerGalInUsdCents
       );
-      if (!result) {
-        alert("sendRentCarRequest error!");
-        setRequestSending(false);
-        return;
-      }
 
       setRequestSending(false);
+      hideSnackbar();
+      if (!result) {
+        showError(
+          "Your create trip request failed. Please make sure you entered trip details right and try again"
+        );
+        return;
+      }
       router.push("/guest/trips");
     } catch (e) {
+      showError(
+        "Your create trip request failed. Please make sure you entered trip details right and try again"
+      );
       console.error("sendRentCarRequest error:" + e);
 
       setRequestSending(false);
@@ -184,7 +204,10 @@ export default function Search() {
             Search
           </RntButton>
         </div>
-        <RntButton className="w-40 mt-2" onClick={() => setOpenFilterPanel(true)}>
+        <RntButton
+          className="w-40 mt-2"
+          onClick={() => setOpenFilterPanel(true)}
+        >
           Filters
         </RntButton>
         <div className="mb-8 flex flex-row"></div>
@@ -334,6 +357,7 @@ export default function Search() {
           </div>
         </SlidingPanel>
       </div>
+      <RntDialogs state={dialogState} hide={hideSnackbar} />
     </GuestLayout>
   );
 }

@@ -6,6 +6,8 @@ import PageTitle from "@/components/pageTitle/pageTitle";
 import RntButton from "@/components/common/rntButton";
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
 import Link from "next/link";
+import RntDialogs from "@/components/common/rntDialogs";
+import useRntDialogs from "@/hooks/useRntDialogs";
 
 export default function AddCar() {
   const [
@@ -62,6 +64,8 @@ export default function AddCar() {
   //     img.onerror = reject;
   //   });
   // };
+  const [dialogState, showInfo, showError, showMessager, hideSnackbar] =
+    useRntDialogs();
 
   const onChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) {
@@ -88,7 +92,7 @@ export default function AddCar() {
     e.preventDefault();
 
     if (!imageFile) {
-      alert("Image is not upoaded");
+      showError("Image is not uploaded");
       return;
     }
 
@@ -101,13 +105,13 @@ export default function AddCar() {
       if (!result) {
         throw new Error("sentCarToServer error");
       }
-      alert("Successfully listed your car!");
+      showInfo("Successfully listed your car!");
 
       setCarSaving(false);
       setMessage("");
       router.push("/host/vehicles");
     } catch (e) {
-      alert("Upload error" + e);
+      showError("Save car request failed. Please try again");
 
       setCarSaving(false);
       setMessage("");
@@ -144,6 +148,7 @@ export default function AddCar() {
           <label>{message}</label>
         </div>
       </div>
+      <RntDialogs state={dialogState} hide={hideSnackbar} />
     </HostLayout>
   );
 }

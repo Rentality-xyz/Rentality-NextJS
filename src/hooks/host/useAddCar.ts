@@ -176,7 +176,6 @@ const useAddCar = () => {
       }
     } catch (e) {
       console.error("error uploading JSON metadata:", e);
-      alert("error uploading JSON metadata: " + e);
     }
   };
 
@@ -281,7 +280,7 @@ const useAddCar = () => {
       setDataSaved(true);
       return true;
     } catch (e) {
-      alert("Upload error" + e);
+      console.error("Upload error" + e);
       setDataSaved(true);
       return false;
     }

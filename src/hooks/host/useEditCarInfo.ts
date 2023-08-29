@@ -262,7 +262,7 @@ const useEditCarInfo = (carId: number) => {
       setDataSaved(true);
       return true;
     } catch (e) {
-      alert("Upload error" + e);
+      console.error("Upload error" + e);
       setDataSaved(true);
       return false;
     }

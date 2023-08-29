@@ -56,7 +56,7 @@ const useHostTrips = () => {
       const result = await transaction.wait();
       return true;
     } catch (e) {
-      alert("acceptRequest error:" + e);
+      console.error("acceptRequest error:" + e);
       return false;
     }
   };
@@ -75,7 +75,7 @@ const useHostTrips = () => {
       const result = await transaction.wait();
       return true;
     } catch (e) {
-      alert("rejectRequest error:" + e);
+      console.error("rejectRequest error:" + e);
       return false;
     }
   };
@@ -100,7 +100,7 @@ const useHostTrips = () => {
       const result = await transaction.wait();
       return true;
     } catch (e) {
-      alert("checkInTrip error:" + e);
+      console.error("checkInTrip error:" + e);
       return false;
     }
   };
@@ -126,7 +126,7 @@ const useHostTrips = () => {
       const result = await transaction.wait();
       return true;
     } catch (e) {
-      alert("checkOutTrip error:" + e);
+      console.error("checkOutTrip error:" + e);
       return false;
     }
   };
@@ -145,7 +145,7 @@ const useHostTrips = () => {
       const result = await transaction.wait();
       return true;
     } catch (e) {
-      alert("finishTrip error" + e);
+      console.error("finishTrip error" + e);
       return false;
     }
   };

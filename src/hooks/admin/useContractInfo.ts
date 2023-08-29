@@ -102,7 +102,7 @@ const useContractInfo = () => {
       setDataUpdated(false);
       return true;
     } catch (e) {
-      alert("withdrawFromPlatform error" + e);
+      console.error("withdrawFromPlatform error" + e);
       return false;
     }
   };
@@ -122,7 +122,7 @@ const useContractInfo = () => {
       setDataUpdated(false);
       return true;
     } catch (e) {
-      alert("setPlatformFeeInPPM error" + e);
+      console.error("setPlatformFeeInPPM error" + e);
       return false;
     }
   };
@@ -142,7 +142,7 @@ const useContractInfo = () => {
       setDataUpdated(false);
       return true;
     } catch (e) {
-      alert("updateUserService error" + e);
+      console.error("updateUserService error" + e);
       return false;
     }
   };
@@ -162,7 +162,7 @@ const useContractInfo = () => {
       setDataUpdated(false);
       return true;
     } catch (e) {
-      alert("updateCarService error" + e);
+      console.error("updateCarService error" + e);
       return false;
     }
   };
@@ -182,7 +182,7 @@ const useContractInfo = () => {
       setDataUpdated(false);
       return true;
     } catch (e) {
-      alert("updateTripService error" + e);
+      console.error("updateTripService error" + e);
       return false;
     }
   };
@@ -204,7 +204,7 @@ const useContractInfo = () => {
       setDataUpdated(false);
       return true;
     } catch (e) {
-      alert("updateCurrencyConverterService error" + e);
+      console.error("updateCurrencyConverterService error" + e);
       return false;
     }
   };
