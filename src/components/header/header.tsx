@@ -53,7 +53,7 @@ export default function Header({ accountType }: Props) {
               <div className=" flex-col hidden lg:flex">
                 <div>{userInfo.firstName} {userInfo.lastName}</div>
                 <div className="text-sm">{formatAddress(rentalityInfo?.walletAddress)}</div>
-              </div>              
+              </div>
               <Avatar
                 alt={`${userInfo.firstName} ${userInfo.lastName}`}
                 src={userInfo.profilePhotoUrl}

@@ -12,6 +12,9 @@ export default function HostSideNavMenu() {
       <SideNavMenuGroup title="Vehicles">
         <SideNavMenuItem text="Listing" href="/host/vehicles/listings" />
       </SideNavMenuGroup>
+      <SideNavMenuGroup title="Inbox">
+        <SideNavMenuItem text="Messages" href="/host/messages" />
+      </SideNavMenuGroup>
       <hr/>
       <SideNavMenuGroup title="Profile settings" href="/host/profile" />
     </BaseSideNavMenu>
