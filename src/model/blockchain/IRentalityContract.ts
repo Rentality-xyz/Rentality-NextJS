@@ -4,6 +4,7 @@ import { ContractCreateTripRequest } from "./ContractCreateTripRequest";
 import { ContractTrip } from "./ContractTrip";
 import { ContractCreateCarRequest } from "./ContractCreateCarRequest";
 import { ContractSearchCarParams } from "./ContractSearchCarParams";
+import { ContractChatInfo } from "./ContractChatInfo";
 
 export interface IRentalityContract {
   getAddress(): Promise<string>;
@@ -97,6 +98,9 @@ export interface IRentalityContract {
   getMyKYCInfo(): Promise<KYCInfo>;
   setKYCInfo(name: string, surname: string, mobilePhoneNumber: string, profilePhoto: string, licenseNumber: string,
     expirationDate: bigint): Promise<ContractTransactionResponse>;
+
+  getChatInfoForHost(): Promise<ContractChatInfo[]>;
+  getChatInfoForGuest(): Promise<ContractChatInfo[]>;
 }
 
 type TripContactInfo = {

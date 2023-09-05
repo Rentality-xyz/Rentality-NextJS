@@ -18,6 +18,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/chat/waku.js", "src/chat/client.js", "src/chat/client.js"],
   "exclude": ["node_modules"]
 }

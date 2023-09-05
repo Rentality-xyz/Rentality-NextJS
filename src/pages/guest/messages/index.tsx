@@ -2,14 +2,15 @@ import RntButton from "@/components/common/rntButton";
 import RntDialogs from "@/components/common/rntDialogs";
 import GuestLayout from "@/components/guest/layout/guestLayout";
 import PageTitle from "@/components/pageTitle/pageTitle";
+import useChatInfos from "@/hooks/chat/useChatInfos";
 import useRntDialogs from "@/hooks/useRntDialogs";
 import { TripStatus } from "@/model/TripInfo";
 import { dateFormat } from "@/utils/datetimeFormatters";
 import { Avatar } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
-type ChatInfo = {
+export type ChatInfo = {
   tripId: number;
 
   guestAddress: string;
@@ -27,9 +28,11 @@ type ChatInfo = {
   tripStatus: TripStatus;
   carTitle: string;
   carLicenceNumber: string;
+
+  messages: ChatMesssage[];
 };
 
-type ChatMesssage = {
+export type ChatMesssage = {
   fromAddress: string;
   toAddress: string;
   datestamp: Date;
@@ -37,108 +40,113 @@ type ChatMesssage = {
 };
 
 export default function Messages() {
-  const [dataFetched, setdataFetched] = useState(true);
   const [dialogState, showInfo, showError, showMessager, hideSnackbar] =
     useRntDialogs();
-  const [chats, setChats] = useState<ChatInfo[]>([
-    {
-      tripId: 1,
-      guestAddress: "0x1234",
-      guestName: "Alex",
-      guestPhotoUrl:
-        "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmb7do1A9rSiqHgEiQVfvydThJB7KMKCYpt1YgdYuJgMdi?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmb7do1A9rSiqHgEiQVfvydThJB7KMKCYpt1YgdYuJgMdi&w=2048&q=75",
+  const [dataFetched, chats, updateData, sendMessage] = useChatInfos(false);
+  // const [chats1, setChats] = useState<ChatInfo[]>([
+  //   {
+  //     tripId: 1,
+  //     guestAddress: "0x1234",
+  //     guestName: "Alex",
+  //     guestPhotoUrl:
+  //       "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmb7do1A9rSiqHgEiQVfvydThJB7KMKCYpt1YgdYuJgMdi?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmb7do1A9rSiqHgEiQVfvydThJB7KMKCYpt1YgdYuJgMdi&w=2048&q=75",
 
-      hostAddress: "0x4321",
-      hostName: "Amanda",
-      hostPhotoUrl:
-        "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmUMwwqx8kUiRVwmCT81h6THdhRZnvDxgwYC45RZR7nnVr?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmUMwwqx8kUiRVwmCT81h6THdhRZnvDxgwYC45RZR7nnVr&w=2048&q=75",
+  //     hostAddress: "0x4321",
+  //     hostName: "Amanda",
+  //     hostPhotoUrl:
+  //       "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmUMwwqx8kUiRVwmCT81h6THdhRZnvDxgwYC45RZR7nnVr?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmUMwwqx8kUiRVwmCT81h6THdhRZnvDxgwYC45RZR7nnVr&w=2048&q=75",
 
-      tripTitle:
-        "Cancelled trip with Amanda Ford Mustang 2015 and some very very very very very very very very very long text",
-      lastMessage:
-        "Amazing! First time for our family and some very very very very very very very very very long text",
+  //     tripTitle:
+  //       "Cancelled trip with Amanda Ford Mustang 2015 and some very very very very very very very very very long text",
+  //     lastMessage:
+  //       "Amazing! First time for our family and some very very very very very very very very very long text",
 
-      carPhotoUrl:
-        "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmbR4mbkBQuNFzWLsPscbYT2J749r9BwvCDFNCg2Sq9t7q?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmbR4mbkBQuNFzWLsPscbYT2J749r9BwvCDFNCg2Sq9t7q&w=2048&q=75",
-      tripStatus: TripStatus.Pending,
-      carTitle:
-        "Ford Mustang 2015 and some very very very very very very very very very long text",
-      carLicenceNumber: "EE 099 TVQ",
-    },
-    {
-      tripId: 2,
-      guestAddress: "0x1234",
-      guestName: "Alex",
-      guestPhotoUrl:
-        "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmb7do1A9rSiqHgEiQVfvydThJB7KMKCYpt1YgdYuJgMdi?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmb7do1A9rSiqHgEiQVfvydThJB7KMKCYpt1YgdYuJgMdi&w=2048&q=75",
+  //     carPhotoUrl:
+  //       "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmbR4mbkBQuNFzWLsPscbYT2J749r9BwvCDFNCg2Sq9t7q?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmbR4mbkBQuNFzWLsPscbYT2J749r9BwvCDFNCg2Sq9t7q&w=2048&q=75",
+  //     tripStatus: TripStatus.Pending,
+  //     carTitle:
+  //       "Ford Mustang 2015 and some very very very very very very very very very long text",
+  //     carLicenceNumber: "EE 099 TVQ",
+  //     messages:[]
+  //   },
+  //   {
+  //     tripId: 2,
+  //     guestAddress: "0x1234",
+  //     guestName: "Alex",
+  //     guestPhotoUrl:
+  //       "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmb7do1A9rSiqHgEiQVfvydThJB7KMKCYpt1YgdYuJgMdi?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmb7do1A9rSiqHgEiQVfvydThJB7KMKCYpt1YgdYuJgMdi&w=2048&q=75",
 
-      hostAddress: "0x5678",
-      hostName: "Amanda",
-      hostPhotoUrl:
-        "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmUMwwqx8kUiRVwmCT81h6THdhRZnvDxgwYC45RZR7nnVr?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmUMwwqx8kUiRVwmCT81h6THdhRZnvDxgwYC45RZR7nnVr&w=2048&q=75",
+  //     hostAddress: "0x5678",
+  //     hostName: "Amanda",
+  //     hostPhotoUrl:
+  //       "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmUMwwqx8kUiRVwmCT81h6THdhRZnvDxgwYC45RZR7nnVr?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmUMwwqx8kUiRVwmCT81h6THdhRZnvDxgwYC45RZR7nnVr&w=2048&q=75",
 
-      tripTitle:
-        "Cancelled trip with Amanda Ford Mustang 2015 and some very very very very very very very very very long text",
-      lastMessage:
-        "Amazing! First time for our family and some very very very very very very very very very long text",
+  //     tripTitle:
+  //       "Cancelled trip with Amanda Ford Mustang 2015 and some very very very very very very very very very long text",
+  //     lastMessage:
+  //       "Amazing! First time for our family and some very very very very very very very very very long text",
 
-      carPhotoUrl:
-        "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmbR4mbkBQuNFzWLsPscbYT2J749r9BwvCDFNCg2Sq9t7q?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmbR4mbkBQuNFzWLsPscbYT2J749r9BwvCDFNCg2Sq9t7q&w=2048&q=75",
-      tripStatus: TripStatus.Pending,
-      carTitle:
-        "Ford Mustang 2015 and some very very very very very very very very very long text",
-      carLicenceNumber: "EE 099 TVQ",
-    },
-    {
-      tripId: 3,
-      guestAddress: "0x1234",
-      guestName: "Alex",
-      guestPhotoUrl:
-        "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmb7do1A9rSiqHgEiQVfvydThJB7KMKCYpt1YgdYuJgMdi?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmb7do1A9rSiqHgEiQVfvydThJB7KMKCYpt1YgdYuJgMdi&w=2048&q=75",
+  //     carPhotoUrl:
+  //       "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmbR4mbkBQuNFzWLsPscbYT2J749r9BwvCDFNCg2Sq9t7q?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmbR4mbkBQuNFzWLsPscbYT2J749r9BwvCDFNCg2Sq9t7q&w=2048&q=75",
+  //     tripStatus: TripStatus.Pending,
+  //     carTitle:
+  //       "Ford Mustang 2015 and some very very very very very very very very very long text",
+  //     carLicenceNumber: "EE 099 TVQ",
+  //     messages:[]
+  //   },
+  //   {
+  //     tripId: 3,
+  //     guestAddress: "0x1234",
+  //     guestName: "Alex",
+  //     guestPhotoUrl:
+  //       "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmb7do1A9rSiqHgEiQVfvydThJB7KMKCYpt1YgdYuJgMdi?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmb7do1A9rSiqHgEiQVfvydThJB7KMKCYpt1YgdYuJgMdi&w=2048&q=75",
 
-      hostAddress: "0x8765",
-      hostName: "Amanda",
-      hostPhotoUrl:
-        "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmUMwwqx8kUiRVwmCT81h6THdhRZnvDxgwYC45RZR7nnVr?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmUMwwqx8kUiRVwmCT81h6THdhRZnvDxgwYC45RZR7nnVr&w=2048&q=75",
+  //     hostAddress: "0x8765",
+  //     hostName: "Amanda",
+  //     hostPhotoUrl:
+  //       "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmUMwwqx8kUiRVwmCT81h6THdhRZnvDxgwYC45RZR7nnVr?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmUMwwqx8kUiRVwmCT81h6THdhRZnvDxgwYC45RZR7nnVr&w=2048&q=75",
 
-      tripTitle:
-        "Cancelled trip with Amanda Ford Mustang 2015 and some very very very very very very very very very long text",
-      lastMessage:
-        "Amazing! First time for our family and some very very very very very very very very very long text",
+  //     tripTitle:
+  //       "Cancelled trip with Amanda Ford Mustang 2015 and some very very very very very very very very very long text",
+  //     lastMessage:
+  //       "Amazing! First time for our family and some very very very very very very very very very long text",
 
-      carPhotoUrl:
-        "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmbR4mbkBQuNFzWLsPscbYT2J749r9BwvCDFNCg2Sq9t7q?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmbR4mbkBQuNFzWLsPscbYT2J749r9BwvCDFNCg2Sq9t7q&w=2048&q=75",
-      tripStatus: TripStatus.Pending,
-      carTitle:
-        "Ford Mustang 2015 and some very very very very very very very very very long text",
-      carLicenceNumber: "EE 099 TVQ",
-    },
-    {
-      tripId: 4,
-      guestAddress: "0x1234",
-      guestName: "Alex",
-      guestPhotoUrl:
-        "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmb7do1A9rSiqHgEiQVfvydThJB7KMKCYpt1YgdYuJgMdi?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmb7do1A9rSiqHgEiQVfvydThJB7KMKCYpt1YgdYuJgMdi&w=2048&q=75",
+  //     carPhotoUrl:
+  //       "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmbR4mbkBQuNFzWLsPscbYT2J749r9BwvCDFNCg2Sq9t7q?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmbR4mbkBQuNFzWLsPscbYT2J749r9BwvCDFNCg2Sq9t7q&w=2048&q=75",
+  //     tripStatus: TripStatus.Pending,
+  //     carTitle:
+  //       "Ford Mustang 2015 and some very very very very very very very very very long text",
+  //     carLicenceNumber: "EE 099 TVQ",
+  //     messages:[]
+  //   },
+  //   {
+  //     tripId: 4,
+  //     guestAddress: "0x1234",
+  //     guestName: "Alex",
+  //     guestPhotoUrl:
+  //       "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmb7do1A9rSiqHgEiQVfvydThJB7KMKCYpt1YgdYuJgMdi?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmb7do1A9rSiqHgEiQVfvydThJB7KMKCYpt1YgdYuJgMdi&w=2048&q=75",
 
-      hostAddress: "0x1470",
-      hostName: "Yadira",
-      hostPhotoUrl: "",
+  //     hostAddress: "0x1470",
+  //     hostName: "Yadira",
+  //     hostPhotoUrl: "",
 
-      tripTitle:
-        "Cancelled trip with Yadira Ford Mustang 2015 and some very very very very very very very very very long text",
-      lastMessage:
-        "Amazing! First time for our family and some very very very very very very very very very long text",
+  //     tripTitle:
+  //       "Cancelled trip with Yadira Ford Mustang 2015 and some very very very very very very very very very long text",
+  //     lastMessage:
+  //       "Amazing! First time for our family and some very very very very very very very very very long text",
 
-      carPhotoUrl:
-        "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmbR4mbkBQuNFzWLsPscbYT2J749r9BwvCDFNCg2Sq9t7q?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmbR4mbkBQuNFzWLsPscbYT2J749r9BwvCDFNCg2Sq9t7q&w=2048&q=75",
-      tripStatus: TripStatus.Pending,
-      carTitle:
-        "Ford Mustang 2015 and some very very very very very very very very very long text",
-      carLicenceNumber: "EE 099 TVQ",
-    },
-  ]);
+  //     carPhotoUrl:
+  //       "https://brilliant-cat-7b398f.netlify.app/_ipx/w_2048,q_75/https%3A%2F%2Fipfs.io%2Fipfs%2FQmbR4mbkBQuNFzWLsPscbYT2J749r9BwvCDFNCg2Sq9t7q?url=https%3A%2F%2Fipfs.io%2Fipfs%2FQmbR4mbkBQuNFzWLsPscbYT2J749r9BwvCDFNCg2Sq9t7q&w=2048&q=75",
+  //     tripStatus: TripStatus.Pending,
+  //     carTitle:
+  //       "Ford Mustang 2015 and some very very very very very very very very very long text",
+  //     carLicenceNumber: "EE 099 TVQ",
+  //     messages:[]
+  //   },
+  // ]);
   const [selectedChat, setSelectedChat] = useState<ChatInfo | null>(null);
-  const [messages, setMessages] = useState<ChatMesssage[]>([]);
+  //const [messages, setMessages] = useState<ChatMesssage[]>([]);
+  const [newMessage, setNewMessage] = useState<string>("");
 
   let statusBgColor = "";
   switch (selectedChat?.tripStatus) {
@@ -176,9 +184,18 @@ export default function Messages() {
     const item = chats.find((ci) => ci.tripId === tripId) ?? null;
     setSelectedChat(item);
     if (item !== null) {
-      createChatMessages(item);
+      //createChatMessages(item);
     }
   };
+
+  useEffect(() => {
+    if (selectedChat !== null) {
+      const item =
+        chats.find((ci) => ci.tripId === selectedChat.tripId) ?? null;
+      setSelectedChat(item);
+    }
+  }, [chats]);
+
   const characters =
     "ABCDEF GHIJKL MNOPQR STUVW XYZab cdef ghij klmn opqr stuv wxyz 0123 456 789";
 
@@ -209,7 +226,7 @@ export default function Messages() {
           generateString(Math.floor(Math.random() * 300)),
       };
     }
-    setMessages(msgs);
+    //setMessages(msgs);
   };
 
   return (
@@ -285,7 +302,7 @@ export default function Messages() {
                 </section>
 
                 <div className="my-4 flex flex-col gap-4">
-                  {messages.map((msgInfo, index) => {
+                  {selectedChat.messages.map((msgInfo, index) => {
                     return msgInfo.fromAddress === selectedChat.hostAddress ? (
                       <div
                         key={index}
@@ -338,10 +355,19 @@ export default function Messages() {
                     rows={5}
                     id="message"
                     placeholder="Enter your message"
-                    // onChange={(e) => {}}
-                    // value={""}
+                    value={newMessage}
+                    onChange={(e) => {
+                      setNewMessage(e.target.value);
+                    }}
                   />
-                  <RntButton>Send a message</RntButton>
+                  <RntButton
+                    onClick={async () => {
+                      await sendMessage(selectedChat.tripId, newMessage);
+                      setNewMessage("");
+                    }}
+                  >
+                    Send a message
+                  </RntButton>
                 </section>
               </div>
             ) : null}

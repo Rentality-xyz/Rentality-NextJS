@@ -1,44 +1,48 @@
-export const getIpfsURIfromPinata =  (pinataURI:string) => {
-    return "https://ipfs.io/ipfs/" + pinataURI.split("/").pop();
-}
+import { isEmpty } from "./string";
 
-export const getPinataGatewayURIfromPinata =  (pinataURI:string) => {
-    return "https://ivory-specific-mink-961.mypinata.cloud/ipfs/" + pinataURI.split("/").pop();
-}
+export const getIpfsURIfromPinata = (pinataURI: string) => {
+  if (isEmpty(pinataURI)) return "";  
+  return "https://ipfs.io/ipfs/" + pinataURI.split("/").pop();
+};
 
-export const getMetaDataFromIpfs = async (tokenURI:string) => { 
-    var ipfsURI = getPinataGatewayURIfromPinata(tokenURI);   
-    // const ulr = "/api/pinata/getMetadataJson?tokenURI=" + tokenURI;
-    // console.log("call ulr: " + ulr);
-    // const response = await fetch(ulr);
-    try{
-        console.log("try fetch " + ipfsURI);
-        
-        const response = await fetch(ipfsURI, {
-          headers: {
-            Accept: "application/json",
-          },
-        });
-        return await response.json();
+export const getPinataGatewayURIfromPinata = (pinataURI: string) => {
+  if (isEmpty(pinataURI)) return "";
+  return (
+    "https://ivory-specific-mink-961.mypinata.cloud/ipfs/" +
+    pinataURI.split("/").pop()
+  );
+};
+
+export const getMetaDataFromIpfs = async (tokenURI: string) => {
+  var ipfsURI = getPinataGatewayURIfromPinata(tokenURI);
+  // const ulr = "/api/pinata/getMetadataJson?tokenURI=" + tokenURI;
+  // console.log("call ulr: " + ulr);
+  // const response = await fetch(ulr);
+  try {
+    console.log("try fetch " + ipfsURI);
+
+    const response = await fetch(ipfsURI, {
+      headers: {
+        Accept: "application/json",
+      },
+    });
+    return await response.json();
+  } catch (ex) {
+    console.error("load metadata from pinata gateway error:", ex);
+
+    ipfsURI = getIpfsURIfromPinata(tokenURI);
+    try {
+      console.log("try fetch " + ipfsURI);
+
+      const response = await fetch(ipfsURI, {
+        headers: {
+          Accept: "application/json",
+        },
+      });
+      return await response.json();
+    } catch (ex) {
+      console.error("load metadata from IPFS error:", ex);
     }
-    catch(ex){
-        console.error("load metadata from pinata gateway error:", ex);
-         
-        ipfsURI = getIpfsURIfromPinata(tokenURI);
-        try{
-            console.log("try fetch " + ipfsURI);
-            
-            const response = await fetch(ipfsURI, {
-            headers: {
-                Accept: "application/json",
-            },
-            });
-            return await response.json();
-        }
-        catch(ex){
-            console.error("load metadata from IPFS error:", ex);
-            
-        }
-    }
-    return {}
-}
+  }
+  return {};
+};
