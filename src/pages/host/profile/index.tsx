@@ -91,7 +91,7 @@ export default function Profile() {
       }
       showInfo("Success");
       router.reload();
-      router.push("/guest");
+      router.push("/host");
     } catch (e) {
       showError("Save profile info request failed. Pleas try again");
       console.error("saveProfileSettings error:" + e);
