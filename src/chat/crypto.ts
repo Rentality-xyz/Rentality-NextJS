@@ -21,10 +21,10 @@ export async function createPublicKeyMessage(
   encryptionPublicKey: Uint8Array,
   signer: JsonRpcSigner
 ) {
-  let signature = localStorage.getItem("encryptionKeySignature") ?? "";
+  let signature = localStorage.getItem("encryptionKeySignature" + signer.address) ?? "";
   if (isEmpty(signature)) {
     signature = await signEncryptionKey(encryptionPublicKey, signer);
-    localStorage.setItem("encryptionKeySignature", signature);
+    localStorage.setItem("encryptionKeySignature" + signer.address, signature);
   }
 
   return new PublicKeyMessage({

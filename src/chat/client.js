@@ -13,21 +13,21 @@ import { bytesToHex, hexToBytes } from "@waku/utils/bytes";
 export class Client {
   constructor(signer, onMessageReceived) {
     this.roomKeys = new Map();
-    // this.encryptionKeyPair = generateEncryptionKeyPair()
+    //this.encryptionKeyPair = generateEncryptionKeyPair()
     const localEncryptionPuKey = localStorage.getItem(
-      "userChatEncryptionPuKey"
+      "userChatEncryptionPuKey" + signer.address
     ) ?? "";
     const localEncryptionPrKey = localStorage.getItem(
-      "userChatEncryptionPrKey"
+      "userChatEncryptionPrKey" + signer.address
     )?? "";
     if (isEmpty(localEncryptionPuKey)) {
       this.encryptionKeyPair = generateEncryptionKeyPair();
       localStorage.setItem(
-        "userChatEncryptionPuKey",
+        "userChatEncryptionPuKey" + signer.address,
         bytesToHex(this.encryptionKeyPair.publicKey)
       );
       localStorage.setItem(
-        "userChatEncryptionPrKey",
+        "userChatEncryptionPrKey" + signer.address,
         bytesToHex(this.encryptionKeyPair.privateKey)
       );
     } else {
@@ -36,8 +36,6 @@ export class Client {
         privateKey: hexToBytes(localEncryptionPrKey),
       };
     }
-    console.log("user EncryptionPuKey:", bytesToHex(this.encryptionKeyPair.publicKey));
-    console.log("user EncryptionPrKey:", bytesToHex(this.encryptionKeyPair.privateKey));
     this.signer = signer;
     this.sendMessage = this.sendMessage.bind(this);
     this.onChatEncryptionKey = this.onChatEncryptionKey.bind(this);
@@ -93,7 +91,6 @@ export class Client {
 
     const tripId = Number(publicKeyMsg.tripId);
 
-    console.log("\n\nReceived chat encryption key");
     this.roomKeys.set(tripId, publicKeyMsg.chatPublicKey);
     console.log(`Set chat encryption key for trip ${tripId}\n`);
     await this.listenForChatMessages(tripId);
@@ -116,20 +113,12 @@ export class Client {
   }
 
   onChatMessage(msg) {
-    console.log(`\n\nReceiving chat message...`, JSON.stringify(msg));
     if (!msg.payload) return;
     const chatMessage = ForwardedMessage.decode(msg.payload);
     if (!chatMessage) return;
-    console.log(`\n\nReceived chat message:`, JSON.stringify(chatMessage));
-    if (
-      String(chatMessage.sender).toLowerCase() ===
-      this.wallet.address.toLowerCase()
-    )
-      return;
-
     console.log(`\n\nReceived chat message from ${chatMessage.sender}`);
     console.log(`Message: ${chatMessage.message}\n`);
-    onMessageReceived(1, chatMessage.message, chatMessage.sender);
+    this.onMessageReceived(chatMessage.tripId, chatMessage.message, chatMessage.sender);
   }
 
   get walletAddress() {

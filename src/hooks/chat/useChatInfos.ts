@@ -116,7 +116,7 @@ const useChatInfos = (isHost: boolean) => {
   //     })
   //     .catch(() => setDataFetched(true));
   // }, [updateRequired]);
-  const isInitiating = useRef(false)
+  const isInitiating = useRef(false);
 
   useEffect(() => {
     const initChat = async () => {
@@ -134,7 +134,6 @@ const useChatInfos = (isHost: boolean) => {
       const infos = (await getChatInfos(contractInfo.contract)) ?? [];
 
       infos.forEach(async (ci) => {
-        console.log("sending sendRoomKeyRequest...");
         await client.sendRoomKeyRequest(ci.tripId);
       });
       setChatClient(client);
@@ -150,52 +149,35 @@ const useChatInfos = (isHost: boolean) => {
     isInitiating.current = false;
   }, []);
 
-  // useEffect(() => {
-  //   if (chatClient === undefined) return;
-  //   if (chatInfos.length === 0) return;
-
-  //   console.log("chatClient or chatInfos changed");
-
-  //   const sendRoomKeyRequests = async () => {
-  //     chatInfos.forEach(async (ci) => {
-  //       console.log("sending sendRoomKeyRequest");
-  //       await chatClient.sendRoomKeyRequest(ci.tripId);
-  //     });
-  //   };
-  //   sendRoomKeyRequests();
-  // }, [chatClient, chatInfos]);
-
   const onMessageReceived = (
     tripId: number,
     message: string,
     fromAddress: string
   ) => {
-    console.log(
-      `!!! received message for tripId ${tripId} from ${fromAddress}: ${message}`
-    );
+    setChatInfos((current) => {
+      const result = [...current];
+      const selectedChat = result.find((i) => i.tripId === tripId);
+      if (selectedChat !== undefined) {
+        selectedChat.messages.push({
+          datestamp: new Date(),
+          fromAddress: fromAddress.toLowerCase() === selectedChat.guestAddress.toLowerCase()
+          ? selectedChat.guestAddress
+          : selectedChat.hostAddress,
+          toAddress:
+            fromAddress.toLowerCase() === selectedChat.guestAddress.toLowerCase()
+              ? selectedChat.hostAddress
+              : selectedChat.guestAddress,
+          message: message,
+        });
+      }
+      return result;
+    });
   };
 
   const sendMessage = async (tripId: number, message: string) => {
     if (chatClient === undefined) return;
 
     await chatClient.sendMessage(tripId, message);
-
-    const result = [...chatInfos];
-    const selectedChat = result.find((i) => i.tripId === tripId);
-    if (selectedChat !== undefined) {
-      selectedChat.messages.push({
-        datestamp: new Date(),
-        fromAddress: isHost
-          ? selectedChat.hostAddress
-          : selectedChat.guestAddress,
-        toAddress: isHost
-          ? selectedChat.guestAddress
-          : selectedChat.hostAddress,
-        message: message,
-      });
-    }
-
-    setChatInfos(result);
   };
 
   return [dataFetched, chatInfos, updateData, sendMessage] as const;

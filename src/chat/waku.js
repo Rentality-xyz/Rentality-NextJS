@@ -7,7 +7,7 @@ import {
 } from '@waku/message-encryption/ecies'
 import { Protocols } from '@waku/interfaces'
 import protobuf from 'protobufjs'
-import { createChatMessage, createPublicKeyMessage } from './crypto.ts'
+import { createChatMessage, createPublicKeyMessage } from './crypto'
 import { bytesToHex, hexToBytes } from '@waku/utils/bytes'
 
 export class PublicKeyMessage {
@@ -156,6 +156,7 @@ export class ForwardedMessage {
   static Type = new protobuf.Type('ForwardedMessage')
     .add(new protobuf.Field('message', 1, 'string'))
     .add(new protobuf.Field('sender', 2, 'bytes'))
+    .add(new protobuf.Field('tripId', 3, 'uint64'))
 
   constructor(payload) {
     this.payload = payload
@@ -169,15 +170,15 @@ export class ForwardedMessage {
   static decode(bytes) {
     const payload = ForwardedMessage.Type.decode(bytes)
 
-    if (!payload.message || !payload.sender) {
+    if (!payload.message || !payload.sender|| !payload.tripId) {
       console.log('Field missing on decoded Forwarded Message', payload)
       return
     }
 
     return new ForwardedMessage({
-      tripId: payload.tripId,
       message: payload.message,
       sender: '0x' + bytesToHex(payload.sender),
+      tripId: Number(payload.tripId),
     })
   }
 
@@ -187,6 +188,10 @@ export class ForwardedMessage {
 
   get sender() {
     return this.payload.sender
+  }
+
+  get tripId() {
+    return this.payload.tripId
   }
 }
 
@@ -281,6 +286,7 @@ export class Waku {
     const messageToForward = new ForwardedMessage({
       message: message,
       sender: hexToBytes(sender),
+      tripId: tripId,
     })
 
     const payload = messageToForward.encode()
