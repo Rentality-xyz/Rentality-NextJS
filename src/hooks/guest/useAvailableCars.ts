@@ -163,10 +163,7 @@ const useAvailableCars = () => {
                     meta.attributes?.find(
                       (x: any) => x.trait_type === "Fuel type"
                     )?.value ?? "",
-                  milesIncludedPerDay:
-                    meta.attributes?.find(
-                      (x: any) => x.trait_type === "Distance included(mi)"
-                    )?.value ?? "",
+                  milesIncludedPerDay: i.milesIncludedPerDay.toString(),
                   pricePerDay: pricePerDay,
                   fuelPricePerGal: fuelPricePerGal,
                   days: tripDays,
