@@ -105,8 +105,6 @@ export const RentalityProvider = ({
     };
   }, [connectToMetaMask, handleAccountsChanged]);
 
-  console.log("rentalityContext: ", rentalityContractInfo);
-
   return (
     <RentalityContext.Provider value={rentalityContractInfo}>
       {children}

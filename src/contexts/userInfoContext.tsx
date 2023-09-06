@@ -86,8 +86,6 @@ export const UserInfoProvider = ({
     loadUserInfo();
   }, [rentalityInfo]);
 
-  console.log("usercontext: ", currentUserInfo);
-
   return (
     <UserInfoContext.Provider value={currentUserInfo}>
       <UserInfoUpdateContext.Provider value={setCurrentUserInfo}>
