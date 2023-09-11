@@ -23,6 +23,10 @@ export type ContractTrip = {
   endFuelLevelInGal: bigint;
   endOdometr: bigint;
   checkedOutByHostDateTime: bigint;
+  rejectedBy: string;
+  rejectedDateTime: bigint;
+  hostName: string;
+  guestName: string;
 };
 
 type PaymentInfo = {

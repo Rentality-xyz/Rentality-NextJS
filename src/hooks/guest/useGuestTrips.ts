@@ -213,10 +213,9 @@ const useGuestTrips = () => {
                 const tokenURI = await rentalityContract.getCarMetadataURI(
                   i.carId
                 );
-                const tripContactInfo = await rentalityContract.getTripContactInfo(
-                  i.carId
-                );
-                
+                const tripContactInfo =
+                  await rentalityContract.getTripContactInfo(i.carId);
+
                 const meta = await getMetaDataFromIpfs(tokenURI);
                 const tripStatus = getTripStatusFromContract(Number(i.status));
                 const tankSize = Number(
@@ -252,16 +251,28 @@ const useGuestTrips = () => {
                   totalPrice: (
                     Number(i.paymentInfo.totalDayPriceInUsdCents) / 100
                   ).toString(),
-                  tankVolumeInGal:tankSize,
+                  tankVolumeInGal: tankSize,
                   startFuelLevelInGal: Number(i.startFuelLevelInGal),
                   endFuelLevelInGal: Number(i.endFuelLevelInGal),
                   fuelPricePerGal: Number(i.fuelPricePerGalInUsdCents) / 100,
                   milesIncludedPerDay: Number(i.milesIncludedPerDay),
                   startOdometr: Number(i.startOdometr),
                   endOdometr: Number(i.endOdometr),
-                  overmilePrice: Number(i.pricePerDayInUsdCents) / Number(i.milesIncludedPerDay) / 100,
+                  overmilePrice:
+                    Number(i.pricePerDayInUsdCents) /
+                    Number(i.milesIncludedPerDay) /
+                    100,
                   hostMobileNumber: tripContactInfo.hostPhoneNumber,
-                  guestMobileNumber: tripContactInfo.guestPhoneNumber
+                  guestMobileNumber: tripContactInfo.guestPhoneNumber,
+                  hostAddress: i.host,
+                  hostName: i.hostName,
+                  guestAddress: i.guest,
+                  guestName: i.guestName,
+                  rejectedBy: i.rejectedBy,
+                  rejectedDate:
+                    i.rejectedDateTime > 0
+                      ? new Date(Number(i.rejectedDateTime) * 1000)
+                      : undefined,
                 };
                 return item;
               })

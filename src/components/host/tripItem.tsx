@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { dateFormat } from "@/utils/datetimeFormatters";
+import { dateFormat, dateFormatMonthDate } from "@/utils/datetimeFormatters";
 import {
   TripInfo,
   TripStatus,
@@ -128,6 +128,17 @@ export default function TripItem({
               <strong className="text-xl">{`${tripInfo.brand} ${tripInfo.model} ${tripInfo.year}`}</strong>
             </div>
             <div>{tripInfo.licensePlate}</div>
+            {tripInfo.status === TripStatus.Rejected &&
+            tripInfo.rejectedDate !== undefined ? (
+              <div className="mt-2">
+                {`${
+                  tripInfo.rejectedBy.toLowerCase() ===
+                  tripInfo.hostAddress.toLowerCase()
+                    ? "You"
+                    : tripInfo.guestName ?? "Guest"
+                } cancelled on ${dateFormatMonthDate(tripInfo.rejectedDate)}`}
+              </div>
+            ) : null}
             <div className="flex flex-col mt-4">
               <div>
                 <strong className="text-l">Total price</strong>

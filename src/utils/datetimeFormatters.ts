@@ -48,3 +48,12 @@ export const dateToHtmlDateTimeFormat = (value: Date | undefined) => {
   }
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 };
+
+export const dateFormatMonthDate = (value: Date) => {
+  const dateString = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+  }).format(value);
+
+  return `${dateString}`;
+};

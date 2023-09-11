@@ -55,6 +55,12 @@ export type TripInfo = {
   overmilePrice: number;
   hostMobileNumber: string;
   guestMobileNumber: string;
+  hostAddress: string;
+  hostName: string;
+  guestAddress: string;
+  guestName: string;
+  rejectedBy: string;
+  rejectedDate: Date | undefined;
 };
 
 export function getGalsFromFuelLevel(
