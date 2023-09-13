@@ -1,6 +1,6 @@
 import HostLayout from "@/components/host/layout/hostLayout";
 import useAddCar from "@/hooks/host/useAddCar";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import RntButton from "@/components/common/rntButton";
@@ -12,12 +12,12 @@ import { resizeImage } from "@/utils/image";
 import { isEmpty } from "@/utils/string";
 import { Button } from "@mui/material";
 import { useUserInfo } from "@/contexts/userInfoContext";
+import { verifyCar } from "@/model/HostCarInfo";
 
 export default function AddCar() {
   const [
     carInfoFormParams,
     setCarInfoFormParams,
-    verifyCar,
     dataSaved,
     sentCarToServer,
   ] = useAddCar();
@@ -105,8 +105,8 @@ export default function AddCar() {
   };
 
   useEffect(() => {
-    setIsButtonSaveDisabled(imageFile == null || !verifyCar() || carSaving);
-  }, [imageFile, carInfoFormParams.pricePerDay, verifyCar, carSaving]);
+    setIsButtonSaveDisabled(imageFile == null || !verifyCar(carInfoFormParams) || carSaving);
+  }, [imageFile, carInfoFormParams, carSaving]);
 
   useEffect(() => {
     if (isEmpty(userInfo.drivingLicense)) {

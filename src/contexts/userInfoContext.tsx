@@ -63,7 +63,6 @@ export const UserInfoProvider = ({
     // checkLoggedIn();
     const loadUserInfo = async () => {
       if (rentalityInfo === null) {
-        console.error("UserInfoProvider rentalityInfo is null");
         return;
       }
       try {

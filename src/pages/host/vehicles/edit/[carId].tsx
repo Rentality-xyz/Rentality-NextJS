@@ -8,6 +8,7 @@ import useEditCarInfo from "@/hooks/host/useEditCarInfo";
 import Link from "next/link";
 import useRntDialogs from "@/hooks/useRntDialogs";
 import RntDialogs from "@/components/common/rntDialogs";
+import { verifyCar } from "@/model/HostCarInfo";
 
 export default function EditCar() {
   const router = useRouter();
@@ -19,7 +20,6 @@ export default function EditCar() {
     dataFetched,
     carInfoFormParams,
     setCarInfoFormParams,
-    verifyCar,
     dataSaved,
     saveCarInfo,
   ] = useEditCarInfo(carIdNumber);
@@ -57,8 +57,8 @@ export default function EditCar() {
   };
 
   useEffect(() => {
-    setIsButtonSaveDisabled(!verifyCar() || carSaving);
-  }, [carInfoFormParams.pricePerDay, verifyCar, carSaving]);
+    setIsButtonSaveDisabled(!verifyCar(carInfoFormParams) || carSaving);
+  }, [carInfoFormParams, carSaving]);
 
   if (!carId) return null;
 

@@ -7,9 +7,8 @@ import { ContractSearchCarParams } from "./ContractSearchCarParams";
 import { ContractChatInfo } from "./ContractChatInfo";
 
 export interface IRentalityContract {
-  getAddress(): Promise<string>;
 
-  ///admin functions
+  /// ADMIN functions
   owner(): Promise<string>;
   getCarServiceAddress(): Promise<string>;
   updateCarService(
@@ -32,7 +31,7 @@ export interface IRentalityContract {
   getPlatformFeeInPPM(): Promise<bigint>;
   setPlatformFeeInPPM(valueInPPM: bigint): Promise<ContractTransactionResponse>;
 
-  ///host functions
+  /// HOST functions
   addCar(
     request: ContractCreateCarRequest
   ): Promise<ContractTransactionResponse>;
@@ -49,7 +48,6 @@ export interface IRentalityContract {
     locationLongitudeInPPM: bigint,
     currentlyListed: boolean
   ): Promise<ContractTransactionResponse>;
-  getCarMetadataURI(carId: bigint): Promise<string>;
   getCarInfoById(carId: bigint): Promise<ContractCarInfo>;
   getMyCars(): Promise<ContractCarInfo[]>;
   getTripsAsHost(): Promise<ContractTrip[]>;
@@ -66,15 +64,14 @@ export interface IRentalityContract {
     endOdometr: bigint
   ): Promise<ContractTransactionResponse>;
   finishTrip(tripId: bigint): Promise<ContractTransactionResponse>;
+  getChatInfoForHost(): Promise<ContractChatInfo[]>;
 
-  ///guest functions
-  getAvailableCars(): ContractCarInfo[];
+  /// GUEST functions
   searchAvailableCars(
     startDateTime: bigint,
     endDateTime: bigint,
     searchParams: ContractSearchCarParams
-  ): ContractCarInfo[];
-
+  ): Promise<ContractCarInfo[]>;
   createTripRequest(
     request: ContractCreateTripRequest,
     value: object
@@ -91,16 +88,22 @@ export interface IRentalityContract {
     endFuelLevelInPermille: bigint,
     endOdometr: bigint
   ): Promise<ContractTransactionResponse>;
+  getChatInfoForGuest(): Promise<ContractChatInfo[]>;
 
+  /// GENERAL functions
+  getAddress(): Promise<string>;
+  getCarMetadataURI(carId: bigint): Promise<string>;
   getTrip(tripId: bigint): Promise<ContractTrip>;
-
   getTripContactInfo(tripId: bigint): Promise<TripContactInfo>;
   getMyKYCInfo(): Promise<KYCInfo>;
-  setKYCInfo(name: string, surname: string, mobilePhoneNumber: string, profilePhoto: string, licenseNumber: string,
-    expirationDate: bigint): Promise<ContractTransactionResponse>;
-
-  getChatInfoForHost(): Promise<ContractChatInfo[]>;
-  getChatInfoForGuest(): Promise<ContractChatInfo[]>;
+  setKYCInfo(
+    name: string,
+    surname: string,
+    mobilePhoneNumber: string,
+    profilePhoto: string,
+    licenseNumber: string,
+    expirationDate: bigint
+  ): Promise<ContractTransactionResponse>;
 }
 
 type TripContactInfo = {
@@ -108,10 +111,10 @@ type TripContactInfo = {
   hostPhoneNumber: string;
 };
 export type KYCInfo = {
-   name: string;
-   surname: string;
-   mobilePhoneNumber: string;
-   profilePhoto: string;
-   licenseNumber: string;
-   expirationDate: bigint;
+  name: string;
+  surname: string;
+  mobilePhoneNumber: string;
+  profilePhoto: string;
+  licenseNumber: string;
+  expirationDate: bigint;
 };

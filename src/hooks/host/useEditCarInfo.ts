@@ -165,41 +165,6 @@ const useEditCarInfo = (carId: number) => {
     }
   };
 
-  const isEmpty = (str: string) => {
-    return !str || str.length === 0;
-  };
-
-  const verifyCar = () => {
-    return (
-      !isEmpty(carInfoFormParams.vinNumber) &&
-      !isEmpty(carInfoFormParams.brand) &&
-      !isEmpty(carInfoFormParams.model) &&
-      !isEmpty(carInfoFormParams.releaseYear) &&
-      !isEmpty(carInfoFormParams.name) &&
-      !isEmpty(carInfoFormParams.licensePlate) &&
-      //!isEmpty(carInfoFormParams.licenseState) &&
-      !isEmpty(carInfoFormParams.seatsNumber) &&
-      !isEmpty(carInfoFormParams.doorsNumber) &&
-      !isEmpty(carInfoFormParams.fuelType) &&
-      !isEmpty(carInfoFormParams.tankVolumeInGal) &&
-      //!carInfoFormParams.wheelDrive &&
-      !isEmpty(carInfoFormParams.transmission) &&
-      //!carInfoFormParams.trunkSize &&
-      !isEmpty(carInfoFormParams.color) &&
-      //!isEmpty(carInfoFormParams.bodyType) &&
-      !isEmpty(carInfoFormParams.description) &&
-      !isEmpty(carInfoFormParams.pricePerDay) &&
-      !isEmpty(carInfoFormParams.milesIncludedPerDay) &&
-      !isEmpty(carInfoFormParams.securityDeposit) &&
-      !isEmpty(carInfoFormParams.fuelPricePerGal) &&
-      !isEmpty(carInfoFormParams.country) &&
-      !isEmpty(carInfoFormParams.state) &&
-      !isEmpty(carInfoFormParams.city) &&
-      !isEmpty(carInfoFormParams.locationLatitude) &&
-      !isEmpty(carInfoFormParams.locationLongitude)
-    );
-  };
-
   const saveCar = async () => {
     try {
       setDataSaved(false);
@@ -288,7 +253,6 @@ const useEditCarInfo = (carId: number) => {
     dataFetched,
     carInfoFormParams,
     setCarInfoFormParams,
-    verifyCar,
     dataSaved,
     saveCar,
   ] as const;

@@ -84,11 +84,12 @@ export const RentalityProvider = ({
     } catch (e) {
       console.error("connectToMetaMask error:" + e);
     }
-  }, []);
+  }, [requiredChainId]);
 
   const handleAccountsChanged = useCallback(() => {
     router.reload();
-  }, []);
+    console.log("handleAccountsChanged: reloading...");
+  }, [router]);
 
   useEffect(() => {
     if (window.ethereum == null) {
