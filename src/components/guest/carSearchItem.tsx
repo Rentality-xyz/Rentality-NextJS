@@ -4,13 +4,13 @@ import RntButton from "../common/rntButton";
 
 type Props = {
   searchInfo: SearchCarInfo;
-  sendRentCarRequest: (carInfo: SearchCarInfo) => void;
+  handleRentCarRequest: (carInfo: SearchCarInfo) => void;
   disableButton: boolean;
 };
 
 export default function CarSearchItem({
   searchInfo,
-  sendRentCarRequest,
+  handleRentCarRequest,
   disableButton,
 }: Props) {
   return (
@@ -59,7 +59,7 @@ export default function CarSearchItem({
         <div className="flex flex-row-reverse items-end mt-2">
           <RntButton
             className="h-14 w-44 text-base"
-            onClick={() => sendRentCarRequest(searchInfo)}
+            onClick={() => handleRentCarRequest(searchInfo)}
             disabled={disableButton}
           >
             <div>Rent for {searchInfo.days} day(s)</div>

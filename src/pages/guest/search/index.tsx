@@ -1,6 +1,10 @@
 import GuestLayout from "@/components/guest/layout/guestLayout";
 import CarSearchItem from "@/components/guest/carSearchItem";
-import useAvailableCars from "@/hooks/guest/useAvailableCars";
+import useSearchCars, {
+  SortOptionKey,
+  isSortOptionKey,
+  sortOptions,
+} from "@/hooks/guest/useSearchCars";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
@@ -19,50 +23,47 @@ import useRntDialogs from "@/hooks/useRntDialogs";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { isEmpty } from "@/utils/string";
 import { Button } from "@mui/material";
+import RntSelect from "@/components/common/rntSelect";
 
 export default function Search() {
   const dateNow = new Date();
-  const dateFrom = new Date(dateNow.getTime() + 1 * 60 * 60 * 1000); //dateNow + 1 hour
-  const dateTo = new Date(dateNow.getTime() + 25 * 60 * 60 * 1000); //dateNow + 1 day and 1 hour
+  const defaultDateFrom = new Date(dateNow.getTime() + 1 * 60 * 60 * 1000); //dateNow + 1 hour
+  const defaultDateTo = new Date(dateNow.getTime() + 25 * 60 * 60 * 1000); //dateNow + 1 day and 1 hour
   const customEmptySearchCarRequest: SearchCarRequest = {
     ...emptySearchCarRequest,
     city: "Miami",
-    dateFrom: dateToHtmlDateTimeFormat(dateFrom),
-    dateTo: dateToHtmlDateTimeFormat(dateTo),
+    dateFrom: dateToHtmlDateTimeFormat(defaultDateFrom),
+    dateTo: dateToHtmlDateTimeFormat(defaultDateTo),
   };
 
   const [
     dataFetched,
-    searchCarsResult,
     searchAvailableCars,
-    dataSaved,
+    searchResult,
+    sortSearchResult,
     createTripRequest,
-  ] = useAvailableCars();
+  ] = useSearchCars();
   const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(
     customEmptySearchCarRequest
   );
-
   const [requestSending, setRequestSending] = useState<boolean>(false);
-  const router = useRouter();
   const [openFilterPanel, setOpenFilterPanel] = useState(false);
   const [searchButtonDisabled, setSearchButtonDisabled] =
     useState<boolean>(false);
   const [dialogState, showInfo, showError, showMessager, hideSnackbar] =
     useRntDialogs();
+  const [sortBy, setSortBy] = useState<SortOptionKey | undefined>(undefined);
   const userInfo = useUserInfo();
+  const router = useRouter();
 
-  const searchCars = async () => {
-    const startDateTime = new Date(searchCarRequest.dateFrom);
-    const endDateTime = new Date(searchCarRequest.dateTo);
-    let days = calculateDays(startDateTime, endDateTime);
-    if (days < 0) {
-      days = 0;
+  const handleSearchClick = async () => {
+    const result = await searchAvailableCars(searchCarRequest);
+    if (result) {
+      setSortBy(undefined);
     }
-
-    await searchAvailableCars(searchCarRequest);
   };
 
-  const sendRentCarRequest = async (carInfo: SearchCarInfo) => {
+  const handleRentCarRequest = async (carInfo: SearchCarInfo) => {
     try {
       if (isEmpty(userInfo.drivingLicense)) {
         const action = (
@@ -84,19 +85,17 @@ export default function Search() {
         );
         return;
       }
-      
-      if (searchCarsResult.searchCarRequest.dateFrom == null) {
+
+      if (searchResult.searchCarRequest.dateFrom == null) {
         showError("Please enter 'Date from'");
         return;
       }
-      if (searchCarsResult.searchCarRequest.dateTo == null) {
+      if (searchResult.searchCarRequest.dateTo == null) {
         showError("Please enter 'Date to'");
         return;
       }
-      const startDateTime = new Date(
-        searchCarsResult.searchCarRequest.dateFrom
-      );
-      const endDateTime = new Date(searchCarsResult.searchCarRequest.dateTo);
+      const startDateTime = new Date(searchResult.searchCarRequest.dateFrom);
+      const endDateTime = new Date(searchResult.searchCarRequest.dateTo);
 
       const days = calculateDays(startDateTime, endDateTime);
       if (days < 0) {
@@ -110,7 +109,7 @@ export default function Search() {
       const totalPriceInUsdCents = carInfo.pricePerDay * 100 * days;
       const depositInUsdCents = carInfo.securityDeposit * 100;
       const fuelPricePerGalInUsdCents = carInfo.fuelPricePerGal * 100;
-      const location = `${searchCarsResult.searchCarRequest.city}, ${searchCarsResult.searchCarRequest.state}, ${searchCarsResult.searchCarRequest.country}`;
+      const location = `${searchResult.searchCarRequest.city}, ${searchResult.searchCarRequest.state}, ${searchResult.searchCarRequest.country}`;
 
       showInfo(
         "Please confirm the transaction with your wallet and wait for the transaction to be processed"
@@ -147,7 +146,7 @@ export default function Search() {
     }
   };
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleSearchInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
     const name = e.target.name;
 
@@ -181,6 +180,11 @@ export default function Search() {
     setSearchButtonDisabled(!isDataValid);
   }, [searchCarRequest]);
 
+  useEffect(() => {
+    if (sortBy === undefined) return;
+    sortSearchResult(sortBy);
+  }, [sortBy, sortSearchResult]);
+
   return (
     <GuestLayout>
       <div className="flex flex-col">
@@ -195,7 +199,7 @@ export default function Search() {
               searchCarRequest.state,
               searchCarRequest.country
             )}
-            onChange={handleChange}
+            onChange={handleSearchInputChange}
           />
           <RntInput
             className="w-1/4"
@@ -203,7 +207,7 @@ export default function Search() {
             label="From"
             type="datetime-local"
             value={searchCarRequest.dateFrom}
-            onChange={handleChange}
+            onChange={handleSearchInputChange}
           />
           <RntInput
             className="w-1/4"
@@ -211,22 +215,44 @@ export default function Search() {
             label="To"
             type="datetime-local"
             value={searchCarRequest.dateTo}
-            onChange={handleChange}
+            onChange={handleSearchInputChange}
           />
           <RntButton
             className="w-40"
             disabled={searchButtonDisabled}
-            onClick={() => searchCars()}
+            onClick={() => handleSearchClick()}
           >
             Search
           </RntButton>
         </div>
-        <RntButton
-          className="w-40 mt-2"
-          onClick={() => setOpenFilterPanel(true)}
-        >
-          Filters
-        </RntButton>
+        <div className="mt-2 flex flex-row gap-2 items-end">
+          <RntButton className="w-40 " onClick={() => setOpenFilterPanel(true)}>
+            Filters
+          </RntButton>
+          <RntSelect
+            className="w-52"
+            id="sort"
+            readOnly={false}
+            value={sortBy ?? ""}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              if (isSortOptionKey(newValue)) {
+                setSortBy(newValue);
+              }
+            }}
+          >
+            <option className="hidden" value={""} disabled>
+              Sort by
+            </option>
+            {(Object.keys(sortOptions) as (keyof typeof sortOptions)[]).map(
+              (key) => (
+                <option key={key} value={key}>
+                  {sortOptions[key]}
+                </option>
+              )
+            )}
+          </RntSelect>
+        </div>
         <div className="mb-8 flex flex-row"></div>
         {!dataFetched ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
@@ -235,17 +261,17 @@ export default function Search() {
         ) : (
           <>
             <div className="text-l font-bold">
-              {searchCarsResult?.carInfos?.length ?? 0} car(s) available
+              {searchResult?.carInfos?.length ?? 0} car(s) available
             </div>
             <div className="my-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
-              {searchCarsResult?.carInfos != null &&
-              searchCarsResult?.carInfos?.length > 0 ? (
-                searchCarsResult?.carInfos.map((value) => {
+              {searchResult?.carInfos != null &&
+              searchResult?.carInfos?.length > 0 ? (
+                searchResult?.carInfos.map((value) => {
                   return (
                     <CarSearchItem
                       key={value.carId}
                       searchInfo={value}
-                      sendRentCarRequest={sendRentCarRequest}
+                      handleRentCarRequest={handleRentCarRequest}
                       disableButton={requestSending}
                     />
                   );
@@ -357,7 +383,7 @@ export default function Search() {
                 <RntButton
                   onClick={() => {
                     setOpenFilterPanel(false);
-                    searchCars();
+                    handleSearchClick();
                   }}
                 >
                   Apply
