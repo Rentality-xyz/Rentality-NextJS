@@ -294,6 +294,7 @@ const useHostTrips = () => {
                   milesIncludedPerDay: Number(i.milesIncludedPerDay),
                   startOdometr: Number(i.startOdometr),
                   endOdometr: Number(i.endOdometr),
+                  depositPaid: Number(i.paymentInfo.depositInUsdCents) / 100,
                   overmilePrice:
                     Number(i.pricePerDayInUsdCents) /
                     Number(i.milesIncludedPerDay) /
