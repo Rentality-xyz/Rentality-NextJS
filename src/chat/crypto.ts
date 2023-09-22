@@ -1,4 +1,4 @@
-import { PublicKeyMessage, ChatMessage } from "./waku";
+import { PublicKeyMessage, ChatMessage, PublicKeysMessage } from "./waku";
 import {
   JsonRpcSigner,
   toUtf8Bytes,
@@ -21,7 +21,8 @@ export async function createPublicKeyMessage(
   encryptionPublicKey: Uint8Array,
   signer: JsonRpcSigner
 ) {
-  let signature = localStorage.getItem("encryptionKeySignature" + signer.address) ?? "";
+  let signature =
+    localStorage.getItem("encryptionKeySignature" + signer.address) ?? "";
   if (isEmpty(signature)) {
     signature = await signEncryptionKey(encryptionPublicKey, signer);
     localStorage.setItem("encryptionKeySignature" + signer.address, signature);
@@ -29,6 +30,26 @@ export async function createPublicKeyMessage(
 
   return new PublicKeyMessage({
     tripId: tripId,
+    encryptionPublicKey: encryptionPublicKey,
+    ethAddress: hexToBytes(signer.address),
+    signature: hexToBytes(signature),
+  });
+}
+
+export async function createPublicKeysMessage(
+  tripIdsJson: string,
+  encryptionPublicKey: Uint8Array,
+  signer: JsonRpcSigner
+) {
+  let signature =
+    localStorage.getItem("encryptionKeySignature" + signer.address) ?? "";
+  if (isEmpty(signature)) {
+    signature = await signEncryptionKey(encryptionPublicKey, signer);
+    localStorage.setItem("encryptionKeySignature" + signer.address, signature);
+  }
+
+  return new PublicKeysMessage({
+    tripIdsJson: tripIdsJson,
     encryptionPublicKey: encryptionPublicKey,
     ethAddress: hexToBytes(signer.address),
     signature: hexToBytes(signature),
