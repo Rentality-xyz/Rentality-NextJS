@@ -281,7 +281,8 @@ const useSearchCars = () => {
     setSearchResult((current) => {
       return {
         searchCarRequest: current.searchCarRequest,
-        carInfos: current.carInfos.toSorted(sortLogic),
+        //TODO carInfos: current.carInfos.toSorted(sortLogic),
+        carInfos: [...current.carInfos].sort(sortLogic),
       };
     });
   }, []);
