@@ -1,47 +1,19 @@
-import { Contract, BrowserProvider, Wallet } from "ethers";
 import { useEffect, useRef, useState } from "react";
-import { rentalityJSON } from "../../abis";
 import { getTripStatusFromContract } from "@/model/blockchain/ContractTrip";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractChatInfo } from "@/model/blockchain/ContractChatInfo";
 import { ChatInfo } from "@/pages/guest/messages";
-import { Client as ChatClient } from "@/chat/client.js";
+import { Client as ChatClient } from "@/chat/client";
+import { useRentality } from "@/contexts/rentalityContext";
 
 const useChatInfos = (isHost: boolean) => {
+  const rentalityInfo = useRentality();
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
-  const [updateRequired, setUpdateRequired] = useState<Boolean>(true);
   const [chatInfos, setChatInfos] = useState<ChatInfo[]>([]);
   const [chatClient, setChatClient] = useState<ChatClient | undefined>(
     undefined
   );
-
-  const updateData = () => {
-    setUpdateRequired(true);
-  };
-
-  const getRentalityContract = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (!ethereum) {
-        console.error("Ethereum wallet is not found");
-      }
-
-      const provider = new BrowserProvider(ethereum);
-      const signer = await provider.getSigner();
-      return {
-        contract: new Contract(
-          rentalityJSON.address,
-          rentalityJSON.abi,
-          signer
-        ) as unknown as IRentalityContract,
-        signer: signer,
-      } as const;
-    } catch (e) {
-      console.error("getRentalityContract error:" + e);
-    }
-  };
 
   const getChatInfos = async (rentalityContract: IRentalityContract) => {
     try {
@@ -120,36 +92,67 @@ const useChatInfos = (isHost: boolean) => {
 
   useEffect(() => {
     const initChat = async () => {
+      if (!rentalityInfo) return;
+      if (isInitiating.current) return;
+      isInitiating.current = true;
+      
+      console.log("initting chat....");
+
       setDataFetched(false);
 
-      const contractInfo = await getRentalityContract();
+      const contractInfo = rentalityInfo.rentalityContract;
       if (contractInfo === undefined) {
         console.error("chat contract info is undefined");
         return;
       }
-      const client = new ChatClient(contractInfo.signer, onMessageReceived);
-      await client.init();
-      await client.listenForChatEncryptionKeys(client.walletAddress);
+      const client = new ChatClient();
+      await client.init(rentalityInfo.signer, onMessageReceived);
+      await client.listenForChatEncryptionKeys(rentalityInfo.signer.address);
 
-      const infos = (await getChatInfos(contractInfo.contract)) ?? [];
+      const infos = (await getChatInfos(contractInfo)) ?? [];
+      await client.sendRoomKeysRequest(infos.map(i => i.tripId));
+      
+      for (const ci of infos){
+        const storedMessages = await client.getChatMessages(ci.tripId);
 
-      infos.forEach(async (ci) => {
-        await client.sendRoomKeyRequest(ci.tripId);
-      });
+        if (storedMessages !== undefined) {
+          ci.messages = storedMessages
+          .filter(Boolean)
+          .map((i) => {
+            return {
+              fromAddress: i?.sender as string,
+              toAddress:  i?.sender.toLowerCase() ===
+              ci.guestAddress.toLowerCase()
+                ? ci.hostAddress
+                : ci.guestAddress,
+              datestamp: new Date(),
+              message: i?.message as string,
+            };
+          });
+        }
+      }
+
+      // console.log("useChatInfos new ChatClient");
+      // const client = new ChatClient();
+      // console.log("useChatInfos initChat");
+      // await client.initChat(contractInfo.signer, onMessageReceived);
+
+      // const infos = (await getChatInfos(contractInfo.contract)) ?? [];
+
+      // console.log("useChatInfos initTrips");
+      // await client.initTrips(infos.map(i => i.tripId));
+
       setChatClient(client);
       setChatInfos(infos);
 
       setDataFetched(true);
+      isInitiating.current = false;
     };
 
-    if (isInitiating.current) return;
-    isInitiating.current = true;
-    console.log("initting chat....");
     initChat();
-    isInitiating.current = false;
-  }, []);
+  }, [rentalityInfo]);
 
-  const onMessageReceived = (
+  const onMessageReceived = async (
     tripId: number,
     message: string,
     fromAddress: string
@@ -160,11 +163,14 @@ const useChatInfos = (isHost: boolean) => {
       if (selectedChat !== undefined) {
         selectedChat.messages.push({
           datestamp: new Date(),
-          fromAddress: fromAddress.toLowerCase() === selectedChat.guestAddress.toLowerCase()
-          ? selectedChat.guestAddress
-          : selectedChat.hostAddress,
+          fromAddress:
+            fromAddress.toLowerCase() ===
+            selectedChat.guestAddress.toLowerCase()
+              ? selectedChat.guestAddress
+              : selectedChat.hostAddress,
           toAddress:
-            fromAddress.toLowerCase() === selectedChat.guestAddress.toLowerCase()
+            fromAddress.toLowerCase() ===
+            selectedChat.guestAddress.toLowerCase()
               ? selectedChat.hostAddress
               : selectedChat.guestAddress,
           message: message,
@@ -180,7 +186,7 @@ const useChatInfos = (isHost: boolean) => {
     await chatClient.sendMessage(tripId, message);
   };
 
-  return [dataFetched, chatInfos, updateData, sendMessage] as const;
+  return [dataFetched, chatInfos, sendMessage] as const;
 };
 
 export default useChatInfos;
