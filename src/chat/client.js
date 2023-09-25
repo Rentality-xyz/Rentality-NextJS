@@ -31,6 +31,7 @@ export class Client {
     const localEncryptionPrKey =
       localStorage.getItem("userChatEncryptionPrKey" + signer.address) ?? "";
     if (isEmpty(localEncryptionPuKey)) {
+      console.log('Generating new EncryptionKeyPair...');
       this.encryptionKeyPair = generateEncryptionKeyPair();
       localStorage.setItem(
         "userChatEncryptionPuKey" + signer.address,
