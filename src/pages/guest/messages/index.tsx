@@ -7,6 +7,7 @@ import useRntDialogs from "@/hooks/useRntDialogs";
 import { TripStatus } from "@/model/TripInfo";
 import { dateFormat } from "@/utils/datetimeFormatters";
 import { Avatar } from "@mui/material";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -130,7 +131,12 @@ export default function Messages() {
                     <div className="text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
                       {chatInfo.tripTitle}
                     </div>
-                    <div className="text-sm">Trip information</div>
+                    <Link
+                      className="text-sm"
+                      href={`/guest/trips/tripInfo/${chatInfo.tripId}`}
+                    >
+                      Trip information
+                    </Link>
                     <div className="col-span-2 whitespace-nowrap overflow-hidden overflow-ellipsis ">
                       {chatInfo.lastMessage}
                     </div>
@@ -168,7 +174,8 @@ export default function Messages() {
 
                 <div className="my-4 flex flex-col gap-4">
                   {selectedChat.messages.map((msgInfo, index) => {
-                    return msgInfo.fromAddress.toLowerCase() === selectedChat.hostAddress.toLowerCase() ? (
+                    return msgInfo.fromAddress.toLowerCase() ===
+                      selectedChat.hostAddress.toLowerCase() ? (
                       <div
                         key={index}
                         className="rnt-card-selected w-5/6 grid grid-cols-[auto_1fr_auto] gap-2 rounded-xl rounded-ss-none  overflow-hidden p-4"
