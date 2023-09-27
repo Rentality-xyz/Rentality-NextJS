@@ -1,4 +1,4 @@
-import { Contract, BrowserProvider } from "ethers";
+import { Contract, ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { rentalityJSON } from "../../abis";
 import {
@@ -32,7 +32,7 @@ const useGuestTrips = () => {
         console.error("Ethereum wallet is not found");
       }
 
-      const provider = new BrowserProvider(ethereum);
+      const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = await provider.getSigner();
       return new Contract(
         rentalityJSON.address,

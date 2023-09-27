@@ -107,7 +107,7 @@ const useChatInfos = (isHost: boolean) => {
       }
       const client = new ChatClient();
       await client.init(rentalityInfo.signer, onMessageReceived);
-      await client.listenForChatEncryptionKeys(rentalityInfo.signer.address);
+      await client.listenForChatEncryptionKeys(await rentalityInfo.signer.getAddress());
 
       const infos = (await getChatInfos(contractInfo)) ?? [];
       await client.sendRoomKeysRequest(infos.map(i => i.tripId));

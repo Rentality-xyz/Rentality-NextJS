@@ -1,11 +1,11 @@
-import { BrowserProvider, ethers, JsonRpcSigner } from "ethers";
+import { Signer, ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 
 export interface IWeb3State {
   address: string | null;
   currentChain: number | null;
-  signer: JsonRpcSigner | null;
-  provider: BrowserProvider | null;
+  signer: Signer | null;
+  provider: ethers.providers.Web3Provider | null;
   isAuthenticated: boolean;
 }
 
@@ -29,7 +29,7 @@ const useWeb3Provider = () => {
       if (!ethereum) {
         return alert("No ethereum wallet found");
       }
-      const provider = new ethers.BrowserProvider(ethereum);
+      const provider = new ethers.providers.Web3Provider(ethereum);
 
       const accounts: string[] = await provider.send("eth_requestAccounts", []);
 

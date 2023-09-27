@@ -1,4 +1,4 @@
-import { Contract, BrowserProvider, formatEther } from "ethers";
+import { Contract, ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { rentalityJSON } from "../../abis";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
@@ -42,7 +42,7 @@ const useContractInfo = () => {
         console.error("Ethereum wallet is not found");
       }
 
-      const provider = new BrowserProvider(ethereum);
+      const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = await provider.getSigner();
       return {
         contract: new Contract(
@@ -60,7 +60,7 @@ const useContractInfo = () => {
 
   const getAdminContractInfo = async (
     contract: IRentalityContract,
-    provider: BrowserProvider
+    provider: ethers.providers.Web3Provider
   ) => {
     const contractAddress = await contract.getAddress();
     const rentalityPlatformAddress = await contract.getRentalityPlatformAddress();
@@ -77,8 +77,8 @@ const useContractInfo = () => {
     const result: AdminContractInfo = {
       contractAddress: contractAddress,
       contractOwnerAddress: ownerAddress,
-      contractBalance: balance,
-      contractBalanceString: formatEther(balance),
+      contractBalance: balance.toBigInt(),
+      contractBalanceString: ethers.utils.formatEther(balance),
       rentalityCommission: rentalityCommission,
       currencyConverterContractAddress: currencyConverterContractAddress,
       userServiceContractAddress: userServiceContractAddress,

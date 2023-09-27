@@ -1,5 +1,5 @@
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { BrowserProvider, Contract, JsonRpcSigner } from "ethers";
+import { Contract, Signer, ethers } from "ethers";
 import { rentalityJSON, rentalityCurrencyConverterJSON } from "../abis";
 import {
   createContext,
@@ -14,8 +14,8 @@ export type RentalityContractInfo = {
   rentalityContract: IRentalityContract;
   walletAddress: string;
   isWalletConnected: boolean;
-  provider: BrowserProvider;
-  signer: JsonRpcSigner;
+  provider: ethers.providers.Web3Provider;
+  signer: Signer;
   connectWallet: () => Promise<void>;
 };
 
@@ -65,7 +65,7 @@ export const RentalityProvider = ({
       const isWalletConnected = true;
       const walletAddress = requestAccounts[0];
 
-      const provider = new BrowserProvider(window.ethereum);
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = await provider.getSigner();
       const rentalityContract = new Contract(
         rentalityJSON.address,

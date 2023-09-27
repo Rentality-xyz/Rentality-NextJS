@@ -5,7 +5,7 @@ import RntInputWithButton from "@/components/common/rntInputWithButton";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useContractInfo from "@/hooks/admin/useContractInfo";
 import useRntDialogs from "@/hooks/useRntDialogs";
-import { parseEther } from "ethers";
+import { ethers } from "ethers";
 import { useState } from "react";
 
 export default function Admin() {
@@ -59,7 +59,7 @@ export default function Admin() {
       return;
     }
     try {
-      const valueToWithdrawInWei = parseEther(ethToWithdraw);
+      const valueToWithdrawInWei = ethers.utils.parseEther(ethToWithdraw).toBigInt();
       await withdrawFromPlatform(BigInt(valueToWithdrawInWei));
       setEthToWithdraw("0");
     } catch (e) {
