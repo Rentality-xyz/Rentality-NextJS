@@ -7,6 +7,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { formatAddress } from "@/utils/addressFormatters";
 import { Avatar } from "@mui/material";
 import { isEmpty } from "@/utils/string";
+import { IdentityButton, ButtonMode } from "@civic/ethereum-gateway-react";
 
 type Props = {
   accountType: string;
@@ -48,21 +49,25 @@ export default function Header({ accountType }: Props) {
               </Link>
             )}
           </div>
+          <IdentityButton mode={ButtonMode.LIGHT} />
           {rentalityInfo?.isWalletConnected ? (
             <div className="flex flex-row gap-4 ml-16 items-center">
               <div className=" flex-col hidden lg:flex">
-                <div>{userInfo.firstName} {userInfo.lastName}</div>
-                <div className="text-sm">{formatAddress(rentalityInfo?.walletAddress)}</div>
+                <div>
+                  {userInfo.firstName} {userInfo.lastName}
+                </div>
+                <div className="text-sm">
+                  {formatAddress(rentalityInfo?.walletAddress)}
+                </div>
               </div>
               <Avatar
                 alt={`${userInfo.firstName} ${userInfo.lastName}`}
                 src={userInfo.profilePhotoUrl}
                 sx={{ width: "5rem", height: "5rem" }}
               >
-                {!isEmpty(userInfo.firstName) ||
-                !isEmpty(userInfo.lastName)
+                {!isEmpty(userInfo.firstName) || !isEmpty(userInfo.lastName)
                   ? userInfo.firstName?.slice(0, 1).toUpperCase() +
-                  userInfo.lastName?.slice(0, 1).toUpperCase()
+                    userInfo.lastName?.slice(0, 1).toUpperCase()
                   : null}
               </Avatar>
             </div>

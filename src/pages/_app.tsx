@@ -1,3 +1,4 @@
+import { CivicControl } from "@/components/CivicControl";
 import { RentalityProvider } from "@/contexts/rentalityContext";
 import { UserInfoProvider } from "@/contexts/userInfoContext";
 import "@/styles/globals.css";
@@ -8,7 +9,9 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <RentalityProvider>
         <UserInfoProvider>
-          <Component {...pageProps} />
+          <CivicControl>
+            <Component {...pageProps} />
+          </CivicControl>
         </UserInfoProvider>
       </RentalityProvider>
     </>
