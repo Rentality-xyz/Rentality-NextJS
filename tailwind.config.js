@@ -13,6 +13,9 @@ module.exports = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       colors: {
+        'rentality-bg-main': '#8C8B9C',
+        'rentality-bg-left-sidebar': '#1E1E30',
+
         'rentality-bg-dark': '#0b0b0d',
 
         'rentality-bg': '#1e1e30', //menu bg, filter, your chat msg bg

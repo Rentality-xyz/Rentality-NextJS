@@ -12,7 +12,7 @@ export default function HostLayout({ children }: Props) {
       <div className="main-grid">
         <Header accountType="Host" />
         <HostSideNavMenu />
-        <main className="px-8 py-4">{children}</main>
+        <main className="px-8 py-4 lg:min-h-[600px]">{children}</main>
         <Footer />
       </div>
     </>
