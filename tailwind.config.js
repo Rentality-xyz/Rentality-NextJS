@@ -64,6 +64,10 @@ module.exports = {
         // 'rnt-temp-slide-panel-bg': '#1e1e30', //#9ca3af bg-gray-400
         // 'rnt-temp-textbox-bg': 'transparent', //#9ca3af bg-gray-400
       },
+      screens: {
+        'sm_inverted': '736px',
+        // => @media (min-width: 640px) { ... }
+      },
     },
   },
   plugins: [],
