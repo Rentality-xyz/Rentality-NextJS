@@ -1,10 +1,11 @@
 import BaseSideNavMenu from "./baseSideNavMenu";
 import SideNavMenuGroup from "./sideNavMenuGroup";
 import SideNavMenuItem from "./sideNavMenuItem";
+import BaseBurgerNavMenu from "@/components/sideNavMenu/baseBurgerNavMenu";
 
-export default function HostSideNavMenu() {
+export default function HostBurgerNavMenu() {
   return (
-    <BaseSideNavMenu accountType={"Host"}>
+    <BaseBurgerNavMenu accountType={"Host"}>
       <SideNavMenuGroup title="Trips">
         <SideNavMenuItem text="Booked" href="/host/trips/booked" />
         <SideNavMenuItem text="History" href="/host/trips/history" />
@@ -17,6 +18,6 @@ export default function HostSideNavMenu() {
       </SideNavMenuGroup>
       <hr/>
       <SideNavMenuGroup title="Profile settings" href="/host/profile" />
-    </BaseSideNavMenu>
+    </BaseBurgerNavMenu>
   );
 }

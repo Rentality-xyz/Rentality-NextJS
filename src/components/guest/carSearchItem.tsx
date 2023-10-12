@@ -14,7 +14,7 @@ export default function CarSearchItem({
   disableButton,
 }: Props) {
   return (
-    <div className="rnt-card flex flex-row rounded-xl overflow-hidden">
+    <div className="bg-rentality-bg rnt-card flex flex-row rounded-xl overflow-hidden">
       {/* <div className="w-60 h-full min-h-[14rem] flex-shrink-0">
         <Image
           src={searchInfo.image}

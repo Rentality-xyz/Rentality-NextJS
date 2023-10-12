@@ -9,12 +9,12 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-[url('../images/bg-gradient-flip.jpg')] bg-cover bg-no-repeat bg-center bg-scroll relative h-[780px] sm:h-[520px]">
+    <footer className="bg-[url('../images/bg-gradient-flip.jpg')] bg-cover bg-no-repeat bg-center bg-scroll relative max-sm:h-[780px] h-[680px] xl:h-[520px]">
         <Image src={bgCar} alt="" className="absolute bottom-0 left-0"/>
         <div className = "absolute bottom-0 left-4 sm:hidden text-white font-['Montserrat',Arial,sans-serif]">
             ©2023 by Rentality LLC
         </div>
-        <div id={"footer-content"} className = "text-white w-[1192px] mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:h-full">
+        <div id={"footer-content"} className = "text-white max-w-[1192px] mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:h-full">
 
             <div id={"footer-info-block"} className = "flex flex-col pt-[70px] max-sm:mx-auto sm:w-full h-full">
                 <Image src={logo} alt="" className="max-w-[200px] min-w-[200px] h-auto"/>

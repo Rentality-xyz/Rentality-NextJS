@@ -1,6 +1,7 @@
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import HostSideNavMenu from "@/components/sideNavMenu/hostSideNavMenu";
+import GuestSideNavMenu from "@/components/sideNavMenu/guestSideNavMenu";
 
 type Props = {
   children?: React.ReactNode;
@@ -9,12 +10,14 @@ type Props = {
 export default function HostLayout({ children }: Props) {
   return (
     <>
-      <div className="main-grid">
-        <Header accountType="Host" />
-        <HostSideNavMenu />
-        <main className="px-8 py-4 lg:min-h-[600px]">{children}</main>
+        <div className="flex text-rnt-temp-sidemenu-text">
+            <HostSideNavMenu />
+            <div className="w-full">
+                <Header accountType="Host" />
+                <main className="px-8 py-4 h-full bg-rentality-bg-main text-rnt-temp-main-text lg:min-h-[600px]">{children}</main>
+            </div>
+        </div>
         <Footer />
-      </div>
     </>
   );
 }
