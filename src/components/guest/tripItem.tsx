@@ -256,7 +256,7 @@ export default function TripItem({
               return (
                 <RntButton
                   key={action.text}
-                  className="h-16 px-4"
+                  className="max-md:w-full h-16 px-4"
                   disabled={disableButton}
                   onClick={() => {
                     if (action.params == null || action.params.length == 0) {
