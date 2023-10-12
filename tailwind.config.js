@@ -66,7 +66,7 @@ module.exports = {
       },
       screens: {
         'sm_inverted': '736px',
-        // => @media (min-width: 640px) { ... }
+        '1xl': '1308px'
       },
     },
   },

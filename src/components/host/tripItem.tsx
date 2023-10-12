@@ -102,8 +102,8 @@ export default function TripItem({
   );
 
   return (
-    <div className="rnt-card flex flex-col rounded-xl overflow-hidden">
-      <div className="flex flex-wrap">
+    <div className="rnt-card flex flex-col rounded-xl overflow-hidden bg-rentality-bg">
+      <div className="sm_inverted:flex flex-wrap">
         {/* <div className="relative h-56 w-60 flex-shrink-0">
           <Image
             src={tripInfo.image}
@@ -114,7 +114,7 @@ export default function TripItem({
           /> */}
         <div
           style={{ backgroundImage: `url(${tripInfo.image})` }}
-          className="relative w-64 min-h-[12rem] flex-shrink-0 bg-center bg-cover"
+          className="relative w-full 1xl:w-64 min-h-[12rem] md:min-h-[16rem] xl:min-h-[12rem] flex-shrink-0 bg-center bg-cover"
         >
           <div className={statusClassName}>
             <strong className="text-m">{`${getTripStatusTextFromStatus(
@@ -147,12 +147,12 @@ export default function TripItem({
             </div>
           </div>
           {!isAdditionalActionHidden ? null : (
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-col 2xl:flex-row gap-4">
               {tripInfo.allowedActions.map((action) => {
                 return (
                   <RntButton
                     key={action.text}
-                    className="h-16 w-full px-4"
+                    className="h-16 w-full xl:w-56 px-4"
                     disabled={disableButton}
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
@@ -218,7 +218,7 @@ export default function TripItem({
           </div>
           <div className="w-full self-end mt-4">
             <Link href={`/host/trips/tripInfo/${tripInfo.tripId}`}>
-              <RntButton className="h-16">Details</RntButton>
+              <RntButton className="max-md:w-full h-16">Details</RntButton>
             </Link>
           </div>
         </div>

@@ -11,7 +11,6 @@ import { twMerge } from "tailwind-merge";
 import RntButton from "../common/rntButton";
 import AllowedActionsForStatusStarted from "./allowedActionsForStatusStarted";
 import AllowedActions from "./allowedActions";
-import bgCar from "@/images/red-generic-sport-ca.png";
 
 type Props = {
   tripInfo: TripInfo;
@@ -104,7 +103,7 @@ export default function TripItem({
           /> */}
         <div
           style={{ backgroundImage: `url(${tripInfo.image})` }}
-          className="relative w-full xl:w-64 min-h-[12rem] md:min-h-[16rem] xl:min-h-[12rem] flex-shrink-0 bg-center bg-cover"
+          className="relative w-full 1xl:w-64 min-h-[12rem] md:min-h-[16rem] xl:min-h-[12rem] flex-shrink-0 bg-center bg-cover"
         >
           <div className={statusClassName}>
             <strong className="text-m">{`${getTripStatusTextFromStatus(
@@ -143,7 +142,7 @@ export default function TripItem({
           </div>
 
           {!isAdditionalActionHidden ? null : (
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-col 2xl:flex-row gap-4">
               {tripInfo.allowedActions.map((action) => {
                 return (
                   <RntButton
