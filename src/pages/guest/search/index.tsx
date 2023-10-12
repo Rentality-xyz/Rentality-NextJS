@@ -189,9 +189,9 @@ export default function Search() {
     <GuestLayout>
       <div className="flex flex-col">
         <PageTitle title="Search" />
-        <div className="search my-2 flex flex-row gap-2 items-end">
+        <div className="search my-2 flex max-xl:flex-col gap-2 xl:items-end">
           <RntInput
-            className="w-1/2"
+            className="xl:w-1/2"
             id="location"
             label="Pick up & Return Location"
             value={formatLocation(
@@ -201,29 +201,31 @@ export default function Search() {
             )}
             onChange={handleSearchInputChange}
           />
-          <RntInput
-            className="w-1/4"
-            id="dateFrom"
-            label="From"
-            type="datetime-local"
-            value={searchCarRequest.dateFrom}
-            onChange={handleSearchInputChange}
-          />
-          <RntInput
-            className="w-1/4"
-            id="dateTo"
-            label="To"
-            type="datetime-local"
-            value={searchCarRequest.dateTo}
-            onChange={handleSearchInputChange}
-          />
-          <RntButton
-            className="w-40"
-            disabled={searchButtonDisabled}
-            onClick={() => handleSearchClick()}
-          >
-            Search
-          </RntButton>
+          <div className="flex max-md:flex-col md:items-end md:justify-between xl:justify-around w-full">
+            <RntInput
+                className="md:w-1/3 2xl:w-[38%]"
+                id="dateFrom"
+                label="From"
+                type="datetime-local"
+                value={searchCarRequest.dateFrom}
+                onChange={handleSearchInputChange}
+            />
+            <RntInput
+                className="md:w-1/3 2xl:w-[38%]"
+                id="dateTo"
+                label="To"
+                type="datetime-local"
+                value={searchCarRequest.dateTo}
+                onChange={handleSearchInputChange}
+            />
+            <RntButton
+                className="w-40 max-xl:mt-4"
+                disabled={searchButtonDisabled}
+                onClick={() => handleSearchClick()}
+            >
+              Search
+            </RntButton>
+          </div>
         </div>
         <div className="mt-2 flex flex-row gap-2 items-end">
           <RntButton className="w-40 " onClick={() => setOpenFilterPanel(true)}>

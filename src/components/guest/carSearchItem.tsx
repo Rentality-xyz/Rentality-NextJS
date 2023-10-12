@@ -14,7 +14,7 @@ export default function CarSearchItem({
   disableButton,
 }: Props) {
   return (
-    <div className="bg-rentality-bg rnt-card flex flex-row rounded-xl overflow-hidden">
+    <div className="bg-rentality-bg rnt-card flex flex-col md:flex-row rounded-xl overflow-hidden">
       {/* <div className="w-60 h-full min-h-[14rem] flex-shrink-0">
         <Image
           src={searchInfo.image}
@@ -26,17 +26,17 @@ export default function CarSearchItem({
       </div> */}
       <div
         style={{ backgroundImage: `url(${searchInfo.image})` }}
-        className="relative w-64 min-h-[12rem] flex-shrink-0 bg-center bg-cover"
+        className="relative w-full md:w-64 min-h-[12rem] flex-shrink-0 bg-center bg-cover"
       />
       <div className="flex w-full flex-col justify-between p-4">
         <div className="flex flex-row items-baseline justify-between ">
           <div className="w-9/12 overflow-hidden">
-            <strong className="text-lg whitespace-nowrap overflow-hidden overflow-ellipsis">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>
+            <strong className="text-lg overflow-hidden overflow-ellipsis">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>
           </div>
           <div>{searchInfo.licensePlate}</div>
         </div>
-        <div className="grid grid-cols-[2fr_1fr] text-xs mt-2">
-          <div className="flex flex-col">
+        <div className="flex md:grid md:grid-cols-[2fr_1fr] text-xs mt-2 md:justify-between">
+          <div className="w-9/12 flex flex-col">
             <div>
               <strong>Total price ${searchInfo.totalPrice}</strong>
             </div>
