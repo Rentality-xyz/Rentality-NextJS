@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@civic/ethereum-gateway-react": "^0.13.5",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@metamask/providers": "^10.2.1",
