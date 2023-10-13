@@ -3,7 +3,7 @@ import SideNavMenuGroup from "./sideNavMenuGroup";
 
 export default function AdminSideNavMenu() {
   return (
-    <BaseSideNavMenu>
+    <BaseSideNavMenu accountType={"Host"}>
       <SideNavMenuGroup title="Contract info" href="/admin" />
     </BaseSideNavMenu>
   );
