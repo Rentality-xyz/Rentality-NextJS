@@ -23,7 +23,7 @@ export default function TripDetails({ tripId }: Props) {
         </div>
       ) : (
         <>
-          <div className="my-4 grid grid-cols-2 gap-4 pr-4">
+          <div className="my-4 flex flex-col md:grid grid-cols-2 gap-4 pr-4">
             <div className="flex flex-row gap-4">
               <RntInput
                 id="tripId"

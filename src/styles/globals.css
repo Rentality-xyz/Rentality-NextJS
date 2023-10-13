@@ -22,10 +22,10 @@ body {
   min-width: 320px;
   font-family: 'Montserrat', Arial, sans-serif;
   color: rgb(var(--foreground-rgb));
-  background-image: url("../images/bg.png");
-  background-position: top;
-  background-repeat: repeat;
-  background-size: cover;
+  /*background-image: url("../images/bg.png");*/
+  /*background-position: top;*/
+  /*background-repeat: repeat;*/
+  /*background-size: cover;*/
   /* background: linear-gradient(
       to bottom,
       transparent,
@@ -34,11 +34,11 @@ body {
     rgb(var(--background-start-rgb)); */
 }
 
-html,
-body {
-  height: 100%;
-  width: 100%;
-}
+/*html,*/
+/*body {*/
+/*  height: 100%;*/
+/*  width: 100%;*/
+/*}*/
 
 .main-grid {
   height: 100%;
@@ -53,7 +53,7 @@ body {
 }
 
 .main-grid>header {
-  @apply bg-rnt-temp-header-bg text-rnt-temp-header-text;
+  @apply text-rnt-temp-header-text;
   grid-area: header;
   width: 100%;
   display: flex;
@@ -62,50 +62,50 @@ body {
 }
 
 .main-grid>aside {
-  @apply bg-rnt-temp-sidemenu-bg text-rnt-temp-sidemenu-text;
+  @apply bg-rentality-bg-left-sidebar text-rnt-temp-sidemenu-text;
   grid-area: aside;
   width: 100%;
   height: auto;
 }
 
 .main-grid>main {
-  @apply bg-rnt-temp-main-bg text-rnt-temp-main-text;
+  @apply bg-rentality-bg-main text-rnt-temp-main-text;
   grid-area: main;
   height: 100%;
   width: 100%;
 }
 
 .main-grid>footer {
-  @apply bg-rnt-temp-footer-bg text-rnt-temp-footer-text;
+  @apply text-rnt-temp-footer-text;
   grid-area: footer;
   width: 100%;
-  height: auto;
+  /*height: auto;*/
   display: flex;
   flex-direction: column;
 }
 
 body {
-  background-image: url("../images/bg.png");
+  /*background-image: url("../images/bg.png");*/
   /* background: repeating-linear-gradient(-45deg, #0B0B0D, #38296B 20%, #0B0B0D 31%),
     repeating-linear-gradient(45deg, #0B0B0D, #38296B 50%, #0B0B0D);
     background-size: 300% 300%; */
 }
 
-.main-grid>header {
-  @apply bg-opacity-60;
-}
+/*.main-grid>header {*/
+/*  @apply bg-opacity-60;*/
+/*}*/
 
-.main-grid>aside {
-  @apply bg-opacity-60;
-}
+/*.main-grid>aside {*/
+/*  @apply bg-opacity-60;*/
+/*}*/
 
-.main-grid>main {
-  @apply bg-opacity-60;
-}
+/*.main-grid>main {*/
+/*  @apply bg-opacity-60;*/
+/*}*/
 
-.main-grid>footer {
-  @apply bg-opacity-30;
-}
+/*.main-grid>footer {*/
+/*  @apply bg-opacity-30;*/
+/*}*/
 
 @media (min-width: 1024px) {
   .main-grid {

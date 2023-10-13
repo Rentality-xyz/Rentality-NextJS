@@ -7,9 +7,14 @@ export default function SideNavMenuItem({
   text: string;
   href: string;
 }) {
+  const removeBodyHidden = () => {
+    const body = document.body;
+    body.classList.remove('max-lg:overflow-hidden');
+  };
+
   return (
     <div className="py-1 h-12">
-      <Link href={href}>{text}</Link>
+      <Link href={href} onClick={removeBodyHidden}>{text}</Link>
     </div>
   );
 }

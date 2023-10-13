@@ -36,7 +36,7 @@ export default function AllowedActionsForStatusStarted({
 
   return (
     <>
-      <div className="flex flex-row gap-8 mb-4">
+      <div className="flex flex-col md:flex-row gap-8 mb-4">
         <div className="flex flex-col flex-1">
           <div className="flex flex-col">
             <div className="font-bold mt-2">Fuel level</div>
