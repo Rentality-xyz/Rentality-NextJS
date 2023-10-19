@@ -291,7 +291,7 @@ export default function Search() {
         <SlidingPanel
           type={"left"}
           isOpen={openFilterPanel}
-          size={30}
+          size={50}
           noBackdrop={false}
           backdropClicked={() => setOpenFilterPanel(false)}
           panelContainerClassName="sliding-panel"
@@ -303,7 +303,7 @@ export default function Search() {
                 onClick={() => setOpenFilterPanel(false)}
               ></i>
             </div>
-            <div className="flex flex-col gap-4 px-16 mt-4">
+            <div className="flex flex-col gap-4 px-4 md:px-8 lg:px-16 mt-4">
               <RntInput
                 id="filter-brand"
                 label="Car brand"
@@ -395,7 +395,7 @@ export default function Search() {
                     setSearchCarRequest(customEmptySearchCarRequest)
                   }
                 >
-                  Reset filters
+                  Reset
                 </RntButton>
               </div>
             </div>
