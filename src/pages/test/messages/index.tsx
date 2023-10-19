@@ -1,49 +1,21 @@
 import RntButton from "@/components/common/rntButton";
 import RntDialogs from "@/components/common/rntDialogs";
-import GuestLayout from "@/components/guest/layout/guestLayout";
+import HostLayout from "@/components/host/layout/hostLayout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useChatInfos from "@/hooks/chat/useChatInfos";
 import useRntDialogs from "@/hooks/useRntDialogs";
 import { TripStatus } from "@/model/TripInfo";
+import { ChatInfo, ChatMessage } from "@/pages/guest/messages";
 import { dateFormat } from "@/utils/datetimeFormatters";
 import { Avatar } from "@mui/material";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
-export type ChatInfo = {
-  tripId: number;
-
-  guestAddress: string;
-  guestName: string;
-  guestPhotoUrl: string;
-
-  hostAddress: string;
-  hostName: string;
-  hostPhotoUrl: string;
-
-  tripTitle: string;
-  lastMessage: string;
-
-  carPhotoUrl: string;
-  tripStatus: TripStatus;
-  carTitle: string;
-  carLicenceNumber: string;
-
-  messages: ChatMessage[];
-};
-
-export type ChatMessage = {
-  fromAddress: string;
-  toAddress: string;
-  datestamp: Date;
-  message: string;
-};
-
 export default function Messages() {
   const [dialogState, showInfo, showError, showMessager, hideSnackbar] =
     useRntDialogs();
-  const [dataFetched, chats, sendMessage] = useChatInfos(false);
+  const [dataFetched, chats, sendMessage, setChatInfos] = useChatInfos(false);
   const [selectedChat, setSelectedChat] = useState<ChatInfo | null>(null);
   const [newMessage, setNewMessage] = useState<string>("");
 
@@ -88,6 +60,48 @@ export default function Messages() {
   };
 
   useEffect(() => {
+    if (chats.some((i) => i.messages.length == 0)) {
+      const newChats: ChatInfo[] = [];
+      chats.forEach((chat) => {
+        newChats.push({ ...chat, messages: getRandomChatMessages(chat) });
+      });
+      setChatInfos(newChats);
+    }
+  }, [chats]);
+
+  const getRandomChatMessages = (chatInfo: ChatInfo) => {
+    const count = 1 + Math.floor(Math.random() * 19);
+
+    const msgs: ChatMessage[] = [];
+
+    for (var i = 0; i < count; i++) {
+      const isFromHost = Math.floor(Math.random() * 2) === 1;
+      msgs[i] = {
+        fromAddress: isFromHost ? chatInfo.hostAddress : chatInfo.guestAddress,
+        toAddress: isFromHost ? chatInfo.guestAddress : chatInfo.hostAddress,
+        datestamp: new Date(),
+        message:
+          "Great vehicle! Clean, full of fuel, everything functional. " +
+          generateString(Math.floor(Math.random() * 300)),
+      };
+    }
+
+    return msgs;
+  };
+  const characters =
+    "ABCDEF GHIJKL MNOPQR STUVW XYZab cdef ghij klmn opqr stuv wxyz 0123 456 789";
+
+  function generateString(length: number) {
+    let result = " ";
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    return result;
+  }
+
+  useEffect(() => {
     if (selectedChat !== null) {
       const item =
         chats.find((ci) => ci.tripId === selectedChat.tripId) ?? null;
@@ -96,7 +110,7 @@ export default function Messages() {
   }, [chats]);
 
   return (
-    <GuestLayout>
+    <HostLayout>
       <div className="flex flex-col">
         <PageTitle title="Chats" />
         {!dataFetched ? (
@@ -121,19 +135,19 @@ export default function Messages() {
                   >
                     <div className="w-24 h-24 row-span-3 self-center">
                       <Avatar
-                        src={chatInfo.hostPhotoUrl}
+                        src={chatInfo.guestPhotoUrl}
                         sx={{ width: "6rem", height: "6rem" }}
                       ></Avatar>
                     </div>
                     <div className="col-span-2 self-end font-bold text-lg">
-                      {chatInfo.hostName}
+                      {chatInfo.guestName}
                     </div>
                     <div className="text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
                       {chatInfo.tripTitle}
                     </div>
                     <Link
                       className="text-sm"
-                      href={`/guest/trips/tripInfo/${chatInfo.tripId}`}
+                      href={`/host/trips/tripInfo/${chatInfo.tripId}`}
                     >
                       Trip information
                     </Link>
@@ -147,7 +161,7 @@ export default function Messages() {
             {selectedChat !== null ? (
               <div className="w-3/5 flex flex-col gap-2">
                 <div className="font-bold text-2xl">
-                  {selectedChat.hostName}
+                  {selectedChat.guestName}
                 </div>
                 <section className="rnt-card mt-4 rounded-xl flex flex-row overflow-hidden">
                   <div
@@ -175,19 +189,19 @@ export default function Messages() {
                 <div className="my-4 flex flex-col gap-4">
                   {selectedChat.messages.map((msgInfo, index) => {
                     return msgInfo.fromAddress.toLowerCase() ===
-                      selectedChat.hostAddress.toLowerCase() ? (
+                      selectedChat.guestAddress.toLowerCase() ? (
                       <div
                         key={index}
                         className="rnt-card-selected w-5/6 grid grid-cols-[auto_1fr_auto] gap-2 rounded-xl rounded-ss-none  overflow-hidden p-4"
                       >
                         <div className="w-12 h-12">
                           <Avatar
-                            src={selectedChat.hostPhotoUrl}
+                            src={selectedChat.guestPhotoUrl}
                             sx={{ width: "3rem", height: "3rem" }}
                           ></Avatar>
                         </div>
                         <div className="font-bold text-lg self-center">
-                          {selectedChat.hostName}
+                          {selectedChat.guestName}
                         </div>
                         <div className="text-sm self-center text-gray-600">
                           {dateFormat(msgInfo.datestamp)}
@@ -205,11 +219,11 @@ export default function Messages() {
                           {dateFormat(msgInfo.datestamp)}
                         </div>
                         <div className="font-bold text-lg self-center text-end">
-                          {selectedChat.guestName}
+                          {selectedChat.hostName}
                         </div>
                         <div className="w-12 h-12">
                           <Avatar
-                            src={selectedChat.guestPhotoUrl}
+                            src={selectedChat.hostPhotoUrl}
                             sx={{ width: "3rem", height: "3rem" }}
                           ></Avatar>
                         </div>
@@ -247,6 +261,6 @@ export default function Messages() {
         )}
       </div>
       <RntDialogs state={dialogState} hide={hideSnackbar} />
-    </GuestLayout>
+    </HostLayout>
   );
 }

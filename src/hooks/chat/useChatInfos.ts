@@ -186,7 +186,7 @@ const useChatInfos = (isHost: boolean) => {
     await chatClient.sendMessage(tripId, message);
   };
 
-  return [dataFetched, chatInfos, sendMessage] as const;
+  return [dataFetched, chatInfos, sendMessage, setChatInfos] as const;
 };
 
 export default useChatInfos;

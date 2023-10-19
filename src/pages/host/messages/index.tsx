@@ -30,10 +30,10 @@ export type ChatInfo = {
   carTitle: string;
   carLicenceNumber: string;
 
-  messages: ChatMesssage[];
+  messages: ChatMessage[];
 };
 
-export type ChatMesssage = {
+export type ChatMessage = {
   fromAddress: string;
   toAddress: string;
   datestamp: Date;
