@@ -121,7 +121,7 @@ export default function Messages() {
                     return (
                         <div
                             key={chatInfo.tripId}
-                            className={`rnt-card w-full grid grid-cols-[auto_1fr_auto] gap-x-2 rounded-xl overflow-hidden p-2 ${
+                            className={`bg-rentality-bg rnt-card w-full grid grid-cols-[auto_1fr_auto] gap-x-2 rounded-xl overflow-hidden p-2 ${
                                 chatInfo.tripId === selectedChat?.tripId
                                     ? "rnt-card-selected"
                                     : ""
@@ -191,7 +191,7 @@ export default function Messages() {
                     return msgInfo.fromAddress.toLowerCase() === selectedChat.guestAddress.toLowerCase() ? (
                       <div
                         key={index}
-                        className="rnt-card-selected w-5/6 grid grid-cols-[auto_1fr_auto] gap-2 rounded-xl rounded-ss-none  overflow-hidden p-4"
+                        className="bg-rentality-bg rnt-card-selected w-5/6 grid grid-cols-[auto_1fr_auto] gap-2 rounded-xl rounded-ss-none  overflow-hidden p-4"
                       >
                         <div className="w-12 h-12">
                           <Avatar
@@ -212,7 +212,7 @@ export default function Messages() {
                     ) : (
                       <div
                         key={index}
-                        className="rnt-card w-5/6 grid grid-cols-[auto_1fr_auto] gap-2 rounded-xl rounded-se-none overflow-hidden p-4 self-end"
+                        className="bg-[#7856FF] rnt-card w-5/6 grid grid-cols-[auto_1fr_auto] gap-2 rounded-xl rounded-se-none overflow-hidden p-4 self-end"
                       >
                         <div className="text-sm self-center text-gray-600">
                           {dateFormat(msgInfo.datestamp)}
