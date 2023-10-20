@@ -161,7 +161,7 @@ export default function Messages() {
             )}
 
             {selectedChat !== null && isOpenChat ? (
-              <div id="chat-id" className="w-full lg:w-3/5 flex flex-col gap-2">
+              <div id="chat-id" className="w-full xl:w-3/5 flex flex-col gap-2">
                 <div className="font-bold text-2xl">
                   {selectedChat.hostName}
                 </div>
