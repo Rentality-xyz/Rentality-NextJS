@@ -66,8 +66,8 @@ export class Waku {
     });
 
     await node.lightPush.send(encoder, { payload });
-    console.log(`Message sent to ${getUserChatContentTopic(toAddress)}\n`);
+    //console.log(`Message sent to ${getUserChatContentTopic(toAddress)}\n`);
     await node.lightPush.send(myEncoder, { payload });
-    console.log(`Message sent to ${getUserChatContentTopic(fromAddress)}\n`);
+    //console.log(`Message sent to ${getUserChatContentTopic(fromAddress)}\n`);
   }
 }

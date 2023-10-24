@@ -85,9 +85,7 @@ export class Client {
     const chatMessage = ChatMessage.decode(msg.payload);
     if (!chatMessage) return;
 
-    console.log(
-      `\n\nReceived chat message from ${chatMessage.from}: Message: ${chatMessage.message}\n`
-    );
+    console.log(`Received chat message from ${chatMessage.from}`);
     this.onUserMessageReceived(
       chatMessage.from,
       chatMessage.to,
