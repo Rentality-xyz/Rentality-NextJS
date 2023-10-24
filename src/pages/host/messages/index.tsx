@@ -174,7 +174,8 @@ export default function Messages() {
 
                 <div className="my-4 flex flex-col gap-4">
                   {selectedChat.messages.map((msgInfo, index) => {
-                    return msgInfo.fromAddress.toLowerCase() === selectedChat.guestAddress.toLowerCase() ? (
+                    return msgInfo.fromAddress.toLowerCase() ===
+                      selectedChat.guestAddress.toLowerCase() ? (
                       <div
                         key={index}
                         className="rnt-card-selected w-5/6 grid grid-cols-[auto_1fr_auto] gap-2 rounded-xl rounded-ss-none  overflow-hidden p-4"
@@ -233,7 +234,11 @@ export default function Messages() {
                   />
                   <RntButton
                     onClick={async () => {
-                      await sendMessage(selectedChat.tripId, newMessage);
+                      await sendMessage(
+                        selectedChat.guestAddress,
+                        selectedChat.tripId,
+                        newMessage
+                      );
                       setNewMessage("");
                     }}
                   >

@@ -6,6 +6,11 @@ import { ContractChatInfo } from "@/model/blockchain/ContractChatInfo";
 import { ChatInfo } from "@/pages/guest/messages";
 import { Client as ChatClient } from "@/chat/client";
 import { useRentality } from "@/contexts/rentalityContext";
+import { Contract, ethers } from "ethers";
+import RentalityChatHelperJSON from "@/abis/RentalityChatHelper.json";
+import { IRentalityChatHelperContract } from "@/model/blockchain/IRentalityChatHelperContract";
+import { isEmpty } from "@/utils/string";
+import { bytesToHex } from "@waku/utils/bytes";
 
 const useChatInfos = (isHost: boolean) => {
   const rentalityInfo = useRentality();
@@ -13,6 +18,9 @@ const useChatInfos = (isHost: boolean) => {
   const [chatInfos, setChatInfos] = useState<ChatInfo[]>([]);
   const [chatClient, setChatClient] = useState<ChatClient | undefined>(
     undefined
+  );
+  const [chatPublicKeys, setChatPublicKeys] = useState<Map<string, string>>(
+    new Map()
   );
 
   const getChatInfos = async (rentalityContract: IRentalityContract) => {
@@ -69,25 +77,27 @@ const useChatInfos = (isHost: boolean) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (!updateRequired) return;
+  const getChatHelper = async () => {
+    if (window.ethereum == null) {
+      console.error("Ethereum wallet is not found");
+      return;
+    }
 
-  //   setUpdateRequired(false);
-  //   setDataFetched(false);
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = await provider.getSigner();
+      const rentalityChatHelperContract = new Contract(
+        RentalityChatHelperJSON.address,
+        RentalityChatHelperJSON.abi,
+        signer
+      ) as unknown as IRentalityChatHelperContract;
 
-  //   getRentalityContract()
-  //     .then((contractInfo) => {
-  //       if (contractInfo?.contract !== undefined) {
-  //         return getChatInfos(contractInfo.contract);
-  //       }
-  //     })
-  //     .then((data) => {
-  //       console.log("setting ChatInfos");
-  //       setChatInfos(data ?? []);
-  //       setDataFetched(true);
-  //     })
-  //     .catch(() => setDataFetched(true));
-  // }, [updateRequired]);
+      return rentalityChatHelperContract;
+    } catch (e) {
+      console.error("getChatHelper error:" + e);
+    }
+  };
+
   const isInitiating = useRef(false);
 
   useEffect(() => {
@@ -95,84 +105,118 @@ const useChatInfos = (isHost: boolean) => {
       if (!rentalityInfo) return;
       if (isInitiating.current) return;
       isInitiating.current = true;
-      
-      console.log("initting chat....");
 
-      setDataFetched(false);
+      const rentalityChatHelper = await getChatHelper();
+      if (!rentalityChatHelper) {
+        console.error("useChatInfos error: ", "rentalityChatHelper is null");
+        return;
+      }
 
       const contractInfo = rentalityInfo.rentalityContract;
       if (contractInfo === undefined) {
         console.error("chat contract info is undefined");
         return;
       }
-      const client = new ChatClient();
-      await client.init(rentalityInfo.signer, onMessageReceived);
-      await client.listenForChatEncryptionKeys(await rentalityInfo.signer.getAddress());
 
-      const infos = (await getChatInfos(contractInfo)) ?? [];
-      await client.sendRoomKeysRequest(infos.map(i => i.tripId));
-      
-      for (const ci of infos){
-        const storedMessages = await client.getChatMessages(ci.tripId);
+      console.log("initting chat....");
+
+      setDataFetched(false);
+
+      try {
+        const client = new ChatClient();
+        const infos = (await getChatInfos(contractInfo)) ?? [];
+        const [myStoredPrivateKey, myStoredPublicKey] =
+          await rentalityChatHelper.getMyChatKeys();
+
+        await client.init(
+          rentalityInfo.signer,
+          onUserMessageReceived,
+          myStoredPrivateKey,
+          myStoredPublicKey
+        );
+        await client.listenForUserChatMessages();
+
+        if (!client.encryptionKeyPair?.publicKey) {
+          console.error("useChatInfos error: ", "publicKey is null");
+          return;
+        }
+
+        const myPrivateKey = bytesToHex(client.encryptionKeyPair.privateKey);
+        const myPublicKey = bytesToHex(client.encryptionKeyPair.publicKey);
+
+        if (
+          isEmpty(myStoredPublicKey) ||
+          myStoredPrivateKey !== myPrivateKey ||
+          myStoredPublicKey !== myPublicKey
+        ) {
+          console.log("Saving user chat public key");
+          await rentalityChatHelper.setMyChatPublicKey(
+            myPrivateKey,
+            myPublicKey
+          );
+        }
+
+        const allAddresses = infos.map((i) =>
+          isHost ? i.guestAddress : i.hostAddress
+        );
+        const uniqueAddresses = allAddresses.filter(function (item, pos, self) {
+          return self.indexOf(item) == pos;
+        });
+        const publicKeys = await rentalityChatHelper.getChatPublicKeys(
+          uniqueAddresses
+        );
+        var dict = new Map<string, string>();
+        publicKeys.forEach((i) => dict.set(i.userAddress, i.publicKey));
+        setChatPublicKeys(dict);
+        console.log("publicKeys: ", dict);
+
+        const storedMessages = await client.getUserChatMessages();
 
         if (storedMessages !== undefined) {
-          ci.messages = storedMessages
-          .filter(Boolean)
-          .map((i) => {
-            return {
-              fromAddress: i?.sender as string,
-              toAddress:  i?.sender.toLowerCase() ===
-              ci.guestAddress.toLowerCase()
-                ? ci.hostAddress
-                : ci.guestAddress,
-              datestamp: new Date(),
-              message: i?.message as string,
-            };
-          });
+          for (const ci of infos) {
+            const msgs = storedMessages.filter((i) => i?.tripId === ci.tripId);
+            if (msgs) {
+              ci.messages = msgs.map((msgInfo) => {
+                return {
+                  fromAddress: msgInfo?.from ?? "",
+                  toAddress: msgInfo?.to ?? "",
+                  datestamp: new Date(msgInfo?.datetime ?? 0),
+                  message: msgInfo?.message ?? "",
+                };
+              });
+            }
+          }
         }
+
+        setChatClient(client);
+        setChatInfos(infos);
+      } catch (e) {
+        console.error("getChatHelper error:" + e);
+      } finally {
+        setDataFetched(true);
       }
 
-      // console.log("useChatInfos new ChatClient");
-      // const client = new ChatClient();
-      // console.log("useChatInfos initChat");
-      // await client.initChat(contractInfo.signer, onMessageReceived);
-
-      // const infos = (await getChatInfos(contractInfo.contract)) ?? [];
-
-      // console.log("useChatInfos initTrips");
-      // await client.initTrips(infos.map(i => i.tripId));
-
-      setChatClient(client);
-      setChatInfos(infos);
-
-      setDataFetched(true);
       isInitiating.current = false;
     };
 
     initChat();
   }, [rentalityInfo]);
 
-  const onMessageReceived = async (
+  const onUserMessageReceived = async (
+    from: string,
+    to: string,
     tripId: number,
-    message: string,
-    fromAddress: string
+    datetime: number,
+    message: string
   ) => {
     setChatInfos((current) => {
       const result = [...current];
       const selectedChat = result.find((i) => i.tripId === tripId);
       if (selectedChat !== undefined) {
         selectedChat.messages.push({
-          datestamp: new Date(),
-          fromAddress:
-            fromAddress.toLowerCase() ===
-            selectedChat.guestAddress.toLowerCase()
-              ? selectedChat.guestAddress
-              : selectedChat.hostAddress,
-          toAddress:
-            fromAddress.toLowerCase() ===
-            selectedChat.guestAddress.toLowerCase()
-              ? selectedChat.hostAddress
-              : selectedChat.guestAddress,
+          datestamp: new Date(datetime),
+          fromAddress: from,
+          toAddress: to,
           message: message,
         });
       }
@@ -180,13 +224,33 @@ const useChatInfos = (isHost: boolean) => {
     });
   };
 
-  const sendMessage = async (tripId: number, message: string) => {
+  const sendUserMessage = async (
+    toAddress: string,
+    tripId: number,
+    message: string
+  ) => {
     if (chatClient === undefined) return;
+    const chatPublicKey = chatPublicKeys.get(toAddress);
+    if (!chatPublicKey || isEmpty(chatPublicKey)) {
+      console.error(
+        "sendUserMessage:",
+        `public key for user ${toAddress} is not found`
+      );
+      return;
+    }
 
-    await chatClient.sendMessage(tripId, message);
+    const datetime = new Date().getTime();
+
+    await chatClient.sendUserMessage(
+      toAddress,
+      tripId,
+      datetime,
+      message,
+      chatPublicKey
+    );
   };
 
-  return [dataFetched, chatInfos, sendMessage, setChatInfos] as const;
+  return [dataFetched, chatInfos, sendUserMessage, setChatInfos] as const;
 };
 
 export default useChatInfos;

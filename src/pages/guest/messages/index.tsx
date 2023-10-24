@@ -234,7 +234,11 @@ export default function Messages() {
                   />
                   <RntButton
                     onClick={async () => {
-                      await sendMessage(selectedChat.tripId, newMessage);
+                      await sendMessage(
+                        selectedChat.hostAddress,
+                        selectedChat.tripId,
+                        newMessage
+                      );
                       setNewMessage("");
                     }}
                   >
