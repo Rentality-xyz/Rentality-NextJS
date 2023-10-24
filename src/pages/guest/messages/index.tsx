@@ -10,6 +10,8 @@ import { Avatar } from "@mui/material";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
+import HostBurgerNavMenu from "@/components/sideNavMenu/hostBurgerNavMenu";
+import GuestBurgerNavMenu from "@/components/sideNavMenu/guestBurgerNavMenu";
 
 export type ChatInfo = {
   tripId: number;
@@ -46,6 +48,11 @@ export default function Messages() {
   const [dataFetched, chats, sendMessage] = useChatInfos(false);
   const [selectedChat, setSelectedChat] = useState<ChatInfo | null>(null);
   const [newMessage, setNewMessage] = useState<string>("");
+  const [isOpenChat, setIsChat] = useState(false);
+
+  const onChat = () => {
+    setIsChat(!isOpenChat);
+  };
 
   let statusBgColor = "";
   switch (selectedChat?.tripStatus) {
@@ -99,57 +106,66 @@ export default function Messages() {
     <GuestLayout>
       <div className="flex flex-col">
         <PageTitle title="Chats" />
+        {isOpenChat && (
+            <RntButton className="w-40 h-12 mt-2" onClick={() => onChat()}>
+              Back
+            </RntButton>
+        )}
         {!dataFetched ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
             Loading...
           </div>
         ) : (
-          <div className="flex flex-row gap-4 mt-5">
-            <div className="w-2/5 flex flex-col gap-2">
-              {chats.map((chatInfo) => {
-                return (
-                  <div
-                    key={chatInfo.tripId}
-                    className={`rnt-card w-full grid grid-cols-[auto_1fr_auto] gap-x-2 rounded-xl overflow-hidden p-2 ${
-                      chatInfo.tripId === selectedChat?.tripId
-                        ? "rnt-card-selected"
-                        : ""
-                    }`}
-                    onClick={() => {
-                      selectChat(chatInfo.tripId);
-                    }}
-                  >
-                    <div className="w-24 h-24 row-span-3 self-center">
-                      <Avatar
-                        src={chatInfo.hostPhotoUrl}
-                        sx={{ width: "6rem", height: "6rem" }}
-                      ></Avatar>
-                    </div>
-                    <div className="col-span-2 self-end font-bold text-lg">
-                      {chatInfo.hostName}
-                    </div>
-                    <div className="text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
-                      {chatInfo.tripTitle}
-                    </div>
-                    <Link
-                      className="text-sm"
-                      href={`/guest/trips/tripInfo/${chatInfo.tripId}`}
-                    >
-                      Trip information
-                    </Link>
-                    <div className="col-span-2 whitespace-nowrap overflow-hidden overflow-ellipsis ">
-                      {chatInfo.lastMessage}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            {selectedChat !== null ? (
-              <div className="w-3/5 flex flex-col gap-2">
+          <div className="flex gap-4 mt-5">
+            {!isOpenChat && (
+                <div id="chat-list" className="w-full lg:w-3/5 flex flex-col gap-2">
+                  {chats.map((chatInfo) => {
+                    return (
+                        <div
+                            key={chatInfo.tripId}
+                            className={`bg-rentality-bg rnt-card w-full grid grid-cols-[auto_1fr_auto] gap-x-2 rounded-xl overflow-hidden p-2 ${
+                                chatInfo.tripId === selectedChat?.tripId
+                                    ? "rnt-card-selected"
+                                    : ""
+                            }`}
+                            onClick={() => {
+                              onChat();
+                              selectChat(chatInfo.tripId);
+                            }}
+                        >
+                          <div className="w-24 h-24 row-span-3 self-center">
+                            <Avatar
+                                src={chatInfo.hostPhotoUrl}
+                                sx={{ width: "6rem", height: "6rem" }}
+                            ></Avatar>
+                          </div>
+                          <div className="col-span-2 self-end font-bold text-lg">
+                            {chatInfo.hostName}
+                          </div>
+                          <div className="text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
+                            {chatInfo.tripTitle}
+                          </div>
+                          <Link
+                              className="text-sm"
+                              href={`/guest/trips/tripInfo/${chatInfo.tripId}`}
+                          >
+                            Trip information
+                          </Link>
+                          <div className="col-span-2 whitespace-nowrap overflow-hidden overflow-ellipsis ">
+                            {chatInfo.lastMessage}
+                          </div>
+                        </div>
+                    );
+                  })}
+                </div>
+            )}
+
+            {selectedChat !== null && isOpenChat ? (
+              <div id="chat-id" className="w-full xl:w-3/5 flex flex-col gap-2">
                 <div className="font-bold text-2xl">
                   {selectedChat.hostName}
                 </div>
-                <section className="rnt-card mt-4 rounded-xl flex flex-row overflow-hidden">
+                <section className="rnt-card mt-4 rounded-xl flex overflow-hidden">
                   <div
                     style={{
                       backgroundImage: `url(${selectedChat.carPhotoUrl})`,
@@ -178,7 +194,7 @@ export default function Messages() {
                       selectedChat.hostAddress.toLowerCase() ? (
                       <div
                         key={index}
-                        className="rnt-card-selected w-5/6 grid grid-cols-[auto_1fr_auto] gap-2 rounded-xl rounded-ss-none  overflow-hidden p-4"
+                        className="bg-rentality-bg rnt-card-selected w-5/6 grid grid-cols-[auto_1fr_auto] gap-2 rounded-xl rounded-ss-none  overflow-hidden p-4"
                       >
                         <div className="w-12 h-12">
                           <Avatar
@@ -199,7 +215,7 @@ export default function Messages() {
                     ) : (
                       <div
                         key={index}
-                        className="rnt-card w-5/6 grid grid-cols-[auto_1fr_auto] gap-2 rounded-xl rounded-se-none overflow-hidden p-4 self-end"
+                        className="bg-[#7856FF] rnt-card w-5/6 grid grid-cols-[auto_1fr_auto] gap-2 rounded-xl rounded-se-none overflow-hidden p-4 self-end"
                       >
                         <div className="text-sm self-center text-gray-600">
                           {dateFormat(msgInfo.datestamp)}

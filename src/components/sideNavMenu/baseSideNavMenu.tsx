@@ -11,7 +11,7 @@ export default function BaseSideNavMenu({children, accountType}:Props) {
     const isHost = accountType === "Host";
 
   return (
-    <aside id="main-menu" className="pl-14 pr-12 pt-12 bg-[#1E1E30] max-lg:hidden">
+    <aside id="main-menu" className="pl-14 pr-12 pt-12 bg-rentality-bg-left-sidebar max-lg:hidden">
       <div className="w-40">
         <Image alt="" width={200} height={200} src={logo} />
       </div>
