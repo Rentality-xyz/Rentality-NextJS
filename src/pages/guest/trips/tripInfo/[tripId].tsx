@@ -1,4 +1,3 @@
-import RntButton from "@/components/common/rntButton";
 import GuestLayout from "@/components/guest/layout/guestLayout";
 import TripDetails from "@/components/tripDetails/TripDetails";
 import { useRouter } from "next/router";
