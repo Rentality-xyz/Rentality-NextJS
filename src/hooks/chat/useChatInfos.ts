@@ -3,7 +3,6 @@ import { getTripStatusFromContract } from "@/model/blockchain/ContractTrip";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractChatInfo } from "@/model/blockchain/ContractChatInfo";
-import { ChatInfo } from "@/pages/guest/messages";
 import { Client as ChatClient } from "@/chat/client";
 import { useRentality } from "@/contexts/rentalityContext";
 import { Contract, ethers } from "ethers";
@@ -11,6 +10,7 @@ import RentalityChatHelperJSON from "@/abis/RentalityChatHelper.json";
 import { IRentalityChatHelperContract } from "@/model/blockchain/IRentalityChatHelperContract";
 import { isEmpty } from "@/utils/string";
 import { bytesToHex } from "@waku/utils/bytes";
+import { ChatInfo } from "@/model/ChatInfo";
 
 const useChatInfos = (isHost: boolean) => {
   const rentalityInfo = useRentality();
