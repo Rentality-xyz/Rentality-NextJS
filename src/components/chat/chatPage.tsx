@@ -7,9 +7,11 @@ import { ChatInfo } from "@/model/ChatInfo";
 import { useEffect, useState } from "react";
 
 export default function ChatPage({
+  isHost,
   chats,
   sendMessage,
 }: {
+  isHost: boolean;
   chats: ChatInfo[];
   sendMessage: (
     toAddress: string,
@@ -39,7 +41,7 @@ export default function ChatPage({
       {!isOpenChat && (
         <ChatList
           chats={chats}
-          isHost={false}
+          isHost={isHost}
           selectedChat={selectedChat ?? undefined}
           selectChatCallback={(tripId) => {
             selectChat(tripId);
@@ -54,7 +56,7 @@ export default function ChatPage({
           </RntButton>
           <div className="font-bold text-2xl">{selectedChat.hostName}</div>
           <ChatHeader selectedChat={selectedChat} />
-          <ChatMessages selectedChat={selectedChat} isHost={false} />
+          <ChatMessages selectedChat={selectedChat} isHost={isHost} />
           <SendMessage
             sendMessageCallback={async (message: string) => {
               await sendMessage(

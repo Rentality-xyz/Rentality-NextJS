@@ -18,7 +18,7 @@ export default function ChatInfoCard({
   const className = `bg-rentality-bg rnt-card w-full grid grid-cols-[auto_1fr_auto] gap-x-2 rounded-xl overflow-hidden p-2 ${
     isSelected ? "rnt-card-selected" : ""
   }`;
-  const otherPhotoUrl = isHost ? chatInfo.guestAddress : chatInfo.hostPhotoUrl;
+  const otherPhotoUrl = isHost ? chatInfo.guestPhotoUrl : chatInfo.hostPhotoUrl;
   const otherName = isHost ? chatInfo.guestName : chatInfo.hostName;
 
   return (
@@ -36,7 +36,7 @@ export default function ChatInfoCard({
         {chatInfo.tripTitle}
       </div>
       <Link
-        className="text-sm"
+        className="text-sm text-rentality-secondary"
         href={`/guest/trips/tripInfo/${chatInfo.tripId}`}
       >
         Trip information

@@ -19,7 +19,7 @@ export default function Messages() {
             Loading...
           </div>
         ) : (
-          <ChatPage chats={chats} sendMessage={sendMessage} />
+          <ChatPage isHost={true} chats={chats} sendMessage={sendMessage} />
         )}
       </div>
       <RntDialogs state={dialogState} hide={hideSnackbar} />
