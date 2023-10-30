@@ -3,6 +3,7 @@ enum MenuIcons {
     History,
     Messages,
     ProfileSettings,
+    Listings
 }
 
 export default MenuIcons;

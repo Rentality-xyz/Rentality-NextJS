@@ -4,6 +4,7 @@ import icBooked from "@/images/ic_booked.jpg";
 import icHistory from "@/images/ic_history.jpg";
 import icMessages from "@/images/ic_messages.jpg";
 import icProfileSettings from "@/images/ic_profile_settings.jpg";
+import icListings from "@/images/ic_listings.jpg";
 import MenuIcons from "@/components/sideNavMenu/menuIcons";
 
 export default function SideNavMenuGroup({
@@ -32,6 +33,8 @@ export default function SideNavMenuGroup({
         return icMessages;
       case MenuIcons.ProfileSettings:
         return icProfileSettings;
+      case MenuIcons.Listings:
+        return icListings;
     }
   };
 
