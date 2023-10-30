@@ -37,19 +37,21 @@ export default function SideNavMenuItem({
   };
 
   return (
-    <div className="py-1 h-12">
-      <Link href={href} onClick={removeBodyHidden} className="flex">
-        <Image
-            src={getImageForMenu(icon)}
-            width={30}
-            height={30}
-            alt=""
-            className="mr-2"
-        />
-        <span className="pt-0.5">
+      <div className="py-1 h-12">
+        <Link href={href} onClick={removeBodyHidden} className="flex">
+          <Image
+              src={getImageForMenu(icon)}
+              width={30}
+              height={30}
+              alt=""
+              className="mr-2"
+          />
+          {icon == MenuIcons.Listings ? <span className="pt-2">
               {text}
-            </span>
-      </Link>
-    </div>
+            </span> : <span className="pt-0.5">
+              {text}
+            </span>}
+        </Link>
+      </div>
   );
 }
