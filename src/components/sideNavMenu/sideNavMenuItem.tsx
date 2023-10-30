@@ -1,20 +1,52 @@
 import Link from "next/link";
+import Image, {ImageProps, StaticImageData} from "next/image";
+import icBooked from "@/images/ic_booked.jpg";
+import icHistory from "@/images/ic_history.jpg";
+import icMessages from "@/images/ic_messages.jpg";
+import icProfileSettings from "@/images/ic_profile_settings.jpg";
+import MenuIcons from "@/components/sideNavMenu/menuIcons";
 
 export default function SideNavMenuItem({
   text,
   href,
+  icon
 }: {
   text: string;
   href: string;
+  icon: MenuIcons;
 }) {
   const removeBodyHidden = () => {
     const body = document.body;
     body.classList.remove('max-lg:overflow-hidden');
   };
 
+  const getImageForMenu = (state: MenuIcons): StaticImageData => {
+    switch (state) {
+      case MenuIcons.Booked:
+        return icBooked;
+      case MenuIcons.History:
+        return icHistory;
+      case MenuIcons.Messages:
+        return icMessages;
+      case MenuIcons.ProfileSettings:
+        return icProfileSettings;
+    }
+  };
+
   return (
     <div className="py-1 h-12">
-      <Link href={href} onClick={removeBodyHidden}>{text}</Link>
+      <Link href={href} onClick={removeBodyHidden} className="flex">
+        <Image
+            src={getImageForMenu(icon)}
+            width={30}
+            height={30}
+            alt=""
+            className="mr-2"
+        />
+        <span className="pt-0.5">
+              {text}
+            </span>
+      </Link>
     </div>
   );
 }
