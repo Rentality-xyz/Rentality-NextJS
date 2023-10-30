@@ -92,7 +92,8 @@ export interface IRentalityContract {
   getChatInfoForGuest(): Promise<ContractChatInfo[]>;
 
   /// GENERAL functions
-  getAddress(): Promise<string>;
+  address: string;
+  //getAddress(): Promise<string>;
   getCarMetadataURI(carId: bigint): Promise<string>;
   getTrip(tripId: bigint): Promise<ContractTrip>;
   getTripContactInfo(tripId: bigint): Promise<TripContactInfo>;

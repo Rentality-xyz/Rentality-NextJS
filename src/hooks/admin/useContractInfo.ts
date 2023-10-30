@@ -62,10 +62,9 @@ const useContractInfo = () => {
     contract: IRentalityContract,
     provider: ethers.providers.Web3Provider
   ) => {
-    const contractAddress = await contract.getAddress();
-    const rentalityPlatformAddress = await contract.getRentalityPlatformAddress();
+    const contractAddress = await contract.address;
     const ownerAddress = await contract.owner();
-    const balance = (await provider.getBalance(rentalityPlatformAddress)) ?? 0;
+    const balance = (await provider.getBalance(contractAddress)) ?? 0;
     const rentalityCommission =
       Number(await contract.getPlatformFeeInPPM()) / 10_000.0 ?? 0;
     const currencyConverterContractAddress =
