@@ -60,7 +60,7 @@ export default function ChatPage({
           <SendMessage
             sendMessageCallback={async (message: string) => {
               await sendMessage(
-                selectedChat.hostAddress,
+                isHost ? selectedChat.guestAddress : selectedChat.hostAddress,
                 selectedChat.tripId,
                 message
               );
