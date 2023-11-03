@@ -69,6 +69,7 @@ export default function RntPlaceAutocomplete({
       types: includeStreetAddress ? ["address"] : ["(cities)"],
       componentRestrictions: { country: "us" },
     },
+    language: "en",
     debounce: 500,
   });
 
@@ -87,7 +88,6 @@ export default function RntPlaceAutocomplete({
         {
           placeId: placePredictions[0].place_id,
           fields: ["address_components", "geometry", "place_id", "formatted_address", "utc_offset_minutes"],
-          language: "en",
         },
         (placeDetails) => {
           if (placeDetails) {
