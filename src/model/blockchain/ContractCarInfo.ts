@@ -18,9 +18,7 @@ export type ContractCarInfo = {
   currentlyListed: boolean;
 };
 
-export function validateContractCarInfo(
-  obj: ContractCarInfo
-): obj is ContractCarInfo {
+export function validateContractCarInfo(obj: ContractCarInfo): obj is ContractCarInfo {
   if (typeof obj !== "object" || obj == null) return false;
 
   if (obj.carId === undefined) {

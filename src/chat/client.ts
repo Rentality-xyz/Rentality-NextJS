@@ -9,18 +9,10 @@ import { Signer } from "ethers";
 
 export class Client {
   node: LightNode | undefined;
-  encryptionKeyPair:
-    | { privateKey: Uint8Array; publicKey: Uint8Array }
-    | undefined;
+  encryptionKeyPair: { privateKey: Uint8Array; publicKey: Uint8Array } | undefined;
   signer: Signer | undefined;
   onUserMessageReceived:
-    | ((
-        from: string,
-        to: string,
-        tripId: number,
-        datetime: number,
-        message: string
-      ) => void)
+    | ((from: string, to: string, tripId: number, datetime: number, message: string) => void)
     | undefined;
 
   constructor() {
@@ -33,13 +25,7 @@ export class Client {
 
   async init(
     signer: Signer,
-    onUserMessageReceived: (
-      from: string,
-      to: string,
-      tripId: number,
-      datetime: number,
-      message: string
-    ) => void,
+    onUserMessageReceived: (from: string, to: string, tripId: number, datetime: number, message: string) => void,
     myStoredPrivateKey: string,
     myStoredPublicKey: string
   ) {
@@ -127,11 +113,7 @@ export class Client {
             })
             .filter(Boolean)
         );
-        console.log(
-          `For user ${walletAddress} restored ${
-            messages?.length ?? 0
-          } message(s)`
-        );
+        console.log(`For user ${walletAddress} restored ${messages?.length ?? 0} message(s)`);
         return messages;
       }
     } catch (e) {
@@ -154,13 +136,7 @@ export class Client {
     };
   }
 
-  async sendUserMessage(
-    toAddress: string,
-    tripId: number,
-    datetime: number,
-    message: string,
-    chatPublicKey: string
-  ) {
+  async sendUserMessage(toAddress: string, tripId: number, datetime: number, message: string, chatPublicKey: string) {
     if (!this.node) return;
     if (!this.encryptionKeyPair) return;
     if (!this.signer) return;

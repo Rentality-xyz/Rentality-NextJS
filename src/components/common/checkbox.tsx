@@ -8,17 +8,8 @@ type Props = {
   onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 
-export default function Checkbox({
-  className,
-  title,
-  value,
-  onChange,
-  ...props
-}: Props) {
-  const c = twMerge(
-    "",
-    className
-  );
+export default function Checkbox({ className, title, value, onChange, ...props }: Props) {
+  const c = twMerge("", className);
   return (
     <div className={c}>
       <label className="rentality-checkbox">

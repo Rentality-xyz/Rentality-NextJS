@@ -6,8 +6,7 @@ import useNotificationInfos from "@/hooks/notification/useNotificationInfos";
 import useRntDialogs from "@/hooks/useRntDialogs";
 
 export default function Notifications() {
-  const [dialogState, showInfo, showError, showMessager, hideSnackbar] =
-    useRntDialogs();
+  const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
   const [dataFetched, notifications] = useNotificationInfos(true);
 
   return (
@@ -15,11 +14,9 @@ export default function Notifications() {
       <div className="flex flex-col">
         <PageTitle title="Notifications" />
         {!dataFetched ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-            Loading...
-          </div>
+          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
         ) : (
-          <NotificationPage notifications={notifications}/>
+          <NotificationPage notifications={notifications} />
         )}
       </div>
       <RntDialogs state={dialogState} hide={hideSnackbar} />

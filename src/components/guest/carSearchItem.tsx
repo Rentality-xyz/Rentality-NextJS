@@ -8,11 +8,7 @@ type Props = {
   disableButton: boolean;
 };
 
-export default function CarSearchItem({
-  searchInfo,
-  handleRentCarRequest,
-  disableButton,
-}: Props) {
+export default function CarSearchItem({ searchInfo, handleRentCarRequest, disableButton }: Props) {
   return (
     <div className="bg-rentality-bg rnt-card flex flex-col md:flex-row rounded-xl overflow-hidden">
       {/* <div className="w-60 h-full min-h-[14rem] flex-shrink-0">
@@ -41,14 +37,10 @@ export default function CarSearchItem({
               <strong>Total price ${searchInfo.totalPrice}</strong>
             </div>
             <div className="mt-2">
-              <strong>{searchInfo.days} days</strong> trip for{" "}
-              <strong>${searchInfo.pricePerDay} per day</strong>
+              <strong>{searchInfo.days} days</strong> trip for <strong>${searchInfo.pricePerDay} per day</strong>
             </div>
             <div>{searchInfo.milesIncludedPerDay} mi included per day</div>
-            <div>
-              Additionally security deposit ${searchInfo.securityDeposit} per
-              trip
-            </div>
+            <div>Additionally security deposit ${searchInfo.securityDeposit} per trip</div>
           </div>
           <div className="flex flex-col">
             <div>- {searchInfo.fuelType}</div>

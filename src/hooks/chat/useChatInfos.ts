@@ -16,12 +16,8 @@ const useChatInfos = (isHost: boolean) => {
   const rentalityInfo = useRentality();
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
   const [chatInfos, setChatInfos] = useState<ChatInfo[]>([]);
-  const [chatClient, setChatClient] = useState<ChatClient | undefined>(
-    undefined
-  );
-  const [chatPublicKeys, setChatPublicKeys] = useState<Map<string, string>>(
-    new Map()
-  );
+  const [chatClient, setChatClient] = useState<ChatClient | undefined>(undefined);
+  const [chatPublicKeys, setChatPublicKeys] = useState<Map<string, string>>(new Map());
 
   const getChatInfos = async (rentalityContract: IRentalityContract) => {
     try {
@@ -39,9 +35,7 @@ const useChatInfos = (isHost: boolean) => {
           : await Promise.all(
               chatInfosView.map(async (ci: ContractChatInfo, index) => {
                 const meta = await getMetaDataFromIpfs(ci.carMetadataUrl);
-                const tripStatus = getTripStatusFromContract(
-                  Number(ci.tripStatus)
-                );
+                const tripStatus = getTripStatusFromContract(Number(ci.tripStatus));
 
                 let item: ChatInfo = {
                   tripId: Number(ci.tripId),
@@ -60,10 +54,7 @@ const useChatInfos = (isHost: boolean) => {
                   carPhotoUrl: getIpfsURIfromPinata(meta.image),
                   tripStatus: tripStatus,
                   carTitle: `${ci.carBrand} ${ci.carModel} ${ci.carYearOfProduction}`,
-                  carLicenceNumber:
-                    meta.attributes?.find(
-                      (x: any) => x.trait_type === "License plate"
-                    )?.value ?? "",
+                  carLicenceNumber: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
 
                   messages: [],
                 };
@@ -125,15 +116,9 @@ const useChatInfos = (isHost: boolean) => {
       try {
         const client = new ChatClient();
         const infos = (await getChatInfos(contractInfo)) ?? [];
-        const [myStoredPrivateKey, myStoredPublicKey] =
-          await rentalityChatHelper.getMyChatKeys();
+        const [myStoredPrivateKey, myStoredPublicKey] = await rentalityChatHelper.getMyChatKeys();
 
-        await client.init(
-          rentalityInfo.signer,
-          onUserMessageReceived,
-          myStoredPrivateKey,
-          myStoredPublicKey
-        );
+        await client.init(rentalityInfo.signer, onUserMessageReceived, myStoredPrivateKey, myStoredPublicKey);
         await client.listenForUserChatMessages();
 
         if (!client.encryptionKeyPair?.publicKey) {
@@ -144,27 +129,16 @@ const useChatInfos = (isHost: boolean) => {
         const myPrivateKey = bytesToHex(client.encryptionKeyPair.privateKey);
         const myPublicKey = bytesToHex(client.encryptionKeyPair.publicKey);
 
-        if (
-          isEmpty(myStoredPublicKey) ||
-          myStoredPrivateKey !== myPrivateKey ||
-          myStoredPublicKey !== myPublicKey
-        ) {
+        if (isEmpty(myStoredPublicKey) || myStoredPrivateKey !== myPrivateKey || myStoredPublicKey !== myPublicKey) {
           console.log("Saving user chat public key");
-          await rentalityChatHelper.setMyChatPublicKey(
-            myPrivateKey,
-            myPublicKey
-          );
+          await rentalityChatHelper.setMyChatPublicKey(myPrivateKey, myPublicKey);
         }
 
-        const allAddresses = infos.map((i) =>
-          isHost ? i.guestAddress : i.hostAddress
-        );
+        const allAddresses = infos.map((i) => (isHost ? i.guestAddress : i.hostAddress));
         const uniqueAddresses = allAddresses.filter(function (item, pos, self) {
           return self.indexOf(item) == pos;
         });
-        const publicKeys = await rentalityChatHelper.getChatPublicKeys(
-          uniqueAddresses
-        );
+        const publicKeys = await rentalityChatHelper.getChatPublicKeys(uniqueAddresses);
         var dict = new Map<string, string>();
         publicKeys.forEach((i) => dict.set(i.userAddress, i.publicKey));
         setChatPublicKeys(dict);
@@ -202,13 +176,7 @@ const useChatInfos = (isHost: boolean) => {
     initChat();
   }, [rentalityInfo]);
 
-  const onUserMessageReceived = async (
-    from: string,
-    to: string,
-    tripId: number,
-    datetime: number,
-    message: string
-  ) => {
+  const onUserMessageReceived = async (from: string, to: string, tripId: number, datetime: number, message: string) => {
     setChatInfos((current) => {
       const result = [...current];
       const selectedChat = result.find((i) => i.tripId === tripId);
@@ -224,30 +192,17 @@ const useChatInfos = (isHost: boolean) => {
     });
   };
 
-  const sendUserMessage = async (
-    toAddress: string,
-    tripId: number,
-    message: string
-  ) => {
+  const sendUserMessage = async (toAddress: string, tripId: number, message: string) => {
     if (chatClient === undefined) return;
     const chatPublicKey = chatPublicKeys.get(toAddress);
     if (!chatPublicKey || isEmpty(chatPublicKey)) {
-      console.error(
-        "sendUserMessage:",
-        `public key for user ${toAddress} is not found`
-      );
+      console.error("sendUserMessage:", `public key for user ${toAddress} is not found`);
       return;
     }
 
     const datetime = new Date().getTime();
 
-    await chatClient.sendUserMessage(
-      toAddress,
-      tripId,
-      datetime,
-      message,
-      chatPublicKey
-    );
+    await chatClient.sendUserMessage(toAddress, tripId, datetime, message, chatPublicKey);
   };
 
   return [dataFetched, chatInfos, sendUserMessage, setChatInfos] as const;

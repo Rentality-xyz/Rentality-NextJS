@@ -15,11 +15,7 @@ export class Waku {
     console.log("Initializing node");
     const node = await createLightNode({ defaultBootstrap: true });
     await node.start();
-    await waitForRemotePeer(node, [
-      Protocols.Filter,
-      Protocols.LightPush,
-      Protocols.Store,
-    ]);
+    await waitForRemotePeer(node, [Protocols.Filter, Protocols.LightPush, Protocols.Store]);
     console.log("Node initialized");
     return node;
   }
@@ -35,14 +31,7 @@ export class Waku {
     node: LightNode
   ) {
     const fromAddress = (await signer.getAddress()).toLowerCase();
-    const signature = await signUserChatMessage(
-      fromAddress,
-      toAddress,
-      tripId,
-      datetime,
-      message,
-      signer
-    );
+    const signature = await signUserChatMessage(fromAddress, toAddress, tripId, datetime, message, signer);
 
     const chatMessage = new ChatMessage({
       from: fromAddress,

@@ -15,21 +15,14 @@ import { useUserInfo } from "@/contexts/userInfoContext";
 import { verifyCar } from "@/model/HostCarInfo";
 
 export default function AddCar() {
-  const [
-    carInfoFormParams,
-    setCarInfoFormParams,
-    dataSaved,
-    sentCarToServer,
-  ] = useAddCar();
+  const [carInfoFormParams, setCarInfoFormParams, dataSaved, sentCarToServer] = useAddCar();
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [message, setMessage] = useState<string>("");
   const [carSaving, setCarSaving] = useState<boolean>(false);
-  const [isButtonSaveDisabled, setIsButtonSaveDisabled] =
-    useState<boolean>(false);
+  const [isButtonSaveDisabled, setIsButtonSaveDisabled] = useState<boolean>(false);
   const router = useRouter();
-  const [dialogState, showInfo, showError, showMessager, hideSnackbar] =
-    useRntDialogs();
+  const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
   const userInfo = useUserInfo();
 
   const onChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,10 +63,7 @@ export default function AddCar() {
           </Button>
         </>
       );
-      showError(
-        "In order to save a car, please enter user information",
-        action
-      );
+      showError("In order to save a car, please enter user information", action);
       return;
     }
 
@@ -123,10 +113,7 @@ export default function AddCar() {
           </Button>
         </>
       );
-      showError(
-        "In order to save a car, please enter user information",
-        action
-      );
+      showError("In order to save a car, please enter user information", action);
       return;
     }
   }, []);
@@ -144,11 +131,7 @@ export default function AddCar() {
         />
 
         <div className="flex flex-row gap-4 mb-8 mt-8 items-center">
-          <RntButton
-            className="w-40 h-16"
-            disabled={isButtonSaveDisabled}
-            onClick={saveCar}
-          >
+          <RntButton className="w-40 h-16" disabled={isButtonSaveDisabled} onClick={saveCar}>
             Save
           </RntButton>
           <Link href={`/host/vehicles/listings`}>

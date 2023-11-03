@@ -11,14 +11,14 @@ export const dateFormat = (value: Date) => {
   return `${dateString}, ${timeString}`;
 };
 
-export const dateToHtmlDateFormat = (value: Date| undefined) => {
+export const dateToHtmlDateFormat = (value: Date | undefined) => {
   if (value === undefined) return "";
-  
+
   let day = value.getDate().toString();
   if (day.length === 1) {
     day = "0" + day;
   }
-  let month = (value.getMonth()+1).toString();
+  let month = (value.getMonth() + 1).toString();
   if (month.length === 1) {
     month = "0" + month;
   }
@@ -28,12 +28,12 @@ export const dateToHtmlDateFormat = (value: Date| undefined) => {
 
 export const dateToHtmlDateTimeFormat = (value: Date | undefined) => {
   if (value === undefined) return "";
-  
+
   let day = value.getDate().toString();
   if (day.length === 1) {
     day = "0" + day;
   }
-  let month = (value.getMonth()+1).toString();
+  let month = (value.getMonth() + 1).toString();
   if (month.length === 1) {
     month = "0" + month;
   }

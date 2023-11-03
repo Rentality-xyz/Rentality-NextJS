@@ -1,18 +1,11 @@
 import { Contract, ethers } from "ethers";
 import { useCallback, useState } from "react";
 import { rentalityCurrencyConverterJSON } from "../../abis";
-import {
-  ContractCarInfo,
-  validateContractCarInfo,
-} from "@/model/blockchain/ContractCarInfo";
+import { ContractCarInfo, validateContractCarInfo } from "@/model/blockchain/ContractCarInfo";
 import { calculateDays } from "@/utils/date";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { ContractCreateTripRequest } from "@/model/blockchain/ContractCreateTripRequest";
-import {
-  SearchCarInfo,
-  SearchCarsResult,
-  emptySearchCarsResult,
-} from "@/model/SearchCarsResult";
+import { SearchCarInfo, SearchCarsResult, emptySearchCarsResult } from "@/model/SearchCarsResult";
 import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { ContractSearchCarParams } from "@/model/blockchain/ContractSearchCarParams";
 import { useRentality } from "@/contexts/rentalityContext";
@@ -30,9 +23,7 @@ export function isSortOptionKey(key: string): key is SortOptionKey {
 const useSearchCars = () => {
   const rentalityInfo = useRentality();
   const [dataFetched, setDataFetched] = useState<Boolean>(true);
-  const [searchResult, setSearchResult] = useState<SearchCarsResult>(
-    emptySearchCarsResult
-  );
+  const [searchResult, setSearchResult] = useState<SearchCarsResult>(emptySearchCarsResult);
 
   const getRentalityCurrencyConverterContract = async () => {
     try {
@@ -44,19 +35,13 @@ const useSearchCars = () => {
 
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = await provider.getSigner();
-      return new Contract(
-        rentalityCurrencyConverterJSON.address,
-        rentalityCurrencyConverterJSON.abi,
-        signer
-      );
+      return new Contract(rentalityCurrencyConverterJSON.address, rentalityCurrencyConverterJSON.abi, signer);
     } catch (e) {
       console.error("getRentalityCurrencyConverter error:" + e);
     }
   };
 
-  const formatSearchAvailableCarsContractRequest = (
-    searchCarRequest: SearchCarRequest
-  ) => {
+  const formatSearchAvailableCarsContractRequest = (searchCarRequest: SearchCarRequest) => {
     const startDateTime = new Date(searchCarRequest.dateFrom);
     const endDateTime = new Date(searchCarRequest.dateTo);
     const tripDays = calculateDays(startDateTime, endDateTime);
@@ -69,35 +54,19 @@ const useSearchCars = () => {
       city: "",
       brand: searchCarRequest.brand ?? "",
       model: searchCarRequest.model ?? "",
-      yearOfProductionFrom: BigInt(
-        searchCarRequest.yearOfProductionFrom ?? "0"
-      ),
+      yearOfProductionFrom: BigInt(searchCarRequest.yearOfProductionFrom ?? "0"),
       yearOfProductionTo: BigInt(searchCarRequest.yearOfProductionTo ?? "0"),
-      pricePerDayInUsdCentsFrom: BigInt(
-        Number(searchCarRequest.pricePerDayInUsdFrom) * 100 ?? "0"
-      ),
-      pricePerDayInUsdCentsTo: BigInt(
-        Number(searchCarRequest.pricePerDayInUsdTo) * 100 ?? "0"
-      ),
+      pricePerDayInUsdCentsFrom: BigInt(Number(searchCarRequest.pricePerDayInUsdFrom) * 100 ?? "0"),
+      pricePerDayInUsdCentsTo: BigInt(Number(searchCarRequest.pricePerDayInUsdTo) * 100 ?? "0"),
     };
-    return [
-      contractDateFrom,
-      contractDateTo,
-      contractSearchCarParams,
-      tripDays,
-    ] as const;
+    return [contractDateFrom, contractDateTo, contractSearchCarParams, tripDays] as const;
   };
 
-  const formatSearchAvailableCarsContractResponse = async (
-    availableCarsView: ContractCarInfo[],
-    tripDays: number
-  ) => {
+  const formatSearchAvailableCarsContractResponse = async (availableCarsView: ContractCarInfo[], tripDays: number) => {
     if (availableCarsView.length === 0) return [];
 
     if (rentalityInfo == null) {
-      console.error(
-        "formatSearchAvailableCarsContractResponse error: rentalityInfo is null"
-      );
+      console.error("formatSearchAvailableCarsContractResponse error: rentalityInfo is null");
       return [];
     }
 
@@ -106,41 +75,25 @@ const useSearchCars = () => {
         if (index === 0) {
           validateContractCarInfo(i);
         }
-        const tokenURI =
-          await rentalityInfo.rentalityContract.getCarMetadataURI(i.carId);
+        const tokenURI = await rentalityInfo.rentalityContract.getCarMetadataURI(i.carId);
         const meta = await getMetaDataFromIpfs(tokenURI);
 
         const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
         const totalPrice = pricePerDay * tripDays;
         const fuelPricePerGal = Number(i.fuelPricePerGalInUsdCents) / 100;
-        const securityDeposit =
-          Number(i.securityDepositPerTripInUsdCents) / 100;
+        const securityDeposit = Number(i.securityDepositPerTripInUsdCents) / 100;
 
         let item: SearchCarInfo = {
           carId: Number(i.carId),
           ownerAddress: i.createdBy.toString(),
           image: getIpfsURIfromPinata(meta.image),
-          brand:
-            meta.attributes?.find((x: any) => x.trait_type === "Brand")
-              ?.value ?? "",
-          model:
-            meta.attributes?.find((x: any) => x.trait_type === "Model")
-              ?.value ?? "",
-          year:
-            meta.attributes?.find((x: any) => x.trait_type === "Release year")
-              ?.value ?? "",
-          licensePlate:
-            meta.attributes?.find((x: any) => x.trait_type === "License plate")
-              ?.value ?? "",
-          seatsNumber:
-            meta.attributes?.find((x: any) => x.trait_type === "Seats number")
-              ?.value ?? "",
-          transmission:
-            meta.attributes?.find((x: any) => x.trait_type === "Transmission")
-              ?.value ?? "",
-          fuelType:
-            meta.attributes?.find((x: any) => x.trait_type === "Fuel type")
-              ?.value ?? "",
+          brand: meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "",
+          model: meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
+          year: meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
+          licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
+          seatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats number")?.value ?? "",
+          transmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
+          fuelType: meta.attributes?.find((x: any) => x.trait_type === "Fuel type")?.value ?? "",
           milesIncludedPerDay: i.milesIncludedPerDay.toString(),
           pricePerDay: pricePerDay,
           fuelPricePerGal: fuelPricePerGal,
@@ -163,24 +116,16 @@ const useSearchCars = () => {
     try {
       setDataFetched(false);
 
-      const [
+      const [contractDateFrom, contractDateTo, contractSearchCarParams, tripDays] =
+        formatSearchAvailableCarsContractRequest(searchCarRequest);
+
+      const availableCarsView: ContractCarInfo[] = await rentalityContract.searchAvailableCars(
         contractDateFrom,
         contractDateTo,
-        contractSearchCarParams,
-        tripDays,
-      ] = formatSearchAvailableCarsContractRequest(searchCarRequest);
-
-      const availableCarsView: ContractCarInfo[] =
-        await rentalityContract.searchAvailableCars(
-          contractDateFrom,
-          contractDateTo,
-          contractSearchCarParams
-        );
-
-      const availableCarsData = await formatSearchAvailableCarsContractResponse(
-        availableCarsView,
-        tripDays
+        contractSearchCarParams
       );
+
+      const availableCarsData = await formatSearchAvailableCarsContractResponse(availableCarsView, tripDays);
 
       setSearchResult({
         searchCarRequest: searchCarRequest,
@@ -214,25 +159,19 @@ const useSearchCars = () => {
 
     try {
       const rentalityContract = rentalityInfo.rentalityContract;
-      const rentalityCurrencyConverterContract =
-        await getRentalityCurrencyConverterContract();
+      const rentalityCurrencyConverterContract = await getRentalityCurrencyConverterContract();
       if (rentalityContract == null) {
         console.error("createTripRequest error: rentalityContract is null");
         return false;
       }
       if (rentalityCurrencyConverterContract == null) {
-        console.error(
-          "createTripRequest error: rentalityCurrencyConverterContract is null"
-        );
+        console.error("createTripRequest error: rentalityCurrencyConverterContract is null");
         return false;
       }
 
-      const rentPriceInUsdCents =
-        (totalDayPriceInUsdCents + taxPriceInUsdCents + depositInUsdCents) | 0;
+      const rentPriceInUsdCents = (totalDayPriceInUsdCents + taxPriceInUsdCents + depositInUsdCents) | 0;
       const [rentPriceInEth, ethToCurrencyRate, ethToCurrencyDecimals] =
-        await rentalityCurrencyConverterContract.getEthFromUsdLatest(
-          rentPriceInUsdCents
-        );
+        await rentalityCurrencyConverterContract.getEthFromUsdLatest(rentPriceInUsdCents);
 
       const tripRequest: ContractCreateTripRequest = {
         carId: BigInt(carId),
@@ -287,13 +226,7 @@ const useSearchCars = () => {
     });
   }, []);
 
-  return [
-    dataFetched,
-    searchAvailableCars,
-    searchResult,
-    sortSearchResult,
-    createTripRequest,
-  ] as const;
+  return [dataFetched, searchAvailableCars, searchResult, sortSearchResult, createTripRequest] as const;
 };
 
 export default useSearchCars;

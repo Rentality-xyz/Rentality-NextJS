@@ -8,12 +8,7 @@ type Props = {
   selectChatCallback: (tripId: number) => void;
 };
 
-export default function ChatList({
-  chats,
-  isHost,
-  selectedChat,
-  selectChatCallback,
-}: Props) {
+export default function ChatList({ chats, isHost, selectedChat, selectChatCallback }: Props) {
   return (
     <div className="w-full lg:w-3/5 flex flex-col gap-2">
       {chats.map((chatInfo) => {
@@ -21,7 +16,7 @@ export default function ChatList({
           <ChatInfoCard
             key={chatInfo.tripId}
             chatInfo={chatInfo}
-            isHost = {isHost}
+            isHost={isHost}
             isSelected={chatInfo.tripId === selectedChat?.tripId}
             onClickCallback={() => {
               selectChatCallback(chatInfo.tripId);

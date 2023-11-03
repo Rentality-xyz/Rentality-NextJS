@@ -31,9 +31,7 @@ export class ChatMessage {
   }
 
   static decode(bytes: Uint8Array) {
-    const payload = ChatMessage.Type.decode(
-      bytes
-    ) as unknown as ChatMessagePayload;
+    const payload = ChatMessage.Type.decode(bytes) as unknown as ChatMessagePayload;
 
     if (
       !payload.from ||

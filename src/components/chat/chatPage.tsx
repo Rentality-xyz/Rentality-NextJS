@@ -13,11 +13,7 @@ export default function ChatPage({
 }: {
   isHost: boolean;
   chats: ChatInfo[];
-  sendMessage: (
-    toAddress: string,
-    tripId: number,
-    message: string
-  ) => Promise<void>;
+  sendMessage: (toAddress: string, tripId: number, message: string) => Promise<void>;
 }) {
   const [selectedChat, setSelectedChat] = useState<ChatInfo | null>(null);
   const [isOpenChat, setIsOpenChat] = useState(false);
@@ -30,8 +26,7 @@ export default function ChatPage({
 
   useEffect(() => {
     if (selectedChat !== null) {
-      const item =
-        chats.find((ci) => ci.tripId === selectedChat.tripId) ?? null;
+      const item = chats.find((ci) => ci.tripId === selectedChat.tripId) ?? null;
       setSelectedChat(item);
     }
   }, [chats]);

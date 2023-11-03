@@ -40,8 +40,7 @@ const useEditCarInfo = (carId: number) => {
   };
 
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
-  const [carInfoFormParams, setCarInfoFormParams] =
-    useState<HostCarInfo>(emptyHostCarInfo);
+  const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(emptyHostCarInfo);
   const [dataSaved, setDataSaved] = useState<Boolean>(true);
 
   const getRentalityContract = async () => {
@@ -54,11 +53,7 @@ const useEditCarInfo = (carId: number) => {
 
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = await provider.getSigner();
-      return new Contract(
-        rentalityJSON.address,
-        rentalityJSON.abi,
-        signer
-      ) as unknown as IRentalityContract;
+      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer) as unknown as IRentalityContract;
     } catch (e) {
       console.error("getRentalityContract error:" + e);
     }
@@ -86,9 +81,7 @@ const useEditCarInfo = (carId: number) => {
         console.error("getMyListings error: contract is null");
         return;
       }
-      const carInfo: ContractCarInfo = await rentalityContract.getCarInfoById(
-        BigInt(carId)
-      );
+      const carInfo: ContractCarInfo = await rentalityContract.getCarInfoById(BigInt(carId));
       const signerAddress = await getSignerAddress();
       if (carInfo.createdBy !== signerAddress) {
         return emptyHostCarInfo;
@@ -98,8 +91,7 @@ const useEditCarInfo = (carId: number) => {
       const meta = await getMetaDataFromIpfs(tokenURI);
 
       const price = Number(carInfo.pricePerDayInUsdCents) / 100;
-      const securityDeposit =
-        Number(carInfo.securityDepositPerTripInUsdCents) / 100;
+      const securityDeposit = Number(carInfo.securityDepositPerTripInUsdCents) / 100;
       const fuelPricePerGal = Number(carInfo.fuelPricePerGalInUsdCents) / 100;
 
       let item: HostCarInfo = {
@@ -111,39 +103,17 @@ const useEditCarInfo = (carId: number) => {
         model: carInfo.model,
         releaseYear: Number(carInfo.yearOfProduction).toString(),
         name: meta.name ?? "",
-        licensePlate:
-          meta.attributes?.find((x: any) => x.trait_type === "License plate")
-            ?.value ?? "",
-        licenseState:
-          meta.attributes?.find((x: any) => x.trait_type === "License state")
-            ?.value ?? "",
-        seatsNumber:
-          meta.attributes?.find((x: any) => x.trait_type === "Seats number")
-            ?.value ?? "",
-        doorsNumber:
-          meta.attributes?.find((x: any) => x.trait_type === "Doors number")
-            ?.value ?? "",
-        fuelType:
-          meta.attributes?.find((x: any) => x.trait_type === "Fuel type")
-            ?.value ?? "",
-        tankVolumeInGal:
-          meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")
-            ?.value ?? "",
-        wheelDrive:
-          meta.attributes?.find((x: any) => x.trait_type === "Wheel drive")
-            ?.value ?? "",
-        transmission:
-          meta.attributes?.find((x: any) => x.trait_type === "Transmission")
-            ?.value ?? "",
-        trunkSize:
-          meta.attributes?.find((x: any) => x.trait_type === "Trunk size")
-            ?.value ?? "",
-        color:
-          meta.attributes?.find((x: any) => x.trait_type === "Color")?.value ??
-          "",
-        bodyType:
-          meta.attributes?.find((x: any) => x.trait_type === "Body type")
-            ?.value ?? "",
+        licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
+        licenseState: meta.attributes?.find((x: any) => x.trait_type === "License state")?.value ?? "",
+        seatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats number")?.value ?? "",
+        doorsNumber: meta.attributes?.find((x: any) => x.trait_type === "Doors number")?.value ?? "",
+        fuelType: meta.attributes?.find((x: any) => x.trait_type === "Fuel type")?.value ?? "",
+        tankVolumeInGal: meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "",
+        wheelDrive: meta.attributes?.find((x: any) => x.trait_type === "Wheel drive")?.value ?? "",
+        transmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
+        trunkSize: meta.attributes?.find((x: any) => x.trait_type === "Trunk size")?.value ?? "",
+        color: meta.attributes?.find((x: any) => x.trait_type === "Color")?.value ?? "",
+        bodyType: meta.attributes?.find((x: any) => x.trait_type === "Body type")?.value ?? "",
         description: meta.description ?? "",
         pricePerDay: price.toString(),
         milesIncludedPerDay: carInfo.milesIncludedPerDay.toString(),
@@ -152,12 +122,8 @@ const useEditCarInfo = (carId: number) => {
         country: carInfo.country,
         state: carInfo.state,
         city: carInfo.city,
-        locationLatitude: (
-          Number(carInfo.locationLatitudeInPPM) / 1_000_000
-        ).toString(),
-        locationLongitude: (
-          Number(carInfo.locationLongitudeInPPM) / 1_000_000
-        ).toString(),
+        locationLatitude: (Number(carInfo.locationLatitudeInPPM) / 1_000_000).toString(),
+        locationLongitude: (Number(carInfo.locationLongitudeInPPM) / 1_000_000).toString(),
       };
       return item;
     } catch (e) {
@@ -177,37 +143,19 @@ const useEditCarInfo = (carId: number) => {
         return false;
       }
 
-      var pricePerDayDouble = Number(
-        carInfoFormParams.pricePerDay.replace(/[^0-9.]+/g, "")
-      );
+      var pricePerDayDouble = Number(carInfoFormParams.pricePerDay.replace(/[^0-9.]+/g, ""));
       const pricePerDayInUsdCents = BigInt((pricePerDayDouble * 100) | 0);
 
-      var securityDepositPerTripDouble = Number(
-        carInfoFormParams.securityDeposit.replace(/[^0-9.]+/g, "")
-      );
-      const securityDepositPerTripInUsdCents = BigInt(
-        (securityDepositPerTripDouble * 100) | 0
-      );
+      var securityDepositPerTripDouble = Number(carInfoFormParams.securityDeposit.replace(/[^0-9.]+/g, ""));
+      const securityDepositPerTripInUsdCents = BigInt((securityDepositPerTripDouble * 100) | 0);
 
-      var fuelPricePerGalDouble = Number(
-        carInfoFormParams.fuelPricePerGal.replace(/[^0-9.]+/g, "")
-      );
-      const fuelPricePerGalInUsdCents = BigInt(
-        (fuelPricePerGalDouble * 100) | 0
-      );
+      var fuelPricePerGalDouble = Number(carInfoFormParams.fuelPricePerGal.replace(/[^0-9.]+/g, ""));
+      const fuelPricePerGalInUsdCents = BigInt((fuelPricePerGalDouble * 100) | 0);
 
-      var locationLatitudeDouble = Number(
-        carInfoFormParams.locationLatitude.replace(/[^0-9.]+/g, "")
-      );
-      const locationLatitudeInPPM = BigInt(
-        (locationLatitudeDouble * 1_000_000) | 0
-      );
-      var locationLongitudeDouble = Number(
-        carInfoFormParams.locationLongitude.replace(/[^0-9.]+/g, "")
-      );
-      const locationLongitudeInPPM = BigInt(
-        (locationLongitudeDouble * 1_000_000) | 0
-      );
+      var locationLatitudeDouble = Number(carInfoFormParams.locationLatitude.replace(/[^0-9.]+/g, ""));
+      const locationLatitudeInPPM = BigInt((locationLatitudeDouble * 1_000_000) | 0);
+      var locationLongitudeDouble = Number(carInfoFormParams.locationLongitude.replace(/[^0-9.]+/g, ""));
+      const locationLongitudeInPPM = BigInt((locationLongitudeDouble * 1_000_000) | 0);
 
       let transaction = await rentalityContract.updateCarInfo(
         BigInt(carId),
@@ -249,13 +197,7 @@ const useEditCarInfo = (carId: number) => {
       .catch(() => setDataFetched(true));
   }, [carId]);
 
-  return [
-    dataFetched,
-    carInfoFormParams,
-    setCarInfoFormParams,
-    dataSaved,
-    saveCar,
-  ] as const;
+  return [dataFetched, carInfoFormParams, setCarInfoFormParams, dataSaved, saveCar] as const;
 };
 
 export default useEditCarInfo;

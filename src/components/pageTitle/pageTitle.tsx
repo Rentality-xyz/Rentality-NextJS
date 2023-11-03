@@ -22,9 +22,7 @@ export default function PageTitle({ title, actions }: Props) {
         : actions.map((action) => {
             return (
               <Link key={action.text} href={action.link}>
-                <RntButton className="w-56 h-16">
-                  {action.text}
-                </RntButton>
+                <RntButton className="w-56 h-16">{action.text}</RntButton>
               </Link>
             );
           })}

@@ -40,8 +40,7 @@ const useAddCar = () => {
     locationLongitude: "",
   };
 
-  const [carInfoFormParams, setCarInfoFormParams] =
-    useState<HostCarInfo>(emptyNewCarInfo);
+  const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(emptyNewCarInfo);
   const [dataSaved, setDataSaved] = useState<Boolean>(true);
 
   const getRentalityContract = async () => {
@@ -54,11 +53,7 @@ const useAddCar = () => {
 
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = await provider.getSigner();
-      return new Contract(
-        rentalityJSON.address,
-        rentalityJSON.abi,
-        signer
-      ) as unknown as IRentalityContract;
+      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer) as unknown as IRentalityContract;
     } catch (e) {
       console.error("getRentalityContract error:" + e);
     }
@@ -82,7 +77,7 @@ const useAddCar = () => {
     trunkSize,
     color,
     bodyType,
-    description
+    description,
   }: HostCarInfo) => {
     if (!verifyCar(carInfoFormParams)) {
       return;
@@ -181,13 +176,13 @@ const useAddCar = () => {
   };
 
   const saveCar = async (image: File) => {
-    try {      
+    try {
       setDataSaved(false);
       const response = await uploadFileToIPFS(image);
 
       if (response.success !== true) {
         console.error("Uploaded image to Pinata error");
-        
+
         setDataSaved(true);
         return false;
       }
@@ -252,12 +247,7 @@ const useAddCar = () => {
     }
   };
 
-  return [
-    carInfoFormParams,
-    setCarInfoFormParams,
-    dataSaved,
-    saveCar,
-  ] as const;
+  return [carInfoFormParams, setCarInfoFormParams, dataSaved, saveCar] as const;
 };
 
 export default useAddCar;

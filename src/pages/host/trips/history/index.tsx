@@ -6,17 +6,14 @@ import useHostTrips from "@/hooks/host/useHostTrips";
 export default function History() {
   const [dataFetched, _, tripsHistory] = useHostTrips();
 
-  const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
-  };
+  const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {};
 
   return (
     <HostLayout>
       <div className="flex flex-col">
-        <PageTitle title="History"/>
+        <PageTitle title="History" />
         {!dataFetched ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-            Loading...
-          </div>
+          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
         ) : (
           <div className="my-4 flex flex-col gap-4 pr-4">
             {tripsHistory != null && tripsHistory.length > 0 ? (
@@ -25,7 +22,7 @@ export default function History() {
                   <TripItem
                     key={value.tripId}
                     tripInfo={value}
-                    changeStatusCallback = {changeStatusCallback}
+                    changeStatusCallback={changeStatusCallback}
                     disableButton={true}
                   />
                 );

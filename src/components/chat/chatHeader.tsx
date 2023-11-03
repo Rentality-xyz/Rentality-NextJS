@@ -2,8 +2,7 @@ import { ChatInfo } from "@/model/ChatInfo";
 import { TripStatus } from "@/model/TripInfo";
 import { twMerge } from "tailwind-merge";
 
-export default function ChatHeader({ selectedChat }: {selectedChat:ChatInfo}) {
-  
+export default function ChatHeader({ selectedChat }: { selectedChat: ChatInfo }) {
   let statusBgColor = "";
   switch (selectedChat?.tripStatus) {
     case TripStatus.Pending:
@@ -45,18 +44,12 @@ export default function ChatHeader({ selectedChat }: {selectedChat:ChatInfo}) {
         className="relative w-1/4 min-h-[6rem] flex-shrink-0 bg-center bg-cover"
       >
         <div className={statusClassName}>
-          <strong className="text-sm">
-            {selectedChat.tripStatus}
-          </strong>
+          <strong className="text-sm">{selectedChat.tripStatus}</strong>
         </div>
       </div>
       <div className="w-3/4 flex flex-col gap-2 justify-center  p-2 pl-8">
-        <div className="text-xl whitespace-nowrap overflow-hidden overflow-ellipsis">
-          {selectedChat.carTitle}
-        </div>
-        <div className="text-sm">
-          {selectedChat.carLicenceNumber}
-        </div>
+        <div className="text-xl whitespace-nowrap overflow-hidden overflow-ellipsis">{selectedChat.carTitle}</div>
+        <div className="text-sm">{selectedChat.carLicenceNumber}</div>
       </div>
     </section>
   );

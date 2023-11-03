@@ -23,12 +23,8 @@ export default function Admin() {
   const [newUserServiceAddress, setNewUserServiceAddress] = useState("0x");
   const [newCarServiceAddress, setNewCarServiceAddress] = useState("0x");
   const [newTripsServiceAddress, setNewTripsServiceAddress] = useState("0x");
-  const [
-    newCurrencyConverterServiceAddress,
-    setNewCurrencyConverterServiceAddress,
-  ] = useState("0x");
-  const [dialogState, showInfo, showError, showMessager, hideSnackbar] =
-    useRntDialogs();
+  const [newCurrencyConverterServiceAddress, setNewCurrencyConverterServiceAddress] = useState("0x");
+  const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
 
   if (adminContractInfo == null) {
     return (
@@ -71,9 +67,7 @@ export default function Admin() {
     if (newPlatformCommission == null) return;
     const value = Number.parseFloat(newPlatformCommission);
     if (value < 0.0001 || value > 100) {
-      showError(
-        "value should be more then 0% and less than 100% (min value is 0.0001%)"
-      );
+      showError("value should be more then 0% and less than 100% (min value is 0.0001%)");
       return;
     }
     try {
@@ -86,10 +80,7 @@ export default function Admin() {
 
   const setUserService = async () => {
     if (newUserServiceAddress == null) return;
-    if (
-      newUserServiceAddress.length != 42 ||
-      !newUserServiceAddress.startsWith("0x")
-    ) {
+    if (newUserServiceAddress.length != 42 || !newUserServiceAddress.startsWith("0x")) {
       showError("Address should start with 0x and contain 40 symbols");
       return;
     }
@@ -103,10 +94,7 @@ export default function Admin() {
 
   const setCarService = async () => {
     if (newCarServiceAddress == null) return;
-    if (
-      newCarServiceAddress.length != 42 ||
-      !newCarServiceAddress.startsWith("0x")
-    ) {
+    if (newCarServiceAddress.length != 42 || !newCarServiceAddress.startsWith("0x")) {
       showError("Address should start with 0x and contain 40 symbols");
       return;
     }
@@ -120,10 +108,7 @@ export default function Admin() {
 
   const setTripsService = async () => {
     if (newTripsServiceAddress == null) return;
-    if (
-      newTripsServiceAddress.length != 42 ||
-      !newTripsServiceAddress.startsWith("0x")
-    ) {
+    if (newTripsServiceAddress.length != 42 || !newTripsServiceAddress.startsWith("0x")) {
       showError("Address should start with 0x and contain 40 symbols");
       return;
     }
@@ -137,10 +122,7 @@ export default function Admin() {
 
   const setCurrencyConverterService = async () => {
     if (newCurrencyConverterServiceAddress == null) return;
-    if (
-      newCurrencyConverterServiceAddress.length != 42 ||
-      !newCurrencyConverterServiceAddress.startsWith("0x")
-    ) {
+    if (newCurrencyConverterServiceAddress.length != 42 || !newCurrencyConverterServiceAddress.startsWith("0x")) {
       showError("Address should start with 0x and contain 40 symbols");
       return;
     }

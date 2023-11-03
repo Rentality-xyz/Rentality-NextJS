@@ -3,10 +3,9 @@ import { AlertColor } from "@mui/material";
 import { DialogState, defaultDialogState } from "@/model/ui/dialogState";
 
 const useRntDialogs = () => {
-  const [dialogState, setDialogState] =
-    useState<DialogState>(defaultDialogState);
+  const [dialogState, setDialogState] = useState<DialogState>(defaultDialogState);
 
-  const showInfo = (message: string, action?:ReactNode) => {
+  const showInfo = (message: string, action?: ReactNode) => {
     setDialogState({
       ...dialogState,
       message: message,
@@ -16,7 +15,7 @@ const useRntDialogs = () => {
     });
   };
 
-  const showError = (message: string, action?:ReactNode) => {
+  const showError = (message: string, action?: ReactNode) => {
     setDialogState({
       ...dialogState,
       message: message,
@@ -26,7 +25,7 @@ const useRntDialogs = () => {
     });
   };
 
-  const showMessager = (message: string, color: AlertColor | undefined, action?:ReactNode) => {
+  const showMessager = (message: string, color: AlertColor | undefined, action?: ReactNode) => {
     if (color === undefined) {
       color = "info";
     }
@@ -42,13 +41,7 @@ const useRntDialogs = () => {
     setDialogState(defaultDialogState);
   };
 
-  return [
-    dialogState,
-    showInfo,
-    showError,
-    showMessager,
-    hideSnackbar,
-  ] as const;
+  return [dialogState, showInfo, showError, showMessager, hideSnackbar] as const;
 };
 
 export default useRntDialogs;

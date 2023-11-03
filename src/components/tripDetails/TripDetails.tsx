@@ -18,44 +18,17 @@ export default function TripDetails({ tripId }: Props) {
     <>
       <PageTitle title={`Trip #${tripId.toString()} details`} />
       {!dataFetched ? (
-        <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-          Loading...
-        </div>
+        <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
       ) : (
         <>
           <div className="my-4 flex flex-col md:grid grid-cols-2 gap-4 pr-4">
             <div className="flex flex-row gap-4">
-              <RntInput
-                id="tripId"
-                label="Trip id:"
-                value={tripDetails.tripId.toString()}
-                readOnly={true}
-              />
-              <RntInput
-                id="carId"
-                label="Car id:"
-                value={tripDetails.carId.toString()}
-                readOnly={true}
-              />
+              <RntInput id="tripId" label="Trip id:" value={tripDetails.tripId.toString()} readOnly={true} />
+              <RntInput id="carId" label="Car id:" value={tripDetails.carId.toString()} readOnly={true} />
             </div>
-            <RntInput
-              id="status"
-              label="Status:"
-              value={tripDetails.status}
-              readOnly={true}
-            />
-            <RntInput
-              id="host"
-              label="Host address:"
-              value={tripDetails.host}
-              readOnly={true}
-            />
-            <RntInput
-              id="guest"
-              label="Guest address:"
-              value={tripDetails.guest}
-              readOnly={true}
-            />
+            <RntInput id="status" label="Status:" value={tripDetails.status} readOnly={true} />
+            <RntInput id="host" label="Host address:" value={tripDetails.host} readOnly={true} />
+            <RntInput id="guest" label="Guest address:" value={tripDetails.guest} readOnly={true} />
             <RntInput
               id="startDateTime"
               label="Start date and time:"
@@ -68,18 +41,8 @@ export default function TripDetails({ tripId }: Props) {
               value={tripDetails.endDateTime.toUTCString()}
               readOnly={true}
             />
-            <RntInput
-              id="startLocation"
-              label="Start Location:"
-              value={tripDetails.startLocation}
-              readOnly={true}
-            />
-            <RntInput
-              id="endLocation"
-              label="End Location:"
-              value={tripDetails.endLocation}
-              readOnly={true}
-            />
+            <RntInput id="startLocation" label="Start Location:" value={tripDetails.startLocation} readOnly={true} />
+            <RntInput id="endLocation" label="End Location:" value={tripDetails.endLocation} readOnly={true} />
             <RntInput
               id="milesIncluded"
               label="Miles included:"
@@ -125,9 +88,7 @@ export default function TripDetails({ tripId }: Props) {
             <RntInput
               id="checkedOutByGuestDateTime"
               label="Checked-out by guest date and time:"
-              value={
-                tripDetails.checkedOutByGuestDateTime?.toUTCString() ?? "-"
-              }
+              value={tripDetails.checkedOutByGuestDateTime?.toUTCString() ?? "-"}
               readOnly={true}
             />
             <RntInput
@@ -148,18 +109,8 @@ export default function TripDetails({ tripId }: Props) {
               value={tripDetails.checkedOutByHostDateTime?.toUTCString() ?? "-"}
               readOnly={true}
             />
-            <RntInput
-              id="paymentFrom"
-              label="Payment from:"
-              value={tripDetails.paymentFrom}
-              readOnly={true}
-            />
-            <RntInput
-              id="paymentTo"
-              label="Payment to:"
-              value={tripDetails.paymentTo}
-              readOnly={true}
-            />
+            <RntInput id="paymentFrom" label="Payment from:" value={tripDetails.paymentFrom} readOnly={true} />
+            <RntInput id="paymentTo" label="Payment to:" value={tripDetails.paymentTo} readOnly={true} />
             <RntInput
               id="pricePerDayInUsdCents"
               label="Price per day in USD:"

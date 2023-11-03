@@ -1,16 +1,8 @@
 import { Contract, ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { rentalityJSON } from "../../abis";
-import {
-  ContractTrip,
-  getTripStatusFromContract,
-  validateContractTrip,
-} from "@/model/blockchain/ContractTrip";
-import {
-  TripInfo,
-  AllowedChangeTripAction,
-  TripStatus,
-} from "@/model/TripInfo";
+import { ContractTrip, getTripStatusFromContract, validateContractTrip } from "@/model/blockchain/ContractTrip";
+import { TripInfo, AllowedChangeTripAction, TripStatus } from "@/model/TripInfo";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 
@@ -33,11 +25,7 @@ const useHostTrips = () => {
       }
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = await provider.getSigner();
-      return new Contract(
-        rentalityJSON.address,
-        rentalityJSON.abi,
-        signer
-      ) as unknown as IRentalityContract;
+      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer) as unknown as IRentalityContract;
     } catch (e) {
       console.error("getRentalityContract error:" + e);
     }
@@ -91,11 +79,7 @@ const useHostTrips = () => {
       const startFuelLevelInPermille = BigInt(Number(params[0]) * 1000);
       const startOdometr = BigInt(params[1]);
 
-      let transaction = await rentalityContract.checkInByHost(
-        tripId,
-        startFuelLevelInPermille,
-        startOdometr
-      );
+      let transaction = await rentalityContract.checkInByHost(tripId, startFuelLevelInPermille, startOdometr);
 
       const result = await transaction.wait();
       return true;
@@ -117,11 +101,7 @@ const useHostTrips = () => {
       const endFuelLevelInPermille = BigInt(Number(params[0]) * 1000);
       const endOdometr = BigInt(params[1]);
 
-      let transaction = await rentalityContract.checkOutByHost(
-        tripId,
-        endFuelLevelInPermille,
-        endOdometr
-      );
+      let transaction = await rentalityContract.checkOutByHost(tripId, endFuelLevelInPermille, endOdometr);
 
       const result = await transaction.wait();
       return true;
@@ -151,16 +131,11 @@ const useHostTrips = () => {
   };
 
   const convernFuelInLevel = (fuelLevelInGal: bigint, fuelTank: number) => {
-    const levelInPercents =
-      Math.ceil((8 * Number(fuelLevelInGal)) / fuelTank) * 0.125;
+    const levelInPercents = Math.ceil((8 * Number(fuelLevelInGal)) / fuelTank) * 0.125;
     return levelInPercents.toString();
   };
 
-  const getAllowedActions = (
-    tripStatus: TripStatus,
-    trip: ContractTrip,
-    tankSize: number
-  ) => {
+  const getAllowedActions = (tripStatus: TripStatus, trip: ContractTrip, tankSize: number) => {
     const result: AllowedChangeTripAction[] = [];
 
     switch (tripStatus) {
@@ -235,8 +210,7 @@ const useHostTrips = () => {
         console.error("getTrips error: contract is null");
         return;
       }
-      const tripsBookedView: ContractTrip[] =
-        await rentalityContract.getTripsAsHost();
+      const tripsBookedView: ContractTrip[] = await rentalityContract.getTripsAsHost();
 
       const tripsBookedData =
         tripsBookedView.length === 0
@@ -247,46 +221,29 @@ const useHostTrips = () => {
                   validateContractTrip(i);
                 }
 
-                const tokenURI = await rentalityContract.getCarMetadataURI(
-                  i.carId
-                );
-                const tripContactInfo =
-                  await rentalityContract.getTripContactInfo(i.carId);
+                const tokenURI = await rentalityContract.getCarMetadataURI(i.carId);
+                const tripContactInfo = await rentalityContract.getTripContactInfo(i.carId);
                 const meta = await getMetaDataFromIpfs(tokenURI);
                 const tripStatus = getTripStatusFromContract(Number(i.status));
                 const tankSize = Number(
-                  meta.attributes?.find(
-                    (x: any) => x.trait_type === "Tank volume(gal)"
-                  )?.value ?? "0"
+                  meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "0"
                 );
 
                 let item: TripInfo = {
                   tripId: Number(i.tripId),
                   carId: Number(i.carId),
                   image: getIpfsURIfromPinata(meta.image),
-                  brand:
-                    meta.attributes?.find((x: any) => x.trait_type === "Brand")
-                      ?.value ?? "",
-                  model:
-                    meta.attributes?.find((x: any) => x.trait_type === "Model")
-                      ?.value ?? "",
-                  year:
-                    meta.attributes?.find(
-                      (x: any) => x.trait_type === "Release year"
-                    )?.value ?? "",
-                  licensePlate:
-                    meta.attributes?.find(
-                      (x: any) => x.trait_type === "License plate"
-                    )?.value ?? "",
+                  brand: meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "",
+                  model: meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
+                  year: meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
+                  licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
                   tripStart: new Date(Number(i.startDateTime) * 1000),
                   tripEnd: new Date(Number(i.endDateTime) * 1000),
                   locationStart: i.startLocation,
                   locationEnd: i.endLocation,
                   status: tripStatus,
                   allowedActions: getAllowedActions(tripStatus, i, tankSize),
-                  totalPrice: (
-                    Number(i.paymentInfo.totalDayPriceInUsdCents) / 100
-                  ).toString(),
+                  totalPrice: (Number(i.paymentInfo.totalDayPriceInUsdCents) / 100).toString(),
                   tankVolumeInGal: tankSize,
                   startFuelLevelInGal: Number(i.startFuelLevelInGal),
                   endFuelLevelInGal: Number(i.endFuelLevelInGal),
@@ -295,10 +252,7 @@ const useHostTrips = () => {
                   startOdometr: Number(i.startOdometr),
                   endOdometr: Number(i.endOdometr),
                   depositPaid: Number(i.paymentInfo.depositInUsdCents) / 100,
-                  overmilePrice:
-                    Number(i.pricePerDayInUsdCents) /
-                    Number(i.milesIncludedPerDay) /
-                    100,
+                  overmilePrice: Number(i.pricePerDayInUsdCents) / Number(i.milesIncludedPerDay) / 100,
                   hostMobileNumber: tripContactInfo.hostPhoneNumber,
                   guestMobileNumber: tripContactInfo.guestPhoneNumber,
                   hostAddress: i.host,
@@ -306,10 +260,7 @@ const useHostTrips = () => {
                   guestAddress: i.guest,
                   guestName: i.guestName,
                   rejectedBy: i.rejectedBy,
-                  rejectedDate:
-                    i.rejectedDateTime > 0
-                      ? new Date(Number(i.rejectedDateTime) * 1000)
-                      : undefined,
+                  rejectedDate: i.rejectedDateTime > 0 ? new Date(Number(i.rejectedDateTime) * 1000) : undefined,
                 };
                 return item;
               })

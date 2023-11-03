@@ -44,7 +44,6 @@ const useEtherProvider = () => {
   //   }
   // };
 
-
   const handleAccountsChanged = useCallback(() => {
     //router.reload();
   }, []);
@@ -102,12 +101,7 @@ const useEtherProvider = () => {
     };
   }, [connectToMetaMask, handleAccountsChanged]);
 
-  return [
-    userConnected,
-    userWeb3Address,
-    formatAddress,
-    connectToMetaMask,
-  ] as const;
+  return [userConnected, userWeb3Address, formatAddress, connectToMetaMask] as const;
 };
 
 export default useEtherProvider;

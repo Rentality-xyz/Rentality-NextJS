@@ -1,10 +1,7 @@
 import { Contract, ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { rentalityJSON } from "../abis";
-import {
-  IRentalityContract,
-  KYCInfo,
-} from "@/model/blockchain/IRentalityContract";
+import { IRentalityContract, KYCInfo } from "@/model/blockchain/IRentalityContract";
 import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
 
 export type ProfileSettings = {
@@ -27,8 +24,7 @@ const useProfileSettings = () => {
   };
 
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
-  const [profileSettings, setProfileSettings] =
-    useState<ProfileSettings>(emptyProfileSettings);
+  const [profileSettings, setProfileSettings] = useState<ProfileSettings>(emptyProfileSettings);
 
   const getRentalityContract = async () => {
     try {
@@ -40,11 +36,7 @@ const useProfileSettings = () => {
 
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = await provider.getSigner();
-      return new Contract(
-        rentalityJSON.address,
-        rentalityJSON.abi,
-        signer
-      ) as unknown as IRentalityContract;
+      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer) as unknown as IRentalityContract;
     } catch (e) {
       console.error("getRentalityContract error:" + e);
     }
@@ -61,15 +53,13 @@ const useProfileSettings = () => {
       if (myKYCInfo == null) return;
 
       let myProfileSettings: ProfileSettings = {
-        profilePhotoUrl:  getIpfsURIfromPinata(myKYCInfo.profilePhoto),
+        profilePhotoUrl: getIpfsURIfromPinata(myKYCInfo.profilePhoto),
         firstName: myKYCInfo.name,
         lastName: myKYCInfo.surname,
         phoneNumber: myKYCInfo.mobilePhoneNumber,
         drivingLicenseNumber: myKYCInfo.licenseNumber,
         drivingLicenseExpire:
-          myKYCInfo.expirationDate > 0
-            ? new Date(Number(myKYCInfo.expirationDate) * 1000)
-            : undefined,
+          myKYCInfo.expirationDate > 0 ? new Date(Number(myKYCInfo.expirationDate) * 1000) : undefined,
       };
       return myProfileSettings;
     } catch (e) {
@@ -88,11 +78,7 @@ const useProfileSettings = () => {
 
       const expirationDate =
         newProfileSettings.drivingLicenseExpire !== undefined
-          ? BigInt(
-              Math.floor(
-                newProfileSettings.drivingLicenseExpire.getTime() / 1000
-              )
-            )
+          ? BigInt(Math.floor(newProfileSettings.drivingLicenseExpire.getTime() / 1000))
           : BigInt(0);
 
       let transaction = await rentalityContract.setKYCInfo(

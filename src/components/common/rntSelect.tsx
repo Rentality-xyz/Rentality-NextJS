@@ -43,7 +43,7 @@ export default function RntSelect({
         </label>
       ) : null}
       <select
-        className={sclassName} 
+        className={sclassName}
         id={id}
         disabled={readOnly}
         placeholder={placeholder}

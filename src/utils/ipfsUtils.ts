@@ -1,16 +1,13 @@
 import { isEmpty } from "./string";
 
 export const getIpfsURIfromPinata = (pinataURI: string) => {
-  if (isEmpty(pinataURI)) return "";  
+  if (isEmpty(pinataURI)) return "";
   return "https://ipfs.io/ipfs/" + pinataURI.split("/").pop();
 };
 
 export const getPinataGatewayURIfromPinata = (pinataURI: string) => {
   if (isEmpty(pinataURI)) return "";
-  return (
-    "https://ivory-specific-mink-961.mypinata.cloud/ipfs/" +
-    pinataURI.split("/").pop()
-  );
+  return "https://ivory-specific-mink-961.mypinata.cloud/ipfs/" + pinataURI.split("/").pop();
 };
 
 export const getMetaDataFromIpfs = async (tokenURI: string) => {

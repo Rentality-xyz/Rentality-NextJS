@@ -14,7 +14,7 @@ export default function GuestBurgerNavMenu() {
       <SideNavMenuGroup title="Inbox">
         <SideNavMenuItem text="Messages" href="/guest/messages" />
       </SideNavMenuGroup>
-      <hr/>
+      <hr />
       <SideNavMenuGroup title="Profile settings" href="/guest/profile" />
     </BaseBurgerNavMenu>
   );

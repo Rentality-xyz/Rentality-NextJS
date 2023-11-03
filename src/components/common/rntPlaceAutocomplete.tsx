@@ -62,12 +62,7 @@ export default function RntPlaceAutocomplete({
   const [enteredAddress, setEnteredAddress] = useState(initValue);
   const [isEditing, setIsEditing] = useState(false);
 
-  const {
-    placesService,
-    placePredictions,
-    getPlacePredictions,
-    isPlacePredictionsLoading,
-  } = usePlacesService({
+  const { placesService, placePredictions, getPlacePredictions, isPlacePredictionsLoading } = usePlacesService({
     apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     options: {
       input: "",
@@ -81,13 +76,8 @@ export default function RntPlaceAutocomplete({
     getPlacePredictions({ input: enteredAddress });
   }, [enteredAddress]);
 
-  const getAddressComponents = (
-    placeDetails: google.maps.places.PlaceResult,
-    fieldName: string
-  ) => {
-    return placeDetails.address_components?.find((i) =>
-      i?.types?.includes(fieldName)
-    );
+  const getAddressComponents = (placeDetails: google.maps.places.PlaceResult, fieldName: string) => {
+    return placeDetails.address_components?.find((i) => i?.types?.includes(fieldName));
   };
 
   useEffect(() => {
@@ -96,13 +86,7 @@ export default function RntPlaceAutocomplete({
       placesService?.getDetails(
         {
           placeId: placePredictions[0].place_id,
-          fields: [
-            "address_components",
-            "geometry",
-            "place_id",
-            "formatted_address",
-            "utc_offset_minutes",
-          ],
+          fields: ["address_components", "geometry", "place_id", "formatted_address", "utc_offset_minutes"],
           language: "en",
         },
         (placeDetails) => {
@@ -115,10 +99,8 @@ export default function RntPlaceAutocomplete({
             const street = getAddressComponents(placeDetails, "route");
             const street_number = getAddressComponents(placeDetails, "street_number");
 
-            const latitude =
-              placeDetails.geometry?.viewport?.getCenter().lat() ?? 0;
-            const longitude =
-              placeDetails.geometry?.viewport?.getCenter().lng() ?? 0;
+            const latitude = placeDetails.geometry?.viewport?.getCenter().lat() ?? 0;
+            const longitude = placeDetails.geometry?.viewport?.getCenter().lng() ?? 0;
 
             onAddressChangeHandler({
               country: country
@@ -174,14 +156,8 @@ export default function RntPlaceAutocomplete({
   // });
 
   type = type ?? "text";
-  const cClassName = twMerge(
-    "relative text-black flex flex-col w-full",
-    className
-  );
-  const lClassName = twMerge(
-    "text-rnt-temp-main-text whitespace-nowrap mb-1",
-    labelClassName
-  );
+  const cClassName = twMerge("relative text-black flex flex-col w-full", className);
+  const lClassName = twMerge("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
   const iClassName = twMerge(
     "w-full h-12 border-2 rounded-full pl-4 disabled:bg-gray-300 disabled:text-gray-600",
     inputClassName

@@ -15,7 +15,7 @@ export default function HostSideNavMenu() {
       <SideNavMenuGroup title="Inbox">
         <SideNavMenuItem text="Messages" href="/host/messages" />
       </SideNavMenuGroup>
-      <hr/>
+      <hr />
       <SideNavMenuGroup title="Profile settings" href="/host/profile" />
     </BaseSideNavMenu>
   );

@@ -16,62 +16,51 @@ import { NotificationInfo } from "@/model/NotificationInfo";
 const useNotificationInfos = (isHost: boolean) => {
   const rentalityInfo = useRentality();
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
-  const [notificationInfos, setNotificationInfos] = useState<
-    NotificationInfo[]
-  >([
+  const [notificationInfos, setNotificationInfos] = useState<NotificationInfo[]>([
     {
       title: "Booked",
       datestamp: new Date(),
-      message:
-        "Ford Mustang 2015 is booked. You have a new unregistered booking, please review it",
+      message: "Ford Mustang 2015 is booked. You have a new unregistered booking, please review it",
     },
     {
       title: "Booked",
       datestamp: new Date(),
-      message:
-        "Ford Mustang 2015 is booked. You have a new unregistered booking, please review it",
+      message: "Ford Mustang 2015 is booked. You have a new unregistered booking, please review it",
     },
     {
       title: "Booked",
       datestamp: new Date(),
-      message:
-        "Ford Mustang 2015 is booked. You have a new unregistered booking, please review it",
+      message: "Ford Mustang 2015 is booked. You have a new unregistered booking, please review it",
     },
     {
       title: "Booked",
       datestamp: new Date(),
-      message:
-        "Ford Mustang 2015 is booked. You have a new unregistered booking, please review it",
+      message: "Ford Mustang 2015 is booked. You have a new unregistered booking, please review it",
     },
     {
       title: "Booked",
       datestamp: new Date(),
-      message:
-        "Ford Mustang 2015 is booked. You have a new unregistered booking, please review it",
+      message: "Ford Mustang 2015 is booked. You have a new unregistered booking, please review it",
     },
     {
       title: "Booked",
       datestamp: new Date(),
-      message:
-        "Ford Mustang 2015 is booked. You have a new unregistered booking, please review it",
+      message: "Ford Mustang 2015 is booked. You have a new unregistered booking, please review it",
     },
     {
       title: "Booked",
       datestamp: new Date(),
-      message:
-        "Ford Mustang 2015 is booked. You have a new unregistered booking, please review it",
+      message: "Ford Mustang 2015 is booked. You have a new unregistered booking, please review it",
     },
     {
       title: "Booked",
       datestamp: new Date(),
-      message:
-        "Ford Mustang 2015 is booked. You have a new unregistered booking, please review it",
+      message: "Ford Mustang 2015 is booked. You have a new unregistered booking, please review it",
     },
     {
       title: "Booked",
       datestamp: new Date(),
-      message:
-        "Ford Mustang 2015 is booked. You have a new unregistered booking, please review it",
+      message: "Ford Mustang 2015 is booked. You have a new unregistered booking, please review it",
     },
   ]);
 
@@ -91,9 +80,7 @@ const useNotificationInfos = (isHost: boolean) => {
           : await Promise.all(
               chatInfosView.map(async (ci: ContractChatInfo, index) => {
                 const meta = await getMetaDataFromIpfs(ci.carMetadataUrl);
-                const tripStatus = getTripStatusFromContract(
-                  Number(ci.tripStatus)
-                );
+                const tripStatus = getTripStatusFromContract(Number(ci.tripStatus));
 
                 let item: ChatInfo = {
                   tripId: Number(ci.tripId),
@@ -112,10 +99,7 @@ const useNotificationInfos = (isHost: boolean) => {
                   carPhotoUrl: getIpfsURIfromPinata(meta.image),
                   tripStatus: tripStatus,
                   carTitle: `${ci.carBrand} ${ci.carModel} ${ci.carYearOfProduction}`,
-                  carLicenceNumber:
-                    meta.attributes?.find(
-                      (x: any) => x.trait_type === "License plate"
-                    )?.value ?? "",
+                  carLicenceNumber: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
 
                   messages: [],
                 };

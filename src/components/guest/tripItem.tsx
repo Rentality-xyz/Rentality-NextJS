@@ -1,11 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { dateFormat, dateFormatMonthDate } from "@/utils/datetimeFormatters";
-import {
-  TripInfo,
-  TripStatus,
-  getTripStatusTextFromStatus,
-} from "@/model/TripInfo";
+import { TripInfo, TripStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import RntButton from "../common/rntButton";
@@ -18,13 +14,8 @@ type Props = {
   disableButton: boolean;
 };
 
-export default function TripItem({
-  tripInfo,
-  changeStatusCallback,
-  disableButton,
-}: Props) {
-  const [isAdditionalActionHidden, setIsAdditionalActionHidden] =
-    useState(true);
+export default function TripItem({ tripInfo, changeStatusCallback, disableButton }: Props) {
+  const [isAdditionalActionHidden, setIsAdditionalActionHidden] = useState(true);
   const defaultValues =
     tripInfo?.allowedActions?.length > 0
       ? tripInfo?.allowedActions[0].params.map((i) => {
@@ -35,27 +26,19 @@ export default function TripItem({
   const [confirmParams, setConfirmParams] = useState<boolean[]>([]);
 
   const handleButtonClick = () => {
-    if (
-      tripInfo == null ||
-      tripInfo.allowedActions == null ||
-      tripInfo.allowedActions.length == 0
-    ) {
+    if (tripInfo == null || tripInfo.allowedActions == null || tripInfo.allowedActions.length == 0) {
       return;
     }
 
     if (
       tripInfo.allowedActions[0].readonly &&
-      (confirmParams.length != defaultValues.length ||
-        !confirmParams.every((i) => i === true))
+      (confirmParams.length != defaultValues.length || !confirmParams.every((i) => i === true))
     ) {
       return;
     }
 
     changeStatusCallback(() => {
-      return tripInfo.allowedActions[0].action(
-        BigInt(tripInfo.tripId),
-        inputParams
-      );
+      return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), inputParams);
     });
   };
   let statusBgColor = "";
@@ -106,13 +89,9 @@ export default function TripItem({
           className="relative w-full 1xl:w-64 min-h-[12rem] md:min-h-[16rem] xl:min-h-[12rem] flex-shrink-0 bg-center bg-cover"
         >
           <div className={statusClassName}>
-            <strong className="text-m">{`${getTripStatusTextFromStatus(
-              tripInfo.status
-            )}`}</strong>
+            <strong className="text-m">{`${getTripStatusTextFromStatus(tripInfo.status)}`}</strong>
             {tripInfo.status === TripStatus.CheckedOutByGuest ? (
-              <div className="text-black text-xs">
-                Pending finish by host and deposit refund
-              </div>
+              <div className="text-black text-xs">Pending finish by host and deposit refund</div>
             ) : null}
           </div>
         </div>
@@ -122,12 +101,10 @@ export default function TripItem({
               <strong className="text-xl">{`${tripInfo.brand} ${tripInfo.model} ${tripInfo.year}`}</strong>
             </div>
             <div>{tripInfo.licensePlate}</div>
-            {tripInfo.status === TripStatus.Rejected &&
-            tripInfo.rejectedDate !== undefined ? (
+            {tripInfo.status === TripStatus.Rejected && tripInfo.rejectedDate !== undefined ? (
               <div className="mt-2">
                 {`${
-                  tripInfo.rejectedBy.toLowerCase() ===
-                  tripInfo.guestAddress.toLowerCase()
+                  tripInfo.rejectedBy.toLowerCase() === tripInfo.guestAddress.toLowerCase()
                     ? "You"
                     : tripInfo.hostName ?? "Host"
                 } cancelled on ${dateFormatMonthDate(tripInfo.rejectedDate)}`}
@@ -172,9 +149,7 @@ export default function TripItem({
               <i className="fi fi-rs-calendar pr-1  text-rentality-icons"></i>
               <strong className="text-l">Trip start</strong>
             </div>
-            <div className="whitespace-nowrap">
-              {dateFormat(tripInfo.tripStart)}
-            </div>
+            <div className="whitespace-nowrap">{dateFormat(tripInfo.tripStart)}</div>
             {/* <div>April 05, 4:00 AM</div> */}
           </div>
           <div className="flex flex-col">
@@ -182,9 +157,7 @@ export default function TripItem({
               <i className="fi fi-rs-calendar pr-1  text-rentality-icons"></i>
               <strong className="text-l">Trip end</strong>
             </div>
-            <div className="whitespace-nowrap">
-              {dateFormat(tripInfo.tripEnd)}
-            </div>
+            <div className="whitespace-nowrap">{dateFormat(tripInfo.tripEnd)}</div>
             {/* <div>April 05, 4:00 AM</div> */}
           </div>
         </div>
@@ -193,9 +166,7 @@ export default function TripItem({
             <div className="flex flex-col">
               <div>
                 <i className="fi fi-rs-marker pr-1  text-rentality-icons"></i>
-                <strong className="text-l whitespace-nowrap">
-                  Pickup location
-                </strong>
+                <strong className="text-l whitespace-nowrap">Pickup location</strong>
               </div>
               <div>{tripInfo.locationStart}</div>
               {/* <div>Miami, CA, USA</div> */}
@@ -203,9 +174,7 @@ export default function TripItem({
             <div className="flex flex-col">
               <div>
                 <i className="fi fi-rs-marker pr-1 text-rentality-icons"></i>
-                <strong className="text-l whitespace-nowrap">
-                  Return location
-                </strong>
+                <strong className="text-l whitespace-nowrap">Return location</strong>
               </div>
               <div>{tripInfo.locationEnd}</div>
               {/* <div>Miami, CA, USA</div> */}
@@ -223,15 +192,11 @@ export default function TripItem({
       tripInfo.allowedActions == null ||
       tripInfo.allowedActions.length == 0 ||
       tripInfo.allowedActions[0].params == null ? null : (
-        <div
-          className="flex flex-col px-8 pt-2 pb-4"
-          hidden={isAdditionalActionHidden}
-        >
+        <div className="flex flex-col px-8 pt-2 pb-4" hidden={isAdditionalActionHidden}>
           <hr />
           <div>
             <strong className="text-xl">
-              Please {tripInfo.allowedActions[0].readonly ? "confirm" : "enter"}{" "}
-              data to change status:
+              Please {tripInfo.allowedActions[0].readonly ? "confirm" : "enter"} data to change status:
             </strong>
           </div>
           {tripInfo.status === TripStatus.Started ? (

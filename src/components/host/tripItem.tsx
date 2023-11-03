@@ -1,11 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { dateFormat, dateFormatMonthDate } from "@/utils/datetimeFormatters";
-import {
-  TripInfo,
-  TripStatus,
-  getTripStatusTextFromStatus,
-} from "@/model/TripInfo";
+import { TripInfo, TripStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { useState } from "react";
 import Checkbox from "../common/checkbox";
 import { calculateDays } from "@/utils/date";
@@ -20,13 +16,8 @@ type Props = {
   disableButton: boolean;
 };
 
-export default function TripItem({
-  tripInfo,
-  changeStatusCallback,
-  disableButton,
-}: Props) {
-  const [isAdditionalActionHidden, setIsAdditionalActionHidden] =
-    useState(true);
+export default function TripItem({ tripInfo, changeStatusCallback, disableButton }: Props) {
+  const [isAdditionalActionHidden, setIsAdditionalActionHidden] = useState(true);
   const defaultValues =
     tripInfo?.allowedActions?.length > 0
       ? tripInfo?.allowedActions[0].params.map((i) => {
@@ -39,34 +30,23 @@ export default function TripItem({
   refuelValue = refuelValue > 0 ? refuelValue : 0;
 
   const tripDays = calculateDays(tripInfo.tripStart, tripInfo.tripEnd);
-  var overmileValue =
-    tripInfo.endOdometr -
-    tripInfo.startOdometr -
-    tripInfo.milesIncludedPerDay * tripDays;
+  var overmileValue = tripInfo.endOdometr - tripInfo.startOdometr - tripInfo.milesIncludedPerDay * tripDays;
   overmileValue = overmileValue > 0 ? overmileValue : 0;
 
   const handleButtonClick = () => {
-    if (
-      tripInfo == null ||
-      tripInfo.allowedActions == null ||
-      tripInfo.allowedActions.length == 0
-    ) {
+    if (tripInfo == null || tripInfo.allowedActions == null || tripInfo.allowedActions.length == 0) {
       return;
     }
 
     if (
       tripInfo.allowedActions[0].readonly &&
-      (confirmParams.length != defaultValues.length ||
-        !confirmParams.every((i) => i === true))
+      (confirmParams.length != defaultValues.length || !confirmParams.every((i) => i === true))
     ) {
       return;
     }
 
     changeStatusCallback(() => {
-      return tripInfo.allowedActions[0].action(
-        BigInt(tripInfo.tripId),
-        inputParams
-      );
+      return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), inputParams);
     });
   };
   let statusBgColor = "";
@@ -117,9 +97,7 @@ export default function TripItem({
           className="relative w-full 1xl:w-64 min-h-[12rem] md:min-h-[16rem] xl:min-h-[12rem] flex-shrink-0 bg-center bg-cover"
         >
           <div className={statusClassName}>
-            <strong className="text-m">{`${getTripStatusTextFromStatus(
-              tripInfo.status
-            )}`}</strong>
+            <strong className="text-m">{`${getTripStatusTextFromStatus(tripInfo.status)}`}</strong>
           </div>
         </div>
         <div className="flex flex-1 flex-col justify-between gap-2 p-4">
@@ -128,12 +106,10 @@ export default function TripItem({
               <strong className="text-xl">{`${tripInfo.brand} ${tripInfo.model} ${tripInfo.year}`}</strong>
             </div>
             <div>{tripInfo.licensePlate}</div>
-            {tripInfo.status === TripStatus.Rejected &&
-            tripInfo.rejectedDate !== undefined ? (
+            {tripInfo.status === TripStatus.Rejected && tripInfo.rejectedDate !== undefined ? (
               <div className="mt-2">
                 {`${
-                  tripInfo.rejectedBy.toLowerCase() ===
-                  tripInfo.hostAddress.toLowerCase()
+                  tripInfo.rejectedBy.toLowerCase() === tripInfo.hostAddress.toLowerCase()
                     ? "You"
                     : tripInfo.guestName ?? "Guest"
                 } cancelled on ${dateFormatMonthDate(tripInfo.rejectedDate)}`}
@@ -177,9 +153,7 @@ export default function TripItem({
               <i className="fi fi-rs-calendar pr-1  text-rentality-icons"></i>
               <strong className="text-l">Trip start</strong>
             </div>
-            <div className="whitespace-nowrap">
-              {dateFormat(tripInfo.tripStart)}
-            </div>
+            <div className="whitespace-nowrap">{dateFormat(tripInfo.tripStart)}</div>
             {/* <div>April 05, 4:00 AM</div> */}
           </div>
           <div className="flex flex-col">
@@ -187,9 +161,7 @@ export default function TripItem({
               <i className="fi fi-rs-calendar pr-1  text-rentality-icons"></i>
               <strong className="text-l">Trip end</strong>
             </div>
-            <div className="whitespace-nowrap">
-              {dateFormat(tripInfo.tripEnd)}
-            </div>
+            <div className="whitespace-nowrap">{dateFormat(tripInfo.tripEnd)}</div>
             {/* <div>April 05, 4:00 AM</div> */}
           </div>
         </div>
@@ -198,9 +170,7 @@ export default function TripItem({
             <div className="flex flex-col">
               <div>
                 <i className="fi fi-rs-marker pr-1  text-rentality-icons"></i>
-                <strong className="text-l whitespace-nowrap">
-                  Pickup location
-                </strong>
+                <strong className="text-l whitespace-nowrap">Pickup location</strong>
               </div>
               <div>{tripInfo.locationStart}</div>
               {/* <div>Miami, CA, USA</div> */}
@@ -208,9 +178,7 @@ export default function TripItem({
             <div className="flex flex-col">
               <div>
                 <i className="fi fi-rs-marker pr-1 text-rentality-icons"></i>
-                <strong className="text-l whitespace-nowrap">
-                  Return location
-                </strong>
+                <strong className="text-l whitespace-nowrap">Return location</strong>
               </div>
               <div>{tripInfo.locationEnd}</div>
               {/* <div>Miami, CA, USA</div> */}
@@ -227,15 +195,11 @@ export default function TripItem({
       tripInfo.allowedActions == null ||
       tripInfo.allowedActions.length == 0 ||
       tripInfo.allowedActions[0].params == null ? null : (
-        <div
-          className="flex flex-col px-8 pt-2 pb-4"
-          hidden={isAdditionalActionHidden}
-        >
+        <div className="flex flex-col px-8 pt-2 pb-4" hidden={isAdditionalActionHidden}>
           <hr />
           <div>
             <strong className="text-xl">
-              Please {tripInfo.allowedActions[0].readonly ? "confirm" : "enter"}{" "}
-              data to change status:
+              Please {tripInfo.allowedActions[0].readonly ? "confirm" : "enter"} data to change status:
             </strong>
           </div>
           <div className="flex flex-col py-4">
@@ -244,94 +208,86 @@ export default function TripItem({
                 <div className="flex flex-col md:flex-row" key={param.text}>
                   <div id="ddi-test" className="flex items-end w-full md:w-1/2 xl:w-1/3">
                     {param.type === "fuel" ? (
-                        <RntSelect
-                            className="w-full py-2"
-                            id={param.text}
-                            label={param.text}
-                            readOnly={tripInfo.allowedActions[0].readonly}
-                            value={inputParams[index]}
-                            onChange={(e) => {
-                              setInputParams((prev) => {
-                                const copy = [...prev];
-                                copy[index] = e.target.value;
-                                return copy;
-                              });
-                            }}
-                        >
-                          <option className="hidden" disabled></option>
-                          <option value="0">0</option>
-                          <option value="0.125">1/8</option>
-                          <option value="0.25">1/4</option>
-                          <option value="0.375">3/8</option>
-                          <option value="0.5">1/2</option>
-                          <option value="0.625">5/8</option>
-                          <option value="0.75">3/4</option>
-                          <option value="0.875">7/8</option>
-                          <option value="1">full</option>
-                        </RntSelect>
+                      <RntSelect
+                        className="w-full py-2"
+                        id={param.text}
+                        label={param.text}
+                        readOnly={tripInfo.allowedActions[0].readonly}
+                        value={inputParams[index]}
+                        onChange={(e) => {
+                          setInputParams((prev) => {
+                            const copy = [...prev];
+                            copy[index] = e.target.value;
+                            return copy;
+                          });
+                        }}
+                      >
+                        <option className="hidden" disabled></option>
+                        <option value="0">0</option>
+                        <option value="0.125">1/8</option>
+                        <option value="0.25">1/4</option>
+                        <option value="0.375">3/8</option>
+                        <option value="0.5">1/2</option>
+                        <option value="0.625">5/8</option>
+                        <option value="0.75">3/4</option>
+                        <option value="0.875">7/8</option>
+                        <option value="1">full</option>
+                      </RntSelect>
                     ) : (
-                        <RntInput
-                            className="w-full py-2"
-                            id={param.text}
-                            label={param.text}
-                            readOnly={tripInfo.allowedActions[0].readonly}
-                            value={inputParams[index]}
-                            onChange={(e) => {
-                              setInputParams((prev) => {
-                                const copy = [...prev];
-                                copy[index] = e.target.value;
-                                return copy;
-                              });
-                            }}
-                        />
+                      <RntInput
+                        className="w-full py-2"
+                        id={param.text}
+                        label={param.text}
+                        readOnly={tripInfo.allowedActions[0].readonly}
+                        value={inputParams[index]}
+                        onChange={(e) => {
+                          setInputParams((prev) => {
+                            const copy = [...prev];
+                            copy[index] = e.target.value;
+                            return copy;
+                          });
+                        }}
+                      />
                     )}
 
                     {tripInfo.allowedActions[0].readonly ? (
-                        <Checkbox
-                            className="ml-4"
-                            title="Confirm"
-                            value={confirmParams[index]}
-                            onChange={(newValue) => {
-                              setConfirmParams((prev) => {
-                                const copy = [...prev];
-                                copy[index] = newValue.target.checked;
-                                return copy;
-                              });
-                            }}
-                        />
+                      <Checkbox
+                        className="ml-4"
+                        title="Confirm"
+                        value={confirmParams[index]}
+                        onChange={(newValue) => {
+                          setConfirmParams((prev) => {
+                            const copy = [...prev];
+                            copy[index] = newValue.target.checked;
+                            return copy;
+                          });
+                        }}
+                      />
                     ) : null}
                   </div>
 
                   {tripInfo.status === TripStatus.CheckedOutByGuest ? (
-                      param.type === "fuel" ? (
-                          <div className="md:w-1/2 xl:w-1/4 md:mx-8 xl:mx-28 grid grid-cols-2 text-sm">
-                            <span className="font-bold col-span-2">
-                              Reimbursement charge:
-                            </span>
-                                <span>ReFuel:</span>
-                                <span>{refuelValue} gal</span>
-                                <span>Gal price:</span>
-                                <span>${tripInfo.fuelPricePerGal.toFixed(2)}</span>
-                                <span>Charge:</span>
-                                <span>
-                              ${(refuelValue * tripInfo.fuelPricePerGal).toFixed(2)}
-                            </span>
-                          </div>
-                      ) : (
-                          <div className="md:w-1/2 xl:w-1/4 md:mx-8 xl:mx-28 grid grid-cols-2 text-sm">
-                            <span className="font-bold col-span-2">
-                              Reimbursement charge:
-                            </span>
-                                <span>Overmiles:</span>
-                                <span>{overmileValue}</span>
-                                <span>Overmile price:</span>
-                                <span>${tripInfo.overmilePrice.toFixed(4)}</span>
-                                <span>Charge:</span>
-                                <span>
-                              ${(overmileValue * tripInfo.overmilePrice).toFixed(2)}
-                            </span>
-                          </div>
-                      )
+                    param.type === "fuel" ? (
+                      <div className="md:w-1/2 xl:w-1/4 md:mx-8 xl:mx-28 grid grid-cols-2 text-sm">
+                        <span className="font-bold col-span-2">Reimbursement charge:</span>
+                        <span>ReFuel:</span>
+                        <span>{refuelValue} gal</span>
+                        <span>Gal price:</span>
+                        <span>${tripInfo.fuelPricePerGal.toFixed(2)}</span>
+                        <span>Charge:</span>
+                        <span>${(refuelValue * tripInfo.fuelPricePerGal).toFixed(2)}</span>
+                      </div>
+                    ) : (
+                      <div className="md:w-1/2 xl:w-1/4 md:mx-8 xl:mx-28 grid grid-cols-2 text-sm">
+                        <span className="font-bold col-span-2">Reimbursement charge:</span>
+                        <span>Overmiles:</span>
+                        <span>{overmileValue}</span>
+                        <span>Overmile price:</span>
+                        <span>${tripInfo.overmilePrice.toFixed(4)}</span>
+                        <span>Charge:</span>
+                        <span>${(overmileValue * tripInfo.overmilePrice).toFixed(2)}</span>
+                      </div>
+                    )
                   ) : null}
                 </div>
               );

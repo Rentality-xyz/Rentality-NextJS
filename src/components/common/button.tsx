@@ -10,5 +10,9 @@ type Props = {
 
 export default function Button({ className, children, onClick, disabled, ...props }: Props) {
   const c = twMerge("h-16 w-56 rounded-md bg-violet-700 disabled:bg-gray-500", className);
-  return <button  disabled={disabled} {...props} className={c} onClick={onClick}>{children}</button>;
+  return (
+    <button disabled={disabled} {...props} className={c} onClick={onClick}>
+      {children}
+    </button>
+  );
 }

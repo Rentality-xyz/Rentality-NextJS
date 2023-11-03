@@ -1,13 +1,7 @@
 import { Snackbar, Alert, Backdrop } from "@mui/material";
 import { DialogState } from "@/model/ui/dialogState";
 
-export default function RntDialogs({
-  state,
-  hide,
-}: {
-  state: DialogState;
-  hide: () => void;
-}) {
+export default function RntDialogs({ state, hide }: { state: DialogState; hide: () => void }) {
   return state.action === null ? (
     <Snackbar
       anchorOrigin={state.anchorOrigin}

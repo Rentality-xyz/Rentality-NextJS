@@ -1,4 +1,4 @@
-import { ContractTransaction  } from "ethers";
+import { ContractTransaction } from "ethers";
 
 export interface IRentalityChatHelperContract {
   setMyChatPublicKey(chatPrivateKey: string, chatPublicKey: string): Promise<ContractTransaction>;

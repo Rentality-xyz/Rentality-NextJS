@@ -8,26 +8,14 @@ type Props = {
   disabled?: boolean;
 };
 
-export default function RntFileButton({
-  className,
-  children,
-  onChange: onFileChange,
-  disabled,
-  ...props
-}: Props) {
+export default function RntFileButton({ className, children, onChange: onFileChange, disabled, ...props }: Props) {
   const bgColor = disabled ? "bg-gray-500" : "bg-violet-700";
   const baseClassName =
-    "h-12 w-56 rounded-full text-white text-lg flex justify-center items-center cursor-pointer " +
-    bgColor;
+    "h-12 w-56 rounded-full text-white text-lg flex justify-center items-center cursor-pointer " + bgColor;
   const c = twMerge(baseClassName, className);
   return (
     <label {...props} className={c}>
-      <input
-        disabled={disabled}
-        className="hidden"
-        type="file"
-        onChange={onFileChange}
-      />
+      <input disabled={disabled} className="hidden" type="file" onChange={onFileChange} />
       {children}
     </label>
   );

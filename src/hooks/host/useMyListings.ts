@@ -1,10 +1,7 @@
 import { Contract, ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { rentalityJSON } from "../../abis";
-import {
-  ContractCarInfo,
-  validateContractCarInfo,
-} from "@/model/blockchain/ContractCarInfo";
+import { ContractCarInfo, validateContractCarInfo } from "@/model/blockchain/ContractCarInfo";
 import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
@@ -23,11 +20,7 @@ const useMyListings = () => {
 
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = await provider.getSigner();
-      return new Contract(
-        rentalityJSON.address,
-        rentalityJSON.abi,
-        signer
-      ) as unknown as IRentalityContract;
+      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer) as unknown as IRentalityContract;
     } catch (e) {
       console.error("getRentalityContract error:" + e);
     }
@@ -39,8 +32,7 @@ const useMyListings = () => {
         console.error("getMyListings error: contract is null");
         return;
       }
-      const myListingsView: ContractCarInfo[] =
-        await rentalityContract.getMyCars();
+      const myListingsView: ContractCarInfo[] = await rentalityContract.getMyCars();
 
       const myListingsData =
         myListingsView.length === 0
@@ -50,9 +42,7 @@ const useMyListings = () => {
                 if (index === 0) {
                   validateContractCarInfo(i);
                 }
-                const tokenURI = await rentalityContract.getCarMetadataURI(
-                  i.carId
-                );
+                const tokenURI = await rentalityContract.getCarMetadataURI(i.carId);
                 const meta = await getMetaDataFromIpfs(tokenURI);
 
                 const price = Number(i.pricePerDayInUsdCents) / 100;
@@ -61,20 +51,10 @@ const useMyListings = () => {
                   carId: Number(i.carId),
                   ownerAddress: i.createdBy.toString(),
                   image: getIpfsURIfromPinata(meta.image),
-                  brand:
-                    meta.attributes?.find((x: any) => x.trait_type === "Brand")
-                      ?.value ?? "",
-                  model:
-                    meta.attributes?.find((x: any) => x.trait_type === "Model")
-                      ?.value ?? "",
-                  year:
-                    meta.attributes?.find(
-                      (x: any) => x.trait_type === "Release year"
-                    )?.value ?? "",
-                  licensePlate:
-                    meta.attributes?.find(
-                      (x: any) => x.trait_type === "License plate"
-                    )?.value ?? "",
+                  brand: meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "",
+                  model: meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
+                  year: meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
+                  licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
                   pricePerDay: price,
                 };
                 return item;

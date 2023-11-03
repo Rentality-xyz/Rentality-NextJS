@@ -1,4 +1,4 @@
-export type TripDetails = {  
+export type TripDetails = {
   tripId: bigint;
   carId: bigint;
   status: string; //TripStatus
@@ -20,7 +20,7 @@ export type TripDetails = {
   endOdometr: number | undefined;
   checkedOutByHostDateTime: Date | undefined;
   resolveAmountInUsd: number | undefined;
-  
+
   paymentFrom: string;
   paymentTo: string;
   pricePerDayInUsdCents: number;

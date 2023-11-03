@@ -46,10 +46,7 @@ export default function AllowedActionsForStatusStarted({
                 id="fuelAtStartTrip"
                 label="At start trip"
                 readOnly={true}
-                value={getFuelLevelFromGalsString(
-                  tripInfo,
-                  tripInfo.startFuelLevelInGal
-                )}
+                value={getFuelLevelFromGalsString(tripInfo, tripInfo.startFuelLevelInGal)}
               />
               <RntSelect
                 className="w-1/2 py-2"
@@ -67,10 +64,7 @@ export default function AllowedActionsForStatusStarted({
                   });
 
                   const endLevel = Number(newValue) ?? 0;
-                  const endLevelInGals = getGalsFromFuelLevel(
-                    tripInfo,
-                    endLevel
-                  );
+                  const endLevelInGals = getGalsFromFuelLevel(tripInfo, endLevel);
                   let fuelDiffs = tripInfo.startFuelLevelInGal - endLevelInGals;
                   fuelDiffs = fuelDiffs > 0 ? fuelDiffs : 0;
                   setRefuelValue(fuelDiffs);
@@ -115,14 +109,8 @@ export default function AllowedActionsForStatusStarted({
                   });
                   if (tripInfo.status === TripStatus.Started) {
                     const endOdometr = Number(newValue) ?? 0;
-                    const tripDays = calculateDays(
-                      tripInfo.tripStart,
-                      tripInfo.tripEnd
-                    );
-                    let overMiles =
-                      endOdometr -
-                      tripInfo.startOdometr -
-                      tripInfo.milesIncludedPerDay * tripDays;
+                    const tripDays = calculateDays(tripInfo.tripStart, tripInfo.tripEnd);
+                    let overMiles = endOdometr - tripInfo.startOdometr - tripInfo.milesIncludedPerDay * tripDays;
                     overMiles = overMiles > 0 ? overMiles : 0;
                     setOvermileValue(overMiles);
                   }
@@ -166,9 +154,7 @@ export default function AllowedActionsForStatusStarted({
             <span>Deposit to be returned:</span>
             <span>${depositToBeReturned.toFixed(2)}</span>
           </div>
-          <div className="mt-4">
-            Deposit returned after the Host Completed the trip
-          </div>
+          <div className="mt-4">Deposit returned after the Host Completed the trip</div>
         </div>
       </div>
 

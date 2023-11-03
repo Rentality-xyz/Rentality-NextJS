@@ -1,4 +1,4 @@
-export type ContractSearchCarParams = {  
+export type ContractSearchCarParams = {
   country: string;
   state: string;
   city: string;

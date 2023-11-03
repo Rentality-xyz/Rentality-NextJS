@@ -11,16 +11,13 @@ export default function Booked() {
   const [dataFetched, tripsBooked, _, updateData] = useHostTrips();
   const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
   //const router = useRouter();
-  const [dialogState, showInfo, showError, showMessager, hideSnackbar] =
-    useRntDialogs();
+  const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
 
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
     try {
       setTripStatusChanging(true);
 
-      showInfo(
-        "Please confirm the transaction with your wallet and wait for the transaction to be processed"
-      );
+      showInfo("Please confirm the transaction with your wallet and wait for the transaction to be processed");
       const result = await changeStatus();
 
       if (!result) {
@@ -43,9 +40,7 @@ export default function Booked() {
       <div className="flex flex-col">
         <PageTitle title="Booked" />
         {!dataFetched ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-            Loading...
-          </div>
+          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
         ) : (
           <div className="my-4 flex flex-col gap-4 pr-4">
             {tripsBooked != null && tripsBooked.length > 0 ? (

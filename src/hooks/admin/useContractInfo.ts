@@ -29,9 +29,7 @@ const useContractInfo = () => {
     carServiceContractAddress: "",
   };
 
-  const [adminContractInfo, setAdminContractInfo] = useState<AdminContractInfo>(
-    emptyAdminContractInfo
-  );
+  const [adminContractInfo, setAdminContractInfo] = useState<AdminContractInfo>(emptyAdminContractInfo);
   const [dataUpdated, setDataUpdated] = useState(false);
 
   const getRentalityContract = async () => {
@@ -45,11 +43,7 @@ const useContractInfo = () => {
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = await provider.getSigner();
       return {
-        contract: new Contract(
-          rentalityJSON.address,
-          rentalityJSON.abi,
-          signer
-        ) as unknown as IRentalityContract,
+        contract: new Contract(rentalityJSON.address, rentalityJSON.abi, signer) as unknown as IRentalityContract,
         provider,
       };
     } catch (e) {
@@ -58,17 +52,12 @@ const useContractInfo = () => {
     }
   };
 
-  const getAdminContractInfo = async (
-    contract: IRentalityContract,
-    provider: ethers.providers.Web3Provider
-  ) => {
+  const getAdminContractInfo = async (contract: IRentalityContract, provider: ethers.providers.Web3Provider) => {
     const contractAddress = await contract.address;
     const ownerAddress = await contract.owner();
     const balance = (await provider.getBalance(contractAddress)) ?? 0;
-    const rentalityCommission =
-      Number(await contract.getPlatformFeeInPPM()) / 10_000.0 ?? 0;
-    const currencyConverterContractAddress =
-      await contract.getCurrencyConverterServiceAddress();
+    const rentalityCommission = Number(await contract.getPlatformFeeInPPM()) / 10_000.0 ?? 0;
+    const currencyConverterContractAddress = await contract.getCurrencyConverterServiceAddress();
     const userServiceContractAddress = await contract.getUserServiceAddress();
     const tripServiceContractAddress = await contract.getTripServiceAddress();
     const carServiceContractAddress = await contract.getCarServiceAddress();
@@ -197,9 +186,7 @@ const useContractInfo = () => {
         return false;
       }
 
-      let transaction = await rentalityContract.updateCurrencyConverterService(
-        address
-      );
+      let transaction = await rentalityContract.updateCurrencyConverterService(address);
       const result = await transaction.wait();
       setDataUpdated(false);
       return true;

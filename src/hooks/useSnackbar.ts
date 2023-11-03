@@ -3,8 +3,7 @@ import { SnackbarState, defaultSnackbarState } from "@/model/ui/snackbarState";
 import { AlertColor } from "@mui/material";
 
 const useSnackbar = () => {
-  const [snackbarState, setSnackbarState] =
-    useState<SnackbarState>(defaultSnackbarState);
+  const [snackbarState, setSnackbarState] = useState<SnackbarState>(defaultSnackbarState);
 
   const showInfo = (message: string) => {
     setSnackbarState({
@@ -39,13 +38,7 @@ const useSnackbar = () => {
     setSnackbarState(defaultSnackbarState);
   };
 
-  return [
-    snackbarState,
-    showInfo,
-    showError,
-    showMessager,
-    hideSnackbar,
-  ] as const;
+  return [snackbarState, showInfo, showError, showMessager, hideSnackbar] as const;
 };
 
 export default useSnackbar;

@@ -27,9 +27,7 @@ export async function signUserChatMessage(
 
   const messageBytes = toUtf8Bytes(JSON.stringify(chatMessage));
   const messageHash = keccak256(messageBytes);
-  const signature = await signer.signMessage(
-    ethers.utils.arrayify(messageHash)
-  );
+  const signature = await signer.signMessage(ethers.utils.arrayify(messageHash));
   return signature;
 }
 
@@ -52,10 +50,7 @@ export function verifyUserChatMessageSignature(
   const messageBytes = toUtf8Bytes(JSON.stringify(chatMessage));
   const messageHash = keccak256(messageBytes);
 
-  const recoveredAddress = ethers.utils.verifyMessage(
-    ethers.utils.arrayify(messageHash),
-    signature
-  );
+  const recoveredAddress = ethers.utils.verifyMessage(ethers.utils.arrayify(messageHash), signature);
 
   return recoveredAddress.toLowerCase() === fromAddress.toLowerCase();
 }

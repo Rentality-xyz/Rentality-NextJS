@@ -1,7 +1,7 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
+import Image from "next/image";
+import { Inter } from "next/font/google";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   return (
@@ -18,15 +18,7 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
+            By <Image src="/vercel.svg" alt="Vercel Logo" className="dark:invert" width={100} height={24} priority />
           </a>
         </div>
       </div>
@@ -50,14 +42,12 @@ export default function Home() {
           rel="noopener noreferrer"
         >
           <h2 className={`${inter.className} mb-3 text-2xl font-semibold`}>
-            Docs{' '}
+            Docs{" "}
             <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
               -&gt;
             </span>
           </h2>
-          <p
-            className={`${inter.className} m-0 max-w-[30ch] text-sm opacity-50`}
-          >
+          <p className={`${inter.className} m-0 max-w-[30ch] text-sm opacity-50`}>
             Find in-depth information about Next.js features and API.
           </p>
         </a>
@@ -69,14 +59,12 @@ export default function Home() {
           rel="noopener noreferrer"
         >
           <h2 className={`${inter.className} mb-3 text-2xl font-semibold`}>
-            Learn{' '}
+            Learn{" "}
             <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
               -&gt;
             </span>
           </h2>
-          <p
-            className={`${inter.className} m-0 max-w-[30ch] text-sm opacity-50`}
-          >
+          <p className={`${inter.className} m-0 max-w-[30ch] text-sm opacity-50`}>
             Learn about Next.js in an interactive course with&nbsp;quizzes!
           </p>
         </a>
@@ -88,14 +76,12 @@ export default function Home() {
           rel="noopener noreferrer"
         >
           <h2 className={`${inter.className} mb-3 text-2xl font-semibold`}>
-            Templates{' '}
+            Templates{" "}
             <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
               -&gt;
             </span>
           </h2>
-          <p
-            className={`${inter.className} m-0 max-w-[30ch] text-sm opacity-50`}
-          >
+          <p className={`${inter.className} m-0 max-w-[30ch] text-sm opacity-50`}>
             Discover and deploy boilerplate example Next.js&nbsp;projects.
           </p>
         </a>
@@ -107,18 +93,16 @@ export default function Home() {
           rel="noopener noreferrer"
         >
           <h2 className={`${inter.className} mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
+            Deploy{" "}
             <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
               -&gt;
             </span>
           </h2>
-          <p
-            className={`${inter.className} m-0 max-w-[30ch] text-sm opacity-50`}
-          >
+          <p className={`${inter.className} m-0 max-w-[30ch] text-sm opacity-50`}>
             Instantly deploy your Next.js site to a shareable URL with Vercel.
           </p>
         </a>
       </div>
     </main>
-  )
+  );
 }

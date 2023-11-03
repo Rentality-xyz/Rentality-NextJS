@@ -1,13 +1,7 @@
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { Contract, Signer, ethers } from "ethers";
 import { rentalityJSON, rentalityCurrencyConverterJSON } from "../abis";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 export type RentalityContractInfo = {
@@ -25,17 +19,12 @@ export function useRentality() {
   return useContext(RentalityContext);
 }
 
-export const RentalityProvider = ({
-  children,
-}: {
-  children?: React.ReactNode;
-}) => {
+export const RentalityProvider = ({ children }: { children?: React.ReactNode }) => {
   const requiredChainId =
     process.env.NEXT_PUBLIC_USE_LOCALHOST_BLOCKCHAIN?.toLowerCase?.() === "true"
       ? "0x539" /// 1337
       : "0xaa36a7"; // 11155111
-  const [rentalityContractInfo, setRentalityContractInfo] =
-    useState<RentalityContractInfo | null>(null);
+  const [rentalityContractInfo, setRentalityContractInfo] = useState<RentalityContractInfo | null>(null);
   const router = useRouter();
 
   const connectToMetaMask = useCallback(async () => {
@@ -106,9 +95,5 @@ export const RentalityProvider = ({
     };
   }, [connectToMetaMask, handleAccountsChanged]);
 
-  return (
-    <RentalityContext.Provider value={rentalityContractInfo}>
-      {children}
-    </RentalityContext.Provider>
-  );
+  return <RentalityContext.Provider value={rentalityContractInfo}>{children}</RentalityContext.Provider>;
 };

@@ -47,11 +47,7 @@ export default function RntInputWithButton({
         readOnly={readOnly}
         onChange={onChangeHandler}
       />
-      <RntButton
-        className="self-end"
-        disabled={buttonDisabled}
-        onClick={onButtonClick}
-      >
+      <RntButton className="self-end" disabled={buttonDisabled} onClick={onButtonClick}>
         {buttonText}
       </RntButton>
     </div>

@@ -1,4 +1,4 @@
-export const resizeImage = async (file: File, maxSize:number): Promise<File> => {
+export const resizeImage = async (file: File, maxSize: number): Promise<File> => {
   return new Promise((resolve, reject) => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -29,7 +29,7 @@ export const resizeImage = async (file: File, maxSize:number): Promise<File> => 
   });
 };
 
-export const resizeImageToSquare = async (file: File, size:number): Promise<File> => {
+export const resizeImageToSquare = async (file: File, size: number): Promise<File> => {
   return new Promise((resolve, reject) => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -45,13 +45,7 @@ export const resizeImageToSquare = async (file: File, size:number): Promise<File
       const scaleFactor = size / Math.max(img.width, img.height);
       const scaledWidth = img.width * scaleFactor;
       const scaledHeight = img.height * scaleFactor;
-      ctx.drawImage(
-        img,
-        (size - scaledWidth) / 2,
-        (size - scaledHeight) / 2,
-        scaledWidth,
-        scaledHeight
-      );
+      ctx.drawImage(img, (size - scaledWidth) / 2, (size - scaledHeight) / 2, scaledWidth, scaledHeight);
       canvas.toBlob(
         (blob) => {
           const resizedFile = new File([blob as BlobPart], file.name, {

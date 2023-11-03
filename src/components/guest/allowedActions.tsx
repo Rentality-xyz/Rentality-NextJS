@@ -31,7 +31,7 @@ export default function AllowedActions({
                 value={inputParams[index]}
                 onChange={(e) => {
                   const newValue = e.target.value;
-                  
+
                   setInputParams((prev) => {
                     const copy = [...prev];
                     copy[index] = newValue;
@@ -59,7 +59,7 @@ export default function AllowedActions({
                 value={inputParams[index]}
                 onChange={(e) => {
                   const newValue = e.target.value;
-                  
+
                   setInputParams((prev) => {
                     const copy = [...prev];
                     copy[index] = newValue;

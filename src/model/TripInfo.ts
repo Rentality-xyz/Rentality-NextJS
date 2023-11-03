@@ -64,28 +64,16 @@ export type TripInfo = {
   rejectedDate: Date | undefined;
 };
 
-export function getGalsFromFuelLevel(
-  tripInfo: TripInfo,
-  fuelLevel: number
-): number {
+export function getGalsFromFuelLevel(tripInfo: TripInfo, fuelLevel: number): number {
   return Math.floor(fuelLevel * tripInfo.tankVolumeInGal);
 }
 
-export function getFuelLevelFromGals(
-  tripInfo: TripInfo,
-  fuelLevelInGal: number
-): number {
-  return (
-    Math.ceil((8 * Number(fuelLevelInGal)) / tripInfo.tankVolumeInGal) * 0.125
-  );
+export function getFuelLevelFromGals(tripInfo: TripInfo, fuelLevelInGal: number): number {
+  return Math.ceil((8 * Number(fuelLevelInGal)) / tripInfo.tankVolumeInGal) * 0.125;
 }
 
-export function getFuelLevelFromGalsString(
-  tripInfo: TripInfo,
-  fuelLevelInGal: number
-): string {
-  const level =
-    Math.ceil((8 * Number(fuelLevelInGal)) / tripInfo.tankVolumeInGal) * 0.125;
+export function getFuelLevelFromGalsString(tripInfo: TripInfo, fuelLevelInGal: number): string {
+  const level = Math.ceil((8 * Number(fuelLevelInGal)) / tripInfo.tankVolumeInGal) * 0.125;
   switch (level) {
     case 0.125:
       return "1/8";

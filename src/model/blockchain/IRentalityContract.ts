@@ -1,4 +1,4 @@
-import { ContractTransaction  } from "ethers";
+import { ContractTransaction } from "ethers";
 import { ContractCarInfo } from "./ContractCarInfo";
 import { ContractCreateTripRequest } from "./ContractCreateTripRequest";
 import { ContractTrip } from "./ContractTrip";
@@ -7,25 +7,16 @@ import { ContractSearchCarParams } from "./ContractSearchCarParams";
 import { ContractChatInfo } from "./ContractChatInfo";
 
 export interface IRentalityContract {
-
   /// ADMIN functions
   owner(): Promise<string>;
   getCarServiceAddress(): Promise<string>;
-  updateCarService(
-    contractAddress: string
-  ): Promise<ContractTransaction>;
+  updateCarService(contractAddress: string): Promise<ContractTransaction>;
   getCurrencyConverterServiceAddress(): Promise<string>;
-  updateCurrencyConverterService(
-    contractAddress: string
-  ): Promise<ContractTransaction>;
+  updateCurrencyConverterService(contractAddress: string): Promise<ContractTransaction>;
   getTripServiceAddress(): Promise<string>;
-  updateTripService(
-    contractAddress: string
-  ): Promise<ContractTransaction>;
+  updateTripService(contractAddress: string): Promise<ContractTransaction>;
   getUserServiceAddress(): Promise<string>;
-  updateUserService(
-    contractAddress: string
-  ): Promise<ContractTransaction>;
+  updateUserService(contractAddress: string): Promise<ContractTransaction>;
   getRentalityPlatformAddress(): Promise<string>;
   withdrawFromPlatform(amount: bigint): Promise<ContractTransaction>;
   withdrawAllFromPlatform(): Promise<ContractTransaction>;
@@ -33,9 +24,7 @@ export interface IRentalityContract {
   setPlatformFeeInPPM(valueInPPM: bigint): Promise<ContractTransaction>;
 
   /// HOST functions
-  addCar(
-    request: ContractCreateCarRequest
-  ): Promise<ContractTransaction>;
+  addCar(request: ContractCreateCarRequest): Promise<ContractTransaction>;
   updateCarInfo(
     carId: bigint,
     pricePerDayInUsdCents: bigint,
@@ -54,16 +43,8 @@ export interface IRentalityContract {
   getTripsAsHost(): Promise<ContractTrip[]>;
   approveTripRequest(tripId: bigint): Promise<ContractTransaction>;
   rejectTripRequest(tripId: bigint): Promise<ContractTransaction>;
-  checkInByHost(
-    tripId: bigint,
-    startFuelLevelInPermille: bigint,
-    startOdometr: bigint
-  ): Promise<ContractTransaction>;
-  checkOutByHost(
-    tripId: bigint,
-    endFuelLevelInPermille: bigint,
-    endOdometr: bigint
-  ): Promise<ContractTransaction>;
+  checkInByHost(tripId: bigint, startFuelLevelInPermille: bigint, startOdometr: bigint): Promise<ContractTransaction>;
+  checkOutByHost(tripId: bigint, endFuelLevelInPermille: bigint, endOdometr: bigint): Promise<ContractTransaction>;
   finishTrip(tripId: bigint): Promise<ContractTransaction>;
   getChatInfoForHost(): Promise<ContractChatInfo[]>;
 
@@ -73,22 +54,11 @@ export interface IRentalityContract {
     endDateTime: bigint,
     searchParams: ContractSearchCarParams
   ): Promise<ContractCarInfo[]>;
-  createTripRequest(
-    request: ContractCreateTripRequest,
-    value: object
-  ): Promise<ContractTransaction>;
+  createTripRequest(request: ContractCreateTripRequest, value: object): Promise<ContractTransaction>;
   getTripsAsGuest(): Promise<ContractTrip[]>;
   getCarsRentedByMe(): Promise<ContractCarInfo[]>;
-  checkInByGuest(
-    tripId: bigint,
-    startFuelLevelInPermille: bigint,
-    startOdometr: bigint
-  ): Promise<ContractTransaction>;
-  checkOutByGuest(
-    tripId: bigint,
-    endFuelLevelInPermille: bigint,
-    endOdometr: bigint
-  ): Promise<ContractTransaction>;
+  checkInByGuest(tripId: bigint, startFuelLevelInPermille: bigint, startOdometr: bigint): Promise<ContractTransaction>;
+  checkOutByGuest(tripId: bigint, endFuelLevelInPermille: bigint, endOdometr: bigint): Promise<ContractTransaction>;
   getChatInfoForGuest(): Promise<ContractChatInfo[]>;
 
   /// GENERAL functions

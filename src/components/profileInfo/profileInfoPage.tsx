@@ -18,16 +18,13 @@ export default function ProfileInfoPage({
   hideSnackbar,
 }: {
   savedProfileSettings: ProfileSettings;
-  saveProfileSettings: (
-    newProfileSettings: ProfileSettings
-  ) => Promise<boolean>;
+  saveProfileSettings: (newProfileSettings: ProfileSettings) => Promise<boolean>;
   showInfo: (message: string, action?: ReactNode) => void;
   showError: (message: string, action?: ReactNode) => void;
   hideSnackbar: () => void;
 }) {
   const router = useRouter();
-  const [userProfileInfo, setUserProfileInfo] =
-    useState<ProfileSettings>(savedProfileSettings);
+  const [userProfileInfo, setUserProfileInfo] = useState<ProfileSettings>(savedProfileSettings);
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [requestSending, setRequestSending] = useState<boolean>(false);
 
@@ -101,9 +98,7 @@ export default function ProfileInfoPage({
         };
       }
 
-      showInfo(
-        "Please confirm the transaction with your wallet and wait for the transaction to be processed"
-      );
+      showInfo("Please confirm the transaction with your wallet and wait for the transaction to be processed");
       const result = await saveProfileSettings(dataToSave);
 
       setRequestSending(false);
@@ -131,8 +126,7 @@ export default function ProfileInfoPage({
           src={userProfileInfo.profilePhotoUrl}
           sx={{ width: "7rem", height: "7rem" }}
         >
-          {!isEmpty(savedProfileSettings.firstName) ||
-          !isEmpty(savedProfileSettings.lastName)
+          {!isEmpty(savedProfileSettings.firstName) || !isEmpty(savedProfileSettings.lastName)
             ? savedProfileSettings.firstName?.slice(0, 1).toUpperCase() +
               savedProfileSettings.lastName?.slice(0, 1).toUpperCase()
             : null}

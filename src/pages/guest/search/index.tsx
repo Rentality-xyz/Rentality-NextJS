@@ -1,20 +1,13 @@
 import GuestLayout from "@/components/guest/layout/guestLayout";
 import CarSearchItem from "@/components/guest/carSearchItem";
-import useSearchCars, {
-  SortOptionKey,
-  isSortOptionKey,
-  sortOptions,
-} from "@/hooks/guest/useSearchCars";
+import useSearchCars, { SortOptionKey, isSortOptionKey, sortOptions } from "@/hooks/guest/useSearchCars";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
 import { calculateDays } from "@/utils/date";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import SlidingPanel from "react-sliding-side-panel";
-import {
-  SearchCarRequest,
-  emptySearchCarRequest,
-} from "@/model/SearchCarRequest";
+import { SearchCarRequest, emptySearchCarRequest } from "@/model/SearchCarRequest";
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 import RntInput from "@/components/common/rntInput";
 import RntButton from "@/components/common/rntButton";
@@ -37,22 +30,12 @@ export default function Search() {
     dateTo: dateToHtmlDateTimeFormat(defaultDateTo),
   };
 
-  const [
-    dataFetched,
-    searchAvailableCars,
-    searchResult,
-    sortSearchResult,
-    createTripRequest,
-  ] = useSearchCars();
-  const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(
-    customEmptySearchCarRequest
-  );
+  const [dataFetched, searchAvailableCars, searchResult, sortSearchResult, createTripRequest] = useSearchCars();
+  const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(customEmptySearchCarRequest);
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const [openFilterPanel, setOpenFilterPanel] = useState(false);
-  const [searchButtonDisabled, setSearchButtonDisabled] =
-    useState<boolean>(false);
-  const [dialogState, showInfo, showError, showMessager, hideSnackbar] =
-    useRntDialogs();
+  const [searchButtonDisabled, setSearchButtonDisabled] = useState<boolean>(false);
+  const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
   const [sortBy, setSortBy] = useState<SortOptionKey | undefined>(undefined);
   const userInfo = useUserInfo();
   const router = useRouter();
@@ -80,10 +63,7 @@ export default function Search() {
             </Button>
           </>
         );
-        showError(
-          "In order to rent a car, please enter user information",
-          action
-        );
+        showError("In order to rent a car, please enter user information", action);
         return;
       }
 
@@ -112,9 +92,7 @@ export default function Search() {
       const fuelPricePerGalInUsdCents = carInfo.fuelPricePerGal * 100;
       const location = `${searchResult.searchCarRequest.city}, ${searchResult.searchCarRequest.state}, ${searchResult.searchCarRequest.country}`;
 
-      showInfo(
-        "Please confirm the transaction with your wallet and wait for the transaction to be processed"
-      );
+      showInfo("Please confirm the transaction with your wallet and wait for the transaction to be processed");
       const result = await createTripRequest(
         carInfo.carId,
         carInfo.ownerAddress,
@@ -131,16 +109,12 @@ export default function Search() {
       setRequestSending(false);
       hideSnackbar();
       if (!result) {
-        showError(
-          "Your create trip request failed. Please make sure you entered trip details right and try again"
-        );
+        showError("Your create trip request failed. Please make sure you entered trip details right and try again");
         return;
       }
       router.push("/guest/trips");
     } catch (e) {
-      showError(
-        "Your create trip request failed. Please make sure you entered trip details right and try again"
-      );
+      showError("Your create trip request failed. Please make sure you entered trip details right and try again");
       console.error("sendRentCarRequest error:" + e);
 
       setRequestSending(false);
@@ -207,11 +181,7 @@ export default function Search() {
             id="location"
             label="Pick up & Return Location"
             placeholder="Miami"
-            initValue={formatLocation(
-              searchCarRequest.city,
-              searchCarRequest.state,
-              searchCarRequest.country
-            )}
+            initValue={formatLocation(searchCarRequest.city, searchCarRequest.state, searchCarRequest.country)}
             onChange={handleSearchInputChange}
             onAddressChange={(placeDetails) => {
               const country = placeDetails.country?.short_name ?? "";
@@ -223,31 +193,27 @@ export default function Search() {
                 country: country,
                 state: state,
                 city: city,
-              });              
+              });
             }}
           />
           <div className="flex max-md:flex-col md:items-end md:justify-between xl:justify-around w-full">
             <RntInput
-                className="md:w-1/3 2xl:w-[38%]"
-                id="dateFrom"
-                label="From"
-                type="datetime-local"
-                value={searchCarRequest.dateFrom}
-                onChange={handleSearchInputChange}
+              className="md:w-1/3 2xl:w-[38%]"
+              id="dateFrom"
+              label="From"
+              type="datetime-local"
+              value={searchCarRequest.dateFrom}
+              onChange={handleSearchInputChange}
             />
             <RntInput
-                className="md:w-1/3 2xl:w-[38%]"
-                id="dateTo"
-                label="To"
-                type="datetime-local"
-                value={searchCarRequest.dateTo}
-                onChange={handleSearchInputChange}
+              className="md:w-1/3 2xl:w-[38%]"
+              id="dateTo"
+              label="To"
+              type="datetime-local"
+              value={searchCarRequest.dateTo}
+              onChange={handleSearchInputChange}
             />
-            <RntButton
-                className="w-40 max-xl:mt-4"
-                disabled={searchButtonDisabled}
-                onClick={() => handleSearchClick()}
-            >
+            <RntButton className="w-40 max-xl:mt-4" disabled={searchButtonDisabled} onClick={() => handleSearchClick()}>
               Search
             </RntButton>
           </div>
@@ -271,28 +237,21 @@ export default function Search() {
             <option className="hidden" value={""} disabled>
               Sort by
             </option>
-            {(Object.keys(sortOptions) as (keyof typeof sortOptions)[]).map(
-              (key) => (
-                <option key={key} value={key}>
-                  {sortOptions[key]}
-                </option>
-              )
-            )}
+            {(Object.keys(sortOptions) as (keyof typeof sortOptions)[]).map((key) => (
+              <option key={key} value={key}>
+                {sortOptions[key]}
+              </option>
+            ))}
           </RntSelect>
         </div>
         <div className="mb-8 flex flex-row"></div>
         {!dataFetched ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-            Loading...
-          </div>
+          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
         ) : (
           <>
-            <div className="text-l font-bold">
-              {searchResult?.carInfos?.length ?? 0} car(s) available
-            </div>
+            <div className="text-l font-bold">{searchResult?.carInfos?.length ?? 0} car(s) available</div>
             <div className="my-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
-              {searchResult?.carInfos != null &&
-              searchResult?.carInfos?.length > 0 ? (
+              {searchResult?.carInfos != null && searchResult?.carInfos?.length > 0 ? (
                 searchResult?.carInfos.map((value) => {
                   return (
                     <CarSearchItem
@@ -323,10 +282,7 @@ export default function Search() {
         >
           <div className="flex flex-col py-8">
             <div className="self-end mr-8">
-              <i
-                className="fi fi-br-cross"
-                onClick={() => setOpenFilterPanel(false)}
-              ></i>
+              <i className="fi fi-br-cross" onClick={() => setOpenFilterPanel(false)}></i>
             </div>
             <div className="flex flex-col gap-4 px-4 md:px-8 lg:px-16 mt-4">
               <RntInput
@@ -415,13 +371,7 @@ export default function Search() {
                 >
                   Apply
                 </RntButton>
-                <RntButton
-                  onClick={() =>
-                    setSearchCarRequest(customEmptySearchCarRequest)
-                  }
-                >
-                  Reset
-                </RntButton>
+                <RntButton onClick={() => setSearchCarRequest(customEmptySearchCarRequest)}>Reset</RntButton>
               </div>
             </div>
           </div>

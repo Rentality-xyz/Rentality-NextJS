@@ -9,12 +9,10 @@ export default function Listings() {
 
   return (
     <HostLayout>
-      <div className="flex flex-col">        
-        <PageTitle title="Listings" actions={[{text:"Add Listing", link:"/host/vehicles/add"}]}/>
+      <div className="flex flex-col">
+        <PageTitle title="Listings" actions={[{ text: "Add Listing", link: "/host/vehicles/add" }]} />
         {!dataFetched ? (
-          <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
-            Loading...
-          </div>
+          <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">Loading...</div>
         ) : (
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 my-4">
             {myListings != null && myListings.length > 0 ? (

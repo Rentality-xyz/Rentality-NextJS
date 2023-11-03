@@ -40,13 +40,8 @@ export function useUserInfoUpdate() {
   return useContext(UserInfoUpdateContext);
 }
 
-export const UserInfoProvider = ({
-  children,
-}: {
-  children?: React.ReactNode;
-}) => {
-  const [currentUserInfo, setCurrentUserInfo] =
-    useState<UserInfo>(EmptyUserInfo);
+export const UserInfoProvider = ({ children }: { children?: React.ReactNode }) => {
+  const [currentUserInfo, setCurrentUserInfo] = useState<UserInfo>(EmptyUserInfo);
   const rentalityInfo = useRentality();
 
   useEffect(() => {
@@ -66,8 +61,7 @@ export const UserInfoProvider = ({
         return;
       }
       try {
-        const myKYCInfo: KYCInfo =
-          await rentalityInfo.rentalityContract.getMyKYCInfo();
+        const myKYCInfo: KYCInfo = await rentalityInfo.rentalityContract.getMyKYCInfo();
 
         if (myKYCInfo == null) return;
 
@@ -87,9 +81,7 @@ export const UserInfoProvider = ({
 
   return (
     <UserInfoContext.Provider value={currentUserInfo}>
-      <UserInfoUpdateContext.Provider value={setCurrentUserInfo}>
-        {children}
-      </UserInfoUpdateContext.Provider>
+      <UserInfoUpdateContext.Provider value={setCurrentUserInfo}>{children}</UserInfoUpdateContext.Provider>
     </UserInfoContext.Provider>
   );
 };
