@@ -24,6 +24,7 @@ import { useUserInfo } from "@/contexts/userInfoContext";
 import { isEmpty } from "@/utils/string";
 import { Button } from "@mui/material";
 import RntSelect from "@/components/common/rntSelect";
+import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 
 export default function Search() {
   const dateNow = new Date();
@@ -190,7 +191,7 @@ export default function Search() {
       <div className="flex flex-col">
         <PageTitle title="Search" />
         <div className="search my-2 flex max-xl:flex-col gap-2 xl:items-end">
-          <RntInput
+          {/* <RntInput
             className="xl:w-1/2"
             id="location"
             label="Pick up & Return Location"
@@ -200,6 +201,30 @@ export default function Search() {
               searchCarRequest.country
             )}
             onChange={handleSearchInputChange}
+          /> */}
+          <RntPlaceAutocomplete
+            className="xl:w-1/2"
+            id="location"
+            label="Pick up & Return Location"
+            placeholder="Miami"
+            initValue={formatLocation(
+              searchCarRequest.city,
+              searchCarRequest.state,
+              searchCarRequest.country
+            )}
+            onChange={handleSearchInputChange}
+            onAddressChange={(placeDetails) => {
+              const country = placeDetails.country?.short_name ?? "";
+              const state = placeDetails.state?.long_name ?? "";
+              const city = placeDetails.city?.long_name ?? "";
+
+              setSearchCarRequest({
+                ...searchCarRequest,
+                country: country,
+                state: state,
+                city: city,
+              });              
+            }}
           />
           <div className="flex max-md:flex-col md:items-end md:justify-between xl:justify-around w-full">
             <RntInput

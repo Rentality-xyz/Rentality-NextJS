@@ -1,10 +1,10 @@
-import RntButton from "@/components/common/rntButton";
 import RntFileButton from "@/components/common/rntFileButton";
 import RntInput from "@/components/common/rntInput";
 import RntSelect from "@/components/common/rntSelect";
 import { HostCarInfo } from "@/model/HostCarInfo";
 import Image from "next/image";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 
 type Props = {
   carInfoFormParams: HostCarInfo;
@@ -13,12 +13,9 @@ type Props = {
   isNewCar: boolean;
 };
 
-export default function CarEditForm({
-  carInfoFormParams,
-  setCarInfoFormParams,
-  onImageFileChange,
-  isNewCar,
-}: Props) {
+export default function CarEditForm({ carInfoFormParams, setCarInfoFormParams, onImageFileChange, isNewCar }: Props) {
+  const [autocomplete, setAutocomplete] = useState("");
+
   return (
     <>
       <div className="mt-4">
@@ -89,16 +86,11 @@ export default function CarEditForm({
         <div className="text-lg mb-4">
           <strong>Photo</strong>
         </div>
-        <RntFileButton
-          className="w-40 h-16"
-          disabled={!isNewCar}
-          onChange={onImageFileChange}
-        >
+        <RntFileButton className="w-40 h-16" disabled={!isNewCar} onChange={onImageFileChange}>
           Upload
         </RntFileButton>
         <div className="w-80 h-60 rounded-2xl mt-8 overflow-hidden bg-gray-200 bg-opacity-40">
-          {carInfoFormParams.image != null &&
-          carInfoFormParams.image.length > 0 ? (
+          {carInfoFormParams.image != null && carInfoFormParams.image.length > 0 ? (
             <Image
               className="h-full w-full object-cover"
               width={1000}
@@ -115,11 +107,37 @@ export default function CarEditForm({
           <strong>Location of vehicle availability</strong>
         </div>
         <div className="flex flex-wrap gap-4">
+          <RntPlaceAutocomplete
+            className="lg:w-full"
+            id="address"
+            label="Address"
+            placeholder="Miami"
+            initValue={autocomplete}
+            includeStreetAddress={true}
+            onChange={(e) => setAutocomplete(e.target.value)}
+            onAddressChange={(placeDetails) => {
+              const country = placeDetails.country?.short_name ?? "";
+              const state = placeDetails.state?.long_name ?? "";
+              const city = placeDetails.city?.long_name ?? "";
+              const latitude = Math.round(placeDetails.location.latitude * 1_000_000) / 1_000_000;
+              const longitude = Math.round(placeDetails.location.longitude * 1_000_000) / 1_000_000;
+
+              setCarInfoFormParams({
+                ...carInfoFormParams,
+                country: country,
+                state: state,
+                city: city,
+                locationLatitude: latitude.toString(),
+                locationLongitude: longitude.toString(),
+              });
+            }}
+          />
           <RntInput
-            className="lg:w-60"
+            className="lg:w-40"
             id="country"
             label="Country"
             placeholder="USA"
+            readOnly={true}
             value={carInfoFormParams.country}
             onChange={(e) =>
               setCarInfoFormParams({
@@ -129,10 +147,11 @@ export default function CarEditForm({
             }
           />
           <RntInput
-            className="lg:w-60"
+            className="lg:w-40"
             id="state"
             label="State"
             placeholder="e.g. Florida"
+            readOnly={true}
             value={carInfoFormParams.state}
             onChange={(e) =>
               setCarInfoFormParams({
@@ -142,10 +161,11 @@ export default function CarEditForm({
             }
           />
           <RntInput
-            className="lg:w-60"
+            className="lg:w-40"
             id="city"
             label="City"
             placeholder="e.g. Miami"
+            readOnly={true}
             value={carInfoFormParams.city}
             onChange={(e) =>
               setCarInfoFormParams({
@@ -159,6 +179,7 @@ export default function CarEditForm({
             id="locationLatitude"
             label="Car location latitude"
             placeholder="e.g. 42.12345"
+            readOnly={true}
             value={carInfoFormParams.locationLatitude}
             onChange={(e) =>
               setCarInfoFormParams({
@@ -172,6 +193,7 @@ export default function CarEditForm({
             id="locationLongitude"
             label="Car location longitude"
             placeholder="e.g. 42.12345"
+            readOnly={true}
             value={carInfoFormParams.locationLongitude}
             onChange={(e) =>
               setCarInfoFormParams({

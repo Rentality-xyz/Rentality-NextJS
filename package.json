@@ -29,6 +29,7 @@
     "protobufjs": "^7.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-google-autocomplete": "^2.7.3",
     "react-phone-input-2": "^2.15.1",
     "react-sliding-side-panel": "^2.0.3",
     "sharp": "^0.32.5",
