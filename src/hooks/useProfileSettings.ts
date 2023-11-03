@@ -1,8 +1,7 @@
-import { Contract, ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { rentalityJSON } from "../abis";
 import { IRentalityContract, KYCInfo } from "@/model/blockchain/IRentalityContract";
 import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
+import { useRentality } from "@/contexts/rentalityContext";
 
 export type ProfileSettings = {
   profilePhotoUrl: string;
@@ -13,34 +12,19 @@ export type ProfileSettings = {
   drivingLicenseExpire: Date | undefined;
 };
 
-const useProfileSettings = () => {
-  const emptyProfileSettings: ProfileSettings = {
-    profilePhotoUrl: "",
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
-    drivingLicenseNumber: "",
-    drivingLicenseExpire: undefined,
-  };
+const emptyProfileSettings: ProfileSettings = {
+  profilePhotoUrl: "",
+  firstName: "",
+  lastName: "",
+  phoneNumber: "",
+  drivingLicenseNumber: "",
+  drivingLicenseExpire: undefined,
+};
 
+const useProfileSettings = () => {
+  const rentalityInfo = useRentality();
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
   const [profileSettings, setProfileSettings] = useState<ProfileSettings>(emptyProfileSettings);
-
-  const getRentalityContract = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (!ethereum) {
-        console.error("Ethereum wallet is not found");
-      }
-
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = await provider.getSigner();
-      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer) as unknown as IRentalityContract;
-    } catch (e) {
-      console.error("getRentalityContract error:" + e);
-    }
-  };
 
   const getProfileSettings = async (rentalityContract: IRentalityContract) => {
     try {
@@ -68,13 +52,13 @@ const useProfileSettings = () => {
   };
 
   const saveProfileSettings = async (newProfileSettings: ProfileSettings) => {
-    try {
-      const rentalityContract = await getRentalityContract();
+    if (!rentalityInfo) {
+      console.error("saveProfileSettings error: rentalityInfo is null");
+      return false;
+    }
 
-      if (!rentalityContract) {
-        console.error("saveProfileSettings error: contract is null");
-        return false;
-      }
+    try {
+      const rentalityContract = rentalityInfo.rentalityContract;
 
       const expirationDate =
         newProfileSettings.drivingLicenseExpire !== undefined
@@ -99,18 +83,15 @@ const useProfileSettings = () => {
   };
 
   useEffect(() => {
-    getRentalityContract()
-      .then((contract) => {
-        if (contract !== undefined) {
-          return getProfileSettings(contract);
-        }
-      })
+    if (!rentalityInfo) return;
+
+    getProfileSettings(rentalityInfo.rentalityContract)
       .then((data) => {
         setProfileSettings(data ?? emptyProfileSettings);
         setDataFetched(true);
       })
       .catch(() => setDataFetched(true));
-  }, []);
+  }, [rentalityInfo, emptyProfileSettings]);
 
   return [dataFetched, profileSettings, saveProfileSettings] as const;
 };

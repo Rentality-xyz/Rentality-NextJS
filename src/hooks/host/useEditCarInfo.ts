@@ -1,88 +1,58 @@
-import { Contract, ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { rentalityJSON } from "../../abis";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractCarInfo } from "@/model/blockchain/ContractCarInfo";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { HostCarInfo } from "@/model/HostCarInfo";
+import { useRentality } from "@/contexts/rentalityContext";
+
+const emptyHostCarInfo = {
+  carId: -1,
+  ownerAddress: "",
+  vinNumber: "",
+  brand: "",
+  model: "",
+  releaseYear: "",
+  image: "",
+  name: "",
+  licensePlate: "",
+  licenseState: "",
+  seatsNumber: "",
+  doorsNumber: "",
+  fuelType: "",
+  tankVolumeInGal: "",
+  wheelDrive: "",
+  transmission: "",
+  trunkSize: "",
+  color: "",
+  bodyType: "",
+  description: "",
+  pricePerDay: "",
+  milesIncludedPerDay: "",
+  securityDeposit: "",
+  fuelPricePerGal: "",
+  country: "",
+  state: "",
+  city: "",
+  locationLatitude: "",
+  locationLongitude: "",
+};
 
 const useEditCarInfo = (carId: number) => {
-  const emptyHostCarInfo = {
-    carId: -1,
-    ownerAddress: "",
-    vinNumber: "",
-    brand: "",
-    model: "",
-    releaseYear: "",
-    image: "",
-    name: "",
-    licensePlate: "",
-    licenseState: "",
-    seatsNumber: "",
-    doorsNumber: "",
-    fuelType: "",
-    tankVolumeInGal: "",
-    wheelDrive: "",
-    transmission: "",
-    trunkSize: "",
-    color: "",
-    bodyType: "",
-    description: "",
-    pricePerDay: "",
-    milesIncludedPerDay: "",
-    securityDeposit: "",
-    fuelPricePerGal: "",
-    country: "",
-    state: "",
-    city: "",
-    locationLatitude: "",
-    locationLongitude: "",
-  };
-
+  const rentalityInfo = useRentality();
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
   const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(emptyHostCarInfo);
   const [dataSaved, setDataSaved] = useState<Boolean>(true);
 
-  const getRentalityContract = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (!ethereum) {
-        console.error("Ethereum wallet is not found");
-      }
-
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = await provider.getSigner();
-      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer) as unknown as IRentalityContract;
-    } catch (e) {
-      console.error("getRentalityContract error:" + e);
+  const getCarInfo = async (rentalityContract: IRentalityContract, signer: Signer) => {
+    if (rentalityContract == null) {
+      console.error("getCarInfo error: contract is null");
+      return;
     }
-  };
 
-  const getSignerAddress = async () => {
     try {
-      const { ethereum } = window;
-
-      if (!ethereum) {
-        console.error("Ethereum wallet is not found");
-      }
-
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = await provider.getSigner();
-      return await signer.getAddress();
-    } catch (e) {
-      console.error("getSignerAddress error:" + e);
-    }
-  };
-
-  const getCarInfo = async (rentalityContract: IRentalityContract) => {
-    try {
-      if (rentalityContract == null) {
-        console.error("getMyListings error: contract is null");
-        return;
-      }
       const carInfo: ContractCarInfo = await rentalityContract.getCarInfoById(BigInt(carId));
-      const signerAddress = await getSignerAddress();
+      const signerAddress = await signer.getAddress();
       if (carInfo.createdBy !== signerAddress) {
         return emptyHostCarInfo;
       }
@@ -132,16 +102,13 @@ const useEditCarInfo = (carId: number) => {
   };
 
   const saveCar = async () => {
+    if (!rentalityInfo) {
+      console.error("saveCar error: rentalityInfo is null");
+      return false;
+    }
+
     try {
       setDataSaved(false);
-
-      const rentalityContract = await getRentalityContract();
-
-      if (!rentalityContract) {
-        console.error("saveCar error: contract is null");
-        setDataSaved(true);
-        return false;
-      }
 
       var pricePerDayDouble = Number(carInfoFormParams.pricePerDay.replace(/[^0-9.]+/g, ""));
       const pricePerDayInUsdCents = BigInt((pricePerDayDouble * 100) | 0);
@@ -157,7 +124,7 @@ const useEditCarInfo = (carId: number) => {
       var locationLongitudeDouble = Number(carInfoFormParams.locationLongitude.replace(/[^0-9.]+/g, ""));
       const locationLongitudeInPPM = BigInt((locationLongitudeDouble * 1_000_000) | 0);
 
-      let transaction = await rentalityContract.updateCarInfo(
+      let transaction = await rentalityInfo.rentalityContract.updateCarInfo(
         BigInt(carId),
         pricePerDayInUsdCents,
         securityDepositPerTripInUsdCents,
@@ -183,19 +150,15 @@ const useEditCarInfo = (carId: number) => {
 
   useEffect(() => {
     if (isNaN(carId) || carId == -1) return;
+    if (!rentalityInfo) return;
 
-    getRentalityContract()
-      .then((contract) => {
-        if (contract !== undefined) {
-          return getCarInfo(contract);
-        }
-      })
+    getCarInfo(rentalityInfo.rentalityContract, rentalityInfo.signer)
       .then((data) => {
         setCarInfoFormParams(data ?? emptyHostCarInfo);
         setDataFetched(true);
       })
       .catch(() => setDataFetched(true));
-  }, [carId]);
+  }, [carId, rentalityInfo]);
 
   return [dataFetched, carInfoFormParams, setCarInfoFormParams, dataSaved, saveCar] as const;
 };

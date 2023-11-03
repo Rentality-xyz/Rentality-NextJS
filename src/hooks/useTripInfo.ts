@@ -1,63 +1,47 @@
-import { Contract, ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { rentalityJSON } from "../abis";
 import { ContractTrip, getTripStatusFromContract } from "@/model/blockchain/ContractTrip";
 import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { TripDetails } from "@/model/TripDetails";
+import { useRentality } from "@/contexts/rentalityContext";
+
+const emptyDetails: TripDetails = {
+  tripId: BigInt(0),
+  carId: BigInt(0),
+  status: "",
+  guest: "",
+  host: "",
+  startDateTime: new Date(),
+  endDateTime: new Date(),
+  startLocation: "",
+  endLocation: "",
+  milesIncludedPerDay: 0,
+  fuelPricePerGalInUsd: 0,
+  approvedDateTime: undefined,
+  checkedInByHostDateTime: undefined,
+  startFuelLevelInGal: undefined,
+  startOdometr: undefined,
+  checkedInByGuestDateTime: undefined,
+  checkedOutByGuestDateTime: undefined,
+  endFuelLevelInGal: undefined,
+  endOdometr: undefined,
+  checkedOutByHostDateTime: undefined,
+  resolveAmountInUsd: undefined,
+
+  paymentFrom: "",
+  paymentTo: "",
+  pricePerDayInUsdCents: 0,
+  totalDayPriceInUsd: 0,
+  taxPriceInUsd: 0,
+  depositInUsd: 0,
+  currencyType: 0,
+  ethToCurrencyRate: 0,
+};
 
 const useTripDetails = (tripId: bigint) => {
-  const emptyDetails: TripDetails = {
-    tripId: BigInt(0),
-    carId: BigInt(0),
-    status: "",
-    guest: "",
-    host: "",
-    startDateTime: new Date(),
-    endDateTime: new Date(),
-    startLocation: "",
-    endLocation: "",
-    milesIncludedPerDay: 0,
-    fuelPricePerGalInUsd: 0,
-    approvedDateTime: undefined,
-    checkedInByHostDateTime: undefined,
-    startFuelLevelInGal: undefined,
-    startOdometr: undefined,
-    checkedInByGuestDateTime: undefined,
-    checkedOutByGuestDateTime: undefined,
-    endFuelLevelInGal: undefined,
-    endOdometr: undefined,
-    checkedOutByHostDateTime: undefined,
-    resolveAmountInUsd: undefined,
-
-    paymentFrom: "",
-    paymentTo: "",
-    pricePerDayInUsdCents: 0,
-    totalDayPriceInUsd: 0,
-    taxPriceInUsd: 0,
-    depositInUsd: 0,
-    currencyType: 0,
-    ethToCurrencyRate: 0,
-  };
-
+  const rentalityInfo = useRentality();
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
   const [tripDetails, setTripDetails] = useState<TripDetails>(emptyDetails);
-
-  const getRentalityContract = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (!ethereum) {
-        console.error("Ethereum wallet is not found");
-      }
-
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = await provider.getSigner();
-      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer) as unknown as IRentalityContract;
-    } catch (e) {
-      console.error("getRentalityContract error:" + e);
-    }
-  };
 
   const getTrip = async (rentalityContract: IRentalityContract, tripId: bigint) => {
     try {
@@ -117,18 +101,15 @@ const useTripDetails = (tripId: bigint) => {
   };
 
   useEffect(() => {
-    getRentalityContract()
-      .then((contract) => {
-        if (contract !== undefined) {
-          return getTrip(contract, tripId);
-        }
-      })
+    if (!rentalityInfo) return;
+
+    getTrip(rentalityInfo.rentalityContract, tripId)
       .then((data) => {
         setTripDetails(data ?? emptyDetails);
         setDataFetched(true);
       })
       .catch(() => setDataFetched(true));
-  }, [tripId]);
+  }, [rentalityInfo, tripId]);
 
   return [dataFetched, tripDetails] as const;
 };

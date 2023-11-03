@@ -6,58 +6,44 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractCreateCarRequest } from "@/model/blockchain/ContractCreateCarRequest";
 import { HostCarInfo, verifyCar } from "@/model/HostCarInfo";
 import { isEmpty } from "@/utils/string";
+import { useRentality } from "@/contexts/rentalityContext";
+
+const emptyNewCarInfo = {
+  carId: 0,
+  ownerAddress: "",
+  vinNumber: "",
+  brand: "",
+  model: "",
+  releaseYear: "",
+  image: "",
+  name: "",
+  licensePlate: "",
+  licenseState: "",
+  seatsNumber: "",
+  doorsNumber: "",
+  fuelType: "",
+  tankVolumeInGal: "",
+  wheelDrive: "",
+  transmission: "",
+  trunkSize: "",
+  color: "",
+  bodyType: "",
+  description: "",
+  pricePerDay: "",
+  milesIncludedPerDay: "",
+  securityDeposit: "",
+  fuelPricePerGal: "",
+  country: "",
+  state: "",
+  city: "",
+  locationLatitude: "",
+  locationLongitude: "",
+};
 
 const useAddCar = () => {
-  const emptyNewCarInfo = {
-    carId: 0,
-    ownerAddress: "",
-    vinNumber: "",
-    brand: "",
-    model: "",
-    releaseYear: "",
-    image: "",
-    name: "",
-    licensePlate: "",
-    licenseState: "",
-    seatsNumber: "",
-    doorsNumber: "",
-    fuelType: "",
-    tankVolumeInGal: "",
-    wheelDrive: "",
-    transmission: "",
-    trunkSize: "",
-    color: "",
-    bodyType: "",
-    description: "",
-    pricePerDay: "",
-    milesIncludedPerDay: "",
-    securityDeposit: "",
-    fuelPricePerGal: "",
-    country: "",
-    state: "",
-    city: "",
-    locationLatitude: "",
-    locationLongitude: "",
-  };
-
+  const rentalityInfo = useRentality();
   const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(emptyNewCarInfo);
   const [dataSaved, setDataSaved] = useState<Boolean>(true);
-
-  const getRentalityContract = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (!ethereum) {
-        console.error("Ethereum wallet is not found");
-      }
-
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = await provider.getSigner();
-      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer) as unknown as IRentalityContract;
-    } catch (e) {
-      console.error("getRentalityContract error:" + e);
-    }
-  };
 
   const uploadMetadataToIPFS = async ({
     vinNumber,
@@ -176,6 +162,11 @@ const useAddCar = () => {
   };
 
   const saveCar = async (image: File) => {
+    if (!rentalityInfo) {
+      console.error("saveCar error: rentalityInfo is null");
+      return false;
+    }
+
     try {
       setDataSaved(false);
       const response = await uploadFileToIPFS(image);
@@ -193,13 +184,6 @@ const useAddCar = () => {
         image: response.pinataURL,
       };
 
-      const rentalityContract = await getRentalityContract();
-
-      if (!rentalityContract) {
-        console.error("saveCar error: contract is null");
-        setDataSaved(true);
-        return false;
-      }
       const metadataURL = await uploadMetadataToIPFS(dataToSave);
 
       var pricePerDayDouble = Number(dataToSave.pricePerDay.replace(/[^0-9.]+/g, ""));
@@ -234,7 +218,7 @@ const useAddCar = () => {
         locationLongitudeInPPM: locationLongitudeInPPM,
       };
 
-      let transaction = await rentalityContract.addCar(request);
+      let transaction = await rentalityInfo.rentalityContract.addCar(request);
 
       const result = await transaction.wait();
       setCarInfoFormParams(emptyNewCarInfo);

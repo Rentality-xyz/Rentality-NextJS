@@ -1,30 +1,14 @@
-import { Contract, ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { rentalityJSON } from "../../abis";
 import { ContractCarInfo, validateContractCarInfo } from "@/model/blockchain/ContractCarInfo";
 import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
+import { useRentality } from "@/contexts/rentalityContext";
 
 const useMyListings = () => {
+  const rentalityInfo = useRentality();
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
   const [myListings, setMyListings] = useState<BaseCarInfo[]>([]);
-
-  const getRentalityContract = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (!ethereum) {
-        console.error("Ethereum wallet is not found");
-      }
-
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = await provider.getSigner();
-      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer) as unknown as IRentalityContract;
-    } catch (e) {
-      console.error("getRentalityContract error:" + e);
-    }
-  };
 
   const getMyListings = async (rentalityContract: IRentalityContract) => {
     try {
@@ -68,18 +52,15 @@ const useMyListings = () => {
   };
 
   useEffect(() => {
-    getRentalityContract()
-      .then((contract) => {
-        if (contract !== undefined) {
-          return getMyListings(contract);
-        }
-      })
+    if (!rentalityInfo) return;
+
+    getMyListings(rentalityInfo.rentalityContract)
       .then((data) => {
         setMyListings(data ?? []);
         setDataFetched(true);
       })
       .catch(() => setDataFetched(true));
-  }, []);
+  }, [rentalityInfo]);
 
   return [dataFetched, myListings] as const;
 };

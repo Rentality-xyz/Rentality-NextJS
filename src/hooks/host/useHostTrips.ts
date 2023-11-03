@@ -5,8 +5,10 @@ import { ContractTrip, getTripStatusFromContract, validateContractTrip } from "@
 import { TripInfo, AllowedChangeTripAction, TripStatus } from "@/model/TripInfo";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
+import { useRentality } from "@/contexts/rentalityContext";
 
 const useHostTrips = () => {
+  const rentalityInfo = useRentality();
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
   const [updateRequired, setUpdateRequired] = useState<Boolean>(true);
   const [tripsBooked, setTripsBooked] = useState<TripInfo[]>([]);
@@ -16,31 +18,14 @@ const useHostTrips = () => {
     setUpdateRequired(true);
   };
 
-  const getRentalityContract = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (!ethereum) {
-        console.error("Ethereum wallet is not found");
-      }
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = await provider.getSigner();
-      return new Contract(rentalityJSON.address, rentalityJSON.abi, signer) as unknown as IRentalityContract;
-    } catch (e) {
-      console.error("getRentalityContract error:" + e);
-    }
-  };
-
   const acceptRequest = async (tripId: bigint, params: string[]) => {
+    if (!rentalityInfo) {
+      console.error("acceptRequest error: rentalityInfo is null");
+      return false;
+    }
+
     try {
-      const rentalityContract = await getRentalityContract();
-
-      if (!rentalityContract) {
-        console.error("acceptRequest error: contract is null");
-        return false;
-      }
-
-      let transaction = await rentalityContract.approveTripRequest(tripId);
+      let transaction = await rentalityInfo.rentalityContract.approveTripRequest(tripId);
       const result = await transaction.wait();
       return true;
     } catch (e) {
@@ -50,15 +35,13 @@ const useHostTrips = () => {
   };
 
   const rejectRequest = async (tripId: bigint, params: string[]) => {
+    if (!rentalityInfo) {
+      console.error("rejectRequest error: rentalityInfo is null");
+      return false;
+    }
+
     try {
-      const rentalityContract = await getRentalityContract();
-
-      if (!rentalityContract) {
-        console.error("rejectRequest error: contract is null");
-        return false;
-      }
-
-      let transaction = await rentalityContract.rejectTripRequest(tripId);
+      let transaction = await rentalityInfo.rentalityContract.rejectTripRequest(tripId);
 
       const result = await transaction.wait();
       return true;
@@ -69,17 +52,20 @@ const useHostTrips = () => {
   };
 
   const checkInTrip = async (tripId: bigint, params: string[]) => {
-    try {
-      const rentalityContract = await getRentalityContract();
+    if (!rentalityInfo) {
+      console.error("checkInTrip error: rentalityInfo is null");
+      return false;
+    }
 
-      if (!rentalityContract) {
-        console.error("checkInTrip error: contract is null");
-        return false;
-      }
+    try {
       const startFuelLevelInPermille = BigInt(Number(params[0]) * 1000);
       const startOdometr = BigInt(params[1]);
 
-      let transaction = await rentalityContract.checkInByHost(tripId, startFuelLevelInPermille, startOdometr);
+      let transaction = await rentalityInfo.rentalityContract.checkInByHost(
+        tripId,
+        startFuelLevelInPermille,
+        startOdometr
+      );
 
       const result = await transaction.wait();
       return true;
@@ -90,18 +76,20 @@ const useHostTrips = () => {
   };
 
   const checkOutTrip = async (tripId: bigint, params: string[]) => {
+    if (!rentalityInfo) {
+      console.error("checkOutTrip error: rentalityInfo is null");
+      return false;
+    }
+
     try {
-      const rentalityContract = await getRentalityContract();
-
-      if (!rentalityContract) {
-        console.error("checkOutTrip error: contract is null");
-        return false;
-      }
-
       const endFuelLevelInPermille = BigInt(Number(params[0]) * 1000);
       const endOdometr = BigInt(params[1]);
 
-      let transaction = await rentalityContract.checkOutByHost(tripId, endFuelLevelInPermille, endOdometr);
+      let transaction = await rentalityInfo.rentalityContract.checkOutByHost(
+        tripId,
+        endFuelLevelInPermille,
+        endOdometr
+      );
 
       const result = await transaction.wait();
       return true;
@@ -112,15 +100,13 @@ const useHostTrips = () => {
   };
 
   const finishTrip = async (tripId: bigint, params: string[]) => {
+    if (!rentalityInfo) {
+      console.error("finishTrip error: rentalityInfo is null");
+      return false;
+    }
+
     try {
-      const rentalityContract = await getRentalityContract();
-
-      if (!rentalityContract) {
-        console.error("finishTrip error: contract is null");
-        return false;
-      }
-
-      let transaction = await rentalityContract.finishTrip(tripId);
+      let transaction = await rentalityInfo.rentalityContract.finishTrip(tripId);
 
       const result = await transaction.wait();
       return true;
@@ -278,16 +264,12 @@ const useHostTrips = () => {
 
   useEffect(() => {
     if (!updateRequired) return;
+    if (!rentalityInfo) return;
 
     setUpdateRequired(false);
     setDataFetched(false);
 
-    getRentalityContract()
-      .then((contract) => {
-        if (contract !== undefined) {
-          return getTrips(contract);
-        }
-      })
+    getTrips(rentalityInfo.rentalityContract)
       .then((data) => {
         setTripsBooked(
           data
@@ -306,7 +288,7 @@ const useHostTrips = () => {
         setDataFetched(true);
       })
       .catch(() => setDataFetched(true));
-  }, [updateRequired]);
+  }, [updateRequired, rentalityInfo]);
 
   return [dataFetched, tripsBooked, tripsHistory, updateData] as const;
 };
