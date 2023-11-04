@@ -4,11 +4,19 @@ import RntInput from "@/components/common/rntInput";
 import { ProfileSettings } from "@/hooks/useProfileSettings";
 import { dateToHtmlDateFormat } from "@/utils/datetimeFormatters";
 import { resizeImage } from "@/utils/image";
+import { MESSAGES } from "@/utils/messages";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
 import { useRouter } from "next/router";
-import { ReactNode, useEffect, useState } from "react";
+import { FocusEvent, FormEvent, ReactNode, useState } from "react";
+
+const STATUS = {
+  IDLE: "IDLE",
+  SUBMITTED: "SUBMITTED",
+  SUBMITTING: "SUBMITTING",
+  COMPLETED: "COMPLETED",
+};
 
 export default function ProfileInfoPage({
   savedProfileSettings,
@@ -24,106 +32,122 @@ export default function ProfileInfoPage({
   hideSnackbar: () => void;
 }) {
   const router = useRouter();
-  const [userProfileInfo, setUserProfileInfo] = useState<ProfileSettings>(savedProfileSettings);
+  const [enteredFormData, setEnteredFormData] = useState<ProfileSettings>(savedProfileSettings);
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
-  const [requestSending, setRequestSending] = useState<boolean>(false);
+  const [status, setStatus] = useState(STATUS.IDLE);
+  const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
 
-  useEffect(() => {
-    setUserProfileInfo(savedProfileSettings);
-  }, [savedProfileSettings]);
+  const errors = getErrors(enteredFormData, profileImageFile);
+  const isValid = Object.keys(errors).length === 0;
 
-  const onChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files?.length) {
+  async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const name = e.target.name;
+
+    if (name === "profilePhotoUrl") {
+      await handleFileUpload(e.target.files);
+    } else if (name === "drivingLicenseExpire") {
+      console.log("e.target.value", e.target.value);
+      console.log("new Date(e.target.value)", new Date(e.target.value));
+
+      setEnteredFormData({ ...enteredFormData, [name]: new Date(e.target.value) });
+    } else {
+      setEnteredFormData({ ...enteredFormData, [name]: e.target.value });
+    }
+  }
+
+  async function handleFileUpload(files: FileList | null) {
+    if (!files?.length) {
       return;
     }
 
-    const file = e.target.files[0];
+    const file = files[0];
     const resizedImage = await resizeImage(file, 300);
     setProfileImageFile(resizedImage);
 
     var reader = new FileReader();
 
     reader.onload = function (event) {
-      setUserProfileInfo({
-        ...userProfileInfo,
+      setEnteredFormData({
+        ...enteredFormData,
         profilePhotoUrl: event.target?.result?.toString() ?? "",
       });
     };
 
     reader.readAsDataURL(resizedImage);
-  };
+  }
 
-  const saveUserInfo = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  async function handleBlur(e: FocusEvent<HTMLInputElement, Element>) {
+    e.persist();
+    setTouched((current) => {
+      return { ...current, [e.target.id]: true };
+    });
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setStatus(STATUS.SUBMITTING);
+
+    if (!isValid) {
+      setStatus(STATUS.SUBMITTED);
+      return;
+    }
 
     try {
-      if (isEmpty(userProfileInfo.firstName)) {
-        showError("Please enter 'Name'");
-        return;
-      }
-      if (isEmpty(userProfileInfo.lastName)) {
-        showError("Please enter 'Last name'");
-        return;
-      }
-      if (isEmpty(userProfileInfo.phoneNumber)) {
-        showError("Please enter 'Phone number'");
-        return;
-      }
-      if (isEmpty(userProfileInfo.drivingLicenseNumber)) {
-        showError("Please enter 'Driving license number'");
-        return;
-      }
-      if (userProfileInfo.drivingLicenseExpire === undefined) {
-        showError("Please enter 'Driving license validity period'");
-        return;
-      }
-      setRequestSending(true);
-
-      let dataToSave: ProfileSettings = userProfileInfo;
+      var profilePhotoUrl = "";
 
       if (profileImageFile !== null) {
         const response = await uploadFileToIPFS(profileImageFile);
 
-        if (response.success !== true) {
-          console.error("Uploaded image to Pinata error");
-
-          setRequestSending(false);
-          return false;
+        if (!response.success || !response.pinataURL) {
+          throw new Error("Uploaded image to Pinata error");
         }
-        console.log("Uploaded image to Pinata: ", response.pinataURL);
-
-        dataToSave = {
-          ...dataToSave,
-          profilePhotoUrl: response.pinataURL,
-        };
+        profilePhotoUrl = response.pinataURL;
+        console.log("Uploaded image to Pinata: ", profilePhotoUrl);
       }
 
-      showInfo("Please confirm the transaction with your wallet and wait for the transaction to be processed");
+      const dataToSave = {
+        ...enteredFormData,
+        profilePhotoUrl: profilePhotoUrl,
+      };
+
+      showInfo(MESSAGES.CONFIRM_TRANSACTION_AND_WAIT);
       const result = await saveProfileSettings(dataToSave);
 
-      setRequestSending(false);
       hideSnackbar();
       if (!result) {
-        showError("Save profile info request failed. Pleas try again");
-        return;
+        throw new Error("Save profile info error");
       }
-      showInfo("Success");
+      showInfo(MESSAGES.SUCCESS);
+      setStatus(STATUS.COMPLETED);
       router.reload();
       router.push("/guest");
     } catch (e) {
-      showError("Save profile info request failed. Pleas try again");
-      console.error("saveProfileSettings error:" + e);
-
-      setRequestSending(false);
+      console.error("handleSubmit error:" + e);
+      showError(MESSAGES.PROFILE_PAGE_SAVE_ERROR);
+      setStatus(STATUS.SUBMITTED);
+      return;
     }
-  };
+  }
+
+  function getErrors(formData: ProfileSettings, profileImageFile: File | null) {
+    const result: { [key: string]: string } = {};
+
+    if (isEmpty(formData.firstName)) result.firstName = "Please enter 'Name'";
+    if (isEmpty(formData.lastName)) result.lastName = "Please enter 'Last name'";
+    if (isEmpty(formData.phoneNumber)) result.phoneNumber = "Please enter 'Phone number'";
+    if (isEmpty(formData.drivingLicenseNumber)) result.drivingLicenseNumber = "Please enter 'Driving license number'";
+    if (!formData.drivingLicenseExpire || Number.isNaN(formData.drivingLicenseExpire.getTime()))
+      result.drivingLicenseExpire = "Please enter 'Driving license validity period'";
+
+    return result;
+  }
 
   return (
-    <div className="my-8 flex flex-col gap-4">
+    <form className="my-8 flex flex-col gap-4" onSubmit={handleSubmit}>
       <div className="flex flex-row gap-4 items-center">
         <Avatar
           alt={`${savedProfileSettings.firstName} ${savedProfileSettings.lastName}`}
-          src={userProfileInfo.profilePhotoUrl}
+          src={enteredFormData.profilePhotoUrl}
           sx={{ width: "7rem", height: "7rem" }}
         >
           {!isEmpty(savedProfileSettings.firstName) || !isEmpty(savedProfileSettings.lastName)
@@ -135,11 +159,11 @@ export default function ProfileInfoPage({
           {savedProfileSettings.firstName} {savedProfileSettings.lastName}
         </div>
       </div>
-      <RntFileButton className="w-40 h-16" onChange={onChangeFile}>
+      <RntFileButton className="w-40 h-16" id="profilePhotoUrl" onChange={handleChange}>
         Upload
       </RntFileButton>
 
-      <div className="mt-4">
+      <fieldset className="mt-4">
         <div className="text-lg mb-4">
           <strong>Basic information</strong>
         </div>
@@ -148,80 +172,77 @@ export default function ProfileInfoPage({
             className="lg:w-60"
             id="firstName"
             label="Name"
-            value={userProfileInfo.firstName}
-            onChange={(e) =>
-              setUserProfileInfo({
-                ...userProfileInfo,
-                firstName: e.target.value,
-              })
-            }
+            value={enteredFormData.firstName}
+            validationError={touched.firstName || status === STATUS.SUBMITTED ? errors.firstName : ""}
+            onChange={handleChange}
+            onBlur={handleBlur}
           />
           <RntInput
             className="lg:w-60"
             id="lastName"
             label="Last name"
-            value={userProfileInfo.lastName}
-            onChange={(e) =>
-              setUserProfileInfo({
-                ...userProfileInfo,
-                lastName: e.target.value,
-              })
-            }
+            value={enteredFormData.lastName}
+            validationError={touched.lastName || status === STATUS.SUBMITTED ? errors.lastName : ""}
+            onChange={handleChange}
+            onBlur={handleBlur}
           />
           <RntInput
             className="lg:w-60"
-            id="phone"
+            id="phoneNumber"
             label="Phone number"
             type="tel"
-            value={userProfileInfo.phoneNumber}
-            onChange={(e) =>
-              setUserProfileInfo({
-                ...userProfileInfo,
-                phoneNumber: e.target.value,
-              })
-            }
+            value={enteredFormData.phoneNumber}
+            validationError={touched.phoneNumber || status === STATUS.SUBMITTED ? errors.phoneNumber : ""}
+            onChange={handleChange}
+            onBlur={handleBlur}
           />
         </div>
-      </div>
+      </fieldset>
 
-      <div className="mt-4">
+      <fieldset className="mt-4">
         <div className="text-lg mb-4">
           <strong>Driving license information</strong>
         </div>
         <div className="flex flex-wrap gap-4">
           <RntInput
             className="lg:w-60"
-            id="licenseNumber"
+            id="drivingLicenseNumber"
             label="Driving license number"
-            value={userProfileInfo.drivingLicenseNumber}
-            onChange={(e) =>
-              setUserProfileInfo({
-                ...userProfileInfo,
-                drivingLicenseNumber: e.target.value,
-              })
+            value={enteredFormData.drivingLicenseNumber}
+            validationError={
+              touched.drivingLicenseNumber || status === STATUS.SUBMITTED ? errors.drivingLicenseNumber : ""
             }
+            onChange={handleChange}
+            onBlur={handleBlur}
           />
           <RntInput
             className="lg:w-60"
-            id="licenseDate"
+            id="drivingLicenseExpire"
             label="Driving license validity period"
             type="date"
-            value={dateToHtmlDateFormat(userProfileInfo.drivingLicenseExpire)}
-            onChange={(e) =>
-              setUserProfileInfo({
-                ...userProfileInfo,
-                drivingLicenseExpire: new Date(e.target.value),
-              })
+            value={dateToHtmlDateFormat(enteredFormData.drivingLicenseExpire)}
+            validationError={
+              touched.drivingLicenseExpire || status === STATUS.SUBMITTED ? errors.drivingLicenseExpire : ""
             }
+            onChange={handleChange}
+            onBlur={handleBlur}
           />
         </div>
-      </div>
+      </fieldset>
 
-      <div className="flex flex-row gap-4 mt-4">
-        <RntButton disabled={requestSending} onClick={saveUserInfo}>
-          Save
-        </RntButton>
-      </div>
-    </div>
+      {!isValid && status === STATUS.SUBMITTED && (
+        <div role="alert" className="text-red-400">
+          <p>Please fix the following errors:</p>
+          <ul>
+            {Object.keys(errors).map((key) => {
+              return <li key={key}>{errors[key]}</li>;
+            })}
+          </ul>
+        </div>
+      )}
+      <RntButton type="submit" className="mt-4" disabled={!isValid}>
+        Save
+      </RntButton>
+    </form>
   );
 }

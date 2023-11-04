@@ -58,14 +58,12 @@ const useProfileSettings = () => {
     }
 
     try {
-      const rentalityContract = rentalityInfo.rentalityContract;
-
       const expirationDate =
         newProfileSettings.drivingLicenseExpire !== undefined
           ? BigInt(Math.floor(newProfileSettings.drivingLicenseExpire.getTime() / 1000))
           : BigInt(0);
 
-      let transaction = await rentalityContract.setKYCInfo(
+      let transaction = await rentalityInfo.rentalityContract.setKYCInfo(
         newProfileSettings.firstName,
         newProfileSettings.lastName,
         newProfileSettings.phoneNumber,
