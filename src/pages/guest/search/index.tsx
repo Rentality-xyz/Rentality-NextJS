@@ -221,7 +221,10 @@ export default function Search() {
             <RntButton
                 className="w-40 max-xl:mt-4"
                 disabled={searchButtonDisabled}
-                onClick={() => handleSearchClick()}
+                onClick={() =>
+                    handleSearchClick()
+                  // showError("value should be more then 0 showMessager success value should be more then 0 showMessager success value should be more then 0 showMessager success")
+            }
             >
               Search
             </RntButton>

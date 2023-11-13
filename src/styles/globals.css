@@ -233,4 +233,15 @@ main option {
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
-} 
+}
+
+/* Snackbar */
+.css-zzms1-MuiSnackbar-root{
+  top: 30% !important;
+}
+.css-1eqdgzv-MuiPaper-root-MuiSnackbarContent-root{
+  background-color: #207080 !important;
+  border-radius: 0px 8px 30px 8px !important;
+  max-width: 700px !important;
+  font-size: 20px !important;
+}
