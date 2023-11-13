@@ -23,14 +23,6 @@ export default function BaseBurgerNavMenu({children, accountType}:Props) {
       </div>
       <nav className="w-full pt-4">
           {children}
-          <div className="py-4 pb-[120px]">
-              <hr/>
-              {isHost ? (
-                  <SideNavMenuGroup title="Switch to Guest" href="/guest" />
-              ) : (
-                  <SideNavMenuGroup title="Switch to Host" href="/host" />
-              )}
-          </div>
       </nav>
     </aside>
   );
