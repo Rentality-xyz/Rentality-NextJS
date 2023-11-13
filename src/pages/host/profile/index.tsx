@@ -17,6 +17,7 @@ import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import {ButtonMode, IdentityButton} from "@civic/ethereum-gateway-react";
 
 export default function Profile() {
   const router = useRouter();
@@ -231,11 +232,10 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="flex flex-row gap-4 mt-4">
-              <RntButton disabled={requestSending} onClick={saveUserInfo}>
-                Save
-              </RntButton>
-            </div>
+            <IdentityButton mode={ButtonMode.LIGHT} className="mt-4"/>
+            <RntButton className = "mt-4" disabled={requestSending} onClick={saveUserInfo}>
+              Save
+            </RntButton>
           </div>
         )}
       </div>

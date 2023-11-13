@@ -245,3 +245,20 @@ main option {
   max-width: 700px !important;
   font-size: 20px !important;
 }
+
+/* Civic */
+.kZzEMI{
+  background-color: #6D28D9 !important;
+  border-radius: 9999px !important;
+  border: none !important;
+  height: 48px !important;
+  width: 224px !important;
+}
+.kZzEMI span{
+  color: white !important;
+  font-size: large !important;
+}
+.kZzEMI svg{
+  left: 33px !important;
+  top: 12px !important;
+}

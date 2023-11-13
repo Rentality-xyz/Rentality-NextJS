@@ -71,7 +71,6 @@ export default function Header({ accountType }: Props) {
                     </Link>
                 )}
               </div>
-              <IdentityButton mode={ButtonMode.LIGHT} className="max-lg:hidden"/>
               {rentalityInfo?.isWalletConnected ? (
                   <div className="flex flex-row gap-4 max-xl:ml-8 ml-16 items-center">
                     <div className=" flex-col hidden xl:flex">

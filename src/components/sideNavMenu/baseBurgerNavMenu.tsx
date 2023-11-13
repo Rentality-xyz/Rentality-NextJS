@@ -30,7 +30,6 @@ export default function BaseBurgerNavMenu({children, accountType}:Props) {
               ) : (
                   <SideNavMenuGroup title="Switch to Host" href="/host" />
               )}
-              <IdentityButton mode={ButtonMode.LIGHT} />
           </div>
       </nav>
     </aside>
