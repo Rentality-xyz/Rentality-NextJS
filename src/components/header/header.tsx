@@ -155,48 +155,6 @@ export default function Header({ accountType }: Props) {
             )}
           </div>
         </div>
-        <div className="flex flex-row items-center">
-          <div className="flex flex-row mr-16 max-xl:mr-8 max-lg:hidden">
-            {isHost ? (
-              <Link href="/guest">
-                <RntButton className="w-48 h-10">Switch to Guest</RntButton>
-              </Link>
-            ) : (
-              <Link href="/host">
-                <RntButton className="w-48 h-10">Switch to Host</RntButton>
-              </Link>
-            )}
-          </div>
-          <IdentityButton mode={ButtonMode.LIGHT} className="max-lg:hidden" />
-          {rentalityInfo?.isWalletConnected ? (
-            <div className="flex flex-row gap-4 max-xl:ml-8 ml-16 items-center">
-              <div className=" flex-col hidden xl:flex">
-                <div>
-                  {userInfo.firstName} {userInfo.lastName}
-                </div>
-                <div className="text-sm">{formatAddress(rentalityInfo?.walletAddress)}</div>
-              </div>
-              <Avatar
-                alt={`${userInfo.firstName} ${userInfo.lastName}`}
-                src={userInfo.profilePhotoUrl}
-                sx={{ width: "5rem", height: "5rem" }}
-              >
-                {!isEmpty(userInfo.firstName) || !isEmpty(userInfo.lastName)
-                  ? userInfo.firstName?.slice(0, 1).toUpperCase() + userInfo.lastName?.slice(0, 1).toUpperCase()
-                  : null}
-              </Avatar>
-            </div>
-          ) : (
-            <RntButton
-              className="w-40 h-10 text-md"
-              onClick={() => {
-                rentalityInfo?.connectWallet();
-              }}
-            >
-              Connect MetaMask
-            </RntButton>
-          )}
-        </div>
       </header>
     </div>
   );
