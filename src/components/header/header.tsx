@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import RntButton from "../common/rntButton";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { useRentality } from "@/contexts/rentalityContext";
 import { formatAddress } from "@/utils/addressFormatters";
-import { Avatar } from "@mui/material";
+import { Avatar, FormControlLabel, Stack, styled, Switch, Typography } from "@mui/material";
 import { isEmpty } from "@/utils/string";
 import { IdentityButton, ButtonMode } from "@civic/ethereum-gateway-react";
 import burgerMenu from "../../images/ic-menu-burge-white-20.svg";
@@ -38,6 +38,58 @@ export default function Header({ accountType }: Props) {
     }
   };
 
+  const AntSwitch = styled(Switch)(({ theme }) => ({
+    width: 72,
+    height: 30,
+    padding: 0,
+    display: "flex",
+    "&:active": {
+      "& .MuiSwitch-thumb": {
+        width: 15,
+      },
+      "& .MuiSwitch-switchBase.Mui-checked": {
+        transform: "translateX(42px)",
+      },
+    },
+    "& .MuiSwitch-switchBase": {
+      padding: 2,
+      "&.Mui-checked": {
+        transform: "translateX(42px)",
+        color: "#fff",
+        "& + .MuiSwitch-track": {
+          opacity: 1,
+          backgroundColor: "#6D28D9",
+        },
+      },
+    },
+    "& .MuiSwitch-thumb": {
+      boxShadow: "0 2px 4px 0 rgb(0 35 11 / 20%)",
+      width: 26,
+      height: 26,
+      borderRadius: 18,
+      transition: theme.transitions.create(["width"], {
+        duration: 700,
+      }),
+    },
+    "& .MuiSwitch-track": {
+      borderRadius: 30 / 2,
+      opacity: 1,
+      backgroundColor: "#6D28D9",
+      boxSizing: "border-box",
+    },
+  }));
+
+  const [checked, setChecked] = useState(isHost);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);
+    if (event.target.checked) {
+      window.location.href = "/host";
+    } else {
+      window.location.href = "/guest";
+    }
+  };
+
   return (
     <div>
       {isActiveBurgerMenu && (
@@ -54,23 +106,27 @@ export default function Header({ accountType }: Props) {
               className="lg:hidden mr-4"
               onClick={toggleBurgerMenu}
             />
-            <div className="font-bold text-xl lg:text-3xl">{accountType} account</div>
+            <div className="font-bold text-xl lg:text-3xl max-sm:hidden">{accountType} account</div>
           </div>
           <div className="flex flex-row items-center">
-            <div className="flex flex-row mr-16 max-xl:mr-8 max-lg:hidden">
-              {isHost ? (
-                <Link href="/guest">
-                  <RntButton className="w-48 h-10">Switch to Guest</RntButton>
-                </Link>
-              ) : (
-                <Link href="/host">
-                  <RntButton className="w-48 h-10">Switch to Host</RntButton>
-                </Link>
-              )}
-            </div>
-            <IdentityButton mode={ButtonMode.LIGHT} className="max-lg:hidden" />
+            {/*<div className="flex flex-row mr-16 max-xl:mr-8 max-lg:hidden">*/}
+            {/*  {isHost ? (*/}
+            {/*      <Link href="/guest">*/}
+            {/*        <RntButton className="w-48 h-10">Switch to Guest</RntButton>*/}
+            {/*      </Link>*/}
+            {/*  ) : (*/}
+            {/*      <Link href="/host">*/}
+            {/*        <RntButton className="w-48 h-10">Switch to Host</RntButton>*/}
+            {/*      </Link>*/}
+            {/*  )}*/}
+            {/*</div>*/}
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography className="text-lg">Guest</Typography>
+              <AntSwitch checked={checked} onChange={handleChange} inputProps={{ "aria-label": "ant design" }} />
+              <Typography className="text-lg">Host</Typography>
+            </Stack>
             {rentalityInfo?.isWalletConnected ? (
-              <div className="flex flex-row gap-4 max-xl:ml-8 ml-16 items-center">
+              <div className="flex flex-row gap-4 max-xl:ml-16 ml-16 items-center">
                 <div className=" flex-col hidden xl:flex">
                   <div>
                     {userInfo.firstName} {userInfo.lastName}
@@ -98,6 +154,48 @@ export default function Header({ accountType }: Props) {
               </RntButton>
             )}
           </div>
+        </div>
+        <div className="flex flex-row items-center">
+          <div className="flex flex-row mr-16 max-xl:mr-8 max-lg:hidden">
+            {isHost ? (
+              <Link href="/guest">
+                <RntButton className="w-48 h-10">Switch to Guest</RntButton>
+              </Link>
+            ) : (
+              <Link href="/host">
+                <RntButton className="w-48 h-10">Switch to Host</RntButton>
+              </Link>
+            )}
+          </div>
+          <IdentityButton mode={ButtonMode.LIGHT} className="max-lg:hidden" />
+          {rentalityInfo?.isWalletConnected ? (
+            <div className="flex flex-row gap-4 max-xl:ml-8 ml-16 items-center">
+              <div className=" flex-col hidden xl:flex">
+                <div>
+                  {userInfo.firstName} {userInfo.lastName}
+                </div>
+                <div className="text-sm">{formatAddress(rentalityInfo?.walletAddress)}</div>
+              </div>
+              <Avatar
+                alt={`${userInfo.firstName} ${userInfo.lastName}`}
+                src={userInfo.profilePhotoUrl}
+                sx={{ width: "5rem", height: "5rem" }}
+              >
+                {!isEmpty(userInfo.firstName) || !isEmpty(userInfo.lastName)
+                  ? userInfo.firstName?.slice(0, 1).toUpperCase() + userInfo.lastName?.slice(0, 1).toUpperCase()
+                  : null}
+              </Avatar>
+            </div>
+          ) : (
+            <RntButton
+              className="w-40 h-10 text-md"
+              onClick={() => {
+                rentalityInfo?.connectWallet();
+              }}
+            >
+              Connect MetaMask
+            </RntButton>
+          )}
         </div>
       </header>
     </div>

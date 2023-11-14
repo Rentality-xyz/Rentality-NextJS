@@ -7,6 +7,7 @@ import { resizeImage } from "@/utils/image";
 import { MESSAGES } from "@/utils/messages";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
+import { ButtonMode, IdentityButton } from "@civic/ethereum-gateway-react";
 import { Avatar } from "@mui/material";
 import { useRouter } from "next/router";
 import { FocusEvent, FormEvent, ReactNode, useState } from "react";
@@ -229,6 +230,8 @@ export default function ProfileInfoPage({
           />
         </div>
       </fieldset>
+
+      <IdentityButton mode={ButtonMode.LIGHT} className="mt-4" />
 
       {!isValid && status === STATUS.SUBMITTED && (
         <div role="alert" className="text-red-400">
