@@ -95,7 +95,9 @@ export default function RntPlaceAutocomplete({
 
             const country = getAddressComponents(placeDetails, "country");
             const state = getAddressComponents(placeDetails, "administrative_area_level_1");
-            const city = getAddressComponents(placeDetails, "locality");
+            const city =
+              getAddressComponents(placeDetails, "locality") ??
+              getAddressComponents(placeDetails, "sublocality_level_1");
             const street = getAddressComponents(placeDetails, "route");
             const street_number = getAddressComponents(placeDetails, "street_number");
 
@@ -103,36 +105,11 @@ export default function RntPlaceAutocomplete({
             const longitude = placeDetails.geometry?.viewport?.getCenter().lng() ?? 0;
 
             onAddressChangeHandler({
-              country: country
-                ? {
-                    long_name: country.long_name,
-                    short_name: country.short_name,
-                  }
-                : undefined,
-              state: state
-                ? {
-                    long_name: state.long_name,
-                    short_name: state.short_name,
-                  }
-                : undefined,
-              city: city
-                ? {
-                    long_name: city.long_name,
-                    short_name: city.short_name,
-                  }
-                : undefined,
-              street: street
-                ? {
-                    long_name: street.long_name,
-                    short_name: street.short_name,
-                  }
-                : undefined,
-              street_number: street_number
-                ? {
-                    long_name: street_number.long_name,
-                    short_name: street_number.short_name,
-                  }
-                : undefined,
+              country: country,
+              state: state,
+              city: city,
+              street: street,
+              street_number: street_number,
               location: { latitude: latitude, longitude: longitude },
             });
           }
