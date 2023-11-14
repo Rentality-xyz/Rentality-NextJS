@@ -1,4 +1,3 @@
-import BaseSideNavMenu from "./baseSideNavMenu";
 import SideNavMenuGroup from "./sideNavMenuGroup";
 import SideNavMenuItem from "./sideNavMenuItem";
 import BaseBurgerNavMenu from "@/components/sideNavMenu/baseBurgerNavMenu";
