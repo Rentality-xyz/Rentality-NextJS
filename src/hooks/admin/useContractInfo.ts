@@ -15,6 +15,7 @@ export type AdminContractInfo = {
   userServiceContractAddress: string;
   tripServiceContractAddress: string;
   carServiceContractAddress: string;
+  platformContractAddress: string;
 };
 
 const emptyAdminContractInfo = {
@@ -27,6 +28,7 @@ const emptyAdminContractInfo = {
   userServiceContractAddress: "",
   tripServiceContractAddress: "",
   carServiceContractAddress: "",
+  platformContractAddress: "",
 };
 
 const useContractInfo = () => {
@@ -37,7 +39,8 @@ const useContractInfo = () => {
   const getAdminContractInfo = async (contract: IRentalityContract, provider: ethers.providers.Web3Provider) => {
     const contractAddress = await contract.address;
     const ownerAddress = await contract.owner();
-    const balance = (await provider.getBalance(contractAddress)) ?? 0;
+    const platformContractAddress = await contract.getRentalityPlatformAddress();
+    const balance = (await provider.getBalance(platformContractAddress)) ?? 0;
     const rentalityCommission = Number(await contract.getPlatformFeeInPPM()) / 10_000.0 ?? 0;
     const currencyConverterContractAddress = await contract.getCurrencyConverterServiceAddress();
     const userServiceContractAddress = await contract.getUserServiceAddress();
@@ -54,6 +57,7 @@ const useContractInfo = () => {
       userServiceContractAddress: userServiceContractAddress,
       tripServiceContractAddress: tripServiceContractAddress,
       carServiceContractAddress: carServiceContractAddress,
+      platformContractAddress: platformContractAddress,
     };
     return result;
   };
@@ -160,6 +164,23 @@ const useContractInfo = () => {
     }
   };
 
+  const updatePlatformService = async (address: string) => {
+    if (!rentalityInfo) {
+      console.error("updatePlatformService error: rentalityInfo is null");
+      return false;
+    }
+
+    try {
+      let transaction = await rentalityInfo.rentalityContract.updateRentalityPlatform(address);
+      const result = await transaction.wait();
+      setDataUpdated(false);
+      return true;
+    } catch (e) {
+      console.error("updatePlatformService error" + e);
+      return false;
+    }
+  };
+
   useEffect(() => {
     if (dataUpdated) return;
     if (!rentalityInfo) return;
@@ -180,6 +201,7 @@ const useContractInfo = () => {
     updateCarService,
     updateTripService,
     updateCurrencyConverterService,
+    updatePlatformService,
   ] as const;
 };
 

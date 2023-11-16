@@ -5,17 +5,18 @@ import RentalityCurrencyConverterJSONLocal from "./RentalityCurrencyConverter.lo
 import RentalityGatewayJSONNet from "./RentalityGateway.json";
 import RentalityGatewayJSONLocal from "./RentalityGateway.localhost.json";
 
+export const rentalityJSONv_0_15 =
+  process.env.NEXT_PUBLIC_USE_LOCALHOST_BLOCKCHAIN?.toLowerCase?.() === "true" ? RentalityJSONLocal : RentalityJSONNet;
 
-export const rentalityJSON = (process.env.NEXT_PUBLIC_USE_LOCALHOST_BLOCKCHAIN)?.toLowerCase?.() === "true"
-? RentalityJSONLocal
-: RentalityJSONNet;
+export const rentalityJSON =
+  process.env.NEXT_PUBLIC_USE_LOCALHOST_BLOCKCHAIN?.toLowerCase?.() === "true"
+    ? RentalityGatewayJSONLocal
+    : RentalityGatewayJSONNet;
 
-export const rentalityJSONv_0_15 = (process.env.NEXT_PUBLIC_USE_LOCALHOST_BLOCKCHAIN)?.toLowerCase?.() === "true"
-? RentalityGatewayJSONLocal
-: RentalityGatewayJSONNet;
+export const rentalityCurrencyConverterJSON =
+  process.env.NEXT_PUBLIC_USE_LOCALHOST_BLOCKCHAIN?.toLowerCase?.() === "true"
+    ? RentalityCurrencyConverterJSONLocal
+    : RentalityCurrencyConverterJSONNet;
 
-export const rentalityCurrencyConverterJSON = (process.env.NEXT_PUBLIC_USE_LOCALHOST_BLOCKCHAIN)?.toLowerCase?.() === "true"
-? RentalityCurrencyConverterJSONLocal
-: RentalityCurrencyConverterJSONNet;
 
 export default rentalityJSON;

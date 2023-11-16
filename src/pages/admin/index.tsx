@@ -17,6 +17,7 @@ export default function Admin() {
     updateCarService,
     updateTripService,
     updateCurrencyConverterService,
+    updatePlatformService,
   ] = useContractInfo();
   const [ethToWithdraw, setEthToWithdraw] = useState("0");
   const [newPlatformCommission, setNewPlatformCommission] = useState("0");
@@ -24,6 +25,7 @@ export default function Admin() {
   const [newCarServiceAddress, setNewCarServiceAddress] = useState("0x");
   const [newTripsServiceAddress, setNewTripsServiceAddress] = useState("0x");
   const [newCurrencyConverterServiceAddress, setNewCurrencyConverterServiceAddress] = useState("0x");
+  const [newPlatformServiceAddress, setNewPlatformServiceAddress] = useState("0x");
   const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
 
   if (adminContractInfo == null) {
@@ -134,6 +136,20 @@ export default function Admin() {
     }
   };
 
+  const setPlatformService = async () => {
+    if (newPlatformServiceAddress == null) return;
+    if (newPlatformServiceAddress.length != 42 || !newPlatformServiceAddress.startsWith("0x")) {
+      showError("Address should start with 0x and contain 40 symbols");
+      return;
+    }
+    try {
+      await updatePlatformService(newPlatformServiceAddress);
+      setNewPlatformServiceAddress("0x");
+    } catch (e) {
+      showError("setPlatformService error:" + e);
+    }
+  };
+
   return (
     <AdminLayout>
       <div className="flex flex-col">
@@ -213,14 +229,14 @@ export default function Admin() {
           />
           <RntInput
             id="carService"
-            label="Car new service contract address:"
+            label="Car service contract address:"
             value={adminContractInfo.carServiceContractAddress}
             readOnly={true}
           />
           <RntInputWithButton
             id="carServiceSet"
             placeholder="0x"
-            label="Set new car service contract address:"
+            label="Set car service contract address:"
             value={newCarServiceAddress}
             onChange={(e) => {
               setNewCarServiceAddress(e.target.value);
@@ -269,6 +285,26 @@ export default function Admin() {
             buttonDisabled={newCurrencyConverterServiceAddress.length != 42}
             onButtonClick={() => {
               setCurrencyConverterService();
+            }}
+          />
+          <RntInput
+            id="platform"
+            label="Platform contract address:"
+            value={adminContractInfo.platformContractAddress}
+            readOnly={true}
+          />
+          <RntInputWithButton
+            id="platformSet"
+            placeholder="0x"
+            label="Set platform contract address:"
+            value={newPlatformServiceAddress}
+            onChange={(e) => {
+              setNewPlatformServiceAddress(e.target.value);
+            }}
+            buttonText="Save"
+            buttonDisabled={newPlatformServiceAddress.length != 42}
+            onButtonClick={() => {
+              setPlatformService();
             }}
           />
         </div>
