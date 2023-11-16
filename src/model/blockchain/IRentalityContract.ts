@@ -18,6 +18,7 @@ export interface IRentalityContract {
   getUserServiceAddress(): Promise<string>;
   updateUserService(contractAddress: string): Promise<ContractTransaction>;
   getRentalityPlatformAddress(): Promise<string>;
+  updateRentalityPlatform(contractAddress: string): Promise<ContractTransaction>;
   withdrawFromPlatform(amount: bigint): Promise<ContractTransaction>;
   withdrawAllFromPlatform(): Promise<ContractTransaction>;
   getPlatformFeeInPPM(): Promise<bigint>;
