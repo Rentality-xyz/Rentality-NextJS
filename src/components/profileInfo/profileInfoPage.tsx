@@ -231,7 +231,7 @@ export default function ProfileInfoPage({
         </div>
       </fieldset>
 
-      <IdentityButton mode={ButtonMode.LIGHT} className="mt-4" />
+      <IdentityButton mode={ButtonMode.LIGHT} className="mt-4 civicButton" />
 
       {!isValid && status === STATUS.SUBMITTED && (
         <div role="alert" className="text-red-400">
