@@ -47,9 +47,6 @@ export default function ProfileInfoPage({
     if (name === "profilePhotoUrl") {
       await handleFileUpload(e.target.files);
     } else if (name === "drivingLicenseExpire") {
-      console.log("e.target.value", e.target.value);
-      console.log("new Date(e.target.value)", new Date(e.target.value));
-
       setEnteredFormData({ ...enteredFormData, [name]: new Date(e.target.value) });
     } else {
       setEnteredFormData({ ...enteredFormData, [name]: e.target.value });
