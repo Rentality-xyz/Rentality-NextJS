@@ -6,7 +6,7 @@ import { ContractChatInfo } from "@/model/blockchain/ContractChatInfo";
 import { Client as ChatClient } from "@/chat/client";
 import { useRentality } from "@/contexts/rentalityContext";
 import { Contract, ethers } from "ethers";
-import RentalityChatHelperJSON from "@/abis/RentalityChatHelper.json";
+import { rentalityChatHelperJSON } from "@/abis";
 import { IRentalityChatHelperContract } from "@/model/blockchain/IRentalityChatHelperContract";
 import { isEmpty } from "@/utils/string";
 import { bytesToHex } from "@waku/utils/bytes";
@@ -78,8 +78,8 @@ const useChatInfos = (isHost: boolean) => {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = await provider.getSigner();
       const rentalityChatHelperContract = new Contract(
-        RentalityChatHelperJSON.address,
-        RentalityChatHelperJSON.abi,
+        rentalityChatHelperJSON.address,
+        rentalityChatHelperJSON.abi,
         signer
       ) as unknown as IRentalityChatHelperContract;
 
@@ -116,6 +116,7 @@ const useChatInfos = (isHost: boolean) => {
       try {
         const client = new ChatClient();
         const infos = (await getChatInfos(contractInfo)) ?? [];
+
         const [myStoredPrivateKey, myStoredPublicKey] = await rentalityChatHelper.getMyChatKeys();
 
         await client.init(rentalityInfo.signer, onUserMessageReceived, myStoredPrivateKey, myStoredPublicKey);
