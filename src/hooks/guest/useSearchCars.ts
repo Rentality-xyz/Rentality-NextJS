@@ -49,9 +49,9 @@ const useSearchCars = () => {
     const contractDateFrom = BigInt(Math.floor(startDateTime.getTime() / 1000));
     const contractDateTo = BigInt(Math.floor(endDateTime.getTime() / 1000));
     const contractSearchCarParams: ContractSearchCarParams = {
-      country: "",
-      state: "",
-      city: "",
+      country: searchCarRequest.country ?? "",
+      state: searchCarRequest.state ?? "",
+      city: searchCarRequest.city ?? "",
       brand: searchCarRequest.brand ?? "",
       model: searchCarRequest.model ?? "",
       yearOfProductionFrom: BigInt(searchCarRequest.yearOfProductionFrom ?? "0"),
