@@ -237,19 +237,20 @@ main option {
 
 /* Snackbar */
 .MuiSnackbar-root {
-  top: 30% !important;
+  top: 8% !important;
 }
 
 .MuiPaper-root {
-  background-color: #207080 !important;
-  border-radius: 0px 8px 30px 8px !important;
+  background-color: #009898 !important;
+  border-radius: 30px 8px 30px 8px !important;
   max-width: 700px !important;
   font-size: 20px !important;
 }
 
 /* Civic */
 .civicButton {
-  background-color: #6D28D9 !important;
+  /*background-color: #6D28D9 !important;*/
+  background: linear-gradient(360deg, rgba(88,63,188,1) 0%, rgba(128,95,228,1) 50%, rgba(127,160,243,1) 100%) !important;
   border-radius: 9999px !important;
   border: none !important;
   height: 48px !important;
@@ -264,4 +265,8 @@ main option {
 .civicButton svg {
   left: 33px !important;
   top: 12px !important;
+}
+
+.buttonGradient {
+  background: linear-gradient(360deg, rgba(88,63,188,1) 0%, rgba(128,95,228,1) 50%, rgba(127,160,243,1) 100%);
 }
