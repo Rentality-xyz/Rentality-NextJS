@@ -18,5 +18,5 @@ export const defaultDialogState: DialogState = {
   action: null,
   anchorOrigin: { vertical: "top", horizontal: "center" },
   backgroundColor: "#22d7d3",
-  autoHideDuration: 600000,
+  autoHideDuration: 6000,
 };
