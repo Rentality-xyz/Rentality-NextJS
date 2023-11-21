@@ -242,9 +242,11 @@ main option {
 
 .MuiPaper-root {
   background-color: #009898 !important;
+  /*border-color: #009898 !important;*/
+  /*border-width: 2px !important;*/
   border-radius: 30px 8px 30px 8px !important;
   max-width: 700px !important;
-  font-size: 20px !important;
+  font-size: 18px !important;
 }
 
 /* Civic */
