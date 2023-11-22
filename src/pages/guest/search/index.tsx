@@ -213,7 +213,10 @@ export default function Search() {
               value={searchCarRequest.dateTo}
               onChange={handleSearchInputChange}
             />
-            <RntButton className="w-40 max-xl:mt-4" disabled={searchButtonDisabled} onClick={() => handleSearchClick()}>
+            <RntButton className="w-40 max-xl:mt-4" disabled={searchButtonDisabled} onClick={() =>
+                handleSearchClick()
+                // showError("safdgshgdfgh 098sydfhgdjbbgkgd ohaehgf3q4t8gufdivb kjdbfbugergb kd")
+            }>
               Search
             </RntButton>
           </div>

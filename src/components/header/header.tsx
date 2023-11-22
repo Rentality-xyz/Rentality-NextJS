@@ -56,7 +56,8 @@ export default function Header({ accountType }: Props) {
         color: "#fff",
         "& + .MuiSwitch-track": {
           opacity: 1,
-          backgroundColor: "#6D28D9",
+          background: "linear-gradient(360deg, rgba(88,63,188,1) 0%, rgba(128,95,228,1) 50%, rgba(127,160,243,1) 100%)",
+          // backgroundColor: "#6D28D9",
         },
       },
     },
@@ -72,7 +73,8 @@ export default function Header({ accountType }: Props) {
     "& .MuiSwitch-track": {
       borderRadius: 30 / 2,
       opacity: 1,
-      backgroundColor: "#6D28D9",
+      background: "linear-gradient(360deg, rgba(88,63,188,1) 0%, rgba(128,95,228,1) 50%, rgba(127,160,243,1) 100%)",
+      // backgroundColor: "#6D28D9",
       boxSizing: "border-box",
     },
   }));
