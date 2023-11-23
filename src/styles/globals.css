@@ -272,3 +272,7 @@ main option {
 .buttonGradient {
   background: linear-gradient(360deg, rgba(88,63,188,1) 0%, rgba(128,95,228,1) 50%, rgba(127,160,243,1) 100%);
 }
+
+.backgroundMain {
+  background: linear-gradient(150deg, rgba(36,15,80,1) 50%, rgba(102,0,204,1) 80%, rgba(102,51,203,1) 100%)
+}

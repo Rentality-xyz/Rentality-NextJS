@@ -15,7 +15,7 @@ export default function Document() {
           href="https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css"
         />
       </Head>
-      <body className="bg-rentality-bg-main">
+      <body className="backgroundMain">
         <Main />
         <NextScript />
       </body>

@@ -97,7 +97,7 @@ export default function Header({ accountType }: Props) {
           {isHost ? <HostBurgerNavMenu /> : <GuestBurgerNavMenu />}
         </div>
       )}
-      <header className="bg-rentality-bg-main text-rnt-temp-header-text">
+      <header className="text-rnt-temp-header-text">
         <div className="flex w-full px-2 py-2 min-h-[7rem] justify-between">
           <div className="flex flex-row items-center">
             <Image
