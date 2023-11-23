@@ -38,6 +38,7 @@ const emptyNewCarInfo = {
   city: "",
   locationLatitude: "",
   locationLongitude: "",
+  currentlyListed: true,
 };
 
 const useAddCar = () => {

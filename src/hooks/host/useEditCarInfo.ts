@@ -1,4 +1,4 @@
-import { Signer, ethers } from "ethers";
+import { Signer } from "ethers";
 import { useEffect, useState } from "react";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractCarInfo } from "@/model/blockchain/ContractCarInfo";
@@ -36,6 +36,7 @@ const emptyHostCarInfo = {
   city: "",
   locationLatitude: "",
   locationLongitude: "",
+  currentlyListed: true,
 };
 
 const useEditCarInfo = (carId: number) => {
@@ -94,6 +95,7 @@ const useEditCarInfo = (carId: number) => {
         city: carInfo.city,
         locationLatitude: (Number(carInfo.locationLatitudeInPPM) / 1_000_000).toString(),
         locationLongitude: (Number(carInfo.locationLongitudeInPPM) / 1_000_000).toString(),
+        currentlyListed: carInfo.currentlyListed,
       };
       return item;
     } catch (e) {
@@ -135,7 +137,7 @@ const useEditCarInfo = (carId: number) => {
         carInfoFormParams.city,
         locationLatitudeInPPM,
         locationLongitudeInPPM,
-        true
+        carInfoFormParams.currentlyListed
       );
 
       const result = await transaction.wait();

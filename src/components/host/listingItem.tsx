@@ -1,13 +1,19 @@
-import { BaseCarInfo } from "@/model/BaseCarInfo";
-import Image from "next/image";
+import { BaseCarInfo, getListingStatusTextFromStatus } from "@/model/BaseCarInfo";
 import RntButton from "../common/rntButton";
 import Link from "next/link";
+import { twMerge } from "tailwind-merge";
 
 type Props = {
   carInfo: BaseCarInfo;
 };
 
 export default function ListingItem({ carInfo }: Props) {
+  let statusBgColor = carInfo.currentlyListed ? "bg-lime-500" : "bg-red-500";
+  const statusClassName = twMerge(
+    "absolute right-0 top-2 px-8 py-2 rounded-l-3xl text-rnt-temp-status-text text-end",
+    statusBgColor
+  );
+
   return (
     <div className="bg-rentality-bg rnt-card flex flex-col sm_inverted:flex-row rounded-xl overflow-hidden">
       {/* <div className="w-60 h-56 flex-shrink-0">
@@ -22,7 +28,11 @@ export default function ListingItem({ carInfo }: Props) {
       <div
         style={{ backgroundImage: `url(${carInfo.image})` }}
         className="relative w-full sm_inverted:w-64 min-h-[12rem] flex-shrink-0 bg-center bg-cover"
-      />
+      >
+        <div className={statusClassName}>
+          <strong className="text-m">{`${getListingStatusTextFromStatus(carInfo.currentlyListed)}`}</strong>
+        </div>
+      </div>
       <div className="w-full flex flex-col justify-between p-4">
         <div className="flex flex-row justify-between items-baseline">
           <div>
@@ -33,7 +43,9 @@ export default function ListingItem({ carInfo }: Props) {
         <div className="flex flex-row justify-between items-end">
           <div className="flex flex-col">
             <strong className="text-xl">{`$${carInfo.pricePerDay}/day`}</strong>
-            <div className="text-sm">{`$${carInfo.pricePerDay} est. total`}</div>
+            <div className="text-sm">{`$${carInfo.milesIncludedPerDay} miles per day`}</div>
+            <div className="text-sm">{`$${carInfo.securityDeposit} Security deposit`}</div>
+            <div className="text-sm">{`$${carInfo.fuelPricePerGal} Fuel price per gal`}</div>
           </div>
           <Link href={`/host/vehicles/edit/${carInfo.carId}`}>
             <RntButton className="w-28 h-12">Edit</RntButton>

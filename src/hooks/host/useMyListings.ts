@@ -29,7 +29,10 @@ const useMyListings = () => {
                 const tokenURI = await rentalityContract.getCarMetadataURI(i.carId);
                 const meta = await getMetaDataFromIpfs(tokenURI);
 
-                const price = Number(i.pricePerDayInUsdCents) / 100;
+                const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
+                const securityDeposit = Number(i.securityDepositPerTripInUsdCents) / 100;
+                const fuelPricePerGal = Number(i.fuelPricePerGalInUsdCents) / 100;
+                const milesIncludedPerDay = Number(i.milesIncludedPerDay);
 
                 let item: BaseCarInfo = {
                   carId: Number(i.carId),
@@ -39,7 +42,11 @@ const useMyListings = () => {
                   model: meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
                   year: meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
                   licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
-                  pricePerDay: price,
+                  pricePerDay: pricePerDay,
+                  securityDeposit: securityDeposit,
+                  fuelPricePerGal: fuelPricePerGal,
+                  milesIncludedPerDay: milesIncludedPerDay,
+                  currentlyListed: i.currentlyListed,
                 };
                 return item;
               })

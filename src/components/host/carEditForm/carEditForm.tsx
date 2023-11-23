@@ -443,6 +443,26 @@ export default function CarEditForm({ carInfoFormParams, setCarInfoFormParams, o
               })
             }
           />
+          <RntSelect
+            className="lg:w-60"
+            id="listed"
+            label="Listing status"
+            value={carInfoFormParams.currentlyListed.toString()}
+            onChange={(e) => {
+              console.log("carInfoFormParams.currentlyListed", carInfoFormParams.currentlyListed);
+              console.log("carInfoFormParams.currentlyListed.toString()", carInfoFormParams.currentlyListed.toString());
+              console.log("e.target.value", e.target.value);
+              console.log("Boolean(e.target.value)", Boolean(e.target.value));
+              console.log("e.target.value === 'true'", e.target.value === "true");
+              setCarInfoFormParams({
+                ...carInfoFormParams,
+                currentlyListed: e.target.value === "true",
+              });
+            }}
+          >
+            <option value="true">Listed</option>
+            <option value="false">Unlisted</option>
+          </RntSelect>
         </div>
       </div>
     </>
