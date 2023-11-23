@@ -25,9 +25,11 @@ const useChatInfos = (isHost: boolean) => {
         console.error("getChatInfos error: contract is null");
         return;
       }
-      const chatInfosView: ContractChatInfo[] = isHost
-        ? await rentalityContract.getChatInfoForHost()
-        : await rentalityContract.getChatInfoForGuest();
+      const chatInfosView: ContractChatInfo[] = (
+        isHost ? await rentalityContract.getChatInfoForHost() : await rentalityContract.getChatInfoForGuest()
+      ).sort((a, b) => {
+        return Number(b.tripId) - Number(a.tripId);
+      });
 
       const chatInfosData =
         chatInfosView.length === 0
