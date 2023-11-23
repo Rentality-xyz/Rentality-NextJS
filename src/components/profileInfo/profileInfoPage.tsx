@@ -91,7 +91,7 @@ export default function ProfileInfoPage({
     }
 
     try {
-      var profilePhotoUrl = "";
+      var profilePhotoUrl = savedProfileSettings.profilePhotoUrl;
 
       if (profileImageFile !== null) {
         const response = await uploadFileToIPFS(profileImageFile);
