@@ -1,7 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { dateFormat, dateFormatMonthDate } from "@/utils/datetimeFormatters";
-import { TripInfo, TripStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
+import {
+  TripInfo,
+  TripStatus,
+  getTripStatusBgColorClassFromStatus,
+  getTripStatusTextFromStatus,
+} from "@/model/TripInfo";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import RntButton from "../common/rntButton";
@@ -41,33 +46,7 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
       return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), inputParams);
     });
   };
-  let statusBgColor = "";
-  switch (tripInfo.status) {
-    case TripStatus.Pending:
-      statusBgColor = "bg-yellow-600";
-      break;
-    case TripStatus.Confirmed:
-      statusBgColor = "bg-lime-500";
-      break;
-    case TripStatus.CheckedInByHost:
-      statusBgColor = "bg-blue-600";
-      break;
-    case TripStatus.Started:
-      statusBgColor = "bg-blue-800";
-      break;
-    case TripStatus.CheckedOutByGuest:
-      statusBgColor = "bg-purple-600";
-      break;
-    case TripStatus.Finished:
-      statusBgColor = "bg-purple-800";
-      break;
-    case TripStatus.Closed:
-      statusBgColor = "bg-fuchsia-700";
-      break;
-    case TripStatus.Rejected:
-      statusBgColor = "bg-red-500";
-      break;
-  }
+  let statusBgColor = getTripStatusBgColorClassFromStatus(tripInfo.status);
   const statusClassName = twMerge(
     "absolute right-0 top-2 px-8 py-2 rounded-l-3xl bg-purple-600 text-rnt-temp-status-text text-end",
     statusBgColor
