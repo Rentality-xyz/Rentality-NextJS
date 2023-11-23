@@ -206,7 +206,7 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
             {tripInfo.allowedActions[0].params.map((param, index) => {
               return (
                 <div className="flex flex-col md:flex-row" key={param.text}>
-                  <div id="ddi-test" className="flex items-end w-full md:w-1/2 xl:w-1/3">
+                  <div className="flex items-end w-full md:w-1/2 xl:w-1/3">
                     {param.type === "fuel" ? (
                       <RntSelect
                         className="w-full py-2"

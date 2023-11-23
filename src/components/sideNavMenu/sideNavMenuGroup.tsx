@@ -6,6 +6,7 @@ import icMessages from "@/images/ic_messages.jpg";
 import icProfileSettings from "@/images/ic_profile_settings.jpg";
 import icListings from "@/images/ic_listings.jpg";
 import MenuIcons from "@/components/sideNavMenu/menuIcons";
+import {useBurgerMenuContext} from "@/hooks/useBurgerMenu";
 
 export default function SideNavMenuGroup({
   title,
@@ -18,10 +19,7 @@ export default function SideNavMenuGroup({
   children?: React.ReactNode;
   icon?: MenuIcons;
 }) {
-  const removeBodyHidden = () => {
-    const body = document.body;
-    body.classList.remove("max-lg:overflow-hidden");
-  };
+  const { isActiveBurgerMenu, toggleBurgerMenu } = useBurgerMenuContext();
 
   const getImageForMenu = (state: MenuIcons): StaticImageData => {
     switch (state) {
@@ -42,7 +40,7 @@ export default function SideNavMenuGroup({
     <div className="pt-4">
       <div className="py-2 text-xl font-bold">
         {href != null ? (
-          <Link href={href} onClick={removeBodyHidden} className="flex">
+          <Link href={href} onClick={toggleBurgerMenu} className="flex">
             {icon != null && <Image src={getImageForMenu(icon)} width={30} height={30} alt="" className="mr-2" />}
             <span>{title}</span>
           </Link>

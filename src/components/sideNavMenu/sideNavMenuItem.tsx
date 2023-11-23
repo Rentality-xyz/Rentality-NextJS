@@ -6,12 +6,10 @@ import icMessages from "@/images/ic_messages.jpg";
 import icProfileSettings from "@/images/ic_profile_settings.jpg";
 import icListings from "@/images/ic_listings.jpg";
 import MenuIcons from "@/components/sideNavMenu/menuIcons";
+import {useBurgerMenuContext} from "@/hooks/useBurgerMenu";
 
 export default function SideNavMenuItem({ text, href, icon }: { text: string; href: string; icon: MenuIcons }) {
-  const removeBodyHidden = () => {
-    const body = document.body;
-    body.classList.remove("max-lg:overflow-hidden");
-  };
+  const { isActiveBurgerMenu, toggleBurgerMenu } = useBurgerMenuContext();
 
   const getImageForMenu = (state: MenuIcons): StaticImageData => {
     switch (state) {
@@ -30,7 +28,7 @@ export default function SideNavMenuItem({ text, href, icon }: { text: string; hr
 
   return (
     <div className="py-1 h-12">
-      <Link href={href} onClick={removeBodyHidden} className="flex">
+      <Link href={href} onClick={toggleBurgerMenu} className="flex">
         <Image src={getImageForMenu(icon)} width={30} height={30} alt="" className="mr-2" />
         {icon == MenuIcons.Listings ? <span className="pt-2">{text}</span> : <span className="pt-0.5">{text}</span>}
       </Link>
