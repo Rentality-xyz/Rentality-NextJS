@@ -1,7 +1,7 @@
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import HostSideNavMenu from "@/components/sideNavMenu/hostSideNavMenu";
-import {BurgerMenuProvider} from "@/hooks/useBurgerMenu";
+import {AppContextProvider} from "@/hooks/useBurgerMenu";
 
 type Props = {
   children?: React.ReactNode;
@@ -11,7 +11,7 @@ export default function HostLayout({ children }: Props) {
   return (
     <>
       <div className="flex text-rnt-temp-sidemenu-text">
-          <BurgerMenuProvider>
+          <AppContextProvider>
               <HostSideNavMenu />
               <div className="w-full">
                   <Header accountType="Host" />
@@ -19,7 +19,7 @@ export default function HostLayout({ children }: Props) {
                       {children}
                   </main>
               </div>
-          </BurgerMenuProvider>
+          </AppContextProvider>
       </div>
       <Footer />
     </>

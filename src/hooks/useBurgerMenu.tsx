@@ -1,20 +1,20 @@
 import {createContext, FC, ReactNode, useContext, useState} from "react";
 
 
-interface BurgerMenuContextType {
-    isActiveBurgerMenu: boolean;
+interface AppContextType {
+    isHideBurgerMenu: boolean;
     toggleBurgerMenu: () => void;
-};
+}
 
-const BurgerMenuContext = createContext<BurgerMenuContextType | undefined>(undefined);
+const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export const BurgerMenuProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [isActiveBurgerMenu, setIsActiveBurgerMenu] = useState(false);
+export const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
+    const [isHideBurgerMenu, setIsHideBurgerMenu] = useState(false);
 
     const toggleBurgerMenu = () => {
-        setIsActiveBurgerMenu((prev) => !prev);
+        setIsHideBurgerMenu((prev) => !prev);
         const body = document.body;
-        if (isActiveBurgerMenu) {
+        if (isHideBurgerMenu) {
             body.classList.remove("max-lg:overflow-hidden");
         } else {
             body.classList.add("max-lg:overflow-hidden");
@@ -22,17 +22,17 @@ export const BurgerMenuProvider: FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     return (
-        <BurgerMenuContext.Provider value={{ isActiveBurgerMenu, toggleBurgerMenu }}>
+        <AppContext.Provider value={{ isHideBurgerMenu, toggleBurgerMenu }}>
             {children}
-        </BurgerMenuContext.Provider>
+        </AppContext.Provider>
     );
 
 };
 
-export const useBurgerMenuContext = () => {
-    const context = useContext(BurgerMenuContext);
+export const useAppContext = () => {
+    const context = useContext(AppContext);
     if (!context) {
-        throw new Error('useBurgerMenuContext must be used within an BurgerMenuProvider');
+        throw new Error('useAppContext must be used within an AppContextProvider');
     }
     return context;
 };

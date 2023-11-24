@@ -10,7 +10,7 @@ import burgerMenuClose from "../../images/ic-menu-burge-close-white-20.svg";
 import Image from "next/image";
 import GuestBurgerNavMenu from "@/components/sideNavMenu/guestBurgerNavMenu";
 import HostBurgerNavMenu from "@/components/sideNavMenu/hostBurgerNavMenu";
-import {BurgerMenuProvider, useBurgerMenuContext} from "@/hooks/useBurgerMenu";
+import {AppContextProvider, useAppContext} from "@/hooks/useBurgerMenu";
 
 type Props = {
   accountType: string;
@@ -24,7 +24,7 @@ export default function Header({ accountType }: Props) {
   accountType = accountType ?? "Host";
   const isHost = accountType === "Host";
 
-  const { isActiveBurgerMenu, toggleBurgerMenu } = useBurgerMenuContext();
+  const { isHideBurgerMenu, toggleBurgerMenu } = useAppContext();
 
   const AntSwitch = styled(Switch)(({ theme }) => ({
     width: 72,
@@ -82,7 +82,7 @@ export default function Header({ accountType }: Props) {
 
   return (
       <div>
-        {isActiveBurgerMenu && (
+        {isHideBurgerMenu && (
             <div id="burger-menu-wrapper" className="fixed top-[7rem] left-0 w-full h-full z-[100] bg-[#1E1E30] overflow-auto lg:hidden">
               {isHost ? <HostBurgerNavMenu /> : <GuestBurgerNavMenu />}
             </div>
@@ -91,7 +91,7 @@ export default function Header({ accountType }: Props) {
           <div className="flex w-full px-2 py-2 min-h-[7rem] justify-between">
             <div className="flex flex-row items-center">
               <Image
-                  src={isActiveBurgerMenu ? burgerMenuClose : burgerMenu}
+                  src={isHideBurgerMenu ? burgerMenuClose : burgerMenu}
                   alt=""
                   className="lg:hidden mr-4"
                   onClick={toggleBurgerMenu}

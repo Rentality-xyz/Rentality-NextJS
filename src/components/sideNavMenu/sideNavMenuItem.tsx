@@ -6,10 +6,10 @@ import icMessages from "@/images/ic_messages.jpg";
 import icProfileSettings from "@/images/ic_profile_settings.jpg";
 import icListings from "@/images/ic_listings.jpg";
 import MenuIcons from "@/components/sideNavMenu/menuIcons";
-import {useBurgerMenuContext} from "@/hooks/useBurgerMenu";
+import {useAppContext} from "@/hooks/useBurgerMenu";
 
 export default function SideNavMenuItem({ text, href, icon }: { text: string; href: string; icon: MenuIcons }) {
-  const { isActiveBurgerMenu, toggleBurgerMenu } = useBurgerMenuContext();
+  const { isHideBurgerMenu, toggleBurgerMenu } = useAppContext();
 
   const getImageForMenu = (state: MenuIcons): StaticImageData => {
     switch (state) {
