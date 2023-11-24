@@ -1,7 +1,7 @@
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import GuestSideNavMenu from "@/components/sideNavMenu/guestSideNavMenu";
-import {AppContextProvider} from "@/hooks/useBurgerMenu";
+import {AppContextProvider} from "@/hooks/useAppContext";
 
 type Props = {
   children?: React.ReactNode;

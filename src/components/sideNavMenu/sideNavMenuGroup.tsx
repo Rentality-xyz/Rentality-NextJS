@@ -6,7 +6,7 @@ import icMessages from "@/images/ic_messages.jpg";
 import icProfileSettings from "@/images/ic_profile_settings.jpg";
 import icListings from "@/images/ic_listings.jpg";
 import MenuIcons from "@/components/sideNavMenu/menuIcons";
-import {useAppContext} from "@/hooks/useBurgerMenu";
+import {useAppContext} from "@/hooks/useAppContext";
 
 export default function SideNavMenuGroup({
   title,

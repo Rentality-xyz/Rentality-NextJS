@@ -10,7 +10,7 @@ import burgerMenuClose from "../../images/ic-menu-burge-close-white-20.svg";
 import Image from "next/image";
 import GuestBurgerNavMenu from "@/components/sideNavMenu/guestBurgerNavMenu";
 import HostBurgerNavMenu from "@/components/sideNavMenu/hostBurgerNavMenu";
-import {AppContextProvider, useAppContext} from "@/hooks/useBurgerMenu";
+import {AppContextProvider, useAppContext} from "@/hooks/useAppContext";
 
 type Props = {
   accountType: string;
