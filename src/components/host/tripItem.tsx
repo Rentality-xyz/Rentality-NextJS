@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { dateFormat, dateFormatMonthDate } from "@/utils/datetimeFormatters";
 import { TripInfo, TripStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
-import { useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import Checkbox from "../common/checkbox";
 import { calculateDays } from "@/utils/date";
 import { twMerge } from "tailwind-merge";
@@ -32,6 +32,14 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
   const tripDays = calculateDays(tripInfo.tripStart, tripInfo.tripEnd);
   var overmileValue = tripInfo.endOdometr - tripInfo.startOdometr - tripInfo.milesIncludedPerDay * tripDays;
   overmileValue = overmileValue > 0 ? overmileValue : 0;
+
+  const allowedActions = document.getElementById("host-allowed-actions") as HTMLDivElement
+  const allowedActionsRef = useRef<HTMLDivElement>(allowedActions);
+  useEffect(() => {
+    if (window.innerWidth <= 1280 && !isAdditionalActionHidden && allowedActionsRef.current) {
+      allowedActionsRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [isAdditionalActionHidden]);
 
   const handleButtonClick = () => {
     if (tripInfo == null || tripInfo.allowedActions == null || tripInfo.allowedActions.length == 0) {
@@ -195,9 +203,9 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
       tripInfo.allowedActions == null ||
       tripInfo.allowedActions.length == 0 ||
       tripInfo.allowedActions[0].params == null ? null : (
-        <div className="flex flex-col px-8 pt-2 pb-4" hidden={isAdditionalActionHidden}>
+        <div className="flex flex-col px-8 pt-2 pb-4" ref={(ref) => (allowedActionsRef.current = ref as HTMLDivElement)} hidden={isAdditionalActionHidden}>
           <hr />
-          <div>
+          <div id="host-allowed-actions">
             <strong className="text-xl">
               Please {tripInfo.allowedActions[0].readonly ? "confirm" : "enter"} data to change status:
             </strong>

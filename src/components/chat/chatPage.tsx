@@ -17,6 +17,7 @@ export default function ChatPage({
 }) {
   const [selectedChat, setSelectedChat] = useState<ChatInfo | null>(null);
   const [isOpenChat, setIsOpenChat] = useState(false);
+
   const pageTitle = document.getElementById("page-title") as HTMLDivElement
   const selectedChatRef = useRef<HTMLDivElement>(pageTitle);
 

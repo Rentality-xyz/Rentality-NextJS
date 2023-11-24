@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { dateFormat, dateFormatMonthDate } from "@/utils/datetimeFormatters";
 import { TripInfo, TripStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
-import { useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import { twMerge } from "tailwind-merge";
 import RntButton from "../common/rntButton";
 import AllowedActionsForStatusStarted from "./allowedActionsForStatusStarted";
@@ -24,6 +24,14 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
       : [];
   const [inputParams, setInputParams] = useState<string[]>(defaultValues);
   const [confirmParams, setConfirmParams] = useState<boolean[]>([]);
+
+  const allowedActions = document.getElementById("guest-allowed-actions") as HTMLDivElement
+  const allowedActionsRef = useRef<HTMLDivElement>(allowedActions);
+  useEffect(() => {
+    if (window.innerWidth <= 1280 && !isAdditionalActionHidden && allowedActionsRef.current) {
+      allowedActionsRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [isAdditionalActionHidden]);
 
   const handleButtonClick = () => {
     if (tripInfo == null || tripInfo.allowedActions == null || tripInfo.allowedActions.length == 0) {
@@ -192,9 +200,9 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
       tripInfo.allowedActions == null ||
       tripInfo.allowedActions.length == 0 ||
       tripInfo.allowedActions[0].params == null ? null : (
-        <div className="flex flex-col px-8 pt-2 pb-4" hidden={isAdditionalActionHidden}>
+        <div className="flex flex-col px-8 pt-2 pb-4" ref={(ref) => (allowedActionsRef.current = ref as HTMLDivElement)} hidden={isAdditionalActionHidden}>
           <hr />
-          <div>
+          <div id="guest-allowed-actions">
             <strong className="text-xl">
               Please {tripInfo.allowedActions[0].readonly ? "confirm" : "enter"} data to change status:
             </strong>
