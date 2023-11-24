@@ -36,7 +36,7 @@ export default function AllowedActionsForStatusStarted({
 
   return (
     <>
-      <div className="flex flex-col md:flex-row gap-8 mb-4">
+      <div className="flex flex-col md:flex-row md:gap-8 mb-4">
         <div className="flex flex-col flex-1">
           <div className="flex flex-col">
             <div className="font-bold mt-2">Fuel level</div>
@@ -121,7 +121,7 @@ export default function AllowedActionsForStatusStarted({
         </div>
         <div className="flex flex-col flex-1">
           <div className="font-bold mt-2">Reimbursement charge:</div>
-          <div className="grid grid-cols-2 mt-4 text-sm">
+          <div className="grid grid-cols-2 mt-2 md:mt-4 text-sm">
             <span>Tank size:</span>
             <span>{tripInfo.tankVolumeInGal} gal</span>
             <span>ReFuel:</span>
@@ -131,7 +131,7 @@ export default function AllowedActionsForStatusStarted({
             <span>Charge:</span>
             <span>${reFuelCharge.toFixed(2)}</span>
           </div>
-          <div className="grid grid-cols-2 mt-4 text-sm">
+          <div className="grid grid-cols-2 mt-2 md:mt-4 text-sm">
             <span>Miles included:</span>
             <span>{tripInfo.milesIncludedPerDay} mi per trip</span>
             <span>Overmiles:</span>
@@ -143,8 +143,8 @@ export default function AllowedActionsForStatusStarted({
           </div>
         </div>
         <div className="flex flex-col flex-1">
-          <div className="font-bold mt-2">Security deposite info:</div>
-          <div className="grid grid-cols-2 gap-x-2 mt-4 text-sm">
+          <div className="font-bold mt-4 md:mt-2">Security deposite info:</div>
+          <div className="grid grid-cols-2 gap-x-2 mt-2 md:mt-4 text-sm">
             <span>Received deposit:</span>
             <span>${depositPaid.toFixed(2)}</span>
             <span>ReFuel reimbursement:</span>
@@ -154,7 +154,7 @@ export default function AllowedActionsForStatusStarted({
             <span>Deposit to be returned:</span>
             <span>${depositToBeReturned.toFixed(2)}</span>
           </div>
-          <div className="mt-4">Deposit returned after the Host Completed the trip</div>
+          <div className="mt-2 md:mt-4">Deposit returned after the Host Completed the trip</div>
         </div>
       </div>
 
