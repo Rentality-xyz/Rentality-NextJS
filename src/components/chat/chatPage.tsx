@@ -35,7 +35,6 @@ export default function ChatPage({
 
   useEffect(() => {
     if (selectedChatRef.current) {
-      // Прокрутіть вибраний блок вгору при зміні вмісту
       selectedChatRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [isOpenChat]);
