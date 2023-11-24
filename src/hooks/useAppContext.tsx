@@ -1,12 +1,12 @@
 import {createContext, FC, ReactNode, useContext, useState} from "react";
 
 
-interface AppContextType {
+interface IAppContext {
     isHideBurgerMenu: boolean;
     toggleBurgerMenu: () => void;
 }
 
-const AppContext = createContext<AppContextType | undefined>(undefined);
+const AppContext = createContext<IAppContext | undefined>(undefined);
 
 export const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [isHideBurgerMenu, setIsHideBurgerMenu] = useState(false);
