@@ -13,7 +13,7 @@ type Props = {
 
 export default function PageTitle({ title, actions }: Props) {
   return (
-    <div className="flex flex-row justify-between items-center">
+    <div id="page-title" className="flex flex-row justify-between items-center">
       <div className="text-2xl">
         <strong>{title}</strong>
       </div>

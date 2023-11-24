@@ -4,7 +4,7 @@ import ChatMessages from "@/components/chat/chatMessages";
 import SendMessage from "@/components/chat/sendMessage";
 import RntButton from "@/components/common/rntButton";
 import { ChatInfo } from "@/model/ChatInfo";
-import { useEffect, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 
 export default function ChatPage({
   isHost,
@@ -17,6 +17,8 @@ export default function ChatPage({
 }) {
   const [selectedChat, setSelectedChat] = useState<ChatInfo | null>(null);
   const [isOpenChat, setIsOpenChat] = useState(false);
+  const pageTitle = document.getElementById("page-title") as HTMLDivElement
+  const selectedChatRef = useRef<HTMLDivElement>(pageTitle);
 
   const selectChat = (tripId: number) => {
     const item = chats.find((ci) => ci.tripId === tripId) ?? null;
@@ -30,6 +32,13 @@ export default function ChatPage({
       setSelectedChat(item);
     }
   }, [chats]);
+
+  useEffect(() => {
+    if (selectedChatRef.current) {
+      // Прокрутіть вибраний блок вгору при зміні вмісту
+      selectedChatRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [isOpenChat]);
 
   return (
     <div className="flex flex-row gap-4 mt-5">
