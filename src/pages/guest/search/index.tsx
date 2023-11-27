@@ -213,7 +213,7 @@ export default function Search() {
               value={searchCarRequest.dateTo}
               onChange={handleSearchInputChange}
             />
-            <RntButton className="w-40 max-xl:mt-4" disabled={searchButtonDisabled} onClick={() =>
+            <RntButton className="w-full sm:w-40 max-xl:mt-4" disabled={searchButtonDisabled} onClick={() =>
                 handleSearchClick()
                 // showError("safdgshgdfgh 098sydfhgdjbbgkgd ohaehgf3q4t8gufdivb kjdbfbugergb kd")
             }>
@@ -221,12 +221,12 @@ export default function Search() {
             </RntButton>
           </div>
         </div>
-        <div className="mt-2 flex flex-row gap-2 items-end">
+        <div className="mt-2 flex flex-row gap-2 max-sm:justify-between">
           <RntButton className="w-40 " onClick={() => setOpenFilterPanel(true)}>
             Filters
           </RntButton>
           <RntSelect
-            className="w-52"
+            className="w-40"
             id="sort"
             readOnly={false}
             value={sortBy ?? ""}
