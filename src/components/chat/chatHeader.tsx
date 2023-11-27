@@ -31,7 +31,7 @@ export default function ChatHeader({ selectedChat }: { selectedChat: ChatInfo })
       break;
   }
   const statusClassName = twMerge(
-    "absolute right-0 top-2 px-4 py-1 rounded-l-3xl bg-purple-600 text-rnt-temp-status-text text-end text-sm",
+    "absolute right-0 top-2 px-1 sm:px-4 py-1 rounded-l-3xl bg-purple-600 text-rnt-temp-status-text text-end text-sm",
     statusBgColor
   );
 
@@ -48,7 +48,7 @@ export default function ChatHeader({ selectedChat }: { selectedChat: ChatInfo })
         </div>
       </div>
       <div className="w-3/4 flex flex-col gap-2 justify-center  p-2 pl-8">
-        <div className="text-xl whitespace-nowrap overflow-hidden overflow-ellipsis">{selectedChat.carTitle}</div>
+        <div className="max-sm:text-base text-xl whitespace-nowrap overflow-hidden overflow-ellipsis">{selectedChat.carTitle}</div>
         <div className="text-sm">{selectedChat.carLicenceNumber}</div>
       </div>
     </section>
