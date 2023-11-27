@@ -52,6 +52,8 @@ const useChatInfos = (isHost: boolean) => {
                   hostPhotoUrl: getIpfsURIfromPinata(ci.hostPhotoUrl),
 
                   tripTitle: `${tripStatus} trip with ${ci.hostName} ${ci.carBrand} ${ci.carModel}`,
+                  startDateTime: new Date(Number(ci.startDateTime) * 1000),
+                  endDateTime: new Date(Number(ci.endDateTime) * 1000),
                   lastMessage: "Click to open chat",
 
                   carPhotoUrl: getIpfsURIfromPinata(meta.image),

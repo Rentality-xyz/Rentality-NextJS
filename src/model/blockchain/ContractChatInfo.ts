@@ -10,6 +10,8 @@ export type ContractChatInfo = {
   hostPhotoUrl: string;
 
   tripStatus: number;
+  startDateTime: bigint;
+  endDateTime: bigint;
 
   carBrand: string;
   carModel: string;

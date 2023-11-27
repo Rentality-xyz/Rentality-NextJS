@@ -1,5 +1,6 @@
 import { ChatInfo } from "@/model/ChatInfo";
-import { TripStatus, getTripStatusBgColorClassFromStatus } from "@/model/TripInfo";
+import { getTripStatusBgColorClassFromStatus } from "@/model/TripInfo";
+import { dateFormatMonthDate } from "@/utils/datetimeFormatters";
 import { twMerge } from "tailwind-merge";
 
 export default function ChatHeader({ selectedChat }: { selectedChat: ChatInfo }) {
@@ -22,7 +23,15 @@ export default function ChatHeader({ selectedChat }: { selectedChat: ChatInfo })
         </div>
       </div>
       <div className="w-3/4 flex flex-col gap-2 justify-center  p-2 pl-8">
-        <div className="max-sm:text-base text-xl whitespace-nowrap overflow-hidden overflow-ellipsis">{selectedChat.carTitle}</div>
+        <div className="max-sm:text-base text-sm">Reservation #{selectedChat.tripId}</div>
+        <div className="max-sm:text-base text-sm">
+          {selectedChat.startDateTime.getTime()
+            ? `${dateFormatMonthDate(selectedChat.startDateTime)} - ${dateFormatMonthDate(
+                selectedChat.endDateTime
+              )} ${selectedChat.endDateTime.getFullYear()}`
+            : null}
+        </div>
+        <div className="max-sm:text-base text-xl">{selectedChat.carTitle}</div>
         <div className="text-sm">{selectedChat.carLicenceNumber}</div>
       </div>
     </section>
