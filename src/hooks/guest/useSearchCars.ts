@@ -101,6 +101,8 @@ const useSearchCars = () => {
           days: tripDays,
           totalPrice: totalPrice,
           securityDeposit: securityDeposit,
+          hostPhotoUrl: i.hostPhotoUrl,
+          hostName: i.hostName,
         };
         return item;
       })

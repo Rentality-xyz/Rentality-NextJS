@@ -1,6 +1,6 @@
 import { SearchCarInfo } from "@/model/SearchCarsResult";
-import Image from "next/image";
 import RntButton from "../common/rntButton";
+import { Avatar } from "@mui/material";
 
 type Props = {
   searchInfo: SearchCarInfo;
@@ -48,7 +48,16 @@ export default function CarSearchItem({ searchInfo, handleRentCarRequest, disabl
             <div>- {searchInfo.seatsNumber} seats</div>
           </div>
         </div>
-        <div className="flex flex-row-reverse items-end mt-2">
+        <div className="w-full grid grid-cols-[1fr_auto] items-end mt-2">
+          <div className="flex flex-row items-center whitespace-nowrap overflow-hidden overflow-ellipsis">
+            <div className="w-12 h-12 self-center mr-2">
+              <Avatar src={searchInfo.hostPhotoUrl} sx={{ width: "3rem", height: "3rem" }}></Avatar>
+            </div>
+            <div className="flex flex-col">
+              <p className="text-xs">HOSTED BY</p>
+              <p className="text-sm">{searchInfo.hostName ?? "-"}</p>
+            </div>
+          </div>
           <RntButton
             className="h-14 w-44 text-base"
             onClick={() => handleRentCarRequest(searchInfo)}
