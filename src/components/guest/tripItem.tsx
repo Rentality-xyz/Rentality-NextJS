@@ -1,8 +1,12 @@
-import Image from "next/image";
 import Link from "next/link";
 import { dateFormat, dateFormatMonthDate } from "@/utils/datetimeFormatters";
-import { TripInfo, TripStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  TripInfo,
+  TripStatus,
+  getTripStatusBgColorClassFromStatus,
+  getTripStatusTextFromStatus,
+} from "@/model/TripInfo";
 import { twMerge } from "tailwind-merge";
 import RntButton from "../common/rntButton";
 import AllowedActionsForStatusStarted from "./allowedActionsForStatusStarted";
@@ -25,11 +29,11 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
   const [inputParams, setInputParams] = useState<string[]>(defaultValues);
   const [confirmParams, setConfirmParams] = useState<boolean[]>([]);
 
-  const allowedActions = document.getElementById("guest-allowed-actions") as HTMLDivElement
+  const allowedActions = document.getElementById("guest-allowed-actions") as HTMLDivElement;
   const allowedActionsRef = useRef<HTMLDivElement>(allowedActions);
   useEffect(() => {
     if (window.innerWidth <= 1280 && !isAdditionalActionHidden && allowedActionsRef.current) {
-      allowedActionsRef.current.scrollIntoView({ behavior: 'smooth' });
+      allowedActionsRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [isAdditionalActionHidden]);
 
@@ -49,33 +53,7 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
       return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), inputParams);
     });
   };
-  let statusBgColor = "";
-  switch (tripInfo.status) {
-    case TripStatus.Pending:
-      statusBgColor = "bg-yellow-600";
-      break;
-    case TripStatus.Confirmed:
-      statusBgColor = "bg-lime-500";
-      break;
-    case TripStatus.CheckedInByHost:
-      statusBgColor = "bg-blue-600";
-      break;
-    case TripStatus.Started:
-      statusBgColor = "bg-blue-800";
-      break;
-    case TripStatus.CheckedOutByGuest:
-      statusBgColor = "bg-purple-600";
-      break;
-    case TripStatus.Finished:
-      statusBgColor = "bg-purple-800";
-      break;
-    case TripStatus.Closed:
-      statusBgColor = "bg-fuchsia-700";
-      break;
-    case TripStatus.Rejected:
-      statusBgColor = "bg-red-500";
-      break;
-  }
+  let statusBgColor = getTripStatusBgColorClassFromStatus(tripInfo.status);
   const statusClassName = twMerge(
     "absolute right-0 top-2 px-8 py-2 rounded-l-3xl bg-purple-600 text-rnt-temp-status-text text-end",
     statusBgColor
@@ -200,7 +178,11 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
       tripInfo.allowedActions == null ||
       tripInfo.allowedActions.length == 0 ||
       tripInfo.allowedActions[0].params == null ? null : (
-        <div className="flex flex-col px-8 pt-2 pb-4" ref={(ref) => (allowedActionsRef.current = ref as HTMLDivElement)} hidden={isAdditionalActionHidden}>
+        <div
+          className="flex flex-col px-8 pt-2 pb-4"
+          ref={(ref) => (allowedActionsRef.current = ref as HTMLDivElement)}
+          hidden={isAdditionalActionHidden}
+        >
           <hr />
           <div id="guest-allowed-actions">
             <strong className="text-xl">

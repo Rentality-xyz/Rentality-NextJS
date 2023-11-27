@@ -28,12 +28,15 @@ const useChatInfos = (isHost: boolean) => {
       const chatInfosView: ContractChatInfo[] = isHost
         ? await rentalityContract.getChatInfoForHost()
         : await rentalityContract.getChatInfoForGuest();
+      const chatInfosViewSorted = [...chatInfosView].sort((a, b) => {
+        return Number(b.tripId) - Number(a.tripId);
+      });
 
       const chatInfosData =
-        chatInfosView.length === 0
+        chatInfosViewSorted.length === 0
           ? []
           : await Promise.all(
-              chatInfosView.map(async (ci: ContractChatInfo, index) => {
+              chatInfosViewSorted.map(async (ci: ContractChatInfo, index) => {
                 const meta = await getMetaDataFromIpfs(ci.carMetadataUrl);
                 const tripStatus = getTripStatusFromContract(Number(ci.tripStatus));
 
