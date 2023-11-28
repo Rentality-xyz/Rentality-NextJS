@@ -3,7 +3,7 @@ import RntInput from "@/components/common/rntInput";
 import RntSelect from "@/components/common/rntSelect";
 import { HostCarInfo } from "@/model/HostCarInfo";
 import Image from "next/image";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useState, useEffect } from "react";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 
 type Props = {
@@ -15,6 +15,28 @@ type Props = {
 
 export default function CarEditForm({ carInfoFormParams, setCarInfoFormParams, onImageFileChange, isNewCar }: Props) {
   const [autocomplete, setAutocomplete] = useState("");
+
+  useEffect(() => {
+    console.log(
+      `locationLatitude:${carInfoFormParams.locationLatitude} | locationLongitude:${carInfoFormParams.locationLongitude}`
+    );
+
+    if (!carInfoFormParams.locationLatitude || !carInfoFormParams.locationLongitude) return;
+
+    const getGoogleAddress = async () => {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${carInfoFormParams.locationLatitude},${carInfoFormParams.locationLongitude}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&language=en`
+      );
+      const result = await response.json();
+      const firstAddress = result?.results[0]?.formatted_address ?? "";
+      console.log("result:", result);
+      console.log("firstAddress:", firstAddress);
+      if (firstAddress) {
+        setAutocomplete(firstAddress);
+      }
+    };
+    getGoogleAddress();
+  }, []);
 
   return (
     <>

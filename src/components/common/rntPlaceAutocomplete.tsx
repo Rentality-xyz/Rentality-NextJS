@@ -74,6 +74,10 @@ export default function RntPlaceAutocomplete({
   });
 
   useEffect(() => {
+    setEnteredAddress(initValue);
+  }, [initValue]);
+
+  useEffect(() => {
     getPlacePredictions({ input: enteredAddress });
   }, [enteredAddress]);
 
