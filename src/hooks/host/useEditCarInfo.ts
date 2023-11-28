@@ -5,6 +5,7 @@ import { ContractCarInfo } from "@/model/blockchain/ContractCarInfo";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { HostCarInfo } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
+import { getIntFromString, getUIntFromString } from "@/utils/numericFormatters";
 
 const emptyHostCarInfo = {
   carId: -1,
@@ -112,18 +113,18 @@ const useEditCarInfo = (carId: number) => {
     try {
       setDataSaved(false);
 
-      var pricePerDayDouble = Number(carInfoFormParams.pricePerDay.replace(/[^0-9.]+/g, ""));
+      var pricePerDayDouble = getUIntFromString(carInfoFormParams.pricePerDay);
       const pricePerDayInUsdCents = BigInt((pricePerDayDouble * 100) | 0);
 
-      var securityDepositPerTripDouble = Number(carInfoFormParams.securityDeposit.replace(/[^0-9.]+/g, ""));
+      var securityDepositPerTripDouble = getUIntFromString(carInfoFormParams.securityDeposit);
       const securityDepositPerTripInUsdCents = BigInt((securityDepositPerTripDouble * 100) | 0);
 
-      var fuelPricePerGalDouble = Number(carInfoFormParams.fuelPricePerGal.replace(/[^0-9.]+/g, ""));
+      var fuelPricePerGalDouble = getUIntFromString(carInfoFormParams.fuelPricePerGal);
       const fuelPricePerGalInUsdCents = BigInt((fuelPricePerGalDouble * 100) | 0);
 
-      var locationLatitudeDouble = Number(carInfoFormParams.locationLatitude.replace(/[^0-9.]+/g, ""));
+      var locationLatitudeDouble = getIntFromString(carInfoFormParams.locationLatitude);
       const locationLatitudeInPPM = BigInt((locationLatitudeDouble * 1_000_000) | 0);
-      var locationLongitudeDouble = Number(carInfoFormParams.locationLongitude.replace(/[^0-9.]+/g, ""));
+      var locationLongitudeDouble = getIntFromString(carInfoFormParams.locationLongitude);
       const locationLongitudeInPPM = BigInt((locationLongitudeDouble * 1_000_000) | 0);
 
       let transaction = await rentalityInfo.rentalityContract.updateCarInfo(
