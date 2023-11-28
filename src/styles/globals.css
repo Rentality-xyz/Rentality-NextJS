@@ -235,24 +235,10 @@ main option {
   transform: rotate(45deg);
 }
 
-/* Snackbar */
-.MuiSnackbar-root {
-  top: 8% !important;
-}
-
-.MuiPaper-root {
-  background-color: #009898 !important;
-  /*border-color: #009898 !important;*/
-  /*border-width: 2px !important;*/
-  border-radius: 30px 8px 30px 8px !important;
-  max-width: 700px !important;
-  font-size: 18px !important;
-}
-
 /* Civic */
 .civicButton {
   /*background-color: #6D28D9 !important;*/
-  background: linear-gradient(360deg, rgba(88,63,188,1) 0%, rgba(128,95,228,1) 50%, rgba(127,160,243,1) 100%) !important;
+  background: linear-gradient(360deg, rgba(88, 63, 188, 1) 0%, rgba(128, 95, 228, 1) 50%, rgba(127, 160, 243, 1) 100%) !important;
   border-radius: 9999px !important;
   border: none !important;
   height: 48px !important;
@@ -270,9 +256,9 @@ main option {
 }
 
 .buttonGradient {
-  background: linear-gradient(360deg, rgba(88,63,188,1) 0%, rgba(128,95,228,1) 50%, rgba(127,160,243,1) 100%);
+  background: linear-gradient(360deg, rgba(88, 63, 188, 1) 0%, rgba(128, 95, 228, 1) 50%, rgba(127, 160, 243, 1) 100%);
 }
 
 .backgroundMain {
-  background: linear-gradient(150deg, rgba(36,15,80,1) 50%, rgba(102,0,204,1) 80%, rgba(102,51,203,1) 100%)
+  background: linear-gradient(150deg, rgba(36, 15, 80, 1) 50%, rgba(102, 0, 204, 1) 80%, rgba(102, 51, 203, 1) 100%)
 }
