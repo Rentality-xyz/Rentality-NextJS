@@ -11,6 +11,7 @@ import { ButtonMode, IdentityButton } from "@civic/ethereum-gateway-react";
 import { Avatar } from "@mui/material";
 import { useRouter } from "next/router";
 import { FocusEvent, FormEvent, ReactNode, useState } from "react";
+import RntDatePicker from "../common/rntDatePicker";
 
 const STATUS = {
   IDLE: "IDLE",
@@ -213,7 +214,19 @@ export default function ProfileInfoPage({
             onChange={handleChange}
             onBlur={handleBlur}
           />
-          <RntInput
+          {/* <RntInput
+            className="lg:w-60"
+            id="drivingLicenseExpire"
+            label="Driving license validity period"
+            type="date"
+            value={dateToHtmlDateFormat(enteredFormData.drivingLicenseExpire)}
+            validationError={
+              touched.drivingLicenseExpire || status === STATUS.SUBMITTED ? errors.drivingLicenseExpire : ""
+            }
+            onChange={handleChange}
+            onBlur={handleBlur}
+          /> */}
+          <RntDatePicker
             className="lg:w-60"
             id="drivingLicenseExpire"
             label="Driving license validity period"
