@@ -47,11 +47,13 @@ export default function ProfileInfoPage({
 
     if (name === "profilePhotoUrl") {
       await handleFileUpload(e.target.files);
-    } else if (name === "drivingLicenseExpire") {
-      setEnteredFormData({ ...enteredFormData, [name]: new Date(e.target.value) });
     } else {
       setEnteredFormData({ ...enteredFormData, [name]: e.target.value });
     }
+  }
+
+  async function handleDateChange(date: Date | null) {
+    setEnteredFormData({ ...enteredFormData, drivingLicenseExpire: date ?? undefined });
   }
 
   async function handleFileUpload(files: FileList | null) {
@@ -231,11 +233,11 @@ export default function ProfileInfoPage({
             id="drivingLicenseExpire"
             label="Driving license validity period"
             type="date"
-            value={dateToHtmlDateFormat(enteredFormData.drivingLicenseExpire)}
+            value={enteredFormData.drivingLicenseExpire}
             validationError={
               touched.drivingLicenseExpire || status === STATUS.SUBMITTED ? errors.drivingLicenseExpire : ""
             }
-            onChange={handleChange}
+            onDateChange={handleDateChange}
             onBlur={handleBlur}
           />
         </div>

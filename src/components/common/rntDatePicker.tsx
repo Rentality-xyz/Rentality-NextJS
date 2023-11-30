@@ -1,6 +1,8 @@
 import { isEmpty } from "@/utils/string";
-import { ChangeEvent, FocusEvent } from "react";
+import { FocusEvent } from "react";
 import { twMerge } from "tailwind-merge";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 type Props = {
   className?: string;
@@ -10,11 +12,10 @@ type Props = {
   id: string;
   type?: string;
   label?: string;
-  placeholder?: string;
   readOnly?: boolean;
-  value: string;
+  value: Date | undefined;
   validationError?: string;
-  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  onDateChange?: (date: Date | null) => void;
   onBlur?: (e: FocusEvent<HTMLInputElement, Element>) => void;
 };
 
@@ -25,12 +26,11 @@ export default function RntDatePicker({
   validationClassName,
   id,
   label,
-  placeholder,
   type,
   value,
   readOnly,
   validationError,
-  onChange: onChangeHandler,
+  onDateChange,
   onBlur: onBlurHandler,
 }: Props) {
   const isShowLabel = label !== undefined && label?.length > 0;
@@ -51,17 +51,15 @@ export default function RntDatePicker({
           {label}
         </label>
       ) : null}
-      <input
+      <DatePicker
         className={iClassName}
         id={id}
         name={id}
-        type={type}
         readOnly={readOnly}
         disabled={readOnly}
-        placeholder={placeholder}
-        onChange={(e) => onChangeHandler != null && onChangeHandler(e)}
+        selected={value}
+        onChange={(date) => onDateChange != null && onDateChange(date)}
         onBlur={(e) => onBlurHandler != null && onBlurHandler(e)}
-        value={value}
       />
 
       {!isEmpty(validationError) ? <p className={vClassName}>* {validationError}</p> : null}
