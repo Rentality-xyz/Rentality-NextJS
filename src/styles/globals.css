@@ -262,3 +262,15 @@ main option {
 .backgroundMain {
   background: linear-gradient(150deg, rgba(36, 15, 80, 1) 50%, rgba(102, 0, 204, 1) 80%, rgba(102, 51, 203, 1) 100%)
 }
+
+select:disabled {
+  background-color: #D1D5DB;
+  opacity: 1;
+  color: #4B5563;
+}
+
+input:disabled {
+  background-color: #D1D5DB;
+  opacity: 1;
+  color: #4B5563;
+}

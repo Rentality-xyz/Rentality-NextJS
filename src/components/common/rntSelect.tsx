@@ -31,7 +31,7 @@ export default function RntSelect({
   const cClassName = twMerge("text-black flex flex-col w-full", className);
   const lClassName = twMerge("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
   const sclassName = twMerge(
-    "w-full h-12 border-2 rounded-full pl-4 disabled:bg-gray-300 disabled:text-gray-600",
+    "w-full h-12 border-2 rounded-full pl-4",
     selectClassName
   );
 
