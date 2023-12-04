@@ -130,15 +130,15 @@ export default function AddCar() {
           isNewCar={true}
         />
 
-        <div className="flex flex-row gap-4 mb-8 mt-8 items-center">
+        <div className="flex flex-row gap-4 mb-8 mt-8 justify-between sm:justify-start">
           <RntButton className="w-40 h-16" disabled={isButtonSaveDisabled} onClick={saveCar}>
             Save
           </RntButton>
           <Link href={`/host/vehicles/listings`}>
             <RntButton className="w-40 h-16">Back</RntButton>
           </Link>
-          <label>{message}</label>
         </div>
+        <label className="mb-4">{message}</label>
       </div>
       <RntDialogs state={dialogState} hide={hideSnackbar} />
     </HostLayout>
