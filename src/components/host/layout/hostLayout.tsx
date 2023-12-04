@@ -14,7 +14,7 @@ export default function HostLayout({ children }: Props) {
           <HostSideNavMenu />
           <div className="w-full">
               <Header accountType="Host" />
-              <main className="px-8 py-4 h-full text-rnt-temp-main-text lg:min-h-[600px]">
+              <main className="px-4 sm:px-8 py-4 h-full text-rnt-temp-main-text lg:min-h-[600px]">
                   {children}
               </main>
           </div>

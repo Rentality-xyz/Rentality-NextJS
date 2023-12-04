@@ -24,7 +24,7 @@ export default function CarSearchItem({ searchInfo, handleRentCarRequest, disabl
         style={{ backgroundImage: `url(${searchInfo.image})` }}
         className="relative w-full md:w-64 min-h-[12rem] flex-shrink-0 bg-center bg-cover"
       />
-      <div className="flex w-full flex-col justify-between p-4">
+      <div className="flex w-full flex-col justify-between p-2 sm:p-4">
         <div className="flex flex-row items-baseline justify-between ">
           <div className="w-9/12 overflow-hidden">
             <strong className="text-lg overflow-hidden overflow-ellipsis">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>
