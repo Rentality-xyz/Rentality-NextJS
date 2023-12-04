@@ -18,6 +18,9 @@ import { isEmpty } from "@/utils/string";
 import { Button } from "@mui/material";
 import RntSelect from "@/components/common/rntSelect";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
+import {BlockchainsEnum} from "@/model/blockchain/BlockchainsEnum";
+import {useAppContext} from "@/contexts/useAppContext";
+import {useRentality} from "@/contexts/rentalityContext";
 
 export default function Search() {
   const dateNow = new Date();
@@ -213,9 +216,10 @@ export default function Search() {
               value={searchCarRequest.dateTo}
               onChange={handleSearchInputChange}
             />
+
             <RntButton className="w-full sm:w-40 max-xl:mt-4" disabled={searchButtonDisabled} onClick={() =>
                 handleSearchClick()
-                // showError("safdgshgdfgh 098sydfhgdjbbgkgd ohaehgf3q4t8gufdivb kjdbfbugergb kd")
+                // showError("w-full sm:w-40 max-xl:mt-4")
             }>
               Search
             </RntButton>

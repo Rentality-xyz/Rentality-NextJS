@@ -1,8 +1,9 @@
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { Contract, Signer, ethers } from "ethers";
-import { rentalityJSON, rentalityCurrencyConverterJSON } from "../abis";
+import {rentalityJSON, rentalityCurrencyConverterJSON, rentalityChatHelperJSON} from "../abis";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import {useAppContext} from "@/contexts/useAppContext";
 
 export type RentalityContractInfo = {
   rentalityContract: IRentalityContract;
@@ -20,6 +21,7 @@ export function useRentality() {
 }
 
 export const RentalityProvider = ({ children }: { children?: React.ReactNode }) => {
+  const { selectedBlockchain } = useAppContext();
   const requiredChainId =
     process.env.NEXT_PUBLIC_USE_LOCALHOST_BLOCKCHAIN?.toLowerCase?.() === "true"
       ? "0x539" /// 1337
@@ -95,5 +97,14 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
     };
   }, [connectToMetaMask, handleAccountsChanged]);
 
-  return <RentalityContext.Provider value={rentalityContractInfo}>{children}</RentalityContext.Provider>;
+  useEffect(() => {
+    if (selectedBlockchain) {
+      console.log("selectedBlockchain=" + selectedBlockchain)
+    }
+  }, [selectedBlockchain]);
+
+  return (
+      <RentalityContext.Provider value={rentalityContractInfo}>
+        {children}
+      </RentalityContext.Provider>);
 };

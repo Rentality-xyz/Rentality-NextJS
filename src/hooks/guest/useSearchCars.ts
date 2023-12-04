@@ -225,7 +225,6 @@ const useSearchCars = () => {
       };
     });
   }, []);
-
   return [dataFetched, searchAvailableCars, searchResult, sortSearchResult, createTripRequest] as const;
 };
 

@@ -3,14 +3,15 @@ import RntButton from "../common/rntButton";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { useRentality } from "@/contexts/rentalityContext";
 import { formatAddress } from "@/utils/addressFormatters";
-import { Avatar, Stack, styled, Switch, Typography } from "@mui/material";
+import {Avatar, Button, Stack, styled, SvgIcon, Switch, Typography} from "@mui/material";
 import { isEmpty } from "@/utils/string";
 import burgerMenu from "../../images/ic-menu-burge-white-20.svg";
 import burgerMenuClose from "../../images/ic-menu-burge-close-white-20.svg";
 import Image from "next/image";
 import GuestBurgerNavMenu from "@/components/sideNavMenu/guestBurgerNavMenu";
 import HostBurgerNavMenu from "@/components/sideNavMenu/hostBurgerNavMenu";
-import {AppContextProvider, useAppContext} from "@/hooks/useAppContext";
+import {AppContextProvider, useAppContext} from "@/contexts/useAppContext";
+import ChooseBlockchainComponent from "@/components/choose_blockchain/ChooseBlockchainComponent";
 
 type Props = {
   accountType: string;
@@ -111,12 +112,15 @@ export default function Header({ accountType }: Props) {
               {/*  )}*/}
               {/*</div>*/}
               <Stack direction="row" spacing={1} alignItems="center">
-                <Typography className="text-lg">Guest</Typography>
+                <Typography className="text-lg font-['Montserrat',Arial,sans-serif]">Guest</Typography>
                 <AntSwitch checked={checked} onChange={handleChange} inputProps={{ "aria-label": "ant design" }} />
-                <Typography className="text-lg">Host</Typography>
+                <Typography className="text-lg font-['Montserrat',Arial,sans-serif]">Host</Typography>
               </Stack>
+
+              <ChooseBlockchainComponent/>
+
               {rentalityInfo?.isWalletConnected ? (
-                  <div className="flex flex-row gap-4 max-xl:ml-16 ml-16 items-center">
+                  <div className="flex flex-row gap-4 ml-2 xl:ml-16 items-center">
                     <div className=" flex-col hidden xl:flex">
                       <div>
                         {userInfo.firstName} {userInfo.lastName}
