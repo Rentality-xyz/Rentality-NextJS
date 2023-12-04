@@ -78,8 +78,8 @@ export default function EditCar() {
               <Link href={`/host/vehicles/listings`}>
                 <RntButton className="w-40 h-16">Back</RntButton>
               </Link>
-              <label>{message}</label>
             </div>
+            <label className="mb-4">{message}</label>
           </>
         )}
       </div>
