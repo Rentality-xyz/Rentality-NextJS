@@ -139,7 +139,7 @@ export default function Header({ accountType }: Props) {
                   </div>
               ) : (
                   <RntButton
-                      className="w-40 h-10 text-md"
+                      className="w-28 sm:w-48 h-10 text-sm sm:text-base"
                       onClick={() => {
                         rentalityInfo?.connectWallet();
                       }}

@@ -14,7 +14,7 @@ export default function BaseBurgerNavMenu({ children, accountType }: Props) {
       <div className="w-40">
         <Image alt="" width={200} height={200} src={logo} />
       </div>
-      <nav className="w-full pt-4 mb-36">{children}</nav>
+      <nav className="w-full pt-4 mb-44">{children}</nav>
     </aside>
   );
 }

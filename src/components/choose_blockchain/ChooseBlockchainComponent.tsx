@@ -21,7 +21,7 @@ export default function ChooseBlockchainComponent() {
     const { selectedBlockchain, toggleBlockchain } = useAppContext();
 
     return (
-        <Stack className="mx-2 xl:ml-16 relative" direction="row" spacing={1} alignItems="center">
+        <Stack className="mx-1 xl:ml-16 relative" direction="row" spacing={1} alignItems="center">
             <Button
                 className="flex"
                 onClick={() => {
