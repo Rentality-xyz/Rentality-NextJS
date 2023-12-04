@@ -13,6 +13,8 @@ export type ChatInfo = {
   hostPhotoUrl: string;
 
   tripTitle: string;
+  startDateTime: Date;
+  endDateTime: Date;
   lastMessage: string;
 
   carPhotoUrl: string;

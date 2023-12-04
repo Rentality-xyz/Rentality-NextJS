@@ -11,6 +11,7 @@ import { ButtonMode, IdentityButton } from "@civic/ethereum-gateway-react";
 import { Avatar } from "@mui/material";
 import { useRouter } from "next/router";
 import { FocusEvent, FormEvent, ReactNode, useState } from "react";
+import RntDatePicker from "../common/rntDatePicker";
 
 const STATUS = {
   IDLE: "IDLE",
@@ -46,11 +47,13 @@ export default function ProfileInfoPage({
 
     if (name === "profilePhotoUrl") {
       await handleFileUpload(e.target.files);
-    } else if (name === "drivingLicenseExpire") {
-      setEnteredFormData({ ...enteredFormData, [name]: new Date(e.target.value) });
     } else {
       setEnteredFormData({ ...enteredFormData, [name]: e.target.value });
     }
+  }
+
+  async function handleDateChange(date: Date | null) {
+    setEnteredFormData({ ...enteredFormData, drivingLicenseExpire: date ?? undefined });
   }
 
   async function handleFileUpload(files: FileList | null) {
@@ -91,7 +94,7 @@ export default function ProfileInfoPage({
     }
 
     try {
-      var profilePhotoUrl = "";
+      var profilePhotoUrl = savedProfileSettings.profilePhotoUrl;
 
       if (profileImageFile !== null) {
         const response = await uploadFileToIPFS(profileImageFile);
@@ -213,7 +216,7 @@ export default function ProfileInfoPage({
             onChange={handleChange}
             onBlur={handleBlur}
           />
-          <RntInput
+          {/* <RntInput
             className="lg:w-60"
             id="drivingLicenseExpire"
             label="Driving license validity period"
@@ -223,6 +226,18 @@ export default function ProfileInfoPage({
               touched.drivingLicenseExpire || status === STATUS.SUBMITTED ? errors.drivingLicenseExpire : ""
             }
             onChange={handleChange}
+            onBlur={handleBlur}
+          /> */}
+          <RntDatePicker
+            className="lg:w-60"
+            id="drivingLicenseExpire"
+            label="Driving license validity period"
+            type="date"
+            value={enteredFormData.drivingLicenseExpire}
+            validationError={
+              touched.drivingLicenseExpire || status === STATUS.SUBMITTED ? errors.drivingLicenseExpire : ""
+            }
+            onDateChange={handleDateChange}
             onBlur={handleBlur}
           />
         </div>

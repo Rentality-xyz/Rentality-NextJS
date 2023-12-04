@@ -55,7 +55,8 @@ const useSearchCars = () => {
       brand: searchCarRequest.brand ?? "",
       model: searchCarRequest.model ?? "",
       yearOfProductionFrom: BigInt(searchCarRequest.yearOfProductionFrom ?? "0"),
-      yearOfProductionTo: BigInt(searchCarRequest.yearOfProductionTo ?? "0"),
+      //TODO DELETE on 0.16 release
+      yearOfProductionTo: BigInt("0"), //BigInt(searchCarRequest.yearOfProductionTo ?? "0"),
       pricePerDayInUsdCentsFrom: BigInt(Number(searchCarRequest.pricePerDayInUsdFrom) * 100 ?? "0"),
       pricePerDayInUsdCentsTo: BigInt(Number(searchCarRequest.pricePerDayInUsdTo) * 100 ?? "0"),
     };
@@ -100,6 +101,8 @@ const useSearchCars = () => {
           days: tripDays,
           totalPrice: totalPrice,
           securityDeposit: securityDeposit,
+          hostPhotoUrl: i.hostPhotoUrl,
+          hostName: i.hostName,
         };
         return item;
       })
@@ -127,9 +130,14 @@ const useSearchCars = () => {
 
       const availableCarsData = await formatSearchAvailableCarsContractResponse(availableCarsView, tripDays);
 
+      //TODO DELETE on 0.16 release
+      const filerYearOfProductionTo = Number(searchCarRequest.yearOfProductionTo) ?? 0;
+
       setSearchResult({
         searchCarRequest: searchCarRequest,
-        carInfos: availableCarsData,
+        carInfos: availableCarsData.filter(
+          (i) => filerYearOfProductionTo === 0 || Number(i.year) <= filerYearOfProductionTo
+        ),
       });
       return true;
     } catch (e) {

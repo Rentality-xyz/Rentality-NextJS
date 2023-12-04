@@ -7,6 +7,7 @@ import { ContractCreateCarRequest } from "@/model/blockchain/ContractCreateCarRe
 import { HostCarInfo, verifyCar } from "@/model/HostCarInfo";
 import { isEmpty } from "@/utils/string";
 import { useRentality } from "@/contexts/rentalityContext";
+import { getIntFromString, getUIntFromString } from "@/utils/numericFormatters";
 
 const emptyNewCarInfo = {
   carId: 0,
@@ -38,6 +39,7 @@ const emptyNewCarInfo = {
   city: "",
   locationLatitude: "",
   locationLongitude: "",
+  currentlyListed: true,
 };
 
 const useAddCar = () => {
@@ -186,18 +188,18 @@ const useAddCar = () => {
 
       const metadataURL = await uploadMetadataToIPFS(dataToSave);
 
-      var pricePerDayDouble = Number(dataToSave.pricePerDay.replace(/[^0-9.]+/g, ""));
+      var pricePerDayDouble = getUIntFromString(dataToSave.pricePerDay);
       const pricePerDayInUsdCents = BigInt((pricePerDayDouble * 100) | 0);
 
-      var securityDepositPerTripDouble = Number(dataToSave.securityDeposit.replace(/[^0-9.]+/g, ""));
+      var securityDepositPerTripDouble = getUIntFromString(dataToSave.securityDeposit);
       const securityDepositPerTripInUsdCents = BigInt((securityDepositPerTripDouble * 100) | 0);
 
-      var fuelPricePerGalDouble = Number(dataToSave.fuelPricePerGal.replace(/[^0-9.]+/g, ""));
+      var fuelPricePerGalDouble = getUIntFromString(dataToSave.fuelPricePerGal);
       const fuelPricePerGalInUsdCents = BigInt((fuelPricePerGalDouble * 100) | 0);
 
-      var locationLatitudeDouble = Number(dataToSave.locationLatitude.replace(/[^0-9.]+/g, ""));
+      var locationLatitudeDouble = getIntFromString(dataToSave.locationLatitude);
       const locationLatitudeInPPM = BigInt((locationLatitudeDouble * 1_000_000) | 0);
-      var locationLongitudeDouble = Number(dataToSave.locationLongitude.replace(/[^0-9.]+/g, ""));
+      var locationLongitudeDouble = getIntFromString(dataToSave.locationLongitude);
       const locationLongitudeInPPM = BigInt((locationLongitudeDouble * 1_000_000) | 0);
 
       const request: ContractCreateCarRequest = {

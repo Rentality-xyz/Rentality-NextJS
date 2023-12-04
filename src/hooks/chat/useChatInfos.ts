@@ -28,12 +28,15 @@ const useChatInfos = (isHost: boolean) => {
       const chatInfosView: ContractChatInfo[] = isHost
         ? await rentalityContract.getChatInfoForHost()
         : await rentalityContract.getChatInfoForGuest();
+      const chatInfosViewSorted = [...chatInfosView].sort((a, b) => {
+        return Number(b.tripId) - Number(a.tripId);
+      });
 
       const chatInfosData =
-        chatInfosView.length === 0
+        chatInfosViewSorted.length === 0
           ? []
           : await Promise.all(
-              chatInfosView.map(async (ci: ContractChatInfo, index) => {
+              chatInfosViewSorted.map(async (ci: ContractChatInfo, index) => {
                 const meta = await getMetaDataFromIpfs(ci.carMetadataUrl);
                 const tripStatus = getTripStatusFromContract(Number(ci.tripStatus));
 
@@ -49,6 +52,8 @@ const useChatInfos = (isHost: boolean) => {
                   hostPhotoUrl: getIpfsURIfromPinata(ci.hostPhotoUrl),
 
                   tripTitle: `${tripStatus} trip with ${ci.hostName} ${ci.carBrand} ${ci.carModel}`,
+                  startDateTime: new Date(Number(ci.startDateTime) * 1000),
+                  endDateTime: new Date(Number(ci.endDateTime) * 1000),
                   lastMessage: "Click to open chat",
 
                   carPhotoUrl: getIpfsURIfromPinata(meta.image),

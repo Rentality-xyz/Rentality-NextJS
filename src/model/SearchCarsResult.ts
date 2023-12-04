@@ -22,6 +22,8 @@ export type SearchCarInfo = {
   days: number;
   totalPrice: number;
   securityDeposit: number;
+  hostPhotoUrl: string;
+  hostName: string;
 };
 
 export const emptySearchCarsResult: SearchCarsResult = {

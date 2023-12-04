@@ -9,6 +9,7 @@ export default function RntDialogs({ state, hide }: { state: DialogState; hide: 
       open={state.isOpen}
       onClose={hide}
       message={state.message}
+      sx={{ top: "8% !important" }}
     >
       <Alert
         severity={state.alertColor}
@@ -30,6 +31,11 @@ export default function RntDialogs({ state, hide }: { state: DialogState; hide: 
       onClose={hide}
       message={state.message}
       action={state.action}
-    ></Snackbar>
+      sx={{ top: "8% !important" }}
+    >
+      <div className="bg-[#009898] rounded-[30px_8px_30px_8px] max-w-[700px] text-lg p-[14px_16px] shadow-snackbar">
+        {state.message}
+      </div>
+    </Snackbar>
   );
 }

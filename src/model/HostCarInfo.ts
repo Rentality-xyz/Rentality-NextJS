@@ -30,6 +30,7 @@ export type HostCarInfo = {
   city: string;
   locationLatitude: string;
   locationLongitude: string;
+  currentlyListed: boolean;
 };
 
 export const verifyCar = (carInfoFormParams: HostCarInfo) => {

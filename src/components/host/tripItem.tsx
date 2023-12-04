@@ -1,8 +1,12 @@
-import Image from "next/image";
 import Link from "next/link";
 import { dateFormat, dateFormatMonthDate } from "@/utils/datetimeFormatters";
-import { TripInfo, TripStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  TripInfo,
+  TripStatus,
+  getTripStatusBgColorClassFromStatus,
+  getTripStatusTextFromStatus,
+} from "@/model/TripInfo";
 import Checkbox from "../common/checkbox";
 import { calculateDays } from "@/utils/date";
 import { twMerge } from "tailwind-merge";
@@ -33,11 +37,11 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
   var overmileValue = tripInfo.endOdometr - tripInfo.startOdometr - tripInfo.milesIncludedPerDay * tripDays;
   overmileValue = overmileValue > 0 ? overmileValue : 0;
 
-  const allowedActions = document.getElementById("host-allowed-actions") as HTMLDivElement
+  const allowedActions = document.getElementById("host-allowed-actions") as HTMLDivElement;
   const allowedActionsRef = useRef<HTMLDivElement>(allowedActions);
   useEffect(() => {
     if (window.innerWidth <= 1280 && !isAdditionalActionHidden && allowedActionsRef.current) {
-      allowedActionsRef.current.scrollIntoView({ behavior: 'smooth' });
+      allowedActionsRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [isAdditionalActionHidden]);
 
@@ -57,35 +61,9 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
       return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), inputParams);
     });
   };
-  let statusBgColor = "";
-  switch (tripInfo.status) {
-    case TripStatus.Pending:
-      statusBgColor = "bg-yellow-600";
-      break;
-    case TripStatus.Confirmed:
-      statusBgColor = "bg-lime-500";
-      break;
-    case TripStatus.CheckedInByHost:
-      statusBgColor = "bg-blue-600";
-      break;
-    case TripStatus.Started:
-      statusBgColor = "bg-blue-800";
-      break;
-    case TripStatus.CheckedOutByGuest:
-      statusBgColor = "bg-purple-600";
-      break;
-    case TripStatus.Finished:
-      statusBgColor = "bg-purple-800";
-      break;
-    case TripStatus.Closed:
-      statusBgColor = "bg-fuchsia-700";
-      break;
-    case TripStatus.Rejected:
-      statusBgColor = "bg-red-500";
-      break;
-  }
+  let statusBgColor = getTripStatusBgColorClassFromStatus(tripInfo.status);
   const statusClassName = twMerge(
-    "absolute right-0 top-2 px-8 py-2 rounded-l-3xl bg-purple-600 text-rnt-temp-status-text text-end",
+    "absolute right-0 top-2 px-8 py-2 rounded-l-3xl text-rnt-temp-status-text text-end",
     statusBgColor
   );
 
@@ -100,6 +78,9 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
             height={1000}
             className="h-full w-full object-cover"
           /> */}
+
+        {/* Empty span to generate tatilwind css colors for statuses */}
+        <span className="bg-yellow-600 bg-lime-500 bg-blue-600 bg-blue-800 bg-purple-600 bg-purple-800 bg-fuchsia-700 bg-red-500" />
         <div
           style={{ backgroundImage: `url(${tripInfo.image})` }}
           className="relative w-full 1xl:w-64 min-h-[12rem] md:min-h-[16rem] xl:min-h-[12rem] flex-shrink-0 bg-center bg-cover"
@@ -203,7 +184,11 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
       tripInfo.allowedActions == null ||
       tripInfo.allowedActions.length == 0 ||
       tripInfo.allowedActions[0].params == null ? null : (
-        <div className="flex flex-col px-8 pt-2 pb-4" ref={(ref) => (allowedActionsRef.current = ref as HTMLDivElement)} hidden={isAdditionalActionHidden}>
+        <div
+          className="flex flex-col px-8 pt-2 pb-4"
+          ref={(ref) => (allowedActionsRef.current = ref as HTMLDivElement)}
+          hidden={isAdditionalActionHidden}
+        >
           <hr />
           <div id="host-allowed-actions">
             <strong className="text-xl">

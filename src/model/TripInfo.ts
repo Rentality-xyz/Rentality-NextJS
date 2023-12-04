@@ -30,6 +30,29 @@ export const getTripStatusTextFromStatus = (status: TripStatus) => {
       return "Rejected";
   }
 };
+
+export const getTripStatusBgColorClassFromStatus = (status: TripStatus) => {
+  switch (status) {
+    case TripStatus.Pending:
+      return "bg-yellow-600";
+    case TripStatus.Confirmed:
+      return "bg-lime-500";
+    case TripStatus.CheckedInByHost:
+      return "bg-blue-600";
+    case TripStatus.Started:
+      return "bg-blue-800";
+    case TripStatus.CheckedOutByGuest:
+      return "bg-purple-600";
+    case TripStatus.Finished:
+      return "bg-purple-800";
+    case TripStatus.Closed:
+      return "bg-fuchsia-700";
+    case TripStatus.Rejected:
+    default:
+      return "bg-red-500";
+  }
+};
+
 export type TripInfo = {
   tripId: number;
   carId: number;

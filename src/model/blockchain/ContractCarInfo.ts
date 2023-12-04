@@ -16,6 +16,8 @@ export type ContractCarInfo = {
   locationLatitudeInPPM: bigint;
   locationLongitudeInPPM: bigint;
   currentlyListed: boolean;
+  hostPhotoUrl: string;
+  hostName: string;
 };
 
 export function validateContractCarInfo(obj: ContractCarInfo): obj is ContractCarInfo {

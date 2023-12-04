@@ -58,54 +58,56 @@ const useNotificationInfos = (isHost: boolean) => {
     },
   ]);
 
-  const getChatInfos = async (rentalityContract: IRentalityContract) => {
-    try {
-      if (rentalityContract == null) {
-        console.error("getChatInfos error: contract is null");
-        return;
-      }
-      const chatInfosView: ContractChatInfo[] = isHost
-        ? await rentalityContract.getChatInfoForHost()
-        : await rentalityContract.getChatInfoForGuest();
+  // const getChatInfos = async (rentalityContract: IRentalityContract) => {
+  //   try {
+  //     if (rentalityContract == null) {
+  //       console.error("getChatInfos error: contract is null");
+  //       return;
+  //     }
+  //     const chatInfosView: ContractChatInfo[] = isHost
+  //       ? await rentalityContract.getChatInfoForHost()
+  //       : await rentalityContract.getChatInfoForGuest();
 
-      const chatInfosData =
-        chatInfosView.length === 0
-          ? []
-          : await Promise.all(
-              chatInfosView.map(async (ci: ContractChatInfo, index) => {
-                const meta = await getMetaDataFromIpfs(ci.carMetadataUrl);
-                const tripStatus = getTripStatusFromContract(Number(ci.tripStatus));
+  //     const chatInfosData =
+  //       chatInfosView.length === 0
+  //         ? []
+  //         : await Promise.all(
+  //             chatInfosView.map(async (ci: ContractChatInfo, index) => {
+  //               const meta = await getMetaDataFromIpfs(ci.carMetadataUrl);
+  //               const tripStatus = getTripStatusFromContract(Number(ci.tripStatus));
 
-                let item: ChatInfo = {
-                  tripId: Number(ci.tripId),
+  //               let item: ChatInfo = {
+  //                 tripId: Number(ci.tripId),
 
-                  guestAddress: ci.guestAddress,
-                  guestName: ci.guestName,
-                  guestPhotoUrl: getIpfsURIfromPinata(ci.guestPhotoUrl),
+  //                 guestAddress: ci.guestAddress,
+  //                 guestName: ci.guestName,
+  //                 guestPhotoUrl: getIpfsURIfromPinata(ci.guestPhotoUrl),
 
-                  hostAddress: ci.hostAddress,
-                  hostName: ci.hostName,
-                  hostPhotoUrl: getIpfsURIfromPinata(ci.hostPhotoUrl),
+  //                 hostAddress: ci.hostAddress,
+  //                 hostName: ci.hostName,
+  //                 hostPhotoUrl: getIpfsURIfromPinata(ci.hostPhotoUrl),
 
-                  tripTitle: `${tripStatus} trip with ${ci.hostName} ${ci.carBrand} ${ci.carModel}`,
-                  lastMessage: "Click to open chat",
+  //                 tripTitle: `${tripStatus} trip with ${ci.hostName} ${ci.carBrand} ${ci.carModel}`,
+  //                 dateFrom: new Date(""),
+  //                 dateTo: new Date(""),
+  //                 lastMessage: "Click to open chat",
 
-                  carPhotoUrl: getIpfsURIfromPinata(meta.image),
-                  tripStatus: tripStatus,
-                  carTitle: `${ci.carBrand} ${ci.carModel} ${ci.carYearOfProduction}`,
-                  carLicenceNumber: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
+  //                 carPhotoUrl: getIpfsURIfromPinata(meta.image),
+  //                 tripStatus: tripStatus,
+  //                 carTitle: `${ci.carBrand} ${ci.carModel} ${ci.carYearOfProduction}`,
+  //                 carLicenceNumber: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
 
-                  messages: [],
-                };
-                return item;
-              })
-            );
+  //                 messages: [],
+  //               };
+  //               return item;
+  //             })
+  //           );
 
-      return chatInfosData;
-    } catch (e) {
-      console.error("getChatInfos error:" + e);
-    }
-  };
+  //     return chatInfosData;
+  //   } catch (e) {
+  //     console.error("getChatInfos error:" + e);
+  //   }
+  // };
 
   const isInitiating = useRef(false);
 

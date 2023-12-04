@@ -7,4 +7,12 @@ export type BaseCarInfo = {
   year: string;
   licensePlate: string;
   pricePerDay: number;
+  securityDeposit: number;
+  fuelPricePerGal: number;
+  milesIncludedPerDay: number;
+  currentlyListed: boolean;
+};
+
+export const getListingStatusTextFromStatus = (currentlyListed: boolean) => {
+  return currentlyListed ? "Listed" : "Unlisted";
 };
