@@ -291,7 +291,7 @@ export default function Search() {
             <div className="self-end mr-8">
               <i className="fi fi-br-cross" onClick={() => setOpenFilterPanel(false)}></i>
             </div>
-            <div className="flex flex-col gap-4 px-4 md:px-8 lg:px-16 mt-4">
+            <div className="flex flex-col gap-2 sm:gap-4 px-2 sm:px-4 md:px-8 lg:px-16 mt-4">
               <RntInput
                 id="filter-brand"
                 label="Car brand"
@@ -369,8 +369,9 @@ export default function Search() {
                   });
                 }}
               />
-              <div className="flex flex-row gap-8 justify-between">
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 max-sm:mt-2 sm:justify-between">
                 <RntButton
+                    className="max-sm:h-10 max-sm:w-full"
                   onClick={() => {
                     setOpenFilterPanel(false);
                     handleSearchClick();
@@ -378,7 +379,11 @@ export default function Search() {
                 >
                   Apply
                 </RntButton>
-                <RntButton onClick={() => setSearchCarRequest(customEmptySearchCarRequest)}>Reset</RntButton>
+                <RntButton
+                    className="max-sm:h-10 max-sm:w-full"
+                    onClick={() => setSearchCarRequest(customEmptySearchCarRequest)}>
+                  Reset
+                </RntButton>
               </div>
             </div>
           </div>
