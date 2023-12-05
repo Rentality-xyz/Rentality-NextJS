@@ -116,6 +116,7 @@ export default function AddCar() {
       showError("In order to save a car, please enter user information", action);
       return;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

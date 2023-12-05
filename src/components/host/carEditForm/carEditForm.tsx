@@ -17,10 +17,6 @@ export default function CarEditForm({ carInfoFormParams, setCarInfoFormParams, o
   const [autocomplete, setAutocomplete] = useState("");
 
   useEffect(() => {
-    console.log(
-      `locationLatitude:${carInfoFormParams.locationLatitude} | locationLongitude:${carInfoFormParams.locationLongitude}`
-    );
-
     if (!carInfoFormParams.locationLatitude || !carInfoFormParams.locationLongitude) return;
 
     const getGoogleAddress = async () => {
@@ -29,13 +25,13 @@ export default function CarEditForm({ carInfoFormParams, setCarInfoFormParams, o
       );
       const result = await response.json();
       const firstAddress = result?.results[0]?.formatted_address ?? "";
-      console.log("result:", result);
-      console.log("firstAddress:", firstAddress);
+
       if (firstAddress) {
         setAutocomplete(firstAddress);
       }
     };
     getGoogleAddress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

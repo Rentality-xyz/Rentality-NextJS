@@ -1,5 +1,6 @@
+import { MouseEventHandler } from "react";
 import { ChatInfo } from "@/model/ChatInfo";
-import { TripStatus, getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
+import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { Avatar } from "@mui/material";
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
@@ -8,7 +9,7 @@ type Props = {
   chatInfo: ChatInfo;
   isHost: boolean;
   isSelected: boolean;
-  onClickCallback: () => void;
+  onClickCallback: MouseEventHandler<HTMLDivElement> | undefined;
 };
 
 export default function ChatInfoCard({ chatInfo, isHost, isSelected, onClickCallback }: Props) {

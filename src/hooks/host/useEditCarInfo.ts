@@ -46,64 +46,6 @@ const useEditCarInfo = (carId: number) => {
   const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(emptyHostCarInfo);
   const [dataSaved, setDataSaved] = useState<Boolean>(true);
 
-  const getCarInfo = async (rentalityContract: IRentalityContract, signer: Signer) => {
-    if (rentalityContract == null) {
-      console.error("getCarInfo error: contract is null");
-      return;
-    }
-
-    try {
-      const carInfo: ContractCarInfo = await rentalityContract.getCarInfoById(BigInt(carId));
-      const signerAddress = await signer.getAddress();
-      if (carInfo.createdBy !== signerAddress) {
-        return emptyHostCarInfo;
-      }
-
-      const tokenURI = await rentalityContract.getCarMetadataURI(carInfo.carId);
-      const meta = await getMetaDataFromIpfs(tokenURI);
-
-      const price = Number(carInfo.pricePerDayInUsdCents) / 100;
-      const securityDeposit = Number(carInfo.securityDepositPerTripInUsdCents) / 100;
-      const fuelPricePerGal = Number(carInfo.fuelPricePerGalInUsdCents) / 100;
-
-      let item: HostCarInfo = {
-        carId: Number(carInfo.carId),
-        ownerAddress: carInfo.createdBy.toString(),
-        image: getIpfsURIfromPinata(meta.image),
-        vinNumber: carInfo.carVinNumber,
-        brand: carInfo.brand,
-        model: carInfo.model,
-        releaseYear: Number(carInfo.yearOfProduction).toString(),
-        name: meta.name ?? "",
-        licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
-        licenseState: meta.attributes?.find((x: any) => x.trait_type === "License state")?.value ?? "",
-        seatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats number")?.value ?? "",
-        doorsNumber: meta.attributes?.find((x: any) => x.trait_type === "Doors number")?.value ?? "",
-        fuelType: meta.attributes?.find((x: any) => x.trait_type === "Fuel type")?.value ?? "",
-        tankVolumeInGal: meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "",
-        wheelDrive: meta.attributes?.find((x: any) => x.trait_type === "Wheel drive")?.value ?? "",
-        transmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
-        trunkSize: meta.attributes?.find((x: any) => x.trait_type === "Trunk size")?.value ?? "",
-        color: meta.attributes?.find((x: any) => x.trait_type === "Color")?.value ?? "",
-        bodyType: meta.attributes?.find((x: any) => x.trait_type === "Body type")?.value ?? "",
-        description: meta.description ?? "",
-        pricePerDay: price.toString(),
-        milesIncludedPerDay: carInfo.milesIncludedPerDay.toString(),
-        securityDeposit: securityDeposit.toString(),
-        fuelPricePerGal: fuelPricePerGal.toString(),
-        country: carInfo.country,
-        state: carInfo.state,
-        city: carInfo.city,
-        locationLatitude: (Number(carInfo.locationLatitudeInPPM) / 1_000_000).toString(),
-        locationLongitude: (Number(carInfo.locationLongitudeInPPM) / 1_000_000).toString(),
-        currentlyListed: carInfo.currentlyListed,
-      };
-      return item;
-    } catch (e) {
-      console.error("getCarInfo error:" + e);
-    }
-  };
-
   const saveCar = async () => {
     if (!rentalityInfo) {
       console.error("saveCar error: rentalityInfo is null");
@@ -152,6 +94,64 @@ const useEditCarInfo = (carId: number) => {
   };
 
   useEffect(() => {
+    const getCarInfo = async (rentalityContract: IRentalityContract, signer: Signer) => {
+      if (rentalityContract == null) {
+        console.error("getCarInfo error: contract is null");
+        return;
+      }
+
+      try {
+        const carInfo: ContractCarInfo = await rentalityContract.getCarInfoById(BigInt(carId));
+        const signerAddress = await signer.getAddress();
+        if (carInfo.createdBy !== signerAddress) {
+          return emptyHostCarInfo;
+        }
+
+        const tokenURI = await rentalityContract.getCarMetadataURI(carInfo.carId);
+        const meta = await getMetaDataFromIpfs(tokenURI);
+
+        const price = Number(carInfo.pricePerDayInUsdCents) / 100;
+        const securityDeposit = Number(carInfo.securityDepositPerTripInUsdCents) / 100;
+        const fuelPricePerGal = Number(carInfo.fuelPricePerGalInUsdCents) / 100;
+
+        let item: HostCarInfo = {
+          carId: Number(carInfo.carId),
+          ownerAddress: carInfo.createdBy.toString(),
+          image: getIpfsURIfromPinata(meta.image),
+          vinNumber: carInfo.carVinNumber,
+          brand: carInfo.brand,
+          model: carInfo.model,
+          releaseYear: Number(carInfo.yearOfProduction).toString(),
+          name: meta.name ?? "",
+          licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
+          licenseState: meta.attributes?.find((x: any) => x.trait_type === "License state")?.value ?? "",
+          seatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats number")?.value ?? "",
+          doorsNumber: meta.attributes?.find((x: any) => x.trait_type === "Doors number")?.value ?? "",
+          fuelType: meta.attributes?.find((x: any) => x.trait_type === "Fuel type")?.value ?? "",
+          tankVolumeInGal: meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "",
+          wheelDrive: meta.attributes?.find((x: any) => x.trait_type === "Wheel drive")?.value ?? "",
+          transmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
+          trunkSize: meta.attributes?.find((x: any) => x.trait_type === "Trunk size")?.value ?? "",
+          color: meta.attributes?.find((x: any) => x.trait_type === "Color")?.value ?? "",
+          bodyType: meta.attributes?.find((x: any) => x.trait_type === "Body type")?.value ?? "",
+          description: meta.description ?? "",
+          pricePerDay: price.toString(),
+          milesIncludedPerDay: carInfo.milesIncludedPerDay.toString(),
+          securityDeposit: securityDeposit.toString(),
+          fuelPricePerGal: fuelPricePerGal.toString(),
+          country: carInfo.country,
+          state: carInfo.state,
+          city: carInfo.city,
+          locationLatitude: (Number(carInfo.locationLatitudeInPPM) / 1_000_000).toString(),
+          locationLongitude: (Number(carInfo.locationLongitudeInPPM) / 1_000_000).toString(),
+          currentlyListed: carInfo.currentlyListed,
+        };
+        return item;
+      } catch (e) {
+        console.error("getCarInfo error:" + e);
+      }
+    };
+
     if (isNaN(carId) || carId == -1) return;
     if (!rentalityInfo) return;
 

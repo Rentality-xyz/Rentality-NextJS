@@ -79,7 +79,7 @@ export default function RntPlaceAutocomplete({
 
   useEffect(() => {
     getPlacePredictions({ input: enteredAddress });
-  }, [enteredAddress]);
+  }, [enteredAddress, getPlacePredictions]);
 
   const getAddressComponents = (placeDetails: google.maps.places.PlaceResult, fieldName: string) => {
     return placeDetails.address_components?.find((i) => i?.types?.includes(fieldName));
@@ -87,39 +87,40 @@ export default function RntPlaceAutocomplete({
 
   useEffect(() => {
     // fetch place details for the first element in placePredictions array
-    if (placePredictions.length)
-      placesService?.getDetails(
-        {
-          placeId: placePredictions[0].place_id,
-          fields: ["address_components", "geometry", "place_id", "formatted_address", "utc_offset_minutes"],
-        },
-        (placeDetails) => {
-          if (placeDetails) {
-            console.log("placeDetails", placeDetails);
+    if (!placesService) return;
+    if (!placePredictions || !placePredictions.length) return;
 
-            const country = getAddressComponents(placeDetails, "country");
-            const state = getAddressComponents(placeDetails, "administrative_area_level_1");
-            const city =
-              getAddressComponents(placeDetails, "locality") ??
-              getAddressComponents(placeDetails, "sublocality_level_1");
-            const street = getAddressComponents(placeDetails, "route");
-            const street_number = getAddressComponents(placeDetails, "street_number");
+    placesService.getDetails(
+      {
+        placeId: placePredictions[0].place_id,
+        fields: ["address_components", "geometry", "place_id", "formatted_address", "utc_offset_minutes"],
+      },
+      (placeDetails) => {
+        if (placeDetails) {
+          console.log("placeDetails", placeDetails);
 
-            const latitude = placeDetails.geometry?.viewport?.getCenter().lat() ?? 0;
-            const longitude = placeDetails.geometry?.viewport?.getCenter().lng() ?? 0;
+          const country = getAddressComponents(placeDetails, "country");
+          const state = getAddressComponents(placeDetails, "administrative_area_level_1");
+          const city =
+            getAddressComponents(placeDetails, "locality") ?? getAddressComponents(placeDetails, "sublocality_level_1");
+          const street = getAddressComponents(placeDetails, "route");
+          const street_number = getAddressComponents(placeDetails, "street_number");
 
-            onAddressChangeHandler({
-              country: country,
-              state: state,
-              city: city,
-              street: street,
-              street_number: street_number,
-              location: { latitude: latitude, longitude: longitude },
-            });
-          }
+          const latitude = placeDetails.geometry?.viewport?.getCenter().lat() ?? 0;
+          const longitude = placeDetails.geometry?.viewport?.getCenter().lng() ?? 0;
+
+          onAddressChangeHandler({
+            country: country,
+            state: state,
+            city: city,
+            street: street,
+            street_number: street_number,
+            location: { latitude: latitude, longitude: longitude },
+          });
         }
-      );
-  }, [placePredictions]);
+      }
+    );
+  }, [placePredictions, placesService, onAddressChangeHandler]);
 
   // const { ref, autocompleteRef } = usePlacesWidget({
   //   apiKey:GOOGLE_MAPS_API_KEY,

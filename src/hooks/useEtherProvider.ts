@@ -84,6 +84,7 @@ const useEtherProvider = () => {
       setUserConnected(false);
       setUserWeb3Address("0x");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

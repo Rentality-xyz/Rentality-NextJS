@@ -4,7 +4,7 @@ import ChatMessages from "@/components/chat/chatMessages";
 import SendMessage from "@/components/chat/sendMessage";
 import RntButton from "@/components/common/rntButton";
 import { ChatInfo } from "@/model/ChatInfo";
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function ChatPage({
   isHost,
@@ -15,34 +15,25 @@ export default function ChatPage({
   chats: ChatInfo[];
   sendMessage: (toAddress: string, tripId: number, message: string) => Promise<void>;
 }) {
-  const [selectedChat, setSelectedChat] = useState<ChatInfo | null>(null);
-  const [isOpenChat, setIsOpenChat] = useState(false);
+  const [selectedTridId, setSelectedTridId] = useState<number>(-1);
 
-  const pageTitle = document.getElementById("page-title") as HTMLDivElement
+  const pageTitle = document.getElementById("page-title") as HTMLDivElement;
   const selectedChatRef = useRef<HTMLDivElement>(pageTitle);
+  const selectedChat = chats.find((ci) => ci.tripId === selectedTridId) ?? null;
 
   const selectChat = (tripId: number) => {
-    const item = chats.find((ci) => ci.tripId === tripId) ?? null;
-    setSelectedChat(item);
-    setIsOpenChat(item !== null);
+    setSelectedTridId(tripId);
   };
 
   useEffect(() => {
-    if (selectedChat !== null) {
-      const item = chats.find((ci) => ci.tripId === selectedChat.tripId) ?? null;
-      setSelectedChat(item);
-    }
-  }, [chats]);
-
-  useEffect(() => {
     if (selectedChatRef.current) {
-      selectedChatRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      selectedChatRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  }, [isOpenChat]);
+  }, [selectedTridId]);
 
   return (
     <div className="flex flex-row gap-4 mt-5">
-      {!isOpenChat && (
+      {selectedChat === null ? (
         <ChatList
           chats={chats}
           isHost={isHost}
@@ -51,9 +42,7 @@ export default function ChatPage({
             selectChat(tripId);
           }}
         />
-      )}
-
-      {selectedChat !== null && isOpenChat ? (
+      ) : (
         <div className="w-full xl:w-3/5 flex flex-col gap-2">
           <RntButton className="w-40 h-12" onClick={() => selectChat(-1)}>
             Back
@@ -71,7 +60,7 @@ export default function ChatPage({
             }}
           />
         </div>
-      ) : null}
+      )}
     </div>
   );
 }

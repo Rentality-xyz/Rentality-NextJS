@@ -89,7 +89,7 @@ const useProfileSettings = () => {
         setDataFetched(true);
       })
       .catch(() => setDataFetched(true));
-  }, [rentalityInfo, emptyProfileSettings]);
+  }, [rentalityInfo]);
 
   return [dataFetched, profileSettings, saveProfileSettings] as const;
 };

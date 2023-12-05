@@ -19,60 +19,6 @@ const useChatInfos = (isHost: boolean) => {
   const [chatClient, setChatClient] = useState<ChatClient | undefined>(undefined);
   const [chatPublicKeys, setChatPublicKeys] = useState<Map<string, string>>(new Map());
 
-  const getChatInfos = async (rentalityContract: IRentalityContract) => {
-    try {
-      if (rentalityContract == null) {
-        console.error("getChatInfos error: contract is null");
-        return;
-      }
-      const chatInfosView: ContractChatInfo[] = isHost
-        ? await rentalityContract.getChatInfoForHost()
-        : await rentalityContract.getChatInfoForGuest();
-      const chatInfosViewSorted = [...chatInfosView].sort((a, b) => {
-        return Number(b.tripId) - Number(a.tripId);
-      });
-
-      const chatInfosData =
-        chatInfosViewSorted.length === 0
-          ? []
-          : await Promise.all(
-              chatInfosViewSorted.map(async (ci: ContractChatInfo, index) => {
-                const meta = await getMetaDataFromIpfs(ci.carMetadataUrl);
-                const tripStatus = getTripStatusFromContract(Number(ci.tripStatus));
-
-                let item: ChatInfo = {
-                  tripId: Number(ci.tripId),
-
-                  guestAddress: ci.guestAddress,
-                  guestName: ci.guestName,
-                  guestPhotoUrl: getIpfsURIfromPinata(ci.guestPhotoUrl),
-
-                  hostAddress: ci.hostAddress,
-                  hostName: ci.hostName,
-                  hostPhotoUrl: getIpfsURIfromPinata(ci.hostPhotoUrl),
-
-                  tripTitle: `${tripStatus} trip with ${ci.hostName} ${ci.carBrand} ${ci.carModel}`,
-                  startDateTime: new Date(Number(ci.startDateTime) * 1000),
-                  endDateTime: new Date(Number(ci.endDateTime) * 1000),
-                  lastMessage: "Click to open chat",
-
-                  carPhotoUrl: getIpfsURIfromPinata(meta.image),
-                  tripStatus: tripStatus,
-                  carTitle: `${ci.carBrand} ${ci.carModel} ${ci.carYearOfProduction}`,
-                  carLicenceNumber: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
-
-                  messages: [],
-                };
-                return item;
-              })
-            );
-
-      return chatInfosData;
-    } catch (e) {
-      console.error("getChatInfos error:" + e);
-    }
-  };
-
   const getChatHelper = async () => {
     if (window.ethereum == null) {
       console.error("Ethereum wallet is not found");
@@ -97,6 +43,60 @@ const useChatInfos = (isHost: boolean) => {
   const isInitiating = useRef(false);
 
   useEffect(() => {
+    const getChatInfos = async (rentalityContract: IRentalityContract) => {
+      try {
+        if (rentalityContract == null) {
+          console.error("getChatInfos error: contract is null");
+          return;
+        }
+        const chatInfosView: ContractChatInfo[] = isHost
+          ? await rentalityContract.getChatInfoForHost()
+          : await rentalityContract.getChatInfoForGuest();
+        const chatInfosViewSorted = [...chatInfosView].sort((a, b) => {
+          return Number(b.tripId) - Number(a.tripId);
+        });
+
+        const chatInfosData =
+          chatInfosViewSorted.length === 0
+            ? []
+            : await Promise.all(
+                chatInfosViewSorted.map(async (ci: ContractChatInfo, index) => {
+                  const meta = await getMetaDataFromIpfs(ci.carMetadataUrl);
+                  const tripStatus = getTripStatusFromContract(Number(ci.tripStatus));
+
+                  let item: ChatInfo = {
+                    tripId: Number(ci.tripId),
+
+                    guestAddress: ci.guestAddress,
+                    guestName: ci.guestName,
+                    guestPhotoUrl: getIpfsURIfromPinata(ci.guestPhotoUrl),
+
+                    hostAddress: ci.hostAddress,
+                    hostName: ci.hostName,
+                    hostPhotoUrl: getIpfsURIfromPinata(ci.hostPhotoUrl),
+
+                    tripTitle: `${tripStatus} trip with ${ci.hostName} ${ci.carBrand} ${ci.carModel}`,
+                    startDateTime: new Date(Number(ci.startDateTime) * 1000),
+                    endDateTime: new Date(Number(ci.endDateTime) * 1000),
+                    lastMessage: "Click to open chat",
+
+                    carPhotoUrl: getIpfsURIfromPinata(meta.image),
+                    tripStatus: tripStatus,
+                    carTitle: `${ci.carBrand} ${ci.carModel} ${ci.carYearOfProduction}`,
+                    carLicenceNumber: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
+
+                    messages: [],
+                  };
+                  return item;
+                })
+              );
+
+        return chatInfosData;
+      } catch (e) {
+        console.error("getChatInfos error:" + e);
+      }
+    };
+
     const initChat = async () => {
       if (!rentalityInfo) return;
       if (isInitiating.current) return;
@@ -180,7 +180,7 @@ const useChatInfos = (isHost: boolean) => {
     };
 
     initChat();
-  }, [rentalityInfo]);
+  }, [rentalityInfo, isHost]);
 
   const onUserMessageReceived = async (from: string, to: string, tripId: number, datetime: number, message: string) => {
     setChatInfos((current) => {
