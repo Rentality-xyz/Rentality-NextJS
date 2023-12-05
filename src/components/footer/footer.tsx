@@ -2,7 +2,7 @@ import Image from "next/image";
 import logo from "../../images/logo.png";
 import bgCar from "../../images/red-generic-sport-ca.png";
 import linkedin from "../../images/icons8-linkedin-50.png";
-import twitter from "../../images/icons8-twitter-50.png";
+import twitter from "../../images/ic_twitter.svg";
 import discord from "../../images/icons8-discord-50.png";
 import { Input } from "postcss";
 import Link from "next/link";
@@ -34,7 +34,7 @@ export default function Footer() {
               </a>
 
               <a href="https://twitter.com/Rentality_Info" target="_blank" rel="noopener noreferrer">
-                <Image src={twitter} alt="" className="ml-3 w-[30px]" />
+                <Image src={twitter} alt="" className="ml-3 w-[22px] mt-1" />
               </a>
 
               <a href="https://discord.gg/QRu86bTRA6e" target="_blank" rel="noopener noreferrer">
