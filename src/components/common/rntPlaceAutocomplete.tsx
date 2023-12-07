@@ -79,7 +79,8 @@ export default function RntPlaceAutocomplete({
 
   useEffect(() => {
     getPlacePredictions({ input: enteredAddress });
-  }, [enteredAddress, getPlacePredictions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enteredAddress]);
 
   const getAddressComponents = (placeDetails: google.maps.places.PlaceResult, fieldName: string) => {
     return placeDetails.address_components?.find((i) => i?.types?.includes(fieldName));
@@ -120,7 +121,8 @@ export default function RntPlaceAutocomplete({
         }
       }
     );
-  }, [placePredictions, placesService, onAddressChangeHandler]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [placePredictions]);
 
   // const { ref, autocompleteRef } = usePlacesWidget({
   //   apiKey:GOOGLE_MAPS_API_KEY,
