@@ -30,6 +30,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
   const router = useRouter();
 
   const connectToMetaMask = useCallback(async () => {
+    console.error("connectToMetaMask");
     if (window.ethereum == null) {
       console.error("Ethereum wallet is not found");
       return;
@@ -79,7 +80,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
 
   const handleAccountsChanged = useCallback(() => {
     router.reload();
-    console.log("handleAccountsChanged: reloading...");
+    console.log("handleAccountsChanged call");
   }, [router]);
 
   useEffect(() => {
@@ -88,14 +89,16 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
       return;
     }
 
-    connectToMetaMask().catch(console.error);
+    if (rentalityContractInfo === null) {
+      connectToMetaMask().catch(console.error);
+    }
 
     window.ethereum.on("accountsChanged", handleAccountsChanged);
 
     return () => {
       window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
     };
-  }, [connectToMetaMask, handleAccountsChanged]);
+  }, [connectToMetaMask, handleAccountsChanged, rentalityContractInfo]);
 
   useEffect(() => {
     if (selectedBlockchain) {
