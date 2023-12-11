@@ -1,3 +1,5 @@
+"use client";
+
 import { MouseEventHandler } from "react";
 import { ChatInfo } from "@/model/ChatInfo";
 import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
