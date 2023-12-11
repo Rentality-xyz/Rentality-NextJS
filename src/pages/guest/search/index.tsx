@@ -18,9 +18,6 @@ import { isEmpty } from "@/utils/string";
 import { Button } from "@mui/material";
 import RntSelect from "@/components/common/rntSelect";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
-import {BlockchainsEnum} from "@/model/blockchain/BlockchainsEnum";
-import {useAppContext} from "@/contexts/useAppContext";
-import {useRentality} from "@/contexts/rentalityContext";
 
 export default function Search() {
   const dateNow = new Date();
@@ -217,10 +214,14 @@ export default function Search() {
               onChange={handleSearchInputChange}
             />
 
-            <RntButton className="w-full sm:w-40 max-xl:mt-4" disabled={searchButtonDisabled} onClick={() =>
-                handleSearchClick()
+            <RntButton
+              className="w-full sm:w-40 max-xl:mt-4"
+              disabled={searchButtonDisabled}
+              onClick={
+                () => handleSearchClick()
                 // showError("w-full sm:w-40 max-xl:mt-4")
-            }>
+              }
+            >
               Search
             </RntButton>
           </div>
@@ -371,7 +372,7 @@ export default function Search() {
               />
               <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 max-sm:mt-2 sm:justify-between">
                 <RntButton
-                    className="max-sm:h-10 max-sm:w-full"
+                  className="max-sm:h-10 max-sm:w-full"
                   onClick={() => {
                     setOpenFilterPanel(false);
                     handleSearchClick();
@@ -380,8 +381,9 @@ export default function Search() {
                   Apply
                 </RntButton>
                 <RntButton
-                    className="max-sm:h-10 max-sm:w-full"
-                    onClick={() => setSearchCarRequest(customEmptySearchCarRequest)}>
+                  className="max-sm:h-10 max-sm:w-full"
+                  onClick={() => setSearchCarRequest(customEmptySearchCarRequest)}
+                >
                   Reset
                 </RntButton>
               </div>

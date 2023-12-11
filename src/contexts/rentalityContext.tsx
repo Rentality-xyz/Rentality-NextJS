@@ -1,9 +1,9 @@
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { Contract, Signer, ethers } from "ethers";
-import {rentalityJSON, rentalityCurrencyConverterJSON, rentalityChatHelperJSON} from "../abis";
+import { rentalityJSON, rentalityCurrencyConverterJSON, rentalityChatHelperJSON } from "../abis";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import {useAppContext} from "@/contexts/useAppContext";
+import { useAppContext } from "@/contexts/useAppContext";
 
 export type RentalityContractInfo = {
   rentalityContract: IRentalityContract;
@@ -99,12 +99,9 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
 
   useEffect(() => {
     if (selectedBlockchain) {
-      console.log("selectedBlockchain=" + selectedBlockchain)
+      console.log("selectedBlockchain=" + selectedBlockchain);
     }
   }, [selectedBlockchain]);
 
-  return (
-      <RentalityContext.Provider value={rentalityContractInfo}>
-        {children}
-      </RentalityContext.Provider>);
+  return <RentalityContext.Provider value={rentalityContractInfo}>{children}</RentalityContext.Provider>;
 };

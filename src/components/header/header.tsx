@@ -3,14 +3,14 @@ import RntButton from "../common/rntButton";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { useRentality } from "@/contexts/rentalityContext";
 import { formatAddress } from "@/utils/addressFormatters";
-import { Avatar, Button, Stack, styled, SvgIcon, Switch, Typography } from "@mui/material";
+import { Avatar, Stack, styled, Switch, Typography } from "@mui/material";
 import { isEmpty } from "@/utils/string";
 import burgerMenu from "../../images/ic-menu-burge-white-20.svg";
 import burgerMenuClose from "../../images/ic-menu-burge-close-white-20.svg";
 import Image from "next/image";
 import GuestBurgerNavMenu from "@/components/sideNavMenu/guestBurgerNavMenu";
 import HostBurgerNavMenu from "@/components/sideNavMenu/hostBurgerNavMenu";
-import { AppContextProvider, useAppContext } from "@/contexts/useAppContext";
+import { useAppContext } from "@/contexts/useAppContext";
 import ChooseBlockchainComponent from "@/components/choose_blockchain/ChooseBlockchainComponent";
 
 type Props = {

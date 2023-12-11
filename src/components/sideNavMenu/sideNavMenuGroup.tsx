@@ -6,7 +6,7 @@ import icMessages from "@/images/ic_messages.jpg";
 import icProfileSettings from "@/images/ic_profile_settings.jpg";
 import icListings from "@/images/ic_listings.jpg";
 import MenuIcons from "@/components/sideNavMenu/menuIcons";
-import {useAppContext} from "@/contexts/useAppContext";
+import { useAppContext } from "@/contexts/useAppContext";
 
 export default function SideNavMenuGroup({
   title,
@@ -19,7 +19,7 @@ export default function SideNavMenuGroup({
   children?: React.ReactNode;
   icon?: MenuIcons;
 }) {
-  const { isHideBurgerMenu, toggleBurgerMenu } = useAppContext();
+  const { toggleBurgerMenu } = useAppContext();
 
   const getImageForMenu = (state: MenuIcons): StaticImageData => {
     switch (state) {
