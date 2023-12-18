@@ -12,3 +12,14 @@ export const getIntFromString = (text: string) => {
 export const getUIntFromString = (text: string) => {
   return Number(text.replace(/[^\d.]+/g, ""));
 };
+
+export const decimalToHex = (decimalValue: string): string | null => {
+  const decimalNumber = Number(decimalValue);
+
+  if (!isNaN(decimalNumber)) {
+    return decimalNumber.toString(16);
+  } else {
+    console.error("Invalid input. Please provide a valid decimal number.");
+    return null;
+  }
+};
