@@ -6,6 +6,8 @@ import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from
 import { Avatar } from "@mui/material";
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
+import icInfo from "@/images/ic-info-teal.svg";
+import Image from "next/image";
 
 type Props = {
   chatInfo: ChatInfo;
@@ -29,7 +31,7 @@ export default function ChatInfoCard({ chatInfo, isHost, isSelected, onClickCall
       <div className="w-24 h-24 row-span-3 self-center mx-2">
         <Avatar src={otherPhotoUrl} sx={{ width: "6rem", height: "6rem" }}></Avatar>
       </div>
-      <div className="col-span-2 flex flex-row items-center">
+      <div className="col-span-2 flex flex-row items-center max-sm:justify-between">
         <div className={statusClassName}>{getTripStatusTextFromStatus(chatInfo.tripStatus)}</div>
         <div className="ml-2 text-xs"> Reservation #{chatInfo.tripId}</div>
       </div>
@@ -37,7 +39,10 @@ export default function ChatInfoCard({ chatInfo, isHost, isSelected, onClickCall
         <strong>{otherName}</strong>
         <div>{chatInfo.carTitle}</div>
       </div>
-      <Link className="text-sm text-rentality-secondary" href={`/guest/trips/tripInfo/${chatInfo.tripId}`}>
+      <Link className="sm:hidden" href={`/guest/trips/tripInfo/${chatInfo.tripId}`}>
+          <Image src={icInfo} width={25} alt="" />
+      </Link>
+      <Link className="max-sm:hidden text-sm text-rentality-secondary" href={`/guest/trips/tripInfo/${chatInfo.tripId}`}>
         Trip information
       </Link>
       <div className="col-span-2 whitespace-nowrap overflow-hidden overflow-ellipsis ">{chatInfo.lastMessage}</div>
