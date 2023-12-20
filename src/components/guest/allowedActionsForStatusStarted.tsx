@@ -122,8 +122,8 @@ export default function AllowedActionsForStatusStarted({
         <div className="flex flex-col flex-1">
           <div className="font-bold mt-2">Reimbursement charge:</div>
           <div className="grid grid-cols-2 mt-2 md:mt-4 text-sm">
-            <span>Tank size:</span>
-            <span>{tripInfo.tankVolumeInGal} gal</span>
+            <span className="col-span-1">Tank size:</span>
+            <span className="col-span-1 text-right">{tripInfo.tankVolumeInGal} gal</span>
             <span>ReFuel:</span>
             <span>{refuelValue} gal</span>
             <span>Gal price:</span>

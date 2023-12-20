@@ -136,9 +136,9 @@ body {
   @apply bg-rentality-primary text-rnt-temp-card-text;
 }
 
-main img {
-  @apply bg-rnt-temp-image-bg;
-}
+/*main img {*/
+/*  @apply bg-rnt-temp-image-bg;*/
+/*}*/
 
 .sliding-panel-container {
   @apply bg-rnt-temp-slide-panel-container-bg;
