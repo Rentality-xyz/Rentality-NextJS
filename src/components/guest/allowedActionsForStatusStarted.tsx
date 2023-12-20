@@ -122,37 +122,43 @@ export default function AllowedActionsForStatusStarted({
         <div className="flex flex-col flex-1">
           <div className="font-bold mt-2">Reimbursement charge:</div>
           <div className="grid grid-cols-2 mt-2 md:mt-4 text-sm">
-            <span>Tank size:</span>
-            <span>{tripInfo.tankVolumeInGal} gal</span>
-            <span>ReFuel:</span>
-            <span>{refuelValue} gal</span>
-            <span>Gal price:</span>
-            <span>${tripInfo.fuelPricePerGal.toFixed(2)}</span>
-            <span>Charge:</span>
-            <span>${reFuelCharge.toFixed(2)}</span>
+            <span className="col-span-1">Tank size:</span>
+            <span className="col-span-1 text-right">{tripInfo.tankVolumeInGal} gal</span>
+            <span className="col-span-1">ReFuel:</span>
+            <span className="col-span-1 text-right">{refuelValue} gal</span>
+            <span className="col-span-1">Gal price:</span>
+            <span className="col-span-1 text-right">${tripInfo.fuelPricePerGal.toFixed(2)}</span>
+            <span className="col-span-1">Charge:</span>
+            <span className="col-span-1 text-right">${reFuelCharge.toFixed(2)}</span>
           </div>
           <div className="grid grid-cols-2 mt-2 md:mt-4 text-sm">
-            <span>Miles included:</span>
-            <span>{tripInfo.milesIncludedPerDay} mi per trip</span>
-            <span>Overmiles:</span>
-            <span>{overmileValue} mi per trip</span>
-            <span>Overmile price:</span>
-            <span>${tripInfo.overmilePrice.toFixed(4)}</span>
-            <span>Charge:</span>
-            <span>${overmilesCharge.toFixed(2)}</span>
+            <span className="col-span-1">Miles included:</span>
+            <span className="col-span-1 text-right">{tripInfo.milesIncludedPerDay} mi per trip</span>
+            <span className="col-span-1">Overmiles:</span>
+            <span className="col-span-1 text-right">{overmileValue} mi per trip</span>
+            <span className="col-span-1">Overmile price:</span>
+            <span className="col-span-1 text-right">${tripInfo.overmilePrice.toFixed(4)}</span>
+            <span className="col-span-1">Charge:</span>
+            <span className="col-span-1 text-right">${overmilesCharge.toFixed(2)}</span>
           </div>
         </div>
         <div className="flex flex-col flex-1">
           <div className="font-bold mt-4 md:mt-2">Security deposite info:</div>
           <div className="grid grid-cols-2 gap-x-2 mt-2 md:mt-4 text-sm">
-            <span>Received deposit:</span>
-            <span>${depositPaid.toFixed(2)}</span>
-            <span>ReFuel reimbursement:</span>
-            <span>${reFuelCharge.toFixed(2)}</span>
-            <span>Overmiles reimbursement:</span>
-            <span>${overmilesCharge.toFixed(2)}</span>
-            <span>Deposit to be returned:</span>
-            <span>${depositToBeReturned.toFixed(2)}</span>
+            <span className="col-span-1">Received deposit:</span>
+            <span className="col-span-1 text-right">${depositPaid.toFixed(2)}</span>
+            <span className="col-span-1">ReFuel reimbursement:</span>
+            <div className="col-span-1 text-right flex items-end">
+              <span className="w-full">${reFuelCharge.toFixed(2)}</span>
+            </div>
+            <span className="col-span-1">Overmiles reimbursement:</span>
+            <div className="col-span-1 text-right flex items-end">
+              <span className="w-full">${overmilesCharge.toFixed(2)}</span>
+            </div>
+            <span className="col-span-1">Deposit to be returned:</span>
+            <div className="col-span-1 text-right flex items-end">
+              <span className="w-full">${depositToBeReturned.toFixed(2)}</span>
+            </div>
           </div>
           <div className="mt-2 md:mt-4">Deposit returned after the Host Completed the trip</div>
         </div>
