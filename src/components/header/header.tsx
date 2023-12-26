@@ -12,6 +12,7 @@ import GuestBurgerNavMenu from "@/components/sideNavMenu/guestBurgerNavMenu";
 import HostBurgerNavMenu from "@/components/sideNavMenu/hostBurgerNavMenu";
 import { useAppContext } from "@/contexts/useAppContext";
 import ChooseBlockchainComponent from "@/components/choose_blockchain/ChooseBlockchainComponent";
+import {usePrivy} from "@privy-io/react-auth";
 
 type Props = {
   accountType: string;
@@ -79,6 +80,8 @@ export default function Header({ accountType }: Props) {
     }
   };
 
+  const {login} = usePrivy();
+
   return (
     <div>
       {isHideBurgerMenu && (
@@ -141,11 +144,13 @@ export default function Header({ accountType }: Props) {
             ) : (
               <RntButton
                 className="w-28 sm:w-48 h-10 text-sm sm:text-base"
-                onClick={() => {
-                  rentalityInfo?.connectWallet();
-                }}
+                onClick={login}
+                // onClick={() => {
+                //   rentalityInfo?.connectWallet();
+                // }}
               >
-                Connect MetaMask
+                Connect Wallet
+                {/*Connect MetaMask*/}
               </RntButton>
             )}
           </div>

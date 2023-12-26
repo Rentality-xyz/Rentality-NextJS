@@ -136,10 +136,6 @@ body {
   @apply bg-rentality-primary text-rnt-temp-card-text;
 }
 
-/*main img {*/
-/*  @apply bg-rnt-temp-image-bg;*/
-/*}*/
-
 .sliding-panel-container {
   @apply bg-rnt-temp-slide-panel-container-bg;
   @apply bg-opacity-50;
@@ -273,4 +269,10 @@ input:disabled {
   background-color: #D1D5DB;
   opacity: 1;
   color: #4B5563;
+}
+
+#privy-dialog > div > div {
+  background-color: #1E1E30;
+  border-width: 2px;
+  border-color: #373737;
 }
