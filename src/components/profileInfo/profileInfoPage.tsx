@@ -12,6 +12,7 @@ import { Avatar } from "@mui/material";
 import { useRouter } from "next/router";
 import { FocusEvent, FormEvent, ReactNode, useState } from "react";
 import RntDatePicker from "../common/rntDatePicker";
+import PhoneInputComponent from "@/components/phone_number_input/PhoneNumberInputComponent";
 
 const STATUS = {
   IDLE: "IDLE",
@@ -143,6 +144,10 @@ export default function ProfileInfoPage({
     return result;
   }
 
+  function handlePhoneChange(value: string) {
+    setEnteredFormData({ ...enteredFormData, phoneNumber: value });
+  }
+
   return (
     <form className="my-8 flex flex-col gap-4" onSubmit={handleSubmit}>
       <div className="flex flex-row gap-4 items-center">
@@ -187,16 +192,18 @@ export default function ProfileInfoPage({
             onChange={handleChange}
             onBlur={handleBlur}
           />
-          <RntInput
-            className="lg:w-60"
-            id="phoneNumber"
-            label="Phone number"
-            type="tel"
-            value={enteredFormData.phoneNumber}
-            validationError={touched.phoneNumber || status === STATUS.SUBMITTED ? errors.phoneNumber : ""}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
+          <PhoneInputComponent onChange={handlePhoneChange}/>
+
+          {/*<RntInput*/}
+          {/*  className="lg:w-60"*/}
+          {/*  id="phoneNumber"*/}
+          {/*  label="Phone number"*/}
+          {/*  type="tel"*/}
+          {/*  value={enteredFormData.phoneNumber}*/}
+          {/*  validationError={touched.phoneNumber || status === STATUS.SUBMITTED ? errors.phoneNumber : ""}*/}
+          {/*  onChange={handleChange}*/}
+          {/*  onBlur={handleBlur}*/}
+          {/*/>*/}
         </div>
       </fieldset>
 
