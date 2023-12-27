@@ -14,7 +14,7 @@
     "@emotion/styled": "^11.11.0",
     "@metamask/providers": "^10.2.1",
     "@mui/material": "^5.14.12",
-    "@privy-io/react-auth": "^1.52.1",
+    "@privy-io/react-auth": "^1.52.2",
     "@types/node": "18.15.13",
     "@types/react": "18.0.37",
     "@types/react-dom": "18.0.11",
