@@ -2,14 +2,12 @@ import {
   ChangeTripParams,
   TripInfo,
   TripStatus,
-  getFuelLevelFromGals,
   getFuelLevelFromGalsString,
   getGalsFromFuelLevel,
 } from "@/model/TripInfo";
 import RntInput from "../common/rntInput";
-import { ChangeEvent, SetStateAction, useState } from "react";
+import { SetStateAction, useState } from "react";
 import RntSelect from "../common/rntSelect";
-import Checkbox from "../common/checkbox";
 import { calculateDays } from "@/utils/date";
 
 export default function AllowedActionsForStatusStarted({
@@ -22,8 +20,6 @@ export default function AllowedActionsForStatusStarted({
   tripInfo: TripInfo;
   inputParams: string[];
   setInputParams: (value: SetStateAction<string[]>) => void;
-  // inputParam: string;
-  // onChange: (newValue: string) => void;
 }) {
   const [refuelValue, setRefuelValue] = useState<number>(0);
   const [overmileValue, setOvermileValue] = useState<number>(0);
@@ -163,139 +159,6 @@ export default function AllowedActionsForStatusStarted({
           <div className="mt-2 md:mt-4">Deposit returned after the Host Completed the trip</div>
         </div>
       </div>
-
-      {/* <div className="hidden">
-        {param.type === "fuel" ? (
-          <RntInput
-            className="w-1/6 py-2"
-            id="fuelAtStartTrip"
-            label="At start trip"
-            readOnly={true}
-            value={"0"}
-          />
-        ) : (
-          <RntInput
-            className="w-1/6 py-2"
-            id="odometrAtStartTrip"
-            label="At start trip"
-            readOnly={true}
-            value={"0"}
-          />
-        )}
-
-        {param.type === "fuel" ? (
-          <RntSelect
-            className="w-1/6 py-2"
-            id={param.text}
-            label={param.text}
-            readOnly={tripInfo.allowedActions[0].readonly}
-            value={inputParam}
-            onChange={(e) => {
-              const newValue = e.target.value;
-              onChange(newValue);
-            }}
-          >
-            <option className="hidden" disabled></option>
-            <option value="0">0</option>
-            <option value="0.125">1/8</option>
-            <option value="0.25">1/4</option>
-            <option value="0.375">3/8</option>
-            <option value="0.5">1/2</option>
-            <option value="0.625">5/8</option>
-            <option value="0.75">3/4</option>
-            <option value="0.875">7/8</option>
-            <option value="1">full</option>
-          </RntSelect>
-        ) : (
-          <RntInput
-            className="w-1/6 py-2"
-            id={param.text}
-            label={param.text}
-            readOnly={tripInfo.allowedActions[0].readonly}
-            value={inputParam}
-            onChange={(e) => {
-              const newValue = e.target.value;
-              onChange(newValue);
-            }}
-          />
-        )}
-
-        {tripInfo.allowedActions[0].readonly ? (
-          <Checkbox
-            className="ml-4"
-            title="Confirm"
-            value={confirmParam}
-            onChange={(newValue) => {
-              onChangeConfirmParam(newValue.target.checked);
-            }}
-          />
-        ) : null}
-      </div>
-      {param.type === "fuel" ? (
-        <RntInput
-          className="w-1/6 py-2"
-          id="fuelAtStartTrip"
-          label="At start trip"
-          readOnly={true}
-          value={"0"}
-        />
-      ) : (
-        <RntInput
-          className="w-1/6 py-2"
-          id="odometrAtStartTrip"
-          label="At start trip"
-          readOnly={true}
-          value={"0"}
-        />
-      )}
-
-      {param.type === "fuel" ? (
-        <RntSelect
-          className="w-1/6 py-2"
-          id={param.text}
-          label={param.text}
-          readOnly={tripInfo.allowedActions[0].readonly}
-          value={inputParam}
-          onChange={(e) => {
-            const newValue = e.target.value;
-            onChange(newValue);
-          }}
-        >
-          <option className="hidden" disabled></option>
-          <option value="0">0</option>
-          <option value="0.125">1/8</option>
-          <option value="0.25">1/4</option>
-          <option value="0.375">3/8</option>
-          <option value="0.5">1/2</option>
-          <option value="0.625">5/8</option>
-          <option value="0.75">3/4</option>
-          <option value="0.875">7/8</option>
-          <option value="1">full</option>
-        </RntSelect>
-      ) : (
-        <RntInput
-          className="w-1/6 py-2"
-          id={param.text}
-          label={param.text}
-          readOnly={tripInfo.allowedActions[0].readonly}
-          value={inputParam}
-          onChange={(e) => {
-            const newValue = e.target.value;
-            onChange(newValue);
-          }}
-        />
-      )}
-
-      {tripInfo.allowedActions[0].readonly ? (
-        <Checkbox
-          className="ml-4"
-          title="Confirm"
-          value={confirmParam}
-          onChange={(newValue) => {
-            onChangeConfirmParam(newValue.target.checked);
-          }}
-        />
-      ) : null} */}
     </>
   );
 }

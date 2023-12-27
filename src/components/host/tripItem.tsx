@@ -30,12 +30,6 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
       : [];
   const [inputParams, setInputParams] = useState<string[]>(defaultValues);
   const [confirmParams, setConfirmParams] = useState<boolean[]>([]);
-  var refuelValue = tripInfo.startFuelLevelInGal - tripInfo.endFuelLevelInGal;
-  refuelValue = refuelValue > 0 ? refuelValue : 0;
-
-  const tripDays = calculateDays(tripInfo.tripStart, tripInfo.tripEnd);
-  var overmileValue = tripInfo.endOdometr - tripInfo.startOdometr - tripInfo.milesIncludedPerDay * tripDays;
-  overmileValue = overmileValue > 0 ? overmileValue : 0;
 
   const allowedActions = document.getElementById("host-allowed-actions") as HTMLDivElement;
   const allowedActionsRef = useRef<HTMLDivElement>(allowedActions);
@@ -66,6 +60,13 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
     "absolute right-0 top-2 px-8 py-2 rounded-l-3xl text-rnt-temp-status-text text-end",
     statusBgColor
   );
+
+  var refuelValue = tripInfo.startFuelLevelInGal - tripInfo.endFuelLevelInGal;
+  refuelValue = refuelValue > 0 ? refuelValue : 0;
+
+  const tripDays = calculateDays(tripInfo.tripStart, tripInfo.tripEnd);
+  var overmileValue = tripInfo.endOdometr - tripInfo.startOdometr - tripInfo.milesIncludedPerDay * tripDays;
+  overmileValue = overmileValue > 0 ? overmileValue : 0;
 
   return (
     <div className="rnt-card flex flex-col rounded-xl overflow-hidden bg-rentality-bg">
@@ -111,6 +112,7 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
               <div>${tripInfo.totalPrice}</div>
             </div>
           </div>
+
           {!isAdditionalActionHidden ? null : (
             <div className="flex flex-col 2xl:flex-row gap-4">
               {tripInfo.allowedActions.map((action) => {
@@ -180,6 +182,7 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
           </div>
         </div>
       </div>
+
       {isAdditionalActionHidden ||
       tripInfo.allowedActions == null ||
       tripInfo.allowedActions.length == 0 ||
