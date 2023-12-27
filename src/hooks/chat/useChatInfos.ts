@@ -6,7 +6,7 @@ import { ContractChatInfo } from "@/model/blockchain/ContractChatInfo";
 import { Client as ChatClient } from "@/chat/client";
 import { useRentality } from "@/contexts/rentalityContext";
 import { Contract, ethers } from "ethers";
-import { rentalityChatHelperJSON } from "@/abis";
+import { rentalityContracts } from "@/abis";
 import { IRentalityChatHelperContract } from "@/model/blockchain/IRentalityChatHelperContract";
 import { isEmpty } from "@/utils/string";
 import { bytesToHex } from "@waku/utils/bytes";
@@ -28,9 +28,13 @@ const useChatInfos = (isHost: boolean) => {
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = await provider.getSigner();
+      const chainId = await signer.getChainId();
+      console.log("getChatHelper chainId", chainId);
+      const selectedChainId =
+        chainId === 80001 ? "80001" : chainId === 84532 ? "84532" : chainId === 11155111 ? "11155111" : "11155111"; //"1337";
       const rentalityChatHelperContract = new Contract(
-        rentalityChatHelperJSON.address,
-        rentalityChatHelperJSON.abi,
+        rentalityContracts[selectedChainId].chatHelper.address,
+        rentalityContracts[selectedChainId].chatHelper.abi,
         signer
       ) as unknown as IRentalityChatHelperContract;
 

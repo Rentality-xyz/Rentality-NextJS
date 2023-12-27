@@ -1,8 +1,6 @@
-import { Contract, ethers } from "ethers";
+import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { rentalityJSON } from "../../abis";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { ContractCarInfo } from "@/model/blockchain/ContractCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
 
 export type AdminContractInfo = {

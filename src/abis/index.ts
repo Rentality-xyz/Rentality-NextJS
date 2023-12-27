@@ -11,21 +11,6 @@ import RentalityChatHelperJSON_84532 from "./RentalityChatHelper.84532.json";
 import RentalityChatHelperJSON_11155111 from "./RentalityChatHelper.11155111.json";
 import RentalityChatHelperJSON_localhost from "./RentalityChatHelper.localhost.json";
 
-export const rentalityJSON =
-  process.env.NEXT_PUBLIC_USE_LOCALHOST_BLOCKCHAIN?.toLowerCase?.() === "true"
-    ? RentalityGatewayJSON_localhost
-    : RentalityGatewayJSON_11155111;
-
-export const rentalityCurrencyConverterJSON =
-  process.env.NEXT_PUBLIC_USE_LOCALHOST_BLOCKCHAIN?.toLowerCase?.() === "true"
-    ? RentalityCurrencyConverterJSON_localhost
-    : RentalityCurrencyConverterJSON_11155111;
-
-export const rentalityChatHelperJSON =
-  process.env.NEXT_PUBLIC_USE_LOCALHOST_BLOCKCHAIN?.toLowerCase?.() === "true"
-    ? RentalityChatHelperJSON_localhost
-    : RentalityChatHelperJSON_11155111;
-
 export const rentalityContracts = {
   1337: {
     gateway: {
@@ -85,4 +70,4 @@ export const rentalityContracts = {
   },
 };
 
-export default rentalityJSON;
+export default rentalityContracts;

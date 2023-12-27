@@ -1,6 +1,4 @@
-import { Contract, ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { rentalityJSON } from "../../abis";
 import { ContractTrip, getTripStatusFromContract, validateContractTrip } from "@/model/blockchain/ContractTrip";
 import { TripInfo, AllowedChangeTripAction, TripStatus } from "@/model/TripInfo";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";

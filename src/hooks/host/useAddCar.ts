@@ -1,11 +1,7 @@
-import { Contract, ethers } from "ethers";
 import { useState } from "react";
-import { rentalityJSON } from "../../abis";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "../../utils/pinata";
-import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractCreateCarRequest } from "@/model/blockchain/ContractCreateCarRequest";
 import { HostCarInfo, verifyCar } from "@/model/HostCarInfo";
-import { isEmpty } from "@/utils/string";
 import { useRentality } from "@/contexts/rentalityContext";
 import { getIntFromString, getUIntFromString } from "@/utils/numericFormatters";
 

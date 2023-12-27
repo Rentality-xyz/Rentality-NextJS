@@ -3,10 +3,7 @@ import { useRouter } from "next/router";
 import { formatAddress } from "@/utils/addressFormatters";
 
 const useEtherProvider = () => {
-  const requiredChainId =
-    process.env.NEXT_PUBLIC_USE_LOCALHOST_BLOCKCHAIN?.toLowerCase?.() === "true"
-      ? "0x539" /// 1337
-      : "0xaa36a7"; // 11155111
+  const requiredChainId = "0xaa36a7"; // 11155111
   const router = useRouter();
   const [userWeb3Address, setUserWeb3Address] = useState("Not connected");
   const [userConnected, setUserConnected] = useState(false);

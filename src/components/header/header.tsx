@@ -12,7 +12,7 @@ import GuestBurgerNavMenu from "@/components/sideNavMenu/guestBurgerNavMenu";
 import HostBurgerNavMenu from "@/components/sideNavMenu/hostBurgerNavMenu";
 import { useAppContext } from "@/contexts/useAppContext";
 import ChooseBlockchainComponent from "@/components/choose_blockchain/ChooseBlockchainComponent";
-import {usePrivy} from "@privy-io/react-auth";
+import { usePrivy } from "@privy-io/react-auth";
 
 type Props = {
   accountType: string;
@@ -80,7 +80,7 @@ export default function Header({ accountType }: Props) {
     }
   };
 
-  const {login} = usePrivy();
+  const { login } = usePrivy();
 
   return (
     <div>
