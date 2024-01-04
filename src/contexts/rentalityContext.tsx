@@ -1,6 +1,6 @@
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { Contract, Signer, ethers } from "ethers";
-import { rentalityContracts } from "../abis";
+import { getContract, rentalityContracts } from "../abis";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { blockchainList } from "@/model/blockchain/BlockchainList";
@@ -86,19 +86,12 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
 
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = await provider.getSigner();
-      const selectedChainId =
-        selectedBlockchain.chainId === 80001
-          ? "80001"
-          : selectedBlockchain.chainId === 84532
-          ? "84532"
-          : selectedBlockchain.chainId === 11155111
-          ? "11155111"
-          : "11155111"; //"1337";
-      const rentalityContract = new Contract(
-        rentalityContracts[selectedChainId].gateway.address,
-        rentalityContracts[selectedChainId].gateway.abi,
-        signer
-      ) as unknown as IRentalityContract;
+
+      const rentalityContract = (await getContract("gateway", signer)) as unknown as IRentalityContract;
+
+      if (rentalityContract === null) {
+        return;
+      }
 
       setRentalityContractInfo({
         rentalityContract: rentalityContract,
@@ -149,34 +142,27 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
 
         const isWalletConnected = true;
         const walletAddress = requestAccounts[0];
-        const selectedChainId =
-          selectedBlockchain.chainId === 80001
-            ? "80001"
-            : selectedBlockchain.chainId === 84532
-            ? "84532"
-            : selectedBlockchain.chainId === 11155111
-            ? "11155111"
-            : "11155111"; //"1337";
 
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = await provider.getSigner();
-        const rentalityContract = new Contract(
-          rentalityContracts[selectedChainId].gateway.address,
-          rentalityContracts[selectedChainId].gateway.abi,
-          signer
-        ) as unknown as IRentalityContract;
 
-        console.log("rentalityContractInfo.walletAddress:", rentalityContractInfo?.walletAddress);
-        console.log("walletAddress:", walletAddress);
-        console.log("await signer.getChainId():", await signer.getChainId());
-        console.log("Number(selectedChainId):", Number(selectedChainId));
+        const rentalityContract = (await getContract("gateway", signer)) as unknown as IRentalityContract;
+
+        if (rentalityContract === null) {
+          return;
+        }
+
+        // console.log("rentalityContractInfo.walletAddress:", rentalityContractInfo?.walletAddress);
+        // console.log("walletAddress:", walletAddress);
+        // console.log("await signer.getChainId():", await signer.getChainId());
+        // console.log("selectedBlockchain.chainId:", selectedBlockchain.chainId);
 
         if (
           rentalityContractInfo !== null &&
           rentalityContractInfo.walletAddress === walletAddress &&
-          (await signer.getChainId()) === Number(selectedChainId)
+          (await signer.getChainId()) === Number(selectedBlockchain.chainId)
         ) {
-          console.log("return");
+          // console.log("return");
           return;
         }
 

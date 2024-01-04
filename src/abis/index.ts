@@ -1,73 +1,36 @@
-import RentalityGatewayJSON_80001 from "./RentalityGateway.80001.json";
-import RentalityGatewayJSON_84532 from "./RentalityGateway.84532.json";
-import RentalityGatewayJSON_11155111 from "./RentalityGateway.11155111.json";
-import RentalityGatewayJSON_localhost from "./RentalityGateway.localhost.json";
-import RentalityCurrencyConverterJSON_80001 from "./RentalityCurrencyConverter.80001.json";
-import RentalityCurrencyConverterJSON_84532 from "./RentalityCurrencyConverter.84532.json";
-import RentalityCurrencyConverterJSON_11155111 from "./RentalityCurrencyConverter.11155111.json";
-import RentalityCurrencyConverterJSON_localhost from "./RentalityCurrencyConverter.localhost.json";
-import RentalityChatHelperJSON_80001 from "./RentalityChatHelper.80001.json";
-import RentalityChatHelperJSON_84532 from "./RentalityChatHelper.84532.json";
-import RentalityChatHelperJSON_11155111 from "./RentalityChatHelper.11155111.json";
-import RentalityChatHelperJSON_localhost from "./RentalityChatHelper.localhost.json";
+import RentalityGatewayJSON_ABI from "./RentalityGateway.v0_15_0.abi.json";
+import RentalityGatewayJSON_ADDRESSES from "./RentalityGateway.v0_15_0.addresses.json";
+import RentalityCurrencyConverterJSON_ABI from "./RentalityCurrencyConverter.v0_15_0.abi.json";
+import RentalityCurrencyConverterJSON_ADDRESSES from "./RentalityCurrencyConverter.v0_15_0.addresses.json";
+import RentalityChatHelperJSON_ABI from "./RentalityChatHelper.v0_15_0.abi.json";
+import RentalityChatHelperJSON_ADDRESSES from "./RentalityChatHelper.v0_15_0.addresses.json";
+import { Contract, ethers } from "ethers";
 
 export const rentalityContracts = {
-  1337: {
-    gateway: {
-      address: RentalityGatewayJSON_localhost.address,
-      abi: RentalityGatewayJSON_localhost.abi,
-    },
-    currencyConverter: {
-      address: RentalityCurrencyConverterJSON_localhost.address,
-      abi: RentalityCurrencyConverterJSON_localhost.abi,
-    },
-    chatHelper: {
-      address: RentalityChatHelperJSON_localhost.address,
-      abi: RentalityChatHelperJSON_localhost.abi,
-    },
+  gateway: {
+    addresses: RentalityGatewayJSON_ADDRESSES.addresses,
+    abi: RentalityGatewayJSON_ABI.abi,
   },
-  80001: {
-    gateway: {
-      address: RentalityGatewayJSON_80001.address,
-      abi: RentalityGatewayJSON_80001.abi,
-    },
-    currencyConverter: {
-      address: RentalityCurrencyConverterJSON_80001.address,
-      abi: RentalityCurrencyConverterJSON_80001.abi,
-    },
-    chatHelper: {
-      address: RentalityChatHelperJSON_80001.address,
-      abi: RentalityChatHelperJSON_80001.abi,
-    },
+  currencyConverter: {
+    addresses: RentalityCurrencyConverterJSON_ADDRESSES.addresses,
+    abi: RentalityCurrencyConverterJSON_ABI.abi,
   },
-  84532: {
-    gateway: {
-      address: RentalityGatewayJSON_84532.address,
-      abi: RentalityGatewayJSON_84532.abi,
-    },
-    currencyConverter: {
-      address: RentalityCurrencyConverterJSON_84532.address,
-      abi: RentalityCurrencyConverterJSON_84532.abi,
-    },
-    chatHelper: {
-      address: RentalityChatHelperJSON_84532.address,
-      abi: RentalityChatHelperJSON_84532.abi,
-    },
-  },
-  11155111: {
-    gateway: {
-      address: RentalityGatewayJSON_11155111.address,
-      abi: RentalityGatewayJSON_11155111.abi,
-    },
-    currencyConverter: {
-      address: RentalityCurrencyConverterJSON_11155111.address,
-      abi: RentalityCurrencyConverterJSON_11155111.abi,
-    },
-    chatHelper: {
-      address: RentalityChatHelperJSON_11155111.address,
-      abi: RentalityChatHelperJSON_11155111.abi,
-    },
+  chatHelper: {
+    addresses: RentalityChatHelperJSON_ADDRESSES.addresses,
+    abi: RentalityChatHelperJSON_ABI.abi,
   },
 };
+
+export async function getContract(contract: keyof typeof rentalityContracts, signer: ethers.providers.JsonRpcSigner) {
+  const chainId = await signer.getChainId();
+  const selectedChain = rentalityContracts[contract].addresses.find((i) => i.chainId === chainId);
+
+  if (!selectedChain) {
+    console.error(`getContract error: contract address for chainId ${chainId} is not found`);
+    return null;
+  }
+
+  return new Contract(selectedChain.address, rentalityContracts[contract].abi, signer);
+}
 
 export default rentalityContracts;

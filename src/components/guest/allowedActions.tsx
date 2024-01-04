@@ -40,15 +40,17 @@ export default function AllowedActions({
                 }}
               >
                 <option className="hidden" disabled></option>
-                <option value="0">0</option>
-                <option value="0.125">1/8</option>
-                <option value="0.25">1/4</option>
-                <option value="0.375">3/8</option>
-                <option value="0.5">1/2</option>
-                <option value="0.625">5/8</option>
-                <option value="0.75">3/4</option>
-                <option value="0.875">7/8</option>
-                <option value="1">full</option>
+                <option value="0">0%</option>
+                <option value="0.1">10%</option>
+                <option value="0.2">20%</option>
+                <option value="0.3">30%</option>
+                <option value="0.4">40%</option>
+                <option value="0.5">50%</option>
+                <option value="0.6">60%</option>
+                <option value="0.7">70%</option>
+                <option value="0.8">80%</option>
+                <option value="0.9">90%</option>
+                <option value="1">100%</option>
               </RntSelect>
             ) : (
               <RntInput

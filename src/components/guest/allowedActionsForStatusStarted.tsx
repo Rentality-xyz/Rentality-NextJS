@@ -35,7 +35,7 @@ export default function AllowedActionsForStatusStarted({
       <div className="flex flex-col md:flex-row md:gap-8 mb-4">
         <div className="flex flex-col flex-1">
           <div className="flex flex-col">
-            <div className="font-bold mt-2">Fuel level</div>
+            <div className="font-bold mt-2">Fuel or battery level, %</div>
             <div className="flex flex-row gap-8">
               <RntInput
                 className="w-1/2 py-2"
@@ -67,15 +67,17 @@ export default function AllowedActionsForStatusStarted({
                 }}
               >
                 <option className="hidden" disabled></option>
-                <option value="0">0</option>
-                <option value="0.125">1/8</option>
-                <option value="0.25">1/4</option>
-                <option value="0.375">3/8</option>
-                <option value="0.5">1/2</option>
-                <option value="0.625">5/8</option>
-                <option value="0.75">3/4</option>
-                <option value="0.875">7/8</option>
-                <option value="1">full</option>
+                <option value="0">0%</option>
+                <option value="0.1">10%</option>
+                <option value="0.2">20%</option>
+                <option value="0.3">30%</option>
+                <option value="0.4">40%</option>
+                <option value="0.5">50%</option>
+                <option value="0.6">60%</option>
+                <option value="0.7">70%</option>
+                <option value="0.8">80%</option>
+                <option value="0.9">90%</option>
+                <option value="1">100%</option>
               </RntSelect>
             </div>
           </div>
@@ -124,7 +126,7 @@ export default function AllowedActionsForStatusStarted({
             <span className="col-span-1 text-right">{refuelValue} gal</span>
             <span className="col-span-1">Gal price:</span>
             <span className="col-span-1 text-right">${tripInfo.fuelPricePerGal.toFixed(2)}</span>
-            <span className="col-span-1">Charge:</span>
+            <span className="col-span-1">Refuel or battery charge:</span>
             <span className="col-span-1 text-right">${reFuelCharge.toFixed(2)}</span>
           </div>
           <div className="grid grid-cols-2 mt-2 md:mt-4 text-sm">
@@ -134,7 +136,7 @@ export default function AllowedActionsForStatusStarted({
             <span className="col-span-1 text-right">{overmileValue} mi per trip</span>
             <span className="col-span-1">Overmile price:</span>
             <span className="col-span-1 text-right">${tripInfo.overmilePrice.toFixed(4)}</span>
-            <span className="col-span-1">Charge:</span>
+            <span className="col-span-1">Overmile charge:</span>
             <span className="col-span-1 text-right">${overmilesCharge.toFixed(2)}</span>
           </div>
         </div>
@@ -143,7 +145,7 @@ export default function AllowedActionsForStatusStarted({
           <div className="grid grid-cols-2 gap-x-2 mt-2 md:mt-4 text-sm">
             <span className="col-span-1">Received deposit:</span>
             <span className="col-span-1 text-right">${depositPaid.toFixed(2)}</span>
-            <span className="col-span-1">ReFuel reimbursement:</span>
+            <span className="col-span-1">Refuel or battery charge:</span>
             <div className="col-span-1 text-right flex items-end">
               <span className="w-full">${reFuelCharge.toFixed(2)}</span>
             </div>

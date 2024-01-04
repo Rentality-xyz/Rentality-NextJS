@@ -1,5 +1,7 @@
 import { isEmpty } from "@/utils/string";
 
+export const UNLIMITED_MILES_VALUE = "Unlimited";
+
 export type HostCarInfo = {
   carId: number;
   ownerAddress: string;
@@ -13,7 +15,6 @@ export type HostCarInfo = {
   licenseState: string;
   seatsNumber: string;
   doorsNumber: string;
-  fuelType: string;
   tankVolumeInGal: string;
   wheelDrive: string;
   transmission: string;
@@ -30,7 +31,13 @@ export type HostCarInfo = {
   city: string;
   locationLatitude: string;
   locationLongitude: string;
+  locationAddress: string;
   currentlyListed: boolean;
+  engineTypeString: string;
+  batteryPrice_0_20: string;
+  batteryPrice_21_50: string;
+  batteryPrice_51_80: string;
+  batteryPrice_81_100: string;
 };
 
 export const verifyCar = (carInfoFormParams: HostCarInfo) => {
@@ -44,7 +51,7 @@ export const verifyCar = (carInfoFormParams: HostCarInfo) => {
     !isEmpty(carInfoFormParams.licenseState) &&
     !isEmpty(carInfoFormParams.seatsNumber) &&
     !isEmpty(carInfoFormParams.doorsNumber) &&
-    !isEmpty(carInfoFormParams.fuelType) &&
+    !isEmpty(carInfoFormParams.engineTypeString) &&
     !isEmpty(carInfoFormParams.tankVolumeInGal) &&
     //!carInfoFormParams.wheelDrive &&
     !isEmpty(carInfoFormParams.transmission) &&
@@ -56,10 +63,6 @@ export const verifyCar = (carInfoFormParams: HostCarInfo) => {
     !isEmpty(carInfoFormParams.milesIncludedPerDay) &&
     !isEmpty(carInfoFormParams.securityDeposit) &&
     !isEmpty(carInfoFormParams.fuelPricePerGal) &&
-    !isEmpty(carInfoFormParams.country) &&
-    !isEmpty(carInfoFormParams.state) &&
-    !isEmpty(carInfoFormParams.city) &&
-    !isEmpty(carInfoFormParams.locationLatitude) &&
-    !isEmpty(carInfoFormParams.locationLongitude)
+    !isEmpty(carInfoFormParams.locationAddress)
   );
 };

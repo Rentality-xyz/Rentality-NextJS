@@ -8,7 +8,6 @@ export type BaseCarInfo = {
   licensePlate: string;
   pricePerDay: number;
   securityDeposit: number;
-  fuelPricePerGal: number;
   milesIncludedPerDay: number;
   currentlyListed: boolean;
 };

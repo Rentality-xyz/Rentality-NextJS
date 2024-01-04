@@ -1,10 +1,13 @@
 import { ContractTransaction } from "ethers";
-import { ContractCarInfo } from "./ContractCarInfo";
+import { ContractAvailableCarInfo, ContractCarInfo } from "./ContractCarInfo";
 import { ContractCreateTripRequest } from "./ContractCreateTripRequest";
 import { ContractTrip } from "./ContractTrip";
 import { ContractCreateCarRequest } from "./ContractCreateCarRequest";
 import { ContractSearchCarParams } from "./ContractSearchCarParams";
 import { ContractChatInfo } from "./ContractChatInfo";
+import { ContractUpdateCarInfoRequest } from "./ContractUpdateCarInfoRequest";
+import { ContractCreateClaimRequest } from "./ContractCreateClaimRequest";
+import { ContractFullClaimInfo } from "./ContractFullClaimInfo";
 
 export interface IRentalityContract {
   /// ADMIN functions
@@ -26,41 +29,41 @@ export interface IRentalityContract {
 
   /// HOST functions
   addCar(request: ContractCreateCarRequest): Promise<ContractTransaction>;
-  updateCarInfo(
-    carId: bigint,
-    pricePerDayInUsdCents: bigint,
-    securityDepositPerTripInUsdCents: bigint,
-    fuelPricePerGalInUsdCents: bigint,
-    milesIncludedPerDay: bigint,
-    country: string,
-    state: string,
-    city: string,
-    locationLatitudeInPPM: bigint,
-    locationLongitudeInPPM: bigint,
-    currentlyListed: boolean
+  updateCarInfo(request: ContractUpdateCarInfoRequest): Promise<ContractTransaction>;
+  updateCarInfoWithLocation(
+    request: ContractUpdateCarInfoRequest,
+    location: string,
+    geoApiKey: string
   ): Promise<ContractTransaction>;
+
   getCarInfoById(carId: bigint): Promise<ContractCarInfo>;
   getMyCars(): Promise<ContractCarInfo[]>;
   getTripsAsHost(): Promise<ContractTrip[]>;
   approveTripRequest(tripId: bigint): Promise<ContractTransaction>;
   rejectTripRequest(tripId: bigint): Promise<ContractTransaction>;
-  checkInByHost(tripId: bigint, startFuelLevelInPermille: bigint, startOdometr: bigint): Promise<ContractTransaction>;
-  checkOutByHost(tripId: bigint, endFuelLevelInPermille: bigint, endOdometr: bigint): Promise<ContractTransaction>;
+  checkInByHost(tripId: bigint, panelParams: bigint[]): Promise<ContractTransaction>;
+  checkOutByHost(tripId: bigint, panelParams: bigint[]): Promise<ContractTransaction>;
   finishTrip(tripId: bigint): Promise<ContractTransaction>;
   getChatInfoForHost(): Promise<ContractChatInfo[]>;
+  createClaim(request: ContractCreateClaimRequest): Promise<ContractTransaction>;
+  rejectClaim(claimId: bigint): Promise<ContractTransaction>;
+  updateClaim(claimId: bigint): Promise<ContractTransaction>;
+  getClaim(claimId: bigint): Promise<ContractFullClaimInfo>;
+  getClaimsByTrip(tripId: bigint): Promise<ContractFullClaimInfo[]>;
 
   /// GUEST functions
   searchAvailableCars(
     startDateTime: bigint,
     endDateTime: bigint,
     searchParams: ContractSearchCarParams
-  ): Promise<ContractCarInfo[]>;
+  ): Promise<ContractAvailableCarInfo[]>;
   createTripRequest(request: ContractCreateTripRequest, value: object): Promise<ContractTransaction>;
   getTripsAsGuest(): Promise<ContractTrip[]>;
   getCarsRentedByMe(): Promise<ContractCarInfo[]>;
-  checkInByGuest(tripId: bigint, startFuelLevelInPermille: bigint, startOdometr: bigint): Promise<ContractTransaction>;
-  checkOutByGuest(tripId: bigint, endFuelLevelInPermille: bigint, endOdometr: bigint): Promise<ContractTransaction>;
+  checkInByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransaction>;
+  checkOutByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransaction>;
   getChatInfoForGuest(): Promise<ContractChatInfo[]>;
+  payClaim(claimId: bigint, value: object): Promise<ContractTransaction>;
 
   /// GENERAL functions
   address: string;

@@ -13,7 +13,7 @@ export const blockchainList: BlockchainBaseInfo[] = [
     isTestnet: true,
   },
   // { name: "Fuse Sparknet", shortName: "Fuse Sparknet", chainId: 123, chainIdHexString: "0x7b", isTestnet: true },
-  // { name: "Ganache", shortName: "Ganache", chainId: 1337, chainIdHexString: "0x539", isTestnet: true },
+  { name: "Ganache", shortName: "Ganache", chainId: 1337, chainIdHexString: "0x539", isTestnet: true },
 ];
 
 type BlockchainBaseInfo = {

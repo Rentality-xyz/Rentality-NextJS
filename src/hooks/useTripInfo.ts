@@ -4,6 +4,7 @@ import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { TripDetails } from "@/model/TripDetails";
 import { useRentality } from "@/contexts/rentalityContext";
+import { getDateFromBlockchainTime } from "@/utils/formInput";
 
 const emptyDetails: TripDetails = {
   tripId: BigInt(0),
@@ -59,25 +60,25 @@ const useTripDetails = (tripId: bigint) => {
         status: getTripStatusTextFromStatus(getTripStatusFromContract(Number(trip.status))),
         guest: trip.guest,
         host: trip.host,
-        startDateTime: new Date(Number(trip.startDateTime) * 1000),
-        endDateTime: new Date(Number(trip.endDateTime) * 1000),
+        startDateTime: getDateFromBlockchainTime(trip.startDateTime),
+        endDateTime: getDateFromBlockchainTime(trip.endDateTime),
         startLocation: trip.startLocation,
         endLocation: trip.endLocation,
         milesIncludedPerDay: trip.milesIncludedPerDay,
-        fuelPricePerGalInUsd: Number(trip.fuelPricePerGalInUsdCents) / 100.0,
-        approvedDateTime: trip.approvedDateTime > 0 ? new Date(Number(trip.approvedDateTime) * 1000) : undefined,
+        fuelPricePerGalInUsd: Number(trip.fuelPrices[0]) / 100.0,
+        approvedDateTime: trip.approvedDateTime > 0 ? getDateFromBlockchainTime(trip.approvedDateTime) : undefined,
         checkedInByHostDateTime:
-          trip.checkedInByHostDateTime > 0 ? new Date(Number(trip.checkedInByHostDateTime) * 1000) : undefined,
-        startFuelLevelInGal: trip.startFuelLevelInGal > 0 ? Number(trip.startFuelLevelInGal) : undefined,
-        startOdometr: trip.startOdometr > 0 ? Number(trip.startOdometr) : undefined,
+          trip.checkedInByHostDateTime > 0 ? getDateFromBlockchainTime(trip.checkedInByHostDateTime) : undefined,
+        startFuelLevelInGal: trip.startParamLevels[0] > 0 ? Number(trip.startParamLevels[0]) : undefined,
+        startOdometr: trip.startParamLevels[1] > 0 ? Number(trip.startParamLevels[1]) : undefined,
         checkedInByGuestDateTime:
-          trip.checkedInByGuestDateTime > 0 ? new Date(Number(trip.checkedInByGuestDateTime) * 1000) : undefined,
+          trip.checkedInByGuestDateTime > 0 ? getDateFromBlockchainTime(trip.checkedInByGuestDateTime) : undefined,
         checkedOutByGuestDateTime:
-          trip.checkedOutByGuestDateTime > 0 ? new Date(Number(trip.checkedOutByGuestDateTime) * 1000) : undefined,
-        endFuelLevelInGal: trip.endFuelLevelInGal > 0 ? Number(trip.endFuelLevelInGal) : undefined,
-        endOdometr: trip.endOdometr > 0 ? Number(trip.endOdometr) : undefined,
+          trip.checkedOutByGuestDateTime > 0 ? getDateFromBlockchainTime(trip.checkedOutByGuestDateTime) : undefined,
+        endFuelLevelInGal: trip.endParamLevels[0] > 0 ? Number(trip.endParamLevels[0]) : undefined,
+        endOdometr: trip.endParamLevels[1] > 0 ? Number(trip.endParamLevels[1]) : undefined,
         checkedOutByHostDateTime:
-          trip.checkedOutByHostDateTime > 0 ? new Date(Number(trip.checkedOutByHostDateTime) * 1000) : undefined,
+          trip.checkedOutByHostDateTime > 0 ? getDateFromBlockchainTime(trip.checkedOutByHostDateTime) : undefined,
 
         paymentFrom: trip.paymentInfo.from,
         paymentTo: trip.paymentInfo.to,

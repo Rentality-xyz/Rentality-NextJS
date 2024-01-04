@@ -117,7 +117,7 @@ export class Client {
         return messages;
       }
     } catch (e) {
-      console.log("Failed to retrieve messages", e);
+      console.error("Failed to retrieve messages", e);
     }
   }
 

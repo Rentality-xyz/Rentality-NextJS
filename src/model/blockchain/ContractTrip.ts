@@ -12,24 +12,20 @@ export type ContractTrip = {
   startLocation: string;
   endLocation: string;
   milesIncludedPerDay: number;
-  fuelPricePerGalInUsdCents: bigint;
-  paymentInfo: PaymentInfo;
+  fuelPrices: bigint[];
+  paymentInfo: ContractPaymentInfo;
   approvedDateTime: bigint;
+  rejectedDateTime: bigint;
+  rejectedBy: string;
   checkedInByHostDateTime: bigint;
-  startFuelLevelInGal: bigint;
-  startOdometr: bigint;
+  startParamLevels: bigint[];
   checkedInByGuestDateTime: bigint;
   checkedOutByGuestDateTime: bigint;
-  endFuelLevelInGal: bigint;
-  endOdometr: bigint;
+  endParamLevels: bigint[];
   checkedOutByHostDateTime: bigint;
-  rejectedBy: string;
-  rejectedDateTime: bigint;
-  hostName: string;
-  guestName: string;
 };
 
-type PaymentInfo = {
+type ContractPaymentInfo = {
   tripId: bigint;
   from: string;
   to: string;
@@ -40,6 +36,8 @@ type PaymentInfo = {
   currencyType: number;
   ethToCurrencyRate: bigint;
   ethToCurrencyDecimals: bigint;
+  resolveFuelAmountInUsdCents: bigint;
+  resolveMilesAmountInUsdCents: bigint;
 };
 
 export const getTripStatusFromContract = (status: number) => {

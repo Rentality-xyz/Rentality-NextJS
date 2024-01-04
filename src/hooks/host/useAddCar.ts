@@ -4,8 +4,14 @@ import { ContractCreateCarRequest } from "@/model/blockchain/ContractCreateCarRe
 import { HostCarInfo, verifyCar } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
 import { getIntFromString, getUIntFromString } from "@/utils/numericFormatters";
+import {
+  ENGINE_TYPE_ELECTRIC_STRING,
+  ENGINE_TYPE_PATROL_STRING,
+  getEngineTypeCode,
+} from "@/model/blockchain/ContractCarInfo";
+import { getMoneyInCentsFromString } from "@/utils/formInput";
 
-const emptyNewCarInfo = {
+const emptyNewCarInfo: HostCarInfo = {
   carId: 0,
   ownerAddress: "",
   vinNumber: "",
@@ -18,7 +24,6 @@ const emptyNewCarInfo = {
   licenseState: "",
   seatsNumber: "",
   doorsNumber: "",
-  fuelType: "",
   tankVolumeInGal: "",
   wheelDrive: "",
   transmission: "",
@@ -35,7 +40,13 @@ const emptyNewCarInfo = {
   city: "",
   locationLatitude: "",
   locationLongitude: "",
+  locationAddress: "",
   currentlyListed: true,
+  engineTypeString: "",
+  batteryPrice_0_20: "",
+  batteryPrice_21_50: "",
+  batteryPrice_51_80: "",
+  batteryPrice_81_100: "",
 };
 
 const useAddCar = () => {
@@ -54,7 +65,6 @@ const useAddCar = () => {
     licenseState,
     seatsNumber,
     doorsNumber,
-    fuelType,
     tankVolumeInGal,
     wheelDrive,
     transmission,
@@ -125,10 +135,6 @@ const useAddCar = () => {
         value: wheelDrive,
       },
       {
-        trait_type: "Fuel type",
-        value: fuelType,
-      },
-      {
         trait_type: "Tank volume(gal)",
         value: tankVolumeInGal,
       },
@@ -184,19 +190,21 @@ const useAddCar = () => {
 
       const metadataURL = await uploadMetadataToIPFS(dataToSave);
 
-      var pricePerDayDouble = getUIntFromString(dataToSave.pricePerDay);
-      const pricePerDayInUsdCents = BigInt((pricePerDayDouble * 100) | 0);
+      const pricePerDayInUsdCents = BigInt(getMoneyInCentsFromString(dataToSave.pricePerDay));
+      const securityDepositPerTripInUsdCents = BigInt(getMoneyInCentsFromString(dataToSave.securityDeposit));
 
-      var securityDepositPerTripDouble = getUIntFromString(dataToSave.securityDeposit);
-      const securityDepositPerTripInUsdCents = BigInt((securityDepositPerTripDouble * 100) | 0);
+      const engineType = getEngineTypeCode(dataToSave.engineTypeString);
 
-      var fuelPricePerGalDouble = getUIntFromString(dataToSave.fuelPricePerGal);
-      const fuelPricePerGalInUsdCents = BigInt((fuelPricePerGalDouble * 100) | 0);
-
-      var locationLatitudeDouble = getIntFromString(dataToSave.locationLatitude);
-      const locationLatitudeInPPM = BigInt((locationLatitudeDouble * 1_000_000) | 0);
-      var locationLongitudeDouble = getIntFromString(dataToSave.locationLongitude);
-      const locationLongitudeInPPM = BigInt((locationLongitudeDouble * 1_000_000) | 0);
+      const engineParams: bigint[] = [];
+      if (carInfoFormParams.engineTypeString === ENGINE_TYPE_PATROL_STRING) {
+        engineParams.push(BigInt(dataToSave.tankVolumeInGal));
+        engineParams.push(BigInt(getMoneyInCentsFromString(dataToSave.fuelPricePerGal)));
+      } else if (carInfoFormParams.engineTypeString === ENGINE_TYPE_ELECTRIC_STRING) {
+        engineParams.push(BigInt(getMoneyInCentsFromString(dataToSave.batteryPrice_0_20)));
+        engineParams.push(BigInt(getMoneyInCentsFromString(dataToSave.batteryPrice_21_50)));
+        engineParams.push(BigInt(getMoneyInCentsFromString(dataToSave.batteryPrice_51_80)));
+        engineParams.push(BigInt(getMoneyInCentsFromString(dataToSave.batteryPrice_81_100)));
+      }
 
       const request: ContractCreateCarRequest = {
         tokenUri: metadataURL,
@@ -206,15 +214,14 @@ const useAddCar = () => {
         yearOfProduction: dataToSave.releaseYear,
         pricePerDayInUsdCents: pricePerDayInUsdCents,
         securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
-        tankVolumeInGal: BigInt(dataToSave.tankVolumeInGal),
-        fuelPricePerGalInUsdCents: fuelPricePerGalInUsdCents,
         milesIncludedPerDay: BigInt(dataToSave.milesIncludedPerDay),
-        country: dataToSave.country,
-        state: dataToSave.state,
-        city: dataToSave.city,
-        locationLatitudeInPPM: locationLatitudeInPPM,
-        locationLongitudeInPPM: locationLongitudeInPPM,
+        geoApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
+        engineType: engineType,
+        engineParams: engineParams,
+        locationAddress: dataToSave.locationAddress,
       };
+
+      console.log("request", request);
 
       let transaction = await rentalityInfo.rentalityContract.addCar(request);
 

@@ -18,6 +18,7 @@ type Props = {
 };
 
 type PlaceDetails = {
+  addressString: string;
   country?: {
     short_name: string;
     long_name: string;
@@ -100,6 +101,7 @@ export default function RntPlaceAutocomplete({
         if (placeDetails) {
           console.log("placeDetails", placeDetails);
 
+          const addressString = placeDetails.formatted_address ?? "";
           const country = getAddressComponents(placeDetails, "country");
           const state = getAddressComponents(placeDetails, "administrative_area_level_1");
           const city =
@@ -111,6 +113,7 @@ export default function RntPlaceAutocomplete({
           const longitude = placeDetails.geometry?.viewport?.getCenter().lng() ?? 0;
 
           onAddressChangeHandler({
+            addressString: addressString,
             country: country,
             state: state,
             city: city,

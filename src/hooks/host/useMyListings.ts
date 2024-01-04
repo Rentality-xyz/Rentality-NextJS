@@ -31,7 +31,6 @@ const useMyListings = () => {
 
                 const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
                 const securityDeposit = Number(i.securityDepositPerTripInUsdCents) / 100;
-                const fuelPricePerGal = Number(i.fuelPricePerGalInUsdCents) / 100;
                 const milesIncludedPerDay = Number(i.milesIncludedPerDay);
 
                 let item: BaseCarInfo = {
@@ -44,7 +43,6 @@ const useMyListings = () => {
                   licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
                   pricePerDay: pricePerDay,
                   securityDeposit: securityDeposit,
-                  fuelPricePerGal: fuelPricePerGal,
                   milesIncludedPerDay: milesIncludedPerDay,
                   currentlyListed: i.currentlyListed,
                 };

@@ -1,14 +1,14 @@
 export type ContractCreateTripRequest = {
   carId: bigint;
   host: string;
-  startDateTime: number;
-  endDateTime: number;
+  startDateTime: bigint;
+  endDateTime: bigint;
   startLocation: string;
   endLocation: string;
   totalDayPriceInUsdCents: number;
   taxPriceInUsdCents: number;
   depositInUsdCents: number;
-  fuelPricePerGalInUsdCents: number;
+  fuelPrices: BigInt[];
   ethToCurrencyRate: bigint;
   ethToCurrencyDecimals: number;
 };

@@ -18,7 +18,6 @@ export type SearchCarInfo = {
   fuelType: string;
   milesIncludedPerDay: string;
   pricePerDay: number;
-  fuelPricePerGal: number;
   days: number;
   totalPrice: number;
   securityDeposit: number;

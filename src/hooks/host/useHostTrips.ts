@@ -4,6 +4,7 @@ import { TripInfo, AllowedChangeTripAction, TripStatus } from "@/model/TripInfo"
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
+import { getDateFromBlockchainTime } from "@/utils/formInput";
 
 const useHostTrips = () => {
   const rentalityInfo = useRentality();
@@ -69,11 +70,10 @@ const useHostTrips = () => {
         const startFuelLevelInPermille = BigInt(Number(params[0]) * 1000);
         const startOdometr = BigInt(params[1]);
 
-        let transaction = await rentalityInfo.rentalityContract.checkInByHost(
-          tripId,
+        let transaction = await rentalityInfo.rentalityContract.checkInByHost(tripId, [
           startFuelLevelInPermille,
-          startOdometr
-        );
+          startOdometr,
+        ]);
 
         const result = await transaction.wait();
         return true;
@@ -93,11 +93,10 @@ const useHostTrips = () => {
         const endFuelLevelInPermille = BigInt(Number(params[0]) * 1000);
         const endOdometr = BigInt(params[1]);
 
-        let transaction = await rentalityInfo.rentalityContract.checkOutByHost(
-          tripId,
+        let transaction = await rentalityInfo.rentalityContract.checkOutByHost(tripId, [
           endFuelLevelInPermille,
-          endOdometr
-        );
+          endOdometr,
+        ]);
 
         const result = await transaction.wait();
         return true;
@@ -147,7 +146,7 @@ const useHostTrips = () => {
             text: "Start",
             readonly: false,
             params: [
-              { text: "Fuel level", value: "", type: "fuel" },
+              { text: "Fuel or battery level, %", value: "", type: "fuel" },
               { text: "Odometr", value: "", type: "text" },
             ],
             action: checkInTrip,
@@ -163,13 +162,13 @@ const useHostTrips = () => {
             readonly: true,
             params: [
               {
-                text: "Fuel level",
-                value: convernFuelInLevel(trip.endFuelLevelInGal, tankSize),
+                text: "Fuel or battery level, %",
+                value: convernFuelInLevel(trip.endParamLevels[0], tankSize),
                 type: "fuel",
               },
               {
                 text: "Odometr",
-                value: trip.endOdometr.toString(),
+                value: trip.endParamLevels[1].toString(),
                 type: "text",
               },
             ],
@@ -226,30 +225,30 @@ const useHostTrips = () => {
                     model: meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
                     year: meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
                     licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
-                    tripStart: new Date(Number(i.startDateTime) * 1000),
-                    tripEnd: new Date(Number(i.endDateTime) * 1000),
+                    tripStart: getDateFromBlockchainTime(i.startDateTime),
+                    tripEnd: getDateFromBlockchainTime(i.endDateTime),
                     locationStart: i.startLocation,
                     locationEnd: i.endLocation,
                     status: tripStatus,
                     allowedActions: getAllowedActions(tripStatus, i, tankSize),
                     totalPrice: (Number(i.paymentInfo.totalDayPriceInUsdCents) / 100).toString(),
                     tankVolumeInGal: tankSize,
-                    startFuelLevelInGal: Number(i.startFuelLevelInGal),
-                    endFuelLevelInGal: Number(i.endFuelLevelInGal),
-                    fuelPricePerGal: Number(i.fuelPricePerGalInUsdCents) / 100,
+                    startFuelLevelInGal: Number(i.startParamLevels[0]),
+                    endFuelLevelInGal: Number(i.endParamLevels[0]),
+                    fuelPricePerGal: Number(i.fuelPrices[0]) / 100,
                     milesIncludedPerDay: Number(i.milesIncludedPerDay),
-                    startOdometr: Number(i.startOdometr),
-                    endOdometr: Number(i.endOdometr),
+                    startOdometr: Number(i.startParamLevels[1]),
+                    endOdometr: Number(i.endParamLevels[1]),
                     depositPaid: Number(i.paymentInfo.depositInUsdCents) / 100,
                     overmilePrice: Number(i.pricePerDayInUsdCents) / Number(i.milesIncludedPerDay) / 100,
                     hostMobileNumber: tripContactInfo.hostPhoneNumber,
                     guestMobileNumber: tripContactInfo.guestPhoneNumber,
                     hostAddress: i.host,
-                    hostName: i.hostName,
+                    hostName: i.host,
                     guestAddress: i.guest,
-                    guestName: i.guestName,
+                    guestName: i.guest,
                     rejectedBy: i.rejectedBy,
-                    rejectedDate: i.rejectedDateTime > 0 ? new Date(Number(i.rejectedDateTime) * 1000) : undefined,
+                    rejectedDate: i.rejectedDateTime > 0 ? getDateFromBlockchainTime(i.rejectedDateTime) : undefined,
                   };
                   return item;
                 })

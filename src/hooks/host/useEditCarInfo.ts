@@ -1,13 +1,20 @@
 import { Signer } from "ethers";
 import { useEffect, useState } from "react";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { ContractCarInfo } from "@/model/blockchain/ContractCarInfo";
+import {
+  ContractCarInfo,
+  ENGINE_TYPE_ELECTRIC_STRING,
+  ENGINE_TYPE_PATROL_STRING,
+  getEngineTypeString,
+} from "@/model/blockchain/ContractCarInfo";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { HostCarInfo } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
-import { getIntFromString, getUIntFromString } from "@/utils/numericFormatters";
+import { getUIntFromString } from "@/utils/numericFormatters";
+import { ContractUpdateCarInfoRequest } from "@/model/blockchain/ContractUpdateCarInfoRequest";
+import { getMoneyInCentsFromString } from "@/utils/formInput";
 
-const emptyHostCarInfo = {
+const emptyHostCarInfo: HostCarInfo = {
   carId: -1,
   ownerAddress: "",
   vinNumber: "",
@@ -20,7 +27,6 @@ const emptyHostCarInfo = {
   licenseState: "",
   seatsNumber: "",
   doorsNumber: "",
-  fuelType: "",
   tankVolumeInGal: "",
   wheelDrive: "",
   transmission: "",
@@ -37,7 +43,13 @@ const emptyHostCarInfo = {
   city: "",
   locationLatitude: "",
   locationLongitude: "",
+  locationAddress: "",
   currentlyListed: true,
+  engineTypeString: "",
+  batteryPrice_0_20: "",
+  batteryPrice_21_50: "",
+  batteryPrice_51_80: "",
+  batteryPrice_81_100: "",
 };
 
 const useEditCarInfo = (carId: number) => {
@@ -55,33 +67,29 @@ const useEditCarInfo = (carId: number) => {
     try {
       setDataSaved(false);
 
-      var pricePerDayDouble = getUIntFromString(carInfoFormParams.pricePerDay);
-      const pricePerDayInUsdCents = BigInt((pricePerDayDouble * 100) | 0);
+      const pricePerDayInUsdCents = BigInt(getMoneyInCentsFromString(carInfoFormParams.pricePerDay));
+      const securityDepositPerTripInUsdCents = BigInt(getMoneyInCentsFromString(carInfoFormParams.securityDeposit));
 
-      var securityDepositPerTripDouble = getUIntFromString(carInfoFormParams.securityDeposit);
-      const securityDepositPerTripInUsdCents = BigInt((securityDepositPerTripDouble * 100) | 0);
+      const engineParams: bigint[] = [];
+      if (carInfoFormParams.engineTypeString === ENGINE_TYPE_PATROL_STRING) {
+        engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.fuelPricePerGal)));
+      } else if (carInfoFormParams.engineTypeString === ENGINE_TYPE_ELECTRIC_STRING) {
+        engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.batteryPrice_0_20)));
+        engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.batteryPrice_21_50)));
+        engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.batteryPrice_51_80)));
+        engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.batteryPrice_81_100)));
+      }
 
-      var fuelPricePerGalDouble = getUIntFromString(carInfoFormParams.fuelPricePerGal);
-      const fuelPricePerGalInUsdCents = BigInt((fuelPricePerGalDouble * 100) | 0);
+      const updateCarRequest: ContractUpdateCarInfoRequest = {
+        carId: BigInt(carId),
+        currentlyListed: carInfoFormParams.currentlyListed,
+        engineParams: engineParams,
+        milesIncludedPerDay: BigInt(carInfoFormParams.milesIncludedPerDay),
+        pricePerDayInUsdCents: pricePerDayInUsdCents,
+        securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
+      };
 
-      var locationLatitudeDouble = getIntFromString(carInfoFormParams.locationLatitude);
-      const locationLatitudeInPPM = BigInt((locationLatitudeDouble * 1_000_000) | 0);
-      var locationLongitudeDouble = getIntFromString(carInfoFormParams.locationLongitude);
-      const locationLongitudeInPPM = BigInt((locationLongitudeDouble * 1_000_000) | 0);
-
-      let transaction = await rentalityInfo.rentalityContract.updateCarInfo(
-        BigInt(carId),
-        pricePerDayInUsdCents,
-        securityDepositPerTripInUsdCents,
-        fuelPricePerGalInUsdCents,
-        BigInt(carInfoFormParams.milesIncludedPerDay),
-        carInfoFormParams.country,
-        carInfoFormParams.state,
-        carInfoFormParams.city,
-        locationLatitudeInPPM,
-        locationLongitudeInPPM,
-        carInfoFormParams.currentlyListed
-      );
+      let transaction = await rentalityInfo.rentalityContract.updateCarInfo(updateCarRequest);
 
       const result = await transaction.wait();
       setDataSaved(true);
@@ -112,7 +120,18 @@ const useEditCarInfo = (carId: number) => {
 
         const price = Number(carInfo.pricePerDayInUsdCents) / 100;
         const securityDeposit = Number(carInfo.securityDepositPerTripInUsdCents) / 100;
-        const fuelPricePerGal = Number(carInfo.fuelPricePerGalInUsdCents) / 100;
+        const engineTypeString = getEngineTypeString(carInfo.engineType);
+
+        const fuelPricePerGal =
+          engineTypeString === ENGINE_TYPE_PATROL_STRING ? (Number(carInfo.engineParams[1]) / 100).toString() : "";
+        const batteryPrice_0_20 =
+          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? Number(carInfo.engineParams[0]).toString() : "";
+        const batteryPrice_21_50 =
+          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? Number(carInfo.engineParams[1]).toString() : "";
+        const batteryPrice_51_80 =
+          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? Number(carInfo.engineParams[2]).toString() : "";
+        const batteryPrice_81_100 =
+          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? Number(carInfo.engineParams[3]).toString() : "";
 
         let item: HostCarInfo = {
           carId: Number(carInfo.carId),
@@ -127,7 +146,6 @@ const useEditCarInfo = (carId: number) => {
           licenseState: meta.attributes?.find((x: any) => x.trait_type === "License state")?.value ?? "",
           seatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats number")?.value ?? "",
           doorsNumber: meta.attributes?.find((x: any) => x.trait_type === "Doors number")?.value ?? "",
-          fuelType: meta.attributes?.find((x: any) => x.trait_type === "Fuel type")?.value ?? "",
           tankVolumeInGal: meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "",
           wheelDrive: meta.attributes?.find((x: any) => x.trait_type === "Wheel drive")?.value ?? "",
           transmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
@@ -138,14 +156,22 @@ const useEditCarInfo = (carId: number) => {
           pricePerDay: price.toString(),
           milesIncludedPerDay: carInfo.milesIncludedPerDay.toString(),
           securityDeposit: securityDeposit.toString(),
-          fuelPricePerGal: fuelPricePerGal.toString(),
-          country: carInfo.country,
-          state: carInfo.state,
-          city: carInfo.city,
-          locationLatitude: (Number(carInfo.locationLatitudeInPPM) / 1_000_000).toString(),
-          locationLongitude: (Number(carInfo.locationLongitudeInPPM) / 1_000_000).toString(),
+          country: "",
+          state: "",
+          city: "",
+          locationLatitude: "",
+          locationLongitude: "",
+          locationAddress: "",
           currentlyListed: carInfo.currentlyListed,
+          engineTypeString: engineTypeString,
+          fuelPricePerGal: fuelPricePerGal,
+          batteryPrice_0_20: batteryPrice_0_20,
+          batteryPrice_21_50: batteryPrice_21_50,
+          batteryPrice_51_80: batteryPrice_51_80,
+          batteryPrice_81_100: batteryPrice_81_100,
         };
+        console.log("item:", JSON.stringify(item));
+
         return item;
       } catch (e) {
         console.error("getCarInfo error:" + e);

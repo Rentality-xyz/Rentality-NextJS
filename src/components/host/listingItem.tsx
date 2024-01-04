@@ -45,7 +45,6 @@ export default function ListingItem({ carInfo }: Props) {
             <strong className="text-xl">{`$${carInfo.pricePerDay}/day`}</strong>
             <div className="text-sm">{`$${carInfo.milesIncludedPerDay} miles per day`}</div>
             <div className="text-sm">{`$${carInfo.securityDeposit} Security deposit`}</div>
-            <div className="text-sm">{`$${carInfo.fuelPricePerGal} Fuel price per gal`}</div>
           </div>
           <Link href={`/host/vehicles/edit/${carInfo.carId}`}>
             <RntButton className="w-28 h-12">Edit</RntButton>

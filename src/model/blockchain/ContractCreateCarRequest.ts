@@ -6,12 +6,9 @@ export type ContractCreateCarRequest = {
   yearOfProduction: string;
   pricePerDayInUsdCents: bigint;
   securityDepositPerTripInUsdCents: bigint;
-  tankVolumeInGal: bigint;
-  fuelPricePerGalInUsdCents: bigint;
+  engineParams: bigint[];
+  engineType: bigint;
   milesIncludedPerDay: bigint;
-  country: string;
-  state: string;
-  city: string;
-  locationLatitudeInPPM: bigint;
-  locationLongitudeInPPM: bigint;
+  locationAddress: string;
+  geoApiKey: string;
 };

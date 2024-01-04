@@ -5,12 +5,13 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractChatInfo } from "@/model/blockchain/ContractChatInfo";
 import { Client as ChatClient } from "@/chat/client";
 import { useRentality } from "@/contexts/rentalityContext";
-import { Contract, ethers } from "ethers";
-import { rentalityContracts } from "@/abis";
+import { ethers } from "ethers";
+import { getContract } from "@/abis";
 import { IRentalityChatHelperContract } from "@/model/blockchain/IRentalityChatHelperContract";
 import { isEmpty } from "@/utils/string";
 import { bytesToHex } from "@waku/utils/bytes";
 import { ChatInfo } from "@/model/ChatInfo";
+import { getDateFromBlockchainTime } from "@/utils/formInput";
 
 const useChatInfos = (isHost: boolean) => {
   const rentalityInfo = useRentality();
@@ -28,15 +29,15 @@ const useChatInfos = (isHost: boolean) => {
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = await provider.getSigner();
-      const chainId = await signer.getChainId();
-      console.log("getChatHelper chainId", chainId);
-      const selectedChainId =
-        chainId === 80001 ? "80001" : chainId === 84532 ? "84532" : chainId === 11155111 ? "11155111" : "11155111"; //"1337";
-      const rentalityChatHelperContract = new Contract(
-        rentalityContracts[selectedChainId].chatHelper.address,
-        rentalityContracts[selectedChainId].chatHelper.abi,
+
+      const rentalityChatHelperContract = (await getContract(
+        "chatHelper",
         signer
-      ) as unknown as IRentalityChatHelperContract;
+      )) as unknown as IRentalityChatHelperContract;
+
+      if (rentalityChatHelperContract === null) {
+        return;
+      }
 
       return rentalityChatHelperContract;
     } catch (e) {
@@ -80,8 +81,8 @@ const useChatInfos = (isHost: boolean) => {
                     hostPhotoUrl: getIpfsURIfromPinata(ci.hostPhotoUrl),
 
                     tripTitle: `${tripStatus} trip with ${ci.hostName} ${ci.carBrand} ${ci.carModel}`,
-                    startDateTime: new Date(Number(ci.startDateTime) * 1000),
-                    endDateTime: new Date(Number(ci.endDateTime) * 1000),
+                    startDateTime: getDateFromBlockchainTime(ci.startDateTime),
+                    endDateTime: getDateFromBlockchainTime(ci.endDateTime),
                     lastMessage: "Click to open chat",
 
                     carPhotoUrl: getIpfsURIfromPinata(meta.image),
@@ -152,7 +153,6 @@ const useChatInfos = (isHost: boolean) => {
         var dict = new Map<string, string>();
         publicKeys.forEach((i) => dict.set(i.userAddress, i.publicKey));
         setChatPublicKeys(dict);
-        console.log("publicKeys: ", dict);
 
         const storedMessages = await client.getUserChatMessages();
 

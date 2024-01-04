@@ -18,6 +18,7 @@ import { isEmpty } from "@/utils/string";
 import { Button } from "@mui/material";
 import RntSelect from "@/components/common/rntSelect";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
+import { getBlockchainTimeFromDate } from "@/utils/formInput";
 
 export default function Search() {
   const dateNow = new Date();
@@ -85,25 +86,21 @@ export default function Search() {
       }
       setRequestSending(true);
 
-      const startUnixTime = startDateTime.getTime() / 1000;
-      const endUnixTime = endDateTime.getTime() / 1000;
       const totalPriceInUsdCents = carInfo.pricePerDay * 100 * days;
       const depositInUsdCents = carInfo.securityDeposit * 100;
-      const fuelPricePerGalInUsdCents = carInfo.fuelPricePerGal * 100;
       const location = `${searchResult.searchCarRequest.city}, ${searchResult.searchCarRequest.state}, ${searchResult.searchCarRequest.country}`;
 
       showInfo("Please confirm the transaction with your wallet and wait for the transaction to be processed");
       const result = await createTripRequest(
         carInfo.carId,
         carInfo.ownerAddress,
-        startUnixTime,
-        endUnixTime,
+        startDateTime,
+        endDateTime,
         location,
         location,
         totalPriceInUsdCents,
         0,
-        depositInUsdCents,
-        fuelPricePerGalInUsdCents
+        depositInUsdCents
       );
 
       setRequestSending(false);

@@ -93,8 +93,8 @@ export default function ChooseBlockchainComponent() {
                   key={i.chainId}
                   className={classBtn}
                   onClick={async () => {
-                    console.log("requestChainIdChange call with:" + i.chainIdHexString);
-                    console.log("rentalityInfo:", rentalityInfo);
+                    // console.log("requestChainIdChange call with:" + i.chainIdHexString);
+                    // console.log("rentalityInfo:", rentalityInfo);
                     await rentalityInfo?.requestChainIdChange(i.chainIdHexString);
                     setIsShowComponentList((prev) => !prev);
                   }}
