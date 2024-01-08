@@ -79,6 +79,14 @@ export default function RntPlaceAutocomplete({
   }, [initValue]);
 
   useEffect(() => {
+    if (!enteredAddress) {
+      onAddressChangeHandler({
+        addressString: "",
+        location: { latitude: 0, longitude: 0 },
+      });
+      return;
+    }
+
     getPlacePredictions({ input: enteredAddress });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enteredAddress]);
