@@ -1,12 +1,12 @@
 export enum TripStatus {
-  Pending = "pending",
-  Confirmed = "confirmed",
-  CheckedInByHost = "checkedInByHost",
-  Started = "started",
-  CheckedOutByGuest = "checkedOutByGuest",
-  Finished = "finished",
-  Closed = "closed",
-  Rejected = "rejected",
+  Pending = "pending", // Created
+  Confirmed = "confirmed", // Approved
+  CheckedInByHost = "checkedInByHost", // CheckedInByHost
+  Started = "started", // CheckedInByGuest
+  CheckedOutByGuest = "checkedOutByGuest", //CheckedOutByGuest
+  Finished = "finished", //CheckedOutByHost
+  Closed = "closed", //Finished
+  Rejected = "rejected", //Canceled
 }
 
 export const getTripStatusTextFromStatus = (status: TripStatus) => {
@@ -69,6 +69,7 @@ export type TripInfo = {
   allowedActions: AllowedChangeTripAction[];
   totalPrice: string;
   tankVolumeInGal: number;
+  //TODO
   startFuelLevelInGal: number;
   endFuelLevelInGal: number;
   fuelPricePerGal: number;
@@ -91,33 +92,8 @@ export function getGalsFromFuelLevel(tripInfo: TripInfo, fuelLevel: number): num
   return Math.floor(fuelLevel * tripInfo.tankVolumeInGal);
 }
 
-export function getFuelLevelFromGals(tripInfo: TripInfo, fuelLevelInGal: number): number {
-  return Math.ceil((8 * Number(fuelLevelInGal)) / tripInfo.tankVolumeInGal) * 0.125;
-}
-
 export function getFuelLevelFromGalsString(tripInfo: TripInfo, fuelLevelInGal: number): string {
-  const level = Math.ceil((8 * Number(fuelLevelInGal)) / tripInfo.tankVolumeInGal) * 0.125;
-  switch (level) {
-    case 0.125:
-      return "1/8";
-    case 0.25:
-      return "1/4";
-    case 0.375:
-      return "3/8";
-    case 0.5:
-      return "1/2";
-    case 0.625:
-      return "5/8";
-    case 0.75:
-      return "3/4";
-    case 0.875:
-      return "7/8";
-    case 1:
-      return "full";
-    default:
-    case 0:
-      return "0";
-  }
+  return (Math.ceil((10 * fuelLevelInGal) / tripInfo.tankVolumeInGal) * 0.1).toString();
 }
 
 export type AllowedChangeTripAction = {

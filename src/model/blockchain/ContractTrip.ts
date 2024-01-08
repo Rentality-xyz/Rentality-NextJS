@@ -1,9 +1,10 @@
+import { validateType } from "@/utils/typeValidator";
 import { TripStatus } from "../TripInfo";
 
 export type ContractTrip = {
   tripId: bigint;
   carId: bigint;
-  status: number; //TripStatus
+  status: TripStatus
   guest: string;
   host: string;
   pricePerDayInUsdCents: bigint;
@@ -63,15 +64,43 @@ export const getTripStatusFromContract = (status: number) => {
 };
 
 export function validateContractTrip(obj: ContractTrip): obj is ContractTrip {
-  if (typeof obj !== "object" || obj == null) return false;
+  const emptyContractTrip: ContractTrip = {
+    tripId: BigInt(0),
+    carId: BigInt(0),
+    status: TripStatus.Pending,
+    guest: "",
+    host: "",
+    pricePerDayInUsdCents: BigInt(0),
+    startDateTime: BigInt(0),
+    endDateTime: BigInt(0),
+    startLocation: "",
+    endLocation: "",
+    milesIncludedPerDay: 0,
+    fuelPrices: [],
+    paymentInfo: {
+      tripId: BigInt(0),
+      from: "",
+      to: "",
+      totalDayPriceInUsdCents: BigInt(0),
+      taxPriceInUsdCents: BigInt(0),
+      depositInUsdCents: BigInt(0),
+      resolveAmountInUsdCents: BigInt(0),
+      currencyType: 0,
+      ethToCurrencyRate: BigInt(0),
+      ethToCurrencyDecimals: BigInt(0),
+      resolveFuelAmountInUsdCents: BigInt(0),
+      resolveMilesAmountInUsdCents: BigInt(0),
+    },
+    approvedDateTime: BigInt(0),
+    rejectedDateTime: BigInt(0),
+    rejectedBy: "",
+    checkedInByHostDateTime: BigInt(0),
+    startParamLevels: [],
+    checkedInByGuestDateTime: BigInt(0),
+    checkedOutByGuestDateTime: BigInt(0),
+    endParamLevels: [],
+    checkedOutByHostDateTime: BigInt(0),
+  };
 
-  if (obj.carId === undefined) {
-    console.error("obj does not contain property carId");
-    return false;
-  }
-  if (obj.status === undefined) {
-    console.error("obj does not contain property status");
-    return false;
-  }
-  return true;
+  return validateType(obj, emptyContractTrip);
 }

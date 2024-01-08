@@ -176,7 +176,7 @@ const useGuestTrips = () => {
                   const tripContactInfo = await rentalityContract.getTripContactInfo(i.carId);
 
                   const meta = await getMetaDataFromIpfs(tokenURI);
-                  const tripStatus = getTripStatusFromContract(Number(i.status));
+                  const tripStatus = i.status;
                   const tankSize = Number(
                     meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "0"
                   );

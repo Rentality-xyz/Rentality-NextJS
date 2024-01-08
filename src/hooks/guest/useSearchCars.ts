@@ -195,7 +195,7 @@ const useSearchCars = () => {
         taxPriceInUsdCents: taxPriceInUsdCents,
         depositInUsdCents: depositInUsdCents,
         //TODO
-        fuelPrices: [],
+        fuelPrices: [BigInt(1)],
         ethToCurrencyRate: BigInt(ethToCurrencyRate),
         ethToCurrencyDecimals: Number(ethToCurrencyDecimals),
       };

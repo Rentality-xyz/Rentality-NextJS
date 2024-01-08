@@ -57,7 +57,7 @@ const useTripDetails = (tripId: bigint) => {
       let details: TripDetails = {
         tripId: trip.tripId,
         carId: trip.carId,
-        status: getTripStatusTextFromStatus(getTripStatusFromContract(Number(trip.status))),
+        status: getTripStatusTextFromStatus(trip.status),
         guest: trip.guest,
         host: trip.host,
         startDateTime: getDateFromBlockchainTime(trip.startDateTime),

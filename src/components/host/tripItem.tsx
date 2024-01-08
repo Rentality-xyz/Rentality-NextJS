@@ -198,6 +198,7 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
               Please {tripInfo.allowedActions[0].readonly ? "confirm" : "enter"} data to change status:
             </strong>
           </div>
+
           <div className="flex flex-col py-4">
             {tripInfo.allowedActions[0].params.map((param, index) => {
               return (
@@ -291,6 +292,7 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
               );
             })}
           </div>
+          
           <div className="flex flex-row gap-4">
             {tripInfo.allowedActions.map((action) => {
               return (
