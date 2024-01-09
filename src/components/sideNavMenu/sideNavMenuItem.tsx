@@ -5,6 +5,7 @@ import icHistory from "@/images/ic_history.jpg";
 import icMessages from "@/images/ic_messages.jpg";
 import icProfileSettings from "@/images/ic_profile_settings.jpg";
 import icListings from "@/images/ic_listings.jpg";
+import icClaims from "@/images/ic_claims.jpg";
 import MenuIcons from "@/components/sideNavMenu/menuIcons";
 import { useAppContext } from "@/contexts/useAppContext";
 
@@ -23,6 +24,8 @@ export default function SideNavMenuItem({ text, href, icon }: { text: string; hr
         return icProfileSettings;
       case MenuIcons.Listings:
         return icListings;
+      case MenuIcons.Claims:
+        return icClaims;
     }
   };
 

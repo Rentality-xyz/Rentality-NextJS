@@ -1,11 +1,12 @@
+import BaseBurgerNavMenu from "./baseBurgerNavMenu";
 import BaseSideNavMenu from "./baseSideNavMenu";
 import SideNavMenuGroup from "./sideNavMenuGroup";
 import SideNavMenuItem from "./sideNavMenuItem";
 import MenuIcons from "@/components/sideNavMenu/menuIcons";
 
-export default function GuestSideNavMenu() {
+function GuestNavMenu() {
   return (
-    <BaseSideNavMenu accountType={"Guest"}>
+    <>
       <SideNavMenuGroup title="Search" href="/guest/search" />
       <SideNavMenuGroup title="Trips">
         <SideNavMenuItem text="Booked" href="/guest/trips/booked" icon={MenuIcons.Booked} />
@@ -14,8 +15,26 @@ export default function GuestSideNavMenu() {
       <SideNavMenuGroup title="Inbox">
         <SideNavMenuItem text="Messages" href="/guest/messages" icon={MenuIcons.Messages} />
       </SideNavMenuGroup>
-      <hr />
-      <SideNavMenuGroup title="Profile settings" href="/guest/profile" icon={MenuIcons.ProfileSettings} />
+      <SideNavMenuGroup title="More">
+        <SideNavMenuItem text="Claims" href="/guest/claims" icon={MenuIcons.Claims} />
+        <SideNavMenuItem text="Profile settings" href="/guest/profile" icon={MenuIcons.ProfileSettings} />
+      </SideNavMenuGroup>
+    </>
+  );
+}
+
+export default function GuestSideNavMenu() {
+  return (
+    <BaseSideNavMenu accountType={"Guest"}>
+      <GuestNavMenu />
     </BaseSideNavMenu>
+  );
+}
+
+export function GuestBurgerNavMenu() {
+  return (
+    <BaseBurgerNavMenu accountType={"Guest"}>
+      <GuestNavMenu />
+    </BaseBurgerNavMenu>
   );
 }
