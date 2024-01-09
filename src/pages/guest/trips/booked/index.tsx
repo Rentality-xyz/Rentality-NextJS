@@ -41,7 +41,7 @@ export default function Booked() {
         {!dataFetched ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
         ) : (
-          <div className="my-4 flex flex-col gap-4 pr-4">
+          <div className="my-4 flex flex-col gap-4">
             {tripsBooked != null && tripsBooked.length > 0 ? (
               tripsBooked.map((value) => {
                 return (
