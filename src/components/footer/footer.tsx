@@ -39,7 +39,7 @@ export default function Footer() {
                 <Image src={twitter} alt="" className="ml-3 w-[22px] mt-1" />
               </a>
 
-              <a href="https://discord.gg/QRu86bTRA6e" target="_blank" rel="noopener noreferrer">
+              <a href="https://discord.gg/rentality" target="_blank" rel="noopener noreferrer">
                 <Image src={discord} alt="" className="ml-3 w-[30px]" />
               </a>
 
