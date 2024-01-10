@@ -274,14 +274,16 @@ input:disabled {
 .react-tel-input {
   font-family: 'Montserrat', Arial, sans-serif !important;
 }
+
 .flag-dropdown {
   border-radius: 9999px 0 0 9999px !important;
 }
+
 .selected-flag {
   border-radius: 9999px 0 0 9999px !important;
 }
 
-#privy-dialog > div > div {
+#privy-dialog>div>div {
   background-color: #1E1E30;
   border-width: 2px;
   border-color: #373737;
