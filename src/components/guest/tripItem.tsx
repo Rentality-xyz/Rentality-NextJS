@@ -11,6 +11,7 @@ import { twMerge } from "tailwind-merge";
 import RntButton from "../common/rntButton";
 import AllowedActionsForStatusStarted from "./allowedActionsForStatusStarted";
 import AllowedActions from "./allowedActions";
+import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 
 type Props = {
   tripInfo: TripInfo;
@@ -61,7 +62,7 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
 
   return (
     <div className="rnt-card flex flex-col rounded-xl overflow-hidden bg-rentality-bg">
-      <div className="sm_inverted:flex flex-wrap">
+      <div className="sm_inverted:flex max-2xl:flex-wrap 2xl:flex-nowrap">
         {/* <div className="relative h-56 w-60 flex-shrink-0">
           <Image
             src={tripInfo.image}
@@ -78,95 +79,147 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
             <strong className="text-m">{`${getTripStatusTextFromStatus(tripInfo.status)}`}</strong>
           </div>
         </div>
-        <div className="flex flex-1 flex-col justify-between gap-2 p-4">
-          <div className="flex flex-col">
-            <div>
-              <strong className="text-xl">{`${tripInfo.brand} ${tripInfo.model} ${tripInfo.year}`}</strong>
-            </div>
-            <div>{tripInfo.licensePlate}</div>
-            {tripInfo.status === TripStatus.Rejected && tripInfo.rejectedDate !== undefined ? (
-              <div className="mt-2">
-                {`${
-                  tripInfo.rejectedBy.toLowerCase() === tripInfo.guestAddress.toLowerCase()
-                    ? "You"
-                    : tripInfo.hostName ?? "Host"
-                } cancelled on ${dateFormatMonthDate(tripInfo.rejectedDate)}`}
-              </div>
-            ) : null}
-            <div className="flex flex-col mt-4">
+        <div id="guest-trip-item-info" className="w-full flex flex-col sm_inverted:flex-row">
+          <div id="guest-trip-main-info" className="w-full sm_inverted:w-1/4 flex flex-1 flex-col p-4 md:p-2 xl:p-4">
+            <div className="flex flex-col">
               <div>
-                <strong className="text-l">Total price</strong>
+                <strong className="text-xl">{`${tripInfo.brand} ${tripInfo.model} ${tripInfo.year}`}</strong>
               </div>
-              <div>${tripInfo.totalPrice}</div>
+              <div>{tripInfo.licensePlate}</div>
+              {tripInfo.status === TripStatus.Rejected && tripInfo.rejectedDate !== undefined ? (
+                  <div id="trip-avatar-info" className="mt-2">
+                    {`${
+                        tripInfo.rejectedBy.toLowerCase() === tripInfo.guestAddress.toLowerCase()
+                            ? "You"
+                            : tripInfo.hostName ?? "Host"
+                    } cancelled on ${dateFormatMonthDate(tripInfo.rejectedDate)}`}
+                  </div>
+              ) : null}
+              <div className="flex flex-col mt-4">
+                <div>
+                  <strong className="text-l">Total price</strong>
+                </div>
+                <div>${tripInfo.totalPrice}</div>
+              </div>
             </div>
           </div>
+          <div id="guest-trip-action-info" className="w-full sm_inverted:w-1/4 flex flex-1 flex-col justify-between gap-2 p-4 md:p-2 xl:p-4">
+            <div className="flex flex-col">
+              <div className="text-center text-[#52D1C9]">
+                <strong>Guest booked a trip at 20 Nov 15:55</strong>
+              </div>
+              <div className="mt-4 text-center">
+                You have 1 hour to confirm this trip or it'll auto-reject
+              </div>
+            </div>
 
-          {!isAdditionalActionHidden ? null : (
-            <div className="flex flex-col 2xl:flex-row gap-4">
-              {tripInfo.allowedActions.map((action) => {
-                return (
-                  <RntButton
-                    key={action.text}
-                    className="h-16 w-full xl:w-56 px-4"
-                    disabled={disableButton}
-                    onClick={() => {
-                      if (action.params == null || action.params.length == 0) {
-                        changeStatusCallback(() => {
-                          return action.action(BigInt(tripInfo.tripId), []);
-                        });
-                      } else {
-                        setIsAdditionalActionHidden(false);
-                      }
-                    }}
-                  >
-                    {action.text}
-                  </RntButton>
-                );
-              })}
-            </div>
-          )}
-        </div>
-        <div className="flex flex-1 flex-col gap-2 p-4">
-          <div className="flex flex-col">
-            <div>
-              <i className="fi fi-rs-calendar pr-1  text-rentality-icons"></i>
-              <strong className="text-l">Trip start</strong>
-            </div>
-            <div className="whitespace-nowrap">{dateFormat(tripInfo.tripStart)}</div>
-            {/* <div>April 05, 4:00 AM</div> */}
+            {!isAdditionalActionHidden ? null : (
+                <div className="flex max-sm_inverted:flex-row flex-col 2xl:flex-row gap-4">
+                  {tripInfo.allowedActions.map((action, index) => {
+                    return (
+                        index === 0 ? (
+                            <RntButton
+                                key={action.text}
+                                className="h-12 w-full px-4"
+                                disabled={disableButton}
+                                onClick={() => {
+                                  if (action.params == null || action.params.length == 0) {
+                                    changeStatusCallback(() => {
+                                      return action.action(BigInt(tripInfo.tripId), []);
+                                    });
+                                  } else {
+                                    setIsAdditionalActionHidden(false);
+                                  }
+                                }}
+                            >
+                              {action.text}
+                            </RntButton>
+                        ) : (
+                            <RntButtonTransparent
+                                key={action.text}
+                                className="h-12 w-full px-4"
+                                disabled={disableButton}
+                                onClick={() => {
+                                  if (action.params == null || action.params.length == 0) {
+                                    changeStatusCallback(() => {
+                                      return action.action(BigInt(tripInfo.tripId), []);
+                                    });
+                                  } else {
+                                    setIsAdditionalActionHidden(false);
+                                  }
+                                }}
+                            >
+                              {action.text}
+                            </RntButtonTransparent>
+                          )
+                    );
+                  })}
+                </div>
+            )}
           </div>
-          <div className="flex flex-col">
-            <div>
-              <i className="fi fi-rs-calendar pr-1  text-rentality-icons"></i>
-              <strong className="text-l">Trip end</strong>
-            </div>
-            <div className="whitespace-nowrap">{dateFormat(tripInfo.tripEnd)}</div>
-            {/* <div>April 05, 4:00 AM</div> */}
-          </div>
-        </div>
-        <div className="flex flex-col flex-1 justify-between p-4">
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-col">
+          <div id="guest-trip-info" className="w-full sm_inverted:w-1/4 flex flex-1 flex-col gap-2 p-4 md:p-2 xl:p-4 2xl:ml-14">
+            <div className="flex flex-col 2xl:mt-6">
               <div>
-                <i className="fi fi-rs-marker pr-1  text-rentality-icons"></i>
-                <strong className="text-l whitespace-nowrap">Pickup location</strong>
+                <i className="fi fi-rs-calendar pr-1 text-rentality-icons"></i>
+                <strong className="text-l">Trip start</strong>
               </div>
-              <div>{tripInfo.locationStart}</div>
-              {/* <div>Miami, CA, USA</div> */}
+              <div className="">{dateFormat(tripInfo.tripStart)}</div>
+              {/* <div>April 05, 4:00 AM</div> */}
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col 2xl:mt-4">
               <div>
-                <i className="fi fi-rs-marker pr-1 text-rentality-icons"></i>
-                <strong className="text-l whitespace-nowrap">Return location</strong>
+                <i className="fi fi-rs-calendar pr-1  text-rentality-icons"></i>
+                <strong className="text-l">Trip end</strong>
               </div>
-              <div>{tripInfo.locationEnd}</div>
-              {/* <div>Miami, CA, USA</div> */}
+              <div className="">{dateFormat(tripInfo.tripEnd)}</div>
+              {/* <div>April 05, 4:00 AM</div> */}
             </div>
           </div>
-          <div className="w-full self-end mt-4">
-            <Link href={`/guest/trips/tripInfo/${tripInfo.tripId}`}>
-              <RntButton className="max-md:w-full h-16">Details</RntButton>
-            </Link>
+          <div id="guest-trip-lacation-info" className="w-full sm_inverted:w-1/4 flex flex-col flex-1 p-4 md:p-2 xl:p-4">
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-col 2xl:mt-6">
+                <div>
+                  <i className="fi fi-sr-marker pr-1  text-rentality-icons"></i>
+                  <strong className="text-l whitespace-nowrap">Pickup location</strong>
+                </div>
+                <div>{tripInfo.locationStart}</div>
+                {/* <div>Miami, CA, USA</div> */}
+              </div>
+              <div className="flex flex-col 2xl:mt-4">
+                <div>
+                  <i className="fi fi-sr-marker pr-1 text-rentality-icons"></i>
+                  <strong className="text-l whitespace-nowrap">Return location</strong>
+                </div>
+                <div>{tripInfo.locationEnd}</div>
+                {/* <div>Miami, CA, USA</div> */}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="guest-trip-contact-info" className="max-2xl:w-full 2xl:w-46 flex flex-col 2xl:flex-shrink-0 p-4 md:p-2 xl:p-4 text-end">
+          <div className="flex max-2xl:justify-between 2xl:flex-col 2xl:gap-2 2xl:pr-8">
+            <div id="guest-trip-chat-info" className="2xl:flex 2xl:flex-col 2xl:mt-6">
+              <div>
+                <Link href={``}>
+                  <i className="fi fi-rs-envelope-open pr-1 text-rentality-icons"></i>
+                  <strong className="text-l">Chat</strong>
+                </Link>
+              </div>
+            </div>
+            <div id="guest-trip-contact-info" className="2xl:flex 2xl:flex-col 2xl:mt-2">
+              <div>
+                <Link href={``}>
+                  <i className="fi fi-br-phone-flip pr-1 text-rentality-icons"></i>
+                  <strong className="text-l">Contact Host</strong>
+                </Link>
+              </div>
+            </div>
+            <div className="2xl:mt-10 text-[#52D1C9]">
+              <Link href={`/guest/trips/tripInfo/${tripInfo.tripId}`}>
+                <strong>More info</strong>
+              </Link>
+              <i className="fi fi-br-angle-small-down pl-1"></i>
+            </div>
           </div>
         </div>
       </div>
@@ -181,7 +234,7 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
           hidden={isAdditionalActionHidden}
         >
           <hr />
-          <div id="guest-allowed-actions">
+          <div id="guest-trip-allowed-actions">
             <strong className="text-xl">
               Please {tripInfo.allowedActions[0].readonly ? "confirm" : "enter"} data to change status:
             </strong>

@@ -33,6 +33,7 @@ module.exports = {
         "rentality-button-light": "#7da2f6",
         "rentality-button-medium": "#7f5ee7",
         "rentality-button-dark": "#593ec0",
+        "rentality-icons": "#C0AEFF",
 
         "status-pending": "#7c58d7",
         "status-on-trip": "#220e50",

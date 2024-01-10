@@ -288,3 +288,28 @@ input:disabled {
   border-width: 2px;
   border-color: #373737;
 }
+
+.border-gradient {
+  /*padding: 10px;*/
+  /*display: inline-block;*/
+  position: relative;
+  /*z-index: 0;*/
+}
+.border-gradient:before {
+  content: "";
+  position: absolute;
+  /*z-index: -1;*/
+  inset: 0;
+  padding: 2px;
+  border-radius: 9999px;
+  background: linear-gradient(to right, #74BBEF 0%, #7257CE 70%, #5E3DD3 100%);
+  -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+  mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+}
