@@ -21,6 +21,8 @@ export type ContractClaim = {
   payDateInSec: bigint;
   rejectedBy: string;
   rejectedDateInSec: bigint;
+  hostPhoneNumber: string;
+  guestPhoneNumber: string;
 };
 
 export type Claim = {
@@ -29,6 +31,7 @@ export type Claim = {
   deadlineDate: Date;
   claimType: ClaimType;
   claimTypeText: string;
+  status: ClaimStatus;
   statusText: string;
   carInfo: string;
   description: string;
@@ -36,6 +39,8 @@ export type Claim = {
   payDateInSec: number;
   rejectedBy: string;
   rejectedDateInSec: number;
+  hostPhoneNumber: string;
+  guestPhoneNumber: string;
 };
 
 export enum ClaimType {
@@ -105,6 +110,8 @@ export function validateContractClaim(obj: ContractClaim): obj is ContractClaim 
     payDateInSec: BigInt(0),
     rejectedBy: "",
     rejectedDateInSec: BigInt(0),
+    hostPhoneNumber: "",
+    guestPhoneNumber: "",
   };
 
   return validateType(obj, emptyContractClaim);

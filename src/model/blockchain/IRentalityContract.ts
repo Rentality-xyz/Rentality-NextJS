@@ -47,9 +47,7 @@ export interface IRentalityContract {
   getChatInfoForHost(): Promise<ContractChatInfo[]>;
   createClaim(request: ContractCreateClaimRequest): Promise<ContractTransaction>;
   rejectClaim(claimId: bigint): Promise<ContractTransaction>;
-  updateClaim(claimId: bigint): Promise<ContractTransaction>;
-  getClaim(claimId: bigint): Promise<ContractFullClaimInfo>;
-  getClaimsByTrip(tripId: bigint): Promise<ContractFullClaimInfo[]>;
+  getMyClaimsAsHost(): Promise<ContractFullClaimInfo[]>;
 
   /// GUEST functions
   searchAvailableCars(
@@ -64,6 +62,7 @@ export interface IRentalityContract {
   checkOutByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransaction>;
   getChatInfoForGuest(): Promise<ContractChatInfo[]>;
   payClaim(claimId: bigint, value: object): Promise<ContractTransaction>;
+  getMyClaimsAsGuest(): Promise<ContractFullClaimInfo[]>;
 
   /// GENERAL functions
   address: string;

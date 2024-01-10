@@ -4,7 +4,7 @@ import { TripStatus } from "../TripInfo";
 export type ContractTrip = {
   tripId: bigint;
   carId: bigint;
-  status: TripStatus
+  status: TripStatus;
   guest: string;
   host: string;
   pricePerDayInUsdCents: bigint;

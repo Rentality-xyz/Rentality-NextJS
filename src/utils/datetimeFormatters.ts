@@ -57,3 +57,29 @@ export const dateFormatMonthDate = (value: Date) => {
 
   return `${dateString}`;
 };
+
+export const dateFormatDayMonthTime = (value: Date) => {
+  if (value === undefined) return "";
+
+  let day = value.getDate().toString();
+  if (day.length === 1) {
+    day = "0" + day;
+  }
+  let month = (value.getMonth() + 1).toString();
+  if (month.length === 1) {
+    month = "0" + month;
+  }
+  const monthString = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+  }).format(value);
+
+  let hours = value.getHours().toString();
+  if (hours.length === 1) {
+    hours = "0" + hours;
+  }
+  let minutes = value.getMinutes().toString();
+  if (minutes.length === 1) {
+    minutes = "0" + minutes;
+  }
+  return `${day} ${monthString}, ${hours}:${minutes}`;
+};
