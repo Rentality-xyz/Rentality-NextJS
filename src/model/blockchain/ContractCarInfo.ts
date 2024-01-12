@@ -4,8 +4,8 @@ export const ENGINE_TYPE_PATROL_STRING = "Gasoline";
 export const ENGINE_TYPE_ELECTRIC_STRING = "Electro";
 
 enum EngineType {
-  PATROL,
-  ELECTRIC,
+  PATROL = 1,
+  ELECTRIC = 2,
 }
 
 export type ContractCarInfo = {
@@ -24,7 +24,7 @@ export type ContractCarInfo = {
   geoVerified: boolean;
 };
 
-const emptyContractCarInfo: ContractCarInfo = {
+export const emptyContractCarInfo: ContractCarInfo = {
   carId: BigInt(0),
   carVinNumber: "",
   createdBy: "",

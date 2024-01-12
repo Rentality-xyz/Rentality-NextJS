@@ -87,13 +87,13 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
               </div>
               <div>{tripInfo.licensePlate}</div>
               {tripInfo.status === TripStatus.Rejected && tripInfo.rejectedDate !== undefined ? (
-                  <div id="trip-avatar-info" className="mt-2">
-                    {`${
-                        tripInfo.rejectedBy.toLowerCase() === tripInfo.guestAddress.toLowerCase()
-                            ? "You"
-                            : tripInfo.hostName ?? "Host"
-                    } cancelled on ${dateFormatMonthDate(tripInfo.rejectedDate)}`}
-                  </div>
+                <div id="trip-avatar-info" className="mt-2">
+                  {`${
+                    tripInfo.rejectedBy.toLowerCase() === tripInfo.guestAddress.toLowerCase()
+                      ? "You"
+                      : tripInfo.hostName ?? "Host"
+                  } cancelled on ${dateFormatMonthDate(tripInfo.rejectedDate)}`}
+                </div>
               ) : null}
               <div className="flex flex-col mt-4">
                 <div>
@@ -103,61 +103,66 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
               </div>
             </div>
           </div>
-          <div id="guest-trip-action-info" className="w-full sm_inverted:w-1/4 flex flex-1 flex-col justify-between gap-2 p-4 md:p-2 xl:p-4">
+          <div
+            id="guest-trip-action-info"
+            className="w-full sm_inverted:w-1/4 flex flex-1 flex-col justify-between gap-2 p-4 md:p-2 xl:p-4"
+          >
             <div className="flex flex-col">
               <div className="text-center text-[#52D1C9]">
                 <strong>Guest booked a trip at 20 Nov 15:55</strong>
               </div>
               <div className="mt-4 text-center">
-                You have 1 hour to confirm this trip or it'll auto-reject
+                {/* `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;` */}
+                You have 1 hour to confirm this trip or it&apos;ll auto-reject
               </div>
             </div>
 
             {!isAdditionalActionHidden ? null : (
-                <div className="flex max-sm_inverted:flex-row flex-col 2xl:flex-row gap-4">
-                  {tripInfo.allowedActions.map((action, index) => {
-                    return (
-                        index === 0 ? (
-                            <RntButton
-                                key={action.text}
-                                className="h-12 w-full px-4"
-                                disabled={disableButton}
-                                onClick={() => {
-                                  if (action.params == null || action.params.length == 0) {
-                                    changeStatusCallback(() => {
-                                      return action.action(BigInt(tripInfo.tripId), []);
-                                    });
-                                  } else {
-                                    setIsAdditionalActionHidden(false);
-                                  }
-                                }}
-                            >
-                              {action.text}
-                            </RntButton>
-                        ) : (
-                            <RntButtonTransparent
-                                key={action.text}
-                                className="h-12 w-full px-4"
-                                disabled={disableButton}
-                                onClick={() => {
-                                  if (action.params == null || action.params.length == 0) {
-                                    changeStatusCallback(() => {
-                                      return action.action(BigInt(tripInfo.tripId), []);
-                                    });
-                                  } else {
-                                    setIsAdditionalActionHidden(false);
-                                  }
-                                }}
-                            >
-                              {action.text}
-                            </RntButtonTransparent>
-                          )
-                    );
-                  })}
-                </div>
+              <div className="flex max-sm_inverted:flex-row flex-col 2xl:flex-row gap-4">
+                {tripInfo.allowedActions.map((action, index) => {
+                  return index === 0 ? (
+                    <RntButton
+                      key={action.text}
+                      className="h-12 w-full px-4"
+                      disabled={disableButton}
+                      onClick={() => {
+                        if (action.params == null || action.params.length == 0) {
+                          changeStatusCallback(() => {
+                            return action.action(BigInt(tripInfo.tripId), []);
+                          });
+                        } else {
+                          setIsAdditionalActionHidden(false);
+                        }
+                      }}
+                    >
+                      {action.text}
+                    </RntButton>
+                  ) : (
+                    <RntButtonTransparent
+                      key={action.text}
+                      className="h-12 w-full px-4"
+                      disabled={disableButton}
+                      onClick={() => {
+                        if (action.params == null || action.params.length == 0) {
+                          changeStatusCallback(() => {
+                            return action.action(BigInt(tripInfo.tripId), []);
+                          });
+                        } else {
+                          setIsAdditionalActionHidden(false);
+                        }
+                      }}
+                    >
+                      {action.text}
+                    </RntButtonTransparent>
+                  );
+                })}
+              </div>
             )}
           </div>
-          <div id="guest-trip-info" className="w-full sm_inverted:w-1/4 flex flex-1 flex-col gap-2 p-4 md:p-2 xl:p-4 2xl:ml-14">
+          <div
+            id="guest-trip-info"
+            className="w-full sm_inverted:w-1/4 flex flex-1 flex-col gap-2 p-4 md:p-2 xl:p-4 2xl:ml-14"
+          >
             <div className="flex flex-col 2xl:mt-6">
               <div>
                 <i className="fi fi-rs-calendar pr-1 text-rentality-icons"></i>
@@ -175,7 +180,10 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
               {/* <div>April 05, 4:00 AM</div> */}
             </div>
           </div>
-          <div id="guest-trip-lacation-info" className="w-full sm_inverted:w-1/4 flex flex-col flex-1 p-4 md:p-2 xl:p-4">
+          <div
+            id="guest-trip-lacation-info"
+            className="w-full sm_inverted:w-1/4 flex flex-col flex-1 p-4 md:p-2 xl:p-4"
+          >
             <div className="flex flex-col gap-2">
               <div className="flex flex-col 2xl:mt-6">
                 <div>
@@ -196,7 +204,10 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
             </div>
           </div>
         </div>
-        <div id="guest-trip-contact-info" className="max-2xl:w-full 2xl:w-46 flex flex-col 2xl:flex-shrink-0 p-4 md:p-2 xl:p-4 text-end">
+        <div
+          id="guest-trip-contact-info"
+          className="max-2xl:w-full 2xl:w-46 flex flex-col 2xl:flex-shrink-0 p-4 md:p-2 xl:p-4 text-end"
+        >
           <div className="flex max-2xl:justify-between 2xl:flex-col 2xl:gap-2 2xl:pr-8">
             <div id="guest-trip-chat-info" className="2xl:flex 2xl:flex-col 2xl:mt-6">
               <div>

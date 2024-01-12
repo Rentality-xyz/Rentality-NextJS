@@ -12,7 +12,7 @@ export type ContractTrip = {
   endDateTime: bigint;
   startLocation: string;
   endLocation: string;
-  milesIncludedPerDay: number;
+  milesIncludedPerDay: bigint;
   fuelPrices: bigint[];
   paymentInfo: ContractPaymentInfo;
   approvedDateTime: bigint;
@@ -24,6 +24,8 @@ export type ContractTrip = {
   checkedOutByGuestDateTime: bigint;
   endParamLevels: bigint[];
   checkedOutByHostDateTime: bigint;
+  guestName: string;
+  hostName: string;
 };
 
 type ContractPaymentInfo = {
@@ -75,7 +77,7 @@ export function validateContractTrip(obj: ContractTrip): obj is ContractTrip {
     endDateTime: BigInt(0),
     startLocation: "",
     endLocation: "",
-    milesIncludedPerDay: 0,
+    milesIncludedPerDay: BigInt(0),
     fuelPrices: [],
     paymentInfo: {
       tripId: BigInt(0),
@@ -100,6 +102,8 @@ export function validateContractTrip(obj: ContractTrip): obj is ContractTrip {
     checkedOutByGuestDateTime: BigInt(0),
     endParamLevels: [],
     checkedOutByHostDateTime: BigInt(0),
+    guestName: "",
+    hostName: "",
   };
 
   return validateType(obj, emptyContractTrip);

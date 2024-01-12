@@ -211,14 +211,16 @@ const useAddCar = () => {
         carVinNumber: dataToSave.vinNumber,
         brand: dataToSave.brand,
         model: dataToSave.model,
-        yearOfProduction: dataToSave.releaseYear,
+        yearOfProduction: Number(dataToSave.releaseYear),
         pricePerDayInUsdCents: pricePerDayInUsdCents,
         securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
         milesIncludedPerDay: BigInt(dataToSave.milesIncludedPerDay),
         geoApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
-        engineType: engineType,
+        engineType: Number(engineType),
         engineParams: engineParams,
         locationAddress: dataToSave.locationAddress,
+		//TODO EDIT
+        timeBufferBetweenTripsInSec: 90,
       };
 
       console.log("request", request);

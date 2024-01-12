@@ -4,6 +4,8 @@ export type TripDetails = {
   status: string; //TripStatus
   guest: string;
   host: string;
+  guestName: string;
+  hostName: string;
   startDateTime: Date;
   endDateTime: Date;
   startLocation: string;

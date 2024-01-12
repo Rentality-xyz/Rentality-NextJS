@@ -3,12 +3,13 @@ export type ContractCreateCarRequest = {
   carVinNumber: string;
   brand: string;
   model: string;
-  yearOfProduction: string;
+  yearOfProduction: number;
   pricePerDayInUsdCents: bigint;
   securityDepositPerTripInUsdCents: bigint;
   engineParams: bigint[];
-  engineType: bigint;
+  engineType: number;
   milesIncludedPerDay: bigint;
+  timeBufferBetweenTripsInSec: number;
   locationAddress: string;
   geoApiKey: string;
 };

@@ -1,12 +1,12 @@
 export enum TripStatus {
-  Pending = "pending", // Created
-  Confirmed = "confirmed", // Approved
-  CheckedInByHost = "checkedInByHost", // CheckedInByHost
-  Started = "started", // CheckedInByGuest
-  CheckedOutByGuest = "checkedOutByGuest", //CheckedOutByGuest
-  Finished = "finished", //CheckedOutByHost
-  Closed = "closed", //Finished
-  Rejected = "rejected", //Canceled
+  Pending, // Created
+  Confirmed, // Approved
+  CheckedInByHost, // CheckedInByHost
+  Started, // CheckedInByGuest
+  CheckedOutByGuest, //CheckedOutByGuest
+  Finished, //CheckedOutByHost
+  Closed, //Finished
+  Rejected, //Canceled
 }
 
 export const getTripStatusTextFromStatus = (status: TripStatus) => {

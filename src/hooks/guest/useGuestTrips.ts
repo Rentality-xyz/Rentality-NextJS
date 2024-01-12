@@ -208,9 +208,9 @@ const useGuestTrips = () => {
                     hostMobileNumber: tripContactInfo.hostPhoneNumber,
                     guestMobileNumber: tripContactInfo.guestPhoneNumber,
                     hostAddress: i.host,
-                    hostName: i.host,
+                    hostName: i.hostName,
                     guestAddress: i.guest,
-                    guestName: i.guest,
+                    guestName: i.guestName,
                     rejectedBy: i.rejectedBy,
                     rejectedDate: i.rejectedDateTime > 0 ? getDateFromBlockchainTime(i.rejectedDateTime) : undefined,
                   };
