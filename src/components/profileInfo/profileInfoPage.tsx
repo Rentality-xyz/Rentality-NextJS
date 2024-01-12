@@ -2,7 +2,6 @@ import RntButton from "@/components/common/rntButton";
 import RntFileButton from "@/components/common/rntFileButton";
 import RntInput from "@/components/common/rntInput";
 import { ProfileSettings } from "@/hooks/useProfileSettings";
-import { dateToHtmlDateFormat } from "@/utils/datetimeFormatters";
 import { resizeImage } from "@/utils/image";
 import { MESSAGES } from "@/utils/messages";
 import { uploadFileToIPFS } from "@/utils/pinata";
@@ -27,12 +26,14 @@ export default function ProfileInfoPage({
   showInfo,
   showError,
   hideSnackbar,
+  isHost,
 }: {
   savedProfileSettings: ProfileSettings;
   saveProfileSettings: (newProfileSettings: ProfileSettings) => Promise<boolean>;
   showInfo: (message: string, action?: ReactNode) => void;
   showError: (message: string, action?: ReactNode) => void;
   hideSnackbar: () => void;
+  isHost: boolean;
 }) {
   const router = useRouter();
   const [enteredFormData, setEnteredFormData] = useState<ProfileSettings>(savedProfileSettings);
@@ -122,7 +123,7 @@ export default function ProfileInfoPage({
       showInfo(MESSAGES.SUCCESS);
       setStatus(STATUS.COMPLETED);
       router.reload();
-      router.push("/guest");
+      router.push(isHost ? "/host" : "/guest");
     } catch (e) {
       console.error("handleSubmit error:" + e);
       showError(MESSAGES.PROFILE_PAGE_SAVE_ERROR);
@@ -192,7 +193,7 @@ export default function ProfileInfoPage({
             onChange={handleChange}
             onBlur={handleBlur}
           />
-          <PhoneInputComponent onChange={handlePhoneChange}/>
+          <PhoneInputComponent onChange={handlePhoneChange} />
 
           {/*<RntInput*/}
           {/*  className="lg:w-60"*/}

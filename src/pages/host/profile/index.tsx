@@ -22,6 +22,7 @@ export default function Profile() {
             showInfo={showInfo}
             showError={showError}
             hideSnackbar={hideSnackbar}
+            isHost={true}
           />
         )}
       </div>
