@@ -1,5 +1,13 @@
 import { validateType } from "@/utils/typeValidator";
 
+export const ENGINE_TYPE_PATROL_STRING = "Gasoline";
+export const ENGINE_TYPE_ELECTRIC_STRING = "Electro";
+
+enum EngineType {
+  PATROL,
+  ELECTRIC,
+}
+
 export type ContractCarInfo = {
   carId: bigint;
   carVinNumber: string;
@@ -15,11 +23,6 @@ export type ContractCarInfo = {
   currentlyListed: boolean;
   geoVerified: boolean;
 };
-
-enum EngineType {
-  PATROL,
-  ELECTRIC,
-}
 
 const emptyContractCarInfo: ContractCarInfo = {
   carId: BigInt(0),
@@ -41,8 +44,22 @@ export function validateContractCarInfo(obj: ContractCarInfo): obj is ContractCa
   return validateType(obj, emptyContractCarInfo);
 }
 
-export const ENGINE_TYPE_PATROL_STRING = "Gasoline";
-export const ENGINE_TYPE_ELECTRIC_STRING = "Electro";
+export type ContractAvailableCarInfo = {
+  car: ContractCarInfo;
+  hostPhotoUrl: string;
+  hostName: string;
+};
+
+export function validateContractAvailableCarInfo(obj: ContractAvailableCarInfo): obj is ContractAvailableCarInfo {
+  if (typeof obj !== "object" || obj == null) return false;
+  const emptyContractAvailableCarInfo: ContractAvailableCarInfo = {
+    car: emptyContractCarInfo,
+    hostName: "",
+    hostPhotoUrl: "",
+  };
+
+  return validateType(obj, emptyContractAvailableCarInfo);
+}
 
 export function getEngineTypeString(engineType: EngineType): string {
   switch (engineType) {
@@ -64,21 +81,4 @@ export function getEngineTypeCode(engineTypeString: string): bigint {
     default:
       return BigInt(0);
   }
-}
-
-export type ContractAvailableCarInfo = {
-  car: ContractCarInfo;
-  hostPhotoUrl: string;
-  hostName: string;
-};
-
-export function validateContractAvailableCarInfo(obj: ContractAvailableCarInfo): obj is ContractAvailableCarInfo {
-  if (typeof obj !== "object" || obj == null) return false;
-  const emptyContractAvailableCarInfo: ContractAvailableCarInfo = {
-    car: emptyContractCarInfo,
-    hostName: "",
-    hostPhotoUrl: "",
-  };
-
-  return validateType(obj, emptyContractAvailableCarInfo);
 }

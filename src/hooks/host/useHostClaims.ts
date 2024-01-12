@@ -3,86 +3,69 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import {
   Claim,
-  ContractClaim,
-  ClaimStatus,
-  ClaimType,
-  validateContractClaim,
   getClaimTypeTextFromClaimType,
   getClaimStatusTextFromStatus,
-} from "@/model/blockchain/ContractFullClaimInfo";
-import { getDateFromBlockchainTime, getStringFromMoneyInCents } from "@/utils/formInput";
-import { CreateClaimRequest } from "@/model/blockchain/ContractCreateClaimRequest";
-
-const claimsViewTEST: ContractClaim[] = [
-  {
-    claimId: BigInt(0),
-    claimType: ClaimType.Tolls,
-    deadlineDateInSec: BigInt(Math.floor(new Date(new Date().getTime() + 1000 * 60 * 60 * 24).getTime() / 1000)),
-    tripId: BigInt(3333),
-    carInfo: "Ford Bronco 2022",
-    description: "Toll road bill",
-    amountInUsdCents: BigInt(2500),
-    status: ClaimStatus.NotPaid,
-    payDateInSec: BigInt(0),
-    rejectedBy: "",
-    rejectedDateInSec: BigInt(0),
-    hostPhoneNumber: "+123456789",
-    guestPhoneNumber: "+987654321",
-  },
-  {
-    claimId: BigInt(1),
-    claimType: ClaimType.Tickets,
-    deadlineDateInSec: BigInt(Math.floor(new Date(new Date().getTime() + 1000 * 60 * 60 * 24).getTime() / 1000)),
-    tripId: BigInt(2222),
-    carInfo: "Ford Bronco 2022",
-    description: "Parking fine",
-    amountInUsdCents: BigInt(1000),
-    status: ClaimStatus.Paid,
-    payDateInSec: BigInt(0),
-    rejectedBy: "",
-    rejectedDateInSec: BigInt(0),
-    hostPhoneNumber: "+123456789",
-    guestPhoneNumber: "+987654321",
-  },
-  {
-    claimId: BigInt(2),
-    claimType: ClaimType.ExteriorDamage,
-    deadlineDateInSec: BigInt(Math.floor(new Date(new Date().getTime() - 1000 * 60 * 60 * 24).getTime() / 1000)),
-    tripId: BigInt(1111),
-    carInfo: "Ford Bronco 2022",
-    description: "Front bumper scratched",
-    amountInUsdCents: BigInt(150000),
-    status: ClaimStatus.Overdue,
-    payDateInSec: BigInt(0),
-    rejectedBy: "",
-    rejectedDateInSec: BigInt(0),
-    hostPhoneNumber: "+123456789",
-    guestPhoneNumber: "+987654321",
-  },
-  {
-    claimId: BigInt(3),
-    claimType: ClaimType.ExteriorDamage,
-    deadlineDateInSec: BigInt(Math.floor(new Date(new Date().getTime() - 1000 * 60 * 60 * 24).getTime() / 1000)),
-    tripId: BigInt(1111),
-    carInfo: "Ford Bronco 2022",
-    description: "Front bumper scratched",
-    amountInUsdCents: BigInt(150000),
-    status: ClaimStatus.Cancel,
-    payDateInSec: BigInt(0),
-    rejectedBy: "",
-    rejectedDateInSec: BigInt(0),
-    hostPhoneNumber: "+123456789",
-    guestPhoneNumber: "+987654321",
-  },
-];
+  ContractFullClaimInfo,
+  validateContractFullClaimInfo,
+} from "@/model/blockchain/ContractClaimInfo";
+import { getDateFromBlockchainTime } from "@/utils/formInput";
+import {
+  ContractCreateClaimRequest,
+  CreateClaimRequest,
+  TripInfoForClaimCreation,
+} from "@/model/blockchain/ContractCreateClaimRequest";
+import { ContractTrip, validateContractTrip } from "@/model/blockchain/ContractTrip";
+import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
+import { dateRangeFormatDayMonth } from "@/utils/datetimeFormatters";
 
 const useHostClaims = () => {
   const rentalityInfo = useRentality();
   const [dataFetched, setDataFetched] = useState<Boolean>(false);
+  const [tripInfos, setTripInfos] = useState<TripInfoForClaimCreation[]>([
+    { tripId: 0, tripDescription: "Loading..." },
+  ]);
+
   const [claims, setClaims] = useState<Claim[]>([]);
 
-  const createClaim = async (createClaimRequest: CreateClaimRequest) => {};
-  const cancelClaim = async (claimId: number) => {};
+  const createClaim = async (createClaimRequest: CreateClaimRequest) => {
+    if (rentalityInfo === null) {
+      console.error("createClaim: rentalityInfo is null");
+      return false;
+    }
+
+    try {
+      const claimRequest: ContractCreateClaimRequest = {
+        tripId: BigInt(createClaimRequest.tripId),
+        claimType: createClaimRequest.claimType,
+        description: createClaimRequest.description,
+        amountInUsdCents: BigInt(createClaimRequest.amountInUsdCents),
+      };
+
+      let transaction = await rentalityInfo.rentalityContract.createClaim(claimRequest);
+      await transaction.wait();
+      return true;
+    } catch (e) {
+      console.error("createClaim error:" + e);
+      return false;
+    }
+  };
+
+  const cancelClaim = async (claimId: number) => {
+    if (!rentalityInfo) {
+      console.error("cancelClaim error: rentalityInfo is null");
+      return false;
+    }
+
+    try {
+      let transaction = await rentalityInfo.rentalityContract.rejectClaim(BigInt(claimId));
+
+      await transaction.wait();
+      return true;
+    } catch (e) {
+      console.error("cancelClaim error:" + e);
+      return false;
+    }
+  };
 
   useEffect(() => {
     const getClaims = async (rentalityContract: IRentalityContract) => {
@@ -91,31 +74,33 @@ const useHostClaims = () => {
           console.error("getClaims error: contract is null");
           return;
         }
-        const claimsView: ContractClaim[] = claimsViewTEST; //await rentalityContract.getMyClaimsAsHost();
+        const claimsView: ContractFullClaimInfo[] = await rentalityContract.getMyClaimsAsHost();
 
         const claimsData =
           claimsView.length === 0
             ? []
             : await Promise.all(
-                claimsView.map(async (i: ContractClaim, index) => {
+                claimsView.map(async (i: ContractFullClaimInfo, index) => {
                   if (index === 0) {
-                    validateContractClaim(i);
+                    validateContractFullClaimInfo(i);
                   }
 
+                  console.log("i:", i);
+
                   let item: Claim = {
-                    claimId: Number(i.claimId),
-                    tripId: Number(i.tripId),
-                    deadlineDate: getDateFromBlockchainTime(i.deadlineDateInSec),
-                    claimType: i.claimType,
-                    claimTypeText: getClaimTypeTextFromClaimType(i.claimType),
-                    status: i.status,
-                    statusText: getClaimStatusTextFromStatus(i.status),
-                    carInfo: i.carInfo,
-                    description: i.description,
-                    amountInUsd: getStringFromMoneyInCents(i.amountInUsdCents),
-                    payDateInSec: Number(i.payDateInSec),
-                    rejectedBy: i.rejectedBy,
-                    rejectedDateInSec: Number(i.rejectedDateInSec),
+                    claimId: Number(i.claim.claimId),
+                    tripId: Number(i.claim.tripId),
+                    deadlineDate: getDateFromBlockchainTime(i.claim.deadlineDateInSec),
+                    claimType: i.claim.claimType,
+                    claimTypeText: getClaimTypeTextFromClaimType(i.claim.claimType),
+                    status: i.claim.status,
+                    statusText: getClaimStatusTextFromStatus(i.claim.status),
+                    carInfo: `${i.carInfo.brand} ${i.carInfo.model} ${i.carInfo.yearOfProduction}`,
+                    description: i.claim.description,
+                    amountInUsdCents: Number(i.claim.amountInUsdCents),
+                    payDateInSec: Number(i.claim.payDateInSec),
+                    rejectedBy: i.claim.rejectedBy,
+                    rejectedDateInSec: Number(i.claim.rejectedDateInSec),
                     hostPhoneNumber: i.hostPhoneNumber,
                     guestPhoneNumber: i.guestPhoneNumber,
                   };
@@ -123,7 +108,39 @@ const useHostClaims = () => {
                 })
               );
 
-        return claimsData;
+        const hostTripsView: ContractTrip[] = await rentalityContract.getTripsAsHost();
+
+        const hostTripsData =
+          hostTripsView.length === 0
+            ? []
+            : await Promise.all(
+                hostTripsView.map(async (i: ContractTrip, index) => {
+                  if (index === 0) {
+                    validateContractTrip(i);
+                  }
+
+                  const tokenURI = await rentalityContract.getCarMetadataURI(i.carId);
+                  const meta = await getMetaDataFromIpfs(tokenURI);
+
+                  const brand = meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
+                  const model = meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
+                  const year = meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "";
+                  const guestName = i.guestName;
+                  const tripStart = getDateFromBlockchainTime(i.startDateTime);
+                  const tripEnd = getDateFromBlockchainTime(i.endDateTime);
+
+                  let item: TripInfoForClaimCreation = {
+                    tripId: Number(i.tripId),
+                    tripDescription: `${brand} ${model} ${year} ${guestName} trip ${dateRangeFormatDayMonth(
+                      tripStart,
+                      tripEnd
+                    )}`,
+                  };
+                  return item;
+                })
+              );
+
+        return { hostTripsData, claimsData };
       } catch (e) {
         console.error("getClaims error:" + e);
       }
@@ -135,13 +152,14 @@ const useHostClaims = () => {
 
     getClaims(rentalityInfo.rentalityContract)
       .then((data) => {
-        setClaims(data ?? []);
+        setClaims(data?.claimsData ?? []);
+        setTripInfos(data?.hostTripsData ?? []);
         setDataFetched(true);
       })
       .catch(() => setDataFetched(true));
   }, [rentalityInfo]);
 
-  return [dataFetched, claims, createClaim, cancelClaim] as const;
+  return [dataFetched, claims, tripInfos, createClaim, cancelClaim] as const;
 };
 
 export default useHostClaims;

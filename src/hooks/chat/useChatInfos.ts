@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { getTripStatusFromContract } from "@/model/blockchain/ContractTrip";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
-import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
+import { IRentalityChatHelperContract, IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractChatInfo } from "@/model/blockchain/ContractChatInfo";
 import { Client as ChatClient } from "@/chat/client";
 import { useRentality } from "@/contexts/rentalityContext";
 import { ethers } from "ethers";
 import { getContract } from "@/abis";
-import { IRentalityChatHelperContract } from "@/model/blockchain/IRentalityChatHelperContract";
 import { isEmpty } from "@/utils/string";
 import { bytesToHex } from "@waku/utils/bytes";
 import { ChatInfo } from "@/model/ChatInfo";

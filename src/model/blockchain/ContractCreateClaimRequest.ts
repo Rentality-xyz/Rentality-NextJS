@@ -1,4 +1,4 @@
-import { ClaimType } from "./ContractFullClaimInfo";
+import { ClaimType } from "./ContractClaimInfo";
 
 export type ContractCreateClaimRequest = {
   tripId: bigint;
@@ -12,4 +12,9 @@ export type CreateClaimRequest = {
   claimType: ClaimType;
   description: string;
   amountInUsdCents: number;
+};
+
+export type TripInfoForClaimCreation = {
+  tripId: number;
+  tripDescription: string;
 };

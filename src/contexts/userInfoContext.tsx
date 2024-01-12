@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRentality } from "./rentalityContext";
-import { KYCInfo } from "@/model/blockchain/IRentalityContract";
+import { ContractKYCInfo } from "@/model/blockchain/IRentalityContract";
 import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
 import { isEmpty } from "@/utils/string";
 
@@ -61,7 +61,7 @@ export const UserInfoProvider = ({ children }: { children?: React.ReactNode }) =
         return;
       }
       try {
-        const myKYCInfo: KYCInfo = await rentalityInfo.rentalityContract.getMyKYCInfo();
+        const myKYCInfo: ContractKYCInfo = await rentalityInfo.rentalityContract.getMyKYCInfo();
 
         if (myKYCInfo == null) return;
 

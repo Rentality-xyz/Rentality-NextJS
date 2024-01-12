@@ -1,8 +1,9 @@
-import { Claim, ClaimStatus } from "@/model/blockchain/ContractFullClaimInfo";
+import { Claim, ClaimStatus } from "@/model/blockchain/ContractClaimInfo";
 import { dateFormatDayMonthTime } from "@/utils/datetimeFormatters";
 import Link from "next/link";
 import RntButton from "../common/rntButton";
 import { twMerge } from "tailwind-merge";
+import { getStringFromMoneyInCents } from "@/utils/formInput";
 
 type Props =
   | {
@@ -56,7 +57,7 @@ export default function ClaimHistory(props: Props) {
                 <td className={rowSpanClassName}>{claim.tripId}</td>
                 <td className={rowSpanClassName}>{claim.carInfo}</td>
                 <td className={rowSpanClassName}>{claim.description}</td>
-                <td className={rowSpanClassName}>${claim.amountInUsd}</td>
+                <td className={rowSpanClassName}>${getStringFromMoneyInCents(claim.amountInUsdCents)}</td>
                 <td className={claim.status === ClaimStatus.Overdue ? redTextClassName : rowSpanClassName}>
                   {claim.statusText}
                 </td>

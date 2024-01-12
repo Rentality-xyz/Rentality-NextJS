@@ -1,13 +1,14 @@
-import { CreateClaimRequest } from "@/model/blockchain/ContractCreateClaimRequest";
+import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/blockchain/ContractCreateClaimRequest";
 import RntSelect from "../common/rntSelect";
 import { useState } from "react";
-import { ClaimType, getClaimTypeTextFromClaimType } from "@/model/blockchain/ContractFullClaimInfo";
+import { ClaimType, getClaimTypeTextFromClaimType } from "@/model/blockchain/ContractClaimInfo";
 import RntInputMultiline from "../common/rntInputMultiline";
 import RntInput from "../common/rntInput";
 import Checkbox from "../common/checkbox";
 import RntButton from "../common/rntButton";
 
 type Props = {
+  tripInfos: TripInfoForClaimCreation[];
   createClaim: (createClaimRequest: CreateClaimRequest) => Promise<void>;
 };
 
@@ -21,27 +22,28 @@ type CreateClaimParams = {
 
 const emptyCreateClaimParams: CreateClaimParams = {
   selectedTripId: "",
-  incidentType: "",
+  incidentType: "Tolls",
   description: "",
   amountInUsd: "",
   isChecked: false,
 };
 
-const tripList = [
-  {
-    tripId: 1,
-    tripDescription: "Ford Bronco 2022 James Webb trip 12 Sep - 14 Oct 2023",
-  },
-  {
-    tripId: 2,
-    tripDescription: "Ford Bronco 2022 Sarah Conor trip 10 Sep - 11 Oct 2023",
-  },
-];
-
-export default function CreateClaim(props: Props) {
+export default function CreateClaim({ tripInfos, createClaim }: Props) {
   const [createClaimParams, setCreateClaimParams] = useState<CreateClaimParams>(emptyCreateClaimParams);
 
   const allClaimTypes = Object.keys(ClaimType).filter((v) => !isFinite(Number(v)));
+
+  const handleCreateClaim = async () => {
+    if (!createClaimParams.isChecked) return;
+
+    const createClaimRequest: CreateClaimRequest = {
+      tripId: Number(createClaimParams.selectedTripId),
+      claimType: Number(ClaimType[createClaimParams.incidentType as keyof typeof ClaimType]),
+      description: createClaimParams.description,
+      amountInUsdCents: (Number(createClaimParams.amountInUsd) ?? 0) * 100,
+    };
+    createClaim(createClaimRequest);
+  };
 
   return (
     <div className="w-full p-4  mt-5 flex flex-col gap-4">
@@ -59,7 +61,7 @@ export default function CreateClaim(props: Props) {
           }
         >
           <option className="hidden" disabled></option>
-          {tripList.map((i) => (
+          {tripInfos.map((i) => (
             <option key={i.tripId} value={i.tripId.toString()}>
               {i.tripDescription}
             </option>
@@ -77,7 +79,6 @@ export default function CreateClaim(props: Props) {
             })
           }
         >
-          <option className="hidden" disabled></option>
           {allClaimTypes.map((i, index) => (
             <option key={index} value={i.toString()}>
               {getClaimTypeTextFromClaimType(index)}
@@ -126,7 +127,9 @@ export default function CreateClaim(props: Props) {
         }
       />
 
-      <RntButton className="w-72">Confirm and send to guest</RntButton>
+      <RntButton className="w-72" onClick={handleCreateClaim} disabled={!createClaimParams.isChecked}>
+        Confirm and send to guest
+      </RntButton>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IRentalityContract, KYCInfo } from "@/model/blockchain/IRentalityContract";
+import { IRentalityContract, ContractKYCInfo } from "@/model/blockchain/IRentalityContract";
 import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
 import { useRentality } from "@/contexts/rentalityContext";
 import { getBlockchainTimeFromDate, getDateFromBlockchainTime } from "@/utils/formInput";
@@ -33,7 +33,7 @@ const useProfileSettings = () => {
         console.error("getTrip error: contract is null");
         return;
       }
-      const myKYCInfo: KYCInfo = await rentalityContract.getMyKYCInfo();
+      const myKYCInfo: ContractKYCInfo = await rentalityContract.getMyKYCInfo();
 
       if (myKYCInfo == null) return;
 
