@@ -136,10 +136,6 @@ body {
   @apply bg-rentality-primary text-rnt-temp-card-text;
 }
 
-/*main img {*/
-/*  @apply bg-rnt-temp-image-bg;*/
-/*}*/
-
 .sliding-panel-container {
   @apply bg-rnt-temp-slide-panel-container-bg;
   @apply bg-opacity-50;
@@ -284,6 +280,13 @@ input:disabled {
 .selected-flag {
   border-radius: 9999px 0 0 9999px !important;
 }
+
+#privy-dialog > div > div {
+  background-color: #1E1E30;
+  border-width: 2px;
+  border-color: #373737;
+}
+
 
 .border-gradient {
   /*padding: 10px;*/

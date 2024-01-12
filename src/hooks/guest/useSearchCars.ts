@@ -1,6 +1,6 @@
 import { Contract, ethers } from "ethers";
 import { useCallback, useState } from "react";
-import { rentalityCurrencyConverterJSON } from "../../abis";
+import { rentalityContracts } from "../../abis";
 import { ContractCarInfo, validateContractCarInfo } from "@/model/blockchain/ContractCarInfo";
 import { calculateDays } from "@/utils/date";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
@@ -35,7 +35,15 @@ const useSearchCars = () => {
 
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = await provider.getSigner();
-      return new Contract(rentalityCurrencyConverterJSON.address, rentalityCurrencyConverterJSON.abi, signer);
+      const chainId = await signer.getChainId();
+      console.log("getRentalityCurrencyConverterContract chainId", chainId);
+      const selectedChainId =
+        chainId === 80001 ? "80001" : chainId === 84532 ? "84532" : chainId === 11155111 ? "11155111" : "11155111"; //"1337";
+      return new Contract(
+        rentalityContracts[selectedChainId].currencyConverter.address,
+        rentalityContracts[selectedChainId].currencyConverter.abi,
+        signer
+      );
     } catch (e) {
       console.error("getRentalityCurrencyConverter error:" + e);
     }

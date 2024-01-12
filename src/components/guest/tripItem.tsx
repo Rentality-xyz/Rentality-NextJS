@@ -77,9 +77,6 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
         >
           <div className={statusClassName}>
             <strong className="text-m">{`${getTripStatusTextFromStatus(tripInfo.status)}`}</strong>
-            {tripInfo.status === TripStatus.CheckedOutByGuest ? (
-              <div className="text-black text-xs">Pending finish by host and deposit refund</div>
-            ) : null}
           </div>
         </div>
         <div id="guest-trip-item-info" className="w-full flex flex-col sm_inverted:flex-row">
