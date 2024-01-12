@@ -17,6 +17,7 @@ import {
 import { ContractTrip, validateContractTrip } from "@/model/blockchain/ContractTrip";
 import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { dateRangeFormatDayMonth } from "@/utils/datetimeFormatters";
+import { TripStatus } from "@/model/TripInfo";
 
 const useHostClaims = () => {
   const rentalityInfo = useRentality();
@@ -108,7 +109,9 @@ const useHostClaims = () => {
                 })
               );
 
-        const hostTripsView: ContractTrip[] = await rentalityContract.getTripsAsHost();
+        const hostTripsView: ContractTrip[] = (await rentalityContract.getTripsAsHost()).filter(
+          (i) => i.status !== TripStatus.Pending
+        );
 
         const hostTripsData =
           hostTripsView.length === 0

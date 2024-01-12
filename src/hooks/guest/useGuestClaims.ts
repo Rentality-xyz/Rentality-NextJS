@@ -113,7 +113,7 @@ const useGuestClaims = () => {
         return false;
       }
 
-      const claimAmountInUsdCents = (claims.find((i) => i.claimId === claimId)?.amountInUsdCents ?? 0) * 100;
+      const claimAmountInUsdCents = claims.find((i) => i.claimId === claimId)?.amountInUsdCents ?? 0;
       const [claimAmountInEth, ethToCurrencyRate, ethToCurrencyDecimals] =
         await rentalityCurrencyConverterContract.getEthFromUsdLatest(claimAmountInUsdCents);
 
