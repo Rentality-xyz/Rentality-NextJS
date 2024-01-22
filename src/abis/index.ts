@@ -13,10 +13,10 @@ export const rentalityContracts = {
     addresses: RentalityGatewayJSON_ADDRESSES.addresses,
     abi: RentalityGatewayJSON_ABI.abi,
   },
-  // admin: {
-  //   addresses: RentalityAdminGatewayJSON_ADDRESSES.addresses,
-  //   abi: RentalityAdminGatewayJSON_ABI.abi,
-  // },
+  admin: {
+    addresses: RentalityAdminGatewayJSON_ADDRESSES.addresses,
+    abi: RentalityAdminGatewayJSON_ABI.abi,
+  },
   currencyConverter: {
     addresses: RentalityCurrencyConverterJSON_ADDRESSES.addresses,
     abi: RentalityCurrencyConverterJSON_ABI.abi,
