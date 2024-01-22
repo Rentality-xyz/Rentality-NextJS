@@ -1,8 +1,6 @@
 import RentalityGatewayJSON_ABI from "./RentalityGateway.v0_15_0.abi.json";
 import RentalityGatewayJSON_ADDRESSES from "./RentalityGateway.v0_15_0.addresses.json";
-// @ts-ignore
 import RentalityAdminGatewayJSON_ABI from "./RentalityAdminGateway.v0_15_0.abi.json";
-// @ts-ignore
 import RentalityAdminGatewayJSON_ADDRESSES from "./RentalityAdminGateway.v0_15_0.addresses.json";
 import RentalityCurrencyConverterJSON_ABI from "./RentalityCurrencyConverter.v0_15_0.abi.json";
 import RentalityCurrencyConverterJSON_ADDRESSES from "./RentalityCurrencyConverter.v0_15_0.addresses.json";
