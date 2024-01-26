@@ -4,9 +4,10 @@ import "react-phone-input-2/lib/style.css";
 
 interface PhoneInputComponentProps {
     onChange: (value: string) => void;
+    initialValue: string;
 }
 
-function PhoneInputComponent({ onChange }: PhoneInputComponentProps) {
+function PhoneInputComponent({ onChange, initialValue }: PhoneInputComponentProps) {
     const [value, setValue] = React.useState('');
     const handleChange = (val: string) => {
         setValue(val);
@@ -23,9 +24,9 @@ function PhoneInputComponent({ onChange }: PhoneInputComponentProps) {
                 containerClass="h-12"
                 country={"us"}
                 placeholder="Enter phone number"
-                value={value}
+                value={initialValue}
                 onChange={handleChange}
-                inputStyle = {{fontFamily: "'Montserrat', Arial, sans-serif", width: "100%", height: "48px", borderRadius: "9999px"}}
+                inputStyle={{ fontFamily: "'Montserrat', Arial, sans-serif", width: "100%", height: "48px", borderRadius: "9999px" }}
             />
         </div>
     );
