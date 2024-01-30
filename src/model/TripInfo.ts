@@ -86,6 +86,7 @@ export type TripInfo = {
   guestName: string;
   rejectedBy: string;
   rejectedDate: Date | undefined;
+  createdDateTime: Date;
 };
 
 export function getGalsFromFuelLevel(tripInfo: TripInfo, fuelLevel: number): number {

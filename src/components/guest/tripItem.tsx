@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { dateFormat, dateFormatMonthDate } from "@/utils/datetimeFormatters";
+import { dateFormat, dateFormatDayMonthTime, dateFormatMonthDate } from "@/utils/datetimeFormatters";
 import { useEffect, useRef, useState } from "react";
 import {
   TripInfo,
@@ -109,7 +109,7 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
           >
             <div className="flex flex-col">
               <div className="text-center text-[#52D1C9]">
-                <strong>Guest booked a trip at 20 Nov 15:55</strong>
+                <strong>Guest booked a trip at {dateFormatDayMonthTime(tripInfo.createdDateTime)}</strong>
               </div>
               <div className="mt-4 text-center">
                 {/* `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;` */}
@@ -169,7 +169,6 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
                 <strong className="text-l">Trip start</strong>
               </div>
               <div className="">{dateFormat(tripInfo.tripStart)}</div>
-              {/* <div>April 05, 4:00 AM</div> */}
             </div>
             <div className="flex flex-col 2xl:mt-4">
               <div>
@@ -177,11 +176,10 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
                 <strong className="text-l">Trip end</strong>
               </div>
               <div className="">{dateFormat(tripInfo.tripEnd)}</div>
-              {/* <div>April 05, 4:00 AM</div> */}
             </div>
           </div>
           <div
-            id="guest-trip-lacation-info"
+            id="guest-trip-location-info"
             className="w-full sm_inverted:w-1/4 flex flex-col flex-1 p-4 md:p-2 xl:p-4"
           >
             <div className="flex flex-col gap-2">
@@ -190,16 +188,14 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
                   <i className="fi fi-sr-marker pr-1  text-rentality-icons"></i>
                   <strong className="text-l whitespace-nowrap">Pickup location</strong>
                 </div>
-                <div>{tripInfo.locationStart}</div>
-                {/* <div>Miami, CA, USA</div> */}
+                <div>{tripInfo.locationStart}&nbsp;</div>
               </div>
               <div className="flex flex-col 2xl:mt-4">
                 <div>
                   <i className="fi fi-sr-marker pr-1 text-rentality-icons"></i>
                   <strong className="text-l whitespace-nowrap">Return location</strong>
                 </div>
-                <div>{tripInfo.locationEnd}</div>
-                {/* <div>Miami, CA, USA</div> */}
+                <div>{tripInfo.locationEnd}&nbsp;</div>
               </div>
             </div>
           </div>
@@ -211,7 +207,7 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
           <div className="flex max-2xl:justify-between 2xl:flex-col 2xl:gap-2 2xl:pr-8">
             <div id="guest-trip-chat-info" className="2xl:flex 2xl:flex-col 2xl:mt-6">
               <div>
-                <Link href={``}>
+                <Link href={`/guest/messages?tridId=${tripInfo.tripId}`}>
                   <i className="fi fi-rs-envelope-open pr-1 text-rentality-icons"></i>
                   <strong className="text-l">Chat</strong>
                 </Link>
@@ -219,10 +215,10 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
             </div>
             <div id="guest-trip-contact-info" className="2xl:flex 2xl:flex-col 2xl:mt-2">
               <div>
-                <Link href={``}>
+                <a href={`tel:${tripInfo.hostMobileNumber}`}>
                   <i className="fi fi-br-phone-flip pr-1 text-rentality-icons"></i>
-                  <strong className="text-l">Contact Host</strong>
-                </Link>
+                  <strong className="text-l">Contact</strong>
+                </a>
               </div>
             </div>
             <div className="2xl:mt-10 text-[#52D1C9]">

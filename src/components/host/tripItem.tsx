@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { dateFormat, dateFormatMonthDate } from "@/utils/datetimeFormatters";
+import { dateFormat, dateFormatDayMonthTime, dateFormatMonthDate } from "@/utils/datetimeFormatters";
 import { useEffect, useRef, useState } from "react";
 import {
   TripInfo,
@@ -81,7 +81,7 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
             className="h-full w-full object-cover"
           /> */}
 
-        {/* Empty span to generate tatilwind css colors for statuses */}
+        {/* Empty span to generate tailwind css colors for statuses */}
         <span className="bg-yellow-600 bg-lime-500 bg-blue-600 bg-blue-800 bg-purple-600 bg-purple-800 bg-fuchsia-700 bg-red-500" />
         <div
           style={{ backgroundImage: `url(${tripInfo.image})` }}
@@ -122,7 +122,7 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
           >
             <div className="flex flex-col">
               <div className="text-center text-[#52D1C9]">
-                <strong>Guest booked a trip at 20 Nov 15:55</strong>
+                <strong>Guest booked a trip at {dateFormatDayMonthTime(tripInfo.createdDateTime)}</strong>
               </div>
               <div className="mt-4 text-center">
                 {/* `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;` */}
@@ -182,7 +182,6 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
                 <strong className="text-l">Trip start</strong>
               </div>
               <div className="whitespace-nowrap">{dateFormat(tripInfo.tripStart)}</div>
-              {/* <div>April 05, 4:00 AM</div> */}
             </div>
             <div className="flex flex-col 2xl:mt-4">
               <div>
@@ -190,17 +189,16 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
                 <strong className="text-l">Trip end</strong>
               </div>
               <div className="whitespace-nowrap">{dateFormat(tripInfo.tripEnd)}</div>
-              {/* <div>April 05, 4:00 AM</div> */}
             </div>
           </div>
-          <div id="host-trip-lacation-info" className="w-full sm_inverted:w-1/4 flex flex-col flex-1 p-4 md:p-2 xl:p-4">
+          <div id="host-trip-location-info" className="w-full sm_inverted:w-1/4 flex flex-col flex-1 p-4 md:p-2 xl:p-4">
             <div className="flex flex-col gap-2">
               <div className="flex flex-col 2xl:mt-6">
                 <div>
                   <i className="fi fi-rs-marker pr-1  text-rentality-icons"></i>
                   <strong className="text-l whitespace-nowrap">Pickup location</strong>
                 </div>
-                <div>{tripInfo.locationStart}</div>
+                <p>{tripInfo.locationStart}&nbsp;</p>
                 {/* <div>Miami, CA, USA</div> */}
               </div>
               <div className="flex flex-col 2xl:mt-4">
@@ -208,7 +206,7 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
                   <i className="fi fi-rs-marker pr-1 text-rentality-icons"></i>
                   <strong className="text-l whitespace-nowrap">Return location</strong>
                 </div>
-                <div>{tripInfo.locationEnd}</div>
+                <p>{tripInfo.locationEnd}&nbsp;</p>
                 {/* <div>Miami, CA, USA</div> */}
               </div>
             </div>
@@ -221,7 +219,7 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
           <div className="flex max-2xl:justify-between 2xl:flex-col 2xl:gap-2 2xl:pr-8">
             <div id="trip-chat-info" className="2xl:flex 2xl:flex-col 2xl:mt-6">
               <div>
-                <Link href={``}>
+                <Link href={`/host/messages?tridId=${tripInfo.tripId}`}>
                   <i className="fi fi-rs-envelope-open pr-1 text-rentality-icons"></i>
                   <strong className="text-l">Chat</strong>
                 </Link>
@@ -229,14 +227,14 @@ export default function TripItem({ tripInfo, changeStatusCallback, disableButton
             </div>
             <div id="trip-contact-info" className="2xl:flex 2xl:flex-col 2xl:mt-2">
               <div>
-                <Link href={``}>
+                <a href={`tel:${tripInfo.guestMobileNumber}`}>
                   <i className="fi fi-br-phone-flip pr-1 text-rentality-icons"></i>
-                  <strong className="text-l">Contact Host</strong>
-                </Link>
+                  <strong className="text-l">Contact</strong>
+                </a>
               </div>
             </div>
             <div className="2xl:mt-10 text-[#52D1C9]">
-              <Link href={`/guest/trips/tripInfo/${tripInfo.tripId}`}>
+              <Link href={`/host/trips/tripInfo/${tripInfo.tripId}`}>
                 <strong>More info</strong>
               </Link>
               <i className="fi fi-br-angle-small-down pl-1"></i>
