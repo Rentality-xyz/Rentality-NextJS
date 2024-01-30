@@ -7,7 +7,7 @@ import icProfileSettings from "@/images/ic_profile_settings.jpg";
 import icListings from "@/images/ic_listings.jpg";
 import icClaims from "@/images/ic_claims.jpg";
 import MenuIcons from "@/components/sideNavMenu/menuIcons";
-import { useAppContext } from "@/contexts/useAppContext";
+import { useAppContext } from "@/contexts/appContext";
 
 export default function SideNavMenuItem({ text, href, icon }: { text: string; href: string; icon: MenuIcons }) {
   const { toggleBurgerMenu } = useAppContext();
