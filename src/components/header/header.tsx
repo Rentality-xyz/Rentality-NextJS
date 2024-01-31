@@ -8,7 +8,7 @@ import { isEmpty } from "@/utils/string";
 import burgerMenu from "../../images/ic-menu-burge-white-20.svg";
 import burgerMenuClose from "../../images/ic-menu-burge-close-white-20.svg";
 import Image from "next/image";
-import { useAppContext } from "@/contexts/useAppContext";
+import { useAppContext } from "@/contexts/appContext";
 import ChooseBlockchainComponent from "@/components/choose_blockchain/ChooseBlockchainComponent";
 import { usePrivy } from "@privy-io/react-auth";
 import { GuestBurgerNavMenu } from "../sideNavMenu/guestSideNavMenu";

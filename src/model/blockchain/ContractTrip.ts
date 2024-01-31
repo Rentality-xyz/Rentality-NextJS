@@ -26,6 +26,7 @@ export type ContractTrip = {
   checkedOutByHostDateTime: bigint;
   guestName: string;
   hostName: string;
+  createdDateTime: bigint;
 };
 
 type ContractPaymentInfo = {
@@ -104,6 +105,7 @@ export function validateContractTrip(obj: ContractTrip): obj is ContractTrip {
     checkedOutByHostDateTime: BigInt(0),
     guestName: "",
     hostName: "",
+    createdDateTime: BigInt(0),
   };
 
   return validateType(obj, emptyContractTrip);

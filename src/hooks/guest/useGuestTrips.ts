@@ -213,6 +213,7 @@ const useGuestTrips = () => {
                     guestName: i.guestName,
                     rejectedBy: i.rejectedBy,
                     rejectedDate: i.rejectedDateTime > 0 ? getDateFromBlockchainTime(i.rejectedDateTime) : undefined,
+                    createdDateTime: getDateFromBlockchainTime(i.createdDateTime),
                   };
                   return item;
                 })

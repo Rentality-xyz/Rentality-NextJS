@@ -50,12 +50,12 @@ export default function ProfileInfoPage({
         if (name === "profilePhotoUrl") {
             await handleFileUpload(e.target.files);
         } else {
-            setEnteredFormData({...enteredFormData, [name]: e.target.value});
+            setEnteredFormData({ ...enteredFormData, [name]: e.target.value });
         }
     }
 
     async function handleDateChange(date: Date | null) {
-        setEnteredFormData({...enteredFormData, drivingLicenseExpire: date ?? undefined});
+        setEnteredFormData({ ...enteredFormData, drivingLicenseExpire: date ?? undefined });
     }
 
     async function handleFileUpload(files: FileList | null) {
@@ -82,7 +82,7 @@ export default function ProfileInfoPage({
     async function handleBlur(e: FocusEvent<HTMLInputElement, Element>) {
         e.persist();
         setTouched((current) => {
-            return {...current, [e.target.id]: true};
+            return { ...current, [e.target.id]: true };
         });
     }
 
@@ -146,7 +146,7 @@ export default function ProfileInfoPage({
     }
 
     function handlePhoneChange(value: string) {
-        setEnteredFormData({...enteredFormData, phoneNumber: value});
+        setEnteredFormData({ ...enteredFormData, phoneNumber: value });
     }
 
     return (
@@ -155,7 +155,7 @@ export default function ProfileInfoPage({
                 <Avatar
                     alt={`${savedProfileSettings.firstName} ${savedProfileSettings.lastName}`}
                     src={enteredFormData.profilePhotoUrl}
-                    sx={{width: "7rem", height: "7rem"}}
+                    sx={{ width: "7rem", height: "7rem" }}
                 >
                     {!isEmpty(savedProfileSettings.firstName) || !isEmpty(savedProfileSettings.lastName)
                         ? savedProfileSettings.firstName?.slice(0, 1).toUpperCase() +
@@ -193,7 +193,7 @@ export default function ProfileInfoPage({
                         onChange={handleChange}
                         onBlur={handleBlur}
                     />
-                    <PhoneInputComponent onChange={handlePhoneChange}/>
+                    <PhoneInputComponent onChange={handlePhoneChange} initialValue={enteredFormData.phoneNumber} />
 
                     {/*<RntInput*/}
                     {/*  className="lg:w-60"*/}

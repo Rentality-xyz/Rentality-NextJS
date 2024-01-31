@@ -1,6 +1,6 @@
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { Contract, Signer, ethers } from "ethers";
-import { getContract, rentalityContracts } from "../abis";
+import { Signer, ethers } from "ethers";
+import { getContract } from "../abis";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { blockchainList } from "@/model/blockchain/BlockchainList";
@@ -197,47 +197,6 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
       window.ethereum.removeListener("chainChanged", handleAccountsChanged);
     };
   }, [connectToMetaMask, handleAccountsChanged, rentalityContractInfo]);
-
-  // useEffect(() => {
-  //   const checkBlockChainId = async () => {
-  //     if (window.ethereum == null) {
-  //       console.error("Ethereum wallet is not found");
-  //       return;
-  //     }
-
-  //     console.log("selectedBlockchain=" + selectedBlockchain);
-  //     const selectedBlockchainHex =
-  //       selectedBlockchain == BlockchainsEnum.ETHEREUM
-  //         ? "0xaa36a7"
-  //         : selectedBlockchain == BlockchainsEnum.POLYGON
-  //         ? "0x" + decimalToHex("80001") //0x13881
-  //         : selectedBlockchain == BlockchainsEnum.BASE
-  //         ? "0x14a33"
-  //         : "";
-
-  //     if (!selectedBlockchainHex) {
-  //       console.error("selectedBlockchainHex is not a number");
-  //       return;
-  //     }
-  //     console.log("selectedBlockchainHex=" + selectedBlockchainHex);
-
-  //     try {
-  //       const chainId = await window.ethereum.request({ method: "eth_chainId" });
-
-  //       if (chainId !== selectedBlockchainHex) {
-  //         setRequiredChainId(selectedBlockchainHex);
-  //         await window.ethereum.request({
-  //           method: "wallet_switchEthereumChain",
-  //           params: [{ chainId: selectedBlockchainHex }],
-  //         });
-  //       }
-  //     } catch (e) {
-  //       console.error("checkBlockChainId error:" + e);
-  //     }
-  //   };
-
-  //   checkBlockChainId();
-  // }, [selectedBlockchain]);
 
   return <RentalityContext.Provider value={rentalityContractInfo}>{children}</RentalityContext.Provider>;
 };
