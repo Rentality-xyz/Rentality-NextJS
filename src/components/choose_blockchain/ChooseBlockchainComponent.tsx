@@ -1,13 +1,6 @@
 import { Button, Stack } from "@mui/material";
-import logoEthereum from "../../images/logoEthereum.svg";
-import logoEthereumBg from "../../images/logoEthereumBg.svg";
 import arrowUp from "../../images/arrowUp.svg";
 import arrowDown from "../../images/arrowDown.svg";
-import logoPolygon from "../../images/logoPolygon.svg";
-import logoPolygonBg from "../../images/logoPolygonBg.svg";
-import logoBase from "../../images/logoBase.svg";
-import logoBaseBg from "../../images/logoBaseBg.svg";
-import logoFuse from "../../images/logoFuse.png";
 import blockchainChosen from "../../images/blockchainChosen.svg";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -59,20 +52,11 @@ export default function ChooseBlockchainComponent() {
     setIsShowComponentList(false);
   };
 
-  const getLogoIcon = (chainId: number, addBackground: boolean) => {
-    switch (chainId) {
-      case 123:
-        return addBackground ? logoFuse : logoFuse;
-      case 80001:
-        return addBackground ? logoPolygonBg : logoPolygon;
-      case 84532:
-        return addBackground ? logoBaseBg : logoBase;
-      case 11155111:
-        return addBackground ? logoEthereumBg : logoEthereum;
-      default:
-        return logoEthereum;
-    }
+  const getLogoIconUrl = (logoFileName: string) => {
+    if (!logoFileName) return "/logos/chainLogoUnknown.svg";
+    return `/logos/${logoFileName}`;
   };
+
   return (
     <div ref={chooseBlockchainWrapperRef}>
       <Stack className="mx-1 xl:ml-16 relative" direction="row" spacing={1} alignItems="center">
@@ -82,7 +66,13 @@ export default function ChooseBlockchainComponent() {
             setIsShowComponentList((prev) => !prev);
           }}
         >
-          <Image className="w-8 h-8" src={getLogoIcon(selectedBlockchain?.chainId ?? 0, true)} alt="" />
+          <Image
+            className={`w-8 h-8 bg-[#DCE3FA] rounded-[0.6rem]`}
+            src={getLogoIconUrl(selectedBlockchain?.logo ?? "")}
+            alt=""
+            width={32}
+            height={32}
+          />
           <Image src={isShowComponentList ? arrowUp : arrowDown} alt="" className="ml-1" />
         </Button>
         {isShowComponentList && (
@@ -99,7 +89,13 @@ export default function ChooseBlockchainComponent() {
                     setIsShowComponentList((prev) => !prev);
                   }}
                 >
-                  <Image className=" mr-2 w-[24px] h-[24px]" src={getLogoIcon(i.chainId, false)} alt="" />
+                  <Image
+                    className="mr-2 w-[24px] h-[24px]"
+                    src={getLogoIconUrl(i.logo)}
+                    alt=""
+                    width={24}
+                    height={24}
+                  />
                   <span className="whitespace-nowrap">{i.shortName}</span>
                   <Stack className="w-full flex items-end">
                     {selectedBlockchain == i && <Image src={blockchainChosen} alt="" className="mr-0" />}
@@ -107,63 +103,6 @@ export default function ChooseBlockchainComponent() {
                 </Button>
               );
             })}
-            {/* 
-            <Button
-              className={classBtn}
-              onClick={() => {
-                rentalityInfo?.requestChainIdChange("0xaa36a7");
-                setIsShowComponentList((prev) => !prev);
-              }}
-            >
-              <Image src={logoEthereum} alt="" className="mr-1" />
-              Sepolia
-              <Stack className="w-full flex items-end">
-                {selectedBlockchain == BlockchainsEnum.ETHEREUM && (
-                  <Image src={blockchainChosen} alt="" className="mr-0" />
-                )}
-              </Stack>
-            </Button>
-            <Button
-              className={classBtn}
-              onClick={() => {
-                toggleBlockchain(BlockchainsEnum.POLYGON);
-                setIsShowComponentList((prev) => !prev);
-              }}
-            >
-              <Image src={logoPolygon} alt="" className="mr-1" />
-              Polygon
-              <Stack className="w-full flex items-end">
-                {selectedBlockchain == BlockchainsEnum.POLYGON && (
-                  <Image src={blockchainChosen} alt="" className="mr-0" />
-                )}
-              </Stack>
-            </Button>
-            <Button
-              className={classBtn}
-              onClick={() => {
-                toggleBlockchain(BlockchainsEnum.BASE);
-                setIsShowComponentList((prev) => !prev);
-              }}
-            >
-              <Image src={logoBase} alt="" className="mr-1" />
-              Base
-              <Stack className="w-full flex items-end">
-                {selectedBlockchain == BlockchainsEnum.BASE && <Image src={blockchainChosen} alt="" className="mr-0" />}
-              </Stack>
-            </Button>
-            <Button
-              className={classBtn}
-              onClick={() => {
-                toggleBlockchain(BlockchainsEnum.FUSE);
-                setIsShowComponentList((prev) => !prev);
-              }}
-            >
-              <Image src={logoFuse} alt="" className="ml-0.5 mr-2 w-[24px] xl:w-[14px]" />
-              Fuse
-              <Stack className="w-full flex items-end">
-                {selectedBlockchain == BlockchainsEnum.FUSE && <Image src={blockchainChosen} alt="" className="mr-0" />}
-              </Stack>
-            </Button> */}
           </Stack>
         )}
       </Stack>

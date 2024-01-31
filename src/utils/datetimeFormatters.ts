@@ -64,7 +64,7 @@ export const dateFormatMonthDate = (value: Date) => {
 
 //dd MMM, HH:mm
 export const dateFormatDayMonthTime = (value: Date) => {
-  if (value === undefined) return "";
+  if (value === undefined || !isFinite(value.getTime())) return "";
 
   let day = value.getDate().toString();
   if (day.length === 1) {

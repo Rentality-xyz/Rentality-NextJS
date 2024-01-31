@@ -193,7 +193,7 @@ export default function ProfileInfoPage({
             onChange={handleChange}
             onBlur={handleBlur}
           />
-          <PhoneInputComponent onChange={handlePhoneChange} />
+          <PhoneInputComponent onChange={handlePhoneChange} initialValue={enteredFormData.phoneNumber} />
 
           {/*<RntInput*/}
           {/*  className="lg:w-60"*/}
