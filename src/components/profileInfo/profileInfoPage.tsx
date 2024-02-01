@@ -112,6 +112,7 @@ export default function ProfileInfoPage({
         if (!response.success || !response.pinataURL) {
           throw new Error("Uploaded image to Pinata error");
         }
+
         profilePhotoUrl = response.pinataURL;
         console.log("Uploaded image to Pinata: ", profilePhotoUrl);
       }
