@@ -1,9 +1,9 @@
-import { Claim, ClaimStatus } from "@/model/blockchain/ContractClaimInfo";
 import { dateFormatDayMonthTime } from "@/utils/datetimeFormatters";
 import Link from "next/link";
 import RntButton from "../common/rntButton";
 import { twMerge } from "tailwind-merge";
 import { getStringFromMoneyInCents } from "@/utils/formInput";
+import { Claim, ClaimStatus } from "@/model/Claim";
 
 type Props =
   | {

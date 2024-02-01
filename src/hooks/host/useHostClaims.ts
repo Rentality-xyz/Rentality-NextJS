@@ -1,13 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import {
-  Claim,
-  getClaimTypeTextFromClaimType,
-  getClaimStatusTextFromStatus,
-  ContractFullClaimInfo,
-  validateContractFullClaimInfo,
-} from "@/model/blockchain/ContractClaimInfo";
+import { ContractFullClaimInfo, validateContractFullClaimInfo } from "@/model/blockchain/ContractClaimInfo";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
 import {
   ContractCreateClaimRequest,
@@ -18,6 +12,7 @@ import { ContractTrip, validateContractTrip } from "@/model/blockchain/ContractT
 import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { dateRangeFormatDayMonth } from "@/utils/datetimeFormatters";
 import { TripStatus } from "@/model/TripInfo";
+import { Claim, getClaimTypeTextFromClaimType, getClaimStatusTextFromStatus } from "@/model/Claim";
 
 const useHostClaims = () => {
   const rentalityInfo = useRentality();

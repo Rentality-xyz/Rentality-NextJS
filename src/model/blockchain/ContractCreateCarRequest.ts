@@ -10,6 +10,6 @@ export type ContractCreateCarRequest = {
   engineType: number;
   milesIncludedPerDay: bigint;
   timeBufferBetweenTripsInSec: number;
-  locationAddress: string;
+  location: string;
   geoApiKey: string;
 };

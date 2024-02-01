@@ -1,4 +1,4 @@
-import { ClaimType } from "./ContractClaimInfo";
+import { ClaimType } from "../Claim";
 
 export type ContractCreateClaimRequest = {
   tripId: bigint;

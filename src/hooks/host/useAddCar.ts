@@ -218,7 +218,7 @@ const useAddCar = () => {
         geoApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
         engineType: Number(engineType),
         engineParams: engineParams,
-        locationAddress: dataToSave.locationAddress,
+        location: dataToSave.locationAddress,
         //TODO EDIT
         timeBufferBetweenTripsInSec: 90,
       };

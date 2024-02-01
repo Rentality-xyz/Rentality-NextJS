@@ -12,13 +12,14 @@ export type ContractChatInfo = {
   hostPhotoUrl: string;
 
   tripStatus: number;
-  startDateTime: bigint;
-  endDateTime: bigint;
 
   carBrand: string;
   carModel: string;
   carYearOfProduction: string;
   carMetadataUrl: string;
+
+  startDateTime: bigint;
+  endDateTime: bigint;
 };
 
 export function validateContractChatInfo(obj: ContractChatInfo): obj is ContractChatInfo {

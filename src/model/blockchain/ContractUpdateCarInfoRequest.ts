@@ -4,5 +4,6 @@ export type ContractUpdateCarInfoRequest = {
   securityDepositPerTripInUsdCents: bigint;
   engineParams: bigint[];
   milesIncludedPerDay: bigint;
+  timeBufferBetweenTripsInSec: number;
   currentlyListed: boolean;
 };

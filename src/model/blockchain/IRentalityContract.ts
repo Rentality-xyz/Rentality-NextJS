@@ -117,6 +117,9 @@ export type ContractKYCInfo = {
   profilePhoto: string;
   licenseNumber: string;
   expirationDate: bigint;
+  createDate: bigint;
+  isKYCPassed: boolean;
+  isTCPassed: boolean;
 };
 
 type ContractChatKeyInfo = {

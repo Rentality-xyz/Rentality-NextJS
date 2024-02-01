@@ -1,5 +1,6 @@
 import { validateType } from "@/utils/typeValidator";
 import { TripStatus } from "../TripInfo";
+import { ContractTransactionInfo, emptyContractTransactionInfo } from "./ContractTransactionInfo";
 
 export type ContractTrip = {
   tripId: bigint;
@@ -15,18 +16,21 @@ export type ContractTrip = {
   milesIncludedPerDay: bigint;
   fuelPrices: bigint[];
   paymentInfo: ContractPaymentInfo;
+  createdDateTime: bigint;
   approvedDateTime: bigint;
   rejectedDateTime: bigint;
   rejectedBy: string;
   checkedInByHostDateTime: bigint;
   startParamLevels: bigint[];
   checkedInByGuestDateTime: bigint;
+  tripStartedBy: string;
   checkedOutByGuestDateTime: bigint;
+  tripFinishedBy: string;
   endParamLevels: bigint[];
   checkedOutByHostDateTime: bigint;
+  transactionInfo: ContractTransactionInfo;
   guestName: string;
   hostName: string;
-  createdDateTime: bigint;
 };
 
 type ContractPaymentInfo = {
@@ -106,6 +110,9 @@ export function validateContractTrip(obj: ContractTrip): obj is ContractTrip {
     guestName: "",
     hostName: "",
     createdDateTime: BigInt(0),
+    tripFinishedBy: "",
+    tripStartedBy: "",
+    transactionInfo: emptyContractTransactionInfo,
   };
 
   return validateType(obj, emptyContractTrip);

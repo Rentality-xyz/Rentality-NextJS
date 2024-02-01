@@ -1,16 +1,11 @@
 import { useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import {
-  Claim,
-  getClaimTypeTextFromClaimType,
-  getClaimStatusTextFromStatus,
-  ContractFullClaimInfo,
-  validateContractFullClaimInfo,
-} from "@/model/blockchain/ContractClaimInfo";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
 import { ethers } from "ethers";
 import { getContract } from "@/abis";
+import { Claim, getClaimStatusTextFromStatus, getClaimTypeTextFromClaimType } from "@/model/Claim";
+import { ContractFullClaimInfo, validateContractFullClaimInfo } from "@/model/blockchain/ContractClaimInfo";
 
 // const claimsViewTEST: ContractClaim[] = [
 //   {

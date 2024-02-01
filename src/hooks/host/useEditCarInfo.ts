@@ -84,8 +84,10 @@ const useEditCarInfo = (carId: number) => {
         carId: BigInt(carId),
         currentlyListed: carInfoFormParams.currentlyListed,
         engineParams: engineParams,
-        milesIncludedPerDay: BigInt(carInfoFormParams.milesIncludedPerDay),
         pricePerDayInUsdCents: pricePerDayInUsdCents,
+        milesIncludedPerDay: BigInt(carInfoFormParams.milesIncludedPerDay),
+        //TODO EDIT
+        timeBufferBetweenTripsInSec: 90,
         securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
       };
 

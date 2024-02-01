@@ -1,11 +1,11 @@
 import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/blockchain/ContractCreateClaimRequest";
 import RntSelect from "../common/rntSelect";
 import { useState } from "react";
-import { ClaimType, getClaimTypeTextFromClaimType } from "@/model/blockchain/ContractClaimInfo";
 import RntInputMultiline from "../common/rntInputMultiline";
 import RntInput from "../common/rntInput";
 import Checkbox from "../common/checkbox";
 import RntButton from "../common/rntButton";
+import { ClaimType, getClaimTypeTextFromClaimType } from "@/model/Claim";
 
 type Props = {
   tripInfos: TripInfoForClaimCreation[];
