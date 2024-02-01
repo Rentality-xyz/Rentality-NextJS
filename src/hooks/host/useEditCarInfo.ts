@@ -50,6 +50,7 @@ const emptyHostCarInfo: HostCarInfo = {
   batteryPrice_21_50: "",
   batteryPrice_51_80: "",
   batteryPrice_81_100: "",
+  timeBufferBetweenTripsInMin: 0,
 };
 
 const useEditCarInfo = (carId: number) => {
@@ -86,8 +87,7 @@ const useEditCarInfo = (carId: number) => {
         engineParams: engineParams,
         pricePerDayInUsdCents: pricePerDayInUsdCents,
         milesIncludedPerDay: BigInt(carInfoFormParams.milesIncludedPerDay),
-        //TODO EDIT
-        timeBufferBetweenTripsInSec: 90,
+        timeBufferBetweenTripsInSec: carInfoFormParams.timeBufferBetweenTripsInMin * 60,
         securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
       };
 
@@ -171,6 +171,7 @@ const useEditCarInfo = (carId: number) => {
           batteryPrice_21_50: batteryPrice_21_50,
           batteryPrice_51_80: batteryPrice_51_80,
           batteryPrice_81_100: batteryPrice_81_100,
+          timeBufferBetweenTripsInMin: Number(carInfo.timeBufferBetweenTripsInSec) / 60,
         };
         console.log("item:", JSON.stringify(item));
 

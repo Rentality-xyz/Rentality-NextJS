@@ -561,6 +561,29 @@ export default function CarEditForm({ carInfoFormParams, setCarInfoFormParams, o
         <div className="text-lg  mb-4">
           <strong>Vehicle management</strong>
         </div>
+        <div className="flex flex-wrap gap-4 mb-4">
+          <RntSelect
+            className="lg:w-60"
+            id="timeBufferBetweenTrips"
+            label="Time buffer between trips"
+            value={carInfoFormParams.timeBufferBetweenTripsInMin.toString()}
+            onChange={(e) => {
+              setCarInfoFormParams({
+                ...carInfoFormParams,
+                timeBufferBetweenTripsInMin: Number(e.target.value) ?? 0,
+              });
+            }}
+          >
+            <option value="0">0 min</option>
+            <option value="15">15 min</option>
+            <option value="30">30 min</option>
+            <option value="60">1 hr</option>
+            <option value="90">1.5 hr</option>
+            <option value="120">2 hr</option>
+            <option value="150">2.5 hr</option>
+            <option value="180">3 hr</option>
+          </RntSelect>
+        </div>
         <div className="flex flex-wrap gap-4">
           <RntSelect
             className="lg:w-60"

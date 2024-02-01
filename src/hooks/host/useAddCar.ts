@@ -48,6 +48,7 @@ const emptyNewCarInfo: HostCarInfo = {
   batteryPrice_21_50: "",
   batteryPrice_51_80: "",
   batteryPrice_81_100: "",
+  timeBufferBetweenTripsInMin: 0,
 };
 
 const useAddCar = () => {
@@ -220,8 +221,7 @@ const useAddCar = () => {
         engineType: Number(engineType),
         engineParams: engineParams,
         location: dataToSave.locationAddress,
-        //TODO EDIT
-        timeBufferBetweenTripsInSec: 90,
+        timeBufferBetweenTripsInSec: carInfoFormParams.timeBufferBetweenTripsInMin * 60,
       };
 
       console.log("request", request);

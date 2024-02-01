@@ -20,7 +20,7 @@ export type ContractCarInfo = {
   engineType: EngineType;
   engineParams: bigint[];
   milesIncludedPerDay: bigint;
-  timeBufferBetweenTripsInSec: bigint;
+  timeBufferBetweenTripsInSec: number;
   currentlyListed: boolean;
   geoVerified: boolean;
   timeZoneId: string;
@@ -40,7 +40,7 @@ export const emptyContractCarInfo: ContractCarInfo = {
   milesIncludedPerDay: BigInt(0),
   currentlyListed: false,
   geoVerified: false,
-  timeBufferBetweenTripsInSec: BigInt(0),
+  timeBufferBetweenTripsInSec: 0,
   timeZoneId: "",
 };
 

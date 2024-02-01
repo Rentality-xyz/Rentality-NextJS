@@ -38,6 +38,7 @@ export type HostCarInfo = {
   batteryPrice_21_50: string;
   batteryPrice_51_80: string;
   batteryPrice_81_100: string;
+  timeBufferBetweenTripsInMin: number;
 };
 
 export const verifyCar = (carInfoFormParams: HostCarInfo) => {
