@@ -43,7 +43,7 @@ export default function ListingItem({ carInfo }: Props) {
         <div className="flex flex-row justify-between items-end">
           <div className="flex flex-col">
             <strong className="text-xl">{`$${carInfo.pricePerDay}/day`}</strong>
-            <div className="text-sm">{`$${carInfo.milesIncludedPerDay} miles per day`}</div>
+            <div className="text-sm">{`${carInfo.milesIncludedPerDay} miles per day`}</div>
             <div className="text-sm">{`$${carInfo.securityDeposit} Security deposit`}</div>
           </div>
           <Link href={`/host/vehicles/edit/${carInfo.carId}`}>
