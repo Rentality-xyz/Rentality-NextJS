@@ -10,6 +10,7 @@ import {
   getEngineTypeCode,
 } from "@/model/blockchain/ContractCarInfo";
 import { getMoneyInCentsFromString } from "@/utils/formInput";
+import { SMARTCONTRACT_VERSION } from "@/abis";
 
 const emptyNewCarInfo: HostCarInfo = {
   carId: 0,
@@ -90,10 +91,6 @@ const useAddCar = () => {
         trait_type: "License state",
         value: licenseState,
       },
-      // {
-      //   trait_type: "State",
-      //   value: state,
-      // },
       {
         trait_type: "Brand",
         value: brand,
@@ -138,14 +135,6 @@ const useAddCar = () => {
         trait_type: "Tank volume(gal)",
         value: tankVolumeInGal,
       },
-      // {
-      //   trait_type: "Distance included(mi)",
-      //   value: milesIncludedPerDay,
-      // },
-      // {
-      //   trait_type: "Price per Day (USD cents)",
-      //   value: pricePerDay,
-      // }
     ];
     const nftJSON = {
       name,
@@ -155,8 +144,12 @@ const useAddCar = () => {
     };
 
     try {
-      //upload the metadata JSON to IPFS
-      const response = await uploadJSONToIPFS(nftJSON);
+      const response = await uploadJSONToIPFS(nftJSON, "RentalityNFTMetadata", {
+        createdAt: new Date().toISOString(),
+        createdBy: rentalityInfo?.walletAddress ?? "",
+        version: SMARTCONTRACT_VERSION,
+        chainId: (await rentalityInfo?.signer.getChainId()) ?? 0,
+      });
       if (response.success === true) {
         return response.pinataURL;
       }
@@ -173,12 +166,15 @@ const useAddCar = () => {
 
     try {
       setDataSaved(false);
-      const response = await uploadFileToIPFS(image);
+      const response = await uploadFileToIPFS(image, "RentalityCarImage", {
+        createdAt: new Date().toISOString(),
+        createdBy: rentalityInfo.walletAddress,
+        version: SMARTCONTRACT_VERSION,
+        chainId: await rentalityInfo.signer.getChainId(),
+      });
 
       if (response.success !== true) {
         console.error("Uploaded image to Pinata error");
-
-        setDataSaved(true);
         return false;
       }
 
@@ -189,6 +185,11 @@ const useAddCar = () => {
       };
 
       const metadataURL = await uploadMetadataToIPFS(dataToSave);
+
+      if (!metadataURL) {
+        console.error("Upload JSON to Pinata error");
+        return false;
+      }
 
       const pricePerDayInUsdCents = BigInt(getMoneyInCentsFromString(dataToSave.pricePerDay));
       const securityDepositPerTripInUsdCents = BigInt(getMoneyInCentsFromString(dataToSave.securityDeposit));
@@ -229,12 +230,12 @@ const useAddCar = () => {
 
       const result = await transaction.wait();
       setCarInfoFormParams(emptyNewCarInfo);
-      setDataSaved(true);
       return true;
     } catch (e) {
       console.error("Upload error" + e);
-      setDataSaved(true);
       return false;
+    } finally {
+      setDataSaved(true);
     }
   };
 

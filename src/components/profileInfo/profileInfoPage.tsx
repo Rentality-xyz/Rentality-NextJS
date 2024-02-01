@@ -12,6 +12,8 @@ import { useRouter } from "next/router";
 import { FocusEvent, FormEvent, ReactNode, useState } from "react";
 import RntDatePicker from "../common/rntDatePicker";
 import PhoneInputComponent from "@/components/phone_number_input/PhoneNumberInputComponent";
+import { SMARTCONTRACT_VERSION } from "@/abis";
+import { useRentality } from "@/contexts/rentalityContext";
 
 const STATUS = {
   IDLE: "IDLE",
@@ -40,6 +42,7 @@ export default function ProfileInfoPage({
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [status, setStatus] = useState(STATUS.IDLE);
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
+  const rentalityInfo = useRentality();
 
   const errors = getErrors(enteredFormData, profileImageFile);
   const isValid = Object.keys(errors).length === 0;
@@ -99,7 +102,12 @@ export default function ProfileInfoPage({
       var profilePhotoUrl = savedProfileSettings.profilePhotoUrl;
 
       if (profileImageFile !== null) {
-        const response = await uploadFileToIPFS(profileImageFile);
+        const response = await uploadFileToIPFS(profileImageFile, "RentalityProfileImage", {
+          createdAt: new Date().toISOString(),
+          createdBy: rentalityInfo?.walletAddress ?? "",
+          version: SMARTCONTRACT_VERSION,
+          chainId: (await rentalityInfo?.signer.getChainId()) ?? 0,
+        });
 
         if (!response.success || !response.pinataURL) {
           throw new Error("Uploaded image to Pinata error");

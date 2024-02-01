@@ -8,6 +8,8 @@ import RentalityChatHelperJSON_ABI from "./RentalityChatHelper.v0_15_0.abi.json"
 import RentalityChatHelperJSON_ADDRESSES from "./RentalityChatHelper.v0_15_0.addresses.json";
 import { Contract, ethers } from "ethers";
 
+export const SMARTCONTRACT_VERSION = "v0_15_0";
+
 export const rentalityContracts = {
   gateway: {
     addresses: RentalityGatewayJSON_ADDRESSES.addresses,
