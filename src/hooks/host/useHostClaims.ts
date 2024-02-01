@@ -81,8 +81,6 @@ const useHostClaims = () => {
                     validateContractFullClaimInfo(i);
                   }
 
-                  console.log("i:", i);
-
                   let item: Claim = {
                     claimId: Number(i.claim.claimId),
                     tripId: Number(i.claim.tripId),

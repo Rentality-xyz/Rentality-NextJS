@@ -107,8 +107,6 @@ export default function RntPlaceAutocomplete({
       },
       (placeDetails) => {
         if (placeDetails) {
-          console.log("placeDetails", placeDetails);
-
           const addressString = placeDetails.formatted_address ?? "";
           const country = getAddressComponents(placeDetails, "country");
           const state = getAddressComponents(placeDetails, "administrative_area_level_1");
@@ -134,21 +132,6 @@ export default function RntPlaceAutocomplete({
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [placePredictions]);
-
-  // const { ref, autocompleteRef } = usePlacesWidget({
-  //   apiKey:GOOGLE_MAPS_API_KEY,
-  //   onPlaceSelected: (place) => {
-  //     console.log(place);
-  //     onAddressChangeHandler(JSON.stringify(place));
-  //   },
-  //   options: {
-  //     types: ["address"],
-  //     fields: ["address_components", "geometry", "place_id", "formatted_address", "utc_offset_minutes"],
-  //     //componentRestrictions: { country: "us" },
-  //   },
-  //   language:"en",
-
-  // });
 
   type = type ?? "text";
   const cClassName = twMerge("relative text-black flex flex-col w-full", className);

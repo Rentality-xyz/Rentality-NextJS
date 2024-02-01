@@ -10,7 +10,6 @@ import {
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { HostCarInfo } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
-import { getUIntFromString } from "@/utils/numericFormatters";
 import { ContractUpdateCarInfoRequest } from "@/model/blockchain/ContractUpdateCarInfoRequest";
 import { getMoneyInCentsFromString } from "@/utils/formInput";
 
@@ -173,8 +172,6 @@ const useEditCarInfo = (carId: number) => {
           batteryPrice_81_100: batteryPrice_81_100,
           timeBufferBetweenTripsInMin: Number(carInfo.timeBufferBetweenTripsInSec) / 60,
         };
-        console.log("item:", JSON.stringify(item));
-
         return item;
       } catch (e) {
         console.error("getCarInfo error:" + e);

@@ -3,7 +3,6 @@ import { uploadFileToIPFS, uploadJSONToIPFS } from "../../utils/pinata";
 import { ContractCreateCarRequest } from "@/model/blockchain/ContractCreateCarRequest";
 import { HostCarInfo, verifyCar } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
-import { getIntFromString, getUIntFromString } from "@/utils/numericFormatters";
 import {
   ENGINE_TYPE_ELECTRIC_STRING,
   ENGINE_TYPE_PATROL_STRING,
@@ -223,8 +222,6 @@ const useAddCar = () => {
         location: dataToSave.locationAddress,
         timeBufferBetweenTripsInSec: carInfoFormParams.timeBufferBetweenTripsInMin * 60,
       };
-
-      console.log("request", request);
 
       let transaction = await rentalityInfo.rentalityContract.addCar(request);
 

@@ -41,7 +41,7 @@ export class ChatMessage {
       !payload.message ||
       !payload.signature
     ) {
-      console.log("Some fields are missed on decoded ChatMessage", payload);
+      console.error("Some fields are missed on decoded ChatMessage", payload);
       return;
     }
 
