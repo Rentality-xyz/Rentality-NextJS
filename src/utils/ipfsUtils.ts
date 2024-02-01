@@ -16,7 +16,7 @@ export const getMetaDataFromIpfs = async (tokenURI: string) => {
   // console.log("call ulr: " + ulr);
   // const response = await fetch(ulr);
   try {
-    console.log("try fetch " + ipfsURI);
+    // console.log("try fetch " + ipfsURI);
 
     const response = await fetch(ipfsURI, {
       headers: {
