@@ -2,14 +2,14 @@ import ChatPage from "@/components/chat/chatPage";
 import RntDialogs from "@/components/common/rntDialogs";
 import GuestLayout from "@/components/guest/layout/guestLayout";
 import PageTitle from "@/components/pageTitle/pageTitle";
-import useChatInfos from "@/hooks/chat/useChatInfos";
+import { useChat } from "@/contexts/chatContext";
 import useRntDialogs from "@/hooks/useRntDialogs";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 
 export default function Messages() {
   const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
-  const [dataFetched, chats, sendMessage] = useChatInfos(false);
+  const { dataFetched, chatInfos, sendMessage } = useChat();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -37,7 +37,7 @@ export default function Messages() {
         ) : (
           <ChatPage
             isHost={false}
-            chats={chats}
+            chats={chatInfos}
             sendMessage={sendMessage}
             selectedTridId={selectedTridId}
             selectChat={selectChat}

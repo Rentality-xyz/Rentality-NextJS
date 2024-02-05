@@ -6,6 +6,7 @@ import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import "@/styles/globals.css";
 import { PrivyProvider } from "@/contexts/privyContext";
+import { ChatProvider } from "@/contexts/chatContext";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -14,9 +15,11 @@ export default function App({ Component, pageProps }: AppProps) {
       <RentalityProvider>
         <CivicProvider>
           <UserInfoProvider>
-            <AppContextProvider>
-              <Component {...pageProps} />
-            </AppContextProvider>
+            <ChatProvider>
+              <AppContextProvider>
+                <Component {...pageProps} />
+              </AppContextProvider>
+            </ChatProvider>
           </UserInfoProvider>
         </CivicProvider>
       </RentalityProvider>
