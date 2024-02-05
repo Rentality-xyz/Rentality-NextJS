@@ -1,6 +1,18 @@
 import { hasContractForChainId } from "@/abis";
 import { defineChain } from "viem";
-import { mainnet, sepolia, polygonMumbai, baseSepolia, optimismSepolia, fuseSparknet, Chain } from "viem/chains";
+import {
+  mainnet,
+  sepolia,
+  polygon,
+  polygonMumbai,
+  base,
+  baseSepolia,
+  optimism,
+  optimismSepolia,
+  fuse,
+  fuseSparknet,
+  Chain,
+} from "viem/chains";
 
 const localhostGanache = defineChain({
   id: 1_337,
@@ -15,70 +27,43 @@ const localhostGanache = defineChain({
   },
 });
 
+const chainIdToHex = (chainId: number) => {
+  return "0x" + chainId.toString(16);
+};
+
+const getBlockchainInfoFromViem = (viemChain: Chain) => {
+  return {
+    name: viemChain.name,
+    chainId: viemChain.id,
+    chainIdHexString: chainIdToHex(viemChain.id),
+    isTestnet: viemChain.testnet ?? false,
+    viemChain: viemChain,
+  };
+};
+
 export const allSupportedBlockchainList: BlockchainBaseInfo[] = [
-  {
-    name: "Ethereum",
-    shortName: "Ethereum",
-    chainId: 1,
-    chainIdHexString: "0x1",
-    isTestnet: false,
-    logo: "chainLogoEthereum.svg",
-    viemChain: mainnet,
-  },
-  {
-    name: "Ethereum Seposia",
-    shortName: "Sepolia",
-    chainId: 11155111,
-    chainIdHexString: "0xaa36a7",
-    isTestnet: true,
-    logo: "chainLogoEthereum.svg",
-    viemChain: sepolia,
-  },
-  {
-    name: "Polygon Mumbai",
-    shortName: "Mumbai",
-    chainId: 80001,
-    chainIdHexString: "0x13881",
-    isTestnet: true,
-    logo: "chainLogoPolygon.svg",
-    viemChain: polygonMumbai,
-  },
-  {
-    name: "Base Seposia Testnet",
-    shortName: "Base Seposia",
-    chainId: 84532,
-    chainIdHexString: "0x14a34",
-    isTestnet: true,
-    logo: "chainLogoBase.svg",
-    viemChain: baseSepolia,
-  },
-  {
-    name: "Optimism Sepolia Testnet",
-    shortName: "Optimism Sepolia",
-    chainId: 11155420,
-    chainIdHexString: "0xaa37dc",
-    isTestnet: true,
-    logo: "chainLogoOptimism.svg",
-    viemChain: optimismSepolia,
-  },
-  {
-    name: "Fuse Sparknet",
-    shortName: "Fuse Sparknet",
-    chainId: 123,
-    chainIdHexString: "0x7b",
-    isTestnet: true,
-    logo: "chainLogoFuse.svg",
-    viemChain: fuseSparknet,
-  },
-  {
-    name: "Ganache",
-    shortName: "Ganache",
-    chainId: 1337,
-    chainIdHexString: "0x539",
-    isTestnet: true,
-    logo: "chainLogoGanache.svg",
-    viemChain: localhostGanache,
-  },
+  //Ethereum
+  { ...getBlockchainInfoFromViem(mainnet), shortName: "Ethereum", logo: "chainLogoEthereum.svg" },
+  { ...getBlockchainInfoFromViem(sepolia), shortName: "Sepolia", logo: "chainLogoEthereum.svg" },
+
+  //Polygon
+  { ...getBlockchainInfoFromViem(polygon), shortName: "Polygon", logo: "chainLogoPolygon.svg" },
+  { ...getBlockchainInfoFromViem(polygonMumbai), shortName: "Mumbai", logo: "chainLogoPolygon.svg" },
+
+  //Base
+  { ...getBlockchainInfoFromViem(base), shortName: "Base", logo: "chainLogoBase.svg" },
+  { ...getBlockchainInfoFromViem(baseSepolia), shortName: "Base Seposia", logo: "chainLogoBase.svg" },
+
+  //Optimism
+  { ...getBlockchainInfoFromViem(optimism), shortName: "OP Mainnet", logo: "chainLogoOptimism.svg" },
+  { ...getBlockchainInfoFromViem(optimismSepolia), shortName: "Optimism Sepolia", logo: "chainLogoOptimism.svg" },
+
+  //Fuse
+  { ...getBlockchainInfoFromViem(fuse), shortName: "Fuse", logo: "chainLogoFuse.svg" },
+  { ...getBlockchainInfoFromViem(fuseSparknet), shortName: "Fuse Sparknet", logo: "chainLogoFuse.svg" },
+
+  //Localhost
+  { ...getBlockchainInfoFromViem(localhostGanache), shortName: "Ganache", logo: "chainLogoGanache.svg" },
 ];
 
 export const getExistBlockchainList = (): BlockchainBaseInfo[] => {
