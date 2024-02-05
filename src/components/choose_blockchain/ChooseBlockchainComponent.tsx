@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { assertIsNode } from "@/utils/react";
 import { useRentality } from "@/contexts/rentalityContext";
-import { blockchainList } from "@/model/blockchain/BlockchainList";
+import { getExistBlockchainList } from "@/model/blockchain/BlockchainList";
 
 export default function ChooseBlockchainComponent() {
   const classBtn: string = "w-full text-base font-semibold text-white normal-case font-['Montserrat',Arial,sans-serif]";
@@ -15,7 +15,7 @@ export default function ChooseBlockchainComponent() {
   const [selectedChainId, setSelectedChainId] = useState(-1);
   const rentalityInfo = useRentality();
   const chooseBlockchainWrapperRef = useRef<HTMLDivElement>(null);
-  const selectedBlockchain = blockchainList.find((i) => i.chainId === selectedChainId);
+  const selectedBlockchain = getExistBlockchainList().find((i) => i.chainId === selectedChainId);
 
   useEffect(() => {
     window.addEventListener("scroll", handleOnScroll, true);
@@ -77,7 +77,7 @@ export default function ChooseBlockchainComponent() {
         </Button>
         {isShowComponentList && (
           <Stack className="w-[220px] absolute top-[2.5rem] left-auto right-0 z-50 bg-[#1E1E30] rounded-xl border-2 border-[#373737]">
-            {blockchainList.map((i) => {
+            {getExistBlockchainList().map((i) => {
               return (
                 <Button
                   key={i.chainId}

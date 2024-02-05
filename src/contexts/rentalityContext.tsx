@@ -3,7 +3,7 @@ import { Signer, ethers } from "ethers";
 import { getContract } from "../abis";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { blockchainList } from "@/model/blockchain/BlockchainList";
+import { getExistBlockchainList } from "@/model/blockchain/BlockchainList";
 
 export type RentalityContractInfo = {
   rentalityContract: IRentalityContract;
@@ -28,7 +28,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
   const requestChainIdChange = async (chainIdHex: string) => {
     console.log("requestChainIdChange:" + chainIdHex);
     try {
-      const selectedBlockchain = blockchainList.find((i) => i.chainIdHexString == chainIdHex);
+      const selectedBlockchain = getExistBlockchainList().find((i) => i.chainIdHexString == chainIdHex);
 
       if (!selectedBlockchain) {
         console.error("requestChainIdChange error", `chain id ${chainIdHex} is not supported`);
@@ -65,12 +65,12 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
     try {
       isInitiating.current = true;
       const metamaskChainId = await window.ethereum.request({ method: "eth_chainId" }); // return chain ID in HEX format
-      const selectedBlockchain = blockchainList.find((i) => i.chainIdHexString == metamaskChainId);
+      const selectedBlockchain = getExistBlockchainList().find((i) => i.chainIdHexString == metamaskChainId);
 
       if (!selectedBlockchain) {
         await window.ethereum.request({
           method: "wallet_switchEthereumChain",
-          params: [{ chainId: blockchainList[0].chainIdHexString }],
+          params: [{ chainId: getExistBlockchainList()[0].chainIdHexString }],
         });
         return;
       }
@@ -122,12 +122,12 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
       try {
         isInitiating.current = true;
         const metamaskChainId = await window.ethereum.request({ method: "eth_chainId" }); // return chain ID in HEX format
-        const selectedBlockchain = blockchainList.find((i) => i.chainIdHexString == metamaskChainId);
+        const selectedBlockchain = getExistBlockchainList().find((i) => i.chainIdHexString == metamaskChainId);
 
         if (!selectedBlockchain) {
           await window.ethereum.request({
             method: "wallet_switchEthereumChain",
-            params: [{ chainId: blockchainList[0].chainIdHexString }],
+            params: [{ chainId: getExistBlockchainList()[0].chainIdHexString }],
           });
           return;
         }

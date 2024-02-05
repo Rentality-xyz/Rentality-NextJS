@@ -11,7 +11,7 @@ import { Contract, ethers } from "ethers";
 
 export const SMARTCONTRACT_VERSION = "v0_16_0";
 
-export const rentalityContracts = {
+const rentalityContracts = {
   gateway: {
     addresses: RentalityGatewayJSON_ADDRESSES.addresses,
     abi: RentalityGatewayJSON_ABI.abi,
@@ -40,6 +40,10 @@ export async function getContract(contract: keyof typeof rentalityContracts, sig
   }
 
   return new Contract(selectedChain.address, rentalityContracts[contract].abi, signer);
+}
+
+export function hasContractForChainId(chainId: number) {
+  return rentalityContracts.gateway.addresses.find((i) => i.chainId === chainId) !== undefined;
 }
 
 export default rentalityContracts;
