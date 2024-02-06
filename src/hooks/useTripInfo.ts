@@ -43,7 +43,7 @@ const emptyDetails: TripDetails = {
 
 const useTripDetails = (tripId: bigint) => {
   const rentalityInfo = useRentality();
-  const [dataFetched, setDataFetched] = useState<Boolean>(false);
+  const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [tripDetails, setTripDetails] = useState<TripDetails>(emptyDetails);
 
   const getTrip = async (rentalityContract: IRentalityContract, tripId: bigint) => {
@@ -111,12 +111,12 @@ const useTripDetails = (tripId: bigint) => {
     getTrip(rentalityInfo.rentalityContract, tripId)
       .then((data) => {
         setTripDetails(data ?? emptyDetails);
-        setDataFetched(true);
+        setIsLoading(false);
       })
-      .catch(() => setDataFetched(true));
+      .catch(() => setIsLoading(false));
   }, [rentalityInfo, tripId]);
 
-  return [dataFetched, tripDetails] as const;
+  return [isLoading, tripDetails] as const;
 };
 
 export default useTripDetails;

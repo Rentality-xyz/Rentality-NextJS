@@ -24,7 +24,7 @@ const emptyProfileSettings: ProfileSettings = {
 
 const useProfileSettings = () => {
   const rentalityInfo = useRentality();
-  const [dataFetched, setDataFetched] = useState<Boolean>(false);
+  const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [profileSettings, setProfileSettings] = useState<ProfileSettings>(emptyProfileSettings);
 
   const getProfileSettings = async (rentalityContract: IRentalityContract) => {
@@ -87,12 +87,12 @@ const useProfileSettings = () => {
     getProfileSettings(rentalityInfo.rentalityContract)
       .then((data) => {
         setProfileSettings(data ?? emptyProfileSettings);
-        setDataFetched(true);
+        setIsLoading(false);
       })
-      .catch(() => setDataFetched(true));
+      .catch(() => setIsLoading(false));
   }, [rentalityInfo]);
 
-  return [dataFetched, profileSettings, saveProfileSettings] as const;
+  return [isLoading, profileSettings, saveProfileSettings] as const;
 };
 
 export default useProfileSettings;

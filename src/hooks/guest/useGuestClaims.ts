@@ -69,7 +69,7 @@ import { ContractFullClaimInfo, validateContractFullClaimInfo } from "@/model/bl
 
 const useGuestClaims = () => {
   const rentalityInfo = useRentality();
-  const [dataFetched, setDataFetched] = useState<Boolean>(false);
+  const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [claims, setClaims] = useState<Claim[]>([]);
 
   const getRentalityCurrencyConverterContract = async () => {
@@ -171,17 +171,17 @@ const useGuestClaims = () => {
 
     if (!rentalityInfo) return;
 
-    setDataFetched(false);
+    setIsLoading(true);
 
     getClaims(rentalityInfo.rentalityContract)
       .then((data) => {
         setClaims(data ?? []);
-        setDataFetched(true);
+        setIsLoading(false);
       })
-      .catch(() => setDataFetched(true));
+      .catch(() => setIsLoading(false));
   }, [rentalityInfo]);
 
-  return [dataFetched, claims, payClaim] as const;
+  return [isLoading, claims, payClaim] as const;
 };
 
 export default useGuestClaims;

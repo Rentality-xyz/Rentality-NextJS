@@ -14,7 +14,7 @@ import { getDateFromBlockchainTime } from "@/utils/formInput";
 
 const useChatInfos = (isHost: boolean) => {
   const rentalityInfo = useRentality();
-  const [dataFetched, setDataFetched] = useState<Boolean>(false);
+  const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [chatInfos, setChatInfos] = useState<ChatInfo[]>([]);
   const [chatClient, setChatClient] = useState<ChatClient | undefined>(undefined);
   const [chatPublicKeys, setChatPublicKeys] = useState<Map<string, string>>(new Map());
@@ -120,7 +120,7 @@ const useChatInfos = (isHost: boolean) => {
 
       console.log("initting chat....");
 
-      setDataFetched(false);
+      setIsLoading(true);
 
       try {
         const client = new ChatClient();
@@ -176,7 +176,7 @@ const useChatInfos = (isHost: boolean) => {
       } catch (e) {
         console.error("getChatHelper error:" + e);
       } finally {
-        setDataFetched(true);
+        setIsLoading(false);
       }
 
       isInitiating.current = false;
@@ -214,7 +214,7 @@ const useChatInfos = (isHost: boolean) => {
     await chatClient.sendUserMessage(toAddress, tripId, datetime, message, chatPublicKey);
   };
 
-  return [dataFetched, chatInfos, sendUserMessage, setChatInfos] as const;
+  return [isLoading, chatInfos, sendUserMessage, setChatInfos] as const;
 };
 
 export default useChatInfos;

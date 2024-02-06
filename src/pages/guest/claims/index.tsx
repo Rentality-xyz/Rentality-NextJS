@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 export default function Claims() {
   const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
-  const [dataFetched, claims, payClaim] = useGuestClaims();
+  const [isLoading, claims, payClaim] = useGuestClaims();
   const router = useRouter();
 
   const handlePayClaim = async (claimId: number) => {
@@ -31,7 +31,7 @@ export default function Claims() {
     <GuestLayout>
       <div className="flex flex-col">
         <PageTitle title="Claims" />
-        {!dataFetched ? (
+        {isLoading ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
         ) : (
           <ClaimHistory claims={claims} payClaim={handlePayClaim} isHost={false} />

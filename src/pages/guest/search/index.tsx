@@ -31,7 +31,7 @@ export default function Search() {
     dateTo: dateToHtmlDateTimeFormat(defaultDateTo),
   };
 
-  const [dataFetched, searchAvailableCars, searchResult, sortSearchResult, createTripRequest] = useSearchCars();
+  const [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest] = useSearchCars();
   const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(customEmptySearchCarRequest);
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const [openFilterPanel, setOpenFilterPanel] = useState(false);
@@ -250,7 +250,7 @@ export default function Search() {
           </RntSelect>
         </div>
         <div className="mb-8 flex flex-row"></div>
-        {!dataFetched ? (
+        {isLoading ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
         ) : (
           <>

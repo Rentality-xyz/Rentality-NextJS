@@ -14,14 +14,14 @@ import { bytesToHex } from "viem";
 import { useRouter } from "next/router";
 
 export type ChatContextInfo = {
-  dataFetched: boolean;
+  isLoading: boolean;
   chatInfos: ChatInfo[];
   chatClient: ChatClient | undefined;
   sendMessage: (toAddress: string, tripId: number, message: string) => Promise<void>;
 };
 
 const ChatContext = createContext<ChatContextInfo>({
-  dataFetched: false,
+  isLoading: true,
   chatClient: undefined,
   sendMessage: async (toAddress: string, tripId: number, message: string) => {},
   chatInfos: [],
@@ -33,7 +33,7 @@ export function useChat() {
 
 export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
   const [chatContextInfo, setChatContextInfo] = useState<ChatContextInfo>({
-    dataFetched: false,
+    isLoading: true,
     chatClient: undefined,
     sendMessage: async (toAddress: string, tripId: number, message: string) => {},
     chatInfos: [],
@@ -174,7 +174,7 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
       console.log("initting chat....");
 
       setChatContextInfo((prev) => {
-        return { ...prev, dataFetched: false };
+        return { ...prev, isLoading: true };
       });
 
       try {
@@ -233,7 +233,7 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
         console.error("getChatHelper error:" + e);
       } finally {
         setChatContextInfo((prev) => {
-          return { ...prev, dataFetched: true };
+          return { ...prev, isLoading: false };
         });
       }
 

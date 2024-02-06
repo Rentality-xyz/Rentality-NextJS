@@ -4,7 +4,7 @@ import PageTitle from "@/components/pageTitle/pageTitle";
 import useHostTrips from "@/hooks/host/useHostTrips";
 
 export default function History() {
-  const [dataFetched, _, tripsHistory] = useHostTrips();
+  const [isLoading, _, tripsHistory] = useHostTrips();
 
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {};
 
@@ -12,7 +12,7 @@ export default function History() {
     <HostLayout>
       <div className="flex flex-col">
         <PageTitle title="History" />
-        {!dataFetched ? (
+        {isLoading ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
         ) : (
           <div className="my-4 flex flex-col gap-4">

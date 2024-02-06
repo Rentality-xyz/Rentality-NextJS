@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 
 export default function Messages() {
   const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
-  const { dataFetched, chatInfos, sendMessage } = useChat();
+  const { isLoading, chatInfos, sendMessage } = useChat();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -32,7 +32,7 @@ export default function Messages() {
     <GuestLayout>
       <div className="flex flex-col">
         <PageTitle title="Chats" />
-        {!dataFetched ? (
+        {isLoading ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
         ) : (
           <ChatPage

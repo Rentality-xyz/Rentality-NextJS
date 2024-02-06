@@ -23,7 +23,7 @@ export function isSortOptionKey(key: string): key is SortOptionKey {
 
 const useSearchCars = () => {
   const rentalityInfo = useRentality();
-  const [dataFetched, setDataFetched] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<Boolean>(false);
   const [searchResult, setSearchResult] = useState<SearchCarsResult>(emptySearchCarsResult);
 
   const getRentalityCurrencyConverterContract = async () => {
@@ -124,7 +124,7 @@ const useSearchCars = () => {
     const rentalityContract = rentalityInfo.rentalityContract;
 
     try {
-      setDataFetched(false);
+      setIsLoading(true);
 
       const [contractDateFrom, contractDateTo, contractSearchCarParams, tripDays] =
         formatSearchAvailableCarsContractRequest(searchCarRequest);
@@ -146,7 +146,7 @@ const useSearchCars = () => {
       console.error("updateData error:" + e);
       return false;
     } finally {
-      setDataFetched(true);
+      setIsLoading(false);
     }
   };
 
@@ -237,7 +237,7 @@ const useSearchCars = () => {
       };
     });
   }, []);
-  return [dataFetched, searchAvailableCars, searchResult, sortSearchResult, createTripRequest] as const;
+  return [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest] as const;
 };
 
 export default useSearchCars;

@@ -6,14 +6,14 @@ import useProfileSettings from "@/hooks/useProfileSettings";
 import useRntDialogs from "@/hooks/useRntDialogs";
 
 export default function Profile() {
-  const [dataFetched, savedProfileSettings, saveProfileSettings] = useProfileSettings();
+  const [isLoading, savedProfileSettings, saveProfileSettings] = useProfileSettings();
   const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
 
   return (
     <HostLayout>
       <div className="flex flex-col">
         <PageTitle title="Profile settings" />
-        {!dataFetched ? (
+        {isLoading ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
         ) : (
           <ProfileInfoPage

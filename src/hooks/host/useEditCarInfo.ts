@@ -54,7 +54,7 @@ const emptyHostCarInfo: HostCarInfo = {
 
 const useEditCarInfo = (carId: number) => {
   const rentalityInfo = useRentality();
-  const [dataFetched, setDataFetched] = useState<Boolean>(false);
+  const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(emptyHostCarInfo);
   const [dataSaved, setDataSaved] = useState<Boolean>(true);
 
@@ -184,12 +184,12 @@ const useEditCarInfo = (carId: number) => {
     getCarInfo(rentalityInfo.rentalityContract, rentalityInfo.signer)
       .then((data) => {
         setCarInfoFormParams(data ?? emptyHostCarInfo);
-        setDataFetched(true);
+        setIsLoading(false);
       })
-      .catch(() => setDataFetched(true));
+      .catch(() => setIsLoading(false));
   }, [carId, rentalityInfo]);
 
-  return [dataFetched, carInfoFormParams, setCarInfoFormParams, dataSaved, saveCar] as const;
+  return [isLoading, carInfoFormParams, setCarInfoFormParams, dataSaved, saveCar] as const;
 };
 
 export default useEditCarInfo;

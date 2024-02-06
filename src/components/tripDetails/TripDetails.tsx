@@ -9,7 +9,7 @@ type Props = {
 };
 
 export default function TripDetails({ tripId }: Props) {
-  const [dataFetched, tripDetails] = useTripDetails(tripId);
+  const [isLoading, tripDetails] = useTripDetails(tripId);
   const router = useRouter();
 
   if (tripId == null || tripId === BigInt(0)) return null;
@@ -17,7 +17,7 @@ export default function TripDetails({ tripId }: Props) {
   return (
     <>
       <PageTitle title={`Trip #${tripId.toString()} details`} />
-      {!dataFetched ? (
+      {isLoading ? (
         <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
       ) : (
         <>

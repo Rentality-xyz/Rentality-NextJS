@@ -4,11 +4,10 @@ import TripItem from "@/components/host/tripItem";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useHostTrips from "@/hooks/host/useHostTrips";
 import useRntDialogs from "@/hooks/useRntDialogs";
-import { useRouter } from "next/router";
 import { useState } from "react";
 
 export default function Booked() {
-  const [dataFetched, tripsBooked, _, updateData] = useHostTrips();
+  const [isLoading, tripsBooked, _, updateData] = useHostTrips();
   const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
   //const router = useRouter();
   const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
@@ -39,7 +38,7 @@ export default function Booked() {
     <HostLayout>
       <div className="flex flex-col">
         <PageTitle title="Booked" />
-        {!dataFetched ? (
+        {isLoading ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
         ) : (
           <div className="my-4 flex flex-col gap-4">

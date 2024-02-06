@@ -1,15 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { getTripStatusFromContract } from "@/model/blockchain/ContractTrip";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
-import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { ContractChatInfo } from "@/model/blockchain/ContractChatInfo";
 import { useRentality } from "@/contexts/rentalityContext";
-import { ChatInfo } from "@/model/ChatInfo";
 import { NotificationInfo } from "@/model/NotificationInfo";
 
 const useNotificationInfos = (isHost: boolean) => {
   const rentalityInfo = useRentality();
-  const [dataFetched, setDataFetched] = useState<Boolean>(false);
+  const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [notificationInfos, setNotificationInfos] = useState<NotificationInfo[]>([
     {
       title: "Booked",
@@ -122,23 +117,23 @@ const useNotificationInfos = (isHost: boolean) => {
     //     return;
     //   }
     //   console.log("initting chat....");
-    //   setDataFetched(false);
+    //   setIsLoading(true);
     //   try {
     //     setChatClient(client);
     //     setChatInfos(infos);
     //   } catch (e) {
     //     console.error("getChatHelper error:" + e);
     //   } finally {
-    //     setDataFetched(true);
+    //     setIsLoading(false);
     //   }
     //   isInitiating.current = false;
     // };
     // initChat();
 
-    setDataFetched(true);
+    setIsLoading(false);
   }, [rentalityInfo]);
 
-  return [dataFetched, notificationInfos] as const;
+  return [isLoading, notificationInfos] as const;
 };
 
 export default useNotificationInfos;

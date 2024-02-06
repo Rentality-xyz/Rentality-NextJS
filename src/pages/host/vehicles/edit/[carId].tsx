@@ -16,7 +16,7 @@ export default function EditCar() {
 
   const carIdNumber = Number(carId) ?? -1;
 
-  const [dataFetched, carInfoFormParams, setCarInfoFormParams, dataSaved, saveCarInfo] = useEditCarInfo(carIdNumber);
+  const [isLoading, carInfoFormParams, setCarInfoFormParams, dataSaved, saveCarInfo] = useEditCarInfo(carIdNumber);
 
   const [message, setMessage] = useState<string>("");
   const [carSaving, setCarSaving] = useState<boolean>(false);
@@ -58,7 +58,7 @@ export default function EditCar() {
     <HostLayout>
       <div className="flex flex-col">
         <PageTitle title="Edit your car" />
-        {!dataFetched ? (
+        {isLoading ? (
           <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">Loading...</div>
         ) : carInfoFormParams.carId === -1 ? (
           <h1 className="py-8 text-2xl font-bold text-red-800">Sorry, but you can not edit this car</h1>

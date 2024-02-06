@@ -8,7 +8,7 @@ import { getDateFromBlockchainTime } from "@/utils/formInput";
 
 const useHostTrips = () => {
   const rentalityInfo = useRentality();
-  const [dataFetched, setDataFetched] = useState<Boolean>(false);
+  const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [updateRequired, setUpdateRequired] = useState<Boolean>(true);
   const [tripsBooked, setTripsBooked] = useState<TripInfo[]>([]);
   const [tripsHistory, setTripsHistory] = useState<TripInfo[]>([]);
@@ -265,7 +265,7 @@ const useHostTrips = () => {
     if (!rentalityInfo) return;
 
     setUpdateRequired(false);
-    setDataFetched(false);
+    setIsLoading(true);
 
     getTrips(rentalityInfo.rentalityContract)
       .then((data) => {
@@ -283,12 +283,12 @@ const useHostTrips = () => {
             })
             .reverse() ?? []
         );
-        setDataFetched(true);
+        setIsLoading(false);
       })
-      .catch(() => setDataFetched(true));
+      .catch(() => setIsLoading(false));
   }, [updateRequired, rentalityInfo]);
 
-  return [dataFetched, tripsBooked, tripsHistory, updateData] as const;
+  return [isLoading, tripsBooked, tripsHistory, updateData] as const;
 };
 
 export default useHostTrips;

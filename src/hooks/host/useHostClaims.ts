@@ -16,7 +16,7 @@ import { Claim, getClaimTypeTextFromClaimType, getClaimStatusTextFromStatus } fr
 
 const useHostClaims = () => {
   const rentalityInfo = useRentality();
-  const [dataFetched, setDataFetched] = useState<Boolean>(false);
+  const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [tripInfos, setTripInfos] = useState<TripInfoForClaimCreation[]>([
     { tripId: 0, tripDescription: "Loading..." },
   ]);
@@ -144,18 +144,18 @@ const useHostClaims = () => {
 
     if (!rentalityInfo) return;
 
-    setDataFetched(false);
+    setIsLoading(true);
 
     getClaims(rentalityInfo.rentalityContract)
       .then((data) => {
         setClaims(data?.claimsData ?? []);
         setTripInfos(data?.hostTripsData ?? []);
-        setDataFetched(true);
+        setIsLoading(false);
       })
-      .catch(() => setDataFetched(true));
+      .catch(() => setIsLoading(false));
   }, [rentalityInfo]);
 
-  return [dataFetched, claims, tripInfos, createClaim, cancelClaim] as const;
+  return [isLoading, claims, tripInfos, createClaim, cancelClaim] as const;
 };
 
 export default useHostClaims;
