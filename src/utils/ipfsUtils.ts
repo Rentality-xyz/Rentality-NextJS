@@ -12,12 +12,7 @@ export const getPinataGatewayURIfromPinata = (pinataURI: string) => {
 
 export const getMetaDataFromIpfs = async (tokenURI: string) => {
   var ipfsURI = getPinataGatewayURIfromPinata(tokenURI);
-  // const ulr = "/api/pinata/getMetadataJson?tokenURI=" + tokenURI;
-  // console.log("call ulr: " + ulr);
-  // const response = await fetch(ulr);
   try {
-    // console.log("try fetch " + ipfsURI);
-
     const response = await fetch(ipfsURI, {
       headers: {
         Accept: "application/json",

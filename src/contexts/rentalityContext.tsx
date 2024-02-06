@@ -152,17 +152,11 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
           return;
         }
 
-        // console.log("rentalityContractInfo.walletAddress:", rentalityContractInfo?.walletAddress);
-        // console.log("walletAddress:", walletAddress);
-        // console.log("await signer.getChainId():", await signer.getChainId());
-        // console.log("selectedBlockchain.chainId:", selectedBlockchain.chainId);
-
         if (
           rentalityContractInfo !== null &&
           rentalityContractInfo.walletAddress === walletAddress &&
           (await signer.getChainId()) === Number(selectedBlockchain.chainId)
         ) {
-          // console.log("return");
           return;
         }
 

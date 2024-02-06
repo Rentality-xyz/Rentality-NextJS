@@ -178,7 +178,6 @@ const useAddCar = () => {
         return false;
       }
 
-      console.log("Uploaded image to Pinata: ", response.pinataURL);
       const dataToSave = {
         ...carInfoFormParams,
         image: response.pinataURL,

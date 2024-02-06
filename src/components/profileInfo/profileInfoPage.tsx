@@ -114,7 +114,6 @@ export default function ProfileInfoPage({
         }
 
         profilePhotoUrl = response.pinataURL;
-        // console.log("Uploaded image to Pinata: ", profilePhotoUrl);
       }
 
       const dataToSave = {

@@ -13,8 +13,6 @@ export function validateType<T extends {}>(obj: T, defaultValue: T): obj is T {
     ) {
       console.error(`typeof obj[${key.toString()}] is ${typeof obj[key]} but should be ${typeof defaultValue[key]}`);
     }
-    // console.log(`obj[${key.toString()}]:`, obj[key]);
-    // console.log(`typeof obj[${key.toString()}]:`, typeof obj[key]);
   });
 
   return true;
