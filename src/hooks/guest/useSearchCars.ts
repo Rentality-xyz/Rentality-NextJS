@@ -2,6 +2,8 @@ import { useCallback, useState } from "react";
 import { getEtherContract } from "../../abis";
 import {
   ContractAvailableCarInfo,
+  ENGINE_TYPE_ELECTRIC_STRING,
+  ENGINE_TYPE_PATROL_STRING,
   getEngineTypeString,
   validateContractAvailableCarInfo,
 } from "@/model/blockchain/ContractCarInfo";
@@ -72,6 +74,18 @@ const useSearchCars = () => {
         const pricePerDay = Number(i.car.pricePerDayInUsdCents) / 100;
         const totalPrice = pricePerDay * tripDays;
         const securityDeposit = Number(i.car.securityDepositPerTripInUsdCents) / 100;
+        const engineTypeString = getEngineTypeString(i.car.engineType);
+        const fuelPrices =
+          engineTypeString === ENGINE_TYPE_PATROL_STRING
+            ? [Number(i.car.engineParams[1])]
+            : engineTypeString === ENGINE_TYPE_ELECTRIC_STRING
+            ? [
+                Number(i.car.engineParams[0]),
+                Number(i.car.engineParams[1]),
+                Number(i.car.engineParams[2]),
+                Number(i.car.engineParams[3]),
+              ]
+            : [];
 
         let item: SearchCarInfo = {
           carId: Number(i.car.carId),
@@ -91,6 +105,7 @@ const useSearchCars = () => {
           securityDeposit: securityDeposit,
           hostPhotoUrl: i.hostPhotoUrl,
           hostName: i.hostName,
+          fuelPrices: fuelPrices,
         };
         return item;
       })
@@ -140,7 +155,8 @@ const useSearchCars = () => {
     endLocation: string,
     totalDayPriceInUsdCents: number,
     taxPriceInUsdCents: number,
-    depositInUsdCents: number
+    depositInUsdCents: number,
+    fuelPrices: number[]
   ) => {
     if (rentalityInfo === null) {
       console.error("createTripRequest: rentalityInfo is null");
@@ -175,11 +191,11 @@ const useSearchCars = () => {
         totalDayPriceInUsdCents: totalDayPriceInUsdCents,
         taxPriceInUsdCents: taxPriceInUsdCents,
         depositInUsdCents: depositInUsdCents,
-        //TODO
-        fuelPrices: [BigInt(1)],
+        fuelPrices: fuelPrices.map((i) => BigInt(i)),
         ethToCurrencyRate: BigInt(ethToCurrencyRate),
         ethToCurrencyDecimals: Number(ethToCurrencyDecimals),
       };
+
       let transaction = await rentalityContract.createTripRequest(tripRequest, {
         value: rentPriceInEth,
       });

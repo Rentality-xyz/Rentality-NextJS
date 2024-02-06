@@ -18,7 +18,6 @@ import { isEmpty } from "@/utils/string";
 import { Button } from "@mui/material";
 import RntSelect from "@/components/common/rntSelect";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
-import { getBlockchainTimeFromDate } from "@/utils/formInput";
 
 export default function Search() {
   const dateNow = new Date();
@@ -100,7 +99,8 @@ export default function Search() {
         location,
         totalPriceInUsdCents,
         0,
-        depositInUsdCents
+        depositInUsdCents,
+        carInfo.fuelPrices
       );
 
       setRequestSending(false);

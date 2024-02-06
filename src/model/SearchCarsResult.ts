@@ -23,6 +23,7 @@ export type SearchCarInfo = {
   securityDeposit: number;
   hostPhotoUrl: string;
   hostName: string;
+  fuelPrices: number[];
 };
 
 export const emptySearchCarsResult: SearchCarsResult = {
