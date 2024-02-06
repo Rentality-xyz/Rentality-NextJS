@@ -69,9 +69,8 @@ export type TripInfo = {
   allowedActions: AllowedChangeTripAction[];
   totalPrice: string;
   tankVolumeInGal: number;
-  //TODO
-  startFuelLevelInGal: number;
-  endFuelLevelInGal: number;
+  startFuelLevelInPercents: number;
+  endFuelLevelInPercents: number;
   fuelPricePerGal: number;
   milesIncludedPerDay: number;
   startOdometr: number;
@@ -88,14 +87,6 @@ export type TripInfo = {
   rejectedDate: Date | undefined;
   createdDateTime: Date;
 };
-
-export function getGalsFromFuelLevel(tripInfo: TripInfo, fuelLevel: number): number {
-  return Math.floor(fuelLevel * tripInfo.tankVolumeInGal);
-}
-
-export function getFuelLevelFromGalsString(tripInfo: TripInfo, fuelLevelInGal: number): string {
-  return (Math.ceil((10 * fuelLevelInGal) / tripInfo.tankVolumeInGal) * 0.1).toString();
-}
 
 export type AllowedChangeTripAction = {
   text: string;

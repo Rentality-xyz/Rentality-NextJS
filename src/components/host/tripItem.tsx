@@ -64,7 +64,8 @@ export default function TripItem({
     statusBgColor
   );
 
-  var refuelValue = tripInfo.startFuelLevelInGal - tripInfo.endFuelLevelInGal;
+  var refuelValue =
+    ((tripInfo.startFuelLevelInPercents - tripInfo.endFuelLevelInPercents) * tripInfo.tankVolumeInGal) / 100;
   refuelValue = refuelValue > 0 ? refuelValue : 0;
 
   const tripDays = calculateDays(tripInfo.tripStart, tripInfo.tripEnd);
@@ -261,14 +262,14 @@ export default function TripItem({
             </strong>
           </div>
 
-          <div className="flex flex-col py-4">
+          <div className="flex flex-col gap-4 py-4">
             {tripInfo.allowedActions[0].params.map((param, index) => {
               return (
                 <div className="flex flex-col md:flex-row" key={param.text}>
                   <div className="flex items-end w-full md:w-1/2 xl:w-1/3">
                     {param.type === "fuel" ? (
                       <RntSelect
-                        className="w-full py-2"
+                        className="w-full"
                         id={param.text}
                         label={param.text}
                         readOnly={tripInfo.allowedActions[0].readonly}
@@ -296,7 +297,7 @@ export default function TripItem({
                       </RntSelect>
                     ) : (
                       <RntInput
-                        className="w-full py-2"
+                        className="w-full"
                         id={param.text}
                         label={param.text}
                         readOnly={tripInfo.allowedActions[0].readonly}

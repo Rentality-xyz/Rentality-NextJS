@@ -1,10 +1,4 @@
-import {
-  ChangeTripParams,
-  TripInfo,
-  TripStatus,
-  getFuelLevelFromGalsString,
-  getGalsFromFuelLevel,
-} from "@/model/TripInfo";
+import { ChangeTripParams, TripInfo, TripStatus } from "@/model/TripInfo";
 import RntInput from "../common/rntInput";
 import { SetStateAction, useState } from "react";
 import RntSelect from "../common/rntSelect";
@@ -42,7 +36,7 @@ export default function AllowedActionsForStatusStarted({
                 id="fuelAtStartTrip"
                 label="At start trip"
                 readOnly={true}
-                value={getFuelLevelFromGalsString(tripInfo, tripInfo.startFuelLevelInGal)}
+                value={`${tripInfo.startFuelLevelInPercents.toString()}%`}
               />
               <RntSelect
                 className="w-1/2 py-2"
@@ -59,9 +53,9 @@ export default function AllowedActionsForStatusStarted({
                     return copy;
                   });
 
-                  const endLevel = Number(newValue) ?? 0;
-                  const endLevelInGals = getGalsFromFuelLevel(tripInfo, endLevel);
-                  let fuelDiffs = tripInfo.startFuelLevelInGal - endLevelInGals;
+                  const endLevelInPercents = Number(newValue) * 100 ?? 0;
+                  let fuelDiffs =
+                    ((tripInfo.startFuelLevelInPercents - endLevelInPercents) * tripInfo.tankVolumeInGal) / 100;
                   fuelDiffs = fuelDiffs > 0 ? fuelDiffs : 0;
                   setRefuelValue(fuelDiffs);
                 }}

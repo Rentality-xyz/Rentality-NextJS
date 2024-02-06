@@ -18,13 +18,13 @@ export default function AllowedActions({
   setConfirmParams: (value: SetStateAction<boolean[]>) => void;
 }) {
   return (
-    <div className="flex flex-col py-4">
+    <div className="flex flex-col gap-4 py-4">
       {tripInfo.allowedActions[0].params.map((param, index) => {
         return (
           <div className="flex flex-row items-end" key={param.text}>
             {param.type === "fuel" ? (
               <RntSelect
-                className="w-1/3 py-2"
+                className="w-1/3"
                 id={param.text}
                 label={param.text}
                 readOnly={tripInfo.allowedActions[0].readonly}
@@ -54,7 +54,7 @@ export default function AllowedActions({
               </RntSelect>
             ) : (
               <RntInput
-                className="w-1/3 py-2"
+                className="w-1/3"
                 id={param.text}
                 label={param.text}
                 readOnly={tripInfo.allowedActions[0].readonly}

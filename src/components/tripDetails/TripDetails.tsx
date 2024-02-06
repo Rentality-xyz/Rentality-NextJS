@@ -65,8 +65,8 @@ export default function TripDetails({ tripId }: { tripId: bigint }) {
             />
             <RntInput
               id="startFuelLevel"
-              label="Start fuel level in gal:"
-              value={tripDetails.startFuelLevelInGal?.toString() ?? "-"}
+              label="Start fuel level in percents:"
+              value={tripDetails.startFuelLevelInPercents?.toString() ?? "-"}
               readOnly={true}
             />
             <RntInput
@@ -89,8 +89,11 @@ export default function TripDetails({ tripId }: { tripId: bigint }) {
             />
             <RntInput
               id="endFuelLevel"
-              label="End fuel level in gal:"
-              value={tripDetails.endFuelLevelInGal?.toString() ?? "-"}
+              label="End fuel level in percents:"
+              value={
+                tripDetails.endFuelLevelInPercents?.toString() ??
+                (tripDetails.checkedOutByGuestDateTime?.toUTCString() ? "0" : "-")
+              }
               readOnly={true}
             />
             <RntInput

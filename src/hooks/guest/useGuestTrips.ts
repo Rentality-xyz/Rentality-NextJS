@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ContractTrip, getTripStatusFromContract, validateContractTrip } from "@/model/blockchain/ContractTrip";
+import { ContractTrip, validateContractTrip } from "@/model/blockchain/ContractTrip";
 import { TripInfo, AllowedChangeTripAction, TripStatus } from "@/model/TripInfo";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
@@ -15,11 +15,6 @@ const useGuestTrips = () => {
 
   const updateData = () => {
     setUpdateRequired(true);
-  };
-
-  const convernFuelInLevel = (fuelLevelInGal: bigint, fuelTank: number) => {
-    const levelInPercents = Math.ceil((8 * Number(fuelLevelInGal)) / fuelTank) * 0.125;
-    return levelInPercents.toString();
   };
 
   const isTripBooked = (status: TripStatus) => {
@@ -50,11 +45,11 @@ const useGuestTrips = () => {
       }
 
       try {
-        const startFuelLevelInPermille = BigInt(Number(params[0]) * 1000);
+        const startFuelLevelInPercents = BigInt(Number(params[0]) * 100);
         const startOdometr = BigInt(params[1]);
 
         let transaction = await rentalityInfo.rentalityContract.checkInByGuest(tripId, [
-          startFuelLevelInPermille,
+          startFuelLevelInPercents,
           startOdometr,
         ]);
         const result = await transaction.wait();
@@ -72,11 +67,11 @@ const useGuestTrips = () => {
       }
 
       try {
-        const endFuelLevelInPermille = BigInt(Number(params[0]) * 1000);
+        const endFuelLevelInPercents = BigInt(Number(params[0]) * 100);
         const endOdometr = BigInt(params[1]);
 
         let transaction = await rentalityInfo.rentalityContract.checkOutByGuest(tripId, [
-          endFuelLevelInPermille,
+          endFuelLevelInPercents,
           endOdometr,
         ]);
         const result = await transaction.wait();
@@ -87,7 +82,7 @@ const useGuestTrips = () => {
       }
     };
 
-    const getAllowedActions = (tripStatus: TripStatus, trip: ContractTrip, tankSize: number) => {
+    const getAllowedActions = (tripStatus: TripStatus, trip: ContractTrip) => {
       const result: AllowedChangeTripAction[] = [];
 
       switch (tripStatus) {
@@ -114,7 +109,7 @@ const useGuestTrips = () => {
             params: [
               {
                 text: "Fuel or battery level, %",
-                value: convernFuelInLevel(trip.startParamLevels[0], tankSize),
+                value: (Number(trip.startParamLevels[0]) / 100).toString(),
                 type: "fuel",
               },
               {
@@ -194,11 +189,11 @@ const useGuestTrips = () => {
                     locationStart: i.startLocation,
                     locationEnd: i.endLocation,
                     status: tripStatus,
-                    allowedActions: getAllowedActions(tripStatus, i, tankSize),
+                    allowedActions: getAllowedActions(tripStatus, i),
                     totalPrice: (Number(i.paymentInfo.totalDayPriceInUsdCents) / 100).toString(),
                     tankVolumeInGal: tankSize,
-                    startFuelLevelInGal: Number(i.startParamLevels[0]),
-                    endFuelLevelInGal: Number(i.endParamLevels[0]),
+                    startFuelLevelInPercents: Number(i.startParamLevels[0]),
+                    endFuelLevelInPercents: Number(i.endParamLevels[0]),
                     fuelPricePerGal: Number(i.fuelPrices[0]) / 100,
                     milesIncludedPerDay: Number(i.milesIncludedPerDay),
                     startOdometr: Number(i.startParamLevels[1]),
