@@ -1,7 +1,8 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
+import { IRentalityAdminGateway, IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
+import { getContract } from "@/abis";
 
 export type AdminContractInfo = {
   contractAddress: string;
@@ -60,14 +61,38 @@ const useContractInfo = () => {
     return result;
   };
 
+  const getAdminGateway = async () => {
+    if (window.ethereum == null) {
+      console.error("Ethereum wallet is not found");
+      return;
+    }
+
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = await provider.getSigner();
+
+      const rentalityAdminGateway = (await getContract("admin", signer)) as unknown as IRentalityAdminGateway;
+
+      if (rentalityAdminGateway === null) {
+        return;
+      }
+
+      return rentalityAdminGateway;
+    } catch (e) {
+      console.error("rentalityAdminGateway error:" + e);
+    }
+  };
+
   const withdrawFromPlatform = async (value: bigint) => {
-    if (!rentalityInfo) {
-      console.error("setPlatformFeeInPPM error: rentalityInfo is null");
+    const rentalityAdminGateway = await getAdminGateway();
+
+    if (!rentalityAdminGateway) {
+      console.error("withdrawFromPlatform error: rentalityAdminGateway is null");
       return false;
     }
 
     try {
-      let transaction = await rentalityInfo.rentalityContract.withdrawFromPlatform(value);
+      let transaction = await rentalityAdminGateway.withdrawFromPlatform(value);
       const result = await transaction.wait();
       setDataUpdated(false);
       return true;
@@ -78,13 +103,15 @@ const useContractInfo = () => {
   };
 
   const setPlatformFeeInPPM = async (value: bigint) => {
-    if (!rentalityInfo) {
-      console.error("setPlatformFeeInPPM error: rentalityInfo is null");
+    const rentalityAdminGateway = await getAdminGateway();
+
+    if (!rentalityAdminGateway) {
+      console.error("setPlatformFeeInPPM error: rentalityAdminGateway is null");
       return false;
     }
 
     try {
-      let transaction = await rentalityInfo.rentalityContract.setPlatformFeeInPPM(value);
+      let transaction = await rentalityAdminGateway.setPlatformFeeInPPM(value);
       const result = await transaction.wait();
       setDataUpdated(false);
       return true;
