@@ -1,6 +1,13 @@
 import { isEmpty } from "@/utils/string";
-import { ChangeEvent, FocusEvent } from "react";
 import { twMerge } from "tailwind-merge";
+
+interface RntInputMultilineProps extends React.ComponentPropsWithoutRef<"textarea"> {
+  labelClassName?: string;
+  inputClassName?: string;
+  validationClassName?: string;
+  label?: string;
+  validationError?: string;
+}
 
 export default function RntInputMultiline({
   className,
@@ -16,21 +23,7 @@ export default function RntInputMultiline({
   validationError,
   onChange: onChangeHandler,
   onBlur: onBlurHandler,
-}: {
-  className?: string;
-  labelClassName?: string;
-  inputClassName?: string;
-  validationClassName?: string;
-  id: string;
-  rows?: number;
-  label?: string;
-  placeholder?: string;
-  readOnly?: boolean;
-  value: string;
-  validationError?: string;
-  onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void;
-  onBlur?: (e: FocusEvent<HTMLTextAreaElement, Element>) => void;
-}) {
+}: RntInputMultilineProps) {
   const isShowLabel = label !== undefined && label?.length > 0;
 
   const cClassName = twMerge("text-black flex flex-col w-full", className);

@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocompleteService";
 
@@ -30,6 +30,15 @@ type PlaceDetails = {
   };
 };
 
+interface RntPlaceAutocompleteProps extends React.ComponentPropsWithoutRef<"input"> {
+  labelClassName?: string;
+  inputClassName?: string;
+  label?: string;
+  initValue: string;
+  includeStreetAddress?: boolean;
+  onAddressChange: (praceDetails: PlaceDetails) => void;
+}
+
 export default function RntPlaceAutocomplete({
   className,
   labelClassName,
@@ -43,20 +52,7 @@ export default function RntPlaceAutocomplete({
   includeStreetAddress,
   onChange: onChangeHandler,
   onAddressChange: onAddressChangeHandler,
-}: {
-  className?: string;
-  labelClassName?: string;
-  inputClassName?: string;
-  id: string;
-  type?: string;
-  label?: string;
-  placeholder?: string;
-  readOnly?: boolean;
-  initValue: string;
-  includeStreetAddress?: boolean;
-  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-  onAddressChange: (praceDetails: PlaceDetails) => void;
-}) {
+}: RntPlaceAutocompleteProps) {
   const isShowLabel = label !== undefined && label?.length > 0;
   const [enteredAddress, setEnteredAddress] = useState(initValue);
   const [isEditing, setIsEditing] = useState(false);

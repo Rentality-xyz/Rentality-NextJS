@@ -1,6 +1,13 @@
 import { isEmpty } from "@/utils/string";
-import { ChangeEvent, FocusEvent } from "react";
 import { twMerge } from "tailwind-merge";
+
+interface RntInputProps extends React.ComponentPropsWithoutRef<"input"> {
+  labelClassName?: string;
+  inputClassName?: string;
+  validationClassName?: string;
+  label?: string;
+  validationError?: string;
+}
 
 export default function RntInput({
   className,
@@ -16,21 +23,7 @@ export default function RntInput({
   validationError,
   onChange: onChangeHandler,
   onBlur: onBlurHandler,
-}: {
-  className?: string;
-  labelClassName?: string;
-  inputClassName?: string;
-  validationClassName?: string;
-  id: string;
-  type?: string;
-  label?: string;
-  placeholder?: string;
-  readOnly?: boolean;
-  value: string;
-  validationError?: string;
-  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-  onBlur?: (e: FocusEvent<HTMLInputElement, Element>) => void;
-}) {
+}: RntInputProps) {
   const isShowLabel = label !== undefined && label?.length > 0;
 
   type = type ?? "text";
