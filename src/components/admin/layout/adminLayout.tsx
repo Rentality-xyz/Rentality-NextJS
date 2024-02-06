@@ -2,11 +2,7 @@ import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import AdminSideNavMenu from "@/components/sideNavMenu/adminSideNavMenu";
 
-type Props = {
-  children?: React.ReactNode;
-};
-
-export default function AdminLayout({ children }: Props) {
+export default function AdminLayout({ children }: { children?: React.ReactNode }) {
   return (
     <>
       <div className="main-grid">
