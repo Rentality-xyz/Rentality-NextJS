@@ -1,6 +1,6 @@
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { Signer, ethers } from "ethers";
-import { getContract } from "../abis";
+import { getEtherContract } from "../abis";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { getExistBlockchainList } from "@/model/blockchain/BlockchainList";
@@ -87,7 +87,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = await provider.getSigner();
 
-      const rentalityContract = (await getContract("gateway", signer)) as unknown as IRentalityContract;
+      const rentalityContract = (await getEtherContract("gateway")) as unknown as IRentalityContract;
 
       if (rentalityContract === null) {
         return;
@@ -146,7 +146,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = await provider.getSigner();
 
-        const rentalityContract = (await getContract("gateway", signer)) as unknown as IRentalityContract;
+        const rentalityContract = (await getEtherContract("gateway")) as unknown as IRentalityContract;
 
         if (rentalityContract === null) {
           return;

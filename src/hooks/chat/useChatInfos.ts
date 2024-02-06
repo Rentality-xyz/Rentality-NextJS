@@ -5,8 +5,7 @@ import { IRentalityChatHelperContract, IRentalityContract } from "@/model/blockc
 import { ContractChatInfo } from "@/model/blockchain/ContractChatInfo";
 import { Client as ChatClient } from "@/chat/client";
 import { useRentality } from "@/contexts/rentalityContext";
-import { ethers } from "ethers";
-import { getContract } from "@/abis";
+import { getEtherContract } from "@/abis";
 import { isEmpty } from "@/utils/string";
 import { bytesToHex } from "@waku/utils/bytes";
 import { ChatInfo } from "@/model/ChatInfo";
@@ -18,31 +17,6 @@ const useChatInfos = (isHost: boolean) => {
   const [chatInfos, setChatInfos] = useState<ChatInfo[]>([]);
   const [chatClient, setChatClient] = useState<ChatClient | undefined>(undefined);
   const [chatPublicKeys, setChatPublicKeys] = useState<Map<string, string>>(new Map());
-
-  const getChatHelper = async () => {
-    if (window.ethereum == null) {
-      console.error("Ethereum wallet is not found");
-      return;
-    }
-
-    try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = await provider.getSigner();
-
-      const rentalityChatHelperContract = (await getContract(
-        "chatHelper",
-        signer
-      )) as unknown as IRentalityChatHelperContract;
-
-      if (rentalityChatHelperContract === null) {
-        return;
-      }
-
-      return rentalityChatHelperContract;
-    } catch (e) {
-      console.error("getChatHelper error:" + e);
-    }
-  };
 
   const isInitiating = useRef(false);
 
@@ -106,7 +80,7 @@ const useChatInfos = (isHost: boolean) => {
       if (isInitiating.current) return;
       isInitiating.current = true;
 
-      const rentalityChatHelper = await getChatHelper();
+      const rentalityChatHelper = (await getEtherContract("chatHelper")) as unknown as IRentalityChatHelperContract;
       if (!rentalityChatHelper) {
         console.error("useChatInfos error: ", "rentalityChatHelper is null");
         return;

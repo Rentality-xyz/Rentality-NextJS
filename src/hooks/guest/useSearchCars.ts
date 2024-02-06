@@ -1,6 +1,5 @@
-import { ethers } from "ethers";
 import { useCallback, useState } from "react";
-import { getContract } from "../../abis";
+import { getEtherContract } from "../../abis";
 import { ContractAvailableCarInfo, validateContractAvailableCarInfo } from "@/model/blockchain/ContractCarInfo";
 import { calculateDays } from "@/utils/date";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
@@ -25,28 +24,6 @@ const useSearchCars = () => {
   const rentalityInfo = useRentality();
   const [isLoading, setIsLoading] = useState<Boolean>(false);
   const [searchResult, setSearchResult] = useState<SearchCarsResult>(emptySearchCarsResult);
-
-  const getRentalityCurrencyConverterContract = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (!ethereum) {
-        console.error("Ethereum wallet is not found");
-      }
-
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = await provider.getSigner();
-
-      const rentalityCurrencyConverterContract = await getContract("currencyConverter", signer);
-
-      if (rentalityCurrencyConverterContract === null) {
-        return;
-      }
-      return rentalityCurrencyConverterContract;
-    } catch (e) {
-      console.error("getRentalityCurrencyConverter error:" + e);
-    }
-  };
 
   const formatSearchAvailableCarsContractRequest = (searchCarRequest: SearchCarRequest) => {
     const startDateTime = new Date(searchCarRequest.dateFrom);
@@ -168,7 +145,7 @@ const useSearchCars = () => {
 
     try {
       const rentalityContract = rentalityInfo.rentalityContract;
-      const rentalityCurrencyConverterContract = await getRentalityCurrencyConverterContract();
+      const rentalityCurrencyConverterContract = await getEtherContract("currencyConverter");
       if (rentalityContract == null) {
         console.error("createTripRequest error: rentalityContract is null");
         return false;

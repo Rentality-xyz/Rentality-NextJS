@@ -1,8 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { ChatInfo } from "@/model/ChatInfo";
 import { Client as ChatClient } from "@/chat/client";
-import { ethers } from "ethers";
-import { getContract } from "@/abis";
+import { getEtherContract } from "@/abis";
 import { IRentalityChatHelperContract, IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractChatInfo } from "@/model/blockchain/ContractChatInfo";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
@@ -42,31 +41,6 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
   const rentalityInfo = useRentality();
   const router = useRouter();
   const isHost = router.route.startsWith("/host");
-
-  const getChatHelper = async () => {
-    if (window.ethereum == null) {
-      console.error("Ethereum wallet is not found");
-      return;
-    }
-
-    try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = await provider.getSigner();
-
-      const rentalityChatHelperContract = (await getContract(
-        "chatHelper",
-        signer
-      )) as unknown as IRentalityChatHelperContract;
-
-      if (rentalityChatHelperContract === null) {
-        return;
-      }
-
-      return rentalityChatHelperContract;
-    } catch (e) {
-      console.error("getChatHelper error:" + e);
-    }
-  };
 
   const onUserMessageReceived = async (from: string, to: string, tripId: number, datetime: number, message: string) => {
     setChatContextInfo((current) => {
@@ -159,7 +133,7 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
       if (isInitiating.current) return;
       isInitiating.current = true;
 
-      const rentalityChatHelper = await getChatHelper();
+      const rentalityChatHelper = (await getEtherContract("chatHelper")) as unknown as IRentalityChatHelperContract;
       if (!rentalityChatHelper) {
         console.error("useChatInfos error: ", "rentalityChatHelper is null");
         return;

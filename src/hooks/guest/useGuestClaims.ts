@@ -2,97 +2,14 @@ import { useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
-import { ethers } from "ethers";
-import { getContract } from "@/abis";
+import { getEtherContract } from "@/abis";
 import { Claim, getClaimStatusTextFromStatus, getClaimTypeTextFromClaimType } from "@/model/Claim";
 import { ContractFullClaimInfo, validateContractFullClaimInfo } from "@/model/blockchain/ContractClaimInfo";
-
-// const claimsViewTEST: ContractClaim[] = [
-//   {
-//     claimId: BigInt(0),
-//     claimType: ClaimType.Tolls,
-//     deadlineDateInSec: BigInt(Math.floor(new Date(new Date().getTime() + 1000 * 60 * 60 * 24).getTime() / 1000)),
-//     tripId: BigInt(3333),
-//     description: "Toll road bill",
-//     amountInUsdCents: BigInt(2500),
-//     status: ClaimStatus.NotPaid,
-//     payDateInSec: BigInt(0),
-//     rejectedBy: "",
-//     rejectedDateInSec: BigInt(0),
-//   },
-//   {
-//     claimId: BigInt(1),
-//     claimType: ClaimType.Tickets,
-//     deadlineDateInSec: BigInt(Math.floor(new Date(new Date().getTime() + 1000 * 60 * 60 * 24).getTime() / 1000)),
-//     tripId: BigInt(2222),
-//     // carInfo: "Ford Bronco 2022",
-//     description: "Parking fine",
-//     amountInUsdCents: BigInt(1000),
-//     status: ClaimStatus.Paid,
-//     payDateInSec: BigInt(0),
-//     rejectedBy: "",
-//     rejectedDateInSec: BigInt(0),
-//     // hostPhoneNumber: "+123456789",
-//     // guestPhoneNumber: "+987654321",
-//   },
-//   {
-//     claimId: BigInt(2),
-//     claimType: ClaimType.ExteriorDamage,
-//     deadlineDateInSec: BigInt(Math.floor(new Date(new Date().getTime() - 1000 * 60 * 60 * 24).getTime() / 1000)),
-//     tripId: BigInt(1111),
-//     // carInfo: "Ford Bronco 2022",
-//     description: "Front bumper scratched",
-//     amountInUsdCents: BigInt(150000),
-//     status: ClaimStatus.Overdue,
-//     payDateInSec: BigInt(0),
-//     rejectedBy: "",
-//     rejectedDateInSec: BigInt(0),
-//     // hostPhoneNumber: "+123456789",
-//     // guestPhoneNumber: "+987654321",
-//   },
-//   {
-//     claimId: BigInt(3),
-//     claimType: ClaimType.ExteriorDamage,
-//     deadlineDateInSec: BigInt(Math.floor(new Date(new Date().getTime() - 1000 * 60 * 60 * 24).getTime() / 1000)),
-//     tripId: BigInt(1111),
-//     // carInfo: "Ford Bronco 2022",
-//     description: "Front bumper scratched",
-//     amountInUsdCents: BigInt(150000),
-//     status: ClaimStatus.Cancel,
-//     payDateInSec: BigInt(0),
-//     rejectedBy: "",
-//     rejectedDateInSec: BigInt(0),
-//     // hostPhoneNumber: "+123456789",
-//     // guestPhoneNumber: "+987654321",
-//   },
-// ];
 
 const useGuestClaims = () => {
   const rentalityInfo = useRentality();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [claims, setClaims] = useState<Claim[]>([]);
-
-  const getRentalityCurrencyConverterContract = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (!ethereum) {
-        console.error("Ethereum wallet is not found");
-      }
-
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = await provider.getSigner();
-
-      const rentalityCurrencyConverterContract = await getContract("currencyConverter", signer);
-
-      if (rentalityCurrencyConverterContract === null) {
-        return;
-      }
-      return rentalityCurrencyConverterContract;
-    } catch (e) {
-      console.error("getRentalityCurrencyConverter error:" + e);
-    }
-  };
 
   const payClaim = async (claimId: number) => {
     if (!rentalityInfo) {
@@ -101,7 +18,7 @@ const useGuestClaims = () => {
     }
 
     try {
-      const rentalityCurrencyConverterContract = await getRentalityCurrencyConverterContract();
+      const rentalityCurrencyConverterContract = await getEtherContract("currencyConverter");
 
       if (rentalityCurrencyConverterContract == null) {
         console.error("payClaim error: rentalityCurrencyConverterContract is null");
