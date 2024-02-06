@@ -1,12 +1,6 @@
 import { dateFormat } from "@/utils/datetimeFormatters";
 
-type Props = {
-  title: string;
-  datetime: Date;
-  message: string;
-};
-
-export default function Notification({ title, datetime, message }: Props) {
+export default function Notification({ title, datetime, message }: { title: string; datetime: Date; message: string }) {
   return (
     <div className="bg-rentality-bg rnt-card w-full flex flex-col gap-2 rounded-xl overflow-hidden p-4">
       <div className="flex flex-row justify-between">

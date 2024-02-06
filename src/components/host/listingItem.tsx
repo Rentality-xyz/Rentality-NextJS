@@ -3,11 +3,7 @@ import RntButton from "../common/rntButton";
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 
-type Props = {
-  carInfo: BaseCarInfo;
-};
-
-export default function ListingItem({ carInfo }: Props) {
+export default function ListingItem({ carInfo }: { carInfo: BaseCarInfo }) {
   let statusBgColor = carInfo.currentlyListed ? "bg-lime-500" : "bg-red-500";
   const statusClassName = twMerge(
     "absolute right-0 top-2 px-8 py-2 rounded-l-3xl text-rnt-temp-status-text text-end",

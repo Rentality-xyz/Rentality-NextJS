@@ -2,21 +2,6 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocompleteService";
 
-type Props = {
-  className?: string;
-  labelClassName?: string;
-  inputClassName?: string;
-  id: string;
-  type?: string;
-  label?: string;
-  placeholder?: string;
-  readOnly?: boolean;
-  initValue: string;
-  includeStreetAddress?: boolean;
-  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-  onAddressChange: (praceDetails: PlaceDetails) => void;
-};
-
 type PlaceDetails = {
   addressString: string;
   country?: {
@@ -58,7 +43,20 @@ export default function RntPlaceAutocomplete({
   includeStreetAddress,
   onChange: onChangeHandler,
   onAddressChange: onAddressChangeHandler,
-}: Props) {
+}: {
+  className?: string;
+  labelClassName?: string;
+  inputClassName?: string;
+  id: string;
+  type?: string;
+  label?: string;
+  placeholder?: string;
+  readOnly?: boolean;
+  initValue: string;
+  includeStreetAddress?: boolean;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  onAddressChange: (praceDetails: PlaceDetails) => void;
+}) {
   const isShowLabel = label !== undefined && label?.length > 0;
   const [enteredAddress, setEnteredAddress] = useState(initValue);
   const [isEditing, setIsEditing] = useState(false);

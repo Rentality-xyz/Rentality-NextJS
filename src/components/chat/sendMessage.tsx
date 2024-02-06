@@ -1,11 +1,11 @@
 import { useState } from "react";
 import RntButton from "../common/rntButton";
 
-type Props = {
+export default function SendMessage({
+  sendMessageCallback,
+}: {
   sendMessageCallback: (message: string) => Promise<void>;
-};
-
-export default function SendMessage({ sendMessageCallback }: Props) {
+}) {
   const [newMessage, setNewMessage] = useState<string>("");
 
   return (

@@ -1,12 +1,7 @@
 import { ChatInfo } from "@/model/ChatInfo";
 import ChatMessage from "./chatMessage";
 
-type Props = {
-  selectedChat: ChatInfo;
-  isHost: boolean;
-};
-
-export default function ChatMessages({ selectedChat, isHost }: Props) {
+export default function ChatMessages({ selectedChat, isHost }: { selectedChat: ChatInfo; isHost: boolean }) {
   const myPhotoUrl = isHost ? selectedChat.hostPhotoUrl : selectedChat.guestPhotoUrl;
   const myName = isHost ? selectedChat.hostName : selectedChat.guestName;
   const otherPhotoUrl = isHost ? selectedChat.guestPhotoUrl : selectedChat.hostPhotoUrl;

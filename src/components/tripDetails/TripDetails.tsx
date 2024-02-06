@@ -4,11 +4,7 @@ import RntInput from "../common/rntInput";
 import RntButton from "../common/rntButton";
 import { useRouter } from "next/router";
 
-type Props = {
-  tripId: bigint;
-};
-
-export default function TripDetails({ tripId }: Props) {
+export default function TripDetails({ tripId }: { tripId: bigint }) {
   const [isLoading, tripDetails] = useTripDetails(tripId);
   const router = useRouter();
 

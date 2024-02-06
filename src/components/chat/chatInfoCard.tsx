@@ -9,14 +9,17 @@ import { twMerge } from "tailwind-merge";
 import icInfo from "@/images/ic-info-teal.svg";
 import Image from "next/image";
 
-type Props = {
+export default function ChatInfoCard({
+  chatInfo,
+  isHost,
+  isSelected,
+  onClickCallback,
+}: {
   chatInfo: ChatInfo;
   isHost: boolean;
   isSelected: boolean;
   onClickCallback: MouseEventHandler<HTMLDivElement> | undefined;
-};
-
-export default function ChatInfoCard({ chatInfo, isHost, isSelected, onClickCallback }: Props) {
+}) {
   const className = `bg-rentality-bg rnt-card w-full grid grid-cols-[auto_1fr_auto] gap-x-2 rounded-xl overflow-hidden p-2 ${
     isSelected ? "rnt-card-selected" : ""
   }`;
@@ -40,9 +43,12 @@ export default function ChatInfoCard({ chatInfo, isHost, isSelected, onClickCall
         <div>{chatInfo.carTitle}</div>
       </div>
       <Link className="sm:hidden" href={`/guest/trips/tripInfo/${chatInfo.tripId}`}>
-          <Image src={icInfo} width={25} alt="" />
+        <Image src={icInfo} width={25} alt="" />
       </Link>
-      <Link className="max-sm:hidden text-sm text-rentality-secondary" href={`/guest/trips/tripInfo/${chatInfo.tripId}`}>
+      <Link
+        className="max-sm:hidden text-sm text-rentality-secondary"
+        href={`/guest/trips/tripInfo/${chatInfo.tripId}`}
+      >
         Trip information
       </Link>
       <div className="col-span-2 whitespace-nowrap overflow-hidden overflow-ellipsis ">{chatInfo.lastMessage}</div>

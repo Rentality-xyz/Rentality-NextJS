@@ -7,11 +7,6 @@ import Checkbox from "../common/checkbox";
 import RntButton from "../common/rntButton";
 import { ClaimType, getClaimTypeTextFromClaimType } from "@/model/Claim";
 
-type Props = {
-  tripInfos: TripInfoForClaimCreation[];
-  createClaim: (createClaimRequest: CreateClaimRequest) => Promise<void>;
-};
-
 type CreateClaimParams = {
   selectedTripId: string;
   incidentType: string;
@@ -28,7 +23,13 @@ const emptyCreateClaimParams: CreateClaimParams = {
   isChecked: false,
 };
 
-export default function CreateClaim({ tripInfos, createClaim }: Props) {
+export default function CreateClaim({
+  tripInfos,
+  createClaim,
+}: {
+  tripInfos: TripInfoForClaimCreation[];
+  createClaim: (createClaimRequest: CreateClaimRequest) => Promise<void>;
+}) {
   const [createClaimParams, setCreateClaimParams] = useState<CreateClaimParams>(emptyCreateClaimParams);
 
   const allClaimTypes = Object.keys(ClaimType).filter((v) => !isFinite(Number(v)));

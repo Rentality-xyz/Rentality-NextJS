@@ -2,22 +2,6 @@ import { isEmpty } from "@/utils/string";
 import { ChangeEvent, FocusEvent } from "react";
 import { twMerge } from "tailwind-merge";
 
-type Props = {
-  className?: string;
-  labelClassName?: string;
-  inputClassName?: string;
-  validationClassName?: string;
-  id: string;
-  rows?: number;
-  label?: string;
-  placeholder?: string;
-  readOnly?: boolean;
-  value: string;
-  validationError?: string;
-  onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void;
-  onBlur?: (e: FocusEvent<HTMLTextAreaElement, Element>) => void;
-};
-
 export default function RntInputMultiline({
   className,
   labelClassName,
@@ -32,7 +16,21 @@ export default function RntInputMultiline({
   validationError,
   onChange: onChangeHandler,
   onBlur: onBlurHandler,
-}: Props) {
+}: {
+  className?: string;
+  labelClassName?: string;
+  inputClassName?: string;
+  validationClassName?: string;
+  id: string;
+  rows?: number;
+  label?: string;
+  placeholder?: string;
+  readOnly?: boolean;
+  value: string;
+  validationError?: string;
+  onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void;
+  onBlur?: (e: FocusEvent<HTMLTextAreaElement, Element>) => void;
+}) {
   const isShowLabel = label !== undefined && label?.length > 0;
 
   const cClassName = twMerge("text-black flex flex-col w-full", className);

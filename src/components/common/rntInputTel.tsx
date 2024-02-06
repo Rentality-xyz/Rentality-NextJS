@@ -1,21 +1,6 @@
-import { ChangeEvent } from "react";
 import { twMerge } from "tailwind-merge";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-
-type Props = {
-  className?: string;
-  labelClassName?: string;
-  inputClassName?: string;
-  id: string;
-  type?: string;
-  pattern?: string;
-  label?: string;
-  placeholder?: string;
-  readOnly?: boolean;
-  value: string;
-  onChange?: (phone: string) => void;
-};
 
 export default function RntInputTel({
   className,
@@ -29,7 +14,19 @@ export default function RntInputTel({
   value,
   readOnly,
   onChange: onChangeHandler,
-}: Props) {
+}: {
+  className?: string;
+  labelClassName?: string;
+  inputClassName?: string;
+  id: string;
+  type?: string;
+  pattern?: string;
+  label?: string;
+  placeholder?: string;
+  readOnly?: boolean;
+  value: string;
+  onChange?: (phone: string) => void;
+}) {
   const isShowLabel = label !== undefined && label?.length > 0;
 
   type = type ?? "text";

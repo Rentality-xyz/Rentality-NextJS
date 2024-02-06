@@ -15,13 +15,15 @@ import RntInput from "../common/rntInput";
 import RntButton from "../common/rntButton";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 
-type Props = {
+export default function TripItem({
+  tripInfo,
+  changeStatusCallback,
+  disableButton,
+}: {
   tripInfo: TripInfo;
   changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<void>;
   disableButton: boolean;
-};
-
-export default function TripItem({ tripInfo, changeStatusCallback, disableButton }: Props) {
+}) {
   const [isAdditionalActionHidden, setIsAdditionalActionHidden] = useState(true);
   const defaultValues =
     tripInfo?.allowedActions?.length > 0

@@ -2,11 +2,7 @@ import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import HostSideNavMenu from "@/components/sideNavMenu/hostSideNavMenu";
 
-type Props = {
-  children?: React.ReactNode;
-};
-
-export default function HostLayout({ children }: Props) {
+export default function HostLayout({ children }: { children?: React.ReactNode }) {
   return (
     <>
       <div className="flex text-rnt-temp-sidemenu-text">

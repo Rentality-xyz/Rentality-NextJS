@@ -2,7 +2,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useRentality } from "./rentalityContext";
 import { ContractKYCInfo } from "@/model/blockchain/IRentalityContract";
 import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
-import { isEmpty } from "@/utils/string";
 
 export type UserInfo = {
   address: string;

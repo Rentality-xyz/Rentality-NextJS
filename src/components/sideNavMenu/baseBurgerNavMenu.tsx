@@ -1,12 +1,13 @@
 import Image from "next/image";
 import logo from "../../images/logo.png";
 
-type Props = {
+export default function BaseBurgerNavMenu({
+  children,
+  accountType,
+}: {
   children?: React.ReactNode;
   accountType: string;
-};
-
-export default function BaseBurgerNavMenu({ children, accountType }: Props) {
+}) {
   accountType = accountType ?? "Host";
 
   return (

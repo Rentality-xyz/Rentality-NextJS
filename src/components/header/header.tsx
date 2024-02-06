@@ -14,11 +14,7 @@ import { usePrivy } from "@privy-io/react-auth";
 import { GuestBurgerNavMenu } from "../sideNavMenu/guestSideNavMenu";
 import { HostBurgerNavMenu } from "../sideNavMenu/hostSideNavMenu";
 
-type Props = {
-  accountType: string;
-};
-
-export default function Header({ accountType }: Props) {
+export default function Header({ accountType }: { accountType: string }) {
   const rentalityInfo = useRentality();
   const userInfo = useUserInfo();
   accountType = accountType ?? "Host";

@@ -8,14 +8,17 @@ import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 import Checkbox from "@/components/common/checkbox";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PATROL_STRING } from "@/model/blockchain/ContractCarInfo";
 
-type Props = {
+export default function CarEditForm({
+  carInfoFormParams,
+  setCarInfoFormParams,
+  onImageFileChange,
+  isNewCar,
+}: {
   carInfoFormParams: HostCarInfo;
   setCarInfoFormParams: Dispatch<SetStateAction<HostCarInfo>>;
   onImageFileChange: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
   isNewCar: boolean;
-};
-
-export default function CarEditForm({ carInfoFormParams, setCarInfoFormParams, onImageFileChange, isNewCar }: Props) {
+}) {
   const [autocomplete, setAutocomplete] = useState("");
   const isUnlimitedMiles = carInfoFormParams.milesIncludedPerDay === UNLIMITED_MILES_VALUE;
   const fuelPricePerMile = Number(carInfoFormParams.pricePerDay) / Number(carInfoFormParams.milesIncludedPerDay);

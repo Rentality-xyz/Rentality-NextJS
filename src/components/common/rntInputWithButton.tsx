@@ -2,22 +2,6 @@ import { ChangeEvent, MouseEventHandler } from "react";
 import RntInput from "./rntInput";
 import RntButton from "./rntButton";
 
-type Props = {
-  className?: string;
-  labelClassName?: string;
-  inputClassName?: string;
-  id: string;
-  type?: string;
-  label?: string;
-  placeholder?: string;
-  readOnly?: boolean;
-  value: string;
-  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-  buttonText: string;
-  buttonDisabled?: boolean;
-  onButtonClick: MouseEventHandler<HTMLButtonElement>;
-};
-
 export default function RntInputWithButton({
   className,
   labelClassName,
@@ -32,7 +16,21 @@ export default function RntInputWithButton({
   buttonText,
   buttonDisabled,
   onButtonClick,
-}: Props) {
+}: {
+  className?: string;
+  labelClassName?: string;
+  inputClassName?: string;
+  id: string;
+  type?: string;
+  label?: string;
+  placeholder?: string;
+  readOnly?: boolean;
+  value: string;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  buttonText: string;
+  buttonDisabled?: boolean;
+  onButtonClick: MouseEventHandler<HTMLButtonElement>;
+}) {
   return (
     <div className="flex flex-row w-full gap-4">
       <RntInput

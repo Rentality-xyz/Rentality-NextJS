@@ -7,21 +7,6 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { createTheme, ThemeProvider, ThemeOptions } from "@mui/material/styles";
 import "react-datepicker/dist/react-datepicker.css";
 
-type Props = {
-  className?: string;
-  labelClassName?: string;
-  inputClassName?: string;
-  validationClassName?: string;
-  id: string;
-  type?: string;
-  label?: string;
-  readOnly?: boolean;
-  value: Date | undefined;
-  validationError?: string;
-  onDateChange?: (date: Date | null) => void;
-  onBlur?: (e: FocusEvent<HTMLInputElement, Element>) => void;
-};
-
 export default function RntDatePicker({
   className,
   labelClassName,
@@ -35,7 +20,20 @@ export default function RntDatePicker({
   validationError,
   onDateChange,
   onBlur: onBlurHandler,
-}: Props) {
+}: {
+  className?: string;
+  labelClassName?: string;
+  inputClassName?: string;
+  validationClassName?: string;
+  id: string;
+  type?: string;
+  label?: string;
+  readOnly?: boolean;
+  value: Date | undefined;
+  validationError?: string;
+  onDateChange?: (date: Date | null) => void;
+  onBlur?: (e: FocusEvent<HTMLInputElement, Element>) => void;
+}) {
   const isShowLabel = label !== undefined && label?.length > 0;
 
   type = type ?? "text";

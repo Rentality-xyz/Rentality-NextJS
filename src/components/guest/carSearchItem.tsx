@@ -2,13 +2,15 @@ import { SearchCarInfo } from "@/model/SearchCarsResult";
 import RntButton from "../common/rntButton";
 import { Avatar } from "@mui/material";
 
-type Props = {
+export default function CarSearchItem({
+  searchInfo,
+  handleRentCarRequest,
+  disableButton,
+}: {
   searchInfo: SearchCarInfo;
   handleRentCarRequest: (carInfo: SearchCarInfo) => void;
   disableButton: boolean;
-};
-
-export default function CarSearchItem({ searchInfo, handleRentCarRequest, disableButton }: Props) {
+}) {
   return (
     <div className="bg-rentality-bg rnt-card flex flex-col md:flex-row rounded-xl overflow-hidden">
       {/* <div className="w-60 h-full min-h-[14rem] flex-shrink-0">

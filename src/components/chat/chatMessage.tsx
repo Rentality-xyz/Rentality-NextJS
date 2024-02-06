@@ -1,15 +1,19 @@
 import { dateFormat } from "@/utils/datetimeFormatters";
 import { Avatar } from "@mui/material";
 
-type Props = {
+export default function ChatMessage({
+  photoUrl,
+  name,
+  datetime,
+  message,
+  isMyMessage,
+}: {
   photoUrl: string;
   name: string;
   datetime: Date;
   message: string;
   isMyMessage: boolean;
-};
-
-export default function ChatMessage({ photoUrl, name, datetime, message, isMyMessage }: Props) {
+}) {
   return !isMyMessage ? (
     <div className="bg-[#484874] rnt-card-selected w-5/6 grid grid-cols-[auto_1fr_auto] gap-2 rounded-xl rounded-ss-none  overflow-hidden p-4">
       <div className="w-12 h-12">

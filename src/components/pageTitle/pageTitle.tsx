@@ -6,12 +6,7 @@ export type PageTitleLink = {
   link: string;
 };
 
-type Props = {
-  title: string;
-  actions?: PageTitleLink[];
-};
-
-export default function PageTitle({ title, actions }: Props) {
+export default function PageTitle({ title, actions }: { title: string; actions?: PageTitleLink[] }) {
   return (
     <div id="page-title" className="flex flex-row justify-between items-center">
       <div className="text-2xl">

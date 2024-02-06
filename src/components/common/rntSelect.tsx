@@ -1,19 +1,6 @@
 import { ChangeEvent } from "react";
 import { twMerge } from "tailwind-merge";
 
-type Props = {
-  children?: React.ReactNode;
-  className?: string;
-  labelClassName?: string;
-  selectClassName?: string;
-  id: string;
-  label?: string;
-  placeholder?: string;
-  readOnly?: boolean;
-  value: string;
-  onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
-};
-
 export default function RntSelect({
   children,
   className,
@@ -25,15 +12,23 @@ export default function RntSelect({
   value,
   readOnly,
   onChange: onChangeHandler,
-}: Props) {
+}: {
+  children?: React.ReactNode;
+  className?: string;
+  labelClassName?: string;
+  selectClassName?: string;
+  id: string;
+  label?: string;
+  placeholder?: string;
+  readOnly?: boolean;
+  value: string;
+  onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
+}) {
   const isShowLabel = label !== undefined && label?.length > 0;
 
   const cClassName = twMerge("text-black flex flex-col w-full", className);
   const lClassName = twMerge("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
-  const sclassName = twMerge(
-    "w-full h-12 border-2 rounded-full pl-4",
-    selectClassName
-  );
+  const sclassName = twMerge("w-full h-12 border-2 rounded-full pl-4", selectClassName);
 
   return (
     <div className={cClassName}>

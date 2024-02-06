@@ -1,14 +1,18 @@
 import { twMerge } from "tailwind-merge";
 import { ChangeEventHandler } from "react";
 
-type Props = {
+export default function Checkbox({
+  className,
+  title,
+  value,
+  onChange,
+  ...props
+}: {
   className?: string;
   title: string;
   value: boolean;
   onChange?: ChangeEventHandler<HTMLInputElement>;
-};
-
-export default function Checkbox({ className, title, value, onChange, ...props }: Props) {
+}) {
   const c = twMerge("", className);
   const checkBoxBgStyle = value ? "bg-rentality-primary" : "bg-white group-hover:bg-[#bbb]";
   return (
