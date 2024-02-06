@@ -70,7 +70,9 @@ const useProfileSettings = () => {
         newProfileSettings.phoneNumber,
         newProfileSettings.profilePhotoUrl,
         newProfileSettings.drivingLicenseNumber,
-        expirationDate
+        expirationDate,
+        true,
+        true
       );
 
       const result = await transaction.wait();

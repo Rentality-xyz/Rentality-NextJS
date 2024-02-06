@@ -73,7 +73,9 @@ export interface IRentalityContract {
     mobilePhoneNumber: string,
     profilePhoto: string,
     licenseNumber: string,
-    expirationDate: bigint
+    expirationDate: bigint,
+    isKYCPassed: boolean,
+    isTCPassed: boolean
   ): Promise<ContractTransaction>;
 
   //not using
