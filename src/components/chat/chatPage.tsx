@@ -6,7 +6,7 @@ import ChatMessages from "@/components/chat/chatMessages";
 import SendMessage from "@/components/chat/sendMessage";
 import RntButton from "@/components/common/rntButton";
 import { ChatInfo } from "@/model/ChatInfo";
-import { useEffect, useRef } from "react";
+import { ElementRef, useEffect, useRef } from "react";
 
 export default function ChatPage({
   isHost,
@@ -22,7 +22,7 @@ export default function ChatPage({
   sendMessage: (toAddress: string, tripId: number, message: string) => Promise<void>;
 }) {
   const pageTitle = document.getElementById("page-title") as HTMLDivElement;
-  const selectedChatRef = useRef<HTMLDivElement>(pageTitle);
+  const selectedChatRef = useRef<ElementRef<"div">>(pageTitle);
   const selectedChat = chats.find((ci) => ci.tripId === selectedTridId) ?? null;
 
   useEffect(() => {

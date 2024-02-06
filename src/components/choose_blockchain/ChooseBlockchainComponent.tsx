@@ -3,7 +3,7 @@ import arrowUp from "../../images/arrowUp.svg";
 import arrowDown from "../../images/arrowDown.svg";
 import blockchainChosen from "../../images/blockchainChosen.svg";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { ElementRef, useEffect, useRef, useState } from "react";
 import { assertIsNode } from "@/utils/react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { getExistBlockchainList } from "@/model/blockchain/BlockchainList";
@@ -14,7 +14,7 @@ export default function ChooseBlockchainComponent() {
   const [isShowComponentList, setIsShowComponentList] = useState(false);
   const [selectedChainId, setSelectedChainId] = useState(-1);
   const rentalityInfo = useRentality();
-  const chooseBlockchainWrapperRef = useRef<HTMLDivElement>(null);
+  const chooseBlockchainWrapperRef = useRef<ElementRef<"div">>(null);
   const selectedBlockchain = getExistBlockchainList().find((i) => i.chainId === selectedChainId);
 
   useEffect(() => {

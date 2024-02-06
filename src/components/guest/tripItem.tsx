@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { dateFormat, dateFormatDayMonthTime, dateFormatMonthDate } from "@/utils/datetimeFormatters";
-import { useEffect, useRef, useState } from "react";
+import { ElementRef, useEffect, useRef, useState } from "react";
 import {
   TripInfo,
   TripStatus,
@@ -33,7 +33,7 @@ export default function TripItem({
   const [confirmParams, setConfirmParams] = useState<boolean[]>([]);
 
   const allowedActions = document.getElementById("guest-allowed-actions") as HTMLDivElement;
-  const allowedActionsRef = useRef<HTMLDivElement>(allowedActions);
+  const allowedActionsRef = useRef<ElementRef<"div">>(allowedActions);
   useEffect(() => {
     if (window.innerWidth <= 1280 && !isAdditionalActionHidden && allowedActionsRef.current) {
       allowedActionsRef.current.scrollIntoView({ behavior: "smooth" });
