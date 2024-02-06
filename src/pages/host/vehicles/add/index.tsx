@@ -25,12 +25,33 @@ export default function AddCar() {
   const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
   const userInfo = useUserInfo();
 
+  const loadCarInfoFromJson = async (file: File) => {
+    try {
+      const fileText = await file.text();
+      const data = JSON.parse(fileText);
+      const carKeys = Object.keys(carInfoFormParams);
+
+      Object.keys(data).forEach((key) => {
+        if (carKeys.includes(key)) {
+          setCarInfoFormParams((prev) => {
+            return { ...prev, [key]: data[key] };
+          });
+        }
+      });
+    } catch (error) {}
+  };
+
   const onChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) {
       return;
     }
 
     const file = e.target.files[0];
+
+    if (file.type === "application/json") {
+      loadCarInfoFromJson(file);
+      return;
+    }
     const resizedImage = await resizeImage(file, 1000);
     setImageFile(resizedImage);
 
