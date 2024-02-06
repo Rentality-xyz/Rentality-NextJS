@@ -1,6 +1,10 @@
 import { useCallback, useState } from "react";
 import { getEtherContract } from "../../abis";
-import { ContractAvailableCarInfo, validateContractAvailableCarInfo } from "@/model/blockchain/ContractCarInfo";
+import {
+  ContractAvailableCarInfo,
+  getEngineTypeString,
+  validateContractAvailableCarInfo,
+} from "@/model/blockchain/ContractCarInfo";
 import { calculateDays } from "@/utils/date";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { ContractCreateTripRequest } from "@/model/blockchain/ContractCreateTripRequest";
@@ -79,7 +83,7 @@ const useSearchCars = () => {
           licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
           seatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats number")?.value ?? "",
           transmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
-          fuelType: meta.attributes?.find((x: any) => x.trait_type === "Fuel type")?.value ?? "",
+          engineType: getEngineTypeString(i.car.engineType),
           milesIncludedPerDay: i.car.milesIncludedPerDay.toString(),
           pricePerDay: pricePerDay,
           days: tripDays,

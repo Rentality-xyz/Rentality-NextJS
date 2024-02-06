@@ -15,7 +15,7 @@ export type SearchCarInfo = {
   licensePlate: string;
   seatsNumber: string;
   transmission: string;
-  fuelType: string;
+  engineType: string;
   milesIncludedPerDay: string;
   pricePerDay: number;
   days: number;
