@@ -30,7 +30,18 @@ export default function Checkbox({
   );
 }
 
-export function CheckboxOld({ className, title, value, onChange, ...props }: Props) {
+export function CheckboxOld({
+  className,
+  title,
+  value,
+  onChange,
+  ...props
+}: {
+  className?: string;
+  title: string;
+  value: boolean;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
+}) {
   const c = twMerge("", className);
   return (
     <div className={c}>
