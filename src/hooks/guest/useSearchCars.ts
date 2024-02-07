@@ -15,6 +15,7 @@ import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { ContractSearchCarParams } from "@/model/blockchain/ContractSearchCarParams";
 import { useRentality } from "@/contexts/rentalityContext";
 import { getBlockchainTimeFromDate, getMoneyInCentsFromString } from "@/utils/formInput";
+import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 
 export const sortOptions = {
   priceAsc: "Price: low to high",
@@ -98,7 +99,7 @@ const useSearchCars = () => {
           seatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats number")?.value ?? "",
           transmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
           engineType: getEngineTypeString(i.car.engineType),
-          milesIncludedPerDay: i.car.milesIncludedPerDay.toString(),
+          milesIncludedPerDay: getMilesIncludedPerDayText(i.car.milesIncludedPerDay),
           pricePerDay: pricePerDay,
           days: tripDays,
           totalPrice: totalPrice,

@@ -1,7 +1,7 @@
 import RntFileButton from "@/components/common/rntFileButton";
 import RntInput from "@/components/common/rntInput";
 import RntSelect from "@/components/common/rntSelect";
-import { HostCarInfo, UNLIMITED_MILES_VALUE } from "@/model/HostCarInfo";
+import { HostCarInfo, UNLIMITED_MILES_VALUE_TEXT } from "@/model/HostCarInfo";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useState, useEffect } from "react";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
@@ -20,7 +20,7 @@ export default function CarEditForm({
   isNewCar: boolean;
 }) {
   const [autocomplete, setAutocomplete] = useState("");
-  const isUnlimitedMiles = carInfoFormParams.milesIncludedPerDay === UNLIMITED_MILES_VALUE;
+  const isUnlimitedMiles = carInfoFormParams.milesIncludedPerDay === UNLIMITED_MILES_VALUE_TEXT;
   const fuelPricePerMile = Number(carInfoFormParams.pricePerDay) / Number(carInfoFormParams.milesIncludedPerDay);
   const fuelPricePerMileText = Number.isFinite(fuelPricePerMile) ? fuelPricePerMile.toString() : "-";
   const isElectricEngine = carInfoFormParams.engineTypeString === "Electro";
@@ -430,7 +430,7 @@ export default function CarEditForm({
             onChange={(e) =>
               setCarInfoFormParams({
                 ...carInfoFormParams,
-                milesIncludedPerDay: e.target.checked ? UNLIMITED_MILES_VALUE : "",
+                milesIncludedPerDay: e.target.checked ? UNLIMITED_MILES_VALUE_TEXT : "",
               })
             }
           />

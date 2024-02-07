@@ -1,6 +1,12 @@
 import { isEmpty } from "@/utils/string";
 
-export const UNLIMITED_MILES_VALUE = "Unlimited";
+export const UNLIMITED_MILES_VALUE_TEXT = "Unlimited";
+export const UNLIMITED_MILES_VALUE = 999_999_999;
+
+export const getMilesIncludedPerDayText = (value: bigint | number) => {
+  if (Number(value) === UNLIMITED_MILES_VALUE) return UNLIMITED_MILES_VALUE_TEXT;
+  return value.toString();
+};
 
 export type HostCarInfo = {
   carId: number;

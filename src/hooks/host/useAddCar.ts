@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "../../utils/pinata";
 import { ContractCreateCarRequest } from "@/model/blockchain/ContractCreateCarRequest";
-import { HostCarInfo, verifyCar } from "@/model/HostCarInfo";
+import { HostCarInfo, UNLIMITED_MILES_VALUE, UNLIMITED_MILES_VALUE_TEXT, verifyCar } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
 import {
   ENGINE_TYPE_ELECTRIC_STRING,
@@ -206,6 +206,11 @@ const useAddCar = () => {
         engineParams.push(BigInt(getMoneyInCentsFromString(dataToSave.batteryPrice_81_100)));
       }
 
+      const milesIncludedPerDay =
+        dataToSave.milesIncludedPerDay === UNLIMITED_MILES_VALUE_TEXT
+          ? BigInt(UNLIMITED_MILES_VALUE)
+          : BigInt(dataToSave.milesIncludedPerDay);
+
       const request: ContractCreateCarRequest = {
         tokenUri: metadataURL,
         carVinNumber: dataToSave.vinNumber,
@@ -214,7 +219,7 @@ const useAddCar = () => {
         yearOfProduction: Number(dataToSave.releaseYear),
         pricePerDayInUsdCents: pricePerDayInUsdCents,
         securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
-        milesIncludedPerDay: BigInt(dataToSave.milesIncludedPerDay),
+        milesIncludedPerDay: milesIncludedPerDay,
         geoApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
         engineType: Number(engineType),
         engineParams: engineParams,

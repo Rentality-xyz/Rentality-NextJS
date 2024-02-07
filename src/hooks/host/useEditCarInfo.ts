@@ -8,7 +8,12 @@ import {
   getEngineTypeString,
 } from "@/model/blockchain/ContractCarInfo";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
-import { HostCarInfo } from "@/model/HostCarInfo";
+import {
+  HostCarInfo,
+  UNLIMITED_MILES_VALUE,
+  UNLIMITED_MILES_VALUE_TEXT,
+  getMilesIncludedPerDayText,
+} from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
 import { ContractUpdateCarInfoRequest } from "@/model/blockchain/ContractUpdateCarInfoRequest";
 import { getMoneyInCentsFromString, getStringFromMoneyInCents } from "@/utils/formInput";
@@ -80,12 +85,17 @@ const useEditCarInfo = (carId: number) => {
         engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.batteryPrice_81_100)));
       }
 
+      const milesIncludedPerDay =
+        carInfoFormParams.milesIncludedPerDay === UNLIMITED_MILES_VALUE_TEXT
+          ? BigInt(UNLIMITED_MILES_VALUE)
+          : BigInt(carInfoFormParams.milesIncludedPerDay);
+
       const updateCarRequest: ContractUpdateCarInfoRequest = {
         carId: BigInt(carId),
         currentlyListed: carInfoFormParams.currentlyListed,
         engineParams: engineParams,
         pricePerDayInUsdCents: pricePerDayInUsdCents,
-        milesIncludedPerDay: BigInt(carInfoFormParams.milesIncludedPerDay),
+        milesIncludedPerDay: milesIncludedPerDay,
         timeBufferBetweenTripsInSec: carInfoFormParams.timeBufferBetweenTripsInMin * 60,
         securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
       };
@@ -155,7 +165,7 @@ const useEditCarInfo = (carId: number) => {
           bodyType: meta.attributes?.find((x: any) => x.trait_type === "Body type")?.value ?? "",
           description: meta.description ?? "",
           pricePerDay: price.toString(),
-          milesIncludedPerDay: carInfo.milesIncludedPerDay.toString(),
+          milesIncludedPerDay: getMilesIncludedPerDayText(carInfo.milesIncludedPerDay),
           securityDeposit: securityDeposit.toString(),
           country: "",
           state: "",

@@ -2,6 +2,7 @@ import { BaseCarInfo, getListingStatusTextFromStatus } from "@/model/BaseCarInfo
 import RntButton from "../common/rntButton";
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
+import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 
 export default function ListingItem({ carInfo }: { carInfo: BaseCarInfo }) {
   let statusBgColor = carInfo.currentlyListed ? "bg-lime-500" : "bg-red-500";
@@ -39,7 +40,7 @@ export default function ListingItem({ carInfo }: { carInfo: BaseCarInfo }) {
         <div className="flex flex-row justify-between items-end">
           <div className="flex flex-col">
             <strong className="text-xl">{`$${carInfo.pricePerDay}/day`}</strong>
-            <div className="text-sm">{`${carInfo.milesIncludedPerDay} miles per day`}</div>
+            <div className="text-sm">{`${getMilesIncludedPerDayText(carInfo.milesIncludedPerDay)} miles per day`}</div>
             <div className="text-sm">{`$${carInfo.securityDeposit} Security deposit`}</div>
           </div>
           <Link href={`/host/vehicles/edit/${carInfo.carId}`}>

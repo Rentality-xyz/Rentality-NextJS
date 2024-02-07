@@ -3,6 +3,7 @@ import PageTitle from "../pageTitle/pageTitle";
 import RntInput from "../common/rntInput";
 import RntButton from "../common/rntButton";
 import { useRouter } from "next/router";
+import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 
 export default function TripDetails({ tripId }: { tripId: bigint }) {
   const [isLoading, tripDetails] = useTripDetails(tripId);
@@ -42,7 +43,7 @@ export default function TripDetails({ tripId }: { tripId: bigint }) {
             <RntInput
               id="milesIncluded"
               label="Miles included:"
-              value={tripDetails.milesIncludedPerDay.toString()}
+              value={getMilesIncludedPerDayText(tripDetails.milesIncludedPerDay)}
               readOnly={true}
             />
             <RntInput

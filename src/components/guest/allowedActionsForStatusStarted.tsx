@@ -3,6 +3,7 @@ import RntInput from "../common/rntInput";
 import { SetStateAction, useState } from "react";
 import RntSelect from "../common/rntSelect";
 import { calculateDays } from "@/utils/date";
+import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 
 export default function AllowedActionsForStatusStarted({
   params,
@@ -125,7 +126,9 @@ export default function AllowedActionsForStatusStarted({
           </div>
           <div className="grid grid-cols-2 mt-2 md:mt-4 text-sm">
             <span className="col-span-1">Miles included:</span>
-            <span className="col-span-1 text-right">{tripInfo.milesIncludedPerDay} mi per trip</span>
+            <span className="col-span-1 text-right">
+              {getMilesIncludedPerDayText(tripInfo.milesIncludedPerDay)} mi per trip
+            </span>
             <span className="col-span-1">Overmiles:</span>
             <span className="col-span-1 text-right">{overmileValue} mi per trip</span>
             <span className="col-span-1">Overmile price:</span>
