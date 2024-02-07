@@ -229,20 +229,23 @@ export default function CarEditForm({
               })
             }
           />
-          <RntInput
-            className="w-[48%] lg:w-40"
-            id="tankVolumeInGal"
-            label="Tank size in gal"
-            placeholder="e.g. 16"
-            readOnly={!isNewCar}
-            value={carInfoFormParams.tankVolumeInGal}
-            onChange={(e) =>
-              setCarInfoFormParams({
-                ...carInfoFormParams,
-                tankVolumeInGal: e.target.value,
-              })
-            }
-          />
+          {!isElectricEngine ? (
+            <RntInput
+              className="w-[48%] lg:w-40"
+              id="tankVolumeInGal"
+              label="Tank size in gal"
+              placeholder="e.g. 16"
+              readOnly={!isNewCar}
+              value={carInfoFormParams.tankVolumeInGal}
+              onChange={(e) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  tankVolumeInGal: e.target.value,
+                })
+              }
+            />
+          ) : null}
+
           <RntSelect
             className="w-[48%] lg:w-40"
             id="transmission"
@@ -468,19 +471,22 @@ export default function CarEditForm({
               })
             }
           />
-          <RntInput
-            className="lg:w-60"
-            id="fuelPricePerGal"
-            label="Fuel price per gal"
-            placeholder="e.g. 5.00"
-            value={carInfoFormParams.fuelPricePerGal}
-            onChange={(e) =>
-              setCarInfoFormParams({
-                ...carInfoFormParams,
-                fuelPricePerGal: e.target.value,
-              })
-            }
-          />
+          {!isElectricEngine ? (
+            <RntInput
+              className="lg:w-60"
+              id="fuelPricePerGal"
+              label="Fuel price per gal"
+              placeholder="e.g. 5.00"
+              value={carInfoFormParams.fuelPricePerGal}
+              onChange={(e) =>
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  fuelPricePerGal: e.target.value,
+                })
+              }
+            />
+          ) : null}
+
           <div className="lg:w-60">
             <p>Overmiles price</p>
             <p className="mt-2 text-sm">
@@ -490,75 +496,77 @@ export default function CarEditForm({
         </div>
       </div>
 
-      <div className={`mt-4 ${isElectricEngine ? "" : "hidden"}`}>
-        <div className="text-lg  mb-4">
-          <strong>Battery charge price:</strong>
+      {isElectricEngine ? (
+        <div className={`mt-4 ${isElectricEngine ? "" : "hidden"}`}>
+          <div className="text-lg  mb-4">
+            <strong>Battery charge price:</strong>
+          </div>
+          <div className="flex flex-wrap gap-4 ">
+            <div>
+              <RntInput
+                className="lg:w-48"
+                labelClassName="self-center"
+                id="0_20"
+                label="0-20%"
+                placeholder="e.g. 30"
+                value={carInfoFormParams.batteryPrice_0_20}
+                onChange={(e) =>
+                  setCarInfoFormParams({
+                    ...carInfoFormParams,
+                    batteryPrice_0_20: e.target.value,
+                  })
+                }
+              />
+              <p className="w-full text-sm text-center mt-2">Recommended $30-50</p>
+            </div>
+            <div>
+              <RntInput
+                className="lg:w-48"
+                labelClassName="self-center"
+                id="21_50"
+                label="21-50%"
+                placeholder="e.g. 20"
+                value={carInfoFormParams.batteryPrice_21_50}
+                onChange={(e) =>
+                  setCarInfoFormParams({
+                    ...carInfoFormParams,
+                    batteryPrice_21_50: e.target.value,
+                  })
+                }
+              />
+              <p className="w-full text-sm text-center mt-2">Recommended $20-30</p>
+            </div>
+            <div>
+              <RntInput
+                className="lg:w-48"
+                labelClassName="self-center"
+                id="51_80"
+                label="51-80%"
+                placeholder="e.g. 5"
+                value={carInfoFormParams.batteryPrice_51_80}
+                onChange={(e) =>
+                  setCarInfoFormParams({
+                    ...carInfoFormParams,
+                    batteryPrice_51_80: e.target.value,
+                  })
+                }
+              />
+              <p className="w-full text-sm text-center mt-2">Recommended $5-20</p>
+            </div>
+            <div>
+              <RntInput
+                className="lg:w-48"
+                labelClassName="self-center"
+                id="81_100"
+                label="81-100%"
+                readOnly={true}
+                value={"Non-refundable"}
+                onChange={(e) => {}}
+              />
+            </div>
+          </div>
         </div>
-        <div className="flex flex-wrap gap-4 ">
-          <div>
-            <RntInput
-              className="lg:w-48"
-              labelClassName="self-center"
-              id="0_20"
-              label="0-20%"
-              placeholder="e.g. 30"
-              value={carInfoFormParams.batteryPrice_0_20}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  batteryPrice_0_20: e.target.value,
-                })
-              }
-            />
-            <p className="w-full text-sm text-center mt-2">Recommended $30-50</p>
-          </div>
-          <div>
-            <RntInput
-              className="lg:w-48"
-              labelClassName="self-center"
-              id="21_50"
-              label="21-50%"
-              placeholder="e.g. 20"
-              value={carInfoFormParams.batteryPrice_21_50}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  batteryPrice_21_50: e.target.value,
-                })
-              }
-            />
-            <p className="w-full text-sm text-center mt-2">Recommended $20-30</p>
-          </div>
-          <div>
-            <RntInput
-              className="lg:w-48"
-              labelClassName="self-center"
-              id="51_80"
-              label="51-80%"
-              placeholder="e.g. 5"
-              value={carInfoFormParams.batteryPrice_51_80}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  batteryPrice_51_80: e.target.value,
-                })
-              }
-            />
-            <p className="w-full text-sm text-center mt-2">Recommended $5-20</p>
-          </div>
-          <div>
-            <RntInput
-              className="lg:w-48"
-              labelClassName="self-center"
-              id="81_100"
-              label="81-100%"
-              readOnly={true}
-              value={"Non-refundable"}
-              onChange={(e) => {}}
-            />
-          </div>
-        </div>
-      </div>
+      ) : null}
 
       <div className="mt-4">
         <div className="text-lg  mb-4">

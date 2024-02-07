@@ -53,7 +53,7 @@ const emptyHostCarInfo: HostCarInfo = {
   batteryPrice_0_20: "",
   batteryPrice_21_50: "",
   batteryPrice_51_80: "",
-  batteryPrice_81_100: "",
+  batteryPrice_81_100: "0",
   timeBufferBetweenTripsInMin: 0,
 };
 

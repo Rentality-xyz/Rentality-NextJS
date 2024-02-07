@@ -1,4 +1,5 @@
 import { isEmpty } from "@/utils/string";
+import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PATROL_STRING } from "./blockchain/ContractCarInfo";
 
 export const UNLIMITED_MILES_VALUE_TEXT = "Unlimited";
 export const UNLIMITED_MILES_VALUE = 999_999_999;
@@ -21,30 +22,35 @@ export type HostCarInfo = {
   licenseState: string;
   seatsNumber: string;
   doorsNumber: string;
-  tankVolumeInGal: string;
-  wheelDrive: string;
   transmission: string;
-  trunkSize: string;
   color: string;
-  bodyType: string;
   description: string;
   pricePerDay: string;
   milesIncludedPerDay: string;
   securityDeposit: string;
+  locationAddress: string;
+  timeBufferBetweenTripsInMin: number;
+  currentlyListed: boolean;
+
+  engineTypeString: string;
+
   fuelPricePerGal: string;
+  tankVolumeInGal: string;
+
+  batteryPrice_0_20: string;
+  batteryPrice_21_50: string;
+  batteryPrice_51_80: string;
+  batteryPrice_81_100: string;
+
   country: string;
   state: string;
   city: string;
   locationLatitude: string;
   locationLongitude: string;
-  locationAddress: string;
-  currentlyListed: boolean;
-  engineTypeString: string;
-  batteryPrice_0_20: string;
-  batteryPrice_21_50: string;
-  batteryPrice_51_80: string;
-  batteryPrice_81_100: string;
-  timeBufferBetweenTripsInMin: number;
+
+  wheelDrive: string;
+  bodyType: string;
+  trunkSize: string;
 };
 
 export const verifyCar = (carInfoFormParams: HostCarInfo) => {
@@ -58,18 +64,23 @@ export const verifyCar = (carInfoFormParams: HostCarInfo) => {
     !isEmpty(carInfoFormParams.licenseState) &&
     !isEmpty(carInfoFormParams.seatsNumber) &&
     !isEmpty(carInfoFormParams.doorsNumber) &&
-    !isEmpty(carInfoFormParams.engineTypeString) &&
-    !isEmpty(carInfoFormParams.tankVolumeInGal) &&
-    //!carInfoFormParams.wheelDrive &&
     !isEmpty(carInfoFormParams.transmission) &&
-    //!carInfoFormParams.trunkSize &&
     !isEmpty(carInfoFormParams.color) &&
-    //!isEmpty(carInfoFormParams.bodyType) &&
     !isEmpty(carInfoFormParams.description) &&
     !isEmpty(carInfoFormParams.pricePerDay) &&
     !isEmpty(carInfoFormParams.milesIncludedPerDay) &&
     !isEmpty(carInfoFormParams.securityDeposit) &&
-    !isEmpty(carInfoFormParams.fuelPricePerGal) &&
-    !isEmpty(carInfoFormParams.locationAddress)
+    !isEmpty(carInfoFormParams.locationAddress) &&
+    !isEmpty(carInfoFormParams.engineTypeString) &&
+    (carInfoFormParams.engineTypeString !== ENGINE_TYPE_PATROL_STRING || !isEmpty(carInfoFormParams.fuelPricePerGal)) &&
+    (carInfoFormParams.engineTypeString !== ENGINE_TYPE_PATROL_STRING || !isEmpty(carInfoFormParams.tankVolumeInGal)) &&
+    (carInfoFormParams.engineTypeString !== ENGINE_TYPE_ELECTRIC_STRING ||
+      !isEmpty(carInfoFormParams.batteryPrice_0_20)) &&
+    (carInfoFormParams.engineTypeString !== ENGINE_TYPE_ELECTRIC_STRING ||
+      !isEmpty(carInfoFormParams.batteryPrice_21_50)) &&
+    (carInfoFormParams.engineTypeString !== ENGINE_TYPE_ELECTRIC_STRING ||
+      !isEmpty(carInfoFormParams.batteryPrice_51_80))
+    //&&  (carInfoFormParams.engineTypeString !== ENGINE_TYPE_ELECTRIC_STRING ||
+    //   !isEmpty(carInfoFormParams.batteryPrice_81_100))
   );
 };
