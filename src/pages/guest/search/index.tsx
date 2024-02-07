@@ -100,7 +100,7 @@ export default function Search() {
         totalPriceInUsdCents,
         0,
         depositInUsdCents,
-        carInfo.fuelPrices
+        carInfo.fuelPricesInUsdCents
       );
 
       setRequestSending(false);

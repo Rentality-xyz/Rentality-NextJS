@@ -75,7 +75,7 @@ const useSearchCars = () => {
         const totalPrice = pricePerDay * tripDays;
         const securityDeposit = Number(i.car.securityDepositPerTripInUsdCents) / 100;
         const engineTypeString = getEngineTypeString(i.car.engineType);
-        const fuelPrices =
+        const fuelPricesInUsdCents =
           engineTypeString === ENGINE_TYPE_PATROL_STRING
             ? [Number(i.car.engineParams[1])]
             : engineTypeString === ENGINE_TYPE_ELECTRIC_STRING
@@ -105,7 +105,7 @@ const useSearchCars = () => {
           securityDeposit: securityDeposit,
           hostPhotoUrl: i.hostPhotoUrl,
           hostName: i.hostName,
-          fuelPrices: fuelPrices,
+          fuelPricesInUsdCents: fuelPricesInUsdCents,
         };
         return item;
       })

@@ -11,7 +11,7 @@ import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { HostCarInfo } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
 import { ContractUpdateCarInfoRequest } from "@/model/blockchain/ContractUpdateCarInfoRequest";
-import { getMoneyInCentsFromString } from "@/utils/formInput";
+import { getMoneyInCentsFromString, getStringFromMoneyInCents } from "@/utils/formInput";
 
 const emptyHostCarInfo: HostCarInfo = {
   carId: -1,
@@ -124,15 +124,15 @@ const useEditCarInfo = (carId: number) => {
         const engineTypeString = getEngineTypeString(carInfo.engineType);
 
         const fuelPricePerGal =
-          engineTypeString === ENGINE_TYPE_PATROL_STRING ? (Number(carInfo.engineParams[1]) / 100).toString() : "";
+          engineTypeString === ENGINE_TYPE_PATROL_STRING ? getStringFromMoneyInCents(carInfo.engineParams[1]) : "";
         const batteryPrice_0_20 =
-          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? Number(carInfo.engineParams[0]).toString() : "";
+          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? getStringFromMoneyInCents(carInfo.engineParams[0]) : "";
         const batteryPrice_21_50 =
-          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? Number(carInfo.engineParams[1]).toString() : "";
+          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? getStringFromMoneyInCents(carInfo.engineParams[1]) : "";
         const batteryPrice_51_80 =
-          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? Number(carInfo.engineParams[2]).toString() : "";
+          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? getStringFromMoneyInCents(carInfo.engineParams[2]) : "";
         const batteryPrice_81_100 =
-          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? Number(carInfo.engineParams[3]).toString() : "";
+          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? getStringFromMoneyInCents(carInfo.engineParams[3]) : "";
 
         let item: HostCarInfo = {
           carId: Number(carInfo.carId),
