@@ -16,6 +16,7 @@ import { ContractSearchCarParams } from "@/model/blockchain/ContractSearchCarPar
 import { useRentality } from "@/contexts/rentalityContext";
 import { getBlockchainTimeFromDate, getMoneyInCentsFromString } from "@/utils/formInput";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
+import { IRentalityCurrencyConverterContract } from "@/model/blockchain/IRentalityContract";
 
 export const sortOptions = {
   priceAsc: "Price: low to high",
@@ -166,7 +167,9 @@ const useSearchCars = () => {
 
     try {
       const rentalityContract = rentalityInfo.rentalityContract;
-      const rentalityCurrencyConverterContract = await getEtherContract("currencyConverter");
+      const rentalityCurrencyConverterContract = (await getEtherContract(
+        "currencyConverter"
+      )) as unknown as IRentalityCurrencyConverterContract;
       if (rentalityContract == null) {
         console.error("createTripRequest error: rentalityContract is null");
         return false;
@@ -179,8 +182,9 @@ const useSearchCars = () => {
       const endTime = getBlockchainTimeFromDate(endDateTime);
 
       const rentPriceInUsdCents = (totalDayPriceInUsdCents + taxPriceInUsdCents + depositInUsdCents) | 0;
-      const [rentPriceInEth, ethToCurrencyRate, ethToCurrencyDecimals] =
-        await rentalityCurrencyConverterContract.getEthFromUsdLatest(rentPriceInUsdCents);
+
+      const { valueInEth, ethToUsdRate, ethToUsdDecimals } =
+        await rentalityCurrencyConverterContract.getEthFromUsdLatest(BigInt(rentPriceInUsdCents));
 
       const tripRequest: ContractCreateTripRequest = {
         carId: BigInt(carId),
@@ -193,12 +197,12 @@ const useSearchCars = () => {
         taxPriceInUsdCents: taxPriceInUsdCents,
         depositInUsdCents: depositInUsdCents,
         fuelPrices: fuelPrices.map((i) => BigInt(i)),
-        ethToCurrencyRate: BigInt(ethToCurrencyRate),
-        ethToCurrencyDecimals: Number(ethToCurrencyDecimals),
+        ethToCurrencyRate: BigInt(ethToUsdRate),
+        ethToCurrencyDecimals: Number(ethToUsdDecimals),
       };
 
       let transaction = await rentalityContract.createTripRequest(tripRequest, {
-        value: rentPriceInEth,
+        value: valueInEth,
       });
       await transaction.wait();
       return true;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
-import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
+import { IRentalityContract, IRentalityCurrencyConverterContract } from "@/model/blockchain/IRentalityContract";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
 import { getEtherContract } from "@/abis";
 import { Claim, getClaimStatusTextFromStatus, getClaimTypeTextFromClaimType } from "@/model/Claim";
@@ -18,7 +18,9 @@ const useGuestClaims = () => {
     }
 
     try {
-      const rentalityCurrencyConverterContract = await getEtherContract("currencyConverter");
+      const rentalityCurrencyConverterContract = (await getEtherContract(
+        "currencyConverter"
+      )) as unknown as IRentalityCurrencyConverterContract;
 
       if (rentalityCurrencyConverterContract == null) {
         console.error("payClaim error: rentalityCurrencyConverterContract is null");
@@ -26,11 +28,12 @@ const useGuestClaims = () => {
       }
 
       const claimAmountInUsdCents = claims.find((i) => i.claimId === claimId)?.amountInUsdCents ?? 0;
-      const [claimAmountInEth, ethToCurrencyRate, ethToCurrencyDecimals] =
-        await rentalityCurrencyConverterContract.getEthFromUsdLatest(claimAmountInUsdCents);
+      const { valueInEth } = await rentalityCurrencyConverterContract.getEthFromUsdLatest(
+        BigInt(claimAmountInUsdCents)
+      );
 
       let transaction = await rentalityInfo.rentalityContract.payClaim(BigInt(claimId), {
-        value: claimAmountInEth,
+        value: valueInEth,
       });
 
       await transaction.wait();

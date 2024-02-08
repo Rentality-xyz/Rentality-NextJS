@@ -108,8 +108,26 @@ export interface IRentalityAdminGateway {
 
 export interface IRentalityChatHelperContract {
   setMyChatPublicKey(chatPrivateKey: string, chatPublicKey: string): Promise<ContractTransaction>;
-  getMyChatKeys(): Promise<string[]>;
+  getMyChatKeys(): Promise<[string, string]>;
   getChatPublicKeys(addresses: string[]): Promise<ContractAddressPublicKey[]>;
+}
+
+export interface IRentalityCurrencyConverterContract {
+  getLatestEthToUsdRate(): Promise<bigint>;
+  getEthToUsdRate(): Promise<{ ethToUsdRate: bigint; ethToUsdDecimals: number }>;
+
+  getEthFromUsdLatest(
+    valueInUsdCents: bigint
+  ): Promise<{ valueInEth: bigint; ethToUsdRate: bigint; ethToUsdDecimals: number }>;
+  getUsdFromEthLatest(
+    valueInEth: bigint
+  ): Promise<{ valueInUsdCents: bigint; ethToUsdRate: bigint; ethToUsdDecimals: number }>;
+  getEthFromUsd(valueInUsdCents: bigint, ethToUsdRate: bigint, ethToUsdDecimals: number): Promise<bigint>;
+  getUsdFromEth(valueInEth: bigint, ethToUsdRate: bigint, ethToUsdDecimals: number): Promise<bigint>;
+
+  getEthToUsdRateWithCache(): Promise<{ ethToUsdRate: bigint; ethToUsdDecimals: number }>;
+  getEthFromUsdWithCache(valueInUsdCents: bigint): Promise<bigint>;
+  getUsdFromEthWithCache(valueInEth: bigint): Promise<bigint>;
 }
 
 export type ContractKYCInfo = {
