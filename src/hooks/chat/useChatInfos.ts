@@ -10,6 +10,7 @@ import { isEmpty } from "@/utils/string";
 import { bytesToHex } from "@waku/utils/bytes";
 import { ChatInfo } from "@/model/ChatInfo";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
+import moment from "moment";
 
 const useChatInfos = (isHost: boolean) => {
   const rentalityInfo = useRentality();
@@ -137,7 +138,10 @@ const useChatInfos = (isHost: boolean) => {
                 return {
                   fromAddress: msgInfo?.from ?? "",
                   toAddress: msgInfo?.to ?? "",
-                  datestamp: new Date(msgInfo?.datetime ?? 0),
+                  datestamp: moment
+                    .unix(msgInfo?.datetime ?? 0)
+                    .local()
+                    .toDate(),
                   message: msgInfo?.message ?? "",
                 };
               });
@@ -165,7 +169,7 @@ const useChatInfos = (isHost: boolean) => {
       const selectedChat = result.find((i) => i.tripId === tripId);
       if (selectedChat !== undefined) {
         selectedChat.messages.push({
-          datestamp: new Date(datetime),
+          datestamp: moment.unix(datetime).local().toDate(),
           fromAddress: from,
           toAddress: to,
           message: message,
@@ -183,7 +187,7 @@ const useChatInfos = (isHost: boolean) => {
       return;
     }
 
-    const datetime = new Date().getTime();
+    const datetime = moment().unix();
 
     await chatClient.sendUserMessage(toAddress, tripId, datetime, message, chatPublicKey);
   };

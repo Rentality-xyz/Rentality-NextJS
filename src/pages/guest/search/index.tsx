@@ -18,6 +18,7 @@ import { isEmpty } from "@/utils/string";
 import { Button } from "@mui/material";
 import RntSelect from "@/components/common/rntSelect";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
+import moment from "moment";
 
 export default function Search() {
   const dateNow = new Date();
@@ -75,8 +76,8 @@ export default function Search() {
         showError("Please enter 'Date to'");
         return;
       }
-      const startDateTime = new Date(searchResult.searchCarRequest.dateFrom);
-      const endDateTime = new Date(searchResult.searchCarRequest.dateTo);
+      const startDateTime = moment.utc(searchResult.searchCarRequest.dateFrom).toDate();
+      const endDateTime = moment.utc(searchResult.searchCarRequest.dateTo).toDate();
 
       const days = calculateDays(startDateTime, endDateTime);
       if (days < 0) {
@@ -95,6 +96,7 @@ export default function Search() {
         carInfo.ownerAddress,
         startDateTime,
         endDateTime,
+        searchResult.searchCarRequest.utcOffsetMinutes,
         location,
         location,
         totalPriceInUsdCents,
@@ -189,6 +191,7 @@ export default function Search() {
                 country: country,
                 state: state,
                 city: city,
+                utcOffsetMinutes: placeDetails.utcOffsetMinutes,
               });
             }}
           />

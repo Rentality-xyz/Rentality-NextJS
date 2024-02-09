@@ -11,6 +11,7 @@ import { useRentality } from "./rentalityContext";
 import { isEmpty } from "@/utils/string";
 import { bytesToHex } from "viem";
 import { useRouter } from "next/router";
+import moment from "moment";
 
 export type ChatContextInfo = {
   isLoading: boolean;
@@ -48,7 +49,7 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
       const selectedChat = result.chatInfos.find((i) => i.tripId === tripId);
       if (selectedChat !== undefined) {
         selectedChat.messages.push({
-          datestamp: new Date(datetime),
+          datestamp: moment.unix(datetime).local().toDate(),
           fromAddress: from,
           toAddress: to,
           message: message,
@@ -66,7 +67,7 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
       return;
     }
 
-    const datetime = new Date().getTime();
+    const datetime = moment().unix();
 
     await chatContextInfo.chatClient.sendUserMessage(toAddress, tripId, datetime, message, chatPublicKey);
   };
@@ -192,7 +193,10 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
                 return {
                   fromAddress: msgInfo?.from ?? "",
                   toAddress: msgInfo?.to ?? "",
-                  datestamp: new Date(msgInfo?.datetime ?? 0),
+                  datestamp: moment
+                    .unix(msgInfo?.datetime ?? 0)
+                    .local()
+                    .toDate(),
                   message: msgInfo?.message ?? "",
                 };
               });

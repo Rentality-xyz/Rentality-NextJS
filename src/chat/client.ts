@@ -6,6 +6,7 @@ import { hexToBytes } from "@waku/utils/bytes";
 import { DecodedMessage, LightNode, PageDirection } from "@waku/sdk";
 import { ChatMessage } from "./model/chatMessage";
 import { Signer } from "ethers";
+import moment from "moment";
 
 export class Client {
   node: LightNode | undefined;
@@ -89,9 +90,9 @@ export class Client {
     const walletAddress = (await this.signer.getAddress()).toLowerCase();
     const contentTopic = getUserChatContentTopic(walletAddress);
 
-    const startTime = new Date();
-    // 30 days, 24 hours/day, 60min/hour, 60secs/min, 100ms/sec
-    startTime.setTime(startTime.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const startTime = moment().subtract(30, "days").toDate();
+    // // 30 days, 24 hours/day, 60min/hour, 60secs/min, 100ms/sec
+    // startTime.setTime(startTime.getTime() - 30 * 24 * 60 * 60 * 1000);
 
     // TODO: Remove this timeout once https://github.com/status-im/js-waku/issues/913 is done
     await new Promise((resolve) => setTimeout(resolve, 200));

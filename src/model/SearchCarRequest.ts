@@ -4,6 +4,7 @@ export type SearchCarRequest = {
   country: string;
   state: string;
   city: string;
+  utcOffsetMinutes: number;
   brand: string;
   model: string;
   yearOfProductionFrom: string;
@@ -18,6 +19,7 @@ export const emptySearchCarRequest: SearchCarRequest = {
   country: "",
   state: "",
   city: "",
+  utcOffsetMinutes: 0,
   brand: "",
   model: "",
   yearOfProductionFrom: "",

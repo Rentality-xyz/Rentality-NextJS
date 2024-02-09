@@ -28,6 +28,7 @@ type PlaceDetails = {
     latitude: number;
     longitude: number;
   };
+  utcOffsetMinutes: number;
 };
 
 interface RntPlaceAutocompleteProps extends React.ComponentPropsWithoutRef<"input"> {
@@ -77,6 +78,7 @@ export default function RntPlaceAutocomplete({
       onAddressChangeHandler({
         addressString: "",
         location: { latitude: 0, longitude: 0 },
+        utcOffsetMinutes: 0,
       });
       return;
     }
@@ -111,6 +113,7 @@ export default function RntPlaceAutocomplete({
 
           const latitude = placeDetails.geometry?.viewport?.getCenter().lat() ?? 0;
           const longitude = placeDetails.geometry?.viewport?.getCenter().lng() ?? 0;
+          const utcOffsetMinutes = placeDetails.utc_offset_minutes ?? 0;
 
           onAddressChangeHandler({
             addressString: addressString,
@@ -120,6 +123,7 @@ export default function RntPlaceAutocomplete({
             street: street,
             street_number: street_number,
             location: { latitude: latitude, longitude: longitude },
+            utcOffsetMinutes: utcOffsetMinutes,
           });
         }
       }

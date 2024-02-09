@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { IRentalityContract, ContractKYCInfo } from "@/model/blockchain/IRentalityContract";
 import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
 import { useRentality } from "@/contexts/rentalityContext";
-import { getBlockchainTimeFromDate, getDateFromBlockchainTime } from "@/utils/formInput";
+import { getBlockchainTimeFromDate, getBlockchainTimeFromUnix, getDateFromBlockchainTime } from "@/utils/formInput";
+import moment from "moment";
 
 export type ProfileSettings = {
   profilePhotoUrl: string;
@@ -61,7 +62,7 @@ const useProfileSettings = () => {
     try {
       const expirationDate =
         newProfileSettings.drivingLicenseExpire !== undefined
-          ? getBlockchainTimeFromDate(newProfileSettings.drivingLicenseExpire)
+          ? getBlockchainTimeFromDate(moment.utc(newProfileSettings.drivingLicenseExpire).toDate())
           : BigInt(0);
 
       let transaction = await rentalityInfo.rentalityContract.setKYCInfo(

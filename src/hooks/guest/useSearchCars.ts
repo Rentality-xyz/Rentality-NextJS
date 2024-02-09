@@ -12,6 +12,7 @@ import { getBlockchainTimeFromDate, getMoneyInCentsFromString } from "@/utils/fo
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { IRentalityCurrencyConverterContract } from "@/model/blockchain/IRentalityContract";
 import { ContractSearchCar, validateContractSearchCar } from "@/model/blockchain/ContractSearchCar";
+import moment from "moment";
 
 export const sortOptions = {
   priceAsc: "Price: low to high",
@@ -29,12 +30,18 @@ const useSearchCars = () => {
   const [searchResult, setSearchResult] = useState<SearchCarsResult>(emptySearchCarsResult);
 
   const formatSearchAvailableCarsContractRequest = (searchCarRequest: SearchCarRequest) => {
-    const startDateTime = new Date(searchCarRequest.dateFrom);
-    const endDateTime = new Date(searchCarRequest.dateTo);
-    const tripDays = calculateDays(startDateTime, endDateTime);
+    const startDateTimeUTC = moment
+      .utc(searchCarRequest.dateFrom)
+      .add(searchCarRequest.utcOffsetMinutes, "minutes")
+      .toDate();
+    const endDateTimeUTC = moment
+      .utc(searchCarRequest.dateTo)
+      .add(searchCarRequest.utcOffsetMinutes, "minutes")
+      .toDate();
+    const tripDays = calculateDays(startDateTimeUTC, endDateTimeUTC);
 
-    const contractDateFrom = getBlockchainTimeFromDate(startDateTime);
-    const contractDateTo = getBlockchainTimeFromDate(endDateTime);
+    const contractDateFromUTC = getBlockchainTimeFromDate(startDateTimeUTC);
+    const contractDateToUTC = getBlockchainTimeFromDate(endDateTimeUTC);
     const contractSearchCarParams: ContractSearchCarParams = {
       country: searchCarRequest.country ?? "",
       state: searchCarRequest.state ?? "",
@@ -46,7 +53,7 @@ const useSearchCars = () => {
       pricePerDayInUsdCentsFrom: BigInt(getMoneyInCentsFromString(searchCarRequest.pricePerDayInUsdFrom)),
       pricePerDayInUsdCentsTo: BigInt(getMoneyInCentsFromString(searchCarRequest.pricePerDayInUsdTo)),
     };
-    return [contractDateFrom, contractDateTo, contractSearchCarParams, tripDays] as const;
+    return [contractDateFromUTC, contractDateToUTC, contractSearchCarParams, tripDays] as const;
   };
 
   const formatSearchAvailableCarsContractResponse = async (
@@ -135,6 +142,7 @@ const useSearchCars = () => {
     host: string,
     startDateTime: Date,
     endDateTime: Date,
+    utcOffsetMinutes: number,
     startLocation: string,
     endLocation: string,
     totalDayPriceInUsdCents: number,
@@ -159,8 +167,11 @@ const useSearchCars = () => {
         console.error("createTripRequest error: rentalityCurrencyConverterContract is null");
         return false;
       }
-      const startTime = getBlockchainTimeFromDate(startDateTime);
-      const endTime = getBlockchainTimeFromDate(endDateTime);
+      const startDateTimeUTC = moment.utc(startDateTime).add(utcOffsetMinutes, "minutes").toDate();
+      const endDateTimeUTC = moment.utc(endDateTime).add(utcOffsetMinutes, "minutes").toDate();
+
+      const startTimeUTC = getBlockchainTimeFromDate(startDateTimeUTC);
+      const endTimeUTC = getBlockchainTimeFromDate(endDateTimeUTC);
 
       const rentPriceInUsdCents = (totalDayPriceInUsdCents + taxPriceInUsdCents + depositInUsdCents) | 0;
 
@@ -170,8 +181,8 @@ const useSearchCars = () => {
       const tripRequest: ContractCreateTripRequest = {
         carId: BigInt(carId),
         host: host,
-        startDateTime: startTime,
-        endDateTime: endTime,
+        startDateTime: startTimeUTC,
+        endDateTime: endTimeUTC,
         startLocation: startLocation,
         endLocation: endLocation,
         totalDayPriceInUsdCents: totalDayPriceInUsdCents,
