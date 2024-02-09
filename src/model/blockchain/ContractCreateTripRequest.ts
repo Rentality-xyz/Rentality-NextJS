@@ -8,7 +8,6 @@ export type ContractCreateTripRequest = {
   totalDayPriceInUsdCents: number;
   taxPriceInUsdCents: number;
   depositInUsdCents: number;
-  fuelPrices: BigInt[];
   ethToCurrencyRate: bigint;
   ethToCurrencyDecimals: number;
 };

@@ -99,8 +99,7 @@ export default function Search() {
         location,
         totalPriceInUsdCents,
         0,
-        depositInUsdCents,
-        carInfo.fuelPricesInUsdCents
+        depositInUsdCents
       );
 
       setRequestSending(false);

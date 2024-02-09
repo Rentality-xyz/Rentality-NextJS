@@ -223,8 +223,10 @@ const useAddCar = () => {
         geoApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
         engineType: Number(engineType),
         engineParams: engineParams,
-        location: dataToSave.locationAddress,
+        locationAddress: dataToSave.locationAddress,
         timeBufferBetweenTripsInSec: carInfoFormParams.timeBufferBetweenTripsInMin * 60,
+        locationLatitude: dataToSave.locationLatitude,
+        locationLongitude: dataToSave.locationLongitude,
       };
 
       let transaction = await rentalityInfo.rentalityContract.addCar(request);

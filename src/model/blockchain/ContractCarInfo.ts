@@ -3,7 +3,7 @@ import { validateType } from "@/utils/typeValidator";
 export const ENGINE_TYPE_PATROL_STRING = "Gasoline";
 export const ENGINE_TYPE_ELECTRIC_STRING = "Electro";
 
-enum EngineType {
+export enum EngineType {
   PATROL = 1,
   ELECTRIC = 2,
 }

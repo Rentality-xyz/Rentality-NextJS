@@ -1,12 +1,6 @@
 import { useCallback, useState } from "react";
 import { getEtherContract } from "../../abis";
-import {
-  ContractAvailableCarInfo,
-  ENGINE_TYPE_ELECTRIC_STRING,
-  ENGINE_TYPE_PATROL_STRING,
-  getEngineTypeString,
-  validateContractAvailableCarInfo,
-} from "@/model/blockchain/ContractCarInfo";
+import { EngineType, getEngineTypeString } from "@/model/blockchain/ContractCarInfo";
 import { calculateDays } from "@/utils/date";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { ContractCreateTripRequest } from "@/model/blockchain/ContractCreateTripRequest";
@@ -17,6 +11,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { getBlockchainTimeFromDate, getMoneyInCentsFromString } from "@/utils/formInput";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { IRentalityCurrencyConverterContract } from "@/model/blockchain/IRentalityContract";
+import { ContractSearchCar, validateContractSearchCar } from "@/model/blockchain/ContractSearchCar";
 
 export const sortOptions = {
   priceAsc: "Price: low to high",
@@ -55,10 +50,10 @@ const useSearchCars = () => {
   };
 
   const formatSearchAvailableCarsContractResponse = async (
-    availableCarsView: ContractAvailableCarInfo[],
+    searchCarsViewsView: ContractSearchCar[],
     tripDays: number
   ) => {
-    if (availableCarsView.length === 0) return [];
+    if (searchCarsViewsView.length === 0) return [];
 
     if (rentalityInfo == null) {
       console.error("formatSearchAvailableCarsContractResponse error: rentalityInfo is null");
@@ -66,32 +61,20 @@ const useSearchCars = () => {
     }
 
     return await Promise.all(
-      availableCarsView.map(async (i: ContractAvailableCarInfo, index) => {
+      searchCarsViewsView.map(async (i: ContractSearchCar, index) => {
         if (index === 0) {
-          validateContractAvailableCarInfo(i);
+          validateContractSearchCar(i);
         }
-        const tokenURI = await rentalityInfo.rentalityContract.getCarMetadataURI(i.car.carId);
+        const tokenURI = await rentalityInfo.rentalityContract.getCarMetadataURI(i.carId);
         const meta = await getMetaDataFromIpfs(tokenURI);
 
-        const pricePerDay = Number(i.car.pricePerDayInUsdCents) / 100;
+        const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
         const totalPrice = pricePerDay * tripDays;
-        const securityDeposit = Number(i.car.securityDepositPerTripInUsdCents) / 100;
-        const engineTypeString = getEngineTypeString(i.car.engineType);
-        const fuelPricesInUsdCents =
-          engineTypeString === ENGINE_TYPE_PATROL_STRING
-            ? [Number(i.car.engineParams[1])]
-            : engineTypeString === ENGINE_TYPE_ELECTRIC_STRING
-            ? [
-                Number(i.car.engineParams[0]),
-                Number(i.car.engineParams[1]),
-                Number(i.car.engineParams[2]),
-                Number(i.car.engineParams[3]),
-              ]
-            : [];
+        const securityDeposit = Number(i.securityDepositPerTripInUsdCents) / 100;
 
         let item: SearchCarInfo = {
-          carId: Number(i.car.carId),
-          ownerAddress: i.car.createdBy.toString(),
+          carId: Number(i.carId),
+          ownerAddress: i.host.toString(),
           image: getIpfsURIfromPinata(meta.image),
           brand: meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "",
           model: meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
@@ -99,15 +82,14 @@ const useSearchCars = () => {
           licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
           seatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats number")?.value ?? "",
           transmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
-          engineType: getEngineTypeString(i.car.engineType),
-          milesIncludedPerDay: getMilesIncludedPerDayText(i.car.milesIncludedPerDay),
+          engineType: getEngineTypeString(i.engineType ?? EngineType.PATROL),
+          milesIncludedPerDay: getMilesIncludedPerDayText(i.milesIncludedPerDay ?? 0),
           pricePerDay: pricePerDay,
           days: tripDays,
           totalPrice: totalPrice,
           securityDeposit: securityDeposit,
           hostPhotoUrl: i.hostPhotoUrl,
           hostName: i.hostName,
-          fuelPricesInUsdCents: fuelPricesInUsdCents,
         };
         return item;
       })
@@ -127,13 +109,13 @@ const useSearchCars = () => {
       const [contractDateFrom, contractDateTo, contractSearchCarParams, tripDays] =
         formatSearchAvailableCarsContractRequest(searchCarRequest);
 
-      const availableCarsView: ContractAvailableCarInfo[] = await rentalityContract.searchAvailableCars(
+      const searchCarsView: ContractSearchCar[] = await rentalityContract.searchAvailableCars(
         contractDateFrom,
         contractDateTo,
         contractSearchCarParams
       );
 
-      const availableCarsData = await formatSearchAvailableCarsContractResponse(availableCarsView, tripDays);
+      const availableCarsData = await formatSearchAvailableCarsContractResponse(searchCarsView, tripDays);
 
       setSearchResult({
         searchCarRequest: searchCarRequest,
@@ -157,8 +139,7 @@ const useSearchCars = () => {
     endLocation: string,
     totalDayPriceInUsdCents: number,
     taxPriceInUsdCents: number,
-    depositInUsdCents: number,
-    fuelPrices: number[]
+    depositInUsdCents: number
   ) => {
     if (rentalityInfo === null) {
       console.error("createTripRequest: rentalityInfo is null");
@@ -196,7 +177,6 @@ const useSearchCars = () => {
         totalDayPriceInUsdCents: totalDayPriceInUsdCents,
         taxPriceInUsdCents: taxPriceInUsdCents,
         depositInUsdCents: depositInUsdCents,
-        fuelPrices: fuelPrices.map((i) => BigInt(i)),
         ethToCurrencyRate: BigInt(ethToUsdRate),
         ethToCurrencyDecimals: Number(ethToUsdDecimals),
       };
