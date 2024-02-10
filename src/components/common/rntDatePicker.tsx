@@ -119,7 +119,7 @@ export default function RntDatePicker({
                 }}
               />
             )}
-            value={value}
+            value={value ?? null}
           />
         </ThemeProvider>
       </LocalizationProvider>
