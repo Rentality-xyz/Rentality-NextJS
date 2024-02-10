@@ -50,7 +50,7 @@ export default function CreateClaim({
 
   return (
     <div className="w-full p-4  mt-5 flex flex-col gap-4">
-      <div className="flex flex-row gap-10 items-center">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center">
         <RntSelect
           className="lg:w-1/2"
           id="trip"
@@ -111,7 +111,6 @@ export default function CreateClaim({
       />
 
       <RntInput
-        className="lg:w-60"
         id="amount"
         label="How much you estimate the incident must be compensated by Guest in USD"
         value={createClaimParams.amountInUsd}
