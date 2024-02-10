@@ -30,28 +30,34 @@ export default function ChatInfoCard({
   const statusClassName = twMerge("px-2 text-rnt-temp-status-text", statusBgColor);
 
   return (
-    <div key={chatInfo.tripId} className={className} onClick={onClickCallback}>
-      <div className="w-24 h-24 row-span-3 self-center mx-2">
+    <div key={chatInfo.tripId} className={className}>
+      <div className="w-24 h-24 row-span-3 self-center mx-2 cursor-pointer" onClick={onClickCallback}>
         <Avatar src={otherPhotoUrl} sx={{ width: "6rem", height: "6rem" }}></Avatar>
       </div>
-      <div className="col-span-2 flex flex-row items-center max-sm:justify-between">
+      <div
+        className="col-span-2 flex flex-row items-center max-sm:justify-between cursor-pointer"
+        onClick={onClickCallback}
+      >
         <div className={statusClassName}>{getTripStatusTextFromStatus(chatInfo.tripStatus)}</div>
         <div className="ml-2 text-xs"> Reservation #{chatInfo.tripId}</div>
       </div>
-      <div className="flex flex-col text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
+      <div
+        className="flex flex-col text-sm whitespace-nowrap overflow-hidden overflow-ellipsis cursor-pointer"
+        onClick={onClickCallback}
+      >
         <strong>{otherName}</strong>
         <div>{chatInfo.carTitle}</div>
       </div>
-      <Link className="sm:hidden" href={`/guest/trips/tripInfo/${chatInfo.tripId}`}>
-        <Image src={icInfo} width={25} alt="" />
+      <Link href={`/${isHost ? "host" : "guest"}/trips/tripInfo/${chatInfo.tripId}`}>
+        <Image className="sm:hidden" src={icInfo} width={25} alt="" />
+        <span className="max-sm:hidden text-sm text-rentality-secondary">Trip information</span>
       </Link>
-      <Link
-        className="max-sm:hidden text-sm text-rentality-secondary"
-        href={`/guest/trips/tripInfo/${chatInfo.tripId}`}
+      <div
+        className="col-span-2 whitespace-nowrap overflow-hidden overflow-ellipsis cursor-pointer"
+        onClick={onClickCallback}
       >
-        Trip information
-      </Link>
-      <div className="col-span-2 whitespace-nowrap overflow-hidden overflow-ellipsis ">{chatInfo.lastMessage}</div>
+        {chatInfo.lastMessage}
+      </div>
     </div>
   );
 }
