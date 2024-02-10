@@ -1,4 +1,4 @@
-import { ChangeTripParams, TripInfo, TripStatus } from "@/model/TripInfo";
+import { ChangeTripParams, TripInfo, TripStatus, getRefuelValueAndCharge } from "@/model/TripInfo";
 import RntInput from "../common/rntInput";
 import { SetStateAction, useState } from "react";
 import RntSelect from "../common/rntSelect";
@@ -16,13 +16,13 @@ export default function AllowedActionsForStatusStarted({
   inputParams: string[];
   setInputParams: (value: SetStateAction<string[]>) => void;
 }) {
-  const [refuelValue, setRefuelValue] = useState<number>(0);
+  const [endLevelInPercents, setEndLevelInPercents] = useState<number>(0);
   const [overmileValue, setOvermileValue] = useState<number>(0);
 
   const depositPaid = tripInfo.depositPaid;
-  const reFuelCharge = refuelValue * tripInfo.fuelPricePerGal;
+  const { refuelValue, refuelCharge } = getRefuelValueAndCharge(tripInfo, endLevelInPercents);
   const overmilesCharge = overmileValue * tripInfo.overmilePrice;
-  let depositToBeReturned = depositPaid - reFuelCharge - overmilesCharge;
+  let depositToBeReturned = depositPaid - refuelCharge - overmilesCharge;
   depositToBeReturned = depositToBeReturned > 0 ? depositToBeReturned : 0;
 
   return (
@@ -30,7 +30,7 @@ export default function AllowedActionsForStatusStarted({
       <div className="flex flex-col md:flex-row md:gap-8 mb-4">
         <div className="flex flex-col flex-1">
           <div className="flex flex-col">
-            <div className="font-bold mt-2">Fuel or battery level, %</div>
+            <div className="font-bold mt-2">Fuel or Battery level, %</div>
             <div className="flex flex-row gap-8">
               <RntInput
                 className="w-1/2 py-2"
@@ -53,12 +53,7 @@ export default function AllowedActionsForStatusStarted({
                     copy[0] = newValue;
                     return copy;
                   });
-
-                  const endLevelInPercents = Number(newValue) * 100 ?? 0;
-                  let fuelDiffs =
-                    ((tripInfo.startFuelLevelInPercents - endLevelInPercents) * tripInfo.tankVolumeInGal) / 100;
-                  fuelDiffs = fuelDiffs > 0 ? fuelDiffs : 0;
-                  setRefuelValue(fuelDiffs);
+                  setEndLevelInPercents(Number(newValue) * 100 ?? 0);
                 }}
               >
                 <option className="hidden" disabled></option>
@@ -115,14 +110,12 @@ export default function AllowedActionsForStatusStarted({
         <div className="flex flex-col flex-1">
           <div className="font-bold mt-2">Reimbursement charge:</div>
           <div className="grid grid-cols-2 mt-2 md:mt-4 text-sm">
-            <span className="col-span-1">Tank size:</span>
-            <span className="col-span-1 text-right">{tripInfo.tankVolumeInGal} gal</span>
-            <span className="col-span-1">ReFuel:</span>
+            <span className="col-span-1">Refuel:</span>
             <span className="col-span-1 text-right">{refuelValue} gal</span>
             <span className="col-span-1">Gal price:</span>
             <span className="col-span-1 text-right">${tripInfo.fuelPricePerGal.toFixed(2)}</span>
             <span className="col-span-1">Refuel or battery charge:</span>
-            <span className="col-span-1 text-right">${reFuelCharge.toFixed(2)}</span>
+            <span className="col-span-1 text-right">${refuelCharge.toFixed(2)}</span>
           </div>
           <div className="grid grid-cols-2 mt-2 md:mt-4 text-sm">
             <span className="col-span-1">Miles included:</span>
@@ -144,7 +137,7 @@ export default function AllowedActionsForStatusStarted({
             <span className="col-span-1 text-right">${depositPaid.toFixed(2)}</span>
             <span className="col-span-1">Refuel or battery charge:</span>
             <div className="col-span-1 text-right flex items-end">
-              <span className="w-full">${reFuelCharge.toFixed(2)}</span>
+              <span className="w-full">${refuelCharge.toFixed(2)}</span>
             </div>
             <span className="col-span-1">Overmiles reimbursement:</span>
             <div className="col-span-1 text-right flex items-end">

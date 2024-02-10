@@ -1,3 +1,5 @@
+import { EngineType } from "./blockchain/ContractCarInfo";
+
 export enum TripStatus {
   Pending, // Created
   Confirmed, // Approved
@@ -71,7 +73,9 @@ export type TripInfo = {
   tankVolumeInGal: number;
   startFuelLevelInPercents: number;
   endFuelLevelInPercents: number;
+  engineType: EngineType;
   fuelPricePerGal: number;
+  batteryPrices: { price_0_20: number; price_21_50: number; price_51_80: number; price_81_100: number };
   milesIncludedPerDay: number;
   startOdometr: number;
   endOdometr: number;
@@ -86,6 +90,37 @@ export type TripInfo = {
   rejectedBy: string;
   rejectedDate: Date | undefined;
   createdDateTime: Date;
+};
+
+export const getBatteryCharge = (
+  fuelDiffsInPercents: number,
+  batteryPrices: { price_0_20: number; price_21_50: number; price_51_80: number; price_81_100: number }
+) => {
+  if (fuelDiffsInPercents <= 20) return batteryPrices.price_0_20;
+  if (fuelDiffsInPercents <= 50) return batteryPrices.price_21_50;
+  if (fuelDiffsInPercents <= 80) return batteryPrices.price_51_80;
+  return batteryPrices.price_81_100;
+};
+
+export const getBatteryChargeFromDiffs = (
+  fuelDiffsInPercents: number,
+  batteryPrices: { price_0_20: number; price_21_50: number; price_51_80: number; price_81_100: number }
+) => {
+  if (fuelDiffsInPercents <= 20) return batteryPrices.price_81_100;
+  if (fuelDiffsInPercents <= 50) return batteryPrices.price_51_80;
+  if (fuelDiffsInPercents <= 80) return batteryPrices.price_21_50;
+  return batteryPrices.price_0_20;
+};
+
+export const getRefuelValueAndCharge = (tripInfo: TripInfo, endFuelLevelInPercents: number) => {
+  const fuelDiffsInPercents = Math.max(tripInfo.startFuelLevelInPercents - endFuelLevelInPercents, 0);
+  const refuelValue =
+    tripInfo.engineType === EngineType.PATROL ? (fuelDiffsInPercents * tripInfo.tankVolumeInGal) / 100 : 0;
+  const refuelCharge =
+    tripInfo.engineType === EngineType.PATROL
+      ? refuelValue * tripInfo.fuelPricePerGal
+      : getBatteryChargeFromDiffs(fuelDiffsInPercents, tripInfo.batteryPrices);
+  return { refuelValue, refuelCharge };
 };
 
 export type AllowedChangeTripAction = {

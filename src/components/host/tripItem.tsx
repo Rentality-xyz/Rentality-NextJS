@@ -4,6 +4,7 @@ import { ElementRef, useEffect, useRef, useState } from "react";
 import {
   TripInfo,
   TripStatus,
+  getRefuelValueAndCharge,
   getTripStatusBgColorClassFromStatus,
   getTripStatusTextFromStatus,
 } from "@/model/TripInfo";
@@ -63,10 +64,7 @@ export default function TripItem({
     "absolute right-0 top-2 px-8 py-2 rounded-l-3xl text-rnt-temp-status-text text-end",
     statusBgColor
   );
-
-  var refuelValue =
-    ((tripInfo.startFuelLevelInPercents - tripInfo.endFuelLevelInPercents) * tripInfo.tankVolumeInGal) / 100;
-  refuelValue = refuelValue > 0 ? refuelValue : 0;
+  const { refuelValue, refuelCharge } = getRefuelValueAndCharge(tripInfo, tripInfo.endFuelLevelInPercents);
 
   const tripDays = calculateDays(tripInfo.tripStart, tripInfo.tripEnd);
   var overmileValue = tripInfo.endOdometr - tripInfo.startOdometr - tripInfo.milesIncludedPerDay * tripDays;
@@ -332,12 +330,12 @@ export default function TripItem({
                     param.type === "fuel" ? (
                       <div className="md:w-1/2 xl:w-1/4 md:mx-8 xl:mx-28 grid grid-cols-2 text-sm">
                         <span className="font-bold col-span-2">Reimbursement charge:</span>
-                        <span>ReFuel:</span>
+                        <span>Refuel:</span>
                         <span>{refuelValue} gal</span>
                         <span>Gal price:</span>
                         <span>${tripInfo.fuelPricePerGal.toFixed(2)}</span>
                         <span>Refuel or battery charge:</span>
-                        <span>${(refuelValue * tripInfo.fuelPricePerGal).toFixed(2)}</span>
+                        <span>${refuelCharge.toFixed(2)}</span>
                       </div>
                     ) : (
                       <div className="md:w-1/2 xl:w-1/4 md:mx-8 xl:mx-28 grid grid-cols-2 text-sm">

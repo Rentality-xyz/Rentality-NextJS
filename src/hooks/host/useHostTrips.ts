@@ -5,6 +5,7 @@ import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
+import { EngineType } from "@/model/blockchain/ContractCarInfo";
 
 const useHostTrips = () => {
   const rentalityInfo = useRentality();
@@ -230,7 +231,17 @@ const useHostTrips = () => {
                     tankVolumeInGal: tankSize,
                     startFuelLevelInPercents: Number(i.startParamLevels[0]),
                     endFuelLevelInPercents: Number(i.endParamLevels[0]),
-                    fuelPricePerGal: Number(i.fuelPrices[0]) / 100,
+                    engineType: i.fuelPrices.length === 4 ? EngineType.ELECTRIC : EngineType.PATROL,
+                    fuelPricePerGal: i.fuelPrices.length === 1 ? Number(i.fuelPrices[0]) / 100 : 0,
+                    batteryPrices:
+                      i.fuelPrices.length === 4
+                        ? {
+                            price_0_20: Number(i.fuelPrices[0]) / 100,
+                            price_21_50: Number(i.fuelPrices[1]) / 100,
+                            price_51_80: Number(i.fuelPrices[2]) / 100,
+                            price_81_100: Number(i.fuelPrices[3]) / 100,
+                          }
+                        : { price_0_20: 0, price_21_50: 0, price_51_80: 0, price_81_100: 0 },
                     milesIncludedPerDay: Number(i.milesIncludedPerDay),
                     startOdometr: Number(i.startParamLevels[1]),
                     endOdometr: Number(i.endParamLevels[1]),
