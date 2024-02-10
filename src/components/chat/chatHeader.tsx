@@ -1,5 +1,5 @@
 import { ChatInfo } from "@/model/ChatInfo";
-import { getTripStatusBgColorClassFromStatus } from "@/model/TripInfo";
+import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { dateFormatMonthDate } from "@/utils/datetimeFormatters";
 import { twMerge } from "tailwind-merge";
 
@@ -19,7 +19,7 @@ export default function ChatHeader({ selectedChat }: { selectedChat: ChatInfo })
         className="relative w-1/4 min-h-[6rem] flex-shrink-0 bg-center bg-cover"
       >
         <div className={statusClassName}>
-          <strong className="text-sm">{selectedChat.tripStatus}</strong>
+          <strong className="text-sm">{getTripStatusTextFromStatus(selectedChat.tripStatus)}</strong>
         </div>
       </div>
       <div className="w-3/4 flex flex-col gap-2 justify-center  p-2 pl-8">
