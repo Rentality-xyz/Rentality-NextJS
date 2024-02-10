@@ -43,8 +43,8 @@ const useSearchCars = () => {
     const contractDateFromUTC = getBlockchainTimeFromDate(startDateTimeUTC);
     const contractDateToUTC = getBlockchainTimeFromDate(endDateTimeUTC);
     const contractSearchCarParams: ContractSearchCarParams = {
-      country: searchCarRequest.country ?? "",
-      state: searchCarRequest.state ?? "",
+      country: "", //searchCarRequest.country ?? "",
+      state: "", //searchCarRequest.state ?? "",
       city: searchCarRequest.city ?? "",
       brand: searchCarRequest.brand ?? "",
       model: searchCarRequest.model ?? "",
