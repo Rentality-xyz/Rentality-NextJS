@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ChatInfo } from "@/model/ChatInfo";
 import { Client as ChatClient } from "@/chat/client";
 import { getEtherContract } from "@/abis";
@@ -15,16 +15,22 @@ import moment from "moment";
 
 export type ChatContextInfo = {
   isLoading: boolean;
+
+  isMyChatKeysSaved: boolean;
+  saveMyChatKeys: () => Promise<void>;
+
   chatInfos: ChatInfo[];
-  chatClient: ChatClient | undefined;
+  getLatestChatInfos: () => Promise<void>;
   sendMessage: (toAddress: string, tripId: number, message: string) => Promise<void>;
 };
 
 const ChatContext = createContext<ChatContextInfo>({
   isLoading: true,
-  chatClient: undefined,
-  sendMessage: async (toAddress: string, tripId: number, message: string) => {},
+  isMyChatKeysSaved: false,
+  saveMyChatKeys: async () => {},
   chatInfos: [],
+  getLatestChatInfos: async () => {},
+  sendMessage: async () => {},
 });
 
 export function useChat() {
@@ -32,50 +38,60 @@ export function useChat() {
 }
 
 export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
-  const [chatContextInfo, setChatContextInfo] = useState<ChatContextInfo>({
-    isLoading: true,
-    chatClient: undefined,
-    sendMessage: async (toAddress: string, tripId: number, message: string) => {},
-    chatInfos: [],
-  });
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isMyChatKeysSaved, setIsMyChatKeysSaved] = useState<boolean>(true);
   const [chatPublicKeys, setChatPublicKeys] = useState<Map<string, string>>(new Map());
+  const [chatClient, setChatClient] = useState<ChatClient | undefined>(undefined);
+  const [chatInfos, setChatInfos] = useState<ChatInfo[]>([]);
+
   const rentalityInfo = useRentality();
   const router = useRouter();
   const isHost = router.route.startsWith("/host");
 
-  const onUserMessageReceived = async (from: string, to: string, tripId: number, datetime: number, message: string) => {
-    setChatContextInfo((current) => {
-      const result = { ...current };
-      const selectedChat = result.chatInfos.find((i) => i.tripId === tripId);
-      if (selectedChat !== undefined) {
-        selectedChat.messages.push({
-          datestamp: moment.unix(datetime).local().toDate(),
-          fromAddress: from,
-          toAddress: to,
-          message: message,
-        });
+  const onUserMessageReceived = useCallback(
+    async (from: string, to: string, tripId: number, datetime: number, message: string) => {
+      setChatInfos((current) => {
+        const result = [...current];
+        const selectedChat = result.find((i) => i.tripId === tripId);
+        if (selectedChat !== undefined) {
+          selectedChat.messages.push({
+            datestamp: moment.unix(datetime).local().toDate(),
+            fromAddress: from,
+            toAddress: to,
+            message: message,
+          });
+        }
+        return result;
+      });
+    },
+    []
+  );
+
+  const sendUserMessage = useCallback(
+    async (toAddress: string, tripId: number, message: string) => {
+      if (!isMyChatKeysSaved) {
+        console.error(`sendUserMessage error: you have to save your keys before send messages`);
+        return;
       }
-      return result;
-    });
-  };
+      if (chatClient === undefined) {
+        console.error("chatClient is undefined");
+        return;
+      }
+      const chatPublicKey = chatPublicKeys.get(toAddress);
+      if (!chatPublicKey || isEmpty(chatPublicKey)) {
+        console.error("sendUserMessage:", `public key for user ${toAddress} is not found`);
+        return;
+      }
 
-  const sendUserMessage = async (toAddress: string, tripId: number, message: string) => {
-    if (chatContextInfo.chatClient === undefined) return;
-    const chatPublicKey = chatPublicKeys.get(toAddress);
-    if (!chatPublicKey || isEmpty(chatPublicKey)) {
-      console.error("sendUserMessage:", `public key for user ${toAddress} is not found`);
-      return;
-    }
+      const datetime = moment().unix();
 
-    const datetime = moment().unix();
+      await chatClient.sendUserMessage(toAddress, tripId, datetime, message, chatPublicKey);
+    },
+    [chatClient, chatPublicKeys, isMyChatKeysSaved]
+  );
 
-    await chatContextInfo.chatClient.sendUserMessage(toAddress, tripId, datetime, message, chatPublicKey);
-  };
-
-  const isInitiating = useRef(false);
-
-  useEffect(() => {
-    const getChatInfos = async (rentalityContract: IRentalityContract) => {
+  const getChatInfos = useCallback(
+    async (rentalityContract: IRentalityContract) => {
       try {
         if (rentalityContract == null) {
           console.error("getChatInfos error: contract is null");
@@ -127,99 +143,151 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
       } catch (e) {
         console.error("getChatInfos error:" + e);
       }
-    };
+    },
+    [isHost]
+  );
 
-    const initChat = async () => {
+  const saveMyChatKeys = useCallback(async () => {
+    if (!chatClient) {
+      console.error("saveMyChatKeys error: chatClient is null");
+      return;
+    }
+    if (!chatClient.encryptionKeyPair?.publicKey) {
+      console.error("saveMyChatKeys error: publicKey is null");
+      return;
+    }
+
+    const rentalityChatHelper = (await getEtherContract("chatHelper")) as unknown as IRentalityChatHelperContract;
+    if (!rentalityChatHelper) {
+      console.error("saveMyChatKeys error: ", "rentalityChatHelper is null");
+      return;
+    }
+
+    const myPrivateKey = bytesToHex(chatClient.encryptionKeyPair.privateKey);
+    const myPublicKey = bytesToHex(chatClient.encryptionKeyPair.publicKey);
+    try {
+      await rentalityChatHelper.setMyChatPublicKey(myPrivateKey, myPublicKey);
+    } catch (e) {
+      console.error("saveMyChatKeys error:" + e);
+    }
+  }, [chatClient]);
+
+  const getLatestChatInfos = useCallback(async () => {
+    if (!rentalityInfo) return;
+    if (!chatClient) return;
+
+    const rentalityChatHelper = (await getEtherContract("chatHelper")) as unknown as IRentalityChatHelperContract;
+    if (!rentalityChatHelper) {
+      console.error("getLatestChatInfos error: rentalityChatHelper is null");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const infos = (await getChatInfos(rentalityInfo.rentalityContract)) ?? [];
+
+      const allAddresses = infos.map((i) => (isHost ? i.guestAddress : i.hostAddress));
+      const uniqueAddresses = allAddresses.filter(function (item, pos, self) {
+        return self.indexOf(item) == pos;
+      });
+
+      const publicKeys = await rentalityChatHelper.getChatPublicKeys(uniqueAddresses);
+      var dict = new Map<string, string>();
+      publicKeys.forEach((i) => dict.set(i.userAddress, i.publicKey));
+      setChatPublicKeys(dict);
+
+      const storedMessages = await chatClient.getUserChatMessages();
+
+      if (storedMessages !== undefined) {
+        for (const ci of infos) {
+          const msgs = storedMessages.filter((i) => i?.tripId === ci.tripId);
+          if (msgs) {
+            ci.messages = msgs.map((msgInfo) => {
+              return {
+                fromAddress: msgInfo?.from ?? "",
+                toAddress: msgInfo?.to ?? "",
+                datestamp: moment
+                  .unix(msgInfo?.datetime ?? 0)
+                  .local()
+                  .toDate(),
+                message: msgInfo?.message ?? "",
+              };
+            });
+          }
+        }
+      }
+      setChatInfos(infos);
+    } catch (e) {
+      return;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [rentalityInfo, chatClient, getChatInfos, isHost]);
+
+  const isInitiating = useRef(false);
+
+  useEffect(() => {
+    const initChatClient = async () => {
       if (!rentalityInfo) return;
+      if (chatClient !== undefined) return;
       if (isInitiating.current) return;
       isInitiating.current = true;
 
-      const rentalityChatHelper = (await getEtherContract("chatHelper")) as unknown as IRentalityChatHelperContract;
-      if (!rentalityChatHelper) {
-        console.error("useChatInfos error: ", "rentalityChatHelper is null");
-        return;
-      }
-
-      const contractInfo = rentalityInfo.rentalityContract;
-      if (contractInfo === undefined) {
-        console.error("chat contract info is undefined");
-        return;
-      }
-
       console.log("initting chat....");
 
-      setChatContextInfo((prev) => {
-        return { ...prev, isLoading: true };
-      });
+      setIsLoading(true);
+
+      const rentalityChatHelper = (await getEtherContract("chatHelper")) as unknown as IRentalityChatHelperContract;
+      if (!rentalityChatHelper) {
+        console.error("initChatClient error: rentalityChatHelper is null");
+        return;
+      }
 
       try {
         const client = new ChatClient();
-        const infos = (await getChatInfos(contractInfo)) ?? [];
 
         const [myStoredPrivateKey, myStoredPublicKey] = await rentalityChatHelper.getMyChatKeys();
+        setIsMyChatKeysSaved(!isEmpty(myStoredPrivateKey));
 
         await client.init(rentalityInfo.signer, onUserMessageReceived, myStoredPrivateKey, myStoredPublicKey);
         await client.listenForUserChatMessages();
 
         if (!client.encryptionKeyPair?.publicKey) {
-          console.error("useChatInfos error: ", "publicKey is null");
+          console.error("initChatClient error: publicKey is null");
           return;
         }
 
         const myPrivateKey = bytesToHex(client.encryptionKeyPair.privateKey);
         const myPublicKey = bytesToHex(client.encryptionKeyPair.publicKey);
 
-        if (isEmpty(myStoredPublicKey) || myStoredPrivateKey !== myPrivateKey || myStoredPublicKey !== myPublicKey) {
-          console.log("Saving user chat public key");
-          await rentalityChatHelper.setMyChatPublicKey(myPrivateKey, myPublicKey);
-        }
+        setIsMyChatKeysSaved(
+          !isEmpty(myStoredPrivateKey) && myStoredPrivateKey === myPrivateKey && myStoredPublicKey === myPublicKey
+        );
 
-        const allAddresses = infos.map((i) => (isHost ? i.guestAddress : i.hostAddress));
-        const uniqueAddresses = allAddresses.filter(function (item, pos, self) {
-          return self.indexOf(item) == pos;
-        });
-        const publicKeys = await rentalityChatHelper.getChatPublicKeys(uniqueAddresses);
-        var dict = new Map<string, string>();
-        publicKeys.forEach((i) => dict.set(i.userAddress, i.publicKey));
-        setChatPublicKeys(dict);
-
-        const storedMessages = await client.getUserChatMessages();
-
-        if (storedMessages !== undefined) {
-          for (const ci of infos) {
-            const msgs = storedMessages.filter((i) => i?.tripId === ci.tripId);
-            if (msgs) {
-              ci.messages = msgs.map((msgInfo) => {
-                return {
-                  fromAddress: msgInfo?.from ?? "",
-                  toAddress: msgInfo?.to ?? "",
-                  datestamp: moment
-                    .unix(msgInfo?.datetime ?? 0)
-                    .local()
-                    .toDate(),
-                  message: msgInfo?.message ?? "",
-                };
-              });
-            }
-          }
-        }
-
-        setChatContextInfo((prev) => {
-          return { ...prev, chatClient: client, chatInfos: infos, sendMessage: sendUserMessage };
-        });
+        setChatClient(client);
       } catch (e) {
-        console.error("getChatHelper error:" + e);
+        console.error("initChatClient error:" + e);
       } finally {
-        setChatContextInfo((prev) => {
-          return { ...prev, isLoading: false };
-        });
+        isInitiating.current = false;
       }
-
-      isInitiating.current = false;
     };
 
-    initChat();
-  }, [rentalityInfo, isHost]);
+    initChatClient();
+  }, [rentalityInfo, chatClient, onUserMessageReceived]);
 
-  return <ChatContext.Provider value={chatContextInfo}>{children}</ChatContext.Provider>;
+  return (
+    <ChatContext.Provider
+      value={{
+        isLoading: isLoading,
+        isMyChatKeysSaved: isMyChatKeysSaved,
+        saveMyChatKeys: saveMyChatKeys,
+        chatInfos: chatInfos,
+        getLatestChatInfos: getLatestChatInfos,
+        sendMessage: sendUserMessage,
+      }}
+    >
+      {children}
+    </ChatContext.Provider>
+  );
 };

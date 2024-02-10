@@ -6,10 +6,11 @@ import { useChat } from "@/contexts/chatContext";
 import useRntDialogs from "@/hooks/useRntDialogs";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function Messages() {
   const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
-  const { isLoading, chatInfos, sendMessage } = useChat();
+  const { isLoading, chatInfos, getLatestChatInfos, sendMessage } = useChat();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -27,6 +28,10 @@ export default function Messages() {
     const pageParams = tripId > 0 ? "?" + createQueryString("tridId", tripId.toString()) : "";
     router.push(pathname + pageParams, pathname + pageParams, { shallow: true, scroll: false });
   };
+
+  useEffect(() => {
+    getLatestChatInfos();
+  }, [getLatestChatInfos]);
 
   return (
     <HostLayout>
