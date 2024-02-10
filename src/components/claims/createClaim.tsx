@@ -6,6 +6,8 @@ import RntInput from "../common/rntInput";
 import Checkbox from "../common/checkbox";
 import RntButton from "../common/rntButton";
 import { ClaimType, getClaimTypeTextFromClaimType } from "@/model/Claim";
+import Link from "next/link";
+import { isEmpty } from "@/utils/string";
 
 type CreateClaimParams = {
   selectedTripId: string;
@@ -86,7 +88,13 @@ export default function CreateClaim({
             </option>
           ))}
         </RntSelect>
-        <div className="text-rentality-secondary">Trip information</div>
+
+        {!isEmpty(createClaimParams.selectedTripId) ? (
+          <Link href={`/host/trips/tripInfo/${createClaimParams.selectedTripId}`} target="_blank">
+            {/* <Image className="sm:hidden" src={icInfo} width={25} alt="" /> max-sm:hidden */}
+            <span className="text-rentality-secondary">Trip information</span>
+          </Link>
+        ) : null}
       </div>
       <RntInputMultiline
         id="description"
