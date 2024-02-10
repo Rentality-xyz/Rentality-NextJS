@@ -28,9 +28,16 @@ export type HostCarInfo = {
   pricePerDay: string;
   milesIncludedPerDay: string;
   securityDeposit: string;
-  locationAddress: string;
   timeBufferBetweenTripsInMin: number;
   currentlyListed: boolean;
+
+  locationAddress: string;
+  isLocationAddressEdited: boolean;
+  country: string;
+  state: string;
+  city: string;
+  locationLatitude: string;
+  locationLongitude: string;
 
   engineTypeString: string;
 
@@ -41,12 +48,6 @@ export type HostCarInfo = {
   batteryPrice_21_50: string;
   batteryPrice_51_80: string;
   batteryPrice_81_100: string;
-
-  country: string;
-  state: string;
-  city: string;
-  locationLatitude: string;
-  locationLongitude: string;
 
   wheelDrive: string;
   bodyType: string;

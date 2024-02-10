@@ -1,4 +1,4 @@
-import { Signer } from "ethers";
+import { ContractTransaction, Signer } from "ethers";
 import { useEffect, useState } from "react";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import {
@@ -17,6 +17,7 @@ import {
 import { useRentality } from "@/contexts/rentalityContext";
 import { ContractUpdateCarInfoRequest } from "@/model/blockchain/ContractUpdateCarInfoRequest";
 import { getMoneyInCentsFromString, getStringFromMoneyInCents } from "@/utils/formInput";
+import { ContractCarDetails } from "@/model/blockchain/ContractCarDetails";
 
 const emptyHostCarInfo: HostCarInfo = {
   carId: -1,
@@ -48,6 +49,7 @@ const emptyHostCarInfo: HostCarInfo = {
   locationLatitude: "",
   locationLongitude: "",
   locationAddress: "",
+  isLocationAddressEdited: false,
   currentlyListed: true,
   engineTypeString: "",
   batteryPrice_0_20: "",
@@ -99,8 +101,19 @@ const useEditCarInfo = (carId: number) => {
         timeBufferBetweenTripsInSec: carInfoFormParams.timeBufferBetweenTripsInMin * 60,
         securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
       };
+      let transaction: ContractTransaction;
 
-      let transaction = await rentalityInfo.rentalityContract.updateCarInfo(updateCarRequest);
+      if (carInfoFormParams.isLocationAddressEdited) {
+        transaction = await rentalityInfo.rentalityContract.updateCarInfoWithLocation(
+          updateCarRequest,
+          carInfoFormParams.locationAddress,
+          carInfoFormParams.locationLatitude,
+          carInfoFormParams.locationLongitude,
+          process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ""
+        );
+      } else {
+        transaction = await rentalityInfo.rentalityContract.updateCarInfo(updateCarRequest);
+      }
 
       const result = await transaction.wait();
       setDataSaved(true);
@@ -121,37 +134,49 @@ const useEditCarInfo = (carId: number) => {
 
       try {
         const carInfo: ContractCarInfo = await rentalityContract.getCarInfoById(BigInt(carId));
+        const carInfoDetails: ContractCarDetails = await rentalityContract.getCarDetails(BigInt(carId));
+
         const signerAddress = await signer.getAddress();
-        if (carInfo.createdBy !== signerAddress) {
+        if (carInfoDetails.host !== signerAddress) {
           return emptyHostCarInfo;
         }
 
-        const tokenURI = await rentalityContract.getCarMetadataURI(carInfo.carId);
+        const tokenURI = await rentalityContract.getCarMetadataURI(carInfoDetails.carId);
         const meta = await getMetaDataFromIpfs(tokenURI);
 
-        const price = Number(carInfo.pricePerDayInUsdCents) / 100;
-        const securityDeposit = Number(carInfo.securityDepositPerTripInUsdCents) / 100;
-        const engineTypeString = getEngineTypeString(carInfo.engineType);
+        const price = Number(carInfoDetails.pricePerDayInUsdCents) / 100;
+        const securityDeposit = Number(carInfoDetails.securityDepositPerTripInUsdCents) / 100;
+        const engineTypeString = getEngineTypeString(carInfoDetails.engineType);
 
         const fuelPricePerGal =
-          engineTypeString === ENGINE_TYPE_PATROL_STRING ? getStringFromMoneyInCents(carInfo.engineParams[1]) : "";
+          engineTypeString === ENGINE_TYPE_PATROL_STRING
+            ? getStringFromMoneyInCents(carInfoDetails.engineParams[1])
+            : "";
         const batteryPrice_0_20 =
-          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? getStringFromMoneyInCents(carInfo.engineParams[0]) : "";
+          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING
+            ? getStringFromMoneyInCents(carInfoDetails.engineParams[0])
+            : "";
         const batteryPrice_21_50 =
-          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? getStringFromMoneyInCents(carInfo.engineParams[1]) : "";
+          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING
+            ? getStringFromMoneyInCents(carInfoDetails.engineParams[1])
+            : "";
         const batteryPrice_51_80 =
-          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? getStringFromMoneyInCents(carInfo.engineParams[2]) : "";
+          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING
+            ? getStringFromMoneyInCents(carInfoDetails.engineParams[2])
+            : "";
         const batteryPrice_81_100 =
-          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? getStringFromMoneyInCents(carInfo.engineParams[3]) : "";
+          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING
+            ? getStringFromMoneyInCents(carInfoDetails.engineParams[3])
+            : "";
 
         let item: HostCarInfo = {
-          carId: Number(carInfo.carId),
-          ownerAddress: carInfo.createdBy.toString(),
+          carId: Number(carInfoDetails.carId),
+          ownerAddress: carInfoDetails.host.toString(),
           image: getIpfsURIfromPinata(meta.image),
           vinNumber: carInfo.carVinNumber,
-          brand: carInfo.brand,
-          model: carInfo.model,
-          releaseYear: Number(carInfo.yearOfProduction).toString(),
+          brand: carInfoDetails.brand,
+          model: carInfoDetails.model,
+          releaseYear: Number(carInfoDetails.yearOfProduction).toString(),
           name: meta.name ?? "",
           licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
           licenseState: meta.attributes?.find((x: any) => x.trait_type === "License state")?.value ?? "",
@@ -165,14 +190,15 @@ const useEditCarInfo = (carId: number) => {
           bodyType: meta.attributes?.find((x: any) => x.trait_type === "Body type")?.value ?? "",
           description: meta.description ?? "",
           pricePerDay: price.toString(),
-          milesIncludedPerDay: getMilesIncludedPerDayText(carInfo.milesIncludedPerDay),
+          milesIncludedPerDay: getMilesIncludedPerDayText(carInfoDetails.milesIncludedPerDay),
           securityDeposit: securityDeposit.toString(),
-          country: "",
-          state: "",
-          city: "",
-          locationLatitude: "",
-          locationLongitude: "",
+          country: carInfoDetails.country,
+          state: carInfoDetails.state,
+          city: carInfoDetails.city,
+          locationLatitude: carInfoDetails.locationLatitude,
+          locationLongitude: carInfoDetails.locationLongitude,
           locationAddress: "",
+          isLocationAddressEdited: false,
           currentlyListed: carInfo.currentlyListed,
           engineTypeString: engineTypeString,
           fuelPricePerGal: fuelPricePerGal,

@@ -41,6 +41,7 @@ const emptyNewCarInfo: HostCarInfo = {
   locationLatitude: "",
   locationLongitude: "",
   locationAddress: "",
+  isLocationAddressEdited: true,
   currentlyListed: true,
   engineTypeString: "",
   batteryPrice_0_20: "",

@@ -32,9 +32,9 @@ export interface IRentalityContract {
   updateCarInfoWithLocation(
     request: ContractUpdateCarInfoRequest,
     location: string,
-    geoApiKey: string,
     locationLatitude: string,
-    locationLongitude: string
+    locationLongitude: string,
+    geoApiKey: string
   ): Promise<ContractTransaction>;
   getCarMetadataURI(carId: bigint): Promise<string>;
   getCarInfoById(carId: bigint): Promise<ContractCarInfo>;

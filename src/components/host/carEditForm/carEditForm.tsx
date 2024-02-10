@@ -7,6 +7,7 @@ import { Dispatch, SetStateAction, useState, useEffect } from "react";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 import Checkbox from "@/components/common/checkbox";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PATROL_STRING } from "@/model/blockchain/ContractCarInfo";
+import RntButton from "@/components/common/rntButton";
 
 export default function CarEditForm({
   carInfoFormParams,
@@ -306,14 +307,15 @@ export default function CarEditForm({
         <div className="text-lg mb-4">
           <strong>Location of vehicle availability</strong>
         </div>
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-row gap-4 items-end  mb-4">
           <RntPlaceAutocomplete
             className="lg:w-full"
             id="address"
-            label="Address"
+            label={isNewCar ? "Address" : "Address (based on saved location)"}
             placeholder="Miami"
             initValue={autocomplete}
             includeStreetAddress={true}
+            readOnly={!carInfoFormParams.isLocationAddressEdited}
             onChange={(e) => setAutocomplete(e.target.value)}
             onAddressChange={(placeDetails) => {
               const country = placeDetails.country?.short_name ?? "";
@@ -333,6 +335,20 @@ export default function CarEditForm({
               });
             }}
           />
+          <RntButton
+            className="w-40"
+            disabled={carInfoFormParams.isLocationAddressEdited}
+            onClick={() =>
+              setCarInfoFormParams({
+                ...carInfoFormParams,
+                isLocationAddressEdited: true,
+              })
+            }
+          >
+            Edit
+          </RntButton>
+        </div>
+        <div className="flex flex-wrap gap-4">
           <RntInput
             className="lg:w-40"
             id="country"
