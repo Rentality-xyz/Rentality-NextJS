@@ -42,6 +42,7 @@ export default function TripCard({
             disableButton={disableButton}
             isAdditionalActionHidden={isAdditionalActionHidden}
             setIsAdditionalActionHidden={setIsAdditionalActionHidden}
+            isHost={isHost}
           />
           <DateDetails tripInfo={tripInfo} />
           <LocationDetails tripInfo={tripInfo} />

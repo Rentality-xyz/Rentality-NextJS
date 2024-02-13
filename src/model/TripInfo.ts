@@ -90,6 +90,9 @@ export type TripInfo = {
   rejectedBy: string;
   rejectedDate: Date | undefined;
   createdDateTime: Date;
+  checkedInByHostDateTime: Date;
+  checkedOutByGuestDateTime: Date;
+  checkedOutByHostDateTime: Date;
 };
 
 export const getBatteryCharge = (

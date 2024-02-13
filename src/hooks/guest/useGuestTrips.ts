@@ -220,6 +220,9 @@ const useGuestTrips = () => {
                     rejectedBy: i.rejectedBy,
                     rejectedDate: i.rejectedDateTime > 0 ? getDateFromBlockchainTime(i.rejectedDateTime) : undefined,
                     createdDateTime: getDateFromBlockchainTime(i.createdDateTime),
+                    checkedInByHostDateTime: getDateFromBlockchainTime(i.checkedInByHostDateTime),
+                    checkedOutByGuestDateTime: getDateFromBlockchainTime(i.checkedOutByGuestDateTime),
+                    checkedOutByHostDateTime: getDateFromBlockchainTime(i.checkedOutByHostDateTime),
                   };
                   return item;
                 })
