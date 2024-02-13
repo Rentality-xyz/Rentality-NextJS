@@ -1,7 +1,7 @@
 import RntDialogs from "@/components/common/rntDialogs";
 import GuestLayout from "@/components/guest/layout/guestLayout";
-import TripItem from "@/components/guest/tripItem";
 import PageTitle from "@/components/pageTitle/pageTitle";
+import TripCard from "@/components/tripCard/tripCard";
 import useGuestTrips from "@/hooks/guest/useGuestTrips";
 import useRntDialogs from "@/hooks/useRntDialogs";
 import { useState } from "react";
@@ -45,11 +45,12 @@ export default function Booked() {
             {tripsBooked != null && tripsBooked.length > 0 ? (
               tripsBooked.map((value) => {
                 return (
-                  <TripItem
+                  <TripCard
                     key={value.tripId}
                     tripInfo={value}
                     changeStatusCallback={changeStatusCallback}
                     disableButton={tripStatusChanging}
+                    isHost={false}
                   />
                 );
               })

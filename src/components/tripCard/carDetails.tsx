@@ -1,0 +1,34 @@
+import { dateFormatMonthDate } from "@/utils/datetimeFormatters";
+import { TripInfo, TripStatus } from "@/model/TripInfo";
+
+export default function СarDetails({ tripInfo, isHost }: { tripInfo: TripInfo; isHost: boolean }) {
+  const rejectedByHost = tripInfo.rejectedBy.toLowerCase() === tripInfo.hostAddress.toLowerCase();
+  const rejectedByText = rejectedByHost
+    ? isHost
+      ? "You"
+      : tripInfo.hostName ?? "Host"
+    : isHost
+    ? tripInfo.guestName ?? "Guest"
+    : "You";
+
+  tripInfo.rejectedBy.toLowerCase() === tripInfo.guestAddress.toLowerCase() ? "You" : tripInfo.hostName ?? "Host";
+  return (
+    <div id="trip-main-info" className="w-full sm_inverted:w-1/4 flex flex-1 flex-col p-4 md:p-2 xl:p-4">
+      <div className="flex flex-col">
+        <div>
+          <strong className="text-xl">{`${tripInfo.brand} ${tripInfo.model} ${tripInfo.year}`}</strong>
+        </div>
+        <div>{tripInfo.licensePlate}</div>
+        {tripInfo.status === TripStatus.Rejected && tripInfo.rejectedDate !== undefined ? (
+          <div className="mt-2">{`${rejectedByText} cancelled on ${dateFormatMonthDate(tripInfo.rejectedDate)}`}</div>
+        ) : null}
+        <div className="flex flex-col mt-4">
+          <div>
+            <strong className="text-l">Total price</strong>
+          </div>
+          <div>${tripInfo.totalPrice}</div>
+        </div>
+      </div>
+    </div>
+  );
+}

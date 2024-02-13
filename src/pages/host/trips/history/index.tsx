@@ -1,6 +1,6 @@
 import HostLayout from "@/components/host/layout/hostLayout";
-import TripItem from "@/components/host/tripItem";
 import PageTitle from "@/components/pageTitle/pageTitle";
+import TripCard from "@/components/tripCard/tripCard";
 import useHostTrips from "@/hooks/host/useHostTrips";
 
 export default function History() {
@@ -19,11 +19,12 @@ export default function History() {
             {tripsHistory != null && tripsHistory.length > 0 ? (
               tripsHistory.map((value) => {
                 return (
-                  <TripItem
+                  <TripCard
                     key={value.tripId}
                     tripInfo={value}
                     changeStatusCallback={changeStatusCallback}
                     disableButton={true}
+                    isHost={true}
                   />
                 );
               })
