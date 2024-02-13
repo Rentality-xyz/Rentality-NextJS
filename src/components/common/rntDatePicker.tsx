@@ -93,7 +93,7 @@ export default function RntDatePicker({
                 {...params}
                 inputProps={{
                   ...params.inputProps,
-                  placeholder: "DD/MM/YYYY",
+                  placeholder: "MM/DD/YYYY",
                 }}
                 autoComplete="off"
                 sx={{
