@@ -4,6 +4,7 @@ import RntButton from "../common/rntButton";
 import { twMerge } from "tailwind-merge";
 import { getStringFromMoneyInCents } from "@/utils/formInput";
 import { Claim, ClaimStatus } from "@/model/Claim";
+import ClaimHistoryMobileCard from "./claimHistoryMobileCard";
 
 type Props =
   | {
@@ -26,8 +27,7 @@ export default function ClaimHistory(props: Props) {
   return (
     <div className="w-full bg-rentality-bg p-4 rounded-2xl mt-5">
       <h3 className="text-xl mb-4">Claims history</h3>
-      <table className=" w-full table-auto border-spacing-2">
-        {/* max-lg:hidden */}
+      <table className=" w-full table-auto border-spacing-2 max-lg:hidden">
         <thead className="mb-2">
           <tr className="text-rentality-additional-light ">
             <th className={headerSpanClassName}>Invoice type</th>
@@ -105,7 +105,27 @@ export default function ClaimHistory(props: Props) {
           })}
         </tbody>
       </table>
-      {/* <div className="lg:hidden">HERE WILL BE MOBILE VIEW FOR CLAIMS</div> */}
+      <div className="lg:hidden">
+        {claims.map((claim, index) => {
+          return isHost ? (
+            <ClaimHistoryMobileCard
+              key={claim.claimId}
+              isHost={isHost}
+              claim={claim}
+              index={index}
+              cancelClaim={props.cancelClaim}
+            />
+          ) : (
+            <ClaimHistoryMobileCard
+              key={claim.claimId}
+              isHost={isHost}
+              claim={claim}
+              index={index}
+              payClaim={props.payClaim}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }
