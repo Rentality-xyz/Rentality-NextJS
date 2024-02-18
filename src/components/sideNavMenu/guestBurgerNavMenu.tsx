@@ -13,6 +13,7 @@ export default function GuestBurgerNavMenu() {
       </SideNavMenuGroup>
       <SideNavMenuGroup title="Inbox">
         <SideNavMenuItem text="Messages" href="/guest/messages" icon={MenuIcons.Messages} />
+        <SideNavMenuItem text="Legal" href="https://rentality.xyz/legalmatters" icon={MenuIcons.Legal} target = "_blank" />
       </SideNavMenuGroup>
       <hr />
       <SideNavMenuGroup title="Profile settings" href="/guest/profile" icon={MenuIcons.ProfileSettings} />
