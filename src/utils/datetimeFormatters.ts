@@ -12,6 +12,20 @@ export const dateFormat = (value: Date) => {
   return `${dateString}, ${timeString}`;
 };
 
+//MMMM d, h:mm AM
+export const dateFormatShortMonth = (value: Date) => {
+  const dateString = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+  }).format(value);
+  const timeString = new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+  }).format(value);
+
+  return `${dateString}, ${timeString}`;
+};
+
 //yyyy-MM-dd
 export const dateToHtmlDateFormat = (value: Date | undefined) => {
   if (value === undefined) return "";
