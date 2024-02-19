@@ -5,6 +5,7 @@ enum MenuIcons {
   Claims,
   ProfileSettings,
   Listings,
+  Legal,
 }
 
 export default MenuIcons;

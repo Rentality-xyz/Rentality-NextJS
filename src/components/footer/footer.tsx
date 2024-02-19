@@ -5,15 +5,35 @@ import linkedin from "../../images/ic-linkedin-50.png";
 import twitter from "../../images/ic_twitter.svg";
 import discord from "../../images/ic-discord-50.png";
 import email from "../../images/ic-email-50.png";
+import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-[url('../images/bg-gradient-flip.jpg')] bg-cover bg-no-repeat bg-center bg-scroll relative h-[320px] min-[500px]:h-[350px] min-[560px]:h-[400px] lg:h-[290px]">
+    <footer className="bg-[url('../images/bg-gradient-flip.jpg')] bg-cover bg-no-repeat bg-center bg-scroll relative h-[500px] min-[500px]:h-[350px] min-[560px]:h-[450px] lg:h-[290px]">
       <Image src={bgCar} alt="" className="absolute bottom-0 left-0" />
       <div
         id={"footer-content"}
-        className="text-white max-w-[1192px] mx-auto px-4 flex flex-col h-full"
+        className="text-white max-w-[1192px] mx-auto flex flex-col sm:flex-row h-full"
       >
+
+        <div id="footer-legal-matters" className = "flex flex-col pt-[30px] lg:pt-[40px] max-lg:mx-auto lg:ml-[540px] min-[1536px]:ml-[540px] min-[1720px]:ml-auto w-max h-1/3 sm:h-full">
+          <Link href="https://rentality.xyz" target="_blank" className = "pb-1 cursor-pointer text-xl font-semibold font-['Montserrat',Arial,sans-serif] hover:underline">
+            <strong>Legal matters</strong>
+          </Link>
+          <Link href="https://rentality.xyz/legalmatters/terms" target="_blank" className = "pb-1.5 pl-4 cursor-pointer text-base font-['Montserrat',Arial,sans-serif] hover:underline">
+            <strong>Terms of service</strong>
+          </Link>
+          <Link href="https://rentality.xyz/legalmatters/cancellation" target="_blank" className = "pb-1.5 pl-4 cursor-pointer text-base font-['Montserrat',Arial,sans-serif] hover:underline">
+            <strong>Cancellation policy</strong>
+          </Link>
+          <Link href="https://rentality.xyz/legalmatters/prohibiteduses" target="_blank" className = "pb-1.5 pl-4 cursor-pointer text-base font-['Montserrat',Arial,sans-serif] hover:underline">
+            <strong>Prohibited uses</strong>
+          </Link>
+          <Link href="https://rentality.xyz/legalmatters/privacy" target="_blank" className = "pb-1.5 pl-4 cursor-pointer text-base font-['Montserrat',Arial,sans-serif] hover:underline">
+            <strong>Privacy policy</strong>
+          </Link>
+        </div>
+
         <div id={"footer-info-block"} className="flex flex-col pt-[30px] lg:pt-[40px] max-lg:mx-auto lg:ml-auto w-max h-full">
           <Image src={logo} alt="" className="max-w-[200px] min-w-[200px] h-auto" />
           <div>

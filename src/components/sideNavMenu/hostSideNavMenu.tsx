@@ -17,6 +17,7 @@ function HostNavMenu() {
       </SideNavMenuGroup>
       <SideNavMenuGroup title="Inbox">
         <SideNavMenuItem text="Messages" href="/host/messages" icon={MenuIcons.Messages} />
+        <SideNavMenuItem text="Legal" href="https://rentality.xyz/legalmatters" icon={MenuIcons.Legal} target = "_blank"/>
       </SideNavMenuGroup>
       <hr />
       <SideNavMenuGroup title="Profile settings" href="/host/profile" icon={MenuIcons.ProfileSettings} />

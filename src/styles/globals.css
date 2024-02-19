@@ -295,6 +295,7 @@ input:disabled {
   position: relative;
   /*z-index: 0;*/
 }
+
 .border-gradient:before {
   content: "";
   position: absolute;
@@ -304,11 +305,11 @@ input:disabled {
   border-radius: 9999px;
   background: linear-gradient(to right, #74BBEF 0%, #7257CE 70%, #5E3DD3 100%);
   -webkit-mask:
-          linear-gradient(#fff 0 0) content-box,
-          linear-gradient(#fff 0 0);
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   mask:
-          linear-gradient(#fff 0 0) content-box,
-          linear-gradient(#fff 0 0);
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
 

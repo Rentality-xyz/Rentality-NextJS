@@ -14,6 +14,7 @@ function GuestNavMenu() {
       </SideNavMenuGroup>
       <SideNavMenuGroup title="Inbox">
         <SideNavMenuItem text="Messages" href="/guest/messages" icon={MenuIcons.Messages} />
+        <SideNavMenuItem text="Legal" href="https://rentality.xyz/legalmatters" icon={MenuIcons.Legal} target = "_blank"/>
       </SideNavMenuGroup>
       <SideNavMenuGroup title="More">
         <SideNavMenuItem text="Claims" href="/guest/claims" icon={MenuIcons.Claims} />

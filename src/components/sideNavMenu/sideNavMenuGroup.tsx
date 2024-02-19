@@ -6,6 +6,7 @@ import icMessages from "@/images/ic_messages.jpg";
 import icProfileSettings from "@/images/ic_profile_settings.jpg";
 import icListings from "@/images/ic_listings.jpg";
 import icClaims from "@/images/ic_claims.jpg";
+import icLegal from "@/images/ic_legal.jpg";
 import MenuIcons from "@/components/sideNavMenu/menuIcons";
 import { useAppContext } from "@/contexts/appContext";
 
@@ -36,6 +37,8 @@ export default function SideNavMenuGroup({
         return icListings;
       case MenuIcons.Claims:
         return icClaims;
+      case MenuIcons.Legal:
+        return icLegal;
     }
   };
 
