@@ -3,7 +3,7 @@ import { TripInfo } from "@/model/TripInfo";
 
 export default function TripContacts({ tripInfo, isHost }: { tripInfo: TripInfo; isHost: boolean }) {
   const pathRoot = isHost ? "host" : "guest";
-  const otherUserMobileNumber = isHost ? tripInfo.guestMobileNumber : tripInfo.hostMobileNumber;
+  const otherUserPhoneNumber = isHost ? tripInfo.guestPhoneNumber : tripInfo.hostPhoneNumber;
 
   return (
     <div
@@ -21,7 +21,7 @@ export default function TripContacts({ tripInfo, isHost }: { tripInfo: TripInfo;
         </div>
         <div id="trip-contact-info" className="2xl:flex 2xl:flex-col 2xl:mt-2">
           <div>
-            <a href={`tel:${otherUserMobileNumber}`}>
+            <a href={`tel:${otherUserPhoneNumber}`}>
               <i className="fi fi-br-phone-flip pr-1 text-rentality-icons"></i>
               <strong className="text-l">Contact</strong>
             </a>

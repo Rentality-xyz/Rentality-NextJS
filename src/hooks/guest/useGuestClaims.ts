@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { IRentalityContract, IRentalityCurrencyConverterContract } from "@/model/blockchain/IRentalityContract";
-import { getDateFromBlockchainTime } from "@/utils/formInput";
+import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
 import { getEtherContract } from "@/abis";
 import { Claim, getClaimStatusTextFromStatus, getClaimTypeTextFromClaimType } from "@/model/Claim";
 import { ContractFullClaimInfo, validateContractFullClaimInfo } from "@/model/blockchain/ContractClaimInfo";
@@ -76,8 +76,8 @@ const useGuestClaims = () => {
                     payDateInSec: Number(i.claim.payDateInSec),
                     rejectedBy: i.claim.rejectedBy,
                     rejectedDateInSec: Number(i.claim.rejectedDateInSec),
-                    hostPhoneNumber: i.hostPhoneNumber,
-                    guestPhoneNumber: i.guestPhoneNumber,
+                    hostPhoneNumber: formatPhoneNumber(i.hostPhoneNumber),
+                    guestPhoneNumber: formatPhoneNumber(i.guestPhoneNumber),
                   };
                   return item;
                 })

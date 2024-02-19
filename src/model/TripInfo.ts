@@ -81,8 +81,8 @@ export type TripInfo = {
   endOdometr: number;
   overmilePrice: number;
   depositPaid: number;
-  hostMobileNumber: string;
-  guestMobileNumber: string;
+  hostPhoneNumber: string;
+  guestPhoneNumber: string;
   hostAddress: string;
   hostName: string;
   guestAddress: string;

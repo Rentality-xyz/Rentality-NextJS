@@ -20,3 +20,7 @@ export const getBlockchainTimeFromDate = (time: Date): bigint => {
 export const getDateFromBlockchainTime = (time: number | bigint): Date => {
   return moment.unix(Number(time)).local().toDate();
 };
+
+export const formatPhoneNumber = (phoneNumber: string): string => {
+  return phoneNumber.startsWith("+") ? phoneNumber : `+${phoneNumber}`;
+};

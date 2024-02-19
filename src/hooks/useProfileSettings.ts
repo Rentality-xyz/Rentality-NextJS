@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { IRentalityContract, ContractKYCInfo } from "@/model/blockchain/IRentalityContract";
 import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
 import { useRentality } from "@/contexts/rentalityContext";
-import { getBlockchainTimeFromDate, getDateFromBlockchainTime } from "@/utils/formInput";
+import { formatPhoneNumber, getBlockchainTimeFromDate, getDateFromBlockchainTime } from "@/utils/formInput";
 import moment from "moment";
 
 export type ProfileSettings = {
@@ -42,7 +42,7 @@ const useProfileSettings = () => {
         profilePhotoUrl: getIpfsURIfromPinata(myKYCInfo.profilePhoto),
         firstName: myKYCInfo.name,
         lastName: myKYCInfo.surname,
-        phoneNumber: myKYCInfo.mobilePhoneNumber,
+        phoneNumber: formatPhoneNumber(myKYCInfo.mobilePhoneNumber),
         drivingLicenseNumber: myKYCInfo.licenseNumber,
         drivingLicenseExpire:
           myKYCInfo.expirationDate > 0 ? getDateFromBlockchainTime(myKYCInfo.expirationDate) : undefined,

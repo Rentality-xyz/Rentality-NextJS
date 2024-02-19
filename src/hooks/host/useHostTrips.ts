@@ -4,7 +4,7 @@ import { TripInfo, AllowedChangeTripAction, TripStatus } from "@/model/TripInfo"
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
-import { getDateFromBlockchainTime } from "@/utils/formInput";
+import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
 import { EngineType } from "@/model/blockchain/ContractCarInfo";
 
 const useHostTrips = () => {
@@ -247,8 +247,8 @@ const useHostTrips = () => {
                     endOdometr: Number(i.endParamLevels[1]),
                     depositPaid: Number(i.paymentInfo.depositInUsdCents) / 100,
                     overmilePrice: Number(i.pricePerDayInUsdCents) / Number(i.milesIncludedPerDay) / 100,
-                    hostMobileNumber: tripContactInfo.hostPhoneNumber,
-                    guestMobileNumber: tripContactInfo.guestPhoneNumber,
+                    hostPhoneNumber: formatPhoneNumber(tripContactInfo.hostPhoneNumber),
+                    guestPhoneNumber: formatPhoneNumber(tripContactInfo.guestPhoneNumber),
                     hostAddress: i.host,
                     hostName: i.hostName,
                     guestAddress: i.guest,
