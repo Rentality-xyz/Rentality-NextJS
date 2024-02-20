@@ -1,28 +1,23 @@
-import { AppContextProvider } from "@/contexts/appContext";
-import { CivicProvider } from "@/contexts/civicContext";
-import { RentalityProvider } from "@/contexts/rentalityContext";
-import { UserInfoProvider } from "@/contexts/userInfoContext";
-import type { AppProps } from "next/app";
-import { useRouter } from "next/router";
 import "@/styles/globals.css";
-import { PrivyProvider } from "@/contexts/privyContext";
+import type { AppProps } from "next/app";
+import { Web3Setup } from "@/contexts/web3/web3Setup";
+import { UserInfoProvider } from "@/contexts/userInfoContext";
 import { ChatProvider } from "@/contexts/chatContext";
+import { AppContextProvider } from "@/contexts/appContext";
+import { RentalityProvider } from "@/contexts/rentalityContext";
 
 export default function App({ Component, pageProps }: AppProps) {
-  const router = useRouter();
   return (
-    <PrivyProvider>
+    <Web3Setup>
       <RentalityProvider>
-        <CivicProvider>
-          <UserInfoProvider>
-            <ChatProvider>
-              <AppContextProvider>
-                <Component {...pageProps} />
-              </AppContextProvider>
-            </ChatProvider>
-          </UserInfoProvider>
-        </CivicProvider>
+        <UserInfoProvider>
+          <ChatProvider>
+            <AppContextProvider>
+              <Component {...pageProps} />
+            </AppContextProvider>
+          </ChatProvider>
+        </UserInfoProvider>
       </RentalityProvider>
-    </PrivyProvider>
+    </Web3Setup>
   );
 }

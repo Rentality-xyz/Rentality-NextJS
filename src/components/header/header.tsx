@@ -15,12 +15,14 @@ import { GuestBurgerNavMenu } from "../sideNavMenu/guestSideNavMenu";
 import { HostBurgerNavMenu } from "../sideNavMenu/hostSideNavMenu";
 
 export default function Header({ accountType }: { accountType: string }) {
+  const { login, logout } = usePrivy();
   const rentalityInfo = useRentality();
   const userInfo = useUserInfo();
   accountType = accountType ?? "Host";
   const isHost = accountType === "Host";
 
   const { isHideBurgerMenu, toggleBurgerMenu } = useAppContext();
+  const [isSelectedHost, setIsSelectedHost] = useState(isHost);
 
   const AntSwitch = styled(Switch)(({ theme }) => ({
     width: 72,
@@ -65,18 +67,14 @@ export default function Header({ accountType }: { accountType: string }) {
     },
   }));
 
-  const [checked, setChecked] = useState(isHost);
-
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
+    setIsSelectedHost(event.target.checked);
     if (event.target.checked) {
       window.location.href = "/host";
     } else {
       window.location.href = "/guest";
     }
   };
-
-  const { login } = usePrivy();
 
   return (
     <div>
@@ -100,32 +98,27 @@ export default function Header({ accountType }: { accountType: string }) {
             <div className="font-bold text-xl lg:text-3xl max-sm:hidden">{accountType} account</div>
           </div>
           <div className="flex flex-row items-center">
-            {/*<div className="flex flex-row mr-16 max-xl:mr-8 max-lg:hidden">*/}
-            {/*  {isHost ? (*/}
-            {/*      <Link href="/guest">*/}
-            {/*        <RntButton className="w-48 h-10">Switch to Guest</RntButton>*/}
-            {/*      </Link>*/}
-            {/*  ) : (*/}
-            {/*      <Link href="/host">*/}
-            {/*        <RntButton className="w-48 h-10">Switch to Host</RntButton>*/}
-            {/*      </Link>*/}
-            {/*  )}*/}
-            {/*</div>*/}
             <Stack direction="row" spacing={1} alignItems="center">
               <Typography className="text-lg font-['Montserrat',Arial,sans-serif]">Guest</Typography>
-              <AntSwitch checked={checked} onChange={handleChange} inputProps={{ "aria-label": "ant design" }} />
+              <AntSwitch checked={isSelectedHost} onChange={handleChange} inputProps={{ "aria-label": "ant design" }} />
               <Typography className="text-lg font-['Montserrat',Arial,sans-serif]">Host</Typography>
             </Stack>
 
             <ChooseBlockchainComponent />
 
             {rentalityInfo?.isWalletConnected ? (
-              <div className="flex flex-row gap-4 ml-2 xl:ml-16 items-center">
+              <div
+                className="flex flex-row gap-4 ml-2 xl:ml-16 items-center cursor-pointer"
+                // onClick={async () => {
+                //   await logout();
+                //   window.ethereum.logout();
+                // }}
+              >
                 <div className=" flex-col hidden xl:flex">
                   <div>
                     {userInfo.firstName} {userInfo.lastName}
                   </div>
-                  <div className="text-sm">{formatAddress(rentalityInfo?.walletAddress)}</div>
+                  <div className="text-sm">{formatAddress(userInfo.address)}</div>
                 </div>
                 <Avatar
                   alt={`${userInfo.firstName} ${userInfo.lastName}`}
@@ -138,15 +131,8 @@ export default function Header({ accountType }: { accountType: string }) {
                 </Avatar>
               </div>
             ) : (
-              <RntButton
-                className="w-28 sm:w-48 h-10 text-sm sm:text-base"
-                onClick={login}
-                // onClick={() => {
-                //   rentalityInfo?.connectWallet();
-                // }}
-              >
-                Connect Wallet
-                {/*Connect MetaMask*/}
+              <RntButton className="w-28 sm:w-48 h-10 text-sm sm:text-base" onClick={login}>
+                Login
               </RntButton>
             )}
           </div>

@@ -7,13 +7,14 @@ import { ElementRef, useEffect, useRef, useState } from "react";
 import { assertIsNode } from "@/utils/react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { getExistBlockchainList } from "@/model/blockchain/BlockchainList";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
 
 export default function ChooseBlockchainComponent() {
   const classBtn: string = "w-full text-base font-semibold text-white normal-case font-['Montserrat',Arial,sans-serif]";
 
   const [isShowComponentList, setIsShowComponentList] = useState(false);
   const [selectedChainId, setSelectedChainId] = useState(-1);
-  const rentalityInfo = useRentality();
+  const ethereumInfo = useEthereum();
   const chooseBlockchainWrapperRef = useRef<ElementRef<"div">>(null);
   const selectedBlockchain = getExistBlockchainList().find((i) => i.chainId === selectedChainId);
 
@@ -29,16 +30,16 @@ export default function ChooseBlockchainComponent() {
 
   useEffect(() => {
     const getChainId = async () => {
-      if (!rentalityInfo) return;
+      if (!ethereumInfo) return;
 
-      const chainId = await rentalityInfo?.signer.getChainId();
+      const chainId = await ethereumInfo?.signer.getChainId();
       if (selectedChainId !== chainId) {
         setSelectedChainId(chainId);
       }
     };
 
     getChainId();
-  }, [rentalityInfo, selectedChainId]);
+  }, [ethereumInfo, selectedChainId]);
 
   const handleOnScroll = (event: Event) => {
     if (event.target === document || event.target === document.documentElement || event.target === document.body) {
@@ -83,7 +84,7 @@ export default function ChooseBlockchainComponent() {
                   key={i.chainId}
                   className={classBtn}
                   onClick={async () => {
-                    await rentalityInfo?.requestChainIdChange(i.chainIdHexString);
+                    await ethereumInfo?.requestChainIdChange(i.chainIdHexString);
                     setIsShowComponentList((prev) => !prev);
                   }}
                 >

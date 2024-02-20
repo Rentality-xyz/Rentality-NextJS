@@ -44,17 +44,6 @@ export const UserInfoProvider = ({ children }: { children?: React.ReactNode }) =
   const rentalityInfo = useRentality();
 
   useEffect(() => {
-    // const checkLoggedIn = async () => {
-    //   let cuser = isAuthenticated();
-    //   if (cuser === null) {
-    //     localStorage.setItem("user", "");
-    //     cuser = "";
-    //   }
-
-    //   setCurrentUserProfile(cuser);
-    // };
-
-    // checkLoggedIn();
     const loadUserInfo = async () => {
       if (rentalityInfo === null) {
         return;
