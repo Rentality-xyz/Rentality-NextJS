@@ -42,7 +42,7 @@ const emptyDetails: TripDetails = {
 };
 
 const useTripDetails = (tripId: bigint) => {
-  const rentalityInfo = useRentality();
+  const rentalityContract = useRentality();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [tripDetails, setTripDetails] = useState<TripDetails>(emptyDetails);
 
@@ -106,15 +106,15 @@ const useTripDetails = (tripId: bigint) => {
   };
 
   useEffect(() => {
-    if (!rentalityInfo) return;
+    if (!rentalityContract) return;
 
-    getTrip(rentalityInfo.rentalityContract, tripId)
+    getTrip(rentalityContract, tripId)
       .then((data) => {
         setTripDetails(data ?? emptyDetails);
         setIsLoading(false);
       })
       .catch(() => setIsLoading(false));
-  }, [rentalityInfo, tripId]);
+  }, [rentalityContract, tripId]);
 
   return [isLoading, tripDetails] as const;
 };

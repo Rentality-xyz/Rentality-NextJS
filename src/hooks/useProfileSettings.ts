@@ -24,7 +24,7 @@ const emptyProfileSettings: ProfileSettings = {
 };
 
 const useProfileSettings = () => {
-  const rentalityInfo = useRentality();
+  const rentalityContract = useRentality();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [profileSettings, setProfileSettings] = useState<ProfileSettings>(emptyProfileSettings);
 
@@ -54,8 +54,8 @@ const useProfileSettings = () => {
   };
 
   const saveProfileSettings = async (newProfileSettings: ProfileSettings) => {
-    if (!rentalityInfo) {
-      console.error("saveProfileSettings error: rentalityInfo is null");
+    if (!rentalityContract) {
+      console.error("saveProfileSettings error: rentalityContract is null");
       return false;
     }
 
@@ -65,7 +65,7 @@ const useProfileSettings = () => {
           ? getBlockchainTimeFromDate(moment.utc(newProfileSettings.drivingLicenseExpire).toDate())
           : BigInt(0);
 
-      let transaction = await rentalityInfo.rentalityContract.setKYCInfo(
+      let transaction = await rentalityContract.setKYCInfo(
         newProfileSettings.firstName,
         newProfileSettings.lastName,
         newProfileSettings.phoneNumber,
@@ -85,15 +85,15 @@ const useProfileSettings = () => {
   };
 
   useEffect(() => {
-    if (!rentalityInfo) return;
+    if (!rentalityContract) return;
 
-    getProfileSettings(rentalityInfo.rentalityContract)
+    getProfileSettings(rentalityContract)
       .then((data) => {
         setProfileSettings(data ?? emptyProfileSettings);
         setIsLoading(false);
       })
       .catch(() => setIsLoading(false));
-  }, [rentalityInfo]);
+  }, [rentalityContract]);
 
   return [isLoading, profileSettings, saveProfileSettings] as const;
 };

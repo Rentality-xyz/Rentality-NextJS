@@ -5,15 +5,17 @@ import { IRentalityChatHelperContract, IRentalityContract } from "@/model/blockc
 import { ContractChatInfo } from "@/model/blockchain/ContractChatInfo";
 import { Client as ChatClient } from "@/chat/client";
 import { useRentality } from "@/contexts/rentalityContext";
-import { getEtherContract } from "@/abis";
+import { getEtherContractWithSigner } from "@/abis";
 import { isEmpty } from "@/utils/string";
 import { bytesToHex } from "@waku/utils/bytes";
 import { ChatInfo } from "@/model/ChatInfo";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
 import moment from "moment";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
 
 const useChatInfos = (isHost: boolean) => {
-  const rentalityInfo = useRentality();
+  const ethereumInfo = useEthereum();
+  const rentalityContract = useRentality();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [chatInfos, setChatInfos] = useState<ChatInfo[]>([]);
   const [chatClient, setChatClient] = useState<ChatClient | undefined>(undefined);
@@ -77,18 +79,21 @@ const useChatInfos = (isHost: boolean) => {
     };
 
     const initChat = async () => {
-      if (!rentalityInfo) return;
+      if (!ethereumInfo) return;
+      if (!rentalityContract) return;
       if (isInitiating.current) return;
       isInitiating.current = true;
 
-      const rentalityChatHelper = (await getEtherContract("chatHelper")) as unknown as IRentalityChatHelperContract;
+      const rentalityChatHelper = (await getEtherContractWithSigner(
+        "chatHelper",
+        ethereumInfo.signer
+      )) as unknown as IRentalityChatHelperContract;
       if (!rentalityChatHelper) {
         console.error("useChatInfos error: ", "rentalityChatHelper is null");
         return;
       }
 
-      const contractInfo = rentalityInfo.rentalityContract;
-      if (contractInfo === undefined) {
+      if (!rentalityContract) {
         console.error("chat contract info is undefined");
         return;
       }
@@ -99,11 +104,11 @@ const useChatInfos = (isHost: boolean) => {
 
       try {
         const client = new ChatClient();
-        const infos = (await getChatInfos(contractInfo)) ?? [];
+        const infos = (await getChatInfos(rentalityContract)) ?? [];
 
         const [myStoredPrivateKey, myStoredPublicKey] = await rentalityChatHelper.getMyChatKeys();
 
-        await client.init(rentalityInfo.signer, onUserMessageReceived, myStoredPrivateKey, myStoredPublicKey);
+        await client.init(ethereumInfo.signer, onUserMessageReceived, myStoredPrivateKey, myStoredPublicKey);
         await client.listenForUserChatMessages();
 
         if (!client.encryptionKeyPair?.publicKey) {
@@ -161,7 +166,7 @@ const useChatInfos = (isHost: boolean) => {
     };
 
     initChat();
-  }, [rentalityInfo, isHost]);
+  }, [ethereumInfo, rentalityContract, isHost]);
 
   const onUserMessageReceived = async (from: string, to: string, tripId: number, datetime: number, message: string) => {
     setChatInfos((current) => {

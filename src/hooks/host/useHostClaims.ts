@@ -15,7 +15,7 @@ import { TripStatus } from "@/model/TripInfo";
 import { Claim, getClaimTypeTextFromClaimType, getClaimStatusTextFromStatus } from "@/model/Claim";
 
 const useHostClaims = () => {
-  const rentalityInfo = useRentality();
+  const rentalityContract = useRentality();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [tripInfos, setTripInfos] = useState<TripInfoForClaimCreation[]>([
     { tripId: 0, tripDescription: "Loading..." },
@@ -24,8 +24,8 @@ const useHostClaims = () => {
   const [claims, setClaims] = useState<Claim[]>([]);
 
   const createClaim = async (createClaimRequest: CreateClaimRequest) => {
-    if (rentalityInfo === null) {
-      console.error("createClaim: rentalityInfo is null");
+    if (rentalityContract === null) {
+      console.error("createClaim: rentalityContract is null");
       return false;
     }
 
@@ -37,7 +37,7 @@ const useHostClaims = () => {
         amountInUsdCents: BigInt(createClaimRequest.amountInUsdCents),
       };
 
-      let transaction = await rentalityInfo.rentalityContract.createClaim(claimRequest);
+      let transaction = await rentalityContract.createClaim(claimRequest);
       await transaction.wait();
       return true;
     } catch (e) {
@@ -47,13 +47,13 @@ const useHostClaims = () => {
   };
 
   const cancelClaim = async (claimId: number) => {
-    if (!rentalityInfo) {
-      console.error("cancelClaim error: rentalityInfo is null");
+    if (!rentalityContract) {
+      console.error("cancelClaim error: rentalityContract is null");
       return false;
     }
 
     try {
-      let transaction = await rentalityInfo.rentalityContract.rejectClaim(BigInt(claimId));
+      let transaction = await rentalityContract.rejectClaim(BigInt(claimId));
 
       await transaction.wait();
       return true;
@@ -142,18 +142,18 @@ const useHostClaims = () => {
       }
     };
 
-    if (!rentalityInfo) return;
+    if (!rentalityContract) return;
 
     setIsLoading(true);
 
-    getClaims(rentalityInfo.rentalityContract)
+    getClaims(rentalityContract)
       .then((data) => {
         setClaims(data?.claimsData ?? []);
         setTripInfos(data?.hostTripsData ?? []);
         setIsLoading(false);
       })
       .catch(() => setIsLoading(false));
-  }, [rentalityInfo]);
+  }, [rentalityContract]);
 
   return [isLoading, claims, tripInfos, createClaim, cancelClaim] as const;
 };

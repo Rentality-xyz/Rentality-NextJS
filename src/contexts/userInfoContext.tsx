@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useRentality } from "./rentalityContext";
 import { ContractKYCInfo } from "@/model/blockchain/IRentalityContract";
 import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
+import { useEthereum } from "./web3/ethereumContext";
 
 export type UserInfo = {
   address: string;
@@ -41,20 +42,24 @@ export function useUserInfoUpdate() {
 
 export const UserInfoProvider = ({ children }: { children?: React.ReactNode }) => {
   const [currentUserInfo, setCurrentUserInfo] = useState<UserInfo>(EmptyUserInfo);
-  const rentalityInfo = useRentality();
+  const rentalityContract = useRentality();
+  const ethereumInfo = useEthereum();
 
   useEffect(() => {
     const loadUserInfo = async () => {
-      if (rentalityInfo === null) {
+      if (rentalityContract === null) {
+        return;
+      }
+      if (ethereumInfo === null) {
         return;
       }
       try {
-        const myKYCInfo: ContractKYCInfo = await rentalityInfo.rentalityContract.getMyKYCInfo();
+        const myKYCInfo: ContractKYCInfo = await rentalityContract.getMyKYCInfo();
 
         if (myKYCInfo == null) return;
 
         setCurrentUserInfo({
-          address: rentalityInfo.walletAddress,
+          address: ethereumInfo.walletAddress,
           firstName: myKYCInfo.name,
           lastName: myKYCInfo.surname,
           profilePhotoUrl: getIpfsURIfromPinata(myKYCInfo.profilePhoto),
@@ -65,7 +70,7 @@ export const UserInfoProvider = ({ children }: { children?: React.ReactNode }) =
       }
     };
     loadUserInfo();
-  }, [rentalityInfo]);
+  }, [rentalityContract, ethereumInfo]);
 
   return (
     <UserInfoContext.Provider value={currentUserInfo}>

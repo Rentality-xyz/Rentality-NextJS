@@ -3,7 +3,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { NotificationInfo } from "@/model/NotificationInfo";
 
 const useNotificationInfos = (isHost: boolean) => {
-  const rentalityInfo = useRentality();
+  const rentalityContract = useRentality();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [notificationInfos, setNotificationInfos] = useState<NotificationInfo[]>([
     {
@@ -108,10 +108,10 @@ const useNotificationInfos = (isHost: boolean) => {
 
   useEffect(() => {
     // const initChat = async () => {
-    //   if (!rentalityInfo) return;
+    //   if (!rentalityContract) return;
     //   if (isInitiating.current) return;
     //   isInitiating.current = true;
-    //   const contractInfo = rentalityInfo.rentalityContract;
+    //   const contractInfo = rentalityContract;
     //   if (contractInfo === undefined) {
     //     console.error("chat contract info is undefined");
     //     return;
@@ -131,7 +131,7 @@ const useNotificationInfos = (isHost: boolean) => {
     // initChat();
 
     setIsLoading(false);
-  }, [rentalityInfo]);
+  }, [rentalityContract]);
 
   return [isLoading, notificationInfos] as const;
 };

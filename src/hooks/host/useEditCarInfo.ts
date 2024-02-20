@@ -18,6 +18,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { ContractUpdateCarInfoRequest } from "@/model/blockchain/ContractUpdateCarInfoRequest";
 import { getMoneyInCentsFromString, getStringFromMoneyInCents } from "@/utils/formInput";
 import { ContractCarDetails } from "@/model/blockchain/ContractCarDetails";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
 
 const emptyHostCarInfo: HostCarInfo = {
   carId: -1,
@@ -60,14 +61,15 @@ const emptyHostCarInfo: HostCarInfo = {
 };
 
 const useEditCarInfo = (carId: number) => {
-  const rentalityInfo = useRentality();
+  const ethereumInfo = useEthereum();
+  const rentalityContract = useRentality();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(emptyHostCarInfo);
   const [dataSaved, setDataSaved] = useState<Boolean>(true);
 
   const saveCar = async () => {
-    if (!rentalityInfo) {
-      console.error("saveCar error: rentalityInfo is null");
+    if (!rentalityContract) {
+      console.error("saveCar error: rentalityContract is null");
       return false;
     }
 
@@ -104,7 +106,7 @@ const useEditCarInfo = (carId: number) => {
       let transaction: ContractTransaction;
 
       if (carInfoFormParams.isLocationAddressEdited) {
-        transaction = await rentalityInfo.rentalityContract.updateCarInfoWithLocation(
+        transaction = await rentalityContract.updateCarInfoWithLocation(
           updateCarRequest,
           carInfoFormParams.locationAddress,
           carInfoFormParams.locationLatitude,
@@ -112,7 +114,7 @@ const useEditCarInfo = (carId: number) => {
           process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ""
         );
       } else {
-        transaction = await rentalityInfo.rentalityContract.updateCarInfo(updateCarRequest);
+        transaction = await rentalityContract.updateCarInfo(updateCarRequest);
       }
 
       const result = await transaction.wait();
@@ -215,15 +217,16 @@ const useEditCarInfo = (carId: number) => {
     };
 
     if (isNaN(carId) || carId == -1) return;
-    if (!rentalityInfo) return;
+    if (!ethereumInfo) return;
+    if (!rentalityContract) return;
 
-    getCarInfo(rentalityInfo.rentalityContract, rentalityInfo.signer)
+    getCarInfo(rentalityContract, ethereumInfo.signer)
       .then((data) => {
         setCarInfoFormParams(data ?? emptyHostCarInfo);
         setIsLoading(false);
       })
       .catch(() => setIsLoading(false));
-  }, [carId, rentalityInfo]);
+  }, [carId, rentalityContract, ethereumInfo]);
 
   return [isLoading, carInfoFormParams, setCarInfoFormParams, dataSaved, saveCar] as const;
 };

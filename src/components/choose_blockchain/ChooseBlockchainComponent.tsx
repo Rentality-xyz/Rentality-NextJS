@@ -5,7 +5,6 @@ import blockchainChosen from "../../images/blockchainChosen.svg";
 import Image from "next/image";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { assertIsNode } from "@/utils/react";
-import { useRentality } from "@/contexts/rentalityContext";
 import { getExistBlockchainList } from "@/model/blockchain/BlockchainList";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 
@@ -84,7 +83,7 @@ export default function ChooseBlockchainComponent() {
                   key={i.chainId}
                   className={classBtn}
                   onClick={async () => {
-                    await ethereumInfo?.requestChainIdChange(i.chainIdHexString);
+                    await ethereumInfo?.requestChainIdChange(i.chainId);
                     setIsShowComponentList((prev) => !prev);
                   }}
                 >

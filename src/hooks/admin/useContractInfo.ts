@@ -2,7 +2,8 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { IRentalityAdminGateway, IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
-import { getEtherContract } from "@/abis";
+import { getEtherContractWithSigner } from "@/abis";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
 
 export type AdminContractInfo = {
   contractAddress: string;
@@ -31,7 +32,8 @@ const emptyAdminContractInfo = {
 };
 
 const useContractInfo = () => {
-  const rentalityInfo = useRentality();
+  const ethereumInfo = useEthereum();
+  const rentalityContract = useRentality();
   const [adminContractInfo, setAdminContractInfo] = useState<AdminContractInfo>(emptyAdminContractInfo);
   const [dataUpdated, setDataUpdated] = useState(false);
 
@@ -62,7 +64,15 @@ const useContractInfo = () => {
   };
 
   const withdrawFromPlatform = async (value: bigint) => {
-    const rentalityAdminGateway = (await getEtherContract("admin")) as unknown as IRentalityAdminGateway;
+    if (!ethereumInfo) {
+      console.error("updateUserService error: ethereumInfo is null");
+      return false;
+    }
+
+    const rentalityAdminGateway = (await getEtherContractWithSigner(
+      "admin",
+      ethereumInfo.signer
+    )) as unknown as IRentalityAdminGateway;
 
     if (!rentalityAdminGateway) {
       console.error("withdrawFromPlatform error: rentalityAdminGateway is null");
@@ -81,7 +91,15 @@ const useContractInfo = () => {
   };
 
   const setPlatformFeeInPPM = async (value: bigint) => {
-    const rentalityAdminGateway = (await getEtherContract("admin")) as unknown as IRentalityAdminGateway;
+    if (!ethereumInfo) {
+      console.error("updateUserService error: ethereumInfo is null");
+      return false;
+    }
+
+    const rentalityAdminGateway = (await getEtherContractWithSigner(
+      "admin",
+      ethereumInfo.signer
+    )) as unknown as IRentalityAdminGateway;
 
     if (!rentalityAdminGateway) {
       console.error("setPlatformFeeInPPM error: rentalityAdminGateway is null");
@@ -100,13 +118,13 @@ const useContractInfo = () => {
   };
 
   const updateUserService = async (address: string) => {
-    if (!rentalityInfo) {
-      console.error("updateUserService error: rentalityInfo is null");
+    if (!rentalityContract) {
+      console.error("updateUserService error: rentalityContract is null");
       return false;
     }
 
     try {
-      let transaction = await rentalityInfo.rentalityContract.updateUserService(address);
+      let transaction = await rentalityContract.updateUserService(address);
       const result = await transaction.wait();
       setDataUpdated(false);
       return true;
@@ -117,13 +135,13 @@ const useContractInfo = () => {
   };
 
   const updateCarService = async (address: string) => {
-    if (!rentalityInfo) {
-      console.error("updateCarService error: rentalityInfo is null");
+    if (!rentalityContract) {
+      console.error("updateCarService error: rentalityContract is null");
       return false;
     }
 
     try {
-      let transaction = await rentalityInfo.rentalityContract.updateCarService(address);
+      let transaction = await rentalityContract.updateCarService(address);
       const result = await transaction.wait();
       setDataUpdated(false);
       return true;
@@ -134,13 +152,13 @@ const useContractInfo = () => {
   };
 
   const updateTripService = async (address: string) => {
-    if (!rentalityInfo) {
-      console.error("updateTripService error: rentalityInfo is null");
+    if (!rentalityContract) {
+      console.error("updateTripService error: rentalityContract is null");
       return false;
     }
 
     try {
-      let transaction = await rentalityInfo.rentalityContract.updateTripService(address);
+      let transaction = await rentalityContract.updateTripService(address);
       const result = await transaction.wait();
       setDataUpdated(false);
       return true;
@@ -151,13 +169,13 @@ const useContractInfo = () => {
   };
 
   const updateCurrencyConverterService = async (address: string) => {
-    if (!rentalityInfo) {
-      console.error("updateCurrencyConverterService error: rentalityInfo is null");
+    if (!rentalityContract) {
+      console.error("updateCurrencyConverterService error: rentalityContract is null");
       return false;
     }
 
     try {
-      let transaction = await rentalityInfo.rentalityContract.updateCurrencyConverterService(address);
+      let transaction = await rentalityContract.updateCurrencyConverterService(address);
       const result = await transaction.wait();
       setDataUpdated(false);
       return true;
@@ -168,13 +186,13 @@ const useContractInfo = () => {
   };
 
   const updatePlatformService = async (address: string) => {
-    if (!rentalityInfo) {
-      console.error("updatePlatformService error: rentalityInfo is null");
+    if (!rentalityContract) {
+      console.error("updatePlatformService error: rentalityContract is null");
       return false;
     }
 
     try {
-      let transaction = await rentalityInfo.rentalityContract.updateRentalityPlatform(address);
+      let transaction = await rentalityContract.updateRentalityPlatform(address);
       const result = await transaction.wait();
       setDataUpdated(false);
       return true;
@@ -186,15 +204,16 @@ const useContractInfo = () => {
 
   useEffect(() => {
     if (dataUpdated) return;
-    if (!rentalityInfo) return;
+    if (!rentalityContract) return;
+    if (!ethereumInfo) return;
 
-    getAdminContractInfo(rentalityInfo.rentalityContract, rentalityInfo.provider).then((data) => {
+    getAdminContractInfo(rentalityContract, ethereumInfo.provider).then((data) => {
       if (data != null) {
         setAdminContractInfo(data);
         setDataUpdated(true);
       }
     });
-  }, [dataUpdated, rentalityInfo]);
+  }, [dataUpdated, rentalityContract, ethereumInfo]);
 
   return [
     adminContractInfo,

@@ -10,6 +10,7 @@ import {
 } from "@/model/blockchain/ContractCarInfo";
 import { getMoneyInCentsFromString } from "@/utils/formInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
 
 const emptyNewCarInfo: HostCarInfo = {
   carId: 0,
@@ -52,7 +53,8 @@ const emptyNewCarInfo: HostCarInfo = {
 };
 
 const useAddCar = () => {
-  const rentalityInfo = useRentality();
+  const rentalityContract = useRentality();
+  const ethereumInfo = useEthereum();
   const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(emptyNewCarInfo);
   const [dataSaved, setDataSaved] = useState<Boolean>(true);
 
@@ -147,9 +149,9 @@ const useAddCar = () => {
     try {
       const response = await uploadJSONToIPFS(nftJSON, "RentalityNFTMetadata", {
         createdAt: new Date().toISOString(),
-        createdBy: rentalityInfo?.walletAddress ?? "",
+        createdBy: ethereumInfo?.walletAddress ?? "",
         version: SMARTCONTRACT_VERSION,
-        chainId: (await rentalityInfo?.signer.getChainId()) ?? 0,
+        chainId: ethereumInfo?.chainId ?? 0,
       });
       if (response.success === true) {
         return response.pinataURL;
@@ -160,8 +162,13 @@ const useAddCar = () => {
   };
 
   const saveCar = async (image: File) => {
-    if (!rentalityInfo) {
-      console.error("saveCar error: rentalityInfo is null");
+    if (!ethereumInfo) {
+      console.error("saveCar error: ethereumInfo is null");
+      return false;
+    }
+
+    if (!rentalityContract) {
+      console.error("saveCar error: rentalityContract is null");
       return false;
     }
 
@@ -169,9 +176,9 @@ const useAddCar = () => {
       setDataSaved(false);
       const response = await uploadFileToIPFS(image, "RentalityCarImage", {
         createdAt: new Date().toISOString(),
-        createdBy: rentalityInfo.walletAddress,
+        createdBy: ethereumInfo.walletAddress,
         version: SMARTCONTRACT_VERSION,
-        chainId: await rentalityInfo.signer.getChainId(),
+        chainId: ethereumInfo?.chainId,
       });
 
       if (response.success !== true) {
@@ -230,7 +237,7 @@ const useAddCar = () => {
         locationLongitude: dataToSave.locationLongitude,
       };
 
-      let transaction = await rentalityInfo.rentalityContract.addCar(request);
+      let transaction = await rentalityContract.addCar(request);
 
       const result = await transaction.wait();
       setCarInfoFormParams(emptyNewCarInfo);

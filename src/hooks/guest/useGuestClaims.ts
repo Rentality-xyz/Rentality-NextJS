@@ -2,24 +2,31 @@ import { useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { IRentalityContract, IRentalityCurrencyConverterContract } from "@/model/blockchain/IRentalityContract";
 import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
-import { getEtherContract } from "@/abis";
+import { getEtherContractWithSigner } from "@/abis";
 import { Claim, getClaimStatusTextFromStatus, getClaimTypeTextFromClaimType } from "@/model/Claim";
 import { ContractFullClaimInfo, validateContractFullClaimInfo } from "@/model/blockchain/ContractClaimInfo";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
 
 const useGuestClaims = () => {
-  const rentalityInfo = useRentality();
+  const ethereumInfo = useEthereum();
+  const rentalityContract = useRentality();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [claims, setClaims] = useState<Claim[]>([]);
 
   const payClaim = async (claimId: number) => {
-    if (!rentalityInfo) {
-      console.error("payClaim error: rentalityInfo is null");
+    if (!ethereumInfo) {
+      console.error("payClaim error: ethereumInfo is null");
+      return false;
+    }
+    if (!rentalityContract) {
+      console.error("payClaim error: rentalityContract is null");
       return false;
     }
 
     try {
-      const rentalityCurrencyConverterContract = (await getEtherContract(
-        "currencyConverter"
+      const rentalityCurrencyConverterContract = (await getEtherContractWithSigner(
+        "currencyConverter",
+        ethereumInfo.signer
       )) as unknown as IRentalityCurrencyConverterContract;
 
       if (rentalityCurrencyConverterContract == null) {
@@ -32,7 +39,7 @@ const useGuestClaims = () => {
         BigInt(claimAmountInUsdCents)
       );
 
-      let transaction = await rentalityInfo.rentalityContract.payClaim(BigInt(claimId), {
+      let transaction = await rentalityContract.payClaim(BigInt(claimId), {
         value: valueInEth,
       });
 
@@ -89,17 +96,17 @@ const useGuestClaims = () => {
       }
     };
 
-    if (!rentalityInfo) return;
+    if (!rentalityContract) return;
 
     setIsLoading(true);
 
-    getClaims(rentalityInfo.rentalityContract)
+    getClaims(rentalityContract)
       .then((data) => {
         setClaims(data ?? []);
         setIsLoading(false);
       })
       .catch(() => setIsLoading(false));
-  }, [rentalityInfo]);
+  }, [rentalityContract]);
 
   return [isLoading, claims, payClaim] as const;
 };

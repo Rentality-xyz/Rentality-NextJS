@@ -6,7 +6,7 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
 
 const useMyListings = () => {
-  const rentalityInfo = useRentality();
+  const rentalityContract = useRentality();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [myListings, setMyListings] = useState<BaseCarInfo[]>([]);
 
@@ -57,15 +57,15 @@ const useMyListings = () => {
   };
 
   useEffect(() => {
-    if (!rentalityInfo) return;
+    if (!rentalityContract) return;
 
-    getMyListings(rentalityInfo.rentalityContract)
+    getMyListings(rentalityContract)
       .then((data) => {
         setMyListings(data ?? []);
         setIsLoading(false);
       })
       .catch(() => setIsLoading(false));
-  }, [rentalityInfo]);
+  }, [rentalityContract]);
 
   return [isLoading, myListings] as const;
 };

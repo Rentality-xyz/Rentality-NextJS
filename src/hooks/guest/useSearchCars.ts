@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { getEtherContract } from "../../abis";
+import { getEtherContractWithSigner } from "../../abis";
 import { EngineType, getEngineTypeString } from "@/model/blockchain/ContractCarInfo";
 import { calculateDays } from "@/utils/date";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
@@ -13,6 +13,7 @@ import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { IRentalityCurrencyConverterContract } from "@/model/blockchain/IRentalityContract";
 import { ContractSearchCar, validateContractSearchCar } from "@/model/blockchain/ContractSearchCar";
 import moment from "moment";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
 
 export const sortOptions = {
   priceAsc: "Price: low to high",
@@ -25,7 +26,8 @@ export function isSortOptionKey(key: string): key is SortOptionKey {
 }
 
 const useSearchCars = () => {
-  const rentalityInfo = useRentality();
+  const ethereumInfo = useEthereum();
+  const rentalityContract = useRentality();
   const [isLoading, setIsLoading] = useState<Boolean>(false);
   const [searchResult, setSearchResult] = useState<SearchCarsResult>(emptySearchCarsResult);
 
@@ -62,8 +64,8 @@ const useSearchCars = () => {
   ) => {
     if (searchCarsViewsView.length === 0) return [];
 
-    if (rentalityInfo == null) {
-      console.error("formatSearchAvailableCarsContractResponse error: rentalityInfo is null");
+    if (rentalityContract == null) {
+      console.error("formatSearchAvailableCarsContractResponse error: rentalityContract is null");
       return [];
     }
 
@@ -72,7 +74,7 @@ const useSearchCars = () => {
         if (index === 0) {
           validateContractSearchCar(i);
         }
-        const tokenURI = await rentalityInfo.rentalityContract.getCarMetadataURI(i.carId);
+        const tokenURI = await rentalityContract.getCarMetadataURI(i.carId);
         const meta = await getMetaDataFromIpfs(tokenURI);
 
         const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
@@ -104,11 +106,10 @@ const useSearchCars = () => {
   };
 
   const searchAvailableCars = async (searchCarRequest: SearchCarRequest) => {
-    if (rentalityInfo === null) {
-      console.error("searchAvailableCars: rentalityInfo is null");
+    if (rentalityContract === null) {
+      console.error("searchAvailableCars: rentalityContract is null");
       return false;
     }
-    const rentalityContract = rentalityInfo.rentalityContract;
 
     try {
       setIsLoading(true);
@@ -149,15 +150,19 @@ const useSearchCars = () => {
     taxPriceInUsdCents: number,
     depositInUsdCents: number
   ) => {
-    if (rentalityInfo === null) {
-      console.error("createTripRequest: rentalityInfo is null");
+    if (ethereumInfo === null) {
+      console.error("createTripRequest: ethereumInfo is null");
+      return false;
+    }
+    if (rentalityContract === null) {
+      console.error("createTripRequest: rentalityContract is null");
       return false;
     }
 
     try {
-      const rentalityContract = rentalityInfo.rentalityContract;
-      const rentalityCurrencyConverterContract = (await getEtherContract(
-        "currencyConverter"
+      const rentalityCurrencyConverterContract = (await getEtherContractWithSigner(
+        "currencyConverter",
+        ethereumInfo.signer
       )) as unknown as IRentalityCurrencyConverterContract;
       if (rentalityContract == null) {
         console.error("createTripRequest error: rentalityContract is null");

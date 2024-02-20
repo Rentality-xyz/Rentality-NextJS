@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ChatInfo } from "@/model/ChatInfo";
 import { Client as ChatClient } from "@/chat/client";
-import { getEtherContract } from "@/abis";
+import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityChatHelperContract, IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractChatInfo } from "@/model/blockchain/ContractChatInfo";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
@@ -12,6 +12,7 @@ import { isEmpty } from "@/utils/string";
 import { bytesToHex } from "viem";
 import { useRouter } from "next/router";
 import moment from "moment";
+import { useEthereum } from "./web3/ethereumContext";
 
 export type ChatContextInfo = {
   isLoading: boolean;
@@ -44,7 +45,8 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
   const [chatClient, setChatClient] = useState<ChatClient | undefined>(undefined);
   const [chatInfos, setChatInfos] = useState<ChatInfo[]>([]);
 
-  const rentalityInfo = useRentality();
+  const ethereumInfo = useEthereum();
+  const rentalityContract = useRentality();
   const router = useRouter();
   const isHost = router.route.startsWith("/host");
 
@@ -156,8 +158,15 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
       console.error("saveMyChatKeys error: publicKey is null");
       return;
     }
+    if (!ethereumInfo) {
+      console.error("saveMyChatKeys error: ethereumInfo is null");
+      return;
+    }
 
-    const rentalityChatHelper = (await getEtherContract("chatHelper")) as unknown as IRentalityChatHelperContract;
+    const rentalityChatHelper = (await getEtherContractWithSigner(
+      "chatHelper",
+      ethereumInfo?.signer
+    )) as unknown as IRentalityChatHelperContract;
     if (!rentalityChatHelper) {
       console.error("saveMyChatKeys error: ", "rentalityChatHelper is null");
       return;
@@ -173,10 +182,14 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
   }, [chatClient]);
 
   const getLatestChatInfos = useCallback(async () => {
-    if (!rentalityInfo) return;
+    if (!ethereumInfo) return;
+    if (!rentalityContract) return;
     if (!chatClient) return;
 
-    const rentalityChatHelper = (await getEtherContract("chatHelper")) as unknown as IRentalityChatHelperContract;
+    const rentalityChatHelper = (await getEtherContractWithSigner(
+      "chatHelper",
+      ethereumInfo?.signer
+    )) as unknown as IRentalityChatHelperContract;
     if (!rentalityChatHelper) {
       console.error("getLatestChatInfos error: rentalityChatHelper is null");
       return;
@@ -185,7 +198,7 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
     setIsLoading(true);
 
     try {
-      const infos = (await getChatInfos(rentalityInfo.rentalityContract)) ?? [];
+      const infos = (await getChatInfos(rentalityContract)) ?? [];
 
       const allAddresses = infos.map((i) => (isHost ? i.guestAddress : i.hostAddress));
       const uniqueAddresses = allAddresses.filter(function (item, pos, self) {
@@ -223,13 +236,13 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [rentalityInfo, chatClient, getChatInfos, isHost]);
+  }, [rentalityContract, chatClient, getChatInfos, isHost]);
 
   const isInitiating = useRef(false);
 
   useEffect(() => {
     const initChatClient = async () => {
-      if (!rentalityInfo) return;
+      if (!ethereumInfo) return;
       if (chatClient !== undefined) return;
       if (isInitiating.current) return;
       isInitiating.current = true;
@@ -238,7 +251,10 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
 
       setIsLoading(true);
 
-      const rentalityChatHelper = (await getEtherContract("chatHelper")) as unknown as IRentalityChatHelperContract;
+      const rentalityChatHelper = (await getEtherContractWithSigner(
+        "chatHelper",
+        ethereumInfo.signer
+      )) as unknown as IRentalityChatHelperContract;
       if (!rentalityChatHelper) {
         console.error("initChatClient error: rentalityChatHelper is null");
         return;
@@ -250,7 +266,7 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
         const [myStoredPrivateKey, myStoredPublicKey] = await rentalityChatHelper.getMyChatKeys();
         setIsMyChatKeysSaved(!isEmpty(myStoredPrivateKey));
 
-        await client.init(rentalityInfo.signer, onUserMessageReceived, myStoredPrivateKey, myStoredPublicKey);
+        await client.init(ethereumInfo.signer, onUserMessageReceived, myStoredPrivateKey, myStoredPublicKey);
         await client.listenForUserChatMessages();
 
         if (!client.encryptionKeyPair?.publicKey) {
@@ -274,7 +290,7 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
     };
 
     initChatClient();
-  }, [rentalityInfo, chatClient, onUserMessageReceived]);
+  }, [ethereumInfo, chatClient, onUserMessageReceived]);
 
   return (
     <ChatContext.Provider

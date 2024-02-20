@@ -1,7 +1,6 @@
 import { useState } from "react";
 import RntButton from "../common/rntButton";
 import { useUserInfo } from "@/contexts/userInfoContext";
-import { useRentality } from "@/contexts/rentalityContext";
 import { formatAddress } from "@/utils/addressFormatters";
 import { Avatar, Stack, styled, Switch, Typography } from "@mui/material";
 import { isEmpty } from "@/utils/string";
@@ -13,10 +12,11 @@ import ChooseBlockchainComponent from "@/components/choose_blockchain/ChooseBloc
 import { usePrivy } from "@privy-io/react-auth";
 import { GuestBurgerNavMenu } from "../sideNavMenu/guestSideNavMenu";
 import { HostBurgerNavMenu } from "../sideNavMenu/hostSideNavMenu";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
 
 export default function Header({ accountType }: { accountType: string }) {
   const { login, logout } = usePrivy();
-  const rentalityInfo = useRentality();
+  const ethereumInfo = useEthereum();
   const userInfo = useUserInfo();
   accountType = accountType ?? "Host";
   const isHost = accountType === "Host";
@@ -106,7 +106,7 @@ export default function Header({ accountType }: { accountType: string }) {
 
             <ChooseBlockchainComponent />
 
-            {rentalityInfo?.isWalletConnected ? (
+            {ethereumInfo?.isWalletConnected ? (
               <div
                 className="flex flex-row gap-4 ml-2 xl:ml-16 items-center cursor-pointer"
                 // onClick={async () => {

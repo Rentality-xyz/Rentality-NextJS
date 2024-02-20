@@ -6,7 +6,7 @@ import RentalityCurrencyConverterJSON_ABI from "./RentalityCurrencyConverter.v0_
 import RentalityCurrencyConverterJSON_ADDRESSES from "./RentalityCurrencyConverter.v0_16_1.addresses.json";
 import RentalityChatHelperJSON_ABI from "./RentalityChatHelper.v0_16_1.abi.json";
 import RentalityChatHelperJSON_ADDRESSES from "./RentalityChatHelper.v0_16_1.addresses.json";
-import { Contract, ethers } from "ethers";
+import { Contract, Signer, ethers } from "ethers";
 
 export const SMARTCONTRACT_VERSION = "v0_16_0";
 
@@ -29,17 +29,13 @@ const rentalityContracts = {
   },
 };
 
-export async function getEtherContract(contract: keyof typeof rentalityContracts) {
+export async function getEtherContractWithSigner(contract: keyof typeof rentalityContracts, signer: Signer) {
   try {
-    const { ethereum } = window;
-
-    if (!ethereum) {
-      console.error("getEtherContract error: Ethereum wallet is not found");
+    if (!signer) {
+      console.error("getEtherContract error: signer is null");
       return null;
     }
 
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
     const chainId = await signer.getChainId();
 
     const selectedChain = rentalityContracts[contract].addresses.find((i) => i.chainId === chainId);
