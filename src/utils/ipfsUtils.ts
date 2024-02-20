@@ -11,7 +11,8 @@ export const getPinataGatewayURIfromPinata = (pinataURI: string) => {
 };
 
 export const getMetaDataFromIpfs = async (tokenURI: string) => {
-  var ipfsURI = getPinataGatewayURIfromPinata(tokenURI);
+  //var ipfsURI = getPinataGatewayURIfromPinata(tokenURI);
+  var ipfsURI = getIpfsURIfromPinata(tokenURI);
   try {
     const response = await fetch(ipfsURI, {
       headers: {
