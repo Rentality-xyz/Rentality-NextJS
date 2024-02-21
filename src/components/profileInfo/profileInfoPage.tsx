@@ -11,7 +11,7 @@ import { Avatar } from "@mui/material";
 import { useRouter } from "next/router";
 import { FocusEvent, FormEvent, ReactNode, useState } from "react";
 import RntDatePicker from "../common/rntDatePicker";
-import PhoneInputComponent from "@/components/phone_number_input/PhoneNumberInputComponent";
+import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 
@@ -145,16 +145,13 @@ export default function ProfileInfoPage({
 
     if (isEmpty(formData.firstName)) result.firstName = "Please enter 'Name'";
     if (isEmpty(formData.lastName)) result.lastName = "Please enter 'Last name'";
-    if (isEmpty(formData.phoneNumber)) result.phoneNumber = "Please enter 'Phone number'";
+    if (isEmpty(formData.phoneNumber) || formData.phoneNumber === "+")
+      result.phoneNumber = "Please enter 'Phone number'";
     if (isEmpty(formData.drivingLicenseNumber)) result.drivingLicenseNumber = "Please enter 'Driving license number'";
     if (!formData.drivingLicenseExpire || Number.isNaN(formData.drivingLicenseExpire.getTime()))
       result.drivingLicenseExpire = "Please enter 'Driving license validity period'";
 
     return result;
-  }
-
-  function handlePhoneChange(value: string) {
-    setEnteredFormData({ ...enteredFormData, phoneNumber: value });
   }
 
   return (
@@ -201,18 +198,17 @@ export default function ProfileInfoPage({
             onChange={handleChange}
             onBlur={handleBlur}
           />
-          <PhoneInputComponent onChange={handlePhoneChange} initialValue={enteredFormData.phoneNumber} />
 
-          {/*<RntInput*/}
-          {/*  className="lg:w-60"*/}
-          {/*  id="phoneNumber"*/}
-          {/*  label="Phone number"*/}
-          {/*  type="tel"*/}
-          {/*  value={enteredFormData.phoneNumber}*/}
-          {/*  validationError={touched.phoneNumber || status === STATUS.SUBMITTED ? errors.phoneNumber : ""}*/}
-          {/*  onChange={handleChange}*/}
-          {/*  onBlur={handleBlur}*/}
-          {/*/>*/}
+          <RntPhoneInput
+            className="lg:w-60"
+            id="phoneNumber"
+            label="Phone number"
+            type="tel"
+            value={enteredFormData.phoneNumber}
+            validationError={touched.phoneNumber || status === STATUS.SUBMITTED ? errors.phoneNumber : ""}
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
         </div>
       </fieldset>
 

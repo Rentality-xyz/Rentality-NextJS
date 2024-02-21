@@ -1,7 +1,10 @@
 import { isEmpty } from "@/utils/string";
+import React from "react";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import { twMerge } from "tailwind-merge";
 
-interface RntInputProps extends React.ComponentPropsWithoutRef<"input"> {
+interface RntPhoneInputProps extends React.ComponentPropsWithoutRef<"input"> {
   labelClassName?: string;
   inputClassName?: string;
   validationClassName?: string;
@@ -9,7 +12,7 @@ interface RntInputProps extends React.ComponentPropsWithoutRef<"input"> {
   validationError?: string;
 }
 
-export default function RntInput({
+function RntPhoneInput({
   className,
   labelClassName,
   inputClassName,
@@ -17,22 +20,16 @@ export default function RntInput({
   id,
   label,
   placeholder,
-  type,
   value,
   readOnly,
   validationError,
   onChange: onChangeHandler,
   onBlur: onBlurHandler,
-}: RntInputProps) {
+}: RntPhoneInputProps) {
   const isShowLabel = label !== undefined && label?.length > 0;
-
-  type = type ?? "text";
   const cClassName = twMerge("text-black flex flex-col w-full", className);
   const lClassName = twMerge("text-rnt-temp-main-text mb-1", labelClassName);
-  const iClassName = twMerge(
-    "w-full h-12 border-2 rounded-full pl-4 disabled:bg-gray-300 disabled:text-gray-600",
-    inputClassName
-  );
+  const iClassName = twMerge("w-full h-12 disabled:bg-gray-300 disabled:text-gray-600", inputClassName);
   const vClassName = twMerge("text-red-400 mt-2", validationClassName);
 
   return (
@@ -42,20 +39,29 @@ export default function RntInput({
           {label}
         </label>
       ) : null}
-      <input
-        className={iClassName}
-        id={id}
-        name={id}
-        type={type}
-        readOnly={readOnly}
+      <PhoneInput
+        containerClass={iClassName}
+        inputProps={{
+          id: id,
+          name: id,
+        }}
         disabled={readOnly}
         placeholder={placeholder}
-        onChange={(e) => onChangeHandler != null && onChangeHandler(e)}
+        country={"us"}
+        onChange={(v, d, e) => onChangeHandler != null && onChangeHandler(e)}
         onBlur={(e) => onBlurHandler != null && onBlurHandler(e)}
-        value={value}
+        value={value?.toString()}
+        inputStyle={{
+          fontFamily: "'Montserrat', Arial, sans-serif",
+          width: "100%",
+          height: "48px",
+          borderRadius: "9999px",
+        }}
       />
 
       {!isEmpty(validationError) ? <p className={vClassName}>* {validationError}</p> : null}
     </div>
   );
 }
+
+export default RntPhoneInput;

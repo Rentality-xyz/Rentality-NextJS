@@ -31,7 +31,6 @@ export default function CarSearchItem({
           <div className="w-9/12 overflow-hidden">
             <strong className="text-lg overflow-hidden overflow-ellipsis">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>
           </div>
-          <div>{searchInfo.licensePlate}</div>
         </div>
         <div className="flex md:grid md:grid-cols-[2fr_1fr] text-xs mt-2 md:justify-between">
           <div className="w-9/12 flex flex-col">

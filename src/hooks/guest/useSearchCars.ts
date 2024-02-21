@@ -88,7 +88,6 @@ const useSearchCars = () => {
           brand: meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "",
           model: meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
           year: meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
-          licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
           seatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats number")?.value ?? "",
           transmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
           engineType: getEngineTypeString(i.engineType ?? EngineType.PATROL),
