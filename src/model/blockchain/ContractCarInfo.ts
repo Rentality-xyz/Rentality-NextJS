@@ -24,6 +24,7 @@ export type ContractCarInfo = {
   currentlyListed: boolean;
   geoVerified: boolean;
   timeZoneId: string;
+  isEditable: boolean;
 };
 
 export const emptyContractCarInfo: ContractCarInfo = {
@@ -42,6 +43,7 @@ export const emptyContractCarInfo: ContractCarInfo = {
   geoVerified: false,
   timeBufferBetweenTripsInSec: 0,
   timeZoneId: "",
+  isEditable: false,
 };
 
 export function validateContractCarInfo(obj: ContractCarInfo): obj is ContractCarInfo {
