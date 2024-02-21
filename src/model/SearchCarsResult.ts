@@ -12,7 +12,6 @@ export type SearchCarInfo = {
   brand: string;
   model: string;
   year: string;
-  licensePlate: string;
   seatsNumber: string;
   transmission: string;
   engineType: string;
