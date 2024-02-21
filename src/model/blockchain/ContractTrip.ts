@@ -1,6 +1,7 @@
 import { validateType } from "@/utils/typeValidator";
 import { TripStatus } from "../TripInfo";
 import { ContractTransactionInfo, emptyContractTransactionInfo } from "./ContractTransactionInfo";
+import { EngineType } from "./ContractCarInfo";
 
 export type ContractTrip = {
   tripId: bigint;
@@ -14,6 +15,7 @@ export type ContractTrip = {
   startLocation: string;
   endLocation: string;
   milesIncludedPerDay: bigint;
+  engineType: EngineType;
   fuelPrices: bigint[];
   paymentInfo: ContractPaymentInfo;
   createdDateTime: bigint;
@@ -83,6 +85,7 @@ export function validateContractTrip(obj: ContractTrip): obj is ContractTrip {
     startLocation: "",
     endLocation: "",
     milesIncludedPerDay: BigInt(0),
+    engineType: EngineType.PATROL,
     fuelPrices: [],
     paymentInfo: {
       tripId: BigInt(0),

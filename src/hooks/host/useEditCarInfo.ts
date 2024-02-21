@@ -52,10 +52,7 @@ const emptyHostCarInfo: HostCarInfo = {
   isLocationAddressEdited: false,
   currentlyListed: true,
   engineTypeString: "",
-  batteryPrice_0_20: "",
-  batteryPrice_21_50: "",
-  batteryPrice_51_80: "",
-  batteryPrice_81_100: "0",
+  fullBatteryChargePrice: "",
   timeBufferBetweenTripsInMin: 0,
 };
 
@@ -81,10 +78,7 @@ const useEditCarInfo = (carId: number) => {
       if (carInfoFormParams.engineTypeString === ENGINE_TYPE_PATROL_STRING) {
         engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.fuelPricePerGal)));
       } else if (carInfoFormParams.engineTypeString === ENGINE_TYPE_ELECTRIC_STRING) {
-        engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.batteryPrice_0_20)));
-        engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.batteryPrice_21_50)));
-        engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.batteryPrice_51_80)));
-        engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.batteryPrice_81_100)));
+        engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.fullBatteryChargePrice)));
       }
 
       const milesIncludedPerDay =
@@ -152,21 +146,9 @@ const useEditCarInfo = (carId: number) => {
           engineTypeString === ENGINE_TYPE_PATROL_STRING
             ? getStringFromMoneyInCents(carInfoDetails.engineParams[1])
             : "";
-        const batteryPrice_0_20 =
+        const fullBatteryChargePrice =
           engineTypeString === ENGINE_TYPE_ELECTRIC_STRING
             ? getStringFromMoneyInCents(carInfoDetails.engineParams[0])
-            : "";
-        const batteryPrice_21_50 =
-          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING
-            ? getStringFromMoneyInCents(carInfoDetails.engineParams[1])
-            : "";
-        const batteryPrice_51_80 =
-          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING
-            ? getStringFromMoneyInCents(carInfoDetails.engineParams[2])
-            : "";
-        const batteryPrice_81_100 =
-          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING
-            ? getStringFromMoneyInCents(carInfoDetails.engineParams[3])
             : "";
 
         let item: HostCarInfo = {
@@ -202,10 +184,7 @@ const useEditCarInfo = (carId: number) => {
           currentlyListed: carInfo.currentlyListed,
           engineTypeString: engineTypeString,
           fuelPricePerGal: fuelPricePerGal,
-          batteryPrice_0_20: batteryPrice_0_20,
-          batteryPrice_21_50: batteryPrice_21_50,
-          batteryPrice_51_80: batteryPrice_51_80,
-          batteryPrice_81_100: batteryPrice_81_100,
+          fullBatteryChargePrice: fullBatteryChargePrice,
           timeBufferBetweenTripsInMin: Number(carInfo.timeBufferBetweenTripsInSec) / 60,
         };
         return item;

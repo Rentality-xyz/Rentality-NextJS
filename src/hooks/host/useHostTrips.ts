@@ -231,17 +231,10 @@ const useHostTrips = () => {
                     tankVolumeInGal: tankSize,
                     startFuelLevelInPercents: Number(i.startParamLevels[0]),
                     endFuelLevelInPercents: Number(i.endParamLevels[0]),
-                    engineType: i.fuelPrices.length === 4 ? EngineType.ELECTRIC : EngineType.PATROL,
-                    fuelPricePerGal: i.fuelPrices.length === 1 ? Number(i.fuelPrices[0]) / 100 : 0,
-                    batteryPrices:
-                      i.fuelPrices.length === 4
-                        ? {
-                            price_0_20: Number(i.fuelPrices[0]) / 100,
-                            price_21_50: Number(i.fuelPrices[1]) / 100,
-                            price_51_80: Number(i.fuelPrices[2]) / 100,
-                            price_81_100: Number(i.fuelPrices[3]) / 100,
-                          }
-                        : { price_0_20: 0, price_21_50: 0, price_51_80: 0, price_81_100: 0 },
+                    engineType: i.engineType,
+                    fuelPricePerGal: i.engineType === EngineType.PATROL ? Number(i.fuelPrices[0]) / 100 : 0,
+                    fullBatteryChargePriceInUsdCents:
+                      i.engineType === EngineType.ELECTRIC ? Number(i.fuelPrices[0]) / 100 : 0,
                     milesIncludedPerDay: Number(i.milesIncludedPerDay),
                     startOdometr: Number(i.startParamLevels[1]),
                     endOdometr: Number(i.endParamLevels[1]),

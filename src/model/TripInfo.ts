@@ -75,7 +75,7 @@ export type TripInfo = {
   endFuelLevelInPercents: number;
   engineType: EngineType;
   fuelPricePerGal: number;
-  batteryPrices: { price_0_20: number; price_21_50: number; price_51_80: number; price_81_100: number };
+  fullBatteryChargePriceInUsdCents: number;
   milesIncludedPerDay: number;
   startOdometr: number;
   endOdometr: number;
@@ -95,24 +95,8 @@ export type TripInfo = {
   checkedOutByHostDateTime: Date;
 };
 
-export const getBatteryCharge = (
-  fuelDiffsInPercents: number,
-  batteryPrices: { price_0_20: number; price_21_50: number; price_51_80: number; price_81_100: number }
-) => {
-  if (fuelDiffsInPercents <= 20) return batteryPrices.price_0_20;
-  if (fuelDiffsInPercents <= 50) return batteryPrices.price_21_50;
-  if (fuelDiffsInPercents <= 80) return batteryPrices.price_51_80;
-  return batteryPrices.price_81_100;
-};
-
-export const getBatteryChargeFromDiffs = (
-  fuelDiffsInPercents: number,
-  batteryPrices: { price_0_20: number; price_21_50: number; price_51_80: number; price_81_100: number }
-) => {
-  if (fuelDiffsInPercents <= 20) return batteryPrices.price_81_100;
-  if (fuelDiffsInPercents <= 50) return batteryPrices.price_51_80;
-  if (fuelDiffsInPercents <= 80) return batteryPrices.price_21_50;
-  return batteryPrices.price_0_20;
+export const getBatteryChargeFromDiffs = (fuelDiffsInPercents: number, fullBatteryChargePriceInUsdCents: number) => {
+  return (Math.floor(fuelDiffsInPercents / 10) * fullBatteryChargePriceInUsdCents) / 10;
 };
 
 export const getRefuelValueAndCharge = (tripInfo: TripInfo, endFuelLevelInPercents: number) => {
@@ -122,7 +106,7 @@ export const getRefuelValueAndCharge = (tripInfo: TripInfo, endFuelLevelInPercen
   const refuelCharge =
     tripInfo.engineType === EngineType.PATROL
       ? refuelValue * tripInfo.fuelPricePerGal
-      : getBatteryChargeFromDiffs(fuelDiffsInPercents, tripInfo.batteryPrices);
+      : getBatteryChargeFromDiffs(fuelDiffsInPercents, tripInfo.fullBatteryChargePriceInUsdCents);
   return { refuelValue, refuelCharge };
 };
 
