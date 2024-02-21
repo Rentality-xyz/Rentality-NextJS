@@ -90,6 +90,8 @@ export default function RntDatePicker({
             onChange={(date) => onDateChange != null && onDateChange(date!)}
             renderInput={(params) => (
               <TextField
+                id={id}
+                onBlur={onBlurHandler}
                 {...params}
                 inputProps={{
                   ...params.inputProps,
