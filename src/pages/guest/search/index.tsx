@@ -19,6 +19,7 @@ import { Button } from "@mui/material";
 import RntSelect from "@/components/common/rntSelect";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 import moment from "moment";
+import DriverLicenseVerified from "@/components/driver_license_verified/driver_license_verified";
 
 export default function Search() {
   const dateNow = new Date();
@@ -51,20 +52,21 @@ export default function Search() {
   const handleRentCarRequest = async (carInfo: SearchCarInfo) => {
     try {
       if (isEmpty(userInfo.drivingLicense)) {
-        const action = (
-          <>
-            <Button
-              color="secondary"
-              size="small"
-              onClick={() => {
-                router.push("/guest/profile");
-              }}
-            >
-              My profile
-            </Button>
-          </>
-        );
-        showError("In order to rent a car, please enter user information", action);
+        // const action = (
+        //   <>
+        //     <Button
+        //       color="secondary"
+        //       size="small"
+        //       onClick={() => {
+        //         router.push("/guest/profile");
+        //       }}
+        //     >
+        //       My profile
+        //     </Button>
+        //   </>
+        // );
+        // showError("In order to rent a car, please enter user information", action);
+        router.push("/guest/profile");
         return;
       }
 

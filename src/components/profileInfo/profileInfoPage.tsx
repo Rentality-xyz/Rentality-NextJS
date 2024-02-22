@@ -14,6 +14,7 @@ import RntDatePicker from "../common/rntDatePicker";
 import PhoneInputComponent from "@/components/phone_number_input/PhoneNumberInputComponent";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useRentality } from "@/contexts/rentalityContext";
+import DriverLicenseVerified from "@/components/driver_license_verified/driver_license_verified";
 
 const STATUS = {
   IDLE: "IDLE",
@@ -259,7 +260,7 @@ export default function ProfileInfoPage({
         </div>
       </fieldset>
 
-      <IdentityButton mode={ButtonMode.LIGHT} className="mt-4 civicButton" />
+      <DriverLicenseVerified/>
 
       {!isValid && status === STATUS.SUBMITTED && (
         <div role="alert" className="text-red-400">

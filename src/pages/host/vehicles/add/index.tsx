@@ -71,20 +71,21 @@ export default function AddCar() {
     e.preventDefault();
 
     if (isEmpty(userInfo.drivingLicense)) {
-      const action = (
-        <>
-          <Button
-            color="secondary"
-            size="small"
-            onClick={() => {
-              router.push("/host/profile");
-            }}
-          >
-            My profile
-          </Button>
-        </>
-      );
-      showError("In order to save a car, please enter user information", action);
+      // const action = (
+      //   <>
+      //     <Button
+      //       color="secondary"
+      //       size="small"
+      //       onClick={() => {
+      //         router.push("/host/profile");
+      //       }}
+      //     >
+      //       My profile
+      //     </Button>
+      //   </>
+      // );
+      // showError("In order to save a car, please enter user information", action);
+      router.push("/host/profile");
       return;
     }
 
@@ -121,20 +122,21 @@ export default function AddCar() {
 
   useEffect(() => {
     if (isEmpty(userInfo.drivingLicense)) {
-      const action = (
-        <>
-          <Button
-            color="secondary"
-            size="small"
-            onClick={() => {
-              router.push("/host/profile");
-            }}
-          >
-            My profile
-          </Button>
-        </>
-      );
-      showError("In order to save a car, please enter user information", action);
+      // const action = (
+      //   <>
+      //     <Button
+      //       color="secondary"
+      //       size="small"
+      //       onClick={() => {
+      //         router.push("/host/profile");
+      //       }}
+      //     >
+      //       My profile
+      //     </Button>
+      //   </>
+      // );
+      // showError("In order to save a car, please enter user information", action);
+      router.push("/host/profile");
       return;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
