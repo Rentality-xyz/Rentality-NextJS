@@ -27,12 +27,13 @@ export default function CarSearchItem({
         className="relative w-full md:w-64 min-h-[12rem] flex-shrink-0 bg-center bg-cover"
       />
       <div className="flex w-full flex-col justify-between p-2 sm:p-4">
-        <div className="flex flex-row items-baseline justify-between ">
-          <div className="w-9/12 overflow-hidden">
-            <strong className="text-lg overflow-hidden overflow-ellipsis">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>
-          </div>
-          <div>{searchInfo.licensePlate}</div>
-        </div>
+        {/*https://helpdesk.eigenmethod.com/browse/RTY-346*/}
+        {/*<div className="flex flex-row items-baseline justify-between ">*/}
+        {/*  <div className="w-9/12 overflow-hidden">*/}
+        {/*    <strong className="text-lg overflow-hidden overflow-ellipsis">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>*/}
+        {/*  </div>*/}
+        {/*  <div>{searchInfo.licensePlate}</div>*/}
+        {/*</div>*/}
         <div className="flex md:grid md:grid-cols-[2fr_1fr] text-xs mt-2 md:justify-between">
           <div className="w-9/12 flex flex-col">
             <div>
