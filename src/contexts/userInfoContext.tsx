@@ -12,24 +12,11 @@ export type UserInfo = {
   drivingLicense: string;
 };
 
-const EmptyUserInfo: UserInfo = {
-  address: "0x",
-  firstName: "",
-  lastName: "",
-  profilePhotoUrl: "",
-  drivingLicense: "",
-};
-
 export type UserInfoUpdate = {
   updateUserInfo: (c: UserInfo) => void;
 };
 
-export type UserProfileContext = {
-  userProfile: UserInfo | undefined;
-  setUserProfile: (value: UserInfo) => void;
-};
-
-const UserInfoContext = createContext<UserInfo>(EmptyUserInfo);
+const UserInfoContext = createContext<UserInfo | undefined>(undefined);
 const UserInfoUpdateContext = createContext((value: UserInfo) => {});
 
 export function useUserInfo() {
@@ -41,7 +28,7 @@ export function useUserInfoUpdate() {
 }
 
 export const UserInfoProvider = ({ children }: { children?: React.ReactNode }) => {
-  const [currentUserInfo, setCurrentUserInfo] = useState<UserInfo>(EmptyUserInfo);
+  const [currentUserInfo, setCurrentUserInfo] = useState<UserInfo | undefined>(undefined);
   const rentalityContract = useRentality();
   const ethereumInfo = useEthereum();
 

@@ -70,7 +70,7 @@ export default function AddCar() {
   const saveCar = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    if (isEmpty(userInfo.drivingLicense)) {
+    if (isEmpty(userInfo?.drivingLicense)) {
       const action = (
         <>
           <Button
@@ -120,6 +120,8 @@ export default function AddCar() {
   }, [imageFile, carInfoFormParams, carSaving]);
 
   useEffect(() => {
+    if (!userInfo) return;
+
     if (isEmpty(userInfo.drivingLicense)) {
       const action = (
         <>

@@ -50,7 +50,7 @@ export default function Search() {
 
   const handleRentCarRequest = async (carInfo: SearchCarInfo) => {
     try {
-      if (isEmpty(userInfo.drivingLicense)) {
+      if (isEmpty(userInfo?.drivingLicense)) {
         const action = (
           <>
             <Button

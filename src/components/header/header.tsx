@@ -1,23 +1,15 @@
 import { useState } from "react";
-import RntButton from "../common/rntButton";
-import { useUserInfo } from "@/contexts/userInfoContext";
-import { formatAddress } from "@/utils/addressFormatters";
-import { Avatar, Stack, styled, Switch, Typography } from "@mui/material";
-import { isEmpty } from "@/utils/string";
+import { Stack, styled, Switch, Typography } from "@mui/material";
 import burgerMenu from "../../images/ic-menu-burge-white-20.svg";
 import burgerMenuClose from "../../images/ic-menu-burge-close-white-20.svg";
 import Image from "next/image";
 import { useAppContext } from "@/contexts/appContext";
 import ChooseBlockchainComponent from "@/components/choose_blockchain/ChooseBlockchainComponent";
-import { usePrivy } from "@privy-io/react-auth";
 import { GuestBurgerNavMenu } from "../sideNavMenu/guestSideNavMenu";
 import { HostBurgerNavMenu } from "../sideNavMenu/hostSideNavMenu";
-import { useEthereum } from "@/contexts/web3/ethereumContext";
+import Login from "./login";
 
 export default function Header({ accountType }: { accountType: string }) {
-  const { login, logout } = usePrivy();
-  const ethereumInfo = useEthereum();
-  const userInfo = useUserInfo();
   accountType = accountType ?? "Host";
   const isHost = accountType === "Host";
 
@@ -105,36 +97,7 @@ export default function Header({ accountType }: { accountType: string }) {
             </Stack>
 
             <ChooseBlockchainComponent />
-
-            {ethereumInfo?.isWalletConnected ? (
-              <div
-                className="flex flex-row gap-4 ml-2 xl:ml-16 items-center cursor-pointer"
-                // onClick={async () => {
-                //   await logout();
-                //   window.ethereum.logout();
-                // }}
-              >
-                <div className=" flex-col hidden xl:flex">
-                  <div>
-                    {userInfo.firstName} {userInfo.lastName}
-                  </div>
-                  <div className="text-sm">{formatAddress(userInfo.address)}</div>
-                </div>
-                <Avatar
-                  alt={`${userInfo.firstName} ${userInfo.lastName}`}
-                  src={userInfo.profilePhotoUrl}
-                  sx={{ width: "5rem", height: "5rem" }}
-                >
-                  {!isEmpty(userInfo.firstName) || !isEmpty(userInfo.lastName)
-                    ? userInfo.firstName?.slice(0, 1).toUpperCase() + userInfo.lastName?.slice(0, 1).toUpperCase()
-                    : null}
-                </Avatar>
-              </div>
-            ) : (
-              <RntButton className="w-28 sm:w-48 h-10 text-sm sm:text-base" onClick={login}>
-                Login
-              </RntButton>
-            )}
+            <Login />
           </div>
         </div>
       </header>

@@ -35,10 +35,10 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
   const isInitiating = useRef(false);
 
   useEffect(() => {
+    if (!ready) return;
+    if (!authenticated) return;
     if (!wallets || !wallets[0]) return;
     if (isInitiating.current) return;
-
-    console.log(`EthereumContext useEffect call`);
 
     const requestChainIdChange = async (chainId: number) => {
       console.log("requestChainIdChange: " + chainId);
@@ -73,7 +73,7 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
 
     wallets[0]
       .getEthersProvider()
-      .then((provider) =>
+      .then((provider) => {
         setEthereumInfo((prev) => {
           const currentChainId = Number(wallets[0].chainId.split(":")[1]);
           const currentWalletAddress = wallets[0].address;
@@ -87,18 +87,18 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
             signer: provider.getSigner(),
             walletAddress: currentWalletAddress,
             chainId: currentChainId,
-            isWalletConnected: true,
+            isWalletConnected: ready && authenticated,
             connectWallet: async () => {
               connectWallet();
             },
             requestChainIdChange: requestChainIdChange,
           };
-        })
-      )
+        });
+      })
       .finally(() => {
         isInitiating.current = false;
       });
-  }, [wallets, connectWallet]);
+  }, [wallets, connectWallet, ready, authenticated]);
 
   useEffect(() => {
     if (!isReloadPageNeeded) return;
