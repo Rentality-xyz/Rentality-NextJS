@@ -1,5 +1,6 @@
 import { dateFormatMonthDate } from "@/utils/datetimeFormatters";
 import { TripInfo, TripStatus } from "@/model/TripInfo";
+import UserAvatarWithName from "./userAvatarWithName";
 
 export default function СarDetails({ tripInfo, isHost }: { tripInfo: TripInfo; isHost: boolean }) {
   const rejectedByHost = tripInfo.rejectedBy.toLowerCase() === tripInfo.hostAddress.toLowerCase();
@@ -10,10 +11,14 @@ export default function СarDetails({ tripInfo, isHost }: { tripInfo: TripInfo; 
     : isHost
     ? tripInfo.guestName ?? "Guest"
     : "You";
+  const otherUserPhotoUrl = isHost ? tripInfo.guestPhotoUrl : tripInfo.hostPhotoUrl;
+  const otherUserName = isHost ? tripInfo.guestName : tripInfo.hostName;
 
-  tripInfo.rejectedBy.toLowerCase() === tripInfo.guestAddress.toLowerCase() ? "You" : tripInfo.hostName ?? "Host";
   return (
-    <div id="trip-main-info" className="w-full sm_inverted:w-1/4 flex flex-1 flex-col p-4 md:p-2 xl:p-4">
+    <div
+      id="trip-main-info"
+      className="w-full sm_inverted:w-1/4 flex flex-1 flex-col gap-4 justify-between p-4 md:p-2 xl:p-4"
+    >
       <div className="flex flex-col">
         <div>
           <strong className="text-xl">{`${tripInfo.brand} ${tripInfo.model} ${tripInfo.year}`}</strong>
@@ -29,6 +34,7 @@ export default function СarDetails({ tripInfo, isHost }: { tripInfo: TripInfo; 
           <div>${tripInfo.totalPrice}</div>
         </div>
       </div>
+      <UserAvatarWithName photoUrl={otherUserPhotoUrl} userName={otherUserName} isHost={isHost} />
     </div>
   );
 }

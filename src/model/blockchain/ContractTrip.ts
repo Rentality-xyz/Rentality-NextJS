@@ -31,6 +31,8 @@ export type ContractTrip = {
   transactionInfo: ContractTransactionInfo;
   guestName: string;
   hostName: string;
+  guestPhotoUrl: string;
+  hostPhotoUrl: string;
 };
 
 type ContractPaymentInfo = {
@@ -113,6 +115,8 @@ export function validateContractTrip(obj: ContractTrip): obj is ContractTrip {
     tripFinishedBy: "",
     tripStartedBy: "",
     transactionInfo: emptyContractTransactionInfo,
+    hostPhotoUrl: "",
+    guestPhotoUrl: "",
   };
 
   return validateType(obj, emptyContractTrip);

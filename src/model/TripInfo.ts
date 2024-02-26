@@ -93,6 +93,8 @@ export type TripInfo = {
   checkedInByHostDateTime: Date;
   checkedOutByGuestDateTime: Date;
   checkedOutByHostDateTime: Date;
+  guestPhotoUrl: string;
+  hostPhotoUrl: string;
 };
 
 export const getBatteryCharge = (
