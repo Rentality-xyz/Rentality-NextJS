@@ -253,6 +253,8 @@ const useHostTrips = () => {
                     checkedInByHostDateTime: getDateFromBlockchainTime(i.checkedInByHostDateTime),
                     checkedOutByGuestDateTime: getDateFromBlockchainTime(i.checkedOutByGuestDateTime),
                     checkedOutByHostDateTime: getDateFromBlockchainTime(i.checkedOutByHostDateTime),
+                    hostPhotoUrl: i.hostPhotoUrl,
+                    guestPhotoUrl: i.guestPhotoUrl,
                   };
                   return item;
                 })
