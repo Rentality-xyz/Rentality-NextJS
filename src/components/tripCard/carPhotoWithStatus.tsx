@@ -1,13 +1,8 @@
 import { TripStatus, getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
+import { memo } from "react";
 import { twMerge } from "tailwind-merge";
 
-export default function CarPhotoWithStatus({
-  carImageUrl,
-  tripStatus,
-}: {
-  carImageUrl: string;
-  tripStatus: TripStatus;
-}) {
+function CarPhotoWithStatus({ carImageUrl, tripStatus }: { carImageUrl: string; tripStatus: TripStatus }) {
   let statusBgColor = getTripStatusBgColorClassFromStatus(tripStatus);
   const statusClassName = twMerge(
     "absolute right-0 top-2 px-8 py-2 rounded-l-3xl text-rnt-temp-status-text text-end",
@@ -38,3 +33,5 @@ export default function CarPhotoWithStatus({
     </>
   );
 }
+
+export default memo(CarPhotoWithStatus);

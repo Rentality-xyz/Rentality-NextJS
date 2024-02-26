@@ -1,4 +1,4 @@
-import { ElementRef, useEffect, useRef, useState } from "react";
+import { ElementRef, memo, useEffect, useRef, useState } from "react";
 import { TripInfo } from "@/model/TripInfo";
 import CarPhotoWithStatus from "./carPhotoWithStatus";
 import СarDetails from "./carDetails";
@@ -8,7 +8,7 @@ import LocationDetails from "./locationDetails";
 import TripContacts from "./tripContacts";
 import TripAdditionalActions from "./tripAdditionalActions";
 
-export default function TripCard({
+function TripCard({
   tripInfo,
   changeStatusCallback,
   disableButton,
@@ -65,3 +65,5 @@ export default function TripCard({
     </div>
   );
 }
+
+export default memo(TripCard);

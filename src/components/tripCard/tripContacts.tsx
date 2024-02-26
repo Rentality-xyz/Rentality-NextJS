@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { TripInfo } from "@/model/TripInfo";
+import { memo } from "react";
 
-export default function TripContacts({ tripInfo, isHost }: { tripInfo: TripInfo; isHost: boolean }) {
+function TripContacts({ tripInfo, isHost }: { tripInfo: TripInfo; isHost: boolean }) {
   const pathRoot = isHost ? "host" : "guest";
   const otherUserPhoneNumber = isHost ? tripInfo.guestPhoneNumber : tripInfo.hostPhoneNumber;
 
@@ -37,3 +38,5 @@ export default function TripContacts({ tripInfo, isHost }: { tripInfo: TripInfo;
     </div>
   );
 }
+
+export default memo(TripContacts);

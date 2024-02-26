@@ -1,7 +1,8 @@
 import { TripInfo } from "@/model/TripInfo";
 import { dateFormat } from "@/utils/datetimeFormatters";
+import { memo } from "react";
 
-export default function DateDetails({ tripInfo }: { tripInfo: TripInfo }) {
+function DateDetails({ tripInfo }: { tripInfo: TripInfo }) {
   return (
     <div id="trip-info" className="w-full sm_inverted:w-1/4 flex flex-1 flex-col gap-2 p-4 md:p-2 xl:p-4 2xl:ml-14">
       <div className="flex flex-col 2xl:mt-6">
@@ -21,3 +22,5 @@ export default function DateDetails({ tripInfo }: { tripInfo: TripInfo }) {
     </div>
   );
 }
+
+export default memo(DateDetails);

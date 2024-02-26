@@ -1,4 +1,4 @@
-import { MutableRefObject, useState } from "react";
+import { MutableRefObject, memo, useState } from "react";
 import { TripInfo, TripStatus, getRefuelValueAndCharge } from "@/model/TripInfo";
 import Checkbox from "../common/checkbox";
 import { calculateDays } from "@/utils/date";
@@ -8,7 +8,7 @@ import RntButton from "../common/rntButton";
 import AllowedActionsForStatusStarted from "../guest/allowedActionsForStatusStarted";
 import AllowedActions from "../guest/allowedActions";
 
-export default function TripAdditionalActions({
+function TripAdditionalActions({
   tripInfo,
   changeStatusCallback,
   disableButton,
@@ -231,3 +231,5 @@ export default function TripAdditionalActions({
     </div>
   );
 }
+
+export default memo(TripAdditionalActions);

@@ -1,8 +1,9 @@
 import { dateFormatMonthDate } from "@/utils/datetimeFormatters";
 import { TripInfo, TripStatus } from "@/model/TripInfo";
 import UserAvatarWithName from "./userAvatarWithName";
+import { memo } from "react";
 
-export default function СarDetails({ tripInfo, isHost }: { tripInfo: TripInfo; isHost: boolean }) {
+function СarDetails({ tripInfo, isHost }: { tripInfo: TripInfo; isHost: boolean }) {
   const rejectedByHost = tripInfo.rejectedBy.toLowerCase() === tripInfo.hostAddress.toLowerCase();
   const rejectedByText = rejectedByHost
     ? isHost
@@ -38,3 +39,5 @@ export default function СarDetails({ tripInfo, isHost }: { tripInfo: TripInfo; 
     </div>
   );
 }
+
+export default memo(СarDetails);

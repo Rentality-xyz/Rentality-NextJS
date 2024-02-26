@@ -2,7 +2,7 @@ import { dateFormatDayMonthTime } from "@/utils/datetimeFormatters";
 import { TripInfo, TripStatus } from "@/model/TripInfo";
 import RntButton from "../common/rntButton";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, memo } from "react";
 import moment from "moment";
 
 const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean) => {
@@ -75,7 +75,7 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean) => {
   }
 };
 
-export default function CurrentStatusInfo({
+function CurrentStatusInfo({
   tripInfo,
   changeStatusCallback,
   disableButton,
@@ -148,3 +148,5 @@ export default function CurrentStatusInfo({
     </div>
   );
 }
+
+export default memo(CurrentStatusInfo);

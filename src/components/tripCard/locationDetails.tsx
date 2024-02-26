@@ -1,6 +1,7 @@
 import { TripInfo } from "@/model/TripInfo";
+import { memo } from "react";
 
-export default function LocationDetails({ tripInfo }: { tripInfo: TripInfo }) {
+function LocationDetails({ tripInfo }: { tripInfo: TripInfo }) {
   return (
     <div id="trip-location-info" className="w-full sm_inverted:w-1/4 flex flex-col flex-1 p-4 md:p-2 xl:p-4">
       <div className="flex flex-col gap-2">
@@ -24,3 +25,5 @@ export default function LocationDetails({ tripInfo }: { tripInfo: TripInfo }) {
     </div>
   );
 }
+
+export default memo(LocationDetails);
