@@ -41,10 +41,7 @@ export default function ChatInfoCard({
         <div className={statusClassName}>{getTripStatusTextFromStatus(chatInfo.tripStatus)}</div>
         <div className="ml-2 text-xs"> Reservation #{chatInfo.tripId}</div>
       </div>
-      <div
-        className="flex flex-col text-sm whitespace-nowrap overflow-hidden overflow-ellipsis cursor-pointer"
-        onClick={onClickCallback}
-      >
+      <div className="flex flex-col text-sm truncate cursor-pointer" onClick={onClickCallback}>
         <strong>{otherName}</strong>
         <div>{chatInfo.carTitle}</div>
       </div>
@@ -52,10 +49,7 @@ export default function ChatInfoCard({
         <Image className="sm:hidden" src={icInfo} width={25} alt="" />
         <span className="max-sm:hidden text-sm text-rentality-secondary">Trip information</span>
       </Link>
-      <div
-        className="col-span-2 whitespace-nowrap overflow-hidden overflow-ellipsis cursor-pointer"
-        onClick={onClickCallback}
-      >
+      <div className="col-span-2 truncate cursor-pointer" onClick={onClickCallback}>
         {chatInfo.lastMessage}
       </div>
     </div>

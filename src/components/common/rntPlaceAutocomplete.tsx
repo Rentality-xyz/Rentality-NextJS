@@ -171,7 +171,7 @@ export default function RntPlaceAutocomplete({
           {placePredictions.map((item, index) => {
             return (
               <option
-                className="py-2 px-4 rounded-xl hover:bg-gray-400 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
+                className="py-2 px-4 rounded-xl hover:bg-gray-400 cursor-pointer truncate"
                 onClick={() => {
                   setEnteredAddress(item.description);
                   setIsEditing(false);

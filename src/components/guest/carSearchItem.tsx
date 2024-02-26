@@ -29,7 +29,7 @@ export default function CarSearchItem({
       <div className="flex w-full flex-col justify-between p-2 sm:p-4">
         <div className="flex flex-row items-baseline justify-between ">
           <div className="w-9/12 overflow-hidden">
-            <strong className="text-lg overflow-hidden overflow-ellipsis">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>
+            <strong className="text-lg truncate">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>
           </div>
         </div>
         <div className="flex md:grid md:grid-cols-[2fr_1fr] text-xs mt-2 md:justify-between">
@@ -50,7 +50,7 @@ export default function CarSearchItem({
           </div>
         </div>
         <div className="w-full grid grid-cols-[1fr_auto] items-end mt-2">
-          <div className="flex flex-row items-center whitespace-nowrap overflow-hidden overflow-ellipsis">
+          <div className="flex flex-row items-center truncate">
             <div className="w-12 h-12 self-center mr-2">
               <Avatar src={searchInfo.hostPhotoUrl} sx={{ width: "3rem", height: "3rem" }}></Avatar>
             </div>
