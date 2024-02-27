@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { IRentalityContract, IRentalityCurrencyConverterContract } from "@/model/blockchain/IRentalityContract";
 import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
@@ -6,6 +6,8 @@ import { getEtherContractWithSigner } from "@/abis";
 import { Claim, getClaimStatusTextFromStatus, getClaimTypeTextFromClaimType } from "@/model/Claim";
 import { ContractFullClaimInfo, validateContractFullClaimInfo } from "@/model/blockchain/ContractClaimInfo";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { formatEthWithDecimals } from "@/utils/numericFormatters";
+import { formatEther } from "ethers/lib/utils";
 
 const useGuestClaims = () => {
   const ethereumInfo = useEthereum();
@@ -35,8 +37,18 @@ const useGuestClaims = () => {
       }
 
       const claimAmountInUsdCents = claims.find((i) => i.claimId === claimId)?.amountInUsdCents ?? 0;
-      const { valueInEth } = await rentalityCurrencyConverterContract.getEthFromUsdLatest(
-        BigInt(claimAmountInUsdCents)
+
+      const { valueInEth, ethToUsdRate, ethToUsdDecimals } =
+        await rentalityCurrencyConverterContract.getEthFromUsdLatest(BigInt(claimAmountInUsdCents));
+
+      console.log(`valueInEth: ${typeof valueInEth}`);
+      console.log(`ethToUsdRate: ${typeof ethToUsdRate}`);
+      console.log(`ethToUsdDecimals: ${typeof ethToUsdDecimals}`);
+
+      console.log(
+        `paying $${(claimAmountInUsdCents / 100).toFixed(2)} = ${formatEther(
+          valueInEth
+        )} ETH (with rate ${formatEthWithDecimals(ethToUsdRate, ethToUsdDecimals)} USD/ETH)...`
       );
 
       let transaction = await rentalityContract.payClaim(BigInt(claimId), {
@@ -108,7 +120,13 @@ const useGuestClaims = () => {
       .catch(() => setIsLoading(false));
   }, [rentalityContract]);
 
-  return [isLoading, claims, payClaim] as const;
+  const sortedClaims = useMemo(() => {
+    return [...claims].sort((a, b) => {
+      return b.deadlineDate.getTime() - a.deadlineDate.getTime();
+    });
+  }, [claims]);
+
+  return [isLoading, sortedClaims, payClaim] as const;
 };
 
 export default useGuestClaims;

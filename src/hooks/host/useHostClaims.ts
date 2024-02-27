@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractFullClaimInfo, validateContractFullClaimInfo } from "@/model/blockchain/ContractClaimInfo";
@@ -13,12 +13,15 @@ import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { dateRangeFormatDayMonth } from "@/utils/datetimeFormatters";
 import { TripStatus } from "@/model/TripInfo";
 import { Claim, getClaimTypeTextFromClaimType, getClaimStatusTextFromStatus } from "@/model/Claim";
+import { useChat } from "@/contexts/chatContext";
+import encodeClaimChatMessage from "@/components/chat/utils";
 
 const useHostClaims = () => {
   const rentalityContract = useRentality();
+  const chatContextInfo = useChat();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [tripInfos, setTripInfos] = useState<TripInfoForClaimCreation[]>([
-    { tripId: 0, tripDescription: "Loading..." },
+    { tripId: 0, guestAddress: "", tripDescription: "Loading...", tripStart: new Date() },
   ]);
 
   const [claims, setClaims] = useState<Claim[]>([]);
@@ -39,6 +42,9 @@ const useHostClaims = () => {
 
       let transaction = await rentalityContract.createClaim(claimRequest);
       await transaction.wait();
+
+      const message = encodeClaimChatMessage(createClaimRequest);
+      chatContextInfo.sendMessage(createClaimRequest.guestAddress, createClaimRequest.tripId, message);
       return true;
     } catch (e) {
       console.error("createClaim error:" + e);
@@ -127,10 +133,12 @@ const useHostClaims = () => {
 
                   let item: TripInfoForClaimCreation = {
                     tripId: Number(i.tripId),
+                    guestAddress: i.guest,
                     tripDescription: `${brand} ${model} ${year} ${guestName} trip ${dateRangeFormatDayMonth(
                       tripStart,
                       tripEnd
                     )}`,
+                    tripStart: tripStart,
                   };
                   return item;
                 })
@@ -155,7 +163,19 @@ const useHostClaims = () => {
       .catch(() => setIsLoading(false));
   }, [rentalityContract]);
 
-  return [isLoading, claims, tripInfos, createClaim, cancelClaim] as const;
+  const sortedClaims = useMemo(() => {
+    return [...claims].sort((a, b) => {
+      return b.deadlineDate.getTime() - a.deadlineDate.getTime();
+    });
+  }, [claims]);
+
+  const sortedTripInfos = useMemo(() => {
+    return [...tripInfos].sort((a, b) => {
+      return b.tripStart.getTime() - a.tripStart.getTime();
+    });
+  }, [tripInfos]);
+
+  return [isLoading, sortedClaims, sortedTripInfos, createClaim, cancelClaim] as const;
 };
 
 export default useHostClaims;

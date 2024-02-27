@@ -1,5 +1,6 @@
 import { ChatInfo } from "@/model/ChatInfo";
 import ChatMessage from "./chatMessage";
+import { decodeClaimChatMessage, isClaimChatMessage } from "./utils";
 
 export default function ChatMessages({ selectedChat, isHost }: { selectedChat: ChatInfo; isHost: boolean }) {
   const myPhotoUrl = isHost ? selectedChat.hostPhotoUrl : selectedChat.guestPhotoUrl;
@@ -15,6 +16,9 @@ export default function ChatMessages({ selectedChat, isHost }: { selectedChat: C
   return (
     <div className="my-4 flex flex-col gap-4 w-full">
       {selectedChat.messages.map((msgInfo, index) => {
+        const formatedMessage = isClaimChatMessage(msgInfo.message)
+          ? decodeClaimChatMessage(msgInfo.message, selectedChat.hostName, selectedChat.carTitle)
+          : msgInfo.message;
         return isSendByMe(msgInfo.fromAddress) ? (
           <ChatMessage
             key={index}

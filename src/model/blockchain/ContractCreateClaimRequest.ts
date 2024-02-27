@@ -9,6 +9,7 @@ export type ContractCreateClaimRequest = {
 
 export type CreateClaimRequest = {
   tripId: number;
+  guestAddress: string;
   claimType: ClaimType;
   description: string;
   amountInUsdCents: number;
@@ -17,4 +18,6 @@ export type CreateClaimRequest = {
 export type TripInfoForClaimCreation = {
   tripId: number;
   tripDescription: string;
+  tripStart: Date;
+  guestAddress: string;
 };

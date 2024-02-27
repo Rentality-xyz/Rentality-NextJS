@@ -17,13 +17,13 @@ export default function Claims() {
       const result = await payClaim(claimId);
       hideSnackbar();
       if (!result) {
-        showError("Your cancel claim request failed. Please make sure you entered claim details right and try again");
+        showError("Your pay claim request failed. Please make sure you entered claim details right and try again");
         return;
       }
       router.refresh();
     } catch (e) {
-      showError("Your cancel claim request failed. Please make sure you entered claim details right and try again");
-      console.error("handleCancelClaim error:" + e);
+      showError("Your pay claim request failed. Please make sure you entered claim details right and try again");
+      console.error("handlePayClaim error:" + e);
     }
   };
 

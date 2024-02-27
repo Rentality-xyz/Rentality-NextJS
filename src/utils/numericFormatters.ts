@@ -13,6 +13,10 @@ export const getUIntFromString = (text: string) => {
   return Number(text.replace(/[^\d.]+/g, ""));
 };
 
+export const formatEthWithDecimals = (value: bigint, decimals: number) => {
+  return `${Number(value) / 10 ** decimals}`;
+};
+
 export const decimalToHex = (decimalValue: string): string | null => {
   const decimalNumber = Number(decimalValue);
 

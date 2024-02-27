@@ -41,6 +41,7 @@ export default function CreateClaim({
 
     const createClaimRequest: CreateClaimRequest = {
       tripId: Number(createClaimParams.selectedTripId),
+      guestAddress: tripInfos.find((ti) => ti.tripId === Number(createClaimParams.selectedTripId))?.guestAddress ?? "",
       claimType: Number(ClaimType[createClaimParams.incidentType as keyof typeof ClaimType]),
       description: createClaimParams.description,
       amountInUsdCents: (Number(createClaimParams.amountInUsd) ?? 0) * 100,
