@@ -183,12 +183,20 @@ export default function CarEditForm({
             label="Type of engine"
             readOnly={!isNewCar}
             value={carInfoFormParams.engineTypeString}
-            onChange={(e) =>
-              setCarInfoFormParams({
-                ...carInfoFormParams,
-                engineTypeString: e.target.value,
-              })
-            }
+            onChange={(e) => {
+              if (e.target.value === ENGINE_TYPE_ELECTRIC_STRING) {
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  engineTypeString: e.target.value,
+                  transmission: "Automatic",
+                });
+              } else {
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  engineTypeString: e.target.value,
+                });
+              }
+            }}
           >
             <option className="hidden" disabled></option>
             <option value={ENGINE_TYPE_PATROL_STRING}>Gasoline and Hybrib</option>
@@ -231,39 +239,41 @@ export default function CarEditForm({
             }
           />
           {!isElectricEngine ? (
-            <RntInput
-              className="w-[48%] lg:w-40"
-              id="tankVolumeInGal"
-              label="Tank size in gal"
-              placeholder="e.g. 16"
-              readOnly={!isNewCar}
-              value={carInfoFormParams.tankVolumeInGal}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  tankVolumeInGal: e.target.value,
-                })
-              }
-            />
+            <>
+              <RntInput
+                className="w-[48%] lg:w-40"
+                id="tankVolumeInGal"
+                label="Tank size in gal"
+                placeholder="e.g. 16"
+                readOnly={!isNewCar}
+                value={carInfoFormParams.tankVolumeInGal}
+                onChange={(e) =>
+                  setCarInfoFormParams({
+                    ...carInfoFormParams,
+                    tankVolumeInGal: e.target.value,
+                  })
+                }
+              />
+              <RntSelect
+                className="w-[48%] lg:w-40"
+                id="transmission"
+                label="Transmission"
+                readOnly={!isNewCar}
+                value={carInfoFormParams.transmission}
+                onChange={(e) =>
+                  setCarInfoFormParams({
+                    ...carInfoFormParams,
+                    transmission: e.target.value,
+                  })
+                }
+              >
+                <option className="hidden" disabled></option>
+                <option value="Manual">Manual</option>
+                <option value="Automatic">Automatic</option>
+              </RntSelect>
+            </>
           ) : null}
 
-          <RntSelect
-            className="w-[48%] lg:w-40"
-            id="transmission"
-            label="Transmission"
-            readOnly={!isNewCar}
-            value={carInfoFormParams.transmission}
-            onChange={(e) =>
-              setCarInfoFormParams({
-                ...carInfoFormParams,
-                transmission: e.target.value,
-              })
-            }
-          >
-            <option className="hidden" disabled></option>
-            <option value="Manual">Manual</option>
-            <option value="Automatic">Automatic</option>
-          </RntSelect>
           <RntInput
             className="w-[48%] lg:w-40"
             id="color"
