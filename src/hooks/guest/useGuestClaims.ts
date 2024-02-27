@@ -7,7 +7,7 @@ import { Claim, getClaimStatusTextFromStatus, getClaimTypeTextFromClaimType } fr
 import { ContractFullClaimInfo, validateContractFullClaimInfo } from "@/model/blockchain/ContractClaimInfo";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { formatEthWithDecimals } from "@/utils/numericFormatters";
-import { formatEther } from "ethers/lib/utils";
+import { formatEther } from "ethers";
 
 const useGuestClaims = () => {
   const ethereumInfo = useEthereum();

@@ -1,11 +1,11 @@
-import { Signer, ethers } from "ethers";
+import { BrowserProvider, Signer } from "ethers";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/router";
 import { getExistBlockchainList } from "@/model/blockchain/BlockchainList";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { useRouter } from "next/navigation";
 
 export type EthereumInfo = {
-  provider: ethers.providers.Web3Provider;
+  provider: BrowserProvider;
   signer: Signer;
   walletAddress: string;
   chainId: number;
@@ -28,18 +28,13 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
   const { wallets } = useWallets();
 
   const handleAccountsChanged = useCallback(() => {
-    router.reload();
+    router.refresh();
     console.log("handleAccountsChanged call");
   }, [router]);
 
   const isInitiating = useRef(false);
 
   useEffect(() => {
-    if (!ready) return;
-    if (!authenticated) return;
-    if (!wallets || !wallets[0]) return;
-    if (isInitiating.current) return;
-
     const requestChainIdChange = async (chainId: number) => {
       console.log("requestChainIdChange: " + chainId);
 
@@ -69,22 +64,30 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
       }
     };
 
-    isInitiating.current = true;
+    const getEtherProvider = async () => {
+      if (!ready) return;
+      if (!authenticated) return;
+      if (!wallets || !wallets[0]) return;
+      if (isInitiating.current) return;
 
-    wallets[0]
-      .getEthersProvider()
-      .then((provider) => {
+      isInitiating.current = true;
+
+      try {
+        const provider = await wallets[0].getEthereumProvider();
+        const etherv6Provider = new BrowserProvider(provider);
+        const signer = await etherv6Provider.getSigner();
+
+        const currentChainId = Number(wallets[0].chainId.split(":")[1]);
+        const currentWalletAddress = wallets[0].address;
+
         setEthereumInfo((prev) => {
-          const currentChainId = Number(wallets[0].chainId.split(":")[1]);
-          const currentWalletAddress = wallets[0].address;
-
           if (prev !== null) {
             setIsReloadPageNeeded(prev.chainId !== currentChainId || prev.walletAddress !== currentWalletAddress);
           }
 
           return {
-            provider: provider,
-            signer: provider.getSigner(),
+            provider: etherv6Provider,
+            signer: signer,
             walletAddress: currentWalletAddress,
             chainId: currentChainId,
             isWalletConnected: ready && authenticated,
@@ -94,17 +97,19 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
             requestChainIdChange: requestChainIdChange,
           };
         });
-      })
-      .finally(() => {
+      } finally {
         isInitiating.current = false;
-      });
+      }
+    };
+
+    getEtherProvider();
   }, [wallets, connectWallet, ready, authenticated]);
 
   useEffect(() => {
     if (!isReloadPageNeeded) return;
 
     setIsReloadPageNeeded(false);
-    router.reload();
+    router.refresh();
     console.log("reloading the page");
   }, [router, isReloadPageNeeded]);
 

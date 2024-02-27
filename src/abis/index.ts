@@ -6,7 +6,7 @@ import RentalityCurrencyConverterJSON_ABI from "./RentalityCurrencyConverter.v0_
 import RentalityCurrencyConverterJSON_ADDRESSES from "./RentalityCurrencyConverter.v0_16_1.addresses.json";
 import RentalityChatHelperJSON_ABI from "./RentalityChatHelper.v0_16_1.abi.json";
 import RentalityChatHelperJSON_ADDRESSES from "./RentalityChatHelper.v0_16_1.addresses.json";
-import { Contract, Signer, ethers } from "ethers";
+import { Contract, Signer } from "ethers";
 
 export const SMARTCONTRACT_VERSION = "v0_16_0";
 
@@ -36,7 +36,7 @@ export async function getEtherContractWithSigner(contract: keyof typeof rentalit
       return null;
     }
 
-    const chainId = await signer.getChainId();
+    const chainId = Number((await signer.provider?.getNetwork())?.chainId);
 
     const selectedChain = rentalityContracts[contract].addresses.find((i) => i.chainId === chainId);
 

@@ -31,7 +31,8 @@ export default function ChooseBlockchainComponent() {
     const getChainId = async () => {
       if (!ethereumInfo) return;
 
-      const chainId = await ethereumInfo?.signer.getChainId();
+      const chainId = ethereumInfo.chainId;
+
       if (selectedChainId !== chainId) {
         setSelectedChainId(chainId);
       }

@@ -1,4 +1,4 @@
-import { Signer, ethers } from "ethers";
+import { Signer, ethers, verifyMessage } from "ethers";
 import { generatePrivateKey, getPublicKey } from "@waku/message-encryption";
 import { keccak256 } from "@ethersproject/keccak256";
 import { toUtf8Bytes } from "@ethersproject/strings";
@@ -27,7 +27,7 @@ export async function signUserChatMessage(
 
   const messageBytes = toUtf8Bytes(JSON.stringify(chatMessage));
   const messageHash = keccak256(messageBytes);
-  const signature = await signer.signMessage(ethers.utils.arrayify(messageHash));
+  const signature = await signer.signMessage(ethers.getBytes(messageHash));
   return signature;
 }
 
@@ -50,7 +50,7 @@ export function verifyUserChatMessageSignature(
   const messageBytes = toUtf8Bytes(JSON.stringify(chatMessage));
   const messageHash = keccak256(messageBytes);
 
-  const recoveredAddress = ethers.utils.verifyMessage(ethers.utils.arrayify(messageHash), signature);
+  const recoveredAddress = verifyMessage(ethers.getBytes(messageHash), signature);
 
   return recoveredAddress.toLowerCase() === fromAddress.toLowerCase();
 }

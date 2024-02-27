@@ -1,6 +1,5 @@
 import { Signer } from "ethers";
-import { createLightNode, waitForRemotePeer, LightNode } from "@waku/sdk";
-import { Protocols } from "@waku/interfaces";
+import { createLightNode, waitForRemotePeer, LightNode, Protocols } from "@waku/sdk";
 import { createEncoder as eciesEncoder } from "@waku/message-encryption/ecies";
 import { hexToBytes } from "@waku/utils/bytes";
 import { signUserChatMessage } from "./crypto";

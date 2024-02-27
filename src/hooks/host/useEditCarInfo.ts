@@ -1,4 +1,4 @@
-import { ContractTransaction, Signer } from "ethers";
+import { ContractTransactionResponse, Signer } from "ethers";
 import { useEffect, useState } from "react";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import {
@@ -103,7 +103,7 @@ const useEditCarInfo = (carId: number) => {
         timeBufferBetweenTripsInSec: carInfoFormParams.timeBufferBetweenTripsInMin * 60,
         securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
       };
-      let transaction: ContractTransaction;
+      let transaction: ContractTransactionResponse;
 
       if (carInfoFormParams.isLocationAddressEdited) {
         transaction = await rentalityContract.updateCarInfoWithLocation(

@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { BrowserProvider, ethers, formatEther } from "ethers";
 import { useEffect, useState } from "react";
 import { IRentalityAdminGateway, IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
@@ -37,7 +37,7 @@ const useContractInfo = () => {
   const [adminContractInfo, setAdminContractInfo] = useState<AdminContractInfo>(emptyAdminContractInfo);
   const [dataUpdated, setDataUpdated] = useState(false);
 
-  const getAdminContractInfo = async (contract: IRentalityContract, provider: ethers.providers.Web3Provider) => {
+  const getAdminContractInfo = async (contract: IRentalityContract, provider: BrowserProvider) => {
     const contractAddress = await contract.address;
     const ownerAddress = await contract.owner();
     const platformContractAddress = await contract.getRentalityPlatformAddress();
@@ -51,8 +51,8 @@ const useContractInfo = () => {
     const result: AdminContractInfo = {
       contractAddress: contractAddress,
       contractOwnerAddress: ownerAddress,
-      contractBalance: balance.toBigInt(),
-      contractBalanceString: ethers.utils.formatEther(balance),
+      contractBalance: balance,
+      contractBalanceString: formatEther(balance),
       rentalityCommission: rentalityCommission,
       currencyConverterContractAddress: currencyConverterContractAddress,
       userServiceContractAddress: userServiceContractAddress,
