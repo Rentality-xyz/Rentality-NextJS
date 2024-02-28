@@ -12,6 +12,7 @@ export type ProfileSettings = {
   phoneNumber: string;
   drivingLicenseNumber: string;
   drivingLicenseExpire: Date | undefined;
+  isConfirmedTerms: boolean;
 };
 
 const emptyProfileSettings: ProfileSettings = {
@@ -21,6 +22,7 @@ const emptyProfileSettings: ProfileSettings = {
   phoneNumber: "",
   drivingLicenseNumber: "",
   drivingLicenseExpire: undefined,
+  isConfirmedTerms: false,
 };
 
 const useProfileSettings = () => {
@@ -46,6 +48,7 @@ const useProfileSettings = () => {
         drivingLicenseNumber: myKYCInfo.licenseNumber,
         drivingLicenseExpire:
           myKYCInfo.expirationDate > 0 ? getDateFromBlockchainTime(myKYCInfo.expirationDate) : undefined,
+        isConfirmedTerms: myKYCInfo.isTCPassed,
       };
       return myProfileSettings;
     } catch (e) {
@@ -73,7 +76,7 @@ const useProfileSettings = () => {
         newProfileSettings.drivingLicenseNumber,
         expirationDate,
         true,
-        true
+        newProfileSettings.isConfirmedTerms
       );
 
       const result = await transaction.wait();

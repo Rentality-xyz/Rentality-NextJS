@@ -6,7 +6,6 @@ import { resizeImage } from "@/utils/image";
 import { MESSAGES } from "@/utils/messages";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
-import { ButtonMode, IdentityButton } from "@civic/ethereum-gateway-react";
 import { Avatar } from "@mui/material";
 import { useRouter } from "next/router";
 import { FocusEvent, FormEvent, ReactNode, useState } from "react";
@@ -151,6 +150,7 @@ export default function ProfileInfoPage({
     if (isEmpty(formData.drivingLicenseNumber)) result.drivingLicenseNumber = "Please enter 'Driving license number'";
     if (!formData.drivingLicenseExpire || Number.isNaN(formData.drivingLicenseExpire.getTime()))
       result.drivingLicenseExpire = "Please enter 'Driving license validity period'";
+    if (!formData.isConfirmedTerms) result.isConfirmedTerms = "Please confirm terms and other documents";
 
     return result;
   }
@@ -256,7 +256,12 @@ export default function ProfileInfoPage({
         </div>
       </fieldset>
 
-      <DriverLicenseVerified/>
+      <DriverLicenseVerified
+        isConfirmed={enteredFormData.isConfirmedTerms}
+        onConfirm={(isConfirmed) => {
+          setEnteredFormData({ ...enteredFormData, isConfirmedTerms: isConfirmed });
+        }}
+      />
 
       {!isValid && status === STATUS.SUBMITTED && (
         <div role="alert" className="text-red-400">
