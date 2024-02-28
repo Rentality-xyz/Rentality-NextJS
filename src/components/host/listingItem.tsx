@@ -44,7 +44,9 @@ export default function ListingItem({ carInfo }: { carInfo: BaseCarInfo }) {
             <div className="text-sm">{`$${carInfo.securityDeposit} Security deposit`}</div>
           </div>
           <Link href={`/host/vehicles/edit/${carInfo.carId}`}>
-            <RntButton className="w-28 h-12">Edit</RntButton>
+            <RntButton disabled={!carInfo.isEditable} className="w-28 h-12">
+              Edit
+            </RntButton>
           </Link>
         </div>
       </div>

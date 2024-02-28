@@ -45,6 +45,7 @@ const useMyListings = () => {
                   securityDeposit: securityDeposit,
                   milesIncludedPerDay: milesIncludedPerDay,
                   currentlyListed: i.currentlyListed,
+                  isEditable: i.isEditable,
                 };
                 return item;
               })
