@@ -4,8 +4,8 @@ export type ContractSearchCarParams = {
   city: string;
   brand: string;
   model: string;
-  yearOfProductionFrom: bigint;
-  yearOfProductionTo: bigint;
+  yearOfProductionFrom: number;
+  yearOfProductionTo: number;
   pricePerDayInUsdCentsFrom: bigint;
   pricePerDayInUsdCentsTo: bigint;
 };

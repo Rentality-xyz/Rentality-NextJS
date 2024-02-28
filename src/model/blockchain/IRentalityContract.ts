@@ -36,7 +36,6 @@ export interface IRentalityContract {
     locationLongitude: string,
     geoApiKey: string
   ): Promise<ContractTransactionResponse>;
-  getCarMetadataURI(carId: bigint): Promise<string>;
   getCarInfoById(carId: bigint): Promise<ContractCarInfo>;
   getMyCars(): Promise<ContractCarInfo[]>;
   getTripsAsHost(): Promise<ContractTrip[]>;
@@ -82,6 +81,7 @@ export interface IRentalityContract {
     isKYCPassed: boolean,
     isTCPassed: boolean
   ): Promise<ContractTransactionResponse>;
+  callOutdated(): Promise<ContractTripContactInfo>;
 
   //not using
   burnCar(carId: bigint): Promise<ContractCarInfo>;

@@ -1,12 +1,7 @@
 import { ContractTransactionResponse, Signer } from "ethers";
 import { useEffect, useState } from "react";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import {
-  ContractCarInfo,
-  ENGINE_TYPE_ELECTRIC_STRING,
-  ENGINE_TYPE_PATROL_STRING,
-  getEngineTypeString,
-} from "@/model/blockchain/ContractCarInfo";
+import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PATROL_STRING, getEngineTypeString } from "@/model/EngineType";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import {
   HostCarInfo,
@@ -19,6 +14,7 @@ import { ContractUpdateCarInfoRequest } from "@/model/blockchain/ContractUpdateC
 import { getMoneyInCentsFromString, getStringFromMoneyInCents } from "@/utils/formInput";
 import { ContractCarDetails } from "@/model/blockchain/ContractCarDetails";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { ContractCarInfo } from "@/model/blockchain/ContractCarInfo";
 
 const emptyHostCarInfo: HostCarInfo = {
   carId: -1,

@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { getEtherContractWithSigner } from "../../abis";
-import { EngineType, getEngineTypeString } from "@/model/blockchain/ContractCarInfo";
+import { EngineType, getEngineTypeString } from "@/model/EngineType";
 import { calculateDays } from "@/utils/date";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { ContractCreateTripRequest } from "@/model/blockchain/ContractCreateTripRequest";
@@ -50,8 +50,8 @@ const useSearchCars = () => {
       city: searchCarRequest.city ?? "",
       brand: searchCarRequest.brand ?? "",
       model: searchCarRequest.model ?? "",
-      yearOfProductionFrom: BigInt(searchCarRequest.yearOfProductionFrom ?? "0"),
-      yearOfProductionTo: BigInt(searchCarRequest.yearOfProductionTo ?? "0"),
+      yearOfProductionFrom: Number(searchCarRequest.yearOfProductionFrom ?? "0"),
+      yearOfProductionTo: Number(searchCarRequest.yearOfProductionTo ?? "0"),
       pricePerDayInUsdCentsFrom: BigInt(getMoneyInCentsFromString(searchCarRequest.pricePerDayInUsdFrom)),
       pricePerDayInUsdCentsTo: BigInt(getMoneyInCentsFromString(searchCarRequest.pricePerDayInUsdTo)),
     };

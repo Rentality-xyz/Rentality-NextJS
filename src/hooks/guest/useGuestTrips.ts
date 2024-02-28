@@ -5,7 +5,7 @@ import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
 import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
-import { EngineType } from "@/model/blockchain/ContractCarInfo";
+import { EngineType } from "@/model/EngineType";
 
 const useGuestTrips = () => {
   const rentalityContract = useRentality();

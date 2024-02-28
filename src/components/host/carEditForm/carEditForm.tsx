@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Dispatch, SetStateAction, useState, useEffect } from "react";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 import Checkbox from "@/components/common/checkbox";
-import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PATROL_STRING } from "@/model/blockchain/ContractCarInfo";
+import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PATROL_STRING } from "@/model/EngineType";
 import RntButton from "@/components/common/rntButton";
 
 export default function CarEditForm({

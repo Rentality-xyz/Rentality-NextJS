@@ -1,12 +1,5 @@
 import { validateType } from "@/utils/typeValidator";
-
-export const ENGINE_TYPE_PATROL_STRING = "Gasoline";
-export const ENGINE_TYPE_ELECTRIC_STRING = "Electro";
-
-export enum EngineType {
-  PATROL = 1,
-  ELECTRIC = 2,
-}
+import { EngineType } from "../EngineType";
 
 export type ContractCarInfo = {
   carId: bigint;
@@ -46,43 +39,4 @@ export const emptyContractCarInfo: ContractCarInfo = {
 
 export function validateContractCarInfo(obj: ContractCarInfo): obj is ContractCarInfo {
   return validateType(obj, emptyContractCarInfo);
-}
-
-export type ContractAvailableCarInfo = {
-  car: ContractCarInfo;
-  hostPhotoUrl: string;
-  hostName: string;
-};
-
-export function validateContractAvailableCarInfo(obj: ContractAvailableCarInfo): obj is ContractAvailableCarInfo {
-  if (typeof obj !== "object" || obj == null) return false;
-  const emptyContractAvailableCarInfo: ContractAvailableCarInfo = {
-    car: emptyContractCarInfo,
-    hostName: "",
-    hostPhotoUrl: "",
-  };
-
-  return validateType(obj, emptyContractAvailableCarInfo);
-}
-
-export function getEngineTypeString(engineType: EngineType): string {
-  switch (engineType) {
-    case EngineType.PATROL:
-      return ENGINE_TYPE_PATROL_STRING;
-    case EngineType.ELECTRIC:
-      return ENGINE_TYPE_ELECTRIC_STRING;
-    default:
-      return "";
-  }
-}
-
-export function getEngineTypeCode(engineTypeString: string): bigint {
-  switch (engineTypeString) {
-    case ENGINE_TYPE_PATROL_STRING:
-      return BigInt(1);
-    case ENGINE_TYPE_ELECTRIC_STRING:
-      return BigInt(2);
-    default:
-      return BigInt(0);
-  }
 }

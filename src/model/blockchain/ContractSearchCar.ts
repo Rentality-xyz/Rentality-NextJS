@@ -1,5 +1,5 @@
 import { validateType } from "@/utils/typeValidator";
-import { EngineType } from "./ContractCarInfo";
+import { EngineType } from "../EngineType";
 
 export type ContractSearchCar = {
   carId: bigint;

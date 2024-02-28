@@ -3,11 +3,7 @@ import { uploadFileToIPFS, uploadJSONToIPFS } from "../../utils/pinata";
 import { ContractCreateCarRequest } from "@/model/blockchain/ContractCreateCarRequest";
 import { HostCarInfo, UNLIMITED_MILES_VALUE, UNLIMITED_MILES_VALUE_TEXT, verifyCar } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
-import {
-  ENGINE_TYPE_ELECTRIC_STRING,
-  ENGINE_TYPE_PATROL_STRING,
-  getEngineTypeCode,
-} from "@/model/blockchain/ContractCarInfo";
+import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PATROL_STRING, getEngineTypeCode } from "@/model/EngineType";
 import { getMoneyInCentsFromString } from "@/utils/formInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";

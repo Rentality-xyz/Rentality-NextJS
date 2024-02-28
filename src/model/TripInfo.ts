@@ -1,4 +1,4 @@
-import { EngineType } from "./blockchain/ContractCarInfo";
+import { EngineType } from "./EngineType";
 
 export enum TripStatus {
   Pending, // Created
