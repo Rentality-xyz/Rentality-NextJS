@@ -119,6 +119,29 @@ export default function Search() {
     }
   };
 
+  useEffect(() => {
+    if (!userInfo) return;
+
+    if (isEmpty(userInfo.drivingLicense)) {
+      const action = (
+        <>
+          <Button
+            color="secondary"
+            size="small"
+            onClick={() => {
+              router.push("/guest/profile");
+            }}
+          >
+            My profile
+          </Button>
+        </>
+      );
+      showError("In order to rent a car, please enter user information", action);
+      return;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userInfo, router]);
+
   function handleSearchInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
     const name = e.target.name;

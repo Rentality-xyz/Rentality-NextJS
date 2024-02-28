@@ -140,7 +140,7 @@ export default function AddCar() {
       return;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [userInfo, router]);
 
   return (
     <HostLayout>
