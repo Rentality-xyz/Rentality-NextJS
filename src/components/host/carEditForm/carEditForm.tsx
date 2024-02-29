@@ -531,15 +531,14 @@ export default function CarEditForm({
             <div>
               <RntInput
                 className="lg:w-48"
-                labelClassName="self-center"
-                id="0_20"
-                label="0-20%"
-                placeholder="e.g. 30"
-                value={carInfoFormParams.batteryPrice_0_20}
+                id="fullBatteryChargePrice"
+                label="Full battery charge cost"
+                placeholder="e.g. 50"
+                value={carInfoFormParams.fullBatteryChargePrice}
                 onChange={(e) =>
                   setCarInfoFormParams({
                     ...carInfoFormParams,
-                    batteryPrice_0_20: e.target.value,
+                    fullBatteryChargePrice: e.target.value,
                   })
                 }
               />
@@ -548,47 +547,12 @@ export default function CarEditForm({
             <div>
               <RntInput
                 className="lg:w-48"
-                labelClassName="self-center"
-                id="21_50"
-                label="21-50%"
-                placeholder="e.g. 20"
-                value={carInfoFormParams.batteryPrice_21_50}
-                onChange={(e) =>
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    batteryPrice_21_50: e.target.value,
-                  })
-                }
-              />
-              <p className="w-full text-sm text-center mt-2">Recommended $20-30</p>
-            </div>
-            <div>
-              <RntInput
-                className="lg:w-48"
-                labelClassName="self-center"
-                id="51_80"
-                label="51-80%"
-                placeholder="e.g. 5"
-                value={carInfoFormParams.batteryPrice_51_80}
-                onChange={(e) =>
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    batteryPrice_51_80: e.target.value,
-                  })
-                }
-              />
-              <p className="w-full text-sm text-center mt-2">Recommended $5-20</p>
-            </div>
-            <div>
-              <RntInput
-                className="lg:w-48"
-                labelClassName="self-center"
-                id="81_100"
-                label="81-100%"
+                id="10PercentBatteryChargePrice"
+                label="Cost for each 10%"
                 readOnly={true}
-                value={"Non-refundable"}
-                onChange={(e) => {}}
+                value={(Number(carInfoFormParams.fullBatteryChargePrice) / 10).toString()}
               />
+              <p className="w-full text-sm text-center mt-2">For the difference in charge in start/end</p>
             </div>
           </div>
         </div>

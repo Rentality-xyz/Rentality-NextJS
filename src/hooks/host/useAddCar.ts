@@ -41,10 +41,7 @@ const emptyNewCarInfo: HostCarInfo = {
   isLocationAddressEdited: true,
   currentlyListed: true,
   engineTypeString: "",
-  batteryPrice_0_20: "",
-  batteryPrice_21_50: "",
-  batteryPrice_51_80: "",
-  batteryPrice_81_100: "0",
+  fullBatteryChargePrice: "",
   timeBufferBetweenTripsInMin: 0,
 };
 
@@ -204,10 +201,7 @@ const useAddCar = () => {
         engineParams.push(BigInt(dataToSave.tankVolumeInGal));
         engineParams.push(BigInt(getMoneyInCentsFromString(dataToSave.fuelPricePerGal)));
       } else if (carInfoFormParams.engineTypeString === ENGINE_TYPE_ELECTRIC_STRING) {
-        engineParams.push(BigInt(getMoneyInCentsFromString(dataToSave.batteryPrice_0_20)));
-        engineParams.push(BigInt(getMoneyInCentsFromString(dataToSave.batteryPrice_21_50)));
-        engineParams.push(BigInt(getMoneyInCentsFromString(dataToSave.batteryPrice_51_80)));
-        engineParams.push(BigInt(getMoneyInCentsFromString(dataToSave.batteryPrice_81_100)));
+        engineParams.push(BigInt(getMoneyInCentsFromString(dataToSave.fullBatteryChargePrice)));
       }
 
       const milesIncludedPerDay =
@@ -225,7 +219,7 @@ const useAddCar = () => {
         securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
         milesIncludedPerDay: milesIncludedPerDay,
         geoApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
-        engineType: Number(engineType),
+        engineType: engineType,
         engineParams: engineParams,
         locationAddress: dataToSave.locationAddress,
         timeBufferBetweenTripsInSec: carInfoFormParams.timeBufferBetweenTripsInMin * 60,

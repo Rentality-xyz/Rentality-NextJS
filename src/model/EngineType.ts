@@ -17,13 +17,13 @@ export function getEngineTypeString(engineType: EngineType): string {
   }
 }
 
-export function getEngineTypeCode(engineTypeString: string): bigint {
+export function getEngineTypeCode(engineTypeString: string): number {
   switch (engineTypeString) {
     case ENGINE_TYPE_PATROL_STRING:
-      return BigInt(1);
+      return 1;
     case ENGINE_TYPE_ELECTRIC_STRING:
-      return BigInt(2);
+      return 2;
     default:
-      return BigInt(0);
+      return 0;
   }
 }

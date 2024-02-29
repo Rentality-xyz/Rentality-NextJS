@@ -44,10 +44,7 @@ export type HostCarInfo = {
   fuelPricePerGal: string;
   tankVolumeInGal: string;
 
-  batteryPrice_0_20: string;
-  batteryPrice_21_50: string;
-  batteryPrice_51_80: string;
-  batteryPrice_81_100: string;
+  fullBatteryChargePrice: string;
 
   wheelDrive: string;
   bodyType: string;
@@ -76,12 +73,6 @@ export const verifyCar = (carInfoFormParams: HostCarInfo) => {
     (carInfoFormParams.engineTypeString !== ENGINE_TYPE_PATROL_STRING || !isEmpty(carInfoFormParams.fuelPricePerGal)) &&
     (carInfoFormParams.engineTypeString !== ENGINE_TYPE_PATROL_STRING || !isEmpty(carInfoFormParams.tankVolumeInGal)) &&
     (carInfoFormParams.engineTypeString !== ENGINE_TYPE_ELECTRIC_STRING ||
-      !isEmpty(carInfoFormParams.batteryPrice_0_20)) &&
-    (carInfoFormParams.engineTypeString !== ENGINE_TYPE_ELECTRIC_STRING ||
-      !isEmpty(carInfoFormParams.batteryPrice_21_50)) &&
-    (carInfoFormParams.engineTypeString !== ENGINE_TYPE_ELECTRIC_STRING ||
-      !isEmpty(carInfoFormParams.batteryPrice_51_80))
-    //&&  (carInfoFormParams.engineTypeString !== ENGINE_TYPE_ELECTRIC_STRING ||
-    //   !isEmpty(carInfoFormParams.batteryPrice_81_100))
+      !isEmpty(carInfoFormParams.fullBatteryChargePrice))
   );
 };

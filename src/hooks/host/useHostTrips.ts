@@ -6,6 +6,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
 import { ContractTrip, ContractTripWithPhotoURL } from "@/model/blockchain/schemas";
 import { validateContractTripWithPhotoURL } from "@/model/blockchain/schemas_utils";
+import { EngineType } from "@/model";
 
 const useHostTrips = () => {
   const rentalityContract = useRentality();
@@ -226,13 +227,9 @@ const useHostTrips = () => {
                     startFuelLevelInPercents: Number(i.trip.startParamLevels[0]),
                     endFuelLevelInPercents: Number(i.trip.endParamLevels[0]),
                     engineType: i.trip.engineType,
-                    fuelPricePerGal: Number(i.trip.fuelPrice),
-                    batteryPrices: {
-                      price_0_20: Number(i.trip.fuelPrice) / 100,
-                      price_21_50: Number(i.trip.fuelPrice) / 100,
-                      price_51_80: Number(i.trip.fuelPrice) / 100,
-                      price_81_100: Number(i.trip.fuelPrice) / 100,
-                    },
+                    fuelPricePerGal: i.trip.engineType === EngineType.PATROL ? Number(i.trip.fuelPrice) / 100 : 0,
+                    fullBatteryChargePriceInUsdCents:
+                      i.trip.engineType === EngineType.ELECTRIC ? Number(i.trip.fuelPrice) / 100 : 0,
                     milesIncludedPerDay: Number(i.trip.milesIncludedPerDay),
                     startOdometr: Number(i.trip.startParamLevels[1]),
                     endOdometr: Number(i.trip.endParamLevels[1]),
