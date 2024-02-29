@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { IRentalityContract, ContractKYCInfo } from "@/model/blockchain/IRentalityContract";
 import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
 import { useRentality } from "@/contexts/rentalityContext";
 import { formatPhoneNumber, getBlockchainTimeFromDate, getDateFromBlockchainTime } from "@/utils/formInput";
 import moment from "moment";
+import { ContractKYCInfo } from "@/model/blockchain/schemas";
+import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 
 export type ProfileSettings = {
   profilePhotoUrl: string;
@@ -75,7 +76,6 @@ const useProfileSettings = () => {
         newProfileSettings.profilePhotoUrl,
         newProfileSettings.drivingLicenseNumber,
         expirationDate,
-        true,
         newProfileSettings.isConfirmedTerms
       );
 

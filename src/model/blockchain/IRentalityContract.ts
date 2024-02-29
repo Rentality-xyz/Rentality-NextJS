@@ -8,6 +8,7 @@ import {
   ContractCreateClaimRequest,
   ContractCreateTripRequest,
   ContractFullClaimInfo,
+  ContractKYCInfo,
   ContractSearchCar,
   ContractSearchCarParams,
   ContractTrip,
@@ -82,7 +83,6 @@ export interface IRentalityContract {
     profilePhoto: string,
     licenseNumber: string,
     expirationDate: bigint,
-    isKYCPassed: boolean,
     isTCPassed: boolean
   ): Promise<ContractTransactionResponse>;
   callOutdated(): Promise<ContractTripContactInfo>;
@@ -99,8 +99,8 @@ export interface IRentalityContract {
     endDateTime: bigint,
     searchParams: ContractSearchCarParams
   ): Promise<ContractSearchCar[]>;
-  getTripsByGuest(guest: string): Promise<ContractTrip[]>;
-  getTripsByHost(host: string): Promise<ContractTrip[]>;
+  getTripsByGuest(guest: string): Promise<ContractTripWithPhotoURL[]>;
+  getTripsByHost(host: string): Promise<ContractTripWithPhotoURL[]>;
   getTripsByCar(carId: bigint): Promise<ContractTrip[]>;
   updateClaim(claimId: bigint): Promise<ContractTransactionResponse>;
   getClaim(claimId: bigint): Promise<ContractFullClaimInfo[]>;
@@ -138,18 +138,6 @@ export interface IRentalityCurrencyConverterContract {
   getEthFromUsdWithCache(valueInUsdCents: bigint): Promise<bigint>;
   getUsdFromEthWithCache(valueInEth: bigint): Promise<bigint>;
 }
-
-export type ContractKYCInfo = {
-  name: string;
-  surname: string;
-  mobilePhoneNumber: string;
-  profilePhoto: string;
-  licenseNumber: string;
-  expirationDate: bigint;
-  createDate: bigint;
-  isKYCPassed: boolean;
-  isTCPassed: boolean;
-};
 
 type ContractChatKeyInfo = {
   privateKey: string;
