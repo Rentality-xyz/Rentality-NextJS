@@ -5,7 +5,7 @@ import blockchainChosen from "../../images/blockchainChosen.svg";
 import Image from "next/image";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { assertIsNode } from "@/utils/react";
-import { getExistBlockchainList } from "@/model/blockchain/BlockchainList";
+import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 
 export default function ChooseBlockchainComponent() {

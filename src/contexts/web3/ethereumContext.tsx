@@ -1,6 +1,6 @@
 import { BrowserProvider, Signer } from "ethers";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
-import { getExistBlockchainList } from "@/model/blockchain/BlockchainList";
+import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
 

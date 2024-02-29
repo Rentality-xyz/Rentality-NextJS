@@ -3,9 +3,7 @@ import { ChatInfo } from "@/model/ChatInfo";
 import { Client as ChatClient } from "@/chat/client";
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityChatHelperContract, IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { ContractChatInfo } from "@/model/blockchain/ContractChatInfo";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
-import { getTripStatusFromContract } from "@/model/blockchain/ContractTrip";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
 import { useRentality } from "./rentalityContext";
 import { isEmpty } from "@/utils/string";
@@ -13,6 +11,8 @@ import { bytesToHex } from "viem";
 import { useRouter } from "next/router";
 import moment from "moment";
 import { useEthereum } from "./web3/ethereumContext";
+import { ContractChatInfo } from "@/model/blockchain/schemas";
+import { getTripStatusFromContract } from "@/model/TripInfo";
 
 export type ChatContextInfo = {
   isLoading: boolean;

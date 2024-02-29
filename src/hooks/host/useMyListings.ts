@@ -3,8 +3,8 @@ import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
-import { ContractCarInfoWithEditability } from "@/model";
-import { validateContractCarInfoWithEditability } from "@/model/blockchain/ContractCarInfoWithEditability";
+import { validateContractCarInfoWithEditability } from "@/model/blockchain/schemas_utils";
+import { ContractCarInfoWithEditability } from "@/model/blockchain/schemas";
 
 const useMyListings = () => {
   const rentalityContract = useRentality();

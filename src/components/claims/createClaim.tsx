@@ -1,4 +1,3 @@
-import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/blockchain/ContractCreateClaimRequest";
 import RntSelect from "../common/rntSelect";
 import { useState } from "react";
 import RntInputMultiline from "../common/rntInputMultiline";
@@ -8,6 +7,7 @@ import RntButton from "../common/rntButton";
 import { ClaimType, getClaimTypeTextFromClaimType } from "@/model/Claim";
 import Link from "next/link";
 import { isEmpty } from "@/utils/string";
+import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
 
 type CreateClaimParams = {
   selectedTripId: string;

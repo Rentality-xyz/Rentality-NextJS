@@ -1,11 +1,4 @@
-import { ClaimType } from "../Claim";
-
-export type ContractCreateClaimRequest = {
-  tripId: bigint;
-  claimType: ClaimType;
-  description: string;
-  amountInUsdCents: bigint;
-};
+import { ClaimType } from "./Claim";
 
 export type CreateClaimRequest = {
   tripId: number;

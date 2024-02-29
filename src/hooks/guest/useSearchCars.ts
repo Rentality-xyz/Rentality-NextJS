@@ -3,17 +3,16 @@ import { getEtherContractWithSigner } from "../../abis";
 import { EngineType, getEngineTypeString } from "@/model/EngineType";
 import { calculateDays } from "@/utils/date";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
-import { ContractCreateTripRequest } from "@/model/blockchain/ContractCreateTripRequest";
 import { SearchCarInfo, SearchCarsResult, emptySearchCarsResult } from "@/model/SearchCarsResult";
 import { SearchCarRequest } from "@/model/SearchCarRequest";
-import { ContractSearchCarParams } from "@/model/blockchain/ContractSearchCarParams";
 import { useRentality } from "@/contexts/rentalityContext";
 import { getBlockchainTimeFromDate, getMoneyInCentsFromString } from "@/utils/formInput";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { IRentalityCurrencyConverterContract } from "@/model/blockchain/IRentalityContract";
-import { ContractSearchCar, validateContractSearchCar } from "@/model/blockchain/ContractSearchCar";
 import moment from "moment";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { ContractCreateTripRequest, ContractSearchCar, ContractSearchCarParams } from "@/model/blockchain/schemas";
+import { validateContractSearchCar } from "@/model/blockchain/schemas_utils";
 
 export const sortOptions = {
   priceAsc: "Price: low to high",
@@ -189,9 +188,9 @@ const useSearchCars = () => {
         endDateTime: endTimeUTC,
         startLocation: startLocation,
         endLocation: endLocation,
-        totalDayPriceInUsdCents: totalDayPriceInUsdCents,
-        taxPriceInUsdCents: taxPriceInUsdCents,
-        depositInUsdCents: depositInUsdCents,
+        totalDayPriceInUsdCents: BigInt(totalDayPriceInUsdCents),
+        taxPriceInUsdCents: BigInt(taxPriceInUsdCents),
+        depositInUsdCents: BigInt(depositInUsdCents),
         ethToCurrencyRate: BigInt(ethToUsdRate),
         ethToCurrencyDecimals: Number(ethToUsdDecimals),
       };

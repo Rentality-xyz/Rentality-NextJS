@@ -5,7 +5,7 @@ import HostLayout from "@/components/host/layout/hostLayout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useHostClaims from "@/hooks/host/useHostClaims";
 import useRntDialogs from "@/hooks/useRntDialogs";
-import { CreateClaimRequest } from "@/model/blockchain/ContractCreateClaimRequest";
+import { CreateClaimRequest } from "@/model/CreateClaimRequest";
 import { useRouter } from "next/navigation";
 
 export default function Claims() {

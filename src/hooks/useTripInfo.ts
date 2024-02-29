@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { ContractTrip, getTripStatusFromContract } from "@/model/blockchain/ContractTrip";
 import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { TripDetails } from "@/model/TripDetails";
 import { useRentality } from "@/contexts/rentalityContext";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
+import { ContractTrip } from "@/model/blockchain/schemas";
 
 const emptyDetails: TripDetails = {
   tripId: BigInt(0),
@@ -69,7 +69,7 @@ const useTripDetails = (tripId: bigint) => {
         startLocation: trip.startLocation,
         endLocation: trip.endLocation,
         milesIncludedPerDay: Number(trip.milesIncludedPerDay),
-        fuelPricePerGalInUsd: Number(trip.fuelPrices[0]) / 100.0,
+        fuelPricePerGalInUsd: Number(trip.fuelPrice) / 100.0,
         approvedDateTime: trip.approvedDateTime > 0 ? getDateFromBlockchainTime(trip.approvedDateTime) : undefined,
         checkedInByHostDateTime:
           trip.checkedInByHostDateTime > 0 ? getDateFromBlockchainTime(trip.checkedInByHostDateTime) : undefined,

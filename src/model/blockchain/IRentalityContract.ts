@@ -1,16 +1,19 @@
 import { ContractTransactionResponse } from "ethers";
-import { ContractCarInfo } from "./ContractCarInfo";
-import { ContractCreateTripRequest } from "./ContractCreateTripRequest";
-import { ContractTrip } from "./ContractTrip";
-import { ContractCreateCarRequest } from "./ContractCreateCarRequest";
-import { ContractSearchCarParams } from "./ContractSearchCarParams";
-import { ContractChatInfo } from "./ContractChatInfo";
-import { ContractUpdateCarInfoRequest } from "./ContractUpdateCarInfoRequest";
-import { ContractCreateClaimRequest } from "./ContractCreateClaimRequest";
-import { ContractFullClaimInfo } from "./ContractClaimInfo";
-import { ContractSearchCar } from "./ContractSearchCar";
-import { ContractCarDetails } from "./ContractCarDetails";
-import { ContractCarInfoWithEditability } from "./ContractCarInfoWithEditability";
+import {
+  ContractCarDetails,
+  ContractCarInfo,
+  ContractCarInfoWithEditability,
+  ContractChatInfo,
+  ContractCreateCarRequest,
+  ContractCreateClaimRequest,
+  ContractCreateTripRequest,
+  ContractFullClaimInfo,
+  ContractSearchCar,
+  ContractSearchCarParams,
+  ContractTrip,
+  ContractTripWithPhotoURL,
+  ContractUpdateCarInfoRequest,
+} from "./schemas";
 
 export interface IRentalityContract {
   /// ADMIN functions
@@ -39,7 +42,7 @@ export interface IRentalityContract {
   ): Promise<ContractTransactionResponse>;
   getCarInfoById(carId: bigint): Promise<ContractCarInfo>;
   getMyCars(): Promise<ContractCarInfoWithEditability[]>;
-  getTripsAsHost(): Promise<ContractTrip[]>;
+  getTripsAsHost(): Promise<ContractTripWithPhotoURL[]>;
   approveTripRequest(tripId: bigint): Promise<ContractTransactionResponse>;
   rejectTripRequest(tripId: bigint): Promise<ContractTransactionResponse>;
   checkInByHost(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
@@ -57,7 +60,7 @@ export interface IRentalityContract {
     searchParams: ContractSearchCarParams
   ): Promise<ContractSearchCar[]>;
   createTripRequest(request: ContractCreateTripRequest, value: object): Promise<ContractTransactionResponse>;
-  getTripsAsGuest(): Promise<ContractTrip[]>;
+  getTripsAsGuest(): Promise<ContractTripWithPhotoURL[]>;
   checkInByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
   checkOutByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
   getChatInfoForGuest(): Promise<ContractChatInfo[]>;

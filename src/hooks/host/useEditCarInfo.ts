@@ -10,11 +10,9 @@ import {
   getMilesIncludedPerDayText,
 } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
-import { ContractUpdateCarInfoRequest } from "@/model/blockchain/ContractUpdateCarInfoRequest";
 import { getMoneyInCentsFromString, getStringFromMoneyInCents } from "@/utils/formInput";
-import { ContractCarDetails } from "@/model/blockchain/ContractCarDetails";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { ContractCarInfo } from "@/model/blockchain/ContractCarInfo";
+import { ContractCarDetails, ContractCarInfo, ContractUpdateCarInfoRequest } from "@/model/blockchain/schemas";
 
 const emptyHostCarInfo: HostCarInfo = {
   carId: -1,

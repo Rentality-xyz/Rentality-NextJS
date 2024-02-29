@@ -54,6 +54,27 @@ export const getTripStatusBgColorClassFromStatus = (status: TripStatus) => {
       return "bg-red-500";
   }
 };
+export const getTripStatusFromContract = (status: number) => {
+  switch (status) {
+    case 0:
+      return TripStatus.Pending;
+    case 1:
+      return TripStatus.Confirmed;
+    case 2:
+      return TripStatus.CheckedInByHost;
+    case 3:
+      return TripStatus.Started;
+    case 4:
+      return TripStatus.CheckedOutByGuest;
+    case 5:
+      return TripStatus.Finished;
+    case 6:
+      return TripStatus.Closed;
+    case 7:
+    default:
+      return TripStatus.Rejected;
+  }
+};
 
 export type TripInfo = {
   tripId: number;

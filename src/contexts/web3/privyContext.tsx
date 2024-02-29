@@ -1,4 +1,4 @@
-import { getExistBlockchainList } from "@/model/blockchain/BlockchainList";
+import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { PrivyProvider as BasePrivyProvider } from "@privy-io/react-auth";
 
 export const PrivyProvider = ({ children }: { children?: React.ReactNode }) => {
