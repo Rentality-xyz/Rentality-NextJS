@@ -10,6 +10,7 @@ import { ContractCreateClaimRequest } from "./ContractCreateClaimRequest";
 import { ContractFullClaimInfo } from "./ContractClaimInfo";
 import { ContractSearchCar } from "./ContractSearchCar";
 import { ContractCarDetails } from "./ContractCarDetails";
+import { ContractCarInfoWithEditability } from "./ContractCarInfoWithEditability";
 
 export interface IRentalityContract {
   /// ADMIN functions
@@ -37,7 +38,7 @@ export interface IRentalityContract {
     geoApiKey: string
   ): Promise<ContractTransactionResponse>;
   getCarInfoById(carId: bigint): Promise<ContractCarInfo>;
-  getMyCars(): Promise<ContractCarInfo[]>;
+  getMyCars(): Promise<ContractCarInfoWithEditability[]>;
   getTripsAsHost(): Promise<ContractTrip[]>;
   approveTripRequest(tripId: bigint): Promise<ContractTransactionResponse>;
   rejectTripRequest(tripId: bigint): Promise<ContractTransactionResponse>;

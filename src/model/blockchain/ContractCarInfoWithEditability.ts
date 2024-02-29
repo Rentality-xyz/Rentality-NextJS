@@ -7,7 +7,7 @@ export type ContractCarInfoWithEditability = {
   isEditable: boolean;
 };
 
-export function validateCarInfoWithEditability(
+export function validateContractCarInfoWithEditability(
   obj: ContractCarInfoWithEditability
 ): obj is ContractCarInfoWithEditability {
   if (typeof obj !== "object" || obj == null) return false;
