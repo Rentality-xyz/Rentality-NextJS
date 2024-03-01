@@ -1,6 +1,7 @@
 import { validateType } from "@/utils/typeValidator";
-import { EngineType } from "../EngineType";
 import {
+  ClaimStatus,
+  ClaimType,
   ContractCarDetails,
   ContractCarInfo,
   ContractCarInfoWithEditability,
@@ -11,9 +12,9 @@ import {
   ContractTransactionInfo,
   ContractTrip,
   ContractTripWithPhotoURL,
+  EngineType,
+  TripStatus,
 } from "./schemas";
-import { ClaimStatus, ClaimType } from "../Claim";
-import { TripStatus } from "../TripInfo";
 
 const emptyContractCarDetails: ContractCarDetails = {
   carId: BigInt(0),
@@ -75,7 +76,7 @@ export function validateContractCarInfoWithEditability(
     isEditable: false,
   };
 
-  return validateType(obj, emptyContractCarInfoWithEditability);
+  return validateType(obj, emptyContractCarInfoWithEditability) && validateType(obj.carInfo, emptyContractCarInfo);
 }
 
 export function validateContractChatInfo(obj: ContractChatInfo): obj is ContractChatInfo {
@@ -104,38 +105,26 @@ export function validateContractChatInfo(obj: ContractChatInfo): obj is Contract
   return validateType(obj, emptyContractChatInfo);
 }
 
-export function validateContractClaim(obj: ContractClaim): obj is ContractClaim {
-  const emptyContractClaim: ContractClaim = {
-    tripId: BigInt(0),
-    claimId: BigInt(0),
-    deadlineDateInSec: BigInt(0),
-    claimType: ClaimType.Tolls,
-    status: ClaimStatus.NotPaid,
-    description: "",
-    amountInUsdCents: BigInt(0),
-    payDateInSec: BigInt(0),
-    rejectedBy: "",
-    rejectedDateInSec: BigInt(0),
-  };
+const emptyContractClaim: ContractClaim = {
+  tripId: BigInt(0),
+  claimId: BigInt(0),
+  deadlineDateInSec: BigInt(0),
+  claimType: ClaimType.Tolls,
+  status: ClaimStatus.NotPaid,
+  description: "",
+  amountInUsdCents: BigInt(0),
+  payDateInSec: BigInt(0),
+  rejectedBy: "",
+  rejectedDateInSec: BigInt(0),
+};
 
+export function validateContractClaim(obj: ContractClaim): obj is ContractClaim {
   return validateType(obj, emptyContractClaim);
 }
 
 export function validateContractFullClaimInfo(obj: ContractFullClaimInfo): obj is ContractFullClaimInfo {
   const emptyContractFullClaimInfo: ContractFullClaimInfo = {
-    claim: {
-      tripId: BigInt(0),
-      claimId: BigInt(0),
-      deadlineDateInSec: BigInt(0),
-      claimType: ClaimType.Tolls,
-      status: ClaimStatus.NotPaid,
-      description: "",
-      amountInUsdCents: BigInt(0),
-      payDateInSec: BigInt(0),
-      rejectedBy: "",
-      rejectedDateInSec: BigInt(0),
-    },
-
+    claim: emptyContractClaim,
     host: "",
     guest: "",
     hostPhoneNumber: "",
@@ -143,7 +132,7 @@ export function validateContractFullClaimInfo(obj: ContractFullClaimInfo): obj i
     carInfo: emptyContractCarInfo,
   };
 
-  return validateType(obj, emptyContractFullClaimInfo);
+  return validateType(obj, emptyContractFullClaimInfo) && validateType(obj.claim, emptyContractClaim);
 }
 
 const emptyContractSearchCar: ContractSearchCar = {
@@ -223,7 +212,7 @@ const emptyContractTrip: ContractTrip = {
   tripFinishedBy: "",
   tripStartedBy: "",
   transactionInfo: emptyContractTransactionInfo,
-  engineType: 0,
+  engineType: EngineType.PATROL,
   fuelPrice: BigInt(0),
 };
 
@@ -238,5 +227,5 @@ const emptyContractTripWithPhotoURL: ContractTripWithPhotoURL = {
 };
 
 export function validateContractTripWithPhotoURL(obj: ContractTripWithPhotoURL): obj is ContractTripWithPhotoURL {
-  return validateType(obj, emptyContractTripWithPhotoURL);
+  return validateType(obj, emptyContractTripWithPhotoURL) && validateType(obj.trip, emptyContractTrip);
 }

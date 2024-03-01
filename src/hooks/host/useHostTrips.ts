@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { TripInfo, AllowedChangeTripAction, TripStatus } from "@/model/TripInfo";
+import { TripInfo, AllowedChangeTripAction } from "@/model/TripInfo";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
 import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
-import { ContractTrip, ContractTripWithPhotoURL } from "@/model/blockchain/schemas";
+import { ContractTrip, ContractTripWithPhotoURL, EngineType, TripStatus } from "@/model/blockchain/schemas";
 import { validateContractTripWithPhotoURL } from "@/model/blockchain/schemas_utils";
-import { EngineType } from "@/model";
 
 const useHostTrips = () => {
   const rentalityContract = useRentality();

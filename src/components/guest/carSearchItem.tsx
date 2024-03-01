@@ -44,7 +44,7 @@ export default function CarSearchItem({
             <div>Additionally security deposit ${searchInfo.securityDeposit} per trip</div>
           </div>
           <div className="flex flex-col">
-            <div>- {searchInfo.engineType}</div>
+            <div>- {searchInfo.engineTypeText}</div>
             <div>- {searchInfo.transmission}</div>
             <div>- {searchInfo.seatsNumber} seats</div>
           </div>

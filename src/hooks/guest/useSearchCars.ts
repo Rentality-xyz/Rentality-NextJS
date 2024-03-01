@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { getEtherContractWithSigner } from "../../abis";
-import { EngineType, getEngineTypeString } from "@/model/EngineType";
+import { getEngineTypeString } from "@/model/EngineType";
 import { calculateDays } from "@/utils/date";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { SearchCarInfo, SearchCarsResult, emptySearchCarsResult } from "@/model/SearchCarsResult";
@@ -11,7 +11,12 @@ import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { IRentalityCurrencyConverterContract } from "@/model/blockchain/IRentalityContract";
 import moment from "moment";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { ContractCreateTripRequest, ContractSearchCar, ContractSearchCarParams } from "@/model/blockchain/schemas";
+import {
+  ContractCreateTripRequest,
+  ContractSearchCar,
+  ContractSearchCarParams,
+  EngineType,
+} from "@/model/blockchain/schemas";
 import { validateContractSearchCar } from "@/model/blockchain/schemas_utils";
 
 export const sortOptions = {
@@ -39,6 +44,13 @@ const useSearchCars = () => {
       .utc(searchCarRequest.dateTo)
       .add(searchCarRequest.utcOffsetMinutes, "minutes")
       .toDate();
+
+    console.log(`utcOffsetMinutes: ${searchCarRequest.utcOffsetMinutes}`);
+    console.log(`dateFrom string: ${searchCarRequest.dateFrom}`);
+    console.log(`startDateTimeUTC string: ${startDateTimeUTC}`);
+    console.log(`dateTo string: ${searchCarRequest.dateTo}`);
+    console.log(`endDateTimeUTC string: ${endDateTimeUTC}`);
+
     const tripDays = calculateDays(startDateTimeUTC, endDateTimeUTC);
 
     const contractDateFromUTC = getBlockchainTimeFromDate(startDateTimeUTC);
@@ -89,7 +101,7 @@ const useSearchCars = () => {
           year: meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
           seatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats number")?.value ?? "",
           transmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
-          engineType: getEngineTypeString(i.engineType ?? EngineType.PATROL),
+          engineTypeText: getEngineTypeString(i.engineType ?? EngineType.PATROL),
           milesIncludedPerDay: getMilesIncludedPerDayText(i.milesIncludedPerDay ?? 0),
           pricePerDay: pricePerDay,
           days: tripDays,

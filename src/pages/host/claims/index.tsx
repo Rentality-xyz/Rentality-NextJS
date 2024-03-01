@@ -19,7 +19,7 @@ export default function Claims() {
         showError("Please select trip");
         return;
       }
-      if (!createClaimRequest.claimType && createClaimRequest.claimType !== 0) {
+      if (!createClaimRequest.claimType && createClaimRequest.claimType !== BigInt(0)) {
         showError("Please select claim type");
         return;
       }

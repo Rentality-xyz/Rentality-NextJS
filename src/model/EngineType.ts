@@ -1,7 +1,9 @@
+import { EngineType } from "./blockchain/schemas";
+
 export const ENGINE_TYPE_PATROL_STRING = "Gasoline";
 export const ENGINE_TYPE_ELECTRIC_STRING = "Electro";
 
-export enum EngineType {
+export enum EngineTypeEnum {
   PATROL = 1,
   ELECTRIC = 2,
 }
@@ -17,13 +19,13 @@ export function getEngineTypeString(engineType: EngineType): string {
   }
 }
 
-export function getEngineTypeCode(engineTypeString: string): number {
+export function getEngineTypeCode(engineTypeString: string): bigint {
   switch (engineTypeString) {
     case ENGINE_TYPE_PATROL_STRING:
-      return 1;
+      return EngineType.PATROL;
     case ENGINE_TYPE_ELECTRIC_STRING:
-      return 2;
+      return EngineType.ELECTRIC;
     default:
-      return 0;
+      return BigInt(0);
   }
 }

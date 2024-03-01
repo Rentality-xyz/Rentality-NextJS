@@ -46,7 +46,7 @@ const emptyHostCarInfo: HostCarInfo = {
   locationAddress: "",
   isLocationAddressEdited: false,
   currentlyListed: true,
-  engineTypeString: "",
+  engineTypeText: "",
   fullBatteryChargePrice: "",
   timeBufferBetweenTripsInMin: 0,
 };
@@ -71,9 +71,9 @@ const useEditCarInfo = (carId: number) => {
       const securityDepositPerTripInUsdCents = BigInt(getMoneyInCentsFromString(carInfoFormParams.securityDeposit));
 
       const engineParams: bigint[] = [];
-      if (carInfoFormParams.engineTypeString === ENGINE_TYPE_PATROL_STRING) {
+      if (carInfoFormParams.engineTypeText === ENGINE_TYPE_PATROL_STRING) {
         engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.fuelPricePerGal)));
-      } else if (carInfoFormParams.engineTypeString === ENGINE_TYPE_ELECTRIC_STRING) {
+      } else if (carInfoFormParams.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING) {
         engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.fullBatteryChargePrice)));
       }
 
@@ -178,7 +178,7 @@ const useEditCarInfo = (carId: number) => {
           locationAddress: "",
           isLocationAddressEdited: false,
           currentlyListed: carInfo.currentlyListed,
-          engineTypeString: engineTypeString,
+          engineTypeText: engineTypeString,
           fuelPricePerGal: fuelPricePerGal,
           fullBatteryChargePrice: fullBatteryChargePrice,
           timeBufferBetweenTripsInMin: Number(carInfo.timeBufferBetweenTripsInSec) / 60,

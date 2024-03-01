@@ -24,7 +24,7 @@ export default function CarEditForm({
   const isUnlimitedMiles = carInfoFormParams.milesIncludedPerDay === UNLIMITED_MILES_VALUE_TEXT;
   const fuelPricePerMile = Number(carInfoFormParams.pricePerDay) / Number(carInfoFormParams.milesIncludedPerDay);
   const fuelPricePerMileText = Number.isFinite(fuelPricePerMile) ? fuelPricePerMile.toString() : "-";
-  const isElectricEngine = carInfoFormParams.engineTypeString === "Electro";
+  const isElectricEngine = carInfoFormParams.engineTypeText === "Electro";
 
   useEffect(() => {
     if (!carInfoFormParams.locationLatitude || !carInfoFormParams.locationLongitude) return;
@@ -182,18 +182,18 @@ export default function CarEditForm({
             id="engineType"
             label="Type of engine"
             readOnly={!isNewCar}
-            value={carInfoFormParams.engineTypeString}
+            value={carInfoFormParams.engineTypeText}
             onChange={(e) => {
               if (e.target.value === ENGINE_TYPE_ELECTRIC_STRING) {
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  engineTypeString: e.target.value,
+                  engineTypeText: e.target.value,
                   transmission: "Automatic",
                 });
               } else {
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  engineTypeString: e.target.value,
+                  engineTypeText: e.target.value,
                 });
               }
             }}

@@ -39,7 +39,7 @@ export type HostCarInfo = {
   locationLatitude: string;
   locationLongitude: string;
 
-  engineTypeString: string;
+  engineTypeText: string;
 
   fuelPricePerGal: string;
   tankVolumeInGal: string;
@@ -69,10 +69,10 @@ export const verifyCar = (carInfoFormParams: HostCarInfo) => {
     !isEmpty(carInfoFormParams.milesIncludedPerDay) &&
     !isEmpty(carInfoFormParams.securityDeposit) &&
     !isEmpty(carInfoFormParams.locationAddress) &&
-    !isEmpty(carInfoFormParams.engineTypeString) &&
-    (carInfoFormParams.engineTypeString !== ENGINE_TYPE_PATROL_STRING || !isEmpty(carInfoFormParams.fuelPricePerGal)) &&
-    (carInfoFormParams.engineTypeString !== ENGINE_TYPE_PATROL_STRING || !isEmpty(carInfoFormParams.tankVolumeInGal)) &&
-    (carInfoFormParams.engineTypeString !== ENGINE_TYPE_ELECTRIC_STRING ||
+    !isEmpty(carInfoFormParams.engineTypeText) &&
+    (carInfoFormParams.engineTypeText !== ENGINE_TYPE_PATROL_STRING || !isEmpty(carInfoFormParams.fuelPricePerGal)) &&
+    (carInfoFormParams.engineTypeText !== ENGINE_TYPE_PATROL_STRING || !isEmpty(carInfoFormParams.tankVolumeInGal)) &&
+    (carInfoFormParams.engineTypeText !== ENGINE_TYPE_ELECTRIC_STRING ||
       !isEmpty(carInfoFormParams.fullBatteryChargePrice))
   );
 };

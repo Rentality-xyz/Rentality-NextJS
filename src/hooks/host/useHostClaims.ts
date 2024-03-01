@@ -4,7 +4,6 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
 import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { dateRangeFormatDayMonth } from "@/utils/datetimeFormatters";
-import { TripStatus } from "@/model/TripInfo";
 import { Claim, getClaimTypeTextFromClaimType, getClaimStatusTextFromStatus } from "@/model/Claim";
 import { useChat } from "@/contexts/chatContext";
 import encodeClaimChatMessage from "@/components/chat/utils";
@@ -13,6 +12,7 @@ import {
   ContractCreateClaimRequest,
   ContractFullClaimInfo,
   ContractTripWithPhotoURL,
+  TripStatus,
 } from "@/model/blockchain/schemas";
 import { validateContractFullClaimInfo, validateContractTripWithPhotoURL } from "@/model/blockchain/schemas_utils";
 

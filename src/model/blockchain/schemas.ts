@@ -1,6 +1,3 @@
-import { ClaimStatus, ClaimType } from "../Claim";
-import { TripStatus } from "../TripInfo";
-
 export type ContractCarInfo = {
   carId: bigint;
   carVinNumber: string;
@@ -11,7 +8,7 @@ export type ContractCarInfo = {
   yearOfProduction: number;
   pricePerDayInUsdCents: bigint;
   securityDepositPerTripInUsdCents: bigint;
-  engineType: number;
+  engineType: EngineType;
   engineParams: bigint[];
   milesIncludedPerDay: bigint;
   timeBufferBetweenTripsInSec: number;
@@ -35,7 +32,7 @@ export type ContractCreateCarRequest = {
   pricePerDayInUsdCents: bigint;
   securityDepositPerTripInUsdCents: bigint;
   engineParams: bigint[];
-  engineType: number;
+  engineType: EngineType;
   milesIncludedPerDay: bigint;
   timeBufferBetweenTripsInSec: number;
   locationAddress: string;
@@ -99,7 +96,7 @@ export type ContractTrip = {
   pricePerDayInUsdCents: bigint;
   startDateTime: bigint;
   endDateTime: bigint;
-  engineType: number;
+  engineType: EngineType;
   startLocation: string;
   endLocation: string;
   milesIncludedPerDay: bigint;
@@ -230,7 +227,7 @@ export type ContractSearchCar = {
   yearOfProduction: number;
   pricePerDayInUsdCents: bigint;
   securityDepositPerTripInUsdCents: bigint;
-  engineType: number;
+  engineType: EngineType;
   milesIncludedPerDay: bigint;
   host: string;
   hostName: string;
@@ -254,7 +251,7 @@ export type ContractCarDetails = {
   pricePerDayInUsdCents: bigint;
   securityDepositPerTripInUsdCents: bigint;
   milesIncludedPerDay: bigint;
-  engineType: number;
+  engineType: EngineType;
   engineParams: bigint[];
   geoVerified: boolean;
   currentlyListed: boolean;
@@ -269,3 +266,41 @@ export type ContractCarDetails = {
 export enum CurrencyType {
   ETH,
 }
+
+export type TripStatus = bigint;
+export const TripStatus = {
+  Pending: BigInt(0), // Created
+  Confirmed: BigInt(1), // Approved
+  CheckedInByHost: BigInt(2), // CheckedInByHost
+  Started: BigInt(3), // CheckedInByGuest
+  CheckedOutByGuest: BigInt(4), //CheckedOutByGuest
+  Finished: BigInt(5), //CheckedOutByHost
+  Closed: BigInt(6), //Finished
+  Rejected: BigInt(7), //Canceled
+};
+
+export type ClaimStatus = bigint;
+export const ClaimStatus = {
+  NotPaid: BigInt(0),
+  Paid: BigInt(1),
+  Cancel: BigInt(2),
+  Overdue: BigInt(3),
+};
+
+export type ClaimType = bigint;
+export const ClaimType = {
+  Tolls: BigInt(0),
+  Tickets: BigInt(1),
+  LateReturn: BigInt(2),
+  Cleanliness: BigInt(3),
+  Smoking: BigInt(4),
+  ExteriorDamage: BigInt(5),
+  InteriorDamage: BigInt(6),
+  Other: BigInt(7),
+};
+
+export type EngineType = bigint;
+export const EngineType = {
+  PATROL: BigInt(1),
+  ELECTRIC: BigInt(2),
+};

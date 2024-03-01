@@ -1,4 +1,4 @@
-import { ClaimType } from "./Claim";
+import { ClaimType } from "./blockchain/schemas";
 
 export type CreateClaimRequest = {
   tripId: number;

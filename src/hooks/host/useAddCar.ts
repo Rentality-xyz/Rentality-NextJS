@@ -40,7 +40,7 @@ const emptyNewCarInfo: HostCarInfo = {
   locationAddress: "",
   isLocationAddressEdited: true,
   currentlyListed: true,
-  engineTypeString: "",
+  engineTypeText: "",
   fullBatteryChargePrice: "",
   timeBufferBetweenTripsInMin: 0,
 };
@@ -194,13 +194,11 @@ const useAddCar = () => {
       const pricePerDayInUsdCents = BigInt(getMoneyInCentsFromString(dataToSave.pricePerDay));
       const securityDepositPerTripInUsdCents = BigInt(getMoneyInCentsFromString(dataToSave.securityDeposit));
 
-      const engineType = getEngineTypeCode(dataToSave.engineTypeString);
-
       const engineParams: bigint[] = [];
-      if (carInfoFormParams.engineTypeString === ENGINE_TYPE_PATROL_STRING) {
+      if (carInfoFormParams.engineTypeText === ENGINE_TYPE_PATROL_STRING) {
         engineParams.push(BigInt(dataToSave.tankVolumeInGal));
         engineParams.push(BigInt(getMoneyInCentsFromString(dataToSave.fuelPricePerGal)));
-      } else if (carInfoFormParams.engineTypeString === ENGINE_TYPE_ELECTRIC_STRING) {
+      } else if (carInfoFormParams.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING) {
         engineParams.push(BigInt(getMoneyInCentsFromString(dataToSave.fullBatteryChargePrice)));
       }
 
@@ -219,7 +217,7 @@ const useAddCar = () => {
         securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
         milesIncludedPerDay: milesIncludedPerDay,
         geoApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
-        engineType: engineType,
+        engineType: getEngineTypeCode(dataToSave.engineTypeText),
         engineParams: engineParams,
         locationAddress: dataToSave.locationAddress,
         timeBufferBetweenTripsInSec: carInfoFormParams.timeBufferBetweenTripsInMin * 60,

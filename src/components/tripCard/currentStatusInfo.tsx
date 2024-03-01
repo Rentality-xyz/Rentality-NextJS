@@ -1,9 +1,10 @@
 import { dateFormatDayMonthTime } from "@/utils/datetimeFormatters";
-import { TripInfo, TripStatus } from "@/model/TripInfo";
+import { TripInfo } from "@/model/TripInfo";
 import RntButton from "../common/rntButton";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import { Dispatch, SetStateAction, memo } from "react";
 import moment from "moment";
+import { TripStatus } from "@/model/blockchain/schemas";
 
 const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean) => {
   switch (tripInfo.status) {

@@ -1,5 +1,5 @@
 import { MutableRefObject, memo, useState } from "react";
-import { TripInfo, TripStatus, getRefuelValueAndCharge } from "@/model/TripInfo";
+import { TripInfo, getRefuelValueAndCharge } from "@/model/TripInfo";
 import Checkbox from "../common/checkbox";
 import { calculateDays } from "@/utils/date";
 import RntSelect from "../common/rntSelect";
@@ -7,6 +7,7 @@ import RntInput from "../common/rntInput";
 import RntButton from "../common/rntButton";
 import AllowedActionsForStatusStarted from "../guest/allowedActionsForStatusStarted";
 import AllowedActions from "../guest/allowedActions";
+import { TripStatus } from "@/model/blockchain/schemas";
 
 function TripAdditionalActions({
   tripInfo,

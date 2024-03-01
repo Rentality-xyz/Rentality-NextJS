@@ -1,6 +1,6 @@
-import { EngineType } from "./EngineType";
+import { EngineType, TripStatus } from "./blockchain/schemas";
 
-export enum TripStatus {
+export enum TripStatusEnum {
   Pending, // Created
   Confirmed, // Approved
   CheckedInByHost, // CheckedInByHost
