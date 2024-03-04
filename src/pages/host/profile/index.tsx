@@ -1,13 +1,10 @@
-import RntDialogs from "@/components/common/rntDialogs";
 import HostLayout from "@/components/host/layout/hostLayout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import ProfileInfoPage from "@/components/profileInfo/profileInfoPage";
 import useProfileSettings from "@/hooks/useProfileSettings";
-import useRntDialogs from "@/hooks/useRntDialogs";
 
 export default function Profile() {
   const [isLoading, savedProfileSettings, saveProfileSettings] = useProfileSettings();
-  const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
 
   return (
     <HostLayout>
@@ -19,14 +16,10 @@ export default function Profile() {
           <ProfileInfoPage
             savedProfileSettings={savedProfileSettings}
             saveProfileSettings={saveProfileSettings}
-            showInfo={showInfo}
-            showError={showError}
-            hideSnackbar={hideSnackbar}
             isHost={true}
           />
         )}
       </div>
-      <RntDialogs state={dialogState} hide={hideSnackbar} />
     </HostLayout>
   );
 }

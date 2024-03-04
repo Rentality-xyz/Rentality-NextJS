@@ -14,6 +14,7 @@ import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import DriverLicenseVerified from "@/components/driver_license_verified/driver_license_verified";
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
 
 const STATUS = {
   IDLE: "IDLE",
@@ -25,16 +26,10 @@ const STATUS = {
 export default function ProfileInfoPage({
   savedProfileSettings,
   saveProfileSettings,
-  showInfo,
-  showError,
-  hideSnackbar,
   isHost,
 }: {
   savedProfileSettings: ProfileSettings;
   saveProfileSettings: (newProfileSettings: ProfileSettings) => Promise<boolean>;
-  showInfo: (message: string, action?: ReactNode) => void;
-  showError: (message: string, action?: ReactNode) => void;
-  hideSnackbar: () => void;
   isHost: boolean;
 }) {
   const router = useRouter();
@@ -43,6 +38,7 @@ export default function ProfileInfoPage({
   const [status, setStatus] = useState(STATUS.IDLE);
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
   const ethereumInfo = useEthereum();
+  const { showInfo, showError, hideDialogs } = useRntDialogs();
 
   const errors = getErrors(enteredFormData, profileImageFile);
   const isValid = Object.keys(errors).length === 0;
@@ -124,7 +120,7 @@ export default function ProfileInfoPage({
       showInfo(MESSAGES.CONFIRM_TRANSACTION_AND_WAIT);
       const result = await saveProfileSettings(dataToSave);
 
-      hideSnackbar();
+      hideDialogs();
       if (!result) {
         throw new Error("Save profile info error");
       }
