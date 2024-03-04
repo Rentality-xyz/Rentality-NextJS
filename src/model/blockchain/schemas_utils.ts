@@ -4,14 +4,14 @@ import {
   ClaimType,
   ContractCarDetails,
   ContractCarInfo,
-  ContractCarInfoWithEditability,
+  ContractCarInfoDTO,
   ContractChatInfo,
   ContractClaim,
   ContractFullClaimInfo,
   ContractSearchCar,
   ContractTransactionInfo,
   ContractTrip,
-  ContractTripWithPhotoURL,
+  ContractTripDTO,
   EngineType,
   TripStatus,
 } from "./schemas";
@@ -23,7 +23,7 @@ const emptyContractCarDetails: ContractCarDetails = {
   host: "",
   brand: "",
   model: "",
-  yearOfProduction: 0,
+  yearOfProduction: BigInt(0),
   pricePerDayInUsdCents: BigInt(0),
   securityDepositPerTripInUsdCents: BigInt(0),
   milesIncludedPerDay: BigInt(0),
@@ -46,11 +46,11 @@ export function validateContractCarDetails(obj: ContractCarDetails): obj is Cont
 const emptyContractCarInfo: ContractCarInfo = {
   carId: BigInt(0),
   carVinNumber: "",
-  carVinNumberHash: new Uint8Array(),
+  carVinNumberHash: "",
   createdBy: "",
   brand: "",
   model: "",
-  yearOfProduction: 0,
+  yearOfProduction: BigInt(0),
   pricePerDayInUsdCents: BigInt(0),
   securityDepositPerTripInUsdCents: BigInt(0),
   engineType: EngineType.ELECTRIC,
@@ -58,7 +58,7 @@ const emptyContractCarInfo: ContractCarInfo = {
   milesIncludedPerDay: BigInt(0),
   currentlyListed: false,
   geoVerified: false,
-  timeBufferBetweenTripsInSec: 0,
+  timeBufferBetweenTripsInSec: BigInt(0),
   timeZoneId: "",
 };
 
@@ -66,17 +66,15 @@ export function validateContractCarInfo(obj: ContractCarInfo): obj is ContractCa
   return validateType(obj, emptyContractCarInfo);
 }
 
-export function validateContractCarInfoWithEditability(
-  obj: ContractCarInfoWithEditability
-): obj is ContractCarInfoWithEditability {
+export function validateContractCarInfoDTO(obj: ContractCarInfoDTO): obj is ContractCarInfoDTO {
   if (typeof obj !== "object" || obj == null) return false;
-  const emptyContractCarInfoWithEditability: ContractCarInfoWithEditability = {
+  const emptyContractCarInfoDTO: ContractCarInfoDTO = {
     carInfo: emptyContractCarInfo,
     metadataURI: "",
     isEditable: false,
   };
 
-  return validateType(obj, emptyContractCarInfoWithEditability) && validateType(obj.carInfo, emptyContractCarInfo);
+  return validateType(obj, emptyContractCarInfoDTO) && validateType(obj.carInfo, emptyContractCarInfo);
 }
 
 export function validateContractChatInfo(obj: ContractChatInfo): obj is ContractChatInfo {
@@ -220,12 +218,13 @@ export function validateContractTrip(obj: ContractTrip): obj is ContractTrip {
   return validateType(obj, emptyContractTrip);
 }
 
-const emptyContractTripWithPhotoURL: ContractTripWithPhotoURL = {
+const emptyContractTripDTO: ContractTripDTO = {
   trip: emptyContractTrip,
   guestPhotoUrl: "",
   hostPhotoUrl: "",
+  metadataURI: "",
 };
 
-export function validateContractTripWithPhotoURL(obj: ContractTripWithPhotoURL): obj is ContractTripWithPhotoURL {
-  return validateType(obj, emptyContractTripWithPhotoURL) && validateType(obj.trip, emptyContractTrip);
+export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {
+  return validateType(obj, emptyContractTripDTO) && validateType(obj.trip, emptyContractTrip);
 }

@@ -1,23 +1,23 @@
 export type ContractCarInfo = {
   carId: bigint;
   carVinNumber: string;
-  carVinNumberHash: Uint8Array;
+  carVinNumberHash: string;
   createdBy: string;
   brand: string;
   model: string;
-  yearOfProduction: number;
+  yearOfProduction: bigint;
   pricePerDayInUsdCents: bigint;
   securityDepositPerTripInUsdCents: bigint;
   engineType: EngineType;
   engineParams: bigint[];
   milesIncludedPerDay: bigint;
-  timeBufferBetweenTripsInSec: number;
+  timeBufferBetweenTripsInSec: bigint;
   currentlyListed: boolean;
   geoVerified: boolean;
   timeZoneId: string;
 };
 
-export type ContractCarInfoWithEditability = {
+export type ContractCarInfoDTO = {
   carInfo: ContractCarInfo;
   metadataURI: string;
   isEditable: boolean;
@@ -117,10 +117,11 @@ export type ContractTrip = {
   transactionInfo: ContractTransactionInfo;
 };
 
-export type ContractTripWithPhotoURL = {
+export type ContractTripDTO = {
   trip: ContractTrip;
   guestPhotoUrl: string;
   hostPhotoUrl: string;
+  metadataURI: string;
 };
 
 export type ContractChatInfo = {
@@ -247,7 +248,7 @@ export type ContractCarDetails = {
   host: string;
   brand: string;
   model: string;
-  yearOfProduction: number;
+  yearOfProduction: bigint;
   pricePerDayInUsdCents: bigint;
   securityDepositPerTripInUsdCents: bigint;
   milesIncludedPerDay: bigint;

@@ -4,8 +4,8 @@ import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
 import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
-import { ContractTrip, ContractTripWithPhotoURL, EngineType, TripStatus } from "@/model/blockchain/schemas";
-import { validateContractTripWithPhotoURL } from "@/model/blockchain/schemas_utils";
+import { ContractTrip, ContractTripDTO, EngineType, TripStatus } from "@/model/blockchain/schemas";
+import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 
 const useHostTrips = () => {
   const rentalityContract = useRentality();
@@ -188,15 +188,15 @@ const useHostTrips = () => {
           console.error("getTrips error: contract is null");
           return;
         }
-        const tripsBookedView: ContractTripWithPhotoURL[] = await rentalityContract.getTripsAsHost();
+        const tripsBookedView: ContractTripDTO[] = await rentalityContract.getTripsAsHost();
 
         const tripsBookedData =
           tripsBookedView.length === 0
             ? []
             : await Promise.all(
-                tripsBookedView.map(async (i: ContractTripWithPhotoURL, index) => {
+                tripsBookedView.map(async (i: ContractTripDTO, index) => {
                   if (index === 0) {
-                    validateContractTripWithPhotoURL(i);
+                    validateContractTripDTO(i);
                   }
 
                   const tokenURI = await rentalityContract.getCarMetadataURI(i.trip.carId);

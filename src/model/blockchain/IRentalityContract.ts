@@ -2,7 +2,7 @@ import { ContractTransactionResponse } from "ethers";
 import {
   ContractCarDetails,
   ContractCarInfo,
-  ContractCarInfoWithEditability,
+  ContractCarInfoDTO,
   ContractChatInfo,
   ContractCreateCarRequest,
   ContractCreateClaimRequest,
@@ -12,7 +12,7 @@ import {
   ContractSearchCar,
   ContractSearchCarParams,
   ContractTrip,
-  ContractTripWithPhotoURL,
+  ContractTripDTO,
   ContractUpdateCarInfoRequest,
 } from "./schemas";
 
@@ -42,8 +42,8 @@ export interface IRentalityContract {
     geoApiKey: string
   ): Promise<ContractTransactionResponse>;
   getCarInfoById(carId: bigint): Promise<ContractCarInfo>;
-  getMyCars(): Promise<ContractCarInfoWithEditability[]>;
-  getTripsAsHost(): Promise<ContractTripWithPhotoURL[]>;
+  getMyCars(): Promise<ContractCarInfoDTO[]>;
+  getTripsAsHost(): Promise<ContractTripDTO[]>;
   approveTripRequest(tripId: bigint): Promise<ContractTransactionResponse>;
   rejectTripRequest(tripId: bigint): Promise<ContractTransactionResponse>;
   checkInByHost(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
@@ -61,7 +61,7 @@ export interface IRentalityContract {
     searchParams: ContractSearchCarParams
   ): Promise<ContractSearchCar[]>;
   createTripRequest(request: ContractCreateTripRequest, value: object): Promise<ContractTransactionResponse>;
-  getTripsAsGuest(): Promise<ContractTripWithPhotoURL[]>;
+  getTripsAsGuest(): Promise<ContractTripDTO[]>;
   checkInByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
   checkOutByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
   getChatInfoForGuest(): Promise<ContractChatInfo[]>;
@@ -99,8 +99,8 @@ export interface IRentalityContract {
     endDateTime: bigint,
     searchParams: ContractSearchCarParams
   ): Promise<ContractSearchCar[]>;
-  getTripsByGuest(guest: string): Promise<ContractTripWithPhotoURL[]>;
-  getTripsByHost(host: string): Promise<ContractTripWithPhotoURL[]>;
+  getTripsByGuest(guest: string): Promise<ContractTripDTO[]>;
+  getTripsByHost(host: string): Promise<ContractTripDTO[]>;
   getTripsByCar(carId: bigint): Promise<ContractTrip[]>;
   updateClaim(claimId: bigint): Promise<ContractTransactionResponse>;
   getClaim(claimId: bigint): Promise<ContractFullClaimInfo[]>;

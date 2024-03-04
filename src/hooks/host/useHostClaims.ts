@@ -11,10 +11,10 @@ import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClai
 import {
   ContractCreateClaimRequest,
   ContractFullClaimInfo,
-  ContractTripWithPhotoURL,
+  ContractTripDTO,
   TripStatus,
 } from "@/model/blockchain/schemas";
-import { validateContractFullClaimInfo, validateContractTripWithPhotoURL } from "@/model/blockchain/schemas_utils";
+import { validateContractFullClaimInfo, validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 
 const useHostClaims = () => {
   const rentalityContract = useRentality();
@@ -108,7 +108,7 @@ const useHostClaims = () => {
                 })
               );
 
-        const hostTripsView: ContractTripWithPhotoURL[] = (await rentalityContract.getTripsAsHost()).filter(
+        const hostTripsView: ContractTripDTO[] = (await rentalityContract.getTripsAsHost()).filter(
           (i) => i.trip.status !== TripStatus.Pending
         );
 
@@ -116,9 +116,9 @@ const useHostClaims = () => {
           hostTripsView.length === 0
             ? []
             : await Promise.all(
-                hostTripsView.map(async (i: ContractTripWithPhotoURL, index) => {
+                hostTripsView.map(async (i: ContractTripDTO, index) => {
                   if (index === 0) {
-                    validateContractTripWithPhotoURL(i);
+                    validateContractTripDTO(i);
                   }
 
                   const tokenURI = await rentalityContract.getCarMetadataURI(i.trip.carId);

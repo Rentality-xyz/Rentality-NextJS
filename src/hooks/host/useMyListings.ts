@@ -3,8 +3,8 @@ import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
-import { validateContractCarInfoWithEditability } from "@/model/blockchain/schemas_utils";
-import { ContractCarInfoWithEditability } from "@/model/blockchain/schemas";
+import { validateContractCarInfoDTO } from "@/model/blockchain/schemas_utils";
+import { ContractCarInfoDTO } from "@/model/blockchain/schemas";
 
 const useMyListings = () => {
   const rentalityContract = useRentality();
@@ -17,15 +17,15 @@ const useMyListings = () => {
         console.error("getMyListings error: contract is null");
         return;
       }
-      const myListingsView: ContractCarInfoWithEditability[] = await rentalityContract.getMyCars();
+      const myListingsView: ContractCarInfoDTO[] = await rentalityContract.getMyCars();
 
       const myListingsData =
         myListingsView.length === 0
           ? []
           : await Promise.all(
-              myListingsView.map(async (i: ContractCarInfoWithEditability, index) => {
+              myListingsView.map(async (i: ContractCarInfoDTO, index) => {
                 if (index === 0) {
-                  validateContractCarInfoWithEditability(i);
+                  validateContractCarInfoDTO(i);
                 }
                 const meta = await getMetaDataFromIpfs(i.metadataURI);
 
