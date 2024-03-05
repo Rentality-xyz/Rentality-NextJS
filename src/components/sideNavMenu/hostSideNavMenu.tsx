@@ -20,6 +20,7 @@ function HostNavMenu() {
       </SideNavMenuGroup>
       <SideNavMenuGroup title="More">
         <SideNavMenuItem text="Legal" href="https://rentality.xyz/legalmatters" icon={MenuIcons.Legal} target = "_blank"/>
+        <SideNavMenuItem text="Transaction history" href="/host/transactionHistory" icon={MenuIcons.TransactionHistory} />
         <SideNavMenuItem text="Profile settings" href="/host/profile" icon={MenuIcons.ProfileSettings} />
       </SideNavMenuGroup>
     </>

@@ -6,6 +6,7 @@ enum MenuIcons {
   ProfileSettings,
   Listings,
   Legal,
+  TransactionHistory
 }
 
 export default MenuIcons;
