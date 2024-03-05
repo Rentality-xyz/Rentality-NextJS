@@ -1,3 +1,5 @@
+import { ClaimStatus, ClaimType } from "./blockchain/schemas";
+
 export type Claim = {
   tripId: number;
   claimId: number;
@@ -16,7 +18,7 @@ export type Claim = {
   guestPhoneNumber: string;
 };
 
-export enum ClaimType {
+export enum ClaimTypeEnum {
   Tolls,
   Tickets,
   LateReturn,
@@ -49,7 +51,7 @@ export const getClaimTypeTextFromClaimType = (status: ClaimType) => {
   }
 };
 
-export enum ClaimStatus {
+export enum ClaimStatusEnum {
   NotPaid,
   Paid,
   Cancel,

@@ -1,6 +1,6 @@
 import { BrowserProvider, Signer } from "ethers";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
-import { getExistBlockchainList } from "@/model/blockchain/BlockchainList";
+import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
 
@@ -22,7 +22,7 @@ export function useEthereum() {
 
 export const EthereumProvider = ({ children }: { children?: React.ReactNode }) => {
   const [ethereumInfo, setEthereumInfo] = useState<EthereumInfo | null>(null);
-  const [isReloadPageNeeded, setIsReloadPageNeeded] = useState<boolean>(false);
+  const [isReloadPageRequested, setIsReloadPageRequested] = useState<boolean>(false);
   const router = useRouter();
   const { connectWallet, ready, authenticated } = usePrivy();
   const { wallets } = useWallets();
@@ -82,7 +82,7 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
 
         setEthereumInfo((prev) => {
           if (prev !== null) {
-            setIsReloadPageNeeded(prev.chainId !== currentChainId || prev.walletAddress !== currentWalletAddress);
+            setIsReloadPageRequested(prev.chainId !== currentChainId || prev.walletAddress !== currentWalletAddress);
           }
 
           return {
@@ -106,12 +106,12 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
   }, [wallets, connectWallet, ready, authenticated]);
 
   useEffect(() => {
-    if (!isReloadPageNeeded) return;
+    if (!isReloadPageRequested) return;
 
-    setIsReloadPageNeeded(false);
+    setIsReloadPageRequested(false);
     router.refresh();
     console.log("reloading the page");
-  }, [router, isReloadPageNeeded]);
+  }, [router, isReloadPageRequested]);
 
   return <EthereumContext.Provider value={ethereumInfo}>{children}</EthereumContext.Provider>;
 };

@@ -2,7 +2,8 @@ import { dateFormatDayMonthTime } from "@/utils/datetimeFormatters";
 import Link from "next/link";
 import RntButton from "../common/rntButton";
 import { getStringFromMoneyInCents } from "@/utils/formInput";
-import { Claim, ClaimStatus } from "@/model/Claim";
+import { Claim } from "@/model/Claim";
+import { ClaimStatus } from "@/model/blockchain/schemas";
 
 type Props =
   | {

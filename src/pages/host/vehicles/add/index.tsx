@@ -6,13 +6,12 @@ import PageTitle from "@/components/pageTitle/pageTitle";
 import RntButton from "@/components/common/rntButton";
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
 import Link from "next/link";
-import RntDialogs from "@/components/common/rntDialogs";
-import useRntDialogs from "@/hooks/useRntDialogs";
 import { resizeImage } from "@/utils/image";
 import { isEmpty } from "@/utils/string";
 import { Button } from "@mui/material";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { verifyCar } from "@/model/HostCarInfo";
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
 
 export default function AddCar() {
   const [carInfoFormParams, setCarInfoFormParams, dataSaved, sentCarToServer] = useAddCar();
@@ -22,7 +21,7 @@ export default function AddCar() {
   const [carSaving, setCarSaving] = useState<boolean>(false);
   const [isButtonSaveDisabled, setIsButtonSaveDisabled] = useState<boolean>(false);
   const router = useRouter();
-  const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
+  const { showInfo, showError } = useRntDialogs();
   const userInfo = useUserInfo();
 
   const loadCarInfoFromJson = async (file: File) => {
@@ -140,7 +139,7 @@ export default function AddCar() {
       return;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [userInfo, router]);
 
   return (
     <HostLayout>
@@ -164,7 +163,6 @@ export default function AddCar() {
         </div>
         <label className="mb-4">{message}</label>
       </div>
-      <RntDialogs state={dialogState} hide={hideSnackbar} />
     </HostLayout>
   );
 }

@@ -1,14 +1,6 @@
 import Link from "next/link";
-import Image, { StaticImageData } from "next/image";
-import icBooked from "@/images/ic_booked.jpg";
-import icHistory from "@/images/ic_history.jpg";
-import icMessages from "@/images/ic_messages.jpg";
-import icProfileSettings from "@/images/ic_profile_settings.jpg";
-import icListings from "@/images/ic_listings.jpg";
-import icClaims from "@/images/ic_claims.jpg";
-import icLegal from "@/images/ic_legal.jpg";
-import icTransactionHistory from "@/images/icTransactionHistory.jpg";
-import MenuIcons from "@/components/sideNavMenu/menuIcons";
+import Image from "next/image";
+import MenuIcons, { getImageForMenu } from "@/components/sideNavMenu/menuIcons";
 import { useAppContext } from "@/contexts/appContext";
 
 export default function SideNavMenuGroup({
@@ -23,27 +15,6 @@ export default function SideNavMenuGroup({
   icon?: MenuIcons;
 }) {
   const { toggleBurgerMenu } = useAppContext();
-
-  const getImageForMenu = (state: MenuIcons): StaticImageData => {
-    switch (state) {
-      case MenuIcons.Booked:
-        return icBooked;
-      case MenuIcons.History:
-        return icHistory;
-      case MenuIcons.Messages:
-        return icMessages;
-      case MenuIcons.ProfileSettings:
-        return icProfileSettings;
-      case MenuIcons.Listings:
-        return icListings;
-      case MenuIcons.Claims:
-        return icClaims;
-      case MenuIcons.Legal:
-        return icLegal;
-      case MenuIcons.TransactionHistory:
-        return icTransactionHistory;
-    }
-  };
 
   return (
     <div className="pt-4">

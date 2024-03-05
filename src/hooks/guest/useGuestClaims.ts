@@ -4,10 +4,11 @@ import { IRentalityContract, IRentalityCurrencyConverterContract } from "@/model
 import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
 import { getEtherContractWithSigner } from "@/abis";
 import { Claim, getClaimStatusTextFromStatus, getClaimTypeTextFromClaimType } from "@/model/Claim";
-import { ContractFullClaimInfo, validateContractFullClaimInfo } from "@/model/blockchain/ContractClaimInfo";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { formatEthWithDecimals } from "@/utils/numericFormatters";
 import { formatEther } from "ethers";
+import { ContractFullClaimInfo } from "@/model/blockchain/schemas";
+import { validateContractFullClaimInfo } from "@/model/blockchain/schemas_utils";
 
 const useGuestClaims = () => {
   const ethereumInfo = useEthereum();

@@ -1,14 +1,14 @@
-import RentalityGatewayJSON_ABI from "./RentalityGateway.v0_16_1.abi.json";
-import RentalityGatewayJSON_ADDRESSES from "./RentalityGateway.v0_16_1.addresses.json";
-import RentalityAdminGatewayJSON_ABI from "./RentalityAdminGateway.v0_16_1.abi.json";
-import RentalityAdminGatewayJSON_ADDRESSES from "./RentalityAdminGateway.v0_16_1.addresses.json";
-import RentalityCurrencyConverterJSON_ABI from "./RentalityCurrencyConverter.v0_16_1.abi.json";
-import RentalityCurrencyConverterJSON_ADDRESSES from "./RentalityCurrencyConverter.v0_16_1.addresses.json";
-import RentalityChatHelperJSON_ABI from "./RentalityChatHelper.v0_16_1.abi.json";
-import RentalityChatHelperJSON_ADDRESSES from "./RentalityChatHelper.v0_16_1.addresses.json";
+import RentalityGatewayJSON_ABI from "./RentalityGateway.v0_16_2.abi.json";
+import RentalityGatewayJSON_ADDRESSES from "./RentalityGateway.v0_16_2.addresses.json";
+import RentalityAdminGatewayJSON_ABI from "./RentalityAdminGateway.v0_16_2.abi.json";
+import RentalityAdminGatewayJSON_ADDRESSES from "./RentalityAdminGateway.v0_16_2.addresses.json";
+import RentalityCurrencyConverterJSON_ABI from "./RentalityCurrencyConverter.v0_16_2.abi.json";
+import RentalityCurrencyConverterJSON_ADDRESSES from "./RentalityCurrencyConverter.v0_16_2.addresses.json";
+import RentalityChatHelperJSON_ABI from "./RentalityChatHelper.v0_16_2.abi.json";
+import RentalityChatHelperJSON_ADDRESSES from "./RentalityChatHelper.v0_16_2.addresses.json";
 import { Contract, Signer } from "ethers";
 
-export const SMARTCONTRACT_VERSION = "v0_16_0";
+export const SMARTCONTRACT_VERSION = "v0_16_2";
 
 const rentalityContracts = {
   gateway: {

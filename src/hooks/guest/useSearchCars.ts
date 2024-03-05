@@ -1,19 +1,23 @@
 import { useCallback, useState } from "react";
 import { getEtherContractWithSigner } from "../../abis";
-import { EngineType, getEngineTypeString } from "@/model/blockchain/ContractCarInfo";
+import { getEngineTypeString } from "@/model/EngineType";
 import { calculateDays } from "@/utils/date";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
-import { ContractCreateTripRequest } from "@/model/blockchain/ContractCreateTripRequest";
 import { SearchCarInfo, SearchCarsResult, emptySearchCarsResult } from "@/model/SearchCarsResult";
 import { SearchCarRequest } from "@/model/SearchCarRequest";
-import { ContractSearchCarParams } from "@/model/blockchain/ContractSearchCarParams";
 import { useRentality } from "@/contexts/rentalityContext";
 import { getBlockchainTimeFromDate, getMoneyInCentsFromString } from "@/utils/formInput";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { IRentalityCurrencyConverterContract } from "@/model/blockchain/IRentalityContract";
-import { ContractSearchCar, validateContractSearchCar } from "@/model/blockchain/ContractSearchCar";
 import moment from "moment";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
+import {
+  ContractCreateTripRequest,
+  ContractSearchCar,
+  ContractSearchCarParams,
+  EngineType,
+} from "@/model/blockchain/schemas";
+import { validateContractSearchCar } from "@/model/blockchain/schemas_utils";
 
 export const sortOptions = {
   priceAsc: "Price: low to high",
@@ -40,6 +44,13 @@ const useSearchCars = () => {
       .utc(searchCarRequest.dateTo)
       .add(searchCarRequest.utcOffsetMinutes, "minutes")
       .toDate();
+
+    console.log(`utcOffsetMinutes: ${searchCarRequest.utcOffsetMinutes}`);
+    console.log(`dateFrom string: ${searchCarRequest.dateFrom}`);
+    console.log(`startDateTimeUTC string: ${startDateTimeUTC}`);
+    console.log(`dateTo string: ${searchCarRequest.dateTo}`);
+    console.log(`endDateTimeUTC string: ${endDateTimeUTC}`);
+
     const tripDays = calculateDays(startDateTimeUTC, endDateTimeUTC);
 
     const contractDateFromUTC = getBlockchainTimeFromDate(startDateTimeUTC);
@@ -50,8 +61,8 @@ const useSearchCars = () => {
       city: searchCarRequest.city ?? "",
       brand: searchCarRequest.brand ?? "",
       model: searchCarRequest.model ?? "",
-      yearOfProductionFrom: BigInt(searchCarRequest.yearOfProductionFrom ?? "0"),
-      yearOfProductionTo: BigInt(searchCarRequest.yearOfProductionTo ?? "0"),
+      yearOfProductionFrom: Number(searchCarRequest.yearOfProductionFrom ?? "0"),
+      yearOfProductionTo: Number(searchCarRequest.yearOfProductionTo ?? "0"),
       pricePerDayInUsdCentsFrom: BigInt(getMoneyInCentsFromString(searchCarRequest.pricePerDayInUsdFrom)),
       pricePerDayInUsdCentsTo: BigInt(getMoneyInCentsFromString(searchCarRequest.pricePerDayInUsdTo)),
     };
@@ -90,7 +101,7 @@ const useSearchCars = () => {
           year: meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
           seatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats number")?.value ?? "",
           transmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
-          engineType: getEngineTypeString(i.engineType ?? EngineType.PATROL),
+          engineTypeText: getEngineTypeString(i.engineType ?? EngineType.PATROL),
           milesIncludedPerDay: getMilesIncludedPerDayText(i.milesIncludedPerDay ?? 0),
           pricePerDay: pricePerDay,
           days: tripDays,
@@ -189,9 +200,9 @@ const useSearchCars = () => {
         endDateTime: endTimeUTC,
         startLocation: startLocation,
         endLocation: endLocation,
-        totalDayPriceInUsdCents: totalDayPriceInUsdCents,
-        taxPriceInUsdCents: taxPriceInUsdCents,
-        depositInUsdCents: depositInUsdCents,
+        totalDayPriceInUsdCents: BigInt(totalDayPriceInUsdCents),
+        taxPriceInUsdCents: BigInt(taxPriceInUsdCents),
+        depositInUsdCents: BigInt(depositInUsdCents),
         ethToCurrencyRate: BigInt(ethToUsdRate),
         ethToCurrencyDecimals: Number(ethToUsdDecimals),
       };

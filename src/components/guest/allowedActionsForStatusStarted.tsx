@@ -1,9 +1,10 @@
-import { ChangeTripParams, TripInfo, TripStatus, getRefuelValueAndCharge } from "@/model/TripInfo";
+import { ChangeTripParams, TripInfo, getRefuelValueAndCharge } from "@/model/TripInfo";
 import RntInput from "../common/rntInput";
 import { SetStateAction, useState } from "react";
 import RntSelect from "../common/rntSelect";
 import { calculateDays } from "@/utils/date";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
+import { TripStatus } from "@/model/blockchain/schemas";
 
 export default function AllowedActionsForStatusStarted({
   params,

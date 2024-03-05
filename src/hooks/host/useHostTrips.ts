@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { ContractTrip, validateContractTrip } from "@/model/blockchain/ContractTrip";
-import { TripInfo, AllowedChangeTripAction, TripStatus } from "@/model/TripInfo";
+import { TripInfo, AllowedChangeTripAction } from "@/model/TripInfo";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
 import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
-import { EngineType } from "@/model/blockchain/ContractCarInfo";
+import { ContractTrip, ContractTripDTO, EngineType, TripStatus } from "@/model/blockchain/schemas";
+import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 
 const useHostTrips = () => {
   const rentalityContract = useRentality();
@@ -188,71 +188,65 @@ const useHostTrips = () => {
           console.error("getTrips error: contract is null");
           return;
         }
-        const tripsBookedView: ContractTrip[] = await rentalityContract.getTripsAsHost();
+        const tripsBookedView: ContractTripDTO[] = await rentalityContract.getTripsAsHost();
 
         const tripsBookedData =
           tripsBookedView.length === 0
             ? []
             : await Promise.all(
-                tripsBookedView.map(async (i: ContractTrip, index) => {
+                tripsBookedView.map(async (i: ContractTripDTO, index) => {
                   if (index === 0) {
-                    validateContractTrip(i);
+                    validateContractTripDTO(i);
                   }
 
-                  const tokenURI = await rentalityContract.getCarMetadataURI(i.carId);
-                  const tripContactInfo = await rentalityContract.getTripContactInfo(i.carId);
+                  const tokenURI = await rentalityContract.getCarMetadataURI(i.trip.carId);
+                  const tripContactInfo = await rentalityContract.getTripContactInfo(i.trip.carId);
                   const meta = await getMetaDataFromIpfs(tokenURI);
-                  const tripStatus = i.status;
+                  const tripStatus = i.trip.status;
                   const tankSize = Number(
                     meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "0"
                   );
 
                   let item: TripInfo = {
-                    tripId: Number(i.tripId),
-                    carId: Number(i.carId),
+                    tripId: Number(i.trip.tripId),
+                    carId: Number(i.trip.carId),
                     image: getIpfsURIfromPinata(meta.image),
                     brand: meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "",
                     model: meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
                     year: meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
                     licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
-                    tripStart: getDateFromBlockchainTime(i.startDateTime),
-                    tripEnd: getDateFromBlockchainTime(i.endDateTime),
-                    locationStart: i.startLocation,
-                    locationEnd: i.endLocation,
+                    tripStart: getDateFromBlockchainTime(i.trip.startDateTime),
+                    tripEnd: getDateFromBlockchainTime(i.trip.endDateTime),
+                    locationStart: i.trip.startLocation,
+                    locationEnd: i.trip.endLocation,
                     status: tripStatus,
-                    allowedActions: getAllowedActions(tripStatus, i),
-                    totalPrice: (Number(i.paymentInfo.totalDayPriceInUsdCents) / 100).toString(),
+                    allowedActions: getAllowedActions(tripStatus, i.trip),
+                    totalPrice: (Number(i.trip.paymentInfo.totalDayPriceInUsdCents) / 100).toString(),
                     tankVolumeInGal: tankSize,
-                    startFuelLevelInPercents: Number(i.startParamLevels[0]),
-                    endFuelLevelInPercents: Number(i.endParamLevels[0]),
-                    engineType: i.fuelPrices.length === 4 ? EngineType.ELECTRIC : EngineType.PATROL,
-                    fuelPricePerGal: i.fuelPrices.length === 1 ? Number(i.fuelPrices[0]) / 100 : 0,
-                    batteryPrices:
-                      i.fuelPrices.length === 4
-                        ? {
-                            price_0_20: Number(i.fuelPrices[0]) / 100,
-                            price_21_50: Number(i.fuelPrices[1]) / 100,
-                            price_51_80: Number(i.fuelPrices[2]) / 100,
-                            price_81_100: Number(i.fuelPrices[3]) / 100,
-                          }
-                        : { price_0_20: 0, price_21_50: 0, price_51_80: 0, price_81_100: 0 },
-                    milesIncludedPerDay: Number(i.milesIncludedPerDay),
-                    startOdometr: Number(i.startParamLevels[1]),
-                    endOdometr: Number(i.endParamLevels[1]),
-                    depositPaid: Number(i.paymentInfo.depositInUsdCents) / 100,
-                    overmilePrice: Number(i.pricePerDayInUsdCents) / Number(i.milesIncludedPerDay) / 100,
+                    startFuelLevelInPercents: Number(i.trip.startParamLevels[0]),
+                    endFuelLevelInPercents: Number(i.trip.endParamLevels[0]),
+                    engineType: i.trip.engineType,
+                    fuelPricePerGal: i.trip.engineType === EngineType.PATROL ? Number(i.trip.fuelPrice) / 100 : 0,
+                    fullBatteryChargePriceInUsdCents:
+                      i.trip.engineType === EngineType.ELECTRIC ? Number(i.trip.fuelPrice) / 100 : 0,
+                    milesIncludedPerDay: Number(i.trip.milesIncludedPerDay),
+                    startOdometr: Number(i.trip.startParamLevels[1]),
+                    endOdometr: Number(i.trip.endParamLevels[1]),
+                    depositPaid: Number(i.trip.paymentInfo.depositInUsdCents) / 100,
+                    overmilePrice: Number(i.trip.pricePerDayInUsdCents) / Number(i.trip.milesIncludedPerDay) / 100,
                     hostPhoneNumber: formatPhoneNumber(tripContactInfo.hostPhoneNumber),
                     guestPhoneNumber: formatPhoneNumber(tripContactInfo.guestPhoneNumber),
-                    hostAddress: i.host,
-                    hostName: i.hostName,
-                    guestAddress: i.guest,
-                    guestName: i.guestName,
-                    rejectedBy: i.rejectedBy,
-                    rejectedDate: i.rejectedDateTime > 0 ? getDateFromBlockchainTime(i.rejectedDateTime) : undefined,
-                    createdDateTime: getDateFromBlockchainTime(i.createdDateTime),
-                    checkedInByHostDateTime: getDateFromBlockchainTime(i.checkedInByHostDateTime),
-                    checkedOutByGuestDateTime: getDateFromBlockchainTime(i.checkedOutByGuestDateTime),
-                    checkedOutByHostDateTime: getDateFromBlockchainTime(i.checkedOutByHostDateTime),
+                    hostAddress: i.trip.host,
+                    hostName: i.trip.hostName,
+                    guestAddress: i.trip.guest,
+                    guestName: i.trip.guestName,
+                    rejectedBy: i.trip.rejectedBy,
+                    rejectedDate:
+                      i.trip.rejectedDateTime > 0 ? getDateFromBlockchainTime(i.trip.rejectedDateTime) : undefined,
+                    createdDateTime: getDateFromBlockchainTime(i.trip.createdDateTime),
+                    checkedInByHostDateTime: getDateFromBlockchainTime(i.trip.checkedInByHostDateTime),
+                    checkedOutByGuestDateTime: getDateFromBlockchainTime(i.trip.checkedOutByGuestDateTime),
+                    checkedOutByHostDateTime: getDateFromBlockchainTime(i.trip.checkedOutByHostDateTime),
                     hostPhotoUrl: i.hostPhotoUrl,
                     guestPhotoUrl: i.guestPhotoUrl,
                   };

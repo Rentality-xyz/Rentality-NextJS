@@ -1,3 +1,4 @@
+import { usePrivy } from "@privy-io/react-auth";
 import BaseBurgerNavMenu from "./baseBurgerNavMenu";
 import BaseSideNavMenu from "./baseSideNavMenu";
 import SideNavMenuGroup from "./sideNavMenuGroup";
@@ -5,6 +6,8 @@ import SideNavMenuItem from "./sideNavMenuItem";
 import MenuIcons from "@/components/sideNavMenu/menuIcons";
 
 function HostNavMenu() {
+  const { ready, authenticated, logout } = usePrivy();
+
   return (
     <>
       <SideNavMenuGroup title="Trips">
@@ -19,9 +22,17 @@ function HostNavMenu() {
         <SideNavMenuItem text="Messages" href="/host/messages" icon={MenuIcons.Messages} />
       </SideNavMenuGroup>
       <SideNavMenuGroup title="More">
-        <SideNavMenuItem text="Legal" href="https://rentality.xyz/legalmatters" icon={MenuIcons.Legal} target = "_blank"/>
+        <SideNavMenuItem
+          text="Legal"
+          href="https://rentality.xyz/legalmatters"
+          icon={MenuIcons.Legal}
+          target="_blank"
+        />
         <SideNavMenuItem text="Transaction history" href="/host/transactionHistory" icon={MenuIcons.TransactionHistory} />
         <SideNavMenuItem text="Profile settings" href="/host/profile" icon={MenuIcons.ProfileSettings} />
+        {ready && authenticated ? (
+          <SideNavMenuItem text="Logout" href="/" onClick={logout} icon={MenuIcons.Logout} />
+        ) : null}
       </SideNavMenuGroup>
     </>
   );

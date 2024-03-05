@@ -11,8 +11,7 @@ import { SearchCarRequest, emptySearchCarRequest } from "@/model/SearchCarReques
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 import RntInput from "@/components/common/rntInput";
 import RntButton from "@/components/common/rntButton";
-import RntDialogs from "@/components/common/rntDialogs";
-import useRntDialogs from "@/hooks/useRntDialogs";
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { isEmpty } from "@/utils/string";
 import { Button } from "@mui/material";
@@ -36,7 +35,7 @@ export default function Search() {
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const [openFilterPanel, setOpenFilterPanel] = useState(false);
   const [searchButtonDisabled, setSearchButtonDisabled] = useState<boolean>(false);
-  const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
+  const { showInfo, showError, hideDialogs } = useRntDialogs();
   const [sortBy, setSortBy] = useState<SortOptionKey | undefined>(undefined);
   const userInfo = useUserInfo();
   const router = useRouter();
@@ -105,7 +104,7 @@ export default function Search() {
       );
 
       setRequestSending(false);
-      hideSnackbar();
+      hideDialogs();
       if (!result) {
         showError("Your create trip request failed. Please make sure you entered trip details right and try again");
         return;
@@ -118,6 +117,29 @@ export default function Search() {
       setRequestSending(false);
     }
   };
+
+  useEffect(() => {
+    if (!userInfo) return;
+
+    if (isEmpty(userInfo.drivingLicense)) {
+      const action = (
+        <>
+          <Button
+            color="secondary"
+            size="small"
+            onClick={() => {
+              router.push("/guest/profile");
+            }}
+          >
+            My profile
+          </Button>
+        </>
+      );
+      showError("In order to rent a car, please enter user information", action);
+      return;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userInfo, router]);
 
   function handleSearchInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
@@ -390,7 +412,6 @@ export default function Search() {
           </div>
         </SlidingPanel>
       </div>
-      <RntDialogs state={dialogState} hide={hideSnackbar} />
     </GuestLayout>
   );
 }

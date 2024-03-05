@@ -3,8 +3,9 @@ import Link from "next/link";
 import RntButton from "../common/rntButton";
 import { twMerge } from "tailwind-merge";
 import { getStringFromMoneyInCents } from "@/utils/formInput";
-import { Claim, ClaimStatus } from "@/model/Claim";
+import { Claim } from "@/model/Claim";
 import ClaimHistoryMobileCard from "./claimHistoryMobileCard";
+import { ClaimStatus } from "@/model/blockchain/schemas";
 
 type Props =
   | {

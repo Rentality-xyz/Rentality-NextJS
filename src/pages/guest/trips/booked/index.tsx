@@ -1,16 +1,14 @@
-import RntDialogs from "@/components/common/rntDialogs";
 import GuestLayout from "@/components/guest/layout/guestLayout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import TripCard from "@/components/tripCard/tripCard";
 import useGuestTrips from "@/hooks/guest/useGuestTrips";
-import useRntDialogs from "@/hooks/useRntDialogs";
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { useState } from "react";
 
 export default function Booked() {
   const [isLoading, tripsBooked, _, updateData] = useGuestTrips();
   const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
-  //const router = useRouter();
-  const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
+  const { showInfo, showError } = useRntDialogs();
 
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
     try {
@@ -62,7 +60,6 @@ export default function Booked() {
           </div>
         )}
       </div>
-      <RntDialogs state={dialogState} hide={hideSnackbar} />
     </GuestLayout>
   );
 }

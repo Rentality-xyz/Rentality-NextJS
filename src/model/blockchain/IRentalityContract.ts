@@ -1,15 +1,20 @@
 import { ContractTransactionResponse } from "ethers";
-import { ContractCarInfo } from "./ContractCarInfo";
-import { ContractCreateTripRequest } from "./ContractCreateTripRequest";
-import { ContractTrip } from "./ContractTrip";
-import { ContractCreateCarRequest } from "./ContractCreateCarRequest";
-import { ContractSearchCarParams } from "./ContractSearchCarParams";
-import { ContractChatInfo } from "./ContractChatInfo";
-import { ContractUpdateCarInfoRequest } from "./ContractUpdateCarInfoRequest";
-import { ContractCreateClaimRequest } from "./ContractCreateClaimRequest";
-import { ContractFullClaimInfo } from "./ContractClaimInfo";
-import { ContractSearchCar } from "./ContractSearchCar";
-import { ContractCarDetails } from "./ContractCarDetails";
+import {
+  ContractCarDetails,
+  ContractCarInfo,
+  ContractCarInfoDTO,
+  ContractChatInfo,
+  ContractCreateCarRequest,
+  ContractCreateClaimRequest,
+  ContractCreateTripRequest,
+  ContractFullClaimInfo,
+  ContractKYCInfo,
+  ContractSearchCar,
+  ContractSearchCarParams,
+  ContractTrip,
+  ContractTripDTO,
+  ContractUpdateCarInfoRequest,
+} from "./schemas";
 
 export interface IRentalityContract {
   /// ADMIN functions
@@ -36,10 +41,9 @@ export interface IRentalityContract {
     locationLongitude: string,
     geoApiKey: string
   ): Promise<ContractTransactionResponse>;
-  getCarMetadataURI(carId: bigint): Promise<string>;
   getCarInfoById(carId: bigint): Promise<ContractCarInfo>;
-  getMyCars(): Promise<ContractCarInfo[]>;
-  getTripsAsHost(): Promise<ContractTrip[]>;
+  getMyCars(): Promise<ContractCarInfoDTO[]>;
+  getTripsAsHost(): Promise<ContractTripDTO[]>;
   approveTripRequest(tripId: bigint): Promise<ContractTransactionResponse>;
   rejectTripRequest(tripId: bigint): Promise<ContractTransactionResponse>;
   checkInByHost(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
@@ -57,7 +61,7 @@ export interface IRentalityContract {
     searchParams: ContractSearchCarParams
   ): Promise<ContractSearchCar[]>;
   createTripRequest(request: ContractCreateTripRequest, value: object): Promise<ContractTransactionResponse>;
-  getTripsAsGuest(): Promise<ContractTrip[]>;
+  getTripsAsGuest(): Promise<ContractTripDTO[]>;
   checkInByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
   checkOutByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
   getChatInfoForGuest(): Promise<ContractChatInfo[]>;
@@ -79,9 +83,9 @@ export interface IRentalityContract {
     profilePhoto: string,
     licenseNumber: string,
     expirationDate: bigint,
-    isKYCPassed: boolean,
     isTCPassed: boolean
   ): Promise<ContractTransactionResponse>;
+  callOutdated(): Promise<ContractTripContactInfo>;
 
   //not using
   burnCar(carId: bigint): Promise<ContractCarInfo>;
@@ -95,8 +99,8 @@ export interface IRentalityContract {
     endDateTime: bigint,
     searchParams: ContractSearchCarParams
   ): Promise<ContractSearchCar[]>;
-  getTripsByGuest(guest: string): Promise<ContractTrip[]>;
-  getTripsByHost(host: string): Promise<ContractTrip[]>;
+  getTripsByGuest(guest: string): Promise<ContractTripDTO[]>;
+  getTripsByHost(host: string): Promise<ContractTripDTO[]>;
   getTripsByCar(carId: bigint): Promise<ContractTrip[]>;
   updateClaim(claimId: bigint): Promise<ContractTransactionResponse>;
   getClaim(claimId: bigint): Promise<ContractFullClaimInfo[]>;
@@ -134,18 +138,6 @@ export interface IRentalityCurrencyConverterContract {
   getEthFromUsdWithCache(valueInUsdCents: bigint): Promise<bigint>;
   getUsdFromEthWithCache(valueInEth: bigint): Promise<bigint>;
 }
-
-export type ContractKYCInfo = {
-  name: string;
-  surname: string;
-  mobilePhoneNumber: string;
-  profilePhoto: string;
-  licenseNumber: string;
-  expirationDate: bigint;
-  createDate: bigint;
-  isKYCPassed: boolean;
-  isTCPassed: boolean;
-};
 
 type ContractChatKeyInfo = {
   privateKey: string;

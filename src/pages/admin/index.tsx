@@ -1,10 +1,9 @@
 import AdminLayout from "@/components/admin/layout/adminLayout";
-import RntDialogs from "@/components/common/rntDialogs";
 import RntInput from "@/components/common/rntInput";
 import RntInputWithButton from "@/components/common/rntInputWithButton";
 import PageTitle from "@/components/pageTitle/pageTitle";
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import useContractInfo from "@/hooks/admin/useContractInfo";
-import useRntDialogs from "@/hooks/useRntDialogs";
 import { parseEther } from "ethers";
 import { useState } from "react";
 
@@ -26,7 +25,7 @@ export default function Admin() {
   const [newTripsServiceAddress, setNewTripsServiceAddress] = useState("0x");
   const [newCurrencyConverterServiceAddress, setNewCurrencyConverterServiceAddress] = useState("0x");
   const [newPlatformServiceAddress, setNewPlatformServiceAddress] = useState("0x");
-  const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
+  const { showError } = useRntDialogs();
 
   if (adminContractInfo == null) {
     return (
@@ -313,7 +312,6 @@ export default function Admin() {
           <div className="font-bold">{adminContractInfo.contractAddress}</div>
         </div> */}
       </div>
-      <RntDialogs state={dialogState} hide={hideSnackbar} />
     </AdminLayout>
   );
 }

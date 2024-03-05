@@ -10,6 +10,7 @@ export type BaseCarInfo = {
   securityDeposit: number;
   milesIncludedPerDay: number;
   currentlyListed: boolean;
+  isEditable: boolean;
 };
 
 export const getListingStatusTextFromStatus = (currentlyListed: boolean) => {

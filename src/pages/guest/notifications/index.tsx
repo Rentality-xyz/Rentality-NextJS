@@ -1,12 +1,9 @@
-import RntDialogs from "@/components/common/rntDialogs";
 import GuestLayout from "@/components/guest/layout/guestLayout";
 import NotificationPage from "@/components/notification/notificationPage";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useNotificationInfos from "@/hooks/notification/useNotificationInfos";
-import useRntDialogs from "@/hooks/useRntDialogs";
 
 export default function Notifications() {
-  const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
   const [isLoading, notifications] = useNotificationInfos(false);
 
   return (
@@ -19,7 +16,6 @@ export default function Notifications() {
           <NotificationPage notifications={notifications} />
         )}
       </div>
-      <RntDialogs state={dialogState} hide={hideSnackbar} />
     </GuestLayout>
   );
 }

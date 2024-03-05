@@ -1,12 +1,7 @@
 import { ContractTransactionResponse, Signer } from "ethers";
 import { useEffect, useState } from "react";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import {
-  ContractCarInfo,
-  ENGINE_TYPE_ELECTRIC_STRING,
-  ENGINE_TYPE_PATROL_STRING,
-  getEngineTypeString,
-} from "@/model/blockchain/ContractCarInfo";
+import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PATROL_STRING, getEngineTypeString } from "@/model/EngineType";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import {
   HostCarInfo,
@@ -15,10 +10,9 @@ import {
   getMilesIncludedPerDayText,
 } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
-import { ContractUpdateCarInfoRequest } from "@/model/blockchain/ContractUpdateCarInfoRequest";
 import { getMoneyInCentsFromString, getStringFromMoneyInCents } from "@/utils/formInput";
-import { ContractCarDetails } from "@/model/blockchain/ContractCarDetails";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { ContractCarDetails, ContractCarInfo, ContractUpdateCarInfoRequest } from "@/model/blockchain/schemas";
 
 const emptyHostCarInfo: HostCarInfo = {
   carId: -1,
@@ -52,11 +46,8 @@ const emptyHostCarInfo: HostCarInfo = {
   locationAddress: "",
   isLocationAddressEdited: false,
   currentlyListed: true,
-  engineTypeString: "",
-  batteryPrice_0_20: "",
-  batteryPrice_21_50: "",
-  batteryPrice_51_80: "",
-  batteryPrice_81_100: "0",
+  engineTypeText: "",
+  fullBatteryChargePrice: "",
   timeBufferBetweenTripsInMin: 0,
 };
 
@@ -80,13 +71,10 @@ const useEditCarInfo = (carId: number) => {
       const securityDepositPerTripInUsdCents = BigInt(getMoneyInCentsFromString(carInfoFormParams.securityDeposit));
 
       const engineParams: bigint[] = [];
-      if (carInfoFormParams.engineTypeString === ENGINE_TYPE_PATROL_STRING) {
+      if (carInfoFormParams.engineTypeText === ENGINE_TYPE_PATROL_STRING) {
         engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.fuelPricePerGal)));
-      } else if (carInfoFormParams.engineTypeString === ENGINE_TYPE_ELECTRIC_STRING) {
-        engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.batteryPrice_0_20)));
-        engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.batteryPrice_21_50)));
-        engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.batteryPrice_51_80)));
-        engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.batteryPrice_81_100)));
+      } else if (carInfoFormParams.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING) {
+        engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.fullBatteryChargePrice)));
       }
 
       const milesIncludedPerDay =
@@ -154,21 +142,9 @@ const useEditCarInfo = (carId: number) => {
           engineTypeString === ENGINE_TYPE_PATROL_STRING
             ? getStringFromMoneyInCents(carInfoDetails.engineParams[1])
             : "";
-        const batteryPrice_0_20 =
+        const fullBatteryChargePrice =
           engineTypeString === ENGINE_TYPE_ELECTRIC_STRING
             ? getStringFromMoneyInCents(carInfoDetails.engineParams[0])
-            : "";
-        const batteryPrice_21_50 =
-          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING
-            ? getStringFromMoneyInCents(carInfoDetails.engineParams[1])
-            : "";
-        const batteryPrice_51_80 =
-          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING
-            ? getStringFromMoneyInCents(carInfoDetails.engineParams[2])
-            : "";
-        const batteryPrice_81_100 =
-          engineTypeString === ENGINE_TYPE_ELECTRIC_STRING
-            ? getStringFromMoneyInCents(carInfoDetails.engineParams[3])
             : "";
 
         let item: HostCarInfo = {
@@ -202,12 +178,9 @@ const useEditCarInfo = (carId: number) => {
           locationAddress: "",
           isLocationAddressEdited: false,
           currentlyListed: carInfo.currentlyListed,
-          engineTypeString: engineTypeString,
+          engineTypeText: engineTypeString,
           fuelPricePerGal: fuelPricePerGal,
-          batteryPrice_0_20: batteryPrice_0_20,
-          batteryPrice_21_50: batteryPrice_21_50,
-          batteryPrice_51_80: batteryPrice_51_80,
-          batteryPrice_81_100: batteryPrice_81_100,
+          fullBatteryChargePrice: fullBatteryChargePrice,
           timeBufferBetweenTripsInMin: Number(carInfo.timeBufferBetweenTripsInSec) / 60,
         };
         return item;

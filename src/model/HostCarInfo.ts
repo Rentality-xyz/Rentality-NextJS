@@ -1,5 +1,5 @@
 import { isEmpty } from "@/utils/string";
-import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PATROL_STRING } from "./blockchain/ContractCarInfo";
+import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PATROL_STRING } from "./EngineType";
 
 export const UNLIMITED_MILES_VALUE_TEXT = "Unlimited";
 export const UNLIMITED_MILES_VALUE = 999_999_999;
@@ -39,15 +39,12 @@ export type HostCarInfo = {
   locationLatitude: string;
   locationLongitude: string;
 
-  engineTypeString: string;
+  engineTypeText: string;
 
   fuelPricePerGal: string;
   tankVolumeInGal: string;
 
-  batteryPrice_0_20: string;
-  batteryPrice_21_50: string;
-  batteryPrice_51_80: string;
-  batteryPrice_81_100: string;
+  fullBatteryChargePrice: string;
 
   wheelDrive: string;
   bodyType: string;
@@ -72,16 +69,10 @@ export const verifyCar = (carInfoFormParams: HostCarInfo) => {
     !isEmpty(carInfoFormParams.milesIncludedPerDay) &&
     !isEmpty(carInfoFormParams.securityDeposit) &&
     !isEmpty(carInfoFormParams.locationAddress) &&
-    !isEmpty(carInfoFormParams.engineTypeString) &&
-    (carInfoFormParams.engineTypeString !== ENGINE_TYPE_PATROL_STRING || !isEmpty(carInfoFormParams.fuelPricePerGal)) &&
-    (carInfoFormParams.engineTypeString !== ENGINE_TYPE_PATROL_STRING || !isEmpty(carInfoFormParams.tankVolumeInGal)) &&
-    (carInfoFormParams.engineTypeString !== ENGINE_TYPE_ELECTRIC_STRING ||
-      !isEmpty(carInfoFormParams.batteryPrice_0_20)) &&
-    (carInfoFormParams.engineTypeString !== ENGINE_TYPE_ELECTRIC_STRING ||
-      !isEmpty(carInfoFormParams.batteryPrice_21_50)) &&
-    (carInfoFormParams.engineTypeString !== ENGINE_TYPE_ELECTRIC_STRING ||
-      !isEmpty(carInfoFormParams.batteryPrice_51_80))
-    //&&  (carInfoFormParams.engineTypeString !== ENGINE_TYPE_ELECTRIC_STRING ||
-    //   !isEmpty(carInfoFormParams.batteryPrice_81_100))
+    !isEmpty(carInfoFormParams.engineTypeText) &&
+    (carInfoFormParams.engineTypeText !== ENGINE_TYPE_PATROL_STRING || !isEmpty(carInfoFormParams.fuelPricePerGal)) &&
+    (carInfoFormParams.engineTypeText !== ENGINE_TYPE_PATROL_STRING || !isEmpty(carInfoFormParams.tankVolumeInGal)) &&
+    (carInfoFormParams.engineTypeText !== ENGINE_TYPE_ELECTRIC_STRING ||
+      !isEmpty(carInfoFormParams.fullBatteryChargePrice))
   );
 };

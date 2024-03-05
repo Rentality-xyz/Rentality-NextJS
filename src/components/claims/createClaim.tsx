@@ -1,13 +1,14 @@
-import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/blockchain/ContractCreateClaimRequest";
 import RntSelect from "../common/rntSelect";
 import { useState } from "react";
 import RntInputMultiline from "../common/rntInputMultiline";
 import RntInput from "../common/rntInput";
 import Checkbox from "../common/checkbox";
 import RntButton from "../common/rntButton";
-import { ClaimType, getClaimTypeTextFromClaimType } from "@/model/Claim";
+import { getClaimTypeTextFromClaimType } from "@/model/Claim";
 import Link from "next/link";
 import { isEmpty } from "@/utils/string";
+import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
+import { ClaimType } from "@/model/blockchain/schemas";
 
 type CreateClaimParams = {
   selectedTripId: string;
@@ -42,7 +43,7 @@ export default function CreateClaim({
     const createClaimRequest: CreateClaimRequest = {
       tripId: Number(createClaimParams.selectedTripId),
       guestAddress: tripInfos.find((ti) => ti.tripId === Number(createClaimParams.selectedTripId))?.guestAddress ?? "",
-      claimType: Number(ClaimType[createClaimParams.incidentType as keyof typeof ClaimType]),
+      claimType: BigInt(ClaimType[createClaimParams.incidentType as keyof typeof ClaimType]),
       description: createClaimParams.description,
       amountInUsdCents: (Number(createClaimParams.amountInUsd) ?? 0) * 100,
     };
@@ -85,7 +86,7 @@ export default function CreateClaim({
         >
           {allClaimTypes.map((i, index) => (
             <option key={index} value={i.toString()}>
-              {getClaimTypeTextFromClaimType(index)}
+              {getClaimTypeTextFromClaimType(BigInt(index))}
             </option>
           ))}
         </RntSelect>

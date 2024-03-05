@@ -1,6 +1,6 @@
-import { EngineType } from "./blockchain/ContractCarInfo";
+import { EngineType, TripStatus } from "./blockchain/schemas";
 
-export enum TripStatus {
+export enum TripStatusEnum {
   Pending, // Created
   Confirmed, // Approved
   CheckedInByHost, // CheckedInByHost
@@ -54,6 +54,27 @@ export const getTripStatusBgColorClassFromStatus = (status: TripStatus) => {
       return "bg-red-500";
   }
 };
+export const getTripStatusFromContract = (status: number) => {
+  switch (status) {
+    case 0:
+      return TripStatus.Pending;
+    case 1:
+      return TripStatus.Confirmed;
+    case 2:
+      return TripStatus.CheckedInByHost;
+    case 3:
+      return TripStatus.Started;
+    case 4:
+      return TripStatus.CheckedOutByGuest;
+    case 5:
+      return TripStatus.Finished;
+    case 6:
+      return TripStatus.Closed;
+    case 7:
+    default:
+      return TripStatus.Rejected;
+  }
+};
 
 export type TripInfo = {
   tripId: number;
@@ -75,7 +96,7 @@ export type TripInfo = {
   endFuelLevelInPercents: number;
   engineType: EngineType;
   fuelPricePerGal: number;
-  batteryPrices: { price_0_20: number; price_21_50: number; price_51_80: number; price_81_100: number };
+  fullBatteryChargePriceInUsdCents: number;
   milesIncludedPerDay: number;
   startOdometr: number;
   endOdometr: number;
@@ -97,24 +118,8 @@ export type TripInfo = {
   hostPhotoUrl: string;
 };
 
-export const getBatteryCharge = (
-  fuelDiffsInPercents: number,
-  batteryPrices: { price_0_20: number; price_21_50: number; price_51_80: number; price_81_100: number }
-) => {
-  if (fuelDiffsInPercents <= 20) return batteryPrices.price_0_20;
-  if (fuelDiffsInPercents <= 50) return batteryPrices.price_21_50;
-  if (fuelDiffsInPercents <= 80) return batteryPrices.price_51_80;
-  return batteryPrices.price_81_100;
-};
-
-export const getBatteryChargeFromDiffs = (
-  fuelDiffsInPercents: number,
-  batteryPrices: { price_0_20: number; price_21_50: number; price_51_80: number; price_81_100: number }
-) => {
-  if (fuelDiffsInPercents <= 20) return batteryPrices.price_81_100;
-  if (fuelDiffsInPercents <= 50) return batteryPrices.price_51_80;
-  if (fuelDiffsInPercents <= 80) return batteryPrices.price_21_50;
-  return batteryPrices.price_0_20;
+export const getBatteryChargeFromDiffs = (fuelDiffsInPercents: number, fullBatteryChargePriceInUsdCents: number) => {
+  return (Math.floor(fuelDiffsInPercents / 10) * fullBatteryChargePriceInUsdCents) / 10;
 };
 
 export const getRefuelValueAndCharge = (tripInfo: TripInfo, endFuelLevelInPercents: number) => {
@@ -124,7 +129,7 @@ export const getRefuelValueAndCharge = (tripInfo: TripInfo, endFuelLevelInPercen
   const refuelCharge =
     tripInfo.engineType === EngineType.PATROL
       ? refuelValue * tripInfo.fuelPricePerGal
-      : getBatteryChargeFromDiffs(fuelDiffsInPercents, tripInfo.batteryPrices);
+      : getBatteryChargeFromDiffs(fuelDiffsInPercents, tripInfo.fullBatteryChargePriceInUsdCents);
   return { refuelValue, refuelCharge };
 };
 

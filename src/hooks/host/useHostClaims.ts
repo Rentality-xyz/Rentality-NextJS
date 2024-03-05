@@ -1,20 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { ContractFullClaimInfo, validateContractFullClaimInfo } from "@/model/blockchain/ContractClaimInfo";
 import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
-import {
-  ContractCreateClaimRequest,
-  CreateClaimRequest,
-  TripInfoForClaimCreation,
-} from "@/model/blockchain/ContractCreateClaimRequest";
-import { ContractTrip, validateContractTrip } from "@/model/blockchain/ContractTrip";
 import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { dateRangeFormatDayMonth } from "@/utils/datetimeFormatters";
-import { TripStatus } from "@/model/TripInfo";
 import { Claim, getClaimTypeTextFromClaimType, getClaimStatusTextFromStatus } from "@/model/Claim";
 import { useChat } from "@/contexts/chatContext";
 import encodeClaimChatMessage from "@/components/chat/utils";
+import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
+import {
+  ContractCreateClaimRequest,
+  ContractFullClaimInfo,
+  ContractTripDTO,
+  TripStatus,
+} from "@/model/blockchain/schemas";
+import { validateContractFullClaimInfo, validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 
 const useHostClaims = () => {
   const rentalityContract = useRentality();
@@ -108,32 +108,32 @@ const useHostClaims = () => {
                 })
               );
 
-        const hostTripsView: ContractTrip[] = (await rentalityContract.getTripsAsHost()).filter(
-          (i) => i.status !== TripStatus.Pending
+        const hostTripsView: ContractTripDTO[] = (await rentalityContract.getTripsAsHost()).filter(
+          (i) => i.trip.status !== TripStatus.Pending
         );
 
         const hostTripsData =
           hostTripsView.length === 0
             ? []
             : await Promise.all(
-                hostTripsView.map(async (i: ContractTrip, index) => {
+                hostTripsView.map(async (i: ContractTripDTO, index) => {
                   if (index === 0) {
-                    validateContractTrip(i);
+                    validateContractTripDTO(i);
                   }
 
-                  const tokenURI = await rentalityContract.getCarMetadataURI(i.carId);
+                  const tokenURI = await rentalityContract.getCarMetadataURI(i.trip.carId);
                   const meta = await getMetaDataFromIpfs(tokenURI);
 
                   const brand = meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
                   const model = meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
                   const year = meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "";
-                  const guestName = i.guestName;
-                  const tripStart = getDateFromBlockchainTime(i.startDateTime);
-                  const tripEnd = getDateFromBlockchainTime(i.endDateTime);
+                  const guestName = i.trip.guestName;
+                  const tripStart = getDateFromBlockchainTime(i.trip.startDateTime);
+                  const tripEnd = getDateFromBlockchainTime(i.trip.endDateTime);
 
                   let item: TripInfoForClaimCreation = {
-                    tripId: Number(i.tripId),
-                    guestAddress: i.guest,
+                    tripId: Number(i.trip.tripId),
+                    guestAddress: i.trip.guest,
                     tripDescription: `${brand} ${model} ${year} ${guestName} trip ${dateRangeFormatDayMonth(
                       tripStart,
                       tripEnd

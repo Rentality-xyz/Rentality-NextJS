@@ -1,4 +1,4 @@
-import { CreateClaimRequest } from "@/model/blockchain/ContractCreateClaimRequest";
+import { CreateClaimRequest } from "@/model/CreateClaimRequest";
 import { dateFormat } from "@/utils/datetimeFormatters";
 import { getStringFromMoneyInCents } from "@/utils/formInput";
 import moment from "moment";

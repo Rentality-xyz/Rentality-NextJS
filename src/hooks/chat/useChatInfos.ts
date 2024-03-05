@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { getTripStatusFromContract } from "@/model/blockchain/ContractTrip";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityChatHelperContract, IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { ContractChatInfo } from "@/model/blockchain/ContractChatInfo";
 import { Client as ChatClient } from "@/chat/client";
 import { useRentality } from "@/contexts/rentalityContext";
 import { getEtherContractWithSigner } from "@/abis";
@@ -12,6 +10,8 @@ import { ChatInfo } from "@/model/ChatInfo";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
 import moment from "moment";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { ContractChatInfo } from "@/model/blockchain/schemas";
+import { getTripStatusFromContract } from "@/model/TripInfo";
 
 const useChatInfos = (isHost: boolean) => {
   const ethereumInfo = useEthereum();

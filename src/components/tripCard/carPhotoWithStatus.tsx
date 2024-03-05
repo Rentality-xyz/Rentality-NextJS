@@ -1,4 +1,5 @@
-import { TripStatus, getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
+import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
+import { TripStatus } from "@/model/blockchain/schemas";
 import { memo } from "react";
 import { twMerge } from "tailwind-merge";
 

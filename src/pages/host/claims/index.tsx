@@ -1,15 +1,14 @@
 import ClaimHistory from "@/components/claims/claimHistory";
 import CreateClaim from "@/components/claims/createClaim";
-import RntDialogs from "@/components/common/rntDialogs";
 import HostLayout from "@/components/host/layout/hostLayout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useHostClaims from "@/hooks/host/useHostClaims";
-import useRntDialogs from "@/hooks/useRntDialogs";
-import { CreateClaimRequest } from "@/model/blockchain/ContractCreateClaimRequest";
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { CreateClaimRequest } from "@/model/CreateClaimRequest";
 import { useRouter } from "next/navigation";
 
 export default function Claims() {
-  const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
+  const { showInfo, showError, hideDialogs } = useRntDialogs();
   const [isLoading, claims, tripInfos, createClaim, cancelClaim] = useHostClaims();
   const router = useRouter();
 
@@ -19,7 +18,7 @@ export default function Claims() {
         showError("Please select trip");
         return;
       }
-      if (!createClaimRequest.claimType && createClaimRequest.claimType !== 0) {
+      if (!createClaimRequest.claimType && createClaimRequest.claimType !== BigInt(0)) {
         showError("Please select claim type");
         return;
       }
@@ -34,7 +33,7 @@ export default function Claims() {
 
       showInfo("Please confirm the transaction with your wallet and wait for the transaction to be processed");
       const result = await createClaim(createClaimRequest);
-      hideSnackbar();
+      hideDialogs();
       if (!result) {
         showError("Your create claim request failed. Please make sure you entered claim details right and try again");
         return;
@@ -50,7 +49,7 @@ export default function Claims() {
     try {
       showInfo("Please confirm the transaction with your wallet and wait for the transaction to be processed");
       const result = await cancelClaim(claimId);
-      hideSnackbar();
+      hideDialogs();
       if (!result) {
         showError("Your cancel claim request failed. Please make sure you entered claim details right and try again");
         return;
@@ -73,7 +72,6 @@ export default function Claims() {
           <ClaimHistory claims={claims} cancelClaim={handleCancelClaim} isHost={true} />
         )}
       </div>
-      <RntDialogs state={dialogState} hide={hideSnackbar} />
     </HostLayout>
   );
 }

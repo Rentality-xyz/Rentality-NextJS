@@ -1,15 +1,12 @@
 import ChatPage from "@/components/chat/chatPage";
-import RntDialogs from "@/components/common/rntDialogs";
 import HostLayout from "@/components/host/layout/hostLayout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import { useChat } from "@/contexts/chatContext";
-import useRntDialogs from "@/hooks/useRntDialogs";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
 export default function Messages() {
-  const [dialogState, showInfo, showError, showMessager, hideSnackbar] = useRntDialogs();
   const { isLoading, chatInfos, getLatestChatInfos, sendMessage } = useChat();
 
   const router = useRouter();
@@ -49,7 +46,6 @@ export default function Messages() {
           />
         )}
       </div>
-      <RntDialogs state={dialogState} hide={hideSnackbar} />
     </HostLayout>
   );
 }

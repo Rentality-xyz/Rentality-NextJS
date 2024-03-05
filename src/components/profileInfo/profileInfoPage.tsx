@@ -6,7 +6,6 @@ import { resizeImage } from "@/utils/image";
 import { MESSAGES } from "@/utils/messages";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
-import { ButtonMode, IdentityButton } from "@civic/ethereum-gateway-react";
 import { Avatar } from "@mui/material";
 import { useRouter } from "next/router";
 import { FocusEvent, FormEvent, ReactNode, useState } from "react";
@@ -15,6 +14,7 @@ import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import DriverLicenseVerified from "@/components/driver_license_verified/driver_license_verified";
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
 
 const STATUS = {
   IDLE: "IDLE",
@@ -26,16 +26,10 @@ const STATUS = {
 export default function ProfileInfoPage({
   savedProfileSettings,
   saveProfileSettings,
-  showInfo,
-  showError,
-  hideSnackbar,
   isHost,
 }: {
   savedProfileSettings: ProfileSettings;
   saveProfileSettings: (newProfileSettings: ProfileSettings) => Promise<boolean>;
-  showInfo: (message: string, action?: ReactNode) => void;
-  showError: (message: string, action?: ReactNode) => void;
-  hideSnackbar: () => void;
   isHost: boolean;
 }) {
   const router = useRouter();
@@ -44,6 +38,7 @@ export default function ProfileInfoPage({
   const [status, setStatus] = useState(STATUS.IDLE);
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
   const ethereumInfo = useEthereum();
+  const { showInfo, showError, hideDialogs } = useRntDialogs();
 
   const errors = getErrors(enteredFormData, profileImageFile);
   const isValid = Object.keys(errors).length === 0;
@@ -125,7 +120,7 @@ export default function ProfileInfoPage({
       showInfo(MESSAGES.CONFIRM_TRANSACTION_AND_WAIT);
       const result = await saveProfileSettings(dataToSave);
 
-      hideSnackbar();
+      hideDialogs();
       if (!result) {
         throw new Error("Save profile info error");
       }
@@ -151,6 +146,7 @@ export default function ProfileInfoPage({
     if (isEmpty(formData.drivingLicenseNumber)) result.drivingLicenseNumber = "Please enter 'Driving license number'";
     if (!formData.drivingLicenseExpire || Number.isNaN(formData.drivingLicenseExpire.getTime()))
       result.drivingLicenseExpire = "Please enter 'Driving license validity period'";
+    if (!formData.isConfirmedTerms) result.isConfirmedTerms = "Please confirm terms and other documents";
 
     return result;
   }
@@ -256,7 +252,12 @@ export default function ProfileInfoPage({
         </div>
       </fieldset>
 
-      <DriverLicenseVerified/>
+      <DriverLicenseVerified
+        isConfirmed={enteredFormData.isConfirmedTerms}
+        onConfirm={(isConfirmed) => {
+          setEnteredFormData({ ...enteredFormData, isConfirmedTerms: isConfirmed });
+        }}
+      />
 
       {!isValid && status === STATUS.SUBMITTED && (
         <div role="alert" className="text-red-400">

@@ -5,6 +5,7 @@ import { UserInfoProvider } from "@/contexts/userInfoContext";
 import { ChatProvider } from "@/contexts/chatContext";
 import { AppContextProvider } from "@/contexts/appContext";
 import { RentalityProvider } from "@/contexts/rentalityContext";
+import { RntDialogsProvider } from "@/contexts/rntDialogsContext";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -13,7 +14,9 @@ export default function App({ Component, pageProps }: AppProps) {
         <UserInfoProvider>
           <ChatProvider>
             <AppContextProvider>
-              <Component {...pageProps} />
+              <RntDialogsProvider>
+                <Component {...pageProps} />
+              </RntDialogsProvider>
             </AppContextProvider>
           </ChatProvider>
         </UserInfoProvider>

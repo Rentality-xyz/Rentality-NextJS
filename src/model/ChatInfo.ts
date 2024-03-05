@@ -1,5 +1,5 @@
 import { ChatMessage } from "./ChatMessage";
-import { TripStatus } from "./TripInfo";
+import { TripStatus } from "./blockchain/schemas";
 
 export type ChatInfo = {
   tripId: number;
