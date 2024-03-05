@@ -36,3 +36,4 @@ next-env.d.ts
 *.localhost.json
 .firebase/
 package-lock.json
+/.project
