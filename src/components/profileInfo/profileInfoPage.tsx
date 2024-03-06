@@ -8,20 +8,14 @@ import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
 import { useRouter } from "next/router";
-import { FocusEvent, FormEvent, ReactNode, useState } from "react";
+import { FormEvent, useState } from "react";
 import RntDatePicker from "../common/rntDatePicker";
 import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import DriverLicenseVerified from "@/components/driver_license_verified/driver_license_verified";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
-
-const STATUS = {
-  IDLE: "IDLE",
-  SUBMITTED: "SUBMITTED",
-  SUBMITTING: "SUBMITTING",
-  COMPLETED: "COMPLETED",
-};
+import { DialogActions } from "@/utils/dialogActions";
 
 export default function ProfileInfoPage({
   savedProfileSettings,
@@ -35,13 +29,10 @@ export default function ProfileInfoPage({
   const router = useRouter();
   const [enteredFormData, setEnteredFormData] = useState<ProfileSettings>(savedProfileSettings);
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
-  const [status, setStatus] = useState(STATUS.IDLE);
-  const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
   const ethereumInfo = useEthereum();
-  const { showInfo, showError, hideDialogs } = useRntDialogs();
+  const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
 
   const errors = getErrors(enteredFormData, profileImageFile);
-  const isValid = Object.keys(errors).length === 0;
 
   async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const name = e.target.name;
@@ -78,19 +69,13 @@ export default function ProfileInfoPage({
     reader.readAsDataURL(resizedImage);
   }
 
-  async function handleBlur(e: FocusEvent<HTMLInputElement, Element>) {
-    e.persist();
-    setTouched((current) => {
-      return { ...current, [e.target.id]: true };
-    });
-  }
-
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setStatus(STATUS.SUBMITTING);
+
+    const isValid = Object.keys(errors).length === 0;
 
     if (!isValid) {
-      setStatus(STATUS.SUBMITTED);
+      showDialog("Please fill in all fields");
       return;
     }
 
@@ -125,13 +110,11 @@ export default function ProfileInfoPage({
         throw new Error("Save profile info error");
       }
       showInfo(MESSAGES.SUCCESS);
-      setStatus(STATUS.COMPLETED);
       router.reload();
       router.push(isHost ? "/host" : "/guest");
     } catch (e) {
       console.error("handleSubmit error:" + e);
       showError(MESSAGES.PROFILE_PAGE_SAVE_ERROR);
-      setStatus(STATUS.SUBMITTED);
       return;
     }
   }
@@ -182,18 +165,14 @@ export default function ProfileInfoPage({
             id="firstName"
             label="Name"
             value={enteredFormData.firstName}
-            validationError={touched.firstName || status === STATUS.SUBMITTED ? errors.firstName : ""}
             onChange={handleChange}
-            onBlur={handleBlur}
           />
           <RntInput
             className="lg:w-60"
             id="lastName"
             label="Last name"
             value={enteredFormData.lastName}
-            validationError={touched.lastName || status === STATUS.SUBMITTED ? errors.lastName : ""}
             onChange={handleChange}
-            onBlur={handleBlur}
           />
 
           <RntPhoneInput
@@ -202,9 +181,7 @@ export default function ProfileInfoPage({
             label="Phone number"
             type="tel"
             value={enteredFormData.phoneNumber}
-            validationError={touched.phoneNumber || status === STATUS.SUBMITTED ? errors.phoneNumber : ""}
             onChange={handleChange}
-            onBlur={handleBlur}
           />
         </div>
       </fieldset>
@@ -219,35 +196,15 @@ export default function ProfileInfoPage({
             id="drivingLicenseNumber"
             label="Driving license number"
             value={enteredFormData.drivingLicenseNumber}
-            validationError={
-              touched.drivingLicenseNumber || status === STATUS.SUBMITTED ? errors.drivingLicenseNumber : ""
-            }
             onChange={handleChange}
-            onBlur={handleBlur}
           />
-          {/* <RntInput
-            className="lg:w-60"
-            id="drivingLicenseExpire"
-            label="Driving license validity period"
-            type="date"
-            value={dateToHtmlDateFormat(enteredFormData.drivingLicenseExpire)}
-            validationError={
-              touched.drivingLicenseExpire || status === STATUS.SUBMITTED ? errors.drivingLicenseExpire : ""
-            }
-            onChange={handleChange}
-            onBlur={handleBlur}
-          /> */}
           <RntDatePicker
             className="lg:w-60"
             id="drivingLicenseExpire"
             label="Driving license validity period"
             type="date"
             value={enteredFormData.drivingLicenseExpire}
-            validationError={
-              touched.drivingLicenseExpire || status === STATUS.SUBMITTED ? errors.drivingLicenseExpire : ""
-            }
             onDateChange={handleDateChange}
-            onBlur={handleBlur}
           />
         </div>
       </fieldset>
@@ -259,17 +216,7 @@ export default function ProfileInfoPage({
         }}
       />
 
-      {!isValid && status === STATUS.SUBMITTED && (
-        <div role="alert" className="text-red-400">
-          <p>Please fix the following errors:</p>
-          <ul>
-            {Object.keys(errors).map((key) => {
-              return <li key={key}>{errors[key]}</li>;
-            })}
-          </ul>
-        </div>
-      )}
-      <RntButton type="submit" className="mt-4" disabled={!isValid}>
+      <RntButton type="submit" className="mt-4">
         Save
       </RntButton>
     </form>

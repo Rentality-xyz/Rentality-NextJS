@@ -6,6 +6,8 @@ import { isEmpty } from "@/utils/string";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { ElementRef, memo, useEffect, useRef, useState } from "react";
 import { assertIsNode } from "@/utils/react";
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { DialogActions } from "@/utils/dialogActions";
 
 function Login() {
   const { connectWallet, login, ready, authenticated, logout } = usePrivy();
@@ -13,6 +15,7 @@ function Login() {
   const { wallets } = useWallets();
   const [isShowMenu, setIsShowMenu] = useState(false);
   const loginWrapperRef = useRef<ElementRef<"div">>(null);
+  const { showDialog, hideDialogs } = useRntDialogs();
 
   const userFullName = `${userInfo?.firstName ?? ""} ${userInfo?.lastName ?? ""}`;
   const userInitials =
@@ -31,6 +34,23 @@ function Login() {
       window.removeEventListener("click", handleOnOutsideClick);
     };
   }, []);
+
+  useEffect(() => {
+    if (!ready) return;
+
+    if (!authenticated) {
+      const action = (
+        <>
+          {DialogActions.Button("Login", () => {
+            hideDialogs();
+            login();
+          })}
+          {DialogActions.Cancel(hideDialogs)}
+        </>
+      );
+      showDialog("Connect your crypto wallet", action);
+    }
+  }, [ready, authenticated]);
 
   const handleOnScroll = (event: Event) => {
     if (event.target === document || event.target === document.documentElement || event.target === document.body) {

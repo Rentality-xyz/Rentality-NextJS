@@ -8,6 +8,8 @@ import RntButton from "../common/rntButton";
 import AllowedActionsForStatusStarted from "../guest/allowedActionsForStatusStarted";
 import AllowedActions from "../guest/allowedActions";
 import { TripStatus } from "@/model/blockchain/schemas";
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { isEmpty } from "@/utils/string";
 
 function TripAdditionalActions({
   tripInfo,
@@ -30,6 +32,7 @@ function TripAdditionalActions({
       : [];
   const [inputParams, setInputParams] = useState<string[]>(defaultValues);
   const [confirmParams, setConfirmParams] = useState<boolean[]>([]);
+  const { showDialog } = useRntDialogs();
 
   const { refuelValue, refuelCharge } = getRefuelValueAndCharge(tripInfo, tripInfo.endFuelLevelInPercents);
   const tripDays = calculateDays(tripInfo.tripStart, tripInfo.tripEnd);
@@ -45,6 +48,12 @@ function TripAdditionalActions({
       tripInfo.allowedActions[0].readonly &&
       (confirmParams.length != defaultValues.length || !confirmParams.every((i) => i === true))
     ) {
+      showDialog("Please confirm fuel and odometer value");
+      return;
+    }
+
+    if (inputParams.length > 0 && !inputParams.every((i) => !isEmpty(i))) {
+      showDialog("Please input fuel and odometer value");
       return;
     }
 

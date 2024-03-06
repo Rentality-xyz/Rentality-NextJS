@@ -5,13 +5,13 @@ import { useRouter } from "next/router";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import RntButton from "@/components/common/rntButton";
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
-import Link from "next/link";
 import { resizeImage } from "@/utils/image";
 import { isEmpty } from "@/utils/string";
 import { Button } from "@mui/material";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { verifyCar } from "@/model/HostCarInfo";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { DialogActions } from "@/utils/dialogActions";
 
 export default function AddCar() {
   const [carInfoFormParams, setCarInfoFormParams, dataSaved, sentCarToServer] = useAddCar();
@@ -19,9 +19,8 @@ export default function AddCar() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [message, setMessage] = useState<string>("");
   const [carSaving, setCarSaving] = useState<boolean>(false);
-  const [isButtonSaveDisabled, setIsButtonSaveDisabled] = useState<boolean>(false);
   const router = useRouter();
-  const { showInfo, showError } = useRntDialogs();
+  const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
   const userInfo = useUserInfo();
 
   const loadCarInfoFromJson = async (file: File) => {
@@ -66,8 +65,24 @@ export default function AddCar() {
     reader.readAsDataURL(resizedImage);
   };
 
-  const saveCar = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    const isValidForm = verifyCar(carInfoFormParams);
+    const isImageUploaded = imageFile !== null;
+
+    if (!isValidForm && !isImageUploaded) {
+      showDialog("Please fill in all fields and vehicle photo");
+      return;
+    }
+    if (!isValidForm) {
+      showDialog("Please fill in all fields");
+      return;
+    }
+    if (!isImageUploaded) {
+      showDialog("Please upload vehicle photo");
+      return;
+    }
 
     if (isEmpty(userInfo?.drivingLicense)) {
       const action = (
@@ -114,9 +129,18 @@ export default function AddCar() {
     }
   };
 
-  useEffect(() => {
-    setIsButtonSaveDisabled(imageFile == null || !verifyCar(carInfoFormParams) || carSaving);
-  }, [imageFile, carInfoFormParams, carSaving]);
+  const handleBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const action = (
+      <>
+        {DialogActions.OK(() => {
+          hideDialogs();
+          router.push("/host/vehicles/listings");
+        })}
+        {DialogActions.Cancel(hideDialogs)}
+      </>
+    );
+    showDialog("Unsaved data will be lost", action);
+  };
 
   useEffect(() => {
     if (!userInfo) return;
@@ -154,12 +178,12 @@ export default function AddCar() {
         />
 
         <div className="flex flex-row gap-4 mb-8 mt-8 justify-between sm:justify-start">
-          <RntButton className="w-40 h-16" disabled={isButtonSaveDisabled} onClick={saveCar}>
+          <RntButton className="w-40 h-16" disabled={carSaving} onClick={handleSave}>
             Save
           </RntButton>
-          <Link href={`/host/vehicles/listings`}>
-            <RntButton className="w-40 h-16">Back</RntButton>
-          </Link>
+          <RntButton className="w-40 h-16" onClick={handleBack}>
+            Back
+          </RntButton>
         </div>
         <label className="mb-4">{message}</label>
       </div>

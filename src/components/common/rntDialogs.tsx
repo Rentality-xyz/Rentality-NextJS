@@ -1,29 +1,78 @@
-import { Snackbar, Alert, Backdrop } from "@mui/material";
+import {
+  Snackbar,
+  Alert,
+  Backdrop,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
+} from "@mui/material";
 import { DialogState } from "@/model/ui/dialogState";
+import RntButton from "./rntButton";
 
 export default function RntDialogs({ state, hide }: { state: DialogState; hide: () => void }) {
-  return state.action === null ? (
-    <Snackbar
-      anchorOrigin={state.anchorOrigin}
-      autoHideDuration={state.autoHideDuration}
-      open={state.isOpen}
-      onClose={hide}
-      message={state.message}
-      sx={{ top: "8% !important" }}
-    >
-      <Alert
-        severity={state.alertColor}
-        sx={{
-          width: "100%",
-          //backgroundColor: snackbarState.backgroundColor,
-          color: "#000",
-          borderRadius: "9999px",
+  if (state.isDialog)
+    return (
+      <Dialog
+        open={state.isOpen}
+        onClose={hide}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        PaperProps={{
+          sx: {
+            borderRadius: "20px",
+          },
         }}
       >
-        {state.message}
-      </Alert>
-    </Snackbar>
-  ) : (
+        <DialogContent
+          sx={{
+            background: "#240F50",
+          }}
+        >
+          <DialogContentText
+            id="alert-dialog-description"
+            sx={{
+              color: "#fff",
+            }}
+          >
+            {state.message}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions
+          sx={{
+            background: "#240F50",
+            justifyContent: "center",
+          }}
+        >
+          {state.action}
+        </DialogActions>
+      </Dialog>
+    );
+
+  if (state.action === null)
+    return (
+      <Snackbar
+        anchorOrigin={state.anchorOrigin}
+        autoHideDuration={state.autoHideDuration}
+        open={state.isOpen}
+        onClose={hide}
+        message={state.message}
+        sx={{ top: "8% !important" }}
+      >
+        <Alert
+          severity={state.alertColor}
+          sx={{
+            width: "100%",
+            color: "#000",
+            borderRadius: "9999px",
+          }}
+        >
+          {state.message}
+        </Alert>
+      </Snackbar>
+    );
+  return (
     <Snackbar
       anchorOrigin={state.anchorOrigin}
       autoHideDuration={state.autoHideDuration}

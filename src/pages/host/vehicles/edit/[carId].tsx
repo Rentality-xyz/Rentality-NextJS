@@ -1,5 +1,5 @@
 import HostLayout from "@/components/host/layout/hostLayout";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import RntButton from "@/components/common/rntButton";
@@ -8,6 +8,7 @@ import useEditCarInfo from "@/hooks/host/useEditCarInfo";
 import Link from "next/link";
 import { verifyCar } from "@/model/HostCarInfo";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { DialogActions } from "@/utils/dialogActions";
 
 export default function EditCar() {
   const router = useRouter();
@@ -15,15 +16,21 @@ export default function EditCar() {
 
   const carIdNumber = Number(carId) ?? -1;
 
-  const [isLoading, carInfoFormParams, setCarInfoFormParams, dataSaved, saveCarInfo] = useEditCarInfo(carIdNumber);
+  const [isLoading, carInfoFormParams, setCarInfoFormParams, _, saveCarInfo] = useEditCarInfo(carIdNumber);
 
   const [message, setMessage] = useState<string>("");
   const [carSaving, setCarSaving] = useState<boolean>(false);
-  const [isButtonSaveDisabled, setIsButtonSaveDisabled] = useState<boolean>(false);
-  const { showInfo, showError, hideDialogs } = useRntDialogs();
+  const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
 
-  const saveChanges = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    const isValidForm = verifyCar(carInfoFormParams);
+
+    if (!isValidForm) {
+      showDialog("Please fill in all fields");
+      return;
+    }
 
     setCarSaving(true);
 
@@ -47,9 +54,18 @@ export default function EditCar() {
     }
   };
 
-  useEffect(() => {
-    setIsButtonSaveDisabled(!verifyCar(carInfoFormParams) || carSaving);
-  }, [carInfoFormParams, carSaving]);
+  const handleBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const action = (
+      <>
+        {DialogActions.OK(() => {
+          hideDialogs();
+          router.push("/host/vehicles/listings");
+        })}
+        {DialogActions.Cancel(hideDialogs)}
+      </>
+    );
+    showDialog("Unsaved data will be lost", action);
+  };
 
   if (!carId) return null;
 
@@ -71,12 +87,13 @@ export default function EditCar() {
             />
 
             <div className="flex flex-row gap-4 mb-8 mt-8 items-center">
-              <RntButton className="w-40 h-16" disabled={isButtonSaveDisabled} onClick={saveChanges}>
+              <RntButton className="w-40 h-16" disabled={carSaving} onClick={handleSave}>
                 Save
               </RntButton>
-              <Link href={`/host/vehicles/listings`}>
-                <RntButton className="w-40 h-16">Back</RntButton>
-              </Link>
+              <RntButton className="w-40 h-16" onClick={handleBack}>
+                Back
+              </RntButton>
+              <Link href={`/host/vehicles/listings`}></Link>
             </div>
             <label className="mb-4">{message}</label>
           </>

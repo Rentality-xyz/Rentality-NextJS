@@ -1,12 +1,14 @@
 import RntDialogs from "@/components/common/rntDialogs";
 import { DialogState } from "@/model";
 import { defaultDialogState } from "@/model/ui/dialogState";
+import { DialogActions } from "@/utils/dialogActions";
 import { AlertColor } from "@mui/material";
 import { ReactNode, createContext, useCallback, useContext, useState } from "react";
 
 interface IRntDialogs {
   showInfo: (message: string, action?: ReactNode) => void;
   showError: (message: string, action?: ReactNode) => void;
+  showDialog: (message: string, action?: ReactNode) => void;
   hideDialogs: () => void;
 }
 
@@ -35,6 +37,16 @@ export const RntDialogsProvider = ({ children }: { children?: React.ReactNode })
     });
   };
 
+  const showDialog = (message: string, action?: ReactNode) => {
+    setDialogState({
+      ...dialogState,
+      message: message,
+      action: action ?? DialogActions.OK(hideSnackbar),
+      isDialog: true,
+      isOpen: true,
+    });
+  };
+
   const showMessager = (message: string, color: AlertColor | undefined, action?: ReactNode) => {
     if (color === undefined) {
       color = "info";
@@ -47,11 +59,17 @@ export const RntDialogsProvider = ({ children }: { children?: React.ReactNode })
       isOpen: true,
     });
   };
+
   const hideSnackbar = () => {
     setDialogState(defaultDialogState);
   };
 
-  const value: IRntDialogs = { showInfo: showInfo, showError: showError, hideDialogs: hideSnackbar };
+  const value: IRntDialogs = {
+    showInfo: showInfo,
+    showError: showError,
+    showDialog: showDialog,
+    hideDialogs: hideSnackbar,
+  };
 
   return (
     <>
