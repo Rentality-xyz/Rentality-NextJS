@@ -9,6 +9,8 @@ services:
       - ganache
     networks:
       - rentality-network
+    volumes:
+      - ./src:/home/app/src
   ganache:
     container_name: ganache
     image:
