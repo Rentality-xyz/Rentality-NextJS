@@ -85,7 +85,7 @@ export interface IRentalityContract {
     expirationDate: bigint,
     isTCPassed: boolean
   ): Promise<ContractTransactionResponse>;
-  callOutdated(): Promise<ContractTripContactInfo>;
+  callOutdated(): Promise<ContractTransactionResponse>;
 
   //not using
   burnCar(carId: bigint): Promise<ContractCarInfo>;
