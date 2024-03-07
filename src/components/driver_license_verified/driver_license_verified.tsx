@@ -39,10 +39,8 @@ export default function DriverLicenseVerified({
         className="ml-4 mt-4"
         title="Terms of service"
         value={isTerms}
-        onChange={(e) => {
-          if (!isTerms) {
-            window.open("https://rentality.xyz/legalmatters/terms", "_blank");
-          }
+        onChange={() => {
+          window.open("https://rentality.xyz/legalmatters/terms", "_blank");
           setIsTerms(true);
         }}
       />
@@ -50,10 +48,8 @@ export default function DriverLicenseVerified({
         className="ml-4 mt-2"
         title="Cancellation policy"
         value={isCancellation}
-        onChange={(e) => {
-          if (!isCancellation) {
-            window.open("https://rentality.xyz/legalmatters/cancellation", "_blank");
-          }
+        onChange={() => {
+          window.open("https://rentality.xyz/legalmatters/cancellation", "_blank");
           setIsCancellation(true);
         }}
       />
@@ -61,10 +57,8 @@ export default function DriverLicenseVerified({
         className="ml-4 mt-2"
         title="Prohibited uses"
         value={isProhibited}
-        onChange={(e) => {
-          if (!isProhibited) {
-            window.open("https://rentality.xyz/legalmatters/prohibiteduses", "_blank");
-          }
+        onChange={() => {
+          window.open("https://rentality.xyz/legalmatters/prohibiteduses", "_blank");
           setIsProhibited(true);
         }}
       />
@@ -72,10 +66,8 @@ export default function DriverLicenseVerified({
         className="ml-4 mt-2"
         title="Privacy policy"
         value={isPrivacy}
-        onChange={(e) => {
-          if (!isPrivacy) {
-            window.open("https://rentality.xyz/legalmatters/privacy", "_blank");
-          }
+        onChange={() => {
+          window.open("https://rentality.xyz/legalmatters/privacy", "_blank");
           setIsPrivacy(true);
         }}
       />
