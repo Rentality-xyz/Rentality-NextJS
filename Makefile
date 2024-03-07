@@ -10,5 +10,4 @@ up:
 down:
 	docker compose down
 	
-reload:
-	down up
+reload: down up

@@ -11,6 +11,7 @@ services:
       - rentality-network
     volumes:
       - ./src:/home/app/src
+      - /home/app/src/abis
   ganache:
     container_name: ganache
     image:
