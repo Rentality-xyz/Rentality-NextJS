@@ -1,22 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  images:{
+  images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'ipfs.io',
-        port: '',
-        pathname: '/ipfs/**',
+        protocol: "https",
+        hostname: "ipfs.io",
+        port: "",
+        pathname: "/ipfs/**",
       },
       {
-        protocol: 'https',
-        hostname: 'ivory-specific-mink-961.mypinata.cloud',
-        port: '',
-        pathname: '/ipfs/**',
+        protocol: "https",
+        hostname: "ivory-specific-mink-961.mypinata.cloud",
+        port: "",
+        pathname: "/ipfs/**",
       },
     ],
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

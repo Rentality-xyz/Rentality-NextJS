@@ -234,8 +234,8 @@ const useSearchCars = () => {
       sortBy === "distance"
         ? sortByIncludedDistance
         : sortBy === "priceDesc"
-        ? sortByDailyPriceDes
-        : sortByDailyPriceAsc;
+          ? sortByDailyPriceDes
+          : sortByDailyPriceAsc;
 
     setSearchResult((current) => {
       return {

@@ -68,16 +68,16 @@ export function CheckboxLight({
 }) {
   const c = twMerge("", className);
   return (
-      <div className={c}>
-        <label className="group flex flex-row items-center cursor-pointer select-none underline">
-          <input className="hidden" type="checkbox" value={value ? 1 : 0} onChange={onChange} />
-          <span className={`relative w-6 h-6 shrink-0 mr-4 border-2 rounded-md`}>
+    <div className={c}>
+      <label className="group flex flex-row items-center cursor-pointer select-none underline">
+        <input className="hidden" type="checkbox" value={value ? 1 : 0} onChange={onChange} />
+        <span className={`relative w-6 h-6 shrink-0 mr-4 border-2 rounded-md`}>
           {value ? (
-              <span className="absolute top-[-8px] right-0.5 w-2.5 h-6 shrink-0 border-white border-b-2 border-r-2 rotate-45"></span>
+            <span className="absolute top-[-8px] right-0.5 w-2.5 h-6 shrink-0 border-white border-b-2 border-r-2 rotate-45"></span>
           ) : null}
         </span>
-          {title}
-        </label>
-      </div>
+        {title}
+      </label>
+    </div>
   );
 }
