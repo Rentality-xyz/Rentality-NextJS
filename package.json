@@ -17,6 +17,7 @@
     "@mui/material": "^5.14.12",
     "@mui/x-date-pickers": "^5.0.20",
     "@privy-io/react-auth": "^1.58.1",
+    "@react-google-maps/api": "^2.19.3",
     "@simpleview/react-phone-input-2": "^2.15.3",
     "@types/node": "18.15.13",
     "@types/react": "18.0.37",

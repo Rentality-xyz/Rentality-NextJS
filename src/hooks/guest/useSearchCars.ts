@@ -109,6 +109,10 @@ const useSearchCars = () => {
           hostPhotoUrl: i.hostPhotoUrl,
           hostName: i.hostName,
           timeZoneId: i.timeZoneId,
+          location: {
+			  lat: parseFloat(i.locationLatitude),
+			  lng: parseFloat(i.locationLongitude)
+		  }          
         };
 
         return item;
