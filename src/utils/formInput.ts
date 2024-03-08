@@ -1,5 +1,7 @@
 import moment from "moment-timezone";
 import { getUIntFromString } from "./numericFormatters";
+import { UTC_TIME_ZONE_ID } from "./date";
+import { isEmpty } from "./string";
 
 export const getMoneyInCentsFromString = (str: string | undefined): number => {
   if (!str) return 0;
@@ -22,6 +24,7 @@ export const getDateFromBlockchainTime = (time: number | bigint): Date => {
 };
 
 export const getDateFromBlockchainTimeWithTZ = (time: number | bigint, timeZoneId: string): Date => {
+  timeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
   return moment.unix(Number(time)).tz(timeZoneId).toDate();
 };
 

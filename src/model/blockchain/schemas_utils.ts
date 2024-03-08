@@ -223,6 +223,7 @@ const emptyContractTripDTO: ContractTripDTO = {
   guestPhotoUrl: "",
   hostPhotoUrl: "",
   metadataURI: "",
+  timeZoneId: "",
 };
 
 export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {
