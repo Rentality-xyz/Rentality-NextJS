@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from "moment-timezone";
 import { getUIntFromString } from "./numericFormatters";
 
 export const getMoneyInCentsFromString = (str: string | undefined): number => {
@@ -13,12 +13,16 @@ export const getStringFromMoneyInCents = (value: number | bigint): string => {
 };
 
 export const getBlockchainTimeFromDate = (time: Date): bigint => {
-  return BigInt(moment(time).utc().unix());
+  return BigInt(moment.utc(time).unix());
   //return BigInt(Math.floor(time.getTime() / 1000));
 };
 
 export const getDateFromBlockchainTime = (time: number | bigint): Date => {
   return moment.unix(Number(time)).local().toDate();
+};
+
+export const getDateFromBlockchainTimeWithTZ = (time: number | bigint, timeZoneId: string): Date => {
+  return moment.unix(Number(time)).tz(timeZoneId).toDate();
 };
 
 export const formatPhoneNumber = (phoneNumber: string): string => {

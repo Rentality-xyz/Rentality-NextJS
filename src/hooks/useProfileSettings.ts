@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
 import { useRentality } from "@/contexts/rentalityContext";
-import { formatPhoneNumber, getBlockchainTimeFromDate, getDateFromBlockchainTime } from "@/utils/formInput";
+import { formatPhoneNumber, getBlockchainTimeFromDate, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import moment from "moment";
 import { ContractKYCInfo } from "@/model/blockchain/schemas";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
 
 export type ProfileSettings = {
   profilePhotoUrl: string;
@@ -48,7 +49,9 @@ const useProfileSettings = () => {
         phoneNumber: formatPhoneNumber(myKYCInfo.mobilePhoneNumber),
         drivingLicenseNumber: myKYCInfo.licenseNumber,
         drivingLicenseExpire:
-          myKYCInfo.expirationDate > 0 ? getDateFromBlockchainTime(myKYCInfo.expirationDate) : undefined,
+          myKYCInfo.expirationDate > 0
+            ? getDateFromBlockchainTimeWithTZ(myKYCInfo.expirationDate, UTC_TIME_ZONE_ID)
+            : undefined,
         isConfirmedTerms: myKYCInfo.isTCPassed,
       };
       return myProfileSettings;

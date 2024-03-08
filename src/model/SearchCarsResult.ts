@@ -22,6 +22,7 @@ export type SearchCarInfo = {
   securityDeposit: number;
   hostPhotoUrl: string;
   hostName: string;
+  timeZoneId: string;
 };
 
 export const emptySearchCarsResult: SearchCarsResult = {

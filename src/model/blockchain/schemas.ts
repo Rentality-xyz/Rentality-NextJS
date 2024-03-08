@@ -122,6 +122,7 @@ export type ContractTripDTO = {
   guestPhotoUrl: string;
   hostPhotoUrl: string;
   metadataURI: string;
+  timeZoneId: string;
 };
 
 export type ContractChatInfo = {

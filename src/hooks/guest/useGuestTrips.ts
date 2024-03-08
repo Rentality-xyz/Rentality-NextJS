@@ -3,7 +3,7 @@ import { TripInfo, AllowedChangeTripAction } from "@/model/TripInfo";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
-import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
+import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { ContractTrip, ContractTripDTO, EngineType, TripStatus } from "@/model/blockchain/schemas";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 
@@ -170,6 +170,7 @@ const useGuestTrips = () => {
                   const tankSize = Number(
                     meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "0"
                   );
+                  const timeZoneId = i.timeZoneId;
 
                   let item: TripInfo = {
                     tripId: Number(i.trip.tripId),
@@ -179,8 +180,8 @@ const useGuestTrips = () => {
                     model: meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
                     year: meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
                     licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
-                    tripStart: getDateFromBlockchainTime(i.trip.startDateTime),
-                    tripEnd: getDateFromBlockchainTime(i.trip.endDateTime),
+                    tripStart: getDateFromBlockchainTimeWithTZ(i.trip.startDateTime, timeZoneId),
+                    tripEnd: getDateFromBlockchainTimeWithTZ(i.trip.endDateTime, timeZoneId),
                     locationStart: i.trip.startLocation,
                     locationEnd: i.trip.endLocation,
                     status: tripStatus,
@@ -206,11 +207,22 @@ const useGuestTrips = () => {
                     guestName: i.trip.guestName,
                     rejectedBy: i.trip.rejectedBy,
                     rejectedDate:
-                      i.trip.rejectedDateTime > 0 ? getDateFromBlockchainTime(i.trip.rejectedDateTime) : undefined,
-                    createdDateTime: getDateFromBlockchainTime(i.trip.createdDateTime),
-                    checkedInByHostDateTime: getDateFromBlockchainTime(i.trip.checkedInByHostDateTime),
-                    checkedOutByGuestDateTime: getDateFromBlockchainTime(i.trip.checkedOutByGuestDateTime),
-                    checkedOutByHostDateTime: getDateFromBlockchainTime(i.trip.checkedOutByHostDateTime),
+                      i.trip.rejectedDateTime > 0
+                        ? getDateFromBlockchainTimeWithTZ(i.trip.rejectedDateTime, timeZoneId)
+                        : undefined,
+                    createdDateTime: getDateFromBlockchainTimeWithTZ(i.trip.createdDateTime, timeZoneId),
+                    checkedInByHostDateTime: getDateFromBlockchainTimeWithTZ(
+                      i.trip.checkedInByHostDateTime,
+                      timeZoneId
+                    ),
+                    checkedOutByGuestDateTime: getDateFromBlockchainTimeWithTZ(
+                      i.trip.checkedOutByGuestDateTime,
+                      timeZoneId
+                    ),
+                    checkedOutByHostDateTime: getDateFromBlockchainTimeWithTZ(
+                      i.trip.checkedOutByHostDateTime,
+                      timeZoneId
+                    ),
                     hostPhotoUrl: i.hostPhotoUrl,
                     guestPhotoUrl: i.guestPhotoUrl,
                   };

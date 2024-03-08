@@ -109,7 +109,9 @@ const useSearchCars = () => {
           securityDeposit: securityDeposit,
           hostPhotoUrl: i.hostPhotoUrl,
           hostName: i.hostName,
+          timeZoneId: i.timeZoneId,
         };
+
         return item;
       })
     );

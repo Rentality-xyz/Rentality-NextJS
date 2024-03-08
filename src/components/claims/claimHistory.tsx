@@ -6,6 +6,7 @@ import { getStringFromMoneyInCents } from "@/utils/formInput";
 import { Claim } from "@/model/Claim";
 import ClaimHistoryMobileCard from "./claimHistoryMobileCard";
 import { ClaimStatus } from "@/model/blockchain/schemas";
+import moment from "moment";
 
 type Props =
   | {
@@ -53,7 +54,7 @@ export default function ClaimHistory(props: Props) {
             return (
               <tr key={claim.claimId} className="border-b-[1px] border-b-gray-500">
                 <td className={rowSpanClassName}>{claim.claimTypeText}</td>
-                <td className={claim.deadlineDate <= new Date() ? redTextClassName : rowSpanClassName}>
+                <td className={claim.deadlineDate <= moment().toDate() ? redTextClassName : rowSpanClassName}>
                   {dateFormatDayMonthTime(claim.deadlineDate)}
                 </td>
                 <td className={rowSpanClassName}>{claim.tripId}</td>
