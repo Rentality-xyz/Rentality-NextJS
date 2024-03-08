@@ -123,18 +123,18 @@ export interface IRentalityChatHelperContract {
 
 export interface IRentalityCurrencyConverterContract {
   getLatestEthToUsdRate(): Promise<bigint>;
-  getEthToUsdRate(): Promise<{ ethToUsdRate: bigint; ethToUsdDecimals: number }>;
+  getEthToUsdRate(): Promise<{ ethToUsdRate: bigint; ethToUsdDecimals: bigint }>;
 
   getEthFromUsdLatest(
     valueInUsdCents: bigint
-  ): Promise<{ valueInEth: bigint; ethToUsdRate: bigint; ethToUsdDecimals: number }>;
+  ): Promise<{ valueInEth: bigint; ethToUsdRate: bigint; ethToUsdDecimals: bigint }>;
   getUsdFromEthLatest(
     valueInEth: bigint
-  ): Promise<{ valueInUsdCents: bigint; ethToUsdRate: bigint; ethToUsdDecimals: number }>;
-  getEthFromUsd(valueInUsdCents: bigint, ethToUsdRate: bigint, ethToUsdDecimals: number): Promise<bigint>;
-  getUsdFromEth(valueInEth: bigint, ethToUsdRate: bigint, ethToUsdDecimals: number): Promise<bigint>;
+  ): Promise<{ valueInUsdCents: bigint; ethToUsdRate: bigint; ethToUsdDecimals: bigint }>;
+  getEthFromUsd(valueInUsdCents: bigint, ethToUsdRate: bigint, ethToUsdDecimals: bigint): Promise<bigint>;
+  getUsdFromEth(valueInEth: bigint, ethToUsdRate: bigint, ethToUsdDecimals: bigint): Promise<bigint>;
 
-  getEthToUsdRateWithCache(): Promise<{ ethToUsdRate: bigint; ethToUsdDecimals: number }>;
+  getEthToUsdRateWithCache(): Promise<{ ethToUsdRate: bigint; ethToUsdDecimals: bigint }>;
   getEthFromUsdWithCache(valueInUsdCents: bigint): Promise<bigint>;
   getUsdFromEthWithCache(valueInEth: bigint): Promise<bigint>;
 }

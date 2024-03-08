@@ -27,33 +27,10 @@ const useGuestClaims = () => {
     }
 
     try {
-      const rentalityCurrencyConverterContract = (await getEtherContractWithSigner(
-        "currencyConverter",
-        ethereumInfo.signer
-      )) as unknown as IRentalityCurrencyConverterContract;
-
-      if (rentalityCurrencyConverterContract == null) {
-        console.error("payClaim error: rentalityCurrencyConverterContract is null");
-        return false;
-      }
-
-      const claimAmountInUsdCents = claims.find((i) => i.claimId === claimId)?.amountInUsdCents ?? 0;
-
-      const { valueInEth, ethToUsdRate, ethToUsdDecimals } =
-        await rentalityCurrencyConverterContract.getEthFromUsdLatest(BigInt(claimAmountInUsdCents));
-
-      console.log(`valueInEth: ${typeof valueInEth}`);
-      console.log(`ethToUsdRate: ${typeof ethToUsdRate}`);
-      console.log(`ethToUsdDecimals: ${typeof ethToUsdDecimals}`);
-
-      console.log(
-        `paying $${(claimAmountInUsdCents / 100).toFixed(2)} = ${formatEther(
-          valueInEth
-        )} ETH (with rate ${formatEthWithDecimals(ethToUsdRate, ethToUsdDecimals)} USD/ETH)...`
-      );
+      const claimAmountInEth = claims.find((i) => i.claimId === claimId)?.amountInEth ?? 0;
 
       let transaction = await rentalityContract.payClaim(BigInt(claimId), {
-        value: valueInEth,
+        value: claimAmountInEth,
       });
 
       await transaction.wait();
@@ -93,6 +70,7 @@ const useGuestClaims = () => {
                     carInfo: `${i.carInfo.brand} ${i.carInfo.model} ${i.carInfo.yearOfProduction}`,
                     description: i.claim.description,
                     amountInUsdCents: Number(i.claim.amountInUsdCents),
+                    amountInEth: i.amountInEth,
                     payDateInSec: Number(i.claim.payDateInSec),
                     rejectedBy: i.claim.rejectedBy,
                     rejectedDateInSec: Number(i.claim.rejectedDateInSec),

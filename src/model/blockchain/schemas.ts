@@ -159,6 +159,7 @@ export type ContractFullClaimInfo = {
   guestPhoneNumber: string;
   hostPhoneNumber: string;
   carInfo: ContractCarInfo;
+  amountInEth: bigint;
 };
 
 export type ContractClaim = {
@@ -206,7 +207,7 @@ export type ContractPaymentInfo = {
   resolveAmountInUsdCents: bigint;
   currencyType: CurrencyType;
   ethToCurrencyRate: bigint;
-  ethToCurrencyDecimals: number;
+  ethToCurrencyDecimals: bigint;
   resolveFuelAmountInUsdCents: bigint;
   resolveMilesAmountInUsdCents: bigint;
 };

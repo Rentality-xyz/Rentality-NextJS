@@ -128,6 +128,7 @@ export function validateContractFullClaimInfo(obj: ContractFullClaimInfo): obj i
     hostPhoneNumber: "",
     guestPhoneNumber: "",
     carInfo: emptyContractCarInfo,
+    amountInEth: BigInt(0),
   };
 
   return validateType(obj, emptyContractFullClaimInfo) && validateType(obj.claim, emptyContractClaim);
@@ -191,7 +192,7 @@ const emptyContractTrip: ContractTrip = {
     resolveAmountInUsdCents: BigInt(0),
     currencyType: 0,
     ethToCurrencyRate: BigInt(0),
-    ethToCurrencyDecimals: 0,
+    ethToCurrencyDecimals: BigInt(0),
     resolveFuelAmountInUsdCents: BigInt(0),
     resolveMilesAmountInUsdCents: BigInt(0),
   },

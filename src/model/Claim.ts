@@ -11,6 +11,7 @@ export type Claim = {
   carInfo: string;
   description: string;
   amountInUsdCents: number;
+  amountInEth: bigint;
   payDateInSec: number;
   rejectedBy: string;
   rejectedDateInSec: number;

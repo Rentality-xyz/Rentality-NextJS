@@ -98,6 +98,7 @@ const useHostClaims = () => {
                     carInfo: `${i.carInfo.brand} ${i.carInfo.model} ${i.carInfo.yearOfProduction}`,
                     description: i.claim.description,
                     amountInUsdCents: Number(i.claim.amountInUsdCents),
+                    amountInEth: i.amountInEth,
                     payDateInSec: Number(i.claim.payDateInSec),
                     rejectedBy: i.claim.rejectedBy,
                     rejectedDateInSec: Number(i.claim.rejectedDateInSec),
