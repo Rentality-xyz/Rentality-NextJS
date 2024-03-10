@@ -1,13 +1,12 @@
-import HostLayout from "@/components/host/layout/hostLayout";
+import Layout from "@/components/layout/layout";
 import LegalContent from "@/pages/legal_content";
-import GuestLayout from "@/components/guest/layout/guestLayout";
 
 export default function Legal() {
   return (
     <div>
-      <HostLayout>
+      <Layout>
         <LegalContent />
-      </HostLayout>
+      </Layout>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import HostSideNavMenu from "@/components/sideNavMenu/hostSideNavMenu";
 
+//TODO DELETE
 export default function HostLayout({ children }: { children?: React.ReactNode }) {
   return (
     <>

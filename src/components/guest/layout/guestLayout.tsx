@@ -2,6 +2,7 @@ import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import GuestSideNavMenu from "@/components/sideNavMenu/guestSideNavMenu";
 
+//TODO DELETE
 export default function GuestLayout({ children }: { children?: React.ReactNode }) {
   return (
     <>

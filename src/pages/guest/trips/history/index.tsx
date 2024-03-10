@@ -1,4 +1,4 @@
-import GuestLayout from "@/components/guest/layout/guestLayout";
+import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import TripCard from "@/components/tripCard/tripCard";
 import useGuestTrips from "@/hooks/guest/useGuestTrips";
@@ -9,7 +9,7 @@ export default function History() {
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {};
 
   return (
-    <GuestLayout>
+    <Layout>
       <div className="flex flex-col">
         <PageTitle title="History" />
         {isLoading ? (
@@ -36,6 +36,6 @@ export default function History() {
           </div>
         )}
       </div>
-    </GuestLayout>
+    </Layout>
   );
 }

@@ -1,6 +1,6 @@
 import ClaimHistory from "@/components/claims/claimHistory";
 import CreateClaim from "@/components/claims/createClaim";
-import HostLayout from "@/components/host/layout/hostLayout";
+import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useHostClaims from "@/hooks/host/useHostClaims";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
@@ -62,7 +62,7 @@ export default function Claims() {
   };
 
   return (
-    <HostLayout>
+    <Layout>
       <div className="flex flex-col">
         <PageTitle title="Claims" />
         <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} />
@@ -72,6 +72,6 @@ export default function Claims() {
           <ClaimHistory claims={claims} cancelClaim={handleCancelClaim} isHost={true} />
         )}
       </div>
-    </HostLayout>
+    </Layout>
   );
 }

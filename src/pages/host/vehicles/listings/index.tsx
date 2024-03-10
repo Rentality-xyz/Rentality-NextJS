@@ -1,4 +1,4 @@
-import HostLayout from "@/components/host/layout/hostLayout";
+import Layout from "@/components/layout/layout";
 import ListingItem from "@/components/host/listingItem";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useMyListings from "@/hooks/host/useMyListings";
@@ -7,7 +7,7 @@ export default function Listings() {
   const [isLoading, myListings] = useMyListings();
 
   return (
-    <HostLayout>
+    <Layout>
       <div className="flex flex-col">
         <PageTitle title="Listings" actions={[{ text: "Add Listing", link: "/host/vehicles/add" }]} />
         {isLoading ? (
@@ -26,6 +26,6 @@ export default function Listings() {
           </div>
         )}
       </div>
-    </HostLayout>
+    </Layout>
   );
 }

@@ -1,4 +1,4 @@
-import HostLayout from "@/components/host/layout/hostLayout";
+import Layout from "@/components/layout/layout";
 import NotificationPage from "@/components/notification/notificationPage";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useNotificationInfos from "@/hooks/notification/useNotificationInfos";
@@ -7,7 +7,7 @@ export default function Notifications() {
   const [isLoading, notifications] = useNotificationInfos(true);
 
   return (
-    <HostLayout>
+    <Layout>
       <div className="flex flex-col">
         <PageTitle title="Notifications" />
         {isLoading ? (
@@ -16,6 +16,6 @@ export default function Notifications() {
           <NotificationPage notifications={notifications} />
         )}
       </div>
-    </HostLayout>
+    </Layout>
   );
 }

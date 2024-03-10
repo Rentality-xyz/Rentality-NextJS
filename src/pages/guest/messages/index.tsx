@@ -1,5 +1,5 @@
 import ChatPage from "@/components/chat/chatPage";
-import GuestLayout from "@/components/guest/layout/guestLayout";
+import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import { useChat } from "@/contexts/chatContext";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -31,7 +31,7 @@ export default function Messages() {
   }, [getLatestChatInfos]);
 
   return (
-    <GuestLayout>
+    <Layout>
       <div className="flex flex-col">
         <PageTitle title="Chats" />
         {isLoading ? (
@@ -46,6 +46,6 @@ export default function Messages() {
           />
         )}
       </div>
-    </GuestLayout>
+    </Layout>
   );
 }

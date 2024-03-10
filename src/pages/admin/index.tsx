@@ -1,6 +1,6 @@
-import AdminLayout from "@/components/admin/layout/adminLayout";
 import RntInput from "@/components/common/rntInput";
 import RntInputWithButton from "@/components/common/rntInputWithButton";
+import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import useContractInfo from "@/hooks/admin/useContractInfo";
@@ -29,7 +29,7 @@ export default function Admin() {
 
   if (adminContractInfo == null) {
     return (
-      <AdminLayout>
+      <Layout>
         <div className="flex flex-col">
           <div className="flex flex-row justify-between items-center">
             <div className="text-2xl">
@@ -40,7 +40,7 @@ export default function Admin() {
             <label>Contract is null: </label>
           </div>
         </div>
-      </AdminLayout>
+      </Layout>
     );
   }
 
@@ -150,7 +150,7 @@ export default function Admin() {
   };
 
   return (
-    <AdminLayout>
+    <Layout>
       <div className="flex flex-col">
         <PageTitle title="Contract info" />
         <div className="grid grid-cols-2 gap-4 mt-4 text-lg">
@@ -312,6 +312,6 @@ export default function Admin() {
           <div className="font-bold">{adminContractInfo.contractAddress}</div>
         </div> */}
       </div>
-    </AdminLayout>
+    </Layout>
   );
 }

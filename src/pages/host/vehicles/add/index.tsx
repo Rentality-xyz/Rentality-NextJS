@@ -1,4 +1,4 @@
-import HostLayout from "@/components/host/layout/hostLayout";
+import Layout from "@/components/layout/layout";
 import useAddCar from "@/hooks/host/useAddCar";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -166,7 +166,7 @@ export default function AddCar() {
   }, [userInfo, router]);
 
   return (
-    <HostLayout>
+    <Layout>
       <div className="flex flex-col">
         <PageTitle title="Add a car" />
 
@@ -187,6 +187,6 @@ export default function AddCar() {
         </div>
         <label className="mb-4">{message}</label>
       </div>
-    </HostLayout>
+    </Layout>
   );
 }

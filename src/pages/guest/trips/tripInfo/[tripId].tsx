@@ -1,4 +1,4 @@
-import GuestLayout from "@/components/guest/layout/guestLayout";
+import Layout from "@/components/layout/layout";
 import TripDetails from "@/components/tripDetails/TripDetails";
 import { useRouter } from "next/router";
 
@@ -8,10 +8,10 @@ export default function GuestTripDetails() {
   const tripIdBigInt = BigInt((tripId as string) ?? "0");
 
   return (
-    <GuestLayout>
+    <Layout>
       <div className="flex flex-col">
         <TripDetails tripId={tripIdBigInt} />
       </div>
-    </GuestLayout>
+    </Layout>
   );
 }

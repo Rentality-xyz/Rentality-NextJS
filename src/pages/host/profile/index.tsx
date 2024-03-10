@@ -1,4 +1,4 @@
-import HostLayout from "@/components/host/layout/hostLayout";
+import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import ProfileInfoPage from "@/components/profileInfo/profileInfoPage";
 import useProfileSettings from "@/hooks/useProfileSettings";
@@ -7,7 +7,7 @@ export default function Profile() {
   const [isLoading, savedProfileSettings, saveProfileSettings] = useProfileSettings();
 
   return (
-    <HostLayout>
+    <Layout>
       <div className="flex flex-col">
         <PageTitle title="Profile settings" />
         {isLoading ? (
@@ -20,6 +20,6 @@ export default function Profile() {
           />
         )}
       </div>
-    </HostLayout>
+    </Layout>
   );
 }

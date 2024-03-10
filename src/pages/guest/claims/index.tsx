@@ -1,5 +1,5 @@
 import ClaimHistory from "@/components/claims/claimHistory";
-import GuestLayout from "@/components/guest/layout/guestLayout";
+import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useGuestClaims from "@/hooks/guest/useGuestClaims";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
@@ -27,7 +27,7 @@ export default function Claims() {
   };
 
   return (
-    <GuestLayout>
+    <Layout>
       <div className="flex flex-col">
         <PageTitle title="Claims" />
         {isLoading ? (
@@ -36,6 +36,6 @@ export default function Claims() {
           <ClaimHistory claims={claims} payClaim={handlePayClaim} isHost={false} />
         )}
       </div>
-    </GuestLayout>
+    </Layout>
   );
 }

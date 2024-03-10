@@ -1,4 +1,4 @@
-import HostLayout from "@/components/host/layout/hostLayout";
+import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import TripCard from "@/components/tripCard/tripCard";
 import useHostTrips from "@/hooks/host/useHostTrips";
@@ -33,7 +33,7 @@ export default function Booked() {
   };
 
   return (
-    <HostLayout>
+    <Layout>
       <div className="flex flex-col">
         <PageTitle title="Booked" />
         {isLoading ? (
@@ -60,6 +60,6 @@ export default function Booked() {
           </div>
         )}
       </div>
-    </HostLayout>
+    </Layout>
   );
 }

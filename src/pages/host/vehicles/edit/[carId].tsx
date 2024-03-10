@@ -1,4 +1,4 @@
-import HostLayout from "@/components/host/layout/hostLayout";
+import Layout from "@/components/layout/layout";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import PageTitle from "@/components/pageTitle/pageTitle";
@@ -70,7 +70,7 @@ export default function EditCar() {
   if (!carId) return null;
 
   return (
-    <HostLayout>
+    <Layout>
       <div className="flex flex-col">
         <PageTitle title="Edit your car" />
         {isLoading ? (
@@ -99,6 +99,6 @@ export default function EditCar() {
           </>
         )}
       </div>
-    </HostLayout>
+    </Layout>
   );
 }
