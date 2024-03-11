@@ -1,10 +1,10 @@
 import Layout from "@/components/layout/layout";
 import NotificationPage from "@/components/notification/notificationPage";
 import PageTitle from "@/components/pageTitle/pageTitle";
-import useNotificationInfos from "@/hooks/notification/useNotificationInfos";
+import { useNotification } from "@/contexts/notification/notificationContext";
 
 export default function Notifications() {
-  const [isLoading, notifications] = useNotificationInfos(false);
+  const { isLoading, notifications } = useNotification();
 
   return (
     <Layout>
