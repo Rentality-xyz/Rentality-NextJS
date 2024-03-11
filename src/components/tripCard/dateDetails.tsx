@@ -1,5 +1,5 @@
 import { TripInfo } from "@/model/TripInfo";
-import { dateFormat } from "@/utils/datetimeFormatters";
+import { dateFormatLongMonthDateTime } from "@/utils/datetimeFormatters";
 import { memo } from "react";
 
 function DateDetails({ tripInfo }: { tripInfo: TripInfo }) {
@@ -10,14 +10,14 @@ function DateDetails({ tripInfo }: { tripInfo: TripInfo }) {
           <i className="fi fi-rs-calendar pr-1  text-rentality-icons"></i>
           <strong className="text-l">Trip start</strong>
         </div>
-        <div className="whitespace-nowrap">{dateFormat(tripInfo.tripStart)}</div>
+        <div className="whitespace-nowrap">{dateFormatLongMonthDateTime(tripInfo.tripStart, tripInfo.timeZoneId)}</div>
       </div>
       <div className="flex flex-col 2xl:mt-4">
         <div>
           <i className="fi fi-rs-calendar pr-1  text-rentality-icons"></i>
           <strong className="text-l">Trip end</strong>
         </div>
-        <div className="whitespace-nowrap">{dateFormat(tripInfo.tripEnd)}</div>
+        <div className="whitespace-nowrap">{dateFormatLongMonthDateTime(tripInfo.tripEnd, tripInfo.timeZoneId)}</div>
       </div>
     </div>
   );

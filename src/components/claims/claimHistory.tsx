@@ -1,4 +1,4 @@
-import { dateFormatDayMonthTime } from "@/utils/datetimeFormatters";
+import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import Link from "next/link";
 import RntButton from "../common/rntButton";
 import { twMerge } from "tailwind-merge";
@@ -55,7 +55,7 @@ export default function ClaimHistory(props: Props) {
               <tr key={claim.claimId} className="border-b-[1px] border-b-gray-500">
                 <td className={rowSpanClassName}>{claim.claimTypeText}</td>
                 <td className={claim.deadlineDate <= moment().toDate() ? redTextClassName : rowSpanClassName}>
-                  {dateFormatDayMonthTime(claim.deadlineDate)}
+                  {dateFormatShortMonthDateTime(claim.deadlineDate)}
                 </td>
                 <td className={rowSpanClassName}>{claim.tripId}</td>
                 <td className={rowSpanClassName}>{claim.carInfo}</td>

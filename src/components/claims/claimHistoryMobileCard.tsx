@@ -1,4 +1,4 @@
-import { dateFormatDayMonthTime } from "@/utils/datetimeFormatters";
+import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import Link from "next/link";
 import RntButton from "../common/rntButton";
 import { getStringFromMoneyInCents } from "@/utils/formInput";
@@ -46,7 +46,7 @@ export default function ClaimHistoryMobileCard(props: Props) {
         <strong>Payment deadline</strong>
       </p>
       <p className={claim.deadlineDate <= new Date() ? "text-red-400" : ""}>
-        {dateFormatDayMonthTime(claim.deadlineDate)}
+        {dateFormatShortMonthDateTime(claim.deadlineDate)}
       </p>
       <hr className="col-span-2" />
       <p className="col-span-2">

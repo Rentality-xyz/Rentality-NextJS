@@ -1,4 +1,4 @@
-import { dateFormatMonthDate } from "@/utils/datetimeFormatters";
+import { dateFormatShortMonthDate } from "@/utils/datetimeFormatters";
 import { TripInfo } from "@/model/TripInfo";
 import UserAvatarWithName from "./userAvatarWithName";
 import { memo } from "react";
@@ -27,7 +27,9 @@ function СarDetails({ tripInfo, isHost }: { tripInfo: TripInfo; isHost: boolean
         </div>
         <div>{tripInfo.licensePlate}</div>
         {tripInfo.status === TripStatus.Rejected && tripInfo.rejectedDate !== undefined ? (
-          <div className="mt-2">{`${rejectedByText} cancelled on ${dateFormatMonthDate(tripInfo.rejectedDate)}`}</div>
+          <div className="mt-2">{`${rejectedByText} cancelled on ${dateFormatShortMonthDate(
+            tripInfo.rejectedDate
+          )}`}</div>
         ) : null}
         <div className="flex flex-col mt-4">
           <div>

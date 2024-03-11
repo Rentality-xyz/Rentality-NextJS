@@ -1,5 +1,5 @@
 import { CreateClaimRequest } from "@/model/CreateClaimRequest";
-import { dateFormat } from "@/utils/datetimeFormatters";
+import { dateFormatLongMonthDateTime } from "@/utils/datetimeFormatters";
 import { getStringFromMoneyInCents } from "@/utils/formInput";
 import moment from "moment";
 
@@ -20,11 +20,11 @@ export function decodeClaimChatMessage(message: string, hostName: string, carDet
   const [a, unixTimeStamp, amountInUsdCents, guestAddress] = message.split("|");
 
   return `Claim requested
-  ${dateFormat(moment.unix(Number(unixTimeStamp)).toDate())}
+  ${dateFormatLongMonthDateTime(moment.unix(Number(unixTimeStamp)).toDate())}
   ${hostName} sent you a new invoice for $${getStringFromMoneyInCents(
     Number(amountInUsdCents)
   )} due for incidentals incurred during your trip with ${hostName}'s ${carDetails}.
-  Please respond to this invoice by ${dateFormat(
+  Please respond to this invoice by ${dateFormatLongMonthDateTime(
     moment.unix(Number(unixTimeStamp)).add(3, "days").toDate()
   )}. If you don't respond in time, you may be unable to book again on Rentality.
   Ссылка на страницу Claims на  стороне Гостя`;

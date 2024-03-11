@@ -3,7 +3,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
 import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
-import { dateRangeFormatDayMonth } from "@/utils/datetimeFormatters";
+import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { Claim, getClaimTypeTextFromClaimType, getClaimStatusTextFromStatus } from "@/model/Claim";
 import { useChat } from "@/contexts/chatContext";
 import encodeClaimChatMessage from "@/components/chat/utils";
@@ -134,7 +134,7 @@ const useHostClaims = () => {
                   let item: TripInfoForClaimCreation = {
                     tripId: Number(i.trip.tripId),
                     guestAddress: i.trip.guest,
-                    tripDescription: `${brand} ${model} ${year} ${guestName} trip ${dateRangeFormatDayMonth(
+                    tripDescription: `${brand} ${model} ${year} ${guestName} trip ${dateRangeFormatShortMonthDateYear(
                       tripStart,
                       tripEnd
                     )}`,

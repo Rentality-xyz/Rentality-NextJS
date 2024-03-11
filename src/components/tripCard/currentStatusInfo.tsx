@@ -1,4 +1,4 @@
-import { dateFormatDayMonthTime } from "@/utils/datetimeFormatters";
+import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import { TripInfo } from "@/model/TripInfo";
 import RntButton from "../common/rntButton";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
@@ -11,7 +11,7 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean) => {
     case TripStatus.Pending:
       return isHost
         ? ([
-            `Guest booked a trip at ${dateFormatDayMonthTime(tripInfo.createdDateTime)}`,
+            `Guest booked a trip at ${dateFormatShortMonthDateTime(tripInfo.createdDateTime)}`,
             "",
             "You have 1 hour to confirm this trip or it'll auto-reject",
           ] as const)
@@ -32,7 +32,7 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean) => {
       return isHost
         ? (["", "", ""] as const)
         : ([
-            `Checked-in by Host at ${dateFormatDayMonthTime(tripInfo.checkedInByHostDateTime)}`,
+            `Checked-in by Host at ${dateFormatShortMonthDateTime(tripInfo.checkedInByHostDateTime)}`,
             "Let`s you check-in!",
             "Start the trip from your side or you can cancel with cancelation fee 100% of the daily rate",
           ] as const);
@@ -55,7 +55,7 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean) => {
     case TripStatus.CheckedOutByGuest:
       return isHost
         ? ([
-            `Checked-out by Guest at ${dateFormatDayMonthTime(tripInfo.checkedOutByGuestDateTime)}`,
+            `Checked-out by Guest at ${dateFormatShortMonthDateTime(tripInfo.checkedOutByGuestDateTime)}`,
             "Let`s you check-out!",
             "Finish the trip from your side and then Complete the order",
           ] as const)
@@ -63,7 +63,7 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean) => {
     case TripStatus.Finished:
       return isHost
         ? ([
-            `You finish the trip at ${dateFormatDayMonthTime(tripInfo.checkedOutByHostDateTime)}`,
+            `You finish the trip at ${dateFormatShortMonthDateTime(tripInfo.checkedOutByHostDateTime)}`,
             "Please complete the order!",
             "You receive payment and guest's deposit refunded.",
           ] as const)
