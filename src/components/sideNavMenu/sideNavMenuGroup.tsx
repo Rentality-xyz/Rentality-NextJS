@@ -8,20 +8,31 @@ export default function SideNavMenuGroup({
   href,
   children,
   icon,
+  target = "_self",
+  onClick,
 }: {
   title: string;
   href?: string;
   children?: React.ReactNode;
   icon?: MenuIcons;
+  target?: string;
+  onClick?: () => void;
 }) {
   const { toggleBurgerMenu } = useAppContext();
+
+  const handleOnClick = () => {
+    toggleBurgerMenu();
+    if (onClick) {
+      onClick();
+    }
+  };
 
   return (
     <div className="pt-4">
       <div className="py-2 text-xl font-bold">
         {href != null ? (
-          <Link href={href} onClick={toggleBurgerMenu} className="flex">
-            {icon != null && <Image src={getImageForMenu(icon)} width={30} height={30} alt="" className="mr-2" />}
+          <Link className="flex flex-row gap-2 items-center" href={href} onClick={handleOnClick} target={target}>
+            {icon != null && <Image src={getImageForMenu(icon)} width={30} height={30} alt="" />}
             <span>{title}</span>
           </Link>
         ) : (

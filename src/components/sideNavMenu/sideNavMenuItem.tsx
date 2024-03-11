@@ -14,11 +14,11 @@ export default function SideNavMenuItem({
   href: string;
   icon: MenuIcons;
   target?: string;
-  onClick?: () => {};
+  onClick?: () => void;
 }) {
   const { toggleBurgerMenu } = useAppContext();
 
-  const handleOnclick = () => {
+  const handleOnClick = () => {
     toggleBurgerMenu();
     if (onClick) {
       onClick();
@@ -27,13 +27,9 @@ export default function SideNavMenuItem({
 
   return (
     <div className="py-1 h-12">
-      <Link href={href} onClick={handleOnclick} className="flex" target={target}>
-        <Image src={getImageForMenu(icon)} width={30} height={30} alt="" className="mr-2" />
-        {icon == MenuIcons.Listings || icon == MenuIcons.Claims ? (
-          <span className="pt-2">{text}</span>
-        ) : (
-          <span className="pt-0.5">{text}</span>
-        )}
+      <Link className="flex flex-row gap-2 items-center" href={href} onClick={handleOnClick} target={target}>
+        {icon != null && <Image src={getImageForMenu(icon)} width={30} height={30} alt="" />}
+        <span>{text}</span>
       </Link>
     </div>
   );
