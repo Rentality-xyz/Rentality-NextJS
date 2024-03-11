@@ -162,10 +162,9 @@ const useGuestTrips = () => {
                   if (index === 0) {
                     validateContractTripDTO(i);
                   }
-                  const tokenURI = await rentalityContract.getCarMetadataURI(i.trip.carId);
                   const tripContactInfo = await rentalityContract.getTripContactInfo(i.trip.carId);
 
-                  const meta = await getMetaDataFromIpfs(tokenURI);
+                  const meta = await getMetaDataFromIpfs(i.metadataURI);
                   const tripStatus = i.trip.status;
                   const tankSize = Number(
                     meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "0"

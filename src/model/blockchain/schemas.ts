@@ -28,13 +28,13 @@ export type ContractCreateCarRequest = {
   carVinNumber: string;
   brand: string;
   model: string;
-  yearOfProduction: number;
+  yearOfProduction: bigint;
   pricePerDayInUsdCents: bigint;
   securityDepositPerTripInUsdCents: bigint;
   engineParams: bigint[];
   engineType: EngineType;
   milesIncludedPerDay: bigint;
-  timeBufferBetweenTripsInSec: number;
+  timeBufferBetweenTripsInSec: bigint;
   locationAddress: string;
   locationLatitude: string;
   locationLongitude: string;
@@ -47,7 +47,7 @@ export type ContractUpdateCarInfoRequest = {
   securityDepositPerTripInUsdCents: bigint;
   engineParams: bigint[];
   milesIncludedPerDay: bigint;
-  timeBufferBetweenTripsInSec: number;
+  timeBufferBetweenTripsInSec: bigint;
   currentlyListed: boolean;
 };
 
@@ -57,8 +57,8 @@ export type ContractSearchCarParams = {
   city: string;
   brand: string;
   model: string;
-  yearOfProductionFrom: number;
-  yearOfProductionTo: number;
+  yearOfProductionFrom: bigint;
+  yearOfProductionTo: bigint;
   pricePerDayInUsdCentsFrom: bigint;
   pricePerDayInUsdCentsTo: bigint;
 };
@@ -74,7 +74,7 @@ export type ContractCreateTripRequest = {
   taxPriceInUsdCents: bigint;
   depositInUsdCents: bigint;
   ethToCurrencyRate: bigint;
-  ethToCurrencyDecimals: number;
+  ethToCurrencyDecimals: bigint;
 };
 
 export type ContractTransactionInfo = {
@@ -136,7 +136,7 @@ export type ContractChatInfo = {
   tripStatus: bigint;
   carBrand: string;
   carModel: string;
-  carYearOfProduction: number;
+  carYearOfProduction: bigint;
   carMetadataUrl: string;
   startDateTime: bigint;
   endDateTime: bigint;
@@ -158,8 +158,8 @@ export type ContractFullClaimInfo = {
   guest: string;
   guestPhoneNumber: string;
   hostPhoneNumber: string;
-  carInfo: ContractCarInfo;
   amountInEth: bigint;
+  carInfo: ContractCarInfo;
 };
 
 export type ContractClaim = {
@@ -227,7 +227,7 @@ export type ContractSearchCar = {
   carId: bigint;
   brand: string;
   model: string;
-  yearOfProduction: number;
+  yearOfProduction: bigint;
   pricePerDayInUsdCents: bigint;
   securityDepositPerTripInUsdCents: bigint;
   engineType: EngineType;
@@ -241,6 +241,7 @@ export type ContractSearchCar = {
   locationLatitude: string;
   locationLongitude: string;
   timeZoneId: string;
+  metadataURI: string;
 };
 
 export type ContractCarDetails = {

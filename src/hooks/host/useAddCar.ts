@@ -212,7 +212,7 @@ const useAddCar = () => {
         carVinNumber: dataToSave.vinNumber,
         brand: dataToSave.brand,
         model: dataToSave.model,
-        yearOfProduction: Number(dataToSave.releaseYear),
+        yearOfProduction: BigInt(dataToSave.releaseYear),
         pricePerDayInUsdCents: pricePerDayInUsdCents,
         securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
         milesIncludedPerDay: milesIncludedPerDay,
@@ -220,7 +220,7 @@ const useAddCar = () => {
         engineType: getEngineTypeCode(dataToSave.engineTypeText),
         engineParams: engineParams,
         locationAddress: dataToSave.locationAddress,
-        timeBufferBetweenTripsInSec: carInfoFormParams.timeBufferBetweenTripsInMin * 60,
+        timeBufferBetweenTripsInSec: BigInt(carInfoFormParams.timeBufferBetweenTripsInMin * 60),
         locationLatitude: dataToSave.locationLatitude,
         locationLongitude: dataToSave.locationLongitude,
       };

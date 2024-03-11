@@ -122,8 +122,7 @@ const useHostClaims = () => {
                     validateContractTripDTO(i);
                   }
 
-                  const tokenURI = await rentalityContract.getCarMetadataURI(i.trip.carId);
-                  const meta = await getMetaDataFromIpfs(tokenURI);
+                  const meta = await getMetaDataFromIpfs(i.metadataURI);
 
                   const brand = meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
                   const model = meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";

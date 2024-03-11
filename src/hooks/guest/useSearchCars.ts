@@ -61,8 +61,8 @@ const useSearchCars = () => {
       city: searchCarRequest.city ?? "",
       brand: searchCarRequest.brand ?? "",
       model: searchCarRequest.model ?? "",
-      yearOfProductionFrom: Number(searchCarRequest.yearOfProductionFrom ?? "0"),
-      yearOfProductionTo: Number(searchCarRequest.yearOfProductionTo ?? "0"),
+      yearOfProductionFrom: BigInt(searchCarRequest.yearOfProductionFrom ?? "0"),
+      yearOfProductionTo: BigInt(searchCarRequest.yearOfProductionTo ?? "0"),
       pricePerDayInUsdCentsFrom: BigInt(getMoneyInCentsFromString(searchCarRequest.pricePerDayInUsdFrom)),
       pricePerDayInUsdCentsTo: BigInt(getMoneyInCentsFromString(searchCarRequest.pricePerDayInUsdTo)),
     };
@@ -85,8 +85,7 @@ const useSearchCars = () => {
         if (index === 0) {
           validateContractSearchCar(i);
         }
-        const tokenURI = await rentalityContract.getCarMetadataURI(i.carId);
-        const meta = await getMetaDataFromIpfs(tokenURI);
+        const meta = await getMetaDataFromIpfs(i.metadataURI);
 
         const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
         const totalPrice = pricePerDay * tripDays;
@@ -206,7 +205,7 @@ const useSearchCars = () => {
         taxPriceInUsdCents: BigInt(taxPriceInUsdCents),
         depositInUsdCents: BigInt(depositInUsdCents),
         ethToCurrencyRate: BigInt(ethToUsdRate),
-        ethToCurrencyDecimals: Number(ethToUsdDecimals),
+        ethToCurrencyDecimals: BigInt(ethToUsdDecimals),
       };
 
       let transaction = await rentalityContract.createTripRequest(tripRequest, {
@@ -236,8 +235,8 @@ const useSearchCars = () => {
       sortBy === "distance"
         ? sortByIncludedDistance
         : sortBy === "priceDesc"
-          ? sortByDailyPriceDes
-          : sortByDailyPriceAsc;
+        ? sortByDailyPriceDes
+        : sortByDailyPriceAsc;
 
     setSearchResult((current) => {
       return {

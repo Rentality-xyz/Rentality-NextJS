@@ -88,7 +88,7 @@ const useEditCarInfo = (carId: number) => {
         engineParams: engineParams,
         pricePerDayInUsdCents: pricePerDayInUsdCents,
         milesIncludedPerDay: milesIncludedPerDay,
-        timeBufferBetweenTripsInSec: carInfoFormParams.timeBufferBetweenTripsInMin * 60,
+        timeBufferBetweenTripsInSec: BigInt(carInfoFormParams.timeBufferBetweenTripsInMin * 60),
         securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
       };
       let transaction: ContractTransactionResponse;

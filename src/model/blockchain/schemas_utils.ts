@@ -96,7 +96,7 @@ export function validateContractChatInfo(obj: ContractChatInfo): obj is Contract
 
     carBrand: "",
     carModel: "",
-    carYearOfProduction: 0,
+    carYearOfProduction: BigInt(0),
     carMetadataUrl: "",
   };
 
@@ -138,7 +138,7 @@ const emptyContractSearchCar: ContractSearchCar = {
   carId: BigInt(0),
   brand: "",
   model: "",
-  yearOfProduction: 0,
+  yearOfProduction: BigInt(0),
   pricePerDayInUsdCents: BigInt(0),
   securityDepositPerTripInUsdCents: BigInt(0),
   engineType: EngineType.PATROL,
@@ -152,6 +152,7 @@ const emptyContractSearchCar: ContractSearchCar = {
   locationLatitude: "",
   locationLongitude: "",
   timeZoneId: "",
+  metadataURI: "",
 };
 
 export function validateContractSearchCar(obj: ContractSearchCar): obj is ContractSearchCar {
