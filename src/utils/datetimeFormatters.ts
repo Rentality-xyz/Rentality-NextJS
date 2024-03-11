@@ -1,49 +1,28 @@
-//MMM dd
+import moment from "moment";
+
+//MMM DD
 export const dateFormatShortMonthDate = (value: Date, timeZone?: string) => {
-  const dateString = new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    timeZone: timeZone,
-  }).format(value);
-
-  return `${dateString}`;
+  const format = "MMM DD";
+  return timeZone ? moment(value).tz(timeZone).format(format) : moment(value).format(format);
 };
 
-//MMM d, h:mm AM
+//MMM D, h:mm A
 export const dateFormatShortMonthDateTime = (value: Date, timeZone?: string) => {
-  const dateString = new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    timeZone: timeZone,
-  }).format(value);
-  const timeString = new Intl.DateTimeFormat("en-US", {
-    hour: "numeric",
-    minute: "numeric",
-    timeZone: timeZone,
-  }).format(value);
-
-  return `${dateString}, ${timeString}`;
+  const format = "MMM D, h:mm A";
+  return timeZone ? moment(value).tz(timeZone).format(format) : moment(value).format(format);
 };
 
-//MMMM d, h:mm AM
+//MMMM D, h:mm A
 export const dateFormatLongMonthDateTime = (value: Date, timeZone?: string) => {
-  const dateString = new Intl.DateTimeFormat("en-US", {
-    month: "long",
-    day: "numeric",
-    timeZone: timeZone,
-  }).format(value);
-  const timeString = new Intl.DateTimeFormat("en-US", {
-    hour: "numeric",
-    minute: "numeric",
-    timeZone: timeZone,
-  }).format(value);
-
-  return `${dateString}, ${timeString}`;
+  const format = "MMMM D, h:mm A";
+  return timeZone ? moment(value).tz(timeZone).format(format) : moment(value).format(format);
 };
 
 //yyyy-MM-ddTHH:mm
 export const dateToHtmlDateTimeFormat = (value: Date | undefined) => {
   if (value === undefined) return "";
+
+  // return moment(value).format("yyyy-MM-DDTHH:mm");
 
   let day = value.getDate().toString();
   if (day.length === 1) {
