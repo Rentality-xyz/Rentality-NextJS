@@ -1,6 +1,5 @@
 import RntDialogs from "@/components/common/rntDialogs";
-import { DialogState } from "@/model";
-import { defaultDialogState } from "@/model/ui/dialogState";
+import { DialogState, defaultDialogState } from "@/model/ui/dialogState";
 import { DialogActions } from "@/utils/dialogActions";
 import { AlertColor } from "@mui/material";
 import { ReactNode, createContext, useCallback, useContext, useState } from "react";

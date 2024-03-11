@@ -1,4 +1,4 @@
-import { BrowserProvider, ethers, formatEther } from "ethers";
+import { BrowserProvider, formatEther } from "ethers";
 import { useEffect, useState } from "react";
 import { IRentalityAdminGateway, IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";

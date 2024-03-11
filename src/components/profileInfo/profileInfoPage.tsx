@@ -8,16 +8,15 @@ import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
 import { useRouter } from "next/router";
-import { FormEvent, useState } from "react";
+import { FormEvent, memo, useState } from "react";
 import RntDatePicker from "../common/rntDatePicker";
 import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import DriverLicenseVerified from "@/components/driver_license_verified/driver_license_verified";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
-import { DialogActions } from "@/utils/dialogActions";
 
-export default function ProfileInfoPage({
+function ProfileInfoPage({
   savedProfileSettings,
   saveProfileSettings,
   isHost,
@@ -222,3 +221,5 @@ export default function ProfileInfoPage({
     </form>
   );
 }
+
+export default memo(ProfileInfoPage);

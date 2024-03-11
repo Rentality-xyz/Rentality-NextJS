@@ -1,5 +1,5 @@
 import { BrowserProvider, Signer } from "ethers";
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
@@ -21,16 +21,11 @@ export function useEthereum() {
 }
 
 export const EthereumProvider = ({ children }: { children?: React.ReactNode }) => {
+  const { connectWallet, ready, authenticated } = usePrivy();
+  const { wallets, ready: walletsReady } = useWallets();
+  const router = useRouter();
   const [ethereumInfo, setEthereumInfo] = useState<EthereumInfo | null>(null);
   const [isReloadPageRequested, setIsReloadPageRequested] = useState<boolean>(false);
-  const router = useRouter();
-  const { connectWallet, ready, authenticated } = usePrivy();
-  const { wallets } = useWallets();
-
-  const handleAccountsChanged = useCallback(() => {
-    router.refresh();
-    console.log("handleAccountsChanged call");
-  }, [router]);
 
   const isInitiating = useRef(false);
 
@@ -66,6 +61,7 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
 
     const getEtherProvider = async () => {
       if (!ready) return;
+      if (!walletsReady) return;
       if (!authenticated) return;
       if (!wallets || !wallets[0]) return;
       if (isInitiating.current) return;
@@ -103,7 +99,7 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
     };
 
     getEtherProvider();
-  }, [wallets, connectWallet, ready, authenticated]);
+  }, [wallets, connectWallet, ready, authenticated, walletsReady]);
 
   useEffect(() => {
     if (!isReloadPageRequested) return;

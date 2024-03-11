@@ -26,11 +26,8 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         console.error("getRentalityContact error: rentalityContract is null");
         return;
       }
-
       setRentalityContract(rentality);
     };
-
-    if (!ethereumInfo || !ethereumInfo.provider) return;
 
     getRentalityContact();
   }, [ethereumInfo]);
