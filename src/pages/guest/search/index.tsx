@@ -20,6 +20,8 @@ import moment from "moment";
 import { usePrivy } from "@privy-io/react-auth";
 import { DialogActions } from "@/utils/dialogActions";
 import Layout from "@/components/layout/layout";
+import { GoogleMapsProvider } from '@/contexts/googleMapsContext';
+import CarSearchMap from "@/components/guest/carSearchMap";
 
 export default function Search() {
   const dateNow = new Date();
@@ -294,9 +296,10 @@ export default function Search() {
         {isLoading ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
         ) : (
-          <>
-            <div className="text-l font-bold">{searchResult?.carInfos?.length ?? 0} car(s) available</div>
-            <div className="my-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
+		  <>	
+          <div className="text-l font-bold">{searchResult?.carInfos?.length ?? 0} car(s) available</div>
+          <div className="grid grid-cols-2">
+            <div className="my-4 grid grid-cols-1 gap-4">
               {searchResult?.carInfos != null && searchResult?.carInfos?.length > 0 ? (
                 searchResult?.carInfos.map((value) => {
                   return (
@@ -314,6 +317,15 @@ export default function Search() {
                 </div>
               )}
             </div>
+            <GoogleMapsProvider>
+				<CarSearchMap
+					carInfos={searchResult?.carInfos}
+					width='100%'
+					height='100vh'
+				>
+				</CarSearchMap>
+			</GoogleMapsProvider>
+          </div>
           </>
         )}
       </div>

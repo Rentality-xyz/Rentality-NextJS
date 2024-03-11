@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { GoogleMap, Marker } from '@react-google-maps/api';
+import { GoogleMap, MarkerF } from '@react-google-maps/api';
 import { useGoogleMapsContext } from '@/contexts/googleMapsContext';
 import { DEFAULT_GOOGLE_MAPS_SEARCH_CENTER, DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM } from '@/utils/constants';
 import { SearchCarInfo } from '@/model/SearchCarsResult';
@@ -12,10 +12,13 @@ export default function CarSearchMap({ carInfos, width, height }: {
 	const [map, setMap] = useState(null)
 
 	const onLoad = (map: google.maps.Map) => {
+		const bounds = new window.google.maps.LatLngBounds();
+		
 		carInfos?.forEach((carInfo) => {
-			const bounds = new window.google.maps.LatLngBounds(carInfo.location);
-			map.fitBounds(bounds);
+			bounds.extend(new google.maps.LatLng(carInfo.location.lat, carInfo.location.lng));
 		});
+		
+		map.fitBounds(bounds);
 		setMap(map);
 	}
 
@@ -35,7 +38,7 @@ export default function CarSearchMap({ carInfos, width, height }: {
 				onUnmount={onUnmount}
 			>
 				{carInfos?.map((carInfo:SearchCarInfo) => (
-					<Marker key={carInfo.carId} position={carInfo.location} />
+					<MarkerF key={carInfo.carId} position={carInfo.location} />
 				))}
 			</GoogleMap>
 		) : <></>

@@ -17,7 +17,7 @@ export default function MapsTest() {
 			<CarSearchMap
 				carInfos={[testCar]}
 				width='100%'
-				height='200vh'
+				height='100vh'
 			>
 			</CarSearchMap>
 		</GoogleMapsProvider>
