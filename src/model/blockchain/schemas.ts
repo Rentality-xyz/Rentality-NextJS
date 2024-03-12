@@ -305,3 +305,18 @@ export const EngineType = {
   PATROL: BigInt(1),
   ELECTRIC: BigInt(2),
 };
+
+export type ContractTransactionHistory = {
+  transHistoryId: bigint;
+  car: string;
+  status: string;
+  days: bigint;
+  startDateTime: bigint;
+  endDateTime: bigint;
+  tripPayment: bigint;
+  refund: bigint;
+  tripEarnings: bigint;
+  cancellationFee: bigint;
+  reimbursements: bigint;
+  rentalityFee: bigint;
+};

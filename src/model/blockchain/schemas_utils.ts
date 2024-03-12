@@ -8,7 +8,7 @@ import {
   ContractChatInfo,
   ContractClaim,
   ContractFullClaimInfo,
-  ContractSearchCar,
+  ContractSearchCar, ContractTransactionHistory,
   ContractTransactionInfo,
   ContractTrip,
   ContractTripDTO,
@@ -228,3 +228,23 @@ const emptyContractTripDTO: ContractTripDTO = {
 export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {
   return validateType(obj, emptyContractTripDTO) && validateType(obj.trip, emptyContractTrip);
 }
+
+
+export function validateContractTransactionHistory(obj: ContractTransactionHistory): obj is ContractTransactionHistory {
+  return validateType(obj, emptyContractTransactionHistory);
+}
+
+const emptyContractTransactionHistory: ContractTransactionHistory = {
+  transHistoryId: BigInt(0),
+  car: "",
+  status: "",
+  days: BigInt(0),
+  startDateTime: BigInt(0),
+  endDateTime: BigInt(0),
+  tripPayment: BigInt(0),
+  refund: BigInt(0),
+  tripEarnings: BigInt(0),
+  cancellationFee: BigInt(0),
+  reimbursements: BigInt(0),
+  rentalityFee: BigInt(0),
+};

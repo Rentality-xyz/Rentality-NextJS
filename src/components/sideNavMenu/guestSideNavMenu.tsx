@@ -26,7 +26,7 @@ function GuestNavMenu() {
           icon={MenuIcons.Legal}
           target="_blank"
         />
-        <SideNavMenuItem text="Transaction history" href="/guest/transactionHistory" icon={MenuIcons.TransactionHistory} />
+        <SideNavMenuItem text="Transaction history" href="/guest/transaction_history" icon={MenuIcons.TransactionHistory} />
         <SideNavMenuItem text="Profile settings" href="/guest/profile" icon={MenuIcons.ProfileSettings} />
         {ready && authenticated ? (
           <SideNavMenuItem text="Logout" href="/" onClick={logout} icon={MenuIcons.Logout} />
