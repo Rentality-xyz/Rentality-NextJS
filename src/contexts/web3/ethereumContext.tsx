@@ -78,7 +78,7 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
 
         setEthereumInfo((prev) => {
           if (prev !== null) {
-            setIsReloadPageRequested(prev.chainId !== currentChainId || prev.walletAddress !== currentWalletAddress);
+            setIsReloadPageRequested(prev.chainId !== currentChainId);
           }
 
           return {
