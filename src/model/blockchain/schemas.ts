@@ -140,6 +140,7 @@ export type ContractChatInfo = {
   carMetadataUrl: string;
   startDateTime: bigint;
   endDateTime: bigint;
+  timeZoneId: string;
 };
 
 export type ContractChatKeyPair = {

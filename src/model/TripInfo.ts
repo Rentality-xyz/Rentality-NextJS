@@ -116,6 +116,7 @@ export type TripInfo = {
   checkedOutByHostDateTime: Date;
   guestPhotoUrl: string;
   hostPhotoUrl: string;
+  timeZoneId: string;
 };
 
 export const getBatteryChargeFromDiffs = (fuelDiffsInPercents: number, fullBatteryChargePriceInUsdCents: number) => {

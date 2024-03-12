@@ -128,6 +128,7 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
                     tripTitle: `${tripStatus} trip with ${ci.hostName} ${ci.carBrand} ${ci.carModel}`,
                     startDateTime: getDateFromBlockchainTime(ci.startDateTime),
                     endDateTime: getDateFromBlockchainTime(ci.endDateTime),
+                    timeZoneId: ci.timeZoneId,
                     lastMessage: "Click to open chat",
 
                     carPhotoUrl: getIpfsURIfromPinata(meta.image),

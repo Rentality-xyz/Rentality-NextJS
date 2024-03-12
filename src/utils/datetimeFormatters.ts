@@ -50,5 +50,5 @@ export const dateRangeFormatShortMonthDateYear = (valueFrom: Date, valueTo: Date
 
   const year = valueTo.getFullYear();
 
-  return `${dateFormatShortMonthDate(valueFrom)} - ${dateFormatShortMonthDate(valueTo)} ${year}`;
+  return `${dateFormatShortMonthDate(valueFrom, timeZone)} - ${dateFormatShortMonthDate(valueTo, timeZone)} ${year}`;
 };

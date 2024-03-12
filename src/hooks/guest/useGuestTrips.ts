@@ -6,6 +6,8 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { ContractTrip, ContractTripDTO, EngineType, TripStatus } from "@/model/blockchain/schemas";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import { isEmpty } from "@/utils/string";
 
 const useGuestTrips = () => {
   const rentalityContract = useRentality();
@@ -169,7 +171,7 @@ const useGuestTrips = () => {
                   const tankSize = Number(
                     meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "0"
                   );
-                  const timeZoneId = i.timeZoneId;
+                  const timeZoneId = !isEmpty(i.timeZoneId) ? i.timeZoneId : UTC_TIME_ZONE_ID;
 
                   let item: TripInfo = {
                     tripId: Number(i.trip.tripId),
@@ -224,6 +226,7 @@ const useGuestTrips = () => {
                     ),
                     hostPhotoUrl: i.hostPhotoUrl,
                     guestPhotoUrl: i.guestPhotoUrl,
+                    timeZoneId: timeZoneId,
                   };
                   return item;
                 })

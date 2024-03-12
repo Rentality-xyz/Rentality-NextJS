@@ -38,11 +38,11 @@ const useSearchCars = () => {
   const formatSearchAvailableCarsContractRequest = (searchCarRequest: SearchCarRequest) => {
     const startDateTimeUTC = moment
       .utc(searchCarRequest.dateFrom)
-      .add(searchCarRequest.utcOffsetMinutes, "minutes")
+      .subtract(searchCarRequest.utcOffsetMinutes, "minutes")
       .toDate();
     const endDateTimeUTC = moment
       .utc(searchCarRequest.dateTo)
-      .add(searchCarRequest.utcOffsetMinutes, "minutes")
+      .subtract(searchCarRequest.utcOffsetMinutes, "minutes")
       .toDate();
 
     console.log(`utcOffsetMinutes: ${searchCarRequest.utcOffsetMinutes}`);
@@ -183,8 +183,8 @@ const useSearchCars = () => {
         console.error("createTripRequest error: rentalityCurrencyConverterContract is null");
         return false;
       }
-      const startDateTimeUTC = moment.utc(startDateTime).add(utcOffsetMinutes, "minutes").toDate();
-      const endDateTimeUTC = moment.utc(endDateTime).add(utcOffsetMinutes, "minutes").toDate();
+      const startDateTimeUTC = moment.utc(startDateTime).subtract(utcOffsetMinutes, "minutes").toDate();
+      const endDateTimeUTC = moment.utc(endDateTime).subtract(utcOffsetMinutes, "minutes").toDate();
 
       const startTimeUTC = getBlockchainTimeFromDate(startDateTimeUTC);
       const endTimeUTC = getBlockchainTimeFromDate(endDateTimeUTC);

@@ -26,9 +26,10 @@ export default function ChatHeader({ selectedChat }: { selectedChat: ChatInfo })
         <div className="max-sm:text-base text-sm">Reservation #{selectedChat.tripId}</div>
         <div className="max-sm:text-base text-sm">
           {selectedChat.startDateTime.getTime()
-            ? `${dateFormatShortMonthDateTime(selectedChat.startDateTime)} - ${dateFormatShortMonthDateTime(
-                selectedChat.endDateTime
-              )}`
+            ? `${dateFormatShortMonthDateTime(
+                selectedChat.startDateTime,
+                selectedChat.timeZoneId
+              )} - ${dateFormatShortMonthDateTime(selectedChat.endDateTime, selectedChat.timeZoneId)}`
             : null}
         </div>
         <div className="max-sm:text-base text-xl">{selectedChat.carTitle}</div>

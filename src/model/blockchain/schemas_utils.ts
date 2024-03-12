@@ -93,6 +93,7 @@ export function validateContractChatInfo(obj: ContractChatInfo): obj is Contract
     tripStatus: BigInt(0),
     startDateTime: BigInt(0),
     endDateTime: BigInt(0),
+    timeZoneId: "",
 
     carBrand: "",
     carModel: "",

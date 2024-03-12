@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
+import { formatPhoneNumber, getDateFromBlockchainTime, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { Claim, getClaimTypeTextFromClaimType, getClaimStatusTextFromStatus } from "@/model/Claim";
@@ -128,15 +128,16 @@ const useHostClaims = () => {
                   const model = meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
                   const year = meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "";
                   const guestName = i.trip.guestName;
-                  const tripStart = getDateFromBlockchainTime(i.trip.startDateTime);
-                  const tripEnd = getDateFromBlockchainTime(i.trip.endDateTime);
+                  const tripStart = getDateFromBlockchainTimeWithTZ(i.trip.startDateTime, i.timeZoneId);
+                  const tripEnd = getDateFromBlockchainTimeWithTZ(i.trip.endDateTime, i.timeZoneId);
 
                   let item: TripInfoForClaimCreation = {
                     tripId: Number(i.trip.tripId),
                     guestAddress: i.trip.guest,
                     tripDescription: `${brand} ${model} ${year} ${guestName} trip ${dateRangeFormatShortMonthDateYear(
                       tripStart,
-                      tripEnd
+                      tripEnd,
+                      i.timeZoneId
                     )}`,
                     tripStart: tripStart,
                   };
