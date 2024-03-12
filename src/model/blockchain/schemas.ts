@@ -159,8 +159,8 @@ export type ContractFullClaimInfo = {
   guest: string;
   guestPhoneNumber: string;
   hostPhoneNumber: string;
-  amountInEth: bigint;
   carInfo: ContractCarInfo;
+  amountInEth: bigint;
 };
 
 export type ContractClaim = {
