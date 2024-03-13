@@ -17,6 +17,7 @@ function GuestNavMenu() {
       </SideNavMenuGroup>
       <SideNavMenuGroup title="Inbox">
         <SideNavMenuItem text="Messages" href="/guest/messages" icon={MenuIcons.Messages} />
+        <SideNavMenuItem text="Notifications" href="/guest/notifications" icon={MenuIcons.Notifications} />
       </SideNavMenuGroup>
       <SideNavMenuGroup title="More">
         <SideNavMenuItem text="Claims" href="/guest/claims" icon={MenuIcons.Claims} />

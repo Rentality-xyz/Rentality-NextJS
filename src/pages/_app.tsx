@@ -6,19 +6,26 @@ import { ChatProvider } from "@/contexts/chatContext";
 import { AppContextProvider } from "@/contexts/appContext";
 import { RentalityProvider } from "@/contexts/rentalityContext";
 import { RntDialogsProvider } from "@/contexts/rntDialogsContext";
+import { NotificationProvider } from "@/contexts/notification/notificationContext";
+import { useRouter } from "next/router";
 
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  const isHost = router.route.startsWith("/host");
+
   return (
     <Web3Setup>
       <RentalityProvider>
         <UserInfoProvider>
-          <ChatProvider>
-            <AppContextProvider>
-              <RntDialogsProvider>
-                <Component {...pageProps} />
-              </RntDialogsProvider>
-            </AppContextProvider>
-          </ChatProvider>
+          <NotificationProvider isHost={isHost}>
+            <ChatProvider>
+              <AppContextProvider>
+                <RntDialogsProvider>
+                  <Component {...pageProps} />
+                </RntDialogsProvider>
+              </AppContextProvider>
+            </ChatProvider>
+          </NotificationProvider>
         </UserInfoProvider>
       </RentalityProvider>
     </Web3Setup>

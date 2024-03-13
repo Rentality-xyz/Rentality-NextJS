@@ -20,6 +20,7 @@ function HostNavMenu() {
       </SideNavMenuGroup>
       <SideNavMenuGroup title="Inbox">
         <SideNavMenuItem text="Messages" href="/host/messages" icon={MenuIcons.Messages} />
+        <SideNavMenuItem text="Notifications" href="/host/notifications" icon={MenuIcons.Notifications} />
       </SideNavMenuGroup>
       <SideNavMenuGroup title="More">
         <SideNavMenuItem

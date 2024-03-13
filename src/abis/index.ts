@@ -6,6 +6,8 @@ import RentalityCurrencyConverterJSON_ABI from "./RentalityCurrencyConverter.v0_
 import RentalityCurrencyConverterJSON_ADDRESSES from "./RentalityCurrencyConverter.v0_16_2.addresses.json";
 import RentalityChatHelperJSON_ABI from "./RentalityChatHelper.v0_16_2.abi.json";
 import RentalityChatHelperJSON_ADDRESSES from "./RentalityChatHelper.v0_16_2.addresses.json";
+import RentalityTripServiceJSON_ABI from "./RentalityTripService.v0_16_2.abi.json";
+import RentalityTripServiceJSON_ADDRESSES from "./RentalityTripService.v0_16_2.addresses.json";
 import { Contract, Signer } from "ethers";
 
 export const SMARTCONTRACT_VERSION = "v0_16_2";
@@ -26,6 +28,10 @@ const rentalityContracts = {
   chatHelper: {
     addresses: RentalityChatHelperJSON_ADDRESSES.addresses,
     abi: RentalityChatHelperJSON_ABI.abi,
+  },
+  tripService: {
+    addresses: RentalityTripServiceJSON_ADDRESSES.addresses,
+    abi: RentalityTripServiceJSON_ABI.abi,
   },
 };
 
