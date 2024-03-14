@@ -49,7 +49,7 @@ export default function Messages() {
 
   useEffect(() => {
     getLatestChatInfos();
-  }, [getLatestChatInfos]);
+  }, []);
 
   return (
     <Layout>
