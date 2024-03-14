@@ -18,6 +18,8 @@ import { Button } from "@mui/material";
 import RntSelect from "@/components/common/rntSelect";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 import moment from "moment";
+import { usePrivy } from "@privy-io/react-auth";
+import { DialogActions } from "@/utils/dialogActions";
 
 export default function Search() {
   const dateNow = new Date();
@@ -35,12 +37,27 @@ export default function Search() {
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const [openFilterPanel, setOpenFilterPanel] = useState(false);
   const [searchButtonDisabled, setSearchButtonDisabled] = useState<boolean>(false);
-  const { showInfo, showError, hideDialogs } = useRntDialogs();
+  const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
   const [sortBy, setSortBy] = useState<SortOptionKey | undefined>(undefined);
   const userInfo = useUserInfo();
   const router = useRouter();
+  const { authenticated, login } = usePrivy();
 
   const handleSearchClick = async () => {
+    if (!authenticated) {
+      const action = (
+        <>
+          {DialogActions.Button("Login", () => {
+            hideDialogs();
+            login();
+          })}
+          {DialogActions.Cancel(hideDialogs)}
+        </>
+      );
+      showDialog("Connect your crypto wallet", action);
+      return;
+    }
+
     const result = await searchAvailableCars(searchCarRequest);
     if (result) {
       setSortBy(undefined);
