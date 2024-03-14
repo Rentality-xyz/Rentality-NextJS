@@ -73,7 +73,7 @@ export default function DriverLicenseVerified({
       />
       <p className="mt-8">I Have read and agree</p>
       <div className="flex mt-4 items-center">
-        <RntButton type="button" onClick={handleConfirm}>
+        <RntButton type="button" onClick={handleConfirm} disabled={isConfirm}>
           Confirm
         </RntButton>
         <div className="ml-2 md:ml-6">{isConfirm ? <GetConfirm /> : <GetNotConfirm />}</div>
