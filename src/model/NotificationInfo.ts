@@ -3,11 +3,10 @@ import { ContractTripDTO, TripStatus } from "./blockchain/schemas";
 import { getDateFromBlockchainTime, getStringFromMoneyInCents } from "@/utils/formInput";
 import { UTC_TIME_ZONE_ID, calculateDays } from "@/utils/date";
 import { isEmpty } from "@/utils/string";
-import { bigIntReplacer } from "@/utils/json";
-import { EventLog } from "ethers";
 import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 
 export type NotificationInfo = {
+  id: string;
   type: NotificationType;
   title: string;
   datestamp: Date;
@@ -35,6 +34,7 @@ export function createNotificationInfoFromTrip(
   switch (status) {
     case TripStatus.Pending:
       return {
+        id: `${tripDTO.trip.tripId}_Pending`,
         type: NotificationType.Booked,
         title: `Trip requested`,
         datestamp: timestamp,
@@ -50,6 +50,7 @@ export function createNotificationInfoFromTrip(
     case TripStatus.Rejected:
       const rejectedByHost = tripDTO.trip.rejectedBy === tripDTO.trip.host;
       return {
+        id: `${tripDTO.trip.tripId}_Rejected`,
         type: NotificationType.History,
         title: rejectedByHost ? `Trip rejected by Host` : `Trip rejected by Guest`,
         datestamp: timestamp,
@@ -63,6 +64,7 @@ export function createNotificationInfoFromTrip(
       };
     case TripStatus.Confirmed:
       return {
+        id: `${tripDTO.trip.tripId}_Confirmed`,
         type: NotificationType.Booked,
         title: `Trip Confirmed`,
         datestamp: timestamp,
@@ -90,6 +92,7 @@ export function createNotificationInfoFromTrip(
       return isHost
         ? undefined
         : {
+            id: `${tripDTO.trip.tripId}_CheckedInByHost`,
             type: NotificationType.Booked,
             title: `Host check-in start trip`,
             datestamp: timestamp,
@@ -100,6 +103,7 @@ export function createNotificationInfoFromTrip(
     case TripStatus.Started:
       return isHost
         ? {
+            id: `${tripDTO.trip.tripId}_Started`,
             type: NotificationType.Booked,
             title: `Guest check-in start trip`,
             datestamp: timestamp,
@@ -111,6 +115,7 @@ export function createNotificationInfoFromTrip(
     case TripStatus.CheckedOutByGuest:
       return isHost
         ? {
+            id: `${tripDTO.trip.tripId}_CheckedOutByGuest`,
             type: NotificationType.Booked,
             title: `Guest checked out`,
             datestamp: timestamp,
@@ -123,6 +128,7 @@ export function createNotificationInfoFromTrip(
       return isHost
         ? undefined
         : {
+            id: `${tripDTO.trip.tripId}_Finished`,
             type: NotificationType.Booked,
             title: `Host checked out`,
             datestamp: timestamp,
@@ -131,16 +137,15 @@ export function createNotificationInfoFromTrip(
             } has marked trip #${tripDTO.trip.tripId.toString()} as finished on ${carDescription}. Deposit returned after the Host marked the order as closed`,
           };
     case TripStatus.Closed:
-      return isHost
-        ? undefined
-        : {
-            type: NotificationType.History,
-            title: isHost ? `You completed trip` : `Host completed trip`,
-            datestamp: timestamp,
-            message: isHost
-              ? `You closed the order #${tripDTO.trip.tripId.toString()} for ${
-                  tripDTO.trip.guestName
-                } trip on ${carDescription}. 
+      return {
+        id: `${tripDTO.trip.tripId}_Closed`,
+        type: NotificationType.History,
+        title: isHost ? `You completed trip` : `Host completed trip`,
+        datestamp: timestamp,
+        message: isHost
+          ? `You closed the order #${tripDTO.trip.tripId.toString()} for ${
+              tripDTO.trip.guestName
+            } trip on ${carDescription}. 
               Security deposit info:
               Received deposit $${getStringFromMoneyInCents(tripDTO.trip.paymentInfo.depositInUsdCents)}
               ReFuel reimbursement $${getStringFromMoneyInCents(tripDTO.trip.paymentInfo.resolveFuelAmountInUsdCents)}
@@ -152,9 +157,9 @@ export function createNotificationInfoFromTrip(
                   tripDTO.trip.paymentInfo.resolveFuelAmountInUsdCents -
                   tripDTO.trip.paymentInfo.resolveMilesAmountInUsdCents
               )}`
-              : `${
-                  tripDTO.trip.hostName
-                } closed the order #${tripDTO.trip.tripId.toString()} for your trip on ${carDescription}. 
+          : `${
+              tripDTO.trip.hostName
+            } closed the order #${tripDTO.trip.tripId.toString()} for your trip on ${carDescription}. 
               Security deposit info:
               Received deposit$${getStringFromMoneyInCents(tripDTO.trip.paymentInfo.depositInUsdCents)}
               ReFuel reimbursement $${getStringFromMoneyInCents(tripDTO.trip.paymentInfo.resolveFuelAmountInUsdCents)}
@@ -166,9 +171,10 @@ export function createNotificationInfoFromTrip(
                   tripDTO.trip.paymentInfo.resolveFuelAmountInUsdCents -
                   tripDTO.trip.paymentInfo.resolveMilesAmountInUsdCents
               )}`,
-          };
+      };
     default:
       return {
+        id: `${tripDTO.trip.tripId}_Unknown`,
         type: NotificationType.Booked,
         title: "Unknown status",
         datestamp: new Date(),
@@ -177,57 +183,33 @@ export function createNotificationInfoFromTrip(
   }
 }
 
-export function getNotificationFromTripChangedEvent(
-  tripInfos: ContractTripDTO[],
-  isHost: boolean
-): (value: EventLog, index: number, array: EventLog[]) => Promise<NotificationInfo | undefined> {
-  return async (event) => {
-    const tripId = BigInt(event.args[0]);
-    const tripStatus: TripStatus = BigInt(event.args[1]);
-    const tripDTO = tripInfos.find((i) => i.trip.tripId === tripId);
+export async function createCreateTripNotification(
+  tripDTO: ContractTripDTO,
+  isHost: boolean,
+  eventDate: Date
+): Promise<NotificationInfo | undefined> {
+  const meta = await getMetaDataFromIpfs(tripDTO.metadataURI);
 
-    if (!tripDTO) return;
+  const brand = meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
+  const model = meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
+  const year = meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "";
+  const carDescription = `${brand} ${model} ${year}`;
 
-    const meta = await getMetaDataFromIpfs(tripDTO.metadataURI);
-
-    const brand = meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
-    const model = meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
-    const year = meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "";
-    const carDescription = `${brand} ${model} ${year}`;
-
-    return createNotificationInfoFromTrip(
-      tripStatus,
-      tripDTO,
-      carDescription,
-      (await event.getBlock()).date ?? new Date(),
-      isHost
-    );
-  };
+  return createNotificationInfoFromTrip(TripStatus.Pending, tripDTO, carDescription, eventDate, isHost);
 }
 
-export function getNotificationFromCreateTripEvent(
-  tripInfos: ContractTripDTO[],
-  isHost: boolean
-): (value: EventLog, index: number, array: EventLog[]) => Promise<NotificationInfo | undefined> {
-  return async (event) => {
-    const tripId = BigInt(event.args[0]);
-    const tripDTO = tripInfos.find((i) => i.trip.tripId === tripId);
+export async function createTripChangedNotification(
+  tripStatus: TripStatus,
+  tripDTO: ContractTripDTO,
+  isHost: boolean,
+  eventDate: Date
+): Promise<NotificationInfo | undefined> {
+  const meta = await getMetaDataFromIpfs(tripDTO.metadataURI);
 
-    if (!tripDTO) return;
+  const brand = meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
+  const model = meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
+  const year = meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "";
+  const carDescription = `${brand} ${model} ${year}`;
 
-    const meta = await getMetaDataFromIpfs(tripDTO.metadataURI);
-
-    const brand = meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
-    const model = meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
-    const year = meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "";
-    const carDescription = `${brand} ${model} ${year}`;
-
-    return createNotificationInfoFromTrip(
-      TripStatus.Pending,
-      tripDTO,
-      carDescription,
-      (await event.getBlock()).date ?? new Date(),
-      isHost
-    );
-  };
+  return createNotificationInfoFromTrip(tripStatus, tripDTO, carDescription, eventDate, isHost);
 }
