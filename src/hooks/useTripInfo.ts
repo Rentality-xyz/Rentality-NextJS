@@ -4,7 +4,7 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { TripDetails } from "@/model/TripDetails";
 import { useRentality } from "@/contexts/rentalityContext";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
-import { ContractCarDetails, ContractTrip } from "@/model/blockchain/schemas";
+import { ContractTripDTO } from "@/model/blockchain/schemas";
 
 const emptyDetails: TripDetails = {
   tripId: BigInt(0),
@@ -52,62 +52,66 @@ const useTripDetails = (tripId: bigint) => {
         console.error("getTrip error: contract is null");
         return;
       }
-      const trip: ContractTrip = await rentalityContract.getTrip(tripId);
-      const carDetails: ContractCarDetails = await rentalityContract.getCarDetails(trip.carId);
-      const timeZoneId = carDetails.timeZoneId;
+      const tripDTO: ContractTripDTO = await rentalityContract.getTrip(tripId);
 
-      if (trip == null) return;
+      if (tripDTO === null) return;
+
+      const timeZoneId = tripDTO.timeZoneId;
 
       let details: TripDetails = {
-        tripId: trip.tripId,
-        carId: trip.carId,
-        status: getTripStatusTextFromStatus(trip.status),
-        guest: trip.guest,
-        host: trip.host,
-        guestName: trip.guestName,
-        hostName: trip.hostName,
-        startDateTime: getDateFromBlockchainTimeWithTZ(trip.startDateTime, timeZoneId),
-        endDateTime: getDateFromBlockchainTimeWithTZ(trip.endDateTime, timeZoneId),
-        startLocation: trip.startLocation,
-        endLocation: trip.endLocation,
-        milesIncludedPerDay: Number(trip.milesIncludedPerDay),
-        fuelPricePerGalInUsd: Number(trip.fuelPrice) / 100.0,
+        tripId: tripDTO.trip.tripId,
+        carId: tripDTO.trip.carId,
+        status: getTripStatusTextFromStatus(tripDTO.trip.status),
+        guest: tripDTO.trip.guest,
+        host: tripDTO.trip.host,
+        guestName: tripDTO.trip.guestName,
+        hostName: tripDTO.trip.hostName,
+        startDateTime: getDateFromBlockchainTimeWithTZ(tripDTO.trip.startDateTime, timeZoneId),
+        endDateTime: getDateFromBlockchainTimeWithTZ(tripDTO.trip.endDateTime, timeZoneId),
+        startLocation: tripDTO.trip.startLocation,
+        endLocation: tripDTO.trip.endLocation,
+        milesIncludedPerDay: Number(tripDTO.trip.milesIncludedPerDay),
+        fuelPricePerGalInUsd: Number(tripDTO.trip.fuelPrice) / 100.0,
         approvedDateTime:
-          trip.approvedDateTime > 0 ? getDateFromBlockchainTimeWithTZ(trip.approvedDateTime, timeZoneId) : undefined,
-        checkedInByHostDateTime:
-          trip.checkedInByHostDateTime > 0
-            ? getDateFromBlockchainTimeWithTZ(trip.checkedInByHostDateTime, timeZoneId)
+          tripDTO.trip.approvedDateTime > 0
+            ? getDateFromBlockchainTimeWithTZ(tripDTO.trip.approvedDateTime, timeZoneId)
             : undefined,
-        startFuelLevelInPercents: trip.startParamLevels[0] > 0 ? Number(trip.startParamLevels[0]) : undefined,
-        startOdometr: trip.startParamLevels[1] > 0 ? Number(trip.startParamLevels[1]) : undefined,
+        checkedInByHostDateTime:
+          tripDTO.trip.checkedInByHostDateTime > 0
+            ? getDateFromBlockchainTimeWithTZ(tripDTO.trip.checkedInByHostDateTime, timeZoneId)
+            : undefined,
+        startFuelLevelInPercents:
+          tripDTO.trip.startParamLevels[0] > 0 ? Number(tripDTO.trip.startParamLevels[0]) : undefined,
+        startOdometr: tripDTO.trip.startParamLevels[1] > 0 ? Number(tripDTO.trip.startParamLevels[1]) : undefined,
         checkedInByGuestDateTime:
-          trip.checkedInByGuestDateTime > 0
-            ? getDateFromBlockchainTimeWithTZ(trip.checkedInByGuestDateTime, timeZoneId)
+          tripDTO.trip.checkedInByGuestDateTime > 0
+            ? getDateFromBlockchainTimeWithTZ(tripDTO.trip.checkedInByGuestDateTime, timeZoneId)
             : undefined,
         checkedOutByGuestDateTime:
-          trip.checkedOutByGuestDateTime > 0
-            ? getDateFromBlockchainTimeWithTZ(trip.checkedOutByGuestDateTime, timeZoneId)
+          tripDTO.trip.checkedOutByGuestDateTime > 0
+            ? getDateFromBlockchainTimeWithTZ(tripDTO.trip.checkedOutByGuestDateTime, timeZoneId)
             : undefined,
-        endFuelLevelInPercents: trip.endParamLevels[0] > 0 ? Number(trip.endParamLevels[0]) : undefined,
-        endOdometr: trip.endParamLevels[1] > 0 ? Number(trip.endParamLevels[1]) : undefined,
+        endFuelLevelInPercents: tripDTO.trip.endParamLevels[0] > 0 ? Number(tripDTO.trip.endParamLevels[0]) : undefined,
+        endOdometr: tripDTO.trip.endParamLevels[1] > 0 ? Number(tripDTO.trip.endParamLevels[1]) : undefined,
         checkedOutByHostDateTime:
-          trip.checkedOutByHostDateTime > 0
-            ? getDateFromBlockchainTimeWithTZ(trip.checkedOutByHostDateTime, timeZoneId)
+          tripDTO.trip.checkedOutByHostDateTime > 0
+            ? getDateFromBlockchainTimeWithTZ(tripDTO.trip.checkedOutByHostDateTime, timeZoneId)
             : undefined,
 
-        paymentFrom: trip.paymentInfo.from,
-        paymentTo: trip.paymentInfo.to,
-        pricePerDayInUsdCents: Number(trip.pricePerDayInUsdCents) / 100.0,
-        totalDayPriceInUsd: Number(trip.paymentInfo.totalDayPriceInUsdCents) / 100.0,
-        taxPriceInUsd: Number(trip.paymentInfo.taxPriceInUsdCents) / 100.0,
-        depositInUsd: Number(trip.paymentInfo.depositInUsdCents) / 100.0,
+        paymentFrom: tripDTO.trip.paymentInfo.from,
+        paymentTo: tripDTO.trip.paymentInfo.to,
+        pricePerDayInUsdCents: Number(tripDTO.trip.pricePerDayInUsdCents) / 100.0,
+        totalDayPriceInUsd: Number(tripDTO.trip.paymentInfo.totalDayPriceInUsdCents) / 100.0,
+        taxPriceInUsd: Number(tripDTO.trip.paymentInfo.taxPriceInUsdCents) / 100.0,
+        depositInUsd: Number(tripDTO.trip.paymentInfo.depositInUsdCents) / 100.0,
         resolveAmountInUsd:
-          trip.paymentInfo.resolveAmountInUsdCents > 0
-            ? Number(trip.paymentInfo.resolveAmountInUsdCents) / 100.0
+          tripDTO.trip.paymentInfo.resolveAmountInUsdCents > 0
+            ? Number(tripDTO.trip.paymentInfo.resolveAmountInUsdCents) / 100.0
             : undefined,
-        currencyType: trip.paymentInfo.currencyType,
+        currencyType: tripDTO.trip.paymentInfo.currencyType,
         ethToCurrencyRate:
-          Number(trip.paymentInfo.ethToCurrencyRate) / 10 ** Number(trip.paymentInfo.ethToCurrencyDecimals),
+          Number(tripDTO.trip.paymentInfo.ethToCurrencyRate) /
+          10 ** Number(tripDTO.trip.paymentInfo.ethToCurrencyDecimals),
         //ethToCurrencyDecimals: trip.paymentInfo.ethToCurrencyDecimals,
       };
       return details;

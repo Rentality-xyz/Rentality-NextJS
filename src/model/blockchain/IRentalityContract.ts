@@ -73,7 +73,7 @@ export interface IRentalityContract {
   //getAddress(): Promise<string>;
   getCarMetadataURI(carId: bigint): Promise<string>;
   getCarDetails(carId: bigint): Promise<ContractCarDetails>;
-  getTrip(tripId: bigint): Promise<ContractTrip>;
+  getTrip(tripId: bigint): Promise<ContractTripDTO>;
   getTripContactInfo(tripId: bigint): Promise<ContractTripContactInfo>;
   getMyKYCInfo(): Promise<ContractKYCInfo>;
   setKYCInfo(
