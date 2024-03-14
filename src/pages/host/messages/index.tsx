@@ -2,12 +2,15 @@ import ChatPage from "@/components/chat/chatPage";
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import { useChat } from "@/contexts/chatContext";
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { DialogActions } from "@/utils/dialogActions";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
 export default function Messages() {
-  const { isLoading, chatInfos, getLatestChatInfos, sendMessage } = useChat();
+  const { isLoading, chatInfos, getLatestChatInfos, sendMessage, isMyChatKeysSaved, saveMyChatKeys } = useChat();
+  const { showDialog, hideDialogs } = useRntDialogs();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -26,6 +29,24 @@ export default function Messages() {
     router.push(pathname + pageParams, pathname + pageParams, { shallow: true, scroll: false });
   };
 
+  const handleSendMessage = async (toAddress: string, tripId: number, message: string) => {
+    if (!isMyChatKeysSaved) {
+      const action = (
+        <>
+          {DialogActions.Button("Save", () => {
+            hideDialogs();
+            saveMyChatKeys();
+          })}
+          {DialogActions.Cancel(hideDialogs)}
+        </>
+      );
+      showDialog("To send and receive messages you have to generate and save encryption keys", action);
+      return;
+    }
+
+    await sendMessage(toAddress, tripId, message);
+  };
+
   useEffect(() => {
     getLatestChatInfos();
   }, [getLatestChatInfos]);
@@ -40,7 +61,7 @@ export default function Messages() {
           <ChatPage
             isHost={true}
             chats={chatInfos}
-            sendMessage={sendMessage}
+            sendMessage={handleSendMessage}
             selectedTridId={selectedTridId}
             selectChat={selectChat}
           />

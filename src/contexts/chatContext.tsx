@@ -178,6 +178,7 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
     try {
       const transaction = await rentalityChatHelper.setMyChatPublicKey(myPrivateKey, myPublicKey);
       await transaction.wait();
+      setIsMyChatKeysSaved(true);
     } catch (e) {
       console.error("saveMyChatKeys error:" + e);
     }

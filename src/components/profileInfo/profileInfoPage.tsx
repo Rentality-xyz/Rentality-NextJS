@@ -15,6 +15,7 @@ import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import DriverLicenseVerified from "@/components/driver_license_verified/driver_license_verified";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { useChat } from "@/contexts/chatContext";
 
 function ProfileInfoPage({
   savedProfileSettings,
@@ -30,6 +31,7 @@ function ProfileInfoPage({
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const ethereumInfo = useEthereum();
   const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
+  const { isMyChatKeysSaved, saveMyChatKeys } = useChat();
 
   const errors = getErrors(enteredFormData, profileImageFile);
 
@@ -215,6 +217,14 @@ function ProfileInfoPage({
         }}
       />
 
+      <p className="mt-4">To use chat functionality you have to generate and save encryption keys</p>
+      <div className="flex items-center">
+        <RntButton type="button" onClick={saveMyChatKeys} disabled={isMyChatKeysSaved}>
+          Save
+        </RntButton>
+        <div className="ml-2 md:ml-6">{isMyChatKeysSaved ? <GetChatKeySaved /> : <GetChatKeyNotSaved />}</div>
+      </div>
+
       <RntButton type="submit" className="mt-4">
         Save
       </RntButton>
@@ -223,3 +233,21 @@ function ProfileInfoPage({
 }
 
 export default memo(ProfileInfoPage);
+
+function GetChatKeyNotSaved() {
+  return (
+    <div className="flex items-center">
+      <span className="w-4 h-4 bg-[#DB001A] rounded-full inline-block pr-4"></span>
+      <span className="ml-2">Keys are not saved</span>
+    </div>
+  );
+}
+
+function GetChatKeySaved() {
+  return (
+    <div className="flex items-center">
+      <span className="w-4 h-4 bg-[#2EB100] rounded-full inline-block pr-4"></span>
+      <span className="ml-2">Keys are saved</span>
+    </div>
+  );
+}
