@@ -32,8 +32,8 @@ const useGuestTrips = () => {
       }
 
       try {
-        let transaction = await rentalityContract.rejectTripRequest(tripId);
-        const result = await transaction.wait();
+        const transaction = await rentalityContract.rejectTripRequest(tripId);
+        await transaction.wait();
         return true;
       } catch (e) {
         console.error("rejectRequest error:" + e);
@@ -52,7 +52,7 @@ const useGuestTrips = () => {
         const startOdometr = BigInt(params[1]);
 
         let transaction = await rentalityContract.checkInByGuest(tripId, [startFuelLevelInPercents, startOdometr]);
-        const result = await transaction.wait();
+        await transaction.wait();
         return true;
       } catch (e) {
         console.error("checkInTrip error:" + e);
@@ -71,7 +71,7 @@ const useGuestTrips = () => {
         const endOdometr = BigInt(params[1]);
 
         let transaction = await rentalityContract.checkOutByGuest(tripId, [endFuelLevelInPercents, endOdometr]);
-        const result = await transaction.wait();
+        await transaction.wait();
         return true;
       } catch (e) {
         console.error("checkOutTrip error:" + e);

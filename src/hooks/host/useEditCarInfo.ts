@@ -105,7 +105,7 @@ const useEditCarInfo = (carId: number) => {
         transaction = await rentalityContract.updateCarInfo(updateCarRequest);
       }
 
-      const result = await transaction.wait();
+      await transaction.wait();
       setDataSaved(true);
       return true;
     } catch (e) {

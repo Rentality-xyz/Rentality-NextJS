@@ -176,7 +176,8 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
     const myPrivateKey = bytesToHex(chatClient.encryptionKeyPair.privateKey);
     const myPublicKey = bytesToHex(chatClient.encryptionKeyPair.publicKey);
     try {
-      await rentalityChatHelper.setMyChatPublicKey(myPrivateKey, myPublicKey);
+      const transaction = await rentalityChatHelper.setMyChatPublicKey(myPrivateKey, myPublicKey);
+      await transaction.wait();
     } catch (e) {
       console.error("saveMyChatKeys error:" + e);
     }

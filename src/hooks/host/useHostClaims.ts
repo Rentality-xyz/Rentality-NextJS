@@ -40,7 +40,7 @@ const useHostClaims = () => {
         amountInUsdCents: BigInt(createClaimRequest.amountInUsdCents),
       };
 
-      let transaction = await rentalityContract.createClaim(claimRequest);
+      const transaction = await rentalityContract.createClaim(claimRequest);
       await transaction.wait();
 
       const message = encodeClaimChatMessage(createClaimRequest);
@@ -59,8 +59,7 @@ const useHostClaims = () => {
     }
 
     try {
-      let transaction = await rentalityContract.rejectClaim(BigInt(claimId));
-
+      const transaction = await rentalityContract.rejectClaim(BigInt(claimId));
       await transaction.wait();
       return true;
     } catch (e) {

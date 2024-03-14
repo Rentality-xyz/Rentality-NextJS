@@ -208,7 +208,7 @@ const useSearchCars = () => {
         ethToCurrencyDecimals: BigInt(ethToUsdDecimals),
       };
 
-      let transaction = await rentalityContract.createTripRequest(tripRequest, {
+      const transaction = await rentalityContract.createTripRequest(tripRequest, {
         value: valueInEth,
       });
       await transaction.wait();

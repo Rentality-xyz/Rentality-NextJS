@@ -225,9 +225,8 @@ const useAddCar = () => {
         locationLongitude: dataToSave.locationLongitude,
       };
 
-      let transaction = await rentalityContract.addCar(request);
-
-      const result = await transaction.wait();
+      const transaction = await rentalityContract.addCar(request);
+      await transaction.wait();
       setCarInfoFormParams(emptyNewCarInfo);
       return true;
     } catch (e) {

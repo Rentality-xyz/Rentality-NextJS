@@ -72,7 +72,7 @@ const useProfileSettings = () => {
           ? getBlockchainTimeFromDate(moment.utc(newProfileSettings.drivingLicenseExpire).toDate())
           : BigInt(0);
 
-      let transaction = await rentalityContract.setKYCInfo(
+      const transaction = await rentalityContract.setKYCInfo(
         newProfileSettings.firstName,
         newProfileSettings.lastName,
         newProfileSettings.phoneNumber,
@@ -82,7 +82,7 @@ const useProfileSettings = () => {
         newProfileSettings.isConfirmedTerms
       );
 
-      const result = await transaction.wait();
+      await transaction.wait();
       return true;
     } catch (e) {
       console.error("saveProfileSettings error:" + e);

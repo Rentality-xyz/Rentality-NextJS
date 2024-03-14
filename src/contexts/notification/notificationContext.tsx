@@ -100,7 +100,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         console.error("tripCreatedListener error:" + e);
       }
     },
-    [notificationInfos, rentalityContract]
+    [rentalityContract, isHost]
   );
 
   const tripStatusChangedListener: Listener = useCallback(
@@ -122,7 +122,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         console.error("tripStatusChangedListener error:" + e);
       }
     },
-    [notificationInfos, rentalityContract]
+    [rentalityContract, isHost]
   );
 
   useEffect(() => {
@@ -179,7 +179,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
     };
 
     initialLoading();
-  }, [ethereumInfo, rentalityContract]);
+  }, [ethereumInfo, rentalityContract, isHost, tripCreatedListener, tripStatusChangedListener]);
 
   const contextValue: NotificationContextInfo = useMemo(() => {
     return {

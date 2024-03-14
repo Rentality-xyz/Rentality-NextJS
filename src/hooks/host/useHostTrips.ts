@@ -32,8 +32,8 @@ const useHostTrips = () => {
       }
 
       try {
-        let transaction = await rentalityContract.approveTripRequest(tripId);
-        const result = await transaction.wait();
+        const transaction = await rentalityContract.approveTripRequest(tripId);
+        await transaction.wait();
         return true;
       } catch (e) {
         console.error("acceptRequest error:" + e);
@@ -48,9 +48,8 @@ const useHostTrips = () => {
       }
 
       try {
-        let transaction = await rentalityContract.rejectTripRequest(tripId);
-
-        const result = await transaction.wait();
+        const transaction = await rentalityContract.rejectTripRequest(tripId);
+        await transaction.wait();
         return true;
       } catch (e) {
         console.error("rejectRequest error:" + e);
@@ -68,9 +67,8 @@ const useHostTrips = () => {
         const startFuelLevelInPercents = BigInt(Number(params[0]) * 100);
         const startOdometr = BigInt(params[1]);
 
-        let transaction = await rentalityContract.checkInByHost(tripId, [startFuelLevelInPercents, startOdometr]);
-
-        const result = await transaction.wait();
+        const transaction = await rentalityContract.checkInByHost(tripId, [startFuelLevelInPercents, startOdometr]);
+        await transaction.wait();
         return true;
       } catch (e) {
         console.error("checkInTrip error:" + e);
@@ -88,9 +86,8 @@ const useHostTrips = () => {
         const endFuelLevelInPercents = BigInt(Number(params[0]) * 100);
         const endOdometr = BigInt(params[1]);
 
-        let transaction = await rentalityContract.checkOutByHost(tripId, [endFuelLevelInPercents, endOdometr]);
-
-        const result = await transaction.wait();
+        const transaction = await rentalityContract.checkOutByHost(tripId, [endFuelLevelInPercents, endOdometr]);
+        await transaction.wait();
         return true;
       } catch (e) {
         console.error("checkOutTrip error:" + e);
@@ -105,9 +102,8 @@ const useHostTrips = () => {
       }
 
       try {
-        let transaction = await rentalityContract.finishTrip(tripId);
-
-        const result = await transaction.wait();
+        const transaction = await rentalityContract.finishTrip(tripId);
+        await transaction.wait();
         return true;
       } catch (e) {
         console.error("finishTrip error" + e);
