@@ -46,12 +46,17 @@ export const GoogleMapsProvider = ({
 		const defaultLanguage = navigator.language.slice(0, 2);
 		const defaultRegion = navigator.language.slice(3, 5);
 
+	    window.__googleMapsCallback__ = () => {
+			apiLoadingFinished();
+        };
+
 		/* eslint-disable camelcase */
 		const params = new URLSearchParams({
 			loading: "async",
 			key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
 			language: language || defaultLanguage,
 			region: region || defaultRegion,
+			callback: '__googleMapsCallback__',
 			...(libraries?.length && { libraries: libraries.join(',') }),
 			...(version && { v: version }),
 			...(authReferrerPolicy && { auth_referrer_policy: authReferrerPolicy })
@@ -85,16 +90,10 @@ export const GoogleMapsProvider = ({
 		} else if (existingScriptTag) {
 			// Google Maps API is already loading
 			setIsLoadingAPI(true);
-
-			const onload = existingScriptTag.onload;
-			existingScriptTag.onload = event => {
-				onload?.call(existingScriptTag, event);
-				apiLoadingFinished();
-			};
 		} else {
 			// Load Google Maps API
 			setIsLoadingAPI(true);
-
+			console.debug("Here");
 			const scriptTag = document.createElement('script');
 			scriptTag.type = 'text/javascript';
 			scriptTag.src = `${GOOGLE_MAPS_API_URL}?${params.toString()}`;

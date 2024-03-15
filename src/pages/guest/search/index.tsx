@@ -15,13 +15,13 @@ import { useUserInfo } from "@/contexts/userInfoContext";
 import { isEmpty } from "@/utils/string";
 import { Button } from "@mui/material";
 import RntSelect from "@/components/common/rntSelect";
-import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 import moment from "moment";
 import { usePrivy } from "@privy-io/react-auth";
 import { DialogActions } from "@/utils/dialogActions";
 import Layout from "@/components/layout/layout";
 import { GoogleMapsProvider } from '@/contexts/googleMapsContext';
-import CarSearchMap from "@/components/guest/carSearchMap";
+import CarSearchMap from "@/components/guest/carMap/carSearchMap";
+import RntPlaceAutoComplete from "@/components/common/rntPlaceAutoComplete";
 
 export default function Search() {
   const dateNow = new Date();
@@ -200,6 +200,7 @@ export default function Search() {
   }, [sortBy, sortSearchResult]);
 
   return (
+	<GoogleMapsProvider libraries={['maps','marker','places']}>
     <Layout>
       <div className="flex flex-col">
         <PageTitle title="Search" />
@@ -317,14 +318,12 @@ export default function Search() {
                 </div>
               )}
             </div>
-            <GoogleMapsProvider>
-				<CarSearchMap
-					carInfos={searchResult?.carInfos}
-					width='100%'
-					height='100vh'
-				>
-				</CarSearchMap>
-			</GoogleMapsProvider>
+			<CarSearchMap
+				carInfos={searchResult?.carInfos}
+				width='100%'
+				height='100vh'
+			>
+			</CarSearchMap>
           </div>
           </>
         )}
@@ -442,5 +441,6 @@ export default function Search() {
         </SlidingPanel>
       </div>
     </Layout>
+    </GoogleMapsProvider>
   );
 }

@@ -31,7 +31,7 @@ type PlaceDetails = {
   utcOffsetMinutes: number;
 };
 
-interface RntPlaceAutocompleteProps extends React.ComponentPropsWithoutRef<"input"> {
+export interface RntPlaceAutocompleteInputProps extends React.ComponentPropsWithoutRef<"input"> {
   labelClassName?: string;
   inputClassName?: string;
   label?: string;
@@ -40,7 +40,7 @@ interface RntPlaceAutocompleteProps extends React.ComponentPropsWithoutRef<"inpu
   onAddressChange: (praceDetails: PlaceDetails) => void;
 }
 
-export default function RntPlaceAutocomplete({
+export default function RntPlaceAutocompleteInput({
   className,
   labelClassName,
   inputClassName,
@@ -53,7 +53,7 @@ export default function RntPlaceAutocomplete({
   includeStreetAddress,
   onChange: onChangeHandler,
   onAddressChange: onAddressChangeHandler,
-}: RntPlaceAutocompleteProps) {
+}: RntPlaceAutocompleteInputProps) {
   const isShowLabel = label !== undefined && label?.length > 0;
   const [enteredAddress, setEnteredAddress] = useState(initValue);
   const [isEditing, setIsEditing] = useState(false);
