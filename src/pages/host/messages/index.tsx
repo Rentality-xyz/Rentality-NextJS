@@ -6,10 +6,11 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export default function Messages() {
-  const { isLoading, chatInfos, getLatestChatInfos, sendMessage, isMyChatKeysSaved, saveMyChatKeys } = useChat();
+  const { isLoading, isClienReady, chatInfos, getLatestChatInfos, sendMessage, isMyChatKeysSaved, saveMyChatKeys } =
+    useChat();
   const { showDialog, hideDialogs } = useRntDialogs();
 
   const router = useRouter();
@@ -48,8 +49,10 @@ export default function Messages() {
   };
 
   useEffect(() => {
+    if (!isClienReady) return;
+
     getLatestChatInfos();
-  }, []);
+  }, [isClienReady]);
 
   return (
     <Layout>

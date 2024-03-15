@@ -11,11 +11,13 @@ import { bytesToHex } from "viem";
 import { useRouter } from "next/router";
 import moment from "moment";
 import { useEthereum } from "./web3/ethereumContext";
-import { ContractChatInfo } from "@/model/blockchain/schemas";
+import { ContractChatInfo, TripStatus } from "@/model/blockchain/schemas";
 import { getTripStatusFromContract } from "@/model/TripInfo";
+import { Listener } from "ethers";
 
 export type ChatContextInfo = {
   isLoading: boolean;
+  isClienReady: boolean;
 
   isMyChatKeysSaved: boolean;
   saveMyChatKeys: () => Promise<void>;
@@ -27,6 +29,7 @@ export type ChatContextInfo = {
 
 const ChatContext = createContext<ChatContextInfo>({
   isLoading: true,
+  isClienReady: false,
   isMyChatKeysSaved: false,
   saveMyChatKeys: async () => {},
   chatInfos: [],
@@ -40,6 +43,7 @@ export function useChat() {
 
 export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isClienReady, setIsClienReady] = useState<boolean>(false);
   const [isMyChatKeysSaved, setIsMyChatKeysSaved] = useState<boolean>(true);
   const [chatPublicKeys, setChatPublicKeys] = useState<Map<string, string>>(new Map());
   const [chatClient, setChatClient] = useState<ChatClient | undefined>(undefined);
@@ -50,24 +54,22 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
   const router = useRouter();
   const isHost = router.route.startsWith("/host");
 
-  const onUserMessageReceived = useCallback(
-    async (from: string, to: string, tripId: number, datetime: number, message: string) => {
-      setChatInfos((current) => {
-        const result = [...current];
-        const selectedChat = result.find((i) => i.tripId === tripId);
-        if (selectedChat !== undefined) {
-          selectedChat.messages.push({
-            datestamp: moment.unix(datetime).local().toDate(),
-            fromAddress: from,
-            toAddress: to,
-            message: message,
-          });
-        }
-        return result;
-      });
-    },
-    []
-  );
+  const onUserMessageReceived = async (from: string, to: string, tripId: number, datetime: number, message: string) => {
+    console.log(`onUserMessageReceived message: ${message}`);
+    setChatInfos((current) => {
+      const result = [...current];
+      const selectedChat = result.find((i) => i.tripId === tripId);
+      if (selectedChat !== undefined) {
+        selectedChat.messages.push({
+          datestamp: moment.unix(datetime).local().toDate(),
+          fromAddress: from,
+          toAddress: to,
+          message: message,
+        });
+      }
+      return result;
+    });
+  };
 
   const sendUserMessage = useCallback(
     async (toAddress: string, tripId: number, message: string) => {
@@ -184,6 +186,21 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
     }
   }, [chatClient]);
 
+  const tripStatusChangedListener: Listener = useCallback(
+    async ({ args }) => {
+      if (!rentalityContract) return;
+
+      const tripId = Number(args[0]);
+      const tripStatus: TripStatus = BigInt(args[1]);
+
+      setChatInfos((prev) => {
+        const result = prev.map((ci) => (ci.tripId === tripId ? { ...ci, tripStatus: tripStatus } : ci));
+        return result;
+      });
+    },
+    [rentalityContract]
+  );
+
   const getLatestChatInfos = useCallback(async () => {
     if (!ethereumInfo) return;
     if (!rentalityContract) return;
@@ -195,6 +212,11 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
     )) as unknown as IRentalityChatHelperContract;
     if (!rentalityChatHelper) {
       console.error("getLatestChatInfos error: rentalityChatHelper is null");
+      return;
+    }
+    const rentalityTripService = await getEtherContractWithSigner("tripService", ethereumInfo?.signer);
+    if (!rentalityTripService) {
+      console.error("getLatestChatInfos error: rentalityTripService is null");
       return;
     }
 
@@ -234,6 +256,12 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
         }
       }
       setChatInfos(infos);
+
+      const eventTripStatusChangedFilter = isHost
+        ? rentalityTripService.filters.TripStatusChanged(null, null, [ethereumInfo.walletAddress], null)
+        : rentalityTripService.filters.TripStatusChanged(null, null, null, [ethereumInfo.walletAddress]);
+      await rentalityTripService.removeAllListeners();
+      await rentalityTripService.on(eventTripStatusChangedFilter, tripStatusChangedListener);
     } catch (e) {
       return;
     } finally {
@@ -285,6 +313,7 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
         );
 
         setChatClient(client);
+        setIsClienReady(true);
       } catch (e) {
         console.error("initChatClient error:" + e);
       } finally {
@@ -299,6 +328,7 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
     <ChatContext.Provider
       value={{
         isLoading: isLoading,
+        isClienReady: isClienReady,
         isMyChatKeysSaved: isMyChatKeysSaved,
         saveMyChatKeys: saveMyChatKeys,
         chatInfos: chatInfos,

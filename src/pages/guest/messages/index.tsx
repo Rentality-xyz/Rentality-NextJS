@@ -9,7 +9,8 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 
 export default function Messages() {
-  const { isLoading, chatInfos, getLatestChatInfos, sendMessage, isMyChatKeysSaved, saveMyChatKeys } = useChat();
+  const { isLoading, isClienReady, chatInfos, getLatestChatInfos, sendMessage, isMyChatKeysSaved, saveMyChatKeys } =
+    useChat();
   const { showDialog, hideDialogs } = useRntDialogs();
 
   const router = useRouter();
@@ -48,8 +49,10 @@ export default function Messages() {
   };
 
   useEffect(() => {
+    if (!isClienReady) return;
+
     getLatestChatInfos();
-  }, []);
+  }, [isClienReady]);
 
   return (
     <Layout>
