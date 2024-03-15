@@ -1,0 +1,26 @@
+services:
+  nextjs:
+    container_name: nextjs
+    image:
+      nextjs-rentality:latest
+    ports:
+      - 3000:3000      
+    depends_on:
+      - ganache
+    networks:
+      - rentality-network
+    volumes:
+      - ./src:/home/app/src
+      - /home/app/src/abis
+  ganache:
+    container_name: ganache
+    image:
+      ganache-rentality:latest
+    ports:
+      - 8545:8545
+    networks:
+      - rentality-network
+networks:
+  rentality-network:
+    driver: bridge
+    name: rentality-network
