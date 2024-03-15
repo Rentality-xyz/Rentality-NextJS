@@ -12,7 +12,7 @@ export default function TransactionHistory() {
             <div className="flex flex-col">
                 <PageTitle title="Transaction history" />
                 {/*TODO прибрати !*/}
-                {isLoading ? (
+                {!isLoading ? (
                     <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
                 ) : (
                     <TransactionHistoryContent isHost={false} transactions={transactions}/>

@@ -11,8 +11,10 @@ import RntButton from "@/components/common/rntButton";
 import React, {useState} from "react";
 import RntSelect from "@/components/common/rntSelect";
 import ReactPaginate from 'react-paginate';
+import TransactionHistoryMobileCard from "@/components/transaction_history/transactionHistoryMobileCard";
 
 export const sortOptions = {
+    allStatus: "All statuses",
     completed: "Completed",
     start: "Start",
     finish: "Finish",
@@ -23,12 +25,8 @@ export function isSortOptionKey(key: string): key is SortOptionKey {
 }
 
 type Props =
-    | {
-    isHost: true;
-    transactions: TransactionHistoryInfo[];
-}
-    | {
-    isHost: false;
+    {
+    isHost: boolean;
     transactions: TransactionHistoryInfo[];
 };
 
@@ -57,10 +55,10 @@ export default function TransactionHistoryContent(props: Props) {
     };
 
     return (
-        <div className="w-full bg-rentality-bg p-4 rounded-2xl mt-5">
-            <div className="flex max-md:flex-col md:items-end">
+        <div className="relative w-full min-h-[540px] pb-16 bg-rentality-bg p-4 rounded-2xl mt-5">
+            <div className="flex max-lg:flex-col items-center lg:items-end">
                 <RntInput
-                    className="max-w-[210px] mr-4"
+                    className="max-w-[320px] lg:max-w-[210px] lg:mr-4"
                     id="dateFrom"
                     label="From"
                     type="datetime-local"
@@ -68,7 +66,7 @@ export default function TransactionHistoryContent(props: Props) {
                     // onChange={handleSearchInputChange}
                 />
                 <RntInput
-                    className="max-w-[210px] mr-8"
+                    className="max-w-[320px] lg:max-w-[210px] lg:mr-8"
                     id="dateTo"
                     label="To"
                     type="datetime-local"
@@ -76,37 +74,39 @@ export default function TransactionHistoryContent(props: Props) {
                     // onChange={handleSearchInputChange}
                 />
 
-                <RntSelect
-                    className="w-40 max-xl:mt-4 mr-8"
-                    id="sort"
-                    readOnly={false}
-                    value={sortBy ?? ""}
-                    onChange={(e) => {
-                        const newValue = e.target.value;
-                        if (isSortOptionKey(newValue)) {
-                            setSortBy(newValue);
-                        }
-                    }}
-                >
-                    <option className="hidden" value={""} disabled>
-                        Status
-                    </option>
-                    {(Object.keys(sortOptions) as (keyof typeof sortOptions)[]).map((key) => (
-                        <option key={key} value={key}>
-                            {sortOptions[key]}
+                <div className="flex items-end">
+                    <RntSelect
+                        className="w-36 sm:w-40 max-xl:mt-4 mr-8"
+                        id="sort"
+                        readOnly={false}
+                        value={sortBy ?? ""}
+                        onChange={(e) => {
+                            const newValue = e.target.value;
+                            if (isSortOptionKey(newValue)) {
+                                setSortBy(newValue);
+                            }
+                        }}
+                    >
+                        <option className="hidden" value={""} disabled>
+                            Status
                         </option>
-                    ))}
-                </RntSelect>
+                        {(Object.keys(sortOptions) as (keyof typeof sortOptions)[]).map((key) => (
+                            <option key={key} value={key}>
+                                {sortOptions[key]}
+                            </option>
+                        ))}
+                    </RntSelect>
 
-                <RntButton
-                    className="sm:w-40"
-                    // disabled={searchButtonDisabled}
-                    onClick={
-                        () => handleSearchClick()
-                    }
-                >
-                    Search
-                </RntButton>
+                    <RntButton
+                        className="w-36 sm:w-40"
+                        // disabled={searchButtonDisabled}
+                        onClick={
+                            () => handleSearchClick()
+                        }
+                    >
+                        Search
+                    </RntButton>
+                </div>
             </div>
 
             <table className="mt-12 w-full table-auto border-spacing-2 max-lg:hidden">
@@ -150,7 +150,7 @@ export default function TransactionHistoryContent(props: Props) {
                 </tr>
                 </thead>
                 <tbody className="text-sm">
-                {Array.from({ length: currentPage === 0 ? Math.min(itemsPerPage, transactions.length) : Math.max(0, transactions.length - currentPage * itemsPerPage) }).map((_, index) => {
+                {transactions.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage).map((transaction, index) => {
                     const itemNumber = currentPage * itemsPerPage + index;
                     const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${transactions[itemNumber].transHistoryId}`;
 
@@ -177,41 +177,40 @@ export default function TransactionHistoryContent(props: Props) {
                 })}
                 </tbody>
             </table>
-            <div className="">
+            <div className="lg:hidden">
+                {transactions.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage).map((transaction, index) => {
+                    return isHost ? (
+                        <TransactionHistoryMobileCard
+                            // key={transaction.transHistoryId}
+                            isHost={isHost}
+                            transaction={transaction}
+                            index={index}
+                        />
+                    ) : (
+                        <TransactionHistoryMobileCard
+                            // key={transaction.transHistoryId}
+                            isHost={isHost}
+                            transaction={transaction}
+                            index={index}
+                        />
+                    );
+
+                })}
+            </div>
+            <div id="pagination">
                 <ReactPaginate
                     previousLabel={'←'}
                     nextLabel={'→'}
                     breakLabel={'...'}
-                    breakClassName={'break-me'}
+                    breakClassName={''}
                     pageCount={totalPages}
                     marginPagesDisplayed={2}
-                    pageRangeDisplayed={5}
+                    pageRangeDisplayed={3}
                     onPageChange={handlePageChange}
-                    containerClassName={'pagination'}
-                    activeClassName={'active'}
+                    containerClassName={'flex absolute bottom-4 right-4 mx-4 text-gray-400'}
+                    activeClassName={'bg-status-pending text-white rounded-full px-2'}
                 />
             </div>
-            {/*<div className="lg:hidden">*/}
-            {/*    {claims.map((claim, index) => {*/}
-            {/*        return isHost ? (*/}
-            {/*            <ClaimHistoryMobileCard*/}
-            {/*                key={claim.claimId}*/}
-            {/*                isHost={isHost}*/}
-            {/*                claim={claim}*/}
-            {/*                index={index}*/}
-            {/*                cancelClaim={props.cancelClaim}*/}
-            {/*            />*/}
-            {/*        ) : (*/}
-            {/*            <ClaimHistoryMobileCard*/}
-            {/*                key={claim.claimId}*/}
-            {/*                isHost={isHost}*/}
-            {/*                claim={claim}*/}
-            {/*                index={index}*/}
-            {/*                payClaim={props.payClaim}*/}
-            {/*            />*/}
-            {/*        );*/}
-            {/*    })}*/}
-            {/*</div>*/}
         </div>
     );
 }

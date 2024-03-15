@@ -9,7 +9,7 @@ const transactionHistoryViewTEST: ContractTransactionHistory[] = [
     {
         transHistoryId: BigInt(0),
         car: "Ford Bronco 2021",
-        status: "Completed",
+        status: "0",
         days: BigInt(2),
         startDateTime: BigInt(1663003540000),
         endDateTime: BigInt(1663176540000),
@@ -23,7 +23,7 @@ const transactionHistoryViewTEST: ContractTransactionHistory[] = [
     {
         transHistoryId: BigInt(1),
         car: "Ford Bronco 2022",
-        status: "Completed",
+        status: "1",
         days: BigInt(2),
         startDateTime: BigInt(1663003540000),
         endDateTime: BigInt(1663176540000),
@@ -37,7 +37,7 @@ const transactionHistoryViewTEST: ContractTransactionHistory[] = [
     {
         transHistoryId: BigInt(2),
         car: "Ford Bronco 2023",
-        status: "Completed",
+        status: "2",
         days: BigInt(2),
         startDateTime: BigInt(1663003540000),
         endDateTime: BigInt(1663176540000),
@@ -51,7 +51,7 @@ const transactionHistoryViewTEST: ContractTransactionHistory[] = [
     {
         transHistoryId: BigInt(3),
         car: "Ford Bronco 2024",
-        status: "Completed",
+        status: "3",
         days: BigInt(2),
         startDateTime: BigInt(1663003540000),
         endDateTime: BigInt(1663176540000),
@@ -65,7 +65,7 @@ const transactionHistoryViewTEST: ContractTransactionHistory[] = [
     {
         transHistoryId: BigInt(4),
         car: "Ford Bronco 2025",
-        status: "Completed",
+        status: "4",
         days: BigInt(2),
         startDateTime: BigInt(1663003540000),
         endDateTime: BigInt(1663176540000),
@@ -79,7 +79,7 @@ const transactionHistoryViewTEST: ContractTransactionHistory[] = [
     {
         transHistoryId: BigInt(5),
         car: "AUDI Q7 2026",
-        status: "Completed",
+        status: "5",
         days: BigInt(2),
         startDateTime: BigInt(1663003540000),
         endDateTime: BigInt(1663176540000),
@@ -93,7 +93,7 @@ const transactionHistoryViewTEST: ContractTransactionHistory[] = [
     {
         transHistoryId: BigInt(6),
         car: "AUDI Q7 2027",
-        status: "Completed",
+        status: "6",
         days: BigInt(2),
         startDateTime: BigInt(1663003540000),
         endDateTime: BigInt(1663176540000),
@@ -107,7 +107,7 @@ const transactionHistoryViewTEST: ContractTransactionHistory[] = [
     {
         transHistoryId: BigInt(7),
         car: "AUDI Q7 2028",
-        status: "Completed",
+        status: "7",
         days: BigInt(2),
         startDateTime: BigInt(1663003540000),
         endDateTime: BigInt(1663176540000),
