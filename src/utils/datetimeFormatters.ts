@@ -52,3 +52,27 @@ export const dateRangeFormatShortMonthDateYear = (valueFrom: Date, valueTo: Date
 
   return `${dateFormatShortMonthDate(valueFrom, timeZone)} - ${dateFormatShortMonthDate(valueTo, timeZone)} ${year}`;
 };
+
+export const dateFormatYearMonthDayTime = (value: Date | undefined) => {
+  if (value === undefined) return "";
+  let day = value.getDate().toString();
+  if (day.length === 1) {
+    day = "0" + day;
+  }
+
+  const monthString = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+  }).format(value);
+
+  const year = value.getFullYear().toString();
+
+  let hours = value.getHours().toString();
+  if (hours.length === 1) {
+    hours = "0" + hours;
+  }
+  let minutes = value.getMinutes().toString();
+  if (minutes.length === 1) {
+    minutes = "0" + minutes;
+  }
+  return `${day} ${monthString} ${year} ${hours}:${minutes}`;
+};

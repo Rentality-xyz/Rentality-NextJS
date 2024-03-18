@@ -29,6 +29,7 @@ function HostNavMenu() {
           icon={MenuIcons.Legal}
           target="_blank"
         />
+        <SideNavMenuItem text="Transaction history" href="/host/transaction_history" icon={MenuIcons.TransactionHistory} />
         <SideNavMenuItem text="Profile settings" href="/host/profile" icon={MenuIcons.ProfileSettings} />
         {ready && authenticated ? (
           <SideNavMenuItem text="Logout" href="/" onClick={logout} icon={MenuIcons.Logout} />

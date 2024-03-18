@@ -321,3 +321,7 @@ input:disabled {
   -webkit-mask-composite: xor;
   mask-composite: exclude;
 }
+
+#pagination>ul>li {
+  margin-left: 12px;
+}
