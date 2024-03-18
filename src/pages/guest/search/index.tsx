@@ -1,4 +1,3 @@
-import GuestLayout from "@/components/guest/layout/guestLayout";
 import CarSearchItem from "@/components/guest/carSearchItem";
 import useSearchCars, { SortOptionKey, isSortOptionKey, sortOptions } from "@/hooks/guest/useSearchCars";
 import { useRouter } from "next/router";
@@ -20,6 +19,7 @@ import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 import moment from "moment";
 import { usePrivy } from "@privy-io/react-auth";
 import { DialogActions } from "@/utils/dialogActions";
+import Layout from "@/components/layout/layout";
 
 export default function Search() {
   const dateNow = new Date();
@@ -198,7 +198,7 @@ export default function Search() {
   }, [sortBy, sortSearchResult]);
 
   return (
-    <GuestLayout>
+    <Layout>
       <div className="flex flex-col">
         <PageTitle title="Search" />
         <div className="search my-2 flex max-xl:flex-col gap-2 xl:items-end">
@@ -429,6 +429,6 @@ export default function Search() {
           </div>
         </SlidingPanel>
       </div>
-    </GuestLayout>
+    </Layout>
   );
 }
