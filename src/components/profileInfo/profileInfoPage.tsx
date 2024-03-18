@@ -220,7 +220,7 @@ function ProfileInfoPage({
       <p className="mt-4">To use chat functionality you have to generate and save encryption keys</p>
       <div className="flex items-center">
         <RntButton type="button" onClick={saveMyChatKeys} disabled={isMyChatKeysSaved}>
-          Save
+          Save chat keys
         </RntButton>
         <div className="ml-2 md:ml-6">{isMyChatKeysSaved ? <GetChatKeySaved /> : <GetChatKeyNotSaved />}</div>
       </div>
