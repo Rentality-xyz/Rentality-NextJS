@@ -3,10 +3,10 @@ import { createRoot, Root } from "react-dom/client";
 
 type AdvancedMarkerElement = google.maps.marker.AdvancedMarkerElement;
 
-export default function Marker({ map, position, text, children }:{
+export default function Marker({ map, position, onClick, children }:{
 	map: google.maps.Map;
 	position: google.maps.LatLngLiteral;
-	text: number;
+	onClick: (...args: any[]) => void;
 	children: React.ReactNode;
 }) {
 	const markerRef = useRef<AdvancedMarkerElement>();
@@ -19,7 +19,9 @@ export default function Marker({ map, position, text, children }:{
 			markerRef.current = new google.maps.marker.AdvancedMarkerElement({
 				position,
 				content: container,
+				gmpClickable: true
 			});
+	        markerRef.current.addListener('click', onClick);
 		}
 	}, []);
 
@@ -28,7 +30,7 @@ export default function Marker({ map, position, text, children }:{
 		rootRef.current.render(children);
 		markerRef.current.position = position;
 		markerRef.current.map = map;
-	}, [map, position, text, children]);
+	}, [map, position, children]);
 
 	return <></>;
 };

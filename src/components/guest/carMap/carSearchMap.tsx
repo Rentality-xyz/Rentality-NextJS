@@ -4,11 +4,13 @@ import { useGoogleMapsContext } from '@/contexts/googleMapsContext';
 import { DEFAULT_GOOGLE_MAPS_SEARCH_CENTER, DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM, GOOGLE_MAPS_MAP_ID } from '@/utils/constants';
 import { SearchCarInfo } from '@/model/SearchCarsResult';
 import Marker from './carMapMarker';
+import RntButton from '@/components/common/rntButton';
 
-export default function CarSearchMap({ carInfos, width, height }: {
+export default function CarSearchMap({ carInfos, width, height, onMarkerClick }: {
 	carInfos: SearchCarInfo[],
 	width: string,
 	height: string,
+	onMarkerClick: (carID: Number) => void
 }) {
 	const [map, setMap] = useState(null)
 
@@ -34,7 +36,7 @@ export default function CarSearchMap({ carInfos, width, height }: {
 		googleMapsAPIIsLoaded ? (
 			<GoogleMap
 				options={{ mapId: GOOGLE_MAPS_MAP_ID }}
-				mapContainerStyle={{ width: width, height: height, borderRadius: '30px' }}
+				mapContainerStyle={{ width: width, height: height, borderRadius: '30px', margin:"1rem" }}
 				center={DEFAULT_GOOGLE_MAPS_SEARCH_CENTER}
 				zoom={DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM}
 				onLoad={onLoad}
@@ -45,8 +47,13 @@ export default function CarSearchMap({ carInfos, width, height }: {
 						key={carInfo.carId}
 						map={map}
 						position={carInfo.location}
-						text={carInfo.totalPrice}
-					/>
+						onClick = {({ domEvent }) => {
+							const { target } = domEvent;
+							onMarkerClick(target.id);
+				        }}
+					>
+						<RntButton id={carInfo.carId} className="w-24 h-8">${carInfo.totalPrice}</RntButton>
+					</Marker>
 				))}
 			</GoogleMap>
 		) : <></>

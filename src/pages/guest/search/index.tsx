@@ -21,7 +21,7 @@ import { DialogActions } from "@/utils/dialogActions";
 import Layout from "@/components/layout/layout";
 import { GoogleMapsProvider } from '@/contexts/googleMapsContext';
 import CarSearchMap from "@/components/guest/carMap/carSearchMap";
-import RntPlaceAutoComplete from "@/components/common/rntPlaceAutoComplete";
+import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 
 export default function Search() {
   const dateNow = new Date();
@@ -34,7 +34,7 @@ export default function Search() {
     dateTo: dateToHtmlDateTimeFormat(defaultDateTo),
   };
 
-  const [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest] = useSearchCars();
+  const [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest, setSearchResult] = useSearchCars();
   const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(customEmptySearchCarRequest);
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const [openFilterPanel, setOpenFilterPanel] = useState(false);
@@ -135,6 +135,19 @@ export default function Search() {
 
       setRequestSending(false);
     }
+  };
+  
+  const handleMapClick = async (carID: Number) => {
+	const newSearchCarInfo = {...searchResult };
+	newSearchCarInfo.carInfos.forEach((item:SearchCarInfo) => {
+		if(item.carId == carID){
+			item.highlighted = !item.highlighted;
+		} else {
+			item.highlighted = false;
+		}
+	});
+  	
+  	setSearchResult(newSearchCarInfo);
   };
 
   useEffect(() => {
@@ -302,7 +315,16 @@ export default function Search() {
           <div className="grid grid-cols-2">
             <div className="my-4 grid grid-cols-1 gap-4">
               {searchResult?.carInfos != null && searchResult?.carInfos?.length > 0 ? (
-                searchResult?.carInfos.map((value) => {
+                searchResult?.carInfos.sort((a :SearchCarInfo,b:SearchCarInfo) => {
+					if(a.highlighted && !b.highlighted){
+						return -1;
+					} else if(!a.highlighted && b.highlighted){
+						return 1;
+					}
+					else{
+						return 0;	
+					}
+				}).map((value:SearchCarInfo) => {
                   return (
                     <CarSearchItem
                       key={value.carId}
@@ -322,6 +344,7 @@ export default function Search() {
 				carInfos={searchResult?.carInfos}
 				width='100%'
 				height='100vh'
+				onMarkerClick={handleMapClick}
 			>
 			</CarSearchMap>
           </div>

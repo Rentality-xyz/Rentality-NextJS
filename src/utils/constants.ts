@@ -4,4 +4,4 @@ export const DEFAULT_GOOGLE_MAPS_SEARCH_CENTER = {
 	lat: 25.802942, 
 	lng: -80.501527
 };
-export const GOOGLE_MAPS_MAP_ID = '73f4381b21790b76';
+export const GOOGLE_MAPS_MAP_ID = '70e109bf32920b0b';

@@ -26,7 +26,8 @@ export type SearchCarInfo = {
   location: {
 	lat: number,
 	lng: number
-  }
+  };
+  highlighted: boolean;
 };
 
 export const emptySearchCarsResult: SearchCarsResult = {

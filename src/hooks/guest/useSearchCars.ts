@@ -250,7 +250,7 @@ const useSearchCars = () => {
       };
     });
   }, []);
-  return [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest] as const;
+  return [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest, setSearchResult] as const;
 };
 
 export default useSearchCars;
