@@ -1,12 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
-import { IRentalityContract, IRentalityCurrencyConverterContract } from "@/model/blockchain/IRentalityContract";
+import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
-import { getEtherContractWithSigner } from "@/abis";
 import { Claim, getClaimStatusTextFromStatus, getClaimTypeTextFromClaimType } from "@/model/Claim";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { formatEthWithDecimals } from "@/utils/numericFormatters";
-import { formatEther } from "ethers";
 import { ContractFullClaimInfo } from "@/model/blockchain/schemas";
 import { validateContractFullClaimInfo } from "@/model/blockchain/schemas_utils";
 

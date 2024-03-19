@@ -1,10 +1,10 @@
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import TransactionHistoryContent from "@/components/transaction_history/transactionHistoryContent";
-import useGuestTransactionHistory from "@/hooks/guest/useGuestTransactionHistory";
+import useTransactionHistory from "@/hooks/transaction_history/useTransactionHistory";
 
 export default function TransactionHistory() {
-  const [isLoading, transactions] = useGuestTransactionHistory();
+  const [isLoading, transactions] = useTransactionHistory(false);
 
   return (
     <Layout>
