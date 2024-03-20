@@ -62,7 +62,7 @@ const useTransactionHistory = (isHost: boolean) => {
                   let item: TransactionHistoryInfo = {
                     transHistoryId: Number(tripDto.trip.tripId),
                     car: carDescription,
-                    status: getTripStatusTextFromStatus(tripDto.trip.status),
+                    status: tripDto.trip.status,
                     days: calculateDays(startDateTime, endDateTime),
                     startDateTime: startDateTime,
                     endDateTime: endDateTime,

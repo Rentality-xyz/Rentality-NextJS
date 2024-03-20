@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import RntSelect from "@/components/common/rntSelect";
 import ReactPaginate from "react-paginate";
 import TransactionHistoryMobileCard from "@/components/transaction_history/transactionHistoryMobileCard";
+import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 
 export const sortOptions = {
   allStatus: "All statuses",
@@ -142,39 +143,31 @@ export default function TransactionHistoryContent(props: Props) {
           </tr>
         </thead>
         <tbody className="text-sm">
-          {transactions
-            .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
-            .map((transaction, index) => {
-              const itemNumber = currentPage * itemsPerPage + index;
-              const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${
-                transactions[itemNumber].transHistoryId
-              }`;
+          {transactions.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage).map((transaction) => {
+            //const itemNumber = currentPage * itemsPerPage + index;
+            const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${transaction.transHistoryId}`;
 
-              return (
-                <tr key={transactions[itemNumber].transHistoryId} className="border-b-[2px] border-b-gray-500">
-                  <td className={rowSpanClassName}>{transactions[itemNumber].car}</td>
-                  <td className={rowSpanClassName}>{transactions[itemNumber].status}</td>
-                  <td className={rowSpanClassName}>{transactions[itemNumber].days}</td>
-                  <td className={rowSpanClassName}>
-                    {dateFormatYearMonthDayTime(transactions[itemNumber].startDateTime)}
-                  </td>
-                  <td className={rowSpanClassName}>
-                    {dateFormatYearMonthDayTime(transactions[itemNumber].endDateTime)}
-                  </td>
-                  <td className={rowSpanClassName}>${transactions[itemNumber].tripPayment}</td>
-                  <td className={rowSpanClassName}>${transactions[itemNumber].refund}</td>
-                  <td className={rowSpanClassName}>${transactions[itemNumber].tripEarnings}</td>
-                  <td className={rowSpanClassName}>${transactions[itemNumber].cancellationFee}</td>
-                  <td className={rowSpanClassName}>${transactions[itemNumber].reimbursements}</td>
-                  <td className={rowSpanClassName}>${transactions[itemNumber].rentalityFee}</td>
-                  <td className={rowSpanClassName}>
-                    <Link href={detailsLink}>
-                      <span className="text-rentality-secondary">Details</span>
-                    </Link>
-                  </td>
-                </tr>
-              );
-            })}
+            return (
+              <tr key={transaction.transHistoryId} className="border-b-[2px] border-b-gray-500">
+                <td className={rowSpanClassName}>{transaction.car}</td>
+                <td className={rowSpanClassName}>{getTripStatusTextFromStatus(transaction.status)}</td>
+                <td className={rowSpanClassName}>{transaction.days}</td>
+                <td className={rowSpanClassName}>{dateFormatYearMonthDayTime(transaction.startDateTime)}</td>
+                <td className={rowSpanClassName}>{dateFormatYearMonthDayTime(transaction.endDateTime)}</td>
+                <td className={rowSpanClassName}>${transaction.tripPayment}</td>
+                <td className={rowSpanClassName}>${transaction.refund}</td>
+                <td className={rowSpanClassName}>${transaction.tripEarnings}</td>
+                <td className={rowSpanClassName}>${transaction.cancellationFee}</td>
+                <td className={rowSpanClassName}>${transaction.reimbursements}</td>
+                <td className={rowSpanClassName}>${transaction.rentalityFee}</td>
+                <td className={rowSpanClassName}>
+                  <Link href={detailsLink}>
+                    <span className="text-rentality-secondary">Details</span>
+                  </Link>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
       <div className="lg:hidden">

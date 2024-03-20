@@ -27,7 +27,7 @@ export default function ListingItem({ carInfo }: { carInfo: BaseCarInfo }) {
         className="relative w-full sm_inverted:w-64 min-h-[12rem] flex-shrink-0 bg-center bg-cover"
       >
         <div className={statusClassName}>
-          <strong className="text-m">{`${getListingStatusTextFromStatus(carInfo.currentlyListed)}`}</strong>
+          <strong>{`${getListingStatusTextFromStatus(carInfo.currentlyListed)}`}</strong>
         </div>
       </div>
       <div className="w-full flex flex-col justify-between p-4">

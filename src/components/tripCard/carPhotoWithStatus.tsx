@@ -28,7 +28,7 @@ function CarPhotoWithStatus({ carImageUrl, tripStatus }: { carImageUrl: string; 
         className="relative w-full 1xl:w-64 min-h-[12rem] md:min-h-[16rem] xl:min-h-[12rem] flex-shrink-0 bg-center bg-cover"
       >
         <div className={statusClassName}>
-          <strong className="text-m">{`${getTripStatusTextFromStatus(tripStatus)}`}</strong>
+          <strong>{`${getTripStatusTextFromStatus(tripStatus)}`}</strong>
         </div>
       </div>
     </>

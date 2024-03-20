@@ -2,11 +2,7 @@ import Link from "next/link";
 import { TransactionHistoryInfo } from "@/model/TransactionHistoryInfo";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import React from "react";
-import {
-  getTripStatusBgColorClassFromStatus,
-  getTripStatusFromContract,
-  getTripStatusTextFromStatus,
-} from "@/model/TripInfo";
+import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
 
 type Props = {
   isHost: boolean;
@@ -17,35 +13,32 @@ type Props = {
 export default function TransactionHistoryMobileCard(props: Props) {
   const { isHost, index, transaction } = props;
   const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${transaction.transHistoryId}`;
-  const tripStatus = getTripStatusFromContract(Number(transaction.status));
-  let statusBgColor = getTripStatusBgColorClassFromStatus(tripStatus);
+  let statusBgColor = getTripStatusBgColorClassFromStatus(transaction.status);
 
   return (
     <div key={transaction.transHistoryId} className="mt-8">
       <div className="flex text-sm justify-between mb-2">
-        <strong className="font-normal text-rentality-secondary-shade">
+        <span className="text-rentality-secondary-shade">
           {dateRangeFormatShortMonthDateYear(transaction.startDateTime, transaction.endDateTime)}
-        </strong>
-        <strong className={statusBgColor + " font-normal px-1 rounded"}>
-          {getTripStatusTextFromStatus(tripStatus)}
-        </strong>
+        </span>
+        <span className={statusBgColor + " px-1 rounded"}>{getTripStatusTextFromStatus(transaction.status)}</span>
       </div>
       {!isHost && (
         <div>
           <div className="flex text-sm justify-between mx-4 mb-2">
-            <strong className="font-normal">Trip payments</strong>
-            <strong className="font-normal">${transaction.tripPayment}</strong>
+            <span>Trispan payments</span>
+            <span>${transaction.tripPayment}</span>
           </div>
           <div className="flex text-sm justify-between mx-4 mb-2">
-            <strong className="font-normal">Refund</strong>
-            <strong className="font-normal">${transaction.refund}</strong>
+            <span>Refund</span>
+            <span>${transaction.refund}</span>
           </div>
         </div>
       )}
       {isHost && (
         <div className="flex text-sm justify-between mx-4 mb-2">
-          <strong className="font-normal">Host Earnings</strong>
-          <strong className="font-normal">${transaction.tripEarnings}</strong>
+          <span>Host Earnings</span>
+          <span>${transaction.tripEarnings}</span>
         </div>
       )}
       <div className="flex text-sm justify-between mb-2">
