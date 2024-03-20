@@ -67,20 +67,8 @@ export default function Search() {
   const handleRentCarRequest = async (carInfo: SearchCarInfo) => {
     try {
       if (isEmpty(userInfo?.drivingLicense)) {
-        const action = (
-          <>
-            <Button
-              color="secondary"
-              size="small"
-              onClick={() => {
-                router.push("/guest/profile");
-              }}
-            >
-              My profile
-            </Button>
-          </>
-        );
-        showError("In order to rent a car, please enter user information", action);
+        showError("In order to rent a car, please enter user information");
+        await router.push("/guest/profile");
         return;
       }
 
@@ -134,29 +122,6 @@ export default function Search() {
       setRequestSending(false);
     }
   };
-
-  useEffect(() => {
-    if (!userInfo) return;
-
-    if (isEmpty(userInfo.drivingLicense)) {
-      const action = (
-        <>
-          <Button
-            color="secondary"
-            size="small"
-            onClick={() => {
-              router.push("/guest/profile");
-            }}
-          >
-            My profile
-          </Button>
-        </>
-      );
-      showError("In order to rent a car, please enter user information", action);
-      return;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userInfo, router]);
 
   function handleSearchInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;

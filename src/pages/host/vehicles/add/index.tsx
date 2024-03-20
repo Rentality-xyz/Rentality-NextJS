@@ -21,7 +21,6 @@ export default function AddCar() {
   const [carSaving, setCarSaving] = useState<boolean>(false);
   const router = useRouter();
   const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
-  const userInfo = useUserInfo();
 
   const loadCarInfoFromJson = async (file: File) => {
     try {
@@ -84,24 +83,6 @@ export default function AddCar() {
       return;
     }
 
-    if (isEmpty(userInfo?.drivingLicense)) {
-      const action = (
-        <>
-          <Button
-            color="secondary"
-            size="small"
-            onClick={() => {
-              router.push("/host/profile");
-            }}
-          >
-            My profile
-          </Button>
-        </>
-      );
-      showError("In order to save a car, please enter user information", action);
-      return;
-    }
-
     if (!imageFile) {
       showError("Image is not uploaded");
       return;
@@ -141,29 +122,6 @@ export default function AddCar() {
     );
     showDialog("Unsaved data will be lost", action);
   };
-
-  useEffect(() => {
-    if (!userInfo) return;
-
-    if (isEmpty(userInfo.drivingLicense)) {
-      const action = (
-        <>
-          <Button
-            color="secondary"
-            size="small"
-            onClick={() => {
-              router.push("/host/profile");
-            }}
-          >
-            My profile
-          </Button>
-        </>
-      );
-      showError("In order to save a car, please enter user information", action);
-      return;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userInfo, router]);
 
   return (
     <Layout>
