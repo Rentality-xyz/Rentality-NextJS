@@ -102,7 +102,7 @@ export interface IRentalityContract {
   getTripsByHost(host: string): Promise<ContractTripDTO[]>;
   getTripsByCar(carId: bigint): Promise<ContractTrip[]>;
   updateClaim(claimId: bigint): Promise<ContractTransactionResponse>;
-  getClaim(claimId: bigint): Promise<ContractFullClaimInfo[]>;
+  getClaim(claimId: bigint): Promise<ContractFullClaimInfo>;
   getClaimsByTrip(tripId: bigint): Promise<ContractFullClaimInfo[]>;
   getKYCInfo(user: string): Promise<ContractKYCInfo>;
   getCarsRentedByMe(): Promise<ContractCarInfo[]>;
