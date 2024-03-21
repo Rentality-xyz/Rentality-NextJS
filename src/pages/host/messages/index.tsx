@@ -1,17 +1,17 @@
 import ChatPage from "@/components/chat/chatPage";
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
-import { useChat } from "@/contexts/chatContext";
+import { useChat, useChatKeys } from "@/contexts/chatContext";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 export default function Messages() {
-  const { isLoading, isClienReady, chatInfos, getLatestChatInfos, sendMessage, isMyChatKeysSaved, saveMyChatKeys } =
-    useChat();
-  const { showDialog, hideDialogs } = useRntDialogs();
+  const { isLoading, isClienReady, chatInfos, getLatestChatInfos, sendMessage } = useChat();
+  const { isLoading: isChatKeysLoading, isChatKeysSaved, saveChatKeys } = useChatKeys();
+  const { showInfo, showDialog, hideDialogs } = useRntDialogs();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -31,12 +31,16 @@ export default function Messages() {
   };
 
   const handleSendMessage = async (toAddress: string, tripId: number, message: string) => {
-    if (!isMyChatKeysSaved) {
+    if (isChatKeysLoading) {
+      showInfo("Please wait while the chat keys are loaded");
+      return;
+    }
+    if (!isChatKeysSaved) {
       const action = (
         <>
           {DialogActions.Button("Save", () => {
             hideDialogs();
-            saveMyChatKeys();
+            saveChatKeys();
           })}
           {DialogActions.Cancel(hideDialogs)}
         </>

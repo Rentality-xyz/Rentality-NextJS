@@ -1,5 +1,4 @@
 import { Waku, getUserChatContentTopic } from "./waku";
-import { generateEncryptionKeyPair } from "./crypto";
 import { createDecoder as eciesDecoder } from "@waku/message-encryption/ecies";
 import { isEmpty } from "@/utils/string";
 import { hexToBytes } from "@waku/utils/bytes";
@@ -27,22 +26,16 @@ export class Client {
   async init(
     signer: Signer,
     onUserMessageReceived: (from: string, to: string, tripId: number, datetime: number, message: string) => void,
-    myStoredPrivateKey: string,
-    myStoredPublicKey: string
+    privateKey: string,
+    publicKey: string
   ) {
-    const walletAddress = await (await signer.getAddress()).toLowerCase();
-    localStorage.removeItem("userChatEncryptionPuKey" + walletAddress);
-    localStorage.removeItem("userChatEncryptionPrKey" + walletAddress);
-
-    if (isEmpty(myStoredPrivateKey) || isEmpty(myStoredPublicKey)) {
-      console.log("Generating new EncryptionKeyPair...");
-      this.encryptionKeyPair = generateEncryptionKeyPair();
-    } else {
-      this.encryptionKeyPair = {
-        privateKey: hexToBytes(myStoredPrivateKey),
-        publicKey: hexToBytes(myStoredPublicKey),
-      };
+    if (isEmpty(privateKey) || isEmpty(publicKey)) {
+      throw new Error("privateKey or publicKey is empty");
     }
+    this.encryptionKeyPair = {
+      privateKey: hexToBytes(privateKey),
+      publicKey: hexToBytes(publicKey),
+    };
     this.signer = signer;
     this.onUserMessageReceived = onUserMessageReceived;
 
