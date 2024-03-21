@@ -6,12 +6,11 @@ import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from
 
 type Props = {
   isHost: boolean;
-  index: number;
   transaction: TransactionHistoryInfo;
 };
 
 export default function TransactionHistoryMobileCard(props: Props) {
-  const { isHost, index, transaction } = props;
+  const { isHost, transaction } = props;
   const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${transaction.transHistoryId}`;
   let statusBgColor = getTripStatusBgColorClassFromStatus(transaction.status);
 

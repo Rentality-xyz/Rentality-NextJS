@@ -171,21 +171,9 @@ export default function TransactionHistoryContent(props: Props) {
         </tbody>
       </table>
       <div className="lg:hidden">
-        {transactions.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage).map((transaction, index) => {
-          return isHost ? (
-            <TransactionHistoryMobileCard
-              // key={transaction.transHistoryId}
-              isHost={isHost}
-              transaction={transaction}
-              index={index}
-            />
-          ) : (
-            <TransactionHistoryMobileCard
-              // key={transaction.transHistoryId}
-              isHost={isHost}
-              transaction={transaction}
-              index={index}
-            />
+        {transactions.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage).map((transaction) => {
+          return (
+            <TransactionHistoryMobileCard key={transaction.transHistoryId} isHost={isHost} transaction={transaction} />
           );
         })}
       </div>
