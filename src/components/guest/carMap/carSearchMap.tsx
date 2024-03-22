@@ -18,6 +18,7 @@ export default function CarSearchMap({ carInfos, width, height, onMarkerClick }:
 		const bounds = new google.maps.LatLngBounds();
 
 		carInfos?.forEach((carInfo) => {
+			if (!carInfo.location.lat || !carInfo.location.lng) return;
 			bounds.extend(new google.maps.LatLng(carInfo.location.lat, carInfo.location.lng));
 		});
 
