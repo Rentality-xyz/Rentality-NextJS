@@ -4,6 +4,7 @@ import RntInput from "../common/rntInput";
 import RntButton from "../common/rntButton";
 import { useRouter } from "next/router";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
+import { dateFormatLongMonthDateTime, dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 
 export default function TripDetails({ tripId }: { tripId: bigint }) {
   const [isLoading, tripDetails] = useTripDetails(tripId);
@@ -29,13 +30,13 @@ export default function TripDetails({ tripId }: { tripId: bigint }) {
             <RntInput
               id="startDateTime"
               label="Start date and time:"
-              value={tripDetails.startDateTime.toUTCString()}
+              value={dateFormatShortMonthDateTime(tripDetails.startDateTime, tripDetails.timeZoneId)}
               readOnly={true}
             />
             <RntInput
               id="endDateTime"
               label="End date and time:"
-              value={tripDetails.endDateTime.toUTCString()}
+              value={dateFormatShortMonthDateTime(tripDetails.endDateTime, tripDetails.timeZoneId)}
               readOnly={true}
             />
             <RntInput id="startLocation" label="Start Location:" value={tripDetails.startLocation} readOnly={true} />
@@ -55,13 +56,21 @@ export default function TripDetails({ tripId }: { tripId: bigint }) {
             <RntInput
               id="approvedDateTime"
               label="Approved date and time:"
-              value={tripDetails.approvedDateTime?.toUTCString() ?? "-"}
+              value={
+                tripDetails.approvedDateTime
+                  ? dateFormatShortMonthDateTime(tripDetails.approvedDateTime, tripDetails.timeZoneId)
+                  : "-"
+              }
               readOnly={true}
             />
             <RntInput
               id="checkedInByHostDateTime"
               label="Checked-in by host date and time:"
-              value={tripDetails.checkedInByHostDateTime?.toUTCString() ?? "-"}
+              value={
+                tripDetails.checkedInByHostDateTime
+                  ? dateFormatShortMonthDateTime(tripDetails.checkedInByHostDateTime, tripDetails.timeZoneId)
+                  : "-"
+              }
               readOnly={true}
             />
             <RntInput
@@ -79,22 +88,27 @@ export default function TripDetails({ tripId }: { tripId: bigint }) {
             <RntInput
               id="checkedInByGuestDateTime"
               label="Checked-in by guest date and time:"
-              value={tripDetails.checkedInByGuestDateTime?.toUTCString() ?? "-"}
+              value={
+                tripDetails.checkedInByGuestDateTime
+                  ? dateFormatShortMonthDateTime(tripDetails.checkedInByGuestDateTime, tripDetails.timeZoneId)
+                  : "-"
+              }
               readOnly={true}
             />
             <RntInput
               id="checkedOutByGuestDateTime"
               label="Checked-out by guest date and time:"
-              value={tripDetails.checkedOutByGuestDateTime?.toUTCString() ?? "-"}
+              value={
+                tripDetails.checkedOutByGuestDateTime
+                  ? dateFormatShortMonthDateTime(tripDetails.checkedOutByGuestDateTime, tripDetails.timeZoneId)
+                  : "-"
+              }
               readOnly={true}
             />
             <RntInput
               id="endFuelLevel"
               label="End fuel level in percents:"
-              value={
-                tripDetails.endFuelLevelInPercents?.toString() ??
-                (tripDetails.checkedOutByGuestDateTime?.toUTCString() ? "0" : "-")
-              }
+              value={tripDetails.endFuelLevelInPercents?.toString() ?? "-"}
               readOnly={true}
             />
             <RntInput
@@ -106,7 +120,11 @@ export default function TripDetails({ tripId }: { tripId: bigint }) {
             <RntInput
               id="checkedOutByHostDateTime"
               label="Checked-out by host date and time:"
-              value={tripDetails.checkedOutByHostDateTime?.toUTCString() ?? "-"}
+              value={
+                tripDetails.checkedOutByHostDateTime
+                  ? dateFormatShortMonthDateTime(tripDetails.checkedOutByHostDateTime, tripDetails.timeZoneId)
+                  : "-"
+              }
               readOnly={true}
             />
             <RntInput id="paymentFrom" label="Payment from:" value={tripDetails.paymentFrom} readOnly={true} />

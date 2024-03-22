@@ -22,6 +22,7 @@ export type TripDetails = {
   endOdometr: number | undefined;
   checkedOutByHostDateTime: Date | undefined;
   resolveAmountInUsd: number | undefined;
+  timeZoneId: string;
 
   paymentFrom: string;
   paymentTo: string;

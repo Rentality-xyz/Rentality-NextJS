@@ -3,8 +3,9 @@ import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { TripDetails } from "@/model/TripDetails";
 import { useRentality } from "@/contexts/rentalityContext";
-import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
+import { getDateFromBlockchainTime, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { ContractTripDTO } from "@/model/blockchain/schemas";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
 
 const emptyDetails: TripDetails = {
   tripId: BigInt(0),
@@ -30,6 +31,7 @@ const emptyDetails: TripDetails = {
   endOdometr: undefined,
   checkedOutByHostDateTime: undefined,
   resolveAmountInUsd: undefined,
+  timeZoneId: "",
 
   paymentFrom: "",
   paymentTo: "",
@@ -56,7 +58,7 @@ const useTripDetails = (tripId: bigint) => {
 
       if (tripDTO === null) return;
 
-      const timeZoneId = tripDTO.timeZoneId;
+      const timeZoneId = tripDTO.timeZoneId ?? UTC_TIME_ZONE_ID;
 
       let details: TripDetails = {
         tripId: tripDTO.trip.tripId,
@@ -66,36 +68,34 @@ const useTripDetails = (tripId: bigint) => {
         host: tripDTO.trip.host,
         guestName: tripDTO.trip.guestName,
         hostName: tripDTO.trip.hostName,
-        startDateTime: getDateFromBlockchainTimeWithTZ(tripDTO.trip.startDateTime, timeZoneId),
-        endDateTime: getDateFromBlockchainTimeWithTZ(tripDTO.trip.endDateTime, timeZoneId),
+        startDateTime: getDateFromBlockchainTime(tripDTO.trip.startDateTime),
+        endDateTime: getDateFromBlockchainTime(tripDTO.trip.endDateTime),
         startLocation: tripDTO.trip.startLocation,
         endLocation: tripDTO.trip.endLocation,
         milesIncludedPerDay: Number(tripDTO.trip.milesIncludedPerDay),
         fuelPricePerGalInUsd: Number(tripDTO.trip.fuelPrice) / 100.0,
         approvedDateTime:
-          tripDTO.trip.approvedDateTime > 0
-            ? getDateFromBlockchainTimeWithTZ(tripDTO.trip.approvedDateTime, timeZoneId)
-            : undefined,
+          tripDTO.trip.approvedDateTime > 0 ? getDateFromBlockchainTime(tripDTO.trip.approvedDateTime) : undefined,
         checkedInByHostDateTime:
           tripDTO.trip.checkedInByHostDateTime > 0
-            ? getDateFromBlockchainTimeWithTZ(tripDTO.trip.checkedInByHostDateTime, timeZoneId)
+            ? getDateFromBlockchainTime(tripDTO.trip.checkedInByHostDateTime)
             : undefined,
         startFuelLevelInPercents:
           tripDTO.trip.startParamLevels[0] > 0 ? Number(tripDTO.trip.startParamLevels[0]) : undefined,
         startOdometr: tripDTO.trip.startParamLevels[1] > 0 ? Number(tripDTO.trip.startParamLevels[1]) : undefined,
         checkedInByGuestDateTime:
           tripDTO.trip.checkedInByGuestDateTime > 0
-            ? getDateFromBlockchainTimeWithTZ(tripDTO.trip.checkedInByGuestDateTime, timeZoneId)
+            ? getDateFromBlockchainTime(tripDTO.trip.checkedInByGuestDateTime)
             : undefined,
         checkedOutByGuestDateTime:
           tripDTO.trip.checkedOutByGuestDateTime > 0
-            ? getDateFromBlockchainTimeWithTZ(tripDTO.trip.checkedOutByGuestDateTime, timeZoneId)
+            ? getDateFromBlockchainTime(tripDTO.trip.checkedOutByGuestDateTime)
             : undefined,
         endFuelLevelInPercents: tripDTO.trip.endParamLevels[0] > 0 ? Number(tripDTO.trip.endParamLevels[0]) : undefined,
         endOdometr: tripDTO.trip.endParamLevels[1] > 0 ? Number(tripDTO.trip.endParamLevels[1]) : undefined,
         checkedOutByHostDateTime:
           tripDTO.trip.checkedOutByHostDateTime > 0
-            ? getDateFromBlockchainTimeWithTZ(tripDTO.trip.checkedOutByHostDateTime, timeZoneId)
+            ? getDateFromBlockchainTime(tripDTO.trip.checkedOutByHostDateTime)
             : undefined,
 
         paymentFrom: tripDTO.trip.paymentInfo.from,
@@ -113,6 +113,7 @@ const useTripDetails = (tripId: bigint) => {
           Number(tripDTO.trip.paymentInfo.ethToCurrencyRate) /
           10 ** Number(tripDTO.trip.paymentInfo.ethToCurrencyDecimals),
         //ethToCurrencyDecimals: trip.paymentInfo.ethToCurrencyDecimals,
+        timeZoneId: timeZoneId,
       };
       return details;
     } catch (e) {
