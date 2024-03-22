@@ -251,7 +251,7 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
                 ? selectedChat.hostName
                 : selectedChat.guestName;
 
-            console.log(`addNotifications`);
+            console.log(`add message notification`);
             addNotificationsRef.current([
               {
                 id: `message_${tripId}_${new Date().getTime()}`,

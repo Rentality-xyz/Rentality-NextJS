@@ -223,9 +223,6 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
           eventClaimStatusChangedHistory.map(getNotificationFromClaimStatusChanged(tripInfos, claimInfos, isHost))
         );
 
-        // console.log(`eventTripCreatedHistory: ${JSON.stringify(eventTripCreatedHistory, bigIntReplacer)}`);
-        // console.log(`eventTripStatusChangedHistory: ${JSON.stringify(eventTripStatusChangedHistory, bigIntReplacer)}`);
-
         const notifications: NotificationInfo[] = notificationsTripCreatedHistory
           .concat(notificationsTripStatusChangedHistory)
           .concat(notificationsClaimStatusChangedHistory)
