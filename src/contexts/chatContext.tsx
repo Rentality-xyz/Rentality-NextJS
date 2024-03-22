@@ -1,6 +1,4 @@
-"use client";
-
-import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { ChatInfo } from "@/model/ChatInfo";
 import { Client as ChatClient } from "@/chat/client";
 import { getEtherContractWithSigner } from "@/abis";
@@ -156,7 +154,7 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
   const { isHost } = useUserRole();
 
   const addNotificationsRef = useRef(addNotifications);
-  useLayoutEffect(() => {
+  useEffect(() => {
     addNotificationsRef.current = addNotifications;
   }, [addNotifications]);
 
@@ -396,7 +394,6 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
       if (!rentalityTripService) return;
       if (!chatClient) return;
       if (isChatInfoInitialized.current) return;
-      // if (!rentalityChatHelper) return;
 
       try {
         setIsLoading(true);
