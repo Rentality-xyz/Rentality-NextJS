@@ -12,7 +12,7 @@ export default function CarSearchMap({ carInfos, width, height, onMarkerClick }:
 	height: string,
 	onMarkerClick: (carID: Number) => void
 }) {
-	const [map, setMap] = useState(null)
+	const [map, setMap] = useState<google.maps.Map | null>(null)
 
 	const onLoad = (map: google.maps.Map) => {
 		const bounds = new google.maps.LatLngBounds();
@@ -45,14 +45,14 @@ export default function CarSearchMap({ carInfos, width, height, onMarkerClick }:
 				{carInfos?.map((carInfo: SearchCarInfo) => (
 					<Marker
 						key={carInfo.carId}
-						map={map}
+						map={map!}
 						position={carInfo.location}
 						onClick = {({ domEvent }) => {
 							const { target } = domEvent;
 							onMarkerClick(target.id);
 				        }}
 					>
-						<RntButton id={carInfo.carId} className="w-24 h-8">${carInfo.totalPrice}</RntButton>
+						<RntButton id={carInfo.carId.toString()} className="w-24 h-8">${carInfo.totalPrice}</RntButton>
 					</Marker>
 				))}
 			</GoogleMap>

@@ -7,7 +7,7 @@ export interface GoogleMapsContextType {
 }
 
 export interface GoogleMapsAPIUrlParameters {
-	googleMapsAPIKey: string;
+	googleMapsAPIKey?: string;
 	libraries?: string[];
 	language?: string;
 	region?: string;
@@ -53,7 +53,7 @@ export const GoogleMapsProvider = ({
 		/* eslint-disable camelcase */
 		const params = new URLSearchParams({
 			loading: "async",
-			key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+			key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
 			language: language || defaultLanguage,
 			region: region || defaultRegion,
 			callback: '__googleMapsCallback__',

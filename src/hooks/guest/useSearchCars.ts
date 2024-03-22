@@ -110,10 +110,12 @@ const useSearchCars = () => {
           hostName: i.hostName,
           timeZoneId: i.timeZoneId,
           location: {
-			  lat: parseFloat(i.locationLatitude),
-			  lng: parseFloat(i.locationLongitude)
-		  }          
+            lat: parseFloat(i.locationLatitude),
+            lng: parseFloat(i.locationLongitude),
+          },
+          highlighted: false,
         };
+        console.log(`item:${JSON.stringify(item)}`);
 
         return item;
       })
