@@ -11,8 +11,8 @@ function СarDetails({ tripInfo, isHost }: { tripInfo: TripInfo; isHost: boolean
       ? "You"
       : tripInfo.hostName ?? "Host"
     : isHost
-    ? tripInfo.guestName ?? "Guest"
-    : "You";
+      ? tripInfo.guestName ?? "Guest"
+      : "You";
   const otherUserPhotoUrl = isHost ? tripInfo.guestPhotoUrl : tripInfo.hostPhotoUrl;
   const otherUserName = isHost ? tripInfo.guestName : tripInfo.hostName;
 

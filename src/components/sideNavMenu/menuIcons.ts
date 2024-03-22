@@ -20,7 +20,7 @@ enum MenuIcons {
   Messages,
   Notifications,
   ProfileSettings,
-  TransactionHistory
+  TransactionHistory,
 }
 
 export const getImageForMenu = (state: MenuIcons): StaticImageData => {

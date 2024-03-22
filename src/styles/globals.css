@@ -322,6 +322,6 @@ input:disabled {
   mask-composite: exclude;
 }
 
-#pagination>ul>li {
+#pagination > ul > li {
   margin-left: 12px;
 }

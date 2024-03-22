@@ -12,8 +12,8 @@ const getPageId = (route: string) => {
   return isEmpty(pageIdFromRoute) || pageIdFromRoute === "guest"
     ? "guest_search"
     : pageIdFromRoute === "host"
-    ? "host_vehicles_listings"
-    : pageIdFromRoute;
+      ? "host_vehicles_listings"
+      : pageIdFromRoute;
 };
 
 const savePageLastVisitedDateTime = (page: string) => {

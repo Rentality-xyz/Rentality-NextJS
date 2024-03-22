@@ -60,8 +60,8 @@ export function createNotificationInfoFromTrip(
             ? `You rejected ${tripDTO.trip.guestName}'s request to book your ${carDescription}`
             : `${tripDTO.trip.guestName} rejected their request to book your ${carDescription}`
           : rejectedByHost
-          ? `${tripDTO.trip.hostName} rejected a request to book ${carDescription}.`
-          : `You rejected a request to book ${carDescription}.`,
+            ? `${tripDTO.trip.hostName} rejected a request to book ${carDescription}.`
+            : `You rejected a request to book ${carDescription}.`,
       };
     case TripStatus.Confirmed:
       return {
