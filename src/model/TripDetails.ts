@@ -30,6 +30,7 @@ export type TripDetails = {
   totalDayPriceInUsd: number;
   taxPriceInUsd: number;
   depositInUsd: number;
-  currencyType: number;
-  ethToCurrencyRate: number;
+  currencyType: string;
+  currencyRate: number;
+  currencyDecimals: number;
 };

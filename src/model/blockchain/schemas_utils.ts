@@ -8,6 +8,7 @@ import {
   ContractChatInfo,
   ContractClaim,
   ContractFullClaimInfo,
+  ContractPublicHostCarDTO,
   ContractSearchCar,
   ContractTransactionInfo,
   ContractTrip,
@@ -75,6 +76,23 @@ export function validateContractCarInfoDTO(obj: ContractCarInfoDTO): obj is Cont
   };
 
   return validateType(obj, emptyContractCarInfoDTO) && validateType(obj.carInfo, emptyContractCarInfo);
+}
+
+export function validateContractPublicHostCarDTO(obj: ContractPublicHostCarDTO): obj is ContractPublicHostCarDTO {
+  if (typeof obj !== "object" || obj == null) return false;
+  const emptyContractPublicHostCarDTO: ContractPublicHostCarDTO = {
+    carId: BigInt(0),
+    metadataURI: "",
+    brand: "",
+    model: "",
+    yearOfProduction: BigInt(0),
+    pricePerDayInUsdCents: BigInt(0),
+    securityDepositPerTripInUsdCents: BigInt(0),
+    milesIncludedPerDay: BigInt(0),
+    currentlyListed: false,
+  };
+
+  return validateType(obj, emptyContractPublicHostCarDTO);
 }
 
 export function validateContractChatInfo(obj: ContractChatInfo): obj is ContractChatInfo {
@@ -192,11 +210,13 @@ const emptyContractTrip: ContractTrip = {
     taxPriceInUsdCents: BigInt(0),
     depositInUsdCents: BigInt(0),
     resolveAmountInUsdCents: BigInt(0),
-    currencyType: 0,
-    ethToCurrencyRate: BigInt(0),
-    ethToCurrencyDecimals: BigInt(0),
+    currencyType: "",
+    currencyRate: BigInt(0),
+    currencyDecimals: BigInt(0),
     resolveFuelAmountInUsdCents: BigInt(0),
     resolveMilesAmountInUsdCents: BigInt(0),
+    priceWithDiscount: BigInt(0),
+    tokenAddress: "",
   },
   approvedDateTime: BigInt(0),
   rejectedDateTime: BigInt(0),

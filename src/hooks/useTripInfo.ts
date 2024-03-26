@@ -39,8 +39,9 @@ const emptyDetails: TripDetails = {
   totalDayPriceInUsd: 0,
   taxPriceInUsd: 0,
   depositInUsd: 0,
-  currencyType: 0,
-  ethToCurrencyRate: 0,
+  currencyType: "",
+  currencyRate: 0,
+  currencyDecimals: 0,
 };
 
 const useTripDetails = (tripId: bigint) => {
@@ -109,10 +110,9 @@ const useTripDetails = (tripId: bigint) => {
             ? Number(tripDTO.trip.paymentInfo.resolveAmountInUsdCents) / 100.0
             : undefined,
         currencyType: tripDTO.trip.paymentInfo.currencyType,
-        ethToCurrencyRate:
-          Number(tripDTO.trip.paymentInfo.ethToCurrencyRate) /
-          10 ** Number(tripDTO.trip.paymentInfo.ethToCurrencyDecimals),
-        //ethToCurrencyDecimals: trip.paymentInfo.ethToCurrencyDecimals,
+        currencyRate:
+          Number(tripDTO.trip.paymentInfo.currencyRate) / 10 ** Number(tripDTO.trip.paymentInfo.currencyDecimals),
+        currencyDecimals: Number(tripDTO.trip.paymentInfo.currencyDecimals),
         timeZoneId: timeZoneId,
       };
       return details;

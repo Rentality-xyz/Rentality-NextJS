@@ -156,7 +156,7 @@ export default function TripDetails({ tripId }: { tripId: bigint }) {
             <RntInput
               id="ethToCurrencyRate"
               label="ETH to currency rate:"
-              value={tripDetails.ethToCurrencyRate.toString()}
+              value={tripDetails.currencyRate.toString()}
               readOnly={true}
             />
             <RntInput

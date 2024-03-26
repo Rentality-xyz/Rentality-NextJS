@@ -202,10 +202,11 @@ const useSearchCars = () => {
         startLocation: startLocation,
         endLocation: endLocation,
         totalDayPriceInUsdCents: BigInt(totalDayPriceInUsdCents),
-        taxPriceInUsdCents: BigInt(taxPriceInUsdCents),
+        //taxPriceInUsdCents: BigInt(taxPriceInUsdCents),
         depositInUsdCents: BigInt(depositInUsdCents),
-        ethToCurrencyRate: BigInt(ethToUsdRate),
-        ethToCurrencyDecimals: BigInt(ethToUsdDecimals),
+        currencyRate: BigInt(ethToUsdRate),
+        currencyDecimals: BigInt(ethToUsdDecimals),
+        currencyType: "0",
       };
 
       const transaction = await rentalityContract.createTripRequest(tripRequest, {
@@ -235,8 +236,8 @@ const useSearchCars = () => {
       sortBy === "distance"
         ? sortByIncludedDistance
         : sortBy === "priceDesc"
-          ? sortByDailyPriceDes
-          : sortByDailyPriceAsc;
+        ? sortByDailyPriceDes
+        : sortByDailyPriceAsc;
 
     setSearchResult((current) => {
       return {

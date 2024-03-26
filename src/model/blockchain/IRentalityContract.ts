@@ -9,6 +9,7 @@ import {
   ContractCreateTripRequest,
   ContractFullClaimInfo,
   ContractKYCInfo,
+  ContractPublicHostCarDTO,
   ContractSearchCar,
   ContractSearchCarParams,
   ContractTrip,
@@ -85,6 +86,7 @@ export interface IRentalityContract {
     expirationDate: bigint,
     isTCPassed: boolean
   ): Promise<ContractTransactionResponse>;
+  getCarsOfHost(host: string): Promise<ContractPublicHostCarDTO[]>;
 
   //not using
   burnCar(carId: bigint): Promise<ContractCarInfo>;

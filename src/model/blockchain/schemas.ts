@@ -17,6 +17,18 @@ export type ContractCarInfo = {
   timeZoneId: string;
 };
 
+export type ContractPublicHostCarDTO = {
+  carId: bigint;
+  metadataURI: string;
+  brand: string;
+  model: string;
+  yearOfProduction: bigint;
+  pricePerDayInUsdCents: bigint;
+  securityDepositPerTripInUsdCents: bigint;
+  milesIncludedPerDay: bigint;
+  currentlyListed: boolean;
+};
+
 export type ContractCarInfoDTO = {
   carInfo: ContractCarInfo;
   metadataURI: string;
@@ -71,10 +83,10 @@ export type ContractCreateTripRequest = {
   startLocation: string;
   endLocation: string;
   totalDayPriceInUsdCents: bigint;
-  taxPriceInUsdCents: bigint;
   depositInUsdCents: bigint;
-  ethToCurrencyRate: bigint;
-  ethToCurrencyDecimals: bigint;
+  currencyRate: bigint;
+  currencyDecimals: bigint;
+  currencyType: string;
 };
 
 export type ContractTransactionInfo = {
@@ -204,13 +216,37 @@ export type ContractPaymentInfo = {
   to: string;
   totalDayPriceInUsdCents: bigint;
   taxPriceInUsdCents: bigint;
+  priceWithDiscount: bigint;
   depositInUsdCents: bigint;
   resolveAmountInUsdCents: bigint;
-  currencyType: CurrencyType;
-  ethToCurrencyRate: bigint;
-  ethToCurrencyDecimals: bigint;
+  currencyType: string;
+  tokenAddress: string;
+  currencyRate: bigint;
+  currencyDecimals: bigint;
   resolveFuelAmountInUsdCents: bigint;
   resolveMilesAmountInUsdCents: bigint;
+};
+
+export type ContractTripReceiptDTO = {
+  totalDayPriceInUsdCents: bigint;
+  totalTripDays: bigint;
+  tripPrice: bigint;
+  discountAmount: bigint;
+  taxes: bigint;
+  depositReceived: bigint;
+  reimbursement: bigint;
+  depositReturned: bigint;
+  refuel: bigint;
+  refuelPricePerUnit: bigint;
+  refuelOrRechargeTotalPrice: bigint;
+  milesIncluded: bigint;
+  overmiles: bigint;
+  pricePerOvermileInCents: bigint;
+  overmileCharge: bigint;
+  startFuelLevel: bigint;
+  endFuelLevel: bigint;
+  startOdometer: bigint;
+  endOdometer: bigint;
 };
 
 export type ContractKYCInfo = {
@@ -245,6 +281,16 @@ export type ContractSearchCar = {
   metadataURI: string;
 };
 
+export type ContractGeoData = {
+  city: string;
+  country: string;
+  state: string;
+  locationLatitude: string;
+  locationLongitude: string;
+  timeZoneId: string;
+  metadataURI: string;
+};
+
 export type ContractCarDetails = {
   carId: bigint;
   hostName: string;
@@ -266,6 +312,18 @@ export type ContractCarDetails = {
   state: string;
   locationLatitude: string;
   locationLongitude: string;
+};
+
+export type ContractFloridaTaxes = {
+  salesTaxPPM: bigint;
+  governmentTaxPerDayInUsdCents: bigint;
+};
+
+export type ContractBaseDiscount = {
+  threeDaysDiscount: bigint;
+  sevenDaysDiscount: bigint;
+  thirtyDaysDiscount: bigint;
+  initialized: boolean;
 };
 
 export enum CurrencyType {
@@ -308,4 +366,11 @@ export type EngineType = bigint;
 export const EngineType = {
   PATROL: BigInt(1),
   ELECTRIC: BigInt(2),
+};
+
+export type TaxesLocationType = bigint;
+export const TaxesLocationType = {
+  City: BigInt(0),
+  State: BigInt(1),
+  Country: BigInt(2),
 };
