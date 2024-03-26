@@ -5,6 +5,7 @@ import linkedin from "../../images/ic-linkedin-50.png";
 import twitter from "../../images/ic_twitter.svg";
 import discord from "../../images/ic-discord-50.png";
 import email from "../../images/ic-email-50.png";
+import telegram from "../../images/ic_telegram.svg";
 import Link from "next/link";
 
 export default function Footer() {
@@ -79,6 +80,10 @@ export default function Footer() {
 
               <a href="mailto:info@rentality.xyz" className="lg:hidden">
                 <Image src={email} alt="" className="ml-3 w-[30px]" />
+              </a>
+
+              <a href="https://t.me/rentality_xyz" target="_blank" rel="noopener noreferrer">
+                <Image src={telegram} alt="" className="ml-3 w-[30px]" />
               </a>
             </div>
           </div>
