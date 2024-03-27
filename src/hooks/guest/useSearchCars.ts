@@ -18,6 +18,7 @@ import {
   EngineType,
 } from "@/model/blockchain/schemas";
 import { validateContractSearchCar } from "@/model/blockchain/schemas_utils";
+import { ethers } from "ethers";
 
 export const sortOptions = {
   priceAsc: "Price: low to high",
@@ -171,28 +172,20 @@ const useSearchCars = () => {
     }
 
     try {
-      const rentalityCurrencyConverterContract = (await getEtherContractWithSigner(
-        "currencyConverter",
-        ethereumInfo.signer
-      )) as unknown as IRentalityCurrencyConverterContract;
-      if (rentalityContract == null) {
-        console.error("createTripRequest error: rentalityContract is null");
-        return false;
-      }
-      if (rentalityCurrencyConverterContract == null) {
-        console.error("createTripRequest error: rentalityCurrencyConverterContract is null");
-        return false;
-      }
       const startDateTimeUTC = moment.utc(startDateTime).subtract(utcOffsetMinutes, "minutes").toDate();
       const endDateTimeUTC = moment.utc(endDateTime).subtract(utcOffsetMinutes, "minutes").toDate();
+
+      const days = calculateDays(startDateTimeUTC, endDateTimeUTC);
+      if (days < 0) {
+        console.error("Date to' must be greater than 'Date from'");
+        return false;
+      }
 
       const startTimeUTC = getBlockchainTimeFromDate(startDateTimeUTC);
       const endTimeUTC = getBlockchainTimeFromDate(endDateTimeUTC);
 
-      const rentPriceInUsdCents = (totalDayPriceInUsdCents + taxPriceInUsdCents + depositInUsdCents) | 0;
-
-      const { valueInEth, ethToUsdRate, ethToUsdDecimals } =
-        await rentalityCurrencyConverterContract.getEthFromUsdLatest(BigInt(rentPriceInUsdCents));
+      const ethAddress = ethers.getAddress("0x0000000000000000000000000000000000000000");
+      const paymentsNeeded = await rentalityContract.calculatePayments(BigInt(carId), BigInt(days), ethAddress);
 
       const tripRequest: ContractCreateTripRequest = {
         carId: BigInt(carId),
@@ -202,15 +195,14 @@ const useSearchCars = () => {
         startLocation: startLocation,
         endLocation: endLocation,
         totalDayPriceInUsdCents: BigInt(totalDayPriceInUsdCents),
-        //taxPriceInUsdCents: BigInt(taxPriceInUsdCents),
         depositInUsdCents: BigInt(depositInUsdCents),
-        currencyRate: BigInt(ethToUsdRate),
-        currencyDecimals: BigInt(ethToUsdDecimals),
-        currencyType: "0",
+        currencyRate: BigInt(paymentsNeeded.currencyRate),
+        currencyDecimals: BigInt(paymentsNeeded.currencyDecimals),
+        currencyType: ethAddress,
       };
 
       const transaction = await rentalityContract.createTripRequest(tripRequest, {
-        value: valueInEth,
+        value: paymentsNeeded.totalPrice,
       });
       await transaction.wait();
       return true;
