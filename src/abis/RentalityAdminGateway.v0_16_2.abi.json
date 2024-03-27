@@ -38,6 +38,75 @@
     },
     {
       "type": "function",
+      "name": "addCurrency",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "tokenAddress" },
+        { "type": "address", "name": "rentalityTokenService" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "addDiscountContract",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "discountContactAddress" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "addTaxesContract",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "taxesContactAddress" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "calculateSumWithDiscount",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "user" },
+        { "type": "uint64", "name": "daysOfTrip" },
+        { "type": "uint64", "name": "value" }
+      ],
+      "outputs": [{ "type": "uint64", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "calculateTaxes",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        { "type": "uint256", "name": "taxesId" },
+        { "type": "uint64", "name": "daysOfTrip" },
+        { "type": "uint64", "name": "value" }
+      ],
+      "outputs": [{ "type": "uint64", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "changeCurrentDiscountType",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "discountContract" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "confirmCheckOut",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "uint256", "name": "tripId" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
       "name": "getCarServiceAddress",
       "constant": true,
       "stateMutability": "view",
@@ -150,6 +219,14 @@
       "payable": false,
       "inputs": [],
       "outputs": [{ "type": "bytes32", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "rejectTripRequest",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "uint256", "name": "tripId" }],
+      "outputs": []
     },
     {
       "type": "function",
@@ -280,7 +357,7 @@
       "name": "withdrawAllFromPlatform",
       "constant": false,
       "payable": false,
-      "inputs": [],
+      "inputs": [{ "type": "address", "name": "tokenAddress" }],
       "outputs": []
     },
     {
@@ -288,7 +365,10 @@
       "name": "withdrawFromPlatform",
       "constant": false,
       "payable": false,
-      "inputs": [{ "type": "uint256", "name": "amount" }],
+      "inputs": [
+        { "type": "uint256", "name": "amount" },
+        { "type": "address", "name": "tokenAddress" }
+      ],
       "outputs": []
     }
   ]

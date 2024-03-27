@@ -220,7 +220,6 @@ export type ContractPaymentInfo = {
   depositInUsdCents: bigint;
   resolveAmountInUsdCents: bigint;
   currencyType: string;
-  tokenAddress: string;
   currencyRate: bigint;
   currencyDecimals: bigint;
   resolveFuelAmountInUsdCents: bigint;
@@ -247,6 +246,12 @@ export type ContractTripReceiptDTO = {
   endFuelLevel: bigint;
   startOdometer: bigint;
   endOdometer: bigint;
+};
+
+export type ContractCalculatePaymentsDTO = {
+  totalPrice: bigint;
+  currencyRate: bigint;
+  currencyDecimals: bigint;
 };
 
 export type ContractKYCInfo = {

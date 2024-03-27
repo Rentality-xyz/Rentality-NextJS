@@ -1,5 +1,6 @@
 import { ContractTransactionResponse } from "ethers";
 import {
+  ContractCalculatePaymentsDTO,
   ContractCarDetails,
   ContractCarInfo,
   ContractCarInfoDTO,
@@ -68,6 +69,7 @@ export interface IRentalityContract {
   getChatInfoForGuest(): Promise<ContractChatInfo[]>;
   payClaim(claimId: bigint, value: object): Promise<ContractTransactionResponse>;
   getMyClaimsAsGuest(): Promise<ContractFullClaimInfo[]>;
+  calculatePayments(carId: bigint, daysOfTrip: bigint, currency: string): Promise<ContractCalculatePaymentsDTO>;
 
   /// GENERAL functions
   address: string;
