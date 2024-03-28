@@ -23,6 +23,11 @@ export type SearchCarInfo = {
   hostPhotoUrl: string;
   hostName: string;
   timeZoneId: string;
+  location: {
+	lat: number,
+	lng: number
+  };
+  highlighted: boolean;
 };
 
 export const emptySearchCarsResult: SearchCarsResult = {

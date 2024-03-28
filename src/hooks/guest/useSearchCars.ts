@@ -110,7 +110,13 @@ const useSearchCars = () => {
           hostPhotoUrl: i.hostPhotoUrl,
           hostName: i.hostName,
           timeZoneId: i.timeZoneId,
+          location: {
+            lat: parseFloat(i.locationLatitude),
+            lng: parseFloat(i.locationLongitude),
+          },
+          highlighted: false,
         };
+        console.log(`item:${JSON.stringify(item)}`);
 
         return item;
       })
@@ -239,7 +245,7 @@ const useSearchCars = () => {
       };
     });
   }, []);
-  return [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest] as const;
+  return [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest, setSearchResult] as const;
 };
 
 export default useSearchCars;
