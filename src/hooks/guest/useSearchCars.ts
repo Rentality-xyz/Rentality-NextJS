@@ -52,8 +52,6 @@ const useSearchCars = () => {
     console.log(`dateTo string: ${searchCarRequest.dateTo}`);
     console.log(`endDateTimeUTC string: ${endDateTimeUTC}`);
 
-    const tripDays = calculateDays(startDateTimeUTC, endDateTimeUTC);
-
     const contractDateFromUTC = getBlockchainTimeFromDate(startDateTimeUTC);
     const contractDateToUTC = getBlockchainTimeFromDate(endDateTimeUTC);
     const contractSearchCarParams: ContractSearchCarParams = {
@@ -67,13 +65,10 @@ const useSearchCars = () => {
       pricePerDayInUsdCentsFrom: BigInt(getMoneyInCentsFromString(searchCarRequest.pricePerDayInUsdFrom)),
       pricePerDayInUsdCentsTo: BigInt(getMoneyInCentsFromString(searchCarRequest.pricePerDayInUsdTo)),
     };
-    return [contractDateFromUTC, contractDateToUTC, contractSearchCarParams, tripDays] as const;
+    return [contractDateFromUTC, contractDateToUTC, contractSearchCarParams] as const;
   };
 
-  const formatSearchAvailableCarsContractResponse = async (
-    searchCarsViewsView: ContractSearchCar[],
-    tripDays: number
-  ) => {
+  const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: ContractSearchCar[]) => {
     if (searchCarsViewsView.length === 0) return [];
 
     if (rentalityContract == null) {
@@ -89,7 +84,10 @@ const useSearchCars = () => {
         const meta = await getMetaDataFromIpfs(i.metadataURI);
 
         const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
-        const totalPrice = pricePerDay * tripDays;
+        const pricePerDayWithDiscount = Number(i.pricePerDayWithDiscount) / 100;
+        const tripDays = Number(i.tripDays);
+        const totalPriceWithDiscount = Number(i.totalPriceWithDiscount) / 100;
+        const taxes = Number(i.taxes) / 100;
         const securityDeposit = Number(i.securityDepositPerTripInUsdCents) / 100;
 
         let item: SearchCarInfo = {
@@ -104,8 +102,10 @@ const useSearchCars = () => {
           engineTypeText: getEngineTypeString(i.engineType ?? EngineType.PATROL),
           milesIncludedPerDay: getMilesIncludedPerDayText(i.milesIncludedPerDay ?? 0),
           pricePerDay: pricePerDay,
-          days: tripDays,
-          totalPrice: totalPrice,
+          pricePerDayWithDiscount: pricePerDayWithDiscount,
+          tripDays: tripDays,
+          totalPriceWithDiscount: totalPriceWithDiscount,
+          taxes: taxes,
           securityDeposit: securityDeposit,
           hostPhotoUrl: i.hostPhotoUrl,
           hostName: i.hostName,
@@ -132,7 +132,7 @@ const useSearchCars = () => {
     try {
       setIsLoading(true);
 
-      const [contractDateFrom, contractDateTo, contractSearchCarParams, tripDays] =
+      const [contractDateFrom, contractDateTo, contractSearchCarParams] =
         formatSearchAvailableCarsContractRequest(searchCarRequest);
 
       const searchCarsView: ContractSearchCar[] = await rentalityContract.searchAvailableCars(
@@ -141,7 +141,7 @@ const useSearchCars = () => {
         contractSearchCarParams
       );
 
-      const availableCarsData = await formatSearchAvailableCarsContractResponse(searchCarsView, tripDays);
+      const availableCarsData = await formatSearchAvailableCarsContractResponse(searchCarsView);
 
       setSearchResult({
         searchCarRequest: searchCarRequest,
