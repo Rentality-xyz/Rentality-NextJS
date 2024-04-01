@@ -71,11 +71,6 @@ const useSearchCars = () => {
   const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: ContractSearchCar[]) => {
     if (searchCarsViewsView.length === 0) return [];
 
-    if (rentalityContract == null) {
-      console.error("formatSearchAvailableCarsContractResponse error: rentalityContract is null");
-      return [];
-    }
-
     return await Promise.all(
       searchCarsViewsView.map(async (i: ContractSearchCar, index) => {
         if (index === 0) {
