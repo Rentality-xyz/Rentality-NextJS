@@ -79,15 +79,15 @@ export function createNotificationInfoFromTrip(
             )} - ${dateFormatShortMonthDateTime(endDateTime, timeZoneId)} for $${getStringFromMoneyInCents(
               tripDTO.trip.paymentInfo.totalDayPriceInUsdCents + tripDTO.trip.paymentInfo.depositInUsdCents
             )} including deposit $${getStringFromMoneyInCents(tripDTO.trip.paymentInfo.depositInUsdCents)}`
-          : `${tripDTO.trip.hostName} has confirmed you request ${calculateDays(
+          : `${tripDTO.trip.hostName} has confirmed your request for a ${calculateDays(
               startDateTime,
               endDateTime
-            )} days trip on ${carDescription}, ${dateFormatShortMonthDateTime(
+            )}-day trip on ${carDescription}, scheduled from ${dateFormatShortMonthDateTime(
               startDateTime,
               timeZoneId
-            )} - ${dateFormatShortMonthDateTime(endDateTime, timeZoneId)} for $${getStringFromMoneyInCents(
+            )} to ${dateFormatShortMonthDateTime(endDateTime, timeZoneId)} for $${getStringFromMoneyInCents(
               tripDTO.trip.paymentInfo.totalDayPriceInUsdCents + tripDTO.trip.paymentInfo.depositInUsdCents
-            )} including deposit $${getStringFromMoneyInCents(tripDTO.trip.paymentInfo.depositInUsdCents)}`,
+            )} including a $${getStringFromMoneyInCents(tripDTO.trip.paymentInfo.depositInUsdCents)} deposit`,
       };
     case TripStatus.CheckedInByHost:
       return isHost
@@ -99,7 +99,7 @@ export function createNotificationInfoFromTrip(
             datestamp: timestamp,
             message: `${
               tripDTO.trip.hostName
-            } confirms start trip #${tripDTO.trip.tripId.toString()} on ${carDescription}. Please confirms start trip on your side`,
+            } has confirmed the start of the trip #${tripDTO.trip.tripId.toString()} on ${carDescription}. Please confirms the start of the trip on your side`,
           };
     case TripStatus.Started:
       return isHost

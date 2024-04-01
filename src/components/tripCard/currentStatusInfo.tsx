@@ -15,7 +15,7 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean) => {
             "",
             "You have 1 hour to confirm this trip or it'll auto-reject",
           ] as const)
-        : (["Host will confirm within 1 hour", "", "Wait host confirmation or you can cancel free of charge"] as const);
+        : (["Host will confirm within 1 hour", "", "Please wait for host confirmation or you can cancel free of charge"] as const);
     case TripStatus.Confirmed:
       return isHost
         ? ([
@@ -37,21 +37,23 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean) => {
               tripInfo.timeZoneId
             )}`,
             "Let`s you check-in!",
-            "Start the trip from your side or you can cancel with cancelation fee 100% of the daily rate",
+            "Start the trip from your side, or you can cancel with a cancellation fee of 100% of the daily rate",
           ] as const);
     case TripStatus.Started:
       return isHost
         ? ([
-            `Now on the trip. The trip ends ${
-              tripInfo.tripEnd > new Date() ? moment(tripInfo.tripEnd).toNow() : moment(tripInfo.tripEnd).fromNow()
-            }`,
+              tripInfo.tripEnd > new Date() ?
+                  `Now on the trip. The trip ended ${moment(tripInfo.tripEnd).toNow()}` :
+                  `Now on the trip. The trip ends in ${moment(tripInfo.tripEnd).fromNow()}`
+              ,,
             "",
             "Wait for the Guest to finish the trip first and then complete on your sides",
           ] as const)
         : ([
-            `The trip ends ${
-              tripInfo.tripEnd > new Date() ? moment(tripInfo.tripEnd).toNow() : moment(tripInfo.tripEnd).fromNow()
-            }`,
+              tripInfo.tripEnd > new Date() ?
+                  `The trip ended ${moment(tripInfo.tripEnd).toNow()}` :
+                  `The trip ends in ${moment(tripInfo.tripEnd).fromNow()}`
+            ,
             "Let`s you check-out!",
             "Finish the trip from your side and wait finish from the Host.",
           ] as const);
@@ -63,13 +65,13 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean) => {
               tripInfo.timeZoneId
             )}`,
             "Let`s you check-out!",
-            "Finish the trip from your side and then Complete the order",
+            "Finish the trip from your side and then complete the order",
           ] as const)
         : (["", "", ""] as const);
     case TripStatus.Finished:
       return isHost
         ? ([
-            `You finish the trip at ${dateFormatShortMonthDateTime(
+            `You finished the trip at ${dateFormatShortMonthDateTime(
               tripInfo.checkedOutByHostDateTime,
               tripInfo.timeZoneId
             )}`,
