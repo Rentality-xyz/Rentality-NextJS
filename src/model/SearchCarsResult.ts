@@ -17,15 +17,17 @@ export type SearchCarInfo = {
   engineTypeText: string;
   milesIncludedPerDay: string;
   pricePerDay: number;
-  days: number;
-  totalPrice: number;
+  pricePerDayWithDiscount: number;
+  tripDays: number;
+  totalPriceWithDiscount: number;
+  taxes: number;
   securityDeposit: number;
   hostPhotoUrl: string;
   hostName: string;
   timeZoneId: string;
   location: {
-	lat: number,
-	lng: number
+    lat: number;
+    lng: number;
   };
   highlighted: boolean;
 };
