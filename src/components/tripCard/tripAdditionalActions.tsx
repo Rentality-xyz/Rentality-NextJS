@@ -141,7 +141,7 @@ function TripAdditionalActions({
                 {tripInfo.status === TripStatus.CheckedOutByGuest ? (
                   param.type === "fuel" ? (
                     <div className="md:w-1/2 xl:w-1/4 md:mx-8 xl:mx-28 grid grid-cols-2 text-sm">
-                      <span className="font-bold col-span-2">Reimbursement charge:</span>
+                      <span className="font-bold col-span-2">FReimbursement charge:</span>
                       <span>Refuel:</span>
                       <span>{refuelValue} gal</span>
                       <span>Gal price:</span>

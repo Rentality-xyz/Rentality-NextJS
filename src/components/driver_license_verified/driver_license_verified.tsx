@@ -71,7 +71,7 @@ export default function DriverLicenseVerified({
           setIsPrivacy(true);
         }}
       />
-      <p className="mt-8">I have read and i agree</p>
+      <p className="mt-8">I have read and I agree</p>
       <div className="flex mt-4 items-center">
         <RntButton type="button" onClick={handleConfirm} disabled={isConfirm}>
           Confirm
