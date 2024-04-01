@@ -35,10 +35,10 @@ export default function CarSearchItem({
         <div className="flex md:grid md:grid-cols-[2fr_1fr] text-xs mt-2 md:justify-between">
           <div className="w-9/12 flex flex-col">
             <div>
-              <strong>Total price ${searchInfo.totalPrice}</strong>
+              <strong>Total price ${searchInfo.totalPriceWithDiscount}</strong>
             </div>
             <div className="mt-2">
-              <strong>{searchInfo.days} days</strong> trip for <strong>${searchInfo.pricePerDay} per day</strong>
+              <strong>{searchInfo.tripDays} days</strong> trip for <strong>${searchInfo.pricePerDay} per day</strong>
             </div>
             <div>{searchInfo.milesIncludedPerDay} mi included per day</div>
             <div>Additionally security deposit ${searchInfo.securityDeposit} per trip</div>
@@ -64,8 +64,8 @@ export default function CarSearchItem({
             onClick={() => handleRentCarRequest(searchInfo)}
             disabled={disableButton}
           >
-            <div>Rent for {searchInfo.days} day(s)</div>
-            <div>for ${searchInfo.totalPrice + searchInfo.securityDeposit}</div>
+            <div>Rent for {searchInfo.tripDays} day(s)</div>
+            <div>for ${searchInfo.totalPriceWithDiscount + searchInfo.securityDeposit}</div>
           </RntButton>
         </div>
       </div>

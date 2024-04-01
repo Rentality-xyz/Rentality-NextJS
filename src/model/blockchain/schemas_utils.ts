@@ -172,6 +172,10 @@ const emptyContractSearchCar: ContractSearchCar = {
   locationLongitude: "",
   timeZoneId: "",
   metadataURI: "",
+  pricePerDayWithDiscount: BigInt(0),
+  taxes: BigInt(0),
+  totalPriceWithDiscount: BigInt(0),
+  tripDays: BigInt(0),
 };
 
 export function validateContractSearchCar(obj: ContractSearchCar): obj is ContractSearchCar {
@@ -216,7 +220,6 @@ const emptyContractTrip: ContractTrip = {
     resolveFuelAmountInUsdCents: BigInt(0),
     resolveMilesAmountInUsdCents: BigInt(0),
     priceWithDiscount: BigInt(0),
-    tokenAddress: "",
   },
   approvedDateTime: BigInt(0),
   rejectedDateTime: BigInt(0),
