@@ -310,8 +310,7 @@ export default function Search() {
 				width='100%'
 				height='100vh'
 				onMarkerClick={handleMapClick}
-			>
-			</CarSearchMap>
+			/>
           </div>
           </>
         )}
