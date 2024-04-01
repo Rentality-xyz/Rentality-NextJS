@@ -81,7 +81,7 @@ export default function TripDetails({ tripId }: { tripId: bigint }) {
             />
             <RntInput
               id="startOdometr"
-              label="Start odometr:"
+              label="Start odometer:"
               value={tripDetails.startOdometr?.toString() ?? "-"}
               readOnly={true}
             />
@@ -113,7 +113,7 @@ export default function TripDetails({ tripId }: { tripId: bigint }) {
             />
             <RntInput
               id="endOdometr"
-              label="End odometr:"
+              label="End odometer:"
               value={tripDetails.endOdometr?.toString() ?? "-"}
               readOnly={true}
             />

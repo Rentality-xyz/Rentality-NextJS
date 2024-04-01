@@ -30,7 +30,7 @@ export default function History() {
               })
             ) : (
               <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
-                You dont have booked trips
+                  You don't have any booked trips
               </div>
             )}
           </div>

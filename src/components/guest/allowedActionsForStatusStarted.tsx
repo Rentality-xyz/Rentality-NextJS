@@ -73,7 +73,7 @@ export default function AllowedActionsForStatusStarted({
             </div>
           </div>
           <div className="flex flex-col">
-            <div className="font-bold mt-2">Odometr</div>
+            <div className="font-bold mt-2">Odometer</div>
             <div className="flex flex-row gap-8">
               <RntInput
                 className="w-1/2 py-2"
@@ -132,7 +132,7 @@ export default function AllowedActionsForStatusStarted({
           </div>
         </div>
         <div className="flex flex-col flex-1">
-          <div className="font-bold mt-4 md:mt-2">Security deposite info:</div>
+          <div className="font-bold mt-4 md:mt-2">Security deposit info:</div>
           <div className="grid grid-cols-2 gap-x-2 mt-2 md:mt-4 text-sm">
             <span className="col-span-1">Received deposit:</span>
             <span className="col-span-1 text-right">${depositPaid.toFixed(2)}</span>

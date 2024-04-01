@@ -48,7 +48,7 @@ function TripAdditionalActions({
       tripInfo.allowedActions[0].readonly &&
       (confirmParams.length != defaultValues.length || !confirmParams.every((i) => i === true))
     ) {
-      showDialog("Please confirm fuel and odometer value");
+      showDialog("Please confirm fuel or battery and odometer value");
       return;
     }
 
@@ -151,8 +151,7 @@ function TripAdditionalActions({
                     </div>
                   ) : (
                     <div className="md:w-1/2 xl:w-1/4 md:mx-8 xl:mx-28 grid grid-cols-2 text-sm">
-                      <span className="font-bold col-span-2">Reimbursement charge:</span>
-                      <span>Overmiles:</span>
+                        <span>Overmiles:</span>
                       <span>{overmileValue}</span>
                       <span>Overmile price:</span>
                       <span>${tripInfo.overmilePrice.toFixed(4)}</span>

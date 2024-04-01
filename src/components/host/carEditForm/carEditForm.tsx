@@ -200,8 +200,8 @@ export default function CarEditForm({
             }}
           >
             <option className="hidden" disabled></option>
-            <option value={ENGINE_TYPE_PATROL_STRING}>Gasoline and Hybrib</option>
-            <option value={ENGINE_TYPE_ELECTRIC_STRING}>Electric Vehicle</option>
+            <option value={ENGINE_TYPE_PATROL_STRING}>Gasoline</option>
+            <option value={ENGINE_TYPE_ELECTRIC_STRING}>Electric</option>
           </RntSelect>
         </div>
       </div>
@@ -294,7 +294,7 @@ export default function CarEditForm({
 
       <div className="mt-4">
         <div className="text-lg  mb-4">
-          <strong>More about the car</strong>
+          <strong>More about the vehicle</strong>
         </div>
         <div className="flex flex-col">
           <textarea
@@ -316,7 +316,7 @@ export default function CarEditForm({
 
       <div className="mt-4">
         <div className="text-lg mb-4">
-          <strong>Location of vehicle availability</strong>
+          <strong>Location of vehicle</strong>
         </div>
         <div className="flex flex-row gap-4 items-end  mb-4">
           <RntPlaceAutocomplete
@@ -435,14 +435,14 @@ export default function CarEditForm({
 
       <div className="mt-4">
         <div className="text-lg  mb-4">
-          <strong>Enabled distance</strong>
+          <strong>Included distance</strong>
         </div>
         {/* <div className="flex flex-col lg:flex-row"> */}
         <div className="flex flex-wrap gap-4 items-end">
           <RntInput
             className="lg:w-60"
             id="milesIncludedPerDay"
-            label="Number of miles per day"
+            label="Maximum daily mileage"
             readOnly={isUnlimitedMiles}
             placeholder="e.g. 200"
             value={carInfoFormParams.milesIncludedPerDay}

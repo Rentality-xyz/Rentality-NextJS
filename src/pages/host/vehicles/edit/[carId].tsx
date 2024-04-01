@@ -35,7 +35,7 @@ export default function EditCar() {
     setCarSaving(true);
 
     try {
-      setMessage("Please wait.. uploading (upto 5 mins)");
+      setMessage("Please wait.. uploading (up to 5 mins)");
       const result = await saveCarInfo();
 
       if (!result) {
