@@ -3,14 +3,14 @@ import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isEmpty } from "@/utils/string";
 
-const useHostPublicListings = (hostAddress: string) => {
+const useHostPublicListings = (hostAddressOrName: string) => {
   const ethereumInfo = useEthereum();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [hostPublicListings, setHostPublicListings] = useState<BaseCarInfo[]>([]);
 
   useEffect(() => {
     const fetchHostPublicListings = async () => {
-      if (isEmpty(hostAddress)) return;
+      if (isEmpty(hostAddressOrName)) return;
 
       const chainId = ethereumInfo?.chainId;
 
@@ -19,7 +19,7 @@ const useHostPublicListings = (hostAddress: string) => {
 
         var url = new URL(`/api/hostPublicListings`, window.location.origin);
         if (chainId) url.searchParams.append("chainId", chainId.toString());
-        url.searchParams.append("hostAddress", hostAddress);
+        url.searchParams.append("host", hostAddressOrName);
         const apiResponse = await fetch(url);
 
         if (!apiResponse.ok) {
@@ -43,7 +43,7 @@ const useHostPublicListings = (hostAddress: string) => {
     };
 
     fetchHostPublicListings();
-  }, [ethereumInfo, hostAddress]);
+  }, [ethereumInfo, hostAddressOrName]);
 
   return [isLoading, hostPublicListings] as const;
 };

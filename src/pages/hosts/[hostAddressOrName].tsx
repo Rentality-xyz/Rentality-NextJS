@@ -4,20 +4,13 @@ import { isEmpty } from "@/utils/string";
 import PublicListingItem from "@/components/hosts/publicListingItem";
 import useHostPublicListings from "@/hooks/host/useHostPublicListings";
 
-const validateWalletAddress = (value: string) => {
-  return !isEmpty(value) && value.length === 42 && value.toLowerCase().startsWith("0x");
-};
-const getHostAddressFromQuery = (query: string | string[] | undefined): string => {
-  return query && typeof query === "string" && validateWalletAddress(query) ? query : "";
-};
-
 export default function HostPublicInfo() {
   const router = useRouter();
-  const { hostAddress: hostAddressQuery } = router.query;
-  const hostAddress = getHostAddressFromQuery(hostAddressQuery);
-  const [isLoading, hostListings] = useHostPublicListings(hostAddress);
+  const { hostAddressOrName: hostQuery } = router.query;
+  const hostAddressOrName = hostQuery && typeof hostQuery === "string" ? hostQuery : "";
+  const [isLoading, hostListings] = useHostPublicListings(hostAddressOrName);
 
-  if (isEmpty(hostAddress))
+  if (isEmpty(hostAddressOrName))
     return (
       <Layout>
         <div className="flex flex-col text-2xl">Host address is invalid</div>
@@ -29,7 +22,7 @@ export default function HostPublicInfo() {
       <div className="flex flex-col">
         <div id="page-title" className="flex flex-row justify-between items-center">
           <div className="text-2xl">
-            <strong>Listings of the host {hostAddress}:</strong>
+            <strong>Listings of the host {hostAddressOrName}:</strong>
           </div>
         </div>
         {isLoading ? (
