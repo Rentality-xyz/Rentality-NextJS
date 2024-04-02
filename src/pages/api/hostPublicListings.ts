@@ -30,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const { chainId, hostAddress: hostAddressQuery } = req.query;
-  const chainIdNumber = Number(chainId) > 0 ? Number(chainId) : Number(process.env.DEFAULT_CHAIN_ID);
+  const chainIdNumber = Number(chainId) > 0 ? Number(chainId) : Number(process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID);
   const hostAddress = getHostAddressFromQuery(hostAddressQuery);
 
   if (!chainIdNumber) {

@@ -9,11 +9,16 @@ const useHostPublicListings = (hostAddress: string) => {
 
   useEffect(() => {
     const fetchHostPublicListings = async () => {
-      const chainId = ethereumInfo?.chainId ?? "default";
+      const chainId = ethereumInfo?.chainId;
 
       try {
         setIsLoading(true);
-        const apiResponse = await fetch(`/api/hostPublicListings?chainId=${chainId}&hostAddress=${hostAddress}`);
+
+        var url = new URL(`/api/hostPublicListings`, window.location.origin);
+        if (chainId) url.searchParams.append("chainId", chainId.toString());
+        url.searchParams.append("hostAddress", hostAddress);
+        const apiResponse = await fetch(url);
+
         if (!apiResponse.ok) {
           console.error(`fetchHostPublicListings fetch error: + ${apiResponse.statusText}`);
           return;
