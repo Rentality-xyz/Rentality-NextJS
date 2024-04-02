@@ -119,24 +119,58 @@ const useSearchCars = () => {
   };
 
   const searchAvailableCars = async (searchCarRequest: SearchCarRequest) => {
-    if (rentalityContract === null) {
-      console.error("searchAvailableCars: rentalityContract is null");
-      return false;
-    }
+    // if (rentalityContract === null) {
+    //   console.error("searchAvailableCars: rentalityContract is null");
+    //   return false;
+    // }
 
     try {
       setIsLoading(true);
 
-      const [contractDateFrom, contractDateTo, contractSearchCarParams] =
-        formatSearchAvailableCarsContractRequest(searchCarRequest);
+      var url = new URL(`/api/publicSearchCars`, window.location.origin);
+      if (ethereumInfo?.chainId) url.searchParams.append("chainId", ethereumInfo.chainId.toString());
+      if (searchCarRequest.dateFrom) url.searchParams.append("dateFrom", searchCarRequest.dateFrom);
+      if (searchCarRequest.dateTo) url.searchParams.append("dateTo", searchCarRequest.dateTo);
+      if (searchCarRequest.country) url.searchParams.append("country", searchCarRequest.country);
+      if (searchCarRequest.state) url.searchParams.append("state", searchCarRequest.state);
+      if (searchCarRequest.city) url.searchParams.append("city", searchCarRequest.city);
+      if (searchCarRequest.utcOffsetMinutes)
+        url.searchParams.append("utcOffsetMinutes", searchCarRequest.utcOffsetMinutes.toString());
+      if (searchCarRequest.brand) url.searchParams.append("brand", searchCarRequest.brand);
+      if (searchCarRequest.model) url.searchParams.append("model", searchCarRequest.model);
+      if (searchCarRequest.yearOfProductionFrom)
+        url.searchParams.append("yearOfProductionFrom", searchCarRequest.yearOfProductionFrom);
+      if (searchCarRequest.yearOfProductionTo)
+        url.searchParams.append("yearOfProductionTo", searchCarRequest.yearOfProductionTo);
+      if (searchCarRequest.pricePerDayInUsdFrom)
+        url.searchParams.append("pricePerDayInUsdFrom", searchCarRequest.pricePerDayInUsdFrom);
+      if (searchCarRequest.pricePerDayInUsdTo)
+        url.searchParams.append("pricePerDayInUsdTo", searchCarRequest.pricePerDayInUsdTo);
 
-      const searchCarsView: ContractSearchCar[] = await rentalityContract.searchAvailableCars(
-        contractDateFrom,
-        contractDateTo,
-        contractSearchCarParams
-      );
+      const apiResponse = await fetch(url);
 
-      const availableCarsData = await formatSearchAvailableCarsContractResponse(searchCarsView);
+      if (!apiResponse.ok) {
+        console.error(`searchAvailableCars fetch error: + ${apiResponse.statusText}`);
+        return;
+      }
+
+      const apiJson = await apiResponse.json();
+      if (!Array.isArray(apiJson)) {
+        console.error("searchAvailableCars fetch wrong response format:");
+        return;
+      }
+
+      const availableCarsData = apiJson as SearchCarInfo[];
+
+      //   const [contractDateFrom, contractDateTo, contractSearchCarParams] =
+      //   formatSearchAvailableCarsContractRequest(searchCarRequest);
+      // const searchCarsView: ContractSearchCar[] = await rentalityContract.searchAvailableCars(
+      //   contractDateFrom,
+      //   contractDateTo,
+      //   contractSearchCarParams
+      // );
+
+      // const availableCarsData = await formatSearchAvailableCarsContractResponse(searchCarsView);
 
       setSearchResult({
         searchCarRequest: searchCarRequest,
