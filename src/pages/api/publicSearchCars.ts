@@ -87,7 +87,6 @@ const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: Co
         },
         highlighted: false,
       };
-      console.log(`item:${JSON.stringify(item)}`);
 
       return item;
     })
@@ -151,7 +150,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     )}`
   );
 
-  console.log(`Calling blockchain function...`);
   const provider = new JsonRpcProvider(providerApiUrl);
   const wallet = new Wallet(privateKey, provider);
 
@@ -167,8 +165,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   );
 
   const availableCarsData = await formatSearchAvailableCarsContractResponse(availableCarsView);
-
-  console.log(`availableCarsData: ${JSON.stringify(availableCarsData)}`);
 
   res.status(200).json(availableCarsData);
 }
