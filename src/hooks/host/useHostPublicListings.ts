@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { isEmpty } from "@/utils/string";
 
 const useHostPublicListings = (hostAddress: string) => {
   const ethereumInfo = useEthereum();
@@ -9,6 +10,8 @@ const useHostPublicListings = (hostAddress: string) => {
 
   useEffect(() => {
     const fetchHostPublicListings = async () => {
+      if (isEmpty(hostAddress)) return;
+
       const chainId = ethereumInfo?.chainId;
 
       try {
