@@ -101,7 +101,7 @@ export default function CreateClaim({
       <RntInputMultiline
         id="description"
         rows={3}
-        label="Describe you claim in detail"
+        label="Describe your claim in detail"
         placeholder="enter your message"
         value={createClaimParams.description}
         onChange={(e) =>
@@ -123,11 +123,11 @@ export default function CreateClaim({
           })
         }
       />
-      <p>Response timeout for a guest 72 hours after trip end Your complaints will be public</p>
+      <p>Response timeout for a guest 72 hours after trip end your complaints will be public</p>
 
       <Checkbox
         className="w-full"
-        title="I certify that all charges are accurate, and i understand that any false submission or representation may result in restrictions or removal from the Rentality marketplace."
+        title="I certify that all charges are accurate, and I understand that any false submission or representation may result in restrictions or removal from the Rentality marketplace."
         value={createClaimParams.isChecked}
         onChange={(e) =>
           setCreateClaimParams({

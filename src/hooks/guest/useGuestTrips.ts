@@ -110,7 +110,7 @@ const useGuestTrips = () => {
                 type: "fuel",
               },
               {
-                text: "Odometr",
+                text: "Odometer",
                 value: trip.startParamLevels[1].toString(),
                 type: "text",
               },
@@ -130,7 +130,7 @@ const useGuestTrips = () => {
             readonly: false,
             params: [
               { text: "Fuel or battery level, %", value: "", type: "fuel" },
-              { text: "Odometr", value: "", type: "text" },
+              { text: "Odometer", value: "", type: "text" },
             ],
             action: checkOutTrip,
           });

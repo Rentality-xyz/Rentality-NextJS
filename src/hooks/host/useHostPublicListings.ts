@@ -1,55 +1,39 @@
 import { useEffect, useState } from "react";
 import { BaseCarInfo } from "@/model/BaseCarInfo";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
-import { useRentality } from "@/contexts/rentalityContext";
-import { ContractPublicHostCarDTO } from "@/model/blockchain/schemas";
-import { validateContractPublicHostCarDTO } from "@/model/blockchain/schemas_utils";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { isEmpty } from "@/utils/string";
 
-const useHostPublicListings = (hostAddress: string) => {
-  const rentalityContract = useRentality();
+const useHostPublicListings = (hostAddressOrName: string) => {
+  const ethereumInfo = useEthereum();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [hostPublicListings, setHostPublicListings] = useState<BaseCarInfo[]>([]);
 
   useEffect(() => {
     const fetchHostPublicListings = async () => {
-      if (!rentalityContract) return;
+      if (isEmpty(hostAddressOrName)) return;
+
+      const chainId = ethereumInfo?.chainId;
 
       try {
         setIsLoading(true);
-        const hostPublicListingsView: ContractPublicHostCarDTO[] = await rentalityContract.getCarsOfHost(hostAddress);
 
-        const hostPublicListingsData =
-          hostPublicListingsView.length === 0
-            ? []
-            : await Promise.all(
-                hostPublicListingsView.map(async (i: ContractPublicHostCarDTO, index) => {
-                  if (index === 0) {
-                    validateContractPublicHostCarDTO(i);
-                  }
-                  const meta = await getMetaDataFromIpfs(i.metadataURI);
+        var url = new URL(`/api/hostPublicListings`, window.location.origin);
+        if (chainId) url.searchParams.append("chainId", chainId.toString());
+        url.searchParams.append("host", hostAddressOrName);
+        const apiResponse = await fetch(url);
 
-                  const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
-                  const securityDeposit = Number(i.securityDepositPerTripInUsdCents) / 100;
-                  const milesIncludedPerDay = Number(i.milesIncludedPerDay);
+        if (!apiResponse.ok) {
+          console.error(`fetchHostPublicListings fetch error: + ${apiResponse.statusText}`);
+          return;
+        }
 
-                  const item: BaseCarInfo = {
-                    carId: Number(i.carId),
-                    ownerAddress: hostAddress,
-                    image: getIpfsURIfromPinata(meta.image),
-                    brand: meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "",
-                    model: meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
-                    year: meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
-                    licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
-                    pricePerDay: pricePerDay,
-                    securityDeposit: securityDeposit,
-                    milesIncludedPerDay: milesIncludedPerDay,
-                    currentlyListed: i.currentlyListed,
-                    isEditable: false,
-                  };
-                  return item;
-                })
-              );
+        const apiJson = await apiResponse.json();
+        if (!Array.isArray(apiJson)) {
+          console.error("fetchHostPublicListings fetch wrong response format:");
+          return;
+        }
 
+        const hostPublicListingsData = apiJson as BaseCarInfo[];
         setHostPublicListings(hostPublicListingsData);
       } catch (e) {
         console.error("fetchHostPublicListings error:" + e);
@@ -59,7 +43,7 @@ const useHostPublicListings = (hostAddress: string) => {
     };
 
     fetchHostPublicListings();
-  }, [rentalityContract, hostAddress]);
+  }, [ethereumInfo, hostAddressOrName]);
 
   return [isLoading, hostPublicListings] as const;
 };

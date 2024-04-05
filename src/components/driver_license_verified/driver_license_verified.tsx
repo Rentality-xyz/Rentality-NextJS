@@ -71,7 +71,7 @@ export default function DriverLicenseVerified({
           setIsPrivacy(true);
         }}
       />
-      <p className="mt-8">I Have read and agree</p>
+      <p className="mt-8">I have read and I agree</p>
       <div className="flex mt-4 items-center">
         <RntButton type="button" onClick={handleConfirm} disabled={isConfirm}>
           Confirm
@@ -86,7 +86,7 @@ function GetNotVerifiedDriverLicense() {
   return (
     <div className="flex items-center">
       <span className="w-4 h-4 bg-[#DB001A] rounded-full inline-block pr-4"></span>
-      <span className="ml-2">You driver license not verified</span>
+      <span className="ml-2">Your driver license not verified</span>
     </div>
   );
 }
@@ -113,7 +113,7 @@ function GetConfirm() {
   return (
     <div className="flex items-center">
       <span className="w-4 h-4 bg-[#2EB100] rounded-full inline-block pr-4"></span>
-      <span className="ml-2">You Confirm</span>
+      <span className="ml-2">You confirmed</span>
     </div>
   );
 }

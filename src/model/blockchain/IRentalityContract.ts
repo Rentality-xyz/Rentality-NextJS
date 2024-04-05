@@ -13,7 +13,6 @@ import {
   ContractPublicHostCarDTO,
   ContractSearchCar,
   ContractSearchCarParams,
-  ContractTrip,
   ContractTripDTO,
   ContractUpdateCarInfoRequest,
 } from "./schemas";
@@ -73,7 +72,6 @@ export interface IRentalityContract {
 
   /// GENERAL functions
   address: string;
-  //getAddress(): Promise<string>;
   getCarMetadataURI(carId: bigint): Promise<string>;
   getCarDetails(carId: bigint): Promise<ContractCarDetails>;
   getTrip(tripId: bigint): Promise<ContractTripDTO>;
@@ -89,27 +87,10 @@ export interface IRentalityContract {
     isTCPassed: boolean
   ): Promise<ContractTransactionResponse>;
   getCarsOfHost(host: string): Promise<ContractPublicHostCarDTO[]>;
+  getClaim(claimId: bigint): Promise<ContractFullClaimInfo>;
 
   //not using
-  burnCar(carId: bigint): Promise<ContractCarInfo>;
-  updateCarTokenUri(carId: bigint, tokenUri: string): Promise<ContractTransactionResponse>;
-  getAvailableCars(): Promise<ContractCarInfo[]>;
   getAllCars(): Promise<ContractCarInfo[]>;
-  getAvailableCarsForUser(user: string): Promise<ContractCarInfo[]>;
-  searchAvailableCarsForUser(
-    user: string,
-    startDateTime: bigint,
-    endDateTime: bigint,
-    searchParams: ContractSearchCarParams
-  ): Promise<ContractSearchCar[]>;
-  getTripsByGuest(guest: string): Promise<ContractTripDTO[]>;
-  getTripsByHost(host: string): Promise<ContractTripDTO[]>;
-  getTripsByCar(carId: bigint): Promise<ContractTrip[]>;
-  updateClaim(claimId: bigint): Promise<ContractTransactionResponse>;
-  getClaim(claimId: bigint): Promise<ContractFullClaimInfo>;
-  getClaimsByTrip(tripId: bigint): Promise<ContractFullClaimInfo[]>;
-  getKYCInfo(user: string): Promise<ContractKYCInfo>;
-  getCarsRentedByMe(): Promise<ContractCarInfo[]>;
 }
 
 export interface IRentalityAdminGateway {
