@@ -25,6 +25,7 @@ function Login() {
           userInfo?.lastName?.slice(0, 1)?.toUpperCase() ?? ""
         }`
       : null;
+  const userAddressOrEnsName = !isEmpty(userInfo?.ensName) ? userInfo?.ensName : formatAddress(userInfo?.address ?? "");
 
   useEffect(() => {
     window.addEventListener("scroll", handleOnScroll, true);
@@ -94,7 +95,7 @@ function Login() {
     >
       <div className=" flex-col hidden xl:flex">
         <div>{userFullName}</div>
-        <div className="text-sm">{formatAddress(userInfo?.address ?? "")}</div>
+        <div className="text-sm">{userAddressOrEnsName}</div>
       </div>
       <Avatar className="w-20 h-20" alt={userFullName} src={userInfo?.profilePhotoUrl}>
         {userInitials}

@@ -37,9 +37,11 @@ export default function Search() {
     const sortOption: object = t("search_page.sort_options", {
         returnObjects: true
     })
+
     function isSortOptionKey(key: PropertyKey): key is SortOptionKey {
         return sortOption.hasOwnProperty(key)
     }
+
     const t_page: TFunction = (path, options) => {
         return t("search_page." + path, options)
     }
@@ -343,6 +345,7 @@ export default function Search() {
                         </>
                     )}
                 </div>
+
                 <div className="sliding-panel-container w-full fixed top-0 left-0">
                     <SlidingPanel
                         type={"left"}
@@ -386,6 +389,7 @@ export default function Search() {
                                     onChange={(e) => {
                                         const newValue = e.target.value;
                                         if (isNaN(Number(newValue)) && newValue !== "") return;
+
 
                                         setSearchCarRequest({
                                             ...searchCarRequest,

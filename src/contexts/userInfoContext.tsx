@@ -6,6 +6,7 @@ import { ContractKYCInfo } from "@/model/blockchain/schemas";
 
 export type UserInfo = {
   address: string;
+  ensName: string | null;
   firstName: string;
   lastName: string;
   profilePhotoUrl: string;
@@ -47,6 +48,7 @@ export const UserInfoProvider = ({ children }: { children?: React.ReactNode }) =
 
         setCurrentUserInfo({
           address: ethereumInfo.walletAddress,
+          ensName: await ethereumInfo.provider.lookupAddress(ethereumInfo.walletAddress),
           firstName: myKYCInfo.name,
           lastName: myKYCInfo.surname,
           profilePhotoUrl: getIpfsURIfromPinata(myKYCInfo.profilePhoto),

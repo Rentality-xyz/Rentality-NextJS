@@ -5,21 +5,15 @@ import PublicListingItem from "@/components/hosts/publicListingItem";
 import useHostPublicListings from "@/hooks/host/useHostPublicListings";
 import {useTranslation} from "react-i18next";
 
-const validateWalletAddress = (value: string) => {
-  return !isEmpty(value) && value.length === 42 && value.toLowerCase().startsWith("0x");
-};
-const getHostAddressFromQuery = (query: string | string[] | undefined): string => {
-  return query && typeof query === "string" && validateWalletAddress(query) ? query : "";
-};
-
 export default function HostPublicInfo() {
   const router = useRouter();
-  const { hostAddress: hostAddressQuery } = router.query;
-  const hostAddress = getHostAddressFromQuery(hostAddressQuery);
-  const [isLoading, hostListings] = useHostPublicListings(hostAddress);
-  const {t} = useTranslation();
 
-  if (isEmpty(hostAddress))
+  const { hostAddressOrName: hostQuery } = router.query;
+  const hostAddressOrName = hostQuery && typeof hostQuery === "string" ? hostQuery : "";
+  const [isLoading, hostListings] = useHostPublicListings(hostAddressOrName);
+    const {t} = useTranslation();
+
+  if (isEmpty(hostAddressOrName))
     return (
       <Layout>
         <div className="flex flex-col text-2xl">{t("hosts.invalid_addr")}</div>
@@ -31,7 +25,7 @@ export default function HostPublicInfo() {
       <div className="flex flex-col">
         <div id="page-title" className="flex flex-row justify-between items-center">
           <div className="text-2xl">
-            <strong>{t('hosts.listings',{address: hostAddress})}</strong>
+            <strong>{t('hosts.listings',{address: hostAddressOrName})}</strong>
           </div>
         </div>
         {isLoading ? (
