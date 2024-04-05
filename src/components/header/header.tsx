@@ -8,6 +8,7 @@ import ChooseBlockchainComponent from "@/components/choose_blockchain/ChooseBloc
 import { GuestBurgerNavMenu } from "../sideNavMenu/guestSideNavMenu";
 import { HostBurgerNavMenu } from "../sideNavMenu/hostSideNavMenu";
 import Login from "./login";
+import {useTranslation} from "react-i18next";
 
 export default function Header({ accountType }: { accountType: string }) {
   accountType = accountType ?? "Host";
@@ -67,6 +68,7 @@ export default function Header({ accountType }: { accountType: string }) {
       window.location.href = "/guest";
     }
   };
+
 
   return (
     <div>

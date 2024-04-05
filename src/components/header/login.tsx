@@ -8,6 +8,7 @@ import { ElementRef, memo, useEffect, useRef, useState } from "react";
 import { assertIsNode } from "@/utils/react";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
+import {useTranslation} from "react-i18next";
 
 function Login() {
   const { connectWallet, login, ready, authenticated, logout } = usePrivy();
@@ -35,20 +36,21 @@ function Login() {
     };
   }, []);
 
+  const {t} = useTranslation();
   useEffect(() => {
     if (!ready) return;
 
     if (!authenticated) {
       const action = (
         <>
-          {DialogActions.Button("Login", () => {
+          {DialogActions.Button(t("common.info.login"), () => {
             hideDialogs();
             login();
           })}
           {DialogActions.Cancel(hideDialogs)}
         </>
       );
-      showDialog("Connect your crypto wallet", action);
+      showDialog(t("common.info.connect_wallet"), action);
     }
   }, [ready, authenticated]);
 
@@ -69,14 +71,14 @@ function Login() {
   if (!authenticated)
     return (
       <RntButton className="w-28 sm:w-48 h-10 text-sm sm:text-base" onClick={login}>
-        Login
+        {t("common.info.login")}
       </RntButton>
     );
 
   if (wallets.length === 0)
     return (
       <RntButton className="w-28 sm:w-48 h-10 text-sm sm:text-base" onClick={connectWallet}>
-        Connect
+        {t("common.connect")}
       </RntButton>
     );
 
@@ -100,7 +102,7 @@ function Login() {
       {isShowMenu && (
         <div className="absolute p-4 top-[5.25rem] left-auto right-0 z-50 bg-[#1E1E30] rounded-xl border-2 border-[#373737]">
           <RntButton className="w-28 sm:w-48 h-10 text-sm sm:text-base" onClick={logout}>
-            Logout
+            {t("common.logout")}
           </RntButton>
         </div>
       )}

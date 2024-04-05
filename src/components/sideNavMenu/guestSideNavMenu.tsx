@@ -7,6 +7,8 @@ import MenuIcons from "@/components/sideNavMenu/menuIcons";
 import { useNotification } from "@/contexts/notification/notificationContext";
 import usePageLastVisit from "@/hooks/usePageLastVisit";
 import { NotificationType } from "@/model/NotificationInfo";
+import {useTranslation} from "react-i18next";
+import {TFunction} from "@/pages/i18n";
 
 function GuestNavMenu() {
   const { ready, authenticated, logout } = usePrivy();
@@ -33,59 +35,62 @@ function GuestNavMenu() {
   const notificationsNotificationCount = notifications.filter(
     (n) => n.datestamp > notificationsLastVisitedDateTime
   ).length;
-
+  const {t} = useTranslation();
+  const t_nav: TFunction = (name, options) => {
+    return t("nav_menu." + name, options)
+  }
   return (
     <>
-      <SideNavMenuGroup title="Search" href="/guest/search" />
-      <SideNavMenuGroup title="Trips">
+      <SideNavMenuGroup title={t_nav("search")} href="/guest/search" />
+      <SideNavMenuGroup title={t_nav("trips")}>
         <SideNavMenuItem
-          text="Booked"
+          text={t_nav("booked")}
           href="/guest/trips/booked"
           icon={MenuIcons.Booked}
           notificationCount={bookedNotificationCount}
         />
         <SideNavMenuItem
-          text="History"
+          text={t_nav("history")}
           href="/guest/trips/history"
           icon={MenuIcons.History}
           notificationCount={historyNotificationCount}
         />
       </SideNavMenuGroup>
-      <SideNavMenuGroup title="Inbox">
+      <SideNavMenuGroup title={t_nav("inbox")}>
         <SideNavMenuItem
-          text="Messages"
+          text={t_nav("messages")}
           href="/guest/messages"
           icon={MenuIcons.Messages}
           notificationCount={messagesNotificationCount}
         />
         <SideNavMenuItem
-          text="Notifications"
+          text={t_nav("notifications")}
           href="/guest/notifications"
           icon={MenuIcons.Notifications}
           notificationCount={notificationsNotificationCount}
         />
       </SideNavMenuGroup>
-      <SideNavMenuGroup title="More">
+      <SideNavMenuGroup title={t_nav("more")}>
         <SideNavMenuItem
-          text="Claims"
+          text={t_nav("claims")}
           href="/guest/claims"
           icon={MenuIcons.Claims}
           notificationCount={claimsNotificationCount}
         />
         <SideNavMenuItem
-          text="Legal"
+          text={t_nav("legal")}
           href="https://rentality.xyz/legalmatters"
           icon={MenuIcons.Legal}
           target="_blank"
         />
         <SideNavMenuItem
-          text="Transaction history"
+          text={t_nav("transaction_history")}
           href="/guest/transaction_history"
           icon={MenuIcons.TransactionHistory}
         />
-        <SideNavMenuItem text="Profile settings" href="/guest/profile" icon={MenuIcons.ProfileSettings} />
+        <SideNavMenuItem text={t_nav("profile")} href="/guest/profile" icon={MenuIcons.ProfileSettings} />
         {ready && authenticated ? (
-          <SideNavMenuItem text="Logout" href="/" onClick={logout} icon={MenuIcons.Logout} />
+          <SideNavMenuItem text={t_nav("logout")} href="/" onClick={logout} icon={MenuIcons.Logout} />
         ) : null}
       </SideNavMenuGroup>
     </>

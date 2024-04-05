@@ -7,20 +7,26 @@ import { Claim } from "@/model/Claim";
 import ClaimHistoryMobileCard from "./claimHistoryMobileCard";
 import { ClaimStatus } from "@/model/blockchain/schemas";
 import moment from "moment";
+import {TFunction} from "@/pages/i18n";
 
 type Props =
   | {
       isHost: true;
       claims: Claim[];
       cancelClaim: (claimId: number) => Promise<void>;
+      t: TFunction
     }
   | {
       isHost: false;
       claims: Claim[];
       payClaim: (claimId: number) => Promise<void>;
+      t: TFunction
     };
 
 export default function ClaimHistory(props: Props) {
+    const t_history: TFunction = (path, options) => {
+        return props.t("history." + path, options)
+    }
   const { isHost, claims } = props;
   const headerSpanClassName = "text-start px-2 font-light text-sm";
   const rowSpanClassName = "px-2 h-12";
@@ -28,32 +34,32 @@ export default function ClaimHistory(props: Props) {
 
   return (
     <div className="w-full bg-rentality-bg p-4 rounded-2xl mt-5">
-      <h3 className="text-xl mb-4">Claims history</h3>
+      <h3 className="text-xl mb-4">{t_history("title")}</h3>
       <table className=" w-full table-auto border-spacing-2 max-lg:hidden">
         <thead className="mb-2">
-          <tr className="text-rentality-additional-light ">
-            <th className={headerSpanClassName}>Invoice type</th>
-            <th className={headerSpanClassName}>Payment deadline</th>
-            <th className={headerSpanClassName}>Reservation</th>
-            <th className={headerSpanClassName}>Car</th>
-            <th className={headerSpanClassName}>Describe</th>
-            <th className={headerSpanClassName}>Amount $</th>
-            <th className={headerSpanClassName}>Status</th>
+        <tr className="text-rentality-additional-light ">
+            <th className={headerSpanClassName}>{t_history("table.invoiceType")}</th>
+            <th className={headerSpanClassName}>{t_history("table.paymentDeadline")}</th>
+            <th className={headerSpanClassName}>{t_history("table.reservation")}</th>
+            <th className={headerSpanClassName}>{t_history("table.car")}</th>
+            <th className={headerSpanClassName}>{t_history("table.describe")}</th>
+            <th className={headerSpanClassName}>{t_history("table.amount")}</th>
+            <th className={headerSpanClassName}>{t_history("table.status")}</th>
             <th></th>
             <th></th>
             <th></th>
             <th></th>
-          </tr>
+        </tr>
         </thead>
-        <tbody className="text-sm">
+          <tbody className="text-sm">
           {claims.map((claim) => {
-            const chatLink = `/${isHost ? "host" : "guest"}/messages?tridId=${claim.tripId}`;
-            const telLink = `tel:${isHost ? claim.guestPhoneNumber : claim.hostPhoneNumber}`;
-            const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${claim.tripId}`;
+              const chatLink = `/${isHost ? "host" : "guest"}/messages?tridId=${claim.tripId}`;
+              const telLink = `tel:${isHost ? claim.guestPhoneNumber : claim.hostPhoneNumber}`;
+              const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${claim.tripId}`;
 
-            return (
-              <tr key={claim.claimId} className="border-b-[1px] border-b-gray-500">
-                <td className={rowSpanClassName}>{claim.claimTypeText}</td>
+              return (
+                  <tr key={claim.claimId} className="border-b-[1px] border-b-gray-500">
+                      <td className={rowSpanClassName}>{claim.claimTypeText}</td>
                 <td className={claim.deadlineDate <= moment().toDate() ? redTextClassName : rowSpanClassName}>
                   {dateFormatShortMonthDateTime(claim.deadlineDate)}
                 </td>
@@ -73,7 +79,7 @@ export default function ClaimHistory(props: Props) {
                           props.cancelClaim(claim.claimId);
                         }}
                       >
-                        Cancel
+                          {t_history("cancel")}
                       </RntButton>
                     ) : (
                       <RntButton
@@ -82,7 +88,7 @@ export default function ClaimHistory(props: Props) {
                           props.payClaim(claim.claimId);
                         }}
                       >
-                        Pay
+                          {t_history("pay")}
                       </RntButton>
                     )
                   ) : null}

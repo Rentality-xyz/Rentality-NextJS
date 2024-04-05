@@ -40,7 +40,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
       </>
     );
 
-  const isAdmin = router.route.startsWith("/admin");
+  const isAdmin = router.route.startsWith("/admin.json");
 
   if (isAdmin)
     return (

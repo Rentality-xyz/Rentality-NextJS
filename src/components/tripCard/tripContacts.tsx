@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { TripInfo } from "@/model/TripInfo";
 import { memo } from "react";
+import {TFunction} from "@/pages/i18n";
 
-function TripContacts({ tripInfo, isHost }: { tripInfo: TripInfo; isHost: boolean }) {
+function TripContacts({ tripInfo, isHost, t }: { tripInfo: TripInfo; isHost: boolean, t: TFunction }) {
   const pathRoot = isHost ? "host" : "guest";
   const otherUserPhoneNumber = isHost ? tripInfo.guestPhoneNumber : tripInfo.hostPhoneNumber;
 
@@ -16,7 +17,7 @@ function TripContacts({ tripInfo, isHost }: { tripInfo: TripInfo; isHost: boolea
           <div>
             <Link href={`/${pathRoot}/messages?tridId=${tripInfo.tripId}`}>
               <i className="fi fi-rs-envelope-open pr-1 text-rentality-icons"></i>
-              <strong className="text-l">Chat</strong>
+              <strong className="text-l">{t("booked.chat")}</strong>
             </Link>
           </div>
         </div>
@@ -24,13 +25,13 @@ function TripContacts({ tripInfo, isHost }: { tripInfo: TripInfo; isHost: boolea
           <div>
             <a href={`tel:${otherUserPhoneNumber}`}>
               <i className="fi fi-br-phone-flip pr-1 text-rentality-icons"></i>
-              <strong className="text-l">Contact</strong>
+              <strong className="text-l">{t("booked.contact")}</strong>
             </a>
           </div>
         </div>
         <div className="2xl:mt-10 text-[#52D1C9]">
           <Link href={`/${pathRoot}/trips/tripInfo/${tripInfo.tripId}`}>
-            <strong>More info</strong>
+            <strong>{t("booked.more_info")}</strong>
           </Link>
           <i className="fi fi-br-angle-small-down pl-1"></i>
         </div>
