@@ -59,7 +59,7 @@ export async function getEtherContractWithSigner(contract: keyof typeof rentalit
     return etherContract;
 
     // switch (contract) {
-    //   case "admin.json":
+    //   case "admin":
     //     return etherContract as unknown as IRentalityAdminGateway;
     //   case "chatHelper":
     //     return etherContract as unknown as IRentalityChatHelperContract;
