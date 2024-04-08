@@ -44,7 +44,7 @@ export default function Listings() {
               })
             ) : (
               <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
-                You don't have any listed car
+                {"You don't have any listed car"}
               </div>
             )}
           </div>
