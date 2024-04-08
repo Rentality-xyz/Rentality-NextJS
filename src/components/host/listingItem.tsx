@@ -3,9 +3,9 @@ import RntButton from "../common/rntButton";
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
-import {TFunction} from "@/pages/i18n";
+import { TFunction } from "@/pages/i18n";
 
-export default function ListingItem({ carInfo, t }: { carInfo: BaseCarInfo, t: TFunction }) {
+export default function ListingItem({ carInfo, t }: { carInfo: BaseCarInfo; t: TFunction }) {
   let statusBgColor = carInfo.currentlyListed ? "bg-lime-500" : "bg-red-500";
   const statusClassName = twMerge(
     "absolute right-0 top-2 px-8 py-2 rounded-l-3xl text-rnt-temp-status-text text-end",

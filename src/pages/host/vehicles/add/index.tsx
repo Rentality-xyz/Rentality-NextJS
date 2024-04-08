@@ -12,7 +12,7 @@ import { useUserInfo } from "@/contexts/userInfoContext";
 import { verifyCar } from "@/model/HostCarInfo";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 export default function AddCar() {
   const [carInfoFormParams, setCarInfoFormParams, dataSaved, sentCarToServer] = useAddCar();
@@ -22,7 +22,7 @@ export default function AddCar() {
   const [carSaving, setCarSaving] = useState<boolean>(false);
   const router = useRouter();
   const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const loadCarInfoFromJson = async (file: File) => {
     try {

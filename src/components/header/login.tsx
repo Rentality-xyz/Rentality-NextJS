@@ -8,7 +8,7 @@ import { ElementRef, memo, useEffect, useRef, useState } from "react";
 import { assertIsNode } from "@/utils/react";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 function Login() {
   const { connectWallet, login, ready, authenticated, logout } = usePrivy();
@@ -37,7 +37,7 @@ function Login() {
     };
   }, []);
 
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   useEffect(() => {
     if (!ready) return;
 

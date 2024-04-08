@@ -7,20 +7,20 @@ import DateDetails from "./dateDetails";
 import LocationDetails from "./locationDetails";
 import TripContacts from "./tripContacts";
 import TripAdditionalActions from "./tripAdditionalActions";
-import {TFunction} from "i18next";
+import { TFunction } from "i18next";
 
 function TripCard({
   tripInfo,
   changeStatusCallback,
   disableButton,
   isHost,
-    t
+  t,
 }: {
   tripInfo: TripInfo;
   changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<void>;
   disableButton: boolean;
   isHost: boolean;
-  t: TFunction
+  t: TFunction;
 }) {
   const [isAdditionalActionHidden, setIsAdditionalActionHidden] = useState(true);
   const allowedActions = document.getElementById("trip-allowed-actions") as HTMLDivElement;
@@ -48,7 +48,7 @@ function TripCard({
             isHost={isHost}
             t={t}
           />
-          <DateDetails tripInfo={tripInfo} t={t}/>
+          <DateDetails tripInfo={tripInfo} t={t} />
           <LocationDetails tripInfo={tripInfo} t={t} />
         </div>
         <TripContacts tripInfo={tripInfo} isHost={isHost} t={t} />

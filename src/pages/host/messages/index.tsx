@@ -7,7 +7,7 @@ import { DialogActions } from "@/utils/dialogActions";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 export default function Messages() {
   const { isLoading, isClienReady, chatInfos, getLatestChatInfos, sendMessage } = useChat();
@@ -18,7 +18,7 @@ export default function Messages() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const selectedTridId = Number(searchParams.get("tridId") ?? -1);
-  const {t} = useTranslation()
+  const { t } = useTranslation();
 
   const createQueryString = (name: string, value: string) => {
     const params = new URLSearchParams();
@@ -65,7 +65,9 @@ export default function Messages() {
       <div className="flex flex-col">
         <PageTitle title={t("chat.title")} />
         {isLoading ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">{t("common.info.loading")}</div>
+          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
+            {t("common.info.loading")}
+          </div>
         ) : (
           <ChatPage
             isHost={true}
@@ -74,7 +76,7 @@ export default function Messages() {
             selectedTridId={selectedTridId}
             selectChat={selectChat}
             t={(name, options) => {
-              return t("chat." + name, options)
+              return t("chat." + name, options);
             }}
           />
         )}

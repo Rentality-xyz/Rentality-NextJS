@@ -8,20 +8,20 @@ import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 import icInfo from "@/images/ic-info-teal.svg";
 import Image from "next/image";
-import {TFunction} from "@/pages/i18n";
+import { TFunction } from "@/pages/i18n";
 
 export default function ChatInfoCard({
   chatInfo,
   isHost,
   isSelected,
   onClickCallback,
-    t
+  t,
 }: {
   chatInfo: ChatInfo;
   isHost: boolean;
   isSelected: boolean;
   onClickCallback: MouseEventHandler<HTMLDivElement> | undefined;
-  t: TFunction
+  t: TFunction;
 }) {
   const className = `bg-rentality-bg rnt-card w-full grid grid-cols-[auto_1fr_auto] gap-x-2 rounded-xl overflow-hidden p-2 ${
     isSelected ? "rnt-card-selected" : ""
@@ -42,7 +42,7 @@ export default function ChatInfoCard({
         onClick={onClickCallback}
       >
         <div className={statusClassName}>{getTripStatusTextFromStatus(chatInfo.tripStatus)}</div>
-        <div className="ml-2 text-xs"> {t("reservation",{trip: chatInfo.tripId}) }</div>
+        <div className="ml-2 text-xs"> {t("reservation", { trip: chatInfo.tripId })}</div>
       </div>
       <div className="flex flex-col text-sm truncate cursor-pointer" onClick={onClickCallback}>
         <strong>{otherName}</strong>

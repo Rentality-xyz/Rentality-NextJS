@@ -68,7 +68,6 @@ export default function Header({ accountType }: { accountType: string }) {
     }
   };
 
-
   return (
     <div>
       {isHideBurgerMenu && (

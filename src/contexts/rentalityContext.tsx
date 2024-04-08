@@ -2,7 +2,7 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { getEtherContractWithSigner } from "../abis";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useEthereum } from "./web3/ethereumContext";
-import {BrowserProvider, Eip1193Provider, ethers, JsonRpcProvider} from "ethers";
+import { BrowserProvider, Eip1193Provider, ethers, JsonRpcProvider } from "ethers";
 
 const RentalityContext = createContext<IRentalityContract | null>(null);
 
@@ -13,7 +13,6 @@ export function useRentality() {
 export const RentalityProvider = ({ children }: { children?: React.ReactNode }) => {
   const [rentalityContract, setRentalityContract] = useState<IRentalityContract | null>(null);
   let ethereumInfo = useEthereum();
-
 
   useEffect(() => {
     const getRentalityContact = async () => {

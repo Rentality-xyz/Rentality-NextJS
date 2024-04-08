@@ -7,8 +7,8 @@ import MenuIcons from "@/components/sideNavMenu/menuIcons";
 import { useNotification } from "@/contexts/notification/notificationContext";
 import usePageLastVisit from "@/hooks/usePageLastVisit";
 import { NotificationType } from "@/model/NotificationInfo";
-import {useTranslation} from "react-i18next";
-import {TFunction} from "@/pages/i18n";
+import { useTranslation } from "react-i18next";
+import { TFunction } from "@/pages/i18n";
 
 function GuestNavMenu() {
   const { ready, authenticated, logout } = usePrivy();
@@ -35,10 +35,10 @@ function GuestNavMenu() {
   const notificationsNotificationCount = notifications.filter(
     (n) => n.datestamp > notificationsLastVisitedDateTime
   ).length;
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const t_nav: TFunction = (name, options) => {
-    return t("nav_menu." + name, options)
-  }
+    return t("nav_menu." + name, options);
+  };
   return (
     <>
       <SideNavMenuGroup title={t_nav("search")} href="/guest/search" />

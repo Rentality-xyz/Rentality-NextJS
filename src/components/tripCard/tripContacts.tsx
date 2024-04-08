@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { TripInfo } from "@/model/TripInfo";
 import { memo } from "react";
-import {TFunction} from "@/pages/i18n";
+import { TFunction } from "@/pages/i18n";
 
-function TripContacts({ tripInfo, isHost, t }: { tripInfo: TripInfo; isHost: boolean, t: TFunction }) {
+function TripContacts({ tripInfo, isHost, t }: { tripInfo: TripInfo; isHost: boolean; t: TFunction }) {
   const pathRoot = isHost ? "host" : "guest";
   const otherUserPhoneNumber = isHost ? tripInfo.guestPhoneNumber : tripInfo.hostPhoneNumber;
 

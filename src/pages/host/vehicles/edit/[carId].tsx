@@ -9,13 +9,12 @@ import Link from "next/link";
 import { verifyCar } from "@/model/HostCarInfo";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
-import {useTranslation} from "react-i18next";
-
+import { useTranslation } from "react-i18next";
 
 export default function EditCar() {
   const router = useRouter();
   const { carId } = router.query;
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const carIdNumber = Number(carId) ?? -1;
 
@@ -38,7 +37,7 @@ export default function EditCar() {
     setCarSaving(true);
 
     try {
-      setMessage(t( "wait_loading"));
+      setMessage(t("wait_loading"));
       const result = await saveCarInfo();
 
       if (!result) {
@@ -77,7 +76,9 @@ export default function EditCar() {
       <div className="flex flex-col">
         <PageTitle title={t("vehicles.edit_car_title")} />
         {isLoading ? (
-          <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">{t("common.info.loading")}</div>
+          <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
+            {t("common.info.loading")}
+          </div>
         ) : carInfoFormParams.carId === -1 ? (
           <h1 className="py-8 text-2xl font-bold text-red-800">{t("can_not_edit")}</h1>
         ) : (
