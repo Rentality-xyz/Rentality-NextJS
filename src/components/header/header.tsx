@@ -8,7 +8,6 @@ import ChooseBlockchainComponent from "@/components/choose_blockchain/ChooseBloc
 import { GuestBurgerNavMenu } from "../sideNavMenu/guestSideNavMenu";
 import { HostBurgerNavMenu } from "../sideNavMenu/hostSideNavMenu";
 import Login from "./login";
-import {useTranslation} from "react-i18next";
 
 export default function Header({ accountType }: { accountType: string }) {
   accountType = accountType ?? "Host";
