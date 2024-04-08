@@ -335,10 +335,6 @@ export type ContractBaseDiscount = {
   initialized: boolean;
 };
 
-export enum CurrencyType {
-  ETH,
-}
-
 export type TripStatus = bigint;
 export const TripStatus = {
   Pending: BigInt(0), // Created
@@ -349,14 +345,6 @@ export const TripStatus = {
   Finished: BigInt(5), //CheckedOutByHost
   Closed: BigInt(6), //Finished
   Rejected: BigInt(7), //Canceled
-};
-
-export type ClaimStatus = bigint;
-export const ClaimStatus = {
-  NotPaid: BigInt(0),
-  Paid: BigInt(1),
-  Cancel: BigInt(2),
-  Overdue: BigInt(3),
 };
 
 export type ClaimType = bigint;
@@ -371,10 +359,17 @@ export const ClaimType = {
   Other: BigInt(7),
 };
 
-export type EngineType = bigint;
-export const EngineType = {
-  PATROL: BigInt(1),
-  ELECTRIC: BigInt(2),
+export type ClaimStatus = bigint;
+export const ClaimStatus = {
+  NotPaid: BigInt(0),
+  Paid: BigInt(1),
+  Cancel: BigInt(2),
+  Overdue: BigInt(3),
+};
+
+export type CurrencyType = bigint;
+export const CurrencyType = {
+  ETH: BigInt(0),
 };
 
 export type TaxesLocationType = bigint;
@@ -382,4 +377,10 @@ export const TaxesLocationType = {
   City: BigInt(0),
   State: BigInt(1),
   Country: BigInt(2),
+};
+
+export type EngineType = bigint;
+export const EngineType = {
+  PATROL: BigInt(1),
+  ELECTRIC: BigInt(2),
 };
