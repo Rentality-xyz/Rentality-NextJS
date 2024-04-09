@@ -40,7 +40,6 @@ const rentalityContracts = {
     abi: RentalityClaimServiceJSON_ABI.abi,
   },
 };
-
 export async function getEtherContractWithSigner(contract: keyof typeof rentalityContracts, signer: Signer) {
   try {
     if (!signer) {

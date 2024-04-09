@@ -2,15 +2,21 @@ import { SearchCarInfo } from "@/model/SearchCarsResult";
 import RntButton from "../common/rntButton";
 import { Avatar } from "@mui/material";
 
+type TFunction = (key: string, options?: { [key: string]: any }) => string;
 export default function CarSearchItem({
   searchInfo,
   handleRentCarRequest,
   disableButton,
+  t,
 }: {
   searchInfo: SearchCarInfo;
   handleRentCarRequest: (carInfo: SearchCarInfo) => void;
   disableButton: boolean;
+  t: TFunction;
 }) {
+  const t_item: TFunction = (name, options) => {
+    return t("car_search_item." + name, options);
+  };
   return (
     <div className="bg-rentality-bg rnt-card flex flex-col md:flex-row rounded-xl overflow-hidden">
       {/* <div className="w-60 h-full min-h-[14rem] flex-shrink-0">
@@ -35,18 +41,31 @@ export default function CarSearchItem({
         <div className="flex md:grid md:grid-cols-[2fr_1fr] text-xs mt-2 md:justify-between">
           <div className="w-9/12 flex flex-col">
             <div>
-              <strong>Total price ${searchInfo.totalPriceWithDiscount}</strong>
+              <strong>
+                {t_item("price")} ${searchInfo.totalPriceWithDiscount}
+              </strong>
             </div>
             <div className="mt-2">
-              <strong>{searchInfo.tripDays} days</strong> trip for <strong>${searchInfo.pricePerDay} per day</strong>
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: t_item("trip_for", {
+                    tripDays: searchInfo.tripDays,
+                    pricePerDay: searchInfo.pricePerDay,
+                  }),
+                }}
+              ></span>
             </div>
-            <div>{searchInfo.milesIncludedPerDay} mi included per day</div>
-            <div>Additionally security deposit ${searchInfo.securityDeposit} per trip</div>
+            <div>
+              {t_item("miles_included")} ${searchInfo.milesIncludedPerDay}
+            </div>
+            <div>{t_item("secur_deposit", { deposit: searchInfo.securityDeposit })}</div>
           </div>
           <div className="flex flex-col">
             <div>- {searchInfo.engineTypeText}</div>
             <div>- {searchInfo.transmission}</div>
-            <div>- {searchInfo.seatsNumber} seats</div>
+            <div>
+              - {searchInfo.seatsNumber} {t_item("seats")}
+            </div>
           </div>
         </div>
         <div className="w-full grid grid-cols-[1fr_auto] items-end mt-2">
@@ -55,7 +74,7 @@ export default function CarSearchItem({
               <Avatar src={searchInfo.hostPhotoUrl} sx={{ width: "3rem", height: "3rem" }}></Avatar>
             </div>
             <div className="flex flex-col">
-              <p className="text-xs">HOSTED BY</p>
+              <p className="text-xs">{t_item("host")}</p>
               <p className="text-sm">{searchInfo.hostName ?? "-"}</p>
             </div>
           </div>
@@ -64,8 +83,10 @@ export default function CarSearchItem({
             onClick={() => handleRentCarRequest(searchInfo)}
             disabled={disableButton}
           >
-            <div>Rent for {searchInfo.tripDays} day(s)</div>
-            <div>for ${searchInfo.totalPriceWithDiscount + searchInfo.securityDeposit}</div>
+            <div>{t_item("rent_for", { days: searchInfo.tripDays })}</div>
+            <div>
+              {t_item("total")} ${searchInfo.totalPriceWithDiscount + searchInfo.securityDeposit}
+            </div>
           </RntButton>
         </div>
       </div>

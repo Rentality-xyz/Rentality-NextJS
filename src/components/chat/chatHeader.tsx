@@ -2,8 +2,9 @@ import { ChatInfo } from "@/model/ChatInfo";
 import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import { twMerge } from "tailwind-merge";
+import { TFunction } from "@/pages/i18n";
 
-export default function ChatHeader({ selectedChat }: { selectedChat: ChatInfo }) {
+export default function ChatHeader({ selectedChat, t }: { selectedChat: ChatInfo; t: TFunction }) {
   let statusBgColor = getTripStatusBgColorClassFromStatus(selectedChat?.tripStatus);
   const statusClassName = twMerge(
     "absolute right-0 top-2 px-1 sm:px-4 py-1 rounded-l-3xl bg-purple-600 text-rnt-temp-status-text text-end text-sm",
@@ -23,7 +24,7 @@ export default function ChatHeader({ selectedChat }: { selectedChat: ChatInfo })
         </div>
       </div>
       <div className="w-3/4 flex flex-col gap-2 justify-center  p-2 pl-8">
-        <div className="max-sm:text-base text-sm">Reservation #{selectedChat.tripId}</div>
+        <div className="max-sm:text-base text-sm">{t("reservation", { trip: selectedChat.tripId })}</div>
         <div className="max-sm:text-base text-sm">
           {selectedChat.startDateTime.getTime()
             ? `${dateFormatShortMonthDateTime(

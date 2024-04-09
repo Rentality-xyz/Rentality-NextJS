@@ -8,6 +8,9 @@ import { RentalityProvider } from "@/contexts/rentalityContext";
 import { RntDialogsProvider } from "@/contexts/rntDialogsContext";
 import { NotificationProvider } from "@/contexts/notification/notificationContext";
 import { useRouter } from "next/router";
+import { Suspense } from "react";
+// should be here for downloading 'locales/* '
+import "./i18n";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
