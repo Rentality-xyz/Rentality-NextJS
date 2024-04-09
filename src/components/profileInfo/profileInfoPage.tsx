@@ -206,6 +206,11 @@ function ProfileInfoPage({
             type="date"
             value={enteredFormData.drivingLicenseExpire}
             onDateChange={handleDateChange}
+            validationError={
+              isNaN(enteredFormData.drivingLicenseExpire?.getTime() ?? 0)
+                ? "Please enter date in format mm/dd/year"
+                : ""
+            }
           />
         </div>
       </fieldset>
