@@ -8,7 +8,7 @@ import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 import Checkbox from "@/components/common/checkbox";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PATROL_STRING } from "@/model/EngineType";
 import RntButton from "@/components/common/rntButton";
-import { GoogleMapsProvider } from '@/contexts/googleMapsContext';
+import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 
 export default function CarEditForm({
   carInfoFormParams,
@@ -46,7 +46,7 @@ export default function CarEditForm({
   }, []);
 
   return (
-	<GoogleMapsProvider libraries={['places']}>
+    <GoogleMapsProvider libraries={["places"]}>
       <div className="mt-4">
         <div className="text-lg mb-4">
           <strong>Car</strong>

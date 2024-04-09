@@ -1,18 +1,18 @@
-import RentalityGatewayJSON_ABI from "./RentalityGateway.v0_16_2.abi.json";
-import RentalityGatewayJSON_ADDRESSES from "./RentalityGateway.v0_16_2.addresses.json";
-import RentalityAdminGatewayJSON_ABI from "./RentalityAdminGateway.v0_16_2.abi.json";
-import RentalityAdminGatewayJSON_ADDRESSES from "./RentalityAdminGateway.v0_16_2.addresses.json";
-import RentalityCurrencyConverterJSON_ABI from "./RentalityCurrencyConverter.v0_16_2.abi.json";
-import RentalityCurrencyConverterJSON_ADDRESSES from "./RentalityCurrencyConverter.v0_16_2.addresses.json";
-import RentalityChatHelperJSON_ABI from "./RentalityChatHelper.v0_16_2.abi.json";
-import RentalityChatHelperJSON_ADDRESSES from "./RentalityChatHelper.v0_16_2.addresses.json";
-import RentalityTripServiceJSON_ABI from "./RentalityTripService.v0_16_2.abi.json";
-import RentalityTripServiceJSON_ADDRESSES from "./RentalityTripService.v0_16_2.addresses.json";
-import RentalityClaimServiceJSON_ABI from "./RentalityClaimService.v0_16_2.abi.json";
-import RentalityClaimServiceJSON_ADDRESSES from "./RentalityClaimService.v0_16_2.addresses.json";
+import RentalityGatewayJSON_ABI from "./RentalityGateway.v0_17_0.abi.json";
+import RentalityGatewayJSON_ADDRESSES from "./RentalityGateway.v0_17_0.addresses.json";
+import RentalityAdminGatewayJSON_ABI from "./RentalityAdminGateway.v0_17_0.abi.json";
+import RentalityAdminGatewayJSON_ADDRESSES from "./RentalityAdminGateway.v0_17_0.addresses.json";
+import RentalityCurrencyConverterJSON_ABI from "./RentalityCurrencyConverter.v0_17_0.abi.json";
+import RentalityCurrencyConverterJSON_ADDRESSES from "./RentalityCurrencyConverter.v0_17_0.addresses.json";
+import RentalityChatHelperJSON_ABI from "./RentalityChatHelper.v0_17_0.abi.json";
+import RentalityChatHelperJSON_ADDRESSES from "./RentalityChatHelper.v0_17_0.addresses.json";
+import RentalityTripServiceJSON_ABI from "./RentalityTripService.v0_17_0.abi.json";
+import RentalityTripServiceJSON_ADDRESSES from "./RentalityTripService.v0_17_0.addresses.json";
+import RentalityClaimServiceJSON_ABI from "./RentalityClaimService.v0_17_0.abi.json";
+import RentalityClaimServiceJSON_ADDRESSES from "./RentalityClaimService.v0_17_0.addresses.json";
 import { Contract, Signer } from "ethers";
 
-export const SMARTCONTRACT_VERSION = "v0_16_2";
+export const SMARTCONTRACT_VERSION = "v0_17_0";
 
 const rentalityContracts = {
   gateway: {
