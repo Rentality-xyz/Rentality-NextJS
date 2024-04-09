@@ -16,15 +16,18 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import DriverLicenseVerified from "@/components/driver_license_verified/driver_license_verified";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { useChatKeys } from "@/contexts/chatContext";
+import { TFunction } from "@/pages/i18n";
 
 function ProfileInfoPage({
   savedProfileSettings,
   saveProfileSettings,
   isHost,
+  t,
 }: {
   savedProfileSettings: ProfileSettings;
   saveProfileSettings: (newProfileSettings: ProfileSettings) => Promise<boolean>;
   isHost: boolean;
+  t: TFunction;
 }) {
   const router = useRouter();
   const [enteredFormData, setEnteredFormData] = useState<ProfileSettings>(savedProfileSettings);
@@ -34,6 +37,9 @@ function ProfileInfoPage({
   const { isLoading: isChatKeysLoading, isChatKeysSaved, saveChatKeys } = useChatKeys();
 
   const errors = getErrors(enteredFormData, profileImageFile);
+  const t_profile: TFunction = (name, options) => {
+    return t("profile." + name, options);
+  };
 
   async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const name = e.target.name;
@@ -76,7 +82,7 @@ function ProfileInfoPage({
     const isValid = Object.keys(errors).length === 0;
 
     if (!isValid) {
-      showDialog("Please fill in all fields");
+      showDialog(t("common.info.fill_fields"));
       return;
     }
 
@@ -103,19 +109,19 @@ function ProfileInfoPage({
         profilePhotoUrl: profilePhotoUrl,
       };
 
-      showInfo(MESSAGES.CONFIRM_TRANSACTION_AND_WAIT);
+      showInfo(t("common.info.sign"));
       const result = await saveProfileSettings(dataToSave);
 
       hideDialogs();
       if (!result) {
         throw new Error("Save profile info error");
       }
-      showInfo(MESSAGES.SUCCESS);
+      showInfo(t("common.info.success"));
       router.reload();
       router.push(isHost ? "/host" : "/guest");
     } catch (e) {
       console.error("handleSubmit error:" + e);
-      showError(MESSAGES.PROFILE_PAGE_SAVE_ERROR);
+      showError(t_profile("save_err"));
       return;
     }
   }
@@ -123,14 +129,13 @@ function ProfileInfoPage({
   function getErrors(formData: ProfileSettings, profileImageFile: File | null) {
     const result: { [key: string]: string } = {};
 
-    if (isEmpty(formData.firstName)) result.firstName = "Please enter 'Name'";
-    if (isEmpty(formData.lastName)) result.lastName = "Please enter 'Last name'";
-    if (isEmpty(formData.phoneNumber) || formData.phoneNumber === "+")
-      result.phoneNumber = "Please enter 'Phone number'";
-    if (isEmpty(formData.drivingLicenseNumber)) result.drivingLicenseNumber = "Please enter 'Driving license number'";
+    if (isEmpty(formData.firstName)) result.firstName = t_profile("pls_name");
+    if (isEmpty(formData.lastName)) result.lastName = t_profile("pls_last_name");
+    if (isEmpty(formData.phoneNumber) || formData.phoneNumber === "+") result.phoneNumber = t_profile("pls_phone");
+    if (isEmpty(formData.drivingLicenseNumber)) result.drivingLicenseNumber = t_profile("pls_license");
     if (!formData.drivingLicenseExpire || Number.isNaN(formData.drivingLicenseExpire.getTime()))
-      result.drivingLicenseExpire = "Please enter 'Driving license validity period'";
-    if (!formData.isConfirmedTerms) result.isConfirmedTerms = "Please confirm terms and other documents";
+      result.drivingLicenseExpire = t_profile("pls_license_period");
+    if (!formData.isConfirmedTerms) result.isConfirmedTerms = t_profile("pls_tc");
 
     return result;
   }
@@ -153,25 +158,25 @@ function ProfileInfoPage({
         </div>
       </div>
       <RntFileButton className="w-40 h-16" id="profilePhotoUrl" onChange={handleChange}>
-        Upload
+        {t("common.upload")}
       </RntFileButton>
 
       <fieldset className="mt-4">
         <div className="text-lg mb-4">
-          <strong>Basic information</strong>
+          <strong>{t_profile("basic_info")}</strong>
         </div>
         <div className="flex flex-wrap gap-4">
           <RntInput
             className="lg:w-60"
             id="firstName"
-            label="Name"
+            label={t_profile("name")}
             value={enteredFormData.firstName}
             onChange={handleChange}
           />
           <RntInput
             className="lg:w-60"
             id="lastName"
-            label="Last name"
+            label={t_profile("last_name")}
             value={enteredFormData.lastName}
             onChange={handleChange}
           />
@@ -179,7 +184,7 @@ function ProfileInfoPage({
           <RntPhoneInput
             className="lg:w-60"
             id="phoneNumber"
-            label="Phone number"
+            label={t_profile("phone")}
             type="tel"
             value={enteredFormData.phoneNumber}
             onChange={handleChange}
@@ -189,20 +194,20 @@ function ProfileInfoPage({
 
       <fieldset className="mt-4">
         <div className="text-lg mb-4">
-          <strong>Driving license information</strong>
+          <strong>{t_profile("driver_license_info")}</strong>
         </div>
         <div className="flex flex-wrap gap-4">
           <RntInput
             className="lg:w-60"
             id="drivingLicenseNumber"
-            label="Driving license number"
+            label={t_profile("driving_license_number")}
             value={enteredFormData.drivingLicenseNumber}
             onChange={handleChange}
           />
           <RntDatePicker
             className="lg:w-60"
             id="drivingLicenseExpire"
-            label="Driving license validity period"
+            label={t_profile("driving_license_validity_period")}
             type="date"
             value={enteredFormData.drivingLicenseExpire}
             onDateChange={handleDateChange}
@@ -215,20 +220,27 @@ function ProfileInfoPage({
         onConfirm={(isConfirmed) => {
           setEnteredFormData({ ...enteredFormData, isConfirmedTerms: isConfirmed });
         }}
+        t={t_profile}
       />
 
-      <p className="mt-4">To use chat functionality you have to generate and save encryption keys</p>
+      <p className="mt-4">{t_profile("generate_keys")}</p>
       <div className="flex items-center">
         <RntButton type="button" onClick={saveChatKeys} disabled={isChatKeysSaved || isChatKeysLoading}>
-          Save chat keys
+          {t_profile("save_chat_keys")}
         </RntButton>
         <div className="ml-2 md:ml-6">
-          {isChatKeysLoading ? <GetChatKeyLoading /> : isChatKeysSaved ? <GetChatKeySaved /> : <GetChatKeyNotSaved />}
+          {isChatKeysLoading ? (
+            <GetChatKeyLoading text={t("common.info.loading")} />
+          ) : isChatKeysSaved ? (
+            <GetChatKeySaved text={t_profile("keys_saved")} />
+          ) : (
+            <GetChatKeyNotSaved text={t_profile("keys_not_saved")} />
+          )}
         </div>
       </div>
 
       <RntButton type="submit" className="mt-4">
-        Save
+        {t("common.save")}
       </RntButton>
     </form>
   );
@@ -236,29 +248,29 @@ function ProfileInfoPage({
 
 export default memo(ProfileInfoPage);
 
-function GetChatKeyLoading() {
+function GetChatKeyLoading({ text }: { text: string }) {
   return (
     <div className="flex items-center">
       <span className="w-4 h-4 bg-[#a59c38] rounded-full inline-block pr-4"></span>
-      <span className="ml-2">Loading...</span>
+      <span className="ml-2">{text}</span>
     </div>
   );
 }
 
-function GetChatKeyNotSaved() {
+function GetChatKeyNotSaved({ text }: { text: string }) {
   return (
     <div className="flex items-center">
       <span className="w-4 h-4 bg-[#DB001A] rounded-full inline-block pr-4"></span>
-      <span className="ml-2">Keys are not saved</span>
+      <span className="ml-2">{text}</span>
     </div>
   );
 }
 
-function GetChatKeySaved() {
+function GetChatKeySaved({ text }: { text: string }) {
   return (
     <div className="flex items-center">
       <span className="w-4 h-4 bg-[#2EB100] rounded-full inline-block pr-4"></span>
-      <span className="ml-2">Keys are saved</span>
+      <span className="ml-2">{text}</span>
     </div>
   );
 }

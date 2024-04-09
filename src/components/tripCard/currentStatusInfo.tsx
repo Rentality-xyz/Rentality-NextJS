@@ -5,79 +5,64 @@ import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import { Dispatch, SetStateAction, memo } from "react";
 import moment from "moment";
 import { TripStatus } from "@/model/blockchain/schemas";
+import { TFunction } from "i18next";
 
-const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean) => {
+const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean, t: TFunction) => {
   switch (tripInfo.status) {
     case TripStatus.Pending:
       return isHost
-        ? ([
-            `Guest booked a trip at ${dateFormatShortMonthDateTime(tripInfo.createdDateTime, tripInfo.timeZoneId)}`,
-            "",
-            "You have 1 hour to confirm this trip or it'll auto-reject",
-          ] as const)
-        : (["Host will confirm within 1 hour", "", "Please wait for host confirmation or you can cancel free of charge"] as const);
+        ? t("booked.status_pending_host", {
+            date: dateFormatShortMonthDateTime(tripInfo.createdDateTime, tripInfo.timeZoneId),
+            returnObjects: true,
+          } as const)
+        : t("booked.status_pending_guest", { returnObjects: true });
     case TripStatus.Confirmed:
       return isHost
-        ? ([
-            `The trip starts in 1 hour`,
-            "Let`s you check-in!",
-            "Start the trip from your side and wait start from the Guest.",
-          ] as const)
-        : ([
-            `The host confirmed your trip The trip starts in 1 hour`,
-            "",
-            "Please wait for the host start a trip or you can cancel with cancelation fee 50% of the daily rate",
-          ] as const);
+        ? t("booked.status_confirmed_host", { returnObjects: true } as const)
+        : t("booked.status_confirmed_guest", { returnObjects: true } as const);
     case TripStatus.CheckedInByHost:
       return isHost
         ? (["", "", ""] as const)
-        : ([
-            `Checked-in by Host at ${dateFormatShortMonthDateTime(
-              tripInfo.checkedInByHostDateTime,
-              tripInfo.timeZoneId
-            )}`,
-            "Let`s you check-in!",
-            "Start the trip from your side, or you can cancel with a cancellation fee of 100% of the daily rate",
-          ] as const);
+        : t("booked.status_check_in_host", {
+            date: dateFormatShortMonthDateTime(tripInfo.checkedInByHostDateTime, tripInfo.timeZoneId),
+            returnObjects: true,
+          } as const);
     case TripStatus.Started:
       return isHost
-        ? ([
-              tripInfo.tripEnd > new Date() ?
-                  `Now on the trip. The trip ended ${moment(tripInfo.tripEnd).toNow()}` :
-                  `Now on the trip. The trip ends in ${moment(tripInfo.tripEnd).fromNow()}`
-              ,,
-            "",
-            "Wait for the Guest to finish the trip first and then complete on your sides",
-          ] as const)
-        : ([
-              tripInfo.tripEnd > new Date() ?
-                  `The trip ended ${moment(tripInfo.tripEnd).toNow()}` :
-                  `The trip ends in ${moment(tripInfo.tripEnd).fromNow()}`
-            ,
-            "Let`s you check-out!",
-            "Finish the trip from your side and wait finish from the Host.",
-          ] as const);
+        ? t(
+            tripInfo.tripEnd > new Date()
+              ? "booked.status_trip_started_host_ended"
+              : "booked.status_trip_started_host_ends",
+            {
+              date:
+                tripInfo.tripEnd > new Date() ? moment(tripInfo.tripEnd).toNow() : moment(tripInfo.tripEnd).fromNow(),
+              returnObjects: true,
+            } as const
+          )
+        : t(
+            tripInfo.tripEnd > new Date()
+              ? "booked.status_trip_started_guest_ended"
+              : "booked.status_trip_started_guest_ends",
+            {
+              date:
+                tripInfo.tripEnd > new Date() ? moment(tripInfo.tripEnd).toNow() : moment(tripInfo.tripEnd).fromNow(),
+              returnObjects: true,
+            } as const
+          );
+
     case TripStatus.CheckedOutByGuest:
       return isHost
-        ? ([
-            `Checked-out by Guest at ${dateFormatShortMonthDateTime(
-              tripInfo.checkedOutByGuestDateTime,
-              tripInfo.timeZoneId
-            )}`,
-            "Let`s you check-out!",
-            "Finish the trip from your side and then complete the order",
-          ] as const)
+        ? t("status_check_out_by_guest", {
+            date: dateFormatShortMonthDateTime(tripInfo.checkedOutByGuestDateTime, tripInfo.timeZoneId),
+            returnObjects: true,
+          } as const)
         : (["", "", ""] as const);
     case TripStatus.Finished:
       return isHost
-        ? ([
-            `You finished the trip at ${dateFormatShortMonthDateTime(
-              tripInfo.checkedOutByHostDateTime,
-              tripInfo.timeZoneId
-            )}`,
-            "Please complete the order!",
-            "You receive payment and guest's deposit refunded.",
-          ] as const)
+        ? t("booked.status_finished", {
+            date: dateFormatShortMonthDateTime(tripInfo.checkedOutByHostDateTime, tripInfo.timeZoneId),
+            returnObjects: true,
+          } as const)
         : (["", "", ""] as const);
     case TripStatus.Closed:
       return isHost ? (["", "", ""] as const) : (["", "", ""] as const);
@@ -94,6 +79,7 @@ function CurrentStatusInfo({
   isAdditionalActionHidden,
   setIsAdditionalActionHidden,
   isHost,
+  t,
 }: {
   tripInfo: TripInfo;
   changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<void>;
@@ -101,8 +87,9 @@ function CurrentStatusInfo({
   isAdditionalActionHidden: boolean;
   setIsAdditionalActionHidden: Dispatch<SetStateAction<boolean>>;
   isHost: boolean;
+  t: TFunction;
 }) {
-  const [actionHeader, actionText, actionDescription] = getActionTextsForStatus(tripInfo, isHost);
+  const [actionHeader, actionText, actionDescription] = getActionTextsForStatus(tripInfo, isHost, t) as string[];
   return (
     <div
       id="trip-action-info"

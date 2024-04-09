@@ -1,7 +1,8 @@
 import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
+import { TFunction } from "@/pages/i18n";
 
-export default function PublicListingItem({ carInfo }: { carInfo: BaseCarInfo }) {
+export default function PublicListingItem({ carInfo, t }: { carInfo: BaseCarInfo; t: TFunction }) {
   return (
     <div className="bg-rentality-bg rnt-card flex flex-col sm_inverted:flex-row rounded-xl overflow-hidden">
       <div
@@ -17,9 +18,9 @@ export default function PublicListingItem({ carInfo }: { carInfo: BaseCarInfo })
         </div>
         <div className="flex flex-row justify-between items-end">
           <div className="flex flex-col">
-            <strong className="text-xl">{`$${carInfo.pricePerDay}/day`}</strong>
-            <div className="text-sm">{`${getMilesIncludedPerDayText(carInfo.milesIncludedPerDay)} miles per day`}</div>
-            <div className="text-sm">{`$${carInfo.securityDeposit} Security deposit`}</div>
+            <strong className="text-xl">{`$${carInfo.pricePerDay}/${t("vehicles.day")}`}</strong>
+            <div className="text-sm">{`${getMilesIncludedPerDayText(carInfo.milesIncludedPerDay)} ${t("vehicles.miles_per_day")}`}</div>
+            <div className="text-sm">{`$${carInfo.securityDeposit} ${t("vehicles.secure_dep")}`}</div>
           </div>
         </div>
       </div>

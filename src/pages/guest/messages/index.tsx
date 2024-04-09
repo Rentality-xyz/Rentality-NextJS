@@ -7,6 +7,8 @@ import { DialogActions } from "@/utils/dialogActions";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { TFunction } from "@/pages/i18n";
 
 export default function Messages() {
   const { isLoading, isClienReady, chatInfos, getLatestChatInfos, sendMessage } = useChat();
@@ -17,6 +19,8 @@ export default function Messages() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const selectedTridId = Number(searchParams.get("tridId") ?? -1);
+
+  const { t } = useTranslation();
 
   const createQueryString = (name: string, value: string) => {
     const params = new URLSearchParams();
@@ -32,20 +36,20 @@ export default function Messages() {
 
   const handleSendMessage = async (toAddress: string, tripId: number, message: string) => {
     if (isChatKeysLoading) {
-      showInfo("Please wait while the chat keys are loaded");
+      showInfo(t("chat.loading_message"));
       return;
     }
     if (!isChatKeysSaved) {
       const action = (
         <>
-          {DialogActions.Button("Save", () => {
+          {DialogActions.Button(t("common.save"), () => {
             hideDialogs();
             saveChatKeys();
           })}
           {DialogActions.Cancel(hideDialogs)}
         </>
       );
-      showDialog("To send and receive messages you have to generate and save encryption keys", action);
+      showDialog(t("chat.keys_message"), action);
       return;
     }
 
@@ -61,9 +65,11 @@ export default function Messages() {
   return (
     <Layout>
       <div className="flex flex-col">
-        <PageTitle title="Chats" />
+        <PageTitle title={t("chat.title")} />
         {isLoading ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
+          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
+            {t("common.info.loading")}
+          </div>
         ) : (
           <ChatPage
             isHost={false}
@@ -71,6 +77,9 @@ export default function Messages() {
             sendMessage={handleSendMessage}
             selectedTridId={selectedTridId}
             selectChat={selectChat}
+            t={(name, options) => {
+              return t("chat." + name, options);
+            }}
           />
         )}
       </div>

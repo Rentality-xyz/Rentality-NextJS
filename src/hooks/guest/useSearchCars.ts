@@ -9,15 +9,10 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { ContractCreateTripRequest } from "@/model/blockchain/schemas";
 import { ethers } from "ethers";
 
-export const sortOptions = {
-  priceAsc: "Price: low to high",
-  priceDesc: "Price: high to low",
-  distance: "Distance",
+export type SortOptions = {
+  [key: string]: string;
 };
-export type SortOptionKey = keyof typeof sortOptions;
-export function isSortOptionKey(key: string): key is SortOptionKey {
-  return sortOptions.hasOwnProperty(key);
-}
+export type SortOptionKey = keyof SortOptions;
 
 const useSearchCars = () => {
   const ethereumInfo = useEthereum();
@@ -155,8 +150,8 @@ const useSearchCars = () => {
       sortBy === "distance"
         ? sortByIncludedDistance
         : sortBy === "priceDesc"
-        ? sortByDailyPriceDes
-        : sortByDailyPriceAsc;
+          ? sortByDailyPriceDes
+          : sortByDailyPriceAsc;
 
     setSearchResult((current) => {
       return {

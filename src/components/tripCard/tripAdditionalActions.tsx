@@ -10,6 +10,7 @@ import AllowedActions from "../guest/allowedActions";
 import { TripStatus } from "@/model/blockchain/schemas";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { isEmpty } from "@/utils/string";
+import { TFunction } from "@/pages/i18n";
 
 function TripAdditionalActions({
   tripInfo,
@@ -17,12 +18,14 @@ function TripAdditionalActions({
   disableButton,
   refForScrool,
   isHost,
+  t,
 }: {
   tripInfo: TripInfo;
   changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<void>;
   disableButton: boolean;
   refForScrool?: MutableRefObject<HTMLDivElement>;
   isHost: boolean;
+  t: TFunction;
 }) {
   const defaultValues =
     tripInfo?.allowedActions?.length > 0
@@ -48,12 +51,12 @@ function TripAdditionalActions({
       tripInfo.allowedActions[0].readonly &&
       (confirmParams.length != defaultValues.length || !confirmParams.every((i) => i === true))
     ) {
-      showDialog("Please confirm fuel or battery and odometer value");
+      showDialog(t("booked.confirm_full"));
       return;
     }
 
     if (inputParams.length > 0 && !inputParams.every((i) => !isEmpty(i))) {
-      showDialog("Please input fuel and odometer value");
+      showDialog(t("booked.input_full_odom"));
       return;
     }
 
@@ -68,7 +71,9 @@ function TripAdditionalActions({
         <hr />
         <div id="trip-allowed-actions">
           <strong className="text-xl">
-            Please {tripInfo.allowedActions[0].readonly ? "confirm" : "enter"} data to change status:
+            {t("booked.confirm_data_to_change_status", {
+              type: tripInfo.allowedActions[0].readonly ? "confirm" : "enter",
+            })}
           </strong>
         </div>
 
@@ -125,7 +130,7 @@ function TripAdditionalActions({
                   {tripInfo.allowedActions[0].readonly ? (
                     <Checkbox
                       className="ml-4"
-                      title="Confirm"
+                      title={t("common.confirm")}
                       value={confirmParams[index]}
                       onChange={(newValue) => {
                         setConfirmParams((prev) => {
@@ -141,21 +146,23 @@ function TripAdditionalActions({
                 {tripInfo.status === TripStatus.CheckedOutByGuest ? (
                   param.type === "fuel" ? (
                     <div className="md:w-1/2 xl:w-1/4 md:mx-8 xl:mx-28 grid grid-cols-2 text-sm">
-                      <span className="font-bold col-span-2">FReimbursement charge:</span>
-                      <span>Refuel:</span>
-                      <span>{refuelValue} gal</span>
-                      <span>Gal price:</span>
+                      <span className="font-bold col-span-2">{t("booked.reimbursement")}</span>
+                      <span>{t("booked.refuel")}</span>
+                      <span>
+                        {refuelValue} {t("booked.refuel_measure")}
+                      </span>
+                      <span>{t("booked.gal_price")}</span>
                       <span>${tripInfo.fuelPricePerGal.toFixed(2)}</span>
-                      <span>Refuel or battery charge:</span>
+                      <span>{t("booked.refuel_or_battery")}</span>
                       <span>${refuelCharge.toFixed(2)}</span>
                     </div>
                   ) : (
                     <div className="md:w-1/2 xl:w-1/4 md:mx-8 xl:mx-28 grid grid-cols-2 text-sm">
-                        <span>Overmiles:</span>
+                      <span>{t("booked.overmiles")}</span>
                       <span>{overmileValue}</span>
-                      <span>Overmile price:</span>
+                      <span>{t("booked.overmile_price")}</span>
                       <span>${tripInfo.overmilePrice.toFixed(4)}</span>
-                      <span>Overmile charge:</span>
+                      <span>{t("booked.overmile_charge")}</span>
                       <span>${(overmileValue * tripInfo.overmilePrice).toFixed(2)}</span>
                     </div>
                   )
@@ -195,7 +202,9 @@ function TripAdditionalActions({
       <hr />
       <div id="trip-allowed-actions">
         <strong className="text-xl">
-          Please {tripInfo.allowedActions[0].readonly ? "confirm" : "enter"} data to change status:
+          {t("booked.confirm_data_to_change_status", {
+            type: tripInfo.allowedActions[0].readonly ? "confirm" : "enter",
+          })}
         </strong>
       </div>
       {tripInfo.status === TripStatus.Started ? (
