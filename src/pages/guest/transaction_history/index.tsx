@@ -5,7 +5,7 @@ import useTransactionHistory from "@/hooks/transaction_history/useTransactionHis
 import { useTranslation } from "react-i18next";
 
 export default function TransactionHistory() {
-  let [isLoading, transactions] = useTransactionHistory(false);
+  const [isLoading, transactions] = useTransactionHistory(false);
   const { t } = useTranslation();
 
   const sortOption: SortOptions = t("transaction_history.sort_options", {
