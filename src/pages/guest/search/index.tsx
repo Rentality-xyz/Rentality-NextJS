@@ -277,7 +277,7 @@ export default function Search() {
         ) : (
 		  <>	
           <div className="text-l font-bold">{searchResult?.carInfos?.length ?? 0} car(s) available</div>
-          <div className="grid grid-cols-2">
+          <div className="lg:grid lg:grid-cols-2">
             <div className="my-4 grid grid-cols-1 gap-4">
               {searchResult?.carInfos != null && searchResult?.carInfos?.length > 0 ? (
                 searchResult?.carInfos.sort((a :SearchCarInfo,b:SearchCarInfo) => {
@@ -305,12 +305,12 @@ export default function Search() {
                 </div>
               )}
             </div>
-			<CarSearchMap
-				carInfos={searchResult?.carInfos}
-				width='100%'
-				height='100vh'
-				onMarkerClick={handleMapClick}
-			/>
+			{/*<CarSearchMap*/}
+			{/*	carInfos={searchResult?.carInfos}*/}
+			{/*	width='100%'*/}
+			{/*	height='100vh'*/}
+			{/*	onMarkerClick={handleMapClick}*/}
+			{/*/>*/}
           </div>
           </>
         )}

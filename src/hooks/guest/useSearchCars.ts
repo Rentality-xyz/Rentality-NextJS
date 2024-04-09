@@ -12,6 +12,7 @@ import { IRentalityCurrencyConverterContract } from "@/model/blockchain/IRentali
 import moment from "moment";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import {
+  ClaimType,
   ContractCreateTripRequest,
   ContractSearchCar,
   ContractSearchCarParams,
@@ -29,6 +30,29 @@ export type SortOptionKey = keyof typeof sortOptions;
 export function isSortOptionKey(key: string): key is SortOptionKey {
   return sortOptions.hasOwnProperty(key);
 }
+export const getDaysDiscount = (tripDays: number) => {
+  switch (true) {
+    case tripDays >= 30:
+      return "30+ day discount";
+    case tripDays >= 7:
+      return "7+ day discount";
+    case tripDays >= 3:
+      return "3+ day discount";
+    default:
+      return "Days discount";
+  }
+};
+
+export const getTotalDiscount = (pricePerDay: number, tripDays: number, totalPriceWithDiscount: number) => {
+  const totalDiscount = pricePerDay * tripDays - totalPriceWithDiscount;
+  let result: string = ""
+  if (totalDiscount > 0) {
+    result = "-$" + String(totalDiscount)
+  } else {
+    result = "-"
+  }
+  return result
+};
 
 const useSearchCars = () => {
   const ethereumInfo = useEthereum();
@@ -110,6 +134,8 @@ const useSearchCars = () => {
             lng: parseFloat(i.locationLongitude),
           },
           highlighted: false,
+          daysDiscount: getDaysDiscount(tripDays),
+          totalDiscount: getTotalDiscount(pricePerDay, tripDays, totalPriceWithDiscount),
         };
         console.log(`item:${JSON.stringify(item)}`);
 

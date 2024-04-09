@@ -1,6 +1,7 @@
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 import RntButton from "../common/rntButton";
 import { Avatar } from "@mui/material";
+import React from "react";
 
 export default function CarSearchItem({
   searchInfo,
@@ -11,6 +12,7 @@ export default function CarSearchItem({
   handleRentCarRequest: (carInfo: SearchCarInfo) => void;
   disableButton: boolean;
 }) {
+  console.log(`ddiLog pricePerDay=${searchInfo.pricePerDay}`)
   return (
     <div className="bg-rentality-bg rnt-card flex flex-col md:flex-row rounded-xl overflow-hidden">
       {/* <div className="w-60 h-full min-h-[14rem] flex-shrink-0">
@@ -32,24 +34,56 @@ export default function CarSearchItem({
             <strong className="text-lg truncate">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>
           </div>
         </div>
-        <div className="flex md:grid md:grid-cols-[2fr_1fr] text-xs mt-2 md:justify-between">
-          <div className="w-9/12 flex flex-col">
-            <div>
-              <strong>Total price ${searchInfo.totalPriceWithDiscount}</strong>
+        <div className="flex md:grid md:grid-cols-[2fr_1fr] text-sm mt-2 md:justify-between">
+          <div className="w-8/12 lg:w-9/12 flex flex-col">
+            {isNaN(searchInfo.pricePerDayWithDiscount) ? (
+                <div className="text-base">
+                  <strong>${searchInfo.pricePerDay}/day</strong>
+                </div>
+            ) : (
+                <div className="text-base">
+                  <strong>${searchInfo.pricePerDayWithDiscount}/day</strong>
+                  <strong  className="ml-8 text-[#8B8B8F] line-through">${searchInfo.pricePerDay}/day</strong>
+                </div>
+                )
+            }
+
+            <div className="mt-4 grid grid-cols-2">
+              <div>
+                <span>${searchInfo.pricePerDay}</span>
+                <span className="mx-0.5">x</span>
+                <span>{searchInfo.tripDays} days</span>
+              </div>
+              <span className="ml-8">$1600</span>
+              {/*<span className="ml-8">${searchInfo.pricePerDay * searchInfo.tripDays}</span>*/}
             </div>
-            <div className="mt-2">
-              <strong>{searchInfo.tripDays} days</strong> trip for <strong>${searchInfo.pricePerDay} per day</strong>
+
+            <div className="grid grid-cols-2">
+              <span className="text-rentality-secondary-shade">{searchInfo.daysDiscount}</span>
+              <span className="ml-8 text-rentality-secondary-shade">{searchInfo.totalDiscount}</span>
             </div>
-            <div>{searchInfo.milesIncludedPerDay} mi included per day</div>
-            <div>Additionally security deposit ${searchInfo.securityDeposit} per trip</div>
+
+            <div className="grid grid-cols-2">
+              <span>Price excl. taxes</span>
+              <span className="ml-8">${searchInfo.totalPriceWithDiscount}</span>
+            </div>
+
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col w-auto">
             <div>- {searchInfo.engineTypeText}</div>
             <div>- {searchInfo.transmission}</div>
             <div>- {searchInfo.seatsNumber} seats</div>
+            <div className="mt-4 grid grid-cols-2">
+              <span>Taxes</span>
+              <span className="max-md:ml-4">${searchInfo.taxes}</span>
+            </div>
+            <div className="grid grid-cols-2">
+              <span>Deposit</span>
+              <span className="max-md:ml-4">${searchInfo.securityDeposit}</span>
+            </div>
           </div>
         </div>
-        <div className="w-full grid grid-cols-[1fr_auto] items-end mt-2">
+        <div className="w-full grid grid-cols-[1fr_auto] items-end mt-4">
           <div className="flex flex-row items-center truncate">
             <div className="w-12 h-12 self-center mr-2">
               <Avatar src={searchInfo.hostPhotoUrl} sx={{ width: "3rem", height: "3rem" }}></Avatar>
@@ -65,7 +99,7 @@ export default function CarSearchItem({
             disabled={disableButton}
           >
             <div>Rent for {searchInfo.tripDays} day(s)</div>
-            <div>for ${searchInfo.totalPriceWithDiscount + searchInfo.securityDeposit}</div>
+            <div>for ${searchInfo.totalPriceWithDiscount + searchInfo.taxes + searchInfo.securityDeposit}</div>
           </RntButton>
         </div>
       </div>
