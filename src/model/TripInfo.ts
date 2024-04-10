@@ -117,6 +117,11 @@ export type TripInfo = {
   guestPhotoUrl: string;
   hostPhotoUrl: string;
   timeZoneId: string;
+  pricePerDayInUsdCents: number;
+  totalDayPriceInUsd: number;
+  taxPriceInUsd: number;
+  depositInUsd: number;
+  currencyRate: number;
 };
 
 export const getBatteryChargeFromDiffs = (fuelDiffsInPercents: number, fullBatteryChargePriceInUsdCents: number) => {

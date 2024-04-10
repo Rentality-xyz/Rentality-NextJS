@@ -5,6 +5,7 @@ import RntButton from "../common/rntButton";
 import { useRouter } from "next/router";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { dateFormatLongMonthDateTime, dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
+import TripCard from "@/components/tripCard/tripCard";
 
 export default function TripDetails({ tripId }: { tripId: bigint }) {
   const [isLoading, tripDetails] = useTripDetails(tripId);
@@ -19,14 +20,21 @@ export default function TripDetails({ tripId }: { tripId: bigint }) {
         <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
       ) : (
         <>
+           <TripCard
+            key={tripId}
+            tripInfo={tripDetails}
+            disableButton={true}
+            isHost={false}
+          />         
+        
           <div className="my-4 flex flex-col md:grid grid-cols-2 gap-4 pr-4">
             <div className="flex flex-row gap-4">
               <RntInput id="tripId" label="Trip id:" value={tripDetails.tripId.toString()} readOnly={true} />
               <RntInput id="carId" label="Car id:" value={tripDetails.carId.toString()} readOnly={true} />
             </div>
             <RntInput id="status" label="Status:" value={tripDetails.status} readOnly={true} />
-            <RntInput id="host" label="Host address:" value={tripDetails.host} readOnly={true} />
-            <RntInput id="guest" label="Guest address:" value={tripDetails.guest} readOnly={true} />
+            <RntInput id="host" label="Host address:" value={tripDetails.hostAddress} readOnly={true} />
+            <RntInput id="guest" label="Guest address:" value={tripDetails.guestAddress} readOnly={true} />
             <RntInput
               id="startDateTime"
               label="Start date and time:"
@@ -50,7 +58,7 @@ export default function TripDetails({ tripId }: { tripId: bigint }) {
             <RntInput
               id="fuelPricePerGalInUsdCents"
               label="Fuel price per gal in USD:"
-              value={tripDetails.fuelPricePerGalInUsd.toString()}
+              value={tripDetails.fuelPricePerGal.toString()}
               readOnly={true}
             />
             <RntInput

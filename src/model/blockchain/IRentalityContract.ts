@@ -133,7 +133,7 @@ type ContractAddressPublicKey = {
   publicKey: string;
 };
 
-type ContractTripContactInfo = {
+export type ContractTripContactInfo = {
   guestPhoneNumber: string;
   hostPhoneNumber: string;
 };

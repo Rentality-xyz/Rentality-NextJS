@@ -33,4 +33,7 @@ export type TripDetails = {
   currencyType: string;
   currencyRate: number;
   currencyDecimals: number;
+  
+  rejectedBy: string;
+  
 };

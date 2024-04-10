@@ -6,6 +6,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { getDateFromBlockchainTime, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { ContractTripDTO } from "@/model/blockchain/schemas";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import { mapTripDTOtoTripInfo } from "@/model/utils/TripDTOtoTripInfo";
 
 const emptyDetails: TripDetails = {
   tripId: BigInt(0),
@@ -59,9 +60,10 @@ const useTripDetails = (tripId: bigint) => {
 
       if (tripDTO === null) return;
 
-      const timeZoneId = tripDTO.timeZoneId ?? UTC_TIME_ZONE_ID;
+	  const tripContactInfo = await rentalityContract.getTripContactInfo(tripDTO.trip.carId);
+	  const details = await mapTripDTOtoTripInfo (tripDTO, tripContactInfo);
 
-      let details: TripDetails = {
+      /*let details: TripDetails = {
         tripId: tripDTO.trip.tripId,
         carId: tripDTO.trip.carId,
         status: getTripStatusTextFromStatus(tripDTO.trip.status),
@@ -114,7 +116,7 @@ const useTripDetails = (tripId: bigint) => {
           Number(tripDTO.trip.paymentInfo.currencyRate) / 10 ** Number(tripDTO.trip.paymentInfo.currencyDecimals),
         currencyDecimals: Number(tripDTO.trip.paymentInfo.currencyDecimals),
         timeZoneId: timeZoneId,
-      };
+      };*/
       return details;
     } catch (e) {
       console.error("getTrip error:" + e);
