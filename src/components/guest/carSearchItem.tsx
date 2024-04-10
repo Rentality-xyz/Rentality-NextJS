@@ -1,6 +1,7 @@
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 import RntButton from "../common/rntButton";
 import { Avatar } from "@mui/material";
+import React from "react";
 
 type TFunction = (key: string, options?: { [key: string]: any }) => string;
 export default function CarSearchItem({
@@ -38,37 +39,66 @@ export default function CarSearchItem({
             <strong className="text-lg truncate">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>
           </div>
         </div>
-        <div className="flex md:grid md:grid-cols-[2fr_1fr] text-xs mt-2 md:justify-between">
-          <div className="w-9/12 flex flex-col">
-            <div>
-              <strong>
-                {t_item("price")} ${searchInfo.totalPriceWithDiscount}
-              </strong>
+        <div className="flex md:grid md:grid-cols-[2fr_1fr] text-sm mt-2 md:justify-between">
+          <div className="w-8/12 lg:w-9/12 flex flex-col">
+            {isNaN(searchInfo.pricePerDayWithDiscount) ? (
+              <div className="text-base">
+                <strong>
+                  ${searchInfo.pricePerDay}
+                  {t_item("per_day")}
+                </strong>
+              </div>
+            ) : (
+              <div className="text-base">
+                <strong>
+                  ${searchInfo.pricePerDayWithDiscount}
+                  {t_item("per_day")}
+                </strong>
+                <strong className="ml-8 text-[#8B8B8F] line-through">
+                  ${searchInfo.pricePerDay}
+                  {t_item("per_day")}
+                </strong>
+              </div>
+            )}
+
+            <div className="mt-4 grid grid-cols-2">
+              <div>
+                <span>${searchInfo.pricePerDay}</span>
+                <span className="mx-0.5">x</span>
+                <span>
+                  {searchInfo.tripDays} {t_item("days")}
+                </span>
+              </div>
+              <span className="ml-8">${searchInfo.pricePerDay * searchInfo.tripDays}</span>
             </div>
-            <div className="mt-2">
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: t_item("trip_for", {
-                    tripDays: searchInfo.tripDays,
-                    pricePerDay: searchInfo.pricePerDay,
-                  }),
-                }}
-              ></span>
+
+            <div className="grid grid-cols-2">
+              <span className="text-rentality-secondary-shade">{searchInfo.daysDiscount}</span>
+              <span className="ml-8 text-rentality-secondary-shade">{searchInfo.totalDiscount}</span>
             </div>
-            <div>
-              {t_item("miles_included")} ${searchInfo.milesIncludedPerDay}
+
+            <div className="grid grid-cols-2">
+              <span> {t_item("price_without_taxes")}</span>
+              <span className="ml-8">${searchInfo.totalPriceWithDiscount}</span>
             </div>
-            <div>{t_item("secur_deposit", { deposit: searchInfo.securityDeposit })}</div>
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col w-auto">
             <div>- {searchInfo.engineTypeText}</div>
             <div>- {searchInfo.transmission}</div>
             <div>
               - {searchInfo.seatsNumber} {t_item("seats")}
             </div>
+            <div className="mt-4 grid grid-cols-2">
+              <span>{t_item("taxes")}</span>
+              <span className="max-md:ml-4">${searchInfo.taxes}</span>
+            </div>
+            <div className="grid grid-cols-2">
+              <span>{t_item("deposit")}</span>
+              <span className="max-md:ml-4">${searchInfo.securityDeposit}</span>
+            </div>
           </div>
         </div>
-        <div className="w-full grid grid-cols-[1fr_auto] items-end mt-2">
+        <div className="w-full grid grid-cols-[1fr_auto] items-end mt-4">
           <div className="flex flex-row items-center truncate">
             <div className="w-12 h-12 self-center mr-2">
               <Avatar src={searchInfo.hostPhotoUrl} sx={{ width: "3rem", height: "3rem" }}></Avatar>
@@ -85,7 +115,7 @@ export default function CarSearchItem({
           >
             <div>{t_item("rent_for", { days: searchInfo.tripDays })}</div>
             <div>
-              {t_item("total")} ${searchInfo.totalPriceWithDiscount + searchInfo.securityDeposit}
+              {t_item("total")} ${searchInfo.totalPriceWithDiscount + searchInfo.taxes + searchInfo.securityDeposit}
             </div>
           </RntButton>
         </div>

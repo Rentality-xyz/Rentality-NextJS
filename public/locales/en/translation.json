@@ -53,7 +53,12 @@
       "host": "HOSTED BY",
       "rent_for": "Rent for {{days, number}} day(s)",
       "total": "for",
-      "secur_deposit": "Additionally security deposit {{deposit, number}} per trip"
+      "secur_deposit": "Additionally security deposit {{deposit, number}} per trip",
+      "taxes": "Taxes",
+      "deposit": "Deposit",
+      "per_day": "/day",
+      "days": "day(s)",
+      "price_without_taxes": "Price excl. taxes"
     },
     "sort_options": {
       "priceAsc": "Price: low to high",

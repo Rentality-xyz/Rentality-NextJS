@@ -35,11 +35,7 @@ export default function History() {
               })
             ) : (
               <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-<<<<<<< HEAD
                 {t("booked.history_no_trips")}
-=======
-                {"You don't have any booked trips"}
->>>>>>> feature/v0_17
               </div>
             )}
           </div>

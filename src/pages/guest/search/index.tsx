@@ -45,7 +45,10 @@ export default function Search() {
   const t_page: TFunction = (path, options) => {
     return t("search_page." + path, options);
   };
-  
+  const t_errors: TFunction = (name, options) => {
+    return t_page("errors." + name, options);
+  };
+
   const [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest, setSearchResult] =
     useSearchCars();
   const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(customEmptySearchCarRequest);
@@ -83,17 +86,17 @@ export default function Search() {
 	
     try {
       if (isEmpty(userInfo?.drivingLicense)) {
-        showError(t_er("user_info"));
+        showError(t_errors("user_info"));
         await router.push("/guest/profile");
         return;
       }
 
       if (searchResult.searchCarRequest.dateFrom == null) {
-        showError(t_er("date_from"));
+        showError(t_errors("date_from"));
         return;
       }
       if (searchResult.searchCarRequest.dateTo == null) {
-        showError(t_er("date_to"));
+        showError(t_errors("date_to"));
         return;
       }
       const startDateTime = moment.utc(searchResult.searchCarRequest.dateFrom).toDate();
@@ -101,7 +104,7 @@ export default function Search() {
 
       const days = calculateDays(startDateTime, endDateTime);
       if (days < 0) {
-        showError(t_er("date_eq"));
+        showError(t_errors("date_eq"));
         return;
       }
       setRequestSending(true);
@@ -127,12 +130,12 @@ export default function Search() {
       setRequestSending(false);
       hideDialogs();
       if (!result) {
-        showError(t_er("request"));
+        showError(t_errors("request"));
         return;
       }
       router.push("/guest/trips");
     } catch (e) {
-      showError(t_er("request"));
+      showError(t_errors("request"));
       console.error("sendRentCarRequest error:" + e);
 
       setRequestSending(false);

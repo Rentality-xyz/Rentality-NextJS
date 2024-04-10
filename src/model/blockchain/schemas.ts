@@ -288,6 +288,8 @@ export type ContractSearchCar = {
   locationLongitude: string;
   timeZoneId: string;
   metadataURI: string;
+  daysDiscount: string;
+  totalDiscount: string;
 };
 
 export type ContractGeoData = {
