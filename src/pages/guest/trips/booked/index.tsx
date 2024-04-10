@@ -4,29 +4,31 @@ import TripCard from "@/components/tripCard/tripCard";
 import useGuestTrips from "@/hooks/guest/useGuestTrips";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function Booked() {
   const [isLoading, tripsBooked, _, updateData] = useGuestTrips();
   const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
   const { showInfo, showError } = useRntDialogs();
+  const { t } = useTranslation();
 
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
     try {
       setTripStatusChanging(true);
 
-      showInfo("Please confirm the transaction with your wallet and wait for the transaction to be processed");
+      showInfo(t("common.info.sign"));
       const result = await changeStatus();
 
       if (!result) {
         throw new Error("changeStatus error");
       }
-      showInfo("Status successfully changed!");
+      showInfo(t("booked.status_changed"));
 
       setTripStatusChanging(false);
       updateData();
       //router.reload();
     } catch (e) {
-      showError("Change trip status request failed. Please try again");
+      showError(t("booked.status_req_failed"));
 
       setTripStatusChanging(false);
     }
@@ -35,9 +37,11 @@ export default function Booked() {
   return (
     <Layout>
       <div className="flex flex-col">
-        <PageTitle title="Booked" />
+        <PageTitle title={t("booked.title")} />
         {isLoading ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
+          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
+            {t("common.info.loading")}
+          </div>
         ) : (
           <div className="my-4 flex flex-col gap-4">
             {tripsBooked != null && tripsBooked.length > 0 ? (
@@ -49,12 +53,13 @@ export default function Booked() {
                     changeStatusCallback={changeStatusCallback}
                     disableButton={tripStatusChanging}
                     isHost={false}
+                    t={t}
                   />
                 );
               })
             ) : (
               <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-                You don't have any booked trips
+                {t("booked.trip_not_found")}
               </div>
             )}
           </div>

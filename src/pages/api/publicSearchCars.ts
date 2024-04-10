@@ -12,6 +12,30 @@ import { JsonRpcProvider, Wallet } from "ethers";
 import moment from "moment";
 import type { NextApiRequest, NextApiResponse } from "next";
 
+export const getDaysDiscount = (tripDays: number) => {
+  switch (true) {
+    case tripDays >= 30:
+      return "30+ day discount";
+    case tripDays >= 7:
+      return "7+ day discount";
+    case tripDays >= 3:
+      return "3+ day discount";
+    default:
+      return "Days discount";
+  }
+};
+
+export const getTotalDiscount = (pricePerDay: number, tripDays: number, totalPriceWithDiscount: number) => {
+  const totalDiscount = pricePerDay * tripDays - totalPriceWithDiscount;
+  let result: string = ""
+  if (totalDiscount > 0) {
+    result = "-$" + String(totalDiscount)
+  } else {
+    result = "-"
+  }
+  return result
+};
+
 const formatSearchAvailableCarsContractRequest = (searchCarRequest: SearchCarRequest) => {
   const startDateTimeUTC = moment
     .utc(searchCarRequest.dateFrom)
@@ -86,6 +110,8 @@ const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: Co
           lng: parseFloat(i.locationLongitude),
         },
         highlighted: false,
+        daysDiscount: getDaysDiscount(tripDays),
+        totalDiscount: getTotalDiscount(pricePerDay, tripDays, totalPriceWithDiscount),
       };
 
       return item;

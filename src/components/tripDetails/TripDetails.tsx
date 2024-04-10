@@ -6,18 +6,24 @@ import { useRouter } from "next/router";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { dateFormatLongMonthDateTime, dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import TripCard from "@/components/tripCard/tripCard";
+import { TFunction } from "@/pages/i18n";
 
-export default function TripDetails({ tripId }: { tripId: bigint }) {
+export default function TripDetails({ tripId, t }: { tripId: bigint; t: TFunction }) {
   const [isLoading, tripDetails] = useTripDetails(tripId);
   const router = useRouter();
+  const t_details: TFunction = (name, options) => {
+    return t("booked.details." + name, options);
+  };
 
   if (tripId == null || tripId === BigInt(0)) return null;
 
   return (
     <>
-      <PageTitle title={`Trip #${tripId.toString()} details`} />
+      <PageTitle title={t_details("title", { tripId: tripId.toString() })} />
       {isLoading ? (
-        <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
+        <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
+          {t("common.info.loading")}
+        </div>
       ) : (
         <>
            <TripCard
@@ -29,41 +35,51 @@ export default function TripDetails({ tripId }: { tripId: bigint }) {
         
           <div className="my-4 flex flex-col md:grid grid-cols-2 gap-4 pr-4">
             <div className="flex flex-row gap-4">
-              <RntInput id="tripId" label="Trip id:" value={tripDetails.tripId.toString()} readOnly={true} />
-              <RntInput id="carId" label="Car id:" value={tripDetails.carId.toString()} readOnly={true} />
+              <RntInput id="tripId" label={t_details("tripId")} value={tripDetails.tripId.toString()} readOnly={true} />
+              <RntInput id="carId" label={t_details("carId")} value={tripDetails.carId.toString()} readOnly={true} />
             </div>
-            <RntInput id="status" label="Status:" value={tripDetails.status} readOnly={true} />
-            <RntInput id="host" label="Host address:" value={tripDetails.hostAddress} readOnly={true} />
-            <RntInput id="guest" label="Guest address:" value={tripDetails.guestAddress} readOnly={true} />
+            <RntInput id="status" label={t_details("status")} value={tripDetails.status} readOnly={true} />
+            <RntInput id="host" label={t_details("host_addr")} value={tripDetails.hostAddress} readOnly={true} />
+            <RntInput id="guest" label={t_details("guest_addr")} value={tripDetails.guestAddress} readOnly={true} />
             <RntInput
               id="startDateTime"
-              label="Start date and time:"
+              label={t_details("start_time")}
               value={dateFormatShortMonthDateTime(tripDetails.startDateTime, tripDetails.timeZoneId)}
               readOnly={true}
             />
             <RntInput
               id="endDateTime"
-              label="End date and time:"
+              label={t_details("end_time")}
               value={dateFormatShortMonthDateTime(tripDetails.endDateTime, tripDetails.timeZoneId)}
               readOnly={true}
             />
-            <RntInput id="startLocation" label="Start Location:" value={tripDetails.startLocation} readOnly={true} />
-            <RntInput id="endLocation" label="End Location:" value={tripDetails.endLocation} readOnly={true} />
+            <RntInput
+              id="startLocation"
+              label={t_details("start_location")}
+              value={tripDetails.startLocation}
+              readOnly={true}
+            />
+            <RntInput
+              id="endLocation"
+              label={t_details("end_location")}
+              value={tripDetails.endLocation}
+              readOnly={true}
+            />
             <RntInput
               id="milesIncluded"
-              label="Miles included:"
+              label={t_details("miles_included")}
               value={getMilesIncludedPerDayText(tripDetails.milesIncludedPerDay)}
               readOnly={true}
             />
             <RntInput
               id="fuelPricePerGalInUsdCents"
-              label="Fuel price per gal in USD:"
+              label={t_details("fuel_price")}
               value={tripDetails.fuelPricePerGal.toString()}
               readOnly={true}
             />
             <RntInput
               id="approvedDateTime"
-              label="Approved date and time:"
+              label={t_details("approved_at")}
               value={
                 tripDetails.approvedDateTime
                   ? dateFormatShortMonthDateTime(tripDetails.approvedDateTime, tripDetails.timeZoneId)
@@ -73,7 +89,7 @@ export default function TripDetails({ tripId }: { tripId: bigint }) {
             />
             <RntInput
               id="checkedInByHostDateTime"
-              label="Checked-in by host date and time:"
+              label={t_details("check_in_at")}
               value={
                 tripDetails.checkedInByHostDateTime
                   ? dateFormatShortMonthDateTime(tripDetails.checkedInByHostDateTime, tripDetails.timeZoneId)
@@ -83,19 +99,19 @@ export default function TripDetails({ tripId }: { tripId: bigint }) {
             />
             <RntInput
               id="startFuelLevel"
-              label="Start fuel level in percents:"
+              label={t_details("start_fuel_level")}
               value={tripDetails.startFuelLevelInPercents?.toString() ?? "-"}
               readOnly={true}
             />
             <RntInput
               id="startOdometr"
-              label="Start odometer:"
+              label={t_details("start_odometer")}
               value={tripDetails.startOdometr?.toString() ?? "-"}
               readOnly={true}
             />
             <RntInput
               id="checkedInByGuestDateTime"
-              label="Checked-in by guest date and time:"
+              label={t_details("check_in_guest_at")}
               value={
                 tripDetails.checkedInByGuestDateTime
                   ? dateFormatShortMonthDateTime(tripDetails.checkedInByGuestDateTime, tripDetails.timeZoneId)
@@ -105,7 +121,7 @@ export default function TripDetails({ tripId }: { tripId: bigint }) {
             />
             <RntInput
               id="checkedOutByGuestDateTime"
-              label="Checked-out by guest date and time:"
+              label={t_details("check_out_guest_at")}
               value={
                 tripDetails.checkedOutByGuestDateTime
                   ? dateFormatShortMonthDateTime(tripDetails.checkedOutByGuestDateTime, tripDetails.timeZoneId)
@@ -115,19 +131,19 @@ export default function TripDetails({ tripId }: { tripId: bigint }) {
             />
             <RntInput
               id="endFuelLevel"
-              label="End fuel level in percents:"
+              label={t_details("end_fuel_level")}
               value={tripDetails.endFuelLevelInPercents?.toString() ?? "-"}
               readOnly={true}
             />
             <RntInput
               id="endOdometr"
-              label="End odometer:"
+              label={t_details("end_odometer")}
               value={tripDetails.endOdometr?.toString() ?? "-"}
               readOnly={true}
             />
             <RntInput
               id="checkedOutByHostDateTime"
-              label="Checked-out by host date and time:"
+              label={t_details("check_out_host_at")}
               value={
                 tripDetails.checkedOutByHostDateTime
                   ? dateFormatShortMonthDateTime(tripDetails.checkedOutByHostDateTime, tripDetails.timeZoneId)
@@ -135,48 +151,58 @@ export default function TripDetails({ tripId }: { tripId: bigint }) {
               }
               readOnly={true}
             />
-            <RntInput id="paymentFrom" label="Payment from:" value={tripDetails.paymentFrom} readOnly={true} />
-            <RntInput id="paymentTo" label="Payment to:" value={tripDetails.paymentTo} readOnly={true} />
+            <RntInput
+              id="paymentFrom"
+              label={t_details("payments", { value: "from" })}
+              value={tripDetails.paymentFrom}
+              readOnly={true}
+            />
+            <RntInput
+              id="paymentTo"
+              label={t_details("payments", { value: "to" })}
+              value={tripDetails.paymentTo}
+              readOnly={true}
+            />
             <RntInput
               id="pricePerDayInUsdCents"
-              label="Price per day in USD:"
+              label={t_details("day_price")}
               value={tripDetails.pricePerDayInUsdCents.toString()}
               readOnly={true}
             />
             <RntInput
               id="totalDayPriceInUsdCents"
-              label="Total day price in USD:"
+              label={t_details("total_price")}
               value={tripDetails.totalDayPriceInUsd.toString()}
               readOnly={true}
             />
             <RntInput
               id="taxPriceInUsdCents"
-              label="Tax price in USD:"
+              label={t_details("taxes")}
               value={tripDetails.taxPriceInUsd.toString()}
               readOnly={true}
             />
             <RntInput
               id="depositInUsdCents"
-              label="Deposit in USD:"
+              label={t_details("deposit")}
               value={tripDetails.depositInUsd.toString()}
               readOnly={true}
             />
             <RntInput
               id="ethToCurrencyRate"
-              label="ETH to currency rate:"
+              label={t_details("eth_rate")}
               value={tripDetails.currencyRate.toString()}
               readOnly={true}
             />
             <RntInput
               id="resolveAmountInUsdCents"
-              label="Resolve amount in USD:"
+              label={t_details("resolve")}
               value={tripDetails.resolveAmountInUsd?.toString() ?? "-"}
               readOnly={true}
             />
           </div>
           <div className="flex flex-row gap-4 mb-8 mt-4 items-center">
             <RntButton className="w-40 h-16" onClick={() => router.back()}>
-              Back
+              {t("common.back")}
             </RntButton>
           </div>
         </>

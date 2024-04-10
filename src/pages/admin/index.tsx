@@ -6,6 +6,8 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import useContractInfo from "@/hooks/admin/useContractInfo";
 import { parseEther } from "ethers";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { TFunction } from "@/pages/i18n";
 
 export default function Admin() {
   const [
@@ -26,6 +28,13 @@ export default function Admin() {
   const [newCurrencyConverterServiceAddress, setNewCurrencyConverterServiceAddress] = useState("0x");
   const [newPlatformServiceAddress, setNewPlatformServiceAddress] = useState("0x");
   const { showError } = useRntDialogs();
+  const { t } = useTranslation();
+  const t_admin: TFunction = (name, options) => {
+    return t("admin." + name, options);
+  };
+  const t_errors: TFunction = (name, options) => {
+    return t_admin("errors." + name, options);
+  };
 
   if (adminContractInfo == null) {
     return (
@@ -33,11 +42,11 @@ export default function Admin() {
         <div className="flex flex-col">
           <div className="flex flex-row justify-between items-center">
             <div className="text-2xl">
-              <strong>Contract info</strong>
+              <strong>{t_admin("contract_info")}</strong>
             </div>
           </div>
           <div className="mt-4">
-            <label>Contract is null: </label>
+            <label>{t_admin("contract_null")}</label>
           </div>
         </div>
       </Layout>
@@ -48,11 +57,11 @@ export default function Admin() {
     if (ethToWithdraw == null) return;
     const value = Number.parseFloat(ethToWithdraw);
     if (value < 0) {
-      showError("value should be more then 0");
+      showError(t_errors("less_than_zero"));
       return;
     }
     if (value > adminContractInfo.contractBalance) {
-      showError("value should be less then contract balance");
+      showError(t_errors("greater_than_contract_balance"));
       return;
     }
     try {
@@ -60,7 +69,7 @@ export default function Admin() {
       await withdrawFromPlatform(BigInt(valueToWithdrawInWei));
       setEthToWithdraw("0");
     } catch (e) {
-      showError("withdraw error:" + e);
+      showError(t_errors("withdraw"));
     }
   };
 
@@ -68,84 +77,84 @@ export default function Admin() {
     if (newPlatformCommission == null) return;
     const value = Number.parseFloat(newPlatformCommission);
     if (value < 0.0001 || value > 100) {
-      showError("value should be more then 0% and less than 100% (min value is 0.0001%)");
+      showError(t_errors("commission_value_range"));
       return;
     }
     try {
       await setPlatformFeeInPPM(BigInt(Math.round(value * 10_000)));
       setNewPlatformCommission("0");
     } catch (e) {
-      showError("setPlatformCommission error:" + e);
+      showError(t_errors("platform_commission_error") + e);
     }
   };
 
   const setUserService = async () => {
     if (newUserServiceAddress == null) return;
     if (newUserServiceAddress.length != 42 || !newUserServiceAddress.startsWith("0x")) {
-      showError("Address should start with 0x and contain 40 symbols");
+      showError(t_errors(" address_format"));
       return;
     }
     try {
       await updateUserService(newUserServiceAddress);
       setNewUserServiceAddress("0x");
     } catch (e) {
-      showError("setUserService error:" + e);
+      showError(t_errors("set_user_service_error") + e);
     }
   };
 
   const setCarService = async () => {
     if (newCarServiceAddress == null) return;
     if (newCarServiceAddress.length != 42 || !newCarServiceAddress.startsWith("0x")) {
-      showError("Address should start with 0x and contain 40 symbols");
+      showError(t_errors("address_format"));
       return;
     }
     try {
       await updateCarService(newCarServiceAddress);
       setNewCarServiceAddress("0x");
     } catch (e) {
-      showError("setCarService error:" + e);
+      showError(t_errors("set_user_service"));
     }
   };
 
   const setTripsService = async () => {
     if (newTripsServiceAddress == null) return;
     if (newTripsServiceAddress.length != 42 || !newTripsServiceAddress.startsWith("0x")) {
-      showError("Address should start with 0x and contain 40 symbols");
+      showError(t_errors("address_format"));
       return;
     }
     try {
       await updateTripService(newTripsServiceAddress);
       setNewTripsServiceAddress("0x");
     } catch (e) {
-      showError("setTripsService error:" + e);
+      showError(t_errors("set_trip_service"));
     }
   };
 
   const setCurrencyConverterService = async () => {
     if (newCurrencyConverterServiceAddress == null) return;
     if (newCurrencyConverterServiceAddress.length != 42 || !newCurrencyConverterServiceAddress.startsWith("0x")) {
-      showError("Address should start with 0x and contain 40 symbols");
+      showError(t_errors("address_format"));
       return;
     }
     try {
       await updateCurrencyConverterService(newCurrencyConverterServiceAddress);
       setNewCurrencyConverterServiceAddress("0x");
     } catch (e) {
-      showError("setCurrencyConverterService error:" + e);
+      showError(t_errors("set_currency_converter_service") + e);
     }
   };
 
   const setPlatformService = async () => {
     if (newPlatformServiceAddress == null) return;
     if (newPlatformServiceAddress.length != 42 || !newPlatformServiceAddress.startsWith("0x")) {
-      showError("Address should start with 0x and contain 40 symbols");
+      showError(t_errors("address_format"));
       return;
     }
     try {
       await updatePlatformService(newPlatformServiceAddress);
       setNewPlatformServiceAddress("0x");
     } catch (e) {
-      showError("setPlatformService error:" + e);
+      showError(t_errors("set_platform_service") + e);
     }
   };
 
@@ -156,19 +165,19 @@ export default function Admin() {
         <div className="grid grid-cols-2 gap-4 mt-4 text-lg">
           <RntInput
             id="balance"
-            label="Rentality contract balance:"
+            label={t_admin("balance")}
             value={adminContractInfo.contractBalanceString + " ETH"}
             readOnly={true}
           />
           <RntInputWithButton
             id="withdraw"
             placeholder="0.00 ETH"
-            label="Withdraw from Rentality contract balance:"
+            label={t_admin("withdraw")}
             value={ethToWithdraw}
             onChange={(e) => {
               setEthToWithdraw(e.target.value);
             }}
-            buttonText="Withdraw"
+            buttonText={t_admin("withdraw_button")}
             buttonDisabled={!Number.parseFloat(ethToWithdraw)}
             onButtonClick={() => {
               withdraw();
@@ -176,19 +185,19 @@ export default function Admin() {
           />
           <RntInput
             id="contract"
-            label="Rentality contract address:"
+            label={t_admin("contract_addr")}
             value={adminContractInfo.contractAddress}
             readOnly={true}
           />
           <RntInput
             id="owner"
-            label="Contract owner address:"
+            label={t_admin("owner_addr")}
             value={adminContractInfo.contractOwnerAddress}
             readOnly={true}
           />
           <RntInput
             id="commission"
-            label="Rentality platform commission:"
+            label={t_admin("commission")}
             value={adminContractInfo.rentalityCommission.toString() + "%"}
             readOnly={true}
           />
@@ -200,7 +209,7 @@ export default function Admin() {
             onChange={(e) => {
               setNewPlatformCommission(e.target.value);
             }}
-            buttonText="Save"
+            buttonText={t("common.save")}
             buttonDisabled={!Number.parseFloat(newPlatformCommission)}
             onButtonClick={() => {
               setPlatformCommission();
@@ -208,19 +217,19 @@ export default function Admin() {
           />
           <RntInput
             id="userService"
-            label="User service contract address:"
+            label={t_admin("user_s_addr")}
             value={adminContractInfo.userServiceContractAddress}
             readOnly={true}
           />
           <RntInputWithButton
             id="userServiceSet"
             placeholder="0x"
-            label="Set user service contract address:"
+            label={t_admin("set_user_s")}
             value={newUserServiceAddress}
             onChange={(e) => {
               setNewUserServiceAddress(e.target.value);
             }}
-            buttonText="Save"
+            buttonText={t("common.save")}
             buttonDisabled={newUserServiceAddress.length != 42}
             onButtonClick={() => {
               setUserService();
@@ -228,19 +237,19 @@ export default function Admin() {
           />
           <RntInput
             id="carService"
-            label="Car service contract address:"
+            label={t_admin("car_s_addr")}
             value={adminContractInfo.carServiceContractAddress}
             readOnly={true}
           />
           <RntInputWithButton
             id="carServiceSet"
             placeholder="0x"
-            label="Set car service contract address:"
+            label={t_admin("set_car_s")}
             value={newCarServiceAddress}
             onChange={(e) => {
               setNewCarServiceAddress(e.target.value);
             }}
-            buttonText="Save"
+            buttonText={t("common.save")}
             buttonDisabled={newCarServiceAddress.length != 42}
             onButtonClick={() => {
               setCarService();
@@ -248,39 +257,38 @@ export default function Admin() {
           />
           <RntInput
             id="tripService"
-            label="Trips service contract address:"
+            label={t_admin("trip_s_addr")}
             value={adminContractInfo.tripServiceContractAddress}
             readOnly={true}
           />
           <RntInputWithButton
             id="tripServiceSet"
             placeholder="0x"
-            label="Set new trips service contract address:"
+            label={t_admin("set_trip_s")}
             value={newTripsServiceAddress}
             onChange={(e) => {
               setNewTripsServiceAddress(e.target.value);
             }}
-            buttonText="Save"
+            buttonText={t("common.save")}
             buttonDisabled={newTripsServiceAddress.length != 42}
             onButtonClick={() => {
               setTripsService();
             }}
           />
           <RntInput
-            id="currencyConverter"
-            label="Currency converter contract address:"
+            label={t_admin("cur_converter_addr")}
             value={adminContractInfo.currencyConverterContractAddress}
             readOnly={true}
           />
           <RntInputWithButton
             id="currencyConverterSet"
             placeholder="0x"
-            label="Set new currency converter contract address:"
+            label={t_admin("set_cur_converter")}
             value={newCurrencyConverterServiceAddress}
             onChange={(e) => {
               setNewCurrencyConverterServiceAddress(e.target.value);
             }}
-            buttonText="Save"
+            buttonText={t("common.save")}
             buttonDisabled={newCurrencyConverterServiceAddress.length != 42}
             onButtonClick={() => {
               setCurrencyConverterService();
@@ -288,19 +296,19 @@ export default function Admin() {
           />
           <RntInput
             id="platform"
-            label="Platform contract address:"
+            label={t_admin("platform_addr")}
             value={adminContractInfo.platformContractAddress}
             readOnly={true}
           />
           <RntInputWithButton
             id="platformSet"
             placeholder="0x"
-            label="Set platform contract address:"
+            label={t_admin("set_platform_s")}
             value={newPlatformServiceAddress}
             onChange={(e) => {
               setNewPlatformServiceAddress(e.target.value);
             }}
-            buttonText="Save"
+            buttonText={t("common.save")}
             buttonDisabled={newPlatformServiceAddress.length != 42}
             onButtonClick={() => {
               setPlatformService();

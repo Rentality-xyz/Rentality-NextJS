@@ -3,16 +3,17 @@ import { TripInfo } from "@/model/TripInfo";
 import UserAvatarWithName from "./userAvatarWithName";
 import { memo } from "react";
 import { TripStatus } from "@/model/blockchain/schemas";
+import { TFunction } from "@/pages/i18n";
 
-function СarDetails({ tripInfo, isHost }: { tripInfo: TripInfo; isHost: boolean }) {
+function СarDetails({ tripInfo, isHost, t }: { tripInfo: TripInfo; isHost: boolean; t: TFunction }) {
   const rejectedByHost = tripInfo.rejectedBy.toLowerCase() === tripInfo.hostAddress.toLowerCase();
   const rejectedByText = rejectedByHost
     ? isHost
-      ? "You"
-      : tripInfo.hostName ?? "Host"
+      ? t("common.you")
+      : tripInfo.hostName ?? t("common.host")
     : isHost
-      ? tripInfo.guestName ?? "Guest"
-      : "You";
+      ? tripInfo.guestName ?? t("common.guest")
+      : t("common.you");
   const otherUserPhotoUrl = isHost ? tripInfo.guestPhotoUrl : tripInfo.hostPhotoUrl;
   const otherUserName = isHost ? tripInfo.guestName : tripInfo.hostName;
 
@@ -27,13 +28,16 @@ function СarDetails({ tripInfo, isHost }: { tripInfo: TripInfo; isHost: boolean
         </div>
         <div>{tripInfo.licensePlate}</div>
         {tripInfo.status === TripStatus.Rejected && tripInfo.rejectedDate !== undefined ? (
-          <div className="mt-2">{`${rejectedByText} cancelled on ${dateFormatShortMonthDate(
-            tripInfo.rejectedDate
-          )}`}</div>
+          <div className="mt-2">
+            {t("booked.cancelled_on", {
+              rejected: rejectedByText,
+              date: dateFormatShortMonthDate(tripInfo.rejectedDate),
+            })}
+          </div>
         ) : null}
         <div className="flex flex-col mt-4">
           <div>
-            <strong className="text-l">Total price</strong>
+            <strong className="text-l">{t("booked.total")}</strong>
           </div>
           <div>${tripInfo.totalPrice}</div>
         </div>

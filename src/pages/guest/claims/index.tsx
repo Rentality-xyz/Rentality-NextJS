@@ -4,24 +4,26 @@ import PageTitle from "@/components/pageTitle/pageTitle";
 import useGuestClaims from "@/hooks/guest/useGuestClaims";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 
 export default function Claims() {
+  const { t } = useTranslation();
   const { showInfo, showError, hideDialogs } = useRntDialogs();
   const [isLoading, claims, payClaim] = useGuestClaims();
   const router = useRouter();
 
   const handlePayClaim = async (claimId: number) => {
     try {
-      showInfo("Please confirm the transaction with your wallet and wait for the transaction to be processed");
+      showInfo(t("common.info.sign"));
       const result = await payClaim(claimId);
       hideDialogs();
       if (!result) {
-        showError("Your pay claim request failed. Please make sure you entered claim details right and try again");
+        showError(t('claims.errors.pay_claim_failed"'));
         return;
       }
       router.refresh();
     } catch (e) {
-      showError("Your pay claim request failed. Please make sure you entered claim details right and try again");
+      showError(t('claims.errors.pay_claim_failed"'));
       console.error("handlePayClaim error:" + e);
     }
   };
@@ -29,11 +31,20 @@ export default function Claims() {
   return (
     <Layout>
       <div className="flex flex-col">
-        <PageTitle title="Claims" />
+        <PageTitle title={t("claims.title")} />
         {isLoading ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
+          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
+            {t("common.info.loading")}
+          </div>
         ) : (
-          <ClaimHistory claims={claims} payClaim={handlePayClaim} isHost={false} />
+          <ClaimHistory
+            claims={claims}
+            payClaim={handlePayClaim}
+            isHost={false}
+            t={(path, options) => {
+              return t("claims." + path, options);
+            }}
+          />
         )}
       </div>
     </Layout>
