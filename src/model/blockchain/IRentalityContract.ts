@@ -84,7 +84,7 @@ export interface IRentalityContract {
     profilePhoto: string,
     licenseNumber: string,
     expirationDate: bigint,
-    isTCPassed: boolean
+    tcSignature: string
   ): Promise<ContractTransactionResponse>;
   getCarsOfHost(host: string): Promise<ContractPublicHostCarDTO[]>;
   getClaim(claimId: bigint): Promise<ContractFullClaimInfo>;

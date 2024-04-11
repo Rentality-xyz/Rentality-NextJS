@@ -262,7 +262,7 @@ export type ContractKYCInfo = {
   licenseNumber: string;
   expirationDate: bigint;
   createDate: bigint;
-  isTCPassed: boolean;
+  tcSignature: string;
 };
 
 export type ContractSearchCar = {

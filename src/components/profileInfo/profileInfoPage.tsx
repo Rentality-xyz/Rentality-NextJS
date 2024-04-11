@@ -39,7 +39,7 @@ function ProfileInfoPage({
   const t_profile: TFunction = (name, options) => {
     return t("profile." + name, options);
   };
-  
+
   const errors = getErrors(enteredFormData, profileImageFile);
 
   async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -136,7 +136,7 @@ function ProfileInfoPage({
     if (isEmpty(formData.drivingLicenseNumber)) result.drivingLicenseNumber = t_profile("pls_license");
     if (!formData.drivingLicenseExpire || Number.isNaN(formData.drivingLicenseExpire.getTime()))
       result.drivingLicenseExpire = t_profile("pls_license_period");
-    if (!formData.isConfirmedTerms) result.isConfirmedTerms = t_profile("pls_tc");
+    if (isEmpty(formData.tcSignature)) result.isConfirmedTerms = t_profile("pls_tc");
 
     return result;
   }
@@ -222,9 +222,9 @@ function ProfileInfoPage({
       </fieldset>
 
       <DriverLicenseVerified
-        isConfirmed={enteredFormData.isConfirmedTerms}
-        onConfirm={(isConfirmed) => {
-          setEnteredFormData({ ...enteredFormData, isConfirmedTerms: isConfirmed });
+        signature={enteredFormData.tcSignature}
+        onSign={(signature) => {
+          setEnteredFormData({ ...enteredFormData, tcSignature: signature });
         }}
         t={t_profile}
       />
