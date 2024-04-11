@@ -36,10 +36,11 @@ function ProfileInfoPage({
   const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
   const { isLoading: isChatKeysLoading, isChatKeysSaved, saveChatKeys } = useChatKeys();
 
-  const errors = getErrors(enteredFormData, profileImageFile);
   const t_profile: TFunction = (name, options) => {
     return t("profile." + name, options);
   };
+  
+  const errors = getErrors(enteredFormData, profileImageFile);
 
   async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const name = e.target.name;
