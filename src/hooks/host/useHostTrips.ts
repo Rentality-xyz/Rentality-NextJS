@@ -238,7 +238,7 @@ const useHostTrips = () => {
                     hostName: i.trip.hostName,
                     guestAddress: i.trip.guest,
                     guestName: i.trip.guestName,
-                    rejectedBy: i.trip.rejectedBy,
+                    rejectedBy: i.trip.rejectedBy ?? '',
                     rejectedDate:
                       i.trip.rejectedDateTime > 0
                         ? getDateFromBlockchainTimeWithTZ(i.trip.rejectedDateTime, timeZoneId)

@@ -74,7 +74,7 @@ export default function TripDetails({ tripId, t }: { tripId: bigint; t: TFunctio
             <RntInput
               id="fuelPricePerGalInUsdCents"
               label={t_details("fuel_price")}
-              value={tripDetails.fuelPricePerGal.toString()}
+              value={tripDetails.fuelPricePerGalInUsd.toString()}
               readOnly={true}
             />
             <RntInput
