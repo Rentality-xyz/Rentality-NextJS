@@ -37,7 +37,7 @@ export default function EditCar() {
     setCarSaving(true);
 
     try {
-      setMessage(t("wait_loading"));
+      setMessage(t("vehicles.wait_loading"));
       const result = await saveCarInfo();
 
       if (!result) {
@@ -80,7 +80,7 @@ export default function EditCar() {
             {t("common.info.loading")}
           </div>
         ) : carInfoFormParams.carId === -1 ? (
-          <h1 className="py-8 text-2xl font-bold text-red-800">{t("can_not_edit")}</h1>
+          <h1 className="py-8 text-2xl font-bold text-red-800">{t("vehicles.can_not_edit")}</h1>
         ) : (
           <>
             <CarEditForm
