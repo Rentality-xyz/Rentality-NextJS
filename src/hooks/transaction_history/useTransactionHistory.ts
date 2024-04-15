@@ -53,7 +53,9 @@ const useTransactionHistory = (isHost: boolean) => {
                   const endDateTime = getDateFromBlockchainTime(tripDto.trip.endDateTime);
                   const tripPayment =
                     Number(
-                      tripDto.trip.paymentInfo.totalDayPriceInUsdCents + tripDto.trip.paymentInfo.depositInUsdCents
+                      tripDto.trip.paymentInfo.totalDayPriceInUsdCents +
+                        tripDto.trip.paymentInfo.depositInUsdCents +
+                        tripDto.trip.paymentInfo.taxPriceInUsdCents
                     ) / 100;
 
                   const cancellationFee = getCancellationFee(tripDto);
