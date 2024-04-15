@@ -8,7 +8,7 @@ import RntSelect from "@/components/common/rntSelect";
 import ReactPaginate from "react-paginate";
 import TransactionHistoryMobileCard from "@/components/transaction_history/transactionHistoryMobileCard";
 import { getTripStatusTextFromStatus } from "@/model/TripInfo";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 export type SortOptions = {
   [key: string]: string;

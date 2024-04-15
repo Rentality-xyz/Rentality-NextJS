@@ -2,7 +2,7 @@ import { ChatInfo } from "@/model/ChatInfo";
 import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import { twMerge } from "tailwind-merge";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 export default function ChatHeader({ selectedChat, t }: { selectedChat: ChatInfo; t: TFunction }) {
   let statusBgColor = getTripStatusBgColorClassFromStatus(selectedChat?.tripStatus);

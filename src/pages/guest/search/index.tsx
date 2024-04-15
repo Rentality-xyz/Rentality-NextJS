@@ -21,7 +21,7 @@ import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import CarSearchMap from "@/components/guest/carMap/carSearchMap";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 import { useTranslation } from "react-i18next";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 export default function Search() {
   const dateNow = new Date();
@@ -37,7 +37,7 @@ export default function Search() {
   const sortOption: object = t("search_page.sort_options", {
     returnObjects: true,
   });
-  
+
   function isSortOptionKey(key: PropertyKey): key is SortOptionKey {
     return sortOption.hasOwnProperty(key);
   }
@@ -83,7 +83,7 @@ export default function Search() {
       showDialog(t("common.info.connect_wallet"), action);
       return;
     }
-	
+
     try {
       if (isEmpty(userInfo?.drivingLicense)) {
         showError(t_errors("user_info"));

@@ -1,6 +1,6 @@
 import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 export default function PublicListingItem({ carInfo, t }: { carInfo: BaseCarInfo; t: TFunction }) {
   return (

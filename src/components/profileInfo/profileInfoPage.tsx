@@ -16,7 +16,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import DriverLicenseVerified from "@/components/driver_license_verified/driver_license_verified";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { useChatKeys } from "@/contexts/chatContext";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 function ProfileInfoPage({
   savedProfileSettings,
@@ -39,7 +39,7 @@ function ProfileInfoPage({
   const t_profile: TFunction = (name, options) => {
     return t("profile." + name, options);
   };
-  
+
   const errors = getErrors(enteredFormData, profileImageFile);
 
   async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {

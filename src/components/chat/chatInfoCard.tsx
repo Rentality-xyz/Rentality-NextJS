@@ -8,7 +8,7 @@ import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 import icInfo from "@/images/ic-info-teal.svg";
 import Image from "next/image";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 export default function ChatInfoCard({
   chatInfo,

@@ -3,7 +3,7 @@ import RntButton from "../common/rntButton";
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 export default function ListingItem({ carInfo, t }: { carInfo: BaseCarInfo; t: TFunction }) {
   let statusBgColor = carInfo.currentlyListed ? "bg-lime-500" : "bg-red-500";

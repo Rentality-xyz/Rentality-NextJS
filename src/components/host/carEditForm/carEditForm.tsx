@@ -9,8 +9,7 @@ import Checkbox from "@/components/common/checkbox";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PATROL_STRING } from "@/model/EngineType";
 import RntButton from "@/components/common/rntButton";
 import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
-import { TFunction } from "@/pages/i18n";
-
+import { TFunction } from "@/utils/i18n";
 
 export default function CarEditForm({
   carInfoFormParams,

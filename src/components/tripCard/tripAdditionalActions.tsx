@@ -10,7 +10,7 @@ import AllowedActions from "../guest/allowedActions";
 import { TripStatus } from "@/model/blockchain/schemas";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { isEmpty } from "@/utils/string";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 function TripAdditionalActions({
   tripInfo,

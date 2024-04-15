@@ -5,7 +5,7 @@ import RntButton from "../common/rntButton";
 import { useRouter } from "next/router";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { dateFormatLongMonthDateTime, dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 export default function TripDetails({ tripId, t }: { tripId: bigint; t: TFunction }) {
   const [isLoading, tripDetails] = useTripDetails(tripId);

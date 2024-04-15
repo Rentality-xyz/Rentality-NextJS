@@ -1,4 +1,4 @@
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 export type BaseCarInfo = {
   carId: number;

@@ -7,7 +7,7 @@ import useContractInfo from "@/hooks/admin/useContractInfo";
 import { parseEther } from "ethers";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 export default function Admin() {
   const [

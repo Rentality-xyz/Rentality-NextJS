@@ -2,7 +2,7 @@ import { ButtonMode, GatewayStatus, IdentityButton, useGateway as useCivic } fro
 import { useState } from "react";
 import { CheckboxLight } from "@/components/common/checkbox";
 import RntButton from "@/components/common/rntButton";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 export default function DriverLicenseVerified({
   isConfirmed,

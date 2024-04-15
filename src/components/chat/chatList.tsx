@@ -1,6 +1,6 @@
 import { ChatInfo } from "@/model/ChatInfo";
 import ChatInfoCard from "./chatInfoCard";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 export default function ChatList({
   chats,
