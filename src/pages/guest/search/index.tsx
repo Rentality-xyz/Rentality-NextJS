@@ -29,7 +29,9 @@ export default function Search() {
   const defaultDateTo = new Date(dateNow.getTime() + 25 * 60 * 60 * 1000); //dateNow + 1 day and 1 hour
   const customEmptySearchCarRequest: SearchCarRequest = {
     ...emptySearchCarRequest,
-    city: "Miami",
+    city: "Center, Miami",
+    state: "Florida",
+    country: "USA",
     dateFrom: dateToHtmlDateTimeFormat(defaultDateFrom),
     dateTo: dateToHtmlDateTimeFormat(defaultDateTo),
   };
@@ -221,6 +223,7 @@ export default function Search() {
               id="location"
               label={t_el("location_label")}
               placeholder={t_el("location_placeholder")}
+              includeStreetAddress={true}
               initValue={formatLocation(searchCarRequest.city, searchCarRequest.state, searchCarRequest.country)}
               onChange={handleSearchInputChange}
               onAddressChange={(placeDetails) => {

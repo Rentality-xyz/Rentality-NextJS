@@ -71,7 +71,7 @@ export default function RntPlaceAutocompleteInput({
 
   useEffect(() => {
     setEnteredAddress(initValue);
-  }, [initValue]);
+  }, []);
 
   useEffect(() => {
     if (!enteredAddress) {
