@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
 import { TransactionHistoryInfo } from "@/model/TransactionHistoryInfo";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
-import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { calculateDays } from "@/utils/date";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
 
@@ -63,6 +62,7 @@ const useTransactionHistory = (isHost: boolean) => {
 
                   let item: TransactionHistoryInfo = {
                     transHistoryId: Number(tripDto.trip.tripId),
+                    tripId: Number(tripDto.trip.tripId),
                     car: carDescription,
                     status: tripDto.trip.status,
                     days: calculateDays(startDateTime, endDateTime),
@@ -74,6 +74,7 @@ const useTransactionHistory = (isHost: boolean) => {
                     cancellationFee: cancellationFee,
                     reimbursements: reimbursements,
                     rentalityFee: Number(tripDto.trip.transactionInfo.rentalityFee) / 100,
+                    taxes: Number(tripDto.trip.paymentInfo.taxPriceInUsdCents) / 100,
                   };
                   return item;
                 })
@@ -97,7 +98,13 @@ const useTransactionHistory = (isHost: boolean) => {
       .catch(() => setIsLoading(true));
   }, [rentalityInfo, isHost]);
 
-  return [isLoading, transactionsHistory] as const;
+  const sortedTransactionsHistory = useMemo(() => {
+    return [...transactionsHistory].sort((a, b) => {
+      return b.startDateTime.getTime() - a.startDateTime.getTime();
+    });
+  }, [transactionsHistory]);
+
+  return [isLoading, sortedTransactionsHistory] as const;
 };
 
 export default useTransactionHistory;

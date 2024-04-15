@@ -188,6 +188,7 @@
       "finish": "Finish"
     },
     "car": "Car",
+    "tripId": "Trip ID",
     "days": "Days",
     "start_date": "Start date",
     "end_date": "End date",
@@ -197,6 +198,7 @@
     "cancellation_fee": "Cancellation fee",
     "reimbursements": "Reimbursements",
     "rentality_fee": "Rentality fee",
+    "taxes": "Taxes",
     "details": "Details"
   },
   "booked": {
