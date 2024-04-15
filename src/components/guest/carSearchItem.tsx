@@ -41,7 +41,8 @@ export default function CarSearchItem({
         </div>
         <div className="flex md:grid md:grid-cols-[2fr_1fr] text-sm mt-2 md:justify-between">
           <div className="w-8/12 lg:w-9/12 flex flex-col">
-            {isNaN(searchInfo.pricePerDayWithDiscount) ? (
+            {isNaN(searchInfo.pricePerDayWithDiscount) ||
+            searchInfo.pricePerDayWithDiscount === searchInfo.pricePerDay ? (
               <div className="text-base">
                 <strong>
                   ${searchInfo.pricePerDay}
