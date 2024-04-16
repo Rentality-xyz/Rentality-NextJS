@@ -604,7 +604,8 @@
             { "type": "string", "name": "licenseNumber" },
             { "type": "uint64", "name": "expirationDate" },
             { "type": "uint256", "name": "createDate" },
-            { "type": "bool", "name": "isTCPassed" }
+            { "type": "bool", "name": "isTCPassed" },
+            { "type": "bytes", "name": "TCSignature" }
           ]
         }
       ]
@@ -916,6 +917,14 @@
     },
     {
       "type": "function",
+      "name": "parseGeoResponse",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "uint256", "name": "carId" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
       "name": "payClaim",
       "constant": false,
       "stateMutability": "payable",
@@ -1007,7 +1016,7 @@
         { "type": "string", "name": "profilePhoto" },
         { "type": "string", "name": "licenseNumber" },
         { "type": "uint64", "name": "expirationDate" },
-        { "type": "bool", "name": "isTCPassed" }
+        { "type": "bytes", "name": "TCSignature" }
       ],
       "outputs": []
     },
