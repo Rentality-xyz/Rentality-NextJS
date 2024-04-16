@@ -263,6 +263,7 @@ export type ContractKYCInfo = {
   expirationDate: bigint;
   createDate: bigint;
   isTCPassed: boolean;
+  TCSignature: string;
 };
 
 export type ContractSearchCar = {
@@ -288,8 +289,6 @@ export type ContractSearchCar = {
   locationLongitude: string;
   timeZoneId: string;
   metadataURI: string;
-  daysDiscount: string;
-  totalDiscount: string;
 };
 
 export type ContractGeoData = {
