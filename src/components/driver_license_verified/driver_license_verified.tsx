@@ -6,6 +6,10 @@ import { TFunction } from "@/utils/i18n";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isEmpty } from "@/utils/string";
 
+const hasSignature = (signature: string) => {
+  return !isEmpty(signature) && signature !== "0x";
+};
+
 export default function DriverLicenseVerified({
   signature,
   onSign,
@@ -16,10 +20,11 @@ export default function DriverLicenseVerified({
   t: TFunction;
 }) {
   const { gatewayStatus } = useCivic();
-  const [isTerms, setIsTerms] = useState(!isEmpty(signature));
-  const [isCancellation, setIsCancellation] = useState(!isEmpty(signature));
-  const [isProhibited, setIsProhibited] = useState(!isEmpty(signature));
-  const [isPrivacy, setIsPrivacy] = useState(!isEmpty(signature));
+  const userHasSignature = hasSignature(signature);
+  const [isTerms, setIsTerms] = useState(userHasSignature);
+  const [isCancellation, setIsCancellation] = useState(userHasSignature);
+  const [isProhibited, setIsProhibited] = useState(userHasSignature);
+  const [isPrivacy, setIsPrivacy] = useState(userHasSignature);
   const [tcSignature, setTcSignature] = useState(signature);
   const ethereumInfo = useEthereum();
 
@@ -85,11 +90,15 @@ export default function DriverLicenseVerified({
       />
       <p className="mt-8">{t("read_agree")}</p>
       <div className="flex mt-4 items-center">
-        <RntButton type="button" onClick={handleConfirm} disabled={!isEmpty(tcSignature)}>
+        <RntButton type="button" onClick={handleConfirm} disabled={hasSignature(tcSignature)}>
           {t("confirm")}
         </RntButton>
         <div className="ml-2 md:ml-6">
-          {!isEmpty(tcSignature) ? <GetConfirm text={t("confirmed")} /> : <GetNotConfirm text={t("not_confirmed")} />}
+          {hasSignature(tcSignature) ? (
+            <GetConfirm text={t("confirmed")} />
+          ) : (
+            <GetNotConfirm text={t("not_confirmed")} />
+          )}
         </div>
       </div>
     </div>

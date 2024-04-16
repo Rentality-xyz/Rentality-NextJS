@@ -52,7 +52,7 @@ const useProfileSettings = () => {
           myKYCInfo.expirationDate > 0
             ? getDateFromBlockchainTimeWithTZ(myKYCInfo.expirationDate, UTC_TIME_ZONE_ID)
             : undefined,
-        tcSignature: myKYCInfo.tcSignature,
+        tcSignature: myKYCInfo.TCSignature,
       };
       return myProfileSettings;
     } catch (e) {
