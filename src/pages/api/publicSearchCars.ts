@@ -27,13 +27,13 @@ export const getDaysDiscount = (tripDays: number) => {
 
 export const getTotalDiscount = (pricePerDay: number, tripDays: number, totalPriceWithDiscount: number) => {
   const totalDiscount = pricePerDay * tripDays - totalPriceWithDiscount;
-  let result: string = ""
+  let result: string = "";
   if (totalDiscount > 0) {
-    result = "-$" + String(totalDiscount)
+    result = "-$" + String(totalDiscount);
   } else {
-    result = "-"
+    result = "-";
   }
-  return result
+  return result;
 };
 
 const formatSearchAvailableCarsContractRequest = (searchCarRequest: SearchCarRequest) => {
@@ -121,15 +121,9 @@ const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: Co
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const privateKey = process.env.NEXT_WALLET_PRIVATE_KEY;
-  const providerApiUrl = process.env.PROVIDER_API_URL;
   if (!privateKey) {
     console.error("API checkTrips error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
-    return;
-  }
-  if (!providerApiUrl) {
-    console.error("API checkTrips error: API URL was not set");
-    res.status(500).json({ error: "API URL was not set" });
     return;
   }
 
@@ -153,6 +147,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!chainIdNumber) {
     console.error("API checkTrips error: chainId was not provided");
     res.status(400).json({ error: "chainId was not provided" });
+    return;
+  }
+
+  let providerApiUrl = process.env[`PROVIDER_API_URL_${chainIdNumber}`];
+  if (!providerApiUrl) {
+    console.error(`API checkTrips error: API URL for chain id ${chainIdNumber} was not set`);
+    res.status(500).json({ error: `API checkTrips error: API URL for chain id ${chainIdNumber} was not set` });
     return;
   }
 
