@@ -257,7 +257,6 @@ export default function Search() {
                 value={searchCarRequest.dateTo}
                 onChange={handleSearchInputChange}
               />
-
               <RntButton
                 className="w-full sm:w-40 max-xl:mt-4"
                 disabled={searchButtonDisabled}
@@ -305,7 +304,7 @@ export default function Search() {
                 {searchResult?.carInfos?.length ?? 0} {t_page("info.cars_available")}
               </div>
               <div className="grid grid-cols-2">
-                <div className="my-4 grid grid-cols-1 gap-4">
+                <div className="my-4 flex flex-col gap-4">
                   {searchResult?.carInfos?.length > 0 ? (
                     searchResult?.carInfos
                       .sort((a: SearchCarInfo, b: SearchCarInfo) => {
