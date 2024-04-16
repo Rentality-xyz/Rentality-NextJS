@@ -75,9 +75,9 @@ const useSearchCars = () => {
   const createTripRequest = async (
     carId: number,
     host: string,
-    startDateTime: Date,
-    endDateTime: Date,
-    utcOffsetMinutes: number,
+    startDateTime: string,
+    endDateTime: string,
+    timeZoneId: string,
     startLocation: string,
     endLocation: string,
     totalDayPriceInUsdCents: number,
@@ -94,17 +94,16 @@ const useSearchCars = () => {
     }
 
     try {
-      const startDateTimeUTC = moment.utc(startDateTime).subtract(utcOffsetMinutes, "minutes").toDate();
-      const endDateTimeUTC = moment.utc(endDateTime).subtract(utcOffsetMinutes, "minutes").toDate();
+      const startCarLocalDateTime = moment.tz(startDateTime, timeZoneId).toDate();
+      const endCarLocalDateTime = moment.tz(endDateTime, timeZoneId).toDate();
 
-      const days = calculateDays(startDateTimeUTC, endDateTimeUTC);
+      const days = calculateDays(startCarLocalDateTime, endCarLocalDateTime);
       if (days < 0) {
         console.error("Date to' must be greater than 'Date from'");
         return false;
       }
-
-      const startTimeUTC = getBlockchainTimeFromDate(startDateTimeUTC);
-      const endTimeUTC = getBlockchainTimeFromDate(endDateTimeUTC);
+      const startUnixTime = getBlockchainTimeFromDate(startCarLocalDateTime);
+      const endUnixTime = getBlockchainTimeFromDate(endCarLocalDateTime);
 
       const ethAddress = ethers.getAddress("0x0000000000000000000000000000000000000000");
       const paymentsNeeded = await rentalityContract.calculatePayments(BigInt(carId), BigInt(days), ethAddress);
@@ -112,8 +111,8 @@ const useSearchCars = () => {
       const tripRequest: ContractCreateTripRequest = {
         carId: BigInt(carId),
         host: host,
-        startDateTime: startTimeUTC,
-        endDateTime: endTimeUTC,
+        startDateTime: startUnixTime,
+        endDateTime: endUnixTime,
         startLocation: startLocation,
         endLocation: endLocation,
         totalDayPriceInUsdCents: BigInt(totalDayPriceInUsdCents),

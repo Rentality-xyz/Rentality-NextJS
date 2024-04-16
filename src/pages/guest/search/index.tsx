@@ -101,31 +101,29 @@ export default function Search() {
         showError(t_errors("date_to"));
         return;
       }
-      const startDateTime = moment.utc(searchResult.searchCarRequest.dateFrom).toDate();
-      const endDateTime = moment.utc(searchResult.searchCarRequest.dateTo).toDate();
 
-      const days = calculateDays(startDateTime, endDateTime);
-      if (days < 0) {
+      if (carInfo.tripDays < 0) {
         showError(t_errors("date_eq"));
         return;
       }
       setRequestSending(true);
 
-      const totalPriceInUsdCents = carInfo.pricePerDay * 100 * days;
+      const totalPriceInUsdCents = carInfo.totalPriceWithDiscount * 100;
       const depositInUsdCents = carInfo.securityDeposit * 100;
+      const taxesInUsdCents = carInfo.taxes * 100;
       const location = `${searchResult.searchCarRequest.city}, ${searchResult.searchCarRequest.state}, ${searchResult.searchCarRequest.country}`;
 
       showInfo(t("common.info.sign"));
       const result = await createTripRequest(
         carInfo.carId,
         carInfo.ownerAddress,
-        startDateTime,
-        endDateTime,
-        searchResult.searchCarRequest.utcOffsetMinutes,
+        searchResult.searchCarRequest.dateFrom,
+        searchResult.searchCarRequest.dateTo,
+        carInfo.timeZoneId,
         location,
         location,
         totalPriceInUsdCents,
-        0,
+        taxesInUsdCents,
         depositInUsdCents
       );
 
