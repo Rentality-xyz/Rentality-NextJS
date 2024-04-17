@@ -31,8 +31,6 @@ const useSearchCars = () => {
       if (searchCarRequest.country) url.searchParams.append("country", searchCarRequest.country);
       if (searchCarRequest.state) url.searchParams.append("state", searchCarRequest.state);
       if (searchCarRequest.city) url.searchParams.append("city", searchCarRequest.city);
-      if (searchCarRequest.utcOffsetMinutes)
-        url.searchParams.append("utcOffsetMinutes", searchCarRequest.utcOffsetMinutes.toString());
       if (searchCarRequest.brand) url.searchParams.append("brand", searchCarRequest.brand);
       if (searchCarRequest.model) url.searchParams.append("model", searchCarRequest.model);
       if (searchCarRequest.yearOfProductionFrom)

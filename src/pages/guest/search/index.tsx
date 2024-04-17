@@ -3,7 +3,6 @@ import useSearchCars, { SortOptionKey } from "@/hooks/guest/useSearchCars";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
-import { calculateDays } from "@/utils/date";
 import SlidingPanel from "react-sliding-side-panel";
 import { SearchCarRequest, emptySearchCarRequest } from "@/model/SearchCarRequest";
 import { SearchCarInfo } from "@/model/SearchCarsResult";
@@ -13,7 +12,6 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { isEmpty } from "@/utils/string";
 import RntSelect from "@/components/common/rntSelect";
-import moment from "moment";
 import { usePrivy } from "@privy-io/react-auth";
 import { DialogActions } from "@/utils/dialogActions";
 import Layout from "@/components/layout/layout";
@@ -223,7 +221,6 @@ export default function Search() {
                   country: country,
                   state: state,
                   city: city,
-                  utcOffsetMinutes: placeDetails.utcOffsetMinutes,
                 });
               }}
             />
