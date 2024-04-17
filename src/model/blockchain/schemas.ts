@@ -77,15 +77,8 @@ export type ContractSearchCarParams = {
 
 export type ContractCreateTripRequest = {
   carId: bigint;
-  host: string;
   startDateTime: bigint;
   endDateTime: bigint;
-  startLocation: string;
-  endLocation: string;
-  totalDayPriceInUsdCents: bigint;
-  depositInUsdCents: bigint;
-  currencyRate: bigint;
-  currencyDecimals: bigint;
   currencyType: string;
 };
 

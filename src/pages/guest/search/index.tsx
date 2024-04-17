@@ -108,23 +108,12 @@ export default function Search() {
       }
       setRequestSending(true);
 
-      const totalPriceInUsdCents = carInfo.totalPriceWithDiscount * 100;
-      const depositInUsdCents = carInfo.securityDeposit * 100;
-      const taxesInUsdCents = carInfo.taxes * 100;
-      const location = `${searchResult.searchCarRequest.city}, ${searchResult.searchCarRequest.state}, ${searchResult.searchCarRequest.country}`;
-
       showInfo(t("common.info.sign"));
       const result = await createTripRequest(
         carInfo.carId,
-        carInfo.ownerAddress,
         searchResult.searchCarRequest.dateFrom,
         searchResult.searchCarRequest.dateTo,
-        carInfo.timeZoneId,
-        location,
-        location,
-        totalPriceInUsdCents,
-        taxesInUsdCents,
-        depositInUsdCents
+        carInfo.timeZoneId
       );
 
       setRequestSending(false);

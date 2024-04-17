@@ -72,18 +72,7 @@ const useSearchCars = () => {
     }
   };
 
-  const createTripRequest = async (
-    carId: number,
-    host: string,
-    startDateTime: string,
-    endDateTime: string,
-    timeZoneId: string,
-    startLocation: string,
-    endLocation: string,
-    totalDayPriceInUsdCents: number,
-    taxPriceInUsdCents: number,
-    depositInUsdCents: number
-  ) => {
+  const createTripRequest = async (carId: number, startDateTime: string, endDateTime: string, timeZoneId: string) => {
     if (ethereumInfo === null) {
       console.error("createTripRequest: ethereumInfo is null");
       return false;
@@ -110,15 +99,8 @@ const useSearchCars = () => {
 
       const tripRequest: ContractCreateTripRequest = {
         carId: BigInt(carId),
-        host: host,
         startDateTime: startUnixTime,
         endDateTime: endUnixTime,
-        startLocation: startLocation,
-        endLocation: endLocation,
-        totalDayPriceInUsdCents: BigInt(totalDayPriceInUsdCents),
-        depositInUsdCents: BigInt(depositInUsdCents),
-        currencyRate: BigInt(paymentsNeeded.currencyRate),
-        currencyDecimals: BigInt(paymentsNeeded.currencyDecimals),
         currencyType: ethAddress,
       };
 
