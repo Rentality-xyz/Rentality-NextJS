@@ -2,29 +2,42 @@ import { ButtonMode, GatewayStatus, IdentityButton, useGateway as useCivic } fro
 import { useState } from "react";
 import { CheckboxLight } from "@/components/common/checkbox";
 import RntButton from "@/components/common/rntButton";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { isEmpty } from "@/utils/string";
+
+const hasSignature = (signature: string) => {
+  return !isEmpty(signature) && signature !== "0x";
+};
 
 export default function DriverLicenseVerified({
-  isConfirmed,
-  onConfirm,
+  signature,
+  onSign,
   t,
 }: {
-  isConfirmed: boolean;
-  onConfirm: (isConfirmed: boolean) => void;
+  signature: string;
+  onSign: (signature: string) => void;
   t: TFunction;
 }) {
   const { gatewayStatus } = useCivic();
-  const [isTerms, setIsTerms] = useState(isConfirmed);
-  const [isCancellation, setIsCancellation] = useState(isConfirmed);
-  const [isProhibited, setIsProhibited] = useState(isConfirmed);
-  const [isPrivacy, setIsPrivacy] = useState(isConfirmed);
-  const [isConfirm, setIsConfirm] = useState(isConfirmed);
+  const userHasSignature = hasSignature(signature);
+  const [isTerms, setIsTerms] = useState(userHasSignature);
+  const [isCancellation, setIsCancellation] = useState(userHasSignature);
+  const [isProhibited, setIsProhibited] = useState(userHasSignature);
+  const [isPrivacy, setIsPrivacy] = useState(userHasSignature);
+  const [tcSignature, setTcSignature] = useState(signature);
+  const ethereumInfo = useEthereum();
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!isTerms || !isCancellation || !isProhibited || !isPrivacy) return;
+    if (!ethereumInfo) return;
 
-    setIsConfirm(true);
-    onConfirm(true);
+    const messageToSing =
+      "I have read and I agree with Terms of service, Cancellation policy, Prohibited uses and Privacy policy of Rentality.";
+
+    const signature = await ethereumInfo.signer.signMessage(messageToSing);
+    setTcSignature(signature);
+    onSign(signature);
   };
 
   return (
@@ -77,11 +90,15 @@ export default function DriverLicenseVerified({
       />
       <p className="mt-8">{t("read_agree")}</p>
       <div className="flex mt-4 items-center">
-        <RntButton type="button" onClick={handleConfirm} disabled={isConfirm}>
+        <RntButton type="button" onClick={handleConfirm} disabled={hasSignature(tcSignature)}>
           {t("confirm")}
         </RntButton>
         <div className="ml-2 md:ml-6">
-          {isConfirm ? <GetConfirm text={t("confirmed")} /> : <GetNotConfirm text={t("not_confirmed")} />}
+          {hasSignature(tcSignature) ? (
+            <GetConfirm text={t("confirmed")} />
+          ) : (
+            <GetNotConfirm text={t("not_confirmed")} />
+          )}
         </div>
       </div>
     </div>

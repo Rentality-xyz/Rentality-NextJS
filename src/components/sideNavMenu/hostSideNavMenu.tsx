@@ -10,7 +10,7 @@ import { useNotification } from "@/contexts/notification/notificationContext";
 import { NotificationType } from "@/model/NotificationInfo";
 import usePageLastVisit from "@/hooks/usePageLastVisit";
 import { useTranslation } from "react-i18next";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 function HostNavMenu() {
   const { ready, authenticated, logout } = usePrivy();

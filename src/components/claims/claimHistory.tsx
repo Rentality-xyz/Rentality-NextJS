@@ -7,7 +7,7 @@ import { Claim } from "@/model/Claim";
 import ClaimHistoryMobileCard from "./claimHistoryMobileCard";
 import { ClaimStatus } from "@/model/blockchain/schemas";
 import moment from "moment";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 type Props =
   | {

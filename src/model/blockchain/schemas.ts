@@ -77,15 +77,8 @@ export type ContractSearchCarParams = {
 
 export type ContractCreateTripRequest = {
   carId: bigint;
-  host: string;
   startDateTime: bigint;
   endDateTime: bigint;
-  startLocation: string;
-  endLocation: string;
-  totalDayPriceInUsdCents: bigint;
-  depositInUsdCents: bigint;
-  currencyRate: bigint;
-  currencyDecimals: bigint;
   currencyType: string;
 };
 
@@ -263,6 +256,7 @@ export type ContractKYCInfo = {
   expirationDate: bigint;
   createDate: bigint;
   isTCPassed: boolean;
+  TCSignature: string;
 };
 
 export type ContractSearchCar = {
@@ -288,8 +282,6 @@ export type ContractSearchCar = {
   locationLongitude: string;
   timeZoneId: string;
   metadataURI: string;
-  daysDiscount: string;
-  totalDiscount: string;
 };
 
 export type ContractGeoData = {

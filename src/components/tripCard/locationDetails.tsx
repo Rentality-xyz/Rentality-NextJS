@@ -1,6 +1,6 @@
 import { TripInfo } from "@/model/TripInfo";
 import { memo } from "react";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 function LocationDetails({ tripInfo, t }: { tripInfo: TripInfo; t: TFunction }) {
   return (

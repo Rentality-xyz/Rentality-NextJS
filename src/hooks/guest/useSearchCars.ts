@@ -31,8 +31,6 @@ const useSearchCars = () => {
       if (searchCarRequest.country) url.searchParams.append("country", searchCarRequest.country);
       if (searchCarRequest.state) url.searchParams.append("state", searchCarRequest.state);
       if (searchCarRequest.city) url.searchParams.append("city", searchCarRequest.city);
-      if (searchCarRequest.utcOffsetMinutes)
-        url.searchParams.append("utcOffsetMinutes", searchCarRequest.utcOffsetMinutes.toString());
       if (searchCarRequest.brand) url.searchParams.append("brand", searchCarRequest.brand);
       if (searchCarRequest.model) url.searchParams.append("model", searchCarRequest.model);
       if (searchCarRequest.yearOfProductionFrom)
@@ -72,18 +70,7 @@ const useSearchCars = () => {
     }
   };
 
-  const createTripRequest = async (
-    carId: number,
-    host: string,
-    startDateTime: Date,
-    endDateTime: Date,
-    utcOffsetMinutes: number,
-    startLocation: string,
-    endLocation: string,
-    totalDayPriceInUsdCents: number,
-    taxPriceInUsdCents: number,
-    depositInUsdCents: number
-  ) => {
+  const createTripRequest = async (carId: number, startDateTime: string, endDateTime: string, timeZoneId: string) => {
     if (ethereumInfo === null) {
       console.error("createTripRequest: ethereumInfo is null");
       return false;
@@ -94,32 +81,24 @@ const useSearchCars = () => {
     }
 
     try {
-      const startDateTimeUTC = moment.utc(startDateTime).subtract(utcOffsetMinutes, "minutes").toDate();
-      const endDateTimeUTC = moment.utc(endDateTime).subtract(utcOffsetMinutes, "minutes").toDate();
+      const startCarLocalDateTime = moment.tz(startDateTime, timeZoneId).toDate();
+      const endCarLocalDateTime = moment.tz(endDateTime, timeZoneId).toDate();
 
-      const days = calculateDays(startDateTimeUTC, endDateTimeUTC);
+      const days = calculateDays(startCarLocalDateTime, endCarLocalDateTime);
       if (days < 0) {
         console.error("Date to' must be greater than 'Date from'");
         return false;
       }
-
-      const startTimeUTC = getBlockchainTimeFromDate(startDateTimeUTC);
-      const endTimeUTC = getBlockchainTimeFromDate(endDateTimeUTC);
+      const startUnixTime = getBlockchainTimeFromDate(startCarLocalDateTime);
+      const endUnixTime = getBlockchainTimeFromDate(endCarLocalDateTime);
 
       const ethAddress = ethers.getAddress("0x0000000000000000000000000000000000000000");
       const paymentsNeeded = await rentalityContract.calculatePayments(BigInt(carId), BigInt(days), ethAddress);
 
       const tripRequest: ContractCreateTripRequest = {
         carId: BigInt(carId),
-        host: host,
-        startDateTime: startTimeUTC,
-        endDateTime: endTimeUTC,
-        startLocation: startLocation,
-        endLocation: endLocation,
-        totalDayPriceInUsdCents: BigInt(totalDayPriceInUsdCents),
-        depositInUsdCents: BigInt(depositInUsdCents),
-        currencyRate: BigInt(paymentsNeeded.currencyRate),
-        currencyDecimals: BigInt(paymentsNeeded.currencyDecimals),
+        startDateTime: startUnixTime,
+        endDateTime: endUnixTime,
         currencyType: ethAddress,
       };
 

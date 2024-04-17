@@ -8,7 +8,7 @@ import { useNotification } from "@/contexts/notification/notificationContext";
 import usePageLastVisit from "@/hooks/usePageLastVisit";
 import { NotificationType } from "@/model/NotificationInfo";
 import { useTranslation } from "react-i18next";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 function GuestNavMenu() {
   const { ready, authenticated, logout } = usePrivy();

@@ -8,7 +8,7 @@ import RntSelect from "@/components/common/rntSelect";
 import ReactPaginate from "react-paginate";
 import TransactionHistoryMobileCard from "@/components/transaction_history/transactionHistoryMobileCard";
 import { getTripStatusTextFromStatus } from "@/model/TripInfo";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 export type SortOptions = {
   [key: string]: string;
@@ -116,6 +116,7 @@ export default function TransactionHistoryContent(props: Props) {
             <th className={headerSpanClassName}></th>
             <th className={headerSpanClassName}></th>
             <th className={headerSpanClassName}></th>
+            <th className={headerSpanClassName}></th>
             <th className={headerSpanClassName} colSpan={2}>
               <div className="flex flex-col text-rentality-secondary-shade">
                 {t_th("guest_payments")}
@@ -130,11 +131,13 @@ export default function TransactionHistoryContent(props: Props) {
             </th>
             <th className={headerSpanClassName}></th>
             <th className={headerSpanClassName}></th>
+            <th className={headerSpanClassName}></th>
           </tr>
         </thead>
         <thead className="mb-2">
           <tr className="border-b-[2px] border-b-gray-500">
             <th className={headerSpanClassName}>{t_th("car")}</th>
+            <th className={headerSpanClassName}>{t_th("tripId")}</th>
             <th className={headerSpanClassName}>{t_th("status")}</th>
             <th className={headerSpanClassName}>{t_th("days")}</th>
             <th className={headerSpanClassName}>{t_th("start_date")}</th>
@@ -145,6 +148,7 @@ export default function TransactionHistoryContent(props: Props) {
             <th className={headerSpanClassName}>{t_th("cancellation_fee")}</th>
             <th className={headerSpanClassName}>{t_th("reimbursements")}</th>
             <th className={headerSpanClassName}>{t_th("rentality_fee")}</th>
+            <th className={headerSpanClassName}>{t_th("taxes")}</th>
             <th className={headerSpanClassName}></th>
           </tr>
         </thead>
@@ -156,6 +160,7 @@ export default function TransactionHistoryContent(props: Props) {
             return (
               <tr key={transaction.transHistoryId} className="border-b-[2px] border-b-gray-500">
                 <td className={rowSpanClassName}>{transaction.car}</td>
+                <td className={rowSpanClassName}>{transaction.tripId}</td>
                 <td className={rowSpanClassName}>{getTripStatusTextFromStatus(transaction.status)}</td>
                 <td className={rowSpanClassName}>{transaction.days}</td>
                 <td className={rowSpanClassName}>{dateFormatYearMonthDayTime(transaction.startDateTime)}</td>
@@ -166,6 +171,7 @@ export default function TransactionHistoryContent(props: Props) {
                 <td className={rowSpanClassName}>${transaction.cancellationFee}</td>
                 <td className={rowSpanClassName}>${transaction.reimbursements}</td>
                 <td className={rowSpanClassName}>${transaction.rentalityFee}</td>
+                <td className={rowSpanClassName}>${transaction.taxes}</td>
                 <td className={rowSpanClassName}>
                   <Link href={detailsLink}>
                     <span className="text-rentality-secondary">{t_th("details")}</span>

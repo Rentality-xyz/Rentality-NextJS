@@ -8,7 +8,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 export default function Messages() {
   const { isLoading, isClienReady, chatInfos, getLatestChatInfos, sendMessage } = useChat();

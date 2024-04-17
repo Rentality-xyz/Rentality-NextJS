@@ -3,7 +3,7 @@ import { TripInfo } from "@/model/TripInfo";
 import UserAvatarWithName from "./userAvatarWithName";
 import { memo } from "react";
 import { TripStatus } from "@/model/blockchain/schemas";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 function СarDetails({ tripInfo, isHost, t }: { tripInfo: TripInfo; isHost: boolean; t: TFunction }) {
 

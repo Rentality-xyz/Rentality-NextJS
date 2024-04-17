@@ -7,7 +7,7 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { CreateClaimRequest } from "@/model/CreateClaimRequest";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 export default function Claims() {
   const { showInfo, showError, hideDialogs } = useRntDialogs();

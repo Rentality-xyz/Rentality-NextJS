@@ -10,7 +10,7 @@ import { NotificationProvider } from "@/contexts/notification/notificationContex
 import { useRouter } from "next/router";
 import { Suspense } from "react";
 // should be here for downloading 'locales/* '
-import "./i18n";
+import "../utils/i18n";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();

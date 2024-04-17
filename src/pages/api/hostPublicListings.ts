@@ -24,15 +24,9 @@ const getHostAddressFromQuery = async (query: string | string[] | undefined, pro
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const privateKey = process.env.NEXT_WALLET_PRIVATE_KEY;
-  const providerApiUrl = process.env.PROVIDER_API_URL;
   if (!privateKey) {
     console.error("API checkTrips error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
-    return;
-  }
-  if (!providerApiUrl) {
-    console.error("API checkTrips error: API URL was not set");
-    res.status(500).json({ error: "API URL was not set" });
     return;
   }
 
@@ -44,6 +38,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(400).json({ error: "chainId was not provided" });
     return;
   }
+
+  let providerApiUrl = process.env[`PROVIDER_API_URL_${chainIdNumber}`];
+  if (!providerApiUrl) {
+    console.error(`API checkTrips error: API URL for chain id ${chainIdNumber} was not set`);
+    res.status(500).json({ error: `API checkTrips error: API URL for chain id ${chainIdNumber} was not set` });
+    return;
+  }
+  console.log(`Chain id: ${chainIdNumber}, providerApiUrl: ${providerApiUrl}`);
 
   const provider = new JsonRpcProvider(providerApiUrl);
   const hostAddress = await getHostAddressFromQuery(hostQuery, provider);

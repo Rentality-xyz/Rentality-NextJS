@@ -1,7 +1,7 @@
 import { TripInfo } from "@/model/TripInfo";
 import { dateFormatLongMonthDateTime } from "@/utils/datetimeFormatters";
 import { memo } from "react";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 function DateDetails({ tripInfo, t }: { tripInfo: TripInfo; t: TFunction }) {
   return (

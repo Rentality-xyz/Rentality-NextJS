@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { TripInfo } from "@/model/TripInfo";
 import { memo } from "react";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 function TripContacts({ tripInfo, isHost, t }: { tripInfo: TripInfo; isHost: boolean; t: TFunction }) {
   const pathRoot = isHost ? "host" : "guest";

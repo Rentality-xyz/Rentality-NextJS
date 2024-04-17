@@ -3,7 +3,6 @@ import useSearchCars, { SortOptionKey } from "@/hooks/guest/useSearchCars";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
-import { calculateDays } from "@/utils/date";
 import SlidingPanel from "react-sliding-side-panel";
 import { SearchCarRequest, emptySearchCarRequest } from "@/model/SearchCarRequest";
 import { SearchCarInfo } from "@/model/SearchCarsResult";
@@ -13,7 +12,6 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { isEmpty } from "@/utils/string";
 import RntSelect from "@/components/common/rntSelect";
-import moment from "moment";
 import { usePrivy } from "@privy-io/react-auth";
 import { DialogActions } from "@/utils/dialogActions";
 import Layout from "@/components/layout/layout";
@@ -21,7 +19,7 @@ import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import CarSearchMap from "@/components/guest/carMap/carSearchMap";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 import { useTranslation } from "react-i18next";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 export default function Search() {
   const dateNow = new Date();
@@ -29,7 +27,9 @@ export default function Search() {
   const defaultDateTo = new Date(dateNow.getTime() + 25 * 60 * 60 * 1000); //dateNow + 1 day and 1 hour
   const customEmptySearchCarRequest: SearchCarRequest = {
     ...emptySearchCarRequest,
-    city: "Miami",
+    city: "Center, Miami",
+    state: "Florida",
+    country: "USA",
     dateFrom: dateToHtmlDateTimeFormat(defaultDateFrom),
     dateTo: dateToHtmlDateTimeFormat(defaultDateTo),
   };
@@ -37,7 +37,7 @@ export default function Search() {
   const sortOption: object = t("search_page.sort_options", {
     returnObjects: true,
   });
-  
+
   function isSortOptionKey(key: PropertyKey): key is SortOptionKey {
     return sortOption.hasOwnProperty(key);
   }
@@ -83,7 +83,7 @@ export default function Search() {
       showDialog(t("common.info.connect_wallet"), action);
       return;
     }
-	
+
     try {
       if (isEmpty(userInfo?.drivingLicense)) {
         showError(t_errors("user_info"));
@@ -99,32 +99,19 @@ export default function Search() {
         showError(t_errors("date_to"));
         return;
       }
-      const startDateTime = moment.utc(searchResult.searchCarRequest.dateFrom).toDate();
-      const endDateTime = moment.utc(searchResult.searchCarRequest.dateTo).toDate();
 
-      const days = calculateDays(startDateTime, endDateTime);
-      if (days < 0) {
+      if (carInfo.tripDays < 0) {
         showError(t_errors("date_eq"));
         return;
       }
       setRequestSending(true);
 
-      const totalPriceInUsdCents = carInfo.pricePerDay * 100 * days;
-      const depositInUsdCents = carInfo.securityDeposit * 100;
-      const location = `${searchResult.searchCarRequest.city}, ${searchResult.searchCarRequest.state}, ${searchResult.searchCarRequest.country}`;
-
       showInfo(t("common.info.sign"));
       const result = await createTripRequest(
         carInfo.carId,
-        carInfo.ownerAddress,
-        startDateTime,
-        endDateTime,
-        searchResult.searchCarRequest.utcOffsetMinutes,
-        location,
-        location,
-        totalPriceInUsdCents,
-        0,
-        depositInUsdCents
+        searchResult.searchCarRequest.dateFrom,
+        searchResult.searchCarRequest.dateTo,
+        carInfo.timeZoneId
       );
 
       setRequestSending(false);
@@ -221,6 +208,7 @@ export default function Search() {
               id="location"
               label={t_el("location_label")}
               placeholder={t_el("location_placeholder")}
+              includeStreetAddress={true}
               initValue={formatLocation(searchCarRequest.city, searchCarRequest.state, searchCarRequest.country)}
               onChange={handleSearchInputChange}
               onAddressChange={(placeDetails) => {
@@ -233,7 +221,6 @@ export default function Search() {
                   country: country,
                   state: state,
                   city: city,
-                  utcOffsetMinutes: placeDetails.utcOffsetMinutes,
                 });
               }}
             />
@@ -254,7 +241,6 @@ export default function Search() {
                 value={searchCarRequest.dateTo}
                 onChange={handleSearchInputChange}
               />
-
               <RntButton
                 className="w-full sm:w-40 max-xl:mt-4"
                 disabled={searchButtonDisabled}
@@ -302,7 +288,7 @@ export default function Search() {
                 {searchResult?.carInfos?.length ?? 0} {t_page("info.cars_available")}
               </div>
               <div className="grid grid-cols-2">
-                <div className="my-4 grid grid-cols-1 gap-4">
+                <div className="my-4 flex flex-col gap-4">
                   {searchResult?.carInfos?.length > 0 ? (
                     searchResult?.carInfos
                       .sort((a: SearchCarInfo, b: SearchCarInfo) => {

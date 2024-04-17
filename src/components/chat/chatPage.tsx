@@ -7,7 +7,7 @@ import SendMessage from "@/components/chat/sendMessage";
 import RntButton from "@/components/common/rntButton";
 import { ChatInfo } from "@/model/ChatInfo";
 import { ElementRef, useEffect, useRef } from "react";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 export default function ChatPage({
   isHost,

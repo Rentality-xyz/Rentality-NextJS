@@ -7,7 +7,7 @@
     "vehicles": "Vehicles",
     "listing": "Listing",
     "claims": "Claims",
-    "inbox": "Inbox,",
+    "inbox": "Inbox",
     "messages": "Messages",
     "notifications": "Notifications",
     "more": "More",
@@ -188,6 +188,7 @@
       "finish": "Finish"
     },
     "car": "Car",
+    "tripId": "Trip ID",
     "days": "Days",
     "start_date": "Start date",
     "end_date": "End date",
@@ -197,6 +198,7 @@
     "cancellation_fee": "Cancellation fee",
     "reimbursements": "Reimbursements",
     "rentality_fee": "Rentality fee",
+    "taxes": "Taxes",
     "details": "Details"
   },
   "booked": {
@@ -364,7 +366,7 @@
     "secure_dep": "Security deposit",
     "fuel_price": "Fuel price per gal",
     "unlimited": "Unlimited",
-    "overmiles_fee": "${{price, string}/mi fee for additional miles driven`}",
+    "overmiles_fee": "${{price, string}}/mi fee for additional miles driven`",
     "battery_charge": "Battery charge price:",
     "full_charge": "Full battery charge cost",
     "recommended": "Recommended {{amount, string}}",

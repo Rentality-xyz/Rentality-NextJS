@@ -1,6 +1,6 @@
 import { useState } from "react";
 import RntButton from "../common/rntButton";
-import { TFunction } from "@/pages/i18n";
+import { TFunction } from "@/utils/i18n";
 
 export default function SendMessage({
   sendMessageCallback,
