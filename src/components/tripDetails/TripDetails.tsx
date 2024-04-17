@@ -31,6 +31,7 @@ export default function TripDetails({ tripId, t }: { tripId: bigint; t: TFunctio
             tripInfo={tripDetails}
             disableButton={true}
             isHost={false}
+            t={t}
           />         
         
           <div className="my-4 flex flex-col md:grid grid-cols-2 gap-4 pr-4">
