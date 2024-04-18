@@ -114,7 +114,7 @@ export default function CreateClaim({
 
       <RntInput
         id="amount"
-        label="How much you estimate the incident must be compensated by Guest in USD"
+        label="What compensation amount do you think the guest should pay for the incident?"
         value={createClaimParams.amountInUsd}
         onChange={(e) =>
           setCreateClaimParams({
