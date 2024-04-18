@@ -7,6 +7,10 @@ import moment from "moment";
 import { TripStatus } from "@/model/blockchain/schemas";
 import { TFunction } from "i18next";
 
+function isInTheFuture(date: Date) {
+  return date > new Date();
+}
+
 const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean, t: TFunction) => {
   switch (tripInfo.status) {
     case TripStatus.Pending:
@@ -30,22 +34,24 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean, t: TFuncti
     case TripStatus.Started:
       return isHost
         ? t(
-            tripInfo.tripEnd > new Date()
-              ? "booked.status_trip_started_host_ended"
-              : "booked.status_trip_started_host_ends",
+            isInTheFuture(tripInfo.tripEnd)
+              ? "booked.status_trip_started_host_ends"
+              : "booked.status_trip_started_host_ended",
             {
-              date:
-                tripInfo.tripEnd > new Date() ? moment(tripInfo.tripEnd).toNow() : moment(tripInfo.tripEnd).fromNow(),
+              date: isInTheFuture(tripInfo.tripEnd)
+                ? moment(tripInfo.tripEnd).toNow()
+                : moment(tripInfo.tripEnd).fromNow(),
               returnObjects: true,
             } as const
           )
         : t(
-            tripInfo.tripEnd > new Date()
-              ? "booked.status_trip_started_guest_ended"
-              : "booked.status_trip_started_guest_ends",
+            isInTheFuture(tripInfo.tripEnd)
+              ? "booked.status_trip_started_guest_ends"
+              : "booked.status_trip_started_guest_ended",
             {
-              date:
-                tripInfo.tripEnd > new Date() ? moment(tripInfo.tripEnd).toNow() : moment(tripInfo.tripEnd).fromNow(),
+              date: isInTheFuture(tripInfo.tripEnd)
+                ? moment(tripInfo.tripEnd).toNow()
+                : moment(tripInfo.tripEnd).fromNow(),
               returnObjects: true,
             } as const
           );
