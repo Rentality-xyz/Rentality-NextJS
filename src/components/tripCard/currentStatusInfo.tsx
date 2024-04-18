@@ -6,6 +6,7 @@ import { Dispatch, SetStateAction, memo } from "react";
 import moment from "moment";
 import { TripStatus } from "@/model/blockchain/schemas";
 import { TFunction } from "i18next";
+import { isEmpty } from "@/utils/string";
 
 function isInTheFuture(date: Date) {
   return date > new Date();
@@ -96,7 +97,12 @@ function CurrentStatusInfo({
   t: TFunction;
 }) {
   const [actionHeader, actionText, actionDescription] = getActionTextsForStatus(tripInfo, isHost, t) as string[];
-  return (
+  return isEmpty(actionHeader) &&
+    isEmpty(actionText) &&
+    isEmpty(actionDescription) &&
+    (!isAdditionalActionHidden || tripInfo.allowedActions.length === 0) ? (
+    <></>
+  ) : (
     <div
       id="trip-action-info"
       className="w-full sm_inverted:w-1/4 flex flex-1 flex-col justify-between gap-2 p-4 md:p-2 xl:p-4"
