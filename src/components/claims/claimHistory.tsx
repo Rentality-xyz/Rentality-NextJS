@@ -37,14 +37,14 @@ export default function ClaimHistory(props: Props) {
       <h3 className="text-xl mb-4">{t_history("title")}</h3>
       <table className=" w-full table-auto border-spacing-2 max-lg:hidden">
         <thead className="mb-2">
-          <tr className="text-rentality-additional-light ">
-            <th className={headerSpanClassName}>{t_history("table.invoiceType")}</th>
-            <th className={headerSpanClassName}>{t_history("table.paymentDeadline")}</th>
-            <th className={headerSpanClassName}>{t_history("table.reservation")}</th>
-            <th className={headerSpanClassName}>{t_history("table.car")}</th>
-            <th className={headerSpanClassName}>{t_history("table.describe")}</th>
-            <th className={headerSpanClassName}>{t_history("table.amount")}</th>
-            <th className={headerSpanClassName}>{t_history("table.status")}</th>
+          <tr className="text-rentality-additional-light">
+            <th className={`${headerSpanClassName} min-w-[12ch]`}>{t_history("table.invoiceType")}</th>
+            <th className={`${headerSpanClassName} min-w-[17ch]`}>{t_history("table.paymentDeadline")}</th>
+            <th className={`${headerSpanClassName}`}>{t_history("table.reservation")}</th>
+            <th className={`${headerSpanClassName} min-w-[30ch]`}>{t_history("table.car")}</th>
+            <th className={`${headerSpanClassName}`}>{t_history("table.describe")}</th>
+            <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_history("table.amount")}</th>
+            <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_history("table.status")}</th>
             <th></th>
             <th></th>
             <th></th>
