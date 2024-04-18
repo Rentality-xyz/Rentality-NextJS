@@ -104,6 +104,11 @@ export default function Search() {
         showError(t_errors("date_eq"));
         return;
       }
+      if (carInfo.ownerAddress === userInfo?.address) {
+        showError(t_errors("own_car"));
+        return;
+      }
+
       setRequestSending(true);
 
       showInfo(t("common.info.sign"));

@@ -22,7 +22,8 @@
       "date_from": "Please enter 'Date from'",
       "date_to": "Please enter 'Date to'",
       "date_eq": "'Date to' must be greater than 'Date from'",
-      "request": "Your create trip request failed. Please make sure you entered trip details right and try again"
+      "request": "Your create trip request failed. Please make sure you entered trip details right and try again",
+      "own_car": "You cannot book your own car"
     },
     "elements": {
       "location_label": "Pick up & Return Location",
