@@ -222,7 +222,7 @@
       "You have 1 hour to confirm this trip or it'll auto-reject"
     ],
     "status_pending_guest": [
-      "Host will confirm within 1 hour",
+      "Host will confirm within 8 hour",
       "",
       "Please wait for host confirmation or you can cancel free of charge"
     ],
