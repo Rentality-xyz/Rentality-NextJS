@@ -174,7 +174,15 @@
     "tc_title": "Terms of service",
     "cancellation_title": "Cancellation policy",
     "prohibited_title": "Prohibited uses",
-    "privacy_title": "Privacy policy"
+    "privacy_title": "Privacy policy",
+    "discounts": "Discounts",
+    "discount_3_and_more": "3+ day discount",
+    "discount_7_and_more": "7+ day discount",
+    "discount_30_and_more": "30+ day discount",
+    "pls_number_percent": "Please enter numeric value (0 - 100%)",
+    "save_keys": "Save keys",
+    "save_discount": "Save discounts",
+    "save_discount_err": "Save trip discounts request failed. Please try again"
   },
   "transaction_history": {
     "title": "Transaction history",
