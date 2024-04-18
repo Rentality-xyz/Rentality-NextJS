@@ -123,7 +123,7 @@ export default function CreateClaim({
           })
         }
       />
-      <p>Response timeout for a guest 72 hours after trip end your complaints will be public</p>
+      <p>After your trip ends, you have 72 hours to respond before your complaints become public</p>
 
       <Checkbox
         className="w-full"
