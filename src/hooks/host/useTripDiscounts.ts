@@ -3,6 +3,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { ethers } from "ethers";
 import { isEmpty } from "@/utils/string";
 import { useUserInfo } from "@/contexts/userInfoContext";
+import { ContractBaseDiscount } from "@/model/blockchain/schemas";
 
 export type DiscountFormValues = {
   discount3DaysAndMoreInPercents: number;
@@ -29,19 +30,14 @@ const useTripDiscounts = () => {
     }
 
     try {
-      const data = {
-        threeDaysDiscount: newDiscountFormValues.discount3DaysAndMoreInPercents * 10_000,
-        sevenDaysDiscount: newDiscountFormValues.discount7DaysAndMoreInPercents * 10_000,
-        thirtyDaysDiscount: newDiscountFormValues.discount30DaysAndMoreInPercents * 10_000,
+      const discounts: ContractBaseDiscount = {
+        threeDaysDiscount: BigInt(newDiscountFormValues.discount3DaysAndMoreInPercents * 10_000),
+        sevenDaysDiscount: BigInt(newDiscountFormValues.discount7DaysAndMoreInPercents * 10_000),
+        thirtyDaysDiscount: BigInt(newDiscountFormValues.discount30DaysAndMoreInPercents * 10_000),
         initialized: true,
       };
 
-      const abiEncoder = ethers.AbiCoder.defaultAbiCoder();
-      const encodedData = abiEncoder.encode(
-        ["uint32", "uint32", "uint32", "bool"],
-        [data.threeDaysDiscount, data.sevenDaysDiscount, data.thirtyDaysDiscount, data.initialized]
-      );
-      const transaction = await rentalityContract.addUserDiscount(encodedData);
+      const transaction = await rentalityContract.addUserDiscount(discounts);
       await transaction.wait();
       return true;
     } catch (e) {
@@ -65,16 +61,12 @@ const useTripDiscounts = () => {
 
         setIsLoading(true);
 
-        const discountData = await rentalityContract.getDiscount(userInfo.address);
-        if (isEmpty(discountData)) return;
-
-        const abiEncoder = ethers.AbiCoder.defaultAbiCoder();
-        const decodedData = abiEncoder.decode(["uint32", "uint32", "uint32", "bool"], discountData);
+        const discounts = await rentalityContract.getDiscount(userInfo.address);
 
         const discountFormValues: DiscountFormValues = {
-          discount3DaysAndMoreInPercents: Number(decodedData[0]) / 10_000,
-          discount7DaysAndMoreInPercents: Number(decodedData[1]) / 10_000,
-          discount30DaysAndMoreInPercents: Number(decodedData[2]) / 10_000,
+          discount3DaysAndMoreInPercents: Number(discounts.threeDaysDiscount) / 10_000,
+          discount7DaysAndMoreInPercents: Number(discounts.sevenDaysDiscount) / 10_000,
+          discount30DaysAndMoreInPercents: Number(discounts.thirtyDaysDiscount) / 10_000,
         };
         setTripDiscounts(discountFormValues);
       } catch (e) {

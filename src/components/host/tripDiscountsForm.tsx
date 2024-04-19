@@ -27,7 +27,7 @@ function TripDiscountsForm({
 
   async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const name = e.target.name;
-    setEnteredFormData({ ...enteredFormData, [name]: e.target.value });
+    setEnteredFormData({ ...enteredFormData, [name]: Number(e.target.value) ?? 0 });
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {

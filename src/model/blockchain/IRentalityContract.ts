@@ -1,5 +1,6 @@
 import { ContractTransactionResponse } from "ethers";
 import {
+  ContractBaseDiscount,
   ContractCalculatePaymentsDTO,
   ContractCarDetails,
   ContractCarInfo,
@@ -54,8 +55,8 @@ export interface IRentalityContract {
   createClaim(request: ContractCreateClaimRequest): Promise<ContractTransactionResponse>;
   rejectClaim(claimId: bigint): Promise<ContractTransactionResponse>;
   getMyClaimsAsHost(): Promise<ContractFullClaimInfo[]>;
-  getDiscount(userAddress:string) : Promise<string>;
-  addUserDiscount(data:string) : Promise<ContractTransactionResponse>;
+  getDiscount(userAddress: string): Promise<ContractBaseDiscount>;
+  addUserDiscount(discountі: ContractBaseDiscount): Promise<ContractTransactionResponse>;
 
   /// GUEST functions
   searchAvailableCars(
