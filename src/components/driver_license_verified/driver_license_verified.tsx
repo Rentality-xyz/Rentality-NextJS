@@ -5,6 +5,7 @@ import RntButton from "@/components/common/rntButton";
 import { TFunction } from "@/utils/i18n";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isEmpty } from "@/utils/string";
+import { keccak256 } from "ethers";
 
 const hasSignature = (signature: string) => {
   return !isEmpty(signature) && signature !== "0x";
@@ -32,10 +33,10 @@ export default function DriverLicenseVerified({
     if (!isTerms || !isCancellation || !isProhibited || !isPrivacy) return;
     if (!ethereumInfo) return;
 
-    const messageToSing =
+    const messageToSign =
       "I have read and I agree with Terms of service, Cancellation policy, Prohibited uses and Privacy policy of Rentality.";
-
-    const signature = await ethereumInfo.signer.signMessage(messageToSing);
+    const messageHash = keccak256(Buffer.from(messageToSign));
+    const signature = await ethereumInfo.signer.signMessage(messageHash);
     setTcSignature(signature);
     onSign(signature);
   };
