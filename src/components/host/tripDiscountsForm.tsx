@@ -76,21 +76,21 @@ function TripDiscountsForm({
         <div className="flex flex-col gap-4">
           <RntInput
             className="lg:w-60"
-            id="discount3AndMore"
+            id="discount3DaysAndMoreInPercents"
             label={t_profile("discount_3_and_more")}
             value={enteredFormData.discount3DaysAndMoreInPercents}
             onChange={handleChange}
           />
           <RntInput
             className="lg:w-60"
-            id="discount7AndMore"
+            id="discount7DaysAndMoreInPercents"
             label={t_profile("discount_7_and_more")}
             value={enteredFormData.discount7DaysAndMoreInPercents}
             onChange={handleChange}
           />
           <RntInput
             className="lg:w-60"
-            id="discount30AndMore"
+            id="discount30DaysAndMoreInPercents"
             label={t_profile("discount_30_and_more")}
             value={enteredFormData.discount30DaysAndMoreInPercents}
             onChange={handleChange}
