@@ -55,8 +55,8 @@ export interface IRentalityContract {
   createClaim(request: ContractCreateClaimRequest): Promise<ContractTransactionResponse>;
   rejectClaim(claimId: bigint): Promise<ContractTransactionResponse>;
   getMyClaimsAsHost(): Promise<ContractFullClaimInfo[]>;
-  getDiscount(userAddress: string): Promise<ContractBaseDiscount>;
-  addUserDiscount(discountі: ContractBaseDiscount): Promise<ContractTransactionResponse>;
+  getDiscount(user: string): Promise<ContractBaseDiscount>;
+  addUserDiscount(discounts: ContractBaseDiscount): Promise<ContractTransactionResponse>;
 
   /// GUEST functions
   searchAvailableCars(
