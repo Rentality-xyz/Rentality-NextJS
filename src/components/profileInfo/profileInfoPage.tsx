@@ -3,7 +3,6 @@ import RntFileButton from "@/components/common/rntFileButton";
 import RntInput from "@/components/common/rntInput";
 import { ProfileSettings } from "@/hooks/useProfileSettings";
 import { resizeImage } from "@/utils/image";
-import { MESSAGES } from "@/utils/messages";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";

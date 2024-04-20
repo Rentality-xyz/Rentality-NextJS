@@ -22,7 +22,8 @@
       "date_from": "Please enter 'Date from'",
       "date_to": "Please enter 'Date to'",
       "date_eq": "'Date to' must be greater than 'Date from'",
-      "request": "Your create trip request failed. Please make sure you entered trip details right and try again"
+      "request": "Your create trip request failed. Please make sure you entered trip details right and try again",
+      "own_car": "You cannot book your own car"
     },
     "elements": {
       "location_label": "Pick up & Return Location",
@@ -174,7 +175,15 @@
     "tc_title": "Terms of service",
     "cancellation_title": "Cancellation policy",
     "prohibited_title": "Prohibited uses",
-    "privacy_title": "Privacy policy"
+    "privacy_title": "Privacy policy",
+    "discounts": "Discounts",
+    "discount_3_and_more": "3+ day discount",
+    "discount_7_and_more": "7+ day discount",
+    "discount_30_and_more": "30+ day discount",
+    "pls_number_percent": "Please enter numeric value (0 - 100%)",
+    "save_keys": "Save keys",
+    "save_discount": "Save discounts",
+    "save_discount_err": "Save trip discounts request failed. Please try again"
   },
   "transaction_history": {
     "title": "Transaction history",
@@ -214,7 +223,7 @@
       "You have 1 hour to confirm this trip or it'll auto-reject"
     ],
     "status_pending_guest": [
-      "Host will confirm within 1 hour",
+      "Host will confirm within 8 hour",
       "",
       "Please wait for host confirmation or you can cancel free of charge"
     ],
@@ -281,7 +290,7 @@
     "overmiles": "Overmiles:",
     "overmile_price": "Overmile price:",
     "overmile_charge": "Overmile charge:",
-    "history_title": "Title",
+    "history_title": "History",
     "history_no_trips": "You don't have any booked trips",
     "details": {
       "title": "Trip #{{tripId, string}} details",

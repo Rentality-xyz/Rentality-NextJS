@@ -35,7 +35,7 @@ export default function CarSearchItem({
       />
       <div className="flex w-full flex-col justify-between p-2 sm:p-4">
         <div className="flex flex-row items-baseline justify-between ">
-          <div className="w-9/12 overflow-hidden">
+          <div className="w-full overflow-hidden">
             <strong className="text-lg truncate">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>
           </div>
         </div>
