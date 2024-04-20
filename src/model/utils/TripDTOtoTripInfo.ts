@@ -21,6 +21,11 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
 		image: getIpfsURIfromPinata(meta.image),
 		brand: meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "",
 		model: meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
+		
+		//meta.attributes <-doorsNumber, etc...
+		//meta.description
+		
+		
 		year: meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
 		licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
 		tripStart: getDateFromBlockchainTimeWithTZ(i.trip.startDateTime, timeZoneId),

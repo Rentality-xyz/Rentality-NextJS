@@ -21,7 +21,7 @@ const emptyDetails: TripDetails = {
   startLocation: "",
   endLocation: "",
   milesIncludedPerDay: 0,
-  fuelPricePerGalInUsd: 0,
+  fuelPricePerGal: 0,
   approvedDateTime: undefined,
   checkedInByHostDateTime: undefined,
   startFuelLevelInPercents: undefined,

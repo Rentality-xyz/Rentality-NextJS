@@ -14,12 +14,14 @@ function TripCard({
   changeStatusCallback,
   disableButton,
   isHost,
+  showMoreInfo,
   t,
 }: {
   tripInfo: TripInfo;
   changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<void>;
   disableButton: boolean;
   isHost: boolean;
+  showMoreInfo: boolean
   t: TFunction;
 }) {
   const [isAdditionalActionHidden, setIsAdditionalActionHidden] = useState(true);
@@ -51,7 +53,7 @@ function TripCard({
           <DateDetails tripInfo={tripInfo} t={t} />
           <LocationDetails tripInfo={tripInfo} t={t} />
         </div>
-        <TripContacts tripInfo={tripInfo} isHost={isHost} t={t} />
+        <TripContacts tripInfo={tripInfo} isHost={isHost} showMoreInfo={showMoreInfo} t={t} />
       </div>
 
       {isAdditionalActionHidden ||

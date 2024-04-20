@@ -53,6 +53,7 @@ export default function Booked() {
                     changeStatusCallback={changeStatusCallback}
                     disableButton={tripStatusChanging}
                     isHost={true}
+                    showMoreInfo={true}
                     t={t}
                   />
                 );
