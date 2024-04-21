@@ -18,14 +18,14 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
 	let item: TripInfo = {
 		tripId: Number(i.trip.tripId),
 		carId: Number(i.trip.carId),
+		carDescription: meta.attributes?.find((x: any) => x.trait_type === "Description")?.value ?? "Test Description",
+		carDoorsNumber:  meta.attributes?.find((x: any) => x.trait_type === "Doors Number")?.value ?? 4,
+		carSeatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats Number")?.value ?? 4,
+		carTransmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
+		carColor: meta.attributes?.find((x: any) => x.trait_type === "Color")?.value ?? "",
 		image: getIpfsURIfromPinata(meta.image),
 		brand: meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "",
-		model: meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
-		
-		//meta.attributes <-doorsNumber, etc...
-		//meta.description
-		
-		
+		model: meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",		
 		year: meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
 		licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
 		tripStart: getDateFromBlockchainTimeWithTZ(i.trip.startDateTime, timeZoneId),

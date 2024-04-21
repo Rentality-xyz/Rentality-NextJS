@@ -79,6 +79,11 @@ export const getTripStatusFromContract = (status: number) => {
 export type TripInfo = {
   tripId: number;
   carId: number;
+  carDescription: string,
+  carDoorsNumber: number,
+  carSeatsNumber: number,
+  carTransmission: string,
+  carColor : string,
   image: string;
   brand: string;
   model: string;

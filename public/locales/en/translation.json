@@ -325,7 +325,26 @@
 	  "trip_status_details" : "Trip status details",
 	  "trip_receipt" : "Trip receipt",
 	  "basic_car_details": "Basic car details",
-	  "more_car_details": "More car details"
+	  "more_car_details": "More about the car",
+	  "doors": "doors",
+	  "seats" : "seats",
+	  "car_colour" : "Car color",
+	  "reservation": "Reservation",
+	  "price_per_day": "Price per day",
+	  "trip_days": "Trip days",
+	  "trip_price": "Trip price",
+	  "discount_amount": "Discount Amount",
+	  "sales_tax" : "Sales Tax",
+	  "government_tax" : "Government Tax",
+	  "trip_total": "Trip total",
+	  "security_deposit_info" : "Security deposit info",
+	  "received" : "Received",
+	  "reimbursement" : "Reimbursement",
+	  "returned" : "Returned",
+	  "reimbursement_info": "Reimbursement info",
+	  "refuel_gal" : "Refuel, gal",
+	  "price_per_gal" : "Price per 1 gal.",
+	  "refuel_or_recharge" : "Refuel or recharge"
     }
   },
   "vehicles": {
