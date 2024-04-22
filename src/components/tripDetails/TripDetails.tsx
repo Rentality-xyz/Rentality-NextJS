@@ -13,6 +13,7 @@ import carTankSizeIcon from "@/images/car_tank_size.png";
 import carColourIcon from "@/images/car_colour.png";
 import { getEngineTypeString } from "@/model/EngineType";
 import moment from "moment";
+import RntContractModal from "@/components/common/rntContractModal";
 
 export default function tripInfo({ tripId, t }: { tripId: bigint; t: TFunction }) {
 	const [isLoading, tripInfo] = useTripInfo(tripId);
@@ -169,11 +170,14 @@ export default function tripInfo({ tripId, t }: { tripId: bigint; t: TFunction }
 											<td class="text-end text-red-700">UNMAPPED</td>
 										</tr>
 									</tbody>
-								</table>								
+								</table>
+								<div class="flex justify-center p-2">
+									<RntContractModal tripId={tripId} tripInfo={tripInfo}/>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div className="flex flex-row gap-4 mb-8 mt-4 items-center">
+					<div className="flex flex-row gap-4 mb-8 mt-4 justify-center">
 						<RntButton className="w-40 h-16" onClick={() => router.back()}>
 							{t("common.back")}
 						</RntButton>
