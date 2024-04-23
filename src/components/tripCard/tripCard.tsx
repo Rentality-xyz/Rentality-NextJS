@@ -21,7 +21,7 @@ function TripCard({
   changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<void>;
   disableButton: boolean;
   isHost: boolean;
-  showMoreInfo: boolean
+  showMoreInfo: boolean;
   t: TFunction;
 }) {
   const [isAdditionalActionHidden, setIsAdditionalActionHidden] = useState(true);

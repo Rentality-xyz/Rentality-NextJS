@@ -21,7 +21,7 @@ export default function AllowedActionsForStatusStarted({
   const [endLevelInPercents, setEndLevelInPercents] = useState<number>(0);
   const [overmileValue, setOvermileValue] = useState<number>(0);
 
-  const depositPaid = tripInfo.depositPaid;
+  const depositPaid = tripInfo.depositInUsd;
   const { refuelValue, refuelCharge } = getRefuelValueAndCharge(tripInfo, endLevelInPercents);
   const overmilesCharge = overmileValue * tripInfo.overmilePrice;
   let depositToBeReturned = depositPaid - refuelCharge - overmilesCharge;

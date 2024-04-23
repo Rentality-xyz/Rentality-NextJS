@@ -79,11 +79,11 @@ export const getTripStatusFromContract = (status: number) => {
 export type TripInfo = {
   tripId: number;
   carId: number;
-  carDescription: string,
-  carDoorsNumber: number,
-  carSeatsNumber: number,
-  carTransmission: string,
-  carColor : string,
+  carDescription: string;
+  carDoorsNumber: number;
+  carSeatsNumber: number;
+  carTransmission: string;
+  carColor: string;
   image: string;
   brand: string;
   model: string;
@@ -95,7 +95,6 @@ export type TripInfo = {
   locationEnd: string;
   status: TripStatus;
   allowedActions: AllowedChangeTripAction[];
-  totalPrice: string;
   tankVolumeInGal: number;
   startFuelLevelInPercents: number;
   endFuelLevelInPercents: number;
@@ -106,7 +105,6 @@ export type TripInfo = {
   startOdometr: number;
   endOdometr: number;
   overmilePrice: number;
-  depositPaid: number;
   hostPhoneNumber: string;
   guestPhoneNumber: string;
   hostAddress: string;
@@ -122,10 +120,13 @@ export type TripInfo = {
   guestPhotoUrl: string;
   hostPhotoUrl: string;
   timeZoneId: string;
-  pricePerDayInUsdCents: number;
+  pricePerDayInUsd: number;
   totalDayPriceInUsd: number;
+  totalPriceWithDiscountInUsd: number;
   taxPriceInUsd: number;
   depositInUsd: number;
+  resolveAmountInUsd: number;
+  depositReturnedInUsd: number;
   currencyRate: number;
 };
 
