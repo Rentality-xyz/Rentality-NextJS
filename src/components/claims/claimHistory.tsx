@@ -2,12 +2,12 @@ import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import Link from "next/link";
 import RntButton from "../common/rntButton";
 import { twMerge } from "tailwind-merge";
-import { getStringFromMoneyInCents } from "@/utils/formInput";
 import { Claim } from "@/model/Claim";
 import ClaimHistoryMobileCard from "./claimHistoryMobileCard";
 import { ClaimStatus } from "@/model/blockchain/schemas";
 import moment from "moment";
 import { TFunction } from "@/utils/i18n";
+import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
 
 type Props =
   | {
@@ -66,7 +66,7 @@ export default function ClaimHistory(props: Props) {
                 <td className={rowSpanClassName}>{claim.tripId}</td>
                 <td className={rowSpanClassName}>{claim.carInfo}</td>
                 <td className={rowSpanClassName}>{claim.description}</td>
-                <td className={rowSpanClassName}>${getStringFromMoneyInCents(claim.amountInUsdCents)}</td>
+                <td className={rowSpanClassName}>${displayMoneyFromCentsWith2Digits(claim.amountInUsdCents)}</td>
                 <td className={claim.status === ClaimStatus.Overdue ? redTextClassName : rowSpanClassName}>
                   {claim.statusText}
                 </td>

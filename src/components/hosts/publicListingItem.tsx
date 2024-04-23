@@ -1,6 +1,7 @@
 import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { TFunction } from "@/utils/i18n";
+import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 
 export default function PublicListingItem({ carInfo, t }: { carInfo: BaseCarInfo; t: TFunction }) {
   return (
@@ -18,9 +19,9 @@ export default function PublicListingItem({ carInfo, t }: { carInfo: BaseCarInfo
         </div>
         <div className="flex flex-row justify-between items-end">
           <div className="flex flex-col">
-            <strong className="text-xl">{`$${carInfo.pricePerDay}/${t("vehicles.day")}`}</strong>
+            <strong className="text-xl">{`$${displayMoneyWith2Digits(carInfo.pricePerDay)}/${t("vehicles.day")}`}</strong>
             <div className="text-sm">{`${getMilesIncludedPerDayText(carInfo.milesIncludedPerDay)} ${t("vehicles.miles_per_day")}`}</div>
-            <div className="text-sm">{`$${carInfo.securityDeposit} ${t("vehicles.secure_dep")}`}</div>
+            <div className="text-sm">{`$${displayMoneyWith2Digits(carInfo.securityDeposit)} ${t("vehicles.secure_dep")}`}</div>
           </div>
         </div>
       </div>

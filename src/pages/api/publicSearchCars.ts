@@ -9,6 +9,7 @@ import { validateContractSearchCar } from "@/model/blockchain/schemas_utils";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getBlockchainTimeFromDate, getMoneyInCentsFromString } from "@/utils/formInput";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
+import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Wallet } from "ethers";
 import moment from "moment";
@@ -31,7 +32,7 @@ export const getTotalDiscount = (pricePerDay: number, tripDays: number, totalPri
   const totalDiscount = pricePerDay * tripDays - totalPriceWithDiscount;
   let result: string = "";
   if (totalDiscount > 0) {
-    result = "-$" + String(totalDiscount);
+    result = "-$" + displayMoneyWith2Digits(totalDiscount);
   } else {
     result = "-";
   }

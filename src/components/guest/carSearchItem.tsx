@@ -2,6 +2,7 @@ import { SearchCarInfo } from "@/model/SearchCarsResult";
 import RntButton from "../common/rntButton";
 import { Avatar } from "@mui/material";
 import React from "react";
+import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 
 type TFunction = (key: string, options?: { [key: string]: any }) => string;
 export default function CarSearchItem({
@@ -45,18 +46,18 @@ export default function CarSearchItem({
             searchInfo.pricePerDayWithDiscount === searchInfo.pricePerDay ? (
               <div className="text-base">
                 <strong>
-                  ${searchInfo.pricePerDay}
+                  ${displayMoneyWith2Digits(searchInfo.pricePerDay)}
                   {t_item("per_day")}
                 </strong>
               </div>
             ) : (
               <div className="text-base">
                 <strong>
-                  ${searchInfo.pricePerDayWithDiscount}
+                  ${displayMoneyWith2Digits(searchInfo.pricePerDayWithDiscount)}
                   {t_item("per_day")}
                 </strong>
                 <strong className="ml-8 text-[#8B8B8F] line-through">
-                  ${searchInfo.pricePerDay}
+                  ${displayMoneyWith2Digits(searchInfo.pricePerDay)}
                   {t_item("per_day")}
                 </strong>
               </div>
@@ -64,13 +65,13 @@ export default function CarSearchItem({
 
             <div className="mt-4 grid grid-cols-2">
               <div>
-                <span>${searchInfo.pricePerDay}</span>
+                <span>${displayMoneyWith2Digits(searchInfo.pricePerDay)}</span>
                 <span className="mx-0.5">x</span>
                 <span>
                   {searchInfo.tripDays} {t_item("days")}
                 </span>
               </div>
-              <span className="ml-8">${searchInfo.pricePerDay * searchInfo.tripDays}</span>
+              <span className="ml-8">${displayMoneyWith2Digits(searchInfo.pricePerDay * searchInfo.tripDays)}</span>
             </div>
 
             <div className="grid grid-cols-2">
@@ -80,7 +81,7 @@ export default function CarSearchItem({
 
             <div className="grid grid-cols-2">
               <span> {t_item("price_without_taxes")}</span>
-              <span className="ml-8">${searchInfo.totalPriceWithDiscount}</span>
+              <span className="ml-8">${displayMoneyWith2Digits(searchInfo.totalPriceWithDiscount)}</span>
             </div>
           </div>
           <div className="flex flex-col w-auto">
@@ -91,11 +92,11 @@ export default function CarSearchItem({
             </div>
             <div className="mt-4 grid grid-cols-2">
               <span>{t_item("taxes")}</span>
-              <span className="max-md:ml-4">${searchInfo.taxes}</span>
+              <span className="max-md:ml-4">${displayMoneyWith2Digits(searchInfo.taxes)}</span>
             </div>
             <div className="grid grid-cols-2">
               <span>{t_item("deposit")}</span>
-              <span className="max-md:ml-4">${searchInfo.securityDeposit}</span>
+              <span className="max-md:ml-4">${displayMoneyWith2Digits(searchInfo.securityDeposit)}</span>
             </div>
           </div>
         </div>
@@ -116,7 +117,10 @@ export default function CarSearchItem({
           >
             <div>{t_item("rent_for", { days: searchInfo.tripDays })}</div>
             <div>
-              {t_item("total")} ${searchInfo.totalPriceWithDiscount + searchInfo.taxes + searchInfo.securityDeposit}
+              {t_item("total")} $
+              {displayMoneyWith2Digits(
+                searchInfo.totalPriceWithDiscount + searchInfo.taxes + searchInfo.securityDeposit
+              )}
             </div>
           </RntButton>
         </div>

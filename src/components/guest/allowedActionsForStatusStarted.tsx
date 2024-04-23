@@ -5,6 +5,7 @@ import RntSelect from "../common/rntSelect";
 import { calculateDays } from "@/utils/date";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { TripStatus } from "@/model/blockchain/schemas";
+import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 
 export default function AllowedActionsForStatusStarted({
   params,
@@ -114,9 +115,9 @@ export default function AllowedActionsForStatusStarted({
             <span className="col-span-1">Refuel:</span>
             <span className="col-span-1 text-right">{refuelValue} gal</span>
             <span className="col-span-1">Gal price:</span>
-            <span className="col-span-1 text-right">${tripInfo.fuelPricePerGal.toFixed(2)}</span>
+            <span className="col-span-1 text-right">${displayMoneyWith2Digits(tripInfo.fuelPricePerGal)}</span>
             <span className="col-span-1">Refuel or battery charge:</span>
-            <span className="col-span-1 text-right">${refuelCharge.toFixed(2)}</span>
+            <span className="col-span-1 text-right">${displayMoneyWith2Digits(refuelCharge)}</span>
           </div>
           <div className="grid grid-cols-2 mt-2 md:mt-4 text-sm">
             <span className="col-span-1">Miles included:</span>
@@ -128,25 +129,25 @@ export default function AllowedActionsForStatusStarted({
             <span className="col-span-1">Overmile price:</span>
             <span className="col-span-1 text-right">${tripInfo.overmilePrice.toFixed(4)}</span>
             <span className="col-span-1">Overmile charge:</span>
-            <span className="col-span-1 text-right">${overmilesCharge.toFixed(2)}</span>
+            <span className="col-span-1 text-right">${displayMoneyWith2Digits(overmilesCharge)}</span>
           </div>
         </div>
         <div className="flex flex-col flex-1">
           <div className="font-bold mt-4 md:mt-2">Security deposit info:</div>
           <div className="grid grid-cols-2 gap-x-2 mt-2 md:mt-4 text-sm">
             <span className="col-span-1">Received deposit:</span>
-            <span className="col-span-1 text-right">${depositPaid.toFixed(2)}</span>
+            <span className="col-span-1 text-right">${displayMoneyWith2Digits(depositPaid)}</span>
             <span className="col-span-1">Refuel or battery charge:</span>
             <div className="col-span-1 text-right flex items-end">
-              <span className="w-full">${refuelCharge.toFixed(2)}</span>
+              <span className="w-full">${displayMoneyWith2Digits(refuelCharge)}</span>
             </div>
             <span className="col-span-1">Overmiles reimbursement:</span>
             <div className="col-span-1 text-right flex items-end">
-              <span className="w-full">${overmilesCharge.toFixed(2)}</span>
+              <span className="w-full">${displayMoneyWith2Digits(overmilesCharge)}</span>
             </div>
             <span className="col-span-1">Deposit to be returned:</span>
             <div className="col-span-1 text-right flex items-end">
-              <span className="w-full">${depositToBeReturned.toFixed(2)}</span>
+              <span className="w-full">${displayMoneyWith2Digits(depositToBeReturned)}</span>
             </div>
           </div>
           <div className="mt-2 md:mt-4">Deposit returned after the Host Completed the trip</div>

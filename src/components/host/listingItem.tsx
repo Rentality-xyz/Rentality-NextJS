@@ -4,6 +4,7 @@ import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { TFunction } from "@/utils/i18n";
+import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 
 export default function ListingItem({ carInfo, t }: { carInfo: BaseCarInfo; t: TFunction }) {
   let statusBgColor = carInfo.currentlyListed ? "bg-lime-500" : "bg-red-500";
@@ -40,9 +41,9 @@ export default function ListingItem({ carInfo, t }: { carInfo: BaseCarInfo; t: T
         </div>
         <div className="flex flex-row justify-between items-end">
           <div className="flex flex-col">
-            <strong className="text-xl">{`$${carInfo.pricePerDay}/${t("vehicles.day")}`}</strong>
+            <strong className="text-xl">{`$${displayMoneyWith2Digits(carInfo.pricePerDay)}/${t("vehicles.day")}`}</strong>
             <div className="text-sm">{`${getMilesIncludedPerDayText(carInfo.milesIncludedPerDay)} ${t("vehicles.miles_per_day")}`}</div>
-            <div className="text-sm">{`$${carInfo.securityDeposit} ${t("vehicles.secure_dep")}`}</div>
+            <div className="text-sm">{`$${displayMoneyWith2Digits(carInfo.securityDeposit)} ${t("vehicles.secure_dep")}`}</div>
           </div>
           <Link href={`/host/vehicles/edit/${carInfo.carId}`}>
             <RntButton disabled={!carInfo.isEditable} className="w-28 h-12">

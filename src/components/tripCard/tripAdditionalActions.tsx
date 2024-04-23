@@ -11,6 +11,7 @@ import { TripStatus } from "@/model/blockchain/schemas";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { isEmpty } from "@/utils/string";
 import { TFunction } from "@/utils/i18n";
+import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 
 function TripAdditionalActions({
   tripInfo,
@@ -152,9 +153,9 @@ function TripAdditionalActions({
                         {refuelValue} {t("booked.refuel_measure")}
                       </span>
                       <span>{t("booked.gal_price")}</span>
-                      <span>${tripInfo.fuelPricePerGal.toFixed(2)}</span>
+                      <span>${displayMoneyWith2Digits(tripInfo.fuelPricePerGal)}</span>
                       <span>{t("booked.refuel_or_battery")}</span>
-                      <span>${refuelCharge.toFixed(2)}</span>
+                      <span>${displayMoneyWith2Digits(refuelCharge)}</span>
                     </div>
                   ) : (
                     <div className="md:w-1/2 xl:w-1/4 md:mx-8 xl:mx-28 grid grid-cols-2 text-sm">
@@ -163,7 +164,7 @@ function TripAdditionalActions({
                       <span>{t("booked.overmile_price")}</span>
                       <span>${tripInfo.overmilePrice.toFixed(4)}</span>
                       <span>{t("booked.overmile_charge")}</span>
-                      <span>${(overmileValue * tripInfo.overmilePrice).toFixed(2)}</span>
+                      <span>${displayMoneyWith2Digits(overmileValue * tripInfo.overmilePrice)}</span>
                     </div>
                   )
                 ) : null}
