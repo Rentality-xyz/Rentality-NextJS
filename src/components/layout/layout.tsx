@@ -13,7 +13,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
   if (isGuest)
     return (
       <>
-        <div className="flex text-rnt-temp-sidemenu-text">
+        <div className="flex text-rnt-temp-sidemenu-text overflow-hidden">
           <GuestSideNavMenu />
           <div className="w-full">
             <Header accountType="Guest" />
@@ -29,7 +29,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
   if (isHost)
     return (
       <>
-        <div className="flex text-rnt-temp-sidemenu-text">
+        <div className="flex text-rnt-temp-sidemenu-text overflow-hidden">
           <HostSideNavMenu />
           <div className="w-full">
             <Header accountType="Host" />
@@ -45,7 +45,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
   if (isAdmin)
     return (
       <>
-        <div className="flex text-rnt-temp-sidemenu-text">
+        <div className="flex text-rnt-temp-sidemenu-text overflow-hidden">
           <AdminSideNavMenu />
           <div className="w-full">
             <Header accountType="Admin" />
@@ -58,7 +58,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
 
   return (
     <>
-      <div className="flex text-rnt-temp-sidemenu-text">
+      <div className="flex text-rnt-temp-sidemenu-text overflow-hidden">
         <GuestSideNavMenu />
         <div className="w-full">
           <Header accountType="Guest" />

@@ -41,7 +41,7 @@ export default function ClaimHistory(props: Props) {
             <th className={`${headerSpanClassName} min-w-[12ch]`}>{t_history("table.invoiceType")}</th>
             <th className={`${headerSpanClassName} min-w-[17ch]`}>{t_history("table.paymentDeadline")}</th>
             <th className={`${headerSpanClassName}`}>{t_history("table.reservation")}</th>
-            <th className={`${headerSpanClassName} min-w-[30ch]`}>{t_history("table.car")}</th>
+            <th className={`${headerSpanClassName} min-w-[20ch]`}>{t_history("table.car")}</th>
             <th className={`${headerSpanClassName}`}>{t_history("table.describe")}</th>
             <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_history("table.amount")}</th>
             <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_history("table.status")}</th>
@@ -65,7 +65,9 @@ export default function ClaimHistory(props: Props) {
                 </td>
                 <td className={rowSpanClassName}>{claim.tripId}</td>
                 <td className={rowSpanClassName}>{claim.carInfo}</td>
-                <td className={rowSpanClassName}>{claim.description}</td>
+                <td className={`${rowSpanClassName} max-w-[40ch] overflow-hidden text-ellipsis`}>
+                  {claim.description}
+                </td>
                 <td className={rowSpanClassName}>${displayMoneyFromCentsWith2Digits(claim.amountInUsdCents)}</td>
                 <td className={claim.status === ClaimStatus.Overdue ? redTextClassName : rowSpanClassName}>
                   {claim.statusText}
