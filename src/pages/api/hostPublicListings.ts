@@ -45,7 +45,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(500).json({ error: `API checkTrips error: API URL for chain id ${chainIdNumber} was not set` });
     return;
   }
-  console.log(`Chain id: ${chainIdNumber}, providerApiUrl: ${providerApiUrl}`);
 
   const provider = new JsonRpcProvider(providerApiUrl);
   const hostAddress = await getHostAddressFromQuery(hostQuery, provider);

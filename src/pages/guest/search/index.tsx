@@ -20,11 +20,13 @@ import CarSearchMap from "@/components/guest/carMap/carSearchMap";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
+import moment from "moment";
+import { ParseLocationResponse } from "@/pages/api/parseLocation";
 
 export default function Search() {
   const dateNow = new Date();
-  const defaultDateFrom = new Date(dateNow.getTime() + 1 * 60 * 60 * 1000); //dateNow + 1 hour
-  const defaultDateTo = new Date(dateNow.getTime() + 25 * 60 * 60 * 1000); //dateNow + 1 day and 1 hour
+  const defaultDateFrom = moment({ hour: 9 }).add(1, "day").toDate();
+  const defaultDateTo = moment({ hour: 9 }).add(2, "day").toDate();
   const customEmptySearchCarRequest: SearchCarRequest = {
     ...emptySearchCarRequest,
     city: "Center, Miami",
@@ -54,13 +56,19 @@ export default function Search() {
   const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(customEmptySearchCarRequest);
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const [openFilterPanel, setOpenFilterPanel] = useState(false);
-  const [searchButtonDisabled, setSearchButtonDisabled] = useState<boolean>(false);
   const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
   const [sortBy, setSortBy] = useState<string | undefined>(undefined);
+  const [utcOffset, setUtcOffset] = useState("");
+
+  const isSearchAllowed =
+    formatLocation(searchCarRequest.city, searchCarRequest.state, searchCarRequest.country).length > 0 &&
+    new Date(searchCarRequest.dateFrom) >= new Date() &&
+    new Date(searchCarRequest.dateTo) > new Date(searchCarRequest.dateFrom);
 
   const userInfo = useUserInfo();
   const router = useRouter();
   const { authenticated, login } = usePrivy();
+  const gmtLabel = isEmpty(utcOffset) ? "" : `(GMT${utcOffset})`;
 
   const handleSearchClick = async () => {
     const result = await searchAvailableCars(searchCarRequest);
@@ -174,12 +182,32 @@ export default function Search() {
   }
 
   useEffect(() => {
-    const isDataValid =
-      formatLocation?.length > 0 &&
-      new Date(searchCarRequest.dateFrom) >= new Date() &&
-      new Date(searchCarRequest.dateTo) > new Date(searchCarRequest.dateFrom);
-    setSearchButtonDisabled(!isDataValid);
-  }, [searchCarRequest]);
+    const getGMTFromLocation = async () => {
+      const address = formatLocation(searchCarRequest.city, searchCarRequest.state, searchCarRequest.country);
+      if (isEmpty(address)) {
+        setUtcOffset("");
+        return;
+      }
+
+      var url = new URL(`/api/parseLocation`, window.location.origin);
+      url.searchParams.append("address", address);
+      const apiResponse = await fetch(url);
+
+      if (!apiResponse.ok) {
+        setUtcOffset("");
+        return;
+      }
+      const apiJson = (await apiResponse.json()) as ParseLocationResponse;
+      if ("error" in apiJson) {
+        setUtcOffset("");
+        return;
+      }
+
+      setUtcOffset(moment.tz(apiJson.timeZoneId).format("Z").slice(0, 3));
+    };
+
+    getGMTFromLocation();
+  }, [searchCarRequest.city, searchCarRequest.state, searchCarRequest.country]);
 
   useEffect(() => {
     if (sortBy === undefined) return;
@@ -216,7 +244,7 @@ export default function Search() {
               includeStreetAddress={true}
               initValue={formatLocation(searchCarRequest.city, searchCarRequest.state, searchCarRequest.country)}
               onChange={handleSearchInputChange}
-              onAddressChange={(placeDetails) => {
+              onAddressChange={async (placeDetails) => {
                 const country = placeDetails.country?.short_name ?? "";
                 const state = placeDetails.state?.long_name ?? "";
                 const city = placeDetails.city?.long_name ?? "";
@@ -233,7 +261,7 @@ export default function Search() {
               <RntInput
                 className="md:w-1/3 2xl:w-[38%]"
                 id="dateFrom"
-                label={t("common.from")}
+                label={`${t("common.from")} ${gmtLabel}`}
                 type="datetime-local"
                 value={searchCarRequest.dateFrom}
                 onChange={handleSearchInputChange}
@@ -241,14 +269,14 @@ export default function Search() {
               <RntInput
                 className="md:w-1/3 2xl:w-[38%]"
                 id="dateTo"
-                label={t("common.to")}
+                label={`${t("common.to")} ${gmtLabel}`}
                 type="datetime-local"
                 value={searchCarRequest.dateTo}
                 onChange={handleSearchInputChange}
               />
               <RntButton
                 className="w-full sm:w-40 max-xl:mt-4"
-                disabled={searchButtonDisabled}
+                disabled={!isSearchAllowed}
                 onClick={
                   () => handleSearchClick()
                   // showError("w-full sm:w-40 max-xl:mt-4")

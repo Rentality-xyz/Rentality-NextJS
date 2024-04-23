@@ -41,13 +41,6 @@ export const getTotalDiscount = (pricePerDay: number, tripDays: number, totalPri
 const formatSearchAvailableCarsContractRequest = (searchCarRequest: SearchCarRequest, timeZoneId: string) => {
   const startCarLocalDateTime = moment.tz(searchCarRequest.dateFrom, timeZoneId).toDate();
   const endCarLocalDateTime = moment.tz(searchCarRequest.dateTo, timeZoneId).toDate();
-
-  console.log(`timeZoneId: ${timeZoneId}`);
-  console.log(`dateFrom: ${searchCarRequest.dateFrom}`);
-  console.log(`startCarLocalDateTime: ${startCarLocalDateTime}`);
-  console.log(`dateTo: ${searchCarRequest.dateTo}`);
-  console.log(`endDateTimeUTC: ${endCarLocalDateTime}`);
-
   const contractDateFromUTC = getBlockchainTimeFromDate(startCarLocalDateTime);
   const contractDateToUTC = getBlockchainTimeFromDate(endCarLocalDateTime);
   const contractSearchCarParams: ContractSearchCarParams = {
