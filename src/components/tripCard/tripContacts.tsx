@@ -3,7 +3,7 @@ import { TripInfo } from "@/model/TripInfo";
 import { memo } from "react";
 import { TFunction } from "@/utils/i18n";
 
-function TripContacts({ tripInfo, isHost, t }: { tripInfo: TripInfo; isHost: boolean; t: TFunction }) {
+function TripContacts({ tripInfo, isHost, showMoreInfo ,t }: { tripInfo: TripInfo; isHost: boolean; showMoreInfo: boolean, t: TFunction }) {
   const pathRoot = isHost ? "host" : "guest";
   const otherUserPhoneNumber = isHost ? tripInfo.guestPhoneNumber : tripInfo.hostPhoneNumber;
 
@@ -29,12 +29,15 @@ function TripContacts({ tripInfo, isHost, t }: { tripInfo: TripInfo; isHost: boo
             </a>
           </div>
         </div>
-        <div className="2xl:mt-10 text-[#52D1C9]">
-          <Link href={`/${pathRoot}/trips/tripInfo/${tripInfo.tripId}`}>
-            <strong>{t("booked.more_info")}</strong>
-          </Link>
-          <i className="fi fi-br-angle-small-down pl-1"></i>
-        </div>
+        { showMoreInfo ? 
+			<div className="2xl:mt-10 text-[#52D1C9]">
+	          <Link href={`/${pathRoot}/trips/tripInfo/${tripInfo.tripId}`}>
+	            <strong>{t("booked.more_info")}</strong>
+	          </Link>
+	          <i className="fi fi-br-angle-small-down pl-1"></i>
+	        </div> : 
+	        <></>
+        }
       </div>
     </div>
   );

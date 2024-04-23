@@ -6,6 +6,8 @@ import { TripStatus } from "@/model/blockchain/schemas";
 import { TFunction } from "@/utils/i18n";
 
 function СarDetails({ tripInfo, isHost, t }: { tripInfo: TripInfo; isHost: boolean; t: TFunction }) {
+
+	
   const rejectedByHost = tripInfo.rejectedBy.toLowerCase() === tripInfo.hostAddress.toLowerCase();
   const rejectedByText = rejectedByHost
     ? isHost

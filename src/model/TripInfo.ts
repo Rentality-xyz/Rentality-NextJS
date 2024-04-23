@@ -79,6 +79,11 @@ export const getTripStatusFromContract = (status: number) => {
 export type TripInfo = {
   tripId: number;
   carId: number;
+  carDescription: string,
+  carDoorsNumber: number,
+  carSeatsNumber: number,
+  carTransmission: string,
+  carColor : string,
   image: string;
   brand: string;
   model: string;
@@ -117,6 +122,11 @@ export type TripInfo = {
   guestPhotoUrl: string;
   hostPhotoUrl: string;
   timeZoneId: string;
+  pricePerDayInUsdCents: number;
+  totalDayPriceInUsd: number;
+  taxPriceInUsd: number;
+  depositInUsd: number;
+  currencyRate: number;
 };
 
 export const getBatteryChargeFromDiffs = (fuelDiffsInPercents: number, fullBatteryChargePriceInUsdCents: number) => {

@@ -29,6 +29,7 @@ export default function History() {
                     changeStatusCallback={changeStatusCallback}
                     disableButton={true}
                     isHost={false}
+                    showMoreInfo={true}
                     t={t}
                   />
                 );
