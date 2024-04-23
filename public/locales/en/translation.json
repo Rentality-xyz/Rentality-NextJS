@@ -291,7 +291,7 @@
     "overmile_price": "Overmile price:",
     "overmile_charge": "Overmile charge:",
     "history_title": "History",
-    "history_no_trips": "You don't have any booked trips",
+    "history_no_trips": "You don't have any history.",
     "details": {
       "title": "Trip #{{tripId, string}} details",
       "tripId": "Trip id:",
