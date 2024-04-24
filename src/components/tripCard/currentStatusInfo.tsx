@@ -40,8 +40,8 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean, t: TFuncti
               : "booked.status_trip_started_host_ended",
             {
               date: isInTheFuture(tripInfo.tripEnd)
-                ? moment(tripInfo.tripEnd).toNow()
-                : moment(tripInfo.tripEnd).fromNow(),
+                ? moment(tripInfo.tripEnd).fromNow()
+                : moment(tripInfo.tripEnd).toNow(),
               returnObjects: true,
             } as const
           )
@@ -51,8 +51,8 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean, t: TFuncti
               : "booked.status_trip_started_guest_ended",
             {
               date: isInTheFuture(tripInfo.tripEnd)
-                ? moment(tripInfo.tripEnd).toNow()
-                : moment(tripInfo.tripEnd).fromNow(),
+                ? moment(tripInfo.tripEnd).fromNow()
+                : moment(tripInfo.tripEnd).toNow(),
               returnObjects: true,
             } as const
           );
