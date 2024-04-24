@@ -1,15 +1,5 @@
-import {
-  Snackbar,
-  Alert,
-  Backdrop,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  DialogContentText,
-} from "@mui/material";
+import { Snackbar, Alert, Dialog, DialogContent, DialogActions, DialogContentText } from "@mui/material";
 import { DialogState } from "@/model/ui/dialogState";
-import RntButton from "./rntButton";
 
 export default function RntDialogs({ state, hide }: { state: DialogState; hide: () => void }) {
   if (state.isDialog)
@@ -36,7 +26,7 @@ export default function RntDialogs({ state, hide }: { state: DialogState; hide: 
               color: "#fff",
             }}
           >
-            {state.message}
+            {state.customForm ? state.customForm : state.message}
           </DialogContentText>
         </DialogContent>
         <DialogActions
