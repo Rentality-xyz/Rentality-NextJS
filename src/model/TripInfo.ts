@@ -115,6 +115,7 @@ export type TripInfo = {
   rejectedDate: Date | undefined;
   createdDateTime: Date;
   checkedInByHostDateTime: Date;
+  checkedInByGuestDateTime: Date;
   checkedOutByGuestDateTime: Date;
   checkedOutByHostDateTime: Date;
   guestPhotoUrl: string;
