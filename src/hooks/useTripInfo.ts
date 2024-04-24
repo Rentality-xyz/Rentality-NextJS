@@ -8,7 +8,7 @@ import { TripInfo } from "@/model/TripInfo";
 const useTripInfo = (tripId: bigint) => {
   const rentalityContract = useRentality();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
-  const [tripInfo, setTripInfo] = useState<TripInfo>({});
+  const [tripInfo, setTripInfo] = useState<TripInfo | null>(null);
 
   const getTrip = async (rentalityContract: IRentalityContract, tripId: bigint) => {
     try {
@@ -34,7 +34,7 @@ const useTripInfo = (tripId: bigint) => {
 
     getTrip(rentalityContract, tripId)
       .then((data) => {
-        setTripInfo(data ?? {});
+        setTripInfo(data ?? null);
         setIsLoading(false);
       })
       .catch(() => setIsLoading(false));

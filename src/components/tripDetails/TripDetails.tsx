@@ -25,7 +25,8 @@ export default function TripInfo({ tripId, t }: { tripId: bigint; t: TFunctionNe
     return t("booked.details." + name, options);
   };
 
-  if (tripId == null || tripId === BigInt(0)) return null;
+  if (tripId == null || tripId === BigInt(0) || tripInfo == null) return null;
+
   const { refuelValue, refuelCharge } = getRefuelValueAndCharge(tripInfo, tripInfo.endFuelLevelInPercents);
 
   return (
