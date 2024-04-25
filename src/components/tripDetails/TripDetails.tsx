@@ -128,10 +128,6 @@ export default function TripInfo({ tripId, t }: { tripId: bigint; t: TFunctionNe
                       <td className="text-end">${tripInfo.taxPriceInUsd}</td>
                     </tr>
                     <tr>
-                      <td>{t_details("government_tax")}</td>
-                      <td className="text-end text-red-700">UNMAPPED</td>
-                    </tr>
-                    <tr>
                       <td className="pt-5">
                         <strong>{t_details("trip_total")}</strong>
                       </td>

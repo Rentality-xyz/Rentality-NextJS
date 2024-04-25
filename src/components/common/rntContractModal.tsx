@@ -5,6 +5,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import RntButton from "./rntButton";
 import { TripInfo } from "@/model/TripInfo";
+import moment from "moment";
+import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
+import { dateFormatLongMonthDateTime } from "@/utils/datetimeFormatters";
 
 export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint; tripInfo: TripInfo }) {
   const [open, setOpen] = React.useState(false);
@@ -90,7 +93,47 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                   </li>
                 </ol>
               </div>
-
+              <div className="flex flex-col m-4">
+				<div class="text-xl">BASIC AGREEMENT INFORMATION</div>
+				<div class="text-xl">GUEST INFORMATION</div>
+				<div class="">Guest name: {tripInfo.guestName}</div> 
+				<div class="">Driving license number: UNMAPPED</div>
+				<div class="">Driving license validity period: UNMAPPED</div>
+				<div class="">Guest insurance information: UNMAPPED</div>
+				<div class="">Insurance company name: UNMAPPED</div>
+				<div class="">Insurance policy number:  UNMAPPED</div>
+				<div class="text-xl">HOST (CAR OWNER OR AUTHORIZED REPRESENTATIVE) INFORMATION</div>
+				<div class="">Host name: {tripInfo.hostName}</div>
+				<div class="">Driving license number: UNMAPPED</div>
+				<div class="">Driving license validity period: UNMAPPED</div>
+				<div class="text-xl">VEHICLE INFORMATION</div>
+				<div class="">Vehicle Brand and Model: {tripInfo.brand} {tripInfo.model}</div>
+				<div class="">Year of manufacture: {tripInfo.year}</div>
+				<div class="">License plate: {tripInfo.licensePlate}</div>
+				<div class="">VIN  UNMAPPED</div>
+				<div class="text-xl">TRIP SUMMARY</div>
+				<div class="">Reservation ID {tripId}</div>
+				<div class="">Booked ON: UNMAPPED</div>
+				<div class="">Trip days: {moment(tripInfo.tripEnd).diff(tripInfo.tripStart, "days")}</div>
+				<div class="">Price per day: ${displayMoneyWith2Digits(tripInfo.pricePerDayInUsd)}</div>
+				<div class="">Trip start: {dateFormatLongMonthDateTime(tripInfo.tripStart, tripInfo.timeZoneId)}</div>
+				<div class="">Trip end: {dateFormatLongMonthDateTime(tripInfo.tripEnd, tripInfo.timeZoneId)}</div>
+				<div class="">Pickup location: UNMAPPED</div>
+				<div class="">Return location: UNMAPPED</div>
+				<div class="">Primary driver: James Webb</div>
+				<div class="">Miles included: {tripInfo.milesIncludedPerDay} per day</div>
+				<div class="text-xl">TRANSACTION INFORMATION</div>
+				<div class="">Transaction currency: ETH</div>
+				<div class="">Currency rate ETH to USD: {tripInfo.currencyRate}</div>
+				<div class="">Trip price: ETH {tripInfo.totalDayPriceInUsd / tripInfo.currencyRate} (USD {displayMoneyWith2Digits(tripInfo.totalDayPriceInUsd)})</div>             
+				<div class="">Discount	ETH { (tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithDiscountInUsd) / tripInfo.currencyRate } (USD {displayMoneyWith2Digits(tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithDiscountInUsd)})</div>
+				<div class="">Sales Tax: ETH {tripInfo.taxPriceInUsd / tripInfo.currencyRate} (USD {tripInfo.taxPriceInUsd}) </div>   
+				<div class="">Total charge: ETH {(tripInfo.totalPriceWithDiscountInUsd + tripInfo.taxPriceInUsd)/tripInfo.currencyRate} (USD {displayMoneyWith2Digits(tripInfo.totalPriceWithDiscountInUsd + tripInfo.taxPriceInUsd)})</div>                
+				<div class="text-xl">Additional transactions </div>
+				<div class="">Security deposit: ETH {tripInfo.depositInUsd / tripInfo.currencyRate} (USD {displayMoneyWith2Digits(tripInfo.depositInUsd)})</div>
+				<div class="">Price per 1 overmile: ETH {tripInfo.overmilePrice/tripInfo.currencyRate} (USD {tripInfo.overmilePrice})</div>
+				<div class="">Price per 1 gallon or 10% battery recharge: ETH {tripInfo.fuelPricePerGal/tripInfo.currencyRate} (USD {tripInfo.fuelPricePerGal})</div>
+			  </div>
               <div className="flex flex-col m-4">
                 The person identified as “Guest” and the person identified as “Host” on the Basic Agreement Information
                 above were connected online through a website or mobile application provided by Rentality (collectively,
