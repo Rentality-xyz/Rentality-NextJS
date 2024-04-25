@@ -116,7 +116,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                 <div className="text-xl">TRIP SUMMARY</div>
                 <div className="">Reservation ID {tripInfo.tripId}</div>
                 <div className="">
-                  Booked ON: {dateFormatLongMonthDateTime(tripInfo.createdDateTime, tripInfo.timeZoneId)}
+                  Booked ON: {dateFormatLongMonthDateTime(tripInfo.approvedDateTime, tripInfo.timeZoneId)}
                 </div>
                 <div className="">Trip days: {moment(tripInfo.tripEnd).diff(tripInfo.tripStart, "days")}</div>
                 <div className="">Price per day: ${displayMoneyWith2Digits(tripInfo.pricePerDayInUsd)}</div>

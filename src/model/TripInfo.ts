@@ -88,6 +88,7 @@ export type TripInfo = {
   rejectedBy: string;
   rejectedDate: Date | undefined;
   createdDateTime: Date;
+  approvedDateTime: Date;
   checkedInByHostDateTime: Date;
   checkedInByGuestDateTime: Date;
   checkedOutByGuestDateTime: Date;
