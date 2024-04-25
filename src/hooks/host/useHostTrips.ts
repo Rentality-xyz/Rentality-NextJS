@@ -58,7 +58,7 @@ const useHostTrips = () => {
       }
     };
 
-    const checkInTrip = async (tripId: bigint, params: string[]) => {
+    const checkInTrip = async (tripId: bigint, params: string[], insuranceCompany: string, insuranceNumber: string) => {
       if (!rentalityContract) {
         console.error("checkInTrip error: rentalityContract is null");
         return false;
@@ -68,7 +68,7 @@ const useHostTrips = () => {
         const startFuelLevelInPercents = BigInt(Number(params[0]) * 100);
         const startOdometr = BigInt(params[1]);
 
-        const transaction = await rentalityContract.checkInByHost(tripId, [startFuelLevelInPercents, startOdometr]);
+        const transaction = await rentalityContract.checkInByHost(tripId, [startFuelLevelInPercents, startOdometr], insuranceCompany, insuranceNumber);
         await transaction.wait();
         return true;
       } catch (e) {

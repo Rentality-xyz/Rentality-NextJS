@@ -6,6 +6,7 @@ import twitter from "../../images/ic_twitter.svg";
 import discord from "../../images/ic-discord-50.png";
 import email from "../../images/ic-email-50.png";
 import telegram from "../../images/ic_telegram.svg";
+import mirror from "../../images/ic_mirror_logo.svg";
 import Link from "next/link";
 
 export default function Footer() {
@@ -61,29 +62,33 @@ export default function Footer() {
               <div>info@rentality.xyz</div>
             </a>
 
-            <div className="flex mt-2 w-[232px]">
+            <div className="flex mt-1.5 w-[232px]">
               <a
                 href="https://www.linkedin.com/company/rentalitycorp/?viewAsMember=true"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Image src={linkedin} alt="" className="w-[30px]" />
+                <Image src={linkedin} alt="" className="w-[30px] mt-0.5" />
               </a>
 
               <a href="https://twitter.com/Rentality_Info" target="_blank" rel="noopener noreferrer">
-                <Image src={twitter} alt="" className="ml-3 w-[22px] mt-1" />
+                <Image src={twitter} alt="" className="ml-3 w-[22px] mt-1.5" />
               </a>
 
               <a href="https://discord.gg/rentality" target="_blank" rel="noopener noreferrer">
-                <Image src={discord} alt="" className="ml-3 w-[30px]" />
+                <Image src={discord} alt="" className="ml-3 w-[30px] mt-0.5" />
               </a>
 
               <a href="mailto:info@rentality.xyz" className="lg:hidden">
-                <Image src={email} alt="" className="ml-3 w-[30px]" />
+                <Image src={email} alt="" className="ml-3 w-[30px] mt-0.5" />
               </a>
 
               <a href="https://t.me/rentality_xyz" target="_blank" rel="noopener noreferrer">
-                <Image src={telegram} alt="" className="ml-3 w-[30px]" />
+                <Image src={telegram} alt="" className="ml-3 w-[30px] mt-0.5" />
+              </a>
+
+              <a href="https://mirror.xyz/0x263660F0ab0014e956d42f85DccD918bBa2Df587" target="_blank" rel="noopener noreferrer">
+                <Image src={mirror} alt="" className="ml-1 w-[36px]" />
               </a>
             </div>
           </div>

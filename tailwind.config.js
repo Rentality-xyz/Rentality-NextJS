@@ -74,6 +74,7 @@ module.exports = {
       screens: {
         sm_inverted: "736px",
         "1xl": "1308px",
+        '3xl': '1624px'
       },
     },
   },

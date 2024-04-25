@@ -128,6 +128,8 @@ export type TripInfo = {
   resolveAmountInUsd: number;
   depositReturnedInUsd: number;
   currencyRate: number;
+  insuranceCompany: string;
+  insuranceNumber: string;
 };
 
 export const getBatteryChargeFromDiffs = (fuelDiffsInPercents: number, fullBatteryChargePriceInUsdCents: number) => {
@@ -149,7 +151,7 @@ export type AllowedChangeTripAction = {
   text: string;
   readonly: boolean;
   params: ChangeTripParams[];
-  action: (tripId: bigint, params: string[]) => Promise<boolean>;
+  action: (tripId: bigint, params: string[], insuranceCompany: string, insuranceNumber: string) => Promise<boolean>;
 };
 
 export type ChangeTripParams = {
