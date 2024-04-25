@@ -94,46 +94,72 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                 </ol>
               </div>
               <div className="flex flex-col m-4">
-				<div class="text-xl">BASIC AGREEMENT INFORMATION</div>
-				<div class="text-xl">GUEST INFORMATION</div>
-				<div class="">Guest name: {tripInfo.guestName}</div> 
-				<div class="">Driving license number: UNMAPPED</div>
-				<div class="">Driving license validity period: UNMAPPED</div>
-				<div class="">Guest insurance information: UNMAPPED</div>
-				<div class="">Insurance company name: UNMAPPED</div>
-				<div class="">Insurance policy number:  UNMAPPED</div>
-				<div class="text-xl">HOST (CAR OWNER OR AUTHORIZED REPRESENTATIVE) INFORMATION</div>
-				<div class="">Host name: {tripInfo.hostName}</div>
-				<div class="">Driving license number: UNMAPPED</div>
-				<div class="">Driving license validity period: UNMAPPED</div>
-				<div class="text-xl">VEHICLE INFORMATION</div>
-				<div class="">Vehicle Brand and Model: {tripInfo.brand} {tripInfo.model}</div>
-				<div class="">Year of manufacture: {tripInfo.year}</div>
-				<div class="">License plate: {tripInfo.licensePlate}</div>
-				<div class="">VIN  UNMAPPED</div>
-				<div class="text-xl">TRIP SUMMARY</div>
-				<div class="">Reservation ID {tripId}</div>
-				<div class="">Booked ON: UNMAPPED</div>
-				<div class="">Trip days: {moment(tripInfo.tripEnd).diff(tripInfo.tripStart, "days")}</div>
-				<div class="">Price per day: ${displayMoneyWith2Digits(tripInfo.pricePerDayInUsd)}</div>
-				<div class="">Trip start: {dateFormatLongMonthDateTime(tripInfo.tripStart, tripInfo.timeZoneId)}</div>
-				<div class="">Trip end: {dateFormatLongMonthDateTime(tripInfo.tripEnd, tripInfo.timeZoneId)}</div>
-				<div class="">Pickup location: UNMAPPED</div>
-				<div class="">Return location: UNMAPPED</div>
-				<div class="">Primary driver: James Webb</div>
-				<div class="">Miles included: {tripInfo.milesIncludedPerDay} per day</div>
-				<div class="text-xl">TRANSACTION INFORMATION</div>
-				<div class="">Transaction currency: ETH</div>
-				<div class="">Currency rate ETH to USD: {tripInfo.currencyRate}</div>
-				<div class="">Trip price: ETH {tripInfo.totalDayPriceInUsd / tripInfo.currencyRate} (USD {displayMoneyWith2Digits(tripInfo.totalDayPriceInUsd)})</div>             
-				<div class="">Discount	ETH { (tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithDiscountInUsd) / tripInfo.currencyRate } (USD {displayMoneyWith2Digits(tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithDiscountInUsd)})</div>
-				<div class="">Sales Tax: ETH {tripInfo.taxPriceInUsd / tripInfo.currencyRate} (USD {tripInfo.taxPriceInUsd}) </div>   
-				<div class="">Total charge: ETH {(tripInfo.totalPriceWithDiscountInUsd + tripInfo.taxPriceInUsd)/tripInfo.currencyRate} (USD {displayMoneyWith2Digits(tripInfo.totalPriceWithDiscountInUsd + tripInfo.taxPriceInUsd)})</div>                
-				<div class="text-xl">Additional transactions </div>
-				<div class="">Security deposit: ETH {tripInfo.depositInUsd / tripInfo.currencyRate} (USD {displayMoneyWith2Digits(tripInfo.depositInUsd)})</div>
-				<div class="">Price per 1 overmile: ETH {tripInfo.overmilePrice/tripInfo.currencyRate} (USD {tripInfo.overmilePrice})</div>
-				<div class="">Price per 1 gallon or 10% battery recharge: ETH {tripInfo.fuelPricePerGal/tripInfo.currencyRate} (USD {tripInfo.fuelPricePerGal})</div>
-			  </div>
+                <div className="text-xl">BASIC AGREEMENT INFORMATION</div>
+                <div className="text-xl">GUEST INFORMATION</div>
+                <div className="">Guest name: {tripInfo.guestName}</div>
+                <div className="">Driving license number: UNMAPPED</div>
+                <div className="">Driving license validity period: UNMAPPED</div>
+                <div className="">Guest insurance information: UNMAPPED</div>
+                <div className="">Insurance company name: UNMAPPED</div>
+                <div className="">Insurance policy number: UNMAPPED</div>
+                <div className="text-xl">HOST (CAR OWNER OR AUTHORIZED REPRESENTATIVE) INFORMATION</div>
+                <div className="">Host name: {tripInfo.hostName}</div>
+                <div className="">Driving license number: UNMAPPED</div>
+                <div className="">Driving license validity period: UNMAPPED</div>
+                <div className="text-xl">VEHICLE INFORMATION</div>
+                <div className="">
+                  Vehicle Brand and Model: {tripInfo.brand} {tripInfo.model}
+                </div>
+                <div className="">Year of manufacture: {tripInfo.year}</div>
+                <div className="">License plate: {tripInfo.licensePlate}</div>
+                <div className="">VIN UNMAPPED</div>
+                <div className="text-xl">TRIP SUMMARY</div>
+                <div className="">Reservation ID {tripInfo.tripId}</div>
+                <div className="">Booked ON: UNMAPPED</div>
+                <div className="">Trip days: {moment(tripInfo.tripEnd).diff(tripInfo.tripStart, "days")}</div>
+                <div className="">Price per day: ${displayMoneyWith2Digits(tripInfo.pricePerDayInUsd)}</div>
+                <div className="">
+                  Trip start: {dateFormatLongMonthDateTime(tripInfo.tripStart, tripInfo.timeZoneId)}
+                </div>
+                <div className="">Trip end: {dateFormatLongMonthDateTime(tripInfo.tripEnd, tripInfo.timeZoneId)}</div>
+                <div className="">Pickup location: UNMAPPED</div>
+                <div className="">Return location: UNMAPPED</div>
+                <div className="">Primary driver: James Webb</div>
+                <div className="">Miles included: {tripInfo.milesIncludedPerDay} per day</div>
+                <div className="text-xl">TRANSACTION INFORMATION</div>
+                <div className="">Transaction currency: ETH</div>
+                <div className="">Currency rate ETH to USD: {tripInfo.currencyRate}</div>
+                <div className="">
+                  Trip price: ETH {tripInfo.totalDayPriceInUsd / tripInfo.currencyRate} (USD{" "}
+                  {displayMoneyWith2Digits(tripInfo.totalDayPriceInUsd)})
+                </div>
+                <div className="">
+                  Discount ETH{" "}
+                  {(tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithDiscountInUsd) / tripInfo.currencyRate} (USD{" "}
+                  {displayMoneyWith2Digits(tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithDiscountInUsd)})
+                </div>
+                <div className="">
+                  Sales Tax: ETH {tripInfo.taxPriceInUsd / tripInfo.currencyRate} (USD {tripInfo.taxPriceInUsd}){" "}
+                </div>
+                <div className="">
+                  Total charge: ETH{" "}
+                  {(tripInfo.totalPriceWithDiscountInUsd + tripInfo.taxPriceInUsd) / tripInfo.currencyRate} (USD{" "}
+                  {displayMoneyWith2Digits(tripInfo.totalPriceWithDiscountInUsd + tripInfo.taxPriceInUsd)})
+                </div>
+                <div className="text-xl">Additional transactions </div>
+                <div className="">
+                  Security deposit: ETH {tripInfo.depositInUsd / tripInfo.currencyRate} (USD{" "}
+                  {displayMoneyWith2Digits(tripInfo.depositInUsd)})
+                </div>
+                <div className="">
+                  Price per 1 overmile: ETH {tripInfo.overmilePrice / tripInfo.currencyRate} (USD{" "}
+                  {tripInfo.overmilePrice})
+                </div>
+                <div className="">
+                  Price per 1 gallon or 10% battery recharge: ETH {tripInfo.fuelPricePerGal / tripInfo.currencyRate}{" "}
+                  (USD {tripInfo.fuelPricePerGal})
+                </div>
+              </div>
               <div className="flex flex-col m-4">
                 The person identified as “Guest” and the person identified as “Host” on the Basic Agreement Information
                 above were connected online through a website or mobile application provided by Rentality (collectively,
