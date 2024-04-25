@@ -6,16 +6,16 @@ import { TripStatus } from "@/model/blockchain/schemas";
 import { TFunction } from "@/utils/i18n";
 
 function СarDetails({ tripInfo, isHost, t }: { tripInfo: TripInfo; isHost: boolean; t: TFunction }) {
-  const rejectedByHost = tripInfo.rejectedBy.toLowerCase() === tripInfo.hostAddress.toLowerCase();
+  const rejectedByHost = tripInfo.rejectedBy.toLowerCase() === tripInfo.host.walletAddress.toLowerCase();
   const rejectedByText = rejectedByHost
     ? isHost
       ? t("common.you")
-      : tripInfo.hostName ?? t("common.host")
+      : tripInfo.host.name ?? t("common.host")
     : isHost
-      ? tripInfo.guestName ?? t("common.guest")
+      ? tripInfo.guest.name ?? t("common.guest")
       : t("common.you");
-  const otherUserPhotoUrl = isHost ? tripInfo.guestPhotoUrl : tripInfo.hostPhotoUrl;
-  const otherUserName = isHost ? tripInfo.guestName : tripInfo.hostName;
+  const otherUserPhotoUrl = isHost ? tripInfo.guest.photoUrl : tripInfo.host.photoUrl;
+  const otherUserName = isHost ? tripInfo.guest.name : tripInfo.host.name;
 
   return (
     <div

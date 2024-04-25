@@ -54,31 +54,11 @@ export const getTripStatusBgColorClassFromStatus = (status: TripStatus) => {
       return "bg-red-500";
   }
 };
-export const getTripStatusFromContract = (status: number) => {
-  switch (status) {
-    case 0:
-      return TripStatus.Pending;
-    case 1:
-      return TripStatus.Confirmed;
-    case 2:
-      return TripStatus.CheckedInByHost;
-    case 3:
-      return TripStatus.Started;
-    case 4:
-      return TripStatus.CheckedOutByGuest;
-    case 5:
-      return TripStatus.Finished;
-    case 6:
-      return TripStatus.Closed;
-    case 7:
-    default:
-      return TripStatus.Rejected;
-  }
-};
 
 export type TripInfo = {
   tripId: number;
   carId: number;
+  carVinNumber: string;
   carDescription: string;
   carDoorsNumber: number;
   carSeatsNumber: number;
@@ -105,12 +85,6 @@ export type TripInfo = {
   startOdometr: number;
   endOdometr: number;
   overmilePrice: number;
-  hostPhoneNumber: string;
-  guestPhoneNumber: string;
-  hostAddress: string;
-  hostName: string;
-  guestAddress: string;
-  guestName: string;
   rejectedBy: string;
   rejectedDate: Date | undefined;
   createdDateTime: Date;
@@ -118,8 +92,6 @@ export type TripInfo = {
   checkedInByGuestDateTime: Date;
   checkedOutByGuestDateTime: Date;
   checkedOutByHostDateTime: Date;
-  guestPhotoUrl: string;
-  hostPhotoUrl: string;
   timeZoneId: string;
   pricePerDayInUsd: number;
   totalDayPriceInUsd: number;
@@ -129,6 +101,26 @@ export type TripInfo = {
   resolveAmountInUsd: number;
   depositReturnedInUsd: number;
   currencyRate: number;
+
+  host: {
+    walletAddress: string;
+    name: string;
+    phoneNumber: string;
+    photoUrl: string;
+    drivingLicenseNumber: string;
+    drivingLicenseExpirationDate: string;
+  };
+
+  guest: {
+    walletAddress: string;
+    name: string;
+    phoneNumber: string;
+    photoUrl: string;
+    drivingLicenseNumber: string;
+    drivingLicenseExpirationDate: string;
+  };
+  guestInsuranceCompanyName: string;
+  guestInsurancePolicyNumber: string;
 };
 
 export const getBatteryChargeFromDiffs = (fuelDiffsInPercents: number, fullBatteryChargePriceInUsdCents: number) => {

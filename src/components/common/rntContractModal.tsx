@@ -96,34 +96,36 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
               <div className="flex flex-col m-4">
                 <div className="text-xl">BASIC AGREEMENT INFORMATION</div>
                 <div className="text-xl">GUEST INFORMATION</div>
-                <div className="">Guest name: {tripInfo.guestName}</div>
-                <div className="">Driving license number: UNMAPPED</div>
-                <div className="">Driving license validity period: UNMAPPED</div>
-                <div className="">Guest insurance information: UNMAPPED</div>
-                <div className="">Insurance company name: UNMAPPED</div>
-                <div className="">Insurance policy number: UNMAPPED</div>
+                <div className="">Guest name: {tripInfo.guest.name}</div>
+                <div className="">Driving license number: {tripInfo.guest.drivingLicenseNumber}</div>
+                <div className="">Driving license validity period: {tripInfo.guest.drivingLicenseExpirationDate}</div>
+                <div className="">Guest insurance information:</div>
+                <div className="">Insurance company name: {tripInfo.guestInsuranceCompanyName}</div>
+                <div className="">Insurance policy number: {tripInfo.guestInsurancePolicyNumber}</div>
                 <div className="text-xl">HOST (CAR OWNER OR AUTHORIZED REPRESENTATIVE) INFORMATION</div>
-                <div className="">Host name: {tripInfo.hostName}</div>
-                <div className="">Driving license number: UNMAPPED</div>
-                <div className="">Driving license validity period: UNMAPPED</div>
+                <div className="">Host name: {tripInfo.host.name}</div>
+                <div className="">Driving license number: {tripInfo.host.drivingLicenseNumber}</div>
+                <div className="">Driving license validity period: {tripInfo.host.drivingLicenseExpirationDate}</div>
                 <div className="text-xl">VEHICLE INFORMATION</div>
                 <div className="">
                   Vehicle Brand and Model: {tripInfo.brand} {tripInfo.model}
                 </div>
                 <div className="">Year of manufacture: {tripInfo.year}</div>
                 <div className="">License plate: {tripInfo.licensePlate}</div>
-                <div className="">VIN UNMAPPED</div>
+                <div className="">VIN {tripInfo.carVinNumber}</div>
                 <div className="text-xl">TRIP SUMMARY</div>
                 <div className="">Reservation ID {tripInfo.tripId}</div>
-                <div className="">Booked ON: UNMAPPED</div>
+                <div className="">
+                  Booked ON: {dateFormatLongMonthDateTime(tripInfo.createdDateTime, tripInfo.timeZoneId)}
+                </div>
                 <div className="">Trip days: {moment(tripInfo.tripEnd).diff(tripInfo.tripStart, "days")}</div>
                 <div className="">Price per day: ${displayMoneyWith2Digits(tripInfo.pricePerDayInUsd)}</div>
                 <div className="">
                   Trip start: {dateFormatLongMonthDateTime(tripInfo.tripStart, tripInfo.timeZoneId)}
                 </div>
                 <div className="">Trip end: {dateFormatLongMonthDateTime(tripInfo.tripEnd, tripInfo.timeZoneId)}</div>
-                <div className="">Pickup location: UNMAPPED</div>
-                <div className="">Return location: UNMAPPED</div>
+                <div className="">Pickup location: {tripInfo.locationStart}</div>
+                <div className="">Return location: {tripInfo.locationEnd}</div>
                 <div className="">Primary driver: James Webb</div>
                 <div className="">Miles included: {tripInfo.milesIncludedPerDay} per day</div>
                 <div className="text-xl">TRANSACTION INFORMATION</div>
