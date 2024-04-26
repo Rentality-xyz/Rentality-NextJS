@@ -15,6 +15,7 @@ import {
   ContractSearchCar,
   ContractSearchCarParams,
   ContractTripDTO,
+  ContractTripReceiptDTO,
   ContractUpdateCarInfoRequest,
 } from "./schemas";
 
@@ -72,6 +73,7 @@ export interface IRentalityContract {
   payClaim(claimId: bigint, value: object): Promise<ContractTransactionResponse>;
   getMyClaimsAsGuest(): Promise<ContractFullClaimInfo[]>;
   calculatePayments(carId: bigint, daysOfTrip: bigint, currency: string): Promise<ContractCalculatePaymentsDTO>;
+  confirmCheckOut(tripId: bigint): Promise<ContractTransactionResponse>;
 
   /// GENERAL functions
   address: string;
@@ -94,6 +96,12 @@ export interface IRentalityContract {
 
   //not using
   getAllCars(): Promise<ContractCarInfo[]>;
+
+  updateServiceAddresses(): Promise<ContractTransactionResponse>;
+  getTripReceipt(tripId: bigint): Promise<ContractTripReceiptDTO>;
+  getAvailableCars(): Promise<ContractCarInfo[]>;
+  getAvailableCarsForUser(user: string): Promise<ContractCarInfo[]>;
+  parseGeoResponse(carId: bigint): Promise<ContractTransactionResponse>;
 }
 
 export interface IRentalityAdminGateway {

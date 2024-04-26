@@ -76,6 +76,22 @@ const useGuestTrips = () => {
       }
     };
 
+    const confirmCheckOutTrip = async (tripId: bigint, params: string[]) => {
+      if (!rentalityContract) {
+        console.error("confirmCheckOutTrip error: rentalityContract is null");
+        return false;
+      }
+
+      try {
+        let transaction = await rentalityContract.confirmCheckOut(tripId);
+        await transaction.wait();
+        return true;
+      } catch (e) {
+        console.error("confirmCheckOutTrip error:" + e);
+        return false;
+      }
+    };
+
     const getAllowedActions = (tripStatus: TripStatus, trip: ContractTrip) => {
       const result: AllowedChangeTripAction[] = [];
 
@@ -84,6 +100,7 @@ const useGuestTrips = () => {
           result.push({
             text: "Reject",
             readonly: false,
+            isDisplay: true,
             params: [],
             action: rejectRequest,
           });
@@ -92,6 +109,7 @@ const useGuestTrips = () => {
           result.push({
             text: "Reject",
             readonly: false,
+            isDisplay: true,
             params: [],
             action: rejectRequest,
           });
@@ -100,6 +118,7 @@ const useGuestTrips = () => {
           result.push({
             text: "Start",
             readonly: true,
+            isDisplay: true,
             params: [
               {
                 text: "Fuel or battery level, %",
@@ -117,6 +136,7 @@ const useGuestTrips = () => {
           result.push({
             text: "Reject",
             readonly: false,
+            isDisplay: true,
             params: [],
             action: rejectRequest,
           });
@@ -125,6 +145,7 @@ const useGuestTrips = () => {
           result.push({
             text: "Finish",
             readonly: false,
+            isDisplay: true,
             params: [
               { text: "Fuel or battery level, %", value: "", type: "fuel" },
               { text: "Odometer", value: "", type: "text" },
@@ -133,6 +154,15 @@ const useGuestTrips = () => {
           });
           break;
         case TripStatus.CheckedOutByGuest:
+          break;
+        case TripStatus.CompletedWithoutGuestComfirmation:
+          result.push({
+            text: "Comfirm",
+            readonly: false,
+            isDisplay: false,
+            params: [],
+            action: confirmCheckOutTrip,
+          });
           break;
         case TripStatus.Finished:
           break;
@@ -162,10 +192,9 @@ const useGuestTrips = () => {
                     validateContractTripDTO(i);
                   }
                   const tripContactInfo = await rentalityContract.getTripContactInfo(i.trip.carId);
-                  const tripStatus = i.trip.status;
-                  
-				  const item = await mapTripDTOtoTripInfo (i, tripContactInfo);	
-				  item.allowedActions = getAllowedActions(tripStatus, i.trip);
+
+                  const item = await mapTripDTOtoTripInfo(i, tripContactInfo);
+                  item.allowedActions = getAllowedActions(item.status, i.trip);
 
                   return item;
                 })

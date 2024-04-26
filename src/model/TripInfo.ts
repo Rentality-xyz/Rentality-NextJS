@@ -23,6 +23,8 @@ export const getTripStatusTextFromStatus = (status: TripStatus) => {
       return "On the trip";
     case TripStatus.CheckedOutByGuest:
       return "Finished by guest";
+    case TripStatus.CompletedWithoutGuestComfirmation:
+      return "Completed without guest confirmation";
     case TripStatus.Finished:
       return "Finished";
     case TripStatus.Closed:
@@ -45,6 +47,8 @@ export const getTripStatusBgColorClassFromStatus = (status: TripStatus) => {
       return "bg-blue-800";
     case TripStatus.CheckedOutByGuest:
       return "bg-purple-600";
+    case TripStatus.CompletedWithoutGuestComfirmation:
+      return "bg-orange-400";
     case TripStatus.Finished:
       return "bg-purple-800";
     case TripStatus.Closed:
@@ -86,6 +90,8 @@ export type TripInfo = {
   endOdometr: number;
   overmilePrice: number;
   rejectedBy: string;
+  tripStartedBy: string;
+  tripFinishedBy: string;
   rejectedDate: Date | undefined;
   createdDateTime: Date;
   approvedDateTime: Date;
@@ -142,6 +148,7 @@ export const getRefuelValueAndCharge = (tripInfo: TripInfo, endFuelLevelInPercen
 export type AllowedChangeTripAction = {
   text: string;
   readonly: boolean;
+  isDisplay: boolean;
   params: ChangeTripParams[];
   action: (tripId: bigint, params: string[]) => Promise<boolean>;
 };

@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react";
 import { TripInfo, AllowedChangeTripAction } from "@/model/TripInfo";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
-import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
-import { ContractTrip, ContractTripDTO, EngineType, TripStatus } from "@/model/blockchain/schemas";
+import { ContractTrip, ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
-import { isEmpty } from "@/utils/string";
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { mapTripDTOtoTripInfo } from "@/model/utils/TripDTOtoTripInfo";
 
 const useHostTrips = () => {
@@ -120,12 +116,14 @@ const useHostTrips = () => {
           result.push({
             text: "Confirm",
             readonly: false,
+            isDisplay: true,
             params: [],
             action: acceptRequest,
           });
           result.push({
             text: "Reject",
             readonly: false,
+            isDisplay: true,
             params: [],
             action: rejectRequest,
           });
@@ -134,6 +132,7 @@ const useHostTrips = () => {
           result.push({
             text: "Start",
             readonly: false,
+            isDisplay: true,
             params: [
               { text: "Fuel or battery level, %", value: "", type: "fuel" },
               { text: "Odometer", value: "", type: "text" },
@@ -142,13 +141,34 @@ const useHostTrips = () => {
           });
           break;
         case TripStatus.CheckedInByHost:
+          result.push({
+            text: "Finish",
+            readonly: false,
+            isDisplay: false,
+            params: [
+              { text: "Fuel or battery level, %", value: "", type: "fuel" },
+              { text: "Odometer", value: "", type: "text" },
+            ],
+            action: checkOutTrip,
+          });
           break;
         case TripStatus.Started:
+          result.push({
+            text: "Finish",
+            readonly: false,
+            isDisplay: false,
+            params: [
+              { text: "Fuel or battery level, %", value: "", type: "fuel" },
+              { text: "Odometer", value: "", type: "text" },
+            ],
+            action: checkOutTrip,
+          });
           break;
         case TripStatus.CheckedOutByGuest:
           result.push({
             text: "Finish",
             readonly: true,
+            isDisplay: true,
             params: [
               {
                 text: "Fuel or battery level, %",
@@ -168,6 +188,7 @@ const useHostTrips = () => {
           result.push({
             text: "Complete",
             readonly: false,
+            isDisplay: true,
             params: [],
             action: finishTrip,
           });
@@ -199,10 +220,9 @@ const useHostTrips = () => {
                   }
 
                   const tripContactInfo = await rentalityContract.getTripContactInfo(i.trip.carId);
-                  const tripStatus = i.trip.status;
 
                   const item = await mapTripDTOtoTripInfo(i, tripContactInfo);
-                  item.allowedActions = getAllowedActions(tripStatus, i.trip);
+                  item.allowedActions = getAllowedActions(item.status, i.trip);
 
                   return item;
                 })

@@ -339,6 +339,7 @@ export const TripStatus = {
   Finished: BigInt(5), //CheckedOutByHost
   Closed: BigInt(6), //Finished
   Rejected: BigInt(7), //Canceled
+  CompletedWithoutGuestComfirmation: BigInt(100), //Finished
 };
 
 export type ClaimType = bigint;

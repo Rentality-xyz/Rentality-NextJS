@@ -33,7 +33,10 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
     timeZoneId: timeZoneId,
     overmilePrice: Number(i.trip.pricePerDayInUsdCents) / Number(i.trip.milesIncludedPerDay) / 100,
 
-    status: i.trip.status,
+    status:
+      i.trip.status === TripStatus.Finished && i.trip.tripFinishedBy.toLowerCase() === i.trip.host.toLowerCase()
+        ? TripStatus.CompletedWithoutGuestComfirmation
+        : i.trip.status,
     tripStart: getDateFromBlockchainTimeWithTZ(i.trip.startDateTime, timeZoneId),
     tripEnd: getDateFromBlockchainTimeWithTZ(i.trip.endDateTime, timeZoneId),
     locationStart: i.trip.startLocation,
@@ -45,6 +48,8 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
     endOdometr: Number(i.trip.endParamLevels[1]),
 
     rejectedBy: i.trip.rejectedBy,
+    tripStartedBy: i.trip.tripStartedBy,
+    tripFinishedBy: i.trip.tripFinishedBy,
     rejectedDate:
       i.trip.rejectedDateTime > 0 ? getDateFromBlockchainTimeWithTZ(i.trip.rejectedDateTime, timeZoneId) : undefined,
     createdDateTime: getDateFromBlockchainTimeWithTZ(i.trip.createdDateTime, timeZoneId),
@@ -82,9 +87,9 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
 
     resolveAmountInUsd: Number(i.trip.paymentInfo.resolveAmountInUsdCents) / 100.0,
     depositReturnedInUsd:
-      i.trip.status < TripStatus.Closed
-        ? 0
-        : Number(i.trip.paymentInfo.depositInUsdCents - i.trip.paymentInfo.resolveAmountInUsdCents) / 100.0,
+      i.trip.status === TripStatus.Closed || i.trip.status === TripStatus.Rejected
+        ? Number(i.trip.paymentInfo.depositInUsdCents - i.trip.paymentInfo.resolveAmountInUsdCents) / 100.0
+        : 0,
 
     currencyRate: Number(i.trip.paymentInfo.currencyRate) / 10 ** Number(i.trip.paymentInfo.currencyDecimals),
   };
