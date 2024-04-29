@@ -237,18 +237,23 @@
       "",
       "Please wait for the host start a trip or you can cancel with cancelation fee 50% of the daily rate"
     ],
-    "status_check_in_host": [
+    "status_check_in_host_host": [
+      "You started the trip from your side at {{date, string}}",
+      "Expect the guest checked-in",
+      ""
+    ],
+    "status_check_in_host_guest": [
       "Checked-in by Host at {{date, string}}",
       "Let`s you check-in!",
       "Start the trip from your side, or you can cancel with a cancellation fee of 100% of the daily rate"
     ],
     "status_trip_started_host_ended": [
-      "Now on the trip. The trip ended {{date, string}}",
+      "Guest started at {{startDate, string}}. \nNow on the trip. \nThe trip ended {{date, string}}",
       "",
       "Wait for the Guest to finish the trip first and then complete on your sides"
     ],
     "status_trip_started_host_ends": [
-      "Now on the trip. The trip ends in {{date, string}}",
+      "Guest started at {{startDate, string}}. \nNow on the trip. \nThe trip ends {{date, string}}",
       "",
       "Wait for the Guest to finish the trip first and then complete on your sides"
     ],
@@ -266,6 +271,16 @@
       "Checked-out by Guest at {{date, string}}",
       "Let`s you check-out!",
       "Finish the trip from your side and then complete the order"
+    ],
+    "status_completed_without_guest_host": [
+      "You finished the trip without guest confirmation at {{date, string}}",
+      "To receive earnings, the guest must confirm finish trip",
+      "Contact the guest if necessary"
+    ],
+    "status_completed_without_guest_guest": [
+      "Host finished the trip without guest confirmation at {{date, string}}",
+      "Please confirm finish trip!",
+      "If you have any questions please contact the host"
     ],
     "status_finished": [
       "You finished the trip at {{date, string}}",
