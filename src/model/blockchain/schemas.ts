@@ -110,6 +110,8 @@ export type ContractTrip = {
   createdDateTime: bigint;
   approvedDateTime: bigint;
   rejectedDateTime: bigint;
+  guestInsuranceCompanyName: string;
+  guestInsurancePolicyNumber: string;
   rejectedBy: string;
   checkedInByHostDateTime: bigint;
   startParamLevels: bigint[];
@@ -128,6 +130,10 @@ export type ContractTripDTO = {
   hostPhotoUrl: string;
   metadataURI: string;
   timeZoneId: string;
+  hostDrivingLicenseNumber: string;
+  hostDrivingLicenseExpirationDate: bigint;
+  guestDrivingLicenseNumber: string;
+  guestDrivingLicenseExpirationDate: bigint;
 };
 
 export type ContractChatInfo = {
@@ -179,6 +185,8 @@ export type ContractClaim = {
   payDateInSec: bigint;
   rejectedBy: string;
   rejectedDateInSec: bigint;
+  photosUrl: string;
+  isHostClaims: boolean;
 };
 
 export type ContractCreateClaimRequest = {
@@ -186,6 +194,7 @@ export type ContractCreateClaimRequest = {
   claimType: ClaimType;
   description: string;
   amountInUsdCents: bigint;
+  photosUrl: string;
 };
 
 export type ContractParsedGeolocationData = {
@@ -347,11 +356,13 @@ export const ClaimType = {
   Tolls: BigInt(0),
   Tickets: BigInt(1),
   LateReturn: BigInt(2),
-  Cleanliness: BigInt(3),
-  Smoking: BigInt(4),
+  Smoking: BigInt(3),
+  Cleanliness: BigInt(4),
   ExteriorDamage: BigInt(5),
   InteriorDamage: BigInt(6),
   Other: BigInt(7),
+  FaultyVehicle: BigInt(8),
+  ListingMismatch: BigInt(9),
 };
 
 export type ClaimStatus = bigint;
