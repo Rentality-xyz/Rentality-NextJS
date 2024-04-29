@@ -1,4 +1,4 @@
-import { MutableRefObject, memo, useState } from "react";
+import React, { MutableRefObject, memo, useState } from "react";
 import { TripInfo, getRefuelValueAndCharge } from "@/model/TripInfo";
 import Checkbox from "../common/checkbox";
 import { calculateDays } from "@/utils/date";
@@ -12,6 +12,7 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { isEmpty } from "@/utils/string";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
+import AllowedActionsForStatusConfirmed from "../host/allowedActionsForStatusConfirmed";
 
 function TripAdditionalActions({
   tripInfo,
@@ -78,7 +79,13 @@ function TripAdditionalActions({
           </strong>
         </div>
 
-        {tripInfo.status === TripStatus.Started || tripInfo.status === TripStatus.CheckedInByHost ? (
+        {tripInfo.status === TripStatus.Confirmed ? (
+          <AllowedActionsForStatusConfirmed
+            params={tripInfo.allowedActions[0].params}
+            inputParams={inputParams}
+            setInputParams={setInputParams}
+          />
+        ) : tripInfo.status === TripStatus.Started || tripInfo.status === TripStatus.CheckedInByHost ? (
           <AllowedActionsForStatusStarted
             tripInfo={tripInfo}
             params={tripInfo.allowedActions[0].params}
@@ -181,7 +188,6 @@ function TripAdditionalActions({
             })}
           </div>
         )}
-
         <div className="flex flex-row gap-4">
           {tripInfo.allowedActions.map((action) => {
             return (

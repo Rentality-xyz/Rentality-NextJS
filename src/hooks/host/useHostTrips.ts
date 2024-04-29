@@ -63,8 +63,15 @@ const useHostTrips = () => {
       try {
         const startFuelLevelInPercents = BigInt(Number(params[0]) * 100);
         const startOdometr = BigInt(params[1]);
+        const insuranceCompany = params[2];
+        const insuranceNumber = params[3];
 
-        const transaction = await rentalityContract.checkInByHost(tripId, [startFuelLevelInPercents, startOdometr]);
+        const transaction = await rentalityContract.checkInByHost(
+          tripId,
+          [startFuelLevelInPercents, startOdometr],
+          insuranceCompany,
+          insuranceNumber
+        );
         await transaction.wait();
         return true;
       } catch (e) {
@@ -136,6 +143,8 @@ const useHostTrips = () => {
             params: [
               { text: "Fuel or battery level, %", value: "", type: "fuel" },
               { text: "Odometer", value: "", type: "text" },
+              { text: "Insurance company name", value: "", type: "text" },
+              { text: "Insurance policy number", value: "", type: "text" },
             ],
             action: checkInTrip,
           });
