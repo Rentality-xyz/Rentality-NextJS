@@ -4,14 +4,21 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
 import { Claim, getClaimStatusTextFromStatus, getClaimTypeTextFromClaimType } from "@/model/Claim";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { ContractFullClaimInfo } from "@/model/blockchain/schemas";
+import {ContractCreateClaimRequest, ContractFullClaimInfo} from "@/model/blockchain/schemas";
 import { validateContractFullClaimInfo } from "@/model/blockchain/schemas_utils";
+import {CreateClaimRequest, TripInfoForClaimCreation} from "@/model/CreateClaimRequest";
+import encodeClaimChatMessage from "@/components/chat/utils";
+import {useChat} from "@/contexts/chatContext";
 
 const useGuestClaims = () => {
   const ethereumInfo = useEthereum();
   const rentalityContract = useRentality();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [claims, setClaims] = useState<Claim[]>([]);
+  const chatContextInfo = useChat();
+  const [tripInfos, setTripInfos] = useState<TripInfoForClaimCreation[]>([
+    { tripId: 0, guestAddress: "", tripDescription: "Loading...", tripStart: new Date() },
+  ]);
 
   const payClaim = async (claimId: number) => {
     if (!ethereumInfo) {
@@ -34,6 +41,32 @@ const useGuestClaims = () => {
       return true;
     } catch (e) {
       console.error("payClaim error:" + e);
+      return false;
+    }
+  };
+
+  const createClaim = async (createClaimRequest: CreateClaimRequest) => {
+    if (rentalityContract === null) {
+      console.error("createClaim: rentalityContract is null");
+      return false;
+    }
+
+    try {
+      const claimRequest: ContractCreateClaimRequest = {
+        tripId: BigInt(createClaimRequest.tripId),
+        claimType: createClaimRequest.claimType,
+        description: createClaimRequest.description,
+        amountInUsdCents: BigInt(createClaimRequest.amountInUsdCents),
+      };
+
+      const transaction = await rentalityContract.createClaim(claimRequest);
+      await transaction.wait();
+
+      const message = encodeClaimChatMessage(createClaimRequest);
+      chatContextInfo.sendMessage(createClaimRequest.guestAddress, createClaimRequest.tripId, message);
+      return true;
+    } catch (e) {
+      console.error("createClaim error:" + e);
       return false;
     }
   };
@@ -102,7 +135,13 @@ const useGuestClaims = () => {
     });
   }, [claims]);
 
-  return [isLoading, sortedClaims, payClaim] as const;
+  const sortedTripInfos = useMemo(() => {
+    return [...tripInfos].sort((a, b) => {
+      return b.tripStart.getTime() - a.tripStart.getTime();
+    });
+  }, [tripInfos]);
+
+  return [isLoading, sortedClaims, sortedTripInfos, payClaim, createClaim] as const;
 };
 
 export default useGuestClaims;

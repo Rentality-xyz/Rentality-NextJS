@@ -9,6 +9,13 @@ import Link from "next/link";
 import { isEmpty } from "@/utils/string";
 import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
 import { ClaimType } from "@/model/blockchain/schemas";
+import RntFileButton from "@/components/common/rntFileButton";
+import {t} from "i18next";
+import {resizeImage} from "@/utils/image";
+import Image from "next/image";
+import mirror from "../../images/ic_mirror_logo.svg";
+import ClaimAddPhoto from "@/components/claims/claimAddPhoto";
+import addCircleOutline from "@/images/add_circle_outline_white_48dp.svg";
 
 type CreateClaimParams = {
   selectedTripId: string;
@@ -111,6 +118,12 @@ export default function CreateClaim({
           })
         }
       />
+        <div className="my-2">
+            <p className="mt-2 mb-1">
+                Up to 5 photos possible
+            </p>
+            <ClaimAddPhoto />
+        </div>
 
       <RntInput
         id="amount"
