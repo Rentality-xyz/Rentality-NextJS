@@ -28,6 +28,11 @@ export default function TripInfo({ tripId, t }: { tripId: bigint; t: TFunctionNe
   if (tripId == null || tripId === BigInt(0) || tripInfo == null) return null;
 
   const { refuelValue, refuelCharge } = getRefuelValueAndCharge(tripInfo, tripInfo.endFuelLevelInPercents);
+  
+  const formatStatusDateTime = (value: Date, timeZone?: string) => {
+    const format = "ddd, D MMM YYYY hh:mm:ss z";
+    return timeZone ? moment(value).tz(timeZone).format(format) : moment(value).format(format);
+  };
 
   return (
     <>
@@ -51,8 +56,9 @@ export default function TripInfo({ tripId, t }: { tripId: bigint; t: TFunctionNe
           <div className="flex flex-wrap my-6">
             <div className="w-full xl:w-2/3">
               <div className="rnt-card flex flex-col rounded-xl bg-rentality-bg my-2 mr-2">
-                <div className="flex flex-row grow p-2">
-                  <strong className="text-2xl text-[#52D1C9]">{t_details("about_car")}</strong>
+                <div className="flex items-center justify-between p-2">
+                  <div><strong className="text-2xl text-[#52D1C9]">{t_details("about_car")}</strong></div>
+                  <div>VIN: {tripInfo.carVinNumber}</div>
                 </div>
                 <div className="flex flex-row grow p-2">
                   <strong className="text-xl text-[#52D1C9]">{t_details("basic_car_details")}</strong>
@@ -89,8 +95,85 @@ export default function TripInfo({ tripId, t }: { tripId: bigint; t: TFunctionNe
                 <div className="flex-row grow p-2">{tripInfo.carDescription}</div>
               </div>
               <div className="rnt-card flex flex-col rounded-xl overflow-hidden bg-rentality-bg my-2 mr-2">
-                <div className="flex flex-row grow p-2">
-                  <strong className="text-2xl text-[#52D1C9]">{t_details("trip_status_details")}</strong>
+                <div className="flex flex-col p-2">
+                  <div className="pb-3"><strong className="text-2xl text-[#52D1C9]">{t_details("trip_status_details")}</strong></div>
+                  {tripInfo.createdDateTime > 0  ? 
+                  (<div className="flex items-center justify-between">
+                     <div>Booked date and time:</div>
+                     <div>{formatStatusDateTime(tripInfo.createdDateTime, tripInfo.timeZoneId)}</div>
+                   </div>
+                    ) : ''
+                  }                  
+                  {tripInfo.hostBookedCancellation > 0  ? 
+                    (<div className="flex items-center justify-between">
+                       <div>Host Booked Cancellation:</div>
+                       <div>TTTTTT</div>
+                     </div>
+                    ) : ''
+                  }                   
+                  {tripInfo.guestCancellationBeforeHostConfirmedDateTime > 0  ? 
+                    (<div className="flex items-center justify-between">
+                       <div>Guest Cancellation before Host confirmed:</div>
+                       <div>{formatStatusDateTime(tripInfo.rejectedDate, tripInfo.timeZoneId)}</div>
+                     </div>
+                    ) : ''
+                  }                              
+                  {tripInfo.approvedDateTime > 0 ? 
+                    (<div className="flex items-center justify-between">
+                       <div>Approved date and time:</div>
+                       <div>{formatStatusDateTime(tripInfo.approvedDateTime, tripInfo.timeZoneId)}</div>
+                     </div>
+                    ) : ''
+                  }
+                  {tripInfo.guestCancellationAfterHostConfirmedDateTime > 0  ? 
+                    (<div className="flex items-center justify-between">
+                      <div>Guest Cancellation after host confirmed:</div>
+                      <div>{formatStatusDateTime(tripInfo.rejectedDate, tripInfo.timeZoneId)}</div>
+                     </div>
+                    ) : ''
+                  }
+                  {tripInfo.hostTripCancellationDateTime > 0  ? 
+                    (<div className="flex items-center justify-between">
+                       <div>Host trip Cancellation:</div>
+                       <div>TTTTTT</div>
+                     </div>
+                    ) : ''
+                  }
+                  {tripInfo.checkedInByHostDateTime > 0  ? 
+                    (<div className="flex items-center justify-between">
+                      <div>Checked-in by host date and time:</div>
+                      <div>{formatStatusDateTime(tripInfo.checkedInByHostDateTime, tripInfo.timeZoneId)}</div>
+                    </div>
+                    ) : ''
+                  }
+                  {tripInfo.checkedInByGuestDateTime > 0  ? 
+                    (<div className="flex items-center justify-between">
+                      <div>Checked-in by guest date and time:</div>
+                      <div>{formatStatusDateTime(tripInfo.checkedInByGuestDateTime, tripInfo.timeZoneId)}</div>
+                    </div>
+                    ) : ''
+                  }                  
+                  {tripInfo.checkedOutByGuestDateTime > 0  ? 
+                    (<div className="flex items-center justify-between">
+                       <div>Checked-out by guest date and time:</div>
+                       <div>{formatStatusDateTime(tripInfo.checkedOutByGuestDateTime, tripInfo.timeZoneId)}</div>
+                     </div>
+                    ) : ''
+                  }                
+                  {tripInfo.checkedOutByHostDateTime > 0  ? 
+                    (<div className="flex items-center justify-between">
+                       <div> Checked-out by host date and time:</div>
+                       <div>{formatStatusDateTime(tripInfo.checkedOutByHostDateTime, tripInfo.timeZoneId)}</div>
+                    </div>
+                    ) : ''
+                  }  
+                  {tripInfo.completedByHostDateTime > 0  ? 
+                    (<div className="flex items-center justify-between">
+                      <div>Completed by host date and time:</div>
+                      <div>TTTTTT</div>
+                     </div>
+                    ) : ''
+                  }
                 </div>
               </div>
             </div>
@@ -182,7 +265,7 @@ export default function TripInfo({ tripId, t }: { tripId: bigint; t: TFunctionNe
             </div>
           </div>
           <div className="flex flex-row gap-4 mb-8 mt-4 justify-center">
-            <RntButton className="w-40 h-16" onClick={() => router.back()}>
+            <RntButton className="w-40 h-16" onClick={() => router.push("/guest/trips/booked")}>
               {t("common.back")}
             </RntButton>
           </div>

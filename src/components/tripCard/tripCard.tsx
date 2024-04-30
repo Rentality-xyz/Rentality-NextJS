@@ -8,6 +8,7 @@ import LocationDetails from "./locationDetails";
 import TripContacts from "./tripContacts";
 import TripAdditionalActions from "./tripAdditionalActions";
 import { TFunction } from "i18next";
+import TripRules from "./tripRules";
 
 function TripCard({
   tripInfo,
@@ -53,7 +54,13 @@ function TripCard({
           <DateDetails tripInfo={tripInfo} t={t} />
           <LocationDetails tripInfo={tripInfo} t={t} />
         </div>
-        <TripContacts tripInfo={tripInfo} isHost={isHost} showMoreInfo={showMoreInfo} t={t} />
+        {
+			showMoreInfo ? (
+               <TripContacts tripInfo={tripInfo} isHost={isHost} t={t} />				
+			):(
+			   <TripRules tripInfo={tripInfo} t={t} />
+			)
+		}
       </div>
 
       {isAdditionalActionHidden ||
