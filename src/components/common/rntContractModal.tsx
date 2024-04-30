@@ -98,14 +98,20 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                 <div className="text-xl">GUEST INFORMATION</div>
                 <div className="">Guest name: {tripInfo.guest.name}</div>
                 <div className="">Driving license number: {tripInfo.guest.drivingLicenseNumber}</div>
-                <div className="">Driving license validity period: {tripInfo.guest.drivingLicenseExpirationDate}</div>
+                <div className="">
+                  Driving license validity period:{" "}
+                  {dateFormatLongMonthDateTime(tripInfo.guest.drivingLicenseExpirationDate, tripInfo.timeZoneId)}
+                </div>
                 <div className="">Guest insurance information:</div>
                 <div className="">Insurance company name: {tripInfo.guestInsuranceCompanyName}</div>
                 <div className="">Insurance policy number: {tripInfo.guestInsurancePolicyNumber}</div>
                 <div className="text-xl">HOST (CAR OWNER OR AUTHORIZED REPRESENTATIVE) INFORMATION</div>
                 <div className="">Host name: {tripInfo.host.name}</div>
                 <div className="">Driving license number: {tripInfo.host.drivingLicenseNumber}</div>
-                <div className="">Driving license validity period: {tripInfo.host.drivingLicenseExpirationDate}</div>
+                <div className="">
+                  Driving license validity period:{" "}
+                  {dateFormatLongMonthDateTime(tripInfo.host.drivingLicenseExpirationDate, tripInfo.timeZoneId)}
+                </div>
                 <div className="text-xl">VEHICLE INFORMATION</div>
                 <div className="">
                   Vehicle Brand and Model: {tripInfo.brand} {tripInfo.model}

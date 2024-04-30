@@ -115,7 +115,7 @@ export type TripInfo = {
     phoneNumber: string;
     photoUrl: string;
     drivingLicenseNumber: string;
-    drivingLicenseExpirationDate: string;
+    drivingLicenseExpirationDate: Date;
   };
 
   guest: {
@@ -124,7 +124,7 @@ export type TripInfo = {
     phoneNumber: string;
     photoUrl: string;
     drivingLicenseNumber: string;
-    drivingLicenseExpirationDate: string;
+    drivingLicenseExpirationDate: Date;
   };
   guestInsuranceCompanyName: string;
   guestInsurancePolicyNumber: string;

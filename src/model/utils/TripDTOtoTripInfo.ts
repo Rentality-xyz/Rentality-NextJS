@@ -64,8 +64,8 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
       name: i.trip.hostName,
       phoneNumber: formatPhoneNumber(tripContactInfo.hostPhoneNumber),
       photoUrl: i.hostPhotoUrl,
-      drivingLicenseNumber: "UNMAPPED",
-      drivingLicenseExpirationDate: "UNMAPPED",
+      drivingLicenseNumber: i.hostDrivingLicenseNumber,
+      drivingLicenseExpirationDate: getDateFromBlockchainTimeWithTZ(i.hostDrivingLicenseExpirationDate, timeZoneId),
     },
 
     guest: {
@@ -73,11 +73,11 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
       name: i.trip.guestName,
       phoneNumber: formatPhoneNumber(tripContactInfo.guestPhoneNumber),
       photoUrl: i.guestPhotoUrl,
-      drivingLicenseNumber: "UNMAPPED",
-      drivingLicenseExpirationDate: "UNMAPPED",
+      drivingLicenseNumber: i.guestDrivingLicenseNumber,
+      drivingLicenseExpirationDate: getDateFromBlockchainTimeWithTZ(i.guestDrivingLicenseExpirationDate, timeZoneId),
     },
-    guestInsuranceCompanyName: "UNMAPPED",
-    guestInsurancePolicyNumber: "UNMAPPED",
+    guestInsuranceCompanyName: i.trip.guestInsuranceCompanyName,
+    guestInsurancePolicyNumber: i.trip.guestInsurancePolicyNumber,
 
     pricePerDayInUsd: Number(i.trip.pricePerDayInUsdCents) / 100.0,
     totalDayPriceInUsd: Number(i.trip.paymentInfo.totalDayPriceInUsdCents) / 100.0,
