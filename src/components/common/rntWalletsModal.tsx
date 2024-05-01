@@ -7,7 +7,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import RntButton from "./rntButton";
 import { TripInfo } from "@/model/TripInfo";
 
-export default function RntWalletsModal({tripInfo}: { tripInfo: TripInfo }) {
+export default function RntWalletsModal({ tripInfo }: { tripInfo: TripInfo }) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -17,13 +17,17 @@ export default function RntWalletsModal({tripInfo}: { tripInfo: TripInfo }) {
   const handleClose = () => {
     setOpen(false);
   };
-  
-  const maskWallet = (str : string) => {
-	  return str.substring(0,6) + str.substring(6, str.length - 6).replace(/./g,".") + str.substring(str.length - 6, str.length);
+
+  const maskWallet = (str: string) => {
+    return (
+      str.substring(0, 6) +
+      str.substring(6, str.length - 6).replace(/./g, ".") +
+      str.substring(str.length - 6, str.length)
+    );
   };
-  
-  const copyToClipboard = (text : string) => {
-	  navigator.clipboard.writeText(text);
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
   };
 
   return (
@@ -54,22 +58,22 @@ export default function RntWalletsModal({tripInfo}: { tripInfo: TripInfo }) {
             }}
             id="alert-dialog-description"
           >
-			<div className="flex flex-col divide-y">
-				<div className="p-2">
-					<strong>Guest's wallet:</strong>
-					<span className="ms-2 text-gray-500">
-						{maskWallet(tripInfo.guest.walletAddress)}
-					</span>
-					<RntButton className="ms-2 w-20 h-8" onClick={() => copyToClipboard(tripInfo.guest.walletAddress)}>Copy</RntButton>
-				</div>
-				<div className="p-2">
-					<strong>Host's wallet:</strong>
-					<span className="ms-2 text-gray-500">
-						{maskWallet(tripInfo.host.walletAddress)}
-					</span>
-					<RntButton className="ms-2 w-20 h-8" onClick={() => copyToClipboard(tripInfo.host.walletAddress)}>Copy</RntButton>					
-				</div>
-			</div>
+            <div className="flex flex-col divide-y">
+              <div className="p-2">
+                <strong>{"Guest's wallet:"}</strong>
+                <span className="ms-2 text-gray-500">{maskWallet(tripInfo.guest.walletAddress)}</span>
+                <RntButton className="ms-2 w-20 h-8" onClick={() => copyToClipboard(tripInfo.guest.walletAddress)}>
+                  Copy
+                </RntButton>
+              </div>
+              <div className="p-2">
+                <strong>{"Host's wallet:"}</strong>
+                <span className="ms-2 text-gray-500">{maskWallet(tripInfo.host.walletAddress)}</span>
+                <RntButton className="ms-2 w-20 h-8" onClick={() => copyToClipboard(tripInfo.host.walletAddress)}>
+                  Copy
+                </RntButton>
+              </div>
+            </div>
           </DialogContentText>
         </DialogContent>
         <DialogActions
