@@ -99,6 +99,7 @@ export type TripInfo = {
   checkedInByGuestDateTime: Date;
   checkedOutByGuestDateTime: Date;
   checkedOutByHostDateTime: Date;
+  finishedDateTime: Date;
   timeZoneId: string;
   pricePerDayInUsd: number;
   totalDayPriceInUsd: number;
