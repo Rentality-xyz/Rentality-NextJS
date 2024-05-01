@@ -8,20 +8,18 @@ import { ClaimStatus } from "@/model/blockchain/schemas";
 import moment from "moment";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
+import Image from "next/image";
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import ClaimFileList from "./claimFileList";
+import { isEmpty } from "@/utils/string";
 
-type Props =
-  | {
-      isHost: true;
-      claims: Claim[];
-      cancelClaim: (claimId: number) => Promise<void>;
-      t: TFunction;
-    }
-  | {
-      isHost: false;
-      claims: Claim[];
-      payClaim: (claimId: number) => Promise<void>;
-      t: TFunction;
-    };
+type Props = {
+  isHost: boolean;
+  claims: Claim[];
+  payClaim: (claimId: number) => Promise<void>;
+  cancelClaim: (claimId: number) => Promise<void>;
+  t: TFunction;
+};
 
 export default function ClaimHistory(props: Props) {
   const t_history: TFunction = (path, options) => {
@@ -31,18 +29,26 @@ export default function ClaimHistory(props: Props) {
   const headerSpanClassName = "text-start px-2 font-light text-sm";
   const rowSpanClassName = "px-2 h-12";
   const redTextClassName = twMerge(rowSpanClassName, "text-red-400");
+  const { showCustomDialog, hideDialogs } = useRntDialogs();
+
+  function handleFilesClick(claim: Claim) {
+    showCustomDialog(<ClaimFileList fileUrls={claim.fileUrls} handleBackClick={hideDialogs} />);
+  }
 
   return (
     <div className="w-full bg-rentality-bg p-4 rounded-2xl mt-5">
       <h3 className="text-xl mb-4">{t_history("title")}</h3>
-      <table className=" w-full table-auto border-spacing-2 max-lg:hidden">
+      <table className=" w-full table-auto border-spacing-2 max-lg:hidden block overflow-x-auto">
         <thead className="mb-2">
           <tr className="text-rentality-additional-light">
+            <th className={`${headerSpanClassName} min-w-[12ch]`}>{"⇄"}</th>
             <th className={`${headerSpanClassName} min-w-[12ch]`}>{t_history("table.invoiceType")}</th>
             <th className={`${headerSpanClassName} min-w-[17ch]`}>{t_history("table.paymentDeadline")}</th>
             <th className={`${headerSpanClassName}`}>{t_history("table.reservation")}</th>
-            <th className={`${headerSpanClassName} min-w-[20ch]`}>{t_history("table.car")}</th>
+            <th className={`${headerSpanClassName}`}>{t_history("table.tripDays")}</th>
+            <th className={`${headerSpanClassName} min-w-[15ch]`}>{t_history("table.car")}</th>
             <th className={`${headerSpanClassName}`}>{t_history("table.describe")}</th>
+            <th className={`${headerSpanClassName}`}>{t_history("table.viewPhotoFile")}</th>
             <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_history("table.amount")}</th>
             <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_history("table.status")}</th>
             <th></th>
@@ -59,14 +65,34 @@ export default function ClaimHistory(props: Props) {
 
             return (
               <tr key={claim.claimId} className="border-b-[1px] border-b-gray-500">
+                <td className={rowSpanClassName}>{claim.isIncomingClaim ? "← Incoming" : "Outgoing →"}</td>
                 <td className={rowSpanClassName}>{claim.claimTypeText}</td>
                 <td className={claim.deadlineDate <= moment().toDate() ? redTextClassName : rowSpanClassName}>
                   {dateFormatShortMonthDateTime(claim.deadlineDate)}
                 </td>
                 <td className={rowSpanClassName}>{claim.tripId}</td>
+                <td className={rowSpanClassName}>{claim.tripDays}</td>
                 <td className={rowSpanClassName}>{claim.carInfo}</td>
-                <td className={`${rowSpanClassName} max-w-[40ch] overflow-hidden text-ellipsis`}>
+                <td className={`${rowSpanClassName} max-w-[20ch] overflow-hidden text-ellipsis`}>
                   {claim.description}
+                </td>
+                <td className={rowSpanClassName}>
+                  {claim.fileUrls.filter((i) => !isEmpty(i)).length > 0 ? (
+                    <div
+                      className="w-8 h-8 cursor-pointer"
+                      onClick={() => {
+                        handleFilesClick(claim);
+                      }}
+                    >
+                      <Image
+                        className="w-full h-full object-cover"
+                        width={36}
+                        height={36}
+                        src="/icon_photo.png"
+                        alt=""
+                      />
+                    </div>
+                  ) : null}
                 </td>
                 <td className={rowSpanClassName}>${displayMoneyFromCentsWith2Digits(claim.amountInUsdCents)}</td>
                 <td className={claim.status === ClaimStatus.Overdue ? redTextClassName : rowSpanClassName}>
@@ -74,16 +100,7 @@ export default function ClaimHistory(props: Props) {
                 </td>
                 <td className={rowSpanClassName}>
                   {claim.status === ClaimStatus.NotPaid || claim.status === ClaimStatus.Overdue ? (
-                    isHost ? (
-                      <RntButton
-                        className="w-24 h-8"
-                        onClick={() => {
-                          props.cancelClaim(claim.claimId);
-                        }}
-                      >
-                        {t_history("cancel")}
-                      </RntButton>
-                    ) : (
+                    claim.isIncomingClaim ? (
                       <RntButton
                         className="w-24 h-8"
                         onClick={() => {
@@ -91,6 +108,15 @@ export default function ClaimHistory(props: Props) {
                         }}
                       >
                         {t_history("pay")}
+                      </RntButton>
+                    ) : (
+                      <RntButton
+                        className="w-24 h-8"
+                        onClick={() => {
+                          props.cancelClaim(claim.claimId);
+                        }}
+                      >
+                        {t_history("cancel")}
                       </RntButton>
                     )
                   ) : null}

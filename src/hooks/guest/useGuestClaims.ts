@@ -4,15 +4,19 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
 import { Claim, getClaimStatusTextFromStatus, getClaimTypeTextFromClaimType } from "@/model/Claim";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import {ContractCreateClaimRequest, ContractFullClaimInfo} from "@/model/blockchain/schemas";
+import { ContractCreateClaimRequest, ContractFullClaimInfo } from "@/model/blockchain/schemas";
 import { validateContractFullClaimInfo } from "@/model/blockchain/schemas_utils";
-import {CreateClaimRequest, TripInfoForClaimCreation} from "@/model/CreateClaimRequest";
+import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
 import encodeClaimChatMessage from "@/components/chat/utils";
-import {useChat} from "@/contexts/chatContext";
+import { useChat } from "@/contexts/chatContext";
+import { isEmpty } from "@/utils/string";
+import { uploadFileToIPFS } from "@/utils/pinata";
+import { SMARTCONTRACT_VERSION } from "@/abis";
+import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
 
 const useGuestClaims = () => {
-  const ethereumInfo = useEthereum();
   const rentalityContract = useRentality();
+  const ethereumInfo = useEthereum();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [claims, setClaims] = useState<Claim[]>([]);
   const chatContextInfo = useChat();
@@ -20,11 +24,53 @@ const useGuestClaims = () => {
     { tripId: 0, guestAddress: "", tripDescription: "Loading...", tripStart: new Date() },
   ]);
 
-  const payClaim = async (claimId: number) => {
-    if (!ethereumInfo) {
-      console.error("payClaim error: ethereumInfo is null");
+  const createClaim = async (createClaimRequest: CreateClaimRequest) => {
+    if (rentalityContract === null) {
+      console.error("createClaim: rentalityContract is null");
       return false;
     }
+
+    try {
+      const filesToSave = createClaimRequest.localFileUrls.filter((i) => i);
+      const savedFiles: string[] = [];
+
+      if (filesToSave.length > 0) {
+        filesToSave.forEach(async (file) => {
+          const response = await uploadFileToIPFS(file.file, "RentalityClaimFile", {
+            createdAt: new Date().toISOString(),
+            createdBy: ethereumInfo?.walletAddress ?? "",
+            version: SMARTCONTRACT_VERSION,
+            chainId: ethereumInfo?.chainId ?? 0,
+          });
+
+          if (!response.success || !response.pinataURL) {
+            throw new Error("Uploaded image to Pinata error");
+          }
+          savedFiles.push(response.pinataURL);
+        });
+      }
+
+      const claimRequest: ContractCreateClaimRequest = {
+        tripId: BigInt(createClaimRequest.tripId),
+        claimType: createClaimRequest.claimType,
+        description: createClaimRequest.description,
+        amountInUsdCents: BigInt(createClaimRequest.amountInUsdCents),
+        photosUrl: savedFiles.join("|"),
+      };
+
+      const transaction = await rentalityContract.createClaim(claimRequest);
+      await transaction.wait();
+
+      const message = encodeClaimChatMessage(createClaimRequest);
+      chatContextInfo.sendMessage(createClaimRequest.guestAddress, createClaimRequest.tripId, message);
+      return true;
+    } catch (e) {
+      console.error("createClaim error:" + e);
+      return false;
+    }
+  };
+
+  const payClaim = async (claimId: number) => {
     if (!rentalityContract) {
       console.error("payClaim error: rentalityContract is null");
       return false;
@@ -45,28 +91,18 @@ const useGuestClaims = () => {
     }
   };
 
-  const createClaim = async (createClaimRequest: CreateClaimRequest) => {
-    if (rentalityContract === null) {
-      console.error("createClaim: rentalityContract is null");
+  const cancelClaim = async (claimId: number) => {
+    if (!rentalityContract) {
+      console.error("cancelClaim error: rentalityContract is null");
       return false;
     }
 
     try {
-      const claimRequest: ContractCreateClaimRequest = {
-        tripId: BigInt(createClaimRequest.tripId),
-        claimType: createClaimRequest.claimType,
-        description: createClaimRequest.description,
-        amountInUsdCents: BigInt(createClaimRequest.amountInUsdCents),
-      };
-
-      const transaction = await rentalityContract.createClaim(claimRequest);
+      const transaction = await rentalityContract.rejectClaim(BigInt(claimId));
       await transaction.wait();
-
-      const message = encodeClaimChatMessage(createClaimRequest);
-      chatContextInfo.sendMessage(createClaimRequest.guestAddress, createClaimRequest.tripId, message);
       return true;
     } catch (e) {
-      console.error("createClaim error:" + e);
+      console.error("cancelClaim error:" + e);
       return false;
     }
   };
@@ -106,6 +142,9 @@ const useGuestClaims = () => {
                     rejectedDateInSec: Number(i.claim.rejectedDateInSec),
                     hostPhoneNumber: formatPhoneNumber(i.hostPhoneNumber),
                     guestPhoneNumber: formatPhoneNumber(i.guestPhoneNumber),
+                    tripDays: 0,
+                    isIncomingClaim: i.claim.isHostClaims,
+                    fileUrls: i.claim.photosUrl.split("|").map((url) => getIpfsURIfromPinata(url)),
                   };
                   return item;
                 })
@@ -141,7 +180,7 @@ const useGuestClaims = () => {
     });
   }, [tripInfos]);
 
-  return [isLoading, sortedClaims, sortedTripInfos, payClaim, createClaim] as const;
+  return { isLoading, claims: sortedClaims, tripInfos: sortedTripInfos, createClaim, payClaim, cancelClaim } as const;
 };
 
 export default useGuestClaims;

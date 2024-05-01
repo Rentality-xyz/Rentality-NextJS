@@ -11,7 +11,7 @@ import { TFunction } from "@/utils/i18n";
 
 export default function Claims() {
   const { showInfo, showError, hideDialogs } = useRntDialogs();
-  const [isLoading, claims, tripInfos, createClaim, cancelClaim] = useHostClaims();
+  const { isLoading, claims, tripInfos, createClaim, payClaim, cancelClaim } = useHostClaims();
   const router = useRouter();
   const { t } = useTranslation();
   const t_h_claims: TFunction = (name, options) => {
@@ -51,6 +51,22 @@ export default function Claims() {
     }
   };
 
+  const handlePayClaim = async (claimId: number) => {
+    try {
+      showInfo(t("common.info.sign"));
+      const result = await payClaim(claimId);
+      hideDialogs();
+      if (!result) {
+        showError(t('claims.errors.pay_claim_failed"'));
+        return;
+      }
+      router.refresh();
+    } catch (e) {
+      showError(t('claims.errors.pay_claim_failed"'));
+      console.error("handlePayClaim error:" + e);
+    }
+  };
+
   const handleCancelClaim = async (claimId: number) => {
     try {
       showInfo(t("common.info.sign"));
@@ -71,7 +87,7 @@ export default function Claims() {
     <Layout>
       <div className="flex flex-col">
         <PageTitle title={t("claims.title")} />
-        <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} />
+        <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={true} />
         {isLoading ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
             {t("common.info.loading")}
@@ -79,6 +95,7 @@ export default function Claims() {
         ) : (
           <ClaimHistory
             claims={claims}
+            payClaim={handlePayClaim}
             cancelClaim={handleCancelClaim}
             isHost={true}
             t={(path, options) => {

@@ -119,8 +119,10 @@
         "invoiceType": "Invoice type",
         "paymentDeadline": "Payment deadline",
         "reservation": "Reservation",
+        "tripDays": "Trip days",
         "car": "Car",
         "describe": "Describe",
+        "viewPhotoFile": "View photo/file",
         "amount": "Amount $",
         "status": "Status"
       },

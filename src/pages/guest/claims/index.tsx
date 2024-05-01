@@ -6,14 +6,14 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import CreateClaim from "@/components/claims/createClaim";
-import {CreateClaimRequest} from "@/model/CreateClaimRequest";
+import { CreateClaimRequest } from "@/model/CreateClaimRequest";
 import { TFunction } from "@/utils/i18n";
 
 export default function Claims() {
   // const [isLoading, claims, tripInfos, createClaim, cancelClaim, payClaim] = useGuestClaims();
   const { t } = useTranslation();
   const { showInfo, showError, hideDialogs } = useRntDialogs();
-  const [isLoading, claims, tripInfos, payClaim, createClaim] = useGuestClaims();
+  const { isLoading, claims, tripInfos, createClaim, payClaim, cancelClaim } = useGuestClaims();
   const router = useRouter();
   const t_h_claims: TFunction = (name, options) => {
     return t("claims.host." + name, options);
@@ -32,6 +32,22 @@ export default function Claims() {
     } catch (e) {
       showError(t('claims.errors.pay_claim_failed"'));
       console.error("handlePayClaim error:" + e);
+    }
+  };
+
+  const handleCancelClaim = async (claimId: number) => {
+    try {
+      showInfo(t("common.info.sign"));
+      const result = await cancelClaim(claimId);
+      hideDialogs();
+      if (!result) {
+        showError(t_h_claims("claim_cancel_failed"));
+        return;
+      }
+      router.refresh();
+    } catch (e) {
+      showError(t_h_claims("claim_cancel_failed"));
+      console.error("handleCancelClaim error:" + e);
     }
   };
 
@@ -72,7 +88,7 @@ export default function Claims() {
     <Layout>
       <div className="flex flex-col">
         <PageTitle title={t("claims.title")} />
-        <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} />
+        <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={false} />
         {isLoading ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
             {t("common.info.loading")}
@@ -81,6 +97,7 @@ export default function Claims() {
           <ClaimHistory
             claims={claims}
             payClaim={handlePayClaim}
+            cancelClaim={handleCancelClaim}
             isHost={false}
             t={(path, options) => {
               return t("claims." + path, options);

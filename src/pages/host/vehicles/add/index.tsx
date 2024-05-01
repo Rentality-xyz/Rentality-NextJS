@@ -1,14 +1,11 @@
 import Layout from "@/components/layout/layout";
 import useAddCar from "@/hooks/host/useAddCar";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { useRouter } from "next/router";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import RntButton from "@/components/common/rntButton";
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
 import { resizeImage } from "@/utils/image";
-import { isEmpty } from "@/utils/string";
-import { Button } from "@mui/material";
-import { useUserInfo } from "@/contexts/userInfoContext";
 import { verifyCar } from "@/model/HostCarInfo";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
