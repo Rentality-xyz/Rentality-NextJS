@@ -3,8 +3,7 @@ import useSearchCars, { SortOptionKey } from "@/hooks/guest/useSearchCars";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
-import SlidingPanel from "react-sliding-side-panel";
-import { SearchCarRequest, emptySearchCarRequest } from "@/model/SearchCarRequest";
+import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 import RntInput from "@/components/common/rntInput";
 import RntButton from "@/components/common/rntButton";
@@ -22,6 +21,7 @@ import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
 import moment from "moment";
 import { ParseLocationResponse } from "@/pages/api/parseLocation";
+import FilterSlidingPanel from "@/components/search/filterSlidingPanel";
 
 export default function Search() {
   const dateNow = new Date();
@@ -213,11 +213,9 @@ export default function Search() {
     if (sortBy === undefined) return;
     sortSearchResult(sortBy);
   }, [sortBy, sortSearchResult]);
+
   const t_el = (element: string) => {
     return t_page("elements." + element);
-  };
-  const t_f: TFunction = (filter, options) => {
-    return t_page("filters." + filter, options);
   };
 
   return (
@@ -225,17 +223,6 @@ export default function Search() {
       <Layout>
         <div className="flex flex-col" title="Search">
           <div className="search my-2 flex max-xl:flex-col gap-2 xl:items-end">
-            {/* <RntInput
-            className="xl:w-1/2"
-            id="location"
-            label="Pick up & Return Location"
-            value={formatLocation(
-              searchCarRequest.city,
-              searchCarRequest.state,
-              searchCarRequest.country
-            )}
-            onChange={handleSearchInputChange}
-          /> */}
             <RntPlaceAutocomplete
               className="xl:w-1/2"
               id="location"
@@ -360,118 +347,14 @@ export default function Search() {
             </>
           )}
         </div>
-        <div className="sliding-panel-container w-full fixed top-0 left-0">
-          <SlidingPanel
-            type={"left"}
-            isOpen={openFilterPanel}
-            size={50}
-            noBackdrop={false}
-            backdropClicked={() => setOpenFilterPanel(false)}
-            panelContainerClassName="sliding-panel"
-          >
-            <div className="flex flex-col py-8">
-              <div className="self-end mr-8">
-                <i className="fi fi-br-cross" onClick={() => setOpenFilterPanel(false)}></i>
-              </div>
-              <div className="flex flex-col gap-2 sm:gap-4 px-2 sm:px-4 md:px-8 lg:px-16 mt-4">
-                <RntInput
-                  id="filter-brand"
-                  label={t_f("brand")}
-                  value={searchCarRequest.brand}
-                  onChange={(e) =>
-                    setSearchCarRequest({
-                      ...searchCarRequest,
-                      brand: e.target.value,
-                    })
-                  }
-                />
-                <RntInput
-                  id="filter-model"
-                  label={t_f("model")}
-                  value={searchCarRequest.model}
-                  onChange={(e) =>
-                    setSearchCarRequest({
-                      ...searchCarRequest,
-                      model: e.target.value,
-                    })
-                  }
-                />
-                <RntInput
-                  id="filter-year-from"
-                  label={t_f("year_from")}
-                  value={searchCarRequest.yearOfProductionFrom}
-                  onChange={(e) => {
-                    const newValue = e.target.value;
-                    if (isNaN(Number(newValue)) && newValue !== "") return;
-
-                    setSearchCarRequest({
-                      ...searchCarRequest,
-                      yearOfProductionFrom: newValue,
-                    });
-                  }}
-                />
-                <RntInput
-                  id="filter-year-yo"
-                  label={t_f("year_to")}
-                  value={searchCarRequest.yearOfProductionTo}
-                  onChange={(e) => {
-                    const newValue = e.target.value;
-                    if (isNaN(Number(newValue)) && newValue !== "") return;
-
-                    setSearchCarRequest({
-                      ...searchCarRequest,
-                      yearOfProductionTo: newValue,
-                    });
-                  }}
-                />
-                <RntInput
-                  id="filter-price-from"
-                  label={t_f("price_from")}
-                  value={searchCarRequest.pricePerDayInUsdFrom}
-                  onChange={(e) => {
-                    const newValue = e.target.value;
-                    if (isNaN(Number(newValue)) && newValue !== "") return;
-                    setSearchCarRequest({
-                      ...searchCarRequest,
-                      pricePerDayInUsdFrom: newValue,
-                    });
-                  }}
-                />
-                <RntInput
-                  id="filter-price-yo"
-                  label={t_f("price_to")}
-                  value={searchCarRequest.pricePerDayInUsdTo}
-                  onChange={(e) => {
-                    const newValue = e.target.value;
-                    if (isNaN(Number(newValue)) && newValue !== "") return;
-
-                    setSearchCarRequest({
-                      ...searchCarRequest,
-                      pricePerDayInUsdTo: newValue,
-                    });
-                  }}
-                />
-                <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 max-sm:mt-2 sm:justify-between">
-                  <RntButton
-                    className="max-sm:h-10 max-sm:w-full"
-                    onClick={() => {
-                      setOpenFilterPanel(false);
-                      handleSearchClick();
-                    }}
-                  >
-                    {t_el("button_apply")}
-                  </RntButton>
-                  <RntButton
-                    className="max-sm:h-10 max-sm:w-full"
-                    onClick={() => setSearchCarRequest(customEmptySearchCarRequest)}
-                  >
-                    {t_el("button_reset")}
-                  </RntButton>
-                </div>
-              </div>
-            </div>
-          </SlidingPanel>
-        </div>
+        <FilterSlidingPanel
+          searchCarRequest={searchCarRequest}
+          setSearchCarRequest={setSearchCarRequest}
+          handleSearchClick={handleSearchClick}
+          openFilterPanel={openFilterPanel}
+          setOpenFilterPanel={setOpenFilterPanel}
+          t={t_page}
+        />
       </Layout>
     </GoogleMapsProvider>
   );
