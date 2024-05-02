@@ -29,7 +29,7 @@ export default function Search() {
   const defaultDateTo = moment({ hour: 9 }).add(2, "day").toDate();
   const customEmptySearchCarRequest: SearchCarRequest = {
     ...emptySearchCarRequest,
-    city: "Center, Miami",
+    city: "Down town, Miami",
     state: "Florida",
     country: "USA",
     dateFrom: dateToHtmlDateTimeFormat(defaultDateFrom),
