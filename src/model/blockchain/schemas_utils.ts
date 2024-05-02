@@ -242,6 +242,7 @@ const emptyContractTrip: ContractTrip = {
   fuelPrice: BigInt(0),
   guestInsuranceCompanyName: "",
   guestInsurancePolicyNumber: "",
+  finishDateTime: BigInt(0),
 };
 
 export function validateContractTrip(obj: ContractTrip): obj is ContractTrip {

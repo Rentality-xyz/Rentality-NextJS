@@ -122,6 +122,7 @@ export type ContractTrip = {
   endParamLevels: bigint[];
   checkedOutByHostDateTime: bigint;
   transactionInfo: ContractTransactionInfo;
+  finishDateTime: bigint;
 };
 
 export type ContractTripDTO = {

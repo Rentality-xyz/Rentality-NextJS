@@ -58,7 +58,7 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
     checkedInByGuestDateTime: getDateFromBlockchainTimeWithTZ(i.trip.checkedInByGuestDateTime, timeZoneId),
     checkedOutByGuestDateTime: getDateFromBlockchainTimeWithTZ(i.trip.checkedOutByGuestDateTime, timeZoneId),
     checkedOutByHostDateTime: getDateFromBlockchainTimeWithTZ(i.trip.checkedOutByHostDateTime, timeZoneId),
-    finishedDateTime: new Date(0), //TODO getDateFromBlockchainTimeWithTZ(i.trip.finishedDateTime, timeZoneId),
+    finishedDateTime: getDateFromBlockchainTimeWithTZ(i.trip.finishDateTime, timeZoneId),
 
     host: {
       walletAddress: i.trip.host,
