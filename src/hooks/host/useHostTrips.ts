@@ -193,6 +193,17 @@ const useHostTrips = () => {
             action: checkOutTrip,
           });
           break;
+        case TripStatus.CompletedWithoutGuestComfirmation:
+          result.push({
+            text: "Contact guest",
+            readonly: false,
+            isDisplay: false,
+            params: [],
+            action: async (tripId: bigint, params: string[]) => {
+              return false;
+            },
+          });
+          break;
         case TripStatus.Finished:
           result.push({
             text: "Complete",

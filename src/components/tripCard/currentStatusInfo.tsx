@@ -198,9 +198,9 @@ function CurrentStatusInfo({
         <p className="mt-4 text-center text-sm">{actionDescription}</p>
       </div>
 
-      {!isAdditionalActionHidden ? null : (
+      {!isAdditionalActionHidden || tripInfo.allowedActions.length === 0 ? null : (
         <div className="flex max-sm_inverted:flex-row flex-col 2xl:flex-row gap-4">
-          {(tripInfo.status === TripStatus.Started || tripInfo.status === TripStatus.CheckedInByHost) && isHost ? (
+          {(tripInfo.status === TripStatus.CheckedInByHost || tripInfo.status === TripStatus.Started) && isHost ? (
             <RntButton
               className="h-12 w-full px-4"
               onClick={() => {
