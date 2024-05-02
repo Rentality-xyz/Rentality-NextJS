@@ -3,7 +3,6 @@ import { getEtherContractWithSigner } from "../abis";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useEthereum } from "./web3/ethereumContext";
 
-
 const RentalityContext = createContext<IRentalityContract | null>(null);
 
 export function useRentality() {

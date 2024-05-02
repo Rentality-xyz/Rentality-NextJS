@@ -87,7 +87,11 @@ export default function Footer() {
                 <Image src={telegram} alt="" className="ml-3 w-[30px] mt-0.5" />
               </a>
 
-              <a href="https://mirror.xyz/0x263660F0ab0014e956d42f85DccD918bBa2Df587" target="_blank" rel="noopener noreferrer">
+              <a
+                href="https://mirror.xyz/0x263660F0ab0014e956d42f85DccD918bBa2Df587"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Image src={mirror} alt="" className="ml-1 w-[36px]" />
               </a>
             </div>

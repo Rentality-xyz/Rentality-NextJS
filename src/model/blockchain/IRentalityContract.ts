@@ -49,7 +49,12 @@ export interface IRentalityContract {
   getTripsAsHost(): Promise<ContractTripDTO[]>;
   approveTripRequest(tripId: bigint): Promise<ContractTransactionResponse>;
   rejectTripRequest(tripId: bigint): Promise<ContractTransactionResponse>;
-  checkInByHost(tripId: bigint, panelParams: bigint[], insuranceCompany: string, insuranceNumber: string): Promise<ContractTransactionResponse>;
+  checkInByHost(
+    tripId: bigint,
+    panelParams: bigint[],
+    insuranceCompany: string,
+    insuranceNumber: string
+  ): Promise<ContractTransactionResponse>;
   checkOutByHost(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
   finishTrip(tripId: bigint): Promise<ContractTransactionResponse>;
   getChatInfoForHost(): Promise<ContractChatInfo[]>;

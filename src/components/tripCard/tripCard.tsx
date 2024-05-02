@@ -54,13 +54,11 @@ function TripCard({
           <DateDetails tripInfo={tripInfo} t={t} />
           <LocationDetails tripInfo={tripInfo} t={t} />
         </div>
-        {
-			showMoreInfo ? (
-               <TripContacts tripInfo={tripInfo} isHost={isHost} t={t} />				
-			):(
-			   <TripRules tripInfo={tripInfo} t={t} />
-			)
-		}
+        {showMoreInfo ? (
+          <TripContacts tripInfo={tripInfo} isHost={isHost} t={t} />
+        ) : (
+          <TripRules tripInfo={tripInfo} t={t} />
+        )}
       </div>
 
       {isAdditionalActionHidden ||
