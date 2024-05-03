@@ -4,9 +4,12 @@ import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PATROL_STRING } from "./Engine
 export const UNLIMITED_MILES_VALUE_TEXT = "Unlimited";
 export const UNLIMITED_MILES_VALUE = 999_999_999;
 
+export const isUnlimitedMiles = (value: bigint | number) => {
+  return value === 0 || value >= UNLIMITED_MILES_VALUE;
+};
+
 export const getMilesIncludedPerDayText = (value: bigint | number) => {
-  if (value === 0 || value >= UNLIMITED_MILES_VALUE) return UNLIMITED_MILES_VALUE_TEXT;
-  return value.toString();
+  return isUnlimitedMiles(value) ? UNLIMITED_MILES_VALUE_TEXT : value.toString();
 };
 
 export type HostCarInfo = {

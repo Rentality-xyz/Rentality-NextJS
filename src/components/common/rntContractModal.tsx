@@ -8,6 +8,7 @@ import { TripInfo } from "@/model/TripInfo";
 import moment from "moment";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { dateFormatLongMonthDateTime } from "@/utils/datetimeFormatters";
+import { getMilesIncludedPerDayText, isUnlimitedMiles } from "@/model/HostCarInfo";
 
 export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint; tripInfo: TripInfo }) {
   const [open, setOpen] = React.useState(false);
@@ -133,7 +134,10 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                 <div className="">Pickup location: {tripInfo.locationStart}</div>
                 <div className="">Return location: {tripInfo.locationEnd}</div>
                 <div className="">Primary driver: James Webb</div>
-                <div className="">Miles included: {tripInfo.milesIncludedPerDay} per day</div>
+                <div className="">
+                  Miles included: {getMilesIncludedPerDayText(tripInfo.milesIncludedPerDay)}
+                  {isUnlimitedMiles(tripInfo.milesIncludedPerDay) ? " miles" : " per day"}
+                </div>
                 <div className="text-xl">TRANSACTION INFORMATION</div>
                 <div className="">Transaction currency: ETH</div>
                 <div className="">Currency rate ETH to USD: {tripInfo.currencyRate}</div>
@@ -160,8 +164,9 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                   {displayMoneyWith2Digits(tripInfo.depositInUsd)})
                 </div>
                 <div className="">
-                  Price per 1 overmile: ETH {tripInfo.overmilePrice / tripInfo.currencyRate} (USD{" "}
-                  {tripInfo.overmilePrice})
+                  {isUnlimitedMiles(tripInfo.milesIncludedPerDay)
+                    ? `Price per 1 overmile: ${getMilesIncludedPerDayText(tripInfo.milesIncludedPerDay)} miles`
+                    : `Price per 1 overmile: ETH ${tripInfo.overmilePrice / tripInfo.currencyRate} (USD ${tripInfo.overmilePrice})`}
                 </div>
                 <div className="">
                   Price per 1 gallon or 10% battery recharge: ETH {tripInfo.fuelPricePerGal / tripInfo.currencyRate}{" "}
