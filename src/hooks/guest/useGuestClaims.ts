@@ -156,7 +156,7 @@ const useGuestClaims = () => {
               );
 
         const guestTripsView: ContractTripDTO[] = (await rentalityContract.getTripsAsGuest()).filter(
-          (i) => i.trip.status !== TripStatus.Pending
+          (i) => i.trip.status !== TripStatus.Pending && i.trip.status !== TripStatus.Rejected
         );
 
         const guestTripsData =
@@ -205,9 +205,8 @@ const useGuestClaims = () => {
       .then((data) => {
         setClaims(data?.claimsData ?? []);
         setTripInfos(data?.guestTripsData ?? []);
-        setIsLoading(false);
       })
-      .catch(() => setIsLoading(false));
+      .finally(() => setIsLoading(false));
   }, [rentalityContract]);
 
   const sortedClaims = useMemo(() => {
