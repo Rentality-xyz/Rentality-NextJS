@@ -3,7 +3,7 @@ import useSearchCars, { SortOptionKey } from "@/hooks/guest/useSearchCars";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
-import { SearchCarRequest } from "@/model/SearchCarRequest";
+import { SearchCarRequest, emptySearchCarRequest } from "@/model/SearchCarRequest";
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 import RntInput from "@/components/common/rntInput";
 import RntButton from "@/components/common/rntButton";
