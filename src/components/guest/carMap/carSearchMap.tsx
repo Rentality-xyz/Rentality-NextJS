@@ -45,7 +45,7 @@ export default function CarSearchMap({
   return googleMapsAPIIsLoaded ? (
     <GoogleMap
       options={{ mapId: GOOGLE_MAPS_MAP_ID }}
-      mapContainerStyle={{ width: width, height: height, borderRadius: "30px", margin: "1rem" }}
+      mapContainerClassName={ width + " " + height+" rounded-[30px] xl:m-4" }
       center={DEFAULT_GOOGLE_MAPS_SEARCH_CENTER}
       zoom={DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM}
       onLoad={onLoad}
