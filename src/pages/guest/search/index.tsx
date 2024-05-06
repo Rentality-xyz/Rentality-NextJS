@@ -304,11 +304,11 @@ export default function Search() {
             <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
           ) : (
             <>
-              <div className="text-l font-bold">
+              <div className="text-l font-bold mb-4">
                 {searchResult?.carInfos?.length ?? 0} {t_page("info.cars_available")}
               </div>
-              <div className="grid grid-cols-2">
-                <div className="my-4 flex flex-col gap-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col">
                   {searchResult?.carInfos?.length > 0 ? (
                     searchResult?.carInfos
                       .sort((a: SearchCarInfo, b: SearchCarInfo) => {
@@ -339,8 +339,6 @@ export default function Search() {
                 </div>
                 <CarSearchMap
                   carInfos={searchResult?.carInfos}
-                  width="100%"
-                  height="100vh"
                   onMarkerClick={handleMapClick}
                 />
               </div>
