@@ -62,7 +62,7 @@ export default function CarSearchMap({
           }}
         >
           <RntButton id={carInfo.carId.toString()} className="w-24 h-8">
-            ${carInfo.totalPriceWithDiscount}
+            ${carInfo.pricePerDayWithDiscount}
           </RntButton>
         </Marker>
       ))}
