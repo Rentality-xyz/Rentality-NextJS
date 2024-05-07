@@ -47,7 +47,7 @@ export default function AllowedActionsForStatusConfirmed({
           <RntInput
             className="py-2"
             id={params[1].text}
-            label={params[0].text}
+            label={params[1].text}
             value={inputParams[1]}
             onChange={(e) => {
               const newValue = e.target.value;

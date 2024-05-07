@@ -365,7 +365,7 @@ export default function Search() {
                       height={`transition-height duration-300 ease-in-out ${isExpanded ? "h-screen" : "h-[12rem] xl:h-screen"}`}
                       onMarkerClick={handleMapClick}
                   />
-                  <div className="absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 flex justify-center items-center z-[99] w-[48px] h-[48px] cursor-pointer bg-[url('../images/ellipseUpBtn.png')] bg-cover bg-no-repeat bg-center"
+                  <div className="xl:hidden absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 flex justify-center items-center z-[99] w-[48px] h-[48px] cursor-pointer bg-[url('../images/ellipseUpBtn.png')] bg-cover bg-no-repeat bg-center"
                        onClick={handleArrowClick}
                   >
                     <Image src={mapArrow} alt="" className={`w-[32px] h-[22px] ${isExpanded ? 'transform rotate-0' : 'transform rotate-180'}`} />
