@@ -11,7 +11,6 @@ import { bytesToHex } from "viem";
 import moment from "moment";
 import { useEthereum } from "./web3/ethereumContext";
 import { ContractChatInfo, TripStatus } from "@/model/blockchain/schemas";
-import { getTripStatusFromContract } from "@/model/TripInfo";
 import { Contract, Listener } from "ethers";
 import { useNotification } from "./notification/notificationContext";
 import { NotificationType } from "@/model/NotificationInfo";
@@ -315,7 +314,7 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
             : await Promise.all(
                 chatInfosViewSorted.map(async (ci: ContractChatInfo) => {
                   const meta = await getMetaDataFromIpfs(ci.carMetadataUrl);
-                  const tripStatus = getTripStatusFromContract(Number(ci.tripStatus));
+                  const tripStatus = ci.tripStatus;
 
                   let item: ChatInfo = {
                     tripId: Number(ci.tripId),

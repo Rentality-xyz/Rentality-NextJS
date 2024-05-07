@@ -5,7 +5,7 @@ build:
 	docker build . --target nextjs --network rentality-network -t nextjs-rentality:latest
 
 up:
-	docker compose up -d nextjs
+	docker compose up -d nextjs --remove-orphans
 
 down:
 	docker compose down

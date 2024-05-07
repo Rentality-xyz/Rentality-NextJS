@@ -1,9 +1,9 @@
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import Link from "next/link";
 import RntButton from "../common/rntButton";
-import { getStringFromMoneyInCents } from "@/utils/formInput";
 import { Claim } from "@/model/Claim";
 import { ClaimStatus } from "@/model/blockchain/schemas";
+import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
 
 type Props =
   | {
@@ -58,7 +58,7 @@ export default function ClaimHistoryMobileCard(props: Props) {
         <strong>Amount $</strong>
       </p>
       <p className={claim.status === ClaimStatus.Overdue ? "text-red-400" : ""}>
-        ${getStringFromMoneyInCents(claim.amountInUsdCents)}
+        ${displayMoneyFromCentsWith2Digits(claim.amountInUsdCents)}
       </p>
       <hr className="col-span-2" />
       <p>

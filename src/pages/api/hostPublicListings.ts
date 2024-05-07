@@ -24,15 +24,9 @@ const getHostAddressFromQuery = async (query: string | string[] | undefined, pro
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const privateKey = process.env.NEXT_WALLET_PRIVATE_KEY;
-  const providerApiUrl = process.env.PROVIDER_API_URL;
   if (!privateKey) {
     console.error("API checkTrips error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
-    return;
-  }
-  if (!providerApiUrl) {
-    console.error("API checkTrips error: API URL was not set");
-    res.status(500).json({ error: "API URL was not set" });
     return;
   }
 
@@ -42,6 +36,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!chainIdNumber) {
     console.error("API checkTrips error: chainId was not provided");
     res.status(400).json({ error: "chainId was not provided" });
+    return;
+  }
+
+  let providerApiUrl = process.env[`PROVIDER_API_URL_${chainIdNumber}`];
+  if (!providerApiUrl) {
+    console.error(`API checkTrips error: API URL for chain id ${chainIdNumber} was not set`);
+    res.status(500).json({ error: `API checkTrips error: API URL for chain id ${chainIdNumber} was not set` });
     return;
   }
 
@@ -80,9 +81,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 carId: Number(i.carId),
                 ownerAddress: hostAddress,
                 image: getIpfsURIfromPinata(meta.image),
-                brand: meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "",
-                model: meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
-                year: meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
+                brand: i.brand,
+                model: i.model,
+                year: i.yearOfProduction.toString(),
                 licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
                 pricePerDay: pricePerDay,
                 securityDeposit: securityDeposit,

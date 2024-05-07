@@ -7,6 +7,7 @@ import SendMessage from "@/components/chat/sendMessage";
 import RntButton from "@/components/common/rntButton";
 import { ChatInfo } from "@/model/ChatInfo";
 import { ElementRef, useEffect, useRef } from "react";
+import { TFunction } from "@/utils/i18n";
 
 export default function ChatPage({
   isHost,
@@ -14,12 +15,14 @@ export default function ChatPage({
   selectedTridId,
   selectChat,
   sendMessage,
+  t,
 }: {
   isHost: boolean;
   chats: ChatInfo[];
   selectedTridId: number;
   selectChat: (tripId: number) => void;
   sendMessage: (toAddress: string, tripId: number, message: string) => Promise<void>;
+  t: TFunction;
 }) {
   const pageTitle = document.getElementById("page-title") as HTMLDivElement;
   const selectedChatRef = useRef<ElementRef<"div">>(pageTitle);
@@ -41,15 +44,16 @@ export default function ChatPage({
           selectChatCallback={(tripId) => {
             selectChat(tripId);
           }}
+          t={t}
         />
       ) : (
         <div className="w-full xl:w-3/5 flex flex-col gap-2">
           <RntButton className="w-40 h-12" onClick={() => selectChat(-1)}>
-            Back
+            {t("back")}
           </RntButton>
 
           <div className="font-bold text-2xl">{selectedChat.hostName}</div>
-          <ChatHeader selectedChat={selectedChat} />
+          <ChatHeader selectedChat={selectedChat} t={t} />
           <ChatMessages selectedChat={selectedChat} isHost={isHost} />
           <SendMessage
             sendMessageCallback={async (message: string) => {
@@ -59,6 +63,7 @@ export default function ChatPage({
                 message
               );
             }}
+            t={t}
           />
         </div>
       )}

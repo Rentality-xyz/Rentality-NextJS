@@ -25,7 +25,7 @@ export default function TransactionHistoryMobileCard(props: Props) {
       {!isHost && (
         <div>
           <div className="flex text-sm justify-between mx-4 mb-2">
-            <span>Trispan payments</span>
+            <span>Trip payments</span>
             <span>${transaction.tripPayment}</span>
           </div>
           <div className="flex text-sm justify-between mx-4 mb-2">

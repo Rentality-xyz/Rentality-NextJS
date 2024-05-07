@@ -17,6 +17,9 @@ export type Claim = {
   rejectedDateInSec: number;
   hostPhoneNumber: string;
   guestPhoneNumber: string;
+  tripDays: number;
+  isIncomingClaim: boolean;
+  fileUrls: string[];
 };
 
 export enum ClaimTypeEnum {
@@ -46,6 +49,10 @@ export const getClaimTypeTextFromClaimType = (status: ClaimType) => {
       return "Exterior damage";
     case ClaimType.InteriorDamage:
       return "Interior damage";
+    case ClaimType.FaultyVehicle:
+      return "The vehicle is faulty";
+    case ClaimType.ListingMismatch:
+      return "Vehicle does not match listing";
     case ClaimType.Other:
     default:
       return "Other";

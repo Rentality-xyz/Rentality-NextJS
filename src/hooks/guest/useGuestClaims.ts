@@ -1,23 +1,81 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
+import { formatPhoneNumber, getDateFromBlockchainTime, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { Claim, getClaimStatusTextFromStatus, getClaimTypeTextFromClaimType } from "@/model/Claim";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { ContractFullClaimInfo } from "@/model/blockchain/schemas";
-import { validateContractFullClaimInfo } from "@/model/blockchain/schemas_utils";
+import {
+  ContractCreateClaimRequest,
+  ContractFullClaimInfo,
+  ContractTripDTO,
+  TripStatus,
+} from "@/model/blockchain/schemas";
+import { validateContractFullClaimInfo, validateContractTripDTO } from "@/model/blockchain/schemas_utils";
+import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
+import encodeClaimChatMessage from "@/components/chat/utils";
+import { useChat } from "@/contexts/chatContext";
+import { uploadFileToIPFS } from "@/utils/pinata";
+import { SMARTCONTRACT_VERSION } from "@/abis";
+import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
+import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 
 const useGuestClaims = () => {
-  const ethereumInfo = useEthereum();
   const rentalityContract = useRentality();
+  const ethereumInfo = useEthereum();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [claims, setClaims] = useState<Claim[]>([]);
+  const chatContextInfo = useChat();
+  const [tripInfos, setTripInfos] = useState<TripInfoForClaimCreation[]>([
+    { tripId: 0, guestAddress: "", tripDescription: "Loading...", tripStart: new Date() },
+  ]);
 
-  const payClaim = async (claimId: number) => {
-    if (!ethereumInfo) {
-      console.error("payClaim error: ethereumInfo is null");
+  const createClaim = async (createClaimRequest: CreateClaimRequest) => {
+    if (rentalityContract === null) {
+      console.error("createClaim: rentalityContract is null");
       return false;
     }
+
+    try {
+      const filesToSave = createClaimRequest.localFileUrls.filter((i) => i);
+      const savedFiles: string[] = [];
+
+      if (filesToSave.length > 0) {
+        filesToSave.forEach(async (file) => {
+          const response = await uploadFileToIPFS(file.file, "RentalityClaimFile", {
+            createdAt: new Date().toISOString(),
+            createdBy: ethereumInfo?.walletAddress ?? "",
+            version: SMARTCONTRACT_VERSION,
+            chainId: ethereumInfo?.chainId ?? 0,
+          });
+
+          if (!response.success || !response.pinataURL) {
+            throw new Error("Uploaded image to Pinata error");
+          }
+          savedFiles.push(response.pinataURL);
+        });
+      }
+
+      const claimRequest: ContractCreateClaimRequest = {
+        tripId: BigInt(createClaimRequest.tripId),
+        claimType: createClaimRequest.claimType,
+        description: createClaimRequest.description,
+        amountInUsdCents: BigInt(createClaimRequest.amountInUsdCents),
+        photosUrl: savedFiles.join("|"),
+      };
+
+      const transaction = await rentalityContract.createClaim(claimRequest);
+      await transaction.wait();
+
+      const message = encodeClaimChatMessage(createClaimRequest);
+      chatContextInfo.sendMessage(createClaimRequest.guestAddress, createClaimRequest.tripId, message);
+      return true;
+    } catch (e) {
+      console.error("createClaim error:" + e);
+      return false;
+    }
+  };
+
+  const payClaim = async (claimId: number) => {
     if (!rentalityContract) {
       console.error("payClaim error: rentalityContract is null");
       return false;
@@ -34,6 +92,22 @@ const useGuestClaims = () => {
       return true;
     } catch (e) {
       console.error("payClaim error:" + e);
+      return false;
+    }
+  };
+
+  const cancelClaim = async (claimId: number) => {
+    if (!rentalityContract) {
+      console.error("cancelClaim error: rentalityContract is null");
+      return false;
+    }
+
+    try {
+      const transaction = await rentalityContract.rejectClaim(BigInt(claimId));
+      await transaction.wait();
+      return true;
+    } catch (e) {
+      console.error("cancelClaim error:" + e);
       return false;
     }
   };
@@ -73,12 +147,51 @@ const useGuestClaims = () => {
                     rejectedDateInSec: Number(i.claim.rejectedDateInSec),
                     hostPhoneNumber: formatPhoneNumber(i.hostPhoneNumber),
                     guestPhoneNumber: formatPhoneNumber(i.guestPhoneNumber),
+                    tripDays: 0,
+                    isIncomingClaim: i.claim.isHostClaims,
+                    fileUrls: i.claim.photosUrl.split("|").map((url) => getIpfsURIfromPinata(url)),
                   };
                   return item;
                 })
               );
 
-        return claimsData;
+        const guestTripsView: ContractTripDTO[] = (await rentalityContract.getTripsAsGuest()).filter(
+          (i) => i.trip.status !== TripStatus.Pending && i.trip.status !== TripStatus.Rejected
+        );
+
+        const guestTripsData =
+          guestTripsView.length === 0
+            ? []
+            : await Promise.all(
+                guestTripsView.map(async (i: ContractTripDTO, index) => {
+                  if (index === 0) {
+                    validateContractTripDTO(i);
+                  }
+
+                  const meta = await getMetaDataFromIpfs(i.metadataURI);
+
+                  const brand = meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
+                  const model = meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
+                  const year = meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "";
+                  const guestName = i.trip.guestName;
+                  const tripStart = getDateFromBlockchainTimeWithTZ(i.trip.startDateTime, i.timeZoneId);
+                  const tripEnd = getDateFromBlockchainTimeWithTZ(i.trip.endDateTime, i.timeZoneId);
+
+                  let item: TripInfoForClaimCreation = {
+                    tripId: Number(i.trip.tripId),
+                    guestAddress: i.trip.guest,
+                    tripDescription: `${brand} ${model} ${year} ${guestName} trip ${dateRangeFormatShortMonthDateYear(
+                      tripStart,
+                      tripEnd,
+                      i.timeZoneId
+                    )}`,
+                    tripStart: tripStart,
+                  };
+                  return item;
+                })
+              );
+
+        return { guestTripsData, claimsData };
       } catch (e) {
         console.error("getClaims error:" + e);
       }
@@ -90,10 +203,10 @@ const useGuestClaims = () => {
 
     getClaims(rentalityContract)
       .then((data) => {
-        setClaims(data ?? []);
-        setIsLoading(false);
+        setClaims(data?.claimsData ?? []);
+        setTripInfos(data?.guestTripsData ?? []);
       })
-      .catch(() => setIsLoading(false));
+      .finally(() => setIsLoading(false));
   }, [rentalityContract]);
 
   const sortedClaims = useMemo(() => {
@@ -102,7 +215,13 @@ const useGuestClaims = () => {
     });
   }, [claims]);
 
-  return [isLoading, sortedClaims, payClaim] as const;
+  const sortedTripInfos = useMemo(() => {
+    return [...tripInfos].sort((a, b) => {
+      return b.tripStart.getTime() - a.tripStart.getTime();
+    });
+  }, [tripInfos]);
+
+  return { isLoading, claims: sortedClaims, tripInfos: sortedTripInfos, createClaim, payClaim, cancelClaim } as const;
 };
 
 export default useGuestClaims;

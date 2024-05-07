@@ -1,9 +1,10 @@
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import { ContractFullClaimInfo, ContractTripDTO, TripStatus } from "./blockchain/schemas";
-import { getDateFromBlockchainTime, getStringFromMoneyInCents } from "@/utils/formInput";
+import { getDateFromBlockchainTime } from "@/utils/formInput";
 import { UTC_TIME_ZONE_ID, calculateDays } from "@/utils/date";
 import { isEmpty } from "@/utils/string";
 import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
+import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
 
 export type NotificationInfo = {
   id: string;
@@ -43,9 +44,9 @@ export function createNotificationInfoFromTrip(
           ? `${tripDTO.trip.guestName} wants to book you ${carDescription} ${dateFormatShortMonthDateTime(
               startDateTime,
               timeZoneId
-            )} - ${dateFormatShortMonthDateTime(endDateTime, timeZoneId)} for $${getStringFromMoneyInCents(
+            )} - ${dateFormatShortMonthDateTime(endDateTime, timeZoneId)} for $${displayMoneyFromCentsWith2Digits(
               tripDTO.trip.paymentInfo.totalDayPriceInUsdCents + tripDTO.trip.paymentInfo.depositInUsdCents
-            )} including deposit $${getStringFromMoneyInCents(tripDTO.trip.paymentInfo.depositInUsdCents)}`
+            )} including deposit $${displayMoneyFromCentsWith2Digits(tripDTO.trip.paymentInfo.depositInUsdCents)}`
           : `You sent a request to book ${carDescription}. Expect confirmation within 1 hour from Host.`,
       };
     case TripStatus.Rejected:
@@ -76,18 +77,18 @@ export function createNotificationInfoFromTrip(
             )} days trip, with you ${carDescription}, ${dateFormatShortMonthDateTime(
               startDateTime,
               timeZoneId
-            )} - ${dateFormatShortMonthDateTime(endDateTime, timeZoneId)} for $${getStringFromMoneyInCents(
+            )} - ${dateFormatShortMonthDateTime(endDateTime, timeZoneId)} for $${displayMoneyFromCentsWith2Digits(
               tripDTO.trip.paymentInfo.totalDayPriceInUsdCents + tripDTO.trip.paymentInfo.depositInUsdCents
-            )} including deposit $${getStringFromMoneyInCents(tripDTO.trip.paymentInfo.depositInUsdCents)}`
+            )} including deposit $${displayMoneyFromCentsWith2Digits(tripDTO.trip.paymentInfo.depositInUsdCents)}`
           : `${tripDTO.trip.hostName} has confirmed your request for a ${calculateDays(
               startDateTime,
               endDateTime
             )}-day trip on ${carDescription}, scheduled from ${dateFormatShortMonthDateTime(
               startDateTime,
               timeZoneId
-            )} to ${dateFormatShortMonthDateTime(endDateTime, timeZoneId)} for $${getStringFromMoneyInCents(
+            )} to ${dateFormatShortMonthDateTime(endDateTime, timeZoneId)} for $${displayMoneyFromCentsWith2Digits(
               tripDTO.trip.paymentInfo.totalDayPriceInUsdCents + tripDTO.trip.paymentInfo.depositInUsdCents
-            )} including a $${getStringFromMoneyInCents(tripDTO.trip.paymentInfo.depositInUsdCents)} deposit`,
+            )} including a $${displayMoneyFromCentsWith2Digits(tripDTO.trip.paymentInfo.depositInUsdCents)} deposit`,
       };
     case TripStatus.CheckedInByHost:
       return isHost
@@ -137,42 +138,62 @@ export function createNotificationInfoFromTrip(
               tripDTO.trip.hostName
             } has marked trip #${tripDTO.trip.tripId.toString()} as finished on ${carDescription}. Deposit returned after the Host marked the order as closed`,
           };
-    case TripStatus.Closed:
+    case TripStatus.CompletedWithoutGuestComfirmation:
       return {
         id: notificationId,
-        type: NotificationType.History,
-        title: isHost ? `You completed trip` : `Host completed trip`,
+        type: NotificationType.Booked,
+        title: `Finish the trip without guest confirmation`,
         datestamp: timestamp,
         message: isHost
-          ? `You closed the order #${tripDTO.trip.tripId.toString()} for ${
-              tripDTO.trip.guestName
-            } trip on ${carDescription}. 
+          ? `You finished the trip without guest confirmation. You will not receive the earnings until the guest confirms the completion of the trip. Contact the guest if necessary.`
+          : `Host finished the trip without guest confirmation. Please confirm finish trip or contact the host.`,
+      };
+    case TripStatus.Closed:
+      return tripDTO.trip.tripFinishedBy.toLowerCase() === tripDTO.trip.host.toLowerCase()
+        ? {
+            id: notificationId,
+            type: NotificationType.History,
+            title: isHost ? `Guest confirm finish trip` : "You confirm finish trip",
+            datestamp: timestamp,
+            message: isHost
+              ? "The guest confirmed the completion of the trip."
+              : "You confirmed the completion of the trip.",
+          }
+        : {
+            id: notificationId,
+            type: NotificationType.History,
+            title: isHost ? `You completed trip` : `Host completed trip`,
+            datestamp: timestamp,
+            message: isHost
+              ? `You closed the order #${tripDTO.trip.tripId.toString()} for ${
+                  tripDTO.trip.guestName
+                } trip on ${carDescription}. 
               Security deposit info:
-              Received deposit $${getStringFromMoneyInCents(tripDTO.trip.paymentInfo.depositInUsdCents)}
-              ReFuel reimbursement $${getStringFromMoneyInCents(tripDTO.trip.paymentInfo.resolveFuelAmountInUsdCents)}
-              Overmiles reimbursement $${getStringFromMoneyInCents(
+              Received deposit $${displayMoneyFromCentsWith2Digits(tripDTO.trip.paymentInfo.depositInUsdCents)}
+              ReFuel reimbursement $${displayMoneyFromCentsWith2Digits(tripDTO.trip.paymentInfo.resolveFuelAmountInUsdCents)}
+              Overmiles reimbursement $${displayMoneyFromCentsWith2Digits(
                 tripDTO.trip.paymentInfo.resolveMilesAmountInUsdCents
               )}
-              Deposit returned $${getStringFromMoneyInCents(
+              Deposit returned $${displayMoneyFromCentsWith2Digits(
                 tripDTO.trip.paymentInfo.depositInUsdCents -
                   tripDTO.trip.paymentInfo.resolveFuelAmountInUsdCents -
                   tripDTO.trip.paymentInfo.resolveMilesAmountInUsdCents
               )}`
-          : `${
-              tripDTO.trip.hostName
-            } closed the order #${tripDTO.trip.tripId.toString()} for your trip on ${carDescription}. 
+              : `${
+                  tripDTO.trip.hostName
+                } closed the order #${tripDTO.trip.tripId.toString()} for your trip on ${carDescription}. 
               Security deposit info:
-              Received deposit$${getStringFromMoneyInCents(tripDTO.trip.paymentInfo.depositInUsdCents)}
-              ReFuel reimbursement $${getStringFromMoneyInCents(tripDTO.trip.paymentInfo.resolveFuelAmountInUsdCents)}
-              Overmiles reimbursement $${getStringFromMoneyInCents(
+              Received deposit$${displayMoneyFromCentsWith2Digits(tripDTO.trip.paymentInfo.depositInUsdCents)}
+              ReFuel reimbursement $${displayMoneyFromCentsWith2Digits(tripDTO.trip.paymentInfo.resolveFuelAmountInUsdCents)}
+              Overmiles reimbursement $${displayMoneyFromCentsWith2Digits(
                 tripDTO.trip.paymentInfo.resolveMilesAmountInUsdCents
               )}
-              Deposit returned $${getStringFromMoneyInCents(
+              Deposit returned $${displayMoneyFromCentsWith2Digits(
                 tripDTO.trip.paymentInfo.depositInUsdCents -
                   tripDTO.trip.paymentInfo.resolveFuelAmountInUsdCents -
                   tripDTO.trip.paymentInfo.resolveMilesAmountInUsdCents
               )}`,
-      };
+          };
     default:
       return {
         id: notificationId,
@@ -201,12 +222,12 @@ export function createNotificationInfoFromClaim(
     title: `Claim requested`,
     datestamp: timestamp,
     message: isHost
-      ? `You sent to the ${tripDTO.trip.guestName} a new invoice for $${getStringFromMoneyInCents(
+      ? `You sent to the ${tripDTO.trip.guestName} a new invoice for $${displayMoneyFromCentsWith2Digits(
           claimInfo.claim.amountInUsdCents
         )} due for incidentals incurred during trip with you ${carDescription}.
       Payment deadline to this invoice by ${dateFormatShortMonthDateTime(deadlineDateTime, timeZoneId)}.
       Your complaints will be public.`
-      : `You have a new invoice for $${getStringFromMoneyInCents(
+      : `You have a new invoice for $${displayMoneyFromCentsWith2Digits(
           claimInfo.claim.amountInUsdCents
         )} due for incidentals incurred during your trip with ${tripDTO.trip.hostName}'s ${carDescription}.
       Please respond to this invoice by ${dateFormatShortMonthDateTime(
@@ -245,7 +266,12 @@ export async function createTripChangedNotification(
   const year = meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "";
   const carDescription = `${brand} ${model} ${year}`;
 
-  return createNotificationInfoFromTrip(tripStatus, tripDTO, carDescription, eventDate, isHost);
+  const updatedTripStatus =
+    tripStatus === TripStatus.Finished && tripDTO.trip.tripFinishedBy.toLowerCase() === tripDTO.trip.host.toLowerCase()
+      ? TripStatus.CompletedWithoutGuestComfirmation
+      : tripStatus;
+
+  return createNotificationInfoFromTrip(updatedTripStatus, tripDTO, carDescription, eventDate, isHost);
 }
 
 export async function createClaimCreatedChangedNotification(

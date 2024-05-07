@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { uploadFileToIPFS, uploadJSONToIPFS } from "../../utils/pinata";
 import { HostCarInfo, UNLIMITED_MILES_VALUE, UNLIMITED_MILES_VALUE_TEXT, verifyCar } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PATROL_STRING, getEngineTypeCode } from "@/model/EngineType";
@@ -7,6 +6,7 @@ import { getMoneyInCentsFromString } from "@/utils/formInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { ContractCreateCarRequest } from "@/model/blockchain/schemas";
+import { uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
 
 const emptyNewCarInfo: HostCarInfo = {
   carId: 0,
