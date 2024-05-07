@@ -337,10 +337,7 @@ export default function Search() {
                     </div>
                   )}
                 </div>
-                <CarSearchMap
-                  carInfos={searchResult?.carInfos}
-                  onMarkerClick={handleMapClick}
-                />
+                <CarSearchMap carInfos={searchResult?.carInfos} onMarkerClick={handleMapClick} />
               </div>
             </>
           )}
