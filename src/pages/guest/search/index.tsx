@@ -21,6 +21,8 @@ import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
 import moment from "moment";
 import { ParseLocationResponse } from "@/pages/api/parseLocation";
+import Image from "next/image";
+import mapArrow from "@/images/arrUpBtn.png";
 import FilterSlidingPanel from "@/components/search/filterSlidingPanel";
 
 export default function Search() {
@@ -218,6 +220,12 @@ export default function Search() {
     return t_page("elements." + element);
   };
 
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleArrowClick = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   return (
     <GoogleMapsProvider libraries={["maps", "marker", "places"]}>
       <Layout>
@@ -307,8 +315,8 @@ export default function Search() {
               <div className="text-l font-bold mb-4">
                 {searchResult?.carInfos?.length ?? 0} {t_page("info.cars_available")}
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col">
+              <div className="flex gap-3 max-xl:flex-col-reverse">
+                <div className="xl:w-8/12 2xl:w-7/12 fullHD:w-6/12 my-4 flex flex-col gap-4">
                   {searchResult?.carInfos?.length > 0 ? (
                     searchResult?.carInfos
                       .sort((a: SearchCarInfo, b: SearchCarInfo) => {
@@ -337,7 +345,23 @@ export default function Search() {
                     </div>
                   )}
                 </div>
-                <CarSearchMap carInfos={searchResult?.carInfos} onMarkerClick={handleMapClick} />
+                <div className="xl:w-4/12 2xl:w-5/12 fullHD:w-6/12 relative max-xl:mb-8">
+                  <CarSearchMap
+                    carInfos={searchResult?.carInfos}
+                    onMarkerClick={handleMapClick}
+                    isExpanded={isExpanded}
+                  />
+                  <div
+                    className="absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 flex justify-center items-center xl:hidden z-[99] w-[48px] h-[48px] cursor-pointer bg-[url('../images/ellipseUpBtn.png')] bg-cover bg-no-repeat bg-center"
+                    onClick={handleArrowClick}
+                  >
+                    <Image
+                      src={mapArrow}
+                      alt=""
+                      className={`w-[32px] h-[22px] ${isExpanded ? "transform rotate-0" : "transform rotate-180"}`}
+                    />
+                  </div>
+                </div>
               </div>
             </>
           )}
