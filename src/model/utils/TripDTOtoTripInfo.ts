@@ -27,7 +27,7 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
     licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
     tankVolumeInGal: Number(meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "0"),
     engineType: i.trip.engineType,
-    fuelPricePerGal: i.trip.engineType === EngineType.PATROL ? Number(i.trip.fuelPrice) / 100 : 0,
+    fuelPricePerGal: i.trip.engineType === EngineType.PETROL ? Number(i.trip.fuelPrice) / 100 : 0,
     fullBatteryChargePriceInUsdCents: i.trip.engineType === EngineType.ELECTRIC ? Number(i.trip.fuelPrice) / 100 : 0,
     milesIncludedPerDay: Number(i.trip.milesIncludedPerDay),
     timeZoneId: timeZoneId,

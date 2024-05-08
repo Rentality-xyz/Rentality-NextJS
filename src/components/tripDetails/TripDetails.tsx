@@ -2,13 +2,12 @@ import PageTitle from "../pageTitle/pageTitle";
 import RntButton from "../common/rntButton";
 import TripCard from "@/components/tripCard/tripCard";
 import Image from "next/image";
-import carDoorsIcon from "@/images/car_doors.png";
-import carSeatsIcon from "@/images/car_seats.png";
-import carEngineTypeIcon from "@/images/car_engine_type.png";
-import carTransmissionIcon from "@/images/car_transmission.png";
-import carTankSizeIcon from "@/images/car_tank_size.png";
-import carColourIcon from "@/images/car_colour.png";
-import { getEngineTypeString } from "@/model/EngineType";
+import carDoorsIcon from "@/images/car_doors.svg";
+import carSeatsIcon from "@/images/car_seats.svg";
+import carTransmissionIcon from "@/images/car_transmission.svg";
+import carTankSizeIcon from "@/images/car_tank_size.svg";
+import carColourIcon from "@/images/car_colour.svg";
+import {getEngineTypeIcon, getEngineTypeString} from "@/model/EngineType";
 import moment from "moment";
 import RntContractModal from "@/components/common/rntContractModal";
 import useTripInfo from "@/hooks/useTripInfo";
@@ -66,23 +65,23 @@ export default function TripInfo({ tripId, t }: { tripId: bigint; t: TFunctionNe
                   <strong className="text-xl text-[#52D1C9]">{t_details("basic_car_details")}</strong>
                 </div>
                 <div className="flex flex-wrap p-2">
-                  <div className="flex w-40 items-center m-2">
+                  <div className="flex w-28 items-center m-2">
                     <Image className="me-1" src={carDoorsIcon} width={30} height={30} alt="" />
                     {tripInfo.carDoorsNumber} {t_details("doors")}
                   </div>
-                  <div className="flex w-40 items-center m-2">
+                  <div className="flex w-28 items-center m-2">
                     <Image className="me-1" src={carSeatsIcon} width={30} height={30} alt="" />
                     {tripInfo.carSeatsNumber} {t_details("seats")}
                   </div>
-                  <div className="flex w-40 items-center m-2">
-                    <Image className="me-1" src={carEngineTypeIcon} width={30} height={30} alt="" />
+                  <div className="flex w-48 items-center m-2">
+                    <Image className="me-1" src={getEngineTypeIcon(tripInfo.engineType)} width={50} height={30} alt="" />
                     {t("vehicles.engine_type")} {getEngineTypeString(tripInfo.engineType)}
                   </div>
                   <div className="flex w-40 items-center m-2 word-break">
                     <Image className="me-1" src={carTransmissionIcon} width={30} height={30} alt="" />
                     {t("vehicles.transmission")}: {tripInfo.carTransmission}
                   </div>
-                  <div className="flex w-40 items-center m-2">
+                  <div className="flex w-44 items-center m-2">
                     <Image className="me-1" src={carTankSizeIcon} width={30} height={30} alt="" />
                     {t("vehicles.tank_size")}: {tripInfo.tankVolumeInGal}
                   </div>

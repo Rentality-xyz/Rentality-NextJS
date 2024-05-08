@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Dispatch, SetStateAction, useState, useEffect } from "react";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 import Checkbox from "@/components/common/checkbox";
-import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PATROL_STRING } from "@/model/EngineType";
+import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/EngineType";
 import RntButton from "@/components/common/rntButton";
 import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import { TFunction } from "@/utils/i18n";
@@ -206,7 +206,7 @@ export default function CarEditForm({
             }}
           >
             <option className="hidden" disabled></option>
-            <option value={ENGINE_TYPE_PATROL_STRING}>{t_car("gasoline")}</option>
+            <option value={ENGINE_TYPE_PETROL_STRING}>{t_car("gasoline")}</option>
             <option value={ENGINE_TYPE_ELECTRIC_STRING}>{t_car("electric")}</option>
           </RntSelect>
         </div>

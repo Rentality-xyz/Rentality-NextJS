@@ -138,9 +138,9 @@ export const getBatteryChargeFromDiffs = (fuelDiffsInPercents: number, fullBatte
 export const getRefuelValueAndCharge = (tripInfo: TripInfo, endFuelLevelInPercents: number) => {
   const fuelDiffsInPercents = Math.max(tripInfo.startFuelLevelInPercents - endFuelLevelInPercents, 0);
   const refuelValue =
-    tripInfo.engineType === EngineType.PATROL ? (fuelDiffsInPercents * tripInfo.tankVolumeInGal) / 100 : 0;
+    tripInfo.engineType === EngineType.PETROL ? (fuelDiffsInPercents * tripInfo.tankVolumeInGal) / 100 : 0;
   const refuelCharge =
-    tripInfo.engineType === EngineType.PATROL
+    tripInfo.engineType === EngineType.PETROL
       ? refuelValue * tripInfo.fuelPricePerGal
       : getBatteryChargeFromDiffs(fuelDiffsInPercents, tripInfo.fullBatteryChargePriceInUsdCents);
   return { refuelValue, refuelCharge };

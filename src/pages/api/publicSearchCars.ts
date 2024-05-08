@@ -84,7 +84,7 @@ const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: Co
         year: i.yearOfProduction.toString(),
         seatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats number")?.value ?? "",
         transmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
-        engineTypeText: getEngineTypeString(i.engineType ?? EngineType.PATROL),
+        engineTypeText: getEngineTypeString(i.engineType ?? EngineType.PETROL),
         milesIncludedPerDay: getMilesIncludedPerDayText(i.milesIncludedPerDay ?? 0),
         pricePerDay: pricePerDay,
         pricePerDayWithDiscount: pricePerDayWithDiscount,
