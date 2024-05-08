@@ -10,7 +10,7 @@ import RentalityTripServiceJSON_ABI from "./RentalityTripService.v0_17_0.abi.jso
 import RentalityTripServiceJSON_ADDRESSES from "./RentalityTripService.v0_17_0.addresses.json";
 import RentalityClaimServiceJSON_ABI from "./RentalityClaimService.v0_17_0.abi.json";
 import RentalityClaimServiceJSON_ADDRESSES from "./RentalityClaimService.v0_17_0.addresses.json";
-import { Contract, Signer } from "ethers";
+import {Contract, Signer} from "ethers";
 
 export const SMARTCONTRACT_VERSION = "v0_17_0";
 
@@ -51,13 +51,11 @@ export async function getEtherContractWithSigner(contract: keyof typeof rentalit
     const chainId = Number((await signer.provider?.getNetwork())?.chainId);
 
     const selectedChain = rentalityContracts[contract].addresses.find((i) => i.chainId === chainId);
-
     if (!selectedChain) {
       console.error(`getEtherContract error: ${contract} address for chainId ${chainId} is not found`);
       return null;
     }
-    const etherContract = new Contract(selectedChain.address, rentalityContracts[contract].abi, signer);
-    return etherContract;
+    return new Contract(selectedChain.address, rentalityContracts[contract].abi, signer);
 
     // switch (contract) {
     //   case "admin":
