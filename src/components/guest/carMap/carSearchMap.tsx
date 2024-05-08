@@ -17,7 +17,7 @@ export default function CarSearchMap({
 }: {
   carInfos: SearchCarInfo[];
   setSelected: (carID: Number) => void;
-  selectedCarID : Number | null
+  selectedCarID: Number | null;
   isExpanded: boolean;
 }) {
   const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -85,7 +85,7 @@ export default function CarSearchMap({
   };
 
   const { googleMapsAPIIsLoaded } = useGoogleMapsContext();
-  
+
   const googleMapElementID = useMemo(() => {
     return `google-maps-${crypto.randomUUID()}-id`;
   }, []);
@@ -108,9 +108,13 @@ export default function CarSearchMap({
           position={carInfo.location}
           onClick={(e) => setSelected(Number(e.domEvent.target.id))}
         >
-          <div 
-          	id={carInfo.carId.toString()}
-          	className={"text-center rounded-full text-white text-lg buttonGradient w-24 h-8" + (selectedCarID == carInfo.carId ? " border-2":"")}>
+          <div
+            id={carInfo.carId.toString()}
+            className={
+              "text-center rounded-full text-white text-lg buttonGradient w-24 h-8" +
+              (selectedCarID == carInfo.carId ? " border-2" : "")
+            }
+          >
             ${carInfo.pricePerDayWithDiscount}
           </div>
         </Marker>

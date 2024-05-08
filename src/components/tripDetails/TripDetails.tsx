@@ -7,7 +7,7 @@ import carSeatsIcon from "@/images/car_seats.svg";
 import carTransmissionIcon from "@/images/car_transmission.svg";
 import carTankSizeIcon from "@/images/car_tank_size.svg";
 import carColourIcon from "@/images/car_colour.svg";
-import {getEngineTypeIcon, getEngineTypeString} from "@/model/EngineType";
+import { getEngineTypeIcon, getEngineTypeString } from "@/model/EngineType";
 import moment from "moment";
 import RntContractModal from "@/components/common/rntContractModal";
 import useTripInfo from "@/hooks/useTripInfo";
@@ -74,7 +74,13 @@ export default function TripInfo({ tripId, t }: { tripId: bigint; t: TFunctionNe
                     {tripInfo.carSeatsNumber} {t_details("seats")}
                   </div>
                   <div className="flex w-48 items-center m-2">
-                    <Image className="me-1" src={getEngineTypeIcon(tripInfo.engineType)} width={50} height={30} alt="" />
+                    <Image
+                      className="me-1"
+                      src={getEngineTypeIcon(tripInfo.engineType)}
+                      width={50}
+                      height={30}
+                      alt=""
+                    />
                     {t("vehicles.engine_type")} {getEngineTypeString(tripInfo.engineType)}
                   </div>
                   <div className="flex w-40 items-center m-2 word-break">

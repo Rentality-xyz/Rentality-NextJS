@@ -2,7 +2,6 @@ import { EngineType } from "./blockchain/schemas";
 import carEngineTypePetrolIcon from "@/images/car_engine_type_petrol.svg";
 import electricEngineTypeIcon from "@/images/car_engine_type_electric.svg";
 
-
 export const ENGINE_TYPE_PETROL_STRING = "Gasoline";
 export const ENGINE_TYPE_ELECTRIC_STRING = "Electro";
 
