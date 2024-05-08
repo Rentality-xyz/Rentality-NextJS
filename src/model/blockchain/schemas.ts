@@ -388,6 +388,6 @@ export const TaxesLocationType = {
 
 export type EngineType = bigint;
 export const EngineType = {
-  PATROL: BigInt(1),
+  PETROL: BigInt(1),
   ELECTRIC: BigInt(2),
 };

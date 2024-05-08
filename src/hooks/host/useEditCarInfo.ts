@@ -1,7 +1,7 @@
 import { ContractTransactionResponse, Signer } from "ethers";
 import { useEffect, useState } from "react";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PATROL_STRING, getEngineTypeString } from "@/model/EngineType";
+import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "@/model/EngineType";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import {
   HostCarInfo,
@@ -72,7 +72,7 @@ const useEditCarInfo = (carId: number) => {
       const securityDepositPerTripInUsdCents = BigInt(getMoneyInCentsFromString(carInfoFormParams.securityDeposit));
 
       const engineParams: bigint[] = [];
-      if (carInfoFormParams.engineTypeText === ENGINE_TYPE_PATROL_STRING) {
+      if (carInfoFormParams.engineTypeText === ENGINE_TYPE_PETROL_STRING) {
         engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.fuelPricePerGal)));
       } else if (carInfoFormParams.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING) {
         engineParams.push(BigInt(getMoneyInCentsFromString(carInfoFormParams.fullBatteryChargePrice)));
@@ -140,7 +140,7 @@ const useEditCarInfo = (carId: number) => {
         const engineTypeString = getEngineTypeString(carInfoDetails.engineType);
 
         const fuelPricePerGal =
-          engineTypeString === ENGINE_TYPE_PATROL_STRING
+          engineTypeString === ENGINE_TYPE_PETROL_STRING
             ? displayMoneyFromCentsWith2Digits(carInfoDetails.engineParams[1])
             : "";
         const fullBatteryChargePrice =

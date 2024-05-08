@@ -1,5 +1,5 @@
 import { isEmpty } from "@/utils/string";
-import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PATROL_STRING } from "./EngineType";
+import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "./EngineType";
 
 export const UNLIMITED_MILES_VALUE_TEXT = "Unlimited";
 export const UNLIMITED_MILES_VALUE = 999_999_999;
@@ -73,8 +73,8 @@ export const verifyCar = (carInfoFormParams: HostCarInfo) => {
     !isEmpty(carInfoFormParams.securityDeposit) &&
     !isEmpty(carInfoFormParams.locationAddress) &&
     !isEmpty(carInfoFormParams.engineTypeText) &&
-    (carInfoFormParams.engineTypeText !== ENGINE_TYPE_PATROL_STRING || !isEmpty(carInfoFormParams.fuelPricePerGal)) &&
-    (carInfoFormParams.engineTypeText !== ENGINE_TYPE_PATROL_STRING || !isEmpty(carInfoFormParams.tankVolumeInGal)) &&
+    (carInfoFormParams.engineTypeText !== ENGINE_TYPE_PETROL_STRING || !isEmpty(carInfoFormParams.fuelPricePerGal)) &&
+    (carInfoFormParams.engineTypeText !== ENGINE_TYPE_PETROL_STRING || !isEmpty(carInfoFormParams.tankVolumeInGal)) &&
     (carInfoFormParams.engineTypeText !== ENGINE_TYPE_ELECTRIC_STRING ||
       !isEmpty(carInfoFormParams.fullBatteryChargePrice))
   );
