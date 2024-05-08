@@ -1,26 +1,37 @@
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 import RntButton from "../common/rntButton";
 import { Avatar } from "@mui/material";
-import React from "react";
+import { useMemo } from "react";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 
 type TFunction = (key: string, options?: { [key: string]: any }) => string;
+
 export default function CarSearchItem({
   searchInfo,
   handleRentCarRequest,
   disableButton,
+  isSelected,
+  setSelected,
   t,
 }: {
   searchInfo: SearchCarInfo;
   handleRentCarRequest: (carInfo: SearchCarInfo) => void;
   disableButton: boolean;
+  isSelected: boolean;
+  setSelected: (carID: Number) => void;
   t: TFunction;
 }) {
   const t_item: TFunction = (name, options) => {
     return t("car_search_item." + name, options);
   };
+  
+  const mainClasses = useMemo(() => {
+	  const classNames = "bg-rentality-bg rnt-card flex flex-col md:flex-row rounded-xl overflow-hidden cursor-pointer";
+	  return isSelected ? classNames + " border-2":classNames;
+  },[isSelected]);
+  
   return (
-    <div className="bg-rentality-bg rnt-card flex flex-col md:flex-row rounded-xl overflow-hidden">
+    <div className={mainClasses} onClick={() => setSelected(searchInfo.carId)}>
       {/* <div className="w-60 h-full min-h-[14rem] flex-shrink-0">
         <Image
           src={searchInfo.image}
