@@ -13,9 +13,11 @@ import RntButton from "@/components/common/rntButton";
 export default function CarSearchMap({
   carInfos,
   onMarkerClick,
+  isExpanded,
 }: {
   carInfos: SearchCarInfo[];
   onMarkerClick: (carID: Number) => void;
+  isExpanded: boolean;
 }) {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [isSticked, setIsSticked] = useState<boolean>(false);
@@ -29,7 +31,6 @@ export default function CarSearchMap({
       top: isSticked ? "0px" : mapTop.current + "px",
       ...(isSticked && { left: mapLeft.current + "px" }),
       width: isSticked ? mapWidth.current + "px" : "100%",
-      height: "60vh",
       borderRadius: "30px",
     }),
     [isSticked]
@@ -51,7 +52,7 @@ export default function CarSearchMap({
 
     const parentRect = googleMapElementParent.getBoundingClientRect();
 
-    if (parentRect.top <= 0 && !isSticked) {
+    if (parentRect.top <= 0 && window.screen.width >= 1280 && !isSticked) {
       const rect = googleMapElement.getBoundingClientRect();
       mapLeft.current = Math.ceil(rect.left);
       mapTop.current = Math.ceil(rect.top);
@@ -92,7 +93,7 @@ export default function CarSearchMap({
     <GoogleMap
       id={googleMapElementID}
       options={{ mapId: GOOGLE_MAPS_MAP_ID }}
-      mapContainerClassName="w-100"
+      mapContainerClassName={`${isExpanded ? "h-[80vh]" : "h-[12rem]"} xl:h-[60vh] max-xl:transition-height max-xl:duration-300 max-xl:ease-in-out`}
       mapContainerStyle={mapContainerStyle}
       center={DEFAULT_GOOGLE_MAPS_SEARCH_CENTER}
       zoom={DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM}
