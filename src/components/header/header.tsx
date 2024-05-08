@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Stack, styled, Switch, Typography } from "@mui/material";
 import burgerMenu from "../../images/ic-menu-burge-white-20.svg";
@@ -107,4 +106,3 @@ export default function Header({ accountType }: { accountType: string }) {
     </div>
   );
 }
-

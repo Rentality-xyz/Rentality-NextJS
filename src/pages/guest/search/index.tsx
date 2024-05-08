@@ -1,4 +1,3 @@
-
 import CarSearchItem from "@/components/guest/carSearchItem";
 import useSearchCars, { SortOptionKey } from "@/hooks/guest/useSearchCars";
 import { useRouter } from "next/router";
@@ -379,4 +378,3 @@ export default function Search() {
     </GoogleMapsProvider>
   );
 }
-

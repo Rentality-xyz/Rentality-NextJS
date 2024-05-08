@@ -144,4 +144,3 @@ const useSearchCars = () => {
 };
 
 export default useSearchCars;
-
