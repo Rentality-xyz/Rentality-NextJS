@@ -9,10 +9,12 @@ import Link from "next/link";
 import { verifyCar } from "@/model/HostCarInfo";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
+import { useTranslation } from "react-i18next";
 
 export default function EditCar() {
   const router = useRouter();
   const { carId } = router.query;
+  const { t } = useTranslation();
 
   const carIdNumber = Number(carId) ?? -1;
 
@@ -28,26 +30,26 @@ export default function EditCar() {
     const isValidForm = verifyCar(carInfoFormParams);
 
     if (!isValidForm) {
-      showDialog("Please fill in all fields");
+      showDialog(t("vehicles.fill_fields"));
       return;
     }
 
     setCarSaving(true);
 
     try {
-      setMessage("Please wait.. uploading (up to 5 mins)");
+      setMessage(t("vehicles.wait_loading"));
       const result = await saveCarInfo();
 
       if (!result) {
         throw new Error("saveCarInfo error");
       }
-      showInfo("Successfully edited your car info!");
+      showInfo(t("vehicles.edited"));
 
       setCarSaving(false);
       setMessage("");
       router.push("/host/vehicles");
     } catch (e) {
-      showError("Edit car request failed. Please try again");
+      showError(t("vehicles.editing_failed"));
 
       setCarSaving(false);
       setMessage("");
@@ -64,7 +66,7 @@ export default function EditCar() {
         {DialogActions.Cancel(hideDialogs)}
       </>
     );
-    showDialog("Unsaved data will be lost", action);
+    showDialog(t("vehicles.lost_unsaved"), action);
   };
 
   if (!carId) return null;
@@ -72,11 +74,13 @@ export default function EditCar() {
   return (
     <Layout>
       <div className="flex flex-col">
-        <PageTitle title="Edit your car" />
+        <PageTitle title={t("vehicles.edit_car_title")} />
         {isLoading ? (
-          <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">Loading...</div>
+          <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
+            {t("common.info.loading")}
+          </div>
         ) : carInfoFormParams.carId === -1 ? (
-          <h1 className="py-8 text-2xl font-bold text-red-800">Sorry, but you can not edit this car</h1>
+          <h1 className="py-8 text-2xl font-bold text-red-800">{t("vehicles.can_not_edit")}</h1>
         ) : (
           <>
             <CarEditForm
@@ -84,6 +88,7 @@ export default function EditCar() {
               setCarInfoFormParams={setCarInfoFormParams}
               onImageFileChange={async (e) => {}}
               isNewCar={false}
+              t={t}
             />
 
             <div className="flex flex-row gap-4 mb-8 mt-8 items-center">
@@ -91,7 +96,7 @@ export default function EditCar() {
                 Save
               </RntButton>
               <RntButton className="w-40 h-16" onClick={handleBack}>
-                Back
+                {t("common.back")}
               </RntButton>
               <Link href={`/host/vehicles/listings`}></Link>
             </div>

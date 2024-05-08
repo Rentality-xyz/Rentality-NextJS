@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 export type DialogState = {
   isOpen: boolean;
   alertColor: AlertColor;
+  customForm: ReactNode;
   message: string;
   action: ReactNode;
   anchorOrigin: SnackbarOrigin;
@@ -15,6 +16,7 @@ export type DialogState = {
 export const defaultDialogState: DialogState = {
   isOpen: false,
   alertColor: "info",
+  customForm: null,
   message: "",
   action: null,
   anchorOrigin: { vertical: "top", horizontal: "center" },

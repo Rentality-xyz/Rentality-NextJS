@@ -3,6 +3,7 @@ import { useRentality } from "./rentalityContext";
 import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
 import { useEthereum } from "./web3/ethereumContext";
 import { ContractKYCInfo } from "@/model/blockchain/schemas";
+import { tryGetEnsName } from "@/utils/ether";
 
 export type UserInfo = {
   address: string;
@@ -48,7 +49,7 @@ export const UserInfoProvider = ({ children }: { children?: React.ReactNode }) =
 
         setCurrentUserInfo({
           address: ethereumInfo.walletAddress,
-          ensName: await ethereumInfo.provider.lookupAddress(ethereumInfo.walletAddress),
+          ensName: await tryGetEnsName(ethereumInfo.provider, ethereumInfo.walletAddress),
           firstName: myKYCInfo.name,
           lastName: myKYCInfo.surname,
           profilePhotoUrl: getIpfsURIfromPinata(myKYCInfo.profilePhoto),

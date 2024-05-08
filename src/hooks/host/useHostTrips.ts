@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import { TripInfo, AllowedChangeTripAction } from "@/model/TripInfo";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
-import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
-import { ContractTrip, ContractTripDTO, EngineType, TripStatus } from "@/model/blockchain/schemas";
+import { ContractTrip, ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
-import { isEmpty } from "@/utils/string";
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import { mapTripDTOtoTripInfo } from "@/model/utils/TripDTOtoTripInfo";
 
 const useHostTrips = () => {
   const rentalityContract = useRentality();
@@ -66,8 +63,15 @@ const useHostTrips = () => {
       try {
         const startFuelLevelInPercents = BigInt(Number(params[0]) * 100);
         const startOdometr = BigInt(params[1]);
+        const insuranceCompany = params[2];
+        const insuranceNumber = params[3];
 
-        const transaction = await rentalityContract.checkInByHost(tripId, [startFuelLevelInPercents, startOdometr]);
+        const transaction = await rentalityContract.checkInByHost(
+          tripId,
+          [startFuelLevelInPercents, startOdometr],
+          insuranceCompany,
+          insuranceNumber
+        );
         await transaction.wait();
         return true;
       } catch (e) {
@@ -119,12 +123,14 @@ const useHostTrips = () => {
           result.push({
             text: "Confirm",
             readonly: false,
+            isDisplay: true,
             params: [],
             action: acceptRequest,
           });
           result.push({
             text: "Reject",
             readonly: false,
+            isDisplay: true,
             params: [],
             action: rejectRequest,
           });
@@ -133,21 +139,45 @@ const useHostTrips = () => {
           result.push({
             text: "Start",
             readonly: false,
+            isDisplay: true,
             params: [
               { text: "Fuel or battery level, %", value: "", type: "fuel" },
               { text: "Odometer", value: "", type: "text" },
+              { text: "Insurance company name", value: "", type: "text" },
+              { text: "Insurance policy number", value: "", type: "text" },
             ],
             action: checkInTrip,
           });
           break;
         case TripStatus.CheckedInByHost:
+          result.push({
+            text: "Finish",
+            readonly: false,
+            isDisplay: false,
+            params: [
+              { text: "Fuel or battery level, %", value: "", type: "fuel" },
+              { text: "Odometer", value: "", type: "text" },
+            ],
+            action: checkOutTrip,
+          });
           break;
         case TripStatus.Started:
+          result.push({
+            text: "Finish",
+            readonly: false,
+            isDisplay: false,
+            params: [
+              { text: "Fuel or battery level, %", value: "", type: "fuel" },
+              { text: "Odometer", value: "", type: "text" },
+            ],
+            action: checkOutTrip,
+          });
           break;
         case TripStatus.CheckedOutByGuest:
           result.push({
             text: "Finish",
             readonly: true,
+            isDisplay: true,
             params: [
               {
                 text: "Fuel or battery level, %",
@@ -163,10 +193,22 @@ const useHostTrips = () => {
             action: checkOutTrip,
           });
           break;
+        case TripStatus.CompletedWithoutGuestComfirmation:
+          result.push({
+            text: "Contact guest",
+            readonly: false,
+            isDisplay: false,
+            params: [],
+            action: async (tripId: bigint, params: string[]) => {
+              return false;
+            },
+          });
+          break;
         case TripStatus.Finished:
           result.push({
             text: "Complete",
             readonly: false,
+            isDisplay: true,
             params: [],
             action: finishTrip,
           });
@@ -198,68 +240,10 @@ const useHostTrips = () => {
                   }
 
                   const tripContactInfo = await rentalityContract.getTripContactInfo(i.trip.carId);
-                  const meta = await getMetaDataFromIpfs(i.metadataURI);
-                  const tripStatus = i.trip.status;
-                  const tankSize = Number(
-                    meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "0"
-                  );
-                  const timeZoneId = !isEmpty(i.timeZoneId) ? i.timeZoneId : UTC_TIME_ZONE_ID;
 
-                  let item: TripInfo = {
-                    tripId: Number(i.trip.tripId),
-                    carId: Number(i.trip.carId),
-                    image: getIpfsURIfromPinata(meta.image),
-                    brand: meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "",
-                    model: meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
-                    year: meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
-                    licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
-                    tripStart: getDateFromBlockchainTimeWithTZ(i.trip.startDateTime, timeZoneId),
-                    tripEnd: getDateFromBlockchainTimeWithTZ(i.trip.endDateTime, timeZoneId),
-                    locationStart: i.trip.startLocation,
-                    locationEnd: i.trip.endLocation,
-                    status: tripStatus,
-                    allowedActions: getAllowedActions(tripStatus, i.trip),
-                    totalPrice: (Number(i.trip.paymentInfo.totalDayPriceInUsdCents) / 100).toString(),
-                    tankVolumeInGal: tankSize,
-                    startFuelLevelInPercents: Number(i.trip.startParamLevels[0]),
-                    endFuelLevelInPercents: Number(i.trip.endParamLevels[0]),
-                    engineType: i.trip.engineType,
-                    fuelPricePerGal: i.trip.engineType === EngineType.PATROL ? Number(i.trip.fuelPrice) / 100 : 0,
-                    fullBatteryChargePriceInUsdCents:
-                      i.trip.engineType === EngineType.ELECTRIC ? Number(i.trip.fuelPrice) / 100 : 0,
-                    milesIncludedPerDay: Number(i.trip.milesIncludedPerDay),
-                    startOdometr: Number(i.trip.startParamLevels[1]),
-                    endOdometr: Number(i.trip.endParamLevels[1]),
-                    depositPaid: Number(i.trip.paymentInfo.depositInUsdCents) / 100,
-                    overmilePrice: Number(i.trip.pricePerDayInUsdCents) / Number(i.trip.milesIncludedPerDay) / 100,
-                    hostPhoneNumber: formatPhoneNumber(tripContactInfo.hostPhoneNumber),
-                    guestPhoneNumber: formatPhoneNumber(tripContactInfo.guestPhoneNumber),
-                    hostAddress: i.trip.host,
-                    hostName: i.trip.hostName,
-                    guestAddress: i.trip.guest,
-                    guestName: i.trip.guestName,
-                    rejectedBy: i.trip.rejectedBy,
-                    rejectedDate:
-                      i.trip.rejectedDateTime > 0
-                        ? getDateFromBlockchainTimeWithTZ(i.trip.rejectedDateTime, timeZoneId)
-                        : undefined,
-                    createdDateTime: getDateFromBlockchainTimeWithTZ(i.trip.createdDateTime, timeZoneId),
-                    checkedInByHostDateTime: getDateFromBlockchainTimeWithTZ(
-                      i.trip.checkedInByHostDateTime,
-                      timeZoneId
-                    ),
-                    checkedOutByGuestDateTime: getDateFromBlockchainTimeWithTZ(
-                      i.trip.checkedOutByGuestDateTime,
-                      timeZoneId
-                    ),
-                    checkedOutByHostDateTime: getDateFromBlockchainTimeWithTZ(
-                      i.trip.checkedOutByHostDateTime,
-                      timeZoneId
-                    ),
-                    hostPhotoUrl: i.hostPhotoUrl,
-                    guestPhotoUrl: i.guestPhotoUrl,
-                    timeZoneId: timeZoneId,
-                  };
+                  const item = await mapTripDTOtoTripInfo(i, tripContactInfo);
+                  item.allowedActions = getAllowedActions(item.status, i.trip);
+
                   return item;
                 })
               );

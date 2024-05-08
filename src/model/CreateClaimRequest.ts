@@ -1,3 +1,4 @@
+import { FileToUpload } from "./FileToUpload";
 import { ClaimType } from "./blockchain/schemas";
 
 export type CreateClaimRequest = {
@@ -6,6 +7,7 @@ export type CreateClaimRequest = {
   claimType: ClaimType;
   description: string;
   amountInUsdCents: number;
+  localFileUrls: FileToUpload[];
 };
 
 export type TripInfoForClaimCreation = {

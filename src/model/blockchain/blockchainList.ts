@@ -11,6 +11,8 @@ import {
   optimismSepolia,
   fuse,
   fuseSparknet,
+  opBNB,
+  opBNBTestnet,
   Chain,
 } from "viem/chains";
 
@@ -61,6 +63,10 @@ export const allSupportedBlockchainList: BlockchainBaseInfo[] = [
   //Fuse
   { ...getBlockchainInfoFromViem(fuse), shortName: "Fuse", logo: "chainLogoFuse.svg" },
   { ...getBlockchainInfoFromViem(fuseSparknet), shortName: "Fuse Sparknet", logo: "chainLogoFuse.svg" },
+
+  //OpBNB
+  { ...getBlockchainInfoFromViem(opBNB), shortName: "opBNB", logo: "chainLogoOpBNB.svg" },
+  { ...getBlockchainInfoFromViem(opBNBTestnet), shortName: "opBNB Testnet", logo: "chainLogoOpBNB.svg" },
 
   //Localhost
   { ...getBlockchainInfoFromViem(localhostGanache), shortName: "Ganache", logo: "chainLogoGanache.svg" },

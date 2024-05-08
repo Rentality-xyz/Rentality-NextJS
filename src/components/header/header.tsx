@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Stack, styled, Switch, Typography } from "@mui/material";
 import burgerMenu from "../../images/ic-menu-burge-white-20.svg";
@@ -8,7 +9,7 @@ import ChooseBlockchainComponent from "@/components/choose_blockchain/ChooseBloc
 import { GuestBurgerNavMenu } from "../sideNavMenu/guestSideNavMenu";
 import { HostBurgerNavMenu } from "../sideNavMenu/hostSideNavMenu";
 import Login from "./login";
-import Deposit from "@/components/guest/deposit";
+import Deposit from "../guest/deposit";
 
 export default function Header({ accountType }: { accountType: string }) {
   accountType = accountType ?? "Host";
@@ -106,3 +107,4 @@ export default function Header({ accountType }: { accountType: string }) {
     </div>
   );
 }
+

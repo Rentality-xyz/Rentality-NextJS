@@ -6,57 +6,79 @@ import useHostClaims from "@/hooks/host/useHostClaims";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { CreateClaimRequest } from "@/model/CreateClaimRequest";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
+import { TFunction } from "@/utils/i18n";
 
 export default function Claims() {
   const { showInfo, showError, hideDialogs } = useRntDialogs();
-  const [isLoading, claims, tripInfos, createClaim, cancelClaim] = useHostClaims();
+  const { isLoading, claims, tripInfos, createClaim, payClaim, cancelClaim } = useHostClaims();
   const router = useRouter();
+  const { t } = useTranslation();
+  const t_h_claims: TFunction = (name, options) => {
+    return t("claims.host." + name, options);
+  };
 
   const handleCreateClaim = async (createClaimRequest: CreateClaimRequest) => {
     try {
       if (!createClaimRequest.tripId) {
-        showError("Please select trip");
+        showError(t_h_claims("select_trip"));
         return;
       }
       if (!createClaimRequest.claimType && createClaimRequest.claimType !== BigInt(0)) {
-        showError("Please select claim type");
+        showError(t_h_claims("select_type"));
         return;
       }
       if (!createClaimRequest.description) {
-        showError("Please enter description");
+        showError(t_h_claims("enter_description"));
         return;
       }
       if (!createClaimRequest.amountInUsdCents) {
-        showError("Please enter amount");
+        showError(t_h_claims("Please enter amount"));
         return;
       }
 
-      showInfo("Please confirm the transaction with your wallet and wait for the transaction to be processed");
+      showInfo(t("common.info.sign"));
       const result = await createClaim(createClaimRequest);
       hideDialogs();
       if (!result) {
-        showError("Your create claim request failed. Please make sure you entered claim details right and try again");
+        showError(t_h_claims("claim_failed"));
         return;
       }
       router.refresh();
     } catch (e) {
-      showError("Your create claim request failed. Please make sure you entered claim details right and try again");
+      showError(t_h_claims("claim_failed"));
       console.error("handleCreateClaim error:" + e);
+    }
+  };
+
+  const handlePayClaim = async (claimId: number) => {
+    try {
+      showInfo(t("common.info.sign"));
+      const result = await payClaim(claimId);
+      hideDialogs();
+      if (!result) {
+        showError(t('claims.errors.pay_claim_failed"'));
+        return;
+      }
+      router.refresh();
+    } catch (e) {
+      showError(t('claims.errors.pay_claim_failed"'));
+      console.error("handlePayClaim error:" + e);
     }
   };
 
   const handleCancelClaim = async (claimId: number) => {
     try {
-      showInfo("Please confirm the transaction with your wallet and wait for the transaction to be processed");
+      showInfo(t("common.info.sign"));
       const result = await cancelClaim(claimId);
       hideDialogs();
       if (!result) {
-        showError("Your cancel claim request failed. Please make sure you entered claim details right and try again");
+        showError(t_h_claims("claim_cancel_failed"));
         return;
       }
       router.refresh();
     } catch (e) {
-      showError("Your cancel claim request failed. Please make sure you entered claim details right and try again");
+      showError(t_h_claims("claim_cancel_failed"));
       console.error("handleCancelClaim error:" + e);
     }
   };
@@ -64,12 +86,22 @@ export default function Claims() {
   return (
     <Layout>
       <div className="flex flex-col">
-        <PageTitle title="Claims" />
-        <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} />
+        <PageTitle title={t("claims.title")} />
+        <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={true} />
         {isLoading ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
+          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
+            {t("common.info.loading")}
+          </div>
         ) : (
-          <ClaimHistory claims={claims} cancelClaim={handleCancelClaim} isHost={true} />
+          <ClaimHistory
+            claims={claims}
+            payClaim={handlePayClaim}
+            cancelClaim={handleCancelClaim}
+            isHost={true}
+            t={(path, options) => {
+              return t("claims." + path, options);
+            }}
+          />
         )}
       </div>
     </Layout>

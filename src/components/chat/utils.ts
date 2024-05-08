@@ -1,6 +1,6 @@
 import { CreateClaimRequest } from "@/model/CreateClaimRequest";
 import { dateFormatLongMonthDateTime } from "@/utils/datetimeFormatters";
-import { getStringFromMoneyInCents } from "@/utils/formInput";
+import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
 import moment from "moment";
 
 const CLAIM_REQUEST_HEADER = "ClaimRequest";
@@ -21,7 +21,7 @@ export function decodeClaimChatMessage(message: string, hostName: string, carDet
 
   return `Claim requested
   ${dateFormatLongMonthDateTime(moment.unix(Number(unixTimeStamp)).toDate())}
-  ${hostName} sent you a new invoice for $${getStringFromMoneyInCents(
+  ${hostName} sent you a new invoice for $${displayMoneyFromCentsWith2Digits(
     Number(amountInUsdCents)
   )} due for incidentals incurred during your trip with ${hostName}'s ${carDetails}.
   Please respond to this invoice by ${dateFormatLongMonthDateTime(

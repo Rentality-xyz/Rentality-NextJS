@@ -1,3 +1,5 @@
+import { TFunction } from "@/utils/i18n";
+
 export type BaseCarInfo = {
   carId: number;
   ownerAddress: string;
@@ -13,6 +15,6 @@ export type BaseCarInfo = {
   isEditable: boolean;
 };
 
-export const getListingStatusTextFromStatus = (currentlyListed: boolean) => {
-  return currentlyListed ? "Listed" : "Unlisted";
+export const getListingStatusTextFromStatus = (currentlyListed: boolean, t: TFunction) => {
+  return currentlyListed ? t("vehicles.listed") : t("vehicles.unlisted");
 };

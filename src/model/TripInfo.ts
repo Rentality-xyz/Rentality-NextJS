@@ -23,6 +23,8 @@ export const getTripStatusTextFromStatus = (status: TripStatus) => {
       return "On the trip";
     case TripStatus.CheckedOutByGuest:
       return "Finished by guest";
+    case TripStatus.CompletedWithoutGuestComfirmation:
+      return "Completed without guest confirmation";
     case TripStatus.Finished:
       return "Finished";
     case TripStatus.Closed:
@@ -45,6 +47,8 @@ export const getTripStatusBgColorClassFromStatus = (status: TripStatus) => {
       return "bg-blue-800";
     case TripStatus.CheckedOutByGuest:
       return "bg-purple-600";
+    case TripStatus.CompletedWithoutGuestComfirmation:
+      return "bg-orange-400";
     case TripStatus.Finished:
       return "bg-purple-800";
     case TripStatus.Closed:
@@ -54,31 +58,16 @@ export const getTripStatusBgColorClassFromStatus = (status: TripStatus) => {
       return "bg-red-500";
   }
 };
-export const getTripStatusFromContract = (status: number) => {
-  switch (status) {
-    case 0:
-      return TripStatus.Pending;
-    case 1:
-      return TripStatus.Confirmed;
-    case 2:
-      return TripStatus.CheckedInByHost;
-    case 3:
-      return TripStatus.Started;
-    case 4:
-      return TripStatus.CheckedOutByGuest;
-    case 5:
-      return TripStatus.Finished;
-    case 6:
-      return TripStatus.Closed;
-    case 7:
-    default:
-      return TripStatus.Rejected;
-  }
-};
 
 export type TripInfo = {
   tripId: number;
   carId: number;
+  carVinNumber: string;
+  carDescription: string;
+  carDoorsNumber: number;
+  carSeatsNumber: number;
+  carTransmission: string;
+  carColor: string;
   image: string;
   brand: string;
   model: string;
@@ -90,7 +79,6 @@ export type TripInfo = {
   locationEnd: string;
   status: TripStatus;
   allowedActions: AllowedChangeTripAction[];
-  totalPrice: string;
   tankVolumeInGal: number;
   startFuelLevelInPercents: number;
   endFuelLevelInPercents: number;
@@ -101,22 +89,46 @@ export type TripInfo = {
   startOdometr: number;
   endOdometr: number;
   overmilePrice: number;
-  depositPaid: number;
-  hostPhoneNumber: string;
-  guestPhoneNumber: string;
-  hostAddress: string;
-  hostName: string;
-  guestAddress: string;
-  guestName: string;
   rejectedBy: string;
+  tripStartedBy: string;
+  tripFinishedBy: string;
   rejectedDate: Date | undefined;
   createdDateTime: Date;
+  approvedDateTime: Date;
   checkedInByHostDateTime: Date;
+  checkedInByGuestDateTime: Date;
   checkedOutByGuestDateTime: Date;
   checkedOutByHostDateTime: Date;
-  guestPhotoUrl: string;
-  hostPhotoUrl: string;
+  finishedDateTime: Date;
   timeZoneId: string;
+  pricePerDayInUsd: number;
+  totalDayPriceInUsd: number;
+  totalPriceWithDiscountInUsd: number;
+  taxPriceInUsd: number;
+  depositInUsd: number;
+  resolveAmountInUsd: number;
+  depositReturnedInUsd: number;
+  currencyRate: number;
+
+  host: {
+    walletAddress: string;
+    name: string;
+    phoneNumber: string;
+    photoUrl: string;
+    drivingLicenseNumber: string;
+    drivingLicenseExpirationDate: Date;
+  };
+
+  guest: {
+    walletAddress: string;
+    name: string;
+    phoneNumber: string;
+    photoUrl: string;
+    drivingLicenseNumber: string;
+    drivingLicenseExpirationDate: Date;
+  };
+  guestInsuranceCompanyName: string;
+  guestInsurancePolicyNumber: string;
 };
 
 export const getBatteryChargeFromDiffs = (fuelDiffsInPercents: number, fullBatteryChargePriceInUsdCents: number) => {
@@ -137,6 +149,7 @@ export const getRefuelValueAndCharge = (tripInfo: TripInfo, endFuelLevelInPercen
 export type AllowedChangeTripAction = {
   text: string;
   readonly: boolean;
+  isDisplay: boolean;
   params: ChangeTripParams[];
   action: (tripId: bigint, params: string[]) => Promise<boolean>;
 };

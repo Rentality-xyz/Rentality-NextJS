@@ -30,6 +30,8 @@ export type SearchCarInfo = {
     lng: number;
   };
   highlighted: boolean;
+  daysDiscount: string;
+  totalDiscount: string;
 };
 
 export const emptySearchCarsResult: SearchCarsResult = {

@@ -8,6 +8,7 @@ interface IRntDialogs {
   showInfo: (message: string, action?: ReactNode) => void;
   showError: (message: string, action?: ReactNode) => void;
   showDialog: (message: string, action?: ReactNode) => void;
+  showCustomDialog: (customForm: ReactNode) => void;
   hideDialogs: () => void;
 }
 
@@ -32,6 +33,15 @@ export const RntDialogsProvider = ({ children }: { children?: React.ReactNode })
       message: message,
       action: action,
       alertColor: "error",
+      isOpen: true,
+    });
+  };
+
+  const showCustomDialog = (customForm: ReactNode) => {
+    setDialogState({
+      ...dialogState,
+      customForm: customForm,
+      isDialog: true,
       isOpen: true,
     });
   };
@@ -67,6 +77,7 @@ export const RntDialogsProvider = ({ children }: { children?: React.ReactNode })
     showInfo: showInfo,
     showError: showError,
     showDialog: showDialog,
+    showCustomDialog: showCustomDialog,
     hideDialogs: hideSnackbar,
   };
 

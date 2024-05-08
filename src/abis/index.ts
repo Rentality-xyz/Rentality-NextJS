@@ -1,18 +1,18 @@
-import RentalityGatewayJSON_ABI from "./RentalityGateway.v0_17_0.abi.json";
-import RentalityGatewayJSON_ADDRESSES from "./RentalityGateway.v0_17_0.addresses.json";
-import RentalityAdminGatewayJSON_ABI from "./RentalityAdminGateway.v0_17_0.abi.json";
-import RentalityAdminGatewayJSON_ADDRESSES from "./RentalityAdminGateway.v0_17_0.addresses.json";
-import RentalityCurrencyConverterJSON_ABI from "./RentalityCurrencyConverter.v0_17_0.abi.json";
-import RentalityCurrencyConverterJSON_ADDRESSES from "./RentalityCurrencyConverter.v0_17_0.addresses.json";
-import RentalityChatHelperJSON_ABI from "./RentalityChatHelper.v0_17_0.abi.json";
-import RentalityChatHelperJSON_ADDRESSES from "./RentalityChatHelper.v0_17_0.addresses.json";
-import RentalityTripServiceJSON_ABI from "./RentalityTripService.v0_17_0.abi.json";
-import RentalityTripServiceJSON_ADDRESSES from "./RentalityTripService.v0_17_0.addresses.json";
-import RentalityClaimServiceJSON_ABI from "./RentalityClaimService.v0_17_0.abi.json";
-import RentalityClaimServiceJSON_ADDRESSES from "./RentalityClaimService.v0_17_0.addresses.json";
-import {Contract, Signer} from "ethers";
+import RentalityGatewayJSON_ABI from "./RentalityGateway.v0_17_1.abi.json";
+import RentalityGatewayJSON_ADDRESSES from "./RentalityGateway.v0_17_1.addresses.json";
+import RentalityAdminGatewayJSON_ABI from "./RentalityAdminGateway.v0_17_1.abi.json";
+import RentalityAdminGatewayJSON_ADDRESSES from "./RentalityAdminGateway.v0_17_1.addresses.json";
+import RentalityCurrencyConverterJSON_ABI from "./RentalityCurrencyConverter.v0_17_1.abi.json";
+import RentalityCurrencyConverterJSON_ADDRESSES from "./RentalityCurrencyConverter.v0_17_1.addresses.json";
+import RentalityChatHelperJSON_ABI from "./RentalityChatHelper.v0_17_1.abi.json";
+import RentalityChatHelperJSON_ADDRESSES from "./RentalityChatHelper.v0_17_1.addresses.json";
+import RentalityTripServiceJSON_ABI from "./RentalityTripService.v0_17_1.abi.json";
+import RentalityTripServiceJSON_ADDRESSES from "./RentalityTripService.v0_17_1.addresses.json";
+import RentalityClaimServiceJSON_ABI from "./RentalityClaimService.v0_17_1.abi.json";
+import RentalityClaimServiceJSON_ADDRESSES from "./RentalityClaimService.v0_17_1.addresses.json";
+import { Contract, Signer } from "ethers";
 
-export const SMARTCONTRACT_VERSION = "v0_17_0";
+export const SMARTCONTRACT_VERSION = "v0_17_1";
 
 const rentalityContracts = {
   gateway: {
@@ -40,7 +40,6 @@ const rentalityContracts = {
     abi: RentalityClaimServiceJSON_ABI.abi,
   },
 };
-
 export async function getEtherContractWithSigner(contract: keyof typeof rentalityContracts, signer: Signer) {
   try {
     if (!signer) {
@@ -51,11 +50,13 @@ export async function getEtherContractWithSigner(contract: keyof typeof rentalit
     const chainId = Number((await signer.provider?.getNetwork())?.chainId);
 
     const selectedChain = rentalityContracts[contract].addresses.find((i) => i.chainId === chainId);
+
     if (!selectedChain) {
       console.error(`getEtherContract error: ${contract} address for chainId ${chainId} is not found`);
       return null;
     }
-    return new Contract(selectedChain.address, rentalityContracts[contract].abi, signer);
+    const etherContract = new Contract(selectedChain.address, rentalityContracts[contract].abi, signer);
+    return etherContract;
 
     // switch (contract) {
     //   case "admin":

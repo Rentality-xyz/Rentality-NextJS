@@ -7,17 +7,23 @@ import DateDetails from "./dateDetails";
 import LocationDetails from "./locationDetails";
 import TripContacts from "./tripContacts";
 import TripAdditionalActions from "./tripAdditionalActions";
+import { TFunction } from "i18next";
+import TripRules from "./tripRules";
 
 function TripCard({
   tripInfo,
   changeStatusCallback,
   disableButton,
   isHost,
+  showMoreInfo,
+  t,
 }: {
   tripInfo: TripInfo;
   changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<void>;
   disableButton: boolean;
   isHost: boolean;
+  showMoreInfo: boolean;
+  t: TFunction;
 }) {
   const [isAdditionalActionHidden, setIsAdditionalActionHidden] = useState(true);
   const allowedActions = document.getElementById("trip-allowed-actions") as HTMLDivElement;
@@ -35,7 +41,7 @@ function TripCard({
         <CarPhotoWithStatus carImageUrl={tripInfo.image} tripStatus={tripInfo.status} />
 
         <div id="trip-item-info" className="w-full flex flex-col sm_inverted:flex-row">
-          <СarDetails tripInfo={tripInfo} isHost={isHost} />
+          <СarDetails tripInfo={tripInfo} isHost={isHost} t={t} />
           <CurrentStatusInfo
             tripInfo={tripInfo}
             changeStatusCallback={changeStatusCallback}
@@ -43,11 +49,16 @@ function TripCard({
             isAdditionalActionHidden={isAdditionalActionHidden}
             setIsAdditionalActionHidden={setIsAdditionalActionHidden}
             isHost={isHost}
+            t={t}
           />
-          <DateDetails tripInfo={tripInfo} />
-          <LocationDetails tripInfo={tripInfo} />
+          <DateDetails tripInfo={tripInfo} t={t} />
+          <LocationDetails tripInfo={tripInfo} t={t} />
         </div>
-        <TripContacts tripInfo={tripInfo} isHost={isHost} />
+        {showMoreInfo ? (
+          <TripContacts tripInfo={tripInfo} isHost={isHost} t={t} />
+        ) : (
+          <TripRules tripInfo={tripInfo} t={t} />
+        )}
       </div>
 
       {isAdditionalActionHidden ||
@@ -60,6 +71,7 @@ function TripCard({
           changeStatusCallback={changeStatusCallback}
           disableButton={disableButton}
           isHost={isHost}
+          t={t}
         />
       )}
     </div>

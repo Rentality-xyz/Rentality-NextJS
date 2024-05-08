@@ -1,17 +1,15 @@
 import Layout from "@/components/layout/layout";
 import useAddCar from "@/hooks/host/useAddCar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import RntButton from "@/components/common/rntButton";
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
 import { resizeImage } from "@/utils/image";
-import { isEmpty } from "@/utils/string";
-import { Button } from "@mui/material";
-import { useUserInfo } from "@/contexts/userInfoContext";
 import { verifyCar } from "@/model/HostCarInfo";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
+import { useTranslation } from "react-i18next";
 
 export default function AddCar() {
   const [carInfoFormParams, setCarInfoFormParams, dataSaved, sentCarToServer] = useAddCar();
@@ -21,6 +19,7 @@ export default function AddCar() {
   const [carSaving, setCarSaving] = useState<boolean>(false);
   const router = useRouter();
   const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
+  const { t } = useTranslation();
 
   const loadCarInfoFromJson = async (file: File) => {
     try {
@@ -71,39 +70,39 @@ export default function AddCar() {
     const isImageUploaded = imageFile !== null;
 
     if (!isValidForm && !isImageUploaded) {
-      showDialog("Please fill in all fields and vehicle photo");
+      showDialog(t("vehicles.fill_fields_photo"));
       return;
     }
     if (!isValidForm) {
-      showDialog("Please fill in all fields");
+      showDialog(t("vehicles.fill_fields"));
       return;
     }
     if (!isImageUploaded) {
-      showDialog("Please upload vehicle photo");
+      showDialog(t("vehicles.upload_photo"));
       return;
     }
 
     if (!imageFile) {
-      showError("Image is not uploaded");
+      showError(t("vehicles.image_not_upload"));
       return;
     }
 
     setCarSaving(true);
 
     try {
-      setMessage("Please wait.. uploading (upto 5 mins)");
+      setMessage(t("vehicles.wait_loading"));
       const result = await sentCarToServer(imageFile);
 
       if (!result) {
         throw new Error("sentCarToServer error");
       }
-      showInfo("Successfully listed your car!");
+      showInfo(t("car_listed"));
 
       setCarSaving(false);
       setMessage("");
       router.push("/host/vehicles");
     } catch (e) {
-      showError("Save car request failed. Please try again");
+      showError("vehicles.saving_failed");
 
       setCarSaving(false);
       setMessage("");
@@ -120,27 +119,28 @@ export default function AddCar() {
         {DialogActions.Cancel(hideDialogs)}
       </>
     );
-    showDialog("Unsaved data will be lost", action);
+    showDialog(t("vehicles.lost_unsaved"), action);
   };
 
   return (
     <Layout>
       <div className="flex flex-col">
-        <PageTitle title="Add a car" />
+        <PageTitle title={t("vehicles.title")} />
 
         <CarEditForm
           carInfoFormParams={carInfoFormParams}
           setCarInfoFormParams={setCarInfoFormParams}
           onImageFileChange={onChangeFile}
           isNewCar={true}
+          t={t}
         />
 
         <div className="flex flex-row gap-4 mb-8 mt-8 justify-between sm:justify-start">
           <RntButton className="w-40 h-16" disabled={carSaving} onClick={handleSave}>
-            Save
+            {t("common.save")}
           </RntButton>
           <RntButton className="w-40 h-16" onClick={handleBack}>
-            Back
+            {t("common.back")}
           </RntButton>
         </div>
         <label className="mb-4">{message}</label>

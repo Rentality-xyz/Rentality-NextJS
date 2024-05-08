@@ -10,9 +10,10 @@ import {
   getMilesIncludedPerDayText,
 } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
-import { getMoneyInCentsFromString, getStringFromMoneyInCents } from "@/utils/formInput";
+import { getMoneyInCentsFromString } from "@/utils/formInput";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { ContractCarDetails, ContractCarInfo, ContractUpdateCarInfoRequest } from "@/model/blockchain/schemas";
+import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
 
 const emptyHostCarInfo: HostCarInfo = {
   carId: -1,
@@ -140,11 +141,11 @@ const useEditCarInfo = (carId: number) => {
 
         const fuelPricePerGal =
           engineTypeString === ENGINE_TYPE_PATROL_STRING
-            ? getStringFromMoneyInCents(carInfoDetails.engineParams[1])
+            ? displayMoneyFromCentsWith2Digits(carInfoDetails.engineParams[1])
             : "";
         const fullBatteryChargePrice =
           engineTypeString === ENGINE_TYPE_ELECTRIC_STRING
-            ? getStringFromMoneyInCents(carInfoDetails.engineParams[0])
+            ? displayMoneyFromCentsWith2Digits(carInfoDetails.engineParams[0])
             : "";
 
         let item: HostCarInfo = {

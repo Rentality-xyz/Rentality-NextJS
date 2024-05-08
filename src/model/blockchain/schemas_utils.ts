@@ -133,6 +133,8 @@ const emptyContractClaim: ContractClaim = {
   payDateInSec: BigInt(0),
   rejectedBy: "",
   rejectedDateInSec: BigInt(0),
+  isHostClaims: false,
+  photosUrl: "",
 };
 
 export function validateContractClaim(obj: ContractClaim): obj is ContractClaim {
@@ -238,6 +240,9 @@ const emptyContractTrip: ContractTrip = {
   transactionInfo: emptyContractTransactionInfo,
   engineType: EngineType.PATROL,
   fuelPrice: BigInt(0),
+  guestInsuranceCompanyName: "",
+  guestInsurancePolicyNumber: "",
+  finishDateTime: BigInt(0),
 };
 
 export function validateContractTrip(obj: ContractTrip): obj is ContractTrip {
@@ -250,6 +255,10 @@ const emptyContractTripDTO: ContractTripDTO = {
   hostPhotoUrl: "",
   metadataURI: "",
   timeZoneId: "",
+  guestDrivingLicenseExpirationDate: BigInt(0),
+  guestDrivingLicenseNumber: "",
+  hostDrivingLicenseExpirationDate: BigInt(0),
+  hostDrivingLicenseNumber: "",
 };
 
 export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {

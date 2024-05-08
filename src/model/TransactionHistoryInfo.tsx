@@ -2,6 +2,7 @@ import { TripStatus } from "@/model/blockchain/schemas";
 
 export type TransactionHistoryInfo = {
   transHistoryId: number;
+  tripId: number;
   car: string;
   status: TripStatus;
   days: number;
@@ -13,4 +14,5 @@ export type TransactionHistoryInfo = {
   cancellationFee: number;
   reimbursements: number;
   rentalityFee: number;
+  taxes: number;
 };
