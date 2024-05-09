@@ -186,10 +186,7 @@ function CurrentStatusInfo({
   };
 
   return (
-    <div
-      id="trip-action-info"
-      className="w-full sm_inverted:w-1/4 flex flex-1 flex-col justify-between gap-2 p-4 md:p-2 xl:p-4"
-    >
+    <div id="trip-action-info" className="w-full md:w-1/4 flex flex-1 flex-col justify-between gap-2 p-4 md:p-2 xl:p-4">
       <div className="flex flex-col whitespace-pre-line">
         <p className="text-center text-[#52D1C9]">{actionHeader}</p>
         <p className="mt-4 text-center text-lg">
@@ -199,7 +196,7 @@ function CurrentStatusInfo({
       </div>
 
       {!isAdditionalActionHidden || tripInfo.allowedActions.length === 0 ? null : (
-        <div className="flex max-sm_inverted:flex-row flex-col 2xl:flex-row gap-4">
+        <div className="flex max-md:flex-row flex-col 2xl:flex-row gap-4">
           {(tripInfo.status === TripStatus.CheckedInByHost || tripInfo.status === TripStatus.Started) && isHost ? (
             <RntButton
               className="h-12 w-full px-4"

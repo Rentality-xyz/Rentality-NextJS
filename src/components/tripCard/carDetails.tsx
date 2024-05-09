@@ -18,10 +18,7 @@ function СarDetails({ tripInfo, isHost, t }: { tripInfo: TripInfo; isHost: bool
   const otherUserName = isHost ? tripInfo.guest.name : tripInfo.host.name;
 
   return (
-    <div
-      id="trip-main-info"
-      className="w-full sm_inverted:w-1/4 flex flex-1 flex-col gap-4 justify-between p-4 md:p-2 xl:p-4"
-    >
+    <div id="trip-main-info" className="w-full md:w-1/4 flex flex-1 flex-col gap-4 justify-between p-4 md:p-2 xl:p-4">
       <div className="flex flex-col">
         <div>
           <strong className="text-xl">{`${tripInfo.brand} ${tripInfo.model} ${tripInfo.year}`}</strong>

@@ -4,7 +4,7 @@ import { TFunction } from "@/utils/i18n";
 
 function LocationDetails({ tripInfo, t }: { tripInfo: TripInfo; t: TFunction }) {
   return (
-    <div id="trip-location-info" className="w-full sm_inverted:w-1/4 flex flex-col flex-1 p-4 md:p-2 xl:p-4">
+    <div id="trip-location-info" className="w-full md:w-1/4 flex flex-col flex-1 p-4 md:p-2 xl:p-4">
       <div className="flex flex-col gap-2">
         <div className="flex flex-col 2xl:mt-6">
           <div>

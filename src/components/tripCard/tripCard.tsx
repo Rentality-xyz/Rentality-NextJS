@@ -37,10 +37,10 @@ function TripCard({
 
   return (
     <div className="rnt-card flex flex-col rounded-xl overflow-hidden bg-rentality-bg">
-      <div className="sm_inverted:flex max-2xl:flex-wrap 2xl:flex-nowrap">
+      <div className="md:flex max-2xl:flex-wrap 2xl:flex-nowrap">
         <CarPhotoWithStatus carImageUrl={tripInfo.image} tripStatus={tripInfo.status} />
 
-        <div id="trip-item-info" className="w-full flex flex-col sm_inverted:flex-row">
+        <div id="trip-item-info" className="w-full flex flex-col md:flex-row">
           <СarDetails tripInfo={tripInfo} isHost={isHost} t={t} />
           <CurrentStatusInfo
             tripInfo={tripInfo}

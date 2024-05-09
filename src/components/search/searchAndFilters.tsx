@@ -108,7 +108,7 @@ export default function SearchAndFilters({
 
   return (
     <>
-      <div className="search my-2 flex max-xl:flex-col gap-2 xl:items-end">
+      <div className="search my-2 flex flex-col xl:flex-row gap-2 xl:items-end">
         <RntPlaceAutoComplete
           className="xl:w-1/2"
           id="location"
@@ -130,9 +130,9 @@ export default function SearchAndFilters({
             });
           }}
         />
-        <div className="flex max-md:flex-col md:items-end md:justify-between xl:justify-around w-full">
+        <div className="flex flex-col md:flex-row gap-4 md:items-end md:justify-between xl:justify-aroundl ">
           <RntInput
-            className="md:w-1/3 2xl:w-[38%]"
+            className="flex-1"
             id="dateFrom"
             label={`${t("common.from")} ${gmtLabel}`}
             type="datetime-local"
@@ -140,7 +140,7 @@ export default function SearchAndFilters({
             onChange={handleSearchInputChange}
           />
           <RntInput
-            className="md:w-1/3 2xl:w-[38%]"
+            className="flex-1"
             id="dateTo"
             label={`${t("common.to")} ${gmtLabel}`}
             type="datetime-local"
@@ -148,7 +148,7 @@ export default function SearchAndFilters({
             onChange={handleSearchInputChange}
           />
           <RntButton
-            className="w-full sm:w-40 max-xl:mt-4"
+            className="w-full md:w-40"
             disabled={!isSearchAllowed}
             onClick={
               () => handleSearchClick()
@@ -159,7 +159,7 @@ export default function SearchAndFilters({
           </RntButton>
         </div>
       </div>
-      <div className="mt-2 flex flex-row gap-2 max-sm:justify-between">
+      <div className="mt-2 flex flex-row gap-2 justify-between md:justify-start">
         <RntButton className="w-40 " onClick={() => setOpenFilterPanel(true)}>
           {t_el("button_filter")}
         </RntButton>

@@ -5,10 +5,10 @@ import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 
 export default function PublicListingItem({ carInfo, t }: { carInfo: BaseCarInfo; t: TFunction }) {
   return (
-    <div className="bg-rentality-bg rnt-card flex flex-col sm_inverted:flex-row rounded-xl overflow-hidden">
+    <div className="bg-rentality-bg rnt-card flex flex-col md:flex-row rounded-xl overflow-hidden">
       <div
         style={{ backgroundImage: `url(${carInfo.image})` }}
-        className="relative w-full sm_inverted:w-64 min-h-[12rem] flex-shrink-0 bg-center bg-cover"
+        className="relative w-full md:w-64 min-h-[12rem] flex-shrink-0 bg-center bg-cover"
       ></div>
       <div className="w-full flex flex-col justify-between p-4">
         <div className="flex flex-row justify-between items-baseline">

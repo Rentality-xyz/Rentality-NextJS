@@ -72,11 +72,19 @@ module.exports = {
         // 'rnt-temp-textbox-bg': 'transparent', //#9ca3af bg-gray-400
       },
       screens: {
-        sm_inverted: "736px",
-        "1xl": "1308px",
-        oldLaptop: "1440px",
-        "3xl": "1624px",
+        // Standart
+        // sm: "640px",
+        // md: "768px",
+        // lg: "1024px",
+        // xl: "1280px",
+        // "2xl": "1536px",
         fullHD: "1920px",
+
+        // TODO Obsolete
+        // sm_inverted: "736px",
+        // "1xl": "1308px",
+        // oldLaptop: "1440px",
+        // "3xl": "1624px",
       },
     },
   },

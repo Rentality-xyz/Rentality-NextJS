@@ -14,7 +14,7 @@ export default function ListingItem({ carInfo, t }: { carInfo: BaseCarInfo; t: T
   );
 
   return (
-    <div className="bg-rentality-bg rnt-card flex flex-col sm_inverted:flex-row rounded-xl overflow-hidden">
+    <div className="bg-rentality-bg rnt-card flex flex-col md:flex-row rounded-xl overflow-hidden">
       {/* <div className="w-60 h-56 flex-shrink-0">
         <Image
           src={carInfo.image}
@@ -26,7 +26,7 @@ export default function ListingItem({ carInfo, t }: { carInfo: BaseCarInfo; t: T
       </div> */}
       <div
         style={{ backgroundImage: `url(${carInfo.image})` }}
-        className="relative w-full sm_inverted:w-64 min-h-[12rem] flex-shrink-0 bg-center bg-cover"
+        className="relative w-full md:w-64 min-h-[12rem] flex-shrink-0 bg-center bg-cover"
       >
         <div className={statusClassName}>
           <strong>{`${getListingStatusTextFromStatus(carInfo.currentlyListed, t)}`}</strong>
