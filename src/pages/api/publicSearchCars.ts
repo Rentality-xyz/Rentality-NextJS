@@ -206,6 +206,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     yearOfProductionTo: yearOfProductionTo as string,
     pricePerDayInUsdFrom: pricePerDayInUsdFrom as string,
     pricePerDayInUsdTo: pricePerDayInUsdTo as string,
+    locationLat: 0,
+    locationLng: 0,
   };
   console.log(
     `Calling searchAvailableCars API for ${chainIdNumber} chain id with searchCarRequest: ${JSON.stringify(

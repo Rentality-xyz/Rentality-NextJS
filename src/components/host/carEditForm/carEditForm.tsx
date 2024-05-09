@@ -338,8 +338,8 @@ export default function CarEditForm({
               const country = placeDetails.country?.short_name ?? "";
               const state = placeDetails.state?.long_name ?? "";
               const city = placeDetails.city?.long_name ?? "";
-              const latitude = Math.round(placeDetails.location.latitude * 1_000_000) / 1_000_000;
-              const longitude = Math.round(placeDetails.location.longitude * 1_000_000) / 1_000_000;
+              const latitude = Math.round(placeDetails.location?.latitude ?? 0 * 1_000_000) / 1_000_000;
+              const longitude = Math.round(placeDetails.location?.longitude ?? 0 * 1_000_000) / 1_000_000;
               const locationAddress = `1, ${city}, ${state}, ${country}`;
 
               setCarInfoFormParams({

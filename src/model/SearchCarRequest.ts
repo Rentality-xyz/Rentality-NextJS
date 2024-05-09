@@ -10,6 +10,8 @@ export type SearchCarRequest = {
   yearOfProductionTo: string;
   pricePerDayInUsdFrom: string;
   pricePerDayInUsdTo: string;
+  locationLat: number | undefined;
+  locationLng: number | undefined;
 };
 
 export const emptySearchCarRequest: SearchCarRequest = {
@@ -24,4 +26,6 @@ export const emptySearchCarRequest: SearchCarRequest = {
   yearOfProductionTo: "",
   pricePerDayInUsdFrom: "",
   pricePerDayInUsdTo: "",
+  locationLat: 0,
+  locationLng: 0,
 };

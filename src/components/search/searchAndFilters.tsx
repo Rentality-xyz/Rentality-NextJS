@@ -121,12 +121,16 @@ export default function SearchAndFilters({
             const country = placeDetails.country?.short_name ?? "";
             const state = placeDetails.state?.long_name ?? "";
             const city = placeDetails.city?.long_name ?? "";
+            const locationLat = placeDetails.location?.latitude;
+            const locationLng = placeDetails.location?.longitude;
 
             setSearchCarRequest({
               ...searchCarRequest,
               country: country,
               state: state,
               city: city,
+              locationLat: locationLat,
+              locationLng: locationLng,
             });
           }}
         />

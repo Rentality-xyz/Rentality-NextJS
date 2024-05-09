@@ -24,7 +24,7 @@ type PlaceDetails = {
     short_name: string;
     long_name: string;
   };
-  location: {
+  location?: {
     latitude: number;
     longitude: number;
   };
@@ -111,8 +111,12 @@ export default function RntPlaceAutocompleteInput({
           const street = getAddressComponents(placeDetails, "route");
           const street_number = getAddressComponents(placeDetails, "street_number");
 
-          const latitude = placeDetails.geometry?.viewport?.getCenter().lat() ?? 0;
-          const longitude = placeDetails.geometry?.viewport?.getCenter().lng() ?? 0;
+          const latitude = placeDetails.geometry?.viewport?.getCenter().lat();
+          const longitude = placeDetails.geometry?.viewport?.getCenter().lng();
+          const location =
+            latitude !== undefined && longitude !== undefined
+              ? { latitude: latitude, longitude: longitude }
+              : undefined;
           const utcOffsetMinutes = placeDetails.utc_offset_minutes ?? 0;
 
           onAddressChangeHandler({
@@ -122,7 +126,7 @@ export default function RntPlaceAutocompleteInput({
             city: city,
             street: street,
             street_number: street_number,
-            location: { latitude: latitude, longitude: longitude },
+            location: location,
             utcOffsetMinutes: utcOffsetMinutes,
           });
         }
