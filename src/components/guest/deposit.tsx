@@ -35,7 +35,6 @@ export default function Deposit(): JSX.Element {
   return (
     <div className="bg-rentality-bg rnt-card flex flex-col md:flex-row rounded-xl overflow-hidden">
       <RntButton
-        style={{ height: 30, weight: 40 }}
         className="h-14 w-44 text-base"
         onClick={() => window.open(buildLink(ethereumInfo?.walletAddress ?? ""))}
       >
