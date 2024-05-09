@@ -72,7 +72,9 @@ export default function CarSearchMap({
       bounds.extend(new google.maps.LatLng(carInfo.location.lat, carInfo.location.lng));
     });
 
-    map.fitBounds(bounds);
+	if(carInfos.length){
+    	map.fitBounds(bounds);
+    }
     setMap(map);
 
     window.addEventListener("scroll", handleScroll, true);
