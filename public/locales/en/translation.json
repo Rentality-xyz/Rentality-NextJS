@@ -16,6 +16,30 @@
     "logout": "Logout",
     "profile": "Profile settings"
   },
+  "search_and_filters": {
+    "location_label": "Pick up & Return Location",
+    "location_placeholder": "Miami",
+    "datetime_from": "From",
+    "datetime_to": "To",
+    "button_search": "Search",
+    "button_filter": "Filters",
+    "sort_by": "Sort by",
+    "sort_options": {
+      "priceAsc": "Price: low to high",
+      "priceDesc": "Price: high to low",
+      "distance": "Distance"
+    }
+  },
+  "filter_sliding_panel": {
+    "brand": "Car brand",
+    "model": "Car model",
+    "year_from": "Model year from",
+    "year_to": "Model year to",
+    "price_from": "Price per day from",
+    "price_to": "Price per day to",
+    "button_apply": "Apply",
+    "button_reset": "Reset"
+  },
   "search_page": {
     "errors": {
       "user_info": "In order to rent a car, please enter user information",
@@ -24,23 +48,6 @@
       "date_eq": "'Date to' must be greater than 'Date from'",
       "request": "Your create trip request failed. Please make sure you entered trip details right and try again",
       "own_car": "You cannot book your own car"
-    },
-    "elements": {
-      "location_label": "Pick up & Return Location",
-      "location_placeholder": "Miami",
-      "button_search": "Search",
-      "button_filter": "Filters",
-      "button_apply": "Apply",
-      "button_reset": "Reset",
-      "sort_by": "Sort by"
-    },
-    "filters": {
-      "brand": "Car brand",
-      "model": "Car model",
-      "year_from": "Model year from",
-      "year_to": "Model year to",
-      "price_from": "Price per day from",
-      "price_to": "Price per day to"
     },
     "info": {
       "cars_available": "car(s) available",
@@ -60,11 +67,6 @@
       "per_day": "/day",
       "days": "day(s)",
       "price_without_taxes": "Price excl. taxes"
-    },
-    "sort_options": {
-      "priceAsc": "Price: low to high",
-      "priceDesc": "Price: high to low",
-      "distance": "Distance"
     }
   },
   "admin": {

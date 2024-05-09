@@ -237,7 +237,7 @@ export default function Search() {
           handleSearchClick={handleSearchClick}
           openFilterPanel={openFilterPanel}
           setOpenFilterPanel={setOpenFilterPanel}
-          t={t_page}
+          t={t}
         />
       </GoogleMapsProvider>
     </Layout>

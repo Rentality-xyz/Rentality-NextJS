@@ -6,7 +6,6 @@ import RntSelect from "../common/rntSelect";
 import { SortOptionKey } from "@/hooks/guest/useSearchCars";
 import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { TFunction as TFunctionNext } from "i18next";
-import { TFunction } from "@/utils/i18n";
 import { useEffect, useState } from "react";
 import { ParseLocationResponse } from "@/pages/api/parseLocation";
 import moment from "moment";
@@ -48,21 +47,17 @@ export default function SearchAndFilters({
     new Date(searchCarRequest.dateFrom) >= new Date() &&
     new Date(searchCarRequest.dateTo) > new Date(searchCarRequest.dateFrom);
 
-  const sortOption: object = t("search_page.sort_options", {
+  const t_comp = (element: string) => {
+    return t("search_and_filters." + element);
+  };
+
+  const sortOption: object = t("search_and_filters.sort_options", {
     returnObjects: true,
   });
 
   function isSortOptionKey(key: PropertyKey): key is SortOptionKey {
     return sortOption.hasOwnProperty(key);
   }
-
-  const t_page: TFunction = (path, options) => {
-    return t("search_page." + path, options);
-  };
-
-  const t_el = (element: string) => {
-    return t_page("elements." + element);
-  };
 
   function handleSearchInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
@@ -108,12 +103,12 @@ export default function SearchAndFilters({
 
   return (
     <>
-      <div className="search my-2 flex flex-col xl:flex-row gap-2 xl:items-end">
+      <div className="search my-2 flex flex-col xl:flex-row gap-4 xl:items-end">
         <RntPlaceAutoComplete
           className="xl:w-1/2"
           id="location"
-          label={t_el("location_label")}
-          placeholder={t_el("location_placeholder")}
+          label={t_comp("location_label")}
+          placeholder={t_comp("location_placeholder")}
           includeStreetAddress={true}
           initValue={formatLocation(searchCarRequest.city, searchCarRequest.state, searchCarRequest.country)}
           onChange={handleSearchInputChange}
@@ -134,38 +129,31 @@ export default function SearchAndFilters({
             });
           }}
         />
-        <div className="flex flex-col md:flex-row gap-4 md:items-end md:justify-between xl:justify-aroundl ">
+        <div className="flex flex-col md:flex-row gap-4 md:items-end md:justify-between xl:justify-around">
           <RntInput
-            className="flex-1"
+            className="basis-1/2"
             id="dateFrom"
-            label={`${t("common.from")} ${gmtLabel}`}
+            label={`${t_comp("datetime_from")} ${gmtLabel}`}
             type="datetime-local"
             value={searchCarRequest.dateFrom}
             onChange={handleSearchInputChange}
           />
           <RntInput
-            className="flex-1"
+            className="basis-1/2"
             id="dateTo"
-            label={`${t("common.to")} ${gmtLabel}`}
+            label={`${t_comp("datetime_to")} ${gmtLabel}`}
             type="datetime-local"
             value={searchCarRequest.dateTo}
             onChange={handleSearchInputChange}
-          />
-          <RntButton
-            className="w-full md:w-40"
-            disabled={!isSearchAllowed}
-            onClick={
-              () => handleSearchClick()
-              // showError("w-full sm:w-40 max-xl:mt-4")
-            }
-          >
-            {t("common.search")}
+          />{" "}
+          <RntButton className="w-full md:w-40" disabled={!isSearchAllowed} onClick={() => handleSearchClick()}>
+            {t_comp("button_search")}
           </RntButton>
         </div>
       </div>
       <div className="mt-2 flex flex-row gap-2 justify-between md:justify-start">
         <RntButton className="w-40 " onClick={() => setOpenFilterPanel(true)}>
-          {t_el("button_filter")}
+          {t_comp("button_filter")}
         </RntButton>
         <RntSelect
           className="w-40"
@@ -179,8 +167,8 @@ export default function SearchAndFilters({
             }
           }}
         >
-          <option className="hidden" value={""} disabled>
-            {t_el("sort_by")}
+          <option className="hidden" value="" disabled>
+            {t_comp("sort_by")}
           </option>
           {Object.entries(sortOption ?? {}).map(([key, value]) => (
             <option key={key} value={value}>

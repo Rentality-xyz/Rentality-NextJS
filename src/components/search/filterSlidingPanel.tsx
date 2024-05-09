@@ -1,7 +1,7 @@
 import SlidingPanel from "react-sliding-side-panel";
 import RntInput from "../common/rntInput";
 import RntButton from "../common/rntButton";
-import { TFunction } from "@/utils/i18n";
+import { TFunction as TFunctionNext } from "i18next";
 import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { Dispatch } from "react";
 
@@ -18,13 +18,10 @@ export default function FilterSlidingPanel({
   handleSearchClick: () => Promise<void>;
   openFilterPanel: boolean;
   setOpenFilterPanel: Dispatch<React.SetStateAction<boolean>>;
-  t: TFunction;
+  t: TFunctionNext;
 }) {
-  const t_el = (element: string) => {
-    return t("elements." + element);
-  };
-  const t_f: TFunction = (filter, options) => {
-    return t("filters." + filter, options);
+  const t_comp = (element: string) => {
+    return t("filter_sliding_panel." + element);
   };
 
   return (
@@ -44,7 +41,7 @@ export default function FilterSlidingPanel({
           <div className="flex flex-col gap-2 sm:gap-4 px-2 sm:px-4 md:px-8 lg:px-16 mt-4">
             <RntInput
               id="filter-brand"
-              label={t_f("brand")}
+              label={t_comp("brand")}
               value={searchCarRequest.brand}
               onChange={(e) =>
                 setSearchCarRequest({
@@ -55,7 +52,7 @@ export default function FilterSlidingPanel({
             />
             <RntInput
               id="filter-model"
-              label={t_f("model")}
+              label={t_comp("model")}
               value={searchCarRequest.model}
               onChange={(e) =>
                 setSearchCarRequest({
@@ -66,7 +63,7 @@ export default function FilterSlidingPanel({
             />
             <RntInput
               id="filter-year-from"
-              label={t_f("year_from")}
+              label={t_comp("year_from")}
               value={searchCarRequest.yearOfProductionFrom}
               onChange={(e) => {
                 const newValue = e.target.value;
@@ -80,7 +77,7 @@ export default function FilterSlidingPanel({
             />
             <RntInput
               id="filter-year-yo"
-              label={t_f("year_to")}
+              label={t_comp("year_to")}
               value={searchCarRequest.yearOfProductionTo}
               onChange={(e) => {
                 const newValue = e.target.value;
@@ -94,7 +91,7 @@ export default function FilterSlidingPanel({
             />
             <RntInput
               id="filter-price-from"
-              label={t_f("price_from")}
+              label={t_comp("price_from")}
               value={searchCarRequest.pricePerDayInUsdFrom}
               onChange={(e) => {
                 const newValue = e.target.value;
@@ -107,7 +104,7 @@ export default function FilterSlidingPanel({
             />
             <RntInput
               id="filter-price-yo"
-              label={t_f("price_to")}
+              label={t_comp("price_to")}
               value={searchCarRequest.pricePerDayInUsdTo}
               onChange={(e) => {
                 const newValue = e.target.value;
@@ -127,7 +124,7 @@ export default function FilterSlidingPanel({
                   handleSearchClick();
                 }}
               >
-                {t_el("button_apply")}
+                {t_comp("button_apply")}
               </RntButton>
               <RntButton
                 className="max-sm:h-10 max-sm:w-full"
@@ -145,7 +142,7 @@ export default function FilterSlidingPanel({
                   })
                 }
               >
-                {t_el("button_reset")}
+                {t_comp("button_reset")}
               </RntButton>
             </div>
           </div>
