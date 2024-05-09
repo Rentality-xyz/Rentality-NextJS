@@ -21,9 +21,10 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
     carSeatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats Number")?.value ?? 4,
     carTransmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
     carColor: meta.attributes?.find((x: any) => x.trait_type === "Color")?.value ?? "",
-    brand: meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "",
-    model: meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
-    year: meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
+    brand: i.brand ?? meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "",
+    model: i.model ?? meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
+    year:
+      i.yearOfProduction?.toString() ?? meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
     licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
     tankVolumeInGal: Number(meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "0"),
     engineType: i.trip.engineType,

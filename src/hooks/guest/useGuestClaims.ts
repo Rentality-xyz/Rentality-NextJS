@@ -170,9 +170,12 @@ const useGuestClaims = () => {
 
                   const meta = await getMetaDataFromIpfs(i.metadataURI);
 
-                  const brand = meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
-                  const model = meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
-                  const year = meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "";
+                  const brand = i.brand ?? meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
+                  const model = i.model ?? meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
+                  const year =
+                    i.yearOfProduction?.toString() ??
+                    meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ??
+                    "";
                   const guestName = i.trip.guestName;
                   const tripStart = getDateFromBlockchainTimeWithTZ(i.trip.startDateTime, i.timeZoneId);
                   const tripEnd = getDateFromBlockchainTimeWithTZ(i.trip.endDateTime, i.timeZoneId);

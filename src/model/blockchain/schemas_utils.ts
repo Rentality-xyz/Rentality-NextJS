@@ -259,6 +259,9 @@ const emptyContractTripDTO: ContractTripDTO = {
   guestDrivingLicenseNumber: "",
   hostDrivingLicenseExpirationDate: BigInt(0),
   hostDrivingLicenseNumber: "",
+  brand: "",
+  model: "",
+  yearOfProduction: BigInt(0),
 };
 
 export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {

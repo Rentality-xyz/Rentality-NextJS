@@ -135,6 +135,9 @@ export type ContractTripDTO = {
   hostDrivingLicenseExpirationDate: bigint;
   guestDrivingLicenseNumber: string;
   guestDrivingLicenseExpirationDate: bigint;
+  model: string;
+  brand: string;
+  yearOfProduction: bigint;
 };
 
 export type ContractChatInfo = {

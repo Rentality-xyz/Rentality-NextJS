@@ -43,9 +43,14 @@ const useTransactionHistory = (isHost: boolean) => {
 
                   const meta = await getMetaDataFromIpfs(tripDto.metadataURI);
 
-                  const brand = meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
-                  const model = meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
-                  const year = meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "";
+                  const brand =
+                    tripDto.brand ?? meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
+                  const model =
+                    tripDto.model ?? meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
+                  const year =
+                    tripDto.yearOfProduction?.toString() ??
+                    meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ??
+                    "";
                   const carDescription = `${brand} ${model} ${year}`;
 
                   const startDateTime = getDateFromBlockchainTime(tripDto.trip.startDateTime);

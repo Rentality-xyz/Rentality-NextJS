@@ -245,9 +245,12 @@ export async function createCreateTripNotification(
 ): Promise<NotificationInfo | undefined> {
   const meta = await getMetaDataFromIpfs(tripDTO.metadataURI);
 
-  const brand = meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
-  const model = meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
-  const year = meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "";
+  const brand = tripDTO.brand ?? meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
+  const model = tripDTO.model ?? meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
+  const year =
+    tripDTO.yearOfProduction?.toString() ??
+    meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ??
+    "";
   const carDescription = `${brand} ${model} ${year}`;
 
   return createNotificationInfoFromTrip(TripStatus.Pending, tripDTO, carDescription, eventDate, isHost);
@@ -261,9 +264,12 @@ export async function createTripChangedNotification(
 ): Promise<NotificationInfo | undefined> {
   const meta = await getMetaDataFromIpfs(tripDTO.metadataURI);
 
-  const brand = meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
-  const model = meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
-  const year = meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "";
+  const brand = tripDTO.brand ?? meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
+  const model = tripDTO.model ?? meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
+  const year =
+    tripDTO.yearOfProduction?.toString() ??
+    meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ??
+    "";
   const carDescription = `${brand} ${model} ${year}`;
 
   const updatedTripStatus =
@@ -282,9 +288,12 @@ export async function createClaimCreatedChangedNotification(
 ): Promise<NotificationInfo | undefined> {
   const meta = await getMetaDataFromIpfs(tripDTO.metadataURI);
 
-  const brand = meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
-  const model = meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
-  const year = meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "";
+  const brand = tripDTO.brand ?? meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
+  const model = tripDTO.model ?? meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
+  const year =
+    tripDTO.yearOfProduction?.toString() ??
+    meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ??
+    "";
   const carDescription = `${brand} ${model} ${year}`;
 
   return createNotificationInfoFromClaim(tripDTO, claimInfo, carDescription, eventDate, isHost);
