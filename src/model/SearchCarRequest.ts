@@ -17,6 +17,15 @@ export type SearchCarRequest = {
     pricePerDayInUsdFrom: string;
     pricePerDayInUsdTo: string;
   };
+  isDeliveryToGuest: boolean;
+  deliveryInfo: {
+    pickupLocation:
+      | { isHostHomeLocatiom: true }
+      | { isHostHomeLocatiom: false; address: string; lat: number; lng: number };
+    returnLocation:
+      | { isHostHomeLocatiom: true }
+      | { isHostHomeLocatiom: false; address: string; lat: number; lng: number };
+  };
 };
 
 export const emptySearchCarRequest: SearchCarRequest = {
@@ -37,5 +46,10 @@ export const emptySearchCarRequest: SearchCarRequest = {
     yearOfProductionTo: "",
     pricePerDayInUsdFrom: "",
     pricePerDayInUsdTo: "",
+  },
+  isDeliveryToGuest: false,
+  deliveryInfo: {
+    pickupLocation: { isHostHomeLocatiom: true },
+    returnLocation: { isHostHomeLocatiom: true },
   },
 };

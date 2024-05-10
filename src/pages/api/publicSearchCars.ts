@@ -213,6 +213,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       pricePerDayInUsdFrom: pricePerDayInUsdFrom as string,
       pricePerDayInUsdTo: pricePerDayInUsdTo as string,
     },
+    isDeliveryToGuest: false,
+    deliveryInfo: {
+      pickupLocation: { isHostHomeLocatiom: true },
+      returnLocation: { isHostHomeLocatiom: true },
+    },
   };
   console.log(
     `Calling searchAvailableCars API for ${chainIdNumber} chain id with searchCarRequest: ${JSON.stringify(
