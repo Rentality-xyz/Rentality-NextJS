@@ -24,23 +24,37 @@ export default function CarSearchMap({
 }) {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [isSticked, setIsSticked] = useState<boolean>(false);
-  const mapLeft = useRef<Number>(0);
-  const mapTop = useRef<Number>(0);
-  const mapWidth = useRef<Number>(0);
-
+  const mapLeft = useRef<number>(0);
+  const mapTop = useRef<number>(0);
+  const mapWidth = useRef<number>(0);
+  const [mapHeight, setMapHeight] = useState<number>(0);
+  
   const mapContainerStyle = useMemo<CSSProperties>(
-    () => ({
+    () => {
+		var height = "";
+		if(isSticked){
+			if(mapHeight){
+				height = mapHeight + "px"
+			} else {
+				height = "100vh";
+			}		
+		} else {
+			height = typeof window !== "undefined" && window.screen.width >= 1280 ? "60vh" : (isExpanded ? "80vh" : "12rem");
+		}
+		return {
       position: isSticked ? "fixed" : "relative",
       top: isSticked ? "0px" : mapTop.current + "px",
       ...(isSticked && { left: mapLeft.current + "px" }),
       width: isSticked ? mapWidth.current + "px" : "100%",
+      height:  height,
       borderRadius: "30px",
-    }),
-    [isSticked]
+    }
+	},
+    [isSticked, mapHeight, isExpanded]
   );
 
   const handleScroll = () => {
-    const googleMapElement = document.getElementById(googleMapElementID);
+    const googleMapElement = document.getElementById("google-maps-guest-search-page");
     if (!googleMapElement) {
       console.log("Cannot find Google Map Element to set up stickyness");
       return;
@@ -52,8 +66,14 @@ export default function CarSearchMap({
       console.log("Cannot find Google Map Parent Element to set up stickyness");
       return;
     }
-
+    
     const parentRect = googleMapElementParent.getBoundingClientRect();
+
+	if(parentRect.top <= 0 && window.screen.width >= 1280 && parentRect.bottom < window.innerHeight){
+		setMapHeight(Math.ceil(parentRect.bottom));
+	} else {
+		setMapHeight(0);
+	}
 
     if (parentRect.top <= 0 && window.screen.width >= 1280 && !isSticked) {
       const rect = googleMapElement.getBoundingClientRect();
@@ -90,15 +110,11 @@ export default function CarSearchMap({
 
   const { googleMapsAPIIsLoaded } = useGoogleMapsContext();
 
-  const googleMapElementID = useMemo(() => {
-    return `google-maps-${crypto.randomUUID()}-id`;
-  }, []);
-
   return googleMapsAPIIsLoaded ? (
     <GoogleMap
-      id={googleMapElementID}
+      id="google-maps-guest-search-page"
       options={{ mapId: GOOGLE_MAPS_MAP_ID }}
-      mapContainerClassName={`${isExpanded ? "h-[80vh]" : "h-[12rem]"} xl:h-[60vh] max-xl:transition-height max-xl:duration-300 max-xl:ease-in-out`}
+      mapContainerClassName={"max-xl:transition-height max-xl:duration-300 max-xl:ease-in-out"}
       mapContainerStyle={mapContainerStyle}
       center={defaultCenter || DEFAULT_GOOGLE_MAPS_SEARCH_CENTER}
       zoom={DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM}
