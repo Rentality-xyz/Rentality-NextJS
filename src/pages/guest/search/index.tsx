@@ -154,10 +154,6 @@ export default function Search() {
     setIsExpanded(!isExpanded);
   };
 
-  useEffect(()=>{
-	  console.log(searchCarRequest);
-  },[searchCarRequest]);
-
   return (
     <Layout>
       <GoogleMapsProvider libraries={["maps", "marker", "places"]}>
