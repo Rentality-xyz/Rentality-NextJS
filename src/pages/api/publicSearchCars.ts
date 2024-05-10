@@ -45,15 +45,15 @@ const formatSearchAvailableCarsContractRequest = (searchCarRequest: SearchCarReq
   const contractDateFromUTC = getBlockchainTimeFromDate(startCarLocalDateTime);
   const contractDateToUTC = getBlockchainTimeFromDate(endCarLocalDateTime);
   const contractSearchCarParams: ContractSearchCarParams = {
-    country: "", //searchCarRequest.country ?? "",
-    state: "", //searchCarRequest.state ?? "",
-    city: searchCarRequest.city ?? "",
-    brand: searchCarRequest.brand ?? "",
-    model: searchCarRequest.model ?? "",
-    yearOfProductionFrom: BigInt(searchCarRequest.yearOfProductionFrom ?? "0"),
-    yearOfProductionTo: BigInt(searchCarRequest.yearOfProductionTo ?? "0"),
-    pricePerDayInUsdCentsFrom: BigInt(getMoneyInCentsFromString(searchCarRequest.pricePerDayInUsdFrom)),
-    pricePerDayInUsdCentsTo: BigInt(getMoneyInCentsFromString(searchCarRequest.pricePerDayInUsdTo)),
+    country: "", //searchCarRequest.searchLocation.country ?? "",
+    state: "", //searchCarRequest.searchLocation.state ?? "",
+    city: searchCarRequest.searchLocation.city ?? "",
+    brand: searchCarRequest.searchFilters.brand ?? "",
+    model: searchCarRequest.searchFilters.model ?? "",
+    yearOfProductionFrom: BigInt(searchCarRequest.searchFilters.yearOfProductionFrom ?? "0"),
+    yearOfProductionTo: BigInt(searchCarRequest.searchFilters.yearOfProductionTo ?? "0"),
+    pricePerDayInUsdCentsFrom: BigInt(getMoneyInCentsFromString(searchCarRequest.searchFilters.pricePerDayInUsdFrom)),
+    pricePerDayInUsdCentsTo: BigInt(getMoneyInCentsFromString(searchCarRequest.searchFilters.pricePerDayInUsdTo)),
   };
   return { contractDateFromUTC, contractDateToUTC, contractSearchCarParams } as const;
 };
@@ -195,19 +195,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const searchCarRequest: SearchCarRequest = {
+    searchLocation: {
+      country: country as string,
+      state: state as string,
+      city: city as string,
+      locationLat: 0,
+      locationLng: 0,
+      address: "",
+    },
     dateFrom: dateFrom as string,
     dateTo: dateTo as string,
-    country: country as string,
-    state: state as string,
-    city: city as string,
-    brand: brand as string,
-    model: model as string,
-    yearOfProductionFrom: yearOfProductionFrom as string,
-    yearOfProductionTo: yearOfProductionTo as string,
-    pricePerDayInUsdFrom: pricePerDayInUsdFrom as string,
-    pricePerDayInUsdTo: pricePerDayInUsdTo as string,
-    locationLat: 0,
-    locationLng: 0,
+    searchFilters: {
+      brand: brand as string,
+      model: model as string,
+      yearOfProductionFrom: yearOfProductionFrom as string,
+      yearOfProductionTo: yearOfProductionTo as string,
+      pricePerDayInUsdFrom: pricePerDayInUsdFrom as string,
+      pricePerDayInUsdTo: pricePerDayInUsdTo as string,
+    },
   };
   console.log(
     `Calling searchAvailableCars API for ${chainIdNumber} chain id with searchCarRequest: ${JSON.stringify(

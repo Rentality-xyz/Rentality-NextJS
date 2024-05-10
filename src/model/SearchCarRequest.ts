@@ -1,31 +1,41 @@
 export type SearchCarRequest = {
+  searchLocation: {
+    address: string;
+    country: string;
+    state: string;
+    city: string;
+    locationLat: number | undefined;
+    locationLng: number | undefined;
+  };
   dateFrom: string;
   dateTo: string;
-  country: string;
-  state: string;
-  city: string;
-  brand: string;
-  model: string;
-  yearOfProductionFrom: string;
-  yearOfProductionTo: string;
-  pricePerDayInUsdFrom: string;
-  pricePerDayInUsdTo: string;
-  locationLat: number | undefined;
-  locationLng: number | undefined;
+  searchFilters: {
+    brand: string;
+    model: string;
+    yearOfProductionFrom: string;
+    yearOfProductionTo: string;
+    pricePerDayInUsdFrom: string;
+    pricePerDayInUsdTo: string;
+  };
 };
 
 export const emptySearchCarRequest: SearchCarRequest = {
+  searchLocation: {
+    country: "",
+    state: "",
+    city: "",
+    locationLat: 0,
+    locationLng: 0,
+    address: "",
+  },
   dateFrom: "",
   dateTo: "",
-  country: "",
-  state: "",
-  city: "",
-  brand: "",
-  model: "",
-  yearOfProductionFrom: "",
-  yearOfProductionTo: "",
-  pricePerDayInUsdFrom: "",
-  pricePerDayInUsdTo: "",
-  locationLat: 0,
-  locationLng: 0,
+  searchFilters: {
+    brand: "",
+    model: "",
+    yearOfProductionFrom: "",
+    yearOfProductionTo: "",
+    pricePerDayInUsdFrom: "",
+    pricePerDayInUsdTo: "",
+  },
 };

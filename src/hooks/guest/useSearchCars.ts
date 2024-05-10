@@ -28,19 +28,21 @@ const useSearchCars = () => {
       if (ethereumInfo?.chainId) url.searchParams.append("chainId", ethereumInfo.chainId.toString());
       if (searchCarRequest.dateFrom) url.searchParams.append("dateFrom", searchCarRequest.dateFrom);
       if (searchCarRequest.dateTo) url.searchParams.append("dateTo", searchCarRequest.dateTo);
-      if (searchCarRequest.country) url.searchParams.append("country", searchCarRequest.country);
-      if (searchCarRequest.state) url.searchParams.append("state", searchCarRequest.state);
-      if (searchCarRequest.city) url.searchParams.append("city", searchCarRequest.city);
-      if (searchCarRequest.brand) url.searchParams.append("brand", searchCarRequest.brand);
-      if (searchCarRequest.model) url.searchParams.append("model", searchCarRequest.model);
-      if (searchCarRequest.yearOfProductionFrom)
-        url.searchParams.append("yearOfProductionFrom", searchCarRequest.yearOfProductionFrom);
-      if (searchCarRequest.yearOfProductionTo)
-        url.searchParams.append("yearOfProductionTo", searchCarRequest.yearOfProductionTo);
-      if (searchCarRequest.pricePerDayInUsdFrom)
-        url.searchParams.append("pricePerDayInUsdFrom", searchCarRequest.pricePerDayInUsdFrom);
-      if (searchCarRequest.pricePerDayInUsdTo)
-        url.searchParams.append("pricePerDayInUsdTo", searchCarRequest.pricePerDayInUsdTo);
+      if (searchCarRequest.searchLocation.country)
+        url.searchParams.append("country", searchCarRequest.searchLocation.country);
+      if (searchCarRequest.searchLocation.state)
+        url.searchParams.append("state", searchCarRequest.searchLocation.state);
+      if (searchCarRequest.searchLocation.city) url.searchParams.append("city", searchCarRequest.searchLocation.city);
+      if (searchCarRequest.searchFilters.brand) url.searchParams.append("brand", searchCarRequest.searchFilters.brand);
+      if (searchCarRequest.searchFilters.model) url.searchParams.append("model", searchCarRequest.searchFilters.model);
+      if (searchCarRequest.searchFilters.yearOfProductionFrom)
+        url.searchParams.append("yearOfProductionFrom", searchCarRequest.searchFilters.yearOfProductionFrom);
+      if (searchCarRequest.searchFilters.yearOfProductionTo)
+        url.searchParams.append("yearOfProductionTo", searchCarRequest.searchFilters.yearOfProductionTo);
+      if (searchCarRequest.searchFilters.pricePerDayInUsdFrom)
+        url.searchParams.append("pricePerDayInUsdFrom", searchCarRequest.searchFilters.pricePerDayInUsdFrom);
+      if (searchCarRequest.searchFilters.pricePerDayInUsdTo)
+        url.searchParams.append("pricePerDayInUsdTo", searchCarRequest.searchFilters.pricePerDayInUsdTo);
 
       const apiResponse = await fetch(url);
 

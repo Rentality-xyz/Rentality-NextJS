@@ -43,7 +43,11 @@ export default function SearchAndFilters({
 
   const gmtLabel = isEmpty(utcOffset) ? "" : `(GMT${utcOffset})`;
   const isSearchAllowed =
-    formatLocation(searchCarRequest.city, searchCarRequest.state, searchCarRequest.country).length > 0 &&
+    formatLocation(
+      searchCarRequest.searchLocation.city,
+      searchCarRequest.searchLocation.state,
+      searchCarRequest.searchLocation.country
+    ).length > 0 &&
     new Date(searchCarRequest.dateFrom) >= new Date() &&
     new Date(searchCarRequest.dateTo) > new Date(searchCarRequest.dateFrom);
 
@@ -75,7 +79,11 @@ export default function SearchAndFilters({
 
   useEffect(() => {
     const getGMTFromLocation = async () => {
-      const address = formatLocation(searchCarRequest.city, searchCarRequest.state, searchCarRequest.country);
+      const address = formatLocation(
+        searchCarRequest.searchLocation.city,
+        searchCarRequest.searchLocation.state,
+        searchCarRequest.searchLocation.country
+      );
       if (isEmpty(address)) {
         setUtcOffset("");
         return;
@@ -99,7 +107,11 @@ export default function SearchAndFilters({
     };
 
     getGMTFromLocation();
-  }, [searchCarRequest.city, searchCarRequest.state, searchCarRequest.country]);
+  }, [
+    searchCarRequest.searchLocation.city,
+    searchCarRequest.searchLocation.state,
+    searchCarRequest.searchLocation.country,
+  ]);
 
   return (
     <>
@@ -110,7 +122,11 @@ export default function SearchAndFilters({
           label={t_comp("location_label")}
           placeholder={t_comp("location_placeholder")}
           includeStreetAddress={true}
-          initValue={formatLocation(searchCarRequest.city, searchCarRequest.state, searchCarRequest.country)}
+          initValue={formatLocation(
+            searchCarRequest.searchLocation.city,
+            searchCarRequest.searchLocation.state,
+            searchCarRequest.searchLocation.country
+          )}
           onChange={handleSearchInputChange}
           onAddressChange={async (placeDetails) => {
             const country = placeDetails.country?.short_name ?? "";
@@ -121,11 +137,14 @@ export default function SearchAndFilters({
 
             setSearchCarRequest({
               ...searchCarRequest,
-              country: country,
-              state: state,
-              city: city,
-              locationLat: locationLat,
-              locationLng: locationLng,
+              searchLocation: {
+                address: placeDetails.addressString,
+                country: country,
+                state: state,
+                city: city,
+                locationLat: locationLat,
+                locationLng: locationLng,
+              },
             });
           }}
         />

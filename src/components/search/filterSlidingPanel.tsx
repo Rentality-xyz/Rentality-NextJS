@@ -42,77 +42,77 @@ export default function FilterSlidingPanel({
             <RntInput
               id="filter-brand"
               label={t_comp("brand")}
-              value={searchCarRequest.brand}
+              value={searchCarRequest.searchFilters.brand}
               onChange={(e) =>
                 setSearchCarRequest({
                   ...searchCarRequest,
-                  brand: e.target.value,
+                  searchFilters: { ...searchCarRequest.searchFilters, brand: e.target.value },
                 })
               }
             />
             <RntInput
               id="filter-model"
               label={t_comp("model")}
-              value={searchCarRequest.model}
+              value={searchCarRequest.searchFilters.model}
               onChange={(e) =>
                 setSearchCarRequest({
                   ...searchCarRequest,
-                  model: e.target.value,
+                  searchFilters: { ...searchCarRequest.searchFilters, model: e.target.value },
                 })
               }
             />
             <RntInput
               id="filter-year-from"
               label={t_comp("year_from")}
-              value={searchCarRequest.yearOfProductionFrom}
+              value={searchCarRequest.searchFilters.yearOfProductionFrom}
               onChange={(e) => {
                 const newValue = e.target.value;
                 if (isNaN(Number(newValue)) && newValue !== "") return;
 
                 setSearchCarRequest({
                   ...searchCarRequest,
-                  yearOfProductionFrom: newValue,
+                  searchFilters: { ...searchCarRequest.searchFilters, yearOfProductionFrom: newValue },
                 });
               }}
             />
             <RntInput
               id="filter-year-yo"
               label={t_comp("year_to")}
-              value={searchCarRequest.yearOfProductionTo}
+              value={searchCarRequest.searchFilters.yearOfProductionTo}
               onChange={(e) => {
                 const newValue = e.target.value;
                 if (isNaN(Number(newValue)) && newValue !== "") return;
 
                 setSearchCarRequest({
                   ...searchCarRequest,
-                  yearOfProductionTo: newValue,
+                  searchFilters: { ...searchCarRequest.searchFilters, yearOfProductionTo: newValue },
                 });
               }}
             />
             <RntInput
               id="filter-price-from"
               label={t_comp("price_from")}
-              value={searchCarRequest.pricePerDayInUsdFrom}
+              value={searchCarRequest.searchFilters.pricePerDayInUsdFrom}
               onChange={(e) => {
                 const newValue = e.target.value;
                 if (isNaN(Number(newValue)) && newValue !== "") return;
                 setSearchCarRequest({
                   ...searchCarRequest,
-                  pricePerDayInUsdFrom: newValue,
+                  searchFilters: { ...searchCarRequest.searchFilters, pricePerDayInUsdFrom: newValue },
                 });
               }}
             />
             <RntInput
               id="filter-price-yo"
               label={t_comp("price_to")}
-              value={searchCarRequest.pricePerDayInUsdTo}
+              value={searchCarRequest.searchFilters.pricePerDayInUsdTo}
               onChange={(e) => {
                 const newValue = e.target.value;
                 if (isNaN(Number(newValue)) && newValue !== "") return;
 
                 setSearchCarRequest({
                   ...searchCarRequest,
-                  pricePerDayInUsdTo: newValue,
+                  searchFilters: { ...searchCarRequest.searchFilters, pricePerDayInUsdTo: newValue },
                 });
               }}
             />
