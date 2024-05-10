@@ -39,7 +39,11 @@ export default function CarSearchMap({
 				height = "100vh";
 			}		
 		} else {
-			height = typeof window !== "undefined" && window.screen.width >= 1280 ? "60vh" : (isExpanded ? "80vh" : "12rem");
+			if(mapHeight && carInfos.length > 0){
+				height = mapHeight + "px"
+			} else {	
+				height = typeof window !== "undefined" && window.screen.width >= 1280 ? "60vh" : (isExpanded ? "80vh" : "12rem");
+			}	
 		}
 		return {
       position: isSticked ? "fixed" : "relative",
@@ -68,15 +72,17 @@ export default function CarSearchMap({
     }
     
     const parentRect = googleMapElementParent.getBoundingClientRect();
-
+    const rect = googleMapElement.getBoundingClientRect();
+    
 	if(parentRect.top <= 0 && window.screen.width >= 1280 && parentRect.bottom < window.innerHeight){
 		setMapHeight(Math.ceil(parentRect.bottom));
+	} else if(rect.bottom < window.innerHeight && window.screen.width >= 1280 && !isSticked ){
+		setMapHeight(window.innerHeight - rect.top);
 	} else {
 		setMapHeight(0);
 	}
-
+	
     if (parentRect.top <= 0 && window.screen.width >= 1280 && !isSticked) {
-      const rect = googleMapElement.getBoundingClientRect();
       mapLeft.current = Math.ceil(rect.left);
       mapTop.current = Math.ceil(rect.top);
       mapWidth.current = Math.ceil(rect.width);
