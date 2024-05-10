@@ -154,6 +154,10 @@ export default function Search() {
     setIsExpanded(!isExpanded);
   };
 
+  useEffect(()=>{
+	  console.log(searchCarRequest);
+  },[searchCarRequest]);
+
   return (
     <Layout>
       <GoogleMapsProvider libraries={["maps", "marker", "places"]}>
@@ -215,6 +219,11 @@ export default function Search() {
                     setSelected={handleSetMapMarkerSelected}
                     selectedCarID={selectedCarID}
                     isExpanded={isExpanded}
+                    defaultCenter={
+						(searchCarRequest.locationLat && searchCarRequest.locationLng 
+							&& searchCarRequest.locationLat > 0 && searchCarRequest.locationLat > 0) ?
+						new google.maps.LatLng(searchCarRequest.locationLat, searchCarRequest.locationLng) : null
+					}
                   />
                   <div
                     className="absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 flex justify-center items-center xl:hidden z-[99] w-[48px] h-[48px] cursor-pointer bg-[url('../images/ellipseUpBtn.png')] bg-cover bg-no-repeat bg-center"

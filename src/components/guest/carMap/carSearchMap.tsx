@@ -14,11 +14,13 @@ export default function CarSearchMap({
   setSelected,
   selectedCarID,
   isExpanded,
+  defaultCenter
 }: {
   carInfos: SearchCarInfo[];
   setSelected: (carID: Number) => void;
   selectedCarID: Number | null;
   isExpanded: boolean;
+  defaultCenter: google.maps.LatLng | null,
 }) {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [isSticked, setIsSticked] = useState<boolean>(false);
@@ -98,7 +100,7 @@ export default function CarSearchMap({
       options={{ mapId: GOOGLE_MAPS_MAP_ID }}
       mapContainerClassName={`${isExpanded ? "h-[80vh]" : "h-[12rem]"} xl:h-[60vh] max-xl:transition-height max-xl:duration-300 max-xl:ease-in-out`}
       mapContainerStyle={mapContainerStyle}
-      center={DEFAULT_GOOGLE_MAPS_SEARCH_CENTER}
+      center={defaultCenter || DEFAULT_GOOGLE_MAPS_SEARCH_CENTER}
       zoom={DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM}
       onLoad={onLoad}
       onUnmount={onUnmount}
