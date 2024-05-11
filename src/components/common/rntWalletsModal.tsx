@@ -6,6 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import RntButton from "./rntButton";
 import { TripInfo } from "@/model/TripInfo";
+import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 
 export default function RntWalletsModal({ tripInfo }: { tripInfo: TripInfo }) {
   const [open, setOpen] = React.useState(false);
@@ -32,9 +33,11 @@ export default function RntWalletsModal({ tripInfo }: { tripInfo: TripInfo }) {
 
   return (
     <React.Fragment>
-      <Link href="#" onClick={handleClickOpen}>
-        View
-      </Link>
+      <RntButtonTransparent className="w-36" onClick={handleClickOpen}>
+        <div className="text-[#52D1C9]">
+          <strong className="text-l">Wallets</strong>
+        </div>
+      </RntButtonTransparent>
       <Dialog
         maxWidth="sm"
         open={open}
