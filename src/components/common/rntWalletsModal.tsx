@@ -7,6 +7,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import RntButton from "./rntButton";
 import { TripInfo } from "@/model/TripInfo";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
+import Image from "next/image";
+import imgCopy from "@/images/ic_copy_24dp.svg";
 
 export default function RntWalletsModal({ tripInfo }: { tripInfo: TripInfo }) {
   const [open, setOpen] = React.useState(false);
@@ -22,7 +24,7 @@ export default function RntWalletsModal({ tripInfo }: { tripInfo: TripInfo }) {
   const maskWallet = (str: string) => {
     return (
       str.substring(0, 6) +
-      str.substring(6, str.length - 6).replace(/./g, ".") +
+      str.substring(6, str.length - 24).replace(/./g, ".") +
       str.substring(str.length - 6, str.length)
     );
   };
@@ -47,12 +49,14 @@ export default function RntWalletsModal({ tripInfo }: { tripInfo: TripInfo }) {
         PaperProps={{
           sx: {
             borderRadius: "20px",
+            margin: '16px',
+            background: "#240F50"
           },
         }}
       >
         <DialogContent
           sx={{
-            background: "#240F50",
+            padding: '20px 10px'
           }}
         >
           <DialogContentText
@@ -62,17 +66,19 @@ export default function RntWalletsModal({ tripInfo }: { tripInfo: TripInfo }) {
             id="alert-dialog-description"
           >
             <div className="flex flex-col divide-y">
-              <div className="p-2">
+              <div className="p-2 flex items-center justify-between">
                 <strong>{"Guest's wallet:"}</strong>
                 <span className="ms-2 text-gray-500">{maskWallet(tripInfo.guest.walletAddress)}</span>
-                <RntButton className="ms-2 w-20 h-8" onClick={() => copyToClipboard(tripInfo.guest.walletAddress)}>
+                <RntButton className="ms-2 w-24 h-8 flex items-center justify-center" onClick={() => copyToClipboard(tripInfo.guest.walletAddress)}>
+                  <Image src={imgCopy} alt="Copy" className="w-5 h-5 mr-1" />
                   Copy
                 </RntButton>
               </div>
-              <div className="p-2">
+              <div className="p-2 flex items-center justify-between">
                 <strong>{"Host's wallet:"}</strong>
                 <span className="ms-2 text-gray-500">{maskWallet(tripInfo.host.walletAddress)}</span>
-                <RntButton className="ms-2 w-20 h-8" onClick={() => copyToClipboard(tripInfo.host.walletAddress)}>
+                <RntButton className="ms-2 w-24 h-8 flex items-center justify-center" onClick={() => copyToClipboard(tripInfo.host.walletAddress)}>
+                  <Image src={imgCopy} alt="Copy" className="w-5 h-5 mr-1" />
                   Copy
                 </RntButton>
               </div>
