@@ -96,7 +96,7 @@ export default function Footer() {
               </a>
             </div>
           </div>
-          <div className="mt-auto font-['Montserrat',Arial,sans-serif]">©2023 by Rentality LLC</div>
+          <div className="z-0 mt-auto font-['Montserrat',Arial,sans-serif]">©2023 by Rentality LLC</div>
         </div>
       </div>
     </footer>
