@@ -15,9 +15,9 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
       <>
         <div className="flex text-rnt-temp-sidemenu-text overflow-hidden">
           <GuestSideNavMenu />
-          <div className="w-full">
+          <div className="xl:flex xl:flex-col xl:grow w-full">
             <Header accountType="Guest" />
-            <main className="px-4 sm:px-8 py-4 h-full text-rnt-temp-main-text lg:min-h-[600px]">{children}</main>
+            <main className="px-4 sm:px-8 py-4 h-full text-rnt-temp-main-text">{children}</main>
           </div>
         </div>
         <Footer />
