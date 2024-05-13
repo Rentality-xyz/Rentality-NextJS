@@ -30,14 +30,12 @@ const buildLink = (address: string): string => {
 
   return url.toString();
 };
-export default function Deposit(): JSX.Element {
+export default function AlchemyPayDeposit(): JSX.Element {
   const ethereumInfo = useEthereum();
   return (
-    <div className="bg-rentality-bg rnt-card flex flex-col md:flex-row rounded-xl overflow-hidden">
-      <RntButton
-        className="h-14 w-44 text-base"
-        onClick={() => window.open(buildLink(ethereumInfo?.walletAddress ?? ""))}
-      >
+    <div className="flex gap-4 items-center">
+      <span className="text-lg">Alchemy pay: </span>
+      <RntButton className="w-44" onClick={() => window.open(buildLink(ethereumInfo?.walletAddress ?? ""))}>
         Deposit
       </RntButton>
     </div>

@@ -1,6 +1,7 @@
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import ProfileInfoPage from "@/components/profileInfo/profileInfoPage";
+import ProfileRnD from "@/components/RnD/profileRnD";
 import useProfileSettings from "@/hooks/useProfileSettings";
 import { useTranslation } from "react-i18next";
 
@@ -17,12 +18,15 @@ export default function Profile() {
             {t("common.info.loading")}
           </div>
         ) : (
-          <ProfileInfoPage
-            savedProfileSettings={savedProfileSettings}
-            saveProfileSettings={saveProfileSettings}
-            isHost={false}
-            t={t}
-          />
+          <>
+            <ProfileInfoPage
+              savedProfileSettings={savedProfileSettings}
+              saveProfileSettings={saveProfileSettings}
+              isHost={false}
+              t={t}
+            />
+            <ProfileRnD />
+          </>
         )}
       </div>
     </Layout>
