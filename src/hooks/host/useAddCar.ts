@@ -43,6 +43,7 @@ const emptyNewCarInfo: HostCarInfo = {
   engineTypeText: "",
   fullBatteryChargePrice: "",
   timeBufferBetweenTripsInMin: 0,
+  isInsuranceIncluded: false,
 };
 
 const useAddCar = () => {

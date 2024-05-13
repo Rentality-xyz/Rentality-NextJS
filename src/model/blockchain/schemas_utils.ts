@@ -38,6 +38,7 @@ const emptyContractCarDetails: ContractCarDetails = {
   locationLatitude: "",
   locationLongitude: "",
   currentlyListed: false,
+  isInsuranceIncluded: false,
 };
 
 export function validateContractCarDetails(obj: ContractCarDetails): obj is ContractCarDetails {

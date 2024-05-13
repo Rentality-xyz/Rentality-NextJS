@@ -423,6 +423,7 @@
     "secure_dep": "Security deposit",
     "fuel_price": "Fuel price per gal",
     "unlimited": "Unlimited",
+    "insurance_included": "Insurance included",
     "overmiles_fee": "${{price, string}}/mi fee for additional miles driven`",
     "battery_charge": "Battery charge price:",
     "full_charge": "Full battery charge cost",

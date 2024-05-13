@@ -528,6 +528,17 @@ export default function CarEditForm({
             </p>
           </div>
         </div>
+        <Checkbox
+          className="mt-4"
+          title={t_car("insurance_included")}
+          value={carInfoFormParams.isInsuranceIncluded}
+          onChange={(e) =>
+            setCarInfoFormParams({
+              ...carInfoFormParams,
+              isInsuranceIncluded: e.target.checked,
+            })
+          }
+        />
       </div>
 
       {isElectricEngine ? (

@@ -50,6 +50,7 @@ const emptyHostCarInfo: HostCarInfo = {
   engineTypeText: "",
   fullBatteryChargePrice: "",
   timeBufferBetweenTripsInMin: 0,
+  isInsuranceIncluded: false,
 };
 
 const useEditCarInfo = (carId: number) => {
@@ -183,6 +184,7 @@ const useEditCarInfo = (carId: number) => {
           fuelPricePerGal: fuelPricePerGal,
           fullBatteryChargePrice: fullBatteryChargePrice,
           timeBufferBetweenTripsInMin: Number(carInfo.timeBufferBetweenTripsInSec) / 60,
+          isInsuranceIncluded: carInfoDetails.isInsuranceIncluded,
         };
         return item;
       } catch (e) {

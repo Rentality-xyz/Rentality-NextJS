@@ -328,6 +328,7 @@ export type ContractCarDetails = {
   state: string;
   locationLatitude: string;
   locationLongitude: string;
+  isInsuranceIncluded: boolean;
 };
 
 export type ContractFloridaTaxes = {
