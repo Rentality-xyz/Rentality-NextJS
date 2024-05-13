@@ -104,6 +104,7 @@ export type TripInfo = {
   pricePerDayInUsd: number;
   totalDayPriceInUsd: number;
   totalPriceWithDiscountInUsd: number;
+  deliveryFeeInUsd: number;
   taxPriceInUsd: number;
   depositInUsd: number;
   resolveAmountInUsd: number;

@@ -359,6 +359,7 @@
       "trip_days": "Trip days",
       "trip_price": "Trip price",
       "discount_amount": "Discount Amount",
+      "delivery_fee": "Delivery fee",
       "sales_tax": "Sales Tax",
       "government_tax": "Government Tax",
       "trip_total": "Trip total",

@@ -230,6 +230,7 @@ export type ContractPaymentInfo = {
   currencyDecimals: bigint;
   resolveFuelAmountInUsdCents: bigint;
   resolveMilesAmountInUsdCents: bigint;
+  deliveryFeeInUsdCents: bigint;
 };
 
 export type ContractTripReceiptDTO = {

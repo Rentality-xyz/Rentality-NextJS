@@ -241,6 +241,10 @@ export default function TripInfo({ tripId, t }: { tripId: bigint; t: TFunctionNe
                       </td>
                     </tr>
                     <tr>
+                      <td>{t_details("delivery_fee")}</td>
+                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.deliveryFeeInUsd)}</td>
+                    </tr>
+                    <tr>
                       <td>{t_details("sales_tax")}</td>
                       <td className="text-end">${tripInfo.taxPriceInUsd}</td>
                     </tr>

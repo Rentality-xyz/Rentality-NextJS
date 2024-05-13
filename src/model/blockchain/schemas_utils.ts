@@ -224,6 +224,7 @@ const emptyContractTrip: ContractTrip = {
     resolveFuelAmountInUsdCents: BigInt(0),
     resolveMilesAmountInUsdCents: BigInt(0),
     priceWithDiscount: BigInt(0),
+    deliveryFeeInUsdCents: BigInt(0),
   },
   approvedDateTime: BigInt(0),
   rejectedDateTime: BigInt(0),
