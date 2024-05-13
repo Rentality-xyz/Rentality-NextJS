@@ -62,6 +62,7 @@
       "rent_for": "Rent for {{days, number}} day(s)",
       "total": "for",
       "secur_deposit": "Additionally security deposit {{deposit, number}} per trip",
+      "delivery_fee": "Delivery fee",
       "taxes": "Taxes",
       "deposit": "Deposit",
       "per_day": "/day",

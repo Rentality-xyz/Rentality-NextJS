@@ -68,12 +68,9 @@ const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: Co
       }
       const meta = await getMetaDataFromIpfs(i.metadataURI);
 
-      const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
-      const pricePerDayWithDiscount = Number(i.pricePerDayWithDiscount) / 100;
       const tripDays = Number(i.tripDays);
+      const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
       const totalPriceWithDiscount = Number(i.totalPriceWithDiscount) / 100;
-      const taxes = Number(i.taxes) / 100;
-      const securityDeposit = Number(i.securityDepositPerTripInUsdCents) / 100;
 
       let item: SearchCarInfo = {
         carId: Number(i.carId),
@@ -87,11 +84,12 @@ const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: Co
         engineTypeText: getEngineTypeString(i.engineType ?? EngineType.PETROL),
         milesIncludedPerDay: getMilesIncludedPerDayText(i.milesIncludedPerDay ?? 0),
         pricePerDay: pricePerDay,
-        pricePerDayWithDiscount: pricePerDayWithDiscount,
+        pricePerDayWithDiscount: Number(i.pricePerDayWithDiscount) / 100,
         tripDays: tripDays,
         totalPriceWithDiscount: totalPriceWithDiscount,
-        taxes: taxes,
-        securityDeposit: securityDeposit,
+        deliveryFee: Number(i.deliveryFee) / 100,
+        taxes: Number(i.taxes) / 100,
+        securityDeposit: Number(i.securityDepositPerTripInUsdCents) / 100,
         hostPhotoUrl: i.hostPhotoUrl,
         hostName: i.hostName,
         timeZoneId: i.timeZoneId,

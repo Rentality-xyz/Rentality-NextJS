@@ -179,6 +179,7 @@ const emptyContractSearchCar: ContractSearchCar = {
   taxes: BigInt(0),
   totalPriceWithDiscount: BigInt(0),
   tripDays: BigInt(0),
+  deliveryFee: BigInt(0),
 };
 
 export function validateContractSearchCar(obj: ContractSearchCar): obj is ContractSearchCar {

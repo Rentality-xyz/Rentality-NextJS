@@ -282,6 +282,7 @@ export type ContractSearchCar = {
   tripDays: bigint;
   totalPriceWithDiscount: bigint;
   taxes: bigint;
+  deliveryFee: bigint;
   securityDepositPerTripInUsdCents: bigint;
   engineType: EngineType;
   milesIncludedPerDay: bigint;

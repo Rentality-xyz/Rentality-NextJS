@@ -20,6 +20,7 @@ export type SearchCarInfo = {
   pricePerDayWithDiscount: number;
   tripDays: number;
   totalPriceWithDiscount: number;
+  deliveryFee: number;
   taxes: number;
   securityDeposit: number;
   hostPhotoUrl: string;
