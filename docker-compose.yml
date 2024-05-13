@@ -4,6 +4,8 @@ services:
     image: nextjs-rentality:latest
     ports:
       - 3000:3000
+    env_file:
+      ./docker/env.nextjs
     depends_on:
       - ganache
     networks:
