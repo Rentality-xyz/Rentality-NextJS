@@ -9,6 +9,7 @@ import {
   ContractCreateCarRequest,
   ContractCreateClaimRequest,
   ContractCreateTripRequest,
+  ContractDeliveryPrices,
   ContractFullClaimInfo,
   ContractKYCInfo,
   ContractPublicHostCarDTO,
@@ -98,6 +99,8 @@ export interface IRentalityContract {
   ): Promise<ContractTransactionResponse>;
   getCarsOfHost(host: string): Promise<ContractPublicHostCarDTO[]>;
   getClaim(claimId: bigint): Promise<ContractFullClaimInfo>;
+  getDeliveryPrices(): Promise<ContractDeliveryPrices>;
+  addUserDeliveryPrices(deliveryPrices: ContractDeliveryPrices): Promise<ContractTransactionResponse>;
 
   //not using
   getAllCars(): Promise<ContractCarInfo[]>;

@@ -342,6 +342,12 @@ export type ContractBaseDiscount = {
   initialized: boolean;
 };
 
+export type ContractDeliveryPrices = {
+  underTwentyFiveMilesInUsdCents: bigint;
+  aboveTwentyFiveMilesInUsdCents: bigint;
+  initialized: boolean;
+};
+
 export type TripStatus = bigint;
 export const TripStatus = {
   Pending: BigInt(0), // Created

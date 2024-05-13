@@ -1,8 +1,10 @@
+import DeliveryPriceForm from "@/components/host/deliveryPriceForm";
 import TripDiscountsForm from "@/components/host/tripDiscountsForm";
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import ProfileInfoPage from "@/components/profileInfo/profileInfoPage";
 import ProfileRnD from "@/components/RnD/profileRnD";
+import useDeliveryPrices from "@/hooks/host/useDeliveryPrices";
 import useTripDiscounts from "@/hooks/host/useTripDiscounts";
 import useProfileSettings from "@/hooks/useProfileSettings";
 import { useTranslation } from "react-i18next";
@@ -10,13 +12,14 @@ import { useTranslation } from "react-i18next";
 export default function Profile() {
   const [isLoading, savedProfileSettings, saveProfileSettings] = useProfileSettings();
   const [isLoadingDiscounts, savedTripsDiscounts, saveTripDiscounts] = useTripDiscounts();
+  const [isLoadingDeliveryPrices, savedDeliveryPrices, saveDeliveryPrices] = useDeliveryPrices();
   const { t } = useTranslation();
 
   return (
     <Layout>
       <div className="flex flex-col">
         <PageTitle title={t("profile.title")} />
-        {isLoading || isLoadingDiscounts ? (
+        {isLoading || isLoadingDiscounts || isLoadingDeliveryPrices ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
             {t("common.info.loading")}
           </div>
@@ -28,7 +31,19 @@ export default function Profile() {
               isHost={true}
               t={t}
             />
-            <TripDiscountsForm savedTripsDiscounts={savedTripsDiscounts} saveTripsDiscounts={saveTripDiscounts} t={t} />
+            <div className="flex flex-wrap gap-20">
+              <TripDiscountsForm
+                savedTripsDiscounts={savedTripsDiscounts}
+                saveTripsDiscounts={saveTripDiscounts}
+                t={t}
+              />
+              <DeliveryPriceForm
+                savedDeliveryPrices={savedDeliveryPrices}
+                saveDeliveryPrices={saveDeliveryPrices}
+                t={t}
+              />
+            </div>
+
             <ProfileRnD />
           </>
         )}
