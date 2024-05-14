@@ -68,6 +68,16 @@
       "per_day": "/day",
       "days": "day(s)",
       "price_without_taxes": "Price excl. taxes"
+    },
+    "search_car_delivery_extra_info": {
+      "title": "Trip Info",
+      "host_home_location": "Host home location:",
+      "free_pickup_and_return_location": "Free Pick up & Return location",
+      "delivery_fee_location": "Delivery fee to you location:",
+      "from_1_to_25_mile": "from 1 to 25 mile ${{price, string}} per mile",
+      "over_25_mile": "over 25 miles ${{price, string}} per mile",
+      "insurance_included_title": "Insurance included in trip price",
+      "insurance_included_text": "Check with the host for insurance conditions"
     }
   },
   "admin": {

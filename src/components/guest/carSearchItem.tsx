@@ -3,6 +3,8 @@ import RntButton from "../common/rntButton";
 import { Avatar } from "@mui/material";
 import { useMemo } from "react";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import SearchCarDeliveryExtraInfo from "./searchCarDeliveryExtraInfo";
 
 type TFunction = (key: string, options?: { [key: string]: any }) => string;
 
@@ -21,6 +23,7 @@ export default function CarSearchItem({
   setSelected: (carID: Number) => void;
   t: TFunction;
 }) {
+  const { showCustomDialog, hideDialogs } = useRntDialogs();
   const t_item: TFunction = (name, options) => {
     return t("car_search_item." + name, options);
   };
@@ -29,6 +32,21 @@ export default function CarSearchItem({
     const classNames = "bg-rentality-bg rnt-card flex flex-col md:flex-row rounded-xl overflow-hidden cursor-pointer";
     return isSelected ? classNames + " border-2" : classNames;
   }, [isSelected]);
+
+  const handleInfoClick = () => {
+    showCustomDialog(
+      <SearchCarDeliveryExtraInfo
+        hostHomeLocation={searchInfo.hostHomeLocation}
+        deliveryPrices={{
+          from1To25milesPrice: searchInfo.deliveryPrices.from1To25milesPrice,
+          over25MilesPrice: searchInfo.deliveryPrices.over25MilesPrice,
+        }}
+        isInsuranceIncluded={searchInfo.isInsuranceIncluded}
+        handleClose={hideDialogs}
+        t={t}
+      />
+    );
+  };
 
   return (
     <div className={mainClasses} onClick={() => setSelected(searchInfo.carId)}>
@@ -119,6 +137,9 @@ export default function CarSearchItem({
             <div className="flex flex-col">
               <p className="text-xs">{t_item("host")}</p>
               <p className="text-sm">{searchInfo.hostName ?? "-"}</p>
+            </div>
+            <div className="ml-8" onClick={handleInfoClick}>
+              <i className="fi fi-rs-info text-2xl"></i>
             </div>
           </div>
           <RntButton

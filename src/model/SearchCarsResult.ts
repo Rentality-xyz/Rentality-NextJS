@@ -33,6 +33,12 @@ export type SearchCarInfo = {
   highlighted: boolean;
   daysDiscount: string;
   totalDiscount: string;
+  hostHomeLocation: string;
+  isInsuranceIncluded: boolean;
+  deliveryPrices: {
+    from1To25milesPrice: number;
+    over25MilesPrice: number;
+  };
 };
 
 export const emptySearchCarsResult: SearchCarsResult = {

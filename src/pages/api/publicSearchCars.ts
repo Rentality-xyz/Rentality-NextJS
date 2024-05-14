@@ -100,6 +100,10 @@ const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: Co
         highlighted: false,
         daysDiscount: getDaysDiscount(tripDays),
         totalDiscount: getTotalDiscount(pricePerDay, tripDays, totalPriceWithDiscount),
+        //TODO
+        hostHomeLocation: "",
+        deliveryPrices: { from1To25milesPrice: 0, over25MilesPrice: 0 },
+        isInsuranceIncluded: true,
       };
 
       return item;
