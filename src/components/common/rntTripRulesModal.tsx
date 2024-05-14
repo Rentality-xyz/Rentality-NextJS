@@ -16,6 +16,7 @@ import tripRulesTollsAndTickets from "@/images/trip_rules_tolls_and_tickets.png"
 import tripRulesDistanceIncluded from "@/images/trip_rules_distance_included.png";
 import tripRulesGuestToHostCommunication from "@/images/trip_rules_host_to_guest_communications.png";
 import tripRulesCarSharingAgreement from "@/images/trip_rules_car_sharing_agreement.png";
+import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 
 export default function RntTripRulesModal({}: {}) {
   const [open, setOpen] = React.useState(false);
@@ -30,9 +31,11 @@ export default function RntTripRulesModal({}: {}) {
 
   return (
     <React.Fragment>
-      <Link href="#" onClick={handleClickOpen}>
-        View
-      </Link>
+      <RntButtonTransparent className="w-36" onClick={handleClickOpen}>
+        <div className="text-[#52D1C9]">
+          <strong className="text-l">Trip Rules</strong>
+        </div>
+      </RntButtonTransparent>
       <Dialog
         maxWidth="md"
         open={open}
