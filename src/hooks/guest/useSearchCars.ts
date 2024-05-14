@@ -108,6 +108,8 @@ const useSearchCars = () => {
         value: paymentsNeeded.totalPrice,
       });
       await transaction.wait();
+      //todo delivery
+
       return true;
     } catch (e) {
       console.error("createTripRequest error:" + e);

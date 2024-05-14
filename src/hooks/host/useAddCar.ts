@@ -224,6 +224,7 @@ const useAddCar = () => {
         timeBufferBetweenTripsInSec: BigInt(carInfoFormParams.timeBufferBetweenTripsInMin * 60),
         locationLatitude: dataToSave.locationLatitude,
         locationLongitude: dataToSave.locationLongitude,
+        insuranceIncluded: dataToSave.isInsuranceIncluded,
       };
 
       const transaction = await rentalityContract.addCar(request);

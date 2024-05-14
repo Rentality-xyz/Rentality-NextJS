@@ -59,7 +59,8 @@ const useTransactionHistory = (isHost: boolean) => {
                     Number(
                       tripDto.trip.paymentInfo.totalDayPriceInUsdCents +
                         tripDto.trip.paymentInfo.depositInUsdCents +
-                        tripDto.trip.paymentInfo.taxPriceInUsdCents
+                        tripDto.trip.paymentInfo.salesTax +
+                        tripDto.trip.paymentInfo.governmentTax
                     ) / 100;
 
                   const cancellationFee = getCancellationFee(tripDto);
@@ -79,7 +80,8 @@ const useTransactionHistory = (isHost: boolean) => {
                     cancellationFee: cancellationFee,
                     reimbursements: reimbursements,
                     rentalityFee: Number(tripDto.trip.transactionInfo.rentalityFee) / 100,
-                    taxes: Number(tripDto.trip.paymentInfo.taxPriceInUsdCents) / 100,
+                    salesTax: Number(tripDto.trip.paymentInfo.salesTax) / 100,
+                    governmentTax: Number(tripDto.trip.paymentInfo.governmentTax) / 100,
                   };
                   return item;
                 })

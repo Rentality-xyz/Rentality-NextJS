@@ -15,6 +15,7 @@ export type ContractCarInfo = {
   currentlyListed: boolean;
   geoVerified: boolean;
   timeZoneId: string;
+  insuranceIncluded: boolean;
 };
 
 export type ContractPublicHostCarDTO = {
@@ -51,6 +52,7 @@ export type ContractCreateCarRequest = {
   locationLatitude: string;
   locationLongitude: string;
   geoApiKey: string;
+  insuranceIncluded: boolean;
 };
 
 export type ContractUpdateCarInfoRequest = {
@@ -80,6 +82,14 @@ export type ContractCreateTripRequest = {
   startDateTime: bigint;
   endDateTime: bigint;
   currencyType: string;
+};
+
+export type ContractCreateTripRequestWithDelivery = {
+  carId: bigint;
+  startDateTime: bigint;
+  endDateTime: bigint;
+  currencyType: string;
+  deliveryInfo: ContractDeliveryLocations;
 };
 
 export type ContractTransactionInfo = {
@@ -221,7 +231,8 @@ export type ContractPaymentInfo = {
   from: string;
   to: string;
   totalDayPriceInUsdCents: bigint;
-  taxPriceInUsdCents: bigint;
+  salesTax: bigint;
+  governmentTax: bigint;
   priceWithDiscount: bigint;
   depositInUsdCents: bigint;
   resolveAmountInUsdCents: bigint;
@@ -230,7 +241,7 @@ export type ContractPaymentInfo = {
   currencyDecimals: bigint;
   resolveFuelAmountInUsdCents: bigint;
   resolveMilesAmountInUsdCents: bigint;
-  deliveryFeeInUsdCents: bigint;
+  deliveryFee: bigint;
 };
 
 export type ContractTripReceiptDTO = {
@@ -238,7 +249,8 @@ export type ContractTripReceiptDTO = {
   totalTripDays: bigint;
   tripPrice: bigint;
   discountAmount: bigint;
-  taxes: bigint;
+  salesTax: bigint;
+  governmentTax: bigint;
   depositReceived: bigint;
   reimbursement: bigint;
   depositReturned: bigint;
@@ -283,7 +295,6 @@ export type ContractSearchCar = {
   tripDays: bigint;
   totalPriceWithDiscount: bigint;
   taxes: bigint;
-  deliveryFee: bigint;
   securityDepositPerTripInUsdCents: bigint;
   engineType: EngineType;
   milesIncludedPerDay: bigint;
@@ -330,7 +341,6 @@ export type ContractCarDetails = {
   state: string;
   locationLatitude: string;
   locationLongitude: string;
-  isInsuranceIncluded: boolean;
 };
 
 export type ContractFloridaTaxes = {
@@ -349,6 +359,24 @@ export type ContractDeliveryPrices = {
   underTwentyFiveMilesInUsdCents: bigint;
   aboveTwentyFiveMilesInUsdCents: bigint;
   initialized: boolean;
+};
+
+export type ContractDeliveryLocations = {
+  pickUpLat: string;
+  pickUpLon: string;
+  returnLat: string;
+  returnLon: string;
+};
+
+export type ContractDeliveryData = {
+  city: string;
+  state: string;
+  country: string;
+  locationLat: string;
+  locationLon: string;
+  underTwentyFiveMilesInUsdCents: bigint;
+  aboveTwentyFiveMilesInUsdCents: bigint;
+  insuranceIncluded: boolean;
 };
 
 export type TripStatus = bigint;

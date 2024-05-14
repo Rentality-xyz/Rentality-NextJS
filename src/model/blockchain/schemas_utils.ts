@@ -38,7 +38,6 @@ const emptyContractCarDetails: ContractCarDetails = {
   locationLatitude: "",
   locationLongitude: "",
   currentlyListed: false,
-  isInsuranceIncluded: false,
 };
 
 export function validateContractCarDetails(obj: ContractCarDetails): obj is ContractCarDetails {
@@ -62,6 +61,7 @@ const emptyContractCarInfo: ContractCarInfo = {
   geoVerified: false,
   timeBufferBetweenTripsInSec: BigInt(0),
   timeZoneId: "",
+  insuranceIncluded: false,
 };
 
 export function validateContractCarInfo(obj: ContractCarInfo): obj is ContractCarInfo {
@@ -179,7 +179,6 @@ const emptyContractSearchCar: ContractSearchCar = {
   taxes: BigInt(0),
   totalPriceWithDiscount: BigInt(0),
   tripDays: BigInt(0),
-  deliveryFee: BigInt(0),
 };
 
 export function validateContractSearchCar(obj: ContractSearchCar): obj is ContractSearchCar {
@@ -215,7 +214,8 @@ const emptyContractTrip: ContractTrip = {
     from: "",
     to: "",
     totalDayPriceInUsdCents: BigInt(0),
-    taxPriceInUsdCents: BigInt(0),
+    governmentTax: BigInt(0),
+    salesTax: BigInt(0),
     depositInUsdCents: BigInt(0),
     resolveAmountInUsdCents: BigInt(0),
     currencyType: "",
@@ -224,7 +224,7 @@ const emptyContractTrip: ContractTrip = {
     resolveFuelAmountInUsdCents: BigInt(0),
     resolveMilesAmountInUsdCents: BigInt(0),
     priceWithDiscount: BigInt(0),
-    deliveryFeeInUsdCents: BigInt(0),
+    deliveryFee: BigInt(0),
   },
   approvedDateTime: BigInt(0),
   rejectedDateTime: BigInt(0),

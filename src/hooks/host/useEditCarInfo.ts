@@ -184,7 +184,7 @@ const useEditCarInfo = (carId: number) => {
           fuelPricePerGal: fuelPricePerGal,
           fullBatteryChargePrice: fullBatteryChargePrice,
           timeBufferBetweenTripsInMin: Number(carInfo.timeBufferBetweenTripsInSec) / 60,
-          isInsuranceIncluded: carInfoDetails.isInsuranceIncluded,
+          isInsuranceIncluded: carInfo.insuranceIncluded,
         };
         return item;
       } catch (e) {

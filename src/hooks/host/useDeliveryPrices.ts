@@ -26,13 +26,13 @@ const useDeliveryPrices = () => {
     }
 
     try {
-      const deliveryPricesRequest: ContractDeliveryPrices = {
-        underTwentyFiveMilesInUsdCents: BigInt(newDeliveryPricesValues.from1To25milesPrice * 100),
-        aboveTwentyFiveMilesInUsdCents: BigInt(newDeliveryPricesValues.over25MilesPrice * 100),
-        initialized: true,
-      };
+      const underTwentyFiveMilesInUsdCents = BigInt(newDeliveryPricesValues.from1To25milesPrice * 100);
+      const aboveTwentyFiveMilesInUsdCents = BigInt(newDeliveryPricesValues.over25MilesPrice * 100);
 
-      const transaction = await rentalityContract.addUserDeliveryPrices(deliveryPricesRequest);
+      const transaction = await rentalityContract.addUserDeliveryPrices(
+        underTwentyFiveMilesInUsdCents,
+        aboveTwentyFiveMilesInUsdCents
+      );
       await transaction.wait();
       return true;
     } catch (e) {
@@ -56,7 +56,9 @@ const useDeliveryPrices = () => {
 
         setIsLoading(true);
 
-        const data = await rentalityContract.getDeliveryPrices();
+        const cars = await rentalityContract.getMyCars();
+        const data = await rentalityContract.getDeliveryData(cars[0].carInfo.carId);
+        //const data = await rentalityContract.getDeliveryPrices();
 
         const deliveryPricesFormValues: DeliveryPricesFormValues = {
           from1To25milesPrice: Number(data.underTwentyFiveMilesInUsdCents) / 100,

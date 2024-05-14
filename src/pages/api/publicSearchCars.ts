@@ -87,7 +87,6 @@ const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: Co
         pricePerDayWithDiscount: Number(i.pricePerDayWithDiscount) / 100,
         tripDays: tripDays,
         totalPriceWithDiscount: totalPriceWithDiscount,
-        deliveryFee: Number(i.deliveryFee) / 100,
         taxes: Number(i.taxes) / 100,
         securityDeposit: Number(i.securityDepositPerTripInUsdCents) / 100,
         hostPhotoUrl: i.hostPhotoUrl,
@@ -101,6 +100,7 @@ const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: Co
         daysDiscount: getDaysDiscount(tripDays),
         totalDiscount: getTotalDiscount(pricePerDay, tripDays, totalPriceWithDiscount),
         //TODO
+        deliveryFee: 0,
         hostHomeLocation: "",
         deliveryPrices: { from1To25milesPrice: 0, over25MilesPrice: 0 },
         isInsuranceIncluded: true,

@@ -105,11 +105,12 @@ export type TripInfo = {
   totalDayPriceInUsd: number;
   totalPriceWithDiscountInUsd: number;
   deliveryFeeInUsd: number;
-  taxPriceInUsd: number;
   depositInUsd: number;
   resolveAmountInUsd: number;
   depositReturnedInUsd: number;
   currencyRate: number;
+  salesTaxInUsd: number;
+  governmentTaxInUsd: number;
 
   host: {
     walletAddress: string;
