@@ -9,6 +9,7 @@ import { TFunction as TFunctionNext } from "i18next";
 import { useEffect, useState } from "react";
 import { ParseLocationResponse } from "@/pages/api/parseLocation";
 import moment from "moment";
+import Checkbox from "../common/checkbox";
 
 function formatLocation(city: string, state: string, country: string) {
   city = city != null && city.length > 0 ? city + ", " : "";
@@ -195,6 +196,135 @@ export default function SearchAndFilters({
             </option>
           ))}
         </RntSelect>
+      </div>
+      <div className="flex flex-wrap items-center gap-4 mt-4">
+        <Checkbox
+          className=""
+          title="Deliver to me"
+          value={searchCarRequest.isDeliveryToGuest}
+          onChange={(e) =>
+            setSearchCarRequest({
+              ...searchCarRequest,
+              isDeliveryToGuest: e.target.checked,
+            })
+          }
+        />
+        <div className="flex flex-col gap-2">
+          <RntPlaceAutoComplete
+            className="min-w-[40ch]"
+            id="pickupLocation"
+            label="Pick up location"
+            placeholder="Enter address"
+            includeStreetAddress={true}
+            readOnly={
+              !searchCarRequest.isDeliveryToGuest || searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
+            }
+            initValue={
+              !searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
+                ? searchCarRequest.deliveryInfo.pickupLocation.address
+                : ""
+            }
+            onAddressChange={async (placeDetails) => {
+              const locationLat = placeDetails.location?.latitude ?? 0;
+              const locationLng = placeDetails.location?.longitude ?? 0;
+
+              setSearchCarRequest({
+                ...searchCarRequest,
+                deliveryInfo: {
+                  ...searchCarRequest.deliveryInfo,
+                  pickupLocation: {
+                    isHostHomeLocation: false,
+                    address: placeDetails.addressString,
+                    lat: locationLat,
+                    lng: locationLng,
+                  },
+                },
+              });
+            }}
+          />
+          <Checkbox
+            className=""
+            title="Host home location"
+            value={searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation}
+            readOnly={!searchCarRequest.isDeliveryToGuest}
+            onChange={(e) =>
+              setSearchCarRequest({
+                ...searchCarRequest,
+                deliveryInfo: {
+                  ...searchCarRequest.deliveryInfo,
+                  pickupLocation: e.target.checked
+                    ? {
+                        isHostHomeLocation: e.target.checked,
+                      }
+                    : {
+                        isHostHomeLocation: e.target.checked,
+                        address: "",
+                        lat: 0,
+                        lng: 0,
+                      },
+                },
+              })
+            }
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <RntPlaceAutoComplete
+            className="min-w-[40ch]"
+            id="returnLocation"
+            label="Return location"
+            placeholder="Enter address"
+            includeStreetAddress={true}
+            readOnly={
+              !searchCarRequest.isDeliveryToGuest || searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+            }
+            initValue={
+              !searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+                ? searchCarRequest.deliveryInfo.returnLocation.address
+                : ""
+            }
+            onAddressChange={async (placeDetails) => {
+              const locationLat = placeDetails.location?.latitude ?? 0;
+              const locationLng = placeDetails.location?.longitude ?? 0;
+
+              setSearchCarRequest({
+                ...searchCarRequest,
+                deliveryInfo: {
+                  ...searchCarRequest.deliveryInfo,
+                  returnLocation: {
+                    isHostHomeLocation: false,
+                    address: placeDetails.addressString,
+                    lat: locationLat,
+                    lng: locationLng,
+                  },
+                },
+              });
+            }}
+          />
+          <Checkbox
+            className=""
+            title="Host home location"
+            value={searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation}
+            readOnly={!searchCarRequest.isDeliveryToGuest}
+            onChange={(e) =>
+              setSearchCarRequest({
+                ...searchCarRequest,
+                deliveryInfo: {
+                  ...searchCarRequest.deliveryInfo,
+                  returnLocation: e.target.checked
+                    ? {
+                        isHostHomeLocation: e.target.checked,
+                      }
+                    : {
+                        isHostHomeLocation: e.target.checked,
+                        address: "",
+                        lat: 0,
+                        lng: 0,
+                      },
+                },
+              })
+            }
+          />
+        </div>
       </div>
     </>
   );

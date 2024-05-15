@@ -5,20 +5,28 @@ export default function Checkbox({
   className,
   title,
   value,
+  readOnly,
   onChange,
   ...props
 }: {
   className?: string;
   title: string;
   value: boolean;
+  readOnly?: boolean;
   onChange?: ChangeEventHandler<HTMLInputElement>;
 }) {
   const c = twMerge("", className);
-  const checkBoxBgStyle = value ? "bg-rentality-primary" : "bg-white group-hover:bg-[#bbb]";
+  const checkBoxBgStyle = readOnly ? "bg-gray-400" : value ? "bg-rentality-primary" : "bg-white group-hover:bg-[#bbb]";
   return (
     <div className={c}>
       <label className="group flex flex-row items-center cursor-pointer select-none">
-        <input className="hidden" type="checkbox" value={value ? 1 : 0} onChange={onChange} />
+        <input
+          className="hidden"
+          type="checkbox"
+          readOnly={readOnly}
+          value={value ? 1 : 0}
+          onChange={readOnly ? () => {} : onChange}
+        />
         <span className={`relative w-10 h-10 shrink-0 mr-4 border-2 rounded-md ${checkBoxBgStyle}`}>
           {value ? (
             <span className="absolute top-1 right-2.5 w-3.5 h-6 shrink-0 border-white border-b-4 border-r-4 rotate-45"></span>
