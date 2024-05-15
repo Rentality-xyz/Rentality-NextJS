@@ -20,11 +20,11 @@ export type SearchCarRequest = {
   isDeliveryToGuest: boolean;
   deliveryInfo: {
     pickupLocation:
-      | { isHostHomeLocatiom: true }
-      | { isHostHomeLocatiom: false; address: string; lat: number; lng: number };
+      | { isHostHomeLocation: true }
+      | { isHostHomeLocation: false; address: string; lat: number; lng: number };
     returnLocation:
-      | { isHostHomeLocatiom: true }
-      | { isHostHomeLocatiom: false; address: string; lat: number; lng: number };
+      | { isHostHomeLocation: true }
+      | { isHostHomeLocation: false; address: string; lat: number; lng: number };
   };
 };
 
@@ -49,7 +49,7 @@ export const emptySearchCarRequest: SearchCarRequest = {
   },
   isDeliveryToGuest: false,
   deliveryInfo: {
-    pickupLocation: { isHostHomeLocatiom: true },
-    returnLocation: { isHostHomeLocatiom: true },
+    pickupLocation: { isHostHomeLocation: true },
+    returnLocation: { isHostHomeLocation: true },
   },
 };

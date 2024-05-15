@@ -56,9 +56,7 @@ const useDeliveryPrices = () => {
 
         setIsLoading(true);
 
-        const cars = await rentalityContract.getMyCars();
-        const data = await rentalityContract.getDeliveryData(cars[0].carInfo.carId);
-        //const data = await rentalityContract.getDeliveryPrices();
+        const data = await rentalityContract.getUserDeliveryPrices(userInfo.address);
 
         const deliveryPricesFormValues: DeliveryPricesFormValues = {
           from1To25milesPrice: Number(data.underTwentyFiveMilesInUsdCents) / 100,

@@ -217,8 +217,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     },
     isDeliveryToGuest: false,
     deliveryInfo: {
-      pickupLocation: { isHostHomeLocatiom: true },
-      returnLocation: { isHostHomeLocatiom: true },
+      pickupLocation: { isHostHomeLocation: true },
+      returnLocation: { isHostHomeLocation: true },
     },
   };
   console.log(

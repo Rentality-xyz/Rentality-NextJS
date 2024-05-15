@@ -22,7 +22,7 @@ function SearchCarDeliveryExtraInfo({
   };
 
   return (
-    <dialog className="w-full flex flex-col">
+    <div className="w-full flex flex-col">
       <h1 className="text-rentality-secondary text-center text-xl">{t_comp("title")}</h1>
       <section className="mt-4">
         <h2 className="text-rentality-secondary text-lg">{t_comp("host_home_location")}</h2>
@@ -44,7 +44,7 @@ function SearchCarDeliveryExtraInfo({
       <RntButton className="place-self-center mt-12" onClick={handleClose}>
         Got it
       </RntButton>
-    </dialog>
+    </div>
   );
 }
 

@@ -4,7 +4,7 @@ import { Avatar } from "@mui/material";
 import { useMemo } from "react";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
-import SearchCarDeliveryExtraInfo from "./searchCarDeliveryExtraInfo";
+import SearchCarDeliveryExtraInfo from "../search/searchCarDeliveryExtraInfo";
 
 type TFunction = (key: string, options?: { [key: string]: any }) => string;
 

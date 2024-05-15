@@ -118,6 +118,7 @@ export interface IRentalityContract {
     currency: string,
     deliveryData: ContractDeliveryLocations
   ): Promise<ContractCalculatePaymentsDTO>;
+  getUserDeliveryPrices(user: string): Promise<ContractDeliveryPrices>;
 
   //not using
   getAllCars(): Promise<ContractCarInfo[]>;
