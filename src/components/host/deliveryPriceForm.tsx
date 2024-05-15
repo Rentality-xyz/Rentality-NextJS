@@ -49,7 +49,6 @@ function DeliveryPriceForm({
         throw new Error("Save trip discounts error");
       }
       showInfo(t("common.info.success"));
-      router.reload();
     } catch (e) {
       console.error("handleSubmit error:" + e);
       showError(t_profile("save_delivery_prices_err"));
