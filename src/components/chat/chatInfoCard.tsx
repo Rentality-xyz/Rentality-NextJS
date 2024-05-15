@@ -9,6 +9,7 @@ import { twMerge } from "tailwind-merge";
 import icInfo from "@/images/ic-info-teal.svg";
 import Image from "next/image";
 import { TFunction } from "@/utils/i18n";
+import { usePathname } from 'next/navigation';
 
 export default function ChatInfoCard({
   chatInfo,
@@ -31,6 +32,8 @@ export default function ChatInfoCard({
 
   let statusBgColor = getTripStatusBgColorClassFromStatus(chatInfo.tripStatus);
   const statusClassName = twMerge("px-2 text-rnt-temp-status-text", statusBgColor);
+  
+  const pathname = usePathname();
 
   return (
     <div key={chatInfo.tripId} className={className}>
@@ -48,7 +51,7 @@ export default function ChatInfoCard({
         <strong>{otherName}</strong>
         <div>{chatInfo.carTitle}</div>
       </div>
-      <Link href={`/${isHost ? "host" : "guest"}/trips/tripInfo/${chatInfo.tripId}`}>
+      <Link href={`/${isHost ? "host" : "guest"}/trips/tripInfo/${chatInfo.tripId}?back=${pathname}`}>
         <Image className="sm:hidden" src={icInfo} width={25} alt="" />
         <span className="max-sm:hidden text-sm text-rentality-secondary">{t("trip_info")}</span>
       </Link>
