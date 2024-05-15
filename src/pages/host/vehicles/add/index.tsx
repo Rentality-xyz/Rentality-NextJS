@@ -96,7 +96,7 @@ export default function AddCar() {
       if (!result) {
         throw new Error("sentCarToServer error");
       }
-      showInfo(t("car_listed"));
+      showInfo(t("vehicles.car_listed"));
 
       setCarSaving(false);
       setMessage("");
