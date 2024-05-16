@@ -12,7 +12,7 @@ export default function GuestTripDetails() {
   return (
     <Layout>
       <div className="flex flex-col">
-        <TripDetails tripId={tripIdBigInt} backPath={back} t={t} />
+        <TripDetails tripId={tripIdBigInt} backPath={back as string} t={t} />
       </div>
     </Layout>
   );
