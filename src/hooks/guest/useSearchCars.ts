@@ -6,8 +6,14 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import moment from "moment";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { ContractCreateTripRequest } from "@/model/blockchain/schemas";
+import {
+  ContractCreateTripRequest,
+  ContractCreateTripRequestWithDelivery,
+  ContractDeliveryLocations,
+} from "@/model/blockchain/schemas";
 import { ethers } from "ethers";
+import { bigIntReplacer } from "@/utils/json";
+import { isEmpty } from "@/utils/string";
 
 export type SortOptions = {
   [key: string]: string;
@@ -43,6 +49,26 @@ const useSearchCars = () => {
         url.searchParams.append("pricePerDayInUsdFrom", searchCarRequest.searchFilters.pricePerDayInUsdFrom);
       if (searchCarRequest.searchFilters.pricePerDayInUsdTo)
         url.searchParams.append("pricePerDayInUsdTo", searchCarRequest.searchFilters.pricePerDayInUsdTo);
+      if (searchCarRequest.isDeliveryToGuest)
+        url.searchParams.append("isDeliveryToGuest", searchCarRequest.isDeliveryToGuest ? "true" : "false");
+      if (
+        searchCarRequest.isDeliveryToGuest &&
+        !searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation &&
+        !isEmpty(searchCarRequest.deliveryInfo.pickupLocation.address)
+      )
+        url.searchParams.append(
+          "pickupLocation",
+          `${searchCarRequest.deliveryInfo.pickupLocation.lat.toFixed(6)};${searchCarRequest.deliveryInfo.pickupLocation.lng.toFixed(6)}`
+        );
+      if (
+        searchCarRequest.isDeliveryToGuest &&
+        !searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation &&
+        !isEmpty(searchCarRequest.deliveryInfo.returnLocation.address)
+      )
+        url.searchParams.append(
+          "returnLocation",
+          `${searchCarRequest.deliveryInfo.returnLocation.lat.toFixed(6)};${searchCarRequest.deliveryInfo.returnLocation.lng.toFixed(6)}`
+        );
 
       const apiResponse = await fetch(url);
 
@@ -72,7 +98,7 @@ const useSearchCars = () => {
     }
   };
 
-  const createTripRequest = async (carId: number, startDateTime: string, endDateTime: string, timeZoneId: string) => {
+  const createTripRequest = async (carId: number, searchCarRequest: SearchCarRequest, timeZoneId: string) => {
     if (ethereumInfo === null) {
       console.error("createTripRequest: ethereumInfo is null");
       return false;
@@ -83,8 +109,8 @@ const useSearchCars = () => {
     }
 
     try {
-      const startCarLocalDateTime = moment.tz(startDateTime, timeZoneId).toDate();
-      const endCarLocalDateTime = moment.tz(endDateTime, timeZoneId).toDate();
+      const startCarLocalDateTime = moment.tz(searchCarRequest.dateFrom, timeZoneId).toDate();
+      const endCarLocalDateTime = moment.tz(searchCarRequest.dateTo, timeZoneId).toDate();
 
       const days = calculateDays(startCarLocalDateTime, endCarLocalDateTime);
       if (days < 0) {
@@ -95,20 +121,63 @@ const useSearchCars = () => {
       const endUnixTime = getBlockchainTimeFromDate(endCarLocalDateTime);
 
       const ethAddress = ethers.getAddress("0x0000000000000000000000000000000000000000");
-      const paymentsNeeded = await rentalityContract.calculatePayments(BigInt(carId), BigInt(days), ethAddress);
 
-      const tripRequest: ContractCreateTripRequest = {
-        carId: BigInt(carId),
-        startDateTime: startUnixTime,
-        endDateTime: endUnixTime,
-        currencyType: ethAddress,
-      };
+      if (searchCarRequest.isDeliveryToGuest) {
+        const deliveryData = await rentalityContract.getDeliveryData(BigInt(carId));
+        const hostHomeLocationLat = deliveryData.locationLat;
+        const hostHomeLocationLng = deliveryData.locationLon;
 
-      const transaction = await rentalityContract.createTripRequest(tripRequest, {
-        value: paymentsNeeded.totalPrice,
-      });
-      await transaction.wait();
-      //todo delivery
+        const deliveryInfo: ContractDeliveryLocations = {
+          pickUpLat: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
+            ? hostHomeLocationLat
+            : searchCarRequest.deliveryInfo.pickupLocation.lat.toString(),
+          pickUpLon: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
+            ? hostHomeLocationLng
+            : searchCarRequest.deliveryInfo.pickupLocation.lng.toString(),
+          returnLat: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+            ? hostHomeLocationLat
+            : searchCarRequest.deliveryInfo.returnLocation.lat.toString(),
+          returnLon: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+            ? hostHomeLocationLng
+            : searchCarRequest.deliveryInfo.returnLocation.lng.toString(),
+        };
+
+        console.log(`deliveryInfo:${JSON.stringify(deliveryInfo, bigIntReplacer)}`);
+
+        const paymentsNeeded = await rentalityContract.calculatePaymentsWithDelivery(
+          BigInt(carId),
+          BigInt(days),
+          ethAddress,
+          deliveryInfo
+        );
+
+        const tripRequest: ContractCreateTripRequestWithDelivery = {
+          carId: BigInt(carId),
+          startDateTime: startUnixTime,
+          endDateTime: endUnixTime,
+          currencyType: ethAddress,
+          deliveryInfo: deliveryInfo,
+        };
+
+        const transaction = await rentalityContract.createTripRequestWithDelivery(tripRequest, {
+          value: paymentsNeeded.totalPrice,
+        });
+        await transaction.wait();
+      } else {
+        const paymentsNeeded = await rentalityContract.calculatePayments(BigInt(carId), BigInt(days), ethAddress);
+
+        const tripRequest: ContractCreateTripRequest = {
+          carId: BigInt(carId),
+          startDateTime: startUnixTime,
+          endDateTime: endUnixTime,
+          currencyType: ethAddress,
+        };
+
+        const transaction = await rentalityContract.createTripRequest(tripRequest, {
+          value: paymentsNeeded.totalPrice,
+        });
+        await transaction.wait();
+      }
 
       return true;
     } catch (e) {

@@ -108,12 +108,7 @@ export default function Search() {
       setRequestSending(true);
 
       showInfo(t("common.info.sign"));
-      const result = await createTripRequest(
-        carInfo.carId,
-        searchResult.searchCarRequest.dateFrom,
-        searchResult.searchCarRequest.dateTo,
-        carInfo.timeZoneId
-      );
+      const result = await createTripRequest(carInfo.carId, searchResult.searchCarRequest, carInfo.timeZoneId);
 
       setRequestSending(false);
       hideDialogs();

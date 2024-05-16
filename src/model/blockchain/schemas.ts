@@ -308,6 +308,10 @@ export type ContractSearchCar = {
   locationLongitude: string;
   timeZoneId: string;
   metadataURI: string;
+  underTwentyFiveMilesInUsdCents: bigint;
+  aboveTwentyFiveMilesInUsdCents: bigint;
+  deliveryFee: bigint;
+  insuranceIncluded: boolean;
 };
 
 export type ContractGeoData = {

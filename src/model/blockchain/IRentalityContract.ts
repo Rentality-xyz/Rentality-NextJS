@@ -74,6 +74,13 @@ export interface IRentalityContract {
     endDateTime: bigint,
     searchParams: ContractSearchCarParams
   ): Promise<ContractSearchCar[]>;
+  searchAvailableCarsWithDelivery(
+    startDateTime: bigint,
+    endDateTime: bigint,
+    searchParams: ContractSearchCarParams,
+    locations: ContractDeliveryLocations
+  ): Promise<ContractSearchCar[]>;
+
   createTripRequest(request: ContractCreateTripRequest, value: object): Promise<ContractTransactionResponse>;
   getTripsAsGuest(): Promise<ContractTripDTO[]>;
   checkInByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;

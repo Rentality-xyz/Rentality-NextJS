@@ -166,36 +166,31 @@ export default function SearchAndFilters({
             value={searchCarRequest.dateTo}
             onChange={handleSearchInputChange}
           />{" "}
-          <RntButton className="w-full md:w-40" disabled={!isSearchAllowed} onClick={() => handleSearchClick()}>
-            {t_comp("button_search")}
+          <RntButton className="w-40 " onClick={() => setOpenFilterPanel(true)}>
+            {t_comp("button_filter")}
           </RntButton>
-        </div>
-      </div>
-      <div className="mt-2 flex flex-row gap-2 justify-between md:justify-start">
-        <RntButton className="w-40 " onClick={() => setOpenFilterPanel(true)}>
-          {t_comp("button_filter")}
-        </RntButton>
-        <RntSelect
-          className="w-40"
-          id="sort"
-          readOnly={false}
-          value={sortBy ?? ""}
-          onChange={(e) => {
-            const newValue = e.target.value;
-            if (isSortOptionKey(newValue)) {
-              setSortBy(newValue);
-            }
-          }}
-        >
-          <option className="hidden" value="" disabled>
-            {t_comp("sort_by")}
-          </option>
-          {Object.entries(sortOption ?? {}).map(([key, value]) => (
-            <option key={key} value={value}>
-              {value}
+          <RntSelect
+            className="w-40"
+            id="sort"
+            readOnly={false}
+            value={sortBy ?? ""}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              if (isSortOptionKey(newValue)) {
+                setSortBy(newValue);
+              }
+            }}
+          >
+            <option className="hidden" value="" disabled>
+              {t_comp("sort_by")}
             </option>
-          ))}
-        </RntSelect>
+            {Object.entries(sortOption ?? {}).map(([key, value]) => (
+              <option key={key} value={value}>
+                {value}
+              </option>
+            ))}
+          </RntSelect>
+        </div>
       </div>
       <div className="flex flex-wrap items-center gap-4 mt-4">
         <Checkbox
@@ -225,6 +220,12 @@ export default function SearchAndFilters({
                 : ""
             }
             onAddressChange={async (placeDetails) => {
+              if (
+                !searchCarRequest.isDeliveryToGuest ||
+                searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
+              )
+                return;
+
               const locationLat = placeDetails.location?.latitude ?? 0;
               const locationLng = placeDetails.location?.longitude ?? 0;
 
@@ -283,6 +284,12 @@ export default function SearchAndFilters({
                 : ""
             }
             onAddressChange={async (placeDetails) => {
+              if (
+                !searchCarRequest.isDeliveryToGuest ||
+                searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+              )
+                return;
+
               const locationLat = placeDetails.location?.latitude ?? 0;
               const locationLng = placeDetails.location?.longitude ?? 0;
 
@@ -325,6 +332,9 @@ export default function SearchAndFilters({
             }
           />
         </div>
+        <RntButton className="w-full md:w-40" disabled={!isSearchAllowed} onClick={() => handleSearchClick()}>
+          {t_comp("button_search")}
+        </RntButton>
       </div>
     </>
   );
