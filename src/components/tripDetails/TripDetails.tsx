@@ -17,7 +17,7 @@ import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { getRefuelValueAndCharge } from "@/model/TripInfo";
 
-export default function TripInfo({ tripId, t }: { tripId: bigint; t: TFunctionNext }) {
+export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; backPath:string; t: TFunctionNext }) {
   const [isLoading, tripInfo] = useTripInfo(tripId);
   const router = useRouter();
   const t_details: TFunction = (name, options) => {
@@ -299,7 +299,7 @@ export default function TripInfo({ tripId, t }: { tripId: bigint; t: TFunctionNe
             </div>
           </div>
           <div className="flex flex-row gap-4 mb-8 mt-4 justify-center">
-            <RntButton className="w-40 h-16" onClick={() => router.push("/guest/trips/booked")}>
+            <RntButton className="w-40 h-16" onClick={() => router.push(backPath)}>
               {t("common.back")}
             </RntButton>
           </div>

@@ -3,6 +3,7 @@ import { TransactionHistoryInfo } from "@/model/TransactionHistoryInfo";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import React from "react";
 import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
+import { usePathname } from 'next/navigation';
 
 type Props = {
   isHost: boolean;
@@ -11,7 +12,8 @@ type Props = {
 
 export default function TransactionHistoryMobileCard(props: Props) {
   const { isHost, transaction } = props;
-  const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${transaction.transHistoryId}`;
+  const pathname = usePathname();
+  const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${transaction.transHistoryId}?back=${pathname}`;
   let statusBgColor = getTripStatusBgColorClassFromStatus(transaction.status);
 
   return (

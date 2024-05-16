@@ -5,14 +5,14 @@ import { useTranslation } from "react-i18next";
 
 export default function GuestTripDetails() {
   const router = useRouter();
-  const { tripId } = router.query;
+  const { tripId, back } = router.query;
   const tripIdBigInt = BigInt((tripId as string) ?? "0");
   const { t } = useTranslation();
 
   return (
     <Layout>
       <div className="flex flex-col">
-        <TripDetails tripId={tripIdBigInt} t={t} />
+        <TripDetails tripId={tripIdBigInt} backPath={back} t={t} />
       </div>
     </Layout>
   );

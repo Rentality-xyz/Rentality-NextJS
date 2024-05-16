@@ -12,6 +12,7 @@ import { ClaimType } from "@/model/blockchain/schemas";
 import ClaimAddPhoto from "@/components/claims/claimAddPhoto";
 import { FileToUpload } from "@/model/FileToUpload";
 import { bigIntReplacer } from "@/utils/json";
+import { usePathname } from 'next/navigation';
 
 type CreateClaimParams = {
   selectedTripId: string;
@@ -40,6 +41,7 @@ export default function CreateClaim({
   createClaim: (createClaimRequest: CreateClaimRequest) => Promise<void>;
   isHost: boolean;
 }) {
+  const pathname = usePathname();
   const [createClaimParams, setCreateClaimParams] = useState<CreateClaimParams>(emptyCreateClaimParams);
 
   const hostClaimTypes = [
@@ -117,7 +119,7 @@ export default function CreateClaim({
         </RntSelect>
 
         {!isEmpty(createClaimParams.selectedTripId) ? (
-          <Link href={`/host/trips/tripInfo/${createClaimParams.selectedTripId}`} target="_blank">
+          <Link href={`/host/trips/tripInfo/${createClaimParams.selectedTripId}?back=${pathname}`} target="_blank">
             {/* <Image className="sm:hidden" src={icInfo} width={25} alt="" /> max-sm:hidden */}
             <span className="text-rentality-secondary">Trip information</span>
           </Link>

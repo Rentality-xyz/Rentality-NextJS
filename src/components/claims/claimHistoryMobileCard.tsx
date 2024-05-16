@@ -4,6 +4,7 @@ import RntButton from "../common/rntButton";
 import { Claim } from "@/model/Claim";
 import { ClaimStatus } from "@/model/blockchain/schemas";
 import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
+import { usePathname } from 'next/navigation';
 
 type Props =
   | {
@@ -23,7 +24,8 @@ export default function ClaimHistoryMobileCard(props: Props) {
   const { claim, index, isHost } = props;
   const chatLink = `/${isHost ? "host" : "guest"}/messages?tridId=${claim.tripId}`;
   const telLink = `tel:${isHost ? claim.guestPhoneNumber : claim.hostPhoneNumber}`;
-  const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${claim.tripId}`;
+  const pathname = usePathname();
+  const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${claim.tripId}?back=${pathname}`;
 
   return (
     <div key={claim.claimId} className={`grid grid-cols-2 gap-2 py-8 ${index > 0 ? "border-t-4" : ""}`}>

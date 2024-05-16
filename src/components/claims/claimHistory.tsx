@@ -12,6 +12,7 @@ import Image from "next/image";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import ClaimFileList from "./claimFileList";
 import { isEmpty } from "@/utils/string";
+import { usePathname } from 'next/navigation';
 
 type Props = {
   isHost: boolean;
@@ -30,6 +31,7 @@ export default function ClaimHistory(props: Props) {
   const rowSpanClassName = "px-2 h-12";
   const redTextClassName = twMerge(rowSpanClassName, "text-red-400");
   const { showCustomDialog, hideDialogs } = useRntDialogs();
+  const pathname = usePathname();
 
   function handleFilesClick(claim: Claim) {
     showCustomDialog(<ClaimFileList fileUrls={claim.fileUrls} handleBackClick={hideDialogs} />);
@@ -61,7 +63,7 @@ export default function ClaimHistory(props: Props) {
           {claims.map((claim) => {
             const chatLink = `/${isHost ? "host" : "guest"}/messages?tridId=${claim.tripId}`;
             const telLink = `tel:${isHost ? claim.guestPhoneNumber : claim.hostPhoneNumber}`;
-            const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${claim.tripId}`;
+            const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${claim.tripId}?back=${pathname}`;
 
             return (
               <tr key={claim.claimId} className="border-b-[1px] border-b-gray-500">

@@ -2,11 +2,13 @@ import Link from "next/link";
 import { TripInfo } from "@/model/TripInfo";
 import { memo } from "react";
 import { TFunction } from "@/utils/i18n";
+import { usePathname } from 'next/navigation';
 
 function TripContacts({ tripInfo, isHost, t }: { tripInfo: TripInfo; isHost: boolean; t: TFunction }) {
   const pathRoot = isHost ? "host" : "guest";
   const otherUserPhoneNumber = isHost ? tripInfo.guest.phoneNumber : tripInfo.host.phoneNumber;
-
+  const pathname = usePathname();
+  
   return (
     <div
       id="trip-contact-info"
@@ -30,7 +32,7 @@ function TripContacts({ tripInfo, isHost, t }: { tripInfo: TripInfo; isHost: boo
           </div>
         </div>
         <div className="2xl:mt-10 text-[#52D1C9]">
-          <Link href={`/${pathRoot}/trips/tripInfo/${tripInfo.tripId}`}>
+          <Link href={`/${pathRoot}/trips/tripInfo/${tripInfo.tripId}?back=${pathname}`}>
             <strong>{t("booked.more_info")}</strong>
           </Link>
           <i className="fi fi-br-angle-small-down pl-1"></i>

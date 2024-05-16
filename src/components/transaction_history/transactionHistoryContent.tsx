@@ -9,6 +9,7 @@ import ReactPaginate from "react-paginate";
 import TransactionHistoryMobileCard from "@/components/transaction_history/transactionHistoryMobileCard";
 import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
+import { usePathname } from 'next/navigation';
 
 export type SortOptions = {
   [key: string]: string;
@@ -43,6 +44,7 @@ export default function TransactionHistoryContent(props: Props) {
     setCurrentPage(selected);
   };
   const sortOptions = props.sortOptions;
+  const pathname = usePathname();
 
   function isSortOptionKey(key: PropertyKey): key is SortOptionKey {
     return sortOptions.hasOwnProperty(key);
@@ -155,7 +157,7 @@ export default function TransactionHistoryContent(props: Props) {
         <tbody className="text-sm">
           {transactions.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage).map((transaction) => {
             //const itemNumber = currentPage * itemsPerPage + index;
-            const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${transaction.transHistoryId}`;
+            const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${transaction.transHistoryId}?back=${pathname}`;
 
             return (
               <tr key={transaction.transHistoryId} className="border-b-[2px] border-b-gray-500">
