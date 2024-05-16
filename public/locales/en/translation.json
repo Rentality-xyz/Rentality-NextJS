@@ -62,11 +62,22 @@
       "rent_for": "Rent for {{days, number}} day(s)",
       "total": "for",
       "secur_deposit": "Additionally security deposit {{deposit, number}} per trip",
+      "delivery_fee": "Delivery fee",
       "taxes": "Taxes",
       "deposit": "Deposit",
       "per_day": "/day",
       "days": "day(s)",
       "price_without_taxes": "Price excl. taxes"
+    },
+    "search_car_delivery_extra_info": {
+      "title": "Trip Info",
+      "host_home_location": "Host home location:",
+      "free_pickup_and_return_location": "Free Pick up & Return location",
+      "delivery_fee_location": "Delivery fee to you location:",
+      "from_1_to_25_mile": "from 1 to 25 mile ${{price, string}} per mile",
+      "over_25_mile": "over 25 miles ${{price, string}} per mile",
+      "insurance_included_title": "Insurance included in trip price",
+      "insurance_included_text": "Check with the host for insurance conditions"
     }
   },
   "admin": {
@@ -185,9 +196,15 @@
     "discount_7_and_more": "7+ day discount",
     "discount_30_and_more": "30+ day discount",
     "pls_number_percent": "Please enter numeric value (0 - 100%)",
+    "pls_number": "Please enter numeric value",
     "save_keys": "Save keys",
     "save_discount": "Save discounts",
-    "save_discount_err": "Save trip discounts request failed. Please try again"
+    "save_discount_err": "Save trip discounts request failed. Please try again",
+    "delivery_price": "Delivery price",
+    "delivery_price_from_1_to_25_miles": "From 1 mile to 25",
+    "delivery_price_over_25_miles": "Over 25 miles",
+    "save_delivery_price": "Save delivery price",
+    "save_delivery_prices_err": "Save delivery prices request failed. Please try again"
   },
   "transaction_history": {
     "title": "Transaction history",
@@ -352,6 +369,7 @@
       "trip_days": "Trip days",
       "trip_price": "Trip price",
       "discount_amount": "Discount Amount",
+      "delivery_fee": "Delivery fee",
       "sales_tax": "Sales Tax",
       "government_tax": "Government Tax",
       "trip_total": "Trip total",
@@ -417,6 +435,7 @@
     "secure_dep": "Security deposit",
     "fuel_price": "Fuel price per gal",
     "unlimited": "Unlimited",
+    "insurance_included": "Insurance included",
     "overmiles_fee": "${{price, string}}/mi fee for additional miles driven`",
     "battery_charge": "Battery charge price:",
     "full_charge": "Full battery charge cost",

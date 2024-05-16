@@ -17,7 +17,8 @@ export const formatEthWithDecimals = (value: bigint, decimals: bigint) => {
   return `${Number(value) / 10 ** Number(decimals)}`;
 };
 
-export const displayMoneyWith2Digits = (value: number) => {
+export const displayMoneyWith2Digits = (value: number | undefined) => {
+  if (!value) return Number(0).toFixed(2);
   return value.toFixed(2);
 };
 

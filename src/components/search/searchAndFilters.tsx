@@ -9,6 +9,7 @@ import { TFunction as TFunctionNext } from "i18next";
 import { useEffect, useState } from "react";
 import { ParseLocationResponse } from "@/pages/api/parseLocation";
 import moment from "moment";
+import Checkbox from "../common/checkbox";
 
 function formatLocation(city: string, state: string, country: string) {
   city = city != null && city.length > 0 ? city + ", " : "";
@@ -43,7 +44,11 @@ export default function SearchAndFilters({
 
   const gmtLabel = isEmpty(utcOffset) ? "" : `(GMT${utcOffset})`;
   const isSearchAllowed =
-    formatLocation(searchCarRequest.city, searchCarRequest.state, searchCarRequest.country).length > 0 &&
+    formatLocation(
+      searchCarRequest.searchLocation.city,
+      searchCarRequest.searchLocation.state,
+      searchCarRequest.searchLocation.country
+    ).length > 0 &&
     new Date(searchCarRequest.dateFrom) >= new Date() &&
     new Date(searchCarRequest.dateTo) > new Date(searchCarRequest.dateFrom);
 
@@ -75,7 +80,11 @@ export default function SearchAndFilters({
 
   useEffect(() => {
     const getGMTFromLocation = async () => {
-      const address = formatLocation(searchCarRequest.city, searchCarRequest.state, searchCarRequest.country);
+      const address = formatLocation(
+        searchCarRequest.searchLocation.city,
+        searchCarRequest.searchLocation.state,
+        searchCarRequest.searchLocation.country
+      );
       if (isEmpty(address)) {
         setUtcOffset("");
         return;
@@ -99,7 +108,11 @@ export default function SearchAndFilters({
     };
 
     getGMTFromLocation();
-  }, [searchCarRequest.city, searchCarRequest.state, searchCarRequest.country]);
+  }, [
+    searchCarRequest.searchLocation.city,
+    searchCarRequest.searchLocation.state,
+    searchCarRequest.searchLocation.country,
+  ]);
 
   return (
     <>
@@ -110,7 +123,11 @@ export default function SearchAndFilters({
           label={t_comp("location_label")}
           placeholder={t_comp("location_placeholder")}
           includeStreetAddress={true}
-          initValue={formatLocation(searchCarRequest.city, searchCarRequest.state, searchCarRequest.country)}
+          initValue={formatLocation(
+            searchCarRequest.searchLocation.city,
+            searchCarRequest.searchLocation.state,
+            searchCarRequest.searchLocation.country
+          )}
           onChange={handleSearchInputChange}
           onAddressChange={async (placeDetails) => {
             const country = placeDetails.country?.short_name ?? "";
@@ -121,11 +138,14 @@ export default function SearchAndFilters({
 
             setSearchCarRequest({
               ...searchCarRequest,
-              country: country,
-              state: state,
-              city: city,
-              locationLat: locationLat,
-              locationLng: locationLng,
+              searchLocation: {
+                address: placeDetails.addressString,
+                country: country,
+                state: state,
+                city: city,
+                locationLat: locationLat,
+                locationLng: locationLng,
+              },
             });
           }}
         />
@@ -146,36 +166,175 @@ export default function SearchAndFilters({
             value={searchCarRequest.dateTo}
             onChange={handleSearchInputChange}
           />{" "}
-          <RntButton className="w-full md:w-40" disabled={!isSearchAllowed} onClick={() => handleSearchClick()}>
-            {t_comp("button_search")}
+          <RntButton className="w-40 " onClick={() => setOpenFilterPanel(true)}>
+            {t_comp("button_filter")}
           </RntButton>
+          <RntSelect
+            className="w-40"
+            id="sort"
+            readOnly={false}
+            value={sortBy ?? ""}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              if (isSortOptionKey(newValue)) {
+                setSortBy(newValue);
+              }
+            }}
+          >
+            <option className="hidden" value="" disabled>
+              {t_comp("sort_by")}
+            </option>
+            {Object.entries(sortOption ?? {}).map(([key, value]) => (
+              <option key={key} value={value}>
+                {value}
+              </option>
+            ))}
+          </RntSelect>
         </div>
       </div>
-      <div className="mt-2 flex flex-row gap-2 justify-between md:justify-start">
-        <RntButton className="w-40 " onClick={() => setOpenFilterPanel(true)}>
-          {t_comp("button_filter")}
-        </RntButton>
-        <RntSelect
-          className="w-40"
-          id="sort"
-          readOnly={false}
-          value={sortBy ?? ""}
-          onChange={(e) => {
-            const newValue = e.target.value;
-            if (isSortOptionKey(newValue)) {
-              setSortBy(newValue);
+      <div className="flex flex-wrap items-center gap-4 mt-4">
+        <Checkbox
+          className=""
+          title="Deliver to me"
+          value={searchCarRequest.isDeliveryToGuest}
+          onChange={(e) =>
+            setSearchCarRequest({
+              ...searchCarRequest,
+              isDeliveryToGuest: e.target.checked,
+            })
+          }
+        />
+        <div className="flex flex-col gap-2">
+          <RntPlaceAutoComplete
+            className="min-w-[40ch]"
+            id="pickupLocation"
+            label="Pick up location"
+            placeholder="Enter address"
+            includeStreetAddress={true}
+            readOnly={
+              !searchCarRequest.isDeliveryToGuest || searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
             }
-          }}
-        >
-          <option className="hidden" value="" disabled>
-            {t_comp("sort_by")}
-          </option>
-          {Object.entries(sortOption ?? {}).map(([key, value]) => (
-            <option key={key} value={value}>
-              {value}
-            </option>
-          ))}
-        </RntSelect>
+            initValue={
+              !searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
+                ? searchCarRequest.deliveryInfo.pickupLocation.address
+                : ""
+            }
+            onAddressChange={async (placeDetails) => {
+              if (
+                !searchCarRequest.isDeliveryToGuest ||
+                searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
+              )
+                return;
+
+              const locationLat = placeDetails.location?.latitude ?? 0;
+              const locationLng = placeDetails.location?.longitude ?? 0;
+
+              setSearchCarRequest({
+                ...searchCarRequest,
+                deliveryInfo: {
+                  ...searchCarRequest.deliveryInfo,
+                  pickupLocation: {
+                    isHostHomeLocation: false,
+                    address: placeDetails.addressString,
+                    lat: locationLat,
+                    lng: locationLng,
+                  },
+                },
+              });
+            }}
+          />
+          <Checkbox
+            className=""
+            title="Host home location"
+            value={searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation}
+            readOnly={!searchCarRequest.isDeliveryToGuest}
+            onChange={(e) =>
+              setSearchCarRequest({
+                ...searchCarRequest,
+                deliveryInfo: {
+                  ...searchCarRequest.deliveryInfo,
+                  pickupLocation: e.target.checked
+                    ? {
+                        isHostHomeLocation: e.target.checked,
+                      }
+                    : {
+                        isHostHomeLocation: e.target.checked,
+                        address: "",
+                        lat: 0,
+                        lng: 0,
+                      },
+                },
+              })
+            }
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <RntPlaceAutoComplete
+            className="min-w-[40ch]"
+            id="returnLocation"
+            label="Return location"
+            placeholder="Enter address"
+            includeStreetAddress={true}
+            readOnly={
+              !searchCarRequest.isDeliveryToGuest || searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+            }
+            initValue={
+              !searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+                ? searchCarRequest.deliveryInfo.returnLocation.address
+                : ""
+            }
+            onAddressChange={async (placeDetails) => {
+              if (
+                !searchCarRequest.isDeliveryToGuest ||
+                searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+              )
+                return;
+
+              const locationLat = placeDetails.location?.latitude ?? 0;
+              const locationLng = placeDetails.location?.longitude ?? 0;
+
+              setSearchCarRequest({
+                ...searchCarRequest,
+                deliveryInfo: {
+                  ...searchCarRequest.deliveryInfo,
+                  returnLocation: {
+                    isHostHomeLocation: false,
+                    address: placeDetails.addressString,
+                    lat: locationLat,
+                    lng: locationLng,
+                  },
+                },
+              });
+            }}
+          />
+          <Checkbox
+            className=""
+            title="Host home location"
+            value={searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation}
+            readOnly={!searchCarRequest.isDeliveryToGuest}
+            onChange={(e) =>
+              setSearchCarRequest({
+                ...searchCarRequest,
+                deliveryInfo: {
+                  ...searchCarRequest.deliveryInfo,
+                  returnLocation: e.target.checked
+                    ? {
+                        isHostHomeLocation: e.target.checked,
+                      }
+                    : {
+                        isHostHomeLocation: e.target.checked,
+                        address: "",
+                        lat: 0,
+                        lng: 0,
+                      },
+                },
+              })
+            }
+          />
+        </div>
+        <RntButton className="w-full md:w-40" disabled={!isSearchAllowed} onClick={() => handleSearchClick()}>
+          {t_comp("button_search")}
+        </RntButton>
       </div>
     </>
   );

@@ -26,9 +26,12 @@ const defaultDateTo = moment({ hour: 9 }).add(2, "day").toDate();
 
 const customEmptySearchCarRequest: SearchCarRequest = {
   ...emptySearchCarRequest,
-  city: "Down town, Miami",
-  state: "Florida",
-  country: "USA",
+  searchLocation: {
+    ...emptySearchCarRequest.searchLocation,
+    city: "Down town, Miami",
+    state: "Florida",
+    country: "USA",
+  },
   dateFrom: dateToHtmlDateTimeFormat(defaultDateFrom),
   dateTo: dateToHtmlDateTimeFormat(defaultDateTo),
 };
@@ -105,12 +108,7 @@ export default function Search() {
       setRequestSending(true);
 
       showInfo(t("common.info.sign"));
-      const result = await createTripRequest(
-        carInfo.carId,
-        searchResult.searchCarRequest.dateFrom,
-        searchResult.searchCarRequest.dateTo,
-        carInfo.timeZoneId
-      );
+      const result = await createTripRequest(carInfo.carId, searchResult.searchCarRequest, carInfo.timeZoneId);
 
       setRequestSending(false);
       hideDialogs();
@@ -215,10 +213,16 @@ export default function Search() {
                     selectedCarID={selectedCarID}
                     isExpanded={isExpanded}
                     defaultCenter={
-						(searchCarRequest.locationLat && searchCarRequest.locationLng 
-							&& searchCarRequest.locationLat > 0 && searchCarRequest.locationLat > 0) ?
-						new google.maps.LatLng(searchCarRequest.locationLat, searchCarRequest.locationLng) : null
-					}
+                      searchCarRequest.searchLocation.locationLat &&
+                      searchCarRequest.searchLocation.locationLng &&
+                      searchCarRequest.searchLocation.locationLat > 0 &&
+                      searchCarRequest.searchLocation.locationLat > 0
+                        ? new google.maps.LatLng(
+                            searchCarRequest.searchLocation.locationLat,
+                            searchCarRequest.searchLocation.locationLng
+                          )
+                        : null
+                    }
                   />
                   <div
                     className="absolute left-1/2 transform -translate-x-1/2 flex justify-center items-center xl:hidden z-[99] w-[48px] h-[48px] cursor-pointer bg-[url('../images/ellipseUpBtn.png')] bg-cover bg-no-repeat bg-center"

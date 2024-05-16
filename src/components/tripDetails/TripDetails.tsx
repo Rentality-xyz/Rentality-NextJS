@@ -108,104 +108,118 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                   </div>
                   <div>
                     {tripInfo.createdDateTime.getTime() > 0 ? (
-                        <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
-                          <div>Booked date and time:</div>
-                          <div className="ml-4">{formatStatusDateTime(tripInfo.createdDateTime, tripInfo.timeZoneId)}</div>
+                      <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
+                        <div>Booked date and time:</div>
+                        <div className="ml-4">
+                          {formatStatusDateTime(tripInfo.createdDateTime, tripInfo.timeZoneId)}
                         </div>
+                      </div>
                     ) : (
-                        ""
+                      ""
                     )}
                     {tripInfo.rejectedDate !== undefined &&
                     tripInfo.rejectedDate.getTime() > 0 &&
                     tripInfo.approvedDateTime.getTime() === 0 &&
                     tripInfo.rejectedBy === tripInfo.host.walletAddress ? (
-                        <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
-                          <div>Host Booked Cancellation:</div>
-                          <div className="ml-4">{formatStatusDateTime(tripInfo.rejectedDate, tripInfo.timeZoneId)}</div>
-                        </div>
+                      <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
+                        <div>Host Booked Cancellation:</div>
+                        <div className="ml-4">{formatStatusDateTime(tripInfo.rejectedDate, tripInfo.timeZoneId)}</div>
+                      </div>
                     ) : (
-                        ""
+                      ""
                     )}
                     {tripInfo.rejectedDate !== undefined &&
                     tripInfo.rejectedDate.getTime() > 0 &&
                     tripInfo.approvedDateTime.getTime() === 0 &&
                     tripInfo.rejectedBy === tripInfo.guest.walletAddress ? (
-                        <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
-                          <div>Guest Cancellation before Host confirmed:</div>
-                          <div className="ml-4">{formatStatusDateTime(tripInfo.rejectedDate, tripInfo.timeZoneId)}</div>
-                        </div>
+                      <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
+                        <div>Guest Cancellation before Host confirmed:</div>
+                        <div className="ml-4">{formatStatusDateTime(tripInfo.rejectedDate, tripInfo.timeZoneId)}</div>
+                      </div>
                     ) : (
-                        ""
+                      ""
                     )}
                     {tripInfo.approvedDateTime.getTime() > 0 ? (
-                        <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
-                          <div>Approved date and time:</div>
-                          <div className="ml-4">{formatStatusDateTime(tripInfo.approvedDateTime, tripInfo.timeZoneId)}</div>
+                      <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
+                        <div>Approved date and time:</div>
+                        <div className="ml-4">
+                          {formatStatusDateTime(tripInfo.approvedDateTime, tripInfo.timeZoneId)}
                         </div>
+                      </div>
                     ) : (
-                        ""
+                      ""
                     )}
                     {tripInfo.rejectedDate !== undefined &&
                     tripInfo.rejectedDate.getTime() > 0 &&
                     tripInfo.approvedDateTime.getTime() > 0 &&
                     tripInfo.rejectedBy === tripInfo.guest.walletAddress ? (
-                        <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
-                          <div>Guest Cancellation after host confirmed:</div>
-                          <div className="ml-4">{formatStatusDateTime(tripInfo.rejectedDate, tripInfo.timeZoneId)}</div>
-                        </div>
+                      <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
+                        <div>Guest Cancellation after host confirmed:</div>
+                        <div className="ml-4">{formatStatusDateTime(tripInfo.rejectedDate, tripInfo.timeZoneId)}</div>
+                      </div>
                     ) : (
-                        ""
+                      ""
                     )}
                     {tripInfo.rejectedDate !== undefined &&
                     tripInfo.rejectedDate.getTime() > 0 &&
                     tripInfo.approvedDateTime.getTime() > 0 &&
                     tripInfo.rejectedBy === tripInfo.host.walletAddress ? (
-                        <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
-                          <div>Host trip Cancellation:</div>
-                          <div className="ml-4">{formatStatusDateTime(tripInfo.rejectedDate, tripInfo.timeZoneId)}</div>
-                        </div>
+                      <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
+                        <div>Host trip Cancellation:</div>
+                        <div className="ml-4">{formatStatusDateTime(tripInfo.rejectedDate, tripInfo.timeZoneId)}</div>
+                      </div>
                     ) : (
-                        ""
+                      ""
                     )}
                     {tripInfo.checkedInByHostDateTime.getTime() > 0 ? (
-                        <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
-                          <div>Checked-in by host date and time:</div>
-                          <div className="ml-4">{formatStatusDateTime(tripInfo.checkedInByHostDateTime, tripInfo.timeZoneId)}</div>
+                      <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
+                        <div>Checked-in by host date and time:</div>
+                        <div className="ml-4">
+                          {formatStatusDateTime(tripInfo.checkedInByHostDateTime, tripInfo.timeZoneId)}
                         </div>
+                      </div>
                     ) : (
-                        ""
+                      ""
                     )}
                     {tripInfo.checkedInByGuestDateTime.getTime() > 0 ? (
-                        <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
-                          <div>Checked-in by guest date and time:</div>
-                          <div className="ml-4">{formatStatusDateTime(tripInfo.checkedInByGuestDateTime, tripInfo.timeZoneId)}</div>
+                      <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
+                        <div>Checked-in by guest date and time:</div>
+                        <div className="ml-4">
+                          {formatStatusDateTime(tripInfo.checkedInByGuestDateTime, tripInfo.timeZoneId)}
                         </div>
+                      </div>
                     ) : (
-                        ""
+                      ""
                     )}
                     {tripInfo.checkedOutByGuestDateTime.getTime() > 0 ? (
-                        <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
-                          <div>Checked-out by guest date and time:</div>
-                          <div className="ml-4">{formatStatusDateTime(tripInfo.checkedOutByGuestDateTime, tripInfo.timeZoneId)}</div>
+                      <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
+                        <div>Checked-out by guest date and time:</div>
+                        <div className="ml-4">
+                          {formatStatusDateTime(tripInfo.checkedOutByGuestDateTime, tripInfo.timeZoneId)}
                         </div>
+                      </div>
                     ) : (
-                        ""
+                      ""
                     )}
                     {tripInfo.checkedOutByHostDateTime.getTime() > 0 ? (
-                        <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
-                          <div> Checked-out by host date and time:</div>
-                          <div className="ml-4">{formatStatusDateTime(tripInfo.checkedOutByHostDateTime, tripInfo.timeZoneId)}</div>
+                      <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
+                        <div> Checked-out by host date and time:</div>
+                        <div className="ml-4">
+                          {formatStatusDateTime(tripInfo.checkedOutByHostDateTime, tripInfo.timeZoneId)}
                         </div>
+                      </div>
                     ) : (
-                        ""
+                      ""
                     )}
                     {tripInfo.finishedDateTime.getTime() > 0 ? (
-                        <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
-                          <div>Completed by host date and time:</div>
-                          <div className="ml-4">{formatStatusDateTime(tripInfo.finishedDateTime, tripInfo.timeZoneId)}</div>
+                      <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
+                        <div>Completed by host date and time:</div>
+                        <div className="ml-4">
+                          {formatStatusDateTime(tripInfo.finishedDateTime, tripInfo.timeZoneId)}
                         </div>
+                      </div>
                     ) : (
-                        ""
+                      ""
                     )}
                   </div>
                 </div>
@@ -241,15 +255,26 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                       </td>
                     </tr>
                     <tr>
+                      <td>{t_details("delivery_fee")}</td>
+                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.deliveryFeeInUsd)}</td>
+                    </tr>
+                    <tr>
                       <td>{t_details("sales_tax")}</td>
-                      <td className="text-end">${tripInfo.taxPriceInUsd}</td>
+                      <td className="text-end">${tripInfo.salesTaxInUsd}</td>
+                    </tr>
+                    <tr>
+                      <td>{t_details("government_tax")}</td>
+                      <td className="text-end">${tripInfo.governmentTaxInUsd}</td>
                     </tr>
                     <tr>
                       <td className="pt-5">
                         <strong>{t_details("trip_total")}</strong>
                       </td>
                       <td className="text-end pt-5">
-                        ${displayMoneyWith2Digits(tripInfo.totalPriceWithDiscountInUsd + tripInfo.taxPriceInUsd)}
+                        $
+                        {displayMoneyWith2Digits(
+                          tripInfo.totalPriceWithDiscountInUsd + tripInfo.salesTaxInUsd + tripInfo.governmentTaxInUsd
+                        )}
                       </td>
                     </tr>
                   </tbody>

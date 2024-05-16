@@ -173,7 +173,7 @@ export default function TransactionHistoryContent(props: Props) {
                 <td className={rowSpanClassName}>${transaction.cancellationFee}</td>
                 <td className={rowSpanClassName}>${transaction.reimbursements}</td>
                 <td className={rowSpanClassName}>${transaction.rentalityFee}</td>
-                <td className={rowSpanClassName}>${transaction.taxes}</td>
+                <td className={rowSpanClassName}>${transaction.salesTax + transaction.governmentTax}</td>
                 <td className={rowSpanClassName}>
                   <Link href={detailsLink}>
                     <span className="text-rentality-secondary">{t_th("details")}</span>

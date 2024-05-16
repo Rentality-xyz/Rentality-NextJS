@@ -151,12 +151,21 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                   {displayMoneyWith2Digits(tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithDiscountInUsd)})
                 </div>
                 <div className="">
-                  Sales Tax: ETH {tripInfo.taxPriceInUsd / tripInfo.currencyRate} (USD {tripInfo.taxPriceInUsd}){" "}
+                  Sales Tax: ETH {tripInfo.salesTaxInUsd / tripInfo.currencyRate} (USD {tripInfo.salesTaxInUsd}){" "}
+                </div>
+                <div className="">
+                  Government Tax: ETH {tripInfo.governmentTaxInUsd / tripInfo.currencyRate} (USD{" "}
+                  {tripInfo.governmentTaxInUsd}){" "}
                 </div>
                 <div className="">
                   Total charge: ETH{" "}
-                  {(tripInfo.totalPriceWithDiscountInUsd + tripInfo.taxPriceInUsd) / tripInfo.currencyRate} (USD{" "}
-                  {displayMoneyWith2Digits(tripInfo.totalPriceWithDiscountInUsd + tripInfo.taxPriceInUsd)})
+                  {(tripInfo.totalPriceWithDiscountInUsd + tripInfo.salesTaxInUsd + tripInfo.governmentTaxInUsd) /
+                    tripInfo.currencyRate}{" "}
+                  (USD{" "}
+                  {displayMoneyWith2Digits(
+                    tripInfo.totalPriceWithDiscountInUsd + tripInfo.salesTaxInUsd + tripInfo.governmentTaxInUsd
+                  )}
+                  )
                 </div>
                 <div className="text-xl">Additional transactions </div>
                 <div className="">

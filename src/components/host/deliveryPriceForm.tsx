@@ -4,19 +4,19 @@ import { FormEvent, memo, useState } from "react";
 import { TFunction } from "@/utils/i18n";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { useRouter } from "next/router";
-import { DiscountFormValues } from "@/hooks/host/useTripDiscounts";
+import { DeliveryPricesFormValues } from "@/hooks/host/useDeliveryPrices";
 
-function TripDiscountsForm({
-  savedTripsDiscounts,
-  saveTripsDiscounts,
+function DeliveryPriceForm({
+  savedDeliveryPrices,
+  saveDeliveryPrices,
   t,
 }: {
-  savedTripsDiscounts: DiscountFormValues;
-  saveTripsDiscounts: (newTripsDiscounts: DiscountFormValues) => Promise<boolean>;
+  savedDeliveryPrices: DeliveryPricesFormValues;
+  saveDeliveryPrices: (newDeliveryPrices: DeliveryPricesFormValues) => Promise<boolean>;
   t: TFunction;
 }) {
   const router = useRouter();
-  const [enteredFormData, setEnteredFormData] = useState<DiscountFormValues>(savedTripsDiscounts);
+  const [enteredFormData, setEnteredFormData] = useState<DeliveryPricesFormValues>(savedDeliveryPrices);
   const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
 
   const t_profile: TFunction = (name, options) => {
@@ -42,7 +42,7 @@ function TripDiscountsForm({
 
     try {
       showInfo(t("common.info.sign"));
-      const result = await saveTripsDiscounts(enteredFormData);
+      const result = await saveDeliveryPrices(enteredFormData);
 
       hideDialogs();
       if (!result) {
@@ -51,17 +51,16 @@ function TripDiscountsForm({
       showInfo(t("common.info.success"));
     } catch (e) {
       console.error("handleSubmit error:" + e);
-      showError(t_profile("save_discount_err"));
+      showError(t_profile("save_delivery_prices_err"));
       return;
     }
   }
 
-  function getErrors(formData: DiscountFormValues) {
+  function getErrors(formData: DeliveryPricesFormValues) {
     const result: { [key: string]: string } = {};
 
-    if (formData.discount3DaysAndMoreInPercents === 0) result.firstName = t_profile("pls_number_percent");
-    if (formData.discount7DaysAndMoreInPercents === 0) result.firstName = t_profile("pls_number_percent");
-    if (formData.discount30DaysAndMoreInPercents === 0) result.firstName = t_profile("pls_number_percent");
+    if (formData.from1To25milesPrice === 0) result.firstName = t_profile("pls_number");
+    if (formData.over25MilesPrice === 0) result.firstName = t_profile("pls_number");
 
     return result;
   }
@@ -70,38 +69,31 @@ function TripDiscountsForm({
     <form className="my-4 flex flex-col gap-4" onSubmit={handleSubmit}>
       <fieldset>
         <div className="text-lg mb-4">
-          <strong>{t_profile("discounts")}</strong>
+          <strong>{t_profile("delivery_price")}</strong>
         </div>
         <div className="flex flex-col gap-4">
           <RntInput
             className="lg:w-60"
-            id="discount3DaysAndMoreInPercents"
-            label={t_profile("discount_3_and_more")}
-            value={enteredFormData.discount3DaysAndMoreInPercents}
+            id="from1To25milesPrice"
+            label={t_profile("delivery_price_from_1_to_25_miles")}
+            value={enteredFormData.from1To25milesPrice}
             onChange={handleChange}
           />
           <RntInput
             className="lg:w-60"
-            id="discount7DaysAndMoreInPercents"
-            label={t_profile("discount_7_and_more")}
-            value={enteredFormData.discount7DaysAndMoreInPercents}
-            onChange={handleChange}
-          />
-          <RntInput
-            className="lg:w-60"
-            id="discount30DaysAndMoreInPercents"
-            label={t_profile("discount_30_and_more")}
-            value={enteredFormData.discount30DaysAndMoreInPercents}
+            id="over25MilesPrice"
+            label={t_profile("delivery_price_over_25_miles")}
+            value={enteredFormData.over25MilesPrice}
             onChange={handleChange}
           />
         </div>
       </fieldset>
 
       <RntButton type="submit" className="mt-4">
-        {t_profile("save_discount")}
+        {t_profile("save_delivery_price")}
       </RntButton>
     </form>
   );
 }
 
-export default memo(TripDiscountsForm);
+export default memo(DeliveryPriceForm);

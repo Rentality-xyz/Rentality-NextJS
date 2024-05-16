@@ -14,5 +14,6 @@ export type TransactionHistoryInfo = {
   cancellationFee: number;
   reimbursements: number;
   rentalityFee: number;
-  taxes: number;
+  salesTax: number;
+  governmentTax: number;
 };

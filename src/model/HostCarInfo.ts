@@ -52,6 +52,7 @@ export type HostCarInfo = {
   wheelDrive: string;
   bodyType: string;
   trunkSize: string;
+  isInsuranceIncluded: boolean;
 };
 
 export const verifyCar = (carInfoFormParams: HostCarInfo) => {
