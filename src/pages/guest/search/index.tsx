@@ -22,7 +22,7 @@ import FilterSlidingPanel from "@/components/search/filterSlidingPanel";
 import SearchAndFilters from "@/components/search/searchAndFilters";
 
 const defaultDateFrom = moment({ hour: 9 }).add(1, "day").toDate();
-const defaultDateTo = moment({ hour: 9 }).add(2, "day").toDate();
+const defaultDateTo = moment({ hour: 9 }).add(4, "day").toDate();
 
 const customEmptySearchCarRequest: SearchCarRequest = {
   ...emptySearchCarRequest,
