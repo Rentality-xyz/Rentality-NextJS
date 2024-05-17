@@ -325,34 +325,45 @@ export default function CarEditForm({
           <strong>{t_car("location")}</strong>
         </div>
         <div className="flex flex-row gap-4 items-end  mb-4">
-          <RntPlaceAutocomplete
-            className="lg:w-full"
-            id="address"
-            label={isNewCar ? t_car("address") : t_car("saved_address")}
-            placeholder="Miami"
-            initValue={autocomplete}
-            includeStreetAddress={true}
-            readOnly={!carInfoFormParams.isLocationAddressEdited}
-            onChange={(e) => setAutocomplete(e.target.value)}
-            onAddressChange={(placeDetails) => {
-              const country = placeDetails.country?.short_name ?? "";
-              const state = placeDetails.state?.long_name ?? "";
-              const city = placeDetails.city?.long_name ?? "";
-              const latitude = Math.round((placeDetails.location?.latitude ?? 0) * 1_000_000) / 1_000_000;
-              const longitude = Math.round((placeDetails.location?.longitude ?? 0) * 1_000_000) / 1_000_000;
-              const locationAddress = `1, ${city}, ${state}, ${country}`;
+          {carInfoFormParams.isLocationAddressEdited ? (
+            <RntPlaceAutocomplete
+              className="lg:w-full"
+              id="address"
+              label={isNewCar ? t_car("address") : t_car("saved_address")}
+              placeholder="Miami"
+              initValue={autocomplete}
+              includeStreetAddress={true}
+              readOnly={!carInfoFormParams.isLocationAddressEdited}
+              onChange={(e) => setAutocomplete(e.target.value)}
+              onAddressChange={(placeDetails) => {
+                const country = placeDetails.country?.short_name ?? "";
+                const state = placeDetails.state?.long_name ?? "";
+                const city = placeDetails.city?.long_name ?? "";
+                const latitude = Math.round((placeDetails.location?.latitude ?? 0) * 1_000_000) / 1_000_000;
+                const longitude = Math.round((placeDetails.location?.longitude ?? 0) * 1_000_000) / 1_000_000;
+                const locationAddress = `1, ${city}, ${state}, ${country}`;
 
-              setCarInfoFormParams({
-                ...carInfoFormParams,
-                locationAddress: locationAddress,
-                country: country,
-                state: state,
-                city: city,
-                locationLatitude: latitude.toString(),
-                locationLongitude: longitude.toString(),
-              });
-            }}
-          />
+                setCarInfoFormParams({
+                  ...carInfoFormParams,
+                  locationAddress: locationAddress,
+                  country: country,
+                  state: state,
+                  city: city,
+                  locationLatitude: latitude.toString(),
+                  locationLongitude: longitude.toString(),
+                });
+              }}
+            />
+          ) : (
+            <RntInput
+              className="lg:w-full"
+              id="address"
+              label={isNewCar ? t_car("address") : t_car("saved_address")}
+              placeholder="Miami"
+              value={autocomplete}
+              readOnly={!carInfoFormParams.isLocationAddressEdited}
+            />
+          )}
           <RntButton
             className="w-40"
             disabled={carInfoFormParams.isLocationAddressEdited}
