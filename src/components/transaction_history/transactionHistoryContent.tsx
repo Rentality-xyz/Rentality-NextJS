@@ -3,59 +3,83 @@ import { TransactionHistoryInfo } from "@/model/TransactionHistoryInfo";
 import { dateFormatYearMonthDayTime, dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
 import RntInput from "@/components/common/rntInput";
 import RntButton from "@/components/common/rntButton";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import RntSelect from "@/components/common/rntSelect";
 import ReactPaginate from "react-paginate";
 import TransactionHistoryMobileCard from "@/components/transaction_history/transactionHistoryMobileCard";
 import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
+import { onlyUnique } from "@/utils/arrays";
+import moment from "moment";
+import { isEmpty } from "@/utils/string";
 
-export type SortOptions = {
-  [key: string]: string;
-};
-export type SortOptionKey = keyof SortOptions;
-
-type Props = {
+type TransactionHistoryContentProps = {
   isHost: boolean;
   transactions: TransactionHistoryInfo[];
-  sortOptions: SortOptions;
   t: TFunction;
 };
 
-export default function TransactionHistoryContent(props: Props) {
-  const dateNow = new Date();
-  const t = props.t;
+type TransactionHistoryFilterParams = {
+  dateFrom: Date;
+  dateTo: Date;
+  statusFilterBy: string;
+};
+
+const defaultDateFrom = moment({ hour: 0 }).subtract(1, "month").toDate();
+const defaultDateTo = moment({ hour: 0 }).toDate();
+
+export default function TransactionHistoryContent({ isHost, transactions, t }: TransactionHistoryContentProps) {
+  const pathname = usePathname();
+  const [filterParams, setFilterParams] = useState<TransactionHistoryFilterParams>({
+    dateFrom: defaultDateFrom,
+    dateTo: defaultDateTo,
+    statusFilterBy: "",
+  });
+  const [submitedFilterParams, setSubmitFilterParams] = useState<TransactionHistoryFilterParams>({
+    dateFrom: defaultDateFrom,
+    dateTo: defaultDateTo,
+    statusFilterBy: "",
+  });
+
   const t_th: TFunction = (name, options) => {
     return t("transaction_history." + name, options);
   };
-  const defaultDateFrom = new Date(dateNow.getTime() + 1 * 60 * 60 * 1000);
-  const defaultDateTo = new Date(dateNow.getTime() + 25 * 60 * 60 * 1000);
-  const { isHost, transactions } = props;
-  const headerSpanClassName = "text-center font-semibold px-2 font-light text-sm";
-  const rowSpanClassName = "px-2 h-12 text-center";
-  const [sortBy, setSortBy] = useState<SortOptionKey | undefined>(undefined);
 
-  const [currentPage, setCurrentPage] = useState(0); // Текущая страница
-  const itemsPerPage = 5; // Количество элементов на странице
-  const totalItems = transactions.length; // Общее количество элементов
-  const totalPages = Math.ceil(totalItems / itemsPerPage); // Вычисляем общее количество страниц
+  const statusFilters = [
+    { key: "", value: t_th("all_statuses") },
+    ...transactions
+      .map((i) => i.status)
+      .filter(onlyUnique)
+      .map((i) => {
+        return { key: i.toString(), value: getTripStatusTextFromStatus(i) };
+      }),
+  ];
+
   const handlePageChange = ({ selected }: { selected: number }) => {
     setCurrentPage(selected);
   };
-  const sortOptions = props.sortOptions;
-  const pathname = usePathname();
 
-  function isSortOptionKey(key: PropertyKey): key is SortOptionKey {
-    return sortOptions.hasOwnProperty(key);
-  }
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter(
+      (i) =>
+        i.startDateTime >= submitedFilterParams.dateFrom &&
+        i.endDateTime <= submitedFilterParams.dateTo &&
+        (isEmpty(submitedFilterParams.statusFilterBy) || i.status.toString() === submitedFilterParams.statusFilterBy)
+    );
+  }, [transactions, submitedFilterParams]);
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 5;
+  const totalItems = filteredTransactions.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const handleSearchClick = async () => {
-    // const result = await searchAvailableCars(searchCarRequest);
-    // if (result) {
-    //     setSortBy(undefined);
-    // }
+    setSubmitFilterParams(filterParams);
   };
+
+  const headerSpanClassName = "text-center font-semibold px-2 font-light text-sm";
+  const rowSpanClassName = "px-2 h-12 text-center";
 
   return (
     <div className="relative w-full min-h-[540px] pb-16 bg-rentality-bg p-4 rounded-2xl mt-5">
@@ -82,20 +106,16 @@ export default function TransactionHistoryContent(props: Props) {
             className="w-36 sm:w-40 max-xl:mt-4 mr-8"
             id="sort"
             readOnly={false}
-            value={sortBy ?? ""}
+            value={filterParams.statusFilterBy ?? ""}
             onChange={(e) => {
-              const newValue = e.target.value;
-              if (isSortOptionKey(newValue)) {
-                setSortBy(newValue);
-              }
+              setFilterParams((prev) => {
+                return { ...prev, statusFilterBy: e.target.value };
+              });
             }}
           >
-            <option className="hidden" value={""} disabled>
-              {t_th("status")}
-            </option>
-            {(Object.keys(sortOptions) as (keyof typeof sortOptions)[]).map((key) => (
-              <option key={key} value={key}>
-                {sortOptions[key]}
+            {statusFilters.map((i) => (
+              <option key={i.key} value={i.key}>
+                {i.value}
               </option>
             ))}
           </RntSelect>

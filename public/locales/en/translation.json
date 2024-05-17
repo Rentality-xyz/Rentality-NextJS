@@ -209,14 +209,9 @@
   "transaction_history": {
     "title": "Transaction history",
     "status": "Status",
+    "all_statuses": "All statuses",
     "guest_payments": "Guest Payments",
     "host_earnings": "Host Earnings",
-    "sort_options": {
-      "allStatus": "All statuses",
-      "completed": "Completed",
-      "start": "Start",
-      "finish": "Finish"
-    },
     "car": "Car",
     "tripId": "Trip ID",
     "days": "Days",

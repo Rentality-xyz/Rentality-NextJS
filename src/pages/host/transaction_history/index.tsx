@@ -1,5 +1,5 @@
 import PageTitle from "@/components/pageTitle/pageTitle";
-import TransactionHistoryContent, { SortOptions } from "@/components/transaction_history/transactionHistoryContent";
+import TransactionHistoryContent from "@/components/transaction_history/transactionHistoryContent";
 import Layout from "@/components/layout/layout";
 import useTransactionHistory from "@/hooks/transaction_history/useTransactionHistory";
 import { useTranslation } from "react-i18next";
@@ -7,9 +7,6 @@ import { useTranslation } from "react-i18next";
 export default function TransactionHistory() {
   const [isLoading, transactions] = useTransactionHistory(true);
   const { t } = useTranslation();
-  const sortOption: SortOptions = t("transaction_history.sort_options", {
-    returnObjects: true,
-  });
 
   return (
     <Layout>
@@ -21,7 +18,7 @@ export default function TransactionHistory() {
             {t("common.info.loading")}
           </div>
         ) : (
-          <TransactionHistoryContent isHost={true} transactions={transactions} t={t} sortOptions={sortOption} />
+          <TransactionHistoryContent isHost={true} transactions={transactions} t={t} />
         )}
       </div>
     </Layout>
