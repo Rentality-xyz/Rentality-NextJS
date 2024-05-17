@@ -142,8 +142,6 @@ const useSearchCars = () => {
             : searchCarRequest.deliveryInfo.returnLocation.lng.toFixed(6),
         };
 
-        console.log(`deliveryInfo:${JSON.stringify(deliveryInfo, bigIntReplacer)}`);
-
         const paymentsNeeded = await rentalityContract.calculatePaymentsWithDelivery(
           BigInt(carId),
           BigInt(days),
