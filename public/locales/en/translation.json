@@ -130,7 +130,7 @@
       "title": "Claims history",
       "table": {
         "invoiceType": "Invoice type",
-        "paymentDeadline": "Payment deadline",
+        "paymentDeadline": "Payment deadline (local time)",
         "reservation": "Reservation",
         "tripDays": "Trip days",
         "car": "Car",
