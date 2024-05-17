@@ -130,16 +130,16 @@ const useSearchCars = () => {
         const deliveryInfo: ContractDeliveryLocations = {
           pickUpLat: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
             ? hostHomeLocationLat
-            : searchCarRequest.deliveryInfo.pickupLocation.lat.toString(),
+            : searchCarRequest.deliveryInfo.pickupLocation.lat.toFixed(6),
           pickUpLon: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
             ? hostHomeLocationLng
-            : searchCarRequest.deliveryInfo.pickupLocation.lng.toString(),
+            : searchCarRequest.deliveryInfo.pickupLocation.lng.toFixed(6),
           returnLat: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
             ? hostHomeLocationLat
-            : searchCarRequest.deliveryInfo.returnLocation.lat.toString(),
+            : searchCarRequest.deliveryInfo.returnLocation.lat.toFixed(6),
           returnLon: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
             ? hostHomeLocationLng
-            : searchCarRequest.deliveryInfo.returnLocation.lng.toString(),
+            : searchCarRequest.deliveryInfo.returnLocation.lng.toFixed(6),
         };
 
         console.log(`deliveryInfo:${JSON.stringify(deliveryInfo, bigIntReplacer)}`);

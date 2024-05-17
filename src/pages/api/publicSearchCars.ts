@@ -4,7 +4,12 @@ import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { ContractSearchCar, ContractSearchCarParams, EngineType } from "@/model/blockchain/schemas";
+import {
+  ContractDeliveryLocations,
+  ContractSearchCar,
+  ContractSearchCarParams,
+  EngineType,
+} from "@/model/blockchain/schemas";
 import { validateContractSearchCar } from "@/model/blockchain/schemas_utils";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getBlockchainTimeFromDate, getMoneyInCentsFromString } from "@/utils/formInput";
@@ -267,19 +272,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   let availableCarsView: ContractSearchCar[];
 
   if (searchCarRequest.isDeliveryToGuest) {
-    const contractDeliveryLocations = {
+    const contractDeliveryLocations: ContractDeliveryLocations = {
       pickUpLat: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
         ? ""
-        : searchCarRequest.deliveryInfo.pickupLocation.lat.toString(),
+        : searchCarRequest.deliveryInfo.pickupLocation.lat.toFixed(6),
       pickUpLon: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
         ? ""
-        : searchCarRequest.deliveryInfo.pickupLocation.lng.toString(),
+        : searchCarRequest.deliveryInfo.pickupLocation.lng.toFixed(6),
       returnLat: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
         ? ""
-        : searchCarRequest.deliveryInfo.returnLocation.lat.toString(),
+        : searchCarRequest.deliveryInfo.returnLocation.lat.toFixed(6),
       returnLon: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
         ? ""
-        : searchCarRequest.deliveryInfo.returnLocation.lng.toString(),
+        : searchCarRequest.deliveryInfo.returnLocation.lng.toFixed(6),
     };
     availableCarsView = await rentality.searchAvailableCarsWithDelivery(
       contractDateFromUTC,
