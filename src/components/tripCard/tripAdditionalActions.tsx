@@ -91,6 +91,7 @@ function TripAdditionalActions({
             params={tripInfo.allowedActions[0].params}
             inputParams={inputParams}
             setInputParams={setInputParams}
+            isFinishingByHost={true}
           />
         ) : (
           <div className="flex flex-col gap-4 py-4">

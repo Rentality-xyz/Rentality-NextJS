@@ -254,6 +254,11 @@
       "",
       "Please wait for the host start a trip or you can cancel with cancelation fee 50% of the daily rate"
     ],
+    "is_finishing_by_host": [
+      "Finish the trip without guest confirmation",
+      "",
+      "Please enter data at the end of the trip"
+    ],
     "status_check_in_host_host": [
       "You started the trip from your side at {{date, string}}",
       "Expect the guest checked-in",

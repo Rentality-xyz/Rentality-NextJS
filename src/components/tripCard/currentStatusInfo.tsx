@@ -11,13 +11,12 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import ModifyTripForm from "./modifyTripForm";
 import { useChat } from "@/contexts/chatContext";
 import GuestConfirmFinishForm from "./guestConfirmFinishForm";
-import { bigIntReplacer } from "@/utils/json";
 
 function isInTheFuture(date: Date) {
   return date > new Date();
 }
 
-const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean, t: TFunction) => {
+const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean, isFinishingByHost: boolean, t: TFunction) => {
   switch (tripInfo.status) {
     case TripStatus.Pending:
       return isHost
@@ -31,6 +30,9 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean, t: TFuncti
         ? t("booked.status_confirmed_host", { returnObjects: true } as const)
         : t("booked.status_confirmed_guest", { returnObjects: true } as const);
     case TripStatus.CheckedInByHost:
+      if (isFinishingByHost) {
+        return t("booked.is_finishing_by_host", { returnObjects: true } as const);
+      }
       return isHost
         ? t("booked.status_check_in_host_host", {
             date: dateFormatShortMonthDateTime(tripInfo.checkedInByHostDateTime, tripInfo.timeZoneId),
@@ -41,6 +43,9 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean, t: TFuncti
             returnObjects: true,
           } as const);
     case TripStatus.Started:
+      if (isFinishingByHost) {
+        return t("booked.is_finishing_by_host", { returnObjects: true } as const);
+      }
       return isHost
         ? t(
             isInTheFuture(tripInfo.tripEnd)
@@ -115,10 +120,17 @@ function CurrentStatusInfo({
   isHost: boolean;
   t: TFunction;
 }) {
-  const [actionHeader, actionText, actionDescription] = getActionTextsForStatus(tripInfo, isHost, t) as string[];
   const { showCustomDialog, hideDialogs } = useRntDialogs();
   const [messageToGuest, setMessageToGuest] = useState("");
+  const [isFinishingByHost, setIsFinishingByHost] = useState(false);
   const { chatInfos, sendMessage } = useChat();
+
+  const [actionHeader, actionText, actionDescription] = getActionTextsForStatus(
+    tripInfo,
+    isHost,
+    isFinishingByHost,
+    t
+  ) as string[];
 
   if (
     isEmpty(actionHeader) &&
@@ -143,6 +155,7 @@ function CurrentStatusInfo({
         return savedAction(tripId, params);
       };
     }
+    setIsFinishingByHost(true);
     setIsAdditionalActionHidden(false);
   };
 

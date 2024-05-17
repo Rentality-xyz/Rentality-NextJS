@@ -12,11 +12,13 @@ export default function AllowedActionsForStatusStarted({
   tripInfo,
   inputParams,
   setInputParams,
+  isFinishingByHost,
 }: {
   params: ChangeTripParams[];
   tripInfo: TripInfo;
   inputParams: string[];
   setInputParams: (value: SetStateAction<string[]>) => void;
+  isFinishingByHost?: boolean;
 }) {
   const [endLevelInPercents, setEndLevelInPercents] = useState<number>(0);
   const [overmileValue, setOvermileValue] = useState<number>(0);
@@ -122,7 +124,10 @@ export default function AllowedActionsForStatusStarted({
           <div className="grid grid-cols-2 mt-2 md:mt-4 text-sm">
             <span className="col-span-1">Miles included:</span>
             <span className="col-span-1 text-right">
-              {getMilesIncludedPerDayText(tripInfo.milesIncludedPerDay)} mi per trip
+              {getMilesIncludedPerDayText(
+                tripInfo.milesIncludedPerDay * calculateDays(tripInfo.tripStart, tripInfo.tripEnd)
+              )}{" "}
+              mi per trip
             </span>
             <span className="col-span-1">Overmiles:</span>
             <span className="col-span-1 text-right">{overmileValue} mi per trip</span>
@@ -150,7 +155,11 @@ export default function AllowedActionsForStatusStarted({
               <span className="w-full">${displayMoneyWith2Digits(depositToBeReturned)}</span>
             </div>
           </div>
-          <div className="mt-2 md:mt-4">Deposit returned after the Host Completed the trip</div>
+          <div className="mt-2 md:mt-4">
+            {isFinishingByHost
+              ? "Reimbursement to host and return deposit to guest will after the guest confirms the completion of the trip"
+              : "Deposit returned after the Host Completed the trip"}
+          </div>
         </div>
       </div>
     </>
