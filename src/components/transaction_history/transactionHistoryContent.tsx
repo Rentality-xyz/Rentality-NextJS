@@ -89,16 +89,30 @@ export default function TransactionHistoryContent({ isHost, transactions, t }: T
           id="dateFrom"
           label={t("common.from")}
           type="datetime-local"
-          value={dateToHtmlDateTimeFormat(defaultDateFrom)}
-          // onChange={handleSearchInputChange}
+          value={dateToHtmlDateTimeFormat(filterParams.dateFrom)}
+          onChange={(e) => {
+            const newValue = moment(e.target.value);
+            if (newValue.isValid()) {
+              setFilterParams((prev) => {
+                return { ...prev, dateFrom: newValue.toDate() };
+              });
+            }
+          }}
         />
         <RntInput
           className="max-w-[320px] lg:max-w-[210px] lg:mr-8"
           id="dateTo"
           label={t("common.to")}
           type="datetime-local"
-          value={dateToHtmlDateTimeFormat(defaultDateTo)}
-          // onChange={handleSearchInputChange}
+          value={dateToHtmlDateTimeFormat(filterParams.dateTo)}
+          onChange={(e) => {
+            const newValue = moment(e.target.value);
+            if (newValue.isValid()) {
+              setFilterParams((prev) => {
+                return { ...prev, dateTo: newValue.toDate() };
+              });
+            }
+          }}
         />
 
         <div className="flex items-end">
@@ -175,37 +189,39 @@ export default function TransactionHistoryContent({ isHost, transactions, t }: T
           </tr>
         </thead>
         <tbody className="text-sm">
-          {transactions.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage).map((transaction) => {
-            //const itemNumber = currentPage * itemsPerPage + index;
-            const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${transaction.transHistoryId}?back=${pathname}`;
+          {filteredTransactions
+            .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+            .map((transaction) => {
+              //const itemNumber = currentPage * itemsPerPage + index;
+              const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${transaction.transHistoryId}?back=${pathname}`;
 
-            return (
-              <tr key={transaction.transHistoryId} className="border-b-[2px] border-b-gray-500">
-                <td className={rowSpanClassName}>{transaction.car}</td>
-                <td className={rowSpanClassName}>{transaction.tripId}</td>
-                <td className={rowSpanClassName}>{getTripStatusTextFromStatus(transaction.status)}</td>
-                <td className={rowSpanClassName}>{transaction.days}</td>
-                <td className={rowSpanClassName}>{dateFormatYearMonthDayTime(transaction.startDateTime)}</td>
-                <td className={rowSpanClassName}>{dateFormatYearMonthDayTime(transaction.endDateTime)}</td>
-                <td className={rowSpanClassName}>${transaction.tripPayment}</td>
-                <td className={rowSpanClassName}>${transaction.refund}</td>
-                <td className={rowSpanClassName}>${transaction.tripEarnings}</td>
-                <td className={rowSpanClassName}>${transaction.cancellationFee}</td>
-                <td className={rowSpanClassName}>${transaction.reimbursements}</td>
-                <td className={rowSpanClassName}>${transaction.rentalityFee}</td>
-                <td className={rowSpanClassName}>${transaction.salesTax + transaction.governmentTax}</td>
-                <td className={rowSpanClassName}>
-                  <Link href={detailsLink}>
-                    <span className="text-rentality-secondary">{t_th("details")}</span>
-                  </Link>
-                </td>
-              </tr>
-            );
-          })}
+              return (
+                <tr key={transaction.transHistoryId} className="border-b-[2px] border-b-gray-500">
+                  <td className={rowSpanClassName}>{transaction.car}</td>
+                  <td className={rowSpanClassName}>{transaction.tripId}</td>
+                  <td className={rowSpanClassName}>{getTripStatusTextFromStatus(transaction.status)}</td>
+                  <td className={rowSpanClassName}>{transaction.days}</td>
+                  <td className={rowSpanClassName}>{dateFormatYearMonthDayTime(transaction.startDateTime)}</td>
+                  <td className={rowSpanClassName}>{dateFormatYearMonthDayTime(transaction.endDateTime)}</td>
+                  <td className={rowSpanClassName}>${transaction.tripPayment}</td>
+                  <td className={rowSpanClassName}>${transaction.refund}</td>
+                  <td className={rowSpanClassName}>${transaction.tripEarnings}</td>
+                  <td className={rowSpanClassName}>${transaction.cancellationFee}</td>
+                  <td className={rowSpanClassName}>${transaction.reimbursements}</td>
+                  <td className={rowSpanClassName}>${transaction.rentalityFee}</td>
+                  <td className={rowSpanClassName}>${transaction.salesTax + transaction.governmentTax}</td>
+                  <td className={rowSpanClassName}>
+                    <Link href={detailsLink}>
+                      <span className="text-rentality-secondary">{t_th("details")}</span>
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
       <div className="lg:hidden">
-        {transactions.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage).map((transaction) => {
+        {filteredTransactions.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage).map((transaction) => {
           return (
             <TransactionHistoryMobileCard key={transaction.transHistoryId} isHost={isHost} transaction={transaction} />
           );
