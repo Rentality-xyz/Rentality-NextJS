@@ -12,8 +12,15 @@ function ClaimAddPhoto({
 }) {
   const MAX_ADD_IMAGE = 5;
   const inputRef = useRef<HTMLInputElement>(null);
+  const currentIndexRef = useRef<number>(-1);
+
+  const handleEditClick = (index: number) => {
+    currentIndexRef.current = index;
+    inputRef.current?.click();
+  };
 
   const handleImageClick = () => {
+    currentIndexRef.current = -1;
     inputRef.current?.click();
   };
 
@@ -22,6 +29,7 @@ function ClaimAddPhoto({
       return;
     }
 
+    const currentIndex = currentIndexRef.current;
     let file = e.target.files[0];
 
     // image/jpeg, image/png
@@ -35,7 +43,15 @@ function ClaimAddPhoto({
     const reader = new FileReader();
     reader.onload = (event) => {
       const fileUrl = event.target?.result as string;
-      setFilesToUpload([...filesToUpload, { file: file, localUrl: fileUrl }]);
+
+      if (currentIndex === -1) {
+        setFilesToUpload([...filesToUpload, { file: file, localUrl: fileUrl }]);
+      } else {
+        const newFilesToUpload = filesToUpload.map((value, index) => {
+          return index === currentIndex ? { file: file, localUrl: fileUrl } : value;
+        });
+        setFilesToUpload(newFilesToUpload);
+      }
     };
     reader.readAsDataURL(file);
   };
@@ -46,7 +62,13 @@ function ClaimAddPhoto({
       <div className="flex flex-row gap-4">
         {filesToUpload.map((fileToUpload, index) => {
           return (
-            <div key={index} className="w-48 h-40 rounded-2xl overflow-hidden">
+            <div
+              key={index}
+              className="relative w-48 h-40 rounded-2xl overflow-hidden"
+              onClick={() => {
+                handleEditClick(index);
+              }}
+            >
               {fileToUpload.file.type.startsWith("image/") ? (
                 <Image
                   className="w-full h-full object-cover"
@@ -60,6 +82,7 @@ function ClaimAddPhoto({
                   <span className="absolute w-full bottom-4 text-center">{fileToUpload.file.name}</span>
                 </div>
               )}
+              <div className="absolute bottom-0 right-0 px-2 bg-rentality-additional">edit</div>
             </div>
           );
         })}
