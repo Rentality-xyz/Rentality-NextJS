@@ -148,6 +148,13 @@ const useHostTrips = () => {
             ],
             action: checkInTrip,
           });
+          result.push({
+            text: "Reject",
+            readonly: false,
+            isDisplay: true,
+            params: [],
+            action: rejectRequest,
+          });
           break;
         case TripStatus.CheckedInByHost:
           result.push({
