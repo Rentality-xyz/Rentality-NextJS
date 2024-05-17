@@ -50,8 +50,8 @@ const formatSearchAvailableCarsContractRequest = (searchCarRequest: SearchCarReq
   const contractDateFromUTC = getBlockchainTimeFromDate(startCarLocalDateTime);
   const contractDateToUTC = getBlockchainTimeFromDate(endCarLocalDateTime);
   const contractSearchCarParams: ContractSearchCarParams = {
-    country: "", //searchCarRequest.searchLocation.country ?? "",
-    state: "", //searchCarRequest.searchLocation.state ?? "",
+    country: searchCarRequest.searchLocation.country ?? "",
+    state: searchCarRequest.searchLocation.state ?? "",
     city: searchCarRequest.searchLocation.city ?? "",
     brand: searchCarRequest.searchFilters.brand ?? "",
     model: searchCarRequest.searchFilters.model ?? "",
