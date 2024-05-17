@@ -12,7 +12,7 @@ import { ClaimType } from "@/model/blockchain/schemas";
 import ClaimAddPhoto from "@/components/claims/claimAddPhoto";
 import { FileToUpload } from "@/model/FileToUpload";
 import { bigIntReplacer } from "@/utils/json";
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 
 type CreateClaimParams = {
   selectedTripId: string;
@@ -23,9 +23,29 @@ type CreateClaimParams = {
   localFileUrls: FileToUpload[];
 };
 
+const hostClaimTypes = [
+  ClaimType.Tolls,
+  ClaimType.Tickets,
+  ClaimType.LateReturn,
+  ClaimType.Cleanliness,
+  ClaimType.Smoking,
+  ClaimType.ExteriorDamage,
+  ClaimType.InteriorDamage,
+  ClaimType.Other,
+];
+
+const guestClaimTypes = [
+  ClaimType.FaultyVehicle,
+  ClaimType.ListingMismatch,
+  ClaimType.Cleanliness,
+  ClaimType.ExteriorDamage,
+  ClaimType.InteriorDamage,
+  ClaimType.Other,
+];
+
 const emptyCreateClaimParams: CreateClaimParams = {
   selectedTripId: "",
-  incidentType: "Tolls",
+  incidentType: "",
   description: "",
   amountInUsd: "",
   isChecked: false,
@@ -42,26 +62,10 @@ export default function CreateClaim({
   isHost: boolean;
 }) {
   const pathname = usePathname();
-  const [createClaimParams, setCreateClaimParams] = useState<CreateClaimParams>(emptyCreateClaimParams);
-
-  const hostClaimTypes = [
-    ClaimType.Tolls,
-    ClaimType.Tickets,
-    ClaimType.LateReturn,
-    ClaimType.Cleanliness,
-    ClaimType.Smoking,
-    ClaimType.ExteriorDamage,
-    ClaimType.InteriorDamage,
-    ClaimType.Other,
-  ];
-  const guestClaimTypes = [
-    ClaimType.FaultyVehicle,
-    ClaimType.ListingMismatch,
-    ClaimType.Cleanliness,
-    ClaimType.ExteriorDamage,
-    ClaimType.InteriorDamage,
-    ClaimType.Other,
-  ];
+  const [createClaimParams, setCreateClaimParams] = useState<CreateClaimParams>({
+    ...emptyCreateClaimParams,
+    incidentType: isHost ? hostClaimTypes[0].toString() : guestClaimTypes[0].toString(),
+  });
 
   const handleCreateClaim = async () => {
     if (!createClaimParams.isChecked) return;
