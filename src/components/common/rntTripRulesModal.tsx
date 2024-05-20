@@ -37,7 +37,7 @@ export default function RntTripRulesModal({}: {}) {
         PaperProps={{
           sx: {
             borderRadius: "40px",
-            background: "#240F50"
+            background: "#240F50",
           },
         }}
       >
@@ -63,7 +63,7 @@ export default function RntTripRulesModal({}: {}) {
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4"/>
+                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4" />
                   </div>
                   <div className="w-11/12">
                     <strong>1. Start and Return on time</strong>
@@ -76,12 +76,13 @@ export default function RntTripRulesModal({}: {}) {
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4"/>
+                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4" />
                   </div>
                   <div className="w-11/12">
                     <strong>2. Keep your license handy</strong>
                     <div className="text-gray-500">
-                      Make sure to carry your physical driver's license with you whenever you're behind the wheel.
+                      Make sure to carry your physical driver`&apos;s license with you whenever you`&apos;re behind the
+                      wheel.
                     </div>
                   </div>
                 </div>
@@ -89,12 +90,13 @@ export default function RntTripRulesModal({}: {}) {
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4"/>
+                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4" />
                   </div>
                   <div className="w-11/12">
                     <strong>3. Refuel the vehicle</strong>
                     <div className="text-gray-500">
-                      Please return the vehicle with the same fuel level you started with. You'll be charged retroactively for any missing fuel/battery charge.
+                      Please return the vehicle with the same fuel level you started with. You`&apos;ll be charged
+                      retroactively for any missing fuel/battery charge.
                     </div>
                   </div>
                 </div>
@@ -102,12 +104,13 @@ export default function RntTripRulesModal({}: {}) {
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4"/>
+                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4" />
                   </div>
                   <div className="w-11/12">
                     <strong>4. No smoking</strong>
                     <div className="text-gray-500">
-                      Guests who violate the no-smoking policy may be imposed by the host, and may be banned from the platform.
+                      Guests who violate the no-smoking policy may be imposed by the host, and may be banned from the
+                      platform.
                     </div>
                   </div>
                 </div>
@@ -115,12 +118,13 @@ export default function RntTripRulesModal({}: {}) {
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4"/>
+                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4" />
                   </div>
                   <div className="w-11/12">
                     <strong>5. Keep the vehicle tidy</strong>
                     <div className="text-gray-500">
-                      If the vehicle is found to be unreasonably dirty upon return, you may be subject to a cleaning fine by the host.
+                      If the vehicle is found to be unreasonably dirty upon return, you may be subject to a cleaning
+                      fine by the host.
                     </div>
                   </div>
                 </div>
@@ -128,12 +132,13 @@ export default function RntTripRulesModal({}: {}) {
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4"/>
+                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4" />
                   </div>
                   <div className="w-11/12">
                     <strong>6. Tolls and tickets</strong>
                     <div className="text-gray-500">
-                      You’re responsible for paying the cost of any certain tickets, tolls or fees incurred during your trip. Hosts may request reimbursement within 90 days post-trip.
+                      You’re responsible for paying the cost of any certain tickets, tolls or fees incurred during your
+                      trip. Hosts may request reimbursement within 90 days post-trip.
                     </div>
                   </div>
                 </div>
@@ -141,12 +146,13 @@ export default function RntTripRulesModal({}: {}) {
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4"/>
+                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4" />
                   </div>
                   <div className="w-11/12">
                     <strong>7. Distance included in trip</strong>
                     <div className="text-gray-500">
-                      In your trip receipt indicates distance included per trip and price per 1 overmile. For any additional miles driven, you'll be charged.
+                      In your trip receipt indicates distance included per trip and price per 1 overmile. For any
+                      additional miles driven, you`&apos;ll be charged.
                     </div>
                   </div>
                 </div>
@@ -154,12 +160,13 @@ export default function RntTripRulesModal({}: {}) {
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4"/>
+                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4" />
                   </div>
                   <div className="w-11/12">
                     <strong>8. Guest-to-host communication</strong>
                     <div className="text-gray-500">
-                      In case of extraordinary situations, immediately contact the host via chat and phone number indicated in the trip card.
+                      In case of extraordinary situations, immediately contact the host via chat and phone number
+                      indicated in the trip card.
                     </div>
                   </div>
                 </div>
@@ -167,7 +174,7 @@ export default function RntTripRulesModal({}: {}) {
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4"/>
+                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4" />
                   </div>
                   <div className="w-11/12">
                     <strong>9. Car sharing agreement</strong>
