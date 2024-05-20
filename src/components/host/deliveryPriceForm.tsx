@@ -23,8 +23,8 @@ function DeliveryPriceForm({
 }) {
   const router = useRouter();
   const [enteredFormData, setEnteredFormData] = useState<DeliveryPricesFormValues>({
-    from1To25milesPrice: savedDeliveryPrices.from1To25milesPrice.toFixed(2),
-    over25MilesPrice: savedDeliveryPrices.over25MilesPrice.toFixed(2),
+    from1To25milesPrice: savedDeliveryPrices.from1To25milesPrice.toString(),
+    over25MilesPrice: savedDeliveryPrices.over25MilesPrice.toString(),
   });
   const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
 
