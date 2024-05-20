@@ -4,19 +4,28 @@ import { FormEvent, memo, useState } from "react";
 import { TFunction } from "@/utils/i18n";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { useRouter } from "next/router";
-import { DeliveryPricesFormValues } from "@/hooks/host/useDeliveryPrices";
+import { DeliveryPrices } from "@/hooks/host/useDeliveryPrices";
+import { isEmpty } from "@/utils/string";
+
+type DeliveryPricesFormValues = {
+  from1To25milesPrice: string;
+  over25MilesPrice: string;
+};
 
 function DeliveryPriceForm({
   savedDeliveryPrices,
   saveDeliveryPrices,
   t,
 }: {
-  savedDeliveryPrices: DeliveryPricesFormValues;
-  saveDeliveryPrices: (newDeliveryPrices: DeliveryPricesFormValues) => Promise<boolean>;
+  savedDeliveryPrices: DeliveryPrices;
+  saveDeliveryPrices: (newDeliveryPrices: DeliveryPrices) => Promise<boolean>;
   t: TFunction;
 }) {
   const router = useRouter();
-  const [enteredFormData, setEnteredFormData] = useState<DeliveryPricesFormValues>(savedDeliveryPrices);
+  const [enteredFormData, setEnteredFormData] = useState<DeliveryPricesFormValues>({
+    from1To25milesPrice: savedDeliveryPrices.from1To25milesPrice.toFixed(2),
+    over25MilesPrice: savedDeliveryPrices.over25MilesPrice.toFixed(2),
+  });
   const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
 
   const t_profile: TFunction = (name, options) => {
@@ -27,7 +36,7 @@ function DeliveryPriceForm({
 
   async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const name = e.target.name;
-    setEnteredFormData({ ...enteredFormData, [name]: Number(e.target.value) ?? 0 });
+    setEnteredFormData({ ...enteredFormData, [name]: e.target.value });
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -42,7 +51,10 @@ function DeliveryPriceForm({
 
     try {
       showInfo(t("common.info.sign"));
-      const result = await saveDeliveryPrices(enteredFormData);
+      const result = await saveDeliveryPrices({
+        from1To25milesPrice: Number(enteredFormData.from1To25milesPrice),
+        over25MilesPrice: Number(enteredFormData.over25MilesPrice),
+      });
 
       hideDialogs();
       if (!result) {
@@ -59,8 +71,10 @@ function DeliveryPriceForm({
   function getErrors(formData: DeliveryPricesFormValues) {
     const result: { [key: string]: string } = {};
 
-    if (formData.from1To25milesPrice === 0) result.firstName = t_profile("pls_number");
-    if (formData.over25MilesPrice === 0) result.firstName = t_profile("pls_number");
+    if (isEmpty(formData.from1To25milesPrice) || !isFinite(Number(formData.from1To25milesPrice)))
+      result.from1To25milesPrice = t_profile("pls_number");
+    if (isEmpty(formData.over25MilesPrice) || !isFinite(Number(formData.over25MilesPrice)))
+      result.over25MilesPrice = t_profile("pls_number");
 
     return result;
   }

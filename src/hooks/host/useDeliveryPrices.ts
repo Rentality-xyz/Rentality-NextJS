@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { useUserInfo } from "@/contexts/userInfoContext";
-import { ContractDeliveryPrices } from "@/model/blockchain/schemas";
 
-export type DeliveryPricesFormValues = {
+export type DeliveryPrices = {
   from1To25milesPrice: number;
   over25MilesPrice: number;
 };
 
-const emptyDiscountFormValues: DeliveryPricesFormValues = {
+const emptyDeliveryPrices: DeliveryPrices = {
   from1To25milesPrice: 0,
   over25MilesPrice: 0,
 };
@@ -17,21 +16,18 @@ const useDeliveryPrices = () => {
   const rentalityContract = useRentality();
   const userInfo = useUserInfo();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
-  const [deliveryPrices, setDeliveryPrices] = useState<DeliveryPricesFormValues>(emptyDiscountFormValues);
+  const [deliveryPrices, setDeliveryPrices] = useState<DeliveryPrices>(emptyDeliveryPrices);
 
-  const saveDeliveryPrices = async (newDeliveryPricesValues: DeliveryPricesFormValues) => {
+  const saveDeliveryPrices = async (newDeliveryPrices: DeliveryPrices) => {
     if (!rentalityContract) {
       console.error("saveDeliveryPrices error: rentalityContract is null");
       return false;
     }
 
     try {
-      const underTwentyFiveMilesInUsdCents = BigInt(newDeliveryPricesValues.from1To25milesPrice * 100);
-      const aboveTwentyFiveMilesInUsdCents = BigInt(newDeliveryPricesValues.over25MilesPrice * 100);
-
       const transaction = await rentalityContract.addUserDeliveryPrices(
-        underTwentyFiveMilesInUsdCents,
-        aboveTwentyFiveMilesInUsdCents
+        BigInt(newDeliveryPrices.from1To25milesPrice * 100),
+        BigInt(newDeliveryPrices.over25MilesPrice * 100)
       );
       await transaction.wait();
       return true;
@@ -58,7 +54,7 @@ const useDeliveryPrices = () => {
 
         const data = await rentalityContract.getUserDeliveryPrices(userInfo.address);
 
-        const deliveryPricesFormValues: DeliveryPricesFormValues = {
+        const deliveryPricesFormValues: DeliveryPrices = {
           from1To25milesPrice: Number(data.underTwentyFiveMilesInUsdCents) / 100,
           over25MilesPrice: Number(data.aboveTwentyFiveMilesInUsdCents) / 100,
         };

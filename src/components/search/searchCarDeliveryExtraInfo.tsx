@@ -1,8 +1,8 @@
-import { DeliveryPricesFormValues } from "@/hooks/host/useDeliveryPrices";
 import { TFunction } from "@/utils/i18n";
 import { memo } from "react";
 import RntButton from "../common/rntButton";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
+import { DeliveryPrices } from "@/hooks/host/useDeliveryPrices";
 
 function SearchCarDeliveryExtraInfo({
   hostHomeLocation,
@@ -12,7 +12,7 @@ function SearchCarDeliveryExtraInfo({
   t,
 }: {
   hostHomeLocation: string;
-  deliveryPrices: DeliveryPricesFormValues;
+  deliveryPrices: DeliveryPrices;
   isInsuranceIncluded: boolean;
   handleClose: () => void;
   t: TFunction;
