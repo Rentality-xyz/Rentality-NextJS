@@ -50,7 +50,7 @@ export const getClaimTypeTextFromClaimType = (status: ClaimType) => {
     case ClaimType.InteriorDamage:
       return "Interior damage";
     case ClaimType.FaultyVehicle:
-      return "The vehicle is faulty";
+      return "The vehicle is not working";
     case ClaimType.ListingMismatch:
       return "Vehicle does not match listing";
     case ClaimType.Other:

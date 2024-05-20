@@ -127,7 +127,7 @@
       "pay_claim_failed": "Your pay claim request failed. Please make sure you entered claim details correctly and try again."
     },
     "history": {
-      "title": "Claims history",
+      "title": "Claims list",
       "table": {
         "invoiceType": "Invoice type",
         "paymentDeadline": "Payment deadline (local time)",
