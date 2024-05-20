@@ -7,15 +7,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import RntButton from "./rntButton";
 import { DialogTitle } from "@mui/material";
 import Image from "next/image";
-import tripRulesNoSmoking from "@/images/trip_rules_no_smoking.png";
-import tripRulesNoStartReturn from "@/images/trip_rules_start_return.png";
-import tripRulesLicense from "@/images/trip_rules_license.png";
-import tripRulesRefuelling from "@/images/trip_rules_refuelling.png";
-import tripRulesKeepTheVehicleTidy from "@/images/trip_rules_keep_the_vehicle_tidy.png";
-import tripRulesTollsAndTickets from "@/images/trip_rules_tolls_and_tickets.png";
-import tripRulesDistanceIncluded from "@/images/trip_rules_distance_included.png";
-import tripRulesGuestToHostCommunication from "@/images/trip_rules_host_to_guest_communications.png";
-import tripRulesCarSharingAgreement from "@/images/trip_rules_car_sharing_agreement.png";
+import tripRulesRectangle from "@/images/rectangle_medium_turquoise.png";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 
 export default function RntTripRulesModal({}: {}) {
@@ -45,6 +37,7 @@ export default function RntTripRulesModal({}: {}) {
         PaperProps={{
           sx: {
             borderRadius: "40px",
+            background: "#240F50"
           },
         }}
       >
@@ -66,147 +59,120 @@ export default function RntTripRulesModal({}: {}) {
             }}
             id="alert-dialog-description"
           >
-            <div className="grid gap-4 grid-cols-3">
+            <div className="flex flex-col md:grid md:gap-4 md:grid-cols-3">
               <div className="bg-rentality-bg p-2">
-                <div className="flex flex-row">
-                  <div className="mx-3 mt-1">
-                    <Image src={tripRulesNoStartReturn} width={60} height={60} alt="" />
+                <div className="flex">
+                  <div className="mx-3 mt-1 w-1/12">
+                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4"/>
                   </div>
-                  <div>
-                    <p>
-                      <strong>Start and return on time</strong>
-                    </p>
+                  <div className="w-11/12">
+                    <strong>1. Start and Return on time</strong>
                     <div className="text-gray-500">
-                      Guests who violate the non-smoking policy may be subject to a 150 CA$ fine and may be banned from
-                      the platform
+                      Start and end your trip on time according to the time in the reservation order.
                     </div>
                   </div>
                 </div>
               </div>
               <div className="bg-rentality-bg p-2">
-                <div className="flex flex-row">
-                  <div className="mx-3 mt-1">
-                    <Image src={tripRulesLicense} width={60} height={60} alt="" />
+                <div className="flex">
+                  <div className="mx-3 mt-1 w-1/12">
+                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4"/>
                   </div>
-                  <div>
-                    <p>
-                      <strong>Keep you license handy</strong>
-                    </p>
+                  <div className="w-11/12">
+                    <strong>2. Keep your license handy</strong>
                     <div className="text-gray-500">
-                      Guests who violate the non-smoking policy may be subject to a 150 CA$ fine and may be banned from
-                      the platform
+                      Make sure to carry your physical driver's license with you whenever you're behind the wheel.
                     </div>
                   </div>
                 </div>
               </div>
               <div className="bg-rentality-bg p-2">
-                <div className="flex flex-row">
-                  <div className="mx-3 mt-1">
-                    <Image src={tripRulesRefuelling} width={60} height={60} alt="" />
+                <div className="flex">
+                  <div className="mx-3 mt-1 w-1/12">
+                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4"/>
                   </div>
-                  <div>
-                    <p>
-                      <strong>Refuel the vehicle</strong>
-                    </p>
+                  <div className="w-11/12">
+                    <strong>3. Refuel the vehicle</strong>
                     <div className="text-gray-500">
-                      Guests who violate the non-smoking policy may be subject to a 150 CA$ fine and may be banned from
-                      the platform
+                      Please return the vehicle with the same fuel level you started with. You'll be charged retroactively for any missing fuel/battery charge.
                     </div>
                   </div>
                 </div>
               </div>
               <div className="bg-rentality-bg p-2">
-                <div className="flex flex-row">
-                  <div className="mx-3 mt-1">
-                    <Image src={tripRulesNoSmoking} width={60} height={60} alt="" />
+                <div className="flex">
+                  <div className="mx-3 mt-1 w-1/12">
+                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4"/>
                   </div>
-                  <div>
-                    <p>
-                      <strong>No smoking</strong>
-                    </p>
+                  <div className="w-11/12">
+                    <strong>4. No smoking</strong>
                     <div className="text-gray-500">
-                      Guests who violate the non-smoking policy may be subject to a 150 CA$ fine and may be banned from
-                      the platform
+                      Guests who violate the no-smoking policy may be imposed by the host, and may be banned from the platform.
                     </div>
                   </div>
                 </div>
               </div>
               <div className="bg-rentality-bg p-2">
-                <div className="flex flex-row">
-                  <div className="mx-3 mt-1">
-                    <Image src={tripRulesKeepTheVehicleTidy} width={60} height={60} alt="" />
+                <div className="flex">
+                  <div className="mx-3 mt-1 w-1/12">
+                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4"/>
                   </div>
-                  <div>
-                    <p>
-                      <strong>Keep the vehicle tidy</strong>
-                    </p>
+                  <div className="w-11/12">
+                    <strong>5. Keep the vehicle tidy</strong>
                     <div className="text-gray-500">
-                      Guests who violate the non-smoking policy may be subject to a 150 CA$ fine and may be banned from
-                      the platform
+                      If the vehicle is found to be unreasonably dirty upon return, you may be subject to a cleaning fine by the host.
                     </div>
                   </div>
                 </div>
               </div>
               <div className="bg-rentality-bg p-2">
-                <div className="flex flex-row">
-                  <div className="mx-3 mt-1">
-                    <Image src={tripRulesTollsAndTickets} width={60} height={60} alt="" />
+                <div className="flex">
+                  <div className="mx-3 mt-1 w-1/12">
+                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4"/>
                   </div>
-                  <div>
-                    <p>
-                      <strong>Talls And Tickets</strong>
-                    </p>
+                  <div className="w-11/12">
+                    <strong>6. Tolls and tickets</strong>
                     <div className="text-gray-500">
-                      Guests who violate the non-smoking policy may be subject to a 150 CA$ fine and may be banned from
-                      the platform
+                      You’re responsible for paying the cost of any certain tickets, tolls or fees incurred during your trip. Hosts may request reimbursement within 90 days post-trip.
                     </div>
                   </div>
                 </div>
               </div>
               <div className="bg-rentality-bg p-2">
-                <div className="flex flex-row">
-                  <div className="mx-3 mt-1">
-                    <Image src={tripRulesDistanceIncluded} width={60} height={60} alt="" />
+                <div className="flex">
+                  <div className="mx-3 mt-1 w-1/12">
+                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4"/>
                   </div>
-                  <div>
-                    <p>
-                      <strong>Distance included in trip</strong>
-                    </p>
+                  <div className="w-11/12">
+                    <strong>7. Distance included in trip</strong>
                     <div className="text-gray-500">
-                      Guests who violate the non-smoking policy may be subject to a 150 CA$ fine and may be banned from
-                      the platform
+                      In your trip receipt indicates distance included per trip and price per 1 overmile. For any additional miles driven, you'll be charged.
                     </div>
                   </div>
                 </div>
               </div>
               <div className="bg-rentality-bg p-2">
-                <div className="flex flex-row">
-                  <div className="mx-3 mt-1">
-                    <Image src={tripRulesGuestToHostCommunication} width={60} height={60} alt="" />
+                <div className="flex">
+                  <div className="mx-3 mt-1 w-1/12">
+                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4"/>
                   </div>
-                  <div>
-                    <p>
-                      <strong>Guest-to-Host communication</strong>
-                    </p>
+                  <div className="w-11/12">
+                    <strong>8. Guest-to-host communication</strong>
                     <div className="text-gray-500">
-                      Guests who violate the non-smoking policy may be subject to a 150 CA$ fine and may be banned from
-                      the platform
+                      In case of extraordinary situations, immediately contact the host via chat and phone number indicated in the trip card.
                     </div>
                   </div>
                 </div>
               </div>
               <div className="bg-rentality-bg p-2">
-                <div className="flex flex-row">
-                  <div className="mx-3 mt-1">
-                    <Image src={tripRulesGuestToHostCommunication} width={60} height={60} alt="" />
+                <div className="flex">
+                  <div className="mx-3 mt-1 w-1/12">
+                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4"/>
                   </div>
-                  <div>
-                    <p>
-                      <strong>Car sharing agreement</strong>
-                    </p>
+                  <div className="w-11/12">
+                    <strong>9. Car sharing agreement</strong>
                     <div className="text-gray-500">
-                      Guests who violate the non-smoking policy may be subject to a 150 CA$ fine and may be banned from
-                      the platform
+                      Check Car sharing agreement and have it handy which can be found and downloaded in Trip details.
                     </div>
                   </div>
                 </div>
