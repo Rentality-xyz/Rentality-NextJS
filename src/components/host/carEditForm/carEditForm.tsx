@@ -10,6 +10,7 @@ import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/
 import RntButton from "@/components/common/rntButton";
 import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import { TFunction } from "@/utils/i18n";
+import { fixedNumber } from "@/utils/numericFormatters";
 
 export default function CarEditForm({
   carInfoFormParams,
@@ -339,8 +340,8 @@ export default function CarEditForm({
                 const country = placeDetails.country?.short_name ?? "";
                 const state = placeDetails.state?.long_name ?? "";
                 const city = placeDetails.city?.long_name ?? "";
-                const latitude = Math.round((placeDetails.location?.latitude ?? 0) * 1_000_000) / 1_000_000;
-                const longitude = Math.round((placeDetails.location?.longitude ?? 0) * 1_000_000) / 1_000_000;
+                const latitude = fixedNumber(placeDetails.location?.latitude ?? 0, 6);
+                const longitude = fixedNumber(placeDetails.location?.longitude ?? 0, 6);
                 const locationAddress = `1, ${city}, ${state}, ${country}`;
 
                 setCarInfoFormParams({
