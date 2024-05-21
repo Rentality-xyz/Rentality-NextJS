@@ -6,6 +6,7 @@ import { TFunction } from "@/utils/i18n";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isEmpty } from "@/utils/string";
 import { keccak256 } from "ethers";
+import DotStatus from "../profileInfo/dotStatus";
 
 const hasSignature = (signature: string) => {
   return !isEmpty(signature) && signature !== "0x";
@@ -47,9 +48,9 @@ export default function DriverLicenseVerified({
       <div className="flex mt-4 items-center gap-2 md:gap-6">
         <IdentityButton mode={ButtonMode.LIGHT} className="civicButton" />
         {gatewayStatus === GatewayStatus.ACTIVE ? (
-          <GetVerifiedDriverLicense text={t("license_verified")} />
+          <DotStatus color="success" text={t("license_verified")} />
         ) : (
-          <GetNotVerifiedDriverLicense text={t("license_not_verified")} />
+          <DotStatus color="error" text={t("license_not_verified")} />
         )}
       </div>
       <p className="mt-8 w-full md:w-3/4 xl:w-3/5 2xl:w-1/3">{t("agreement_info")}</p>
@@ -96,48 +97,12 @@ export default function DriverLicenseVerified({
         </RntButton>
         <div className="ml-2 md:ml-6">
           {hasSignature(tcSignature) ? (
-            <GetConfirm text={t("confirmed")} />
+            <DotStatus color="success" text={t("confirmed")} />
           ) : (
-            <GetNotConfirm text={t("not_confirmed")} />
+            <DotStatus color="error" text={t("not_confirmed")} />
           )}
         </div>
       </div>
-    </div>
-  );
-}
-
-function GetNotVerifiedDriverLicense({ text }: { text: string }) {
-  return (
-    <div className="flex items-center">
-      <span className="w-4 h-4 bg-[#DB001A] rounded-full inline-block pr-4"></span>
-      <span className="ml-2">{text}</span>
-    </div>
-  );
-}
-
-function GetVerifiedDriverLicense({ text }: { text: string }) {
-  return (
-    <div className="flex items-center">
-      <span className="w-4 h-4 bg-[#2EB100] rounded-full inline-block pr-4"></span>
-      <span className="ml-2">{text}</span>
-    </div>
-  );
-}
-
-function GetNotConfirm({ text }: { text: string }) {
-  return (
-    <div className="flex items-center">
-      <span className="w-4 h-4 bg-[#DB001A] rounded-full inline-block pr-4"></span>
-      <span className="ml-2">{text}</span>
-    </div>
-  );
-}
-
-function GetConfirm({ text }: { text: string }) {
-  return (
-    <div className="flex items-center">
-      <span className="w-4 h-4 bg-[#2EB100] rounded-full inline-block pr-4"></span>
-      <span className="ml-2">{text}</span>
     </div>
   );
 }
