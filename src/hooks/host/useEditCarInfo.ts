@@ -39,13 +39,8 @@ const emptyHostCarInfo: HostCarInfo = {
   milesIncludedPerDay: "",
   securityDeposit: "",
   fuelPricePerGal: "",
-  country: "",
-  state: "",
-  city: "",
-  locationLatitude: "",
-  locationLongitude: "",
-  locationAddress: "",
-  isLocationAddressEdited: false,
+  locationInfo: { address: "", country: "", state: "", city: "", latitude: 0, longitude: 0, timeZoneId: "" },
+  isLocationEdited: false,
   currentlyListed: true,
   engineTypeText: "",
   fullBatteryChargePrice: "",
@@ -95,12 +90,12 @@ const useEditCarInfo = (carId: number) => {
       };
       let transaction: ContractTransactionResponse;
 
-      if (carInfoFormParams.isLocationAddressEdited) {
+      if (carInfoFormParams.isLocationEdited) {
         transaction = await rentalityContract.updateCarInfoWithLocation(
           updateCarRequest,
-          carInfoFormParams.locationAddress,
-          carInfoFormParams.locationLatitude,
-          carInfoFormParams.locationLongitude,
+          carInfoFormParams.locationInfo.address,
+          carInfoFormParams.locationInfo.latitude.toFixed(6),
+          carInfoFormParams.locationInfo.longitude.toFixed(6),
           process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ""
         );
       } else {
@@ -172,13 +167,15 @@ const useEditCarInfo = (carId: number) => {
           pricePerDay: price.toString(),
           milesIncludedPerDay: getMilesIncludedPerDayText(carInfoDetails.milesIncludedPerDay),
           securityDeposit: securityDeposit.toString(),
-          country: carInfoDetails.country,
-          state: carInfoDetails.state,
-          city: carInfoDetails.city,
-          locationLatitude: carInfoDetails.locationLatitude,
-          locationLongitude: carInfoDetails.locationLongitude,
-          locationAddress: "",
-          isLocationAddressEdited: false,
+          locationInfo: {
+            address: "",
+            country: carInfoDetails.country,
+            state: carInfoDetails.state,
+            city: carInfoDetails.city,
+            latitude: Number(carInfoDetails.locationLatitude),
+            longitude: Number(carInfoDetails.locationLongitude),
+          },
+          isLocationEdited: false,
           currentlyListed: carInfo.currentlyListed,
           engineTypeText: engineTypeString,
           fuelPricePerGal: fuelPricePerGal,

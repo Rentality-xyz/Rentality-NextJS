@@ -1,5 +1,6 @@
 import { isEmpty } from "@/utils/string";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "./EngineType";
+import { LocationInfo } from "./LocationInfo";
 
 export const UNLIMITED_MILES_VALUE_TEXT = "Unlimited";
 export const UNLIMITED_MILES_VALUE = 999_999_999;
@@ -34,13 +35,8 @@ export type HostCarInfo = {
   timeBufferBetweenTripsInMin: number;
   currentlyListed: boolean;
 
-  locationAddress: string;
-  isLocationAddressEdited: boolean;
-  country: string;
-  state: string;
-  city: string;
-  locationLatitude: string;
-  locationLongitude: string;
+  isLocationEdited: boolean;
+  locationInfo: LocationInfo;
 
   engineTypeText: string;
 
@@ -72,7 +68,7 @@ export const verifyCar = (carInfoFormParams: HostCarInfo) => {
     !isEmpty(carInfoFormParams.pricePerDay) &&
     !isEmpty(carInfoFormParams.milesIncludedPerDay) &&
     !isEmpty(carInfoFormParams.securityDeposit) &&
-    !isEmpty(carInfoFormParams.locationAddress) &&
+    !isEmpty(carInfoFormParams.locationInfo.address) &&
     !isEmpty(carInfoFormParams.engineTypeText) &&
     (carInfoFormParams.engineTypeText !== ENGINE_TYPE_PETROL_STRING || !isEmpty(carInfoFormParams.fuelPricePerGal)) &&
     (carInfoFormParams.engineTypeText !== ENGINE_TYPE_PETROL_STRING || !isEmpty(carInfoFormParams.tankVolumeInGal)) &&
