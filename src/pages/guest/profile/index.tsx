@@ -1,6 +1,6 @@
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
-import ProfileInfoPage from "@/components/profileInfo/profileInfoPage";
+import UserProfileInfo from "@/components/profileInfo/userProfileInfo";
 import ProfileRnD from "@/components/RnD/profileRnD";
 import useProfileSettings from "@/hooks/useProfileSettings";
 import { useTranslation } from "react-i18next";
@@ -19,7 +19,7 @@ export default function Profile() {
           </div>
         ) : (
           <>
-            <ProfileInfoPage
+            <UserProfileInfo
               savedProfileSettings={savedProfileSettings}
               saveProfileSettings={saveProfileSettings}
               isHost={false}

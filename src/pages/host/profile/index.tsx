@@ -2,7 +2,7 @@ import DeliveryPriceForm from "@/components/host/deliveryPriceForm";
 import TripDiscountsForm from "@/components/host/tripDiscountsForm";
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
-import ProfileInfoPage from "@/components/profileInfo/profileInfoPage";
+import UserProfileInfo from "@/components/profileInfo/userProfileInfo";
 import ProfileRnD from "@/components/RnD/profileRnD";
 import useDeliveryPrices from "@/hooks/host/useDeliveryPrices";
 import useTripDiscounts from "@/hooks/host/useTripDiscounts";
@@ -25,7 +25,7 @@ export default function Profile() {
           </div>
         ) : (
           <>
-            <ProfileInfoPage
+            <UserProfileInfo
               savedProfileSettings={savedProfileSettings}
               saveProfileSettings={saveProfileSettings}
               isHost={true}

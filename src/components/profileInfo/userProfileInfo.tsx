@@ -12,13 +12,14 @@ import RntDatePicker from "../common/rntDatePicker";
 import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import DriverLicenseVerified from "@/components/driver_license_verified/driver_license_verified";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { useChatKeys } from "@/contexts/chatContext";
 import { TFunction } from "@/utils/i18n";
 import DotStatus from "./dotStatus";
+import AgreementInfo from "./agreement_info";
+import KycVerification from "./kyc_verification";
 
-function ProfileInfoPage({
+function UserProfileInfo({
   savedProfileSettings,
   saveProfileSettings,
   isHost,
@@ -221,7 +222,8 @@ function ProfileInfoPage({
         </div>
       </fieldset>
 
-      <DriverLicenseVerified
+      <KycVerification t={t_profile} />
+      <AgreementInfo
         signature={enteredFormData.tcSignature}
         onSign={(signature) => {
           setEnteredFormData({ ...enteredFormData, tcSignature: signature });
@@ -252,4 +254,4 @@ function ProfileInfoPage({
   );
 }
 
-export default memo(ProfileInfoPage);
+export default memo(UserProfileInfo);
