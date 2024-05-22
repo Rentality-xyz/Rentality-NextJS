@@ -73,8 +73,10 @@ export type TripInfo = {
   model: string;
   year: string;
   licensePlate: string;
+  licenseState: string;
   tripStart: Date;
   tripEnd: Date;
+  tripDays: number;
   locationStart: string;
   locationEnd: string;
   status: TripStatus;
@@ -86,9 +88,12 @@ export type TripInfo = {
   fuelPricePerGal: number;
   fullBatteryChargePriceInUsdCents: number;
   milesIncludedPerDay: number;
+  milesIncludedPerTrip: number,
   startOdometr: number;
   endOdometr: number;
   overmilePrice: number;
+  overmileValue: number,
+  overmileCharge: number,
   rejectedBy: string;
   tripStartedBy: string;
   tripFinishedBy: string;

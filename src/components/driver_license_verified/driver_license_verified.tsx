@@ -1,4 +1,4 @@
-import { ButtonMode, GatewayStatus, IdentityButton, useGateway as useCivic } from "@civic/ethereum-gateway-react";
+import { ButtonMode, IdentityButton} from "@civic/ethereum-gateway-react";
 import { useState } from "react";
 import { CheckboxLight } from "@/components/common/checkbox";
 import RntButton from "@/components/common/rntButton";
@@ -6,6 +6,7 @@ import { TFunction } from "@/utils/i18n";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isEmpty } from "@/utils/string";
 import { keccak256 } from "ethers";
+import RntDriverLicenseVerified from "@/components/common/rntDriverLicenseVerified";
 
 const hasSignature = (signature: string) => {
   return !isEmpty(signature) && signature !== "0x";
@@ -20,7 +21,6 @@ export default function DriverLicenseVerified({
   onSign: (signature: string) => void;
   t: TFunction;
 }) {
-  const { gatewayStatus } = useCivic();
   const userHasSignature = hasSignature(signature);
   const [isTerms, setIsTerms] = useState(userHasSignature);
   const [isCancellation, setIsCancellation] = useState(userHasSignature);
@@ -46,11 +46,7 @@ export default function DriverLicenseVerified({
       <p>{t("pass_license_varif")}</p>
       <div className="flex mt-4 items-center gap-2 md:gap-6">
         <IdentityButton mode={ButtonMode.LIGHT} className="civicButton" />
-        {gatewayStatus === GatewayStatus.ACTIVE ? (
-          <GetVerifiedDriverLicense text={t("license_verified")} />
-        ) : (
-          <GetNotVerifiedDriverLicense text={t("license_not_verified")} />
-        )}
+        <RntDriverLicenseVerified t={t}/>
       </div>
       <p className="mt-8 w-full md:w-3/4 xl:w-3/5 2xl:w-1/3">{t("agreement_info")}</p>
       <CheckboxLight
@@ -102,24 +98,6 @@ export default function DriverLicenseVerified({
           )}
         </div>
       </div>
-    </div>
-  );
-}
-
-function GetNotVerifiedDriverLicense({ text }: { text: string }) {
-  return (
-    <div className="flex items-center">
-      <span className="w-4 h-4 bg-[#DB001A] rounded-full inline-block pr-4"></span>
-      <span className="ml-2">{text}</span>
-    </div>
-  );
-}
-
-function GetVerifiedDriverLicense({ text }: { text: string }) {
-  return (
-    <div className="flex items-center">
-      <span className="w-4 h-4 bg-[#2EB100] rounded-full inline-block pr-4"></span>
-      <span className="ml-2">{text}</span>
     </div>
   );
 }
