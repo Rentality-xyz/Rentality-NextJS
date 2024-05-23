@@ -12,13 +12,23 @@ function getColor(color: `#${string}` | "success" | "error") {
   }
 }
 
-function DotStatus({ color, text }: { color: `#${string}` | "success" | "error"; text: string }) {
+function DotStatus({
+  containerClassName,
+  color,
+  text,
+}: {
+  containerClassName?: string;
+  color: `#${string}` | "success" | "error";
+  text: string;
+}) {
+  const containerClassNameMerged = twMerge("flex gap-2 items-center", containerClassName);
   const dotClassName = twMerge("w-4 h-4 rounded-full inline-block pr-4", getColor(color));
 
   return (
-    <div className="flex items-center">
+    <div className={containerClassNameMerged}>
+      <span className="bg-[#2EB100] bg-[#DB001A]">{/* for tailwind initialization */}</span>
       <span className={dotClassName}></span>
-      <span className="ml-2">{text}</span>
+      <span>{text}</span>
     </div>
   );
 }

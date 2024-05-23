@@ -179,7 +179,7 @@
     "keys_saved": "Keys are saved",
     "keys_not_saved": "Keys are not saved",
     "generate_keys": "To use chat functionality you have to generate and save encryption keys",
-    "pass_license_varif": "Please pass driver license verification",
+    "pass_license_verif": "Please pass driver license verification",
     "license_verified": "Driver's license verified",
     "license_not_verified": "Driver's license not verified",
     "not_confirmed": "You did not confirm",

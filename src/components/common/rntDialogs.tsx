@@ -22,6 +22,7 @@ export default function RntDialogs({ state, hide }: { state: DialogState; hide: 
         >
           <DialogContentText
             id="alert-dialog-description"
+            component={"div"}
             sx={{
               color: "#fff",
             }}
