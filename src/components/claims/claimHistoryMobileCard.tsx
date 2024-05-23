@@ -4,7 +4,7 @@ import RntButton from "../common/rntButton";
 import { Claim } from "@/model/Claim";
 import { ClaimStatus } from "@/model/blockchain/schemas";
 import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 
 type Props =
   | {

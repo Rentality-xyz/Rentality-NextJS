@@ -88,12 +88,12 @@ export type TripInfo = {
   fuelPricePerGal: number;
   fullBatteryChargePriceInUsdCents: number;
   milesIncludedPerDay: number;
-  milesIncludedPerTrip: number,
+  milesIncludedPerTrip: number;
   startOdometr: number;
   endOdometr: number;
   overmilePrice: number;
-  overmileValue: number,
-  overmileCharge: number,
+  overmileValue: number;
+  overmileCharge: number;
   rejectedBy: string;
   tripStartedBy: string;
   tripFinishedBy: string;

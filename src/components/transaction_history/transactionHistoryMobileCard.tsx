@@ -3,7 +3,7 @@ import { TransactionHistoryInfo } from "@/model/TransactionHistoryInfo";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import React from "react";
 import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 
 type Props = {
   isHost: boolean;

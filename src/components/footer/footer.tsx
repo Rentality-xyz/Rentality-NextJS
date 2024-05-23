@@ -13,7 +13,10 @@ export default function Footer() {
   return (
     <footer className="bg-[url('../images/bg-gradient-flip.jpg')] bg-cover bg-no-repeat bg-center bg-scroll relative h-[500px] min-[560px]:h-[450px] lg:h-[290px]">
       <Image src={bgCar} alt="" className="absolute bottom-0 left-0" />
-      <div id={"footer-content"} className="text-white max-w-[1192px] mx-auto flex max-[560px]:flex-col flex-row h-full">
+      <div
+        id={"footer-content"}
+        className="text-white max-w-[1192px] mx-auto flex max-[560px]:flex-col flex-row h-full"
+      >
         <div
           id="footer-legal-matters"
           className="z-0 flex flex-col pt-[30px] lg:pt-[40px] max-lg:mx-auto lg:ml-[540px] min-[1536px]:ml-[540px] min-[1720px]:ml-auto w-max h-1/3 sm:h-full"

@@ -21,7 +21,7 @@ import TripContacts from "@/components/common/tripContacts";
 import { dateFormatLongMonthDateTime } from "@/utils/datetimeFormatters";
 import RntDriverLicenseVerified from "@/components/common/rntDriverLicenseVerified";
 
-export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; backPath:string; t: TFunctionNext }) {
+export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; backPath: string; t: TFunctionNext }) {
   const [isLoading, tripInfo] = useTripInfo(tripId);
   const router = useRouter();
   const t_details: TFunction = (name, options) => {
@@ -340,12 +340,9 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                         <strong>{t_details("total_reimbursement")}</strong>
                       </td>
                       <td className="text-end pt-5">
-                        $
-                        {displayMoneyWith2Digits(
-                          refuelCharge + tripInfo.overmileCharge
-                        )}
+                        ${displayMoneyWith2Digits(refuelCharge + tripInfo.overmileCharge)}
                       </td>
-                    </tr>                                                                                          
+                    </tr>
                   </tbody>
                 </table>
                 <hr className="my-4" />
@@ -367,31 +364,37 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     <tr>
                       <td>{t_details("end_odometer")}</td>
                       <td className="text-end">{tripInfo.endOdometr}</td>
-                    </tr>                                                                              
+                    </tr>
                   </tbody>
-                 </table>
-                 <hr className="my-4" />
-                 <div className="p-4">
-                 	<div className="mb-3">
-                 		<UserAvatarWithName photoUrl={tripInfo.guest.photoUrl} userName={tripInfo.guest.name} label="Guest" />
-                 	</div>
-					<table className="m-2">
-						  <tbody>
-							  <tr>
-			  					<RntDriverLicenseVerified t={t} />
-							  </tr>
-							  <tr>
-								  <td>{t_details("dl_number")}:</td>
-								  <td className="text-end">{tripInfo.guest.drivingLicenseNumber}</td>
-							  </tr>
-  							  <tr>
-								  <td>{t_details("dl_validity_period")}:</td>
-								  <td className="text-end">{dateFormatLongMonthDateTime(tripInfo.guest.drivingLicenseExpirationDate)}</td>
-							  </tr>
-						  </tbody>
-					  </table>
-                 	<TripContacts tripInfo={tripInfo} isHost={true} t={t}/>
-                 </div>	                     
+                </table>
+                <hr className="my-4" />
+                <div className="p-4">
+                  <div className="mb-3">
+                    <UserAvatarWithName
+                      photoUrl={tripInfo.guest.photoUrl}
+                      userName={tripInfo.guest.name}
+                      label="Guest"
+                    />
+                  </div>
+                  <table className="m-2">
+                    <tbody>
+                      <tr>
+                        <RntDriverLicenseVerified t={t} />
+                      </tr>
+                      <tr>
+                        <td>{t_details("dl_number")}:</td>
+                        <td className="text-end">{tripInfo.guest.drivingLicenseNumber}</td>
+                      </tr>
+                      <tr>
+                        <td>{t_details("dl_validity_period")}:</td>
+                        <td className="text-end">
+                          {dateFormatLongMonthDateTime(tripInfo.guest.drivingLicenseExpirationDate)}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <TripContacts tripInfo={tripInfo} isHost={true} t={t} />
+                </div>
                 <div className="flex justify-center p-4">
                   <RntContractModal tripId={tripId} tripInfo={tripInfo} />
                 </div>

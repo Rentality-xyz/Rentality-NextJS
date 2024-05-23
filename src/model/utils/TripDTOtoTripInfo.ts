@@ -10,16 +10,19 @@ import { calculateDays } from "@/utils/date";
 export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: ContractTripContactInfo) => {
   const meta = await getMetaDataFromIpfs(i.metadataURI);
   const timeZoneId = !isEmpty(i.timeZoneId) ? i.timeZoneId : UTC_TIME_ZONE_ID;
-  
+
   const startOdometr = Number(i.trip.startParamLevels[1]);
   const endOdometr = Number(i.trip.endParamLevels[1]);
   const milesIncludedPerDay = Number(i.trip.milesIncludedPerDay);
-  
-  const tripDays = calculateDays(getDateFromBlockchainTimeWithTZ(i.trip.startDateTime, timeZoneId),getDateFromBlockchainTimeWithTZ(i.trip.endDateTime, timeZoneId));
+
+  const tripDays = calculateDays(
+    getDateFromBlockchainTimeWithTZ(i.trip.startDateTime, timeZoneId),
+    getDateFromBlockchainTimeWithTZ(i.trip.endDateTime, timeZoneId)
+  );
   var overmileValue = endOdometr - startOdometr - milesIncludedPerDay * tripDays;
   overmileValue = overmileValue > 0 ? overmileValue : 0;
   const overmilePrice = Number(i.trip.pricePerDayInUsdCents) / Number(i.trip.milesIncludedPerDay) / 100;
-  
+
   let item: TripInfo = {
     tripId: Number(i.trip.tripId),
 
@@ -42,11 +45,11 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
     fuelPricePerGal: i.trip.engineType === EngineType.PETROL ? Number(i.trip.fuelPrice) / 100 : 0,
     fullBatteryChargePriceInUsdCents: i.trip.engineType === EngineType.ELECTRIC ? Number(i.trip.fuelPrice) / 100 : 0,
     milesIncludedPerDay: milesIncludedPerDay,
-    milesIncludedPerTrip:  milesIncludedPerDay * tripDays,
+    milesIncludedPerTrip: milesIncludedPerDay * tripDays,
     timeZoneId: timeZoneId,
     overmilePrice: overmilePrice,
-	overmileValue: overmileValue,
-	overmileCharge : overmileValue * overmilePrice,
+    overmileValue: overmileValue,
+    overmileCharge: overmileValue * overmilePrice,
     status:
       i.trip.status === TripStatus.Finished && i.trip.tripFinishedBy.toLowerCase() === i.trip.host.toLowerCase()
         ? TripStatus.CompletedWithoutGuestComfirmation

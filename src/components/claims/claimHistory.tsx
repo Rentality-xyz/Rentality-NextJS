@@ -12,7 +12,7 @@ import Image from "next/image";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import ClaimFileList from "./claimFileList";
 import { isEmpty } from "@/utils/string";
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 
 type Props = {
   isHost: boolean;

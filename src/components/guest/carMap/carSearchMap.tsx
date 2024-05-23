@@ -14,13 +14,13 @@ export default function CarSearchMap({
   setSelected,
   selectedCarID,
   isExpanded,
-  defaultCenter
+  defaultCenter,
 }: {
   carInfos: SearchCarInfo[];
   setSelected: (carID: Number) => void;
   selectedCarID: Number | null;
   isExpanded: boolean;
-  defaultCenter: google.maps.LatLng | null,
+  defaultCenter: google.maps.LatLng | null;
 }) {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [isSticked, setIsSticked] = useState<boolean>(false);
@@ -28,34 +28,31 @@ export default function CarSearchMap({
   const mapTop = useRef<number>(0);
   const mapWidth = useRef<number>(0);
   const [mapHeight, setMapHeight] = useState<number>(0);
-  
-  const mapContainerStyle = useMemo<CSSProperties>(
-    () => {
-		var height = "";
-		if(isSticked){
-			if(mapHeight){
-				height = mapHeight + "px"
-			} else {
-				height = "100vh";
-			}		
-		} else {
-			if(mapHeight && carInfos.length > 0){
-				height = mapHeight + "px"
-			} else {	
-				height = typeof window !== "undefined" && window.screen.width >= 1280 ? "60vh" : (isExpanded ? "80vh" : "12rem");
-			}	
-		}
-		return {
+
+  const mapContainerStyle = useMemo<CSSProperties>(() => {
+    var height = "";
+    if (isSticked) {
+      if (mapHeight) {
+        height = mapHeight + "px";
+      } else {
+        height = "100vh";
+      }
+    } else {
+      if (mapHeight && carInfos.length > 0) {
+        height = mapHeight + "px";
+      } else {
+        height = typeof window !== "undefined" && window.screen.width >= 1280 ? "60vh" : isExpanded ? "80vh" : "12rem";
+      }
+    }
+    return {
       position: isSticked ? "fixed" : "relative",
       top: isSticked ? "0px" : mapTop.current + "px",
       ...(isSticked && { left: mapLeft.current + "px" }),
       width: isSticked ? mapWidth.current + "px" : "100%",
-      height:  height,
+      height: height,
       borderRadius: "30px",
-    }
-	},
-    [isSticked, mapHeight, isExpanded]
-  );
+    };
+  }, [isSticked, mapHeight, isExpanded]);
 
   const handleScroll = () => {
     const googleMapElement = document.getElementById("google-maps-guest-search-page");
@@ -70,18 +67,18 @@ export default function CarSearchMap({
       console.log("Cannot find Google Map Parent Element to set up stickyness");
       return;
     }
-    
+
     const parentRect = googleMapElementParent.getBoundingClientRect();
     const rect = googleMapElement.getBoundingClientRect();
-    
-	if(parentRect.top <= 0 && window.screen.width >= 1280 && parentRect.bottom < window.innerHeight){
-		setMapHeight(Math.ceil(parentRect.bottom));
-	} else if(rect.bottom < window.innerHeight && window.screen.width >= 1280 && !isSticked ){
-		setMapHeight(window.innerHeight - rect.top);
-	} else {
-		setMapHeight(0);
-	}
-	
+
+    if (parentRect.top <= 0 && window.screen.width >= 1280 && parentRect.bottom < window.innerHeight) {
+      setMapHeight(Math.ceil(parentRect.bottom));
+    } else if (rect.bottom < window.innerHeight && window.screen.width >= 1280 && !isSticked) {
+      setMapHeight(window.innerHeight - rect.top);
+    } else {
+      setMapHeight(0);
+    }
+
     if (parentRect.top <= 0 && window.screen.width >= 1280 && !isSticked) {
       mapLeft.current = Math.ceil(rect.left);
       mapTop.current = Math.ceil(rect.top);
@@ -100,8 +97,8 @@ export default function CarSearchMap({
       bounds.extend(new google.maps.LatLng(carInfo.location.lat, carInfo.location.lng));
     });
 
-	if(carInfos.length){
-    	map.fitBounds(bounds);
+    if (carInfos.length) {
+      map.fitBounds(bounds);
     }
     setMap(map);
 
