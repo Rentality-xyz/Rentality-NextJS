@@ -24,7 +24,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
   return (
     <React.Fragment>
       <RntButton className="w-60 h-10" onClick={handleClickOpen}>
-        View Contract
+        Download the contract
       </RntButton>
       <Dialog
         fullScreen

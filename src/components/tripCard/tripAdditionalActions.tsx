@@ -40,9 +40,6 @@ function TripAdditionalActions({
   const { showDialog } = useRntDialogs();
 
   const { refuelValue, refuelCharge } = getRefuelValueAndCharge(tripInfo, tripInfo.endFuelLevelInPercents);
-  const tripDays = calculateDays(tripInfo.tripStart, tripInfo.tripEnd);
-  var overmileValue = tripInfo.endOdometr - tripInfo.startOdometr - tripInfo.milesIncludedPerDay * tripDays;
-  overmileValue = overmileValue > 0 ? overmileValue : 0;
 
   const handleButtonClick = () => {
     if (tripInfo == null || tripInfo.allowedActions == null || tripInfo.allowedActions.length == 0) {
@@ -176,11 +173,11 @@ function TripAdditionalActions({
                     ) : (
                       <div className="md:w-1/2 xl:w-1/4 md:mx-8 xl:mx-28 grid grid-cols-2 text-sm">
                         <span>{t("booked.overmiles")}</span>
-                        <span>{overmileValue}</span>
+                        <span>{tripInfo.overmileValue}</span>
                         <span>{t("booked.overmile_price")}</span>
                         <span>${tripInfo.overmilePrice.toFixed(4)}</span>
                         <span>{t("booked.overmile_charge")}</span>
-                        <span>${displayMoneyWith2Digits(overmileValue * tripInfo.overmilePrice)}</span>
+                        <span>${displayMoneyWith2Digits(tripInfo.overmileValue * tripInfo.overmilePrice)}</span>
                       </div>
                     )
                   ) : null}

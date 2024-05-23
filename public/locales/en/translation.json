@@ -180,8 +180,8 @@
     "keys_not_saved": "Keys are not saved",
     "generate_keys": "To use chat functionality you have to generate and save encryption keys",
     "pass_license_varif": "Please pass driver license verification",
-    "license_verified": "You driver license verified",
-    "license_not_verified": "Your driver license not verified",
+    "license_verified": "Driver's license verified",
+    "license_not_verified": "Driver's license not verified",
     "not_confirmed": "You did not confirm",
     "confirmed": "You confirmed",
     "confirm": "Confirm",
@@ -343,12 +343,12 @@
       "approved_at": "Approved date and time:",
       "check_in_at": "Checked-in by host date and time:",
       "start_fuel_level": "Start fuel level in percents:",
-      "start_odometer": "Start odometer:",
+      "start_odometer": "Start odometer",
       "check_in_guest_at": "Checked-in by guest date and time:",
       "check_out_guest_at": "Checked-out by guest date and time:",
       "check_out_host_at": "Checked-out by host date and time:",
       "end_fuel_level": "End fuel level in percents:",
-      "end_odometer": "End odometer:",
+      "end_odometer": "End odometer",
       "payments": "Payments {{value, string}}:",
       "day_price": "Price per day in USD:",
       "total_price": "Total day price in USD:",
@@ -380,7 +380,17 @@
       "reimbursement_info": "Reimbursement info",
       "refuel_gal": "Refuel, gal",
       "price_per_gal": "Price per 1 gal.",
-      "refuel_or_recharge": "Refuel or recharge"
+      "refuel_or_recharge": "Refuel or recharge",
+      "miles_included_per_trip": "Miles included per trip",
+      "overmiles" : "Overmiles",
+      "price_per_one_overmile" : "Price per 1 overmile",
+      "overmile_charge": "Overmile charge",
+      "total_reimbursement":"Total reimbursement",
+      "vehicle_dashboard_data": "Vehicle dashboard data",
+      "start_fuel_or_battery_level": "Start fuel or battery level",
+      "end_fuel_or_battery_level": "End fuel or battery level",
+      "dl_number":"DL number",
+      "dl_validity_period" : "DL validity period"
     }
   },
   "vehicles": {
@@ -479,6 +489,7 @@
     "back": "Back",
     "edit": "Edit",
     "connect": "Connect",
-    "logout": "Logout"
+    "logout": "Logout",
+    "plate_number": "Plate number"
   }
 }

@@ -5,11 +5,21 @@ import { isEmpty } from "@/utils/string";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { ContractTripDTO, EngineType, TripStatus } from "@/model/blockchain/schemas";
 import { ContractTripContactInfo } from "@/model/blockchain/IRentalityContract";
+import { calculateDays } from "@/utils/date";
 
 export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: ContractTripContactInfo) => {
   const meta = await getMetaDataFromIpfs(i.metadataURI);
   const timeZoneId = !isEmpty(i.timeZoneId) ? i.timeZoneId : UTC_TIME_ZONE_ID;
-
+  
+  const startOdometr = Number(i.trip.startParamLevels[1]);
+  const endOdometr = Number(i.trip.endParamLevels[1]);
+  const milesIncludedPerDay = Number(i.trip.milesIncludedPerDay);
+  
+  const tripDays = calculateDays(getDateFromBlockchainTimeWithTZ(i.trip.startDateTime, timeZoneId),getDateFromBlockchainTimeWithTZ(i.trip.endDateTime, timeZoneId));
+  var overmileValue = endOdometr - startOdometr - milesIncludedPerDay * tripDays;
+  overmileValue = overmileValue > 0 ? overmileValue : 0;
+  const overmilePrice = Number(i.trip.pricePerDayInUsdCents) / Number(i.trip.milesIncludedPerDay) / 100;
+  
   let item: TripInfo = {
     tripId: Number(i.trip.tripId),
 
@@ -26,27 +36,31 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
     year:
       i.yearOfProduction?.toString() ?? meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
     licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
+    licenseState: meta.attributes?.find((x: any) => x.trait_type === "License state")?.value ?? "",
     tankVolumeInGal: Number(meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "0"),
     engineType: i.trip.engineType,
     fuelPricePerGal: i.trip.engineType === EngineType.PETROL ? Number(i.trip.fuelPrice) / 100 : 0,
     fullBatteryChargePriceInUsdCents: i.trip.engineType === EngineType.ELECTRIC ? Number(i.trip.fuelPrice) / 100 : 0,
-    milesIncludedPerDay: Number(i.trip.milesIncludedPerDay),
+    milesIncludedPerDay: milesIncludedPerDay,
+    milesIncludedPerTrip:  milesIncludedPerDay * tripDays,
     timeZoneId: timeZoneId,
-    overmilePrice: Number(i.trip.pricePerDayInUsdCents) / Number(i.trip.milesIncludedPerDay) / 100,
-
+    overmilePrice: overmilePrice,
+	overmileValue: overmileValue,
+	overmileCharge : overmileValue * overmilePrice,
     status:
       i.trip.status === TripStatus.Finished && i.trip.tripFinishedBy.toLowerCase() === i.trip.host.toLowerCase()
         ? TripStatus.CompletedWithoutGuestComfirmation
         : i.trip.status,
     tripStart: getDateFromBlockchainTimeWithTZ(i.trip.startDateTime, timeZoneId),
     tripEnd: getDateFromBlockchainTimeWithTZ(i.trip.endDateTime, timeZoneId),
+    tripDays: tripDays,
     locationStart: i.trip.startLocation,
     locationEnd: i.trip.endLocation,
     allowedActions: [],
     startFuelLevelInPercents: Number(i.trip.startParamLevels[0]),
     endFuelLevelInPercents: Number(i.trip.endParamLevels[0]),
-    startOdometr: Number(i.trip.startParamLevels[1]),
-    endOdometr: Number(i.trip.endParamLevels[1]),
+    startOdometr: startOdometr,
+    endOdometr: endOdometr,
 
     rejectedBy: i.trip.rejectedBy,
     tripStartedBy: i.trip.tripStartedBy,

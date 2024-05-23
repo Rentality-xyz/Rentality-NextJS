@@ -16,6 +16,10 @@ import { TFunction as TFunctionNext } from "i18next";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { getRefuelValueAndCharge } from "@/model/TripInfo";
+import UserAvatarWithName from "@/components/common/userAvatarWithName";
+import TripContacts from "@/components/common/tripContacts";
+import { dateFormatLongMonthDateTime } from "@/utils/datetimeFormatters";
+import RntDriverLicenseVerified from "@/components/common/rntDriverLicenseVerified";
 
 export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; backPath:string; t: TFunctionNext }) {
   const [isLoading, tripInfo] = useTripInfo(tripId);
@@ -280,7 +284,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                   </tbody>
                 </table>
                 <hr className="my-4" />
-                <div className="flex flex-row grow p-2">{t_details("security_deposit_info")}:</div>
+                <div className="flex flex-row grow p-2 text-[#52D1C9]">{t_details("security_deposit_info")}:</div>
                 <table className="m-2">
                   <tbody>
                     <tr>
@@ -300,7 +304,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                   </tbody>
                 </table>
                 <hr className="my-4" />
-                <div className="flex flex-row grow p-2">{t_details("reimbursement_info")}:</div>
+                <div className="flex flex-row grow p-2 text-[#52D1C9]">{t_details("reimbursement_info")}:</div>
                 <table className="m-2">
                   <tbody>
                     <tr>
@@ -313,11 +317,82 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     </tr>
                     <tr>
                       <td>{t_details("refuel_or_recharge")}</td>
-                      <td className="text-end">{refuelCharge}</td>
+                      <td className="text-end">${refuelCharge}</td>
                     </tr>
+                    <tr>
+                      <td>{t_details("miles_included_per_trip")}</td>
+                      <td className="text-end">{tripInfo.milesIncludedPerTrip} ml</td>
+                    </tr>
+                    <tr>
+                      <td>{t_details("overmiles")}</td>
+                      <td className="text-end">{tripInfo.overmileValue} ml</td>
+                    </tr>
+                    <tr>
+                      <td>{t_details("price_per_one_overmile")}</td>
+                      <td className="text-end">${tripInfo.overmilePrice}</td>
+                    </tr>
+                    <tr>
+                      <td>{t_details("overmile_charge")}</td>
+                      <td className="text-end">${tripInfo.overmileCharge}</td>
+                    </tr>
+                    <tr>
+                      <td className="pt-5">
+                        <strong>{t_details("total_reimbursement")}</strong>
+                      </td>
+                      <td className="text-end pt-5">
+                        $
+                        {displayMoneyWith2Digits(
+                          refuelCharge + tripInfo.overmileCharge
+                        )}
+                      </td>
+                    </tr>                                                                                          
                   </tbody>
                 </table>
-                <div className="flex justify-center p-2">
+                <hr className="my-4" />
+                <div className="flex flex-row grow p-2 text-[#52D1C9]">{t_details("vehicle_dashboard_data")}:</div>
+                <table className="m-2">
+                  <tbody>
+                    <tr>
+                      <td>{t_details("start_fuel_or_battery_level")}</td>
+                      <td className="text-end">{tripInfo.startFuelLevelInPercents}%</td>
+                    </tr>
+                    <tr>
+                      <td>{t_details("end_fuel_or_battery_level")}</td>
+                      <td className="text-end">{tripInfo.endFuelLevelInPercents}%</td>
+                    </tr>
+                    <tr>
+                      <td>{t_details("start_odometer")}</td>
+                      <td className="text-end">{tripInfo.startOdometr}</td>
+                    </tr>
+                    <tr>
+                      <td>{t_details("end_odometer")}</td>
+                      <td className="text-end">{tripInfo.endOdometr}</td>
+                    </tr>                                                                              
+                  </tbody>
+                 </table>
+                 <hr className="my-4" />
+                 <div className="p-4">
+                 	<div className="mb-3">
+                 		<UserAvatarWithName photoUrl={tripInfo.guest.photoUrl} userName={tripInfo.guest.name} label="Guest" />
+                 	</div>
+					<table className="m-2">
+						  <tbody>
+							  <tr>
+			  					<RntDriverLicenseVerified t={t} />
+							  </tr>
+							  <tr>
+								  <td>{t_details("dl_number")}:</td>
+								  <td className="text-end">{tripInfo.guest.drivingLicenseNumber}</td>
+							  </tr>
+  							  <tr>
+								  <td>{t_details("dl_validity_period")}:</td>
+								  <td className="text-end">{dateFormatLongMonthDateTime(tripInfo.guest.drivingLicenseExpirationDate)}</td>
+							  </tr>
+						  </tbody>
+					  </table>
+                 	<TripContacts tripInfo={tripInfo} isHost={true} t={t}/>
+                 </div>	                     
+                <div className="flex justify-center p-4">
                   <RntContractModal tripId={tripId} tripInfo={tripInfo} />
                 </div>
               </div>
