@@ -26,6 +26,12 @@ export const displayMoneyFromCentsWith2Digits = (value: number | bigint): string
   return (Number(value) / 100).toFixed(2);
 };
 
+export const fixedNumber = (value: number, decimals: number): number => {
+  if (!value) return 0;
+
+  return Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
+};
+
 export const decimalToHex = (decimalValue: string): string | null => {
   const decimalNumber = Number(decimalValue);
 

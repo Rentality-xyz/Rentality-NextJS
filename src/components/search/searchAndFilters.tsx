@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { ParseLocationResponse } from "@/pages/api/parseLocation";
 import moment from "moment";
 import Checkbox from "../common/checkbox";
+import { LocationInfo } from "@/model/LocationInfo";
 
 function formatLocation(city: string, state: string, country: string) {
   city = city != null && city.length > 0 ? city + ", " : "";
@@ -41,6 +42,8 @@ export default function SearchAndFilters({
   t: TFunctionNext;
 }) {
   const [utcOffset, setUtcOffset] = useState("");
+  const [pickupLocationInfo, setPickupLocationInfo] = useState<LocationInfo | undefined>(undefined);
+  const [returnLocationInfo, setReturnLocationInfo] = useState<LocationInfo | undefined>(undefined);
 
   const gmtLabel = isEmpty(utcOffset) ? "" : `(GMT${utcOffset})`;
   const isSearchAllowed =
@@ -228,7 +231,15 @@ export default function SearchAndFilters({
 
               const locationLat = placeDetails.location?.latitude ?? 0;
               const locationLng = placeDetails.location?.longitude ?? 0;
-
+              setPickupLocationInfo({
+                address: placeDetails.addressString,
+                country: placeDetails.country?.short_name ?? "",
+                state: placeDetails.state?.short_name ?? "",
+                city: placeDetails.city?.long_name ?? "",
+                latitude: locationLat,
+                longitude: locationLng,
+                timeZoneId: "",
+              });
               setSearchCarRequest({
                 ...searchCarRequest,
                 deliveryInfo: {
@@ -259,9 +270,9 @@ export default function SearchAndFilters({
                       }
                     : {
                         isHostHomeLocation: e.target.checked,
-                        address: "",
-                        lat: 0,
-                        lng: 0,
+                        address: pickupLocationInfo?.address ?? "",
+                        lat: pickupLocationInfo?.latitude ?? 0,
+                        lng: pickupLocationInfo?.longitude ?? 0,
                       },
                 },
               })
@@ -293,6 +304,16 @@ export default function SearchAndFilters({
               const locationLat = placeDetails.location?.latitude ?? 0;
               const locationLng = placeDetails.location?.longitude ?? 0;
 
+              setReturnLocationInfo({
+                address: placeDetails.addressString,
+                country: placeDetails.country?.short_name ?? "",
+                state: placeDetails.state?.short_name ?? "",
+                city: placeDetails.city?.long_name ?? "",
+                latitude: locationLat,
+                longitude: locationLng,
+                timeZoneId: "",
+              });
+
               setSearchCarRequest({
                 ...searchCarRequest,
                 deliveryInfo: {
@@ -323,9 +344,9 @@ export default function SearchAndFilters({
                       }
                     : {
                         isHostHomeLocation: e.target.checked,
-                        address: "",
-                        lat: 0,
-                        lng: 0,
+                        address: returnLocationInfo?.address ?? "",
+                        lat: returnLocationInfo?.latitude ?? 0,
+                        lng: returnLocationInfo?.longitude ?? 0,
                       },
                 },
               })

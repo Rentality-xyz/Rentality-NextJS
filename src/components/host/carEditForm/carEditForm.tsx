@@ -10,6 +10,7 @@ import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/
 import RntButton from "@/components/common/rntButton";
 import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import { TFunction } from "@/utils/i18n";
+import { fixedNumber } from "@/utils/numericFormatters";
 
 export default function CarEditForm({
   carInfoFormParams,
@@ -31,11 +32,11 @@ export default function CarEditForm({
   const isElectricEngine = carInfoFormParams.engineTypeText === "Electro";
 
   useEffect(() => {
-    if (!carInfoFormParams.locationLatitude || !carInfoFormParams.locationLongitude) return;
+    if (!carInfoFormParams.locationInfo.latitude || !carInfoFormParams.locationInfo.longitude) return;
 
     const getGoogleAddress = async () => {
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${carInfoFormParams.locationLatitude},${carInfoFormParams.locationLongitude}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&language=en`
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${carInfoFormParams.locationInfo.latitude},${carInfoFormParams.locationInfo.longitude}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&language=en`
       );
       const result = await response.json();
       const firstAddress = result?.results[0]?.formatted_address ?? "";
@@ -325,7 +326,7 @@ export default function CarEditForm({
           <strong>{t_car("location")}</strong>
         </div>
         <div className="flex flex-row gap-4 items-end  mb-4">
-          {carInfoFormParams.isLocationAddressEdited ? (
+          {carInfoFormParams.isLocationEdited ? (
             <RntPlaceAutocomplete
               className="lg:w-full"
               id="address"
@@ -333,24 +334,26 @@ export default function CarEditForm({
               placeholder="Miami"
               initValue={autocomplete}
               includeStreetAddress={true}
-              readOnly={!carInfoFormParams.isLocationAddressEdited}
+              readOnly={!carInfoFormParams.isLocationEdited}
               onChange={(e) => setAutocomplete(e.target.value)}
               onAddressChange={(placeDetails) => {
                 const country = placeDetails.country?.short_name ?? "";
                 const state = placeDetails.state?.long_name ?? "";
                 const city = placeDetails.city?.long_name ?? "";
-                const latitude = Math.round((placeDetails.location?.latitude ?? 0) * 1_000_000) / 1_000_000;
-                const longitude = Math.round((placeDetails.location?.longitude ?? 0) * 1_000_000) / 1_000_000;
+                const latitude = fixedNumber(placeDetails.location?.latitude ?? 0, 6);
+                const longitude = fixedNumber(placeDetails.location?.longitude ?? 0, 6);
                 const locationAddress = `1, ${city}, ${state}, ${country}`;
 
                 setCarInfoFormParams({
                   ...carInfoFormParams,
-                  locationAddress: locationAddress,
-                  country: country,
-                  state: state,
-                  city: city,
-                  locationLatitude: latitude.toString(),
-                  locationLongitude: longitude.toString(),
+                  locationInfo: {
+                    address: locationAddress,
+                    country: country,
+                    state: state,
+                    city: city,
+                    latitude: latitude,
+                    longitude: longitude,
+                  },
                 });
               }}
             />
@@ -361,16 +364,16 @@ export default function CarEditForm({
               label={isNewCar ? t_car("address") : t_car("saved_address")}
               placeholder="Miami"
               value={autocomplete}
-              readOnly={!carInfoFormParams.isLocationAddressEdited}
+              readOnly={!carInfoFormParams.isLocationEdited}
             />
           )}
           <RntButton
             className="w-40"
-            disabled={carInfoFormParams.isLocationAddressEdited}
+            disabled={carInfoFormParams.isLocationEdited}
             onClick={() =>
               setCarInfoFormParams({
                 ...carInfoFormParams,
-                isLocationAddressEdited: true,
+                isLocationEdited: true,
               })
             }
           >
@@ -384,13 +387,7 @@ export default function CarEditForm({
             label={t_car("country")}
             placeholder="USA"
             readOnly={true}
-            value={carInfoFormParams.country}
-            onChange={(e) =>
-              setCarInfoFormParams({
-                ...carInfoFormParams,
-                country: e.target.value,
-              })
-            }
+            value={carInfoFormParams.locationInfo.country}
           />
           <RntInput
             className="lg:w-40"
@@ -398,13 +395,7 @@ export default function CarEditForm({
             label={t_car("state")}
             placeholder="e.g. Florida"
             readOnly={true}
-            value={carInfoFormParams.state}
-            onChange={(e) =>
-              setCarInfoFormParams({
-                ...carInfoFormParams,
-                state: e.target.value,
-              })
-            }
+            value={carInfoFormParams.locationInfo.state}
           />
           <RntInput
             className="lg:w-40"
@@ -412,41 +403,23 @@ export default function CarEditForm({
             label={t_car("city")}
             placeholder="e.g. Miami"
             readOnly={true}
-            value={carInfoFormParams.city}
-            onChange={(e) =>
-              setCarInfoFormParams({
-                ...carInfoFormParams,
-                city: e.target.value,
-              })
-            }
+            value={carInfoFormParams.locationInfo.city}
           />
           <RntInput
             className="w-[48%] lg:w-60"
             id="locationLatitude"
             label={t_car("location_lat")}
-            placeholder="e.g. 42.12345"
+            placeholder="e.g. 42.123456"
             readOnly={true}
-            value={carInfoFormParams.locationLatitude}
-            onChange={(e) =>
-              setCarInfoFormParams({
-                ...carInfoFormParams,
-                locationLatitude: e.target.value,
-              })
-            }
+            value={carInfoFormParams.locationInfo.latitude}
           />
           <RntInput
             className="w-[48%] lg:w-60"
             id="locationLongitude"
             label={t_car("location_long")}
-            placeholder="e.g. 42.12345"
+            placeholder="e.g. 42.123456"
             readOnly={true}
-            value={carInfoFormParams.locationLongitude}
-            onChange={(e) =>
-              setCarInfoFormParams({
-                ...carInfoFormParams,
-                locationLongitude: e.target.value,
-              })
-            }
+            value={carInfoFormParams.locationInfo.longitude}
           />
         </div>
       </div>

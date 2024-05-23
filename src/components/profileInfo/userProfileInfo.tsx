@@ -12,12 +12,14 @@ import RntDatePicker from "../common/rntDatePicker";
 import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import DriverLicenseVerified from "@/components/driver_license_verified/driver_license_verified";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { useChatKeys } from "@/contexts/chatContext";
 import { TFunction } from "@/utils/i18n";
+import DotStatus from "./dotStatus";
+import AgreementInfo from "./agreement_info";
+import KycVerification from "./kyc_verification";
 
-function ProfileInfoPage({
+function UserProfileInfo({
   savedProfileSettings,
   saveProfileSettings,
   isHost,
@@ -220,7 +222,8 @@ function ProfileInfoPage({
         </div>
       </fieldset>
 
-      <DriverLicenseVerified
+      <KycVerification t={t_profile} />
+      <AgreementInfo
         signature={enteredFormData.tcSignature}
         onSign={(signature) => {
           setEnteredFormData({ ...enteredFormData, tcSignature: signature });
@@ -235,11 +238,11 @@ function ProfileInfoPage({
         </RntButton>
         <div className="ml-2 md:ml-6">
           {isChatKeysLoading ? (
-            <GetChatKeyLoading text={t("common.info.loading")} />
+            <DotStatus color="#a59c38" text={t("common.info.loading")} />
           ) : isChatKeysSaved ? (
-            <GetChatKeySaved text={t_profile("keys_saved")} />
+            <DotStatus color="success" text={t_profile("keys_saved")} />
           ) : (
-            <GetChatKeyNotSaved text={t_profile("keys_not_saved")} />
+            <DotStatus color="error" text={t_profile("keys_not_saved")} />
           )}
         </div>
       </div>
@@ -251,31 +254,4 @@ function ProfileInfoPage({
   );
 }
 
-export default memo(ProfileInfoPage);
-
-function GetChatKeyLoading({ text }: { text: string }) {
-  return (
-    <div className="flex items-center">
-      <span className="w-4 h-4 bg-[#a59c38] rounded-full inline-block pr-4"></span>
-      <span className="ml-2">{text}</span>
-    </div>
-  );
-}
-
-function GetChatKeyNotSaved({ text }: { text: string }) {
-  return (
-    <div className="flex items-center">
-      <span className="w-4 h-4 bg-[#DB001A] rounded-full inline-block pr-4"></span>
-      <span className="ml-2">{text}</span>
-    </div>
-  );
-}
-
-function GetChatKeySaved({ text }: { text: string }) {
-  return (
-    <div className="flex items-center">
-      <span className="w-4 h-4 bg-[#2EB100] rounded-full inline-block pr-4"></span>
-      <span className="ml-2">{text}</span>
-    </div>
-  );
-}
+export default memo(UserProfileInfo);
