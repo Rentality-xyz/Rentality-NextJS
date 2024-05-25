@@ -7,7 +7,7 @@ import RntButton from "./rntButton";
 import { TripInfo } from "@/model/TripInfo";
 import moment from "moment";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
-import { dateFormatLongMonthDateTime } from "@/utils/datetimeFormatters";
+import { dateFormatLongMonthDateTime, dateFormatLongMonthYearDateTime, dateFormatYearMonthDay } from "@/utils/datetimeFormatters";
 import { getMilesIncludedPerDayText, isUnlimitedMiles } from "@/model/HostCarInfo";
 
 export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint; tripInfo: TripInfo }) {
@@ -52,7 +52,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
             <div className="flex flex-col m-4">
               <div className="flex flex-col m-4">
                 <h1 className="text-4xl mb-4">Car sharing agreement #{tripId.toString()}</h1>
-                <h3 className="text-2xl mb-1">James Webb’s trip with Edwin Hubble’s Tesla Model 3 2022</h3>
+                <h3 className="text-2xl mb-1">{tripInfo.guest.name}’s trip with {tripInfo.host.name}’s {tripInfo.brand} {tripInfo.model} {tripInfo.year}</h3>
                 <p>
                   Refer to this document for evidence of your Rentality trip transaction when interacting with law
                   enforcement, insurance providers, roadside service providers, impound lot attendants, or others.
@@ -101,7 +101,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                 <div className="">Driving license number: {tripInfo.guest.drivingLicenseNumber}</div>
                 <div className="">
                   Driving license validity period:{" "}
-                  {dateFormatLongMonthDateTime(tripInfo.guest.drivingLicenseExpirationDate, tripInfo.timeZoneId)}
+                  {dateFormatYearMonthDay(tripInfo.guest.drivingLicenseExpirationDate, tripInfo.timeZoneId)}
                 </div>
                 <div className="">Guest insurance information:</div>
                 <div className="">Insurance company name: {tripInfo.guestInsuranceCompanyName}</div>
@@ -111,7 +111,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                 <div className="">Driving license number: {tripInfo.host.drivingLicenseNumber}</div>
                 <div className="">
                   Driving license validity period:{" "}
-                  {dateFormatLongMonthDateTime(tripInfo.host.drivingLicenseExpirationDate, tripInfo.timeZoneId)}
+                  {dateFormatYearMonthDay(tripInfo.host.drivingLicenseExpirationDate, tripInfo.timeZoneId)}
                 </div>
                 <div className="text-xl">VEHICLE INFORMATION</div>
                 <div className="">
@@ -123,17 +123,18 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                 <div className="text-xl">TRIP SUMMARY</div>
                 <div className="">Reservation ID {tripInfo.tripId}</div>
                 <div className="">
-                  Booked ON: {dateFormatLongMonthDateTime(tripInfo.approvedDateTime, tripInfo.timeZoneId)}
+                  Booked ON: {dateFormatLongMonthYearDateTime(tripInfo.approvedDateTime, tripInfo.timeZoneId)}
                 </div>
                 <div className="">Trip days: {moment(tripInfo.tripEnd).diff(tripInfo.tripStart, "days")}</div>
-                <div className="">Price per day: ${displayMoneyWith2Digits(tripInfo.pricePerDayInUsd)}</div>
+                <div className="">Price per day: ETH {tripInfo.pricePerDayInUsd / tripInfo.currencyRate} (USD{" "}
+                  {displayMoneyWith2Digits(tripInfo.pricePerDayInUsd)})</div>
                 <div className="">
-                  Trip start: {dateFormatLongMonthDateTime(tripInfo.tripStart, tripInfo.timeZoneId)}
+                  Trip start: {dateFormatLongMonthYearDateTime(tripInfo.tripStart, tripInfo.timeZoneId)}
                 </div>
-                <div className="">Trip end: {dateFormatLongMonthDateTime(tripInfo.tripEnd, tripInfo.timeZoneId)}</div>
+                <div className="">Trip end: {dateFormatLongMonthYearDateTime(tripInfo.tripEnd, tripInfo.timeZoneId)}</div>
                 <div className="">Pickup location: {tripInfo.locationStart}</div>
                 <div className="">Return location: {tripInfo.locationEnd}</div>
-                <div className="">Primary driver: James Webb</div>
+                <div className="">Primary driver: {tripInfo.guest.name}</div>
                 <div className="">
                   Miles included: {getMilesIncludedPerDayText(tripInfo.milesIncludedPerDay)}
                   {isUnlimitedMiles(tripInfo.milesIncludedPerDay) ? " miles" : " per day"}
