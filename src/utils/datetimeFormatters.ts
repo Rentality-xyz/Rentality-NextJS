@@ -18,6 +18,16 @@ export const dateFormatLongMonthDateTime = (value: Date, timeZone?: string) => {
   return timeZone ? moment(value).tz(timeZone).format(format) : moment(value).format(format);
 };
 
+export const dateFormatYearMonthDay = (value: Date, timeZone?: string) => {
+  const format = "MM/DD/YYYY  ";
+  return timeZone ? moment(value).tz(timeZone).format(format) : moment(value).format(format);
+};
+
+export const dateFormatLongMonthYearDateTime = (value: Date, timeZone?: string) => {
+  const format = "MMM D, YYYY h:mm A";
+  return timeZone ? moment(value).tz(timeZone).format(format) : moment(value).format(format);
+};
+
 //yyyy-MM-ddTHH:mm
 export const dateToHtmlDateTimeFormat = (value: Date | undefined) => {
   if (value === undefined) return "";
