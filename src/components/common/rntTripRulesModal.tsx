@@ -6,8 +6,16 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import RntButton from "./rntButton";
 import { DialogTitle } from "@mui/material";
+import tripRulesNoSmoking from "@/images/trip_rules_no_smoking.png";
+import tripRulesNoStartReturn from "@/images/trip_rules_start_return.png";
+import tripRulesLicense from "@/images/trip_rules_license.png";
+import tripRulesRefuelling from "@/images/trip_rules_refuelling.png";
+import tripRulesKeepTheVehicleTidy from "@/images/trip_rules_keep_the_vehicle_tidy.png";
+import tripRulesTollsAndTickets from "@/images/trip_rules_tolls_and_tickets.png";
+import tripRulesDistanceIncluded from "@/images/trip_rules_distance_included.png";
+import tripRulesGuestToHostCommunication from "@/images/trip_rules_host_to_guest_communications.png";
+import tripRulesCarSharingAgreement from "@/images/trip_rules_car_sharing_agreement.png";
 import Image from "next/image";
-import tripRulesRectangle from "@/images/rectangle_medium_turquoise.png";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 
 export default function RntTripRulesModal({}: {}) {
@@ -63,7 +71,7 @@ export default function RntTripRulesModal({}: {}) {
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4" />
+                    <Image src={tripRulesNoStartReturn} width={60} height={60} alt="" />
                   </div>
                   <div className="w-11/12">
                     <strong>1. Start and Return on time</strong>
@@ -76,7 +84,7 @@ export default function RntTripRulesModal({}: {}) {
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4" />
+                    <Image src={tripRulesLicense} width={60} height={60} alt="" />
                   </div>
                   <div className="w-11/12">
                     <strong>2. Keep your license handy</strong>
@@ -90,7 +98,7 @@ export default function RntTripRulesModal({}: {}) {
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4" />
+                    <Image src={tripRulesRefuelling} width={60} height={60} alt="" />
                   </div>
                   <div className="w-11/12">
                     <strong>3. Refuel the vehicle</strong>
@@ -104,7 +112,7 @@ export default function RntTripRulesModal({}: {}) {
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4" />
+                    <Image src={tripRulesNoSmoking} width={60} height={60} alt="" />
                   </div>
                   <div className="w-11/12">
                     <strong>4. No smoking</strong>
@@ -118,7 +126,7 @@ export default function RntTripRulesModal({}: {}) {
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4" />
+                    <Image src={tripRulesKeepTheVehicleTidy} width={60} height={60} alt="" />
                   </div>
                   <div className="w-11/12">
                     <strong>5. Keep the vehicle tidy</strong>
@@ -132,7 +140,7 @@ export default function RntTripRulesModal({}: {}) {
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4" />
+                    <Image src={tripRulesTollsAndTickets} width={60} height={60} alt="" />
                   </div>
                   <div className="w-11/12">
                     <strong>6. Tolls and tickets</strong>
@@ -146,7 +154,7 @@ export default function RntTripRulesModal({}: {}) {
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4" />
+                    <Image src={tripRulesDistanceIncluded} width={60} height={60} alt="" />
                   </div>
                   <div className="w-11/12">
                     <strong>7. Distance included in trip</strong>
@@ -160,7 +168,7 @@ export default function RntTripRulesModal({}: {}) {
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4" />
+                    <Image src={tripRulesGuestToHostCommunication} width={60} height={60} alt="" />
                   </div>
                   <div className="w-11/12">
                     <strong>8. Guest-to-host communication</strong>
@@ -174,7 +182,7 @@ export default function RntTripRulesModal({}: {}) {
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRectangle} alt="" className="w-4 h-4" />
+                    <Image src={tripRulesCarSharingAgreement} width={60} height={60} alt="" />
                   </div>
                   <div className="w-11/12">
                     <strong>9. Car sharing agreement</strong>
