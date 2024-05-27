@@ -424,25 +424,6 @@
         { "type": "bytes", "name": "data" }
       ],
       "outputs": []
-    },
-    {
-      "type": "function",
-      "name": "withdrawAllFromPlatform",
-      "constant": false,
-      "payable": false,
-      "inputs": [{ "type": "address", "name": "tokenAddress" }],
-      "outputs": []
-    },
-    {
-      "type": "function",
-      "name": "withdrawFromPlatform",
-      "constant": false,
-      "payable": false,
-      "inputs": [
-        { "type": "uint256", "name": "amount" },
-        { "type": "address", "name": "tokenAddress" }
-      ],
-      "outputs": []
     }
   ]
 }

@@ -1,4 +1,4 @@
-import { BrowserProvider, Signer } from "ethers";
+import { BrowserProvider, Signer, Provider, JsonRpcProvider, ethers } from "ethers";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 
 export type EthereumInfo = {
   provider: BrowserProvider;
+  viewProvider: JsonRpcProvider;
+  defaultChainId: number;
   signer: Signer;
   walletAddress: string;
   chainId: number;
@@ -68,6 +70,9 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
 
       isInitiating.current = true;
 
+      const defaultProvider = new ethers.JsonRpcProvider(process.env.DEFAULT_NETWORK_URL);
+      const defaultChainId = Number.parseInt(process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID!);
+
       try {
         const provider = await wallets[0].getEthereumProvider();
         const etherv6Provider = new BrowserProvider(provider);
@@ -82,6 +87,8 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
           }
 
           return {
+            viewProvider: defaultProvider,
+            defaultChainId: defaultChainId,
             provider: etherv6Provider,
             signer: signer,
             walletAddress: currentWalletAddress,

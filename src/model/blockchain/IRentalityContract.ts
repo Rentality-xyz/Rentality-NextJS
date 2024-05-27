@@ -15,6 +15,7 @@ import {
   ContractDeliveryPrices,
   ContractFullClaimInfo,
   ContractKYCInfo,
+  ContractLocationInfo,
   ContractPublicHostCarDTO,
   ContractSearchCar,
   ContractSearchCarParams,
@@ -22,8 +23,9 @@ import {
   ContractTripReceiptDTO,
   ContractUpdateCarInfoRequest,
 } from "./schemas";
+import { LocationInfo } from "@/model/LocationInfo";
 
-export interface IRentalityContract {
+export interface IRentalityContract extends IRentalityPlatform {
   /// ADMIN functions
   owner(): Promise<string>;
   getCarServiceAddress(): Promise<string>;
@@ -38,58 +40,35 @@ export interface IRentalityContract {
   updateRentalityPlatform(contractAddress: string): Promise<ContractTransactionResponse>;
   getPlatformFeeInPPM(): Promise<bigint>;
 
-  /// HOST functions
-  addCar(request: ContractCreateCarRequest): Promise<ContractTransactionResponse>;
-  updateCarInfo(request: ContractUpdateCarInfoRequest): Promise<ContractTransactionResponse>;
-  updateCarInfoWithLocation(
-    request: ContractUpdateCarInfoRequest,
-    location: string,
-    locationLatitude: string,
-    locationLongitude: string,
-    geoApiKey: string
-  ): Promise<ContractTransactionResponse>;
   getCarInfoById(carId: bigint): Promise<ContractCarInfo>;
   getMyCars(): Promise<ContractCarInfoDTO[]>;
   getTripsAsHost(): Promise<ContractTripDTO[]>;
-  approveTripRequest(tripId: bigint): Promise<ContractTransactionResponse>;
-  rejectTripRequest(tripId: bigint): Promise<ContractTransactionResponse>;
-  checkInByHost(
-    tripId: bigint,
-    panelParams: bigint[],
-    insuranceCompany: string,
-    insuranceNumber: string
-  ): Promise<ContractTransactionResponse>;
-  checkOutByHost(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
-  finishTrip(tripId: bigint): Promise<ContractTransactionResponse>;
-  getChatInfoForHost(): Promise<ContractChatInfo[]>;
-  createClaim(request: ContractCreateClaimRequest): Promise<ContractTransactionResponse>;
-  rejectClaim(claimId: bigint): Promise<ContractTransactionResponse>;
+
   getMyClaimsAsHost(): Promise<ContractFullClaimInfo[]>;
   getDiscount(user: string): Promise<ContractBaseDiscount>;
-  addUserDiscount(discounts: ContractBaseDiscount): Promise<ContractTransactionResponse>;
 
   /// GUEST functions
   searchAvailableCars(
     startDateTime: bigint,
     endDateTime: bigint,
-    searchParams: ContractSearchCarParams
+    searchParams: ContractSearchCarParams,
+    user?: string
   ): Promise<ContractSearchCar[]>;
   searchAvailableCarsWithDelivery(
     startDateTime: bigint,
     endDateTime: bigint,
     searchParams: ContractSearchCarParams,
-    locations: ContractDeliveryLocations
+    pickUpInfo: ContractLocationInfo,
+    returnInfo: ContractLocationInfo,
+    user?: string
   ): Promise<ContractSearchCar[]>;
 
-  createTripRequest(request: ContractCreateTripRequest, value: object): Promise<ContractTransactionResponse>;
   getTripsAsGuest(): Promise<ContractTripDTO[]>;
-  checkInByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
-  checkOutByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
+
   getChatInfoForGuest(): Promise<ContractChatInfo[]>;
-  payClaim(claimId: bigint, value: object): Promise<ContractTransactionResponse>;
+
   getMyClaimsAsGuest(): Promise<ContractFullClaimInfo[]>;
   calculatePayments(carId: bigint, daysOfTrip: bigint, currency: string): Promise<ContractCalculatePaymentsDTO>;
-  confirmCheckOut(tripId: bigint): Promise<ContractTransactionResponse>;
 
   /// GENERAL functions
   address: string;
@@ -98,6 +77,41 @@ export interface IRentalityContract {
   getTrip(tripId: bigint): Promise<ContractTripDTO>;
   getTripContactInfo(tripId: bigint): Promise<ContractTripContactInfo>;
   getMyKYCInfo(): Promise<ContractKYCInfo>;
+
+  getCarsOfHost(host: string): Promise<ContractPublicHostCarDTO[]>;
+  getClaim(claimId: bigint): Promise<ContractFullClaimInfo>;
+
+  getDeliveryData(carId: bigint): Promise<ContractDeliveryData>;
+
+  calculatePaymentsWithDelivery(
+    carId: bigint,
+    daysOfTrip: bigint,
+    currency: string,
+    pickUp: ContractLocationInfo,
+    returnL: ContractLocationInfo
+  ): Promise<ContractCalculatePaymentsDTO>;
+  getUserDeliveryPrices(user: string): Promise<ContractDeliveryPrices>;
+
+  //not using
+  getAllCars(): Promise<ContractCarInfo[]>;
+
+  updateServiceAddresses(value?: object): Promise<ContractTransactionResponse>;
+  getTripReceipt(tripId: bigint): Promise<ContractTripReceiptDTO>;
+  getAvailableCars(): Promise<ContractCarInfo[]>;
+  getAvailableCarsForUser(user: string): Promise<ContractCarInfo[]>;
+}
+export interface IRentalityPlatform {
+  parseGeoResponse(carId: bigint, value?: object): Promise<ContractTransactionResponse>;
+  addUserDeliveryPrices(
+    underTwentyFiveMilesInUsdCents: bigint,
+    aboveTwentyFiveMilesInUsdCents: bigint,
+    value?: object
+  ): Promise<ContractTransactionResponse>;
+  createTripRequestWithDelivery(
+    request: ContractCreateTripRequestWithDelivery,
+    value: object,
+    quoteValue?: object
+  ): Promise<ContractTransactionResponse>;
   setKYCInfo(
     name: string,
     surname: string,
@@ -105,36 +119,110 @@ export interface IRentalityContract {
     profilePhoto: string,
     licenseNumber: string,
     expirationDate: bigint,
-    tcSignature: string
+    tcSignature: string,
+    value?: object
   ): Promise<ContractTransactionResponse>;
-  getCarsOfHost(host: string): Promise<ContractPublicHostCarDTO[]>;
-  getClaim(claimId: bigint): Promise<ContractFullClaimInfo>;
 
-  createTripRequestWithDelivery(
-    request: ContractCreateTripRequestWithDelivery,
-    value: object
+  /// HOST functions
+  addCar(request: ContractCreateCarRequest, value?: object): Promise<ContractTransactionResponse>;
+  updateCarInfo(request: ContractUpdateCarInfoRequest, value?: object): Promise<ContractTransactionResponse>;
+  updateCarInfoWithLocation(
+    request: ContractUpdateCarInfoRequest,
+    location: ContractLocationInfo,
+    value?: object
   ): Promise<ContractTransactionResponse>;
-  getDeliveryData(carId: bigint): Promise<ContractDeliveryData>;
-  addUserDeliveryPrices(
+  confirmCheckOut(tripId: bigint, value?: object): Promise<ContractTransactionResponse>;
+  payClaim(claimId: bigint, value: object, quoteValue?: object): Promise<ContractTransactionResponse>;
+  checkInByGuest(tripId: bigint, panelParams: bigint[], value?: object): Promise<ContractTransactionResponse>;
+  checkOutByGuest(tripId: bigint, panelParams: bigint[], value?: object): Promise<ContractTransactionResponse>;
+  createTripRequest(
+    request: ContractCreateTripRequest,
+    value: object,
+    quoteValue?: object
+  ): Promise<ContractTransactionResponse>;
+  createTripRequest(
+    request: ContractCreateTripRequest,
+    value: object,
+    quoteValue?: object
+  ): Promise<ContractTransactionResponse>;
+  addUserDiscount(discounts: ContractBaseDiscount, value?: object): Promise<ContractTransactionResponse>;
+  finishTrip(tripId: bigint, value?: object): Promise<ContractTransactionResponse>;
+  createClaim(request: ContractCreateClaimRequest, value?: object): Promise<ContractTransactionResponse>;
+  rejectClaim(claimId: bigint, value?: object): Promise<ContractTransactionResponse>;
+  approveTripRequest(tripId: bigint, value?: object): Promise<ContractTransactionResponse>;
+  rejectTripRequest(tripId: bigint, value?: object): Promise<ContractTransactionResponse>;
+  checkInByHost(
+    tripId: bigint,
+    panelParams: bigint[],
+    insuranceCompany: string,
+    insuranceNumber: string,
+    value?: object
+  ): Promise<ContractTransactionResponse>;
+  checkOutByHost(tripId: bigint, panelParams: bigint[], value?: object): Promise<ContractTransactionResponse>;
+
+  getChatInfoForHost(): Promise<ContractChatInfo[]>;
+  createClaim(request: ContractCreateClaimRequest, value?: object): Promise<ContractTransactionResponse>;
+  rejectClaim(claimId: bigint, value?: object): Promise<ContractTransactionResponse>;
+}
+export interface IRentalitySender extends IRentalityPlatform {
+  quoteAddCar(request: ContractCreateCarRequest): Promise<bigint>;
+
+  quoteUpdateCarInfoWithLocation(
+    request: ContractUpdateCarInfoRequest,
+    location: ContractLocationInfo
+  ): Promise<bigint>;
+
+  quoteUpdateCarInfo(request: ContractUpdateCarInfoRequest): Promise<bigint>;
+
+  quoteApproveTripRequest(tripId: bigint): Promise<bigint>;
+
+  quoteRejectTripRequest(tripId: bigint): Promise<bigint>;
+
+  quoteCheckInByHost(
+    tripId: bigint,
+    panelParams: bigint[],
+    insuranceCompany: string,
+    insuranceNumber: string
+  ): Promise<bigint>;
+
+  quoteCheckOutByHost(tripId: bigint, panelParams: bigint[]): Promise<bigint>;
+
+  quoteFinishTrip(tripId: bigint): Promise<bigint>;
+
+  quoteCreateClaim(request: ContractCreateClaimRequest): Promise<bigint>;
+
+  quoteRejectClaim(claimId: bigint): Promise<bigint>;
+
+  quoteAddUserDiscount(discounts: ContractBaseDiscount): Promise<bigint>;
+
+  quoteCreateTripRequest(value: number, request: ContractCreateTripRequest): Promise<bigint>;
+
+  quoteCheckInByGuest(tripId: bigint, panelParams: bigint[]): Promise<bigint>;
+
+  quoteCheckOutByGuest(tripId: bigint, panelParams: bigint[]): Promise<bigint>;
+
+  quotePayClaim(value: number, claimId: bigint): Promise<bigint>;
+
+  quoteConfirmCheckOut(tripId: bigint): Promise<bigint>;
+
+  quoteSetKYCInfo(
+    name: string,
+    surname: string,
+    mobilePhoneNumber: string,
+    profilePhoto: string,
+    licenseNumber: string,
+    expirationDate: bigint,
+    tcSignature: string
+  ): Promise<bigint>;
+
+  quoteCreateTripRequestWithDelivery(value: number, request: ContractCreateTripRequestWithDelivery): Promise<bigint>;
+
+  quoteAddUserDeliveryPrices(
     underTwentyFiveMilesInUsdCents: bigint,
     aboveTwentyFiveMilesInUsdCents: bigint
-  ): Promise<ContractTransactionResponse>;
-  calculatePaymentsWithDelivery(
-    carId: bigint,
-    daysOfTrip: bigint,
-    currency: string,
-    deliveryData: ContractDeliveryLocations
-  ): Promise<ContractCalculatePaymentsDTO>;
-  getUserDeliveryPrices(user: string): Promise<ContractDeliveryPrices>;
+  ): Promise<bigint>;
 
-  //not using
-  getAllCars(): Promise<ContractCarInfo[]>;
-
-  updateServiceAddresses(): Promise<ContractTransactionResponse>;
-  getTripReceipt(tripId: bigint): Promise<ContractTripReceiptDTO>;
-  getAvailableCars(): Promise<ContractCarInfo[]>;
-  getAvailableCarsForUser(user: string): Promise<ContractCarInfo[]>;
-  parseGeoResponse(carId: bigint): Promise<ContractTransactionResponse>;
+  quoteParseGeoResponse(carId: bigint): Promise<bigint>;
 }
 
 export interface IRentalityAdminGateway {

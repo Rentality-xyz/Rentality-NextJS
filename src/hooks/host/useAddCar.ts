@@ -32,7 +32,7 @@ const emptyNewCarInfo: HostCarInfo = {
   milesIncludedPerDay: "",
   securityDeposit: "",
   fuelPricePerGal: "",
-  locationInfo: { address: "", country: "", state: "", city: "", latitude: 0, longitude: 0, timeZoneId: "" },
+  locationInfo: { address: "", country: "", state: "", city: "", latitude: "0", longitude: "0", timeZoneId: "" },
   isLocationEdited: true,
   currentlyListed: true,
   engineTypeText: "",
@@ -215,11 +215,17 @@ const useAddCar = () => {
         geoApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
         engineType: getEngineTypeCode(dataToSave.engineTypeText),
         engineParams: engineParams,
-        locationAddress: dataToSave.locationInfo.address,
         timeBufferBetweenTripsInSec: BigInt(carInfoFormParams.timeBufferBetweenTripsInMin * 60),
-        locationLatitude: dataToSave.locationInfo.latitude.toFixed(6),
-        locationLongitude: dataToSave.locationInfo.longitude.toFixed(6),
         insuranceIncluded: dataToSave.isInsuranceIncluded,
+        locationInfo: {
+          userAddress: dataToSave.ownerAddress,
+          city: dataToSave.locationInfo.city,
+          country: dataToSave.locationInfo.country,
+          state: dataToSave.locationInfo.state,
+          longitude: dataToSave.locationInfo.longitude.toString(),
+          latitude: dataToSave.locationInfo.latitude.toString(),
+          timeZoneId: dataToSave.locationInfo.timeZoneId || "",
+        },
       };
 
       const transaction = await rentalityContract.addCar(request);

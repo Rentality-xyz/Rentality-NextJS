@@ -3,7 +3,7 @@ export type LocationInfo = {
   country: string;
   state: string;
   city: string;
-  latitude: number;
-  longitude: number;
+  latitude: string;
+  longitude: string;
   timeZoneId?: string;
 };

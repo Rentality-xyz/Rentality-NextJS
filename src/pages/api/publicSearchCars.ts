@@ -6,6 +6,7 @@ import { SearchCarInfo } from "@/model/SearchCarsResult";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import {
   ContractDeliveryLocations,
+  ContractLocationInfo,
   ContractSearchCar,
   ContractSearchCarParams,
   EngineType,
@@ -99,15 +100,15 @@ const formatSearchAvailableCarsContractResponse = async (
         securityDeposit: Number(i.securityDepositPerTripInUsdCents) / 100,
         hostPhotoUrl: i.hostPhotoUrl,
         hostName: i.hostName,
-        timeZoneId: i.timeZoneId,
+        timeZoneId: i.locationInfo.timeZoneId,
         location: {
-          lat: parseFloat(i.locationLatitude),
-          lng: parseFloat(i.locationLongitude),
+          lat: parseFloat(i.locationInfo.latitude),
+          lng: parseFloat(i.locationInfo.longitude),
         },
         highlighted: false,
         daysDiscount: getDaysDiscount(tripDays),
         totalDiscount: getTotalDiscount(pricePerDay, tripDays, totalPriceWithDiscount),
-        hostHomeLocation: `${i.city}, ${i.state}, ${i.country}`,
+        hostHomeLocation: `${i.locationInfo.city}, ${i.locationInfo.state}, ${i.locationInfo.userAddress}`,
         deliveryPrices: {
           from1To25milesPrice: Number(i.underTwentyFiveMilesInUsdCents) / 100,
           over25MilesPrice: Number(i.aboveTwentyFiveMilesInUsdCents) / 100,
@@ -270,27 +271,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     timeZoneId
   );
   let availableCarsView: ContractSearchCar[];
-
   if (searchCarRequest.isDeliveryToGuest) {
-    const contractDeliveryLocations: ContractDeliveryLocations = {
-      pickUpLat: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
+    const contractDeliveryLocationsPickUp: ContractLocationInfo = {
+      country: "",
+      state: "",
+      city: "",
+      userAddress: "",
+      timeZoneId: "",
+      latitude: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
         ? ""
         : searchCarRequest.deliveryInfo.pickupLocation.lat.toFixed(6),
-      pickUpLon: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
+      longitude: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
         ? ""
         : searchCarRequest.deliveryInfo.pickupLocation.lng.toFixed(6),
-      returnLat: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+    };
+    const contractDeliveryLocationsReturn: ContractLocationInfo = {
+      country: "",
+      state: "",
+      city: "",
+      userAddress: "",
+      timeZoneId: "",
+      latitude: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
         ? ""
         : searchCarRequest.deliveryInfo.returnLocation.lat.toFixed(6),
-      returnLon: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+      longitude: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
         ? ""
         : searchCarRequest.deliveryInfo.returnLocation.lng.toFixed(6),
     };
+
     availableCarsView = await rentality.searchAvailableCarsWithDelivery(
       contractDateFromUTC,
       contractDateToUTC,
       contractSearchCarParams,
-      contractDeliveryLocations
+      contractDeliveryLocationsPickUp,
+      contractDeliveryLocationsReturn
     );
   } else {
     availableCarsView = await rentality.searchAvailableCars(
@@ -299,8 +313,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       contractSearchCarParams
     );
   }
-
+  console.log(availableCarsView);
   const availableCarsData = await formatSearchAvailableCarsContractResponse(rentality, availableCarsView);
-
   res.status(200).json(availableCarsData);
 }

@@ -382,15 +382,15 @@
       "price_per_gal": "Price per 1 gal.",
       "refuel_or_recharge": "Refuel or recharge",
       "miles_included_per_trip": "Miles included per trip",
-      "overmiles" : "Overmiles",
-      "price_per_one_overmile" : "Price per 1 overmile",
+      "overmiles": "Overmiles",
+      "price_per_one_overmile": "Price per 1 overmile",
       "overmile_charge": "Overmile charge",
-      "total_reimbursement":"Total reimbursement",
+      "total_reimbursement": "Total reimbursement",
       "vehicle_dashboard_data": "Vehicle dashboard data",
       "start_fuel_or_battery_level": "Start fuel or battery level",
       "end_fuel_or_battery_level": "End fuel or battery level",
-      "dl_number":"DL number",
-      "dl_validity_period" : "DL validity period"
+      "dl_number": "DL number",
+      "dl_validity_period": "DL validity period"
     }
   },
   "vehicles": {

@@ -11,7 +11,6 @@ export default function Booked() {
   const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
   const { showInfo, showError } = useRntDialogs();
   const { t } = useTranslation();
-
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
     try {
       setTripStatusChanging(true);
