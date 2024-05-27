@@ -14,6 +14,7 @@ import {
 import { ethers } from "ethers";
 import { bigIntReplacer } from "@/utils/json";
 import { isEmpty } from "@/utils/string";
+import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 
 export type SortOptions = {
   [key: string]: string;
@@ -120,8 +121,6 @@ const useSearchCars = () => {
       const startUnixTime = getBlockchainTimeFromDate(startCarLocalDateTime);
       const endUnixTime = getBlockchainTimeFromDate(endCarLocalDateTime);
 
-      const ethAddress = ethers.getAddress("0x0000000000000000000000000000000000000000");
-
       if (searchCarRequest.isDeliveryToGuest) {
         const deliveryData = await rentalityContract.getDeliveryData(BigInt(carId));
         const hostHomeLocationLat = deliveryData.locationLat;
@@ -145,7 +144,7 @@ const useSearchCars = () => {
         const paymentsNeeded = await rentalityContract.calculatePaymentsWithDelivery(
           BigInt(carId),
           BigInt(days),
-          ethAddress,
+          ETH_DEFAULT_ADDRESS,
           deliveryInfo
         );
 
@@ -153,7 +152,7 @@ const useSearchCars = () => {
           carId: BigInt(carId),
           startDateTime: startUnixTime,
           endDateTime: endUnixTime,
-          currencyType: ethAddress,
+          currencyType: ETH_DEFAULT_ADDRESS,
           deliveryInfo: deliveryInfo,
         };
 
@@ -162,13 +161,17 @@ const useSearchCars = () => {
         });
         await transaction.wait();
       } else {
-        const paymentsNeeded = await rentalityContract.calculatePayments(BigInt(carId), BigInt(days), ethAddress);
+        const paymentsNeeded = await rentalityContract.calculatePayments(
+          BigInt(carId),
+          BigInt(days),
+          ETH_DEFAULT_ADDRESS
+        );
 
         const tripRequest: ContractCreateTripRequest = {
           carId: BigInt(carId),
           startDateTime: startUnixTime,
           endDateTime: endUnixTime,
-          currencyType: ethAddress,
+          currencyType: ETH_DEFAULT_ADDRESS,
         };
 
         const transaction = await rentalityContract.createTripRequest(tripRequest, {

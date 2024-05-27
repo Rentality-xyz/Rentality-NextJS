@@ -1,5 +1,6 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { GatewayStatus, useGateway } from "@civic/ethereum-gateway-react";
 import { ethers } from "ethers";
 import { useEffect, useRef, useState } from "react";
@@ -36,8 +37,7 @@ const useCustomCivic = () => {
     try {
       setStatus("Paying");
 
-      const ethAddress = ethers.getAddress("0x0000000000000000000000000000000000000000");
-      const commissionPrice = await rentalityContract.calculateKycCommission(ethAddress);
+      const commissionPrice = await rentalityContract.calculateKycCommission(ETH_DEFAULT_ADDRESS);
       const transaction = await rentalityContract.payKycCommission({
         value: commissionPrice.totalPrice,
       });
