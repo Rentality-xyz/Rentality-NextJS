@@ -1,3 +1,5 @@
+import { LocationInfo } from "./LocationInfo";
+
 export type SearchCarRequest = {
   searchLocation: {
     address: string;
@@ -19,12 +21,8 @@ export type SearchCarRequest = {
   };
   isDeliveryToGuest: boolean;
   deliveryInfo: {
-    pickupLocation:
-      | { isHostHomeLocation: true }
-      | { isHostHomeLocation: false; address: string; lat: number; lng: number };
-    returnLocation:
-      | { isHostHomeLocation: true }
-      | { isHostHomeLocation: false; address: string; lat: number; lng: number };
+    pickupLocation: { isHostHomeLocation: true } | { isHostHomeLocation: false; locationInfo: LocationInfo };
+    returnLocation: { isHostHomeLocation: true } | { isHostHomeLocation: false; locationInfo: LocationInfo };
   };
 };
 

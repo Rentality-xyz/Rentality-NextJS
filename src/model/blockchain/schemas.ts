@@ -16,6 +16,7 @@ export type ContractCarInfo = {
   geoVerified: boolean;
   timeZoneId: string;
   insuranceIncluded: boolean;
+  locationHash: string;
 };
 
 export type ContractPublicHostCarDTO = {
@@ -48,11 +49,9 @@ export type ContractCreateCarRequest = {
   engineType: EngineType;
   milesIncludedPerDay: bigint;
   timeBufferBetweenTripsInSec: bigint;
-  locationAddress: string;
-  locationLatitude: string;
-  locationLongitude: string;
   geoApiKey: string;
   insuranceIncluded: boolean;
+  locationInfo: ContractLocationInfo;
 };
 
 export type ContractUpdateCarInfoRequest = {
@@ -89,7 +88,8 @@ export type ContractCreateTripRequestWithDelivery = {
   startDateTime: bigint;
   endDateTime: bigint;
   currencyType: string;
-  deliveryInfo: ContractDeliveryLocations;
+  pickUpInfo: ContractSignedLocationInfo;
+  returnInfo: ContractSignedLocationInfo;
 };
 
 export type ContractTransactionInfo = {
@@ -112,8 +112,6 @@ export type ContractTrip = {
   startDateTime: bigint;
   endDateTime: bigint;
   engineType: EngineType;
-  startLocation: string;
-  endLocation: string;
   milesIncludedPerDay: bigint;
   fuelPrice: bigint;
   paymentInfo: ContractPaymentInfo;
@@ -133,6 +131,8 @@ export type ContractTrip = {
   checkedOutByHostDateTime: bigint;
   transactionInfo: ContractTransactionInfo;
   finishDateTime: bigint;
+  pickUpHash: string;
+  returnHash: string;
 };
 
 export type ContractTripDTO = {
@@ -148,6 +148,8 @@ export type ContractTripDTO = {
   model: string;
   brand: string;
   yearOfProduction: bigint;
+  pickUpLocation: ContractLocationInfo;
+  returnLocation: ContractLocationInfo;
 };
 
 export type ContractChatInfo = {
@@ -301,17 +303,12 @@ export type ContractSearchCar = {
   host: string;
   hostName: string;
   hostPhotoUrl: string;
-  city: string;
-  country: string;
-  state: string;
-  locationLatitude: string;
-  locationLongitude: string;
-  timeZoneId: string;
   metadataURI: string;
   underTwentyFiveMilesInUsdCents: bigint;
   aboveTwentyFiveMilesInUsdCents: bigint;
   deliveryFee: bigint;
   insuranceIncluded: boolean;
+  locationInfo: ContractLocationInfo;
 };
 
 export type ContractGeoData = {
@@ -339,12 +336,7 @@ export type ContractCarDetails = {
   engineParams: bigint[];
   geoVerified: boolean;
   currentlyListed: boolean;
-  timeZoneId: string;
-  city: string;
-  country: string;
-  state: string;
-  locationLatitude: string;
-  locationLongitude: string;
+  locationInfo: ContractLocationInfo;
 };
 
 export type ContractFloridaTaxes = {
@@ -373,14 +365,30 @@ export type ContractDeliveryLocations = {
 };
 
 export type ContractDeliveryData = {
-  city: string;
-  state: string;
-  country: string;
-  locationLat: string;
-  locationLon: string;
+  locationInfo: ContractLocationInfo;
   underTwentyFiveMilesInUsdCents: bigint;
   aboveTwentyFiveMilesInUsdCents: bigint;
   insuranceIncluded: boolean;
+};
+
+export type ContractLocationInfo = {
+  userAddress: string;
+  country: string;
+  state: string;
+  city: string;
+  latitude: string;
+  longitude: string;
+  timeZoneId: string;
+};
+
+export type ContractSignedLocationInfo = {
+  locationInfo: ContractLocationInfo;
+  signature: string;
+};
+
+export type ContractKycCommissionData = {
+  paidTime: bigint;
+  commissionPaid: boolean;
 };
 
 export type TripStatus = bigint;

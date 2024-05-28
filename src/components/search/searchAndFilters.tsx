@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { ParseLocationResponse } from "@/pages/api/parseLocation";
 import moment from "moment";
 import Checkbox from "../common/checkbox";
-import { LocationInfo } from "@/model/LocationInfo";
+import { LocationInfo, emptyLocationInfo } from "@/model/LocationInfo";
 
 function formatLocation(city: string, state: string, country: string) {
   city = city != null && city.length > 0 ? city + ", " : "";
@@ -219,7 +219,7 @@ export default function SearchAndFilters({
             }
             initValue={
               !searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
-                ? searchCarRequest.deliveryInfo.pickupLocation.address
+                ? searchCarRequest.deliveryInfo.pickupLocation.locationInfo.address
                 : ""
             }
             onAddressChange={async (placeDetails) => {
@@ -246,9 +246,15 @@ export default function SearchAndFilters({
                   ...searchCarRequest.deliveryInfo,
                   pickupLocation: {
                     isHostHomeLocation: false,
-                    address: placeDetails.addressString,
-                    lat: locationLat,
-                    lng: locationLng,
+                    locationInfo: {
+                      address: placeDetails.addressString,
+                      country: placeDetails.country?.short_name ?? "",
+                      state: placeDetails.state?.short_name ?? "",
+                      city: placeDetails.city?.long_name ?? "",
+                      latitude: locationLat,
+                      longitude: locationLng,
+                      timeZoneId: "",
+                    },
                   },
                 },
               });
@@ -270,9 +276,7 @@ export default function SearchAndFilters({
                       }
                     : {
                         isHostHomeLocation: e.target.checked,
-                        address: pickupLocationInfo?.address ?? "",
-                        lat: pickupLocationInfo?.latitude ?? 0,
-                        lng: pickupLocationInfo?.longitude ?? 0,
+                        locationInfo: pickupLocationInfo ?? emptyLocationInfo,
                       },
                 },
               })
@@ -291,7 +295,7 @@ export default function SearchAndFilters({
             }
             initValue={
               !searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
-                ? searchCarRequest.deliveryInfo.returnLocation.address
+                ? searchCarRequest.deliveryInfo.returnLocation.locationInfo.address
                 : ""
             }
             onAddressChange={async (placeDetails) => {
@@ -320,9 +324,15 @@ export default function SearchAndFilters({
                   ...searchCarRequest.deliveryInfo,
                   returnLocation: {
                     isHostHomeLocation: false,
-                    address: placeDetails.addressString,
-                    lat: locationLat,
-                    lng: locationLng,
+                    locationInfo: {
+                      address: placeDetails.addressString,
+                      country: placeDetails.country?.short_name ?? "",
+                      state: placeDetails.state?.short_name ?? "",
+                      city: placeDetails.city?.long_name ?? "",
+                      latitude: locationLat,
+                      longitude: locationLng,
+                      timeZoneId: "",
+                    },
                   },
                 },
               });
@@ -344,9 +354,7 @@ export default function SearchAndFilters({
                       }
                     : {
                         isHostHomeLocation: e.target.checked,
-                        address: returnLocationInfo?.address ?? "",
-                        lat: returnLocationInfo?.latitude ?? 0,
-                        lng: returnLocationInfo?.longitude ?? 0,
+                        locationInfo: returnLocationInfo ?? emptyLocationInfo,
                       },
                 },
               })

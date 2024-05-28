@@ -3,14 +3,15 @@ import { getEngineTypeString } from "@/model/EngineType";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { SearchCarInfo } from "@/model/SearchCarsResult";
+import { emptyLocationInfo } from "@/model/LocationInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import {
-  ContractDeliveryLocations,
+  ContractLocationInfo,
   ContractSearchCar,
   ContractSearchCarParams,
   EngineType,
 } from "@/model/blockchain/schemas";
-import { validateContractSearchCar } from "@/model/blockchain/schemas_utils";
+import { validateContractSearchCar, emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getBlockchainTimeFromDate, getMoneyInCentsFromString } from "@/utils/formInput";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
@@ -99,15 +100,15 @@ const formatSearchAvailableCarsContractResponse = async (
         securityDeposit: Number(i.securityDepositPerTripInUsdCents) / 100,
         hostPhotoUrl: i.hostPhotoUrl,
         hostName: i.hostName,
-        timeZoneId: i.timeZoneId,
+        timeZoneId: i.locationInfo.timeZoneId,
         location: {
-          lat: parseFloat(i.locationLatitude),
-          lng: parseFloat(i.locationLongitude),
+          lat: parseFloat(i.locationInfo.latitude),
+          lng: parseFloat(i.locationInfo.longitude),
         },
         highlighted: false,
         daysDiscount: getDaysDiscount(tripDays),
         totalDiscount: getTotalDiscount(pricePerDay, tripDays, totalPriceWithDiscount),
-        hostHomeLocation: `${i.city}, ${i.state}, ${i.country}`,
+        hostHomeLocation: `${i.locationInfo.city}, ${i.locationInfo.state}, ${i.locationInfo.country}`,
         deliveryPrices: {
           from1To25milesPrice: Number(i.underTwentyFiveMilesInUsdCents) / 100,
           over25MilesPrice: Number(i.aboveTwentyFiveMilesInUsdCents) / 100,
@@ -239,18 +240,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           ? { isHostHomeLocation: true }
           : {
               isHostHomeLocation: false,
-              address: "",
-              lat: Number(pickupLocationValues[0]),
-              lng: Number(pickupLocationValues[1]),
+              locationInfo: {
+                ...emptyLocationInfo,
+                latitude: Number(pickupLocationValues[0]),
+                longitude: Number(pickupLocationValues[1]),
+              },
             },
       returnLocation:
         !isDeliveryToGuestValue || returnLocationValues?.length !== 2
           ? { isHostHomeLocation: true }
           : {
               isHostHomeLocation: false,
-              address: "",
-              lat: Number(returnLocationValues[0]),
-              lng: Number(returnLocationValues[1]),
+              locationInfo: {
+                ...emptyLocationInfo,
+                latitude: Number(returnLocationValues[0]),
+                longitude: Number(returnLocationValues[1]),
+              },
             },
     },
   };
@@ -272,25 +277,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   let availableCarsView: ContractSearchCar[];
 
   if (searchCarRequest.isDeliveryToGuest) {
-    const contractDeliveryLocations: ContractDeliveryLocations = {
-      pickUpLat: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
+    const pickUpInfo: ContractLocationInfo = {
+      ...emptyContractLocationInfo,
+      latitude: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
         ? ""
-        : searchCarRequest.deliveryInfo.pickupLocation.lat.toFixed(6),
-      pickUpLon: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
+        : searchCarRequest.deliveryInfo.pickupLocation.locationInfo.latitude.toFixed(6),
+      longitude: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
         ? ""
-        : searchCarRequest.deliveryInfo.pickupLocation.lng.toFixed(6),
-      returnLat: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
-        ? ""
-        : searchCarRequest.deliveryInfo.returnLocation.lat.toFixed(6),
-      returnLon: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
-        ? ""
-        : searchCarRequest.deliveryInfo.returnLocation.lng.toFixed(6),
+        : searchCarRequest.deliveryInfo.pickupLocation.locationInfo.longitude.toFixed(6),
     };
+    const returnInfo: ContractLocationInfo = {
+      ...emptyContractLocationInfo,
+      latitude: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+        ? ""
+        : searchCarRequest.deliveryInfo.returnLocation.locationInfo.latitude.toFixed(6),
+      longitude: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+        ? ""
+        : searchCarRequest.deliveryInfo.returnLocation.locationInfo.longitude.toFixed(6),
+    };
+
     availableCarsView = await rentality.searchAvailableCarsWithDelivery(
       contractDateFromUTC,
       contractDateToUTC,
       contractSearchCarParams,
-      contractDeliveryLocations
+      pickUpInfo,
+      returnInfo
     );
   } else {
     availableCarsView = await rentality.searchAvailableCars(

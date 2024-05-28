@@ -15,9 +15,11 @@ import {
   ContractDeliveryPrices,
   ContractFullClaimInfo,
   ContractKYCInfo,
+  ContractLocationInfo,
   ContractPublicHostCarDTO,
   ContractSearchCar,
   ContractSearchCarParams,
+  ContractSignedLocationInfo,
   ContractTripDTO,
   ContractTripReceiptDTO,
   ContractUpdateCarInfoRequest,
@@ -29,9 +31,7 @@ export interface IRentalityContract {
   updateCarInfo(request: ContractUpdateCarInfoRequest): Promise<ContractTransactionResponse>;
   updateCarInfoWithLocation(
     request: ContractUpdateCarInfoRequest,
-    location: string,
-    locationLatitude: string,
-    locationLongitude: string,
+    location: ContractSignedLocationInfo,
     geoApiKey: string
   ): Promise<ContractTransactionResponse>;
   getCarInfoById(carId: bigint): Promise<ContractCarInfo>;
@@ -64,7 +64,8 @@ export interface IRentalityContract {
     startDateTime: bigint,
     endDateTime: bigint,
     searchParams: ContractSearchCarParams,
-    locations: ContractDeliveryLocations
+    pickUpInfo: ContractLocationInfo,
+    returnInfo: ContractLocationInfo
   ): Promise<ContractSearchCar[]>;
 
   createTripRequest(request: ContractCreateTripRequest, value: object): Promise<ContractTransactionResponse>;
@@ -110,7 +111,8 @@ export interface IRentalityContract {
     carId: bigint,
     daysOfTrip: bigint,
     currency: string,
-    deliveryData: ContractDeliveryLocations
+    pickUpLocation: ContractLocationInfo,
+    returnLocation: ContractLocationInfo
   ): Promise<ContractCalculatePaymentsDTO>;
   getUserDeliveryPrices(user: string): Promise<ContractDeliveryPrices>;
 

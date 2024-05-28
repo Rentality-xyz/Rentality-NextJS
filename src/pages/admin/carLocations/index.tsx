@@ -45,12 +45,12 @@ const useCarLocations = () => {
                   let item: CarLocations = {
                     carId: Number(i.carId),
                     carPhotoUrl: getIpfsURIfromPinata(meta.image),
-                    country: carInfoDetails.country,
-                    state: carInfoDetails.state,
-                    city: carInfoDetails.city,
-                    timeZoneId: carInfoDetails.timeZoneId,
-                    locationLatitude: carInfoDetails.locationLatitude,
-                    locationLongitude: carInfoDetails.locationLongitude,
+                    country: carInfoDetails.locationInfo.country,
+                    state: carInfoDetails.locationInfo.state,
+                    city: carInfoDetails.locationInfo.city,
+                    timeZoneId: carInfoDetails.locationInfo.timeZoneId,
+                    locationLatitude: carInfoDetails.locationInfo.latitude,
+                    locationLongitude: carInfoDetails.locationInfo.longitude,
                   };
                   return item;
                 })
