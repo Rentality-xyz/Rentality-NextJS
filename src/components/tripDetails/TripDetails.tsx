@@ -18,7 +18,7 @@ import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { getRefuelValueAndCharge } from "@/model/TripInfo";
 import UserAvatarWithName from "@/components/common/userAvatarWithName";
 import TripContacts from "@/components/common/tripContacts";
-import { dateFormatLongMonthDateTime } from "@/utils/datetimeFormatters";
+import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import RntDriverLicenseVerified from "@/components/common/rntDriverLicenseVerified";
 
 export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; backPath: string; t: TFunctionNext }) {
@@ -388,7 +388,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                       <tr>
                         <td>{t_details("dl_validity_period")}:</td>
                         <td className="text-end">
-                          {dateFormatLongMonthDateTime(tripInfo.guest.drivingLicenseExpirationDate)}
+                          {dateFormatShortMonthDateYear(tripInfo.guest.drivingLicenseExpirationDate)}
                         </td>
                       </tr>
                     </tbody>
