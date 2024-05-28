@@ -277,7 +277,10 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                       <td className="text-end pt-5">
                         $
                         {displayMoneyWith2Digits(
-                          tripInfo.totalPriceWithDiscountInUsd + tripInfo.salesTaxInUsd + tripInfo.governmentTaxInUsd
+                          tripInfo.totalPriceWithDiscountInUsd +
+                            tripInfo.salesTaxInUsd +
+                            tripInfo.governmentTaxInUsd +
+                            tripInfo.deliveryFeeInUsd
                         )}
                       </td>
                     </tr>
