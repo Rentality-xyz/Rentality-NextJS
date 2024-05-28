@@ -38,7 +38,7 @@ export default function Admin() {
     setNewClaimWaitingTime(adminContractInfo.claimWaitingTime.toString());
   }, [adminContractInfo]);
 
-  if (adminContractInfo == null || isLoading) {
+  if (adminContractInfo == null) {
     return (
       <Layout>
         <div className="flex flex-col">
@@ -87,7 +87,6 @@ export default function Admin() {
 
     try {
       await setPlatformFeeInPPM(value);
-      setNewPlatformFee("0");
     } catch (e) {
       showError(t_errors("platform_commission_error") + e);
     }
@@ -103,7 +102,6 @@ export default function Admin() {
     }
     try {
       await saveKycCommission(value);
-      setNewKycCommission("0");
     } catch (e) {
       showError(t_errors("kyc_commission_error") + e);
     }
@@ -119,7 +117,6 @@ export default function Admin() {
     }
     try {
       await saveClaimWaitingTime(value);
-      setNewClaimWaitingTime("0");
     } catch (e) {
       showError(t_errors("claim_waiting_time_error") + e);
     }
