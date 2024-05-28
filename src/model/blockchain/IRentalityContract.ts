@@ -118,7 +118,7 @@ export interface IRentalityContract {
 
   getKycCommission(): Promise<bigint>;
   calculateKycCommission(currency: string): Promise<bigint>;
-  payKycCommission(value: object): Promise<ContractTransactionResponse>;
+  payKycCommission(currency: string, value: object): Promise<ContractTransactionResponse>;
   isKycCommissionPaid(user: string): Promise<boolean>;
   useKycCommission(user: string): Promise<ContractTransactionResponse>;
 

@@ -38,7 +38,7 @@ const useCustomCivic = () => {
       setStatus("Paying");
 
       const commissionPrice = await rentalityContract.calculateKycCommission(ETH_DEFAULT_ADDRESS);
-      const transaction = await rentalityContract.payKycCommission({ value: commissionPrice });
+      const transaction = await rentalityContract.payKycCommission(ETH_DEFAULT_ADDRESS, { value: commissionPrice });
       await transaction.wait();
 
       setStatus("Commission paid");
