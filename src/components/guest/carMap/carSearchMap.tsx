@@ -41,7 +41,7 @@ export default function CarSearchMap({
       if (mapHeight && carInfos.length > 0) {
         height = mapHeight + "px";
       } else {
-        height = typeof window !== "undefined" && window.screen.width >= 1280 ? "60vh" : isExpanded ? "80vh" : "12rem";
+        height = typeof window !== "undefined" && window.screen.width >= 1280 ? "55vh" : isExpanded ? "80vh" : "12rem";
       }
     }
     return {
@@ -73,10 +73,8 @@ export default function CarSearchMap({
 
     if (parentRect.top <= 0 && window.screen.width >= 1280 && parentRect.bottom < window.innerHeight) {
       setMapHeight(Math.ceil(parentRect.bottom));
-    } else if (rect.bottom < window.innerHeight && window.screen.width >= 1280 && !isSticked) {
-      setMapHeight(window.innerHeight - rect.top);
     } else {
-      setMapHeight(0);
+      setMapHeight(window.innerHeight - rect.top);
     }
 
     if (parentRect.top <= 0 && window.screen.width >= 1280 && !isSticked) {
