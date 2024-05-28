@@ -31,7 +31,7 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
     image: getIpfsURIfromPinata(meta.image),
     carDescription: meta.description ?? "No description",
     carDoorsNumber: meta.attributes?.find((x: any) => x.trait_type === "Doors Number")?.value ?? 4,
-    carSeatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats Number")?.value ?? 4,
+    carSeatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats number")?.value ?? 4,
     carTransmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
     carColor: meta.attributes?.find((x: any) => x.trait_type === "Color")?.value ?? "",
     brand: i.brand ?? meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "",
