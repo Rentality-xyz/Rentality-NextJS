@@ -158,6 +158,7 @@ export function validateContractFullClaimInfo(obj: ContractFullClaimInfo): obj i
     guestPhoneNumber: "",
     carInfo: emptyContractCarInfo,
     amountInEth: BigInt(0),
+    timeZoneId: "",
   };
 
   return validateType(obj, emptyContractFullClaimInfo) && validateType(obj.claim, emptyContractClaim);

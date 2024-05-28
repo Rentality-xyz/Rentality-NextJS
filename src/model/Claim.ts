@@ -20,6 +20,7 @@ export type Claim = {
   tripDays: number;
   isIncomingClaim: boolean;
   fileUrls: string[];
+  timeZoneId: string;
 };
 
 export enum ClaimTypeEnum {

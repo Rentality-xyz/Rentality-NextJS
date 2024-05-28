@@ -188,6 +188,7 @@ export type ContractFullClaimInfo = {
   hostPhoneNumber: string;
   carInfo: ContractCarInfo;
   amountInEth: bigint;
+  timeZoneId: string;
 };
 
 export type ContractClaim = {

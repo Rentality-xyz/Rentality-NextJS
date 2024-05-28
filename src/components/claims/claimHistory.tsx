@@ -69,8 +69,12 @@ export default function ClaimHistory(props: Props) {
               <tr key={claim.claimId} className="border-b-[1px] border-b-gray-500">
                 <td className={rowSpanClassName}>{claim.isIncomingClaim ? "← Incoming" : "Outgoing →"}</td>
                 <td className={rowSpanClassName}>{claim.claimTypeText}</td>
-                <td className={claim.deadlineDate <= moment().toDate() ? redTextClassName : rowSpanClassName}>
-                  {dateFormatShortMonthDateTime(claim.deadlineDate)}
+                <td
+                  className={
+                    claim.deadlineDate <= moment.tz(claim.timeZoneId).toDate() ? redTextClassName : rowSpanClassName
+                  }
+                >
+                  {dateFormatShortMonthDateTime(claim.deadlineDate, claim.timeZoneId)}
                 </td>
                 <td className={rowSpanClassName}>{claim.tripId}</td>
                 <td className={rowSpanClassName}>{claim.tripDays}</td>
