@@ -272,7 +272,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     </tr>
                     <tr>
                       <td className="pt-5">
-                        <strong>{t_details("trip_total")}</strong>
+                        <strong>{t_details("total_charge")}</strong>
                       </td>
                       <td className="text-end pt-5">
                         $

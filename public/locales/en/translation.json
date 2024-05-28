@@ -376,7 +376,7 @@
       "delivery_fee": "Delivery fee",
       "sales_tax": "Sales Tax",
       "government_tax": "Government Tax",
-      "trip_total": "Trip total",
+      "total_charge": "Total charge",
       "security_deposit_info": "Security deposit info",
       "received": "Received",
       "reimbursement": "Reimbursement",
