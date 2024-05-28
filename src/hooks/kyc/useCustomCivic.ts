@@ -38,9 +38,7 @@ const useCustomCivic = () => {
       setStatus("Paying");
 
       const commissionPrice = await rentalityContract.calculateKycCommission(ETH_DEFAULT_ADDRESS);
-      const transaction = await rentalityContract.payKycCommission({
-        value: commissionPrice.totalPrice,
-      });
+      const transaction = await rentalityContract.payKycCommission({ value: commissionPrice });
       await transaction.wait();
 
       setStatus("Commission paid");
@@ -86,7 +84,7 @@ const useCustomCivic = () => {
       if (isKycProcessing && gatewayStatus !== GatewayStatus.UNKNOWN && gatewayStatus !== GatewayStatus.IN_REVIEW) {
         try {
           userUsedCommission.current = true;
-          const transaction = await rentalityContract.useKycCommissionForUser(ethereumInfo.walletAddress);
+          const transaction = await rentalityContract.useKycCommission(ethereumInfo.walletAddress);
           await transaction.wait();
         } catch (e) {
           userUsedCommission.current = false;
@@ -107,7 +105,7 @@ const useCustomCivic = () => {
     if (!rentalityContract) return;
     if (!ethereumInfo) return;
     if (status !== "Commission paid") return;
-    if (!(await rentalityContract.isKycCommissionPaidForUser(ethereumInfo.walletAddress))) return;
+    if (!(await rentalityContract.isKycCommissionPaid(ethereumInfo.walletAddress))) return;
 
     await requestGatewayToken();
   }
@@ -130,7 +128,7 @@ const useCustomCivic = () => {
           return;
         }
 
-        if (await rentalityContract.isKycCommissionPaidForUser(ethereumInfo.walletAddress)) {
+        if (await rentalityContract.isKycCommissionPaid(ethereumInfo.walletAddress)) {
           setStatus("Commission paid");
           return;
         }

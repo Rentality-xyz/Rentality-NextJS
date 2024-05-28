@@ -94,7 +94,7 @@ const useAdminPanelInfo = () => {
     try {
       setIsLoading(true);
 
-      let transaction = await rentalityAdminGateway.saveKycCommission(BigInt(Math.round(value * 100)));
+      let transaction = await rentalityAdminGateway.setKycCommission(BigInt(Math.round(value * 100)));
       await transaction.wait();
       return true;
     } catch (e) {

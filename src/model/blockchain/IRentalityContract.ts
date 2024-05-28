@@ -116,12 +116,11 @@ export interface IRentalityContract {
   ): Promise<ContractCalculatePaymentsDTO>;
   getUserDeliveryPrices(user: string): Promise<ContractDeliveryPrices>;
 
-  //new
   getKycCommission(): Promise<bigint>;
-  calculateKycCommission(currency: string): Promise<ContractCalculatePaymentsDTO>;
+  calculateKycCommission(currency: string): Promise<bigint>;
   payKycCommission(value: object): Promise<ContractTransactionResponse>;
-  isKycCommissionPaidForUser(user: string): Promise<boolean>;
-  useKycCommissionForUser(user: string): Promise<ContractTransactionResponse>;
+  isKycCommissionPaid(user: string): Promise<boolean>;
+  useKycCommission(user: string): Promise<ContractTransactionResponse>;
 
   //not using
   getAllCars(): Promise<ContractCarInfo[]>;
@@ -163,9 +162,8 @@ export interface IRentalityAdminGateway {
   setCivicData(_civicVerifier: string, _civicGatekeeperNetwork: bigint): Promise<ContractTransactionResponse>;
   setNewTCMessage(message: string): Promise<ContractTransactionResponse>;
 
-  //new
   getKycCommission(): Promise<bigint>;
-  saveKycCommission(valueInUsdCents: bigint): Promise<ContractTransactionResponse>;
+  setKycCommission(valueInUsdCents: bigint): Promise<ContractTransactionResponse>;
 }
 
 export interface IRentalityChatHelperContract {
