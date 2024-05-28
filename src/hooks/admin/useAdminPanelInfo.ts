@@ -140,11 +140,6 @@ const useAdminPanelInfo = () => {
           ethereumInfo.signer
         )) as unknown as IRentalityAdminGateway;
         setRentalityAdminGateway(rentalityAdminGateway);
-        //TODO DELETE MOCK DATA
-        rentalityAdminGateway.getKycCommission = async () => {
-          alert("getKycCommission call");
-          return 400;
-        };
 
         const platformFee = Number(await rentalityAdminGateway.getPlatformFeeInPPM()) / 10_000.0 ?? 0;
         const claimWaitingTime = Number(await rentalityAdminGateway.getClaimWaitingTime());
