@@ -305,7 +305,7 @@ export default function CarEditForm({
         </div>
         <div className="flex flex-col">
           <textarea
-            className="text-black w-full px-4 py-2 border-2 rounded-2xl"
+            className="text-black w-full px-4 py-2 border-2 rounded-2xl disabled:bg-gray-300 disabled:text-gray-600"
             rows={5}
             id="description"
             placeholder="e.g. Dupont Pepper Grey 1967 Ford Mustang fastback"
