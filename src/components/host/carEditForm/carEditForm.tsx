@@ -10,7 +10,7 @@ import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/
 import RntButton from "@/components/common/rntButton";
 import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import { TFunction } from "@/utils/i18n";
-import { fixedNumber } from "@/utils/numericFormatters";
+import { displayMoneyWith2Digits, fixedNumber } from "@/utils/numericFormatters";
 
 export default function CarEditForm({
   carInfoFormParams,
@@ -28,7 +28,7 @@ export default function CarEditForm({
   const [autocomplete, setAutocomplete] = useState("");
   const isUnlimitedMiles = carInfoFormParams.milesIncludedPerDay === UNLIMITED_MILES_VALUE_TEXT;
   const fuelPricePerMile = Number(carInfoFormParams.pricePerDay) / Number(carInfoFormParams.milesIncludedPerDay);
-  const fuelPricePerMileText = Number.isFinite(fuelPricePerMile) ? fuelPricePerMile.toString() : "-";
+  const fuelPricePerMileText = Number.isFinite(fuelPricePerMile) ? displayMoneyWith2Digits(fuelPricePerMile) : "-";
   const isElectricEngine = carInfoFormParams.engineTypeText === "Electro";
 
   useEffect(() => {

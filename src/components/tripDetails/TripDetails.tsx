@@ -332,7 +332,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     </tr>
                     <tr>
                       <td>{t_details("price_per_one_overmile")}</td>
-                      <td className="text-end">${tripInfo.overmilePrice}</td>
+                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.overmilePrice)}</td>
                     </tr>
                     <tr>
                       <td>{t_details("overmile_charge")}</td>
