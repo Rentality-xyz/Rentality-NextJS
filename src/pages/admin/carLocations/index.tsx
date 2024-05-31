@@ -16,6 +16,7 @@ type CarLocations = {
   timeZoneId: string;
   locationLatitude: string;
   locationLongitude: string;
+  isListed: boolean;
 };
 
 const useCarLocations = () => {
@@ -51,6 +52,7 @@ const useCarLocations = () => {
                     timeZoneId: carInfoDetails.locationInfo.timeZoneId,
                     locationLatitude: carInfoDetails.locationInfo.latitude,
                     locationLongitude: carInfoDetails.locationInfo.longitude,
+                    isListed: carInfoDetails.currentlyListed,
                   };
                   return item;
                 })
@@ -93,7 +95,8 @@ export default function Admin() {
                 <th className={`${headerSpanClassName}`}>City</th>
                 <th className={`${headerSpanClassName}`}>TimeZoneId</th>
                 <th className={`${headerSpanClassName}`}>Latitude</th>
-                <th className={`${headerSpanClassName}`}>locatioLongitude</th>
+                <th className={`${headerSpanClassName}`}>Longitude</th>
+                <th className={`${headerSpanClassName}`}>Status</th>
               </tr>
             </thead>
             <tbody className="text-sm">
@@ -116,6 +119,7 @@ export default function Admin() {
                     <td className={rowSpanClassName}>{carLocation.timeZoneId}</td>
                     <td className={rowSpanClassName}>{carLocation.locationLatitude}</td>
                     <td className={rowSpanClassName}>{carLocation.locationLongitude}</td>
+                    <td className={rowSpanClassName}>{carLocation.isListed ? "Listed" : "Not listed"}</td>
                   </tr>
                 );
               })}
