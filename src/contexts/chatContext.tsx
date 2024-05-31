@@ -15,7 +15,7 @@ import { Contract, Listener } from "ethers";
 import { useNotification } from "./notification/notificationContext";
 import { NotificationType } from "@/model/NotificationInfo";
 import { generateEncryptionKeyPair } from "@/chat/crypto";
-import useUserRole from "@/hooks/useUserRole";
+import useUserMode from "@/hooks/useUserMode";
 
 export type ChatContextInfo = {
   isLoading: boolean;
@@ -150,7 +150,7 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [chatInfos, setChatInfos] = useState<ChatInfo[]>([]);
   const rentalityContract = useRentality();
-  const { isHost } = useUserRole();
+  const { isHost } = useUserMode();
 
   const addNotificationsRef = useRef(addNotifications);
   useEffect(() => {
