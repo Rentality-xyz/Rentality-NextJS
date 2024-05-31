@@ -7,12 +7,14 @@ import ProfileRnD from "@/components/RnD/profileRnD";
 import useDeliveryPrices from "@/hooks/host/useDeliveryPrices";
 import useTripDiscounts from "@/hooks/host/useTripDiscounts";
 import useProfileSettings from "@/hooks/useProfileSettings";
+import useUserRole from "@/hooks/useUserRole";
 import { useTranslation } from "react-i18next";
 
 export default function Profile() {
   const [isLoading, savedProfileSettings, saveProfileSettings] = useProfileSettings();
   const [isLoadingDiscounts, savedTripsDiscounts, saveTripDiscounts] = useTripDiscounts();
   const [isLoadingDeliveryPrices, savedDeliveryPrices, saveDeliveryPrices] = useDeliveryPrices();
+  const { userRole } = useUserRole();
   const { t } = useTranslation();
 
   return (
@@ -35,11 +37,13 @@ export default function Profile() {
               <TripDiscountsForm
                 savedTripsDiscounts={savedTripsDiscounts}
                 saveTripsDiscounts={saveTripDiscounts}
+                isUserHasHostRole={userRole === "Host"}
                 t={t}
               />
               <DeliveryPriceForm
                 savedDeliveryPrices={savedDeliveryPrices}
                 saveDeliveryPrices={saveDeliveryPrices}
+                isUserHasHostRole={userRole === "Host"}
                 t={t}
               />
             </div>

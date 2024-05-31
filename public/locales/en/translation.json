@@ -204,11 +204,13 @@
     "save_keys": "Save keys",
     "save_discount": "Save discounts",
     "save_discount_err": "Save trip discounts request failed. Please try again",
+    "save_discount_err_is_not_host": "Please enter the first vehicle in Listing to enter Discounts",
     "delivery_price": "Delivery price",
     "delivery_price_from_1_to_25_miles": "From 1 mile to 25",
     "delivery_price_over_25_miles": "Over 25 miles",
     "save_delivery_price": "Save delivery price",
-    "save_delivery_prices_err": "Save delivery prices request failed. Please try again"
+    "save_delivery_prices_err": "Save delivery prices request failed. Please try again",
+    "save_delivery_prices_err_is_not_host": "Please enter the first vehicle in Listing to enter Delivery price"
   },
   "transaction_history": {
     "title": "Transaction history",
