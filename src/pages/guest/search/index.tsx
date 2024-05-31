@@ -213,13 +213,13 @@ export default function Search() {
                     selectedCarID={selectedCarID}
                     isExpanded={isExpanded}
                     defaultCenter={
-                      searchCarRequest.searchLocation.locationLat &&
-                      searchCarRequest.searchLocation.locationLng &&
-                      searchCarRequest.searchLocation.locationLat > 0 &&
-                      searchCarRequest.searchLocation.locationLat > 0
+                      searchCarRequest.searchLocation.latitude &&
+                      searchCarRequest.searchLocation.longitude &&
+                      searchCarRequest.searchLocation.latitude > 0 &&
+                      searchCarRequest.searchLocation.longitude > 0
                         ? new google.maps.LatLng(
-                            searchCarRequest.searchLocation.locationLat,
-                            searchCarRequest.searchLocation.locationLng
+                            searchCarRequest.searchLocation.latitude,
+                            searchCarRequest.searchLocation.longitude
                           )
                         : null
                     }

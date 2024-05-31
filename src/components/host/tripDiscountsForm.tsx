@@ -3,19 +3,19 @@ import RntInput from "@/components/common/rntInput";
 import { FormEvent, memo, useState } from "react";
 import { TFunction } from "@/utils/i18n";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
-import { useRouter } from "next/router";
 import { DiscountFormValues } from "@/hooks/host/useTripDiscounts";
 
 function TripDiscountsForm({
   savedTripsDiscounts,
   saveTripsDiscounts,
+  isUserHasHostRole,
   t,
 }: {
   savedTripsDiscounts: DiscountFormValues;
   saveTripsDiscounts: (newTripsDiscounts: DiscountFormValues) => Promise<boolean>;
+  isUserHasHostRole: boolean;
   t: TFunction;
 }) {
-  const router = useRouter();
   const [enteredFormData, setEnteredFormData] = useState<DiscountFormValues>(savedTripsDiscounts);
   const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
 
@@ -32,6 +32,11 @@ function TripDiscountsForm({
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (!isUserHasHostRole) {
+      showDialog(t_profile("save_discount_err_is_not_host"));
+      return;
+    }
 
     const isValid = Object.keys(errors).length === 0;
 

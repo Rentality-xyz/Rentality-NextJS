@@ -1,13 +1,9 @@
-import { useRouter } from "next/router";
-import { useMemo } from "react";
+export type ROLE = "Guest" | "Host";
 
 const useUserRole = () => {
-  const router = useRouter();
-  const isHost = useMemo(() => {
-    return router.route.startsWith("/host");
-  }, [router.route]);
+  const userRole: ROLE = "Host";
 
-  return { isHost } as const;
+  return { userRole } as const;
 };
 
 export default useUserRole;

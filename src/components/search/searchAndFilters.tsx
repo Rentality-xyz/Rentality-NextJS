@@ -10,7 +10,8 @@ import { useEffect, useState } from "react";
 import { ParseLocationResponse } from "@/pages/api/parseLocation";
 import moment from "moment";
 import Checkbox from "../common/checkbox";
-import { LocationInfo } from "@/model/LocationInfo";
+import { LocationInfo, emptyLocationInfo } from "@/model/LocationInfo";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
 
 function formatLocation(city: string, state: string, country: string) {
   city = city != null && city.length > 0 ? city + ", " : "";
@@ -41,18 +42,19 @@ export default function SearchAndFilters({
   setOpenFilterPanel: (value: boolean) => void;
   t: TFunctionNext;
 }) {
-  const [utcOffset, setUtcOffset] = useState("");
+  const [timeZoneId, setTimeZoneId] = useState("");
   const [pickupLocationInfo, setPickupLocationInfo] = useState<LocationInfo | undefined>(undefined);
   const [returnLocationInfo, setReturnLocationInfo] = useState<LocationInfo | undefined>(undefined);
 
-  const gmtLabel = isEmpty(utcOffset) ? "" : `(GMT${utcOffset})`;
+  const gmtLabel = isEmpty(timeZoneId) ? "" : `(GMT${moment.tz(timeZoneId).format("Z").slice(0, 3)})`;
+  const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
   const isSearchAllowed =
     formatLocation(
       searchCarRequest.searchLocation.city,
       searchCarRequest.searchLocation.state,
       searchCarRequest.searchLocation.country
     ).length > 0 &&
-    new Date(searchCarRequest.dateFrom) >= new Date() &&
+    moment.tz(searchCarRequest.dateFrom, notEmtpyTimeZoneId) >= moment.tz(notEmtpyTimeZoneId) &&
     new Date(searchCarRequest.dateTo) > new Date(searchCarRequest.dateFrom);
 
   const t_comp = (element: string) => {
@@ -89,7 +91,7 @@ export default function SearchAndFilters({
         searchCarRequest.searchLocation.country
       );
       if (isEmpty(address)) {
-        setUtcOffset("");
+        setTimeZoneId("");
         return;
       }
 
@@ -98,16 +100,16 @@ export default function SearchAndFilters({
       const apiResponse = await fetch(url);
 
       if (!apiResponse.ok) {
-        setUtcOffset("");
+        setTimeZoneId("");
         return;
       }
       const apiJson = (await apiResponse.json()) as ParseLocationResponse;
       if ("error" in apiJson) {
-        setUtcOffset("");
+        setTimeZoneId("");
         return;
       }
 
-      setUtcOffset(moment.tz(apiJson.timeZoneId).format("Z").slice(0, 3));
+      setTimeZoneId(apiJson.timeZoneId);
     };
 
     getGMTFromLocation();
@@ -146,8 +148,9 @@ export default function SearchAndFilters({
                 country: country,
                 state: state,
                 city: city,
-                locationLat: locationLat,
-                locationLng: locationLng,
+                latitude: locationLat ?? 0,
+                longitude: locationLng ?? 0,
+                timeZoneId: "",
               },
             });
           }}
@@ -219,7 +222,7 @@ export default function SearchAndFilters({
             }
             initValue={
               !searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
-                ? searchCarRequest.deliveryInfo.pickupLocation.address
+                ? searchCarRequest.deliveryInfo.pickupLocation.locationInfo.address
                 : ""
             }
             onAddressChange={async (placeDetails) => {
@@ -246,9 +249,15 @@ export default function SearchAndFilters({
                   ...searchCarRequest.deliveryInfo,
                   pickupLocation: {
                     isHostHomeLocation: false,
-                    address: placeDetails.addressString,
-                    lat: locationLat,
-                    lng: locationLng,
+                    locationInfo: {
+                      address: placeDetails.addressString,
+                      country: placeDetails.country?.short_name ?? "",
+                      state: placeDetails.state?.short_name ?? "",
+                      city: placeDetails.city?.long_name ?? "",
+                      latitude: locationLat,
+                      longitude: locationLng,
+                      timeZoneId: "",
+                    },
                   },
                 },
               });
@@ -270,9 +279,7 @@ export default function SearchAndFilters({
                       }
                     : {
                         isHostHomeLocation: e.target.checked,
-                        address: pickupLocationInfo?.address ?? "",
-                        lat: pickupLocationInfo?.latitude ?? 0,
-                        lng: pickupLocationInfo?.longitude ?? 0,
+                        locationInfo: pickupLocationInfo ?? emptyLocationInfo,
                       },
                 },
               })
@@ -291,7 +298,7 @@ export default function SearchAndFilters({
             }
             initValue={
               !searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
-                ? searchCarRequest.deliveryInfo.returnLocation.address
+                ? searchCarRequest.deliveryInfo.returnLocation.locationInfo.address
                 : ""
             }
             onAddressChange={async (placeDetails) => {
@@ -320,9 +327,15 @@ export default function SearchAndFilters({
                   ...searchCarRequest.deliveryInfo,
                   returnLocation: {
                     isHostHomeLocation: false,
-                    address: placeDetails.addressString,
-                    lat: locationLat,
-                    lng: locationLng,
+                    locationInfo: {
+                      address: placeDetails.addressString,
+                      country: placeDetails.country?.short_name ?? "",
+                      state: placeDetails.state?.short_name ?? "",
+                      city: placeDetails.city?.long_name ?? "",
+                      latitude: locationLat,
+                      longitude: locationLng,
+                      timeZoneId: "",
+                    },
                   },
                 },
               });
@@ -344,9 +357,7 @@ export default function SearchAndFilters({
                       }
                     : {
                         isHostHomeLocation: e.target.checked,
-                        address: returnLocationInfo?.address ?? "",
-                        lat: returnLocationInfo?.latitude ?? 0,
-                        lng: returnLocationInfo?.longitude ?? 0,
+                        locationInfo: returnLocationInfo ?? emptyLocationInfo,
                       },
                 },
               })

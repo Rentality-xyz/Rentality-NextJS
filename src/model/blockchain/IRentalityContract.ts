@@ -15,37 +15,24 @@ import {
   ContractDeliveryPrices,
   ContractFullClaimInfo,
   ContractKYCInfo,
+  ContractLocationInfo,
   ContractPublicHostCarDTO,
   ContractSearchCar,
   ContractSearchCarParams,
+  ContractSearchCarWithDistance,
+  ContractSignedLocationInfo,
   ContractTripDTO,
   ContractTripReceiptDTO,
   ContractUpdateCarInfoRequest,
 } from "./schemas";
 
 export interface IRentalityContract {
-  /// ADMIN functions
-  owner(): Promise<string>;
-  getCarServiceAddress(): Promise<string>;
-  updateCarService(contractAddress: string): Promise<ContractTransactionResponse>;
-  getCurrencyConverterServiceAddress(): Promise<string>;
-  updateCurrencyConverterService(contractAddress: string): Promise<ContractTransactionResponse>;
-  getTripServiceAddress(): Promise<string>;
-  updateTripService(contractAddress: string): Promise<ContractTransactionResponse>;
-  getUserServiceAddress(): Promise<string>;
-  updateUserService(contractAddress: string): Promise<ContractTransactionResponse>;
-  getRentalityPlatformAddress(): Promise<string>;
-  updateRentalityPlatform(contractAddress: string): Promise<ContractTransactionResponse>;
-  getPlatformFeeInPPM(): Promise<bigint>;
-
   /// HOST functions
   addCar(request: ContractCreateCarRequest): Promise<ContractTransactionResponse>;
   updateCarInfo(request: ContractUpdateCarInfoRequest): Promise<ContractTransactionResponse>;
   updateCarInfoWithLocation(
     request: ContractUpdateCarInfoRequest,
-    location: string,
-    locationLatitude: string,
-    locationLongitude: string,
+    location: ContractSignedLocationInfo,
     geoApiKey: string
   ): Promise<ContractTransactionResponse>;
   getCarInfoById(carId: bigint): Promise<ContractCarInfo>;
@@ -73,13 +60,14 @@ export interface IRentalityContract {
     startDateTime: bigint,
     endDateTime: bigint,
     searchParams: ContractSearchCarParams
-  ): Promise<ContractSearchCar[]>;
+  ): Promise<ContractSearchCarWithDistance[]>;
   searchAvailableCarsWithDelivery(
     startDateTime: bigint,
     endDateTime: bigint,
     searchParams: ContractSearchCarParams,
-    locations: ContractDeliveryLocations
-  ): Promise<ContractSearchCar[]>;
+    pickUpInfo: ContractLocationInfo,
+    returnInfo: ContractLocationInfo
+  ): Promise<ContractSearchCarWithDistance[]>;
 
   createTripRequest(request: ContractCreateTripRequest, value: object): Promise<ContractTransactionResponse>;
   getTripsAsGuest(): Promise<ContractTripDTO[]>;
@@ -93,6 +81,7 @@ export interface IRentalityContract {
 
   /// GENERAL functions
   address: string;
+  owner(): Promise<string>;
   getCarMetadataURI(carId: bigint): Promise<string>;
   getCarDetails(carId: bigint): Promise<ContractCarDetails>;
   getTrip(tripId: bigint): Promise<ContractTripDTO>;
@@ -123,9 +112,16 @@ export interface IRentalityContract {
     carId: bigint,
     daysOfTrip: bigint,
     currency: string,
-    deliveryData: ContractDeliveryLocations
+    pickUpLocation: ContractLocationInfo,
+    returnLocation: ContractLocationInfo
   ): Promise<ContractCalculatePaymentsDTO>;
   getUserDeliveryPrices(user: string): Promise<ContractDeliveryPrices>;
+
+  getKycCommission(): Promise<bigint>;
+  calculateKycCommission(currency: string): Promise<bigint>;
+  payKycCommission(currency: string, value: object): Promise<ContractTransactionResponse>;
+  isKycCommissionPaid(user: string): Promise<boolean>;
+  useKycCommission(user: string): Promise<ContractTransactionResponse>;
 
   //not using
   getAllCars(): Promise<ContractCarInfo[]>;
@@ -138,9 +134,37 @@ export interface IRentalityContract {
 }
 
 export interface IRentalityAdminGateway {
-  withdrawFromPlatform(amount: bigint): Promise<ContractTransactionResponse>;
-  withdrawAllFromPlatform(): Promise<ContractTransactionResponse>;
+  address: string;
+  owner(): Promise<string>;
+  getCarServiceAddress(): Promise<string>;
+  updateCarService(contractAddress: string): Promise<ContractTransactionResponse>;
+  getPaymentService(): Promise<string>;
+  updatePaymentService(contractAddress: string): Promise<ContractTransactionResponse>;
+  getClaimServiceAddress(): Promise<string>;
+  updateClaimService(contractAddress: string): Promise<ContractTransactionResponse>;
+  getRentalityPlatformAddress(): Promise<string>;
+  updateRentalityPlatform(contractAddress: string): Promise<ContractTransactionResponse>;
+  getCurrencyConverterServiceAddress(): Promise<string>;
+  updateCurrencyConverterService(contractAddress: string): Promise<ContractTransactionResponse>;
+  getTripServiceAddress(): Promise<string>;
+  updateTripService(contractAddress: string): Promise<ContractTransactionResponse>;
+  getUserServiceAddress(): Promise<string>;
+  updateUserService(contractAddress: string): Promise<ContractTransactionResponse>;
+  withdrawFromPlatform(amount: bigint, currencyType: string): Promise<ContractTransactionResponse>;
+  withdrawAllFromPlatform(currencyType: string): Promise<ContractTransactionResponse>;
   setPlatformFeeInPPM(valueInPPM: bigint): Promise<ContractTransactionResponse>;
+  updateGeoServiceAddress(newGeoServiceAddress: string): Promise<ContractTransactionResponse>;
+  updateGeoParserAddress(newGeoParserAddress: string): Promise<ContractTransactionResponse>;
+  setClaimsWaitingTime(timeInSec: bigint): Promise<ContractTransactionResponse>;
+  getClaimWaitingTime(): Promise<bigint>;
+  getPlatformFeeInPPM(): Promise<bigint>;
+  confirmCheckOut(tripId: bigint): Promise<ContractTransactionResponse>;
+  rejectTripRequest(tripId: bigint): Promise<ContractTransactionResponse>;
+  setCivicData(_civicVerifier: string, _civicGatekeeperNetwork: bigint): Promise<ContractTransactionResponse>;
+  setNewTCMessage(message: string): Promise<ContractTransactionResponse>;
+
+  getKycCommission(): Promise<bigint>;
+  setKycCommission(valueInUsdCents: bigint): Promise<ContractTransactionResponse>;
 }
 
 export interface IRentalityChatHelperContract {

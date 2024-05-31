@@ -84,6 +84,38 @@ export const getExistBlockchainList = (): BlockchainBaseInfo[] => {
   );
 };
 
+export const getBlockCountForSearch = (chainId: number): number => {
+  switch (chainId) {
+    case mainnet.id:
+      return Number.POSITIVE_INFINITY;
+    case sepolia.id:
+      return Number.POSITIVE_INFINITY;
+    case polygon.id:
+      return Number.POSITIVE_INFINITY;
+    case polygonMumbai.id:
+      return Number.POSITIVE_INFINITY;
+    case base.id:
+      return Number.POSITIVE_INFINITY;
+    case baseSepolia.id:
+      return 2500;
+    case optimism.id:
+      return Number.POSITIVE_INFINITY;
+    case optimismSepolia.id:
+      return Number.POSITIVE_INFINITY;
+    case fuse.id:
+      return Number.POSITIVE_INFINITY;
+    case fuseSparknet.id:
+      return Number.POSITIVE_INFINITY;
+    case opBNB.id:
+      return Number.POSITIVE_INFINITY;
+    case opBNBTestnet.id:
+      return Number.POSITIVE_INFINITY;
+    case localhostGanache.id:
+    default:
+      return Number.POSITIVE_INFINITY;
+  }
+};
+
 type BlockchainBaseInfo = {
   name: string;
   shortName: string;

@@ -10,6 +10,7 @@ import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import {
   dateFormatLongMonthDateTime,
   dateFormatLongMonthYearDateTime,
+  dateFormatShortMonthDateYear,
   dateFormatYearMonthDay,
 } from "@/utils/datetimeFormatters";
 import { getMilesIncludedPerDayText, isUnlimitedMiles } from "@/model/HostCarInfo";
@@ -108,7 +109,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                 <div className="">Driving license number: {tripInfo.guest.drivingLicenseNumber}</div>
                 <div className="">
                   Driving license validity period:{" "}
-                  {dateFormatYearMonthDay(tripInfo.guest.drivingLicenseExpirationDate, tripInfo.timeZoneId)}
+                  {dateFormatShortMonthDateYear(tripInfo.guest.drivingLicenseExpirationDate, tripInfo.timeZoneId)}
                 </div>
                 <div className="">Guest insurance information:</div>
                 <div className="">Insurance company name: {tripInfo.guestInsuranceCompanyName}</div>
@@ -118,7 +119,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                 <div className="">Driving license number: {tripInfo.host.drivingLicenseNumber}</div>
                 <div className="">
                   Driving license validity period:{" "}
-                  {dateFormatYearMonthDay(tripInfo.host.drivingLicenseExpirationDate, tripInfo.timeZoneId)}
+                  {dateFormatShortMonthDateYear(tripInfo.host.drivingLicenseExpirationDate, tripInfo.timeZoneId)}
                 </div>
                 <div className="text-xl">VEHICLE INFORMATION</div>
                 <div className="">

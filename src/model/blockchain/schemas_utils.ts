@@ -8,14 +8,26 @@ import {
   ContractChatInfo,
   ContractClaim,
   ContractFullClaimInfo,
+  ContractLocationInfo,
   ContractPublicHostCarDTO,
   ContractSearchCar,
+  ContractSearchCarWithDistance,
   ContractTransactionInfo,
   ContractTrip,
   ContractTripDTO,
   EngineType,
   TripStatus,
 } from "./schemas";
+
+export const emptyContractLocationInfo: ContractLocationInfo = {
+  userAddress: "",
+  country: "",
+  state: "",
+  city: "",
+  latitude: "",
+  longitude: "",
+  timeZoneId: "",
+};
 
 const emptyContractCarDetails: ContractCarDetails = {
   carId: BigInt(0),
@@ -31,17 +43,12 @@ const emptyContractCarDetails: ContractCarDetails = {
   engineType: EngineType.PETROL,
   engineParams: [],
   geoVerified: false,
-  timeZoneId: "",
-  city: "",
-  country: "",
-  state: "",
-  locationLatitude: "",
-  locationLongitude: "",
   currentlyListed: false,
+  locationInfo: emptyContractLocationInfo,
 };
 
 export function validateContractCarDetails(obj: ContractCarDetails): obj is ContractCarDetails {
-  return validateType(obj, emptyContractCarDetails);
+  return validateType(obj, emptyContractCarDetails) && validateType(obj.locationInfo, emptyContractLocationInfo);
 }
 
 const emptyContractCarInfo: ContractCarInfo = {
@@ -62,6 +69,7 @@ const emptyContractCarInfo: ContractCarInfo = {
   timeBufferBetweenTripsInSec: BigInt(0),
   timeZoneId: "",
   insuranceIncluded: false,
+  locationHash: "",
 };
 
 export function validateContractCarInfo(obj: ContractCarInfo): obj is ContractCarInfo {
@@ -151,6 +159,7 @@ export function validateContractFullClaimInfo(obj: ContractFullClaimInfo): obj i
     guestPhoneNumber: "",
     carInfo: emptyContractCarInfo,
     amountInEth: BigInt(0),
+    timeZoneId: "",
   };
 
   return validateType(obj, emptyContractFullClaimInfo) && validateType(obj.claim, emptyContractClaim);
@@ -168,12 +177,6 @@ const emptyContractSearchCar: ContractSearchCar = {
   host: "",
   hostName: "",
   hostPhotoUrl: "",
-  city: "",
-  country: "",
-  state: "",
-  locationLatitude: "",
-  locationLongitude: "",
-  timeZoneId: "",
   metadataURI: "",
   pricePerDayWithDiscount: BigInt(0),
   taxes: BigInt(0),
@@ -183,10 +186,22 @@ const emptyContractSearchCar: ContractSearchCar = {
   underTwentyFiveMilesInUsdCents: BigInt(0),
   deliveryFee: BigInt(0),
   insuranceIncluded: false,
+  locationInfo: emptyContractLocationInfo,
 };
 
 export function validateContractSearchCar(obj: ContractSearchCar): obj is ContractSearchCar {
-  return validateType(obj, emptyContractSearchCar);
+  return validateType(obj, emptyContractSearchCar) && validateType(obj.locationInfo, emptyContractLocationInfo);
+}
+
+const emptyContractSearchCarWithDistance: ContractSearchCarWithDistance = {
+  car: emptyContractSearchCar,
+  distance: BigInt(0),
+};
+
+export function validateContractSearchCarWithDistance(
+  obj: ContractSearchCarWithDistance
+): obj is ContractSearchCarWithDistance {
+  return validateType(obj, emptyContractSearchCarWithDistance) && validateType(obj.car, emptyContractSearchCar);
 }
 
 const emptyContractTransactionInfo: ContractTransactionInfo = {
@@ -210,8 +225,6 @@ const emptyContractTrip: ContractTrip = {
   pricePerDayInUsdCents: BigInt(0),
   startDateTime: BigInt(0),
   endDateTime: BigInt(0),
-  startLocation: "",
-  endLocation: "",
   milesIncludedPerDay: BigInt(0),
   paymentInfo: {
     tripId: BigInt(0),
@@ -250,6 +263,8 @@ const emptyContractTrip: ContractTrip = {
   guestInsuranceCompanyName: "",
   guestInsurancePolicyNumber: "",
   finishDateTime: BigInt(0),
+  pickUpHash: "",
+  returnHash: "",
 };
 
 export function validateContractTrip(obj: ContractTrip): obj is ContractTrip {
@@ -269,8 +284,15 @@ const emptyContractTripDTO: ContractTripDTO = {
   brand: "",
   model: "",
   yearOfProduction: BigInt(0),
+  pickUpLocation: emptyContractLocationInfo,
+  returnLocation: emptyContractLocationInfo,
 };
 
 export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {
-  return validateType(obj, emptyContractTripDTO) && validateType(obj.trip, emptyContractTrip);
+  return (
+    validateType(obj, emptyContractTripDTO) &&
+    validateType(obj.trip, emptyContractTrip) &&
+    validateType(obj.pickUpLocation, emptyContractLocationInfo) &&
+    validateType(obj.returnLocation, emptyContractLocationInfo)
+  );
 }

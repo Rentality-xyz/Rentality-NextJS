@@ -5,12 +5,12 @@ import React from "react";
 import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { usePathname } from "next/navigation";
 
-type Props = {
+type TransactionHistoryMobileCardProps = {
   isHost: boolean;
   transaction: TransactionHistoryInfo;
 };
 
-export default function TransactionHistoryMobileCard(props: Props) {
+export default function TransactionHistoryMobileCard(props: TransactionHistoryMobileCardProps) {
   const { isHost, transaction } = props;
   const pathname = usePathname();
   const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${transaction.transHistoryId}?back=${pathname}`;
