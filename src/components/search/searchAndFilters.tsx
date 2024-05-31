@@ -11,6 +11,7 @@ import { ParseLocationResponse } from "@/pages/api/parseLocation";
 import moment from "moment";
 import Checkbox from "../common/checkbox";
 import { LocationInfo, emptyLocationInfo } from "@/model/LocationInfo";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
 
 function formatLocation(city: string, state: string, country: string) {
   city = city != null && city.length > 0 ? city + ", " : "";
@@ -41,18 +42,19 @@ export default function SearchAndFilters({
   setOpenFilterPanel: (value: boolean) => void;
   t: TFunctionNext;
 }) {
-  const [utcOffset, setUtcOffset] = useState("");
+  const [timeZoneId, setTimeZoneId] = useState("");
   const [pickupLocationInfo, setPickupLocationInfo] = useState<LocationInfo | undefined>(undefined);
   const [returnLocationInfo, setReturnLocationInfo] = useState<LocationInfo | undefined>(undefined);
 
-  const gmtLabel = isEmpty(utcOffset) ? "" : `(GMT${utcOffset})`;
+  const gmtLabel = isEmpty(timeZoneId) ? "" : `(GMT${moment.tz(timeZoneId).format("Z").slice(0, 3)})`;
+  const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
   const isSearchAllowed =
     formatLocation(
       searchCarRequest.searchLocation.city,
       searchCarRequest.searchLocation.state,
       searchCarRequest.searchLocation.country
     ).length > 0 &&
-    new Date(searchCarRequest.dateFrom) >= new Date() &&
+    moment.tz(searchCarRequest.dateFrom, notEmtpyTimeZoneId) >= moment.tz(notEmtpyTimeZoneId) &&
     new Date(searchCarRequest.dateTo) > new Date(searchCarRequest.dateFrom);
 
   const t_comp = (element: string) => {
@@ -89,7 +91,7 @@ export default function SearchAndFilters({
         searchCarRequest.searchLocation.country
       );
       if (isEmpty(address)) {
-        setUtcOffset("");
+        setTimeZoneId("");
         return;
       }
 
@@ -98,16 +100,16 @@ export default function SearchAndFilters({
       const apiResponse = await fetch(url);
 
       if (!apiResponse.ok) {
-        setUtcOffset("");
+        setTimeZoneId("");
         return;
       }
       const apiJson = (await apiResponse.json()) as ParseLocationResponse;
       if ("error" in apiJson) {
-        setUtcOffset("");
+        setTimeZoneId("");
         return;
       }
 
-      setUtcOffset(moment.tz(apiJson.timeZoneId).format("Z").slice(0, 3));
+      setTimeZoneId(apiJson.timeZoneId);
     };
 
     getGMTFromLocation();
