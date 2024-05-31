@@ -112,8 +112,8 @@ const formatSearchAvailableCarsContractResponse = async (
         hostName: i.car.hostName,
         timeZoneId: i.car.locationInfo.timeZoneId,
         location: {
-          lat: parseFloat(i.car.locationInfo.latitude),
-          lng: parseFloat(i.car.locationInfo.longitude),
+          lat: Number(i.car.locationInfo.latitude),
+          lng: Number(i.car.locationInfo.longitude),
         },
         highlighted: false,
         daysDiscount: getDaysDiscount(tripDays),

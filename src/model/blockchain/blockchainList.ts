@@ -97,7 +97,7 @@ export const getBlockCountForSearch = (chainId: number): number => {
     case base.id:
       return Number.POSITIVE_INFINITY;
     case baseSepolia.id:
-      return 2500;
+      return 1000;
     case optimism.id:
       return Number.POSITIVE_INFINITY;
     case optimismSepolia.id:
