@@ -68,7 +68,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                 <div className="flex flex-row grow p-2">
                   <strong className="text-xl text-[#52D1C9]">{t_details("basic_car_details")}</strong>
                 </div>
-                <div className="flex flex-wrap p-2">
+                <div className="flex max-sm:flex-col flex-wrap p-2">
                   <div className="flex w-28 items-center m-2">
                     <Image className="me-1" src={carDoorsIcon} width={30} height={30} alt="" />
                     {tripInfo.carDoorsNumber} {t_details("doors")}
