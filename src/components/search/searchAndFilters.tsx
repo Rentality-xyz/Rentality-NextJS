@@ -146,8 +146,9 @@ export default function SearchAndFilters({
                 country: country,
                 state: state,
                 city: city,
-                locationLat: locationLat,
-                locationLng: locationLng,
+                latitude: locationLat ?? 0,
+                longitude: locationLng ?? 0,
+                timeZoneId: "",
               },
             });
           }}

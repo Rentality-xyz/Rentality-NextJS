@@ -11,6 +11,7 @@ import {
   ContractLocationInfo,
   ContractPublicHostCarDTO,
   ContractSearchCar,
+  ContractSearchCarWithDistance,
   ContractTransactionInfo,
   ContractTrip,
   ContractTripDTO,
@@ -190,6 +191,17 @@ const emptyContractSearchCar: ContractSearchCar = {
 
 export function validateContractSearchCar(obj: ContractSearchCar): obj is ContractSearchCar {
   return validateType(obj, emptyContractSearchCar) && validateType(obj.locationInfo, emptyContractLocationInfo);
+}
+
+const emptyContractSearchCarWithDistance: ContractSearchCarWithDistance = {
+  car: emptyContractSearchCar,
+  distance: BigInt(0),
+};
+
+export function validateContractSearchCarWithDistance(
+  obj: ContractSearchCarWithDistance
+): obj is ContractSearchCarWithDistance {
+  return validateType(obj, emptyContractSearchCarWithDistance) && validateType(obj.car, emptyContractSearchCar);
 }
 
 const emptyContractTransactionInfo: ContractTransactionInfo = {

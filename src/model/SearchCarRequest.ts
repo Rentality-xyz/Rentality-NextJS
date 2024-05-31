@@ -1,14 +1,7 @@
-import { LocationInfo } from "./LocationInfo";
+import { LocationInfo, emptyLocationInfo } from "./LocationInfo";
 
 export type SearchCarRequest = {
-  searchLocation: {
-    address: string;
-    country: string;
-    state: string;
-    city: string;
-    locationLat: number | undefined;
-    locationLng: number | undefined;
-  };
+  searchLocation: LocationInfo;
   dateFrom: string;
   dateTo: string;
   searchFilters: {
@@ -27,14 +20,7 @@ export type SearchCarRequest = {
 };
 
 export const emptySearchCarRequest: SearchCarRequest = {
-  searchLocation: {
-    country: "",
-    state: "",
-    city: "",
-    locationLat: 0,
-    locationLng: 0,
-    address: "",
-  },
+  searchLocation: emptyLocationInfo,
   dateFrom: "",
   dateTo: "",
   searchFilters: {

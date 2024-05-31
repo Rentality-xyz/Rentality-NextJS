@@ -19,6 +19,7 @@ import {
   ContractPublicHostCarDTO,
   ContractSearchCar,
   ContractSearchCarParams,
+  ContractSearchCarWithDistance,
   ContractSignedLocationInfo,
   ContractTripDTO,
   ContractTripReceiptDTO,
@@ -59,14 +60,14 @@ export interface IRentalityContract {
     startDateTime: bigint,
     endDateTime: bigint,
     searchParams: ContractSearchCarParams
-  ): Promise<ContractSearchCar[]>;
+  ): Promise<ContractSearchCarWithDistance[]>;
   searchAvailableCarsWithDelivery(
     startDateTime: bigint,
     endDateTime: bigint,
     searchParams: ContractSearchCarParams,
     pickUpInfo: ContractLocationInfo,
     returnInfo: ContractLocationInfo
-  ): Promise<ContractSearchCar[]>;
+  ): Promise<ContractSearchCarWithDistance[]>;
 
   createTripRequest(request: ContractCreateTripRequest, value: object): Promise<ContractTransactionResponse>;
   getTripsAsGuest(): Promise<ContractTripDTO[]>;

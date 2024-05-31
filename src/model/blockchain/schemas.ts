@@ -74,6 +74,7 @@ export type ContractSearchCarParams = {
   yearOfProductionTo: bigint;
   pricePerDayInUsdCentsFrom: bigint;
   pricePerDayInUsdCentsTo: bigint;
+  userLocation: ContractLocationInfo;
 };
 
 export type ContractCreateTripRequest = {
@@ -286,6 +287,11 @@ export type ContractKYCInfo = {
   createDate: bigint;
   isTCPassed: boolean;
   TCSignature: string;
+};
+
+export type ContractSearchCarWithDistance = {
+  car: ContractSearchCar;
+  distance: bigint;
 };
 
 export type ContractSearchCar = {
