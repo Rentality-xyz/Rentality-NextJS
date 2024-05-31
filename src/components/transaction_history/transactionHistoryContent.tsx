@@ -28,7 +28,7 @@ type TransactionHistoryFilterParams = {
 };
 
 const defaultDateFrom = moment({ hour: 0 }).subtract(1, "month").toDate();
-const defaultDateTo = moment({ hour: 0 }).toDate();
+const defaultDateTo = moment({ hour: 0 }).add(6, "month").toDate();
 
 export default function TransactionHistoryContent({ isHost, transactions, t }: TransactionHistoryContentProps) {
   const pathname = usePathname();
