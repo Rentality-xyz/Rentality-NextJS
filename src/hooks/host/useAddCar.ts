@@ -7,6 +7,7 @@ import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { ContractCreateCarRequest } from "@/model/blockchain/schemas";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
+import { emptyLocationInfo } from "@/model/LocationInfo";
 
 const emptyNewCarInfo: HostCarInfo = {
   carId: 0,
@@ -32,7 +33,7 @@ const emptyNewCarInfo: HostCarInfo = {
   milesIncludedPerDay: "",
   securityDeposit: "",
   fuelPricePerGal: "",
-  locationInfo: { address: "", country: "", state: "", city: "", latitude: 0, longitude: 0, timeZoneId: "" },
+  locationInfo: emptyLocationInfo,
   isLocationEdited: true,
   currentlyListed: true,
   engineTypeText: "",
@@ -224,7 +225,7 @@ const useAddCar = () => {
           city: dataToSave.locationInfo.city,
           latitude: dataToSave.locationInfo.latitude.toFixed(6),
           longitude: dataToSave.locationInfo.longitude.toFixed(6),
-          timeZoneId: dataToSave.locationInfo.timeZoneId ?? "",
+          timeZoneId: dataToSave.locationInfo.timeZoneId,
         },
       };
 

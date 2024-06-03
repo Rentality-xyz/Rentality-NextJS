@@ -11,6 +11,29 @@ import RntButton from "@/components/common/rntButton";
 import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2Digits, fixedNumber } from "@/utils/numericFormatters";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
+
+const getTimeZoneIdFromAddress = async (latitude: number, longitude: number) => {
+  if (longitude === 0) return UTC_TIME_ZONE_ID;
+
+  const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  if (!GOOGLE_MAPS_API_KEY) {
+    console.error("getTimeZoneIdFromAddress error: GOOGLE_MAPS_API_KEY was not set");
+    return "";
+  }
+
+  var googleTimeZoneResponse = await fetch(
+    `https://maps.googleapis.com/maps/api/timezone/json?location=${latitude},${longitude}&timestamp=0&key=${GOOGLE_MAPS_API_KEY}`
+  );
+  if (!googleTimeZoneResponse.ok) {
+    console.error(`getUtcOffsetMinutesFromLocation error: googleTimeZoneResponse is ${googleTimeZoneResponse.status}`);
+    return UTC_TIME_ZONE_ID;
+  }
+
+  const googleTimeZoneJson = await googleTimeZoneResponse.json();
+
+  return googleTimeZoneJson?.timeZoneId ?? UTC_TIME_ZONE_ID;
+};
 
 export default function CarEditForm({
   carInfoFormParams,
@@ -43,6 +66,11 @@ export default function CarEditForm({
 
       if (firstAddress) {
         setAutocomplete(firstAddress);
+
+        setCarInfoFormParams({
+          ...carInfoFormParams,
+          locationInfo: { ...carInfoFormParams.locationInfo, address: firstAddress },
+        });
       }
     };
     getGoogleAddress();
@@ -336,13 +364,15 @@ export default function CarEditForm({
               includeStreetAddress={true}
               readOnly={!carInfoFormParams.isLocationEdited}
               onChange={(e) => setAutocomplete(e.target.value)}
-              onAddressChange={(placeDetails) => {
+              onAddressChange={async (placeDetails) => {
+                const locationAddress = placeDetails.addressString;
                 const country = placeDetails.country?.short_name ?? "";
                 const state = placeDetails.state?.long_name ?? "";
                 const city = placeDetails.city?.long_name ?? "";
                 const latitude = fixedNumber(placeDetails.location?.latitude ?? 0, 6);
                 const longitude = fixedNumber(placeDetails.location?.longitude ?? 0, 6);
-                const locationAddress = `1, ${city}, ${state}, ${country}`;
+                const timeZoneId = await getTimeZoneIdFromAddress(latitude, longitude);
+                console.log(`timeZoneId: ${timeZoneId}`);
 
                 setCarInfoFormParams({
                   ...carInfoFormParams,
@@ -353,6 +383,7 @@ export default function CarEditForm({
                     city: city,
                     latitude: latitude,
                     longitude: longitude,
+                    timeZoneId: timeZoneId,
                   },
                 });
               }}

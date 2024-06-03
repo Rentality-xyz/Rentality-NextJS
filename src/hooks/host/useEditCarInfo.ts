@@ -19,6 +19,7 @@ import {
   ContractUpdateCarInfoRequest,
 } from "@/model/blockchain/schemas";
 import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
+import { emptyLocationInfo } from "@/model/LocationInfo";
 
 const emptyHostCarInfo: HostCarInfo = {
   carId: -1,
@@ -44,7 +45,7 @@ const emptyHostCarInfo: HostCarInfo = {
   milesIncludedPerDay: "",
   securityDeposit: "",
   fuelPricePerGal: "",
-  locationInfo: { address: "", country: "", state: "", city: "", latitude: 0, longitude: 0, timeZoneId: "" },
+  locationInfo: emptyLocationInfo,
   isLocationEdited: false,
   currentlyListed: true,
   engineTypeText: "",
@@ -101,7 +102,7 @@ const useEditCarInfo = (carId: number) => {
           city: carInfoFormParams.locationInfo.city,
           latitude: carInfoFormParams.locationInfo.latitude.toFixed(6),
           longitude: carInfoFormParams.locationInfo.longitude.toFixed(6),
-          timeZoneId: carInfoFormParams.locationInfo.timeZoneId ?? "",
+          timeZoneId: carInfoFormParams.locationInfo.timeZoneId,
         },
         signature: "",
       };
@@ -183,12 +184,13 @@ const useEditCarInfo = (carId: number) => {
           milesIncludedPerDay: getMilesIncludedPerDayText(carInfoDetails.milesIncludedPerDay),
           securityDeposit: securityDeposit.toString(),
           locationInfo: {
-            address: "",
+            address: carInfoDetails.locationInfo.userAddress,
             country: carInfoDetails.locationInfo.country,
             state: carInfoDetails.locationInfo.state,
             city: carInfoDetails.locationInfo.city,
             latitude: Number(carInfoDetails.locationInfo.latitude),
             longitude: Number(carInfoDetails.locationInfo.longitude),
+            timeZoneId: carInfoDetails.locationInfo.timeZoneId,
           },
           isLocationEdited: false,
           currentlyListed: carInfo.currentlyListed,

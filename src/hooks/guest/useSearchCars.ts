@@ -142,7 +142,7 @@ const useSearchCars = () => {
               city: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.city,
               latitude: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.latitude.toFixed(6),
               longitude: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.longitude.toFixed(6),
-              timeZoneId: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.timeZoneId ?? "",
+              timeZoneId: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.timeZoneId,
             };
         const returnLocationInfo = searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
           ? carLocationInfo
@@ -153,7 +153,7 @@ const useSearchCars = () => {
               city: searchCarRequest.deliveryInfo.returnLocation.locationInfo.city,
               latitude: searchCarRequest.deliveryInfo.returnLocation.locationInfo.latitude.toFixed(6),
               longitude: searchCarRequest.deliveryInfo.returnLocation.locationInfo.longitude.toFixed(6),
-              timeZoneId: searchCarRequest.deliveryInfo.returnLocation.locationInfo.timeZoneId ?? "",
+              timeZoneId: searchCarRequest.deliveryInfo.returnLocation.locationInfo.timeZoneId,
             };
 
         const paymentsNeeded = await rentalityContract.calculatePaymentsWithDelivery(
