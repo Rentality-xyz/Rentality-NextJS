@@ -20,6 +20,7 @@ import {
 } from "@/model/blockchain/schemas";
 import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
 import { emptyLocationInfo } from "@/model/LocationInfo";
+import { bigIntReplacer } from "@/utils/json";
 
 const emptyHostCarInfo: HostCarInfo = {
   carId: -1,
@@ -94,9 +95,18 @@ const useEditCarInfo = (carId: number) => {
         timeBufferBetweenTripsInSec: BigInt(carInfoFormParams.timeBufferBetweenTripsInMin * 60),
         securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
       };
+
+      let hostAddressArray = carInfoFormParams.locationInfo.address.split(",");
+
+      hostAddressArray[hostAddressArray.length - 1] = carInfoFormParams.locationInfo.country;
+      hostAddressArray[hostAddressArray.length - 2] = carInfoFormParams.locationInfo.state;
+      hostAddressArray[hostAddressArray.length - 3] = carInfoFormParams.locationInfo.city;
+
+      let hostAddress = hostAddressArray.join(",");
+
       const location: ContractSignedLocationInfo = {
         locationInfo: {
-          userAddress: carInfoFormParams.locationInfo.address,
+          userAddress: hostAddress,
           country: carInfoFormParams.locationInfo.country,
           state: carInfoFormParams.locationInfo.state,
           city: carInfoFormParams.locationInfo.city,
