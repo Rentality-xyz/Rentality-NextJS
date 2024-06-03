@@ -34,7 +34,7 @@ function CivicConditions({
       <h2 className="place-self-center text-rentality-secondary text-xl font-bold mt-6">
         Payment for Civic KYC verification procedure
       </h2>
-      <p className="mt-4">{`The price to complete one identity and driver's license verification process is $${{ commissionFee }}`}</p>
+      <p className="mt-4">{`The price to complete one identity and driver's license verification process is $${commissionFee}`}</p>
       <p>{"You'll get your verification fee back after completing your first trip on the Rentality platform."}</p>
       <p className="mt-4 font-bold">Attention!</p>
       <p>{`Verification is paid even if you do not pass the verification requirements listed above under "Conditions for Issuing a Civic Pass", payment is non-refundable.`}</p>
