@@ -88,6 +88,7 @@ export default function Admin() {
           <table className=" w-full table-auto border-spacing-2 max-lg:hidden">
             <thead className="mb-2">
               <tr className="text-rentality-additional-light">
+                <th className={`${headerSpanClassName}`}>#</th>
                 <th className={`${headerSpanClassName}`}>CarId</th>
                 <th className={`${headerSpanClassName}`}>CarImage</th>
                 <th className={`${headerSpanClassName}`}>Country</th>
@@ -100,9 +101,10 @@ export default function Admin() {
               </tr>
             </thead>
             <tbody className="text-sm">
-              {carLocations.map((carLocation) => {
+              {carLocations.map((carLocation, index) => {
                 return (
                   <tr key={carLocation.carId} className="border-b-[1px] border-b-gray-500">
+                    <td className={rowSpanClassName}>{index}</td>
                     <td className={rowSpanClassName}>{carLocation.carId}</td>
                     <td className={rowSpanClassName}>
                       <Image
