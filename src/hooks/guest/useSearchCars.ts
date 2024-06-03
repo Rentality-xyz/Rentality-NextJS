@@ -40,6 +40,8 @@ const useSearchCars = () => {
       if (searchCarRequest.searchLocation.state)
         url.searchParams.append("state", searchCarRequest.searchLocation.state);
       if (searchCarRequest.searchLocation.city) url.searchParams.append("city", searchCarRequest.searchLocation.city);
+      url.searchParams.append("latitude", searchCarRequest.searchLocation.latitude.toFixed(6));
+      url.searchParams.append("longitude", searchCarRequest.searchLocation.longitude.toFixed(6));
       if (searchCarRequest.searchFilters.brand) url.searchParams.append("brand", searchCarRequest.searchFilters.brand);
       if (searchCarRequest.searchFilters.model) url.searchParams.append("model", searchCarRequest.searchFilters.model);
       if (searchCarRequest.searchFilters.yearOfProductionFrom)

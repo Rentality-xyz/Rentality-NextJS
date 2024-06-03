@@ -7,16 +7,11 @@ import { emptyLocationInfo } from "@/model/LocationInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import {
   ContractLocationInfo,
-  ContractSearchCar,
   ContractSearchCarParams,
   ContractSearchCarWithDistance,
   EngineType,
 } from "@/model/blockchain/schemas";
-import {
-  validateContractSearchCar,
-  emptyContractLocationInfo,
-  validateContractSearchCarWithDistance,
-} from "@/model/blockchain/schemas_utils";
+import { emptyContractLocationInfo, validateContractSearchCarWithDistance } from "@/model/blockchain/schemas_utils";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getBlockchainTimeFromDate, getMoneyInCentsFromString } from "@/utils/formInput";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
@@ -25,6 +20,7 @@ import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Wallet } from "ethers";
 import moment from "moment";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { bigIntReplacer } from "@/utils/json";
 
 export const getDaysDiscount = (tripDays: number) => {
   switch (true) {
@@ -57,8 +53,8 @@ const formatSearchAvailableCarsContractRequest = (searchCarRequest: SearchCarReq
   const contractDateToUTC = getBlockchainTimeFromDate(endCarLocalDateTime);
   const contractSearchCarParams: ContractSearchCarParams = {
     country: searchCarRequest.searchLocation.country ?? "",
-    state: searchCarRequest.searchLocation.state ?? "",
-    city: searchCarRequest.searchLocation.city ?? "",
+    state: "", //searchCarRequest.searchLocation.state ?? "",
+    city: "", //searchCarRequest.searchLocation.city ?? "",
     brand: searchCarRequest.searchFilters.brand ?? "",
     model: searchCarRequest.searchFilters.model ?? "",
     yearOfProductionFrom: BigInt(searchCarRequest.searchFilters.yearOfProductionFrom ?? "0"),
@@ -74,10 +70,7 @@ const formatSearchAvailableCarsContractRequest = (searchCarRequest: SearchCarReq
   return { contractDateFromUTC, contractDateToUTC, contractSearchCarParams } as const;
 };
 
-const formatSearchAvailableCarsContractResponse = async (
-  rentality: IRentalityContract,
-  searchCarsViewsView: ContractSearchCarWithDistance[]
-) => {
+const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: ContractSearchCarWithDistance[]) => {
   if (searchCarsViewsView.length === 0) return [];
 
   return await Promise.all(
@@ -132,7 +125,7 @@ const formatSearchAvailableCarsContractResponse = async (
   );
 };
 
-const getTimeZoneIdFromLocation = async (address: string) => {
+const getTimeZoneIdFromAddress = async (address: string) => {
   if (isEmpty(address)) return UTC_TIME_ZONE_ID;
 
   const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
@@ -187,6 +180,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     country,
     state,
     city,
+    latitude,
+    longitude,
     brand,
     model,
     yearOfProductionFrom,
@@ -214,7 +209,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const location = `${city as string}, ${state as string}, ${country as string}`;
 
-  const timeZoneId = await getTimeZoneIdFromLocation(location);
+  const timeZoneId = await getTimeZoneIdFromAddress(location);
   if (isEmpty(timeZoneId)) {
     res.status(500).json({ error: "API checkTrips error: GOOGLE_MAPS_API_KEY was not set" });
     return;
@@ -225,7 +220,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const returnLocationValues = (returnLocation as string)?.split(";");
 
   const searchCarRequest: SearchCarRequest = {
-    searchLocation: emptyLocationInfo,
+    searchLocation: {
+      address: "",
+      country: country as string,
+      state: state as string,
+      city: city as string,
+      latitude: Number(latitude as string),
+      longitude: Number(longitude as string),
+      timeZoneId: "",
+    },
     dateFrom: dateFrom as string,
     dateTo: dateTo as string,
     searchFilters: {
@@ -299,6 +302,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         : searchCarRequest.deliveryInfo.returnLocation.locationInfo.longitude.toFixed(6),
     };
 
+    console.log(`contractSearchCarParams: ${JSON.stringify(contractSearchCarParams, bigIntReplacer)}`);
+
     availableCarsView = await rentality.searchAvailableCarsWithDelivery(
       contractDateFromUTC,
       contractDateToUTC,
@@ -307,6 +312,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       returnInfo
     );
   } else {
+    console.log(`contractSearchCarParams: ${JSON.stringify(contractSearchCarParams, bigIntReplacer)}`);
     availableCarsView = await rentality.searchAvailableCars(
       contractDateFromUTC,
       contractDateToUTC,
@@ -314,7 +320,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
   }
 
-  const availableCarsData = await formatSearchAvailableCarsContractResponse(rentality, availableCarsView);
+  const availableCarsData = await formatSearchAvailableCarsContractResponse(availableCarsView);
 
   res.status(200).json(availableCarsData);
 }
