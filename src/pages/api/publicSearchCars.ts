@@ -302,8 +302,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         : searchCarRequest.deliveryInfo.returnLocation.locationInfo.longitude.toFixed(6),
     };
 
-    console.log(`contractSearchCarParams: ${JSON.stringify(contractSearchCarParams, bigIntReplacer)}`);
-
     availableCarsView = await rentality.searchAvailableCarsWithDelivery(
       contractDateFromUTC,
       contractDateToUTC,
@@ -312,7 +310,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       returnInfo
     );
   } else {
-    console.log(`contractSearchCarParams: ${JSON.stringify(contractSearchCarParams, bigIntReplacer)}`);
     availableCarsView = await rentality.searchAvailableCars(
       contractDateFromUTC,
       contractDateToUTC,

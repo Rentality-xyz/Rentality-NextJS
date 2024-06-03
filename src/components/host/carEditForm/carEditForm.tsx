@@ -372,7 +372,6 @@ export default function CarEditForm({
                 const latitude = fixedNumber(placeDetails.location?.latitude ?? 0, 6);
                 const longitude = fixedNumber(placeDetails.location?.longitude ?? 0, 6);
                 const timeZoneId = await getTimeZoneIdFromAddress(latitude, longitude);
-                console.log(`timeZoneId: ${timeZoneId}`);
 
                 setCarInfoFormParams({
                   ...carInfoFormParams,
