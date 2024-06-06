@@ -13,7 +13,7 @@ export default function Claims() {
   // const [isLoading, claims, tripInfos, createClaim, cancelClaim, payClaim] = useGuestClaims();
   const { t } = useTranslation();
   const { showInfo, showError, hideDialogs } = useRntDialogs();
-  const { isLoading, claims, tripInfos, createClaim, payClaim, cancelClaim } = useGuestClaims();
+  const { isLoading, claims, tripInfos, createClaim, payClaim, cancelClaim, updateData } = useGuestClaims();
   const router = useRouter();
   const t_h_claims: TFunction = (name, options) => {
     return t("claims.host." + name, options);
@@ -28,7 +28,7 @@ export default function Claims() {
         showError(t('claims.errors.pay_claim_failed"'));
         return;
       }
-      router.refresh();
+      updateData();
     } catch (e) {
       showError(t('claims.errors.pay_claim_failed"'));
       console.error("handlePayClaim error:" + e);
@@ -44,7 +44,7 @@ export default function Claims() {
         showError(t_h_claims("claim_cancel_failed"));
         return;
       }
-      router.refresh();
+      updateData();
     } catch (e) {
       showError(t_h_claims("claim_cancel_failed"));
       console.error("handleCancelClaim error:" + e);
@@ -77,7 +77,7 @@ export default function Claims() {
         showError(t_h_claims("claim_failed"));
         return;
       }
-      router.refresh();
+      updateData();
     } catch (e) {
       showError(t_h_claims("claim_failed"));
       console.error("handleCreateClaim error:" + e);

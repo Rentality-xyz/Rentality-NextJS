@@ -119,7 +119,6 @@ function UserProfileInfo({
         throw new Error("Save profile info error");
       }
       showInfo(t("common.info.success"));
-      router.reload();
       router.push(isHost ? "/host" : "/guest");
     } catch (e) {
       console.error("handleSubmit error:" + e);
