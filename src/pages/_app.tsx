@@ -8,13 +8,18 @@ import { RentalityProvider } from "@/contexts/rentalityContext";
 import { RntDialogsProvider } from "@/contexts/rntDialogsContext";
 import { NotificationProvider } from "@/contexts/notification/notificationContext";
 import { useRouter } from "next/router";
-import { Suspense } from "react";
 // should be here for downloading 'locales/* '
 import "../utils/i18n";
+import { useEffect } from "react";
+import { analytics } from "@/utils/analytics";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const isHost = router.route.startsWith("/host");
+
+  useEffect(() => {
+    analytics;
+  }, []);
 
   return (
     <Web3Setup>
