@@ -1,11 +1,25 @@
-import { Waku, getUserChatContentTopic } from "./waku";
-import { createDecoder as eciesDecoder } from "@waku/message-encryption/ecies";
-import { isEmpty } from "@/utils/string";
+import { createEncoder as eciesEncoder, createDecoder as eciesDecoder } from "@waku/message-encryption/ecies";
+import { DecodedMessage } from "@waku/message-encryption";
+import { LightNode, PageDirection, Protocols, createLightNode, waitForRemotePeer } from "@waku/sdk";
 import { hexToBytes } from "@waku/utils/bytes";
-import { DecodedMessage, LightNode, PageDirection } from "@waku/sdk";
-import { ChatMessage } from "./model/chatMessage";
 import { Signer } from "ethers";
 import moment from "moment";
+import { isEmpty } from "@/utils/string";
+import { ChatMessage } from "./model/chatMessage";
+import { signUserChatMessage } from "./crypto";
+
+export function getUserChatContentTopic(address: string) {
+  return `/rentality/1/pm-user-t-${String(address).toLowerCase()}/proto`;
+}
+
+async function initializeNode() {
+  console.log("Initializing node");
+  const node = await createLightNode({ defaultBootstrap: true });
+  await node.start();
+  await waitForRemotePeer(node, [Protocols.Filter, Protocols.LightPush, Protocols.Store]);
+  console.log("Node initialized");
+  return node;
+}
 
 export class Client {
   node: LightNode | undefined;
@@ -39,7 +53,7 @@ export class Client {
     this.signer = signer;
     this.onUserMessageReceived = onUserMessageReceived;
 
-    this.node = await Waku.initializeNode();
+    this.node = await initializeNode();
   }
 
   async listenForUserChatMessages() {
@@ -50,10 +64,13 @@ export class Client {
     const walletAddress = (await this.signer.getAddress()).toLowerCase();
     const contentTopic = getUserChatContentTopic(walletAddress);
 
-    await this.node.filter.subscribe(
-      eciesDecoder(contentTopic, this.encryptionKeyPair.privateKey),
-      this.onUserChatMessage
-    );
+    const subscription = await this.node.filter.createSubscription();
+    await subscription.subscribe(eciesDecoder(contentTopic, this.encryptionKeyPair.privateKey), this.onUserChatMessage);
+
+    // await this.node.filter.subscribe(
+    //   eciesDecoder(contentTopic, this.encryptionKeyPair.privateKey),
+    //   this.onUserChatMessage
+    // );
 
     console.log(`Listening for messages at ${contentTopic}`);
   }
@@ -130,20 +147,47 @@ export class Client {
     };
   }
 
-  async sendUserMessage(toAddress: string, tripId: number, datetime: number, message: string, chatPublicKey: string) {
+  async sendUserMessage(
+    toAddress: string,
+    tripId: number,
+    datetime: number,
+    type: string,
+    message: string,
+    tags: Map<string, string>,
+    chatPublicKey: string
+  ) {
     if (!this.node) return;
     if (!this.encryptionKeyPair) return;
     if (!this.signer) return;
 
-    await Waku.sendUserChatMessage(
-      toAddress,
-      tripId,
-      datetime,
-      message,
-      this.signer,
-      hexToBytes(chatPublicKey),
-      this.encryptionKeyPair.publicKey,
-      this.node
-    );
+    const myPublicKey = this.encryptionKeyPair.publicKey;
+    const fromAddress = (await this.signer.getAddress()).toLowerCase();
+    const signature = await signUserChatMessage(fromAddress, toAddress, tripId, datetime, message, this.signer);
+
+    const chatMessage = new ChatMessage({
+      from: fromAddress,
+      to: toAddress,
+      tripId: tripId,
+      datetime: datetime,
+      type: type,
+      message: message,
+      tags: JSON.stringify(tags),
+      signature: hexToBytes(signature),
+    });
+
+    const payload = chatMessage.encode();
+    const encoder = eciesEncoder({
+      contentTopic: getUserChatContentTopic(toAddress),
+      publicKey: hexToBytes(chatPublicKey),
+      ephemeral: false,
+    });
+    const myEncoder = eciesEncoder({
+      contentTopic: getUserChatContentTopic(fromAddress),
+      publicKey: myPublicKey,
+      ephemeral: false,
+    });
+
+    await this.node.lightPush.send(encoder, { payload });
+    await this.node.lightPush.send(myEncoder, { payload });
   }
 }

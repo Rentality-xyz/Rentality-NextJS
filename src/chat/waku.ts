@@ -23,7 +23,9 @@ export class Waku {
     toAddress: string,
     tripId: number,
     datetime: number,
+    type: string,
     message: string,
+    tags: Map<string, string>,
     signer: Signer,
     chatPublicKey: Uint8Array,
     myPublicKey: Uint8Array,
@@ -37,7 +39,9 @@ export class Waku {
       to: toAddress,
       tripId: tripId,
       datetime: datetime,
+      type: type,
       message: message,
+      tags: JSON.stringify(tags),
       signature: hexToBytes(signature),
     });
 
