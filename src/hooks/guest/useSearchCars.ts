@@ -188,9 +188,10 @@ const useSearchCars = () => {
           currencyType: ethAddress,
         };
 
-        const transaction = await rentalityContract.createTripRequest(tripRequest, {
-          value: paymentsNeeded.totalPrice,
-        });
+        const transaction = await rentalityContract.createTripRequest(
+          { value: paymentsNeeded.totalPrice },
+          tripRequest
+        );
         await transaction.wait();
       }
 

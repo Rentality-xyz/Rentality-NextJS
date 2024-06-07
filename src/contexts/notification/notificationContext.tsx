@@ -5,13 +5,13 @@ import {
   createCreateTripNotification,
   createTripChangedNotification,
 } from "@/model/NotificationInfo";
-import { getEtherContractWithSigner } from "@/abis";
+import { getEtherContractWithProvider, getEtherContractWithSigner } from "@/abis";
 import { useEthereum } from "../web3/ethereumContext";
 import { useRentality } from "../rentalityContext";
 import { isEventLog } from "@/utils/ether";
 import { bigIntReplacer } from "@/utils/json";
 import { hasValue } from "@/utils/arrays";
-import { EventLog, Listener } from "ethers";
+import { ethers, EventLog, JsonRpcProvider, Listener } from "ethers";
 import { ClaimStatus, ContractFullClaimInfo, ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
 
 export type NotificationContextInfo = {
@@ -177,12 +177,20 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
       if (!rentalityContract) return;
 
       try {
-        const tripServiceContract = await getEtherContractWithSigner("tripService", ethereumInfo.signer);
+        const tripServiceContract = await getEtherContractWithSigner(
+          "tripService",
+          ethereumInfo.signer,
+          ethereumInfo.defaultChainId
+        );
         if (tripServiceContract == null) {
           console.error("initialLoading error: tripServiceContract is null");
           return false;
         }
-        const claimServiceContract = await getEtherContractWithSigner("claimService", ethereumInfo.signer);
+        const claimServiceContract = await getEtherContractWithSigner(
+          "claimService",
+          ethereumInfo.signer,
+          ethereumInfo.defaultChainId
+        );
         if (claimServiceContract == null) {
           console.error("initialLoading error: claimServiceContract is null");
           return false;
@@ -209,6 +217,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         const eventTripStatusChangedHistory = (
           await tripServiceContract.queryFilter(eventTripStatusChangedFilter)
         ).filter(isEventLog);
+        console.log(tripInfos);
         const notificationsTripStatusChangedHistory = await Promise.all(
           eventTripStatusChangedHistory.map(getNotificationFromTripChangedEvent(tripInfos, isHost))
         );

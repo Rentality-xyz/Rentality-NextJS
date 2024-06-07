@@ -416,7 +416,7 @@ export default class RentalityL0Contract implements IRentalitySender, IRentality
   async createTripRequest(value: object, request: ContractCreateTripRequest): Promise<ContractTransactionResponse> {
     if (this.isDefaultNetwork) {
       // @ts-ignore
-      return this.currantChainContract.createTripRequest(value.value, request);
+      return this.currantChainContract.createTripRequest(value.value, request, { value });
     }
     // @ts-ignore
     let _value = value.value;
@@ -424,7 +424,7 @@ export default class RentalityL0Contract implements IRentalitySender, IRentality
       _value,
       request
     );
-    return this.currantChainContract.createTripRequest(request, { value: quote + _value });
+    return this.currantChainContract.createTripRequest(_value, request, { value: quote });
   }
 
   async createTripRequestWithDelivery(
@@ -433,13 +433,13 @@ export default class RentalityL0Contract implements IRentalitySender, IRentality
   ): Promise<ContractTransactionResponse> {
     if (this.isDefaultNetwork) {
       // @ts-ignore
-      return this.currantChainContract.createTripRequestWithDelivery(value.value, request);
+      return this.currantChainContract.createTripRequestWithDelivery(value.value, request, value);
     }
     // @ts-ignore
     let _value = value.value;
     let quote = await this.currantChainContract.createTripRequestWithDelivery(_value, request);
 
-    return this.currantChainContract.createTripRequestWithDelivery(request, { value: quote + _value });
+    return this.currantChainContract.createTripRequestWithDelivery(_value, request, { value: quote });
   }
 
   async finishTrip(tripId: bigint): Promise<ContractTransactionResponse> {
@@ -467,12 +467,13 @@ export default class RentalityL0Contract implements IRentalitySender, IRentality
 
   async payClaim(claimId: bigint, value: object): Promise<ContractTransactionResponse> {
     if (this.isDefaultNetwork) {
-      return this.currantChainContract.payClaim(claimId, value);
+      // @ts-ignore
+      return this.currantChainContract.payClaim(value.value, claimId, value);
     }
     // @ts-ignore
     let _value = value.value;
     let quote = await (this.currantChainContract as unknown as IRentalitySender).quotePayClaim(_value, claimId);
-    return this.currantChainContract.payClaim(claimId, { value: quote + _value });
+    return this.currantChainContract.payClaim(_value, claimId, { value: quote });
   }
 
   async rejectClaim(claimId: bigint): Promise<ContractTransactionResponse> {

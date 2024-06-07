@@ -5,6 +5,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { ContractTrip, ContractTripDTO, EngineType, TripStatus } from "@/model/blockchain/schemas";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 import { mapTripDTOtoTripInfo } from "@/model/utils/TripDTOtoTripInfo";
+import RentalityL0Contract from "@/model/blockchain/IRentalityViewGateway";
 
 const useGuestTrips = () => {
   const rentalityContract = useRentality();
@@ -175,13 +176,14 @@ const useGuestTrips = () => {
       return result;
     };
 
-    const getTrips = async (rentalityContract: IRentalityContract) => {
+    const getTrips = async (rentalityContract: RentalityL0Contract) => {
       try {
         if (rentalityContract == null) {
           console.error("getTrips error: contract is null");
           return;
         }
         const tripsBookedView: ContractTripDTO[] = await rentalityContract.getTripsAsGuest();
+        console.log(tripsBookedView);
 
         const tripsBookedData =
           tripsBookedView.length === 0
@@ -189,6 +191,7 @@ const useGuestTrips = () => {
             : await Promise.all(
                 tripsBookedView.map(async (i: ContractTripDTO, index) => {
                   if (index === 0) {
+                    console.log(i);
                     validateContractTripDTO(i);
                   }
                   const tripContactInfo = await rentalityContract.getTripContactInfo(i.trip.carId);

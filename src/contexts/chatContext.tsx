@@ -16,6 +16,7 @@ import { useNotification } from "./notification/notificationContext";
 import { NotificationType } from "@/model/NotificationInfo";
 import { generateEncryptionKeyPair } from "@/chat/crypto";
 import useUserRole from "@/hooks/useUserRole";
+import RentalityL0Contract from "@/model/blockchain/IRentalityViewGateway";
 
 export type ChatContextInfo = {
   isLoading: boolean;
@@ -294,7 +295,7 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
   /// Chat Infos
 
   const getChatInfos = useCallback(
-    async (rentalityContract: IRentalityContract) => {
+    async (rentalityContract: RentalityL0Contract) => {
       try {
         if (rentalityContract == null) {
           console.error("getChatInfos error: contract is null");

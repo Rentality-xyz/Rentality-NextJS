@@ -12,7 +12,7 @@ import RentalityClaimServiceJSON_ABI from "./RentalityClaimService.v0_17_1.abi.j
 import RentalityClaimServiceJSON_ADDRESSES from "./RentalityClaimService.v0_17_1.addresses.json";
 import RentalitySenderJSON_ADDRESSES from "./RentalitySender.v0_17_1.addresses.json";
 import RentalitySenderJSON_ABI from "./RentalitySender.v0_17_1.abi.json";
-import { Contract, JsonRpcProvider, Signer } from "ethers";
+import { Contract, ethers, JsonRpcProvider, Signer } from "ethers";
 
 export const SMARTCONTRACT_VERSION = "v0_17_1";
 
@@ -47,14 +47,13 @@ const rentalityContracts = {
   },
 };
 
-export async function getEtherContractWithSigner(contract: keyof typeof rentalityContracts, signer: Signer) {
+export async function getEtherContractWithSigner(contract: keyof typeof rentalityContracts, signer: Signer, chain = 0) {
   try {
     if (!signer) {
       console.error("getEtherContract error: signer is null");
       return null;
     }
-
-    const chainId = Number((await signer.provider?.getNetwork())?.chainId);
+    let chainId = chain == 0 ? Number((await signer.provider?.getNetwork())?.chainId) : chain;
 
     const selectedChain = rentalityContracts[contract].addresses.find((i) => i.chainId === chainId);
 
@@ -62,7 +61,9 @@ export async function getEtherContractWithSigner(contract: keyof typeof rentalit
       console.error(`getEtherContract error: ${contract} address for chainId ${chainId} is not found`);
       return null;
     }
-    const etherContract = new Contract(selectedChain.address, rentalityContracts[contract].abi, signer);
+
+    let etherContract = new ethers.Contract(selectedChain.address, rentalityContracts[contract].abi, signer);
+
     return etherContract;
 
     // switch (contract) {
@@ -91,7 +92,7 @@ export async function getEtherContractWithProvider(
       return null;
     }
 
-    const chainId = Number((await provider?.getNetwork())?.chainId);
+    const chainId = Number(process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID!);
 
     const selectedChain = rentalityContracts[contract].addresses.find((i) => i.chainId === chainId);
 
