@@ -2,7 +2,7 @@ import React, {memo, MutableRefObject, useState} from "react";
 import Checkbox, {CheckboxLight} from "@/components/common/checkbox";
 import RntPlaceAutoComplete from "@/components/common/rntPlaceAutocomplete";
 import {SearchCarRequest} from "@/model/SearchCarRequest";
-import {LocationInfo} from "@/model/LocationInfo";
+import {emptyLocationInfo, LocationInfo} from "@/model/LocationInfo";
 import {t} from "i18next";
 
 export default function  SearchDeliveryLocations({
@@ -31,7 +31,7 @@ export default function  SearchDeliveryLocations({
                     }
                     initValue={
                         !searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
-                            ? searchCarRequest.deliveryInfo.pickupLocation.address
+                            ? searchCarRequest.deliveryInfo.pickupLocation.locationInfo.address
                             : ""
                     }
                     onAddressChange={async (placeDetails) => {
@@ -57,9 +57,15 @@ export default function  SearchDeliveryLocations({
                                 ...searchCarRequest.deliveryInfo,
                                 pickupLocation: {
                                     isHostHomeLocation: false,
-                                    address: placeDetails.addressString,
-                                    lat: locationLat,
-                                    lng: locationLng,
+                                    locationInfo: {
+                                        address: placeDetails.addressString,
+                                        country: placeDetails.country?.short_name ?? "",
+                                        state: placeDetails.state?.short_name ?? "",
+                                        city: placeDetails.city?.long_name ?? "",
+                                        latitude: locationLat,
+                                        longitude: locationLng,
+                                        timeZoneId: "",
+                                    },
                                 },
                             },
                         });
@@ -80,9 +86,7 @@ export default function  SearchDeliveryLocations({
                                     }
                                     : {
                                         isHostHomeLocation: e.target.checked,
-                                        address: pickupLocationInfo?.address ?? "",
-                                        lat: pickupLocationInfo?.latitude ?? 0,
-                                        lng: pickupLocationInfo?.longitude ?? 0,
+                                        locationInfo: pickupLocationInfo ?? emptyLocationInfo,
                                     },
                             },
                         })
@@ -101,7 +105,7 @@ export default function  SearchDeliveryLocations({
                     }
                     initValue={
                         !searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
-                            ? searchCarRequest.deliveryInfo.returnLocation.address
+                            ? searchCarRequest.deliveryInfo.returnLocation.locationInfo.address
                             : ""
                     }
                     onAddressChange={async (placeDetails) => {
@@ -129,9 +133,15 @@ export default function  SearchDeliveryLocations({
                                 ...searchCarRequest.deliveryInfo,
                                 returnLocation: {
                                     isHostHomeLocation: false,
-                                    address: placeDetails.addressString,
-                                    lat: locationLat,
-                                    lng: locationLng,
+                                    locationInfo: {
+                                        address: placeDetails.addressString,
+                                        country: placeDetails.country?.short_name ?? "",
+                                        state: placeDetails.state?.short_name ?? "",
+                                        city: placeDetails.city?.long_name ?? "",
+                                        latitude: locationLat,
+                                        longitude: locationLng,
+                                        timeZoneId: "",
+                                    },
                                 },
                             },
                         });
@@ -152,9 +162,7 @@ export default function  SearchDeliveryLocations({
                                     }
                                     : {
                                         isHostHomeLocation: e.target.checked,
-                                        address: returnLocationInfo?.address ?? "",
-                                        lat: returnLocationInfo?.latitude ?? 0,
-                                        lng: returnLocationInfo?.longitude ?? 0,
+                                        locationInfo: returnLocationInfo ?? emptyLocationInfo,
                                     },
                             },
                         })
