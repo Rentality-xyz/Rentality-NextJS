@@ -259,8 +259,12 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                       </td>
                     </tr>
                     <tr>
-                      <td>{t_details("delivery_fee")}</td>
-                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.deliveryFeeInUsd)}</td>
+                      <td>{t_details("pickUp_delivery_fee")}</td>
+                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.pickUpDeliveryFeeInUsd)}</td>
+                    </tr>
+                    <tr>
+                      <td>{t_details("dropOff_delivery_fee")}</td>
+                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.dropOffDeliveryFeeInUsd)}</td>
                     </tr>
                     <tr>
                       <td>{t_details("sales_tax")}</td>
@@ -280,7 +284,8 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                           tripInfo.totalPriceWithDiscountInUsd +
                             tripInfo.salesTaxInUsd +
                             tripInfo.governmentTaxInUsd +
-                            tripInfo.deliveryFeeInUsd
+                            tripInfo.pickUpDeliveryFeeInUsd +
+                            tripInfo.dropOffDeliveryFeeInUsd
                         )}
                       </td>
                     </tr>

@@ -245,7 +245,8 @@ export type ContractPaymentInfo = {
   currencyDecimals: bigint;
   resolveFuelAmountInUsdCents: bigint;
   resolveMilesAmountInUsdCents: bigint;
-  deliveryFee: bigint;
+  pickUpFee: bigint;
+  dropOfFee: bigint;
 };
 
 export type ContractTripReceiptDTO = {
@@ -313,7 +314,8 @@ export type ContractSearchCar = {
   metadataURI: string;
   underTwentyFiveMilesInUsdCents: bigint;
   aboveTwentyFiveMilesInUsdCents: bigint;
-  deliveryFee: bigint;
+  pickUp: bigint;
+  dropOf: bigint;
   insuranceIncluded: boolean;
   locationInfo: ContractLocationInfo;
 };
