@@ -20,6 +20,7 @@ import UserAvatarWithName from "@/components/common/userAvatarWithName";
 import TripContacts from "@/components/common/tripContacts";
 import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import RntDriverLicenseVerified from "@/components/common/rntDriverLicenseVerified";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
 
 export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; backPath: string; t: TFunctionNext }) {
   const [isLoading, tripInfo] = useTripInfo(tripId);
@@ -278,16 +279,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                       <td className="pt-5">
                         <strong>{t_details("total_charge")}</strong>
                       </td>
-                      <td className="text-end pt-5">
-                        $
-                        {displayMoneyWith2Digits(
-                          tripInfo.totalPriceWithDiscountInUsd +
-                            tripInfo.salesTaxInUsd +
-                            tripInfo.governmentTaxInUsd +
-                            tripInfo.pickUpDeliveryFeeInUsd +
-                            tripInfo.dropOffDeliveryFeeInUsd
-                        )}
-                      </td>
+                      <td className="text-end pt-5">${displayMoneyWith2Digits(tripInfo.totalPriceInUsd)}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -396,7 +388,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                       <tr>
                         <td>{t_details("dl_validity_period")}:</td>
                         <td className="text-end">
-                          {dateFormatShortMonthDateYear(tripInfo.guest.drivingLicenseExpirationDate)}
+                          {dateFormatShortMonthDateYear(tripInfo.guest.drivingLicenseExpirationDate, UTC_TIME_ZONE_ID)}
                         </td>
                       </tr>
                     </tbody>

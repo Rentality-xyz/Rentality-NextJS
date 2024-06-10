@@ -117,6 +117,7 @@ export type TripInfo = {
   currencyRate: number;
   salesTaxInUsd: number;
   governmentTaxInUsd: number;
+  totalPriceInUsd: number;
 
   host: {
     walletAddress: string;
