@@ -211,7 +211,7 @@ export default function SearchAndFilters({
                 </option>
             ))}
           </RntSelect>
-          <RntButtonTransparent className="w-48" onClick={handleClickOpenDeliveryLocation}>
+          <RntButtonTransparent className="w-full sm:w-48" onClick={handleClickOpenDeliveryLocation}>
             <div className="flex justify-center items-center text-[#52D1C9]">
               <div className="text-lg">
                 Deliver to me

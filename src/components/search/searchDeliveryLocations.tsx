@@ -21,7 +21,7 @@ export default function  SearchDeliveryLocations({
             <hr className="w-full border-t-2 border-gray-300" />
             <div className="flex flex-col gap-2">
                 <RntPlaceAutoComplete
-                    className="min-w-[40ch]"
+                    className="min-w-[34ch]"
                     id="pickupLocation"
                     label="Pick up location"
                     placeholder="Enter address"
@@ -91,7 +91,7 @@ export default function  SearchDeliveryLocations({
             </div>
             <div className="flex flex-col gap-2">
                 <RntPlaceAutoComplete
-                    className="min-w-[40ch]"
+                    className="min-w-[34ch]"
                     id="returnLocation"
                     label="Return location"
                     placeholder="Enter address"
