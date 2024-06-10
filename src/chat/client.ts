@@ -15,7 +15,9 @@ export function getUserChatContentTopic(address: string) {
 async function initializeNode() {
   console.log("Initializing node");
   const node = await createLightNode({ defaultBootstrap: true });
+  console.log("Starting Waku node.");
   await node.start();
+  console.log("Waiting for a peer");
   await waitForRemotePeer(node, [Protocols.Filter, Protocols.LightPush, Protocols.Store]);
   console.log("Node initialized");
   return node;
