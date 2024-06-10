@@ -59,11 +59,11 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
           <div className="flex flex-wrap my-6">
             <div className="w-full xl:w-2/3">
               <div className="rnt-card flex flex-col rounded-xl bg-rentality-bg my-2 xl:mr-2">
-                <div className="flex items-center justify-between p-2">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-2">
                   <div>
                     <strong className="text-2xl text-[#52D1C9]">{t_details("about_car")}</strong>
                   </div>
-                  <div>VIN: {tripInfo.carVinNumber}</div>
+                  <div className="max-sm:mt-2">VIN: {tripInfo.carVinNumber}</div>
                 </div>
                 <div className="flex flex-row grow p-2">
                   <strong className="text-xl text-[#52D1C9]">{t_details("basic_car_details")}</strong>
