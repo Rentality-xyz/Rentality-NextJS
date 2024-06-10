@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { TransactionHistoryInfo } from "@/model/TransactionHistoryInfo";
-import { dateFormatYearMonthDayTime, dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
+import {
+  dateFormatShortMonthDateTime,
+  dateFormatYearMonthDayTime,
+  dateToHtmlDateTimeFormat,
+} from "@/utils/datetimeFormatters";
 import RntInput from "@/components/common/rntInput";
 import RntButton from "@/components/common/rntButton";
 import React, { useMemo, useState } from "react";
@@ -202,8 +206,12 @@ export default function TransactionHistoryContent({ isHost, transactions, t }: T
                   <td className={rowSpanClassName}>{transaction.tripId}</td>
                   <td className={rowSpanClassName}>{getTripStatusTextFromStatus(transaction.status)}</td>
                   <td className={rowSpanClassName}>{transaction.days}</td>
-                  <td className={rowSpanClassName}>{dateFormatYearMonthDayTime(transaction.startDateTime)}</td>
-                  <td className={rowSpanClassName}>{dateFormatYearMonthDayTime(transaction.endDateTime)}</td>
+                  <td className={rowSpanClassName}>
+                    {dateFormatShortMonthDateTime(transaction.startDateTime, transaction.timeZoneId)}
+                  </td>
+                  <td className={rowSpanClassName}>
+                    {dateFormatShortMonthDateTime(transaction.endDateTime, transaction.timeZoneId)}
+                  </td>
                   <td className={rowSpanClassName}>${transaction.tripPayment}</td>
                   <td className={rowSpanClassName}>${transaction.refund}</td>
                   <td className={rowSpanClassName}>${transaction.tripEarnings}</td>

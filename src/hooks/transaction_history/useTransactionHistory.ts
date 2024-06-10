@@ -76,6 +76,7 @@ const useTransactionHistory = (isHost: boolean) => {
                     days: calculateDays(startDateTime, endDateTime),
                     startDateTime: startDateTime,
                     endDateTime: endDateTime,
+                    timeZoneId: tripDto.timeZoneId,
                     tripPayment: tripPayment,
                     refund: Number(tripDto.trip.transactionInfo.depositRefund) / 100,
                     tripEarnings: Number(tripDto.trip.transactionInfo.tripEarnings) / 100,
