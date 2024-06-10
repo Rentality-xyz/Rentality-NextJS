@@ -5,5 +5,15 @@ export type LocationInfo = {
   city: string;
   latitude: number;
   longitude: number;
-  timeZoneId?: string;
+  timeZoneId: string;
+};
+
+export const emptyLocationInfo = {
+  address: "",
+  country: "",
+  state: "",
+  city: "",
+  latitude: 0,
+  longitude: 0,
+  timeZoneId: "",
 };

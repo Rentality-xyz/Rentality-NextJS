@@ -10,7 +10,30 @@ import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/
 import RntButton from "@/components/common/rntButton";
 import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import { TFunction } from "@/utils/i18n";
-import { fixedNumber } from "@/utils/numericFormatters";
+import { displayMoneyWith2Digits, fixedNumber } from "@/utils/numericFormatters";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
+
+const getTimeZoneIdFromAddress = async (latitude: number, longitude: number) => {
+  if (longitude === 0) return UTC_TIME_ZONE_ID;
+
+  const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  if (!GOOGLE_MAPS_API_KEY) {
+    console.error("getTimeZoneIdFromAddress error: GOOGLE_MAPS_API_KEY was not set");
+    return "";
+  }
+
+  var googleTimeZoneResponse = await fetch(
+    `https://maps.googleapis.com/maps/api/timezone/json?location=${latitude},${longitude}&timestamp=0&key=${GOOGLE_MAPS_API_KEY}`
+  );
+  if (!googleTimeZoneResponse.ok) {
+    console.error(`getUtcOffsetMinutesFromLocation error: googleTimeZoneResponse is ${googleTimeZoneResponse.status}`);
+    return UTC_TIME_ZONE_ID;
+  }
+
+  const googleTimeZoneJson = await googleTimeZoneResponse.json();
+
+  return googleTimeZoneJson?.timeZoneId ?? UTC_TIME_ZONE_ID;
+};
 
 export default function CarEditForm({
   carInfoFormParams,
@@ -28,7 +51,7 @@ export default function CarEditForm({
   const [autocomplete, setAutocomplete] = useState("");
   const isUnlimitedMiles = carInfoFormParams.milesIncludedPerDay === UNLIMITED_MILES_VALUE_TEXT;
   const fuelPricePerMile = Number(carInfoFormParams.pricePerDay) / Number(carInfoFormParams.milesIncludedPerDay);
-  const fuelPricePerMileText = Number.isFinite(fuelPricePerMile) ? fuelPricePerMile.toString() : "-";
+  const fuelPricePerMileText = Number.isFinite(fuelPricePerMile) ? displayMoneyWith2Digits(fuelPricePerMile) : "-";
   const isElectricEngine = carInfoFormParams.engineTypeText === "Electro";
 
   useEffect(() => {
@@ -43,6 +66,11 @@ export default function CarEditForm({
 
       if (firstAddress) {
         setAutocomplete(firstAddress);
+
+        setCarInfoFormParams({
+          ...carInfoFormParams,
+          locationInfo: { ...carInfoFormParams.locationInfo, address: firstAddress },
+        });
       }
     };
     getGoogleAddress();
@@ -305,7 +333,7 @@ export default function CarEditForm({
         </div>
         <div className="flex flex-col">
           <textarea
-            className="text-black w-full px-4 py-2 border-2 rounded-2xl"
+            className="text-black w-full px-4 py-2 border-2 rounded-2xl disabled:bg-gray-300 disabled:text-gray-600"
             rows={5}
             id="description"
             placeholder="e.g. Dupont Pepper Grey 1967 Ford Mustang fastback"
@@ -336,13 +364,14 @@ export default function CarEditForm({
               includeStreetAddress={true}
               readOnly={!carInfoFormParams.isLocationEdited}
               onChange={(e) => setAutocomplete(e.target.value)}
-              onAddressChange={(placeDetails) => {
+              onAddressChange={async (placeDetails) => {
+                const locationAddress = placeDetails.addressString;
                 const country = placeDetails.country?.short_name ?? "";
                 const state = placeDetails.state?.long_name ?? "";
                 const city = placeDetails.city?.long_name ?? "";
                 const latitude = fixedNumber(placeDetails.location?.latitude ?? 0, 6);
                 const longitude = fixedNumber(placeDetails.location?.longitude ?? 0, 6);
-                const locationAddress = `1, ${city}, ${state}, ${country}`;
+                const timeZoneId = await getTimeZoneIdFromAddress(latitude, longitude);
 
                 setCarInfoFormParams({
                   ...carInfoFormParams,
@@ -353,6 +382,7 @@ export default function CarEditForm({
                     city: city,
                     latitude: latitude,
                     longitude: longitude,
+                    timeZoneId: timeZoneId,
                   },
                 });
               }}

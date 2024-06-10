@@ -15,10 +15,12 @@ type DeliveryPricesFormValues = {
 function DeliveryPriceForm({
   savedDeliveryPrices,
   saveDeliveryPrices,
+  isUserHasHostRole,
   t,
 }: {
   savedDeliveryPrices: DeliveryPrices;
   saveDeliveryPrices: (newDeliveryPrices: DeliveryPrices) => Promise<boolean>;
+  isUserHasHostRole: boolean;
   t: TFunction;
 }) {
   const router = useRouter();
@@ -41,6 +43,11 @@ function DeliveryPriceForm({
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (!isUserHasHostRole) {
+      showDialog(t_profile("save_delivery_prices_err_is_not_host"));
+      return;
+    }
 
     const isValid = Object.keys(errors).length === 0;
 

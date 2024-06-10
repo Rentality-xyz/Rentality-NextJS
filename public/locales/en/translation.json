@@ -103,8 +103,12 @@
       "less_than_zero": "Value should be more than 0",
       "greater_than_contract_balance": "Value should be less than contract balance",
       "withdraw": "Withdraw error:",
-      "platform_commission_error": "setPlatformCommission error:",
+      "platform_commission_error": "Save platform fee error:",
+      "kyc_commission_error": "Save KYC commission error:",
+      "claim_waiting_time_error": "Save claim waiting time error:",
       "commission_value_range": "Value should be between 0.0001% and 100% (min value is 0.0001%)",
+      "kyc_commission_value_range": "Value should be greater than 0",
+      "claim_waiting_time_value_range": "Value should be greater than 0",
       "address_format": "Address should start with 0x and contain 40 symbols",
       "set_user_service": "Set user service error:",
       "set_car_service": "Set car service error:",
@@ -179,7 +183,7 @@
     "keys_saved": "Keys are saved",
     "keys_not_saved": "Keys are not saved",
     "generate_keys": "To use chat functionality you have to generate and save encryption keys",
-    "pass_license_varif": "Please pass driver license verification",
+    "pass_license_verif": "Please pass driver license verification",
     "license_verified": "Driver's license verified",
     "license_not_verified": "Driver's license not verified",
     "not_confirmed": "You did not confirm",
@@ -200,11 +204,13 @@
     "save_keys": "Save keys",
     "save_discount": "Save discounts",
     "save_discount_err": "Save trip discounts request failed. Please try again",
+    "save_discount_err_is_not_host": "Please enter the first vehicle in Listing to enter Discounts",
     "delivery_price": "Delivery price",
     "delivery_price_from_1_to_25_miles": "From 1 mile to 25",
     "delivery_price_over_25_miles": "Over 25 miles",
     "save_delivery_price": "Save delivery price",
-    "save_delivery_prices_err": "Save delivery prices request failed. Please try again"
+    "save_delivery_prices_err": "Save delivery prices request failed. Please try again",
+    "save_delivery_prices_err_is_not_host": "Please enter the first vehicle in Listing to enter Delivery price"
   },
   "transaction_history": {
     "title": "Transaction history",
@@ -233,26 +239,25 @@
     "trip_not_found": "You don't have any booked trips",
     "cancelled_on": "{{rejected, string}} cancelled on {{date, string}}",
     "total": "Total price",
-    "status_pending_host": ["Guest booked a trip at {{date, string}}", "", "You have 8 hour to confirm this trip."],
+    "status_pending_host": [
+      "Guest booked a trip at {{date, string}}",
+      "",
+      "You have 8 hour to confirm this trip or you can reject free of charge"
+    ],
     "status_pending_guest": [
       "Host will confirm within 8 hour",
       "",
       "Please wait for host confirmation or you can cancel free of charge"
     ],
     "status_confirmed_host": [
-      "The trip starts in 1 hour",
+      "The trip starts {{date, string}}",
       "Let`s you check-in!",
-      "Start the trip from your side and wait start from the Guest."
+      "Start the trip from your side and wait start from the Guest.\nFree cancellation is available."
     ],
     "status_confirmed_guest": [
-      "The host confirmed your trip The trip starts in 1 hour",
+      "The host confirmed your trip The trip starts {{date, string}}",
       "",
-      "Please wait for the host start a trip or you can cancel with cancelation fee 50% of the daily rate"
-    ],
-    "is_finishing_by_host": [
-      "Finish the trip without guest confirmation",
-      "",
-      "Please enter data at the end of the trip"
+      "Please wait for the host start a trip or you can reject free of charge"
     ],
     "status_check_in_host_host": [
       "You started the trip from your side at {{date, string}}",
@@ -262,7 +267,7 @@
     "status_check_in_host_guest": [
       "Checked-in by Host at {{date, string}}",
       "Let`s you check-in!",
-      "Start the trip from your side, or you can cancel with a cancellation fee of 100% of the daily rate"
+      "Start the trip from you side."
     ],
     "status_trip_started_host_ended": [
       "Guest started at {{startDate, string}}. \nNow on the trip. \nThe trip ended {{date, string}}",
@@ -283,6 +288,11 @@
       "The trip ends {{date, string}}",
       "Let`s you check-out!",
       "Finish the trip from your side and wait finish from the Host."
+    ],
+    "status_is_finishing_by_host": [
+      "Finish the trip without guest confirmation",
+      "",
+      "Please enter data at the end of the trip"
     ],
     "status_check_out_by_guest": [
       "Checked-out by Guest at {{date, string}}",
@@ -372,7 +382,7 @@
       "delivery_fee": "Delivery fee",
       "sales_tax": "Sales Tax",
       "government_tax": "Government Tax",
-      "trip_total": "Trip total",
+      "total_charge": "Total charge",
       "security_deposit_info": "Security deposit info",
       "received": "Received",
       "reimbursement": "Reimbursement",
@@ -382,15 +392,15 @@
       "price_per_gal": "Price per 1 gal.",
       "refuel_or_recharge": "Refuel or recharge",
       "miles_included_per_trip": "Miles included per trip",
-      "overmiles" : "Overmiles",
-      "price_per_one_overmile" : "Price per 1 overmile",
+      "overmiles": "Overmiles",
+      "price_per_one_overmile": "Price per 1 overmile",
       "overmile_charge": "Overmile charge",
-      "total_reimbursement":"Total reimbursement",
+      "total_reimbursement": "Total reimbursement",
       "vehicle_dashboard_data": "Vehicle dashboard data",
       "start_fuel_or_battery_level": "Start fuel or battery level",
       "end_fuel_or_battery_level": "End fuel or battery level",
-      "dl_number":"DL number",
-      "dl_validity_period" : "DL validity period"
+      "dl_number": "DL number",
+      "dl_validity_period": "DL validity period"
     }
   },
   "vehicles": {

@@ -5,6 +5,7 @@ import { Claim } from "@/model/Claim";
 import { ClaimStatus } from "@/model/blockchain/schemas";
 import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
 import { usePathname } from "next/navigation";
+import moment from "moment";
 
 type Props =
   | {
@@ -47,8 +48,8 @@ export default function ClaimHistoryMobileCard(props: Props) {
       <p>
         <strong>Payment deadline</strong>
       </p>
-      <p className={claim.deadlineDate <= new Date() ? "text-red-400" : ""}>
-        {dateFormatShortMonthDateTime(claim.deadlineDate)}
+      <p className={claim.deadlineDate <= moment.tz(claim.timeZoneId).toDate() ? "text-red-400" : ""}>
+        {dateFormatShortMonthDateTime(claim.deadlineDate, claim.timeZoneId)}
       </p>
       <hr className="col-span-2" />
       <p className="col-span-2">

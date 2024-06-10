@@ -152,6 +152,7 @@ export default function RntPlaceAutocompleteInput({
       <input
         // ref={ref}
         className={iClassName}
+        autoComplete="off"
         id={id}
         name={id}
         type={type}

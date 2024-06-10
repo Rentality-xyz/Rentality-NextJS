@@ -114,8 +114,8 @@
         { "type": "uint64", "name": "pricePerDayInUsdCents" },
         { "type": "uint64", "name": "startDateTime" },
         { "type": "uint64", "name": "endDateTime" },
-        { "type": "string", "name": "startLocation" },
-        { "type": "string", "name": "endLocation" },
+        { "type": "bytes32", "name": "startLocation" },
+        { "type": "bytes32", "name": "endLocation" },
         { "type": "uint64", "name": "milesIncludedPerDay" },
         {
           "type": "tuple",
@@ -184,8 +184,6 @@
             { "type": "uint64", "name": "startDateTime" },
             { "type": "uint64", "name": "endDateTime" },
             { "type": "uint8", "name": "engineType" },
-            { "type": "string", "name": "startLocation" },
-            { "type": "string", "name": "endLocation" },
             { "type": "uint64", "name": "milesIncludedPerDay" },
             { "type": "uint64", "name": "fuelPrice" },
             {
@@ -234,7 +232,9 @@
                 { "type": "uint8", "name": "statusBeforeCancellation" }
               ]
             },
-            { "type": "uint256", "name": "finishDateTime" }
+            { "type": "uint256", "name": "finishDateTime" },
+            { "type": "bytes32", "name": "pickUpHash" },
+            { "type": "bytes32", "name": "returnHash" }
           ]
         },
         { "type": "uint64[]", "name": "engineParams" }
@@ -267,8 +267,6 @@
             { "type": "uint64", "name": "startDateTime" },
             { "type": "uint64", "name": "endDateTime" },
             { "type": "uint8", "name": "engineType" },
-            { "type": "string", "name": "startLocation" },
-            { "type": "string", "name": "endLocation" },
             { "type": "uint64", "name": "milesIncludedPerDay" },
             { "type": "uint64", "name": "fuelPrice" },
             {
@@ -317,7 +315,9 @@
                 { "type": "uint8", "name": "statusBeforeCancellation" }
               ]
             },
-            { "type": "uint256", "name": "finishDateTime" }
+            { "type": "uint256", "name": "finishDateTime" },
+            { "type": "bytes32", "name": "pickUpHash" },
+            { "type": "bytes32", "name": "returnHash" }
           ]
         }
       ]

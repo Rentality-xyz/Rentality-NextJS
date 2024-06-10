@@ -40,6 +40,95 @@
     },
     {
       "type": "function",
+      "name": "calculateTripFinsish",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "tuple",
+          "name": "paymentInfo",
+          "components": [
+            { "type": "uint256", "name": "tripId" },
+            { "type": "address", "name": "from" },
+            { "type": "address", "name": "to" },
+            { "type": "uint64", "name": "totalDayPriceInUsdCents" },
+            { "type": "uint64", "name": "salesTax" },
+            { "type": "uint64", "name": "governmentTax" },
+            { "type": "uint64", "name": "priceWithDiscount" },
+            { "type": "uint64", "name": "depositInUsdCents" },
+            { "type": "uint64", "name": "resolveAmountInUsdCents" },
+            { "type": "address", "name": "currencyType" },
+            { "type": "int256", "name": "currencyRate" },
+            { "type": "uint8", "name": "currencyDecimals" },
+            { "type": "uint64", "name": "resolveFuelAmountInUsdCents" },
+            { "type": "uint64", "name": "resolveMilesAmountInUsdCents" },
+            { "type": "uint128", "name": "deliveryFee" }
+          ]
+        },
+        { "type": "uint256", "name": "rentalityFee" }
+      ],
+      "outputs": [
+        { "type": "uint256", "name": "" },
+        { "type": "uint256", "name": "" },
+        { "type": "uint256", "name": "" },
+        { "type": "uint256", "name": "" }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "calculateTripReject",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "tuple",
+          "name": "paymentInfo",
+          "components": [
+            { "type": "uint256", "name": "tripId" },
+            { "type": "address", "name": "from" },
+            { "type": "address", "name": "to" },
+            { "type": "uint64", "name": "totalDayPriceInUsdCents" },
+            { "type": "uint64", "name": "salesTax" },
+            { "type": "uint64", "name": "governmentTax" },
+            { "type": "uint64", "name": "priceWithDiscount" },
+            { "type": "uint64", "name": "depositInUsdCents" },
+            { "type": "uint64", "name": "resolveAmountInUsdCents" },
+            { "type": "address", "name": "currencyType" },
+            { "type": "int256", "name": "currencyRate" },
+            { "type": "uint8", "name": "currencyDecimals" },
+            { "type": "uint64", "name": "resolveFuelAmountInUsdCents" },
+            { "type": "uint64", "name": "resolveMilesAmountInUsdCents" },
+            { "type": "uint128", "name": "deliveryFee" }
+          ]
+        }
+      ],
+      "outputs": [
+        { "type": "uint256", "name": "" },
+        { "type": "uint256", "name": "" }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "calculateValueWithFee",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "ty" },
+        { "type": "uint256", "name": "value" },
+        { "type": "uint256", "name": "commission" },
+        { "type": "int256", "name": "rate" },
+        { "type": "uint8", "name": "dec" }
+      ],
+      "outputs": [
+        { "type": "uint256", "name": "" },
+        { "type": "uint256", "name": "" }
+      ]
+    },
+    {
+      "type": "function",
       "name": "currencyTypeIsAvailable",
       "constant": true,
       "stateMutability": "view",

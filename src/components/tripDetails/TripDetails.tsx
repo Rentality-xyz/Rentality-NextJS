@@ -18,7 +18,7 @@ import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { getRefuelValueAndCharge } from "@/model/TripInfo";
 import UserAvatarWithName from "@/components/common/userAvatarWithName";
 import TripContacts from "@/components/common/tripContacts";
-import { dateFormatLongMonthDateTime } from "@/utils/datetimeFormatters";
+import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import RntDriverLicenseVerified from "@/components/common/rntDriverLicenseVerified";
 
 export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; backPath: string; t: TFunctionNext }) {
@@ -68,7 +68,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                 <div className="flex flex-row grow p-2">
                   <strong className="text-xl text-[#52D1C9]">{t_details("basic_car_details")}</strong>
                 </div>
-                <div className="flex flex-wrap p-2">
+                <div className="flex max-sm:flex-col flex-wrap p-2">
                   <div className="flex w-28 items-center m-2">
                     <Image className="me-1" src={carDoorsIcon} width={30} height={30} alt="" />
                     {tripInfo.carDoorsNumber} {t_details("doors")}
@@ -272,12 +272,15 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     </tr>
                     <tr>
                       <td className="pt-5">
-                        <strong>{t_details("trip_total")}</strong>
+                        <strong>{t_details("total_charge")}</strong>
                       </td>
                       <td className="text-end pt-5">
                         $
                         {displayMoneyWith2Digits(
-                          tripInfo.totalPriceWithDiscountInUsd + tripInfo.salesTaxInUsd + tripInfo.governmentTaxInUsd
+                          tripInfo.totalPriceWithDiscountInUsd +
+                            tripInfo.salesTaxInUsd +
+                            tripInfo.governmentTaxInUsd +
+                            tripInfo.deliveryFeeInUsd
                         )}
                       </td>
                     </tr>
@@ -329,7 +332,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     </tr>
                     <tr>
                       <td>{t_details("price_per_one_overmile")}</td>
-                      <td className="text-end">${tripInfo.overmilePrice}</td>
+                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.overmilePrice)}</td>
                     </tr>
                     <tr>
                       <td>{t_details("overmile_charge")}</td>
@@ -388,7 +391,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                       <tr>
                         <td>{t_details("dl_validity_period")}:</td>
                         <td className="text-end">
-                          {dateFormatLongMonthDateTime(tripInfo.guest.drivingLicenseExpirationDate)}
+                          {dateFormatShortMonthDateYear(tripInfo.guest.drivingLicenseExpirationDate)}
                         </td>
                       </tr>
                     </tbody>
