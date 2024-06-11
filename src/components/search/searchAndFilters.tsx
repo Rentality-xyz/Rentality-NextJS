@@ -9,7 +9,7 @@ import { TFunction as TFunctionNext } from "i18next";
 import { useEffect, useState } from "react";
 import { ParseLocationResponse } from "@/pages/api/parseLocation";
 import moment from "moment";
-import Checkbox from "../common/checkbox";
+import RntCheckbox from "../common/rntCheckbox";
 import { LocationInfo, emptyLocationInfo } from "@/model/LocationInfo";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 
@@ -199,7 +199,7 @@ export default function SearchAndFilters({
         </div>
       </div>
       <div className="flex flex-wrap items-center gap-4 mt-4">
-        <Checkbox
+        <RntCheckbox
           className=""
           title="Deliver to me"
           value={searchCarRequest.isDeliveryToGuest}
@@ -263,7 +263,7 @@ export default function SearchAndFilters({
               });
             }}
           />
-          <Checkbox
+          <RntCheckbox
             className=""
             title="Host home location"
             value={searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation}
@@ -341,7 +341,7 @@ export default function SearchAndFilters({
               });
             }}
           />
-          <Checkbox
+          <RntCheckbox
             className=""
             title="Host home location"
             value={searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation}

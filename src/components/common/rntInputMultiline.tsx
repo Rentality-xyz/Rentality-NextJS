@@ -1,4 +1,5 @@
 import { isEmpty } from "@/utils/string";
+import { forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface RntInputMultilineProps extends React.ComponentPropsWithoutRef<"textarea"> {
@@ -9,53 +10,62 @@ interface RntInputMultilineProps extends React.ComponentPropsWithoutRef<"textare
   validationError?: string;
 }
 
-export default function RntInputMultiline({
-  className,
-  labelClassName,
-  inputClassName,
-  validationClassName,
-  id,
-  label,
-  placeholder,
-  rows,
-  value,
-  readOnly,
-  validationError,
-  onChange: onChangeHandler,
-  onBlur: onBlurHandler,
-}: RntInputMultilineProps) {
-  const isShowLabel = label !== undefined && label?.length > 0;
+const RntInputMultiline = forwardRef<HTMLTextAreaElement, RntInputMultilineProps>(
+  (
+    {
+      className,
+      labelClassName,
+      inputClassName,
+      validationClassName,
+      id,
+      label,
+      placeholder,
+      rows,
+      value,
+      readOnly,
+      validationError,
+      onChange: onChangeHandler,
+      onBlur: onBlurHandler,
+      ...rest
+    },
+    ref
+  ) => {
+    const cClassName = twMerge("text-black flex flex-col w-full", className);
+    const lClassName = twMerge("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
+    const iClassName = twMerge(
+      "w-full border-2 rounded-2xl px-4 py-2 disabled:bg-gray-300 disabled:text-gray-600",
+      inputClassName
+    );
 
-  const cClassName = twMerge("text-black flex flex-col w-full", className);
-  const lClassName = twMerge("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
-  const iClassName = twMerge(
-    "w-full border-2 rounded-2xl px-4 py-2 disabled:bg-gray-300 disabled:text-gray-600",
-    inputClassName
-  );
+    const vClassName = twMerge("text-red-400 mt-2", validationClassName);
 
-  const vClassName = twMerge("text-red-400 mt-2", validationClassName);
+    return (
+      <div className={cClassName}>
+        {!isEmpty(label) && (
+          <label className={lClassName} htmlFor={id}>
+            {label}
+          </label>
+        )}
+        <textarea
+          className={iClassName}
+          rows={rows}
+          id={id}
+          name={id}
+          readOnly={readOnly}
+          disabled={readOnly}
+          placeholder={placeholder}
+          onChange={(e) => onChangeHandler != null && onChangeHandler(e)}
+          onBlur={(e) => onBlurHandler != null && onBlurHandler(e)}
+          value={value}
+          {...rest}
+          ref={ref}
+        />
 
-  return (
-    <div className={cClassName}>
-      {isShowLabel ? (
-        <label className={lClassName} htmlFor={id}>
-          {label}
-        </label>
-      ) : null}
-      <textarea
-        className={iClassName}
-        rows={rows}
-        id={id}
-        name={id}
-        readOnly={readOnly}
-        disabled={readOnly}
-        placeholder={placeholder}
-        onChange={(e) => onChangeHandler != null && onChangeHandler(e)}
-        onBlur={(e) => onBlurHandler != null && onBlurHandler(e)}
-        value={value}
-      />
+        {!isEmpty(validationError) ? <p className={vClassName}>* {validationError}</p> : null}
+      </div>
+    );
+  }
+);
+RntInputMultiline.displayName = "RntInputMultiline";
 
-      {!isEmpty(validationError) ? <p className={vClassName}>* {validationError}</p> : null}
-    </div>
-  );
-}
+export default RntInputMultiline;
