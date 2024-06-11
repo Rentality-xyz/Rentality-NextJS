@@ -6,6 +6,7 @@ import { calculateDays } from "@/utils/date";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { TripStatus } from "@/model/blockchain/schemas";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
+import { isEmpty } from "@/utils/string";
 
 export default function AllowedActionsForStatusStarted({
   params,
@@ -24,7 +25,9 @@ export default function AllowedActionsForStatusStarted({
   const [overmileValue, setOvermileValue] = useState<number>(0);
 
   const depositPaid = tripInfo.depositInUsd;
-  const { refuelValue, refuelCharge } = getRefuelValueAndCharge(tripInfo, endLevelInPercents);
+  const { refuelValue, refuelCharge } = !isEmpty(inputParams[0])
+    ? getRefuelValueAndCharge(tripInfo, endLevelInPercents)
+    : { refuelValue: 0, refuelCharge: 0 };
   const overmilesCharge = overmileValue * tripInfo.overmilePrice;
   let depositToBeReturned = depositPaid - refuelCharge - overmilesCharge;
   depositToBeReturned = depositToBeReturned > 0 ? depositToBeReturned : 0;
