@@ -122,10 +122,9 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     ) : (
                       ""
                     )}
-                    {tripInfo.rejectedDate !== undefined &&
-                    tripInfo.rejectedDate.getTime() > 0 &&
-                    tripInfo.approvedDateTime.getTime() === 0 &&
-                    tripInfo.rejectedBy === tripInfo.host.walletAddress ? (
+                    {tripInfo.isTripRejected &&
+                    tripInfo.rejectedBy === tripInfo.host.walletAddress &&
+                    tripInfo.rejectedDate !== undefined ? (
                       <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
                         <div>Host Booked Cancellation:</div>
                         <div className="ml-4">{formatStatusDateTime(tripInfo.rejectedDate, tripInfo.timeZoneId)}</div>
@@ -133,10 +132,9 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     ) : (
                       ""
                     )}
-                    {tripInfo.rejectedDate !== undefined &&
-                    tripInfo.rejectedDate.getTime() > 0 &&
-                    tripInfo.approvedDateTime.getTime() === 0 &&
-                    tripInfo.rejectedBy === tripInfo.guest.walletAddress ? (
+                    {tripInfo.isTripRejected &&
+                    tripInfo.rejectedBy === tripInfo.guest.walletAddress &&
+                    tripInfo.rejectedDate !== undefined ? (
                       <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
                         <div>Guest Cancellation before Host confirmed:</div>
                         <div className="ml-4">{formatStatusDateTime(tripInfo.rejectedDate, tripInfo.timeZoneId)}</div>
@@ -154,10 +152,9 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     ) : (
                       ""
                     )}
-                    {tripInfo.rejectedDate !== undefined &&
-                    tripInfo.rejectedDate.getTime() > 0 &&
-                    tripInfo.approvedDateTime.getTime() > 0 &&
-                    tripInfo.rejectedBy === tripInfo.guest.walletAddress ? (
+                    {tripInfo.isTripCanceled &&
+                    tripInfo.rejectedBy === tripInfo.guest.walletAddress &&
+                    tripInfo.rejectedDate !== undefined ? (
                       <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
                         <div>Guest Cancellation after host confirmed:</div>
                         <div className="ml-4">{formatStatusDateTime(tripInfo.rejectedDate, tripInfo.timeZoneId)}</div>
@@ -165,10 +162,9 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     ) : (
                       ""
                     )}
-                    {tripInfo.rejectedDate !== undefined &&
-                    tripInfo.rejectedDate.getTime() > 0 &&
-                    tripInfo.approvedDateTime.getTime() > 0 &&
-                    tripInfo.rejectedBy === tripInfo.host.walletAddress ? (
+                    {tripInfo.isTripCanceled &&
+                    tripInfo.rejectedBy === tripInfo.host.walletAddress &&
+                    tripInfo.rejectedDate !== undefined ? (
                       <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
                         <div>Host trip Cancellation:</div>
                         <div className="ml-4">{formatStatusDateTime(tripInfo.rejectedDate, tripInfo.timeZoneId)}</div>
@@ -233,10 +229,21 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
             <div className="w-full xl:w-1/3">
               <div className="rnt-card flex flex-col rounded-xl overflow-hidden bg-rentality-bg my-2 xl:ml-2">
                 <div className="flex flex-row grow p-2">
-                  <strong className="text-2xl text-[#52D1C9]">{t_details("trip_receipt")}</strong>
+                  {tripInfo.isTripCanceled ? (
+                    <strong className="text-2xl text-[#FF0000]">{t_details("trip_receipt_canceled")}</strong>
+                  ) : tripInfo.isTripRejected ? (
+                    <strong className="text-2xl text-[#FF0000]">{t_details("trip_receipt_rejected")}</strong>
+                  ) : (
+                    <strong className="text-2xl text-[#52D1C9]">{t_details("trip_receipt")}</strong>
+                  )}
                 </div>
                 <div className="flex flex-row grow p-2">
                   {t_details("reservation")} # {tripInfo.tripId}
+                  {tripInfo.isTripCanceled ? (
+                    <span className="text-[#FF0000]">&nbsp;({t_details("canceled")})</span>
+                  ) : tripInfo.isTripRejected ? (
+                    <span className="text-[#FF0000]">&nbsp;({t_details("rejected")})</span>
+                  ) : null}
                 </div>
                 <hr className="my-4" />
                 <table className="m-2">

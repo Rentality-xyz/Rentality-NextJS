@@ -57,7 +57,16 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
           >
             <div className="flex flex-col m-4">
               <div className="flex flex-col m-4">
-                <h1 className="text-4xl mb-4">Car sharing agreement #{tripId.toString()}</h1>
+                <h1
+                  className={`text-4xl mb-4 ${tripInfo.isTripCanceled || tripInfo.isTripRejected ? "text-[#FF0000]" : ""}`}
+                >
+                  Car sharing agreement #{tripId.toString()}{" "}
+                  {tripInfo.isTripCanceled
+                    ? "canceled, payments refunded to the guest. "
+                    : tripInfo.isTripRejected
+                      ? "rejected, payments refunded to the guest. "
+                      : null}
+                </h1>
                 <h3 className="text-2xl mb-1">
                   {tripInfo.guest.name}’s trip with {tripInfo.host.name}’s {tripInfo.brand} {tripInfo.model}{" "}
                   {tripInfo.year}

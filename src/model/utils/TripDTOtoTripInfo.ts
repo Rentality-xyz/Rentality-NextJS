@@ -70,6 +70,8 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
     tripFinishedBy: i.trip.tripFinishedBy,
     rejectedDate:
       i.trip.rejectedDateTime > 0 ? getDateFromBlockchainTimeWithTZ(i.trip.rejectedDateTime, timeZoneId) : undefined,
+    isTripRejected: i.trip.rejectedDateTime > 0 && i.trip.approvedDateTime === BigInt(0),
+    isTripCanceled: i.trip.rejectedDateTime > 0 && i.trip.approvedDateTime > 0,
     createdDateTime: getDateFromBlockchainTimeWithTZ(i.trip.createdDateTime, timeZoneId),
     approvedDateTime: getDateFromBlockchainTimeWithTZ(i.trip.approvedDateTime, timeZoneId),
     checkedInByHostDateTime: getDateFromBlockchainTimeWithTZ(i.trip.checkedInByHostDateTime, timeZoneId),
