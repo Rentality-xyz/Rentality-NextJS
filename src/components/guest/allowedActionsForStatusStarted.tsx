@@ -102,7 +102,7 @@ export default function AllowedActionsForStatusStarted({
                     copy[1] = newValue;
                     return copy;
                   });
-                  if (tripInfo.status === TripStatus.Started) {
+                  if (tripInfo.status === TripStatus.Started || tripInfo.status === TripStatus.CheckedInByHost) {
                     const endOdometr = Number(newValue) ?? 0;
                     const tripDays = calculateDays(tripInfo.tripStart, tripInfo.tripEnd);
                     let overMiles = endOdometr - tripInfo.startOdometr - tripInfo.milesIncludedPerDay * tripDays;
