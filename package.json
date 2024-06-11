@@ -23,6 +23,7 @@
     "@types/node": "18.15.13",
     "@types/react": "18.0.37",
     "@types/react-dom": "18.0.11",
+    "@waku/discovery": "^0.0.2",
     "@waku/message-encryption": "^0.0.27",
     "@waku/sdk": "^0.0.24",
     "autoprefixer": "10.4.14",
