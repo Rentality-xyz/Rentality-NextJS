@@ -31,7 +31,7 @@ export const emptySearchCarRequest: SearchCarRequest = {
     pricePerDayInUsdFrom: "",
     pricePerDayInUsdTo: "",
   },
-  isDeliveryToGuest: false,
+  isDeliveryToGuest: true,
   deliveryInfo: {
     pickupLocation: { isHostHomeLocation: true },
     returnLocation: { isHostHomeLocation: true },
