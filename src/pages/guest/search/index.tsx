@@ -21,7 +21,7 @@ import mapArrow from "@/images/arrUpBtn.png";
 import FilterSlidingPanel from "@/components/search/filterSlidingPanel";
 import SearchAndFilters from "@/components/search/searchAndFilters";
 import AllowedActionsForStatusStarted from "@/components/guest/allowedActionsForStatusStarted";
-import {TripInfo} from "@/model/TripInfo";
+import { TripInfo } from "@/model/TripInfo";
 import SearchDeliveryLocations from "@/components/search/searchDeliveryLocations";
 
 const defaultDateFrom = moment({ hour: 9 }).add(1, "day").toDate();
@@ -153,9 +153,9 @@ export default function Search() {
   const handleArrowClick = () => {
     setIsExpanded(!isExpanded);
   };
-  
+
   useEffect(() => {
-    if(!isLoading && searchResult?.carInfos?.length){
+    if (!isLoading && searchResult?.carInfos?.length) {
       setSelectedCarID(searchResult.carInfos[0].carId);
     }
   }, [isLoading]);
@@ -185,7 +185,7 @@ export default function Search() {
                 <div className="xl:w-8/12 2xl:w-7/12 fullHD:w-6/12 my-4 flex flex-col gap-4">
                   {searchResult?.carInfos?.length > 0 ? (
                     searchResult.carInfos
-                    .sort((a: SearchCarInfo, b: SearchCarInfo) => {
+                      .sort((a: SearchCarInfo, b: SearchCarInfo) => {
                         if (a.highlighted && !b.highlighted) {
                           return -1;
                         } else if (!a.highlighted && b.highlighted) {
@@ -194,7 +194,7 @@ export default function Search() {
                           return 0;
                         }
                       })
-                    .map((value: SearchCarInfo) => {
+                      .map((value: SearchCarInfo) => {
                         return (
                           <CarSearchItem
                             key={value.carId}

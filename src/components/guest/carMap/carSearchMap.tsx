@@ -85,21 +85,21 @@ export default function CarSearchMap({
     }
   };
 
-  const positionMapToCar = () => {  
+  const positionMapToCar = () => {
     if (!map || !selectedCar) return;
-    
-    const bounds = new google.maps.LatLngBounds();	
+
+    const bounds = new google.maps.LatLngBounds();
     bounds.extend(new google.maps.LatLng(selectedCar.location.lat, selectedCar.location.lng));
-	map.fitBounds(bounds);
-	map.setZoom(11);
-  }
+    map.fitBounds(bounds);
+    map.setZoom(11);
+  };
 
   const onLoad = (map: google.maps.Map) => {
     setMap(map);
     window.addEventListener("scroll", handleScroll, true);
-    if(selectedCarID != null){
-		positionMapToCar()
-	}
+    if (selectedCarID != null) {
+      positionMapToCar();
+    }
   };
 
   const onUnload = () => {
@@ -109,17 +109,17 @@ export default function CarSearchMap({
 
   const { googleMapsAPIIsLoaded } = useGoogleMapsContext();
 
-  useEffect(() => { 
-    if(carInfos.length && selectedCarID != null){
-  	    positionMapToCar();
-    }	  
-  },[selectedCarID]);
-  
+  useEffect(() => {
+    if (carInfos.length && selectedCarID != null) {
+      positionMapToCar();
+    }
+  }, [selectedCarID]);
+
   const selectedCar = useMemo(() => {
-	  return carInfos.find((item) => {
-	    return item.carId == selectedCarID;
-	  });
-  },[carInfos, selectedCarID]);
+    return carInfos.find((item) => {
+      return item.carId == selectedCarID;
+    });
+  }, [carInfos, selectedCarID]);
 
   return googleMapsAPIIsLoaded ? (
     <GoogleMap
