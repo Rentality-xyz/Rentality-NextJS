@@ -20,9 +20,6 @@ import Image from "next/image";
 import mapArrow from "@/images/arrUpBtn.png";
 import FilterSlidingPanel from "@/components/search/filterSlidingPanel";
 import SearchAndFilters from "@/components/search/searchAndFilters";
-import AllowedActionsForStatusStarted from "@/components/guest/allowedActionsForStatusStarted";
-import { TripInfo } from "@/model/TripInfo";
-import SearchDeliveryLocations from "@/components/search/searchDeliveryLocations";
 
 const defaultDateFrom = moment({ hour: 9 }).add(1, "day").toDate();
 const defaultDateTo = moment({ hour: 9 }).add(4, "day").toDate();
