@@ -1,7 +1,7 @@
 import { twMerge } from "tailwind-merge";
 import { ChangeEventHandler } from "react";
 
-export default function Checkbox({
+export default function RntCheckbox({
   className,
   title,
   value,

@@ -502,8 +502,6 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
         return newInfos.length > 0 ? [...prev, ...newInfos] : prev;
       });
       setChatInfos(infos);
-    } catch (e) {
-      return;
     } finally {
       setIsLoading(false);
     }

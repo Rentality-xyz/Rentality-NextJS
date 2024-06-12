@@ -191,42 +191,37 @@ export default function SearchAndFilters({
             {t_comp("button_filter")}
           </RntButton>
           <RntSelect
-              className="w-40"
-              id="sort"
-              readOnly={false}
-              value={sortBy ?? ""}
-              onChange={(e) => {
-                const newValue = e.target.value;
-                if (isSortOptionKey(newValue)) {
-                  setSortBy(newValue);
-                }
-              }}
+            className="w-40"
+            id="sort"
+            readOnly={false}
+            value={sortBy ?? ""}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              if (isSortOptionKey(newValue)) {
+                setSortBy(newValue);
+              }
+            }}
           >
             <option className="hidden" value="" disabled>
               {t_comp("sort_by")}
             </option>
             {Object.entries(sortOption ?? {}).map(([key, value]) => (
-                <option key={key} value={value}>
-                  {value}
-                </option>
+              <option key={key} value={value}>
+                {value}
+              </option>
             ))}
           </RntSelect>
           <RntButtonTransparent className="w-full sm:w-48" onClick={handleClickOpenDeliveryLocation}>
             <div className="flex justify-center items-center text-[#52D1C9]">
-              <div className="text-lg">
-                Deliver to me
-              </div>
+              <div className="text-lg">Deliver to me</div>
               <Image src={openDeliveryLocation ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
             </div>
           </RntButtonTransparent>
         </div>
         {openDeliveryLocation && (
-            <div>
-              <SearchDeliveryLocations
-                  searchCarRequest={searchCarRequest}
-                  setSearchCarRequest={setSearchCarRequest}
-              />
-            </div>
+          <div>
+            <SearchDeliveryLocations searchCarRequest={searchCarRequest} setSearchCarRequest={setSearchCarRequest} />
+          </div>
         )}
       </div>
     </>

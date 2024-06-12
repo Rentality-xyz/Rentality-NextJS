@@ -1,6 +1,6 @@
 import React, { MutableRefObject, memo, useState } from "react";
 import { TripInfo, getRefuelValueAndCharge } from "@/model/TripInfo";
-import Checkbox from "../common/checkbox";
+import RntCheckbox from "../common/rntCheckbox";
 import { calculateDays } from "@/utils/date";
 import RntSelect from "../common/rntSelect";
 import RntInput from "../common/rntInput";
@@ -142,7 +142,7 @@ function TripAdditionalActions({
                     )}
 
                     {tripInfo.allowedActions[0].readonly ? (
-                      <Checkbox
+                      <RntCheckbox
                         className="ml-4"
                         title={t("common.confirm")}
                         value={confirmParams[index]}

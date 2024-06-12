@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckboxLight } from "@/components/common/checkbox";
+import { CheckboxLight } from "@/components/common/rntCheckbox";
 import RntButton from "@/components/common/rntButton";
 import { TFunction } from "@/utils/i18n";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
