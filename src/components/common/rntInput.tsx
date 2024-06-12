@@ -13,6 +13,7 @@ interface RntInputProps extends React.ComponentPropsWithoutRef<"input"> {
 const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
   (
     {
+      id,
       className,
       labelClassName,
       inputClassName,
@@ -29,7 +30,8 @@ const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
     },
     ref
   ) => {
-    const id = useId();
+    const reactId = useId();
+    const controlId = !isEmpty(id) ? id : reactId;
     type = type ?? "text";
     const cClassName = twMerge("text-black flex flex-col w-full", className);
     const lClassName = twMerge("text-rnt-temp-main-text mb-1", labelClassName);
@@ -42,13 +44,13 @@ const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
     return (
       <div className={cClassName}>
         {!isEmpty(label) && (
-          <label className={lClassName} htmlFor={id}>
+          <label className={lClassName} htmlFor={reactId}>
             {label}
           </label>
         )}
         <input
           className={iClassName}
-          id={id}
+          id={reactId}
           name={id}
           type={type}
           readOnly={readOnly}
