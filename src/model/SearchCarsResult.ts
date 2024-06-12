@@ -20,6 +20,7 @@ export type SearchCarInfo = {
   pricePerDayWithDiscount: number;
   tripDays: number;
   totalPriceWithDiscount: number;
+  deliveryFee: number;
   taxes: number;
   securityDeposit: number;
   hostPhotoUrl: string;
@@ -38,8 +39,6 @@ export type SearchCarInfo = {
     from1To25milesPrice: number;
     over25MilesPrice: number;
   };
-  pickUpDeliveryFee: number;
-  dropOffDeliveryFee: number;
 };
 
 export const emptySearchCarsResult: SearchCarsResult = {

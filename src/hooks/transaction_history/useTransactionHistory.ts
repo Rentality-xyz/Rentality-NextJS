@@ -61,8 +61,7 @@ const useTransactionHistory = (isHost: boolean) => {
                         tripDto.trip.paymentInfo.depositInUsdCents +
                         tripDto.trip.paymentInfo.salesTax +
                         tripDto.trip.paymentInfo.governmentTax +
-                        tripDto.trip.paymentInfo.pickUpFee +
-                        tripDto.trip.paymentInfo.dropOfFee
+                        tripDto.trip.paymentInfo.deliveryFee
                     ) / 100;
 
                   const cancellationFee = getCancellationFee(tripDto);

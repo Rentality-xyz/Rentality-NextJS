@@ -117,8 +117,7 @@ const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: Co
           over25MilesPrice: Number(i.car.aboveTwentyFiveMilesInUsdCents) / 100,
         },
         isInsuranceIncluded: i.car.insuranceIncluded,
-        pickUpDeliveryFee: Number(i.car.pickUp) / 100,
-        dropOffDeliveryFee: Number(i.car.dropOf) / 100,
+        deliveryFee: Number(i.car.deliveryFee) / 100,
       };
 
       return item;

@@ -111,8 +111,7 @@ export type TripInfo = {
   pricePerDayInUsd: number;
   totalDayPriceInUsd: number;
   totalPriceWithDiscountInUsd: number;
-  pickUpDeliveryFeeInUsd: number;
-  dropOffDeliveryFeeInUsd: number;
+  deliveryFeeInUsd: number;
   depositInUsd: number;
   resolveAmountInUsd: number;
   depositReturnedInUsd: number;

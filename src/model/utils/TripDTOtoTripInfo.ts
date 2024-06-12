@@ -103,8 +103,7 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
     pricePerDayInUsd: Number(i.trip.pricePerDayInUsdCents) / 100.0,
     totalDayPriceInUsd: Number(i.trip.paymentInfo.totalDayPriceInUsdCents) / 100.0,
     totalPriceWithDiscountInUsd: Number(i.trip.paymentInfo.priceWithDiscount) / 100.0,
-    pickUpDeliveryFeeInUsd: Number(i.trip.paymentInfo.pickUpFee) / 100.0,
-    dropOffDeliveryFeeInUsd: Number(i.trip.paymentInfo.dropOfFee) / 100.0,
+    deliveryFeeInUsd: Number(i.trip.paymentInfo.deliveryFee) / 100.0,
     salesTaxInUsd: Number(i.trip.paymentInfo.salesTax) / 100.0,
     governmentTaxInUsd: Number(i.trip.paymentInfo.governmentTax) / 100.0,
     depositInUsd: Number(i.trip.paymentInfo.depositInUsdCents) / 100.0,
@@ -113,8 +112,7 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
         i.trip.paymentInfo.priceWithDiscount +
           i.trip.paymentInfo.governmentTax +
           i.trip.paymentInfo.salesTax +
-          i.trip.paymentInfo.pickUpFee +
-          i.trip.paymentInfo.dropOfFee
+          i.trip.paymentInfo.deliveryFee
       ) / 100.0,
 
     resolveAmountInUsd: Number(i.trip.paymentInfo.resolveAmountInUsdCents) / 100.0,
