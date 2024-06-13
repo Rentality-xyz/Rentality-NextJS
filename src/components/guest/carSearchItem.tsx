@@ -121,7 +121,9 @@ export default function CarSearchItem({
             </div>
             <div className="mt-4 grid grid-cols-2">
               <span>{t_item("delivery_fee")}</span>
-              <span className="max-md:ml-4">${displayMoneyWith2Digits(searchInfo.deliveryFee)}</span>
+              <span className="max-md:ml-4">
+                ${displayMoneyWith2Digits(searchInfo.pickUpDeliveryFee + searchInfo.dropOffDeliveryFee)}
+              </span>
               <span>{t_item("taxes")}</span>
               <span className="max-md:ml-4">${displayMoneyWith2Digits(searchInfo.taxes)}</span>
               <span>{t_item("deposit")}</span>
@@ -154,7 +156,8 @@ export default function CarSearchItem({
                 searchInfo.totalPriceWithDiscount +
                   searchInfo.taxes +
                   searchInfo.securityDeposit +
-                  searchInfo.deliveryFee
+                  searchInfo.pickUpDeliveryFee +
+                  searchInfo.dropOffDeliveryFee
               )}
             </div>
           </RntButton>
