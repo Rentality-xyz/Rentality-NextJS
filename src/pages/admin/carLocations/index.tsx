@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 type CarLocations = {
   carId: number;
   carPhotoUrl: string;
+  userAddress: string;
   country: string;
   state: string;
   city: string;
@@ -46,6 +47,7 @@ const useCarLocations = () => {
                   let item: CarLocations = {
                     carId: Number(i.carId),
                     carPhotoUrl: getIpfsURIfromPinata(meta.image),
+                    userAddress: carInfoDetails.locationInfo.userAddress,
                     country: carInfoDetails.locationInfo.country,
                     state: carInfoDetails.locationInfo.state,
                     city: carInfoDetails.locationInfo.city,
@@ -90,22 +92,27 @@ export default function Admin() {
               <tr className="text-rentality-additional-light">
                 <th className={`${headerSpanClassName}`}>#</th>
                 <th className={`${headerSpanClassName}`}>CarId</th>
-                <th className={`${headerSpanClassName}`}>CarImage</th>
-                <th className={`${headerSpanClassName}`}>Country</th>
-                <th className={`${headerSpanClassName}`}>State</th>
-                <th className={`${headerSpanClassName}`}>City</th>
-                <th className={`${headerSpanClassName}`}>TimeZoneId</th>
-                <th className={`${headerSpanClassName}`}>Latitude</th>
-                <th className={`${headerSpanClassName}`}>Longitude</th>
                 <th className={`${headerSpanClassName}`}>Status</th>
+                <th className={`${headerSpanClassName}`}>CarImage</th>
+                <th className={`${headerSpanClassName}`}>
+                  <div>Country/State</div>
+                  <div>City</div>
+                </th>
+                <th className={`${headerSpanClassName}`}>TimeZoneId</th>
+                <th className={`${headerSpanClassName}`}>
+                  <div>Latitude</div>
+                  <div>Longitude</div>
+                </th>
+                <th className={`${headerSpanClassName}`}>Home address </th>
               </tr>
             </thead>
             <tbody className="text-sm">
               {carLocations.map((carLocation, index) => {
                 return (
                   <tr key={carLocation.carId} className="border-b-[1px] border-b-gray-500">
-                    <td className={rowSpanClassName}>{index}</td>
+                    <td className={rowSpanClassName}>{index + 1}</td>
                     <td className={rowSpanClassName}>{carLocation.carId}</td>
+                    <td className={rowSpanClassName}>{carLocation.isListed ? "Listed" : "Not listed"}</td>
                     <td className={rowSpanClassName}>
                       <Image
                         src={carLocation.carPhotoUrl}
@@ -115,13 +122,16 @@ export default function Admin() {
                         className="py-2 object-cover"
                       />
                     </td>
-                    <td className={rowSpanClassName}>{carLocation.country}</td>
-                    <td className={rowSpanClassName}>{carLocation.state}</td>
-                    <td className={rowSpanClassName}>{carLocation.city}</td>
+                    <td className={rowSpanClassName}>
+                      <div>{`${carLocation.country} / ${carLocation.state}`}</div>
+                      <div>{carLocation.city}</div>
+                    </td>
                     <td className={rowSpanClassName}>{carLocation.timeZoneId}</td>
-                    <td className={rowSpanClassName}>{carLocation.locationLatitude}</td>
-                    <td className={rowSpanClassName}>{carLocation.locationLongitude}</td>
-                    <td className={rowSpanClassName}>{carLocation.isListed ? "Listed" : "Not listed"}</td>
+                    <td className={rowSpanClassName}>
+                      <div>{carLocation.locationLatitude}</div>
+                      <div>{carLocation.locationLongitude}</div>
+                    </td>
+                    <td className={rowSpanClassName}>{carLocation.userAddress}</td>
                   </tr>
                 );
               })}
