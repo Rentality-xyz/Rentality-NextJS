@@ -9,7 +9,6 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import {
   ContractCreateTripRequest,
   ContractCreateTripRequestWithDelivery,
-  ContractDeliveryLocations,
   ContractLocationInfo,
 } from "@/model/blockchain/schemas";
 import { isEmpty } from "@/utils/string";

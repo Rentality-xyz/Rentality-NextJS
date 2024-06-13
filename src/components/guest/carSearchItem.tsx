@@ -120,10 +120,10 @@ export default function CarSearchItem({
               - {searchInfo.seatsNumber} {t_item("seats")}
             </div>
             <div className="mt-4 grid grid-cols-2">
-              <span>{t_item("delivery_fee")}</span>
-              <span className="max-md:ml-4">
-                ${displayMoneyWith2Digits(searchInfo.pickUpDeliveryFee + searchInfo.dropOffDeliveryFee)}
-              </span>
+              <span>{t_item("delivery_fee_pick_up")}</span>
+              <span className="max-md:ml-4">${displayMoneyWith2Digits(searchInfo.pickUpDeliveryFee)}</span>
+              <span>{t_item("delivery_fee_drop_off")}</span>
+              <span className="max-md:ml-4">${displayMoneyWith2Digits(searchInfo.dropOffDeliveryFee)}</span>
               <span>{t_item("taxes")}</span>
               <span className="max-md:ml-4">${displayMoneyWith2Digits(searchInfo.taxes)}</span>
               <span>{t_item("deposit")}</span>

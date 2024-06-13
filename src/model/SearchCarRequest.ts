@@ -33,7 +33,7 @@ export const emptySearchCarRequest: SearchCarRequest = {
   },
   isDeliveryToGuest: true,
   deliveryInfo: {
-    pickupLocation: { isHostHomeLocation: true },
-    returnLocation: { isHostHomeLocation: true },
+    pickupLocation: { isHostHomeLocation: false, locationInfo: emptyLocationInfo },
+    returnLocation: { isHostHomeLocation: false, locationInfo: emptyLocationInfo },
   },
 };

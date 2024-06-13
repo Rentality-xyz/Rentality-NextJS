@@ -63,6 +63,8 @@
       "total": "for",
       "secur_deposit": "Additionally security deposit {{deposit, number}} per trip",
       "delivery_fee": "Delivery fee",
+      "delivery_fee_pick_up": "Pick up",
+      "delivery_fee_drop_off": "Drop off",
       "taxes": "Taxes",
       "deposit": "Deposit",
       "per_day": "/day",
