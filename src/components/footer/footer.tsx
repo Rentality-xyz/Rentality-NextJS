@@ -8,6 +8,7 @@ import email from "../../images/ic-email-50.png";
 import telegram from "../../images/ic_telegram.svg";
 import mirror from "../../images/ic_mirror_logo.svg";
 import Link from "next/link";
+import moment from "moment";
 
 export default function Footer() {
   return (
@@ -99,7 +100,7 @@ export default function Footer() {
               </a>
             </div>
           </div>
-          <div className="z-0 mt-auto font-['Montserrat',Arial,sans-serif]">©2023 by Rentality LLC</div>
+          <div className="z-0 mt-auto font-['Montserrat',Arial,sans-serif]">©{moment().year()} by Rentality LLC</div>
         </div>
       </div>
     </footer>

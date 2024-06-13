@@ -5,7 +5,7 @@ import { HostCarInfo, UNLIMITED_MILES_VALUE_TEXT } from "@/model/HostCarInfo";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useState, useEffect } from "react";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
-import Checkbox from "@/components/common/checkbox";
+import RntCheckbox from "@/components/common/rntCheckbox";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/EngineType";
 import RntButton from "@/components/common/rntButton";
 import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
@@ -474,7 +474,7 @@ export default function CarEditForm({
               })
             }
           />
-          <Checkbox
+          <RntCheckbox
             className="ml-4"
             title={t_car("unlimited_miles")}
             value={isUnlimitedMiles}
@@ -542,7 +542,7 @@ export default function CarEditForm({
             </p>
           </div>
         </div>
-        <Checkbox
+        <RntCheckbox
           className="mt-4"
           title={t_car("insurance_included")}
           value={carInfoFormParams.isInsuranceIncluded}

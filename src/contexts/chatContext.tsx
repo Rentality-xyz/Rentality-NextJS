@@ -17,6 +17,24 @@ import { NotificationType } from "@/model/NotificationInfo";
 import { generateEncryptionKeyPair } from "@/chat/crypto";
 import useUserMode from "@/hooks/useUserMode";
 
+export type ChatKeysContextInfo = {
+  isLoading: boolean;
+  chatKeys: { privateKey: string; publicKey: string } | undefined;
+  isChatKeysSaved: boolean;
+  saveChatKeys: () => Promise<void>;
+};
+
+const ChatKeysContext = createContext<ChatKeysContextInfo>({
+  isLoading: true,
+  chatKeys: undefined,
+  isChatKeysSaved: false,
+  saveChatKeys: async () => {},
+});
+
+export function useChatKeys() {
+  return useContext(ChatKeysContext);
+}
+
 export type ChatContextInfo = {
   isLoading: boolean;
   isClienReady: boolean;
@@ -24,13 +42,6 @@ export type ChatContextInfo = {
   chatInfos: ChatInfo[];
   getLatestChatInfos: () => Promise<void>;
   sendMessage: (toAddress: string, tripId: number, message: string) => Promise<void>;
-};
-
-export type ChatKeysContextInfo = {
-  isLoading: boolean;
-  chatKeys: { privateKey: string; publicKey: string } | undefined;
-  isChatKeysSaved: boolean;
-  saveChatKeys: () => Promise<void>;
 };
 
 const ChatContext = createContext<ChatContextInfo>({
@@ -41,25 +52,33 @@ const ChatContext = createContext<ChatContextInfo>({
   sendMessage: async () => {},
 });
 
-const ChatKeysContext = createContext<ChatKeysContextInfo>({
-  isLoading: true,
-  chatKeys: undefined,
-  isChatKeysSaved: false,
-  saveChatKeys: async () => {},
-});
-
 export function useChat() {
   return useContext(ChatContext);
 }
 
-export function useChatKeys() {
-  return useContext(ChatKeysContext);
-}
-
 export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
-  /// Chat keys
   const ethereumInfo = useEthereum();
   const [rentalityChatHelper, setRentalityChatHelper] = useState<IRentalityChatHelperContract | undefined>(undefined);
+
+  useEffect(() => {
+    const getRentalityChatHelper = async () => {
+      if (!ethereumInfo) return;
+
+      const chatHelper = (await getEtherContractWithSigner(
+        "chatHelper",
+        ethereumInfo.signer
+      )) as unknown as IRentalityChatHelperContract;
+      if (!chatHelper) {
+        console.error("getChatKeysFromBlockchain error: chatHelper is null");
+        return;
+      }
+      setRentalityChatHelper(chatHelper);
+    };
+
+    getRentalityChatHelper();
+  }, [ethereumInfo]);
+
+  /// Chat keys
   const [chatKeys, setChatKeys] = useState<{ privateKey: string; publicKey: string } | undefined>(undefined);
   const [isChatKeysLoading, setIsChatKeysLoading] = useState<boolean>(true);
   const [isChatKeysSaved, setIsChatKeysSaved] = useState<boolean>(true);
@@ -86,24 +105,6 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
       setIsChatKeysLoading(false);
     }
   }, [rentalityChatHelper, chatKeys]);
-
-  useEffect(() => {
-    const getRentalityChatHelper = async () => {
-      if (!ethereumInfo) return;
-
-      const chatHelper = (await getEtherContractWithSigner(
-        "chatHelper",
-        ethereumInfo.signer
-      )) as unknown as IRentalityChatHelperContract;
-      if (!chatHelper) {
-        console.error("getChatKeysFromBlockchain error: chatHelper is null");
-        return;
-      }
-      setRentalityChatHelper(chatHelper);
-    };
-
-    getRentalityChatHelper();
-  }, [ethereumInfo]);
 
   useEffect(() => {
     const getChatKeysFromBlockchain = async () => {
@@ -191,7 +192,15 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
       }
 
       const datetime = moment().unix();
-      await chatClient.sendUserMessage(toAddress, tripId, datetime, message, chatPublicKey);
+      await chatClient.sendUserMessage(
+        toAddress,
+        tripId,
+        datetime,
+        "text",
+        message,
+        new Map<string, string>(),
+        chatPublicKey
+      );
     },
     [chatClient, chatPublicKeys, isChatKeysSaved, rentalityChatHelper]
   );
@@ -493,8 +502,6 @@ export const ChatProvider = ({ children }: { children?: React.ReactNode }) => {
         return newInfos.length > 0 ? [...prev, ...newInfos] : prev;
       });
       setChatInfos(infos);
-    } catch (e) {
-      return;
     } finally {
       setIsLoading(false);
     }

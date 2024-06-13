@@ -20,7 +20,11 @@ export default function TransactionHistoryMobileCard(props: TransactionHistoryMo
     <div key={transaction.transHistoryId} className="mt-8">
       <div className="flex text-sm justify-between mb-2">
         <span className="text-rentality-secondary-shade">
-          {dateRangeFormatShortMonthDateYear(transaction.startDateTime, transaction.endDateTime)}
+          {dateRangeFormatShortMonthDateYear(
+            transaction.startDateTime,
+            transaction.endDateTime,
+            transaction.timeZoneId
+          )}
         </span>
         <span className={statusBgColor + " px-1 rounded"}>{getTripStatusTextFromStatus(transaction.status)}</span>
       </div>

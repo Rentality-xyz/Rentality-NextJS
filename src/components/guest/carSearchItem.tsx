@@ -20,7 +20,7 @@ export default function CarSearchItem({
   handleRentCarRequest: (carInfo: SearchCarInfo) => void;
   disableButton: boolean;
   isSelected: boolean;
-  setSelected: (carID: Number) => void;
+  setSelected: (carID: number) => void;
   t: TFunction;
 }) {
   const { showCustomDialog, hideDialogs } = useRntDialogs();

@@ -11,7 +11,7 @@ import { TFunction } from "@/utils/i18n";
 
 export default function Claims() {
   const { showInfo, showError, hideDialogs } = useRntDialogs();
-  const { isLoading, claims, tripInfos, createClaim, payClaim, cancelClaim } = useHostClaims();
+  const { isLoading, claims, tripInfos, createClaim, payClaim, cancelClaim, updateData } = useHostClaims();
   const router = useRouter();
   const { t } = useTranslation();
   const t_h_claims: TFunction = (name, options) => {
@@ -44,7 +44,7 @@ export default function Claims() {
         showError(t_h_claims("claim_failed"));
         return;
       }
-      router.refresh();
+      updateData();
     } catch (e) {
       showError(t_h_claims("claim_failed"));
       console.error("handleCreateClaim error:" + e);
@@ -60,7 +60,7 @@ export default function Claims() {
         showError(t('claims.errors.pay_claim_failed"'));
         return;
       }
-      router.refresh();
+      updateData();
     } catch (e) {
       showError(t('claims.errors.pay_claim_failed"'));
       console.error("handlePayClaim error:" + e);
@@ -76,7 +76,7 @@ export default function Claims() {
         showError(t_h_claims("claim_cancel_failed"));
         return;
       }
-      router.refresh();
+      updateData();
     } catch (e) {
       showError(t_h_claims("claim_cancel_failed"));
       console.error("handleCancelClaim error:" + e);

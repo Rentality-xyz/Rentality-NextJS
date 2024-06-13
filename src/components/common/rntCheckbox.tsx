@@ -1,7 +1,7 @@
 import { twMerge } from "tailwind-merge";
 import { ChangeEventHandler } from "react";
 
-export default function Checkbox({
+export default function RntCheckbox({
   className,
   title,
   value,
@@ -77,7 +77,7 @@ export function CheckboxLight({
   const c = twMerge("", className);
   return (
     <div className={c}>
-      <label className="group w-fit flex flex-row items-center cursor-pointer select-none underline">
+      <label className="group w-fit flex flex-row items-center cursor-pointer select-none">
         <input className="hidden" type="checkbox" value={value ? 1 : 0} onChange={onChange} />
         <span className={`relative w-6 h-6 shrink-0 mr-4 border-2 rounded-md`}>
           {value ? (

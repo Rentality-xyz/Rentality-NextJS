@@ -100,13 +100,11 @@ function CustomCivicForm({
             <DotStatus containerClassName="text-sm" color="success" text="You driver license verified" />
           )}
           {status === "Kyc failed" && (
-            <>
-              <DotStatus containerClassName="text-sm" color="error" text="Your driver license not verified" />
-              <p className="underline cursor-pointer text-sm" onClick={openIssueReasons}>
-                See possible reasons refusal to issue a pass
-              </p>
-            </>
+            <DotStatus containerClassName="text-sm" color="error" text="Your driver license not verified" />
           )}
+          <p className="underline cursor-pointer text-sm" onClick={openIssueReasons}>
+            See possible reasons refusal to issue a pass
+          </p>
         </div>
       </section>
       <RntButton className="place-self-center mt-4" onClick={handleCancelClick}>

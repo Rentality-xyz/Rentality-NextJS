@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckboxLight } from "@/components/common/checkbox";
+import { CheckboxLight } from "@/components/common/rntCheckbox";
 import RntButton from "@/components/common/rntButton";
 import { TFunction } from "@/utils/i18n";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
@@ -44,7 +44,7 @@ export default function AgreementInfo({
     <section>
       <p className="mt-8 w-full md:w-3/4 xl:w-3/5 2xl:w-1/3">{t("agreement_info")}</p>
       <CheckboxLight
-        className="ml-4 mt-4"
+        className="ml-4 mt-4 underline"
         title={t("tc_title")}
         value={isTerms}
         onChange={() => {
@@ -53,7 +53,7 @@ export default function AgreementInfo({
         }}
       />
       <CheckboxLight
-        className="ml-4 mt-2"
+        className="ml-4 mt-2 underline"
         title={t("cancellation_title")}
         value={isCancellation}
         onChange={() => {
@@ -62,7 +62,7 @@ export default function AgreementInfo({
         }}
       />
       <CheckboxLight
-        className="ml-4 mt-2"
+        className="ml-4 mt-2 underline"
         title={t("prohibited_title")}
         value={isProhibited}
         onChange={() => {
@@ -71,7 +71,7 @@ export default function AgreementInfo({
         }}
       />
       <CheckboxLight
-        className="ml-4 mt-2"
+        className="ml-4 mt-2 underline"
         title={t("privacy_title")}
         value={isPrivacy}
         onChange={() => {

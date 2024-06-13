@@ -15,7 +15,28 @@ function CivicConditions({
       <h1 className="place-self-center text-xl">{"when checking your driver's license"}</h1>
       <p className="mt-6">Below are the steps outlining the conditions for issuing a new Pass to an End User:</p>
       <ol className="list-decimal ml-4">
-        <li className="mt-1">Agreed to Civic’s Terms and Conditions, Privacy Policy, and Biometric Policy</li>
+        <li className="mt-1">
+          Agreed to Civic’s{" "}
+          <a
+            className="underline"
+            href="https://www.civic.com/legal/terms-and-conditions-uniqueness-v1/"
+            target="_blank"
+          >
+            Terms and Conditions
+          </a>
+          ,{" "}
+          <a className="underline" href="https://www.civic.com/legal/privacy-policy-uniqueness-v1/" target="_blank">
+            Privacy Policy
+          </a>
+          , and{" "}
+          <a
+            className="underline"
+            href="https://www.civic.com/legal/biometric-privacy-notice-uniqueness-v1/"
+            target="_blank"
+          >
+            Biometric Policy
+          </a>
+        </li>
         <li>Completed liveness check; and</li>
         <li>Completed wallet ownership verification; and</li>
         <li>Completed identity document verification; and</li>

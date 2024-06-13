@@ -7,7 +7,7 @@ import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
 import { useRouter } from "next/router";
-import { FormEvent, memo, useState } from "react";
+import { ChangeEvent, memo, useState } from "react";
 import RntDatePicker from "../common/rntDatePicker";
 import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
@@ -18,6 +18,10 @@ import { TFunction } from "@/utils/i18n";
 import DotStatus from "./dotStatus";
 import AgreementInfo from "./agreement_info";
 import KycVerification from "./kyc_verification";
+import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ProfileInfoFormValues, profileInfoFormSchema } from "./profileInfoFormSchema";
+import moment from "moment";
 
 function UserProfileInfo({
   savedProfileSettings,
@@ -31,67 +35,55 @@ function UserProfileInfo({
   t: TFunction;
 }) {
   const router = useRouter();
-  const [enteredFormData, setEnteredFormData] = useState<ProfileSettings>(savedProfileSettings);
-  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const ethereumInfo = useEthereum();
   const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
-  const { isLoading: isChatKeysLoading, isChatKeysSaved, saveChatKeys } = useChatKeys();
+
+  const { register, handleSubmit, formState, control } = useForm<ProfileInfoFormValues>({
+    defaultValues: {
+      profilePhotoUrl: savedProfileSettings.profilePhotoUrl,
+      firstName: savedProfileSettings.firstName,
+      lastName: savedProfileSettings.lastName,
+      phoneNumber: savedProfileSettings.phoneNumber,
+      drivingLicenseNumber: savedProfileSettings.drivingLicenseNumber,
+      drivingLicenseExpire: savedProfileSettings.drivingLicenseExpire,
+      tcSignature: savedProfileSettings.tcSignature,
+    },
+    resolver: zodResolver(profileInfoFormSchema),
+  });
+  const { errors, isSubmitting } = formState;
+  const userInitials =
+    !isEmpty(savedProfileSettings.firstName) || !isEmpty(savedProfileSettings.lastName)
+      ? `${savedProfileSettings.firstName?.slice(0, 1).toUpperCase()}${savedProfileSettings.lastName?.slice(0, 1).toUpperCase()}`
+      : null;
 
   const t_profile: TFunction = (name, options) => {
     return t("profile." + name, options);
   };
 
-  const errors = getErrors(enteredFormData, profileImageFile);
+  function fileChangeCallback(field: ControllerRenderProps<ProfileInfoFormValues, "profilePhotoUrl">) {
+    return async (e: ChangeEvent<HTMLInputElement>) => {
+      if (!e.target.files?.length) {
+        return;
+      }
 
-  async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const name = e.target.name;
-
-    if (name === "profilePhotoUrl") {
-      await handleFileUpload(e.target.files);
-    } else {
-      setEnteredFormData({ ...enteredFormData, [name]: e.target.value });
-    }
-  }
-
-  async function handleDateChange(date: Date | null) {
-    setEnteredFormData({ ...enteredFormData, drivingLicenseExpire: date ?? undefined });
-  }
-
-  async function handleFileUpload(files: FileList | null) {
-    if (!files?.length) {
-      return;
-    }
-
-    const file = files[0];
-    const resizedImage = await resizeImage(file, 300);
-    setProfileImageFile(resizedImage);
-
-    var reader = new FileReader();
-
-    reader.onload = function (event) {
-      setEnteredFormData({
-        ...enteredFormData,
-        profilePhotoUrl: event.target?.result?.toString() ?? "",
-      });
+      const file = e.target.files[0];
+      const resizedImage = await resizeImage(file, 300);
+      if (!isEmpty(field.value) && field.value.startsWith("blob")) {
+        console.log("Revoking ObjectURL");
+        URL.revokeObjectURL(field.value);
+      }
+      const urlImage = URL.createObjectURL(resizedImage);
+      field.onChange(urlImage);
     };
-
-    reader.readAsDataURL(resizedImage);
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const isValid = Object.keys(errors).length === 0;
-
-    if (!isValid) {
-      showDialog(t("common.info.fill_fields"));
-      return;
-    }
-
+  async function onFormSubmit(formData: ProfileInfoFormValues) {
     try {
       var profilePhotoUrl = savedProfileSettings.profilePhotoUrl;
+      if (formData.profilePhotoUrl !== savedProfileSettings.profilePhotoUrl) {
+        const blob = await (await fetch(formData.profilePhotoUrl)).blob();
+        const profileImageFile = new File([blob], "profileImage", { type: "image/png" });
 
-      if (profileImageFile !== null) {
         const response = await uploadFileToIPFS(profileImageFile, "RentalityProfileImage", {
           createdAt: new Date().toISOString(),
           createdBy: ethereumInfo?.walletAddress ?? "",
@@ -107,8 +99,9 @@ function UserProfileInfo({
       }
 
       const dataToSave = {
-        ...enteredFormData,
+        ...formData,
         profilePhotoUrl: profilePhotoUrl,
+        drivingLicenseExpire: formData.drivingLicenseExpire,
       };
 
       showInfo(t("common.info.sign"));
@@ -119,7 +112,6 @@ function UserProfileInfo({
         throw new Error("Save profile info error");
       }
       showInfo(t("common.info.success"));
-      router.reload();
       router.push(isHost ? "/host" : "/guest");
     } catch (e) {
       console.error("handleSubmit error:" + e);
@@ -128,40 +120,31 @@ function UserProfileInfo({
     }
   }
 
-  function getErrors(formData: ProfileSettings, profileImageFile: File | null) {
-    const result: { [key: string]: string } = {};
-
-    if (isEmpty(formData.firstName)) result.firstName = t_profile("pls_name");
-    if (isEmpty(formData.lastName)) result.lastName = t_profile("pls_last_name");
-    if (isEmpty(formData.phoneNumber) || formData.phoneNumber === "+") result.phoneNumber = t_profile("pls_phone");
-    if (isEmpty(formData.drivingLicenseNumber)) result.drivingLicenseNumber = t_profile("pls_license");
-    if (!formData.drivingLicenseExpire || Number.isNaN(formData.drivingLicenseExpire.getTime()))
-      result.drivingLicenseExpire = t_profile("pls_license_period");
-    if (isEmpty(formData.tcSignature)) result.isConfirmedTerms = t_profile("pls_tc");
-
-    return result;
-  }
-
   return (
-    <form className="my-8 flex flex-col gap-4" onSubmit={handleSubmit}>
-      <div className="flex flex-row gap-4 items-center">
-        <Avatar
-          alt={`${savedProfileSettings.firstName} ${savedProfileSettings.lastName}`}
-          src={enteredFormData.profilePhotoUrl}
-          sx={{ width: "7rem", height: "7rem" }}
-        >
-          {!isEmpty(savedProfileSettings.firstName) || !isEmpty(savedProfileSettings.lastName)
-            ? savedProfileSettings.firstName?.slice(0, 1).toUpperCase() +
-              savedProfileSettings.lastName?.slice(0, 1).toUpperCase()
-            : null}
-        </Avatar>
-        <div className="text-xl">
-          {savedProfileSettings.firstName} {savedProfileSettings.lastName}
-        </div>
-      </div>
-      <RntFileButton className="w-40 h-16" id="profilePhotoUrl" onChange={handleChange}>
-        {t("common.upload")}
-      </RntFileButton>
+    <form className="my-8 flex flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
+      <Controller
+        name="profilePhotoUrl"
+        control={control}
+        render={({ field }) => (
+          <>
+            <div className="flex flex-row gap-4 items-center">
+              <Avatar
+                alt={`${savedProfileSettings.firstName} ${savedProfileSettings.lastName}`}
+                src={field.value}
+                sx={{ width: "7rem", height: "7rem" }}
+              >
+                {userInitials}
+              </Avatar>
+              <div className="text-xl">
+                {savedProfileSettings.firstName} {savedProfileSettings.lastName}
+              </div>
+            </div>
+            <RntFileButton className="w-40 h-16" id="profilePhotoUrl" onChange={fileChangeCallback(field)}>
+              {t("common.upload")}
+            </RntFileButton>
+          </>
+        )}
+      />
 
       <fieldset className="mt-4">
         <div className="text-lg mb-4">
@@ -172,24 +155,31 @@ function UserProfileInfo({
             className="lg:w-60"
             id="firstName"
             label={t_profile("name")}
-            value={enteredFormData.firstName}
-            onChange={handleChange}
+            {...register("firstName")}
+            validationError={errors.firstName?.message}
           />
           <RntInput
             className="lg:w-60"
             id="lastName"
             label={t_profile("last_name")}
-            value={enteredFormData.lastName}
-            onChange={handleChange}
+            {...register("lastName")}
+            validationError={errors.lastName?.message}
           />
 
-          <RntPhoneInput
-            className="lg:w-60"
-            id="phoneNumber"
-            label={t_profile("phone")}
-            type="tel"
-            value={enteredFormData.phoneNumber}
-            onChange={handleChange}
+          <Controller
+            name="phoneNumber"
+            control={control}
+            render={({ field }) => (
+              <RntPhoneInput
+                className="lg:w-60"
+                id="phoneNumber"
+                label={t_profile("phone")}
+                type="tel"
+                value={field.value}
+                onChange={field.onChange}
+                validationError={errors.phoneNumber?.message}
+              />
+            )}
           />
         </div>
       </fieldset>
@@ -203,34 +193,64 @@ function UserProfileInfo({
             className="lg:w-60"
             id="drivingLicenseNumber"
             label={t_profile("driving_license_number")}
-            value={enteredFormData.drivingLicenseNumber}
-            onChange={handleChange}
+            {...register("drivingLicenseNumber")}
+            validationError={errors.drivingLicenseNumber?.message}
           />
-          <RntDatePicker
-            className="lg:w-60"
-            id="drivingLicenseExpire"
-            label={t_profile("driving_license_validity_period")}
-            type="date"
-            value={enteredFormData.drivingLicenseExpire}
-            onDateChange={handleDateChange}
-            validationError={
-              isNaN(enteredFormData.drivingLicenseExpire?.getTime() ?? 0)
-                ? "Please enter date in format mm/dd/year"
-                : ""
-            }
+          <Controller
+            name="drivingLicenseExpire"
+            control={control}
+            render={({ field }) => (
+              <RntDatePicker
+                className="lg:w-60"
+                id="drivingLicenseExpire"
+                label={t_profile("driving_license_validity_period")}
+                type="date"
+                value={field.value}
+                onDateChange={(date) => {
+                  field.onChange(date ?? undefined);
+                }}
+                validationError={errors.drivingLicenseExpire?.message}
+                maxDate={moment().add(15, "years").toDate()}
+              />
+            )}
           />
         </div>
       </fieldset>
 
       <KycVerification t={t_profile} />
-      <AgreementInfo
-        signature={enteredFormData.tcSignature}
-        onSign={(signature) => {
-          setEnteredFormData({ ...enteredFormData, tcSignature: signature });
-        }}
-        t={t_profile}
+
+      <Controller
+        name="tcSignature"
+        control={control}
+        render={({ field }) => (
+          <AgreementInfo
+            signature={field.value}
+            onSign={(signature) => {
+              field.onChange(signature);
+            }}
+            t={t_profile}
+          />
+        )}
       />
 
+      <SaveChatKeys t={t} />
+
+      <RntButton type="submit" className="mt-4" disabled={isSubmitting}>
+        {t("common.save")}
+      </RntButton>
+    </form>
+  );
+}
+
+const SaveChatKeys = ({ t }: { t: TFunction }) => {
+  const { isLoading: isChatKeysLoading, isChatKeysSaved, saveChatKeys } = useChatKeys();
+
+  const t_profile: TFunction = (name, options) => {
+    return t("profile." + name, options);
+  };
+
+  return (
+    <>
       <p className="mt-4">{t_profile("generate_keys")}</p>
       <div className="flex items-center">
         <RntButton type="button" onClick={saveChatKeys} disabled={isChatKeysSaved || isChatKeysLoading}>
@@ -246,12 +266,8 @@ function UserProfileInfo({
           )}
         </div>
       </div>
-
-      <RntButton type="submit" className="mt-4">
-        {t("common.save")}
-      </RntButton>
-    </form>
+    </>
   );
-}
+};
 
 export default memo(UserProfileInfo);

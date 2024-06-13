@@ -1,11 +1,39 @@
-import { Waku, getUserChatContentTopic } from "./waku";
-import { createDecoder as eciesDecoder } from "@waku/message-encryption/ecies";
-import { isEmpty } from "@/utils/string";
+import { createEncoder as eciesEncoder, createDecoder as eciesDecoder } from "@waku/message-encryption/ecies";
+import { DecodedMessage } from "@waku/message-encryption";
+import { LightNode, PageDirection, Protocols, createLightNode, waitForRemotePeer } from "@waku/sdk";
 import { hexToBytes } from "@waku/utils/bytes";
-import { DecodedMessage, LightNode, PageDirection } from "@waku/sdk";
-import { ChatMessage } from "./model/chatMessage";
 import { Signer } from "ethers";
 import moment from "moment";
+import { isEmpty } from "@/utils/string";
+import { ChatMessage } from "./model/chatMessage";
+import { signUserChatMessage } from "./crypto";
+import { wakuPeerExchangeDiscovery } from "@waku/discovery";
+
+const PubsubTopic = "/waku/2/default-waku/proto";
+export function getUserChatContentTopic(address: string) {
+  return `/rentality/1/pm-user-t-${String(address).toLowerCase()}/proto`;
+}
+
+async function initializeNode() {
+  console.log("Initializing node");
+  //const node = await createLightNode({ defaultBootstrap: true });
+  const node = await createLightNode({
+    pubsubTopics: [PubsubTopic],
+    defaultBootstrap: false,
+    bootstrapPeers: [
+      "/dns4/waku.myrandomdemos.online/tcp/8000/wss/p2p/16Uiu2HAmKfC2QUvMVyBsVjuEzdo1hVhRddZxo69YkBuXYvuZ83sc",
+    ],
+    libp2p: {
+      peerDiscovery: [wakuPeerExchangeDiscovery([PubsubTopic])],
+    },
+  });
+  console.log("Starting Waku node.");
+  await node.start();
+  console.log("Waiting for a peer");
+  await waitForRemotePeer(node, [Protocols.Filter, Protocols.LightPush, Protocols.Store]);
+  console.log("Node initialized");
+  return node;
+}
 
 export class Client {
   node: LightNode | undefined;
@@ -39,7 +67,7 @@ export class Client {
     this.signer = signer;
     this.onUserMessageReceived = onUserMessageReceived;
 
-    this.node = await Waku.initializeNode();
+    this.node = await initializeNode();
   }
 
   async listenForUserChatMessages() {
@@ -50,10 +78,16 @@ export class Client {
     const walletAddress = (await this.signer.getAddress()).toLowerCase();
     const contentTopic = getUserChatContentTopic(walletAddress);
 
-    await this.node.filter.subscribe(
-      eciesDecoder(contentTopic, this.encryptionKeyPair.privateKey),
+    const subscription = await this.node.filter.createSubscription();
+    await subscription.subscribe(
+      eciesDecoder(contentTopic, this.encryptionKeyPair.privateKey, PubsubTopic),
       this.onUserChatMessage
     );
+
+    // await this.node.filter.subscribe(
+    //   eciesDecoder(contentTopic, this.encryptionKeyPair.privateKey),
+    //   this.onUserChatMessage
+    // );
 
     console.log(`Listening for messages at ${contentTopic}`);
   }
@@ -84,15 +118,13 @@ export class Client {
     const contentTopic = getUserChatContentTopic(walletAddress);
 
     const startTime = moment().subtract(30, "days").toDate();
-    // // 30 days, 24 hours/day, 60min/hour, 60secs/min, 100ms/sec
-    // startTime.setTime(startTime.getTime() - 30 * 24 * 60 * 60 * 1000);
 
     // TODO: Remove this timeout once https://github.com/status-im/js-waku/issues/913 is done
     await new Promise((resolve) => setTimeout(resolve, 200));
 
     try {
       for await (const messagesPromises of this.node.store.queryGenerator(
-        [eciesDecoder(contentTopic, this.encryptionKeyPair.privateKey)],
+        [eciesDecoder(contentTopic, this.encryptionKeyPair.privateKey, PubsubTopic)],
         {
           timeFilter: { startTime, endTime: new Date() },
           pageDirection: PageDirection.BACKWARD,
@@ -130,20 +162,49 @@ export class Client {
     };
   }
 
-  async sendUserMessage(toAddress: string, tripId: number, datetime: number, message: string, chatPublicKey: string) {
+  async sendUserMessage(
+    toAddress: string,
+    tripId: number,
+    datetime: number,
+    type: string,
+    message: string,
+    tags: Map<string, string>,
+    chatPublicKey: string
+  ) {
     if (!this.node) return;
     if (!this.encryptionKeyPair) return;
     if (!this.signer) return;
 
-    await Waku.sendUserChatMessage(
-      toAddress,
-      tripId,
-      datetime,
-      message,
-      this.signer,
-      hexToBytes(chatPublicKey),
-      this.encryptionKeyPair.publicKey,
-      this.node
-    );
+    const myPublicKey = this.encryptionKeyPair.publicKey;
+    const fromAddress = (await this.signer.getAddress()).toLowerCase();
+    const signature = await signUserChatMessage(fromAddress, toAddress, tripId, datetime, message, this.signer);
+
+    const chatMessage = new ChatMessage({
+      from: fromAddress,
+      to: toAddress,
+      tripId: tripId,
+      datetime: datetime,
+      type: type,
+      message: message,
+      tags: JSON.stringify(tags),
+      signature: hexToBytes(signature),
+    });
+
+    const payload = chatMessage.encode();
+    const encoder = eciesEncoder({
+      contentTopic: getUserChatContentTopic(toAddress),
+      publicKey: hexToBytes(chatPublicKey),
+      ephemeral: false,
+      pubsubTopic: PubsubTopic,
+    });
+    const myEncoder = eciesEncoder({
+      contentTopic: getUserChatContentTopic(fromAddress),
+      publicKey: myPublicKey,
+      ephemeral: false,
+      pubsubTopic: PubsubTopic,
+    });
+
+    await this.node.lightPush.send(encoder, { payload });
+    await this.node.lightPush.send(myEncoder, { payload });
   }
 }

@@ -7,10 +7,10 @@ function CivicIssueReasons({ handleCancelClick }: { handleCancelClick: () => voi
         Possible reasons refusal to issue a pass
       </h1>
       <h1 className="place-self-center text-xl">{"when checking your driver's license"}</h1>
-      <p className="mt-6">При прохождении верификации выявлено хотя бы одно несоответствие требованиям:</p>
+      <p className="mt-6">At least one non-compliance was identified during verification:</p>
       <ul className="mt-4 list-disc ml-4">
         <li>Completed liveness check; and</li>
-        <li>Completed wallet ownership verification, или уникальность кошелька; and</li>
+        <li>Completed wallet ownership verification, or the uniqueness of the wallet; and</li>
         <li>Completed identity document verification; and</li>
         <li>Over the age of 21; and</li>
         <li>

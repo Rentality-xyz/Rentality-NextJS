@@ -6,7 +6,9 @@ export type ChatMessagePayload = {
   to: string;
   tripId: number;
   datetime: number;
+  type: string;
   message: string;
+  tags: string;
   signature: Uint8Array;
 };
 
@@ -18,8 +20,10 @@ export class ChatMessage {
     .add(new protobuf.Field("to", 2, "string"))
     .add(new protobuf.Field("tripId", 3, "uint64"))
     .add(new protobuf.Field("datetime", 4, "uint64"))
-    .add(new protobuf.Field("message", 5, "string"))
-    .add(new protobuf.Field("signature", 6, "bytes"));
+    .add(new protobuf.Field("type", 5, "string"))
+    .add(new protobuf.Field("message", 6, "string"))
+    .add(new protobuf.Field("tags", 7, "string"))
+    .add(new protobuf.Field("signature", 8, "bytes"));
 
   constructor(payload: ChatMessagePayload) {
     this.payload = payload;
@@ -38,7 +42,9 @@ export class ChatMessage {
       !payload.to ||
       !payload.tripId ||
       !payload.datetime ||
+      !payload.type ||
       !payload.message ||
+      !payload.tags ||
       !payload.signature
     ) {
       console.error("Some fields are missed on decoded ChatMessage", payload);
@@ -50,7 +56,9 @@ export class ChatMessage {
       to: payload.to,
       tripId: Number(payload.tripId),
       datetime: payload.datetime,
+      type: payload.type,
       message: payload.message,
+      tags: payload.tags,
       signature: payload.signature,
     });
   }
@@ -71,8 +79,16 @@ export class ChatMessage {
     return this.payload.datetime;
   }
 
+  get type() {
+    return this.payload.type;
+  }
+
   get message() {
     return this.payload.message;
+  }
+
+  get tags() {
+    return this.payload.tags;
   }
 
   get signature() {

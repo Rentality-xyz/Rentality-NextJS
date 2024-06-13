@@ -98,6 +98,8 @@ export type TripInfo = {
   tripStartedBy: string;
   tripFinishedBy: string;
   rejectedDate: Date | undefined;
+  isTripRejected: boolean;
+  isTripCanceled: boolean;
   createdDateTime: Date;
   approvedDateTime: Date;
   checkedInByHostDateTime: Date;
@@ -116,6 +118,7 @@ export type TripInfo = {
   currencyRate: number;
   salesTaxInUsd: number;
   governmentTaxInUsd: number;
+  totalPriceInUsd: number;
 
   host: {
     walletAddress: string;
