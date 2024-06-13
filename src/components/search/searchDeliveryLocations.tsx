@@ -27,7 +27,7 @@ export default function  SearchDeliveryLocations({
                     placeholder="Enter address"
                     includeStreetAddress={true}
                     readOnly={
-                        searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
+                        !searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
                     }
                     initValue={
                         !searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
@@ -74,7 +74,7 @@ export default function  SearchDeliveryLocations({
                 <CheckboxLight
                     className="ml-4 mt-0.5"
                     title="Host home locatione"
-                    value={searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation}
+                    value={!searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation}
                     onChange={(e) =>
                         setSearchCarRequest({
                             ...searchCarRequest,
@@ -101,7 +101,7 @@ export default function  SearchDeliveryLocations({
                     placeholder="Enter address"
                     includeStreetAddress={true}
                     readOnly={
-                        searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+                        !searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
                     }
                     initValue={
                         !searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
@@ -150,7 +150,7 @@ export default function  SearchDeliveryLocations({
                 <CheckboxLight
                     className="ml-4 mt-0.5"
                     title="Host home locatione"
-                    value={searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation}
+                    value={!searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation}
                     onChange={(e) =>
                         setSearchCarRequest({
                             ...searchCarRequest,
