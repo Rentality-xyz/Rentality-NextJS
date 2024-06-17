@@ -59,7 +59,7 @@ export default function CarEditForm({
   };
 
   return (
-    <GoogleMapsProvider libraries={["places"]}>
+    <GoogleMapsProvider libraries={["places"]} language="en">
       <div className="mt-4">
         <div className="text-lg mb-4">
           <strong>{t_car("car")}</strong>
