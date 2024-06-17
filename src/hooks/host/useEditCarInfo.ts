@@ -96,13 +96,13 @@ const useEditCarInfo = (carId: number) => {
         securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
       };
 
-      let hostAddressArray = carInfoFormParams.locationInfo.address.split(",");
+      const hostAddressArray = carInfoFormParams.locationInfo.address.split(",").map((i) => i.trim());
 
       hostAddressArray[hostAddressArray.length - 1] = carInfoFormParams.locationInfo.country;
       hostAddressArray[hostAddressArray.length - 2] = carInfoFormParams.locationInfo.state;
       hostAddressArray[hostAddressArray.length - 3] = carInfoFormParams.locationInfo.city;
 
-      let hostAddress = hostAddressArray.join(",");
+      const hostAddress = hostAddressArray.join(", ");
 
       const location: ContractSignedLocationInfo = {
         locationInfo: {
@@ -194,7 +194,10 @@ const useEditCarInfo = (carId: number) => {
           milesIncludedPerDay: getMilesIncludedPerDayText(carInfoDetails.milesIncludedPerDay),
           securityDeposit: securityDeposit.toString(),
           locationInfo: {
-            address: carInfoDetails.locationInfo.userAddress,
+            address: carInfoDetails.locationInfo.userAddress
+              .split(",")
+              .map((i) => i.trim())
+              .join(", "),
             country: carInfoDetails.locationInfo.country,
             state: carInfoDetails.locationInfo.state,
             city: carInfoDetails.locationInfo.city,

@@ -448,7 +448,7 @@
     "more_info": "More about the vehicle",
     "location": "Location of vehicle",
     "address": "Address",
-    "saved_address": "Address (based on saved location)",
+    "saved_address": "Address",
     "country": "Country",
     "city": "City",
     "state": "State",

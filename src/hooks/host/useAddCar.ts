@@ -5,7 +5,7 @@ import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeCo
 import { getMoneyInCentsFromString } from "@/utils/formInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { ContractCreateCarRequest } from "@/model/blockchain/schemas";
+import { ContractCreateCarRequest, ContractLocationInfo } from "@/model/blockchain/schemas";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
 import { emptyLocationInfo } from "@/model/LocationInfo";
 
@@ -204,6 +204,24 @@ const useAddCar = () => {
           ? BigInt(UNLIMITED_MILES_VALUE)
           : BigInt(dataToSave.milesIncludedPerDay);
 
+      const hostAddressArray = dataToSave.locationInfo.address.split(",").map((i) => i.trim());
+
+      hostAddressArray[hostAddressArray.length - 1] = dataToSave.locationInfo.country;
+      hostAddressArray[hostAddressArray.length - 2] = dataToSave.locationInfo.state;
+      hostAddressArray[hostAddressArray.length - 3] = dataToSave.locationInfo.city;
+
+      const hostAddress = hostAddressArray.join(", ");
+
+      const locationInfo: ContractLocationInfo = {
+        userAddress: hostAddress,
+        country: dataToSave.locationInfo.country,
+        state: dataToSave.locationInfo.state,
+        city: dataToSave.locationInfo.city,
+        latitude: dataToSave.locationInfo.latitude.toFixed(6),
+        longitude: dataToSave.locationInfo.longitude.toFixed(6),
+        timeZoneId: dataToSave.locationInfo.timeZoneId,
+      };
+
       const request: ContractCreateCarRequest = {
         tokenUri: metadataURL,
         carVinNumber: dataToSave.vinNumber,
@@ -218,15 +236,7 @@ const useAddCar = () => {
         engineParams: engineParams,
         timeBufferBetweenTripsInSec: BigInt(carInfoFormParams.timeBufferBetweenTripsInMin * 60),
         insuranceIncluded: dataToSave.isInsuranceIncluded,
-        locationInfo: {
-          userAddress: dataToSave.locationInfo.address,
-          country: dataToSave.locationInfo.country,
-          state: dataToSave.locationInfo.state,
-          city: dataToSave.locationInfo.city,
-          latitude: dataToSave.locationInfo.latitude.toFixed(6),
-          longitude: dataToSave.locationInfo.longitude.toFixed(6),
-          timeZoneId: dataToSave.locationInfo.timeZoneId,
-        },
+        locationInfo: locationInfo,
       };
 
       const transaction = await rentalityContract.addCar(request);

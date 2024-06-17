@@ -48,38 +48,16 @@ export default function CarEditForm({
   isNewCar: boolean;
   t: TFunction;
 }) {
-  const [autocomplete, setAutocomplete] = useState("");
+  const [autocomplete, setAutocomplete] = useState(carInfoFormParams.locationInfo.address);
   const isUnlimitedMiles = carInfoFormParams.milesIncludedPerDay === UNLIMITED_MILES_VALUE_TEXT;
   const fuelPricePerMile = Number(carInfoFormParams.pricePerDay) / Number(carInfoFormParams.milesIncludedPerDay);
   const fuelPricePerMileText = Number.isFinite(fuelPricePerMile) ? displayMoneyWith2Digits(fuelPricePerMile) : "-";
   const isElectricEngine = carInfoFormParams.engineTypeText === "Electro";
 
-  useEffect(() => {
-    if (!carInfoFormParams.locationInfo.latitude || !carInfoFormParams.locationInfo.longitude) return;
-
-    const getGoogleAddress = async () => {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${carInfoFormParams.locationInfo.latitude},${carInfoFormParams.locationInfo.longitude}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&language=en`
-      );
-      const result = await response.json();
-      const firstAddress = result?.results[0]?.formatted_address ?? "";
-
-      if (firstAddress) {
-        setAutocomplete(firstAddress);
-
-        setCarInfoFormParams({
-          ...carInfoFormParams,
-          locationInfo: { ...carInfoFormParams.locationInfo, address: firstAddress },
-        });
-      }
-    };
-    getGoogleAddress();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
   };
+
   return (
     <GoogleMapsProvider libraries={["places"]}>
       <div className="mt-4">
