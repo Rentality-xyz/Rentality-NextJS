@@ -6,10 +6,13 @@ import { validateContractCarInfo } from "@/model/blockchain/schemas_utils";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { twMerge } from "tailwind-merge";
+import { number } from "zod";
 
 type CarLocations = {
   carId: number;
   carPhotoUrl: string;
+  userAddress: string;
   country: string;
   state: string;
   city: string;
@@ -17,6 +20,9 @@ type CarLocations = {
   locationLatitude: string;
   locationLongitude: string;
   isListed: boolean;
+  hostName: string;
+  isUniue: boolean;
+  isUserAddressFull: boolean;
 };
 
 const useCarLocations = () => {
@@ -31,7 +37,7 @@ const useCarLocations = () => {
       try {
         const getAllCarsView = await rentalityContract.getAllCars();
 
-        const carLocationsData =
+        let carLocationsData =
           getAllCarsView.length === 0
             ? []
             : await Promise.all(
@@ -42,10 +48,14 @@ const useCarLocations = () => {
                   const carInfoDetails: ContractCarDetails = await rentalityContract.getCarDetails(i.carId);
                   const metadataURI = await rentalityContract.getCarMetadataURI(i.carId);
                   const meta = await getMetaDataFromIpfs(metadataURI);
+                  const isUserAddressFull =
+                    carInfoDetails.locationInfo.userAddress.split(",").length > 3 &&
+                    carInfoDetails.locationInfo.userAddress.split(",")[0] !== "1";
 
                   let item: CarLocations = {
                     carId: Number(i.carId),
                     carPhotoUrl: getIpfsURIfromPinata(meta.image),
+                    userAddress: carInfoDetails.locationInfo.userAddress,
                     country: carInfoDetails.locationInfo.country,
                     state: carInfoDetails.locationInfo.state,
                     city: carInfoDetails.locationInfo.city,
@@ -53,10 +63,20 @@ const useCarLocations = () => {
                     locationLatitude: carInfoDetails.locationInfo.latitude,
                     locationLongitude: carInfoDetails.locationInfo.longitude,
                     isListed: carInfoDetails.currentlyListed,
+                    hostName: carInfoDetails.hostName,
+                    isUniue: true,
+                    isUserAddressFull: isUserAddressFull,
                   };
                   return item;
                 })
               );
+        carLocationsData = carLocationsData.map((cl) =>
+          carLocationsData.filter(
+            (i) => i.locationLatitude === cl.locationLatitude && i.locationLongitude === cl.locationLongitude
+          ).length > 1
+            ? { ...cl, isUniue: false }
+            : cl
+        );
 
         setCarLocations(carLocationsData ?? []);
       } catch (e) {
@@ -90,22 +110,30 @@ export default function Admin() {
               <tr className="text-rentality-additional-light">
                 <th className={`${headerSpanClassName}`}>#</th>
                 <th className={`${headerSpanClassName}`}>CarId</th>
-                <th className={`${headerSpanClassName}`}>CarImage</th>
-                <th className={`${headerSpanClassName}`}>Country</th>
-                <th className={`${headerSpanClassName}`}>State</th>
-                <th className={`${headerSpanClassName}`}>City</th>
-                <th className={`${headerSpanClassName}`}>TimeZoneId</th>
-                <th className={`${headerSpanClassName}`}>Latitude</th>
-                <th className={`${headerSpanClassName}`}>Longitude</th>
+                <th className={`${headerSpanClassName}`}>Host</th>
                 <th className={`${headerSpanClassName}`}>Status</th>
+                <th className={`${headerSpanClassName}`}>CarImage</th>
+                <th className={`${headerSpanClassName}`}>
+                  <div>Country/State</div>
+                  <div>City</div>
+                </th>
+                <th className={`${headerSpanClassName}`}>
+                  <div>Latitude</div>
+                  <div>Longitude</div>
+                  <div>TimeZoneId</div>
+                </th>
+                <th className={`${headerSpanClassName}`}>Home address </th>
               </tr>
             </thead>
             <tbody className="text-sm">
               {carLocations.map((carLocation, index) => {
+                const uniqueRowClassName = twMerge(rowSpanClassName);
                 return (
                   <tr key={carLocation.carId} className="border-b-[1px] border-b-gray-500">
-                    <td className={rowSpanClassName}>{index}</td>
+                    <td className={rowSpanClassName}>{index + 1}</td>
                     <td className={rowSpanClassName}>{carLocation.carId}</td>
+                    <td className={rowSpanClassName}>{carLocation.hostName}</td>
+                    <td className={rowSpanClassName}>{carLocation.isListed ? "Listed" : "Not listed"}</td>
                     <td className={rowSpanClassName}>
                       <Image
                         src={carLocation.carPhotoUrl}
@@ -115,13 +143,24 @@ export default function Admin() {
                         className="py-2 object-cover"
                       />
                     </td>
-                    <td className={rowSpanClassName}>{carLocation.country}</td>
-                    <td className={rowSpanClassName}>{carLocation.state}</td>
-                    <td className={rowSpanClassName}>{carLocation.city}</td>
-                    <td className={rowSpanClassName}>{carLocation.timeZoneId}</td>
-                    <td className={rowSpanClassName}>{carLocation.locationLatitude}</td>
-                    <td className={rowSpanClassName}>{carLocation.locationLongitude}</td>
-                    <td className={rowSpanClassName}>{carLocation.isListed ? "Listed" : "Not listed"}</td>
+                    <td className={rowSpanClassName}>
+                      <div>{`${carLocation.country} / ${carLocation.state}`}</div>
+                      <div>{carLocation.city}</div>
+                    </td>
+                    <td className={rowSpanClassName}>
+                      <div className={`${carLocation.isUniue ? "" : "text-red-500"}`}>
+                        {carLocation.locationLatitude}
+                      </div>
+                      <div className={`${carLocation.isUniue ? "" : "text-red-500"}`}>
+                        {carLocation.locationLongitude}
+                      </div>
+                      <div>{carLocation.timeZoneId}</div>
+                    </td>
+                    <td className={rowSpanClassName}>
+                      <span className={`${carLocation.isUserAddressFull ? "" : "text-red-500"}`}>
+                        {carLocation.userAddress}
+                      </span>
+                    </td>
                   </tr>
                 );
               })}

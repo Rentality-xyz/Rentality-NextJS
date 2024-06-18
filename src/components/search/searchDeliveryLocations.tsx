@@ -24,7 +24,7 @@ export default function SearchDeliveryLocations({
           label="Pick up location"
           placeholder="Enter address"
           includeStreetAddress={true}
-          readOnly={!searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation}
+          readOnly={searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation}
           initValue={
             !searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
               ? searchCarRequest.deliveryInfo.pickupLocation.locationInfo.address
@@ -67,7 +67,7 @@ export default function SearchDeliveryLocations({
         <CheckboxLight
           className="ml-4 mt-0.5"
           title="Host home locatione"
-          value={!searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation}
+          value={searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation}
           onChange={(e) =>
             setSearchCarRequest({
               ...searchCarRequest,
@@ -93,7 +93,7 @@ export default function SearchDeliveryLocations({
           label="Return location"
           placeholder="Enter address"
           includeStreetAddress={true}
-          readOnly={!searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation}
+          readOnly={searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation}
           initValue={
             !searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
               ? searchCarRequest.deliveryInfo.returnLocation.locationInfo.address
@@ -138,7 +138,7 @@ export default function SearchDeliveryLocations({
         <CheckboxLight
           className="ml-4 mt-0.5"
           title="Host home locatione"
-          value={!searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation}
+          value={searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation}
           onChange={(e) =>
             setSearchCarRequest({
               ...searchCarRequest,

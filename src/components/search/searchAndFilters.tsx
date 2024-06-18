@@ -125,6 +125,10 @@ export default function SearchAndFilters({
 
   const handleClickOpenDeliveryLocation = () => {
     setOpenDeliveryLocation(!openDeliveryLocation);
+    setSearchCarRequest({
+      ...searchCarRequest,
+      isDeliveryToGuest: !openDeliveryLocation,
+    });
   };
 
   return (

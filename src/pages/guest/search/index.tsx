@@ -159,7 +159,7 @@ export default function Search() {
 
   return (
     <Layout>
-      <GoogleMapsProvider libraries={["maps", "marker", "places"]}>
+      <GoogleMapsProvider libraries={["maps", "marker", "places"]} language="en">
         <div className="flex flex-col xl:h-full" title="Search">
           <SearchAndFilters
             searchCarRequest={searchCarRequest}
