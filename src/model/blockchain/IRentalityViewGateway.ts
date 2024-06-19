@@ -19,6 +19,8 @@ import {
   ContractPublicHostCarDTO,
   ContractSearchCar,
   ContractSearchCarParams,
+  ContractSearchCarWithDistance,
+  ContractSignedLocationInfo,
   ContractTripDTO,
   ContractTripReceiptDTO,
   ContractUpdateCarInfoRequest,
@@ -32,6 +34,7 @@ import {
 import { LocationInfo } from "@/model/LocationInfo";
 import { EthereumInfo } from "@/contexts/web3/ethereumContext";
 import type { JsonRpcSigner } from "ethers/src.ts/providers/provider-jsonrpc";
+import { info } from "autoprefixer";
 
 export interface IRentalityViewContract {
   getCarServiceAddress(): Promise<string>;
@@ -272,7 +275,7 @@ export default class RentalityL0Contract implements IRentalitySender, IRentality
     endDateTime: bigint,
     searchParams: ContractSearchCarParams,
     user = this.sender
-  ): Promise<ContractSearchCar[]> {
+  ): Promise<ContractSearchCarWithDistance[]> {
     return this.defaultContract.searchAvailableCars(startDateTime, endDateTime, searchParams, { from: user });
   }
 
@@ -283,7 +286,7 @@ export default class RentalityL0Contract implements IRentalitySender, IRentality
     pickUp: ContractLocationInfo,
     returnL: ContractLocationInfo,
     user = this.sender
-  ): Promise<ContractSearchCar[]> {
+  ): Promise<ContractSearchCarWithDistance[]> {
     return this.defaultContract.searchAvailableCarsWithDelivery(
       startDateTime,
       endDateTime,
@@ -413,10 +416,10 @@ export default class RentalityL0Contract implements IRentalitySender, IRentality
     return this.currantChainContract.createClaim(request, { value: quote });
   }
 
-  async createTripRequest(value: object, request: ContractCreateTripRequest): Promise<ContractTransactionResponse> {
+  async createTripRequest(request: ContractCreateTripRequest, value: object): Promise<ContractTransactionResponse> {
     if (this.isDefaultNetwork) {
       // @ts-ignore
-      return this.currantChainContract.createTripRequest(value.value, request, { value });
+      return this.currantChainContract.createTripRequest(value.value, request, value);
     }
     // @ts-ignore
     let _value = value.value;
@@ -437,8 +440,10 @@ export default class RentalityL0Contract implements IRentalitySender, IRentality
     }
     // @ts-ignore
     let _value = value.value;
-    let quote = await this.currantChainContract.createTripRequestWithDelivery(_value, request);
-
+    let quote = await (this.currantChainContract as unknown as IRentalitySender).quoteCreateTripRequestWithDelivery(
+      _value,
+      request
+    );
     return this.currantChainContract.createTripRequestWithDelivery(_value, request, { value: quote });
   }
 
@@ -465,7 +470,7 @@ export default class RentalityL0Contract implements IRentalitySender, IRentality
     return this.currantChainContract.parseGeoResponse(carId, { value: quote });
   }
 
-  async payClaim(claimId: bigint, value: object): Promise<ContractTransactionResponse> {
+  async payClaim(_: bigint | 0, claimId: bigint, value: object): Promise<ContractTransactionResponse> {
     if (this.isDefaultNetwork) {
       // @ts-ignore
       return this.currantChainContract.payClaim(value.value, claimId, value);
@@ -544,16 +549,18 @@ export default class RentalityL0Contract implements IRentalitySender, IRentality
 
   async updateCarInfoWithLocation(
     request: ContractUpdateCarInfoRequest,
-    location: ContractLocationInfo
+    location: ContractSignedLocationInfo,
+    apiKey: string
   ): Promise<ContractTransactionResponse> {
     if (this.isDefaultNetwork) {
-      return (this.currantChainContract as IRentalityContract).updateCarInfoWithLocation(request, location);
+      return (this.currantChainContract as IRentalityContract).updateCarInfoWithLocation(request, location, apiKey);
     }
     let quote = await (this.currantChainContract as unknown as IRentalitySender).quoteUpdateCarInfoWithLocation(
       request,
-      location
+      location,
+      apiKey
     );
-    return (this.currantChainContract as IRentalityContract).updateCarInfoWithLocation(request, location, {
+    return (this.currantChainContract as IRentalityContract).updateCarInfoWithLocation(request, location, apiKey, {
       value: quote,
     });
   }
@@ -598,6 +605,40 @@ export default class RentalityL0Contract implements IRentalitySender, IRentality
       return (this.currantChainContract as IRentalityContract).updateUserService(contractAddress);
     }
     throw new Error("Wrong contract type");
+  }
+
+  calculateKycCommission(currency: string): Promise<bigint> {
+    return this.defaultContract.calculateKycCommission({ from: this.sender });
+  }
+
+  getKycCommission(): Promise<bigint> {
+    return this.defaultContract.getKycCommission({ from: this.sender });
+  }
+
+  isKycCommissionPaid(user: string): Promise<boolean> {
+    return this.defaultContract.isKycCommissionPaid(user, { from: this.sender });
+  }
+
+  async payKycCommission(amount: bigint, currency: string, _value: object): Promise<ContractTransactionResponse> {
+    if (this.isDefaultNetwork) {
+      // @ts-ignore
+      return this.currantChainContract.payKycCommission(_value.value, currency, { value: _value });
+    }
+    // @ts-ignore
+    let value = _value.value;
+    let quote = await (this.currantChainContract as unknown as IRentalitySender).quotePayKycCommission(value, currency);
+    return this.currantChainContract.payKycCommission(value, currency, { value: quote });
+  }
+
+  async useKycCommission(user: string): Promise<ContractTransactionResponse> {
+    if (this.isDefaultNetwork) {
+      // @ts-ignore
+      return this.currantChainContract.useKycCommission(user);
+    }
+    // @ts-ignore
+    let value = _value.value;
+    let quote = await (this.currantChainContract as unknown as IRentalitySender).quoteUseKycCommission(user);
+    return this.currantChainContract.useKycCommission(user, { value: quote });
   }
 
   quoteAddCar(request: ContractCreateCarRequest): Promise<bigint> {
@@ -770,13 +811,29 @@ export default class RentalityL0Contract implements IRentalitySender, IRentality
 
   quoteUpdateCarInfoWithLocation(
     request: ContractUpdateCarInfoRequest,
-    location: ContractLocationInfo
+    location: ContractSignedLocationInfo,
+    apiKey: string
   ): Promise<bigint> {
     if (!this.isDefaultNetwork) {
       return (this.currantChainContract as unknown as IRentalitySender).quoteUpdateCarInfoWithLocation(
         request,
-        location
+        location,
+        apiKey
       );
+    }
+    throw new Error("Wrong contract type");
+  }
+
+  quotePayKycCommission(value: bigint, currency: string): Promise<bigint> {
+    if (!this.isDefaultNetwork) {
+      return (this.currantChainContract as unknown as IRentalitySender).quotePayKycCommission(value, currency);
+    }
+    throw new Error("Wrong contract type");
+  }
+
+  quoteUseKycCommission(user: string): Promise<bigint> {
+    if (!this.isDefaultNetwork) {
+      return (this.currantChainContract as unknown as IRentalitySender).quoteUseKycCommission(user);
     }
     throw new Error("Wrong contract type");
   }
