@@ -5,7 +5,6 @@ import { TextField } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import "react-datepicker/dist/react-datepicker.css";
 
 export default function RntDatePicker({
   className,
