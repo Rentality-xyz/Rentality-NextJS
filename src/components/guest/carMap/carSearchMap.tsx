@@ -121,6 +121,10 @@ export default function CarSearchMap({
     });
   }, [carInfos, selectedCarID]);
 
+  const markerClassName = "text-center text-lg w-24 h-8";
+  const carIdClassName = markerClassName + " text-white buttonGradient rounded-full";
+  const selectedCarIdClassName = markerClassName + " rounded-lg text-black font-medium bg-white border-2 border-[#805FE4]";
+
   return googleMapsAPIIsLoaded ? (
     <GoogleMap
       id="google-maps-guest-search-page"
@@ -141,9 +145,9 @@ export default function CarSearchMap({
         >
           <div
             id={carInfo.carId.toString()}
+            // className="text-[#805FE4]"
             className={
-              "text-center rounded-full text-white text-lg buttonGradient w-24 h-8" +
-              (selectedCarID == carInfo.carId ? " border-2" : "")
+              selectedCarID == carInfo.carId ? selectedCarIdClassName : carIdClassName
             }
           >
             ${carInfo.pricePerDayWithDiscount}
