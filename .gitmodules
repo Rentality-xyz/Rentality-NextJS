@@ -1,3 +1,0 @@
-[submodule "contracts"]
-	path = contracts
-	url = git@bitbucket.org:eigenmethodteam/demo-rentality-web3-contracts.git
