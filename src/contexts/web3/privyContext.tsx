@@ -1,4 +1,5 @@
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
+import { isEmpty } from "@/utils/string";
 import { PrivyProvider as BasePrivyProvider } from "@privy-io/react-auth";
 
 export const PrivyProvider = ({ children }: { children?: React.ReactNode }) => {
@@ -8,7 +9,10 @@ export const PrivyProvider = ({ children }: { children?: React.ReactNode }) => {
 
   if (!appId || currentSupportedViemChains.length === 0) return <>{children}</>;
 
-  const defaultChain = currentSupportedViemChains[0];
+  const defaultChainId = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
+  const defaultChain = !isEmpty(defaultChainId)
+    ? currentSupportedViemChains.find((ch) => ch.id === Number(defaultChainId))
+    : currentSupportedViemChains[0];
 
   return (
     <BasePrivyProvider
