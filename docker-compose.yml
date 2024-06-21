@@ -11,7 +11,7 @@ services:
       - rentality-network
     volumes:
       - ./src:/home/app/src
-      - abis-volume:/home/app/src/abis
+      - /home/app/src/abis
       - localnodes:/home/app/node_modules
   ganache:
     container_name: ganache
@@ -31,5 +31,3 @@ volumes:
       type: none
       device: ./node_modules
       o: bind
-  abis-volume:
-    driver: local
