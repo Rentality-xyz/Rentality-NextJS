@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import "../utils/i18n";
 import { useEffect } from "react";
 import { analyticsPromise } from "@/utils/firebase";
+import { FirebaseChatProvider } from "@/contexts/firebaseChatContext";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -26,13 +27,13 @@ export default function App({ Component, pageProps }: AppProps) {
       <RentalityProvider>
         <UserInfoProvider>
           <NotificationProvider isHost={isHost}>
-            <ChatProvider>
+            <FirebaseChatProvider>
               <AppContextProvider>
                 <RntDialogsProvider>
                   <Component {...pageProps} />
                 </RntDialogsProvider>
               </AppContextProvider>
-            </ChatProvider>
+            </FirebaseChatProvider>
           </NotificationProvider>
         </UserInfoProvider>
       </RentalityProvider>

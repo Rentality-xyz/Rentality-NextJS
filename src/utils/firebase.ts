@@ -1,5 +1,6 @@
 import { FirebaseApp, initializeApp } from "firebase/app";
 import { Analytics, getAnalytics, isSupported } from "firebase/analytics";
+import { Firestore, getFirestore } from "firebase/firestore";
 import { isEmpty } from "./string";
 
 const firebaseConfig = {
@@ -14,10 +15,12 @@ const firebaseConfig = {
 
 let app: FirebaseApp;
 let analyticsPromise: Promise<Analytics | null>;
+let dbPromise: Promise<Firestore | null>;
 
 if (typeof window != undefined && !isEmpty(firebaseConfig.projectId)) {
   app = initializeApp(firebaseConfig);
   analyticsPromise = isSupported().then((yes) => (yes ? getAnalytics(app) : null));
+  dbPromise = isSupported().then((yes) => (yes ? getFirestore(app, "rentality-chat-db") : null));
 }
 
-export { app, analyticsPromise };
+export { app, analyticsPromise, dbPromise };

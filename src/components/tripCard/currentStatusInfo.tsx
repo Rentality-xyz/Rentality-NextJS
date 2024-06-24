@@ -9,7 +9,7 @@ import { TFunction } from "i18next";
 import { isEmpty } from "@/utils/string";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import ModifyTripForm from "./modifyTripForm";
-import { useChat } from "@/contexts/chatContext";
+import { useChat } from "@/contexts/firebaseChatContext";
 import GuestConfirmFinishForm from "./guestConfirmFinishForm";
 
 function isInTheFuture(date: Date) {

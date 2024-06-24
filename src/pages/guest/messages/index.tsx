@@ -1,17 +1,16 @@
 import ChatPage from "@/components/chat/chatPage";
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
-import { useChat, useChatKeys } from "@/contexts/chatContext";
+import { useChat, useChatKeys } from "@/contexts/firebaseChatContext";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { TFunction } from "@/utils/i18n";
 
 export default function Messages() {
-  const { isLoading, isClienReady, chatInfos, getLatestChatInfos, sendMessage } = useChat();
+  const { isLoading, chatInfos, getLatestChatInfos, sendMessage } = useChat();
   const { isLoading: isChatKeysLoading, isChatKeysSaved, saveChatKeys } = useChatKeys();
   const { showInfo, showDialog, hideDialogs } = useRntDialogs();
 
@@ -57,10 +56,8 @@ export default function Messages() {
   };
 
   useEffect(() => {
-    if (!isClienReady) return;
-
     getLatestChatInfos();
-  }, [isClienReady]);
+  }, []);
 
   return (
     <Layout>
