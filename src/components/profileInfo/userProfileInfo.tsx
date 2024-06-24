@@ -121,7 +121,7 @@ function UserProfileInfo({
   }
 
   return (
-    <form className="my-8 flex flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
+    <form className="my-1 lg:my-8 flex flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
       <Controller
         name="profilePhotoUrl"
         control={control}

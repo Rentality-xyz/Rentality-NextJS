@@ -29,7 +29,7 @@ export default function FilterSlidingPanel({
       <SlidingPanel
         type={"left"}
         isOpen={openFilterPanel}
-        size={50}
+        size={100}
         noBackdrop={false}
         backdropClicked={() => setOpenFilterPanel(false)}
         panelContainerClassName="sliding-panel"
