@@ -13,7 +13,7 @@ import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
-import { useChatKeys } from "@/contexts/chatContext";
+import { useChatKeys } from "@/contexts/firebaseChatContext";
 import { TFunction } from "@/utils/i18n";
 import DotStatus from "./dotStatus";
 import AgreementInfo from "./agreement_info";

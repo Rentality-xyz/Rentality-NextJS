@@ -1,6 +1,7 @@
 import { ChatInfo } from "@/model/ChatInfo";
 import ChatMessage from "./chatMessage";
 import { decodeClaimChatMessage, isClaimChatMessage } from "./utils";
+import { useEffect, useRef } from "react";
 
 export default function ChatMessages({ selectedChat, isHost }: { selectedChat: ChatInfo; isHost: boolean }) {
   const myPhotoUrl = isHost ? selectedChat.hostPhotoUrl : selectedChat.guestPhotoUrl;
@@ -8,6 +9,12 @@ export default function ChatMessages({ selectedChat, isHost }: { selectedChat: C
   const otherPhotoUrl = isHost ? selectedChat.guestPhotoUrl : selectedChat.hostPhotoUrl;
   const otherName = isHost ? selectedChat.guestName : selectedChat.hostName;
   const myAddress = isHost ? selectedChat.hostAddress : selectedChat.guestAddress;
+
+  const endRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
 
   const isSendByMe = (address: string) => {
     return address.toLowerCase() === myAddress.toLowerCase();
@@ -39,6 +46,7 @@ export default function ChatMessages({ selectedChat, isHost }: { selectedChat: C
           />
         );
       })}
+      <div ref={endRef} />
     </div>
   );
 }
