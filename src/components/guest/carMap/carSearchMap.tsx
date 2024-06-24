@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, CSSProperties } from "react";
+import { useState, useEffect, useMemo, useRef, CSSProperties, useCallback } from "react";
 import { GoogleMap } from "@react-google-maps/api";
 import { useGoogleMapsContext } from "@/contexts/googleMapsContext";
 import {
@@ -30,20 +30,21 @@ export default function CarSearchMap({
   const [mapHeight, setMapHeight] = useState<number>(0);
 
   const mapContainerStyle = useMemo<CSSProperties>(() => {
+	if (typeof window == "undefined" || window.innerWidth < 1280) {
+		return {
+	      borderRadius: "30px",
+	      height: isExpanded ? "100vh" : "0vh",
+	    };
+	}
+	
     var height = "";
-    if (isSticked) {
-      if (mapHeight) {
-        height = mapHeight + "px";
-      } else {
-        height = "100vh";
-      }
-    } else {
-      if (mapHeight && carInfos.length > 0) {
-        height = mapHeight + "px";
-      } else {
-        height = typeof window !== "undefined" && window.screen.width >= 1280 ? "55vh" : isExpanded ? "80vh" : "12rem";
-      }
-    }
+    
+    if(!isSticked && carInfos.length == 0){
+		height = "55vh"
+	} else {
+		height = mapHeight + "px";
+	}
+    
     return {
       position: isSticked ? "fixed" : "relative",
       top: isSticked ? "0px" : mapTop.current + "px",
@@ -51,60 +52,83 @@ export default function CarSearchMap({
       width: isSticked ? mapWidth.current + "px" : "100%",
       height: height,
       borderRadius: "30px",
-    };
-  }, [isSticked, mapHeight, isExpanded]);
+    };		
+  }, [carInfos.length, isSticked, mapHeight, isExpanded]);
 
   const handleScroll = () => {
+    if (window.innerWidth < 1280) {
+      return;
+    }
+    console.log("Here");
     const googleMapElement = document.getElementById("google-maps-guest-search-page");
     if (!googleMapElement) {
       return;
     }
-
-    const googleMapElementParent = googleMapElement.parentElement;
-
-    if (!googleMapElementParent) {
-      return;
-    }
-
-    const parentRect = googleMapElementParent.getBoundingClientRect();
     const rect = googleMapElement.getBoundingClientRect();
 
-    if (parentRect.top <= 0 && window.screen.width >= 1280 && parentRect.bottom < window.innerHeight) {
+    const googleMapElementParent = googleMapElement.parentElement;
+    if (!googleMapElementParent) {
+	  return;
+    }
+    const parentRect = googleMapElementParent.getBoundingClientRect();
+
+    if (parentRect.top <= 0 && parentRect.bottom < window.innerHeight) {
       setMapHeight(Math.ceil(parentRect.bottom));
     } else {
       setMapHeight(window.innerHeight - rect.top);
     }
 
-    if (parentRect.top <= 0 && window.screen.width >= 1280 && !isSticked) {
+    if (parentRect.top <= 0 && !isSticked) {
       mapLeft.current = Math.ceil(rect.left);
       mapTop.current = Math.ceil(rect.top);
       mapWidth.current = Math.ceil(rect.width);
       setIsSticked(true);
-    } else if (parentRect.top > 0) {
+    } else if (parentRect.top > 0){
       setIsSticked(false);
     }
   };
+  
+  const handleResize = () => {
+    if (window.innerWidth < 1280) {
+	  window.removeEventListener("scroll", handleScroll);
+      setIsSticked(false);
+    } else {
+	  window.addEventListener("scroll", handleScroll);
+	}
+  };
 
-  const positionMapToCar = () => {
+  const selectedCar = useMemo(() => {
+    return carInfos.find((item) => {
+      return item.carId == selectedCarID;
+    });
+  }, [carInfos, selectedCarID]);
+  
+  const positionMapToCar = useCallback(() => {
     if (!map || !selectedCar) return;
 
     const bounds = new google.maps.LatLngBounds();
     bounds.extend(new google.maps.LatLng(selectedCar.location.lat, selectedCar.location.lng));
     map.fitBounds(bounds);
     map.setZoom(11);
-  };
+  },[map, selectedCar]);
 
   const onLoad = (map: google.maps.Map) => {
     setMap(map);
-    window.addEventListener("scroll", handleScroll, true);
+    if (typeof window !== "undefined" && window.innerWidth >= 1280) {
+		console.log("screen: " +window.innerWidth);
+      window.addEventListener("scroll", handleScroll);
+    }
+    window.addEventListener("resize", handleResize);
     if (selectedCarID != null) {
       positionMapToCar();
     }
+    handleScroll();
   };
 
   const onUnload = () => {
     setMap(null);
     window.removeEventListener("scroll", handleScroll);
+    window.removeEventListener("resize", handleResize);
   };
 
   const { googleMapsAPIIsLoaded } = useGoogleMapsContext();
@@ -113,13 +137,7 @@ export default function CarSearchMap({
     if (carInfos.length && selectedCarID != null) {
       positionMapToCar();
     }
-  }, [selectedCarID]);
-
-  const selectedCar = useMemo(() => {
-    return carInfos.find((item) => {
-      return item.carId == selectedCarID;
-    });
-  }, [carInfos, selectedCarID]);
+  }, [carInfos.length, selectedCarID]);
 
   return googleMapsAPIIsLoaded ? (
     <GoogleMap

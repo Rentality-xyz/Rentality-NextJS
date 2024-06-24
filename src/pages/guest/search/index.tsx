@@ -173,7 +173,7 @@ export default function Search() {
           <div className="mb-8 flex flex-row"></div>
 
           <div className="flex gap-3 max-xl:flex-col-reverse">
-            <div className="xl:w-8/12 2xl:w-7/12 fullHD:w-6/12 my-4 flex flex-col gap-4">
+            <div className="xl:w-8/12 2xl:w-7/12 fullHD:w-6/12 my-4 flex flex-col gap-4 h-full">
               {isLoading ? (
                 <div>Loading...</div>
               ) : (
