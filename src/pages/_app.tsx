@@ -11,14 +11,14 @@ import { useRouter } from "next/router";
 // should be here for downloading 'locales/* '
 import "../utils/i18n";
 import { useEffect } from "react";
-import { analytics } from "@/utils/analytics";
+import { analyticsPromise } from "@/utils/firebase";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const isHost = router.route.startsWith("/host");
 
   useEffect(() => {
-    analytics;
+    analyticsPromise;
   }, []);
 
   return (

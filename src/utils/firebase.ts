@@ -13,11 +13,11 @@ const firebaseConfig = {
 };
 
 let app: FirebaseApp;
-let analytics: Promise<Analytics | null>;
+let analyticsPromise: Promise<Analytics | null>;
 
 if (typeof window != undefined && !isEmpty(firebaseConfig.projectId)) {
   app = initializeApp(firebaseConfig);
-  analytics = isSupported().then((yes) => (yes ? getAnalytics(app) : null));
+  analyticsPromise = isSupported().then((yes) => (yes ? getAnalytics(app) : null));
 }
 
-export { app, analytics };
+export { app, analyticsPromise };
