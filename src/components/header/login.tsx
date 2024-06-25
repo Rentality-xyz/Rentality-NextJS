@@ -9,6 +9,7 @@ import { assertIsNode } from "@/utils/react";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
 import { useTranslation } from "react-i18next";
+import { useRouter } from "next/router";
 
 function Login() {
   const { connectWallet, login, ready, authenticated, logout } = usePrivy();
@@ -17,6 +18,7 @@ function Login() {
   const [isShowMenu, setIsShowMenu] = useState(false);
   const loginWrapperRef = useRef<ElementRef<"div">>(null);
   const { showDialog, hideDialogs } = useRntDialogs();
+  const router = useRouter();
 
   const userFullName = `${userInfo?.firstName ?? ""} ${userInfo?.lastName ?? ""}`;
   const userInitials =
@@ -67,6 +69,11 @@ function Login() {
     setIsShowMenu(false);
   };
 
+  const handleLogout = async () => {
+    await logout();
+    router.reload();
+  };
+
   if (!ready) return <></>;
 
   if (!authenticated)
@@ -102,7 +109,7 @@ function Login() {
       </Avatar>
       {isShowMenu && (
         <div className="absolute p-4 top-[5.25rem] left-auto right-0 z-50 bg-[#1E1E30] rounded-xl border-2 border-[#373737]">
-          <RntButton className="w-28 sm:w-48 h-10 text-sm sm:text-base" onClick={logout}>
+          <RntButton className="w-28 sm:w-48 h-10 text-sm sm:text-base" onClick={handleLogout}>
             {t("common.logout")}
           </RntButton>
         </div>
