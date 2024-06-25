@@ -40,3 +40,4 @@ package-lock.json
 /.project
 /privatekeys.txt
 /private_keys.txt
+.env.ga*
