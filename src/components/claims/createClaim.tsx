@@ -78,7 +78,12 @@ export default function CreateClaim({
       amountInUsdCents: (Number(createClaimParams.amountInUsd) ?? 0) * 100,
       localFileUrls: createClaimParams.localFileUrls,
     };
-    createClaim(createClaimRequest);
+    await createClaim(createClaimRequest);
+
+    setCreateClaimParams({
+      ...emptyCreateClaimParams,
+      incidentType: isHost ? hostClaimTypes[0].toString() : guestClaimTypes[0].toString(),
+    });
   };
 
   return (
