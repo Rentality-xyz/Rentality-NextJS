@@ -13,7 +13,7 @@ import {
 import { validateContractFullClaimInfo, validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
 import encodeClaimChatMessage from "@/components/chat/utils";
-import { useChat } from "@/contexts/firebaseChatContext";
+import { useChat } from "@/contexts/chat/firebase/chatContext";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";

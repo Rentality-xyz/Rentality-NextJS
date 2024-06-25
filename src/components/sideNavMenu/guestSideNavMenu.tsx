@@ -9,7 +9,7 @@ import usePageLastVisit from "@/hooks/usePageLastVisit";
 import { NotificationType } from "@/model/NotificationInfo";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
-import { useChat } from "@/contexts/firebaseChatContext";
+import { useChat } from "@/contexts/chat/firebase/chatContext";
 
 function GuestNavMenu() {
   const { ready, authenticated, logout } = usePrivy();

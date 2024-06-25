@@ -5,7 +5,7 @@ import { formatPhoneNumber, getDateFromBlockchainTime, getDateFromBlockchainTime
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { Claim, getClaimTypeTextFromClaimType, getClaimStatusTextFromStatus } from "@/model/Claim";
-import { useChat } from "@/contexts/firebaseChatContext";
+import { useChat } from "@/contexts/chat/firebase/chatContext";
 import encodeClaimChatMessage from "@/components/chat/utils";
 import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
 import {

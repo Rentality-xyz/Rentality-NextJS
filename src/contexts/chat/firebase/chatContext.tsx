@@ -4,14 +4,14 @@ import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityChatHelperContract, IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
-import { useRentality } from "./rentalityContext";
+import { useRentality } from "../../rentalityContext";
 import { isEmpty } from "@/utils/string";
 import { bytesToHex } from "viem";
 import moment from "moment";
-import { useEthereum } from "./web3/ethereumContext";
+import { useEthereum } from "../../web3/ethereumContext";
 import { ContractChatInfo, TripStatus } from "@/model/blockchain/schemas";
 import { Contract, Listener } from "ethers";
-import { useNotification } from "./notification/notificationContext";
+import { useNotification } from "../../notification/notificationContext";
 import { generateEncryptionKeyPair } from "@/chat/crypto";
 import useUserMode from "@/hooks/useUserMode";
 import {
@@ -27,7 +27,7 @@ import {
   where,
 } from "firebase/firestore";
 import { dbPromise } from "@/utils/firebase";
-import { ChatId, FIREBASE_DB_NAME } from "@/chat/model/firebase";
+import { ChatId, FIREBASE_DB_NAME } from "@/chat/model/firebaseTypes";
 import { ChatMessage } from "@/model/ChatMessage";
 import { bigIntReplacer } from "@/utils/json";
 
@@ -235,16 +235,6 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
           messages: arrayUnion(newMessage),
         });
       }
-
-      // await chatClient.sendUserMessage(
-      //   toAddress,
-      //   tripId,
-      //   datetime,
-      //   "text",
-      //   message,
-      //   new Map<string, string>(),
-      //   chatPublicKey
-      // );
     },
     [chatPublicKeys, chatInfos, ethereumInfo, isChatKeysSaved, rentalityChatHelper]
   );
@@ -419,6 +409,12 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
                 };
               }
             );
+          } else {
+            await setDoc(doc(chatsRef, chatId.toString()), {
+              chatId: chatId.toString(),
+              createdAt: moment().unix(),
+              messages: [],
+            });
           }
 
           const unSub = onSnapshot(doc(chatsRef, chatId.toString()), (res) => {
@@ -440,6 +436,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
               })
             );
           });
+
           unsubscribeList.push(unSub);
           return { ...i, messages: messages } as ChatInfo;
         });
@@ -467,9 +464,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
       if (rentalityTripService) {
         rentalityTripService.removeAllListeners();
       }
-      if (unsubscribeList.length > 0) {
-        unsubscribeList.forEach((unSub) => unSub());
-      }
+      unsubscribeList.forEach((unSub) => unSub());
     };
   }, [
     ethereumInfo,

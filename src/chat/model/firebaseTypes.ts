@@ -22,6 +22,8 @@ export class ChatId {
   };
 }
 
+export const FIREBASE_DB_NAME = { chats: "chats" };
+
 export type FirebaseChatMessage = {
   chatId: ChatId;
   senderId: string;
@@ -36,4 +38,14 @@ export type FirebaseChat = {
   messages: FirebaseChatMessage[];
 };
 
-export const FIREBASE_DB_NAME = { chats: "chats" };
+export type FirebaseUserChat = {
+  chatId: ChatId;
+  lastMessages: string;
+  updatedAt: number;
+  senderId: string;
+};
+
+export type FirebaseUserChats = {
+  userId: string;
+  userChats: FirebaseUserChat[];
+};

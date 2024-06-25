@@ -7,13 +7,12 @@ import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
 import { useRouter } from "next/router";
-import { ChangeEvent, memo, useState } from "react";
+import { ChangeEvent, memo } from "react";
 import RntDatePicker from "../common/rntDatePicker";
 import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
-import { useChatKeys } from "@/contexts/firebaseChatContext";
 import { TFunction } from "@/utils/i18n";
 import DotStatus from "./dotStatus";
 import AgreementInfo from "./agreement_info";
@@ -22,6 +21,7 @@ import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProfileInfoFormValues, profileInfoFormSchema } from "./profileInfoFormSchema";
 import moment from "moment";
+import { useChatKeys } from "@/contexts/chat/firebase/chatContext";
 
 function UserProfileInfo({
   savedProfileSettings,
@@ -121,7 +121,10 @@ function UserProfileInfo({
   }
 
   return (
-    <form className="my-1 lg:my-8 flex flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
+    <form
+      className="my-1 lg:my-8 flex flex-col gap-4"
+      onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}
+    >
       <Controller
         name="profilePhotoUrl"
         control={control}

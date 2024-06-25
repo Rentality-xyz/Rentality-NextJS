@@ -1,7 +1,7 @@
 import ChatPage from "@/components/chat/chatPage";
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
-import { useChat, useChatKeys } from "@/contexts/firebaseChatContext";
+import { useChat, useChatKeys } from "@/contexts/chat/firebase/chatContext";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
 import { isEmpty } from "@/utils/string";
