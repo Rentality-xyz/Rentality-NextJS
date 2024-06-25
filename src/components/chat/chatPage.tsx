@@ -29,9 +29,7 @@ export default function ChatPage({
   const selectedChat = chats.find((ci) => ci.tripId === selectedTridId) ?? null;
 
   useEffect(() => {
-    if (selectedChatRef.current) {
-      selectedChatRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    selectedChatRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [selectedTridId]);
 
   return (
