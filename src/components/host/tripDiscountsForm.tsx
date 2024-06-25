@@ -64,9 +64,12 @@ function TripDiscountsForm({
   function getErrors(formData: DiscountFormValues) {
     const result: { [key: string]: string } = {};
 
-    if (formData.discount3DaysAndMoreInPercents === 0) result.firstName = t_profile("pls_number_percent");
-    if (formData.discount7DaysAndMoreInPercents === 0) result.firstName = t_profile("pls_number_percent");
-    if (formData.discount30DaysAndMoreInPercents === 0) result.firstName = t_profile("pls_number_percent");
+    if (formData.discount3DaysAndMoreInPercents < 0 || formData.discount3DaysAndMoreInPercents > 100)
+      result.firstName = t_profile("pls_number_percent");
+    if (formData.discount7DaysAndMoreInPercents < 0 || formData.discount7DaysAndMoreInPercents > 100)
+      result.firstName = t_profile("pls_number_percent");
+    if (formData.discount30DaysAndMoreInPercents < 0 || formData.discount30DaysAndMoreInPercents > 100)
+      result.firstName = t_profile("pls_number_percent");
 
     return result;
   }
