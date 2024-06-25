@@ -154,7 +154,6 @@ const useHostClaims = () => {
                     rejectedDateInSec: Number(i.claim.rejectedDateInSec),
                     hostPhoneNumber: formatPhoneNumber(i.hostPhoneNumber),
                     guestPhoneNumber: formatPhoneNumber(i.guestPhoneNumber),
-                    tripDays: 0,
                     isIncomingClaim: !i.claim.isHostClaims,
                     fileUrls: i.claim.photosUrl.split("|").map((url) => getIpfsURIfromPinata(url)),
                     timeZoneId: i.timeZoneId,

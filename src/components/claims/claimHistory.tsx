@@ -47,7 +47,6 @@ export default function ClaimHistory(props: Props) {
             <th className={`${headerSpanClassName} min-w-[12ch]`}>{t_history("table.invoiceType")}</th>
             <th className={`${headerSpanClassName} min-w-[17ch]`}>{t_history("table.paymentDeadline")}</th>
             <th className={`${headerSpanClassName}`}>{t_history("table.reservation")}</th>
-            <th className={`${headerSpanClassName}`}>{t_history("table.tripDays")}</th>
             <th className={`${headerSpanClassName} min-w-[15ch]`}>{t_history("table.car")}</th>
             <th className={`${headerSpanClassName}`}>{t_history("table.describe")}</th>
             <th className={`${headerSpanClassName}`}>{t_history("table.viewPhotoFile")}</th>
@@ -77,7 +76,6 @@ export default function ClaimHistory(props: Props) {
                   {dateFormatShortMonthDateTime(claim.deadlineDate, claim.timeZoneId)}
                 </td>
                 <td className={rowSpanClassName}>{claim.tripId}</td>
-                <td className={rowSpanClassName}>{claim.tripDays}</td>
                 <td className={rowSpanClassName}>{claim.carInfo}</td>
                 <td className={`${rowSpanClassName} max-w-[20ch] overflow-hidden text-ellipsis`}>
                   {claim.description}

@@ -138,7 +138,6 @@
         "invoiceType": "Invoice type",
         "paymentDeadline": "Payment deadline (local time)",
         "reservation": "Reservation",
-        "tripDays": "Trip days",
         "car": "Car",
         "describe": "Describe",
         "viewPhotoFile": "View photo/file",

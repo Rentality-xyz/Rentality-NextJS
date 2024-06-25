@@ -17,7 +17,6 @@ export type Claim = {
   rejectedDateInSec: number;
   hostPhoneNumber: string;
   guestPhoneNumber: string;
-  tripDays: number;
   isIncomingClaim: boolean;
   fileUrls: string[];
   timeZoneId: string;
