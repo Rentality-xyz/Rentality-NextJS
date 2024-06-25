@@ -141,10 +141,10 @@ const useHostTrips = () => {
             readonly: false,
             isDisplay: true,
             params: [
-              { text: "Fuel or battery level, %", value: "", type: "fuel" },
-              { text: "Odometer", value: "", type: "text" },
-              { text: "Insurance company name", value: "", type: "text" },
-              { text: "Insurance policy number", value: "", type: "text" },
+              { text: "Fuel or battery level, %", value: "", type: "fuel", required: true },
+              { text: "Odometer", value: "", type: "text", required: true },
+              { text: "Insurance company name", value: "", type: "text", required: false },
+              { text: "Insurance policy number", value: "", type: "text", required: false },
             ],
             action: checkInTrip,
           });
@@ -162,8 +162,8 @@ const useHostTrips = () => {
             readonly: false,
             isDisplay: false,
             params: [
-              { text: "Fuel or battery level, %", value: "", type: "fuel" },
-              { text: "Odometer", value: "", type: "text" },
+              { text: "Fuel or battery level, %", value: "", type: "fuel", required: true },
+              { text: "Odometer", value: "", type: "text", required: true },
             ],
             action: checkOutTrip,
           });
@@ -174,8 +174,8 @@ const useHostTrips = () => {
             readonly: false,
             isDisplay: false,
             params: [
-              { text: "Fuel or battery level, %", value: "", type: "fuel" },
-              { text: "Odometer", value: "", type: "text" },
+              { text: "Fuel or battery level, %", value: "", type: "fuel", required: true },
+              { text: "Odometer", value: "", type: "text", required: true },
             ],
             action: checkOutTrip,
           });
@@ -190,11 +190,13 @@ const useHostTrips = () => {
                 text: "Fuel or battery level, %",
                 value: (Number(trip.endParamLevels[0]) / 100).toString(),
                 type: "fuel",
+                required: true,
               },
               {
                 text: "Odometer",
                 value: trip.endParamLevels[1].toString(),
                 type: "text",
+                required: true,
               },
             ],
             action: checkOutTrip,
