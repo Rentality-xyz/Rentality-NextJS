@@ -4,6 +4,7 @@ import PageTitle from "@/components/pageTitle/pageTitle";
 import { useChat, useChatKeys } from "@/contexts/firebaseChatContext";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
+import { isEmpty } from "@/utils/string";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -34,6 +35,9 @@ export default function Messages() {
   };
 
   const handleSendMessage = async (toAddress: string, tripId: number, message: string) => {
+    if (isEmpty(message)) {
+      return;
+    }
     if (isChatKeysLoading) {
       showInfo(t("chat.loading_message"));
       return;

@@ -172,6 +172,8 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
   const sendUserMessage = useCallback(
     async (toAddress: string, tripId: number, message: string) => {
+      if (isEmpty(message)) return;
+
       if (!isChatKeysSaved) {
         console.error(`sendUserMessage error: you have to save your keys before send messages`);
         return;
