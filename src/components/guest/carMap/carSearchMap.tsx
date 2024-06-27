@@ -8,6 +8,8 @@ import {
 } from "@/utils/constants";
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 import Marker from "./carMapMarker";
+import { MarkerClusterer } from "@googlemaps/markerclusterer";
+import { MapRenderer } from "./carMapRenderer";
 
 export default function CarSearchMap({
   carInfos,
@@ -28,6 +30,7 @@ export default function CarSearchMap({
   const mapTop = useRef<number>(0);
   const mapWidth = useRef<number>(0);
   const [mapHeight, setMapHeight] = useState<number>(0);
+  const markerClusterer = useRef<MarkerClusterer | null>(null);
 
   const mapContainerStyle = useMemo<CSSProperties>(() => {
 	if (typeof window == "undefined" || window.innerWidth < 1280) {
@@ -123,6 +126,7 @@ export default function CarSearchMap({
       positionMapToCar();
     }
     handleScroll();
+    markerClusterer.current = new MarkerClusterer({ map: map, renderer : new MapRenderer });
   };
 
   const onUnload = () => {
@@ -160,6 +164,7 @@ export default function CarSearchMap({
           map={map!}
           position={carInfo.location}
           onClick={(e) => setSelected(Number(e.domEvent.target.id))}
+          markerClusterer={markerClusterer.current}
         >
           <div
             id={carInfo.carId.toString()}
