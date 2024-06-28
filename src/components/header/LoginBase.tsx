@@ -6,6 +6,7 @@ import { DialogActions } from "@/utils/dialogActions";
 import { useTranslation } from "react-i18next";
 import { Avatar as MuiAvatar } from "@mui/material";
 import { isEmpty } from "@/utils/string";
+// @ts-ignore
 import { Avatar, Identity, Badge, Name, Address } from "@coinbase/onchainkit/identity";
 
 function LoginBase() {

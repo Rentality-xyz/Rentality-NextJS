@@ -33,21 +33,21 @@ export default function CarSearchMap({
   const markerClusterer = useRef<MarkerClusterer | null>(null);
 
   const mapContainerStyle = useMemo<CSSProperties>(() => {
-	if (typeof window == "undefined" || window.innerWidth < 1280) {
-		return {
-	      borderRadius: "30px",
-	      height: isExpanded ? "100vh" : "0vh",
-	    };
-	}
-	
+    if (typeof window == "undefined" || window.innerWidth < 1280) {
+      return {
+        borderRadius: "30px",
+        height: isExpanded ? "100vh" : "0vh",
+      };
+    }
+
     var height = "";
-    
-    if(!isSticked && carInfos.length == 0){
-		height = "55vh"
-	} else {
-		height = mapHeight + "px";
-	}
-    
+
+    if (!isSticked && carInfos.length == 0) {
+      height = "55vh";
+    } else {
+      height = mapHeight + "px";
+    }
+
     return {
       position: isSticked ? "fixed" : "relative",
       top: isSticked ? "0px" : mapTop.current + "px",
@@ -55,7 +55,7 @@ export default function CarSearchMap({
       width: isSticked ? mapWidth.current + "px" : "100%",
       height: height,
       borderRadius: "30px",
-    };		
+    };
   }, [carInfos.length, isSticked, mapHeight, isExpanded]);
 
   const handleScroll = () => {
@@ -71,7 +71,7 @@ export default function CarSearchMap({
 
     const googleMapElementParent = googleMapElement.parentElement;
     if (!googleMapElementParent) {
-	  return;
+      return;
     }
     const parentRect = googleMapElementParent.getBoundingClientRect();
 
@@ -86,18 +86,18 @@ export default function CarSearchMap({
       mapTop.current = Math.ceil(rect.top);
       mapWidth.current = Math.ceil(rect.width);
       setIsSticked(true);
-    } else if (parentRect.top > 0){
+    } else if (parentRect.top > 0) {
       setIsSticked(false);
     }
   };
-  
+
   const handleResize = () => {
     if (window.innerWidth < 1280) {
-	  window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleScroll);
       setIsSticked(false);
     } else {
-	  window.addEventListener("scroll", handleScroll);
-	}
+      window.addEventListener("scroll", handleScroll);
+    }
   };
 
   const selectedCar = useMemo(() => {
@@ -105,7 +105,7 @@ export default function CarSearchMap({
       return item.carId == selectedCarID;
     });
   }, [carInfos, selectedCarID]);
-  
+
   const positionMapToCar = useCallback(() => {
     if (!map || !selectedCar) return;
 
@@ -113,12 +113,12 @@ export default function CarSearchMap({
     bounds.extend(new google.maps.LatLng(selectedCar.location.lat, selectedCar.location.lng));
     map.fitBounds(bounds);
     map.setZoom(11);
-  },[map, selectedCar]);
+  }, [map, selectedCar]);
 
   const onLoad = (map: google.maps.Map) => {
     setMap(map);
     if (typeof window !== "undefined" && window.innerWidth >= 1280) {
-		console.log("screen: " +window.innerWidth);
+      console.log("screen: " + window.innerWidth);
       window.addEventListener("scroll", handleScroll);
     }
     window.addEventListener("resize", handleResize);
@@ -126,7 +126,7 @@ export default function CarSearchMap({
       positionMapToCar();
     }
     handleScroll();
-    markerClusterer.current = new MarkerClusterer({ map: map, renderer : new MapRenderer });
+    markerClusterer.current = new MarkerClusterer({ map: map, renderer: new MapRenderer() });
   };
 
   const onUnload = () => {
@@ -145,7 +145,8 @@ export default function CarSearchMap({
 
   const markerClassName = "text-center text-lg w-24 h-8";
   const carIdClassName = markerClassName + " text-white buttonGradient rounded-full";
-  const selectedCarIdClassName = markerClassName + " rounded-lg text-black font-medium bg-white border-2 border-[#805FE4]";
+  const selectedCarIdClassName =
+    markerClassName + " rounded-lg text-black font-medium bg-white border-2 border-[#805FE4]";
 
   return googleMapsAPIIsLoaded ? (
     <GoogleMap
@@ -164,14 +165,12 @@ export default function CarSearchMap({
           map={map!}
           position={carInfo.location}
           onClick={(e) => setSelected(Number(e.domEvent.target.id))}
-          markerClusterer={markerClusterer.current}
+          markerClusterer={markerClusterer.current!}
         >
           <div
             id={carInfo.carId.toString()}
             // className="text-[#805FE4]"
-            className={
-              selectedCarID == carInfo.carId ? selectedCarIdClassName : carIdClassName
-            }
+            className={selectedCarID == carInfo.carId ? selectedCarIdClassName : carIdClassName}
           >
             ${carInfo.pricePerDayWithDiscount}
           </div>
