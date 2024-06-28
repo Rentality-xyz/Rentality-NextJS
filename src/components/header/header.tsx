@@ -9,6 +9,7 @@ import { GuestBurgerNavMenu } from "../sideNavMenu/guestSideNavMenu";
 import { HostBurgerNavMenu } from "../sideNavMenu/hostSideNavMenu";
 import Login from "./login";
 import { useRouter } from "next/router";
+import LoginBase from "./LoginBase";
 
 export default function Header({ accountType }: { accountType: string }) {
   accountType = accountType ?? "Host";
@@ -98,9 +99,8 @@ export default function Header({ accountType }: { accountType: string }) {
               <AntSwitch checked={isSelectedHost} onChange={handleChange} inputProps={{ "aria-label": "ant design" }} />
               <Typography className="text-lg font-['Montserrat',Arial,sans-serif]">Host</Typography>
             </Stack>
-
             <ChooseBlockchainComponent />
-            <Login />
+            <LoginBase />
           </div>
         </div>
       </header>
