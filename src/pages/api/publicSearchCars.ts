@@ -70,7 +70,10 @@ const formatSearchAvailableCarsContractRequest = (searchCarRequest: SearchCarReq
   return { contractDateFromUTC, contractDateToUTC, contractSearchCarParams } as const;
 };
 
-const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: ContractSearchCarWithDistance[]) => {
+const formatSearchAvailableCarsContractResponse = async (
+  rentality: IRentalityContract,
+  searchCarsViewsView: ContractSearchCarWithDistance[]
+) => {
   if (searchCarsViewsView.length === 0) return [];
 
   return await Promise.all(
@@ -79,6 +82,13 @@ const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: Co
         validateContractSearchCarWithDistance(i);
       }
       const meta = await getMetaDataFromIpfs(i.car.metadataURI);
+      let isCarDetailsConfirmed = false;
+
+      try {
+        isCarDetailsConfirmed = await rentality.isCarDetailsConfirmed(i.car.carId);
+      } catch (ex) {
+        console.error("formatSearchAvailableCarsContractResponse error:", ex);
+      }
 
       const tripDays = Number(i.car.tripDays);
       const pricePerDay = Number(i.car.pricePerDayInUsdCents) / 100;
@@ -119,6 +129,7 @@ const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: Co
         isInsuranceIncluded: i.car.insuranceIncluded,
         pickUpDeliveryFee: Number(i.car.pickUp) / 100,
         dropOffDeliveryFee: Number(i.car.dropOf) / 100,
+        isCarDetailsConfirmed: isCarDetailsConfirmed,
       };
 
       return item;
@@ -318,7 +329,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
   }
 
-  const availableCarsData = await formatSearchAvailableCarsContractResponse(availableCarsView);
+  const availableCarsData = await formatSearchAvailableCarsContractResponse(rentality, availableCarsView);
 
   res.status(200).json(availableCarsData);
 }

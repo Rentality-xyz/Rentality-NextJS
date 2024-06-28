@@ -123,6 +123,9 @@ export interface IRentalityContract {
   isKycCommissionPaid(user: string): Promise<boolean>;
   useKycCommission(user: string): Promise<ContractTransactionResponse>;
 
+  isCarDetailsConfirmed(tripId: bigint): Promise<boolean>;
+  confirmCarDetails(tripId: bigint): Promise<ContractTransactionResponse>;
+
   //not using
   getAllCars(): Promise<ContractCarInfo[]>;
 

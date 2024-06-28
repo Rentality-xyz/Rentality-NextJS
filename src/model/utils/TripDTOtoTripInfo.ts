@@ -7,7 +7,11 @@ import { ContractTripDTO, EngineType, TripStatus } from "@/model/blockchain/sche
 import { ContractTripContactInfo } from "@/model/blockchain/IRentalityContract";
 import { calculateDays } from "@/utils/date";
 
-export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: ContractTripContactInfo) => {
+export const mapTripDTOtoTripInfo = async (
+  i: ContractTripDTO,
+  tripContactInfo: ContractTripContactInfo,
+  isCarDetailsConfirmed?: boolean
+) => {
   const meta = await getMetaDataFromIpfs(i.metadataURI);
   const timeZoneId = !isEmpty(i.timeZoneId) ? i.timeZoneId : UTC_TIME_ZONE_ID;
 
@@ -124,6 +128,7 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
         : 0,
 
     currencyRate: Number(i.trip.paymentInfo.currencyRate) / 10 ** Number(i.trip.paymentInfo.currencyDecimals),
+    isCarDetailsConfirmed: isCarDetailsConfirmed ?? false,
   };
   return item;
 };

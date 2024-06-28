@@ -140,6 +140,7 @@ export type TripInfo = {
   };
   guestInsuranceCompanyName: string;
   guestInsurancePolicyNumber: string;
+  isCarDetailsConfirmed: boolean;
 };
 
 export const getBatteryChargeFromDiffs = (fuelDiffsInPercents: number, fullBatteryChargePriceInUsdCents: number) => {
