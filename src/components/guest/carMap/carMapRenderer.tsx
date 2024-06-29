@@ -3,7 +3,7 @@ import { Renderer } from "@googlemaps/markerclusterer";
 export class MapRenderer implements Renderer {
 	render({ count, position }, stats, map) {
 		// change color if this cluster has more markers than the mean cluster
-		const color = count > Math.max(3, stats.clusters.markers.mean) ? "#ff0000" : "#0000ff";
+		const color = count > Math.max(3, stats.clusters.markers.mean) ? "#06af8f" : "#0000ff";
 		// create svg literal with fill color
 		const svg = `<svg fill="${color}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="100" height="100">
 			<circle cx="120" cy="120" opacity=".6" r="70" />
