@@ -52,35 +52,37 @@ export default function Claims() {
   };
 
   const handleCreateClaim = async (createClaimRequest: CreateClaimRequest) => {
-    try {
-      if (!createClaimRequest.tripId) {
-        showError(t_h_claims("select_trip"));
-        return;
-      }
-      if (!createClaimRequest.claimType && createClaimRequest.claimType !== BigInt(0)) {
-        showError(t_h_claims("select_type"));
-        return;
-      }
-      if (!createClaimRequest.description) {
-        showError(t_h_claims("enter_description"));
-        return;
-      }
-      if (!createClaimRequest.amountInUsdCents) {
-        showError(t_h_claims("Please enter amount"));
-        return;
-      }
+    if (!createClaimRequest.tripId) {
+      showError(t_h_claims("select_trip"));
+      return false;
+    }
+    if (!createClaimRequest.claimType && createClaimRequest.claimType !== BigInt(0)) {
+      showError(t_h_claims("select_type"));
+      return false;
+    }
+    if (!createClaimRequest.description) {
+      showError(t_h_claims("enter_description"));
+      return false;
+    }
+    if (!createClaimRequest.amountInUsdCents) {
+      showError(t_h_claims("enter_amount"));
+      return false;
+    }
 
+    try {
       showInfo(t("common.info.sign"));
       const result = await createClaim(createClaimRequest);
       hideDialogs();
       if (!result) {
         showError(t_h_claims("claim_failed"));
-        return;
+        return false;
       }
       updateData();
+      return true;
     } catch (e) {
       showError(t_h_claims("claim_failed"));
       console.error("handleCreateClaim error:" + e);
+      return false;
     }
   };
 

@@ -6,7 +6,7 @@ import moment from "moment";
 const CLAIM_REQUEST_HEADER = "ClaimRequest";
 
 export default function encodeClaimChatMessage(request: CreateClaimRequest) {
-  return `${CLAIM_REQUEST_HEADER}|${moment().unix}|${request.amountInUsdCents}|${request.guestAddress}`;
+  return `${CLAIM_REQUEST_HEADER}|${moment().unix()}|${request.amountInUsdCents}|${request.guestAddress}`;
 }
 
 export function isClaimChatMessage(message: string) {
