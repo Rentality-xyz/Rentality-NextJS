@@ -63,7 +63,7 @@ export default function RntPlaceAutocompleteInput({
     options: {
       input: "",
       types: includeStreetAddress
-        ? ["locality", "sublocality_level_1", "sublocality_level_2", "sublocality_level_3", "street_address"]
+        ? ["airport", "locality", "administrative_area_level_1", "administrative_area_level_3", "route"]
         : ["(cities)"],
       componentRestrictions: { country: "us" },
     },
