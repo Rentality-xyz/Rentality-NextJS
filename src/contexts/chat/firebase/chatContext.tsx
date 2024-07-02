@@ -1,33 +1,27 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ChatInfo } from "@/model/ChatInfo";
 import { getEtherContractWithSigner } from "@/abis";
-import { IRentalityChatHelperContract, IRentalityContract } from "@/model/blockchain/IRentalityContract";
+import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
 import { useRentality } from "../../rentalityContext";
 import { isEmpty } from "@/utils/string";
-import { bytesToHex } from "viem";
 import moment from "moment";
 import { useEthereum } from "../../web3/ethereumContext";
 import { ContractChatInfo, TripStatus } from "@/model/blockchain/schemas";
 import { Contract, Listener } from "ethers";
 import { useNotification } from "../../notification/notificationContext";
-import { generateEncryptionKeyPair } from "@/chat/crypto";
 import useUserMode from "@/hooks/useUserMode";
+import { Unsubscribe, collection, doc, getDocs, onSnapshot, query, where } from "firebase/firestore";
+import { db } from "@/utils/firebase";
 import {
-  Unsubscribe,
-  arrayUnion,
-  collection,
-  doc,
-  getDocs,
-  onSnapshot,
-  query,
-  setDoc,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import { dbPromise } from "@/utils/firebase";
-import { ChatId, FIREBASE_DB_NAME } from "@/chat/model/firebaseTypes";
+  ChatId,
+  FIREBASE_DB_NAME,
+  FirebaseUserChat,
+  checkUserChats,
+  getChatMessages,
+  saveMessageToFirebase,
+} from "@/chat/model/firebaseTypes";
 import { ChatMessage } from "@/model/ChatMessage";
 import { bigIntReplacer } from "@/utils/json";
 
@@ -50,20 +44,23 @@ export function useChatKeys() {
 }
 
 export type ChatContextInfo = {
-  isLoading: boolean;
-  isChatReady: boolean;
-
+  isLoadingClient: boolean;
   chatInfos: ChatInfo[];
-  getLatestChatInfos: () => Promise<void>;
+  updateAllChats: () => void;
   sendMessage: (toAddress: string, tripId: number, message: string) => Promise<void>;
+
+  isLoadingChat: boolean;
+  selectChat: (tripId: number) => void;
 };
 
 const FirebaseChatContext = createContext<ChatContextInfo>({
-  isLoading: true,
-  isChatReady: true,
+  isLoadingClient: true,
   chatInfos: [],
-  getLatestChatInfos: async () => {},
+  updateAllChats: () => {},
   sendMessage: async () => {},
+
+  isLoadingChat: true,
+  selectChat: async () => {},
 });
 
 export function useChat() {
@@ -72,99 +69,17 @@ export function useChat() {
 
 export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode }) => {
   const ethereumInfo = useEthereum();
-  const [rentalityChatHelper, setRentalityChatHelper] = useState<IRentalityChatHelperContract | undefined>(undefined);
-
-  useEffect(() => {
-    const getRentalityChatHelper = async () => {
-      if (!ethereumInfo) return;
-
-      const chatHelper = (await getEtherContractWithSigner(
-        "chatHelper",
-        ethereumInfo.signer
-      )) as unknown as IRentalityChatHelperContract;
-      if (!chatHelper) {
-        console.error("getChatKeysFromBlockchain error: chatHelper is null");
-        return;
-      }
-      setRentalityChatHelper(chatHelper);
-    };
-
-    getRentalityChatHelper();
-  }, [ethereumInfo]);
-
-  /// Chat keys
-  const [chatKeys, setChatKeys] = useState<{ privateKey: string; publicKey: string } | undefined>(undefined);
-  const [isChatKeysLoading, setIsChatKeysLoading] = useState<boolean>(true);
-  const [isChatKeysSaved, setIsChatKeysSaved] = useState<boolean>(true);
-
-  const saveChatKeys = useCallback(async () => {
-    if (!chatKeys) {
-      console.error("saveChatKeys error: chatKeys is undefined");
-      return;
-    }
-    if (!rentalityChatHelper) {
-      console.error("saveChatKeys error: rentalityChatHelper is null");
-      return;
-    }
-
-    try {
-      setIsChatKeysLoading(true);
-
-      const transaction = await rentalityChatHelper.setMyChatPublicKey(chatKeys.privateKey, chatKeys.publicKey);
-      await transaction.wait();
-      setIsChatKeysSaved(true);
-    } catch (e) {
-      console.error("saveChatKeys error:" + e);
-    } finally {
-      setIsChatKeysLoading(false);
-    }
-  }, [rentalityChatHelper, chatKeys]);
-
-  useEffect(() => {
-    const getChatKeysFromBlockchain = async () => {
-      if (!rentalityChatHelper) return;
-
-      try {
-        setIsChatKeysLoading(true);
-
-        const [mySavedPrivateKey, mySavedPublicKey] = await rentalityChatHelper.getMyChatKeys();
-
-        if (isEmpty(mySavedPrivateKey) || isEmpty(mySavedPublicKey)) {
-          const { privateKey, publicKey } = generateEncryptionKeyPair();
-          setIsChatKeysSaved(false);
-          setChatKeys({ privateKey: bytesToHex(privateKey), publicKey: bytesToHex(publicKey) });
-        } else {
-          setIsChatKeysSaved(true);
-          setChatKeys({ privateKey: mySavedPrivateKey, publicKey: mySavedPublicKey });
-        }
-      } catch (e) {
-        console.error("getChatKeysFromBlockchain error:" + e);
-      } finally {
-        setIsChatKeysLoading(false);
-      }
-    };
-
-    getChatKeysFromBlockchain();
-  }, [rentalityChatHelper]);
-
-  const chatKeysContextInfoValue: ChatKeysContextInfo = useMemo(() => {
-    return {
-      isLoading: isChatKeysLoading,
-      chatKeys: chatKeys,
-      isChatKeysSaved: isChatKeysSaved,
-      saveChatKeys: saveChatKeys,
-    };
-  }, [isChatKeysLoading, chatKeys, isChatKeysSaved, saveChatKeys]);
 
   /// Chat client
-  const [chatPublicKeys, setChatPublicKeys] = useState<Map<string, string>>(new Map());
-  const { addNotifications } = useNotification();
-
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [chatInfos, setChatInfos] = useState<ChatInfo[]>([]);
   const rentalityContract = useRentality();
   const { isHost } = useUserMode();
 
+  const [isChatReloadRequire, setIsChatReloadRequire] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [chatInfos, setChatInfos] = useState<ChatInfo[]>([]);
+  const [selectedChat, setSelectedChat] = useState<ChatInfo | undefined>(undefined);
+
+  const { addNotifications } = useNotification();
   const addNotificationsRef = useRef(addNotifications);
   useEffect(() => {
     addNotificationsRef.current = addNotifications;
@@ -173,36 +88,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
   const sendUserMessage = useCallback(
     async (toAddress: string, tripId: number, message: string) => {
       if (isEmpty(message)) return;
-
-      if (!isChatKeysSaved) {
-        console.error(`sendUserMessage error: you have to save your keys before send messages`);
-        return;
-      }
-      let chatPublicKey = chatPublicKeys.get(toAddress);
-      if (!chatPublicKey || isEmpty(chatPublicKey)) {
-        if (!rentalityChatHelper) {
-          console.error("sendUserMessage error: rentalityChatHelper is undefined");
-          return;
-        }
-        const publicKeys = await rentalityChatHelper.getChatPublicKeys([toAddress]);
-
-        if (!publicKeys || publicKeys.length === 0) {
-          console.error("sendUserMessage:", `public key for user ${toAddress} is not found`);
-          return;
-        }
-        chatPublicKey = publicKeys[0].publicKey;
-
-        setChatPublicKeys((prev) => {
-          const copy = new Map(prev);
-          if (!copy.has(publicKeys[0].userAddress)) {
-            copy.set(publicKeys[0].userAddress, publicKeys[0].publicKey);
-          }
-          return copy;
-        });
-      }
-
       if (!ethereumInfo) return;
-      const db = await dbPromise;
       if (!db) return;
 
       const chatInfo = chatInfos.find((ci) => ci.tripId === tripId);
@@ -214,58 +100,22 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         chatInfo.hostAddress,
         chatInfo.guestAddress
       );
-
-      const chatsRef = collection(db, FIREBASE_DB_NAME.chats);
-      const chatsQuerySnapshot = await getDocs(query(chatsRef, where("chatId", "==", chatId.toString())));
       const newMessage = {
-        chatId: chatId.toString(),
+        chatId: chatId,
         senderId: ethereumInfo.walletAddress,
         text: message,
         tag: "TEXT",
         createdAt: moment().unix(),
       };
-      if (chatsQuerySnapshot.empty) {
-        await setDoc(doc(chatsRef, chatId.toString()), {
-          chatId: chatId.toString(),
-          createdAt: moment().unix(),
-          messages: [newMessage],
-        });
-      } else {
-        await updateDoc(doc(chatsRef, chatId.toString()), {
-          messages: arrayUnion(newMessage),
-        });
-      }
+
+      await saveMessageToFirebase(db, newMessage);
     },
-    [chatPublicKeys, chatInfos, ethereumInfo, isChatKeysSaved, rentalityChatHelper]
-  );
-
-  const loadKeysForUsers = useCallback(
-    async (addresses: string[]) => {
-      if (!rentalityChatHelper) {
-        console.error("loadKeysForUsers error: rentalityChatHelper is undefined");
-        return;
-      }
-      const publicKeys = await rentalityChatHelper.getChatPublicKeys(addresses);
-
-      setChatPublicKeys((prev) => {
-        let isEdited = false;
-
-        const copy = new Map(prev);
-        publicKeys.forEach((i) => {
-          if (!copy.has(i.userAddress)) {
-            copy.set(i.userAddress, i.publicKey);
-            isEdited = true;
-          }
-        });
-        return isEdited ? copy : prev;
-      });
-    },
-    [rentalityChatHelper]
+    [chatInfos, ethereumInfo]
   );
 
   /// Chat Infos
 
-  const getChatInfos = useCallback(
+  const getChatInfosWithoutMessages = useCallback(
     async (rentalityContract: IRentalityContract) => {
       try {
         if (rentalityContract == null) {
@@ -304,6 +154,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
                     endDateTime: getDateFromBlockchainTime(ci.endDateTime),
                     timeZoneId: ci.timeZoneId,
                     lastMessage: "Click to open chat",
+                    updatedAt: moment.unix(0).toDate(),
 
                     carPhotoUrl: getIpfsURIfromPinata(meta.image),
                     tripStatus: tripStatus,
@@ -348,6 +199,8 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
       const tripId = Number(args[0]);
       const tripStatus: TripStatus = BigInt(args[1]);
 
+      console.log(`tripStatusChangedListener call. TripId: ${tripId} status: ${tripStatus}`);
+
       setChatInfos((prev) => {
         const result = prev.map((ci) => (ci.tripId === tripId ? { ...ci, tripStatus: tripStatus } : ci));
         return result;
@@ -356,37 +209,100 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
     [rentalityContract]
   );
 
-  const isChatInfoInitialized = useRef(false);
+  const selectChat = useCallback(
+    (tripId: number) => {
+      if (selectedChat?.tripId === tripId) return;
+      if (chatInfos.length === 0) return;
+
+      const existChatInfo = chatInfos.find((ci) => ci.tripId === tripId);
+
+      if (!existChatInfo) {
+        console.error(`Chat with tripId ${tripId} is not found`);
+        return;
+      }
+      setSelectedChat(existChatInfo);
+    },
+    [chatInfos, selectedChat]
+  );
 
   useEffect(() => {
-    const unsubscribeList: Unsubscribe[] = [];
+    if (selectedChat === undefined) return;
+    if (!ethereumInfo) return;
+
+    const chatId = new ChatId(
+      ethereumInfo.chainId.toString(),
+      selectedChat.tripId.toString(),
+      selectedChat.hostAddress,
+      selectedChat.guestAddress
+    );
+
+    const chatsRef = doc(db, FIREBASE_DB_NAME.chats, chatId.toString());
+    console.log(`Sub for chat ${chatId.toString()}`);
+    const unSub = onSnapshot(chatsRef, (res) => {
+      const data = res.data();
+      if (!data) return;
+
+      const newMessages = data.messages.map(
+        (cm: { chatId: string; senderId: string; text: string; tag: string; createdAt: number }) => {
+          return {
+            fromAddress: cm.senderId,
+            toAddress:
+              cm.senderId.toLowerCase() === selectedChat.hostAddress.toLowerCase()
+                ? selectedChat.guestAddress
+                : selectedChat.hostAddress,
+            datestamp: moment.unix(cm.createdAt).toDate(),
+            message: cm.text,
+          };
+        }
+      );
+      setChatInfos((prev) =>
+        prev.map((ci) => {
+          return ci.tripId !== selectedChat.tripId
+            ? ci
+            : {
+                ...ci,
+                messages: newMessages,
+                updatedAt:
+                  ci.updatedAt !== moment.unix(0).toDate() || newMessages[-1] === undefined
+                    ? ci.updatedAt
+                    : newMessages[-1].datestamp,
+              };
+        })
+      );
+    });
+
+    return () => {
+      if (unSub) {
+        console.log(`Unsub from chat ${chatId.toString()}`);
+
+        unSub();
+      }
+    };
+  }, [ethereumInfo, selectedChat]);
+
+  const isChatInitializing = useRef(false);
+
+  useEffect(() => {
+    let unSub: Unsubscribe;
 
     const initChatInfos = async () => {
+      if (!isChatReloadRequire) return;
       if (!ethereumInfo) return;
       if (!rentalityContract) return;
       if (!rentalityTripService) return;
-      if (isChatInfoInitialized.current) return;
-      const db = await dbPromise;
-      if (!db) {
-        console.error(`db is null`);
-        return;
-      }
+      if (!db) return;
+      if (isChatInitializing.current) return;
 
       try {
+        isChatInitializing.current = true;
         setIsLoading(true);
+        console.log(`Chat initializing...`);
 
-        const infos = (await getChatInfos(rentalityContract)) ?? [];
-
-        const allAddresses = infos.map((i) => (isHost ? i.guestAddress : i.hostAddress));
-        const uniqueAddresses = allAddresses.filter(function (item, pos, self) {
-          return self.indexOf(item) == pos;
-        });
-
-        await loadKeysForUsers(uniqueAddresses);
-
-        const chatsRef = collection(db, FIREBASE_DB_NAME.chats);
+        const infos = (await getChatInfosWithoutMessages(rentalityContract)) ?? [];
 
         const promisses = infos.map(async (i) => {
+          await checkUserChats(db, i.hostAddress, i.guestAddress);
+
           const chatId = new ChatId(
             ethereumInfo.chainId.toString(),
             i.tripId.toString(),
@@ -394,50 +310,16 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
             i.guestAddress
           );
 
-          let messages: ChatMessage[] = [];
-          const chatsQuerySnapshot = await getDocs(query(chatsRef, where("chatId", "==", chatId.toString())));
-          if (!chatsQuerySnapshot.empty) {
-            const chatsQueryData = chatsQuerySnapshot.docs[0].data();
-            const chatMessages = chatsQueryData.messages;
-            messages = chatMessages.map(
-              (cm: { chatId: string; senderId: string; text: string; tag: string; createdAt: number }) => {
-                return {
-                  fromAddress: cm.senderId,
-                  toAddress: cm.senderId.toLowerCase() === i.hostAddress.toLowerCase() ? i.guestAddress : i.hostAddress,
-                  datestamp: moment.unix(cm.createdAt),
-                  message: cm.text,
-                };
-              }
-            );
-          } else {
-            await setDoc(doc(chatsRef, chatId.toString()), {
-              chatId: chatId.toString(),
-              createdAt: moment().unix(),
-              messages: [],
-            });
-          }
-
-          const unSub = onSnapshot(doc(chatsRef, chatId.toString()), (res) => {
-            const data = res.data();
-            if (!data) return;
-            const newMessages = data.messages.map(
-              (cm: { chatId: string; senderId: string; text: string; tag: string; createdAt: number }) => {
-                return {
-                  fromAddress: cm.senderId,
-                  toAddress: cm.senderId.toLowerCase() === i.hostAddress.toLowerCase() ? i.guestAddress : i.hostAddress,
-                  datestamp: moment.unix(cm.createdAt),
-                  message: cm.text,
-                };
-              }
-            );
-            setChatInfos((prev) =>
-              prev.map((ci) => {
-                return ci.tripId !== i.tripId ? ci : { ...ci, messages: newMessages };
-              })
-            );
+          const firebaseMessages = await getChatMessages(db, chatId);
+          const messages: ChatMessage[] = firebaseMessages.map((cm) => {
+            return {
+              fromAddress: cm.senderId,
+              toAddress: cm.senderId.toLowerCase() === i.hostAddress.toLowerCase() ? i.guestAddress : i.hostAddress,
+              datestamp: moment.unix(cm.createdAt).toDate(),
+              message: cm.text,
+            };
           });
 
-          unsubscribeList.push(unSub);
           return { ...i, messages: messages } as ChatInfo;
         });
 
@@ -449,11 +331,50 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
           : rentalityTripService.filters.TripStatusChanged(null, null, null, [ethereumInfo.walletAddress]);
         await rentalityTripService.removeAllListeners();
         await rentalityTripService.on(eventTripStatusChangedFilter, tripStatusChangedListener);
+        setIsChatReloadRequire(false);
 
-        isChatInfoInitialized.current = true;
+        const chatsRef = doc(db, FIREBASE_DB_NAME.userchats, ethereumInfo.walletAddress);
+
+        console.log("Sub for userchats");
+        unSub = onSnapshot(chatsRef, (res) => {
+          const data = res.data();
+          if (!data) return;
+
+          console.log(`userchats update. Data: ${JSON.stringify(data, bigIntReplacer)}`);
+
+          const userChats: FirebaseUserChat[] = data.userChats.map(
+            (cm: { chatId: string; senderId: string; lastMessages: string; updatedAt: number; isSeen: boolean }) => {
+              return { ...cm, chatId: ChatId.parse(cm.chatId) } as FirebaseUserChat;
+            }
+          );
+
+          setChatInfos((prev) =>
+            prev.map((ci) => {
+              const chatId = new ChatId(
+                ethereumInfo.chainId.toString(),
+                ci.tripId.toString(),
+                ci.hostAddress,
+                ci.guestAddress
+              );
+              const existUserChat = userChats.find((uc) => uc.chatId.toString() === chatId.toString());
+
+              if (!existUserChat) return ci;
+
+              return {
+                ...ci,
+                lastMessage: existUserChat.lastMessages,
+                updatedAt: moment.unix(existUserChat.updatedAt).toDate(),
+              };
+            })
+          );
+        });
+
+        console.log(`Chat initialized!`);
       } catch (e) {
+        console.error("initChatInfos error:", e);
         return;
       } finally {
+        isChatInitializing.current = false;
         setIsLoading(false);
       }
     };
@@ -461,81 +382,53 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
     initChatInfos();
 
     return () => {
+      if (!isChatReloadRequire) return;
+      if (!ethereumInfo) return;
+      if (!rentalityContract) return;
+      if (!rentalityTripService) return;
+      if (!db) return;
+      if (isChatInitializing.current) return;
+
       if (rentalityTripService) {
         rentalityTripService.removeAllListeners();
       }
-      unsubscribeList.forEach((unSub) => unSub());
+      if (unSub) {
+        console.log("unSub for userchats");
+        unSub();
+      }
     };
   }, [
     ethereumInfo,
     rentalityContract,
     rentalityTripService,
     isHost,
-    loadKeysForUsers,
-    getChatInfos,
+    getChatInfosWithoutMessages,
     tripStatusChangedListener,
+    isChatReloadRequire,
   ]);
 
-  const getLatestChatInfos = useCallback(async () => {
-    if (!rentalityContract) return;
-    if (!ethereumInfo) return;
-    const db = await dbPromise;
-    if (!db) {
-      console.error(`db is null`);
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-
-      const infos = (await getChatInfos(rentalityContract)) ?? [];
-
-      const chatsRef = collection(db, FIREBASE_DB_NAME.chats);
-
-      const promisses = infos.map(async (i) => {
-        const chatId = new ChatId(ethereumInfo.chainId.toString(), i.tripId.toString(), i.hostAddress, i.guestAddress);
-
-        let messages: ChatMessage[] = [];
-        const chatsQuerySnapshot = await getDocs(query(chatsRef, where("chatId", "==", chatId.toString())));
-        if (!chatsQuerySnapshot.empty) {
-          const chatsQueryData = chatsQuerySnapshot.docs[0].data();
-          const chatMessages = chatsQueryData.messages;
-          messages = chatMessages.map(
-            (cm: { chatId: string; senderId: string; text: string; tag: string; createdAt: Date }) => {
-              return {
-                fromAddress: cm.senderId,
-                toAddress: cm.senderId.toLowerCase() === i.hostAddress.toLowerCase() ? i.guestAddress : i.hostAddress,
-                datestamp: cm.createdAt,
-                message: cm.text,
-              };
-            }
-          );
-        }
-        return { ...i, messages: messages };
-      });
-
-      const infosWithMessages = await Promise.all(promisses);
-      setChatInfos((prev) => {
-        const newInfos = infosWithMessages.filter(
-          (newCi) => prev.find((ci) => ci.tripId === newCi.tripId) === undefined
-        );
-        return newInfos.length > 0 ? [...prev, ...newInfos] : prev;
-      });
-      //setChatInfos(infos);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [rentalityContract, ethereumInfo, getChatInfos]);
+  function updateAllChats() {
+    setIsChatReloadRequire(true);
+  }
 
   return (
-    <ChatKeysContext.Provider value={chatKeysContextInfoValue}>
+    <ChatKeysContext.Provider
+      value={{
+        isLoading: false,
+        chatKeys: undefined,
+        isChatKeysSaved: true,
+        saveChatKeys: async () => {},
+      }}
+    >
       <FirebaseChatContext.Provider
         value={{
-          isLoading: isLoading,
-          isChatReady: true,
+          isLoadingClient: false,
           chatInfos: chatInfos,
-          getLatestChatInfos: getLatestChatInfos,
+          updateAllChats: updateAllChats,
           sendMessage: sendUserMessage,
+
+          isLoadingChat: false,
+          selectChat: selectChat,
         }}
       >
         {children}

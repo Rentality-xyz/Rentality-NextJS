@@ -15,12 +15,12 @@ const firebaseConfig = {
 
 let app: FirebaseApp;
 let analyticsPromise: Promise<Analytics | null>;
-let dbPromise: Promise<Firestore | null>;
+let db: Firestore;
 
 if (typeof window != undefined && !isEmpty(firebaseConfig.projectId)) {
   app = initializeApp(firebaseConfig);
   analyticsPromise = isSupported().then((yes) => (yes ? getAnalytics(app) : null));
-  dbPromise = isSupported().then((yes) => (yes ? getFirestore(app, "rentality-chat-db") : null));
+  db = getFirestore(app, "rentality-chat-db");
 }
 
-export { app, analyticsPromise, dbPromise };
+export { app, analyticsPromise, db };

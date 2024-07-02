@@ -11,15 +11,19 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function Messages() {
-  const { isLoading, chatInfos, getLatestChatInfos, sendMessage } = useChat();
+  const { isLoadingClient, chatInfos, selectChat, updateAllChats, sendMessage } = useChat();
   const { isLoading: isChatKeysLoading, isChatKeysSaved, saveChatKeys } = useChatKeys();
   const { showInfo, showDialog, hideDialogs } = useRntDialogs();
 
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const selectedTridId = Number(searchParams.get("tridId") ?? -1);
   const { t } = useTranslation();
+
+  const selectedTridId = Number(searchParams.get("tridId") ?? -1);
+  if (selectedTridId >= 0) {
+    selectChat(selectedTridId);
+  }
 
   const createQueryString = (name: string, value: string) => {
     const params = new URLSearchParams();
@@ -28,7 +32,7 @@ export default function Messages() {
     return params.toString();
   };
 
-  const selectChat = (tripId: number) => {
+  const handleSelectChat = (tripId: number) => {
     const pageParams = tripId > 0 ? "?" + createQueryString("tridId", tripId.toString()) : "";
     router.push(pathname + pageParams, pathname + pageParams, { shallow: true, scroll: false });
   };
@@ -59,14 +63,14 @@ export default function Messages() {
   };
 
   useEffect(() => {
-    getLatestChatInfos();
+    updateAllChats();
   }, []);
 
   return (
     <Layout>
       <div className="flex flex-col">
         <PageTitle title={t("chat.title")} />
-        {isLoading ? (
+        {isLoadingClient ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
             {t("common.info.loading")}
           </div>
@@ -76,7 +80,7 @@ export default function Messages() {
             chats={chatInfos}
             sendMessage={handleSendMessage}
             selectedTridId={selectedTridId}
-            selectChat={selectChat}
+            selectChat={handleSelectChat}
             t={(name, options) => {
               return t("chat." + name, options);
             }}

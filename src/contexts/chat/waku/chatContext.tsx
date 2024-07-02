@@ -341,6 +341,7 @@ export const WakuChatProvider = ({ children }: { children?: React.ReactNode }) =
                     endDateTime: getDateFromBlockchainTime(ci.endDateTime),
                     timeZoneId: ci.timeZoneId,
                     lastMessage: "Click to open chat",
+                    updatedAt: moment.unix(0).toDate(),
 
                     carPhotoUrl: getIpfsURIfromPinata(meta.image),
                     tripStatus: tripStatus,
