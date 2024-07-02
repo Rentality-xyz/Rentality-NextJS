@@ -21,6 +21,7 @@ import {
 import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
 import { emptyLocationInfo } from "@/model/LocationInfo";
 import { bigIntReplacer } from "@/utils/json";
+import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
 
 const emptyHostCarInfo: HostCarInfo = {
   carId: -1,
@@ -96,24 +97,8 @@ const useEditCarInfo = (carId: number) => {
         securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
       };
 
-      const hostAddressArray = carInfoFormParams.locationInfo.address.split(",").map((i) => i.trim());
-
-      hostAddressArray[hostAddressArray.length - 1] = carInfoFormParams.locationInfo.country;
-      hostAddressArray[hostAddressArray.length - 2] = carInfoFormParams.locationInfo.state;
-      hostAddressArray[hostAddressArray.length - 3] = carInfoFormParams.locationInfo.city;
-
-      const hostAddress = hostAddressArray.join(", ");
-
       const location: ContractSignedLocationInfo = {
-        locationInfo: {
-          userAddress: hostAddress,
-          country: carInfoFormParams.locationInfo.country,
-          state: carInfoFormParams.locationInfo.state,
-          city: carInfoFormParams.locationInfo.city,
-          latitude: carInfoFormParams.locationInfo.latitude.toFixed(6),
-          longitude: carInfoFormParams.locationInfo.longitude.toFixed(6),
-          timeZoneId: carInfoFormParams.locationInfo.timeZoneId,
-        },
+        locationInfo: mapLocationInfoToContractLocationInfo(carInfoFormParams.locationInfo),
         signature: "",
       };
       let transaction: ContractTransactionResponse;
