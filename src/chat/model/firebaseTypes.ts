@@ -198,6 +198,31 @@ async function updateUserChatsForUser(db: Firestore, userAddress: string, messag
   }
 }
 
+export async function markUserChatAsSeen(db: Firestore, userAddress: string, chatId: ChatId) {
+  if (!db) return;
+  if (userAddress !== chatId.hostAddress && userAddress !== chatId.guestAddress) {
+    console.error("user does not belong to this chat id");
+    return;
+  }
+
+  const userchatsRef = doc(db, FIREBASE_DB_NAME.userchats, userAddress);
+  const userchatsQuerySnapshot = await getDoc(userchatsRef);
+
+  if (userchatsQuerySnapshot.exists()) {
+    const existChat = userchatsQuerySnapshot.data().userChats.find((uc: any) => uc.chatId === chatId.toString());
+
+    if (existChat !== undefined) {
+      console.log(`markUserChatAsSeen... userAddress: ${userAddress}, chatId: ${chatId.toString()} `);
+
+      await updateDoc(userchatsRef, {
+        userChats: userchatsQuerySnapshot
+          .data()
+          .userChats.map((uc: any) => (uc.chatId === chatId.toString() ? { ...uc, isSeen: true } : uc)),
+      });
+    }
+  }
+}
+
 export async function checkUserChats(db: Firestore, hostAddress: string, guestAddress: string) {
   if (!db) return;
 

@@ -20,6 +20,7 @@ import {
   FirebaseUserChat,
   checkUserChats,
   getChatMessages,
+  markUserChatAsSeen,
   saveMessageToFirebase,
 } from "@/chat/model/firebaseTypes";
 import { ChatMessage } from "@/model/ChatMessage";
@@ -155,6 +156,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
                     timeZoneId: ci.timeZoneId,
                     lastMessage: "Click to open chat",
                     updatedAt: moment.unix(0).toDate(),
+                    isSeen: true,
 
                     carPhotoUrl: getIpfsURIfromPinata(meta.image),
                     tripStatus: tripStatus,
@@ -235,6 +237,8 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
       selectedChat.hostAddress,
       selectedChat.guestAddress
     );
+
+    markUserChatAsSeen(db, ethereumInfo.walletAddress, chatId);
 
     const chatsRef = doc(db, FIREBASE_DB_NAME.chats, chatId.toString());
     console.log(`Sub for chat ${chatId.toString()}`);
@@ -364,6 +368,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
                 ...ci,
                 lastMessage: existUserChat.lastMessages,
                 updatedAt: moment.unix(existUserChat.updatedAt).toDate(),
+                isSeen: existUserChat.isSeen,
               };
             })
           );

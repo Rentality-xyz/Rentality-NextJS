@@ -18,6 +18,7 @@ export type ChatInfo = {
   timeZoneId: string;
   lastMessage: string;
   updatedAt: Date;
+  isSeen: boolean;
 
   carPhotoUrl: string;
   tripStatus: TripStatus;

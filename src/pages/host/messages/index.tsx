@@ -7,7 +7,7 @@ import { DialogActions } from "@/utils/dialogActions";
 import { isEmpty } from "@/utils/string";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function Messages() {
@@ -66,6 +66,13 @@ export default function Messages() {
     updateAllChats();
   }, []);
 
+  const sortedChatInfos = useMemo(() => {
+    const copy = [...chatInfos];
+    return copy.sort((a, b) => {
+      return b.updatedAt.getTime() - a.updatedAt.getTime();
+    });
+  }, [chatInfos]);
+
   return (
     <Layout>
       <div className="flex flex-col">
@@ -77,7 +84,7 @@ export default function Messages() {
         ) : (
           <ChatPage
             isHost={true}
-            chats={chatInfos}
+            chats={sortedChatInfos}
             sendMessage={handleSendMessage}
             selectedTridId={selectedTridId}
             selectChat={handleSelectChat}
