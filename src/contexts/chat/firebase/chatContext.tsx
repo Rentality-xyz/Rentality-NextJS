@@ -47,7 +47,7 @@ export type ChatContextInfo = {
   isLoadingClient: boolean;
   chatInfos: ChatInfo[];
   updateAllChats: () => void;
-  sendMessage: (toAddress: string, tripId: number, message: string) => Promise<void>;
+  sendMessage: (toAddress: string, tripId: number, message: string, tag?: string) => Promise<void>;
 
   isLoadingChat: boolean;
   selectChat: (tripId: number) => void;
@@ -86,7 +86,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
   }, [addNotifications]);
 
   const sendUserMessage = useCallback(
-    async (toAddress: string, tripId: number, message: string) => {
+    async (toAddress: string, tripId: number, message: string, tag: string = "TEXT") => {
       if (isEmpty(message)) return;
       if (!ethereumInfo) return;
       if (!db) return;
@@ -104,7 +104,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         chatId: chatId,
         senderId: ethereumInfo.walletAddress,
         text: message,
-        tag: "TEXT",
+        tag: tag,
         createdAt: moment().unix(),
       };
 

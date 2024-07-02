@@ -71,8 +71,13 @@ const useGuestClaims = () => {
       const transaction = await rentalityContract.createClaim(claimRequest);
       await transaction.wait();
 
-      const message = encodeClaimChatMessage(createClaimRequest);
-      chatContextInfo.sendMessage(createClaimRequest.guestAddress, createClaimRequest.tripId, message);
+      // const message = encodeClaimChatMessage(createClaimRequest);
+      // chatContextInfo.sendMessage(
+      //   createClaimRequest.guestAddress,
+      //   createClaimRequest.tripId,
+      //   message,
+      //   "SYSTEM|CLAIM_REQUEST"
+      // );
       return true;
     } catch (e) {
       console.error("createClaim error:" + e);
