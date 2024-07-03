@@ -342,6 +342,7 @@ export const WakuChatProvider = ({ children }: { children?: React.ReactNode }) =
                     timeZoneId: ci.timeZoneId,
                     lastMessage: "Click to open chat",
                     updatedAt: moment.unix(0).toDate(),
+                    isSeen: true,
 
                     carPhotoUrl: getIpfsURIfromPinata(meta.image),
                     tripStatus: tripStatus,
