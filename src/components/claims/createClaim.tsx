@@ -66,6 +66,7 @@ export default function CreateClaim({
     ...emptyCreateClaimParams,
     incidentType: isHost ? hostClaimTypes[0].toString() : guestClaimTypes[0].toString(),
   });
+    const textSendTo = isHost ? "guest" : "host";
 
   const handleCreateClaim = async () => {
     if (!createClaimParams.isChecked) return;
@@ -186,7 +187,7 @@ export default function CreateClaim({
       />
 
       <RntButton className="w-72" onClick={handleCreateClaim} disabled={!createClaimParams.isChecked}>
-        Confirm and send to guest
+        Confirm and send to {textSendTo}
       </RntButton>
     </div>
   );
