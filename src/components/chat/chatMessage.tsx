@@ -20,8 +20,8 @@ export default function ChatMessage({
         <Avatar src={photoUrl} sx={{ width: "3rem", height: "3rem" }}></Avatar>
       </div>
       <div className="max-sm:leading-5 font-bold text-lg self-center">{name}</div>
-      <div className="text-sm self-center text-gray-400">{dateFormatLongMonthDateTime(datetime)}</div>
-      <div className="col-span-3 text-sm whitespace-pre-line">{message}</div>
+      <div className="text-base self-center text-rentality-secondary">{dateFormatLongMonthDateTime(datetime)}</div>
+      <div className="col-span-3 text-lg whitespace-pre-line">{message}</div>
     </div>
   ) : (
     <div className="bg-[#7856FF] rnt-card w-5/6 grid grid-cols-[auto_1fr_auto] gap-2 rounded-xl rounded-se-none overflow-hidden p-4 self-end">
