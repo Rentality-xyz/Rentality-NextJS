@@ -9,6 +9,7 @@ import { ContractCreateCarRequest, ContractLocationInfo } from "@/model/blockcha
 import { uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
 import { emptyLocationInfo } from "@/model/LocationInfo";
 import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
+import { bigIntReplacer } from "@/utils/json";
 
 const emptyNewCarInfo: HostCarInfo = {
   carId: 0,
@@ -224,6 +225,7 @@ const useAddCar = () => {
         locationInfo: locationInfo,
       };
 
+      console.log(`request: ${JSON.stringify(request, bigIntReplacer)}`);
       const transaction = await rentalityContract.addCar(request);
       await transaction.wait();
       setCarInfoFormParams(emptyNewCarInfo);
