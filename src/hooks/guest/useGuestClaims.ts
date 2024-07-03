@@ -45,7 +45,7 @@ const useGuestClaims = () => {
       const savedFiles: string[] = [];
 
       if (filesToSave.length > 0) {
-        filesToSave.forEach(async (file) => {
+        for (const file of filesToSave) {
           const response = await uploadFileToIPFS(file.file, "RentalityClaimFile", {
             createdAt: new Date().toISOString(),
             createdBy: ethereumInfo?.walletAddress ?? "",
@@ -57,7 +57,7 @@ const useGuestClaims = () => {
             throw new Error("Uploaded image to Pinata error");
           }
           savedFiles.push(response.pinataURL);
-        });
+        }
       }
 
       const claimRequest: ContractCreateClaimRequest = {
