@@ -21,7 +21,7 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
   );
   var overmileValue = endOdometr - startOdometr - milesIncludedPerDay * tripDays;
   overmileValue = overmileValue > 0 ? overmileValue : 0;
-  const overmilePrice = Number(i.trip.pricePerDayInUsdCents) / Number(i.trip.milesIncludedPerDay) / 100;
+  const overmilePrice = Math.ceil(Number(i.trip.pricePerDayInUsdCents) / Number(i.trip.milesIncludedPerDay)) / 100;
 
   let item: TripInfo = {
     tripId: Number(i.trip.tripId),
