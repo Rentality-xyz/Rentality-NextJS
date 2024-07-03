@@ -251,25 +251,16 @@ export async function getChatMessages(db: Firestore, chatId: ChatId): Promise<Fi
   const chatsRef = doc(db, FIREBASE_DB_NAME.chats, chatId.toString());
   const chatsQuerySnapshot = await getDoc(chatsRef);
 
-  if (!chatsQuerySnapshot.exists()) {
-    await setDoc(chatsRef, {
-      chatId: chatId.toString(),
-      createdAt: moment().unix(),
-      messages: [],
-    });
-    return [];
-  } else {
-    const chatMessages = chatsQuerySnapshot.data().messages;
-    return chatMessages.map(
-      (cm: { chatId: string; senderId: string; text: string; tag: string; createdAt: number }) => {
-        return {
-          chatId: ChatId.parse(cm.chatId),
-          senderId: cm.senderId,
-          text: cm.text,
-          tag: cm.tag,
-          createdAt: cm.createdAt,
-        } as FirebaseChatMessage;
-      }
-    );
-  }
+  if (!chatsQuerySnapshot.exists()) return [];
+
+  const chatMessages = chatsQuerySnapshot.data().messages;
+  return chatMessages.map((cm: { chatId: string; senderId: string; text: string; tag: string; createdAt: number }) => {
+    return {
+      chatId: ChatId.parse(cm.chatId),
+      senderId: cm.senderId,
+      text: cm.text,
+      tag: cm.tag,
+      createdAt: cm.createdAt,
+    } as FirebaseChatMessage;
+  });
 }
