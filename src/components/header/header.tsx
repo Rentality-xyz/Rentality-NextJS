@@ -64,6 +64,7 @@ export default function Header({ accountType }: { accountType: string }) {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsSelectedHost(event.target.checked);
     router.push(event.target.checked ? "/host" : "/guest");
+    router.reload();
     // if (event.target.checked) {
     //   window.location.href = "/host";
     // } else {
