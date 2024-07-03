@@ -8,7 +8,7 @@ import { useRentality } from "../../rentalityContext";
 import { isEmpty } from "@/utils/string";
 import moment from "moment";
 import { useEthereum } from "../../web3/ethereumContext";
-import { ContractChatInfo, TripStatus } from "@/model/blockchain/schemas";
+import { ContractChatInfo, ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
 import { Contract, Listener } from "ethers";
 import { useNotification } from "../../notification/notificationContext";
 import useUserMode from "@/hooks/useUserMode";
@@ -52,6 +52,7 @@ export type ChatContextInfo = {
 
   isLoadingChat: boolean;
   selectChat: (tripId: number) => void;
+  getMessages: (tripId: number) => Promise<ChatMessage[]>;
 };
 
 const FirebaseChatContext = createContext<ChatContextInfo>({
@@ -62,6 +63,9 @@ const FirebaseChatContext = createContext<ChatContextInfo>({
 
   isLoadingChat: true,
   selectChat: async () => {},
+  getMessages: async () => {
+    return [];
+  },
 });
 
 export function useChat() {
@@ -194,6 +198,60 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
     getRentalityTripService();
   }, [ethereumInfo]);
 
+  const tripCreatedListener: Listener = useCallback(
+    async ({ args }) => {
+      if (!rentalityContract) return;
+
+      const tripId = BigInt(args[0]);
+      console.log(`tripCreatedListener call. TripId: ${tripId}`);
+
+      try {
+        const tripInfo: ContractTripDTO = await rentalityContract.getTrip(tripId);
+        const meta = await getMetaDataFromIpfs(tripInfo.metadataURI);
+        const tripStatus = tripInfo.trip.status;
+
+        setChatInfos((prev) => {
+          if (prev.find((ci) => ci.tripId === Number(tripId)) !== undefined) {
+            return prev;
+          }
+
+          return [
+            ...prev,
+            {
+              tripId: Number(tripInfo.trip.tripId),
+
+              guestAddress: tripInfo.trip.guest,
+              guestName: tripInfo.trip.guestName,
+              guestPhotoUrl: getIpfsURIfromPinata(tripInfo.guestPhotoUrl),
+
+              hostAddress: tripInfo.trip.host,
+              hostName: tripInfo.trip.hostName,
+              hostPhotoUrl: getIpfsURIfromPinata(tripInfo.hostPhotoUrl),
+
+              tripTitle: `${tripStatus} trip with ${tripInfo.trip.hostName} ${tripInfo.brand} ${tripInfo.model}`,
+              startDateTime: getDateFromBlockchainTime(tripInfo.trip.startDateTime),
+              endDateTime: getDateFromBlockchainTime(tripInfo.trip.endDateTime),
+              timeZoneId: tripInfo.timeZoneId,
+              lastMessage: "Click to open chat",
+              updatedAt: moment.unix(0).toDate(),
+              isSeen: true,
+
+              carPhotoUrl: getIpfsURIfromPinata(meta.image),
+              tripStatus: tripStatus,
+              carTitle: `${tripInfo.brand} ${tripInfo.model} ${tripInfo.yearOfProduction}`,
+              carLicenceNumber: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
+
+              messages: [],
+            },
+          ];
+        });
+      } catch (e) {
+        console.error("tripCreatedListener error:" + e);
+      }
+    },
+    [rentalityContract]
+  );
+
   const tripStatusChangedListener: Listener = useCallback(
     async ({ args }) => {
       if (!rentalityContract) return;
@@ -225,6 +283,40 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
       setSelectedChat(existChatInfo);
     },
     [chatInfos, selectedChat]
+  );
+
+  const getMessages = useCallback(
+    async (tripId: number) => {
+      if (!ethereumInfo) return [];
+
+      const existChatInfo = chatInfos.find((ci) => ci.tripId === tripId);
+
+      if (!existChatInfo) {
+        console.error(`Chat with tripId ${tripId} is not found`);
+        return [];
+      }
+
+      const chatId = new ChatId(
+        ethereumInfo.chainId.toString(),
+        tripId.toString(),
+        existChatInfo.hostAddress,
+        existChatInfo.guestAddress
+      );
+
+      const firebaseMessages = await getChatMessages(db, chatId);
+      return firebaseMessages.map((cm) => {
+        return {
+          fromAddress: cm.senderId,
+          toAddress:
+            cm.senderId.toLowerCase() === existChatInfo.hostAddress.toLowerCase()
+              ? existChatInfo.guestAddress
+              : existChatInfo.hostAddress,
+          datestamp: moment.unix(cm.createdAt).toDate(),
+          message: cm.text,
+        } as ChatMessage;
+      });
+    },
+    [chatInfos, ethereumInfo]
   );
 
   useEffect(() => {
@@ -330,10 +422,15 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         const chatInfos = await Promise.all(promisses);
         setChatInfos(chatInfos);
 
+        const eventTripCreatedFilter = isHost
+          ? rentalityTripService.filters.TripCreated(null, [ethereumInfo.walletAddress], null)
+          : rentalityTripService.filters.TripCreated(null, null, [ethereumInfo.walletAddress]);
+
         const eventTripStatusChangedFilter = isHost
           ? rentalityTripService.filters.TripStatusChanged(null, null, [ethereumInfo.walletAddress], null)
           : rentalityTripService.filters.TripStatusChanged(null, null, null, [ethereumInfo.walletAddress]);
         await rentalityTripService.removeAllListeners();
+        await rentalityTripService.on(eventTripCreatedFilter, tripCreatedListener);
         await rentalityTripService.on(eventTripStatusChangedFilter, tripStatusChangedListener);
         setIsChatReloadRequire(false);
 
@@ -408,6 +505,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
     rentalityTripService,
     isHost,
     getChatInfosWithoutMessages,
+    tripCreatedListener,
     tripStatusChangedListener,
     isChatReloadRequire,
   ]);
@@ -434,6 +532,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
           isLoadingChat: false,
           selectChat: selectChat,
+          getMessages: getMessages,
         }}
       >
         {children}
