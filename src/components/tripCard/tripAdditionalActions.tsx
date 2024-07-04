@@ -54,7 +54,10 @@ function TripAdditionalActions({
       return;
     }
 
-    if (inputParams.length > 0 && !inputParams.every((i) => !isEmpty(i))) {
+    if (
+      inputParams.length > 0 &&
+      inputParams.some((i, index) => tripInfo?.allowedActions[0]?.params[index]?.required === true && isEmpty(i))
+    ) {
       showDialog(t("booked.input_full_odom"));
       return;
     }

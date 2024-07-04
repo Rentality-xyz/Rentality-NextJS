@@ -11,10 +11,12 @@ import { NotificationType } from "@/model/NotificationInfo";
 import usePageLastVisit from "@/hooks/usePageLastVisit";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
+import { useChat } from "@/contexts/chat/firebase/chatContext";
 
 function HostNavMenu() {
   const { ready, authenticated, logout } = usePrivy();
   const { notifications } = useNotification();
+  const { chatInfos } = useChat();
   const { getPageLastVisitedDateTime } = usePageLastVisit();
   const bookedLastVisitedDateTime = getPageLastVisitedDateTime("host_trips_booked");
   const historyLastVisitedDateTime = getPageLastVisitedDateTime("host_trips_history");
@@ -31,8 +33,8 @@ function HostNavMenu() {
   const claimsNotificationCount = notifications.filter(
     (n) => n.type === NotificationType.Claim && n.datestamp > claimsLastVisitedDateTime
   ).length;
-  const messagesNotificationCount = notifications.filter(
-    (n) => n.type === NotificationType.Message && n.datestamp > messagesLastVisitedDateTime
+  const messagesNotificationCount = chatInfos.filter(
+    (ci) => ci.messages.filter((m) => m.datestamp > messagesLastVisitedDateTime).length > 0
   ).length;
   const notificationsNotificationCount = notifications.filter(
     (n) => n.datestamp > notificationsLastVisitedDateTime

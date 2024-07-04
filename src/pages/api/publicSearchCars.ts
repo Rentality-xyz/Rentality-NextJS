@@ -53,8 +53,8 @@ const formatSearchAvailableCarsContractRequest = (searchCarRequest: SearchCarReq
   const contractDateToUTC = getBlockchainTimeFromDate(endCarLocalDateTime);
   const contractSearchCarParams: ContractSearchCarParams = {
     country: searchCarRequest.searchLocation.country ?? "",
-    state: "", //searchCarRequest.searchLocation.state ?? "",
-    city: "", //searchCarRequest.searchLocation.city ?? "",
+    state: searchCarRequest.searchLocation.state ?? "",
+    city: searchCarRequest.searchLocation.city ?? "",
     brand: searchCarRequest.searchFilters.brand ?? "",
     model: searchCarRequest.searchFilters.model ?? "",
     yearOfProductionFrom: BigInt(searchCarRequest.searchFilters.yearOfProductionFrom ?? "0"),

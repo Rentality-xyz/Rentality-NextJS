@@ -6,7 +6,7 @@ import moment from "moment";
 const CLAIM_REQUEST_HEADER = "ClaimRequest";
 
 export default function encodeClaimChatMessage(request: CreateClaimRequest) {
-  return `${CLAIM_REQUEST_HEADER}|${moment().unix}|${request.amountInUsdCents}|${request.guestAddress}`;
+  return `${CLAIM_REQUEST_HEADER}|${moment().unix()}|${request.amountInUsdCents}|${request.guestAddress}`;
 }
 
 export function isClaimChatMessage(message: string) {
@@ -17,7 +17,7 @@ export function decodeClaimChatMessage(message: string, hostName: string, carDet
   if (!message || !isClaimChatMessage(message)) {
     return message;
   }
-  const [a, unixTimeStamp, amountInUsdCents, guestAddress] = message.split("|");
+  const [_, unixTimeStamp, amountInUsdCents, guestAddress] = message.split("|");
 
   return `Claim requested
   ${dateFormatLongMonthDateTime(moment.unix(Number(unixTimeStamp)).toDate())}
@@ -26,6 +26,5 @@ export function decodeClaimChatMessage(message: string, hostName: string, carDet
   )} due for incidentals incurred during your trip with ${hostName}'s ${carDetails}.
   Please respond to this invoice by ${dateFormatLongMonthDateTime(
     moment.unix(Number(unixTimeStamp)).add(3, "days").toDate()
-  )}. If you don't respond in time, you may be unable to book again on Rentality.
-  Ссылка на страницу Claims на  стороне Гостя`;
+  )}. If you don't respond in time, you may be unable to book again on Rentality.`;
 }

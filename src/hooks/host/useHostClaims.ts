@@ -5,7 +5,7 @@ import { formatPhoneNumber, getDateFromBlockchainTime, getDateFromBlockchainTime
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { Claim, getClaimTypeTextFromClaimType, getClaimStatusTextFromStatus } from "@/model/Claim";
-import { useChat } from "@/contexts/chatContext";
+import { useChat } from "@/contexts/chat/firebase/chatContext";
 import encodeClaimChatMessage from "@/components/chat/utils";
 import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
 import {
@@ -73,8 +73,13 @@ const useHostClaims = () => {
       const transaction = await rentalityContract.createClaim(claimRequest);
       await transaction.wait();
 
-      const message = encodeClaimChatMessage(createClaimRequest);
-      chatContextInfo.sendMessage(createClaimRequest.guestAddress, createClaimRequest.tripId, message);
+      // const message = encodeClaimChatMessage(createClaimRequest);
+      // chatContextInfo.sendMessage(
+      //   createClaimRequest.guestAddress,
+      //   createClaimRequest.tripId,
+      //   message,
+      //   "SYSTEM|CLAIM_REQUEST"
+      // );
       return true;
     } catch (e) {
       console.error("createClaim error:" + e);
@@ -154,7 +159,6 @@ const useHostClaims = () => {
                     rejectedDateInSec: Number(i.claim.rejectedDateInSec),
                     hostPhoneNumber: formatPhoneNumber(i.hostPhoneNumber),
                     guestPhoneNumber: formatPhoneNumber(i.guestPhoneNumber),
-                    tripDays: 0,
                     isIncomingClaim: !i.claim.isHostClaims,
                     fileUrls: i.claim.photosUrl.split("|").map((url) => getIpfsURIfromPinata(url)),
                     timeZoneId: i.timeZoneId,

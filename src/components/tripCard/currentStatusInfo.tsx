@@ -9,7 +9,7 @@ import { TFunction } from "i18next";
 import { isEmpty } from "@/utils/string";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import ModifyTripForm from "./modifyTripForm";
-import { useChat } from "@/contexts/chatContext";
+import { useChat } from "@/contexts/chat/firebase/chatContext";
 import GuestConfirmFinishForm from "./guestConfirmFinishForm";
 
 function isInTheFuture(date: Date) {
@@ -129,7 +129,7 @@ function CurrentStatusInfo({
   const { showCustomDialog, hideDialogs } = useRntDialogs();
   const [messageToGuest, setMessageToGuest] = useState("");
   const [isFinishingByHost, setIsFinishingByHost] = useState(false);
-  const { chatInfos, sendMessage } = useChat();
+  const { sendMessage, getMessages } = useChat();
 
   const [actionHeader, actionText, actionDescription] = getActionTextsForStatus(
     tripInfo,
@@ -187,17 +187,16 @@ function CurrentStatusInfo({
     );
   };
 
-  const showGuestConfirmFinishDialog = () => {
+  const showGuestConfirmFinishDialog = async () => {
     showCustomDialog(
       <GuestConfirmFinishForm
         handleFinishTrip={handleGuestFinishTrip}
         handleCancel={handleCancel}
         hostPhoneNumber={tripInfo.host.phoneNumber}
         messageFromHost={
-          chatInfos
-            .find((i) => i.tripId === tripInfo.tripId)
-            ?.messages?.find((m) => m.message.startsWith("Host finished the trip without guest confirmation."))
-            ?.message?.split("\n")[0] ?? ""
+          (await getMessages(tripInfo.tripId))
+            .find((m) => m.message.startsWith("Host finished the trip without guest confirmation."))
+            ?.message?.split("\n")[1] ?? ""
         }
         t={t}
       />

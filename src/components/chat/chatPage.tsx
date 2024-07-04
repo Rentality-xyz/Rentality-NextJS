@@ -24,14 +24,16 @@ export default function ChatPage({
   sendMessage: (toAddress: string, tripId: number, message: string) => Promise<void>;
   t: TFunction;
 }) {
-  const pageTitle = document.getElementById("page-title") as HTMLDivElement;
-  const selectedChatRef = useRef<ElementRef<"div">>(pageTitle);
+  const selectedChatRef = useRef<ElementRef<"div">>();
   const selectedChat = chats.find((ci) => ci.tripId === selectedTridId) ?? null;
 
   useEffect(() => {
-    if (selectedChatRef.current) {
-      selectedChatRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    const pageTitle = document.getElementById("page-title") as HTMLDivElement;
+    selectedChatRef.current = pageTitle;
+  }, []);
+
+  useEffect(() => {
+    selectedChatRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [selectedTridId]);
 
   return (

@@ -24,7 +24,7 @@ export default function ChatInfoCard({
   onClickCallback: MouseEventHandler<HTMLDivElement> | undefined;
   t: TFunction;
 }) {
-  const className = `bg-rentality-bg rnt-card w-full grid grid-cols-[auto_1fr_auto] gap-x-2 rounded-xl overflow-hidden p-2 ${
+  const className = `${chatInfo.isSeen ? "bg-rentality-bg" : "bg-rentality-additional-tint"} rnt-card w-full grid grid-cols-[auto_1fr_auto] gap-x-2 rounded-xl overflow-hidden p-2 ${
     isSelected ? "rnt-card-selected" : ""
   }`;
   const otherPhotoUrl = isHost ? chatInfo.guestPhotoUrl : chatInfo.hostPhotoUrl;

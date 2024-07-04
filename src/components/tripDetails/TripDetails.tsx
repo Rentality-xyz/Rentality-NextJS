@@ -20,7 +20,7 @@ import UserAvatarWithName from "@/components/common/userAvatarWithName";
 import TripContacts from "@/components/common/tripContacts";
 import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import RntDriverLicenseVerified from "@/components/common/rntDriverLicenseVerified";
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import { UTC_TIME_ZONE_ID, calculateDays } from "@/utils/date";
 
 export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; backPath: string; t: TFunctionNext }) {
   const [isLoading, tripInfo] = useTripInfo(tripId);
@@ -254,7 +254,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     </tr>
                     <tr>
                       <td>{t_details("trip_days")}</td>
-                      <td className="text-end">{moment(tripInfo.tripEnd).diff(tripInfo.tripStart, "days")}</td>
+                      <td className="text-end">{calculateDays(tripInfo.tripStart, tripInfo.tripEnd)}</td>
                     </tr>
                     <tr>
                       <td>{t_details("trip_price")}</td>

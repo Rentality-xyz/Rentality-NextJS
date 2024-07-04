@@ -8,6 +8,8 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { ContractCreateCarRequest, ContractLocationInfo } from "@/model/blockchain/schemas";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
 import { emptyLocationInfo } from "@/model/LocationInfo";
+import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
+import { bigIntReplacer } from "@/utils/json";
 
 const emptyNewCarInfo: HostCarInfo = {
   carId: 0,
@@ -204,23 +206,7 @@ const useAddCar = () => {
           ? BigInt(UNLIMITED_MILES_VALUE)
           : BigInt(dataToSave.milesIncludedPerDay);
 
-      const hostAddressArray = dataToSave.locationInfo.address.split(",").map((i) => i.trim());
-
-      hostAddressArray[hostAddressArray.length - 1] = dataToSave.locationInfo.country;
-      hostAddressArray[hostAddressArray.length - 2] = dataToSave.locationInfo.state;
-      hostAddressArray[hostAddressArray.length - 3] = dataToSave.locationInfo.city;
-
-      const hostAddress = hostAddressArray.join(", ");
-
-      const locationInfo: ContractLocationInfo = {
-        userAddress: hostAddress,
-        country: dataToSave.locationInfo.country,
-        state: dataToSave.locationInfo.state,
-        city: dataToSave.locationInfo.city,
-        latitude: dataToSave.locationInfo.latitude.toFixed(6),
-        longitude: dataToSave.locationInfo.longitude.toFixed(6),
-        timeZoneId: dataToSave.locationInfo.timeZoneId,
-      };
+      const locationInfo: ContractLocationInfo = mapLocationInfoToContractLocationInfo(dataToSave.locationInfo);
 
       const request: ContractCreateCarRequest = {
         tokenUri: metadataURL,
@@ -239,6 +225,7 @@ const useAddCar = () => {
         locationInfo: locationInfo,
       };
 
+      console.log(`request: ${JSON.stringify(request, bigIntReplacer)}`);
       const transaction = await rentalityContract.addCar(request);
       await transaction.wait();
       setCarInfoFormParams(emptyNewCarInfo);

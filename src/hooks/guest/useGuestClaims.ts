@@ -13,7 +13,7 @@ import {
 import { validateContractFullClaimInfo, validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
 import encodeClaimChatMessage from "@/components/chat/utils";
-import { useChat } from "@/contexts/chatContext";
+import { useChat } from "@/contexts/chat/firebase/chatContext";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
@@ -45,7 +45,7 @@ const useGuestClaims = () => {
       const savedFiles: string[] = [];
 
       if (filesToSave.length > 0) {
-        filesToSave.forEach(async (file) => {
+        for (const file of filesToSave) {
           const response = await uploadFileToIPFS(file.file, "RentalityClaimFile", {
             createdAt: new Date().toISOString(),
             createdBy: ethereumInfo?.walletAddress ?? "",
@@ -57,7 +57,7 @@ const useGuestClaims = () => {
             throw new Error("Uploaded image to Pinata error");
           }
           savedFiles.push(response.pinataURL);
-        });
+        }
       }
 
       const claimRequest: ContractCreateClaimRequest = {
@@ -71,8 +71,13 @@ const useGuestClaims = () => {
       const transaction = await rentalityContract.createClaim(claimRequest);
       await transaction.wait();
 
-      const message = encodeClaimChatMessage(createClaimRequest);
-      chatContextInfo.sendMessage(createClaimRequest.guestAddress, createClaimRequest.tripId, message);
+      // const message = encodeClaimChatMessage(createClaimRequest);
+      // chatContextInfo.sendMessage(
+      //   createClaimRequest.guestAddress,
+      //   createClaimRequest.tripId,
+      //   message,
+      //   "SYSTEM|CLAIM_REQUEST"
+      // );
       return true;
     } catch (e) {
       console.error("createClaim error:" + e);
@@ -152,7 +157,6 @@ const useGuestClaims = () => {
                     rejectedDateInSec: Number(i.claim.rejectedDateInSec),
                     hostPhoneNumber: formatPhoneNumber(i.hostPhoneNumber),
                     guestPhoneNumber: formatPhoneNumber(i.guestPhoneNumber),
-                    tripDays: 0,
                     isIncomingClaim: i.claim.isHostClaims,
                     fileUrls: i.claim.photosUrl.split("|").map((url) => getIpfsURIfromPinata(url)),
                     timeZoneId: i.timeZoneId,

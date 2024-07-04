@@ -169,4 +169,5 @@ export type ChangeTripParams = {
   text: string;
   value: string;
   type: string;
+  required: boolean;
 };

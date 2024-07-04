@@ -140,8 +140,8 @@ export default function CarSearchItem({
               <p className="text-xs">{t_item("host")}</p>
               <p className="text-sm">{searchInfo.hostName ?? "-"}</p>
             </div>
-            <div className="ml-8" onClick={handleInfoClick}>
-              <i className="fi fi-rs-info text-2xl"></i>
+            <div className="ml-2 sm:ml-8" onClick={handleInfoClick}>
+              <i className="fi fi-rs-info text-2xl text-rentality-secondary-shade"></i>
             </div>
           </div>
           <RntButton

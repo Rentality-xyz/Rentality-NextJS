@@ -11,7 +11,6 @@ import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClai
 import { ClaimType } from "@/model/blockchain/schemas";
 import ClaimAddPhoto from "@/components/claims/claimAddPhoto";
 import { FileToUpload } from "@/model/FileToUpload";
-import { bigIntReplacer } from "@/utils/json";
 import { usePathname } from "next/navigation";
 
 type CreateClaimParams = {
@@ -58,7 +57,7 @@ export default function CreateClaim({
   isHost,
 }: {
   tripInfos: TripInfoForClaimCreation[];
-  createClaim: (createClaimRequest: CreateClaimRequest) => Promise<void>;
+  createClaim: (createClaimRequest: CreateClaimRequest) => Promise<boolean>;
   isHost: boolean;
 }) {
   const pathname = usePathname();
@@ -66,6 +65,7 @@ export default function CreateClaim({
     ...emptyCreateClaimParams,
     incidentType: isHost ? hostClaimTypes[0].toString() : guestClaimTypes[0].toString(),
   });
+    const textSendTo = isHost ? "guest" : "host";
 
   const handleCreateClaim = async () => {
     if (!createClaimParams.isChecked) return;
@@ -78,7 +78,13 @@ export default function CreateClaim({
       amountInUsdCents: (Number(createClaimParams.amountInUsd) ?? 0) * 100,
       localFileUrls: createClaimParams.localFileUrls,
     };
-    createClaim(createClaimRequest);
+    const success = await createClaim(createClaimRequest);
+    if (success) {
+      setCreateClaimParams({
+        ...emptyCreateClaimParams,
+        incidentType: isHost ? hostClaimTypes[0].toString() : guestClaimTypes[0].toString(),
+      });
+    }
   };
 
   return (
@@ -181,7 +187,7 @@ export default function CreateClaim({
       />
 
       <RntButton className="w-72" onClick={handleCreateClaim} disabled={!createClaimParams.isChecked}>
-        Confirm and send to guest
+        Confirm and send to {textSendTo}
       </RntButton>
     </div>
   );

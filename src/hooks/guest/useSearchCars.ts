@@ -14,6 +14,7 @@ import {
 import { isEmpty } from "@/utils/string";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { bigIntReplacer } from "@/utils/json";
+import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
 
 export type SortOptions = {
   [key: string]: string;
@@ -142,28 +143,12 @@ const useSearchCars = () => {
           searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation ||
           isEmpty(searchCarRequest.deliveryInfo.pickupLocation.locationInfo.address)
             ? carLocationInfo
-            : {
-                userAddress: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.address,
-                country: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.country,
-                state: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.state,
-                city: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.city,
-                latitude: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.latitude.toFixed(6),
-                longitude: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.longitude.toFixed(6),
-                timeZoneId: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.timeZoneId,
-              };
+            : mapLocationInfoToContractLocationInfo(searchCarRequest.deliveryInfo.pickupLocation.locationInfo);
         const returnLocationInfo =
           searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation ||
           isEmpty(searchCarRequest.deliveryInfo.returnLocation.locationInfo.address)
             ? carLocationInfo
-            : {
-                userAddress: searchCarRequest.deliveryInfo.returnLocation.locationInfo.address,
-                country: searchCarRequest.deliveryInfo.returnLocation.locationInfo.country,
-                state: searchCarRequest.deliveryInfo.returnLocation.locationInfo.state,
-                city: searchCarRequest.deliveryInfo.returnLocation.locationInfo.city,
-                latitude: searchCarRequest.deliveryInfo.returnLocation.locationInfo.latitude.toFixed(6),
-                longitude: searchCarRequest.deliveryInfo.returnLocation.locationInfo.longitude.toFixed(6),
-                timeZoneId: searchCarRequest.deliveryInfo.returnLocation.locationInfo.timeZoneId,
-              };
+            : mapLocationInfoToContractLocationInfo(searchCarRequest.deliveryInfo.returnLocation.locationInfo);
 
         const paymentsNeeded = await rentalityContract.calculatePaymentsWithDelivery(
           BigInt(carId),

@@ -15,6 +15,7 @@ import {
 } from "@/utils/datetimeFormatters";
 import { getMilesIncludedPerDayText, isUnlimitedMiles } from "@/model/HostCarInfo";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import { EngineType } from "@/model/blockchain/schemas";
 
 export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint; tripInfo: TripInfo }) {
   const [open, setOpen] = React.useState(false);
@@ -26,6 +27,11 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
   const handleClose = () => {
     setOpen(false);
   };
+
+  const pricePer1GalOrBatteryRecharge =
+    tripInfo.engineType === EngineType.PETROL
+      ? tripInfo.fuelPricePerGal
+      : tripInfo.fullBatteryChargePriceInUsdCents / 10;
 
   return (
     <React.Fragment>
@@ -240,8 +246,8 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                     : `Price per 1 overmile: ETH ${tripInfo.overmilePrice / tripInfo.currencyRate} (USD ${tripInfo.overmilePrice})`}
                 </div>
                 <div className="">
-                  Price per 1 gallon or 10% battery recharge: ETH {tripInfo.fuelPricePerGal / tripInfo.currencyRate}{" "}
-                  (USD {tripInfo.fuelPricePerGal})
+                  Price per 1 gallon or 10% battery recharge: ETH{" "}
+                  {pricePer1GalOrBatteryRecharge / tripInfo.currencyRate} (USD {pricePer1GalOrBatteryRecharge})
                 </div>
               </div>
               <div className="flex flex-col m-4">
