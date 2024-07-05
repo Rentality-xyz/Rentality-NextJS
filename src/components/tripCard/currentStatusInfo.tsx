@@ -70,9 +70,7 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean, isFinishin
               ? "booked.status_trip_started_guest_ends"
               : "booked.status_trip_started_guest_ended",
             {
-              date: isInTheFuture(tripInfo.tripEnd)
-                ? moment(tripInfo.tripEnd).fromNow()
-                : moment(tripInfo.tripEnd).toNow(),
+              date: moment(tripInfo.tripEnd).fromNow(),
               returnObjects: true,
             } as const
           );
@@ -94,7 +92,7 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean, isFinishin
             date: dateFormatShortMonthDateTime(tripInfo.checkedOutByHostDateTime, tripInfo.timeZoneId),
             returnObjects: true,
           } as const);
-    case TripStatus.Finished:
+      case TripStatus.Finished:
       return isHost
         ? t("booked.status_finished", {
             date: dateFormatShortMonthDateTime(tripInfo.checkedOutByHostDateTime, tripInfo.timeZoneId),
@@ -137,6 +135,7 @@ function CurrentStatusInfo({
     isFinishingByHost,
     t
   ) as string[];
+
 
   if (
     isEmpty(actionHeader) &&
