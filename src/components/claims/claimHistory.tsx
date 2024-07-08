@@ -3,14 +3,14 @@ import Link from "next/link";
 import RntButton from "../common/rntButton";
 import { twMerge } from "tailwind-merge";
 import { Claim } from "@/model/Claim";
-import ClaimHistoryMobileCard from "./claimHistoryMobileCard";
+import ClaimHistoryMobileCard from "./ClaimHistoryMobileCard";
 import { ClaimStatus } from "@/model/blockchain/schemas";
 import moment from "moment";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
 import Image from "next/image";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
-import ClaimFileList from "./claimFileList";
+import ClaimFileList from "./ClaimFileList";
 import { isEmpty } from "@/utils/string";
 import { usePathname } from "next/navigation";
 

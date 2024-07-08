@@ -1,5 +1,5 @@
-import ClaimHistory from "@/components/claims/claimHistory";
-import CreateClaim from "@/components/claims/createClaim";
+import ClaimHistory from "@/components/claims/ClaimHistory";
+import CreateClaim from "@/components/claims/CreateClaim";
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useHostClaims from "@/hooks/host/useHostClaims";

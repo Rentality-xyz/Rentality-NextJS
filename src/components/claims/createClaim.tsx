@@ -1,5 +1,4 @@
 import RntSelect from "../common/rntSelect";
-import { useState } from "react";
 import RntInputMultiline from "../common/rntInputMultiline";
 import RntInput from "../common/rntInput";
 import RntCheckbox from "../common/rntCheckbox";
@@ -9,18 +8,11 @@ import Link from "next/link";
 import { isEmpty } from "@/utils/string";
 import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
 import { ClaimType } from "@/model/blockchain/schemas";
-import ClaimAddPhoto from "@/components/claims/claimAddPhoto";
-import { FileToUpload } from "@/model/FileToUpload";
+import ClaimAddPhoto from "@/components/claims/ClaimAddPhoto";
 import { usePathname } from "next/navigation";
-
-type CreateClaimParams = {
-  selectedTripId: string;
-  incidentType: string;
-  description: string;
-  amountInUsd: string;
-  isChecked: boolean;
-  localFileUrls: FileToUpload[];
-};
+import { createClaimFormSchema, CreateClaimFormValues } from "./createClaimFormSchema";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const hostClaimTypes = [
   ClaimType.Tolls,
@@ -42,15 +34,6 @@ const guestClaimTypes = [
   ClaimType.Other,
 ];
 
-const emptyCreateClaimParams: CreateClaimParams = {
-  selectedTripId: "",
-  incidentType: "",
-  description: "",
-  amountInUsd: "",
-  isChecked: false,
-  localFileUrls: [],
-};
-
 export default function CreateClaim({
   tripInfos,
   createClaim,
@@ -61,46 +44,72 @@ export default function CreateClaim({
   isHost: boolean;
 }) {
   const pathname = usePathname();
-  const [createClaimParams, setCreateClaimParams] = useState<CreateClaimParams>({
-    ...emptyCreateClaimParams,
-    incidentType: isHost ? hostClaimTypes[0].toString() : guestClaimTypes[0].toString(),
+  const { register, handleSubmit, formState, control, reset, watch } = useForm<CreateClaimFormValues>({
+    defaultValues: {
+      selectedTripId: "",
+      incidentType: isHost ? hostClaimTypes[0].toString() : guestClaimTypes[0].toString(),
+      description: "",
+      amountInUsd: 0,
+      isChecked: false,
+      localFileUrls: [],
+    },
+    resolver: zodResolver(createClaimFormSchema),
   });
-    const textSendTo = isHost ? "guest" : "host";
+  const { errors, isSubmitting } = formState;
 
-  const handleCreateClaim = async () => {
-    if (!createClaimParams.isChecked) return;
+  const textSendTo = isHost ? "guest" : "host";
+  const selectedTripId = watch("selectedTripId");
+  const isChecked = watch("isChecked");
+
+  async function onFormSubmit(formData: CreateClaimFormValues) {
+    if (!formData.isChecked) return;
 
     const createClaimRequest: CreateClaimRequest = {
-      tripId: Number(createClaimParams.selectedTripId),
-      guestAddress: tripInfos.find((ti) => ti.tripId === Number(createClaimParams.selectedTripId))?.guestAddress ?? "",
-      claimType: BigInt(createClaimParams.incidentType),
-      description: createClaimParams.description,
-      amountInUsdCents: (Number(createClaimParams.amountInUsd) ?? 0) * 100,
-      localFileUrls: createClaimParams.localFileUrls,
+      tripId: Number(formData.selectedTripId),
+      guestAddress: tripInfos.find((ti) => ti.tripId === Number(formData.selectedTripId))?.guestAddress ?? "",
+      claimType: BigInt(formData.incidentType),
+      description: formData.description,
+      amountInUsdCents: (Number(formData.amountInUsd) ?? 0) * 100,
+      localFileUrls: formData.localFileUrls,
     };
     const success = await createClaim(createClaimRequest);
     if (success) {
-      setCreateClaimParams({
-        ...emptyCreateClaimParams,
-        incidentType: isHost ? hostClaimTypes[0].toString() : guestClaimTypes[0].toString(),
-      });
+      reset();
     }
-  };
+  }
+
+  // const handleCreateClaim = async () => {
+  //   if (!createClaimParams.isChecked) return;
+
+  //   const createClaimRequest: CreateClaimRequest = {
+  //     tripId: Number(createClaimParams.selectedTripId),
+  //     guestAddress: tripInfos.find((ti) => ti.tripId === Number(createClaimParams.selectedTripId))?.guestAddress ?? "",
+  //     claimType: BigInt(createClaimParams.incidentType),
+  //     description: createClaimParams.description,
+  //     amountInUsdCents: (Number(createClaimParams.amountInUsd) ?? 0) * 100,
+  //     localFileUrls: createClaimParams.localFileUrls,
+  //   };
+  //   const success = await createClaim(createClaimRequest);
+  //   if (success) {
+  //     setCreateClaimParams({
+  //       ...emptyCreateClaimParams,
+  //       incidentType: isHost ? hostClaimTypes[0].toString() : guestClaimTypes[0].toString(),
+  //     });
+  //   }
+  // };
 
   return (
-    <div className="w-full p-4 mt-5 flex flex-col gap-4">
+    <form
+      className="w-full p-4 mt-5 flex flex-col gap-4"
+      onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}
+    >
       <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center">
         <RntSelect
           className="lg:w-1/2"
           id="trip"
           label="Trip"
-          value={createClaimParams.selectedTripId}
-          onChange={(e) =>
-            setCreateClaimParams({
-              ...createClaimParams,
-              selectedTripId: e.target.value,
-            })
-          }
+          {...register("selectedTripId")}
+          validationError={errors.selectedTripId?.message}
         >
           <option className="hidden" disabled></option>
           {tripInfos.map((i) => (
@@ -113,13 +122,8 @@ export default function CreateClaim({
           className="lg:w-80"
           id="type"
           label={isHost ? "Incident type" : "Issues type"}
-          value={createClaimParams.incidentType}
-          onChange={(e) =>
-            setCreateClaimParams({
-              ...createClaimParams,
-              incidentType: e.target.value,
-            })
-          }
+          {...register("incidentType")}
+          validationError={errors.incidentType?.message}
         >
           {(isHost ? hostClaimTypes : guestClaimTypes).map((i) => (
             <option key={i.toString()} value={i.toString()}>
@@ -128,8 +132,8 @@ export default function CreateClaim({
           ))}
         </RntSelect>
 
-        {!isEmpty(createClaimParams.selectedTripId) ? (
-          <Link href={`/host/trips/tripInfo/${createClaimParams.selectedTripId}?back=${pathname}`} target="_blank">
+        {!isEmpty(selectedTripId) ? (
+          <Link href={`/host/trips/tripInfo/${selectedTripId}?back=${pathname}`} target="_blank">
             {/* <Image className="sm:hidden" src={icInfo} width={25} alt="" /> max-sm:hidden */}
             <span className="text-rentality-secondary">Trip information</span>
           </Link>
@@ -140,55 +144,51 @@ export default function CreateClaim({
         rows={3}
         label="Describe your claim in detail"
         placeholder="enter your message"
-        value={createClaimParams.description}
-        onChange={(e) =>
-          setCreateClaimParams({
-            ...createClaimParams,
-            description: e.target.value,
-          })
-        }
+        {...register("description")}
+        validationError={errors.description?.message}
       />
 
-      <ClaimAddPhoto
-        filesToUpload={createClaimParams.localFileUrls}
-        setFilesToUpload={(newValue) => {
-          setCreateClaimParams((prev) => {
-            return {
-              ...prev,
-              localFileUrls: newValue,
-            };
-          });
-        }}
+      <Controller
+        name="localFileUrls"
+        control={control}
+        render={({ field }) => (
+          <ClaimAddPhoto
+            filesToUpload={field.value}
+            setFilesToUpload={(newValue) => {
+              field.onChange(newValue);
+            }}
+          />
+        )}
       />
 
       <RntInput
+        className="w-full lg:w-1/2"
         id="amount"
+        autoComplete="off"
         label={`What compensation amount do you think the ${isHost ? "guest" : "host"} should pay for the incident?`}
-        value={createClaimParams.amountInUsd}
-        onChange={(e) =>
-          setCreateClaimParams({
-            ...createClaimParams,
-            amountInUsd: e.target.value,
-          })
-        }
+        {...register("amountInUsd", { valueAsNumber: true })}
+        validationError={errors.amountInUsd?.message}
       />
       <p>After your trip ends, you have 72 hours to respond before your complaints become public</p>
 
-      <RntCheckbox
-        className="w-full"
-        title="I certify that all charges are accurate, and I understand that any false submission or representation may result in restrictions or removal from the Rentality marketplace."
-        value={createClaimParams.isChecked}
-        onChange={(e) =>
-          setCreateClaimParams({
-            ...createClaimParams,
-            isChecked: e.target.checked,
-          })
-        }
+      <Controller
+        name="isChecked"
+        control={control}
+        render={({ field }) => (
+          <RntCheckbox
+            className="w-full"
+            title="I certify that all charges are accurate, and I understand that any false submission or representation may result in restrictions or removal from the Rentality marketplace."
+            value={field.value}
+            onChange={(e) => {
+              field.onChange(e.target.checked);
+            }}
+          />
+        )}
       />
 
-      <RntButton className="w-72" onClick={handleCreateClaim} disabled={!createClaimParams.isChecked}>
+      <RntButton type="submit" className="w-72" disabled={isSubmitting || !isChecked}>
         Confirm and send to {textSendTo}
       </RntButton>
-    </div>
+    </form>
   );
 }
