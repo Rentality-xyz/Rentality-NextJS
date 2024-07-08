@@ -196,7 +196,7 @@
     "cancellation_title": "Cancellation policy",
     "prohibited_title": "Prohibited uses",
     "privacy_title": "Privacy policy",
-    "discounts": "Discounts",
+    "discounts": "Discounts, %(enter from 1 to 99)",
     "discount_3_and_more": "3+ day discount",
     "discount_7_and_more": "7+ day discount",
     "discount_30_and_more": "30+ day discount",
