@@ -2,6 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --text-inverse: theme(colors.gray.50);
+    --text-foreground: theme(colors.gray.950);
+    --text-foreground-muted: theme(colors.gray.600);
+    --text-error: theme(colors.rose.600);
+    --text-primary: theme(colors.indigo.600);
+    --text-success: theme(colors.lime.600);
+    --text-warning: theme(colors.orange.600);
+    --text-disabled: theme(colors.gray.400);
+
+    --bg-default: theme(colors.gray.50);
+    --bg-default-hover: theme(colors.gray.200);
+    --bg-default-active: theme(colors.gray.300);
+    --bg-alternate: theme(colors.gray.200);
+    --bg-alternate-hover: theme(colors.gray.300);
+    --bg-alternate-active: theme(colors.gray.400);
+    --bg-inverse: theme(colors.gray.100);
+    --bg-inverse-hover: theme(colors.gray.200);
+    --bg-inverse-active: theme(colors.gray.300);
+    --bg-primary: theme(colors.indigo.600);
+    --bg-primary-hover: theme(colors.indigo.700);
+    --bg-primary-active: theme(colors.indigo.800);
+    --bg-secondary: theme(colors.slate.200);
+    --bg-secondary-hover: theme(colors.slate.300);
+    --bg-secondary-active: theme(colors.slate.400);
+    --bg-error: theme(colors.rose.600);
+    --bg-warning: theme(colors.orange.600);
+    --bg-success: theme(colors.lime.300);
+  }
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -53,7 +85,7 @@ body {
     "footer";
 }
 
-.main-grid > header {
+.main-grid>header {
   @apply text-rnt-temp-header-text;
   grid-area: header;
   width: 100%;
@@ -62,21 +94,21 @@ body {
   justify-content: stretch;
 }
 
-.main-grid > aside {
+.main-grid>aside {
   @apply bg-rentality-bg-left-sidebar text-rnt-temp-sidemenu-text;
   grid-area: aside;
   width: 100%;
   height: auto;
 }
 
-.main-grid > main {
+.main-grid>main {
   @apply bg-rentality-bg-main text-rnt-temp-main-text;
   grid-area: main;
   height: 100%;
   width: 100%;
 }
 
-.main-grid > footer {
+.main-grid>footer {
   @apply text-rnt-temp-footer-text;
   grid-area: footer;
   width: 100%;
@@ -159,8 +191,7 @@ main option {
   /* @apply bg-rnt-temp-sidemenu-bg; */
 }
 
-@media (min-width: 1024px) {
-}
+@media (min-width: 1024px) {}
 
 /* footer */
 
@@ -200,12 +231,12 @@ main option {
 }
 
 /* On mouse-over, add a grey background color */
-.rentality-checkbox:hover input ~ .rentality-checkmark {
+.rentality-checkbox:hover input~.rentality-checkmark {
   background-color: #bbb;
 }
 
 /* When the checkbox is checked, add a blue background */
-.rentality-checkbox input:checked ~ .rentality-checkmark {
+.rentality-checkbox input:checked~.rentality-checkmark {
   background-color: #6c29d9;
 }
 
@@ -217,7 +248,7 @@ main option {
 }
 
 /* Show the checkmark when checked */
-.rentality-checkbox input:checked ~ .rentality-checkmark:after {
+.rentality-checkbox input:checked~.rentality-checkmark:after {
   display: block;
 }
 
@@ -237,12 +268,10 @@ main option {
 /* Civic */
 .civicButton {
   /*background-color: #6D28D9 !important;*/
-  background: linear-gradient(
-    360deg,
-    rgba(88, 63, 188, 1) 0%,
-    rgba(128, 95, 228, 1) 50%,
-    rgba(127, 160, 243, 1) 100%
-  ) !important;
+  background: linear-gradient(360deg,
+      rgba(88, 63, 188, 1) 0%,
+      rgba(128, 95, 228, 1) 50%,
+      rgba(127, 160, 243, 1) 100%) !important;
   border-radius: 9999px !important;
   border: none !important;
   height: 48px !important;
@@ -291,7 +320,7 @@ input:disabled {
   border-radius: 9999px 0 0 9999px !important;
 }
 
-#privy-dialog > div > div {
+#privy-dialog>div>div {
   background-color: #1e1e30;
   border-width: 2px;
   border-color: #373737;
@@ -322,6 +351,6 @@ input:disabled {
   mask-composite: exclude;
 }
 
-#pagination > ul > li {
+#pagination>ul>li {
   margin-left: 12px;
 }

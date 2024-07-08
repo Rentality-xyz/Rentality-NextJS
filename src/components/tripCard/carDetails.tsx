@@ -5,18 +5,25 @@ import { memo } from "react";
 import { TripStatus } from "@/model/blockchain/schemas";
 import { TFunction } from "@/utils/i18n";
 import Link from "next/link";
+import RntButtonTransparent from "../common/rntButtonTransparent";
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import CarDetailsVerificationDialog from "./CarDetailsVerificationDialog";
 
 function СarDetails({
   tripInfo,
   isHost,
   t,
+  confirmCarDetails,
   showMoreInfo,
 }: {
   tripInfo: TripInfo;
   isHost: boolean;
   t: TFunction;
+  confirmCarDetails?: (tridId: number) => Promise<void>;
   showMoreInfo: boolean;
 }) {
+  const { showCustomDialog, hideDialogs } = useRntDialogs();
+
   const rejectedByHost = tripInfo.rejectedBy.toLowerCase() === tripInfo.host.walletAddress.toLowerCase();
   const rejectedByText = rejectedByHost
     ? isHost
@@ -30,6 +37,23 @@ function СarDetails({
 
   const pathRoot = isHost ? "host" : "guest";
   const otherUserPhoneNumber = isHost ? tripInfo.guest.phoneNumber : tripInfo.host.phoneNumber;
+
+  const handleConfirmCarDetailsClick = async () => {
+    if (!confirmCarDetails) {
+      console.error("handleConfirmCarDetailsClick error: confirmCarDetails is undefined");
+      return;
+    }
+
+    showCustomDialog(
+      <CarDetailsVerificationDialog
+        handleConfirmCarDetailsClick={async () => {
+          await confirmCarDetails(tripInfo.tripId);
+          hideDialogs();
+        }}
+        handleCancelClick={hideDialogs}
+      />
+    );
+  };
 
   return (
     <div id="trip-main-info" className="w-full md:w-1/4 flex flex-1 flex-col gap-4 justify-between p-4 md:p-2 xl:p-4">
@@ -64,11 +88,22 @@ function СarDetails({
           <></>
         )}
       </div>
-      <UserAvatarWithName
-        photoUrl={otherUserPhotoUrl}
-        userName={otherUserName}
-        label={isHost ? "YOUR GUEST" : "HOSTED BY"}
-      />
+      <div className="flex flex-row justify-between">
+        <UserAvatarWithName
+          photoUrl={otherUserPhotoUrl}
+          userName={otherUserName}
+          label={isHost ? "YOUR GUEST" : "HOSTED BY"}
+        />
+
+        {tripInfo.status === TripStatus.Closed && !tripInfo.isCarDetailsConfirmed && (
+          <RntButtonTransparent
+            className="h-12 w-12 flex flex-row justify-center items-center gap-2 mr-8"
+            onClick={handleConfirmCarDetailsClick}
+          >
+            <i className="fi fi-br-hexagon-check text-green-500 text-3xl pt-2"></i>
+          </RntButtonTransparent>
+        )}
+      </div>
       {!showMoreInfo ? (
         <div className="2xl:flex 2xl:flex-row">
           <div id="trip-chat-info">

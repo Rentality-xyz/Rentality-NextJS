@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function Booked() {
-  const [isLoading, tripsBooked, _, updateData] = useGuestTrips();
+  const { isLoading, tripsBooked, updateData } = useGuestTrips();
   const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
   const { showInfo, showError } = useRntDialogs();
   const { t } = useTranslation();

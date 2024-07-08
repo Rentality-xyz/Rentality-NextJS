@@ -18,6 +18,7 @@ function TripCard({
   disableButton,
   isHost,
   showMoreInfo,
+  confirmCarDetails,
   t,
 }: {
   tripInfo: TripInfo;
@@ -25,6 +26,7 @@ function TripCard({
   disableButton: boolean;
   isHost: boolean;
   showMoreInfo: boolean;
+  confirmCarDetails?: (tripId: number) => Promise<void>;
   t: TFunction;
 }) {
   const [isAdditionalActionHidden, setIsAdditionalActionHidden] = useState(true);
@@ -45,7 +47,13 @@ function TripCard({
         <CarPhotoWithStatus carImageUrl={tripInfo.image} tripStatus={tripInfo.status} />
 
         <div id="trip-item-info" className="w-full flex flex-col md:flex-row">
-          <СarDetails tripInfo={tripInfo} isHost={isHost} t={t} showMoreInfo={showMoreInfo} />
+          <СarDetails
+            tripInfo={tripInfo}
+            isHost={isHost}
+            t={t}
+            showMoreInfo={showMoreInfo}
+            confirmCarDetails={confirmCarDetails}
+          />
           {showMoreInfo && (
             <CurrentStatusInfo
               tripInfo={tripInfo}

@@ -40,6 +40,7 @@ export type SearchCarInfo = {
   };
   pickUpDeliveryFee: number;
   dropOffDeliveryFee: number;
+  isCarDetailsConfirmed: boolean;
 };
 
 export const emptySearchCarsResult: SearchCarsResult = {
