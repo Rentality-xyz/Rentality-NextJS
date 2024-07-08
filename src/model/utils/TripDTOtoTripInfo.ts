@@ -26,6 +26,7 @@ export const mapTripDTOtoTripInfo = async (
   var overmileValue = endOdometr - startOdometr - milesIncludedPerDay * tripDays;
   overmileValue = overmileValue > 0 ? overmileValue : 0;
   const overmilePrice = Math.ceil(Number(i.trip.pricePerDayInUsdCents) / Number(i.trip.milesIncludedPerDay)) / 100;
+  const tankVolumeInGal = Number(meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "0");
 
   let item: TripInfo = {
     tripId: Number(i.trip.tripId),
@@ -44,10 +45,12 @@ export const mapTripDTOtoTripInfo = async (
       i.yearOfProduction?.toString() ?? meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
     licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
     licenseState: meta.attributes?.find((x: any) => x.trait_type === "License state")?.value ?? "",
-    tankVolumeInGal: Number(meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "0"),
+    tankVolumeInGal: tankVolumeInGal,
     engineType: i.trip.engineType,
-    fuelPricePerGal: i.trip.engineType === EngineType.PETROL ? Number(i.trip.fuelPrice) / 100 : 0,
-    fullBatteryChargePriceInUsdCents: i.trip.engineType === EngineType.ELECTRIC ? Number(i.trip.fuelPrice) / 100 : 0,
+    pricePer10PercentFuel:
+      i.trip.engineType === EngineType.PETROL
+        ? (Number(i.trip.fuelPrice) * tankVolumeInGal) / 1000
+        : Number(i.trip.fuelPrice) / 1000,
     milesIncludedPerDay: milesIncludedPerDay,
     milesIncludedPerTrip: milesIncludedPerDay * tripDays,
     timeZoneId: timeZoneId,

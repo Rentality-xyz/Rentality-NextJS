@@ -1,4 +1,4 @@
-import { ChangeTripParams, TripInfo, getRefuelValueAndCharge } from "@/model/TripInfo";
+import { ChangeTripParams, TripInfo, getRefuelCharge } from "@/model/TripInfo";
 import RntInput from "../common/rntInput";
 import { SetStateAction, useState } from "react";
 import RntSelect from "../common/rntSelect";
@@ -25,9 +25,7 @@ export default function AllowedActionsForStatusStarted({
   const [overmileValue, setOvermileValue] = useState<number>(0);
 
   const depositPaid = tripInfo.depositInUsd;
-  const { refuelValue, refuelCharge } = !isEmpty(inputParams[0])
-    ? getRefuelValueAndCharge(tripInfo, endLevelInPercents)
-    : { refuelValue: 0, refuelCharge: 0 };
+  const refuelCharge = !isEmpty(inputParams[0]) ? getRefuelCharge(tripInfo, endLevelInPercents) : 0;
   const overmilesCharge = overmileValue * tripInfo.overmilePrice;
   let depositToBeReturned = depositPaid - refuelCharge - overmilesCharge;
   depositToBeReturned = depositToBeReturned > 0 ? depositToBeReturned : 0;
@@ -117,11 +115,13 @@ export default function AllowedActionsForStatusStarted({
         <div className="flex flex-col flex-1">
           <div className="font-bold mt-2">Reimbursement charge:</div>
           <div className="grid grid-cols-2 mt-2 md:mt-4 text-sm">
-            <span className="col-span-1">Refuel:</span>
-            <span className="col-span-1 text-right">{refuelValue} gal</span>
-            <span className="col-span-1">Gal price:</span>
-            <span className="col-span-1 text-right">${displayMoneyWith2Digits(tripInfo.fuelPricePerGal)}</span>
-            <span className="col-span-1">Refuel or battery charge:</span>
+            <span className="col-span-1">Pick up Fuel:</span>
+            <span className="col-span-1 text-right">{tripInfo.startFuelLevelInPercents}%</span>
+            <span className="col-span-1">Drop off Fuel:</span>
+            <span className="col-span-1 text-right">{endLevelInPercents}%</span>
+            <span className="col-span-1">Price per 10% charge/tank:</span>
+            <span className="col-span-1 text-right">${displayMoneyWith2Digits(tripInfo.pricePer10PercentFuel)}</span>
+            <span className="col-span-1">Total refuel charge:</span>
             <span className="col-span-1 text-right">${displayMoneyWith2Digits(refuelCharge)}</span>
           </div>
           <div className="grid grid-cols-2 mt-2 md:mt-4 text-sm">

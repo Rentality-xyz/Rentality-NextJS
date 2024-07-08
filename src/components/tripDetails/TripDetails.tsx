@@ -15,7 +15,7 @@ import { useRouter } from "next/router";
 import { TFunction as TFunctionNext } from "i18next";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
-import { getRefuelValueAndCharge } from "@/model/TripInfo";
+import { getRefuelCharge } from "@/model/TripInfo";
 import UserAvatarWithName from "@/components/common/userAvatarWithName";
 import TripContacts from "@/components/common/tripContacts";
 import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
@@ -31,7 +31,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
 
   if (tripId == null || tripId === BigInt(0) || tripInfo == null) return null;
 
-  const { refuelValue, refuelCharge } = getRefuelValueAndCharge(tripInfo, tripInfo.endFuelLevelInPercents);
+  const refuelCharge = getRefuelCharge(tripInfo, tripInfo.endFuelLevelInPercents);
 
   const formatStatusDateTime = (value: Date, timeZone?: string) => {
     const format = "ddd, D MMM YYYY hh:mm:ss z";
@@ -315,15 +315,19 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                 <table className="m-2">
                   <tbody>
                     <tr>
-                      <td>{t_details("refuel_gal")}</td>
-                      <td className="text-end">{refuelValue}</td>
+                      <td>{t_details("pickUp_fuel")}</td>
+                      <td className="text-end">{tripInfo.startFuelLevelInPercents}%</td>
                     </tr>
                     <tr>
-                      <td>{t_details("price_per_gal")}</td>
-                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.fuelPricePerGal)}</td>
+                      <td>{t_details("dropOff_fuel")}</td>
+                      <td className="text-end">{tripInfo.endFuelLevelInPercents}%</td>
                     </tr>
                     <tr>
-                      <td>{t_details("refuel_or_recharge")}</td>
+                      <td>{t_details("price_per_10_percents")}</td>
+                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.pricePer10PercentFuel)}</td>
+                    </tr>
+                    <tr>
+                      <td>{t_details("total_refuel_charge")}</td>
                       <td className="text-end">${refuelCharge}</td>
                     </tr>
                     <tr>

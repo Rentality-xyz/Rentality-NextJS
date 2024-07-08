@@ -85,8 +85,7 @@ export type TripInfo = {
   startFuelLevelInPercents: number;
   endFuelLevelInPercents: number;
   engineType: EngineType;
-  fuelPricePerGal: number;
-  fullBatteryChargePriceInUsdCents: number;
+  pricePer10PercentFuel: number;
   milesIncludedPerDay: number;
   milesIncludedPerTrip: number;
   startOdometr: number;
@@ -143,19 +142,9 @@ export type TripInfo = {
   isCarDetailsConfirmed: boolean;
 };
 
-export const getBatteryChargeFromDiffs = (fuelDiffsInPercents: number, fullBatteryChargePriceInUsdCents: number) => {
-  return (Math.floor(fuelDiffsInPercents / 10) * fullBatteryChargePriceInUsdCents) / 10;
-};
-
-export const getRefuelValueAndCharge = (tripInfo: TripInfo, endFuelLevelInPercents: number) => {
-  const fuelDiffsInPercents = Math.max(tripInfo.startFuelLevelInPercents - endFuelLevelInPercents, 0);
-  const refuelValue =
-    tripInfo.engineType === EngineType.PETROL ? (fuelDiffsInPercents * tripInfo.tankVolumeInGal) / 100 : 0;
-  const refuelCharge =
-    tripInfo.engineType === EngineType.PETROL
-      ? refuelValue * tripInfo.fuelPricePerGal
-      : getBatteryChargeFromDiffs(fuelDiffsInPercents, tripInfo.fullBatteryChargePriceInUsdCents);
-  return { refuelValue, refuelCharge };
+export const getRefuelCharge = (tripInfo: TripInfo, endFuelLevelInPercents: number) => {
+  const fuelDiffsIn10Percents = Math.max((tripInfo.startFuelLevelInPercents - endFuelLevelInPercents) / 10, 0);
+  return fuelDiffsIn10Percents * tripInfo.pricePer10PercentFuel;
 };
 
 export type AllowedChangeTripAction = {
