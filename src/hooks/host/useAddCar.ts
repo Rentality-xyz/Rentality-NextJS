@@ -5,7 +5,7 @@ import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeCo
 import { getMoneyInCentsFromString } from "@/utils/formInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { ContractCreateCarRequest, ContractLocationInfo } from "@/model/blockchain/schemas";
+import { ContractCreateCarRequest, ContractSignedLocationInfo } from "@/model/blockchain/schemas";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
 import { emptyLocationInfo } from "@/model/LocationInfo";
 import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
@@ -206,7 +206,10 @@ const useAddCar = () => {
           ? BigInt(UNLIMITED_MILES_VALUE)
           : BigInt(dataToSave.milesIncludedPerDay);
 
-      const locationInfo: ContractLocationInfo = mapLocationInfoToContractLocationInfo(dataToSave.locationInfo);
+      const location: ContractSignedLocationInfo = {
+        locationInfo: mapLocationInfoToContractLocationInfo(dataToSave.locationInfo),
+        signature: "",
+      };
 
       const request: ContractCreateCarRequest = {
         tokenUri: metadataURL,
@@ -222,7 +225,7 @@ const useAddCar = () => {
         engineParams: engineParams,
         timeBufferBetweenTripsInSec: BigInt(carInfoFormParams.timeBufferBetweenTripsInMin * 60),
         insuranceIncluded: dataToSave.isInsuranceIncluded,
-        locationInfo: locationInfo,
+        locationInfo: location,
       };
 
       console.log(`request: ${JSON.stringify(request, bigIntReplacer)}`);
