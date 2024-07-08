@@ -256,7 +256,7 @@
       "Start the trip from your side and wait start from the Guest.\nFree cancellation is available."
     ],
     "status_confirmed_guest": [
-      "The host confirmed your trip The trip starts {{date, string}}",
+      "This trip was supposed to start {{date, string}}",
       "",
       "Please wait for the host start a trip or you can reject free of charge"
     ],
@@ -281,7 +281,7 @@
       "Wait for the Guest to finish the trip first and then complete on your sides"
     ],
     "status_trip_started_guest_ended": [
-      "The trip ended {{date, string}}",
+      "This trip was supposed to end {{date, string}}",
       "Let`s you check-out!",
       "Finish the trip from your side and wait finish from the Host."
     ],
