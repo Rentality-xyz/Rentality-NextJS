@@ -1,5 +1,5 @@
 import { ChatInfo } from "@/model/ChatInfo";
-import ChatInfoCard from "./chatInfoCard";
+import ChatInfoCard from "./ChatInfoCard";
 import { TFunction } from "@/utils/i18n";
 
 export default function ChatList({

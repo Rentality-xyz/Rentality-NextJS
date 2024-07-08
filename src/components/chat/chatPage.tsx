@@ -1,9 +1,9 @@
 "use client";
 
-import ChatHeader from "@/components/chat/chatHeader";
-import ChatList from "@/components/chat/chatList";
-import ChatMessages from "@/components/chat/chatMessages";
-import SendMessage from "@/components/chat/sendMessage";
+import ChatHeader from "@/components/chat/ChatHeader";
+import ChatList from "@/components/chat/ChatList";
+import ChatMessages from "@/components/chat/ChatMessages";
+import SendMessage from "@/components/chat/SendMessage";
 import RntButton from "@/components/common/rntButton";
 import { ChatInfo } from "@/model/ChatInfo";
 import { ElementRef, useEffect, useRef } from "react";

@@ -1,5 +1,5 @@
 import { ChatInfo } from "@/model/ChatInfo";
-import ChatMessage from "./chatMessage";
+import ChatMessage from "./ChatMessage";
 import { decodeClaimChatMessage, isClaimChatMessage } from "./utils";
 import { useEffect, useRef } from "react";
 
