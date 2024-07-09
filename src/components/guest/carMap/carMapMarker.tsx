@@ -30,8 +30,8 @@ export default function Marker({
         gmpClickable: true,
       });
       markerRef.current.addListener("click", onClick);
-      if(markerClusterer){
-      	markerClusterer.addMarker(markerRef.current);
+      if (markerClusterer) {
+        markerClusterer.addMarker(markerRef.current);
       }
     }
   }, []);
