@@ -27,13 +27,20 @@
               "type": "tuple",
               "name": "locationInfo",
               "components": [
-                { "type": "string", "name": "userAddress" },
-                { "type": "string", "name": "country" },
-                { "type": "string", "name": "state" },
-                { "type": "string", "name": "city" },
-                { "type": "string", "name": "latitude" },
-                { "type": "string", "name": "longitude" },
-                { "type": "string", "name": "timeZoneId" }
+                {
+                  "type": "tuple",
+                  "name": "locationInfo",
+                  "components": [
+                    { "type": "string", "name": "userAddress" },
+                    { "type": "string", "name": "country" },
+                    { "type": "string", "name": "state" },
+                    { "type": "string", "name": "city" },
+                    { "type": "string", "name": "latitude" },
+                    { "type": "string", "name": "longitude" },
+                    { "type": "string", "name": "timeZoneId" }
+                  ]
+                },
+                { "type": "string", "name": "signature" }
               ]
             }
           ]
@@ -204,14 +211,6 @@
         { "type": "uint256", "name": "tripId" },
         { "type": "uint64[]", "name": "panelParams" }
       ],
-      "outputs": []
-    },
-    {
-      "type": "function",
-      "name": "confirmCarDetails",
-      "constant": false,
-      "payable": false,
-      "inputs": [{ "type": "uint256", "name": "tripId" }],
       "outputs": []
     },
     {
@@ -1293,15 +1292,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "function",
-      "name": "isCarDetailsConfirmed",
-      "constant": true,
-      "stateMutability": "view",
-      "payable": false,
-      "inputs": [{ "type": "uint256", "name": "carId" }],
-      "outputs": [{ "type": "bool", "name": "" }]
     },
     {
       "type": "function",
