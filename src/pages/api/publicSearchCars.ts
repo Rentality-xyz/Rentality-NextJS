@@ -84,11 +84,11 @@ const formatSearchAvailableCarsContractResponse = async (
       const meta = await getMetaDataFromIpfs(i.car.metadataURI);
       let isCarDetailsConfirmed = false;
 
-      try {
-        isCarDetailsConfirmed = await rentality.isCarDetailsConfirmed(i.car.carId);
-      } catch (ex) {
-        console.error("formatSearchAvailableCarsContractResponse error:", ex);
-      }
+      // try {
+      //   isCarDetailsConfirmed = await rentality.isCarDetailsConfirmed(i.car.carId);
+      // } catch (ex) {
+      //   console.error("formatSearchAvailableCarsContractResponse error:", ex);
+      // }
 
       const tripDays = Number(i.car.tripDays);
       const pricePerDay = Number(i.car.pricePerDayInUsdCents) / 100;

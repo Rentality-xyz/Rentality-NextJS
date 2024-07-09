@@ -33,7 +33,6 @@ export default function History() {
                     disableButton={true}
                     isHost={false}
                     showMoreInfo={true}
-                    confirmCarDetails={handleConfirmCarDetails}
                     t={t}
                   />
                 );

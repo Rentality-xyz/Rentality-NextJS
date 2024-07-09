@@ -24,8 +24,10 @@ const useGuestTrips = () => {
     }
 
     try {
-      const transaction = await rentalityContract.confirmCarDetails(BigInt(tripId));
-      await transaction.wait();
+      console.log(`confirmCarDetails error: logic in development`);
+
+      //const transaction = await rentalityContract.confirmCarDetails(BigInt(tripId));
+      //await transaction.wait();
       return true;
     } catch (e) {
       console.error("confirmCarDetails error:" + e);
@@ -205,9 +207,9 @@ const useGuestTrips = () => {
                   const tripContactInfo = await rentalityContract.getTripContactInfo(i.trip.carId);
 
                   let isCarDetailsConfirmed = false;
-                  try {
-                    isCarDetailsConfirmed = await rentalityContract.isCarDetailsConfirmed(i.trip.carId);
-                  } catch (ex) {}
+                  // try {
+                  //   isCarDetailsConfirmed = await rentalityContract.isCarDetailsConfirmed(i.trip.carId);
+                  // } catch (ex) {}
 
                   const item = await mapTripDTOtoTripInfo(i, tripContactInfo, isCarDetailsConfirmed);
                   item.allowedActions = getAllowedActions(item.status, i.trip);
