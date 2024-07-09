@@ -1,17 +1,15 @@
 import { memo } from "react";
 import AlchemyPayDeposit from "./AlchemyPay";
 
-function ProfileRnD() {
+function AddFunds() {
   return (
     <div className="my-4 flex flex-col gap-4">
       <div className="text-lg mb-4">
-        <strong>RnD logic</strong>
+        <strong>Add funds to your wallet</strong>
       </div>
-      <div className="flex flex-col gap-4">
-        <AlchemyPayDeposit />
-      </div>
+      <AlchemyPayDeposit />
     </div>
   );
 }
 
-export default memo(ProfileRnD);
+export default memo(AddFunds);

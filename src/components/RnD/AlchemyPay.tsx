@@ -1,7 +1,6 @@
-import React from "react";
+import React, { memo } from "react";
 import RntButton from "../common/rntButton";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-
 import crypto from "crypto";
 
 function encrypt(plainText: string, secretKeyData: string) {
@@ -15,7 +14,7 @@ function encrypt(plainText: string, secretKeyData: string) {
   return null;
 }
 
-const buildLink = (address: string): string => {
+function buildLink(address: string): string {
   const baseUrl = process.env.NEXT_PUBLIC_ALHEMY_LINK!;
   const url = new URL(baseUrl);
 
@@ -29,15 +28,22 @@ const buildLink = (address: string): string => {
   url.searchParams.append("sign", sign!);
 
   return url.toString();
-};
-export default function AlchemyPayDeposit(): JSX.Element {
+}
+
+function AlchemyPay() {
   const ethereumInfo = useEthereum();
+
   return (
     <div className="flex gap-4 items-center">
-      <span className="text-lg">Alchemy pay: </span>
-      <RntButton className="w-44" onClick={() => window.open(buildLink(ethereumInfo?.walletAddress ?? ""))}>
-        Deposit
+      <span className="text-lg">Coming soon Alchemy Pay service: </span>
+      <RntButton
+        className="w-44"
+        disabled={true} /* onClick={() => window.open(buildLink(ethereumInfo?.walletAddress ?? ""))} */
+      >
+        Buy Crypto
       </RntButton>
     </div>
   );
 }
+
+export default memo(AlchemyPay);
