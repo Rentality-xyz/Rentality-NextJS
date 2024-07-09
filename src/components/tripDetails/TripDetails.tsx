@@ -21,6 +21,7 @@ import TripContacts from "@/components/common/tripContacts";
 import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import RntDriverLicenseVerified from "@/components/common/rntDriverLicenseVerified";
 import { UTC_TIME_ZONE_ID, calculateDays } from "@/utils/date";
+import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 
 export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; backPath: string; t: TFunctionNext }) {
   const [isLoading, tripInfo] = useTripInfo(tripId);
@@ -332,7 +333,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     </tr>
                     <tr>
                       <td>{t_details("miles_included_per_trip")}</td>
-                      <td className="text-end">{tripInfo.milesIncludedPerTrip} ml</td>
+                      <td className="text-end">{getMilesIncludedPerDayText(tripInfo.milesIncludedPerTrip)} ml</td>
                     </tr>
                     <tr>
                       <td>{t_details("overmiles")}</td>
