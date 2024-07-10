@@ -135,7 +135,7 @@ export default function AllowedActionsForStatusStarted({
             <span className="col-span-1">Overmiles:</span>
             <span className="col-span-1 text-right">{overmileValue} mi per trip</span>
             <span className="col-span-1">Overmile price:</span>
-            <span className="col-span-1 text-right">${tripInfo.overmilePrice.toFixed(4)}</span>
+            <span className="col-span-1 text-right">${tripInfo.overmilePrice.toFixed(2)}</span>
             <span className="col-span-1">Overmile charge:</span>
             <span className="col-span-1 text-right">${displayMoneyWith2Digits(overmilesCharge)}</span>
           </div>

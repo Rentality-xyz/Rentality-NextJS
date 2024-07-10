@@ -177,7 +177,7 @@ function TripAdditionalActions({
                         <span>{t("booked.overmiles")}</span>
                         <span>{tripInfo.overmileValue}</span>
                         <span>{t("booked.overmile_price")}</span>
-                        <span>${tripInfo.overmilePrice.toFixed(4)}</span>
+                        <span>${tripInfo.overmilePrice.toFixed(2)}</span>
                         <span>{t("booked.overmile_charge")}</span>
                         <span>${displayMoneyWith2Digits(tripInfo.overmileValue * tripInfo.overmilePrice)}</span>
                       </div>

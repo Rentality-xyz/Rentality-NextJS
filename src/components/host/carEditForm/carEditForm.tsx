@@ -50,7 +50,8 @@ export default function CarEditForm({
 }) {
   const [autocomplete, setAutocomplete] = useState(carInfoFormParams.locationInfo.address);
   const isUnlimitedMiles = carInfoFormParams.milesIncludedPerDay === UNLIMITED_MILES_VALUE_TEXT;
-  const fuelPricePerMile = Number(carInfoFormParams.pricePerDay) / Number(carInfoFormParams.milesIncludedPerDay);
+  const fuelPricePerMile =
+    Math.ceil((Number(carInfoFormParams.pricePerDay) * 100) / Number(carInfoFormParams.milesIncludedPerDay)) / 100;
   const fuelPricePerMileText = Number.isFinite(fuelPricePerMile) ? displayMoneyWith2Digits(fuelPricePerMile) : "-";
   const isElectricEngine = carInfoFormParams.engineTypeText === "Electro";
 
