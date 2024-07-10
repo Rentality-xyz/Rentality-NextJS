@@ -52,12 +52,12 @@ function LoginBase() {
 
   return (
     <Identity
-      className="bg-transparent flex-row-reverse gap-4"
+      className="bg-transparent xl:flex-row-reverse xl:gap-4 "
       address={userInfo.address}
       schemaId={process.env.NEXT_PUBLIC_COINBASE_SCHEMA_ID ?? ""}
     >
-      <Name className="text-white" />
-      <Address className="text-white" />
+      <Name className="text-white hidden xl:flex" />
+      <Address className="text-white hidden xl:flex" />
       <Avatar
         className="h-20 w-20"
         loadingComponent={
