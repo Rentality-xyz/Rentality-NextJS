@@ -1,6 +1,6 @@
 {
   "name": "rentality-demo-next",
-  "version": "0.17.30",
+  "version": "0.17.31",
   "private": true,
   "scripts": {
     "dev": "next dev",
