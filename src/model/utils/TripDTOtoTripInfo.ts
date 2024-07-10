@@ -56,7 +56,6 @@ export const mapTripDTOtoTripInfo = async (
     timeZoneId: timeZoneId,
     overmilePrice: overmilePrice,
     overmileValue: overmileValue,
-    overmileCharge: overmileValue * overmilePrice,
     status:
       i.trip.status === TripStatus.Finished && i.trip.tripFinishedBy.toLowerCase() === i.trip.host.toLowerCase()
         ? TripStatus.CompletedWithoutGuestComfirmation
@@ -125,6 +124,8 @@ export const mapTripDTOtoTripInfo = async (
       ) / 100.0,
 
     resolveAmountInUsd: Number(i.trip.paymentInfo.resolveAmountInUsdCents) / 100.0,
+    resolveFuelAmountInUsd: Number(i.trip.paymentInfo.resolveFuelAmountInUsdCents) / 100.0,
+    resolveMilesAmountInUsd: Number(i.trip.paymentInfo.resolveMilesAmountInUsdCents) / 100.0,
     depositReturnedInUsd:
       i.trip.status === TripStatus.Closed || i.trip.status === TripStatus.Rejected
         ? Number(i.trip.paymentInfo.depositInUsdCents - i.trip.paymentInfo.resolveAmountInUsdCents) / 100.0

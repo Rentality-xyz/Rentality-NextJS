@@ -14,7 +14,6 @@ import { useRouter } from "next/router";
 import { TFunction as TFunctionNext } from "i18next";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
-import { getRefuelCharge } from "@/model/TripInfo";
 import UserAvatarWithName from "@/components/common/userAvatarWithName";
 import TripContacts from "@/components/common/tripContacts";
 import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
@@ -33,8 +32,6 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
   };
 
   if (tripId == null || tripId === BigInt(0) || tripInfo == null) return null;
-
-  const refuelCharge = getRefuelCharge(tripInfo, tripInfo.endFuelLevelInPercents);
 
   const formatStatusDateTime = (value: Date, timeZone?: string) => {
     const format = "ddd, D MMM YYYY hh:mm:ss z";
@@ -323,7 +320,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     </tr>
                     <tr>
                       <td>{t_details("total_refuel_charge")}</td>
-                      <td className="text-end">${refuelCharge}</td>
+                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.resolveFuelAmountInUsd)}</td>
                     </tr>
                     <tr>
                       <td>{t_details("miles_included_per_trip")}</td>
@@ -339,15 +336,13 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     </tr>
                     <tr>
                       <td>{t_details("overmile_charge")}</td>
-                      <td className="text-end">${tripInfo.overmileCharge}</td>
+                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.resolveMilesAmountInUsd)}</td>
                     </tr>
                     <tr>
                       <td className="pt-5">
                         <strong>{t_details("total_reimbursement")}</strong>
                       </td>
-                      <td className="text-end pt-5">
-                        ${displayMoneyWith2Digits(refuelCharge + tripInfo.overmileCharge)}
-                      </td>
+                      <td className="text-end pt-5">${displayMoneyWith2Digits(tripInfo.resolveAmountInUsd)}</td>
                     </tr>
                   </tbody>
                 </table>

@@ -92,7 +92,6 @@ export type TripInfo = {
   endOdometr: number;
   overmilePrice: number;
   overmileValue: number;
-  overmileCharge: number;
   rejectedBy: string;
   tripStartedBy: string;
   tripFinishedBy: string;
@@ -114,6 +113,8 @@ export type TripInfo = {
   dropOffDeliveryFeeInUsd: number;
   depositInUsd: number;
   resolveAmountInUsd: number;
+  resolveFuelAmountInUsd: number;
+  resolveMilesAmountInUsd: number;
   depositReturnedInUsd: number;
   currencyRate: number;
   salesTaxInUsd: number;
