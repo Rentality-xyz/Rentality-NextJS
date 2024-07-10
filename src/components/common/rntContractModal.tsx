@@ -1,8 +1,5 @@
 import * as React from "react";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
+import { Dialog, DialogActions, DialogContent, DialogContentText } from "@mui/material";
 import RntButton from "./rntButton";
 import { TripInfo } from "@/model/TripInfo";
 import moment from "moment";

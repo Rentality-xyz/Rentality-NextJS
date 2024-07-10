@@ -6,10 +6,7 @@ import { TripInfo } from "@/model/TripInfo";
 
 function TripRules({ tripInfo, t }: { tripInfo: TripInfo; t: TFunction }) {
   return (
-    <div
-      id="trip-contact-info"
-      className="max-2xl:w-full 2xl:w-46 flex flex-col 2xl:flex-shrink-0 p-4 md:p-2 xl:p-4 text-end"
-    >
+    <div className="max-2xl:w-full 2xl:w-46 flex flex-col 2xl:flex-shrink-0 p-4 md:p-2 xl:p-4 text-end">
       <div className="flex max-2xl:justify-between 2xl:flex-col 2xl:gap-2 2xl:pr-8">
         <div className="flex flex-row 2xl:mt-6 gap-x-10 justify-between">
           <RntTripRulesModal />

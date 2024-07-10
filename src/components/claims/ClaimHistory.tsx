@@ -14,19 +14,22 @@ import ClaimFileList from "./ClaimFileList";
 import { isEmpty } from "@/utils/string";
 import { usePathname } from "next/navigation";
 
-type Props = {
+export default function ClaimHistory({
+  isHost,
+  claims,
+  payClaim,
+  cancelClaim,
+  t,
+}: {
   isHost: boolean;
   claims: Claim[];
   payClaim: (claimId: number) => Promise<void>;
   cancelClaim: (claimId: number) => Promise<void>;
   t: TFunction;
-};
-
-export default function ClaimHistory(props: Props) {
+}) {
   const t_history: TFunction = (path, options) => {
-    return props.t("history." + path, options);
+    return t("history." + path, options);
   };
-  const { isHost, claims } = props;
   const headerSpanClassName = "text-start px-2 font-light text-sm";
   const rowSpanClassName = "px-2 h-12";
   const redTextClassName = twMerge(rowSpanClassName, "text-red-400");
@@ -108,7 +111,7 @@ export default function ClaimHistory(props: Props) {
                       <RntButton
                         className="w-24 h-8"
                         onClick={() => {
-                          props.payClaim(claim.claimId);
+                          payClaim(claim.claimId);
                         }}
                       >
                         {t_history("pay")}
@@ -117,7 +120,7 @@ export default function ClaimHistory(props: Props) {
                       <RntButton
                         className="w-24 h-8"
                         onClick={() => {
-                          props.cancelClaim(claim.claimId);
+                          cancelClaim(claim.claimId);
                         }}
                       >
                         {t_history("cancel")}
@@ -153,7 +156,7 @@ export default function ClaimHistory(props: Props) {
               isHost={isHost}
               claim={claim}
               index={index}
-              cancelClaim={props.cancelClaim}
+              cancelClaim={cancelClaim}
             />
           ) : (
             <ClaimHistoryMobileCard
@@ -161,7 +164,7 @@ export default function ClaimHistory(props: Props) {
               isHost={isHost}
               claim={claim}
               index={index}
-              payClaim={props.payClaim}
+              payClaim={payClaim}
             />
           );
         })}
