@@ -95,7 +95,7 @@ function СarDetails({
           label={isHost ? "YOUR GUEST" : "HOSTED BY"}
         />
 
-        {tripInfo.status === TripStatus.Closed && !tripInfo.isCarDetailsConfirmed && (
+        {tripInfo.status === TripStatus.Closed && !tripInfo.isCarDetailsConfirmed && confirmCarDetails && (
           <RntButtonTransparent
             className="h-12 w-12 flex flex-row justify-center items-center gap-2 mr-8"
             onClick={handleConfirmCarDetailsClick}
