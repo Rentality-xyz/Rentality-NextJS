@@ -102,6 +102,13 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
   }, [wallets, connectWallet, ready, authenticated, walletsReady]);
 
   useEffect(() => {
+    if (!authenticated && ethereumInfo !== null) {
+      console.debug(`User has logged out. Reset ethereumInfo`);
+      setEthereumInfo(null);
+    }
+  }, [authenticated, ethereumInfo]);
+
+  useEffect(() => {
     if (!isReloadPageRequested) return;
 
     setIsReloadPageRequested(false);

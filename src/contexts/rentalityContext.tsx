@@ -15,7 +15,13 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
 
   useEffect(() => {
     const getRentalityContact = async () => {
-      if (!ethereumInfo || !ethereumInfo.provider) return;
+      if (!ethereumInfo || !ethereumInfo.provider) {
+        if (rentalityContract !== null) {
+          console.debug(`Reset rentalityContract`);
+          setRentalityContract(null);
+        }
+        return;
+      }
 
       const rentality = (await getEtherContractWithSigner(
         "gateway",
