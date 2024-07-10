@@ -204,7 +204,7 @@ const useGuestTrips = () => {
                   if (index === 0) {
                     validateContractTripDTO(i);
                   }
-                  const tripContactInfo = await rentalityContract.getTripContactInfo(i.trip.carId);
+                  const tripContactInfo = await rentalityContract.getTripContactInfo(i.trip.tripId);
 
                   let isCarDetailsConfirmed = false;
                   // try {

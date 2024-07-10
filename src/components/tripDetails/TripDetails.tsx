@@ -1,6 +1,5 @@
 import PageTitle from "../pageTitle/pageTitle";
 import RntButton from "../common/rntButton";
-import TripCard from "@/components/tripCard/tripCard";
 import Image from "next/image";
 import carDoorsIcon from "@/images/car_doors.svg";
 import carSeatsIcon from "@/images/car_seats.svg";
@@ -22,9 +21,12 @@ import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import RntDriverLicenseVerified from "@/components/common/rntDriverLicenseVerified";
 import { UTC_TIME_ZONE_ID, calculateDays } from "@/utils/date";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
+import TripCardForDetails from "../tripCard/tripCardForDetails";
+import useUserMode from "@/hooks/useUserMode";
 
 export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; backPath: string; t: TFunctionNext }) {
   const [isLoading, tripInfo] = useTripInfo(tripId);
+  const { isHost } = useUserMode();
   const router = useRouter();
   const t_details: TFunction = (name, options) => {
     return t("booked.details." + name, options);
@@ -48,15 +50,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
         </div>
       ) : (
         <>
-          <TripCard
-            key={Number(tripId)}
-            tripInfo={tripInfo}
-            disableButton={true}
-            isHost={false}
-            showMoreInfo={false}
-            t={t}
-            changeStatusCallback={async (changeStatus: () => Promise<boolean>) => {}}
-          />
+          <TripCardForDetails key={Number(tripId)} isHost={isHost} tripInfo={tripInfo} t={t} />
 
           <div className="flex flex-wrap my-6">
             <div className="w-full xl:w-2/3">
@@ -405,7 +399,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                       </tr>
                     </tbody>
                   </table>
-                  <TripContacts tripInfo={tripInfo} isHost={true} t={t} />
+                  <TripContacts tripInfo={tripInfo} isHost={isHost} phoneForHost={false} t={t} />
                 </div>
                 <div className="flex justify-center p-4">
                   <RntContractModal tripId={tripId} tripInfo={tripInfo} />

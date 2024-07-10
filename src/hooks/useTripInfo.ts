@@ -20,7 +20,7 @@ const useTripInfo = (tripId: bigint) => {
 
       if (tripDTO === null) return;
 
-      const tripContactInfo = await rentalityContract.getTripContactInfo(tripDTO.trip.carId);
+      const tripContactInfo = await rentalityContract.getTripContactInfo(tripDTO.trip.tripId);
       const tripInfo = await mapTripDTOtoTripInfo(tripDTO, tripContactInfo);
 
       return tripInfo;

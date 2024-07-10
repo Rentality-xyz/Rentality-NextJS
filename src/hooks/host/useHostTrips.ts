@@ -248,7 +248,7 @@ const useHostTrips = () => {
                     validateContractTripDTO(i);
                   }
 
-                  const tripContactInfo = await rentalityContract.getTripContactInfo(i.trip.carId);
+                  const tripContactInfo = await rentalityContract.getTripContactInfo(i.trip.tripId);
 
                   const item = await mapTripDTOtoTripInfo(i, tripContactInfo);
                   item.allowedActions = getAllowedActions(item.status, i.trip);
