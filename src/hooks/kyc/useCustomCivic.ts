@@ -98,7 +98,7 @@ const useCustomCivic = () => {
 
   //TODO DELETE THIS IS FOR DEBUG
   useEffect(() => {
-    console.log(`gatewayStatus changed: ${gatewayStatus}`);
+    console.debug(`gatewayStatus changed: ${gatewayStatus}`);
   }, [gatewayStatus]);
 
   async function requestKyc() {

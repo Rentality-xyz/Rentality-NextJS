@@ -104,8 +104,6 @@ const useEditCarInfo = (carId: number) => {
       let transaction: ContractTransactionResponse;
 
       if (carInfoFormParams.isLocationEdited) {
-        console.log(`location: ${JSON.stringify(location, bigIntReplacer)}`);
-
         transaction = await rentalityContract.updateCarInfoWithLocation(
           updateCarRequest,
           location,

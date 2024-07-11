@@ -228,7 +228,6 @@ const useAddCar = () => {
         locationInfo: location,
       };
 
-      console.log(`request: ${JSON.stringify(request, bigIntReplacer)}`);
       const transaction = await rentalityContract.addCar(request);
       await transaction.wait();
       setCarInfoFormParams(emptyNewCarInfo);

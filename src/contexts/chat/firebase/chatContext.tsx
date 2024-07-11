@@ -205,7 +205,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
       if (!rentalityContract) return;
 
       const tripId = BigInt(args[0]);
-      console.log(`tripCreatedListener call. TripId: ${tripId}`);
+      console.debug(`tripCreatedListener call. TripId: ${tripId}`);
 
       try {
         const tripInfo: ContractTripDTO = await rentalityContract.getTrip(tripId);
@@ -261,7 +261,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
       const tripId = Number(args[0]);
       const tripStatus: TripStatus = BigInt(args[1]);
 
-      console.log(`tripStatusChangedListener call. TripId: ${tripId} status: ${tripStatus}`);
+      console.debug(`tripStatusChangedListener call. TripId: ${tripId} status: ${tripStatus}`);
 
       setChatInfos((prev) => {
         const result = prev.map((ci) => (ci.tripId === tripId ? { ...ci, tripStatus: tripStatus } : ci));
@@ -335,7 +335,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
     markUserChatAsSeen(db, ethereumInfo.walletAddress, chatId);
 
     const chatsRef = doc(db, FIREBASE_DB_NAME.chats, chatId.toString());
-    console.log(`Sub for chat ${chatId.toString()}`);
+    console.debug(`Sub for chat ${chatId.toString()}`);
     const unSub = onSnapshot(chatsRef, (res) => {
       const data = res.data();
       if (!data) return;
@@ -371,7 +371,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
     return () => {
       if (unSub) {
-        console.log(`Unsub from chat ${chatId.toString()}`);
+        console.debug(`Unsub from chat ${chatId.toString()}`);
 
         unSub();
       }
@@ -438,13 +438,10 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
         const chatsRef = doc(db, FIREBASE_DB_NAME.userchats, ethereumInfo.walletAddress);
 
-        console.log("Sub for userchats");
+        console.debug("Sub for userchats");
         unSub = onSnapshot(chatsRef, (res) => {
           const data = res.data();
           if (!data) return;
-
-          console.log(`userchats update. Data: ${JSON.stringify(data, bigIntReplacer)}`);
-
           const userChats: FirebaseUserChat[] = data.userChats.map(
             (cm: { chatId: string; senderId: string; lastMessages: string; updatedAt: number; isSeen: boolean }) => {
               return { ...cm, chatId: ChatId.parse(cm.chatId) } as FirebaseUserChat;
@@ -497,7 +494,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         rentalityTripService.removeAllListeners();
       }
       if (unSub) {
-        console.log("unSub for userchats");
+        console.debug("unSub for userchats");
         unSub();
       }
     };
