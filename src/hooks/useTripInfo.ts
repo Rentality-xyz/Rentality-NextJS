@@ -20,8 +20,7 @@ const useTripInfo = (tripId: bigint) => {
 
       if (tripDTO === null) return;
 
-      const tripContactInfo = await rentalityContract.getTripContactInfo(tripDTO.trip.tripId);
-      const tripInfo = await mapTripDTOtoTripInfo(tripDTO, tripContactInfo);
+      const tripInfo = await mapTripDTOtoTripInfo(tripDTO);
 
       return tripInfo;
     } catch (e) {

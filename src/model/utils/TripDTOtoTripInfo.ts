@@ -4,40 +4,30 @@ import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/form
 import { isEmpty } from "@/utils/string";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { ContractTripDTO, EngineType, TripStatus } from "@/model/blockchain/schemas";
-import { ContractTripContactInfo } from "@/model/blockchain/IRentalityContract";
 import { calculateDays } from "@/utils/date";
 
-export const mapTripDTOtoTripInfo = async (
-  i: ContractTripDTO,
-  tripContactInfo: ContractTripContactInfo,
-  isCarDetailsConfirmed?: boolean
-) => {
-  const meta = await getMetaDataFromIpfs(i.metadataURI);
-  const timeZoneId = !isEmpty(i.timeZoneId) ? i.timeZoneId : UTC_TIME_ZONE_ID;
+export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetailsConfirmed?: boolean) => {
+  const meta = await getMetaDataFromIpfs(tripDTO.metadataURI);
+  const timeZoneId = !isEmpty(tripDTO.timeZoneId) ? tripDTO.timeZoneId : UTC_TIME_ZONE_ID;
 
-  const startOdometr = Number(i.trip.startParamLevels[1]);
-  const endOdometr = Number(i.trip.endParamLevels[1]);
-  const milesIncludedPerDay = Number(i.trip.milesIncludedPerDay);
+  const startOdometr = Number(tripDTO.trip.startParamLevels[1]);
+  const endOdometr = Number(tripDTO.trip.endParamLevels[1]);
+  const milesIncludedPerDay = Number(tripDTO.trip.milesIncludedPerDay);
 
   const tripDays = calculateDays(
-    getDateFromBlockchainTimeWithTZ(i.trip.startDateTime, timeZoneId),
-    getDateFromBlockchainTimeWithTZ(i.trip.endDateTime, timeZoneId)
+    getDateFromBlockchainTimeWithTZ(tripDTO.trip.startDateTime, timeZoneId),
+    getDateFromBlockchainTimeWithTZ(tripDTO.trip.endDateTime, timeZoneId)
   );
   var overmileValue = endOdometr - startOdometr - milesIncludedPerDay * tripDays;
   overmileValue = overmileValue > 0 ? overmileValue : 0;
-  const overmilePrice = Math.ceil(Number(i.trip.pricePerDayInUsdCents) / Number(i.trip.milesIncludedPerDay)) / 100;
+  const overmilePrice =
+    Math.ceil(Number(tripDTO.trip.pricePerDayInUsdCents) / Number(tripDTO.trip.milesIncludedPerDay)) / 100;
   const tankVolumeInGal = Number(meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "0");
-  const guestPhoneNumber = formatPhoneNumber(
-    !isEmpty(i.guestPhoneNumber) ? i.guestPhoneNumber : tripContactInfo.guestPhoneNumber
-  );
-  const hostPhoneNumber = formatPhoneNumber(
-    !isEmpty(i.hostPhoneNumber) ? i.hostPhoneNumber : tripContactInfo.hostPhoneNumber
-  );
 
   let item: TripInfo = {
-    tripId: Number(i.trip.tripId),
+    tripId: Number(tripDTO.trip.tripId),
 
-    carId: Number(i.trip.carId),
+    carId: Number(tripDTO.trip.carId),
     carVinNumber: meta.attributes?.find((x: any) => x.trait_type === "VIN number")?.value ?? "",
     image: getIpfsURIfromPinata(meta.image),
     carDescription: meta.description ?? "No description",
@@ -45,105 +35,111 @@ export const mapTripDTOtoTripInfo = async (
     carSeatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats number")?.value ?? 4,
     carTransmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
     carColor: meta.attributes?.find((x: any) => x.trait_type === "Color")?.value ?? "",
-    brand: i.brand ?? meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "",
-    model: i.model ?? meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
+    brand: tripDTO.brand ?? meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "",
+    model: tripDTO.model ?? meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
     year:
-      i.yearOfProduction?.toString() ?? meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ?? "",
+      tripDTO.yearOfProduction?.toString() ??
+      meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ??
+      "",
     licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
     licenseState: meta.attributes?.find((x: any) => x.trait_type === "License state")?.value ?? "",
     tankVolumeInGal: tankVolumeInGal,
-    engineType: i.trip.engineType,
+    engineType: tripDTO.trip.engineType,
     pricePer10PercentFuel:
-      i.trip.engineType === EngineType.PETROL
-        ? (Number(i.trip.fuelPrice) * tankVolumeInGal) / 1000
-        : Number(i.trip.fuelPrice) / 1000,
+      tripDTO.trip.engineType === EngineType.PETROL
+        ? (Number(tripDTO.trip.fuelPrice) * tankVolumeInGal) / 1000
+        : Number(tripDTO.trip.fuelPrice) / 1000,
     milesIncludedPerDay: milesIncludedPerDay,
     milesIncludedPerTrip: milesIncludedPerDay * tripDays,
     timeZoneId: timeZoneId,
     overmilePrice: overmilePrice,
     overmileValue: overmileValue,
     status:
-      i.trip.status === TripStatus.Finished && i.trip.tripFinishedBy.toLowerCase() === i.trip.host.toLowerCase()
+      tripDTO.trip.status === TripStatus.Finished &&
+      tripDTO.trip.tripFinishedBy.toLowerCase() === tripDTO.trip.host.toLowerCase()
         ? TripStatus.CompletedWithoutGuestComfirmation
-        : i.trip.status,
-    tripStart: getDateFromBlockchainTimeWithTZ(i.trip.startDateTime, timeZoneId),
-    tripEnd: getDateFromBlockchainTimeWithTZ(i.trip.endDateTime, timeZoneId),
+        : tripDTO.trip.status,
+    tripStart: getDateFromBlockchainTimeWithTZ(tripDTO.trip.startDateTime, timeZoneId),
+    tripEnd: getDateFromBlockchainTimeWithTZ(tripDTO.trip.endDateTime, timeZoneId),
     tripDays: tripDays,
-    locationStart: i.pickUpLocation.userAddress,
-    locationEnd: i.returnLocation.userAddress,
+    locationStart: tripDTO.pickUpLocation.userAddress,
+    locationEnd: tripDTO.returnLocation.userAddress,
     allowedActions: [],
-    startFuelLevelInPercents: Number(i.trip.startParamLevels[0]),
-    endFuelLevelInPercents: Number(i.trip.endParamLevels[0]),
+    startFuelLevelInPercents: Number(tripDTO.trip.startParamLevels[0]),
+    endFuelLevelInPercents: Number(tripDTO.trip.endParamLevels[0]),
     startOdometr: startOdometr,
     endOdometr: endOdometr,
 
-    rejectedBy: i.trip.rejectedBy,
-    tripStartedBy: i.trip.tripStartedBy,
-    tripFinishedBy: i.trip.tripFinishedBy,
+    rejectedBy: tripDTO.trip.rejectedBy,
+    tripStartedBy: tripDTO.trip.tripStartedBy,
+    tripFinishedBy: tripDTO.trip.tripFinishedBy,
     rejectedDate:
-      i.trip.rejectedDateTime > 0 ? getDateFromBlockchainTimeWithTZ(i.trip.rejectedDateTime, timeZoneId) : undefined,
-    isTripRejected: i.trip.rejectedDateTime > 0 && i.trip.approvedDateTime === BigInt(0),
-    isTripCanceled: i.trip.rejectedDateTime > 0 && i.trip.approvedDateTime > 0,
-    createdDateTime: getDateFromBlockchainTimeWithTZ(i.trip.createdDateTime, timeZoneId),
-    approvedDateTime: getDateFromBlockchainTimeWithTZ(i.trip.approvedDateTime, timeZoneId),
-    checkedInByHostDateTime: getDateFromBlockchainTimeWithTZ(i.trip.checkedInByHostDateTime, timeZoneId),
-    checkedInByGuestDateTime: getDateFromBlockchainTimeWithTZ(i.trip.checkedInByGuestDateTime, timeZoneId),
-    checkedOutByGuestDateTime: getDateFromBlockchainTimeWithTZ(i.trip.checkedOutByGuestDateTime, timeZoneId),
-    checkedOutByHostDateTime: getDateFromBlockchainTimeWithTZ(i.trip.checkedOutByHostDateTime, timeZoneId),
-    finishedDateTime: getDateFromBlockchainTimeWithTZ(i.trip.finishDateTime, timeZoneId),
+      tripDTO.trip.rejectedDateTime > 0
+        ? getDateFromBlockchainTimeWithTZ(tripDTO.trip.rejectedDateTime, timeZoneId)
+        : undefined,
+    isTripRejected: tripDTO.trip.rejectedDateTime > 0 && tripDTO.trip.approvedDateTime === BigInt(0),
+    isTripCanceled: tripDTO.trip.rejectedDateTime > 0 && tripDTO.trip.approvedDateTime > 0,
+    createdDateTime: getDateFromBlockchainTimeWithTZ(tripDTO.trip.createdDateTime, timeZoneId),
+    approvedDateTime: getDateFromBlockchainTimeWithTZ(tripDTO.trip.approvedDateTime, timeZoneId),
+    checkedInByHostDateTime: getDateFromBlockchainTimeWithTZ(tripDTO.trip.checkedInByHostDateTime, timeZoneId),
+    checkedInByGuestDateTime: getDateFromBlockchainTimeWithTZ(tripDTO.trip.checkedInByGuestDateTime, timeZoneId),
+    checkedOutByGuestDateTime: getDateFromBlockchainTimeWithTZ(tripDTO.trip.checkedOutByGuestDateTime, timeZoneId),
+    checkedOutByHostDateTime: getDateFromBlockchainTimeWithTZ(tripDTO.trip.checkedOutByHostDateTime, timeZoneId),
+    finishedDateTime: getDateFromBlockchainTimeWithTZ(tripDTO.trip.finishDateTime, timeZoneId),
 
     host: {
-      walletAddress: i.trip.host,
-      name: i.trip.hostName,
-      phoneNumber: hostPhoneNumber,
-      photoUrl: i.hostPhotoUrl,
-      drivingLicenseNumber: i.hostDrivingLicenseNumber,
+      walletAddress: tripDTO.trip.host,
+      name: tripDTO.trip.hostName,
+      phoneNumber: formatPhoneNumber(tripDTO.hostPhoneNumber),
+      photoUrl: tripDTO.hostPhotoUrl,
+      drivingLicenseNumber: tripDTO.hostDrivingLicenseNumber,
       drivingLicenseExpirationDate: getDateFromBlockchainTimeWithTZ(
-        i.hostDrivingLicenseExpirationDate,
+        tripDTO.hostDrivingLicenseExpirationDate,
         UTC_TIME_ZONE_ID
       ),
     },
 
     guest: {
-      walletAddress: i.trip.guest,
-      name: i.trip.guestName,
-      phoneNumber: guestPhoneNumber,
-      photoUrl: i.guestPhotoUrl,
-      drivingLicenseNumber: i.guestDrivingLicenseNumber,
+      walletAddress: tripDTO.trip.guest,
+      name: tripDTO.trip.guestName,
+      phoneNumber: formatPhoneNumber(tripDTO.guestPhoneNumber),
+      photoUrl: tripDTO.guestPhotoUrl,
+      drivingLicenseNumber: tripDTO.guestDrivingLicenseNumber,
       drivingLicenseExpirationDate: getDateFromBlockchainTimeWithTZ(
-        i.guestDrivingLicenseExpirationDate,
+        tripDTO.guestDrivingLicenseExpirationDate,
         UTC_TIME_ZONE_ID
       ),
     },
-    guestInsuranceCompanyName: i.trip.guestInsuranceCompanyName,
-    guestInsurancePolicyNumber: i.trip.guestInsurancePolicyNumber,
+    guestInsuranceCompanyName: tripDTO.trip.guestInsuranceCompanyName,
+    guestInsurancePolicyNumber: tripDTO.trip.guestInsurancePolicyNumber,
 
-    pricePerDayInUsd: Number(i.trip.pricePerDayInUsdCents) / 100.0,
-    totalDayPriceInUsd: Number(i.trip.paymentInfo.totalDayPriceInUsdCents) / 100.0,
-    totalPriceWithDiscountInUsd: Number(i.trip.paymentInfo.priceWithDiscount) / 100.0,
-    pickUpDeliveryFeeInUsd: Number(i.trip.paymentInfo.pickUpFee) / 100.0,
-    dropOffDeliveryFeeInUsd: Number(i.trip.paymentInfo.dropOfFee) / 100.0,
-    salesTaxInUsd: Number(i.trip.paymentInfo.salesTax) / 100.0,
-    governmentTaxInUsd: Number(i.trip.paymentInfo.governmentTax) / 100.0,
-    depositInUsd: Number(i.trip.paymentInfo.depositInUsdCents) / 100.0,
+    pricePerDayInUsd: Number(tripDTO.trip.pricePerDayInUsdCents) / 100.0,
+    totalDayPriceInUsd: Number(tripDTO.trip.paymentInfo.totalDayPriceInUsdCents) / 100.0,
+    totalPriceWithDiscountInUsd: Number(tripDTO.trip.paymentInfo.priceWithDiscount) / 100.0,
+    pickUpDeliveryFeeInUsd: Number(tripDTO.trip.paymentInfo.pickUpFee) / 100.0,
+    dropOffDeliveryFeeInUsd: Number(tripDTO.trip.paymentInfo.dropOfFee) / 100.0,
+    salesTaxInUsd: Number(tripDTO.trip.paymentInfo.salesTax) / 100.0,
+    governmentTaxInUsd: Number(tripDTO.trip.paymentInfo.governmentTax) / 100.0,
+    depositInUsd: Number(tripDTO.trip.paymentInfo.depositInUsdCents) / 100.0,
     totalPriceInUsd:
       Number(
-        i.trip.paymentInfo.priceWithDiscount +
-          i.trip.paymentInfo.governmentTax +
-          i.trip.paymentInfo.salesTax +
-          i.trip.paymentInfo.pickUpFee +
-          i.trip.paymentInfo.dropOfFee
+        tripDTO.trip.paymentInfo.priceWithDiscount +
+          tripDTO.trip.paymentInfo.governmentTax +
+          tripDTO.trip.paymentInfo.salesTax +
+          tripDTO.trip.paymentInfo.pickUpFee +
+          tripDTO.trip.paymentInfo.dropOfFee
       ) / 100.0,
 
-    resolveAmountInUsd: Number(i.trip.paymentInfo.resolveAmountInUsdCents) / 100.0,
-    resolveFuelAmountInUsd: Number(i.trip.paymentInfo.resolveFuelAmountInUsdCents) / 100.0,
-    resolveMilesAmountInUsd: Number(i.trip.paymentInfo.resolveMilesAmountInUsdCents) / 100.0,
+    resolveAmountInUsd: Number(tripDTO.trip.paymentInfo.resolveAmountInUsdCents) / 100.0,
+    resolveFuelAmountInUsd: Number(tripDTO.trip.paymentInfo.resolveFuelAmountInUsdCents) / 100.0,
+    resolveMilesAmountInUsd: Number(tripDTO.trip.paymentInfo.resolveMilesAmountInUsdCents) / 100.0,
     depositReturnedInUsd:
-      i.trip.status === TripStatus.Closed || i.trip.status === TripStatus.Rejected
-        ? Number(i.trip.paymentInfo.depositInUsdCents - i.trip.paymentInfo.resolveAmountInUsdCents) / 100.0
+      tripDTO.trip.status === TripStatus.Closed || tripDTO.trip.status === TripStatus.Rejected
+        ? Number(tripDTO.trip.paymentInfo.depositInUsdCents - tripDTO.trip.paymentInfo.resolveAmountInUsdCents) / 100.0
         : 0,
 
-    currencyRate: Number(i.trip.paymentInfo.currencyRate) / 10 ** Number(i.trip.paymentInfo.currencyDecimals),
+    currencyRate:
+      Number(tripDTO.trip.paymentInfo.currencyRate) / 10 ** Number(tripDTO.trip.paymentInfo.currencyDecimals),
     isCarDetailsConfirmed: isCarDetailsConfirmed ?? false,
   };
   return item;

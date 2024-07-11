@@ -205,14 +205,12 @@ const useGuestTrips = () => {
                     validateContractTripDTO(i);
                   }
 
-                  const tripContactInfo = await rentalityContract.getTripContactInfo(i.trip.tripId);
-
                   let isCarDetailsConfirmed = false;
                   // try {
                   //   isCarDetailsConfirmed = await rentalityContract.isCarDetailsConfirmed(i.trip.carId);
                   // } catch (ex) {}
 
-                  const item = await mapTripDTOtoTripInfo(i, tripContactInfo, isCarDetailsConfirmed);
+                  const item = await mapTripDTOtoTripInfo(i, isCarDetailsConfirmed);
                   item.allowedActions = getAllowedActions(item.status, i.trip);
 
                   return item;
