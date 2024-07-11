@@ -151,6 +151,8 @@ export type ContractTripDTO = {
   yearOfProduction: bigint;
   pickUpLocation: ContractLocationInfo;
   returnLocation: ContractLocationInfo;
+  guestPhoneNumber: string;
+  hostPhoneNumber: string;
 };
 
 export type ContractChatInfo = {

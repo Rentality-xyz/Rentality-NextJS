@@ -288,6 +288,8 @@ const emptyContractTripDTO: ContractTripDTO = {
   yearOfProduction: BigInt(0),
   pickUpLocation: emptyContractLocationInfo,
   returnLocation: emptyContractLocationInfo,
+  guestPhoneNumber: "",
+  hostPhoneNumber: "",
 };
 
 export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {

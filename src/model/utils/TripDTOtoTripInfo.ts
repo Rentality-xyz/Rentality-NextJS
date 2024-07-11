@@ -27,6 +27,12 @@ export const mapTripDTOtoTripInfo = async (
   overmileValue = overmileValue > 0 ? overmileValue : 0;
   const overmilePrice = Math.ceil(Number(i.trip.pricePerDayInUsdCents) / Number(i.trip.milesIncludedPerDay)) / 100;
   const tankVolumeInGal = Number(meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "0");
+  const guestPhoneNumber = formatPhoneNumber(
+    !isEmpty(i.guestPhoneNumber) ? i.guestPhoneNumber : tripContactInfo.guestPhoneNumber
+  );
+  const hostPhoneNumber = formatPhoneNumber(
+    !isEmpty(i.hostPhoneNumber) ? i.hostPhoneNumber : tripContactInfo.hostPhoneNumber
+  );
 
   let item: TripInfo = {
     tripId: Number(i.trip.tripId),
@@ -89,19 +95,25 @@ export const mapTripDTOtoTripInfo = async (
     host: {
       walletAddress: i.trip.host,
       name: i.trip.hostName,
-      phoneNumber: formatPhoneNumber(tripContactInfo.hostPhoneNumber),
+      phoneNumber: hostPhoneNumber,
       photoUrl: i.hostPhotoUrl,
       drivingLicenseNumber: i.hostDrivingLicenseNumber,
-      drivingLicenseExpirationDate: getDateFromBlockchainTimeWithTZ(i.hostDrivingLicenseExpirationDate, timeZoneId),
+      drivingLicenseExpirationDate: getDateFromBlockchainTimeWithTZ(
+        i.hostDrivingLicenseExpirationDate,
+        UTC_TIME_ZONE_ID
+      ),
     },
 
     guest: {
       walletAddress: i.trip.guest,
       name: i.trip.guestName,
-      phoneNumber: formatPhoneNumber(tripContactInfo.guestPhoneNumber),
+      phoneNumber: guestPhoneNumber,
       photoUrl: i.guestPhotoUrl,
       drivingLicenseNumber: i.guestDrivingLicenseNumber,
-      drivingLicenseExpirationDate: getDateFromBlockchainTimeWithTZ(i.guestDrivingLicenseExpirationDate, timeZoneId),
+      drivingLicenseExpirationDate: getDateFromBlockchainTimeWithTZ(
+        i.guestDrivingLicenseExpirationDate,
+        UTC_TIME_ZONE_ID
+      ),
     },
     guestInsuranceCompanyName: i.trip.guestInsuranceCompanyName,
     guestInsurancePolicyNumber: i.trip.guestInsurancePolicyNumber,
