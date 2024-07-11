@@ -51,6 +51,9 @@ export default function Footer() {
           >
             <strong>Privacy policy</strong>
           </Link>
+          <div className="z-0 mt-auto">
+            UIcons by <a href="https://www.flaticon.com/uicons">Flaticon</a>
+          </div>
         </div>
 
         <div
