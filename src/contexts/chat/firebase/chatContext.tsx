@@ -25,6 +25,7 @@ import {
 } from "@/chat/model/firebaseTypes";
 import { ChatMessage } from "@/model/ChatMessage";
 import { bigIntReplacer } from "@/utils/json";
+import { usePrivy } from "@privy-io/react-auth";
 
 export type ChatKeysContextInfo = {
   isLoading: boolean;
@@ -73,6 +74,7 @@ export function useChat() {
 }
 
 export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode }) => {
+  const { authenticated } = usePrivy();
   const ethereumInfo = useEthereum();
 
   /// Chat client
@@ -509,6 +511,13 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
     tripStatusChangedListener,
     isChatReloadRequire,
   ]);
+
+  useEffect(() => {
+    if (!authenticated && chatInfos.length > 0) {
+      console.debug(`User has logged out. Reset chatInfos`);
+      setChatInfos([]);
+    }
+  }, [authenticated, chatInfos]);
 
   function updateAllChats() {
     setIsChatReloadRequire(true);
