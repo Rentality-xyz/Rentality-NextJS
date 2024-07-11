@@ -38,6 +38,8 @@ function TripAdditionalActions({
   const [confirmParams, setConfirmParams] = useState<boolean[]>([]);
   const { showDialog } = useRntDialogs();
 
+  const refuelCharge = getRefuelCharge(tripInfo, tripInfo.endFuelLevelInPercents);
+
   const handleButtonClick = () => {
     if (tripInfo == null || tripInfo.allowedActions == null || tripInfo.allowedActions.length == 0) {
       return;
@@ -168,7 +170,7 @@ function TripAdditionalActions({
                         <span>{t("booked.price_per_10_percents")}</span>
                         <span>${displayMoneyWith2Digits(tripInfo.pricePer10PercentFuel)}</span>
                         <span>{t("booked.total_refuel_charge")}</span>
-                        <span>${displayMoneyWith2Digits(tripInfo.resolveFuelAmountInUsd)}</span>
+                        <span>${displayMoneyWith2Digits(refuelCharge)}</span>
                       </div>
                     ) : (
                       <div className="md:w-1/2 xl:w-1/4 md:mx-8 xl:mx-28 grid grid-cols-2 text-sm">
@@ -177,7 +179,7 @@ function TripAdditionalActions({
                         <span>{t("booked.overmile_price")}</span>
                         <span>${displayMoneyWith2Digits(tripInfo.overmilePrice)}</span>
                         <span>{t("booked.overmile_charge")}</span>
-                        <span>${displayMoneyWith2Digits(tripInfo.resolveMilesAmountInUsd)}</span>
+                        <span>${displayMoneyWith2Digits(tripInfo.overmileValue * tripInfo.overmilePrice)}</span>
                       </div>
                     )
                   ) : null}
