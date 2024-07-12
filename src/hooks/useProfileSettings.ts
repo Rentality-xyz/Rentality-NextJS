@@ -69,7 +69,7 @@ const useProfileSettings = () => {
     try {
       const expirationDate =
         newProfileSettings.drivingLicenseExpire !== undefined
-          ? getBlockchainTimeFromDate(moment.utc(newProfileSettings.drivingLicenseExpire).toDate())
+          ? getBlockchainTimeFromDate(moment.utc(newProfileSettings.drivingLicenseExpire.toDateString()).toDate())
           : BigInt(0);
 
       const transaction = await rentalityContract.setKYCInfo(
