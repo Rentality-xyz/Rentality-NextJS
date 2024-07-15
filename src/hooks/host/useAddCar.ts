@@ -211,6 +211,8 @@ const useAddCar = () => {
         signature: "",
       };
 
+      console.debug(`location: ${JSON.stringify(location)}`);
+
       const request: ContractCreateCarRequest = {
         tokenUri: metadataURL,
         carVinNumber: dataToSave.vinNumber,

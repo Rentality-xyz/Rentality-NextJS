@@ -6,18 +6,21 @@ export function formatLocationAddressFromLocationInfo(locationInfo: LocationInfo
 }
 
 export function formatLocationAddress(address: string, country: string, state: string, city: string) {
+  console.debug(`formatLocationAddress input: ${address}`);
+
   const addressArray = address.split(",").map((i) => i.trim());
 
-  if (addressArray.length > 1) {
+  if (addressArray.length >= 1) {
     addressArray[addressArray.length - 1] = country;
   }
-  if (addressArray.length > 2) {
+  if (addressArray.length >= 2) {
     addressArray[addressArray.length - 2] = state;
   }
-  if (addressArray.length > 3) {
+  if (addressArray.length >= 3) {
     addressArray[addressArray.length - 3] = city;
   }
 
+  console.debug(`formatLocationAddress output: ${addressArray.join(", ")}`);
   return addressArray.join(", ");
 }
 
