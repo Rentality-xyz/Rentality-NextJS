@@ -12,6 +12,7 @@ export default function RntDialogs({ state, hide }: { state: DialogState; hide: 
         PaperProps={{
           sx: {
             borderRadius: "20px",
+            background: "#240F50",
           },
         }}
       >
