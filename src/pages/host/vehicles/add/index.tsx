@@ -102,7 +102,7 @@ export default function AddCar() {
       setMessage("");
       router.push("/host/vehicles");
     } catch (e) {
-      showError("vehicles.saving_failed");
+      showError(t("vehicles.saving_failed"));
 
       setCarSaving(false);
       setMessage("");
