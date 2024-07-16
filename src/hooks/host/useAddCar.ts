@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { HostCarInfo, UNLIMITED_MILES_VALUE, UNLIMITED_MILES_VALUE_TEXT, verifyCar } from "@/model/HostCarInfo";
+import {
+  emptyHostCarInfo,
+  HostCarInfo,
+  UNLIMITED_MILES_VALUE,
+  UNLIMITED_MILES_VALUE_TEXT,
+  verifyCar,
+} from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeCode } from "@/model/EngineType";
 import { getMoneyInCentsFromString } from "@/utils/formInput";
@@ -7,136 +13,22 @@ import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { ContractCreateCarRequest, ContractSignedLocationInfo } from "@/model/blockchain/schemas";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
-import { emptyLocationInfo } from "@/model/LocationInfo";
 import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { bigIntReplacer } from "@/utils/json";
-
-const emptyNewCarInfo: HostCarInfo = {
-  carId: 0,
-  ownerAddress: "",
-  vinNumber: "",
-  brand: "",
-  model: "",
-  releaseYear: "",
-  image: "",
-  name: "",
-  licensePlate: "",
-  licenseState: "",
-  seatsNumber: "",
-  doorsNumber: "",
-  tankVolumeInGal: "",
-  wheelDrive: "",
-  transmission: "",
-  trunkSize: "",
-  color: "",
-  bodyType: "",
-  description: "",
-  pricePerDay: "",
-  milesIncludedPerDay: "",
-  securityDeposit: "",
-  fuelPricePerGal: "",
-  locationInfo: emptyLocationInfo,
-  isLocationEdited: true,
-  currentlyListed: true,
-  engineTypeText: "",
-  fullBatteryChargePrice: "",
-  timeBufferBetweenTripsInMin: 0,
-  isInsuranceIncluded: false,
-};
+import { getNftJSONFromCarInfo } from "@/utils/ipfsUtils";
 
 const useAddCar = () => {
   const rentalityContract = useRentality();
   const ethereumInfo = useEthereum();
-  const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(emptyNewCarInfo);
+  const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(emptyHostCarInfo);
   const [dataSaved, setDataSaved] = useState<Boolean>(true);
 
-  const uploadMetadataToIPFS = async ({
-    vinNumber,
-    brand,
-    model,
-    releaseYear,
-    image,
-    name,
-    licensePlate,
-    licenseState,
-    seatsNumber,
-    doorsNumber,
-    tankVolumeInGal,
-    wheelDrive,
-    transmission,
-    trunkSize,
-    color,
-    bodyType,
-    description,
-  }: HostCarInfo) => {
+  const uploadMetadataToIPFS = async (hostCarInfo: HostCarInfo) => {
     if (!verifyCar(carInfoFormParams)) {
       return;
     }
 
-    const attributes = [
-      {
-        trait_type: "VIN number",
-        value: vinNumber,
-      },
-      {
-        trait_type: "License plate",
-        value: licensePlate,
-      },
-      {
-        trait_type: "License state",
-        value: licenseState,
-      },
-      {
-        trait_type: "Brand",
-        value: brand,
-      },
-      {
-        trait_type: "Model",
-        value: model,
-      },
-      {
-        trait_type: "Release year",
-        value: releaseYear,
-      },
-      {
-        trait_type: "Body type",
-        value: bodyType,
-      },
-      {
-        trait_type: "Color",
-        value: color,
-      },
-      {
-        trait_type: "Doors number",
-        value: doorsNumber,
-      },
-      {
-        trait_type: "Seats number",
-        value: seatsNumber,
-      },
-      {
-        trait_type: "Trunk size",
-        value: trunkSize,
-      },
-      {
-        trait_type: "Transmission",
-        value: transmission,
-      },
-      {
-        trait_type: "Wheel drive",
-        value: wheelDrive,
-      },
-      {
-        trait_type: "Tank volume(gal)",
-        value: tankVolumeInGal,
-      },
-    ];
-    const nftJSON = {
-      name,
-      description,
-      image,
-      attributes,
-    };
+    const nftJSON = getNftJSONFromCarInfo(hostCarInfo);
 
     try {
       const response = await uploadJSONToIPFS(nftJSON, "RentalityNFTMetadata", {
@@ -230,7 +122,7 @@ const useAddCar = () => {
 
       const transaction = await rentalityContract.addCar(request);
       await transaction.wait();
-      setCarInfoFormParams(emptyNewCarInfo);
+      setCarInfoFormParams(emptyHostCarInfo);
       return true;
     } catch (e) {
       console.error("Upload error" + e);

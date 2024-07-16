@@ -24,7 +24,7 @@ export default function EditCar() {
           <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
             {t("common.info.loading")}
           </div>
-        ) : carInfoFormParams.carId === -1 ? (
+        ) : carInfoFormParams.carId <= 0 ? (
           <h1 className="py-8 text-2xl font-bold text-red-800">{t("vehicles.can_not_edit")}</h1>
         ) : (
           <>

@@ -3,7 +3,7 @@ import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractPublicHostCarDTO } from "@/model/blockchain/schemas";
 import { validateContractPublicHostCarDTO } from "@/model/blockchain/schemas_utils";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
+import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Provider, Wallet } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -71,7 +71,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               if (index === 0) {
                 validateContractPublicHostCarDTO(i);
               }
-              const meta = await getMetaDataFromIpfs(i.metadataURI);
+              const metaData = parseMetaData(await getMetaDataFromIpfs(i.metadataURI));
 
               const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
               const securityDeposit = Number(i.securityDepositPerTripInUsdCents) / 100;
@@ -80,11 +80,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               const item: BaseCarInfo = {
                 carId: Number(i.carId),
                 ownerAddress: hostAddress,
-                image: getIpfsURIfromPinata(meta.image),
+                image: getIpfsURIfromPinata(metaData.image),
                 brand: i.brand,
                 model: i.model,
                 year: i.yearOfProduction.toString(),
-                licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
+                licensePlate: metaData.licensePlate,
                 pricePerDay: pricePerDay,
                 securityDeposit: securityDeposit,
                 milesIncludedPerDay: milesIncludedPerDay,

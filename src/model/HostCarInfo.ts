@@ -1,6 +1,6 @@
 import { isEmpty } from "@/utils/string";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "./EngineType";
-import { LocationInfo } from "./LocationInfo";
+import { emptyLocationInfo, LocationInfo } from "./LocationInfo";
 
 export const UNLIMITED_MILES_VALUE_TEXT = "Unlimited";
 export const UNLIMITED_MILES_VALUE = 999_999_999;
@@ -49,6 +49,39 @@ export type HostCarInfo = {
   bodyType: string;
   trunkSize: string;
   isInsuranceIncluded: boolean;
+};
+
+export const emptyHostCarInfo: HostCarInfo = {
+  carId: 0,
+  ownerAddress: "",
+  vinNumber: "",
+  brand: "",
+  model: "",
+  releaseYear: "",
+  image: "",
+  name: "",
+  licensePlate: "",
+  licenseState: "",
+  seatsNumber: "",
+  doorsNumber: "",
+  tankVolumeInGal: "",
+  wheelDrive: "",
+  transmission: "",
+  trunkSize: "",
+  color: "",
+  bodyType: "",
+  description: "",
+  pricePerDay: "",
+  milesIncludedPerDay: "",
+  securityDeposit: "",
+  fuelPricePerGal: "",
+  locationInfo: emptyLocationInfo,
+  isLocationEdited: true,
+  currentlyListed: true,
+  engineTypeText: "",
+  fullBatteryChargePrice: "",
+  timeBufferBetweenTripsInMin: 0,
+  isInsuranceIncluded: false,
 };
 
 export const verifyCar = (carInfoFormParams: HostCarInfo) => {

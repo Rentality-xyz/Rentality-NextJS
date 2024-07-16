@@ -3,7 +3,7 @@ import PageTitle from "@/components/pageTitle/pageTitle";
 import { useRentality } from "@/contexts/rentalityContext";
 import { ContractCarDetails, ContractCarInfo } from "@/model/blockchain/schemas";
 import { validateContractCarInfo } from "@/model/blockchain/schemas_utils";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
+import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
@@ -47,14 +47,14 @@ const useCarLocations = () => {
                   }
                   const carInfoDetails: ContractCarDetails = await rentalityContract.getCarDetails(i.carId);
                   const metadataURI = await rentalityContract.getCarMetadataURI(i.carId);
-                  const meta = await getMetaDataFromIpfs(metadataURI);
+                  const metaData = parseMetaData(await getMetaDataFromIpfs(metadataURI));
                   const isUserAddressFull =
                     carInfoDetails.locationInfo.userAddress.split(",").length > 3 &&
                     carInfoDetails.locationInfo.userAddress.split(",")[0] !== "1";
 
                   let item: CarLocations = {
                     carId: Number(i.carId),
-                    carPhotoUrl: getIpfsURIfromPinata(meta.image),
+                    carPhotoUrl: getIpfsURIfromPinata(metaData.image),
                     userAddress: carInfoDetails.locationInfo.userAddress,
                     country: carInfoDetails.locationInfo.country,
                     state: carInfoDetails.locationInfo.state,

@@ -1,5 +1,5 @@
 import { TripInfo } from "@/model/TripInfo";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
+import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { isEmpty } from "@/utils/string";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
@@ -7,7 +7,7 @@ import { ContractTripDTO, EngineType, TripStatus } from "@/model/blockchain/sche
 import { calculateDays } from "@/utils/date";
 
 export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetailsConfirmed?: boolean) => {
-  const meta = await getMetaDataFromIpfs(tripDTO.metadataURI);
+  const metaData = parseMetaData(await getMetaDataFromIpfs(tripDTO.metadataURI));
   const timeZoneId = !isEmpty(tripDTO.timeZoneId) ? tripDTO.timeZoneId : UTC_TIME_ZONE_ID;
 
   const startOdometr = Number(tripDTO.trip.startParamLevels[1]);
@@ -22,27 +22,24 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
   overmileValue = overmileValue > 0 ? overmileValue : 0;
   const overmilePrice =
     Math.ceil(Number(tripDTO.trip.pricePerDayInUsdCents) / Number(tripDTO.trip.milesIncludedPerDay)) / 100;
-  const tankVolumeInGal = Number(meta.attributes?.find((x: any) => x.trait_type === "Tank volume(gal)")?.value ?? "0");
+  const tankVolumeInGal = Number(metaData.tankVolumeInGal);
 
   let item: TripInfo = {
     tripId: Number(tripDTO.trip.tripId),
 
     carId: Number(tripDTO.trip.carId),
-    carVinNumber: meta.attributes?.find((x: any) => x.trait_type === "VIN number")?.value ?? "",
-    image: getIpfsURIfromPinata(meta.image),
-    carDescription: meta.description ?? "No description",
-    carDoorsNumber: meta.attributes?.find((x: any) => x.trait_type === "Doors Number")?.value ?? 4,
-    carSeatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats number")?.value ?? 4,
-    carTransmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
-    carColor: meta.attributes?.find((x: any) => x.trait_type === "Color")?.value ?? "",
-    brand: tripDTO.brand ?? meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "",
-    model: tripDTO.model ?? meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "",
-    year:
-      tripDTO.yearOfProduction?.toString() ??
-      meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ??
-      "",
-    licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
-    licenseState: meta.attributes?.find((x: any) => x.trait_type === "License state")?.value ?? "",
+    carVinNumber: metaData.vinNumber,
+    image: getIpfsURIfromPinata(metaData.image),
+    carDescription: metaData.description,
+    carDoorsNumber: metaData.doorsNumber,
+    carSeatsNumber: metaData.seatsNumber,
+    carTransmission: metaData.transmission,
+    carColor: metaData.color,
+    brand: tripDTO.brand ?? metaData.brand,
+    model: tripDTO.model ?? metaData.model,
+    year: tripDTO.yearOfProduction?.toString() ?? metaData.yearOfProduction,
+    licensePlate: metaData.licensePlate,
+    licenseState: metaData.licenseState,
     tankVolumeInGal: tankVolumeInGal,
     engineType: tripDTO.trip.engineType,
     pricePer10PercentFuel:
