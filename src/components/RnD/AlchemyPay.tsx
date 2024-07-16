@@ -15,16 +15,16 @@ function encrypt(plainText: string, secretKeyData: string) {
 }
 
 function buildLink(address: string): string {
-  const baseUrl = process.env.NEXT_PUBLIC_ALHEMY_LINK!;
+  const baseUrl = process.env.NEXT_PUBLIC_ALCHEMY_LINK!;
   const url = new URL(baseUrl);
 
-  url.searchParams.append("appId", process.env.NEXT_PUBLIC_ALHEMY_APP_ID!);
+  url.searchParams.append("appId", process.env.NEXT_PUBLIC_ALCHEMY_APP_ID!);
   url.searchParams.append("fiat", "USD");
   url.searchParams.append("crypto", "ETH");
   url.searchParams.append("address", address);
   url.searchParams.append("callbackUrl", baseUrl);
 
-  const sign = encrypt(process.env.NEXT_PUBLIC_ALHEMY_SECRET!, url.toString());
+  const sign = encrypt(process.env.NEXT_PUBLIC_ALCHEMY_SECRET!, url.toString());
   url.searchParams.append("sign", sign!);
 
   return url.toString();
