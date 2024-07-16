@@ -103,6 +103,7 @@ const useCustomCivic = () => {
 
   async function requestKyc() {
     if (!rentalityContract) return;
+    if (!requestGatewayToken) return;
     if (!ethereumInfo) return;
     if (status !== "Commission paid") return;
     if (!(await rentalityContract.isKycCommissionPaid(ethereumInfo.walletAddress))) return;
