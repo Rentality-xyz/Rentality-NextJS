@@ -236,41 +236,11 @@ function UserProfileInfo({
         )}
       />
 
-      <SaveChatKeys t={t} />
-
       <RntButton type="submit" className="mt-4" disabled={isSubmitting}>
         {t("common.save")}
       </RntButton>
     </form>
   );
 }
-
-const SaveChatKeys = ({ t }: { t: TFunction }) => {
-  const { isLoading: isChatKeysLoading, isChatKeysSaved, saveChatKeys } = useChatKeys();
-
-  const t_profile: TFunction = (name, options) => {
-    return t("profile." + name, options);
-  };
-
-  return (
-    <>
-      <p className="mt-4">{t_profile("generate_keys")}</p>
-      <div className="flex items-center">
-        <RntButton type="button" onClick={saveChatKeys} disabled={isChatKeysSaved || isChatKeysLoading}>
-          {t_profile("save_chat_keys")}
-        </RntButton>
-        <div className="ml-2 md:ml-6">
-          {isChatKeysLoading ? (
-            <DotStatus color="#a59c38" text={t("common.info.loading")} />
-          ) : isChatKeysSaved ? (
-            <DotStatus color="success" text={t_profile("keys_saved")} />
-          ) : (
-            <DotStatus color="error" text={t_profile("keys_not_saved")} />
-          )}
-        </div>
-      </div>
-    </>
-  );
-};
 
 export default memo(UserProfileInfo);
