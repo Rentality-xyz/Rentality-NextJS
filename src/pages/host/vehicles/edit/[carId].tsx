@@ -5,8 +5,6 @@ import CarEditForm from "@/components/host/carEditForm/carEditForm";
 import useFetchCarInfo from "@/hooks/host/useFetchCarInfo";
 import { useTranslation } from "react-i18next";
 import useSaveCar from "@/hooks/host/useSaveCar";
-import { emptyHostCarInfo, HostCarInfo } from "@/model/HostCarInfo";
-import { useEffect, useState } from "react";
 
 export default function EditCar() {
   const router = useRouter();
@@ -15,13 +13,8 @@ export default function EditCar() {
 
   const carIdNumber = Number(carId) ?? -1;
 
-  const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(emptyHostCarInfo);
   const { isLoading, hostCarInfo } = useFetchCarInfo(carIdNumber);
   const { updateCar } = useSaveCar();
-
-  useEffect(() => {
-    setCarInfoFormParams(hostCarInfo);
-  }, [hostCarInfo]);
 
   if (!carId) return null;
 
@@ -29,20 +22,19 @@ export default function EditCar() {
     <Layout>
       <div className="flex flex-col">
         <PageTitle title={t("vehicles.edit_car_title")} />
-        {isLoading || carInfoFormParams.carId !== hostCarInfo.carId ? (
+        {isLoading ? (
           <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
             {t("common.info.loading")}
           </div>
-        ) : carInfoFormParams.carId <= 0 ? (
+        ) : hostCarInfo.carId <= 0 ? (
           <h1 className="py-8 text-2xl font-bold text-red-800">{t("vehicles.can_not_edit")}</h1>
         ) : (
           <>
             <CarEditForm
-              carInfoFormParams={carInfoFormParams}
-              setCarInfoFormParams={setCarInfoFormParams}
+              initValue={hostCarInfo}
               isNewCar={false}
-              saveCarInfo={async () => {
-                return await updateCar(carInfoFormParams);
+              saveCarInfo={async (hostCarInfo) => {
+                return await updateCar(hostCarInfo);
               }}
               t={t}
             />

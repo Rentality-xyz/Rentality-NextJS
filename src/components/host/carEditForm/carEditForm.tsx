@@ -1,9 +1,9 @@
 import RntFileButton from "@/components/common/rntFileButton";
 import RntInput from "@/components/common/rntInput";
 import RntSelect from "@/components/common/rntSelect";
-import { HostCarInfo, UNLIMITED_MILES_VALUE_TEXT, verifyCar } from "@/model/HostCarInfo";
+import { emptyHostCarInfo, HostCarInfo, UNLIMITED_MILES_VALUE_TEXT, verifyCar } from "@/model/HostCarInfo";
 import Image from "next/image";
-import { Dispatch, SetStateAction, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 import RntCheckbox from "@/components/common/rntCheckbox";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/EngineType";
@@ -16,23 +16,23 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
 import { useRouter } from "next/navigation";
 import { resizeImage } from "@/utils/image";
+import { bigIntReplacer } from "@/utils/json";
 
 export default function CarEditForm({
-  carInfoFormParams,
-  setCarInfoFormParams,
+  initValue,
   isNewCar,
   saveCarInfo,
   t,
 }: {
-  carInfoFormParams: HostCarInfo;
-  setCarInfoFormParams: Dispatch<SetStateAction<HostCarInfo>>;
+  initValue?: HostCarInfo;
   isNewCar: boolean;
-  saveCarInfo: (image: File) => Promise<boolean>;
+  saveCarInfo: (hostCarInfo: HostCarInfo, image: File) => Promise<boolean>;
   t: TFunction;
 }) {
   const router = useRouter();
   const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
 
+  const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(initValue ?? emptyHostCarInfo);
   const [message, setMessage] = useState<string>("");
   const [carSaving, setCarSaving] = useState<boolean>(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -43,6 +43,13 @@ export default function CarEditForm({
     Math.ceil((Number(carInfoFormParams.pricePerDay) * 100) / Number(carInfoFormParams.milesIncludedPerDay)) / 100;
   const fuelPricePerMileText = Number.isFinite(fuelPricePerMile) ? displayMoneyWith2Digits(fuelPricePerMile) : "-";
   const isElectricEngine = carInfoFormParams.engineTypeText === "Electro";
+
+  useEffect(() => {
+    if (!initValue) return;
+
+    console.debug(`updating carInfoFormParams: ${JSON.stringify(initValue, bigIntReplacer)}`);
+    setCarInfoFormParams(initValue);
+  }, [initValue]);
 
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
@@ -118,7 +125,7 @@ export default function CarEditForm({
 
     try {
       setMessage(t("vehicles.wait_loading"));
-      const result = await saveCarInfo(imageFile);
+      const result = await saveCarInfo(carInfoFormParams, imageFile);
 
       if (!result) {
         throw new Error("handleSave error");
