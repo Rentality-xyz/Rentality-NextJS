@@ -5,14 +5,6 @@ import { emptyLocationInfo, LocationInfo } from "./LocationInfo";
 export const UNLIMITED_MILES_VALUE_TEXT = "Unlimited";
 export const UNLIMITED_MILES_VALUE = 999_999_999;
 
-export const isUnlimitedMiles = (value: bigint | number) => {
-  return value === 0 || value >= UNLIMITED_MILES_VALUE;
-};
-
-export const getMilesIncludedPerDayText = (value: bigint | number) => {
-  return isUnlimitedMiles(value) ? UNLIMITED_MILES_VALUE_TEXT : value.toString();
-};
-
 export type HostCarInfo = {
   carId: number;
   ownerAddress: string;
@@ -108,4 +100,12 @@ export const verifyCar = (carInfoFormParams: HostCarInfo) => {
     (carInfoFormParams.engineTypeText !== ENGINE_TYPE_ELECTRIC_STRING ||
       !isEmpty(carInfoFormParams.fullBatteryChargePrice))
   );
+};
+
+export const isUnlimitedMiles = (value: bigint | number) => {
+  return value === 0 || value >= UNLIMITED_MILES_VALUE;
+};
+
+export const getMilesIncludedPerDayText = (value: bigint | number) => {
+  return isUnlimitedMiles(value) ? UNLIMITED_MILES_VALUE_TEXT : value.toString();
 };

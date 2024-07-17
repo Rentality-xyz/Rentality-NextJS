@@ -2,8 +2,11 @@ import Layout from "@/components/layout/layout";
 import { useRouter } from "next/router";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
-import useEditCarInfo from "@/hooks/host/useEditCarInfo";
+import useFetchCarInfo from "@/hooks/host/useFetchCarInfo";
 import { useTranslation } from "react-i18next";
+import useSaveCar from "@/hooks/host/useSaveCar";
+import { emptyHostCarInfo, HostCarInfo } from "@/model/HostCarInfo";
+import { useEffect, useState } from "react";
 
 export default function EditCar() {
   const router = useRouter();
@@ -12,7 +15,13 @@ export default function EditCar() {
 
   const carIdNumber = Number(carId) ?? -1;
 
-  const [isLoading, carInfoFormParams, setCarInfoFormParams, _, saveCarInfo] = useEditCarInfo(carIdNumber);
+  const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(emptyHostCarInfo);
+  const { isLoading, hostCarInfo } = useFetchCarInfo(carIdNumber);
+  const { updateCar } = useSaveCar();
+
+  useEffect(() => {
+    setCarInfoFormParams(hostCarInfo);
+  }, [hostCarInfo]);
 
   if (!carId) return null;
 
@@ -20,7 +29,7 @@ export default function EditCar() {
     <Layout>
       <div className="flex flex-col">
         <PageTitle title={t("vehicles.edit_car_title")} />
-        {isLoading ? (
+        {isLoading || carInfoFormParams.carId !== hostCarInfo.carId ? (
           <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
             {t("common.info.loading")}
           </div>
@@ -32,7 +41,9 @@ export default function EditCar() {
               carInfoFormParams={carInfoFormParams}
               setCarInfoFormParams={setCarInfoFormParams}
               isNewCar={false}
-              saveCarInfo={saveCarInfo}
+              saveCarInfo={async () => {
+                return await updateCar(carInfoFormParams);
+              }}
               t={t}
             />
           </>

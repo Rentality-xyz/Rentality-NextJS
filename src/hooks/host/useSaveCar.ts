@@ -1,30 +1,28 @@
 import { useState } from "react";
-import {
-  emptyHostCarInfo,
-  HostCarInfo,
-  UNLIMITED_MILES_VALUE,
-  UNLIMITED_MILES_VALUE_TEXT,
-  verifyCar,
-} from "@/model/HostCarInfo";
+import { HostCarInfo, UNLIMITED_MILES_VALUE, UNLIMITED_MILES_VALUE_TEXT, verifyCar } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeCode } from "@/model/EngineType";
 import { getMoneyInCentsFromString } from "@/utils/formInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { ContractCreateCarRequest, ContractSignedLocationInfo } from "@/model/blockchain/schemas";
+import {
+  ContractCreateCarRequest,
+  ContractSignedLocationInfo,
+  ContractUpdateCarInfoRequest,
+} from "@/model/blockchain/schemas";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
 import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { bigIntReplacer } from "@/utils/json";
 import { getNftJSONFromCarInfo } from "@/utils/ipfsUtils";
+import { ContractTransactionResponse } from "ethers";
 
-const useAddCar = () => {
+const useSaveCar = () => {
   const rentalityContract = useRentality();
   const ethereumInfo = useEthereum();
-  const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(emptyHostCarInfo);
   const [dataSaved, setDataSaved] = useState<Boolean>(true);
 
   const uploadMetadataToIPFS = async (hostCarInfo: HostCarInfo) => {
-    if (!verifyCar(carInfoFormParams)) {
+    if (!verifyCar(hostCarInfo)) {
       return;
     }
 
@@ -45,7 +43,7 @@ const useAddCar = () => {
     }
   };
 
-  const saveCar = async (image: File) => {
+  async function addNewCar(hostCarInfo: HostCarInfo, image: File) {
     if (!ethereumInfo) {
       console.error("saveCar error: ethereumInfo is null");
       return false;
@@ -58,6 +56,7 @@ const useAddCar = () => {
 
     try {
       setDataSaved(false);
+
       const response = await uploadFileToIPFS(image, "RentalityCarImage", {
         createdAt: new Date().toISOString(),
         createdBy: ethereumInfo.walletAddress,
@@ -71,7 +70,7 @@ const useAddCar = () => {
       }
 
       const dataToSave = {
-        ...carInfoFormParams,
+        ...hostCarInfo,
         image: response.pinataURL,
       };
 
@@ -82,14 +81,11 @@ const useAddCar = () => {
         return false;
       }
 
-      const pricePerDayInUsdCents = BigInt(getMoneyInCentsFromString(dataToSave.pricePerDay));
-      const securityDepositPerTripInUsdCents = BigInt(getMoneyInCentsFromString(dataToSave.securityDeposit));
-
       const engineParams: bigint[] = [];
-      if (carInfoFormParams.engineTypeText === ENGINE_TYPE_PETROL_STRING) {
+      if (dataToSave.engineTypeText === ENGINE_TYPE_PETROL_STRING) {
         engineParams.push(BigInt(dataToSave.tankVolumeInGal));
         engineParams.push(BigInt(getMoneyInCentsFromString(dataToSave.fuelPricePerGal)));
-      } else if (carInfoFormParams.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING) {
+      } else if (dataToSave.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING) {
         engineParams.push(BigInt(getMoneyInCentsFromString(dataToSave.fullBatteryChargePrice)));
       }
 
@@ -109,20 +105,19 @@ const useAddCar = () => {
         brand: dataToSave.brand,
         model: dataToSave.model,
         yearOfProduction: BigInt(dataToSave.releaseYear),
-        pricePerDayInUsdCents: pricePerDayInUsdCents,
-        securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
+        pricePerDayInUsdCents: BigInt(getMoneyInCentsFromString(dataToSave.pricePerDay)),
+        securityDepositPerTripInUsdCents: BigInt(getMoneyInCentsFromString(dataToSave.securityDeposit)),
         milesIncludedPerDay: milesIncludedPerDay,
         geoApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
         engineType: getEngineTypeCode(dataToSave.engineTypeText),
         engineParams: engineParams,
-        timeBufferBetweenTripsInSec: BigInt(carInfoFormParams.timeBufferBetweenTripsInMin * 60),
+        timeBufferBetweenTripsInSec: BigInt(dataToSave.timeBufferBetweenTripsInMin * 60),
         insuranceIncluded: dataToSave.isInsuranceIncluded,
         locationInfo: location,
       };
 
       const transaction = await rentalityContract.addCar(request);
       await transaction.wait();
-      setCarInfoFormParams(emptyHostCarInfo);
       return true;
     } catch (e) {
       console.error("Upload error" + e);
@@ -130,9 +125,67 @@ const useAddCar = () => {
     } finally {
       setDataSaved(true);
     }
-  };
+  }
 
-  return [carInfoFormParams, setCarInfoFormParams, dataSaved, saveCar] as const;
+  async function updateCar(hostCarInfo: HostCarInfo) {
+    if (!rentalityContract) {
+      console.error("saveCar error: rentalityContract is null");
+      return false;
+    }
+
+    try {
+      setDataSaved(false);
+
+      const engineParams: bigint[] = [];
+      if (hostCarInfo.engineTypeText === ENGINE_TYPE_PETROL_STRING) {
+        engineParams.push(BigInt(getMoneyInCentsFromString(hostCarInfo.fuelPricePerGal)));
+      } else if (hostCarInfo.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING) {
+        engineParams.push(BigInt(getMoneyInCentsFromString(hostCarInfo.fullBatteryChargePrice)));
+      }
+
+      const milesIncludedPerDay =
+        hostCarInfo.milesIncludedPerDay === UNLIMITED_MILES_VALUE_TEXT
+          ? BigInt(UNLIMITED_MILES_VALUE)
+          : BigInt(hostCarInfo.milesIncludedPerDay);
+
+      const updateCarRequest: ContractUpdateCarInfoRequest = {
+        carId: BigInt(hostCarInfo.carId),
+        currentlyListed: hostCarInfo.currentlyListed,
+        engineParams: engineParams,
+        pricePerDayInUsdCents: BigInt(getMoneyInCentsFromString(hostCarInfo.pricePerDay)),
+        milesIncludedPerDay: milesIncludedPerDay,
+        timeBufferBetweenTripsInSec: BigInt(hostCarInfo.timeBufferBetweenTripsInMin * 60),
+        securityDepositPerTripInUsdCents: BigInt(getMoneyInCentsFromString(hostCarInfo.securityDeposit)),
+      };
+
+      let transaction: ContractTransactionResponse;
+
+      if (hostCarInfo.isLocationEdited) {
+        const location: ContractSignedLocationInfo = {
+          locationInfo: mapLocationInfoToContractLocationInfo(hostCarInfo.locationInfo),
+          signature: "",
+        };
+
+        transaction = await rentalityContract.updateCarInfoWithLocation(
+          updateCarRequest,
+          location,
+          process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ""
+        );
+      } else {
+        transaction = await rentalityContract.updateCarInfo(updateCarRequest);
+      }
+
+      await transaction.wait();
+      setDataSaved(true);
+      return true;
+    } catch (e) {
+      console.error("Upload error" + e);
+      setDataSaved(true);
+      return false;
+    }
+  }
+
+  return { dataSaved, addNewCar, updateCar } as const;
 };
 
-export default useAddCar;
+export default useSaveCar;
