@@ -1,6 +1,7 @@
 import { isEmpty } from "@/utils/string";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "./EngineType";
 import { emptyLocationInfo, LocationInfo } from "./LocationInfo";
+import { TRANSMISSION_MANUAL_STRING, TransmissionType } from "./Transmission";
 
 export const UNLIMITED_MILES_VALUE_TEXT = "Unlimited";
 export const UNLIMITED_MILES_VALUE = 999_999_999;
@@ -12,30 +13,30 @@ export type HostCarInfo = {
   vinNumber: string;
   brand: string;
   model: string;
-  releaseYear: string;
+  releaseYear: number;
   name: string;
   licensePlate: string;
   licenseState: string;
-  seatsNumber: string;
-  doorsNumber: string;
-  transmission: string;
+  seatsNumber: number;
+  doorsNumber: number;
+  transmission: TransmissionType;
   color: string;
   description: string;
-  pricePerDay: string;
-  milesIncludedPerDay: string;
-  securityDeposit: string;
+  pricePerDay: number;
+  milesIncludedPerDay: number | typeof UNLIMITED_MILES_VALUE_TEXT;
+  securityDeposit: number;
   timeBufferBetweenTripsInMin: number;
   currentlyListed: boolean;
 
   isLocationEdited: boolean;
   locationInfo: LocationInfo;
 
-  engineTypeText: string;
+  engineTypeText: typeof ENGINE_TYPE_PETROL_STRING | typeof ENGINE_TYPE_ELECTRIC_STRING;
 
-  fuelPricePerGal: string;
-  tankVolumeInGal: string;
+  fuelPricePerGal: number;
+  tankVolumeInGal: number;
 
-  fullBatteryChargePrice: string;
+  fullBatteryChargePrice: number;
 
   wheelDrive: string;
   bodyType: string;
@@ -49,29 +50,29 @@ export const emptyHostCarInfo: HostCarInfo = {
   vinNumber: "",
   brand: "",
   model: "",
-  releaseYear: "",
+  releaseYear: 0,
   image: "",
   name: "",
   licensePlate: "",
   licenseState: "",
-  seatsNumber: "",
-  doorsNumber: "",
-  tankVolumeInGal: "",
+  seatsNumber: 0,
+  doorsNumber: 0,
+  tankVolumeInGal: 0,
   wheelDrive: "",
-  transmission: "",
+  transmission: TRANSMISSION_MANUAL_STRING,
   trunkSize: "",
   color: "",
   bodyType: "",
   description: "",
-  pricePerDay: "",
-  milesIncludedPerDay: "",
-  securityDeposit: "",
-  fuelPricePerGal: "",
+  pricePerDay: 0,
+  milesIncludedPerDay: 0,
+  securityDeposit: 0,
+  fuelPricePerGal: 0,
   locationInfo: emptyLocationInfo,
   isLocationEdited: true,
   currentlyListed: true,
-  engineTypeText: "",
-  fullBatteryChargePrice: "",
+  engineTypeText: ENGINE_TYPE_PETROL_STRING,
+  fullBatteryChargePrice: 0,
   timeBufferBetweenTripsInMin: 0,
   isInsuranceIncluded: false,
 };
@@ -81,29 +82,29 @@ export const verifyCar = (carInfoFormParams: HostCarInfo) => {
     !isEmpty(carInfoFormParams.vinNumber) &&
     !isEmpty(carInfoFormParams.brand) &&
     !isEmpty(carInfoFormParams.model) &&
-    !isEmpty(carInfoFormParams.releaseYear) &&
+    carInfoFormParams.releaseYear > 0 &&
     !isEmpty(carInfoFormParams.name) &&
     !isEmpty(carInfoFormParams.licensePlate) &&
     !isEmpty(carInfoFormParams.licenseState) &&
-    !isEmpty(carInfoFormParams.seatsNumber) &&
-    !isEmpty(carInfoFormParams.doorsNumber) &&
+    carInfoFormParams.seatsNumber > 0 &&
+    carInfoFormParams.doorsNumber > 0 &&
     !isEmpty(carInfoFormParams.transmission) &&
     !isEmpty(carInfoFormParams.color) &&
     !isEmpty(carInfoFormParams.description) &&
-    !isEmpty(carInfoFormParams.pricePerDay) &&
-    !isEmpty(carInfoFormParams.milesIncludedPerDay) &&
-    !isEmpty(carInfoFormParams.securityDeposit) &&
+    carInfoFormParams.pricePerDay > 0 &&
+    (carInfoFormParams.milesIncludedPerDay === UNLIMITED_MILES_VALUE_TEXT ||
+      carInfoFormParams.milesIncludedPerDay > 0) &&
+    carInfoFormParams.securityDeposit > 0 &&
     !isEmpty(carInfoFormParams.locationInfo.address) &&
     !isEmpty(carInfoFormParams.engineTypeText) &&
-    (carInfoFormParams.engineTypeText !== ENGINE_TYPE_PETROL_STRING || !isEmpty(carInfoFormParams.fuelPricePerGal)) &&
-    (carInfoFormParams.engineTypeText !== ENGINE_TYPE_PETROL_STRING || !isEmpty(carInfoFormParams.tankVolumeInGal)) &&
-    (carInfoFormParams.engineTypeText !== ENGINE_TYPE_ELECTRIC_STRING ||
-      !isEmpty(carInfoFormParams.fullBatteryChargePrice))
+    (carInfoFormParams.engineTypeText !== ENGINE_TYPE_PETROL_STRING || carInfoFormParams.fuelPricePerGal > 0) &&
+    (carInfoFormParams.engineTypeText !== ENGINE_TYPE_PETROL_STRING || carInfoFormParams.tankVolumeInGal > 0) &&
+    (carInfoFormParams.engineTypeText !== ENGINE_TYPE_ELECTRIC_STRING || carInfoFormParams.fullBatteryChargePrice > 0)
   );
 };
 
-export const isUnlimitedMiles = (value: bigint | number) => {
-  return value === 0 || value >= UNLIMITED_MILES_VALUE;
+export const isUnlimitedMiles = (value: bigint | number | typeof UNLIMITED_MILES_VALUE_TEXT) => {
+  return value === 0 || value === UNLIMITED_MILES_VALUE_TEXT || value >= UNLIMITED_MILES_VALUE;
 };
 
 export const getMilesIncludedPerDayText = (value: bigint | number) => {

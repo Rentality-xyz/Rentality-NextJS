@@ -1,9 +1,16 @@
 import RntFileButton from "@/components/common/rntFileButton";
 import RntInput from "@/components/common/rntInput";
 import RntSelect from "@/components/common/rntSelect";
-import { emptyHostCarInfo, HostCarInfo, UNLIMITED_MILES_VALUE_TEXT, verifyCar } from "@/model/HostCarInfo";
+import {
+  emptyHostCarInfo,
+  HostCarInfo,
+  isUnlimitedMiles,
+  UNLIMITED_MILES_VALUE,
+  UNLIMITED_MILES_VALUE_TEXT,
+  verifyCar,
+} from "@/model/HostCarInfo";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 import RntCheckbox from "@/components/common/rntCheckbox";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/EngineType";
@@ -17,6 +24,13 @@ import { DialogActions } from "@/utils/dialogActions";
 import { useRouter } from "next/navigation";
 import { resizeImage } from "@/utils/image";
 import { bigIntReplacer } from "@/utils/json";
+import { Controller, useForm } from "react-hook-form";
+import { carEditFormSchema, CarEditFormValues } from "./carEditFormSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import RntInputMultiline from "@/components/common/rntInputMultiline";
+import { isEmpty } from "@/utils/string";
+import { TRANSMISSION_AUTOMATIC_STRING, TRANSMISSION_MANUAL_STRING } from "@/model/Transmission";
+import RntValidationError from "@/components/common/rntValidationError";
 
 export default function CarEditForm({
   initValue,
@@ -32,24 +46,65 @@ export default function CarEditForm({
   const router = useRouter();
   const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
 
-  const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(initValue ?? emptyHostCarInfo);
+  //const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(initValue ?? emptyHostCarInfo);
+
+  const { register, control, handleSubmit, formState, setValue, watch, getValues } = useForm<CarEditFormValues>({
+    defaultValues:
+      !isNewCar && initValue !== undefined
+        ? {
+            carId: initValue.carId,
+            vinNumber: initValue.vinNumber,
+            brand: initValue.brand,
+            model: initValue.model,
+            releaseYear: initValue.releaseYear,
+
+            image: initValue.image,
+
+            name: initValue.name,
+            licensePlate: initValue.licensePlate,
+            licenseState: initValue.licenseState,
+            engineTypeText: initValue.engineTypeText,
+
+            seatsNumber: initValue.seatsNumber,
+            doorsNumber: initValue.doorsNumber,
+            tankVolumeInGal: initValue.tankVolumeInGal,
+            transmission: initValue.transmission,
+            color: initValue.color,
+
+            description: initValue.description,
+
+            isLocationEdited: initValue.isLocationEdited,
+            locationInfo: initValue.locationInfo,
+
+            milesIncludedPerDay: initValue.milesIncludedPerDay,
+
+            pricePerDay: initValue.pricePerDay,
+            securityDeposit: initValue.securityDeposit,
+            fuelPricePerGal: initValue.fuelPricePerGal,
+            fullBatteryChargePrice: initValue.fullBatteryChargePrice,
+            isInsuranceIncluded: initValue.isInsuranceIncluded,
+
+            timeBufferBetweenTripsInMin: initValue.timeBufferBetweenTripsInMin,
+            currentlyListed: initValue.currentlyListed,
+          }
+        : { carId: 0, isLocationEdited: true, currentlyListed: true },
+    resolver: zodResolver(carEditFormSchema),
+  });
+  const { errors, isSubmitting } = formState;
+
   const [message, setMessage] = useState<string>("");
-  const [carSaving, setCarSaving] = useState<boolean>(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [autocomplete, setAutocomplete] = useState(carInfoFormParams.locationInfo.address);
+  const [autocomplete, setAutocomplete] = useState(initValue?.locationInfo.address ?? "");
 
-  const isUnlimitedMiles = carInfoFormParams.milesIncludedPerDay === UNLIMITED_MILES_VALUE_TEXT;
-  const fuelPricePerMile =
-    Math.ceil((Number(carInfoFormParams.pricePerDay) * 100) / Number(carInfoFormParams.milesIncludedPerDay)) / 100;
+  const pricePerDay = watch("pricePerDay");
+  const milesIncludedPerDay = watch("milesIncludedPerDay");
+
+  const fuelPricePerMile = Math.ceil((Number(pricePerDay) * 100) / Number(milesIncludedPerDay)) / 100;
   const fuelPricePerMileText = Number.isFinite(fuelPricePerMile) ? displayMoneyWith2Digits(fuelPricePerMile) : "-";
-  const isElectricEngine = carInfoFormParams.engineTypeText === "Electro";
 
-  useEffect(() => {
-    if (!initValue) return;
-
-    console.debug(`updating carInfoFormParams: ${JSON.stringify(initValue, bigIntReplacer)}`);
-    setCarInfoFormParams(initValue);
-  }, [initValue]);
+  const engineTypeText = watch("engineTypeText");
+  const isElectricEngine = engineTypeText === "Electro";
+  const image = watch("image");
 
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
@@ -59,13 +114,12 @@ export default function CarEditForm({
     try {
       const fileText = await file.text();
       const data = JSON.parse(fileText);
-      const carKeys = Object.keys(carInfoFormParams);
+      const carKeys = Object.keys(emptyHostCarInfo);
+      type CarKeys = keyof CarEditFormValues;
 
       Object.keys(data).forEach((key) => {
         if (carKeys.includes(key)) {
-          setCarInfoFormParams((prev) => {
-            return { ...prev, [key]: data[key] };
-          });
+          setValue(key as CarKeys, data[key]);
         }
       });
     } catch (error) {}
@@ -88,18 +142,46 @@ export default function CarEditForm({
     var reader = new FileReader();
 
     reader.onload = function (event) {
-      setCarInfoFormParams({
-        ...carInfoFormParams,
-        image: event.target?.result?.toString() ?? "",
-      });
+      setValue("image", event.target?.result?.toString() ?? "");
     };
 
     reader.readAsDataURL(resizedImage);
   };
 
-  const handleSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-
+  async function onFormSubmit(formData: CarEditFormValues) {
+    const carInfoFormParams: HostCarInfo = {
+      carId: formData.carId ?? 0,
+      vinNumber: formData.vinNumber,
+      brand: formData.brand,
+      model: formData.model,
+      releaseYear: formData.releaseYear,
+      image: formData.image,
+      name: formData.name,
+      licensePlate: formData.licensePlate,
+      licenseState: formData.licenseState,
+      seatsNumber: formData.seatsNumber,
+      doorsNumber: formData.doorsNumber,
+      transmission: formData.transmission,
+      color: formData.color,
+      description: formData.description,
+      pricePerDay: formData.pricePerDay,
+      milesIncludedPerDay: formData.milesIncludedPerDay,
+      securityDeposit: formData.securityDeposit,
+      tankVolumeInGal: formData.engineTypeText === ENGINE_TYPE_PETROL_STRING ? formData.tankVolumeInGal : 0,
+      fuelPricePerGal: formData.engineTypeText === ENGINE_TYPE_PETROL_STRING ? formData.fuelPricePerGal : 0,
+      locationInfo: formData.locationInfo,
+      isLocationEdited: formData.isLocationEdited,
+      currentlyListed: formData.currentlyListed,
+      engineTypeText: formData.engineTypeText,
+      fullBatteryChargePrice:
+        formData.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING ? formData.fullBatteryChargePrice : 0,
+      timeBufferBetweenTripsInMin: formData.timeBufferBetweenTripsInMin,
+      isInsuranceIncluded: formData.isInsuranceIncluded,
+      ownerAddress: "",
+      wheelDrive: "",
+      trunkSize: "",
+      bodyType: "",
+    };
     const isValidForm = verifyCar(carInfoFormParams);
     const isImageUploaded = !isNewCar || imageFile !== null;
 
@@ -116,16 +198,9 @@ export default function CarEditForm({
       return;
     }
 
-    if (!imageFile) {
-      showError(t("vehicles.image_not_upload"));
-      return;
-    }
-
-    setCarSaving(true);
-
     try {
       setMessage(t("vehicles.wait_loading"));
-      const result = await saveCarInfo(carInfoFormParams, imageFile);
+      const result = await saveCarInfo(carInfoFormParams, imageFile!);
 
       if (!result) {
         throw new Error("handleSave error");
@@ -139,10 +214,9 @@ export default function CarEditForm({
     } catch (e) {
       showError("vehicles.saving_failed");
     } finally {
-      setCarSaving(false);
       setMessage("");
     }
-  };
+  }
 
   const handleBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const action = (
@@ -159,7 +233,7 @@ export default function CarEditForm({
 
   return (
     <GoogleMapsProvider libraries={["places"]} language="en">
-      <div>
+      <form onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
         <div className="mt-4">
           <div className="text-lg mb-4">
             <strong>{t_car("car")}</strong>
@@ -171,13 +245,8 @@ export default function CarEditForm({
               label={t_car("vin_num")}
               placeholder="e.g. 4Y1SL65848Z411439"
               readOnly={!isNewCar}
-              value={carInfoFormParams.vinNumber}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  vinNumber: e.target.value,
-                })
-              }
+              {...register("vinNumber")}
+              validationError={errors.vinNumber?.message?.toString()}
             />
             <RntInput
               className="lg:w-60"
@@ -185,13 +254,8 @@ export default function CarEditForm({
               label={t_car("brand")}
               placeholder="e.g. Shelby"
               readOnly={!isNewCar}
-              value={carInfoFormParams.brand}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  brand: e.target.value,
-                })
-              }
+              {...register("brand")}
+              validationError={errors.brand?.message?.toString()}
             />
             <RntInput
               className="lg:w-60"
@@ -199,13 +263,8 @@ export default function CarEditForm({
               label={t_car("model")}
               placeholder="e.g. Mustang GT500"
               readOnly={!isNewCar}
-              value={carInfoFormParams.model}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  model: e.target.value,
-                })
-              }
+              {...register("model")}
+              validationError={errors.model?.message?.toString()}
             />
             <RntInput
               className="lg:w-60"
@@ -213,13 +272,8 @@ export default function CarEditForm({
               label={t_car("release")}
               placeholder="e.g. 2023"
               readOnly={!isNewCar}
-              value={carInfoFormParams.releaseYear}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  releaseYear: e.target.value,
-                })
-              }
+              {...register("releaseYear", { valueAsNumber: true })}
+              validationError={errors.releaseYear?.message?.toString()}
             />
           </div>
         </div>
@@ -232,16 +286,11 @@ export default function CarEditForm({
             {t("common.upload")}
           </RntFileButton>
           <div className="w-80 h-60 rounded-2xl mt-8 overflow-hidden bg-gray-200 bg-opacity-40">
-            {carInfoFormParams.image != null && carInfoFormParams.image.length > 0 ? (
-              <Image
-                className="h-full w-full object-cover"
-                width={1000}
-                height={1000}
-                src={carInfoFormParams.image}
-                alt=""
-              />
+            {!isEmpty(image) ? (
+              <Image className="h-full w-full object-cover" width={1000} height={1000} src={image} alt="" />
             ) : null}
           </div>
+          <RntValidationError validationError={errors.image?.message?.toString()} />
         </div>
 
         <div className="mt-4">
@@ -255,13 +304,8 @@ export default function CarEditForm({
               label={t_car("car_name")}
               placeholder="e.g. Eleanor"
               readOnly={!isNewCar}
-              value={carInfoFormParams.name}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  name: e.target.value,
-                })
-              }
+              {...register("name")}
+              validationError={errors.name?.message?.toString()}
             />
             <RntInput
               className="lg:w-60"
@@ -269,13 +313,8 @@ export default function CarEditForm({
               label={t_car("licence_plate")}
               placeholder="e.g. ABC-12D"
               readOnly={!isNewCar}
-              value={carInfoFormParams.licensePlate}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  licensePlate: e.target.value,
-                })
-              }
+              {...register("licensePlate")}
+              validationError={errors.licensePlate?.message?.toString()}
             />
             <RntInput
               className="lg:w-60"
@@ -283,39 +322,34 @@ export default function CarEditForm({
               label={t_car("licence_state")}
               placeholder="e.g. Florida"
               readOnly={!isNewCar}
-              value={carInfoFormParams.licenseState}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  licenseState: e.target.value,
-                })
-              }
+              {...register("licenseState")}
+              validationError={errors.licenseState?.message?.toString()}
             />
-            <RntSelect
-              className="lg:w-60"
-              id="engineType"
-              label={t_car("engine_type")}
-              readOnly={!isNewCar}
-              value={carInfoFormParams.engineTypeText}
-              onChange={(e) => {
-                if (e.target.value === ENGINE_TYPE_ELECTRIC_STRING) {
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    engineTypeText: e.target.value,
-                    transmission: "Automatic",
-                  });
-                } else {
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    engineTypeText: e.target.value,
-                  });
-                }
-              }}
-            >
-              <option className="hidden" disabled></option>
-              <option value={ENGINE_TYPE_PETROL_STRING}>{t_car("gasoline")}</option>
-              <option value={ENGINE_TYPE_ELECTRIC_STRING}>{t_car("electric")}</option>
-            </RntSelect>
+
+            <Controller
+              name="engineTypeText"
+              control={control}
+              render={({ field }) => (
+                <RntSelect
+                  className="lg:w-60"
+                  id="engineType"
+                  label={t_car("engine_type")}
+                  readOnly={!isNewCar}
+                  validationError={errors.engineTypeText?.message?.toString()}
+                  value={field.value}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    if (e.target.value === ENGINE_TYPE_ELECTRIC_STRING) {
+                      setValue("transmission", TRANSMISSION_AUTOMATIC_STRING);
+                    }
+                  }}
+                >
+                  <option className="hidden" disabled selected></option>
+                  <option value={ENGINE_TYPE_PETROL_STRING}>{t_car("gasoline")}</option>
+                  <option value={ENGINE_TYPE_ELECTRIC_STRING}>{t_car("electric")}</option>
+                </RntSelect>
+              )}
+            />
           </div>
         </div>
 
@@ -330,13 +364,8 @@ export default function CarEditForm({
               label={t_car("seats_amount")}
               placeholder="e.g. 5"
               readOnly={!isNewCar}
-              value={carInfoFormParams.seatsNumber}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  seatsNumber: e.target.value,
-                })
-              }
+              {...register("seatsNumber", { valueAsNumber: true })}
+              validationError={errors.seatsNumber?.message?.toString()}
             />
             <RntInput
               className="w-[48%] lg:w-40"
@@ -344,13 +373,8 @@ export default function CarEditForm({
               label={t_car("doors")}
               placeholder="e.g. 2"
               readOnly={!isNewCar}
-              value={carInfoFormParams.doorsNumber}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  doorsNumber: e.target.value,
-                })
-              }
+              {...register("doorsNumber", { valueAsNumber: true })}
+              validationError={errors.doorsNumber?.message?.toString()}
             />
             {!isElectricEngine ? (
               <>
@@ -360,12 +384,11 @@ export default function CarEditForm({
                   label={t_car("tank_size")}
                   placeholder="e.g. 16"
                   readOnly={!isNewCar}
-                  value={carInfoFormParams.tankVolumeInGal}
-                  onChange={(e) =>
-                    setCarInfoFormParams({
-                      ...carInfoFormParams,
-                      tankVolumeInGal: e.target.value,
-                    })
+                  {...register("tankVolumeInGal", {
+                    setValueAs: (v) => (v === "" || v === Number.isNaN(v) ? undefined : parseInt(v, 10)),
+                  })}
+                  validationError={
+                    "tankVolumeInGal" in errors ? errors.tankVolumeInGal?.message?.toString() : undefined
                   }
                 />
                 <RntSelect
@@ -373,17 +396,12 @@ export default function CarEditForm({
                   id="transmission"
                   label={t_car("transmission")}
                   readOnly={!isNewCar}
-                  value={carInfoFormParams.transmission}
-                  onChange={(e) =>
-                    setCarInfoFormParams({
-                      ...carInfoFormParams,
-                      transmission: e.target.value,
-                    })
-                  }
+                  {...register("transmission")}
+                  validationError={errors.transmission?.message?.toString()}
                 >
-                  <option className="hidden" disabled></option>
-                  <option value="Manual">{t_car("manual")}</option>
-                  <option value="Automatic">{t_car("auto")}</option>
+                  <option className="hidden" disabled selected></option>
+                  <option value={TRANSMISSION_MANUAL_STRING}>{t_car("manual")}</option>
+                  <option value={TRANSMISSION_AUTOMATIC_STRING}>{t_car("auto")}</option>
                 </RntSelect>
               </>
             ) : null}
@@ -394,13 +412,8 @@ export default function CarEditForm({
               label={t_car("color")}
               placeholder="e.g. Green"
               readOnly={!isNewCar}
-              value={carInfoFormParams.color}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  color: e.target.value,
-                })
-              }
+              {...register("color")}
+              validationError={errors.color?.message?.toString()}
             />
           </div>
         </div>
@@ -410,19 +423,13 @@ export default function CarEditForm({
             <strong>{t_car("more_info")}</strong>
           </div>
           <div className="flex flex-col">
-            <textarea
-              className="text-black w-full px-4 py-2 border-2 rounded-2xl disabled:bg-gray-300 disabled:text-gray-600"
+            <RntInputMultiline
               rows={5}
               id="description"
               placeholder="e.g. Dupont Pepper Grey 1967 Ford Mustang fastback"
               disabled={!isNewCar}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  description: e.target.value,
-                })
-              }
-              value={carInfoFormParams.description}
+              {...register("description")}
+              validationError={errors.description?.message?.toString()}
             />
           </div>
         </div>
@@ -432,38 +439,41 @@ export default function CarEditForm({
             <strong>{t_car("location")}</strong>
           </div>
           <div className="flex flex-row gap-4 items-end  mb-4">
-            {carInfoFormParams.isLocationEdited ? (
-              <RntPlaceAutocomplete
-                className="lg:w-full"
-                id="address"
-                label={isNewCar ? t_car("address") : t_car("saved_address")}
-                placeholder="Miami"
-                initValue={autocomplete}
-                includeStreetAddress={true}
-                readOnly={!carInfoFormParams.isLocationEdited}
-                onChange={(e) => setAutocomplete(e.target.value)}
-                onAddressChange={async (placeDetails) => {
-                  const locationAddress = placeDetails.addressString;
-                  const country = placeDetails.country?.short_name ?? "";
-                  const state = placeDetails.state?.long_name ?? "";
-                  const city = placeDetails.city?.long_name ?? "";
-                  const latitude = fixedNumber(placeDetails.location?.latitude ?? 0, 6);
-                  const longitude = fixedNumber(placeDetails.location?.longitude ?? 0, 6);
-                  const timeZoneId = await getTimeZoneIdFromAddress(latitude, longitude);
-
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    locationInfo: {
-                      address: locationAddress,
-                      country: country,
-                      state: state,
-                      city: city,
-                      latitude: latitude,
-                      longitude: longitude,
-                      timeZoneId: timeZoneId,
-                    },
-                  });
-                }}
+            {getValues("isLocationEdited") ? (
+              <Controller
+                name="locationInfo"
+                control={control}
+                render={({ field }) => (
+                  <RntPlaceAutocomplete
+                    className="lg:w-full"
+                    id="address"
+                    label={isNewCar ? t_car("address") : t_car("saved_address")}
+                    placeholder="Miami"
+                    initValue={autocomplete}
+                    includeStreetAddress={true}
+                    readOnly={!getValues("isLocationEdited")}
+                    onChange={(e) => setAutocomplete(e.target.value)}
+                    onAddressChange={async (placeDetails) => {
+                      const locationAddress = placeDetails.addressString;
+                      const country = placeDetails.country?.short_name ?? "";
+                      const state = placeDetails.state?.long_name ?? "";
+                      const city = placeDetails.city?.long_name ?? "";
+                      const latitude = fixedNumber(placeDetails.location?.latitude ?? 0, 6);
+                      const longitude = fixedNumber(placeDetails.location?.longitude ?? 0, 6);
+                      const timeZoneId = await getTimeZoneIdFromAddress(latitude, longitude);
+                      field.onChange({
+                        address: locationAddress,
+                        country: country,
+                        state: state,
+                        city: city,
+                        latitude: latitude,
+                        longitude: longitude,
+                        timeZoneId: timeZoneId,
+                      });
+                    }}
+                    validationError={errors.locationInfo?.address?.message?.toString()}
+                  />
+                )}
               />
             ) : (
               <RntInput
@@ -472,22 +482,18 @@ export default function CarEditForm({
                 label={isNewCar ? t_car("address") : t_car("saved_address")}
                 placeholder="Miami"
                 value={autocomplete}
-                readOnly={!carInfoFormParams.isLocationEdited}
+                readOnly={true}
               />
             )}
             <RntButton
               className="w-40"
-              disabled={carInfoFormParams.isLocationEdited}
-              onClick={() =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  isLocationEdited: true,
-                })
-              }
+              disabled={getValues("isLocationEdited")}
+              onClick={() => setValue("isLocationEdited", true)}
             >
               Edit
             </RntButton>
           </div>
+
           <div className="flex flex-wrap gap-4">
             <RntInput
               className="lg:w-40"
@@ -495,7 +501,7 @@ export default function CarEditForm({
               label={t_car("country")}
               placeholder="USA"
               readOnly={true}
-              value={carInfoFormParams.locationInfo.country}
+              {...register("locationInfo.country")}
             />
             <RntInput
               className="lg:w-40"
@@ -503,7 +509,7 @@ export default function CarEditForm({
               label={t_car("state")}
               placeholder="e.g. Florida"
               readOnly={true}
-              value={carInfoFormParams.locationInfo.state}
+              {...register("locationInfo.state")}
             />
             <RntInput
               className="lg:w-40"
@@ -511,7 +517,7 @@ export default function CarEditForm({
               label={t_car("city")}
               placeholder="e.g. Miami"
               readOnly={true}
-              value={carInfoFormParams.locationInfo.city}
+              {...register("locationInfo.city")}
             />
             <RntInput
               className="w-[48%] lg:w-60"
@@ -519,7 +525,7 @@ export default function CarEditForm({
               label={t_car("location_lat")}
               placeholder="e.g. 42.123456"
               readOnly={true}
-              value={carInfoFormParams.locationInfo.latitude}
+              {...register("locationInfo.latitude", { valueAsNumber: true })}
             />
             <RntInput
               className="w-[48%] lg:w-60"
@@ -527,7 +533,7 @@ export default function CarEditForm({
               label={t_car("location_long")}
               placeholder="e.g. 42.123456"
               readOnly={true}
-              value={carInfoFormParams.locationInfo.longitude}
+              {...register("locationInfo.longitude", { valueAsNumber: true })}
             />
           </div>
         </div>
@@ -536,34 +542,20 @@ export default function CarEditForm({
           <div className="text-lg  mb-4">
             <strong>{t_car("included_distance")}</strong>
           </div>
-          {/* <div className="flex flex-col lg:flex-row"> */}
-          <div className="flex flex-wrap gap-4 items-end">
-            <RntInput
-              className="lg:w-60"
-              id="milesIncludedPerDay"
-              label={t_car("max_mileage")}
-              readOnly={isUnlimitedMiles}
-              placeholder="e.g. 200"
-              value={carInfoFormParams.milesIncludedPerDay}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  milesIncludedPerDay: e.target.value,
-                })
-              }
-            />
-            <RntCheckbox
-              className="ml-4"
-              title={t_car("unlimited_miles")}
-              value={isUnlimitedMiles}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  milesIncludedPerDay: e.target.checked ? UNLIMITED_MILES_VALUE_TEXT : "",
-                })
-              }
-            />
-          </div>
+          <Controller
+            name="milesIncludedPerDay"
+            control={control}
+            render={({ field }) => (
+              <div className="flex flex-wrap gap-4 items-start">
+                <MilesIncludedPerDay
+                  value={field.value}
+                  onChange={field.onChange}
+                  validationError={errors.milesIncludedPerDay?.message?.toString()}
+                  t_car={t_car}
+                />
+              </div>
+            )}
+          />
         </div>
 
         <div className="mt-4">
@@ -576,26 +568,16 @@ export default function CarEditForm({
               id="pricePerDay"
               label={t_car("rent")}
               placeholder="e.g. 100"
-              value={carInfoFormParams.pricePerDay}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  pricePerDay: e.target.value,
-                })
-              }
+              {...register("pricePerDay", { valueAsNumber: true })}
+              validationError={errors.pricePerDay?.message?.toString()}
             />
             <RntInput
               className="lg:w-60"
               id="securityDeposit"
               label={t_car("secure_dep")}
               placeholder="e.g. 300"
-              value={carInfoFormParams.securityDeposit}
-              onChange={(e) =>
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  securityDeposit: e.target.value,
-                })
-              }
+              {...register("securityDeposit", { valueAsNumber: true })}
+              validationError={errors.securityDeposit?.message?.toString()}
             />
             {!isElectricEngine ? (
               <RntInput
@@ -603,33 +585,34 @@ export default function CarEditForm({
                 id="fuelPricePerGal"
                 label={t_car("fuel_price")}
                 placeholder="e.g. 5.00"
-                value={carInfoFormParams.fuelPricePerGal}
-                onChange={(e) =>
-                  setCarInfoFormParams({
-                    ...carInfoFormParams,
-                    fuelPricePerGal: e.target.value,
-                  })
-                }
+                {...register("fuelPricePerGal", {
+                  setValueAs: (v) => (v === "" || v === Number.isNaN(v) ? undefined : parseInt(v, 10)),
+                })}
+                validationError={"fuelPricePerGal" in errors ? errors.fuelPricePerGal?.message?.toString() : undefined}
               />
             ) : null}
 
             <div className="lg:w-60">
               <p>Overmiles price</p>
               <p className="mt-2 text-sm">
-                {isUnlimitedMiles ? t_car("unlimited") : t_car("overmiles_fee", { price: fuelPricePerMileText })}
+                {isUnlimitedMiles(milesIncludedPerDay)
+                  ? t_car("unlimited")
+                  : t_car("overmiles_fee", { price: fuelPricePerMileText })}
               </p>
             </div>
           </div>
-          <RntCheckbox
-            className="mt-4"
-            title={t_car("insurance_included")}
-            value={carInfoFormParams.isInsuranceIncluded}
-            onChange={(e) =>
-              setCarInfoFormParams({
-                ...carInfoFormParams,
-                isInsuranceIncluded: e.target.checked,
-              })
-            }
+
+          <Controller
+            name="isInsuranceIncluded"
+            control={control}
+            render={({ field }) => (
+              <RntCheckbox
+                className="mt-4"
+                label={t_car("insurance_included")}
+                checked={field.value}
+                onChange={field.onChange}
+              />
+            )}
           />
         </div>
 
@@ -638,34 +621,22 @@ export default function CarEditForm({
             <div className="text-lg  mb-4">
               <strong>{t_car("battery_charge")}</strong>
             </div>
-            <div className="flex flex-wrap gap-4 ">
-              <div>
-                <RntInput
-                  className="lg:w-48"
-                  id="fullBatteryChargePrice"
-                  label={t_car("full_charge")}
-                  placeholder="e.g. 50"
-                  value={carInfoFormParams.fullBatteryChargePrice}
-                  onChange={(e) =>
-                    setCarInfoFormParams({
-                      ...carInfoFormParams,
-                      fullBatteryChargePrice: e.target.value,
-                    })
+            <Controller
+              name="fullBatteryChargePrice"
+              control={control}
+              render={({ field }) => (
+                <FullBatteryChargePrice
+                  value={field.value}
+                  onChange={(newValue) => {
+                    field.onChange(newValue);
+                  }}
+                  validationError={
+                    "fullBatteryChargePrice" in errors ? errors.fullBatteryChargePrice?.message?.toString() : undefined
                   }
+                  t_car={t_car}
                 />
-                <p className="w-full text-sm text-center mt-2">{t_car("recommended", { amount: "$30-50" })}</p>
-              </div>
-              <div>
-                <RntInput
-                  className="lg:w-48"
-                  id="10PercentBatteryChargePrice"
-                  label={t_car("cost_for_each")}
-                  readOnly={true}
-                  value={(Number(carInfoFormParams.fullBatteryChargePrice) / 10).toString()}
-                />
-                <p className="w-full text-sm text-center mt-2">{t_car("for_difference")}</p>
-              </div>
-            </div>
+              )}
+            />
           </div>
         ) : null}
 
@@ -678,13 +649,8 @@ export default function CarEditForm({
               className="lg:w-60"
               id="timeBufferBetweenTrips"
               label={t_car("time_buffer")}
-              value={carInfoFormParams.timeBufferBetweenTripsInMin.toString()}
-              onChange={(e) => {
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  timeBufferBetweenTripsInMin: Number(e.target.value) ?? 0,
-                });
-              }}
+              {...register("timeBufferBetweenTripsInMin", { valueAsNumber: true })}
+              validationError={errors.timeBufferBetweenTripsInMin?.message?.toString()}
             >
               <option value="0">0 min</option>
               <option value="15">15 min</option>
@@ -697,26 +663,29 @@ export default function CarEditForm({
             </RntSelect>
           </div>
           <div className="flex flex-wrap gap-4">
-            <RntSelect
-              className="lg:w-60"
-              id="listed"
-              label={t_car("listing_status")}
-              value={carInfoFormParams.currentlyListed.toString()}
-              onChange={(e) => {
-                setCarInfoFormParams({
-                  ...carInfoFormParams,
-                  currentlyListed: e.target.value === "true",
-                });
-              }}
-            >
-              <option value="true">{t_car("listed")}</option>
-              <option value="false">{t_car("unlisted")}</option>
-            </RntSelect>
+            <Controller
+              name="currentlyListed"
+              control={control}
+              render={({ field }) => (
+                <RntSelect
+                  className="lg:w-60"
+                  id="listed"
+                  label={t_car("listing_status")}
+                  value={field.value ? "true" : "false"}
+                  onChange={(e) => {
+                    field.onChange(e.target.value === "true");
+                  }}
+                >
+                  <option value="true">{t_car("listed")}</option>
+                  <option value="false">{t_car("unlisted")}</option>
+                </RntSelect>
+              )}
+            />
           </div>
         </div>
 
         <div className="flex flex-row gap-4 mb-8 mt-8 justify-between sm:justify-start">
-          <RntButton className="w-40 h-16" disabled={carSaving} onClick={handleSave}>
+          <RntButton type="submit" className="w-40 h-16" disabled={isSubmitting}>
             {t("common.save")}
           </RntButton>
           <RntButton className="w-40 h-16" onClick={handleBack}>
@@ -724,7 +693,117 @@ export default function CarEditForm({
           </RntButton>
         </div>
         <label className="mb-4">{message}</label>
-      </div>
+      </form>
     </GoogleMapsProvider>
   );
 }
+
+const MilesIncludedPerDay = ({
+  value,
+  onChange,
+  validationError,
+  t_car,
+}: {
+  value: number | typeof UNLIMITED_MILES_VALUE_TEXT;
+  onChange: (value: number | typeof UNLIMITED_MILES_VALUE_TEXT) => void;
+  validationError?: string;
+  t_car: TFunction;
+}) => {
+  const [milesIncludedPerDay, setMilesIncludedPerDay] = useState<
+    number | typeof UNLIMITED_MILES_VALUE_TEXT | undefined
+  >(value);
+  const [isUnlimited, setIsUnlimited] = useState<boolean>(isUnlimitedMiles(value));
+
+  useEffect(() => {
+    if (!isUnlimitedMiles(value)) {
+      setMilesIncludedPerDay(value);
+    }
+  }, [value]);
+
+  return (
+    <>
+      {isUnlimited ? (
+        <RntInput className="lg:w-60" label={t_car("max_mileage")} readOnly={true} value={UNLIMITED_MILES_VALUE_TEXT} />
+      ) : (
+        <RntInput
+          className="lg:w-60"
+          id="milesIncludedPerDay"
+          label={t_car("max_mileage")}
+          placeholder="e.g. 200"
+          value={milesIncludedPerDay}
+          onChange={(e) => {
+            const newValue =
+              e.target.value === UNLIMITED_MILES_VALUE_TEXT ? UNLIMITED_MILES_VALUE_TEXT : Number(e.target.value);
+            if (Number.isFinite(newValue) || newValue === UNLIMITED_MILES_VALUE_TEXT) {
+              setMilesIncludedPerDay(newValue);
+              onChange(newValue);
+            }
+          }}
+          validationError={validationError}
+        />
+      )}
+      <RntCheckbox
+        className="ml-4 mt-8"
+        label={t_car("unlimited_miles")}
+        checked={isUnlimited}
+        onChange={(e) => {
+          //setValue("milesIncludedPerDay", e.target.checked ? UNLIMITED_MILES_VALUE : 0)
+          //field.onChange(e.target.checked ? UNLIMITED_MILES_VALUE : 0);
+          setIsUnlimited(e.target.checked);
+          onChange(e.target.checked ? UNLIMITED_MILES_VALUE_TEXT : milesIncludedPerDay ?? 0);
+        }}
+      />
+    </>
+  );
+};
+
+const FullBatteryChargePrice = ({
+  value,
+  onChange,
+  validationError,
+  t_car,
+}: {
+  value: number;
+  onChange: (value: number) => void;
+  validationError?: string;
+  t_car: TFunction;
+}) => {
+  const [fullBatteryChargePrice, setFullBatteryChargePrice] = useState<number | undefined>(value);
+
+  useEffect(() => {
+    setFullBatteryChargePrice(value);
+  }, [value]);
+
+  return (
+    <div className="flex flex-wrap gap-4 ">
+      <div>
+        <RntInput
+          className="lg:w-48"
+          id="fullBatteryChargePrice"
+          label={t_car("full_charge")}
+          placeholder="e.g. 50"
+          value={fullBatteryChargePrice}
+          onChange={(e) => {
+            const newValue = Number(e.target.value);
+            if (Number.isFinite(newValue)) {
+              setFullBatteryChargePrice(newValue);
+              onChange(newValue);
+            }
+          }}
+          validationError={validationError}
+        />
+        <p className="w-full text-sm text-center mt-2">{t_car("recommended", { amount: "$30-50" })}</p>
+      </div>
+      <div>
+        <RntInput
+          className="lg:w-48"
+          id="tenPercentBatteryChargePrice"
+          label={t_car("cost_for_each")}
+          readOnly={true}
+          value={(fullBatteryChargePrice ?? 0) / 10}
+        />
+        <p className="w-full text-sm text-center mt-2">{t_car("for_difference")}</p>
+      </div>
+    </div>
+  );
+};

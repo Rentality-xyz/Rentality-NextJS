@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { HostCarInfo, UNLIMITED_MILES_VALUE, UNLIMITED_MILES_VALUE_TEXT, verifyCar } from "@/model/HostCarInfo";
+import { HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE, verifyCar } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeCode } from "@/model/EngineType";
-import { getMoneyInCentsFromString } from "@/utils/formInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import {
@@ -12,7 +11,6 @@ import {
 } from "@/model/blockchain/schemas";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
 import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
-import { bigIntReplacer } from "@/utils/json";
 import { getNftJSONFromCarInfo } from "@/utils/ipfsUtils";
 import { ContractTransactionResponse } from "ethers";
 
@@ -84,15 +82,10 @@ const useSaveCar = () => {
       const engineParams: bigint[] = [];
       if (dataToSave.engineTypeText === ENGINE_TYPE_PETROL_STRING) {
         engineParams.push(BigInt(dataToSave.tankVolumeInGal));
-        engineParams.push(BigInt(getMoneyInCentsFromString(dataToSave.fuelPricePerGal)));
+        engineParams.push(BigInt(dataToSave.fuelPricePerGal * 100));
       } else if (dataToSave.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING) {
-        engineParams.push(BigInt(getMoneyInCentsFromString(dataToSave.fullBatteryChargePrice)));
+        engineParams.push(BigInt(dataToSave.fullBatteryChargePrice * 100));
       }
-
-      const milesIncludedPerDay =
-        dataToSave.milesIncludedPerDay === UNLIMITED_MILES_VALUE_TEXT
-          ? BigInt(UNLIMITED_MILES_VALUE)
-          : BigInt(dataToSave.milesIncludedPerDay);
 
       const location: ContractSignedLocationInfo = {
         locationInfo: mapLocationInfoToContractLocationInfo(dataToSave.locationInfo),
@@ -105,9 +98,11 @@ const useSaveCar = () => {
         brand: dataToSave.brand,
         model: dataToSave.model,
         yearOfProduction: BigInt(dataToSave.releaseYear),
-        pricePerDayInUsdCents: BigInt(getMoneyInCentsFromString(dataToSave.pricePerDay)),
-        securityDepositPerTripInUsdCents: BigInt(getMoneyInCentsFromString(dataToSave.securityDeposit)),
-        milesIncludedPerDay: milesIncludedPerDay,
+        pricePerDayInUsdCents: BigInt(dataToSave.pricePerDay * 100),
+        securityDepositPerTripInUsdCents: BigInt(dataToSave.securityDeposit * 100),
+        milesIncludedPerDay: BigInt(
+          isUnlimitedMiles(dataToSave.milesIncludedPerDay) ? UNLIMITED_MILES_VALUE : dataToSave.milesIncludedPerDay
+        ),
         geoApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
         engineType: getEngineTypeCode(dataToSave.engineTypeText),
         engineParams: engineParams,
@@ -138,24 +133,21 @@ const useSaveCar = () => {
 
       const engineParams: bigint[] = [];
       if (hostCarInfo.engineTypeText === ENGINE_TYPE_PETROL_STRING) {
-        engineParams.push(BigInt(getMoneyInCentsFromString(hostCarInfo.fuelPricePerGal)));
+        engineParams.push(BigInt(hostCarInfo.fuelPricePerGal * 100));
       } else if (hostCarInfo.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING) {
-        engineParams.push(BigInt(getMoneyInCentsFromString(hostCarInfo.fullBatteryChargePrice)));
+        engineParams.push(BigInt(hostCarInfo.fullBatteryChargePrice * 100));
       }
-
-      const milesIncludedPerDay =
-        hostCarInfo.milesIncludedPerDay === UNLIMITED_MILES_VALUE_TEXT
-          ? BigInt(UNLIMITED_MILES_VALUE)
-          : BigInt(hostCarInfo.milesIncludedPerDay);
 
       const updateCarRequest: ContractUpdateCarInfoRequest = {
         carId: BigInt(hostCarInfo.carId),
         currentlyListed: hostCarInfo.currentlyListed,
         engineParams: engineParams,
-        pricePerDayInUsdCents: BigInt(getMoneyInCentsFromString(hostCarInfo.pricePerDay)),
-        milesIncludedPerDay: milesIncludedPerDay,
+        pricePerDayInUsdCents: BigInt(hostCarInfo.pricePerDay * 100),
+        milesIncludedPerDay: BigInt(
+          isUnlimitedMiles(hostCarInfo.milesIncludedPerDay) ? UNLIMITED_MILES_VALUE : hostCarInfo.milesIncludedPerDay
+        ),
         timeBufferBetweenTripsInSec: BigInt(hostCarInfo.timeBufferBetweenTripsInMin * 60),
-        securityDepositPerTripInUsdCents: BigInt(getMoneyInCentsFromString(hostCarInfo.securityDeposit)),
+        securityDepositPerTripInUsdCents: BigInt(hostCarInfo.securityDeposit * 100),
       };
 
       let transaction: ContractTransactionResponse;

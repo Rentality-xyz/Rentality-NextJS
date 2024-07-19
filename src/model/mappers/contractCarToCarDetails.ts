@@ -1,6 +1,6 @@
 import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { ContractCarDetails, ContractCarInfo } from "../blockchain/schemas";
-import { getMilesIncludedPerDayText, HostCarInfo } from "../HostCarInfo";
+import { getMilesIncludedPerDayText, HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE_TEXT } from "../HostCarInfo";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "../EngineType";
 import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
 
@@ -15,10 +15,8 @@ export const mapContractCarToCarDetails = async (
   const securityDeposit = Number(carInfo.securityDepositPerTripInUsdCents) / 100;
   const engineTypeString = getEngineTypeString(carInfo.engineType);
 
-  const fuelPricePerGal =
-    engineTypeString === ENGINE_TYPE_PETROL_STRING ? displayMoneyFromCentsWith2Digits(carInfo.engineParams[1]) : "";
-  const fullBatteryChargePrice =
-    engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? displayMoneyFromCentsWith2Digits(carInfo.engineParams[0]) : "";
+  const fuelPricePerGal = engineTypeString === ENGINE_TYPE_PETROL_STRING ? Number(carInfo.engineParams[1]) / 100 : 0;
+  const fullBatteryChargePrice = engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? Number(carInfo.engineParams[0]) / 100  : 0;
 
   return {
     carId: Number(carInfo.carId),
@@ -27,7 +25,7 @@ export const mapContractCarToCarDetails = async (
     vinNumber: carInfo.carVinNumber,
     brand: carInfo.brand,
     model: carInfo.model,
-    releaseYear: Number(carInfo.yearOfProduction).toString(),
+    releaseYear: Number(carInfo.yearOfProduction),
     name: metaData.name,
     licensePlate: metaData.licensePlate,
     licenseState: metaData.licenseState,
@@ -40,14 +38,13 @@ export const mapContractCarToCarDetails = async (
     color: metaData.color,
     bodyType: metaData.bodyType,
     description: metaData.description,
-    pricePerDay: price.toString(),
-    milesIncludedPerDay: getMilesIncludedPerDayText(carInfo.milesIncludedPerDay),
-    securityDeposit: securityDeposit.toString(),
+    pricePerDay: price,
+    milesIncludedPerDay: isUnlimitedMiles(carInfo.milesIncludedPerDay)
+      ? UNLIMITED_MILES_VALUE_TEXT
+      : Number(carInfo.milesIncludedPerDay),
+    securityDeposit: securityDeposit,
     locationInfo: {
-      address: carInfoDetails.locationInfo.userAddress
-        .split(",")
-        .map((i) => i.trim())
-        .join(", "),
+      address: carInfoDetails.locationInfo.userAddress,
       country: carInfoDetails.locationInfo.country,
       state: carInfoDetails.locationInfo.state,
       city: carInfoDetails.locationInfo.city,
@@ -57,7 +54,7 @@ export const mapContractCarToCarDetails = async (
     },
     isLocationEdited: false,
     currentlyListed: carInfo.currentlyListed,
-    engineTypeText: engineTypeString,
+    engineTypeText: engineTypeString ?? ENGINE_TYPE_PETROL_STRING,
     fuelPricePerGal: fuelPricePerGal,
     fullBatteryChargePrice: fullBatteryChargePrice,
     timeBufferBetweenTripsInMin: Number(carInfo.timeBufferBetweenTripsInSec) / 60,

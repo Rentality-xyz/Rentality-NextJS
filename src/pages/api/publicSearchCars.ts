@@ -1,5 +1,5 @@
 import { getEtherContractWithSigner } from "@/abis";
-import { getEngineTypeString } from "@/model/EngineType";
+import { ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "@/model/EngineType";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { SearchCarInfo } from "@/model/SearchCarsResult";
@@ -103,7 +103,7 @@ const formatSearchAvailableCarsContractResponse = async (
         year: i.car.yearOfProduction.toString(),
         seatsNumber: metaData.seatsNumber,
         transmission: metaData.transmission,
-        engineTypeText: getEngineTypeString(i.car.engineType ?? EngineType.PETROL),
+        engineTypeText: getEngineTypeString(i.car.engineType) ?? ENGINE_TYPE_PETROL_STRING,
         milesIncludedPerDay: getMilesIncludedPerDayText(i.car.milesIncludedPerDay ?? 0),
         pricePerDay: pricePerDay,
         pricePerDayWithDiscount: Number(i.car.pricePerDayWithDiscount) / 100,

@@ -104,7 +104,7 @@ export function getNftJSONFromCarInfo({
     },
     {
       trait_type: META_KEY_RELEASE_YEAR,
-      value: releaseYear,
+      value: releaseYear.toString(),
     },
     {
       trait_type: META_KEY_BODY_TYPE,
@@ -116,11 +116,11 @@ export function getNftJSONFromCarInfo({
     },
     {
       trait_type: META_KEY_DOORS_NUMBER,
-      value: doorsNumber,
+      value: doorsNumber.toString(),
     },
     {
       trait_type: META_KEY_SEATS_NUMBER,
-      value: seatsNumber,
+      value: seatsNumber.toString(),
     },
     {
       trait_type: META_KEY_TRUNK_SIZE,
@@ -136,7 +136,7 @@ export function getNftJSONFromCarInfo({
     },
     {
       trait_type: META_KEY_TANK_VOLUME_GAL,
-      value: tankVolumeInGal,
+      value: tankVolumeInGal.toString(),
     },
   ];
   return {

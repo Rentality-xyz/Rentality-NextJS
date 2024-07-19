@@ -5,19 +5,22 @@ import electricEngineTypeIcon from "@/images/car_engine_type_electric.svg";
 export const ENGINE_TYPE_PETROL_STRING = "Gasoline";
 export const ENGINE_TYPE_ELECTRIC_STRING = "Electro";
 
+export type EngineTypeType = typeof ENGINE_TYPE_PETROL_STRING | typeof ENGINE_TYPE_ELECTRIC_STRING;
 export enum EngineTypeEnum {
   PETROL = 1,
   ELECTRIC = 2,
 }
 
-export function getEngineTypeString(engineType: EngineType): string {
+export function getEngineTypeString(
+  engineType: EngineType
+): typeof ENGINE_TYPE_PETROL_STRING | typeof ENGINE_TYPE_ELECTRIC_STRING | undefined {
   switch (engineType) {
     case EngineType.PETROL:
       return ENGINE_TYPE_PETROL_STRING;
     case EngineType.ELECTRIC:
       return ENGINE_TYPE_ELECTRIC_STRING;
     default:
-      return "";
+      return undefined;
   }
 }
 
