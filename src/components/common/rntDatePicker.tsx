@@ -5,6 +5,7 @@ import { TextField } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import RntValidationError from "./rntValidationError";
 
 export default function RntDatePicker({
   className,
@@ -44,7 +45,6 @@ export default function RntDatePicker({
     "w-full h-12 border-2 rounded-full pl-4 disabled:bg-gray-300 disabled:text-gray-600",
     inputClassName
   );
-  const vClassName = twMerge("text-red-400 mt-2", validationClassName);
 
   const newTheme = createTheme({
     components: {
@@ -128,7 +128,7 @@ export default function RntDatePicker({
         </ThemeProvider>
       </LocalizationProvider>
 
-      {!isEmpty(validationError) ? <p className={vClassName}>* {validationError}</p> : null}
+      <RntValidationError className={validationClassName} validationError={validationError} />
     </div>
   );
 }
