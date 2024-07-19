@@ -146,8 +146,8 @@ function TripAdditionalActions({
                     {tripInfo.allowedActions[0].readonly ? (
                       <RntCheckbox
                         className="ml-4"
-                        title={t("common.confirm")}
-                        value={confirmParams[index]}
+                        label={t("common.confirm")}
+                        checked={confirmParams[index]}
                         onChange={(newValue) => {
                           setConfirmParams((prev) => {
                             const copy = [...prev];

@@ -45,8 +45,8 @@ export default function AgreementInfo({
       <p className="mt-8 w-full md:w-3/4 xl:w-3/5 2xl:w-1/3">{t("agreement_info")}</p>
       <CheckboxLight
         className="ml-4 mt-4 underline"
-        title={t("tc_title")}
-        value={isTerms}
+        label={t("tc_title")}
+        checked={isTerms}
         onChange={() => {
           window.open("https://rentality.xyz/legalmatters/terms", "_blank");
           setIsTerms(true);
@@ -54,8 +54,8 @@ export default function AgreementInfo({
       />
       <CheckboxLight
         className="ml-4 mt-2 underline"
-        title={t("cancellation_title")}
-        value={isCancellation}
+        label={t("cancellation_title")}
+        checked={isCancellation}
         onChange={() => {
           window.open("https://rentality.xyz/legalmatters/cancellation", "_blank");
           setIsCancellation(true);
@@ -63,8 +63,8 @@ export default function AgreementInfo({
       />
       <CheckboxLight
         className="ml-4 mt-2 underline"
-        title={t("prohibited_title")}
-        value={isProhibited}
+        label={t("prohibited_title")}
+        checked={isProhibited}
         onChange={() => {
           window.open("https://rentality.xyz/legalmatters/prohibiteduses", "_blank");
           setIsProhibited(true);
@@ -72,8 +72,8 @@ export default function AgreementInfo({
       />
       <CheckboxLight
         className="ml-4 mt-2 underline"
-        title={t("privacy_title")}
-        value={isPrivacy}
+        label={t("privacy_title")}
+        checked={isPrivacy}
         onChange={() => {
           window.open("https://rentality.xyz/legalmatters/privacy", "_blank");
           setIsPrivacy(true);

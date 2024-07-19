@@ -74,8 +74,8 @@ export default function AllowedActions({
             {tripInfo.allowedActions[0].readonly ? (
               <RntCheckbox
                 className="ml-4"
-                title="Confirm"
-                value={confirmParams[index]}
+                label="Confirm"
+                checked={confirmParams[index]}
                 onChange={(e) => {
                   setConfirmParams((prev) => {
                     const copy = [...prev];
