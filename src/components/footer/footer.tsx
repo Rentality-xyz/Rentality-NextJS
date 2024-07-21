@@ -1,5 +1,5 @@
 import Image from "next/image";
-import logo from "../../images/logo.png";
+import logo from "../../images/logo.svg";
 import bgCar from "../../images/red-generic-sport-ca.png";
 import linkedin from "../../images/ic-linkedin-50.png";
 import twitter from "../../images/ic_twitter.svg";
