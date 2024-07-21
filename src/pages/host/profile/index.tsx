@@ -33,7 +33,7 @@ export default function Profile() {
               isHost={true}
               t={t}
             />
-            <div className="flex flex-wrap gap-20">
+            <div className="flex flex-col min-[560px]:flex-row min-[560px]:gap-20">
               <TripDiscountsForm
                 savedTripsDiscounts={savedTripsDiscounts}
                 saveTripsDiscounts={saveTripDiscounts}
