@@ -170,6 +170,7 @@ export default function SearchAndFilters({
         <div className="flex flex-col md:flex-row gap-4 md:items-end md:justify-between xl:justify-around">
           <RntInput
             className="basis-1/2"
+            inputClassName="pr-4"
             id="dateFrom"
             label={`${t_comp("datetime_from")} ${gmtLabel}`}
             type="datetime-local"
@@ -178,6 +179,7 @@ export default function SearchAndFilters({
           />
           <RntInput
             className="basis-1/2"
+            inputClassName="pr-4"
             id="dateTo"
             label={`${t_comp("datetime_to")} ${gmtLabel}`}
             type="datetime-local"
