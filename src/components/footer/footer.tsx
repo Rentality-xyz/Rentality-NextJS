@@ -22,32 +22,42 @@ export default function Footer() {
           id="footer-legal-matters"
           className="z-0 flex flex-col pt-[30px] lg:pt-[40px] max-lg:mx-auto lg:ml-[540px] min-[1536px]:ml-[540px] min-[1720px]:ml-auto w-max h-1/3 sm:h-full"
         >
-          <strong className="pb-1 text-xl font-semibold font-['Montserrat',Arial,sans-serif]">Legal matters</strong>
+          <Link
+              href="https://rentality.xyz/legalmatters"
+              target="_blank"
+              className="pb-1 cursor-pointer text-xl font-semibold font-['Montserrat',Arial,sans-serif] hover:underline"
+          >
+            <strong>Legal matters</strong>
+          </Link>
+
           <Link
             href="https://rentality.xyz/legalmatters/terms"
             target="_blank"
-            className="pb-1.5 pl-4 cursor-pointer text-base font-['Montserrat',Arial,sans-serif] hover:underline"
+            className="pb-1.5 cursor-pointer text-base font-['Montserrat',Arial,sans-serif] hover:underline"
           >
             <strong>Terms of service</strong>
           </Link>
+
           <Link
             href="https://rentality.xyz/legalmatters/cancellation"
             target="_blank"
-            className="pb-1.5 pl-4 cursor-pointer text-base font-['Montserrat',Arial,sans-serif] hover:underline"
+            className="pb-1.5 cursor-pointer text-base font-['Montserrat',Arial,sans-serif] hover:underline"
           >
             <strong>Cancellation policy</strong>
           </Link>
+
           <Link
             href="https://rentality.xyz/legalmatters/prohibiteduses"
             target="_blank"
-            className="pb-1.5 pl-4 cursor-pointer text-base font-['Montserrat',Arial,sans-serif] hover:underline"
+            className="pb-1.5 cursor-pointer text-base font-['Montserrat',Arial,sans-serif] hover:underline"
           >
             <strong>Prohibited uses</strong>
           </Link>
+
           <Link
             href="https://rentality.xyz/legalmatters/privacy"
             target="_blank"
-            className="pb-1.5 pl-4 cursor-pointer text-base font-['Montserrat',Arial,sans-serif] hover:underline"
+            className="pb-1.5 cursor-pointer text-base font-['Montserrat',Arial,sans-serif] hover:underline"
           >
             <strong>Privacy policy</strong>
           </Link>
@@ -60,11 +70,11 @@ export default function Footer() {
           id={"footer-info-block"}
           className="z-0 flex flex-col pt-[30px] lg:pt-[40px] max-lg:mx-auto lg:ml-auto w-max h-full"
         >
-          <Image src={logo} alt="" className="max-w-[200px] min-w-[200px] h-auto" />
+          <Image src={logo} alt="" className="max-w-[180px] min-w-[180px] h-auto mb-2" />
           <div>
             <a
               href="mailto:info@rentality.xyz"
-              className="max-lg:hidden pt-4 lg:pt-9 font-['Montserrat',Arial,sans-serif] text-3xl font-normal"
+              className="max-lg:hidden pt-4 lg:pt-9 font-['Montserrat',Arial,sans-serif] text-base font-normal"
             >
               <div>info@rentality.xyz</div>
             </a>
