@@ -1,0 +1,17 @@
+FROM node:18-bullseye-slim AS base
+
+RUN apt-get update && \
+ apt-get install --no-install-recommends -y \
+ build-essential
+RUN apt clean && rm -rf /var/lib/apt/lists/*
+
+FROM base AS ganache
+
+RUN mkdir -p /home/app
+WORKDIR /home/app
+
+RUN npm install --global ganache
+
+EXPOSE 8545
+
+ENTRYPOINT ["ganache", "-h 0.0.0.0", "--wallet.accounts=0x18f36ba0a734b18c5e774c0c71d554266bcf5a9b53fefd1a0cb26ad85c313b98, 1000000000000000000000", "--wallet.accounts=0xa23105c5d0a799a046cd66051f359c696642b7ae36c9a689fd92e7db8f7e5f19, 1000000000000000000000"]
