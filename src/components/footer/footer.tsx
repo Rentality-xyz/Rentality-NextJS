@@ -67,7 +67,7 @@ export default function Footer() {
           id={"footer-info-block"}
           className="z-0 flex flex-col pt-[30px] lg:pt-[40px] max-lg:mx-auto lg:ml-auto w-max h-full"
         >
-          <Image src={logo} alt="" className="max-w-[180px] min-w-[180px] h-auto" />
+          <Image src={logo} alt="" className="max-w-[180px] min-w-[180px] h-auto mb-2" />
           <div>
             <a
               href="mailto:info@rentality.xyz"
