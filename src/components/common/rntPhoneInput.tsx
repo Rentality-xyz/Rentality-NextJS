@@ -1,9 +1,8 @@
-import { isEmpty } from "@/utils/string";
 import React from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { twMerge } from "tailwind-merge";
-import RntValidationError from "./rntValidationError";
+import RntValidationError from "./RntValidationError";
 
 interface RntPhoneInputProps extends React.ComponentPropsWithoutRef<"input"> {
   labelClassName?: string;

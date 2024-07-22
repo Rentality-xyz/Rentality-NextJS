@@ -1,7 +1,7 @@
 import { isEmpty } from "@/utils/string";
 import { forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
-import RntValidationError from "./rntValidationError";
+import RntValidationError from "./RntValidationError";
 
 interface RntInputMultilineProps extends React.ComponentPropsWithoutRef<"textarea"> {
   labelClassName?: string;

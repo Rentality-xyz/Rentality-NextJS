@@ -1,7 +1,7 @@
 import { isEmpty } from "@/utils/string";
 import { forwardRef, useId } from "react";
 import { twMerge } from "tailwind-merge";
-import RntValidationError from "./rntValidationError";
+import RntValidationError from "./RntValidationError";
 
 interface RntInputProps extends React.ComponentPropsWithoutRef<"input"> {
   labelClassName?: string;

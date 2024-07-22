@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocompleteService";
 import { isEmpty } from "@/utils/string";
-import RntValidationError from "./rntValidationError";
+import RntValidationError from "./RntValidationError";
 
 type PlaceDetails = {
   addressString: string;

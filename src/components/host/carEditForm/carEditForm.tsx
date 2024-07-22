@@ -30,7 +30,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import RntInputMultiline from "@/components/common/rntInputMultiline";
 import { isEmpty } from "@/utils/string";
 import { TRANSMISSION_AUTOMATIC_STRING, TRANSMISSION_MANUAL_STRING } from "@/model/Transmission";
-import RntValidationError from "@/components/common/rntValidationError";
+import RntValidationError from "@/components/common/RntValidationError";
 
 export default function CarEditForm({
   initValue,
