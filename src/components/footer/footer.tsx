@@ -51,7 +51,7 @@ export default function Footer() {
           >
             <strong>Privacy policy</strong>
           </Link>
-          <div className="z-0 mt-auto">
+          <div className="z-0 mt-auto hidden sm:flex">
             UIcons by <a href="https://www.flaticon.com/uicons">Flaticon</a>
           </div>
         </div>
@@ -101,6 +101,9 @@ export default function Footer() {
               >
                 <Image src={mirror} alt="" className="ml-1 w-[36px]" />
               </a>
+            </div>
+            <div className="z-0 mt-8 sm:hidden">
+              UIcons by <a href="https://www.flaticon.com/uicons">Flaticon</a>
             </div>
           </div>
           <div className="z-0 mt-auto font-['Montserrat',Arial,sans-serif]">©{moment().year()} by Rentality LLC</div>
