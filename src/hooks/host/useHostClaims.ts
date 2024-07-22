@@ -2,11 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { formatPhoneNumber, getDateFromBlockchainTime, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
+import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { Claim, getClaimTypeTextFromClaimType, getClaimStatusTextFromStatus } from "@/model/Claim";
 import { useChat } from "@/contexts/chat/firebase/chatContext";
-import encodeClaimChatMessage from "@/components/chat/utils";
 import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
 import {
   ContractCreateClaimRequest,
@@ -23,7 +22,6 @@ import { bigIntReplacer } from "@/utils/json";
 const useHostClaims = () => {
   const rentalityContract = useRentality();
   const ethereumInfo = useEthereum();
-  const chatContextInfo = useChat();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [updateRequired, setUpdateRequired] = useState<Boolean>(true);
   const [tripInfos, setTripInfos] = useState<TripInfoForClaimCreation[]>([
@@ -180,22 +178,13 @@ const useHostClaims = () => {
                     validateContractTripDTO(i);
                   }
 
-                  const meta = await getMetaDataFromIpfs(i.metadataURI);
-
-                  const brand = i.brand ?? meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
-                  const model = i.model ?? meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
-                  const year =
-                    i.yearOfProduction?.toString() ??
-                    meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ??
-                    "";
-                  const guestName = i.trip.guestName;
                   const tripStart = getDateFromBlockchainTimeWithTZ(i.trip.startDateTime, i.timeZoneId);
                   const tripEnd = getDateFromBlockchainTimeWithTZ(i.trip.endDateTime, i.timeZoneId);
 
                   let item: TripInfoForClaimCreation = {
                     tripId: Number(i.trip.tripId),
                     guestAddress: i.trip.guest,
-                    tripDescription: `${brand} ${model} ${year} ${guestName} trip ${dateRangeFormatShortMonthDateYear(
+                    tripDescription: `${i.brand} ${i.model} ${i.yearOfProduction} ${i.trip.guestName} trip ${dateRangeFormatShortMonthDateYear(
                       tripStart,
                       tripEnd,
                       i.timeZoneId

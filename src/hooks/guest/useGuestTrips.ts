@@ -25,7 +25,6 @@ const useGuestTrips = () => {
 
     try {
       console.log(`confirmCarDetails error: logic in development`);
-
       //const transaction = await rentalityContract.confirmCarDetails(BigInt(tripId));
       //await transaction.wait();
       return true;

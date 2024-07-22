@@ -4,7 +4,6 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
 import { TransactionHistoryInfo } from "@/model/TransactionHistoryInfo";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
-import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { calculateDays } from "@/utils/date";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
 
@@ -41,17 +40,7 @@ const useTransactionHistory = (isHost: boolean) => {
                     validateContractTripDTO(tripDto);
                   }
 
-                  const meta = await getMetaDataFromIpfs(tripDto.metadataURI);
-
-                  const brand =
-                    tripDto.brand ?? meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
-                  const model =
-                    tripDto.model ?? meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
-                  const year =
-                    tripDto.yearOfProduction?.toString() ??
-                    meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ??
-                    "";
-                  const carDescription = `${brand} ${model} ${year}`;
+                  const carDescription = `${tripDto.brand} ${tripDto.model} ${tripDto.yearOfProduction}`;
 
                   const startDateTime = getDateFromBlockchainTime(tripDto.trip.startDateTime);
                   const endDateTime = getDateFromBlockchainTime(tripDto.trip.endDateTime);

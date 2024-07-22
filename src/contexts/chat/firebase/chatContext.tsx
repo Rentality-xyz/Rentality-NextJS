@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 import { ChatInfo } from "@/model/ChatInfo";
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
+import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
 import { useRentality } from "../../rentalityContext";
 import { isEmpty } from "@/utils/string";
@@ -142,7 +142,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
             ? []
             : await Promise.all(
                 chatInfosViewSorted.map(async (ci: ContractChatInfo) => {
-                  const meta = await getMetaDataFromIpfs(ci.carMetadataUrl);
+                  const metaData = parseMetaData(await getMetaDataFromIpfs(ci.carMetadataUrl));
                   const tripStatus = ci.tripStatus;
 
                   let item: ChatInfo = {
@@ -164,10 +164,10 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
                     updatedAt: moment.unix(0).toDate(),
                     isSeen: true,
 
-                    carPhotoUrl: getIpfsURIfromPinata(meta.image),
+                    carPhotoUrl: getIpfsURIfromPinata(metaData.image),
                     tripStatus: tripStatus,
                     carTitle: `${ci.carBrand} ${ci.carModel} ${ci.carYearOfProduction}`,
-                    carLicenceNumber: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
+                    carLicenceNumber: metaData.licensePlate,
 
                     messages: [],
                   };
@@ -209,7 +209,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
       try {
         const tripInfo: ContractTripDTO = await rentalityContract.getTrip(tripId);
-        const meta = await getMetaDataFromIpfs(tripInfo.metadataURI);
+        const metaData = parseMetaData(await getMetaDataFromIpfs(tripInfo.metadataURI));
         const tripStatus = tripInfo.trip.status;
 
         setChatInfos((prev) => {
@@ -238,10 +238,10 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
               updatedAt: moment.unix(0).toDate(),
               isSeen: true,
 
-              carPhotoUrl: getIpfsURIfromPinata(meta.image),
+              carPhotoUrl: getIpfsURIfromPinata(metaData.image),
               tripStatus: tripStatus,
               carTitle: `${tripInfo.brand} ${tripInfo.model} ${tripInfo.yearOfProduction}`,
-              carLicenceNumber: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
+              carLicenceNumber: metaData.licensePlate,
 
               messages: [],
             },

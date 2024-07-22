@@ -177,8 +177,8 @@ export default function CreateClaim({
         render={({ field }) => (
           <RntCheckbox
             className="w-full"
-            title="I certify that all charges are accurate, and I understand that any false submission or representation may result in restrictions or removal from the Rentality marketplace."
-            value={field.value}
+            label="I certify that all charges are accurate, and I understand that any false submission or representation may result in restrictions or removal from the Rentality marketplace."
+            checked={field.value}
             onChange={(e) => {
               field.onChange(e.target.checked);
             }}

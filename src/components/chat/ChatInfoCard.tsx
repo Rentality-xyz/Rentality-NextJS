@@ -55,7 +55,7 @@ export default function ChatInfoCard({
         <Image className="sm:hidden" src={icInfo} width={25} alt="" />
         <span className="max-sm:hidden text-sm text-rentality-secondary">{t("trip_info")}</span>
       </Link>
-      <div className="col-span-2 truncate cursor-pointer" onClick={onClickCallback}>
+      <div className="col-span-2 truncate cursor-pointer font-semibold" onClick={onClickCallback}>
         {chatInfo.lastMessage}
       </div>
     </div>

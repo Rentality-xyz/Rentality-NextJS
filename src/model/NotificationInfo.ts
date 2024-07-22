@@ -3,7 +3,6 @@ import { ContractFullClaimInfo, ContractTripDTO, TripStatus } from "./blockchain
 import { getDateFromBlockchainTime } from "@/utils/formInput";
 import { UTC_TIME_ZONE_ID, calculateDays } from "@/utils/date";
 import { isEmpty } from "@/utils/string";
-import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
 
 export type NotificationInfo = {
@@ -243,15 +242,7 @@ export async function createCreateTripNotification(
   isHost: boolean,
   eventDate: Date
 ): Promise<NotificationInfo | undefined> {
-  const meta = await getMetaDataFromIpfs(tripDTO.metadataURI);
-
-  const brand = tripDTO.brand ?? meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
-  const model = tripDTO.model ?? meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
-  const year =
-    tripDTO.yearOfProduction?.toString() ??
-    meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ??
-    "";
-  const carDescription = `${brand} ${model} ${year}`;
+  const carDescription = `${tripDTO.brand} ${tripDTO.model} ${tripDTO.yearOfProduction}`;
 
   return createNotificationInfoFromTrip(TripStatus.Pending, tripDTO, carDescription, eventDate, isHost);
 }
@@ -262,15 +253,7 @@ export async function createTripChangedNotification(
   isHost: boolean,
   eventDate: Date
 ): Promise<NotificationInfo | undefined> {
-  const meta = await getMetaDataFromIpfs(tripDTO.metadataURI);
-
-  const brand = tripDTO.brand ?? meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
-  const model = tripDTO.model ?? meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
-  const year =
-    tripDTO.yearOfProduction?.toString() ??
-    meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ??
-    "";
-  const carDescription = `${brand} ${model} ${year}`;
+  const carDescription = `${tripDTO.brand} ${tripDTO.model} ${tripDTO.yearOfProduction}`;
 
   const updatedTripStatus =
     tripStatus === TripStatus.Finished && tripDTO.trip.tripFinishedBy.toLowerCase() === tripDTO.trip.host.toLowerCase()
@@ -286,15 +269,7 @@ export async function createClaimCreatedChangedNotification(
   isHost: boolean,
   eventDate: Date
 ): Promise<NotificationInfo | undefined> {
-  const meta = await getMetaDataFromIpfs(tripDTO.metadataURI);
-
-  const brand = tripDTO.brand ?? meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
-  const model = tripDTO.model ?? meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
-  const year =
-    tripDTO.yearOfProduction?.toString() ??
-    meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ??
-    "";
-  const carDescription = `${brand} ${model} ${year}`;
+  const carDescription = `${tripDTO.brand} ${tripDTO.model} ${tripDTO.yearOfProduction}`;
 
   return createNotificationInfoFromClaim(tripDTO, claimInfo, carDescription, eventDate, isHost);
 }

@@ -3,6 +3,7 @@ import React from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { twMerge } from "tailwind-merge";
+import RntValidationError from "./rntValidationError";
 
 interface RntPhoneInputProps extends React.ComponentPropsWithoutRef<"input"> {
   labelClassName?: string;
@@ -30,7 +31,6 @@ function RntPhoneInput({
   const cClassName = twMerge("text-black flex flex-col w-full", className);
   const lClassName = twMerge("text-rnt-temp-main-text mb-1", labelClassName);
   const iClassName = twMerge("w-full h-12 disabled:bg-gray-300 disabled:text-gray-600", inputClassName);
-  const vClassName = twMerge("text-red-400 mt-2", validationClassName);
 
   return (
     <div className={cClassName}>
@@ -59,7 +59,7 @@ function RntPhoneInput({
         }}
       />
 
-      {!isEmpty(validationError) ? <p className={vClassName}>* {validationError}</p> : null}
+      <RntValidationError className={validationClassName} validationError={validationError} />
     </div>
   );
 }

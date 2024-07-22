@@ -49,7 +49,7 @@ export default function ChatPage({
           t={t}
         />
       ) : (
-        <div className="w-full xl:w-3/5 flex flex-col gap-2">
+        <div className="w-full flex flex-col gap-2">
           <RntButton className="w-40 h-12" onClick={() => selectChat(-1)}>
             {t("back")}
           </RntButton>
