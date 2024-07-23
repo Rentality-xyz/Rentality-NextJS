@@ -148,6 +148,7 @@ const useSaveCar = () => {
         ),
         timeBufferBetweenTripsInSec: BigInt(hostCarInfo.timeBufferBetweenTripsInMin * 60),
         securityDepositPerTripInUsdCents: BigInt(hostCarInfo.securityDeposit * 100),
+        insuranceIncluded: hostCarInfo.isInsuranceIncluded,
       };
 
       let transaction: ContractTransactionResponse;
