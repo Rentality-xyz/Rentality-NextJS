@@ -278,7 +278,7 @@ main option {
   border-radius: 9999px !important;
   border: none !important;
   height: 48px !important;
-  width: 224px !important;
+  min-width: 220px !important;
 }
 
 .civicButton span {
