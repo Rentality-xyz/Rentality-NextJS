@@ -1,11 +1,11 @@
-import ClaimHistory from "@/components/claims/claimHistory";
+import ClaimHistory from "@/components/claims/ClaimHistory";
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useGuestClaims from "@/hooks/guest/useGuestClaims";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import CreateClaim from "@/components/claims/createClaim";
+import CreateClaim from "@/components/claims/CreateClaim";
 import { CreateClaimRequest } from "@/model/CreateClaimRequest";
 import { TFunction } from "@/utils/i18n";
 

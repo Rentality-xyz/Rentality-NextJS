@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocompleteService";
+import { isEmpty } from "@/utils/string";
+import RntValidationError from "./RntValidationError";
 
 type PlaceDetails = {
   addressString: string;
@@ -38,6 +40,8 @@ export interface RntPlaceAutocompleteInputProps extends React.ComponentPropsWith
   initValue: string;
   includeStreetAddress?: boolean;
   onAddressChange: (praceDetails: PlaceDetails) => void;
+  validationClassName?: string;
+  validationError?: string;
 }
 
 export default function RntPlaceAutocompleteInput({
@@ -53,8 +57,9 @@ export default function RntPlaceAutocompleteInput({
   includeStreetAddress,
   onChange: onChangeHandler,
   onAddressChange: onAddressChangeHandler,
+  validationClassName,
+  validationError,
 }: RntPlaceAutocompleteInputProps) {
-  const isShowLabel = label !== undefined && label?.length > 0;
   const [enteredAddress, setEnteredAddress] = useState(initValue);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -146,11 +151,11 @@ export default function RntPlaceAutocompleteInput({
   );
   return (
     <div className={cClassName}>
-      {isShowLabel ? (
+      {!isEmpty(label) && (
         <label className={lClassName} htmlFor={id}>
           {label}
         </label>
-      ) : null}
+      )}
       <input
         // ref={ref}
         className={iClassName}
@@ -191,6 +196,8 @@ export default function RntPlaceAutocompleteInput({
           })}
         </div>
       ) : null}
+
+      <RntValidationError className={validationClassName} validationError={validationError} />
 
       {/* <div
         style={{

@@ -92,7 +92,7 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean, isFinishin
             date: dateFormatShortMonthDateTime(tripInfo.checkedOutByHostDateTime, tripInfo.timeZoneId),
             returnObjects: true,
           } as const);
-      case TripStatus.Finished:
+    case TripStatus.Finished:
       return isHost
         ? t("booked.status_finished", {
             date: dateFormatShortMonthDateTime(tripInfo.checkedOutByHostDateTime, tripInfo.timeZoneId),
@@ -135,7 +135,6 @@ function CurrentStatusInfo({
     isFinishingByHost,
     t
   ) as string[];
-
 
   if (
     isEmpty(actionHeader) &&

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BaseCarInfo } from "@/model/BaseCarInfo";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
+import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
 import { validateContractCarInfoDTO } from "@/model/blockchain/schemas_utils";
@@ -27,7 +27,7 @@ const useMyListings = () => {
                 if (index === 0) {
                   validateContractCarInfoDTO(i);
                 }
-                const meta = await getMetaDataFromIpfs(i.metadataURI);
+                const metaData = parseMetaData(await getMetaDataFromIpfs(i.metadataURI));
 
                 const pricePerDay = Number(i.carInfo.pricePerDayInUsdCents) / 100;
                 const securityDeposit = Number(i.carInfo.securityDepositPerTripInUsdCents) / 100;
@@ -36,11 +36,11 @@ const useMyListings = () => {
                 let item: BaseCarInfo = {
                   carId: Number(i.carInfo.carId),
                   ownerAddress: i.carInfo.createdBy.toString(),
-                  image: getIpfsURIfromPinata(meta.image),
+                  image: getIpfsURIfromPinata(metaData.image),
                   brand: i.carInfo.brand,
                   model: i.carInfo.model,
                   year: i.carInfo.yearOfProduction.toString(),
-                  licensePlate: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
+                  licensePlate: metaData.licensePlate,
                   pricePerDay: pricePerDay,
                   securityDeposit: securityDeposit,
                   milesIncludedPerDay: milesIncludedPerDay,

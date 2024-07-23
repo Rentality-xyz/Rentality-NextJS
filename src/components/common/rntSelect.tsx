@@ -1,6 +1,7 @@
 import { isEmpty } from "@/utils/string";
 import { forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
+import RntValidationError from "./RntValidationError";
 
 interface RntSelectProps extends React.ComponentPropsWithoutRef<"select"> {
   labelClassName?: string;
@@ -33,7 +34,6 @@ const RntSelect = forwardRef<HTMLSelectElement, RntSelectProps>(
     const cClassName = twMerge("text-black flex flex-col w-full", className);
     const lClassName = twMerge("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
     const sclassName = twMerge("w-full h-12 border-2 rounded-full pl-4", selectClassName);
-    const vClassName = twMerge("text-red-400 mt-2", validationClassName);
 
     return (
       <div className={cClassName}>
@@ -54,7 +54,7 @@ const RntSelect = forwardRef<HTMLSelectElement, RntSelectProps>(
         >
           {children}
         </select>
-        {!isEmpty(validationError) && <p className={vClassName}>* {validationError}</p>}
+        <RntValidationError className={validationClassName} validationError={validationError} />
       </div>
     );
   }

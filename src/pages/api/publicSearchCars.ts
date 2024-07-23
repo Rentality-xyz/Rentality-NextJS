@@ -1,5 +1,5 @@
 import { getEtherContractWithSigner } from "@/abis";
-import { getEngineTypeString } from "@/model/EngineType";
+import { ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "@/model/EngineType";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { SearchCarInfo } from "@/model/SearchCarsResult";
@@ -14,7 +14,7 @@ import {
 import { emptyContractLocationInfo, validateContractSearchCarWithDistance } from "@/model/blockchain/schemas_utils";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getBlockchainTimeFromDate, getMoneyInCentsFromString } from "@/utils/formInput";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
+import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Wallet } from "ethers";
@@ -70,7 +70,10 @@ const formatSearchAvailableCarsContractRequest = (searchCarRequest: SearchCarReq
   return { contractDateFromUTC, contractDateToUTC, contractSearchCarParams } as const;
 };
 
-const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: ContractSearchCarWithDistance[]) => {
+const formatSearchAvailableCarsContractResponse = async (
+  rentality: IRentalityContract,
+  searchCarsViewsView: ContractSearchCarWithDistance[]
+) => {
   if (searchCarsViewsView.length === 0) return [];
 
   return await Promise.all(
@@ -78,7 +81,14 @@ const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: Co
       if (index === 0) {
         validateContractSearchCarWithDistance(i);
       }
-      const meta = await getMetaDataFromIpfs(i.car.metadataURI);
+      const metaData = parseMetaData(await getMetaDataFromIpfs(i.car.metadataURI));
+      let isCarDetailsConfirmed = false;
+
+      // try {
+      //   isCarDetailsConfirmed = await rentality.isCarDetailsConfirmed(i.car.carId);
+      // } catch (ex) {
+      //   console.error("formatSearchAvailableCarsContractResponse error:", ex);
+      // }
 
       const tripDays = Number(i.car.tripDays);
       const pricePerDay = Number(i.car.pricePerDayInUsdCents) / 100;
@@ -87,13 +97,13 @@ const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: Co
       let item: SearchCarInfo = {
         carId: Number(i.car.carId),
         ownerAddress: i.car.host.toString(),
-        image: getIpfsURIfromPinata(meta.image),
+        image: getIpfsURIfromPinata(metaData.image),
         brand: i.car.brand,
         model: i.car.model,
         year: i.car.yearOfProduction.toString(),
-        seatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats number")?.value ?? "",
-        transmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
-        engineTypeText: getEngineTypeString(i.car.engineType ?? EngineType.PETROL),
+        seatsNumber: metaData.seatsNumber,
+        transmission: metaData.transmission,
+        engineTypeText: getEngineTypeString(i.car.engineType) ?? ENGINE_TYPE_PETROL_STRING,
         milesIncludedPerDay: getMilesIncludedPerDayText(i.car.milesIncludedPerDay ?? 0),
         pricePerDay: pricePerDay,
         pricePerDayWithDiscount: Number(i.car.pricePerDayWithDiscount) / 100,
@@ -119,6 +129,7 @@ const formatSearchAvailableCarsContractResponse = async (searchCarsViewsView: Co
         isInsuranceIncluded: i.car.insuranceIncluded,
         pickUpDeliveryFee: Number(i.car.pickUp) / 100,
         dropOffDeliveryFee: Number(i.car.dropOf) / 100,
+        isCarDetailsConfirmed: isCarDetailsConfirmed,
       };
 
       return item;
@@ -318,7 +329,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
   }
 
-  const availableCarsData = await formatSearchAvailableCarsContractResponse(availableCarsView);
+  const availableCarsData = await formatSearchAvailableCarsContractResponse(rentality, availableCarsView);
 
   res.status(200).json(availableCarsData);
 }

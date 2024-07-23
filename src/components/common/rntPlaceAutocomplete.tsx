@@ -6,5 +6,8 @@ import RntInput from "./rntInput";
 export default function RntPlaceAutoComplete(props: RntPlaceAutocompleteInputProps) {
   const { googleMapsAPIIsLoaded } = useGoogleMapsContext();
 
-  return googleMapsAPIIsLoaded ? <RntPlaceAutocompleteInput {...props} /> : <RntInput {...props} />;
+  if (googleMapsAPIIsLoaded) return <RntPlaceAutocompleteInput {...props} />;
+
+  const { initValue, includeStreetAddress, onAddressChange, ...inputProps } = props;
+  return <RntInput {...inputProps} />;
 }

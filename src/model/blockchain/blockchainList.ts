@@ -1,4 +1,5 @@
 import { hasContractForChainId } from "@/abis";
+import { isEmpty } from "@/utils/string";
 import { defineChain } from "viem";
 import {
   mainnet,
@@ -27,6 +28,7 @@ const localhostGanache = defineChain({
   rpcUrls: {
     default: { http: ["http://127.0.0.1:7545"] },
   },
+  testnet: true,
 });
 
 const chainIdToHex = (chainId: number) => {
@@ -73,13 +75,17 @@ export const allSupportedBlockchainList: BlockchainBaseInfo[] = [
 ];
 
 export const getExistBlockchainList = (): BlockchainBaseInfo[] => {
-  var isIncludeTestnets = process.env.NEXT_PUBLIC_INCLUDE_TESTNETS?.toLowerCase?.() === "true";
-  var isIncludeLocalnets = process.env.NEXT_PUBLIC_INCLUDE_LOCALNETS?.toLowerCase?.() === "true";
+  var isIncludeTestnets = process.env.NEXT_PUBLIC_INCLUDE_TESTNETS?.toLowerCase() === "true";
+  var isIncludeLocalnets = process.env.NEXT_PUBLIC_INCLUDE_LOCALNETS?.toLowerCase() === "true";
+  var isIncludeMainnets = !isEmpty(process.env.NEXT_PUBLIC_INCLUDE_MAINNETS)
+    ? process.env.NEXT_PUBLIC_INCLUDE_MAINNETS?.toLowerCase() === "true"
+    : true;
 
   return allSupportedBlockchainList.filter(
     (bc) =>
       hasContractForChainId(bc.chainId) &&
-      (!bc.isTestnet || isIncludeTestnets) &&
+      (bc.isTestnet || isIncludeMainnets) &&
+      (!bc.isTestnet || bc.chainId === 1337 || isIncludeTestnets) &&
       (bc.chainId !== 1337 || isIncludeLocalnets)
   );
 };
@@ -95,7 +101,7 @@ export const getBlockCountForSearch = (chainId: number): number => {
     case polygonMumbai.id:
       return Number.POSITIVE_INFINITY;
     case base.id:
-      return Number.POSITIVE_INFINITY;
+      return 1000;
     case baseSepolia.id:
       return 1000;
     case optimism.id:

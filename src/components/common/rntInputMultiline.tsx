@@ -1,6 +1,7 @@
 import { isEmpty } from "@/utils/string";
 import { forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
+import RntValidationError from "./RntValidationError";
 
 interface RntInputMultilineProps extends React.ComponentPropsWithoutRef<"textarea"> {
   labelClassName?: string;
@@ -37,8 +38,6 @@ const RntInputMultiline = forwardRef<HTMLTextAreaElement, RntInputMultilineProps
       inputClassName
     );
 
-    const vClassName = twMerge("text-red-400 mt-2", validationClassName);
-
     return (
       <div className={cClassName}>
         {!isEmpty(label) && (
@@ -61,7 +60,7 @@ const RntInputMultiline = forwardRef<HTMLTextAreaElement, RntInputMultilineProps
           ref={ref}
         />
 
-        {!isEmpty(validationError) ? <p className={vClassName}>* {validationError}</p> : null}
+        <RntValidationError className={validationClassName} validationError={validationError} />
       </div>
     );
   }

@@ -3,7 +3,7 @@ import { ChatInfo } from "@/model/ChatInfo";
 import { Client as ChatClient } from "@/chat/client";
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityChatHelperContract, IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
+import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
 import { isEmpty } from "@/utils/string";
 import { bytesToHex } from "viem";
@@ -322,7 +322,7 @@ export const WakuChatProvider = ({ children }: { children?: React.ReactNode }) =
             ? []
             : await Promise.all(
                 chatInfosViewSorted.map(async (ci: ContractChatInfo) => {
-                  const meta = await getMetaDataFromIpfs(ci.carMetadataUrl);
+                  const metaData = parseMetaData(await getMetaDataFromIpfs(ci.carMetadataUrl));
                   const tripStatus = ci.tripStatus;
 
                   let item: ChatInfo = {
@@ -344,10 +344,10 @@ export const WakuChatProvider = ({ children }: { children?: React.ReactNode }) =
                     updatedAt: moment.unix(0).toDate(),
                     isSeen: true,
 
-                    carPhotoUrl: getIpfsURIfromPinata(meta.image),
+                    carPhotoUrl: getIpfsURIfromPinata(metaData.image),
                     tripStatus: tripStatus,
                     carTitle: `${ci.carBrand} ${ci.carModel} ${ci.carYearOfProduction}`,
-                    carLicenceNumber: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
+                    carLicenceNumber: metaData.licensePlate,
 
                     messages: [],
                   };

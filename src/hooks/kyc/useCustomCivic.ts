@@ -98,11 +98,12 @@ const useCustomCivic = () => {
 
   //TODO DELETE THIS IS FOR DEBUG
   useEffect(() => {
-    console.log(`gatewayStatus changed: ${gatewayStatus}`);
+    console.debug(`gatewayStatus changed: ${gatewayStatus}`);
   }, [gatewayStatus]);
 
   async function requestKyc() {
     if (!rentalityContract) return;
+    if (!requestGatewayToken) return;
     if (!ethereumInfo) return;
     if (status !== "Commission paid") return;
     if (!(await rentalityContract.isKycCommissionPaid(ethereumInfo.walletAddress))) return;

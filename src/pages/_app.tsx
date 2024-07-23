@@ -13,10 +13,18 @@ import { useEffect } from "react";
 import { analyticsPromise } from "@/utils/firebase";
 // should be here for downloading 'locales/* '
 import "../utils/i18n";
+import { base } from "viem/chains";
+import { OnchainKitProvider } from "@coinbase/onchainkit";
+import "@coinbase/onchainkit/tailwind.css";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { WagmiProvider } from "wagmi";
+import { wagmiConfig } from "@/wagmi.config";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const isHost = router.route.startsWith("/host");
+  const queryClient = new QueryClient();
 
   useEffect(() => {
     analyticsPromise;
@@ -26,15 +34,21 @@ export default function App({ Component, pageProps }: AppProps) {
     <Web3Setup>
       <RentalityProvider>
         <UserInfoProvider>
-          <NotificationProvider isHost={isHost}>
-            <FirebaseChatProvider>
-              <AppContextProvider>
-                <RntDialogsProvider>
-                  <Component {...pageProps} />
-                </RntDialogsProvider>
-              </AppContextProvider>
-            </FirebaseChatProvider>
-          </NotificationProvider>
+          <WagmiProvider config={wagmiConfig}>
+            <QueryClientProvider client={queryClient}>
+              <OnchainKitProvider apiKey={process.env.NEXT_PUBLIC_COINBASE_API_KEY} chain={base}>
+                <NotificationProvider isHost={isHost}>
+                  <FirebaseChatProvider>
+                    <AppContextProvider>
+                      <RntDialogsProvider>
+                        <Component {...pageProps} />
+                      </RntDialogsProvider>
+                    </AppContextProvider>
+                  </FirebaseChatProvider>
+                </NotificationProvider>
+              </OnchainKitProvider>
+            </QueryClientProvider>
+          </WagmiProvider>
         </UserInfoProvider>
       </RentalityProvider>
     </Web3Setup>

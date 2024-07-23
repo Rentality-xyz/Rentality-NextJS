@@ -66,8 +66,8 @@ export default function SearchDeliveryLocations({
         />
         <CheckboxLight
           className="ml-4 mt-0.5"
-          title="Host home locatione"
-          value={searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation}
+          label="Host home locatione"
+          checked={searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation}
           onChange={(e) =>
             setSearchCarRequest({
               ...searchCarRequest,
@@ -137,8 +137,8 @@ export default function SearchDeliveryLocations({
         />
         <CheckboxLight
           className="ml-4 mt-0.5"
-          title="Host home locatione"
-          value={searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation}
+          label="Host home locatione"
+          checked={searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation}
           onChange={(e) =>
             setSearchCarRequest({
               ...searchCarRequest,

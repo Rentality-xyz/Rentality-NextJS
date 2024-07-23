@@ -62,7 +62,7 @@ export default function CarSearchMap({
     if (window.innerWidth < 1280) {
       return;
     }
-    console.log("Here");
+    console.debug("Here");
     const googleMapElement = document.getElementById("google-maps-guest-search-page");
     if (!googleMapElement) {
       return;

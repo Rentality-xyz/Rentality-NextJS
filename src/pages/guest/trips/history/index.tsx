@@ -5,10 +5,13 @@ import useGuestTrips from "@/hooks/guest/useGuestTrips";
 import { useTranslation } from "react-i18next";
 
 export default function History() {
-  const [isLoading, _, tripsHistory] = useGuestTrips();
+  const { isLoading, tripsHistory, confirmCarDetails } = useGuestTrips();
   const { t } = useTranslation();
 
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {};
+  const handleConfirmCarDetails = async (tripId: number) => {
+    await confirmCarDetails(tripId);
+  };
 
   return (
     <Layout>
@@ -29,7 +32,6 @@ export default function History() {
                     changeStatusCallback={changeStatusCallback}
                     disableButton={true}
                     isHost={false}
-                    showMoreInfo={true}
                     t={t}
                   />
                 );

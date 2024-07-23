@@ -1,5 +1,5 @@
 import { memo } from "react";
-import AlchemyPayDeposit from "./alchemyPayDeposit";
+import AlchemyPayDeposit from "./AlchemyPay";
 
 function ProfileRnD() {
   return (

@@ -212,8 +212,6 @@ export async function markUserChatAsSeen(db: Firestore, userAddress: string, cha
     const existChat = userchatsQuerySnapshot.data().userChats.find((uc: any) => uc.chatId === chatId.toString());
 
     if (existChat !== undefined) {
-      console.log(`markUserChatAsSeen... userAddress: ${userAddress}, chatId: ${chatId.toString()} `);
-
       await updateDoc(userchatsRef, {
         userChats: userchatsQuerySnapshot
           .data()

@@ -1,6 +1,5 @@
 import PageTitle from "../pageTitle/pageTitle";
 import RntButton from "../common/rntButton";
-import TripCard from "@/components/tripCard/tripCard";
 import Image from "next/image";
 import carDoorsIcon from "@/images/car_doors.svg";
 import carSeatsIcon from "@/images/car_seats.svg";
@@ -15,23 +14,24 @@ import { useRouter } from "next/router";
 import { TFunction as TFunctionNext } from "i18next";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
-import { getRefuelValueAndCharge } from "@/model/TripInfo";
 import UserAvatarWithName from "@/components/common/userAvatarWithName";
 import TripContacts from "@/components/common/tripContacts";
 import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import RntDriverLicenseVerified from "@/components/common/rntDriverLicenseVerified";
 import { UTC_TIME_ZONE_ID, calculateDays } from "@/utils/date";
+import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
+import TripCardForDetails from "../tripCard/tripCardForDetails";
+import useUserMode from "@/hooks/useUserMode";
 
 export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; backPath: string; t: TFunctionNext }) {
   const [isLoading, tripInfo] = useTripInfo(tripId);
+  const { isHost } = useUserMode();
   const router = useRouter();
   const t_details: TFunction = (name, options) => {
     return t("booked.details." + name, options);
   };
 
   if (tripId == null || tripId === BigInt(0) || tripInfo == null) return null;
-
-  const { refuelValue, refuelCharge } = getRefuelValueAndCharge(tripInfo, tripInfo.endFuelLevelInPercents);
 
   const formatStatusDateTime = (value: Date, timeZone?: string) => {
     const format = "ddd, D MMM YYYY hh:mm:ss z";
@@ -47,15 +47,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
         </div>
       ) : (
         <>
-          <TripCard
-            key={Number(tripId)}
-            tripInfo={tripInfo}
-            disableButton={true}
-            isHost={false}
-            showMoreInfo={false}
-            t={t}
-            changeStatusCallback={async (changeStatus: () => Promise<boolean>) => {}}
-          />
+          <TripCardForDetails key={Number(tripId)} isHost={isHost} tripInfo={tripInfo} t={t} />
 
           <div className="flex flex-wrap my-6">
             <div className="w-full xl:w-2/3">
@@ -315,20 +307,24 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                 <table className="m-2">
                   <tbody>
                     <tr>
-                      <td>{t_details("refuel_gal")}</td>
-                      <td className="text-end">{refuelValue}</td>
+                      <td>{t_details("pickUp_fuel")}</td>
+                      <td className="text-end">{tripInfo.startFuelLevelInPercents}%</td>
                     </tr>
                     <tr>
-                      <td>{t_details("price_per_gal")}</td>
-                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.fuelPricePerGal)}</td>
+                      <td>{t_details("dropOff_fuel")}</td>
+                      <td className="text-end">{tripInfo.endFuelLevelInPercents}%</td>
                     </tr>
                     <tr>
-                      <td>{t_details("refuel_or_recharge")}</td>
-                      <td className="text-end">${refuelCharge}</td>
+                      <td>{t_details("price_per_10_percents")}</td>
+                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.pricePer10PercentFuel)}</td>
+                    </tr>
+                    <tr>
+                      <td>{t_details("total_refuel_charge")}</td>
+                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.resolveFuelAmountInUsd)}</td>
                     </tr>
                     <tr>
                       <td>{t_details("miles_included_per_trip")}</td>
-                      <td className="text-end">{tripInfo.milesIncludedPerTrip} ml</td>
+                      <td className="text-end">{getMilesIncludedPerDayText(tripInfo.milesIncludedPerTrip)} ml</td>
                     </tr>
                     <tr>
                       <td>{t_details("overmiles")}</td>
@@ -340,15 +336,13 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     </tr>
                     <tr>
                       <td>{t_details("overmile_charge")}</td>
-                      <td className="text-end">${tripInfo.overmileCharge}</td>
+                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.resolveMilesAmountInUsd)}</td>
                     </tr>
                     <tr>
                       <td className="pt-5">
                         <strong>{t_details("total_reimbursement")}</strong>
                       </td>
-                      <td className="text-end pt-5">
-                        ${displayMoneyWith2Digits(refuelCharge + tripInfo.overmileCharge)}
-                      </td>
+                      <td className="text-end pt-5">${displayMoneyWith2Digits(tripInfo.resolveAmountInUsd)}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -400,7 +394,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                       </tr>
                     </tbody>
                   </table>
-                  <TripContacts tripInfo={tripInfo} isHost={true} t={t} />
+                  <TripContacts tripInfo={tripInfo} isHost={isHost} phoneForHost={false} t={t} />
                 </div>
                 <div className="flex justify-center p-4">
                   <RntContractModal tripId={tripId} tripInfo={tripInfo} />

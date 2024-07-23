@@ -51,7 +51,7 @@ export type ContractCreateCarRequest = {
   timeBufferBetweenTripsInSec: bigint;
   geoApiKey: string;
   insuranceIncluded: boolean;
-  locationInfo: ContractLocationInfo;
+  locationInfo: ContractSignedLocationInfo;
 };
 
 export type ContractUpdateCarInfoRequest = {
@@ -151,6 +151,8 @@ export type ContractTripDTO = {
   yearOfProduction: bigint;
   pickUpLocation: ContractLocationInfo;
   returnLocation: ContractLocationInfo;
+  guestPhoneNumber: string;
+  hostPhoneNumber: string;
 };
 
 export type ContractChatInfo = {
