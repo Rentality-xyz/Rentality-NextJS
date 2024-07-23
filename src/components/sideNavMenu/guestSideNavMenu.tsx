@@ -43,7 +43,11 @@ function GuestNavMenu() {
   };
   return (
     <>
-      <SideNavMenuGroup title={t_nav("search")} href="/guest/search" />
+      <SideNavMenuGroup
+          title={t_nav("search")}
+          href="/guest/search"
+          icon={MenuIcons.Search}
+      />
       <SideNavMenuGroup title={t_nav("trips")}>
         <SideNavMenuItem
           text={t_nav("booked")}
