@@ -132,7 +132,7 @@ export default function SearchAndFilters({
     });
   };
 
-  const { isHideFilterOnSearchPage, toggleFilterOnSearchPage } = useAppContext();
+  const { toggleFilterOnSearchPage } = useAppContext();
 
   return (
     <>

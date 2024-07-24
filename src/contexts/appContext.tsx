@@ -14,16 +14,18 @@ export const AppContextProvider = ({ children }: { children?: React.ReactNode })
   const [isHideFilterOnSearchPage,setHideFilterOnSearchPage] = useState(false);
 
   const toggleBurgerMenu = () => {
+    console.log("ddiLog toggleBurgerMenu " + isHideBurgerMenu)
     setIsHideBurgerMenu((prev) => !prev);
     const body = document.body;
     if (isHideBurgerMenu) {
-      body.classList.remove("overflow-hidden");
+      body.classList.remove("max-lg:overflow-hidden");
     } else {
-      body.classList.add("overflow-hidden");
+      body.classList.add("max-lg:overflow-hidden");
     }
   };
 
   const toggleFilterOnSearchPage = () => {
+    console.log("ddiLog toggleFilterOnSearchPage")
     setHideFilterOnSearchPage((prev) => !prev);
     const body = document.body;
     if (isHideFilterOnSearchPage) {
