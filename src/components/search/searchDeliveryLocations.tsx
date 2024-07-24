@@ -38,7 +38,7 @@ export default function SearchDeliveryLocations({
             setPickupLocationInfo({
               address: placeDetails.addressString,
               country: placeDetails.country?.short_name ?? "",
-              state: placeDetails.state?.short_name ?? "",
+              state: placeDetails.state?.long_name ?? "",
               city: placeDetails.city?.long_name ?? "",
               latitude: locationLat,
               longitude: locationLng,

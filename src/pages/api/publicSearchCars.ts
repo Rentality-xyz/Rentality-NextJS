@@ -236,7 +236,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       address: "",
       country: country as string,
       state: state as string,
-      city: city as string,
+      city: "",
       latitude: Number(latitude as string),
       longitude: Number(longitude as string),
       timeZoneId: "",
