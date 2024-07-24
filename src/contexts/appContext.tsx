@@ -14,7 +14,6 @@ export const AppContextProvider = ({ children }: { children?: React.ReactNode })
   const [isHideFilterOnSearchPage,setHideFilterOnSearchPage] = useState(false);
 
   const toggleBurgerMenu = () => {
-    console.log("ddiLog toggleBurgerMenu " + isHideBurgerMenu)
     setIsHideBurgerMenu((prev) => !prev);
     const body = document.body;
     if (isHideBurgerMenu) {
@@ -25,7 +24,6 @@ export const AppContextProvider = ({ children }: { children?: React.ReactNode })
   };
 
   const toggleFilterOnSearchPage = () => {
-    console.log("ddiLog toggleFilterOnSearchPage")
     setHideFilterOnSearchPage((prev) => !prev);
     const body = document.body;
     if (isHideFilterOnSearchPage) {
