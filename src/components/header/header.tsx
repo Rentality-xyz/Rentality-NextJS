@@ -91,7 +91,7 @@ export default function Header({ accountType }: { accountType: string }) {
               className="lg:hidden mr-4"
               onClick={toggleBurgerMenu}
             />
-            <div className="font-bold text-xl lg:text-3xl max-sm:hidden">{accountType} account</div>
+            <div className="font-bold text-xl lg:text-3xl max-sm:hidden sm:pl-[42px]">{accountType} account</div>
           </div>
           <div className="flex flex-row items-center">
             <Stack direction="row" spacing={1} alignItems="center">

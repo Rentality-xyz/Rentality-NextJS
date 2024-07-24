@@ -139,6 +139,7 @@ export default function SearchAndFilters({
       <div className="search my-2 flex flex-col xl:flex-row gap-4 xl:items-end">
         <RntPlaceAutoComplete
           className="xl:w-2/3"
+          labelClassName="pl-[18px]"
           id="location"
           label={t_comp("location_label")}
           placeholder={t_comp("location_placeholder")}
@@ -174,6 +175,7 @@ export default function SearchAndFilters({
           <RntInput
             className="basis-1/2"
             inputClassName="pr-4"
+            labelClassName="pl-[18px]"
             id="dateFrom"
             label={`${t_comp("datetime_from")} ${gmtLabel}`}
             type="datetime-local"
@@ -183,6 +185,7 @@ export default function SearchAndFilters({
           <RntInput
             className="basis-1/2"
             inputClassName="pr-4"
+            labelClassName="pl-[18px]"
             id="dateTo"
             label={`${t_comp("datetime_to")} ${gmtLabel}`}
             type="datetime-local"
