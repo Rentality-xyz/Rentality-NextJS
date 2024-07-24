@@ -690,7 +690,7 @@ export default function CarEditForm({
           <RntButton type="submit" className="w-40 h-16" disabled={isSubmitting}>
             {t("common.save")}
           </RntButton>
-          <RntButton className="w-40 h-16" onClick={handleBack}>
+          <RntButton type="button" className="w-40 h-16" onClick={handleBack}>
             {t("common.back")}
           </RntButton>
         </div>
