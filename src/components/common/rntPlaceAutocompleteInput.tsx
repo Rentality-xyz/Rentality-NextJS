@@ -110,6 +110,7 @@ export default function RntPlaceAutocompleteInput({
       },
       (placeDetails) => {
         if (placeDetails) {
+          console.log(`component placeDetails: ${JSON.stringify(placeDetails)}`);
           const addressString = placeDetails.formatted_address ?? "";
           const country = getAddressComponents(placeDetails, "country");
           const state = getAddressComponents(placeDetails, "administrative_area_level_1");

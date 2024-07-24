@@ -36,6 +36,7 @@ export default function KycVerification({ t }: { t: TFunction }) {
         }
 
         const apiJson = await apiResponse.json();
+        console.log(`apiJson: ${JSON.stringify(apiJson)}`);
 
         showCustomDialog(
           <div className="grid grid-cols-[auto_1fr] gap-2 ">
