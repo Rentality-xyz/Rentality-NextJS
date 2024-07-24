@@ -48,7 +48,7 @@ export default function CarEditForm({
 
   //const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(initValue ?? emptyHostCarInfo);
 
-  const { register, control, handleSubmit, formState, setValue, watch, getValues } = useForm<CarEditFormValues>({
+  const { register, control, handleSubmit, formState, setValue, watch } = useForm<CarEditFormValues>({
     defaultValues:
       !isNewCar && initValue !== undefined
         ? {
@@ -105,6 +105,7 @@ export default function CarEditForm({
   const engineTypeText = watch("engineTypeText");
   const isElectricEngine = engineTypeText === "Electro";
   const image = watch("image");
+  const isLocationEdited = watch("isLocationEdited");
 
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
@@ -439,7 +440,7 @@ export default function CarEditForm({
             <strong>{t_car("location")}</strong>
           </div>
           <div className="flex flex-row gap-4 items-end  mb-4">
-            {getValues("isLocationEdited") ? (
+            {isLocationEdited ? (
               <Controller
                 name="locationInfo"
                 control={control}
@@ -451,7 +452,7 @@ export default function CarEditForm({
                     placeholder="Miami"
                     initValue={autocomplete}
                     includeStreetAddress={true}
-                    readOnly={!getValues("isLocationEdited")}
+                    readOnly={!isLocationEdited}
                     onChange={(e) => setAutocomplete(e.target.value)}
                     onAddressChange={async (placeDetails) => {
                       const locationAddress = placeDetails.addressString;
@@ -487,7 +488,8 @@ export default function CarEditForm({
             )}
             <RntButton
               className="w-40"
-              disabled={getValues("isLocationEdited")}
+              type="button"
+              disabled={isLocationEdited}
               onClick={() => setValue("isLocationEdited", true)}
             >
               Edit
