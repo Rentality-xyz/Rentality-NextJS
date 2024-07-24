@@ -83,7 +83,7 @@ export default function Header({ accountType }: { accountType: string }) {
         </div>
       )}
       <header className="text-rnt-temp-header-text">
-        <div className="flex w-full px-2 py-2 min-h-[7rem] justify-between">
+        <div className="flex w-full pl-2 pr-2 sm:pr-6 py-2 min-h-[7rem] justify-between">
           <div className="flex flex-row items-center">
             <Image
               src={isHideBurgerMenu ? burgerMenuClose : burgerMenu}
