@@ -15,13 +15,13 @@ type Props =
       isHost: true;
       claim: Claim;
       index: number;
-      cancelClaim: (claimId: number) => Promise<void>;
+      payClaim: (claimId: number) => Promise<void>;
     }
   | {
       isHost: false;
       claim: Claim;
       index: number;
-      payClaim: (claimId: number) => Promise<void>;
+      cancelClaim: (claimId: number) => Promise<void>;
     };
 
 export default function ClaimHistoryMobileCard(props: Props) {
@@ -128,21 +128,21 @@ export default function ClaimHistoryMobileCard(props: Props) {
       <div className="col-span-2 mt-2 justify-self-center">
         {claim.status === ClaimStatus.NotPaid || claim.status === ClaimStatus.Overdue ? (
           isHost ? (
-            <RntButton
-              onClick={() => {
-                props.cancelClaim(claim.claimId);
-              }}
-            >
-              Cancel
-            </RntButton>
+              <RntButton
+                  onClick={() => {
+                      props.payClaim(claim.claimId);
+                  }}
+              >
+                  Pay
+              </RntButton>
           ) : (
-            <RntButton
-              onClick={() => {
-                props.payClaim(claim.claimId);
-              }}
-            >
-              Pay
-            </RntButton>
+              <RntButton
+                  onClick={() => {
+                      props.cancelClaim(claim.claimId);
+                  }}
+              >
+                  Cancel
+              </RntButton>
           )
         ) : null}
       </div>

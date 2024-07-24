@@ -82,8 +82,8 @@ export default function Header({ accountType }: { accountType: string }) {
           {isHost ? <HostBurgerNavMenu /> : <GuestBurgerNavMenu />}
         </div>
       )}
-      <header className="text-rnt-temp-header-text">
-        <div className="flex w-full px-2 py-2 min-h-[7rem] justify-between">
+      <header className="text-rnt-temp-header-text pt-1.5">
+        <div className="flex w-full pl-2 pr-2 sm:pr-6 py-2 min-h-[7rem] justify-between">
           <div className="flex flex-row items-center">
             <Image
               src={isHideBurgerMenu ? burgerMenuClose : burgerMenu}
@@ -91,7 +91,7 @@ export default function Header({ accountType }: { accountType: string }) {
               className="lg:hidden mr-4"
               onClick={toggleBurgerMenu}
             />
-            <div className="font-bold text-xl lg:text-3xl max-sm:hidden">{accountType} account</div>
+            <div className="font-bold text-xl lg:text-3xl max-sm:hidden sm:pl-[42px]">{accountType} account</div>
           </div>
           <div className="flex flex-row items-center">
             <Stack direction="row" spacing={1} alignItems="center">

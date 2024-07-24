@@ -155,7 +155,7 @@ export default function ClaimHistory(props: Props) {
               isHost={isHost}
               claim={claim}
               index={index}
-              cancelClaim={props.cancelClaim}
+              payClaim={props.payClaim}
             />
           ) : (
             <ClaimHistoryMobileCard
@@ -163,7 +163,8 @@ export default function ClaimHistory(props: Props) {
               isHost={isHost}
               claim={claim}
               index={index}
-              payClaim={props.payClaim}
+              cancelClaim={props.cancelClaim}
+
             />
           );
         })}
