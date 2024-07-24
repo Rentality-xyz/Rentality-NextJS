@@ -234,7 +234,7 @@ export default function Search() {
                 }
               />
               <div
-                className="absolute left-1/2 transform -translate-x-1/2 flex justify-center items-center xl:hidden z-[99] w-[48px] h-[48px] cursor-pointer bg-[url('../images/ellipseUpBtn.png')] bg-cover bg-no-repeat bg-center"
+                className="absolute left-1/2 transform -translate-x-1/2 flex justify-center items-center xl:hidden w-[48px] h-[48px] cursor-pointer bg-[url('../images/ellipseUpBtn.png')] bg-cover bg-no-repeat bg-center"
                 onClick={handleArrowClick}
               >
                 <Image
