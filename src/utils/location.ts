@@ -6,8 +6,6 @@ export function formatLocationAddressFromLocationInfo(locationInfo: LocationInfo
 }
 
 export function formatLocationAddress(address: string, country: string, state: string, city: string) {
-  console.debug(`formatLocationAddress input: ${address}`);
-
   const addressArray = address.split(",").map((i) => i.trim());
 
   if (addressArray.length === 0) return "";
