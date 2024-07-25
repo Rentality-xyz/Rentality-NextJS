@@ -10,17 +10,19 @@ export function formatLocationAddress(address: string, country: string, state: s
 
   const addressArray = address.split(",").map((i) => i.trim());
 
-  if (addressArray.length >= 1) {
-    addressArray[addressArray.length - 1] = country;
-  }
-  if (addressArray.length >= 2) {
-    addressArray[addressArray.length - 2] = state;
-  }
-  if (addressArray.length >= 3) {
-    addressArray[addressArray.length - 3] = city;
-  }
+  if (addressArray.length === 0) return "";
+  if (addressArray.length === 1) return country;
+  if (addressArray.length === 2) return `${state}, ${country}`;
 
-  console.debug(`formatLocationAddress output: ${addressArray.join(", ")}`);
+  const indexOfCity = addressArray.indexOf(city);
+  const isFixibleAddress = indexOfCity === addressArray.length - 3 || indexOfCity === addressArray.length - 2;
+
+  if (!isFixibleAddress) return `${city}, ${state}, ${country}`;
+
+  addressArray[indexOfCity + 1] = state;
+  addressArray[indexOfCity + 2] = country;
+
+  console.log(`formatLocationAddress call. Input:${address} | Output: ${addressArray.join(", ")}`);
   return addressArray.join(", ");
 }
 
