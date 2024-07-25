@@ -106,6 +106,7 @@ export default function CarEditForm({
   const isElectricEngine = engineTypeText === "Electro";
   const image = watch("image");
   const isLocationEdited = watch("isLocationEdited");
+  const locationInfo = watch("locationInfo");
 
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
@@ -503,7 +504,7 @@ export default function CarEditForm({
               label={t_car("country")}
               placeholder="USA"
               readOnly={true}
-              {...register("locationInfo.country")}
+              value={locationInfo.country}
             />
             <RntInput
               className="lg:w-40"
@@ -511,7 +512,7 @@ export default function CarEditForm({
               label={t_car("state")}
               placeholder="e.g. Florida"
               readOnly={true}
-              {...register("locationInfo.state")}
+              value={locationInfo.state}
             />
             <RntInput
               className="lg:w-40"
@@ -519,7 +520,7 @@ export default function CarEditForm({
               label={t_car("city")}
               placeholder="e.g. Miami"
               readOnly={true}
-              {...register("locationInfo.city")}
+              value={locationInfo.city}
             />
             <RntInput
               className="w-[48%] lg:w-60"
@@ -527,7 +528,7 @@ export default function CarEditForm({
               label={t_car("location_lat")}
               placeholder="e.g. 42.123456"
               readOnly={true}
-              {...register("locationInfo.latitude", { valueAsNumber: true })}
+              value={locationInfo.latitude}
             />
             <RntInput
               className="w-[48%] lg:w-60"
@@ -535,7 +536,7 @@ export default function CarEditForm({
               label={t_car("location_long")}
               placeholder="e.g. 42.123456"
               readOnly={true}
-              {...register("locationInfo.longitude", { valueAsNumber: true })}
+              value={locationInfo.longitude}
             />
           </div>
         </div>
