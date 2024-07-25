@@ -49,7 +49,7 @@ const defaultCarEditFormSchema = z.object({
 
   image: z.string().min(1, "Please, download an image"),
 
-  name: z.string().min(1, "Name is too short").max(15, "Name is too long"),
+  name: z.string().min(1, "Name is too short").max(25, "Name is too long"),
   licensePlate: z.string().min(1, "License plate is too short").max(15, "License plate is too long"),
   licenseState: z.string().min(1, "License state is too short").max(50, "License state is too long"),
   engineTypeText: z.union([z.literal(ENGINE_TYPE_PETROL_STRING), z.literal(ENGINE_TYPE_ELECTRIC_STRING)]),
