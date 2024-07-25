@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { createRoot, Root } from "react-dom/client";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
@@ -9,39 +9,56 @@ export default function Marker({
   position,
   onClick,
   markerClusterer,
+  isSelected,
   children,
 }: {
   map: google.maps.Map;
   position: google.maps.LatLngLiteral;
   onClick: (...args: any[]) => void;
   markerClusterer: MarkerClusterer;
+  isSelected: boolean;
   children: React.ReactNode;
 }) {
-  const markerRef = useRef<AdvancedMarkerElement>();
+  const [markerRef, setMarkerRef] = useState<AdvancedMarkerElement|null>(null);
   const rootRef = useRef<Root>();
+  
+  useEffect(() => {
+	  var advancedMarker = markerRef;
+	  
+	  if(advancedMarker){
+	     advancedMarker.map = null;
+	  }
+  
+	  const container = document.createElement("div");
+	  rootRef.current = createRoot(container);
+	  advancedMarker = new google.maps.marker.AdvancedMarkerElement({
+	    position,
+	    content: container,
+	    gmpClickable: true,
+	    zIndex : isSelected ? 20 : 0
+	  })
+	  advancedMarker.addListener("click", onClick);
+	  if (markerClusterer) {
+	    markerClusterer.addMarker(advancedMarker);
+	  }
+	  
+	  setMarkerRef(advancedMarker);
+    
+  }, [isSelected]);
 
   useEffect(() => {
-    if (!rootRef.current) {
-      const container = document.createElement("div");
-      rootRef.current = createRoot(container);
-      markerRef.current = new google.maps.marker.AdvancedMarkerElement({
-        position,
-        content: container,
-        gmpClickable: true,
-      });
-      markerRef.current.addListener("click", onClick);
-      if (markerClusterer) {
-        markerClusterer.addMarker(markerRef.current);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!markerRef.current || !rootRef.current) return;
+    if (!markerRef || !rootRef.current) return;
+    
     rootRef.current.render(children);
-    markerRef.current.position = position;
-    markerRef.current.map = map;
-  }, [map, position, children]);
+      
+    const newMarker = markerRef;
+    
+    newMarker.position = position;
+    newMarker.map = map;
+    
+    setMarkerRef(newMarker);
+    
+  }, [map, position, children, isSelected]);
 
   return <></>;
 }

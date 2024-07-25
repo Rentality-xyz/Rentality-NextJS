@@ -112,7 +112,7 @@ export default function CarSearchMap({
     const bounds = new google.maps.LatLngBounds();
     bounds.extend(new google.maps.LatLng(selectedCar.location.lat, selectedCar.location.lng));
     map.fitBounds(bounds);
-    map.setZoom(11);
+    map.setZoom(18);
   }, [map, selectedCar]);
 
   const onLoad = (map: google.maps.Map) => {
@@ -144,9 +144,9 @@ export default function CarSearchMap({
   }, [carInfos.length, selectedCarID]);
 
   const markerClassName = "text-center text-lg w-24 h-8";
-  const carIdClassName = markerClassName + " text-white buttonGradient rounded-full";
+  const carIdClassName = markerClassName + "z-0 text-white buttonGradient rounded-full";
   const selectedCarIdClassName =
-    markerClassName + " rounded-lg text-black font-medium bg-white border-2 border-[#805FE4]";
+    markerClassName + "z-20 rounded-lg text-black font-medium bg-white border-2 border-[#805FE4]";
 
   return googleMapsAPIIsLoaded ? (
     <GoogleMap
@@ -159,23 +159,26 @@ export default function CarSearchMap({
       onLoad={onLoad}
       onUnmount={onUnload}
     >
-      {carInfos?.map((carInfo: SearchCarInfo) => (
-        <Marker
-          key={carInfo.carId}
-          map={map!}
-          position={carInfo.location}
-          onClick={(e) => setSelected(Number(e.domEvent.target.id))}
-          markerClusterer={markerClusterer.current!}
-        >
-          <div
-            id={carInfo.carId.toString()}
-            // className="text-[#805FE4]"
-            className={selectedCarID == carInfo.carId ? selectedCarIdClassName : carIdClassName}
-          >
-            ${carInfo.pricePerDayWithDiscount}
-          </div>
-        </Marker>
-      ))}
+      {carInfos?.map((carInfo: SearchCarInfo) => {
+		        		  
+		  return (
+	        <Marker
+	          key={carInfo.carId}
+	          map={map!}
+	          position={carInfo.location}
+	          onClick={(e) => setSelected(Number(e.domEvent.target.id))}
+	          markerClusterer={markerClusterer.current!}
+	          isSelected={selectedCarID == carInfo.carId}
+	        >
+	          <div
+	            id={carInfo.carId.toString()}
+	            className={selectedCarID == carInfo.carId ? selectedCarIdClassName : carIdClassName}
+	          >
+	            ${carInfo.pricePerDayWithDiscount}
+	          </div>
+	        </Marker>
+      	)
+      })}
     </GoogleMap>
   ) : (
     <></>

@@ -87,6 +87,18 @@ const useSearchCars = () => {
       }
 
       const availableCarsData = apiJson as SearchCarInfo[];
+          
+	  for(const carInfoI of availableCarsData){
+          for(const carInfoJ of availableCarsData){
+			  if (carInfoI.carId == carInfoJ.carId && 
+			  	carInfoJ.location.lat == carInfoJ.location.lat && 
+			  	carInfoJ.location.lng == carInfoJ.location.lng ){
+			        //update the position of the coincident marker by applying a small multipler to its coordinates
+			        carInfoI.location.lat += (Math.random() -.5) / 4000;// * (Math.random() * (max - min) + min);
+			        carInfoI.location.lng += (Math.random() -.5) / 4000;// * (Math.random() * (max - min) + min);		        				  
+			  }
+		  }
+	  }	  
 
       setSearchResult({
         searchCarRequest: searchCarRequest,
