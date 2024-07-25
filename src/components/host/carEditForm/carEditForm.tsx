@@ -213,7 +213,7 @@ export default function CarEditForm({
       }
       router.push("/host/vehicles");
     } catch (e) {
-      showError("vehicles.saving_failed");
+      showError(t("vehicles.saving_failed"));
     } finally {
       setMessage("");
     }
