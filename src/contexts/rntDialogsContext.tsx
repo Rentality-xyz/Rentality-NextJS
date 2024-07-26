@@ -2,7 +2,7 @@ import RntDialogs from "@/components/common/rntDialogs";
 import { DialogState, defaultDialogState } from "@/model/ui/dialogState";
 import { DialogActions } from "@/utils/dialogActions";
 import { AlertColor } from "@mui/material";
-import { ReactNode, createContext, useCallback, useContext, useState } from "react";
+import { ReactNode, createContext, useCallback, useContext, useMemo, useState } from "react";
 
 interface IRntDialogs {
   showInfo: (message: string, action?: ReactNode) => void;
@@ -17,69 +17,84 @@ const RntDialogsContext = createContext<IRntDialogs | undefined>(undefined);
 export const RntDialogsProvider = ({ children }: { children?: React.ReactNode }) => {
   const [dialogState, setDialogState] = useState<DialogState>(defaultDialogState);
 
-  const showInfo = (message: string, action?: ReactNode) => {
-    setDialogState({
-      ...dialogState,
-      message: message,
-      action: action,
-      alertColor: "info",
-      isOpen: true,
+  const showInfo = useCallback((message: string, action?: ReactNode) => {
+    setDialogState((prev) => {
+      return {
+        ...prev,
+        message: message,
+        action: action,
+        alertColor: "info",
+        isOpen: true,
+      };
     });
-  };
+  }, []);
 
-  const showError = (message: string, action?: ReactNode) => {
-    setDialogState({
-      ...dialogState,
-      message: message,
-      action: action,
-      alertColor: "error",
-      isOpen: true,
+  const showError = useCallback((message: string, action?: ReactNode) => {
+    setDialogState((prev) => {
+      return {
+        ...prev,
+        message: message,
+        action: action,
+        alertColor: "error",
+        isOpen: true,
+      };
     });
-  };
+  }, []);
 
-  const showCustomDialog = (customForm: ReactNode) => {
-    setDialogState({
-      ...dialogState,
-      customForm: customForm,
-      isDialog: true,
-      isOpen: true,
+  const showCustomDialog = useCallback((customForm: ReactNode) => {
+    setDialogState((prev) => {
+      return {
+        ...prev,
+        customForm: customForm,
+        isDialog: true,
+        isOpen: true,
+      };
     });
-  };
+  }, []);
 
-  const showDialog = (message: string, action?: ReactNode) => {
-    setDialogState({
-      ...dialogState,
-      message: message,
-      action: action ?? DialogActions.OK(hideSnackbar),
-      isDialog: true,
-      isOpen: true,
-    });
-  };
+  const hideSnackbar = useCallback(() => {
+    setDialogState(defaultDialogState);
+  }, []);
 
-  const showMessager = (message: string, color: AlertColor | undefined, action?: ReactNode) => {
+  const showDialog = useCallback(
+    (message: string, action?: ReactNode) => {
+      setDialogState((prev) => {
+        return {
+          ...prev,
+          message: message,
+          action: action ?? DialogActions.OK(hideSnackbar),
+          isDialog: true,
+          isOpen: true,
+        };
+      });
+    },
+    [hideSnackbar]
+  );
+
+  const showMessager = useCallback((message: string, color: AlertColor | undefined, action?: ReactNode) => {
     if (color === undefined) {
       color = "info";
     }
-    setDialogState({
-      ...dialogState,
-      message: message,
-      action: action,
-      alertColor: color,
-      isOpen: true,
+    setDialogState((prev) => {
+      return {
+        ...prev,
+        message: message,
+        action: action,
+        alertColor: color,
+        isOpen: true,
+      };
     });
-  };
+  }, []);
 
-  const hideSnackbar = () => {
-    setDialogState(defaultDialogState);
-  };
-
-  const value: IRntDialogs = {
-    showInfo: showInfo,
-    showError: showError,
-    showDialog: showDialog,
-    showCustomDialog: showCustomDialog,
-    hideDialogs: hideSnackbar,
-  };
+  const value: IRntDialogs = useMemo(() => {
+    return {
+      showInfo: showInfo,
+      showError: showError,
+      showDialog: showDialog,
+      showCustomDialog: showCustomDialog,
+      hideDialogs: hideSnackbar,
+    };
+  }, [showInfo, showError, showDialog, showCustomDialog, hideSnackbar]);
 
   return (
     <>
