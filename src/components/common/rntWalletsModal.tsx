@@ -1,13 +1,10 @@
 import * as React from "react";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import RntButton from "./rntButton";
 import { TripInfo } from "@/model/TripInfo";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import Image from "next/image";
 import imgCopy from "@/images/ic_copy_24dp.svg";
+import { Dialog, DialogActions, DialogContent, DialogContentText } from "@mui/material";
 
 export default function RntWalletsModal({ tripInfo }: { tripInfo: TripInfo }) {
   const [open, setOpen] = React.useState(false);

@@ -1,7 +1,6 @@
 import React, { MutableRefObject, memo, useState } from "react";
-import { TripInfo, getRefuelValueAndCharge } from "@/model/TripInfo";
+import { TripInfo, getRefuelCharge } from "@/model/TripInfo";
 import RntCheckbox from "../common/rntCheckbox";
-import { calculateDays } from "@/utils/date";
 import RntSelect from "../common/rntSelect";
 import RntInput from "../common/rntInput";
 import RntButton from "../common/rntButton";
@@ -39,7 +38,7 @@ function TripAdditionalActions({
   const [confirmParams, setConfirmParams] = useState<boolean[]>([]);
   const { showDialog } = useRntDialogs();
 
-  const { refuelValue, refuelCharge } = getRefuelValueAndCharge(tripInfo, tripInfo.endFuelLevelInPercents);
+  const refuelCharge = getRefuelCharge(tripInfo, tripInfo.endFuelLevelInPercents);
 
   const handleButtonClick = () => {
     if (tripInfo == null || tripInfo.allowedActions == null || tripInfo.allowedActions.length == 0) {
@@ -147,8 +146,8 @@ function TripAdditionalActions({
                     {tripInfo.allowedActions[0].readonly ? (
                       <RntCheckbox
                         className="ml-4"
-                        title={t("common.confirm")}
-                        value={confirmParams[index]}
+                        label={t("common.confirm")}
+                        checked={confirmParams[index]}
                         onChange={(newValue) => {
                           setConfirmParams((prev) => {
                             const copy = [...prev];
@@ -164,13 +163,13 @@ function TripAdditionalActions({
                     param.type === "fuel" ? (
                       <div className="md:w-1/2 xl:w-1/4 md:mx-8 xl:mx-28 grid grid-cols-2 text-sm">
                         <span className="font-bold col-span-2">{t("booked.reimbursement")}</span>
-                        <span>{t("booked.refuel")}</span>
-                        <span>
-                          {refuelValue} {t("booked.refuel_measure")}
-                        </span>
-                        <span>{t("booked.gal_price")}</span>
-                        <span>${displayMoneyWith2Digits(tripInfo.fuelPricePerGal)}</span>
-                        <span>{t("booked.refuel_or_battery")}</span>
+                        <span>{t("booked.pickUp_fuel")}</span>
+                        <span>{tripInfo.startFuelLevelInPercents}%</span>
+                        <span>{t("booked.dropOff_fuel")}</span>
+                        <span>{tripInfo.endFuelLevelInPercents}%</span>
+                        <span>{t("booked.price_per_10_percents")}</span>
+                        <span>${displayMoneyWith2Digits(tripInfo.pricePer10PercentFuel)}</span>
+                        <span>{t("booked.total_refuel_charge")}</span>
                         <span>${displayMoneyWith2Digits(refuelCharge)}</span>
                       </div>
                     ) : (
@@ -178,7 +177,7 @@ function TripAdditionalActions({
                         <span>{t("booked.overmiles")}</span>
                         <span>{tripInfo.overmileValue}</span>
                         <span>{t("booked.overmile_price")}</span>
-                        <span>${tripInfo.overmilePrice.toFixed(4)}</span>
+                        <span>${displayMoneyWith2Digits(tripInfo.overmilePrice)}</span>
                         <span>{t("booked.overmile_charge")}</span>
                         <span>${displayMoneyWith2Digits(tripInfo.overmileValue * tripInfo.overmilePrice)}</span>
                       </div>

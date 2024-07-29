@@ -3,7 +3,7 @@ import TripDiscountsForm from "@/components/host/tripDiscountsForm";
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import UserProfileInfo from "@/components/profileInfo/userProfileInfo";
-import ProfileRnD from "@/components/RnD/profileRnD";
+import AddFunds from "@/components/RnD/AddFunds";
 import useDeliveryPrices from "@/hooks/host/useDeliveryPrices";
 import useTripDiscounts from "@/hooks/host/useTripDiscounts";
 import useProfileSettings from "@/hooks/useProfileSettings";
@@ -33,7 +33,7 @@ export default function Profile() {
               isHost={true}
               t={t}
             />
-            <div className="flex flex-wrap gap-20">
+            <div className="flex flex-col min-[560px]:flex-row min-[560px]:gap-20">
               <TripDiscountsForm
                 savedTripsDiscounts={savedTripsDiscounts}
                 saveTripsDiscounts={saveTripDiscounts}
@@ -48,7 +48,7 @@ export default function Profile() {
               />
             </div>
 
-            <ProfileRnD />
+            <AddFunds />
           </>
         )}
       </div>

@@ -16,6 +16,7 @@ import arrowUpTurquoise from "../../images/arrowUpTurquoise.svg";
 import arrowDownTurquoise from "../../images/arrowDownTurquoise.svg";
 import Image from "next/image";
 import SearchDeliveryLocations from "@/components/search/searchDeliveryLocations";
+import {useAppContext} from "@/contexts/appContext";
 
 function formatLocation(city: string, state: string, country: string) {
   city = city != null && city.length > 0 ? city + ", " : "";
@@ -131,11 +132,14 @@ export default function SearchAndFilters({
     });
   };
 
+  const { toggleFilterOnSearchPage } = useAppContext();
+
   return (
     <>
       <div className="search my-2 flex flex-col xl:flex-row gap-4 xl:items-end">
         <RntPlaceAutoComplete
           className="xl:w-2/3"
+          labelClassName="pl-[18px]"
           id="location"
           label={t_comp("location_label")}
           placeholder={t_comp("location_placeholder")}
@@ -170,6 +174,8 @@ export default function SearchAndFilters({
         <div className="flex flex-col md:flex-row gap-4 md:items-end md:justify-between xl:justify-around">
           <RntInput
             className="basis-1/2"
+            inputClassName="pr-4"
+            labelClassName="pl-[18px]"
             id="dateFrom"
             label={`${t_comp("datetime_from")} ${gmtLabel}`}
             type="datetime-local"
@@ -178,6 +184,8 @@ export default function SearchAndFilters({
           />
           <RntInput
             className="basis-1/2"
+            inputClassName="pr-4"
+            labelClassName="pl-[18px]"
             id="dateTo"
             label={`${t_comp("datetime_to")} ${gmtLabel}`}
             type="datetime-local"
@@ -191,7 +199,13 @@ export default function SearchAndFilters({
       </div>
       <div className="flex flex-col">
         <div className="flex flex-wrap items-center gap-4 mt-4">
-          <RntButton className="w-40 " onClick={() => setOpenFilterPanel(true)}>
+          <RntButton
+              className="w-40 "
+              onClick={() => {
+                setOpenFilterPanel(true);
+                toggleFilterOnSearchPage();
+              }}
+          >
             {t_comp("button_filter")}
           </RntButton>
           <RntSelect

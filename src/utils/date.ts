@@ -1,4 +1,4 @@
-export const UTC_TIME_ZONE_ID = "Europe/London";
+export const UTC_TIME_ZONE_ID = "Etc/UTC";
 
 export const calculateDays = (dateFrom: Date, dateTo: Date) => {
   let difference = dateTo.getTime() - dateFrom.getTime();

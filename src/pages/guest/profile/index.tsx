@@ -1,7 +1,7 @@
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import UserProfileInfo from "@/components/profileInfo/userProfileInfo";
-import ProfileRnD from "@/components/RnD/profileRnD";
+import AddFunds from "@/components/RnD/AddFunds";
 import useProfileSettings from "@/hooks/useProfileSettings";
 import { useTranslation } from "react-i18next";
 
@@ -25,7 +25,7 @@ export default function Profile() {
               isHost={false}
               t={t}
             />
-            <ProfileRnD />
+            <AddFunds />
           </>
         )}
       </div>

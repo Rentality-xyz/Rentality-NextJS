@@ -1,6 +1,7 @@
 import { isEmpty } from "@/utils/string";
 import { forwardRef, useId } from "react";
 import { twMerge } from "tailwind-merge";
+import RntValidationError from "./RntValidationError";
 
 interface RntInputProps extends React.ComponentPropsWithoutRef<"input"> {
   labelClassName?: string;
@@ -39,7 +40,6 @@ const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
       "w-full h-12 border-2 rounded-full pl-4 disabled:bg-gray-300 disabled:text-gray-600",
       inputClassName
     );
-    const vClassName = twMerge("text-red-400 mt-2", validationClassName);
 
     return (
       <div className={cClassName}>
@@ -62,8 +62,7 @@ const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
           {...rest}
           ref={ref}
         />
-
-        {!isEmpty(validationError) && <p className={vClassName}>* {validationError}</p>}
+        <RntValidationError className={validationClassName} validationError={validationError} />
       </div>
     );
   }

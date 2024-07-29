@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 import { ChatInfo } from "@/model/ChatInfo";
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
+import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
 import { useRentality } from "../../rentalityContext";
 import { isEmpty } from "@/utils/string";
@@ -25,6 +25,7 @@ import {
 } from "@/chat/model/firebaseTypes";
 import { ChatMessage } from "@/model/ChatMessage";
 import { bigIntReplacer } from "@/utils/json";
+import { usePrivy } from "@privy-io/react-auth";
 
 export type ChatKeysContextInfo = {
   isLoading: boolean;
@@ -73,6 +74,7 @@ export function useChat() {
 }
 
 export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode }) => {
+  const { authenticated } = usePrivy();
   const ethereumInfo = useEthereum();
 
   /// Chat client
@@ -140,7 +142,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
             ? []
             : await Promise.all(
                 chatInfosViewSorted.map(async (ci: ContractChatInfo) => {
-                  const meta = await getMetaDataFromIpfs(ci.carMetadataUrl);
+                  const metaData = parseMetaData(await getMetaDataFromIpfs(ci.carMetadataUrl));
                   const tripStatus = ci.tripStatus;
 
                   let item: ChatInfo = {
@@ -162,10 +164,10 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
                     updatedAt: moment.unix(0).toDate(),
                     isSeen: true,
 
-                    carPhotoUrl: getIpfsURIfromPinata(meta.image),
+                    carPhotoUrl: getIpfsURIfromPinata(metaData.image),
                     tripStatus: tripStatus,
                     carTitle: `${ci.carBrand} ${ci.carModel} ${ci.carYearOfProduction}`,
-                    carLicenceNumber: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
+                    carLicenceNumber: metaData.licensePlate,
 
                     messages: [],
                   };
@@ -203,11 +205,11 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
       if (!rentalityContract) return;
 
       const tripId = BigInt(args[0]);
-      console.log(`tripCreatedListener call. TripId: ${tripId}`);
+      console.debug(`tripCreatedListener call. TripId: ${tripId}`);
 
       try {
         const tripInfo: ContractTripDTO = await rentalityContract.getTrip(tripId);
-        const meta = await getMetaDataFromIpfs(tripInfo.metadataURI);
+        const metaData = parseMetaData(await getMetaDataFromIpfs(tripInfo.metadataURI));
         const tripStatus = tripInfo.trip.status;
 
         setChatInfos((prev) => {
@@ -236,10 +238,10 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
               updatedAt: moment.unix(0).toDate(),
               isSeen: true,
 
-              carPhotoUrl: getIpfsURIfromPinata(meta.image),
+              carPhotoUrl: getIpfsURIfromPinata(metaData.image),
               tripStatus: tripStatus,
               carTitle: `${tripInfo.brand} ${tripInfo.model} ${tripInfo.yearOfProduction}`,
-              carLicenceNumber: meta.attributes?.find((x: any) => x.trait_type === "License plate")?.value ?? "",
+              carLicenceNumber: metaData.licensePlate,
 
               messages: [],
             },
@@ -259,7 +261,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
       const tripId = Number(args[0]);
       const tripStatus: TripStatus = BigInt(args[1]);
 
-      console.log(`tripStatusChangedListener call. TripId: ${tripId} status: ${tripStatus}`);
+      console.debug(`tripStatusChangedListener call. TripId: ${tripId} status: ${tripStatus}`);
 
       setChatInfos((prev) => {
         const result = prev.map((ci) => (ci.tripId === tripId ? { ...ci, tripStatus: tripStatus } : ci));
@@ -333,7 +335,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
     markUserChatAsSeen(db, ethereumInfo.walletAddress, chatId);
 
     const chatsRef = doc(db, FIREBASE_DB_NAME.chats, chatId.toString());
-    console.log(`Sub for chat ${chatId.toString()}`);
+    console.debug(`Sub for chat ${chatId.toString()}`);
     const unSub = onSnapshot(chatsRef, (res) => {
       const data = res.data();
       if (!data) return;
@@ -369,7 +371,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
     return () => {
       if (unSub) {
-        console.log(`Unsub from chat ${chatId.toString()}`);
+        console.debug(`Unsub from chat ${chatId.toString()}`);
 
         unSub();
       }
@@ -436,13 +438,10 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
         const chatsRef = doc(db, FIREBASE_DB_NAME.userchats, ethereumInfo.walletAddress);
 
-        console.log("Sub for userchats");
+        console.debug("Sub for userchats");
         unSub = onSnapshot(chatsRef, (res) => {
           const data = res.data();
           if (!data) return;
-
-          console.log(`userchats update. Data: ${JSON.stringify(data, bigIntReplacer)}`);
-
           const userChats: FirebaseUserChat[] = data.userChats.map(
             (cm: { chatId: string; senderId: string; lastMessages: string; updatedAt: number; isSeen: boolean }) => {
               return { ...cm, chatId: ChatId.parse(cm.chatId) } as FirebaseUserChat;
@@ -495,7 +494,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         rentalityTripService.removeAllListeners();
       }
       if (unSub) {
-        console.log("unSub for userchats");
+        console.debug("unSub for userchats");
         unSub();
       }
     };
@@ -509,6 +508,13 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
     tripStatusChangedListener,
     isChatReloadRequire,
   ]);
+
+  useEffect(() => {
+    if (!authenticated && chatInfos.length > 0) {
+      console.debug(`User has logged out. Reset chatInfos`);
+      setChatInfos([]);
+    }
+  }, [authenticated, chatInfos]);
 
   function updateAllChats() {
     setIsChatReloadRequire(true);

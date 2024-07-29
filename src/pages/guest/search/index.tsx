@@ -175,10 +175,10 @@ export default function Search() {
           <div className="flex gap-3 max-xl:flex-col-reverse">
             <div className="xl:w-8/12 2xl:w-7/12 fullHD:w-6/12 my-4 flex flex-col gap-4 h-full">
               {isLoading ? (
-                <div>Loading...</div>
+                <div className="pl-[18px]">Loading...</div>
               ) : (
                 <>
-                  <div className="text-l font-bold">
+                  <div className="text-l font-bold pl-[18px]">
                     {searchResult?.carInfos?.length ?? 0} {t_page("info.cars_available")}
                   </div>
                   {searchResult?.carInfos?.length > 0 ? (
@@ -208,7 +208,7 @@ export default function Search() {
                         );
                       })
                   ) : (
-                    <div className="flex max-w-screen-xl flex-wrap justify-between text-center xl:h-full">
+                    <div className="flex max-w-screen-xl flex-wrap justify-between text-center xl:h-full pl-[18px]">
                       {t_page("info.no_cars")}
                     </div>
                   )}
@@ -234,7 +234,7 @@ export default function Search() {
                 }
               />
               <div
-                className="absolute left-1/2 transform -translate-x-1/2 flex justify-center items-center xl:hidden z-[99] w-[48px] h-[48px] cursor-pointer bg-[url('../images/ellipseUpBtn.png')] bg-cover bg-no-repeat bg-center"
+                className="absolute left-1/2 transform -translate-x-1/2 flex justify-center items-center xl:hidden w-[48px] h-[48px] cursor-pointer bg-[url('../images/ellipseUpBtn.png')] bg-cover bg-no-repeat bg-center"
                 onClick={handleArrowClick}
               >
                 <Image

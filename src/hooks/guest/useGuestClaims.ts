@@ -12,11 +12,10 @@ import {
 } from "@/model/blockchain/schemas";
 import { validateContractFullClaimInfo, validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
-import encodeClaimChatMessage from "@/components/chat/utils";
 import { useChat } from "@/contexts/chat/firebase/chatContext";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { SMARTCONTRACT_VERSION } from "@/abis";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs } from "@/utils/ipfsUtils";
+import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 
 const useGuestClaims = () => {
@@ -178,22 +177,13 @@ const useGuestClaims = () => {
                     validateContractTripDTO(i);
                   }
 
-                  const meta = await getMetaDataFromIpfs(i.metadataURI);
-
-                  const brand = i.brand ?? meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "";
-                  const model = i.model ?? meta.attributes?.find((x: any) => x.trait_type === "Model")?.value ?? "";
-                  const year =
-                    i.yearOfProduction?.toString() ??
-                    meta.attributes?.find((x: any) => x.trait_type === "Release year")?.value ??
-                    "";
-                  const guestName = i.trip.guestName;
                   const tripStart = getDateFromBlockchainTimeWithTZ(i.trip.startDateTime, i.timeZoneId);
                   const tripEnd = getDateFromBlockchainTimeWithTZ(i.trip.endDateTime, i.timeZoneId);
 
                   let item: TripInfoForClaimCreation = {
                     tripId: Number(i.trip.tripId),
                     guestAddress: i.trip.guest,
-                    tripDescription: `${brand} ${model} ${year} ${guestName} trip ${dateRangeFormatShortMonthDateYear(
+                    tripDescription: `${i.brand} ${i.model} ${i.yearOfProduction} ${i.trip.guestName} trip ${dateRangeFormatShortMonthDateYear(
                       tripStart,
                       tripEnd,
                       i.timeZoneId

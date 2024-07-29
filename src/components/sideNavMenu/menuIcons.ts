@@ -9,6 +9,7 @@ import icMessages from "@/images/ic_messages.png";
 import icNotifications from "@/images/ic_notifications.png";
 import icProfileSettings from "@/images/ic_profile_settings.png";
 import icTransactionHistory from "@/images/ic_transaction_history.png";
+import icSearch from "@/images/ic-search-128.svg";
 
 enum MenuIcons {
   Booked,
@@ -21,6 +22,7 @@ enum MenuIcons {
   Notifications,
   ProfileSettings,
   TransactionHistory,
+  Search,
 }
 
 export const getImageForMenu = (state: MenuIcons): StaticImageData => {
@@ -45,6 +47,8 @@ export const getImageForMenu = (state: MenuIcons): StaticImageData => {
       return icProfileSettings;
     case MenuIcons.TransactionHistory:
       return icTransactionHistory;
+    case MenuIcons.Search:
+      return icSearch;
   }
 };
 

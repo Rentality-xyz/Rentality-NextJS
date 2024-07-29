@@ -3,12 +3,15 @@ import { createContext, useContext, useState } from "react";
 interface IAppContext {
   isHideBurgerMenu: boolean;
   toggleBurgerMenu: () => void;
+  isHideFilterOnSearchPage: boolean;
+  toggleFilterOnSearchPage: () => void;
 }
 
 const AppContext = createContext<IAppContext | undefined>(undefined);
 
 export const AppContextProvider = ({ children }: { children?: React.ReactNode }) => {
   const [isHideBurgerMenu, setIsHideBurgerMenu] = useState(false);
+  const [isHideFilterOnSearchPage,setHideFilterOnSearchPage] = useState(false);
 
   const toggleBurgerMenu = () => {
     setIsHideBurgerMenu((prev) => !prev);
@@ -20,7 +23,17 @@ export const AppContextProvider = ({ children }: { children?: React.ReactNode })
     }
   };
 
-  return <AppContext.Provider value={{ isHideBurgerMenu, toggleBurgerMenu }}>{children}</AppContext.Provider>;
+  const toggleFilterOnSearchPage = () => {
+    setHideFilterOnSearchPage((prev) => !prev);
+    const body = document.body;
+    if (isHideFilterOnSearchPage) {
+      body.classList.remove("overflow-hidden");
+    } else {
+      body.classList.add("overflow-hidden");
+    }
+  };
+
+  return <AppContext.Provider value={{ isHideBurgerMenu, toggleBurgerMenu, isHideFilterOnSearchPage, toggleFilterOnSearchPage }}>{children}</AppContext.Provider>;
 };
 
 export const useAppContext = () => {

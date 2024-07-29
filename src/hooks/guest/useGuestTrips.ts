@@ -17,6 +17,23 @@ const useGuestTrips = () => {
     setUpdateRequired(true);
   };
 
+  const confirmCarDetails = async (tripId: number) => {
+    if (!rentalityContract) {
+      console.error("confirmCarDetails error: rentalityContract is null");
+      return false;
+    }
+
+    try {
+      console.log(`confirmCarDetails error: logic in development`);
+      //const transaction = await rentalityContract.confirmCarDetails(BigInt(tripId));
+      //await transaction.wait();
+      return true;
+    } catch (e) {
+      console.error("confirmCarDetails error:" + e);
+      return false;
+    }
+  };
+
   const isTripBooked = (status: TripStatus) => {
     return status !== TripStatus.Rejected && status !== TripStatus.Closed;
   };
@@ -186,9 +203,13 @@ const useGuestTrips = () => {
                   if (index === 0) {
                     validateContractTripDTO(i);
                   }
-                  const tripContactInfo = await rentalityContract.getTripContactInfo(i.trip.carId);
 
-                  const item = await mapTripDTOtoTripInfo(i, tripContactInfo);
+                  let isCarDetailsConfirmed = false;
+                  // try {
+                  //   isCarDetailsConfirmed = await rentalityContract.isCarDetailsConfirmed(i.trip.carId);
+                  // } catch (ex) {}
+
+                  const item = await mapTripDTOtoTripInfo(i, isCarDetailsConfirmed);
                   item.allowedActions = getAllowedActions(item.status, i.trip);
 
                   return item;
@@ -228,7 +249,7 @@ const useGuestTrips = () => {
       .catch(() => setIsLoading(false));
   }, [updateRequired, rentalityContract]);
 
-  return [isLoading, tripsBooked, tripsHistory, updateData] as const;
+  return { isLoading, tripsBooked, tripsHistory, updateData, confirmCarDetails } as const;
 };
 
 export default useGuestTrips;

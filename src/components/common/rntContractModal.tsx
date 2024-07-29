@@ -1,21 +1,12 @@
 import * as React from "react";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
+import { Dialog, DialogActions, DialogContent, DialogContentText } from "@mui/material";
 import RntButton from "./rntButton";
 import { TripInfo } from "@/model/TripInfo";
 import moment from "moment";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
-import {
-  dateFormatLongMonthDateTime,
-  dateFormatLongMonthYearDateTime,
-  dateFormatShortMonthDateYear,
-  dateFormatYearMonthDay,
-} from "@/utils/datetimeFormatters";
+import { dateFormatLongMonthYearDateTime, dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { getMilesIncludedPerDayText, isUnlimitedMiles } from "@/model/HostCarInfo";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
-import { EngineType } from "@/model/blockchain/schemas";
 
 export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint; tripInfo: TripInfo }) {
   const [open, setOpen] = React.useState(false);
@@ -27,11 +18,6 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
   const handleClose = () => {
     setOpen(false);
   };
-
-  const pricePer1GalOrBatteryRecharge =
-    tripInfo.engineType === EngineType.PETROL
-      ? tripInfo.fuelPricePerGal
-      : tripInfo.fullBatteryChargePriceInUsdCents / 10;
 
   return (
     <React.Fragment>
@@ -243,11 +229,12 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                 <div className="">
                   {isUnlimitedMiles(tripInfo.milesIncludedPerDay)
                     ? `Price per 1 overmile: ${getMilesIncludedPerDayText(tripInfo.milesIncludedPerDay)} miles`
-                    : `Price per 1 overmile: ETH ${tripInfo.overmilePrice / tripInfo.currencyRate} (USD ${tripInfo.overmilePrice})`}
+                    : `Price per 1 overmile: ETH ${tripInfo.overmilePrice / tripInfo.currencyRate} (USD ${displayMoneyWith2Digits(tripInfo.overmilePrice)})`}
                 </div>
                 <div className="">
-                  Price per 1 gallon or 10% battery recharge: ETH{" "}
-                  {pricePer1GalOrBatteryRecharge / tripInfo.currencyRate} (USD {pricePer1GalOrBatteryRecharge})
+                  Price for each 10% battery charge or tank refueling: ETH{" "}
+                  {tripInfo.pricePer10PercentFuel / tripInfo.currencyRate} (USD{" "}
+                  {displayMoneyWith2Digits(tripInfo.pricePer10PercentFuel)})
                 </div>
               </div>
               <div className="flex flex-col m-4">

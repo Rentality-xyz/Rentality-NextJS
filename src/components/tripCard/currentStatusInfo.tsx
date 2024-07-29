@@ -70,9 +70,7 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean, isFinishin
               ? "booked.status_trip_started_guest_ends"
               : "booked.status_trip_started_guest_ended",
             {
-              date: isInTheFuture(tripInfo.tripEnd)
-                ? moment(tripInfo.tripEnd).fromNow()
-                : moment(tripInfo.tripEnd).toNow(),
+              date: moment(tripInfo.tripEnd).fromNow(),
               returnObjects: true,
             } as const
           );

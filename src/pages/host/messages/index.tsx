@@ -1,4 +1,4 @@
-import ChatPage from "@/components/chat/chatPage";
+import ChatPage from "@/components/chat/ChatPage";
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import { useChat, useChatKeys } from "@/contexts/chat/firebase/chatContext";

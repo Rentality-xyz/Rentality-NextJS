@@ -1,10 +1,6 @@
 import * as React from "react";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import RntButton from "./rntButton";
-import { DialogTitle } from "@mui/material";
 import tripRulesNoSmoking from "@/images/trip_rules_no_smoking.png";
 import tripRulesNoStartReturn from "@/images/trip_rules_start_return.png";
 import tripRulesLicense from "@/images/trip_rules_license.png";

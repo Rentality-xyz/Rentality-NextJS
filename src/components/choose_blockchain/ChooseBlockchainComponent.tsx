@@ -77,7 +77,7 @@ export default function ChooseBlockchainComponent() {
           <Image src={isShowComponentList ? arrowUp : arrowDown} alt="" className="ml-1" />
         </Button>
         {isShowComponentList && (
-          <Stack className="w-[220px] absolute top-[2.5rem] left-auto right-0 z-50 bg-[#1E1E30] rounded-xl border-2 border-[#373737]">
+          <div className="w-[220px] absolute top-[2.5rem] left-auto right-0 z-50 bg-[#1E1E30] rounded-xl border-2 border-[#373737]">
             {getExistBlockchainList().map((i) => {
               return (
                 <Button
@@ -96,13 +96,13 @@ export default function ChooseBlockchainComponent() {
                     height={24}
                   />
                   <span className="whitespace-nowrap">{i.shortName}</span>
-                  <Stack className="w-full flex items-end">
+                  <div className="w-full flex items-end">
                     {selectedBlockchain == i && <Image src={blockchainChosen} alt="" className="mr-0" />}
-                  </Stack>
+                  </div>
                 </Button>
               );
             })}
-          </Stack>
+          </div>
         )}
       </Stack>
     </div>

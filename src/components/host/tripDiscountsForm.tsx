@@ -1,9 +1,12 @@
 import RntButton from "@/components/common/rntButton";
 import RntInput from "@/components/common/rntInput";
-import { FormEvent, memo, useState } from "react";
+import { memo } from "react";
 import { TFunction } from "@/utils/i18n";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { DiscountFormValues } from "@/hooks/host/useTripDiscounts";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { tripDiscountsFormSchema, TripDiscountsFormValues } from "./tripDiscountsFormSchema";
 
 function TripDiscountsForm({
   savedTripsDiscounts,
@@ -16,38 +19,34 @@ function TripDiscountsForm({
   isUserHasHostRole: boolean;
   t: TFunction;
 }) {
-  const [enteredFormData, setEnteredFormData] = useState<DiscountFormValues>(savedTripsDiscounts);
   const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
+  const { register, handleSubmit, formState } = useForm<TripDiscountsFormValues>({
+    defaultValues: {
+      discount3DaysAndMoreInPercents: savedTripsDiscounts.discount3DaysAndMoreInPercents,
+      discount7DaysAndMoreInPercents: savedTripsDiscounts.discount7DaysAndMoreInPercents,
+      discount30DaysAndMoreInPercents: savedTripsDiscounts.discount30DaysAndMoreInPercents,
+    },
+    resolver: zodResolver(tripDiscountsFormSchema),
+  });
+  const { errors, isSubmitting } = formState;
 
   const t_profile: TFunction = (name, options) => {
     return t("profile." + name, options);
   };
 
-  const errors = getErrors(enteredFormData);
-
-  async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const name = e.target.name;
-    setEnteredFormData({ ...enteredFormData, [name]: Number(e.target.value) ?? 0 });
-  }
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
+  async function onFormSubmit(formData: TripDiscountsFormValues) {
     if (!isUserHasHostRole) {
       showDialog(t_profile("save_discount_err_is_not_host"));
       return;
     }
 
-    const isValid = Object.keys(errors).length === 0;
-
-    if (!isValid) {
-      showDialog(t("common.info.fill_fields"));
-      return;
-    }
-
     try {
       showInfo(t("common.info.sign"));
-      const result = await saveTripsDiscounts(enteredFormData);
+      const result = await saveTripsDiscounts({
+        discount3DaysAndMoreInPercents: formData.discount3DaysAndMoreInPercents,
+        discount7DaysAndMoreInPercents: formData.discount7DaysAndMoreInPercents,
+        discount30DaysAndMoreInPercents: formData.discount30DaysAndMoreInPercents,
+      });
 
       hideDialogs();
       if (!result) {
@@ -61,21 +60,8 @@ function TripDiscountsForm({
     }
   }
 
-  function getErrors(formData: DiscountFormValues) {
-    const result: { [key: string]: string } = {};
-
-    if (formData.discount3DaysAndMoreInPercents < 0 || formData.discount3DaysAndMoreInPercents > 100)
-      result.firstName = t_profile("pls_number_percent");
-    if (formData.discount7DaysAndMoreInPercents < 0 || formData.discount7DaysAndMoreInPercents > 100)
-      result.firstName = t_profile("pls_number_percent");
-    if (formData.discount30DaysAndMoreInPercents < 0 || formData.discount30DaysAndMoreInPercents > 100)
-      result.firstName = t_profile("pls_number_percent");
-
-    return result;
-  }
-
   return (
-    <form className="my-4 flex flex-col gap-4" onSubmit={handleSubmit}>
+    <form className="my-4 flex flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
       <fieldset>
         <div className="text-lg mb-4">
           <strong>{t_profile("discounts")}</strong>
@@ -85,27 +71,27 @@ function TripDiscountsForm({
             className="lg:w-60"
             id="discount3DaysAndMoreInPercents"
             label={t_profile("discount_3_and_more")}
-            value={enteredFormData.discount3DaysAndMoreInPercents}
-            onChange={handleChange}
+            {...register("discount3DaysAndMoreInPercents", { valueAsNumber: true })}
+            validationError={errors.discount3DaysAndMoreInPercents?.message?.toString()}
           />
           <RntInput
             className="lg:w-60"
             id="discount7DaysAndMoreInPercents"
             label={t_profile("discount_7_and_more")}
-            value={enteredFormData.discount7DaysAndMoreInPercents}
-            onChange={handleChange}
+            {...register("discount7DaysAndMoreInPercents", { valueAsNumber: true })}
+            validationError={errors.discount7DaysAndMoreInPercents?.message?.toString()}
           />
           <RntInput
             className="lg:w-60"
             id="discount30DaysAndMoreInPercents"
             label={t_profile("discount_30_and_more")}
-            value={enteredFormData.discount30DaysAndMoreInPercents}
-            onChange={handleChange}
+            {...register("discount30DaysAndMoreInPercents", { valueAsNumber: true })}
+            validationError={errors.discount30DaysAndMoreInPercents?.message?.toString()}
           />
         </div>
       </fieldset>
 
-      <RntButton type="submit" className="mt-4">
+      <RntButton type="submit" className="mt-4" disabled={isSubmitting}>
         {t_profile("save_discount")}
       </RntButton>
     </form>
