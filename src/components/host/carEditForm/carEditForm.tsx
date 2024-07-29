@@ -504,7 +504,7 @@ export default function CarEditForm({
               label={t_car("country")}
               placeholder="USA"
               readOnly={true}
-              value={locationInfo.country}
+              value={locationInfo?.country}
             />
             <RntInput
               className="lg:w-40"
@@ -512,7 +512,7 @@ export default function CarEditForm({
               label={t_car("state")}
               placeholder="e.g. Florida"
               readOnly={true}
-              value={locationInfo.state}
+              value={locationInfo?.state}
             />
             <RntInput
               className="lg:w-40"
@@ -520,7 +520,7 @@ export default function CarEditForm({
               label={t_car("city")}
               placeholder="e.g. Miami"
               readOnly={true}
-              value={locationInfo.city}
+              value={locationInfo?.city}
             />
             <RntInput
               className="w-[48%] lg:w-60"
@@ -528,7 +528,7 @@ export default function CarEditForm({
               label={t_car("location_lat")}
               placeholder="e.g. 42.123456"
               readOnly={true}
-              value={locationInfo.latitude}
+              value={locationInfo?.latitude}
             />
             <RntInput
               className="w-[48%] lg:w-60"
@@ -536,7 +536,7 @@ export default function CarEditForm({
               label={t_car("location_long")}
               placeholder="e.g. 42.123456"
               readOnly={true}
-              value={locationInfo.longitude}
+              value={locationInfo?.longitude}
             />
           </div>
         </div>

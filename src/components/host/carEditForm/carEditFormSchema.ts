@@ -1,5 +1,6 @@
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/EngineType";
 import { UNLIMITED_MILES_VALUE_TEXT } from "@/model/HostCarInfo";
+import { emptyLocationInfo } from "@/model/LocationInfo";
 import { TRANSMISSION_AUTOMATIC_STRING, TRANSMISSION_MANUAL_STRING } from "@/model/Transmission";
 import { z } from "zod";
 
@@ -75,7 +76,7 @@ const defaultCarEditFormSchema = z.object({
   description: z.string().min(1, "Description is too short").max(500, "Description is too long"),
 
   isLocationEdited: z.boolean().default(true),
-  locationInfo: locationInfoFormSchema,
+  locationInfo: locationInfoFormSchema.default(emptyLocationInfo),
   milesIncludedPerDay: z
     .number({
       required_error: "Miles included is required",

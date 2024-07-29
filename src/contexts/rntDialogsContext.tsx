@@ -72,15 +72,13 @@ export const RntDialogsProvider = ({ children }: { children?: React.ReactNode })
   );
 
   const showMessager = useCallback((message: string, color: AlertColor | undefined, action?: ReactNode) => {
-    if (color === undefined) {
-      color = "info";
-    }
+    const colorValue = color ?? "info";
     setDialogState((prev) => {
       return {
         ...prev,
         message: message,
         action: action,
-        alertColor: color,
+        alertColor: colorValue,
         isOpen: true,
       };
     });

@@ -25,8 +25,6 @@ let loginWithPassword: (email: string, password: string) => Promise<User | undef
 let logout: () => Promise<void>;
 
 if (!isEmpty(firebaseConfig.projectId)) {
-  console.log(`init app`);
-
   app = initializeApp(firebaseConfig);
   analyticsPromise = isSupported().then((yes) => (yes ? getAnalytics(app) : null));
   db = getFirestore(app, "rentality-chat-db");
