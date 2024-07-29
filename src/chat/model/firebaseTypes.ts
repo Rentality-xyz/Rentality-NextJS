@@ -1,15 +1,10 @@
 import {
   Firestore,
   QueryDocumentSnapshot,
-  QuerySnapshot,
-  SnapshotMetadata,
   SnapshotOptions,
-  addDoc,
   arrayUnion,
-  collection,
   doc,
   getDoc,
-  getDocs,
   setDoc,
   updateDoc,
 } from "firebase/firestore";
@@ -47,7 +42,7 @@ export class ChatId {
   }
 }
 
-export const FIREBASE_DB_NAME = { chats: "chats", userchats: "userchats" };
+export const FIREBASE_DB_NAME = { chats: "chats", userchats: "userchats", kycInfos: "kycInfos" };
 
 export type FirebaseChatMessage = {
   chatId: ChatId;

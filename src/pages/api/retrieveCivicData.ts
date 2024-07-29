@@ -1,9 +1,45 @@
 import { isEmpty } from "@/utils/string";
 import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { db, storage, loginWithPassword } from "@/utils/firebase";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { FIREBASE_DB_NAME } from "@/chat/model/firebaseTypes";
+import { ref, uploadBytes } from "firebase/storage";
+import { createWriteStream, writeFileSync } from "fs";
 
 export type ParseLocationRequest = {
   requestId: string;
+};
+
+type PiiLink = {
+  rel: string;
+  href: string;
+};
+
+type PiiDocData = {
+  rel: string;
+  data: string;
+  mimeType: string;
+};
+
+type PiiVerifiedInformation = {
+  issueCountry: string;
+  name: string;
+  email: string;
+  dateOfBirth: string;
+  dateOfExpiry: string;
+  documentType: string;
+  documentNumber: string;
+  address: string;
+  accountId: string;
+};
+
+type AllPiiInfo = {
+  id: string;
+  type: string;
+  status: string;
+  links: PiiLink[];
+  verifiedInformation: PiiVerifiedInformation;
 };
 
 export type ParseLocationResponse =
@@ -65,9 +101,15 @@ async function getAllPIIs(requestId: string, authToken: string) {
     })
     .then(function (response) {
       console.log("getAllPIIs response", response.data);
+      if (response.status !== 200) {
+        return {
+          success: false,
+          message: response.statusText,
+        } as const;
+      }
       return {
         success: true,
-        response: response.data,
+        response: response.data as AllPiiInfo,
       } as const;
     })
     .catch(function (error) {
@@ -80,17 +122,18 @@ async function getAllPIIs(requestId: string, authToken: string) {
 }
 
 async function getPIIByLink(link: string, authToken: string) {
+  console.error(`getPIIByLink call link:${link}`);
   return axios
     .get(link, {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
+      responseType: "arraybuffer",
     })
     .then(function (response) {
-      console.log("getPIIByLink response", response.data);
       return {
         success: true,
-        response: response.data,
+        response: { data: response.data, mimeType: response.headers["content-type"] },
       } as const;
     })
     .catch(function (error) {
@@ -100,6 +143,124 @@ async function getPIIByLink(link: string, authToken: string) {
         message: error.message,
       } as const;
     });
+}
+
+async function getPiiDocs(links: PiiLink[], authToken: string) {
+  const piiDocPicsPromises = links.map(async (link) => {
+    const dataResponse = await getPIIByLink(link.href, authToken);
+    if (dataResponse.success) {
+      return {
+        rel: link.rel,
+        data: dataResponse.response.data,
+        mimeType: dataResponse.response.mimeType,
+      } as PiiDocData;
+    }
+    return { rel: link.rel, data: "", mimeType: "" } as PiiDocData;
+  });
+  const piiDocPics = await Promise.all(piiDocPicsPromises);
+
+  if (piiDocPics.find((i) => isEmpty(i.data)) !== undefined) {
+    return {
+      success: false,
+      message: "Some docs is not retrived",
+    } as const;
+  }
+  return {
+    success: true,
+    response: piiDocPics,
+  } as const;
+}
+async function saveDocs(address: string, docs: PiiDocData[]) {
+  const saveDocsResultPromise = docs.map(async (doc) => {
+    const docRef = ref(storage, `kycdocs/${address}_${doc.rel}.jpg`);
+    try {
+      console.log(` doc.mimeType: ${doc.mimeType}`);
+
+      const snapshot = await uploadBytes(
+        docRef,
+        new Blob([doc.data], {
+          type: doc.mimeType,
+        })
+      );
+      console.log("saveDocs success:", snapshot.ref.fullPath);
+      return { rel: doc.rel, href: snapshot.ref.fullPath };
+    } catch (error) {
+      console.error("saveDocs error", error);
+
+      return { rel: doc.rel, href: undefined };
+    }
+  });
+  const saveDocsResult = await Promise.all(saveDocsResultPromise);
+
+  if (saveDocsResult.find((i) => i.href === undefined) !== undefined) {
+    return {
+      success: false,
+      message: "saveDocs errors",
+    } as const;
+  }
+
+  return {
+    success: true,
+    response: saveDocsResult as PiiLink[],
+  } as const;
+}
+
+async function savePiiInfoToFirebase(allInfo: AllPiiInfo, docs: PiiDocData[]) {
+  if (!db)
+    return {
+      success: false,
+      message: "db is null",
+    } as const;
+  if (!storage)
+    return {
+      success: false,
+      message: "storage is null",
+    } as const;
+
+  const CIVIC_USER_EMAIL = process.env.CIVIC_USER_EMAIL;
+  if (!CIVIC_USER_EMAIL || isEmpty(CIVIC_USER_EMAIL)) {
+    console.error("retrieveCivicData error: CIVIC_USER_EMAIL was not set");
+    return {
+      success: false,
+      message: "CIVIC_USER_EMAIL was not set",
+    } as const;
+  }
+
+  const CIVIC_USER_PASSWORD = process.env.CIVIC_USER_PASSWORD;
+  if (!CIVIC_USER_PASSWORD || isEmpty(CIVIC_USER_PASSWORD)) {
+    console.error("retrieveCivicData error: CIVIC_USER_PASSWORD was not set");
+    return {
+      success: false,
+      message: "CIVIC_USER_PASSWORD was not set",
+    } as const;
+  }
+
+  const user = await loginWithPassword(CIVIC_USER_EMAIL, CIVIC_USER_PASSWORD);
+  console.log(`user: ${JSON.stringify(user)}`);
+
+  const savedDocsResult = await saveDocs(allInfo.verifiedInformation.address, docs);
+
+  if (!savedDocsResult.success) {
+    return {
+      success: false,
+      message: "saveDocs error",
+    } as const;
+  }
+  allInfo.links = savedDocsResult.response;
+
+  const kycInfoRef = doc(db, FIREBASE_DB_NAME.kycInfos, allInfo.verifiedInformation.address);
+  const kycInfoQuerySnapshot = await getDoc(kycInfoRef);
+
+  if (!kycInfoQuerySnapshot.exists()) {
+    await setDoc(kycInfoRef, allInfo);
+  } else {
+    await updateDoc(kycInfoRef, allInfo);
+  }
+
+  return {
+    success: false,
+    message: "test purposes",
+  } as const;
 }
 
 async function updateStatus(requestId: string, isPassed: boolean, authToken: string) {
@@ -169,8 +330,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
+  console.log(`PII data was received successfully`);
 
-  console.log(`return result: ${allPIIsResult.response}`);
+  const PiiDocDatas = await getPiiDocs(allPIIsResult.response.links, authTokenResult.accessToken);
+  if (!PiiDocDatas.success) {
+    res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
+    return;
+  }
+  console.log(`PII docs were received successfully`);
+
+  const saveDataResult = await savePiiInfoToFirebase(allPIIsResult.response, PiiDocDatas.response);
+
+  console.log(`saveDataResult: ${JSON.stringify(saveDataResult)}`);
+
+  if (!saveDataResult.success) {
+    //res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
+    res.status(200).json(allPIIsResult.response);
+    return;
+  }
+  console.log(`PII data was saved successfully`);
+
+  const updateStatusResult = await updateStatus(requestId, true, authTokenResult.accessToken);
+  if (!updateStatusResult.success) {
+    res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
+    return;
+  }
+  console.log(`Civic status was updated successfully`);
+
+  //console.log(`allPIIsResult result: ${JSON.stringify(allPIIsResult.response)}`);
+  //console.log(`piiDocPics result: ${JSON.stringify(piiDocPics)}`);
 
   res.status(200).json(allPIIsResult.response);
   return;

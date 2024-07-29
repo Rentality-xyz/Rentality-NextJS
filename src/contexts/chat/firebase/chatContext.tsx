@@ -12,7 +12,7 @@ import { ContractChatInfo, ContractTripDTO, TripStatus } from "@/model/blockchai
 import { Contract, Listener } from "ethers";
 import { useNotification } from "../../notification/notificationContext";
 import useUserMode from "@/hooks/useUserMode";
-import { Unsubscribe, collection, doc, getDocs, onSnapshot, query, where } from "firebase/firestore";
+import { Unsubscribe, doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 import {
   ChatId,
