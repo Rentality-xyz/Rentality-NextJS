@@ -1,7 +1,7 @@
 import CarSearchItem from "@/components/guest/carSearchItem";
 import useSearchCars from "@/hooks/guest/useSearchCars";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
 import { SearchCarRequest, emptySearchCarRequest } from "@/model/SearchCarRequest";
 import { SearchCarInfo } from "@/model/SearchCarsResult";
@@ -36,6 +36,8 @@ const customEmptySearchCarRequest: SearchCarRequest = {
   dateTo: dateToHtmlDateTimeFormat(defaultDateTo),
 };
 
+type AdvancedMarkerElement = google.maps.marker.AdvancedMarkerElement;
+
 export default function Search() {
   const [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest, setSearchResult] =
     useSearchCars();
@@ -44,7 +46,6 @@ export default function Search() {
   const [openFilterPanel, setOpenFilterPanel] = useState(false);
   const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
   const [sortBy, setSortBy] = useState<string | undefined>(undefined);
-  const [selectedCarID, setSelectedCarID] = useState<number | null>(null);
 
   const userInfo = useUserInfo();
   const router = useRouter();
@@ -60,6 +61,7 @@ export default function Search() {
 
   const handleSearchClick = async () => {
     const result = await searchAvailableCars(searchCarRequest);
+    
     if (result) {
       setSortBy(undefined);
     }
@@ -124,21 +126,32 @@ export default function Search() {
       setRequestSending(false);
     }
   };
+  
+  const setHighlightedCar = useCallback((carID: number) => {	  
+	const newSearchResult = {...searchResult };
 
-  const handleSetMapMarkerSelected = (carID: number) => {
-    const newSearchCarInfo = { ...searchResult };
-
-    newSearchCarInfo.carInfos.forEach((item: SearchCarInfo) => {
-      if (item.carId == carID) {
-        item.highlighted = !item.highlighted;
-      } else {
-        item.highlighted = false;
-      }
+    newSearchResult.carInfos.forEach((item: SearchCarInfo) => {
+		item.highlighted = item.carId == carID;
     });
 
-    setSearchResult(newSearchCarInfo);
-    setSelectedCarID(carID == selectedCarID ? null : carID);
-  };
+    setSearchResult(newSearchResult);
+  },[searchResult]);
+  
+  const sortCars = useCallback(() => {
+	  const newSearchResult = {...searchResult };
+	  
+	  newSearchResult.carInfos.sort((a: SearchCarInfo, b: SearchCarInfo) => {
+        if (a.highlighted && !b.highlighted) {
+          return -1;
+        } else if (!a.highlighted && b.highlighted) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+	  
+	  setSearchResult(newSearchResult);
+  }, [searchResult]);
 
   useEffect(() => {
     if (sortBy === undefined) return;
@@ -150,12 +163,6 @@ export default function Search() {
   const handleArrowClick = () => {
     setIsExpanded(!isExpanded);
   };
-
-  useEffect(() => {
-    if (!isLoading && searchResult?.carInfos?.length) {
-      setSelectedCarID(searchResult.carInfos[0].carId);
-    }
-  }, [isLoading]);
 
   return (
     <Layout>
@@ -182,27 +189,15 @@ export default function Search() {
                     {searchResult?.carInfos?.length ?? 0} {t_page("info.cars_available")}
                   </div>
                   {searchResult?.carInfos?.length > 0 ? (
-                    searchResult.carInfos
-                      .sort((a: SearchCarInfo, b: SearchCarInfo) => {
-                        if (a.highlighted && !b.highlighted) {
-                          return -1;
-                        } else if (!a.highlighted && b.highlighted) {
-                          return 1;
-                        } else {
-                          return 0;
-                        }
-                      })
-                      .map((value: SearchCarInfo) => {
+                    searchResult.carInfos.map((value: SearchCarInfo) => {
                         return (
                           <CarSearchItem
                             key={value.carId}
                             searchInfo={value}
                             handleRentCarRequest={handleRentCarRequest}
                             disableButton={requestSending}
-                            isSelected={selectedCarID == value.carId}
-                            setSelected={(carID: number) => {
-                              setSelectedCarID(carID == selectedCarID ? null : carID);
-                            }}
+                            isSelected={value.highlighted}
+                            setSelected={setHighlightedCar}
                             t={t_page}
                           />
                         );
@@ -217,9 +212,11 @@ export default function Search() {
             </div>
             <div className="xl:w-4/12 2xl:w-5/12 fullHD:w-6/12 my-4 max-xl:mb-8">
               <CarSearchMap
-                carInfos={searchResult?.carInfos}
-                setSelected={handleSetMapMarkerSelected}
-                selectedCarID={selectedCarID}
+                searchResult={searchResult}
+                setSelected={(carID : number) => {
+					setHighlightedCar(carID);
+					sortCars();
+				}}
                 isExpanded={isExpanded}
                 defaultCenter={
                   searchCarRequest.searchLocation.latitude &&

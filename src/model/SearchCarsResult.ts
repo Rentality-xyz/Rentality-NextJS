@@ -1,4 +1,7 @@
+import { Root } from "react-dom/client";
 import { emptySearchCarRequest, SearchCarRequest } from "./SearchCarRequest";
+
+type AdvancedMarkerElement = google.maps.marker.AdvancedMarkerElement;
 
 export type SearchCarsResult = {
   searchCarRequest: SearchCarRequest;
@@ -41,6 +44,8 @@ export type SearchCarInfo = {
   pickUpDeliveryFee: number;
   dropOffDeliveryFee: number;
   isCarDetailsConfirmed: boolean;
+  markerRef: AdvancedMarkerElement
+  rootRef: Root
 };
 
 export const emptySearchCarsResult: SearchCarsResult = {
