@@ -2,6 +2,7 @@ import { CSSProperties, useEffect, useState } from "react";
 import { EthereumGatewayWallet, GatewayProvider } from "@civic/ethereum-gateway-react";
 import { DEFAULT_LOCAL_HOST_CHAIN_ID } from "@/utils/constants";
 import { useEthereum } from "./ethereumContext";
+import { base, baseSepolia } from "viem/chains";
 
 const customWrapperStyle: CSSProperties = {
   background: "rgba(0,0,0,0.5)",
@@ -45,6 +46,7 @@ export const CivicProvider = ({ children }: { children?: React.ReactNode }) => {
   const gatekeeperNetwork = process.env.NEXT_PUBLIC_CIVIC_GATEKEEPER_NETWORK || "";
   const [wallet, setWallet] = useState<EthereumGatewayWallet>();
   const [isLocalHost, setIsLocalHost] = useState<boolean>(true);
+  const [isBaseNetwork, setIsBaseNetwork] = useState<boolean>(false);
   const ethereumInfo = useEthereum();
 
   useEffect(() => {
@@ -52,13 +54,14 @@ export const CivicProvider = ({ children }: { children?: React.ReactNode }) => {
       if (!ethereumInfo) return;
 
       setIsLocalHost(ethereumInfo.chainId === DEFAULT_LOCAL_HOST_CHAIN_ID);
+      setIsBaseNetwork(ethereumInfo.chainId === base.id || ethereumInfo.chainId === baseSepolia.id);
       setWallet({ address: ethereumInfo.walletAddress, signer: ethereumInfo.signer });
     };
 
     setData();
   }, [ethereumInfo]);
 
-  if (isLocalHost) return <>{children}</>;
+  if (isLocalHost || !isBaseNetwork) return <>{children}</>;
 
   return (
     <GatewayProvider wallet={wallet} gatekeeperNetwork={gatekeeperNetwork} wrapper={CustomWrapper}>
