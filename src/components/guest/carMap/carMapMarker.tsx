@@ -9,14 +9,14 @@ export default function Marker({
   position,
   onClick,
   markerClusterer,
-  isSelected,
+  zIndex,
   children,
 }: {
   map: google.maps.Map;
   position: google.maps.LatLngLiteral;
   onClick: (...args: any[]) => void;
   markerClusterer: MarkerClusterer;
-  isSelected: boolean;
+  zIndex: number;
   children: React.ReactNode;
 }) {
   const [markerRef, setMarkerRef] = useState<AdvancedMarkerElement|null>(null);
@@ -25,26 +25,27 @@ export default function Marker({
   useEffect(() => {
 	  var advancedMarker = markerRef;
 	  
-	  if(advancedMarker){
-	     advancedMarker.map = null;
-	  }
-  
 	  const container = document.createElement("div");
 	  rootRef.current = createRoot(container);
+	  
 	  advancedMarker = new google.maps.marker.AdvancedMarkerElement({
 	    position,
 	    content: container,
 	    gmpClickable: true,
-	    zIndex : isSelected ? 20 : 0
+	    zIndex : zIndex
 	  })
+	  
 	  advancedMarker.addListener("click", onClick);
+	  
 	  if (markerClusterer) {
 	    markerClusterer.addMarker(advancedMarker);
 	  }
 	  
 	  setMarkerRef(advancedMarker);
+	  
+	  console.log("Marker created");
     
-  }, [isSelected]);
+  }, []);
 
   useEffect(() => {
     if (!markerRef || !rootRef.current) return;
@@ -58,7 +59,18 @@ export default function Marker({
     
     setMarkerRef(newMarker);
     
-  }, [map, position, children, isSelected]);
+  }, [map, position, children]);
+  
+  useEffect(() => {
+    if (!markerRef || !rootRef.current) return;
+    
+    const newMarker = markerRef;
+    
+    newMarker.zIndex = zIndex;
+    
+    setMarkerRef(newMarker);
+    
+  }, [zIndex]);
 
   return <></>;
 }

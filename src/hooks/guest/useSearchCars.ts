@@ -98,7 +98,9 @@ const useSearchCars = () => {
 			        carInfoI.location.lng += (Math.random() -.5) / 4000;// * (Math.random() * (max - min) + min);		        				  
 			  }
 		  }
-	  }	  
+	  }
+	  
+	  availableCarsData[0].highlighted = true;
 
       setSearchResult({
         searchCarRequest: searchCarRequest,
