@@ -1,4 +1,3 @@
-import { usePrivy } from "@privy-io/react-auth";
 import BaseBurgerNavMenu from "./baseBurgerNavMenu";
 import BaseSideNavMenu from "./baseSideNavMenu";
 import SideNavMenuGroup from "./sideNavMenuGroup";
@@ -10,9 +9,10 @@ import { NotificationType } from "@/model/NotificationInfo";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
 import { useChat } from "@/contexts/chat/firebase/chatContext";
+import { useAuth } from "@/contexts/auth/authContext";
 
 function GuestNavMenu() {
-  const { ready, authenticated, logout } = usePrivy();
+  const { isAuthenticated, logout } = useAuth();
   const { notifications } = useNotification();
   const { chatInfos } = useChat();
   const { getPageLastVisitedDateTime } = usePageLastVisit();
@@ -43,11 +43,7 @@ function GuestNavMenu() {
   };
   return (
     <>
-      <SideNavMenuGroup
-          title={t_nav("search")}
-          href="/guest/search"
-          icon={MenuIcons.Search}
-      />
+      <SideNavMenuGroup title={t_nav("search")} href="/guest/search" icon={MenuIcons.Search} />
       <SideNavMenuGroup title={t_nav("trips")}>
         <SideNavMenuItem
           text={t_nav("booked")}
@@ -95,7 +91,7 @@ function GuestNavMenu() {
           icon={MenuIcons.TransactionHistory}
         />
         <SideNavMenuItem text={t_nav("profile")} href="/guest/profile" icon={MenuIcons.ProfileSettings} />
-        {ready && authenticated ? (
+        {isAuthenticated ? (
           <SideNavMenuItem text={t_nav("logout")} href="/" onClick={logout} icon={MenuIcons.Logout} />
         ) : null}
       </SideNavMenuGroup>

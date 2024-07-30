@@ -14,7 +14,7 @@ import { hasValue } from "@/utils/arrays";
 import { EventLog, Listener } from "ethers";
 import { ClaimStatus, ContractFullClaimInfo, ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
 import { getBlockCountForSearch } from "@/model/blockchain/blockchainList";
-import { usePrivy } from "@privy-io/react-auth";
+import { useAuth } from "../auth/authContext";
 
 export type NotificationContextInfo = {
   isLoading: Boolean;
@@ -92,7 +92,7 @@ function getFromBlock(chainId: number, toBlock: number): number {
 }
 
 export const NotificationProvider = ({ isHost, children }: { isHost: boolean; children?: React.ReactNode }) => {
-  const { authenticated } = usePrivy();
+  const { isAuthenticated } = useAuth();
   const ethereumInfo = useEthereum();
   const rentalityContract = useRentality();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
@@ -266,11 +266,11 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
   ]);
 
   useEffect(() => {
-    if (!authenticated && notificationInfos.length > 0) {
+    if (!isAuthenticated && notificationInfos.length > 0) {
       console.debug(`User has logged out. Reset notificationInfos`);
       setNotificationInfos([]);
     }
-  }, [authenticated, notificationInfos]);
+  }, [isAuthenticated, notificationInfos]);
 
   const contextValue: NotificationContextInfo = useMemo(() => {
     return {

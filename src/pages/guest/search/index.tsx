@@ -8,7 +8,6 @@ import { SearchCarInfo } from "@/model/SearchCarsResult";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { isEmpty } from "@/utils/string";
-import { usePrivy } from "@privy-io/react-auth";
 import { DialogActions } from "@/utils/dialogActions";
 import Layout from "@/components/layout/layout";
 import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
@@ -20,6 +19,7 @@ import Image from "next/image";
 import mapArrow from "@/images/arrUpBtn.png";
 import FilterSlidingPanel from "@/components/search/filterSlidingPanel";
 import SearchAndFilters from "@/components/search/searchAndFilters";
+import { useAuth } from "@/contexts/auth/authContext";
 
 const defaultDateFrom = moment({ hour: 9 }).add(1, "day").toDate();
 const defaultDateTo = moment({ hour: 9 }).add(4, "day").toDate();
@@ -48,7 +48,8 @@ export default function Search() {
 
   const userInfo = useUserInfo();
   const router = useRouter();
-  const { authenticated, login } = usePrivy();
+  const { isAuthenticated, login } = useAuth();
+
   const { t } = useTranslation();
 
   const t_page: TFunction = (path, options) => {
@@ -66,7 +67,7 @@ export default function Search() {
   };
 
   const handleRentCarRequest = async (carInfo: SearchCarInfo) => {
-    if (!authenticated) {
+    if (!isAuthenticated) {
       const action = (
         <>
           {DialogActions.Button(t("common.info.login"), () => {

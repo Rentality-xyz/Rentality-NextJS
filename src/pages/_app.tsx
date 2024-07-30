@@ -2,7 +2,6 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Web3Setup } from "@/contexts/web3/web3Setup";
 import { UserInfoProvider } from "@/contexts/userInfoContext";
-import { WakuChatProvider } from "@/contexts/chat/waku/chatContext";
 import { FirebaseChatProvider } from "@/contexts/chat/firebase/chatContext";
 import { AppContextProvider } from "@/contexts/appContext";
 import { RentalityProvider } from "@/contexts/rentalityContext";
@@ -20,6 +19,7 @@ import "@coinbase/onchainkit/tailwind.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import { wagmiConfig } from "@/wagmi.config";
+import { AuthProvider } from "@/contexts/auth/authContext";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -34,21 +34,23 @@ export default function App({ Component, pageProps }: AppProps) {
     <Web3Setup>
       <RentalityProvider>
         <UserInfoProvider>
-          <WagmiProvider config={wagmiConfig}>
-            <QueryClientProvider client={queryClient}>
-              <OnchainKitProvider apiKey={process.env.NEXT_PUBLIC_COINBASE_API_KEY} chain={base}>
-                <NotificationProvider isHost={isHost}>
-                  <FirebaseChatProvider>
-                    <AppContextProvider>
-                      <RntDialogsProvider>
-                        <Component {...pageProps} />
-                      </RntDialogsProvider>
-                    </AppContextProvider>
-                  </FirebaseChatProvider>
-                </NotificationProvider>
-              </OnchainKitProvider>
-            </QueryClientProvider>
-          </WagmiProvider>
+          <AuthProvider>
+            <WagmiProvider config={wagmiConfig}>
+              <QueryClientProvider client={queryClient}>
+                <OnchainKitProvider apiKey={process.env.NEXT_PUBLIC_COINBASE_API_KEY} chain={base}>
+                  <NotificationProvider isHost={isHost}>
+                    <FirebaseChatProvider>
+                      <AppContextProvider>
+                        <RntDialogsProvider>
+                          <Component {...pageProps} />
+                        </RntDialogsProvider>
+                      </AppContextProvider>
+                    </FirebaseChatProvider>
+                  </NotificationProvider>
+                </OnchainKitProvider>
+              </QueryClientProvider>
+            </WagmiProvider>
+          </AuthProvider>
         </UserInfoProvider>
       </RentalityProvider>
     </Web3Setup>

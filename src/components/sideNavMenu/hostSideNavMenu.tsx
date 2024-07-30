@@ -1,6 +1,5 @@
 "use client";
 
-import { usePrivy } from "@privy-io/react-auth";
 import BaseBurgerNavMenu from "./baseBurgerNavMenu";
 import BaseSideNavMenu from "./baseSideNavMenu";
 import SideNavMenuGroup from "./sideNavMenuGroup";
@@ -12,9 +11,10 @@ import usePageLastVisit from "@/hooks/usePageLastVisit";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
 import { useChat } from "@/contexts/chat/firebase/chatContext";
+import { useAuth } from "@/contexts/auth/authContext";
 
 function HostNavMenu() {
-  const { ready, authenticated, logout } = usePrivy();
+  const { isAuthenticated, logout } = useAuth();
   const { notifications } = useNotification();
   const { chatInfos } = useChat();
   const { getPageLastVisitedDateTime } = usePageLastVisit();
@@ -95,7 +95,7 @@ function HostNavMenu() {
           icon={MenuIcons.TransactionHistory}
         />
         <SideNavMenuItem text={t_nav("profile")} href="/host/profile" icon={MenuIcons.ProfileSettings} />
-        {ready && authenticated ? (
+        {isAuthenticated ? (
           <SideNavMenuItem text={t_nav("logout")} href="/" onClick={logout} icon={MenuIcons.Logout} />
         ) : null}
       </SideNavMenuGroup>

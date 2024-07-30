@@ -1,5 +1,4 @@
 import { useUserInfo } from "@/contexts/userInfoContext";
-import { usePrivy } from "@privy-io/react-auth";
 import { memo, useEffect } from "react";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
@@ -8,9 +7,11 @@ import { Avatar as MuiAvatar } from "@mui/material";
 import { isEmpty } from "@/utils/string";
 // @ts-ignore
 import { Avatar, Identity, Badge, Name, Address } from "@coinbase/onchainkit/identity";
+import { useAuth } from "@/contexts/auth/authContext";
+import RntButton from "../common/rntButton";
 
 function LoginBase() {
-  const { login, ready, authenticated } = usePrivy();
+  const { isLoading, isAuthenticated, login } = useAuth();
   const userInfo = useUserInfo();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { t } = useTranslation();
@@ -24,9 +25,9 @@ function LoginBase() {
       : null;
 
   useEffect(() => {
-    if (!ready) return;
+    if (isLoading) return;
 
-    if (!authenticated) {
+    if (!isAuthenticated) {
       const action = (
         <>
           {DialogActions.Button(t("common.info.login"), () => {
@@ -38,7 +39,14 @@ function LoginBase() {
       );
       showDialog(t("common.info.connect_wallet"), action);
     }
-  }, [ready, authenticated]);
+  }, [isLoading, isAuthenticated]);
+
+  if (!isLoading && !isAuthenticated)
+    return (
+      <RntButton className="w-28 sm:w-48 h-10 text-sm sm:text-base" onClick={login}>
+        {t("common.info.login")}
+      </RntButton>
+    );
 
   if (userInfo === undefined)
     return (
