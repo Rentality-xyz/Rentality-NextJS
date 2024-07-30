@@ -41,3 +41,4 @@ package-lock.json
 /privatekeys.txt
 /private_keys.txt
 .env.deploy_*
+.vscode/
