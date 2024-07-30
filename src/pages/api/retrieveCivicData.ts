@@ -5,11 +5,18 @@ import { db, storage, loginWithPassword } from "@/utils/firebase";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { FIREBASE_DB_NAME } from "@/chat/model/firebaseTypes";
 import { ref, uploadBytes } from "firebase/storage";
-import { createWriteStream, writeFileSync } from "fs";
 
-export type ParseLocationRequest = {
+export type RetrieveCivicDataRequest = {
   requestId: string;
 };
+
+export type RetrieveCivicDataResponse =
+  | {
+      success: true;
+    }
+  | {
+      error: string;
+    };
 
 type PiiLink = {
   rel: string;
@@ -42,17 +49,79 @@ type AllPiiInfo = {
   verifiedInformation: PiiVerifiedInformation;
 };
 
-export type ParseLocationResponse =
-  | {
-      success: true;
-    }
-  | {
-      error: string;
-    };
-
 const GET_AUTH_TOKEN_URL = "https://auth.civic.com/oauth/token";
 const GET_ALL_PIIS_URL = "https://api.civic.com/partner/piirequest/REQUEST_ID";
 const UPDATE_STATUS_URL = "https://api.civic.com/partner/piirequest/REQUEST_ID/status";
+
+// export default async function handler(req: NextApiRequest, res: NextApiResponse<ParseLocationResponse>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<RetrieveCivicDataResponse>) {
+  const CIVIC_CLIENT_ID = process.env.CIVIC_CLIENT_ID;
+  if (!CIVIC_CLIENT_ID || isEmpty(CIVIC_CLIENT_ID)) {
+    console.error("retrieveCivicData error: CIVIC_CLIENT_ID was not set");
+    res.status(500).json({ error: getErrorMessage("retrieveCivicData error: CIVIC_CLIENT_ID was not set") });
+    return;
+  }
+
+  const CIVIC_CLIENT_SECRET = process.env.CIVIC_CLIENT_SECRET;
+  if (!CIVIC_CLIENT_SECRET || isEmpty(CIVIC_CLIENT_SECRET)) {
+    console.error("retrieveCivicData error: CIVIC_CLIENT_SECRET was not set");
+    res.status(500).json({ error: getErrorMessage("retrieveCivicData error: CIVIC_CLIENT_SECRET was not set") });
+    return;
+  }
+
+  const { requestId: requestIdQuery } = req.query;
+  const requestId = typeof requestIdQuery === "string" ? requestIdQuery : "";
+
+  if (isEmpty(requestId)) {
+    res.status(400).json({ error: "'requestId' is not provided or empty" });
+    return;
+  }
+
+  console.log(`Calling retrieveCivicData API with requestId:${requestId}`);
+  const authTokenResult = await getAuthToken(CIVIC_CLIENT_ID, CIVIC_CLIENT_SECRET);
+
+  if (!authTokenResult.success) {
+    res.status(500).json({ error: getErrorMessage(`authTokenResult error: ${authTokenResult.message}`) });
+    return;
+  }
+
+  const allPIIsResult = await getAllPIIs(requestId, authTokenResult.accessToken);
+  if (!allPIIsResult.success) {
+    res.status(500).json({ error: getErrorMessage(`allPIIsResult error: ${allPIIsResult.message}`) });
+    return;
+  }
+  console.log(`PII data was received successfully`);
+
+  const PiiDocDatas = await getPiiDocs(allPIIsResult.response.links, authTokenResult.accessToken);
+  if (!PiiDocDatas.success) {
+    res.status(500).json({ error: getErrorMessage(`PiiDocDatas error: ${PiiDocDatas.message}`) });
+    return;
+  }
+  console.log(`PII docs were received successfully`);
+
+  const saveDataResult = await savePiiInfoToFirebase(allPIIsResult.response, PiiDocDatas.response);
+
+  console.log(`saveDataResult: ${JSON.stringify(saveDataResult)}`);
+
+  if (!saveDataResult.success) {
+    res.status(500).json({ error: getErrorMessage(`saveDataResult error: ${saveDataResult.message}`) });
+    return;
+  }
+  console.log(`PII data was saved successfully`);
+
+  const updateStatusResult = await updateStatus(requestId, true, authTokenResult.accessToken);
+  if (!updateStatusResult.success) {
+    res.status(500).json({ error: getErrorMessage(`updateStatusResult error: ${updateStatusResult.message}`) });
+    return;
+  }
+  console.log(`Civic status was updated successfully`);
+
+  //console.log(`allPIIsResult result: ${JSON.stringify(allPIIsResult.response)}`);
+  //console.log(`piiDocPics result: ${JSON.stringify(piiDocPics)}`);
+
+  res.status(200).json({ success: true });
+  return;
+}
 
 async function getAuthToken(clientId: string, clientSecret: string) {
   const data = JSON.stringify({
@@ -78,7 +147,7 @@ async function getAuthToken(clientId: string, clientSecret: string) {
       }
       return {
         success: false,
-        accessToken: "response does not contain access_token",
+        message: "response does not contain access_token",
       } as const;
     })
     .catch(function (error) {
@@ -170,6 +239,7 @@ async function getPiiDocs(links: PiiLink[], authToken: string) {
     response: piiDocPics,
   } as const;
 }
+
 async function saveDocs(address: string, docs: PiiDocData[]) {
   const saveDocsResultPromise = docs.map(async (doc) => {
     const docRef = ref(storage, `kycdocs/${address}_${doc.rel}.jpg`);
@@ -258,8 +328,7 @@ async function savePiiInfoToFirebase(allInfo: AllPiiInfo, docs: PiiDocData[]) {
   }
 
   return {
-    success: false,
-    message: "test purposes",
+    success: true,
   } as const;
 }
 
@@ -291,75 +360,7 @@ async function updateStatus(requestId: string, isPassed: boolean, authToken: str
     });
 }
 
-// export default async function handler(req: NextApiRequest, res: NextApiResponse<ParseLocationResponse>) {
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log("Call started");
-
-  const CIVIC_CLIENT_ID = process.env.CIVIC_CLIENT_ID;
-  if (!CIVIC_CLIENT_ID || isEmpty(CIVIC_CLIENT_ID)) {
-    console.error("retrieveCivicData error: CIVIC_CLIENT_ID was not set");
-    res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
-    return;
-  }
-
-  const CIVIC_CLIENT_SECRET = process.env.CIVIC_CLIENT_SECRET;
-  if (!CIVIC_CLIENT_SECRET || isEmpty(CIVIC_CLIENT_SECRET)) {
-    console.error("retrieveCivicData error: CIVIC_CLIENT_SECRET was not set");
-    res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
-    return;
-  }
-
-  const { requestId: requestIdQuery } = req.query;
-  const requestId = typeof requestIdQuery === "string" ? requestIdQuery : "";
-
-  if (isEmpty(requestId)) {
-    res.status(400).json({ error: "'requestId' is not provided or empty" });
-    return;
-  }
-
-  console.log(`Calling retrieveCivicData API with requestId:${requestId}`);
-  const authTokenResult = await getAuthToken(CIVIC_CLIENT_ID, CIVIC_CLIENT_SECRET);
-
-  if (!authTokenResult.success) {
-    res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
-    return;
-  }
-
-  const allPIIsResult = await getAllPIIs(requestId, authTokenResult.accessToken);
-  if (!allPIIsResult.success) {
-    res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
-    return;
-  }
-  console.log(`PII data was received successfully`);
-
-  const PiiDocDatas = await getPiiDocs(allPIIsResult.response.links, authTokenResult.accessToken);
-  if (!PiiDocDatas.success) {
-    res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
-    return;
-  }
-  console.log(`PII docs were received successfully`);
-
-  const saveDataResult = await savePiiInfoToFirebase(allPIIsResult.response, PiiDocDatas.response);
-
-  console.log(`saveDataResult: ${JSON.stringify(saveDataResult)}`);
-
-  if (!saveDataResult.success) {
-    //res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
-    res.status(200).json(allPIIsResult.response);
-    return;
-  }
-  console.log(`PII data was saved successfully`);
-
-  const updateStatusResult = await updateStatus(requestId, true, authTokenResult.accessToken);
-  if (!updateStatusResult.success) {
-    res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
-    return;
-  }
-  console.log(`Civic status was updated successfully`);
-
-  //console.log(`allPIIsResult result: ${JSON.stringify(allPIIsResult.response)}`);
-  //console.log(`piiDocPics result: ${JSON.stringify(piiDocPics)}`);
-
-  res.status(200).json(allPIIsResult.response);
-  return;
+function getErrorMessage(debugMessage: string) {
+  const isDebug = true;
+  return isDebug ? debugMessage : "Something went wrong! Please wait a few minutes and try again";
 }
