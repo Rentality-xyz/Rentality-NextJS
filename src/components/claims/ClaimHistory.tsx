@@ -164,7 +164,6 @@ export default function ClaimHistory(props: Props) {
               claim={claim}
               index={index}
               cancelClaim={props.cancelClaim}
-
             />
           );
         })}

@@ -62,7 +62,7 @@ export default function Search() {
 
   const handleSearchClick = async () => {
     const result = await searchAvailableCars(searchCarRequest);
-    
+
     if (result) {
       setSortBy(undefined);
     }
@@ -127,31 +127,34 @@ export default function Search() {
       setRequestSending(false);
     }
   };
-  
-  const setHighlightedCar = useCallback((carID: number) => {	  
-	const newSearchResult = {...searchResult };
 
-    newSearchResult.carInfos.forEach((item: SearchCarInfo) => {
-		item.highlighted = item.carId == carID;
+  const setHighlightedCar = useCallback(
+    (carID: number) => {
+      const newSearchResult = { ...searchResult };
+
+      newSearchResult.carInfos.forEach((item: SearchCarInfo) => {
+        item.highlighted = item.carId == carID;
+      });
+
+      setSearchResult(newSearchResult);
+    },
+    [searchResult]
+  );
+
+  const sortCars = useCallback(() => {
+    const newSearchResult = { ...searchResult };
+
+    newSearchResult.carInfos.sort((a: SearchCarInfo, b: SearchCarInfo) => {
+      if (a.highlighted && !b.highlighted) {
+        return -1;
+      } else if (!a.highlighted && b.highlighted) {
+        return 1;
+      } else {
+        return 0;
+      }
     });
 
     setSearchResult(newSearchResult);
-  },[searchResult]);
-  
-  const sortCars = useCallback(() => {
-	  const newSearchResult = {...searchResult };
-	  
-	  newSearchResult.carInfos.sort((a: SearchCarInfo, b: SearchCarInfo) => {
-        if (a.highlighted && !b.highlighted) {
-          return -1;
-        } else if (!a.highlighted && b.highlighted) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-	  
-	  setSearchResult(newSearchResult);
   }, [searchResult]);
 
   useEffect(() => {
@@ -191,18 +194,18 @@ export default function Search() {
                   </div>
                   {searchResult?.carInfos?.length > 0 ? (
                     searchResult.carInfos.map((value: SearchCarInfo) => {
-                        return (
-                          <CarSearchItem
-                            key={value.carId}
-                            searchInfo={value}
-                            handleRentCarRequest={handleRentCarRequest}
-                            disableButton={requestSending}
-                            isSelected={value.highlighted}
-                            setSelected={setHighlightedCar}
-                            t={t_page}
-                          />
-                        );
-                      })
+                      return (
+                        <CarSearchItem
+                          key={value.carId}
+                          searchInfo={value}
+                          handleRentCarRequest={handleRentCarRequest}
+                          disableButton={requestSending}
+                          isSelected={value.highlighted}
+                          setSelected={setHighlightedCar}
+                          t={t_page}
+                        />
+                      );
+                    })
                   ) : (
                     <div className="flex max-w-screen-xl flex-wrap justify-between text-center xl:h-full pl-[18px]">
                       {t_page("info.no_cars")}
@@ -214,10 +217,10 @@ export default function Search() {
             <div className="xl:w-4/12 2xl:w-5/12 fullHD:w-6/12 my-4 max-xl:mb-8">
               <CarSearchMap
                 searchResult={searchResult}
-                setSelected={(carID : number) => {
-					setHighlightedCar(carID);
-					sortCars();
-				}}
+                setSelected={(carID: number) => {
+                  setHighlightedCar(carID);
+                  sortCars();
+                }}
                 isExpanded={isExpanded}
                 defaultCenter={
                   searchCarRequest.searchLocation.latitude &&

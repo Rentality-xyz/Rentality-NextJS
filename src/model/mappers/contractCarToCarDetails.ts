@@ -16,7 +16,8 @@ export const mapContractCarToCarDetails = async (
   const engineTypeString = getEngineTypeString(carInfo.engineType);
 
   const fuelPricePerGal = engineTypeString === ENGINE_TYPE_PETROL_STRING ? Number(carInfo.engineParams[1]) / 100 : 0;
-  const fullBatteryChargePrice = engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? Number(carInfo.engineParams[0]) / 100  : 0;
+  const fullBatteryChargePrice =
+    engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? Number(carInfo.engineParams[0]) / 100 : 0;
 
   return {
     carId: Number(carInfo.carId),

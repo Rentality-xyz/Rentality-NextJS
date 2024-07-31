@@ -19,48 +19,45 @@ export default function Marker({
   zIndex: number;
   children: React.ReactNode;
 }) {
-  const [markerRef, setMarkerRef] = useState<AdvancedMarkerElement|null>(null);
+  const [markerRef, setMarkerRef] = useState<AdvancedMarkerElement | null>(null);
   const rootRef = useRef<Root>();
-  
+
   useEffect(() => {
-	  var advancedMarker = markerRef;
-	  
-	  const container = document.createElement("div");
-	  rootRef.current = createRoot(container);
-	  
-	  advancedMarker = new google.maps.marker.AdvancedMarkerElement({
-	    position,
-	    content: container,
-	    gmpClickable: true,
-	    zIndex : zIndex
-	  })
-	  
-	  advancedMarker.addListener("click", onClick);
-	  
-	  if (markerClusterer) {
-	    markerClusterer.addMarker(advancedMarker);
-	  }
-	  
-	  setMarkerRef(advancedMarker);
-	  
-	  rootRef.current.render(children);
-    
+    var advancedMarker = markerRef;
+
+    const container = document.createElement("div");
+    rootRef.current = createRoot(container);
+
+    advancedMarker = new google.maps.marker.AdvancedMarkerElement({
+      position,
+      content: container,
+      gmpClickable: true,
+      zIndex: zIndex,
+    });
+
+    advancedMarker.addListener("click", onClick);
+
+    if (markerClusterer) {
+      markerClusterer.addMarker(advancedMarker);
+    }
+
+    setMarkerRef(advancedMarker);
+
+    rootRef.current.render(children);
   }, []);
 
+  useEffect(() => {
+    if (!markerRef || !rootRef.current) return;
 
-  useEffect(() => {  
-  	if (!markerRef || !rootRef.current) return;
-  	
     const newMarker = markerRef;
-    
+
     newMarker.position = position;
     newMarker.map = map;
     newMarker.zIndex = zIndex;
-    
+
     setMarkerRef(newMarker);
-    
+
     rootRef.current.render(children);
-    
   }, [map, position, zIndex, children]);
 
   return <></>;

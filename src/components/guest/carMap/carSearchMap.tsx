@@ -11,19 +11,18 @@ import Marker from "./carMapMarker";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import { MapRenderer } from "./carMapRenderer";
 
-
 export default function CarSearchMap({
   searchResult,
   setSelected,
   isExpanded,
-  defaultCenter
+  defaultCenter,
 }: {
   searchResult: SearchCarsResult;
   setSelected: (carID: number) => void;
   isExpanded: boolean;
   defaultCenter: google.maps.LatLng | null;
 }) {
-  const mapRef = useRef<google.maps.Map|null>();
+  const mapRef = useRef<google.maps.Map | null>();
   const [isSticked, setIsSticked] = useState<boolean>(false);
   const mapLeft = useRef<number>(0);
   const mapTop = useRef<number>(0);
@@ -73,17 +72,17 @@ export default function CarSearchMap({
       return;
     }
     const parentRect = googleMapElementParent.getBoundingClientRect();
-    
+
     var newHeight = parentRect.height;
-    
-    if(parentRect.top <= 0){
-		newHeight += parentRect.top;
-	} 
-	
-	if(parentRect.bottom > window.innerHeight){
-		newHeight -= parentRect.bottom - window.innerHeight;
-	}
-    
+
+    if (parentRect.top <= 0) {
+      newHeight += parentRect.top;
+    }
+
+    if (parentRect.bottom > window.innerHeight) {
+      newHeight -= parentRect.bottom - window.innerHeight;
+    }
+
     setMapHeight(newHeight);
 
     if (parentRect.top <= 0 && !isSticked) {
@@ -106,36 +105,35 @@ export default function CarSearchMap({
   };
 
   const selectedCar = searchResult.carInfos.find((item) => {
-      return item.highlighted;
+    return item.highlighted;
   });
 
-  if (mapRef.current && selectedCar){
+  if (mapRef.current && selectedCar) {
     const bounds = new google.maps.LatLngBounds();
     bounds.extend(new google.maps.LatLng(selectedCar.location.lat, selectedCar.location.lng));
     mapRef.current.fitBounds(bounds);
     mapRef.current.setZoom(18);
   }
-  
-  if(mapRef.current){
+
+  if (mapRef.current) {
     markerClusterer.current = new MarkerClusterer({ map: mapRef.current, renderer: new MapRenderer() });
   }
 
   const onLoad = (map: google.maps.Map) => {
-	mapRef.current = map;
-    
+    mapRef.current = map;
+
     if (typeof window !== "undefined" && window.innerWidth >= 1280) {
       window.addEventListener("scroll", handleScroll);
     }
-    
-    window.addEventListener("resize", handleResize);
-    
-    handleScroll();
 
+    window.addEventListener("resize", handleResize);
+
+    handleScroll();
   };
 
   const onUnload = () => {
     mapRef.current = null;
-    
+
     window.removeEventListener("scroll", handleScroll);
     window.removeEventListener("resize", handleResize);
   };
@@ -159,27 +157,23 @@ export default function CarSearchMap({
       onUnmount={onUnload}
     >
       {searchResult.carInfos.map((carInfo: SearchCarInfo) => {
-		  
-		  const className = carInfo.highlighted? selectedCarIdClassName : carIdClassName;
-		  const zIndex = carInfo.highlighted? 20 : 0;
-		  
-		  return (
-	        <Marker
-	          key={carInfo.carId}
-	          map={mapRef.current!}
-	          position={carInfo.location}
-	          onClick={(e) => setSelected(Number(e.domEvent.target.id))}
-	          markerClusterer={markerClusterer.current!}
-	          zIndex={zIndex}
-	        >
-	          <div
-	            id={carInfo.carId.toString()}
-	            className={className}
-	          >
-	            ${carInfo.pricePerDayWithDiscount}
-	          </div>
-	        </Marker>
-      	)
+        const className = carInfo.highlighted ? selectedCarIdClassName : carIdClassName;
+        const zIndex = carInfo.highlighted ? 20 : 0;
+
+        return (
+          <Marker
+            key={carInfo.carId}
+            map={mapRef.current!}
+            position={carInfo.location}
+            onClick={(e) => setSelected(Number(e.domEvent.target.id))}
+            markerClusterer={markerClusterer.current!}
+            zIndex={zIndex}
+          >
+            <div id={carInfo.carId.toString()} className={className}>
+              ${carInfo.pricePerDayWithDiscount}
+            </div>
+          </Marker>
+        );
       })}
     </GoogleMap>
   ) : (
