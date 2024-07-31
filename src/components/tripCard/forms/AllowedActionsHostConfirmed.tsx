@@ -1,9 +1,9 @@
-import { ChangeTripParams, TripInfo } from "@/model/TripInfo";
-import RntInput from "../common/rntInput";
+import RntInput from "@/components/common/rntInput";
+import RntSelect from "@/components/common/rntSelect";
+import { ChangeTripParams } from "@/model/TripInfo";
 import { SetStateAction } from "react";
-import RntSelect from "../common/rntSelect";
 
-export default function AllowedActionsForStatusConfirmed({
+export default function AllowedActionsHostConfirmed({
   params,
   inputParams,
   setInputParams,

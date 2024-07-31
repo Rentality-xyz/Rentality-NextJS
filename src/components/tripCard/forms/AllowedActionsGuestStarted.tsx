@@ -1,14 +1,14 @@
 import { ChangeTripParams, TripInfo, getRefuelCharge } from "@/model/TripInfo";
-import RntInput from "../common/rntInput";
 import { SetStateAction, useState } from "react";
-import RntSelect from "../common/rntSelect";
 import { calculateDays } from "@/utils/date";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { TripStatus } from "@/model/blockchain/schemas";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { isEmpty } from "@/utils/string";
+import RntInput from "@/components/common/rntInput";
+import RntSelect from "@/components/common/rntSelect";
 
-export default function AllowedActionsForStatusStarted({
+export default function AllowedActionsGuestStarted({
   params,
   tripInfo,
   inputParams,
