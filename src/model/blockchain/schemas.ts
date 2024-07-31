@@ -62,6 +62,7 @@ export type ContractUpdateCarInfoRequest = {
   milesIncludedPerDay: bigint;
   timeBufferBetweenTripsInSec: bigint;
   currentlyListed: boolean;
+  insuranceIncluded: boolean;
 };
 
 export type ContractSearchCarParams = {
