@@ -73,12 +73,18 @@ export default function CarSearchMap({
       return;
     }
     const parentRect = googleMapElementParent.getBoundingClientRect();
-
-    if (parentRect.top <= 0 && parentRect.bottom < window.innerHeight) {
-      setMapHeight(Math.ceil(parentRect.bottom));
-    } else {
-      setMapHeight(window.innerHeight - rect.top);
-    }
+    
+    var newHeight = parentRect.height;
+    
+    if(parentRect.top <= 0){
+		newHeight += parentRect.top;
+	} 
+	
+	if(parentRect.bottom > window.innerHeight){
+		newHeight -= parentRect.bottom - window.innerHeight;
+	}
+    
+    setMapHeight(newHeight);
 
     if (parentRect.top <= 0 && !isSticked) {
       mapLeft.current = Math.ceil(rect.left);
