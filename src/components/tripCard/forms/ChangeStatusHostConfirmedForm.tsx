@@ -11,14 +11,14 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import RntFuelLevelSelect from "@/components/common/RntFuelLevelSelect";
 
-interface ChangeStatusHostConfirmedProps {
+interface ChangeStatusHostConfirmedFormProps {
   tripInfo: TripInfo;
   changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<void>;
   disableButton: boolean;
   t: TFunction;
 }
 
-const ChangeStatusHostConfirmed = forwardRef<HTMLDivElement, ChangeStatusHostConfirmedProps>(
+const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHostConfirmedFormProps>(
   ({ tripInfo, changeStatusCallback, disableButton, t }, ref) => {
     const { register, control, handleSubmit, formState } = useForm<ChangeStatusHostConfirmedFormValues>({
       defaultValues: {},
@@ -116,6 +116,6 @@ const ChangeStatusHostConfirmed = forwardRef<HTMLDivElement, ChangeStatusHostCon
     );
   }
 );
-ChangeStatusHostConfirmed.displayName = "ChangeStatusHostConfirmed";
+ChangeStatusHostConfirmedForm.displayName = "ChangeStatusHostConfirmedForm";
 
-export default ChangeStatusHostConfirmed;
+export default ChangeStatusHostConfirmedForm;
