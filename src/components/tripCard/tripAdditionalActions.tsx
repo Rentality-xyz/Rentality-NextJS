@@ -5,10 +5,7 @@ import { TripStatus } from "@/model/blockchain/schemas";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { isEmpty } from "@/utils/string";
 import { TFunction } from "@/utils/i18n";
-import AllowedActionsHostFinishingByHost from "./forms/AllowedActionsHostFinishingByHost";
-import AllowedActionsGuestStarted from "./forms/AllowedActionsGuestStarted";
 import AllowedActionsGuest from "./forms/AllowedActionsGuest";
-import AllowedActionsHostConfirmed from "./forms/AllowedActionsHostConfirmed";
 import AllowedActionsHost from "./forms/AllowedActionsHost";
 import ChangeStatusHostConfirmedForm from "./forms/ChangeStatusHostConfirmedForm";
 import ChangeStatusGuestStartedForm from "./forms/ChangeStatusGuestStartedForm";
@@ -110,36 +107,13 @@ function TripAdditionalActions({
       </div>
 
       {isHost ? (
-        tripInfo.status === TripStatus.Confirmed ? (
-          <AllowedActionsHostConfirmed
-            params={tripInfo.allowedActions[0].params}
-            inputParams={inputParams}
-            setInputParams={setInputParams}
-          />
-        ) : tripInfo.status === TripStatus.Started || tripInfo.status === TripStatus.CheckedInByHost ? (
-          <AllowedActionsHostFinishingByHost
-            tripInfo={tripInfo}
-            params={tripInfo.allowedActions[0].params}
-            inputParams={inputParams}
-            setInputParams={setInputParams}
-            isFinishingByHost={true}
-          />
-        ) : (
-          <AllowedActionsHost
-            tripInfo={tripInfo}
-            inputParams={inputParams}
-            setInputParams={setInputParams}
-            confirmParams={confirmParams}
-            setConfirmParams={setConfirmParams}
-            t={t}
-          />
-        )
-      ) : tripInfo.status === TripStatus.Started ? (
-        <AllowedActionsGuestStarted
+        <AllowedActionsHost
           tripInfo={tripInfo}
-          params={tripInfo.allowedActions[0].params}
           inputParams={inputParams}
           setInputParams={setInputParams}
+          confirmParams={confirmParams}
+          setConfirmParams={setConfirmParams}
+          t={t}
         />
       ) : (
         <AllowedActionsGuest
