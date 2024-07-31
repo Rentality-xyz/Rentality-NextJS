@@ -1,10 +1,10 @@
+import RntCheckbox from "@/components/common/rntCheckbox";
+import RntInput from "@/components/common/rntInput";
+import RntSelect from "@/components/common/rntSelect";
 import { TripInfo } from "@/model/TripInfo";
-import RntInput from "../common/rntInput";
 import { SetStateAction } from "react";
-import RntCheckbox from "../common/rntCheckbox";
-import RntSelect from "../common/rntSelect";
 
-export default function AllowedActions({
+export default function AllowedActionsGuest({
   tripInfo,
   inputParams,
   setInputParams,

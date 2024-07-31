@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
 import RntValidationError from "./RntValidationError";
 
-interface RntSelectProps extends React.ComponentPropsWithoutRef<"select"> {
+export interface RntSelectProps extends React.ComponentPropsWithoutRef<"select"> {
   labelClassName?: string;
   selectClassName?: string;
   label?: string;
