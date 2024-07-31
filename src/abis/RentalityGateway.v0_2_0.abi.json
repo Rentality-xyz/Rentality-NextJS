@@ -1593,7 +1593,8 @@
             { "type": "uint64[]", "name": "engineParams" },
             { "type": "uint64", "name": "milesIncludedPerDay" },
             { "type": "uint32", "name": "timeBufferBetweenTripsInSec" },
-            { "type": "bool", "name": "currentlyListed" }
+            { "type": "bool", "name": "currentlyListed" },
+            { "type": "bool", "name": "insuranceIncluded" }
           ]
         }
       ],
@@ -1615,7 +1616,8 @@
             { "type": "uint64[]", "name": "engineParams" },
             { "type": "uint64", "name": "milesIncludedPerDay" },
             { "type": "uint32", "name": "timeBufferBetweenTripsInSec" },
-            { "type": "bool", "name": "currentlyListed" }
+            { "type": "bool", "name": "currentlyListed" },
+            { "type": "bool", "name": "insuranceIncluded" }
           ]
         },
         {
