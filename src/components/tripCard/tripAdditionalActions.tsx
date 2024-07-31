@@ -11,6 +11,7 @@ import AllowedActionsGuest from "./forms/AllowedActionsGuest";
 import AllowedActionsHostConfirmed from "./forms/AllowedActionsHostConfirmed";
 import AllowedActionsHost from "./forms/AllowedActionsHost";
 import ChangeStatusHostConfirmed from "./forms/changeStatusHostConfirmed";
+import ChangeStatusGuestStartedForm from "./forms/ChangeStatusGuestStartedForm";
 
 function TripAdditionalActions({
   tripInfo,
@@ -66,6 +67,16 @@ function TripAdditionalActions({
   if (isHost && tripInfo.status === TripStatus.Confirmed)
     return (
       <ChangeStatusHostConfirmed
+        tripInfo={tripInfo}
+        changeStatusCallback={changeStatusCallback}
+        disableButton={disableButton}
+        t={t}
+        ref={refForScrool}
+      />
+    );
+  if (!isHost && tripInfo.status === TripStatus.Started)
+    return (
+      <ChangeStatusGuestStartedForm
         tripInfo={tripInfo}
         changeStatusCallback={changeStatusCallback}
         disableButton={disableButton}
