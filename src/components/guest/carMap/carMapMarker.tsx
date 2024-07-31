@@ -44,8 +44,6 @@ export default function Marker({
 	  setMarkerRef(advancedMarker);
 	  
 	  rootRef.current.render(children);
-	  
-	  console.log("Marker created");
     
   }, []);
 

@@ -168,7 +168,7 @@ export default function Search() {
   return (
     <Layout>
       <GoogleMapsProvider libraries={["maps", "marker", "places"]} language="en">
-        <div className="flex flex-col xl:h-full" title="Search">
+        <div className="flex flex-col" title="Search">
           <SearchAndFilters
             searchCarRequest={searchCarRequest}
             setSearchCarRequest={setSearchCarRequest}
@@ -181,7 +181,7 @@ export default function Search() {
           <div className="mb-8 flex flex-row"></div>
 
           <div className="flex gap-3 max-xl:flex-col-reverse">
-            <div className="xl:w-8/12 2xl:w-7/12 fullHD:w-6/12 my-4 flex flex-col gap-4 h-full">
+            <div className="xl:w-8/12 2xl:w-7/12 fullHD:w-6/12 my-4 flex flex-col gap-4">
               {isLoading ? (
                 <div className="pl-[18px]">Loading...</div>
               ) : (
