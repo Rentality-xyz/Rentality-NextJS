@@ -44,8 +44,6 @@ export type SearchCarInfo = {
   pickUpDeliveryFee: number;
   dropOffDeliveryFee: number;
   isCarDetailsConfirmed: boolean;
-  markerRef: AdvancedMarkerElement
-  rootRef: Root
 };
 
 export const emptySearchCarsResult: SearchCarsResult = {
