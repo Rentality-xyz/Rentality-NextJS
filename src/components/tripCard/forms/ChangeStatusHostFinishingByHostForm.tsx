@@ -6,29 +6,29 @@ import RntInput from "@/components/common/rntInput";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import RntFuelLevelSelect from "@/components/common/RntFuelLevelSelect";
-import {
-  changeStatusGuestStartedFormSchema,
-  ChangeStatusGuestStartedFormValues,
-} from "./changeStatusGuestStartedFormSchema";
 import { calculateDays } from "@/utils/date";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
+import {
+  changeStatusHostFinishingByHostFormSchema,
+  ChangeStatusHostFinishingByHostFormValues,
+} from "./changeStatusHostFinishingByHostFormSchema";
 
-interface ChangeStatusGuestStartedFormProps {
+interface ChangeStatusHostFinishingByHostFormProps {
   tripInfo: TripInfo;
   changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<void>;
   disableButton: boolean;
   t: TFunction;
 }
 
-const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGuestStartedFormProps>(
+const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeStatusHostFinishingByHostFormProps>(
   ({ tripInfo, changeStatusCallback, disableButton, t }, ref) => {
-    const { register, control, handleSubmit, formState, watch } = useForm<ChangeStatusGuestStartedFormValues>({
+    const { register, control, handleSubmit, formState, watch } = useForm<ChangeStatusHostFinishingByHostFormValues>({
       defaultValues: {
         fuelOrBatteryLevelStart: `${tripInfo.startFuelLevelInPercents}%`,
         odotemerStart: Number(tripInfo.startOdometr),
       },
-      resolver: zodResolver(changeStatusGuestStartedFormSchema),
+      resolver: zodResolver(changeStatusHostFinishingByHostFormSchema),
     });
     const { errors, isSubmitting } = formState;
 
@@ -50,7 +50,7 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
       setOvermileValue(overMiles);
     }, [tripInfo, odometer]);
 
-    async function onFormSubmit(formData: ChangeStatusGuestStartedFormValues) {
+    async function onFormSubmit(formData: ChangeStatusHostFinishingByHostFormValues) {
       changeStatusCallback(() => {
         return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), [
           formData.fuelOrBatteryLevel.toString(),
@@ -175,7 +175,10 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
                   <span className="w-full">${displayMoneyWith2Digits(depositToBeReturned)}</span>
                 </div>
               </div>
-              <div className="mt-2 md:mt-4">Deposit returned after the Host Completed the trip</div>
+              <div className="mt-2 md:mt-4">
+                Reimbursement to host and return deposit to guest will after the guest confirms the completion of the
+                trip
+              </div>
             </div>
           </div>
 
@@ -189,6 +192,6 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
     );
   }
 );
-ChangeStatusGuestStartedForm.displayName = "ChangeStatusGuestStartedForm";
+ChangeStatusHostFinishingByHostForm.displayName = "ChangeStatusHostFinishingByHostForm";
 
-export default ChangeStatusGuestStartedForm;
+export default ChangeStatusHostFinishingByHostForm;

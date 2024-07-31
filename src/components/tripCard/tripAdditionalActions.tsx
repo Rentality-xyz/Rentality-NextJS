@@ -12,6 +12,7 @@ import AllowedActionsHostConfirmed from "./forms/AllowedActionsHostConfirmed";
 import AllowedActionsHost from "./forms/AllowedActionsHost";
 import ChangeStatusHostConfirmedForm from "./forms/ChangeStatusHostConfirmedForm";
 import ChangeStatusGuestStartedForm from "./forms/ChangeStatusGuestStartedForm";
+import ChangeStatusHostFinishingByHostForm from "./forms/ChangeStatusHostFinishingByHostForm";
 
 function TripAdditionalActions({
   tripInfo,
@@ -74,6 +75,18 @@ function TripAdditionalActions({
         ref={refForScrool}
       />
     );
+
+  if (isHost && (tripInfo.status === TripStatus.Started || tripInfo.status === TripStatus.CheckedInByHost))
+    return (
+      <ChangeStatusHostFinishingByHostForm
+        tripInfo={tripInfo}
+        changeStatusCallback={changeStatusCallback}
+        disableButton={disableButton}
+        t={t}
+        ref={refForScrool}
+      />
+    );
+
   if (!isHost && tripInfo.status === TripStatus.Started)
     return (
       <ChangeStatusGuestStartedForm
