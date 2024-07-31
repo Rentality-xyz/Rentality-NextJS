@@ -100,7 +100,9 @@ const useSearchCars = () => {
 		  }
 	  }
 	  
-	  availableCarsData[0].highlighted = true;
+	  if (availableCarsData.length > 0){
+	  	availableCarsData[0].highlighted = true;
+	  }
 
       setSearchResult({
         searchCarRequest: searchCarRequest,
