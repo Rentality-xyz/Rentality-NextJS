@@ -10,6 +10,7 @@ import AllowedActionsGuestStarted from "./forms/AllowedActionsGuestStarted";
 import AllowedActionsGuest from "./forms/AllowedActionsGuest";
 import AllowedActionsHostConfirmed from "./forms/AllowedActionsHostConfirmed";
 import AllowedActionsHost from "./forms/AllowedActionsHost";
+import ChangeStatusHostConfirmed from "./forms/changeStatusHostConfirmed";
 
 function TripAdditionalActions({
   tripInfo,
@@ -61,6 +62,17 @@ function TripAdditionalActions({
       return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), inputParams);
     });
   };
+
+  if (isHost && tripInfo.status === TripStatus.Confirmed)
+    return (
+      <ChangeStatusHostConfirmed
+        tripInfo={tripInfo}
+        changeStatusCallback={changeStatusCallback}
+        disableButton={disableButton}
+        t={t}
+        ref={refForScrool}
+      />
+    );
 
   return (
     <div className="flex flex-col px-8 pt-2 pb-4" ref={refForScrool}>

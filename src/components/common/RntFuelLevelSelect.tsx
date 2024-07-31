@@ -19,7 +19,7 @@ const RntFuelLevelSelect = forwardRef<HTMLSelectElement, RntFuelLevelSelectProps
         {...rest}
         ref={ref}
       >
-        <option className="hidden" disabled></option>
+        <option className="hidden" disabled selected></option>
         <option value="0">0%</option>
         <option value="0.1">10%</option>
         <option value="0.2">20%</option>
