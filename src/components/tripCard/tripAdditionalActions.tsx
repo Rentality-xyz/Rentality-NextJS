@@ -62,19 +62,19 @@ function TripAdditionalActions({
     });
   };
 
-  if (isHost)
-    return (
-      <div className="flex flex-col px-8 pt-2 pb-4" ref={refForScrool}>
-        <hr />
-        <div id="trip-allowed-actions">
-          <strong className="text-xl">
-            {t("booked.confirm_data_to_change_status", {
-              type: tripInfo.allowedActions[0].readonly ? "confirm" : "enter",
-            })}
-          </strong>
-        </div>
+  return (
+    <div className="flex flex-col px-8 pt-2 pb-4" ref={refForScrool}>
+      <hr />
+      <div id="trip-allowed-actions">
+        <strong className="text-xl">
+          {t("booked.confirm_data_to_change_status", {
+            type: tripInfo.allowedActions[0].readonly ? "confirm" : "enter",
+          })}
+        </strong>
+      </div>
 
-        {tripInfo.status === TripStatus.Confirmed ? (
+      {isHost ? (
+        tripInfo.status === TripStatus.Confirmed ? (
           <AllowedActionsHostConfirmed
             params={tripInfo.allowedActions[0].params}
             inputParams={inputParams}
@@ -97,45 +97,8 @@ function TripAdditionalActions({
             setConfirmParams={setConfirmParams}
             t={t}
           />
-        )}
-
-        <div className="flex flex-row gap-4">
-          {tripInfo.allowedActions.map((action) => {
-            return (
-              <RntButton
-                key={action.text}
-                className="max-md:w-full h-16 px-4"
-                disabled={disableButton}
-                onClick={() => {
-                  if (action.params == null || action.params.length == 0) {
-                    changeStatusCallback(() => {
-                      return action.action(BigInt(tripInfo.tripId), []);
-                    });
-                  } else {
-                    handleButtonClick();
-                  }
-                }}
-              >
-                {action.text}
-              </RntButton>
-            );
-          })}
-        </div>
-      </div>
-    );
-
-  return (
-    <div className="flex flex-col px-8 pt-2 pb-4" ref={refForScrool}>
-      <hr />
-      <div id="trip-allowed-actions">
-        <strong className="text-xl">
-          {t("booked.confirm_data_to_change_status", {
-            type: tripInfo.allowedActions[0].readonly ? "confirm" : "enter",
-          })}
-        </strong>
-      </div>
-
-      {tripInfo.status === TripStatus.Started ? (
+        )
+      ) : tripInfo.status === TripStatus.Started ? (
         <AllowedActionsGuestStarted
           tripInfo={tripInfo}
           params={tripInfo.allowedActions[0].params}
