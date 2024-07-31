@@ -43,34 +43,27 @@ export default function Marker({
 	  
 	  setMarkerRef(advancedMarker);
 	  
+	  rootRef.current.render(children);
+	  
 	  console.log("Marker created");
     
   }, []);
 
-  useEffect(() => {
-    if (!markerRef || !rootRef.current) return;
-    
-    rootRef.current.render(children);
-      
+
+  useEffect(() => {  
+  	if (!markerRef || !rootRef.current) return;
+  	
     const newMarker = markerRef;
     
     newMarker.position = position;
     newMarker.map = map;
-    
-    setMarkerRef(newMarker);
-    
-  }, [map, position, children]);
-  
-  useEffect(() => {
-    if (!markerRef || !rootRef.current) return;
-    
-    const newMarker = markerRef;
-    
     newMarker.zIndex = zIndex;
     
     setMarkerRef(newMarker);
     
-  }, [zIndex]);
+    rootRef.current.render(children);
+    
+  }, [map, position, zIndex, children]);
 
   return <></>;
 }
