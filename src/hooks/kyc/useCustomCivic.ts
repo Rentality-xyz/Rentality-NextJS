@@ -1,6 +1,7 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
+import { isEmpty } from "@/utils/string";
 import { GatewayStatus, useGateway } from "@civic/ethereum-gateway-react";
 import { ethers } from "ethers";
 import { useEffect, useRef, useState } from "react";
@@ -19,9 +20,38 @@ const useCustomCivic = () => {
   const ethereumInfo = useEthereum();
   const [status, setStatus] = useState<KycStatus>("Loading");
   const [commissionFee, setCommissionFee] = useState(0);
-  const { gatewayStatus, requestGatewayToken } = useGateway();
+  const { gatewayStatus, requestGatewayToken, pendingRequests } = useGateway();
   const [isKycProcessing, setIsKycProcessing] = useState(false);
   const userUsedCommission = useRef<boolean>(false);
+  const isFetchingPiiData = useRef<boolean>(false);
+
+  useEffect(() => {
+    const getInfo = async () => {
+      console.log(`KycVerification pendingRequests: ${JSON.stringify(pendingRequests)}`);
+
+      if (!pendingRequests) return;
+      if (isFetchingPiiData.current) return;
+      if (isEmpty(pendingRequests.presentationRequestId)) return;
+
+      isFetchingPiiData.current = true;
+      try {
+        var url = new URL(`/api/retrieveCivicData`, window.location.origin);
+        url.searchParams.append("requestId", pendingRequests.presentationRequestId);
+
+        console.log(`calling retrieveCivicData...`);
+
+        const apiResponse = await fetch(url);
+
+        if (!apiResponse.ok) {
+          console.error(`getInfo fetch error: + ${apiResponse.statusText}`);
+          return;
+        }
+      } finally {
+        isFetchingPiiData.current = false;
+      }
+    };
+    getInfo();
+  }, [pendingRequests]);
 
   async function payCommission() {
     if (!rentalityContract) {
