@@ -1,45 +1,37 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 interface IAppContext {
-  isHideBurgerMenu: boolean;
+  isBurgerMenuShown: boolean;
   toggleBurgerMenu: () => void;
-  isHideFilterOnSearchPage: boolean;
+  isFilterOnSearchPageShown: boolean;
   toggleFilterOnSearchPage: () => void;
 }
 
 const AppContext = createContext<IAppContext | undefined>(undefined);
 
 export const AppContextProvider = ({ children }: { children?: React.ReactNode }) => {
-  const [isHideBurgerMenu, setIsHideBurgerMenu] = useState(false);
-  const [isHideFilterOnSearchPage, setHideFilterOnSearchPage] = useState(false);
+  const [isBurgerMenuShown, setIsBurgerMenuShown] = useState(false);
+  const [isFilterOnSearchPageShown, setIsFilterOnSearchPageShown] = useState(false);
 
-  const toggleBurgerMenu = () => {
-    setIsHideBurgerMenu((prev) => !prev);
-    const body = document.body;
-    if (isHideBurgerMenu) {
-      body.classList.remove("max-lg:overflow-hidden");
-    } else {
-      body.classList.add("max-lg:overflow-hidden");
-    }
-  };
+  const toggleBurgerMenu = useCallback(() => {
+    setIsBurgerMenuShown((prev) => !prev);
+  }, []);
 
-  const toggleFilterOnSearchPage = () => {
-    setHideFilterOnSearchPage((prev) => !prev);
-    const body = document.body;
-    if (isHideFilterOnSearchPage) {
-      body.classList.remove("overflow-hidden");
-    } else {
-      body.classList.add("overflow-hidden");
-    }
-  };
+  const toggleFilterOnSearchPage = useCallback(() => {
+    setIsFilterOnSearchPageShown((prev) => !prev);
+  }, []);
 
-  return (
-    <AppContext.Provider
-      value={{ isHideBurgerMenu, toggleBurgerMenu, isHideFilterOnSearchPage, toggleFilterOnSearchPage }}
-    >
-      {children}
-    </AppContext.Provider>
+  const value = useMemo(
+    () => ({
+      isBurgerMenuShown,
+      toggleBurgerMenu,
+      isFilterOnSearchPageShown,
+      toggleFilterOnSearchPage,
+    }),
+    [isBurgerMenuShown, toggleBurgerMenu, isFilterOnSearchPageShown, toggleFilterOnSearchPage]
   );
+
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 
 export const useAppContext = () => {
