@@ -1,7 +1,5 @@
-import Image from "next/image";
-import logo from "../../images/logo.png";
-import Link from "next/link";
 import { useAppContext } from "@/contexts/appContext";
+import NavMenuLogo from "./navMenuLogo";
 
 export default function BaseBurgerNavMenu({ children }: { children?: React.ReactNode }) {
   const { toggleBurgerMenu } = useAppContext();
@@ -12,11 +10,7 @@ export default function BaseBurgerNavMenu({ children }: { children?: React.React
 
   return (
     <aside id="burger-menu" className="pl-14 pr-12 pt-8 bg-[#1E1E30] text-rnt-temp-sidemenu-text">
-      <div className="w-40">
-        <Link href={"https://rentality.xyz/"} onClick={handleOnClick}>
-          <Image alt="" width={200} height={200} src={logo} />
-        </Link>
-      </div>
+      <NavMenuLogo onClick={handleOnClick} />
       <nav className="w-full pt-4 mb-44">{children}</nav>
     </aside>
   );
