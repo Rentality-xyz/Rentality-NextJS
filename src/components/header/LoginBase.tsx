@@ -52,7 +52,7 @@ function LoginBase() {
     return (
       <div className="flex items-center space-x-4 px-2 py-1 bg-transparent flex-row-reverse gap-4">
         <div className="overflow-hidden">
-          <MuiAvatar className="w-20 h-20" alt="" src="" />
+          <MuiAvatar className="w-12 sm:w-20 h-12 sm:h-20" alt="" src="" />
         </div>
         <div className="w-[12ch]"></div>
       </div>
@@ -67,14 +67,14 @@ function LoginBase() {
       <Name className="text-white hidden xl:flex" />
       <Address className="text-white hidden xl:flex" />
       <Avatar
-        className="h-20 w-20"
+        className="w-12 sm:w-20 h-12 sm:h-20"
         loadingComponent={
-          <MuiAvatar className="w-20 h-20" alt={userFullName} src={userInfo?.profilePhotoUrl}>
+          <MuiAvatar className="w-12 sm:w-20 h-12 sm:h-20" alt={userFullName} src={userInfo?.profilePhotoUrl}>
             {userInitials}
           </MuiAvatar>
         }
         defaultComponent={
-          <MuiAvatar className="w-20 h-20" alt={userFullName} src={userInfo?.profilePhotoUrl}>
+          <MuiAvatar className="w-12 sm:w-20 h-12 sm:h-20" alt={userFullName} src={userInfo?.profilePhotoUrl}>
             {userInitials}
           </MuiAvatar>
         }
