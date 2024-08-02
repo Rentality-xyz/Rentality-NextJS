@@ -3,15 +3,8 @@ import logo from "../../images/logo.png";
 import Link from "next/link";
 import { useAppContext } from "@/contexts/appContext";
 
-export default function BaseBurgerNavMenu({
-  children,
-  accountType,
-}: {
-  children?: React.ReactNode;
-  accountType: string;
-}) {
+export default function BaseBurgerNavMenu({ children }: { children?: React.ReactNode }) {
   const { toggleBurgerMenu } = useAppContext();
-  accountType = accountType ?? "Host";
 
   const handleOnClick = () => {
     toggleBurgerMenu();

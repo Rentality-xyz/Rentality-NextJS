@@ -101,7 +101,7 @@ function GuestNavMenu() {
 
 export default function GuestSideNavMenu() {
   return (
-    <BaseSideNavMenu accountType={"Guest"}>
+    <BaseSideNavMenu>
       <GuestNavMenu />
     </BaseSideNavMenu>
   );
@@ -109,7 +109,7 @@ export default function GuestSideNavMenu() {
 
 export function GuestBurgerNavMenu() {
   return (
-    <BaseBurgerNavMenu accountType={"Guest"}>
+    <BaseBurgerNavMenu>
       <GuestNavMenu />
     </BaseBurgerNavMenu>
   );
