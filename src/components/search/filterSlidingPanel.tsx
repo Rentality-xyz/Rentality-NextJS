@@ -27,6 +27,11 @@ export default function FilterSlidingPanel({
 
   const { toggleFilterOnSearchPage } = useAppContext();
 
+  function handleClose() {
+    setOpenFilterPanel(false);
+    toggleFilterOnSearchPage();
+  }
+
   return (
     <div className="sliding-panel-container w-full fixed top-0 left-0">
       <SlidingPanel
@@ -34,18 +39,12 @@ export default function FilterSlidingPanel({
         isOpen={openFilterPanel}
         size={100}
         noBackdrop={false}
-        backdropClicked={() => setOpenFilterPanel(false)}
+        backdropClicked={handleClose}
         panelContainerClassName="sliding-panel"
       >
         <div className="flex flex-col py-8">
           <div className="self-end mr-8">
-            <i
-              className="fi fi-br-cross"
-              onClick={() => {
-                setOpenFilterPanel(false);
-                toggleFilterOnSearchPage();
-              }}
-            ></i>
+            <i className="fi fi-br-cross" onClick={handleClose}></i>
           </div>
           <div className="flex flex-col gap-2 sm:gap-4 px-2 sm:px-4 md:px-8 lg:px-16 mt-4">
             <RntInput
@@ -129,7 +128,7 @@ export default function FilterSlidingPanel({
               <RntButton
                 className="max-sm:h-10 max-sm:w-full"
                 onClick={() => {
-                  setOpenFilterPanel(false);
+                  handleClose();
                   handleSearchClick();
                 }}
               >
@@ -141,12 +140,14 @@ export default function FilterSlidingPanel({
                   setSearchCarRequest((prev) => {
                     return {
                       ...prev,
-                      brand: "",
-                      model: "",
-                      pricePerDayInUsdFrom: "",
-                      pricePerDayInUsdTo: "",
-                      yearOfProductionFrom: "",
-                      yearOfProductionTo: "",
+                      searchFilters: {
+                        brand: "",
+                        model: "",
+                        pricePerDayInUsdFrom: "",
+                        pricePerDayInUsdTo: "",
+                        yearOfProductionFrom: "",
+                        yearOfProductionTo: "",
+                      },
                     };
                   })
                 }
