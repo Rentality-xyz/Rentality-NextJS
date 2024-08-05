@@ -18,10 +18,10 @@ export default function SideNavMenuItem({
   onClick?: () => void;
   notificationCount?: number;
 }) {
-  const { toggleBurgerMenu } = useAppContext();
+  const { closeBurgerMenu } = useAppContext();
 
   const handleOnClick = () => {
-    toggleBurgerMenu();
+    closeBurgerMenu();
     if (onClick) {
       onClick();
     }

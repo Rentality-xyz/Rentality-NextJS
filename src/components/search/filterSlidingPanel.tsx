@@ -25,11 +25,11 @@ export default function FilterSlidingPanel({
     return t("filter_sliding_panel." + element);
   };
 
-  const { toggleFilterOnSearchPage } = useAppContext();
+  const { closeFilterOnSearchPage } = useAppContext();
 
   function handleClose() {
     setOpenFilterPanel(false);
-    toggleFilterOnSearchPage();
+    closeFilterOnSearchPage();
   }
 
   return (

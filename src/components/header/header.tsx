@@ -16,7 +16,7 @@ export default function Header({ accountType }: { accountType: string }) {
   const isHost = accountType === "Host";
   const router = useRouter();
 
-  const { isHideBurgerMenu, toggleBurgerMenu } = useAppContext();
+  const { isHideBurgerMenu, openBurgerMenu, closeBurgerMenu } = useAppContext();
   const [isSelectedHost, setIsSelectedHost] = useState(isHost);
 
   const AntSwitch = styled(Switch)(({ theme }) => ({
@@ -89,7 +89,7 @@ export default function Header({ accountType }: { accountType: string }) {
               src={isHideBurgerMenu ? burgerMenuClose : burgerMenu}
               alt=""
               className="lg:hidden mr-4"
-              onClick={toggleBurgerMenu}
+              onClick={isHideBurgerMenu ? closeBurgerMenu : openBurgerMenu}
             />
             <div className="font-bold text-xl lg:text-3xl max-sm:hidden sm:pl-[42px]">{accountType} account</div>
           </div>

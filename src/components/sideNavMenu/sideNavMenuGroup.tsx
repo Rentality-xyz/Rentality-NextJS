@@ -18,10 +18,10 @@ export default function SideNavMenuGroup({
   target?: string;
   onClick?: () => void;
 }) {
-  const { toggleBurgerMenu } = useAppContext();
+  const { closeBurgerMenu } = useAppContext();
 
   const handleOnClick = () => {
-    toggleBurgerMenu();
+    closeBurgerMenu();
     if (onClick) {
       onClick();
     }

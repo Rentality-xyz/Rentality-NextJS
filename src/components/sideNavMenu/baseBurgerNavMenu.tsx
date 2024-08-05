@@ -10,11 +10,11 @@ export default function BaseBurgerNavMenu({
   children?: React.ReactNode;
   accountType: string;
 }) {
-  const { toggleBurgerMenu } = useAppContext();
+  const { closeBurgerMenu } = useAppContext();
   accountType = accountType ?? "Host";
 
   const handleOnClick = () => {
-    toggleBurgerMenu();
+    closeBurgerMenu();
   };
 
   return (

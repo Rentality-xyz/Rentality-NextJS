@@ -132,7 +132,7 @@ export default function SearchAndFilters({
     });
   };
 
-  const { toggleFilterOnSearchPage } = useAppContext();
+  const { openFilterOnSearchPage } = useAppContext();
 
   return (
     <>
@@ -203,7 +203,7 @@ export default function SearchAndFilters({
             className="w-40 "
             onClick={() => {
               setOpenFilterPanel(true);
-              toggleFilterOnSearchPage();
+              openFilterOnSearchPage();
             }}
           >
             {t_comp("button_filter")}
