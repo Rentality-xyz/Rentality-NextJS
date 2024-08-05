@@ -4,11 +4,23 @@ import Footer from "@/components/footer/footer";
 import HostSideNavMenu from "../sideNavMenu/hostSideNavMenu";
 import GuestSideNavMenu from "../sideNavMenu/guestSideNavMenu";
 import AdminSideNavMenu from "../sideNavMenu/adminSideNavMenu";
+import { useEffect } from "react";
+import { useAppContext } from "@/contexts/appContext";
 
 export default function Layout({ children }: { children?: React.ReactNode }) {
   const router = useRouter();
+  const { isHideBurgerMenu, isHideFilterOnSearchPage } = useAppContext();
 
   const isGuest = router.route.startsWith("/guest");
+
+  useEffect(() => {
+    const body = document.body;
+    if (isHideBurgerMenu || isHideFilterOnSearchPage) {
+      body.classList.add("overflow-hidden");
+    } else {
+      body.classList.remove("overflow-hidden");
+    }
+  }, [isHideBurgerMenu, isHideFilterOnSearchPage]);
 
   if (isGuest)
     return (
