@@ -63,9 +63,6 @@ export default function CarSearchItem({
         style={{ backgroundImage: `url(${searchInfo.image})` }}
         className="relative w-full md:w-64 min-h-[12rem] flex-shrink-0 bg-center bg-cover"
       >
-        {searchInfo.isCarDetailsConfirmed && (
-          <i className="fi fi-br-hexagon-check absolute text-green-500 text-3xl top-2 right-2"></i>
-        )}
       </div>
       <div className="flex w-full flex-col justify-between p-2 sm:p-4">
         <div className="flex flex-row items-baseline justify-between ">

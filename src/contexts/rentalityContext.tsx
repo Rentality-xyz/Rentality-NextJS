@@ -1,5 +1,5 @@
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { getEtherContractWithSigner } from "../abis";
+import { getEtherContractWithSigner } from "@/abis";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useEthereum } from "./web3/ethereumContext";
 

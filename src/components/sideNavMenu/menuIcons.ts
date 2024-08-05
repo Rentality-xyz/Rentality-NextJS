@@ -10,6 +10,9 @@ import icNotifications from "@/images/ic_notifications.png";
 import icProfileSettings from "@/images/ic_profile_settings.png";
 import icTransactionHistory from "@/images/ic_transaction_history.png";
 import icSearch from "@/images/ic-search-128.svg";
+import icInvest from "@/images/ic_invest.jpeg";
+import icClaimInvest from "@/images/ic_claimInvest.png"
+import icCreateInvest from "@/images/ic-create-invest.jpg"
 
 enum MenuIcons {
   Booked,
@@ -23,6 +26,9 @@ enum MenuIcons {
   ProfileSettings,
   TransactionHistory,
   Search,
+  Invest,
+  ClaimInvest,
+  CreateInvest
 }
 
 export const getImageForMenu = (state: MenuIcons): StaticImageData => {
@@ -49,6 +55,13 @@ export const getImageForMenu = (state: MenuIcons): StaticImageData => {
       return icTransactionHistory;
     case MenuIcons.Search:
       return icSearch;
+    case MenuIcons.Invest:
+      return icInvest;
+    case MenuIcons.ClaimInvest:
+      return icClaimInvest;
+    case MenuIcons.CreateInvest:
+      return icCreateInvest;
+
   }
 };
 
