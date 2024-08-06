@@ -28,9 +28,11 @@ const customEmptySearchCarRequest: SearchCarRequest = {
   ...emptySearchCarRequest,
   searchLocation: {
     ...emptySearchCarRequest.searchLocation,
-    city: "Down town, Miami",
+    city: "Miami",
     state: "Florida",
-    country: "USA",
+    country: "US",
+    latitude: 25.782407,
+    longitude: -80.229458,
   },
   dateFrom: dateToHtmlDateTimeFormat(defaultDateFrom),
   dateTo: dateToHtmlDateTimeFormat(defaultDateTo),
@@ -40,7 +42,7 @@ type AdvancedMarkerElement = google.maps.marker.AdvancedMarkerElement;
 
 export default function Search() {
   const [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest, setSearchResult] =
-    useSearchCars();
+    useSearchCars(customEmptySearchCarRequest);
   const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(customEmptySearchCarRequest);
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const [openFilterPanel, setOpenFilterPanel] = useState(false);
