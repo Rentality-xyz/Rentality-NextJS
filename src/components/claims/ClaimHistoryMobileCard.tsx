@@ -80,29 +80,29 @@ export default function ClaimHistoryMobileCard({ claim, index, isHost, payClaim,
       <hr className="col-span-2" />
       {claim.fileUrls.filter((i) => !isEmpty(i)).length > 0 ? (
         <div className="col-span-2">
-          <div className="w-full grid grid-cols-2 gap-2 mb-1">
+          <div className="mb-1 grid w-full grid-cols-2 gap-2">
             <p>
               <strong>View photo/file</strong>
             </p>
             <div
-              className="w-8 h-8 cursor-pointer mt-[-6px]"
+              className="mt-[-6px] h-8 w-8 cursor-pointer"
               onClick={() => {
                 handleFilesClick();
               }}
             >
-              <Image className="w-full h-full object-cover" width={36} height={36} src="/icon_photo.png" alt="" />
+              <Image className="h-full w-full object-cover" width={36} height={36} src="/icon_photo.png" alt="" />
             </div>
           </div>
           {isVisible && (
-            <div className="mt-2 mb-4">
-              <div className="flex overflow-x-auto space-x-2">
+            <div className="mb-4 mt-2">
+              <div className="flex space-x-2 overflow-x-auto">
                 {claim.fileUrls
                   .filter((i) => !isEmpty(i))
                   .slice(0, 5)
                   .map((url, index) => (
-                    <div key={index} className="flex-none w-36 h-36">
+                    <div key={index} className="h-36 w-36 flex-none">
                       <Image
-                        className="w-full h-full object-cover cursor-pointer"
+                        className="h-full w-full cursor-pointer object-cover"
                         src={url}
                         alt={`Photo ${index + 1}`}
                         width={144}

@@ -80,7 +80,7 @@ export default function AgreementInfo({
         }}
       />
       <p className="mt-8">{t("read_agree")}</p>
-      <div className="flex mt-4 items-center">
+      <div className="mt-4 flex items-center">
         <RntButton type="button" onClick={handleConfirm} disabled={hasSignature(tcSignature)}>
           {t("confirm")}
         </RntButton>

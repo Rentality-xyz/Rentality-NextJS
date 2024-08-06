@@ -42,7 +42,7 @@ export default function Admin() {
     return (
       <Layout>
         <div className="flex flex-col">
-          <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-row items-center justify-between">
             <div className="text-2xl">
               <strong>{t_admin("contract_info")}</strong>
             </div>

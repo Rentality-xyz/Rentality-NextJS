@@ -12,20 +12,20 @@ export default function ChatHeader({ selectedChat, t }: { selectedChat: ChatInfo
   );
 
   return (
-    <section className="rnt-card mt-4 rounded-xl flex overflow-hidden">
+    <section className="rnt-card mt-4 flex overflow-hidden rounded-xl">
       <div
         style={{
           backgroundImage: `url(${selectedChat.carPhotoUrl})`,
         }}
-        className="relative w-1/4 min-h-[6rem] flex-shrink-0 bg-center bg-cover"
+        className="relative min-h-[6rem] w-1/4 flex-shrink-0 bg-cover bg-center"
       >
         <div className={statusClassName}>
           <strong className="text-sm">{getTripStatusTextFromStatus(selectedChat.tripStatus)}</strong>
         </div>
       </div>
-      <div className="w-3/4 flex flex-col gap-2 justify-center  p-2 pl-8">
-        <div className="max-sm:text-base text-sm">{t("reservation", { trip: selectedChat.tripId })}</div>
-        <div className="max-sm:text-base text-sm">
+      <div className="flex w-3/4 flex-col justify-center gap-2 p-2 pl-8">
+        <div className="text-sm max-sm:text-base">{t("reservation", { trip: selectedChat.tripId })}</div>
+        <div className="text-sm max-sm:text-base">
           {selectedChat.startDateTime.getTime()
             ? `${dateFormatShortMonthDateTime(
                 selectedChat.startDateTime,
@@ -33,7 +33,7 @@ export default function ChatHeader({ selectedChat, t }: { selectedChat: ChatInfo
               )} - ${dateFormatShortMonthDateTime(selectedChat.endDateTime, selectedChat.timeZoneId)}`
             : null}
         </div>
-        <div className="max-sm:text-base text-xl">{selectedChat.carTitle}</div>
+        <div className="text-xl max-sm:text-base">{selectedChat.carTitle}</div>
         <div className="text-sm">{selectedChat.carLicenceNumber}</div>
       </div>
     </section>

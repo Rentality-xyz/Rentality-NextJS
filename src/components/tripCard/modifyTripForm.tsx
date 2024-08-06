@@ -19,7 +19,7 @@ function ModifyTripForm({
   const telLink = `tel:${guestPhoneNumber}`;
 
   return (
-    <div className="w-full flex flex-col gap-2 items-center">
+    <div className="flex w-full flex-col items-center gap-2">
       <p className="text-rentality-secondary">Finish the trip without guest confirmation</p>
       <p>You can complete the trip without guest confirmation and the car will be available for booking.</p>
       <p>You will not receive the earnings until the guest confirms the completion of the trip.</p>
@@ -32,13 +32,13 @@ function ModifyTripForm({
         value={messageToGuest}
         onChange={(e) => setMessageToGuest(e.target.value)}
       />
-      <RntButton className="w-full my-1" onClick={() => handleFinishTrip(messageToGuest)}>
+      <RntButton className="my-1 w-full" onClick={() => handleFinishTrip(messageToGuest)}>
         Finish the trip without guest confirmation
       </RntButton>
       <a className="w-full" href={telLink}>
-        <RntButtonTransparent className="w-full my-1">Contact to guest</RntButtonTransparent>
+        <RntButtonTransparent className="my-1 w-full">Contact to guest</RntButtonTransparent>
       </a>
-      <RntButtonTransparent className="w-full my-1" onClick={handleCancel}>
+      <RntButtonTransparent className="my-1 w-full" onClick={handleCancel}>
         Cancel
       </RntButtonTransparent>
     </div>

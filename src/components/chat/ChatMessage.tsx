@@ -15,22 +15,22 @@ export default function ChatMessage({
   isMyMessage: boolean;
 }) {
   return !isMyMessage ? (
-    <div className="bg-[#484874] rnt-card-selected w-5/6 grid grid-cols-[auto_1fr_auto] gap-2 rounded-xl rounded-ss-none  overflow-hidden p-4">
-      <div className="w-12 h-12">
+    <div className="rnt-card-selected grid w-5/6 grid-cols-[auto_1fr_auto] gap-2 overflow-hidden rounded-xl rounded-ss-none bg-[#484874] p-4">
+      <div className="h-12 w-12">
         <Avatar src={photoUrl} sx={{ width: "3rem", height: "3rem" }}></Avatar>
       </div>
-      <div className="max-sm:leading-5 font-bold text-lg self-center">{name}</div>
-      <div className="text-base self-center text-rentality-secondary">{dateFormatLongMonthDateTime(datetime)}</div>
-      <div className="col-span-3 text-lg whitespace-pre-line">{message}</div>
+      <div className="self-center text-lg font-bold max-sm:leading-5">{name}</div>
+      <div className="self-center text-base text-rentality-secondary">{dateFormatLongMonthDateTime(datetime)}</div>
+      <div className="col-span-3 whitespace-pre-line text-lg">{message}</div>
     </div>
   ) : (
-    <div className="bg-[#7856FF] rnt-card w-5/6 grid grid-cols-[auto_1fr_auto] gap-2 rounded-xl rounded-se-none overflow-hidden p-4 self-end">
-      <div className="text-base self-center text-rentality-secondary">{dateFormatLongMonthDateTime(datetime)}</div>
-      <div className="max-sm:leading-5 font-bold text-lg self-center text-end">{name}</div>
-      <div className="w-12 h-12">
+    <div className="rnt-card grid w-5/6 grid-cols-[auto_1fr_auto] gap-2 self-end overflow-hidden rounded-xl rounded-se-none bg-[#7856FF] p-4">
+      <div className="self-center text-base text-rentality-secondary">{dateFormatLongMonthDateTime(datetime)}</div>
+      <div className="self-center text-end text-lg font-bold max-sm:leading-5">{name}</div>
+      <div className="h-12 w-12">
         <Avatar src={photoUrl} sx={{ width: "3rem", height: "3rem" }}></Avatar>
       </div>
-      <div className="col-span-3 text-lg whitespace-pre-line">{message}</div>
+      <div className="col-span-3 whitespace-pre-line text-lg">{message}</div>
     </div>
   );
 }
@@ -48,19 +48,19 @@ function ChatMessageHeader({
   return !isMyMessage ? (
     <div className="col-span-3 flex flex-row justify-between">
       <div className="flex flex-row gap-2">
-        <div className="w-12 h-12">
+        <div className="h-12 w-12">
           <Avatar src={photoUrl} sx={{ width: "3rem", height: "3rem" }}></Avatar>
         </div>
-        <div className="font-bold text-lg self-center">{name}</div>
+        <div className="self-center text-lg font-bold">{name}</div>
       </div>
-      <div className="text-sm self-center text-gray-600">{dateFormatLongMonthDateTime(datetime)}</div>
+      <div className="self-center text-sm text-gray-600">{dateFormatLongMonthDateTime(datetime)}</div>
     </div>
   ) : (
     <div className="col-span-3 flex flex-row justify-between">
-      <div className="text-sm self-center text-gray-600">{dateFormatLongMonthDateTime(datetime)}</div>
+      <div className="self-center text-sm text-gray-600">{dateFormatLongMonthDateTime(datetime)}</div>
       <div className="flex flex-row gap-2">
-        <div className="font-bold text-lg self-center">{name}</div>
-        <div className="w-12 h-12">
+        <div className="self-center text-lg font-bold">{name}</div>
+        <div className="h-12 w-12">
           <Avatar src={photoUrl} sx={{ width: "3rem", height: "3rem" }}></Avatar>
         </div>
       </div>

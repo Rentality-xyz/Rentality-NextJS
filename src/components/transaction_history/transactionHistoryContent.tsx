@@ -87,10 +87,10 @@ export default function TransactionHistoryContent({ isHost, transactions, t }: T
   const rowSpanClassName = "px-2 h-12 text-center";
 
   return (
-    <div className="relative w-full min-h-[540px] pb-16 bg-rentality-bg p-4 rounded-2xl mt-5">
-      <div className="flex max-lg:flex-col items-center lg:items-end">
+    <div className="relative mt-5 min-h-[540px] w-full rounded-2xl bg-rentality-bg p-4 pb-16">
+      <div className="flex items-center max-lg:flex-col lg:items-end">
         <RntInput
-          className="max-w-[320px] lg:max-w-[210px] lg:mr-4"
+          className="max-w-[320px] lg:mr-4 lg:max-w-[210px]"
           id="dateFrom"
           label={t("common.from")}
           type="datetime-local"
@@ -105,7 +105,7 @@ export default function TransactionHistoryContent({ isHost, transactions, t }: T
           }}
         />
         <RntInput
-          className="max-w-[320px] lg:max-w-[210px] lg:mr-8"
+          className="max-w-[320px] lg:mr-8 lg:max-w-[210px]"
           id="dateTo"
           label={t("common.to")}
           type="datetime-local"
@@ -122,7 +122,7 @@ export default function TransactionHistoryContent({ isHost, transactions, t }: T
 
         <div className="flex items-end">
           <RntSelect
-            className="w-36 sm:w-40 max-xl:mt-4 mr-8"
+            className="mr-8 w-36 max-xl:mt-4 sm:w-40"
             id="sort"
             readOnly={false}
             value={filterParams.statusFilterBy ?? ""}
@@ -161,13 +161,13 @@ export default function TransactionHistoryContent({ isHost, transactions, t }: T
             <th className={headerSpanClassName} colSpan={2}>
               <div className="flex flex-col text-rentality-secondary-shade">
                 {t_th("guest_payments")}
-                <span className="w-full h-1 border-b-2 border-[#24D8D4]" />
+                <span className="h-1 w-full border-b-2 border-[#24D8D4]" />
               </div>
             </th>
             <th className={headerSpanClassName} colSpan={3}>
               <div className="flex flex-col text-rentality-button-medium">
                 {t_th("host_earnings")}
-                <span className="w-full h-1 border-b-2 border-[#7f5ee7]" />
+                <span className="h-1 w-full border-b-2 border-[#7f5ee7]" />
               </div>
             </th>
             <th className={headerSpanClassName}></th>

@@ -16,7 +16,7 @@ export default function ChatList({
   t: TFunction;
 }) {
   return (
-    <div className="w-full flex flex-col gap-2">
+    <div className="flex w-full flex-col gap-2">
       {chats.map((chatInfo) => {
         return (
           <ChatInfoCard

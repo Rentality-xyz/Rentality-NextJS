@@ -100,10 +100,10 @@ export default function CreateClaim({
 
   return (
     <form
-      className="w-full p-4 mt-5 flex flex-col gap-4"
+      className="mt-5 flex w-full flex-col gap-4 p-4"
       onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}
     >
-      <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center">
+      <div className="flex flex-col items-center gap-4 md:flex-row md:gap-8">
         <RntSelect
           className="lg:w-1/2"
           id="trip"

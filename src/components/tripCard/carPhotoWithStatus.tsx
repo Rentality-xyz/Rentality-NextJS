@@ -33,10 +33,10 @@ function CarPhotoWithStatus({ carImageUrl, tripStatus }: { carImageUrl: string; 
           /> */}
 
       {/* Empty span to generate tailwind css colors for statuses */}
-      <span className="bg-yellow-600 bg-lime-500 bg-blue-600 bg-blue-800 bg-purple-600 bg-orange-400 bg-purple-800 bg-fuchsia-700 bg-red-500" />
+      <span className="bg-blue-600 bg-blue-800 bg-fuchsia-700 bg-lime-500 bg-orange-400 bg-purple-600 bg-purple-800 bg-red-500 bg-yellow-600" />
       <div
         style={{ backgroundImage: `url(${carImageUrl})` }}
-        className="relative w-full xl:w-64 min-h-[12rem] md:min-h-[16rem] xl:min-h-[12rem] flex-shrink-0 bg-center bg-cover"
+        className="relative min-h-[12rem] w-full flex-shrink-0 bg-cover bg-center md:min-h-[16rem] xl:min-h-[12rem] xl:w-64"
       >
         {tripStatus == TripStatus.CompletedWithoutGuestComfirmation ? (
           <div className={statusClassName}>

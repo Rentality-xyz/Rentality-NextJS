@@ -40,7 +40,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
     return (
       <div ref={ref}>
         <form
-          className="flex flex-col px-8 pt-2 pb-4"
+          className="flex flex-col px-8 pb-4 pt-2"
           onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}
         >
           <hr />
@@ -52,8 +52,8 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
             </strong>
           </div>
 
-          <div className="flex flex-row flex-wrap gap-12 py-4 ">
-            <div className="w-full flex flex-col md:flex-1 lg:flex-none lg:w-1/3">
+          <div className="flex flex-row flex-wrap gap-12 py-4">
+            <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
               <Controller
                 name="fuelOrBatteryLevel"
                 control={control}
@@ -76,7 +76,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
                 validationError={errors.odotemer?.message?.toString()}
               />
             </div>
-            <div className="w-full flex flex-col md:flex-1 lg:flex-none lg:w-1/3">
+            <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
               <RntInput
                 className="py-2"
                 id="insurance_company_name"
@@ -95,12 +95,12 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
           </div>
 
           <div className="flex flex-row gap-4">
-            <RntButton type="submit" className="max-md:w-full h-16 px-4" disabled={disableButton || isSubmitting}>
+            <RntButton type="submit" className="h-16 px-4 max-md:w-full" disabled={disableButton || isSubmitting}>
               Start
             </RntButton>
             <RntButton
               type="button"
-              className="max-md:w-full h-16 px-4"
+              className="h-16 px-4 max-md:w-full"
               disabled={disableButton || isSubmitting}
               onClick={() => {
                 changeStatusCallback(() => {

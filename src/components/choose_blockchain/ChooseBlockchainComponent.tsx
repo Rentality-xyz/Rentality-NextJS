@@ -60,7 +60,7 @@ export default function ChooseBlockchainComponent() {
 
   return (
     <div ref={chooseBlockchainWrapperRef}>
-      <Stack className="mx-1 xl:ml-16 relative" direction="row" spacing={1} alignItems="center">
+      <Stack className="relative mx-1 xl:ml-16" direction="row" spacing={1} alignItems="center">
         <Button
           className="flex"
           onClick={() => {
@@ -68,7 +68,7 @@ export default function ChooseBlockchainComponent() {
           }}
         >
           <Image
-            className={`w-8 h-8 bg-[#DCE3FA] rounded-[0.6rem]`}
+            className={`h-8 w-8 rounded-[0.6rem] bg-[#DCE3FA]`}
             src={getLogoIconUrl(selectedBlockchain?.logo ?? "")}
             alt=""
             width={32}
@@ -77,7 +77,7 @@ export default function ChooseBlockchainComponent() {
           <Image src={isShowComponentList ? arrowUp : arrowDown} alt="" className="ml-1" />
         </Button>
         {isShowComponentList && (
-          <div className="w-[220px] absolute top-[2.5rem] left-auto right-0 z-50 bg-[#1E1E30] rounded-xl border-2 border-[#373737]">
+          <div className="absolute left-auto right-0 top-[2.5rem] z-50 w-[220px] rounded-xl border-2 border-[#373737] bg-[#1E1E30]">
             {getExistBlockchainList().map((i) => {
               return (
                 <Button
@@ -89,14 +89,14 @@ export default function ChooseBlockchainComponent() {
                   }}
                 >
                   <Image
-                    className="mr-2 w-[24px] h-[24px]"
+                    className="mr-2 h-[24px] w-[24px]"
                     src={getLogoIconUrl(i.logo)}
                     alt=""
                     width={24}
                     height={24}
                   />
                   <span className="whitespace-nowrap">{i.shortName}</span>
-                  <div className="w-full flex items-end">
+                  <div className="flex w-full items-end">
                     {selectedBlockchain == i && <Image src={blockchainChosen} alt="" className="mr-0" />}
                   </div>
                 </Button>

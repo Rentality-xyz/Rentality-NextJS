@@ -33,7 +33,7 @@ export default function FilterSlidingPanel({
   }
 
   return (
-    <div className="sliding-panel-container w-full fixed top-0 left-0">
+    <div className="sliding-panel-container fixed left-0 top-0 w-full">
       <SlidingPanel
         type={"left"}
         isOpen={openFilterPanel}
@@ -43,10 +43,10 @@ export default function FilterSlidingPanel({
         panelContainerClassName="sliding-panel"
       >
         <div className="flex flex-col py-8">
-          <div className="self-end mr-8">
+          <div className="mr-8 self-end">
             <i className="fi fi-br-cross" onClick={handleClose}></i>
           </div>
-          <div className="flex flex-col gap-2 sm:gap-4 px-2 sm:px-4 md:px-8 lg:px-16 mt-4">
+          <div className="mt-4 flex flex-col gap-2 px-2 sm:gap-4 sm:px-4 md:px-8 lg:px-16">
             <RntInput
               id="filter-brand"
               label={t_comp("brand")}
@@ -124,7 +124,7 @@ export default function FilterSlidingPanel({
                 });
               }}
             />
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 max-sm:mt-2 sm:justify-between">
+            <div className="flex flex-col gap-4 max-sm:mt-2 sm:flex-row sm:justify-between sm:gap-8">
               <RntButton
                 className="max-sm:h-10 max-sm:w-full"
                 onClick={() => {

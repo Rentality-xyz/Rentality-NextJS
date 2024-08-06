@@ -28,13 +28,13 @@ export default function SideNavMenuItem({
   };
 
   return (
-    <div className="flex py-1 h-12">
-      <Link className="flex flex-row gap-2 items-center" href={href} onClick={handleOnClick} target={target}>
+    <div className="flex h-12 py-1">
+      <Link className="flex flex-row items-center gap-2" href={href} onClick={handleOnClick} target={target}>
         {icon != null && <Image src={getImageForMenu(icon)} width={30} height={30} alt="" />}
         <span>{text}</span>
       </Link>
       {notificationCount && notificationCount > 0 ? (
-        <span className="ml-4 rounded-full bg-rentality-primary h-6 w-6 flex justify-center items-center">
+        <span className="ml-4 flex h-6 w-6 items-center justify-center rounded-full bg-rentality-primary">
           <span className="text-white">{notificationCount <= 9 ? notificationCount : "9+"}</span>
         </span>
       ) : null}

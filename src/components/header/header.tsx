@@ -77,27 +77,27 @@ export default function Header({ accountType }: { accountType: string }) {
       {isHideBurgerMenu && (
         <div
           id="burger-menu-wrapper"
-          className="fixed top-[7rem] left-0 w-full h-full z-[100] bg-[#1E1E30] overflow-auto lg:hidden"
+          className="fixed left-0 top-[7rem] z-[100] h-full w-full overflow-auto bg-[#1E1E30] lg:hidden"
         >
           {isHost ? <HostBurgerNavMenu /> : <GuestBurgerNavMenu />}
         </div>
       )}
-      <header className="text-rnt-temp-header-text pt-1.5">
-        <div className="flex w-full pl-2 pr-2 sm:pr-6 py-2 min-h-[7rem] justify-between">
+      <header className="pt-1.5 text-rnt-temp-header-text">
+        <div className="flex min-h-[7rem] w-full justify-between py-2 pl-2 pr-2 sm:pr-6">
           <div className="flex flex-row items-center">
             <Image
               src={isHideBurgerMenu ? burgerMenuClose : burgerMenu}
               alt=""
-              className="lg:hidden mr-4"
+              className="mr-4 lg:hidden"
               onClick={isHideBurgerMenu ? closeBurgerMenu : openBurgerMenu}
             />
-            <div className="font-bold text-xl lg:text-3xl max-sm:hidden sm:pl-[42px]">{accountType} account</div>
+            <div className="text-xl font-bold max-sm:hidden sm:pl-[42px] lg:text-3xl">{accountType} account</div>
           </div>
           <div className="flex flex-row items-center">
             <Stack direction="row" spacing={1} alignItems="center">
-              <Typography className="text-lg font-['Montserrat',Arial,sans-serif]">Guest</Typography>
+              <Typography className="font-['Montserrat',Arial,sans-serif] text-lg">Guest</Typography>
               <AntSwitch checked={isSelectedHost} onChange={handleChange} inputProps={{ "aria-label": "ant design" }} />
-              <Typography className="text-lg font-['Montserrat',Arial,sans-serif]">Host</Typography>
+              <Typography className="font-['Montserrat',Arial,sans-serif] text-lg">Host</Typography>
             </Stack>
             <ChooseBlockchainComponent />
             <LoginBase />

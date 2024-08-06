@@ -37,8 +37,8 @@ export default function ClaimHistory({ isHost, claims, payClaim, cancelClaim, t 
   }
 
   return (
-    <div className="w-full bg-rentality-bg p-4 rounded-2xl mt-5">
-      <h3 className="text-xl mb-4">{t_history("title")}</h3>
+    <div className="mt-5 w-full rounded-2xl bg-rentality-bg p-4">
+      <h3 className="mb-4 text-xl">{t_history("title")}</h3>
       <div className="w-full overflow-x-auto">
         <table className="w-full table-auto border-spacing-2 max-lg:hidden">
           <thead className="w-full">
@@ -58,14 +58,14 @@ export default function ClaimHistory({ isHost, claims, payClaim, cancelClaim, t 
               <th></th>
             </tr>
           </thead>
-          <tbody className="text-sm w-full">
+          <tbody className="w-full text-sm">
             {claims.map((claim) => {
               const chatLink = `/${isHost ? "host" : "guest"}/messages?tridId=${claim.tripId}`;
               const telLink = `tel:${isHost ? claim.guestPhoneNumber : claim.hostPhoneNumber}`;
               const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${claim.tripId}?back=${pathname}`;
 
               return (
-                <tr key={claim.claimId} className="border-b-[1px] border-b-gray-500 w-full">
+                <tr key={claim.claimId} className="w-full border-b-[1px] border-b-gray-500">
                   <td className={rowSpanClassName}>{claim.isIncomingClaim ? "← Incoming" : "Outgoing →"}</td>
                   <td className={rowSpanClassName}>{claim.claimTypeText}</td>
                   <td
@@ -83,13 +83,13 @@ export default function ClaimHistory({ isHost, claims, payClaim, cancelClaim, t 
                   <td className={rowSpanClassName}>
                     {claim.fileUrls.filter((i) => !isEmpty(i)).length > 0 ? (
                       <div
-                        className="w-8 h-8 cursor-pointer"
+                        className="h-8 w-8 cursor-pointer"
                         onClick={() => {
                           handleFilesClick(claim);
                         }}
                       >
                         <Image
-                          className="w-full h-full object-cover"
+                          className="h-full w-full object-cover"
                           width={36}
                           height={36}
                           src="/icon_photo.png"
@@ -106,7 +106,7 @@ export default function ClaimHistory({ isHost, claims, payClaim, cancelClaim, t 
                     {claim.status === ClaimStatus.NotPaid || claim.status === ClaimStatus.Overdue ? (
                       claim.isIncomingClaim ? (
                         <RntButton
-                          className="w-24 h-8"
+                          className="h-8 w-24"
                           onClick={() => {
                             payClaim(claim.claimId);
                           }}
@@ -115,7 +115,7 @@ export default function ClaimHistory({ isHost, claims, payClaim, cancelClaim, t 
                         </RntButton>
                       ) : (
                         <RntButton
-                          className="w-24 h-8"
+                          className="h-8 w-24"
                           onClick={() => {
                             cancelClaim(claim.claimId);
                           }}

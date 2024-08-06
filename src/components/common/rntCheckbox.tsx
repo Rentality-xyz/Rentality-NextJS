@@ -17,7 +17,7 @@ const RntCheckbox = ({ className, label, checked, readOnly, onChange, ...rest }:
 
   return (
     <div className={c}>
-      <label className="group flex flex-row items-center cursor-pointer select-none">
+      <label className="group flex cursor-pointer select-none flex-row items-center">
         <input
           className="hidden"
           type="checkbox"
@@ -25,9 +25,9 @@ const RntCheckbox = ({ className, label, checked, readOnly, onChange, ...rest }:
           onChange={readOnly ? () => {} : onChange}
           {...rest}
         />
-        <span className={`relative w-10 h-10 shrink-0 mr-4 border-2 rounded-md ${checkBoxBgStyle}`}>
+        <span className={`relative mr-4 h-10 w-10 shrink-0 rounded-md border-2 ${checkBoxBgStyle}`}>
           {checked ? (
-            <span className="absolute top-1 right-2.5 w-3.5 h-6 shrink-0 border-white border-b-4 border-r-4 rotate-45"></span>
+            <span className="absolute right-2.5 top-1 h-6 w-3.5 shrink-0 rotate-45 border-b-4 border-r-4 border-white"></span>
           ) : null}
         </span>
         {label}
@@ -40,11 +40,11 @@ export function CheckboxLight({ className, label, checked, onChange, ...rest }: 
   const c = twMerge("", className);
   return (
     <div className={c}>
-      <label className="group w-fit flex flex-row items-center cursor-pointer select-none">
+      <label className="group flex w-fit cursor-pointer select-none flex-row items-center">
         <input className="hidden" type="checkbox" checked={checked} onChange={onChange} />
-        <span className={`relative w-6 h-6 shrink-0 mr-4 border-2 rounded-md`}>
+        <span className={`relative mr-4 h-6 w-6 shrink-0 rounded-md border-2`}>
           {checked ? (
-            <span className="absolute top-[-8px] right-0.5 w-2.5 h-6 shrink-0 border-white border-b-2 border-r-2 rotate-45"></span>
+            <span className="absolute right-0.5 top-[-8px] h-6 w-2.5 shrink-0 rotate-45 border-b-2 border-r-2 border-white"></span>
           ) : null}
         </span>
         {label}

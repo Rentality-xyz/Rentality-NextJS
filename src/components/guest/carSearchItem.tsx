@@ -61,20 +61,20 @@ export default function CarSearchItem({
       </div> */}
       <div
         style={{ backgroundImage: `url(${searchInfo.image})` }}
-        className="relative w-full md:w-64 min-h-[12rem] flex-shrink-0 bg-center bg-cover"
+        className="relative min-h-[12rem] w-full flex-shrink-0 bg-cover bg-center md:w-64"
       >
         {searchInfo.isCarDetailsConfirmed && (
-          <i className="fi fi-br-hexagon-check absolute text-green-500 text-3xl top-2 right-2"></i>
+          <i className="fi fi-br-hexagon-check absolute right-2 top-2 text-3xl text-green-500"></i>
         )}
       </div>
       <div className="flex w-full flex-col justify-between p-2 sm:p-4">
-        <div className="flex flex-row items-baseline justify-between ">
+        <div className="flex flex-row items-baseline justify-between">
           <div className="w-full overflow-hidden">
-            <strong className="text-lg truncate">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>
+            <strong className="truncate text-lg">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>
           </div>
         </div>
-        <div className="flex md:grid md:grid-cols-[2fr_1fr] text-sm mt-2 md:justify-between">
-          <div className="w-8/12 lg:w-9/12 flex flex-col">
+        <div className="mt-2 flex text-sm md:grid md:grid-cols-[2fr_1fr] md:justify-between">
+          <div className="flex w-8/12 flex-col lg:w-9/12">
             {isNaN(searchInfo.pricePerDayWithDiscount) ||
             searchInfo.pricePerDayWithDiscount === searchInfo.pricePerDay ? (
               <div className="text-base">
@@ -117,7 +117,7 @@ export default function CarSearchItem({
               <span className="ml-8">${displayMoneyWith2Digits(searchInfo.totalPriceWithDiscount)}</span>
             </div>
           </div>
-          <div className="flex flex-col w-auto">
+          <div className="flex w-auto flex-col">
             <div>- {searchInfo.engineTypeText}</div>
             <div>- {searchInfo.transmission}</div>
             <div>
@@ -135,9 +135,9 @@ export default function CarSearchItem({
             </div>
           </div>
         </div>
-        <div className="w-full grid grid-cols-[1fr_auto] items-end mt-4">
+        <div className="mt-4 grid w-full grid-cols-[1fr_auto] items-end">
           <div className="flex flex-row items-center truncate">
-            <div className="w-12 h-12 self-center mr-2">
+            <div className="mr-2 h-12 w-12 self-center">
               <Avatar src={searchInfo.hostPhotoUrl} sx={{ width: "3rem", height: "3rem" }}></Avatar>
             </div>
             <div className="flex flex-col">

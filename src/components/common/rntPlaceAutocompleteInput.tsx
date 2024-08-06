@@ -179,11 +179,11 @@ export default function RntPlaceAutocompleteInput({
         // loading={isPlacePredictionsLoading}
       />
       {isEditing && placePredictions && placePredictions.length > 1 ? (
-        <div className="block absolute top-[105%] w-full bg-white text-black border-2 rounded-xl border-black z-50">
+        <div className="absolute top-[105%] z-50 block w-full rounded-xl border-2 border-black bg-white text-black">
           {placePredictions.map((item, index) => {
             return (
               <option
-                className="py-2 px-4 rounded-xl hover:bg-gray-400 cursor-pointer truncate"
+                className="cursor-pointer truncate rounded-xl px-4 py-2 hover:bg-gray-400"
                 onClick={() => {
                   setEnteredAddress(item.description);
                   setIsEditing(false);

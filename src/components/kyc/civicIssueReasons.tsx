@@ -3,12 +3,12 @@ import RntButton from "../common/rntButton";
 function CivicIssueReasons({ handleCancelClick }: { handleCancelClick: () => void }) {
   return (
     <section className="flex flex-col md:px-4">
-      <h1 className="place-self-center text-rentality-secondary text-xl font-bold">
+      <h1 className="place-self-center text-xl font-bold text-rentality-secondary">
         Possible reasons refusal to issue a pass
       </h1>
       <h1 className="place-self-center text-xl">{"when checking your driver's license"}</h1>
       <p className="mt-6">At least one non-compliance was identified during verification:</p>
-      <ul className="mt-4 list-disc ml-4">
+      <ul className="ml-4 mt-4 list-disc">
         <li>Completed liveness check; and</li>
         <li>Completed wallet ownership verification, or the uniqueness of the wallet; and</li>
         <li>Completed identity document verification; and</li>

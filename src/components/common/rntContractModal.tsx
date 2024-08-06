@@ -21,7 +21,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
 
   return (
     <React.Fragment>
-      <RntButton className="w-60 h-10" onClick={handleClickOpen}>
+      <RntButton className="h-10 w-60" onClick={handleClickOpen}>
         Download the contract
       </RntButton>
       <Dialog
@@ -47,10 +47,10 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
             }}
             id="alert-dialog-description"
           >
-            <div className="flex flex-col m-4">
-              <div className="flex flex-col m-4">
+            <div className="m-4 flex flex-col">
+              <div className="m-4 flex flex-col">
                 <h1
-                  className={`text-4xl mb-4 ${tripInfo.isTripCanceled || tripInfo.isTripRejected ? "text-[#FF0000]" : ""}`}
+                  className={`mb-4 text-4xl ${tripInfo.isTripCanceled || tripInfo.isTripRejected ? "text-[#FF0000]" : ""}`}
                 >
                   Car sharing agreement #{tripId.toString()}{" "}
                   {tripInfo.isTripCanceled
@@ -59,7 +59,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                       ? "rejected, payments refunded to the guest. "
                       : null}
                 </h1>
-                <h3 className="text-2xl mb-1">
+                <h3 className="mb-1 text-2xl">
                   {tripInfo.guest.name}’s trip with {tripInfo.host.name}’s {tripInfo.brand} {tripInfo.model}{" "}
                   {tripInfo.year}
                 </h3>
@@ -67,14 +67,14 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                   Refer to this document for evidence of your Rentality trip transaction when interacting with law
                   enforcement, insurance providers, roadside service providers, impound lot attendants, or others.
                 </p>
-                <h4 className="text-xl mb-1">Key agreement facts</h4>
-                <ol className="list-decimal list-inside [counter-reset:section]">
-                  <li className="[counter-increment:section] marker:[content:counters(section,'. ')]">
+                <h4 className="mb-1 text-xl">Key agreement facts</h4>
+                <ol className="list-inside list-decimal [counter-reset:section]">
+                  <li className="marker:[content:counters(section,'. ')] [counter-increment:section]">
                     During the car sharing period (see in Trip Summary “Trip Start” and “Trip End”), the person “Guest”
                     named below was given permission to drive the vehicle listed below by the “Host” (either the car
                     owner or an authorized representative) in accordance with Rentality&apos;s terms of service, to
                     which both the Guest and the Host have agreed. The terms are detailed in the following documents:
-                    <ol className=" ms-3 list-decimal list-inside [counter-reset:section]">
+                    <ol className="ms-3 list-inside list-decimal [counter-reset:section]">
                       <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
                         &nbsp;
                         <a className="underline" href="https://rentality.xyz/legalmatters/terms" target="_blank">
@@ -125,22 +125,22 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                       </li>
                     </ol>
                   </li>
-                  <li className="[counter-increment:section] marker:[content:counters(section,'. ')]">
+                  <li className="marker:[content:counters(section,'. ')] [counter-increment:section]">
                     The Terms of service, together with the Cancellation Policy, Prohibited Uses and Privacy Policy
                     constitute this Car sharing agreement between the person identified as “Guest” and the person
                     identified as “Host”.
                   </li>
-                  <li className="[counter-increment:section] marker:[content:counters(section,'. ')]">
+                  <li className="marker:[content:counters(section,'. ')] [counter-increment:section]">
                     Rentality is a digital peer-to-peer car sharing platform, connecting private car owners who want to
                     rent out their vehicles with individuals seeking to use them for a fee.
                   </li>
-                  <li className="[counter-increment:section] marker:[content:counters(section,'. ')]">
+                  <li className="marker:[content:counters(section,'. ')] [counter-increment:section]">
                     By listing their car on the Rentality platform, the Host confirms that their vehicle is safe,
                     well-maintained, legally registered, and covered by their personal insurance.
                   </li>
                 </ol>
               </div>
-              <div className="flex flex-col m-4">
+              <div className="m-4 flex flex-col">
                 <div className="text-xl">BASIC AGREEMENT INFORMATION</div>
                 <div className="text-xl">GUEST INFORMATION</div>
                 <div className="">Guest name: {tripInfo.guest.name}</div>
@@ -237,7 +237,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                   {displayMoneyWith2Digits(tripInfo.pricePer10PercentFuel)})
                 </div>
               </div>
-              <div className="flex flex-col m-4">
+              <div className="m-4 flex flex-col">
                 The person identified as “Guest” and the person identified as “Host” on the Basic Agreement Information
                 above were connected online through a website or mobile application provided by Rentality (collectively,
                 the “Rentality Services”). As part of connecting through the Rentality Services, the Host and Guest

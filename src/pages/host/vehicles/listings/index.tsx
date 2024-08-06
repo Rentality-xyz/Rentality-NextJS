@@ -27,26 +27,26 @@ export default function Listings() {
   return (
     <Layout>
       <div className="flex flex-col">
-        <div id="page-title" className="flex flex-row justify-between items-center">
+        <div id="page-title" className="flex flex-row items-center justify-between">
           <div className="text-2xl">
             <strong>{t("vehicles.listing_title")}</strong>
           </div>
-          <RntButton className="w-40 sm:w-56 h-12 sm:h-16" onClick={handleAddListing}>
+          <RntButton className="h-12 w-40 sm:h-16 sm:w-56" onClick={handleAddListing}>
             {t("vehicles.add_listing")}
           </RntButton>
         </div>
         {isLoading ? (
-          <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
+          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
             {t("common.info.loading")}
           </div>
         ) : (
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 my-4">
+          <div className="my-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
             {myListings != null && myListings.length > 0 ? (
               myListings.map((value) => {
                 return <ListingItem key={value.carId} carInfo={value} t={t} />;
               })
             ) : (
-              <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
+              <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
                 {t("vehicles.no_listed_cars")}
               </div>
             )}

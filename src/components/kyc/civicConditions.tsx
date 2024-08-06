@@ -9,12 +9,12 @@ function CivicConditions({
 }) {
   return (
     <section className="flex flex-col md:px-4">
-      <h1 className="place-self-center text-rentality-secondary text-xl font-bold">
+      <h1 className="place-self-center text-xl font-bold text-rentality-secondary">
         Conditions for Issuing a Civic Pass
       </h1>
       <h1 className="place-self-center text-xl">{"when checking your driver's license"}</h1>
       <p className="mt-6">Below are the steps outlining the conditions for issuing a new Pass to an End User:</p>
-      <ol className="list-decimal ml-4">
+      <ol className="ml-4 list-decimal">
         <li className="mt-1">
           Agreed to Civic’s{" "}
           <a
@@ -52,7 +52,7 @@ function CivicConditions({
         </li>
         <li>Not physically located in a blocked or banned location.</li>
       </ol>
-      <h2 className="place-self-center text-rentality-secondary text-xl font-bold mt-6">
+      <h2 className="mt-6 place-self-center text-xl font-bold text-rentality-secondary">
         Payment for Civic KYC verification procedure
       </h2>
       <p className="mt-4">{`The price to complete one identity and driver's license verification process is $${commissionFee}`}</p>

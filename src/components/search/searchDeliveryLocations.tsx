@@ -15,7 +15,7 @@ export default function SearchDeliveryLocations({
   const [returnLocationInfo, setReturnLocationInfo] = useState<LocationInfo | undefined>(undefined);
 
   return (
-    <div className="flex flex-wrap items-center gap-4 mt-4">
+    <div className="mt-4 flex flex-wrap items-center gap-4">
       <hr className="w-full border-t-2 border-gray-300" />
       <div className="flex flex-col gap-2">
         <RntPlaceAutoComplete

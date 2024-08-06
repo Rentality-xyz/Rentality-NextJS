@@ -21,7 +21,7 @@ export default function ChatMessages({ selectedChat, isHost }: { selectedChat: C
   };
 
   return (
-    <div className="my-4 flex flex-col gap-4 w-full">
+    <div className="my-4 flex w-full flex-col gap-4">
       {selectedChat.messages.map((msgInfo, index) => {
         const formatedMessage = isClaimChatMessage(msgInfo.message)
           ? decodeClaimChatMessage(msgInfo.message, selectedChat.hostName, selectedChat.carTitle)
