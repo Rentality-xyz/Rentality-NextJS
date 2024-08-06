@@ -43,11 +43,7 @@ function GuestNavMenu() {
   };
   return (
     <>
-      <SideNavMenuGroup
-          title={t_nav("search")}
-          href="/guest/search"
-          icon={MenuIcons.Search}
-      />
+      <SideNavMenuGroup title={t_nav("search")} href="/guest/search" icon={MenuIcons.Search} />
       <SideNavMenuGroup title={t_nav("trips")}>
         <SideNavMenuItem
           text={t_nav("booked")}
@@ -94,21 +90,11 @@ function GuestNavMenu() {
           href="/guest/transaction_history"
           icon={MenuIcons.TransactionHistory}
         />
-        <SideNavMenuItem
-            text={"Invest"}
-            href="/guest/invest"
-            icon={MenuIcons.Invest}
-        />
-        <SideNavMenuItem
-            text={"Claim Investment"}
-            href="/guest/claimInvestment"
-            icon={MenuIcons.ClaimInvest}
-        />
+        <SideNavMenuItem text={"Invest"} href="/guest/invest" icon={MenuIcons.Invest} />
         <SideNavMenuItem text={t_nav("profile")} href="/guest/profile" icon={MenuIcons.ProfileSettings} />
         {ready && authenticated ? (
           <SideNavMenuItem text={t_nav("logout")} href="/" onClick={logout} icon={MenuIcons.Logout} />
         ) : null}
-
       </SideNavMenuGroup>
     </>
   );

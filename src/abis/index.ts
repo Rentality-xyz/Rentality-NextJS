@@ -43,7 +43,7 @@ const rentalityContracts = {
   },
   investService: {
     addresses: RentalityInvestServiceJSON_ADDRESSES.addresses,
-    abi:RentalityInvestServiceJSON_ABI.abi,
+    abi: RentalityInvestServiceJSON_ABI.abi,
   },
 };
 export async function getEtherContractWithSigner(contract: keyof typeof rentalityContracts, signer: Signer) {

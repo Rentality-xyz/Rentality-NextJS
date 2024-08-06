@@ -11,7 +11,7 @@ const AppContext = createContext<IAppContext | undefined>(undefined);
 
 export const AppContextProvider = ({ children }: { children?: React.ReactNode }) => {
   const [isHideBurgerMenu, setIsHideBurgerMenu] = useState(false);
-  const [isHideFilterOnSearchPage,setHideFilterOnSearchPage] = useState(false);
+  const [isHideFilterOnSearchPage, setHideFilterOnSearchPage] = useState(false);
 
   const toggleBurgerMenu = () => {
     setIsHideBurgerMenu((prev) => !prev);
@@ -33,7 +33,13 @@ export const AppContextProvider = ({ children }: { children?: React.ReactNode })
     }
   };
 
-  return <AppContext.Provider value={{ isHideBurgerMenu, toggleBurgerMenu, isHideFilterOnSearchPage, toggleFilterOnSearchPage }}>{children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider
+      value={{ isHideBurgerMenu, toggleBurgerMenu, isHideFilterOnSearchPage, toggleFilterOnSearchPage }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
 };
 
 export const useAppContext = () => {

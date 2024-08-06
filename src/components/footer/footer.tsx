@@ -23,9 +23,9 @@ export default function Footer() {
           className="z-0 flex flex-col pt-[30px] lg:pt-[40px] max-lg:mx-auto lg:ml-[540px] min-[1536px]:ml-[540px] min-[1720px]:ml-auto w-max h-1/3 sm:h-full"
         >
           <Link
-              href="https://rentality.xyz/legalmatters"
-              target="_blank"
-              className="pb-1 cursor-pointer text-xl font-semibold font-['Montserrat',Arial,sans-serif] hover:underline"
+            href="https://rentality.xyz/legalmatters"
+            target="_blank"
+            className="pb-1 cursor-pointer text-xl font-semibold font-['Montserrat',Arial,sans-serif] hover:underline"
           >
             <strong>Legal matters</strong>
           </Link>

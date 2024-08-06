@@ -16,7 +16,7 @@ import arrowUpTurquoise from "../../images/arrowUpTurquoise.svg";
 import arrowDownTurquoise from "../../images/arrowDownTurquoise.svg";
 import Image from "next/image";
 import SearchDeliveryLocations from "@/components/search/searchDeliveryLocations";
-import {useAppContext} from "@/contexts/appContext";
+import { useAppContext } from "@/contexts/appContext";
 
 function formatLocation(city: string, state: string, country: string) {
   city = city != null && city.length > 0 ? city + ", " : "";
@@ -200,11 +200,11 @@ export default function SearchAndFilters({
       <div className="flex flex-col">
         <div className="flex flex-wrap items-center gap-4 mt-4">
           <RntButton
-              className="w-40 "
-              onClick={() => {
-                setOpenFilterPanel(true);
-                toggleFilterOnSearchPage();
-              }}
+            className="w-40 "
+            onClick={() => {
+              setOpenFilterPanel(true);
+              toggleFilterOnSearchPage();
+            }}
           >
             {t_comp("button_filter")}
           </RntButton>

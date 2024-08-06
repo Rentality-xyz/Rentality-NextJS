@@ -44,11 +44,11 @@ export type HostCarInfo = {
   isInsuranceIncluded: boolean;
 };
 export type CreateInvestCar = {
-  hostCarInfo: HostCarInfo,
-  priceInUsdCents: number,
-  creatorPercents: number,
-  inProgress: boolean
-}
+  hostCarInfo: HostCarInfo;
+  priceInUsdCents: number;
+  creatorPercents: number;
+  inProgress: boolean;
+};
 
 export const emptyHostCarInfo: HostCarInfo = {
   carId: 0,

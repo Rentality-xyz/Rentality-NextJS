@@ -94,11 +94,7 @@ function HostNavMenu() {
           href="/host/transaction_history"
           icon={MenuIcons.TransactionHistory}
         />
-        <SideNavMenuItem
-            text={"Create invest"}
-            href="/host/create_invest"
-            icon={MenuIcons.CreateInvest}
-        />
+        <SideNavMenuItem text={"Create invest"} href="/host/create_invest" icon={MenuIcons.CreateInvest} />
         <SideNavMenuItem text={t_nav("profile")} href="/host/profile" icon={MenuIcons.ProfileSettings} />
         {ready && authenticated ? (
           <SideNavMenuItem text={t_nav("logout")} href="/" onClick={logout} icon={MenuIcons.Logout} />

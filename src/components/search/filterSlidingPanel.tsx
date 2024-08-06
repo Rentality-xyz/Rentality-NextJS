@@ -4,7 +4,7 @@ import RntButton from "../common/rntButton";
 import { TFunction as TFunctionNext } from "i18next";
 import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { Dispatch } from "react";
-import {useAppContext} from "@/contexts/appContext";
+import { useAppContext } from "@/contexts/appContext";
 
 export default function FilterSlidingPanel({
   searchCarRequest,
@@ -25,7 +25,7 @@ export default function FilterSlidingPanel({
     return t("filter_sliding_panel." + element);
   };
 
-    const { toggleFilterOnSearchPage } = useAppContext();
+  const { toggleFilterOnSearchPage } = useAppContext();
 
   return (
     <div className="sliding-panel-container w-full fixed top-0 left-0">
@@ -39,11 +39,13 @@ export default function FilterSlidingPanel({
       >
         <div className="flex flex-col py-8">
           <div className="self-end mr-8">
-            <i className="fi fi-br-cross"
-               onClick={() => {
-                   setOpenFilterPanel(false);
-                   toggleFilterOnSearchPage();
-            }}></i>
+            <i
+              className="fi fi-br-cross"
+              onClick={() => {
+                setOpenFilterPanel(false);
+                toggleFilterOnSearchPage();
+              }}
+            ></i>
           </div>
           <div className="flex flex-col gap-2 sm:gap-4 px-2 sm:px-4 md:px-8 lg:px-16 mt-4">
             <RntInput
