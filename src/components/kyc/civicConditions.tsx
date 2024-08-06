@@ -59,6 +59,10 @@ function CivicConditions({
       <p>{"You'll get your verification fee back after completing your first trip on the Rentality platform."}</p>
       <p className="mt-4 font-bold">Attention!</p>
       <p>{`Verification is paid even if you do not pass the verification requirements listed above under "Conditions for Issuing a Civic Pass", payment is non-refundable.`}</p>
+      <section className="mt-4 text-red-500">
+        Please use your driver’s license for verification. Other documents will not be accepted, and the fee will not be
+        refunded if they are used.
+      </section>
       <RntButton className="mt-6 place-self-center" onClick={handleCancelClick}>
         Got it
       </RntButton>
