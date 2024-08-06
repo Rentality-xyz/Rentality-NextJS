@@ -9,23 +9,18 @@ import moment from "moment";
 import { isEmpty } from "@/utils/string";
 import Image from "next/image";
 import { useState } from "react";
+import { TFunction } from "@/utils/i18n";
 
-type Props =
-  | {
-      isHost: true;
-      claim: Claim;
-      index: number;
-      payClaim: (claimId: number) => Promise<void>;
-    }
-  | {
-      isHost: false;
-      claim: Claim;
-      index: number;
-      cancelClaim: (claimId: number) => Promise<void>;
-    };
+type Props = {
+  isHost: boolean;
+  claim: Claim;
+  index: number;
+  payClaim: (claimId: number) => Promise<void>;
+  cancelClaim: (claimId: number) => Promise<void>;
+  t_history: TFunction;
+};
 
-export default function ClaimHistoryMobileCard(props: Props) {
-  const { claim, index, isHost } = props;
+export default function ClaimHistoryMobileCard({ claim, index, isHost, payClaim, cancelClaim, t_history }: Props) {
   const chatLink = `/${isHost ? "host" : "guest"}/messages?tridId=${claim.tripId}`;
   const telLink = `tel:${isHost ? claim.guestPhoneNumber : claim.hostPhoneNumber}`;
   const pathname = usePathname();
@@ -124,21 +119,21 @@ export default function ClaimHistoryMobileCard(props: Props) {
       ) : null}
       <div className="col-span-2 mt-2 justify-self-center">
         {claim.status === ClaimStatus.NotPaid || claim.status === ClaimStatus.Overdue ? (
-          isHost ? (
+          claim.isIncomingClaim ? (
             <RntButton
               onClick={() => {
-                props.payClaim(claim.claimId);
+                payClaim(claim.claimId);
               }}
             >
-              Pay
+              {t_history("pay")}
             </RntButton>
           ) : (
             <RntButton
               onClick={() => {
-                props.cancelClaim(claim.claimId);
+                cancelClaim(claim.claimId);
               }}
             >
-              Cancel
+              {t_history("cancel")}
             </RntButton>
           )
         ) : null}
