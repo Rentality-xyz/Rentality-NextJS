@@ -64,7 +64,12 @@ export const CivicProvider = ({ children }: { children?: React.ReactNode }) => {
   if (isLocalHost || !isBaseNetwork) return <>{children}</>;
 
   return (
-    <GatewayProvider wallet={wallet} gatekeeperNetwork={gatekeeperNetwork} wrapper={CustomWrapper}>
+    <GatewayProvider
+      wallet={wallet}
+      gatekeeperNetwork={gatekeeperNetwork}
+      wrapper={CustomWrapper}
+      options={{ autoShowModal: false }}
+    >
       {children}
     </GatewayProvider>
   );
