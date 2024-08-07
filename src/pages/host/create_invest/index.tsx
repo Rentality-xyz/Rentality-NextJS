@@ -8,7 +8,7 @@ export default function CreateInvest() {
 
   return (
     <Layout>
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-4">
         <PageTitle title={"Create investment"} />
 
         <CreateCarInvestment t={t} />
