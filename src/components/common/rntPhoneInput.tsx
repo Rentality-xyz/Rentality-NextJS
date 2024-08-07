@@ -1,8 +1,8 @@
 import React from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { twMerge } from "tailwind-merge";
 import RntValidationError from "./RntValidationError";
+import { cn } from "@/utils";
 
 interface RntPhoneInputProps extends React.ComponentPropsWithoutRef<"input"> {
   labelClassName?: string;
@@ -27,9 +27,9 @@ function RntPhoneInput({
   onBlur: onBlurHandler,
 }: RntPhoneInputProps) {
   const isShowLabel = label !== undefined && label?.length > 0;
-  const cClassName = twMerge("text-black flex flex-col w-full", className);
-  const lClassName = twMerge("text-rnt-temp-main-text mb-1", labelClassName);
-  const iClassName = twMerge("w-full h-12 disabled:bg-gray-300 disabled:text-gray-600", inputClassName);
+  const cClassName = cn("text-black flex flex-col w-full", className);
+  const lClassName = cn("text-rnt-temp-main-text mb-1", labelClassName);
+  const iClassName = cn("w-full h-12 disabled:bg-gray-300 disabled:text-gray-600", inputClassName);
 
   return (
     <div className={cClassName}>

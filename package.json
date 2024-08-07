@@ -31,6 +31,7 @@
     "@waku/sdk": "^0.0.24",
     "autoprefixer": "10.4.14",
     "axios": "^1.4.0",
+    "clsx": "^2.1.1",
     "eslint": "8.38.0",
     "eslint-config-next": "^14.1.0",
     "ethers": "^6.11.1",

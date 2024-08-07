@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { twMerge } from "tailwind-merge";
 import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocompleteService";
 import { isEmpty } from "@/utils/string";
 import RntValidationError from "./RntValidationError";
+import { cn } from "@/utils";
 
 type PlaceDetails = {
   addressString: string;
@@ -143,9 +143,9 @@ export default function RntPlaceAutocompleteInput({
   }, [placePredictions]);
 
   type = type ?? "text";
-  const cClassName = twMerge("relative text-black flex flex-col w-full", className);
-  const lClassName = twMerge("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
-  const iClassName = twMerge(
+  const cClassName = cn("relative text-black flex flex-col w-full", className);
+  const lClassName = cn("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
+  const iClassName = cn(
     "w-full h-12 border-2 rounded-full pl-4 disabled:bg-gray-300 disabled:text-gray-600",
     inputClassName
   );

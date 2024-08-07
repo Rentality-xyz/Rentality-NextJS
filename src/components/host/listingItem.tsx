@@ -1,14 +1,14 @@
 import { BaseCarInfo, getListingStatusTextFromStatus } from "@/model/BaseCarInfo";
 import RntButton from "../common/rntButton";
 import Link from "next/link";
-import { twMerge } from "tailwind-merge";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
+import { cn } from "@/utils";
 
 export default function ListingItem({ carInfo, t }: { carInfo: BaseCarInfo; t: TFunction }) {
   let statusBgColor = carInfo.currentlyListed ? "bg-lime-500" : "bg-red-500";
-  const statusClassName = twMerge(
+  const statusClassName = cn(
     "absolute right-0 top-2 px-8 py-2 rounded-l-3xl text-rnt-temp-status-text text-end",
     statusBgColor
   );
