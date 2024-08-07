@@ -168,3 +168,23 @@ export function parseMetaData(meta: any) {
     tankVolumeInGal: meta.attributes?.find((x: any) => x.trait_type === META_KEY_TANK_VOLUME_GAL)?.value ?? "0",
   };
 }
+
+export type CarMetadata = {
+  image: string;
+  name: string;
+  description: string;
+  vinNumber: string;
+  licensePlate: string;
+  licenseState: string;
+  brand: string;
+  model: string;
+  yearOfProduction: string;
+  bodyType: string;
+  color: string;
+  doorsNumber: string;
+  seatsNumber: string;
+  trunkSize: string;
+  transmission: string;
+  wheelDrive: string;
+  tankVolumeInGal: string;
+};

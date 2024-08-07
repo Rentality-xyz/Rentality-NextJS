@@ -10,6 +10,8 @@ import RentalityTripServiceJSON_ABI from "./RentalityTripService.v0_2_0.abi.json
 import RentalityTripServiceJSON_ADDRESSES from "./RentalityTripService.v0_2_0.addresses.json";
 import RentalityClaimServiceJSON_ABI from "./RentalityClaimService.v0_2_0.abi.json";
 import RentalityClaimServiceJSON_ADDRESSES from "./RentalityClaimService.v0_2_0.addresses.json";
+import RentalityInvestServiceJSON_ADDRESSES from "./RentalityInvestment.v0_2_0.addresses.json";
+import RentalityInvestServiceJSON_ABI from "./RentalityInvestment.v0_2_0.abi.json";
 import { Contract, Signer } from "ethers";
 
 export const SMARTCONTRACT_VERSION = "v0_2_0";
@@ -38,6 +40,10 @@ const rentalityContracts = {
   claimService: {
     addresses: RentalityClaimServiceJSON_ADDRESSES.addresses,
     abi: RentalityClaimServiceJSON_ABI.abi,
+  },
+  investService: {
+    addresses: RentalityInvestServiceJSON_ADDRESSES.addresses,
+    abi: RentalityInvestServiceJSON_ABI.abi,
   },
 };
 export async function getEtherContractWithSigner(contract: keyof typeof rentalityContracts, signer: Signer) {
