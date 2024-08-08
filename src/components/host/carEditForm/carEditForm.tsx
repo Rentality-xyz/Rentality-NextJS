@@ -31,6 +31,8 @@ import RntInputMultiline from "@/components/common/rntInputMultiline";
 import { isEmpty } from "@/utils/string";
 import { TRANSMISSION_AUTOMATIC_STRING, TRANSMISSION_MANUAL_STRING } from "@/model/Transmission";
 import RntValidationError from "@/components/common/RntValidationError";
+import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
+import RntCarModelSelect from "@/components/common/rntCarModelSelect";
 
 export default function CarEditForm({
   initValue,
@@ -107,6 +109,10 @@ export default function CarEditForm({
   const image = watch("image");
   const isLocationEdited = watch("isLocationEdited");
   const locationInfo = watch("locationInfo");
+
+  const [selectedMakeID, setSelectedMakeID] = useState<string>("");
+  const [selectedBrand, setSelectedBrand] = useState<string>("");
+  const [selectedModel, setSelectedModel] = useState<string>("");
 
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
@@ -250,23 +256,25 @@ export default function CarEditForm({
               {...register("vinNumber")}
               validationError={errors.vinNumber?.message?.toString()}
             />
-            <RntInput
+            <RntCarMakeSelect
+              id={"filter-brand"}
               className="lg:w-60"
-              id="brand"
               label={t_car("brand")}
-              placeholder="e.g. Shelby"
               readOnly={!isNewCar}
-              {...register("brand")}
-              validationError={errors.brand?.message?.toString()}
+              value={selectedBrand}
+              onMakeSelect={(newID, newMake) =>{
+                setSelectedMakeID(newID);
+                setSelectedBrand(newMake);
+              }}
             />
-            <RntInput
+            <RntCarModelSelect
+              id={"model"}
               className="lg:w-60"
-              id="model"
               label={t_car("model")}
-              placeholder="e.g. Mustang GT500"
+              make_id={selectedMakeID}
               readOnly={!isNewCar}
-              {...register("model")}
-              validationError={errors.model?.message?.toString()}
+              value={selectedModel}
+              onModelSelect={(newModel) => setSelectedModel(newModel)}
             />
             <RntInput
               className="lg:w-60"
