@@ -8,7 +8,6 @@ type ModelsResponse = {
 };
 
 const carAPIURL : string = "https://carapi.app/api/models?make_id=MAKE_ID&page=PAGE";
-const authToken : string = "";
 
 let carModelsList: CarModelsListElement[] = [];
 

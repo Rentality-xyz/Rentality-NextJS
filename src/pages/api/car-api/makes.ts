@@ -8,7 +8,6 @@ type MakesResponse = {
 };
 
 const carAPIURL : string = "https://carapi.app/api/makes?page=PAGE";
-const authToken : string = "";
 
 let carMakesList: CarMakesListElement[] = [];
 
