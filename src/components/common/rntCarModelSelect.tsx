@@ -10,7 +10,7 @@ interface RntCarModelSelectProps extends RntSelectProps {
   make_id: string;
   value: string;
   readOnly? : boolean;
-  onModelSelect?: (newMake: string) => void;
+  onModelSelect?: (newID: string, newMake: string) => void;
 }
 
 export default function RntCarModelSelect ({id, label, className, readOnly, make_id, value, onModelSelect} : RntCarModelSelectProps) {
@@ -37,13 +37,14 @@ export default function RntCarModelSelect ({id, label, className, readOnly, make
       readOnly={readOnly || false}
       onChange={function(e) {
         const newValue = e.target.value;
-        if (onModelSelect) onModelSelect(newValue);
+        const newID: string = e.target.options[e.target.selectedIndex].getAttribute("data-id") || "";
+        if (onModelSelect) onModelSelect(newID, newValue);
       }}
   >
       <option value="">Please select</option>
-      {modelsList.map((CarModelsListElement) => (
-        <option key={"car-model-" + CarModelsListElement.id} value={CarModelsListElement.name}>
-          {CarModelsListElement.name}
+      {modelsList.map((carModelsListElement) => (
+        <option key={"car-model-" + carModelsListElement.id} data-id={carModelsListElement.id} value={carModelsListElement.name}>
+          {carModelsListElement.name}
         </option>
       ))}
 

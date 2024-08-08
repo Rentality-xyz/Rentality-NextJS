@@ -7,6 +7,7 @@ import { Dispatch, useState } from "react";
 import { useAppContext } from "@/contexts/appContext";
 import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
 import RntCarModelSelect from "@/components/common/rntCarModelSelect";
+import RntCarYearSelect from "@/components/common/rntCarYearSelect";
 
 export default function FilterSlidingPanel({
   searchCarRequest,
@@ -30,6 +31,7 @@ export default function FilterSlidingPanel({
   const { closeFilterOnSearchPage } = useAppContext();
 
   const [selectedMakeID, setSelectedMakeID] = useState<string>("");
+  const [selectedModelID, setSelectedModelID] = useState<string>("");
 
   function handleClose() {
     setOpenFilterPanel(false);
@@ -64,32 +66,34 @@ export default function FilterSlidingPanel({
               }
             }
             />
+
             <RntCarModelSelect
               id={"filter-model"}
               label={t_comp("model")}
               value={searchCarRequest.searchFilters.model}
               make_id={selectedMakeID}
-              onModelSelect={(newModel) =>
+              onModelSelect={(newID, newModel) => {
+                setSelectedModelID(newID);
                 setSearchCarRequest({
                   ...searchCarRequest,
                   searchFilters: { ...searchCarRequest.searchFilters, model: newModel },
                 })
               }
+            }
             />
-            <RntInput
+            <RntCarYearSelect
               id="filter-year-from"
               label={t_comp("year_from")}
+              make_id={selectedMakeID}
+              model_id={selectedModelID}
               value={searchCarRequest.searchFilters.yearOfProductionFrom}
-              onChange={(e) => {
-                const newValue = e.target.value;
-                if (isNaN(Number(newValue)) && newValue !== "") return;
-
+              onYearSelect={(newYear) =>{
                 setSearchCarRequest({
                   ...searchCarRequest,
-                  searchFilters: { ...searchCarRequest.searchFilters, yearOfProductionFrom: newValue },
+                  searchFilters: { ...searchCarRequest.searchFilters, yearOfProductionFrom: newYear },
                 });
               }}
-            />
+             />
             <RntInput
               id="filter-year-yo"
               label={t_comp("year_to")}

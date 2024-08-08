@@ -59,7 +59,7 @@ async function getAllCarMakes () : Promise<CarMakesListElement[]> {
 }
 
 async function getCarModelByMake(make_id: string) : Promise<CarModelsListElement[]> {
-  const response : AxiosResponse<CarModelsListElement[]> = await axios.get("/api/car-api/models?make_id=" + make_id);
+  const response : AxiosResponse<CarModelsListElement[]> = await axios.get(`/api/car-api/models?make_id=${make_id}`);
   if(response.status !== 200) {
     console.log("Car API for Models response error code " + response.status + " with data " + response.data);
     return [];
@@ -67,8 +67,17 @@ async function getCarModelByMake(make_id: string) : Promise<CarModelsListElement
   return response.data;
 }
 
+async function getCarYearsByMakeAndModel(make_id: string, model_id: string) : Promise<string[]> {
+  const response : AxiosResponse<string[]> = await axios.get(`/api/car-api/years?make_id=${make_id}&model_id=${model_id}`);
+  if(response.status !== 200) {
+    console.log("Car API for Years response error code " + response.status + " with data " + response.data);
+    return [];
+  }
+  return response.data;
+}
+
 const useCarAPI = () => {
-  return {getAllCarMakes, getCarModelByMake} as const;
+  return {getAllCarMakes, getCarModelByMake, getCarYearsByMakeAndModel} as const;
 }
 
 export default useCarAPI;

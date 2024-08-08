@@ -33,6 +33,7 @@ import { TRANSMISSION_AUTOMATIC_STRING, TRANSMISSION_MANUAL_STRING } from "@/mod
 import RntValidationError from "@/components/common/RntValidationError";
 import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
 import RntCarModelSelect from "@/components/common/rntCarModelSelect";
+import RntCarYearSelect from "@/components/common/rntCarYearSelect";
 
 export default function CarEditForm({
   initValue,
@@ -112,7 +113,9 @@ export default function CarEditForm({
 
   const [selectedMakeID, setSelectedMakeID] = useState<string>("");
   const [selectedBrand, setSelectedBrand] = useState<string>("");
+  const [selectedModelID, setSelectedModelID] = useState<string>("");
   const [selectedModel, setSelectedModel] = useState<string>("");
+  const [selectedYear, setSelectedYear] = useState("");
 
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
@@ -257,7 +260,7 @@ export default function CarEditForm({
               validationError={errors.vinNumber?.message?.toString()}
             />
             <RntCarMakeSelect
-              id={"filter-brand"}
+              id="filter-brand"
               className="lg:w-60"
               label={t_car("brand")}
               readOnly={!isNewCar}
@@ -268,22 +271,28 @@ export default function CarEditForm({
               }}
             />
             <RntCarModelSelect
-              id={"model"}
+              id="model"
               className="lg:w-60"
               label={t_car("model")}
               make_id={selectedMakeID}
               readOnly={!isNewCar}
               value={selectedModel}
-              onModelSelect={(newModel) => setSelectedModel(newModel)}
+              onModelSelect={(newID: string, newModel) => {
+                setSelectedModelID(newID);
+                setSelectedModel(newModel);
+              }}
             />
-            <RntInput
-              className="lg:w-60"
+            <RntCarYearSelect
               id="releaseYear"
+              className="lg:w-60"
               label={t_car("release")}
-              placeholder="e.g. 2023"
+              make_id={selectedMakeID}
+              model_id={selectedModelID}
               readOnly={!isNewCar}
-              {...register("releaseYear", { valueAsNumber: true })}
-              validationError={errors.releaseYear?.message?.toString()}
+              value={selectedYear}
+              onYearSelect={(newYear) =>{
+                setSelectedYear(newYear);
+              }}
             />
           </div>
         </div>

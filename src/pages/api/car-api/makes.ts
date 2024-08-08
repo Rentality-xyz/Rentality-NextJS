@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { CarAPIMetadata, CarMakesListElement, getAuthToken } from "@/hooks/useCarAPI";
 
 type MakesResponse = {
-  "collection": CarAPIMetadata,
+  collection: CarAPIMetadata,
   data: CarMakesListElement[]
 };
 
