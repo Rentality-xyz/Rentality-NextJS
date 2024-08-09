@@ -10,6 +10,6 @@ async function retry(fnc: () => void, depth = 0, maxAttempts = 5) {
     const timeToWaitInMilliseconds = 2 ** depth * 1000 + Math.ceil(Math.random() * 1000);
     await wait(timeToWaitInMilliseconds);
 
-    return retry(fnc, depth + 1, maxAttempts);
+    return await retry(fnc, depth + 1, maxAttempts);
   }
 }
