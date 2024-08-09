@@ -23,7 +23,7 @@ const getHostAddressFromQuery = async (query: string | string[] | undefined, pro
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const privateKey = process.env.NEXT_WALLET_PRIVATE_KEY;
+  const privateKey = process.env.WALLET_PRIVATE_KEY;
   if (!privateKey) {
     console.error("API checkTrips error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
