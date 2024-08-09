@@ -22,6 +22,7 @@
     "@mui/x-date-pickers": "^5.0.20",
     "@privy-io/react-auth": "^1.71.0",
     "@react-google-maps/api": "^2.19.3",
+    "@t3-oss/env-nextjs": "^0.11.0",
     "@tanstack/react-query": "^5.48.0",
     "@types/node": "18.15.13",
     "@types/react": "18.0.37",

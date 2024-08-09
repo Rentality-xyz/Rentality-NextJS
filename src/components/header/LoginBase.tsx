@@ -8,6 +8,7 @@ import { isEmpty } from "@/utils/string";
 import { Avatar, Identity, Badge, Name, Address } from "@coinbase/onchainkit/identity";
 import { useAuth } from "@/contexts/auth/authContext";
 import RntButton from "../common/rntButton";
+import { env } from "@/utils/env";
 
 function LoginBase() {
   const { isLoading, isAuthenticated, login } = useAuth();
@@ -61,7 +62,7 @@ function LoginBase() {
     <Identity
       className="bg-transparent xl:flex-row-reverse xl:gap-4"
       address={userInfo.address as `0x${string}`}
-      schemaId={(process.env.NEXT_PUBLIC_COINBASE_SCHEMA_ID ?? "") as `0x${string}`}
+      schemaId={env.NEXT_PUBLIC_COINBASE_SCHEMA_ID as `0x${string}`}
     >
       <Name className="hidden text-white xl:flex" />
       <Address className="hidden text-white xl:flex" />

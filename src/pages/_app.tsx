@@ -20,6 +20,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import { wagmiConfig } from "@/wagmi.config";
 import { AuthProvider } from "@/contexts/auth/authContext";
+import { env } from "@/utils/env";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -37,7 +38,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <AuthProvider>
             <WagmiProvider config={wagmiConfig}>
               <QueryClientProvider client={queryClient}>
-                <OnchainKitProvider apiKey={process.env.NEXT_PUBLIC_COINBASE_API_KEY} chain={base}>
+                <OnchainKitProvider apiKey={env.NEXT_PUBLIC_COINBASE_API_KEY} chain={base}>
                   <NotificationProvider isHost={isHost}>
                     <FirebaseChatProvider>
                       <AppContextProvider>

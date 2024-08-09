@@ -3,6 +3,7 @@ import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocomplet
 import { isEmpty } from "@/utils/string";
 import RntValidationError from "./RntValidationError";
 import { cn } from "@/utils";
+import { env } from "@/utils/env";
 
 type PlaceDetails = {
   addressString: string;
@@ -64,7 +65,7 @@ export default function RntPlaceAutocompleteInput({
   const [isEditing, setIsEditing] = useState(false);
 
   const { placesService, placePredictions, getPlacePredictions, isPlacePredictionsLoading } = usePlacesService({
-    apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    apiKey: env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     options: {
       input: "",
       types: includeStreetAddress

@@ -13,6 +13,7 @@ import { uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
 import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { getNftJSONFromCarInfo } from "@/utils/ipfsUtils";
 import { ContractTransactionResponse } from "ethers";
+import { env } from "@/utils/env";
 
 const useSaveCar = () => {
   const rentalityContract = useRentality();
@@ -104,7 +105,7 @@ const useSaveCar = () => {
         milesIncludedPerDay: BigInt(
           isUnlimitedMiles(dataToSave.milesIncludedPerDay) ? UNLIMITED_MILES_VALUE : dataToSave.milesIncludedPerDay
         ),
-        geoApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
+        geoApiKey: env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
         engineType: getEngineTypeCode(dataToSave.engineTypeText),
         engineParams: engineParams,
         timeBufferBetweenTripsInSec: BigInt(dataToSave.timeBufferBetweenTripsInMin * 60),
@@ -165,7 +166,7 @@ const useSaveCar = () => {
         transaction = await rentalityContract.updateCarInfoWithLocation(
           updateCarRequest,
           location,
-          process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ""
+          env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
         );
       } else {
         transaction = await rentalityContract.updateCarInfo(updateCarRequest);

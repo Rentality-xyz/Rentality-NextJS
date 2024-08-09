@@ -21,6 +21,7 @@ import { JsonRpcProvider, Wallet } from "ethers";
 import moment from "moment";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { bigIntReplacer } from "@/utils/json";
+import { env } from "@/utils/env";
 
 export const getDaysDiscount = (tripDays: number) => {
   switch (true) {
@@ -140,8 +141,8 @@ const formatSearchAvailableCarsContractResponse = async (
 const getTimeZoneIdFromAddress = async (address: string) => {
   if (isEmpty(address)) return UTC_TIME_ZONE_ID;
 
-  const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  if (!GOOGLE_MAPS_API_KEY) {
+  const GOOGLE_MAPS_API_KEY = env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  if (isEmpty(GOOGLE_MAPS_API_KEY)) {
     console.error("getUtcOffsetMinutesFromLocation error: GOOGLE_MAPS_API_KEY was not set");
     return "";
   }
@@ -178,8 +179,8 @@ const getTimeZoneIdFromAddress = async (address: string) => {
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const privateKey = process.env.WALLET_PRIVATE_KEY;
-  if (!privateKey) {
+  const privateKey = env.WALLET_PRIVATE_KEY;
+  if (isEmpty(privateKey)) {
     console.error("API checkTrips error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
     return;
@@ -204,7 +205,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     pickupLocation,
     returnLocation,
   } = req.query;
-  const chainIdNumber = Number(chainId) > 0 ? Number(chainId) : Number(process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID);
+  const chainIdNumber = Number(chainId) > 0 ? Number(chainId) : env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
 
   if (!chainIdNumber) {
     console.error("API checkTrips error: chainId was not provided");
