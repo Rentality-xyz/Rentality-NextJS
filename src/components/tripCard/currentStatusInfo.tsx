@@ -236,9 +236,7 @@ function CurrentStatusInfo({
             <RntButton
               className="h-12 w-full px-4"
               onClick={() => {
-                setDisabled(true);
                 showGuestConfirmFinishDialog();
-                setDisabled(false);
               }}
               disabled={isDisabled}
             >
