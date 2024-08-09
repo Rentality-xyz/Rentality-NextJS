@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
+
+console.debug(`next.config.js -> reactStrictMode: ${process.env.NEXT_USE_STRICT_MODE !== "false"}`);
+
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: process.env.NEXT_USE_STRICT_MODE !== "false",
   images: {
     remotePatterns: [
       {
