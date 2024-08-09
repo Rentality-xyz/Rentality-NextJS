@@ -34,7 +34,7 @@ function TripCard({
 
   useEffect(() => {
     if (window.innerWidth <= 1280 && !isAdditionalActionHidden && allowedActionsRef.current) {
-      allowedActionsRef.current.scrollIntoView({ behavior: "smooth" });
+      allowedActionsRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
   }, [isAdditionalActionHidden]);
 
