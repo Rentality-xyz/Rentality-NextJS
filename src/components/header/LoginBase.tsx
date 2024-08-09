@@ -5,7 +5,6 @@ import { DialogActions } from "@/utils/dialogActions";
 import { useTranslation } from "react-i18next";
 import { Avatar as MuiAvatar } from "@mui/material";
 import { isEmpty } from "@/utils/string";
-// @ts-ignore
 import { Avatar, Identity, Badge, Name, Address } from "@coinbase/onchainkit/identity";
 import { useAuth } from "@/contexts/auth/authContext";
 import RntButton from "../common/rntButton";
@@ -61,8 +60,8 @@ function LoginBase() {
   return (
     <Identity
       className="bg-transparent xl:flex-row-reverse xl:gap-4"
-      address={userInfo.address}
-      schemaId={process.env.NEXT_PUBLIC_COINBASE_SCHEMA_ID ?? ""}
+      address={userInfo.address as `0x${string}`}
+      schemaId={(process.env.NEXT_PUBLIC_COINBASE_SCHEMA_ID ?? "") as `0x${string}`}
     >
       <Name className="hidden text-white xl:flex" />
       <Address className="hidden text-white xl:flex" />
