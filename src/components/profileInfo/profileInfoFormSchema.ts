@@ -21,7 +21,7 @@ export const profileInfoFormSchema = z.object({
         message: issue.code === "invalid_date" ? "Please enter date in format mm/dd/year" : defaultError,
       }),
     })
-    .max(moment().add(15, "y").toDate(), "A maximum of 15 years in the future")
+    .min(moment().toDate(), "Date should be in the future")
     .or(z.undefined()),
   //.refine((data) => !isNaN(data?.getTime() ?? 0), { message: "Please enter date in format mm/dd/year" }),
   tcSignature: z.string(),

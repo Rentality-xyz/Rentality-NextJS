@@ -34,7 +34,7 @@ function AlchemyPay() {
   const ethereumInfo = useEthereum();
 
   return (
-    <div className="flex gap-4 items-center">
+    <div className="flex items-center gap-4">
       <span className="text-lg">Coming soon Alchemy Pay service: </span>
       <RntButton
         className="w-44"

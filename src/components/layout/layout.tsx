@@ -11,7 +11,7 @@ import Image from "next/image";
 import { useEffect } from "react";
 
 export default function Layout({ children }: { children?: React.ReactNode }) {
-  const { isBurgerMenuShown, isFilterOnSearchPageShown, toggleBurgerMenu } = useAppContext();
+  const { isBurgerMenuShown, isFilterOnSearchPageShown, openBurgerMenu, closeBurgerMenu } = useAppContext();
   const { userMode } = useUserMode();
 
   useEffect(() => {
@@ -34,15 +34,15 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
 
   return (
     <>
-      <div className="flex flex-row w-full min-h-[100vh] text-rnt-temp-sidemenu-text overflow-hidden relative">
-        <aside id="main-side-menu" className="hidden lg:block bg-rentality-bg-left-sidebar">
+      <div className="relative flex min-h-[100vh] w-full flex-row overflow-hidden text-rnt-temp-sidemenu-text">
+        <aside id="main-side-menu" className="hidden bg-rentality-bg-left-sidebar lg:block">
           {sideNavMenu}
         </aside>
 
         {isBurgerMenuShown && (
           <div
             id="burger-menu-wrapper"
-            className="fixed top-[7rem] left-0 w-full h-full z-[100] overflow-auto lg:hidden"
+            className="fixed left-0 top-[7rem] z-[100] h-full w-full overflow-auto lg:hidden"
           >
             <aside id="burger-menu" className="bg-rentality-bg-left-sidebar">
               {burgerNavMenu}
@@ -50,15 +50,15 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
           </div>
         )}
 
-        <div className="flex flex-col xl:grow w-full min-w-0 relative ">
+        <div className="relative flex w-full min-w-0 flex-col xl:grow">
           <Image
             src={isBurgerMenuShown ? burgerMenuClose : burgerMenu}
             alt=""
-            className="lg:hidden mx-2 absolute left-0 top-[3.25rem]"
-            onClick={toggleBurgerMenu}
+            className="absolute left-0 top-[3.25rem] mx-2 lg:hidden"
+            onClick={isBurgerMenuShown ? closeBurgerMenu : openBurgerMenu}
           />
           <Header />
-          <main className="px-4 sm:px-8 py-4 h-full text-rnt-temp-main-text">{children}</main>
+          <main className="h-full px-4 py-4 text-rnt-temp-main-text sm:px-8">{children}</main>
         </div>
       </div>
       <Footer />

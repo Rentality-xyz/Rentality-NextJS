@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { calculateDays } from "@/utils/date";
 import { SearchCarInfo, SearchCarsResult, emptySearchCarsResult } from "@/model/SearchCarsResult";
 import { SearchCarRequest } from "@/model/SearchCarRequest";
@@ -21,7 +21,7 @@ export type SortOptions = {
 };
 export type SortOptionKey = keyof SortOptions;
 
-const useSearchCars = () => {
+const useSearchCars = (searchCarRequest: SearchCarRequest) => {
   const ethereumInfo = useEthereum();
   const rentalityContract = useRentality();
   const [isLoading, setIsLoading] = useState<Boolean>(false);
@@ -118,6 +118,10 @@ const useSearchCars = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    searchAvailableCars(searchCarRequest);
+  }, []);
 
   const createTripRequest = async (carId: number, searchCarRequest: SearchCarRequest, timeZoneId: string) => {
     if (ethereumInfo === null) {

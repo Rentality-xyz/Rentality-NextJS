@@ -29,7 +29,7 @@ function CustomCivicForm({
     return (
       <section className="flex flex-col md:px-4">
         <p>Initialization error. Please try again!</p>
-        <RntButton className="place-self-center mt-4" onClick={handleCancelClick}>
+        <RntButton className="mt-4 place-self-center" onClick={handleCancelClick}>
           Close
         </RntButton>
       </section>
@@ -37,23 +37,23 @@ function CustomCivicForm({
 
   return (
     <section className="flex flex-col md:px-4">
-      <span className="bg-[#FFFF00] bg-[#7355D7]">{/* for tailwind initialization */}</span>
-      <h1 className="place-self-center text-rentality-secondary text-xl font-bold">Get verification</h1>{" "}
-      <section className="flex flex-col mt-4">
-        <h2 className="place-self-center text-rentality-secondary text-xl font-bold">Step 1</h2>
-        <p className="place-self-center mt-2">
+      <span className="bg-[#7355D7] bg-[#FFFF00]">{/* for tailwind initialization */}</span>
+      <h1 className="place-self-center text-xl font-bold text-rentality-secondary">Get verification</h1>{" "}
+      <section className="mt-4 flex flex-col">
+        <h2 className="place-self-center text-xl font-bold text-rentality-secondary">Step 1</h2>
+        <p className="mt-2 place-self-center">
           Read the{" "}
-          <span className="underline cursor-pointer" onClick={openConditions}>
+          <span className="cursor-pointer underline" onClick={openConditions}>
             conditions
           </span>{" "}
           and pay for verification procedures
         </p>
         <RntButton
-          className="w-full mt-2 h-16 px-2 sm:px-0 sm:h-12"
+          className="mt-2 h-16 w-full px-2 sm:h-12 sm:px-0"
           disabled={!(status === "Not paid" || status === "Kyc failed")}
           onClick={payCommission}
         >
-          I agree to conditions and pay ${commissionFee} for verified
+          I agree and will pay ${commissionFee} for verification
         </RntButton>
         <div className="mt-2">
           {status === "Not paid" && (
@@ -82,11 +82,11 @@ function CustomCivicForm({
           )}
         </div>
       </section>
-      <section className="flex flex-col mt-4">
-        <h2 className="place-self-center text-rentality-secondary text-xl font-bold mt-4">Step 2</h2>
-        <p className="place-self-center mt-2">Get verification procedure</p>
+      <section className="mt-4 flex flex-col">
+        <h2 className="mt-4 place-self-center text-xl font-bold text-rentality-secondary">Step 2</h2>
+        <p className="mt-2 place-self-center">Undergo verification</p>
         <RntButton
-          className="w-full mt-2"
+          className="mt-2 w-full"
           disabled={!(status === "Commission paid" || status === "Kyc passed")}
           onClick={passKyc}
         >
@@ -94,7 +94,7 @@ function CustomCivicForm({
         </RntButton>
         <div className="mt-2">
           {(status === "Not paid" || status === "Commission paid") && (
-            <DotStatus containerClassName="text-sm" color="#FFFF00" text="You haven't been verified procedure yet" />
+            <DotStatus containerClassName="text-sm" color="#FFFF00" text="You haven't been verified yet" />
           )}
           {status === "Kyc passed" && (
             <DotStatus containerClassName="text-sm" color="success" text="You driver license verified" />
@@ -102,12 +102,12 @@ function CustomCivicForm({
           {status === "Kyc failed" && (
             <DotStatus containerClassName="text-sm" color="error" text="Your driver license not verified" />
           )}
-          <p className="underline cursor-pointer text-sm" onClick={openIssueReasons}>
+          <p className="cursor-pointer text-sm underline" onClick={openIssueReasons}>
             See possible reasons refusal to issue a pass
           </p>
         </div>
       </section>
-      <RntButton className="place-self-center mt-4" onClick={handleCancelClick}>
+      <RntButton className="mt-4 place-self-center" onClick={handleCancelClick}>
         Close
       </RntButton>
     </section>

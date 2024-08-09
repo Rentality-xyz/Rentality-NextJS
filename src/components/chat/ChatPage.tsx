@@ -37,7 +37,7 @@ export default function ChatPage({
   }, [selectedTridId]);
 
   return (
-    <div className="flex flex-row gap-4 mt-5">
+    <div className="mt-5 flex flex-row gap-4">
       {selectedChat === null ? (
         <ChatList
           chats={chats}
@@ -49,12 +49,12 @@ export default function ChatPage({
           t={t}
         />
       ) : (
-        <div className="w-full flex flex-col gap-2">
-          <RntButton className="w-40 h-12" onClick={() => selectChat(-1)}>
+        <div className="flex w-full flex-col gap-2">
+          <RntButton className="h-12 w-40" onClick={() => selectChat(-1)}>
             {t("back")}
           </RntButton>
 
-          <div className="font-bold text-2xl">{selectedChat.hostName}</div>
+          <div className="text-2xl font-bold">{selectedChat.hostName}</div>
           <ChatHeader selectedChat={selectedChat} t={t} />
           <ChatMessages selectedChat={selectedChat} isHost={isHost} />
           <SendMessage

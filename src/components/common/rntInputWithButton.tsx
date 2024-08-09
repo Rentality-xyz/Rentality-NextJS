@@ -32,7 +32,7 @@ export default function RntInputWithButton({
   onButtonClick: MouseEventHandler<HTMLButtonElement>;
 }) {
   return (
-    <div className="flex flex-row w-full gap-4">
+    <div className="flex w-full flex-row gap-4">
       <RntInput
         className={className}
         labelClassName={labelClassName}

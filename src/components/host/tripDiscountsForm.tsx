@@ -63,7 +63,7 @@ function TripDiscountsForm({
   return (
     <form className="my-4 flex flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
       <fieldset>
-        <div className="text-lg mb-4">
+        <div className="mb-4 text-lg">
           <strong>{t_profile("discounts")}</strong>
         </div>
         <div className="flex flex-col gap-4">

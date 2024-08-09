@@ -9,23 +9,18 @@ import moment from "moment";
 import { isEmpty } from "@/utils/string";
 import Image from "next/image";
 import { useState } from "react";
+import { TFunction } from "@/utils/i18n";
 
-type Props =
-  | {
-      isHost: true;
-      claim: Claim;
-      index: number;
-      payClaim: (claimId: number) => Promise<void>;
-    }
-  | {
-      isHost: false;
-      claim: Claim;
-      index: number;
-      cancelClaim: (claimId: number) => Promise<void>;
-    };
+type Props = {
+  isHost: boolean;
+  claim: Claim;
+  index: number;
+  payClaim: (claimId: number) => Promise<void>;
+  cancelClaim: (claimId: number) => Promise<void>;
+  t_history: TFunction;
+};
 
-export default function ClaimHistoryMobileCard(props: Props) {
-  const { claim, index, isHost } = props;
+export default function ClaimHistoryMobileCard({ claim, index, isHost, payClaim, cancelClaim, t_history }: Props) {
   const chatLink = `/${isHost ? "host" : "guest"}/messages?tridId=${claim.tripId}`;
   const telLink = `tel:${isHost ? claim.guestPhoneNumber : claim.hostPhoneNumber}`;
   const pathname = usePathname();
@@ -85,29 +80,29 @@ export default function ClaimHistoryMobileCard(props: Props) {
       <hr className="col-span-2" />
       {claim.fileUrls.filter((i) => !isEmpty(i)).length > 0 ? (
         <div className="col-span-2">
-          <div className="w-full grid grid-cols-2 gap-2 mb-1">
+          <div className="mb-1 grid w-full grid-cols-2 gap-2">
             <p>
               <strong>View photo/file</strong>
             </p>
             <div
-              className="w-8 h-8 cursor-pointer mt-[-6px]"
+              className="mt-[-6px] h-8 w-8 cursor-pointer"
               onClick={() => {
                 handleFilesClick();
               }}
             >
-              <Image className="w-full h-full object-cover" width={36} height={36} src="/icon_photo.png" alt="" />
+              <Image className="h-full w-full object-cover" width={36} height={36} src="/icon_photo.png" alt="" />
             </div>
           </div>
           {isVisible && (
-            <div className="mt-2 mb-4">
-              <div className="flex overflow-x-auto space-x-2">
+            <div className="mb-4 mt-2">
+              <div className="flex space-x-2 overflow-x-auto">
                 {claim.fileUrls
                   .filter((i) => !isEmpty(i))
                   .slice(0, 5)
                   .map((url, index) => (
-                    <div key={index} className="flex-none w-36 h-36">
+                    <div key={index} className="h-36 w-36 flex-none">
                       <Image
-                        className="w-full h-full object-cover cursor-pointer"
+                        className="h-full w-full cursor-pointer object-cover"
                         src={url}
                         alt={`Photo ${index + 1}`}
                         width={144}
@@ -124,21 +119,21 @@ export default function ClaimHistoryMobileCard(props: Props) {
       ) : null}
       <div className="col-span-2 mt-2 justify-self-center">
         {claim.status === ClaimStatus.NotPaid || claim.status === ClaimStatus.Overdue ? (
-          isHost ? (
+          claim.isIncomingClaim ? (
             <RntButton
               onClick={() => {
-                props.payClaim(claim.claimId);
+                payClaim(claim.claimId);
               }}
             >
-              Pay
+              {t_history("pay")}
             </RntButton>
           ) : (
             <RntButton
               onClick={() => {
-                props.cancelClaim(claim.claimId);
+                cancelClaim(claim.claimId);
               }}
             >
-              Cancel
+              {t_history("cancel")}
             </RntButton>
           )
         ) : null}

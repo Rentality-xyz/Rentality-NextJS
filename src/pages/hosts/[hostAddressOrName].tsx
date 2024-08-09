@@ -23,23 +23,23 @@ export default function HostPublicInfo() {
   return (
     <Layout>
       <div className="flex flex-col">
-        <div id="page-title" className="flex flex-row justify-between items-center">
+        <div id="page-title" className="flex flex-row items-center justify-between">
           <div className="text-2xl">
             <strong>{t("hosts.listings", { address: hostAddressOrName })}</strong>
           </div>
         </div>
         {isLoading ? (
-          <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
+          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
             {t("common.info.loading")}
           </div>
         ) : (
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 my-4">
+          <div className="my-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
             {hostListings != null && hostListings.length > 0 ? (
               hostListings.map((value) => {
                 return <PublicListingItem key={value.carId} carInfo={value} t={t} />;
               })
             ) : (
-              <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
+              <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
                 {t("hosts.no_cars")}
               </div>
             )}

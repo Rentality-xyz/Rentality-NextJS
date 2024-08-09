@@ -18,7 +18,7 @@ export default function TransactionHistoryMobileCard(props: TransactionHistoryMo
 
   return (
     <div key={transaction.transHistoryId} className="mt-8">
-      <div className="flex text-sm justify-between mb-2">
+      <div className="mb-2 flex justify-between text-sm">
         <span className="text-rentality-secondary-shade">
           {dateRangeFormatShortMonthDateYear(
             transaction.startDateTime,
@@ -26,27 +26,27 @@ export default function TransactionHistoryMobileCard(props: TransactionHistoryMo
             transaction.timeZoneId
           )}
         </span>
-        <span className={statusBgColor + " px-1 rounded"}>{getTripStatusTextFromStatus(transaction.status)}</span>
+        <span className={statusBgColor + " rounded px-1"}>{getTripStatusTextFromStatus(transaction.status)}</span>
       </div>
       {!isHost && (
         <div>
-          <div className="flex text-sm justify-between mx-4 mb-2">
+          <div className="mx-4 mb-2 flex justify-between text-sm">
             <span>Trip payments</span>
             <span>${transaction.tripPayment}</span>
           </div>
-          <div className="flex text-sm justify-between mx-4 mb-2">
+          <div className="mx-4 mb-2 flex justify-between text-sm">
             <span>Refund</span>
             <span>${transaction.refund}</span>
           </div>
         </div>
       )}
       {isHost && (
-        <div className="flex text-sm justify-between mx-4 mb-2">
+        <div className="mx-4 mb-2 flex justify-between text-sm">
           <span>Host Earnings</span>
           <span>${transaction.tripEarnings}</span>
         </div>
       )}
-      <div className="flex text-sm justify-between mb-2">
+      <div className="mb-2 flex justify-between text-sm">
         <strong className="font-normal">{transaction.car}</strong>
         <Link href={detailsLink}>
           <span className="font-normal text-rentality-secondary-shade">Details</span>

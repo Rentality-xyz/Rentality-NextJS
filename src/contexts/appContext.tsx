@@ -2,9 +2,11 @@ import { createContext, useCallback, useContext, useMemo, useState } from "react
 
 interface IAppContext {
   isBurgerMenuShown: boolean;
-  toggleBurgerMenu: () => void;
+  openBurgerMenu: () => void;
+  closeBurgerMenu: () => void;
   isFilterOnSearchPageShown: boolean;
-  toggleFilterOnSearchPage: () => void;
+  openFilterOnSearchPage: () => void;
+  closeFilterOnSearchPage: () => void;
 }
 
 const AppContext = createContext<IAppContext | undefined>(undefined);
@@ -13,22 +15,39 @@ export const AppContextProvider = ({ children }: { children?: React.ReactNode })
   const [isBurgerMenuShown, setIsBurgerMenuShown] = useState(false);
   const [isFilterOnSearchPageShown, setIsFilterOnSearchPageShown] = useState(false);
 
-  const toggleBurgerMenu = useCallback(() => {
-    setIsBurgerMenuShown((prev) => !prev);
+  const openBurgerMenu = useCallback(() => {
+    setIsBurgerMenuShown(true);
   }, []);
 
-  const toggleFilterOnSearchPage = useCallback(() => {
-    setIsFilterOnSearchPageShown((prev) => !prev);
+  const closeBurgerMenu = useCallback(() => {
+    setIsBurgerMenuShown(false);
+  }, []);
+
+  const openFilterOnSearchPage = useCallback(() => {
+    setIsFilterOnSearchPageShown(true);
+  }, []);
+
+  const closeFilterOnSearchPage = useCallback(() => {
+    setIsFilterOnSearchPageShown(false);
   }, []);
 
   const value = useMemo(
     () => ({
       isBurgerMenuShown,
-      toggleBurgerMenu,
+      openBurgerMenu,
+      closeBurgerMenu,
       isFilterOnSearchPageShown,
-      toggleFilterOnSearchPage,
+      openFilterOnSearchPage,
+      closeFilterOnSearchPage,
     }),
-    [isBurgerMenuShown, toggleBurgerMenu, isFilterOnSearchPageShown, toggleFilterOnSearchPage]
+    [
+      isBurgerMenuShown,
+      openBurgerMenu,
+      closeBurgerMenu,
+      isFilterOnSearchPageShown,
+      openFilterOnSearchPage,
+      closeFilterOnSearchPage,
+    ]
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -74,7 +74,7 @@ export default function RntDialogs({ state, hide }: { state: DialogState; hide: 
       action={state.action}
       sx={{ top: "8% !important" }}
     >
-      <div className="bg-[#009898] rounded-[30px_8px_30px_8px] max-w-[700px] text-lg p-[14px_16px] shadow-snackbar text-white">
+      <div className="max-w-[700px] rounded-[30px_8px_30px_8px] bg-[#009898] p-[14px_16px] text-lg text-white shadow-snackbar">
         {state.message}
       </div>
     </Snackbar>

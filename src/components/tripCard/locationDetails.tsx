@@ -4,11 +4,11 @@ import { TFunction } from "@/utils/i18n";
 
 function LocationDetails({ tripInfo, t }: { tripInfo: TripInfo; t: TFunction }) {
   return (
-    <div id="trip-location-info" className="w-full md:w-1/4 flex flex-col flex-1 p-4 md:p-2 xl:p-4">
+    <div id="trip-location-info" className="flex w-full flex-1 flex-col p-4 md:w-1/4 md:p-2 xl:p-4">
       <div className="flex flex-col gap-2">
         <div className="flex flex-col 2xl:mt-6">
           <div>
-            <i className="fi fi-rs-marker pr-1  text-rentality-icons"></i>
+            <i className="fi fi-rs-marker pr-1 text-rentality-icons"></i>
             <strong className="text-l whitespace-nowrap">{t("booked.pick_up_location")}</strong>
           </div>
           <p>{tripInfo.locationStart}&nbsp;</p>

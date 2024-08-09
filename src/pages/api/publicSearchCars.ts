@@ -288,6 +288,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const rentality = (await getEtherContractWithSigner("gateway", wallet)) as unknown as IRentalityContract;
 
+  if (rentality === null) {
+    res.status(500).json({ error: "rentality is null" });
+    return;
+  }
+
   const { contractDateFromUTC, contractDateToUTC, contractSearchCarParams } = formatSearchAvailableCarsContractRequest(
     searchCarRequest,
     timeZoneId

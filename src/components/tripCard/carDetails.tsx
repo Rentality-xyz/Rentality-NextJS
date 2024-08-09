@@ -50,7 +50,7 @@ function СarDetails({
   };
 
   return (
-    <div id="trip-main-info" className="w-full md:w-1/4 flex flex-1 flex-col gap-4 justify-between p-4 md:p-2 xl:p-4">
+    <div id="trip-main-info" className="flex w-full flex-1 flex-col justify-between gap-4 p-4 md:w-1/4 md:p-2 xl:p-4">
       <div className="flex flex-col">
         <div>
           <strong className="text-xl">{`${tripInfo.brand} ${tripInfo.model} ${tripInfo.year}`}</strong>
@@ -64,7 +64,7 @@ function СarDetails({
             })}
           </div>
         ) : null}
-        <div className="flex flex-col mt-4">
+        <div className="mt-4 flex flex-col">
           <div>
             <strong className="text-l">{t("booked.total")}</strong>
           </div>
@@ -80,10 +80,10 @@ function СarDetails({
 
         {tripInfo.status === TripStatus.Closed && !tripInfo.isCarDetailsConfirmed && confirmCarDetails && (
           <RntButtonTransparent
-            className="h-12 w-12 flex flex-row justify-center items-center gap-2 mr-8"
+            className="mr-8 flex h-12 w-12 flex-row items-center justify-center gap-2"
             onClick={handleConfirmCarDetailsClick}
           >
-            <i className="fi fi-br-hexagon-check text-green-500 text-3xl pt-2"></i>
+            <i className="fi fi-br-hexagon-check pt-2 text-3xl text-green-500"></i>
           </RntButtonTransparent>
         )}
       </div>

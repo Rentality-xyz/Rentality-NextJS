@@ -22,11 +22,10 @@ type Props = {
   t: TFunction;
 };
 
-export default function ClaimHistory(props: Props) {
+export default function ClaimHistory({ isHost, claims, payClaim, cancelClaim, t }: Props) {
   const t_history: TFunction = (path, options) => {
-    return props.t("history." + path, options);
+    return t("history." + path, options);
   };
-  const { isHost, claims } = props;
   const headerSpanClassName = "text-start px-2 font-light text-sm";
   const rowSpanClassName = "px-2 h-12";
   const redTextClassName = twMerge(rowSpanClassName, "text-red-400");
@@ -38,8 +37,8 @@ export default function ClaimHistory(props: Props) {
   }
 
   return (
-    <div className="w-full bg-rentality-bg p-4 rounded-2xl mt-5">
-      <h3 className="text-xl mb-4">{t_history("title")}</h3>
+    <div className="mt-5 w-full rounded-2xl bg-rentality-bg p-4">
+      <h3 className="mb-4 text-xl">{t_history("title")}</h3>
       <div className="w-full overflow-x-auto">
         <table className="w-full table-auto border-spacing-2 max-lg:hidden">
           <thead className="w-full">
@@ -59,14 +58,14 @@ export default function ClaimHistory(props: Props) {
               <th></th>
             </tr>
           </thead>
-          <tbody className="text-sm w-full">
+          <tbody className="w-full text-sm">
             {claims.map((claim) => {
               const chatLink = `/${isHost ? "host" : "guest"}/messages?tridId=${claim.tripId}`;
               const telLink = `tel:${isHost ? claim.guestPhoneNumber : claim.hostPhoneNumber}`;
               const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${claim.tripId}?back=${pathname}`;
 
               return (
-                <tr key={claim.claimId} className="border-b-[1px] border-b-gray-500 w-full">
+                <tr key={claim.claimId} className="w-full border-b-[1px] border-b-gray-500">
                   <td className={rowSpanClassName}>{claim.isIncomingClaim ? "← Incoming" : "Outgoing →"}</td>
                   <td className={rowSpanClassName}>{claim.claimTypeText}</td>
                   <td
@@ -84,13 +83,13 @@ export default function ClaimHistory(props: Props) {
                   <td className={rowSpanClassName}>
                     {claim.fileUrls.filter((i) => !isEmpty(i)).length > 0 ? (
                       <div
-                        className="w-8 h-8 cursor-pointer"
+                        className="h-8 w-8 cursor-pointer"
                         onClick={() => {
                           handleFilesClick(claim);
                         }}
                       >
                         <Image
-                          className="w-full h-full object-cover"
+                          className="h-full w-full object-cover"
                           width={36}
                           height={36}
                           src="/icon_photo.png"
@@ -107,18 +106,18 @@ export default function ClaimHistory(props: Props) {
                     {claim.status === ClaimStatus.NotPaid || claim.status === ClaimStatus.Overdue ? (
                       claim.isIncomingClaim ? (
                         <RntButton
-                          className="w-24 h-8"
+                          className="h-8 w-24"
                           onClick={() => {
-                            props.payClaim(claim.claimId);
+                            payClaim(claim.claimId);
                           }}
                         >
                           {t_history("pay")}
                         </RntButton>
                       ) : (
                         <RntButton
-                          className="w-24 h-8"
+                          className="h-8 w-24"
                           onClick={() => {
-                            props.cancelClaim(claim.claimId);
+                            cancelClaim(claim.claimId);
                           }}
                         >
                           {t_history("cancel")}
@@ -149,21 +148,15 @@ export default function ClaimHistory(props: Props) {
       </div>
       <div className="lg:hidden">
         {claims.map((claim, index) => {
-          return isHost ? (
+          return (
             <ClaimHistoryMobileCard
               key={claim.claimId}
               isHost={isHost}
               claim={claim}
               index={index}
-              payClaim={props.payClaim}
-            />
-          ) : (
-            <ClaimHistoryMobileCard
-              key={claim.claimId}
-              isHost={isHost}
-              claim={claim}
-              index={index}
-              cancelClaim={props.cancelClaim}
+              payClaim={payClaim}
+              cancelClaim={cancelClaim}
+              t_history={t_history}
             />
           );
         })}

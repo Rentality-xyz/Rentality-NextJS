@@ -237,7 +237,7 @@ export default function CarEditForm({
     <GoogleMapsProvider libraries={["places"]} language="en">
       <form onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
         <div className="mt-4">
-          <div className="text-lg mb-4">
+          <div className="mb-4 text-lg">
             <strong>{t_car("car")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
@@ -281,13 +281,13 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="text-lg mb-4">
+          <div className="mb-4 text-lg">
             <strong>{t_car("photo")}</strong>
           </div>
-          <RntFileButton className="w-40 h-16" disabled={!isNewCar} onChange={onChangeFile}>
+          <RntFileButton className="h-16 w-40" disabled={!isNewCar} onChange={onChangeFile}>
             {t("common.upload")}
           </RntFileButton>
-          <div className="w-80 h-60 rounded-2xl mt-8 overflow-hidden bg-gray-200 bg-opacity-40">
+          <div className="mt-8 h-60 w-80 overflow-hidden rounded-2xl bg-gray-200 bg-opacity-40">
             {!isEmpty(image) ? (
               <Image className="h-full w-full object-cover" width={1000} height={1000} src={image} alt="" />
             ) : null}
@@ -296,7 +296,7 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="text-lg mb-4">
+          <div className="mb-4 text-lg">
             <strong>{t_car("car_basics")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
@@ -356,7 +356,7 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="text-lg  mb-4">
+          <div className="mb-4 text-lg">
             <strong>{t_car("basic_details")}</strong>
           </div>
           <div className="details flex flex-wrap gap-4">
@@ -421,7 +421,7 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="text-lg  mb-4">
+          <div className="mb-4 text-lg">
             <strong>{t_car("more_info")}</strong>
           </div>
           <div className="flex flex-col">
@@ -437,10 +437,10 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="text-lg mb-4">
+          <div className="mb-4 text-lg">
             <strong>{t_car("location")}</strong>
           </div>
-          <div className="flex flex-row gap-4 items-end  mb-4">
+          <div className="mb-4 flex flex-row items-end gap-4">
             {isLocationEdited ? (
               <Controller
                 name="locationInfo"
@@ -542,14 +542,14 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="text-lg  mb-4">
+          <div className="mb-4 text-lg">
             <strong>{t_car("included_distance")}</strong>
           </div>
           <Controller
             name="milesIncludedPerDay"
             control={control}
             render={({ field }) => (
-              <div className="flex flex-wrap gap-4 items-start">
+              <div className="flex flex-wrap items-start gap-4">
                 <MilesIncludedPerDay
                   value={field.value}
                   onChange={field.onChange}
@@ -562,7 +562,7 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="text-lg  mb-4">
+          <div className="mb-4 text-lg">
             <strong>{t_car("price")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
@@ -621,7 +621,7 @@ export default function CarEditForm({
 
         {isElectricEngine ? (
           <div className={`mt-4 ${isElectricEngine ? "" : "hidden"}`}>
-            <div className="text-lg  mb-4">
+            <div className="mb-4 text-lg">
               <strong>{t_car("battery_charge")}</strong>
             </div>
             <Controller
@@ -644,10 +644,10 @@ export default function CarEditForm({
         ) : null}
 
         <div className="mt-4">
-          <div className="text-lg  mb-4">
+          <div className="mb-4 text-lg">
             <strong>{t_car("management")}</strong>
           </div>
-          <div className="flex flex-wrap gap-4 mb-4">
+          <div className="mb-4 flex flex-wrap gap-4">
             <RntSelect
               className="lg:w-60"
               id="timeBufferBetweenTrips"
@@ -687,11 +687,11 @@ export default function CarEditForm({
           </div>
         </div>
 
-        <div className="flex flex-row gap-4 mb-8 mt-8 justify-between sm:justify-start">
-          <RntButton type="submit" className="w-40 h-16" disabled={isSubmitting}>
+        <div className="mb-8 mt-8 flex flex-row justify-between gap-4 sm:justify-start">
+          <RntButton type="submit" className="h-16 w-40" disabled={isSubmitting}>
             {t("common.save")}
           </RntButton>
-          <RntButton type="button" className="w-40 h-16" onClick={handleBack}>
+          <RntButton type="button" className="h-16 w-40" onClick={handleBack}>
             {t("common.back")}
           </RntButton>
         </div>
@@ -778,7 +778,7 @@ const FullBatteryChargePrice = ({
   }, [value]);
 
   return (
-    <div className="flex flex-wrap gap-4 ">
+    <div className="flex flex-wrap gap-4">
       <div>
         <RntInput
           className="lg:w-48"
@@ -795,7 +795,7 @@ const FullBatteryChargePrice = ({
           }}
           validationError={validationError}
         />
-        <p className="w-full text-sm text-center mt-2">{t_car("recommended", { amount: "$30-50" })}</p>
+        <p className="mt-2 w-full text-center text-sm">{t_car("recommended", { amount: "$30-50" })}</p>
       </div>
       <div>
         <RntInput
@@ -805,7 +805,7 @@ const FullBatteryChargePrice = ({
           readOnly={true}
           value={(fullBatteryChargePrice ?? 0) / 10}
         />
-        <p className="w-full text-sm text-center mt-2">{t_car("for_difference")}</p>
+        <p className="mt-2 w-full text-center text-sm">{t_car("for_difference")}</p>
       </div>
     </div>
   );

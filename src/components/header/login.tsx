@@ -78,21 +78,21 @@ function Login() {
 
   if (!authenticated)
     return (
-      <RntButton className="w-28 sm:w-48 h-10 text-sm sm:text-base" onClick={login}>
+      <RntButton className="h-10 w-28 text-sm sm:w-48 sm:text-base" onClick={login}>
         {t("common.info.login")}
       </RntButton>
     );
 
   if (wallets.length === 0)
     return (
-      <RntButton className="w-28 sm:w-48 h-10 text-sm sm:text-base" onClick={connectWallet}>
+      <RntButton className="h-10 w-28 text-sm sm:w-48 sm:text-base" onClick={connectWallet}>
         {t("common.connect")}
       </RntButton>
     );
 
   return (
     <div
-      className="flex flex-row gap-4 ml-2 xl:ml-16 items-center cursor-pointer relative"
+      className="relative ml-2 flex cursor-pointer flex-row items-center gap-4 xl:ml-16"
       ref={loginWrapperRef}
       onClick={async () => {
         setIsShowMenu((prev) => {
@@ -100,16 +100,16 @@ function Login() {
         });
       }}
     >
-      <div className=" flex-col hidden xl:flex">
+      <div className="hidden flex-col xl:flex">
         <div>{userFullName}</div>
         <div className="text-sm">{userAddressOrEnsName}</div>
       </div>
-      <Avatar className="w-20 h-20" alt={userFullName} src={userInfo?.profilePhotoUrl}>
+      <Avatar className="h-20 w-20" alt={userFullName} src={userInfo?.profilePhotoUrl}>
         {userInitials}
       </Avatar>
       {isShowMenu && (
-        <div className="absolute p-4 top-[5.25rem] left-auto right-0 z-50 bg-[#1E1E30] rounded-xl border-2 border-[#373737]">
-          <RntButton className="w-28 sm:w-48 h-10 text-sm sm:text-base" onClick={handleLogout}>
+        <div className="absolute left-auto right-0 top-[5.25rem] z-50 rounded-xl border-2 border-[#373737] bg-[#1E1E30] p-4">
+          <RntButton className="h-10 w-28 text-sm sm:w-48 sm:text-base" onClick={handleLogout}>
             {t("common.logout")}
           </RntButton>
         </div>

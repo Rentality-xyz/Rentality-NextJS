@@ -18,10 +18,10 @@ export default function SideNavMenuGroup({
   target?: string;
   onClick?: () => void;
 }) {
-  const { toggleBurgerMenu } = useAppContext();
+  const { closeBurgerMenu } = useAppContext();
 
   const handleOnClick = () => {
-    toggleBurgerMenu();
+    closeBurgerMenu();
     if (onClick) {
       onClick();
     }
@@ -31,7 +31,7 @@ export default function SideNavMenuGroup({
     <div className="pt-4">
       <div className="py-2 text-xl font-bold">
         {href != null ? (
-          <Link className="flex flex-row gap-2 items-center" href={href} onClick={handleOnClick} target={target}>
+          <Link className="flex flex-row items-center gap-2" href={href} onClick={handleOnClick} target={target}>
             {icon != null && <Image src={getImageForMenu(icon)} width={30} height={30} alt="" />}
             <span>{title}</span>
           </Link>
