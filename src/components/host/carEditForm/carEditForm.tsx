@@ -34,6 +34,10 @@ import RntValidationError from "@/components/common/RntValidationError";
 import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
 import RntCarModelSelect from "@/components/common/rntCarModelSelect";
 import RntCarYearSelect from "@/components/common/rntCarYearSelect";
+import RntVINCheckingInput from "@/components/common/rntVINCheckingInput";
+import { isJsonRpcValidationInvalid } from "@walletconnect/jsonrpc-utils";
+import { e } from "@tanstack/query-core/build/legacy/hydration-zFr_7WN8";
+import * as React from "react";
 
 export default function CarEditForm({
   initValue,
@@ -116,6 +120,10 @@ export default function CarEditForm({
   const [selectedModelID, setSelectedModelID] = useState<string>("");
   const [selectedModel, setSelectedModel] = useState<string>("");
   const [selectedYear, setSelectedYear] = useState("");
+  const [vinNumber, setVinNumber] = useState("");
+
+  const [isVINVerified, setIsVINVerified] = useState<boolean>(false);
+  const [isVINCheckOverriden, setIsVINCheckOverriden] = useState<boolean>(false);
 
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
@@ -250,14 +258,18 @@ export default function CarEditForm({
             <strong>{t_car("car")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
-            <RntInput
-              className="lg:w-60"
+            <RntVINCheckingInput
               id="vinNumber"
+              className="lg:w-60"
               label={t_car("vin_num")}
+              value={vinNumber}
+              isVINCheckOverriden={isVINCheckOverriden}
+              isVINVerified={isVINVerified}
               placeholder="e.g. 4Y1SL65848Z411439"
               readOnly={!isNewCar}
-              {...register("vinNumber")}
-              validationError={errors.vinNumber?.message?.toString()}
+              onChange={(e) => setVinNumber(e.target.value)}
+              onVINVerified={(isVINVerified: boolean) => setIsVINVerified(isVINVerified)}
+              onVINCheckOverriden={(isVINCheckOverriden) => setIsVINCheckOverriden(isVINCheckOverriden)}
             />
             <RntCarMakeSelect
               id="filter-brand"

@@ -76,8 +76,19 @@ async function getCarYearsByMakeAndModel(make_id: string, model_id: string) : Pr
   return response.data;
 }
 
+async function checkVINNumber(vinNumber: string):Promise<boolean>{
+  const response: AxiosResponse = await axios.get(`/api/car-api/vin?vin=${vinNumber}`);
+
+  if(response.status !== 200) {
+    console.log("Car API for VIN response error code " + response.status + " with data " + response.data);
+    return false;
+  }
+
+  return response.data.result;
+}
+
 const useCarAPI = () => {
-  return {getAllCarMakes, getCarModelByMake, getCarYearsByMakeAndModel} as const;
+  return {getAllCarMakes, getCarModelByMake, getCarYearsByMakeAndModel, checkVINNumber} as const;
 }
 
 export default useCarAPI;
