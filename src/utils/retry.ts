@@ -1,6 +1,6 @@
 import { wait } from "@/utils";
 
-async function retry(fnc: () => void, depth = 0, maxAttempts = 5) {
+export async function retry(fnc: () => void, depth = 0, maxAttempts = 5): Promise<void> {
   try {
     return await fnc();
   } catch (e) {

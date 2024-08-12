@@ -5,7 +5,6 @@ import {
   emptyHostCarInfo,
   HostCarInfo,
   isUnlimitedMiles,
-  UNLIMITED_MILES_VALUE,
   UNLIMITED_MILES_VALUE_TEXT,
   verifyCar,
 } from "@/model/HostCarInfo";
@@ -35,8 +34,6 @@ import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
 import RntCarModelSelect from "@/components/common/rntCarModelSelect";
 import RntCarYearSelect from "@/components/common/rntCarYearSelect";
 import RntVINCheckingInput from "@/components/common/rntVINCheckingInput";
-import { isJsonRpcValidationInvalid } from "@walletconnect/jsonrpc-utils";
-import { e } from "@tanstack/query-core/build/legacy/hydration-zFr_7WN8";
 import * as React from "react";
 
 export default function CarEditForm({

@@ -1,5 +1,5 @@
 import RntInput from "@/components/common/rntInput";
-import { ChangeEventHandler, useMemo } from "react";
+import { useMemo } from "react";
 import useCarAPI from "@/hooks/useCarAPI";
 import RntButton from "@/components/common/rntButton";
 import * as React from "react";
@@ -14,7 +14,7 @@ type RntVINCheckingInputProps = {
   value: string;
   isVINVerified: boolean;
   isVINCheckOverriden: boolean;
-  onChange: ChangeEventHandler;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
   onVINVerified: (isVerified: boolean) => void;
   onVINCheckOverriden: (isVINCheckOverriden: boolean) => void;
 };
