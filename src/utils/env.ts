@@ -22,6 +22,9 @@ export const env = createEnv({
     PROVIDER_API_URL_84532: z.string().url(),
     PROVIDER_API_URL_11155111: z.string().url().optional(),
     PROVIDER_API_URL_11155420: z.string().url().optional(),
+
+    CARAPI_TOKEN: z.string(),
+    CARAPI_SECRET: z.string(),
   },
   client: {
     NEXT_PUBLIC_INCLUDE_MAINNETS: booleanEnvType,

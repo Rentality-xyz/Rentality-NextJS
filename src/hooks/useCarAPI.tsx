@@ -23,14 +23,14 @@ export type CarModelsListElement = {
   name: string;
 };
 
-export async function getAuthToken(){
-  const CARAPI_SECRET: string = process.env.CARAPI_SECRET!;
+export async function getAuthToken() {
+  const CARAPI_SECRET: string = env.CARAPI_SECRET!;
 
   if (!CARAPI_SECRET || isEmpty(CARAPI_SECRET)) {
     throw new Error("CARAPI_SECRET is not set");
   }
 
-  const CARAPI_TOKEN : string = process.env.CARAPI_TOKEN!;
+  const CARAPI_TOKEN: string = env.CARAPI_TOKEN!;
 
   if (!CARAPI_TOKEN || isEmpty(CARAPI_TOKEN)) {
     throw new Error("CARAPI_TOKEN is not set");
