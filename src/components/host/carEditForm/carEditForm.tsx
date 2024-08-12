@@ -31,6 +31,13 @@ import RntInputMultiline from "@/components/common/rntInputMultiline";
 import { isEmpty } from "@/utils/string";
 import { TRANSMISSION_AUTOMATIC_STRING, TRANSMISSION_MANUAL_STRING } from "@/model/Transmission";
 import RntValidationError from "@/components/common/RntValidationError";
+import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
+import RntCarModelSelect from "@/components/common/rntCarModelSelect";
+import RntCarYearSelect from "@/components/common/rntCarYearSelect";
+import RntVINCheckingInput from "@/components/common/rntVINCheckingInput";
+import { isJsonRpcValidationInvalid } from "@walletconnect/jsonrpc-utils";
+import { e } from "@tanstack/query-core/build/legacy/hydration-zFr_7WN8";
+import * as React from "react";
 
 export default function CarEditForm({
   initValue,
@@ -107,6 +114,16 @@ export default function CarEditForm({
   const image = watch("image");
   const isLocationEdited = watch("isLocationEdited");
   const locationInfo = watch("locationInfo");
+
+  const [selectedMakeID, setSelectedMakeID] = useState<string>("");
+  const [selectedBrand, setSelectedBrand] = useState<string>("");
+  const [selectedModelID, setSelectedModelID] = useState<string>("");
+  const [selectedModel, setSelectedModel] = useState<string>("");
+  const [selectedYear, setSelectedYear] = useState("");
+  const [vinNumber, setVinNumber] = useState("");
+
+  const [isVINVerified, setIsVINVerified] = useState<boolean>(false);
+  const [isVINCheckOverriden, setIsVINCheckOverriden] = useState<boolean>(false);
 
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
@@ -241,41 +258,53 @@ export default function CarEditForm({
             <strong>{t_car("car")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
-            <RntInput
-              className="lg:w-60"
+            <RntVINCheckingInput
               id="vinNumber"
+              className="lg:w-60"
               label={t_car("vin_num")}
+              value={vinNumber}
+              isVINCheckOverriden={isVINCheckOverriden}
+              isVINVerified={isVINVerified}
               placeholder="e.g. 4Y1SL65848Z411439"
               readOnly={!isNewCar}
-              {...register("vinNumber")}
-              validationError={errors.vinNumber?.message?.toString()}
+              onChange={(e) => setVinNumber(e.target.value)}
+              onVINVerified={(isVINVerified: boolean) => setIsVINVerified(isVINVerified)}
+              onVINCheckOverriden={(isVINCheckOverriden) => setIsVINCheckOverriden(isVINCheckOverriden)}
             />
-            <RntInput
+            <RntCarMakeSelect
+              id="filter-brand"
               className="lg:w-60"
-              id="brand"
               label={t_car("brand")}
-              placeholder="e.g. Shelby"
               readOnly={!isNewCar}
-              {...register("brand")}
-              validationError={errors.brand?.message?.toString()}
+              value={selectedBrand}
+              onMakeSelect={(newID, newMake) =>{
+                setSelectedMakeID(newID);
+                setSelectedBrand(newMake);
+              }}
             />
-            <RntInput
-              className="lg:w-60"
+            <RntCarModelSelect
               id="model"
-              label={t_car("model")}
-              placeholder="e.g. Mustang GT500"
-              readOnly={!isNewCar}
-              {...register("model")}
-              validationError={errors.model?.message?.toString()}
-            />
-            <RntInput
               className="lg:w-60"
-              id="releaseYear"
-              label={t_car("release")}
-              placeholder="e.g. 2023"
+              label={t_car("model")}
+              make_id={selectedMakeID}
               readOnly={!isNewCar}
-              {...register("releaseYear", { valueAsNumber: true })}
-              validationError={errors.releaseYear?.message?.toString()}
+              value={selectedModel}
+              onModelSelect={(newID: string, newModel) => {
+                setSelectedModelID(newID);
+                setSelectedModel(newModel);
+              }}
+            />
+            <RntCarYearSelect
+              id="releaseYear"
+              className="lg:w-60"
+              label={t_car("release")}
+              make_id={selectedMakeID}
+              model_id={selectedModelID}
+              readOnly={!isNewCar}
+              value={selectedYear}
+              onYearSelect={(newYear) =>{
+                setSelectedYear(newYear);
+              }}
             />
           </div>
         </div>

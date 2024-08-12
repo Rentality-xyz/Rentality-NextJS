@@ -34,4 +34,3 @@ volumes:
       o: bind
   abis-volume:
     external: true
-    name: abis-volume
