@@ -9,24 +9,33 @@ interface RntCarYearSelectProps extends RntSelectProps {
   make_id: string;
   model_id: string;
   value: string;
-  readOnly? : boolean;
+  readOnly?: boolean;
   onYearSelect?: (newYear: string) => void;
 }
 
-export default function RntCarYearSelect ({id, label, className, readOnly, make_id, model_id, value, onYearSelect} : RntCarYearSelectProps) {
-  const {getCarYearsByMakeAndModel} = useCarAPI();
+export default function RntCarYearSelect({
+  id,
+  label,
+  className,
+  readOnly,
+  make_id,
+  model_id,
+  value,
+  onYearSelect,
+}: RntCarYearSelectProps) {
+  const { getCarYearsByMakeAndModel } = useCarAPI();
 
   const [yearsList, setYearsList] = useState<string[]>([]);
 
-  useEffect(() =>{
+  useEffect(() => {
     if (make_id === "" && model_id === "") {
       setYearsList([]);
-    } else{
+    } else {
       getCarYearsByMakeAndModel(make_id, model_id).then(function (response: string[]) {
         setYearsList(response);
       });
     }
-  },[make_id, model_id]);
+  }, [make_id, model_id]);
 
   return (
     <RntSelect
@@ -35,7 +44,7 @@ export default function RntCarYearSelect ({id, label, className, readOnly, make_
       label={label}
       value={value}
       readOnly={readOnly || false}
-      onChange={function(e) {
+      onChange={function (e) {
         const newValue = e.target.value;
         if (onYearSelect) onYearSelect(newValue);
       }}
@@ -46,7 +55,6 @@ export default function RntCarYearSelect ({id, label, className, readOnly, make_
           {yearsListElement}
         </option>
       ))}
-
     </RntSelect>
-  )
+  );
 }

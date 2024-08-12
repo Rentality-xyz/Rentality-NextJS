@@ -9,12 +9,20 @@ interface RntCarModelSelectProps extends RntSelectProps {
   className?: string;
   make_id: string;
   value: string;
-  readOnly? : boolean;
+  readOnly?: boolean;
   onModelSelect?: (newID: string, newMake: string) => void;
 }
 
-export default function RntCarModelSelect ({id, label, className, readOnly, make_id, value, onModelSelect} : RntCarModelSelectProps) {
-  const {getCarModelByMake} = useCarAPI();
+export default function RntCarModelSelect({
+  id,
+  label,
+  className,
+  readOnly,
+  make_id,
+  value,
+  onModelSelect,
+}: RntCarModelSelectProps) {
+  const { getCarModelByMake } = useCarAPI();
 
   const [modelsList, setModelsList] = useState<CarModelsListElement[]>([]);
 
@@ -26,7 +34,7 @@ export default function RntCarModelSelect ({id, label, className, readOnly, make
         setModelsList(response);
       });
     }
-  },[make_id]);
+  }, [make_id]);
 
   return (
     <RntSelect
@@ -35,19 +43,22 @@ export default function RntCarModelSelect ({id, label, className, readOnly, make
       label={label}
       value={value}
       readOnly={readOnly || false}
-      onChange={function(e) {
+      onChange={function (e) {
         const newValue = e.target.value;
         const newID: string = e.target.options[e.target.selectedIndex].getAttribute("data-id") || "";
         if (onModelSelect) onModelSelect(newID, newValue);
       }}
-  >
+    >
       <option value="">Please select</option>
       {modelsList.map((carModelsListElement) => (
-        <option key={"car-model-" + carModelsListElement.id} data-id={carModelsListElement.id} value={carModelsListElement.name}>
+        <option
+          key={"car-model-" + carModelsListElement.id}
+          data-id={carModelsListElement.id}
+          value={carModelsListElement.name}
+        >
           {carModelsListElement.name}
         </option>
       ))}
-
     </RntSelect>
-  )
+  );
 }

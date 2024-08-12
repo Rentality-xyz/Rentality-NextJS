@@ -277,7 +277,7 @@ export default function CarEditForm({
               label={t_car("brand")}
               readOnly={!isNewCar}
               value={selectedBrand}
-              onMakeSelect={(newID, newMake) =>{
+              onMakeSelect={(newID, newMake) => {
                 setSelectedMakeID(newID);
                 setSelectedBrand(newMake);
               }}
@@ -302,7 +302,7 @@ export default function CarEditForm({
               model_id={selectedModelID}
               readOnly={!isNewCar}
               value={selectedYear}
-              onYearSelect={(newYear) =>{
+              onYearSelect={(newYear) => {
                 setSelectedYear(newYear);
               }}
             />

@@ -510,9 +510,9 @@ export default function AllTripsTable({ isHost, t }: AllTripsTableProps) {
   const rowSpanClassName = "px-2 h-12 text-center";
 
   return (
-    <div className="min-h-[300px] pb-16 bg-rentality-bg p-4 rounded-2xl mt-5">
-      <div className="lg:hidden text-xl">The resolution is too low!</div>
-      <table className="hidden lg:block w-full overflow-x-auto table-auto border-spacing-2 ">
+    <div className="mt-5 min-h-[300px] rounded-2xl bg-rentality-bg p-4 pb-16">
+      <div className="text-xl lg:hidden">The resolution is too low!</div>
+      <table className="hidden w-full table-auto border-spacing-2 overflow-x-auto lg:block">
         <thead className="mb-2">
           <tr className="border-b-[2px] border-b-gray-500">
             <th className={`${headerSpanClassName} min-w-[5ch]`}>{t_att("tripId")}</th>
@@ -559,8 +559,8 @@ export default function AllTripsTable({ isHost, t }: AllTripsTableProps) {
                 <td className={rowSpanClassName}>
                   {tripItem.paymentsStatus === "Unpaid" ? (
                     <div className="flex flex-col gap-2 py-2">
-                      <RntButton className="w-40 h-8">Pay to Host</RntButton>
-                      <RntButton className="w-40 h-8">Refund to Guest</RntButton>
+                      <RntButton className="h-8 w-40">Pay to Host</RntButton>
+                      <RntButton className="h-8 w-40">Refund to Guest</RntButton>
                     </div>
                   ) : null}
                 </td>

@@ -6,36 +6,49 @@ import * as React from "react";
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 
 type RntVINCheckingInputProps = {
-  id: string,
-  className?: string,
-  label: string,
-  placeholder?: string,
-  readOnly?: boolean,
-  value: string,
-  isVINVerified:boolean,
-  isVINCheckOverriden: boolean,
-  onChange: ChangeEventHandler
-  onVINVerified: (isVerified: boolean) => void,
-  onVINCheckOverriden: (isVINCheckOverriden: boolean) => void,
-}
-export default function RntVINCheckingInput({id, className, label, placeholder, readOnly, value, isVINVerified, onChange, onVINVerified, onVINCheckOverriden, isVINCheckOverriden}: RntVINCheckingInputProps) {
-
-  const {checkVINNumber} = useCarAPI();
+  id: string;
+  className?: string;
+  label: string;
+  placeholder?: string;
+  readOnly?: boolean;
+  value: string;
+  isVINVerified: boolean;
+  isVINCheckOverriden: boolean;
+  onChange: ChangeEventHandler;
+  onVINVerified: (isVerified: boolean) => void;
+  onVINCheckOverriden: (isVINCheckOverriden: boolean) => void;
+};
+export default function RntVINCheckingInput({
+  id,
+  className,
+  label,
+  placeholder,
+  readOnly,
+  value,
+  isVINVerified,
+  onChange,
+  onVINVerified,
+  onVINCheckOverriden,
+  isVINCheckOverriden,
+}: RntVINCheckingInputProps) {
+  const { checkVINNumber } = useCarAPI();
   const [isVINConfirmDialogOpen, setIsVINConfirmDialogOpen] = React.useState(false);
 
   const validationError = useMemo(() => {
-    if (value.length != 17){
+    if (value.length != 17) {
       return "VIN should be 17 digits";
     } else {
       return !isVINVerified && !isVINCheckOverriden ? "VIN is not verified" : "";
     }
-  },[value,isVINVerified,isVINCheckOverriden]);
+  }, [value, isVINVerified, isVINCheckOverriden]);
 
   return (
     <>
       <Dialog
         open={isVINConfirmDialogOpen}
-        onClose={() => {setIsVINConfirmDialogOpen(false)}}
+        onClose={() => {
+          setIsVINConfirmDialogOpen(false);
+        }}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         PaperProps={{
@@ -71,11 +84,15 @@ export default function RntVINCheckingInput({id, className, label, placeholder, 
             justifyContent: "center",
           }}
         >
-          <RntButton onClick={() => setIsVINConfirmDialogOpen(false)} autoFocus>Edit</RntButton>
-          <RntButton onClick={() => {
-            onVINCheckOverriden(true);
-            setIsVINConfirmDialogOpen(false)
-          }}>
+          <RntButton onClick={() => setIsVINConfirmDialogOpen(false)} autoFocus>
+            Edit
+          </RntButton>
+          <RntButton
+            onClick={() => {
+              onVINCheckOverriden(true);
+              setIsVINConfirmDialogOpen(false);
+            }}
+          >
             Confirm
           </RntButton>
         </DialogActions>
@@ -93,24 +110,22 @@ export default function RntVINCheckingInput({id, className, label, placeholder, 
           let isVINVerified: boolean = false;
 
           if (vinNumber.length === 17) {
-            checkVINNumber(vinNumber).then((result) => isVINVerified = result);
+            checkVINNumber(vinNumber).then((result) => (isVINVerified = result));
           } else {
             isVINVerified = false;
           }
           onVINVerified(isVINVerified);
           onVINCheckOverriden(false);
-          onChange != null && onChange(e)
+          onChange != null && onChange(e);
         }}
       />
-      {value.length === 17 && !isVINVerified && (<div className={"flex flex-col" + (validationError ? " self-center" : "  self-end")}>
-        <RntButton
-          type="button"
-          className="w-[100px]"
-          onClick={() => setIsVINConfirmDialogOpen(true)}>
-          Confirm
-        </RntButton>
-      </div>)
-      }
+      {value.length === 17 && !isVINVerified && (
+        <div className={"flex flex-col" + (validationError ? " self-center" : " self-end")}>
+          <RntButton type="button" className="w-[100px]" onClick={() => setIsVINConfirmDialogOpen(true)}>
+            Confirm
+          </RntButton>
+        </div>
+      )}
     </>
   );
 }
