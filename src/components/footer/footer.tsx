@@ -7,6 +7,9 @@ import discord from "../../images/ic-discord-50.png";
 import email from "../../images/ic-email-50.png";
 import telegram from "../../images/ic_telegram.svg";
 import mirror from "../../images/ic_mirror_logo.svg";
+import instagram from "../../images/instagram-social-media.svg";
+import medium from "../../images/medium_logo.svg";
+import warpcast from "../../images/warpcast-logo.png";
 import Link from "next/link";
 import moment from "moment";
 
@@ -79,38 +82,57 @@ export default function Footer() {
               <div>info@rentality.xyz</div>
             </a>
 
-            <div className="mt-1.5 flex w-[232px]">
-              <a
-                href="https://www.linkedin.com/company/rentalitycorp/?viewAsMember=true"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Image src={linkedin} alt="" className="mt-0.5 w-[30px]" />
-              </a>
+            <div className="flex flex-col mt-1.5 w-[256px]">
+              <div className="flex">
+                <a
+                    href="https://www.linkedin.com/company/rentalitycorp/?viewAsMember=true"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                  <Image src={linkedin} alt="" className="mt-0.5 w-[30px]" />
+                </a>
 
-              <a href="https://twitter.com/Rentality_Info" target="_blank" rel="noopener noreferrer">
-                <Image src={twitter} alt="" className="ml-3 mt-1.5 w-[22px]" />
-              </a>
+                <a href="https://twitter.com/Rentality_Info" target="_blank" rel="noopener noreferrer">
+                  <Image src={twitter} alt="" className="ml-3 mt-1.5 w-[22px]" />
+                </a>
 
-              <a href="https://discord.gg/rentality" target="_blank" rel="noopener noreferrer">
-                <Image src={discord} alt="" className="ml-3 mt-0.5 w-[30px]" />
-              </a>
+                <a href="https://discord.gg/rentality" target="_blank" rel="noopener noreferrer">
+                  <Image src={discord} alt="" className="ml-3 mt-0.5 w-[30px]" />
+                </a>
 
-              <a href="mailto:info@rentality.xyz" className="lg:hidden">
-                <Image src={email} alt="" className="ml-3 mt-0.5 w-[30px]" />
-              </a>
+                <a href="mailto:info@rentality.xyz" className="lg:hidden">
+                  <Image src={email} alt="" className="ml-3 mt-0.5 w-[30px]" />
+                </a>
 
-              <a href="https://t.me/rentality_xyz" target="_blank" rel="noopener noreferrer">
-                <Image src={telegram} alt="" className="ml-3 mt-0.5 w-[30px]" />
-              </a>
+                <a href="https://t.me/rentality_xyz" target="_blank" rel="noopener noreferrer">
+                  <Image src={telegram} alt="" className="ml-3 mt-0.5 w-[30px]" />
+                </a>
 
-              <a
-                href="https://mirror.xyz/0x263660F0ab0014e956d42f85DccD918bBa2Df587"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Image src={mirror} alt="" className="ml-1 w-[36px]" />
-              </a>
+                <a
+                    href="https://mirror.xyz/0x263660F0ab0014e956d42f85DccD918bBa2Df587"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                  <Image src={mirror} alt="" className="ml-1 w-[36px]" />
+                </a>
+
+                <a href="https://warpcast.com/rentality" target="_blank" rel="noopener noreferrer">
+                  <Image src={warpcast} alt="" className="ml-1 w-[30px] mt-0.5" />
+                </a>
+
+                <a href="https://www.instagram.com/rentality_/" target="_blank" rel="noopener noreferrer">
+                  <Image src={instagram} alt="" className="ml-3 w-[30px] mt-0.5" />
+                </a>
+              </div>
+              <div className="flex mt-1">
+                <a
+                    href="https://medium.com/@rentality"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                  <Image src={medium} alt="" className="h-[24px] w-full" />
+                </a>
+              </div>
             </div>
             <div className="z-0 mt-8 sm:hidden">
               UIcons by <a href="https://www.flaticon.com/uicons">Flaticon</a>
