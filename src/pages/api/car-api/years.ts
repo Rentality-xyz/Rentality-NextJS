@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const authToken: string = await getAuthToken();
 
   await axios
-    .get(`https://carapi.app/api/years?make_id=${req.query.make_id}&model_id=${req.query.model_id}`, {
+    .get(`https://carapi.app/api/years?make_id=${req.query.make_id}&make_model_id=${req.query.model_id}`, {
       headers: {
         accept: "application/json",
         Authorization: `Bearer ${authToken}`,

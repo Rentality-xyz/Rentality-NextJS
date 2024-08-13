@@ -9,7 +9,7 @@ build:
 
 	docker volume rm abis-volume || true
 	docker run -it --name contracts-build -v abis-volume:/home/app/src/abis contracts-rentality echo abis
-	docker build . --network rentality-build-network -t nextjs-rentality:latest
+	export DOCKER_BUILDKIT=0 && docker build . --network rentality-build-network -t nextjs-rentality:latest
 
 	(docker stop ganache-build || true) && docker rm ganache-build
 	(docker stop contracts-build || true) && docker rm contracts-build
