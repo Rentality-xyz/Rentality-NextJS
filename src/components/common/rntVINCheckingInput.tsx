@@ -107,14 +107,13 @@ export default function RntVINCheckingInput({
         validationError={validationError}
         onChange={(e) => {
           const vinNumber = e.target.value;
-          let isVINVerified: boolean = false;
-
           if (vinNumber.length === 17) {
-            checkVINNumber(vinNumber).then((result) => (isVINVerified = result));
+            checkVINNumber(vinNumber).then((result) => {
+              onVINVerified(result);
+            });
           } else {
-            isVINVerified = false;
+            onVINVerified(false);
           }
-          onVINVerified(isVINVerified);
           onVINCheckOverriden(false);
           onChange != null && onChange(e);
         }}
