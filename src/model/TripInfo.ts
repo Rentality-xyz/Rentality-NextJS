@@ -35,6 +35,37 @@ export const getTripStatusTextFromStatus = (status: TripStatus) => {
   }
 };
 
+export const getExpandedTripStatusTextFromTripInfo = (tripInfo: TripInfo) => {
+  switch (tripInfo.status) {
+    case TripStatus.Pending:
+      return "Pending";
+    case TripStatus.Confirmed:
+      return "Confirmed";
+    case TripStatus.CheckedInByHost:
+      return "Started";
+    case TripStatus.Started:
+      return "On the trip";
+    case TripStatus.CheckedOutByGuest:
+      return "Finished by guest";
+    case TripStatus.CompletedWithoutGuestComfirmation:
+      return "Completed without guest confirmation";
+    case TripStatus.Finished:
+      return "Finished";
+    case TripStatus.Closed:
+      return "Completed";
+      return "Completed by guest";
+      return "Completed by administrator";
+    case TripStatus.Rejected:
+      return "Rejected";
+      return "Guest Cancellation before Host confirmed";
+      return "Guest Cancellation after host confirmed";
+      return "Host Booked Cancellation";
+      return "Host trip Cancellation";
+    default:
+      return "Rejected";
+  }
+};
+
 export const getTripStatusBgColorClassFromStatus = (status: TripStatus) => {
   switch (status) {
     case TripStatus.Pending:
