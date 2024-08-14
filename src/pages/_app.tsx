@@ -21,6 +21,7 @@ import { WagmiProvider } from "wagmi";
 import { wagmiConfig } from "@/wagmi.config";
 import { AuthProvider } from "@/contexts/auth/authContext";
 import { env } from "@/utils/env";
+import Hotjar from "@hotjar/browser";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -29,6 +30,10 @@ export default function App({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     analyticsPromise;
+  }, []);
+
+  useEffect(() => {
+    Hotjar.init(env.NEXT_PUBLIC_HOTJAR_SITE_ID, env.NEXT_PUBLIC_HOTJAR_VERSION);
   }, []);
 
   return (

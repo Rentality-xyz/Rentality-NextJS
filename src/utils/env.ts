@@ -48,6 +48,9 @@ export const env = createEnv({
 
     NEXT_PUBLIC_COINBASE_API_KEY: z.string().min(1),
     NEXT_PUBLIC_COINBASE_SCHEMA_ID: z.string().startsWith("0x"),
+
+    NEXT_PUBLIC_HOTJAR_SITE_ID: z.coerce.number(),
+    NEXT_PUBLIC_HOTJAR_VERSION: z.coerce.number(),
   },
 
   // If you're using Next.js < 13.4.4, you'll need to specify the runtimeEnv manually
@@ -73,6 +76,9 @@ export const env = createEnv({
 
     NEXT_PUBLIC_COINBASE_API_KEY: process.env.NEXT_PUBLIC_COINBASE_API_KEY,
     NEXT_PUBLIC_COINBASE_SCHEMA_ID: process.env.NEXT_PUBLIC_COINBASE_SCHEMA_ID,
+
+    NEXT_PUBLIC_HOTJAR_SITE_ID: process.env.NEXT_PUBLIC_HOTJAR_SITE_ID,
+    NEXT_PUBLIC_HOTJAR_VERSION: process.env.NEXT_PUBLIC_HOTJAR_VERSION,
   },
   // For Next.js >= 13.4.4, you only need to destructure client variables:
   //    experimental__runtimeEnv: {
