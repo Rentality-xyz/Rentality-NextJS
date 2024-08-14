@@ -11,6 +11,7 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import ModifyTripForm from "./modifyTripForm";
 import { useChat } from "@/contexts/chat/firebase/chatContext";
 import GuestConfirmFinishForm from "./guestConfirmFinishForm";
+import { useRouter } from "next/navigation";
 
 function isInTheFuture(date: Date) {
   return date > new Date();
@@ -128,6 +129,8 @@ function CurrentStatusInfo({
   const [messageToGuest, setMessageToGuest] = useState("");
   const [isFinishingByHost, setIsFinishingByHost] = useState(false);
   const { sendMessage, getMessages } = useChat();
+  const [isDisabled, setDisabled] = useState(false);
+  const router = useRouter();
 
   const [actionHeader, actionText, actionDescription] = getActionTextsForStatus(
     tripInfo,
@@ -165,9 +168,12 @@ function CurrentStatusInfo({
 
   const handleGuestFinishTrip = async () => {
     hideDialogs();
+    setDisabled(true);
     if (tripInfo.allowedActions.length > 0) {
       await tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), []);
     }
+    setDisabled(false);
+    router.refresh();
   };
 
   const handleCancel = () => {
@@ -232,6 +238,7 @@ function CurrentStatusInfo({
               onClick={() => {
                 showGuestConfirmFinishDialog();
               }}
+              disabled={isDisabled}
             >
               I confirm finish trip
             </RntButton>
