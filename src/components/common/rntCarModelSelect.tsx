@@ -50,9 +50,9 @@ export default function RntCarModelSelect({
       }}
     >
       <option value="">Please select</option>
-      {modelsList.map((carModelsListElement) => (
+      {modelsList.map((carModelsListElement, index) => (
         <option
-          key={"car-model-" + carModelsListElement.id}
+          key={"car-model-" + index}
           data-id={carModelsListElement.id}
           value={carModelsListElement.name}
         >

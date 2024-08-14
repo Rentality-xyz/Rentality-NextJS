@@ -44,9 +44,9 @@ export default function RntCarMakeSelect({
       }}
     >
       <option value="">Please select</option>
-      {makesList.map((carMakesListElement) => (
+      {makesList.map((carMakesListElement, index) => (
         <option
-          key={"car-make-" + carMakesListElement.id}
+          key={"car-make-" + index}
           data-id={carMakesListElement.id}
           value={carMakesListElement.name}
         >
