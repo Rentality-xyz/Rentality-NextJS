@@ -517,7 +517,9 @@
     "accruableSalesTax": "Accruable Sales Tax, $",
     "accruableGovernmentTax": "Accruable Government Tax, $",
     "pay_to_host": "Pay to Host",
-    "refund_to_guest": "Refund to Guest"
+    "refund_to_guest": "Refund to Guest",
+    "start_date": "Start date",
+    "end_date": "End date"
   },
   "common": {
     "info": {
@@ -541,6 +543,7 @@
     "edit": "Edit",
     "connect": "Connect",
     "logout": "Logout",
-    "plate_number": "Plate number"
+    "plate_number": "Plate number",
+    "apply": "Apply"
   }
 }

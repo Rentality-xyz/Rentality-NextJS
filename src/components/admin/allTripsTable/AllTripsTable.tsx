@@ -1,36 +1,57 @@
 import Link from "next/link";
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import RntButton from "@/components/common/rntButton";
-import { getTripStatusTextFromStatus } from "@/model/TripInfo";
+import { getTripStatusTextFromAdminStatus } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2DigitsOrNa } from "@/utils/numericFormatters";
-import { TripStatus } from "@/model/blockchain/schemas";
 import { usePathname } from "next/navigation";
 import { cn } from "@/utils";
-import { AdminTripDetails, PaymentStatus } from "@/hooks/admin/useAdminAllTrips";
+import { AdminTripDetails } from "@/hooks/admin/useAdminAllTrips";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { getAdminTripStatusBgColorFromStatus, getAdminTextColorForPaymentStatus } from "@/utils/tailwind";
+import { Result } from "@/model/utils/result";
 
 type AllTripsTableProps = {
   data: AdminTripDetails[];
+  payToHost: (tripId: number) => Promise<Result<boolean, string>>;
+  refundToGuest: (tripId: number) => Promise<Result<boolean, string>>;
 };
 
-export default function AllTripsTable({ data }: AllTripsTableProps) {
+export default function AllTripsTable({ data, payToHost, refundToGuest }: AllTripsTableProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const pathname = usePathname();
   const { t } = useTranslation();
+  const { showError } = useRntDialogs();
 
   const t_att: TFunction = (name, options) => {
     return t("all_trips_table." + name, options);
   };
 
-  const handlePayToHost = async () => {};
-  const handleRefundToGuest = async () => {};
+  const handlePayToHost = async (tripId: number) => {
+    setIsSubmitting(true);
+    const result = await payToHost(tripId);
+    if (!result.ok) {
+      showError(result.error);
+    }
+    setIsSubmitting(false);
+  };
+
+  const handleRefundToGuest = async (tripId: number) => {
+    setIsSubmitting(true);
+    const result = await refundToGuest(tripId);
+    if (!result.ok) {
+      showError(result.error);
+    }
+    setIsSubmitting(false);
+  };
 
   const headerSpanClassName = "text-center font-semibold px-2 font-light text-sm";
   const rowSpanClassName = "px-2 h-12 text-center";
 
   return (
-    <div className="mt-5 min-h-[300px] rounded-2xl bg-rentality-bg p-4 pb-16">
+    <div className="mt-2 min-h-[300px] rounded-2xl bg-rentality-bg p-4 pb-16">
       <div className="text-xl lg:hidden">The resolution is too low!</div>
       <table className="hidden w-full table-auto border-spacing-2 overflow-x-auto lg:block">
         <thead className="mb-2">
@@ -68,7 +89,7 @@ export default function AllTripsTable({ data }: AllTripsTableProps) {
         </thead>
         <tbody className="text-sm">
           {data.map((tripItem) => {
-            const detailsLink = `/guest/trips/tripInfo/${tripItem.tripId}?back=${pathname}`;
+            const detailsLink = `/admin/trips/tripInfo/${tripItem.tripId}?back=${pathname}`;
             const tripStatusBgColor = getAdminTripStatusBgColorFromStatus(tripItem.tripStatus);
             const paymentStatusTextColor = getAdminTextColorForPaymentStatus(tripItem.paymentsStatus);
 
@@ -78,15 +99,25 @@ export default function AllTripsTable({ data }: AllTripsTableProps) {
                 <td className={rowSpanClassName}>{tripItem.carDescription}</td>
                 <td className={rowSpanClassName}>{tripItem.plateNumber}</td>
                 <td className={cn(rowSpanClassName, tripStatusBgColor, "font-semibold")}>
-                  {getTripStatusTextFromStatus(tripItem.tripStatus)}
+                  {getTripStatusTextFromAdminStatus(tripItem.tripStatus)}
                 </td>
                 <td className={rowSpanClassName}>
                   {tripItem.paymentsStatus === "Unpaid" && (
                     <div className="flex flex-col gap-2 py-2">
-                      <RntButton className="h-8 w-40 bg-[#548235]" type="button" onClick={handlePayToHost}>
+                      <RntButton
+                        className="h-8 w-40 bg-[#548235]"
+                        type="button"
+                        disabled={isSubmitting}
+                        onClick={() => handlePayToHost(tripItem.tripId)}
+                      >
                         {t_att("pay_to_host")}
                       </RntButton>
-                      <RntButton className="h-8 w-40 bg-[#C55A11]" type="button" onClick={handleRefundToGuest}>
+                      <RntButton
+                        className="h-8 w-40 bg-[#C55A11]"
+                        type="button"
+                        disabled={isSubmitting}
+                        onClick={() => handleRefundToGuest(tripItem.tripId)}
+                      >
                         {t_att("refund_to_guest")}
                       </RntButton>
                     </div>

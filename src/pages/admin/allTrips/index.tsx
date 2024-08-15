@@ -4,26 +4,26 @@ import Loading from "@/components/common/Loading";
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useAdminAllTrips, { AdminAllTripsFilters } from "@/hooks/admin/useAdminAllTrips";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function AllTrips() {
-  const { isLoading, data, fetchData } = useAdminAllTrips();
+  const { isLoading, data, fetchData, payToHost, refundToGuest } = useAdminAllTrips();
   const [filters, setFilters] = useState<AdminAllTripsFilters>({});
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(1000);
   const { t } = useTranslation();
 
-  const handleApplyFilters = async (filters: AdminAllTripsFilters) => {
+  async function handleApplyFilters(filters: AdminAllTripsFilters) {
     setFilters(filters);
     setCurrentPage(1);
-    fetchData(filters, 1, itemsPerPage);
-  };
+    await fetchData(filters, 1, itemsPerPage);
+  }
 
-  const handleMoveToPage = async (page: number) => {
+  async function handleMoveToPage(page: number) {
     setCurrentPage(page);
-    fetchData(filters, page, itemsPerPage);
-  };
+    await fetchData(filters, page, itemsPerPage);
+  }
 
   return (
     <Layout>
@@ -31,7 +31,7 @@ export default function AllTrips() {
         <PageTitle title={t("all_trips_table.page_title")} />
         <AllTripsFilters onApply={handleApplyFilters} />
         {isLoading && <Loading />}
-        {!isLoading && <AllTripsTable data={data.data} />}
+        {!isLoading && <AllTripsTable data={data.data} payToHost={payToHost} refundToGuest={refundToGuest} />}
       </div>
     </Layout>
   );

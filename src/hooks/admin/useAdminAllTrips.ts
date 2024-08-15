@@ -1,8 +1,12 @@
 import { TripStatus } from "@/model/blockchain/schemas";
+import { formatLocationInfoUpToCity, LocationInfo } from "@/model/LocationInfo";
+import { Ok, Result } from "@/model/utils/result";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import { bigIntReplacer } from "@/utils/json";
 import { useEffect, useState } from "react";
 
-export type PaymentStatus = "Prepayment" | "Paid to host" | "Refund to guest" | "Unpaid";
+export const PaymentStatuses = ["Prepayment", "Paid to host", "Refund to guest", "Unpaid"] as const;
+export type PaymentStatus = (typeof PaymentStatuses)[number];
 
 export type AdminTripDetails = {
   tripId: number;
@@ -38,7 +42,7 @@ export type AdminTripDetails = {
 export type AdminAllTripsFilters = {
   status?: TripStatus;
   paymentStatus?: PaymentStatus;
-  location?: string;
+  location?: LocationInfo;
   startDateTimeUtc?: Date;
   endDateTimeUtc?: Date;
 };
@@ -529,11 +533,38 @@ const useAdminAllTrips = () => {
   const [data, setData] = useState<AdminTripDetails[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
 
-  async function fetchData(filters?: AdminAllTripsFilters, page: number = 1, itemsPerPage: number = 10) {}
+  async function fetchData(filters?: AdminAllTripsFilters, page: number = 1, itemsPerPage: number = 10) {
+    setIsLoading(true);
+    await new Promise((res) => setTimeout(res, 1000));
+    console.log(`filters: ${JSON.stringify(filters, bigIntReplacer)}`);
+
+    const filteredData = TEST_DATA.filter(
+      (i) =>
+        !filters ||
+        ((filters.status === undefined || i.tripStatus === filters.status) &&
+          (!filters.paymentStatus || i.paymentsStatus === filters.paymentStatus) &&
+          (!filters.location || i.hostLocation === formatLocationInfoUpToCity(filters.location)) &&
+          (!filters.startDateTimeUtc || i.tripStartDate >= filters.startDateTimeUtc) &&
+          (!filters.endDateTimeUtc || i.tripEndDate <= filters.endDateTimeUtc))
+    );
+    setData(filteredData);
+    setTotalCount(filteredData.length);
+    setIsLoading(false);
+  }
+
+  async function payToHost(tripId: number): Promise<Result<boolean, string>> {
+    await new Promise((res) => setTimeout(res, 1000));
+    return Ok(true);
+  }
+
+  async function refundToGuest(tripId: number): Promise<Result<boolean, string>> {
+    await new Promise((res) => setTimeout(res, 1000));
+    return Ok(true);
+  }
 
   useEffect(() => {
     const init = async () => {
-      await new Promise((res) => setTimeout(res, 2000));
+      await new Promise((res) => setTimeout(res, 1000));
       setData(TEST_DATA);
       setTotalCount(TEST_DATA.length);
       setIsLoading(false);
@@ -542,7 +573,7 @@ const useAdminAllTrips = () => {
     init();
   }, []);
 
-  return { isLoading, data: { data: data, totalCount: totalCount }, fetchData } as const;
+  return { isLoading, data: { data: data, totalCount: totalCount }, fetchData, payToHost, refundToGuest } as const;
 };
 
 export default useAdminAllTrips;
