@@ -113,11 +113,7 @@ export default function CarEditForm({
   const locationInfo = watch("locationInfo");
 
   const [selectedMakeID, setSelectedMakeID] = useState<string>("");
-  const [selectedBrand, setSelectedBrand] = useState<string>("");
   const [selectedModelID, setSelectedModelID] = useState<string>("");
-  const [selectedModel, setSelectedModel] = useState<string>("");
-  const [selectedYear, setSelectedYear] = useState("");
-  const [vinNumber, setVinNumber] = useState("");
 
   const [isVINVerified, setIsVINVerified] = useState<boolean>(false);
   const [isVINCheckOverriden, setIsVINCheckOverriden] = useState<boolean>(false);
@@ -198,6 +194,7 @@ export default function CarEditForm({
       trunkSize: "",
       bodyType: "",
     };
+
     const isValidForm = verifyCar(carInfoFormParams);
     const isImageUploaded = !isNewCar || imageFile !== null;
 
@@ -255,53 +252,78 @@ export default function CarEditForm({
             <strong>{t_car("car")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
-            <RntVINCheckingInput
-              id="vinNumber"
-              className="lg:w-60"
-              label={t_car("vin_num")}
-              value={vinNumber}
-              isVINCheckOverriden={isVINCheckOverriden}
-              isVINVerified={isVINVerified}
-              placeholder="e.g. 4Y1SL65848Z411439"
-              readOnly={!isNewCar}
-              onChange={(e) => setVinNumber(e.target.value)}
-              onVINVerified={(isVINVerified: boolean) => setIsVINVerified(isVINVerified)}
-              onVINCheckOverriden={(isVINCheckOverriden) => setIsVINCheckOverriden(isVINCheckOverriden)}
+            <Controller
+              name="vinNumber"
+              control={control}
+              defaultValue=""
+              render = {({ field: { onChange, value } }) => (
+                <RntVINCheckingInput
+                  id="vinNumber"
+                  className="lg:w-60"
+                  label={t_car("vin_num")}
+                  value={value}
+                  isVINCheckOverriden={isVINCheckOverriden}
+                  isVINVerified={isVINVerified}
+                  placeholder="e.g. 4Y1SL65848Z411439"
+                  readOnly={!isNewCar}
+                  onChange={(e) => onChange(e.target.value)}
+                  onVINVerified={(isVINVerified: boolean) => setIsVINVerified(isVINVerified)}
+                  onVINCheckOverriden={(isVINCheckOverriden) => setIsVINCheckOverriden(isVINCheckOverriden)}
+                />
+            )} />
+            <Controller
+              name="brand"
+              control={control}
+              defaultValue=""
+              render = {({ field: { onChange, value } }) => (
+                <RntCarMakeSelect
+                  id="brand"
+                  className="lg:w-60"
+                  label={t_car("brand")}
+                  readOnly={!isNewCar}
+                  value={value}
+                  onMakeSelect={(newID, newMake) => {
+                    onChange(newMake);
+                    setSelectedMakeID(newID);
+                  }}
+                />
+              )}
             />
-            <RntCarMakeSelect
-              id="filter-brand"
-              className="lg:w-60"
-              label={t_car("brand")}
-              readOnly={!isNewCar}
-              value={selectedBrand}
-              onMakeSelect={(newID, newMake) => {
-                setSelectedMakeID(newID);
-                setSelectedBrand(newMake);
-              }}
+            <Controller
+              name="model"
+              control={control}
+              defaultValue=""
+              render={({ field: { onChange, value } }) => (
+                <RntCarModelSelect
+                  id="model"
+                  className="lg:w-60"
+                  label={t_car("model")}
+                  make_id={selectedMakeID}
+                  readOnly={!isNewCar}
+                  value={value}
+                  onModelSelect={(newID: string, newModel) => {
+                    onChange(newModel);
+                    setSelectedModelID(newID);
+                  }}
+                />
+              )}
             />
-            <RntCarModelSelect
-              id="model"
-              className="lg:w-60"
-              label={t_car("model")}
-              make_id={selectedMakeID}
-              readOnly={!isNewCar}
-              value={selectedModel}
-              onModelSelect={(newID: string, newModel) => {
-                setSelectedModelID(newID);
-                setSelectedModel(newModel);
-              }}
-            />
-            <RntCarYearSelect
-              id="releaseYear"
-              className="lg:w-60"
-              label={t_car("release")}
-              make_id={selectedMakeID}
-              model_id={selectedModelID}
-              readOnly={!isNewCar}
-              value={selectedYear}
-              onYearSelect={(newYear) => {
-                setSelectedYear(newYear);
-              }}
+            <Controller
+              name="releaseYear"
+              control={control}
+              defaultValue={0}
+              render={({ field: { onChange, value } }) => (
+                <RntCarYearSelect
+                  id="releaseYear"
+                  className="lg:w-60"
+                  label={t_car("release")}
+                  make_id={selectedMakeID}
+                  model_id={selectedModelID}
+                  readOnly={!isNewCar}
+                  value={value}
+                  onYearSelect={(newYear) => onChange(newYear)}
+                />
+              )}
             />
           </div>
         </div>
