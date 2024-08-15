@@ -3,7 +3,7 @@ import { formatLocationInfoUpToCity, LocationInfo } from "@/model/LocationInfo";
 import { Ok, Result } from "@/model/utils/result";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { bigIntReplacer } from "@/utils/json";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export const PaymentStatuses = ["Prepayment", "Paid to host", "Refund to guest", "Unpaid"] as const;
 export type PaymentStatus = (typeof PaymentStatuses)[number];
@@ -528,52 +528,61 @@ const TEST_DATA: AdminTripDetails[] = [
   },
 ];
 
-const useAdminAllTrips = () => {
+const useAdminAllTrips = (defaultFiters: AdminAllTripsFilters = {}, itemsPerPage: number = 10) => {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<AdminTripDetails[]>([]);
+  const [currentPage, setCurrentPage] = useState(0);
   const [totalCount, setTotalCount] = useState<number>(0);
 
-  async function fetchData(filters?: AdminAllTripsFilters, page: number = 1, itemsPerPage: number = 10) {
-    setIsLoading(true);
-    await new Promise((res) => setTimeout(res, 1000));
-    console.log(`filters: ${JSON.stringify(filters, bigIntReplacer)}`);
+  const fetchData = useCallback(
+    async (filters?: AdminAllTripsFilters, page: number = 0) => {
+      setIsLoading(true);
+      setCurrentPage(page);
+      await new Promise((res) => setTimeout(res, 1000));
+      console.log(`filters: ${JSON.stringify(filters, bigIntReplacer)}`);
 
-    const filteredData = TEST_DATA.filter(
-      (i) =>
-        !filters ||
-        ((filters.status === undefined || i.tripStatus === filters.status) &&
-          (!filters.paymentStatus || i.paymentsStatus === filters.paymentStatus) &&
-          (!filters.location || i.hostLocation === formatLocationInfoUpToCity(filters.location)) &&
-          (!filters.startDateTimeUtc || i.tripStartDate >= filters.startDateTimeUtc) &&
-          (!filters.endDateTimeUtc || i.tripEndDate <= filters.endDateTimeUtc))
-    );
-    setData(filteredData);
-    setTotalCount(filteredData.length);
-    setIsLoading(false);
-  }
+      const filteredData = TEST_DATA.filter(
+        (i) =>
+          !filters ||
+          ((filters.status === undefined || i.tripStatus === filters.status) &&
+            (!filters.paymentStatus || i.paymentsStatus === filters.paymentStatus) &&
+            (!filters.location || i.hostLocation === formatLocationInfoUpToCity(filters.location)) &&
+            (!filters.startDateTimeUtc || i.tripStartDate >= filters.startDateTimeUtc) &&
+            (!filters.endDateTimeUtc || i.tripEndDate <= filters.endDateTimeUtc))
+      );
+      const currentItems = filteredData.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
+      setData(currentItems);
+      setTotalCount(filteredData.length);
+      setIsLoading(false);
+    },
+    [itemsPerPage]
+  );
 
-  async function payToHost(tripId: number): Promise<Result<boolean, string>> {
+  const payToHost = useCallback(async (tripId: number): Promise<Result<boolean, string>> => {
     await new Promise((res) => setTimeout(res, 1000));
     return Ok(true);
-  }
+  }, []);
 
-  async function refundToGuest(tripId: number): Promise<Result<boolean, string>> {
+  const refundToGuest = useCallback(async (tripId: number): Promise<Result<boolean, string>> => {
     await new Promise((res) => setTimeout(res, 1000));
     return Ok(true);
-  }
+  }, []);
 
   useEffect(() => {
     const init = async () => {
-      await new Promise((res) => setTimeout(res, 1000));
-      setData(TEST_DATA);
-      setTotalCount(TEST_DATA.length);
-      setIsLoading(false);
+      await fetchData(defaultFiters);
     };
 
     init();
-  }, []);
+  }, [fetchData, defaultFiters]);
 
-  return { isLoading, data: { data: data, totalCount: totalCount }, fetchData, payToHost, refundToGuest } as const;
+  return {
+    isLoading,
+    data: { data: data, currentPage: currentPage, totalCount: totalCount },
+    fetchData,
+    payToHost,
+    refundToGuest,
+  } as const;
 };
 
 export default useAdminAllTrips;

@@ -12,14 +12,16 @@ import { useState } from "react";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { getAdminTripStatusBgColorFromStatus, getAdminTextColorForPaymentStatus } from "@/utils/tailwind";
 import { Result } from "@/model/utils/result";
+import Loading from "@/components/common/Loading";
 
 type AllTripsTableProps = {
+  isLoading: boolean;
   data: AdminTripDetails[];
   payToHost: (tripId: number) => Promise<Result<boolean, string>>;
   refundToGuest: (tripId: number) => Promise<Result<boolean, string>>;
 };
 
-export default function AllTripsTable({ data, payToHost, refundToGuest }: AllTripsTableProps) {
+export default function AllTripsTable({ isLoading, data, payToHost, refundToGuest }: AllTripsTableProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const pathname = usePathname();
   const { t } = useTranslation();
@@ -29,29 +31,37 @@ export default function AllTripsTable({ data, payToHost, refundToGuest }: AllTri
     return t("all_trips_table." + name, options);
   };
 
-  const handlePayToHost = async (tripId: number) => {
+  async function handlePayToHost(tripId: number) {
     setIsSubmitting(true);
     const result = await payToHost(tripId);
     if (!result.ok) {
       showError(result.error);
     }
     setIsSubmitting(false);
-  };
+  }
 
-  const handleRefundToGuest = async (tripId: number) => {
+  async function handleRefundToGuest(tripId: number) {
     setIsSubmitting(true);
     const result = await refundToGuest(tripId);
     if (!result.ok) {
       showError(result.error);
     }
     setIsSubmitting(false);
-  };
+  }
 
   const headerSpanClassName = "text-center font-semibold px-2 font-light text-sm";
   const rowSpanClassName = "px-2 h-12 text-center";
 
+  if (isLoading) {
+    return (
+      <div className="rounded-b-2xl bg-rentality-bg p-4 pb-8">
+        <Loading />
+      </div>
+    );
+  }
+
   return (
-    <div className="mt-2 min-h-[300px] rounded-2xl bg-rentality-bg p-4 pb-16">
+    <>
       <div className="text-xl lg:hidden">The resolution is too low!</div>
       <table className="hidden w-full table-auto border-spacing-2 overflow-x-auto lg:block">
         <thead className="mb-2">
@@ -168,6 +178,6 @@ export default function AllTripsTable({ data, payToHost, refundToGuest }: AllTri
           })}
         </tbody>
       </table>
-    </div>
+    </>
   );
 }

@@ -18,11 +18,12 @@ const allTripStatuses = Object.values(TripStatus).map((value) => {
 });
 
 interface AllTripsFiltersProps {
+  defaultFilters?: AdminAllTripsFilters;
   onApply: (filters: AdminAllTripsFilters) => Promise<void>;
 }
 
-function AllTripsFilters({ onApply }: AllTripsFiltersProps) {
-  const [filters, setFilters] = useState<AdminAllTripsFilters>({});
+function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
+  const [filters, setFilters] = useState<AdminAllTripsFilters>(defaultFilters ?? {});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { t } = useTranslation();
 
@@ -35,7 +36,7 @@ function AllTripsFilters({ onApply }: AllTripsFiltersProps) {
 
   return (
     <GoogleMapsProvider libraries={["places"]} language="en">
-      <form className="mt-5 flex flex-wrap items-end gap-4 rounded-2xl bg-rentality-bg p-4" onSubmit={handleApplyClick}>
+      <form className="flex flex-wrap items-end gap-4" onSubmit={handleApplyClick}>
         <RntSelect
           className="w-60"
           id="status"
@@ -45,7 +46,7 @@ function AllTripsFilters({ onApply }: AllTripsFiltersProps) {
             setFilters((prev) => ({ ...prev, status: e.target.value !== "none" ? BigInt(e.target.value) : undefined }));
           }}
         >
-          <option value={"none"}></option>
+          <option value={"none"}>{t("all_trips_table.allStatuses")}</option>
           {allTripStatuses.map((i) => (
             <option key={i.id.toString()} value={i.id.toString()}>
               {i.text}
@@ -64,7 +65,7 @@ function AllTripsFilters({ onApply }: AllTripsFiltersProps) {
             }));
           }}
         >
-          <option value={"none"}></option>
+          <option value={"none"}>{t("all_trips_table.allStatuses")}</option>
           {PaymentStatuses.map((i) => (
             <option key={i} value={i}>
               {i}
@@ -122,7 +123,7 @@ function AllTripsFilters({ onApply }: AllTripsFiltersProps) {
           }}
         />
         <RntButton className="w-48" type="submit" disabled={isSubmitting}>
-          {t("common.apply")}
+          {t("common.search")}
         </RntButton>
       </form>
     </GoogleMapsProvider>

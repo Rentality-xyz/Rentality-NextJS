@@ -1,37 +1,44 @@
 import AllTripsFilters from "@/components/admin/allTripsTable/AllTripsFilters";
 import AllTripsTable from "@/components/admin/allTripsTable/AllTripsTable";
-import Loading from "@/components/common/Loading";
+import PaginationWrapper from "@/components/common/PaginationWrapper";
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useAdminAllTrips, { AdminAllTripsFilters } from "@/hooks/admin/useAdminAllTrips";
+import moment from "moment";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+const defaultFilters: AdminAllTripsFilters = {
+  startDateTimeUtc: moment({ hour: 0 }).subtract(1, "month").toDate(),
+  endDateTimeUtc: moment({ hour: 0 }).toDate(),
+};
+
 export default function AllTrips() {
-  const { isLoading, data, fetchData, payToHost, refundToGuest } = useAdminAllTrips();
-  const [filters, setFilters] = useState<AdminAllTripsFilters>({});
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(1000);
+  const itemsPerPage = 10;
+  const [filters, setFilters] = useState<AdminAllTripsFilters>(defaultFilters);
+  const { isLoading, data, fetchData, payToHost, refundToGuest } = useAdminAllTrips(defaultFilters, itemsPerPage);
   const { t } = useTranslation();
+  const pageCount = !isLoading ? Math.ceil(data.totalCount / itemsPerPage) : 0;
 
   async function handleApplyFilters(filters: AdminAllTripsFilters) {
     setFilters(filters);
-    setCurrentPage(1);
-    await fetchData(filters, 1, itemsPerPage);
+    await fetchData(filters, 0);
   }
 
-  async function handleMoveToPage(page: number) {
-    setCurrentPage(page);
-    await fetchData(filters, page, itemsPerPage);
+  async function fetchDataForPage(page: number) {
+    await fetchData(filters, page);
   }
 
   return (
     <Layout>
       <div className="flex flex-col">
         <PageTitle title={t("all_trips_table.page_title")} />
-        <AllTripsFilters onApply={handleApplyFilters} />
-        {isLoading && <Loading />}
-        {!isLoading && <AllTripsTable data={data.data} payToHost={payToHost} refundToGuest={refundToGuest} />}
+        <div className="mt-5 flex flex-col gap-4 rounded-2xl bg-rentality-bg p-4 pb-8">
+          <AllTripsFilters defaultFilters={defaultFilters} onApply={handleApplyFilters} />
+          <PaginationWrapper currentPage={data.currentPage} totalPages={pageCount} setCurrentPage={fetchDataForPage}>
+            <AllTripsTable isLoading={isLoading} data={data.data} payToHost={payToHost} refundToGuest={refundToGuest} />
+          </PaginationWrapper>
+        </div>
       </div>
     </Layout>
   );

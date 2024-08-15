@@ -519,7 +519,8 @@
     "pay_to_host": "Pay to Host",
     "refund_to_guest": "Refund to Guest",
     "start_date": "Start date",
-    "end_date": "End date"
+    "end_date": "End date",
+    "allStatuses": "All statuses"
   },
   "common": {
     "info": {
