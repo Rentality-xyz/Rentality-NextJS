@@ -14,14 +14,12 @@ import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { TFunction } from "@/utils/i18n";
-import DotStatus from "./dotStatus";
 import AgreementInfo from "./agreement_info";
 import KycVerification from "./kyc_verification";
 import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProfileInfoFormValues, profileInfoFormSchema } from "./profileInfoFormSchema";
 import moment from "moment";
-import { useChatKeys } from "@/contexts/chat/firebase/chatContext";
 
 function UserProfileInfo({
   savedProfileSettings,

@@ -35,8 +35,8 @@ export const getTripStatusTextFromStatus = (status: TripStatus) => {
   }
 };
 
-export const getExpandedTripStatusTextFromTripInfo = (tripInfo: TripInfo) => {
-  switch (tripInfo.status) {
+export const getTripStatusTextFromAdminStatus = (status: TripStatus) => {
+  switch (status) {
     case TripStatus.Pending:
       return "Pending";
     case TripStatus.Confirmed:
@@ -53,40 +53,21 @@ export const getExpandedTripStatusTextFromTripInfo = (tripInfo: TripInfo) => {
       return "Finished";
     case TripStatus.Closed:
       return "Completed";
+    case TripStatus.ClosedByGuestAfterCompleteWithoutGuestComfirmation:
       return "Completed by guest";
+    case TripStatus.ClosedByAdminAfterCompleteWithoutGuestComfirmation:
       return "Completed by administrator";
-    case TripStatus.Rejected:
-      return "Rejected";
+    case TripStatus.GuestRejected:
       return "Guest Cancellation before Host confirmed";
+    case TripStatus.GuestCanceled:
       return "Guest Cancellation after host confirmed";
+    case TripStatus.HostRejected:
       return "Host Booked Cancellation";
+    case TripStatus.HostCanceled:
       return "Host trip Cancellation";
-    default:
-      return "Rejected";
-  }
-};
-
-export const getTripStatusBgColorClassFromStatus = (status: TripStatus) => {
-  switch (status) {
-    case TripStatus.Pending:
-      return "bg-yellow-600";
-    case TripStatus.Confirmed:
-      return "bg-lime-500";
-    case TripStatus.CheckedInByHost:
-      return "bg-blue-600";
-    case TripStatus.Started:
-      return "bg-blue-800";
-    case TripStatus.CheckedOutByGuest:
-      return "bg-purple-600";
-    case TripStatus.CompletedWithoutGuestComfirmation:
-      return "bg-orange-400";
-    case TripStatus.Finished:
-      return "bg-purple-800";
-    case TripStatus.Closed:
-      return "bg-fuchsia-700";
     case TripStatus.Rejected:
     default:
-      return "bg-red-500";
+      return "Rejected";
   }
 };
 

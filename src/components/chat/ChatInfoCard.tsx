@@ -2,7 +2,7 @@
 
 import { MouseEventHandler } from "react";
 import { ChatInfo } from "@/model/ChatInfo";
-import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
+import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { Avatar } from "@mui/material";
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
@@ -10,6 +10,7 @@ import icInfo from "@/images/ic-info-teal.svg";
 import Image from "next/image";
 import { TFunction } from "@/utils/i18n";
 import { usePathname } from "next/navigation";
+import { getTripStatusBgColorFromStatus } from "@/utils/tailwind";
 
 export default function ChatInfoCard({
   chatInfo,
@@ -30,7 +31,7 @@ export default function ChatInfoCard({
   const otherPhotoUrl = isHost ? chatInfo.guestPhotoUrl : chatInfo.hostPhotoUrl;
   const otherName = isHost ? chatInfo.guestName : chatInfo.hostName;
 
-  let statusBgColor = getTripStatusBgColorClassFromStatus(chatInfo.tripStatus);
+  let statusBgColor = getTripStatusBgColorFromStatus(chatInfo.tripStatus);
   const statusClassName = twMerge("px-2 text-rnt-temp-status-text", statusBgColor);
 
   const pathname = usePathname();

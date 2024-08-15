@@ -9,41 +9,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/utils";
 import { AdminTripDetails, PaymentStatus } from "@/hooks/admin/useAdminAllTrips";
 import { useTranslation } from "react-i18next";
-
-function getBgColorForTripStatus(tripStatus: TripStatus) {
-  switch (tripStatus) {
-    case TripStatus.Closed:
-      return "bg-[#9148C8]";
-    case TripStatus.CompletedWithoutGuestComfirmation:
-      return "bg-[#C65911]";
-    case TripStatus.Closed:
-    case TripStatus.ClosedByAdminAfterCompleteWithoutGuestComfirmation:
-    case TripStatus.ClosedByGuestAfterCompleteWithoutGuestComfirmation:
-      return "bg-[#0070C0]";
-    case TripStatus.Rejected:
-    case TripStatus.HostRejected:
-    case TripStatus.GuestRejected:
-    case TripStatus.HostCanceled:
-    case TripStatus.GuestCanceled:
-      return "bg-[#FF0000]";
-    default:
-      return "";
-  }
-}
-
-function getTextColorForPaymentStatus(paymentStatus: PaymentStatus) {
-  switch (paymentStatus) {
-    case "Unpaid":
-      return "text-[#FF0000]";
-    case "Refund to guest":
-      return "text-[#FFFF00]";
-    case "Paid to host":
-      return "text-[#00B050]";
-    case "Prepayment":
-    default:
-      return "text-[#9148C8]";
-  }
-}
+import { getAdminTripStatusBgColorFromStatus, getAdminTextColorForPaymentStatus } from "@/utils/tailwind";
 
 type AllTripsTableProps = {
   data: AdminTripDetails[];
@@ -66,7 +32,6 @@ export default function AllTripsTable({ data }: AllTripsTableProps) {
   return (
     <div className="mt-5 min-h-[300px] rounded-2xl bg-rentality-bg p-4 pb-16">
       <div className="text-xl lg:hidden">The resolution is too low!</div>
-      <div className="bg-[#0070C0] bg-[#9148C8] bg-[#C65911] bg-[#FF0000] text-[#00B050] text-[#9148C8] text-[#FF0000] text-[#FFFF00]"></div>
       <table className="hidden w-full table-auto border-spacing-2 overflow-x-auto lg:block">
         <thead className="mb-2">
           <tr className="border-b-[2px] border-b-gray-500">
@@ -104,8 +69,8 @@ export default function AllTripsTable({ data }: AllTripsTableProps) {
         <tbody className="text-sm">
           {data.map((tripItem) => {
             const detailsLink = `/guest/trips/tripInfo/${tripItem.tripId}?back=${pathname}`;
-            const tripStatusBgColor = getBgColorForTripStatus(tripItem.tripStatus);
-            const paymentStatusTextColor = getTextColorForPaymentStatus(tripItem.paymentsStatus);
+            const tripStatusBgColor = getAdminTripStatusBgColorFromStatus(tripItem.tripStatus);
+            const paymentStatusTextColor = getAdminTextColorForPaymentStatus(tripItem.paymentsStatus);
 
             return (
               <tr key={tripItem.tripId} className="border-b-[2px] border-b-gray-500">

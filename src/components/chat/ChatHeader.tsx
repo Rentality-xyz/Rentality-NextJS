@@ -1,11 +1,12 @@
 import { ChatInfo } from "@/model/ChatInfo";
-import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
+import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import { twMerge } from "tailwind-merge";
 import { TFunction } from "@/utils/i18n";
+import { getTripStatusBgColorFromStatus } from "@/utils/tailwind";
 
 export default function ChatHeader({ selectedChat, t }: { selectedChat: ChatInfo; t: TFunction }) {
-  let statusBgColor = getTripStatusBgColorClassFromStatus(selectedChat?.tripStatus);
+  let statusBgColor = getTripStatusBgColorFromStatus(selectedChat?.tripStatus);
   const statusClassName = twMerge(
     "absolute right-0 top-2 px-1 sm:px-4 py-1 rounded-l-3xl bg-purple-600 text-rnt-temp-status-text text-end text-sm",
     statusBgColor

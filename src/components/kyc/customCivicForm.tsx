@@ -37,7 +37,6 @@ function CustomCivicForm({
 
   return (
     <section className="flex flex-col md:px-4">
-      <span className="bg-[#7355D7] bg-[#FFFF00]">{/* for tailwind initialization */}</span>
       <h1 className="place-self-center text-xl font-bold text-rentality-secondary">Get verification</h1>{" "}
       <section className="mt-4 flex flex-col">
         <h2 className="place-self-center text-xl font-bold text-rentality-secondary">Step 1</h2>
