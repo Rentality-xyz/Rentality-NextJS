@@ -129,8 +129,6 @@ function CurrentStatusInfo({
   const [messageToGuest, setMessageToGuest] = useState("");
   const [isFinishingByHost, setIsFinishingByHost] = useState(false);
   const { sendMessage, getMessages } = useChat();
-  const [isDisabled, setDisabled] = useState(false);
-  const router = useRouter();
 
   const [actionHeader, actionText, actionDescription] = getActionTextsForStatus(
     tripInfo,
@@ -168,12 +166,9 @@ function CurrentStatusInfo({
 
   const handleGuestFinishTrip = async () => {
     hideDialogs();
-    setDisabled(true);
-    if (tripInfo.allowedActions.length > 0) {
-      await tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), []);
-    }
-    setDisabled(false);
-    router.refresh();
+    changeStatusCallback(() => {
+      return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), []);
+    });
   };
 
   const handleCancel = () => {
@@ -235,10 +230,10 @@ function CurrentStatusInfo({
           ) : tripInfo.status === TripStatus.CompletedWithoutGuestComfirmation && !isHost ? (
             <RntButton
               className="h-12 w-full px-4"
+              disabled={disableButton}
               onClick={() => {
                 showGuestConfirmFinishDialog();
               }}
-              disabled={isDisabled}
             >
               I confirm finish trip
             </RntButton>
