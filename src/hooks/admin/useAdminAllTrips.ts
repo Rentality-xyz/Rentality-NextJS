@@ -528,14 +528,14 @@ const TEST_DATA: AdminTripDetails[] = [
   },
 ];
 
-const useAdminAllTrips = (defaultFiters: AdminAllTripsFilters = {}, itemsPerPage: number = 10) => {
+const useAdminAllTrips = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<AdminTripDetails[]>([]);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState<number>(0);
 
   const fetchData = useCallback(
-    async (filters?: AdminAllTripsFilters, page: number = 0) => {
+    async (filters?: AdminAllTripsFilters, page: number = 1, itemsPerPage: number = 10) => {
       setIsLoading(true);
       setCurrentPage(page);
       await new Promise((res) => setTimeout(res, 1000));
@@ -550,12 +550,12 @@ const useAdminAllTrips = (defaultFiters: AdminAllTripsFilters = {}, itemsPerPage
             (!filters.startDateTimeUtc || i.tripStartDate >= filters.startDateTimeUtc) &&
             (!filters.endDateTimeUtc || i.tripEndDate <= filters.endDateTimeUtc))
       );
-      const currentItems = filteredData.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
+      const currentItems = filteredData.slice((page - 1) * itemsPerPage, page * itemsPerPage);
       setData(currentItems);
       setTotalCount(filteredData.length);
       setIsLoading(false);
     },
-    [itemsPerPage]
+    []
   );
 
   const payToHost = useCallback(async (tripId: number): Promise<Result<boolean, string>> => {
@@ -567,14 +567,6 @@ const useAdminAllTrips = (defaultFiters: AdminAllTripsFilters = {}, itemsPerPage
     await new Promise((res) => setTimeout(res, 1000));
     return Ok(true);
   }, []);
-
-  useEffect(() => {
-    const init = async () => {
-      await fetchData(defaultFiters);
-    };
-
-    init();
-  }, [fetchData, defaultFiters]);
 
   return {
     isLoading,

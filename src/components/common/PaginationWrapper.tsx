@@ -4,15 +4,10 @@ type PaginationWrapperProps = {
   children?: React.ReactNode;
   currentPage: number;
   totalPages: number;
-  setCurrentPage: (page: number) => Promise<void>;
+  selectPage: (page: number) => Promise<void>;
 };
 
-export default function PaginationWrapper({
-  children,
-  currentPage,
-  totalPages,
-  setCurrentPage,
-}: PaginationWrapperProps) {
+export default function PaginationWrapper({ children, currentPage, totalPages, selectPage }: PaginationWrapperProps) {
   return (
     <div className="flex flex-col justify-between gap-4">
       {children}
@@ -27,9 +22,9 @@ export default function PaginationWrapper({
           pageCount={totalPages}
           marginPagesDisplayed={2}
           pageRangeDisplayed={3}
-          forcePage={currentPage}
-          onPageChange={async ({ selected }) => {
-            await setCurrentPage(selected);
+          forcePage={Math.max(0, currentPage - 1)}
+          onPageChange={async ({ selected: zeroBaseSelectedPage }) => {
+            await selectPage(zeroBaseSelectedPage + 1);
           }}
         />
       )}

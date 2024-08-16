@@ -5,7 +5,7 @@ import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useAdminAllTrips, { AdminAllTripsFilters } from "@/hooks/admin/useAdminAllTrips";
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const defaultFilters: AdminAllTripsFilters = {
@@ -14,20 +14,24 @@ const defaultFilters: AdminAllTripsFilters = {
 };
 
 export default function AllTrips() {
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
   const [filters, setFilters] = useState<AdminAllTripsFilters>(defaultFilters);
-  const { isLoading, data, fetchData, payToHost, refundToGuest } = useAdminAllTrips(defaultFilters, itemsPerPage);
+  const { isLoading, data, fetchData, payToHost, refundToGuest } = useAdminAllTrips();
   const { t } = useTranslation();
-  const pageCount = !isLoading ? Math.ceil(data.totalCount / itemsPerPage) : 0;
+  const totalPages = !isLoading ? Math.ceil(data.totalCount / itemsPerPage) : 0;
 
   async function handleApplyFilters(filters: AdminAllTripsFilters) {
     setFilters(filters);
-    await fetchData(filters, 0);
+    await fetchData(filters, 1, itemsPerPage);
   }
 
   async function fetchDataForPage(page: number) {
-    await fetchData(filters, page);
+    await fetchData(filters, page, itemsPerPage);
   }
+
+  useEffect(() => {
+    fetchData(defaultFilters, 1, itemsPerPage);
+  }, [fetchData]);
 
   return (
     <Layout>
@@ -35,7 +39,7 @@ export default function AllTrips() {
         <PageTitle title={t("all_trips_table.page_title")} />
         <div className="mt-5 flex flex-col gap-4 rounded-2xl bg-rentality-bg p-4 pb-8">
           <AllTripsFilters defaultFilters={defaultFilters} onApply={handleApplyFilters} />
-          <PaginationWrapper currentPage={data.currentPage} totalPages={pageCount} setCurrentPage={fetchDataForPage}>
+          <PaginationWrapper currentPage={data.currentPage} totalPages={totalPages} selectPage={fetchDataForPage}>
             <AllTripsTable isLoading={isLoading} data={data.data} payToHost={payToHost} refundToGuest={refundToGuest} />
           </PaginationWrapper>
         </div>
