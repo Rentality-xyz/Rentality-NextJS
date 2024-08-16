@@ -19,6 +19,7 @@ export default function RntCarMakeSelect({
   value,
   readOnly,
   onMakeSelect,
+  validationError,
 }: RntCarMakeSelectProps) {
   const { getAllCarMakes } = useCarAPI();
 
@@ -36,6 +37,7 @@ export default function RntCarMakeSelect({
       className={className}
       label={label}
       value={value}
+      validationError={validationError}
       readOnly={readOnly || false}
       onChange={function (e) {
         const newValue: string = e.target.value;
@@ -45,11 +47,7 @@ export default function RntCarMakeSelect({
     >
       <option value="">Please select</option>
       {makesList.map((carMakesListElement, index) => (
-        <option
-          key={"car-make-" + index}
-          data-id={carMakesListElement.id}
-          value={carMakesListElement.name}
-        >
+        <option key={"car-make-" + index} data-id={carMakesListElement.id} value={carMakesListElement.name}>
           {carMakesListElement.name}
         </option>
       ))}

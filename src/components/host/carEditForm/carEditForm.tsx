@@ -256,7 +256,7 @@ export default function CarEditForm({
               name="vinNumber"
               control={control}
               defaultValue=""
-              render = {({ field: { onChange, value } }) => (
+              render={({ field: { onChange, value } }) => (
                 <RntVINCheckingInput
                   id="vinNumber"
                   className="lg:w-60"
@@ -270,12 +270,13 @@ export default function CarEditForm({
                   onVINVerified={(isVINVerified: boolean) => setIsVINVerified(isVINVerified)}
                   onVINCheckOverriden={(isVINCheckOverriden) => setIsVINCheckOverriden(isVINCheckOverriden)}
                 />
-            )} />
+              )}
+            />
             <Controller
               name="brand"
               control={control}
               defaultValue=""
-              render = {({ field: { onChange, value } }) => (
+              render={({ field: { onChange, value } }) => (
                 <RntCarMakeSelect
                   id="brand"
                   className="lg:w-60"
@@ -286,6 +287,7 @@ export default function CarEditForm({
                     onChange(newMake);
                     setSelectedMakeID(newID);
                   }}
+                  validationError={errors.brand?.message?.toString()}
                 />
               )}
             />
@@ -305,6 +307,7 @@ export default function CarEditForm({
                     onChange(newModel);
                     setSelectedModelID(newID);
                   }}
+                  validationError={errors.model?.message?.toString()}
                 />
               )}
             />
@@ -322,6 +325,7 @@ export default function CarEditForm({
                   readOnly={!isNewCar}
                   value={value}
                   onYearSelect={(newYear) => onChange(newYear)}
+                  validationError={errors.releaseYear?.message?.toString()}
                 />
               )}
             />

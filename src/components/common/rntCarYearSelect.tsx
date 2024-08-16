@@ -22,6 +22,7 @@ export default function RntCarYearSelect({
   model_id,
   value,
   onYearSelect,
+  validationError,
 }: RntCarYearSelectProps) {
   const { getCarYearsByMakeAndModel } = useCarAPI();
 
@@ -43,6 +44,7 @@ export default function RntCarYearSelect({
       className={className}
       label={label}
       value={value}
+      validationError={validationError}
       readOnly={readOnly || false}
       onChange={function (e) {
         const newValue = e.target.value;

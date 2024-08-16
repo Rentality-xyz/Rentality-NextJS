@@ -21,6 +21,7 @@ export default function RntCarModelSelect({
   make_id,
   value,
   onModelSelect,
+  validationError,
 }: RntCarModelSelectProps) {
   const { getCarModelByMake } = useCarAPI();
 
@@ -42,6 +43,7 @@ export default function RntCarModelSelect({
       className={className}
       label={label}
       value={value}
+      validationError={validationError}
       readOnly={readOnly || false}
       onChange={function (e) {
         const newValue = e.target.value;
@@ -51,11 +53,7 @@ export default function RntCarModelSelect({
     >
       <option value="">Please select</option>
       {modelsList.map((carModelsListElement, index) => (
-        <option
-          key={"car-model-" + index}
-          data-id={carModelsListElement.id}
-          value={carModelsListElement.name}
-        >
+        <option key={"car-model-" + index} data-id={carModelsListElement.id} value={carModelsListElement.name}>
           {carModelsListElement.name}
         </option>
       ))}
