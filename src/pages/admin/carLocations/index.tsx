@@ -3,10 +3,10 @@ import PageTitle from "@/components/pageTitle/pageTitle";
 import { useRentality } from "@/contexts/rentalityContext";
 import { ContractCarDetails, ContractCarInfo } from "@/model/blockchain/schemas";
 import { validateContractCarInfo } from "@/model/blockchain/schemas_utils";
+import { cn } from "@/utils";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { twMerge } from "tailwind-merge";
 import { number } from "zod";
 
 type CarLocations = {
@@ -127,7 +127,7 @@ export default function Admin() {
             </thead>
             <tbody className="text-sm">
               {carLocations.map((carLocation, index) => {
-                const uniqueRowClassName = twMerge(rowSpanClassName);
+                const uniqueRowClassName = cn(rowSpanClassName);
                 return (
                   <tr key={carLocation.carId} className="border-b-[1px] border-b-gray-500">
                     <td className={rowSpanClassName}>{index + 1}</td>

@@ -1,7 +1,8 @@
 import FormData from "form-data";
 import axios from "axios";
+import { env } from "./env";
 
-const pinataJwt = process.env.NEXT_PUBLIC_USE_PINATA_JWT;
+const pinataJwt = env.NEXT_PUBLIC_USE_PINATA_JWT;
 
 export const uploadJSONToIPFS = async (JSONBody: {}, fileNameTag?: string, keyValues?: {}) => {
   const url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;

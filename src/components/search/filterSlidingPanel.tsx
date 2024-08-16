@@ -3,8 +3,11 @@ import RntInput from "../common/rntInput";
 import RntButton from "../common/rntButton";
 import { TFunction as TFunctionNext } from "i18next";
 import { SearchCarRequest } from "@/model/SearchCarRequest";
-import { Dispatch } from "react";
+import { Dispatch, useState } from "react";
 import { useAppContext } from "@/contexts/appContext";
+import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
+import RntCarModelSelect from "@/components/common/rntCarModelSelect";
+import RntCarYearSelect from "@/components/common/rntCarYearSelect";
 
 export default function FilterSlidingPanel({
   searchCarRequest,
@@ -27,6 +30,9 @@ export default function FilterSlidingPanel({
 
   const { closeFilterOnSearchPage } = useAppContext();
 
+  const [selectedMakeID, setSelectedMakeID] = useState<string>("");
+  const [selectedModelID, setSelectedModelID] = useState<string>("");
+
   function handleClose() {
     setOpenFilterPanel(false);
     closeFilterOnSearchPage();
@@ -47,39 +53,42 @@ export default function FilterSlidingPanel({
             <i className="fi fi-br-cross" onClick={handleClose}></i>
           </div>
           <div className="mt-4 flex flex-col gap-2 px-2 sm:gap-4 sm:px-4 md:px-8 lg:px-16">
-            <RntInput
-              id="filter-brand"
+            <RntCarMakeSelect
+              id={"filter-brand"}
               label={t_comp("brand")}
               value={searchCarRequest.searchFilters.brand}
-              onChange={(e) =>
+              onMakeSelect={(newID, newMake) => {
+                setSelectedMakeID(newID);
                 setSearchCarRequest({
                   ...searchCarRequest,
-                  searchFilters: { ...searchCarRequest.searchFilters, brand: e.target.value },
-                })
-              }
+                  searchFilters: { ...searchCarRequest.searchFilters, brand: newMake },
+                });
+              }}
             />
-            <RntInput
-              id="filter-model"
+
+            <RntCarModelSelect
+              id={"filter-model"}
               label={t_comp("model")}
               value={searchCarRequest.searchFilters.model}
-              onChange={(e) =>
+              make_id={selectedMakeID}
+              onModelSelect={(newID, newModel) => {
+                setSelectedModelID(newID);
                 setSearchCarRequest({
                   ...searchCarRequest,
-                  searchFilters: { ...searchCarRequest.searchFilters, model: e.target.value },
-                })
-              }
+                  searchFilters: { ...searchCarRequest.searchFilters, model: newModel },
+                });
+              }}
             />
-            <RntInput
+            <RntCarYearSelect
               id="filter-year-from"
               label={t_comp("year_from")}
+              make_id={selectedMakeID}
+              model_id={selectedModelID}
               value={searchCarRequest.searchFilters.yearOfProductionFrom}
-              onChange={(e) => {
-                const newValue = e.target.value;
-                if (isNaN(Number(newValue)) && newValue !== "") return;
-
+              onYearSelect={(newYear) => {
                 setSearchCarRequest({
                   ...searchCarRequest,
-                  searchFilters: { ...searchCarRequest.searchFilters, yearOfProductionFrom: newValue },
+                  searchFilters: { ...searchCarRequest.searchFilters, yearOfProductionFrom: newYear },
                 });
               }}
             />

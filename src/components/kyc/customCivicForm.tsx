@@ -39,11 +39,7 @@ function CustomCivicForm({
     <section className="flex flex-col md:px-4">
       <span className="bg-[#7355D7] bg-[#FFFF00]">{/* for tailwind initialization */}</span>
       <h1 className="place-self-center text-xl font-bold text-rentality-secondary">Get verification</h1>{" "}
-      <section className="mx-8 mt-6 text-center text-sm text-red-500">
-        Verification fee is non-refundable. Please use your driver’s license for verification. Other documents will not
-        be accepted, and the fee will not be refunded if they are used
-      </section>
-      <section className="mt-2 flex flex-col">
+      <section className="mt-4 flex flex-col">
         <h2 className="place-self-center text-xl font-bold text-rentality-secondary">Step 1</h2>
         <p className="mt-2 place-self-center">
           Read the{" "}
@@ -57,7 +53,7 @@ function CustomCivicForm({
           disabled={!(status === "Not paid" || status === "Kyc failed")}
           onClick={payCommission}
         >
-          I agree to conditions and pay ${commissionFee} for verified
+          I agree and will pay ${commissionFee} for verification
         </RntButton>
         <div className="mt-2">
           {status === "Not paid" && (
@@ -88,7 +84,7 @@ function CustomCivicForm({
       </section>
       <section className="mt-4 flex flex-col">
         <h2 className="mt-4 place-self-center text-xl font-bold text-rentality-secondary">Step 2</h2>
-        <p className="mt-2 place-self-center">Get verification procedure</p>
+        <p className="mt-2 place-self-center">Undergo verification</p>
         <RntButton
           className="mt-2 w-full"
           disabled={!(status === "Commission paid" || status === "Kyc passed")}
@@ -98,7 +94,7 @@ function CustomCivicForm({
         </RntButton>
         <div className="mt-2">
           {(status === "Not paid" || status === "Commission paid") && (
-            <DotStatus containerClassName="text-sm" color="#FFFF00" text="You haven't been verified procedure yet" />
+            <DotStatus containerClassName="text-sm" color="#FFFF00" text="You haven't been verified yet" />
           )}
           {status === "Kyc passed" && (
             <DotStatus containerClassName="text-sm" color="success" text="You driver license verified" />

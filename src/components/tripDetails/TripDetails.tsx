@@ -21,11 +21,11 @@ import RntDriverLicenseVerified from "@/components/common/rntDriverLicenseVerifi
 import { UTC_TIME_ZONE_ID, calculateDays } from "@/utils/date";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import TripCardForDetails from "../tripCard/tripCardForDetails";
-import useUserMode from "@/hooks/useUserMode";
+import useUserMode, { isHost } from "@/hooks/useUserMode";
 
 export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; backPath: string; t: TFunctionNext }) {
   const [isLoading, tripInfo] = useTripInfo(tripId);
-  const { isHost } = useUserMode();
+  const { userMode } = useUserMode();
   const router = useRouter();
   const t_details: TFunction = (name, options) => {
     return t("booked.details." + name, options);
@@ -47,7 +47,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
         </div>
       ) : (
         <>
-          <TripCardForDetails key={Number(tripId)} isHost={isHost} tripInfo={tripInfo} t={t} />
+          <TripCardForDetails key={Number(tripId)} isHost={isHost(userMode)} tripInfo={tripInfo} t={t} />
 
           <div className="my-6 flex flex-wrap">
             <div className="w-full xl:w-2/3">
@@ -394,7 +394,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                       </tr>
                     </tbody>
                   </table>
-                  <TripContacts tripInfo={tripInfo} isHost={isHost} phoneForHost={false} t={t} />
+                  <TripContacts tripInfo={tripInfo} isHost={isHost(userMode)} phoneForHost={false} t={t} />
                 </div>
                 <div className="flex justify-center p-4">
                   <RntContractModal tripId={tripId} tripInfo={tripInfo} />

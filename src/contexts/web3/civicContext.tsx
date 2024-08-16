@@ -3,6 +3,7 @@ import { EthereumGatewayWallet, GatewayProvider } from "@civic/ethereum-gateway-
 import { DEFAULT_LOCAL_HOST_CHAIN_ID } from "@/utils/constants";
 import { useEthereum } from "./ethereumContext";
 import { base, baseSepolia } from "viem/chains";
+import { env } from "@/utils/env";
 
 const customWrapperStyle: CSSProperties = {
   background: "rgba(0,0,0,0.5)",
@@ -43,7 +44,7 @@ const CustomWrapper: React.FC = ({ children = null }: { children?: React.ReactNo
 };
 
 export const CivicProvider = ({ children }: { children?: React.ReactNode }) => {
-  const gatekeeperNetwork = process.env.NEXT_PUBLIC_CIVIC_GATEKEEPER_NETWORK || "";
+  const gatekeeperNetwork = env.NEXT_PUBLIC_CIVIC_GATEKEEPER_NETWORK;
   const [wallet, setWallet] = useState<EthereumGatewayWallet>();
   const [isLocalHost, setIsLocalHost] = useState<boolean>(true);
   const [isBaseNetwork, setIsBaseNetwork] = useState<boolean>(false);
@@ -64,7 +65,12 @@ export const CivicProvider = ({ children }: { children?: React.ReactNode }) => {
   if (isLocalHost || !isBaseNetwork) return <>{children}</>;
 
   return (
-    <GatewayProvider wallet={wallet} gatekeeperNetwork={gatekeeperNetwork} wrapper={CustomWrapper}>
+    <GatewayProvider
+      wallet={wallet}
+      gatekeeperNetwork={gatekeeperNetwork}
+      wrapper={CustomWrapper}
+      options={{ autoShowModal: false }}
+    >
       {children}
     </GatewayProvider>
   );

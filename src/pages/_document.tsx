@@ -1,12 +1,6 @@
 import { Html, Head, Main, NextScript } from "next/document";
-import Hotjar from '@hotjar/browser';
 
 export default function Document() {
-    const siteId = 5086721;
-    const hotjarVersion = 6;
-
-    Hotjar.init(siteId, hotjarVersion);
-
   return (
     <Html lang="en">
       <Head>
@@ -15,10 +9,6 @@ export default function Document() {
         <link
           rel="stylesheet"
           href="https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css"
-        />
-        <link
-          rel="stylesheet"
-          href="https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css"
         />
       </Head>
       <body className="backgroundMain">

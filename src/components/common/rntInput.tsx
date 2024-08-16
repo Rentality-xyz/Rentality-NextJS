@@ -1,7 +1,7 @@
 import { isEmpty } from "@/utils/string";
 import { forwardRef, useId } from "react";
-import { twMerge } from "tailwind-merge";
 import RntValidationError from "./RntValidationError";
+import { cn } from "@/utils";
 
 interface RntInputProps extends React.ComponentPropsWithoutRef<"input"> {
   labelClassName?: string;
@@ -34,9 +34,9 @@ const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
     const reactId = useId();
     const controlId = !isEmpty(id) ? id : reactId;
     type = type ?? "text";
-    const cClassName = twMerge("text-black flex flex-col w-full", className);
-    const lClassName = twMerge("text-rnt-temp-main-text mb-1", labelClassName);
-    const iClassName = twMerge(
+    const cClassName = cn("text-black flex flex-col w-full", className);
+    const lClassName = cn("text-rnt-temp-main-text mb-1", labelClassName);
+    const iClassName = cn(
       "w-full h-12 border-2 rounded-full pl-4 disabled:bg-gray-300 disabled:text-gray-600",
       inputClassName
     );

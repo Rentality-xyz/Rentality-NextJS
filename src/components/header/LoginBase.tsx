@@ -5,10 +5,10 @@ import { DialogActions } from "@/utils/dialogActions";
 import { useTranslation } from "react-i18next";
 import { Avatar as MuiAvatar } from "@mui/material";
 import { isEmpty } from "@/utils/string";
-// @ts-ignore
 import { Avatar, Identity, Badge, Name, Address } from "@coinbase/onchainkit/identity";
 import { useAuth } from "@/contexts/auth/authContext";
 import RntButton from "../common/rntButton";
+import { env } from "@/utils/env";
 
 function LoginBase() {
   const { isLoading, isAuthenticated, login } = useAuth();
@@ -52,7 +52,7 @@ function LoginBase() {
     return (
       <div className="flex flex-row-reverse items-center gap-4 space-x-4 bg-transparent px-2 py-1">
         <div className="overflow-hidden">
-          <MuiAvatar className="h-20 w-20" alt="" src="" />
+          <MuiAvatar className="h-12 w-12 sm:h-20 sm:w-20" alt="" src="" />
         </div>
         <div className="w-[12ch]"></div>
       </div>
@@ -61,20 +61,20 @@ function LoginBase() {
   return (
     <Identity
       className="bg-transparent xl:flex-row-reverse xl:gap-4"
-      address={userInfo.address}
-      schemaId={process.env.NEXT_PUBLIC_COINBASE_SCHEMA_ID ?? ""}
+      address={userInfo.address as `0x${string}`}
+      schemaId={env.NEXT_PUBLIC_COINBASE_SCHEMA_ID as `0x${string}`}
     >
       <Name className="hidden text-white xl:flex" />
       <Address className="hidden text-white xl:flex" />
       <Avatar
-        className="h-20 w-20"
+        className="h-12 w-12 sm:h-20 sm:w-20"
         loadingComponent={
-          <MuiAvatar className="h-20 w-20" alt={userFullName} src={userInfo?.profilePhotoUrl}>
+          <MuiAvatar className="h-12 w-12 sm:h-20 sm:w-20" alt={userFullName} src={userInfo?.profilePhotoUrl}>
             {userInitials}
           </MuiAvatar>
         }
         defaultComponent={
-          <MuiAvatar className="h-20 w-20" alt={userFullName} src={userInfo?.profilePhotoUrl}>
+          <MuiAvatar className="h-12 w-12 sm:h-20 sm:w-20" alt={userFullName} src={userInfo?.profilePhotoUrl}>
             {userInitials}
           </MuiAvatar>
         }
