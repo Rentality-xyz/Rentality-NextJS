@@ -84,11 +84,11 @@ export default function FilterSlidingPanel({
               label={t_comp("year_from")}
               make_id={selectedMakeID}
               model_id={selectedModelID}
-              value={searchCarRequest.searchFilters.yearOfProductionFrom}
+              value={Number(searchCarRequest.searchFilters.yearOfProductionFrom)}
               onYearSelect={(newYear) => {
                 setSearchCarRequest({
                   ...searchCarRequest,
-                  searchFilters: { ...searchCarRequest.searchFilters, yearOfProductionFrom: newYear },
+                  searchFilters: { ...searchCarRequest.searchFilters, yearOfProductionFrom: newYear.toString() },
                 });
               }}
             />
