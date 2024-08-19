@@ -336,7 +336,12 @@ export default function CarEditForm({
           <div className="mb-4 text-lg">
             <strong>{t_car("photo")}</strong>
           </div>
-          <RntFileButton className="h-16 w-40" disabled={!isNewCar} onChange={onChangeFile}>
+          <RntFileButton
+            className="h-16 w-40"
+            disabled={!isNewCar}
+            onChange={onChangeFile}
+            accept="image/png,image/jpeg"
+          >
             {t("common.upload")}
           </RntFileButton>
           <div className="mt-8 h-60 w-80 overflow-hidden rounded-2xl bg-gray-200 bg-opacity-40">

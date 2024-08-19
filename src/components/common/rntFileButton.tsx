@@ -7,6 +7,7 @@ export default function RntFileButton({
   children,
   onChange: onFileChange,
   disabled,
+  accept,
   ...props
 }: {
   className?: string;
@@ -14,6 +15,7 @@ export default function RntFileButton({
   children?: React.ReactNode;
   onChange?: ChangeEventHandler<HTMLInputElement>;
   disabled?: boolean;
+  accept?: string;
 }) {
   const bgColor = disabled ? "bg-gray-500" : "buttonGradient";
   const baseClassName =
@@ -21,7 +23,15 @@ export default function RntFileButton({
   const c = cn(baseClassName, className);
   return (
     <label {...props} className={c}>
-      <input disabled={disabled} className="hidden" type="file" id={id} name={id} onChange={onFileChange} />
+      <input
+        disabled={disabled}
+        className="hidden"
+        type="file"
+        id={id}
+        name={id}
+        onChange={onFileChange}
+        accept={accept}
+      />
       {children}
     </label>
   );

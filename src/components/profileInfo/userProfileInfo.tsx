@@ -142,7 +142,12 @@ function UserProfileInfo({
                 {savedProfileSettings.firstName} {savedProfileSettings.lastName}
               </div>
             </div>
-            <RntFileButton className="h-16 w-40" id="profilePhotoUrl" onChange={fileChangeCallback(field)}>
+            <RntFileButton
+              className="h-16 w-40"
+              id="profilePhotoUrl"
+              onChange={fileChangeCallback(field)}
+              accept="image/png,image/jpeg"
+            >
               {t("common.upload")}
             </RntFileButton>
           </>
