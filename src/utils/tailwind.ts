@@ -1,5 +1,4 @@
-import { PaymentStatus } from "@/hooks/admin/useAdminAllTrips";
-import { TripStatus } from "@/model/blockchain/schemas";
+import { AdminTripStatus, PaymentStatus, TripStatus } from "@/model/blockchain/schemas";
 
 export function getTripStatusBgColorFromStatus(status: TripStatus) {
   switch (status) {
@@ -25,22 +24,21 @@ export function getTripStatusBgColorFromStatus(status: TripStatus) {
   }
 }
 
-export function getAdminTripStatusBgColorFromStatus(tripStatus: TripStatus) {
-  switch (tripStatus) {
-    case TripStatus.Closed:
+export function getAdminTripStatusBgColorFromStatus(adminStatus: AdminTripStatus) {
+  switch (adminStatus) {
+    case AdminTripStatus.Finished:
       return "bg-[#9148C8]";
-    case TripStatus.CompletedWithoutGuestComfirmation:
+    case AdminTripStatus.CompletedWithoutGuestConfirmation:
       return "bg-[#C65911]";
-    case TripStatus.Closed:
-    case TripStatus.ClosedByAdminAfterCompleteWithoutGuestComfirmation:
-    case TripStatus.ClosedByGuestAfterCompleteWithoutGuestComfirmation:
+    case AdminTripStatus.CompletedByGuest:
+    case AdminTripStatus.CompletedByAdmin:
       return "bg-[#0070C0]";
-    case TripStatus.Rejected:
-    case TripStatus.HostRejected:
-    case TripStatus.GuestRejected:
-    case TripStatus.HostCanceled:
-    case TripStatus.GuestCanceled:
+    case AdminTripStatus.GuestCanceledBeforeApprove:
+    case AdminTripStatus.HostCanceledBeforeApprove:
+    case AdminTripStatus.GuestCanceledAfterApprove:
+    case AdminTripStatus.HostCanceledAfterApprove:
       return "bg-[#FF0000]";
+
     default:
       return "";
   }
@@ -48,15 +46,16 @@ export function getAdminTripStatusBgColorFromStatus(tripStatus: TripStatus) {
 
 export function getAdminTextColorForPaymentStatus(paymentStatus: PaymentStatus) {
   switch (paymentStatus) {
-    case "Unpaid":
+    case PaymentStatus.Unpaid:
       return "text-[#FF0000]";
-    case "Refund to guest":
+    case PaymentStatus.RefundToGuest:
       return "text-[#FFFF00]";
-    case "Paid to host":
+    case PaymentStatus.PaidToHost:
       return "text-[#00B050]";
-    case "Prepayment":
-    default:
+    case PaymentStatus.Prepayment:
       return "text-[#9148C8]";
+    default:
+      return "";
   }
 }
 

@@ -35,42 +35,6 @@ export const getTripStatusTextFromStatus = (status: TripStatus) => {
   }
 };
 
-export const getTripStatusTextFromAdminStatus = (status: TripStatus) => {
-  switch (status) {
-    case TripStatus.Pending:
-      return "Pending";
-    case TripStatus.Confirmed:
-      return "Confirmed";
-    case TripStatus.CheckedInByHost:
-      return "Started";
-    case TripStatus.Started:
-      return "On the trip";
-    case TripStatus.CheckedOutByGuest:
-      return "Finished by guest";
-    case TripStatus.CompletedWithoutGuestComfirmation:
-      return "Completed without guest confirmation";
-    case TripStatus.Finished:
-      return "Finished";
-    case TripStatus.Closed:
-      return "Completed";
-    case TripStatus.ClosedByGuestAfterCompleteWithoutGuestComfirmation:
-      return "Completed by guest";
-    case TripStatus.ClosedByAdminAfterCompleteWithoutGuestComfirmation:
-      return "Completed by administrator";
-    case TripStatus.GuestRejected:
-      return "Guest Cancellation before Host confirmed";
-    case TripStatus.GuestCanceled:
-      return "Guest Cancellation after host confirmed";
-    case TripStatus.HostRejected:
-      return "Host Booked Cancellation";
-    case TripStatus.HostCanceled:
-      return "Host trip Cancellation";
-    case TripStatus.Rejected:
-    default:
-      return "Rejected";
-  }
-};
-
 export type TripInfo = {
   tripId: number;
   carId: number;

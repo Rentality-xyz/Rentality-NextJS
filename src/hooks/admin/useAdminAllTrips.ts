@@ -1,576 +1,168 @@
-import { TripStatus } from "@/model/blockchain/schemas";
-import { formatLocationInfoUpToCity, LocationInfo } from "@/model/LocationInfo";
-import { Ok, Result } from "@/model/utils/result";
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import { getEtherContractWithSigner } from "@/abis";
+import { useRentality } from "@/contexts/rentalityContext";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { AdminTripDetails } from "@/model/admin/AdminTripDetails";
+import { IRentalityAdminGateway } from "@/model/blockchain/IRentalityContract";
+import { AdminTripStatus, ContractTripFilter, PaymentStatus, TripStatus } from "@/model/blockchain/schemas";
+import { emptyContractLocationInfo, validateContractAllTripsDTO } from "@/model/blockchain/schemas_utils";
+import { LocationInfo } from "@/model/LocationInfo";
+import { mapContractTripToAdminTripDetails } from "@/model/mappers/contractTripToAdminTripDetails";
+import { Err, Ok, Result } from "@/model/utils/result";
+import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import { bigIntReplacer } from "@/utils/json";
-import { useCallback, useEffect, useState } from "react";
-
-export const PaymentStatuses = ["Prepayment", "Paid to host", "Refund to guest", "Unpaid"] as const;
-export type PaymentStatus = (typeof PaymentStatuses)[number];
-
-export type AdminTripDetails = {
-  tripId: number;
-  carDescription: string;
-  plateNumber: string;
-  tripStatus: TripStatus;
-  paymentsStatus: PaymentStatus;
-  hostLocation: string;
-  tripStartDate: Date;
-  tripEndDate: Date;
-  timeZoneId: string;
-  tripDays: number;
-  hostName: string;
-  guestName: string;
-  tripPriceBeforeDiscountInUsd: number;
-  tripDiscountInUsd: number;
-  tripPriceAfterDiscountInUsd: number;
-  deliveryFeePickUpInUsd: number;
-  deliveryFeeDropOffInUsd: number;
-  salesTaxInUsd: number;
-  governmentTaxInUsd: number;
-  totalChargeForTripInUsd: number;
-  refundForTripInUsd: number | undefined;
-  depositReceivedInUsd: number;
-  depositReturnedInUsd: number | undefined;
-  reimbursementInUsd: number | undefined;
-  hostEarningsInUsd: number | undefined;
-  platformCommissionInUsd: number | undefined;
-  accruableSalesTaxInUsd: number | undefined;
-  accruableGovernmentTaxInUsd: number | undefined;
-};
+import { mapContractLocationInfoToLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export type AdminAllTripsFilters = {
-  status?: TripStatus;
+  status?: AdminTripStatus;
   paymentStatus?: PaymentStatus;
   location?: LocationInfo;
   startDateTimeUtc?: Date;
   endDateTimeUtc?: Date;
 };
 
-function getPaymentStatusByTripStatus(status: TripStatus): PaymentStatus {
-  switch (status) {
-    case TripStatus.Pending:
-    case TripStatus.Confirmed:
-    case TripStatus.CheckedInByHost:
-    case TripStatus.Started:
-    case TripStatus.CheckedOutByGuest:
-    case TripStatus.Finished:
-      return "Prepayment";
-
-    case TripStatus.Closed:
-    case TripStatus.ClosedByGuestAfterCompleteWithoutGuestComfirmation:
-    case TripStatus.ClosedByAdminAfterCompleteWithoutGuestComfirmation:
-      return "Paid to host";
-
-    case TripStatus.Rejected:
-    case TripStatus.HostRejected:
-    case TripStatus.HostCanceled:
-    case TripStatus.GuestRejected:
-    case TripStatus.GuestCanceled:
-      return "Refund to guest";
-
-    case TripStatus.CompletedWithoutGuestComfirmation:
-    default:
-      return "Unpaid";
-  }
-}
-
-const TEST_DATA: AdminTripDetails[] = [
-  {
-    tripId: 10,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.Closed,
-    paymentsStatus: getPaymentStatusByTripStatus(TripStatus.Closed),
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: 450,
-    reimbursementInUsd: 50,
-    hostEarningsInUsd: 874,
-    platformCommissionInUsd: 206,
-    accruableSalesTaxInUsd: 72.1,
-    accruableGovernmentTaxInUsd: 20,
-  },
-  {
-    tripId: 11,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.CompletedWithoutGuestComfirmation,
-    paymentsStatus: getPaymentStatusByTripStatus(TripStatus.CompletedWithoutGuestComfirmation),
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: undefined,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 12,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.ClosedByGuestAfterCompleteWithoutGuestComfirmation, //finished by host, guest approve
-    paymentsStatus: getPaymentStatusByTripStatus(TripStatus.ClosedByGuestAfterCompleteWithoutGuestComfirmation),
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: 450,
-    reimbursementInUsd: 50,
-    hostEarningsInUsd: 874,
-    platformCommissionInUsd: 206,
-    accruableSalesTaxInUsd: 72.1,
-    accruableGovernmentTaxInUsd: 20,
-  },
-  {
-    tripId: 13,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.ClosedByAdminAfterCompleteWithoutGuestComfirmation, //finished by host, admin pay to host
-    paymentsStatus: getPaymentStatusByTripStatus(TripStatus.ClosedByAdminAfterCompleteWithoutGuestComfirmation),
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: 450,
-    reimbursementInUsd: 50,
-    hostEarningsInUsd: 874,
-    platformCommissionInUsd: 206,
-    accruableSalesTaxInUsd: 72.1,
-    accruableGovernmentTaxInUsd: 20,
-  },
-  {
-    tripId: 14,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.ClosedByAdminAfterCompleteWithoutGuestComfirmation, //finished by host, admin refund to guest
-    paymentsStatus: getPaymentStatusByTripStatus(TripStatus.ClosedByAdminAfterCompleteWithoutGuestComfirmation),
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: 1122.1,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: 500,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 15,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.GuestRejected, //guest before confirm
-    paymentsStatus: getPaymentStatusByTripStatus(TripStatus.GuestRejected),
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: 1122.1,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: 500,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 16,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.GuestCanceled, //guest after confirm
-    paymentsStatus: getPaymentStatusByTripStatus(TripStatus.GuestCanceled),
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: 1122.1,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: 500,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 17,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.HostRejected, //host before confirm
-    paymentsStatus: getPaymentStatusByTripStatus(TripStatus.HostRejected),
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: 1122.1,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: 500,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 18,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.HostCanceled, //host after confirm
-    paymentsStatus: getPaymentStatusByTripStatus(TripStatus.HostCanceled),
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: 1122.1,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: 500,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 19,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.Pending,
-    paymentsStatus: getPaymentStatusByTripStatus(TripStatus.Pending),
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: undefined,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 20,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.Confirmed,
-    paymentsStatus: getPaymentStatusByTripStatus(TripStatus.Confirmed),
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: undefined,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 21,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.CheckedInByHost,
-    paymentsStatus: getPaymentStatusByTripStatus(TripStatus.CheckedInByHost),
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: undefined,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 22,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.Started,
-    paymentsStatus: getPaymentStatusByTripStatus(TripStatus.Started),
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: undefined,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 23,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.CheckedOutByGuest,
-    paymentsStatus: getPaymentStatusByTripStatus(TripStatus.CheckedOutByGuest),
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: undefined,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 24,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.Finished,
-    paymentsStatus: getPaymentStatusByTripStatus(TripStatus.Finished),
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: undefined,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-];
-
 const useAdminAllTrips = () => {
+  const ethereumInfo = useEthereum();
+  const rentalityGateway = useRentality();
+  const [rentalityAdminGateway, setRentalityAdminGateway] = useState<IRentalityAdminGateway | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<AdminTripDetails[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalCount, setTotalCount] = useState<number>(0);
+  const [totalPageCount, setTotalPageCount] = useState<number>(0);
 
   const fetchData = useCallback(
     async (filters?: AdminAllTripsFilters, page: number = 1, itemsPerPage: number = 10) => {
-      setIsLoading(true);
-      setCurrentPage(page);
-      await new Promise((res) => setTimeout(res, 1000));
-      console.log(`filters: ${JSON.stringify(filters, bigIntReplacer)}`);
+      if (!rentalityAdminGateway) {
+        console.error("fetchData error: rentalityAdminGateway is null");
+        return Err("Contract is not initialized");
+      }
+      if (!rentalityGateway) {
+        console.error("fetchData error: rentalityContract is null");
+        return Err("Contract is not initialized");
+      }
 
-      const filteredData = TEST_DATA.filter(
-        (i) =>
-          !filters ||
-          ((filters.status === undefined || i.tripStatus === filters.status) &&
-            (!filters.paymentStatus || i.paymentsStatus === filters.paymentStatus) &&
-            (!filters.location || i.hostLocation === formatLocationInfoUpToCity(filters.location)) &&
-            (!filters.startDateTimeUtc || i.tripStartDate >= filters.startDateTimeUtc) &&
-            (!filters.endDateTimeUtc || i.tripEndDate <= filters.endDateTimeUtc))
-      );
-      const currentItems = filteredData.slice((page - 1) * itemsPerPage, page * itemsPerPage);
-      setData(currentItems);
-      setTotalCount(filteredData.length);
-      setIsLoading(false);
+      try {
+        setIsLoading(true);
+        setCurrentPage(page);
+        setTotalPageCount(0);
+        console.debug(`filters: ${JSON.stringify(filters, bigIntReplacer)}`);
+
+        const contractFilters: ContractTripFilter = {
+          status: filters?.status ? filters.status : AdminTripStatus.Any,
+          paymentStatus: filters?.paymentStatus ? filters.paymentStatus : PaymentStatus.Any,
+          location: filters?.location
+            ? mapLocationInfoToContractLocationInfo(filters.location)
+            : emptyContractLocationInfo,
+          startDateTime: filters?.startDateTimeUtc ? getBlockchainTimeFromDate(filters.startDateTimeUtc) : BigInt(0),
+          endDateTime: filters?.endDateTimeUtc ? getBlockchainTimeFromDate(filters.endDateTimeUtc) : BigInt(0),
+        };
+
+        const allAdminTrips = await rentalityAdminGateway.getAllTrips(
+          contractFilters,
+          BigInt(page),
+          BigInt(itemsPerPage)
+        );
+        validateContractAllTripsDTO(allAdminTrips);
+
+        const data: AdminTripDetails[] = await Promise.all(
+          allAdminTrips.trips.map(async (trip) => {
+            const metadataURI = await rentalityGateway.getCarMetadataURI(trip.carId);
+            const carDetails = await rentalityGateway.getCarDetails(trip.carId);
+            return mapContractTripToAdminTripDetails(
+              trip,
+              mapContractLocationInfoToLocationInfo(carDetails.locationInfo),
+              metadataURI
+            );
+          })
+        );
+
+        setData(data);
+        setTotalPageCount(Number(allAdminTrips.totalPageCount));
+
+        return Ok(true);
+      } catch (e) {
+        console.error("fetchData error" + e);
+        return Err("Get data error. See logs for more details");
+      } finally {
+        setIsLoading(false);
+      }
     },
-    []
+    [rentalityAdminGateway, rentalityGateway]
   );
 
-  const payToHost = useCallback(async (tripId: number): Promise<Result<boolean, string>> => {
-    await new Promise((res) => setTimeout(res, 1000));
-    return Ok(true);
-  }, []);
+  const payToHost = useCallback(
+    async (tripId: number): Promise<Result<boolean, string>> => {
+      if (!rentalityAdminGateway) {
+        console.error("payToHost error: rentalityAdminGateway is null");
+        return Err("Contract is not initialized");
+      }
 
-  const refundToGuest = useCallback(async (tripId: number): Promise<Result<boolean, string>> => {
-    await new Promise((res) => setTimeout(res, 1000));
-    return Ok(true);
-  }, []);
+      try {
+        setIsLoading(true);
+
+        let transaction = await rentalityAdminGateway.payToHost(BigInt(tripId));
+        await transaction.wait();
+        return Ok(true);
+      } catch (e) {
+        console.error("payToHost error" + e);
+        return Err("Transaction error. See logs for more details");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [rentalityAdminGateway]
+  );
+
+  const refundToGuest = useCallback(
+    async (tripId: number): Promise<Result<boolean, string>> => {
+      if (!rentalityAdminGateway) {
+        console.error("refundToGuest error: rentalityAdminGateway is null");
+        return Err("Contract is not initialized");
+      }
+
+      try {
+        setIsLoading(true);
+
+        let transaction = await rentalityAdminGateway.refundToGuest(BigInt(tripId));
+        await transaction.wait();
+        return Ok(true);
+      } catch (e) {
+        console.error("refundToGuest error" + e);
+        return Err("Transaction error. See logs for more details");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [rentalityAdminGateway]
+  );
+
+  const isIniialized = useRef<boolean>(false);
+
+  useEffect(() => {
+    const initialize = async () => {
+      if (!ethereumInfo) return;
+      if (isIniialized.current) return;
+
+      try {
+        isIniialized.current = true;
+
+        const rentalityAdminGateway = (await getEtherContractWithSigner(
+          "admin",
+          ethereumInfo.signer
+        )) as unknown as IRentalityAdminGateway;
+        setRentalityAdminGateway(rentalityAdminGateway);
+      } catch (e) {
+        console.error("initialize error" + e);
+        isIniialized.current = false;
+      }
+    };
+
+    initialize();
+  }, [ethereumInfo]);
 
   return {
     isLoading,
-    data: { data: data, currentPage: currentPage, totalCount: totalCount },
+    data: { data: data, currentPage: currentPage, totalPageCount: totalPageCount },
     fetchData,
     payToHost,
     refundToGuest,

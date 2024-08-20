@@ -3,19 +3,27 @@ import RntInput from "@/components/common/rntInput";
 import RntPlaceAutoComplete from "@/components/common/rntPlaceAutocomplete";
 import RntSelect from "@/components/common/rntSelect";
 import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
-import { AdminAllTripsFilters, PaymentStatus, PaymentStatuses } from "@/hooks/admin/useAdminAllTrips";
-import { TripStatus } from "@/model/blockchain/schemas";
+import { AdminAllTripsFilters } from "@/hooks/admin/useAdminAllTrips";
+import { getPaymentStatusText, getTripStatusTextFromAdminStatus } from "@/model/admin/AdminTripDetails";
+import { AdminTripStatus, PaymentStatus } from "@/model/blockchain/schemas";
 import { formatLocationInfoUpToCity } from "@/model/LocationInfo";
-import { getTripStatusTextFromAdminStatus } from "@/model/TripInfo";
 import { dateToHtmlDateFormat } from "@/utils/datetimeFormatters";
 import { isEmpty } from "@/utils/string";
 import moment from "moment";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-const allTripStatuses = Object.values(TripStatus).map((value) => {
-  return { id: value, text: getTripStatusTextFromAdminStatus(value) };
-});
+const allPaymentStatuses = Object.values(PaymentStatus)
+  .slice(1)
+  .map((value) => {
+    return { id: value, text: getPaymentStatusText(value) };
+  });
+
+const allTripStatuses = Object.values(AdminTripStatus)
+  .slice(1)
+  .map((value) => {
+    return { id: value, text: getTripStatusTextFromAdminStatus(value) };
+  });
 
 interface AllTripsFiltersProps {
   defaultFilters?: AdminAllTripsFilters;
@@ -61,14 +69,14 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
           onChange={(e) => {
             setFilters((prev) => ({
               ...prev,
-              paymentStatus: e.target.value !== "none" ? (e.target.value as PaymentStatus) : undefined,
+              paymentStatus: e.target.value !== "none" ? BigInt(e.target.value) : undefined,
             }));
           }}
         >
           <option value={"none"}>{t("all_trips_table.allStatuses")}</option>
-          {PaymentStatuses.map((i) => (
-            <option key={i} value={i}>
-              {i}
+          {allPaymentStatuses.map((i) => (
+            <option key={i.id.toString()} value={i.id.toString()}>
+              {i.text}
             </option>
           ))}
         </RntSelect>

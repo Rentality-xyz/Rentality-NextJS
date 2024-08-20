@@ -1,3 +1,5 @@
+import { ContractLocationInfo } from "./blockchain/schemas";
+
 export type LocationInfo = {
   address: string;
   country: string;
@@ -18,7 +20,7 @@ export const emptyLocationInfo = {
   timeZoneId: "",
 };
 
-export function formatLocationInfoUpToCity(locationInfo: LocationInfo) {
+export function formatLocationInfoUpToCity(locationInfo: LocationInfo | ContractLocationInfo) {
   const city = locationInfo.city != null && locationInfo.city.length > 0 ? locationInfo.city + ", " : "";
   const state = locationInfo.state != null && locationInfo.state.length > 0 ? locationInfo.state + ", " : "";
   const country = locationInfo.country != null && locationInfo.country.length > 0 ? locationInfo.country + ", " : "";

@@ -1,18 +1,22 @@
 import Link from "next/link";
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import RntButton from "@/components/common/rntButton";
-import { getTripStatusTextFromAdminStatus } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2DigitsOrNa } from "@/utils/numericFormatters";
 import { usePathname } from "next/navigation";
 import { cn } from "@/utils";
-import { AdminTripDetails } from "@/hooks/admin/useAdminAllTrips";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { getAdminTripStatusBgColorFromStatus, getAdminTextColorForPaymentStatus } from "@/utils/tailwind";
 import { Result } from "@/model/utils/result";
 import Loading from "@/components/common/Loading";
+import { PaymentStatus } from "@/model/blockchain/schemas";
+import {
+  AdminTripDetails,
+  getPaymentStatusText,
+  getTripStatusTextFromAdminStatus,
+} from "@/model/admin/AdminTripDetails";
 
 type AllTripsTableProps = {
   isLoading: boolean;
@@ -112,7 +116,7 @@ export default function AllTripsTable({ isLoading, data, payToHost, refundToGues
                   {getTripStatusTextFromAdminStatus(tripItem.tripStatus)}
                 </td>
                 <td className={rowSpanClassName}>
-                  {tripItem.paymentsStatus === "Unpaid" && (
+                  {tripItem.paymentsStatus === PaymentStatus.Unpaid && (
                     <div className="flex flex-col gap-2 py-2">
                       <RntButton
                         className="h-8 w-40 bg-[#548235]"
@@ -134,7 +138,7 @@ export default function AllTripsTable({ isLoading, data, payToHost, refundToGues
                   )}
                 </td>
                 <td className={cn(rowSpanClassName, paymentStatusTextColor, "font-semibold")}>
-                  {tripItem.paymentsStatus}
+                  {getPaymentStatusText(tripItem.paymentsStatus)}
                 </td>
                 <td className={rowSpanClassName}>{tripItem.hostLocation}</td>
                 <td className={rowSpanClassName}>
