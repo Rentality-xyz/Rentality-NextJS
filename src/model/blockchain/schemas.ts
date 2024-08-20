@@ -52,6 +52,7 @@ export type ContractCreateCarRequest = {
   geoApiKey: string;
   insuranceIncluded: boolean;
   locationInfo: ContractSignedLocationInfo;
+  currentlyListed: boolean;
 };
 
 export type ContractUpdateCarInfoRequest = {
@@ -403,6 +404,19 @@ export type ContractKycCommissionData = {
   commissionPaid: boolean;
 };
 
+export type ContractTripFilter = {
+  paymentStatus: PaymentStatus;
+  status: AdminTripStatus;
+  location: ContractLocationInfo;
+  startDateTime: bigint;
+  endDateTime: bigint;
+};
+
+export type ContractAllTripsDTO = {
+  trips: ContractTrip[];
+  totalPageCount: bigint;
+};
+
 export type TripStatus = bigint;
 export const TripStatus = {
   Pending: BigInt(0), // Created
@@ -455,6 +469,34 @@ export const TaxesLocationType = {
   City: BigInt(0),
   State: BigInt(1),
   Country: BigInt(2),
+};
+
+export type PaymentStatus = bigint;
+export const PaymentStatus = {
+  Any: BigInt(0),
+  PaidToHost: BigInt(1),
+  Unpaid: BigInt(2),
+  RefundToGuest: BigInt(3),
+  Prepayment: BigInt(4),
+};
+
+export type AdminTripStatus = bigint;
+export const AdminTripStatus = {
+  Any: BigInt(0),
+  Created: BigInt(1),
+  Approved: BigInt(2),
+  CheckedInByHost: BigInt(3),
+  CheckedInByGuest: BigInt(4),
+  CheckedOutByGuest: BigInt(5),
+  CheckedOutByHost: BigInt(6),
+  Finished: BigInt(7),
+  GuestCanceledBeforeApprove: BigInt(8),
+  HostCanceledBeforeApprove: BigInt(9),
+  GuestCanceledAfterApprove: BigInt(10),
+  HostCanceledAfterApprove: BigInt(11),
+  CompletedWithoutGuestConfirmation: BigInt(12),
+  CompletedByGuest: BigInt(13),
+  CompletedByAdmin: BigInt(14),
 };
 
 export type EngineType = bigint;
