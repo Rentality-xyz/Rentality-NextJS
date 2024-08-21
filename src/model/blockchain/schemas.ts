@@ -412,8 +412,14 @@ export type ContractTripFilter = {
   endDateTime: bigint;
 };
 
+export type ContractAdminTripDTO = {
+  trip: ContractTrip;
+  carMetadataURI: string;
+  carLocation: ContractLocationInfo;
+};
+
 export type ContractAllTripsDTO = {
-  trips: ContractTrip[];
+  trips: ContractAdminTripDTO[];
   totalPageCount: bigint;
 };
 

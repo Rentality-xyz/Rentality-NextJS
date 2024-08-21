@@ -3,7 +3,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { AdminTripDetails } from "@/model/admin/AdminTripDetails";
 import { IRentalityAdminGateway } from "@/model/blockchain/IRentalityContract";
-import { AdminTripStatus, ContractTripFilter, PaymentStatus, TripStatus } from "@/model/blockchain/schemas";
+import { AdminTripStatus, ContractTripFilter, PaymentStatus } from "@/model/blockchain/schemas";
 import { emptyContractLocationInfo, validateContractAllTripsDTO } from "@/model/blockchain/schemas_utils";
 import { LocationInfo } from "@/model/LocationInfo";
 import { mapContractTripToAdminTripDetails } from "@/model/mappers/contractTripToAdminTripDetails";
@@ -65,13 +65,11 @@ const useAdminAllTrips = () => {
         validateContractAllTripsDTO(allAdminTrips);
 
         const data: AdminTripDetails[] = await Promise.all(
-          allAdminTrips.trips.map(async (trip) => {
-            const metadataURI = await rentalityGateway.getCarMetadataURI(trip.carId);
-            const carDetails = await rentalityGateway.getCarDetails(trip.carId);
+          allAdminTrips.trips.map(async (adminTripDto) => {
             return mapContractTripToAdminTripDetails(
-              trip,
-              mapContractLocationInfoToLocationInfo(carDetails.locationInfo),
-              metadataURI
+              adminTripDto.trip,
+              mapContractLocationInfoToLocationInfo(adminTripDto.carLocation),
+              adminTripDto.carMetadataURI
             );
           })
         );
