@@ -42,7 +42,7 @@ export class ChatId {
   }
 }
 
-export const FIREBASE_DB_NAME = { chats: "chats", userchats: "userchats", kycInfos: "kycInfos" };
+export const FIREBASE_DB_NAME = { chats: "chats", userchats: "userchats", kycInfos: "kycInfos" } as const;
 
 export type FirebaseChatMessage = {
   chatId: ChatId;
