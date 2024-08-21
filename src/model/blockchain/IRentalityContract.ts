@@ -163,9 +163,9 @@ export interface IRentalityAdminGateway {
   getClaimWaitingTime(): Promise<bigint>;
   getPlatformFeeInPPM(): Promise<bigint>;
   setCivicData(_civicVerifier: string, _civicGatekeeperNetwork: bigint): Promise<ContractTransactionResponse>;
-  setNewTCMessage(message: string): Promise<ContractTransactionResponse>;  
-  
-  getAllTrips(filter:ContractTripFilter, page:bigint, itemsPerPage:bigint): Promise<ContractAllTripsDTO>;  
+  setNewTCMessage(message: string): Promise<ContractTransactionResponse>;
+
+  getAllTrips(filter: ContractTripFilter, page: bigint, itemsPerPage: bigint): Promise<ContractAllTripsDTO>;
   payToHost(tripId: bigint): Promise<ContractTransactionResponse>;
   refundToGuest(tripId: bigint): Promise<ContractTransactionResponse>;
 
