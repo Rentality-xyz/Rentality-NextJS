@@ -1,4 +1,5 @@
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import { env } from "@/utils/env";
 import { isEmpty } from "@/utils/string";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -85,8 +86,8 @@ export const getLocationDetails = async (
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ParseLocationResponse>) {
-  const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  if (!GOOGLE_MAPS_API_KEY) {
+  const GOOGLE_MAPS_API_KEY = env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  if (isEmpty(GOOGLE_MAPS_API_KEY)) {
     console.error("ParseLocation error: GOOGLE_MAPS_API_KEY was not set");
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;

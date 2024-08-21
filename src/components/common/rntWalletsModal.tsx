@@ -62,25 +62,25 @@ export default function RntWalletsModal({ tripInfo }: { tripInfo: TripInfo }) {
             id="alert-dialog-description"
           >
             <div className="flex flex-col divide-y">
-              <div className="p-2 flex items-center justify-between">
+              <div className="flex items-center justify-between p-2">
                 <strong>{"Guest's wallet:"}</strong>
                 <span className="ms-2 text-gray-500">{maskWallet(tripInfo.guest.walletAddress)}</span>
                 <RntButton
-                  className="ms-2 w-16 md:w-24 h-8 flex items-center justify-center"
+                  className="ms-2 flex h-8 w-16 items-center justify-center md:w-24"
                   onClick={() => copyToClipboard(tripInfo.guest.walletAddress)}
                 >
-                  <Image src={imgCopy} alt="Copy" className="w-5 h-5 md:mr-1" />
+                  <Image src={imgCopy} alt="Copy" className="h-5 w-5 md:mr-1" />
                   <span className="max-md:hidden">Copy</span>
                 </RntButton>
               </div>
-              <div className="p-2 flex items-center justify-between">
+              <div className="flex items-center justify-between p-2">
                 <strong>{"Host's wallet:"}</strong>
                 <span className="ms-2 text-gray-500">{maskWallet(tripInfo.host.walletAddress)}</span>
                 <RntButton
-                  className="ms-2 w-16 md:w-24 h-8 flex items-center justify-center"
+                  className="ms-2 flex h-8 w-16 items-center justify-center md:w-24"
                   onClick={() => copyToClipboard(tripInfo.host.walletAddress)}
                 >
-                  <Image src={imgCopy} alt="Copy" className="w-5 h-5 md:mr-1" />
+                  <Image src={imgCopy} alt="Copy" className="h-5 w-5 md:mr-1" />
                   <span className="max-md:hidden">Copy</span>
                 </RntButton>
               </div>

@@ -8,7 +8,7 @@ export type PageTitleLink = {
 
 export default function PageTitle({ title, actions }: { title: string; actions?: PageTitleLink[] }) {
   return (
-    <div id="page-title" className="flex flex-row justify-between items-center">
+    <div id="page-title" className="flex flex-row items-center justify-between">
       <div className="text-2xl">
         <strong>{title}</strong>
       </div>
@@ -17,7 +17,7 @@ export default function PageTitle({ title, actions }: { title: string; actions?:
         : actions.map((action) => {
             return (
               <Link key={action.text} href={action.link}>
-                <RntButton className="w-40 sm:w-56 h-12 sm:h-16">{action.text}</RntButton>
+                <RntButton className="h-12 w-40 sm:h-16 sm:w-56">{action.text}</RntButton>
               </Link>
             );
           })}

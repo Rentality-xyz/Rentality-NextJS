@@ -5,6 +5,7 @@ import { db, storage, loginWithPassword } from "@/utils/firebase";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { FIREBASE_DB_NAME } from "@/chat/model/firebaseTypes";
 import { ref, uploadBytes } from "firebase/storage";
+import { env } from "@/utils/env";
 
 export type RetrieveCivicDataRequest = {
   requestId: string;
@@ -55,14 +56,14 @@ const UPDATE_STATUS_URL = "https://api.civic.com/partner/piirequest/REQUEST_ID/s
 
 // export default async function handler(req: NextApiRequest, res: NextApiResponse<ParseLocationResponse>) {
 export default async function handler(req: NextApiRequest, res: NextApiResponse<RetrieveCivicDataResponse>) {
-  const CIVIC_CLIENT_ID = process.env.CIVIC_CLIENT_ID;
+  const CIVIC_CLIENT_ID = env.CIVIC_CLIENT_ID;
   if (!CIVIC_CLIENT_ID || isEmpty(CIVIC_CLIENT_ID)) {
     console.error("retrieveCivicData error: CIVIC_CLIENT_ID was not set");
     res.status(500).json({ error: getErrorMessage("retrieveCivicData error: CIVIC_CLIENT_ID was not set") });
     return;
   }
 
-  const CIVIC_CLIENT_SECRET = process.env.CIVIC_CLIENT_SECRET;
+  const CIVIC_CLIENT_SECRET = env.CIVIC_CLIENT_SECRET;
   if (!CIVIC_CLIENT_SECRET || isEmpty(CIVIC_CLIENT_SECRET)) {
     console.error("retrieveCivicData error: CIVIC_CLIENT_SECRET was not set");
     res.status(500).json({ error: getErrorMessage("retrieveCivicData error: CIVIC_CLIENT_SECRET was not set") });
@@ -287,7 +288,7 @@ async function savePiiInfoToFirebase(allInfo: AllPiiInfo, docs: PiiDocData[]) {
       message: "storage is null",
     } as const;
 
-  const CIVIC_USER_EMAIL = process.env.CIVIC_USER_EMAIL;
+  const CIVIC_USER_EMAIL = env.CIVIC_USER_EMAIL;
   if (!CIVIC_USER_EMAIL || isEmpty(CIVIC_USER_EMAIL)) {
     console.error("retrieveCivicData error: CIVIC_USER_EMAIL was not set");
     return {
@@ -296,7 +297,7 @@ async function savePiiInfoToFirebase(allInfo: AllPiiInfo, docs: PiiDocData[]) {
     } as const;
   }
 
-  const CIVIC_USER_PASSWORD = process.env.CIVIC_USER_PASSWORD;
+  const CIVIC_USER_PASSWORD = env.CIVIC_USER_PASSWORD;
   if (!CIVIC_USER_PASSWORD || isEmpty(CIVIC_USER_PASSWORD)) {
     console.error("retrieveCivicData error: CIVIC_USER_PASSWORD was not set");
     return {

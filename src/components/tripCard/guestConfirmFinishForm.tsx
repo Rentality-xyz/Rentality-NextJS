@@ -20,7 +20,7 @@ function GuestConfirmFinishForm({
   const telLink = `tel:${hostPhoneNumber}`;
 
   return (
-    <div className="w-full flex flex-col gap-2 items-center">
+    <div className="flex w-full flex-col items-center gap-2">
       <p className="text-rentality-secondary">Confirm finish trip</p>
       <p>Host finished the trip without guest confirmation.</p>
       <p>Please confirm finish trip or contact the host.</p>
@@ -33,13 +33,13 @@ function GuestConfirmFinishForm({
         label="Message from your Host"
         value={messageFromHost}
       />
-      <RntButton className="w-full my-1" onClick={() => handleFinishTrip()}>
+      <RntButton className="my-1 w-full" onClick={() => handleFinishTrip()}>
         I confirm finish trip
       </RntButton>
       <a className="w-full" href={telLink}>
-        <RntButtonTransparent className="w-full my-1">Contact to host</RntButtonTransparent>
+        <RntButtonTransparent className="my-1 w-full">Contact to host</RntButtonTransparent>
       </a>
-      <RntButtonTransparent className="w-full my-1" onClick={handleCancel}>
+      <RntButtonTransparent className="my-1 w-full" onClick={handleCancel}>
         Cancel
       </RntButtonTransparent>
     </div>

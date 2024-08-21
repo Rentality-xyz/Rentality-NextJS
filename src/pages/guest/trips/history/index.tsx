@@ -18,11 +18,11 @@ export default function History() {
       <div className="flex flex-col">
         <PageTitle title={t("booked.history_title")} />
         {isLoading ? (
-          <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
+          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
             {t("common.info.loading")}
           </div>
         ) : (
-          <div className="flex flex-col gap-4 pr-4 my-4">
+          <div className="my-4 flex flex-col gap-4 pr-4">
             {tripsHistory != null && tripsHistory.length > 0 ? (
               tripsHistory.map((value) => {
                 return (
@@ -37,7 +37,7 @@ export default function History() {
                 );
               })
             ) : (
-              <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
+              <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
                 {t("booked.history_no_trips")}
               </div>
             )}

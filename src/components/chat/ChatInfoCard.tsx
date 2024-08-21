@@ -5,11 +5,11 @@ import { ChatInfo } from "@/model/ChatInfo";
 import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { Avatar } from "@mui/material";
 import Link from "next/link";
-import { twMerge } from "tailwind-merge";
 import icInfo from "@/images/ic-info-teal.svg";
 import Image from "next/image";
 import { TFunction } from "@/utils/i18n";
 import { usePathname } from "next/navigation";
+import { cn } from "@/utils";
 
 export default function ChatInfoCard({
   chatInfo,
@@ -31,32 +31,32 @@ export default function ChatInfoCard({
   const otherName = isHost ? chatInfo.guestName : chatInfo.hostName;
 
   let statusBgColor = getTripStatusBgColorClassFromStatus(chatInfo.tripStatus);
-  const statusClassName = twMerge("px-2 text-rnt-temp-status-text", statusBgColor);
+  const statusClassName = cn("px-2 text-rnt-temp-status-text", statusBgColor);
 
   const pathname = usePathname();
 
   return (
     <div key={chatInfo.tripId} className={className}>
-      <div className="w-24 h-24 row-span-3 self-center mx-2 cursor-pointer" onClick={onClickCallback}>
+      <div className="row-span-3 mx-2 h-24 w-24 cursor-pointer self-center" onClick={onClickCallback}>
         <Avatar src={otherPhotoUrl} sx={{ width: "6rem", height: "6rem" }}></Avatar>
       </div>
       <div
-        className="col-span-2 flex flex-row items-center max-sm:justify-between cursor-pointer"
+        className="col-span-2 flex cursor-pointer flex-row items-center max-sm:justify-between"
         onClick={onClickCallback}
       >
         <div className={statusClassName}>{getTripStatusTextFromStatus(chatInfo.tripStatus)}</div>
         <div className="ml-2 text-xs"> {t("reservation", { trip: chatInfo.tripId })}</div>
       </div>
-      <div className="flex flex-col text-sm truncate cursor-pointer" onClick={onClickCallback}>
+      <div className="flex cursor-pointer flex-col truncate text-sm" onClick={onClickCallback}>
         <strong>{otherName}</strong>
         <div>{chatInfo.carTitle}</div>
       </div>
       <Link href={`/${isHost ? "host" : "guest"}/trips/tripInfo/${chatInfo.tripId}?back=${pathname}`}>
         <Image className="sm:hidden" src={icInfo} width={25} alt="" />
-        <span className="max-sm:hidden text-sm text-rentality-secondary">{t("trip_info")}</span>
+        <span className="text-sm text-rentality-secondary max-sm:hidden">{t("trip_info")}</span>
       </Link>
       <div
-        className={`col-span-2 truncate cursor-pointer ${!chatInfo.isSeen ? "font-semibold" : ""}`}
+        className={`col-span-2 cursor-pointer truncate ${!chatInfo.isSeen ? "font-semibold" : ""}`}
         onClick={onClickCallback}
       >
         {chatInfo.lastMessage}

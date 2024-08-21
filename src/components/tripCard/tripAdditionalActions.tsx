@@ -96,7 +96,7 @@ function TripAdditionalActions({
     );
 
   return (
-    <div className="flex flex-col px-8 pt-2 pb-4" ref={refForScrool}>
+    <div className="flex flex-col px-8 pb-4 pt-2" ref={refForScrool}>
       <hr />
       <div id="trip-allowed-actions">
         <strong className="text-xl">
@@ -130,7 +130,7 @@ function TripAdditionalActions({
           return (
             <RntButton
               key={action.text}
-              className="max-md:w-full h-16 px-4"
+              className="h-16 px-4 max-md:w-full"
               disabled={disableButton}
               onClick={() => {
                 if (action.params == null || action.params.length == 0) {

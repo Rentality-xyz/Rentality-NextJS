@@ -1,3 +1,4 @@
+import { env } from "@/utils/env";
 import { createContext, PropsWithChildren, useState, useEffect, useContext } from "react";
 
 const GOOGLE_MAPS_API_URL = "https://maps.googleapis.com/maps/api/js";
@@ -52,7 +53,7 @@ export const GoogleMapsProvider = ({
     /* eslint-disable camelcase */
     const params = new URLSearchParams({
       loading: "async",
-      key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
+      key: env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
       language: language || defaultLanguage,
       region: region || defaultRegion,
       callback: "__googleMapsCallback__",

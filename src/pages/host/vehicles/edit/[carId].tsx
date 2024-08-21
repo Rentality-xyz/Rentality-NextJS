@@ -23,7 +23,7 @@ export default function EditCar() {
       <div className="flex flex-col">
         <PageTitle title={t("vehicles.edit_car_title")} />
         {isLoading ? (
-          <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
+          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
             {t("common.info.loading")}
           </div>
         ) : hostCarInfo.carId <= 0 ? (

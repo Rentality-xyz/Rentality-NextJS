@@ -1,5 +1,5 @@
+import { cn } from "@/utils";
 import { memo } from "react";
-import { twMerge } from "tailwind-merge";
 
 function getColor(color: `#${string}` | "success" | "error") {
   switch (color) {
@@ -21,8 +21,8 @@ function DotStatus({
   color: `#${string}` | "success" | "error";
   text: string;
 }) {
-  const containerClassNameMerged = twMerge("flex gap-2 items-center", containerClassName);
-  const dotClassName = twMerge("w-4 h-4 rounded-full inline-block pr-4", getColor(color));
+  const containerClassNameMerged = cn("flex gap-2 items-center", containerClassName);
+  const dotClassName = cn("w-4 h-4 rounded-full inline-block pr-4", getColor(color));
 
   return (
     <div className={containerClassNameMerged}>

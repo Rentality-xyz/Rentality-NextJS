@@ -5,7 +5,6 @@ import {
   emptyHostCarInfo,
   HostCarInfo,
   isUnlimitedMiles,
-  UNLIMITED_MILES_VALUE,
   UNLIMITED_MILES_VALUE_TEXT,
   verifyCar,
 } from "@/model/HostCarInfo";
@@ -31,6 +30,11 @@ import RntInputMultiline from "@/components/common/rntInputMultiline";
 import { isEmpty } from "@/utils/string";
 import { TRANSMISSION_AUTOMATIC_STRING, TRANSMISSION_MANUAL_STRING } from "@/model/Transmission";
 import RntValidationError from "@/components/common/RntValidationError";
+import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
+import RntCarModelSelect from "@/components/common/rntCarModelSelect";
+import RntCarYearSelect from "@/components/common/rntCarYearSelect";
+import RntVINCheckingInput from "@/components/common/rntVINCheckingInput";
+import * as React from "react";
 
 export default function CarEditForm({
   initValue,
@@ -108,6 +112,12 @@ export default function CarEditForm({
   const isLocationEdited = watch("isLocationEdited");
   const locationInfo = watch("locationInfo");
 
+  const [selectedMakeID, setSelectedMakeID] = useState<string>("");
+  const [selectedModelID, setSelectedModelID] = useState<string>("");
+
+  const [isVINVerified, setIsVINVerified] = useState<boolean>(false);
+  const [isVINCheckOverriden, setIsVINCheckOverriden] = useState<boolean>(false);
+
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
   };
@@ -184,6 +194,7 @@ export default function CarEditForm({
       trunkSize: "",
       bodyType: "",
     };
+
     const isValidForm = verifyCar(carInfoFormParams);
     const isImageUploaded = !isNewCar || imageFile !== null;
 
@@ -237,57 +248,103 @@ export default function CarEditForm({
     <GoogleMapsProvider libraries={["places"]} language="en">
       <form onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
         <div className="mt-4">
-          <div className="text-lg mb-4">
+          <div className="mb-4 text-lg">
             <strong>{t_car("car")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
-            <RntInput
-              className="lg:w-60"
-              id="vinNumber"
-              label={t_car("vin_num")}
-              placeholder="e.g. 4Y1SL65848Z411439"
-              readOnly={!isNewCar}
-              {...register("vinNumber")}
-              validationError={errors.vinNumber?.message?.toString()}
+            <Controller
+              name="vinNumber"
+              control={control}
+              defaultValue=""
+              render={({ field: { onChange, value } }) => (
+                <RntVINCheckingInput
+                  id="vinNumber"
+                  className="lg:w-60"
+                  label={t_car("vin_num")}
+                  value={value}
+                  isVINCheckOverriden={isVINCheckOverriden}
+                  isVINVerified={isVINVerified}
+                  placeholder="e.g. 4Y1SL65848Z411439"
+                  readOnly={!isNewCar}
+                  onChange={(e) => onChange(e.target.value)}
+                  onVINVerified={(isVINVerified: boolean) => setIsVINVerified(isVINVerified)}
+                  onVINCheckOverriden={(isVINCheckOverriden) => setIsVINCheckOverriden(isVINCheckOverriden)}
+                />
+              )}
             />
-            <RntInput
-              className="lg:w-60"
-              id="brand"
-              label={t_car("brand")}
-              placeholder="e.g. Shelby"
-              readOnly={!isNewCar}
-              {...register("brand")}
-              validationError={errors.brand?.message?.toString()}
+            <Controller
+              name="brand"
+              control={control}
+              defaultValue=""
+              render={({ field: { onChange, value } }) => (
+                <RntCarMakeSelect
+                  id="brand"
+                  className="lg:w-60"
+                  label={t_car("brand")}
+                  readOnly={!isNewCar}
+                  value={value}
+                  onMakeSelect={(newID, newMake) => {
+                    onChange(newMake);
+                    setSelectedMakeID(newID);
+                  }}
+                  validationError={errors.brand?.message?.toString()}
+                />
+              )}
             />
-            <RntInput
-              className="lg:w-60"
-              id="model"
-              label={t_car("model")}
-              placeholder="e.g. Mustang GT500"
-              readOnly={!isNewCar}
-              {...register("model")}
-              validationError={errors.model?.message?.toString()}
+            <Controller
+              name="model"
+              control={control}
+              defaultValue=""
+              render={({ field: { onChange, value } }) => (
+                <RntCarModelSelect
+                  id="model"
+                  className="lg:w-60"
+                  label={t_car("model")}
+                  make_id={selectedMakeID}
+                  readOnly={!isNewCar}
+                  value={value}
+                  onModelSelect={(newID: string, newModel) => {
+                    onChange(newModel);
+                    setSelectedModelID(newID);
+                  }}
+                  validationError={errors.model?.message?.toString()}
+                />
+              )}
             />
-            <RntInput
-              className="lg:w-60"
-              id="releaseYear"
-              label={t_car("release")}
-              placeholder="e.g. 2023"
-              readOnly={!isNewCar}
-              {...register("releaseYear", { valueAsNumber: true })}
-              validationError={errors.releaseYear?.message?.toString()}
+            <Controller
+              name="releaseYear"
+              control={control}
+              defaultValue={0}
+              render={({ field: { onChange, value } }) => (
+                <RntCarYearSelect
+                  id="releaseYear"
+                  className="lg:w-60"
+                  label={t_car("release")}
+                  make_id={selectedMakeID}
+                  model_id={selectedModelID}
+                  readOnly={!isNewCar}
+                  value={value}
+                  onYearSelect={(newYear) => onChange(newYear)}
+                  validationError={errors.releaseYear?.message?.toString()}
+                />
+              )}
             />
           </div>
         </div>
 
         <div className="mt-4">
-          <div className="text-lg mb-4">
+          <div className="mb-4 text-lg">
             <strong>{t_car("photo")}</strong>
           </div>
-          <RntFileButton className="w-40 h-16" disabled={!isNewCar} onChange={onChangeFile}>
+          <RntFileButton
+            className="h-16 w-40"
+            disabled={!isNewCar}
+            onChange={onChangeFile}
+            accept="image/png,image/jpeg"
+          >
             {t("common.upload")}
           </RntFileButton>
-          <div className="w-80 h-60 rounded-2xl mt-8 overflow-hidden bg-gray-200 bg-opacity-40">
+          <div className="mt-8 h-60 w-80 overflow-hidden rounded-2xl bg-gray-200 bg-opacity-40">
             {!isEmpty(image) ? (
               <Image className="h-full w-full object-cover" width={1000} height={1000} src={image} alt="" />
             ) : null}
@@ -296,7 +353,7 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="text-lg mb-4">
+          <div className="mb-4 text-lg">
             <strong>{t_car("car_basics")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
@@ -356,7 +413,7 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="text-lg  mb-4">
+          <div className="mb-4 text-lg">
             <strong>{t_car("basic_details")}</strong>
           </div>
           <div className="details flex flex-wrap gap-4">
@@ -421,7 +478,7 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="text-lg  mb-4">
+          <div className="mb-4 text-lg">
             <strong>{t_car("more_info")}</strong>
           </div>
           <div className="flex flex-col">
@@ -437,10 +494,10 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="text-lg mb-4">
+          <div className="mb-4 text-lg">
             <strong>{t_car("location")}</strong>
           </div>
-          <div className="flex flex-row gap-4 items-end  mb-4">
+          <div className="mb-4 flex flex-row items-end gap-4">
             {isLocationEdited ? (
               <Controller
                 name="locationInfo"
@@ -542,14 +599,14 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="text-lg  mb-4">
+          <div className="mb-4 text-lg">
             <strong>{t_car("included_distance")}</strong>
           </div>
           <Controller
             name="milesIncludedPerDay"
             control={control}
             render={({ field }) => (
-              <div className="flex flex-wrap gap-4 items-start">
+              <div className="flex flex-wrap items-start gap-4">
                 <MilesIncludedPerDay
                   value={field.value}
                   onChange={field.onChange}
@@ -562,7 +619,7 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="text-lg  mb-4">
+          <div className="mb-4 text-lg">
             <strong>{t_car("price")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
@@ -621,7 +678,7 @@ export default function CarEditForm({
 
         {isElectricEngine ? (
           <div className={`mt-4 ${isElectricEngine ? "" : "hidden"}`}>
-            <div className="text-lg  mb-4">
+            <div className="mb-4 text-lg">
               <strong>{t_car("battery_charge")}</strong>
             </div>
             <Controller
@@ -644,10 +701,10 @@ export default function CarEditForm({
         ) : null}
 
         <div className="mt-4">
-          <div className="text-lg  mb-4">
+          <div className="mb-4 text-lg">
             <strong>{t_car("management")}</strong>
           </div>
-          <div className="flex flex-wrap gap-4 mb-4">
+          <div className="mb-4 flex flex-wrap gap-4">
             <RntSelect
               className="lg:w-60"
               id="timeBufferBetweenTrips"
@@ -687,11 +744,11 @@ export default function CarEditForm({
           </div>
         </div>
 
-        <div className="flex flex-row gap-4 mb-8 mt-8 justify-between sm:justify-start">
-          <RntButton type="submit" className="w-40 h-16" disabled={isSubmitting}>
+        <div className="mb-8 mt-8 flex flex-row justify-between gap-4 sm:justify-start">
+          <RntButton type="submit" className="h-16 w-40" disabled={isSubmitting}>
             {t("common.save")}
           </RntButton>
-          <RntButton type="button" className="w-40 h-16" onClick={handleBack}>
+          <RntButton type="button" className="h-16 w-40" onClick={handleBack}>
             {t("common.back")}
           </RntButton>
         </div>
@@ -778,7 +835,7 @@ const FullBatteryChargePrice = ({
   }, [value]);
 
   return (
-    <div className="flex flex-wrap gap-4 ">
+    <div className="flex flex-wrap gap-4">
       <div>
         <RntInput
           className="lg:w-48"
@@ -795,7 +852,7 @@ const FullBatteryChargePrice = ({
           }}
           validationError={validationError}
         />
-        <p className="w-full text-sm text-center mt-2">{t_car("recommended", { amount: "$30-50" })}</p>
+        <p className="mt-2 w-full text-center text-sm">{t_car("recommended", { amount: "$30-50" })}</p>
       </div>
       <div>
         <RntInput
@@ -805,7 +862,7 @@ const FullBatteryChargePrice = ({
           readOnly={true}
           value={(fullBatteryChargePrice ?? 0) / 10}
         />
-        <p className="w-full text-sm text-center mt-2">{t_car("for_difference")}</p>
+        <p className="mt-2 w-full text-center text-sm">{t_car("for_difference")}</p>
       </div>
     </div>
   );

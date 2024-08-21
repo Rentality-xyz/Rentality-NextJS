@@ -136,7 +136,7 @@ export default function SearchAndFilters({
 
   return (
     <>
-      <div className="search my-2 flex flex-col xl:flex-row gap-4 xl:items-end">
+      <div className="search my-2 flex flex-col gap-4 xl:flex-row xl:items-end">
         <RntPlaceAutoComplete
           className="xl:w-2/3"
           labelClassName="pl-[18px]"
@@ -171,7 +171,7 @@ export default function SearchAndFilters({
             });
           }}
         />
-        <div className="flex flex-col md:flex-row gap-4 md:items-end md:justify-between xl:justify-around">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between xl:justify-around">
           <RntInput
             className="basis-1/2"
             inputClassName="pr-4"
@@ -192,15 +192,15 @@ export default function SearchAndFilters({
             value={searchCarRequest.dateTo}
             onChange={handleSearchInputChange}
           />{" "}
-          <RntButton className="w-full md:w-48 mt-2" disabled={!isSearchAllowed} onClick={() => handleSearchClick()}>
+          <RntButton className="mt-2 w-full md:w-48" disabled={!isSearchAllowed} onClick={() => handleSearchClick()}>
             {t_comp("button_search")}
           </RntButton>
         </div>
       </div>
       <div className="flex flex-col">
-        <div className="flex flex-wrap items-center gap-4 mt-4">
+        <div className="mt-4 flex flex-wrap items-center gap-4">
           <RntButton
-            className="w-40 "
+            className="w-40"
             onClick={() => {
               setOpenFilterPanel(true);
               openFilterOnSearchPage();
@@ -230,7 +230,7 @@ export default function SearchAndFilters({
             ))}
           </RntSelect>
           <RntButtonTransparent className="w-full sm:w-48" onClick={handleClickOpenDeliveryLocation}>
-            <div className="flex justify-center items-center text-[#52D1C9]">
+            <div className="flex items-center justify-center text-[#52D1C9]">
               <div className="text-lg">Deliver to me</div>
               <Image src={openDeliveryLocation ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
             </div>

@@ -122,7 +122,7 @@ function UserProfileInfo({
 
   return (
     <form
-      className="my-1 lg:my-8 flex flex-col gap-4"
+      className="my-1 flex flex-col gap-4 lg:my-8"
       onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}
     >
       <Controller
@@ -130,7 +130,7 @@ function UserProfileInfo({
         control={control}
         render={({ field }) => (
           <>
-            <div className="flex flex-row gap-4 items-center">
+            <div className="flex flex-row items-center gap-4">
               <Avatar
                 alt={`${savedProfileSettings.firstName} ${savedProfileSettings.lastName}`}
                 src={field.value}
@@ -142,7 +142,12 @@ function UserProfileInfo({
                 {savedProfileSettings.firstName} {savedProfileSettings.lastName}
               </div>
             </div>
-            <RntFileButton className="w-40 h-16" id="profilePhotoUrl" onChange={fileChangeCallback(field)}>
+            <RntFileButton
+              className="h-16 w-40"
+              id="profilePhotoUrl"
+              onChange={fileChangeCallback(field)}
+              accept="image/png,image/jpeg"
+            >
               {t("common.upload")}
             </RntFileButton>
           </>
@@ -150,7 +155,7 @@ function UserProfileInfo({
       />
 
       <fieldset className="mt-4">
-        <div className="text-lg mb-4">
+        <div className="mb-4 text-lg">
           <strong>{t_profile("basic_info")}</strong>
         </div>
         <div className="flex flex-wrap gap-4">
@@ -188,7 +193,7 @@ function UserProfileInfo({
       </fieldset>
 
       <fieldset className="mt-4">
-        <div className="text-lg mb-4">
+        <div className="mb-4 text-lg">
           <strong>{t_profile("driver_license_info")}</strong>
         </div>
         <div className="flex flex-wrap gap-4">

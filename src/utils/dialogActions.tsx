@@ -5,7 +5,7 @@ export const DialogActions = {
   OK: (onClick: MouseEventHandler<HTMLButtonElement>) => {
     return (
       <>
-        <RntButton className="w-28 mx-4" onClick={onClick}>
+        <RntButton className="mx-4 w-28" onClick={onClick}>
           Ок
         </RntButton>
       </>
@@ -14,7 +14,7 @@ export const DialogActions = {
   Cancel: (onClick: MouseEventHandler<HTMLButtonElement>) => {
     return (
       <>
-        <RntButton className="w-28 mx-4" onClick={onClick}>
+        <RntButton className="mx-4 w-28" onClick={onClick}>
           Cancel
         </RntButton>
       </>
@@ -23,7 +23,7 @@ export const DialogActions = {
   Button: (title: string, onClick: MouseEventHandler<HTMLButtonElement>) => {
     return (
       <>
-        <RntButton className="w-28 mx-4" onClick={onClick}>
+        <RntButton className="mx-4 w-28" onClick={onClick}>
           {title}
         </RntButton>
       </>

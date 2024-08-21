@@ -11,6 +11,7 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import ModifyTripForm from "./modifyTripForm";
 import { useChat } from "@/contexts/chat/firebase/chatContext";
 import GuestConfirmFinishForm from "./guestConfirmFinishForm";
+import { useRouter } from "next/navigation";
 
 function isInTheFuture(date: Date) {
   return date > new Date();
@@ -165,9 +166,9 @@ function CurrentStatusInfo({
 
   const handleGuestFinishTrip = async () => {
     hideDialogs();
-    if (tripInfo.allowedActions.length > 0) {
-      await tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), []);
-    }
+    changeStatusCallback(() => {
+      return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), []);
+    });
   };
 
   const handleCancel = () => {
@@ -202,7 +203,7 @@ function CurrentStatusInfo({
   };
 
   return (
-    <div id="trip-action-info" className="w-full md:w-1/4 flex flex-1 flex-col justify-between gap-2 p-4 md:p-2 xl:p-4">
+    <div id="trip-action-info" className="flex w-full flex-1 flex-col justify-between gap-2 p-4 md:w-1/4 md:p-2 xl:p-4">
       <div className="flex flex-col whitespace-pre-line">
         <p className="text-center text-[#52D1C9]">{actionHeader}</p>
         <p className="mt-4 text-center text-lg">
@@ -212,7 +213,7 @@ function CurrentStatusInfo({
       </div>
 
       {!isAdditionalActionHidden || tripInfo.allowedActions.length === 0 ? null : (
-        <div className="flex max-md:flex-row flex-col 2xl:flex-row gap-4">
+        <div className="flex flex-col gap-4 max-md:flex-row 2xl:flex-row">
           {(tripInfo.status === TripStatus.CheckedInByHost || tripInfo.status === TripStatus.Started) && isHost ? (
             <RntButton
               className="h-12 w-full px-4"
@@ -229,6 +230,7 @@ function CurrentStatusInfo({
           ) : tripInfo.status === TripStatus.CompletedWithoutGuestComfirmation && !isHost ? (
             <RntButton
               className="h-12 w-full px-4"
+              disabled={disableButton}
               onClick={() => {
                 showGuestConfirmFinishDialog();
               }}

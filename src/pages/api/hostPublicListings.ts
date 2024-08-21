@@ -3,6 +3,7 @@ import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractPublicHostCarDTO } from "@/model/blockchain/schemas";
 import { validateContractPublicHostCarDTO } from "@/model/blockchain/schemas_utils";
+import { env } from "@/utils/env";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Provider, Wallet } from "ethers";
@@ -23,8 +24,8 @@ const getHostAddressFromQuery = async (query: string | string[] | undefined, pro
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const privateKey = process.env.NEXT_WALLET_PRIVATE_KEY;
-  if (!privateKey) {
+  const privateKey = env.WALLET_PRIVATE_KEY;
+  if (isEmpty(privateKey)) {
     console.error("API checkTrips error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
     return;
@@ -32,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { chainId, host: hostQuery } = req.query;
 
-  const chainIdNumber = Number(chainId) > 0 ? Number(chainId) : Number(process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID);
+  const chainIdNumber = Number(chainId) > 0 ? Number(chainId) : env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
   if (!chainIdNumber) {
     console.error("API checkTrips error: chainId was not provided");
     res.status(400).json({ error: "chainId was not provided" });

@@ -1,7 +1,7 @@
 import { isEmpty } from "@/utils/string";
 import { forwardRef } from "react";
-import { twMerge } from "tailwind-merge";
 import RntValidationError from "./RntValidationError";
+import { cn } from "@/utils";
 
 export interface RntSelectProps extends React.ComponentPropsWithoutRef<"select"> {
   labelClassName?: string;
@@ -31,9 +31,9 @@ const RntSelect = forwardRef<HTMLSelectElement, RntSelectProps>(
     },
     ref
   ) => {
-    const cClassName = twMerge("text-black flex flex-col w-full", className);
-    const lClassName = twMerge("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
-    const sclassName = twMerge("w-full h-12 border-2 rounded-full pl-4", selectClassName);
+    const cClassName = cn("text-black flex flex-col w-full", className);
+    const lClassName = cn("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
+    const sclassName = cn("w-full h-12 border-2 rounded-full pl-4", selectClassName);
 
     return (
       <div className={cClassName}>

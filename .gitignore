@@ -37,7 +37,7 @@ next-env.d.ts
 *.localhost.json
 .firebase/
 package-lock.json
-/.project
+
 /privatekeys.txt
 /private_keys.txt
 .env.deploy_*

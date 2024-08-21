@@ -62,7 +62,7 @@ export default function RntTripRulesModal({}: {}) {
             }}
             id="alert-dialog-description"
           >
-            <div className="flex flex-col md:grid md:gap-4 md:grid-cols-3">
+            <div className="flex flex-col md:grid md:grid-cols-3 md:gap-4">
               <div className="bg-rentality-bg p-2">
                 <div className="flex">
                   <div className="mx-3 mt-1 w-1/12">

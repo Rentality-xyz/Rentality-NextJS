@@ -17,8 +17,8 @@ export const changeStatusHostConfirmedFormSchema = z.object({
     .min(0, "Odotemer should be positive")
     .max(9999999, "Level is to big")
     .int(),
-  insuranceCompanyName: z.string().optional(),
-  insurancePolicyNumber: z.string().optional(),
+  insuranceCompanyName: z.string().trim().max(50, "value is to big").optional(),
+  insurancePolicyNumber: z.string().trim().max(30, "value is to big").optional(),
 });
 
 export type ChangeStatusHostConfirmedFormValues = z.infer<typeof changeStatusHostConfirmedFormSchema>;

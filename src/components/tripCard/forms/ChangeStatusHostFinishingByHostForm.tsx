@@ -62,7 +62,7 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
     return (
       <div ref={ref}>
         <form
-          className="flex flex-col px-8 pt-2 pb-4"
+          className="flex flex-col px-8 pb-4 pt-2"
           onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}
         >
           <hr />
@@ -74,10 +74,10 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
             </strong>
           </div>
 
-          <div className="flex flex-col md:flex-row md:gap-8 mb-4">
-            <div className="flex flex-col flex-1">
+          <div className="mb-4 flex flex-col md:flex-row md:gap-8">
+            <div className="flex flex-1 flex-col">
               <div className="flex flex-col">
-                <div className="font-bold mt-2">Fuel or Battery level, %</div>
+                <div className="mt-2 font-bold">Fuel or Battery level, %</div>
                 <div className="flex flex-row gap-8">
                   <RntInput
                     className="w-1/2 py-2"
@@ -107,7 +107,7 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
                 </div>
               </div>
               <div className="flex flex-col">
-                <div className="font-bold mt-2">Odometer</div>
+                <div className="mt-2 font-bold">Odometer</div>
                 <div className="flex flex-row gap-8">
                   <RntInput
                     className="w-1/2 py-2"
@@ -127,9 +127,9 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
                 </div>
               </div>
             </div>
-            <div className="flex flex-col flex-1">
-              <div className="font-bold mt-2">Reimbursement charge:</div>
-              <div className="grid grid-cols-2 mt-2 md:mt-4 text-sm">
+            <div className="flex flex-1 flex-col">
+              <div className="mt-2 font-bold">Reimbursement charge:</div>
+              <div className="mt-2 grid grid-cols-2 text-sm md:mt-4">
                 <span className="col-span-1">Pick up Fuel:</span>
                 <span className="col-span-1 text-right">{tripInfo.startFuelLevelInPercents}%</span>
                 <span className="col-span-1">Drop off Fuel:</span>
@@ -141,7 +141,7 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
                 <span className="col-span-1">Total refuel charge:</span>
                 <span className="col-span-1 text-right">${displayMoneyWith2Digits(refuelCharge)}</span>
               </div>
-              <div className="grid grid-cols-2 mt-2 md:mt-4 text-sm">
+              <div className="mt-2 grid grid-cols-2 text-sm md:mt-4">
                 <span className="col-span-1">Miles included:</span>
                 <span className="col-span-1 text-right">
                   {getMilesIncludedPerDayText(
@@ -157,21 +157,21 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
                 <span className="col-span-1 text-right">${displayMoneyWith2Digits(overmilesCharge)}</span>
               </div>
             </div>
-            <div className="flex flex-col flex-1">
-              <div className="font-bold mt-4 md:mt-2">Security deposit info:</div>
-              <div className="grid grid-cols-2 gap-x-2 mt-2 md:mt-4 text-sm">
+            <div className="flex flex-1 flex-col">
+              <div className="mt-4 font-bold md:mt-2">Security deposit info:</div>
+              <div className="mt-2 grid grid-cols-2 gap-x-2 text-sm md:mt-4">
                 <span className="col-span-1">Received deposit:</span>
                 <span className="col-span-1 text-right">${displayMoneyWith2Digits(depositPaid)}</span>
                 <span className="col-span-1">Refuel or battery charge:</span>
-                <div className="col-span-1 text-right flex items-end">
+                <div className="col-span-1 flex items-end text-right">
                   <span className="w-full">${displayMoneyWith2Digits(refuelCharge)}</span>
                 </div>
                 <span className="col-span-1">Overmiles reimbursement:</span>
-                <div className="col-span-1 text-right flex items-end">
+                <div className="col-span-1 flex items-end text-right">
                   <span className="w-full">${displayMoneyWith2Digits(overmilesCharge)}</span>
                 </div>
                 <span className="col-span-1">Deposit to be returned:</span>
-                <div className="col-span-1 text-right flex items-end">
+                <div className="col-span-1 flex items-end text-right">
                   <span className="w-full">${displayMoneyWith2Digits(depositToBeReturned)}</span>
                 </div>
               </div>
@@ -183,7 +183,7 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
           </div>
 
           <div className="flex flex-row gap-4">
-            <RntButton type="submit" className="max-md:w-full h-16 px-4" disabled={disableButton || isSubmitting}>
+            <RntButton type="submit" className="h-16 px-4 max-md:w-full" disabled={disableButton || isSubmitting}>
               Finish
             </RntButton>
           </div>

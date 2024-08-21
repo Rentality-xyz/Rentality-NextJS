@@ -22,6 +22,11 @@ export const displayMoneyWith2Digits = (value: number | undefined) => {
   return value.toFixed(2);
 };
 
+export const displayMoneyWith2DigitsOrNa = (value: number | undefined) => {
+  if (value === undefined) return "N/A";
+  return value.toFixed(2);
+};
+
 export const displayMoneyFromCentsWith2Digits = (value: number | bigint): string => {
   return (Number(value) / 100).toFixed(2);
 };

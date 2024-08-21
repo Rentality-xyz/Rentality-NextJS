@@ -34,16 +34,16 @@ function TripCard({
 
   useEffect(() => {
     if (window.innerWidth <= 1280 && !isAdditionalActionHidden && allowedActionsRef.current) {
-      allowedActionsRef.current.scrollIntoView({ behavior: "smooth" });
+      allowedActionsRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
   }, [isAdditionalActionHidden]);
 
   return (
-    <div className="rnt-card flex flex-col rounded-xl overflow-hidden bg-rentality-bg">
-      <div className="md:flex max-2xl:flex-wrap 2xl:flex-nowrap">
+    <div className="rnt-card flex flex-col overflow-hidden rounded-xl bg-rentality-bg">
+      <div className="max-2xl:flex-wrap md:flex 2xl:flex-nowrap">
         <CarPhotoWithStatus carImageUrl={tripInfo.image} tripStatus={tripInfo.status} />
 
-        <div id="trip-item-info" className="w-full flex flex-col md:flex-row">
+        <div id="trip-item-info" className="flex w-full flex-col md:flex-row">
           <СarDetails tripInfo={tripInfo} isHost={isHost} t={t} confirmCarDetails={confirmCarDetails} />
           {
             <CurrentStatusInfo
@@ -59,10 +59,10 @@ function TripCard({
           <DateDetails tripInfo={tripInfo} t={t} />
           <LocationDetails tripInfo={tripInfo} t={t} />
         </div>
-        <div className="max-2xl:w-full 2xl:w-46 flex flex-col 2xl:flex-shrink-0 p-4 md:p-2 xl:p-4 text-end">
+        <div className="2xl:w-46 flex flex-col p-4 text-end max-2xl:w-full md:p-2 xl:p-4 2xl:flex-shrink-0">
           <div className="flex max-2xl:justify-between 2xl:flex-col 2xl:gap-2 2xl:pr-8">
             <TripContacts tripInfo={tripInfo} isHost={isHost} t={t} />
-            <div className="2xl:mt-10 text-[#52D1C9]">
+            <div className="text-[#52D1C9] 2xl:mt-10">
               <Link href={`/${pathRoot}/trips/tripInfo/${tripInfo.tripId}?back=${pathname}`}>
                 <strong>{t("booked.more_info")}</strong>
               </Link>

@@ -105,7 +105,7 @@ function HostNavMenu() {
 
 export default function HostSideNavMenu() {
   return (
-    <BaseSideNavMenu accountType={"Host"}>
+    <BaseSideNavMenu>
       <HostNavMenu />
     </BaseSideNavMenu>
   );
@@ -113,7 +113,7 @@ export default function HostSideNavMenu() {
 
 export function HostBurgerNavMenu() {
   return (
-    <BaseBurgerNavMenu accountType={"Host"}>
+    <BaseBurgerNavMenu>
       <HostNavMenu />
     </BaseBurgerNavMenu>
   );

@@ -3,10 +3,10 @@ import PageTitle from "@/components/pageTitle/pageTitle";
 import { useRentality } from "@/contexts/rentalityContext";
 import { ContractCarDetails, ContractCarInfo } from "@/model/blockchain/schemas";
 import { validateContractCarInfo } from "@/model/blockchain/schemas_utils";
+import { cn } from "@/utils";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { twMerge } from "tailwind-merge";
 import { number } from "zod";
 
 type CarLocations = {
@@ -105,7 +105,7 @@ export default function Admin() {
         {isLoading ? (
           <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
         ) : (
-          <table className=" w-full table-auto border-spacing-2 max-lg:hidden">
+          <table className="w-full table-auto border-spacing-2 max-lg:hidden">
             <thead className="mb-2">
               <tr className="text-rentality-additional-light">
                 <th className={`${headerSpanClassName}`}>#</th>
@@ -127,7 +127,7 @@ export default function Admin() {
             </thead>
             <tbody className="text-sm">
               {carLocations.map((carLocation, index) => {
-                const uniqueRowClassName = twMerge(rowSpanClassName);
+                const uniqueRowClassName = cn(rowSpanClassName);
                 return (
                   <tr key={carLocation.carId} className="border-b-[1px] border-b-gray-500">
                     <td className={rowSpanClassName}>{index + 1}</td>
@@ -140,7 +140,7 @@ export default function Admin() {
                         alt=""
                         width={150}
                         height={100}
-                        className="py-2 object-cover"
+                        className="object-cover py-2"
                       />
                     </td>
                     <td className={rowSpanClassName}>

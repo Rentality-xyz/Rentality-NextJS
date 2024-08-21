@@ -58,37 +58,37 @@ function ClaimAddPhoto({
 
   return (
     <div className="my-2">
-      <p className="mt-2 mb-1">Up to 5 photos possible</p>
+      <p className="mb-1 mt-2">Up to 5 photos possible</p>
       <div className="flex flex-row gap-4">
         {filesToUpload.map((fileToUpload, index) => {
           return (
             <div
               key={index}
-              className="relative w-48 h-40 rounded-2xl overflow-hidden"
+              className="relative h-40 w-48 overflow-hidden rounded-2xl"
               onClick={() => {
                 handleEditClick(index);
               }}
             >
               {fileToUpload.file.type.startsWith("image/") ? (
                 <Image
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                   width={1000}
                   height={1000}
                   src={fileToUpload.localUrl}
                   alt=""
                 />
               ) : (
-                <div className="w-full h-full relative bg-gray-200 bg-opacity-60 bg-center bg-no-repeat">
-                  <span className="absolute w-full bottom-4 text-center">{fileToUpload.file.name}</span>
+                <div className="relative h-full w-full bg-gray-200 bg-opacity-60 bg-center bg-no-repeat">
+                  <span className="absolute bottom-4 w-full text-center">{fileToUpload.file.name}</span>
                 </div>
               )}
-              <div className="absolute bottom-0 right-0 px-2 bg-rentality-additional">edit</div>
+              <div className="absolute bottom-0 right-0 bg-rentality-additional px-2">edit</div>
             </div>
           );
         })}
         {filesToUpload.length < MAX_ADD_IMAGE ? (
-          <div className="w-48 h-40 rounded-2xl overflow-hidden cursor-pointer bg-gray-200 bg-opacity-40 bg-center bg-no-repeat bg-[url('../images/add_circle_outline_white_48dp.svg')]">
-            <div className="w-full h-full" onClick={handleImageClick} />
+          <div className="h-40 w-48 cursor-pointer overflow-hidden rounded-2xl bg-gray-200 bg-opacity-40 bg-[url('../images/add_circle_outline_white_48dp.svg')] bg-center bg-no-repeat">
+            <div className="h-full w-full" onClick={handleImageClick} />
             <input className="hidden" type="file" accept="image/*" ref={inputRef} onChange={handleImageChange} />
           </div>
         ) : null}
