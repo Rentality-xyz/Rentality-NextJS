@@ -1,3 +1,4 @@
+import Loading from "@/components/common/Loading";
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import { useRentality } from "@/contexts/rentalityContext";
@@ -102,9 +103,8 @@ export default function Admin() {
     <Layout>
       <div className="flex flex-col">
         <PageTitle title="Car locations" />
-        {isLoading ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">Loading...</div>
-        ) : (
+        {isLoading && <Loading />}
+        {!isLoading && (
           <table className="w-full table-auto border-spacing-2 max-lg:hidden">
             <thead className="mb-2">
               <tr className="text-rentality-additional-light">

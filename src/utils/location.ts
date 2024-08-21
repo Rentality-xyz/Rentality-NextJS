@@ -35,3 +35,15 @@ export function mapLocationInfoToContractLocationInfo(locationInfo: LocationInfo
     timeZoneId: locationInfo.timeZoneId,
   };
 }
+
+export function mapContractLocationInfoToLocationInfo(locationInfo: ContractLocationInfo): LocationInfo {
+  return {
+    address: locationInfo.userAddress,
+    country: locationInfo.country,
+    state: locationInfo.state,
+    city: locationInfo.city,
+    latitude: Number(locationInfo.latitude),
+    longitude: Number(locationInfo.longitude),
+    timeZoneId: locationInfo.timeZoneId,
+  };
+}

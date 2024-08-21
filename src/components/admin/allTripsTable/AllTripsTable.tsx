@@ -1,516 +1,71 @@
 import Link from "next/link";
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import RntButton from "@/components/common/rntButton";
-import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2DigitsOrNa } from "@/utils/numericFormatters";
-import { TripStatus } from "@/model/blockchain/schemas";
 import { usePathname } from "next/navigation";
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import { cn } from "@/utils";
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
-
-type AdminTripDetails = {
-  tripId: number;
-  carDescription: string;
-  plateNumber: string;
-  tripStatus: TripStatus;
-  paymentsStatus: "Prepayment" | "Paid to host" | "Refund to guest" | "Unpaid";
-  hostLocation: string;
-  tripStartDate: Date;
-  tripEndDate: Date;
-  timeZoneId: string;
-  tripDays: number;
-  hostName: string;
-  guestName: string;
-  tripPriceBeforeDiscountInUsd: number;
-  tripDiscountInUsd: number;
-  tripPriceAfterDiscountInUsd: number;
-  deliveryFeePickUpInUsd: number;
-  deliveryFeeDropOffInUsd: number;
-  salesTaxInUsd: number;
-  governmentTaxInUsd: number;
-  totalChargeForTripInUsd: number;
-  refundForTripInUsd: number | undefined;
-  depositReceivedInUsd: number;
-  depositReturnedInUsd: number | undefined;
-  reimbursementInUsd: number | undefined;
-  hostEarningsInUsd: number | undefined;
-  platformCommissionInUsd: number | undefined;
-  accruableSalesTaxInUsd: number | undefined;
-  accruableGovernmentTaxInUsd: number | undefined;
-};
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { getAdminTripStatusBgColorFromStatus, getAdminTextColorForPaymentStatus } from "@/utils/tailwind";
+import { Result } from "@/model/utils/result";
+import Loading from "@/components/common/Loading";
+import { PaymentStatus } from "@/model/blockchain/schemas";
+import {
+  AdminTripDetails,
+  getPaymentStatusText,
+  getTripStatusTextFromAdminStatus,
+} from "@/model/admin/AdminTripDetails";
 
 type AllTripsTableProps = {
-  isHost: boolean;
-  t: TFunction;
+  isLoading: boolean;
+  data: AdminTripDetails[];
+  payToHost: (tripId: number) => Promise<Result<boolean, string>>;
+  refundToGuest: (tripId: number) => Promise<Result<boolean, string>>;
 };
 
-const TEST_DATA: AdminTripDetails[] = [
-  {
-    tripId: 10,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.Closed,
-    paymentsStatus: "Paid to host",
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: 450,
-    reimbursementInUsd: 50,
-    hostEarningsInUsd: 874,
-    platformCommissionInUsd: 206,
-    accruableSalesTaxInUsd: 72.1,
-    accruableGovernmentTaxInUsd: 20,
-  },
-  {
-    tripId: 11,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.CompletedWithoutGuestComfirmation,
-    paymentsStatus: "Unpaid",
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: undefined,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 12,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.Closed, //finished by host, guest approve
-    paymentsStatus: "Paid to host",
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: 450,
-    reimbursementInUsd: 50,
-    hostEarningsInUsd: 874,
-    platformCommissionInUsd: 206,
-    accruableSalesTaxInUsd: 72.1,
-    accruableGovernmentTaxInUsd: 20,
-  },
-  {
-    tripId: 13,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.Closed, //finished by host, admin pay to host
-    paymentsStatus: "Paid to host",
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: 450,
-    reimbursementInUsd: 50,
-    hostEarningsInUsd: 874,
-    platformCommissionInUsd: 206,
-    accruableSalesTaxInUsd: 72.1,
-    accruableGovernmentTaxInUsd: 20,
-  },
-  {
-    tripId: 14,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.Closed, //finished by host, admin refund to guest
-    paymentsStatus: "Refund to guest",
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: 1122.1,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: 500,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 15,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.Rejected, //guest before confirm
-    paymentsStatus: "Refund to guest",
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: 1122.1,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: 500,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 16,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.Rejected, //guest after confirm
-    paymentsStatus: "Refund to guest",
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: 1122.1,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: 500,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 17,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.Rejected, //host before confirm
-    paymentsStatus: "Refund to guest",
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: 1122.1,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: 500,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 18,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.Rejected, //host after confirm
-    paymentsStatus: "Refund to guest",
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: 1122.1,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: 500,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 19,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.Pending,
-    paymentsStatus: "Prepayment",
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: undefined,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 20,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.Confirmed,
-    paymentsStatus: "Prepayment",
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: undefined,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 21,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.CheckedInByHost,
-    paymentsStatus: "Prepayment",
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: undefined,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 22,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.Started,
-    paymentsStatus: "Prepayment",
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: undefined,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 23,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.CheckedOutByGuest,
-    paymentsStatus: "Prepayment",
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: undefined,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-  {
-    tripId: 24,
-    carDescription: "BMW 330i 2023",
-    plateNumber: "XYZ9876",
-    tripStatus: TripStatus.Finished,
-    paymentsStatus: "Prepayment",
-    hostLocation: "Miami, Florida, US",
-    tripStartDate: new Date(2023, 11, 15, 12, 47),
-    tripEndDate: new Date(2023, 11, 16, 12, 48),
-    timeZoneId: UTC_TIME_ZONE_ID,
-    tripDays: 10,
-    hostName: "James Webb",
-    guestName: "Kirrill Parygin",
-    tripPriceBeforeDiscountInUsd: 1000,
-    tripDiscountInUsd: 100,
-    tripPriceAfterDiscountInUsd: 900,
-    deliveryFeePickUpInUsd: 60,
-    deliveryFeeDropOffInUsd: 70,
-    salesTaxInUsd: 72.1,
-    governmentTaxInUsd: 20,
-    totalChargeForTripInUsd: 1122.1,
-    refundForTripInUsd: undefined,
-    depositReceivedInUsd: 500,
-    depositReturnedInUsd: undefined,
-    reimbursementInUsd: undefined,
-    hostEarningsInUsd: undefined,
-    platformCommissionInUsd: undefined,
-    accruableSalesTaxInUsd: undefined,
-    accruableGovernmentTaxInUsd: undefined,
-  },
-];
-
-export default function AllTripsTable({ isHost, t }: AllTripsTableProps) {
+export default function AllTripsTable({ isLoading, data, payToHost, refundToGuest }: AllTripsTableProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const pathname = usePathname();
+  const { t } = useTranslation();
+  const { showError } = useRntDialogs();
 
   const t_att: TFunction = (name, options) => {
     return t("all_trips_table." + name, options);
   };
 
-  const [allTrips, setAllTrips] = useState<AdminTripDetails[]>(TEST_DATA);
+  async function handlePayToHost(tripId: number) {
+    setIsSubmitting(true);
+    const result = await payToHost(tripId);
+    if (!result.ok) {
+      showError(result.error);
+    }
+    setIsSubmitting(false);
+  }
+
+  async function handleRefundToGuest(tripId: number) {
+    setIsSubmitting(true);
+    const result = await refundToGuest(tripId);
+    if (!result.ok) {
+      showError(result.error);
+    }
+    setIsSubmitting(false);
+  }
+
   const headerSpanClassName = "text-center font-semibold px-2 font-light text-sm";
   const rowSpanClassName = "px-2 h-12 text-center";
 
+  if (isLoading) {
+    return (
+      <div className="rounded-b-2xl bg-rentality-bg p-4 pb-8">
+        <Loading />
+      </div>
+    );
+  }
+
   return (
-    <div className="mt-5 min-h-[300px] rounded-2xl bg-rentality-bg p-4 pb-16">
+    <>
       <div className="text-xl lg:hidden">The resolution is too low!</div>
       <table className="hidden w-full table-auto border-spacing-2 overflow-x-auto lg:block">
         <thead className="mb-2">
@@ -518,9 +73,9 @@ export default function AllTripsTable({ isHost, t }: AllTripsTableProps) {
             <th className={`${headerSpanClassName} min-w-[5ch]`}>{t_att("tripId")}</th>
             <th className={`${headerSpanClassName} min-w-[15ch]`}>{t_att("vehicle")}</th>
             <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_att("plateNumber")}</th>
-            <th className={`${headerSpanClassName} min-w-[20ch]`}>{t_att("tripStatus")}</th>
+            <th className={`${headerSpanClassName} min-w-[25ch]`}>{t_att("tripStatus")}</th>
             <th className={`${headerSpanClassName}`}>{t_att("paymentManagement")}</th>
-            <th className={`${headerSpanClassName} min-w-[15ch]`}>{t_att("paymentsStatus")}</th>
+            <th className={`${headerSpanClassName} min-w-[17ch]`}>{t_att("paymentsStatus")}</th>
             <th className={`${headerSpanClassName} min-w-[18ch]`}>{t_att("location")}</th>
             <th className={`${headerSpanClassName} min-w-[18ch]`}>{t_att("start")}</th>
             <th className={`${headerSpanClassName} min-w-[18ch]`}>{t_att("end")}</th>
@@ -547,24 +102,44 @@ export default function AllTripsTable({ isHost, t }: AllTripsTableProps) {
           </tr>
         </thead>
         <tbody className="text-sm">
-          {allTrips.map((tripItem) => {
-            const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${tripItem.tripId}?back=${pathname}`;
+          {data.map((tripItem) => {
+            const detailsLink = `/admin/trips/tripInfo/${tripItem.tripId}?back=${pathname}`;
+            const tripStatusBgColor = getAdminTripStatusBgColorFromStatus(tripItem.tripStatus);
+            const paymentStatusTextColor = getAdminTextColorForPaymentStatus(tripItem.paymentsStatus);
 
             return (
               <tr key={tripItem.tripId} className="border-b-[2px] border-b-gray-500">
                 <td className={rowSpanClassName}>{tripItem.tripId}</td>
                 <td className={rowSpanClassName}>{tripItem.carDescription}</td>
                 <td className={rowSpanClassName}>{tripItem.plateNumber}</td>
-                <td className={rowSpanClassName}>{getTripStatusTextFromStatus(tripItem.tripStatus)}</td>
-                <td className={rowSpanClassName}>
-                  {tripItem.paymentsStatus === "Unpaid" ? (
-                    <div className="flex flex-col gap-2 py-2">
-                      <RntButton className="h-8 w-40">Pay to Host</RntButton>
-                      <RntButton className="h-8 w-40">Refund to Guest</RntButton>
-                    </div>
-                  ) : null}
+                <td className={cn(rowSpanClassName, tripStatusBgColor, "font-semibold")}>
+                  {getTripStatusTextFromAdminStatus(tripItem.tripStatus)}
                 </td>
-                <td className={rowSpanClassName}>{tripItem.paymentsStatus}</td>
+                <td className={rowSpanClassName}>
+                  {tripItem.paymentsStatus === PaymentStatus.Unpaid && (
+                    <div className="flex flex-col gap-2 py-2">
+                      <RntButton
+                        className="h-8 w-40 bg-[#548235]"
+                        type="button"
+                        disabled={isSubmitting}
+                        onClick={() => handlePayToHost(tripItem.tripId)}
+                      >
+                        {t_att("pay_to_host")}
+                      </RntButton>
+                      <RntButton
+                        className="h-8 w-40 bg-[#C55A11]"
+                        type="button"
+                        disabled={isSubmitting}
+                        onClick={() => handleRefundToGuest(tripItem.tripId)}
+                      >
+                        {t_att("refund_to_guest")}
+                      </RntButton>
+                    </div>
+                  )}
+                </td>
+                <td className={cn(rowSpanClassName, paymentStatusTextColor, "font-semibold")}>
+                  {getPaymentStatusText(tripItem.paymentsStatus)}
+                </td>
                 <td className={rowSpanClassName}>{tripItem.hostLocation}</td>
                 <td className={rowSpanClassName}>
                   {dateFormatShortMonthDateTime(tripItem.tripStartDate, tripItem.timeZoneId)}
@@ -607,6 +182,6 @@ export default function AllTripsTable({ isHost, t }: AllTripsTableProps) {
           })}
         </tbody>
       </table>
-    </div>
+    </>
   );
 }

@@ -60,6 +60,24 @@ export const dateToHtmlDateTimeFormat = (value: Date | undefined) => {
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 };
 
+//yyyy-MM-dd
+export const dateToHtmlDateFormat = (value: Date | undefined) => {
+  if (value === undefined) return "";
+
+  // return moment(value).format("yyyy-MM-DD");
+
+  let day = value.getDate().toString();
+  if (day.length === 1) {
+    day = "0" + day;
+  }
+  let month = (value.getMonth() + 1).toString();
+  if (month.length === 1) {
+    month = "0" + month;
+  }
+  const year = value.getFullYear().toString();
+  return `${year}-${month}-${day}`;
+};
+
 //MMM dd - MMM dd yyyy
 export const dateRangeFormatShortMonthDateYear = (valueFrom: Date, valueTo: Date, timeZone?: string) => {
   if (!valueFrom || !valueTo) return "";

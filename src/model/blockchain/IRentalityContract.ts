@@ -1,5 +1,6 @@
 import { ContractTransactionResponse } from "ethers";
 import {
+  ContractAllTripsDTO,
   ContractBaseDiscount,
   ContractCalculatePaymentsDTO,
   ContractCarDetails,
@@ -20,6 +21,7 @@ import {
   ContractSearchCarWithDistance,
   ContractSignedLocationInfo,
   ContractTripDTO,
+  ContractTripFilter,
   ContractTripReceiptDTO,
   ContractUpdateCarInfoRequest,
 } from "./schemas";
@@ -160,10 +162,12 @@ export interface IRentalityAdminGateway {
   setClaimsWaitingTime(timeInSec: bigint): Promise<ContractTransactionResponse>;
   getClaimWaitingTime(): Promise<bigint>;
   getPlatformFeeInPPM(): Promise<bigint>;
-  confirmCheckOut(tripId: bigint): Promise<ContractTransactionResponse>;
-  rejectTripRequest(tripId: bigint): Promise<ContractTransactionResponse>;
   setCivicData(_civicVerifier: string, _civicGatekeeperNetwork: bigint): Promise<ContractTransactionResponse>;
-  setNewTCMessage(message: string): Promise<ContractTransactionResponse>;
+  setNewTCMessage(message: string): Promise<ContractTransactionResponse>;  
+  
+  getAllTrips(filter:ContractTripFilter, page:bigint, itemsPerPage:bigint): Promise<ContractAllTripsDTO>;  
+  payToHost(tripId: bigint): Promise<ContractTransactionResponse>;
+  refundToGuest(tripId: bigint): Promise<ContractTransactionResponse>;
 
   getKycCommission(): Promise<bigint>;
   setKycCommission(valueInUsdCents: bigint): Promise<ContractTransactionResponse>;

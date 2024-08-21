@@ -486,6 +486,7 @@
     "no_cars": "Host does not have any listed car"
   },
   "all_trips_table": {
+    "page_title": "All trips table",
     "tripId": "Trip id",
     "vehicle": "Vehicle",
     "plateNumber": "Plate number",
@@ -514,7 +515,12 @@
     "platformCommission": "Platform commission, $",
     "details": "Details",
     "accruableSalesTax": "Accruable Sales Tax, $",
-    "accruableGovernmentTax": "Accruable Government Tax, $"
+    "accruableGovernmentTax": "Accruable Government Tax, $",
+    "pay_to_host": "Pay to Host",
+    "refund_to_guest": "Refund to Guest",
+    "start_date": "Start date",
+    "end_date": "End date",
+    "allStatuses": "All statuses"
   },
   "common": {
     "info": {
@@ -538,6 +544,7 @@
     "edit": "Edit",
     "connect": "Connect",
     "logout": "Logout",
-    "plate_number": "Plate number"
+    "plate_number": "Plate number",
+    "apply": "Apply"
   }
 }

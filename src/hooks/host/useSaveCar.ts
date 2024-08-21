@@ -111,6 +111,7 @@ const useSaveCar = () => {
         timeBufferBetweenTripsInSec: BigInt(dataToSave.timeBufferBetweenTripsInMin * 60),
         insuranceIncluded: dataToSave.isInsuranceIncluded,
         locationInfo: location,
+        currentlyListed: dataToSave.currentlyListed,
       };
 
       const transaction = await rentalityContract.addCar(request);
