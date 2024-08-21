@@ -20,6 +20,7 @@ import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProfileInfoFormValues, profileInfoFormSchema } from "./profileInfoFormSchema";
 import moment from "moment";
+import { convertHeicToPng } from "@/utils/heic2any";
 
 function UserProfileInfo({
   savedProfileSettings,
@@ -64,14 +65,26 @@ function UserProfileInfo({
         return;
       }
 
-      const file = e.target.files[0];
-      const resizedImage = await resizeImage(file, 300);
+      let file = e.target.files[0];
+      if (file.type.startsWith("image/")) {
+        file = await resizeImage(file, 300);
+      } else if (file.size > 5 * 1024 * 1024) {
+        alert("File is too big");
+        return;
+      }
+
       if (!isEmpty(field.value) && field.value.startsWith("blob")) {
         console.log("Revoking ObjectURL");
         URL.revokeObjectURL(field.value);
       }
-      const urlImage = URL.createObjectURL(resizedImage);
-      field.onChange(urlImage);
+      const fileNameExt = file.name.substr(file.name.lastIndexOf(".") + 1);
+      if (fileNameExt == "heic") {
+        const convertedFile = await convertHeicToPng(file);
+        field.onChange(convertedFile.localUrl);
+      } else {
+        const urlImage = URL.createObjectURL(file);
+        field.onChange(urlImage);
+      }
     };
   }
 
