@@ -18,7 +18,7 @@ import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2Digits, fixedNumber } from "@/utils/numericFormatters";
 import { getTimeZoneIdFromAddress } from "@/utils/fetchTimeZoneId";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
 import { useRouter } from "next/navigation";
 import { resizeImage } from "@/utils/image";
@@ -35,7 +35,7 @@ import RntCarModelSelect from "@/components/common/rntCarModelSelect";
 import RntCarYearSelect from "@/components/common/rntCarYearSelect";
 import RntVINCheckingInput from "@/components/common/rntVINCheckingInput";
 import * as React from "react";
-import {convertHeicToPng} from "@/utils/heic2any";
+import { convertHeicToPng } from "@/utils/heic2any";
 
 export default function CarEditForm({
   initValue,
@@ -49,7 +49,8 @@ export default function CarEditForm({
   t: TFunction;
 }) {
   const router = useRouter();
-  const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
+  const { showDialog, hideDialogs } = useRntDialogs();
+  const { showInfo, showError } = useRntSnackbars();
 
   //const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(initValue ?? emptyHostCarInfo);
 
@@ -161,8 +162,8 @@ export default function CarEditForm({
 
     const reader = new FileReader();
     reader.onload = async function (event) {
-      const fileNameExt = file.name.substr(file.name.lastIndexOf('.') + 1);
-      if(fileNameExt == "heic") {
+      const fileNameExt = file.name.substr(file.name.lastIndexOf(".") + 1);
+      if (fileNameExt == "heic") {
         const convertedFile = await convertHeicToPng(file);
         setValue("image", convertedFile.localUrl);
       } else {

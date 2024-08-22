@@ -12,7 +12,7 @@ import RntDatePicker from "../common/rntDatePicker";
 import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { TFunction } from "@/utils/i18n";
 import AgreementInfo from "./agreement_info";
 import KycVerification from "./kyc_verification";
@@ -35,7 +35,8 @@ function UserProfileInfo({
 }) {
   const router = useRouter();
   const ethereumInfo = useEthereum();
-  const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
+  const { showDialog, hideDialogs } = useRntDialogs();
+  const { showInfo, showError, hideSnackbars } = useRntSnackbars();
 
   const { register, handleSubmit, formState, control } = useForm<ProfileInfoFormValues>({
     defaultValues: {
@@ -119,6 +120,7 @@ function UserProfileInfo({
       const result = await saveProfileSettings(dataToSave);
 
       hideDialogs();
+      hideSnackbars();
       if (!result) {
         throw new Error("Save profile info error");
       }

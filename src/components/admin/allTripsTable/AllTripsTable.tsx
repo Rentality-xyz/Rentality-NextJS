@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/utils";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { getAdminTripStatusBgColorFromStatus, getAdminTextColorForPaymentStatus } from "@/utils/tailwind";
 import { Result } from "@/model/utils/result";
 import Loading from "@/components/common/Loading";
@@ -29,7 +29,7 @@ export default function AllTripsTable({ isLoading, data, payToHost, refundToGues
   const [isSubmitting, setIsSubmitting] = useState(false);
   const pathname = usePathname();
   const { t } = useTranslation();
-  const { showError } = useRntDialogs();
+  const { showError } = useRntSnackbars();
 
   const t_att: TFunction = (name, options) => {
     return t("all_trips_table." + name, options);

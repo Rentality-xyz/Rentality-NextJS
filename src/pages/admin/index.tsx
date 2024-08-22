@@ -2,7 +2,7 @@ import RntInput from "@/components/common/rntInput";
 import RntInputWithButton from "@/components/common/rntInputWithButton";
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import useAdminPanelInfo from "@/hooks/admin/useAdminPanelInfo";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -22,7 +22,7 @@ export default function Admin() {
   const [newPlatformFee, setNewPlatformFee] = useState("");
   const [newKycCommission, setNewKycCommission] = useState("");
   const [newClaimWaitingTime, setNewClaimWaitingTime] = useState("");
-  const { showError } = useRntDialogs();
+  const { showError } = useRntSnackbars();
   const { t } = useTranslation();
   const t_admin: TFunction = (name, options) => {
     return t("admin." + name, options);
