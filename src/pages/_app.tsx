@@ -36,6 +36,12 @@ export default function App({ Component, pageProps }: AppProps) {
     Hotjar.init(env.NEXT_PUBLIC_HOTJAR_SITE_ID, env.NEXT_PUBLIC_HOTJAR_VERSION);
   }, []);
 
+  useEffect(() => {
+    if (env.NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS) {
+      import("eruda").then((eruda) => eruda.default.init({ useShadowDom: true, autoScale: true }));
+    }
+  }, []);
+
   return (
     <Web3Setup>
       <RentalityProvider>
