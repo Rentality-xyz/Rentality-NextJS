@@ -166,6 +166,8 @@ export interface IRentalityAdminGateway {
   setNewTCMessage(message: string): Promise<ContractTransactionResponse>;
 
   getAllTrips(filter: ContractTripFilter, page: bigint, itemsPerPage: bigint): Promise<ContractAllTripsDTO>;
+  getAllCars(page: bigint, itemsPerPage: bigint): Promise<ContractAllTripsDTO>;
+
   payToHost(tripId: bigint): Promise<ContractTransactionResponse>;
   refundToGuest(tripId: bigint): Promise<ContractTransactionResponse>;
 
