@@ -23,7 +23,6 @@ export type AdminAllTripsFilters = {
 
 const useAdminAllTrips = () => {
   const ethereumInfo = useEthereum();
-  const rentalityGateway = useRentality();
   const [rentalityAdminGateway, setRentalityAdminGateway] = useState<IRentalityAdminGateway | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<AdminTripDetails[]>([]);
@@ -31,13 +30,13 @@ const useAdminAllTrips = () => {
   const [totalPageCount, setTotalPageCount] = useState<number>(0);
 
   const fetchData = useCallback(
-    async (filters?: AdminAllTripsFilters, page: number = 1, itemsPerPage: number = 10) => {
+    async (
+      filters?: AdminAllTripsFilters,
+      page: number = 1,
+      itemsPerPage: number = 10
+    ): Promise<Result<boolean, string>> => {
       if (!rentalityAdminGateway) {
         console.error("fetchData error: rentalityAdminGateway is null");
-        return Err("Contract is not initialized");
-      }
-      if (!rentalityGateway) {
-        console.error("fetchData error: rentalityContract is null");
         return Err("Contract is not initialized");
       }
 
@@ -85,7 +84,7 @@ const useAdminAllTrips = () => {
         setIsLoading(false);
       }
     },
-    [rentalityAdminGateway, rentalityGateway]
+    [rentalityAdminGateway]
   );
 
   const payToHost = useCallback(

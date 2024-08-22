@@ -66,7 +66,7 @@ export default function AllTripsTable({ isLoading, data, payToHost, refundToGues
 
   return (
     <>
-      <div className="text-xl lg:hidden">The resolution is too low!</div>
+      <div className="text-xl lg:hidden">{t("common.low_resolution")}</div>
       <table className="hidden w-full table-auto border-spacing-2 overflow-x-auto lg:block">
         <thead className="mb-2">
           <tr className="border-b-[2px] border-b-gray-500">
