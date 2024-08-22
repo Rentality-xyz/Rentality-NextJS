@@ -163,10 +163,10 @@ export interface IRentalityAdminGateway {
   getClaimWaitingTime(): Promise<bigint>;
   getPlatformFeeInPPM(): Promise<bigint>;
   setCivicData(_civicVerifier: string, _civicGatekeeperNetwork: bigint): Promise<ContractTransactionResponse>;
-  setNewTCMessage(message: string): Promise<ContractTransactionResponse>;  
-  
-  getAllTrips(filter:ContractTripFilter, page:bigint, itemsPerPage:bigint): Promise<ContractAllTripsDTO>;  
-  payToHost(tripId: bigint): Promise<ContractTransactionResponse>;
+  setNewTCMessage(message: string): Promise<ContractTransactionResponse>;
+
+  getAllTrips(filter: ContractTripFilter, page: bigint, itemsPerPage: bigint): Promise<ContractAllTripsDTO>;
+  getAllCars(page: bigint, itemsPerPage: bigint): Promise<ContractAllTripsDTO>;
   refundToGuest(tripId: bigint): Promise<ContractTransactionResponse>;
 
   getKycCommission(): Promise<bigint>;

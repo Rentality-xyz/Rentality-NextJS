@@ -522,6 +522,20 @@
     "end_date": "End date",
     "allStatuses": "All statuses"
   },
+  "admin_all_cars": {
+    "page_title": "Car locations",
+    "carId": "Car id",
+    "host": "Host",
+    "status": "Status",
+    "image": "Image",
+    "country": "Country",
+    "state": "State",
+    "city": "City",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "timeZoneId": "Time zone",
+    "homeAddress": "Home address"
+  },
   "common": {
     "info": {
       "sign": "Please confirm the transaction with your wallet and wait for the transaction to be processed",
@@ -545,6 +559,7 @@
     "connect": "Connect",
     "logout": "Logout",
     "plate_number": "Plate number",
-    "apply": "Apply"
+    "apply": "Apply",
+    "low_resolution": "The resolution is too low!"
   }
 }
