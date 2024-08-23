@@ -4,6 +4,7 @@ import PaginationWrapper from "@/components/common/PaginationWrapper";
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useAdminAllTrips, { AdminAllTripsFilters } from "@/hooks/admin/useAdminAllTrips";
+import { Result } from "@/model/utils/result";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -28,6 +29,22 @@ export default function AllTrips() {
     await fetchData(filters, page, itemsPerPage);
   }
 
+  async function handlePayToHost(tripId: number): Promise<Result<boolean, string>> {
+    const result = await payToHost(tripId);
+    if (result.ok) {
+      await fetchData(filters, data.currentPage, itemsPerPage);
+    }
+    return result;
+  }
+
+  async function handleRefundToGuest(tripId: number): Promise<Result<boolean, string>> {
+    const result = await refundToGuest(tripId);
+    if (result.ok) {
+      await fetchData(filters, data.currentPage, itemsPerPage);
+    }
+    return result;
+  }
+
   useEffect(() => {
     fetchData(defaultFilters, 1, itemsPerPage);
   }, [fetchData]);
@@ -43,7 +60,12 @@ export default function AllTrips() {
             totalPages={data.totalPageCount}
             selectPage={fetchDataForPage}
           >
-            <AllTripsTable isLoading={isLoading} data={data.data} payToHost={payToHost} refundToGuest={refundToGuest} />
+            <AllTripsTable
+              isLoading={isLoading}
+              data={data.data}
+              payToHost={handlePayToHost}
+              refundToGuest={handleRefundToGuest}
+            />
           </PaginationWrapper>
         </div>
       </div>

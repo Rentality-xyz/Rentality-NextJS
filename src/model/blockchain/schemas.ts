@@ -423,6 +423,16 @@ export type ContractAllTripsDTO = {
   totalPageCount: bigint;
 };
 
+export type ContractAdminCarDTO = {
+  car: ContractCarDetails;
+  carMetadataURI: string;
+};
+
+export type ContractAllCarsDTO = {
+  cars: ContractAdminCarDTO[];
+  totalPageCount: bigint;
+};
+
 export type TripStatus = bigint;
 export const TripStatus = {
   Pending: BigInt(0), // Created
@@ -503,6 +513,14 @@ export const AdminTripStatus = {
   CompletedWithoutGuestConfirmation: BigInt(12),
   CompletedByGuest: BigInt(13),
   CompletedByAdmin: BigInt(14),
+};
+
+export type Role = bigint;
+export const Role = {
+  Guest: BigInt(0),
+  Host: BigInt(1),
+  Manager: BigInt(2),
+  Admin: BigInt(3),
 };
 
 export type EngineType = bigint;

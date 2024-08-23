@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import Loading from "@/components/common/Loading";
 import Image from "next/image";
 import { AdminCarDetails } from "@/model/admin/AdminCarDetails";
+import { cn } from "@/utils";
 
 type AllCarsTableProps = {
   isLoading: boolean;
@@ -39,16 +40,18 @@ export default function AllCarsTable({ isLoading, data }: AllCarsTableProps) {
       <table className="hidden w-full table-auto border-spacing-2 overflow-x-auto lg:block">
         <thead className="mb-2">
           <tr className="border-b-[2px] border-b-gray-500">
-            <th className={`${headerSpanClassName}`}>#</th>
-            <th className={`${headerSpanClassName}`}>{t_aac("carId")}</th>
-            <th className={`${headerSpanClassName}`}>{t_aac("host")}</th>
-            <th className={`${headerSpanClassName}`}>{t_aac("status")}</th>
-            <th className={`${headerSpanClassName}`}>{t_aac("image")}</th>
-            <th className={`${headerSpanClassName}`}>{`${t_aac("country")}/${t_aac("state")}\n${t_aac("city")}`}</th>
-            <th className={`${headerSpanClassName}`}>
+            <th className={`${cn(headerSpanClassName, "min-w-[6ch]")}`}>#</th>
+            <th className={`${cn(headerSpanClassName, "min-w-[6ch]")}`}>{t_aac("carId")}</th>
+            <th className={`${cn(headerSpanClassName, "min-w-[15ch]")}`}>{t_aac("host")}</th>
+            <th className={`${cn(headerSpanClassName, "min-w-[10ch]")}`}>{t_aac("status")}</th>
+            <th className={`${cn(headerSpanClassName, "min-w-[10ch]")}`}>{t_aac("image")}</th>
+            <th
+              className={`${cn(headerSpanClassName, "min-w-[25ch]")}`}
+            >{`${t_aac("country")}/${t_aac("state")}\n${t_aac("city")}`}</th>
+            <th className={`${cn(headerSpanClassName, "min-w-[20ch]")}`}>
               {`${t_aac("latitude")}\n${t_aac("longitude")}\n${t_aac("timeZoneId")}`}
             </th>
-            <th className={`${headerSpanClassName}`}>{t_aac("homeAddress")}</th>
+            <th className={`${cn(headerSpanClassName, "min-w-[45ch]")}`}>{t_aac("homeAddress")}</th>
           </tr>
         </thead>
         <tbody className="text-sm">

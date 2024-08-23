@@ -2,7 +2,9 @@ import { validateType } from "@/utils/typeValidator";
 import {
   ClaimStatus,
   ClaimType,
+  ContractAdminCarDTO,
   ContractAdminTripDTO,
+  ContractAllCarsDTO,
   ContractAllTripsDTO,
   ContractCarDetails,
   ContractCarInfo,
@@ -321,5 +323,23 @@ export function validateContractAllTripsDTO(obj: ContractAllTripsDTO): obj is Co
       (validateType(obj.trips[0], emptyContractAdminTripDTO) &&
         validateType(obj.trips[0].trip, emptyContractTrip) &&
         validateType(obj.trips[0].carLocation, emptyContractLocationInfo)))
+  );
+}
+
+const emptyContractAllCarsDTO: ContractAllCarsDTO = {
+  cars: [],
+  totalPageCount: BigInt(0),
+};
+
+const emptyContractAdminCarDTO: ContractAdminCarDTO = {
+  car: emptyContractCarDetails,
+  carMetadataURI: "",
+};
+
+export function validateContractAllCarsDTO(obj: ContractAllCarsDTO): obj is ContractAllCarsDTO {
+  return (
+    validateType(obj, emptyContractAllCarsDTO) &&
+    (obj.cars.length === 0 ||
+      (validateType(obj.cars[0], emptyContractAdminCarDTO) && validateType(obj.cars[0].car, emptyContractCarDetails)))
   );
 }
