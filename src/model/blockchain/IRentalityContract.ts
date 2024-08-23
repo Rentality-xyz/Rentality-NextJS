@@ -1,5 +1,6 @@
 import { ContractTransactionResponse } from "ethers";
 import {
+  ContractAllCarsDTO,
   ContractAllTripsDTO,
   ContractBaseDiscount,
   ContractCalculatePaymentsDTO,
@@ -24,6 +25,7 @@ import {
   ContractTripFilter,
   ContractTripReceiptDTO,
   ContractUpdateCarInfoRequest,
+  Role,
 } from "./schemas";
 
 export interface IRentalityContract {
@@ -165,9 +167,9 @@ export interface IRentalityAdminGateway {
   setCivicData(_civicVerifier: string, _civicGatekeeperNetwork: bigint): Promise<ContractTransactionResponse>;
   setNewTCMessage(message: string): Promise<ContractTransactionResponse>;
 
+  manageRole(role: Role, user: string, grant: boolean): Promise<ContractTransactionResponse>;
   getAllTrips(filter: ContractTripFilter, page: bigint, itemsPerPage: bigint): Promise<ContractAllTripsDTO>;
-  getAllCars(page: bigint, itemsPerPage: bigint): Promise<ContractAllTripsDTO>;
-
+  getAllCars(page: bigint, itemsPerPage: bigint): Promise<ContractAllCarsDTO>;
   payToHost(tripId: bigint): Promise<ContractTransactionResponse>;
   refundToGuest(tripId: bigint): Promise<ContractTransactionResponse>;
 

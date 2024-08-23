@@ -1,5 +1,4 @@
 import { getEtherContractWithSigner } from "@/abis";
-import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { AdminTripDetails } from "@/model/admin/AdminTripDetails";
 import { IRentalityAdminGateway } from "@/model/blockchain/IRentalityContract";
@@ -95,16 +94,12 @@ const useAdminAllTrips = () => {
       }
 
       try {
-        setIsLoading(true);
-
         let transaction = await rentalityAdminGateway.payToHost(BigInt(tripId));
         await transaction.wait();
         return Ok(true);
       } catch (e) {
         console.error("payToHost error" + e);
         return Err("Transaction error. See logs for more details");
-      } finally {
-        setIsLoading(false);
       }
     },
     [rentalityAdminGateway]
@@ -118,16 +113,12 @@ const useAdminAllTrips = () => {
       }
 
       try {
-        setIsLoading(true);
-
         let transaction = await rentalityAdminGateway.refundToGuest(BigInt(tripId));
         await transaction.wait();
         return Ok(true);
       } catch (e) {
         console.error("refundToGuest error" + e);
         return Err("Transaction error. See logs for more details");
-      } finally {
-        setIsLoading(false);
       }
     },
     [rentalityAdminGateway]

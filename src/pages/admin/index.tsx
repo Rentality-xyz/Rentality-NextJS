@@ -17,11 +17,13 @@ export default function Admin() {
     setPlatformFeeInPPM,
     saveKycCommission,
     saveClaimWaitingTime,
+    grantAdminRole,
   } = useAdminPanelInfo();
   const [ethToWithdraw, setEthToWithdraw] = useState("0");
   const [newPlatformFee, setNewPlatformFee] = useState("");
   const [newKycCommission, setNewKycCommission] = useState("");
   const [newClaimWaitingTime, setNewClaimWaitingTime] = useState("");
+  const [addressForAdminRole, setAddressForAdminRole] = useState("0x");
   const { showError } = useRntSnackbars();
   const { t } = useTranslation();
   const t_admin: TFunction = (name, options) => {
@@ -122,6 +124,17 @@ export default function Admin() {
     }
   };
 
+  const handleGrantAdminRole = async () => {
+    if (isEmpty(addressForAdminRole) || !addressForAdminRole.startsWith("0x") || addressForAdminRole.length !== 42)
+      return;
+
+    try {
+      await grantAdminRole(addressForAdminRole);
+    } catch (e) {
+      showError(t_errors("grant_admin_role_error") + e);
+    }
+  };
+
   return (
     <Layout>
       <div className="flex flex-col gap-4">
@@ -202,6 +215,22 @@ export default function Admin() {
           buttonDisabled={!Number.parseFloat(newClaimWaitingTime)}
           onButtonClick={() => {
             handleSaveClaimWaitingTime();
+          }}
+        />
+        <RntInputWithButton
+          id="grand_admin_role"
+          placeholder="0x"
+          label="Grant admin role to address"
+          value={addressForAdminRole}
+          onChange={(e) => {
+            setAddressForAdminRole(e.target.value);
+          }}
+          buttonText={"Grant"}
+          buttonDisabled={
+            isEmpty(addressForAdminRole) || !addressForAdminRole.startsWith("0x") || addressForAdminRole.length !== 42
+          }
+          onButtonClick={() => {
+            handleGrantAdminRole();
           }}
         />
       </div>

@@ -4,7 +4,7 @@ export type AdminTripDetails = {
   tripId: number;
   carDescription: string;
   plateNumber: string;
-  tripStatus: TripStatus;
+  tripStatus: AdminTripStatus;
   paymentsStatus: PaymentStatus;
   hostLocation: string;
   tripStartDate: Date;
