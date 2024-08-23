@@ -6,7 +6,6 @@ import { IRentalityAdminGateway } from "@/model/blockchain/IRentalityContract";
 import { validateContractAllCarsDTO } from "@/model/blockchain/schemas_utils";
 import { mapContractCarToAdminCarDetails } from "@/model/mappers/contractCarToAdminCarDetails";
 import { Err, Ok, Result } from "@/model/utils/result";
-import { bigIntReplacer } from "@/utils/json";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const useAdminAllCars = () => {
