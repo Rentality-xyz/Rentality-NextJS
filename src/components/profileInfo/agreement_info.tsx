@@ -6,6 +6,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isEmpty } from "@/utils/string";
 import { keccak256 } from "ethers";
 import DotStatus from "./dotStatus";
+import { useWallets } from "@privy-io/react-auth";
 
 const hasSignature = (signature: string) => {
   return !isEmpty(signature) && signature !== "0x";
@@ -27,15 +28,23 @@ export default function AgreementInfo({
   const [isPrivacy, setIsPrivacy] = useState(userHasSignature);
   const [tcSignature, setTcSignature] = useState(signature);
   const ethereumInfo = useEthereum();
-
+  const { wallets } = useWallets();
   const handleConfirm = async () => {
     if (!isTerms || !isCancellation || !isProhibited || !isPrivacy) return;
     if (!ethereumInfo) return;
 
     const messageToSign =
       "I have read and I agree with Terms of service, Cancellation policy, Prohibited uses and Privacy policy of Rentality.";
-    const messageHash = keccak256(Buffer.from(messageToSign));
-    const signature = await ethereumInfo.signer.signMessage(messageHash);
+    const wallet = wallets.find((wallet) => ethereumInfo.walletAddress === wallet?.address);
+    if (wallet === undefined) {
+      console.error("SetKYCInfo wallet is null");
+      return;
+    }
+    const provider = await wallet.getEthereumProvider();
+    const signature = await provider.request({
+      method: "personal_sign",
+      params: [messageToSign, wallet.address],
+    });
     setTcSignature(signature);
     onSign(signature);
   };
