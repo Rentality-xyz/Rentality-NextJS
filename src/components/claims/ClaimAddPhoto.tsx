@@ -1,7 +1,8 @@
-import React, { useRef } from "react";
+import React, {useEffect, useRef} from "react";
 import Image from "next/image";
 import { resizeImage } from "@/utils/image";
 import { FileToUpload } from "@/model/FileToUpload";
+import {convertHeicToPng} from "@/utils/heic2any";
 
 function ClaimAddPhoto({
   filesToUpload,
@@ -41,11 +42,17 @@ function ClaimAddPhoto({
     }
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       const fileUrl = event.target?.result as string;
 
       if (currentIndex === -1) {
-        setFilesToUpload([...filesToUpload, { file: file, localUrl: fileUrl }]);
+        const fileNameExt = file.name.substr(file.name.lastIndexOf('.') + 1);
+        if(fileNameExt == "heic") {
+          const convertedFile = await convertHeicToPng(file);
+          setFilesToUpload([...filesToUpload, convertedFile]);
+        } else {
+          setFilesToUpload([...filesToUpload, { file: file, localUrl: fileUrl }]);
+        }
       } else {
         const newFilesToUpload = filesToUpload.map((value, index) => {
           return index === currentIndex ? { file: file, localUrl: fileUrl } : value;

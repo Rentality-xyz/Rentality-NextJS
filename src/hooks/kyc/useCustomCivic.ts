@@ -1,9 +1,10 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { Err, Ok, Result } from "@/model/utils/result";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
+import { tryParseMetamaskError } from "@/utils/metamask";
 import { isEmpty } from "@/utils/string";
 import { GatewayStatus, useGateway } from "@civic/ethereum-gateway-react";
-import { ethers } from "ethers";
 import { useEffect, useRef, useState } from "react";
 
 export type KycStatus =
@@ -53,15 +54,15 @@ const useCustomCivic = () => {
     getInfo();
   }, [pendingRequests]);
 
-  async function payCommission() {
+  async function payCommission(): Promise<Result<boolean, string>> {
     if (!rentalityContract) {
       console.error("payCommission error: rentalityContract is null");
-      return;
+      return Err("rentalityContract is null");
     }
 
     if (!(status === "Not paid" || status === "Kyc failed")) {
       console.error(`payCommission error: status is not "Not paid" nor "Kyc failed"`);
-      return;
+      return Err(`status is not "Not paid" nor "Kyc failed"`);
     }
 
     try {
@@ -73,9 +74,16 @@ const useCustomCivic = () => {
 
       setStatus("Commission paid");
       userUsedCommission.current = false;
+      return Ok(true);
     } catch (e) {
+      const metamaskErrorResult = tryParseMetamaskError(e);
+      if (metamaskErrorResult.ok && metamaskErrorResult.value.message.includes("insufficient funds")) {
+        setStatus("Not paid");
+        return Err("You're almost there! Just add a little more to your wallet to continue.");
+      }
       console.error("payCommission error:" + e);
       setStatus("Not paid");
+      return Err("Transaction error. See logs for more details");
     }
   }
 

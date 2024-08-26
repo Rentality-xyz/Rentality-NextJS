@@ -291,7 +291,7 @@ main option {
   top: 12px !important;
 }
 
-.buttonGradient {
+.buttonGradient:enabled {
   background: linear-gradient(360deg, rgba(88, 63, 188, 1) 0%, rgba(128, 95, 228, 1) 50%, rgba(127, 160, 243, 1) 100%);
 }
 
@@ -356,4 +356,10 @@ input:disabled {
 
 #pagination > ul > li {
   margin-left: 12px;
+}
+
+@media (min-width: 450px) {
+  #eruda {
+    display: none !important;
+  }
 }

@@ -18,7 +18,7 @@ import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2Digits, fixedNumber } from "@/utils/numericFormatters";
 import { getTimeZoneIdFromAddress } from "@/utils/fetchTimeZoneId";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
 import { useRouter } from "next/navigation";
 import { resizeImage } from "@/utils/image";
@@ -35,6 +35,7 @@ import RntCarModelSelect from "@/components/common/rntCarModelSelect";
 import RntCarYearSelect from "@/components/common/rntCarYearSelect";
 import RntVINCheckingInput from "@/components/common/rntVINCheckingInput";
 import * as React from "react";
+import { convertHeicToPng } from "@/utils/heic2any";
 
 export default function CarEditForm({
   initValue,
@@ -48,7 +49,8 @@ export default function CarEditForm({
   t: TFunction;
 }) {
   const router = useRouter();
-  const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
+  const { showDialog, hideDialogs } = useRntDialogs();
+  const { showInfo, showError } = useRntSnackbars();
 
   //const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(initValue ?? emptyHostCarInfo);
 
@@ -142,22 +144,34 @@ export default function CarEditForm({
       return;
     }
 
-    const file = e.target.files[0];
+    let file = e.target.files[0];
 
     if (file.type === "application/json") {
-      loadCarInfoFromJson(file);
+      await loadCarInfoFromJson(file);
       return;
     }
-    const resizedImage = await resizeImage(file, 1000);
-    setImageFile(resizedImage);
 
-    var reader = new FileReader();
+    if (file.type.startsWith("image/")) {
+      file = await resizeImage(file, 1000);
+    } else if (file.size > 5 * 1024 * 1024) {
+      alert("File is too big");
+      return;
+    }
 
-    reader.onload = function (event) {
-      setValue("image", event.target?.result?.toString() ?? "");
+    setImageFile(file);
+
+    const reader = new FileReader();
+    reader.onload = async function (event) {
+      const fileNameExt = file.name.substr(file.name.lastIndexOf(".") + 1);
+      if (fileNameExt == "heic") {
+        const convertedFile = await convertHeicToPng(file);
+        setValue("image", convertedFile.localUrl);
+      } else {
+        setValue("image", event.target?.result?.toString() ?? "");
+      }
     };
 
-    reader.readAsDataURL(resizedImage);
+    reader.readAsDataURL(file);
   };
 
   async function onFormSubmit(formData: CarEditFormValues) {

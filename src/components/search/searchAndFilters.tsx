@@ -17,18 +17,7 @@ import arrowDownTurquoise from "../../images/arrowDownTurquoise.svg";
 import Image from "next/image";
 import SearchDeliveryLocations from "@/components/search/searchDeliveryLocations";
 import { useAppContext } from "@/contexts/appContext";
-
-function formatLocation(city: string, state: string, country: string) {
-  city = city != null && city.length > 0 ? city + ", " : "";
-  state = state != null && state.length > 0 ? state + ", " : "";
-  country = country != null && country.length > 0 ? country + ", " : "";
-  const location = `${city}${state}${country}`;
-  if (location.length > 2) {
-    return location.slice(0, -2);
-  }
-
-  return location;
-}
+import { formatLocationInfoUpToCity } from "@/model/LocationInfo";
 
 export default function SearchAndFilters({
   searchCarRequest,
@@ -52,11 +41,7 @@ export default function SearchAndFilters({
   const gmtLabel = isEmpty(timeZoneId) ? "" : `(GMT${moment.tz(timeZoneId).format("Z").slice(0, 3)})`;
   const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
   const isSearchAllowed =
-    formatLocation(
-      searchCarRequest.searchLocation.city,
-      searchCarRequest.searchLocation.state,
-      searchCarRequest.searchLocation.country
-    ).length > 0 &&
+    formatLocationInfoUpToCity(searchCarRequest.searchLocation).length > 0 &&
     moment.tz(searchCarRequest.dateFrom, notEmtpyTimeZoneId) >= moment.tz(notEmtpyTimeZoneId) &&
     new Date(searchCarRequest.dateTo) > new Date(searchCarRequest.dateFrom);
 
@@ -88,11 +73,7 @@ export default function SearchAndFilters({
 
   useEffect(() => {
     const getGMTFromLocation = async () => {
-      const address = formatLocation(
-        searchCarRequest.searchLocation.city,
-        searchCarRequest.searchLocation.state,
-        searchCarRequest.searchLocation.country
-      );
+      const address = formatLocationInfoUpToCity(searchCarRequest.searchLocation);
       if (isEmpty(address)) {
         setTimeZoneId("");
         return;
@@ -116,11 +97,7 @@ export default function SearchAndFilters({
     };
 
     getGMTFromLocation();
-  }, [
-    searchCarRequest.searchLocation.city,
-    searchCarRequest.searchLocation.state,
-    searchCarRequest.searchLocation.country,
-  ]);
+  }, [searchCarRequest.searchLocation]);
 
   const [openDeliveryLocation, setOpenDeliveryLocation] = useState(false);
 
@@ -144,11 +121,7 @@ export default function SearchAndFilters({
           label={t_comp("location_label")}
           placeholder={t_comp("location_placeholder")}
           includeStreetAddress={true}
-          initValue={formatLocation(
-            searchCarRequest.searchLocation.city,
-            searchCarRequest.searchLocation.state,
-            searchCarRequest.searchLocation.country
-          )}
+          initValue={formatLocationInfoUpToCity(searchCarRequest.searchLocation)}
           onChange={handleSearchInputChange}
           onAddressChange={async (placeDetails) => {
             const country = placeDetails.country?.short_name ?? "";

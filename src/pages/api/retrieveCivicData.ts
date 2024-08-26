@@ -6,6 +6,7 @@ import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { FIREBASE_DB_NAME } from "@/chat/model/firebaseTypes";
 import { ref, uploadBytes } from "firebase/storage";
 import { env } from "@/utils/env";
+import moment from "moment";
 
 export type RetrieveCivicDataRequest = {
   requestId: string;
@@ -48,6 +49,7 @@ type AllPiiInfo = {
   status: string;
   links: PiiLink[];
   verifiedInformation: PiiVerifiedInformation;
+  updateDate: string;
 };
 
 const GET_AUTH_TOKEN_URL = "https://auth.civic.com/oauth/token";
@@ -179,7 +181,7 @@ async function getAllPIIs(requestId: string, authToken: string) {
       }
       return {
         success: true,
-        response: response.data as AllPiiInfo,
+        response: { ...response.data, updateDate: moment().toISOString() } as AllPiiInfo,
       } as const;
     })
     .catch(function (error) {

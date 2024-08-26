@@ -4,7 +4,7 @@ import useMyListings from "@/hooks/host/useMyListings";
 import RntButton from "@/components/common/rntButton";
 import { isEmpty } from "@/utils/string";
 import { useUserInfo } from "@/contexts/userInfoContext";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
@@ -12,7 +12,7 @@ export default function Listings() {
   const [isLoading, myListings] = useMyListings();
   const router = useRouter();
   const userInfo = useUserInfo();
-  const { showError } = useRntDialogs();
+  const { showError } = useRntSnackbars();
 
   const handleAddListing = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

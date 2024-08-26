@@ -2,8 +2,9 @@ import Link from "next/link";
 import { TransactionHistoryInfo } from "@/model/TransactionHistoryInfo";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import React from "react";
-import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
+import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { usePathname } from "next/navigation";
+import { getTripStatusBgColorFromStatus } from "@/utils/tailwind";
 
 type TransactionHistoryMobileCardProps = {
   isHost: boolean;
@@ -14,7 +15,7 @@ export default function TransactionHistoryMobileCard(props: TransactionHistoryMo
   const { isHost, transaction } = props;
   const pathname = usePathname();
   const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${transaction.transHistoryId}?back=${pathname}`;
-  let statusBgColor = getTripStatusBgColorClassFromStatus(transaction.status);
+  let statusBgColor = getTripStatusBgColorFromStatus(transaction.status);
 
   return (
     <div key={transaction.transHistoryId} className="mt-8">

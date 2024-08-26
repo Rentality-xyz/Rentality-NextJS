@@ -4,6 +4,8 @@ import { IRentalityAdminGateway } from "@/model/blockchain/IRentalityContract";
 import { getEtherContractWithSigner } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
+import { Role } from "@/model/blockchain/schemas";
+import { validateContractAllCarsDTO } from "@/model/blockchain/schemas_utils";
 
 export type AdminContractInfo = {
   platformFee: number;
@@ -125,6 +127,26 @@ const useAdminPanelInfo = () => {
     }
   };
 
+  const grantAdminRole = async (address: string) => {
+    if (!rentalityAdminGateway) {
+      console.error("grantAdminRole error: rentalityAdminGateway is null");
+      return false;
+    }
+
+    try {
+      setIsLoading(true);
+
+      let transaction = await rentalityAdminGateway.manageRole(Role.Admin, address, true);
+      await transaction.wait();
+      return true;
+    } catch (e) {
+      console.error("grantAdminRole error" + e);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const isIniialized = useRef<boolean>(false);
 
   useEffect(() => {
@@ -191,6 +213,7 @@ const useAdminPanelInfo = () => {
     setPlatformFeeInPPM,
     saveKycCommission,
     saveClaimWaitingTime,
+    grantAdminRole,
   } as const;
 };
 
