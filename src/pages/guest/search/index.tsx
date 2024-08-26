@@ -20,41 +20,79 @@ import mapArrow from "@/images/arrUpBtn.png";
 import FilterSlidingPanel from "@/components/search/filterSlidingPanel";
 import SearchAndFilters from "@/components/search/searchAndFilters";
 import { useAuth } from "@/contexts/auth/authContext";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const defaultDateFrom = moment({ hour: 9 }).add(1, "day").toDate();
 const defaultDateTo = moment({ hour: 9 }).add(4, "day").toDate();
 
-const customEmptySearchCarRequest: SearchCarRequest = {
-  ...emptySearchCarRequest,
-  searchLocation: {
-    ...emptySearchCarRequest.searchLocation,
-    city: "Miami",
-    state: "Florida",
-    country: "US",
-    latitude: 25.782407,
-    longitude: -80.229458,
-  },
-  dateFrom: dateToHtmlDateTimeFormat(defaultDateFrom),
-  dateTo: dateToHtmlDateTimeFormat(defaultDateTo),
-};
-
 type AdvancedMarkerElement = google.maps.marker.AdvancedMarkerElement;
 
 export default function Search() {
+  const searchParams = useSearchParams();
+
+  const dateFrom = searchParams.get("dateFrom") ?? undefined;
+  const dateTo = searchParams.get("dateTo") ?? undefined;
+  const country = searchParams.get("country") ?? undefined;
+  const state = searchParams.get("state") ?? undefined;
+  const city = searchParams.get("city") ?? undefined;
+  const brand = searchParams.get("brand") ?? undefined;
+  const model = searchParams.get("model") ?? undefined;
+  const yearOfProductionFrom = searchParams.get("yearOfProductionFrom") ?? undefined;
+  const yearOfProductionTo = searchParams.get("yearOfProductionTo") ?? undefined;
+  const pricePerDayInUsdFrom = searchParams.get("pricePerDayInUsdFrom") ?? undefined;
+  const pricePerDayInUsdTo = searchParams.get("pricePerDayInUsdTo") ?? undefined;
+
+  const customEmptySearchCarRequest: SearchCarRequest = {
+    ...emptySearchCarRequest,
+    searchLocation: {
+      ...emptySearchCarRequest.searchLocation,
+      city: "Miami",
+      state: "Florida",
+      country: "US",
+      latitude: 25.782407,
+      longitude: -80.229458,
+    },
+    dateFrom: dateToHtmlDateTimeFormat(defaultDateFrom),
+    dateTo: dateToHtmlDateTimeFormat(defaultDateTo),
+  };
+
   const [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest, setSearchResult] =
     useSearchCars(customEmptySearchCarRequest);
-  const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(customEmptySearchCarRequest);
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const [openFilterPanel, setOpenFilterPanel] = useState(false);
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const [sortBy, setSortBy] = useState<string | undefined>(undefined);
-
   const userInfo = useUserInfo();
   const router = useRouter();
   const { isAuthenticated, login } = useAuth();
 
   const { t } = useTranslation();
+  const pathname = usePathname();
+
+  console.log(`customEmptySearchCarRequest: ${JSON.stringify(customEmptySearchCarRequest)}`);
+  const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(customEmptySearchCarRequest);
+
+  const createQueryString = (request: SearchCarRequest) => {
+    const params = new URLSearchParams();
+    if (!isEmpty(request.dateFrom)) params.set("dateFrom", request.dateFrom);
+    if (!isEmpty(request.dateTo)) params.set("dateTo", request.dateTo);
+    if (!isEmpty(request.searchLocation.country)) params.set("country", request.searchLocation.country);
+    if (!isEmpty(request.searchLocation.state)) params.set("state", request.searchLocation.state);
+    if (!isEmpty(request.searchLocation.city)) params.set("city", request.searchLocation.city);
+    if (!isEmpty(request.searchFilters.brand)) params.set("brand", request.searchFilters.brand);
+    if (!isEmpty(request.searchFilters.model)) params.set("model", request.searchFilters.model);
+    if (!isEmpty(request.searchFilters.yearOfProductionFrom))
+      params.set("yearOfProductionFrom", request.searchFilters.yearOfProductionFrom);
+    if (!isEmpty(request.searchFilters.yearOfProductionTo))
+      params.set("yearOfProductionTo", request.searchFilters.yearOfProductionTo);
+    if (!isEmpty(request.searchFilters.pricePerDayInUsdFrom))
+      params.set("pricePerDayInUsdFrom", request.searchFilters.pricePerDayInUsdFrom);
+    if (!isEmpty(request.searchFilters.pricePerDayInUsdTo))
+      params.set("pricePerDayInUsdTo", request.searchFilters.pricePerDayInUsdTo);
+
+    return params.toString();
+  };
 
   const t_page: TFunction = (path, options) => {
     return t("search_page." + path, options);
@@ -64,6 +102,9 @@ export default function Search() {
   };
 
   const handleSearchClick = async () => {
+    const pageParams = "?" + createQueryString(searchCarRequest);
+    router.push(pathname + pageParams, pathname + pageParams, { shallow: true, scroll: false });
+
     const result = await searchAvailableCars(searchCarRequest);
 
     if (result) {
