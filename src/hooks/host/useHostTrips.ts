@@ -5,6 +5,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { ContractTrip, ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 import { mapTripDTOtoTripInfo } from "@/model/utils/TripDTOtoTripInfo";
+import RentalityL0Contract from "@/model/blockchain/IRentalityViewGateway";
 
 const useHostTrips = () => {
   const rentalityContract = useRentality();
@@ -229,7 +230,7 @@ const useHostTrips = () => {
       return result;
     };
 
-    const getTrips = async (rentalityContract: IRentalityContract) => {
+    const getTrips = async (rentalityContract: RentalityL0Contract) => {
       try {
         if (rentalityContract == null) {
           console.error("getTrips error: contract is null");
@@ -247,7 +248,6 @@ const useHostTrips = () => {
                   }
 
                   const tripContactInfo = await rentalityContract.getTripContactInfo(i.trip.carId);
-
                   const item = await mapTripDTOtoTripInfo(i, tripContactInfo);
                   item.allowedActions = getAllowedActions(item.status, i.trip);
 

@@ -6,6 +6,7 @@ import moment from "moment";
 import { ContractKYCInfo } from "@/model/blockchain/schemas";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import RentalityL0Contract from "@/model/blockchain/IRentalityViewGateway";
 
 export type ProfileSettings = {
   profilePhotoUrl: string;
@@ -32,7 +33,7 @@ const useProfileSettings = () => {
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [profileSettings, setProfileSettings] = useState<ProfileSettings>(emptyProfileSettings);
 
-  const getProfileSettings = async (rentalityContract: IRentalityContract) => {
+  const getProfileSettings = async (rentalityContract: RentalityL0Contract) => {
     try {
       if (rentalityContract == null) {
         console.error("getTrip error: contract is null");

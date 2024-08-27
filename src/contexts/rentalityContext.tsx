@@ -26,7 +26,8 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
     const getRentalityContact = async () => {
       if (!ethereumInfo || !ethereumInfo.provider) return;
       let rentality: IRentalityContract;
-      if (ethereumInfo.chainId == ethereumInfo.defaultChainId)
+      const defaultChainId2 = Number.parseInt(process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID_OPBNB!);
+      if (ethereumInfo.chainId == ethereumInfo.defaultChainId || ethereumInfo.chainId === defaultChainId2)
         rentality = (await getEtherContractWithSigner("gateway", ethereumInfo.signer)) as unknown as IRentalityContract;
       else
         rentality = (await getEtherContractWithSigner("sender", ethereumInfo.signer)) as unknown as IRentalityContract;
@@ -35,15 +36,21 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         console.error("getRentalityContact error: rentalityContract is null");
         return;
       }
+
       const viewRentality = (await getEtherContractWithProvider(
         "gateway",
-        new JsonRpcProvider(process.env.NEXT_PUBLIC_DEFAULT_NETWOR_URL!)
+        new JsonRpcProvider(
+          ethereumInfo.chainId === defaultChainId2 || ethereumInfo.chainId === 11155111
+            ? process.env.NEXT_PUBLIC_DEFAULT_NETWOR_URL2!
+            : process.env.NEXT_PUBLIC_DEFAULT_NETWOR_URL!
+        ),
+        ethereumInfo.chainId === defaultChainId2 || ethereumInfo.chainId === 11155111 ? 5611 : 84532
       ))!;
       const viewRentalityContract = new RentalityViewContract(
         viewRentality,
         await ethereumInfo.signer.getAddress(),
         rentality,
-        ethereumInfo.chainId == ethereumInfo.defaultChainId,
+        ethereumInfo.chainId == ethereumInfo.defaultChainId || ethereumInfo.chainId === defaultChainId2,
         await viewRentality.getAddress(),
         ethereumInfo
       );

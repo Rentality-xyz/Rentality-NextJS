@@ -58,7 +58,6 @@ export const getTripStatusBgColorClassFromStatus = (status: TripStatus) => {
       return "bg-red-500";
   }
 };
-
 export type TripInfo = {
   tripId: number;
   carId: number;

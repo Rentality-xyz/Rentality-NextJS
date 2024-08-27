@@ -16,7 +16,6 @@ import { useNotification } from "./notification/notificationContext";
 import { NotificationType } from "@/model/NotificationInfo";
 import { generateEncryptionKeyPair } from "@/chat/crypto";
 import useUserMode from "@/hooks/useUserMode";
-import RentalityL0Contract from "@/model/blockchain/IRentalityViewGateway";
 
 export type ChatKeysContextInfo = {
   isLoading: boolean;
@@ -35,6 +34,8 @@ const ChatKeysContext = createContext<ChatKeysContextInfo>({
 export function useChatKeys() {
   return useContext(ChatKeysContext);
 }
+
+import RentalityL0Contract from "@/model/blockchain/IRentalityViewGateway";
 
 export type ChatContextInfo = {
   isLoading: boolean;

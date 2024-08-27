@@ -10,19 +10,17 @@ import { calculateDays } from "@/utils/date";
 export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: ContractTripContactInfo) => {
   const meta = await getMetaDataFromIpfs(i.metadataURI);
   const timeZoneId = !isEmpty(i.timeZoneId) ? i.timeZoneId : UTC_TIME_ZONE_ID;
-
   const startOdometr = Number(i.trip.startParamLevels[1]);
   const endOdometr = Number(i.trip.endParamLevels[1]);
   const milesIncludedPerDay = Number(i.trip.milesIncludedPerDay);
-
   const tripDays = calculateDays(
     getDateFromBlockchainTimeWithTZ(i.trip.startDateTime, timeZoneId),
     getDateFromBlockchainTimeWithTZ(i.trip.endDateTime, timeZoneId)
   );
+
   var overmileValue = endOdometr - startOdometr - milesIncludedPerDay * tripDays;
   overmileValue = overmileValue > 0 ? overmileValue : 0;
   const overmilePrice = Number(i.trip.pricePerDayInUsdCents) / Number(i.trip.milesIncludedPerDay) / 100;
-
   let item: TripInfo = {
     tripId: Number(i.trip.tripId),
 
