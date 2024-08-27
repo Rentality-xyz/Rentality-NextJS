@@ -44,7 +44,7 @@ export default function Search() {
   const [openFilterPanel, setOpenFilterPanel] = useState(false);
   const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
   const [sortBy, setSortBy] = useState<string | undefined>(undefined);
-  const [selectedCarID, setSelectedCarID] = useState<Number | null>(null);
+  const [selectedCarID, setSelectedCarID] = useState<number | null>(null);
 
   const userInfo = useUserInfo();
   const router = useRouter();
@@ -125,7 +125,7 @@ export default function Search() {
     }
   };
 
-  const handleSetMapMarkerSelected = (carID: Number) => {
+  const handleSetMapMarkerSelected = (carID: number) => {
     const newSearchCarInfo = { ...searchResult };
 
     newSearchCarInfo.carInfos.forEach((item: SearchCarInfo) => {
@@ -151,9 +151,15 @@ export default function Search() {
     setIsExpanded(!isExpanded);
   };
 
+  useEffect(() => {
+    if (!isLoading && searchResult?.carInfos?.length) {
+      setSelectedCarID(searchResult.carInfos[0].carId);
+    }
+  }, [isLoading]);
+
   return (
     <Layout>
-      <GoogleMapsProvider libraries={["maps", "marker", "places"]}>
+      <GoogleMapsProvider libraries={["maps", "marker", "places"]} language="en">
         <div className="flex flex-col xl:h-full" title="Search">
           <SearchAndFilters
             searchCarRequest={searchCarRequest}
@@ -172,10 +178,10 @@ export default function Search() {
               <div className="text-l font-bold">
                 {searchResult?.carInfos?.length ?? 0} {t_page("info.cars_available")}
               </div>
-              <div className="flex gap-3 max-xl:flex-col-reverse xl:h-full">
+              <div className="flex gap-3 max-xl:flex-col-reverse">
                 <div className="xl:w-8/12 2xl:w-7/12 fullHD:w-6/12 my-4 flex flex-col gap-4">
                   {searchResult?.carInfos?.length > 0 ? (
-                    searchResult?.carInfos
+                    searchResult.carInfos
                       .sort((a: SearchCarInfo, b: SearchCarInfo) => {
                         if (a.highlighted && !b.highlighted) {
                           return -1;
@@ -193,7 +199,7 @@ export default function Search() {
                             handleRentCarRequest={handleRentCarRequest}
                             disableButton={requestSending}
                             isSelected={selectedCarID == value.carId}
-                            setSelected={(carID: Number) => {
+                            setSelected={(carID: number) => {
                               setSelectedCarID(carID == selectedCarID ? null : carID);
                             }}
                             t={t_page}
@@ -213,13 +219,13 @@ export default function Search() {
                     selectedCarID={selectedCarID}
                     isExpanded={isExpanded}
                     defaultCenter={
-                      searchCarRequest.searchLocation.locationLat &&
-                      searchCarRequest.searchLocation.locationLng &&
-                      searchCarRequest.searchLocation.locationLat > 0 &&
-                      searchCarRequest.searchLocation.locationLat > 0
+                      searchCarRequest.searchLocation.latitude &&
+                      searchCarRequest.searchLocation.longitude &&
+                      searchCarRequest.searchLocation.latitude > 0 &&
+                      searchCarRequest.searchLocation.longitude > 0
                         ? new google.maps.LatLng(
-                            searchCarRequest.searchLocation.locationLat,
-                            searchCarRequest.searchLocation.locationLng
+                            searchCarRequest.searchLocation.latitude,
+                            searchCarRequest.searchLocation.longitude
                           )
                         : null
                     }

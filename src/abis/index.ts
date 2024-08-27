@@ -1,20 +1,21 @@
-import RentalityGatewayJSON_ABI from "./RentalityGateway.v0_17_1.abi.json";
-import RentalityGatewayJSON_ADDRESSES from "./RentalityGateway.v0_17_1.addresses.json";
-import RentalityAdminGatewayJSON_ABI from "./RentalityAdminGateway.v0_17_1.abi.json";
-import RentalityAdminGatewayJSON_ADDRESSES from "./RentalityAdminGateway.v0_17_1.addresses.json";
-import RentalityCurrencyConverterJSON_ABI from "./RentalityCurrencyConverter.v0_17_1.abi.json";
-import RentalityCurrencyConverterJSON_ADDRESSES from "./RentalityCurrencyConverter.v0_17_1.addresses.json";
-import RentalityChatHelperJSON_ABI from "./RentalityChatHelper.v0_17_1.abi.json";
-import RentalityChatHelperJSON_ADDRESSES from "./RentalityChatHelper.v0_17_1.addresses.json";
-import RentalityTripServiceJSON_ABI from "./RentalityTripService.v0_17_1.abi.json";
-import RentalityTripServiceJSON_ADDRESSES from "./RentalityTripService.v0_17_1.addresses.json";
-import RentalityClaimServiceJSON_ABI from "./RentalityClaimService.v0_17_1.abi.json";
-import RentalityClaimServiceJSON_ADDRESSES from "./RentalityClaimService.v0_17_1.addresses.json";
-import RentalitySenderJSON_ADDRESSES from "./RentalitySender.v0_17_1.addresses.json";
-import RentalitySenderJSON_ABI from "./RentalitySender.v0_17_1.abi.json";
-import { Contract, ethers, JsonRpcProvider, Signer } from "ethers";
+import RentalitySenderJSON_ADDRESSES from "./RentalitySender.v0_17_2.addresses.json";
+import RentalitySenderJSON_ABI from "./RentalitySender.v0_17_2.abi.json";
+import { ethers, JsonRpcProvider } from "ethers";
+import RentalityGatewayJSON_ABI from "./RentalityGateway.v0_17_2.abi.json";
+import RentalityGatewayJSON_ADDRESSES from "./RentalityGateway.v0_17_2.addresses.json";
+import RentalityAdminGatewayJSON_ABI from "./RentalityAdminGateway.v0_17_2.abi.json";
+import RentalityAdminGatewayJSON_ADDRESSES from "./RentalityAdminGateway.v0_17_2.addresses.json";
+import RentalityCurrencyConverterJSON_ABI from "./RentalityCurrencyConverter.v0_17_2.abi.json";
+import RentalityCurrencyConverterJSON_ADDRESSES from "./RentalityCurrencyConverter.v0_17_2.addresses.json";
+import RentalityChatHelperJSON_ABI from "./RentalityChatHelper.v0_17_2.abi.json";
+import RentalityChatHelperJSON_ADDRESSES from "./RentalityChatHelper.v0_17_2.addresses.json";
+import RentalityTripServiceJSON_ABI from "./RentalityTripService.v0_17_2.abi.json";
+import RentalityTripServiceJSON_ADDRESSES from "./RentalityTripService.v0_17_2.addresses.json";
+import RentalityClaimServiceJSON_ABI from "./RentalityClaimService.v0_17_2.abi.json";
+import RentalityClaimServiceJSON_ADDRESSES from "./RentalityClaimService.v0_17_2.addresses.json";
+import { Contract, Signer } from "ethers";
 
-export const SMARTCONTRACT_VERSION = "v0_17_1";
+export const SMARTCONTRACT_VERSION = "v0_17_2";
 
 const rentalityContracts = {
   sender: {
@@ -53,8 +54,7 @@ export async function getEtherContractWithSigner(contract: keyof typeof rentalit
       console.error("getEtherContract error: signer is null");
       return null;
     }
-    let chainId = chain == 0 ? Number((await signer.provider?.getNetwork())?.chainId) : chain;
-
+    let chainId = Number((await signer.provider?.getNetwork())?.chainId);
     const selectedChain = rentalityContracts[contract].addresses.find((i) => i.chainId === chainId);
 
     if (!selectedChain) {
@@ -84,15 +84,14 @@ export async function getEtherContractWithSigner(contract: keyof typeof rentalit
 
 export async function getEtherContractWithProvider(
   contract: keyof typeof rentalityContracts,
-  provider: JsonRpcProvider
+  provider: JsonRpcProvider,
+  chainId?: number
 ) {
   try {
     if (!provider) {
       console.error("getEtherContract error: signer is null");
       return null;
     }
-
-    const chainId = Number(process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID!);
 
     const selectedChain = rentalityContracts[contract].addresses.find((i) => i.chainId === chainId);
 

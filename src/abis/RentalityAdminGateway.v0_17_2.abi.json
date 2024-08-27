@@ -155,6 +155,15 @@
     },
     {
       "type": "function",
+      "name": "getKycCommission",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "uint256", "name": "" }]
+    },
+    {
+      "type": "function",
       "name": "getPaymentService",
       "constant": true,
       "stateMutability": "view",
@@ -291,6 +300,14 @@
       "constant": false,
       "payable": false,
       "inputs": [{ "type": "uint256", "name": "timeInSec" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "setKycCommission",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "uint256", "name": "value" }],
       "outputs": []
     },
     {

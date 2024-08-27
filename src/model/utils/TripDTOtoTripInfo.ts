@@ -31,7 +31,7 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
     image: getIpfsURIfromPinata(meta.image),
     carDescription: meta.description ?? "No description",
     carDoorsNumber: meta.attributes?.find((x: any) => x.trait_type === "Doors Number")?.value ?? 4,
-    carSeatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats Number")?.value ?? 4,
+    carSeatsNumber: meta.attributes?.find((x: any) => x.trait_type === "Seats number")?.value ?? 4,
     carTransmission: meta.attributes?.find((x: any) => x.trait_type === "Transmission")?.value ?? "",
     carColor: meta.attributes?.find((x: any) => x.trait_type === "Color")?.value ?? "",
     brand: i.brand ?? meta.attributes?.find((x: any) => x.trait_type === "Brand")?.value ?? "",
@@ -57,8 +57,8 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
     tripStart: getDateFromBlockchainTimeWithTZ(i.trip.startDateTime, timeZoneId),
     tripEnd: getDateFromBlockchainTimeWithTZ(i.trip.endDateTime, timeZoneId),
     tripDays: tripDays,
-    locationStart: i.trip.startLocation,
-    locationEnd: i.trip.endLocation,
+    locationStart: i.pickUpLocation.userAddress,
+    locationEnd: i.returnLocation.userAddress,
     allowedActions: [],
     startFuelLevelInPercents: Number(i.trip.startParamLevels[0]),
     endFuelLevelInPercents: Number(i.trip.endParamLevels[0]),
@@ -70,6 +70,8 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
     tripFinishedBy: i.trip.tripFinishedBy,
     rejectedDate:
       i.trip.rejectedDateTime > 0 ? getDateFromBlockchainTimeWithTZ(i.trip.rejectedDateTime, timeZoneId) : undefined,
+    isTripRejected: i.trip.rejectedDateTime > 0 && i.trip.approvedDateTime === BigInt(0),
+    isTripCanceled: i.trip.rejectedDateTime > 0 && i.trip.approvedDateTime > 0,
     createdDateTime: getDateFromBlockchainTimeWithTZ(i.trip.createdDateTime, timeZoneId),
     approvedDateTime: getDateFromBlockchainTimeWithTZ(i.trip.approvedDateTime, timeZoneId),
     checkedInByHostDateTime: getDateFromBlockchainTimeWithTZ(i.trip.checkedInByHostDateTime, timeZoneId),
@@ -101,10 +103,19 @@ export const mapTripDTOtoTripInfo = async (i: ContractTripDTO, tripContactInfo: 
     pricePerDayInUsd: Number(i.trip.pricePerDayInUsdCents) / 100.0,
     totalDayPriceInUsd: Number(i.trip.paymentInfo.totalDayPriceInUsdCents) / 100.0,
     totalPriceWithDiscountInUsd: Number(i.trip.paymentInfo.priceWithDiscount) / 100.0,
-    deliveryFeeInUsd: Number(i.trip.paymentInfo.deliveryFee) / 100.0,
+    pickUpDeliveryFeeInUsd: Number(i.trip.paymentInfo.pickUpFee) / 100.0,
+    dropOffDeliveryFeeInUsd: Number(i.trip.paymentInfo.dropOfFee) / 100.0,
     salesTaxInUsd: Number(i.trip.paymentInfo.salesTax) / 100.0,
     governmentTaxInUsd: Number(i.trip.paymentInfo.governmentTax) / 100.0,
     depositInUsd: Number(i.trip.paymentInfo.depositInUsdCents) / 100.0,
+    totalPriceInUsd:
+      Number(
+        i.trip.paymentInfo.priceWithDiscount +
+          i.trip.paymentInfo.governmentTax +
+          i.trip.paymentInfo.salesTax +
+          i.trip.paymentInfo.pickUpFee +
+          i.trip.paymentInfo.dropOfFee
+      ) / 100.0,
 
     resolveAmountInUsd: Number(i.trip.paymentInfo.resolveAmountInUsdCents) / 100.0,
     depositReturnedInUsd:

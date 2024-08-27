@@ -134,13 +134,6 @@ const useGuestTrips = () => {
             ],
             action: checkInTrip,
           });
-          result.push({
-            text: "Reject",
-            readonly: false,
-            isDisplay: true,
-            params: [],
-            action: rejectRequest,
-          });
           break;
         case TripStatus.Started:
           result.push({

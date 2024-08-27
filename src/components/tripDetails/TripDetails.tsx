@@ -18,8 +18,9 @@ import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { getRefuelValueAndCharge } from "@/model/TripInfo";
 import UserAvatarWithName from "@/components/common/userAvatarWithName";
 import TripContacts from "@/components/common/tripContacts";
-import { dateFormatLongMonthDateTime } from "@/utils/datetimeFormatters";
+import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import RntDriverLicenseVerified from "@/components/common/rntDriverLicenseVerified";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
 
 export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; backPath: string; t: TFunctionNext }) {
   const [isLoading, tripInfo] = useTripInfo(tripId);
@@ -59,16 +60,16 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
           <div className="flex flex-wrap my-6">
             <div className="w-full xl:w-2/3">
               <div className="rnt-card flex flex-col rounded-xl bg-rentality-bg my-2 xl:mr-2">
-                <div className="flex items-center justify-between p-2">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-2">
                   <div>
                     <strong className="text-2xl text-[#52D1C9]">{t_details("about_car")}</strong>
                   </div>
-                  <div>VIN: {tripInfo.carVinNumber}</div>
+                  <div className="max-sm:mt-2">VIN: {tripInfo.carVinNumber}</div>
                 </div>
                 <div className="flex flex-row grow p-2">
                   <strong className="text-xl text-[#52D1C9]">{t_details("basic_car_details")}</strong>
                 </div>
-                <div className="flex flex-wrap p-2">
+                <div className="flex max-sm:flex-col flex-wrap p-2">
                   <div className="flex w-28 items-center m-2">
                     <Image className="me-1" src={carDoorsIcon} width={30} height={30} alt="" />
                     {tripInfo.carDoorsNumber} {t_details("doors")}
@@ -121,10 +122,9 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     ) : (
                       ""
                     )}
-                    {tripInfo.rejectedDate !== undefined &&
-                    tripInfo.rejectedDate.getTime() > 0 &&
-                    tripInfo.approvedDateTime.getTime() === 0 &&
-                    tripInfo.rejectedBy === tripInfo.host.walletAddress ? (
+                    {tripInfo.isTripRejected &&
+                    tripInfo.rejectedBy === tripInfo.host.walletAddress &&
+                    tripInfo.rejectedDate !== undefined ? (
                       <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
                         <div>Host Booked Cancellation:</div>
                         <div className="ml-4">{formatStatusDateTime(tripInfo.rejectedDate, tripInfo.timeZoneId)}</div>
@@ -132,10 +132,9 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     ) : (
                       ""
                     )}
-                    {tripInfo.rejectedDate !== undefined &&
-                    tripInfo.rejectedDate.getTime() > 0 &&
-                    tripInfo.approvedDateTime.getTime() === 0 &&
-                    tripInfo.rejectedBy === tripInfo.guest.walletAddress ? (
+                    {tripInfo.isTripRejected &&
+                    tripInfo.rejectedBy === tripInfo.guest.walletAddress &&
+                    tripInfo.rejectedDate !== undefined ? (
                       <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
                         <div>Guest Cancellation before Host confirmed:</div>
                         <div className="ml-4">{formatStatusDateTime(tripInfo.rejectedDate, tripInfo.timeZoneId)}</div>
@@ -153,10 +152,9 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     ) : (
                       ""
                     )}
-                    {tripInfo.rejectedDate !== undefined &&
-                    tripInfo.rejectedDate.getTime() > 0 &&
-                    tripInfo.approvedDateTime.getTime() > 0 &&
-                    tripInfo.rejectedBy === tripInfo.guest.walletAddress ? (
+                    {tripInfo.isTripCanceled &&
+                    tripInfo.rejectedBy === tripInfo.guest.walletAddress &&
+                    tripInfo.rejectedDate !== undefined ? (
                       <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
                         <div>Guest Cancellation after host confirmed:</div>
                         <div className="ml-4">{formatStatusDateTime(tripInfo.rejectedDate, tripInfo.timeZoneId)}</div>
@@ -164,10 +162,9 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     ) : (
                       ""
                     )}
-                    {tripInfo.rejectedDate !== undefined &&
-                    tripInfo.rejectedDate.getTime() > 0 &&
-                    tripInfo.approvedDateTime.getTime() > 0 &&
-                    tripInfo.rejectedBy === tripInfo.host.walletAddress ? (
+                    {tripInfo.isTripCanceled &&
+                    tripInfo.rejectedBy === tripInfo.host.walletAddress &&
+                    tripInfo.rejectedDate !== undefined ? (
                       <div className="flex max-xl:mt-1 max-xl:flex-col items-start xl:items-center justify-between">
                         <div>Host trip Cancellation:</div>
                         <div className="ml-4">{formatStatusDateTime(tripInfo.rejectedDate, tripInfo.timeZoneId)}</div>
@@ -232,10 +229,21 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
             <div className="w-full xl:w-1/3">
               <div className="rnt-card flex flex-col rounded-xl overflow-hidden bg-rentality-bg my-2 xl:ml-2">
                 <div className="flex flex-row grow p-2">
-                  <strong className="text-2xl text-[#52D1C9]">{t_details("trip_receipt")}</strong>
+                  {tripInfo.isTripCanceled ? (
+                    <strong className="text-2xl text-[#FF0000]">{t_details("trip_receipt_canceled")}</strong>
+                  ) : tripInfo.isTripRejected ? (
+                    <strong className="text-2xl text-[#FF0000]">{t_details("trip_receipt_rejected")}</strong>
+                  ) : (
+                    <strong className="text-2xl text-[#52D1C9]">{t_details("trip_receipt")}</strong>
+                  )}
                 </div>
                 <div className="flex flex-row grow p-2">
                   {t_details("reservation")} # {tripInfo.tripId}
+                  {tripInfo.isTripCanceled ? (
+                    <span className="text-[#FF0000]">&nbsp;({t_details("canceled")})</span>
+                  ) : tripInfo.isTripRejected ? (
+                    <span className="text-[#FF0000]">&nbsp;({t_details("rejected")})</span>
+                  ) : null}
                 </div>
                 <hr className="my-4" />
                 <table className="m-2">
@@ -259,8 +267,12 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                       </td>
                     </tr>
                     <tr>
-                      <td>{t_details("delivery_fee")}</td>
-                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.deliveryFeeInUsd)}</td>
+                      <td>{t_details("pickUp_delivery_fee")}</td>
+                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.pickUpDeliveryFeeInUsd)}</td>
+                    </tr>
+                    <tr>
+                      <td>{t_details("dropOff_delivery_fee")}</td>
+                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.dropOffDeliveryFeeInUsd)}</td>
                     </tr>
                     <tr>
                       <td>{t_details("sales_tax")}</td>
@@ -272,14 +284,9 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     </tr>
                     <tr>
                       <td className="pt-5">
-                        <strong>{t_details("trip_total")}</strong>
+                        <strong>{t_details("total_charge")}</strong>
                       </td>
-                      <td className="text-end pt-5">
-                        $
-                        {displayMoneyWith2Digits(
-                          tripInfo.totalPriceWithDiscountInUsd + tripInfo.salesTaxInUsd + tripInfo.governmentTaxInUsd
-                        )}
-                      </td>
+                      <td className="text-end pt-5">${displayMoneyWith2Digits(tripInfo.totalPriceInUsd)}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -329,7 +336,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                     </tr>
                     <tr>
                       <td>{t_details("price_per_one_overmile")}</td>
-                      <td className="text-end">${tripInfo.overmilePrice}</td>
+                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.overmilePrice)}</td>
                     </tr>
                     <tr>
                       <td>{t_details("overmile_charge")}</td>
@@ -388,7 +395,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                       <tr>
                         <td>{t_details("dl_validity_period")}:</td>
                         <td className="text-end">
-                          {dateFormatLongMonthDateTime(tripInfo.guest.drivingLicenseExpirationDate)}
+                          {dateFormatShortMonthDateYear(tripInfo.guest.drivingLicenseExpirationDate, UTC_TIME_ZONE_ID)}
                         </td>
                       </tr>
                     </tbody>

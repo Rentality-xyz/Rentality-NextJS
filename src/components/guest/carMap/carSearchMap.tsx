@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, CSSProperties } from "react";
+import { useState, useEffect, useMemo, useRef, CSSProperties } from "react";
 import { GoogleMap } from "@react-google-maps/api";
 import { useGoogleMapsContext } from "@/contexts/googleMapsContext";
 import {
@@ -17,8 +17,8 @@ export default function CarSearchMap({
   defaultCenter,
 }: {
   carInfos: SearchCarInfo[];
-  setSelected: (carID: Number) => void;
-  selectedCarID: Number | null;
+  setSelected: (carID: number) => void;
+  selectedCarID: number | null;
   isExpanded: boolean;
   defaultCenter: google.maps.LatLng | null;
 }) {
@@ -41,7 +41,7 @@ export default function CarSearchMap({
       if (mapHeight && carInfos.length > 0) {
         height = mapHeight + "px";
       } else {
-        height = typeof window !== "undefined" && window.screen.width >= 1280 ? "60vh" : isExpanded ? "80vh" : "12rem";
+        height = typeof window !== "undefined" && window.screen.width >= 1280 ? "55vh" : isExpanded ? "80vh" : "12rem";
       }
     }
     return {
@@ -57,14 +57,12 @@ export default function CarSearchMap({
   const handleScroll = () => {
     const googleMapElement = document.getElementById("google-maps-guest-search-page");
     if (!googleMapElement) {
-      console.log("Cannot find Google Map Element to set up stickyness");
       return;
     }
 
     const googleMapElementParent = googleMapElement.parentElement;
 
     if (!googleMapElementParent) {
-      console.log("Cannot find Google Map Parent Element to set up stickyness");
       return;
     }
 
@@ -73,10 +71,8 @@ export default function CarSearchMap({
 
     if (parentRect.top <= 0 && window.screen.width >= 1280 && parentRect.bottom < window.innerHeight) {
       setMapHeight(Math.ceil(parentRect.bottom));
-    } else if (rect.bottom < window.innerHeight && window.screen.width >= 1280 && !isSticked) {
-      setMapHeight(window.innerHeight - rect.top);
     } else {
-      setMapHeight(0);
+      setMapHeight(window.innerHeight - rect.top);
     }
 
     if (parentRect.top <= 0 && window.screen.width >= 1280 && !isSticked) {
@@ -89,29 +85,41 @@ export default function CarSearchMap({
     }
   };
 
-  const onLoad = (map: google.maps.Map) => {
+  const positionMapToCar = () => {
+    if (!map || !selectedCar) return;
+
     const bounds = new google.maps.LatLngBounds();
-
-    carInfos?.forEach((carInfo) => {
-      if (!carInfo.location.lat || !carInfo.location.lng) return;
-      bounds.extend(new google.maps.LatLng(carInfo.location.lat, carInfo.location.lng));
-    });
-
-    if (carInfos.length) {
-      map.fitBounds(bounds);
-    }
-    setMap(map);
-
-    window.addEventListener("scroll", handleScroll, true);
+    bounds.extend(new google.maps.LatLng(selectedCar.location.lat, selectedCar.location.lng));
+    map.fitBounds(bounds);
+    map.setZoom(11);
   };
 
-  const onUnmount = (map: google.maps.Map) => {
-    setMap(null);
+  const onLoad = (map: google.maps.Map) => {
+    setMap(map);
+    window.addEventListener("scroll", handleScroll, true);
+    if (selectedCarID != null) {
+      positionMapToCar();
+    }
+  };
 
+  const onUnload = () => {
+    setMap(null);
     window.removeEventListener("scroll", handleScroll);
   };
 
   const { googleMapsAPIIsLoaded } = useGoogleMapsContext();
+
+  useEffect(() => {
+    if (carInfos.length && selectedCarID != null) {
+      positionMapToCar();
+    }
+  }, [selectedCarID]);
+
+  const selectedCar = useMemo(() => {
+    return carInfos.find((item) => {
+      return item.carId == selectedCarID;
+    });
+  }, [carInfos, selectedCarID]);
 
   return googleMapsAPIIsLoaded ? (
     <GoogleMap
@@ -119,10 +127,10 @@ export default function CarSearchMap({
       options={{ mapId: GOOGLE_MAPS_MAP_ID }}
       mapContainerClassName={"max-xl:transition-height max-xl:duration-300 max-xl:ease-in-out"}
       mapContainerStyle={mapContainerStyle}
-      center={defaultCenter || DEFAULT_GOOGLE_MAPS_SEARCH_CENTER}
-      zoom={DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM}
+      center={selectedCar?.location || defaultCenter || DEFAULT_GOOGLE_MAPS_SEARCH_CENTER}
+      zoom={selectedCarID ? 11 : DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM}
       onLoad={onLoad}
-      onUnmount={onUnmount}
+      onUnmount={onUnload}
     >
       {carInfos?.map((carInfo: SearchCarInfo) => (
         <Marker

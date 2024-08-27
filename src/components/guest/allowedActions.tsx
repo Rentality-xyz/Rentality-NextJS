@@ -1,7 +1,7 @@
 import { TripInfo } from "@/model/TripInfo";
 import RntInput from "../common/rntInput";
 import { SetStateAction } from "react";
-import Checkbox from "../common/checkbox";
+import RntCheckbox from "../common/rntCheckbox";
 import RntSelect from "../common/rntSelect";
 
 export default function AllowedActions({
@@ -72,7 +72,7 @@ export default function AllowedActions({
             )}
 
             {tripInfo.allowedActions[0].readonly ? (
-              <Checkbox
+              <RntCheckbox
                 className="ml-4"
                 title="Confirm"
                 value={confirmParams[index]}

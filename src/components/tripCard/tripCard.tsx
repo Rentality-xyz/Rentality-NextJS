@@ -46,15 +46,17 @@ function TripCard({
 
         <div id="trip-item-info" className="w-full flex flex-col md:flex-row">
           <СarDetails tripInfo={tripInfo} isHost={isHost} t={t} showMoreInfo={showMoreInfo} />
-          <CurrentStatusInfo
-            tripInfo={tripInfo}
-            changeStatusCallback={changeStatusCallback}
-            disableButton={disableButton}
-            isAdditionalActionHidden={isAdditionalActionHidden}
-            setIsAdditionalActionHidden={setIsAdditionalActionHidden}
-            isHost={isHost}
-            t={t}
-          />
+          {showMoreInfo && (
+            <CurrentStatusInfo
+              tripInfo={tripInfo}
+              changeStatusCallback={changeStatusCallback}
+              disableButton={disableButton}
+              isAdditionalActionHidden={isAdditionalActionHidden}
+              setIsAdditionalActionHidden={setIsAdditionalActionHidden}
+              isHost={isHost}
+              t={t}
+            />
+          )}
           <DateDetails tripInfo={tripInfo} t={t} />
           <LocationDetails tripInfo={tripInfo} t={t} />
         </div>

@@ -8,6 +8,7 @@ export type TransactionHistoryInfo = {
   days: number;
   startDateTime: Date;
   endDateTime: Date;
+  timeZoneId: string;
   tripPayment: number;
   refund: number;
   tripEarnings: number;

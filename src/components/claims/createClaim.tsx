@@ -2,7 +2,7 @@ import RntSelect from "../common/rntSelect";
 import { useState } from "react";
 import RntInputMultiline from "../common/rntInputMultiline";
 import RntInput from "../common/rntInput";
-import Checkbox from "../common/checkbox";
+import RntCheckbox from "../common/rntCheckbox";
 import RntButton from "../common/rntButton";
 import { getClaimTypeTextFromClaimType } from "@/model/Claim";
 import Link from "next/link";
@@ -157,7 +157,7 @@ export default function CreateClaim({
 
       <RntInput
         id="amount"
-        label="What compensation amount do you think the guest should pay for the incident?"
+        label={`What compensation amount do you think the ${isHost ? "guest" : "host"} should pay for the incident?`}
         value={createClaimParams.amountInUsd}
         onChange={(e) =>
           setCreateClaimParams({
@@ -168,7 +168,7 @@ export default function CreateClaim({
       />
       <p>After your trip ends, you have 72 hours to respond before your complaints become public</p>
 
-      <Checkbox
+      <RntCheckbox
         className="w-full"
         title="I certify that all charges are accurate, and I understand that any false submission or representation may result in restrictions or removal from the Rentality marketplace."
         value={createClaimParams.isChecked}

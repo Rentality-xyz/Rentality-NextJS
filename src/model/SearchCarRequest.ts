@@ -1,12 +1,7 @@
+import { LocationInfo, emptyLocationInfo } from "./LocationInfo";
+
 export type SearchCarRequest = {
-  searchLocation: {
-    address: string;
-    country: string;
-    state: string;
-    city: string;
-    locationLat: number | undefined;
-    locationLng: number | undefined;
-  };
+  searchLocation: LocationInfo;
   dateFrom: string;
   dateTo: string;
   searchFilters: {
@@ -19,24 +14,13 @@ export type SearchCarRequest = {
   };
   isDeliveryToGuest: boolean;
   deliveryInfo: {
-    pickupLocation:
-      | { isHostHomeLocation: true }
-      | { isHostHomeLocation: false; address: string; lat: number; lng: number };
-    returnLocation:
-      | { isHostHomeLocation: true }
-      | { isHostHomeLocation: false; address: string; lat: number; lng: number };
+    pickupLocation: { isHostHomeLocation: true } | { isHostHomeLocation: false; locationInfo: LocationInfo };
+    returnLocation: { isHostHomeLocation: true } | { isHostHomeLocation: false; locationInfo: LocationInfo };
   };
 };
 
 export const emptySearchCarRequest: SearchCarRequest = {
-  searchLocation: {
-    country: "",
-    state: "",
-    city: "",
-    locationLat: 0,
-    locationLng: 0,
-    address: "",
-  },
+  searchLocation: emptyLocationInfo,
   dateFrom: "",
   dateTo: "",
   searchFilters: {
@@ -49,7 +33,7 @@ export const emptySearchCarRequest: SearchCarRequest = {
   },
   isDeliveryToGuest: false,
   deliveryInfo: {
-    pickupLocation: { isHostHomeLocation: true },
-    returnLocation: { isHostHomeLocation: true },
+    pickupLocation: { isHostHomeLocation: false, locationInfo: emptyLocationInfo },
+    returnLocation: { isHostHomeLocation: false, locationInfo: emptyLocationInfo },
   },
 };

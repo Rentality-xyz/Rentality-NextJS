@@ -5,12 +5,12 @@ import React from "react";
 import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { usePathname } from "next/navigation";
 
-type Props = {
+type TransactionHistoryMobileCardProps = {
   isHost: boolean;
   transaction: TransactionHistoryInfo;
 };
 
-export default function TransactionHistoryMobileCard(props: Props) {
+export default function TransactionHistoryMobileCard(props: TransactionHistoryMobileCardProps) {
   const { isHost, transaction } = props;
   const pathname = usePathname();
   const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${transaction.transHistoryId}?back=${pathname}`;
@@ -20,7 +20,11 @@ export default function TransactionHistoryMobileCard(props: Props) {
     <div key={transaction.transHistoryId} className="mt-8">
       <div className="flex text-sm justify-between mb-2">
         <span className="text-rentality-secondary-shade">
-          {dateRangeFormatShortMonthDateYear(transaction.startDateTime, transaction.endDateTime)}
+          {dateRangeFormatShortMonthDateYear(
+            transaction.startDateTime,
+            transaction.endDateTime,
+            transaction.timeZoneId
+          )}
         </span>
         <span className={statusBgColor + " px-1 rounded"}>{getTripStatusTextFromStatus(transaction.status)}</span>
       </div>

@@ -8,10 +8,12 @@ import ChooseBlockchainComponent from "@/components/choose_blockchain/ChooseBloc
 import { GuestBurgerNavMenu } from "../sideNavMenu/guestSideNavMenu";
 import { HostBurgerNavMenu } from "../sideNavMenu/hostSideNavMenu";
 import Login from "./login";
+import { useRouter } from "next/router";
 
 export default function Header({ accountType }: { accountType: string }) {
   accountType = accountType ?? "Host";
   const isHost = accountType === "Host";
+  const router = useRouter();
 
   const { isHideBurgerMenu, toggleBurgerMenu } = useAppContext();
   const [isSelectedHost, setIsSelectedHost] = useState(isHost);
@@ -61,11 +63,12 @@ export default function Header({ accountType }: { accountType: string }) {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsSelectedHost(event.target.checked);
-    if (event.target.checked) {
-      window.location.href = "/host";
-    } else {
-      window.location.href = "/guest";
-    }
+    router.push(event.target.checked ? "/host" : "/guest");
+    // if (event.target.checked) {
+    //   window.location.href = "/host";
+    // } else {
+    //   window.location.href = "/guest";
+    // }
   };
 
   return (

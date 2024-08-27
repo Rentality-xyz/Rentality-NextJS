@@ -142,7 +142,8 @@
             { "type": "uint8", "name": "currencyDecimals" },
             { "type": "uint64", "name": "resolveFuelAmountInUsdCents" },
             { "type": "uint64", "name": "resolveMilesAmountInUsdCents" },
-            { "type": "uint128", "name": "deliveryFee" }
+            { "type": "uint128", "name": "pickUpFee" },
+            { "type": "uint128", "name": "dropOfFee" }
           ]
         },
         { "type": "address", "name": "user" }
@@ -215,7 +216,8 @@
                 { "type": "uint8", "name": "currencyDecimals" },
                 { "type": "uint64", "name": "resolveFuelAmountInUsdCents" },
                 { "type": "uint64", "name": "resolveMilesAmountInUsdCents" },
-                { "type": "uint128", "name": "deliveryFee" }
+                { "type": "uint128", "name": "pickUpFee" },
+                { "type": "uint128", "name": "dropOfFee" }
               ]
             },
             { "type": "uint256", "name": "createdDateTime" },
@@ -298,7 +300,8 @@
                 { "type": "uint8", "name": "currencyDecimals" },
                 { "type": "uint64", "name": "resolveFuelAmountInUsdCents" },
                 { "type": "uint64", "name": "resolveMilesAmountInUsdCents" },
-                { "type": "uint128", "name": "deliveryFee" }
+                { "type": "uint128", "name": "pickUpFee" },
+                { "type": "uint128", "name": "dropOfFee" }
               ]
             },
             { "type": "uint256", "name": "createdDateTime" },
@@ -346,6 +349,30 @@
         { "type": "address", "name": "engineServiceAddress" }
       ],
       "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "isGuestTrip",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        { "type": "uint256", "name": "tripId" },
+        { "type": "address", "name": "guest" }
+      ],
+      "outputs": [{ "type": "bool", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "isHostTrip",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        { "type": "uint256", "name": "tripId" },
+        { "type": "address", "name": "host" }
+      ],
+      "outputs": [{ "type": "bool", "name": "" }]
     },
     {
       "type": "function",

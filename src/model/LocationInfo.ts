@@ -3,7 +3,17 @@ export type LocationInfo = {
   country: string;
   state: string;
   city: string;
-  latitude: string;
-  longitude: string;
-  timeZoneId?: string;
+  latitude: number;
+  longitude: number;
+  timeZoneId: string;
+};
+
+export const emptyLocationInfo = {
+  address: "",
+  country: "",
+  state: "",
+  city: "",
+  latitude: 0,
+  longitude: 0,
+  timeZoneId: "",
 };

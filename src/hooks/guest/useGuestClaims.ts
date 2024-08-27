@@ -23,11 +23,16 @@ const useGuestClaims = () => {
   const rentalityContract = useRentality();
   const ethereumInfo = useEthereum();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [updateRequired, setUpdateRequired] = useState<Boolean>(true);
   const [claims, setClaims] = useState<Claim[]>([]);
   const chatContextInfo = useChat();
   const [tripInfos, setTripInfos] = useState<TripInfoForClaimCreation[]>([
     { tripId: 0, guestAddress: "", tripDescription: "Loading...", tripStart: new Date() },
   ]);
+
+  const updateData = () => {
+    setUpdateRequired(true);
+  };
 
   const createClaim = async (createClaimRequest: CreateClaimRequest) => {
     if (rentalityContract === null) {
@@ -150,6 +155,7 @@ const useGuestClaims = () => {
                     tripDays: 0,
                     isIncomingClaim: i.claim.isHostClaims,
                     fileUrls: i.claim.photosUrl.split("|").map((url) => getIpfsURIfromPinata(url)),
+                    timeZoneId: i.timeZoneId,
                   };
                   return item;
                 })
@@ -200,8 +206,10 @@ const useGuestClaims = () => {
       }
     };
 
+    if (!updateRequired) return;
     if (!rentalityContract) return;
 
+    setUpdateRequired(false);
     setIsLoading(true);
 
     getClaims(rentalityContract)
@@ -210,7 +218,7 @@ const useGuestClaims = () => {
         setTripInfos(data?.guestTripsData ?? []);
       })
       .finally(() => setIsLoading(false));
-  }, [rentalityContract]);
+  }, [updateRequired, rentalityContract]);
 
   const sortedClaims = useMemo(() => {
     return [...claims].sort((a, b) => {
@@ -224,7 +232,15 @@ const useGuestClaims = () => {
     });
   }, [tripInfos]);
 
-  return { isLoading, claims: sortedClaims, tripInfos: sortedTripInfos, createClaim, payClaim, cancelClaim } as const;
+  return {
+    isLoading,
+    claims: sortedClaims,
+    tripInfos: sortedTripInfos,
+    createClaim,
+    payClaim,
+    cancelClaim,
+    updateData,
+  } as const;
 };
 
 export default useGuestClaims;

@@ -62,7 +62,9 @@ export default function RntPlaceAutocompleteInput({
     apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     options: {
       input: "",
-      types: includeStreetAddress ? ["address"] : ["(cities)"],
+      types: includeStreetAddress
+        ? ["locality", "sublocality_level_1", "sublocality_level_2", "sublocality_level_3", "street_address"]
+        : ["(cities)"],
       componentRestrictions: { country: "us" },
     },
     language: "en",
@@ -152,6 +154,7 @@ export default function RntPlaceAutocompleteInput({
       <input
         // ref={ref}
         className={iClassName}
+        autoComplete="off"
         id={id}
         name={id}
         type={type}

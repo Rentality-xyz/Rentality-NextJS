@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { TransactionHistoryInfo } from "@/model/TransactionHistoryInfo";
-import { dateFormatYearMonthDayTime, dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
+import {
+  dateFormatShortMonthDateTime,
+  dateFormatYearMonthDayTime,
+  dateToHtmlDateTimeFormat,
+} from "@/utils/datetimeFormatters";
 import RntInput from "@/components/common/rntInput";
 import RntButton from "@/components/common/rntButton";
 import React, { useMemo, useState } from "react";
@@ -13,6 +17,7 @@ import { usePathname } from "next/navigation";
 import { onlyUnique } from "@/utils/arrays";
 import moment from "moment";
 import { isEmpty } from "@/utils/string";
+import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 
 type TransactionHistoryContentProps = {
   isHost: boolean;
@@ -27,7 +32,7 @@ type TransactionHistoryFilterParams = {
 };
 
 const defaultDateFrom = moment({ hour: 0 }).subtract(1, "month").toDate();
-const defaultDateTo = moment({ hour: 0 }).toDate();
+const defaultDateTo = moment({ hour: 0 }).add(6, "month").toDate();
 
 export default function TransactionHistoryContent({ isHost, transactions, t }: TransactionHistoryContentProps) {
   const pathname = usePathname();
@@ -201,15 +206,21 @@ export default function TransactionHistoryContent({ isHost, transactions, t }: T
                   <td className={rowSpanClassName}>{transaction.tripId}</td>
                   <td className={rowSpanClassName}>{getTripStatusTextFromStatus(transaction.status)}</td>
                   <td className={rowSpanClassName}>{transaction.days}</td>
-                  <td className={rowSpanClassName}>{dateFormatYearMonthDayTime(transaction.startDateTime)}</td>
-                  <td className={rowSpanClassName}>{dateFormatYearMonthDayTime(transaction.endDateTime)}</td>
+                  <td className={rowSpanClassName}>
+                    {dateFormatShortMonthDateTime(transaction.startDateTime, transaction.timeZoneId)}
+                  </td>
+                  <td className={rowSpanClassName}>
+                    {dateFormatShortMonthDateTime(transaction.endDateTime, transaction.timeZoneId)}
+                  </td>
                   <td className={rowSpanClassName}>${transaction.tripPayment}</td>
                   <td className={rowSpanClassName}>${transaction.refund}</td>
                   <td className={rowSpanClassName}>${transaction.tripEarnings}</td>
                   <td className={rowSpanClassName}>${transaction.cancellationFee}</td>
                   <td className={rowSpanClassName}>${transaction.reimbursements}</td>
                   <td className={rowSpanClassName}>${transaction.rentalityFee}</td>
-                  <td className={rowSpanClassName}>${transaction.salesTax + transaction.governmentTax}</td>
+                  <td className={rowSpanClassName}>
+                    ${displayMoneyWith2Digits(transaction.salesTax + transaction.governmentTax)}
+                  </td>
                   <td className={rowSpanClassName}>
                     <Link href={detailsLink}>
                       <span className="text-rentality-secondary">{t_th("details")}</span>

@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge";
 import { TextField } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { createTheme, ThemeProvider, ThemeOptions } from "@mui/material/styles";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function RntDatePicker({
@@ -20,6 +20,7 @@ export default function RntDatePicker({
   validationError,
   onDateChange,
   onBlur: onBlurHandler,
+  maxDate,
 }: {
   className?: string;
   labelClassName?: string;
@@ -33,6 +34,7 @@ export default function RntDatePicker({
   validationError?: string;
   onDateChange?: (date: Date | null) => void;
   onBlur?: (e: FocusEvent<HTMLInputElement, Element>) => void;
+  maxDate?: Date | undefined;
 }) {
   const isShowLabel = label !== undefined && label?.length > 0;
 
@@ -88,6 +90,7 @@ export default function RntDatePicker({
             readOnly={readOnly}
             disabled={readOnly}
             onChange={(date) => onDateChange != null && onDateChange(date!)}
+            maxDate={maxDate}
             renderInput={(params) => (
               <TextField
                 id={id}

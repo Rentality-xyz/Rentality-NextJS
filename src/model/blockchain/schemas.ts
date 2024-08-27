@@ -74,6 +74,7 @@ export type ContractSearchCarParams = {
   yearOfProductionTo: bigint;
   pricePerDayInUsdCentsFrom: bigint;
   pricePerDayInUsdCentsTo: bigint;
+  userLocation: ContractLocationInfo;
 };
 
 export type ContractCreateTripRequest = {
@@ -188,6 +189,7 @@ export type ContractFullClaimInfo = {
   hostPhoneNumber: string;
   carInfo: ContractCarInfo;
   amountInEth: bigint;
+  timeZoneId: string;
 };
 
 export type ContractClaim = {
@@ -243,7 +245,8 @@ export type ContractPaymentInfo = {
   currencyDecimals: bigint;
   resolveFuelAmountInUsdCents: bigint;
   resolveMilesAmountInUsdCents: bigint;
-  deliveryFee: bigint;
+  pickUpFee: bigint;
+  dropOfFee: bigint;
 };
 
 export type ContractTripReceiptDTO = {
@@ -287,6 +290,11 @@ export type ContractKYCInfo = {
   TCSignature: string;
 };
 
+export type ContractSearchCarWithDistance = {
+  car: ContractSearchCar;
+  distance: bigint;
+};
+
 export type ContractSearchCar = {
   carId: bigint;
   brand: string;
@@ -306,7 +314,8 @@ export type ContractSearchCar = {
   metadataURI: string;
   underTwentyFiveMilesInUsdCents: bigint;
   aboveTwentyFiveMilesInUsdCents: bigint;
-  deliveryFee: bigint;
+  pickUp: bigint;
+  dropOf: bigint;
   insuranceIncluded: boolean;
   locationInfo: ContractLocationInfo;
 };
@@ -379,6 +388,11 @@ export type ContractLocationInfo = {
   latitude: string;
   longitude: string;
   timeZoneId: string;
+};
+
+export type ContractKycCommissionData = {
+  paidTime: bigint;
+  commissionPaid: boolean;
 };
 
 export type ContractSignedLocationInfo = {

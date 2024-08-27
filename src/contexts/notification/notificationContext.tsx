@@ -13,6 +13,7 @@ import { bigIntReplacer } from "@/utils/json";
 import { hasValue } from "@/utils/arrays";
 import { ethers, EventLog, JsonRpcProvider, Listener } from "ethers";
 import { ClaimStatus, ContractFullClaimInfo, ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
+import { getBlockCountForSearch } from "@/model/blockchain/blockchainList";
 
 export type NotificationContextInfo = {
   isLoading: Boolean;
@@ -81,6 +82,12 @@ function getNotificationFromClaimStatusChanged(
     const eventDate = (await event.getBlock()).date ?? new Date();
     return createClaimCreatedChangedNotification(tripDTO, claimInfo, isHost, eventDate);
   };
+}
+
+function getFromBlock(chainId: number, toBlock: number): number {
+  const blockCountForSearch = getBlockCountForSearch(chainId);
+  if (blockCountForSearch === Number.POSITIVE_INFINITY) return 0;
+  return toBlock > blockCountForSearch ? toBlock - blockCountForSearch : 0;
 }
 
 export const NotificationProvider = ({ isHost, children }: { isHost: boolean; children?: React.ReactNode }) => {
@@ -196,6 +203,9 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
           return false;
         }
 
+        const toBlock = await ethereumInfo.provider.getBlockNumber();
+        const fromBlock = getFromBlock(ethereumInfo.chainId, toBlock);
+
         const tripInfos = isHost ? await rentalityContract.getTripsAsHost() : await rentalityContract.getTripsAsGuest();
         const claimInfos = isHost
           ? await rentalityContract.getMyClaimsAsHost()
@@ -204,9 +214,9 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         const eventTripCreatedFilter = isHost
           ? tripServiceContract.filters.TripCreated(null, [ethereumInfo.walletAddress], null)
           : tripServiceContract.filters.TripCreated(null, null, [ethereumInfo.walletAddress]);
-        const eventTripCreatedHistory = (await tripServiceContract.queryFilter(eventTripCreatedFilter)).filter(
-          isEventLog
-        );
+        const eventTripCreatedHistory = (
+          await tripServiceContract.queryFilter(eventTripCreatedFilter, fromBlock, toBlock)
+        ).filter(isEventLog);
         const notificationsTripCreatedHistory = await Promise.all(
           eventTripCreatedHistory.map(getNotificationFromCreateTripEvent(tripInfos, isHost))
         );
@@ -215,7 +225,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
           ? tripServiceContract.filters.TripStatusChanged(null, null, [ethereumInfo.walletAddress], null)
           : tripServiceContract.filters.TripStatusChanged(null, null, null, [ethereumInfo.walletAddress]);
         const eventTripStatusChangedHistory = (
-          await tripServiceContract.queryFilter(eventTripStatusChangedFilter)
+          await tripServiceContract.queryFilter(eventTripStatusChangedFilter, fromBlock, toBlock)
         ).filter(isEventLog);
         console.log(tripInfos);
         const notificationsTripStatusChangedHistory = await Promise.all(
@@ -226,7 +236,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
           ? claimServiceContract.filters.ClaimStatusChanged(null, null, [ethereumInfo.walletAddress], null)
           : claimServiceContract.filters.ClaimStatusChanged(null, null, null, [ethereumInfo.walletAddress]);
         const eventClaimStatusChangedHistory = (
-          await claimServiceContract.queryFilter(eventClaimStatusChangedFilter)
+          await claimServiceContract.queryFilter(eventClaimStatusChangedFilter, fromBlock, toBlock)
         ).filter(isEventLog);
         const notificationsClaimStatusChangedHistory = await Promise.all(
           eventClaimStatusChangedHistory.map(getNotificationFromClaimStatusChanged(tripInfos, claimInfos, isHost))

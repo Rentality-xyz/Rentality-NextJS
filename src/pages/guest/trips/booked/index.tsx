@@ -25,7 +25,6 @@ export default function Booked() {
 
       setTripStatusChanging(false);
       updateData();
-      //router.reload();
     } catch (e) {
       showError(t("booked.status_req_failed"));
 

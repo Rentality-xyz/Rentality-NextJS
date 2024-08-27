@@ -10,9 +10,11 @@ import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import {
   dateFormatLongMonthDateTime,
   dateFormatLongMonthYearDateTime,
+  dateFormatShortMonthDateYear,
   dateFormatYearMonthDay,
 } from "@/utils/datetimeFormatters";
 import { getMilesIncludedPerDayText, isUnlimitedMiles } from "@/model/HostCarInfo";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
 
 export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint; tripInfo: TripInfo }) {
   const [open, setOpen] = React.useState(false);
@@ -55,7 +57,16 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
           >
             <div className="flex flex-col m-4">
               <div className="flex flex-col m-4">
-                <h1 className="text-4xl mb-4">Car sharing agreement #{tripId.toString()}</h1>
+                <h1
+                  className={`text-4xl mb-4 ${tripInfo.isTripCanceled || tripInfo.isTripRejected ? "text-[#FF0000]" : ""}`}
+                >
+                  Car sharing agreement #{tripId.toString()}{" "}
+                  {tripInfo.isTripCanceled
+                    ? "canceled, payments refunded to the guest. "
+                    : tripInfo.isTripRejected
+                      ? "rejected, payments refunded to the guest. "
+                      : null}
+                </h1>
                 <h3 className="text-2xl mb-1">
                   {tripInfo.guest.name}’s trip with {tripInfo.host.name}’s {tripInfo.brand} {tripInfo.model}{" "}
                   {tripInfo.year}
@@ -73,16 +84,52 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                     which both the Guest and the Host have agreed. The terms are detailed in the following documents:
                     <ol className=" ms-3 list-decimal list-inside [counter-reset:section]">
                       <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
-                        &nbsp;<a href="https://rentality.xyz/policies/terms">Terms of service</a>
+                        &nbsp;
+                        <a className="underline" href="https://rentality.xyz/legalmatters/terms" target="_blank">
+                          Terms of service
+                        </a>
+                        &nbsp;
+                        <a className="underline" href="https://rentality.xyz/legalmatters/terms" target="_blank">
+                          (published at https://rentality.xyz/legalmatters/terms)
+                        </a>
                       </li>
                       <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
-                        &nbsp;<a href="https://rentality.xyz/policies/cancellation">Cancellation policy</a>
+                        &nbsp;
+                        <a className="underline" href="https://rentality.xyz/legalmatters/cancellation" target="_blank">
+                          Cancellation policy
+                        </a>
+                        &nbsp;
+                        <a className="underline" href="https://rentality.xyz/legalmatters/cancellation" target="_blank">
+                          (published at https://rentality.xyz/legalmatters/cancellation)
+                        </a>
                       </li>
                       <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
-                        &nbsp;<a href="https://rentality.xyz/policies/prohibiteduses">Prohibited Uses</a>
+                        &nbsp;
+                        <a
+                          className="underline"
+                          href="https://rentality.xyz/legalmatters/prohibiteduses"
+                          target="_blank"
+                        >
+                          Prohibited Uses
+                        </a>
+                        &nbsp;
+                        <a
+                          className="underline"
+                          href="https://rentality.xyz/legalmatters/prohibiteduses"
+                          target="_blank"
+                        >
+                          (published at https://rentality.xyz/legalmatters/prohibiteduses)
+                        </a>
                       </li>
                       <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
-                        &nbsp;<a href="https://rentality.xyz/policies/privacy">Privacy policy</a>
+                        &nbsp;
+                        <a className="underline" href="https://rentality.xyz/legalmatters/privacy" target="_blank">
+                          Privacy policy
+                        </a>
+                        &nbsp;
+                        <a className="underline" href="https://rentality.xyz/legalmatters/privacy" target="_blank">
+                          (published at https://rentality.xyz/legalmattersprivacy)
+                        </a>
                       </li>
                     </ol>
                   </li>
@@ -108,7 +155,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                 <div className="">Driving license number: {tripInfo.guest.drivingLicenseNumber}</div>
                 <div className="">
                   Driving license validity period:{" "}
-                  {dateFormatYearMonthDay(tripInfo.guest.drivingLicenseExpirationDate, tripInfo.timeZoneId)}
+                  {dateFormatShortMonthDateYear(tripInfo.guest.drivingLicenseExpirationDate, UTC_TIME_ZONE_ID)}
                 </div>
                 <div className="">Guest insurance information:</div>
                 <div className="">Insurance company name: {tripInfo.guestInsuranceCompanyName}</div>
@@ -118,7 +165,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                 <div className="">Driving license number: {tripInfo.host.drivingLicenseNumber}</div>
                 <div className="">
                   Driving license validity period:{" "}
-                  {dateFormatYearMonthDay(tripInfo.host.drivingLicenseExpirationDate, tripInfo.timeZoneId)}
+                  {dateFormatShortMonthDateYear(tripInfo.host.drivingLicenseExpirationDate, UTC_TIME_ZONE_ID)}
                 </div>
                 <div className="text-xl">VEHICLE INFORMATION</div>
                 <div className="">
@@ -163,21 +210,24 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                   {displayMoneyWith2Digits(tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithDiscountInUsd)})
                 </div>
                 <div className="">
-                  Sales Tax: ETH {tripInfo.salesTaxInUsd / tripInfo.currencyRate} (USD {tripInfo.salesTaxInUsd}){" "}
+                  Delivery fee to Pick-Up location: ETH {tripInfo.pickUpDeliveryFeeInUsd / tripInfo.currencyRate} (USD{" "}
+                  {displayMoneyWith2Digits(tripInfo.pickUpDeliveryFeeInUsd)}){" "}
+                </div>
+                <div className="">
+                  Delivery fee from Drop-Off location: ETH {tripInfo.dropOffDeliveryFeeInUsd / tripInfo.currencyRate}{" "}
+                  (USD {displayMoneyWith2Digits(tripInfo.dropOffDeliveryFeeInUsd)}){" "}
+                </div>
+                <div className="">
+                  Sales Tax: ETH {tripInfo.salesTaxInUsd / tripInfo.currencyRate} (USD{" "}
+                  {displayMoneyWith2Digits(tripInfo.salesTaxInUsd)}){" "}
                 </div>
                 <div className="">
                   Government Tax: ETH {tripInfo.governmentTaxInUsd / tripInfo.currencyRate} (USD{" "}
                   {tripInfo.governmentTaxInUsd}){" "}
                 </div>
                 <div className="">
-                  Total charge: ETH{" "}
-                  {(tripInfo.totalPriceWithDiscountInUsd + tripInfo.salesTaxInUsd + tripInfo.governmentTaxInUsd) /
-                    tripInfo.currencyRate}{" "}
-                  (USD{" "}
-                  {displayMoneyWith2Digits(
-                    tripInfo.totalPriceWithDiscountInUsd + tripInfo.salesTaxInUsd + tripInfo.governmentTaxInUsd
-                  )}
-                  )
+                  Total charge: ETH {tripInfo.totalPriceInUsd / tripInfo.currencyRate} (USD{" "}
+                  {displayMoneyWith2Digits(tripInfo.totalPriceInUsd)})
                 </div>
                 <div className="text-xl">Additional transactions </div>
                 <div className="">

@@ -1,3 +1,5 @@
+import { isEmpty } from "@/utils/string";
+import { forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface RntSelectProps extends React.ComponentPropsWithoutRef<"select"> {
@@ -5,43 +7,58 @@ interface RntSelectProps extends React.ComponentPropsWithoutRef<"select"> {
   selectClassName?: string;
   label?: string;
   readOnly?: boolean;
+  validationClassName?: string;
+  validationError?: string;
 }
 
-export default function RntSelect({
-  children,
-  className,
-  labelClassName,
-  selectClassName,
-  id,
-  label,
-  placeholder,
-  value,
-  readOnly,
-  onChange: onChangeHandler,
-}: RntSelectProps) {
-  const isShowLabel = label !== undefined && label?.length > 0;
+const RntSelect = forwardRef<HTMLSelectElement, RntSelectProps>(
+  (
+    {
+      children,
+      className,
+      labelClassName,
+      selectClassName,
+      validationClassName,
+      validationError,
+      id,
+      label,
+      placeholder,
+      value,
+      readOnly,
+      onChange: onChangeHandler,
+      ...rest
+    },
+    ref
+  ) => {
+    const cClassName = twMerge("text-black flex flex-col w-full", className);
+    const lClassName = twMerge("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
+    const sclassName = twMerge("w-full h-12 border-2 rounded-full pl-4", selectClassName);
+    const vClassName = twMerge("text-red-400 mt-2", validationClassName);
 
-  const cClassName = twMerge("text-black flex flex-col w-full", className);
-  const lClassName = twMerge("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
-  const sclassName = twMerge("w-full h-12 border-2 rounded-full pl-4", selectClassName);
+    return (
+      <div className={cClassName}>
+        {!isEmpty(label) && (
+          <label className={lClassName} htmlFor={id}>
+            {label}
+          </label>
+        )}
+        <select
+          className={sclassName}
+          id={id}
+          disabled={readOnly}
+          placeholder={placeholder}
+          onChange={(e) => onChangeHandler != null && onChangeHandler(e)}
+          value={value}
+          {...rest}
+          ref={ref}
+        >
+          {children}
+        </select>
+        {!isEmpty(validationError) && <p className={vClassName}>* {validationError}</p>}
+      </div>
+    );
+  }
+);
+RntSelect.displayName = "RntSelect";
 
-  return (
-    <div className={cClassName}>
-      {isShowLabel ? (
-        <label className={lClassName} htmlFor={id}>
-          {label}
-        </label>
-      ) : null}
-      <select
-        className={sclassName}
-        id={id}
-        disabled={readOnly}
-        placeholder={placeholder}
-        onChange={(e) => onChangeHandler != null && onChangeHandler(e)}
-        value={value}
-      >
-        {children}
-      </select>
-    </div>
-  );
-}
+export default RntSelect;

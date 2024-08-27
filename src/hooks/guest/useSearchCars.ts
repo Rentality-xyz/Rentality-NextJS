@@ -9,13 +9,11 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import {
   ContractCreateTripRequest,
   ContractCreateTripRequestWithDelivery,
-  ContractDeliveryLocations,
   ContractLocationInfo,
-  ContractSearchCarParams,
 } from "@/model/blockchain/schemas";
-import { ethers } from "ethers";
-import { bigIntReplacer } from "@/utils/json";
 import { isEmpty } from "@/utils/string";
+import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
+import { bigIntReplacer } from "@/utils/json";
 
 export type SortOptions = {
   [key: string]: string;
@@ -33,7 +31,13 @@ const useSearchCars = () => {
       setIsLoading(true);
 
       var url = new URL(`/api/publicSearchCars`, window.location.origin);
-      if (ethereumInfo?.chainId) url.searchParams.append("chainId", ethereumInfo.defaultChainId.toString());
+      if (ethereumInfo?.chainId)
+        url.searchParams.append(
+          "chainId",
+          ethereumInfo.chainId === 5611 || ethereumInfo.chainId === 11155111
+            ? "5611"
+            : ethereumInfo.defaultChainId.toString()
+        );
       if (searchCarRequest.dateFrom) url.searchParams.append("dateFrom", searchCarRequest.dateFrom);
       if (searchCarRequest.dateTo) url.searchParams.append("dateTo", searchCarRequest.dateTo);
       if (searchCarRequest.searchLocation.country)
@@ -42,6 +46,10 @@ const useSearchCars = () => {
         url.searchParams.append("state", "" /* searchCarRequest.searchLocation.state*/);
       if (searchCarRequest.searchLocation.city)
         url.searchParams.append("city", "" /*searchCarRequest.searchLocation.city*/);
+      url.searchParams.append("state", searchCarRequest.searchLocation.state);
+      if (searchCarRequest.searchLocation.city) url.searchParams.append("city", searchCarRequest.searchLocation.city);
+      url.searchParams.append("latitude", searchCarRequest.searchLocation.latitude.toFixed(6));
+      url.searchParams.append("longitude", searchCarRequest.searchLocation.longitude.toFixed(6));
       if (searchCarRequest.searchFilters.brand) url.searchParams.append("brand", searchCarRequest.searchFilters.brand);
       if (searchCarRequest.searchFilters.model) url.searchParams.append("model", searchCarRequest.searchFilters.model);
       if (searchCarRequest.searchFilters.yearOfProductionFrom)
@@ -57,20 +65,20 @@ const useSearchCars = () => {
       if (
         searchCarRequest.isDeliveryToGuest &&
         !searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation &&
-        !isEmpty(searchCarRequest.deliveryInfo.pickupLocation.address)
+        !isEmpty(searchCarRequest.deliveryInfo.pickupLocation.locationInfo.address)
       )
         url.searchParams.append(
           "pickupLocation",
-          `${searchCarRequest.deliveryInfo.pickupLocation.lat.toFixed(6)};${searchCarRequest.deliveryInfo.pickupLocation.lng.toFixed(6)}`
+          `${searchCarRequest.deliveryInfo.pickupLocation.locationInfo.latitude.toFixed(6)};${searchCarRequest.deliveryInfo.pickupLocation.locationInfo.longitude.toFixed(6)}`
         );
       if (
         searchCarRequest.isDeliveryToGuest &&
         !searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation &&
-        !isEmpty(searchCarRequest.deliveryInfo.returnLocation.address)
+        !isEmpty(searchCarRequest.deliveryInfo.returnLocation.locationInfo.address)
       )
         url.searchParams.append(
           "returnLocation",
-          `${searchCarRequest.deliveryInfo.returnLocation.lat.toFixed(6)};${searchCarRequest.deliveryInfo.returnLocation.lng.toFixed(6)}`
+          `${searchCarRequest.deliveryInfo.returnLocation.locationInfo.latitude.toFixed(6)};${searchCarRequest.deliveryInfo.returnLocation.locationInfo.longitude.toFixed(6)}`
         );
 
       const apiResponse = await fetch(url);
@@ -100,7 +108,6 @@ const useSearchCars = () => {
       setIsLoading(false);
     }
   };
-
   const createTripRequest = async (carId: number, searchCarRequest: SearchCarRequest, timeZoneId: string) => {
     if (ethereumInfo === null) {
       console.error("createTripRequest: ethereumInfo is null");
@@ -123,75 +130,93 @@ const useSearchCars = () => {
       const startUnixTime = getBlockchainTimeFromDate(startCarLocalDateTime);
       const endUnixTime = getBlockchainTimeFromDate(endCarLocalDateTime);
 
-      const ethAddress = ethers.getAddress("0x0000000000000000000000000000000000000000");
-
-      if (searchCarRequest.isDeliveryToGuest) {
-        const deliveryData = await rentalityContract.getDeliveryData(BigInt(carId));
-        const hostHomeLocationLat = deliveryData.locationInfo.latitude;
-        const hostHomeLocationLng = deliveryData.locationInfo.longitude;
-
-        const contractDeliveryLocationsPickUp: ContractLocationInfo = {
-          country: "",
-          state: "",
-          city: "",
-          userAddress: "",
-          timeZoneId: "",
-          latitude: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
-            ? ""
-            : searchCarRequest.deliveryInfo.pickupLocation.lat.toFixed(6),
-          longitude: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
-            ? ""
-            : searchCarRequest.deliveryInfo.pickupLocation.lng.toFixed(6),
+      if (
+        searchCarRequest.isDeliveryToGuest ||
+        !searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation ||
+        !searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+      ) {
+        const carDeliveryData = await rentalityContract.getDeliveryData(BigInt(carId));
+        const carLocationInfo: ContractLocationInfo = {
+          userAddress: carDeliveryData.locationInfo.userAddress,
+          country: carDeliveryData.locationInfo.country,
+          state: carDeliveryData.locationInfo.state,
+          city: carDeliveryData.locationInfo.city,
+          latitude: carDeliveryData.locationInfo.latitude,
+          longitude: carDeliveryData.locationInfo.longitude,
+          timeZoneId: carDeliveryData.locationInfo.timeZoneId,
         };
-        const contractDeliveryLocationsReturn: ContractLocationInfo = {
-          country: "",
-          state: "",
-          city: "",
-          userAddress: "",
-          timeZoneId: "",
-          latitude: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
-            ? ""
-            : searchCarRequest.deliveryInfo.returnLocation.lat.toFixed(6),
-          longitude: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
-            ? ""
-            : searchCarRequest.deliveryInfo.returnLocation.lng.toFixed(6),
-        };
+
+        const pickupLocationInfo: ContractLocationInfo =
+          searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation ||
+          isEmpty(searchCarRequest.deliveryInfo.pickupLocation.locationInfo.address)
+            ? carLocationInfo
+            : {
+                userAddress: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.address,
+                country: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.country,
+                state: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.state,
+                city: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.city,
+                latitude: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.latitude.toFixed(6),
+                longitude: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.longitude.toFixed(6),
+                timeZoneId: searchCarRequest.deliveryInfo.pickupLocation.locationInfo.timeZoneId,
+              };
+        const returnLocationInfo =
+          searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation ||
+          isEmpty(searchCarRequest.deliveryInfo.returnLocation.locationInfo.address)
+            ? carLocationInfo
+            : {
+                userAddress: searchCarRequest.deliveryInfo.returnLocation.locationInfo.address,
+                country: searchCarRequest.deliveryInfo.returnLocation.locationInfo.country,
+                state: searchCarRequest.deliveryInfo.returnLocation.locationInfo.state,
+                city: searchCarRequest.deliveryInfo.returnLocation.locationInfo.city,
+                latitude: searchCarRequest.deliveryInfo.returnLocation.locationInfo.latitude.toFixed(6),
+                longitude: searchCarRequest.deliveryInfo.returnLocation.locationInfo.longitude.toFixed(6),
+                timeZoneId: searchCarRequest.deliveryInfo.returnLocation.locationInfo.timeZoneId,
+              };
 
         const paymentsNeeded = await rentalityContract.calculatePaymentsWithDelivery(
           BigInt(carId),
           BigInt(days),
-          ethAddress,
-          contractDeliveryLocationsPickUp,
-          contractDeliveryLocationsReturn
+          ETH_DEFAULT_ADDRESS,
+          pickupLocationInfo,
+          returnLocationInfo
         );
 
         const tripRequest: ContractCreateTripRequestWithDelivery = {
           carId: BigInt(carId),
           startDateTime: startUnixTime,
           endDateTime: endUnixTime,
-          currencyType: ethAddress,
-          pickUpInfo: { locationInfo: contractDeliveryLocationsPickUp, signature: ethAddress },
-          returnInfo: { locationInfo: contractDeliveryLocationsReturn, signature: ethAddress },
+          currencyType: ETH_DEFAULT_ADDRESS,
+          pickUpInfo: {
+            locationInfo: pickupLocationInfo,
+            signature: "",
+          },
+          returnInfo: {
+            locationInfo: returnLocationInfo,
+            signature: "",
+          },
         };
-
+        console.log("amount", paymentsNeeded.totalPrice);
         const transaction = await rentalityContract.createTripRequestWithDelivery(tripRequest, {
           value: paymentsNeeded.totalPrice,
         });
         await transaction.wait();
       } else {
-        const paymentsNeeded = await rentalityContract.calculatePayments(BigInt(carId), BigInt(days), ethAddress);
+        const paymentsNeeded = await rentalityContract.calculatePayments(
+          BigInt(carId),
+          BigInt(days),
+          ETH_DEFAULT_ADDRESS
+        );
 
         const tripRequest: ContractCreateTripRequest = {
           carId: BigInt(carId),
           startDateTime: startUnixTime,
           endDateTime: endUnixTime,
-          currencyType: ethAddress,
+          currencyType: ETH_DEFAULT_ADDRESS,
         };
 
-        const transaction = await rentalityContract.createTripRequest(
-          { value: paymentsNeeded.totalPrice },
-          tripRequest
-        );
+        const transaction = await rentalityContract.createTripRequest(tripRequest, {
+          value: paymentsNeeded.totalPrice,
+        });
         await transaction.wait();
       }
 
@@ -205,7 +230,6 @@ const useSearchCars = () => {
   function sortByDailyPriceAsc(a: SearchCarInfo, b: SearchCarInfo) {
     return a.pricePerDay - b.pricePerDay;
   }
-
   function sortByDailyPriceDes(a: SearchCarInfo, b: SearchCarInfo) {
     return b.pricePerDay - a.pricePerDay;
   }
@@ -232,4 +256,5 @@ const useSearchCars = () => {
   }, []);
   return [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest, setSearchResult] as const;
 };
+
 export default useSearchCars;

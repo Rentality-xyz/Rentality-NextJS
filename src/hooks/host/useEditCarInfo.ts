@@ -12,8 +12,15 @@ import {
 import { useRentality } from "@/contexts/rentalityContext";
 import { getMoneyInCentsFromString } from "@/utils/formInput";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { ContractCarDetails, ContractCarInfo, ContractUpdateCarInfoRequest } from "@/model/blockchain/schemas";
+import {
+  ContractCarDetails,
+  ContractCarInfo,
+  ContractSignedLocationInfo,
+  ContractUpdateCarInfoRequest,
+} from "@/model/blockchain/schemas";
 import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
+import { emptyLocationInfo } from "@/model/LocationInfo";
+import { bigIntReplacer } from "@/utils/json";
 
 const emptyHostCarInfo: HostCarInfo = {
   carId: -1,
@@ -39,7 +46,7 @@ const emptyHostCarInfo: HostCarInfo = {
   milesIncludedPerDay: "",
   securityDeposit: "",
   fuelPricePerGal: "",
-  locationInfo: { address: "", country: "", state: "", city: "", latitude: 0, longitude: 0, timeZoneId: "" },
+  locationInfo: emptyLocationInfo,
   isLocationEdited: false,
   currentlyListed: true,
   engineTypeText: "",
@@ -88,14 +95,33 @@ const useEditCarInfo = (carId: number) => {
         timeBufferBetweenTripsInSec: BigInt(carInfoFormParams.timeBufferBetweenTripsInMin * 60),
         securityDepositPerTripInUsdCents: securityDepositPerTripInUsdCents,
       };
+
+      const hostAddressArray = carInfoFormParams.locationInfo.address.split(",").map((i) => i.trim());
+
+      hostAddressArray[hostAddressArray.length - 1] = carInfoFormParams.locationInfo.country;
+      hostAddressArray[hostAddressArray.length - 2] = carInfoFormParams.locationInfo.state;
+      hostAddressArray[hostAddressArray.length - 3] = carInfoFormParams.locationInfo.city;
+
+      const hostAddress = hostAddressArray.join(", ");
+
+      const location: ContractSignedLocationInfo = {
+        locationInfo: {
+          userAddress: hostAddress,
+          country: carInfoFormParams.locationInfo.country,
+          state: carInfoFormParams.locationInfo.state,
+          city: carInfoFormParams.locationInfo.city,
+          latitude: carInfoFormParams.locationInfo.latitude.toFixed(6),
+          longitude: carInfoFormParams.locationInfo.longitude.toFixed(6),
+          timeZoneId: carInfoFormParams.locationInfo.timeZoneId,
+        },
+        signature: "",
+      };
       let transaction: ContractTransactionResponse;
 
       if (carInfoFormParams.isLocationEdited) {
         transaction = await rentalityContract.updateCarInfoWithLocation(
           updateCarRequest,
-          carInfoFormParams.locationInfo.address,
-          carInfoFormParams.locationInfo.latitude.toFixed(6),
-          carInfoFormParams.locationInfo.longitude.toFixed(6),
+          location,
           process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ""
         );
       } else {
@@ -168,12 +194,16 @@ const useEditCarInfo = (carId: number) => {
           milesIncludedPerDay: getMilesIncludedPerDayText(carInfoDetails.milesIncludedPerDay),
           securityDeposit: securityDeposit.toString(),
           locationInfo: {
-            address: "",
-            country: carInfoDetails.country,
-            state: carInfoDetails.state,
-            city: carInfoDetails.city,
-            latitude: Number(carInfoDetails.locationLatitude),
-            longitude: Number(carInfoDetails.locationLongitude),
+            address: carInfoDetails.locationInfo.userAddress
+              .split(",")
+              .map((i) => i.trim())
+              .join(", "),
+            country: carInfoDetails.locationInfo.country,
+            state: carInfoDetails.locationInfo.state,
+            city: carInfoDetails.locationInfo.city,
+            latitude: Number(carInfoDetails.locationInfo.latitude),
+            longitude: Number(carInfoDetails.locationInfo.longitude),
+            timeZoneId: carInfoDetails.locationInfo.timeZoneId,
           },
           isLocationEdited: false,
           currentlyListed: carInfo.currentlyListed,

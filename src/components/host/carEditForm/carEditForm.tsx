@@ -5,12 +5,35 @@ import { HostCarInfo, UNLIMITED_MILES_VALUE_TEXT } from "@/model/HostCarInfo";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useState, useEffect } from "react";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
-import Checkbox from "@/components/common/checkbox";
+import RntCheckbox from "@/components/common/rntCheckbox";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/EngineType";
 import RntButton from "@/components/common/rntButton";
 import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import { TFunction } from "@/utils/i18n";
-import { fixedNumber } from "@/utils/numericFormatters";
+import { displayMoneyWith2Digits, fixedNumber } from "@/utils/numericFormatters";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
+
+const getTimeZoneIdFromAddress = async (latitude: number, longitude: number) => {
+  if (longitude === 0) return UTC_TIME_ZONE_ID;
+
+  const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  if (!GOOGLE_MAPS_API_KEY) {
+    console.error("getTimeZoneIdFromAddress error: GOOGLE_MAPS_API_KEY was not set");
+    return "";
+  }
+
+  var googleTimeZoneResponse = await fetch(
+    `https://maps.googleapis.com/maps/api/timezone/json?location=${latitude},${longitude}&timestamp=0&key=${GOOGLE_MAPS_API_KEY}`
+  );
+  if (!googleTimeZoneResponse.ok) {
+    console.error(`getUtcOffsetMinutesFromLocation error: googleTimeZoneResponse is ${googleTimeZoneResponse.status}`);
+    return UTC_TIME_ZONE_ID;
+  }
+
+  const googleTimeZoneJson = await googleTimeZoneResponse.json();
+
+  return googleTimeZoneJson?.timeZoneId ?? UTC_TIME_ZONE_ID;
+};
 
 export default function CarEditForm({
   carInfoFormParams,
@@ -25,35 +48,18 @@ export default function CarEditForm({
   isNewCar: boolean;
   t: TFunction;
 }) {
-  const [autocomplete, setAutocomplete] = useState("");
+  const [autocomplete, setAutocomplete] = useState(carInfoFormParams.locationInfo.address);
   const isUnlimitedMiles = carInfoFormParams.milesIncludedPerDay === UNLIMITED_MILES_VALUE_TEXT;
   const fuelPricePerMile = Number(carInfoFormParams.pricePerDay) / Number(carInfoFormParams.milesIncludedPerDay);
-  const fuelPricePerMileText = Number.isFinite(fuelPricePerMile) ? fuelPricePerMile.toString() : "-";
+  const fuelPricePerMileText = Number.isFinite(fuelPricePerMile) ? displayMoneyWith2Digits(fuelPricePerMile) : "-";
   const isElectricEngine = carInfoFormParams.engineTypeText === "Electro";
-
-  useEffect(() => {
-    if (!carInfoFormParams.locationInfo.latitude || !carInfoFormParams.locationInfo.longitude) return;
-
-    const getGoogleAddress = async () => {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${carInfoFormParams.locationInfo.latitude},${carInfoFormParams.locationInfo.longitude}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&language=en`
-      );
-      const result = await response.json();
-      const firstAddress = result?.results[0]?.formatted_address ?? "";
-
-      if (firstAddress) {
-        setAutocomplete(firstAddress);
-      }
-    };
-    getGoogleAddress();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
   };
+
   return (
-    <GoogleMapsProvider libraries={["places"]}>
+    <GoogleMapsProvider libraries={["places"]} language="en">
       <div className="mt-4">
         <div className="text-lg mb-4">
           <strong>{t_car("car")}</strong>
@@ -305,7 +311,7 @@ export default function CarEditForm({
         </div>
         <div className="flex flex-col">
           <textarea
-            className="text-black w-full px-4 py-2 border-2 rounded-2xl"
+            className="text-black w-full px-4 py-2 border-2 rounded-2xl disabled:bg-gray-300 disabled:text-gray-600"
             rows={5}
             id="description"
             placeholder="e.g. Dupont Pepper Grey 1967 Ford Mustang fastback"
@@ -336,13 +342,14 @@ export default function CarEditForm({
               includeStreetAddress={true}
               readOnly={!carInfoFormParams.isLocationEdited}
               onChange={(e) => setAutocomplete(e.target.value)}
-              onAddressChange={(placeDetails) => {
+              onAddressChange={async (placeDetails) => {
+                const locationAddress = placeDetails.addressString;
                 const country = placeDetails.country?.short_name ?? "";
                 const state = placeDetails.state?.long_name ?? "";
                 const city = placeDetails.city?.long_name ?? "";
                 const latitude = fixedNumber(placeDetails.location?.latitude ?? 0, 6);
                 const longitude = fixedNumber(placeDetails.location?.longitude ?? 0, 6);
-                const locationAddress = `1, ${city}, ${state}, ${country}`;
+                const timeZoneId = await getTimeZoneIdFromAddress(latitude, longitude);
 
                 setCarInfoFormParams({
                   ...carInfoFormParams,
@@ -353,6 +360,7 @@ export default function CarEditForm({
                     city: city,
                     latitude: latitude,
                     longitude: longitude,
+                    timeZoneId: timeZoneId,
                   },
                 });
               }}
@@ -444,7 +452,7 @@ export default function CarEditForm({
               })
             }
           />
-          <Checkbox
+          <RntCheckbox
             className="ml-4"
             title={t_car("unlimited_miles")}
             value={isUnlimitedMiles}
@@ -512,7 +520,7 @@ export default function CarEditForm({
             </p>
           </div>
         </div>
-        <Checkbox
+        <RntCheckbox
           className="mt-4"
           title={t_car("insurance_included")}
           value={carInfoFormParams.isInsuranceIncluded}

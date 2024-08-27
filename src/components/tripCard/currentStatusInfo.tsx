@@ -27,11 +27,17 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean, isFinishin
         : t("booked.status_pending_guest", { returnObjects: true });
     case TripStatus.Confirmed:
       return isHost
-        ? t("booked.status_confirmed_host", { returnObjects: true } as const)
-        : t("booked.status_confirmed_guest", { returnObjects: true } as const);
+        ? t("booked.status_confirmed_host", {
+            date: moment(tripInfo.tripStart).fromNow(),
+            returnObjects: true,
+          } as const)
+        : t("booked.status_confirmed_guest", {
+            date: moment(tripInfo.tripStart).fromNow(),
+            returnObjects: true,
+          } as const);
     case TripStatus.CheckedInByHost:
       if (isFinishingByHost) {
-        return t("booked.is_finishing_by_host", { returnObjects: true } as const);
+        return t("booked.status_is_finishing_by_host", { returnObjects: true } as const);
       }
       return isHost
         ? t("booked.status_check_in_host_host", {
@@ -44,7 +50,7 @@ const getActionTextsForStatus = (tripInfo: TripInfo, isHost: boolean, isFinishin
           } as const);
     case TripStatus.Started:
       if (isFinishingByHost) {
-        return t("booked.is_finishing_by_host", { returnObjects: true } as const);
+        return t("booked.status_is_finishing_by_host", { returnObjects: true } as const);
       }
       return isHost
         ? t(
