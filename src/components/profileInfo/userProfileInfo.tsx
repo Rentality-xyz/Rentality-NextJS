@@ -20,7 +20,6 @@ import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProfileInfoFormValues, profileInfoFormSchema } from "./profileInfoFormSchema";
 import moment from "moment";
-import { convertHeicToPng } from "@/utils/heic2any";
 
 function UserProfileInfo({
   savedProfileSettings,
@@ -80,7 +79,8 @@ function UserProfileInfo({
       }
       const fileNameExt = file.name.substr(file.name.lastIndexOf(".") + 1);
       if (fileNameExt == "heic") {
-        const convertedFile = await convertHeicToPng(file);
+        const convertHeicToPng = await import("@/utils/heic2any");
+        const convertedFile = await convertHeicToPng.default(file);
         field.onChange(convertedFile.localUrl);
       } else {
         const urlImage = URL.createObjectURL(file);
