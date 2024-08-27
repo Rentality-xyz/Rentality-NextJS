@@ -77,7 +77,7 @@ export default function Footer() {
           <div>
             <a
               href="mailto:info@rentality.xyz"
-              className="pt-4 font-['Montserrat',Arial,sans-serif] text-base font-normal max-lg:hidden lg:pt-9"
+              className="pt-4 font-['Montserrat',Arial,sans-serif] text-base font-normal lg:pt-9"
             >
               <div>info@rentality.xyz</div>
             </a>
@@ -100,9 +100,9 @@ export default function Footer() {
                   <Image src={discord} alt="" className="ml-1.5 w-[30px]" />
                 </a>
 
-                <a href="mailto:info@rentality.xyz" className="lg:hidden">
-                  <Image src={email} alt="" className="ml-1.5 w-[30px]" />
-                </a>
+                {/*<a href="mailto:info@rentality.xyz" className="lg:hidden">*/}
+                {/*  <Image src={email} alt="" className="ml-1.5 w-[30px]" />*/}
+                {/*</a>*/}
 
                 <a href="https://t.me/rentality_xyz" target="_blank" rel="noopener noreferrer">
                   <Image src={telegram} alt="" className="ml-1.5 w-[30px]" />
