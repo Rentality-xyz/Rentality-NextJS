@@ -1,5 +1,8 @@
+import { PlaceDetails } from "@/components/common/rntPlaceAutocompleteInput";
 import { LocationInfo } from "@/model/LocationInfo";
 import { ContractLocationInfo } from "@/model/blockchain/schemas";
+import { fixedNumber } from "./numericFormatters";
+import { getTimeZoneIdFromAddress } from "./fetchTimeZoneId";
 
 export function formatLocationAddressFromLocationInfo(locationInfo: LocationInfo) {
   return formatLocationAddress(locationInfo.address, locationInfo.country, locationInfo.state, locationInfo.city);
@@ -20,7 +23,6 @@ export function formatLocationAddress(address: string, country: string, state: s
   addressArray[indexOfCity + 1] = state;
   addressArray[indexOfCity + 2] = country;
 
-  console.log(`formatLocationAddress call. Input:${address} | Output: ${addressArray.join(", ")}`);
   return addressArray.join(", ");
 }
 
@@ -45,5 +47,31 @@ export function mapContractLocationInfoToLocationInfo(locationInfo: ContractLoca
     latitude: Number(locationInfo.latitude),
     longitude: Number(locationInfo.longitude),
     timeZoneId: locationInfo.timeZoneId,
+  };
+}
+
+export function placeDetailsToLocationInfo(placeDetails: PlaceDetails): LocationInfo {
+  return {
+    address: placeDetails.addressString,
+    country: placeDetails.country?.short_name ?? "",
+    state: placeDetails.state?.long_name ?? "",
+    city: placeDetails.city?.long_name ?? "",
+    latitude: fixedNumber(placeDetails.location?.latitude ?? 0, 6),
+    longitude: fixedNumber(placeDetails.location?.longitude ?? 0, 6),
+    timeZoneId: "",
+  };
+}
+
+export async function placeDetailsToLocationInfoWithTimeZone(placeDetails: PlaceDetails): Promise<LocationInfo> {
+  const latitude = fixedNumber(placeDetails.location?.latitude ?? 0, 6);
+  const longitude = fixedNumber(placeDetails.location?.longitude ?? 0, 6);
+  return {
+    address: placeDetails.addressString,
+    country: placeDetails.country?.short_name ?? "",
+    state: placeDetails.state?.long_name ?? "",
+    city: placeDetails.city?.long_name ?? "",
+    latitude: latitude,
+    longitude: longitude,
+    timeZoneId: await getTimeZoneIdFromAddress(latitude, longitude),
   };
 }

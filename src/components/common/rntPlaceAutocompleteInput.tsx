@@ -5,7 +5,7 @@ import RntValidationError from "./RntValidationError";
 import { cn } from "@/utils";
 import { env } from "@/utils/env";
 
-type PlaceDetails = {
+export type PlaceDetails = {
   addressString: string;
   country?: {
     short_name: string;

@@ -92,7 +92,6 @@ const useSaveCar = () => {
         locationInfo: mapLocationInfoToContractLocationInfo(dataToSave.locationInfo),
         signature: "",
       };
-      console.log(`location: ${JSON.stringify(location)}`);
 
       const request: ContractCreateCarRequest = {
         tokenUri: metadataURL,
@@ -161,8 +160,6 @@ const useSaveCar = () => {
           locationInfo: mapLocationInfoToContractLocationInfo(hostCarInfo.locationInfo),
           signature: "",
         };
-
-        console.log(`location: ${JSON.stringify(location)}`);
 
         transaction = await rentalityContract.updateCarInfoWithLocation(
           updateCarRequest,

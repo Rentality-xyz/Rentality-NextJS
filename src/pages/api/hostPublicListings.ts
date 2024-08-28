@@ -56,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
-  console.log(`Calling checkTrips API for ${chainIdNumber} chain id and ${hostAddress} host...`);
+  console.log(`\nCalling checkTrips API for ${chainIdNumber} chain id and ${hostAddress} host...`);
 
   const wallet = new Wallet(privateKey, provider);
   try {

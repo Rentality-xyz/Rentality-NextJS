@@ -18,7 +18,6 @@ function CustomCivicDialog({
   async function handlePayCommission() {
     const payCommissionResult = await payCommission();
     if (!payCommissionResult.ok) {
-      console.log(`calling showError(${payCommissionResult.error})`);
       showError(payCommissionResult.error);
     }
   }

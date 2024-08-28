@@ -5,6 +5,7 @@ import { collection, getDocs, query } from "firebase/firestore";
 import { FIREBASE_DB_NAME } from "@/chat/model/firebaseTypes";
 import moment from "moment";
 import { Err, Ok, Result } from "@/model/utils/result";
+import { env } from "@/utils/env";
 
 type RegisteredUser = {
   email: string;
@@ -57,13 +58,13 @@ async function getRegisteredUsers(
 ): Promise<Result<RegisteredUser[], string>> {
   if (!db) return Err("db is null");
 
-  const CIVIC_USER_EMAIL = process.env.CIVIC_USER_EMAIL;
+  const CIVIC_USER_EMAIL = env.CIVIC_USER_EMAIL;
   if (!CIVIC_USER_EMAIL || isEmpty(CIVIC_USER_EMAIL)) {
     console.error("retrieveCivicData error: CIVIC_USER_EMAIL was not set");
     return Err("CIVIC_USER_EMAIL was not set");
   }
 
-  const CIVIC_USER_PASSWORD = process.env.CIVIC_USER_PASSWORD;
+  const CIVIC_USER_PASSWORD = env.CIVIC_USER_PASSWORD;
   if (!CIVIC_USER_PASSWORD || isEmpty(CIVIC_USER_PASSWORD)) {
     console.error("retrieveCivicData error: CIVIC_USER_PASSWORD was not set");
     return Err("CIVIC_USER_PASSWORD was not set");
