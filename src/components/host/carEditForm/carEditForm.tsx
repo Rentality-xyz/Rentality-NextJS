@@ -16,8 +16,7 @@ import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/
 import RntButton from "@/components/common/rntButton";
 import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import { TFunction } from "@/utils/i18n";
-import { displayMoneyWith2Digits, fixedNumber } from "@/utils/numericFormatters";
-import { getTimeZoneIdFromAddress } from "@/utils/fetchTimeZoneId";
+import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
 import { useRouter } from "next/navigation";
@@ -34,6 +33,7 @@ import RntCarModelSelect from "@/components/common/rntCarModelSelect";
 import RntCarYearSelect from "@/components/common/rntCarYearSelect";
 import RntVINCheckingInput from "@/components/common/rntVINCheckingInput";
 import * as React from "react";
+import { placeDetailsToLocationInfoWithTimeZone } from "@/utils/location";
 
 export default function CarEditForm({
   initValue,
@@ -526,22 +526,7 @@ export default function CarEditForm({
                     readOnly={!isLocationEdited}
                     onChange={(e) => setAutocomplete(e.target.value)}
                     onAddressChange={async (placeDetails) => {
-                      const locationAddress = placeDetails.addressString;
-                      const country = placeDetails.country?.short_name ?? "";
-                      const state = placeDetails.state?.long_name ?? "";
-                      const city = placeDetails.city?.long_name ?? "";
-                      const latitude = fixedNumber(placeDetails.location?.latitude ?? 0, 6);
-                      const longitude = fixedNumber(placeDetails.location?.longitude ?? 0, 6);
-                      const timeZoneId = await getTimeZoneIdFromAddress(latitude, longitude);
-                      field.onChange({
-                        address: locationAddress,
-                        country: country,
-                        state: state,
-                        city: city,
-                        latitude: latitude,
-                        longitude: longitude,
-                        timeZoneId: timeZoneId,
-                      });
+                      field.onChange(await placeDetailsToLocationInfoWithTimeZone(placeDetails));
                     }}
                     validationError={errors.locationInfo?.address?.message?.toString()}
                   />
