@@ -140,6 +140,6 @@ module.exports = {
       },
     },
   },
-  safelist: [],
+  safelist: ["bg-[#FFFF00]", "bg-[#7355D7]"],
   plugins: [],
 };
