@@ -22,7 +22,6 @@ import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
 import { useRouter } from "next/navigation";
 import { resizeImage } from "@/utils/image";
-import { bigIntReplacer } from "@/utils/json";
 import { Controller, useForm } from "react-hook-form";
 import { carEditFormSchema, CarEditFormValues } from "./carEditFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,7 +34,6 @@ import RntCarModelSelect from "@/components/common/rntCarModelSelect";
 import RntCarYearSelect from "@/components/common/rntCarYearSelect";
 import RntVINCheckingInput from "@/components/common/rntVINCheckingInput";
 import * as React from "react";
-import { convertHeicToPng } from "@/utils/heic2any";
 
 export default function CarEditForm({
   initValue,
@@ -164,7 +162,8 @@ export default function CarEditForm({
     reader.onload = async function (event) {
       const fileNameExt = file.name.substr(file.name.lastIndexOf(".") + 1);
       if (fileNameExt == "heic") {
-        const convertedFile = await convertHeicToPng(file);
+        const convertHeicToPng = await import("@/utils/heic2any");
+        const convertedFile = await convertHeicToPng.default(file);
         setValue("image", convertedFile.localUrl);
       } else {
         setValue("image", event.target?.result?.toString() ?? "");

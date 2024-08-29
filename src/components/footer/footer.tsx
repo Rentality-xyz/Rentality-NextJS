@@ -1,15 +1,15 @@
 import Image from "next/image";
 import logo from "../../images/logo.svg";
 import bgCar from "../../images/red-generic-sport-ca.png";
-import linkedin from "../../images/ic-linkedin-50.png";
-import twitter from "../../images/ic_twitter.svg";
-import discord from "../../images/ic-discord-50.png";
+import linkedin from "../../images/social/linkedin-logo.svg";
+import twitter from "../../images/social/x-logo.svg";
+import discord from "../../images/social/discord-logo.svg";
 import email from "../../images/ic-email-50.png";
-import telegram from "../../images/ic_telegram.svg";
-import mirror from "../../images/ic_mirror_logo.svg";
-import instagram from "../../images/instagram-social-media.svg";
-import medium from "../../images/medium_logo.svg";
-import warpcast from "../../images/warpcast-logo.png";
+import telegram from "../../images/social/telegram-logo.svg";
+import mirror from "../../images/social/mirror-logo.svg";
+import instagram from "../../images/social/instagram-logo.svg";
+import medium from "../../images/social/medium-logo.svg";
+import warpcast from "../../images/social/warpcast-logo.svg";
 import Link from "next/link";
 import moment from "moment";
 
@@ -77,56 +77,56 @@ export default function Footer() {
           <div>
             <a
               href="mailto:info@rentality.xyz"
-              className="pt-4 font-['Montserrat',Arial,sans-serif] text-base font-normal max-lg:hidden lg:pt-9"
+              className="pt-4 font-['Montserrat',Arial,sans-serif] text-base font-normal lg:pt-9"
             >
               <div>info@rentality.xyz</div>
             </a>
 
-            <div className="mt-1.5 flex w-[256px] flex-col">
+            <div className="mt-1.5 flex flex-col">
               <div className="flex">
                 <a
                   href="https://www.linkedin.com/company/rentalitycorp/?viewAsMember=true"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Image src={linkedin} alt="" className="mt-0.5 w-[30px]" />
+                  <Image src={linkedin} alt="" className="w-[30px]" />
                 </a>
 
                 <a href="https://twitter.com/Rentality_Info" target="_blank" rel="noopener noreferrer">
-                  <Image src={twitter} alt="" className="ml-3 mt-1.5 w-[22px]" />
+                  <Image src={twitter} alt="" className="ml-1.5 w-[30px]" />
                 </a>
 
                 <a href="https://discord.gg/rentality" target="_blank" rel="noopener noreferrer">
-                  <Image src={discord} alt="" className="ml-3 mt-0.5 w-[30px]" />
+                  <Image src={discord} alt="" className="ml-1.5 w-[30px]" />
                 </a>
 
-                <a href="mailto:info@rentality.xyz" className="lg:hidden">
-                  <Image src={email} alt="" className="ml-3 mt-0.5 w-[30px]" />
-                </a>
+                {/*<a href="mailto:info@rentality.xyz" className="lg:hidden">*/}
+                {/*  <Image src={email} alt="" className="ml-1.5 w-[30px]" />*/}
+                {/*</a>*/}
 
                 <a href="https://t.me/rentality_xyz" target="_blank" rel="noopener noreferrer">
-                  <Image src={telegram} alt="" className="ml-3 mt-0.5 w-[30px]" />
+                  <Image src={telegram} alt="" className="ml-1.5 w-[30px]" />
                 </a>
-
+              </div>
+              <div className="flex">
                 <a
                   href="https://mirror.xyz/0x263660F0ab0014e956d42f85DccD918bBa2Df587"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Image src={mirror} alt="" className="ml-1 w-[36px]" />
+                  <Image src={mirror} alt="" className="w-[30px]" />
                 </a>
 
                 <a href="https://warpcast.com/rentality" target="_blank" rel="noopener noreferrer">
-                  <Image src={warpcast} alt="" className="ml-1 mt-0.5 w-[30px]" />
+                  <Image src={warpcast} alt="" className="ml-1.5 w-[30px]" />
                 </a>
 
                 <a href="https://www.instagram.com/rentality_/" target="_blank" rel="noopener noreferrer">
-                  <Image src={instagram} alt="" className="ml-3 mt-0.5 w-[30px]" />
+                  <Image src={instagram} alt="" className="ml-1.5 w-[30px]" />
                 </a>
-              </div>
-              <div className="mt-1 flex">
+
                 <a href="https://medium.com/@rentality" target="_blank" rel="noopener noreferrer">
-                  <Image src={medium} alt="" className="h-[24px] w-full" />
+                  <Image src={medium} alt="" className="ml-1.5 w-[30px]" />
                 </a>
               </div>
             </div>
