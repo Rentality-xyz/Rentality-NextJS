@@ -15,6 +15,7 @@ export const env = createEnv({
     CIVIC_USER_PASSWORD: z.string().optional(),
 
     WALLET_PRIVATE_KEY: z.string(),
+    SIGNER_PRIVATE_KEY: z.string(),
 
     PROVIDER_API_URL_1337: z.string().url(),
     PROVIDER_API_URL_5611: z.string().url().optional(),

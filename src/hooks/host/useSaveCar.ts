@@ -10,7 +10,7 @@ import {
   ContractUpdateCarInfoRequest,
 } from "@/model/blockchain/schemas";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
-import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
+import { getSignedLocationInfo } from "@/utils/location";
 import { getNftJSONFromCarInfo } from "@/utils/ipfsUtils";
 import { ContractTransactionResponse } from "ethers";
 import { env } from "@/utils/env";
@@ -88,10 +88,11 @@ const useSaveCar = () => {
         engineParams.push(BigInt(dataToSave.fullBatteryChargePrice * 100));
       }
 
-      const location: ContractSignedLocationInfo = {
-        locationInfo: mapLocationInfoToContractLocationInfo(dataToSave.locationInfo),
-        signature: "",
-      };
+      const locationResult = await getSignedLocationInfo(dataToSave.locationInfo, ethereumInfo.chainId);
+      if (!locationResult.ok) {
+        console.error("Sign location error");
+        return false;
+      }
 
       const request: ContractCreateCarRequest = {
         tokenUri: metadataURL,
@@ -109,7 +110,7 @@ const useSaveCar = () => {
         engineParams: engineParams,
         timeBufferBetweenTripsInSec: BigInt(dataToSave.timeBufferBetweenTripsInMin * 60),
         insuranceIncluded: dataToSave.isInsuranceIncluded,
-        locationInfo: location,
+        locationInfo: locationResult.value,
         currentlyListed: dataToSave.currentlyListed,
       };
 
@@ -125,6 +126,10 @@ const useSaveCar = () => {
   }
 
   async function updateCar(hostCarInfo: HostCarInfo) {
+    if (!ethereumInfo) {
+      console.error("saveCar error: ethereumInfo is null");
+      return false;
+    }
     if (!rentalityContract) {
       console.error("saveCar error: rentalityContract is null");
       return false;
@@ -156,14 +161,15 @@ const useSaveCar = () => {
       let transaction: ContractTransactionResponse;
 
       if (hostCarInfo.isLocationEdited) {
-        const location: ContractSignedLocationInfo = {
-          locationInfo: mapLocationInfoToContractLocationInfo(hostCarInfo.locationInfo),
-          signature: "",
-        };
+        const locationResult = await getSignedLocationInfo(hostCarInfo.locationInfo, ethereumInfo.chainId);
+        if (!locationResult.ok) {
+          console.error("Sign location error");
+          return false;
+        }
 
         transaction = await rentalityContract.updateCarInfoWithLocation(
           updateCarRequest,
-          location,
+          locationResult.value,
           env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
         );
       } else {

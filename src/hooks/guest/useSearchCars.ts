@@ -13,7 +13,7 @@ import {
 import { isEmpty } from "@/utils/string";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { bigIntReplacer } from "@/utils/json";
-import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
+import { getSignedLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 
 export type SortOptions = {
@@ -177,19 +177,28 @@ const useSearchCars = () => {
           returnLocationInfo
         );
 
+        const pickupLocationResult = await getSignedLocationInfo(pickupLocationInfo, ethereumInfo.chainId);
+        if (!pickupLocationResult.ok) {
+          console.error("Sign location error");
+          return false;
+        }
+
+        const returnLocationResult =
+          returnLocationInfo.userAddress === pickupLocationInfo.userAddress
+            ? pickupLocationResult
+            : await getSignedLocationInfo(returnLocationInfo, ethereumInfo.chainId);
+        if (!returnLocationResult.ok) {
+          console.error("Sign location error");
+          return false;
+        }
+
         const tripRequest: ContractCreateTripRequestWithDelivery = {
           carId: BigInt(carId),
           startDateTime: startUnixTime,
           endDateTime: endUnixTime,
           currencyType: ETH_DEFAULT_ADDRESS,
-          pickUpInfo: {
-            locationInfo: pickupLocationInfo,
-            signature: "",
-          },
-          returnInfo: {
-            locationInfo: returnLocationInfo,
-            signature: "",
-          },
+          pickUpInfo: pickupLocationResult.value,
+          returnInfo: returnLocationResult.value,
         };
 
         const transaction = await rentalityContract.createTripRequestWithDelivery(tripRequest, {
