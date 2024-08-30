@@ -1,5 +1,4 @@
 import ClaimHistory from "@/components/claims/ClaimHistory";
-import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useGuestClaims from "@/hooks/guest/useGuestClaims";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
@@ -8,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import CreateClaim from "@/components/claims/CreateClaim";
 import { CreateClaimRequest } from "@/model/CreateClaimRequest";
 import { TFunction } from "@/utils/i18n";
+import Loading from "@/components/common/Loading";
 
 export default function Claims() {
   // const [isLoading, claims, tripInfos, createClaim, cancelClaim, payClaim] = useGuestClaims();
@@ -87,26 +87,21 @@ export default function Claims() {
   };
 
   return (
-    <Layout>
-      <div className="flex flex-col">
-        <PageTitle title={t("claims.title")} />
-        <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={false} />
-        {isLoading ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-            {t("common.info.loading")}
-          </div>
-        ) : (
-          <ClaimHistory
-            claims={claims}
-            payClaim={handlePayClaim}
-            cancelClaim={handleCancelClaim}
-            isHost={false}
-            t={(path, options) => {
-              return t("claims." + path, options);
-            }}
-          />
-        )}
-      </div>
-    </Layout>
+    <>
+      <PageTitle title={t("claims.title")} />
+      <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={false} />
+      {isLoading && <Loading />}
+      {!isLoading && (
+        <ClaimHistory
+          claims={claims}
+          payClaim={handlePayClaim}
+          cancelClaim={handleCancelClaim}
+          isHost={false}
+          t={(path, options) => {
+            return t("claims." + path, options);
+          }}
+        />
+      )}
+    </>
   );
 }

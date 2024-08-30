@@ -7,7 +7,6 @@ import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { isEmpty } from "@/utils/string";
 import { DialogActions } from "@/utils/dialogActions";
-import Layout from "@/components/layout/layout";
 import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import CarSearchMap from "@/components/guest/carMap/carSearchMap";
 import { useTranslation } from "react-i18next";
@@ -158,7 +157,7 @@ export default function Search() {
   };
 
   return (
-    <Layout>
+    <>
       <GoogleMapsProvider libraries={["maps", "marker", "places"]} language="en">
         <div className="flex flex-col" title="Search">
           <SearchAndFilters
@@ -247,6 +246,6 @@ export default function Search() {
           t={t}
         />
       </GoogleMapsProvider>
-    </Layout>
+    </>
   );
 }

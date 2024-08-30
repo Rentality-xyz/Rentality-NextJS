@@ -20,7 +20,6 @@ export default function TransactionHistoryContent({ isHost, t }: TransactionHist
   const itemsPerPage = 5;
   const [filters, setFilters] = useState<TransactionHistoryFilters>(defaultFilters);
   const { isLoading, data, fetchData } = useTransactionHistory(isHost);
-  //const [isLoading, transactions] = useTransactionHistory(isHost);
 
   async function handleApplyFilters(filters: TransactionHistoryFilters) {
     setFilters(filters);
