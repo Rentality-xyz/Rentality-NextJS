@@ -17,7 +17,7 @@ const defaultFilters: TransactionHistoryFilters = {
 };
 
 export default function TransactionHistoryContent({ isHost, t }: TransactionHistoryContentProps) {
-  const itemsPerPage = 1;
+  const itemsPerPage = 5;
   const [filters, setFilters] = useState<TransactionHistoryFilters>(defaultFilters);
   const { isLoading, data, fetchData } = useTransactionHistory(isHost);
   //const [isLoading, transactions] = useTransactionHistory(isHost);

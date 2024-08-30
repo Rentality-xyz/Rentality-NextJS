@@ -32,9 +32,9 @@ const useTransactionHistory = (isHost: boolean) => {
         ? data
         : data.filter(
             (i) =>
-              (!filters.dateFrom || i.startDateTime >= filters.dateFrom) &&
-              (!filters.dateTo || i.endDateTime <= filters.dateTo) &&
-              (!filters.status || i.status === filters.status)
+              (filters.dateFrom === undefined || i.startDateTime >= filters.dateFrom) &&
+              (filters.dateTo === undefined || i.endDateTime <= filters.dateTo) &&
+              (filters.status === undefined || i.status === filters.status)
           );
       const slicedData = filteredData.slice((page - 1) * itemsPerPage, page * itemsPerPage);
       setCurrentPage(page);
