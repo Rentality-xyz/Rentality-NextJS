@@ -56,7 +56,6 @@ const GET_AUTH_TOKEN_URL = "https://auth.civic.com/oauth/token";
 const GET_ALL_PIIS_URL = "https://api.civic.com/partner/piirequest/REQUEST_ID";
 const UPDATE_STATUS_URL = "https://api.civic.com/partner/piirequest/REQUEST_ID/status";
 
-// export default async function handler(req: NextApiRequest, res: NextApiResponse<ParseLocationResponse>) {
 export default async function handler(req: NextApiRequest, res: NextApiResponse<RetrieveCivicDataResponse>) {
   const CIVIC_CLIENT_ID = env.CIVIC_CLIENT_ID;
   if (!CIVIC_CLIENT_ID || isEmpty(CIVIC_CLIENT_ID)) {
