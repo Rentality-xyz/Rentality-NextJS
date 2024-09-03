@@ -4,13 +4,9 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeCode } from "@/model/EngineType";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import {
-  ContractCreateCarRequest,
-  ContractSignedLocationInfo,
-  ContractUpdateCarInfoRequest,
-} from "@/model/blockchain/schemas";
+import { ContractCreateCarRequest, ContractUpdateCarInfoRequest } from "@/model/blockchain/schemas";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
-import { getSignedLocationInfo } from "@/utils/location";
+import { getSignedLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { getNftJSONFromCarInfo } from "@/utils/ipfsUtils";
 import { ContractTransactionResponse } from "ethers";
 import { env } from "@/utils/env";
@@ -88,7 +84,10 @@ const useSaveCar = () => {
         engineParams.push(BigInt(dataToSave.fullBatteryChargePrice * 100));
       }
 
-      const locationResult = await getSignedLocationInfo(dataToSave.locationInfo, ethereumInfo.chainId);
+      const locationResult = await getSignedLocationInfo(
+        mapLocationInfoToContractLocationInfo(dataToSave.locationInfo),
+        ethereumInfo.chainId
+      );
       if (!locationResult.ok) {
         console.error("Sign location error");
         return false;
@@ -161,7 +160,10 @@ const useSaveCar = () => {
       let transaction: ContractTransactionResponse;
 
       if (hostCarInfo.isLocationEdited) {
-        const locationResult = await getSignedLocationInfo(hostCarInfo.locationInfo, ethereumInfo.chainId);
+        const locationResult = await getSignedLocationInfo(
+          mapLocationInfoToContractLocationInfo(hostCarInfo.locationInfo),
+          ethereumInfo.chainId
+        );
         if (!locationResult.ok) {
           console.error("Sign location error");
           return false;
