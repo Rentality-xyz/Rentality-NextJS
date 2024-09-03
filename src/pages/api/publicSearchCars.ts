@@ -11,7 +11,7 @@ import {
 } from "@/model/blockchain/schemas";
 import { emptyContractLocationInfo, validateContractSearchCarWithDistance } from "@/model/blockchain/schemas_utils";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
-import { getBlockchainTimeFromDate, getMoneyInCentsFromString } from "@/utils/formInput";
+import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { isEmpty } from "@/utils/string";
@@ -23,7 +23,7 @@ import { env } from "@/utils/env";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const privateKey = env.WALLET_PRIVATE_KEY;
+  const privateKey = env.SIGNER_PRIVATE_KEY;
   if (isEmpty(privateKey)) {
     console.error("API checkTrips error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
