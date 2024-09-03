@@ -34,7 +34,7 @@ const useSearchCars = () => {
       var url = new URL(`/api/publicSearchCars`, window.location.origin);
       if (ethereumInfo?.chainId) url.searchParams.append("chainId", ethereumInfo.chainId.toString());
       if (request.dateFrom) url.searchParams.append("dateFrom", request.dateFrom.toISOString());
-      if (request.dateTo) url.searchParams.append("dateTo", request.dateFrom.toISOString());
+      if (request.dateTo) url.searchParams.append("dateTo", request.dateTo.toISOString());
       if (request.searchLocation.country) url.searchParams.append("country", request.searchLocation.country);
       if (request.searchLocation.state) url.searchParams.append("state", request.searchLocation.state);
       if (request.searchLocation.city) url.searchParams.append("city", request.searchLocation.city);
