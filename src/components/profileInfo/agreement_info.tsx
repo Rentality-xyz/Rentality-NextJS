@@ -42,7 +42,7 @@ export default function AgreementInfo({
 
   return (
     <section>
-      <p className="mt-8 w-full md:w-3/4 xl:w-3/5 2xl:w-1/3">{t("agreement_info")}</p>
+      <p className="mt-8 w-full md:w-3/4 xl:w-3/5 2xl:w-1/3 pl-4">{t("agreement_info")}</p>
       <CheckboxLight
         className="ml-4 mt-4 underline"
         label={t("tc_title")}
@@ -79,7 +79,7 @@ export default function AgreementInfo({
           setIsPrivacy(true);
         }}
       />
-      <p className="mt-8">{t("read_agree")}</p>
+      <p className="mt-8 pl-[16px]">{t("read_agree")}</p>
       <div className="mt-4 flex items-center">
         <RntButton type="button" onClick={handleConfirm} disabled={hasSignature(tcSignature)}>
           {t("confirm")}

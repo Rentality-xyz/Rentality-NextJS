@@ -63,12 +63,13 @@ function TripDiscountsForm({
   return (
     <form className="my-4 flex flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
       <fieldset>
-        <div className="mb-4 text-lg">
+        <div className="mb-4 text-lg pl-[16px]">
           <strong>{t_profile("discounts")}</strong>
         </div>
         <div className="flex flex-col gap-4">
           <RntInput
             className="lg:w-60"
+            labelClassName="pl-[18px]"
             id="discount3DaysAndMoreInPercents"
             label={t_profile("discount_3_and_more")}
             {...register("discount3DaysAndMoreInPercents", { valueAsNumber: true })}
@@ -76,6 +77,7 @@ function TripDiscountsForm({
           />
           <RntInput
             className="lg:w-60"
+            labelClassName="pl-[18px]"
             id="discount7DaysAndMoreInPercents"
             label={t_profile("discount_7_and_more")}
             {...register("discount7DaysAndMoreInPercents", { valueAsNumber: true })}
@@ -83,6 +85,7 @@ function TripDiscountsForm({
           />
           <RntInput
             className="lg:w-60"
+            labelClassName="pl-[18px]"
             id="discount30DaysAndMoreInPercents"
             label={t_profile("discount_30_and_more")}
             {...register("discount30DaysAndMoreInPercents", { valueAsNumber: true })}

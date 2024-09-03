@@ -165,12 +165,13 @@ function UserProfileInfo({
       />
 
       <fieldset className="mt-4">
-        <div className="mb-4 text-lg">
+        <div className="mb-4 text-lg pl-[16px]">
           <strong>{t_profile("basic_info")}</strong>
         </div>
         <div className="flex flex-wrap gap-4">
           <RntInput
             className="lg:w-60"
+            labelClassName="pl-[16px]"
             id="firstName"
             label={t_profile("name")}
             {...register("firstName")}
@@ -178,6 +179,7 @@ function UserProfileInfo({
           />
           <RntInput
             className="lg:w-60"
+            labelClassName="pl-[16px]"
             id="lastName"
             label={t_profile("last_name")}
             {...register("lastName")}
@@ -190,6 +192,7 @@ function UserProfileInfo({
             render={({ field }) => (
               <RntPhoneInput
                 className="lg:w-60"
+                labelClassName="pl-[16px]"
                 id="phoneNumber"
                 label={t_profile("phone")}
                 type="tel"
@@ -203,12 +206,13 @@ function UserProfileInfo({
       </fieldset>
 
       <fieldset className="mt-4">
-        <div className="mb-4 text-lg">
+        <div className="mb-4 text-lg pl-4">
           <strong>{t_profile("driver_license_info")}</strong>
         </div>
         <div className="flex flex-wrap gap-4">
           <RntInput
             className="lg:w-60"
+            labelClassName="pl-4"
             id="drivingLicenseNumber"
             label={t_profile("driving_license_number")}
             {...register("drivingLicenseNumber")}
@@ -220,6 +224,7 @@ function UserProfileInfo({
             render={({ field }) => (
               <RntDatePicker
                 className="lg:w-60"
+                labelClassName="pl-4"
                 id="drivingLicenseExpire"
                 label={t_profile("driving_license_validity_period")}
                 type="date"
