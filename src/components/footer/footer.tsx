@@ -82,12 +82,12 @@ export default function Footer() {
               <div>info@rentality.xyz</div>
             </a>
 
-            <div className="flex flex-col mt-1.5">
+            <div className="mt-1.5 flex flex-col">
               <div className="flex">
                 <a
-                    href="https://www.linkedin.com/company/rentalitycorp/?viewAsMember=true"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  href="https://www.linkedin.com/company/rentalitycorp/?viewAsMember=true"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <Image src={linkedin} alt="" className="w-[30px]" />
                 </a>
@@ -110,9 +110,9 @@ export default function Footer() {
               </div>
               <div className="flex">
                 <a
-                    href="https://mirror.xyz/0x263660F0ab0014e956d42f85DccD918bBa2Df587"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  href="https://mirror.xyz/0x263660F0ab0014e956d42f85DccD918bBa2Df587"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <Image src={mirror} alt="" className="w-[30px]" />
                 </a>
@@ -125,11 +125,7 @@ export default function Footer() {
                   <Image src={instagram} alt="" className="ml-1.5 w-[30px]" />
                 </a>
 
-                <a
-                    href="https://medium.com/@rentality"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
+                <a href="https://medium.com/@rentality" target="_blank" rel="noopener noreferrer">
                   <Image src={medium} alt="" className="ml-1.5 w-[30px]" />
                 </a>
               </div>

@@ -24,7 +24,7 @@ const getHostAddressFromQuery = async (query: string | string[] | undefined, pro
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const privateKey = env.WALLET_PRIVATE_KEY;
+  const privateKey = env.SIGNER_PRIVATE_KEY;
   if (isEmpty(privateKey)) {
     console.error("API checkTrips error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
@@ -56,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
-  console.log(`Calling checkTrips API for ${chainIdNumber} chain id and ${hostAddress} host...`);
+  console.log(`\nCalling checkTrips API for ${chainIdNumber} chain id and ${hostAddress} host...`);
 
   const wallet = new Wallet(privateKey, provider);
   try {

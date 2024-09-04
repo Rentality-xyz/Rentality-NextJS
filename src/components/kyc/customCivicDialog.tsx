@@ -4,10 +4,23 @@ import CivicIssueReasons from "./civicIssueReasons";
 import CustomCivicForm from "./customCivicForm";
 import useCustomCivic from "@/hooks/kyc/useCustomCivic";
 
-function CustomCivicDialog({ handleCancelClick }: { handleCancelClick: () => void }) {
+function CustomCivicDialog({
+  showError,
+  handleCancelClick,
+}: {
+  showError: (message: string) => void;
+  handleCancelClick: () => void;
+}) {
   const [isShowConditions, setIsShowConditions] = useState(false);
   const [isShowIssueReasons, setIsShowIssueReasons] = useState(false);
   const { status, commissionFee, payCommission, passKyc } = useCustomCivic();
+
+  async function handlePayCommission() {
+    const payCommissionResult = await payCommission();
+    if (!payCommissionResult.ok) {
+      showError(payCommissionResult.error);
+    }
+  }
 
   if (isShowConditions)
     return (
@@ -32,7 +45,7 @@ function CustomCivicDialog({ handleCancelClick }: { handleCancelClick: () => voi
     <CustomCivicForm
       commissionFee={commissionFee}
       status={status}
-      payCommission={payCommission}
+      payCommission={handlePayCommission}
       passKyc={passKyc}
       handleCancelClick={handleCancelClick}
       openConditions={() => setIsShowConditions(true)}

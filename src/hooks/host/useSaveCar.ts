@@ -4,13 +4,9 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeCode } from "@/model/EngineType";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import {
-  ContractCreateCarRequest,
-  ContractSignedLocationInfo,
-  ContractUpdateCarInfoRequest,
-} from "@/model/blockchain/schemas";
+import { ContractCreateCarRequest, ContractUpdateCarInfoRequest } from "@/model/blockchain/schemas";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
-import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
+import { getSignedLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { getNftJSONFromCarInfo } from "@/utils/ipfsUtils";
 import { ContractTransactionResponse } from "ethers";
 import { env } from "@/utils/env";
@@ -88,11 +84,14 @@ const useSaveCar = () => {
         engineParams.push(BigInt(dataToSave.fullBatteryChargePrice * 100));
       }
 
-      const location: ContractSignedLocationInfo = {
-        locationInfo: mapLocationInfoToContractLocationInfo(dataToSave.locationInfo),
-        signature: "",
-      };
-      console.log(`location: ${JSON.stringify(location)}`);
+      const locationResult = await getSignedLocationInfo(
+        mapLocationInfoToContractLocationInfo(dataToSave.locationInfo),
+        ethereumInfo.chainId
+      );
+      if (!locationResult.ok) {
+        console.error("Sign location error");
+        return false;
+      }
 
       const request: ContractCreateCarRequest = {
         tokenUri: metadataURL,
@@ -110,7 +109,8 @@ const useSaveCar = () => {
         engineParams: engineParams,
         timeBufferBetweenTripsInSec: BigInt(dataToSave.timeBufferBetweenTripsInMin * 60),
         insuranceIncluded: dataToSave.isInsuranceIncluded,
-        locationInfo: location,
+        locationInfo: locationResult.value,
+        currentlyListed: dataToSave.currentlyListed,
       };
 
       const transaction = await rentalityContract.addCar(request);
@@ -125,6 +125,10 @@ const useSaveCar = () => {
   }
 
   async function updateCar(hostCarInfo: HostCarInfo) {
+    if (!ethereumInfo) {
+      console.error("saveCar error: ethereumInfo is null");
+      return false;
+    }
     if (!rentalityContract) {
       console.error("saveCar error: rentalityContract is null");
       return false;
@@ -156,16 +160,18 @@ const useSaveCar = () => {
       let transaction: ContractTransactionResponse;
 
       if (hostCarInfo.isLocationEdited) {
-        const location: ContractSignedLocationInfo = {
-          locationInfo: mapLocationInfoToContractLocationInfo(hostCarInfo.locationInfo),
-          signature: "",
-        };
-
-        console.log(`location: ${JSON.stringify(location)}`);
+        const locationResult = await getSignedLocationInfo(
+          mapLocationInfoToContractLocationInfo(hostCarInfo.locationInfo),
+          ethereumInfo.chainId
+        );
+        if (!locationResult.ok) {
+          console.error("Sign location error");
+          return false;
+        }
 
         transaction = await rentalityContract.updateCarInfoWithLocation(
           updateCarRequest,
-          location,
+          locationResult.value,
           env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
         );
       } else {

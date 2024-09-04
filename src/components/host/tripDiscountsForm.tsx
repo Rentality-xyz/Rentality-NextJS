@@ -2,7 +2,7 @@ import RntButton from "@/components/common/rntButton";
 import RntInput from "@/components/common/rntInput";
 import { memo } from "react";
 import { TFunction } from "@/utils/i18n";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { DiscountFormValues } from "@/hooks/host/useTripDiscounts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -19,7 +19,8 @@ function TripDiscountsForm({
   isUserHasHostRole: boolean;
   t: TFunction;
 }) {
-  const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
+  const { showDialog, hideDialogs } = useRntDialogs();
+  const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { register, handleSubmit, formState } = useForm<TripDiscountsFormValues>({
     defaultValues: {
       discount3DaysAndMoreInPercents: savedTripsDiscounts.discount3DaysAndMoreInPercents,
@@ -49,6 +50,7 @@ function TripDiscountsForm({
       });
 
       hideDialogs();
+      hideSnackbars();
       if (!result) {
         throw new Error("Save trip discounts error");
       }

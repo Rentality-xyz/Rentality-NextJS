@@ -42,7 +42,8 @@
                 },
                 { "type": "string", "name": "signature" }
               ]
-            }
+            },
+            { "type": "bool", "name": "currentlyListed" }
           ]
         }
       ],

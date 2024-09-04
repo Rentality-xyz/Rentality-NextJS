@@ -5,10 +5,10 @@ import { TRANSMISSION_AUTOMATIC_STRING, TRANSMISSION_MANUAL_STRING } from "@/mod
 import { z } from "zod";
 
 const locationInfoFormSchema = z.object({
-  address: z.string().min(1, "Address is too short"),
-  country: z.string().min(1, "Country is too small"),
-  state: z.string().min(1, "State is too small"),
-  city: z.string().min(1, "City is too small"),
+  address: z.string().trim().min(1, "Address is too short"),
+  country: z.string().trim().min(1, "Country is too small"),
+  state: z.string().trim().min(1, "State is too small"),
+  city: z.string().trim().min(1, "City is too small"),
   latitude: z
     .number({
       required_error: "Latitude is required",
@@ -25,7 +25,7 @@ const locationInfoFormSchema = z.object({
     .min(-180, "Longitude is too small")
     .max(180, "Longitude is too big")
     .step(0.000001, "only 6 decimals are allowed"),
-  timeZoneId: z.string(),
+  timeZoneId: z.string().trim(),
 });
 
 const defaultCarEditFormSchema = z.object({
@@ -36,9 +36,9 @@ const defaultCarEditFormSchema = z.object({
     })
     .optional(),
 
-  vinNumber: z.string().min(1, "Vin number is too short").max(17, "Vin number is too long"),
-  brand: z.string().min(1, "Brand is too short").max(30, "Brand is too long"),
-  model: z.string().min(1, "Model is too short").max(30, "Model is too long"),
+  vinNumber: z.string().trim().min(1, "Vin number is too short").max(17, "Vin number is too long"),
+  brand: z.string().trim().min(1, "Brand is too short").max(30, "Brand is too long"),
+  model: z.string().trim().min(1, "Model is too short").max(30, "Model is too long"),
   releaseYear: z
     .number({
       required_error: "Release year is required",
@@ -50,9 +50,9 @@ const defaultCarEditFormSchema = z.object({
 
   image: z.string().min(1, "Please, download an image"),
 
-  name: z.string().min(1, "Name is too short").max(25, "Name is too long"),
-  licensePlate: z.string().min(1, "License plate is too short").max(15, "License plate is too long"),
-  licenseState: z.string().min(1, "License state is too short").max(50, "License state is too long"),
+  name: z.string().trim().min(1, "Name is too short").max(25, "Name is too long"),
+  licensePlate: z.string().trim().min(1, "License plate is too short").max(15, "License plate is too long"),
+  licenseState: z.string().trim().min(1, "License state is too short").max(50, "License state is too long"),
   engineTypeText: z.union([z.literal(ENGINE_TYPE_PETROL_STRING), z.literal(ENGINE_TYPE_ELECTRIC_STRING)]),
   seatsNumber: z
     .number({
@@ -71,9 +71,14 @@ const defaultCarEditFormSchema = z.object({
     .max(5, "Doors number is too big")
     .int("Doors number must be an integer"),
   transmission: z.union([z.literal(TRANSMISSION_MANUAL_STRING), z.literal(TRANSMISSION_AUTOMATIC_STRING)]),
-  color: z.string().min(1, "Color is too short").max(15, "Color is too long"),
+  color: z
+    .string()
+    .trim()
+    .min(1, "Color is too short")
+    .max(15, "Color is too long")
+    .regex(new RegExp(/^[\w- ]+$/), "Color contains invalid characters"),
 
-  description: z.string().min(1, "Description is too short").max(500, "Description is too long"),
+  description: z.string().trim().min(1, "Description is too short").max(500, "Description is too long"),
 
   isLocationEdited: z.boolean().default(true),
   locationInfo: locationInfoFormSchema.default(emptyLocationInfo),
@@ -92,7 +97,7 @@ const defaultCarEditFormSchema = z.object({
       required_error: "Price is required",
       invalid_type_error: "Price must be a number",
     })
-    .min(0.01, "Price is too small")
+    .min(1, "Price is too small")
     .max(10_000, "Price is too big")
     .step(0.01, "only 2 decimals are allowed"),
   securityDeposit: z
@@ -100,7 +105,7 @@ const defaultCarEditFormSchema = z.object({
       required_error: "Deposit is required",
       invalid_type_error: "Deposit must be a number",
     })
-    .min(0.01, "Deposit is too small")
+    .min(1, "Deposit is too small")
     .max(100_000, "Deposit is too big")
     .step(0.01, "only 2 decimals are allowed"),
   isInsuranceIncluded: z.boolean().default(false),
@@ -123,7 +128,7 @@ const petrolCarSchema = z.object({
       required_error: "Fuel price is required",
       invalid_type_error: "Fuel price must be a number",
     })
-    .min(0.01, "Fuel price is too small")
+    .min(1, "Fuel price is too small")
     .max(50, "Fuel price is too big")
     .step(0.01, "only 2 decimals are allowed"),
 });
@@ -135,7 +140,7 @@ const electricCarSchema = z.object({
       required_error: "Battery charge price is required",
       invalid_type_error: "Battery charge price must be a number",
     })
-    .min(0.01, "value is too small")
+    .min(1, "value is too small")
     .max(100, "value is too big")
     .step(0.01, "only 2 decimals are allowed"),
 });

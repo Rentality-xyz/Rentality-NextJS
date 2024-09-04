@@ -1,40 +1,60 @@
 import SlidingPanel from "react-sliding-side-panel";
 import RntInput from "../common/rntInput";
 import RntButton from "../common/rntButton";
-import { TFunction as TFunctionNext } from "i18next";
-import { SearchCarRequest } from "@/model/SearchCarRequest";
-import { Dispatch, useState } from "react";
+import { TFunction } from "i18next";
+import { useState } from "react";
 import { useAppContext } from "@/contexts/appContext";
 import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
 import RntCarModelSelect from "@/components/common/rntCarModelSelect";
-import RntCarYearSelect from "@/components/common/rntCarYearSelect";
+import { SearchCarFilters } from "@/model/SearchCarRequest";
+import { isEmpty } from "@/utils/string";
 
 export default function FilterSlidingPanel({
-  searchCarRequest,
-  setSearchCarRequest,
-  handleSearchClick,
-  openFilterPanel,
-  setOpenFilterPanel,
+  initValue,
+  onFilterApply,
+  isOpen,
+  closePanel,
   t,
 }: {
-  searchCarRequest: SearchCarRequest;
-  setSearchCarRequest: Dispatch<React.SetStateAction<SearchCarRequest>>;
-  handleSearchClick: () => Promise<void>;
-  openFilterPanel: boolean;
-  setOpenFilterPanel: Dispatch<React.SetStateAction<boolean>>;
-  t: TFunctionNext;
+  initValue: SearchCarFilters;
+  onFilterApply: (filters: SearchCarFilters) => Promise<void>;
+  isOpen: boolean;
+  closePanel: () => void;
+  t: TFunction;
 }) {
-  const t_comp = (element: string) => {
-    return t("filter_sliding_panel." + element);
-  };
-
   const { closeFilterOnSearchPage } = useAppContext();
+  const [searchCarFilters, setSearchCarFilters] = useState<SearchCarFilters>(initValue);
 
   const [selectedMakeID, setSelectedMakeID] = useState<string>("");
   const [selectedModelID, setSelectedModelID] = useState<string>("");
 
+  function t_comp(element: string) {
+    return t("filter_sliding_panel." + element);
+  }
+
+  function handleNumberInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = !isEmpty(e.target.value) ? Number(e.target.value) : undefined;
+    if (value !== undefined && isNaN(value)) return;
+
+    const name = e.target.name;
+
+    setSearchCarFilters({
+      ...searchCarFilters,
+      [name]: value,
+    });
+  }
+
+  function handleApplyClick() {
+    onFilterApply(searchCarFilters);
+    handleClose();
+  }
+
+  function handleResetClick() {
+    setSearchCarFilters({});
+  }
+
   function handleClose() {
-    setOpenFilterPanel(false);
+    closePanel();
     closeFilterOnSearchPage();
   }
 
@@ -42,7 +62,7 @@ export default function FilterSlidingPanel({
     <div className="sliding-panel-container fixed left-0 top-0 w-full">
       <SlidingPanel
         type={"left"}
-        isOpen={openFilterPanel}
+        isOpen={isOpen}
         size={100}
         noBackdrop={false}
         backdropClicked={handleClose}
@@ -56,12 +76,12 @@ export default function FilterSlidingPanel({
             <RntCarMakeSelect
               id={"filter-brand"}
               label={t_comp("brand")}
-              value={searchCarRequest.searchFilters.brand}
+              value={searchCarFilters.brand ?? ""}
               onMakeSelect={(newID, newMake) => {
                 setSelectedMakeID(newID);
-                setSearchCarRequest({
-                  ...searchCarRequest,
-                  searchFilters: { ...searchCarRequest.searchFilters, brand: newMake },
+                setSearchCarFilters({
+                  ...searchCarFilters,
+                  brand: newMake,
                 });
               }}
             />
@@ -69,98 +89,45 @@ export default function FilterSlidingPanel({
             <RntCarModelSelect
               id={"filter-model"}
               label={t_comp("model")}
-              value={searchCarRequest.searchFilters.model}
+              value={searchCarFilters.model ?? ""}
               make_id={selectedMakeID}
               onModelSelect={(newID, newModel) => {
                 setSelectedModelID(newID);
-                setSearchCarRequest({
-                  ...searchCarRequest,
-                  searchFilters: { ...searchCarRequest.searchFilters, model: newModel },
+                setSearchCarFilters({
+                  ...searchCarFilters,
+                  model: newModel,
                 });
               }}
             />
-            <RntCarYearSelect
-              id="filter-year-from"
+            <RntInput
+              id="yearOfProductionFrom"
               label={t_comp("year_from")}
-              make_id={selectedMakeID}
-              model_id={selectedModelID}
-              value={searchCarRequest.searchFilters.yearOfProductionFrom}
-              onYearSelect={(newYear) => {
-                setSearchCarRequest({
-                  ...searchCarRequest,
-                  searchFilters: { ...searchCarRequest.searchFilters, yearOfProductionFrom: newYear },
-                });
-              }}
+              value={searchCarFilters.yearOfProductionFrom ?? ""}
+              onChange={handleNumberInputChange}
             />
             <RntInput
-              id="filter-year-yo"
+              id="yearOfProductionTo"
               label={t_comp("year_to")}
-              value={searchCarRequest.searchFilters.yearOfProductionTo}
-              onChange={(e) => {
-                const newValue = e.target.value;
-                if (isNaN(Number(newValue)) && newValue !== "") return;
-
-                setSearchCarRequest({
-                  ...searchCarRequest,
-                  searchFilters: { ...searchCarRequest.searchFilters, yearOfProductionTo: newValue },
-                });
-              }}
+              value={searchCarFilters.yearOfProductionTo ?? ""}
+              onChange={handleNumberInputChange}
             />
             <RntInput
-              id="filter-price-from"
+              id="pricePerDayInUsdFrom"
               label={t_comp("price_from")}
-              value={searchCarRequest.searchFilters.pricePerDayInUsdFrom}
-              onChange={(e) => {
-                const newValue = e.target.value;
-                if (isNaN(Number(newValue)) && newValue !== "") return;
-                setSearchCarRequest({
-                  ...searchCarRequest,
-                  searchFilters: { ...searchCarRequest.searchFilters, pricePerDayInUsdFrom: newValue },
-                });
-              }}
+              value={searchCarFilters.pricePerDayInUsdFrom ?? ""}
+              onChange={handleNumberInputChange}
             />
             <RntInput
-              id="filter-price-yo"
+              id="pricePerDayInUsdTo"
               label={t_comp("price_to")}
-              value={searchCarRequest.searchFilters.pricePerDayInUsdTo}
-              onChange={(e) => {
-                const newValue = e.target.value;
-                if (isNaN(Number(newValue)) && newValue !== "") return;
-
-                setSearchCarRequest({
-                  ...searchCarRequest,
-                  searchFilters: { ...searchCarRequest.searchFilters, pricePerDayInUsdTo: newValue },
-                });
-              }}
+              value={searchCarFilters.pricePerDayInUsdTo ?? ""}
+              onChange={handleNumberInputChange}
             />
             <div className="flex flex-col gap-4 max-sm:mt-2 sm:flex-row sm:justify-between sm:gap-8">
-              <RntButton
-                className="max-sm:h-10 max-sm:w-full"
-                onClick={() => {
-                  handleClose();
-                  handleSearchClick();
-                }}
-              >
+              <RntButton className="max-sm:h-10 max-sm:w-full" type="button" onClick={handleApplyClick}>
                 {t_comp("button_apply")}
               </RntButton>
-              <RntButton
-                className="max-sm:h-10 max-sm:w-full"
-                onClick={() =>
-                  setSearchCarRequest((prev) => {
-                    return {
-                      ...prev,
-                      searchFilters: {
-                        brand: "",
-                        model: "",
-                        pricePerDayInUsdFrom: "",
-                        pricePerDayInUsdTo: "",
-                        yearOfProductionFrom: "",
-                        yearOfProductionTo: "",
-                      },
-                    };
-                  })
-                }
-              >
+              <RntButton className="max-sm:h-10 max-sm:w-full" type="button" onClick={handleResetClick}>
                 {t_comp("button_reset")}
               </RntButton>
             </div>

@@ -2,7 +2,7 @@ import RntButton from "@/components/common/rntButton";
 import RntInput from "@/components/common/rntInput";
 import { memo } from "react";
 import { TFunction } from "@/utils/i18n";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { DeliveryPrices } from "@/hooks/host/useDeliveryPrices";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,7 +19,8 @@ function DeliveryPriceForm({
   isUserHasHostRole: boolean;
   t: TFunction;
 }) {
-  const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
+  const { showDialog, hideDialogs } = useRntDialogs();
+  const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { register, handleSubmit, formState } = useForm<DeliveryPricesFormValues>({
     defaultValues: {
       from1To25milesPrice: savedDeliveryPrices.from1To25milesPrice,
@@ -47,6 +48,7 @@ function DeliveryPriceForm({
       });
 
       hideDialogs();
+      hideSnackbars();
       if (!result) {
         throw new Error("Save trip delivery prices error");
       }

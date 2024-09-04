@@ -12,18 +12,14 @@ import RntDatePicker from "../common/rntDatePicker";
 import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { TFunction } from "@/utils/i18n";
-import DotStatus from "./dotStatus";
 import AgreementInfo from "./agreement_info";
 import KycVerification from "./kyc_verification";
 import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProfileInfoFormValues, profileInfoFormSchema } from "./profileInfoFormSchema";
 import moment from "moment";
-import { useChatKeys } from "@/contexts/chat/firebase/chatContext";
-import {convertHeicToPng} from "@/utils/heic2any";
-import {FileToUpload} from "@/model/FileToUpload";
 
 function UserProfileInfo({
   savedProfileSettings,
@@ -38,7 +34,8 @@ function UserProfileInfo({
 }) {
   const router = useRouter();
   const ethereumInfo = useEthereum();
-  const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
+  const { showDialog, hideDialogs } = useRntDialogs();
+  const { showInfo, showError, hideSnackbars } = useRntSnackbars();
 
   const { register, handleSubmit, formState, control } = useForm<ProfileInfoFormValues>({
     defaultValues: {
@@ -80,15 +77,15 @@ function UserProfileInfo({
         console.log("Revoking ObjectURL");
         URL.revokeObjectURL(field.value);
       }
-      const fileNameExt = file.name.substr(file.name.lastIndexOf('.') + 1);
-      if(fileNameExt == "heic") {
-        const convertedFile = await convertHeicToPng(file);
+      const fileNameExt = file.name.substr(file.name.lastIndexOf(".") + 1);
+      if (fileNameExt == "heic") {
+        const convertHeicToPng = await import("@/utils/heic2any");
+        const convertedFile = await convertHeicToPng.default(file);
         field.onChange(convertedFile.localUrl);
       } else {
         const urlImage = URL.createObjectURL(file);
         field.onChange(urlImage);
       }
-
     };
   }
 
@@ -123,6 +120,7 @@ function UserProfileInfo({
       const result = await saveProfileSettings(dataToSave);
 
       hideDialogs();
+      hideSnackbars();
       if (!result) {
         throw new Error("Save profile info error");
       }
@@ -157,7 +155,12 @@ function UserProfileInfo({
                 {savedProfileSettings.firstName} {savedProfileSettings.lastName}
               </div>
             </div>
-            <RntFileButton className="h-16 w-40" id="profilePhotoUrl" onChange={fileChangeCallback(field)}>
+            <RntFileButton
+              className="h-16 w-40"
+              id="profilePhotoUrl"
+              onChange={fileChangeCallback(field)}
+              accept="image/png,image/jpeg"
+            >
               {t("common.upload")}
             </RntFileButton>
           </>

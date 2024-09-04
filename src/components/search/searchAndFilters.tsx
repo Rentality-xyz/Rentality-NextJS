@@ -4,7 +4,6 @@ import RntInput from "../common/rntInput";
 import RntPlaceAutoComplete from "../common/rntPlaceAutocomplete";
 import RntSelect from "../common/rntSelect";
 import { SortOptionKey } from "@/hooks/guest/useSearchCars";
-import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { TFunction as TFunctionNext } from "i18next";
 import { useEffect, useState } from "react";
 import { ParseLocationResponse } from "@/pages/api/parseLocation";
@@ -17,46 +16,33 @@ import arrowDownTurquoise from "../../images/arrowDownTurquoise.svg";
 import Image from "next/image";
 import SearchDeliveryLocations from "@/components/search/searchDeliveryLocations";
 import { useAppContext } from "@/contexts/appContext";
-
-function formatLocation(city: string, state: string, country: string) {
-  city = city != null && city.length > 0 ? city + ", " : "";
-  state = state != null && state.length > 0 ? state + ", " : "";
-  country = country != null && country.length > 0 ? country + ", " : "";
-  const location = `${city}${state}${country}`;
-  if (location.length > 2) {
-    return location.slice(0, -2);
-  }
-
-  return location;
-}
+import { formatLocationInfoUpToCity } from "@/model/LocationInfo";
+import { SearchCarRequest } from "@/model/SearchCarRequest";
+import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
+import { placeDetailsToLocationInfo } from "@/utils/location";
 
 export default function SearchAndFilters({
-  searchCarRequest,
-  setSearchCarRequest,
+  initValue,
   sortBy,
   setSortBy,
-  handleSearchClick,
-  setOpenFilterPanel,
+  onSearchClick,
+  onOpenFilters,
   t,
 }: {
-  searchCarRequest: SearchCarRequest;
-  setSearchCarRequest: (value: SearchCarRequest) => void;
+  initValue: SearchCarRequest;
   sortBy: string | undefined;
   setSortBy: (value: string | undefined) => void;
-  handleSearchClick: () => Promise<void>;
-  setOpenFilterPanel: (value: boolean) => void;
+  onSearchClick: (searchCarRequest: SearchCarRequest) => Promise<void>;
+  onOpenFilters: () => void;
   t: TFunctionNext;
 }) {
   const [timeZoneId, setTimeZoneId] = useState("");
+  const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(initValue);
 
   const gmtLabel = isEmpty(timeZoneId) ? "" : `(GMT${moment.tz(timeZoneId).format("Z").slice(0, 3)})`;
   const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
   const isSearchAllowed =
-    formatLocation(
-      searchCarRequest.searchLocation.city,
-      searchCarRequest.searchLocation.state,
-      searchCarRequest.searchLocation.country
-    ).length > 0 &&
+    formatLocationInfoUpToCity(searchCarRequest.searchLocation).length > 0 &&
     moment.tz(searchCarRequest.dateFrom, notEmtpyTimeZoneId) >= moment.tz(notEmtpyTimeZoneId) &&
     new Date(searchCarRequest.dateTo) > new Date(searchCarRequest.dateFrom);
 
@@ -72,11 +58,27 @@ export default function SearchAndFilters({
     return sortOption.hasOwnProperty(key);
   }
 
+  function handleSearchClick() {
+    onSearchClick(searchCarRequest);
+  }
+
+  function handleFiltersClick() {
+    onOpenFilters();
+    openFilterOnSearchPage();
+  }
+
   function handleSearchInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
     const name = e.target.name;
 
     if (name === "location") {
+      return;
+    }
+    if (name === "dateFrom" || name === "dateTo") {
+      setSearchCarRequest({
+        ...searchCarRequest,
+        [name]: moment(value).toDate(),
+      });
       return;
     }
 
@@ -88,11 +90,7 @@ export default function SearchAndFilters({
 
   useEffect(() => {
     const getGMTFromLocation = async () => {
-      const address = formatLocation(
-        searchCarRequest.searchLocation.city,
-        searchCarRequest.searchLocation.state,
-        searchCarRequest.searchLocation.country
-      );
+      const address = formatLocationInfoUpToCity(searchCarRequest.searchLocation);
       if (isEmpty(address)) {
         setTimeZoneId("");
         return;
@@ -116,11 +114,7 @@ export default function SearchAndFilters({
     };
 
     getGMTFromLocation();
-  }, [
-    searchCarRequest.searchLocation.city,
-    searchCarRequest.searchLocation.state,
-    searchCarRequest.searchLocation.country,
-  ]);
+  }, [searchCarRequest.searchLocation]);
 
   const [openDeliveryLocation, setOpenDeliveryLocation] = useState(false);
 
@@ -144,30 +138,12 @@ export default function SearchAndFilters({
           label={t_comp("location_label")}
           placeholder={t_comp("location_placeholder")}
           includeStreetAddress={true}
-          initValue={formatLocation(
-            searchCarRequest.searchLocation.city,
-            searchCarRequest.searchLocation.state,
-            searchCarRequest.searchLocation.country
-          )}
+          initValue={formatLocationInfoUpToCity(searchCarRequest.searchLocation)}
           onChange={handleSearchInputChange}
           onAddressChange={async (placeDetails) => {
-            const country = placeDetails.country?.short_name ?? "";
-            const state = placeDetails.state?.long_name ?? "";
-            const city = placeDetails.city?.long_name ?? "";
-            const locationLat = placeDetails.location?.latitude;
-            const locationLng = placeDetails.location?.longitude;
-
             setSearchCarRequest({
               ...searchCarRequest,
-              searchLocation: {
-                address: placeDetails.addressString,
-                country: country,
-                state: state,
-                city: city,
-                latitude: locationLat ?? 0,
-                longitude: locationLng ?? 0,
-                timeZoneId: "",
-              },
+              searchLocation: placeDetailsToLocationInfo(placeDetails),
             });
           }}
         />
@@ -179,7 +155,7 @@ export default function SearchAndFilters({
             id="dateFrom"
             label={`${t_comp("datetime_from")} ${gmtLabel}`}
             type="datetime-local"
-            value={searchCarRequest.dateFrom}
+            value={dateToHtmlDateTimeFormat(searchCarRequest.dateFrom)}
             onChange={handleSearchInputChange}
           />
           <RntInput
@@ -189,23 +165,17 @@ export default function SearchAndFilters({
             id="dateTo"
             label={`${t_comp("datetime_to")} ${gmtLabel}`}
             type="datetime-local"
-            value={searchCarRequest.dateTo}
+            value={dateToHtmlDateTimeFormat(searchCarRequest.dateTo)}
             onChange={handleSearchInputChange}
           />{" "}
-          <RntButton className="mt-2 w-full md:w-48" disabled={!isSearchAllowed} onClick={() => handleSearchClick()}>
+          <RntButton className="mt-2 w-full md:w-48" disabled={!isSearchAllowed} onClick={handleSearchClick}>
             {t_comp("button_search")}
           </RntButton>
         </div>
       </div>
       <div className="flex flex-col">
         <div className="mt-4 flex flex-wrap items-center gap-4">
-          <RntButton
-            className="w-40"
-            onClick={() => {
-              setOpenFilterPanel(true);
-              openFilterOnSearchPage();
-            }}
-          >
+          <RntButton className="w-40" onClick={handleFiltersClick}>
             {t_comp("button_filter")}
           </RntButton>
           <RntSelect

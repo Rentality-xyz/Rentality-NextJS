@@ -8,9 +8,9 @@ interface RntCarYearSelectProps extends RntSelectProps {
   className?: string;
   make_id: string;
   model_id: string;
-  value: string;
+  value: number;
   readOnly?: boolean;
-  onYearSelect?: (newYear: string) => void;
+  onYearSelect?: (newYear: number) => void;
 }
 
 export default function RntCarYearSelect({
@@ -22,6 +22,7 @@ export default function RntCarYearSelect({
   model_id,
   value,
   onYearSelect,
+  validationError,
 }: RntCarYearSelectProps) {
   const { getCarYearsByMakeAndModel } = useCarAPI();
 
@@ -43,15 +44,16 @@ export default function RntCarYearSelect({
       className={className}
       label={label}
       value={value}
+      validationError={validationError}
       readOnly={readOnly || false}
       onChange={function (e) {
         const newValue = e.target.value;
-        if (onYearSelect) onYearSelect(newValue);
+        if (onYearSelect) onYearSelect(parseInt(newValue));
       }}
     >
-      <option value="">Please select</option>
-      {yearsList.map((yearsListElement) => (
-        <option key={"car-year-" + yearsListElement} value={yearsListElement}>
+      <option value="0">Please select</option>
+      {yearsList.map((yearsListElement, index) => (
+        <option key={"car-year-" + index} value={yearsListElement}>
           {yearsListElement}
         </option>
       ))}

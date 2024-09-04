@@ -16,13 +16,11 @@ import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/
 import RntButton from "@/components/common/rntButton";
 import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import { TFunction } from "@/utils/i18n";
-import { displayMoneyWith2Digits, fixedNumber } from "@/utils/numericFormatters";
-import { getTimeZoneIdFromAddress } from "@/utils/fetchTimeZoneId";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
+import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
 import { useRouter } from "next/navigation";
 import { resizeImage } from "@/utils/image";
-import { bigIntReplacer } from "@/utils/json";
 import { Controller, useForm } from "react-hook-form";
 import { carEditFormSchema, CarEditFormValues } from "./carEditFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,7 +33,7 @@ import RntCarModelSelect from "@/components/common/rntCarModelSelect";
 import RntCarYearSelect from "@/components/common/rntCarYearSelect";
 import RntVINCheckingInput from "@/components/common/rntVINCheckingInput";
 import * as React from "react";
-import {convertHeicToPng} from "@/utils/heic2any";
+import { placeDetailsToLocationInfoWithTimeZone } from "@/utils/location";
 
 export default function CarEditForm({
   initValue,
@@ -49,7 +47,8 @@ export default function CarEditForm({
   t: TFunction;
 }) {
   const router = useRouter();
-  const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
+  const { showDialog, hideDialogs } = useRntDialogs();
+  const { showInfo, showError } = useRntSnackbars();
 
   //const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(initValue ?? emptyHostCarInfo);
 
@@ -114,11 +113,7 @@ export default function CarEditForm({
   const locationInfo = watch("locationInfo");
 
   const [selectedMakeID, setSelectedMakeID] = useState<string>("");
-  const [selectedBrand, setSelectedBrand] = useState<string>("");
   const [selectedModelID, setSelectedModelID] = useState<string>("");
-  const [selectedModel, setSelectedModel] = useState<string>("");
-  const [selectedYear, setSelectedYear] = useState("");
-  const [vinNumber, setVinNumber] = useState("");
 
   const [isVINVerified, setIsVINVerified] = useState<boolean>(false);
   const [isVINCheckOverriden, setIsVINCheckOverriden] = useState<boolean>(false);
@@ -165,9 +160,10 @@ export default function CarEditForm({
 
     const reader = new FileReader();
     reader.onload = async function (event) {
-      const fileNameExt = file.name.substr(file.name.lastIndexOf('.') + 1);
-      if(fileNameExt == "heic") {
-        const convertedFile = await convertHeicToPng(file);
+      const fileNameExt = file.name.substr(file.name.lastIndexOf(".") + 1);
+      if (fileNameExt == "heic") {
+        const convertHeicToPng = await import("@/utils/heic2any");
+        const convertedFile = await convertHeicToPng.default(file);
         setValue("image", convertedFile.localUrl);
       } else {
         setValue("image", event.target?.result?.toString() ?? "");
@@ -211,6 +207,7 @@ export default function CarEditForm({
       trunkSize: "",
       bodyType: "",
     };
+
     const isValidForm = verifyCar(carInfoFormParams);
     const isImageUploaded = !isNewCar || imageFile !== null;
 
@@ -268,53 +265,82 @@ export default function CarEditForm({
             <strong>{t_car("car")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
-            <RntVINCheckingInput
-              id="vinNumber"
-              className="lg:w-60"
-              label={t_car("vin_num")}
-              value={vinNumber}
-              isVINCheckOverriden={isVINCheckOverriden}
-              isVINVerified={isVINVerified}
-              placeholder="e.g. 4Y1SL65848Z411439"
-              readOnly={!isNewCar}
-              onChange={(e) => setVinNumber(e.target.value)}
-              onVINVerified={(isVINVerified: boolean) => setIsVINVerified(isVINVerified)}
-              onVINCheckOverriden={(isVINCheckOverriden) => setIsVINCheckOverriden(isVINCheckOverriden)}
+            <Controller
+              name="vinNumber"
+              control={control}
+              defaultValue=""
+              render={({ field: { onChange, value } }) => (
+                <RntVINCheckingInput
+                  id="vinNumber"
+                  className="lg:w-60"
+                  label={t_car("vin_num")}
+                  value={value}
+                  isVINCheckOverriden={isVINCheckOverriden}
+                  isVINVerified={isVINVerified}
+                  placeholder="e.g. 4Y1SL65848Z411439"
+                  readOnly={!isNewCar}
+                  onChange={(e) => onChange(e.target.value)}
+                  onVINVerified={(isVINVerified: boolean) => setIsVINVerified(isVINVerified)}
+                  onVINCheckOverriden={(isVINCheckOverriden) => setIsVINCheckOverriden(isVINCheckOverriden)}
+                />
+              )}
             />
-            <RntCarMakeSelect
-              id="filter-brand"
-              className="lg:w-60"
-              label={t_car("brand")}
-              readOnly={!isNewCar}
-              value={selectedBrand}
-              onMakeSelect={(newID, newMake) => {
-                setSelectedMakeID(newID);
-                setSelectedBrand(newMake);
-              }}
+            <Controller
+              name="brand"
+              control={control}
+              defaultValue=""
+              render={({ field: { onChange, value } }) => (
+                <RntCarMakeSelect
+                  id="brand"
+                  className="lg:w-60"
+                  label={t_car("brand")}
+                  readOnly={!isNewCar}
+                  value={value}
+                  onMakeSelect={(newID, newMake) => {
+                    onChange(newMake);
+                    setSelectedMakeID(newID);
+                  }}
+                  validationError={errors.brand?.message?.toString()}
+                />
+              )}
             />
-            <RntCarModelSelect
-              id="model"
-              className="lg:w-60"
-              label={t_car("model")}
-              make_id={selectedMakeID}
-              readOnly={!isNewCar}
-              value={selectedModel}
-              onModelSelect={(newID: string, newModel) => {
-                setSelectedModelID(newID);
-                setSelectedModel(newModel);
-              }}
+            <Controller
+              name="model"
+              control={control}
+              defaultValue=""
+              render={({ field: { onChange, value } }) => (
+                <RntCarModelSelect
+                  id="model"
+                  className="lg:w-60"
+                  label={t_car("model")}
+                  make_id={selectedMakeID}
+                  readOnly={!isNewCar}
+                  value={value}
+                  onModelSelect={(newID: string, newModel) => {
+                    onChange(newModel);
+                    setSelectedModelID(newID);
+                  }}
+                  validationError={errors.model?.message?.toString()}
+                />
+              )}
             />
-            <RntCarYearSelect
-              id="releaseYear"
-              className="lg:w-60"
-              label={t_car("release")}
-              make_id={selectedMakeID}
-              model_id={selectedModelID}
-              readOnly={!isNewCar}
-              value={selectedYear}
-              onYearSelect={(newYear) => {
-                setSelectedYear(newYear);
-              }}
+            <Controller
+              name="releaseYear"
+              control={control}
+              defaultValue={0}
+              render={({ field: { onChange, value } }) => (
+                <RntCarYearSelect
+                  id="releaseYear"
+                  className="lg:w-60"
+                  label={t_car("release")}
+                  make_id={selectedMakeID}
+                  model_id={selectedModelID}
+                  readOnly={!isNewCar}
+                  value={value}
+                  onYearSelect={(newYear) => onChange(newYear)}
+                  validationError={errors.releaseYear?.message?.toString()}
+                />
+              )}
             />
           </div>
         </div>
@@ -323,7 +349,12 @@ export default function CarEditForm({
           <div className="mb-4 text-lg">
             <strong>{t_car("photo")}</strong>
           </div>
-          <RntFileButton className="h-16 w-40" disabled={!isNewCar} onChange={onChangeFile}>
+          <RntFileButton
+            className="h-16 w-40"
+            disabled={!isNewCar}
+            onChange={onChangeFile}
+            accept="image/png,image/jpeg"
+          >
             {t("common.upload")}
           </RntFileButton>
           <div className="mt-8 h-60 w-80 overflow-hidden rounded-2xl bg-gray-200 bg-opacity-40">
@@ -495,22 +526,7 @@ export default function CarEditForm({
                     readOnly={!isLocationEdited}
                     onChange={(e) => setAutocomplete(e.target.value)}
                     onAddressChange={async (placeDetails) => {
-                      const locationAddress = placeDetails.addressString;
-                      const country = placeDetails.country?.short_name ?? "";
-                      const state = placeDetails.state?.long_name ?? "";
-                      const city = placeDetails.city?.long_name ?? "";
-                      const latitude = fixedNumber(placeDetails.location?.latitude ?? 0, 6);
-                      const longitude = fixedNumber(placeDetails.location?.longitude ?? 0, 6);
-                      const timeZoneId = await getTimeZoneIdFromAddress(latitude, longitude);
-                      field.onChange({
-                        address: locationAddress,
-                        country: country,
-                        state: state,
-                        city: city,
-                        latitude: latitude,
-                        longitude: longitude,
-                        timeZoneId: timeZoneId,
-                      });
+                      field.onChange(await placeDetailsToLocationInfoWithTimeZone(placeDetails));
                     }}
                     validationError={errors.locationInfo?.address?.message?.toString()}
                   />

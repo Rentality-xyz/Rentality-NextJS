@@ -1,8 +1,7 @@
-import React, {useEffect, useRef} from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
 import { resizeImage } from "@/utils/image";
 import { FileToUpload } from "@/model/FileToUpload";
-import {convertHeicToPng} from "@/utils/heic2any";
 
 function ClaimAddPhoto({
   filesToUpload,
@@ -46,9 +45,10 @@ function ClaimAddPhoto({
       const fileUrl = event.target?.result as string;
 
       if (currentIndex === -1) {
-        const fileNameExt = file.name.substr(file.name.lastIndexOf('.') + 1);
-        if(fileNameExt == "heic") {
-          const convertedFile = await convertHeicToPng(file);
+        const fileNameExt = file.name.substr(file.name.lastIndexOf(".") + 1);
+        if (fileNameExt == "heic") {
+          const convertHeicToPng = await import("@/utils/heic2any");
+          const convertedFile = await convertHeicToPng.default(file);
           setFilesToUpload([...filesToUpload, convertedFile]);
         } else {
           setFilesToUpload([...filesToUpload, { file: file, localUrl: fileUrl }]);

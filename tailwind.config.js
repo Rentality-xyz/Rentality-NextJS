@@ -6,6 +6,7 @@ module.exports = {
     "./src/pages/**/*.{js,ts,jsx,tsx}",
     "./src/components/**/*.{js,ts,jsx,tsx}",
     "./src/app/**/*.{js,ts,jsx,tsx}",
+    "./src/utils/tailwind.ts",
     path.join(path.dirname(require.resolve("@coinbase/onchainkit")), "**/*.js"),
   ],
   theme: {
@@ -139,5 +140,6 @@ module.exports = {
       },
     },
   },
+  safelist: ["bg-[#FFFF00]", "bg-[#7355D7]"],
   plugins: [],
 };

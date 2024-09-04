@@ -108,6 +108,7 @@
       "platform_commission_error": "Save platform fee error:",
       "kyc_commission_error": "Save KYC commission error:",
       "claim_waiting_time_error": "Save claim waiting time error:",
+      "grant_admin_role_error": "Grant admin role error:",
       "commission_value_range": "Value should be between 0.0001% and 100% (min value is 0.0001%)",
       "kyc_commission_value_range": "Value should be greater than 0",
       "claim_waiting_time_value_range": "Value should be greater than 0",
@@ -486,6 +487,7 @@
     "no_cars": "Host does not have any listed car"
   },
   "all_trips_table": {
+    "page_title": "All trips table",
     "tripId": "Trip id",
     "vehicle": "Vehicle",
     "plateNumber": "Plate number",
@@ -514,7 +516,26 @@
     "platformCommission": "Platform commission, $",
     "details": "Details",
     "accruableSalesTax": "Accruable Sales Tax, $",
-    "accruableGovernmentTax": "Accruable Government Tax, $"
+    "accruableGovernmentTax": "Accruable Government Tax, $",
+    "pay_to_host": "Pay to Host",
+    "refund_to_guest": "Refund to Guest",
+    "start_date": "Start date",
+    "end_date": "End date",
+    "allStatuses": "All statuses"
+  },
+  "admin_all_cars": {
+    "page_title": "Car locations",
+    "carId": "Car id",
+    "host": "Host",
+    "status": "Status",
+    "image": "Image",
+    "country": "Country",
+    "state": "State",
+    "city": "City",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "timeZoneId": "Time zone",
+    "homeAddress": "Home address"
   },
   "common": {
     "info": {
@@ -538,6 +559,8 @@
     "edit": "Edit",
     "connect": "Connect",
     "logout": "Logout",
-    "plate_number": "Plate number"
+    "plate_number": "Plate number",
+    "apply": "Apply",
+    "low_resolution": "The resolution is too low!"
   }
 }

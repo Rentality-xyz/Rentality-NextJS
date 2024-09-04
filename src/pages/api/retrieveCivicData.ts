@@ -6,6 +6,7 @@ import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { FIREBASE_DB_NAME } from "@/chat/model/firebaseTypes";
 import { ref, uploadBytes } from "firebase/storage";
 import { env } from "@/utils/env";
+import moment from "moment";
 
 export type RetrieveCivicDataRequest = {
   requestId: string;
@@ -48,13 +49,13 @@ type AllPiiInfo = {
   status: string;
   links: PiiLink[];
   verifiedInformation: PiiVerifiedInformation;
+  updateDate: string;
 };
 
 const GET_AUTH_TOKEN_URL = "https://auth.civic.com/oauth/token";
 const GET_ALL_PIIS_URL = "https://api.civic.com/partner/piirequest/REQUEST_ID";
 const UPDATE_STATUS_URL = "https://api.civic.com/partner/piirequest/REQUEST_ID/status";
 
-// export default async function handler(req: NextApiRequest, res: NextApiResponse<ParseLocationResponse>) {
 export default async function handler(req: NextApiRequest, res: NextApiResponse<RetrieveCivicDataResponse>) {
   const CIVIC_CLIENT_ID = env.CIVIC_CLIENT_ID;
   if (!CIVIC_CLIENT_ID || isEmpty(CIVIC_CLIENT_ID)) {
@@ -78,7 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  console.log(`Calling retrieveCivicData API with requestId:${requestId}`);
+  console.log(`\nCalling retrieveCivicData API with requestId:${requestId}`);
   const authTokenResult = await getAuthToken(CIVIC_CLIENT_ID, CIVIC_CLIENT_SECRET);
 
   if (!authTokenResult.success) {
@@ -117,9 +118,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
   console.log(`Civic status was updated successfully`);
 
-  //console.log(`allPIIsResult result: ${JSON.stringify(allPIIsResult.response)}`);
-  //console.log(`piiDocPics result: ${JSON.stringify(piiDocPics)}`);
-
   res.status(200).json({ success: true });
   return;
 }
@@ -139,7 +137,6 @@ async function getAuthToken(clientId: string, clientSecret: string) {
       },
     })
     .then(function (response) {
-      console.log("getAuthToken response", response.data);
       if ("access_token" in response.data) {
         return {
           success: true,
@@ -170,7 +167,6 @@ async function getAllPIIs(requestId: string, authToken: string) {
       },
     })
     .then(function (response) {
-      console.log("getAllPIIs response", response.data);
       if (response.status !== 200) {
         return {
           success: false,
@@ -179,7 +175,7 @@ async function getAllPIIs(requestId: string, authToken: string) {
       }
       return {
         success: true,
-        response: response.data as AllPiiInfo,
+        response: { ...response.data, updateDate: moment().toISOString() } as AllPiiInfo,
       } as const;
     })
     .catch(function (error) {
@@ -245,15 +241,12 @@ async function saveDocs(address: string, docs: PiiDocData[]) {
   const saveDocsResultPromise = docs.map(async (doc) => {
     const docRef = ref(storage, `kycdocs/${address}_${doc.rel}.jpg`);
     try {
-      console.log(` doc.mimeType: ${doc.mimeType}`);
-
       const snapshot = await uploadBytes(
         docRef,
         new Blob([doc.data], {
           type: doc.mimeType,
         })
       );
-      console.log("saveDocs success:", snapshot.ref.fullPath);
       return { rel: doc.rel, href: snapshot.ref.fullPath };
     } catch (error) {
       console.error("saveDocs error", error);
@@ -307,7 +300,6 @@ async function savePiiInfoToFirebase(allInfo: AllPiiInfo, docs: PiiDocData[]) {
   }
 
   const user = await loginWithPassword(CIVIC_USER_EMAIL, CIVIC_USER_PASSWORD);
-  console.log(`user: ${JSON.stringify(user)}`);
 
   const savedDocsResult = await saveDocs(allInfo.verifiedInformation.address, docs);
 
@@ -346,7 +338,6 @@ async function updateStatus(requestId: string, isPassed: boolean, authToken: str
       },
     })
     .then(function (response) {
-      console.log("updateStatus response", response.data);
       return {
         success: true,
         response: response.data,

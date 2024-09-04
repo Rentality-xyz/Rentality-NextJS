@@ -119,7 +119,8 @@ export default function RntVINCheckingInput({
         }}
       />
       {value.length === 17 && !isVINVerified && (
-        <div className={"flex flex-col" + (validationError ? " self-center" : " self-end")}>
+        <div className="flex flex-col">
+          <label className="mb-1">&nbsp;</label>
           <RntButton type="button" className="w-[100px]" onClick={() => setIsVINConfirmDialogOpen(true)}>
             Confirm
           </RntButton>

@@ -37,8 +37,14 @@ export const dateFormatLongMonthYearDateTime = (value: Date, timeZone?: string) 
 //yyyy-MM-ddTHH:mm
 export const dateToHtmlDateTimeFormat = (value: Date | undefined) => {
   if (value === undefined) return "";
+  return moment(value).format("yyyy-MM-DDTHH:mm");
+};
 
-  // return moment(value).format("yyyy-MM-DDTHH:mm");
+//yyyy-MM-dd
+export const dateToHtmlDateFormat = (value: Date | undefined) => {
+  if (value === undefined) return "";
+
+  // return moment(value).format("yyyy-MM-DD");
 
   let day = value.getDate().toString();
   if (day.length === 1) {
@@ -49,15 +55,7 @@ export const dateToHtmlDateTimeFormat = (value: Date | undefined) => {
     month = "0" + month;
   }
   const year = value.getFullYear().toString();
-  let hours = value.getHours().toString();
-  if (hours.length === 1) {
-    hours = "0" + hours;
-  }
-  let minutes = value.getMinutes().toString();
-  if (minutes.length === 1) {
-    minutes = "0" + minutes;
-  }
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
+  return `${year}-${month}-${day}`;
 };
 
 //MMM dd - MMM dd yyyy

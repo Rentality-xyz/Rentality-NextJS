@@ -7,8 +7,8 @@ const claimFileFormSchema = z.object({
 
 export const createClaimFormSchema = z.object({
   selectedTripId: z.string(),
-  incidentType: z.string(),
-  description: z.string().min(1, "Description is too short").max(1000, "Description is too long"),
+  incidentType: z.string().trim(),
+  description: z.string().trim().min(1, "Description is too short").max(1000, "Description is too long"),
   amountInUsd: z
     .number({
       required_error: "value is required",

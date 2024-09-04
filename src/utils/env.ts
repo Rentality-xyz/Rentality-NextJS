@@ -15,6 +15,7 @@ export const env = createEnv({
     CIVIC_USER_PASSWORD: z.string().optional(),
 
     WALLET_PRIVATE_KEY: z.string(),
+    SIGNER_PRIVATE_KEY: z.string(),
 
     PROVIDER_API_URL_1337: z.string().url(),
     PROVIDER_API_URL_5611: z.string().url().optional(),
@@ -51,6 +52,7 @@ export const env = createEnv({
 
     NEXT_PUBLIC_HOTJAR_SITE_ID: z.coerce.number(),
     NEXT_PUBLIC_HOTJAR_VERSION: z.coerce.number(),
+    NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS: booleanEnvType.optional(),
   },
 
   // If you're using Next.js < 13.4.4, you'll need to specify the runtimeEnv manually
@@ -79,6 +81,7 @@ export const env = createEnv({
 
     NEXT_PUBLIC_HOTJAR_SITE_ID: process.env.NEXT_PUBLIC_HOTJAR_SITE_ID,
     NEXT_PUBLIC_HOTJAR_VERSION: process.env.NEXT_PUBLIC_HOTJAR_VERSION,
+    NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS: process.env.NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS,
   },
   // For Next.js >= 13.4.4, you only need to destructure client variables:
   //    experimental__runtimeEnv: {
