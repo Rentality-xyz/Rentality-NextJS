@@ -128,6 +128,10 @@ export default function SearchAndFilters({
 
   const { openFilterOnSearchPage } = useAppContext();
 
+  useEffect(() => {
+    setSearchCarRequest(initValue);
+  }, [initValue]);
+
   return (
     <>
       <div className="search my-2 flex flex-col gap-4 xl:flex-row xl:items-end">

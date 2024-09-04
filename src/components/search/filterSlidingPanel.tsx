@@ -2,7 +2,7 @@ import SlidingPanel from "react-sliding-side-panel";
 import RntInput from "../common/rntInput";
 import RntButton from "../common/rntButton";
 import { TFunction } from "i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppContext } from "@/contexts/appContext";
 import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
 import RntCarModelSelect from "@/components/common/rntCarModelSelect";
@@ -57,6 +57,10 @@ export default function FilterSlidingPanel({
     closePanel();
     closeFilterOnSearchPage();
   }
+
+  useEffect(() => {
+    setSearchCarFilters(initValue);
+  }, [initValue]);
 
   return (
     <div className="sliding-panel-container fixed left-0 top-0 w-full">
