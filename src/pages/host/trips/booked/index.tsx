@@ -53,7 +53,7 @@ export default function Booked() {
               );
             })
           ) : (
-            <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
+            <div className="pl-4 mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
               {t("booked.trip_not_found")}
             </div>
           )}

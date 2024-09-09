@@ -65,7 +65,7 @@ function ClaimAddPhoto({
 
   return (
     <div className="my-2">
-      <p className="mb-1 mt-2">Up to 5 photos possible</p>
+      <p className="mb-1 mt-2 pl-3.5">Up to 5 photos possible</p>
       <div className="flex flex-row gap-4">
         {filesToUpload.map((fileToUpload, index) => {
           return (
