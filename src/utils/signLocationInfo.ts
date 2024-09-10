@@ -29,7 +29,7 @@ export async function signLocationInfo(signer: Signer, locationInfo: ContractLoc
   return await signer.signTypedData(domain, types, locationInfo);
 }
 
-export async function checkVerifyFunction(signer: Signer, location: ContractLocationInfo) {
+export async function signLocationInfoWithVerify(signer: Signer, location: ContractLocationInfo) {
   let contract = await getEtherContractWithSigner("verifierService", signer);
   if (contract === null) {
     console.error("contract is null");
@@ -41,7 +41,7 @@ export async function checkVerifyFunction(signer: Signer, location: ContractLoca
     signature,
   };
   let result = await contract.verify(signed);
-  console.log("Signer address: ", result);
+  console.log("Signer   address: ", await signer.getAddress());
   console.log("verified address: ", result);
-  return signature;
+  return { signature, verifyAddress: result };
 }
