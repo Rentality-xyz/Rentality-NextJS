@@ -10,7 +10,7 @@ export default function SearchDeliveryLocations({
   setSearchCarRequest,
 }: {
   searchCarRequest: SearchCarRequest;
-  setSearchCarRequest: (value: SearchCarRequest) => void;
+  setSearchCarRequest: (value: React.SetStateAction<SearchCarRequest>) => void;
 }) {
   const [pickupLocationInfo, setPickupLocationInfo] = useState<LocationInfo | undefined>(undefined);
   const [returnLocationInfo, setReturnLocationInfo] = useState<LocationInfo | undefined>(undefined);
@@ -36,16 +36,16 @@ export default function SearchDeliveryLocations({
 
             const locationInfo = placeDetailsToLocationInfo(placeDetails);
             setPickupLocationInfo(locationInfo);
-            setSearchCarRequest({
-              ...searchCarRequest,
+            setSearchCarRequest((prev) => ({
+              ...prev,
               deliveryInfo: {
-                ...searchCarRequest.deliveryInfo,
+                ...prev.deliveryInfo,
                 pickupLocation: {
                   isHostHomeLocation: false,
                   locationInfo: locationInfo,
                 },
               },
-            });
+            }));
           }}
         />
         <CheckboxLight
@@ -53,8 +53,8 @@ export default function SearchDeliveryLocations({
           label="Host home locatione"
           checked={searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation}
           onChange={(e) =>
-            setSearchCarRequest({
-              ...searchCarRequest,
+            setSearchCarRequest((prev) => ({
+              ...prev,
               deliveryInfo: {
                 ...searchCarRequest.deliveryInfo,
                 pickupLocation: e.target.checked
@@ -66,7 +66,7 @@ export default function SearchDeliveryLocations({
                       locationInfo: pickupLocationInfo ?? emptyLocationInfo,
                     },
               },
-            })
+            }))
           }
         />
       </div>
@@ -90,16 +90,16 @@ export default function SearchDeliveryLocations({
 
             setReturnLocationInfo(locationInfo);
 
-            setSearchCarRequest({
-              ...searchCarRequest,
+            setSearchCarRequest((prev) => ({
+              ...prev,
               deliveryInfo: {
-                ...searchCarRequest.deliveryInfo,
+                ...prev.deliveryInfo,
                 returnLocation: {
                   isHostHomeLocation: false,
                   locationInfo: locationInfo,
                 },
               },
-            });
+            }));
           }}
         />
         <CheckboxLight
@@ -107,8 +107,8 @@ export default function SearchDeliveryLocations({
           label="Host home locatione"
           checked={searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation}
           onChange={(e) =>
-            setSearchCarRequest({
-              ...searchCarRequest,
+            setSearchCarRequest((prev) => ({
+              ...prev,
               deliveryInfo: {
                 ...searchCarRequest.deliveryInfo,
                 returnLocation: e.target.checked
@@ -120,7 +120,7 @@ export default function SearchDeliveryLocations({
                       locationInfo: returnLocationInfo ?? emptyLocationInfo,
                     },
               },
-            })
+            }))
           }
         />
       </div>
