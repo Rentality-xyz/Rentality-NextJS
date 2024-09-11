@@ -63,12 +63,13 @@ function DeliveryPriceForm({
   return (
     <form className="my-4 flex flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
       <fieldset>
-        <div className="mb-4 text-lg">
+        <div className="mb-4 text-lg pl-[16px]">
           <strong>{t_profile("delivery_price")}</strong>
         </div>
         <div className="flex flex-col gap-4">
           <RntInput
             className="lg:w-60"
+            labelClassName="pl-[18px]"
             id="from1To25milesPrice"
             label={t_profile("delivery_price_from_1_to_25_miles")}
             {...register("from1To25milesPrice", { valueAsNumber: true })}
@@ -76,6 +77,7 @@ function DeliveryPriceForm({
           />
           <RntInput
             className="lg:w-60"
+            labelClassName="pl-[18px]"
             id="over25MilesPrice"
             label={t_profile("delivery_price_over_25_miles")}
             {...register("over25MilesPrice", { valueAsNumber: true })}

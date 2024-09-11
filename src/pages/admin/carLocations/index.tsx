@@ -1,6 +1,5 @@
 import AllCarsTable from "@/components/admin/addCars/AllCarsTable";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
-import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useAdminAllCars from "@/hooks/admin/useAdminAllCars";
 import { useEffect } from "react";
@@ -20,19 +19,17 @@ export default function AllCars() {
   }, [fetchData]);
 
   return (
-    <Layout>
-      <div className="flex flex-col">
-        <PageTitle title={t("admin_all_cars.page_title")} />
-        <div className="mt-5 flex flex-col gap-4 rounded-2xl bg-rentality-bg p-4 pb-8">
-          <PaginationWrapper
-            currentPage={data.currentPage}
-            totalPages={data.totalPageCount}
-            selectPage={fetchDataForPage}
-          >
-            <AllCarsTable isLoading={isLoading} data={data.data} />
-          </PaginationWrapper>
-        </div>
+    <>
+      <PageTitle title={t("admin_all_cars.page_title")} />
+      <div className="mt-5 flex flex-col gap-4 rounded-2xl bg-rentality-bg p-4 pb-8">
+        <PaginationWrapper
+          currentPage={data.currentPage}
+          totalPages={data.totalPageCount}
+          selectPage={fetchDataForPage}
+        >
+          <AllCarsTable isLoading={isLoading} data={data.data} />
+        </PaginationWrapper>
       </div>
-    </Layout>
+    </>
   );
 }

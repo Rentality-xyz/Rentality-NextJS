@@ -88,6 +88,7 @@ export type FirebaseUserChat = {
   lastMessages: string;
   updatedAt: number;
   isSeen: boolean;
+  seenAt?: number;
 };
 
 export type FirebaseUserChats = {
@@ -109,7 +110,14 @@ export const userChatsConverter = {
     return {
       userId: data.userId,
       userChats: data.userChats.map(
-        (uc: { chatId: string; senderId: string; lastMessages: string; updatedAt: number; isSeen: boolean }) => {
+        (uc: {
+          chatId: string;
+          senderId: string;
+          lastMessages: string;
+          updatedAt: number;
+          isSeen: boolean;
+          seenAt?: number;
+        }) => {
           return { ...uc, chatId: ChatId.parse(uc.chatId) };
         }
       ),
@@ -183,7 +191,9 @@ async function updateUserChatsForUser(db: Firestore, userAddress: string, messag
       await updateDoc(userchatsRef, {
         userChats: userchatsQuerySnapshot
           .data()
-          .userChats.map((uc: any) => (uc.chatId === updatedUserChat.chatId ? updatedUserChat : uc)),
+          .userChats.map((uc: any) =>
+            uc.chatId === updatedUserChat.chatId ? { ...updatedUserChat, seenAt: uc.seenAt ?? "" } : uc
+          ),
       });
     } else {
       await updateDoc(userchatsRef, {
@@ -210,7 +220,9 @@ export async function markUserChatAsSeen(db: Firestore, userAddress: string, cha
       await updateDoc(userchatsRef, {
         userChats: userchatsQuerySnapshot
           .data()
-          .userChats.map((uc: any) => (uc.chatId === chatId.toString() ? { ...uc, isSeen: true } : uc)),
+          .userChats.map((uc: any) =>
+            uc.chatId === chatId.toString() ? { ...uc, isSeen: true, seenAt: moment().unix() } : uc
+          ),
       });
     }
   }

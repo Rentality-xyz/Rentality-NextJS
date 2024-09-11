@@ -58,7 +58,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
             onClick={isBurgerMenuShown ? closeBurgerMenu : openBurgerMenu}
           />
           <Header />
-          <main className="h-full px-4 py-4 text-rnt-temp-main-text sm:px-8">{children}</main>
+          <main className="flex h-full flex-col px-4 py-4 text-rnt-temp-main-text sm:px-8">{children}</main>
         </div>
       </div>
       <Footer />

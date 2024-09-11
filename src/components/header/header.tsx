@@ -65,7 +65,7 @@ export default function Header() {
     <header className="w-full pt-1.5 text-rnt-temp-header-text">
       <div className="flex min-h-[7rem] w-full justify-between py-2 pl-2 pr-2 sm:pr-6">
         <div className="flex flex-row items-center">
-          <div className="text-xl font-bold max-sm:hidden sm:pl-[42px] lg:text-3xl">{userMode} account</div>
+          <div className="text-xl font-bold max-sm:hidden sm:pl-[38px] lg:text-3xl">{userMode} account</div>
         </div>
         <div className="ml-6 flex flex-row items-center">
           <Stack direction="row" spacing={1} alignItems="center">

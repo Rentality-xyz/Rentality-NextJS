@@ -1,5 +1,5 @@
 import ChatPage from "@/components/chat/ChatPage";
-import Layout from "@/components/layout/layout";
+import Loading from "@/components/common/Loading";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import { useChat, useChatKeys } from "@/contexts/chat/firebase/chatContext";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
@@ -75,26 +75,21 @@ export default function Messages() {
   }, [chatInfos]);
 
   return (
-    <Layout>
-      <div className="flex flex-col">
-        <PageTitle title={t("chat.title")} />
-        {isLoadingClient ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-            {t("common.info.loading")}
-          </div>
-        ) : (
-          <ChatPage
-            isHost={true}
-            chats={sortedChatInfos}
-            sendMessage={handleSendMessage}
-            selectedTridId={selectedTridId}
-            selectChat={handleSelectChat}
-            t={(name, options) => {
-              return t("chat." + name, options);
-            }}
-          />
-        )}
-      </div>
-    </Layout>
+    <>
+      <PageTitle title={t("chat.title")} />
+      {isLoadingClient && <Loading />}
+      {!isLoadingClient && (
+        <ChatPage
+          isHost={true}
+          chats={sortedChatInfos}
+          sendMessage={handleSendMessage}
+          selectedTridId={selectedTridId}
+          selectChat={handleSelectChat}
+          t={(name, options) => {
+            return t("chat." + name, options);
+          }}
+        />
+      )}
+    </>
   );
 }

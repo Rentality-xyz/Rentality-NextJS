@@ -162,6 +162,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
                     lastMessage: "Click to open chat",
                     updatedAt: moment.unix(0).toDate(),
                     isSeen: true,
+                    seenAt: null,
 
                     carPhotoUrl: getIpfsURIfromPinata(metaData.image),
                     tripStatus: tripStatus,
@@ -236,6 +237,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
               lastMessage: "Click to open chat",
               updatedAt: moment.unix(0).toDate(),
               isSeen: true,
+              seenAt: null,
 
               carPhotoUrl: getIpfsURIfromPinata(metaData.image),
               tripStatus: tripStatus,
@@ -442,7 +444,14 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
           const data = res.data();
           if (!data) return;
           const userChats: FirebaseUserChat[] = data.userChats.map(
-            (cm: { chatId: string; senderId: string; lastMessages: string; updatedAt: number; isSeen: boolean }) => {
+            (cm: {
+              chatId: string;
+              senderId: string;
+              lastMessages: string;
+              updatedAt: number;
+              isSeen: boolean;
+              seenAt?: number;
+            }) => {
               return { ...cm, chatId: ChatId.parse(cm.chatId) } as FirebaseUserChat;
             }
           );
@@ -464,6 +473,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
                 lastMessage: existUserChat.lastMessages,
                 updatedAt: moment.unix(existUserChat.updatedAt).toDate(),
                 isSeen: existUserChat.isSeen,
+                seenAt: existUserChat.seenAt ? moment.unix(existUserChat.seenAt).toDate() : null,
               };
             })
           );

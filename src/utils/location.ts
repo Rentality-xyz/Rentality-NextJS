@@ -1,5 +1,10 @@
+import { PlaceDetails } from "@/components/common/rntPlaceAutocompleteInput";
 import { LocationInfo } from "@/model/LocationInfo";
-import { ContractLocationInfo } from "@/model/blockchain/schemas";
+import { ContractLocationInfo, ContractSignedLocationInfo } from "@/model/blockchain/schemas";
+import { fixedNumber } from "./numericFormatters";
+import { getTimeZoneIdFromAddress } from "./fetchTimeZoneId";
+import { Err, Ok, Result } from "@/model/utils/result";
+import { SignLocationResponse } from "@/pages/api/signLocation";
 
 export function formatLocationAddressFromLocationInfo(locationInfo: LocationInfo) {
   return formatLocationAddress(locationInfo.address, locationInfo.country, locationInfo.state, locationInfo.city);
@@ -20,7 +25,6 @@ export function formatLocationAddress(address: string, country: string, state: s
   addressArray[indexOfCity + 1] = state;
   addressArray[indexOfCity + 2] = country;
 
-  console.log(`formatLocationAddress call. Input:${address} | Output: ${addressArray.join(", ")}`);
   return addressArray.join(", ");
 }
 
@@ -46,4 +50,51 @@ export function mapContractLocationInfoToLocationInfo(locationInfo: ContractLoca
     longitude: Number(locationInfo.longitude),
     timeZoneId: locationInfo.timeZoneId,
   };
+}
+
+export function placeDetailsToLocationInfo(placeDetails: PlaceDetails): LocationInfo {
+  return {
+    address: placeDetails.addressString,
+    country: placeDetails.country?.short_name ?? "",
+    state: placeDetails.state?.long_name ?? "",
+    city: placeDetails.city?.long_name ?? "",
+    latitude: fixedNumber(placeDetails.location?.latitude ?? 0, 6),
+    longitude: fixedNumber(placeDetails.location?.longitude ?? 0, 6),
+    timeZoneId: "",
+  };
+}
+
+export async function placeDetailsToLocationInfoWithTimeZone(placeDetails: PlaceDetails): Promise<LocationInfo> {
+  const latitude = fixedNumber(placeDetails.location?.latitude ?? 0, 6);
+  const longitude = fixedNumber(placeDetails.location?.longitude ?? 0, 6);
+  return {
+    address: placeDetails.addressString,
+    country: placeDetails.country?.short_name ?? "",
+    state: placeDetails.state?.long_name ?? "",
+    city: placeDetails.city?.long_name ?? "",
+    latitude: latitude,
+    longitude: longitude,
+    timeZoneId: await getTimeZoneIdFromAddress(latitude, longitude),
+  };
+}
+
+export async function getSignedLocationInfo(
+  locationInfo: LocationInfo | ContractLocationInfo,
+  chainId: number
+): Promise<Result<ContractSignedLocationInfo, string>> {
+  const address = "address" in locationInfo ? locationInfo.address : locationInfo.userAddress;
+
+  var url = new URL(`/api/signLocation`, window.location.origin);
+  url.searchParams.append("address", address);
+  url.searchParams.append("chainId", chainId.toString());
+  const apiResponse = await fetch(url);
+
+  if (!apiResponse.ok) {
+    return Err("Sign location error");
+  }
+  const apiJson = (await apiResponse.json()) as SignLocationResponse;
+  if ("error" in apiJson) {
+    return Err("Sign location error");
+  }
+  return Ok(apiJson);
 }

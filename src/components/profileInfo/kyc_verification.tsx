@@ -14,7 +14,7 @@ export default function KycVerification({ t }: { t: TFunction }) {
 
   return (
     <div id="driver_license_verification" className="mt-1.5">
-      <p>{t("pass_license_verif")}</p>
+      <p className="pl-4">{t("pass_license_verif")}</p>
       <div className="mt-4 flex items-center gap-2 md:gap-6">
         <RntButton type="button" onClick={handleButtonClick}>
           Get Pass

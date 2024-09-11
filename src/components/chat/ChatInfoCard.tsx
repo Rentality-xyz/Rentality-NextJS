@@ -35,6 +35,9 @@ export default function ChatInfoCard({
   const statusClassName = cn("px-2 text-rnt-temp-status-text", statusBgColor);
 
   const pathname = usePathname();
+  const unreadMessageCount = chatInfo.messages.filter(
+    (m) => chatInfo.seenAt === null || m.datestamp > chatInfo.seenAt
+  ).length;
 
   return (
     <div key={chatInfo.tripId} className={className}>
@@ -57,10 +60,18 @@ export default function ChatInfoCard({
         <span className="text-sm text-rentality-secondary max-sm:hidden">{t("trip_info")}</span>
       </Link>
       <div
-        className={`col-span-2 cursor-pointer truncate ${!chatInfo.isSeen ? "font-semibold" : ""}`}
+        className={cn(
+          "col-span-2 flex cursor-pointer flex-row justify-between truncate",
+          !chatInfo.isSeen ? "font-semibold" : ""
+        )}
         onClick={onClickCallback}
       >
-        {chatInfo.lastMessage}
+        <span>{chatInfo.lastMessage}</span>
+        {!chatInfo.isSeen && unreadMessageCount > 0 && (
+          <span className="min-w-[1.75rem] rounded-full bg-rentality-secondary-shade pt-0.5 text-center">
+            {unreadMessageCount > 9 ? "9+" : unreadMessageCount}
+          </span>
+        )}
       </div>
     </div>
   );

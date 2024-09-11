@@ -2,58 +2,36 @@ import CarSearchItem from "@/components/guest/carSearchItem";
 import useSearchCars from "@/hooks/guest/useSearchCars";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
-import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
-import { SearchCarRequest, emptySearchCarRequest } from "@/model/SearchCarRequest";
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { isEmpty } from "@/utils/string";
 import { DialogActions } from "@/utils/dialogActions";
-import Layout from "@/components/layout/layout";
 import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import CarSearchMap from "@/components/guest/carMap/carSearchMap";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
-import moment from "moment";
 import Image from "next/image";
 import mapArrow from "@/images/arrUpBtn.png";
 import FilterSlidingPanel from "@/components/search/filterSlidingPanel";
 import SearchAndFilters from "@/components/search/searchAndFilters";
 import { useAuth } from "@/contexts/auth/authContext";
-
-const defaultDateFrom = moment({ hour: 9 }).add(1, "day").toDate();
-const defaultDateTo = moment({ hour: 9 }).add(4, "day").toDate();
-
-const customEmptySearchCarRequest: SearchCarRequest = {
-  ...emptySearchCarRequest,
-  searchLocation: {
-    ...emptySearchCarRequest.searchLocation,
-    city: "Miami",
-    state: "Florida",
-    country: "US",
-    latitude: 25.782407,
-    longitude: -80.229458,
-  },
-  dateFrom: dateToHtmlDateTimeFormat(defaultDateFrom),
-  dateTo: dateToHtmlDateTimeFormat(defaultDateTo),
-};
-
-type AdvancedMarkerElement = google.maps.marker.AdvancedMarkerElement;
+import useCarSearchParams from "@/hooks/guest/useCarSearchParams";
+import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 
 export default function Search() {
+  const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
   const [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest, setSearchResult] =
-    useSearchCars(customEmptySearchCarRequest);
-  const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(customEmptySearchCarRequest);
+    useSearchCars();
+
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const [openFilterPanel, setOpenFilterPanel] = useState(false);
+  const [sortBy, setSortBy] = useState<string | undefined>(undefined);
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
-  const [sortBy, setSortBy] = useState<string | undefined>(undefined);
-
   const userInfo = useUserInfo();
   const router = useRouter();
   const { isAuthenticated, login } = useAuth();
-
   const { t } = useTranslation();
 
   const t_page: TFunction = (path, options) => {
@@ -63,13 +41,19 @@ export default function Search() {
     return t_page("errors." + name, options);
   };
 
-  const handleSearchClick = async () => {
-    const result = await searchAvailableCars(searchCarRequest);
-
-    if (result) {
-      setSortBy(undefined);
-    }
+  const handleSearchClick = async (request: SearchCarRequest) => {
+    updateSearchParams(request, searchCarFilters);
+    searchAvailableCars(request, searchCarFilters);
   };
+
+  const handleFilterApply = async (filters: SearchCarFilters) => {
+    updateSearchParams(searchCarRequest, filters);
+    searchAvailableCars(searchCarRequest, filters);
+  };
+
+  useEffect(() => {
+    searchAvailableCars(searchCarRequest, searchCarFilters);
+  }, []);
 
   const handleRentCarRequest = async (carInfo: SearchCarInfo) => {
     if (!isAuthenticated) {
@@ -173,16 +157,17 @@ export default function Search() {
   };
 
   return (
-    <Layout>
+    <>
       <GoogleMapsProvider libraries={["maps", "marker", "places"]} language="en">
         <div className="flex flex-col" title="Search">
           <SearchAndFilters
-            searchCarRequest={searchCarRequest}
-            setSearchCarRequest={setSearchCarRequest}
+            initValue={searchCarRequest}
             sortBy={sortBy}
             setSortBy={setSortBy}
-            handleSearchClick={handleSearchClick}
-            setOpenFilterPanel={setOpenFilterPanel}
+            onSearchClick={handleSearchClick}
+            onOpenFilters={() => {
+              setOpenFilterPanel(true);
+            }}
             t={t}
           />
           <div className="mb-8 flex flex-row"></div>
@@ -252,14 +237,15 @@ export default function Search() {
           </div>
         </div>
         <FilterSlidingPanel
-          searchCarRequest={searchCarRequest}
-          setSearchCarRequest={setSearchCarRequest}
-          handleSearchClick={handleSearchClick}
-          openFilterPanel={openFilterPanel}
-          setOpenFilterPanel={setOpenFilterPanel}
+          initValue={searchCarFilters}
+          onFilterApply={handleFilterApply}
+          isOpen={openFilterPanel}
+          closePanel={() => {
+            setOpenFilterPanel(false);
+          }}
           t={t}
         />
       </GoogleMapsProvider>
-    </Layout>
+    </>
   );
 }

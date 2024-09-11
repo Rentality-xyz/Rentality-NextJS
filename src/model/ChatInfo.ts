@@ -19,6 +19,7 @@ export type ChatInfo = {
   lastMessage: string;
   updatedAt: Date;
   isSeen: boolean;
+  seenAt: Date | null;
 
   carPhotoUrl: string;
   tripStatus: TripStatus;

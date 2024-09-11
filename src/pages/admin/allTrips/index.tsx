@@ -1,7 +1,6 @@
 import AllTripsFilters from "@/components/admin/allTripsTable/AllTripsFilters";
 import AllTripsTable from "@/components/admin/allTripsTable/AllTripsTable";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
-import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useAdminAllTrips, { AdminAllTripsFilters } from "@/hooks/admin/useAdminAllTrips";
 import { Result } from "@/model/utils/result";
@@ -50,25 +49,23 @@ export default function AllTrips() {
   }, [fetchData]);
 
   return (
-    <Layout>
-      <div className="flex flex-col">
-        <PageTitle title={t("all_trips_table.page_title")} />
-        <div className="mt-5 flex flex-col gap-4 rounded-2xl bg-rentality-bg p-4 pb-8">
-          <AllTripsFilters defaultFilters={defaultFilters} onApply={handleApplyFilters} />
-          <PaginationWrapper
-            currentPage={data.currentPage}
-            totalPages={data.totalPageCount}
-            selectPage={fetchDataForPage}
-          >
-            <AllTripsTable
-              isLoading={isLoading}
-              data={data.data}
-              payToHost={handlePayToHost}
-              refundToGuest={handleRefundToGuest}
-            />
-          </PaginationWrapper>
-        </div>
+    <>
+      <PageTitle title={t("all_trips_table.page_title")} />
+      <div className="mt-5 flex flex-col gap-4 rounded-2xl bg-rentality-bg p-4 pb-8">
+        <AllTripsFilters defaultFilters={defaultFilters} onApply={handleApplyFilters} />
+        <PaginationWrapper
+          currentPage={data.currentPage}
+          totalPages={data.totalPageCount}
+          selectPage={fetchDataForPage}
+        >
+          <AllTripsTable
+            isLoading={isLoading}
+            data={data.data}
+            payToHost={handlePayToHost}
+            refundToGuest={handleRefundToGuest}
+          />
+        </PaginationWrapper>
       </div>
-    </Layout>
+    </>
   );
 }

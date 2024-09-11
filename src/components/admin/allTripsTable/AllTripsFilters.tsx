@@ -8,6 +8,7 @@ import { getPaymentStatusText, getTripStatusTextFromAdminStatus } from "@/model/
 import { AdminTripStatus, PaymentStatus } from "@/model/blockchain/schemas";
 import { formatLocationInfoUpToCity } from "@/model/LocationInfo";
 import { dateToHtmlDateFormat } from "@/utils/datetimeFormatters";
+import { placeDetailsToLocationInfo } from "@/utils/location";
 import { isEmpty } from "@/utils/string";
 import moment from "moment";
 import React, { useState } from "react";
@@ -88,17 +89,7 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
           onAddressChange={async (placeDetails) => {
             setFilters((prev) => ({
               ...prev,
-              location: !isEmpty(placeDetails.addressString)
-                ? {
-                    address: placeDetails.addressString,
-                    country: placeDetails.country?.short_name ?? "",
-                    state: placeDetails.state?.long_name ?? "",
-                    city: placeDetails.city?.long_name ?? "",
-                    latitude: placeDetails.location?.latitude ?? 0,
-                    longitude: placeDetails.location?.longitude ?? 0,
-                    timeZoneId: "",
-                  }
-                : undefined,
+              location: !isEmpty(placeDetails.addressString) ? placeDetailsToLocationInfo(placeDetails) : undefined,
             }));
           }}
         />

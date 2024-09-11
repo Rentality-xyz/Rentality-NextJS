@@ -17,10 +17,13 @@ export default function RntFileButton({
   disabled?: boolean;
   accept?: string;
 }) {
-  const bgColor = disabled ? "bg-gray-500" : "buttonGradient";
-  const baseClassName =
-    "h-12 w-56 rounded-full text-white text-lg flex justify-center items-center cursor-pointer " + bgColor;
-  const c = cn(baseClassName, className);
+  const bgColor = !className?.includes("bg-") ? "bg-rnt-button-gradient" : "";
+  const c = cn(
+    "h-12 w-56 rounded-full text-white text-lg flex justify-center items-center disabled:bg-gray-500 cursor-pointer",
+    bgColor,
+    className
+  );
+
   return (
     <label {...props} className={c}>
       <input
