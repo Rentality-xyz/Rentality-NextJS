@@ -433,6 +433,14 @@ export type ContractAllCarsDTO = {
   totalPageCount: bigint;
 };
 
+export type CivicKYCInfo = {
+  name: string;
+  licenseNumber: string;
+  expirationDate: bigint;
+  country: string;
+  email: string;
+};
+
 export type TripStatus = bigint;
 export const TripStatus = {
   Pending: BigInt(0), // Created
