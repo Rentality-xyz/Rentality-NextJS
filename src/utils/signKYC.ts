@@ -15,11 +15,11 @@ export async function signKycInfo(signer: Signer, kyc: CivicKYCInfo) {
   };
 
   const types = {
-    KYCInfoWithSignature: [
-      { name: "name", type: "string" },
+    CivicKYCInfo: [
+      { name: "fullName", type: "string" },
       { name: "licenseNumber", type: "string" },
       { name: "expirationDate", type: "uint64" },
-      { name: "country", type: "string" },
+      { name: "issueCountry", type: "string" },
       { name: "email", type: "string" },
     ],
   };

@@ -434,10 +434,10 @@ export type ContractAllCarsDTO = {
 };
 
 export type CivicKYCInfo = {
-  name: string;
+  fullName: string;
   licenseNumber: string;
   expirationDate: bigint;
-  country: string;
+  issueCountry: string;
   email: string;
 };
 
