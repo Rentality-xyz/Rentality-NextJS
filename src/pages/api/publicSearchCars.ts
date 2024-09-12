@@ -1,7 +1,6 @@
 import { getEtherContractWithSigner } from "@/abis";
 import { ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "@/model/EngineType";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
-import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 import { emptyLocationInfo } from "@/model/LocationInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
@@ -9,11 +8,10 @@ import {
   ContractLocationInfo,
   ContractSearchCarParams,
   ContractSearchCarWithDistance,
-  EngineType,
 } from "@/model/blockchain/schemas";
 import { emptyContractLocationInfo, validateContractSearchCarWithDistance } from "@/model/blockchain/schemas_utils";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
-import { getBlockchainTimeFromDate, getMoneyInCentsFromString } from "@/utils/formInput";
+import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { isEmpty } from "@/utils/string";
@@ -21,8 +19,185 @@ import { JsonRpcProvider, Wallet } from "ethers";
 import moment from "moment";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { bigIntReplacer } from "@/utils/json";
+import { env } from "@/utils/env";
+import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 
-export const getDaysDiscount = (tripDays: number) => {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const privateKey = env.SIGNER_PRIVATE_KEY;
+  if (isEmpty(privateKey)) {
+    console.error("API checkTrips error: private key was not set");
+    res.status(500).json({ error: "private key was not set" });
+    return;
+  }
+
+  const {
+    chainId,
+    dateFrom,
+    dateTo,
+    country,
+    state,
+    city,
+    latitude,
+    longitude,
+    brand,
+    model,
+    yearOfProductionFrom,
+    yearOfProductionTo,
+    pricePerDayInUsdFrom,
+    pricePerDayInUsdTo,
+    isDeliveryToGuest,
+    pickupLocation,
+    returnLocation,
+  } = req.query;
+  const chainIdNumber = Number(chainId) > 0 ? Number(chainId) : env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
+
+  if (!chainIdNumber) {
+    console.error("API checkTrips error: chainId was not provided");
+    res.status(400).json({ error: "chainId was not provided" });
+    return;
+  }
+
+  let providerApiUrl = process.env[`PROVIDER_API_URL_${chainIdNumber}`];
+  if (!providerApiUrl) {
+    console.error(`API checkTrips error: API URL for chain id ${chainIdNumber} was not set`);
+    res.status(500).json({ error: `API checkTrips error: API URL for chain id ${chainIdNumber} was not set` });
+    return;
+  }
+
+  const location = `${city as string}, ${state as string}, ${country as string}`;
+
+  const timeZoneId = await getTimeZoneIdFromAddress(location);
+  if (isEmpty(timeZoneId)) {
+    res.status(500).json({ error: "API checkTrips error: GOOGLE_MAPS_API_KEY was not set" });
+    return;
+  }
+
+  const isDeliveryToGuestValue = (isDeliveryToGuest as string)?.toLowerCase() === "true";
+  const pickupLocationValues = (pickupLocation as string)?.split(";");
+  const returnLocationValues = (returnLocation as string)?.split(";");
+
+  const searchCarRequest: SearchCarRequest = {
+    searchLocation: {
+      address: "",
+      country: country as string,
+      state: state as string,
+      city: "",
+      latitude: Number(latitude as string),
+      longitude: Number(longitude as string),
+      timeZoneId: "",
+    },
+    dateFrom: new Date(dateFrom as string),
+    dateTo: new Date(dateTo as string),
+    isDeliveryToGuest: isDeliveryToGuestValue,
+    deliveryInfo: {
+      pickupLocation:
+        !isDeliveryToGuestValue || pickupLocationValues?.length !== 2
+          ? { isHostHomeLocation: true }
+          : {
+              isHostHomeLocation: false,
+              locationInfo: {
+                ...emptyLocationInfo,
+                latitude: Number(pickupLocationValues[0]),
+                longitude: Number(pickupLocationValues[1]),
+              },
+            },
+      returnLocation:
+        !isDeliveryToGuestValue || returnLocationValues?.length !== 2
+          ? { isHostHomeLocation: true }
+          : {
+              isHostHomeLocation: false,
+              locationInfo: {
+                ...emptyLocationInfo,
+                latitude: Number(returnLocationValues[0]),
+                longitude: Number(returnLocationValues[1]),
+              },
+            },
+    },
+  };
+  const searchCarFilters: SearchCarFilters = {
+    brand: brand as SearchCarFilters["brand"],
+    model: model as SearchCarFilters["model"],
+    yearOfProductionFrom: yearOfProductionFrom ? Number(yearOfProductionFrom) : undefined,
+    yearOfProductionTo: yearOfProductionTo ? Number(yearOfProductionTo) : undefined,
+    pricePerDayInUsdFrom: pricePerDayInUsdFrom ? Number(pricePerDayInUsdFrom) : undefined,
+    pricePerDayInUsdTo: pricePerDayInUsdTo ? Number(pricePerDayInUsdTo) : undefined,
+  };
+
+  console.log(
+    `\nCalling searchAvailableCars API for ${chainIdNumber} chain id with searchCarRequest: ${JSON.stringify(
+      searchCarRequest
+    )} and searchCarFilters: ${JSON.stringify(searchCarFilters)}`
+  );
+
+  const provider = new JsonRpcProvider(providerApiUrl);
+  const wallet = new Wallet(privateKey, provider);
+
+  const rentality = (await getEtherContractWithSigner("gateway", wallet)) as unknown as IRentalityContract;
+
+  if (rentality === null) {
+    res.status(500).json({ error: "rentality is null" });
+    return;
+  }
+
+  const { contractDateFromUTC, contractDateToUTC, contractSearchCarParams } = formatSearchAvailableCarsContractRequest(
+    searchCarRequest,
+    searchCarFilters,
+    timeZoneId
+  );
+  let availableCarsView: ContractSearchCarWithDistance[];
+
+  if (searchCarRequest.isDeliveryToGuest) {
+    const pickUpInfo: ContractLocationInfo = {
+      ...emptyContractLocationInfo,
+      latitude: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
+        ? ""
+        : searchCarRequest.deliveryInfo.pickupLocation.locationInfo.latitude.toFixed(6),
+      longitude: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
+        ? ""
+        : searchCarRequest.deliveryInfo.pickupLocation.locationInfo.longitude.toFixed(6),
+    };
+    const returnInfo: ContractLocationInfo = {
+      ...emptyContractLocationInfo,
+      latitude: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+        ? ""
+        : searchCarRequest.deliveryInfo.returnLocation.locationInfo.latitude.toFixed(6),
+      longitude: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+        ? ""
+        : searchCarRequest.deliveryInfo.returnLocation.locationInfo.longitude.toFixed(6),
+    };
+
+    availableCarsView = await rentality.searchAvailableCarsWithDelivery(
+      contractDateFromUTC,
+      contractDateToUTC,
+      contractSearchCarParams,
+      pickUpInfo,
+      returnInfo
+    );
+  } else {
+    availableCarsView = await rentality.searchAvailableCars(
+      contractDateFromUTC,
+      contractDateToUTC,
+      contractSearchCarParams
+    );
+  }
+
+  const availableCarsData = await formatSearchAvailableCarsContractResponse(rentality, availableCarsView);
+
+  res.status(200).json(availableCarsData);
+}
+
+function getTotalDiscount(pricePerDay: number, tripDays: number, totalPriceWithDiscount: number) {
+  const totalDiscount = pricePerDay * tripDays - totalPriceWithDiscount;
+  let result: string = "";
+  if (totalDiscount > 0) {
+    result = "-$" + displayMoneyWith2Digits(totalDiscount);
+  } else {
+    result = "-";
+  }
+  return result;
+}
+
+function getDaysDiscount(tripDays: number) {
   switch (true) {
     case tripDays >= 30:
       return "30+ day discount";
@@ -33,20 +208,13 @@ export const getDaysDiscount = (tripDays: number) => {
     default:
       return "Days discount";
   }
-};
+}
 
-export const getTotalDiscount = (pricePerDay: number, tripDays: number, totalPriceWithDiscount: number) => {
-  const totalDiscount = pricePerDay * tripDays - totalPriceWithDiscount;
-  let result: string = "";
-  if (totalDiscount > 0) {
-    result = "-$" + displayMoneyWith2Digits(totalDiscount);
-  } else {
-    result = "-";
-  }
-  return result;
-};
-
-const formatSearchAvailableCarsContractRequest = (searchCarRequest: SearchCarRequest, timeZoneId: string) => {
+function formatSearchAvailableCarsContractRequest(
+  searchCarRequest: SearchCarRequest,
+  searchCarFilters: SearchCarFilters,
+  timeZoneId: string
+) {
   const startCarLocalDateTime = moment.tz(searchCarRequest.dateFrom, timeZoneId).toDate();
   const endCarLocalDateTime = moment.tz(searchCarRequest.dateTo, timeZoneId).toDate();
   const contractDateFromUTC = getBlockchainTimeFromDate(startCarLocalDateTime);
@@ -55,12 +223,12 @@ const formatSearchAvailableCarsContractRequest = (searchCarRequest: SearchCarReq
     country: searchCarRequest.searchLocation.country ?? "",
     state: searchCarRequest.searchLocation.state ?? "",
     city: searchCarRequest.searchLocation.city ?? "",
-    brand: searchCarRequest.searchFilters.brand ?? "",
-    model: searchCarRequest.searchFilters.model ?? "",
-    yearOfProductionFrom: BigInt(searchCarRequest.searchFilters.yearOfProductionFrom ?? "0"),
-    yearOfProductionTo: BigInt(searchCarRequest.searchFilters.yearOfProductionTo ?? "0"),
-    pricePerDayInUsdCentsFrom: BigInt(getMoneyInCentsFromString(searchCarRequest.searchFilters.pricePerDayInUsdFrom)),
-    pricePerDayInUsdCentsTo: BigInt(getMoneyInCentsFromString(searchCarRequest.searchFilters.pricePerDayInUsdTo)),
+    brand: searchCarFilters.brand ?? "",
+    model: searchCarFilters.model ?? "",
+    yearOfProductionFrom: BigInt(searchCarFilters.yearOfProductionFrom ?? 0),
+    yearOfProductionTo: BigInt(searchCarFilters.yearOfProductionTo ?? 0),
+    pricePerDayInUsdCentsFrom: BigInt((searchCarFilters.pricePerDayInUsdFrom ?? 0) * 100),
+    pricePerDayInUsdCentsTo: BigInt((searchCarFilters.pricePerDayInUsdTo ?? 0) * 100),
     userLocation: {
       ...emptyContractLocationInfo,
       latitude: searchCarRequest.searchLocation.latitude.toFixed(6),
@@ -68,12 +236,12 @@ const formatSearchAvailableCarsContractRequest = (searchCarRequest: SearchCarReq
     },
   };
   return { contractDateFromUTC, contractDateToUTC, contractSearchCarParams } as const;
-};
+}
 
-const formatSearchAvailableCarsContractResponse = async (
+async function formatSearchAvailableCarsContractResponse(
   rentality: IRentalityContract,
   searchCarsViewsView: ContractSearchCarWithDistance[]
-) => {
+) {
   if (searchCarsViewsView.length === 0) return [];
 
   return await Promise.all(
@@ -135,13 +303,13 @@ const formatSearchAvailableCarsContractResponse = async (
       return item;
     })
   );
-};
+}
 
-const getTimeZoneIdFromAddress = async (address: string) => {
+async function getTimeZoneIdFromAddress(address: string) {
   if (isEmpty(address)) return UTC_TIME_ZONE_ID;
 
-  const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  if (!GOOGLE_MAPS_API_KEY) {
+  const GOOGLE_MAPS_API_KEY = env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  if (isEmpty(GOOGLE_MAPS_API_KEY)) {
     console.error("getUtcOffsetMinutesFromLocation error: GOOGLE_MAPS_API_KEY was not set");
     return "";
   }
@@ -175,166 +343,4 @@ const getTimeZoneIdFromAddress = async (address: string) => {
   const offSetInMinutes = (rawOffsetInSec + dstOffsetInSec) / 60 ?? 0;
 
   return offSetInMinutes;
-};
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const privateKey = process.env.NEXT_WALLET_PRIVATE_KEY;
-  if (!privateKey) {
-    console.error("API checkTrips error: private key was not set");
-    res.status(500).json({ error: "private key was not set" });
-    return;
-  }
-
-  const {
-    chainId,
-    dateFrom,
-    dateTo,
-    country,
-    state,
-    city,
-    latitude,
-    longitude,
-    brand,
-    model,
-    yearOfProductionFrom,
-    yearOfProductionTo,
-    pricePerDayInUsdFrom,
-    pricePerDayInUsdTo,
-    isDeliveryToGuest,
-    pickupLocation,
-    returnLocation,
-  } = req.query;
-  const chainIdNumber = Number(chainId) > 0 ? Number(chainId) : Number(process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID);
-
-  if (!chainIdNumber) {
-    console.error("API checkTrips error: chainId was not provided");
-    res.status(400).json({ error: "chainId was not provided" });
-    return;
-  }
-
-  let providerApiUrl = process.env[`PROVIDER_API_URL_${chainIdNumber}`];
-  if (!providerApiUrl) {
-    console.error(`API checkTrips error: API URL for chain id ${chainIdNumber} was not set`);
-    res.status(500).json({ error: `API checkTrips error: API URL for chain id ${chainIdNumber} was not set` });
-    return;
-  }
-
-  const location = `${city as string}, ${state as string}, ${country as string}`;
-
-  const timeZoneId = await getTimeZoneIdFromAddress(location);
-  if (isEmpty(timeZoneId)) {
-    res.status(500).json({ error: "API checkTrips error: GOOGLE_MAPS_API_KEY was not set" });
-    return;
-  }
-
-  const isDeliveryToGuestValue = (isDeliveryToGuest as string)?.toLowerCase() === "true";
-  const pickupLocationValues = (pickupLocation as string)?.split(";");
-  const returnLocationValues = (returnLocation as string)?.split(";");
-
-  const searchCarRequest: SearchCarRequest = {
-    searchLocation: {
-      address: "",
-      country: country as string,
-      state: state as string,
-      city: "",
-      latitude: Number(latitude as string),
-      longitude: Number(longitude as string),
-      timeZoneId: "",
-    },
-    dateFrom: dateFrom as string,
-    dateTo: dateTo as string,
-    searchFilters: {
-      brand: brand as string,
-      model: model as string,
-      yearOfProductionFrom: yearOfProductionFrom as string,
-      yearOfProductionTo: yearOfProductionTo as string,
-      pricePerDayInUsdFrom: pricePerDayInUsdFrom as string,
-      pricePerDayInUsdTo: pricePerDayInUsdTo as string,
-    },
-    isDeliveryToGuest: isDeliveryToGuestValue,
-    deliveryInfo: {
-      pickupLocation:
-        !isDeliveryToGuestValue || pickupLocationValues?.length !== 2
-          ? { isHostHomeLocation: true }
-          : {
-              isHostHomeLocation: false,
-              locationInfo: {
-                ...emptyLocationInfo,
-                latitude: Number(pickupLocationValues[0]),
-                longitude: Number(pickupLocationValues[1]),
-              },
-            },
-      returnLocation:
-        !isDeliveryToGuestValue || returnLocationValues?.length !== 2
-          ? { isHostHomeLocation: true }
-          : {
-              isHostHomeLocation: false,
-              locationInfo: {
-                ...emptyLocationInfo,
-                latitude: Number(returnLocationValues[0]),
-                longitude: Number(returnLocationValues[1]),
-              },
-            },
-    },
-  };
-  console.log(
-    `Calling searchAvailableCars API for ${chainIdNumber} chain id with searchCarRequest: ${JSON.stringify(
-      searchCarRequest
-    )}`
-  );
-
-  const provider = new JsonRpcProvider(providerApiUrl);
-  const wallet = new Wallet(privateKey, provider);
-
-  const rentality = (await getEtherContractWithSigner("gateway", wallet)) as unknown as IRentalityContract;
-
-  if (rentality === null) {
-    res.status(500).json({ error: "rentality is null" });
-    return;
-  }
-
-  const { contractDateFromUTC, contractDateToUTC, contractSearchCarParams } = formatSearchAvailableCarsContractRequest(
-    searchCarRequest,
-    timeZoneId
-  );
-  let availableCarsView: ContractSearchCarWithDistance[];
-
-  if (searchCarRequest.isDeliveryToGuest) {
-    const pickUpInfo: ContractLocationInfo = {
-      ...emptyContractLocationInfo,
-      latitude: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
-        ? ""
-        : searchCarRequest.deliveryInfo.pickupLocation.locationInfo.latitude.toFixed(6),
-      longitude: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
-        ? ""
-        : searchCarRequest.deliveryInfo.pickupLocation.locationInfo.longitude.toFixed(6),
-    };
-    const returnInfo: ContractLocationInfo = {
-      ...emptyContractLocationInfo,
-      latitude: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
-        ? ""
-        : searchCarRequest.deliveryInfo.returnLocation.locationInfo.latitude.toFixed(6),
-      longitude: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
-        ? ""
-        : searchCarRequest.deliveryInfo.returnLocation.locationInfo.longitude.toFixed(6),
-    };
-
-    availableCarsView = await rentality.searchAvailableCarsWithDelivery(
-      contractDateFromUTC,
-      contractDateToUTC,
-      contractSearchCarParams,
-      pickUpInfo,
-      returnInfo
-    );
-  } else {
-    availableCarsView = await rentality.searchAvailableCars(
-      contractDateFromUTC,
-      contractDateToUTC,
-      contractSearchCarParams
-    );
-  }
-
-  const availableCarsData = await formatSearchAvailableCarsContractResponse(rentality, availableCarsView);
-
-  res.status(200).json(availableCarsData);
 }

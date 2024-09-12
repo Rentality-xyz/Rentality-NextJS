@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { twMerge } from "tailwind-merge";
 import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocompleteService";
 import { isEmpty } from "@/utils/string";
 import RntValidationError from "./RntValidationError";
+import { cn } from "@/utils";
+import { env } from "@/utils/env";
 
-type PlaceDetails = {
+export type PlaceDetails = {
   addressString: string;
   country?: {
     short_name: string;
@@ -64,7 +65,7 @@ export default function RntPlaceAutocompleteInput({
   const [isEditing, setIsEditing] = useState(false);
 
   const { placesService, placePredictions, getPlacePredictions, isPlacePredictionsLoading } = usePlacesService({
-    apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    apiKey: env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     options: {
       input: "",
       types: includeStreetAddress
@@ -143,9 +144,9 @@ export default function RntPlaceAutocompleteInput({
   }, [placePredictions]);
 
   type = type ?? "text";
-  const cClassName = twMerge("relative text-black flex flex-col w-full", className);
-  const lClassName = twMerge("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
-  const iClassName = twMerge(
+  const cClassName = cn("relative text-black flex flex-col w-full", className);
+  const lClassName = cn("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
+  const iClassName = cn(
     "w-full h-12 border-2 rounded-full pl-4 disabled:bg-gray-300 disabled:text-gray-600",
     inputClassName
   );

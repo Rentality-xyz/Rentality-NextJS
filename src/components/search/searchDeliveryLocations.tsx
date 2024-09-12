@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import RntPlaceAutoComplete from "@/components/common/rntPlaceAutocomplete";
-import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { emptyLocationInfo, LocationInfo } from "@/model/LocationInfo";
 import { CheckboxLight } from "../common/rntCheckbox";
+import { placeDetailsToLocationInfo } from "@/utils/location";
+import { SearchCarRequest } from "@/model/SearchCarRequest";
 
 export default function SearchDeliveryLocations({
   searchCarRequest,
@@ -33,32 +34,15 @@ export default function SearchDeliveryLocations({
           onAddressChange={async (placeDetails) => {
             if (searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation) return;
 
-            const locationLat = placeDetails.location?.latitude ?? 0;
-            const locationLng = placeDetails.location?.longitude ?? 0;
-            setPickupLocationInfo({
-              address: placeDetails.addressString,
-              country: placeDetails.country?.short_name ?? "",
-              state: placeDetails.state?.long_name ?? "",
-              city: placeDetails.city?.long_name ?? "",
-              latitude: locationLat,
-              longitude: locationLng,
-              timeZoneId: "",
-            });
+            const locationInfo = placeDetailsToLocationInfo(placeDetails);
+            setPickupLocationInfo(locationInfo);
             setSearchCarRequest({
               ...searchCarRequest,
               deliveryInfo: {
                 ...searchCarRequest.deliveryInfo,
                 pickupLocation: {
                   isHostHomeLocation: false,
-                  locationInfo: {
-                    address: placeDetails.addressString,
-                    country: placeDetails.country?.short_name ?? "",
-                    state: placeDetails.state?.short_name ?? "",
-                    city: placeDetails.city?.long_name ?? "",
-                    latitude: locationLat,
-                    longitude: locationLng,
-                    timeZoneId: "",
-                  },
+                  locationInfo: locationInfo,
                 },
               },
             });
@@ -102,18 +86,9 @@ export default function SearchDeliveryLocations({
           onAddressChange={async (placeDetails) => {
             if (searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation) return;
 
-            const locationLat = placeDetails.location?.latitude ?? 0;
-            const locationLng = placeDetails.location?.longitude ?? 0;
+            const locationInfo = placeDetailsToLocationInfo(placeDetails);
 
-            setReturnLocationInfo({
-              address: placeDetails.addressString,
-              country: placeDetails.country?.short_name ?? "",
-              state: placeDetails.state?.short_name ?? "",
-              city: placeDetails.city?.long_name ?? "",
-              latitude: locationLat,
-              longitude: locationLng,
-              timeZoneId: "",
-            });
+            setReturnLocationInfo(locationInfo);
 
             setSearchCarRequest({
               ...searchCarRequest,
@@ -121,15 +96,7 @@ export default function SearchDeliveryLocations({
                 ...searchCarRequest.deliveryInfo,
                 returnLocation: {
                   isHostHomeLocation: false,
-                  locationInfo: {
-                    address: placeDetails.addressString,
-                    country: placeDetails.country?.short_name ?? "",
-                    state: placeDetails.state?.short_name ?? "",
-                    city: placeDetails.city?.long_name ?? "",
-                    latitude: locationLat,
-                    longitude: locationLng,
-                    timeZoneId: "",
-                  },
+                  locationInfo: locationInfo,
                 },
               },
             });

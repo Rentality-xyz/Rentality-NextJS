@@ -1,7 +1,7 @@
 import { isEmpty } from "@/utils/string";
 import { forwardRef } from "react";
-import { twMerge } from "tailwind-merge";
 import RntValidationError from "./RntValidationError";
+import { cn } from "@/utils";
 
 interface RntInputMultilineProps extends React.ComponentPropsWithoutRef<"textarea"> {
   labelClassName?: string;
@@ -31,9 +31,9 @@ const RntInputMultiline = forwardRef<HTMLTextAreaElement, RntInputMultilineProps
     },
     ref
   ) => {
-    const cClassName = twMerge("text-black flex flex-col w-full", className);
-    const lClassName = twMerge("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
-    const iClassName = twMerge(
+    const cClassName = cn("text-black flex flex-col w-full", className);
+    const lClassName = cn("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
+    const iClassName = cn(
       "w-full border-2 rounded-2xl px-4 py-2 disabled:bg-gray-300 disabled:text-gray-600",
       inputClassName
     );

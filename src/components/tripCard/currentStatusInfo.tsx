@@ -129,8 +129,6 @@ function CurrentStatusInfo({
   const [messageToGuest, setMessageToGuest] = useState("");
   const [isFinishingByHost, setIsFinishingByHost] = useState(false);
   const { sendMessage, getMessages } = useChat();
-  const [isDisabled, setDisabled] = useState(false);
-  const router = useRouter();
 
   const [actionHeader, actionText, actionDescription] = getActionTextsForStatus(
     tripInfo,
@@ -168,12 +166,9 @@ function CurrentStatusInfo({
 
   const handleGuestFinishTrip = async () => {
     hideDialogs();
-    setDisabled(true);
-    if (tripInfo.allowedActions.length > 0) {
-      await tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), []);
-    }
-    setDisabled(false);
-    router.refresh();
+    changeStatusCallback(() => {
+      return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), []);
+    });
   };
 
   const handleCancel = () => {
@@ -221,7 +216,7 @@ function CurrentStatusInfo({
         <div className="flex flex-col gap-4 max-md:flex-row 2xl:flex-row">
           {(tripInfo.status === TripStatus.CheckedInByHost || tripInfo.status === TripStatus.Started) && isHost ? (
             <RntButton
-              className="h-12 w-full px-4"
+              className="w-full px-4"
               onClick={() => {
                 showModifyTripDialog();
               }}
@@ -230,15 +225,15 @@ function CurrentStatusInfo({
             </RntButton>
           ) : tripInfo.status === TripStatus.CompletedWithoutGuestComfirmation && isHost ? (
             <a className="w-full" href={`tel:${tripInfo.guest.phoneNumber}`}>
-              <RntButton className="h-12 w-full px-4">Contact to guest</RntButton>
+              <RntButton className="w-full px-4">Contact to guest</RntButton>
             </a>
           ) : tripInfo.status === TripStatus.CompletedWithoutGuestComfirmation && !isHost ? (
             <RntButton
-              className="h-12 w-full px-4"
+              className="w-full px-4"
+              disabled={disableButton}
               onClick={() => {
                 showGuestConfirmFinishDialog();
               }}
-              disabled={isDisabled}
             >
               I confirm finish trip
             </RntButton>
@@ -249,7 +244,7 @@ function CurrentStatusInfo({
                 return index === 0 ? (
                   <RntButton
                     key={action.text}
-                    className="h-12 w-full px-4"
+                    className="w-full px-4"
                     disabled={disableButton}
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
@@ -261,12 +256,12 @@ function CurrentStatusInfo({
                       }
                     }}
                   >
-                    {action.text}
+                    {"I confirm finish trip"}
                   </RntButton>
                 ) : (
                   <RntButtonTransparent
                     key={action.text}
-                    className="h-12 w-full px-4"
+                    className="w-full px-4"
                     disabled={disableButton}
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {

@@ -1,6 +1,3 @@
-import { twMerge } from "tailwind-merge";
-import { ChangeEventHandler } from "react";
-
 interface RntCheckboxProps extends React.ComponentPropsWithoutRef<"input"> {
   label?: string;
   validationClassName?: string;
@@ -8,7 +5,6 @@ interface RntCheckboxProps extends React.ComponentPropsWithoutRef<"input"> {
 }
 
 const RntCheckbox = ({ className, label, checked, readOnly, onChange, ...rest }: RntCheckboxProps) => {
-  const c = twMerge("", className);
   const checkBoxBgStyle = readOnly
     ? "bg-gray-400"
     : checked
@@ -16,7 +12,7 @@ const RntCheckbox = ({ className, label, checked, readOnly, onChange, ...rest }:
       : "bg-white group-hover:bg-[#bbb]";
 
   return (
-    <div className={c}>
+    <div className={className}>
       <label className="group flex cursor-pointer select-none flex-row items-center">
         <input
           className="hidden"
@@ -37,9 +33,8 @@ const RntCheckbox = ({ className, label, checked, readOnly, onChange, ...rest }:
 };
 
 export function CheckboxLight({ className, label, checked, onChange, ...rest }: RntCheckboxProps) {
-  const c = twMerge("", className);
   return (
-    <div className={c}>
+    <div className={className}>
       <label className="group flex w-fit cursor-pointer select-none flex-row items-center">
         <input className="hidden" type="checkbox" checked={checked} onChange={onChange} />
         <span className={`relative mr-4 h-6 w-6 shrink-0 rounded-md border-2`}>

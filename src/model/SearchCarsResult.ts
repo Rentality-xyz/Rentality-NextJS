@@ -1,10 +1,10 @@
-import { Root } from "react-dom/client";
-import { emptySearchCarRequest, SearchCarRequest } from "./SearchCarRequest";
-
-type AdvancedMarkerElement = google.maps.marker.AdvancedMarkerElement;
+import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
+import { emptyLocationInfo } from "./LocationInfo";
+import { DEFAULT_SEARCH_DATE_FROM, DEFAULT_SEARCH_DATE_TO } from "@/utils/constants";
 
 export type SearchCarsResult = {
   searchCarRequest: SearchCarRequest;
+  searchCarFilters: SearchCarFilters;
   carInfos: SearchCarInfo[];
 };
 
@@ -46,7 +46,19 @@ export type SearchCarInfo = {
   isCarDetailsConfirmed: boolean;
 };
 
+const emptySearchCarRequest: SearchCarRequest = {
+  searchLocation: emptyLocationInfo,
+  dateFrom: DEFAULT_SEARCH_DATE_FROM,
+  dateTo: DEFAULT_SEARCH_DATE_TO,
+  isDeliveryToGuest: false,
+  deliveryInfo: {
+    pickupLocation: { isHostHomeLocation: true },
+    returnLocation: { isHostHomeLocation: true },
+  },
+};
+
 export const emptySearchCarsResult: SearchCarsResult = {
   searchCarRequest: emptySearchCarRequest,
+  searchCarFilters: {},
   carInfos: [],
 };

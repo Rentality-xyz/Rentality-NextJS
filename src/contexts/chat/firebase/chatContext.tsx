@@ -11,7 +11,7 @@ import { useEthereum } from "../../web3/ethereumContext";
 import { ContractChatInfo, ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
 import { Contract, Listener } from "ethers";
 import { useNotification } from "../../notification/notificationContext";
-import useUserMode from "@/hooks/useUserMode";
+import useUserMode, { isHost } from "@/hooks/useUserMode";
 import { Unsubscribe, doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 import {
@@ -78,7 +78,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
   /// Chat client
   const rentalityContract = useRentality();
-  const { isHost } = useUserMode();
+  const { userMode } = useUserMode();
 
   const [isChatReloadRequire, setIsChatReloadRequire] = useState(true);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -129,7 +129,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
           return;
         }
 
-        const chatInfosView: ContractChatInfo[] = isHost
+        const chatInfosView: ContractChatInfo[] = isHost(userMode)
           ? await rentalityContract.getChatInfoForHost()
           : await rentalityContract.getChatInfoForGuest();
         const chatInfosViewSorted = [...chatInfosView].sort((a, b) => {
@@ -162,6 +162,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
                     lastMessage: "Click to open chat",
                     updatedAt: moment.unix(0).toDate(),
                     isSeen: true,
+                    seenAt: null,
 
                     carPhotoUrl: getIpfsURIfromPinata(metaData.image),
                     tripStatus: tripStatus,
@@ -179,7 +180,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         console.error("getChatInfos error:" + e);
       }
     },
-    [isHost]
+    [userMode]
   );
 
   const [rentalityTripService, setRentalityTripService] = useState<Contract | undefined>(undefined);
@@ -236,6 +237,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
               lastMessage: "Click to open chat",
               updatedAt: moment.unix(0).toDate(),
               isSeen: true,
+              seenAt: null,
 
               carPhotoUrl: getIpfsURIfromPinata(metaData.image),
               tripStatus: tripStatus,
@@ -423,11 +425,11 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         const chatInfos = await Promise.all(promisses);
         setChatInfos(chatInfos);
 
-        const eventTripCreatedFilter = isHost
+        const eventTripCreatedFilter = isHost(userMode)
           ? rentalityTripService.filters.TripCreated(null, [ethereumInfo.walletAddress], null)
           : rentalityTripService.filters.TripCreated(null, null, [ethereumInfo.walletAddress]);
 
-        const eventTripStatusChangedFilter = isHost
+        const eventTripStatusChangedFilter = isHost(userMode)
           ? rentalityTripService.filters.TripStatusChanged(null, null, [ethereumInfo.walletAddress], null)
           : rentalityTripService.filters.TripStatusChanged(null, null, null, [ethereumInfo.walletAddress]);
         await rentalityTripService.removeAllListeners();
@@ -442,7 +444,14 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
           const data = res.data();
           if (!data) return;
           const userChats: FirebaseUserChat[] = data.userChats.map(
-            (cm: { chatId: string; senderId: string; lastMessages: string; updatedAt: number; isSeen: boolean }) => {
+            (cm: {
+              chatId: string;
+              senderId: string;
+              lastMessages: string;
+              updatedAt: number;
+              isSeen: boolean;
+              seenAt?: number;
+            }) => {
               return { ...cm, chatId: ChatId.parse(cm.chatId) } as FirebaseUserChat;
             }
           );
@@ -464,6 +473,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
                 lastMessage: existUserChat.lastMessages,
                 updatedAt: moment.unix(existUserChat.updatedAt).toDate(),
                 isSeen: existUserChat.isSeen,
+                seenAt: existUserChat.seenAt ? moment.unix(existUserChat.seenAt).toDate() : null,
               };
             })
           );
@@ -501,7 +511,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
     ethereumInfo,
     rentalityContract,
     rentalityTripService,
-    isHost,
+    userMode,
     getChatInfosWithoutMessages,
     tripCreatedListener,
     tripStatusChangedListener,

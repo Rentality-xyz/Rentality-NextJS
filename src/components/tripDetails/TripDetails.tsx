@@ -21,12 +21,21 @@ import RntDriverLicenseVerified from "@/components/common/rntDriverLicenseVerifi
 import { UTC_TIME_ZONE_ID, calculateDays } from "@/utils/date";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import TripCardForDetails from "../tripCard/tripCardForDetails";
-import useUserMode from "@/hooks/useUserMode";
+import useUserMode, { isHost } from "@/hooks/useUserMode";
+import Loading from "../common/Loading";
+import { useTranslation } from "react-i18next";
 
-export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; backPath: string; t: TFunctionNext }) {
-  const [isLoading, tripInfo] = useTripInfo(tripId);
-  const { isHost } = useUserMode();
+export default function TripInfo() {
+  const { userMode } = useUserMode();
   const router = useRouter();
+  const { tripId: tripIdQuery, back } = router.query;
+
+  const tripId = BigInt((tripIdQuery as string) ?? "0");
+  const backPath = back as string;
+
+  const [isLoading, tripInfo] = useTripInfo(tripId);
+  const { t } = useTranslation();
+
   const t_details: TFunction = (name, options) => {
     return t("booked.details." + name, options);
   };
@@ -41,13 +50,10 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
   return (
     <>
       <PageTitle title={t_details("title", { tripId: tripId.toString() })} />
-      {isLoading ? (
-        <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-          {t("common.info.loading")}
-        </div>
-      ) : (
+      {isLoading && <Loading />}
+      {!isLoading && (
         <>
-          <TripCardForDetails key={Number(tripId)} isHost={isHost} tripInfo={tripInfo} t={t} />
+          <TripCardForDetails key={Number(tripId)} isHost={isHost(userMode)} tripInfo={tripInfo} t={t} />
 
           <div className="my-6 flex flex-wrap">
             <div className="w-full xl:w-2/3">
@@ -394,7 +400,7 @@ export default function TripInfo({ tripId, backPath, t }: { tripId: bigint; back
                       </tr>
                     </tbody>
                   </table>
-                  <TripContacts tripInfo={tripInfo} isHost={isHost} phoneForHost={false} t={t} />
+                  <TripContacts tripInfo={tripInfo} isHost={isHost(userMode)} phoneForHost={false} t={t} />
                 </div>
                 <div className="flex justify-center p-4">
                   <RntContractModal tripId={tripId} tripInfo={tripInfo} />

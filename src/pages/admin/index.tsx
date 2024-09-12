@@ -1,8 +1,7 @@
 import RntInput from "@/components/common/rntInput";
 import RntInputWithButton from "@/components/common/rntInputWithButton";
-import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import useAdminPanelInfo from "@/hooks/admin/useAdminPanelInfo";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -17,12 +16,14 @@ export default function Admin() {
     setPlatformFeeInPPM,
     saveKycCommission,
     saveClaimWaitingTime,
+    grantAdminRole,
   } = useAdminPanelInfo();
   const [ethToWithdraw, setEthToWithdraw] = useState("0");
   const [newPlatformFee, setNewPlatformFee] = useState("");
   const [newKycCommission, setNewKycCommission] = useState("");
   const [newClaimWaitingTime, setNewClaimWaitingTime] = useState("");
-  const { showError } = useRntDialogs();
+  const [addressForAdminRole, setAddressForAdminRole] = useState("0x");
+  const { showError } = useRntSnackbars();
   const { t } = useTranslation();
   const t_admin: TFunction = (name, options) => {
     return t("admin." + name, options);
@@ -40,18 +41,16 @@ export default function Admin() {
 
   if (adminContractInfo == null) {
     return (
-      <Layout>
-        <div className="flex flex-col">
-          <div className="flex flex-row items-center justify-between">
-            <div className="text-2xl">
-              <strong>{t_admin("contract_info")}</strong>
-            </div>
-          </div>
-          <div className="mt-4">
-            <label>{t_admin("contract_null")}</label>
+      <>
+        <div className="flex flex-row items-center justify-between">
+          <div className="text-2xl">
+            <strong>{t_admin("contract_info")}</strong>
           </div>
         </div>
-      </Layout>
+        <div className="mt-4">
+          <label>{t_admin("contract_null")}</label>
+        </div>
+      </>
     );
   }
 
@@ -122,89 +121,114 @@ export default function Admin() {
     }
   };
 
-  return (
-    <Layout>
-      <div className="flex flex-col gap-4">
-        <PageTitle title="Contract info" />
-        <div className="grid grid-cols-2 gap-4 text-lg">
-          <RntInput
-            id="balance"
-            label="Platform contract balance:"
-            value={adminContractInfo.platformBalance + " ETH"}
-            readOnly={true}
-          />
-          <RntInput
-            id="balance1"
-            label="Payment contract balance:"
-            value={adminContractInfo.paymentBalance + " ETH"}
-            readOnly={true}
-          />
-          <RntInput
-            className="col-span-2"
-            id="owner"
-            label={t_admin("owner_addr")}
-            value={adminContractInfo.ownerAddress}
-            readOnly={true}
-          />
-        </div>
+  const handleGrantAdminRole = async () => {
+    if (isEmpty(addressForAdminRole) || !addressForAdminRole.startsWith("0x") || addressForAdminRole.length !== 42)
+      return;
 
-        <RntInputWithButton
-          id="withdraw"
-          placeholder="0.00 ETH"
-          label={t_admin("withdraw")}
-          value={ethToWithdraw}
-          onChange={(e) => {
-            setEthToWithdraw(e.target.value);
-          }}
-          buttonText={t_admin("withdraw_button")}
-          buttonDisabled={!Number.parseFloat(ethToWithdraw)}
-          onButtonClick={() => {
-            handleWithdraw();
-          }}
+    try {
+      await grantAdminRole(addressForAdminRole);
+    } catch (e) {
+      showError(t_errors("grant_admin_role_error") + e);
+    }
+  };
+
+  return (
+    <>
+      <PageTitle title="Contract info" />
+      <div className="grid grid-cols-2 gap-4 text-lg">
+        <RntInput
+          id="balance"
+          label="Platform contract balance:"
+          value={adminContractInfo.platformBalance + " ETH"}
+          readOnly={true}
         />
-        <RntInputWithButton
-          id="platform_commission"
-          placeholder="10%"
-          label="Set new platform commission (%):"
-          value={newPlatformFee}
-          onChange={(e) => {
-            setNewPlatformFee(e.target.value);
-          }}
-          buttonText={t("common.save")}
-          buttonDisabled={!Number.parseFloat(newPlatformFee)}
-          onButtonClick={() => {
-            handleSavePlatformCommission();
-          }}
+        <RntInput
+          id="balance1"
+          label="Payment contract balance:"
+          value={adminContractInfo.paymentBalance + " ETH"}
+          readOnly={true}
         />
-        <RntInputWithButton
-          id="kyc_commission"
-          placeholder="3"
-          label="Price pass driver license verification, $:"
-          value={newKycCommission}
-          onChange={(e) => {
-            setNewKycCommission(e.target.value);
-          }}
-          buttonText={t("common.save")}
-          buttonDisabled={!Number.parseFloat(newKycCommission)}
-          onButtonClick={() => {
-            handleSaveKycCommission();
-          }}
-        />
-        <RntInputWithButton
-          id="claim_waiting_time"
-          placeholder="3"
-          label="Claim waiting time, sec:"
-          value={newClaimWaitingTime}
-          onChange={(e) => {
-            setNewClaimWaitingTime(e.target.value);
-          }}
-          buttonText={t("common.save")}
-          buttonDisabled={!Number.parseFloat(newClaimWaitingTime)}
-          onButtonClick={() => {
-            handleSaveClaimWaitingTime();
-          }}
+        <RntInput
+          className="col-span-2"
+          id="owner"
+          label={t_admin("owner_addr")}
+          value={adminContractInfo.ownerAddress}
+          readOnly={true}
         />
       </div>
-    </Layout>
+
+      <RntInputWithButton
+        id="withdraw"
+        placeholder="0.00 ETH"
+        label={t_admin("withdraw")}
+        value={ethToWithdraw}
+        onChange={(e) => {
+          setEthToWithdraw(e.target.value);
+        }}
+        buttonText={t_admin("withdraw_button")}
+        buttonDisabled={!Number.parseFloat(ethToWithdraw)}
+        onButtonClick={() => {
+          handleWithdraw();
+        }}
+      />
+      <RntInputWithButton
+        id="platform_commission"
+        placeholder="10%"
+        label="Set new platform commission (%):"
+        value={newPlatformFee}
+        onChange={(e) => {
+          setNewPlatformFee(e.target.value);
+        }}
+        buttonText={t("common.save")}
+        buttonDisabled={!Number.parseFloat(newPlatformFee)}
+        onButtonClick={() => {
+          handleSavePlatformCommission();
+        }}
+      />
+      <RntInputWithButton
+        id="kyc_commission"
+        placeholder="3"
+        label="Price pass driver license verification, $:"
+        value={newKycCommission}
+        onChange={(e) => {
+          setNewKycCommission(e.target.value);
+        }}
+        buttonText={t("common.save")}
+        buttonDisabled={!Number.parseFloat(newKycCommission)}
+        onButtonClick={() => {
+          handleSaveKycCommission();
+        }}
+      />
+      <RntInputWithButton
+        id="claim_waiting_time"
+        placeholder="3"
+        label="Claim waiting time, sec:"
+        value={newClaimWaitingTime}
+        onChange={(e) => {
+          setNewClaimWaitingTime(e.target.value);
+        }}
+        buttonText={t("common.save")}
+        buttonDisabled={!Number.parseFloat(newClaimWaitingTime)}
+        onButtonClick={() => {
+          handleSaveClaimWaitingTime();
+        }}
+      />
+      <RntInputWithButton
+        id="grand_admin_role"
+        placeholder="0x"
+        label="Grant admin role to address"
+        value={addressForAdminRole}
+        onChange={(e) => {
+          setAddressForAdminRole(e.target.value);
+        }}
+        buttonText={"Grant"}
+        buttonDisabled={
+          isEmpty(addressForAdminRole) || !addressForAdminRole.startsWith("0x") || addressForAdminRole.length !== 42
+        }
+        onButtonClick={() => {
+          handleGrantAdminRole();
+        }}
+      />
+    </>
   );
 }

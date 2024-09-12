@@ -5,16 +5,18 @@ export const profileInfoFormSchema = z.object({
   profilePhotoUrl: z.string(),
   firstName: z
     .string()
+    .trim()
     .min(1, "first name is too short")
     .max(30, "first name is too long")
     .regex(new RegExp(/^[\w-]+$/), "first name contains invalid characters"),
   lastName: z
     .string()
+    .trim()
     .min(1, "last name is too short")
     .max(30, "last name is too long")
     .regex(new RegExp(/^[\w-]+$/), "last name contains invalid characters"),
   phoneNumber: z.string().max(30, "phone number is too long"),
-  drivingLicenseNumber: z.string().max(15, "License number is too long"),
+  drivingLicenseNumber: z.string().trim().max(15, "License number is too long"),
   drivingLicenseExpire: z
     .date({
       errorMap: (issue, { defaultError }) => ({

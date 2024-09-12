@@ -1,4 +1,4 @@
-import Layout from "@/components/layout/layout";
+import Loading from "@/components/common/Loading";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import UserProfileInfo from "@/components/profileInfo/userProfileInfo";
 import AddFunds from "@/components/RnD/AddFunds";
@@ -10,25 +10,20 @@ export default function Profile() {
   const { t } = useTranslation();
 
   return (
-    <Layout>
-      <div className="flex flex-col">
-        <PageTitle title={t("profile.title")} />
-        {isLoading ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-            {t("common.info.loading")}
-          </div>
-        ) : (
-          <>
-            <UserProfileInfo
-              savedProfileSettings={savedProfileSettings}
-              saveProfileSettings={saveProfileSettings}
-              isHost={false}
-              t={t}
-            />
-            <AddFunds />
-          </>
-        )}
-      </div>
-    </Layout>
+    <>
+      <PageTitle title={t("profile.title")} />
+      {isLoading && <Loading />}
+      {!isLoading && (
+        <>
+          <UserProfileInfo
+            savedProfileSettings={savedProfileSettings}
+            saveProfileSettings={saveProfileSettings}
+            isHost={false}
+            t={t}
+          />
+          <AddFunds />
+        </>
+      )}
+    </>
   );
 }

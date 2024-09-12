@@ -1,5 +1,7 @@
 import { ContractTransactionResponse } from "ethers";
 import {
+  ContractAllCarsDTO,
+  ContractAllTripsDTO,
   ContractBaseDiscount,
   ContractCalculatePaymentsDTO,
   ContractCarDetails,
@@ -11,19 +13,19 @@ import {
   ContractCreateTripRequest,
   ContractCreateTripRequestWithDelivery,
   ContractDeliveryData,
-  ContractDeliveryLocations,
   ContractDeliveryPrices,
   ContractFullClaimInfo,
   ContractKYCInfo,
   ContractLocationInfo,
   ContractPublicHostCarDTO,
-  ContractSearchCar,
   ContractSearchCarParams,
   ContractSearchCarWithDistance,
   ContractSignedLocationInfo,
   ContractTripDTO,
+  ContractTripFilter,
   ContractTripReceiptDTO,
   ContractUpdateCarInfoRequest,
+  Role,
 } from "./schemas";
 
 export interface IRentalityContract {
@@ -162,10 +164,14 @@ export interface IRentalityAdminGateway {
   setClaimsWaitingTime(timeInSec: bigint): Promise<ContractTransactionResponse>;
   getClaimWaitingTime(): Promise<bigint>;
   getPlatformFeeInPPM(): Promise<bigint>;
-  confirmCheckOut(tripId: bigint): Promise<ContractTransactionResponse>;
-  rejectTripRequest(tripId: bigint): Promise<ContractTransactionResponse>;
   setCivicData(_civicVerifier: string, _civicGatekeeperNetwork: bigint): Promise<ContractTransactionResponse>;
   setNewTCMessage(message: string): Promise<ContractTransactionResponse>;
+
+  manageRole(role: Role, user: string, grant: boolean): Promise<ContractTransactionResponse>;
+  getAllTrips(filter: ContractTripFilter, page: bigint, itemsPerPage: bigint): Promise<ContractAllTripsDTO>;
+  getAllCars(page: bigint, itemsPerPage: bigint): Promise<ContractAllCarsDTO>;
+  payToHost(tripId: bigint): Promise<ContractTransactionResponse>;
+  refundToGuest(tripId: bigint): Promise<ContractTransactionResponse>;
 
   getKycCommission(): Promise<bigint>;
   setKycCommission(valueInUsdCents: bigint): Promise<ContractTransactionResponse>;

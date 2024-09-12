@@ -1,7 +1,6 @@
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import Link from "next/link";
 import RntButton from "../common/rntButton";
-import { twMerge } from "tailwind-merge";
 import { Claim } from "@/model/Claim";
 import { ClaimStatus } from "@/model/blockchain/schemas";
 import moment from "moment";
@@ -13,6 +12,7 @@ import { isEmpty } from "@/utils/string";
 import { usePathname } from "next/navigation";
 import ClaimFileList from "./ClaimFileList";
 import ClaimHistoryMobileCard from "./ClaimHistoryMobileCard";
+import { cn } from "@/utils";
 
 type Props = {
   isHost: boolean;
@@ -28,7 +28,7 @@ export default function ClaimHistory({ isHost, claims, payClaim, cancelClaim, t 
   };
   const headerSpanClassName = "text-start px-2 font-light text-sm";
   const rowSpanClassName = "px-2 h-12";
-  const redTextClassName = twMerge(rowSpanClassName, "text-red-400");
+  const redTextClassName = cn(rowSpanClassName, "text-red-400");
   const { showCustomDialog, hideDialogs } = useRntDialogs();
   const pathname = usePathname();
 

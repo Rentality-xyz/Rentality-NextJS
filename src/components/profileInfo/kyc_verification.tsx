@@ -1,19 +1,20 @@
 import { TFunction } from "@/utils/i18n";
 import RntDriverLicenseVerified from "../common/rntDriverLicenseVerified";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import CustomCivicDialog from "../kyc/customCivicDialog";
 import RntButton from "../common/rntButton";
 
 export default function KycVerification({ t }: { t: TFunction }) {
   const { showCustomDialog, hideDialogs } = useRntDialogs();
+  const { showError } = useRntSnackbars();
 
   function handleButtonClick() {
-    showCustomDialog(<CustomCivicDialog handleCancelClick={hideDialogs} />);
+    showCustomDialog(<CustomCivicDialog showError={showError} handleCancelClick={hideDialogs} />);
   }
 
   return (
     <div id="driver_license_verification" className="mt-1.5">
-      <p>{t("pass_license_verif")}</p>
+      <p className="pl-4">{t("pass_license_verif")}</p>
       <div className="mt-4 flex items-center gap-2 md:gap-6">
         <RntButton type="button" onClick={handleButtonClick}>
           Get Pass

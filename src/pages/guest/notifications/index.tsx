@@ -1,4 +1,4 @@
-import Layout from "@/components/layout/layout";
+import Loading from "@/components/common/Loading";
 import NotificationPage from "@/components/notification/notificationPage";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import { useNotification } from "@/contexts/notification/notificationContext";
@@ -9,17 +9,10 @@ export default function Notifications() {
   const { t } = useTranslation();
 
   return (
-    <Layout>
-      <div className="flex flex-col">
-        <PageTitle title={t("notifications.title")} />
-        {isLoading ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-            {t("common.info.loading")}
-          </div>
-        ) : (
-          <NotificationPage notifications={notifications} />
-        )}
-      </div>
-    </Layout>
+    <>
+      <PageTitle title={t("notifications.title")} />
+      {isLoading && <Loading />}
+      {!isLoading && <NotificationPage notifications={notifications} />}
+    </>
   );
 }

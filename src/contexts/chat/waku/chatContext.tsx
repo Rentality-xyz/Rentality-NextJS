@@ -12,7 +12,7 @@ import { ContractChatInfo, TripStatus } from "@/model/blockchain/schemas";
 import { Contract, Listener } from "ethers";
 import { NotificationType } from "@/model/NotificationInfo";
 import { generateEncryptionKeyPair } from "@/chat/crypto";
-import useUserMode from "@/hooks/useUserMode";
+import useUserMode, { isHost } from "@/hooks/useUserMode";
 import { useNotification } from "@/contexts/notification/notificationContext";
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
@@ -151,7 +151,7 @@ export const WakuChatProvider = ({ children }: { children?: React.ReactNode }) =
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [chatInfos, setChatInfos] = useState<ChatInfo[]>([]);
   const rentalityContract = useRentality();
-  const { isHost } = useUserMode();
+  const { userMode } = useUserMode();
 
   const addNotificationsRef = useRef(addNotifications);
   useEffect(() => {
@@ -310,7 +310,7 @@ export const WakuChatProvider = ({ children }: { children?: React.ReactNode }) =
           return;
         }
 
-        const chatInfosView: ContractChatInfo[] = isHost
+        const chatInfosView: ContractChatInfo[] = isHost(userMode)
           ? await rentalityContract.getChatInfoForHost()
           : await rentalityContract.getChatInfoForGuest();
         const chatInfosViewSorted = [...chatInfosView].sort((a, b) => {
@@ -343,6 +343,7 @@ export const WakuChatProvider = ({ children }: { children?: React.ReactNode }) =
                     lastMessage: "Click to open chat",
                     updatedAt: moment.unix(0).toDate(),
                     isSeen: true,
+                    seenAt: null,
 
                     carPhotoUrl: getIpfsURIfromPinata(metaData.image),
                     tripStatus: tripStatus,
@@ -360,7 +361,7 @@ export const WakuChatProvider = ({ children }: { children?: React.ReactNode }) =
         console.error("getChatInfos error:" + e);
       }
     },
-    [isHost]
+    [userMode]
   );
 
   const [rentalityTripService, setRentalityTripService] = useState<Contract | undefined>(undefined);
@@ -410,7 +411,7 @@ export const WakuChatProvider = ({ children }: { children?: React.ReactNode }) =
 
         const infos = (await getChatInfos(rentalityContract)) ?? [];
 
-        const allAddresses = infos.map((i) => (isHost ? i.guestAddress : i.hostAddress));
+        const allAddresses = infos.map((i) => (isHost(userMode) ? i.guestAddress : i.hostAddress));
         const uniqueAddresses = allAddresses.filter(function (item, pos, self) {
           return self.indexOf(item) == pos;
         });
@@ -439,7 +440,7 @@ export const WakuChatProvider = ({ children }: { children?: React.ReactNode }) =
         }
         setChatInfos(infos);
 
-        const eventTripStatusChangedFilter = isHost
+        const eventTripStatusChangedFilter = isHost(userMode)
           ? rentalityTripService.filters.TripStatusChanged(null, null, [ethereumInfo.walletAddress], null)
           : rentalityTripService.filters.TripStatusChanged(null, null, null, [ethereumInfo.walletAddress]);
         await rentalityTripService.removeAllListeners();
@@ -464,7 +465,7 @@ export const WakuChatProvider = ({ children }: { children?: React.ReactNode }) =
     rentalityContract,
     rentalityTripService,
     chatClient,
-    isHost,
+    userMode,
     loadKeysForUsers,
     getChatInfos,
     tripStatusChangedListener,

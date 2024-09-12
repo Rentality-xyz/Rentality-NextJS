@@ -1,109 +1,107 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
-import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
+import { TripStatus } from "@/model/blockchain/schemas";
 import { TransactionHistoryInfo } from "@/model/TransactionHistoryInfo";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
-import { calculateDays } from "@/utils/date";
-import { getDateFromBlockchainTime } from "@/utils/formInput";
+import { Err, Ok, Result } from "@/model/utils/result";
+import { bigIntReplacer } from "@/utils/json";
+import { mapContractTripDTOToTransactionHistoryInfo } from "@/model/mappers/contractTripDTOToTransactionHistoryInfo";
 
-const getCancellationFee = (tripDto: ContractTripDTO) => {
-  return 0;
-  if (tripDto.trip.status !== TripStatus.Rejected) return 0;
-  if (tripDto.trip.transactionInfo.statusBeforeCancellation === TripStatus.Pending) return 0;
-
-  const pricePerDayInUsd = Number(tripDto.trip.pricePerDayInUsdCents) / 100;
-  if (tripDto.trip.transactionInfo.statusBeforeCancellation === TripStatus.Confirmed) return pricePerDayInUsd / 2;
-  return pricePerDayInUsd;
+export type TransactionHistoryFilters = {
+  dateFrom?: Date;
+  dateTo?: Date;
+  status?: TripStatus;
 };
 
 const useTransactionHistory = (isHost: boolean) => {
-  const rentalityInfo = useRentality();
-  const [isLoading, setIsLoading] = useState<Boolean>(false);
-  const [transactionsHistory, setTransactionsHistory] = useState<TransactionHistoryInfo[]>([]);
+  const rentalityContract = useRentality();
+  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState<TransactionHistoryInfo[]>([]);
+  const [allData, setAllData] = useState<TransactionHistoryInfo[] | undefined>(undefined);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPageCount, setTotalPageCount] = useState<number>(0);
 
-  useEffect(() => {
-    const getTransactionsHistory = async (rentalityContract: IRentalityContract) => {
+  const filterData = useCallback(
+    (
+      data: TransactionHistoryInfo[],
+      filters?: TransactionHistoryFilters,
+      page: number = 1,
+      itemsPerPage: number = 10
+    ) => {
+      const filteredData = !filters
+        ? data
+        : data.filter(
+            (i) =>
+              (filters.dateFrom === undefined || i.startDateTime >= filters.dateFrom) &&
+              (filters.dateTo === undefined || i.endDateTime <= filters.dateTo) &&
+              (filters.status === undefined || i.status === filters.status)
+          );
+      const slicedData = filteredData.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+      setCurrentPage(page);
+      setData(slicedData);
+      console.log(`slicedData.length: ${slicedData.length} | itemsPerPage: ${itemsPerPage}`);
+
+      setTotalPageCount(Math.ceil(filteredData.length / itemsPerPage));
+    },
+    []
+  );
+
+  const fetchData = useCallback(
+    async (
+      filters?: TransactionHistoryFilters,
+      page: number = 1,
+      itemsPerPage: number = 10
+    ): Promise<Result<boolean, string>> => {
+      if (allData !== undefined) {
+        filterData(allData, filters, page, itemsPerPage);
+        return Ok(true);
+      }
+
+      if (!rentalityContract) {
+        console.error("fetchData error: rentalityContract is null");
+        return Err("Contract is not initialized");
+      }
+
       try {
-        if (rentalityContract == null) {
-          console.error("getTransactionsHistory error: contract is null");
-          return;
-        }
+        setIsLoading(true);
+        setCurrentPage(page);
+        setTotalPageCount(0);
+
         const tripInfos = isHost ? await rentalityContract.getTripsAsHost() : await rentalityContract.getTripsAsGuest();
 
-        const transactionHistoryData =
-          tripInfos.length === 0
-            ? []
-            : await Promise.all(
-                tripInfos.map(async (tripDto: ContractTripDTO, index) => {
-                  if (index === 0) {
-                    validateContractTripDTO(tripDto);
-                  }
+        if (tripInfos && tripInfos.length > 0) {
+          validateContractTripDTO(tripInfos[0]);
+        }
 
-                  const carDescription = `${tripDto.brand} ${tripDto.model} ${tripDto.yearOfProduction}`;
+        const data: TransactionHistoryInfo[] = await Promise.all(
+          tripInfos.map(async (tripDto) => {
+            return mapContractTripDTOToTransactionHistoryInfo(tripDto);
+          })
+        );
 
-                  const startDateTime = getDateFromBlockchainTime(tripDto.trip.startDateTime);
-                  const endDateTime = getDateFromBlockchainTime(tripDto.trip.endDateTime);
-                  const tripPayment =
-                    Number(
-                      tripDto.trip.paymentInfo.priceWithDiscount +
-                        tripDto.trip.paymentInfo.depositInUsdCents +
-                        tripDto.trip.paymentInfo.salesTax +
-                        tripDto.trip.paymentInfo.governmentTax +
-                        tripDto.trip.paymentInfo.pickUpFee +
-                        tripDto.trip.paymentInfo.dropOfFee
-                    ) / 100;
+        data.sort((a, b) => {
+          return b.startDateTime.getTime() - a.startDateTime.getTime();
+        });
+        console.log("data", JSON.stringify(data, bigIntReplacer, 2));
 
-                  const cancellationFee = getCancellationFee(tripDto);
-                  const reimbursements = Number(tripDto.trip.paymentInfo.resolveAmountInUsdCents) / 100;
-
-                  let item: TransactionHistoryInfo = {
-                    transHistoryId: Number(tripDto.trip.tripId),
-                    tripId: Number(tripDto.trip.tripId),
-                    car: carDescription,
-                    status: tripDto.trip.status,
-                    days: calculateDays(startDateTime, endDateTime),
-                    startDateTime: startDateTime,
-                    endDateTime: endDateTime,
-                    timeZoneId: tripDto.timeZoneId,
-                    tripPayment: tripPayment,
-                    refund: Number(tripDto.trip.transactionInfo.depositRefund) / 100,
-                    tripEarnings: Number(tripDto.trip.transactionInfo.tripEarnings) / 100,
-                    cancellationFee: cancellationFee,
-                    reimbursements: reimbursements,
-                    rentalityFee: Number(tripDto.trip.transactionInfo.rentalityFee) / 100,
-                    salesTax: Number(tripDto.trip.paymentInfo.salesTax) / 100,
-                    governmentTax: Number(tripDto.trip.paymentInfo.governmentTax) / 100,
-                  };
-                  return item;
-                })
-              );
-
-        return transactionHistoryData;
+        setAllData(data);
+        filterData(data, filters, page, itemsPerPage);
+        return Ok(true);
       } catch (e) {
-        console.error("getTransactionHistory error:" + e);
+        console.error("fetchData error" + e);
+        return Err("Get data error. See logs for more details");
+      } finally {
+        setIsLoading(false);
       }
-    };
+    },
+    [rentalityContract, isHost, allData, filterData]
+  );
 
-    if (!rentalityInfo) return;
-
-    setIsLoading(false);
-
-    getTransactionsHistory(rentalityInfo)
-      .then((data) => {
-        setTransactionsHistory(data ?? []);
-        setIsLoading(true);
-      })
-      .catch(() => setIsLoading(true));
-  }, [rentalityInfo, isHost]);
-
-  const sortedTransactionsHistory = useMemo(() => {
-    return [...transactionsHistory].sort((a, b) => {
-      return b.startDateTime.getTime() - a.startDateTime.getTime();
-    });
-  }, [transactionsHistory]);
-
-  return [isLoading, sortedTransactionsHistory] as const;
+  return {
+    isLoading,
+    data: { data: data, currentPage: currentPage, totalPageCount: totalPageCount },
+    fetchData,
+  } as const;
 };
 
 export default useTransactionHistory;

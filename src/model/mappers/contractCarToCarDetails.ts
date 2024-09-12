@@ -1,8 +1,7 @@
 import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { ContractCarDetails, ContractCarInfo } from "../blockchain/schemas";
-import { getMilesIncludedPerDayText, HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE_TEXT } from "../HostCarInfo";
+import { HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE_TEXT } from "../HostCarInfo";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "../EngineType";
-import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
 
 export const mapContractCarToCarDetails = async (
   carInfo: ContractCarInfo,

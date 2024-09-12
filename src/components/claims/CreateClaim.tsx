@@ -100,12 +100,13 @@ export default function CreateClaim({
 
   return (
     <form
-      className="mt-5 flex w-full flex-col gap-4 p-4"
+      className="mt-5 flex w-full flex-col gap-4 py-4"
       onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}
     >
       <div className="flex flex-col items-center gap-4 md:flex-row md:gap-8">
         <RntSelect
           className="lg:w-1/2"
+          labelClassName="pl-4"
           id="trip"
           label="Trip"
           {...register("selectedTripId")}
@@ -120,6 +121,7 @@ export default function CreateClaim({
         </RntSelect>
         <RntSelect
           className="lg:w-80"
+          labelClassName="pl-4"
           id="type"
           label={isHost ? "Incident type" : "Issues type"}
           {...register("incidentType")}
@@ -141,6 +143,7 @@ export default function CreateClaim({
       </div>
       <RntInputMultiline
         id="description"
+        labelClassName="pl-3.5"
         rows={3}
         label="Describe your claim in detail"
         placeholder="enter your message"
@@ -163,13 +166,14 @@ export default function CreateClaim({
 
       <RntInput
         className="w-full lg:w-1/2"
+        labelClassName="pl-4"
         id="amount"
         autoComplete="off"
         label={`What compensation amount do you think the ${isHost ? "guest" : "host"} should pay for the incident?`}
         {...register("amountInUsd", { valueAsNumber: true })}
         validationError={errors.amountInUsd?.message}
       />
-      <p>After your trip ends, you have 72 hours to respond before your complaints become public</p>
+      <p className="pl-4">After your trip ends, you have 72 hours to respond before your complaints become public</p>
 
       <Controller
         name="isChecked"

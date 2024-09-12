@@ -1,10 +1,10 @@
-import Layout from "@/components/layout/layout";
 import { useRouter } from "next/router";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
 import useFetchCarInfo from "@/hooks/host/useFetchCarInfo";
 import { useTranslation } from "react-i18next";
 import useSaveCar from "@/hooks/host/useSaveCar";
+import Loading from "@/components/common/Loading";
 
 export default function EditCar() {
   const router = useRouter();
@@ -19,28 +19,24 @@ export default function EditCar() {
   if (!carId) return null;
 
   return (
-    <Layout>
-      <div className="flex flex-col">
-        <PageTitle title={t("vehicles.edit_car_title")} />
-        {isLoading ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-            {t("common.info.loading")}
-          </div>
-        ) : hostCarInfo.carId <= 0 ? (
-          <h1 className="py-8 text-2xl font-bold text-red-800">{t("vehicles.can_not_edit")}</h1>
-        ) : (
-          <>
-            <CarEditForm
-              initValue={hostCarInfo}
-              isNewCar={false}
-              saveCarInfo={async (hostCarInfo) => {
-                return await updateCar(hostCarInfo);
-              }}
-              t={t}
-            />
-          </>
-        )}
-      </div>
-    </Layout>
+    <>
+      <PageTitle title={t("vehicles.edit_car_title")} />
+      {isLoading && <Loading />}
+      {!isLoading && hostCarInfo.carId <= 0 && (
+        <h1 className="py-8 text-2xl font-bold text-red-800">{t("vehicles.can_not_edit")}</h1>
+      )}
+      {!isLoading && hostCarInfo.carId > 0 && (
+        <>
+          <CarEditForm
+            initValue={hostCarInfo}
+            isNewCar={false}
+            saveCarInfo={async (hostCarInfo) => {
+              return await updateCar(hostCarInfo);
+            }}
+            t={t}
+          />
+        </>
+      )}
+    </>
   );
 }
