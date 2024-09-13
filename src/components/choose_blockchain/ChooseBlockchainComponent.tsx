@@ -60,7 +60,7 @@ export default function ChooseBlockchainComponent() {
 
   return (
     <div ref={chooseBlockchainWrapperRef}>
-      <Stack className="relative mx-1 xl:ml-16" direction="row" spacing={1} alignItems="center">
+      <Stack className="relative xl:ml-16" direction="row" spacing={1} alignItems="center">
         <Button
           className="flex"
           onClick={() => {

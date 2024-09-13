@@ -34,10 +34,10 @@ const RntInputTransparent = forwardRef<HTMLInputElement, RntInputProps>(
     const reactId = useId();
     const controlId = !isEmpty(id) ? id : reactId;
     type = type ?? "text";
-    const cClassName = cn("text-black flex flex-col w-full", className);
+    const cClassName = cn("text-black w-full", className);
     const lClassName = cn("text-rnt-temp-main-text mb-1", labelClassName);
     const iClassName = cn(
-      "w-full h-12 rounded-full pl-4 disabled:bg-gray-300 disabled:text-gray-600 input-inner",
+      "w-full h-12 rounded-full  disabled:bg-gray-300 disabled:text-gray-600 input-inner",
       inputClassName
     );
 
@@ -49,7 +49,7 @@ const RntInputTransparent = forwardRef<HTMLInputElement, RntInputProps>(
           </label>
         )}
           <div className="border-gradient">
-              <div className="input-wrapper">
+              <div className="input-wrapper pl-2">
                   <input
                       className={iClassName}
                       id={controlId}
