@@ -62,7 +62,7 @@ function LoginBase() {
 
   return (
     <Identity
-      className="bg-transparent flex-row-reverse xl:gap-4"
+      className="bg-transparent lg:flex-row-reverse xl:gap-4"
       address={userInfo.address as `0x${string}`}
       schemaId={env.NEXT_PUBLIC_COINBASE_SCHEMA_ID as `0x${string}`}
     >

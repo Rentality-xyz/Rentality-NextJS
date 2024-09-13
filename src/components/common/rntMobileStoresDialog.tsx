@@ -20,7 +20,7 @@ export default function RntMobileStoresDialog() {
     return (
         <React.Fragment>
             <button
-                className="flex items-center px-4 border border-gray-500 rounded-md hover:border-gray-400"
+                className="flex items-center lg:px-4 border border-gray-500 rounded-md hover:border-gray-400"
                 onClick={handleClickOpen}
             >
                 <Image src={imgStore} alt="Mobile Store" className="min-w-[54px] lg:min-w-[94px]" />

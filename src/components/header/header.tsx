@@ -82,7 +82,7 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed flex justify-between items-center w-full bg-rentality-bg-left-sidebar border-b-2 border-b-[#ffffff1f] lg:py-1 max-lg:pl-4 max-lg:pr-2 lg:pl-14 lg:pr-6 z-50 text-rnt-temp-header-text">
+    <header className="fixed flex justify-between items-center w-full bg-rentality-bg-left-sidebar border-b-2 border-b-[#ffffff1f] lg:py-1 max-lg:pl-4 lg:pl-14 lg:pr-6 z-50 text-rnt-temp-header-text">
       <div className="flex max-lg:justify-between max-lg:w-full">
         <HeaderLogo />
         <div className="flex items-center lg:hidden">
@@ -97,21 +97,24 @@ export default function Header() {
               </div>
           )}
 
-          <div className="flex flex-col w-full min-w-0 xl:grow mr-6">
+          <div className="flex flex-col w-full min-w-0 xl:grow">
             <Image
                 height={28}
                 src={isBurgerMenuShown ? burgerMenuClose : burgerMenu}
                 alt=""
-                className="mr-4 lg:hidden"
+                className="lg:hidden"
                 onClick={isBurgerMenuShown ? closeBurgerMenu : openBurgerMenu}
             />
           </div>
         </div>
       </div>
-      <div className="flex flex-row items-center max-lg:justify-between max-lg:w-full">
+      <div className="flex flex-row items-center max-lg:justify-between max-lg:w-full ml-2">
         <RntMobileStoresDialog />
-        <Stack direction="row" spacing={1} alignItems="center" className="lg:ml-12 max-lg:mx-4">
+        <Stack direction="row" spacing={1} alignItems="center" className="lg:ml-12 max-lg:mx-3">
           <Typography className="font-['Montserrat',Arial,sans-serif] text-lg max-lg:hidden">Guest</Typography>
+          <Typography className="font-['Montserrat',Arial,sans-serif] text-lg lg:hidden">
+            {isSelectedHost ? 'Host' : 'Guest'}
+          </Typography>
           <AntSwitch checked={isSelectedHost} onChange={handleChange} inputProps={{ "aria-label": "ant design" }} />
           <Typography className="font-['Montserrat',Arial,sans-serif] text-lg max-lg:hidden">Host</Typography>
         </Stack>
