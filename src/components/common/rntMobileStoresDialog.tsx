@@ -5,6 +5,8 @@ import imgBg from "@/images/rectangle_midnight_purple_without_shadow.png";
 import { Dialog, DialogActions, DialogContent, DialogContentText } from "@mui/material";
 import imgStore from "@/images/app-google-store.svg";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
+import {useState} from "react";
+import sendCommunityDataToGoogleTable from "@/utils/sendCommunityDataToGoogleTable";
 
 export default function RntMobileStoresDialog() {
     const [open, setOpen] = React.useState(false);
@@ -13,8 +15,17 @@ export default function RntMobileStoresDialog() {
         setOpen(true);
     };
 
-    const handleClose = () => {
+    const [formInputEmail, setFormInputEmail] = useState('');
+
+    const handleClose = async () => {
         setOpen(false);
+        await sendCommunityDataToGoogleTable({
+            email: formInputEmail,
+        });
+    };
+
+    const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFormInputEmail(event.target.value);
     };
 
     return (
@@ -61,6 +72,8 @@ export default function RntMobileStoresDialog() {
                                     className="w-full text-white"
                                     placeholder="Enter your email"
                                     type="email"
+                                    value={formInputEmail}
+                                    onChange={handleEmailChange}
                                 />
                                 <RntButtonTransparent className="w-36 px-8 lg:ml-8 max-lg:mt-6" onClick={handleClose}>
                                     <div className="text-white">
