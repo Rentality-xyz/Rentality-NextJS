@@ -2,7 +2,7 @@ import BaseBurgerNavMenu from "./baseBurgerNavMenu";
 import BaseSideNavMenu from "./baseSideNavMenu";
 import SideNavMenuGroup from "./sideNavMenuGroup";
 import SideNavMenuItem from "./sideNavMenuItem";
-import MenuIcons from "@/components/sideNavMenu/menuIcons";
+import MenuIcons, {getImageForMenu} from "@/components/sideNavMenu/menuIcons";
 import { useNotification } from "@/contexts/notification/notificationContext";
 import usePageLastVisit from "@/hooks/usePageLastVisit";
 import { NotificationType } from "@/model/NotificationInfo";
@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
 import { useChat } from "@/contexts/chat/firebase/chatContext";
 import { useAuth } from "@/contexts/auth/authContext";
+import * as React from "react";
 
 function GuestNavMenu() {
   const { isAuthenticated, logout } = useAuth();
