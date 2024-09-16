@@ -18,11 +18,15 @@ import SearchAndFilters from "@/components/search/searchAndFilters";
 import { useAuth } from "@/contexts/auth/authContext";
 import useCarSearchParams from "@/hooks/guest/useCarSearchParams";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
 
 export default function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
+  const ethereumInfo = useEthereum();
+
+  const chainId = ethereumInfo === null ? 0 : ethereumInfo.chainId;
   const [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest, setSearchResult] =
-    useSearchCars();
+    useSearchCars(chainId);
 
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const [openFilterPanel, setOpenFilterPanel] = useState(false);
@@ -44,11 +48,13 @@ export default function Search() {
   const handleSearchClick = async (request: SearchCarRequest) => {
     updateSearchParams(request, searchCarFilters);
     searchAvailableCars(request, searchCarFilters);
+    if (ethereumInfo === null) return;
   };
 
   const handleFilterApply = async (filters: SearchCarFilters) => {
     updateSearchParams(searchCarRequest, filters);
     searchAvailableCars(searchCarRequest, filters);
+    if (ethereumInfo === null) return;
   };
 
   useEffect(() => {
@@ -141,7 +147,6 @@ export default function Search() {
         return 0;
       }
     });
-
     setSearchResult(newSearchResult);
   }, [searchResult]);
 

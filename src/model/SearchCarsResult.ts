@@ -44,6 +44,7 @@ export type SearchCarInfo = {
   pickUpDeliveryFee: number;
   dropOffDeliveryFee: number;
   isCarDetailsConfirmed: boolean;
+  isTestCar: boolean;
 };
 
 const emptySearchCarRequest: SearchCarRequest = {

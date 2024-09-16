@@ -21,12 +21,25 @@ export type SortOptions = {
 };
 export type SortOptionKey = keyof SortOptions;
 
-const useSearchCars = () => {
+const useSearchCars = (chainId:number) => {
   const ethereumInfo = useEthereum();
   const rentalityContract = useRentality();
   const [isLoading, setIsLoading] = useState<Boolean>(false);
   const [searchResult, setSearchResult] = useState<SearchCarsResult>(emptySearchCarsResult);
 
+  function sortByTestWallet(a: SearchCarInfo, b: SearchCarInfo, listOfTestWallets: string[]) {
+    let isAInTestWallets = listOfTestWallets.includes(a.ownerAddress);
+    let isBInTestWallets = listOfTestWallets.includes(b.ownerAddress);
+  
+
+    if (isAInTestWallets && !isBInTestWallets) {
+      return 1; 
+    } else if (!isAInTestWallets && isBInTestWallets) {
+      return -1;
+    } else {
+      return 0;
+    }}
+    
   const searchAvailableCars = async (request: SearchCarRequest, filters: SearchCarFilters) => {
     try {
       setIsLoading(true);
@@ -88,7 +101,27 @@ const useSearchCars = () => {
 
       const availableCarsData = apiJson as SearchCarInfo[];
 
+      let listOfTestWallets:string[] = [];
+      let mainnetsOnPlatform = process.env['NEXT_PUBLIC_MAINNETS']
+      if(mainnetsOnPlatform !== undefined) {
+      let result = mainnetsOnPlatform.split(",").find(chain => chain === chainId.toString())
+      if (result !== undefined) {
+        
+        let listOfTestWalletsEnv = process.env['NEXT_PUBLIC_TEST_WALLETS']
+      if(listOfTestWalletsEnv !== undefined) {
+        listOfTestWallets = listOfTestWalletsEnv.split(",")
+        availableCarsData.sort((a,b)=>sortByTestWallet(a, b, listOfTestWallets))
+      }
+    }
+  }
+   
+
       for (const carInfoI of availableCarsData) {
+        if(listOfTestWallets.length > 0 && listOfTestWallets.includes(carInfoI.ownerAddress))
+          carInfoI.isTestCar = true;
+        else 
+          carInfoI.isTestCar = false;
+      
         for (const carInfoJ of availableCarsData) {
           if (
             carInfoI.carId == carInfoJ.carId &&
@@ -106,10 +139,11 @@ const useSearchCars = () => {
         availableCarsData[0].highlighted = true;
       }
 
+  
       setSearchResult({
         searchCarRequest: request,
         searchCarFilters: filters,
-        carInfos: availableCarsData,
+        carInfos:availableCarsData,
       });
       return true;
     } catch (e) {
