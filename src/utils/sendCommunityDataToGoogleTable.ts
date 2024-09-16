@@ -1,4 +1,6 @@
-// Define the types for the CommunityData and GoogleTableResponse interfaces
+import { Err, Ok, Result } from "@/model/utils/result";
+import { isEmpty } from "./string";
+
 interface CommunityData {
   email: string;
 }
@@ -10,7 +12,11 @@ interface GoogleTableResponse {
   };
 }
 
-export default async function sendCommunityDataToGoogleTable(data: CommunityData): Promise<void> {
+export default async function sendCommunityDataToGoogleTable(data: CommunityData): Promise<Result<boolean, string>> {
+  if (!data || isEmpty(data.email)) {
+    return Err("Email is empty");
+  }
+
   const url = `https://script.google.com/macros/s/AKfycbxzDkbnBiEaJ077gx_steYQRV-ius8pYak1slbdLHwZHcXyXlUAvN21mdcmD6LVhj6N/exec?GoogleSheetId=1x5Zu_7JyaiaXk7mZ8FXXZ09n1YnRb6zbtUz7iLpoGzM&email=${data.email}`;
 
   try {
@@ -19,15 +25,15 @@ export default async function sendCommunityDataToGoogleTable(data: CommunityData
 
     if (response.ok) {
       if (json.result === "success") {
-        window.alert("Success");
+        return Ok(true);
       } else {
-        // window.alert(json.error?.name || "Unknown error");
+        return Err(json.error?.name || "Unknown error");
       }
     } else {
-      window.alert(JSON.stringify(json));
+      return Err(JSON.stringify(json));
     }
   } catch (error) {
     console.error("Error sending data to Google Table:", error);
-    window.alert("An error occurred while sending data.");
+    return Err("An error occurred while sending data.");
   }
 }

@@ -1,6 +1,8 @@
 import { cn } from "@/utils";
 import { MouseEventHandler } from "react";
 
+interface RntButtonTransparentProps extends React.ComponentPropsWithoutRef<"button"> {}
+
 export default function RntButtonTransparent({
   className,
   type,
@@ -8,13 +10,7 @@ export default function RntButtonTransparent({
   onClick,
   disabled,
   ...props
-}: {
-  className?: string;
-  type?: string;
-  children?: React.ReactNode;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
-  disabled?: boolean;
-}) {
+}: RntButtonTransparentProps) {
   const bgColor = disabled ? "bg-gray-500" : "border-gradient";
   const c = cn("h-12 w-56 rounded-full text-white text-lg", bgColor, className);
   return (
