@@ -2,7 +2,7 @@ import BaseBurgerNavMenu from "./baseBurgerNavMenu";
 import BaseSideNavMenu from "./baseSideNavMenu";
 import SideNavMenuGroup from "./sideNavMenuGroup";
 import SideNavMenuItem from "./sideNavMenuItem";
-import MenuIcons, {getImageForMenu} from "@/components/sideNavMenu/menuIcons";
+import MenuIcons from "@/components/sideNavMenu/menuIcons";
 import { useNotification } from "@/contexts/notification/notificationContext";
 import usePageLastVisit from "@/hooks/usePageLastVisit";
 import { NotificationType } from "@/model/NotificationInfo";

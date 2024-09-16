@@ -381,8 +381,12 @@ input:disabled {
   padding: 2px; /* Толщина градиентной рамки */
   border-radius: inherit;
   background: linear-gradient(to bottom, #74bbef 0%, #7257ce 70%, #5e3dd3 100%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none; /* Важно: псевдоэлемент не блокирует клики */

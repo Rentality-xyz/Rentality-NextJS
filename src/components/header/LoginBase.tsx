@@ -9,8 +9,6 @@ import { Avatar, Identity, Badge, Name, Address } from "@coinbase/onchainkit/ide
 import { useAuth } from "@/contexts/auth/authContext";
 import RntButton from "../common/rntButton";
 import { env } from "@/utils/env";
-import {padRight} from "web3-utils";
-import {padding} from "@mui/system";
 
 function LoginBase() {
   const { isLoading, isAuthenticated, login } = useAuth();
@@ -52,7 +50,7 @@ function LoginBase() {
 
   if (userInfo === undefined)
     return (
-      <div className="flex flex-row-reverse items-center gap-4 lg:space-x-4 bg-transparent lg:px-2 py-1">
+      <div className="flex flex-row-reverse items-center gap-4 bg-transparent py-1 lg:space-x-4 lg:px-2">
         <div className="overflow-hidden">
           <MuiAvatar className="h-10 w-10 lg:h-12 lg:w-12" alt="" src="" />
         </div>
