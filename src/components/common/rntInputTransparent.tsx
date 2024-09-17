@@ -48,25 +48,25 @@ const RntInputTransparent = forwardRef<HTMLInputElement, RntInputProps>(
             {label}
           </label>
         )}
-          <div className="border-gradient">
-              <div className="input-wrapper pl-2">
-                  <input
-                      className={iClassName}
-                      id={controlId}
-                      name={id}
-                      type={type}
-                      style={{ backgroundColor: "transparent" }}
-                      readOnly={readOnly}
-                      disabled={readOnly}
-                      placeholder={placeholder}
-                      onChange={(e) => onChangeHandler != null && onChangeHandler(e)}
-                      onBlur={(e) => onBlurHandler != null && onBlurHandler(e)}
-                      value={value}
-                      {...rest}
-                      ref={ref}
-                  />
-              </div>
+        <div className="border-gradient">
+          <div className="input-wrapper pl-2">
+            <input
+              className={iClassName}
+              id={controlId}
+              name={id}
+              type={type}
+              style={{ backgroundColor: "transparent" }}
+              readOnly={readOnly}
+              disabled={readOnly}
+              placeholder={placeholder}
+              onChange={(e) => onChangeHandler != null && onChangeHandler(e)}
+              onBlur={(e) => onBlurHandler != null && onBlurHandler(e)}
+              value={value}
+              {...rest}
+              ref={ref}
+            />
           </div>
+        </div>
         <RntValidationError className={validationClassName} validationError={validationError} />
       </div>
     );

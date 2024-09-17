@@ -27,18 +27,20 @@ function setParam(params: URLSearchParams, key: keyof SearchCarQueryParams, valu
 }
 
 function locationInfoToParamAddress(locationInfo: LocationInfo): string {
-  return `${locationInfo.city},${locationInfo.state},${locationInfo.country}`;
+  return `${locationInfo.address},${locationInfo.city},${locationInfo.state},${locationInfo.country},${locationInfo.latitude.toFixed(6)},${locationInfo.longitude.toFixed(6)}`;
 }
 
 function paramAddressToLocationInfo(address: string, defaultValue: LocationInfo = emptyLocationInfo): LocationInfo {
   const locationParts = (address ?? "").split(",");
-  return locationParts.length === 3
+  return locationParts.length >= 6
     ? {
         ...emptyLocationInfo,
-        address: address,
-        city: locationParts[0],
-        state: locationParts[1],
-        country: locationParts[2],
+        address: locationParts.slice(0, locationParts.length - 5).join(","),
+        city: locationParts[locationParts.length - 5],
+        state: locationParts[locationParts.length - 4],
+        country: locationParts[locationParts.length - 3],
+        latitude: parseFloat(locationParts[locationParts.length - 2]),
+        longitude: parseFloat(locationParts[locationParts.length - 1]),
       }
     : defaultValue;
 }

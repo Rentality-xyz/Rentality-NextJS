@@ -85,7 +85,7 @@ body {
     "footer";
 }
 
-.main-grid > header {
+.main-grid>header {
   @apply text-rnt-temp-header-text;
   grid-area: header;
   width: 100%;
@@ -94,21 +94,21 @@ body {
   justify-content: stretch;
 }
 
-.main-grid > aside {
+.main-grid>aside {
   @apply bg-rentality-bg-left-sidebar text-rnt-temp-sidemenu-text;
   grid-area: aside;
   width: 100%;
   height: auto;
 }
 
-.main-grid > main {
+.main-grid>main {
   @apply bg-rentality-bg-main text-rnt-temp-main-text;
   grid-area: main;
   height: 100%;
   width: 100%;
 }
 
-.main-grid > footer {
+.main-grid>footer {
   @apply text-rnt-temp-footer-text;
   grid-area: footer;
   width: 100%;
@@ -191,8 +191,7 @@ main option {
   /* @apply bg-rnt-temp-sidemenu-bg; */
 }
 
-@media (min-width: 1024px) {
-}
+@media (min-width: 1024px) {}
 
 /* footer */
 
@@ -232,12 +231,12 @@ main option {
 }
 
 /* On mouse-over, add a grey background color */
-.rentality-checkbox:hover input ~ .rentality-checkmark {
+.rentality-checkbox:hover input~.rentality-checkmark {
   background-color: #bbb;
 }
 
 /* When the checkbox is checked, add a blue background */
-.rentality-checkbox input:checked ~ .rentality-checkmark {
+.rentality-checkbox input:checked~.rentality-checkmark {
   background-color: #6c29d9;
 }
 
@@ -249,7 +248,7 @@ main option {
 }
 
 /* Show the checkmark when checked */
-.rentality-checkbox input:checked ~ .rentality-checkmark:after {
+.rentality-checkbox input:checked~.rentality-checkmark:after {
   display: block;
 }
 
@@ -269,12 +268,10 @@ main option {
 /* Civic */
 .civicButton {
   /*background-color: #6D28D9 !important;*/
-  background: linear-gradient(
-    360deg,
-    rgba(88, 63, 188, 1) 0%,
-    rgba(128, 95, 228, 1) 50%,
-    rgba(127, 160, 243, 1) 100%
-  ) !important;
+  background: linear-gradient(360deg,
+      rgba(88, 63, 188, 1) 0%,
+      rgba(128, 95, 228, 1) 50%,
+      rgba(127, 160, 243, 1) 100%) !important;
   border-radius: 9999px !important;
   border: none !important;
   height: 48px !important;
@@ -327,7 +324,7 @@ input:disabled {
   border-radius: 9999px 0 0 9999px !important;
 }
 
-#privy-dialog > div > div {
+#privy-dialog>div>div {
   background-color: #1e1e30;
   border-width: 2px;
   border-color: #373737;
@@ -358,7 +355,7 @@ input:disabled {
   mask-composite: exclude;
 }
 
-#pagination > ul > li {
+#pagination>ul>li {
   margin-left: 12px;
 }
 
@@ -370,36 +367,51 @@ input:disabled {
 
 .input-border-gradient {
   position: relative;
-  display: inline-block; /* Устанавливаем обертку под размер input */
-  border-radius: 9999px; /* Скругленные углы */
+  display: inline-block;
+  /* Устанавливаем обертку под размер input */
+  border-radius: 9999px;
+  /* Скругленные углы */
 }
 
 .input-border-gradient:before {
   content: "";
   position: absolute;
   inset: 0;
-  padding: 2px; /* Толщина градиентной рамки */
+  padding: 2px;
+  /* Толщина градиентной рамки */
   border-radius: inherit;
   background: linear-gradient(to bottom, #74bbef 0%, #7257ce 70%, #5e3dd3 100%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  pointer-events: none; /* Важно: псевдоэлемент не блокирует клики */
+  pointer-events: none;
+  /* Важно: псевдоэлемент не блокирует клики */
   z-index: 0;
 }
 
 .input-wrapper {
   position: relative;
-  z-index: 1; /* Устанавливаем input выше псевдоэлемента */
-  border-radius: inherit; /* Совпадение радиуса с градиентом */
+  z-index: 1;
+  /* Устанавливаем input выше псевдоэлемента */
+  border-radius: inherit;
+  /* Совпадение радиуса с градиентом */
 }
 
 .input-inner {
-  background-color: transparent; /* Прозрачный фон */
-  border: none; /* Убираем стандартную рамку */
-  outline: none; /* Убираем обводку при фокусе */
-  padding: 8px 12px; /* Внутренний отступ */
+  background-color: transparent;
+  /* Прозрачный фон */
+  border: none;
+  /* Убираем стандартную рамку */
+  outline: none;
+  /* Убираем обводку при фокусе */
+  padding: 8px 12px;
+  /* Внутренний отступ */
   border-radius: inherit;
-  width: 100%; /* Ширина input должна занимать всю обертку */
+  width: 100%;
+  /* Ширина input должна занимать всю обертку */
 }

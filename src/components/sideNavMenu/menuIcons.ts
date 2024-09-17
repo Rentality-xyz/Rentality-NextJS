@@ -26,7 +26,7 @@ enum MenuIcons {
   TransactionHistory,
   Search,
   ToAppStore,
-  ToGooglePlay
+  ToGooglePlay,
 }
 
 export const getImageForMenu = (state: MenuIcons): StaticImageData => {

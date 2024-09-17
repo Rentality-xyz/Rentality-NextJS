@@ -537,6 +537,11 @@
     "timeZoneId": "Time zone",
     "homeAddress": "Home address"
   },
+  "mobile_stores_dialog": {
+    "title": "Be the First to Know!",
+    "app_is_coming_soon": "Our app is coming soon to the App Store and Play Market.",
+    "leave_your_email": "Leave your email, and we’ll notify you as soon as it’s available for download!"
+  },
   "common": {
     "info": {
       "sign": "Please confirm the transaction with your wallet and wait for the transaction to be processed",
@@ -548,6 +553,7 @@
     },
     "upload": "Upload",
     "save": "Save",
+    "submit": "Submit",
     "from": "From",
     "to": "To",
     "search": "Search",
@@ -561,6 +567,7 @@
     "logout": "Logout",
     "plate_number": "Plate number",
     "apply": "Apply",
-    "low_resolution": "The resolution is too low!"
+    "low_resolution": "The resolution is too low!",
+    "success": "Success"
   }
 }

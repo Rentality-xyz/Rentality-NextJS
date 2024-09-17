@@ -1,7 +1,7 @@
 import Header from "@/components/header/header";
 import Footer from "@/components/footer/footer";
-import HostSideNavMenu, { HostBurgerNavMenu } from "../sideNavMenu/hostSideNavMenu";
-import GuestSideNavMenu, { GuestBurgerNavMenu } from "../sideNavMenu/guestSideNavMenu";
+import HostSideNavMenu from "../sideNavMenu/hostSideNavMenu";
+import GuestSideNavMenu from "../sideNavMenu/guestSideNavMenu";
 import AdminSideNavMenu from "../sideNavMenu/adminSideNavMenu";
 import { useAppContext } from "@/contexts/appContext";
 import useUserMode, { isAdmin, isHost } from "@/hooks/useUserMode";
@@ -31,7 +31,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
   return (
     <>
       <Header />
-      <div className="relative pt-16 flex min-h-[100vh] w-full flex-row overflow-hidden text-rnt-temp-sidemenu-text">
+      <div className="relative flex min-h-[100vh] w-full flex-row overflow-hidden pt-16 text-rnt-temp-sidemenu-text">
         <aside id="main-side-menu" className="hidden bg-rentality-bg-left-sidebar lg:block">
           {sideNavMenu}
         </aside>

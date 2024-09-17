@@ -96,5 +96,6 @@ export async function getSignedLocationInfo(
   if ("error" in apiJson) {
     return Err("Sign location error");
   }
+  console.log(`LocationInfo: ${JSON.stringify(apiJson, null, 2)}`);
   return Ok(apiJson);
 }

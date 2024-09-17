@@ -10,7 +10,7 @@ export type LocationInfo = {
   timeZoneId: string;
 };
 
-export const emptyLocationInfo = {
+export const emptyLocationInfo: LocationInfo = {
   address: "",
   country: "",
   state: "",

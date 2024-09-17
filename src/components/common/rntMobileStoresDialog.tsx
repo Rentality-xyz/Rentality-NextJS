@@ -1,90 +1,112 @@
-import * as React from "react";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import Image from "next/image";
 import imgBg from "@/images/rectangle_midnight_purple_without_shadow.png";
-import { Dialog, DialogActions, DialogContent, DialogContentText } from "@mui/material";
+import { Dialog, DialogContent } from "@mui/material";
 import imgStore from "@/images/app-google-store.svg";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
-import {useState} from "react";
+import { useState } from "react";
 import sendCommunityDataToGoogleTable from "@/utils/sendCommunityDataToGoogleTable";
+import { useRntSnackbars } from "@/contexts/rntDialogsContext";
+import { useTranslation } from "react-i18next";
 
 export default function RntMobileStoresDialog() {
-    const [open, setOpen] = React.useState(false);
+  const [isOpened, setIsOpened] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [formInputEmail, setFormInputEmail] = useState("");
+  const { showInfo, showError } = useRntSnackbars();
+  const { t } = useTranslation();
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
 
-    const [formInputEmail, setFormInputEmail] = useState('');
+    setIsButtonDisabled(true);
+    const sendResult = await sendCommunityDataToGoogleTable({
+      email: formInputEmail,
+    });
+    if (sendResult.ok) {
+      showInfo(t("common.success"));
+      setFormInputEmail("");
+      setIsOpened(false);
+    } else {
+      showError(sendResult.error);
+    }
+    setIsButtonDisabled(false);
+  }
 
-    const handleClose = async () => {
-        setOpen(false);
-        await sendCommunityDataToGoogleTable({
-            email: formInputEmail,
-        });
-    };
+  function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setFormInputEmail(e.target.value);
+  }
 
-    const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setFormInputEmail(event.target.value);
-    };
-
-    return (
-        <React.Fragment>
-            <button
-                className="flex items-center lg:px-4 border border-gray-500 rounded-md hover:border-gray-400"
-                onClick={handleClickOpen}
-            >
-                <Image src={imgStore} alt="Mobile Store" className="min-w-[54px] lg:min-w-[94px]" />
-            </button>
-            <Dialog
-                maxWidth="lg"
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="mobile-stores-dialog-title"
-                aria-describedby="mobile-stores-dialog-description"
-                PaperProps={{
-                    sx: {
-                        borderRadius: "12px",
-                        margin: "16px",
-                        background: "#110D1C"
-                    },
-                }}
-            >
-                <DialogContent
-                    sx={{
-                        padding: "0px 0px",
-                    }}
+  return (
+    <>
+      <button
+        className="flex items-center rounded-md border border-gray-500 hover:border-gray-400 lg:px-4"
+        onClick={() => {
+          setIsOpened(true);
+        }}
+      >
+        <Image src={imgStore} alt="Mobile Store" className="min-w-[54px] lg:min-w-[94px]" />
+      </button>
+      <Dialog
+        maxWidth="lg"
+        open={isOpened}
+        onClose={() => {
+          setIsOpened(false);
+        }}
+        aria-labelledby="mobile-stores-dialog-title"
+        aria-describedby="mobile-stores-dialog-description"
+        PaperProps={{
+          sx: {
+            borderRadius: "12px",
+            margin: "16px",
+            background: "#110D1C",
+          },
+        }}
+      >
+        <DialogContent
+          sx={{
+            padding: "0px 0px",
+          }}
+        >
+          <div className="relative">
+            <Image src={imgBg} alt="" className="h-[420px] lg:max-h-[340px] lg:min-w-[750px]" />
+            <div className="absolute left-0 top-0 flex flex-col items-center justify-center px-12">
+              <p className="mt-4 font-['Montserrat',Arial,sans-serif] text-[26px] font-bold leading-[64px] text-[#24D8D4] lg:mt-12 lg:text-[40px]">
+                {t("mobile_stores_dialog.title")}
+              </p>
+              <p className="text-center font-['Montserrat',Arial,sans-serif] text-lg font-medium text-white lg:px-6 lg:text-xl">
+                {t("mobile_stores_dialog.app_is_coming_soon")}
+                <br />
+                {t("mobile_stores_dialog.leave_your_email")}
+              </p>
+              <form
+                className="mt-8 flex w-full flex-col max-lg:items-center lg:flex-row lg:px-12"
+                onSubmit={handleSubmit}
+              >
+                <RntInputTransparent
+                  id="mobile_stores_input_email"
+                  className="w-full text-white"
+                  placeholder="Enter your email"
+                  type="email"
+                  autoComplete="off"
+                  required
+                  value={formInputEmail}
+                  onChange={handleEmailChange}
+                />
+                <RntButtonTransparent
+                  className="w-36 px-8 max-lg:mt-6 lg:ml-8"
+                  type="submit"
+                  disabled={isButtonDisabled}
                 >
-                    <div className="relative">
-                        <Image src={imgBg} alt="" className="lg:min-w-[750px] lg:max-h-[340px] h-[420px]" />
-                        <div className="absolute top-0 left-0 flex flex-col justify-center items-center px-12">
-                            <p className="mt-4 lg:mt-12 text-[#24D8D4] text-[26px] lg:text-[40px] leading-[64px] font-bold font-['Montserrat',Arial,sans-serif]">
-                                Be the First to Know!
-                            </p>
-                            <p className="lg:px-6 text-white text-lg lg:text-xl font-medium text-center font-['Montserrat',Arial,sans-serif]">
-                                Our app is coming soon to the App Store and Play Market.
-                                <br/>
-                                Leave your email, and we’ll notify you as soon as it’s available for download!
-                            </p>
-                            <div className="flex flex-col lg:flex-row mt-8 lg:px-12 w-full max-lg:items-center">
-                                <RntInputTransparent
-                                    id="mobile_stores_input_email"
-                                    className="w-full text-white"
-                                    placeholder="Enter your email"
-                                    type="email"
-                                    value={formInputEmail}
-                                    onChange={handleEmailChange}
-                                />
-                                <RntButtonTransparent className="w-36 px-8 lg:ml-8 max-lg:mt-6" onClick={handleClose}>
-                                    <div className="text-white">
-                                        <strong className="text-l">Submit</strong>
-                                    </div>
-                                </RntButtonTransparent>
-                            </div>
-                        </div>
-                    </div>
-                </DialogContent>
-            </Dialog>
-        </React.Fragment>
-    );
+                  <div className="text-white">
+                    <strong className="text-l">{t("common.submit")}</strong>
+                  </div>
+                </RntButtonTransparent>
+              </form>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
 }
