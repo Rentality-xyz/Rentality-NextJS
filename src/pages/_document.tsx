@@ -11,7 +11,7 @@ export default function Document() {
           href="https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css"
         />
       </Head>
-      <body className="backgroundMain">
+      <body className="backgroundMain font-['Montserrat',Arial,sans-serif] text-white">
         <Main />
         <NextScript />
       </body>

@@ -1,6 +1,5 @@
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import Image from "next/image";
-import imgBg from "@/images/rectangle_midnight_purple_without_shadow.png";
 import { Dialog, DialogContent } from "@mui/material";
 import imgStore from "@/images/app-google-store.svg";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
@@ -57,9 +56,8 @@ export default function RntMobileStoresDialog() {
         aria-describedby="mobile-stores-dialog-description"
         PaperProps={{
           sx: {
-            borderRadius: "12px",
+            borderRadius: "16px",
             margin: "16px",
-            background: "#110D1C",
           },
         }}
       >
@@ -68,42 +66,30 @@ export default function RntMobileStoresDialog() {
             padding: "0px 0px",
           }}
         >
-          <div className="relative">
-            <Image src={imgBg} alt="" className="h-[420px] lg:max-h-[340px] lg:min-w-[750px]" />
-            <div className="absolute left-0 top-0 flex flex-col items-center justify-center px-12">
-              <p className="mt-4 font-['Montserrat',Arial,sans-serif] text-[26px] font-bold leading-[64px] text-[#24D8D4] lg:mt-12 lg:text-[40px]">
-                {t("mobile_stores_dialog.title")}
-              </p>
-              <p className="text-center font-['Montserrat',Arial,sans-serif] text-lg font-medium text-white lg:px-6 lg:text-xl">
-                {t("mobile_stores_dialog.app_is_coming_soon")}
-                <br />
-                {t("mobile_stores_dialog.leave_your_email")}
-              </p>
-              <form
-                className="mt-8 flex w-full flex-col max-lg:items-center lg:flex-row lg:px-12"
-                onSubmit={handleSubmit}
-              >
-                <RntInputTransparent
-                  id="mobile_stores_input_email"
-                  className="w-full text-white"
-                  placeholder="Enter your email"
-                  type="email"
-                  autoComplete="off"
-                  required
-                  value={formInputEmail}
-                  onChange={handleEmailChange}
-                />
-                <RntButtonTransparent
-                  className="w-36 px-8 max-lg:mt-6 lg:ml-8"
-                  type="submit"
-                  disabled={isButtonDisabled}
-                >
-                  <div className="text-white">
-                    <strong className="text-l">{t("common.submit")}</strong>
-                  </div>
-                </RntButtonTransparent>
-              </form>
-            </div>
+          <div className="border-rnt-gradient-2 bg-rnt-dialog shadow-rnt-dialog-inner flex flex-col items-center justify-center gap-4 rounded-2xl p-8 text-white lg:p-12">
+            <p className="text-2xl font-bold leading-[64px] text-rentality-secondary lg:text-4xl">
+              {t("mobile_stores_dialog.title")}
+            </p>
+            <p className="text-center text-lg lg:text-xl">
+              {t("mobile_stores_dialog.app_is_coming_soon")}
+              <br />
+              {t("mobile_stores_dialog.leave_your_email")}
+            </p>
+            <form className="mt-4 flex w-full flex-col items-center gap-6 lg:flex-row lg:gap-8" onSubmit={handleSubmit}>
+              <RntInputTransparent
+                className="w-full"
+                id="mobile_stores_input_email"
+                placeholder="Enter your email"
+                type="email"
+                autoComplete="off"
+                required
+                value={formInputEmail}
+                onChange={handleEmailChange}
+              />
+              <RntButtonTransparent className="w-44" type="submit" disabled={isButtonDisabled}>
+                <strong className="text-l">{t("common.submit")}</strong>
+              </RntButtonTransparent>
+            </form>
           </div>
         </DialogContent>
       </Dialog>
