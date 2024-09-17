@@ -25,6 +25,7 @@ export default function RntMobileStoresDialog() {
     });
     if (sendResult.ok) {
       showInfo(t("common.success"));
+      setFormInputEmail("");
       setIsOpened(false);
     } else {
       showError(sendResult.error);
