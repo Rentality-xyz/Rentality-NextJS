@@ -87,6 +87,7 @@ export default function RntMobileStoresDialog() {
                   className="w-full text-white"
                   placeholder="Enter your email"
                   type="email"
+                  autoComplete="off"
                   required
                   value={formInputEmail}
                   onChange={handleEmailChange}
