@@ -26,6 +26,8 @@ export const env = createEnv({
 
     CARAPI_TOKEN: z.string(),
     CARAPI_SECRET: z.string(),
+
+    TEST_WALLETS_ADDRESSES: z.string(),
   },
   client: {
     NEXT_PUBLIC_INCLUDE_MAINNETS: booleanEnvType,

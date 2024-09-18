@@ -12,7 +12,6 @@ import {
 } from "@/model/blockchain/schemas";
 import { isEmpty } from "@/utils/string";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
-import { bigIntReplacer } from "@/utils/json";
 import { getSignedLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 

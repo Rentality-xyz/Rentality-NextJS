@@ -21,6 +21,7 @@ import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 
 export default function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
+
   const [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest, setSearchResult] =
     useSearchCars();
 
