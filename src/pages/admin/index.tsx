@@ -62,7 +62,7 @@ export default function Admin() {
       showError(t_errors("less_than_zero"));
       return;
     }
-    if (value > adminContractInfo.platformBalance) {
+    if (value > adminContractInfo.paymentBalance) {
       showError(t_errors("greater_than_contract_balance"));
       return;
     }
