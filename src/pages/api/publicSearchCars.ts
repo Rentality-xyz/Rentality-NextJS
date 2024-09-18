@@ -21,6 +21,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { bigIntReplacer } from "@/utils/json";
 import { env } from "@/utils/env";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
+import { allSupportedBlockchainList } from "@/model/blockchain/blockchainList";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const privateKey = env.SIGNER_PRIVATE_KEY;
@@ -181,7 +182,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
   }
 
-  const availableCarsData = await formatSearchAvailableCarsContractResponse(rentality, availableCarsView);
+  const availableCarsData = await formatSearchAvailableCarsContractResponse(
+    rentality,
+    chainIdNumber,
+    availableCarsView
+  );
 
   res.status(200).json(availableCarsData);
 }
@@ -240,11 +245,14 @@ function formatSearchAvailableCarsContractRequest(
 
 async function formatSearchAvailableCarsContractResponse(
   rentality: IRentalityContract,
+  chainId: number,
   searchCarsViewsView: ContractSearchCarWithDistance[]
 ) {
   if (searchCarsViewsView.length === 0) return [];
 
-  return await Promise.all(
+  const testWallets = env.TEST_WALLETS_ADDRESSES?.split(",") ?? [];
+
+  const cars = await Promise.all(
     searchCarsViewsView.map(async (i: ContractSearchCarWithDistance, index) => {
       if (index === 0) {
         validateContractSearchCarWithDistance(i);
@@ -298,11 +306,17 @@ async function formatSearchAvailableCarsContractResponse(
         pickUpDeliveryFee: Number(i.car.pickUp) / 100,
         dropOffDeliveryFee: Number(i.car.dropOf) / 100,
         isCarDetailsConfirmed: isCarDetailsConfirmed,
+        isTestCar: testWallets.includes(i.car.host),
       };
 
       return item;
     })
   );
+
+  if (allSupportedBlockchainList.find((bch) => !bch.isTestnet && bch.chainId === chainId) !== undefined) {
+    cars.sort((a, b) => sortByTestWallet(a, b));
+  }
+  return cars;
 }
 
 async function getTimeZoneIdFromAddress(address: string) {
@@ -343,4 +357,14 @@ async function getTimeZoneIdFromAddress(address: string) {
   const offSetInMinutes = (rawOffsetInSec + dstOffsetInSec) / 60 ?? 0;
 
   return offSetInMinutes;
+}
+
+function sortByTestWallet(a: SearchCarInfo, b: SearchCarInfo) {
+  if (a.isTestCar && !b.isTestCar) {
+    return 1;
+  } else if (!a.isTestCar && b.isTestCar) {
+    return -1;
+  } else {
+    return 0;
+  }
 }
