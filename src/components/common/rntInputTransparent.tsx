@@ -37,7 +37,7 @@ const RntInputTransparent = forwardRef<HTMLInputElement, RntInputProps>(
     const cClassName = cn("text-black w-full", className);
     const lClassName = cn("text-rnt-temp-main-text mb-1", labelClassName);
     const iClassName = cn(
-      "w-full h-12 rounded-full  disabled:bg-gray-300 disabled:text-gray-600 input-inner",
+      "w-full h-12 rounded-full  disabled:bg-gray-300 disabled:text-gray-600 input-inner text-white",
       inputClassName
     );
 

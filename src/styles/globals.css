@@ -34,6 +34,46 @@
   }
 }
 
+@layer components {
+  .border-rnt-gradient-2 {
+    position: relative;
+
+    &:before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 2px solid transparent;
+      border-radius: inherit;
+      background: linear-gradient(to top, #4831B1 -4.59%, #5D41C4 5.74%, #7152D8 20.36%, #7C5CE4 35%, #805FE8 49.61%, #8065E9 59.7%, #7F76ED 73.38%, #7E93F3 89.09%, #7CBAFC 106.23%, #7BC9FF 111.99%) border-box;
+      -webkit-mask:
+        linear-gradient(#fff 0 0) padding-box,
+        linear-gradient(#fff 0 0) border-box;
+      mask:
+        linear-gradient(#fff 0 0) padding-box,
+        linear-gradient(#fff 0 0) border-box;
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+  }
+
+  .alt-border-rnt-gradient-2-fixed-bg {
+    border: 2px solid transparent;
+    background:
+      linear-gradient(#110D1C, #110D1C) padding-box,
+      linear-gradient(218.45deg, #1c0b4299 0%, #1809351a 98.75%) padding-box,
+      linear-gradient(to top, #4831B1 -4.59%, #5D41C4 5.74%, #7152D8 20.36%, #7C5CE4 35%, #805FE8 49.61%, #8065E9 59.7%, #7F76ED 73.38%, #7E93F3 89.09%, #7CBAFC 106.23%, #7BC9FF 111.99%) border-box;
+  }
+
+  .bg-rnt-dialog {
+    background-color: #110D1C;
+    background-image: linear-gradient(218.45deg, rgba(28, 11, 66, 0.6) 0%, #1809351a 98.75%);
+  }
+
+  .shadow-rnt-dialog-inner {
+    box-shadow: 0px 0px 45px 2px rgba(124, 92, 228, 1) inset;
+  }
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -73,6 +113,7 @@ body {
 /*}*/
 
 .main-grid {
+  @apply text-white;
   height: 100%;
   width: 100%;
   min-height: 100vh;
