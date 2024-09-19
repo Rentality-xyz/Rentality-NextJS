@@ -39,12 +39,25 @@
     position: relative;
 
     &:before {
-      content: '';
+      content: "";
       position: absolute;
       inset: 0;
       border: 2px solid transparent;
       border-radius: inherit;
-      background: linear-gradient(to top, #4831B1 -4.59%, #5D41C4 5.74%, #7152D8 20.36%, #7C5CE4 35%, #805FE8 49.61%, #8065E9 59.7%, #7F76ED 73.38%, #7E93F3 89.09%, #7CBAFC 106.23%, #7BC9FF 111.99%) border-box;
+      background: linear-gradient(
+          to top,
+          #4831b1 -4.59%,
+          #5d41c4 5.74%,
+          #7152d8 20.36%,
+          #7c5ce4 35%,
+          #805fe8 49.61%,
+          #8065e9 59.7%,
+          #7f76ed 73.38%,
+          #7e93f3 89.09%,
+          #7cbafc 106.23%,
+          #7bc9ff 111.99%
+        )
+        border-box;
       -webkit-mask:
         linear-gradient(#fff 0 0) padding-box,
         linear-gradient(#fff 0 0) border-box;
@@ -59,13 +72,26 @@
   .alt-border-rnt-gradient-2-fixed-bg {
     border: 2px solid transparent;
     background:
-      linear-gradient(#110D1C, #110D1C) padding-box,
+      linear-gradient(#110d1c, #110d1c) padding-box,
       linear-gradient(218.45deg, #1c0b4299 0%, #1809351a 98.75%) padding-box,
-      linear-gradient(to top, #4831B1 -4.59%, #5D41C4 5.74%, #7152D8 20.36%, #7C5CE4 35%, #805FE8 49.61%, #8065E9 59.7%, #7F76ED 73.38%, #7E93F3 89.09%, #7CBAFC 106.23%, #7BC9FF 111.99%) border-box;
+      linear-gradient(
+          to top,
+          #4831b1 -4.59%,
+          #5d41c4 5.74%,
+          #7152d8 20.36%,
+          #7c5ce4 35%,
+          #805fe8 49.61%,
+          #8065e9 59.7%,
+          #7f76ed 73.38%,
+          #7e93f3 89.09%,
+          #7cbafc 106.23%,
+          #7bc9ff 111.99%
+        )
+        border-box;
   }
 
   .bg-rnt-dialog {
-    background-color: #110D1C;
+    background-color: #110d1c;
     background-image: linear-gradient(218.45deg, rgba(28, 11, 66, 0.6) 0%, #1809351a 98.75%);
   }
 
@@ -126,7 +152,7 @@ body {
     "footer";
 }
 
-.main-grid>header {
+.main-grid > header {
   @apply text-rnt-temp-header-text;
   grid-area: header;
   width: 100%;
@@ -135,21 +161,21 @@ body {
   justify-content: stretch;
 }
 
-.main-grid>aside {
+.main-grid > aside {
   @apply bg-rentality-bg-left-sidebar text-rnt-temp-sidemenu-text;
   grid-area: aside;
   width: 100%;
   height: auto;
 }
 
-.main-grid>main {
+.main-grid > main {
   @apply bg-rentality-bg-main text-rnt-temp-main-text;
   grid-area: main;
   height: 100%;
   width: 100%;
 }
 
-.main-grid>footer {
+.main-grid > footer {
   @apply text-rnt-temp-footer-text;
   grid-area: footer;
   width: 100%;
@@ -232,7 +258,8 @@ main option {
   /* @apply bg-rnt-temp-sidemenu-bg; */
 }
 
-@media (min-width: 1024px) {}
+@media (min-width: 1024px) {
+}
 
 /* footer */
 
@@ -272,12 +299,12 @@ main option {
 }
 
 /* On mouse-over, add a grey background color */
-.rentality-checkbox:hover input~.rentality-checkmark {
+.rentality-checkbox:hover input ~ .rentality-checkmark {
   background-color: #bbb;
 }
 
 /* When the checkbox is checked, add a blue background */
-.rentality-checkbox input:checked~.rentality-checkmark {
+.rentality-checkbox input:checked ~ .rentality-checkmark {
   background-color: #6c29d9;
 }
 
@@ -289,7 +316,7 @@ main option {
 }
 
 /* Show the checkmark when checked */
-.rentality-checkbox input:checked~.rentality-checkmark:after {
+.rentality-checkbox input:checked ~ .rentality-checkmark:after {
   display: block;
 }
 
@@ -309,10 +336,12 @@ main option {
 /* Civic */
 .civicButton {
   /*background-color: #6D28D9 !important;*/
-  background: linear-gradient(360deg,
-      rgba(88, 63, 188, 1) 0%,
-      rgba(128, 95, 228, 1) 50%,
-      rgba(127, 160, 243, 1) 100%) !important;
+  background: linear-gradient(
+    360deg,
+    rgba(88, 63, 188, 1) 0%,
+    rgba(128, 95, 228, 1) 50%,
+    rgba(127, 160, 243, 1) 100%
+  ) !important;
   border-radius: 9999px !important;
   border: none !important;
   height: 48px !important;
@@ -365,7 +394,7 @@ input:disabled {
   border-radius: 9999px 0 0 9999px !important;
 }
 
-#privy-dialog>div>div {
+#privy-dialog > div > div {
   background-color: #1e1e30;
   border-width: 2px;
   border-color: #373737;
@@ -396,7 +425,7 @@ input:disabled {
   mask-composite: exclude;
 }
 
-#pagination>ul>li {
+#pagination > ul > li {
   margin-left: 12px;
 }
 

@@ -168,7 +168,7 @@ function UserProfileInfo({
       />
 
       <fieldset className="mt-4">
-        <div className="mb-4 text-lg pl-[16px]">
+        <div className="mb-4 pl-[16px] text-lg">
           <strong>{t_profile("basic_info")}</strong>
         </div>
         <div className="flex flex-wrap gap-4">
@@ -209,7 +209,7 @@ function UserProfileInfo({
       </fieldset>
 
       <fieldset className="mt-4">
-        <div className="mb-4 text-lg pl-4">
+        <div className="mb-4 pl-4 text-lg">
           <strong>{t_profile("driver_license_info")}</strong>
         </div>
         <div className="flex flex-wrap gap-4">

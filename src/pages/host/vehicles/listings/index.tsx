@@ -27,7 +27,7 @@ export default function Listings() {
   return (
     <>
       <div id="page-title" className="flex flex-row items-center justify-between">
-        <div className="text-2xl pl-5">
+        <div className="pl-5 text-2xl">
           <strong>{t("vehicles.listing_title")}</strong>
         </div>
         <RntButton className="h-12 w-40 sm:h-16 sm:w-56" onClick={handleAddListing}>

@@ -1,6 +1,6 @@
 import { cn } from "@/utils";
 import React from "react";
-import {height, minHeight} from "@mui/system";
+import { height, minHeight } from "@mui/system";
 
 interface RntButtonProps extends React.ComponentPropsWithoutRef<"button"> {}
 

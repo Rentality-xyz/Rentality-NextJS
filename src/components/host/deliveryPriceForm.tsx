@@ -63,7 +63,7 @@ function DeliveryPriceForm({
   return (
     <form className="my-4 flex flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
       <fieldset>
-        <div className="mb-4 text-lg pl-[16px]">
+        <div className="mb-4 pl-[16px] text-lg">
           <strong>{t_profile("delivery_price")}</strong>
         </div>
         <div className="flex flex-col gap-4">

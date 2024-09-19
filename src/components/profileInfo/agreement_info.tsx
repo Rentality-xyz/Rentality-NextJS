@@ -33,7 +33,7 @@ export default function AgreementInfo({
       if (isInited.current) return;
 
       const address = await ethereumInfo.signer.getAddress();
-      const verifyAddress = verifyMessage(DEFAULT_AGREEMENT_MESSAGE, signature);
+      const verifyAddress = signature !== "0x" ? verifyMessage(DEFAULT_AGREEMENT_MESSAGE, signature) : "";
       const isSignatureCorrect = !isEmpty(signature) && signature !== "0x" && verifyAddress === address;
 
       isInited.current = true;
@@ -61,7 +61,7 @@ export default function AgreementInfo({
 
   return (
     <section>
-      <p className="mt-8 w-full md:w-3/4 xl:w-3/5 2xl:w-1/3 pl-4">{t("agreement_info")}</p>
+      <p className="mt-8 w-full pl-4 md:w-3/4 xl:w-3/5 2xl:w-1/3">{t("agreement_info")}</p>
       <CheckboxLight
         className="ml-4 mt-4 underline"
         label={t("tc_title")}

@@ -26,7 +26,7 @@ const getHostAddressFromQuery = async (query: string | string[] | undefined, pro
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const privateKey = env.SIGNER_PRIVATE_KEY;
   if (isEmpty(privateKey)) {
-    console.error("API checkTrips error: private key was not set");
+    console.error("API hostPublicListings error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
     return;
   }
@@ -35,15 +35,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const chainIdNumber = Number(chainId) > 0 ? Number(chainId) : env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
   if (!chainIdNumber) {
-    console.error("API checkTrips error: chainId was not provided");
+    console.error("API hostPublicListings error: chainId was not provided");
     res.status(400).json({ error: "chainId was not provided" });
     return;
   }
 
   let providerApiUrl = process.env[`PROVIDER_API_URL_${chainIdNumber}`];
   if (!providerApiUrl) {
-    console.error(`API checkTrips error: API URL for chain id ${chainIdNumber} was not set`);
-    res.status(500).json({ error: `API checkTrips error: API URL for chain id ${chainIdNumber} was not set` });
+    console.error(`API hostPublicListings error: API URL for chain id ${chainIdNumber} was not set`);
+    res.status(500).json({ error: `API hostPublicListings error: API URL for chain id ${chainIdNumber} was not set` });
     return;
   }
 
@@ -51,12 +51,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const hostAddress = await getHostAddressFromQuery(hostQuery, provider);
 
   if (!hostAddress || isEmpty(hostAddress)) {
-    console.error("API checkTrips error: hostAddress was not provided");
+    console.error("API hostPublicListings error: hostAddress was not provided");
     res.status(400).json({ error: "hostAddress was not provided" });
     return;
   }
 
-  console.log(`\nCalling checkTrips API for ${chainIdNumber} chain id and ${hostAddress} host...`);
+  console.log(`\nCalling hostPublicListings API for ${chainIdNumber} chain id and ${hostAddress} host...`);
 
   const wallet = new Wallet(privateKey, provider);
   try {
