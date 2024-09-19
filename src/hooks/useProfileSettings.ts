@@ -3,7 +3,7 @@ import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
 import { useRentality } from "@/contexts/rentalityContext";
 import { formatPhoneNumber, getBlockchainTimeFromDate, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import moment from "moment";
-import { ContractKYCInfo } from "@/model/blockchain/schemas";
+import { ContractFullKYCInfoDTO, ContractKYCInfo } from "@/model/blockchain/schemas";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 
@@ -38,21 +38,21 @@ const useProfileSettings = () => {
         console.error("getTrip error: contract is null");
         return;
       }
-      const myKYCInfo: ContractKYCInfo = await rentalityContract.getMyKYCInfo();
+      const myKYCInfo: ContractFullKYCInfoDTO = await rentalityContract.getMyFullKYCInfo();
 
       if (myKYCInfo == null) return;
 
       let myProfileSettings: ProfileSettings = {
-        profilePhotoUrl: getIpfsURIfromPinata(myKYCInfo.profilePhoto),
-        firstName: myKYCInfo.name,
-        lastName: myKYCInfo.surname,
-        phoneNumber: formatPhoneNumber(myKYCInfo.mobilePhoneNumber),
-        drivingLicenseNumber: myKYCInfo.licenseNumber,
+        profilePhotoUrl: getIpfsURIfromPinata(myKYCInfo.kyc.profilePhoto),
+        firstName: myKYCInfo.kyc.name,
+        lastName: myKYCInfo.kyc.surname,
+        phoneNumber: formatPhoneNumber(myKYCInfo.kyc.mobilePhoneNumber),
+        drivingLicenseNumber: myKYCInfo.kyc.licenseNumber,
         drivingLicenseExpire:
-          myKYCInfo.expirationDate > 0
-            ? getDateFromBlockchainTimeWithTZ(myKYCInfo.expirationDate, UTC_TIME_ZONE_ID)
+          myKYCInfo.kyc.expirationDate > 0
+            ? getDateFromBlockchainTimeWithTZ(myKYCInfo.kyc.expirationDate, UTC_TIME_ZONE_ID)
             : undefined,
-        tcSignature: myKYCInfo.TCSignature,
+        tcSignature: myKYCInfo.kyc.TCSignature,
       };
       return myProfileSettings;
     } catch (e) {
@@ -74,12 +74,20 @@ const useProfileSettings = () => {
 
       const transaction = await rentalityContract.setKYCInfo(
         newProfileSettings.firstName,
-        newProfileSettings.lastName,
+        // newProfileSettings.lastName,
         newProfileSettings.phoneNumber,
         newProfileSettings.profilePhotoUrl,
-        newProfileSettings.drivingLicenseNumber,
-        expirationDate,
-        newProfileSettings.tcSignature
+        {
+          fullName: `${newProfileSettings.firstName} ${newProfileSettings.lastName}`,
+          licenseNumber: newProfileSettings.drivingLicenseNumber,
+          expirationDate: expirationDate,
+          issueCountry: "",
+          email: "",
+        },
+        // newProfileSettings.drivingLicenseNumber,
+        // expirationDate,
+        newProfileSettings.tcSignature,
+        "0x"
       );
 
       await transaction.wait();

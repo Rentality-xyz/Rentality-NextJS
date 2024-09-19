@@ -8,6 +8,7 @@ import {
   ContractCarInfo,
   ContractCarInfoDTO,
   ContractChatInfo,
+  ContractCivicKYCInfo,
   ContractCreateCarRequest,
   ContractCreateClaimRequest,
   ContractCreateTripRequest,
@@ -15,6 +16,7 @@ import {
   ContractDeliveryData,
   ContractDeliveryPrices,
   ContractFullClaimInfo,
+  ContractFullKYCInfoDTO,
   ContractKYCInfo,
   ContractLocationInfo,
   ContractPublicHostCarDTO,
@@ -88,18 +90,18 @@ export interface IRentalityContract {
   getCarDetails(carId: bigint): Promise<ContractCarDetails>;
   getTrip(tripId: bigint): Promise<ContractTripDTO>;
   getTripContactInfo(tripId: bigint): Promise<ContractTripContactInfo>;
-  getMyKYCInfo(): Promise<ContractKYCInfo>;
+  //getMyKYCInfo(): Promise<ContractKYCInfo>;
   setKYCInfo(
-    name: string,
-    surname: string,
+    nickName: string,
     mobilePhoneNumber: string,
     profilePhoto: string,
-    licenseNumber: string,
-    expirationDate: bigint,
-    tcSignature: string
+    kycInfo: ContractCivicKYCInfo,
+    TCSignature: string,
+    KYCSignature: string
   ): Promise<ContractTransactionResponse>;
   getCarsOfHost(host: string): Promise<ContractPublicHostCarDTO[]>;
   getClaim(claimId: bigint): Promise<ContractFullClaimInfo>;
+  getMyFullKYCInfo(): Promise<ContractFullKYCInfoDTO>;
 
   createTripRequestWithDelivery(
     request: ContractCreateTripRequestWithDelivery,
