@@ -7,57 +7,70 @@ import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
 import { useRouter } from "next/router";
-import { ChangeEvent, memo } from "react";
-import RntDatePicker from "../common/rntDatePicker";
+import { ChangeEvent, memo, useEffect } from "react";
 import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
-import { TFunction } from "@/utils/i18n";
-import AgreementInfo from "./agreement_info";
 import KycVerification from "./kyc_verification";
 import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProfileInfoFormValues, profileInfoFormSchema } from "./profileInfoFormSchema";
-import moment from "moment";
+import DotStatus from "./dotStatus";
+import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
+import { useTranslation } from "react-i18next";
+import { CheckboxLight } from "../common/rntCheckbox";
+import { verifyMessage } from "ethers";
+import { DEFAULT_AGREEMENT_MESSAGE } from "@/utils/constants";
+import { signMessage } from "@/utils/ether";
 
 function UserProfileInfo({
   savedProfileSettings,
   saveProfileSettings,
   isHost,
-  t,
 }: {
   savedProfileSettings: ProfileSettings;
   saveProfileSettings: (newProfileSettings: ProfileSettings) => Promise<boolean>;
   isHost: boolean;
-  t: TFunction;
+}) {
+  return (
+    <div className="my-1 flex flex-col gap-4 lg:my-8">
+      <UserCommonInformationForm
+        savedProfileSettings={savedProfileSettings}
+        saveProfileSettings={saveProfileSettings}
+        isHost={isHost}
+      />
+      <hr />
+      <UserDriverLicenseVerification savedProfileSettings={savedProfileSettings} />
+    </div>
+  );
+}
+
+function UserCommonInformationForm({
+  savedProfileSettings,
+  saveProfileSettings,
+  isHost,
+}: {
+  savedProfileSettings: ProfileSettings;
+  saveProfileSettings: (newProfileSettings: ProfileSettings) => Promise<boolean>;
+  isHost: boolean;
 }) {
   const router = useRouter();
   const ethereumInfo = useEthereum();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
+  const { t } = useTranslation();
 
-  const { register, handleSubmit, formState, control } = useForm<ProfileInfoFormValues>({
+  const { register, handleSubmit, formState, control, setValue, watch } = useForm<ProfileInfoFormValues>({
     defaultValues: {
       profilePhotoUrl: savedProfileSettings.profilePhotoUrl,
-      firstName: savedProfileSettings.firstName,
-      lastName: savedProfileSettings.lastName,
+      nickname: savedProfileSettings.nickname,
       phoneNumber: savedProfileSettings.phoneNumber,
-      drivingLicenseNumber: savedProfileSettings.drivingLicenseNumber,
-      drivingLicenseExpire: savedProfileSettings.drivingLicenseExpire,
       tcSignature: savedProfileSettings.tcSignature,
     },
     resolver: zodResolver(profileInfoFormSchema),
   });
   const { errors, isSubmitting } = formState;
-  const userInitials =
-    !isEmpty(savedProfileSettings.firstName) || !isEmpty(savedProfileSettings.lastName)
-      ? `${savedProfileSettings.firstName?.slice(0, 1).toUpperCase()}${savedProfileSettings.lastName?.slice(0, 1).toUpperCase()}`
-      : null;
-
-  const t_profile: TFunction = (name, options) => {
-    return t("profile." + name, options);
-  };
 
   function fileChangeCallback(field: ControllerRenderProps<ProfileInfoFormValues, "profilePhotoUrl">) {
     return async (e: ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +103,16 @@ function UserProfileInfo({
   }
 
   async function onFormSubmit(formData: ProfileInfoFormValues) {
+    if (!ethereumInfo) return;
+    if (!formData.isTerms) return;
+
     try {
+      const signature = await signMessage(ethereumInfo.signer, DEFAULT_AGREEMENT_MESSAGE);
+      console.debug(`tcSignature before: ${formData.tcSignature}`);
+      setValue("tcSignature", signature);
+      formData.tcSignature = signature;
+      console.debug(`tcSignature after: ${formData.tcSignature}`);
+
       var profilePhotoUrl = savedProfileSettings.profilePhotoUrl;
       if (formData.profilePhotoUrl !== savedProfileSettings.profilePhotoUrl) {
         const blob = await (await fetch(formData.profilePhotoUrl)).blob();
@@ -110,10 +132,15 @@ function UserProfileInfo({
         profilePhotoUrl = response.pinataURL;
       }
 
-      const dataToSave = {
+      const dataToSave: ProfileSettings = {
         ...formData,
         profilePhotoUrl: profilePhotoUrl,
-        drivingLicenseExpire: formData.drivingLicenseExpire,
+        fullname: "",
+        documentType: "",
+        drivingLicenseNumber: "",
+        drivingLicenseExpire: undefined,
+        issueCountry: "",
+        email: "",
       };
 
       showInfo(t("common.info.sign"));
@@ -128,32 +155,43 @@ function UserProfileInfo({
       router.push(isHost ? "/host" : "/guest");
     } catch (e) {
       console.error("handleSubmit error:" + e);
-      showError(t_profile("save_err"));
+      showError(t("profile.save_err"));
       return;
     }
   }
 
+  const isTerms = watch("isTerms");
+
+  useEffect(() => {
+    const checkSignature = async () => {
+      if (!ethereumInfo) return;
+
+      if (isEmpty(savedProfileSettings.tcSignature) || savedProfileSettings.tcSignature === "0x") {
+        setValue("isTerms", false);
+        return;
+      }
+
+      const userAddress = await ethereumInfo.signer.getAddress();
+      const verifyAddress = verifyMessage(DEFAULT_AGREEMENT_MESSAGE, savedProfileSettings.tcSignature);
+      const isSignatureCorrect = verifyAddress === userAddress;
+      setValue("isTerms", isTerms || isSignatureCorrect);
+    };
+
+    checkSignature();
+  }, [ethereumInfo, savedProfileSettings.tcSignature, setValue]);
+
   return (
-    <form
-      className="my-1 flex flex-col gap-4 lg:my-8"
-      onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}
-    >
+    <form className="flex flex-col gap-4 lg:my-8" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
       <Controller
         name="profilePhotoUrl"
         control={control}
         render={({ field }) => (
           <>
             <div className="flex flex-row items-center gap-4">
-              <Avatar
-                alt={`${savedProfileSettings.firstName} ${savedProfileSettings.lastName}`}
-                src={field.value}
-                sx={{ width: "7rem", height: "7rem" }}
-              >
-                {userInitials}
+              <Avatar alt={`${savedProfileSettings.nickname}`} src={field.value} sx={{ width: "7rem", height: "7rem" }}>
+                {savedProfileSettings.nickname}
               </Avatar>
-              <div className="text-xl">
-                {savedProfileSettings.firstName} {savedProfileSettings.lastName}
-              </div>
+              <div className="text-xl">{savedProfileSettings.nickname}</div>
             </div>
             <RntFileButton
               className="h-16 w-40"
@@ -168,25 +206,17 @@ function UserProfileInfo({
       />
 
       <fieldset className="mt-4">
-        <div className="mb-4 text-lg pl-[16px]">
-          <strong>{t_profile("basic_info")}</strong>
+        <div className="mb-4 pl-[16px] text-lg">
+          <strong>{t("profile.welcome_create_account")}</strong>
         </div>
         <div className="flex flex-wrap gap-4">
           <RntInput
             className="lg:w-60"
             labelClassName="pl-[16px]"
-            id="firstName"
-            label={t_profile("name")}
-            {...register("firstName")}
-            validationError={errors.firstName?.message}
-          />
-          <RntInput
-            className="lg:w-60"
-            labelClassName="pl-[16px]"
-            id="lastName"
-            label={t_profile("last_name")}
-            {...register("lastName")}
-            validationError={errors.lastName?.message}
+            id="nickname"
+            label={t("profile.nickname")}
+            {...register("nickname")}
+            validationError={errors.nickname?.message}
           />
 
           <Controller
@@ -197,7 +227,7 @@ function UserProfileInfo({
                 className="lg:w-60"
                 labelClassName="pl-[16px]"
                 id="phoneNumber"
-                label={t_profile("phone")}
+                label={t("profile.phone")}
                 type="tel"
                 value={field.value}
                 onChange={field.onChange}
@@ -208,61 +238,78 @@ function UserProfileInfo({
         </div>
       </fieldset>
 
-      <fieldset className="mt-4">
-        <div className="mb-4 text-lg pl-4">
-          <strong>{t_profile("driver_license_info")}</strong>
-        </div>
-        <div className="flex flex-wrap gap-4">
-          <RntInput
-            className="lg:w-60"
-            labelClassName="pl-4"
-            id="drivingLicenseNumber"
-            label={t_profile("driving_license_number")}
-            {...register("drivingLicenseNumber")}
-            validationError={errors.drivingLicenseNumber?.message}
-          />
-          <Controller
-            name="drivingLicenseExpire"
-            control={control}
-            render={({ field }) => (
-              <RntDatePicker
-                className="lg:w-60"
-                labelClassName="pl-4"
-                id="drivingLicenseExpire"
-                label={t_profile("driving_license_validity_period")}
-                type="date"
-                value={field.value}
-                onDateChange={(date) => {
-                  field.onChange(date ?? undefined);
-                }}
-                validationError={errors.drivingLicenseExpire?.message}
-                maxDate={moment().add(15, "years").toDate()}
-              />
-            )}
-          />
-        </div>
-      </fieldset>
-
-      <KycVerification t={t_profile} />
+      <p className="w-full pl-4 md:w-3/4 xl:w-3/5 2xl:w-1/3">{t("profile.agreement_info")}</p>
 
       <Controller
-        name="tcSignature"
+        name="isTerms"
         control={control}
         render={({ field }) => (
-          <AgreementInfo
-            signature={field.value}
-            onSign={(signature) => {
-              field.onChange(signature);
+          <CheckboxLight
+            className="ml-4 underline"
+            label={t("profile.tc_and_privacy_title")}
+            checked={field.value}
+            onChange={() => {
+              window.open("https://rentality.xyz/legalmatters/terms", "_blank");
+              field.onChange(true);
             }}
-            t={t_profile}
           />
         )}
       />
+      <p className="pl-[16px] text-sm">{t("profile.read_agree")}</p>
 
-      <RntButton type="submit" className="mt-4" disabled={isSubmitting}>
-        {t("common.save")}
-      </RntButton>
+      <div className="flex items-center gap-2 md:gap-6">
+        <RntButton type="submit" disabled={isSubmitting || !isTerms}>
+          {t("profile.confirm&save")}
+        </RntButton>
+
+        {!isEmpty(savedProfileSettings.tcSignature) && savedProfileSettings.tcSignature !== "0x" ? (
+          <DotStatus color="success" text={t("profile.confirmed")} />
+        ) : (
+          <DotStatus color="error" text={t("profile.not_confirmed")} />
+        )}
+      </div>
     </form>
+  );
+}
+
+function UserDriverLicenseVerification({ savedProfileSettings }: { savedProfileSettings: ProfileSettings }) {
+  const { t } = useTranslation();
+
+  return (
+    <fieldset className="mt-4">
+      <strong className="mb-4 pl-[16px] text-lg">{t("profile.pass_verification")}</strong>
+      <p className="text-rentality-secondary">{t("profile.user_data_load_automatically")}</p>
+      <KycVerification t={t} />
+
+      <fieldset className="mt-4 flex flex-col">
+        <strong className="mb-2">{t("profile.verified_user_data")}</strong>
+        <VerifiedUserDataRow title={t("profile.name")} value={savedProfileSettings.fullname} />
+        <VerifiedUserDataRow title={t("profile.document_type")} value={savedProfileSettings.documentType} />
+        <VerifiedUserDataRow
+          title={t("profile.driving_license_number")}
+          value={savedProfileSettings.drivingLicenseNumber}
+        />
+        <VerifiedUserDataRow
+          title={t("profile.driving_license_validity_period")}
+          value={
+            savedProfileSettings.drivingLicenseExpire
+              ? dateFormatShortMonthDateYear(savedProfileSettings.drivingLicenseExpire)
+              : ""
+          }
+        />
+        <VerifiedUserDataRow title={t("profile.issue_country")} value={savedProfileSettings.issueCountry} />
+        <VerifiedUserDataRow title={t("profile.email")} value={savedProfileSettings.email} />
+      </fieldset>
+    </fieldset>
+  );
+}
+
+function VerifiedUserDataRow({ title, value }: { title: string; value: string }) {
+  return (
+    <div className="flex flex-row gap-1">
+      <span className="text-rentality-secondary">{title}:</span>
+      <span>{value}</span>
+    </div>
   );
 }
 

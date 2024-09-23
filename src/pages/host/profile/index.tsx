@@ -27,7 +27,6 @@ export default function Profile() {
             savedProfileSettings={savedProfileSettings}
             saveProfileSettings={saveProfileSettings}
             isHost={true}
-            t={t}
           />
           <div className="flex flex-col min-[560px]:flex-row min-[560px]:gap-20">
             <TripDiscountsForm

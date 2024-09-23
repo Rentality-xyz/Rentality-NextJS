@@ -11,6 +11,9 @@ import { Err, Ok, Result } from "@/model/utils/result";
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { JsonRpcProvider, Wallet } from "ethers";
+import { signKycInfo } from "@/utils/signKYC";
+import { ContractCivicKYCInfo } from "@/model/blockchain/schemas";
+import { getBlockchainTimeFromDate } from "@/utils/formInput";
 
 export type RetrieveCivicDataRequest = {
   requestId: string;
@@ -77,6 +80,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const MANAGER_PRIVATE_KEY = env.MANAGER_PRIVATE_KEY;
   if (isEmpty(MANAGER_PRIVATE_KEY)) {
+    console.error("retrieveCivicData error: private key was not set");
+    res.status(500).json({ error: getErrorMessage("private key was not set") });
+    return;
+  }
+
+  const SIGNER_PRIVATE_KEY = env.SIGNER_PRIVATE_KEY;
+  if (isEmpty(SIGNER_PRIVATE_KEY)) {
     console.error("retrieveCivicData error: private key was not set");
     res.status(500).json({ error: getErrorMessage("private key was not set") });
     return;
@@ -159,7 +169,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
   console.log(`User KYC Commission was reset successfully`);
 
-  res.status(200).json({ success: true });
+  const saveKycInfoResult = await saveKycInfo(
+    allPIIsResult.value.verifiedInformation,
+    SIGNER_PRIVATE_KEY,
+    MANAGER_PRIVATE_KEY
+  );
+
+  if (!saveKycInfoResult.ok) {
+    res.status(500).json({ error: getErrorMessage(`sign KYC info error: ${saveKycInfoResult.error}`) });
+    return;
+  }
+
+  res.status(200).json({
+    success: true,
+  });
   return;
 }
 
@@ -361,6 +384,53 @@ async function resetUserKycCommission(
     console.error("useKycCommission error", e);
     return Err(`useKycCommission error ${e}`);
   }
+}
+
+async function saveKycInfo(
+  verifiedInformation: PiiVerifiedInformation,
+  signerPrivateKey: string,
+  managerPrivateKey: string
+): Promise<Result<boolean, string>> {
+  if (!verifiedInformation || isEmpty(verifiedInformation.address)) {
+    console.error("verifiedInformation or address is empty");
+    return Err("verifiedInformation or address is empty");
+  }
+
+  const signer = new Wallet(signerPrivateKey);
+  const wallet = new Wallet(managerPrivateKey);
+  const contractCivicKYCInfo: ContractCivicKYCInfo = {
+    fullName: verifiedInformation.name,
+    licenseNumber: verifiedInformation.documentNumber,
+    expirationDate: getBlockchainTimeFromDate(moment.utc(verifiedInformation.dateOfExpiry).toDate()),
+    issueCountry: verifiedInformation.issueCountry,
+    email: verifiedInformation.email,
+  };
+
+  const rentality = (await getEtherContractWithSigner("gateway", wallet)) as unknown as IRentalityContract;
+
+  if (rentality === null) {
+    console.error("rentality is null");
+    return Err("rentality is null");
+  }
+  try {
+    //TODO not my but user
+    const savedKYCInfo = await rentality.getMyFullKYCInfo();
+    const transaction = await rentality.setKYCInfo(
+      savedKYCInfo.kyc.name,
+      savedKYCInfo.kyc.mobilePhoneNumber,
+      savedKYCInfo.kyc.profilePhoto,
+      contractCivicKYCInfo,
+      savedKYCInfo.kyc.TCSignature,
+      await signKycInfo(signer, contractCivicKYCInfo)
+    );
+    await transaction.wait();
+    return Ok(true);
+  } catch (e) {
+    console.error("useKycCommission error", e);
+    return Err(`useKycCommission error ${e}`);
+  }
+
+  return Ok(true);
 }
 
 function getErrorMessage(debugMessage: string) {

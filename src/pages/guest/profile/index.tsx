@@ -19,7 +19,6 @@ export default function Profile() {
             savedProfileSettings={savedProfileSettings}
             saveProfileSettings={saveProfileSettings}
             isHost={false}
-            t={t}
           />
           <AddFunds />
         </>

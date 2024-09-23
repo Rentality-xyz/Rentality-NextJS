@@ -9,22 +9,28 @@ import { UTC_TIME_ZONE_ID } from "@/utils/date";
 
 export type ProfileSettings = {
   profilePhotoUrl: string;
-  firstName: string;
-  lastName: string;
+  nickname: string;
   phoneNumber: string;
+  tcSignature: string;
+  fullname: string;
+  documentType: string;
   drivingLicenseNumber: string;
   drivingLicenseExpire: Date | undefined;
-  tcSignature: string;
+  issueCountry: string;
+  email: string;
 };
 
 const emptyProfileSettings: ProfileSettings = {
   profilePhotoUrl: "",
-  firstName: "",
-  lastName: "",
+  nickname: "",
   phoneNumber: "",
+  tcSignature: "",
+  fullname: "",
+  documentType: "",
   drivingLicenseNumber: "",
   drivingLicenseExpire: undefined,
-  tcSignature: "",
+  issueCountry: "",
+  email: "",
 };
 
 const useProfileSettings = () => {
@@ -44,15 +50,18 @@ const useProfileSettings = () => {
 
       let myProfileSettings: ProfileSettings = {
         profilePhotoUrl: getIpfsURIfromPinata(myKYCInfo.kyc.profilePhoto),
-        firstName: myKYCInfo.kyc.name,
-        lastName: myKYCInfo.kyc.surname,
+        nickname: myKYCInfo.kyc.name,
         phoneNumber: formatPhoneNumber(myKYCInfo.kyc.mobilePhoneNumber),
+        tcSignature: myKYCInfo.kyc.TCSignature,
+        fullname: myKYCInfo.kyc.surname,
+        documentType: "driving license",
         drivingLicenseNumber: myKYCInfo.kyc.licenseNumber,
         drivingLicenseExpire:
           myKYCInfo.kyc.expirationDate > 0
             ? getDateFromBlockchainTimeWithTZ(myKYCInfo.kyc.expirationDate, UTC_TIME_ZONE_ID)
             : undefined,
-        tcSignature: myKYCInfo.kyc.TCSignature,
+        issueCountry: myKYCInfo.additionalKYC.issueCountry,
+        email: myKYCInfo.additionalKYC.email,
       };
       return myProfileSettings;
     } catch (e) {
@@ -73,19 +82,16 @@ const useProfileSettings = () => {
           : BigInt(0);
 
       const transaction = await rentalityContract.setKYCInfo(
-        newProfileSettings.firstName,
-        // newProfileSettings.lastName,
+        newProfileSettings.nickname,
         newProfileSettings.phoneNumber,
         newProfileSettings.profilePhotoUrl,
         {
-          fullName: `${newProfileSettings.firstName} ${newProfileSettings.lastName}`,
-          licenseNumber: newProfileSettings.drivingLicenseNumber,
-          expirationDate: expirationDate,
+          fullName: "",
+          licenseNumber: "",
+          expirationDate: BigInt(0),
           issueCountry: "",
           email: "",
         },
-        // newProfileSettings.drivingLicenseNumber,
-        // expirationDate,
         newProfileSettings.tcSignature,
         "0x"
       );

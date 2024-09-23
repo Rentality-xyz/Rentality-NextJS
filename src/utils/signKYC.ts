@@ -1,8 +1,8 @@
 import { Signer } from "ethers";
 import { getContractAddress, getEtherContractWithSigner } from "@/abis";
-import { CivicKYCInfo } from "@/model/blockchain/schemas";
+import { ContractCivicKYCInfo } from "@/model/blockchain/schemas";
 
-export async function signKycInfo(signer: Signer, kyc: CivicKYCInfo) {
+export async function signKycInfo(signer: Signer, kyc: ContractCivicKYCInfo) {
   const chainId = Number((await signer.provider?.getNetwork())?.chainId);
 
   const contractAddress = getContractAddress("verifierService", chainId);
@@ -27,7 +27,7 @@ export async function signKycInfo(signer: Signer, kyc: CivicKYCInfo) {
   return await signer.signTypedData(domain, types, kyc);
 }
 
-export async function checkKYCVerifyFunction(signer: Signer, kyc: CivicKYCInfo) {
+export async function checkKYCVerifyFunction(signer: Signer, kyc: ContractCivicKYCInfo) {
   let contract = await getEtherContractWithSigner("verifierService", signer);
   if (contract === null) {
     console.error("contract is null");
@@ -38,5 +38,5 @@ export async function checkKYCVerifyFunction(signer: Signer, kyc: CivicKYCInfo) 
   let result = await contract.verifyKYCInfo(kyc, signature);
   console.log("Signer address: ", result);
   console.log("verified address: ", result);
-  return signature;
+  return { signature, verifyAddress: result };
 }
