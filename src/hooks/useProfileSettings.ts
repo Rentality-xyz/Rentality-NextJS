@@ -85,15 +85,7 @@ const useProfileSettings = () => {
         newProfileSettings.nickname,
         newProfileSettings.phoneNumber,
         newProfileSettings.profilePhotoUrl,
-        {
-          fullName: "",
-          licenseNumber: "",
-          expirationDate: BigInt(0),
-          issueCountry: "",
-          email: "",
-        },
-        newProfileSettings.tcSignature,
-        "0x"
+        newProfileSettings.tcSignature
       );
 
       await transaction.wait();

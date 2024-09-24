@@ -413,16 +413,7 @@ async function saveKycInfo(
     return Err("rentality is null");
   }
   try {
-    //TODO not my but user
-    const savedKYCInfo = await rentality.getMyFullKYCInfo();
-    const transaction = await rentality.setKYCInfo(
-      savedKYCInfo.kyc.name,
-      savedKYCInfo.kyc.mobilePhoneNumber,
-      savedKYCInfo.kyc.profilePhoto,
-      contractCivicKYCInfo,
-      savedKYCInfo.kyc.TCSignature,
-      await signKycInfo(signer, contractCivicKYCInfo)
-    );
+    const transaction = await rentality.setCivicKYCInfo(verifiedInformation.address, contractCivicKYCInfo);
     await transaction.wait();
     return Ok(true);
   } catch (e) {

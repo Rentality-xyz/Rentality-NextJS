@@ -91,17 +91,16 @@ export interface IRentalityContract {
   getTrip(tripId: bigint): Promise<ContractTripDTO>;
   getTripContactInfo(tripId: bigint): Promise<ContractTripContactInfo>;
   //getMyKYCInfo(): Promise<ContractKYCInfo>;
+  getMyFullKYCInfo(): Promise<ContractFullKYCInfoDTO>;
   setKYCInfo(
     nickName: string,
     mobilePhoneNumber: string,
     profilePhoto: string,
-    kycInfo: ContractCivicKYCInfo,
-    TCSignature: string,
-    KYCSignature: string
+    TCSignature: string
   ): Promise<ContractTransactionResponse>;
   getCarsOfHost(host: string): Promise<ContractPublicHostCarDTO[]>;
   getClaim(claimId: bigint): Promise<ContractFullClaimInfo>;
-  getMyFullKYCInfo(): Promise<ContractFullKYCInfoDTO>;
+  setCivicKYCInfo(user: string, civicKycInfo: ContractCivicKYCInfo): Promise<ContractTransactionResponse>;
 
   createTripRequestWithDelivery(
     request: ContractCreateTripRequestWithDelivery,
