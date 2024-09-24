@@ -92,9 +92,8 @@ const useHostClaims = () => {
     }
 
     try {
-      const claimAmountInEth = claims.find((i) => i.claimId === claimId)?.amountInEth ?? 0;
-
-      let transaction = await rentalityContract.payClaim(BigInt(claimId), {
+      const claimAmountInEth = await rentalityContract.calculateClaimValue(BigInt(claimId));
+      const transaction = await rentalityContract.payClaim(BigInt(claimId), {
         value: claimAmountInEth,
       });
 

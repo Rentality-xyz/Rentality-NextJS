@@ -78,7 +78,6 @@ export interface IRentalityContract {
   checkInByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
   checkOutByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
   getChatInfoForGuest(): Promise<ContractChatInfo[]>;
-  payClaim(claimId: bigint, value: object): Promise<ContractTransactionResponse>;
   getMyClaimsAsGuest(): Promise<ContractFullClaimInfo[]>;
   calculatePayments(carId: bigint, daysOfTrip: bigint, currency: string): Promise<ContractCalculatePaymentsDTO>;
   confirmCheckOut(tripId: bigint): Promise<ContractTransactionResponse>;
@@ -90,6 +89,12 @@ export interface IRentalityContract {
   getCarDetails(carId: bigint): Promise<ContractCarDetails>;
   getTrip(tripId: bigint): Promise<ContractTripDTO>;
   getTripContactInfo(tripId: bigint): Promise<ContractTripContactInfo>;
+  getCarsOfHost(host: string): Promise<ContractPublicHostCarDTO[]>;
+
+  getClaim(claimId: bigint): Promise<ContractFullClaimInfo>;
+  payClaim(claimId: bigint, value: object): Promise<ContractTransactionResponse>;
+  calculateClaimValue(claimId: bigint): Promise<bigint>;
+
   //getMyKYCInfo(): Promise<ContractKYCInfo>;
   getMyFullKYCInfo(): Promise<ContractFullKYCInfoDTO>;
   setKYCInfo(
@@ -98,8 +103,6 @@ export interface IRentalityContract {
     profilePhoto: string,
     TCSignature: string
   ): Promise<ContractTransactionResponse>;
-  getCarsOfHost(host: string): Promise<ContractPublicHostCarDTO[]>;
-  getClaim(claimId: bigint): Promise<ContractFullClaimInfo>;
   setCivicKYCInfo(user: string, civicKycInfo: ContractCivicKYCInfo): Promise<ContractTransactionResponse>;
 
   createTripRequestWithDelivery(
