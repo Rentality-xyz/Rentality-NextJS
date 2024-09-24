@@ -11,7 +11,6 @@ import { Err, Ok, Result } from "@/model/utils/result";
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { JsonRpcProvider, Wallet } from "ethers";
-import { signKycInfo } from "@/utils/signKYC";
 import { ContractCivicKYCInfo } from "@/model/blockchain/schemas";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
 
