@@ -170,8 +170,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const saveKycInfoResult = await saveKycInfo(
     allPIIsResult.value.verifiedInformation,
-    SIGNER_PRIVATE_KEY,
-    MANAGER_PRIVATE_KEY
+    MANAGER_PRIVATE_KEY,
+    providerApiUrl
   );
 
   if (!saveKycInfoResult.ok) {
@@ -387,16 +387,16 @@ async function resetUserKycCommission(
 
 async function saveKycInfo(
   verifiedInformation: PiiVerifiedInformation,
-  signerPrivateKey: string,
-  managerPrivateKey: string
+  managerPrivateKey: string,
+  providerApiUrl: string
 ): Promise<Result<boolean, string>> {
   if (!verifiedInformation || isEmpty(verifiedInformation.address)) {
     console.error("verifiedInformation or address is empty");
     return Err("verifiedInformation or address is empty");
   }
 
-  const signer = new Wallet(signerPrivateKey);
-  const wallet = new Wallet(managerPrivateKey);
+  const provider = new JsonRpcProvider(providerApiUrl);
+  const wallet = new Wallet(managerPrivateKey, provider);
   const contractCivicKYCInfo: ContractCivicKYCInfo = {
     fullName: verifiedInformation.name,
     licenseNumber: verifiedInformation.documentNumber,
