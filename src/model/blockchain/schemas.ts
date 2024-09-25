@@ -294,6 +294,24 @@ export type ContractKYCInfo = {
   TCSignature: string;
 };
 
+export type ContractCivicKYCInfo = {
+  fullName: string;
+  licenseNumber: string;
+  expirationDate: bigint;
+  issueCountry: string;
+  email: string;
+};
+
+export type ContractAdditionalKYCInfo = {
+  issueCountry: string;
+  email: string;
+};
+
+export type ContractFullKYCInfoDTO = {
+  kyc: ContractKYCInfo;
+  additionalKYC: ContractAdditionalKYCInfo;
+};
+
 export type ContractSearchCarWithDistance = {
   car: ContractSearchCar;
   distance: bigint;
@@ -515,6 +533,7 @@ export const Role = {
   Host: BigInt(1),
   Manager: BigInt(2),
   Admin: BigInt(3),
+  KYCManager: BigInt(4),
 };
 
 export type EngineType = bigint;

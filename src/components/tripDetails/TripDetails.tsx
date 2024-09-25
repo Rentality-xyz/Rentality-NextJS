@@ -11,13 +11,11 @@ import moment from "moment";
 import RntContractModal from "@/components/common/rntContractModal";
 import useTripInfo from "@/hooks/useTripInfo";
 import { useRouter } from "next/router";
-import { TFunction as TFunctionNext } from "i18next";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import UserAvatarWithName from "@/components/common/userAvatarWithName";
 import TripContacts from "@/components/common/tripContacts";
 import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
-import RntDriverLicenseVerified from "@/components/common/rntDriverLicenseVerified";
 import { UTC_TIME_ZONE_ID, calculateDays } from "@/utils/date";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import TripCardForDetails from "../tripCard/tripCardForDetails";
@@ -385,9 +383,6 @@ export default function TripInfo() {
                   </div>
                   <table className="m-2">
                     <tbody>
-                      <tr>
-                        <RntDriverLicenseVerified t={t} />
-                      </tr>
                       <tr>
                         <td>{t_details("dl_number")}:</td>
                         <td className="text-end">{tripInfo.guest.drivingLicenseNumber}</td>

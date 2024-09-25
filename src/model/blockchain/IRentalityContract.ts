@@ -8,6 +8,7 @@ import {
   ContractCarInfo,
   ContractCarInfoDTO,
   ContractChatInfo,
+  ContractCivicKYCInfo,
   ContractCreateCarRequest,
   ContractCreateClaimRequest,
   ContractCreateTripRequest,
@@ -15,6 +16,7 @@ import {
   ContractDeliveryData,
   ContractDeliveryPrices,
   ContractFullClaimInfo,
+  ContractFullKYCInfoDTO,
   ContractKYCInfo,
   ContractLocationInfo,
   ContractPublicHostCarDTO,
@@ -76,7 +78,6 @@ export interface IRentalityContract {
   checkInByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
   checkOutByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
   getChatInfoForGuest(): Promise<ContractChatInfo[]>;
-  payClaim(claimId: bigint, value: object): Promise<ContractTransactionResponse>;
   getMyClaimsAsGuest(): Promise<ContractFullClaimInfo[]>;
   calculatePayments(carId: bigint, daysOfTrip: bigint, currency: string): Promise<ContractCalculatePaymentsDTO>;
   confirmCheckOut(tripId: bigint): Promise<ContractTransactionResponse>;
@@ -88,18 +89,21 @@ export interface IRentalityContract {
   getCarDetails(carId: bigint): Promise<ContractCarDetails>;
   getTrip(tripId: bigint): Promise<ContractTripDTO>;
   getTripContactInfo(tripId: bigint): Promise<ContractTripContactInfo>;
-  getMyKYCInfo(): Promise<ContractKYCInfo>;
+  getCarsOfHost(host: string): Promise<ContractPublicHostCarDTO[]>;
+
+  getClaim(claimId: bigint): Promise<ContractFullClaimInfo>;
+  payClaim(claimId: bigint, value: object): Promise<ContractTransactionResponse>;
+  calculateClaimValue(claimId: bigint): Promise<bigint>;
+
+  //getMyKYCInfo(): Promise<ContractKYCInfo>;
+  getMyFullKYCInfo(): Promise<ContractFullKYCInfoDTO>;
   setKYCInfo(
-    name: string,
-    surname: string,
+    nickName: string,
     mobilePhoneNumber: string,
     profilePhoto: string,
-    licenseNumber: string,
-    expirationDate: bigint,
-    tcSignature: string
+    TCSignature: string
   ): Promise<ContractTransactionResponse>;
-  getCarsOfHost(host: string): Promise<ContractPublicHostCarDTO[]>;
-  getClaim(claimId: bigint): Promise<ContractFullClaimInfo>;
+  setCivicKYCInfo(user: string, civicKycInfo: ContractCivicKYCInfo): Promise<ContractTransactionResponse>;
 
   createTripRequestWithDelivery(
     request: ContractCreateTripRequestWithDelivery,

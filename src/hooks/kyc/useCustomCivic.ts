@@ -23,36 +23,6 @@ const useCustomCivic = () => {
   const [commissionFee, setCommissionFee] = useState(0);
   const { gatewayStatus, requestGatewayToken, pendingRequests } = useGateway();
   const [isKycProcessing, setIsKycProcessing] = useState(false);
-  const userUsedCommission = useRef<boolean>(false);
-  const isFetchingPiiData = useRef<boolean>(false);
-
-  useEffect(() => {
-    const getInfo = async () => {
-      console.log(`KycVerification pendingRequests: ${JSON.stringify(pendingRequests)}`);
-
-      if (!pendingRequests) return;
-      if (isFetchingPiiData.current) return;
-      if (isEmpty(pendingRequests.presentationRequestId)) return;
-
-      isFetchingPiiData.current = true;
-      try {
-        var url = new URL(`/api/retrieveCivicData`, window.location.origin);
-        url.searchParams.append("requestId", pendingRequests.presentationRequestId);
-
-        console.log(`calling retrieveCivicData...`);
-
-        const apiResponse = await fetch(url);
-
-        if (!apiResponse.ok) {
-          console.error(`getInfo fetch error: + ${apiResponse.statusText}`);
-          return;
-        }
-      } finally {
-        isFetchingPiiData.current = false;
-      }
-    };
-    getInfo();
-  }, [pendingRequests]);
 
   async function payCommission(): Promise<Result<boolean, string>> {
     if (!rentalityContract) {
@@ -73,7 +43,6 @@ const useCustomCivic = () => {
       await transaction.wait();
 
       setStatus("Commission paid");
-      userUsedCommission.current = false;
       return Ok(true);
     } catch (e) {
       const metamaskErrorResult = tryParseMetamaskError(e);
@@ -87,6 +56,16 @@ const useCustomCivic = () => {
     }
   }
 
+  async function requestKyc() {
+    if (!rentalityContract) return;
+    if (!requestGatewayToken) return;
+    if (!ethereumInfo) return;
+    if (status !== "Commission paid") return;
+    if (!(await rentalityContract.isKycCommissionPaid(ethereumInfo.walletAddress))) return;
+
+    await requestGatewayToken();
+  }
+
   useEffect(() => {
     const checkStatusChange = async () => {
       if (!rentalityContract) return;
@@ -97,6 +76,26 @@ const useCustomCivic = () => {
         return;
       }
 
+      if (gatewayStatus === GatewayStatus.COLLECTING_USER_INFORMATION && !isKycProcessing) {
+        console.log(`KYC processing is started`);
+        setIsKycProcessing(true);
+        return;
+      }
+
+      if (
+        isKycProcessing &&
+        (gatewayStatus === GatewayStatus.CHECKING || gatewayStatus === GatewayStatus.USER_INFORMATION_REJECTED)
+      ) {
+        try {
+          const transaction = await rentalityContract.useKycCommission(ethereumInfo.walletAddress);
+          await transaction.wait();
+        } catch (e) {
+          console.error("checkStatusChange error:" + e);
+        }
+        setStatus("Kyc failed");
+        return;
+      }
+
       if (
         isKycProcessing &&
         (gatewayStatus === GatewayStatus.ERROR ||
@@ -104,50 +103,51 @@ const useCustomCivic = () => {
           gatewayStatus === GatewayStatus.LOCATION_NOT_SUPPORTED ||
           gatewayStatus === GatewayStatus.REJECTED ||
           gatewayStatus === GatewayStatus.REVOKED ||
-          gatewayStatus === GatewayStatus.USER_INFORMATION_REJECTED ||
           gatewayStatus === GatewayStatus.VPN_NOT_SUPPORTED)
       ) {
         setStatus("Kyc failed");
         return;
-      }
-
-      if (gatewayStatus === GatewayStatus.IN_REVIEW && !isKycProcessing) {
-        console.log(`KYC processing is started`);
-        setIsKycProcessing(true);
-        return;
-      }
-
-      if (userUsedCommission.current) return;
-
-      if (isKycProcessing && gatewayStatus !== GatewayStatus.UNKNOWN && gatewayStatus !== GatewayStatus.IN_REVIEW) {
-        try {
-          userUsedCommission.current = true;
-          const transaction = await rentalityContract.useKycCommission(ethereumInfo.walletAddress);
-          await transaction.wait();
-        } catch (e) {
-          userUsedCommission.current = false;
-          console.error("checkStatusChange error:" + e);
-        }
       }
     };
 
     checkStatusChange();
   }, [rentalityContract, ethereumInfo, gatewayStatus, isKycProcessing]);
 
+  const isFetchingPiiData = useRef<boolean>(false);
+  useEffect(() => {
+    const retrieveCivicData = async () => {
+      console.log(`KycVerification pendingRequests: ${JSON.stringify(pendingRequests)}`);
+
+      if (!pendingRequests) return;
+      if (!ethereumInfo) return;
+      if (isFetchingPiiData.current) return;
+      if (isEmpty(pendingRequests.presentationRequestId)) return;
+
+      isFetchingPiiData.current = true;
+      try {
+        var url = new URL(`/api/retrieveCivicData`, window.location.origin);
+        url.searchParams.append("requestId", pendingRequests.presentationRequestId);
+        url.searchParams.append("chainId", ethereumInfo.chainId.toString());
+
+        console.log(`calling retrieveCivicData...`);
+
+        const apiResponse = await fetch(url);
+
+        if (!apiResponse.ok) {
+          console.error(`getInfo fetch error: + ${apiResponse.statusText}`);
+          return;
+        }
+      } finally {
+        isFetchingPiiData.current = false;
+      }
+    };
+    retrieveCivicData();
+  }, [pendingRequests, ethereumInfo]);
+
   //TODO DELETE THIS IS FOR DEBUG
   useEffect(() => {
     console.debug(`gatewayStatus changed: ${gatewayStatus}`);
   }, [gatewayStatus]);
-
-  async function requestKyc() {
-    if (!rentalityContract) return;
-    if (!requestGatewayToken) return;
-    if (!ethereumInfo) return;
-    if (status !== "Commission paid") return;
-    if (!(await rentalityContract.isKycCommissionPaid(ethereumInfo.walletAddress))) return;
-
-    await requestGatewayToken();
-  }
 
   const isInitialized = useRef<boolean>(false);
   useEffect(() => {
