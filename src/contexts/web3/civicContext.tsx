@@ -69,7 +69,7 @@ export const CivicProvider = ({ children }: { children?: React.ReactNode }) => {
       wallet={wallet}
       gatekeeperNetwork={gatekeeperNetwork}
       wrapper={CustomWrapper}
-      options={{ autoShowModal: false }}
+      options={{ autoShowModal: false, disableAutoRestartOnValidationFailure: true }}
     >
       {children}
     </GatewayProvider>
