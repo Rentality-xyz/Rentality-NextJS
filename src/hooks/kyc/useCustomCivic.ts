@@ -87,10 +87,20 @@ const useCustomCivic = () => {
         (gatewayStatus === GatewayStatus.CHECKING || gatewayStatus === GatewayStatus.USER_INFORMATION_REJECTED)
       ) {
         try {
-          const transaction = await rentalityContract.useKycCommission(ethereumInfo.walletAddress);
-          await transaction.wait();
+          var url = new URL(`/api/updateCivic`, window.location.origin);
+          url.searchParams.append("address", ethereumInfo.walletAddress);
+          url.searchParams.append("chainId", ethereumInfo.chainId.toString());
+
+          console.log(`calling updateCivic...`);
+
+          const apiResponse = await fetch(url);
+
+          if (!apiResponse.ok) {
+            console.error(`updateCivic fetch error: + ${apiResponse.statusText}`);
+            return;
+          }
         } catch (e) {
-          console.error("checkStatusChange error:" + e);
+          console.error("updateCivic error:" + e);
         }
         setStatus("Kyc failed");
         return;
