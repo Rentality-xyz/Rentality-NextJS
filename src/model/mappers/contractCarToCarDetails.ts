@@ -58,6 +58,7 @@ export const mapContractCarToCarDetails = async (
     fuelPricePerGal: fuelPricePerGal,
     fullBatteryChargePrice: fullBatteryChargePrice,
     timeBufferBetweenTripsInMin: Number(carInfo.timeBufferBetweenTripsInSec) / 60,
-    isInsuranceIncluded: carInfo.insuranceIncluded,
+    isGuestInsuranceRequired: carInfo.isGuestInsuranceRequired,
+    insurancePerDayPriceInUsd: Number(carInfo.insurancePerDayPriceInUsdCents) / 100,
   };
 };

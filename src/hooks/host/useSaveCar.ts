@@ -121,9 +121,10 @@ const useSaveCar = () => {
         engineType: getEngineTypeCode(dataToSave.engineTypeText),
         engineParams: engineParams,
         timeBufferBetweenTripsInSec: BigInt(dataToSave.timeBufferBetweenTripsInMin * 60),
-        insuranceIncluded: dataToSave.isInsuranceIncluded,
         locationInfo: locationResult.value,
         currentlyListed: dataToSave.currentlyListed,
+        isGuestInsuranceRequired: dataToSave.isGuestInsuranceRequired,
+        insurancePerDayPriceInUsdCents: BigInt(dataToSave.insurancePerDayPriceInUsd * 100),
       };
 
       const transaction = await rentalityContract.addCar(request);
@@ -203,7 +204,8 @@ const useSaveCar = () => {
         ),
         timeBufferBetweenTripsInSec: BigInt(hostCarInfo.timeBufferBetweenTripsInMin * 60),
         securityDepositPerTripInUsdCents: BigInt(hostCarInfo.securityDeposit * 100),
-        insuranceIncluded: hostCarInfo.isInsuranceIncluded,
+        isGuestInsuranceRequired: hostCarInfo.isGuestInsuranceRequired,
+        insurancePerDayPriceInUsdCents: BigInt(hostCarInfo.insurancePerDayPriceInUsd * 100),
       };
 
       let transaction: ContractTransactionResponse;
