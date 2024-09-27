@@ -1,4 +1,3 @@
-import RntFileButton from "@/components/common/rntFileButton";
 import RntInput from "@/components/common/rntInput";
 import RntSelect from "@/components/common/rntSelect";
 import {
@@ -8,7 +7,6 @@ import {
   UNLIMITED_MILES_VALUE_TEXT,
   verifyCar,
 } from "@/model/HostCarInfo";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 import RntCheckbox from "@/components/common/rntCheckbox";
@@ -20,12 +18,10 @@ import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
 import { useRouter } from "next/navigation";
-import { resizeImage } from "@/utils/image";
 import { Controller, useForm } from "react-hook-form";
 import { carEditFormSchema, CarEditFormValues } from "./carEditFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import RntInputMultiline from "@/components/common/rntInputMultiline";
-import { isEmpty } from "@/utils/string";
 import { TRANSMISSION_AUTOMATIC_STRING, TRANSMISSION_MANUAL_STRING } from "@/model/Transmission";
 import RntValidationError from "@/components/common/RntValidationError";
 import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
@@ -34,6 +30,7 @@ import RntCarYearSelect from "@/components/common/rntCarYearSelect";
 import RntVINCheckingInput from "@/components/common/rntVINCheckingInput";
 import * as React from "react";
 import { placeDetailsToLocationInfoWithTimeZone } from "@/utils/location";
+import CarAddPhoto from "./CarAddPhoto";
 
 export default function CarEditForm({
   initValue,
@@ -43,14 +40,12 @@ export default function CarEditForm({
 }: {
   initValue?: HostCarInfo;
   isNewCar: boolean;
-  saveCarInfo: (hostCarInfo: HostCarInfo, image: File) => Promise<boolean>;
+  saveCarInfo: (hostCarInfo: HostCarInfo) => Promise<boolean>;
   t: TFunction;
 }) {
   const router = useRouter();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError } = useRntSnackbars();
-
-  //const [carInfoFormParams, setCarInfoFormParams] = useState<HostCarInfo>(initValue ?? emptyHostCarInfo);
 
   const { register, control, handleSubmit, formState, setValue, watch } = useForm<CarEditFormValues>({
     defaultValues:
@@ -62,7 +57,7 @@ export default function CarEditForm({
             model: initValue.model,
             releaseYear: initValue.releaseYear,
 
-            image: initValue.image,
+            images: initValue.images,
 
             name: initValue.name,
             licensePlate: initValue.licensePlate,
@@ -91,13 +86,12 @@ export default function CarEditForm({
             timeBufferBetweenTripsInMin: initValue.timeBufferBetweenTripsInMin,
             currentlyListed: initValue.currentlyListed,
           }
-        : { carId: 0, isLocationEdited: true, currentlyListed: true },
+        : { carId: 0, isLocationEdited: true, currentlyListed: true, images: [] },
     resolver: zodResolver(carEditFormSchema),
   });
   const { errors, isSubmitting } = formState;
 
   const [message, setMessage] = useState<string>("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
   const [autocomplete, setAutocomplete] = useState(initValue?.locationInfo.address ?? "");
 
   const pricePerDay = watch("pricePerDay");
@@ -108,7 +102,6 @@ export default function CarEditForm({
 
   const engineTypeText = watch("engineTypeText");
   const isElectricEngine = engineTypeText === "Electro";
-  const image = watch("image");
   const isLocationEdited = watch("isLocationEdited");
   const locationInfo = watch("locationInfo");
 
@@ -122,57 +115,6 @@ export default function CarEditForm({
     return t("vehicles." + name, options);
   };
 
-  const loadCarInfoFromJson = async (file: File) => {
-    try {
-      const fileText = await file.text();
-      const data = JSON.parse(fileText);
-      const carKeys = Object.keys(emptyHostCarInfo);
-      type CarKeys = keyof CarEditFormValues;
-
-      Object.keys(data).forEach((key) => {
-        if (carKeys.includes(key)) {
-          setValue(key as CarKeys, data[key]);
-        }
-      });
-    } catch (error) {}
-  };
-
-  const onChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files?.length) {
-      return;
-    }
-
-    let file = e.target.files[0];
-
-    if (file.type === "application/json") {
-      await loadCarInfoFromJson(file);
-      return;
-    }
-
-    if (file.type.startsWith("image/")) {
-      file = await resizeImage(file, 1000);
-    } else if (file.size > 5 * 1024 * 1024) {
-      alert("File is too big");
-      return;
-    }
-
-    setImageFile(file);
-
-    const reader = new FileReader();
-    reader.onload = async function (event) {
-      const fileNameExt = file.name.substr(file.name.lastIndexOf(".") + 1);
-      if (fileNameExt == "heic") {
-        const convertHeicToPng = await import("@/utils/heic2any");
-        const convertedFile = await convertHeicToPng.default(file);
-        setValue("image", convertedFile.localUrl);
-      } else {
-        setValue("image", event.target?.result?.toString() ?? "");
-      }
-    };
-
-    reader.readAsDataURL(file);
-  };
-
   async function onFormSubmit(formData: CarEditFormValues) {
     const carInfoFormParams: HostCarInfo = {
       carId: formData.carId ?? 0,
@@ -180,7 +122,7 @@ export default function CarEditForm({
       brand: formData.brand,
       model: formData.model,
       releaseYear: formData.releaseYear,
-      image: formData.image,
+      images: formData.images,
       name: formData.name,
       licensePlate: formData.licensePlate,
       licenseState: formData.licenseState,
@@ -209,7 +151,7 @@ export default function CarEditForm({
     };
 
     const isValidForm = verifyCar(carInfoFormParams);
-    const isImageUploaded = !isNewCar || imageFile !== null;
+    const isImageUploaded = !isNewCar || carInfoFormParams.images.length > 0;
 
     if (!isValidForm && !isImageUploaded) {
       showDialog(t("vehicles.fill_fields_photo"));
@@ -226,7 +168,7 @@ export default function CarEditForm({
 
     try {
       setMessage(t("vehicles.wait_loading"));
-      const result = await saveCarInfo(carInfoFormParams, imageFile!);
+      const result = await saveCarInfo(carInfoFormParams);
 
       if (!result) {
         throw new Error("handleSave error");
@@ -244,7 +186,22 @@ export default function CarEditForm({
     }
   }
 
-  const handleBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  async function loadCarInfoFromJson(file: File) {
+    try {
+      const fileText = await file.text();
+      const data = JSON.parse(fileText);
+      const carKeys = Object.keys(emptyHostCarInfo);
+      type CarKeys = keyof CarEditFormValues;
+
+      Object.keys(data).forEach((key) => {
+        if (carKeys.includes(key)) {
+          setValue(key as CarKeys, data[key]);
+        }
+      });
+    } catch (error) {}
+  }
+
+  async function handleBack(e: React.MouseEvent<HTMLButtonElement>) {
     const action = (
       <>
         {DialogActions.OK(() => {
@@ -255,7 +212,7 @@ export default function CarEditForm({
       </>
     );
     showDialog(t("vehicles.lost_unsaved"), action);
-  };
+  }
 
   return (
     <GoogleMapsProvider libraries={["places"]} language="en">
@@ -345,25 +302,22 @@ export default function CarEditForm({
           </div>
         </div>
 
-        <div className="mt-4">
-          <div className="mb-4 text-lg">
-            <strong>{t_car("photo")}</strong>
-          </div>
-          <RntFileButton
-            className="h-16 w-40"
-            disabled={!isNewCar}
-            onChange={onChangeFile}
-            accept="image/png,image/jpeg"
-          >
-            {t("common.upload")}
-          </RntFileButton>
-          <div className="mt-8 h-60 w-80 overflow-hidden rounded-2xl bg-gray-200 bg-opacity-40">
-            {!isEmpty(image) ? (
-              <Image className="h-full w-full object-cover" width={1000} height={1000} src={image} alt="" />
-            ) : null}
-          </div>
-          <RntValidationError validationError={errors.image?.message?.toString()} />
-        </div>
+        <Controller
+          name="images"
+          control={control}
+          render={({ field }) => (
+            <>
+              <CarAddPhoto
+                carImages={field.value}
+                onCarImagesChanged={(newValue) => {
+                  field.onChange(newValue);
+                }}
+                onJsonFileLoaded={loadCarInfoFromJson}
+              />
+              <RntValidationError validationError={errors.images?.message?.toString()} />
+            </>
+          )}
+        />
 
         <div className="mt-4">
           <div className="mb-4 text-lg">

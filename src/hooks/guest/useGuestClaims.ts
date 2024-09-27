@@ -15,7 +15,7 @@ import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClai
 import { useChat } from "@/contexts/chat/firebase/chatContext";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { SMARTCONTRACT_VERSION } from "@/abis";
-import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
+import { getIpfsURI } from "@/utils/ipfsUtils";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 
 const useGuestClaims = () => {
@@ -156,7 +156,7 @@ const useGuestClaims = () => {
                     hostPhoneNumber: formatPhoneNumber(i.hostPhoneNumber),
                     guestPhoneNumber: formatPhoneNumber(i.guestPhoneNumber),
                     isIncomingClaim: i.claim.isHostClaims,
-                    fileUrls: i.claim.photosUrl.split("|").map((url) => getIpfsURIfromPinata(url)),
+                    fileUrls: i.claim.photosUrl.split("|").map((url) => getIpfsURI(url)),
                     timeZoneId: i.timeZoneId,
                   };
                   return item;

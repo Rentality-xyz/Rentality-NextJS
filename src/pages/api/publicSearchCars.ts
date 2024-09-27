@@ -12,7 +12,7 @@ import {
 import { emptyContractLocationInfo, validateContractSearchCarWithDistance } from "@/model/blockchain/schemas_utils";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Wallet } from "ethers";
@@ -273,7 +273,7 @@ async function formatSearchAvailableCarsContractResponse(
       let item: SearchCarInfo = {
         carId: Number(i.car.carId),
         ownerAddress: i.car.host.toString(),
-        image: getIpfsURIfromPinata(metaData.image),
+        image: getIpfsURI(metaData.mainImage),
         brand: i.car.brand,
         model: i.car.model,
         year: i.car.yearOfProduction.toString(),

@@ -1,11 +1,26 @@
 import { HostCarInfo } from "@/model/HostCarInfo";
 import { isEmpty } from "./string";
+import { UploadedCarImage } from "@/model/FileToUpload";
 
-export function getIpfsURIfromPinata(pinataURI: string) {
-  if (isEmpty(pinataURI)) return "";
-  const fileHash = pinataURI.split("/").pop();
+export function getIpfsHashFromUrl(pinataURI: string) {
+  if (!pinataURI || pinataURI.length === 0) return "";
+  return pinataURI.split("/").pop() ?? "";
+}
+
+function getIpfsURIfromPinata(pinataURI: string) {
+  const fileHash = getIpfsHashFromUrl(pinataURI);
   if (isEmpty(fileHash)) return "";
   return "https://ipfs.io/ipfs/" + fileHash;
+}
+
+export function getIpfsURI(pinataURI: string) {
+  if (isEmpty(pinataURI)) return "";
+  return getIpfsURIfromPinata(pinataURI);
+}
+
+export function getIpfsURIs(pinataURI: string[]) {
+  if (!pinataURI || pinataURI.length === 0) return [];
+  return pinataURI.map((uri) => getIpfsURIfromPinata(uri));
 }
 
 export function getPinataGatewayURIfromPinata(pinataURI: string) {
@@ -67,7 +82,7 @@ export function getNftJSONFromCarInfo({
   brand,
   model,
   releaseYear,
-  image,
+  images,
   name,
   licensePlate,
   licenseState,
@@ -139,19 +154,28 @@ export function getNftJSONFromCarInfo({
       value: tankVolumeInGal.toString(),
     },
   ];
+  const imageUrls: UploadedCarImage[] = images.filter((i) => "url" in i);
+  imageUrls.sort((a, b) => {
+    if (a.isPrimary) return -1;
+    if (b.isPrimary) return 1;
+    return 0;
+  });
+
   return {
     name,
     description,
-    image,
+    image: imageUrls[0]?.url ?? "",
     attributes,
+    allImages: imageUrls.map((i) => i.url),
   };
 }
 
 export function parseMetaData(meta: any) {
   return {
-    image: meta.image ?? "",
-    name: meta.name ?? "",
-    description: meta.description ?? "",
+    mainImage: (meta.image as string) ?? "",
+    images: (meta.allImages as string[]) ?? [],
+    name: (meta.name as string) ?? "",
+    description: (meta.description as string) ?? "",
     vinNumber: meta.attributes?.find((x: any) => x.trait_type === META_KEY_VIN_NUMBER)?.value ?? "",
     licensePlate: meta.attributes?.find((x: any) => x.trait_type === META_KEY_LICENSE_PLATE)?.value ?? "",
     licenseState: meta.attributes?.find((x: any) => x.trait_type === META_KEY_LICENSE_STATE)?.value ?? "",

@@ -90,7 +90,7 @@ function UserCommonInformationForm({
         console.log("Revoking ObjectURL");
         URL.revokeObjectURL(field.value);
       }
-      const fileNameExt = file.name.substr(file.name.lastIndexOf(".") + 1);
+      const fileNameExt = file.name.slice(file.name.lastIndexOf(".") + 1);
       if (fileNameExt == "heic") {
         const convertHeicToPng = await import("@/utils/heic2any");
         const convertedFile = await convertHeicToPng.default(file);

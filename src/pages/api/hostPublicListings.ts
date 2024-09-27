@@ -4,7 +4,7 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractPublicHostCarDTO } from "@/model/blockchain/schemas";
 import { validateContractPublicHostCarDTO } from "@/model/blockchain/schemas_utils";
 import { env } from "@/utils/env";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Provider, Wallet } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -81,7 +81,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               const item: BaseCarInfo = {
                 carId: Number(i.carId),
                 ownerAddress: hostAddress,
-                image: getIpfsURIfromPinata(metaData.image),
+                image: getIpfsURI(metaData.mainImage),
                 brand: i.brand,
                 model: i.model,
                 year: i.yearOfProduction.toString(),

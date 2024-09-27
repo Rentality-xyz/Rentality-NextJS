@@ -45,7 +45,7 @@ function ClaimAddPhoto({
       const fileUrl = event.target?.result as string;
 
       if (currentIndex === -1) {
-        const fileNameExt = file.name.substr(file.name.lastIndexOf(".") + 1);
+        const fileNameExt = file.name.slice(file.name.lastIndexOf(".") + 1);
         if (fileNameExt == "heic") {
           const convertHeicToPng = await import("@/utils/heic2any");
           const convertedFile = await convertHeicToPng.default(file);

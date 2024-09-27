@@ -2,10 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { formatPhoneNumber, getDateFromBlockchainTime, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
-import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
+import { getIpfsURI } from "@/utils/ipfsUtils";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { Claim, getClaimTypeTextFromClaimType, getClaimStatusTextFromStatus } from "@/model/Claim";
-import { useChat } from "@/contexts/chat/firebase/chatContext";
 import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
 import {
   ContractCreateClaimRequest,
@@ -157,7 +156,7 @@ const useHostClaims = () => {
                     hostPhoneNumber: formatPhoneNumber(i.hostPhoneNumber),
                     guestPhoneNumber: formatPhoneNumber(i.guestPhoneNumber),
                     isIncomingClaim: !i.claim.isHostClaims,
-                    fileUrls: i.claim.photosUrl.split("|").map((url) => getIpfsURIfromPinata(url)),
+                    fileUrls: i.claim.photosUrl.split("|").map((url) => getIpfsURI(url)),
                     timeZoneId: i.timeZoneId,
                   };
                   return item;

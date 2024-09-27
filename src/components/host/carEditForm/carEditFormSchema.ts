@@ -4,6 +4,19 @@ import { emptyLocationInfo } from "@/model/LocationInfo";
 import { TRANSMISSION_AUTOMATIC_STRING, TRANSMISSION_MANUAL_STRING } from "@/model/Transmission";
 import { z } from "zod";
 
+const carFileFormSchema = z.union([
+  z.object({
+    file: z.instanceof(File),
+    localUrl: z.string(),
+    isPrimary: z.boolean(),
+  }),
+  z.object({
+    url: z.string(),
+    isDeleted: z.boolean().optional(),
+    isPrimary: z.boolean(),
+  }),
+]);
+
 const locationInfoFormSchema = z.object({
   address: z.string().trim().min(1, "Address is too short"),
   country: z.string().trim().min(1, "Country is too small"),
@@ -48,7 +61,7 @@ const defaultCarEditFormSchema = z.object({
     .max(2100, "Release year is too big")
     .int("Release year must be an integer"),
 
-  image: z.string().min(1, "Please, download an image"),
+  images: z.array(carFileFormSchema).min(1, "Please, download an image"),
 
   name: z.string().trim().min(1, "Name is too short").max(25, "Name is too long"),
   licensePlate: z.string().trim().min(1, "License plate is too short").max(15, "License plate is too long"),

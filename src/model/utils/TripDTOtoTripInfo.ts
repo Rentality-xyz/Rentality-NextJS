@@ -1,5 +1,5 @@
 import { TripInfo } from "@/model/TripInfo";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { isEmpty } from "@/utils/string";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
@@ -29,7 +29,7 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
 
     carId: Number(tripDTO.trip.carId),
     carVinNumber: metaData.vinNumber,
-    image: getIpfsURIfromPinata(metaData.image),
+    image: getIpfsURI(metaData.mainImage),
     carDescription: metaData.description,
     carDoorsNumber: metaData.doorsNumber,
     carSeatsNumber: metaData.seatsNumber,

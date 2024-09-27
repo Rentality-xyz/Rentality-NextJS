@@ -1,10 +1,11 @@
 import FormData from "form-data";
 import axios from "axios";
 import { env } from "./env";
+import { Err, Ok, Result } from "@/model/utils/result";
 
 const pinataJwt = env.NEXT_PUBLIC_USE_PINATA_JWT;
 
-export const uploadJSONToIPFS = async (JSONBody: {}, fileNameTag?: string, keyValues?: {}) => {
+export async function uploadJSONToIPFS(JSONBody: {}, fileNameTag?: string, keyValues?: {}) {
   const url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;
 
   const pinataData = {
@@ -35,9 +36,9 @@ export const uploadJSONToIPFS = async (JSONBody: {}, fileNameTag?: string, keyVa
         message: error.message,
       } as const;
     });
-};
+}
 
-export const uploadFileToIPFS = async (file: File, fileNameTag?: string, keyValues?: {}) => {
+export async function uploadFileToIPFS(file: File, fileNameTag?: string, keyValues?: {}) {
   const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
 
   if (!fileNameTag) {
@@ -92,4 +93,23 @@ export const uploadFileToIPFS = async (file: File, fileNameTag?: string, keyValu
         message: error.message,
       } as const;
     });
-};
+}
+
+export async function deleteFileFromIPFS(ipfsHash: string): Promise<Result<boolean, string>> {
+  const url = `https://api.pinata.cloud/pinning/unpin/${ipfsHash}`;
+
+  return axios
+    .delete(url, {
+      headers: {
+        Authorization: `Bearer ${pinataJwt}`,
+      },
+    })
+    .then((response) => {
+      console.log("file deleted", response.data.IpfsHash);
+      return Ok(true);
+    })
+    .catch((error) => {
+      console.error(error);
+      return Err(error.message);
+    });
+}
