@@ -15,8 +15,9 @@ export type ContractCarInfo = {
   currentlyListed: boolean;
   geoVerified: boolean;
   timeZoneId: string;
-  insuranceIncluded: boolean;
   locationHash: string;
+  isGuestInsuranceRequired: boolean;
+  insurancePerDayPriceInUsdCents: bigint;
 };
 
 export type ContractPublicHostCarDTO = {
@@ -50,9 +51,10 @@ export type ContractCreateCarRequest = {
   milesIncludedPerDay: bigint;
   timeBufferBetweenTripsInSec: bigint;
   geoApiKey: string;
-  insuranceIncluded: boolean;
   locationInfo: ContractSignedLocationInfo;
   currentlyListed: boolean;
+  isGuestInsuranceRequired: boolean;
+  insurancePerDayPriceInUsdCents: bigint;
 };
 
 export type ContractUpdateCarInfoRequest = {
@@ -63,7 +65,8 @@ export type ContractUpdateCarInfoRequest = {
   milesIncludedPerDay: bigint;
   timeBufferBetweenTripsInSec: bigint;
   currentlyListed: boolean;
-  insuranceIncluded: boolean;
+  isGuestInsuranceRequired: boolean;
+  insurancePerDayPriceInUsdCents: bigint;
 };
 
 export type ContractSearchCarParams = {
