@@ -119,32 +119,34 @@ export default function Search() {
 
   const setHighlightedCar = useCallback(
     (carID: number) => {
-      const newSearchResult = { ...searchResult };
+      setSearchResult((prev) => {
+        const newSearchResult = { ...prev };
 
-      newSearchResult.carInfos.forEach((item: SearchCarInfo) => {
-        item.highlighted = item.carId == carID;
+        newSearchResult.carInfos.forEach((item: SearchCarInfo) => {
+          item.highlighted = item.carId == carID;
+        });
+        return newSearchResult;
       });
-
-      setSearchResult(newSearchResult);
     },
-    [searchResult]
+    [setSearchResult]
   );
 
   const sortCars = useCallback(() => {
-    const newSearchResult = { ...searchResult };
+    setSearchResult((prev) => {
+      const newSearchResult = { ...prev };
 
-    newSearchResult.carInfos.sort((a: SearchCarInfo, b: SearchCarInfo) => {
-      if (a.highlighted && !b.highlighted) {
-        return -1;
-      } else if (!a.highlighted && b.highlighted) {
-        return 1;
-      } else {
-        return 0;
-      }
+      newSearchResult.carInfos.sort((a: SearchCarInfo, b: SearchCarInfo) => {
+        if (a.highlighted && !b.highlighted) {
+          return -1;
+        } else if (!a.highlighted && b.highlighted) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      return newSearchResult;
     });
-
-    setSearchResult(newSearchResult);
-  }, [searchResult]);
+  }, [setSearchResult]);
 
   useEffect(() => {
     if (sortBy === undefined) return;
