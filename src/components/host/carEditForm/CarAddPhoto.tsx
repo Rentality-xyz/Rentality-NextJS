@@ -108,7 +108,7 @@ function CarAddPhoto({
 
   return (
     <div className="my-2">
-      <p className="mb-1 mt-2 pl-3.5">{t("vehicles.upload_photos_title")}</p>
+      <p className="mb-1 mt-2 pl-4">{t("vehicles.upload_photos_title")}</p>
       <div className="mt-4 flex flex-row gap-4">
         {carImages
           .filter((i) => "file" in i || !i.isDeleted)

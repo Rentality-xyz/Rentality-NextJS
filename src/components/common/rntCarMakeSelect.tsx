@@ -36,6 +36,7 @@ export default function RntCarMakeSelect({
       id={id}
       className={className}
       label={label}
+      labelClassName="pl-4"
       value={value}
       validationError={validationError}
       readOnly={readOnly || false}
