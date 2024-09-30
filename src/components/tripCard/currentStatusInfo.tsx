@@ -213,7 +213,7 @@ function CurrentStatusInfo({
       </div>
 
       {!isAdditionalActionHidden || tripInfo.allowedActions.length === 0 ? null : (
-        <div className="flex flex-col gap-4 max-md:flex-row 2xl:flex-row">
+        <div className="flex flex-col gap-4 sm:flex-row md:flex-col">
           {(tripInfo.status === TripStatus.CheckedInByHost || tripInfo.status === TripStatus.Started) && isHost ? (
             <RntButton
               className="w-full px-4"
@@ -256,7 +256,7 @@ function CurrentStatusInfo({
                       }
                     }}
                   >
-                    {"I confirm finish trip"}
+                      {action.text}
                   </RntButton>
                 ) : (
                   <RntButtonTransparent

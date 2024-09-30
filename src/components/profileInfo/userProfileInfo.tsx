@@ -275,10 +275,10 @@ function UserDriverLicenseVerification({ savedProfileSettings }: { savedProfileS
   return (
     <fieldset className="mt-4">
       <strong className="mb-4 pl-[16px] text-lg">{t("profile.pass_verification")}</strong>
-      <p className="text-rentality-secondary">{t("profile.user_data_load_automatically")}</p>
+      <p className="text-rentality-secondary pl-4">{t("profile.user_data_load_automatically")}</p>
       <KycVerification t={t} />
 
-      <fieldset className="mt-4 flex flex-col">
+      <fieldset className="mt-4 flex flex-col pl-4">
         <strong className="mb-2">{t("profile.verified_user_data")}</strong>
         <VerifiedUserDataRow title={t("profile.name")} value={savedProfileSettings.fullname} />
         <VerifiedUserDataRow title={t("profile.document_type")} value={savedProfileSettings.documentType} />

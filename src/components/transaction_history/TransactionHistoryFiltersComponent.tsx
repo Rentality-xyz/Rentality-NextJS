@@ -36,6 +36,7 @@ function TransactionHistoryFiltersComponent({ defaultFilters, onApply }: Transac
         className="sm:max-w-[15rem]"
         id="dateFrom"
         label={t("common.from")}
+        labelClassName="pl-4"
         type="date"
         value={dateToHtmlDateFormat(filters.dateFrom)}
         onChange={(e) => {
@@ -49,6 +50,7 @@ function TransactionHistoryFiltersComponent({ defaultFilters, onApply }: Transac
         className="sm:max-w-[15rem]"
         id="dateTo"
         label={t("common.to")}
+        labelClassName="pl-4"
         type="date"
         value={dateToHtmlDateFormat(filters.dateTo)}
         onChange={(e) => {
@@ -70,6 +72,7 @@ function TransactionHistoryFiltersComponent({ defaultFilters, onApply }: Transac
         className="sm:max-w-[15rem]"
         id="status"
         label={t("all_trips_table.tripStatus")}
+        labelClassName="pl-4"
         value={filters.status?.toString()}
         onChange={(e) => {
           setFilters((prev) => ({ ...prev, status: e.target.value !== "none" ? BigInt(e.target.value) : undefined }));
