@@ -218,7 +218,7 @@ export default function CarEditForm({
     <GoogleMapsProvider libraries={["places"]} language="en">
       <form onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
         <div className="mt-4">
-          <div className="mb-4 text-lg">
+          <div className="mb-4 text-lg pl-4">
             <strong>{t_car("car")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
@@ -320,7 +320,7 @@ export default function CarEditForm({
         />
 
         <div className="mt-4">
-          <div className="mb-4 text-lg">
+          <div className="mb-4 text-lg pl-4">
             <strong>{t_car("car_basics")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
@@ -328,6 +328,7 @@ export default function CarEditForm({
               className="lg:w-60"
               id="name"
               label={t_car("car_name")}
+              labelClassName = "pl-4"
               placeholder="e.g. Eleanor"
               readOnly={!isNewCar}
               {...register("name")}
@@ -337,6 +338,7 @@ export default function CarEditForm({
               className="lg:w-60"
               id="licensePlate"
               label={t_car("licence_plate")}
+              labelClassName = "pl-4"
               placeholder="e.g. ABC-12D"
               readOnly={!isNewCar}
               {...register("licensePlate")}
@@ -346,6 +348,7 @@ export default function CarEditForm({
               className="lg:w-60"
               id="licenseState"
               label={t_car("licence_state")}
+              labelClassName = "pl-4"
               placeholder="e.g. Florida"
               readOnly={!isNewCar}
               {...register("licenseState")}
@@ -360,6 +363,7 @@ export default function CarEditForm({
                   className="lg:w-60"
                   id="engineType"
                   label={t_car("engine_type")}
+                  labelClassName = "pl-4"
                   readOnly={!isNewCar}
                   validationError={errors.engineTypeText?.message?.toString()}
                   value={field.value}
@@ -380,7 +384,7 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="mb-4 text-lg">
+          <div className="mb-4 text-lg pl-4">
             <strong>{t_car("basic_details")}</strong>
           </div>
           <div className="details flex flex-wrap gap-4">
@@ -388,6 +392,7 @@ export default function CarEditForm({
               className="w-[48%] lg:w-40"
               id="seatsNumber"
               label={t_car("seats_amount")}
+              labelClassName = "pl-4"
               placeholder="e.g. 5"
               readOnly={!isNewCar}
               {...register("seatsNumber", { valueAsNumber: true })}
@@ -397,6 +402,7 @@ export default function CarEditForm({
               className="w-[48%] lg:w-40"
               id="doorsNumber"
               label={t_car("doors")}
+              labelClassName = "pl-4"
               placeholder="e.g. 2"
               readOnly={!isNewCar}
               {...register("doorsNumber", { valueAsNumber: true })}
@@ -408,6 +414,7 @@ export default function CarEditForm({
                   className="w-[48%] lg:w-40"
                   id="tankVolumeInGal"
                   label={t_car("tank_size")}
+                  labelClassName = "pl-4"
                   placeholder="e.g. 16"
                   readOnly={!isNewCar}
                   {...register("tankVolumeInGal", {
@@ -421,6 +428,7 @@ export default function CarEditForm({
                   className="w-[48%] lg:w-40"
                   id="transmission"
                   label={t_car("transmission")}
+                  labelClassName = "pl-4"
                   readOnly={!isNewCar}
                   {...register("transmission")}
                   validationError={errors.transmission?.message?.toString()}
@@ -436,6 +444,7 @@ export default function CarEditForm({
               className="w-[48%] lg:w-40"
               id="color"
               label={t_car("color")}
+              labelClassName = "pl-4"
               placeholder="e.g. Green"
               readOnly={!isNewCar}
               {...register("color")}
@@ -445,7 +454,7 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="mb-4 text-lg">
+          <div className="mb-4 text-lg pl-4">
             <strong>{t_car("more_info")}</strong>
           </div>
           <div className="flex flex-col">
@@ -461,7 +470,7 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="mb-4 text-lg">
+          <div className="mb-4 text-lg pl-4">
             <strong>{t_car("location")}</strong>
           </div>
           <div className="mb-4 flex flex-row items-end gap-4">
@@ -490,6 +499,7 @@ export default function CarEditForm({
               <RntInput
                 className="lg:w-full"
                 id="address"
+                labelClassName="pl-4"
                 label={isNewCar ? t_car("address") : t_car("saved_address")}
                 placeholder="Miami"
                 value={autocomplete}
@@ -511,6 +521,7 @@ export default function CarEditForm({
               className="lg:w-40"
               id="country"
               label={t_car("country")}
+              labelClassName="pl-4"
               placeholder="USA"
               readOnly={true}
               value={locationInfo?.country}
@@ -519,6 +530,7 @@ export default function CarEditForm({
               className="lg:w-40"
               id="state"
               label={t_car("state")}
+              labelClassName="pl-4"
               placeholder="e.g. Florida"
               readOnly={true}
               value={locationInfo?.state}
@@ -527,6 +539,7 @@ export default function CarEditForm({
               className="lg:w-40"
               id="city"
               label={t_car("city")}
+              labelClassName="pl-4"
               placeholder="e.g. Miami"
               readOnly={true}
               value={locationInfo?.city}
@@ -535,6 +548,7 @@ export default function CarEditForm({
               className="w-[48%] lg:w-60"
               id="locationLatitude"
               label={t_car("location_lat")}
+              labelClassName="pl-4"
               placeholder="e.g. 42.123456"
               readOnly={true}
               value={locationInfo?.latitude}
@@ -543,6 +557,7 @@ export default function CarEditForm({
               className="w-[48%] lg:w-60"
               id="locationLongitude"
               label={t_car("location_long")}
+              labelClassName="pl-4"
               placeholder="e.g. 42.123456"
               readOnly={true}
               value={locationInfo?.longitude}
@@ -551,7 +566,7 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="mb-4 text-lg">
+          <div className="mb-4 text-lg pl-4">
             <strong>{t_car("included_distance")}</strong>
           </div>
           <Controller
@@ -571,7 +586,7 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="mb-4 text-lg">
+          <div className="mb-4 text-lg pl-4">
             <strong>{t_car("price")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
@@ -579,6 +594,7 @@ export default function CarEditForm({
               className="lg:w-60"
               id="pricePerDay"
               label={t_car("rent")}
+              labelClassName="pl-4"
               placeholder="e.g. 100"
               {...register("pricePerDay", { valueAsNumber: true })}
               validationError={errors.pricePerDay?.message?.toString()}
@@ -587,6 +603,7 @@ export default function CarEditForm({
               className="lg:w-60"
               id="securityDeposit"
               label={t_car("secure_dep")}
+              labelClassName="pl-4"
               placeholder="e.g. 300"
               {...register("securityDeposit", { valueAsNumber: true })}
               validationError={errors.securityDeposit?.message?.toString()}
@@ -596,6 +613,7 @@ export default function CarEditForm({
                 className="lg:w-60"
                 id="fuelPricePerGal"
                 label={t_car("fuel_price")}
+                labelClassName="pl-4"
                 placeholder="e.g. 5.00"
                 {...register("fuelPricePerGal", {
                   setValueAs: (v) => (v === "" || v === Number.isNaN(v) ? undefined : parseInt(v, 10)),
@@ -630,7 +648,7 @@ export default function CarEditForm({
 
         {isElectricEngine ? (
           <div className={`mt-4 ${isElectricEngine ? "" : "hidden"}`}>
-            <div className="mb-4 text-lg">
+            <div className="mb-4 text-lg pl-4">
               <strong>{t_car("battery_charge")}</strong>
             </div>
             <Controller
@@ -653,7 +671,7 @@ export default function CarEditForm({
         ) : null}
 
         <div className="mt-4">
-          <div className="mb-4 text-lg">
+          <div className="mb-4 text-lg pl-4">
             <strong>{t_car("management")}</strong>
           </div>
           <div className="mb-4 flex flex-wrap gap-4">
@@ -661,6 +679,7 @@ export default function CarEditForm({
               className="lg:w-60"
               id="timeBufferBetweenTrips"
               label={t_car("time_buffer")}
+              labelClassName="pl-4"
               {...register("timeBufferBetweenTripsInMin", { valueAsNumber: true })}
               validationError={errors.timeBufferBetweenTripsInMin?.message?.toString()}
             >
@@ -683,6 +702,7 @@ export default function CarEditForm({
                   className="lg:w-60"
                   id="listed"
                   label={t_car("listing_status")}
+                  labelClassName="pl-4"
                   value={field.value ? "true" : "false"}
                   onChange={(e) => {
                     field.onChange(e.target.value === "true");
@@ -741,6 +761,7 @@ const MilesIncludedPerDay = ({
           className="lg:w-60"
           id="milesIncludedPerDay"
           label={t_car("max_mileage")}
+          labelClassName="pl-4"
           placeholder="e.g. 200"
           value={milesIncludedPerDay}
           onChange={(e) => {

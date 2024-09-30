@@ -100,11 +100,13 @@ export default function RntVINCheckingInput({
       <RntInput
         id={id}
         label={label}
+        labelClassName = "pl-4"
         placeholder={placeholder}
         className={className}
         readOnly={readOnly}
         value={value}
         validationError={validationError}
+        validationClassName="pl-4"
         onChange={(e) => {
           const vinNumber = e.target.value;
           if (vinNumber.length === 17) {
