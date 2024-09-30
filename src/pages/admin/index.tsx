@@ -18,6 +18,7 @@ export default function Admin() {
     saveClaimWaitingTime,
     grantAdminRole,
     updateKycInfoForAddress,
+    createTestTrip,
   } = useAdminPanelInfo();
   const [ethToWithdraw, setEthToWithdraw] = useState("0");
   const [newPlatformFee, setNewPlatformFee] = useState("");
@@ -25,6 +26,7 @@ export default function Admin() {
   const [newClaimWaitingTime, setNewClaimWaitingTime] = useState("");
   const [addressForAdminRole, setAddressForAdminRole] = useState("0x");
   const [addressToUpdateKyc, setAddressToUpdateKyc] = useState("0x");
+  const [testCarId, setTestCarId] = useState("");
   const { showError } = useRntSnackbars();
   const { t } = useTranslation();
   const t_admin: TFunction = (name, options) => {
@@ -144,6 +146,16 @@ export default function Admin() {
     }
   }
 
+  async function handleCreateTestTrip() {
+    if (isEmpty(testCarId)) return;
+
+    try {
+      await createTestTrip(testCarId);
+    } catch (e) {
+      showError("handleCreateTestTrip error: " + e);
+    }
+  }
+
   return (
     <>
       <PageTitle title="Contract info" />
@@ -255,6 +267,20 @@ export default function Admin() {
         }
         onButtonClick={() => {
           handleUpdateKycInfo();
+        }}
+      />
+      <RntInputWithButton
+        id="create_test_trip_request"
+        placeholder="car id"
+        label="Create 3 days trip request for car (with -1% price) "
+        value={testCarId}
+        onChange={(e) => {
+          setTestCarId(e.target.value);
+        }}
+        buttonText={"Create"}
+        buttonDisabled={isEmpty(testCarId)}
+        onButtonClick={() => {
+          handleCreateTestTrip();
         }}
       />
     </>

@@ -204,6 +204,47 @@ const useAdminPanelInfo = () => {
     }
   }
 
+  async function createTestTrip(carId: string) {
+    if (!rentalityAdminGateway) {
+      console.error("createTestTrip error: rentalityAdminGateway is null");
+      return false;
+    }
+    if (!ethereumInfo) {
+      console.error("createTestTrip error: ethereumInfo is null");
+      return false;
+    }
+
+    try {
+      setIsLoading(true);
+
+      const rentalityContract = (await getEtherContractWithSigner(
+        "gateway",
+        ethereumInfo.signer
+      )) as unknown as IRentalityContract;
+
+      const paymentsNeeded = await rentalityContract.calculatePayments(BigInt(carId), BigInt(3), ETH_DEFAULT_ADDRESS);
+
+      const tripRequest = {
+        carId: BigInt(carId),
+        startDateTime: getBlockchainTimeFromDate(moment().toDate()),
+        endDateTime: getBlockchainTimeFromDate(moment().add(3, "days").toDate()),
+        currencyType: ETH_DEFAULT_ADDRESS,
+      };
+
+      const transaction = await rentalityContract.createTripRequest(tripRequest, {
+        value: BigInt(Math.ceil(Number(paymentsNeeded.totalPrice) * 0.991)),
+      });
+      await transaction.wait();
+
+      return true;
+    } catch (e) {
+      console.error("createTestTrip error" + e);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   const isIniialized = useRef<boolean>(false);
 
   useEffect(() => {
@@ -272,6 +313,7 @@ const useAdminPanelInfo = () => {
     saveClaimWaitingTime,
     grantAdminRole,
     updateKycInfoForAddress,
+    createTestTrip,
   } as const;
 };
 
