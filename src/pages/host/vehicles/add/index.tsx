@@ -12,8 +12,8 @@ export default function AddCar() {
       <PageTitle title={t("vehicles.title")} />
       <CarEditForm
         isNewCar={true}
-        saveCarInfo={async (hostCarInfo, image) => {
-          return await addNewCar(hostCarInfo, image);
+        saveCarInfo={async (hostCarInfo) => {
+          return await addNewCar(hostCarInfo);
         }}
         t={t}
       />

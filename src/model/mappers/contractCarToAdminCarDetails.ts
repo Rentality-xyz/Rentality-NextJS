@@ -1,5 +1,5 @@
 import { ContractCarDetails } from "../blockchain/schemas";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { AdminCarDetails } from "../admin/AdminCarDetails";
 
 export const mapContractCarToAdminCarDetails = async (
@@ -11,7 +11,7 @@ export const mapContractCarToAdminCarDetails = async (
 
   return {
     carId: Number(car.carId),
-    carPhotoUrl: getIpfsURIfromPinata(metaData.image),
+    carPhotoUrl: getIpfsURI(metaData.mainImage),
     userAddress: car.locationInfo.userAddress,
     country: car.locationInfo.country,
     state: car.locationInfo.state,

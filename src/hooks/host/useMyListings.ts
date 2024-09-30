@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BaseCarInfo } from "@/model/BaseCarInfo";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
 import { validateContractCarInfoDTO } from "@/model/blockchain/schemas_utils";
@@ -36,7 +36,7 @@ const useMyListings = () => {
                 let item: BaseCarInfo = {
                   carId: Number(i.carInfo.carId),
                   ownerAddress: i.carInfo.createdBy.toString(),
-                  image: getIpfsURIfromPinata(metaData.image),
+                  image: getIpfsURI(metaData.mainImage),
                   brand: i.carInfo.brand,
                   model: i.carInfo.model,
                   year: i.carInfo.yearOfProduction.toString(),

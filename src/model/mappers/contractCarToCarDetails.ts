@@ -1,4 +1,4 @@
-import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getIpfsURI, getIpfsURIs, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { ContractCarDetails, ContractCarInfo } from "../blockchain/schemas";
 import { HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE_TEXT } from "../HostCarInfo";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "../EngineType";
@@ -21,7 +21,7 @@ export const mapContractCarToCarDetails = async (
   return {
     carId: Number(carInfo.carId),
     ownerAddress: carInfo.createdBy.toString(),
-    image: getIpfsURIfromPinata(metaData.image),
+    images: metaData.images.map((image, index) => ({ url: getIpfsURI(image), isPrimary: index === 0 })),
     vinNumber: carInfo.carVinNumber,
     brand: carInfo.brand,
     model: carInfo.model,

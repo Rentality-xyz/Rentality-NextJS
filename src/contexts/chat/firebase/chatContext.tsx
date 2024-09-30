@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 import { ChatInfo } from "@/model/ChatInfo";
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
 import { useRentality } from "../../rentalityContext";
 import { isEmpty } from "@/utils/string";
@@ -149,11 +149,11 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
                     guestAddress: ci.guestAddress,
                     guestName: ci.guestName,
-                    guestPhotoUrl: getIpfsURIfromPinata(ci.guestPhotoUrl),
+                    guestPhotoUrl: getIpfsURI(ci.guestPhotoUrl),
 
                     hostAddress: ci.hostAddress,
                     hostName: ci.hostName,
-                    hostPhotoUrl: getIpfsURIfromPinata(ci.hostPhotoUrl),
+                    hostPhotoUrl: getIpfsURI(ci.hostPhotoUrl),
 
                     tripTitle: `${tripStatus} trip with ${ci.hostName} ${ci.carBrand} ${ci.carModel}`,
                     startDateTime: getDateFromBlockchainTime(ci.startDateTime),
@@ -164,7 +164,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
                     isSeen: true,
                     seenAt: null,
 
-                    carPhotoUrl: getIpfsURIfromPinata(metaData.image),
+                    carPhotoUrl: getIpfsURI(metaData.mainImage),
                     tripStatus: tripStatus,
                     carTitle: `${ci.carBrand} ${ci.carModel} ${ci.carYearOfProduction}`,
                     carLicenceNumber: metaData.licensePlate,
@@ -224,11 +224,11 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
               guestAddress: tripInfo.trip.guest,
               guestName: tripInfo.trip.guestName,
-              guestPhotoUrl: getIpfsURIfromPinata(tripInfo.guestPhotoUrl),
+              guestPhotoUrl: getIpfsURI(tripInfo.guestPhotoUrl),
 
               hostAddress: tripInfo.trip.host,
               hostName: tripInfo.trip.hostName,
-              hostPhotoUrl: getIpfsURIfromPinata(tripInfo.hostPhotoUrl),
+              hostPhotoUrl: getIpfsURI(tripInfo.hostPhotoUrl),
 
               tripTitle: `${tripStatus} trip with ${tripInfo.trip.hostName} ${tripInfo.brand} ${tripInfo.model}`,
               startDateTime: getDateFromBlockchainTime(tripInfo.trip.startDateTime),
@@ -239,7 +239,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
               isSeen: true,
               seenAt: null,
 
-              carPhotoUrl: getIpfsURIfromPinata(metaData.image),
+              carPhotoUrl: getIpfsURI(metaData.mainImage),
               tripStatus: tripStatus,
               carTitle: `${tripInfo.brand} ${tripInfo.model} ${tripInfo.yearOfProduction}`,
               carLicenceNumber: metaData.licensePlate,

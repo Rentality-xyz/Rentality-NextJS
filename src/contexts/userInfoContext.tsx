@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRentality } from "./rentalityContext";
-import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
+import { getIpfsURI } from "@/utils/ipfsUtils";
 import { useEthereum } from "./web3/ethereumContext";
 import { ContractFullKYCInfoDTO, ContractKYCInfo } from "@/model/blockchain/schemas";
 import { tryGetEnsName } from "@/utils/ether";
@@ -52,7 +52,7 @@ export const UserInfoProvider = ({ children }: { children?: React.ReactNode }) =
           ensName: await tryGetEnsName(ethereumInfo.provider, ethereumInfo.walletAddress),
           firstName: myKYCInfo.kyc.name,
           lastName: myKYCInfo.kyc.name,
-          profilePhotoUrl: getIpfsURIfromPinata(myKYCInfo.kyc.profilePhoto),
+          profilePhotoUrl: getIpfsURI(myKYCInfo.kyc.profilePhoto),
           drivingLicense: myKYCInfo.kyc.licenseNumber,
         });
       } catch (e) {

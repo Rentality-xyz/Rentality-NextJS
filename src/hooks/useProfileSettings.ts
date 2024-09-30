@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
+import { getIpfsURI } from "@/utils/ipfsUtils";
 import { useRentality } from "@/contexts/rentalityContext";
 import { formatPhoneNumber, getBlockchainTimeFromDate, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import moment from "moment";
@@ -49,7 +49,7 @@ const useProfileSettings = () => {
       if (myKYCInfo == null) return;
 
       let myProfileSettings: ProfileSettings = {
-        profilePhotoUrl: getIpfsURIfromPinata(myKYCInfo.kyc.profilePhoto),
+        profilePhotoUrl: getIpfsURI(myKYCInfo.kyc.profilePhoto),
         nickname: myKYCInfo.kyc.name,
         phoneNumber: formatPhoneNumber(myKYCInfo.kyc.mobilePhoneNumber),
         tcSignature: myKYCInfo.kyc.TCSignature,
