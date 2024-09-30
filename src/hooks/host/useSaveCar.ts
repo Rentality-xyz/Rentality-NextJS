@@ -228,6 +228,10 @@ const useSaveCar = () => {
       }
 
       await transaction.wait();
+
+      transaction = await rentalityContract.updateCarTokenUri(updateCarRequest.carId, metadataURL);
+      await transaction.wait();
+
       setDataSaved(true);
       return true;
     } catch (e) {
