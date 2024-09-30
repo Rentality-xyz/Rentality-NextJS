@@ -16,8 +16,8 @@ export type ContractCarInfo = {
   geoVerified: boolean;
   timeZoneId: string;
   locationHash: string;
-  isGuestInsuranceRequired: boolean;
-  insurancePerDayPriceInUsdCents: bigint;
+  insuranceRequired: boolean;
+  insurancePriceInUsdCents: bigint;
 };
 
 export type ContractPublicHostCarDTO = {
@@ -53,8 +53,8 @@ export type ContractCreateCarRequest = {
   geoApiKey: string;
   locationInfo: ContractSignedLocationInfo;
   currentlyListed: boolean;
-  isGuestInsuranceRequired: boolean;
-  insurancePerDayPriceInUsdCents: bigint;
+  insuranceRequired: boolean;
+  insurancePriceInUsdCents: bigint;
 };
 
 export type ContractUpdateCarInfoRequest = {
@@ -65,8 +65,8 @@ export type ContractUpdateCarInfoRequest = {
   milesIncludedPerDay: bigint;
   timeBufferBetweenTripsInSec: bigint;
   currentlyListed: boolean;
-  isGuestInsuranceRequired: boolean;
-  insurancePerDayPriceInUsdCents: bigint;
+  insuranceRequired: boolean;
+  insurancePriceInUsdCents: bigint;
 };
 
 export type ContractSearchCarParams = {
@@ -277,6 +277,7 @@ export type ContractTripReceiptDTO = {
   endFuelLevel: bigint;
   startOdometer: bigint;
   endOdometer: bigint;
+  insuranceFee: bigint;
 };
 
 export type ContractCalculatePaymentsDTO = {
@@ -454,6 +455,40 @@ export type ContractAllCarsDTO = {
   totalPageCount: bigint;
 };
 
+export type ContractInsuranceCarInfo = {
+  required: boolean;
+  priceInUsdCents: bigint;
+};
+
+export type ContractSaveInsuranceRequest = {
+  companyName: string;
+  policyNumber: string;
+  photo: string;
+  comment: string;
+  insuranceType: InsuranceType;
+};
+
+export type ContractInsuranceInfo = {
+  companyName: string;
+  policyNumber: string;
+  photo: string;
+  comment: string;
+  insuranceType: InsuranceType;
+  createdTime: bigint;
+  createdBy: string;
+};
+
+export type ContractInsuranceDTO = {
+  tripId: bigint;
+  carBrand: string;
+  carModel: string;
+  carYear: bigint;
+  insuranceInfo: ContractInsuranceInfo;
+  createdByHost: boolean;
+  creatorPhoneNumber: string;
+  creatorFullName: string;
+};
+
 export type TripStatus = bigint;
 export const TripStatus = {
   Pending: BigInt(0), // Created
@@ -537,6 +572,13 @@ export const Role = {
   Manager: BigInt(2),
   Admin: BigInt(3),
   KYCManager: BigInt(4),
+};
+
+export type InsuranceType = bigint;
+export const InsuranceType = {
+  None: BigInt(0),
+  General: BigInt(1),
+  OneTime: BigInt(2),
 };
 
 export type EngineType = bigint;

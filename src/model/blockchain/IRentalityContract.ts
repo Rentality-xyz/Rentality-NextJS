@@ -17,9 +17,11 @@ import {
   ContractDeliveryPrices,
   ContractFullClaimInfo,
   ContractFullKYCInfoDTO,
+  ContractInsuranceDTO,
   ContractKYCInfo,
   ContractLocationInfo,
   ContractPublicHostCarDTO,
+  ContractSaveInsuranceRequest,
   ContractSearchCarParams,
   ContractSearchCarWithDistance,
   ContractSignedLocationInfo,
@@ -128,6 +130,14 @@ export interface IRentalityContract {
   payKycCommission(currency: string, value: object): Promise<ContractTransactionResponse>;
   isKycCommissionPaid(user: string): Promise<boolean>;
   useKycCommission(user: string): Promise<ContractTransactionResponse>;
+
+  //insurance
+  getInsurancesBy(host: boolean): Promise<ContractInsuranceDTO[]>;
+  saveTripInsuranceInfo(
+    tripId: bigint,
+    insuranceInfo: ContractSaveInsuranceRequest
+  ): Promise<ContractTransactionResponse>;
+  saveGuestInsurance(insuranceInfo: ContractSaveInsuranceRequest): Promise<ContractTransactionResponse>;
 
   // temporary is not working (reversed)
   isCarDetailsConfirmed(carId: bigint): Promise<boolean>;

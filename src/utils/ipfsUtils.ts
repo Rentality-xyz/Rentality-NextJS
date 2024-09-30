@@ -154,6 +154,7 @@ export function getNftJSONFromCarInfo({
       value: tankVolumeInGal.toString(),
     },
   ];
+
   const imageUrls: UploadedCarImage[] = images.filter((i) => "url" in i);
   imageUrls.sort((a, b) => {
     if (a.isPrimary) return -1;
