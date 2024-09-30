@@ -109,6 +109,7 @@
       "kyc_commission_error": "Save KYC commission error:",
       "claim_waiting_time_error": "Save claim waiting time error:",
       "grant_admin_role_error": "Grant admin role error:",
+      "update_kyc_error": "Update KYC info error:",
       "commission_value_range": "Value should be between 0.0001% and 100% (min value is 0.0001%)",
       "kyc_commission_value_range": "Value should be greater than 0",
       "claim_waiting_time_value_range": "Value should be greater than 0",

@@ -291,7 +291,9 @@ function UserDriverLicenseVerification({ savedProfileSettings }: { savedProfileS
           value={
             savedProfileSettings.drivingLicenseExpire
               ? dateFormatShortMonthDateYear(savedProfileSettings.drivingLicenseExpire)
-              : ""
+              : !isEmpty(savedProfileSettings.drivingLicenseNumber)
+                ? "Permanent"
+                : ""
           }
         />
         <VerifiedUserDataRow title={t("profile.issue_country")} value={savedProfileSettings.issueCountry} />

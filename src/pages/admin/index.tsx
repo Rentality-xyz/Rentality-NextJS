@@ -17,12 +17,14 @@ export default function Admin() {
     saveKycCommission,
     saveClaimWaitingTime,
     grantAdminRole,
+    updateKycInfoForAddress,
   } = useAdminPanelInfo();
   const [ethToWithdraw, setEthToWithdraw] = useState("0");
   const [newPlatformFee, setNewPlatformFee] = useState("");
   const [newKycCommission, setNewKycCommission] = useState("");
   const [newClaimWaitingTime, setNewClaimWaitingTime] = useState("");
   const [addressForAdminRole, setAddressForAdminRole] = useState("0x");
+  const [addressToUpdateKyc, setAddressToUpdateKyc] = useState("0x");
   const { showError } = useRntSnackbars();
   const { t } = useTranslation();
   const t_admin: TFunction = (name, options) => {
@@ -132,6 +134,16 @@ export default function Admin() {
     }
   };
 
+  async function handleUpdateKycInfo() {
+    if (isEmpty(addressToUpdateKyc) || !addressToUpdateKyc.startsWith("0x") || addressToUpdateKyc.length !== 42) return;
+
+    try {
+      await updateKycInfoForAddress(addressToUpdateKyc);
+    } catch (e) {
+      showError(t_errors("update_kyc_error") + e);
+    }
+  }
+
   return (
     <>
       <PageTitle title="Contract info" />
@@ -227,6 +239,22 @@ export default function Admin() {
         }
         onButtonClick={() => {
           handleGrantAdminRole();
+        }}
+      />
+      <RntInputWithButton
+        id="update_kyc_for_address"
+        placeholder="0x"
+        label="Update KYC info for address (only KYC manager)"
+        value={addressToUpdateKyc}
+        onChange={(e) => {
+          setAddressToUpdateKyc(e.target.value);
+        }}
+        buttonText={"Update"}
+        buttonDisabled={
+          isEmpty(addressToUpdateKyc) || !addressToUpdateKyc.startsWith("0x") || addressToUpdateKyc.length !== 42
+        }
+        onButtonClick={() => {
+          handleUpdateKycInfo();
         }}
       />
     </>
