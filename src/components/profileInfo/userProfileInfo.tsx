@@ -6,7 +6,6 @@ import { resizeImage } from "@/utils/image";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
-import { useRouter } from "next/router";
 import { ChangeEvent, memo, useEffect } from "react";
 import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
@@ -55,7 +54,6 @@ function UserCommonInformationForm({
   saveProfileSettings: (newProfileSettings: ProfileSettings) => Promise<boolean>;
   isHost: boolean;
 }) {
-  const router = useRouter();
   const ethereumInfo = useEthereum();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
@@ -152,7 +150,6 @@ function UserCommonInformationForm({
         throw new Error("Save profile info error");
       }
       showInfo(t("common.info.success"));
-      router.push(isHost ? "/host" : "/guest");
     } catch (e) {
       console.error("handleSubmit error:" + e);
       showError(t("profile.save_err"));
