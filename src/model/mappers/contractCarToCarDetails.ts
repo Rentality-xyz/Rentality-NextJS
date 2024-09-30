@@ -1,10 +1,11 @@
-import { getIpfsURI, getIpfsURIs, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
-import { ContractCarDetails, ContractCarInfo } from "../blockchain/schemas";
+import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { ContractCarDetails, ContractCarInfo, ContractInsuranceCarInfo } from "../blockchain/schemas";
 import { HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE_TEXT } from "../HostCarInfo";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "../EngineType";
 
 export const mapContractCarToCarDetails = async (
   carInfo: ContractCarInfo,
+  insuranceInfo: ContractInsuranceCarInfo,
   carInfoDetails: ContractCarDetails,
   tokenURI: string
 ): Promise<HostCarInfo> => {
@@ -58,7 +59,7 @@ export const mapContractCarToCarDetails = async (
     fuelPricePerGal: fuelPricePerGal,
     fullBatteryChargePrice: fullBatteryChargePrice,
     timeBufferBetweenTripsInMin: Number(carInfo.timeBufferBetweenTripsInSec) / 60,
-    isGuestInsuranceRequired: carInfo.insuranceRequired,
-    insurancePerDayPriceInUsd: Number(carInfo.insurancePriceInUsdCents) / 100,
+    isGuestInsuranceRequired: insuranceInfo.required,
+    insurancePerDayPriceInUsd: Number(insuranceInfo.priceInUsdCents) / 100,
   };
 };

@@ -15,9 +15,8 @@ export type ContractCarInfo = {
   currentlyListed: boolean;
   geoVerified: boolean;
   timeZoneId: string;
+  insuranceIncluded: boolean;
   locationHash: string;
-  insuranceRequired: boolean;
-  insurancePriceInUsdCents: bigint;
 };
 
 export type ContractPublicHostCarDTO = {
@@ -487,6 +486,11 @@ export type ContractInsuranceDTO = {
   createdByHost: boolean;
   creatorPhoneNumber: string;
   creatorFullName: string;
+};
+
+export type ContractCarInfoWithInsurance = {
+  carInfo: ContractCarInfo;
+  insuranceInfo: ContractInsuranceCarInfo;
 };
 
 export type TripStatus = bigint;

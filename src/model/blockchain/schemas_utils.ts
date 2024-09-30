@@ -73,8 +73,7 @@ const emptyContractCarInfo: ContractCarInfo = {
   timeBufferBetweenTripsInSec: BigInt(0),
   timeZoneId: "",
   locationHash: "",
-  insuranceRequired: false,
-  insurancePriceInUsdCents: BigInt(0),
+  insuranceIncluded: true,
 };
 
 export function validateContractCarInfo(obj: ContractCarInfo): obj is ContractCarInfo {

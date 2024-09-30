@@ -7,6 +7,7 @@ import {
   ContractCarDetails,
   ContractCarInfo,
   ContractCarInfoDTO,
+  ContractCarInfoWithInsurance,
   ContractChatInfo,
   ContractCivicKYCInfo,
   ContractCreateCarRequest,
@@ -41,7 +42,7 @@ export interface IRentalityContract {
     location: ContractSignedLocationInfo,
     geoApiKey: string
   ): Promise<ContractTransactionResponse>;
-  getCarInfoById(carId: bigint): Promise<ContractCarInfo>;
+  getCarInfoById(carId: bigint): Promise<ContractCarInfoWithInsurance>;
   getMyCars(): Promise<ContractCarInfoDTO[]>;
   getTripsAsHost(): Promise<ContractTripDTO[]>;
   approveTripRequest(tripId: bigint): Promise<ContractTransactionResponse>;
