@@ -1,6 +1,6 @@
 import { HostCarInfo } from "@/model/HostCarInfo";
 import { isEmpty } from "./string";
-import { UploadedCarImage } from "@/model/FileToUpload";
+import { isUploadedCarImage, UploadedCarImage } from "@/model/FileToUpload";
 
 export function getIpfsHashFromUrl(pinataURI: string) {
   if (!pinataURI || pinataURI.length === 0) return "";
@@ -154,7 +154,7 @@ export function getNftJSONFromCarInfo({
       value: tankVolumeInGal.toString(),
     },
   ];
-  const imageUrls: UploadedCarImage[] = images.filter((i) => "url" in i);
+  const imageUrls: UploadedCarImage[] = images.filter(isUploadedCarImage);
   imageUrls.sort((a, b) => {
     if (a.isPrimary) return -1;
     if (b.isPrimary) return 1;
