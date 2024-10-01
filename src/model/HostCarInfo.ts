@@ -43,6 +43,7 @@ export type HostCarInfo = {
   bodyType: string;
   trunkSize: string;
   isInsuranceIncluded: boolean;
+  isCarMetadataEdited: boolean;
 };
 
 export const emptyHostCarInfo: HostCarInfo = {
@@ -76,6 +77,7 @@ export const emptyHostCarInfo: HostCarInfo = {
   fullBatteryChargePrice: 0,
   timeBufferBetweenTripsInMin: 0,
   isInsuranceIncluded: false,
+  isCarMetadataEdited: false,
 };
 
 export const verifyCar = (carInfoFormParams: HostCarInfo) => {
