@@ -173,7 +173,7 @@ export function getNftJSONFromCarInfo({
 export function parseMetaData(meta: any) {
   return {
     mainImage: (meta.image as string) ?? "",
-    images: (meta.allImages as string[]) ?? [],
+    images: (meta.allImages as string[]) ?? [meta.image as string] ?? [],
     name: (meta.name as string) ?? "",
     description: (meta.description as string) ?? "",
     vinNumber: meta.attributes?.find((x: any) => x.trait_type === META_KEY_VIN_NUMBER)?.value ?? "",
