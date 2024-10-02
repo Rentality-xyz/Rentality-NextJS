@@ -248,63 +248,95 @@ export default function CarEditForm({
               name="brand"
               control={control}
               defaultValue=""
-              render={({ field: { onChange, value } }) => (
-                <RntCarMakeSelect
-                  id="brand"
-                  className="lg:w-60"
-                  label={t_car("brand")}
-                  readOnly={!isNewCar}
-                  value={value}
-                  onMakeSelect={(newID, newMake) => {
-                    onChange(newMake);
-                    setSelectedMakeID(newID);
-                    setIsCarMetadataEdited(true);
-                  }}
-                  validationError={errors.brand?.message?.toString()}
-                />
-              )}
+              render={({ field: { onChange, value } }) =>
+                isNewCar ? (
+                  <RntCarMakeSelect
+                    id="brand"
+                    className="lg:w-60"
+                    label={t_car("brand")}
+                    value={value}
+                    onMakeSelect={(newID, newMake) => {
+                      onChange(newMake);
+                      setSelectedMakeID(newID);
+                      setIsCarMetadataEdited(true);
+                    }}
+                    validationError={errors.brand?.message?.toString()}
+                  />
+                ) : (
+                  <RntInput
+                    className="lg:w-60"
+                    id="brand_text"
+                    label={t_car("brand")}
+                    labelClassName="pl-4"
+                    readOnly={true}
+                    value={value}
+                  />
+                )
+              }
             />
             <Controller
               name="model"
               control={control}
               defaultValue=""
-              render={({ field: { onChange, value } }) => (
-                <RntCarModelSelect
-                  id="model"
-                  className="lg:w-60"
-                  label={t_car("model")}
-                  make_id={selectedMakeID}
-                  readOnly={!isNewCar}
-                  value={value}
-                  onModelSelect={(newID: string, newModel) => {
-                    onChange(newModel);
-                    setSelectedModelID(newID);
-                    setIsCarMetadataEdited(true);
-                  }}
-                  validationError={errors.model?.message?.toString()}
-                />
-              )}
+              render={({ field: { onChange, value } }) =>
+                isNewCar ? (
+                  <RntCarModelSelect
+                    id="model"
+                    className="lg:w-60"
+                    label={t_car("model")}
+                    make_id={selectedMakeID}
+                    readOnly={!isNewCar}
+                    value={value}
+                    onModelSelect={(newID: string, newModel) => {
+                      onChange(newModel);
+                      setSelectedModelID(newID);
+                      setIsCarMetadataEdited(true);
+                    }}
+                    validationError={errors.model?.message?.toString()}
+                  />
+                ) : (
+                  <RntInput
+                    className="lg:w-60"
+                    id="model_text"
+                    label={t_car("model")}
+                    labelClassName="pl-4"
+                    readOnly={true}
+                    value={value}
+                  />
+                )
+              }
             />
             <Controller
               name="releaseYear"
               control={control}
               defaultValue={0}
-              render={({ field: { onChange, value } }) => (
-                <RntCarYearSelect
-                  id="releaseYear"
-                  className="lg:w-60"
-                  label={t_car("release")}
-                  make_id={selectedMakeID}
-                  model_id={selectedModelID}
-                  readOnly={!isNewCar}
-                  value={value}
-                  onYearSelect={(newYear) => {
-                    onChange(newYear);
-                    setIsCarMetadataEdited(true);
-                  }}
-                  validationError={errors.releaseYear?.message?.toString()}
-                />
-              )}
+              render={({ field: { onChange, value } }) =>
+                isNewCar ? (
+                  <RntCarYearSelect
+                    id="releaseYear"
+                    className="lg:w-60"
+                    label={t_car("release")}
+                    make_id={selectedMakeID}
+                    model_id={selectedModelID}
+                    readOnly={!isNewCar}
+                    value={value}
+                    onYearSelect={(newYear) => {
+                      onChange(newYear);
+                      setIsCarMetadataEdited(true);
+                    }}
+                    validationError={errors.releaseYear?.message?.toString()}
+                  />
+                ) : (
+                  <RntInput
+                    className="lg:w-60"
+                    id="releaseYear_text"
+                    label={t_car("release")}
+                    labelClassName="pl-4"
+                    readOnly={true}
+                    value={value}
+                  />
+                )
+              }
             />
           </div>
         </div>
