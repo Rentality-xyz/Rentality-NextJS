@@ -67,6 +67,7 @@ function CarAddPhoto({
             localUrl: fileUrl,
             isPrimary: updatedCarImages[currentIndex].isPrimary,
           });
+          onCarImagesChange(updatedCarImages);
         } else {
           onCarImagesChange(
             carImages.map((value, index) => {
