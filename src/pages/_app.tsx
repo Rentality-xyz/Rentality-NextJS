@@ -38,7 +38,7 @@ export default function App({ Component, pageProps }: AppProps) {
   }, []);
 
   useEffect(() => {
-    if (env.NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS) {
+    if (env.NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS === "true") {
       import("eruda").then((eruda) => eruda.default.init({ useShadowDom: true, autoScale: true }));
     }
   }, []);
