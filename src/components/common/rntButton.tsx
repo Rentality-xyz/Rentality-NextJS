@@ -2,7 +2,9 @@ import { cn } from "@/utils";
 import React from "react";
 import { height, minHeight } from "@mui/system";
 
-interface RntButtonProps extends React.ComponentPropsWithoutRef<"button"> {minHeight?: string;}
+interface RntButtonProps extends React.ComponentPropsWithoutRef<"button"> {
+  minHeight?: string;
+}
 
 export default function RntButton({ className, type, children, minHeight = "48px", ...restProps }: RntButtonProps) {
   const bgColor = !className?.includes("bg-") ? "buttonGradient" : "";

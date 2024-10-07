@@ -256,7 +256,7 @@ function CurrentStatusInfo({
                       }
                     }}
                   >
-                      {action.text}
+                    {action.text}
                   </RntButton>
                 ) : (
                   <RntButtonTransparent

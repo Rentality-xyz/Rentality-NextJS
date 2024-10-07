@@ -1,7 +1,9 @@
 import { cn } from "@/utils";
 import { MouseEventHandler } from "react";
 
-interface RntButtonTransparentProps extends React.ComponentPropsWithoutRef<"button"> {minHeight?: string;}
+interface RntButtonTransparentProps extends React.ComponentPropsWithoutRef<"button"> {
+  minHeight?: string;
+}
 
 export default function RntButtonTransparent({
   className,
