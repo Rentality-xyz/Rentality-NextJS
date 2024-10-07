@@ -63,7 +63,7 @@ export default function RntVINCheckingInput({
             background: "#240F50",
           }}
         >
-          <div className="text-[#52D1C9]">Vehicle not identified</div>
+          <div className="text-rentality-secondary">Vehicle not identified</div>
         </DialogTitle>
         <DialogContent
           sx={{

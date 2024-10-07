@@ -11,6 +11,7 @@ import burgerMenu from "@/images/ic-menu-burge-white-20.svg";
 import { useAppContext } from "@/contexts/appContext";
 import { HostBurgerNavMenu } from "@/components/sideNavMenu/hostSideNavMenu";
 import { GuestBurgerNavMenu } from "@/components/sideNavMenu/guestSideNavMenu";
+import { useRouter } from "next/router";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 72,
@@ -59,6 +60,15 @@ export default function Header() {
   const { userMode } = useUserMode();
   const [isSelectedHost, setIsSelectedHost] = useState(isHost(userMode));
 
+  const router = useRouter();
+  useEffect(() => {
+    if (isHost(userMode)) {
+      setIsSelectedHost(true);
+    } else {
+      setIsSelectedHost(false);
+    }
+  }, [router.pathname]);
+
   const { isBurgerMenuShown, isFilterOnSearchPageShown, openBurgerMenu, closeBurgerMenu } = useAppContext();
   useEffect(() => {
     const body = document.body;
@@ -72,7 +82,6 @@ export default function Header() {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsSelectedHost(event.target.checked);
-    //router.push(event.target.checked ? "/host" : "/guest");
     if (event.target.checked) {
       window.location.href = "/host";
     } else {
@@ -107,7 +116,7 @@ export default function Header() {
       <div className="ml-2 flex flex-row items-center max-lg:w-full max-lg:justify-between">
         <RntMobileStoresDialog />
         <Stack direction="row" spacing={1} alignItems="center" className="max-lg:mx-3 lg:ml-12">
-          <Typography className="font-['Montserrat',Arial,sans-serif] text-lg max-lg:hidden">Guest</Typography>
+          <Typography className="font-['Montserrat',Arial,sans-serif] text-lg lg:block">Guest</Typography>
           <Typography className="font-['Montserrat',Arial,sans-serif] text-lg lg:hidden">
             {isSelectedHost ? "Host" : "Guest"}
           </Typography>

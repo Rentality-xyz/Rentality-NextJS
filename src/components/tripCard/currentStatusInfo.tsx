@@ -205,7 +205,7 @@ function CurrentStatusInfo({
   return (
     <div id="trip-action-info" className="flex w-full flex-1 flex-col justify-between gap-2 p-4 md:w-1/4 md:p-2 xl:p-4">
       <div className="flex flex-col whitespace-pre-line">
-        <p className="text-center text-[#52D1C9]">{actionHeader}</p>
+        <p className="text-center text-rentality-secondary">{actionHeader}</p>
         <p className="mt-4 text-center text-lg">
           <strong>{actionText}</strong>
         </p>

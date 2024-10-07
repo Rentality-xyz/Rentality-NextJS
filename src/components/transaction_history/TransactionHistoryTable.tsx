@@ -47,9 +47,9 @@ function TransactionHistoryTable({ isLoading, data, isHost }: TransactionHistory
             <th className={headerSpanClassName}></th>
             <th className={headerSpanClassName}></th>
             <th className={headerSpanClassName} colSpan={2}>
-              <div className="flex flex-col text-rentality-secondary-shade">
+              <div className="flex flex-col text-rentality-secondary">
                 {t_th("guest_payments")}
-                <span className="h-1 w-full border-b-2 border-[#24D8D4]" />
+                <span className="h-1 w-full border-b-2 border-rentality-secondary" />
               </div>
             </th>
             <th className={headerSpanClassName} colSpan={3}>

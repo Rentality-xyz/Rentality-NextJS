@@ -68,7 +68,7 @@ export default function ChatInfoCard({
       >
         <span>{chatInfo.lastMessage}</span>
         {!chatInfo.isSeen && unreadMessageCount > 0 && (
-          <span className="min-w-[1.75rem] rounded-full bg-rentality-secondary-shade pt-0.5 text-center">
+          <span className="min-w-[1.75rem] rounded-full bg-rentality-secondary pt-0.5 text-center">
             {unreadMessageCount > 9 ? "9+" : unreadMessageCount}
           </span>
         )}
