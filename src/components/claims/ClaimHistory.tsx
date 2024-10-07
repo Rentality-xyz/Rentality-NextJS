@@ -107,8 +107,7 @@ export default function ClaimHistory({ isHost, claims, payClaim, cancelClaim, t 
                     {claim.status === ClaimStatus.NotPaid || claim.status === ClaimStatus.Overdue ? (
                       claim.isIncomingClaim ? (
                         <RntButton
-                          className="h-8 w-24"
-                          minHeight="38px"
+                          className="h-8 min-h-[38px] w-24"
                           onClick={() => {
                             payClaim(claim.claimId);
                           }}
@@ -117,8 +116,7 @@ export default function ClaimHistory({ isHost, claims, payClaim, cancelClaim, t 
                         </RntButton>
                       ) : (
                         <RntButton
-                          className="h-8 w-24"
-                          minHeight="38px"
+                          className="h-8 min-h-[38px] w-24"
                           onClick={() => {
                             cancelClaim(claim.claimId);
                           }}
