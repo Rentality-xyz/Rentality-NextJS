@@ -1,7 +1,7 @@
 import { cn } from "@/utils";
 import { MouseEventHandler } from "react";
 
-interface RntButtonTransparentProps extends React.ComponentPropsWithoutRef<"button"> {}
+interface RntButtonTransparentProps extends React.ComponentPropsWithoutRef<"button"> {minHeight?: string;}
 
 export default function RntButtonTransparent({
   className,
@@ -9,6 +9,7 @@ export default function RntButtonTransparent({
   children,
   onClick,
   disabled,
+  minHeight = "48px",
   ...props
 }: RntButtonTransparentProps) {
   const bgColor = disabled ? "bg-gray-500" : "border-gradient";
@@ -16,7 +17,7 @@ export default function RntButtonTransparent({
   return (
     <button
       type={type === "submit" ? "submit" : undefined}
-      style={{ minHeight: "48px" }}
+      style={{ minHeight }}
       disabled={disabled}
       {...props}
       className={c}

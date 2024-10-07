@@ -13,6 +13,7 @@ import { usePathname } from "next/navigation";
 import ClaimFileList from "./ClaimFileList";
 import ClaimHistoryMobileCard from "./ClaimHistoryMobileCard";
 import { cn } from "@/utils";
+import {minHeight} from "@mui/system";
 
 type Props = {
   isHost: boolean;
@@ -27,7 +28,7 @@ export default function ClaimHistory({ isHost, claims, payClaim, cancelClaim, t 
     return t("history." + path, options);
   };
   const headerSpanClassName = "text-start px-2 font-light text-sm";
-  const rowSpanClassName = "px-2 h-12";
+  const rowSpanClassName = "px-2 h-16";
   const redTextClassName = cn(rowSpanClassName, "text-red-400");
   const { showCustomDialog, hideDialogs } = useRntDialogs();
   const pathname = usePathname();
@@ -105,23 +106,25 @@ export default function ClaimHistory({ isHost, claims, payClaim, cancelClaim, t 
                   <td className={rowSpanClassName}>
                     {claim.status === ClaimStatus.NotPaid || claim.status === ClaimStatus.Overdue ? (
                       claim.isIncomingClaim ? (
-                        <RntButton
-                          className="h-8 w-24"
-                          onClick={() => {
-                            payClaim(claim.claimId);
-                          }}
-                        >
-                          {t_history("pay")}
-                        </RntButton>
+                          <RntButton
+                              className="h-8 w-24"
+                              minHeight="38px"
+                              onClick={() => {
+                                payClaim(claim.claimId);
+                              }}
+                          >
+                            {t_history("pay")}
+                          </RntButton>
                       ) : (
-                        <RntButton
-                          className="h-8 w-24"
-                          onClick={() => {
-                            cancelClaim(claim.claimId);
-                          }}
-                        >
-                          {t_history("cancel")}
-                        </RntButton>
+                          <RntButton
+                              className="h-8 w-24"
+                              minHeight="38px"
+                              onClick={() => {
+                                cancelClaim(claim.claimId);
+                              }}
+                          >
+                            {t_history("cancel")}
+                          </RntButton>
                       )
                     ) : null}
                   </td>

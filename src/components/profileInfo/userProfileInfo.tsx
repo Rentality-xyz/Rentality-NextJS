@@ -311,3 +311,4 @@ function VerifiedUserDataRow({ title, value }: { title: string; value: string })
 }
 
 export default memo(UserProfileInfo);
+export { UserCommonInformationForm, UserDriverLicenseVerification };
