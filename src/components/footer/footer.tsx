@@ -12,8 +12,18 @@ import medium from "../../images/social/medium-logo.svg";
 import warpcast from "../../images/social/warpcast-logo.svg";
 import Link from "next/link";
 import moment from "moment";
+import {
+  LEGAL_CANCELLATION_NAME,
+  LEGAL_PRIVACY_NAME,
+  LEGAL_PROHIBITEDUSES_NAME,
+  LEGAL_TERMS_NAME
+} from "@/utils/constants";
+import useUserMode, {isHost} from "@/hooks/useUserMode";
 
 export default function Footer() {
+  const { userMode } = useUserMode();
+  const pathnameUserMode = isHost(userMode) ? "/host" : "/guest";
+
   return (
     <footer className="relative h-[500px] bg-[url('../images/bg-gradient-flip.jpg')] bg-cover bg-scroll bg-center bg-no-repeat min-[560px]:h-[450px] lg:h-[290px]">
       <Image src={bgCar} alt="" className="absolute bottom-0 left-0" />
@@ -26,7 +36,7 @@ export default function Footer() {
           className="z-0 flex h-1/3 w-max flex-col pt-[30px] max-lg:mx-auto sm:h-full lg:ml-[540px] lg:pt-[40px] min-[1536px]:ml-[540px] min-[1720px]:ml-auto"
         >
           <Link
-            href="https://rentality.xyz/legalmatters"
+            href={`${pathnameUserMode}/legal?tab=${LEGAL_TERMS_NAME}`}
             target="_blank"
             className="cursor-pointer pb-1 font-['Montserrat',Arial,sans-serif] text-xl font-semibold hover:underline"
           >
@@ -34,7 +44,7 @@ export default function Footer() {
           </Link>
 
           <Link
-            href="https://rentality.xyz/legalmatters/terms"
+            href={`${pathnameUserMode}/legal?tab=${LEGAL_TERMS_NAME}`}
             target="_blank"
             className="cursor-pointer pb-1.5 font-['Montserrat',Arial,sans-serif] text-base hover:underline"
           >
@@ -42,7 +52,7 @@ export default function Footer() {
           </Link>
 
           <Link
-            href="https://rentality.xyz/legalmatters/cancellation"
+            href={`${pathnameUserMode}/legal?tab=${LEGAL_CANCELLATION_NAME}`}
             target="_blank"
             className="cursor-pointer pb-1.5 font-['Montserrat',Arial,sans-serif] text-base hover:underline"
           >
@@ -50,7 +60,7 @@ export default function Footer() {
           </Link>
 
           <Link
-            href="https://rentality.xyz/legalmatters/prohibiteduses"
+            href={`${pathnameUserMode}/legal?tab=${LEGAL_PROHIBITEDUSES_NAME}`}
             target="_blank"
             className="cursor-pointer pb-1.5 font-['Montserrat',Arial,sans-serif] text-base hover:underline"
           >
@@ -58,7 +68,7 @@ export default function Footer() {
           </Link>
 
           <Link
-            href="https://rentality.xyz/legalmatters/privacy"
+            href={`${pathnameUserMode}/legal?tab=${LEGAL_PRIVACY_NAME}`}
             target="_blank"
             className="cursor-pointer pb-1.5 font-['Montserrat',Arial,sans-serif] text-base hover:underline"
           >
