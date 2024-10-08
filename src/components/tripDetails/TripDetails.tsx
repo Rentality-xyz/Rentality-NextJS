@@ -287,7 +287,9 @@ export default function TripInfo() {
                   </tbody>
                 </table>
                 <hr className="my-4" />
-                <div className="flex grow flex-row p-2 text-rentality-secondary">{t_details("security_deposit_info")}:</div>
+                <div className="flex grow flex-row p-2 text-rentality-secondary">
+                  {t_details("security_deposit_info")}:
+                </div>
                 <table className="m-2">
                   <tbody>
                     <tr>
@@ -307,7 +309,9 @@ export default function TripInfo() {
                   </tbody>
                 </table>
                 <hr className="my-4" />
-                <div className="flex grow flex-row p-2 text-rentality-secondary">{t_details("reimbursement_info")}:</div>
+                <div className="flex grow flex-row p-2 text-rentality-secondary">
+                  {t_details("reimbursement_info")}:
+                </div>
                 <table className="m-2">
                   <tbody>
                     <tr>
@@ -351,7 +355,9 @@ export default function TripInfo() {
                   </tbody>
                 </table>
                 <hr className="my-4" />
-                <div className="flex grow flex-row p-2 text-rentality-secondary">{t_details("vehicle_dashboard_data")}:</div>
+                <div className="flex grow flex-row p-2 text-rentality-secondary">
+                  {t_details("vehicle_dashboard_data")}:
+                </div>
                 <table className="m-2">
                   <tbody>
                     <tr>

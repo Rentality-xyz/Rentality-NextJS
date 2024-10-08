@@ -100,7 +100,7 @@ export default function RntVINCheckingInput({
       <RntInput
         id={id}
         label={label}
-        labelClassName = "pl-4"
+        labelClassName="pl-4"
         placeholder={placeholder}
         className={className}
         readOnly={readOnly}

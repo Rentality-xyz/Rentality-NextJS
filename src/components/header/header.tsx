@@ -11,7 +11,7 @@ import burgerMenu from "@/images/ic-menu-burge-white-20.svg";
 import { useAppContext } from "@/contexts/appContext";
 import { HostBurgerNavMenu } from "@/components/sideNavMenu/hostSideNavMenu";
 import { GuestBurgerNavMenu } from "@/components/sideNavMenu/guestSideNavMenu";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 72,
