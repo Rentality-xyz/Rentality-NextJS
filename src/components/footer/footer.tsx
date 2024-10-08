@@ -4,7 +4,6 @@ import bgCar from "../../images/red-generic-sport-ca.png";
 import linkedin from "../../images/social/linkedin-logo.svg";
 import twitter from "../../images/social/x-logo.svg";
 import discord from "../../images/social/discord-logo.svg";
-import email from "../../images/ic-email-50.png";
 import telegram from "../../images/social/telegram-logo.svg";
 import mirror from "../../images/social/mirror-logo.svg";
 import instagram from "../../images/social/instagram-logo.svg";
@@ -16,9 +15,9 @@ import {
   LEGAL_CANCELLATION_NAME,
   LEGAL_PRIVACY_NAME,
   LEGAL_PROHIBITEDUSES_NAME,
-  LEGAL_TERMS_NAME
+  LEGAL_TERMS_NAME,
 } from "@/utils/constants";
-import useUserMode, {isHost} from "@/hooks/useUserMode";
+import useUserMode, { isHost } from "@/hooks/useUserMode";
 
 export default function Footer() {
   const { userMode } = useUserMode();
