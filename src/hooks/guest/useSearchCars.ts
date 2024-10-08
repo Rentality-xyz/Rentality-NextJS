@@ -14,6 +14,7 @@ import { isEmpty } from "@/utils/string";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { getSignedLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
+import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 
 export type SortOptions = {
   [key: string]: string;
@@ -205,10 +206,12 @@ const useSearchCars = () => {
         });
         await transaction.wait();
       } else {
-        const paymentsNeeded = await rentalityContract.calculatePayments(
+        const paymentsNeeded = await rentalityContract.calculatePaymentsWithDelivery(
           BigInt(carId),
           BigInt(days),
-          ETH_DEFAULT_ADDRESS
+          ETH_DEFAULT_ADDRESS,
+          emptyContractLocationInfo,
+          emptyContractLocationInfo
         );
 
         const tripRequest: ContractCreateTripRequest = {

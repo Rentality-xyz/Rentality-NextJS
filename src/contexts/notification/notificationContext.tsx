@@ -200,10 +200,8 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         const toBlock = await ethereumInfo.provider.getBlockNumber();
         const fromBlock = getFromBlock(ethereumInfo.chainId, toBlock);
 
-        const tripInfos = isHost ? await rentalityContract.getTripsAsHost() : await rentalityContract.getTripsAsGuest();
-        const claimInfos = isHost
-          ? await rentalityContract.getMyClaimsAsHost()
-          : await rentalityContract.getMyClaimsAsGuest();
+        const tripInfos = await rentalityContract.getTripsAs(isHost);
+        const claimInfos = await rentalityContract.getMyClaimsAs(isHost);
 
         const eventTripCreatedFilter = isHost
           ? tripServiceContract.filters.TripCreated(null, [ethereumInfo.walletAddress], null)

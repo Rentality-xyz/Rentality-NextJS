@@ -12,6 +12,7 @@ import {
   ContractChatInfo,
   ContractClaim,
   ContractFullClaimInfo,
+  ContractInsuranceCarInfo,
   ContractLocationInfo,
   ContractPublicHostCarDTO,
   ContractSearchCar,
@@ -169,6 +170,11 @@ export function validateContractFullClaimInfo(obj: ContractFullClaimInfo): obj i
   return validateType(obj, emptyContractFullClaimInfo) && validateType(obj.claim, emptyContractClaim);
 }
 
+const emptyContractInsuranceCarInfo: ContractInsuranceCarInfo = {
+  required: false,
+  priceInUsdCents: BigInt(0),
+};
+
 const emptyContractSearchCar: ContractSearchCar = {
   carId: BigInt(0),
   brand: "",
@@ -192,6 +198,7 @@ const emptyContractSearchCar: ContractSearchCar = {
   dropOf: BigInt(0),
   insuranceIncluded: false,
   locationInfo: emptyContractLocationInfo,
+  insuranceInfo: emptyContractInsuranceCarInfo,
 };
 
 export function validateContractSearchCar(obj: ContractSearchCar): obj is ContractSearchCar {
@@ -294,6 +301,8 @@ const emptyContractTripDTO: ContractTripDTO = {
   returnLocation: emptyContractLocationInfo,
   guestPhoneNumber: "",
   hostPhoneNumber: "",
+  insurancesInfo: [],
+  paidForInsuranceInUsdCents: BigInt(0),
 };
 
 export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {

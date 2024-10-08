@@ -129,9 +129,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
           return;
         }
 
-        const chatInfosView: ContractChatInfo[] = isHost(userMode)
-          ? await rentalityContract.getChatInfoForHost()
-          : await rentalityContract.getChatInfoForGuest();
+        const chatInfosView: ContractChatInfo[] = await rentalityContract.getChatInfoFor(isHost(userMode));
         const chatInfosViewSorted = [...chatInfosView].sort((a, b) => {
           return Number(b.tripId) - Number(a.tripId);
         });

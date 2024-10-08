@@ -157,6 +157,8 @@ export type ContractTripDTO = {
   returnLocation: ContractLocationInfo;
   guestPhoneNumber: string;
   hostPhoneNumber: string;
+  insurancesInfo: ContractInsuranceInfo[];
+  paidForInsuranceInUsdCents: bigint;
 };
 
 export type ContractChatInfo = {
@@ -343,6 +345,7 @@ export type ContractSearchCar = {
   dropOf: bigint;
   insuranceIncluded: boolean;
   locationInfo: ContractLocationInfo;
+  insuranceInfo: ContractInsuranceCarInfo;
 };
 
 export type ContractGeoData = {
