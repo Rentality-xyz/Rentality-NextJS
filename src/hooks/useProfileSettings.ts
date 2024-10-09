@@ -38,7 +38,7 @@ const useProfileSettings = () => {
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [profileSettings, setProfileSettings] = useState<ProfileSettings>(emptyProfileSettings);
 
-  const getProfileSettings = async (rentalityContract: IRentalityContract) => {
+  const getProfileSettings = async (rentalityContract: IRentalityContract | null) => {
     try {
       if (rentalityContract == null) {
         console.error("getTrip error: contract is null");
@@ -97,8 +97,7 @@ const useProfileSettings = () => {
   };
 
   useEffect(() => {
-    if (!rentalityContract) return;
-
+    if (rentalityContract === undefined) return;
     getProfileSettings(rentalityContract)
       .then((data) => {
         setProfileSettings(data ?? emptyProfileSettings);

@@ -14,7 +14,7 @@ export type EthereumInfo = {
   requestChainIdChange: (chainId: number) => Promise<boolean>;
 };
 
-const EthereumContext = createContext<EthereumInfo | null>(null);
+const EthereumContext = createContext<EthereumInfo | null | undefined>(undefined);
 
 export function useEthereum() {
   return useContext(EthereumContext);
@@ -24,7 +24,7 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
   const { connectWallet, ready, authenticated } = usePrivy();
   const { wallets, ready: walletsReady } = useWallets();
   const router = useRouter();
-  const [ethereumInfo, setEthereumInfo] = useState<EthereumInfo | null>(null);
+  const [ethereumInfo, setEthereumInfo] = useState<EthereumInfo | null | undefined>(undefined);
   const [isReloadPageRequested, setIsReloadPageRequested] = useState<boolean>(false);
 
   const isInitiating = useRef(false);
@@ -77,7 +77,7 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
         const currentWalletAddress = wallets[0].address;
 
         setEthereumInfo((prev) => {
-          if (prev !== null) {
+          if (prev !== undefined && prev !== null) {
             setIsReloadPageRequested(prev.chainId !== currentChainId);
           }
 
