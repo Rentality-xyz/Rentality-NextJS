@@ -1,13 +1,28 @@
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractPublicHostCarDTO } from "@/model/blockchain/schemas";
-import { GalxeResponse } from "@/model/galxe";
 import { env } from "@/utils/env";
 import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Wallet } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<GalxeResponse | { error: string }>) {
+type CheckIfUserListedACarResponse =
+  | {
+      cars_listed: number;
+    }
+  | { error: string };
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse<CheckIfUserListedACarResponse>) {
+  if (req.method === "OPTIONS") {
+    res
+      .status(200)
+      .setHeader("Allow", "OPTIONS, GET")
+      .setHeader("Access-Control-Allow-Origin", "https://dashboard.galxe.com")
+      .setHeader("Access-Control-Allow-Methods", "GET")
+      .json({ error: "" });
+    return;
+  }
+
   const privateKey = env.SIGNER_PRIVATE_KEY;
   if (isEmpty(privateKey)) {
     console.error("API checkIfUserListedACar error: private key was not set");
@@ -51,13 +66,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const rentality = (await getEtherContractWithSigner("gateway", wallet)) as unknown as IRentalityContract;
 
     const userListingsView: ContractPublicHostCarDTO[] = await rentality.getCarsOfHost(userAddress);
-    const userHasAtLeastOneCar = userListingsView.length > 0;
 
     res
       .status(200)
       .setHeader("Access-Control-Allow-Origin", "https://dashboard.galxe.com")
       .setHeader("Access-Control-Allow-Methods", "GET")
-      .json({ is_ok: userHasAtLeastOneCar });
+      .json({ cars_listed: userListingsView.length });
     return;
   } catch (error) {
     console.error(error);
