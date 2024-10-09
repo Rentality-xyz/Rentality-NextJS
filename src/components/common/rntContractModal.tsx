@@ -7,6 +7,13 @@ import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { dateFormatLongMonthYearDateTime, dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { getMilesIncludedPerDayText, isUnlimitedMiles } from "@/model/HostCarInfo";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import {
+  LEGAL_CANCELLATION_NAME,
+  LEGAL_PRIVACY_NAME,
+  LEGAL_PROHIBITEDUSES_NAME,
+  LEGAL_TERMS_NAME
+} from "@/utils/constants";
+import useUserMode, {isHost} from "@/hooks/useUserMode";
 
 export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint; tripInfo: TripInfo }) {
   const [open, setOpen] = React.useState(false);
@@ -18,6 +25,9 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
   const handleClose = () => {
     setOpen(false);
   };
+
+  const { userMode } = useUserMode();
+  const pathnameUserMode = isHost(userMode) ? "/host" : "/guest";
 
   return (
     <React.Fragment>
@@ -77,29 +87,29 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                     <ol className="ms-3 list-inside list-decimal [counter-reset:section]">
                       <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
                         &nbsp;
-                        <a className="underline" href="https://rentality.xyz/legalmatters/terms" target="_blank">
+                        <a className="underline" href={`${pathnameUserMode}/legal?tab=${LEGAL_TERMS_NAME}`} target="_blank">
                           Terms of service
                         </a>
                         &nbsp;
-                        <a className="underline" href="https://rentality.xyz/legalmatters/terms" target="_blank">
-                          (published at https://rentality.xyz/legalmatters/terms)
+                        <a className="underline" href={`/host/legal?tab=${LEGAL_TERMS_NAME}`} target="_blank">
+                          (published at https://app.rentality.xyz/legalmatters/terms)
                         </a>
                       </li>
                       <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
                         &nbsp;
-                        <a className="underline" href="https://rentality.xyz/legalmatters/cancellation" target="_blank">
+                        <a className="underline" href={`${pathnameUserMode}/legal?tab=${LEGAL_CANCELLATION_NAME}`} target="_blank">
                           Cancellation policy
                         </a>
                         &nbsp;
-                        <a className="underline" href="https://rentality.xyz/legalmatters/cancellation" target="_blank">
-                          (published at https://rentality.xyz/legalmatters/cancellation)
+                        <a className="underline" href={`${pathnameUserMode}/legal?tab=${LEGAL_CANCELLATION_NAME}`} target="_blank">
+                          (published at https://app.rentality.xyz/legalmatters/cancellation)
                         </a>
                       </li>
                       <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
                         &nbsp;
                         <a
                           className="underline"
-                          href="https://rentality.xyz/legalmatters/prohibiteduses"
+                          href={`${pathnameUserMode}/legal?tab=${LEGAL_PROHIBITEDUSES_NAME}`}
                           target="_blank"
                         >
                           Prohibited Uses
@@ -107,20 +117,20 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                         &nbsp;
                         <a
                           className="underline"
-                          href="https://rentality.xyz/legalmatters/prohibiteduses"
+                          href={`${pathnameUserMode}/legal?tab=${LEGAL_PROHIBITEDUSES_NAME}`}
                           target="_blank"
                         >
-                          (published at https://rentality.xyz/legalmatters/prohibiteduses)
+                          (published at https://app.rentality.xyz/legalmatters/prohibiteduses)
                         </a>
                       </li>
                       <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
                         &nbsp;
-                        <a className="underline" href="https://rentality.xyz/legalmatters/privacy" target="_blank">
+                        <a className="underline" href={`${pathnameUserMode}/legal?tab=${LEGAL_PRIVACY_NAME}`} target="_blank">
                           Privacy policy
                         </a>
                         &nbsp;
-                        <a className="underline" href="https://rentality.xyz/legalmatters/privacy" target="_blank">
-                          (published at https://rentality.xyz/legalmattersprivacy)
+                        <a className="underline" href={`${pathnameUserMode}/legal?tab=${LEGAL_PRIVACY_NAME}`} target="_blank">
+                          (published at https://app.rentality.xyz/legalmattersprivacy)
                         </a>
                       </li>
                     </ol>

@@ -85,16 +85,15 @@ function HostNavMenu() {
       <SideNavMenuGroup title={t_nav("more")}>
         <SideNavMenuItem
           text={t_nav("legal")}
-          href="https://rentality.xyz/legalmatters"
+          href="/host/legal"
           icon={MenuIcons.Legal}
-          target="_blank"
         />
         <SideNavMenuItem
           text={t_nav("transaction_history")}
           href="/host/transaction_history"
           icon={MenuIcons.TransactionHistory}
         />
-        <SideNavMenuItem text={t_nav("profile")} href="/host/become_host" icon={MenuIcons.ProfileSettings} />
+        <SideNavMenuItem text={t_nav("profile")} href="/host/profile" icon={MenuIcons.ProfileSettings} />
         {isAuthenticated ? (
           <SideNavMenuItem text={t_nav("logout")} href="/" onClick={logout} icon={MenuIcons.Logout} />
         ) : null}
