@@ -253,11 +253,11 @@ export default function BecomeHost() {
                 </div>
                 <Image src={openBlockListingCar ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
               </div>
-              {/*{openBlockListingCar && (*/}
-              {/*  <div className="ml-10 mt-4">*/}
-              {/*    <AddCar />*/}
-              {/*  </div>*/}
-              {/*)}*/}
+              {openBlockListingCar && (
+                <div className="ml-10 mt-4">
+                  <AddCar />
+                </div>
+              )}
 
               <div
                 className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
