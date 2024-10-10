@@ -617,7 +617,7 @@ export default function CarEditForm({
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-4">
+          <div className="mt-4 flex flex-wrap items-center gap-4">
             <Controller
               name="isGuestInsuranceRequired"
               control={control}
@@ -625,7 +625,6 @@ export default function CarEditForm({
                 <RntCheckbox
                   className="mt-4"
                   label={t_car("guest_insurance_required")}
-                  readOnly={!isNewCar}
                   checked={field.value}
                   onChange={field.onChange}
                 />
@@ -636,7 +635,7 @@ export default function CarEditForm({
               id="insurancePerDayPriceInUsd"
               label={t_car("insurance_per_day")}
               placeholder="e.g. 25"
-              disabled={!isGuestInsuranceRequired || !isNewCar}
+              disabled={!isGuestInsuranceRequired}
               {...register("insurancePerDayPriceInUsd", { valueAsNumber: true })}
               validationError={errors.insurancePerDayPriceInUsd?.message?.toString()}
             />
