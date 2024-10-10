@@ -1,4 +1,5 @@
 import Loading from "@/components/common/Loading";
+import { UserInsurance } from "@/components/guest/UserInsurance";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import UserProfileInfo from "@/components/profileInfo/userProfileInfo";
 import AddFunds from "@/components/RnD/AddFunds";
@@ -20,6 +21,9 @@ export default function Profile() {
             saveProfileSettings={saveProfileSettings}
             isHost={false}
           />
+          <hr />
+          <UserInsurance />
+          <hr />
           <AddFunds />
         </>
       )}

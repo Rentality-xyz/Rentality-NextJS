@@ -218,7 +218,14 @@
 
     "basic_info": "Basic information",
     "pass_license_verif": "Please pass driver license verification",
-    "driver_license_info": "Driving license information"
+    "driver_license_info": "Driving license information",
+
+    "user_insurance": {
+      "please_upload_photo": "Please, upload photo you ID insurance card",
+      "insurance_requirements": "See insurance requirements",
+      "insurance_uploaded": "Insurance card uploaded",
+      "insurance_not_uploaded": "Insurance card not uploaded"
+    }
   },
   "transaction_history": {
     "title": "Transaction history",
