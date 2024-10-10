@@ -4,7 +4,7 @@ import { Avatar } from "@mui/material";
 import { useMemo } from "react";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
-import SearchCarDeliveryExtraInfo from "../search/searchCarDeliveryExtraInfo";
+import { useRouter } from "next/navigation";
 
 type TFunction = (key: string, options?: { [key: string]: any }) => string;
 
@@ -23,6 +23,7 @@ export default function CarSearchItem({
   setSelected: (carID: number) => void;
   t: TFunction;
 }) {
+  const router = useRouter();
   const { showCustomDialog, hideDialogs } = useRntDialogs();
   const t_item: TFunction = (name, options) => {
     return t("car_search_item." + name, options);
@@ -33,35 +34,24 @@ export default function CarSearchItem({
     return isSelected ? classNames + " border-2" : classNames;
   }, [isSelected]);
 
-  const handleInfoClick = () => {
-    showCustomDialog(
-      <SearchCarDeliveryExtraInfo
-        hostHomeLocation={searchInfo.hostHomeLocation}
-        deliveryPrices={{
-          from1To25milesPrice: searchInfo.deliveryPrices.from1To25milesPrice,
-          over25MilesPrice: searchInfo.deliveryPrices.over25MilesPrice,
-        }}
-        isInsuranceIncluded={searchInfo.isInsuranceIncluded}
-        handleClose={hideDialogs}
-        t={t}
-      />
-    );
-  };
+  function handleImageClick() {
+    router.push("/todo");
+  }
+
+  function handleInfoClick() {
+    router.push("/todo");
+  }
+
+  const insurancePriceTotal = searchInfo.insuranceRequired
+    ? searchInfo.insurancePerDayPriceInUsd * searchInfo.tripDays
+    : 0;
 
   return (
     <div className={mainClasses} onClick={() => setSelected(searchInfo.carId)}>
-      {/* <div className="w-60 h-full min-h-[14rem] flex-shrink-0">
-        <Image
-          src={searchInfo.image}
-          alt=""
-          width={1000}
-          height={1000}
-          className="h-full w-full object-cover"
-        />
-      </div> */}
       <div
         style={{ backgroundImage: `url(${searchInfo.image})` }}
         className="relative min-h-[12rem] w-full flex-shrink-0 bg-cover bg-center md:w-64"
+        onClick={handleImageClick}
       >
         {searchInfo.isCarDetailsConfirmed && (
           <i className="fi fi-br-hexagon-check absolute right-2 top-2 text-3xl text-green-500"></i>
@@ -132,6 +122,12 @@ export default function CarSearchItem({
               <span className="max-md:ml-4">${displayMoneyWith2Digits(searchInfo.taxes)}</span>
               <span>{t_item("deposit")}</span>
               <span className="max-md:ml-4">${displayMoneyWith2Digits(searchInfo.securityDeposit)}</span>
+              {searchInfo.insuranceRequired && (
+                <>
+                  <span>{t_item("insurance")}</span>
+                  <span className="max-md:ml-4">${displayMoneyWith2Digits(insurancePriceTotal)}</span>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -147,6 +143,9 @@ export default function CarSearchItem({
             <div className="ml-2 sm:ml-8" onClick={handleInfoClick}>
               <i className="fi fi-rs-info text-2xl text-rentality-secondary-shade"></i>
             </div>
+            {searchInfo.insuranceRequired && (
+              <div className="mx-4 pb-1 text-sm text-rentality-secondary">{t_item("insurance_required")}</div>
+            )}
           </div>
           <RntButton
             className="h-14 w-44 text-base"
@@ -161,7 +160,8 @@ export default function CarSearchItem({
                   searchInfo.taxes +
                   searchInfo.securityDeposit +
                   searchInfo.pickUpDeliveryFee +
-                  searchInfo.dropOffDeliveryFee
+                  searchInfo.dropOffDeliveryFee +
+                  insurancePriceTotal
               )}
             </div>
           </RntButton>

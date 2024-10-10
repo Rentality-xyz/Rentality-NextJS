@@ -67,9 +67,11 @@
       "delivery_fee_drop_off": "Drop off",
       "taxes": "Taxes",
       "deposit": "Deposit",
+      "insurance": "Insurance",
       "per_day": "/day",
       "days": "day(s)",
-      "price_without_taxes": "Price excl. taxes"
+      "price_without_taxes": "Price excl. taxes",
+      "insurance_required": "Insurance required"
     },
     "search_car_delivery_extra_info": {
       "title": "Trip Info",

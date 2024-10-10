@@ -309,6 +309,8 @@ async function formatSearchAvailableCarsContractResponse(
         dropOffDeliveryFee: Number(i.car.dropOf) / 100,
         isCarDetailsConfirmed: isCarDetailsConfirmed,
         isTestCar: testWallets.includes(i.car.host),
+        insuranceRequired: i.car.insuranceInfo.required,
+        insurancePerDayPriceInUsd: Number(i.car.insuranceInfo.priceInUsdCents) / 100,
       };
 
       return item;
@@ -354,11 +356,6 @@ async function getTimeZoneIdFromAddress(address: string) {
   const googleTimeZoneJson = await googleTimeZoneResponse.json();
 
   return googleTimeZoneJson?.timeZoneId ?? UTC_TIME_ZONE_ID;
-  const dstOffsetInSec = Number(googleTimeZoneJson?.dstOffset) ?? "";
-  const rawOffsetInSec = Number(googleTimeZoneJson?.rawOffset) ?? "";
-  const offSetInMinutes = (rawOffsetInSec + dstOffsetInSec) / 60 ?? 0;
-
-  return offSetInMinutes;
 }
 
 function sortByTestWallet(a: SearchCarInfo, b: SearchCarInfo) {
