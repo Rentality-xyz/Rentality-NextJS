@@ -63,7 +63,11 @@ const useCustomCivic = () => {
     if (status !== "Commission paid") return;
     if (!(await rentalityContract.isKycCommissionPaid(ethereumInfo.walletAddress))) return;
 
-    await requestGatewayToken();
+    if (gatewayStatus === GatewayStatus.USER_INFORMATION_REJECTED) {
+      reinitialize();
+    } else {
+      requestGatewayToken();
+    }
   }
 
   useEffect(() => {
@@ -98,9 +102,6 @@ const useCustomCivic = () => {
           if (!apiResponse.ok) {
             console.error(`updateCivic fetch error: + ${apiResponse.statusText}`);
             return;
-          }
-          if (gatewayStatus === GatewayStatus.USER_INFORMATION_REJECTED){
-            reinitialize();
           }
         } catch (e) {
           console.error("updateCivic error:" + e);
