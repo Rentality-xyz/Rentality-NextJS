@@ -3,14 +3,13 @@ import RntButton from "../common/rntButton";
 import { Avatar } from "@mui/material";
 import { useMemo } from "react";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
-import { useRouter } from "next/navigation";
 
 type TFunction = (key: string, options?: { [key: string]: any }) => string;
 
 export default function CarSearchItem({
   searchInfo,
   handleRentCarRequest,
+  handleShowRequestDetails,
   disableButton,
   isSelected,
   setSelected,
@@ -18,13 +17,12 @@ export default function CarSearchItem({
 }: {
   searchInfo: SearchCarInfo;
   handleRentCarRequest: (carInfo: SearchCarInfo) => void;
+  handleShowRequestDetails: (carInfo: SearchCarInfo) => void;
   disableButton: boolean;
   isSelected: boolean;
   setSelected: (carID: number) => void;
   t: TFunction;
 }) {
-  const router = useRouter();
-  const { showCustomDialog, hideDialogs } = useRntDialogs();
   const t_item: TFunction = (name, options) => {
     return t("car_search_item." + name, options);
   };
@@ -35,11 +33,11 @@ export default function CarSearchItem({
   }, [isSelected]);
 
   function handleImageClick() {
-    router.push("/todo");
+    handleShowRequestDetails(searchInfo);
   }
 
   function handleInfoClick() {
-    router.push("/todo");
+    handleShowRequestDetails(searchInfo);
   }
 
   const insurancePriceTotal = searchInfo.insuranceRequired

@@ -117,6 +117,10 @@ export default function Search() {
     }
   };
 
+  function handleShowRequestDetails(carInfo: SearchCarInfo) {
+    router.push(`/guest/createTrip?carId=${carInfo.carId} `);
+  }
+
   const setHighlightedCar = useCallback(
     (carID: number) => {
       const newSearchResult = { ...searchResult };
@@ -189,6 +193,7 @@ export default function Search() {
                           key={value.carId}
                           searchInfo={value}
                           handleRentCarRequest={handleRentCarRequest}
+                          handleShowRequestDetails={handleShowRequestDetails}
                           disableButton={requestSending}
                           isSelected={value.highlighted}
                           setSelected={setHighlightedCar}
