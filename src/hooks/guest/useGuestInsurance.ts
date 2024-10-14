@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { ContractInsuranceDTO, ContractSaveInsuranceRequest, InsuranceType } from "@/model/blockchain/schemas";
+import { ContractInsuranceInfo, ContractSaveInsuranceRequest, InsuranceType } from "@/model/blockchain/schemas";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { GuestGeneralInsurance } from "@/model/GuestInsurance";
 import { FileToUpload } from "@/model/FileToUpload";
 import { bigIntReplacer } from "@/utils/json";
+import { getIpfsURI } from "@/utils/ipfsUtils";
 
 const useGuestInsurance = () => {
   const rentalityContract = useRentality();
@@ -58,19 +59,15 @@ const useGuestInsurance = () => {
           console.error("getGuestInsurance error: contract is null");
           return { photo: "" };
         }
-        const insurancesView: ContractInsuranceDTO[] = await rentalityContract.getInsurancesBy(false);
-        console.log("getInsurancesBy", JSON.stringify(insurancesView, bigIntReplacer, 2));
+        const insurancesView: ContractInsuranceInfo[] = await rentalityContract.getMyInsurancesAsGuest();
 
-        const insurancesView1 = await rentalityContract.getMyInsurancesAsGuest();
-        console.log("getMyInsurancesAsGuest", JSON.stringify(insurancesView1, bigIntReplacer, 2));
-
-        const generalInsurances = insurancesView.filter((i) => i.insuranceInfo.insuranceType === InsuranceType.General);
+        const generalInsurances = insurancesView.filter((i) => i.insuranceType === InsuranceType.General);
         if (generalInsurances.length === 0) return { photo: "" };
 
         generalInsurances.sort((a, b) => {
-          return Number(b.insuranceInfo.createdTime - a.insuranceInfo.createdTime);
+          return Number(b.createdTime - a.createdTime);
         });
-        return { photo: generalInsurances[generalInsurances.length - 1].insuranceInfo.photo };
+        return { photo: getIpfsURI(generalInsurances[generalInsurances.length - 1].photo) };
       } catch (e) {
         console.error("getGuestInsurance error:" + e);
         return { photo: "" };
