@@ -20,7 +20,7 @@ import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { useTranslation } from "react-i18next";
 import { CheckboxLight } from "../common/rntCheckbox";
 import { verifyMessage } from "ethers";
-import { DEFAULT_AGREEMENT_MESSAGE } from "@/utils/constants";
+import { DEFAULT_AGREEMENT_MESSAGE, LEGAL_TERMS_NAME } from "@/utils/constants";
 import { signMessage } from "@/utils/ether";
 
 function UserProfileInfo({
@@ -246,7 +246,7 @@ function UserCommonInformationForm({
             label={t("profile.tc_and_privacy_title")}
             checked={field.value}
             onChange={() => {
-              window.open("https://rentality.xyz/legalmatters/terms", "_blank");
+              window.open(`/${isHost ? "host" : "guest"}/legal?tab=${LEGAL_TERMS_NAME}`, "_blank");
               field.onChange(true);
             }}
           />
