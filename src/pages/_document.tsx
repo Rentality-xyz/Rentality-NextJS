@@ -11,16 +11,18 @@ export default function Document() {
           rel="stylesheet"
           href="https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css"
         />
-        <noscript>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            height="1"
-            width="1"
-            alt=""
-            style={{ display: "none" }}
-            src={`https://www.facebook.com/tr?id=${env.NEXT_PUBLIC_FB_PIXEL_ID}&ev=PageView&noscript=1`}
-          />
-        </noscript>
+        {env.NEXT_PUBLIC_FB_PIXEL_ID > 0 && (
+          <noscript>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              height="1"
+              width="1"
+              alt=""
+              style={{ display: "none" }}
+              src={`https://www.facebook.com/tr?id=${env.NEXT_PUBLIC_FB_PIXEL_ID}&ev=PageView&noscript=1`}
+            />
+          </noscript>
+        )}
       </Head>
       <body className="backgroundMain font-['Montserrat',Arial,sans-serif] text-white">
         <Main />
