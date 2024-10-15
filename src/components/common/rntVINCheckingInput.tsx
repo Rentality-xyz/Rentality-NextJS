@@ -35,12 +35,13 @@ export default function RntVINCheckingInput({
   const [isVINConfirmDialogOpen, setIsVINConfirmDialogOpen] = React.useState(false);
 
   const validationError = useMemo(() => {
+    if (readOnly) return "";
     if (value.length != 17) {
       return "VIN should be 17 digits";
     } else {
       return !isVINVerified && !isVINCheckOverriden ? "VIN is not verified" : "";
     }
-  }, [value, isVINVerified, isVINCheckOverriden]);
+  }, [value, isVINVerified, isVINCheckOverriden, readOnly]);
 
   return (
     <>
@@ -120,7 +121,7 @@ export default function RntVINCheckingInput({
           onChange != null && onChange(e);
         }}
       />
-      {value.length === 17 && !isVINVerified && (
+      {value.length === 17 && !isVINVerified && !readOnly && (
         <div className="flex flex-col">
           <label className="mb-1">&nbsp;</label>
           <RntButton type="button" className="w-[100px]" onClick={() => setIsVINConfirmDialogOpen(true)}>

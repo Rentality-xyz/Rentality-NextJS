@@ -93,7 +93,7 @@ export default function Header() {
     <header className="fixed z-50 flex w-full items-center justify-between border-b-2 border-b-[#ffffff1f] bg-rentality-bg-left-sidebar text-rnt-temp-header-text max-lg:pl-4 lg:py-1 lg:pl-14 lg:pr-6">
       <div className="flex max-lg:w-full max-lg:justify-between">
         <HeaderLogo />
-        <div className="flex items-center lg:hidden">
+        <div className="flex min-w-[20px] items-center lg:hidden">
           {isBurgerMenuShown && (
             <div id="burger-menu-wrapper" className="fixed left-0 top-[50px] z-[100] h-full w-full overflow-auto">
               <aside id="burger-menu" className="bg-rentality-bg-left-sidebar">

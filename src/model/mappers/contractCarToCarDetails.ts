@@ -1,4 +1,4 @@
-import { getIpfsURI, getIpfsURIs, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { ContractCarDetails, ContractCarInfo } from "../blockchain/schemas";
 import { HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE_TEXT } from "../HostCarInfo";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "../EngineType";
@@ -14,6 +14,7 @@ export const mapContractCarToCarDetails = async (
   const securityDeposit = Number(carInfo.securityDepositPerTripInUsdCents) / 100;
   const engineTypeString = getEngineTypeString(carInfo.engineType);
 
+  const tankVolumeInGal = engineTypeString === ENGINE_TYPE_PETROL_STRING ? Number(carInfo.engineParams[0]) : 0;
   const fuelPricePerGal = engineTypeString === ENGINE_TYPE_PETROL_STRING ? Number(carInfo.engineParams[1]) / 100 : 0;
   const fullBatteryChargePrice =
     engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? Number(carInfo.engineParams[0]) / 100 : 0;
@@ -31,7 +32,7 @@ export const mapContractCarToCarDetails = async (
     licenseState: metaData.licenseState,
     seatsNumber: metaData.seatsNumber,
     doorsNumber: metaData.doorsNumber,
-    tankVolumeInGal: metaData.tankVolumeInGal,
+    tankVolumeInGal: tankVolumeInGal,
     wheelDrive: metaData.wheelDrive,
     transmission: metaData.transmission,
     trunkSize: metaData.trunkSize,
@@ -59,5 +60,6 @@ export const mapContractCarToCarDetails = async (
     fullBatteryChargePrice: fullBatteryChargePrice,
     timeBufferBetweenTripsInMin: Number(carInfo.timeBufferBetweenTripsInSec) / 60,
     isInsuranceIncluded: carInfo.insuranceIncluded,
+    isCarMetadataEdited: false,
   };
 };

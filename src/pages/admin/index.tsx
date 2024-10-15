@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
 import { isEmpty } from "@/utils/string";
+import { env } from "@/utils/env";
 
 export default function Admin() {
   const {
@@ -17,12 +18,16 @@ export default function Admin() {
     saveKycCommission,
     saveClaimWaitingTime,
     grantAdminRole,
+    updateKycInfoForAddress,
+    createTestTrip,
   } = useAdminPanelInfo();
   const [ethToWithdraw, setEthToWithdraw] = useState("0");
   const [newPlatformFee, setNewPlatformFee] = useState("");
   const [newKycCommission, setNewKycCommission] = useState("");
   const [newClaimWaitingTime, setNewClaimWaitingTime] = useState("");
   const [addressForAdminRole, setAddressForAdminRole] = useState("0x");
+  const [addressToUpdateKyc, setAddressToUpdateKyc] = useState("0x");
+  const [testCarId, setTestCarId] = useState("");
   const { showError } = useRntSnackbars();
   const { t } = useTranslation();
   const t_admin: TFunction = (name, options) => {
@@ -132,6 +137,26 @@ export default function Admin() {
     }
   };
 
+  async function handleUpdateKycInfo() {
+    if (isEmpty(addressToUpdateKyc) || !addressToUpdateKyc.startsWith("0x") || addressToUpdateKyc.length !== 42) return;
+
+    try {
+      await updateKycInfoForAddress(addressToUpdateKyc);
+    } catch (e) {
+      showError(t_errors("update_kyc_error") + e);
+    }
+  }
+
+  async function handleCreateTestTrip() {
+    if (isEmpty(testCarId)) return;
+
+    try {
+      await createTestTrip(testCarId);
+    } catch (e) {
+      showError("handleCreateTestTrip error: " + e);
+    }
+  }
+
   return (
     <>
       <PageTitle title="Contract info" />
@@ -229,6 +254,38 @@ export default function Admin() {
           handleGrantAdminRole();
         }}
       />
+      <RntInputWithButton
+        id="update_kyc_for_address"
+        placeholder="0x"
+        label="Update KYC info for address (only KYC manager)"
+        value={addressToUpdateKyc}
+        onChange={(e) => {
+          setAddressToUpdateKyc(e.target.value);
+        }}
+        buttonText={"Update"}
+        buttonDisabled={
+          isEmpty(addressToUpdateKyc) || !addressToUpdateKyc.startsWith("0x") || addressToUpdateKyc.length !== 42
+        }
+        onButtonClick={() => {
+          handleUpdateKycInfo();
+        }}
+      />
+      {env.NEXT_PUBLIC_INCLUDE_TESTNETS === "true" && (
+        <RntInputWithButton
+          id="create_test_trip_request"
+          placeholder="car id"
+          label="Create 3 days trip request for car (with -1% price) "
+          value={testCarId}
+          onChange={(e) => {
+            setTestCarId(e.target.value);
+          }}
+          buttonText={"Create"}
+          buttonDisabled={isEmpty(testCarId)}
+          onButtonClick={() => {
+            handleCreateTestTrip();
+          }}
+        />
+      )}
     </>
   );
 }

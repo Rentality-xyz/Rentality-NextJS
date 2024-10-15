@@ -105,6 +105,7 @@ export default function CarEditForm({
   const isLocationEdited = watch("isLocationEdited");
   const locationInfo = watch("locationInfo");
 
+  const [isCarMetadataEdited, setIsCarMetadataEdited] = useState(isNewCar);
   const [selectedMakeID, setSelectedMakeID] = useState<string>("");
   const [selectedModelID, setSelectedModelID] = useState<string>("");
 
@@ -148,6 +149,7 @@ export default function CarEditForm({
       wheelDrive: "",
       trunkSize: "",
       bodyType: "",
+      isCarMetadataEdited: isCarMetadataEdited,
     };
 
     const isValidForm = verifyCar(carInfoFormParams);
@@ -246,58 +248,95 @@ export default function CarEditForm({
               name="brand"
               control={control}
               defaultValue=""
-              render={({ field: { onChange, value } }) => (
-                <RntCarMakeSelect
-                  id="brand"
-                  className="lg:w-60"
-                  label={t_car("brand")}
-                  readOnly={!isNewCar}
-                  value={value}
-                  onMakeSelect={(newID, newMake) => {
-                    onChange(newMake);
-                    setSelectedMakeID(newID);
-                  }}
-                  validationError={errors.brand?.message?.toString()}
-                />
-              )}
+              render={({ field: { onChange, value } }) =>
+                isNewCar ? (
+                  <RntCarMakeSelect
+                    id="brand"
+                    className="lg:w-60"
+                    label={t_car("brand")}
+                    value={value}
+                    onMakeSelect={(newID, newMake) => {
+                      onChange(newMake);
+                      setSelectedMakeID(newID);
+                      setIsCarMetadataEdited(true);
+                    }}
+                    validationError={errors.brand?.message?.toString()}
+                  />
+                ) : (
+                  <RntInput
+                    className="lg:w-60"
+                    id="brand_text"
+                    label={t_car("brand")}
+                    labelClassName="pl-4"
+                    readOnly={true}
+                    value={value}
+                  />
+                )
+              }
             />
             <Controller
               name="model"
               control={control}
               defaultValue=""
-              render={({ field: { onChange, value } }) => (
-                <RntCarModelSelect
-                  id="model"
-                  className="lg:w-60"
-                  label={t_car("model")}
-                  make_id={selectedMakeID}
-                  readOnly={!isNewCar}
-                  value={value}
-                  onModelSelect={(newID: string, newModel) => {
-                    onChange(newModel);
-                    setSelectedModelID(newID);
-                  }}
-                  validationError={errors.model?.message?.toString()}
-                />
-              )}
+              render={({ field: { onChange, value } }) =>
+                isNewCar ? (
+                  <RntCarModelSelect
+                    id="model"
+                    className="lg:w-60"
+                    label={t_car("model")}
+                    make_id={selectedMakeID}
+                    readOnly={!isNewCar}
+                    value={value}
+                    onModelSelect={(newID: string, newModel) => {
+                      onChange(newModel);
+                      setSelectedModelID(newID);
+                      setIsCarMetadataEdited(true);
+                    }}
+                    validationError={errors.model?.message?.toString()}
+                  />
+                ) : (
+                  <RntInput
+                    className="lg:w-60"
+                    id="model_text"
+                    label={t_car("model")}
+                    labelClassName="pl-4"
+                    readOnly={true}
+                    value={value}
+                  />
+                )
+              }
             />
             <Controller
               name="releaseYear"
               control={control}
               defaultValue={0}
-              render={({ field: { onChange, value } }) => (
-                <RntCarYearSelect
-                  id="releaseYear"
-                  className="lg:w-60"
-                  label={t_car("release")}
-                  make_id={selectedMakeID}
-                  model_id={selectedModelID}
-                  readOnly={!isNewCar}
-                  value={value}
-                  onYearSelect={(newYear) => onChange(newYear)}
-                  validationError={errors.releaseYear?.message?.toString()}
-                />
-              )}
+              render={({ field: { onChange, value } }) =>
+                isNewCar ? (
+                  <RntCarYearSelect
+                    id="releaseYear"
+                    className="lg:w-60"
+                    label={t_car("release")}
+                    make_id={selectedMakeID}
+                    model_id={selectedModelID}
+                    readOnly={!isNewCar}
+                    value={value}
+                    onYearSelect={(newYear) => {
+                      onChange(newYear);
+                      setIsCarMetadataEdited(true);
+                    }}
+                    validationError={errors.releaseYear?.message?.toString()}
+                  />
+                ) : (
+                  <RntInput
+                    className="lg:w-60"
+                    id="releaseYear_text"
+                    label={t_car("release")}
+                    labelClassName="pl-4"
+                    readOnly={true}
+                    value={value}
+                  />
+                )
+              }
             />
           </div>
         </div>
@@ -311,6 +350,7 @@ export default function CarEditForm({
                 carImages={field.value}
                 onCarImagesChanged={(newValue) => {
                   field.onChange(newValue);
+                  setIsCarMetadataEdited(true);
                 }}
                 onJsonFileLoaded={loadCarInfoFromJson}
               />
@@ -330,8 +370,11 @@ export default function CarEditForm({
               label={t_car("car_name")}
               labelClassName="pl-4"
               placeholder="e.g. Eleanor"
-              readOnly={!isNewCar}
-              {...register("name")}
+              {...register("name", {
+                onChange: () => {
+                  setIsCarMetadataEdited(true);
+                },
+              })}
               validationError={errors.name?.message?.toString()}
             />
             <RntInput
@@ -340,8 +383,11 @@ export default function CarEditForm({
               label={t_car("licence_plate")}
               labelClassName="pl-4"
               placeholder="e.g. ABC-12D"
-              readOnly={!isNewCar}
-              {...register("licensePlate")}
+              {...register("licensePlate", {
+                onChange: () => {
+                  setIsCarMetadataEdited(true);
+                },
+              })}
               validationError={errors.licensePlate?.message?.toString()}
             />
             <RntInput
@@ -350,8 +396,11 @@ export default function CarEditForm({
               label={t_car("licence_state")}
               labelClassName="pl-4"
               placeholder="e.g. Florida"
-              readOnly={!isNewCar}
-              {...register("licenseState")}
+              {...register("licenseState", {
+                onChange: () => {
+                  setIsCarMetadataEdited(true);
+                },
+              })}
               validationError={errors.licenseState?.message?.toString()}
             />
 
@@ -394,8 +443,12 @@ export default function CarEditForm({
               label={t_car("seats_amount")}
               labelClassName="pl-4"
               placeholder="e.g. 5"
-              readOnly={!isNewCar}
-              {...register("seatsNumber", { valueAsNumber: true })}
+              {...register("seatsNumber", {
+                valueAsNumber: true,
+                onChange: () => {
+                  setIsCarMetadataEdited(true);
+                },
+              })}
               validationError={errors.seatsNumber?.message?.toString()}
             />
             <RntInput
@@ -404,8 +457,12 @@ export default function CarEditForm({
               label={t_car("doors")}
               labelClassName="pl-4"
               placeholder="e.g. 2"
-              readOnly={!isNewCar}
-              {...register("doorsNumber", { valueAsNumber: true })}
+              {...register("doorsNumber", {
+                valueAsNumber: true,
+                onChange: () => {
+                  setIsCarMetadataEdited(true);
+                },
+              })}
               validationError={errors.doorsNumber?.message?.toString()}
             />
             {!isElectricEngine ? (
@@ -419,6 +476,9 @@ export default function CarEditForm({
                   readOnly={!isNewCar}
                   {...register("tankVolumeInGal", {
                     setValueAs: (v) => (v === "" || v === Number.isNaN(v) ? undefined : parseInt(v, 10)),
+                    onChange: () => {
+                      setIsCarMetadataEdited(true);
+                    },
                   })}
                   validationError={
                     "tankVolumeInGal" in errors ? errors.tankVolumeInGal?.message?.toString() : undefined
@@ -429,8 +489,11 @@ export default function CarEditForm({
                   id="transmission"
                   label={t_car("transmission")}
                   labelClassName="pl-4"
-                  readOnly={!isNewCar}
-                  {...register("transmission")}
+                  {...register("transmission", {
+                    onChange: () => {
+                      setIsCarMetadataEdited(true);
+                    },
+                  })}
                   validationError={errors.transmission?.message?.toString()}
                 >
                   <option className="hidden" disabled selected></option>
@@ -446,8 +509,11 @@ export default function CarEditForm({
               label={t_car("color")}
               labelClassName="pl-4"
               placeholder="e.g. Green"
-              readOnly={!isNewCar}
-              {...register("color")}
+              {...register("color", {
+                onChange: () => {
+                  setIsCarMetadataEdited(true);
+                },
+              })}
               validationError={errors.color?.message?.toString()}
             />
           </div>
@@ -462,8 +528,11 @@ export default function CarEditForm({
               rows={5}
               id="description"
               placeholder="e.g. Dupont Pepper Grey 1967 Ford Mustang fastback"
-              disabled={!isNewCar}
-              {...register("description")}
+              {...register("description", {
+                onChange: () => {
+                  setIsCarMetadataEdited(true);
+                },
+              })}
               validationError={errors.description?.message?.toString()}
             />
           </div>

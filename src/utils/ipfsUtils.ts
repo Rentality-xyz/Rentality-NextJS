@@ -1,6 +1,6 @@
 import { HostCarInfo } from "@/model/HostCarInfo";
 import { isEmpty } from "./string";
-import { UploadedCarImage } from "@/model/FileToUpload";
+import { isUploadedCarImage, UploadedCarImage } from "@/model/FileToUpload";
 
 export function getIpfsHashFromUrl(pinataURI: string) {
   if (!pinataURI || pinataURI.length === 0) return "";
@@ -154,7 +154,7 @@ export function getNftJSONFromCarInfo({
       value: tankVolumeInGal.toString(),
     },
   ];
-  const imageUrls: UploadedCarImage[] = images.filter((i) => "url" in i);
+  const imageUrls: UploadedCarImage[] = images.filter(isUploadedCarImage);
   imageUrls.sort((a, b) => {
     if (a.isPrimary) return -1;
     if (b.isPrimary) return 1;
@@ -173,7 +173,7 @@ export function getNftJSONFromCarInfo({
 export function parseMetaData(meta: any) {
   return {
     mainImage: (meta.image as string) ?? "",
-    images: (meta.allImages as string[]) ?? [],
+    images: (meta.allImages as string[]) ?? [meta.image as string] ?? [],
     name: (meta.name as string) ?? "",
     description: (meta.description as string) ?? "",
     vinNumber: meta.attributes?.find((x: any) => x.trait_type === META_KEY_VIN_NUMBER)?.value ?? "",

@@ -21,7 +21,7 @@ const useCustomCivic = () => {
   const ethereumInfo = useEthereum();
   const [status, setStatus] = useState<KycStatus>("Loading");
   const [commissionFee, setCommissionFee] = useState(0);
-  const { gatewayStatus, requestGatewayToken, pendingRequests } = useGateway();
+  const { gatewayStatus, requestGatewayToken, pendingRequests, reinitialize } = useGateway();
   const [isKycProcessing, setIsKycProcessing] = useState(false);
 
   async function payCommission(): Promise<Result<boolean, string>> {
@@ -63,7 +63,11 @@ const useCustomCivic = () => {
     if (status !== "Commission paid") return;
     if (!(await rentalityContract.isKycCommissionPaid(ethereumInfo.walletAddress))) return;
 
-    await requestGatewayToken();
+    if (gatewayStatus === GatewayStatus.USER_INFORMATION_REJECTED) {
+      reinitialize();
+    } else {
+      requestGatewayToken();
+    }
   }
 
   useEffect(() => {
