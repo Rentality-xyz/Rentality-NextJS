@@ -5,7 +5,7 @@ import {
   GOOGLE_MAPS_MAP_ID,
 } from "@/utils/constants";
 import { SearchCarsResult } from "@/model/SearchCarsResult";
-import { APIProvider, Map } from '@vis.gl/react-google-maps';
+import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import { env } from "@/utils/env";
 import { ClusteredMapMarkers } from "@/components/guest/carMap/clusteredMapMarkers";
 
@@ -13,12 +13,12 @@ export default function CarSearchMap({
   searchResult,
   setSelected,
   isExpanded,
-  defaultCenter
+  defaultCenter,
 }: {
   searchResult: SearchCarsResult;
   setSelected?: (carID: number) => void | null;
   isExpanded: boolean;
-  defaultCenter?: google.maps.LatLng | null;
+  defaultCenter?: google.maps.LatLngLiteral | null;
 }) {
   const [isSticked, setIsSticked] = useState<boolean>(false);
   const mapLeft = useRef<number>(0);
@@ -114,11 +114,11 @@ export default function CarSearchMap({
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
-    }
-  },[]);
+    };
+  }, []);
 
   return (
-    <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={['places']}>
+    <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]}>
       <Map
         id="google-maps-guest-search-page"
         mapId={GOOGLE_MAPS_MAP_ID}
@@ -127,11 +127,7 @@ export default function CarSearchMap({
         defaultCenter={selectedCar?.location || defaultCenter || DEFAULT_GOOGLE_MAPS_SEARCH_CENTER}
         defaultZoom={selectedCar ? 11 : DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM}
       >
-        <ClusteredMapMarkers
-          carInfos={searchResult.carInfos}
-          selectedCar={selectedCar}
-          setSelected={setSelected}
-        />
+        <ClusteredMapMarkers carInfos={searchResult.carInfos} selectedCar={selectedCar} setSelected={setSelected} />
       </Map>
     </APIProvider>
   );
