@@ -12,7 +12,6 @@ import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 import RntCheckbox from "@/components/common/rntCheckbox";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/EngineType";
 import RntButton from "@/components/common/rntButton";
-import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
@@ -31,6 +30,8 @@ import RntVINCheckingInput from "@/components/common/rntVINCheckingInput";
 import * as React from "react";
 import { placeDetailsToLocationInfoWithTimeZone } from "@/utils/location";
 import CarAddPhoto from "./CarAddPhoto";
+import { env } from "@/utils/env";
+import {APIProvider} from '@vis.gl/react-google-maps';
 
 export default function CarEditForm({
   initValue,
@@ -217,7 +218,7 @@ export default function CarEditForm({
   }
 
   return (
-    <GoogleMapsProvider libraries={["places"]} language="en">
+    <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]}>
       <form onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
         <div className="mt-4">
           <div className="mb-4 pl-4 text-lg">
@@ -795,7 +796,7 @@ export default function CarEditForm({
         </div>
         <label className="mb-4">{message}</label>
       </form>
-    </GoogleMapsProvider>
+    </APIProvider>
   );
 }
 

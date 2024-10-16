@@ -1,64 +1,49 @@
-import { useRef, useState, useEffect } from "react";
-import { createRoot, Root } from "react-dom/client";
-import { MarkerClusterer } from "@googlemaps/markerclusterer";
+import { SearchCarInfo } from "@/model/SearchCarsResult";
+import {AdvancedMarker} from '@vis.gl/react-google-maps';
+import type {Marker} from '@googlemaps/markerclusterer';
+import { useCallback } from "react";
 
-type AdvancedMarkerElement = google.maps.marker.AdvancedMarkerElement;
+export default function CarMapMarker(
+  {
+    carInfo,
+    setSelected,
+    setMarkerRef
+  } : {
+    carInfo:SearchCarInfo,
+    setSelected?: (carID: number) => void | null;
+    setMarkerRef: (marker: Marker | null, carId: number) => void;
+  }){
 
-export default function Marker({
-  map,
-  position,
-  onClick,
-  markerClusterer,
-  zIndex,
-  children,
-}: {
-  map: google.maps.Map;
-  position: google.maps.LatLngLiteral;
-  onClick: (...args: any[]) => void;
-  markerClusterer: MarkerClusterer;
-  zIndex: number;
-  children: React.ReactNode;
-}) {
-  const [markerRef, setMarkerRef] = useState<AdvancedMarkerElement | null>(null);
-  const rootRef = useRef<Root>();
+  const markerClassName = "text-center text-lg w-24 h-8";
+  const carIdClassName = markerClassName + "z-0 text-white bg-rnt-button-gradient rounded-full";
+  const selectedCarIdClassName =
+    markerClassName + "z-20 rounded-lg text-black font-medium bg-white border-2 border-[#805FE4]";
 
-  useEffect(() => {
-    var advancedMarker = markerRef;
+  const className = carInfo.highlighted ? selectedCarIdClassName : carIdClassName;
+  const zIndex = carInfo.highlighted ? 20 : 0;
 
-    const container = document.createElement("div");
-    rootRef.current = createRoot(container);
+  const ref = useCallback(
+    (marker: google.maps.marker.AdvancedMarkerElement) =>
+      setMarkerRef(marker, carInfo.carId),
+    [setMarkerRef, carInfo.carId]
+  );
 
-    advancedMarker = new google.maps.marker.AdvancedMarkerElement({
-      position,
-      content: container,
-      gmpClickable: true,
-      zIndex: zIndex,
-    });
-
-    advancedMarker.addListener("click", onClick);
-
-    if (markerClusterer) {
-      markerClusterer.addMarker(advancedMarker);
-    }
-
-    setMarkerRef(advancedMarker);
-
-    rootRef.current.render(children);
-  }, []);
-
-  useEffect(() => {
-    if (!markerRef || !rootRef.current) return;
-
-    const newMarker = markerRef;
-
-    newMarker.position = position;
-    newMarker.map = map;
-    newMarker.zIndex = zIndex;
-
-    setMarkerRef(newMarker);
-
-    rootRef.current.render(children);
-  }, [map, position, zIndex, children]);
-
-  return <></>;
+  return (
+    <AdvancedMarker
+      id={carInfo.carId}
+      ref={ref}
+      key={carInfo.carId}
+      position={carInfo.location}
+      onClick={(e) => {
+        if(setSelected !== undefined) {
+          setSelected(Number(e.domEvent.target!.id))
+        }
+      }}
+      zIndex={zIndex}
+    >
+      <div id={carInfo.carId.toString()} className={className}>
+        ${carInfo.pricePerDayWithDiscount}
+      </div>
+    </AdvancedMarker>
+  )
 }

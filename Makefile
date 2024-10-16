@@ -5,7 +5,7 @@ build:
 	docker run -d --name ganache-build --network rentality-build-network ganache-rentality:latest
 
 	cd ../demo-rentality-web3-contracts; \
-	docker build . --network rentality-build-network -t contracts-rentality:latest
+	export DOCKER_BUILDKIT=0 && docker build . --network rentality-build-network -t contracts-rentality:latest
 
 	docker volume rm abis-volume || true
 	docker run -it --name contracts-build -v abis-volume:/home/app/src/abis contracts-rentality echo abis
