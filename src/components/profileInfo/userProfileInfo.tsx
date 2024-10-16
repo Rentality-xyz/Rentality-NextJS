@@ -22,6 +22,7 @@ import { CheckboxLight } from "../common/rntCheckbox";
 import { verifyMessage } from "ethers";
 import { DEFAULT_AGREEMENT_MESSAGE, LEGAL_TERMS_NAME } from "@/utils/constants";
 import { signMessage } from "@/utils/ether";
+import { useLogin, usePrivy } from "@privy-io/react-auth";
 
 function UserProfileInfo({
   savedProfileSettings,
@@ -32,6 +33,16 @@ function UserProfileInfo({
   saveProfileSettings: (newProfileSettings: ProfileSettings) => Promise<boolean>;
   isHost: boolean;
 }) {
+  const { login } = useLogin({
+    onComplete: (user, isNewUser, wasAlreadyAuthenticated, loginMethod, linkedAccount) => {
+      console.log(
+        `Privy callback userProfileInfo.tsx. useLogin.onComplete -> data:${JSON.stringify({ user, isNewUser, wasAlreadyAuthenticated, loginMethod, linkedAccount })}`
+      );
+    },
+    onError: (error) => {
+      console.log(`Privy callback userProfileInfo.tsx. useLogin.onError -> error:${JSON.stringify(error)}`);
+    },
+  });
   return (
     <div className="my-1 flex flex-col gap-4 lg:my-8">
       <UserCommonInformationForm
