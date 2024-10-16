@@ -11,7 +11,7 @@ const useMyListings = () => {
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [myListings, setMyListings] = useState<BaseCarInfo[]>([]);
 
-  const getMyListings = async (rentalityContract: IRentalityContract) => {
+  const getMyListings = async (rentalityContract: IRentalityContract | null) => {
     try {
       if (rentalityContract == null) {
         console.error("getMyListings error: contract is null");
@@ -58,7 +58,7 @@ const useMyListings = () => {
   };
 
   useEffect(() => {
-    if (!rentalityContract) return;
+    if (rentalityContract === undefined) return;
 
     getMyListings(rentalityContract)
       .then((data) => {

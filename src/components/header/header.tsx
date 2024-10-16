@@ -116,7 +116,7 @@ export default function Header() {
       <div className="ml-2 flex flex-row items-center max-lg:w-full max-lg:justify-between">
         <RntMobileStoresDialog />
         <Stack direction="row" spacing={1} alignItems="center" className="max-lg:mx-3 lg:ml-12">
-          <Typography className="font-['Montserrat',Arial,sans-serif] text-lg lg:block">Guest</Typography>
+          <Typography className="font-['Montserrat',Arial,sans-serif] text-lg max-lg:hidden">Guest</Typography>
           <Typography className="font-['Montserrat',Arial,sans-serif] text-lg lg:hidden">
             {isSelectedHost ? "Host" : "Guest"}
           </Typography>

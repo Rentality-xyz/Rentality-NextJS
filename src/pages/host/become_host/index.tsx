@@ -34,42 +34,61 @@ export default function BecomeHost() {
   const { userRole } = useUserRole();
   const { t } = useTranslation();
 
-  const [progress, setProgress] = useState(60); // Устанавливаем начальное значение прогресса (в процентах)
+  let [countStepsTaken, setCountStepsTaken] = useState(0);
 
-  const [isStepConnectWalletCompleted, setIsStepConnectWalletCompleted] = useState<boolean | undefined | null>(
-    undefined
-  );
+  const [progress, setProgress] = useState(0);
+
+  const [isStepConnectWalletCompleted, setIsStepConnectWalletCompleted] = useState<boolean | undefined>(undefined);
   useEffect(() => {
-    // if (!ethereumInfo?.isWalletConnected) return;
+    if (ethereumInfo === undefined) return;
     setIsStepConnectWalletCompleted(ethereumInfo?.isWalletConnected ?? false);
   }, [ethereumInfo]);
+  useEffect(() => {
+    if (isStepConnectWalletCompleted) {
+      countStepsTaken = countStepsTaken + 1;
+      setCountStepsTaken(countStepsTaken);
+      setProgress(countStepsTaken * 20);
+    }
+  }, [isStepConnectWalletCompleted]);
   const handleClickBlockConnectWallet = () => {
     if (!isStepConnectWalletCompleted) {
       login();
     }
   };
 
-  const [isStepUserInfoCompleted, setIsStepUserInfoCompleted] = useState(false);
+  const [isStepUserInfoCompleted, setIsStepUserInfoCompleted] = useState<boolean | undefined>(undefined);
   const [openBlockUserInfo, setOpenBlockUserInfo] = useState(false);
   const handleClickOpenBlockUserInfo = () => {
     setOpenBlockUserInfo(!openBlockUserInfo);
   };
   useEffect(() => {
+    if (isLoadingProfileSettings) return;
     setIsStepUserInfoCompleted(!!savedProfileSettings.tcSignature);
-  }, [savedProfileSettings]);
+  }, [savedProfileSettings, isLoadingProfileSettings]);
+  useEffect(() => {
+    if (isStepUserInfoCompleted) {
+      countStepsTaken = countStepsTaken + 1;
+      setCountStepsTaken(countStepsTaken);
+      setProgress(countStepsTaken * 20);
+    }
+  }, [isStepUserInfoCompleted]);
 
-  const [isStepDriverLicenseCompleted, setIsStepDriverLicenseCompleted] = useState<boolean | undefined | null>(
-    undefined
-  );
+  const [isStepDriverLicenseCompleted, setIsStepDriverLicenseCompleted] = useState<boolean | undefined>(undefined);
   const [openBlockDriverLicense, setOpenBlockDriverLicense] = useState(false);
   const { gatewayStatus } = useGateway();
   const handleClickOpenBlockDriverLicense = () => {
     setOpenBlockDriverLicense(!openBlockDriverLicense);
   };
   useEffect(() => {
-    // if (!gatewayStatus) return;
     setIsStepDriverLicenseCompleted(gatewayStatus === GatewayStatus.ACTIVE);
-  }, [gatewayStatus]);
+  }, [gatewayStatus, isStepConnectWalletCompleted]);
+  useEffect(() => {
+    if (isStepDriverLicenseCompleted) {
+      countStepsTaken = countStepsTaken + 1;
+      setCountStepsTaken(countStepsTaken);
+      setProgress(countStepsTaken * 20);
+    }
+  }, [isStepDriverLicenseCompleted]);
 
   const [isStepListingCarCompleted, setIsStepListingCarCompleted] = useState(false);
   const [openBlockListingCar, setOpenBlockListingCar] = useState(false);
@@ -78,8 +97,16 @@ export default function BecomeHost() {
     setOpenBlockListingCar(!openBlockListingCar);
   };
   useEffect(() => {
+    if (isLoadingMyListings) return;
     setIsStepListingCarCompleted(myListings.length > 0);
-  }, [myListings]);
+  }, [myListings, isLoadingMyListings]);
+  useEffect(() => {
+    if (isStepListingCarCompleted) {
+      countStepsTaken = countStepsTaken + 1;
+      setCountStepsTaken(countStepsTaken);
+      setProgress(countStepsTaken * 20);
+    }
+  }, [isStepListingCarCompleted]);
 
   const [isStepDiscountsAndPriceCompleted, setIsStepDiscountsAndPriceCompleted] = useState(false);
   const [openBlockDiscountsAndPrice, setOpenBlockDiscountsAndPrice] = useState(false);
@@ -95,18 +122,37 @@ export default function BecomeHost() {
         savedDeliveryPrices.over25MilesPrice > 0
     );
   }, [savedTripsDiscounts, savedDeliveryPrices]);
+  useEffect(() => {
+    if (isStepDiscountsAndPriceCompleted) {
+      countStepsTaken = countStepsTaken + 1;
+      setCountStepsTaken(countStepsTaken);
+      setProgress(countStepsTaken * 20);
+    }
+  }, [isStepDiscountsAndPriceCompleted]);
 
   const [isPageLoaded, setIsPageLoaded] = useState(false);
   useEffect(() => {
     if (
       isStepConnectWalletCompleted !== undefined &&
-      isStepConnectWalletCompleted !== null &&
+      isStepUserInfoCompleted !== undefined &&
       isStepDriverLicenseCompleted !== undefined &&
-      isStepDriverLicenseCompleted !== null
+      isStepListingCarCompleted !== undefined &&
+      isStepDiscountsAndPriceCompleted !== undefined
     ) {
       setIsPageLoaded(true);
     }
-  }, [isStepConnectWalletCompleted]);
+  }, [
+    isStepConnectWalletCompleted,
+    isStepUserInfoCompleted,
+    isStepDriverLicenseCompleted,
+    isStepListingCarCompleted,
+    isStepDiscountsAndPriceCompleted,
+  ]);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setIsPageLoaded(true);
+  //   }, 3000);
+  // }, [isPageLoaded]);
 
   return (
     <>
@@ -114,7 +160,7 @@ export default function BecomeHost() {
       {!isPageLoaded && <Loading />}
       {isPageLoaded && (
         <>
-          <div className="mt-5 flex justify-between">
+          <div className="mt-5 flex flex-col justify-between xl:flex-row">
             <div>
               <div className="pl-4 text-start">{t("become_host.all_steps_car_sharing")}</div>
 
@@ -128,24 +174,9 @@ export default function BecomeHost() {
                   >
                     {/* Текст внутри прогресс-бара */}
                     <span className="absolute inset-0 flex items-center justify-start pl-4 text-[#004F51]">
-                      3 of 5 steps
+                      {countStepsTaken} of 5 steps
                     </span>
                   </div>
-                </div>
-                {/* Кнопки для управления прогрессом */}
-                <div className="mt-4 flex justify-center space-x-2">
-                  <button
-                    onClick={() => setProgress((prev) => Math.max(prev - 20, 0))} // Уменьшаем прогресс на 20%
-                    className="rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-                  >
-                    Уменьшить
-                  </button>
-                  <button
-                    onClick={() => setProgress((prev) => Math.min(prev + 20, 100))} // Увеличиваем прогресс на 20%
-                    className="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-                  >
-                    Увеличить
-                  </button>
                 </div>
               </div>
 
@@ -222,7 +253,11 @@ export default function BecomeHost() {
                 </div>
                 <Image src={openBlockListingCar ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
               </div>
-              {openBlockListingCar && <div className="ml-10">{/*<AddCar />*/}</div>}
+              {openBlockListingCar && (
+                <div className="ml-10 mt-4">
+                  <AddCar />
+                </div>
+              )}
 
               <div
                 className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
@@ -268,7 +303,7 @@ export default function BecomeHost() {
                 </Link>
               </div>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col max-xl:mt-8">
               <Image src={tutorialVideo} alt="Tutorial video" className="ml-1" />
               <RntButton type="submit" className="mt-4 w-full">
                 {t("become_host.btn_how_to_start")}
