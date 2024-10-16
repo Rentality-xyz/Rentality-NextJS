@@ -1,6 +1,6 @@
 {
   "name": "rentality-app",
-  "version": "0.5.3",
+  "version": "0.5.3-alpha.1",
   "private": true,
   "license": "MIT",
   "scripts": {
