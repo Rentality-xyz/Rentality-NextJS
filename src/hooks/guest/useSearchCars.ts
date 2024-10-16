@@ -120,11 +120,11 @@ const useSearchCars = () => {
   };
 
   const createTripRequest = async (carId: number, searchCarRequest: SearchCarRequest, timeZoneId: string) => {
-    if (ethereumInfo === null) {
+    if (!ethereumInfo) {
       console.error("createTripRequest: ethereumInfo is null");
       return false;
     }
-    if (rentalityContract === null) {
+    if (!rentalityContract) {
       console.error("createTripRequest: rentalityContract is null");
       return false;
     }

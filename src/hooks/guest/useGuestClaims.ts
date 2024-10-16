@@ -34,7 +34,7 @@ const useGuestClaims = () => {
   };
 
   const createClaim = async (createClaimRequest: CreateClaimRequest) => {
-    if (rentalityContract === null) {
+    if (!rentalityContract) {
       console.error("createClaim: rentalityContract is null");
       return false;
     }
