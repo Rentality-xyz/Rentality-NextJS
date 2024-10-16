@@ -3,7 +3,7 @@ import RntButton from "../common/rntButton";
 import RntInput from "../common/rntInput";
 import RntPlaceAutoComplete from "../common/rntPlaceAutocomplete";
 import RntSelect from "../common/rntSelect";
-import { SortOptionKey } from "@/hooks/guest/useSearchCars";
+import useSearchCars, { SortOptionKey } from "@/hooks/guest/useSearchCars";
 import { TFunction as TFunctionNext } from "i18next";
 import { useEffect, useState } from "react";
 import { ParseLocationResponse } from "@/pages/api/parseLocation";
@@ -17,23 +17,28 @@ import Image from "next/image";
 import SearchDeliveryLocations from "@/components/search/searchDeliveryLocations";
 import { useAppContext } from "@/contexts/appContext";
 import { formatLocationInfoUpToCity } from "@/model/LocationInfo";
-import { SearchCarRequest } from "@/model/SearchCarRequest";
+import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
 import { placeDetailsToLocationInfo } from "@/utils/location";
+import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
+import { Controller } from "react-hook-form";
+import RntCarModelSelect from "@/components/common/rntCarModelSelect";
+import FilterSlidingPanel from "@/components/search/filterSlidingPanel";
+import useCarSearchParams from "@/hooks/guest/useCarSearchParams";
 
 export default function SearchAndFilters({
   initValue,
   sortBy,
   setSortBy,
   onSearchClick,
-  onOpenFilters,
+  onFilterApply,
   t,
 }: {
   initValue: SearchCarRequest;
   sortBy: string | undefined;
   setSortBy: (value: string | undefined) => void;
   onSearchClick: (searchCarRequest: SearchCarRequest) => Promise<void>;
-  onOpenFilters: () => void;
+  onFilterApply: (filters: SearchCarFilters) => Promise<void>;
   t: TFunctionNext;
 }) {
   const [timeZoneId, setTimeZoneId] = useState("");
@@ -56,15 +61,6 @@ export default function SearchAndFilters({
 
   function isSortOptionKey(key: PropertyKey): key is SortOptionKey {
     return sortOption.hasOwnProperty(key);
-  }
-
-  function handleSearchClick() {
-    onSearchClick(searchCarRequest);
-  }
-
-  function handleFiltersClick() {
-    onOpenFilters();
-    openFilterOnSearchPage();
   }
 
   function handleSearchInputChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -126,11 +122,27 @@ export default function SearchAndFilters({
     });
   };
 
-  const { openFilterOnSearchPage } = useAppContext();
-
   useEffect(() => {
     setSearchCarRequest(initValue);
   }, [initValue]);
+
+  const [selectedModelID, setSelectedModelID] = useState<string>("");
+  const [searchCarFilters, setSearchCarFilters] = useState<SearchCarFilters | null>(null);
+  const [selectedMakeID, setSelectedMakeID] = useState<string>("");
+
+  useEffect(() => {
+    if (searchCarFilters) {
+      onFilterApply(searchCarFilters);
+    }
+  }, [searchCarFilters]);
+
+  function handleSearchClick() {
+    onSearchClick(searchCarRequest);
+  }
+
+  function handleResetClick() {
+    setSearchCarFilters({});
+  }
 
   return (
     <>
@@ -179,8 +191,47 @@ export default function SearchAndFilters({
       </div>
       <div className="flex flex-col">
         <div className="mt-4 flex flex-wrap items-center gap-4">
-          <RntButton className="w-40" onClick={handleFiltersClick}>
-            {t_comp("button_filter")}
+          <div className="select-container">
+            <RntCarMakeSelect
+              id={t_comp("select_filter_make")}
+              className="border-gradient"
+              selectClassName="bg-transparent text-rentality-secondary text-center custom-select px-4 border-0"
+              promptText={t_comp("select_filter_make")}
+              label=""
+              value={searchCarFilters?.brand ?? ""}
+              onMakeSelect={(newID, newMake) => {
+                setSelectedMakeID(newID);
+                setSearchCarFilters({
+                  ...searchCarFilters,
+                  brand: newMake,
+                });
+              }}
+            />
+            <span className="custom-arrow"></span>
+          </div>
+
+          <div className="select-container">
+            <RntCarModelSelect
+              id={t_comp("select_filter_model")}
+              className="border-gradient"
+              selectClassName="bg-transparent text-rentality-secondary text-center custom-select px-4 border-0"
+              promptText={t_comp("select_filter_model")}
+              label=""
+              value={searchCarFilters?.model ?? ""}
+              make_id={selectedMakeID}
+              onModelSelect={(newID, newModel) => {
+                setSelectedModelID(newID);
+                setSearchCarFilters({
+                  ...searchCarFilters,
+                  model: newModel,
+                });
+              }}
+            />
+            <span className="custom-arrow"></span>
+          </div>
+
+          <RntButton className="mr-12 w-40 bg-white text-black" onClick={handleResetClick}>
+            {t_comp("button_reset")}
           </RntButton>
           <RntSelect
             className="w-40"
@@ -205,7 +256,7 @@ export default function SearchAndFilters({
           </RntSelect>
           <RntButtonTransparent className="w-full sm:w-48" onClick={handleClickOpenDeliveryLocation}>
             <div className="flex items-center justify-center text-rentality-secondary">
-              <div className="text-lg">Deliver to me</div>
+              <div className="text-lg">{t_comp("button_deliver_to_me")}</div>
               <Image src={openDeliveryLocation ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
             </div>
           </RntButtonTransparent>

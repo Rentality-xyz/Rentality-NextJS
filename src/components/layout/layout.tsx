@@ -31,7 +31,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
   return (
     <>
       <Header />
-      <div className="relative flex min-h-[100vh] w-full flex-row overflow-hidden pt-16 text-rnt-temp-sidemenu-text">
+      <div className="relative flex min-h-[100vh] w-full flex-row overflow-hidden pt-14 text-rnt-temp-sidemenu-text">
         <aside id="main-side-menu" className="hidden bg-rentality-bg-left-sidebar lg:block">
           {sideNavMenu}
         </aside>

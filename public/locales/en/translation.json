@@ -22,13 +22,18 @@
     "datetime_from": "From",
     "datetime_to": "To",
     "button_search": "Search",
-    "button_filter": "Filters",
+    "button_reset": "Reset",
     "sort_by": "Sort by",
     "sort_options": {
       "priceAsc": "Price: low to high",
       "priceDesc": "Price: high to low",
       "distance": "Distance"
-    }
+    },
+    "button_deliver_to_me": "Deliver to me",
+    "select_filter_make": "Make",
+    "select_filter_model": "Model",
+    "select_filter_years": "Years",
+    "select_filter_price": "Price"
   },
   "filter_sliding_panel": {
     "brand": "Car brand",

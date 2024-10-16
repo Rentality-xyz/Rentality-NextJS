@@ -166,9 +166,7 @@ export default function Search() {
             sortBy={sortBy}
             setSortBy={setSortBy}
             onSearchClick={handleSearchClick}
-            onOpenFilters={() => {
-              setOpenFilterPanel(true);
-            }}
+            onFilterApply={handleFilterApply}
             t={t}
           />
           <div className="mb-8 flex flex-row"></div>
