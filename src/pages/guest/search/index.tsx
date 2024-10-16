@@ -7,7 +7,6 @@ import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { isEmpty } from "@/utils/string";
 import { DialogActions } from "@/utils/dialogActions";
-import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import CarSearchMap from "@/components/guest/carMap/carSearchMap";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
@@ -18,6 +17,8 @@ import SearchAndFilters from "@/components/search/searchAndFilters";
 import { useAuth } from "@/contexts/auth/authContext";
 import useCarSearchParams from "@/hooks/guest/useCarSearchParams";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
+import { env } from "@/utils/env";
+import {APIProvider} from '@vis.gl/react-google-maps';
 
 export default function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -161,7 +162,7 @@ export default function Search() {
 
   return (
     <>
-      <GoogleMapsProvider libraries={["maps", "marker", "places"]} language="en">
+      <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["maps", "marker", "places"]}>
         <div className="flex flex-col" title="Search">
           <SearchAndFilters
             initValue={searchCarRequest}
@@ -248,7 +249,7 @@ export default function Search() {
           }}
           t={t}
         />
-      </GoogleMapsProvider>
+      </APIProvider>
     </>
   );
 }
