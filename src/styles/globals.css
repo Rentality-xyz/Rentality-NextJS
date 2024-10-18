@@ -506,7 +506,7 @@ input:disabled {
   pointer-events: none;
   width: 1rem;
   height: 1rem;
-  background: url("../images/arrowDownTurquoise.svg") no-repeat right center;
+  /*background: url("../images/arrowDownTurquoise.svg") no-repeat right center;*/
   background-size: contain;
 }
 

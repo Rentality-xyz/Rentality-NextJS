@@ -3,7 +3,6 @@ import RntButton from "../common/rntButton";
 import RntInput from "../common/rntInput";
 import RntPlaceAutoComplete from "../common/rntPlaceAutocomplete";
 import RntSelect from "../common/rntSelect";
-import useSearchCars, { SortOptionKey } from "@/hooks/guest/useSearchCars";
 import { TFunction as TFunctionNext } from "i18next";
 import { useEffect, useState } from "react";
 import { ParseLocationResponse } from "@/pages/api/parseLocation";
@@ -15,16 +14,16 @@ import arrowUpTurquoise from "../../images/arrowUpTurquoise.svg";
 import arrowDownTurquoise from "../../images/arrowDownTurquoise.svg";
 import Image from "next/image";
 import SearchDeliveryLocations from "@/components/search/searchDeliveryLocations";
-import { useAppContext } from "@/contexts/appContext";
 import { formatLocationInfoUpToCity } from "@/model/LocationInfo";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
 import { placeDetailsToLocationInfo } from "@/utils/location";
 import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
-import { Controller } from "react-hook-form";
 import RntCarModelSelect from "@/components/common/rntCarModelSelect";
-import FilterSlidingPanel from "@/components/search/filterSlidingPanel";
-import useCarSearchParams from "@/hooks/guest/useCarSearchParams";
+import { SortOptionKey } from "@/hooks/guest/useSearchCars";
+import icLocation from "../../images/ic_location.png";
+import icSearch from "@/images/ic_search.svg";
+import icCalendar from "../../images/ic_calendar.png";
 
 export default function SearchAndFilters({
   initValue,
@@ -146,10 +145,13 @@ export default function SearchAndFilters({
 
   return (
     <>
-      <div className="search my-2 flex flex-col gap-4 xl:flex-row xl:items-end">
+      <div className="search mb-2 mt-1 flex flex-col gap-4 xl:flex-row xl:items-end">
         <RntPlaceAutoComplete
-          className="xl:w-2/3"
-          labelClassName="pl-[18px]"
+          isTransparentStyle={true}
+          iconFrontLabel={icLocation}
+          className="w-full"
+          inputClassName="mt-1 z-10"
+          labelClassName="pl-3.5 font-bold"
           id="location"
           label={t_comp("location_label")}
           placeholder={t_comp("location_placeholder")}
@@ -165,9 +167,11 @@ export default function SearchAndFilters({
         />
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between xl:justify-around">
           <RntInput
+            isTransparentStyle={true}
+            iconFrontLabel={icCalendar}
             className="basis-1/2"
-            inputClassName="pr-4"
-            labelClassName="pl-[18px]"
+            inputClassName="pr-4 z-10"
+            labelClassName="pl-[18px] z-10 font-bold"
             id="dateFrom"
             label={`${t_comp("datetime_from")} ${gmtLabel}`}
             type="datetime-local"
@@ -175,16 +179,23 @@ export default function SearchAndFilters({
             onChange={handleSearchInputChange}
           />
           <RntInput
+            isTransparentStyle={true}
+            iconFrontLabel={icCalendar}
             className="basis-1/2"
-            inputClassName="pr-4"
-            labelClassName="pl-[18px]"
+            inputClassName="pr-4 z-10"
+            labelClassName="pl-[18px] z-10 font-bold"
             id="dateTo"
             label={`${t_comp("datetime_to")} ${gmtLabel}`}
             type="datetime-local"
             value={dateToHtmlDateTimeFormat(searchCarRequest.dateTo)}
             onChange={handleSearchInputChange}
-          />{" "}
-          <RntButton className="mt-2 w-full md:w-48" disabled={!isSearchAllowed} onClick={handleSearchClick}>
+          />
+          <RntButton
+            className="mt-2 flex w-full items-center justify-center md:w-48"
+            disabled={!isSearchAllowed}
+            onClick={handleSearchClick}
+          >
+            <Image src={icSearch} alt="" className="mr-2 h-[16px]" />
             {t_comp("button_search")}
           </RntButton>
         </div>
@@ -207,7 +218,7 @@ export default function SearchAndFilters({
                 });
               }}
             />
-            <span className="custom-arrow"></span>
+            <span className="custom-arrow bg-[url('../images/arrowDownTurquoise.svg')]"></span>
           </div>
 
           <div className="select-container">
@@ -227,33 +238,38 @@ export default function SearchAndFilters({
                 });
               }}
             />
-            <span className="custom-arrow"></span>
+            {/*background: url("../images/arrowDownTurquoise.svg") no-repeat right center;*/}
+            <span className="custom-arrow bg-[url('../images/arrowDownTurquoise.svg')]"></span>
           </div>
 
-          <RntButton className="mr-12 w-40 bg-white text-black" onClick={handleResetClick}>
+          <RntButton className="w-40" onClick={handleResetClick}>
             {t_comp("button_reset")}
           </RntButton>
-          <RntSelect
-            className="w-40"
-            id="sort"
-            readOnly={false}
-            value={sortBy ?? ""}
-            onChange={(e) => {
-              const newValue = e.target.value;
-              if (isSortOptionKey(newValue)) {
-                setSortBy(newValue);
-              }
-            }}
-          >
-            <option className="hidden" value="" disabled>
-              {t_comp("sort_by")}
-            </option>
-            {Object.entries(sortOption ?? {}).map(([key, value]) => (
-              <option key={key} value={value}>
-                {value}
+          <div className="select-container">
+            <RntSelect
+              className="w-40"
+              selectClassName="buttonGradient text-white text-center custom-select px-4 border-0"
+              id="sort"
+              readOnly={false}
+              value={sortBy ?? ""}
+              onChange={(e) => {
+                const newValue = e.target.value;
+                if (isSortOptionKey(newValue)) {
+                  setSortBy(newValue);
+                }
+              }}
+            >
+              <option className="hidden" value="" disabled>
+                {t_comp("sort_by")}
               </option>
-            ))}
-          </RntSelect>
+              {Object.entries(sortOption ?? {}).map(([key, value]) => (
+                <option key={key} value={value}>
+                  {value}
+                </option>
+              ))}
+            </RntSelect>
+            <span className="custom-arrow bg-[url('../images/arrowDownWhite.svg')]"></span>
+          </div>
           <RntButtonTransparent className="w-full sm:w-48" onClick={handleClickOpenDeliveryLocation}>
             <div className="flex items-center justify-center text-rentality-secondary">
               <div className="text-lg">{t_comp("button_deliver_to_me")}</div>
