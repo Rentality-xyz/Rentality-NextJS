@@ -108,8 +108,8 @@ export default function CarSearchItem({
             </div>
 
             <div className="grid grid-cols-2">
-              <span className="text-rentality-secondary-shade">{searchInfo.daysDiscount}</span>
-              <span className="ml-8 text-rentality-secondary-shade">{searchInfo.totalDiscount}</span>
+              <span className="text-rentality-secondary">{searchInfo.daysDiscount}</span>
+              <span className="ml-8 text-rentality-secondary">{searchInfo.totalDiscount}</span>
             </div>
 
             <div className="grid grid-cols-2">
@@ -145,7 +145,7 @@ export default function CarSearchItem({
               <p className="text-sm">{searchInfo.hostName ?? "-"}</p>
             </div>
             <div className="ml-2 sm:ml-8" onClick={handleInfoClick}>
-              <i className="fi fi-rs-info text-2xl text-rentality-secondary-shade"></i>
+              <i className="fi fi-rs-info text-2xl text-rentality-secondary"></i>
             </div>
           </div>
           <RntButton

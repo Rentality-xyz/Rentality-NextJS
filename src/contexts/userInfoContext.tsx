@@ -36,10 +36,10 @@ export const UserInfoProvider = ({ children }: { children?: React.ReactNode }) =
 
   useEffect(() => {
     const loadUserInfo = async () => {
-      if (rentalityContract === null) {
+      if (!rentalityContract) {
         return;
       }
-      if (ethereumInfo === null) {
+      if (!ethereumInfo) {
         return;
       }
       try {

@@ -18,10 +18,11 @@ import { ProfileInfoFormValues, profileInfoFormSchema } from "./profileInfoFormS
 import DotStatus from "./dotStatus";
 import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { useTranslation } from "react-i18next";
-import { CheckboxLight } from "../common/rntCheckbox";
+import { CheckboxTerms } from "../common/rntCheckbox";
 import { verifyMessage } from "ethers";
-import { DEFAULT_AGREEMENT_MESSAGE } from "@/utils/constants";
+import { DEFAULT_AGREEMENT_MESSAGE, LEGAL_TERMS_NAME } from "@/utils/constants";
 import { signMessage } from "@/utils/ether";
+import { useLogin } from "@privy-io/react-auth";
 
 function UserProfileInfo({
   savedProfileSettings,
@@ -32,6 +33,16 @@ function UserProfileInfo({
   saveProfileSettings: (newProfileSettings: ProfileSettings) => Promise<boolean>;
   isHost: boolean;
 }) {
+  const { login } = useLogin({
+    onComplete: (user, isNewUser, wasAlreadyAuthenticated, loginMethod, linkedAccount) => {
+      console.log(
+        `Privy callback userProfileInfo.tsx. useLogin.onComplete -> data:${JSON.stringify({ user, isNewUser, wasAlreadyAuthenticated, loginMethod, linkedAccount })}`
+      );
+    },
+    onError: (error) => {
+      console.log(`Privy callback userProfileInfo.tsx. useLogin.onError -> error:${JSON.stringify(error)}`);
+    },
+  });
   return (
     <div className="my-1 flex flex-col gap-4 lg:my-8">
       <UserCommonInformationForm
@@ -241,13 +252,18 @@ function UserCommonInformationForm({
         name="isTerms"
         control={control}
         render={({ field }) => (
-          <CheckboxLight
+          <CheckboxTerms
             className="ml-4 underline"
             label={t("profile.tc_and_privacy_title")}
             checked={field.value}
             onChange={() => {
-              window.open("https://rentality.xyz/legalmatters/terms", "_blank");
-              field.onChange(true);
+              field.onChange(!field.value);
+            }}
+            onLabelClick={(e) => {
+              console.log(`onLabelClick. ${JSON.stringify(e.type)}`);
+              const windowsProxy = window.open(`/${isHost ? "host" : "guest"}/legal?tab=${LEGAL_TERMS_NAME}`, "_blank");
+              if (windowsProxy === null || typeof windowsProxy == "undefined")
+                showError("Please, turn off your pop-up blocker!");
             }}
           />
         )}
@@ -275,10 +291,10 @@ function UserDriverLicenseVerification({ savedProfileSettings }: { savedProfileS
   return (
     <fieldset className="mt-4">
       <strong className="mb-4 pl-[16px] text-lg">{t("profile.pass_verification")}</strong>
-      <p className="text-rentality-secondary">{t("profile.user_data_load_automatically")}</p>
+      <p className="pl-4 text-rentality-secondary">{t("profile.user_data_load_automatically")}</p>
       <KycVerification t={t} />
 
-      <fieldset className="mt-4 flex flex-col">
+      <fieldset className="mt-4 flex flex-col pl-4">
         <strong className="mb-2">{t("profile.verified_user_data")}</strong>
         <VerifiedUserDataRow title={t("profile.name")} value={savedProfileSettings.fullname} />
         <VerifiedUserDataRow title={t("profile.document_type")} value={savedProfileSettings.documentType} />
@@ -313,3 +329,4 @@ function VerifiedUserDataRow({ title, value }: { title: string; value: string })
 }
 
 export default memo(UserProfileInfo);
+export { UserCommonInformationForm, UserDriverLicenseVerification };

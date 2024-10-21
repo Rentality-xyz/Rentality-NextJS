@@ -18,7 +18,7 @@ import { useAuth } from "@/contexts/auth/authContext";
 import useCarSearchParams from "@/hooks/guest/useCarSearchParams";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { env } from "@/utils/env";
-import {APIProvider} from '@vis.gl/react-google-maps';
+import { APIProvider } from "@vis.gl/react-google-maps";
 
 export default function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -220,10 +220,7 @@ export default function Search() {
                   searchCarRequest.searchLocation.longitude &&
                   searchCarRequest.searchLocation.latitude > 0 &&
                   searchCarRequest.searchLocation.longitude > 0
-                    ? new google.maps.LatLng(
-                        searchCarRequest.searchLocation.latitude,
-                        searchCarRequest.searchLocation.longitude
-                      )
+                    ? { lat: searchCarRequest.searchLocation.latitude, lng: searchCarRequest.searchLocation.longitude }
                     : null
                 }
               />

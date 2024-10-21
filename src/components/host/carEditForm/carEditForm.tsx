@@ -106,6 +106,7 @@ export default function CarEditForm({
   const isLocationEdited = watch("isLocationEdited");
   const locationInfo = watch("locationInfo");
 
+  const [isCarMetadataEdited, setIsCarMetadataEdited] = useState(isNewCar);
   const [selectedMakeID, setSelectedMakeID] = useState<string>("");
   const [selectedModelID, setSelectedModelID] = useState<string>("");
 
@@ -149,6 +150,7 @@ export default function CarEditForm({
       wheelDrive: "",
       trunkSize: "",
       bodyType: "",
+      isCarMetadataEdited: isCarMetadataEdited,
     };
 
     const isValidForm = verifyCar(carInfoFormParams);
@@ -219,7 +221,7 @@ export default function CarEditForm({
     <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]}>
       <form onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
         <div className="mt-4">
-          <div className="mb-4 text-lg">
+          <div className="mb-4 pl-4 text-lg">
             <strong>{t_car("car")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
@@ -247,58 +249,95 @@ export default function CarEditForm({
               name="brand"
               control={control}
               defaultValue=""
-              render={({ field: { onChange, value } }) => (
-                <RntCarMakeSelect
-                  id="brand"
-                  className="lg:w-60"
-                  label={t_car("brand")}
-                  readOnly={!isNewCar}
-                  value={value}
-                  onMakeSelect={(newID, newMake) => {
-                    onChange(newMake);
-                    setSelectedMakeID(newID);
-                  }}
-                  validationError={errors.brand?.message?.toString()}
-                />
-              )}
+              render={({ field: { onChange, value } }) =>
+                isNewCar ? (
+                  <RntCarMakeSelect
+                    id="brand"
+                    className="lg:w-60"
+                    label={t_car("brand")}
+                    value={value}
+                    onMakeSelect={(newID, newMake) => {
+                      onChange(newMake);
+                      setSelectedMakeID(newID);
+                      setIsCarMetadataEdited(true);
+                    }}
+                    validationError={errors.brand?.message?.toString()}
+                  />
+                ) : (
+                  <RntInput
+                    className="lg:w-60"
+                    id="brand_text"
+                    label={t_car("brand")}
+                    labelClassName="pl-4"
+                    readOnly={true}
+                    value={value}
+                  />
+                )
+              }
             />
             <Controller
               name="model"
               control={control}
               defaultValue=""
-              render={({ field: { onChange, value } }) => (
-                <RntCarModelSelect
-                  id="model"
-                  className="lg:w-60"
-                  label={t_car("model")}
-                  make_id={selectedMakeID}
-                  readOnly={!isNewCar}
-                  value={value}
-                  onModelSelect={(newID: string, newModel) => {
-                    onChange(newModel);
-                    setSelectedModelID(newID);
-                  }}
-                  validationError={errors.model?.message?.toString()}
-                />
-              )}
+              render={({ field: { onChange, value } }) =>
+                isNewCar ? (
+                  <RntCarModelSelect
+                    id="model"
+                    className="lg:w-60"
+                    label={t_car("model")}
+                    make_id={selectedMakeID}
+                    readOnly={!isNewCar}
+                    value={value}
+                    onModelSelect={(newID: string, newModel) => {
+                      onChange(newModel);
+                      setSelectedModelID(newID);
+                      setIsCarMetadataEdited(true);
+                    }}
+                    validationError={errors.model?.message?.toString()}
+                  />
+                ) : (
+                  <RntInput
+                    className="lg:w-60"
+                    id="model_text"
+                    label={t_car("model")}
+                    labelClassName="pl-4"
+                    readOnly={true}
+                    value={value}
+                  />
+                )
+              }
             />
             <Controller
               name="releaseYear"
               control={control}
               defaultValue={0}
-              render={({ field: { onChange, value } }) => (
-                <RntCarYearSelect
-                  id="releaseYear"
-                  className="lg:w-60"
-                  label={t_car("release")}
-                  make_id={selectedMakeID}
-                  model_id={selectedModelID}
-                  readOnly={!isNewCar}
-                  value={value}
-                  onYearSelect={(newYear) => onChange(newYear)}
-                  validationError={errors.releaseYear?.message?.toString()}
-                />
-              )}
+              render={({ field: { onChange, value } }) =>
+                isNewCar ? (
+                  <RntCarYearSelect
+                    id="releaseYear"
+                    className="lg:w-60"
+                    label={t_car("release")}
+                    make_id={selectedMakeID}
+                    model_id={selectedModelID}
+                    readOnly={!isNewCar}
+                    value={value}
+                    onYearSelect={(newYear) => {
+                      onChange(newYear);
+                      setIsCarMetadataEdited(true);
+                    }}
+                    validationError={errors.releaseYear?.message?.toString()}
+                  />
+                ) : (
+                  <RntInput
+                    className="lg:w-60"
+                    id="releaseYear_text"
+                    label={t_car("release")}
+                    labelClassName="pl-4"
+                    readOnly={true}
+                    value={value}
+                  />
+                )
+              }
             />
           </div>
         </div>
@@ -312,6 +351,7 @@ export default function CarEditForm({
                 carImages={field.value}
                 onCarImagesChanged={(newValue) => {
                   field.onChange(newValue);
+                  setIsCarMetadataEdited(true);
                 }}
                 onJsonFileLoaded={loadCarInfoFromJson}
               />
@@ -321,7 +361,7 @@ export default function CarEditForm({
         />
 
         <div className="mt-4">
-          <div className="mb-4 text-lg">
+          <div className="mb-4 pl-4 text-lg">
             <strong>{t_car("car_basics")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
@@ -329,27 +369,39 @@ export default function CarEditForm({
               className="lg:w-60"
               id="name"
               label={t_car("car_name")}
+              labelClassName="pl-4"
               placeholder="e.g. Eleanor"
-              readOnly={!isNewCar}
-              {...register("name")}
+              {...register("name", {
+                onChange: () => {
+                  setIsCarMetadataEdited(true);
+                },
+              })}
               validationError={errors.name?.message?.toString()}
             />
             <RntInput
               className="lg:w-60"
               id="licensePlate"
               label={t_car("licence_plate")}
+              labelClassName="pl-4"
               placeholder="e.g. ABC-12D"
-              readOnly={!isNewCar}
-              {...register("licensePlate")}
+              {...register("licensePlate", {
+                onChange: () => {
+                  setIsCarMetadataEdited(true);
+                },
+              })}
               validationError={errors.licensePlate?.message?.toString()}
             />
             <RntInput
               className="lg:w-60"
               id="licenseState"
               label={t_car("licence_state")}
+              labelClassName="pl-4"
               placeholder="e.g. Florida"
-              readOnly={!isNewCar}
-              {...register("licenseState")}
+              {...register("licenseState", {
+                onChange: () => {
+                  setIsCarMetadataEdited(true);
+                },
+              })}
               validationError={errors.licenseState?.message?.toString()}
             />
 
@@ -361,6 +413,7 @@ export default function CarEditForm({
                   className="lg:w-60"
                   id="engineType"
                   label={t_car("engine_type")}
+                  labelClassName="pl-4"
                   readOnly={!isNewCar}
                   validationError={errors.engineTypeText?.message?.toString()}
                   value={field.value}
@@ -381,7 +434,7 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="mb-4 text-lg">
+          <div className="mb-4 pl-4 text-lg">
             <strong>{t_car("basic_details")}</strong>
           </div>
           <div className="details flex flex-wrap gap-4">
@@ -389,18 +442,28 @@ export default function CarEditForm({
               className="w-[48%] lg:w-40"
               id="seatsNumber"
               label={t_car("seats_amount")}
+              labelClassName="pl-4"
               placeholder="e.g. 5"
-              readOnly={!isNewCar}
-              {...register("seatsNumber", { valueAsNumber: true })}
+              {...register("seatsNumber", {
+                valueAsNumber: true,
+                onChange: () => {
+                  setIsCarMetadataEdited(true);
+                },
+              })}
               validationError={errors.seatsNumber?.message?.toString()}
             />
             <RntInput
               className="w-[48%] lg:w-40"
               id="doorsNumber"
               label={t_car("doors")}
+              labelClassName="pl-4"
               placeholder="e.g. 2"
-              readOnly={!isNewCar}
-              {...register("doorsNumber", { valueAsNumber: true })}
+              {...register("doorsNumber", {
+                valueAsNumber: true,
+                onChange: () => {
+                  setIsCarMetadataEdited(true);
+                },
+              })}
               validationError={errors.doorsNumber?.message?.toString()}
             />
             {!isElectricEngine ? (
@@ -409,10 +472,14 @@ export default function CarEditForm({
                   className="w-[48%] lg:w-40"
                   id="tankVolumeInGal"
                   label={t_car("tank_size")}
+                  labelClassName="pl-4"
                   placeholder="e.g. 16"
                   readOnly={!isNewCar}
                   {...register("tankVolumeInGal", {
                     setValueAs: (v) => (v === "" || v === Number.isNaN(v) ? undefined : parseInt(v, 10)),
+                    onChange: () => {
+                      setIsCarMetadataEdited(true);
+                    },
                   })}
                   validationError={
                     "tankVolumeInGal" in errors ? errors.tankVolumeInGal?.message?.toString() : undefined
@@ -422,8 +489,12 @@ export default function CarEditForm({
                   className="w-[48%] lg:w-40"
                   id="transmission"
                   label={t_car("transmission")}
-                  readOnly={!isNewCar}
-                  {...register("transmission")}
+                  labelClassName="pl-4"
+                  {...register("transmission", {
+                    onChange: () => {
+                      setIsCarMetadataEdited(true);
+                    },
+                  })}
                   validationError={errors.transmission?.message?.toString()}
                 >
                   <option className="hidden" disabled selected></option>
@@ -437,16 +508,20 @@ export default function CarEditForm({
               className="w-[48%] lg:w-40"
               id="color"
               label={t_car("color")}
+              labelClassName="pl-4"
               placeholder="e.g. Green"
-              readOnly={!isNewCar}
-              {...register("color")}
+              {...register("color", {
+                onChange: () => {
+                  setIsCarMetadataEdited(true);
+                },
+              })}
               validationError={errors.color?.message?.toString()}
             />
           </div>
         </div>
 
         <div className="mt-4">
-          <div className="mb-4 text-lg">
+          <div className="mb-4 pl-4 text-lg">
             <strong>{t_car("more_info")}</strong>
           </div>
           <div className="flex flex-col">
@@ -454,15 +529,18 @@ export default function CarEditForm({
               rows={5}
               id="description"
               placeholder="e.g. Dupont Pepper Grey 1967 Ford Mustang fastback"
-              disabled={!isNewCar}
-              {...register("description")}
+              {...register("description", {
+                onChange: () => {
+                  setIsCarMetadataEdited(true);
+                },
+              })}
               validationError={errors.description?.message?.toString()}
             />
           </div>
         </div>
 
         <div className="mt-4">
-          <div className="mb-4 text-lg">
+          <div className="mb-4 pl-4 text-lg">
             <strong>{t_car("location")}</strong>
           </div>
           <div className="mb-4 flex flex-row items-end gap-4">
@@ -491,6 +569,7 @@ export default function CarEditForm({
               <RntInput
                 className="lg:w-full"
                 id="address"
+                labelClassName="pl-4"
                 label={isNewCar ? t_car("address") : t_car("saved_address")}
                 placeholder="Miami"
                 value={autocomplete}
@@ -512,6 +591,7 @@ export default function CarEditForm({
               className="lg:w-40"
               id="country"
               label={t_car("country")}
+              labelClassName="pl-4"
               placeholder="USA"
               readOnly={true}
               value={locationInfo?.country}
@@ -520,6 +600,7 @@ export default function CarEditForm({
               className="lg:w-40"
               id="state"
               label={t_car("state")}
+              labelClassName="pl-4"
               placeholder="e.g. Florida"
               readOnly={true}
               value={locationInfo?.state}
@@ -528,6 +609,7 @@ export default function CarEditForm({
               className="lg:w-40"
               id="city"
               label={t_car("city")}
+              labelClassName="pl-4"
               placeholder="e.g. Miami"
               readOnly={true}
               value={locationInfo?.city}
@@ -536,6 +618,7 @@ export default function CarEditForm({
               className="w-[48%] lg:w-60"
               id="locationLatitude"
               label={t_car("location_lat")}
+              labelClassName="pl-4"
               placeholder="e.g. 42.123456"
               readOnly={true}
               value={locationInfo?.latitude}
@@ -544,6 +627,7 @@ export default function CarEditForm({
               className="w-[48%] lg:w-60"
               id="locationLongitude"
               label={t_car("location_long")}
+              labelClassName="pl-4"
               placeholder="e.g. 42.123456"
               readOnly={true}
               value={locationInfo?.longitude}
@@ -552,7 +636,7 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="mb-4 text-lg">
+          <div className="mb-4 pl-4 text-lg">
             <strong>{t_car("included_distance")}</strong>
           </div>
           <Controller
@@ -572,7 +656,7 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="mb-4 text-lg">
+          <div className="mb-4 pl-4 text-lg">
             <strong>{t_car("price")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
@@ -580,6 +664,7 @@ export default function CarEditForm({
               className="lg:w-60"
               id="pricePerDay"
               label={t_car("rent")}
+              labelClassName="pl-4"
               placeholder="e.g. 100"
               {...register("pricePerDay", { valueAsNumber: true })}
               validationError={errors.pricePerDay?.message?.toString()}
@@ -588,6 +673,7 @@ export default function CarEditForm({
               className="lg:w-60"
               id="securityDeposit"
               label={t_car("secure_dep")}
+              labelClassName="pl-4"
               placeholder="e.g. 300"
               {...register("securityDeposit", { valueAsNumber: true })}
               validationError={errors.securityDeposit?.message?.toString()}
@@ -597,6 +683,7 @@ export default function CarEditForm({
                 className="lg:w-60"
                 id="fuelPricePerGal"
                 label={t_car("fuel_price")}
+                labelClassName="pl-4"
                 placeholder="e.g. 5.00"
                 {...register("fuelPricePerGal", {
                   setValueAs: (v) => (v === "" || v === Number.isNaN(v) ? undefined : parseInt(v, 10)),
@@ -631,7 +718,7 @@ export default function CarEditForm({
 
         {isElectricEngine ? (
           <div className={`mt-4 ${isElectricEngine ? "" : "hidden"}`}>
-            <div className="mb-4 text-lg">
+            <div className="mb-4 pl-4 text-lg">
               <strong>{t_car("battery_charge")}</strong>
             </div>
             <Controller
@@ -654,7 +741,7 @@ export default function CarEditForm({
         ) : null}
 
         <div className="mt-4">
-          <div className="mb-4 text-lg">
+          <div className="mb-4 pl-4 text-lg">
             <strong>{t_car("management")}</strong>
           </div>
           <div className="mb-4 flex flex-wrap gap-4">
@@ -662,6 +749,7 @@ export default function CarEditForm({
               className="lg:w-60"
               id="timeBufferBetweenTrips"
               label={t_car("time_buffer")}
+              labelClassName="pl-4"
               {...register("timeBufferBetweenTripsInMin", { valueAsNumber: true })}
               validationError={errors.timeBufferBetweenTripsInMin?.message?.toString()}
             >
@@ -684,6 +772,7 @@ export default function CarEditForm({
                   className="lg:w-60"
                   id="listed"
                   label={t_car("listing_status")}
+                  labelClassName="pl-4"
                   value={field.value ? "true" : "false"}
                   onChange={(e) => {
                     field.onChange(e.target.value === "true");
@@ -742,6 +831,7 @@ const MilesIncludedPerDay = ({
           className="lg:w-60"
           id="milesIncludedPerDay"
           label={t_car("max_mileage")}
+          labelClassName="pl-4"
           placeholder="e.g. 200"
           value={milesIncludedPerDay}
           onChange={(e) => {

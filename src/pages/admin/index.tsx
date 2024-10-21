@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
 import { isEmpty } from "@/utils/string";
+import { env } from "@/utils/env";
 
 export default function Admin() {
   const {
@@ -269,20 +270,22 @@ export default function Admin() {
           handleUpdateKycInfo();
         }}
       />
-      <RntInputWithButton
-        id="create_test_trip_request"
-        placeholder="car id"
-        label="Create 3 days trip request for car (with -1% price) "
-        value={testCarId}
-        onChange={(e) => {
-          setTestCarId(e.target.value);
-        }}
-        buttonText={"Create"}
-        buttonDisabled={isEmpty(testCarId)}
-        onButtonClick={() => {
-          handleCreateTestTrip();
-        }}
-      />
+      {env.NEXT_PUBLIC_INCLUDE_TESTNETS === "true" && (
+        <RntInputWithButton
+          id="create_test_trip_request"
+          placeholder="car id"
+          label="Create 3 days trip request for car (with -1% price) "
+          value={testCarId}
+          onChange={(e) => {
+            setTestCarId(e.target.value);
+          }}
+          buttonText={"Create"}
+          buttonDisabled={isEmpty(testCarId)}
+          onButtonClick={() => {
+            handleCreateTestTrip();
+          }}
+        />
+      )}
     </>
   );
 }

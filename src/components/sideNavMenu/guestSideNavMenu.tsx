@@ -82,9 +82,8 @@ function GuestNavMenu() {
         />
         <SideNavMenuItem
           text={t_nav("legal")}
-          href="https://rentality.xyz/legalmatters"
+          href="/guest/legal"
           icon={MenuIcons.Legal}
-          target="_blank"
         />
         <SideNavMenuItem
           text={t_nav("transaction_history")}
