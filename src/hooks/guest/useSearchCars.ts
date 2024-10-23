@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { SearchCarInfo, SearchCarsResult, emptySearchCarsResult } from "@/model/SearchCarsResult";
+import { SearchCarInfo, SearchCarInfoDTO, SearchCarsResult, emptySearchCarsResult } from "@/model/SearchCarsResult";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isEmpty } from "@/utils/string";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
@@ -73,7 +73,7 @@ const useSearchCars = () => {
         return;
       }
 
-      const availableCarsData = apiJson as SearchCarInfo[];
+      const availableCarsData = apiJson as SearchCarInfoDTO[];
 
       for (const carInfoI of availableCarsData) {
         for (const carInfoJ of availableCarsData) {
@@ -96,7 +96,7 @@ const useSearchCars = () => {
       setSearchResult({
         searchCarRequest: request,
         searchCarFilters: filters,
-        carInfos: availableCarsData,
+        carInfos: availableCarsData.map((i) => ({ ...i, engineType: BigInt(i.engineType) })),
       });
       return true;
     } catch (e) {

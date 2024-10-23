@@ -3,6 +3,7 @@ import RntButton from "../common/rntButton";
 import { Avatar } from "@mui/material";
 import { useMemo } from "react";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
+import { getEngineTypeString } from "@/model/EngineType";
 
 type TFunction = (key: string, options?: { [key: string]: any }) => string;
 
@@ -40,14 +41,14 @@ export default function CarSearchItem({
     handleShowRequestDetails(searchInfo);
   }
 
-  const insurancePriceTotal = searchInfo.insuranceRequired
+  const insurancePriceTotal = searchInfo.isInsuranceRequired
     ? searchInfo.insurancePerDayPriceInUsd * searchInfo.tripDays
     : 0;
 
   return (
     <div className={mainClasses} onClick={() => setSelected(searchInfo.carId)}>
       <div
-        style={{ backgroundImage: `url(${searchInfo.image})` }}
+        style={{ backgroundImage: `url(${searchInfo.images[0]})` }}
         className="relative min-h-[12rem] w-full flex-shrink-0 bg-cover bg-center md:w-64"
         onClick={handleImageClick}
       >
@@ -106,21 +107,25 @@ export default function CarSearchItem({
             </div>
           </div>
           <div className="flex w-auto flex-col">
-            <div>- {searchInfo.engineTypeText}</div>
+            <div>- {getEngineTypeString(searchInfo.engineType)}</div>
             <div>- {searchInfo.transmission}</div>
             <div>
               - {searchInfo.seatsNumber} {t_item("seats")}
             </div>
             <div className="mt-4 grid grid-cols-2">
               <span>{t_item("delivery_fee_pick_up")}</span>
-              <span className="max-md:ml-4">${displayMoneyWith2Digits(searchInfo.pickUpDeliveryFee)}</span>
+              <span className="max-md:ml-4">
+                ${displayMoneyWith2Digits(searchInfo.deliveryDetails.pickUp.priceInUsd)}
+              </span>
               <span>{t_item("delivery_fee_drop_off")}</span>
-              <span className="max-md:ml-4">${displayMoneyWith2Digits(searchInfo.dropOffDeliveryFee)}</span>
+              <span className="max-md:ml-4">
+                ${displayMoneyWith2Digits(searchInfo.deliveryDetails.dropOff.priceInUsd)}
+              </span>
               <span>{t_item("taxes")}</span>
               <span className="max-md:ml-4">${displayMoneyWith2Digits(searchInfo.taxes)}</span>
               <span>{t_item("deposit")}</span>
               <span className="max-md:ml-4">${displayMoneyWith2Digits(searchInfo.securityDeposit)}</span>
-              {searchInfo.insuranceRequired && (
+              {searchInfo.isInsuranceRequired && (
                 <>
                   <span>{t_item("insurance")}</span>
                   <span className="max-md:ml-4">${displayMoneyWith2Digits(insurancePriceTotal)}</span>
@@ -141,7 +146,7 @@ export default function CarSearchItem({
             <div className="ml-2 sm:ml-8" onClick={handleInfoClick}>
               <i className="fi fi-rs-info text-2xl text-rentality-secondary-shade"></i>
             </div>
-            {searchInfo.insuranceRequired && (
+            {searchInfo.isInsuranceRequired && (
               <div className="mx-4 pb-1 text-sm text-rentality-secondary">{t_item("insurance_required")}</div>
             )}
           </div>
@@ -157,8 +162,8 @@ export default function CarSearchItem({
                 searchInfo.totalPriceWithDiscount +
                   searchInfo.taxes +
                   searchInfo.securityDeposit +
-                  searchInfo.pickUpDeliveryFee +
-                  searchInfo.dropOffDeliveryFee +
+                  searchInfo.deliveryDetails.pickUp.priceInUsd +
+                  searchInfo.deliveryDetails.dropOff.priceInUsd +
                   insurancePriceTotal
               )}
             </div>
