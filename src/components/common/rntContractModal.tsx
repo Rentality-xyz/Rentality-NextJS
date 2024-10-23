@@ -50,7 +50,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
             <div className="m-4 flex flex-col">
               <div className="m-4 flex flex-col">
                 <h1
-                  className={`mb-4 text-4xl ${tripInfo.isTripCanceled || tripInfo.isTripRejected ? "text-[#FF0000]" : ""}`}
+                  className={`mb-4 text-4xl ${tripInfo.isTripCanceled || tripInfo.isTripRejected ? "text-rentality-alert-text" : ""}`}
                 >
                   Car sharing agreement #{tripId.toString()}{" "}
                   {tripInfo.isTripCanceled
