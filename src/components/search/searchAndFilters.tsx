@@ -24,6 +24,8 @@ import { SortOptionKey } from "@/hooks/guest/useSearchCars";
 import icLocation from "../../images/ic_location.png";
 import icSearch from "@/images/ic_search.svg";
 import icCalendar from "../../images/ic_calendar.png";
+import PanelFilteringByYear from "@/components/search/panelFilteringByYear";
+import PanelFilteringByPrice from "@/components/search/panelFilteringByPrice";
 
 export default function SearchAndFilters({
   initValue,
@@ -141,7 +143,10 @@ export default function SearchAndFilters({
 
   function handleResetClick() {
     setSearchCarFilters({});
+    setResetFilters(true);
   }
+
+  const [resetFilters, setResetFilters] = useState(false);
 
   return (
     <>
@@ -202,7 +207,7 @@ export default function SearchAndFilters({
       </div>
       <div className="flex flex-col">
         <div className="mt-4 flex flex-wrap items-center gap-4">
-          <div className="select-container">
+          <div className="select-container w-full sm:w-48">
             <RntCarMakeSelect
               id={t_comp("select_filter_make")}
               className="border-gradient"
@@ -221,7 +226,7 @@ export default function SearchAndFilters({
             <span className="custom-arrow bg-[url('../images/arrowDownTurquoise.svg')]"></span>
           </div>
 
-          <div className="select-container">
+          <div className="select-container w-full sm:w-48">
             <RntCarModelSelect
               id={t_comp("select_filter_model")}
               className="border-gradient"
@@ -238,42 +243,89 @@ export default function SearchAndFilters({
                 });
               }}
             />
-            {/*background: url("../images/arrowDownTurquoise.svg") no-repeat right center;*/}
             <span className="custom-arrow bg-[url('../images/arrowDownTurquoise.svg')]"></span>
           </div>
 
-          <RntButton className="w-40" onClick={handleResetClick}>
-            {t_comp("button_reset")}
-          </RntButton>
-          <div className="select-container">
-            <RntSelect
-              className="w-40"
-              selectClassName="buttonGradient text-white text-center custom-select px-4 border-0"
-              id="sort"
-              readOnly={false}
-              value={sortBy ?? ""}
-              onChange={(e) => {
-                const newValue = e.target.value;
-                if (isSortOptionKey(newValue)) {
-                  setSortBy(newValue);
-                }
-              }}
-            >
-              <option className="hidden" value="" disabled>
-                {t_comp("sort_by")}
-              </option>
-              {Object.entries(sortOption ?? {}).map(([key, value]) => (
-                <option key={key} value={value}>
-                  {value}
+          <PanelFilteringByYear
+            id={"panel-filtering-year"}
+            onClickReset={() => {
+              setSearchCarFilters({
+                ...searchCarFilters,
+                yearOfProductionFrom: 0,
+                yearOfProductionTo: 0,
+              });
+            }}
+            onClickApply={(selectedValues) => {
+              setSearchCarFilters({
+                ...searchCarFilters,
+                yearOfProductionFrom: selectedValues[0],
+                yearOfProductionTo: selectedValues[1],
+              });
+              setResetFilters(false);
+            }}
+            isResetFilters={resetFilters}
+          />
+
+          <PanelFilteringByPrice
+            id={"panel-filtering-price"}
+            onClickReset={() => {
+              setSearchCarFilters({
+                ...searchCarFilters,
+                pricePerDayInUsdFrom: 0,
+                pricePerDayInUsdTo: 0,
+              });
+            }}
+            onClickApply={(selectedValues) => {
+              setSearchCarFilters({
+                ...searchCarFilters,
+                pricePerDayInUsdFrom: selectedValues[0],
+                pricePerDayInUsdTo: selectedValues[1],
+              });
+              setResetFilters(false);
+            }}
+            isResetFilters={resetFilters}
+          />
+
+          <div className="flex justify-between gap-4 max-sm:w-full">
+            <RntButton className="w-40" onClick={handleResetClick}>
+              {t_comp("button_reset_filters")}
+            </RntButton>
+
+            <div className="select-container">
+              <RntSelect
+                className="w-40"
+                selectClassName="buttonGradient text-white text-center custom-select px-4 border-0"
+                id="sort"
+                readOnly={false}
+                value={sortBy ?? ""}
+                onChange={(e) => {
+                  const newValue = e.target.value;
+                  if (isSortOptionKey(newValue)) {
+                    setSortBy(newValue);
+                  }
+                }}
+              >
+                <option className="hidden" value="" disabled>
+                  {t_comp("sort_by")}
                 </option>
-              ))}
-            </RntSelect>
-            <span className="custom-arrow bg-[url('../images/arrowDownWhite.svg')]"></span>
+                {Object.entries(sortOption ?? {}).map(([key, value]) => (
+                  <option key={key} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </RntSelect>
+              <span className="custom-arrow bg-[url('../images/arrowDownWhite.svg')]"></span>
+            </div>
           </div>
+
           <RntButtonTransparent className="w-full sm:w-48" onClick={handleClickOpenDeliveryLocation}>
-            <div className="flex items-center justify-center text-rentality-secondary">
+            <div className="relative flex items-center justify-center text-rentality-secondary">
               <div className="text-lg">{t_comp("button_deliver_to_me")}</div>
-              <Image src={openDeliveryLocation ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
+              <Image
+                src={openDeliveryLocation ? arrowUpTurquoise : arrowDownTurquoise}
+                alt=""
+                className="max-sm:absolute max-sm:right-4 sm:ml-3"
+              />
             </div>
           </RntButtonTransparent>
         </div>

@@ -22,6 +22,8 @@
     "datetime_from": "From",
     "datetime_to": "To",
     "button_search": "Search",
+    "button_reset_filters": "Reset filters",
+    "button_apply": "Apply",
     "button_reset": "Reset",
     "sort_by": "Sort by",
     "sort_options": {
