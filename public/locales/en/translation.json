@@ -168,6 +168,7 @@
       "kyc_commission_error": "Save KYC commission error:",
       "claim_waiting_time_error": "Save claim waiting time error:",
       "grant_admin_role_error": "Grant admin role error:",
+      "update_kyc_error": "Update KYC info error:",
       "commission_value_range": "Value should be between 0.0001% and 100% (min value is 0.0001%)",
       "kyc_commission_value_range": "Value should be greater than 0",
       "claim_waiting_time_value_range": "Value should be greater than 0",
@@ -646,5 +647,16 @@
     "success": "Success",
     "day": "day",
     "trip": "trip"
+  },
+  "become_host": {
+    "title": "Become a host",
+    "all_steps_car_sharing": "All steps to start a car sharing on Rentality:",
+    "btn_how_to_start": "How to start",
+    "to_search_page": "You can find your car on the search page",
+    "connect_wallet": "Connect your crypto wallet",
+    "enter_user_info": "Enter user information and confirm terms of service",
+    "driver_license": "Pass driver license verification",
+    "listing_car": "Listing you first car",
+    "discounts_and_price": "Manage discounts and delivery price"
   }
 }

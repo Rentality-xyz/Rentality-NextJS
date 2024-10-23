@@ -20,7 +20,7 @@ export default function TransactionHistoryMobileCard(props: TransactionHistoryMo
   return (
     <div key={transaction.transHistoryId} className="mt-8">
       <div className="mb-2 flex justify-between text-sm">
-        <span className="text-rentality-secondary-shade">
+        <span className="text-rentality-secondary">
           {dateRangeFormatShortMonthDateYear(
             transaction.startDateTime,
             transaction.endDateTime,
@@ -50,7 +50,7 @@ export default function TransactionHistoryMobileCard(props: TransactionHistoryMo
       <div className="mb-2 flex justify-between text-sm">
         <strong className="font-normal">{transaction.car}</strong>
         <Link href={detailsLink}>
-          <span className="font-normal text-rentality-secondary-shade">Details</span>
+          <span className="font-normal text-rentality-secondary">Details</span>
         </Link>
       </div>
       <hr className="border-b-2 border-b-gray-300" />

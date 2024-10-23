@@ -44,6 +44,7 @@ export type HostCarInfo = {
   trunkSize: string;
   isGuestInsuranceRequired: boolean;
   insurancePerDayPriceInUsd: number;
+  isCarMetadataEdited: boolean;
 };
 
 export const emptyHostCarInfo: HostCarInfo = {
@@ -78,6 +79,7 @@ export const emptyHostCarInfo: HostCarInfo = {
   timeBufferBetweenTripsInMin: 0,
   isGuestInsuranceRequired: false,
   insurancePerDayPriceInUsd: 0,
+  isCarMetadataEdited: false,
 };
 
 export const verifyCar = (carInfoFormParams: HostCarInfo) => {

@@ -204,7 +204,7 @@ export default function SearchAndFilters({
             ))}
           </RntSelect>
           <RntButtonTransparent className="w-full sm:w-48" onClick={handleClickOpenDeliveryLocation}>
-            <div className="flex items-center justify-center text-[#52D1C9]">
+            <div className="flex items-center justify-center text-rentality-secondary">
               <div className="text-lg">Deliver to me</div>
               <Image src={openDeliveryLocation ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
             </div>

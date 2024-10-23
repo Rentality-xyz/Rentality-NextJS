@@ -21,7 +21,7 @@ const useCustomCivic = () => {
   const ethereumInfo = useEthereum();
   const [status, setStatus] = useState<KycStatus>("Loading");
   const [commissionFee, setCommissionFee] = useState(0);
-  const { gatewayStatus, requestGatewayToken, pendingRequests } = useGateway();
+  const { gatewayStatus, requestGatewayToken, pendingRequests, reinitialize } = useGateway();
   const [isKycProcessing, setIsKycProcessing] = useState(false);
 
   async function payCommission(): Promise<Result<boolean, string>> {
@@ -63,7 +63,14 @@ const useCustomCivic = () => {
     if (status !== "Commission paid") return;
     if (!(await rentalityContract.isKycCommissionPaid(ethereumInfo.walletAddress))) return;
 
-    await requestGatewayToken();
+      console.debug("gatewayStatus: " + gatewayStatus);
+    if (gatewayStatus === GatewayStatus.USER_INFORMATION_REJECTED || gatewayStatus === GatewayStatus.REVOKED) {
+      console.debug("requestKyc -> reinitialize call");
+      reinitialize();
+    } else {
+      console.debug("requestKyc -> requestGatewayToken call");
+      requestGatewayToken();
+    }
   }
 
   useEffect(() => {
@@ -87,10 +94,20 @@ const useCustomCivic = () => {
         (gatewayStatus === GatewayStatus.CHECKING || gatewayStatus === GatewayStatus.USER_INFORMATION_REJECTED)
       ) {
         try {
-          const transaction = await rentalityContract.useKycCommission(ethereumInfo.walletAddress);
-          await transaction.wait();
+          var url = new URL(`/api/updateCivic`, window.location.origin);
+          url.searchParams.append("address", ethereumInfo.walletAddress);
+          url.searchParams.append("chainId", ethereumInfo.chainId.toString());
+
+          console.log(`calling updateCivic...`);
+
+          const apiResponse = await fetch(url);
+
+          if (!apiResponse.ok) {
+            console.error(`updateCivic fetch error: + ${apiResponse.statusText}`);
+            return;
+          }
         } catch (e) {
-          console.error("checkStatusChange error:" + e);
+          console.error("updateCivic error:" + e);
         }
         setStatus("Kyc failed");
         return;

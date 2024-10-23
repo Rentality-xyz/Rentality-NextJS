@@ -58,12 +58,12 @@ export default function TripInfo() {
               <div className="rnt-card my-2 flex flex-col rounded-xl bg-rentality-bg xl:mr-2">
                 <div className="flex flex-col items-start justify-between p-2 sm:flex-row sm:items-center">
                   <div>
-                    <strong className="text-2xl text-[#52D1C9]">{t_details("about_car")}</strong>
+                    <strong className="text-2xl text-rentality-secondary">{t_details("about_car")}</strong>
                   </div>
                   <div className="max-sm:mt-2">VIN: {tripInfo.carVinNumber}</div>
                 </div>
                 <div className="flex grow flex-row p-2">
-                  <strong className="text-xl text-[#52D1C9]">{t_details("basic_car_details")}</strong>
+                  <strong className="text-xl text-rentality-secondary">{t_details("basic_car_details")}</strong>
                 </div>
                 <div className="flex flex-wrap p-2 max-sm:flex-col">
                   <div className="m-2 flex w-28 items-center">
@@ -98,14 +98,14 @@ export default function TripInfo() {
                   </div>
                 </div>
                 <div className="flex grow flex-row p-2">
-                  <strong className="text-xl text-[#52D1C9]">{t_details("more_car_details")}</strong>
+                  <strong className="text-xl text-rentality-secondary">{t_details("more_car_details")}</strong>
                 </div>
                 <div className="grow flex-row p-2">{tripInfo.carDescription}</div>
               </div>
               <div className="rnt-card my-2 flex flex-col overflow-hidden rounded-xl bg-rentality-bg xl:mr-2">
                 <div className="flex flex-col p-2">
                   <div className="pb-3">
-                    <strong className="text-2xl text-[#52D1C9]">{t_details("trip_status_details")}</strong>
+                    <strong className="text-2xl text-rentality-secondary">{t_details("trip_status_details")}</strong>
                   </div>
                   <div>
                     {tripInfo.createdDateTime.getTime() > 0 ? (
@@ -230,7 +230,7 @@ export default function TripInfo() {
                   ) : tripInfo.isTripRejected ? (
                     <strong className="text-2xl text-[#FF0000]">{t_details("trip_receipt_rejected")}</strong>
                   ) : (
-                    <strong className="text-2xl text-[#52D1C9]">{t_details("trip_receipt")}</strong>
+                    <strong className="text-2xl text-rentality-secondary">{t_details("trip_receipt")}</strong>
                   )}
                 </div>
                 <div className="flex grow flex-row p-2">
@@ -287,7 +287,9 @@ export default function TripInfo() {
                   </tbody>
                 </table>
                 <hr className="my-4" />
-                <div className="flex grow flex-row p-2 text-[#52D1C9]">{t_details("security_deposit_info")}:</div>
+                <div className="flex grow flex-row p-2 text-rentality-secondary">
+                  {t_details("security_deposit_info")}:
+                </div>
                 <table className="m-2">
                   <tbody>
                     <tr>
@@ -307,7 +309,9 @@ export default function TripInfo() {
                   </tbody>
                 </table>
                 <hr className="my-4" />
-                <div className="flex grow flex-row p-2 text-[#52D1C9]">{t_details("reimbursement_info")}:</div>
+                <div className="flex grow flex-row p-2 text-rentality-secondary">
+                  {t_details("reimbursement_info")}:
+                </div>
                 <table className="m-2">
                   <tbody>
                     <tr>
@@ -351,7 +355,9 @@ export default function TripInfo() {
                   </tbody>
                 </table>
                 <hr className="my-4" />
-                <div className="flex grow flex-row p-2 text-[#52D1C9]">{t_details("vehicle_dashboard_data")}:</div>
+                <div className="flex grow flex-row p-2 text-rentality-secondary">
+                  {t_details("vehicle_dashboard_data")}:
+                </div>
                 <table className="m-2">
                   <tbody>
                     <tr>

@@ -11,6 +11,7 @@ import burgerMenu from "@/images/ic-menu-burge-white-20.svg";
 import { useAppContext } from "@/contexts/appContext";
 import { HostBurgerNavMenu } from "@/components/sideNavMenu/hostSideNavMenu";
 import { GuestBurgerNavMenu } from "@/components/sideNavMenu/guestSideNavMenu";
+import { useRouter } from "next/router";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 72,
@@ -59,6 +60,15 @@ export default function Header() {
   const { userMode } = useUserMode();
   const [isSelectedHost, setIsSelectedHost] = useState(isHost(userMode));
 
+  const router = useRouter();
+  useEffect(() => {
+    if (isHost(userMode)) {
+      setIsSelectedHost(true);
+    } else {
+      setIsSelectedHost(false);
+    }
+  }, [router.pathname]);
+
   const { isBurgerMenuShown, isFilterOnSearchPageShown, openBurgerMenu, closeBurgerMenu } = useAppContext();
   useEffect(() => {
     const body = document.body;
@@ -72,7 +82,6 @@ export default function Header() {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsSelectedHost(event.target.checked);
-    //router.push(event.target.checked ? "/host" : "/guest");
     if (event.target.checked) {
       window.location.href = "/host";
     } else {
@@ -84,7 +93,7 @@ export default function Header() {
     <header className="fixed z-50 flex w-full items-center justify-between border-b-2 border-b-[#ffffff1f] bg-rentality-bg-left-sidebar text-rnt-temp-header-text max-lg:pl-4 lg:py-1 lg:pl-14 lg:pr-6">
       <div className="flex max-lg:w-full max-lg:justify-between">
         <HeaderLogo />
-        <div className="flex items-center lg:hidden">
+        <div className="flex min-w-[20px] items-center lg:hidden">
           {isBurgerMenuShown && (
             <div id="burger-menu-wrapper" className="fixed left-0 top-[50px] z-[100] h-full w-full overflow-auto">
               <aside id="burger-menu" className="bg-rentality-bg-left-sidebar">
