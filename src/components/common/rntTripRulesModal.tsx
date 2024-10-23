@@ -28,7 +28,7 @@ export default function RntTripRulesModal({}: {}) {
     <React.Fragment>
       <RntButtonTransparent className="w-36" onClick={handleClickOpen}>
         <div className="text-[#52D1C9]">
-          <strong className="text-l">Trip Rules</strong>
+          <strong className="text-lg">Trip Rules</strong>
         </div>
       </RntButtonTransparent>
       <Dialog

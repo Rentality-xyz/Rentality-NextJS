@@ -184,7 +184,7 @@ export default function Search() {
                 <div className="pl-[18px]">Loading...</div>
               ) : (
                 <>
-                  <div className="text-l pl-[18px] font-bold">
+                  <div className="pl-[18px] text-lg font-bold">
                     {searchResult?.carInfos?.length ?? 0} {t_page("info.cars_available")}
                   </div>
                   {searchResult?.carInfos?.length > 0 ? (
