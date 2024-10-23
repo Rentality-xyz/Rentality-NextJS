@@ -14,9 +14,16 @@ export default function PanelFilteringByPrice({ id, onClickReset, onClickApply, 
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [value, setValue] = useState([minPrice, maxPrice]);
+  const [selectedValue, setSelectedValue] = useState(value);
 
   const toggleDropdown = () => {
-    setIsOpen(!isOpen);
+    setIsOpen((prevIsOpen) => {
+      if (prevIsOpen) {
+        // Логика для случая, когда dropdown был открыт и сейчас будет закрыт
+        setValue(selectedValue);
+      }
+      return !prevIsOpen;
+    });
   };
 
   const { t } = useTranslation();
@@ -31,11 +38,13 @@ export default function PanelFilteringByPrice({ id, onClickReset, onClickApply, 
 
   const handleReset = () => {
     setValue([minPrice, maxPrice]);
+    setSelectedValue([minPrice, maxPrice]);
     setIsOpen(false);
     onClickReset();
   };
 
   const handleApply = () => {
+    setSelectedValue(value);
     setIsOpen(false);
     onClickApply(value);
   };
@@ -56,9 +65,16 @@ export default function PanelFilteringByPrice({ id, onClickReset, onClickApply, 
 
   useEffect(() => {
     if (isResetFilters) {
+      setSelectedValue([minPrice, maxPrice]);
       setValue([minPrice, maxPrice]);
     }
   }, [isResetFilters]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setValue(selectedValue);
+    }
+  }, [isOpen]);
 
   return (
     <div ref={dropdownRef} id={id} className="relative w-full sm:w-48">

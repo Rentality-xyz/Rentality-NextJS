@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { ElementRef, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import arrowUpTurquoise from "@/images/arrowUpTurquoise.svg";
 import arrowDownTurquoise from "@/images/arrowDownTurquoise.svg";
@@ -14,9 +14,16 @@ export default function PanelFilteringByYear({ id, onClickReset, onClickApply, i
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [value, setValue] = useState([minYear, maxYear]);
+  const [selectedValue, setSelectedValue] = useState(value);
 
   const toggleDropdown = () => {
-    setIsOpen(!isOpen);
+    setIsOpen((prevIsOpen) => {
+      if (prevIsOpen) {
+        // Логика для случая, когда dropdown был открыт и сейчас будет закрыт
+        setValue(selectedValue);
+      }
+      return !prevIsOpen;
+    });
   };
 
   const { t } = useTranslation();
@@ -31,11 +38,13 @@ export default function PanelFilteringByYear({ id, onClickReset, onClickApply, i
 
   const handleReset = () => {
     setValue([minYear, maxYear]);
+    setSelectedValue([minYear, maxYear]);
     setIsOpen(false);
     onClickReset();
   };
 
   const handleApply = () => {
+    setSelectedValue(value);
     setIsOpen(false);
     onClickApply(value);
   };
@@ -56,9 +65,16 @@ export default function PanelFilteringByYear({ id, onClickReset, onClickApply, i
 
   useEffect(() => {
     if (isResetFilters) {
+      setSelectedValue([minYear, maxYear]);
       setValue([minYear, maxYear]);
     }
   }, [isResetFilters]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setValue(selectedValue);
+    }
+  }, [isOpen]);
 
   return (
     <div ref={dropdownRef} id={id} className="relative w-full sm:w-48">
