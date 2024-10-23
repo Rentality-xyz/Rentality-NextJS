@@ -20,6 +20,8 @@ type SearchCarQueryParams = {
   yearTo?: number;
   priceFrom?: number;
   priceTo?: number;
+
+  carId?: number;
 };
 
 function setParam(params: URLSearchParams, key: keyof SearchCarQueryParams, value: string) {
@@ -64,7 +66,9 @@ export function useCarSearchParams() {
   const priceFrom = searchParams.get("priceFrom") ? parseInt(searchParams.get("priceFrom") as string) : undefined;
   const priceTo = searchParams.get("priceTo") ? parseInt(searchParams.get("priceTo") as string) : undefined;
 
-  const createQueryString = (request: SearchCarRequest, filters: SearchCarFilters) => {
+  const carId = searchParams.get("carId") ? parseInt(searchParams.get("carId") as string) : undefined;
+
+  const createQueryString = (request: SearchCarRequest, filters: SearchCarFilters, carId?: number) => {
     const params = new URLSearchParams();
 
     if (request.searchLocation && !isEmpty(request.searchLocation.address)) {
@@ -112,6 +116,9 @@ export function useCarSearchParams() {
     if (filters.pricePerDayInUsdTo && filters.pricePerDayInUsdTo > 0) {
       setParam(params, "priceTo", filters.pricePerDayInUsdTo.toString());
     }
+    if (carId && carId > 0) {
+      setParam(params, "carId", carId.toString());
+    }
 
     return params.toString();
   };
@@ -143,8 +150,9 @@ export function useCarSearchParams() {
       yearOfProductionTo: yearTo,
       pricePerDayInUsdFrom: priceFrom,
       pricePerDayInUsdTo: priceTo,
+      carId: carId,
     };
-  }, [brand, model, yearFrom, yearTo, priceFrom, priceTo]);
+  }, [brand, model, yearFrom, yearTo, priceFrom, priceTo, carId]);
 
   function updateSearchParams(request: SearchCarRequest, filters: SearchCarFilters) {
     const pageParams = "?" + createQueryString(request, filters);

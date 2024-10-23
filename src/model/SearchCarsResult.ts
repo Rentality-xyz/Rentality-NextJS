@@ -65,6 +65,14 @@ export type SearchCarInfo = {
 
 export type SearchCarInfoDTO = Omit<SearchCarInfo, "engineType"> & { engineType: number };
 
+export type SearchCarInfoDetails = SearchCarInfo & {
+  pricePer10PercentFuel: number;
+  tripDiscounts: TripDiscountsFormValues;
+  salesTax: number;
+  governmentTax: number;
+  isGuestHasInsurance: boolean;
+};
+
 const emptySearchCarRequest: SearchCarRequest = {
   searchLocation: emptyLocationInfo,
   dateFrom: DEFAULT_SEARCH_DATE_FROM,
