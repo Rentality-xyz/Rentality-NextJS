@@ -15,6 +15,7 @@ export const mapContractCarToCarDetails = async (
   const securityDeposit = Number(carInfo.securityDepositPerTripInUsdCents) / 100;
   const engineTypeString = getEngineTypeString(carInfo.engineType);
 
+  const tankVolumeInGal = engineTypeString === ENGINE_TYPE_PETROL_STRING ? Number(carInfo.engineParams[0]) : 0;
   const fuelPricePerGal = engineTypeString === ENGINE_TYPE_PETROL_STRING ? Number(carInfo.engineParams[1]) / 100 : 0;
   const fullBatteryChargePrice =
     engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? Number(carInfo.engineParams[0]) / 100 : 0;
@@ -32,7 +33,7 @@ export const mapContractCarToCarDetails = async (
     licenseState: metaData.licenseState,
     seatsNumber: metaData.seatsNumber,
     doorsNumber: metaData.doorsNumber,
-    tankVolumeInGal: metaData.tankVolumeInGal,
+    tankVolumeInGal: tankVolumeInGal,
     wheelDrive: metaData.wheelDrive,
     transmission: metaData.transmission,
     trunkSize: metaData.trunkSize,
@@ -61,5 +62,6 @@ export const mapContractCarToCarDetails = async (
     timeBufferBetweenTripsInMin: Number(carInfo.timeBufferBetweenTripsInSec) / 60,
     isGuestInsuranceRequired: insuranceInfo.required,
     insurancePerDayPriceInUsd: Number(insuranceInfo.priceInUsdCents) / 100,
+    isCarMetadataEdited: false,
   };
 };

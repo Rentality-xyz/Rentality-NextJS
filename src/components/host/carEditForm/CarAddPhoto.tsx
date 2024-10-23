@@ -4,6 +4,7 @@ import { resizeImage } from "@/utils/image";
 import { PlatformCarImage } from "@/model/FileToUpload";
 import RntCheckbox from "@/components/common/rntCheckbox";
 import { useTranslation } from "react-i18next";
+import { cn } from "@/utils";
 
 function CarAddPhoto({
   carImages,
@@ -66,6 +67,7 @@ function CarAddPhoto({
             localUrl: fileUrl,
             isPrimary: updatedCarImages[currentIndex].isPrimary,
           });
+          onCarImagesChange(updatedCarImages);
         } else {
           onCarImagesChange(
             carImages.map((value, index) => {
@@ -107,52 +109,51 @@ function CarAddPhoto({
   }
 
   return (
-    <div className="my-2">
-      <p className="mb-1 mt-2 pl-3.5">{t("vehicles.upload_photos_title")}</p>
-      <div className="mt-4 flex flex-row gap-4">
-        {carImages
-          .filter((i) => "file" in i || !i.isDeleted)
-          .map((carImage, index) => {
-            const carImageUrl = "url" in carImage ? carImage.url : carImage.localUrl;
-            return (
-              <div key={index} className="relative">
-                <div className="relative h-40 w-48 overflow-hidden rounded-2xl">
-                  <Image className="h-full w-full object-cover" width={1000} height={1000} src={carImageUrl} alt="" />
-                  <button
-                    className="absolute bottom-0 left-0 z-10 bg-rentality-additional px-2"
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteClick(index);
-                    }}
-                  >
-                    {t("common.delete")}
-                  </button>
-                  <button
-                    className="absolute bottom-0 right-0 bg-rentality-additional px-2"
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEditClick(index);
-                    }}
-                  >
-                    {t("common.edit")}
-                  </button>
-                </div>
-                <RntCheckbox
-                  className="absolute -left-2 -top-2"
-                  checked={carImage.isPrimary}
-                  onChange={(e) => handleCheckboxClick(index)}
-                />
+    <div className="my-2 flex flex-col gap-4">
+      <p className="pl-4">{t("vehicles.upload_photos_title")}</p>
+      <div className="flex w-full flex-row gap-4 overflow-x-auto p-2 pb-4">
+        {carImages.map((carImage, index) => {
+          const carImageUrl = "url" in carImage ? carImage.url : carImage.localUrl;
+          const isImageDeleted = "isDeleted" in carImage && carImage.isDeleted;
+          return (
+            <div key={index} className={cn("relative", isImageDeleted ? "hidden" : "")}>
+              <div className="relative h-40 w-48 overflow-hidden rounded-2xl">
+                <Image className="h-full w-full object-cover" width={1000} height={1000} src={carImageUrl} alt="" />
+                <button
+                  className="absolute bottom-0 left-0 z-10 bg-rentality-additional px-2"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteClick(index);
+                  }}
+                >
+                  {t("common.delete")}
+                </button>
+                <button
+                  className="absolute bottom-0 right-0 bg-rentality-additional px-2"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditClick(index);
+                  }}
+                >
+                  {t("common.edit")}
+                </button>
               </div>
-            );
-          })}
-        {carImages.length < MAX_ADD_IMAGE ? (
-          <div className="h-40 w-48 cursor-pointer overflow-hidden rounded-2xl bg-gray-200 bg-opacity-40 bg-[url('../images/add_circle_outline_white_48dp.svg')] bg-center bg-no-repeat">
+              <RntCheckbox
+                className="absolute -left-2 -top-2"
+                checked={carImage.isPrimary}
+                onChange={(e) => handleCheckboxClick(index)}
+              />
+            </div>
+          );
+        })}
+        {carImages.filter((i) => "file" in i || !i.isDeleted).length < MAX_ADD_IMAGE && (
+          <div className="h-40 w-48 min-w-[12rem] cursor-pointer overflow-hidden rounded-2xl bg-gray-200 bg-opacity-40 bg-[url('../images/add_circle_outline_white_48dp.svg')] bg-center bg-no-repeat">
             <div className="h-full w-full" onClick={handleImageClick} />
             <input className="hidden" type="file" accept="image/*" ref={inputRef} onChange={handleImageChange} />
           </div>
-        ) : null}
+        )}
       </div>
     </div>
   );

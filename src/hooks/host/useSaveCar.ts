@@ -151,42 +151,6 @@ const useSaveCar = () => {
     try {
       setDataSaved(false);
 
-      const savedImages: UploadedCarImage[] = [];
-
-      if (hostCarInfo.images.length > 0) {
-        for (const image of hostCarInfo.images) {
-          if ("file" in image) {
-            const response = await uploadFileToIPFS(image.file, "RentalityCarImage", {
-              createdAt: new Date().toISOString(),
-              createdBy: ethereumInfo?.walletAddress ?? "",
-              version: SMARTCONTRACT_VERSION,
-              chainId: ethereumInfo?.chainId ?? 0,
-            });
-
-            if (!response.success || !response.pinataURL) {
-              throw new Error("Uploaded image to Pinata error");
-            }
-            savedImages.push({ url: response.pinataURL, isPrimary: image.isPrimary });
-          } else if (image.isDeleted) {
-            await deleteFileFromIPFS(getIpfsHashFromUrl(image.url));
-          } else {
-            savedImages.push(image);
-          }
-        }
-      }
-
-      const dataToSave = {
-        ...hostCarInfo,
-        images: savedImages,
-      };
-
-      const metadataURL = await uploadMetadataToIPFS(dataToSave);
-
-      if (!metadataURL) {
-        console.error("Upload JSON to Pinata error");
-        return false;
-      }
-
       const engineParams: bigint[] = [];
       if (hostCarInfo.engineTypeText === ENGINE_TYPE_PETROL_STRING) {
         engineParams.push(BigInt(hostCarInfo.fuelPricePerGal * 100));
@@ -230,6 +194,47 @@ const useSaveCar = () => {
       }
 
       await transaction.wait();
+
+      if (hostCarInfo.isCarMetadataEdited) {
+        const savedImages: UploadedCarImage[] = [];
+        if (hostCarInfo.images.length > 0) {
+          for (const image of hostCarInfo.images) {
+            if ("file" in image) {
+              const response = await uploadFileToIPFS(image.file, "RentalityCarImage", {
+                createdAt: new Date().toISOString(),
+                createdBy: ethereumInfo?.walletAddress ?? "",
+                version: SMARTCONTRACT_VERSION,
+                chainId: ethereumInfo?.chainId ?? 0,
+              });
+
+              if (!response.success || !response.pinataURL) {
+                throw new Error("Uploaded image to Pinata error");
+              }
+              savedImages.push({ url: response.pinataURL, isPrimary: image.isPrimary });
+            } else if (image.isDeleted) {
+              await deleteFileFromIPFS(getIpfsHashFromUrl(image.url));
+            } else {
+              savedImages.push(image);
+            }
+          }
+        }
+
+        const dataToSave = {
+          ...hostCarInfo,
+          images: savedImages,
+        };
+
+        const metadataURL = await uploadMetadataToIPFS(dataToSave);
+
+        if (!metadataURL) {
+          console.error("Upload JSON to Pinata error");
+          return false;
+        }
+        transaction = await rentalityContract.updateCarTokenUri(updateCarRequest.carId, metadataURL);
+      }
+
+      await transaction.wait();
+
       setDataSaved(true);
       return true;
     } catch (e) {

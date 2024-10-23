@@ -62,7 +62,7 @@ function TripCard({
         <div className="2xl:w-46 flex flex-col p-4 text-end max-2xl:w-full md:p-2 xl:p-4 2xl:flex-shrink-0">
           <div className="flex max-2xl:justify-between 2xl:flex-col 2xl:gap-2 2xl:pr-8">
             <TripContacts tripInfo={tripInfo} isHost={isHost} t={t} />
-            <div className="text-[#52D1C9] 2xl:mt-10">
+            <div className="text-rentality-secondary 2xl:mt-10">
               <Link href={`/${pathRoot}/trips/tripInfo/${tripInfo.tripId}?back=${pathname}`}>
                 <strong>{t("booked.more_info")}</strong>
               </Link>

@@ -400,7 +400,9 @@ async function saveKycInfo(
   const contractCivicKYCInfo: ContractCivicKYCInfo = {
     fullName: verifiedInformation.name,
     licenseNumber: verifiedInformation.documentNumber,
-    expirationDate: getBlockchainTimeFromDate(moment.utc(verifiedInformation.dateOfExpiry).toDate()),
+    expirationDate: !isEmpty(verifiedInformation.dateOfExpiry)
+      ? getBlockchainTimeFromDate(moment.utc(verifiedInformation.dateOfExpiry).toDate())
+      : BigInt(0),
     issueCountry: verifiedInformation.issueCountry,
     email: verifiedInformation.email,
   };
@@ -419,8 +421,6 @@ async function saveKycInfo(
     console.error("useKycCommission error", e);
     return Err(`useKycCommission error ${e}`);
   }
-
-  return Ok(true);
 }
 
 function getErrorMessage(debugMessage: string) {

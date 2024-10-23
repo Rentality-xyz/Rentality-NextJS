@@ -1,11 +1,18 @@
 import { formatEther, parseEther } from "ethers";
 import { useEffect, useRef, useState } from "react";
-import { IRentalityAdminGateway } from "@/model/blockchain/IRentalityContract";
+import { IRentalityAdminGateway, IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { getEtherContractWithSigner } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
-import { Role } from "@/model/blockchain/schemas";
-import { validateContractAllCarsDTO } from "@/model/blockchain/schemas_utils";
+import { ContractCivicKYCInfo, Role } from "@/model/blockchain/schemas";
+import { db } from "@/utils/firebase";
+import { isEmpty } from "@/utils/string";
+import { getBlockchainTimeFromDate } from "@/utils/formInput";
+import moment from "moment";
+import { collection, getDocs, query } from "firebase/firestore";
+import { FIREBASE_DB_NAME } from "@/chat/model/firebaseTypes";
+import { bigIntReplacer } from "@/utils/json";
+import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 
 export type AdminContractInfo = {
   platformFee: number;
@@ -147,6 +154,104 @@ const useAdminPanelInfo = () => {
     }
   };
 
+  async function updateKycInfoForAddress(address: string) {
+    if (!rentalityAdminGateway) {
+      console.error("updateKycInfoForAddress error: rentalityAdminGateway is null");
+      return false;
+    }
+    if (!ethereumInfo) {
+      console.error("updateKycInfoForAddress error: ethereumInfo is null");
+      return false;
+    }
+
+    try {
+      setIsLoading(true);
+
+      const kycInfoQuery = query(collection(db, FIREBASE_DB_NAME.kycInfos));
+      const kycInfoQuerySnapshot = await getDocs(kycInfoQuery);
+      const verifiedInformation = kycInfoQuerySnapshot.docs
+        .find((i) => i.data().verifiedInformation?.address === address)
+        ?.data().verifiedInformation;
+
+      if (verifiedInformation === undefined) {
+        console.error(`verifiedInformation for ${address} was not found`);
+        return;
+      }
+
+      const contractCivicKYCInfo: ContractCivicKYCInfo = {
+        fullName: verifiedInformation.name,
+        licenseNumber: verifiedInformation.documentNumber,
+        expirationDate: !isEmpty(verifiedInformation.dateOfExpiry)
+          ? getBlockchainTimeFromDate(moment.utc(verifiedInformation.dateOfExpiry).toDate())
+          : BigInt(0),
+        issueCountry: verifiedInformation.issueCountry,
+        email: verifiedInformation.email,
+      };
+
+      console.debug("contractCivicKYCInfo", JSON.stringify(contractCivicKYCInfo, bigIntReplacer, 2));
+
+      const rentality = (await getEtherContractWithSigner(
+        "gateway",
+        ethereumInfo.signer
+      )) as unknown as IRentalityContract;
+      const transaction = await rentality.setCivicKYCInfo(address, contractCivicKYCInfo);
+      await transaction.wait();
+      return true;
+    } catch (e) {
+      console.error("updateKycInfoForAddress error" + e);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function createTestTrip(carId: string) {
+    if (!rentalityAdminGateway) {
+      console.error("createTestTrip error: rentalityAdminGateway is null");
+      return false;
+    }
+    if (!ethereumInfo) {
+      console.error("createTestTrip error: ethereumInfo is null");
+      return false;
+    }
+
+    try {
+      setIsLoading(true);
+
+      const rentalityContract = (await getEtherContractWithSigner(
+        "gateway",
+        ethereumInfo.signer
+      )) as unknown as IRentalityContract;
+
+      const paymentsNeeded = await rentalityContract.calculatePaymentsWithDelivery(
+        BigInt(carId),
+        BigInt(3),
+        ETH_DEFAULT_ADDRESS,
+        emptyContractLocationInfo,
+        emptyContractLocationInfo
+      );
+
+      const tripRequest = {
+        carId: BigInt(carId),
+        startDateTime: getBlockchainTimeFromDate(moment().toDate()),
+        endDateTime: getBlockchainTimeFromDate(moment().add(3, "days").toDate()),
+        currencyType: ETH_DEFAULT_ADDRESS,
+      };
+
+      const transaction = await rentalityContract.createTripRequest(tripRequest, {
+        value: BigInt(Math.ceil(Number(paymentsNeeded.totalPrice) * 0.991)),
+      });
+      await transaction.wait();
+
+      return true;
+    } catch (e) {
+      console.error("createTestTrip error" + e);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   const isIniialized = useRef<boolean>(false);
 
   useEffect(() => {
@@ -163,9 +268,9 @@ const useAdminPanelInfo = () => {
         )) as unknown as IRentalityAdminGateway;
         setRentalityAdminGateway(rentalityAdminGateway);
 
-        const platformFee = Number(await rentalityAdminGateway.getPlatformFeeInPPM()) / 10_000.0 ?? 0;
+        const platformFee = Number((await rentalityAdminGateway.getPlatformFeeInPPM()) ?? 0) / 10_000.0;
         const claimWaitingTime = Number(await rentalityAdminGateway.getClaimWaitingTime());
-        const kycCommission = Number(await rentalityAdminGateway.getKycCommission()) / 100 ?? 0;
+        const kycCommission = Number((await rentalityAdminGateway.getKycCommission()) ?? 0) / 100;
 
         const ownerAddress = await rentalityAdminGateway.owner();
         const userServiceAddress = await rentalityAdminGateway.getUserServiceAddress();
@@ -214,6 +319,8 @@ const useAdminPanelInfo = () => {
     saveKycCommission,
     saveClaimWaitingTime,
     grantAdminRole,
+    updateKycInfoForAddress,
+    createTestTrip,
   } as const;
 };
 

@@ -35,12 +35,13 @@ export default function RntVINCheckingInput({
   const [isVINConfirmDialogOpen, setIsVINConfirmDialogOpen] = React.useState(false);
 
   const validationError = useMemo(() => {
+    if (readOnly) return "";
     if (value.length != 17) {
       return "VIN should be 17 digits";
     } else {
       return !isVINVerified && !isVINCheckOverriden ? "VIN is not verified" : "";
     }
-  }, [value, isVINVerified, isVINCheckOverriden]);
+  }, [value, isVINVerified, isVINCheckOverriden, readOnly]);
 
   return (
     <>
@@ -62,7 +63,7 @@ export default function RntVINCheckingInput({
             background: "#240F50",
           }}
         >
-          <div className="text-[#52D1C9]">Vehicle not identified</div>
+          <div className="text-rentality-secondary">Vehicle not identified</div>
         </DialogTitle>
         <DialogContent
           sx={{
@@ -100,11 +101,13 @@ export default function RntVINCheckingInput({
       <RntInput
         id={id}
         label={label}
+        labelClassName="pl-4"
         placeholder={placeholder}
         className={className}
         readOnly={readOnly}
         value={value}
         validationError={validationError}
+        validationClassName="pl-4"
         onChange={(e) => {
           const vinNumber = e.target.value;
           if (vinNumber.length === 17) {
@@ -118,7 +121,7 @@ export default function RntVINCheckingInput({
           onChange != null && onChange(e);
         }}
       />
-      {value.length === 17 && !isVINVerified && (
+      {value.length === 17 && !isVINVerified && !readOnly && (
         <div className="flex flex-col">
           <label className="mb-1">&nbsp;</label>
           <RntButton type="button" className="w-[100px]" onClick={() => setIsVINConfirmDialogOpen(true)}>

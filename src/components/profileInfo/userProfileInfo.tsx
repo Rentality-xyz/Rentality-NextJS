@@ -6,7 +6,6 @@ import { resizeImage } from "@/utils/image";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
-import { useRouter } from "next/router";
 import { ChangeEvent, memo, useEffect } from "react";
 import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
@@ -21,7 +20,7 @@ import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { useTranslation } from "react-i18next";
 import { CheckboxLight } from "../common/rntCheckbox";
 import { verifyMessage } from "ethers";
-import { DEFAULT_AGREEMENT_MESSAGE } from "@/utils/constants";
+import { DEFAULT_AGREEMENT_MESSAGE, LEGAL_TERMS_NAME } from "@/utils/constants";
 import { signMessage } from "@/utils/ether";
 
 function UserProfileInfo({
@@ -55,7 +54,6 @@ function UserCommonInformationForm({
   saveProfileSettings: (newProfileSettings: ProfileSettings) => Promise<boolean>;
   isHost: boolean;
 }) {
-  const router = useRouter();
   const ethereumInfo = useEthereum();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
@@ -152,7 +150,6 @@ function UserCommonInformationForm({
         throw new Error("Save profile info error");
       }
       showInfo(t("common.info.success"));
-      router.push(isHost ? "/host" : "/guest");
     } catch (e) {
       console.error("handleSubmit error:" + e);
       showError(t("profile.save_err"));
@@ -249,7 +246,7 @@ function UserCommonInformationForm({
             label={t("profile.tc_and_privacy_title")}
             checked={field.value}
             onChange={() => {
-              window.open("https://rentality.xyz/legalmatters/terms", "_blank");
+              window.open(`/${isHost ? "host" : "guest"}/legal?tab=${LEGAL_TERMS_NAME}`, "_blank");
               field.onChange(true);
             }}
           />
@@ -278,10 +275,10 @@ function UserDriverLicenseVerification({ savedProfileSettings }: { savedProfileS
   return (
     <fieldset className="mt-4">
       <strong className="mb-4 pl-[16px] text-lg">{t("profile.pass_verification")}</strong>
-      <p className="text-rentality-secondary">{t("profile.user_data_load_automatically")}</p>
+      <p className="pl-4 text-rentality-secondary">{t("profile.user_data_load_automatically")}</p>
       <KycVerification t={t} />
 
-      <fieldset className="mt-4 flex flex-col">
+      <fieldset className="mt-4 flex flex-col pl-4">
         <strong className="mb-2">{t("profile.verified_user_data")}</strong>
         <VerifiedUserDataRow title={t("profile.name")} value={savedProfileSettings.fullname} />
         <VerifiedUserDataRow title={t("profile.document_type")} value={savedProfileSettings.documentType} />
@@ -294,7 +291,9 @@ function UserDriverLicenseVerification({ savedProfileSettings }: { savedProfileS
           value={
             savedProfileSettings.drivingLicenseExpire
               ? dateFormatShortMonthDateYear(savedProfileSettings.drivingLicenseExpire)
-              : ""
+              : !isEmpty(savedProfileSettings.drivingLicenseNumber)
+                ? "Permanent"
+                : ""
           }
         />
         <VerifiedUserDataRow title={t("profile.issue_country")} value={savedProfileSettings.issueCountry} />
@@ -314,3 +313,4 @@ function VerifiedUserDataRow({ title, value }: { title: string; value: string })
 }
 
 export default memo(UserProfileInfo);
+export { UserCommonInformationForm, UserDriverLicenseVerification };
