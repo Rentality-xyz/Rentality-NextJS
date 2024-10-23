@@ -54,9 +54,9 @@ export const CivicProvider = ({ children }: { children?: React.ReactNode }) => {
     const setData = async () => {
       if (!ethereumInfo) return;
 
+      setWallet({ address: ethereumInfo.walletAddress, signer: ethereumInfo.signer });
       setIsLocalHost(ethereumInfo.chainId === DEFAULT_LOCAL_HOST_CHAIN_ID);
       setIsBaseNetwork(ethereumInfo.chainId === base.id || ethereumInfo.chainId === baseSepolia.id);
-      setWallet({ address: ethereumInfo.walletAddress, signer: ethereumInfo.signer });
     };
 
     setData();
