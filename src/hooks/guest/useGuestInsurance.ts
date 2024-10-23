@@ -17,7 +17,7 @@ const useGuestInsurance = () => {
   const [guestInsurance, setGuestInsurance] = useState<GuestGeneralInsurance>({ photo: "" });
 
   const saveGuestInsurance = async (file: FileToUpload) => {
-    if (rentalityContract === null) {
+    if (!rentalityContract) {
       console.error("saveGuestInsurance: rentalityContract is null");
       return false;
     }

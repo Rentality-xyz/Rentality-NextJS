@@ -7,7 +7,6 @@ import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { isEmpty } from "@/utils/string";
 import { DialogActions } from "@/utils/dialogActions";
-import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import CarSearchMap from "@/components/guest/carMap/carSearchMap";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
@@ -19,6 +18,8 @@ import { useAuth } from "@/contexts/auth/authContext";
 import useCarSearchParams from "@/hooks/guest/useCarSearchParams";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import useCreateTripRequest from "@/hooks/guest/useCreateTripRequest";
+import { env } from "@/utils/env";
+import { APIProvider } from "@vis.gl/react-google-maps";
 
 export default function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -124,32 +125,34 @@ export default function Search() {
 
   const setHighlightedCar = useCallback(
     (carID: number) => {
-      const newSearchResult = { ...searchResult };
+      setSearchResult((prev) => {
+        const newSearchResult = { ...prev };
 
-      newSearchResult.carInfos.forEach((item: SearchCarInfo) => {
-        item.highlighted = item.carId == carID;
+        newSearchResult.carInfos.forEach((item: SearchCarInfo) => {
+          item.highlighted = item.carId == carID;
+        });
+        return newSearchResult;
       });
-
-      setSearchResult(newSearchResult);
     },
-    [searchResult]
+    [setSearchResult]
   );
 
   const sortCars = useCallback(() => {
-    const newSearchResult = { ...searchResult };
+    setSearchResult((prev) => {
+      const newSearchResult = { ...prev };
 
-    newSearchResult.carInfos.sort((a: SearchCarInfo, b: SearchCarInfo) => {
-      if (a.highlighted && !b.highlighted) {
-        return -1;
-      } else if (!a.highlighted && b.highlighted) {
-        return 1;
-      } else {
-        return 0;
-      }
+      newSearchResult.carInfos.sort((a: SearchCarInfo, b: SearchCarInfo) => {
+        if (a.highlighted && !b.highlighted) {
+          return -1;
+        } else if (!a.highlighted && b.highlighted) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      return newSearchResult;
     });
-
-    setSearchResult(newSearchResult);
-  }, [searchResult]);
+  }, [setSearchResult]);
 
   useEffect(() => {
     if (sortBy === undefined) return;
@@ -164,7 +167,7 @@ export default function Search() {
 
   return (
     <>
-      <GoogleMapsProvider libraries={["maps", "marker", "places"]} language="en">
+      <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["maps", "marker", "places"]}>
         <div className="flex flex-col" title="Search">
           <SearchAndFilters
             initValue={searchCarRequest}
@@ -223,10 +226,7 @@ export default function Search() {
                   searchCarRequest.searchLocation.longitude &&
                   searchCarRequest.searchLocation.latitude > 0 &&
                   searchCarRequest.searchLocation.longitude > 0
-                    ? new google.maps.LatLng(
-                        searchCarRequest.searchLocation.latitude,
-                        searchCarRequest.searchLocation.longitude
-                      )
+                    ? { lat: searchCarRequest.searchLocation.latitude, lng: searchCarRequest.searchLocation.longitude }
                     : null
                 }
               />
@@ -252,7 +252,7 @@ export default function Search() {
           }}
           t={t}
         />
-      </GoogleMapsProvider>
+      </APIProvider>
     </>
   );
 }
