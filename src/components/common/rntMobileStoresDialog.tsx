@@ -87,7 +87,7 @@ export default function RntMobileStoresDialog() {
                 onChange={handleEmailChange}
               />
               <RntButtonTransparent className="w-44" type="submit" disabled={isButtonDisabled}>
-                <strong className="text-l">{t("common.submit")}</strong>
+                <strong className="text-lg">{t("common.submit")}</strong>
               </RntButtonTransparent>
             </form>
           </div>
