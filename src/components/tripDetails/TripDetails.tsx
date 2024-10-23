@@ -258,7 +258,7 @@ export default function TripInfo() {
                     </tr>
                     <tr>
                       <td>{t_details("discount_amount")}</td>
-                      <td className="text-end text-red-500">
+                      <td className="text-rentality-alert-text text-end">
                         -${displayMoneyWith2Digits(tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithDiscountInUsd)}
                       </td>
                     </tr>
@@ -296,7 +296,7 @@ export default function TripInfo() {
                     </tr>
                     <tr>
                       <td>{t_details("reimbursement")}</td>
-                      <td className="text-end text-red-500">
+                      <td className="text-rentality-alert-text text-end">
                         -${displayMoneyWith2Digits(tripInfo.resolveAmountInUsd)}
                       </td>
                     </tr>

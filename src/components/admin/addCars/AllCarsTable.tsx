@@ -70,12 +70,16 @@ export default function AllCarsTable({ isLoading, data }: AllCarsTableProps) {
                   <div>{carDetails.city}</div>
                 </td>
                 <td className={rowSpanClassName}>
-                  <div className={`${carDetails.isUniue ? "" : "text-red-500"}`}>{carDetails.locationLatitude}</div>
-                  <div className={`${carDetails.isUniue ? "" : "text-red-500"}`}>{carDetails.locationLongitude}</div>
+                  <div className={`${carDetails.isUniue ? "" : "text-rentality-alert-text"}`}>
+                    {carDetails.locationLatitude}
+                  </div>
+                  <div className={`${carDetails.isUniue ? "" : "text-rentality-alert-text"}`}>
+                    {carDetails.locationLongitude}
+                  </div>
                   <div>{carDetails.timeZoneId}</div>
                 </td>
                 <td className={rowSpanClassName}>
-                  <span className={`${carDetails.isUserAddressFull ? "" : "text-red-500"}`}>
+                  <span className={`${carDetails.isUserAddressFull ? "" : "text-rentality-alert-text"}`}>
                     {carDetails.userAddress}
                   </span>
                 </td>

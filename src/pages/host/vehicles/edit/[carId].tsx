@@ -23,7 +23,7 @@ export default function EditCar() {
       <PageTitle title={t("vehicles.edit_car_title")} />
       {isLoading && <Loading />}
       {!isLoading && hostCarInfo.carId <= 0 && (
-        <h1 className="py-8 text-2xl font-bold text-red-800">{t("vehicles.can_not_edit")}</h1>
+        <h1 className="text-rentality-alert-text py-8 text-2xl font-bold">{t("vehicles.can_not_edit")}</h1>
       )}
       {!isLoading && hostCarInfo.carId > 0 && (
         <>
