@@ -58,7 +58,10 @@
     },
     "info": {
       "cars_available": "car(s) available",
-      "no_cars": "No cars were found for your request"
+      "no_cars": "No cars were found for your request",
+      "launched_miami": "We've launched in Miami, Florida",
+      "soon_other_locations": "Coming soon in other locations",
+      "changing_request": "Try changing you request location"
     },
     "car_search_item": {
       "price": "Total price",
