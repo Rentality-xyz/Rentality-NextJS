@@ -197,7 +197,7 @@ export default function Search() {
                     })
                   ) : (
                     <div>
-                      <div className="flex max-w-screen-xl flex-col border border-gray-600 py-2 text-center font-['Montserrat',Arial,sans-serif] text-white">
+                      <div className="flex max-w-screen-xl flex-col border border-gray-600 p-2 text-center font-['Montserrat',Arial,sans-serif] text-white">
                         {/*{t_page("info.no_cars")}*/}
                         <p className="text-3xl">{t_page("info.launched_miami")}</p>
                         <p className="mt-4 text-2xl text-rentality-secondary">{t_page("info.soon_other_locations")}</p>
