@@ -162,7 +162,7 @@ export default function Search() {
 
   return (
     <>
-      <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["maps", "marker", "places"]}>
+      <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["maps", "marker", "places"]} language="en">
         <div className="flex flex-col" title="Search">
           <SearchAndFilters
             initValue={searchCarRequest}

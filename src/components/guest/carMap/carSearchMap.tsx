@@ -118,7 +118,7 @@ export default function CarSearchMap({
   }, []);
 
   return (
-    <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]}>
+    <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]} language="en">
       <Map
         id="google-maps-guest-search-page"
         mapId={GOOGLE_MAPS_MAP_ID}
