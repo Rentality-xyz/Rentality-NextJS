@@ -6,6 +6,9 @@ import AdminSideNavMenu from "../sideNavMenu/adminSideNavMenu";
 import { useAppContext } from "@/contexts/appContext";
 import useUserMode, { isAdmin, isHost } from "@/hooks/useUserMode";
 import React, { useEffect } from "react";
+import { DialogActions } from "@/utils/dialogActions";
+import { t } from "i18next";
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
 
 export default function Layout({ children }: { children?: React.ReactNode }) {
   const { isBurgerMenuShown, isFilterOnSearchPageShown, openBurgerMenu, closeBurgerMenu } = useAppContext();
@@ -27,6 +30,26 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
   ) : (
     <GuestSideNavMenu />
   );
+
+  const { showDialog, hideDialogs } = useRntDialogs();
+
+  useEffect(() => {
+    const checkScreenWidth = () => {
+      const screenWidth = window.matchMedia("(max-width: 409px)");
+
+      if (screenWidth.matches) {
+        const action = <>{DialogActions.OK(hideDialogs)}</>;
+        showDialog(t("common.info.small_screen"), action);
+      }
+    };
+
+    checkScreenWidth();
+
+    window.addEventListener("resize", checkScreenWidth);
+    return () => {
+      window.removeEventListener("resize", checkScreenWidth);
+    };
+  }, []);
 
   return (
     <>
