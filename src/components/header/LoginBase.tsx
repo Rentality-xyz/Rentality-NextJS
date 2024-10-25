@@ -28,8 +28,12 @@ function LoginBase() {
 
   if (!isLoadingAuth && !isAuthenticated)
     return (
-      <RntButton className="h-10 w-28 text-sm sm:w-48 sm:text-base" onClick={login}>
-        {t("common.info.login")}
+      <RntButton className="h-10 w-14 text-sm max-sm:my-1 max-sm:mr-1 sm:w-48 sm:text-base" onClick={login}>
+        <span className="sm:hidden">
+          Log <br />
+          In
+        </span>
+        <span className="hidden sm:block">{t("common.info.login")}</span>
       </RntButton>
     );
 
