@@ -18,16 +18,17 @@ export default function InvitationToConnect() {
 
   return (
     <div className="ml-4 mt-6 flex w-fit flex-col font-['Montserrat',Arial,sans-serif]">
-      <Image src={carLoading} alt="" className="" />
-      <p className="mt-6 text-center text-2xl">
+      <p className="hidden text-3xl text-rentality-secondary sm:block">{t("common.info.welcome_to_web3")}</p>
+      <Image src={carLoading} alt="" className="sm:hidden" />
+      <p className="mt-6 text-2xl max-sm:text-center">
         Connect your crypto wallet for <br />
         full Rentality functionality
       </p>
-      <div className="mt-6 flex items-center justify-center">
+      <div className="mt-6 flex items-center max-sm:justify-center">
         <Image src={logoBaseWhite} alt="" className="mr-2 w-7" />
-        <p className="text-lg">{t("search_page.info.we_on_base_network")}</p>
+        <p className="text-lg">{t("common.info.we_on_base_network")}</p>
       </div>
-      <div className="mt-6 flex flex-col items-center justify-center">
+      <div className="mt-6 flex flex-col max-sm:items-center max-sm:justify-center">
         <RntButton className="md:w-48" onClick={handleConnectClick}>
           {t("common.info.connect_wallet_now")}
         </RntButton>
@@ -35,6 +36,7 @@ export default function InvitationToConnect() {
           <span>{t("common.info.back_to_car_search")}</span>
         </Link>
       </div>
+      <Image src={carLoading} alt="" className="mt-6 hidden sm:block" />
     </div>
   );
 }

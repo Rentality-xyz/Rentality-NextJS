@@ -61,8 +61,7 @@
       "no_cars": "No cars were found for your request",
       "launched_miami": "We've launched in Miami, Florida",
       "soon_other_locations": "Coming soon in other locations",
-      "changing_request": "Try changing you request location",
-      "we_on_base_network": "We’ve on the Base network"
+      "changing_request": "Try changing you request location"
     },
     "car_search_item": {
       "price": "Total price",
@@ -571,7 +570,9 @@
       "success": "Success",
       "small_screen": "Please note: your screen resolution is less than 410 pixels. This may lead to some elements being displayed incorrectly. Please use a device with a higher resolution for an optimal experience on our platform.",
       "connect_wallet_now": "Connect now!",
-      "back_to_car_search": "← Back to car search"
+      "back_to_car_search": "← Back to car search",
+      "we_on_base_network": "We’ve on the Base network",
+      "welcome_to_web3": "Welcome to Web 3.0 platform!"
     },
     "upload": "Upload",
     "save": "Save",
