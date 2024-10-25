@@ -3,18 +3,22 @@ import PageTitle from "@/components/pageTitle/pageTitle";
 import TripCard from "@/components/tripCard/tripCard";
 import useHostTrips from "@/hooks/host/useHostTrips";
 import { useTranslation } from "react-i18next";
+import InvitationToConnect from "@/components/common/invitationToConnect";
+import { useAuth } from "@/contexts/auth/authContext";
 
 export default function History() {
-  const [isLoading, _, tripsHistory] = useHostTrips();
+  const [isLoadingTrips, _, tripsHistory] = useHostTrips();
   const { t } = useTranslation();
+  const { isLoadingAuth, isAuthenticated } = useAuth();
 
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {};
 
   return (
     <>
       <PageTitle title={t("booked.history_title")} />
-      {isLoading && <Loading />}
-      {!isLoading && (
+      {isLoadingAuth && <Loading />}
+      {!isLoadingAuth && !isAuthenticated && <InvitationToConnect />}
+      {!isLoadingTrips && isAuthenticated && (
         <div className="my-4 flex flex-col gap-4">
           {tripsHistory != null && tripsHistory.length > 0 ? (
             tripsHistory.map((value) => {

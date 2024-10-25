@@ -8,7 +8,7 @@ import { mapTripDTOtoTripInfo } from "@/model/utils/TripDTOtoTripInfo";
 
 const useHostTrips = () => {
   const rentalityContract = useRentality();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [isLoadingTrips, setIsLoadingTrips] = useState<Boolean>(true);
   const [updateRequired, setUpdateRequired] = useState<Boolean>(true);
   const [tripsBooked, setTripsBooked] = useState<TripInfo[]>([]);
   const [tripsHistory, setTripsHistory] = useState<TripInfo[]>([]);
@@ -265,7 +265,7 @@ const useHostTrips = () => {
     if (!rentalityContract) return;
 
     setUpdateRequired(false);
-    setIsLoading(true);
+    setIsLoadingTrips(true);
 
     getTrips(rentalityContract)
       .then((data) => {
@@ -283,12 +283,12 @@ const useHostTrips = () => {
             })
             .reverse() ?? []
         );
-        setIsLoading(false);
+        setIsLoadingTrips(false);
       })
-      .catch(() => setIsLoading(false));
+      .catch(() => setIsLoadingTrips(false));
   }, [updateRequired, rentalityContract]);
 
-  return [isLoading, tripsBooked, tripsHistory, updateData] as const;
+  return [isLoadingTrips, tripsBooked, tripsHistory, updateData] as const;
 };
 
 export default useHostTrips;

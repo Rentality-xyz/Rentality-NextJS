@@ -568,7 +568,9 @@
       "loading": "Loading...",
       "fill_fields": "Please fill in all fields",
       "success": "Success",
-      "small_screen": "Please note: your screen resolution is less than 410 pixels. This may lead to some elements being displayed incorrectly. Please use a device with a higher resolution for an optimal experience on our platform."
+      "small_screen": "Please note: your screen resolution is less than 410 pixels. This may lead to some elements being displayed incorrectly. Please use a device with a higher resolution for an optimal experience on our platform.",
+      "connect_wallet_now": "Connect now!",
+      "back_to_car_search": "← Back to car search"
     },
     "upload": "Upload",
     "save": "Save",

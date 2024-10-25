@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 
 interface useAuthInterface {
-  isLoading: boolean;
+  isLoadingAuth: boolean;
   isAuthenticated: boolean;
 
   login: () => void;
@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
   const { connectWallet, ready, authenticated, login, logout } = usePrivy();
   const { wallets, ready: walletsReady } = useWallets();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoadingAuth, setIsLoadingAuth] = useState<boolean>(true);
 
   const custonLogin = useCallback(() => {
     if (authenticated && wallets.length === 0) {
@@ -38,17 +38,17 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
     if (!walletsReady) return;
 
     setIsAuthenticated(authenticated && wallets.length > 0);
-    setIsLoading(false);
+    setIsLoadingAuth(false);
   }, [ready, walletsReady, authenticated, wallets]);
 
   const value = useMemo(
     () => ({
-      isLoading: isLoading,
+      isLoadingAuth: isLoadingAuth,
       isAuthenticated: isAuthenticated,
       login: custonLogin,
       logout: logout,
     }),
-    [isLoading, isAuthenticated, custonLogin, logout]
+    [isLoadingAuth, isAuthenticated, custonLogin, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

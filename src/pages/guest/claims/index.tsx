@@ -8,16 +8,19 @@ import CreateClaim from "@/components/claims/CreateClaim";
 import { CreateClaimRequest } from "@/model/CreateClaimRequest";
 import { TFunction } from "@/utils/i18n";
 import Loading from "@/components/common/Loading";
+import InvitationToConnect from "@/components/common/invitationToConnect";
+import { useAuth } from "@/contexts/auth/authContext";
 
 export default function Claims() {
   // const [isLoading, claims, tripInfos, createClaim, cancelClaim, payClaim] = useGuestClaims();
   const { t } = useTranslation();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
-  const { isLoading, claims, tripInfos, createClaim, payClaim, cancelClaim, updateData } = useGuestClaims();
+  const { claims, tripInfos, createClaim, payClaim, cancelClaim, updateData } = useGuestClaims();
   const router = useRouter();
   const t_h_claims: TFunction = (name, options) => {
     return t("claims.host." + name, options);
   };
+  const { isLoadingAuth, isAuthenticated } = useAuth();
 
   const handlePayClaim = async (claimId: number) => {
     try {
@@ -89,18 +92,21 @@ export default function Claims() {
   return (
     <>
       <PageTitle title={t("claims.title")} />
-      <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={false} />
-      {isLoading && <Loading />}
-      {!isLoading && (
-        <ClaimHistory
-          claims={claims}
-          payClaim={handlePayClaim}
-          cancelClaim={handleCancelClaim}
-          isHost={false}
-          t={(path, options) => {
-            return t("claims." + path, options);
-          }}
-        />
+      {isLoadingAuth && <Loading />}
+      {!isLoadingAuth && !isAuthenticated && <InvitationToConnect />}
+      {!isLoadingAuth && isAuthenticated && (
+        <>
+          <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={false} />
+          <ClaimHistory
+            claims={claims}
+            payClaim={handlePayClaim}
+            cancelClaim={handleCancelClaim}
+            isHost={false}
+            t={(path, options) => {
+              return t("claims." + path, options);
+            }}
+          />
+        </>
       )}
     </>
   );

@@ -9,6 +9,8 @@ import useTripDiscounts from "@/hooks/host/useTripDiscounts";
 import useProfileSettings from "@/hooks/useProfileSettings";
 import useUserRole from "@/hooks/useUserRole";
 import { useTranslation } from "react-i18next";
+import InvitationToConnect from "@/components/common/invitationToConnect";
+import { useAuth } from "@/contexts/auth/authContext";
 
 export default function Profile() {
   const [isLoading, savedProfileSettings, saveProfileSettings] = useProfileSettings();
@@ -16,11 +18,13 @@ export default function Profile() {
   const [isLoadingDeliveryPrices, savedDeliveryPrices, saveDeliveryPrices] = useDeliveryPrices();
   const { userRole } = useUserRole();
   const { t } = useTranslation();
+  const { isAuthenticated } = useAuth();
 
   return (
     <>
       <PageTitle title={t("profile.title")} />
-      {(isLoading || isLoadingDiscounts || isLoadingDeliveryPrices) && <Loading />}
+      {isLoading && <Loading />}
+      {!isLoading && !isAuthenticated && <InvitationToConnect />}
       {!isLoading && !isLoadingDiscounts && !isLoadingDeliveryPrices && (
         <>
           <UserProfileInfo

@@ -5,12 +5,15 @@ import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Loading from "@/components/common/Loading";
+import { useAuth } from "@/contexts/auth/authContext";
+import InvitationToConnect from "@/components/common/invitationToConnect";
 
 export default function Booked() {
-  const [isLoading, tripsBooked, _, updateData] = useHostTrips();
+  const [isLoadingTrips, tripsBooked, _, updateData] = useHostTrips();
   const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
   const { showInfo, showError } = useRntSnackbars();
   const { t } = useTranslation();
+  const { isLoadingAuth, isAuthenticated } = useAuth();
 
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
     try {
@@ -36,8 +39,9 @@ export default function Booked() {
   return (
     <>
       <PageTitle title={t("booked.title")} />
-      {isLoading && <Loading />}
-      {!isLoading && (
+      {isLoadingAuth && <Loading />}
+      {!isLoadingAuth && !isAuthenticated && <InvitationToConnect />}
+      {!isLoadingAuth && isAuthenticated && (
         <div className="my-4 flex flex-col gap-4">
           {tripsBooked != null && tripsBooked.length > 0 ? (
             tripsBooked.map((value) => {
