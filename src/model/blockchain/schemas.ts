@@ -348,6 +348,37 @@ export type ContractSearchCar = {
   insuranceInfo: ContractInsuranceCarInfo;
 };
 
+export type ContractAvailableCarDTO = {
+  carId: bigint;
+  brand: string;
+  model: string;
+  yearOfProduction: bigint;
+  pricePerDayInUsdCents: bigint;
+  pricePerDayWithDiscount: bigint;
+  tripDays: bigint;
+  totalPriceWithDiscount: bigint;
+  taxes: bigint;
+  securityDepositPerTripInUsdCents: bigint;
+  engineType: EngineType;
+  milesIncludedPerDay: bigint;
+  host: string;
+  hostName: string;
+  hostPhotoUrl: string;
+  metadataURI: string;
+  underTwentyFiveMilesInUsdCents: bigint;
+  aboveTwentyFiveMilesInUsdCents: bigint;
+  pickUp: bigint;
+  dropOf: bigint;
+  insuranceIncluded: boolean;
+  locationInfo: ContractLocationInfo;
+  insuranceInfo: ContractInsuranceCarInfo;
+  fuelPrice: bigint;
+  carDiscounts: ContractBaseDiscount;
+  salesTax: bigint;
+  governmentTax: bigint;
+  isGuestHasInsurance: boolean;
+};
+
 export type ContractGeoData = {
   city: string;
   country: string;
@@ -489,6 +520,8 @@ export type ContractInsuranceDTO = {
   createdByHost: boolean;
   creatorPhoneNumber: string;
   creatorFullName: string;
+  startDateTime: bigint;
+  endDateTime: bigint;
 };
 
 export type ContractCarInfoWithInsurance = {
