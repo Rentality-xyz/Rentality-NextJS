@@ -70,6 +70,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           return false;
         }
 
+        // const availableCarDTO = await rentalityContract.checkCarAvailabilityWithDelivery();
         const discounts = await rentalityContract.getDiscount(selectedCar.ownerAddress);
         const insurancesView = await rentalityContract.getMyInsurancesAsGuest();
         const generalInsurances = insurancesView.filter((i) => i.insuranceType === InsuranceType.General);

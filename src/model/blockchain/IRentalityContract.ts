@@ -2,6 +2,7 @@ import { ContractTransactionResponse } from "ethers";
 import {
   ContractAllCarsDTO,
   ContractAllTripsDTO,
+  ContractAvailableCarDTO,
   ContractBaseDiscount,
   ContractCalculatePaymentsDTO,
   ContractCarDetails,
@@ -100,6 +101,14 @@ export interface IRentalityContract {
     pickUpInfo: ContractLocationInfo,
     returnInfo: ContractLocationInfo
   ): Promise<ContractSearchCarWithDistance[]>;
+  checkCarAvailabilityWithDelivery(
+    carId: bigint,
+    startDateTime: bigint,
+    endDateTime: bigint,
+    searchParams: ContractSearchCarParams,
+    pickUpInfo: ContractLocationInfo,
+    returnInfo: ContractLocationInfo
+  ): Promise<ContractAvailableCarDTO>;
   calculatePaymentsWithDelivery(
     carId: bigint,
     daysOfTrip: bigint,
@@ -174,7 +183,6 @@ export interface IRentalityAdminGateway {
   withdrawAllFromPlatform(currencyType: string): Promise<ContractTransactionResponse>;
   setPlatformFeeInPPM(valueInPPM: bigint): Promise<ContractTransactionResponse>;
   updateGeoServiceAddress(newGeoServiceAddress: string): Promise<ContractTransactionResponse>;
-  updateGeoParserAddress(newGeoParserAddress: string): Promise<ContractTransactionResponse>;
   setClaimsWaitingTime(timeInSec: bigint): Promise<ContractTransactionResponse>;
   getClaimWaitingTime(): Promise<bigint>;
   getPlatformFeeInPPM(): Promise<bigint>;
