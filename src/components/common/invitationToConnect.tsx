@@ -25,7 +25,7 @@ export default function InvitationToConnect() {
       </p>
       <div className="mt-6 flex items-center justify-center">
         <Image src={logoBaseWhite} alt="" className="mr-2 w-7" />
-        <p className="text-lg">We’ve on the Base network</p>
+        <p className="text-lg">{t("search_page.info.we_on_base_network")}</p>
       </div>
       <div className="mt-6 flex flex-col items-center justify-center">
         <RntButton className="md:w-48" onClick={handleConnectClick}>
