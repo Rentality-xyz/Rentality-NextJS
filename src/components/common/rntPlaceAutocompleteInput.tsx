@@ -4,6 +4,10 @@ import { isEmpty } from "@/utils/string";
 import RntValidationError from "./RntValidationError";
 import { cn } from "@/utils";
 import { env } from "@/utils/env";
+import Image, { StaticImageData } from "next/image";
+import * as React from "react";
+import { color } from "@mui/system";
+import bgBlockSearch from "@/images/bg_block_search.png";
 
 export type PlaceDetails = {
   addressString: string;
@@ -43,6 +47,8 @@ export interface RntPlaceAutocompleteInputProps extends React.ComponentPropsWith
   onAddressChange: (praceDetails: PlaceDetails) => void;
   validationClassName?: string;
   validationError?: string;
+  isTransparentStyle?: boolean;
+  iconFrontLabel?: StaticImageData;
 }
 
 export default function RntPlaceAutocompleteInput({
@@ -60,6 +66,8 @@ export default function RntPlaceAutocompleteInput({
   onAddressChange: onAddressChangeHandler,
   validationClassName,
   validationError,
+  isTransparentStyle = false,
+  iconFrontLabel,
 }: RntPlaceAutocompleteInputProps) {
   const [enteredAddress, setEnteredAddress] = useState(initValue);
   const [isEditing, setIsEditing] = useState(false);
@@ -152,14 +160,22 @@ export default function RntPlaceAutocompleteInput({
   );
   return (
     <div className={cClassName}>
-      {!isEmpty(label) && (
-        <label className={lClassName} htmlFor={id}>
-          {label}
-        </label>
-      )}
+      {!isEmpty(label) &&
+        (isTransparentStyle ? (
+          <label className={cn("flex items-center", lClassName)} htmlFor={id}>
+            {!isEmpty(iconFrontLabel?.src) && <Image src={iconFrontLabel!!} alt="" className="mr-2" />}
+            {label}
+            <Image src={bgBlockSearch} alt="" className="absolute left-0 top-[34px] h-[60%] w-full rounded-full" />
+          </label>
+        ) : (
+          <label className={lClassName} htmlFor={id}>
+            {label}
+          </label>
+        ))}
       <input
         // ref={ref}
         className={iClassName}
+        style={isTransparentStyle ? { backgroundColor: "transparent", border: "0px", color: "white" } : {}}
         autoComplete="off"
         id={id}
         name={id}

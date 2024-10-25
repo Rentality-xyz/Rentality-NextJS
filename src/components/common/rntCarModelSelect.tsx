@@ -7,6 +7,8 @@ interface RntCarModelSelectProps extends RntSelectProps {
   id: string;
   label: string;
   className?: string;
+  selectClassName?: string;
+  promptText?: string;
   make_id: string;
   value: string;
   readOnly?: boolean;
@@ -17,6 +19,8 @@ export default function RntCarModelSelect({
   id,
   label,
   className,
+  selectClassName,
+  promptText = "Please select",
   readOnly,
   make_id,
   value,
@@ -41,6 +45,7 @@ export default function RntCarModelSelect({
     <RntSelect
       id={id}
       className={className}
+      selectClassName={selectClassName}
       label={label}
       labelClassName="pl-4"
       value={value}
@@ -52,7 +57,7 @@ export default function RntCarModelSelect({
         if (onModelSelect) onModelSelect(newID, newValue);
       }}
     >
-      <option value="">Please select</option>
+      <option value="">{promptText}</option>
       {modelsList.map((carModelsListElement, index) => (
         <option key={"car-model-" + index} data-id={carModelsListElement.id} value={carModelsListElement.name}>
           {carModelsListElement.name}

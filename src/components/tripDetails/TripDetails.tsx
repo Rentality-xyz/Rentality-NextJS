@@ -22,6 +22,8 @@ import TripCardForDetails from "../tripCard/tripCardForDetails";
 import useUserMode, { isHost } from "@/hooks/useUserMode";
 import Loading from "../common/Loading";
 import { useTranslation } from "react-i18next";
+import InvitationToConnect from "@/components/common/invitationToConnect";
+import { useAuth } from "@/contexts/auth/authContext";
 
 export default function TripInfo() {
   const { userMode } = useUserMode();
@@ -45,10 +47,12 @@ export default function TripInfo() {
     return timeZone ? moment(value).tz(timeZone).format(format) : moment(value).format(format);
   };
 
+  const { isAuthenticated } = useAuth();
+
   return (
     <>
       <PageTitle title={t_details("title", { tripId: tripId.toString() })} />
-      {isLoading && <Loading />}
+      {isLoading && !isAuthenticated && <InvitationToConnect />}
       {!isLoading && (
         <>
           <TripCardForDetails key={Number(tripId)} isHost={isHost(userMode)} tripInfo={tripInfo} t={t} />

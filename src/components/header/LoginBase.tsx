@@ -13,7 +13,7 @@ import { padRight } from "web3-utils";
 import { padding } from "@mui/system";
 
 function LoginBase() {
-  const { isLoading, isAuthenticated, login } = useAuth();
+  const { isLoadingAuth, isAuthenticated, login } = useAuth();
   const userInfo = useUserInfo();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { t } = useTranslation();
@@ -26,26 +26,9 @@ function LoginBase() {
         }`
       : null;
 
-  useEffect(() => {
-    if (isLoading) return;
-
-    if (!isAuthenticated) {
-      const action = (
-        <>
-          {DialogActions.Button(t("common.info.login"), () => {
-            hideDialogs();
-            login();
-          })}
-          {DialogActions.Cancel(hideDialogs)}
-        </>
-      );
-      showDialog(t("common.info.connect_wallet"), action);
-    }
-  }, [isLoading, isAuthenticated]);
-
-  if (!isLoading && !isAuthenticated)
+  if (!isLoadingAuth && !isAuthenticated)
     return (
-      <RntButton className="h-10 w-28 text-sm sm:w-48 sm:text-base" onClick={login}>
+      <RntButton className="h-10 w-14 text-[10px] max-sm:my-1 max-sm:mr-1 sm:w-48 sm:text-base" onClick={login}>
         {t("common.info.login")}
       </RntButton>
     );

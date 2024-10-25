@@ -8,15 +8,18 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
 import Loading from "@/components/common/Loading";
+import InvitationToConnect from "@/components/common/invitationToConnect";
+import { useAuth } from "@/contexts/auth/authContext";
 
 export default function Claims() {
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
-  const { isLoading, claims, tripInfos, createClaim, payClaim, cancelClaim, updateData } = useHostClaims();
+  const { claims, tripInfos, createClaim, payClaim, cancelClaim, updateData } = useHostClaims();
   const router = useRouter();
   const { t } = useTranslation();
   const t_h_claims: TFunction = (name, options) => {
     return t("claims.host." + name, options);
   };
+  const { isLoadingAuth, isAuthenticated } = useAuth();
 
   const handleCreateClaim = async (createClaimRequest: CreateClaimRequest) => {
     if (!createClaimRequest.tripId) {
@@ -88,18 +91,21 @@ export default function Claims() {
   return (
     <>
       <PageTitle title={t("claims.title")} />
-      <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={true} />
-      {isLoading && <Loading />}
-      {!isLoading && (
-        <ClaimHistory
-          claims={claims}
-          payClaim={handlePayClaim}
-          cancelClaim={handleCancelClaim}
-          isHost={true}
-          t={(path, options) => {
-            return t("claims." + path, options);
-          }}
-        />
+      {isLoadingAuth && <Loading />}
+      {!isLoadingAuth && !isAuthenticated && <InvitationToConnect />}
+      {!isLoadingAuth && isAuthenticated && (
+        <>
+          <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={true} />
+          <ClaimHistory
+            claims={claims}
+            payClaim={handlePayClaim}
+            cancelClaim={handleCancelClaim}
+            isHost={true}
+            t={(path, options) => {
+              return t("claims." + path, options);
+            }}
+          />
+        </>
       )}
     </>
   );
