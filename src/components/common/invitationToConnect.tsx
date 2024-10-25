@@ -24,10 +24,10 @@ export default function InvitationToConnect() {
         <p className="mt-6 text-xl max-sm:text-center">Connect your crypto wallet for full Rentality functionality</p>
         <div className="mt-6 flex items-center max-sm:justify-center">
           <Image src={logoBaseWhite} alt="" className="mr-2 w-5" />
-          <p className="text-base">{t("common.info.we_on_base_network")}</p>
+          <p>{t("common.info.we_on_base_network")}</p>
         </div>
         <div className="mt-6 flex flex-col max-sm:items-center max-sm:justify-center">
-          <RntButton className="w-[250px]" onClick={handleConnectClick}>
+          <RntButton className="w-56" onClick={handleConnectClick}>
             {t("common.info.connect_wallet_now")}
           </RntButton>
           <Link className="mt-6 text-rentality-secondary" href="/guest/search" target="_self">
