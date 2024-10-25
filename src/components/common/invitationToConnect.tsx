@@ -19,18 +19,18 @@ export default function InvitationToConnect() {
   return (
     <>
       <div className="ml-4 mt-6 flex w-fit flex-col font-['Montserrat',Arial,sans-serif]">
-        <p className="hidden text-3xl text-rentality-secondary sm:block">{t("common.info.welcome_to_web3")}</p>
+        <p className="hidden text-2xl text-rentality-secondary sm:block">{t("common.info.welcome_to_web3")}</p>
         <Image src={carLoading} alt="" className="sm:hidden" />
-        <p className="mt-6 text-2xl max-sm:text-center">Connect your crypto wallet for full Rentality functionality</p>
+        <p className="mt-6 text-xl max-sm:text-center">Connect your crypto wallet for full Rentality functionality</p>
         <div className="mt-6 flex items-center max-sm:justify-center">
-          <Image src={logoBaseWhite} alt="" className="mr-2 w-7" />
-          <p className="text-lg">{t("common.info.we_on_base_network")}</p>
+          <Image src={logoBaseWhite} alt="" className="mr-2 w-5" />
+          <p className="text-base">{t("common.info.we_on_base_network")}</p>
         </div>
         <div className="mt-6 flex flex-col max-sm:items-center max-sm:justify-center">
-          <RntButton className="md:w-48" onClick={handleConnectClick}>
+          <RntButton className="w-[250px]" onClick={handleConnectClick}>
             {t("common.info.connect_wallet_now")}
           </RntButton>
-          <Link className="mt-6 text-lg text-rentality-secondary" href="/guest/search" target="_self">
+          <Link className="mt-6 text-rentality-secondary" href="/guest/search" target="_self">
             <span>{t("common.info.back_to_car_search")}</span>
           </Link>
         </div>
