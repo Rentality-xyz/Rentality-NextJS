@@ -6,28 +6,26 @@ import { useMap } from "@vis.gl/react-google-maps";
 import { MapRenderer } from "@/components/guest/carMap/carMapRenderer";
 
 export const ClusteredMapMarkers = ({
-    carInfos,
-    selectedCar,
-    setSelected,
-  } : {
-    carInfos : SearchCarInfo[],
-    selectedCar: SearchCarInfo | undefined,
-    setSelected?: (carID: number) => void | null;
-  }) => {
+  carInfos,
+  selectedCar,
+  setSelected,
+}: {
+  carInfos: SearchCarInfo[];
+  selectedCar: SearchCarInfo | undefined;
+  setSelected?: (carID: number) => void | null;
+}) => {
+  const map = useMap();
 
-  const map = useMap()
-
-  const [markers, setMarkers] = useState<{[key: number]: Marker}>({});
+  const [markers, setMarkers] = useState<{ [key: number]: Marker }>({});
 
   const setMarkerRef = useCallback((marker: Marker | null, carId: number) => {
-    setMarkers(markers => {
-      if ((marker && markers[carId]) || (!marker && !markers[carId]))
-        return markers;
+    setMarkers((markers) => {
+      if ((marker && markers[carId]) || (!marker && !markers[carId])) return markers;
 
       if (marker) {
-        return {...markers, [carId]: marker};
+        return { ...markers, [carId]: marker };
       } else {
-        const {[carId]: _, ...newMarkers} = markers;
+        const { [carId]: _, ...newMarkers } = markers;
 
         return newMarkers;
       }
@@ -36,7 +34,7 @@ export const ClusteredMapMarkers = ({
 
   const clusterer = useMemo(() => {
     if (!map) return null;
-    return new MarkerClusterer({map, renderer: new MapRenderer() });
+    return new MarkerClusterer({ map, renderer: new MapRenderer() });
   }, [map]);
 
   useEffect(() => {
@@ -59,17 +57,9 @@ export const ClusteredMapMarkers = ({
 
   return (
     <>
-    {carInfos.map((carInfo: SearchCarInfo) =>
-        (
-          <CarMapMarker
-            key={carInfo.carId}
-            carInfo={carInfo}
-            setSelected={setSelected}
-            setMarkerRef={setMarkerRef}
-          />
-        )
-      )
-    }
+      {carInfos.map((carInfo: SearchCarInfo) => (
+        <CarMapMarker key={carInfo.carId} carInfo={carInfo} setSelected={setSelected} setMarkerRef={setMarkerRef} />
+      ))}
     </>
-  )
-}
+  );
+};

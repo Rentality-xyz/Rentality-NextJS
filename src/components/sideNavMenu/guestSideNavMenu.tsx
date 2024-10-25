@@ -80,11 +80,7 @@ function GuestNavMenu() {
           icon={MenuIcons.Claims}
           notificationCount={claimsNotificationCount}
         />
-        <SideNavMenuItem
-          text={t_nav("legal")}
-          href="/guest/legal"
-          icon={MenuIcons.Legal}
-        />
+        <SideNavMenuItem text={t_nav("legal")} href="/guest/legal" icon={MenuIcons.Legal} />
         <SideNavMenuItem
           text={t_nav("transaction_history")}
           href="/guest/transaction_history"
