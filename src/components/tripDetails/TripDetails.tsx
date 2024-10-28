@@ -29,6 +29,7 @@ export default function TripInfo() {
   const { userMode } = useUserMode();
   const router = useRouter();
   const { tripId: tripIdQuery, back } = router.query;
+  const { isAuthenticated } = useAuth();
 
   const tripId = BigInt((tripIdQuery as string) ?? "0");
   const backPath = back as string;
@@ -40,14 +41,12 @@ export default function TripInfo() {
     return t("booked.details." + name, options);
   };
 
-  if (tripId == null || tripId === BigInt(0) || tripInfo == null) return null;
-
   const formatStatusDateTime = (value: Date, timeZone?: string) => {
     const format = "ddd, D MMM YYYY hh:mm:ss z";
     return timeZone ? moment(value).tz(timeZone).format(format) : moment(value).format(format);
   };
 
-  const { isAuthenticated } = useAuth();
+  if (tripId == null || tripId === BigInt(0) || tripInfo == null) return null;
 
   return (
     <>
