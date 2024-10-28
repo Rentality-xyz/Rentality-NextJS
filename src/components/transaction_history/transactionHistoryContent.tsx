@@ -23,7 +23,6 @@ export default function TransactionHistoryContent({ isHost, t }: TransactionHist
   const itemsPerPage = 5;
   const [filters, setFilters] = useState<TransactionHistoryFilters>(defaultFilters);
   const { isLoading, data, fetchData } = useTransactionHistory(isHost);
-  const { isLoadingAuth, isAuthenticated } = useAuth();
 
   async function handleApplyFilters(filters: TransactionHistoryFilters) {
     setFilters(filters);
@@ -42,11 +41,7 @@ export default function TransactionHistoryContent({ isHost, t }: TransactionHist
     <div className="mt-5 flex flex-col gap-4 rounded-2xl bg-rentality-bg p-4 pb-8">
       <TransactionHistoryFiltersComponent defaultFilters={defaultFilters} onApply={handleApplyFilters} />
       <PaginationWrapper currentPage={data.currentPage} totalPages={data.totalPageCount} selectPage={fetchDataForPage}>
-        {isLoadingAuth && <Loading />}
-        {!isLoadingAuth && !isAuthenticated && <InvitationToConnect />}
-        {!isLoading && isAuthenticated && (
-          <TransactionHistoryTable isLoading={isLoading} data={data.data} isHost={isHost} />
-        )}
+        <TransactionHistoryTable isLoading={isLoading} data={data.data} isHost={isHost} />
       </PaginationWrapper>
     </div>
   );
