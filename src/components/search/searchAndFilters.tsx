@@ -210,7 +210,7 @@ export default function SearchAndFilters({
           <div className="select-container w-full sm:w-48">
             <RntCarMakeSelect
               id={t_comp("select_filter_make")}
-              className="border-gradient"
+              className="border-gradient text-lg"
               selectClassName="bg-transparent text-rentality-secondary text-center custom-select px-4 border-0"
               promptText={t_comp("select_filter_make")}
               label=""
@@ -229,7 +229,7 @@ export default function SearchAndFilters({
           <div className="select-container w-full sm:w-48">
             <RntCarModelSelect
               id={t_comp("select_filter_model")}
-              className="border-gradient"
+              className="border-gradient text-lg"
               selectClassName="bg-transparent text-rentality-secondary text-center custom-select px-4 border-0"
               promptText={t_comp("select_filter_model")}
               label=""
@@ -293,7 +293,7 @@ export default function SearchAndFilters({
 
             <div className="select-container">
               <RntSelect
-                className="w-40"
+                className="w-40 text-lg"
                 selectClassName="buttonGradient text-white text-center custom-select px-4 border-0"
                 id="sort"
                 readOnly={false}
