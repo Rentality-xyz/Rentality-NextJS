@@ -204,7 +204,11 @@ function UserCommonInformationForm({
 
       <fieldset className="mt-4">
         <div className="mb-4 pl-[16px] text-lg">
-          <strong>{t("profile.welcome_create_account")}</strong>
+          {!isEmpty(savedProfileSettings.tcSignature) && savedProfileSettings.tcSignature !== "0x" ? (
+            <strong>{t("profile.basic_info")}</strong>
+          ) : (
+            <strong>{t("profile.welcome_create_account")}</strong>
+          )}
         </div>
         <div className="flex flex-wrap gap-4">
           <RntInput
