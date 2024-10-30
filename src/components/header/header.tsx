@@ -183,7 +183,7 @@ export default function Header() {
             <div onClick={handleAvatarClick}>
               <LoginBase />
               {isOpen && (
-                <div className="absolute z-10 flex flex-col rounded-lg border border-white bg-rentality-bg-left-sidebar py-2 pl-2 font-['Montserrat',Arial,sans-serif] text-white shadow-md sm:left-[-18px] sm:w-56">
+                <div className="absolute z-10 flex flex-col rounded-lg border border-gray-500 bg-rentality-bg-left-sidebar py-2 pl-2 font-['Montserrat',Arial,sans-serif] text-white shadow-md sm:left-[-18px] sm:w-56">
                   <div className="mb-3 flex items-center leading-tight">
                     <Image src={icWalletBalance} width={30} height={30} alt="" />
                     <div className="flex flex-col">

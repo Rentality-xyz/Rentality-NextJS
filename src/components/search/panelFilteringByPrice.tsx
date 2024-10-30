@@ -95,7 +95,7 @@ export default function PanelFilteringByPrice({ id, onClickReset, onClickApply, 
       </RntButtonTransparent>
 
       {isOpen && (
-        <div className="absolute z-10 w-full rounded-lg border border-white bg-rentality-bg-left-sidebar px-4 py-2 shadow-md sm:left-[-17px] sm:w-56">
+        <div className="absolute z-10 w-full rounded-lg border border-gray-500 bg-rentality-bg-left-sidebar px-4 py-2 shadow-md sm:left-[-17px] sm:w-56">
           <div className="mb-4 text-lg text-white">
             ${value[0]} - ${value[1]}/day
           </div>
