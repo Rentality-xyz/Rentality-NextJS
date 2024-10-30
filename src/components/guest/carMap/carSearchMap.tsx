@@ -24,7 +24,7 @@ export default function CarSearchMap({
   const mapLeft = useRef<number>(0);
   const mapTop = useRef<number>(0);
   const mapWidth = useRef<number>(0);
-  const [mapHeight, setMapHeight] = useState<number>(0);
+  const [mapHeight, setMapHeight] = useState<number>(80);
 
   const mapContainerStyle = useMemo<CSSProperties>(() => {
     if (typeof window == "undefined" || window.innerWidth < 1280) {
