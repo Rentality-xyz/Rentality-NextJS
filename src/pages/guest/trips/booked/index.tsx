@@ -6,11 +6,11 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Loading from "@/components/common/Loading";
 import InvitationToConnect from "@/components/common/invitationToConnect";
-import RntButton from "@/components/common/rntButton";
 import { useAuth } from "@/contexts/auth/authContext";
+import CheckingLoadingPage from "@/components/common/CheckingLoadingPage";
 
 export default function Booked() {
-  const { tripsBooked, updateData } = useGuestTrips();
+  const { isLoadingTrips, tripsBooked, updateData } = useGuestTrips();
   const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
   const { showInfo, showError } = useRntSnackbars();
   const { t } = useTranslation();
@@ -39,15 +39,11 @@ export default function Booked() {
 
   return (
     <>
-      <PageTitle title={t("booked.title")} />
-      {isLoadingAuth && <Loading />}
-      {!isLoadingAuth && !isAuthenticated && <InvitationToConnect />}
-      {/*{isLoading && <Loading />}*/}
-      {!isLoadingAuth && isAuthenticated && (
-        <div className="my-4 flex flex-col gap-4">
-          {tripsBooked != null && tripsBooked.length > 0 ? (
-            tripsBooked.map((value) => {
-              return (
+      <CheckingLoadingPage title={<PageTitle title={t("booked.title")} />} isLoadingContentPage={!!isLoadingTrips}>
+        <>
+          <div className="my-4 flex flex-col gap-4">
+            {tripsBooked != null && tripsBooked.length > 0 ? (
+              tripsBooked.map((value) => (
                 <TripCard
                   key={value.tripId}
                   tripInfo={value}
@@ -56,15 +52,15 @@ export default function Booked() {
                   isHost={false}
                   t={t}
                 />
-              );
-            })
-          ) : (
-            <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between pl-4 text-center">
-              {t("booked.trip_not_found")}
-            </div>
-          )}
-        </div>
-      )}
+              ))
+            ) : (
+              <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between pl-4 text-center">
+                {t("booked.trip_not_found")}
+              </div>
+            )}
+          </div>
+        </>
+      </CheckingLoadingPage>
     </>
   );
 }
