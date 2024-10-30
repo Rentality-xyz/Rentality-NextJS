@@ -83,11 +83,7 @@ function HostNavMenu() {
         />
       </SideNavMenuGroup>
       <SideNavMenuGroup title={t_nav("more")}>
-        <SideNavMenuItem
-          text={t_nav("legal")}
-          href="/host/legal"
-          icon={MenuIcons.Legal}
-        />
+        <SideNavMenuItem text={t_nav("legal")} href="/host/legal" icon={MenuIcons.Legal} />
         <SideNavMenuItem
           text={t_nav("transaction_history")}
           href="/host/transaction_history"

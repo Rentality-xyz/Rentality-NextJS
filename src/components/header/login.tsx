@@ -3,7 +3,7 @@ import { useUserInfo } from "@/contexts/userInfoContext";
 import { formatAddress } from "@/utils/addressFormatters";
 import { Avatar } from "@mui/material";
 import { isEmpty } from "@/utils/string";
-import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { useLogin, useLogout, usePrivy, useWallets } from "@privy-io/react-auth";
 import { ElementRef, memo, useEffect, useRef, useState } from "react";
 import { assertIsNode } from "@/utils/react";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
@@ -12,7 +12,24 @@ import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
 
 function Login() {
-  const { connectWallet, login, ready, authenticated, logout } = usePrivy();
+  const { connectWallet, ready, authenticated } = usePrivy();
+
+  const { login } = useLogin({
+    onComplete: (user, isNewUser, wasAlreadyAuthenticated, loginMethod, linkedAccount) => {
+      console.log(
+        `Privy callback login.tsx. useLogin.onComplete -> data:${JSON.stringify({ user, isNewUser, wasAlreadyAuthenticated, loginMethod, linkedAccount })}`
+      );
+    },
+    onError: (error) => {
+      console.log(`Privy callback login.tsx. useLogin.onError -> error:${JSON.stringify(error)}`);
+    },
+  });
+
+  const { logout } = useLogout({
+    onSuccess: () => {
+      console.log("Privy callback login.tsx. useLogout.onSuccess");
+    },
+  });
   const userInfo = useUserInfo();
   const { wallets } = useWallets();
   const [isShowMenu, setIsShowMenu] = useState(false);

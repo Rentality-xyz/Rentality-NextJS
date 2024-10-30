@@ -27,7 +27,7 @@ export const DEFAULT_SEARCH_LOCATION: LocationInfo = {
 export const DEFAULT_SEARCH_DATE_FROM = moment({ hour: 9 }).add(1, "day").toDate();
 export const DEFAULT_SEARCH_DATE_TO = moment({ hour: 9 }).add(4, "day").toDate();
 
-export const LEGAL_TERMS_NAME = "TERMS"
-export const LEGAL_CANCELLATION_NAME = "CANCELLATION"
-export const LEGAL_PROHIBITEDUSES_NAME = "PROHIBITEDUSES"
-export const LEGAL_PRIVACY_NAME = "PRIVACY"
+export const LEGAL_TERMS_NAME = "TERMS";
+export const LEGAL_CANCELLATION_NAME = "CANCELLATION";
+export const LEGAL_PROHIBITEDUSES_NAME = "PROHIBITEDUSES";
+export const LEGAL_PRIVACY_NAME = "PRIVACY";

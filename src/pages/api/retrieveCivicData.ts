@@ -58,7 +58,7 @@ type AllPiiInfo = {
   updateDate: string;
 };
 
-const GET_AUTH_TOKEN_URL = "https://auth.civic.com/oauth/token";
+const GET_AUTH_TOKEN_URL = "https://auth0.civic.com/oauth/token";
 const GET_ALL_PIIS_URL = "https://api.civic.com/partner/piirequest/REQUEST_ID";
 const UPDATE_STATUS_URL = "https://api.civic.com/partner/piirequest/REQUEST_ID/status";
 

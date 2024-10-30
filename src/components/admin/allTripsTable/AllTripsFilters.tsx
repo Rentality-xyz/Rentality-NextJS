@@ -2,7 +2,6 @@ import RntButton from "@/components/common/rntButton";
 import RntInput from "@/components/common/rntInput";
 import RntPlaceAutoComplete from "@/components/common/rntPlaceAutocomplete";
 import RntSelect from "@/components/common/rntSelect";
-import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import { AdminAllTripsFilters } from "@/hooks/admin/useAdminAllTrips";
 import { getPaymentStatusText, getTripStatusTextFromAdminStatus } from "@/model/admin/AdminTripDetails";
 import { AdminTripStatus, PaymentStatus } from "@/model/blockchain/schemas";
@@ -13,6 +12,8 @@ import { isEmpty } from "@/utils/string";
 import moment from "moment";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { env } from "@/utils/env";
+import { APIProvider } from "@vis.gl/react-google-maps";
 
 const allPaymentStatuses = Object.values(PaymentStatus)
   .slice(1)
@@ -44,7 +45,7 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
   }
 
   return (
-    <GoogleMapsProvider libraries={["places"]} language="en">
+    <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]} language="en">
       <form className="flex flex-wrap items-end gap-4" onSubmit={handleApplyClick}>
         <RntSelect
           className="w-60"
@@ -125,7 +126,7 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
           {t("common.search")}
         </RntButton>
       </form>
-    </GoogleMapsProvider>
+    </APIProvider>
   );
 }
 

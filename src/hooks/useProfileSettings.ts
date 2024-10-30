@@ -6,6 +6,7 @@ import moment from "moment";
 import { ContractFullKYCInfoDTO, ContractKYCInfo } from "@/model/blockchain/schemas";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import { usePrivy } from "@privy-io/react-auth";
 
 export type ProfileSettings = {
   profilePhotoUrl: string;
@@ -34,6 +35,7 @@ const emptyProfileSettings: ProfileSettings = {
 };
 
 const useProfileSettings = () => {
+  const { ready, authenticated } = usePrivy();
   const rentalityContract = useRentality();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [profileSettings, setProfileSettings] = useState<ProfileSettings>(emptyProfileSettings);
@@ -63,9 +65,13 @@ const useProfileSettings = () => {
         issueCountry: myKYCInfo.additionalKYC.issueCountry,
         email: myKYCInfo.additionalKYC.email,
       };
+      console.log("useProfileSettings.getProfileSettings() return data");
       return myProfileSettings;
     } catch (e) {
-      console.error("getProfileSettings error:" + e);
+      console.error(
+        `useProfileSettings.getProfileSettings() error | privy ready: ${ready} | Privy authenticated: ${authenticated} | error:`,
+        e
+      );
     }
   };
 
@@ -93,6 +99,7 @@ const useProfileSettings = () => {
 
   useEffect(() => {
     if (rentalityContract === undefined) return;
+
     getProfileSettings(rentalityContract)
       .then((data) => {
         setProfileSettings(data ?? emptyProfileSettings);
