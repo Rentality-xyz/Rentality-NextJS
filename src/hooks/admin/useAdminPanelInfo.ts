@@ -4,7 +4,7 @@ import { IRentalityAdminGateway, IRentalityContract } from "@/model/blockchain/I
 import { getEtherContractWithSigner } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
-import { ContractCivicKYCInfo, Role } from "@/model/blockchain/schemas";
+import { ContractCivicKYCInfo, ContractCreateTripRequestWithDelivery, Role } from "@/model/blockchain/schemas";
 import { db } from "@/utils/firebase";
 import { isEmpty } from "@/utils/string";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
@@ -231,14 +231,16 @@ const useAdminPanelInfo = () => {
         emptyContractLocationInfo
       );
 
-      const tripRequest = {
+      const tripRequest: ContractCreateTripRequestWithDelivery = {
         carId: BigInt(carId),
         startDateTime: getBlockchainTimeFromDate(moment().toDate()),
         endDateTime: getBlockchainTimeFromDate(moment().add(3, "days").toDate()),
         currencyType: ETH_DEFAULT_ADDRESS,
+        pickUpInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
+        returnInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
       };
 
-      const transaction = await rentalityContract.createTripRequest(tripRequest, {
+      const transaction = await rentalityContract.createTripRequestWithDelivery(tripRequest, {
         value: BigInt(Math.ceil(Number(paymentsNeeded.totalPrice) * 0.991)),
       });
       await transaction.wait();
