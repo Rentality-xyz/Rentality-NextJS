@@ -11,6 +11,7 @@
     "messages": "Messages",
     "notifications": "Notifications",
     "more": "More",
+    "insurance": "Insurance",
     "legal": "Legal",
     "transaction_history": "Transaction history",
     "logout": "Logout",
@@ -658,5 +659,20 @@
     "driver_license": "Pass driver license verification",
     "listing_car": "Listing you first car",
     "discounts_and_price": "Manage discounts and delivery price"
+  },
+  "insurance": {
+    "page_title": "Insurance",
+    "please_enter_your_insurance": "Please, enter you General Insurance ID or/and One-Time trip insurance",
+    "insurance_list": "Insurance list",
+    "add_insurance": "Add Insurance",
+    "trip_filter": "Trip filter",
+    "trip": "Trip",
+    "insurance_type": "Insurance type",
+    "view_document": "View document",
+    "insurance_company_name": "Insurance company name",
+    "insurance_policy_number": "Insurance policy number",
+    "comment": "Comment",
+    "uploaded_by": "Uploaded by",
+    "trip_details": "Trip details"
   }
 }

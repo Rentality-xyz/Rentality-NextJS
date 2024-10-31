@@ -74,17 +74,14 @@ function GuestNavMenu() {
         />
       </SideNavMenuGroup>
       <SideNavMenuGroup title={t_nav("more")}>
+        <SideNavMenuItem text={t_nav("insurance")} href="/guest/insurance" icon={MenuIcons.Insurance} />
         <SideNavMenuItem
           text={t_nav("claims")}
           href="/guest/claims"
           icon={MenuIcons.Claims}
           notificationCount={claimsNotificationCount}
         />
-        <SideNavMenuItem
-          text={t_nav("legal")}
-          href="/guest/legal"
-          icon={MenuIcons.Legal}
-        />
+        <SideNavMenuItem text={t_nav("legal")} href="/guest/legal" icon={MenuIcons.Legal} />
         <SideNavMenuItem
           text={t_nav("transaction_history")}
           href="/guest/transaction_history"
