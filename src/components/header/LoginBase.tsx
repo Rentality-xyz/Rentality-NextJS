@@ -45,12 +45,12 @@ function LoginBase() {
 
   return (
     <Identity
-      className="bg-transparent lg:flex-row-reverse xl:gap-4"
+      className="cursor-pointer bg-transparent lg:flex-row-reverse xl:gap-4"
       address={userInfo.address as `0x${string}`}
       schemaId={env.NEXT_PUBLIC_COINBASE_SCHEMA_ID as `0x${string}`}
     >
       <Name className="hidden text-white xl:flex" />
-      <Address className="hidden text-white xl:flex" />
+      {/*<Address className="hidden text-white xl:flex" />*/}
       <Avatar
         className="h-10 w-10 lg:h-12 lg:w-12"
         loadingComponent={
