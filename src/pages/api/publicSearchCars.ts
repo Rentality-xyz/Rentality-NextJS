@@ -9,7 +9,6 @@ import {
   ContractSearchCarWithDistance,
 } from "@/model/blockchain/schemas";
 import { emptyContractLocationInfo, validateContractSearchCarWithDistance } from "@/model/blockchain/schemas_utils";
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import { getIpfsURIs, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
@@ -20,6 +19,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { env } from "@/utils/env";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { allSupportedBlockchainList } from "@/model/blockchain/blockchainList";
+import { getTimeZoneIdFromAddress } from "@/utils/timezone";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const privateKey = env.SIGNER_PRIVATE_KEY;
@@ -327,41 +327,6 @@ async function formatSearchAvailableCarsContractResponse(
     cars.sort((a, b) => sortByTestWallet(a, b));
   }
   return cars;
-}
-
-async function getTimeZoneIdFromAddress(address: string) {
-  if (isEmpty(address)) return UTC_TIME_ZONE_ID;
-
-  const GOOGLE_MAPS_API_KEY = env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  if (isEmpty(GOOGLE_MAPS_API_KEY)) {
-    console.error("getUtcOffsetMinutesFromLocation error: GOOGLE_MAPS_API_KEY was not set");
-    return "";
-  }
-
-  const googleGeoCodeResponse = await fetch(
-    `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${GOOGLE_MAPS_API_KEY}`
-  );
-
-  if (!googleGeoCodeResponse.ok) {
-    console.error(`getUtcOffsetMinutesFromLocation error: googleGeoCodeResponse is ${googleGeoCodeResponse.status}`);
-    return UTC_TIME_ZONE_ID;
-  }
-
-  const googleGeoCodeJson = await googleGeoCodeResponse.json();
-  const locationLat = googleGeoCodeJson.results[0]?.geometry?.location?.lat ?? 0;
-  const locationLng = googleGeoCodeJson.results[0]?.geometry?.location?.lng ?? 0;
-
-  var googleTimeZoneResponse = await fetch(
-    `https://maps.googleapis.com/maps/api/timezone/json?location=${locationLat},${locationLng}&timestamp=0&key=${GOOGLE_MAPS_API_KEY}`
-  );
-  if (!googleTimeZoneResponse.ok) {
-    console.error(`getUtcOffsetMinutesFromLocation error: googleTimeZoneResponse is ${googleTimeZoneResponse.status}`);
-    return UTC_TIME_ZONE_ID;
-  }
-
-  const googleTimeZoneJson = await googleTimeZoneResponse.json();
-
-  return googleTimeZoneJson?.timeZoneId ?? UTC_TIME_ZONE_ID;
 }
 
 function sortByTestWallet(a: SearchCarInfoDTO, b: SearchCarInfoDTO) {

@@ -40,22 +40,22 @@ const useCreateTripRequest = () => {
       const startUnixTime = getBlockchainTimeFromDate(startCarLocalDateTime);
       const endUnixTime = getBlockchainTimeFromDate(endCarLocalDateTime);
 
+      const carDeliveryData = await rentalityContract.getDeliveryData(BigInt(carId));
+      const carLocationInfo: ContractLocationInfo = {
+        userAddress: carDeliveryData.locationInfo.userAddress,
+        country: carDeliveryData.locationInfo.country,
+        state: carDeliveryData.locationInfo.state,
+        city: carDeliveryData.locationInfo.city,
+        latitude: carDeliveryData.locationInfo.latitude,
+        longitude: carDeliveryData.locationInfo.longitude,
+        timeZoneId: carDeliveryData.locationInfo.timeZoneId,
+      };
+
       if (
         searchCarRequest.isDeliveryToGuest ||
         !searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation ||
         !searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
       ) {
-        const carDeliveryData = await rentalityContract.getDeliveryData(BigInt(carId));
-        const carLocationInfo: ContractLocationInfo = {
-          userAddress: carDeliveryData.locationInfo.userAddress,
-          country: carDeliveryData.locationInfo.country,
-          state: carDeliveryData.locationInfo.state,
-          city: carDeliveryData.locationInfo.city,
-          latitude: carDeliveryData.locationInfo.latitude,
-          longitude: carDeliveryData.locationInfo.longitude,
-          timeZoneId: carDeliveryData.locationInfo.timeZoneId,
-        };
-
         const pickupLocationInfo: ContractLocationInfo =
           searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation ||
           isEmpty(searchCarRequest.deliveryInfo.pickupLocation.locationInfo.address)
@@ -112,14 +112,16 @@ const useCreateTripRequest = () => {
           emptyContractLocationInfo
         );
 
-        const tripRequest: ContractCreateTripRequest = {
+        const tripRequest: ContractCreateTripRequestWithDelivery = {
           carId: BigInt(carId),
           startDateTime: startUnixTime,
           endDateTime: endUnixTime,
           currencyType: ETH_DEFAULT_ADDRESS,
+          pickUpInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
+          returnInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
         };
 
-        const transaction = await rentalityContract.createTripRequest(tripRequest, {
+        const transaction = await rentalityContract.createTripRequestWithDelivery(tripRequest, {
           value: paymentsNeeded.totalPrice,
         });
         await transaction.wait();

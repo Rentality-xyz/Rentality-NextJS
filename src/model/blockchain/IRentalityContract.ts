@@ -116,8 +116,6 @@ export interface IRentalityContract {
     pickUpLocation: ContractLocationInfo,
     returnLocation: ContractLocationInfo
   ): Promise<ContractCalculatePaymentsDTO>;
-
-  createTripRequest(request: ContractCreateTripRequest, value: object): Promise<ContractTransactionResponse>;
   createTripRequestWithDelivery(
     request: ContractCreateTripRequestWithDelivery,
     value: object
