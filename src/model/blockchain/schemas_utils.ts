@@ -421,6 +421,7 @@ const emptyContractAvailableCarDTO: ContractAvailableCarDTO = {
   salesTax: BigInt(0),
   governmentTax: BigInt(0),
   isGuestHasInsurance: false,
+  distance: BigInt(0),
 };
 
 export function validateContractAvailableCarDTO(obj: ContractAvailableCarDTO): obj is ContractAvailableCarDTO {
