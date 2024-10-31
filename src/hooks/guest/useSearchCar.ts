@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
-import { SearchCarInfoDetails, SearchCarInfoDTO } from "@/model/SearchCarsResult";
+import { SearchCarInfoDetails } from "@/model/SearchCarsResult";
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isEmpty } from "@/utils/string";
 import { SearchCarRequest } from "@/model/SearchCarRequest";
-import { EngineType, InsuranceType } from "@/model/blockchain/schemas";
+import { ContractLocationInfo, EngineType } from "@/model/blockchain/schemas";
+import { emptyContractLocationInfo, validateContractAvailableCarDTO } from "@/model/blockchain/schemas_utils";
+import { formatLocationInfoUpToCity } from "@/model/LocationInfo";
+import { getIpfsURIs, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
+import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
+import { bigIntReplacer } from "@/utils/json";
+import { getTimeZoneIdFromAddress } from "@/utils/timezone";
+import { formatSearchAvailableCarsContractRequest } from "@/utils/searchMapper";
 
 const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
   const ethereumInfo = useEthereum();
@@ -19,84 +27,126 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
       try {
         setIsLoading(true);
 
-        var url = new URL(`/api/publicSearchCars`, window.location.origin);
-        if (ethereumInfo?.chainId) url.searchParams.append("chainId", ethereumInfo.chainId.toString());
-        if (request.dateFrom) url.searchParams.append("dateFrom", request.dateFrom.toISOString());
-        if (request.dateTo) url.searchParams.append("dateTo", request.dateTo.toISOString());
-        if (request.searchLocation.country) url.searchParams.append("country", request.searchLocation.country);
-        if (request.searchLocation.state) url.searchParams.append("state", request.searchLocation.state);
-        if (request.searchLocation.city) url.searchParams.append("city", request.searchLocation.city);
-        url.searchParams.append("latitude", request.searchLocation.latitude.toFixed(6));
-        url.searchParams.append("longitude", request.searchLocation.longitude.toFixed(6));
+        const timeZoneId = await getTimeZoneIdFromAddress(formatLocationInfoUpToCity(searchCarRequest.searchLocation));
+        const { contractDateFromUTC, contractDateToUTC, contractSearchCarParams } =
+          formatSearchAvailableCarsContractRequest(searchCarRequest, {}, timeZoneId);
+        const pickUpInfo: ContractLocationInfo = {
+          ...emptyContractLocationInfo,
+          latitude: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
+            ? ""
+            : searchCarRequest.deliveryInfo.pickupLocation.locationInfo.latitude.toFixed(6),
+          longitude: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
+            ? ""
+            : searchCarRequest.deliveryInfo.pickupLocation.locationInfo.longitude.toFixed(6),
+        };
+        const returnInfo: ContractLocationInfo = {
+          ...emptyContractLocationInfo,
+          latitude: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+            ? ""
+            : searchCarRequest.deliveryInfo.returnLocation.locationInfo.latitude.toFixed(6),
+          longitude: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+            ? ""
+            : searchCarRequest.deliveryInfo.returnLocation.locationInfo.longitude.toFixed(6),
+        };
 
-        if (request.isDeliveryToGuest)
-          url.searchParams.append("isDeliveryToGuest", request.isDeliveryToGuest ? "true" : "false");
-        if (
-          request.isDeliveryToGuest &&
-          !request.deliveryInfo.pickupLocation.isHostHomeLocation &&
-          !isEmpty(request.deliveryInfo.pickupLocation.locationInfo.address)
-        )
-          url.searchParams.append(
-            "pickupLocation",
-            `${request.deliveryInfo.pickupLocation.locationInfo.latitude.toFixed(6)};${request.deliveryInfo.pickupLocation.locationInfo.longitude.toFixed(6)}`
-          );
-        if (
-          request.isDeliveryToGuest &&
-          !request.deliveryInfo.returnLocation.isHostHomeLocation &&
-          !isEmpty(request.deliveryInfo.returnLocation.locationInfo.address)
-        )
-          url.searchParams.append(
-            "returnLocation",
-            `${request.deliveryInfo.returnLocation.locationInfo.latitude.toFixed(6)};${request.deliveryInfo.returnLocation.locationInfo.longitude.toFixed(6)}`
-          );
+        console.log("contractDateFromUTC", JSON.stringify(contractDateFromUTC, bigIntReplacer, 2));
+        console.log("contractDateToUTC", JSON.stringify(contractDateToUTC, bigIntReplacer, 2));
+        console.log("contractSearchCarParams", JSON.stringify(contractSearchCarParams, bigIntReplacer, 2));
+        console.log("pickUpInfo", JSON.stringify(pickUpInfo, null, 2));
+        console.log("returnInfo", JSON.stringify(returnInfo, null, 2));
 
-        const apiResponse = await fetch(url);
-
-        if (!apiResponse.ok) {
-          console.error(`checkCarAvailabilityWithDelivery fetch error: + ${apiResponse.statusText}`);
-          return;
+        const availableCarDTO = await rentalityContract.checkCarAvailabilityWithDelivery(
+          BigInt(carId),
+          contractDateFromUTC,
+          contractDateToUTC,
+          contractSearchCarParams,
+          pickUpInfo,
+          returnInfo
+        );
+        if (availableCarDTO) {
+          validateContractAvailableCarDTO(availableCarDTO);
         }
-
-        const apiJson = await apiResponse.json();
-        if (!Array.isArray(apiJson)) {
-          console.error("checkCarAvailabilityWithDelivery fetch wrong response format:");
-          return;
-        }
-
-        const availableCarsData = apiJson as SearchCarInfoDTO[];
-        const selectedCar = availableCarsData.find((i) => i.carId === carId);
-        if (!selectedCar) {
-          console.error("checkCarAvailabilityWithDelivery error: selectedCar was not found");
-          return false;
-        }
-
-        // const availableCarDTO = await rentalityContract.checkCarAvailabilityWithDelivery();
-        const discounts = await rentalityContract.getDiscount(selectedCar.ownerAddress);
-        const insurancesView = await rentalityContract.getMyInsurancesAsGuest();
-        const generalInsurances = insurancesView.filter((i) => i.insuranceType === InsuranceType.General);
-
+        console.log("availableCarDTO:", JSON.stringify(availableCarDTO, bigIntReplacer, 2));
         const carInfo = await rentalityContract.getCarInfoById(BigInt(carId));
 
         const tankVolumeInGal =
-          carInfo.carInfo.engineType === EngineType.PETROL ? Number(carInfo.carInfo.engineParams[0]) : 0;
+          availableCarDTO.engineType === EngineType.PETROL ? Number(carInfo.carInfo.engineParams[0]) : 0;
 
         const pricePer10PercentFuel =
-          carInfo.carInfo.engineType === EngineType.PETROL
-            ? (Number(carInfo.carInfo.engineParams[1]) * tankVolumeInGal) / 1000
-            : Number(carInfo.carInfo.engineParams[0]) / 1000;
+          availableCarDTO.engineType === EngineType.PETROL
+            ? (Number(availableCarDTO.fuelPrice) * tankVolumeInGal) / 1000
+            : Number(availableCarDTO.fuelPrice) / 1000;
+
+        const metaData = parseMetaData(await getMetaDataFromIpfs(availableCarDTO.metadataURI));
+        let isCarDetailsConfirmed = false;
+
+        const tripDays = Number(availableCarDTO.tripDays);
+        const pricePerDay = Number(availableCarDTO.pricePerDayInUsdCents) / 100;
+        const totalPriceWithDiscount = Number(availableCarDTO.totalPriceWithDiscount) / 100;
 
         const selectedCarDetails: SearchCarInfoDetails = {
-          ...selectedCar,
-          engineType: BigInt(selectedCar.engineType),
+          carId: Number(availableCarDTO.carId),
+          ownerAddress: availableCarDTO.host.toString(),
+          images: getIpfsURIs(metaData.images),
+          brand: availableCarDTO.brand,
+          model: availableCarDTO.model,
+          year: availableCarDTO.yearOfProduction.toString(),
+          doorsNumber: Number(metaData.doorsNumber),
+          seatsNumber: Number(metaData.seatsNumber),
+          transmission: metaData.transmission,
+          engineType: availableCarDTO.engineType,
+          carDescription: metaData.description,
+          color: metaData.color,
+          carName: metaData.name,
+          tankSizeInGal: Number(metaData.tankVolumeInGal),
+
+          milesIncludedPerDay: getMilesIncludedPerDayText(availableCarDTO.milesIncludedPerDay ?? 0),
+          pricePerDay: pricePerDay,
+          pricePerDayWithDiscount: Number(availableCarDTO.pricePerDayWithDiscount) / 100,
+          tripDays: tripDays,
+          totalPriceWithDiscount: totalPriceWithDiscount,
+          taxes: Number(availableCarDTO.taxes) / 100,
+          securityDeposit: Number(availableCarDTO.securityDepositPerTripInUsdCents) / 100,
+          hostPhotoUrl: availableCarDTO.hostPhotoUrl,
+          hostName: availableCarDTO.hostName,
+          timeZoneId: availableCarDTO.locationInfo.timeZoneId,
+          location: {
+            lat: Number(availableCarDTO.locationInfo.latitude),
+            lng: Number(availableCarDTO.locationInfo.longitude),
+          },
+          highlighted: false,
+          daysDiscount: getDaysDiscount(tripDays),
+          totalDiscount: getTotalDiscount(pricePerDay, tripDays, totalPriceWithDiscount),
+          hostHomeLocation: formatLocationInfoUpToCity(availableCarDTO.locationInfo),
+          deliveryPrices: {
+            from1To25milesPrice: Number(availableCarDTO.underTwentyFiveMilesInUsdCents) / 100,
+            over25MilesPrice: Number(availableCarDTO.aboveTwentyFiveMilesInUsdCents) / 100,
+          },
+          isInsuranceIncluded: availableCarDTO.insuranceIncluded,
+          deliveryDetails: {
+            pickUp: {
+              distanceInMiles: Number(availableCarDTO.distance ?? 0),
+              priceInUsd: Number(availableCarDTO.pickUp) / 100,
+            },
+            dropOff: {
+              distanceInMiles: Number(availableCarDTO.distance ?? 0),
+              priceInUsd: Number(availableCarDTO.dropOf) / 100,
+            },
+          },
+          isCarDetailsConfirmed: isCarDetailsConfirmed,
+          isTestCar: false,
+          isInsuranceRequired: availableCarDTO.insuranceInfo.required,
+          insurancePerDayPriceInUsd: Number(availableCarDTO.insuranceInfo.priceInUsdCents) / 100,
+
           pricePer10PercentFuel: pricePer10PercentFuel,
           tripDiscounts: {
-            discount3DaysAndMoreInPercents: Number(discounts.threeDaysDiscount) / 10_000,
-            discount7DaysAndMoreInPercents: Number(discounts.sevenDaysDiscount) / 10_000,
-            discount30DaysAndMoreInPercents: Number(discounts.thirtyDaysDiscount) / 10_000,
+            discount3DaysAndMoreInPercents: Number(availableCarDTO.carDiscounts.threeDaysDiscount) / 10_000,
+            discount7DaysAndMoreInPercents: Number(availableCarDTO.carDiscounts.sevenDaysDiscount) / 10_000,
+            discount30DaysAndMoreInPercents: Number(availableCarDTO.carDiscounts.thirtyDaysDiscount) / 10_000,
           },
-          salesTax: 12,
-          governmentTax: 34,
-          isGuestHasInsurance: generalInsurances.length > 0,
+          salesTax: Number(availableCarDTO.salesTax),
+          governmentTax: Number(availableCarDTO.governmentTax),
+          isGuestHasInsurance: availableCarDTO.isGuestHasInsurance,
         };
         setCarInfo(selectedCarDetails);
 
@@ -119,5 +169,29 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
 
   return { isLoading, carInfo } as const;
 };
+
+function getDaysDiscount(tripDays: number) {
+  switch (true) {
+    case tripDays >= 30:
+      return "30+ day discount";
+    case tripDays >= 7:
+      return "7+ day discount";
+    case tripDays >= 3:
+      return "3+ day discount";
+    default:
+      return "Days discount";
+  }
+}
+
+function getTotalDiscount(pricePerDay: number, tripDays: number, totalPriceWithDiscount: number) {
+  const totalDiscount = pricePerDay * tripDays - totalPriceWithDiscount;
+  let result: string = "";
+  if (totalDiscount > 0) {
+    result = "-$" + displayMoneyWith2Digits(totalDiscount);
+  } else {
+    result = "-";
+  }
+  return result;
+}
 
 export default useSearchCar;

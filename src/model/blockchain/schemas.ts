@@ -376,6 +376,7 @@ export type ContractAvailableCarDTO = {
   carDiscounts: ContractBaseDiscount;
   salesTax: bigint;
   governmentTax: bigint;
+  distance: bigint;
   isGuestHasInsurance: boolean;
 };
 
