@@ -57,7 +57,6 @@ export default function Booked() {
               ))
             ) : (
               <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between pl-4 text-center">
-                123456789
                 {t("booked.trip_not_found")}
               </div>
             )}
