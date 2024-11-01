@@ -103,7 +103,6 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const handleAvatarClick = () => {
-    console.log("ddiLog Avatar clicked");
     setIsOpen(!isOpen);
   };
   useEffect(() => {
@@ -179,11 +178,11 @@ export default function Header() {
         </Stack>
         <ChooseBlockchainComponent />
         {isAuthenticated ? (
-          <div ref={dropdownRef} className="relative">
-            <div onClick={handleAvatarClick}>
+          <div ref={dropdownRef}>
+            <div className="relative" onClick={handleAvatarClick}>
               <LoginBase />
               {isOpen && (
-                <div className="absolute z-10 flex flex-col rounded-lg border border-gray-500 bg-rentality-bg-left-sidebar py-2 pl-2 font-['Montserrat',Arial,sans-serif] text-white shadow-md sm:left-[-18px] sm:w-56">
+                <div className="absolute right-2 z-10 flex w-60 flex-col rounded-lg border border-gray-500 bg-rentality-bg-left-sidebar py-2 pl-2 font-['Montserrat',Arial,sans-serif] text-white sm:right-[-16px]">
                   <div className="mb-3 flex items-center leading-tight">
                     <Image src={icWalletBalance} width={30} height={30} alt="" />
                     <div className="flex flex-col">

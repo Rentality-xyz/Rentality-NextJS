@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useLogin, useLogout, usePrivy, useWallets } from "@privy-io/react-auth";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
 
 interface useAuthInterface {
   isLoadingAuth: boolean;
@@ -21,6 +22,7 @@ export function useAuth() {
 
 export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
   const { connectWallet, ready, authenticated } = usePrivy();
+  const ethereumInfo = useEthereum();
 
   const { login } = useLogin({
     onComplete: (user, isNewUser, wasAlreadyAuthenticated, loginMethod, linkedAccount) => {
@@ -65,6 +67,7 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
   useEffect(() => {
     if (!ready) return;
     if (!walletsReady) return;
+    if (ethereumInfo === undefined) return;
 
     setIsAuthenticated(authenticated && wallets.length > 0);
     setIsLoadingAuth(false);
