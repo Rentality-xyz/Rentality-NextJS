@@ -4,9 +4,6 @@ import useGuestTrips from "@/hooks/guest/useGuestTrips";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import Loading from "@/components/common/Loading";
-import InvitationToConnect from "@/components/common/invitationToConnect";
-import { useAuth } from "@/contexts/auth/authContext";
 import CheckingLoadingPage from "@/components/common/CheckingLoadingPage";
 
 export default function Booked() {
@@ -14,7 +11,6 @@ export default function Booked() {
   const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
   const { showInfo, showError } = useRntSnackbars();
   const { t } = useTranslation();
-  const { isLoadingAuth, isAuthenticated } = useAuth();
 
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
     try {
@@ -30,10 +26,12 @@ export default function Booked() {
 
       setTripStatusChanging(false);
       updateData();
+      return true;
     } catch (e) {
       showError(t("booked.status_req_failed"));
 
       setTripStatusChanging(false);
+      return false;
     }
   };
 

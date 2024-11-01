@@ -11,7 +11,9 @@ export default function History() {
   const { t } = useTranslation();
   const { isLoadingAuth, isAuthenticated } = useAuth();
 
-  const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {};
+  const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
+    return true;
+  };
   const handleConfirmCarDetails = async (tripId: number) => {
     await confirmCarDetails(tripId);
   };

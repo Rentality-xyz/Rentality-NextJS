@@ -29,10 +29,12 @@ export default function Booked() {
 
       setTripStatusChanging(false);
       updateData();
+      return true;
     } catch (e) {
       showError(t("booked.status_req_failed"));
 
       setTripStatusChanging(false);
+      return false;
     }
   };
 
