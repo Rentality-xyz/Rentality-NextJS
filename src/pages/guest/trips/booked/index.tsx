@@ -2,19 +2,18 @@ import PageTitle from "@/components/pageTitle/pageTitle";
 import TripCard from "@/components/tripCard/tripCard";
 import useGuestTrips from "@/hooks/guest/useGuestTrips";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import Loading from "@/components/common/Loading";
 import InvitationToConnect from "@/components/common/invitationToConnect";
 import { useAuth } from "@/contexts/auth/authContext";
-import CheckingLoadingPage from "@/components/common/CheckingLoadingPage";
 
 export default function Booked() {
   const { isLoadingTrips, tripsBooked, updateData } = useGuestTrips();
   const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
   const { showInfo, showError } = useRntSnackbars();
   const { t } = useTranslation();
-  const { isLoadingAuth, isAuthenticated } = useAuth();
 
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
     try {
@@ -36,11 +35,14 @@ export default function Booked() {
       setTripStatusChanging(false);
     }
   };
+  const { isLoadingAuth, isAuthenticated } = useAuth();
 
   return (
     <>
-      <CheckingLoadingPage title={<PageTitle title={t("booked.title")} />} isLoadingContentPage={!!isLoadingTrips}>
-        <>
+      <PageTitle title={t("booked.title")} />
+      <CheckingLoadingAuth>
+        {!isLoadingAuth && isAuthenticated && isLoadingTrips && <Loading />}
+        {!isLoadingAuth && isAuthenticated && !isLoadingTrips && (
           <div className="my-4 flex flex-col gap-4">
             {tripsBooked != null && tripsBooked.length > 0 ? (
               tripsBooked.map((value) => (
@@ -55,12 +57,13 @@ export default function Booked() {
               ))
             ) : (
               <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between pl-4 text-center">
+                123456789
                 {t("booked.trip_not_found")}
               </div>
             )}
           </div>
-        </>
-      </CheckingLoadingPage>
+        )}
+      </CheckingLoadingAuth>
     </>
   );
 }
