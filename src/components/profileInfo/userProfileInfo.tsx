@@ -19,8 +19,8 @@ import DotStatus from "./dotStatus";
 import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { useTranslation } from "react-i18next";
 import { CheckboxTerms } from "../common/rntCheckbox";
-import { verifyMessage } from "ethers";
-import { DEFAULT_AGREEMENT_MESSAGE, LEGAL_TERMS_NAME } from "@/utils/constants";
+import { formatEther, verifyMessage } from "ethers";
+import { DEFAULT_AGREEMENT_MESSAGE, LEGAL_TERMS_NAME, MIN_ETH_ON_WALLET_FOR_TRANSACTION } from "@/utils/constants";
 import { signMessage } from "@/utils/ether";
 import { useLogin } from "@privy-io/react-auth";
 
@@ -114,6 +114,13 @@ function UserCommonInformationForm({
   async function onFormSubmit(formData: ProfileInfoFormValues) {
     if (!ethereumInfo) return;
     if (!formData.isTerms) return;
+
+    const userBalanceWeth = await ethereumInfo.signer.provider?.getBalance(await ethereumInfo.signer.getAddress());
+    const userBalanceEth = Number(formatEther(userBalanceWeth ?? 0)) ?? 0;
+    if (userBalanceEth < MIN_ETH_ON_WALLET_FOR_TRANSACTION) {
+      showInfo("You're almost there! Just add a little more to your wallet to continue.");
+      return;
+    }
 
     try {
       const signature = await signMessage(ethereumInfo.signer, DEFAULT_AGREEMENT_MESSAGE);
