@@ -264,6 +264,7 @@ function UserCommonInformationForm({
               field.onChange(!field.value);
             }}
             onLabelClick={(e) => {
+              field.onChange(true);
               console.log(`onLabelClick. ${JSON.stringify(e.type)}`);
               const windowsProxy = window.open(`/${isHost ? "host" : "guest"}/legal?tab=${LEGAL_TERMS_NAME}`, "_blank");
               if (windowsProxy === null || typeof windowsProxy == "undefined")
