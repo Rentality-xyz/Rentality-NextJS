@@ -12,7 +12,6 @@ import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
 import Image from "next/image";
 import mapArrow from "@/images/arrUpBtn.png";
-import FilterSlidingPanel from "@/components/search/filterSlidingPanel";
 import SearchAndFilters from "@/components/search/searchAndFilters";
 import { useAuth } from "@/contexts/auth/authContext";
 import useCarSearchParams from "@/hooks/guest/useCarSearchParams";
@@ -28,7 +27,6 @@ export default function Search() {
     useSearchCars();
 
   const [requestSending, setRequestSending] = useState<boolean>(false);
-  const [openFilterPanel, setOpenFilterPanel] = useState(false);
   const [sortBy, setSortBy] = useState<string | undefined>(undefined);
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
@@ -242,15 +240,6 @@ export default function Search() {
             </div>
           </div>
         </div>
-        <FilterSlidingPanel
-          initValue={searchCarFilters}
-          onFilterApply={handleFilterApply}
-          isOpen={openFilterPanel}
-          closePanel={() => {
-            setOpenFilterPanel(false);
-          }}
-          t={t}
-        />
       </APIProvider>
     </>
   );
