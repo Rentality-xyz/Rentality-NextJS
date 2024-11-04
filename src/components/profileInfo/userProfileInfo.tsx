@@ -115,8 +115,12 @@ function UserCommonInformationForm({
     if (!ethereumInfo) return;
     if (!formData.isTerms) return;
 
-    const userBalanceWeth = await ethereumInfo.signer.provider?.getBalance(await ethereumInfo.signer.getAddress());
+    const userAddress = await ethereumInfo.signer.getAddress();
+    const userBalanceWeth = await ethereumInfo.signer.provider?.getBalance(userAddress);
+
     const userBalanceEth = Number(formatEther(userBalanceWeth ?? 0)) ?? 0;
+    console.debug(`userAddress: ${userAddress} has balance ${userBalanceWeth} WETH or ${userBalanceEth} ETH`);
+
     if (userBalanceEth < MIN_ETH_ON_WALLET_FOR_TRANSACTION) {
       showInfo("You're almost there! Just add a little more to your wallet to continue.");
       return;
