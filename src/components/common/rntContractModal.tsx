@@ -11,9 +11,9 @@ import {
   LEGAL_CANCELLATION_NAME,
   LEGAL_PRIVACY_NAME,
   LEGAL_PROHIBITEDUSES_NAME,
-  LEGAL_TERMS_NAME
+  LEGAL_TERMS_NAME,
 } from "@/utils/constants";
-import useUserMode, {isHost} from "@/hooks/useUserMode";
+import useUserMode, { isHost } from "@/hooks/useUserMode";
 
 export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint; tripInfo: TripInfo }) {
   const [open, setOpen] = React.useState(false);
@@ -87,7 +87,11 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                     <ol className="ms-3 list-inside list-decimal [counter-reset:section]">
                       <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
                         &nbsp;
-                        <a className="underline" href={`${pathnameUserMode}/legal?tab=${LEGAL_TERMS_NAME}`} target="_blank">
+                        <a
+                          className="underline"
+                          href={`${pathnameUserMode}/legal?tab=${LEGAL_TERMS_NAME}`}
+                          target="_blank"
+                        >
                           Terms of service
                         </a>
                         &nbsp;
@@ -97,11 +101,19 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                       </li>
                       <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
                         &nbsp;
-                        <a className="underline" href={`${pathnameUserMode}/legal?tab=${LEGAL_CANCELLATION_NAME}`} target="_blank">
+                        <a
+                          className="underline"
+                          href={`${pathnameUserMode}/legal?tab=${LEGAL_CANCELLATION_NAME}`}
+                          target="_blank"
+                        >
                           Cancellation policy
                         </a>
                         &nbsp;
-                        <a className="underline" href={`${pathnameUserMode}/legal?tab=${LEGAL_CANCELLATION_NAME}`} target="_blank">
+                        <a
+                          className="underline"
+                          href={`${pathnameUserMode}/legal?tab=${LEGAL_CANCELLATION_NAME}`}
+                          target="_blank"
+                        >
                           (published at https://app.rentality.xyz/legalmatters/cancellation)
                         </a>
                       </li>
@@ -125,11 +137,19 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                       </li>
                       <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
                         &nbsp;
-                        <a className="underline" href={`${pathnameUserMode}/legal?tab=${LEGAL_PRIVACY_NAME}`} target="_blank">
+                        <a
+                          className="underline"
+                          href={`${pathnameUserMode}/legal?tab=${LEGAL_PRIVACY_NAME}`}
+                          target="_blank"
+                        >
                           Privacy policy
                         </a>
                         &nbsp;
-                        <a className="underline" href={`${pathnameUserMode}/legal?tab=${LEGAL_PRIVACY_NAME}`} target="_blank">
+                        <a
+                          className="underline"
+                          href={`${pathnameUserMode}/legal?tab=${LEGAL_PRIVACY_NAME}`}
+                          target="_blank"
+                        >
                           (published at https://app.rentality.xyz/legalmattersprivacy)
                         </a>
                       </li>

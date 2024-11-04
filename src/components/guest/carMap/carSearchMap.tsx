@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, CSSProperties, useEffect, useCallback } from "react";
+import { useState, useRef, CSSProperties, useEffect } from "react";
 import {
   DEFAULT_GOOGLE_MAPS_SEARCH_CENTER,
   DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM,
@@ -10,10 +10,10 @@ import { env } from "@/utils/env";
 import { ClusteredMapMarkers } from "@/components/guest/carMap/clusteredMapMarkers";
 
 export default function CarSearchMap({
-  searchResult,
-  setSelected,
-  isExpanded,
-  defaultCenter,
+   searchResult,
+   setSelected,
+   isExpanded,
+   defaultCenter
 }: {
   searchResult: SearchCarsResult;
   setSelected?: (carID: number) => void | null;
@@ -24,33 +24,8 @@ export default function CarSearchMap({
   const mapLeft = useRef<number>(0);
   const mapTop = useRef<number>(0);
   const mapWidth = useRef<number>(0);
-  const [mapHeight, setMapHeight] = useState<number>(0);
-
-  const mapContainerStyle = useMemo<CSSProperties>(() => {
-    if (typeof window == "undefined" || window.innerWidth < 1280) {
-      return {
-        borderRadius: "30px",
-        height: isExpanded ? "100vh" : "0vh",
-      };
-    }
-
-    let height = "";
-
-    if (!isSticked) {
-      height = "70vh";
-    } else {
-      height = mapHeight + "px";
-    }
-
-    return {
-      position: isSticked ? "fixed" : "relative",
-      top: isSticked ? "0px" : mapTop.current + "px",
-      ...(isSticked && { left: mapLeft.current + "px" }),
-      width: isSticked ? mapWidth.current + "px" : "100%",
-      height: height,
-      borderRadius: "30px",
-    };
-  }, [searchResult, isSticked, mapHeight, isExpanded]);
+  const [mapHeight, setMapHeight] = useState<string>("0vh");
+  const [mapContainerStyle, setMapContainerStyle] = useState<CSSProperties>()
 
   const handleScroll = () => {
     if (window.innerWidth < 1280) {
@@ -79,7 +54,7 @@ export default function CarSearchMap({
       newHeight -= parentRect.bottom - window.innerHeight;
     }
 
-    setMapHeight(newHeight);
+    setMapHeight(newHeight + 'px' );
 
     if (parentRect.top <= 0 && !isSticked) {
       mapLeft.current = Math.ceil(rect.left);
@@ -117,8 +92,26 @@ export default function CarSearchMap({
     };
   }, []);
 
+  useEffect(() => {
+    if (window.innerWidth < 1280) {
+      setMapContainerStyle({
+        borderRadius: "30px",
+        height: isExpanded ? "100vh" : "0vh",
+      })
+    } else {
+      setMapContainerStyle({
+        position: isSticked ? "fixed" : "relative",
+        top: isSticked ? "0px" : mapTop.current + "px",
+        ...(isSticked && { left: mapLeft.current + "px" }),
+        width: isSticked ? mapWidth.current + "px" : "100%",
+        height: isSticked ? mapHeight : "70vh",
+        borderRadius: "30px",
+      })
+    }
+  },[isSticked, mapHeight, isExpanded])
+
   return (
-    <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]}>
+    <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]} language="en">
       <Map
         id="google-maps-guest-search-page"
         mapId={GOOGLE_MAPS_MAP_ID}

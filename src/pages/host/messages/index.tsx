@@ -9,12 +9,15 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import InvitationToConnect from "@/components/common/invitationToConnect";
+import { useAuth } from "@/contexts/auth/authContext";
 
 export default function Messages() {
   const { isLoadingClient, chatInfos, selectChat, updateAllChats, sendMessage } = useChat();
   const { isLoading: isChatKeysLoading, isChatKeysSaved, saveChatKeys } = useChatKeys();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo } = useRntSnackbars();
+  const { isLoadingAuth, isAuthenticated } = useAuth();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -77,8 +80,9 @@ export default function Messages() {
   return (
     <>
       <PageTitle title={t("chat.title")} />
-      {isLoadingClient && <Loading />}
-      {!isLoadingClient && (
+      {isLoadingAuth && <Loading />}
+      {!isLoadingAuth && !isAuthenticated && <InvitationToConnect />}
+      {!isLoadingClient && isAuthenticated && (
         <ChatPage
           isHost={true}
           chats={sortedChatInfos}

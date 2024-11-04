@@ -13,7 +13,7 @@ import moment from "moment";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { env } from "@/utils/env";
-import {APIProvider} from '@vis.gl/react-google-maps';
+import { APIProvider } from "@vis.gl/react-google-maps";
 
 const allPaymentStatuses = Object.values(PaymentStatus)
   .slice(1)
@@ -45,7 +45,7 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
   }
 
   return (
-    <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]}>
+    <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]} language="en">
       <form className="flex flex-wrap items-end gap-4" onSubmit={handleApplyClick}>
         <RntSelect
           className="w-60"

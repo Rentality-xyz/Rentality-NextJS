@@ -20,6 +20,7 @@ import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import useCreateTripRequest from "@/hooks/guest/useCreateTripRequest";
 import { env } from "@/utils/env";
 import { APIProvider } from "@vis.gl/react-google-maps";
+import mapNotFoundCars from "@/images/map_not_found_cars.png";
 
 export default function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -167,16 +168,14 @@ export default function Search() {
 
   return (
     <>
-      <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["maps", "marker", "places"]}>
+      <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["maps", "marker", "places"]} language="en">
         <div className="flex flex-col" title="Search">
           <SearchAndFilters
             initValue={searchCarRequest}
             sortBy={sortBy}
             setSortBy={setSortBy}
             onSearchClick={handleSearchClick}
-            onOpenFilters={() => {
-              setOpenFilterPanel(true);
-            }}
+            onFilterApply={handleFilterApply}
             t={t}
           />
           <div className="mb-8 flex flex-row"></div>
@@ -206,8 +205,14 @@ export default function Search() {
                       );
                     })
                   ) : (
-                    <div className="flex max-w-screen-xl flex-wrap justify-between pl-[18px] text-center xl:h-full">
-                      {t_page("info.no_cars")}
+                    <div>
+                      <div className="flex max-w-screen-xl flex-col border border-gray-600 p-2 text-center font-['Montserrat',Arial,sans-serif] text-white">
+                        {/*{t_page("info.no_cars")}*/}
+                        <p className="text-3xl">{t_page("info.launched_miami")}</p>
+                        <p className="mt-4 text-2xl text-rentality-secondary">{t_page("info.soon_other_locations")}</p>
+                        <p className="mt-4 text-base">{t_page("info.changing_request")}</p>
+                      </div>
+                      <Image src={mapNotFoundCars} alt="" className="mt-2" />
                     </div>
                   )}
                 </>

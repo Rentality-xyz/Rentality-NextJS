@@ -1,12 +1,18 @@
 import { cn } from "@/utils";
 import React from "react";
 
-interface RntButtonProps extends React.ComponentPropsWithoutRef<"button"> {}
+interface RntButtonProps extends React.ComponentPropsWithoutRef<"button"> {
+  minHeight?: string;
+}
 
-export default function RntButton({ className, type, children, ...restProps }: RntButtonProps) {
+export default function RntButton({ className, type, children, minHeight = "48px", ...restProps }: RntButtonProps) {
   const bgColor = !className?.includes("bg-") ? "buttonGradient" : "";
   type = type ?? "button";
-  const c = cn("py-1 w-56 rounded-full text-white text-lg disabled:bg-gray-500 min-h-[48px]", bgColor, className);
+  const c = cn(
+    `py-1 w-56 rounded-full text-white text-lg disabled:bg-gray-500 min-h-[${minHeight}]`,
+    bgColor,
+    className
+  );
 
   return (
     <button className={c} type={type} {...restProps}>

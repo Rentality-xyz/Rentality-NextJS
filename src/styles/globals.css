@@ -408,6 +408,7 @@ input:disabled {
 }
 
 .border-gradient:before {
+  pointer-events: none;
   content: "";
   position: absolute;
   /*z-index: -1;*/
@@ -484,4 +485,37 @@ input:disabled {
   border-radius: inherit;
   width: 100%;
   /* Ширина input должна занимать всю обертку */
+}
+
+.select-container {
+  position: relative;
+  display: inline-block;
+  min-width: 10rem;
+}
+
+.custom-select {
+  appearance: none;
+  padding-right: 2rem;
+}
+
+.custom-arrow {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  width: 1.3rem;
+  height: 1.3rem;
+  /*background: url("../images/arrowDownTurquoise.svg") no-repeat right center;*/
+  background-size: contain;
+}
+
+.custom-select option {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.custom-select option:hover {
+  background-color: #e0e0e0;
+  color: #000;
 }

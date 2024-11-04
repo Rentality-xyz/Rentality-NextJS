@@ -22,11 +22,14 @@ import TripCardForDetails from "../tripCard/tripCardForDetails";
 import useUserMode, { isHost } from "@/hooks/useUserMode";
 import Loading from "../common/Loading";
 import { useTranslation } from "react-i18next";
+import InvitationToConnect from "@/components/common/invitationToConnect";
+import { useAuth } from "@/contexts/auth/authContext";
 
 export default function TripInfo() {
   const { userMode } = useUserMode();
   const router = useRouter();
   const { tripId: tripIdQuery, back } = router.query;
+  const { isAuthenticated } = useAuth();
 
   const tripId = BigInt((tripIdQuery as string) ?? "0");
   const backPath = back as string;
@@ -38,17 +41,17 @@ export default function TripInfo() {
     return t("booked.details." + name, options);
   };
 
-  if (tripId == null || tripId === BigInt(0) || tripInfo == null) return null;
-
   const formatStatusDateTime = (value: Date, timeZone?: string) => {
     const format = "ddd, D MMM YYYY hh:mm:ss z";
     return timeZone ? moment(value).tz(timeZone).format(format) : moment(value).format(format);
   };
 
+  if (tripId == null || tripId === BigInt(0) || tripInfo == null) return null;
+
   return (
     <>
       <PageTitle title={t_details("title", { tripId: tripId.toString() })} />
-      {isLoading && <Loading />}
+      {isLoading && !isAuthenticated && <InvitationToConnect />}
       {!isLoading && (
         <>
           <TripCardForDetails key={Number(tripId)} isHost={isHost(userMode)} tripInfo={tripInfo} t={t} />
