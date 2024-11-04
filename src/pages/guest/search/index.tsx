@@ -19,6 +19,9 @@ import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { env } from "@/utils/env";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import mapNotFoundCars from "@/images/map_not_found_cars.png";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import moment from "moment";
+import { dateFormatToDateTime } from "@/utils/datetimeFormatters";
 
 export default function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -99,7 +102,15 @@ export default function Search() {
       setRequestSending(true);
 
       showInfo(t("common.info.sign"));
-      const result = await createTripRequest(carInfo.carId, searchResult.searchCarRequest, carInfo.timeZoneId);
+
+      const timeZoneId = carInfo.timeZoneId ?? UTC_TIME_ZONE_ID;
+      const searchCarRequestWithTimeZoneId: SearchCarRequest = {
+        ...searchResult.searchCarRequest,
+        dateFrom: moment.tz(dateFormatToDateTime(searchCarRequest.dateFrom), timeZoneId).toDate(),
+        dateTo: moment.tz(dateFormatToDateTime(searchCarRequest.dateTo), timeZoneId).toDate(),
+      };
+
+      const result = await createTripRequest(carInfo.carId, searchCarRequestWithTimeZoneId);
 
       setRequestSending(false);
       hideDialogs();

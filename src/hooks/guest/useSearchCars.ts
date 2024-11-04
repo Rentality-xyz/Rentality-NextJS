@@ -3,7 +3,6 @@ import { calculateDays } from "@/utils/date";
 import { SearchCarInfo, SearchCarsResult, emptySearchCarsResult } from "@/model/SearchCarsResult";
 import { useRentality } from "@/contexts/rentalityContext";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
-import moment from "moment";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import {
   ContractCreateTripRequest,
@@ -119,7 +118,7 @@ const useSearchCars = () => {
     }
   };
 
-  const createTripRequest = async (carId: number, searchCarRequest: SearchCarRequest, timeZoneId: string) => {
+  const createTripRequest = async (carId: number, searchCarRequest: SearchCarRequest) => {
     if (!ethereumInfo) {
       console.error("createTripRequest: ethereumInfo is null");
       return false;
@@ -130,16 +129,13 @@ const useSearchCars = () => {
     }
 
     try {
-      const startCarLocalDateTime = moment.tz(searchCarRequest.dateFrom, timeZoneId).toDate();
-      const endCarLocalDateTime = moment.tz(searchCarRequest.dateTo, timeZoneId).toDate();
-
-      const days = calculateDays(startCarLocalDateTime, endCarLocalDateTime);
+      const days = calculateDays(searchCarRequest.dateFrom, searchCarRequest.dateTo);
       if (days < 0) {
         console.error("Date to' must be greater than 'Date from'");
         return false;
       }
-      const startUnixTime = getBlockchainTimeFromDate(startCarLocalDateTime);
-      const endUnixTime = getBlockchainTimeFromDate(endCarLocalDateTime);
+      const startUnixTime = getBlockchainTimeFromDate(searchCarRequest.dateFrom);
+      const endUnixTime = getBlockchainTimeFromDate(searchCarRequest.dateTo);
 
       if (
         searchCarRequest.isDeliveryToGuest ||
