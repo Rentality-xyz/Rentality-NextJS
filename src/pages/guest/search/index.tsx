@@ -12,7 +12,6 @@ import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
 import Image from "next/image";
 import mapArrow from "@/images/arrUpBtn.png";
-import FilterSlidingPanel from "@/components/search/filterSlidingPanel";
 import SearchAndFilters from "@/components/search/searchAndFilters";
 import { useAuth } from "@/contexts/auth/authContext";
 import useCarSearchParams from "@/hooks/guest/useCarSearchParams";
@@ -21,6 +20,9 @@ import useCreateTripRequest from "@/hooks/guest/useCreateTripRequest";
 import { env } from "@/utils/env";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import mapNotFoundCars from "@/images/map_not_found_cars.png";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import moment from "moment";
+import { dateFormatToDateTime } from "@/utils/datetimeFormatters";
 
 export default function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -29,7 +31,6 @@ export default function Search() {
   const { createTripRequest } = useCreateTripRequest();
 
   const [requestSending, setRequestSending] = useState<boolean>(false);
-  const [openFilterPanel, setOpenFilterPanel] = useState(false);
   const [sortBy, setSortBy] = useState<string | undefined>(undefined);
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
@@ -102,7 +103,15 @@ export default function Search() {
       setRequestSending(true);
 
       showInfo(t("common.info.sign"));
-      const result = await createTripRequest(carInfo.carId, searchResult.searchCarRequest, carInfo.timeZoneId);
+
+      const timeZoneId = carInfo.timeZoneId ?? UTC_TIME_ZONE_ID;
+      const searchCarRequestWithTimeZoneId: SearchCarRequest = {
+        ...searchResult.searchCarRequest,
+        dateFrom: moment.tz(dateFormatToDateTime(searchCarRequest.dateFrom), timeZoneId).toDate(),
+        dateTo: moment.tz(dateFormatToDateTime(searchCarRequest.dateTo), timeZoneId).toDate(),
+      };
+
+      const result = await createTripRequest(carInfo.carId, searchCarRequestWithTimeZoneId);
 
       setRequestSending(false);
       hideDialogs();
@@ -248,15 +257,6 @@ export default function Search() {
             </div>
           </div>
         </div>
-        <FilterSlidingPanel
-          initValue={searchCarFilters}
-          onFilterApply={handleFilterApply}
-          isOpen={openFilterPanel}
-          closePanel={() => {
-            setOpenFilterPanel(false);
-          }}
-          t={t}
-        />
       </APIProvider>
     </>
   );
