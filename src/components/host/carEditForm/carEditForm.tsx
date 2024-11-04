@@ -31,7 +31,7 @@ import * as React from "react";
 import { placeDetailsToLocationInfoWithTimeZone } from "@/utils/location";
 import CarAddPhoto from "./CarAddPhoto";
 import { env } from "@/utils/env";
-import {APIProvider} from '@vis.gl/react-google-maps';
+import { APIProvider } from "@vis.gl/react-google-maps";
 
 export default function CarEditForm({
   initValue,
@@ -221,7 +221,7 @@ export default function CarEditForm({
   }
 
   return (
-    <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]}>
+    <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]} language="en">
       <form onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
         <div className="mt-4">
           <div className="mb-4 pl-4 text-lg">

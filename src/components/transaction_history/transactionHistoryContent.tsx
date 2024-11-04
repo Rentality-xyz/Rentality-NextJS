@@ -5,6 +5,9 @@ import useTransactionHistory, { TransactionHistoryFilters } from "@/hooks/transa
 import PaginationWrapper from "../common/PaginationWrapper";
 import TransactionHistoryTable from "./TransactionHistoryTable";
 import TransactionHistoryFiltersComponent from "./TransactionHistoryFiltersComponent";
+import Loading from "@/components/common/Loading";
+import InvitationToConnect from "@/components/common/invitationToConnect";
+import { useAuth } from "@/contexts/auth/authContext";
 
 type TransactionHistoryContentProps = {
   isHost: boolean;

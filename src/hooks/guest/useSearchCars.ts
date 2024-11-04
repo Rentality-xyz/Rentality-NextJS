@@ -11,7 +11,7 @@ export type SortOptionKey = keyof SortOptions;
 
 const useSearchCars = () => {
   const ethereumInfo = useEthereum();
-  const [isLoading, setIsLoading] = useState<Boolean>(false);
+  const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [searchResult, setSearchResult] = useState<SearchCarsResult>(emptySearchCarsResult);
 
   const searchAvailableCars = async (request: SearchCarRequest, filters: SearchCarFilters) => {

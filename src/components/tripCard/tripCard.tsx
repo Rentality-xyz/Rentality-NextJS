@@ -20,7 +20,7 @@ function TripCard({
   t,
 }: {
   tripInfo: TripInfo;
-  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<void>;
+  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<boolean>;
   disableButton: boolean;
   isHost: boolean;
   confirmCarDetails?: (tripId: number) => Promise<void>;
@@ -48,7 +48,11 @@ function TripCard({
           {
             <CurrentStatusInfo
               tripInfo={tripInfo}
-              changeStatusCallback={changeStatusCallback}
+              changeStatusCallback={async (changeStatus) => {
+                if (await changeStatusCallback(changeStatus)) {
+                  setIsAdditionalActionHidden(true);
+                }
+              }}
               disableButton={disableButton}
               isAdditionalActionHidden={isAdditionalActionHidden}
               setIsAdditionalActionHidden={setIsAdditionalActionHidden}
@@ -79,7 +83,11 @@ function TripCard({
         <TripAdditionalActions
           refForScrool={allowedActionsRef}
           tripInfo={tripInfo}
-          changeStatusCallback={changeStatusCallback}
+          changeStatusCallback={async (changeStatus) => {
+            if (await changeStatusCallback(changeStatus)) {
+              setIsAdditionalActionHidden(true);
+            }
+          }}
           disableButton={disableButton}
           isHost={isHost}
           t={t}

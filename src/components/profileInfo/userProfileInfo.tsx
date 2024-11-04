@@ -19,8 +19,8 @@ import DotStatus from "./dotStatus";
 import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { useTranslation } from "react-i18next";
 import { CheckboxTerms } from "../common/rntCheckbox";
-import { verifyMessage } from "ethers";
-import { DEFAULT_AGREEMENT_MESSAGE, LEGAL_TERMS_NAME } from "@/utils/constants";
+import { formatEther, verifyMessage } from "ethers";
+import { DEFAULT_AGREEMENT_MESSAGE, LEGAL_TERMS_NAME, MIN_ETH_ON_WALLET_FOR_TRANSACTION } from "@/utils/constants";
 import { signMessage } from "@/utils/ether";
 import { useLogin } from "@privy-io/react-auth";
 
@@ -114,6 +114,13 @@ function UserCommonInformationForm({
   async function onFormSubmit(formData: ProfileInfoFormValues) {
     if (!ethereumInfo) return;
     if (!formData.isTerms) return;
+
+    const userBalanceWeth = await ethereumInfo.signer.provider?.getBalance(await ethereumInfo.signer.getAddress());
+    const userBalanceEth = Number(formatEther(userBalanceWeth ?? 0)) ?? 0;
+    if (userBalanceEth < MIN_ETH_ON_WALLET_FOR_TRANSACTION) {
+      showInfo("You're almost there! Just add a little more to your wallet to continue.");
+      return;
+    }
 
     try {
       const signature = await signMessage(ethereumInfo.signer, DEFAULT_AGREEMENT_MESSAGE);
@@ -215,7 +222,11 @@ function UserCommonInformationForm({
 
       <fieldset className="mt-4">
         <div className="mb-4 pl-[16px] text-lg">
-          <strong>{t("profile.welcome_create_account")}</strong>
+          {!isEmpty(savedProfileSettings.tcSignature) && savedProfileSettings.tcSignature !== "0x" ? (
+            <strong>{t("profile.basic_info")}</strong>
+          ) : (
+            <strong>{t("profile.welcome_create_account")}</strong>
+          )}
         </div>
         <div className="flex flex-wrap gap-4">
           <RntInput
@@ -260,6 +271,7 @@ function UserCommonInformationForm({
               field.onChange(!field.value);
             }}
             onLabelClick={(e) => {
+              field.onChange(true);
               console.log(`onLabelClick. ${JSON.stringify(e.type)}`);
               const windowsProxy = window.open(`/${isHost ? "host" : "guest"}/legal?tab=${LEGAL_TERMS_NAME}`, "_blank");
               if (windowsProxy === null || typeof windowsProxy == "undefined")
