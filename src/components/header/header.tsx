@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Stack, styled, Switch, Typography } from "@mui/material";
-import ChooseBlockchainComponent from "@/components/choose_blockchain/ChooseBlockchainComponent";
+import ChooseBlockchainComponent from "@/features/blockchain/components/ChooseBlockchainComponent";
 import LoginBase from "./LoginBase";
 import useUserMode, { isAdmin, isHost } from "@/hooks/useUserMode";
 import Image from "next/image";
