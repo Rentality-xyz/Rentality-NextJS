@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { calculateDays } from "@/utils/date";
+import { calculateDays, UTC_TIME_ZONE_ID } from "@/utils/date";
 import { SearchCarInfo, SearchCarsResult, emptySearchCarsResult } from "@/model/SearchCarsResult";
 import { useRentality } from "@/contexts/rentalityContext";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
@@ -13,6 +13,7 @@ import { isEmpty } from "@/utils/string";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { getSignedLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
+import moment from "moment";
 
 export type SortOptions = {
   [key: string]: string;
@@ -31,8 +32,9 @@ const useSearchCars = () => {
 
       var url = new URL(`/api/publicSearchCars`, window.location.origin);
       if (ethereumInfo?.chainId) url.searchParams.append("chainId", ethereumInfo.chainId.toString());
-      if (request.dateFrom) url.searchParams.append("dateFrom", request.dateFrom.toISOString());
-      if (request.dateTo) url.searchParams.append("dateTo", request.dateTo.toISOString());
+      if (request.dateFromInDateTimeStringFormat)
+        url.searchParams.append("dateFrom", request.dateFromInDateTimeStringFormat);
+      if (request.dateToInDateTimeStringFormat) url.searchParams.append("dateTo", request.dateToInDateTimeStringFormat);
       if (request.searchLocation.country) url.searchParams.append("country", request.searchLocation.country);
       if (request.searchLocation.state) url.searchParams.append("state", request.searchLocation.state);
       if (request.searchLocation.city) url.searchParams.append("city", request.searchLocation.city);
@@ -118,7 +120,7 @@ const useSearchCars = () => {
     }
   };
 
-  const createTripRequest = async (carId: number, searchCarRequest: SearchCarRequest) => {
+  const createTripRequest = async (carId: number, searchCarRequest: SearchCarRequest, timeZoneId: string) => {
     if (!ethereumInfo) {
       console.error("createTripRequest: ethereumInfo is null");
       return false;
@@ -129,13 +131,17 @@ const useSearchCars = () => {
     }
 
     try {
-      const days = calculateDays(searchCarRequest.dateFrom, searchCarRequest.dateTo);
+      const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
+      const dateFrom = moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, notEmtpyTimeZoneId).toDate();
+      const dateTo = moment.tz(searchCarRequest.dateToInDateTimeStringFormat, notEmtpyTimeZoneId).toDate();
+
+      const days = calculateDays(dateFrom, dateTo);
       if (days < 0) {
         console.error("Date to' must be greater than 'Date from'");
         return false;
       }
-      const startUnixTime = getBlockchainTimeFromDate(searchCarRequest.dateFrom);
-      const endUnixTime = getBlockchainTimeFromDate(searchCarRequest.dateTo);
+      const startUnixTime = getBlockchainTimeFromDate(dateFrom);
+      const endUnixTime = getBlockchainTimeFromDate(dateTo);
 
       if (
         searchCarRequest.isDeliveryToGuest ||

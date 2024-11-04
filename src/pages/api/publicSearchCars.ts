@@ -18,7 +18,6 @@ import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Wallet } from "ethers";
 import moment from "moment";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { bigIntReplacer } from "@/utils/json";
 import { env } from "@/utils/env";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { allSupportedBlockchainList } from "@/model/blockchain/blockchainList";
@@ -87,8 +86,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       longitude: Number(longitude as string),
       timeZoneId: "",
     },
-    dateFrom: new Date(dateFrom as string),
-    dateTo: new Date(dateTo as string),
+    dateFromInDateTimeStringFormat: dateFrom as string,
+    dateToInDateTimeStringFormat: dateTo as string,
     isDeliveryToGuest: isDeliveryToGuestValue,
     deliveryInfo: {
       pickupLocation:
@@ -220,8 +219,8 @@ function formatSearchAvailableCarsContractRequest(
   searchCarFilters: SearchCarFilters,
   timeZoneId: string
 ) {
-  const startCarLocalDateTime = moment.tz(searchCarRequest.dateFrom, timeZoneId).toDate();
-  const endCarLocalDateTime = moment.tz(searchCarRequest.dateTo, timeZoneId).toDate();
+  const startCarLocalDateTime = moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, timeZoneId).toDate();
+  const endCarLocalDateTime = moment.tz(searchCarRequest.dateToInDateTimeStringFormat, timeZoneId).toDate();
   const contractDateFromUTC = getBlockchainTimeFromDate(startCarLocalDateTime);
   const contractDateToUTC = getBlockchainTimeFromDate(endCarLocalDateTime);
   const contractSearchCarParams: ContractSearchCarParams = {

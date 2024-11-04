@@ -11,8 +11,8 @@ export type SearchCarFilters = {
 
 export type SearchCarRequest = {
   searchLocation: LocationInfo;
-  dateFrom: Date;
-  dateTo: Date;
+  dateFromInDateTimeStringFormat: string;
+  dateToInDateTimeStringFormat: string;
   isDeliveryToGuest: boolean;
   deliveryInfo: {
     pickupLocation: { isHostHomeLocation: true } | { isHostHomeLocation: false; locationInfo: LocationInfo };
