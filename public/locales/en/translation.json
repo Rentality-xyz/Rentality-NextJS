@@ -69,7 +69,9 @@
       "no_cars": "No cars were found for your request",
       "launched_miami": "We've launched in Miami, Florida",
       "soon_other_locations": "Coming soon in other locations",
-      "changing_request": "Try changing you request location"
+      "changing_request": "Try changing you request location",
+      "does_not_support_selected_network": "Rentality does not support network selected in your crypto wallet",
+      "switch_network": "Switch network"
     },
     "car_search_item": {
       "price": "Total price",
