@@ -11,24 +11,13 @@ import useTransactionHistory from "@/hooks/transaction_history/useTransactionHis
 
 export default function TransactionHistory() {
   const { t } = useTranslation();
-  const { isLoading, data, fetchData } = useTransactionHistory(true);
-
-  useEffect(() => {}, [fetchData]);
-  const { isLoadingAuth, isAuthenticated } = useAuth();
 
   return (
     <>
       <PageTitle title={t("transaction_history.title")} />
-      <CheckingLoadingAuth
-      // title={<PageTitle title={t("transaction_history.title")} />}
-      // isLoadingContentPage={isLoading}
-      >
-        {!isLoadingAuth && isAuthenticated && !isLoading && <Loading />}
-        {!isLoadingAuth && isAuthenticated && isLoading && <TransactionHistoryContent isHost={true} t={t} />}
+      <CheckingLoadingAuth>
+        <TransactionHistoryContent isHost={true} t={t} />
       </CheckingLoadingAuth>
-      {/*{isLoadingAuth && <Loading />}*/}
-      {/*{!isLoadingAuth && !isAuthenticated && <InvitationToConnect />}*/}
-      {/*{isAuthenticated && <TransactionHistoryContent isHost={true} t={t} />}*/}
     </>
   );
 }

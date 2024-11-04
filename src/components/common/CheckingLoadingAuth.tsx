@@ -14,9 +14,7 @@ export default function CheckingLoadingAuth({ children }: CheckingLoadingAuthPro
     <>
       {isLoadingAuth && <Loading />}
       {!isLoadingAuth && !isAuthenticated && <InvitationToConnect />}
-      {children}
-      {/*{!isLoadingAuth && isAuthenticated && isLoadingContentPage && <Loading />}*/}
-      {/*{!isLoadingAuth && isAuthenticated && !isLoadingContentPage && children}*/}
+      {!isLoadingAuth && isAuthenticated && children}
     </>
   );
 }

@@ -41,8 +41,8 @@ export default function Booked() {
     <>
       <PageTitle title={t("booked.title")} />
       <CheckingLoadingAuth>
-        {!isLoadingAuth && isAuthenticated && isLoadingTrips && <Loading />}
-        {!isLoadingAuth && isAuthenticated && !isLoadingTrips && (
+        {isLoadingTrips && <Loading />}
+        {!isLoadingTrips && (
           <div className="my-4 flex flex-col gap-4">
             {tripsBooked != null && tripsBooked.length > 0 ? (
               tripsBooked.map((value) => {
