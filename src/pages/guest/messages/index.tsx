@@ -7,17 +7,18 @@ import { DialogActions } from "@/utils/dialogActions";
 import { isEmpty } from "@/utils/string";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
-import { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import InvitationToConnect from "@/components/common/invitationToConnect";
 import { useAuth } from "@/contexts/auth/authContext";
+import TransactionHistoryContent from "@/components/transaction_history/transactionHistoryContent";
+import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 
 export default function Messages() {
   const { isLoadingClient, chatInfos, selectChat, updateAllChats, sendMessage } = useChat();
   const { isLoading: isChatKeysLoading, isChatKeysSaved, saveChatKeys } = useChatKeys();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo } = useRntSnackbars();
-  const { isLoadingAuth, isAuthenticated } = useAuth();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -80,20 +81,21 @@ export default function Messages() {
   return (
     <>
       <PageTitle title={t("chat.title")} />
-      {isLoadingAuth && <Loading />}
-      {!isLoadingAuth && !isAuthenticated && <InvitationToConnect />}
-      {!isLoadingClient && isAuthenticated && (
-        <ChatPage
-          isHost={false}
-          chats={sortedChatInfos}
-          sendMessage={handleSendMessage}
-          selectedTridId={selectedTridId}
-          selectChat={handleSelectChat}
-          t={(name, options) => {
-            return t("chat." + name, options);
-          }}
-        />
-      )}
+      <CheckingLoadingAuth>
+        {isLoadingClient && <Loading />}
+        {!isLoadingClient && (
+          <ChatPage
+            isHost={false}
+            chats={sortedChatInfos}
+            sendMessage={handleSendMessage}
+            selectedTridId={selectedTridId}
+            selectChat={handleSelectChat}
+            t={(name, options) => {
+              return t("chat." + name, options);
+            }}
+          />
+        )}
+      </CheckingLoadingAuth>
     </>
   );
 }

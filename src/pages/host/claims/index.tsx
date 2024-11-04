@@ -10,6 +10,7 @@ import { TFunction } from "@/utils/i18n";
 import Loading from "@/components/common/Loading";
 import InvitationToConnect from "@/components/common/invitationToConnect";
 import { useAuth } from "@/contexts/auth/authContext";
+import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 
 export default function Claims() {
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
@@ -19,7 +20,6 @@ export default function Claims() {
   const t_h_claims: TFunction = (name, options) => {
     return t("claims.host." + name, options);
   };
-  const { isLoadingAuth, isAuthenticated } = useAuth();
 
   const handleCreateClaim = async (createClaimRequest: CreateClaimRequest) => {
     if (!createClaimRequest.tripId) {
@@ -91,22 +91,18 @@ export default function Claims() {
   return (
     <>
       <PageTitle title={t("claims.title")} />
-      {isLoadingAuth && <Loading />}
-      {!isLoadingAuth && !isAuthenticated && <InvitationToConnect />}
-      {!isLoadingAuth && isAuthenticated && (
-        <>
-          <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={true} />
-          <ClaimHistory
-            claims={claims}
-            payClaim={handlePayClaim}
-            cancelClaim={handleCancelClaim}
-            isHost={true}
-            t={(path, options) => {
-              return t("claims." + path, options);
-            }}
-          />
-        </>
-      )}
+      <CheckingLoadingAuth>
+        <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={true} />
+        <ClaimHistory
+          claims={claims}
+          payClaim={handlePayClaim}
+          cancelClaim={handleCancelClaim}
+          isHost={true}
+          t={(path, options) => {
+            return t("claims." + path, options);
+          }}
+        />
+      </CheckingLoadingAuth>
     </>
   );
 }
