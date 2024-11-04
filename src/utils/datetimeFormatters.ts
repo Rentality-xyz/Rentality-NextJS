@@ -90,3 +90,9 @@ export const dateFormatYearMonthDayTime = (value: Date | undefined) => {
   }
   return `${day} ${monthString} ${year} ${hours}:${minutes}`;
 };
+
+//YYYY-MM-DDTHH:mm:ss
+export const dateFormatToDateTime = (value: Date) => {
+  const format = "YYYY-MM-DDTHH:mm:ss";
+  return moment(value).format(format);
+};
