@@ -37,13 +37,11 @@ export default function Profile() {
               savedTripsDiscounts={savedTripsDiscounts}
               saveTripsDiscounts={saveTripDiscounts}
               isUserHasHostRole={userRole === "Host"}
-              t={t}
             />
             <DeliveryPriceForm
               savedDeliveryPrices={savedDeliveryPrices}
               saveDeliveryPrices={saveDeliveryPrices}
               isUserHasHostRole={userRole === "Host"}
-              t={t}
             />
           </div>
 

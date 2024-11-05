@@ -14,6 +14,9 @@ import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { getSignedLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import moment from "moment";
+import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
+import { isUserHasEnoughFunds } from "@/utils/wallet";
+import { formatEther } from "viem";
 
 export type SortOptions = {
   [key: string]: string;
@@ -120,29 +123,34 @@ const useSearchCars = () => {
     }
   };
 
-  const createTripRequest = async (carId: number, searchCarRequest: SearchCarRequest, timeZoneId: string) => {
+  async function createTripRequest(
+    carId: number,
+    searchCarRequest: SearchCarRequest,
+    timeZoneId: string
+  ): Promise<Result<boolean, TransactionErrorCode>> {
     if (!ethereumInfo) {
-      console.error("createTripRequest: ethereumInfo is null");
-      return false;
+      console.error("createTripRequest error: ethereumInfo is null");
+      return Err("ERROR");
     }
+
     if (!rentalityContract) {
-      console.error("createTripRequest: rentalityContract is null");
-      return false;
+      console.error("createTripRequest error: rentalityContract is null");
+      return Err("ERROR");
     }
+
+    const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
+    const dateFrom = moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, notEmtpyTimeZoneId).toDate();
+    const dateTo = moment.tz(searchCarRequest.dateToInDateTimeStringFormat, notEmtpyTimeZoneId).toDate();
+
+    const days = calculateDays(dateFrom, dateTo);
+    if (days < 0) {
+      console.error("Date to' must be greater than 'Date from'");
+      return Err("ERROR");
+    }
+    const startUnixTime = getBlockchainTimeFromDate(dateFrom);
+    const endUnixTime = getBlockchainTimeFromDate(dateTo);
 
     try {
-      const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
-      const dateFrom = moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, notEmtpyTimeZoneId).toDate();
-      const dateTo = moment.tz(searchCarRequest.dateToInDateTimeStringFormat, notEmtpyTimeZoneId).toDate();
-
-      const days = calculateDays(dateFrom, dateTo);
-      if (days < 0) {
-        console.error("Date to' must be greater than 'Date from'");
-        return false;
-      }
-      const startUnixTime = getBlockchainTimeFromDate(dateFrom);
-      const endUnixTime = getBlockchainTimeFromDate(dateTo);
-
       if (
         searchCarRequest.isDeliveryToGuest ||
         !searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation ||
@@ -181,7 +189,7 @@ const useSearchCars = () => {
         const pickupLocationResult = await getSignedLocationInfo(pickupLocationInfo, ethereumInfo.chainId);
         if (!pickupLocationResult.ok) {
           console.error("Sign location error");
-          return false;
+          return Err("ERROR");
         }
 
         const returnLocationResult =
@@ -190,7 +198,7 @@ const useSearchCars = () => {
             : await getSignedLocationInfo(returnLocationInfo, ethereumInfo.chainId);
         if (!returnLocationResult.ok) {
           console.error("Sign location error");
-          return false;
+          return Err("ERROR");
         }
 
         const tripRequest: ContractCreateTripRequestWithDelivery = {
@@ -201,6 +209,12 @@ const useSearchCars = () => {
           pickUpInfo: pickupLocationResult.value,
           returnInfo: returnLocationResult.value,
         };
+        const totalPriceInEth = Number(formatEther(paymentsNeeded.totalPrice));
+
+        if (!(await isUserHasEnoughFunds(ethereumInfo.signer, totalPriceInEth))) {
+          console.error("createTripRequest error: user don't have enough funds");
+          return Err("NOT_ENOUGH_FUNDS");
+        }
 
         const transaction = await rentalityContract.createTripRequestWithDelivery(tripRequest, {
           value: paymentsNeeded.totalPrice,
@@ -220,18 +234,24 @@ const useSearchCars = () => {
           currencyType: ETH_DEFAULT_ADDRESS,
         };
 
+        const totalPriceInEth = Number(formatEther(paymentsNeeded.totalPrice));
+
+        if (!(await isUserHasEnoughFunds(ethereumInfo.signer, totalPriceInEth))) {
+          console.error("createTripRequest error: user don't have enough funds");
+          return Err("NOT_ENOUGH_FUNDS");
+        }
         const transaction = await rentalityContract.createTripRequest(tripRequest, {
           value: paymentsNeeded.totalPrice,
         });
         await transaction.wait();
       }
 
-      return true;
+      return Ok(true);
     } catch (e) {
       console.error("createTripRequest error:" + e);
-      return false;
+      return Err("ERROR");
     }
-  };
+  }
 
   function sortByDailyPriceAsc(a: SearchCarInfo, b: SearchCarInfo) {
     return a.pricePerDay - b.pricePerDay;

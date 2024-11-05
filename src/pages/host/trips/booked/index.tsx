@@ -6,37 +6,45 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Loading from "@/components/common/Loading";
 import { useAuth } from "@/contexts/auth/authContext";
-import InvitationToConnect from "@/components/common/invitationToConnect";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { isUserHasEnoughFunds } from "@/utils/wallet";
 
 export default function Booked() {
+  const ethereumInfo = useEthereum();
   const [isLoadingTrips, tripsBooked, _, updateData] = useHostTrips();
   const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
   const { showInfo, showError } = useRntSnackbars();
-  const { t } = useTranslation();
   const { isLoadingAuth, isAuthenticated } = useAuth();
+  const { t } = useTranslation();
 
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
-    try {
-      setTripStatusChanging(true);
-
-      showInfo(t("common.info.sign"));
-      const result = await changeStatus();
-
-      if (!result) {
-        throw new Error("changeStatus error");
-      }
-      showInfo(t("booked.status_changed"));
-
-      setTripStatusChanging(false);
-      updateData();
-      return true;
-    } catch (e) {
-      showError(t("booked.status_req_failed"));
-
-      setTripStatusChanging(false);
+    if (!ethereumInfo) {
+      console.error("changeStatusCallback error: ethereumInfo is null");
       return false;
     }
+
+    if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
+      console.error("changeStatusCallback error: user don't have enough funds");
+      showError(t("common.add_fund_to_wallet"));
+      return false;
+    }
+
+    setTripStatusChanging(true);
+
+    showInfo(t("common.info.sign"));
+
+    const result = await changeStatus();
+
+    if (result) {
+      showInfo(t("booked.status_changed"));
+      updateData();
+    } else {
+      showError(t("booked.status_req_failed"));
+    }
+    setTripStatusChanging(false);
+
+    return result;
   };
 
   return (

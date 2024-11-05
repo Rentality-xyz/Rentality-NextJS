@@ -38,9 +38,6 @@ export default function Search() {
   const t_page: TFunction = (path, options) => {
     return t("search_page." + path, options);
   };
-  const t_errors: TFunction = (name, options) => {
-    return t_page("errors." + name, options);
-  };
 
   const handleSearchClick = async (request: SearchCarRequest) => {
     updateSearchParams(request, searchCarFilters);
@@ -71,50 +68,48 @@ export default function Search() {
       return;
     }
 
-    try {
-      if (isEmpty(userInfo?.drivingLicense)) {
-        showError(t_errors("user_info"));
-        await router.push("/guest/profile");
-        return;
-      }
+    if (isEmpty(userInfo?.drivingLicense)) {
+      showError(t("errors.user_info"));
+      await router.push("/guest/profile");
+      return;
+    }
 
-      if (isEmpty(searchResult.searchCarRequest.dateFromInDateTimeStringFormat)) {
-        showError(t_errors("date_from"));
-        return;
-      }
-      if (isEmpty(searchResult.searchCarRequest.dateToInDateTimeStringFormat)) {
-        showError(t_errors("date_to"));
-        return;
-      }
+    if (isEmpty(searchResult.searchCarRequest.dateFromInDateTimeStringFormat)) {
+      showError(t("errors.date_from"));
+      return;
+    }
+    if (isEmpty(searchResult.searchCarRequest.dateToInDateTimeStringFormat)) {
+      showError(t("errors.date_to"));
+      return;
+    }
 
-      if (carInfo.tripDays < 0) {
-        showError(t_errors("date_eq"));
-        return;
-      }
-      if (carInfo.ownerAddress === userInfo?.address) {
-        showError(t_errors("own_car"));
-        return;
-      }
+    if (carInfo.tripDays < 0) {
+      showError(t("errors.date_eq"));
+      return;
+    }
+    if (carInfo.ownerAddress === userInfo?.address) {
+      showError(t("errors.own_car"));
+      return;
+    }
 
-      setRequestSending(true);
+    setRequestSending(true);
 
-      showInfo(t("common.info.sign"));
+    showInfo(t("common.info.sign"));
 
-      const result = await createTripRequest(carInfo.carId, searchResult.searchCarRequest, carInfo.timeZoneId);
+    const result = await createTripRequest(carInfo.carId, searchResult.searchCarRequest, carInfo.timeZoneId);
 
-      setRequestSending(false);
-      hideDialogs();
-      hideSnackbars();
-      if (!result) {
-        showError(t_errors("request"));
-        return;
-      }
+    hideDialogs();
+    hideSnackbars();
+    setRequestSending(false);
+
+    if (result.ok) {
       router.push("/guest/trips");
-    } catch (e) {
-      showError(t_errors("request"));
-      console.error("sendRentCarRequest error:" + e);
-
-      setRequestSending(false);
+    } else {
+      if (result.error === "NOT_ENOUGH_FUNDS") {
+        showError(t("common.add_fund_to_wallet"));
+      } else {
+        showError(t("errors.request"));
+      }
     }
   };
 

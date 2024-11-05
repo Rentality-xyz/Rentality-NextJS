@@ -592,7 +592,8 @@
     "plate_number": "Plate number",
     "apply": "Apply",
     "low_resolution": "The resolution is too low!",
-    "success": "Success"
+    "success": "Success",
+    "add_fund_to_wallet": "You're almost there! Just add a little more to your wallet to continue."
   },
   "become_host": {
     "title": "Become a host",
