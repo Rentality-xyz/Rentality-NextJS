@@ -20,7 +20,7 @@ import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
 import { placeDetailsToLocationInfo } from "@/utils/location";
 import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
 import RntCarModelSelect from "@/components/common/rntCarModelSelect";
-import { SortOptionKey } from "@/hooks/guest/useSearchCars";
+import { SortOptionKey, SortOptions } from "@/hooks/guest/useSearchCars";
 import icLocation from "../../images/ic_location.png";
 import icSearch from "@/images/ic_search.svg";
 import icCalendar from "../../images/ic_calendar.png";
@@ -56,7 +56,7 @@ export default function SearchAndFilters({
     return t("search_and_filters." + element);
   };
 
-  const sortOption: object = t("search_and_filters.sort_options", {
+  const sortOption: Record<string, string> = t("search_and_filters.sort_options", {
     returnObjects: true,
   });
 
@@ -144,6 +144,7 @@ export default function SearchAndFilters({
   function handleResetClick() {
     setSearchCarFilters({});
     setResetFilters(true);
+    setSortBy("");
   }
 
   const [resetFilters, setResetFilters] = useState(false);
@@ -211,7 +212,7 @@ export default function SearchAndFilters({
             <RntCarMakeSelect
               id={t_comp("select_filter_make")}
               className="border-gradient text-lg"
-              selectClassName="bg-transparent text-rentality-secondary text-center custom-select px-4 border-0"
+              selectClassName="bg-transparent text-rentality-secondary text-center custom-select px-4 border-0 cursor-pointer"
               promptText={t_comp("select_filter_make")}
               label=""
               value={searchCarFilters?.brand ?? ""}
@@ -230,7 +231,7 @@ export default function SearchAndFilters({
             <RntCarModelSelect
               id={t_comp("select_filter_model")}
               className="border-gradient text-lg"
-              selectClassName="bg-transparent text-rentality-secondary text-center custom-select px-4 border-0"
+              selectClassName="bg-transparent text-rentality-secondary text-center custom-select px-4 border-0 cursor-pointer"
               promptText={t_comp("select_filter_model")}
               label=""
               value={searchCarFilters?.model ?? ""}
@@ -294,14 +295,14 @@ export default function SearchAndFilters({
             <div className="select-container">
               <RntSelect
                 className="w-40 text-lg"
-                selectClassName="buttonGradient text-white text-center custom-select px-4 border-0"
+                selectClassName="buttonGradient text-white text-center custom-select px-4 border-0 cursor-pointer"
                 id="sort"
                 readOnly={false}
-                value={sortBy ?? ""}
+                value={sortBy ? sortOption[sortBy] : ""}
                 onChange={(e) => {
-                  const newValue = e.target.value;
-                  if (isSortOptionKey(newValue)) {
-                    setSortBy(newValue);
+                  const newDataKey = e.target.options[e.target.selectedIndex].getAttribute("data-key") || "";
+                  if (isSortOptionKey(newDataKey)) {
+                    setSortBy(newDataKey);
                   }
                 }}
               >
@@ -309,7 +310,7 @@ export default function SearchAndFilters({
                   {t_comp("sort_by")}
                 </option>
                 {Object.entries(sortOption ?? {}).map(([key, value]) => (
-                  <option key={key} value={value}>
+                  <option key={key} value={value} data-key={key}>
                     {value}
                   </option>
                 ))}
