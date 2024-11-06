@@ -14,7 +14,10 @@
     "legal": "Legal",
     "transaction_history": "Transaction history",
     "logout": "Logout",
-    "profile": "Profile settings"
+    "profile": "Profile settings",
+    "contract_info": "Contract info",
+    "car_locations": "Car locations",
+    "all_trips_table": "All trips table"
   },
   "search_and_filters": {
     "location_label": "Pick up & Return Location",
