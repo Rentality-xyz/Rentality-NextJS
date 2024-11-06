@@ -65,7 +65,7 @@ export default function Search() {
             hideDialogs();
             login();
           })}
-          {DialogActions.Cancel(hideDialogs)}
+          {/*{DialogActions.Cancel(hideDialogs)}*/}
         </>
       );
       showDialog(t("common.info.connect_wallet"), action);
