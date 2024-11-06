@@ -61,7 +61,7 @@ export default function Search() {
             hideDialogs();
             login();
           })}
-          {DialogActions.Cancel(hideDialogs)}
+          {/*{DialogActions.Cancel(hideDialogs)}*/}
         </>
       );
       showDialog(t("common.info.connect_wallet"), action);
@@ -127,22 +127,24 @@ export default function Search() {
     [setSearchResult]
   );
 
-  const sortCars = useCallback(() => {
-    setSearchResult((prev) => {
-      const newSearchResult = { ...prev };
+  const sortCars = useCallback(
+    (selectedCarId: number) => {
+      setSearchResult((prev) => {
+        const newSearchResult = { ...prev };
 
-      newSearchResult.carInfos.sort((a: SearchCarInfo, b: SearchCarInfo) => {
-        if (a.highlighted && !b.highlighted) {
-          return -1;
-        } else if (!a.highlighted && b.highlighted) {
-          return 1;
-        } else {
-          return 0;
+        const selectedCarIndex = newSearchResult.carInfos.findIndex((car) => car.carId === selectedCarId);
+
+        if (selectedCarIndex !== -1) {
+          setTimeout(() => {
+            document.getElementById(`car-${selectedCarId}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+          }, 0);
         }
+
+        return newSearchResult;
       });
-      return newSearchResult;
-    });
-  }, [setSearchResult]);
+    },
+    [setSearchResult]
+  );
 
   useEffect(() => {
     if (sortBy === undefined) return;
@@ -181,15 +183,17 @@ export default function Search() {
                   {searchResult?.carInfos?.length > 0 ? (
                     searchResult.carInfos.map((value: SearchCarInfo) => {
                       return (
-                        <CarSearchItem
-                          key={value.carId}
-                          searchInfo={value}
-                          handleRentCarRequest={handleRentCarRequest}
-                          disableButton={requestSending}
-                          isSelected={value.highlighted}
-                          setSelected={setHighlightedCar}
-                          t={t_page}
-                        />
+                        <div key={value.carId} id={`car-${value.carId}`}>
+                          <CarSearchItem
+                            key={value.carId}
+                            searchInfo={value}
+                            handleRentCarRequest={handleRentCarRequest}
+                            disableButton={requestSending}
+                            isSelected={value.highlighted}
+                            setSelected={setHighlightedCar}
+                            t={t_page}
+                          />
+                        </div>
                       );
                     })
                   ) : (
@@ -211,7 +215,7 @@ export default function Search() {
                 searchResult={searchResult}
                 setSelected={(carID: number) => {
                   setHighlightedCar(carID);
-                  sortCars();
+                  sortCars(carID);
                 }}
                 isExpanded={isExpanded}
                 defaultCenter={

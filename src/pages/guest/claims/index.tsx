@@ -5,16 +5,13 @@ import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useTranslation } from "react-i18next";
 import CreateClaim from "@/components/claims/CreateClaim";
 import { CreateClaimRequest } from "@/model/CreateClaimRequest";
-import Loading from "@/components/common/Loading";
-import InvitationToConnect from "@/components/common/invitationToConnect";
-import { useAuth } from "@/contexts/auth/authContext";
 import { Err, Result, TransactionErrorCode } from "@/model/utils/result";
+import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 
 export default function Claims() {
   const { t } = useTranslation();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { claims, tripInfos, createClaim, payClaim, cancelClaim, updateData } = useGuestClaims();
-  const { isLoadingAuth, isAuthenticated } = useAuth();
 
   async function handleCreateClaim(
     createClaimRequest: CreateClaimRequest
@@ -93,22 +90,18 @@ export default function Claims() {
   return (
     <>
       <PageTitle title={t("claims.title")} />
-      {isLoadingAuth && <Loading />}
-      {!isLoadingAuth && !isAuthenticated && <InvitationToConnect />}
-      {!isLoadingAuth && isAuthenticated && (
-        <>
-          <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={false} />
-          <ClaimHistory
-            claims={claims}
-            payClaim={handlePayClaim}
-            cancelClaim={handleCancelClaim}
-            isHost={false}
-            t={(path, options) => {
-              return t("claims." + path, options);
-            }}
-          />
-        </>
-      )}
+      <CheckingLoadingAuth>
+        <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={false} />
+        <ClaimHistory
+          claims={claims}
+          payClaim={handlePayClaim}
+          cancelClaim={handleCancelClaim}
+          isHost={false}
+          t={(path, options) => {
+            return t("claims." + path, options);
+          }}
+        />
+      </CheckingLoadingAuth>
     </>
   );
 }

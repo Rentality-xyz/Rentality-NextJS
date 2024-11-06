@@ -605,5 +605,12 @@
     "driver_license": "Pass driver license verification",
     "listing_car": "Listing you first car",
     "discounts_and_price": "Manage discounts and delivery price"
+  },
+  "header": {
+    "wallet_balance": "Wallet Balance",
+    "open_in_base_explorer": "Open in Base Explorer",
+    "copy_address": "Copy Address",
+    "edit_profile": "Edit Profile",
+    "logout": "Logout"
   }
 }

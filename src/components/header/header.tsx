@@ -21,6 +21,7 @@ import icProfileSettings from "@/images/ic_profile_settings.png";
 import imgCopy from "@/images/ic_copy_24dp.svg";
 import icBaseScan from "@/images/base-scan-log.svg";
 import icWalletBalance from "@/images/ic_wallet_balance.svg";
+import { useTranslation } from "react-i18next";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 72,
@@ -70,6 +71,7 @@ export default function Header() {
   const [isSelectedHost, setIsSelectedHost] = useState(isHost(userMode));
   const { isAuthenticated, logout } = useAuth();
   const ethereumInfo = useEthereum();
+  const { t } = useTranslation();
 
   const router = useRouter();
   useEffect(() => {
@@ -127,7 +129,7 @@ export default function Header() {
     try {
       const walletAddress = ethereumInfo?.walletAddress ?? "";
       const balance = await ethereumInfo?.provider.getBalance(walletAddress);
-      return balance ? parseFloat(formatEther(balance)).toFixed(2) : "0";
+      return balance ? parseFloat(formatEther(balance)).toFixed(4) : "0";
     } catch (error) {
       console.error("Error while retrieving balance:", error);
       return "0";
@@ -186,8 +188,8 @@ export default function Header() {
                   <div className="mb-3 flex items-center leading-tight">
                     <Image src={icWalletBalance} width={30} height={30} alt="" />
                     <div className="flex flex-col">
-                      <span className="ml-1">Wallet Balance</span>
-                      <span className="ml-1 text-sm">{`${balance} ETH`}</span>
+                      <span className="ml-3">{t("header.wallet_balance")}</span>
+                      <span className="ml-3 text-sm">{`${balance} ETH`}</span>
                     </div>
                   </div>
                   <Link
@@ -196,22 +198,22 @@ export default function Header() {
                     target={"_blank"}
                   >
                     <Image src={icBaseScan} width={30} height={30} alt="" />
-                    <span className="ml-1">Open in Base Explorer</span>
+                    <span className="ml-3">{t("header.open_in_base_explorer")}</span>
                   </Link>
                   <div
                     className="mb-3 flex cursor-pointer items-center hover:underline"
                     onClick={() => copyToClipboard(ethereumInfo?.walletAddress ?? "")}
                   >
                     <Image src={imgCopy} width={30} height={30} alt="" />
-                    <span className="ml-1">Copy Address</span>
+                    <span className="ml-3">{t("header.copy_address")}</span>
                   </div>
                   <Link className="mb-3 flex cursor-pointer items-center hover:underline" href="/guest/profile">
                     <Image src={icProfileSettings} width={30} height={30} alt="" />
-                    <span className="ml-1">Edit Profile</span>
+                    <span className="ml-3">{t("header.edit_profile")}</span>
                   </Link>
                   <Link className="flex cursor-pointer items-center hover:underline" href="/" onClick={logout}>
                     <Image src={icLogout} width={30} height={30} alt="" />
-                    <span className="ml-1">Logout</span>
+                    <span className="ml-3">{t("header.logout")}</span>
                   </Link>
                 </div>
               )}

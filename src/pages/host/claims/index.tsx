@@ -5,15 +5,12 @@ import useHostClaims from "@/hooks/host/useHostClaims";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { CreateClaimRequest } from "@/model/CreateClaimRequest";
 import { useTranslation } from "react-i18next";
-import Loading from "@/components/common/Loading";
-import InvitationToConnect from "@/components/common/invitationToConnect";
-import { useAuth } from "@/contexts/auth/authContext";
 import { Err, Result, TransactionErrorCode } from "@/model/utils/result";
+import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 
 export default function Claims() {
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { claims, tripInfos, createClaim, payClaim, cancelClaim, updateData } = useHostClaims();
-  const { isLoadingAuth, isAuthenticated } = useAuth();
   const { t } = useTranslation();
 
   async function handleCreateClaim(
@@ -93,22 +90,18 @@ export default function Claims() {
   return (
     <>
       <PageTitle title={t("claims.title")} />
-      {isLoadingAuth && <Loading />}
-      {!isLoadingAuth && !isAuthenticated && <InvitationToConnect />}
-      {!isLoadingAuth && isAuthenticated && (
-        <>
-          <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={true} />
-          <ClaimHistory
-            claims={claims}
-            payClaim={handlePayClaim}
-            cancelClaim={handleCancelClaim}
-            isHost={true}
-            t={(path, options) => {
-              return t("claims." + path, options);
-            }}
-          />
-        </>
-      )}
+      <CheckingLoadingAuth>
+        <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={true} />
+        <ClaimHistory
+          claims={claims}
+          payClaim={handlePayClaim}
+          cancelClaim={handleCancelClaim}
+          isHost={true}
+          t={(path, options) => {
+            return t("claims." + path, options);
+          }}
+        />
+      </CheckingLoadingAuth>
     </>
   );
 }
