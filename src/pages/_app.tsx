@@ -1,4 +1,7 @@
 import "@/styles/globals.css";
+import "@coinbase/onchainkit/tailwind.css";
+// should be here for downloading 'locales/* '
+import "../utils/i18n";
 import type { AppProps } from "next/app";
 import { Web3Setup } from "@/contexts/web3/web3Setup";
 import { UserInfoProvider } from "@/contexts/userInfoContext";
@@ -10,16 +13,11 @@ import { NotificationProvider } from "@/contexts/notification/notificationContex
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { analyticsPromise } from "@/utils/firebase";
-// should be here for downloading 'locales/* '
-import "../utils/i18n";
 import { base } from "viem/chains";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
-import "@coinbase/onchainkit/tailwind.css";
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import { wagmiConfig } from "@/wagmi.config";
-import { AuthProvider } from "@/contexts/auth/authContext";
 import { env } from "@/utils/env";
 import Hotjar from "@hotjar/browser";
 import Layout from "@/components/layout/layout";
@@ -71,25 +69,23 @@ export default function App({ Component, pageProps }: AppProps) {
       <Web3Setup>
         <RentalityProvider>
           <UserInfoProvider>
-            <AuthProvider>
-              <WagmiProvider config={wagmiConfig}>
-                <QueryClientProvider client={queryClient}>
-                  <OnchainKitProvider apiKey={env.NEXT_PUBLIC_COINBASE_API_KEY} chain={base}>
-                    <NotificationProvider isHost={isHost}>
-                      <FirebaseChatProvider>
-                        <AppContextProvider>
-                          <RntDialogsProvider>
-                            <Layout>
-                              <Component {...pageProps} />
-                            </Layout>
-                          </RntDialogsProvider>
-                        </AppContextProvider>
-                      </FirebaseChatProvider>
-                    </NotificationProvider>
-                  </OnchainKitProvider>
-                </QueryClientProvider>
-              </WagmiProvider>
-            </AuthProvider>
+            <WagmiProvider config={wagmiConfig}>
+              <QueryClientProvider client={queryClient}>
+                <OnchainKitProvider apiKey={env.NEXT_PUBLIC_COINBASE_API_KEY} chain={base}>
+                  <NotificationProvider isHost={isHost}>
+                    <FirebaseChatProvider>
+                      <AppContextProvider>
+                        <RntDialogsProvider>
+                          <Layout>
+                            <Component {...pageProps} />
+                          </Layout>
+                        </RntDialogsProvider>
+                      </AppContextProvider>
+                    </FirebaseChatProvider>
+                  </NotificationProvider>
+                </OnchainKitProvider>
+              </QueryClientProvider>
+            </WagmiProvider>
           </UserInfoProvider>
         </RentalityProvider>
       </Web3Setup>

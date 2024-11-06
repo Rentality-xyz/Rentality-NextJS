@@ -5,17 +5,15 @@ import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
-import Loading from "@/components/common/Loading";
-import { useAuth } from "@/contexts/auth/authContext";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function Booked() {
   const ethereumInfo = useEthereum();
   const { isLoadingTrips, tripsBooked, updateData } = useGuestTrips();
   const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
   const { showInfo, showError } = useRntSnackbars();
-  const { isLoadingAuth, isAuthenticated } = useAuth();
   const { t } = useTranslation();
 
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
@@ -51,8 +49,7 @@ export default function Booked() {
     <>
       <PageTitle title={t("booked.title")} />
       <CheckingLoadingAuth>
-        {isLoadingTrips && <Loading />}
-        {!isLoadingTrips && (
+        <RntSuspense isLoading={isLoadingTrips}>
           <div className="my-4 flex flex-col gap-4">
             {tripsBooked != null && tripsBooked.length > 0 ? (
               tripsBooked.map((value) => (
@@ -71,7 +68,7 @@ export default function Booked() {
               </div>
             )}
           </div>
-        )}
+        </RntSuspense>
       </CheckingLoadingAuth>
     </>
   );

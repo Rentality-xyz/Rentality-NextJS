@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { TFunction } from "@/utils/i18n";
 import moment from "moment";
 import useTransactionHistory, { TransactionHistoryFilters } from "@/hooks/transaction_history/useTransactionHistory";
 import PaginationWrapper from "../common/PaginationWrapper";
 import TransactionHistoryTable from "./TransactionHistoryTable";
 import TransactionHistoryFiltersComponent from "./TransactionHistoryFiltersComponent";
-import Loading from "@/components/common/Loading";
-import InvitationToConnect from "@/components/common/invitationToConnect";
-import { useAuth } from "@/contexts/auth/authContext";
 
 type TransactionHistoryContentProps = {
   isHost: boolean;
-  t: TFunction;
 };
 
 const defaultFilters: TransactionHistoryFilters = {
@@ -19,7 +14,7 @@ const defaultFilters: TransactionHistoryFilters = {
   dateTo: moment({ day: 1, hour: 0 }).add(6, "month").toDate(),
 };
 
-export default function TransactionHistoryContent({ isHost, t }: TransactionHistoryContentProps) {
+export default function TransactionHistoryContent({ isHost }: TransactionHistoryContentProps) {
   const itemsPerPage = 5;
   const [filters, setFilters] = useState<TransactionHistoryFilters>(defaultFilters);
   const { isLoading, data, fetchData } = useTransactionHistory(isHost);

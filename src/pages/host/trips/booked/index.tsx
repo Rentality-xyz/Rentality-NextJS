@@ -4,11 +4,10 @@ import useHostTrips from "@/hooks/host/useHostTrips";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import Loading from "@/components/common/Loading";
-import { useAuth } from "@/contexts/auth/authContext";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function Booked() {
   const ethereumInfo = useEthereum();
@@ -50,8 +49,7 @@ export default function Booked() {
     <>
       <PageTitle title={t("booked.title")} />
       <CheckingLoadingAuth>
-        {isLoadingTrips && <Loading />}
-        {!isLoadingTrips && (
+        <RntSuspense isLoading={isLoadingTrips}>
           <div className="my-4 flex flex-col gap-4">
             {tripsBooked != null && tripsBooked.length > 0 ? (
               tripsBooked.map((value) => {
@@ -72,7 +70,7 @@ export default function Booked() {
               </div>
             )}
           </div>
-        )}
+        </RntSuspense>
       </CheckingLoadingAuth>
     </>
   );

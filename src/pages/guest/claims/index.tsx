@@ -7,11 +7,12 @@ import CreateClaim from "@/components/claims/CreateClaim";
 import { CreateClaimRequest } from "@/model/CreateClaimRequest";
 import { Err, Result, TransactionErrorCode } from "@/model/utils/result";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function Claims() {
   const { t } = useTranslation();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
-  const { claims, tripInfos, createClaim, payClaim, cancelClaim, updateData } = useGuestClaims();
+  const { isLoading, claims, tripInfos, createClaim, payClaim, cancelClaim, updateData } = useGuestClaims();
 
   async function handleCreateClaim(
     createClaimRequest: CreateClaimRequest
@@ -91,16 +92,18 @@ export default function Claims() {
     <>
       <PageTitle title={t("claims.title")} />
       <CheckingLoadingAuth>
-        <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={false} />
-        <ClaimHistory
-          claims={claims}
-          payClaim={handlePayClaim}
-          cancelClaim={handleCancelClaim}
-          isHost={false}
-          t={(path, options) => {
-            return t("claims." + path, options);
-          }}
-        />
+        <RntSuspense isLoading={isLoading}>
+          <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={false} />
+          <ClaimHistory
+            claims={claims}
+            payClaim={handlePayClaim}
+            cancelClaim={handleCancelClaim}
+            isHost={false}
+            t={(path, options) => {
+              return t("claims." + path, options);
+            }}
+          />
+        </RntSuspense>
       </CheckingLoadingAuth>
     </>
   );

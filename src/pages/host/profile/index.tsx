@@ -1,4 +1,3 @@
-import Loading from "@/components/common/Loading";
 import DeliveryPriceForm from "@/components/host/deliveryPriceForm";
 import TripDiscountsForm from "@/components/host/tripDiscountsForm";
 import PageTitle from "@/components/pageTitle/pageTitle";
@@ -9,8 +8,8 @@ import useTripDiscounts from "@/hooks/host/useTripDiscounts";
 import useProfileSettings from "@/hooks/useProfileSettings";
 import useUserRole from "@/hooks/useUserRole";
 import { useTranslation } from "react-i18next";
-import InvitationToConnect from "@/components/common/invitationToConnect";
-import { useAuth } from "@/contexts/auth/authContext";
+import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function Profile() {
   const [isLoading, savedProfileSettings, saveProfileSettings] = useProfileSettings();
@@ -18,15 +17,12 @@ export default function Profile() {
   const [isLoadingDeliveryPrices, savedDeliveryPrices, saveDeliveryPrices] = useDeliveryPrices();
   const { userRole } = useUserRole();
   const { t } = useTranslation();
-  const { isAuthenticated } = useAuth();
 
   return (
     <>
       <PageTitle title={t("profile.title")} />
-      {isLoading && <Loading />}
-      {!isLoading && !isAuthenticated && <InvitationToConnect />}
-      {!isLoading && !isLoadingDiscounts && !isLoadingDeliveryPrices && (
-        <>
+      <CheckingLoadingAuth>
+        <RntSuspense isLoading={isLoading || isLoadingDiscounts || isLoadingDeliveryPrices}>
           <UserProfileInfo
             savedProfileSettings={savedProfileSettings}
             saveProfileSettings={saveProfileSettings}
@@ -46,8 +42,8 @@ export default function Profile() {
           </div>
 
           <AddFunds />
-        </>
-      )}
+        </RntSuspense>
+      </CheckingLoadingAuth>
     </>
   );
 }

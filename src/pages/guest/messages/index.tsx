@@ -1,24 +1,16 @@
 import ChatPage from "@/components/chat/ChatPage";
-import Loading from "@/components/common/Loading";
 import PageTitle from "@/components/pageTitle/pageTitle";
-import { useChat, useChatKeys } from "@/contexts/chat/firebase/chatContext";
-import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
-import { DialogActions } from "@/utils/dialogActions";
+import { useChat } from "@/contexts/chat/firebase/chatContext";
 import { isEmpty } from "@/utils/string";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
-import React, { useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import InvitationToConnect from "@/components/common/invitationToConnect";
-import { useAuth } from "@/contexts/auth/authContext";
-import TransactionHistoryContent from "@/components/transaction_history/transactionHistoryContent";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function Messages() {
   const { isLoadingClient, chatInfos, selectChat, updateAllChats, sendMessage } = useChat();
-  const { isLoading: isChatKeysLoading, isChatKeysSaved, saveChatKeys } = useChatKeys();
-  const { showDialog, hideDialogs } = useRntDialogs();
-  const { showInfo } = useRntSnackbars();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -46,23 +38,6 @@ export default function Messages() {
     if (isEmpty(message)) {
       return;
     }
-    if (isChatKeysLoading) {
-      showInfo(t("chat.loading_message"));
-      return;
-    }
-    if (!isChatKeysSaved) {
-      const action = (
-        <>
-          {DialogActions.Button(t("common.save"), () => {
-            hideDialogs();
-            saveChatKeys();
-          })}
-          {DialogActions.Cancel(hideDialogs)}
-        </>
-      );
-      showDialog(t("chat.keys_message"), action);
-      return;
-    }
 
     await sendMessage(toAddress, tripId, message);
   };
@@ -82,8 +57,7 @@ export default function Messages() {
     <>
       <PageTitle title={t("chat.title")} />
       <CheckingLoadingAuth>
-        {isLoadingClient && <Loading />}
-        {!isLoadingClient && (
+        <RntSuspense isLoading={isLoadingClient}>
           <ChatPage
             isHost={false}
             chats={sortedChatInfos}
@@ -94,7 +68,7 @@ export default function Messages() {
               return t("chat." + name, options);
             }}
           />
-        )}
+        </RntSuspense>
       </CheckingLoadingAuth>
     </>
   );

@@ -7,10 +7,11 @@ import { CreateClaimRequest } from "@/model/CreateClaimRequest";
 import { useTranslation } from "react-i18next";
 import { Err, Result, TransactionErrorCode } from "@/model/utils/result";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function Claims() {
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
-  const { claims, tripInfos, createClaim, payClaim, cancelClaim, updateData } = useHostClaims();
+  const { isLoading, claims, tripInfos, createClaim, payClaim, cancelClaim, updateData } = useHostClaims();
   const { t } = useTranslation();
 
   async function handleCreateClaim(
@@ -91,16 +92,18 @@ export default function Claims() {
     <>
       <PageTitle title={t("claims.title")} />
       <CheckingLoadingAuth>
-        <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={true} />
-        <ClaimHistory
-          claims={claims}
-          payClaim={handlePayClaim}
-          cancelClaim={handleCancelClaim}
-          isHost={true}
-          t={(path, options) => {
-            return t("claims." + path, options);
-          }}
-        />
+        <RntSuspense isLoading={isLoading}>
+          <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={true} />
+          <ClaimHistory
+            claims={claims}
+            payClaim={handlePayClaim}
+            cancelClaim={handleCancelClaim}
+            isHost={true}
+            t={(path, options) => {
+              return t("claims." + path, options);
+            }}
+          />
+        </RntSuspense>
       </CheckingLoadingAuth>
     </>
   );

@@ -6,12 +6,8 @@ import { useUserInfo } from "@/contexts/userInfoContext";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import Loading from "@/components/common/Loading";
-import InvitationToConnect from "@/components/common/invitationToConnect";
-import { useAuth } from "@/contexts/auth/authContext";
-import TransactionHistoryContent from "@/components/transaction_history/transactionHistoryContent";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
-import React from "react";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function Listings() {
   const [isLoadingMyListings, myListings] = useMyListings();
@@ -39,8 +35,9 @@ export default function Listings() {
           {t("vehicles.add_listing")}
         </RntButton>
       </div>
+
       <CheckingLoadingAuth>
-        {!isLoadingMyListings && (
+        <RntSuspense isLoading={isLoadingMyListings}>
           <div className="my-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
             {myListings != null && myListings.length > 0 ? (
               myListings.map((value) => {
@@ -52,7 +49,7 @@ export default function Listings() {
               </div>
             )}
           </div>
-        )}
+        </RntSuspense>
       </CheckingLoadingAuth>
     </>
   );
