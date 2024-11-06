@@ -1,18 +1,17 @@
-import Loading from "@/components/common/Loading";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import TripCard from "@/components/tripCard/tripCard";
 import useGuestTrips from "@/hooks/guest/useGuestTrips";
 import { useTranslation } from "react-i18next";
-import InvitationToConnect from "@/components/common/invitationToConnect";
-import { useAuth } from "@/contexts/auth/authContext";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
-import React from "react";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function History() {
   const { isLoadingTrips, tripsHistory, confirmCarDetails } = useGuestTrips();
   const { t } = useTranslation();
 
-  const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {};
+  const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
+    return true;
+  };
   const handleConfirmCarDetails = async (tripId: number) => {
     await confirmCarDetails(tripId);
   };
@@ -21,7 +20,7 @@ export default function History() {
     <>
       <PageTitle title={t("booked.history_title")} />
       <CheckingLoadingAuth>
-        {!isLoadingTrips && (
+        <RntSuspense isLoading={isLoadingTrips}>
           <div className="my-4 flex flex-col gap-4 pr-4">
             {tripsHistory != null && tripsHistory.length > 0 ? (
               tripsHistory.map((value) => {
@@ -42,7 +41,7 @@ export default function History() {
               </div>
             )}
           </div>
-        )}
+        </RntSuspense>
       </CheckingLoadingAuth>
     </>
   );

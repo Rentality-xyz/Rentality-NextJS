@@ -16,7 +16,6 @@ import Image from "next/image";
 import SearchDeliveryLocations from "@/components/search/searchDeliveryLocations";
 import { formatLocationInfoUpToCity } from "@/model/LocationInfo";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
-import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
 import { placeDetailsToLocationInfo } from "@/utils/location";
 import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
 import RntCarModelSelect from "@/components/common/rntCarModelSelect";
@@ -49,8 +48,8 @@ export default function SearchAndFilters({
   const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
   const isSearchAllowed =
     formatLocationInfoUpToCity(searchCarRequest.searchLocation).length > 0 &&
-    moment.tz(searchCarRequest.dateFrom, notEmtpyTimeZoneId) >= moment.tz(notEmtpyTimeZoneId) &&
-    new Date(searchCarRequest.dateTo) > new Date(searchCarRequest.dateFrom);
+    moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, notEmtpyTimeZoneId) >= moment.tz(notEmtpyTimeZoneId) &&
+    new Date(searchCarRequest.dateToInDateTimeStringFormat) > new Date(searchCarRequest.dateFromInDateTimeStringFormat);
 
   const t_comp = (element: string) => {
     return t("search_and_filters." + element);
@@ -69,13 +68,6 @@ export default function SearchAndFilters({
     const name = e.target.name;
 
     if (name === "location") {
-      return;
-    }
-    if (name === "dateFrom" || name === "dateTo") {
-      setSearchCarRequest({
-        ...searchCarRequest,
-        [name]: moment(value).toDate(),
-      });
       return;
     }
 
@@ -181,7 +173,7 @@ export default function SearchAndFilters({
             id="dateFrom"
             label={`${t_comp("datetime_from")} ${gmtLabel}`}
             type="datetime-local"
-            value={dateToHtmlDateTimeFormat(searchCarRequest.dateFrom)}
+            value={searchCarRequest.dateFromInDateTimeStringFormat}
             onChange={handleSearchInputChange}
           />
           <RntInput
@@ -193,7 +185,7 @@ export default function SearchAndFilters({
             id="dateTo"
             label={`${t_comp("datetime_to")} ${gmtLabel}`}
             type="datetime-local"
-            value={dateToHtmlDateTimeFormat(searchCarRequest.dateTo)}
+            value={searchCarRequest.dateToInDateTimeStringFormat}
             onChange={handleSearchInputChange}
           />
           <RntButton

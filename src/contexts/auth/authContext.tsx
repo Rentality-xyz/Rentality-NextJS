@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useLogin, useLogout, usePrivy, useWallets } from "@privy-io/react-auth";
-import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { bigIntReplacer } from "@/utils/json";
 
 interface useAuthInterface {
   isLoadingAuth: boolean;
@@ -22,7 +22,10 @@ export function useAuth() {
 
 export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
   const { connectWallet, ready, authenticated } = usePrivy();
-  const ethereumInfo = useEthereum();
+  const { wallets, ready: walletsReady } = useWallets();
+
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isLoadingAuth, setIsLoadingAuth] = useState<boolean>(true);
 
   const { login } = useLogin({
     onComplete: (user, isNewUser, wasAlreadyAuthenticated, loginMethod, linkedAccount) => {
@@ -41,7 +44,19 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
     },
   });
 
-  const { wallets, ready: walletsReady } = useWallets();
+  const customLogin = useCallback(() => {
+    if (authenticated && wallets.length === 0) {
+      connectWallet();
+      return;
+    }
+    login();
+  }, [authenticated, wallets, connectWallet, login]);
+
+  useEffect(() => {
+    const isAuth = ready && walletsReady && authenticated && wallets.length > 0;
+    setIsAuthenticated(isAuth);
+    setIsLoadingAuth(!ready || !walletsReady);
+  }, [ready, walletsReady, authenticated, wallets]);
 
   useEffect(() => {
     console.log(`AuthProvider usePrivy.ready has changed to ${ready}`);
@@ -52,35 +67,24 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
   useEffect(() => {
     console.log(`AuthProvider useWallets.ready has changed to ${walletsReady}`);
   }, [walletsReady]);
-
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isLoadingAuth, setIsLoadingAuth] = useState<boolean>(true);
-
-  const custonLogin = useCallback(() => {
-    if (authenticated && wallets.length === 0) {
-      connectWallet();
-      return;
-    }
-    login();
-  }, [authenticated, wallets, connectWallet, login]);
-
   useEffect(() => {
-    if (!ready) return;
-    if (!walletsReady) return;
-    if (ethereumInfo === undefined) return;
-
-    setIsAuthenticated(authenticated && wallets.length > 0);
-    setIsLoadingAuth(false);
-  }, [ready, walletsReady, authenticated, wallets]);
+    console.log(`AuthProvider wallets has changed to ${JSON.stringify(wallets, bigIntReplacer, 2)}`);
+  }, [wallets]);
+  useEffect(() => {
+    console.log(`AuthProvider isLoadingAuth has changed to ${isLoadingAuth}`);
+  }, [isLoadingAuth]);
+  useEffect(() => {
+    console.log(`AuthProvider isAuthenticated has changed to ${isAuthenticated}`);
+  }, [isAuthenticated]);
 
   const value = useMemo(
     () => ({
       isLoadingAuth: isLoadingAuth,
       isAuthenticated: isAuthenticated,
-      login: custonLogin,
+      login: customLogin,
       logout: logout,
     }),
-    [isLoadingAuth, isAuthenticated, custonLogin, logout]
+    [isLoadingAuth, isAuthenticated, customLogin, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

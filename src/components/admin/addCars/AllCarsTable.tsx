@@ -4,6 +4,7 @@ import Loading from "@/components/common/Loading";
 import Image from "next/image";
 import { AdminCarDetails } from "@/model/admin/AdminCarDetails";
 import { cn } from "@/utils";
+import RntSuspense from "@/components/common/rntSuspense";
 
 type AllCarsTableProps = {
   isLoading: boolean;
@@ -17,25 +18,18 @@ export default function AllCarsTable({ isLoading, data }: AllCarsTableProps) {
     return t("admin_all_cars." + name, options);
   };
 
-  const t_att: TFunction = (name, options) => {
-    return t("all_trips_table." + name, options);
-  };
-
-  // const headerSpanClassName = "text-start px-2 font-light text-sm";
-  // const rowSpanClassName = "px-2 h-12";
   const headerSpanClassName = "text-center font-semibold px-2 font-light text-sm whitespace-pre-line";
   const rowSpanClassName = "px-2 h-12 text-center whitespace-pre-line";
 
-  if (isLoading) {
-    return (
-      <div className="rounded-b-2xl bg-rentality-bg p-4 pb-8">
-        <Loading />
-      </div>
-    );
-  }
-
   return (
-    <>
+    <RntSuspense
+      isLoading={isLoading}
+      fallback={
+        <div className="rounded-b-2xl bg-rentality-bg p-4 pb-8">
+          <Loading />
+        </div>
+      }
+    >
       <div className="text-xl lg:hidden">{t("common.low_resolution")}</div>
       <table className="hidden w-full table-auto border-spacing-2 overflow-x-auto lg:block">
         <thead className="mb-2">
@@ -84,6 +78,6 @@ export default function AllCarsTable({ isLoading, data }: AllCarsTableProps) {
           })}
         </tbody>
       </table>
-    </>
+    </RntSuspense>
   );
 }

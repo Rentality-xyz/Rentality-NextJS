@@ -19,10 +19,11 @@ import DotStatus from "./dotStatus";
 import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { useTranslation } from "react-i18next";
 import { CheckboxTerms } from "../common/rntCheckbox";
-import { verifyMessage } from "ethers";
-import { DEFAULT_AGREEMENT_MESSAGE, LEGAL_TERMS_NAME } from "@/utils/constants";
+import { formatEther, verifyMessage } from "ethers";
+import { DEFAULT_AGREEMENT_MESSAGE, LEGAL_TERMS_NAME, MIN_ETH_ON_WALLET_FOR_TRANSACTION } from "@/utils/constants";
 import { signMessage } from "@/utils/ether";
 import { useLogin } from "@privy-io/react-auth";
+import { isUserHasEnoughFunds } from "@/utils/wallet";
 
 function UserProfileInfo({
   savedProfileSettings,
@@ -114,6 +115,11 @@ function UserCommonInformationForm({
   async function onFormSubmit(formData: ProfileInfoFormValues) {
     if (!ethereumInfo) return;
     if (!formData.isTerms) return;
+
+    if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
+      showInfo(t("common.add_fund_to_wallet"));
+      return;
+    }
 
     try {
       const signature = await signMessage(ethereumInfo.signer, DEFAULT_AGREEMENT_MESSAGE);
@@ -264,6 +270,7 @@ function UserCommonInformationForm({
               field.onChange(!field.value);
             }}
             onLabelClick={(e) => {
+              field.onChange(true);
               console.log(`onLabelClick. ${JSON.stringify(e.type)}`);
               const windowsProxy = window.open(`/${isHost ? "host" : "guest"}/legal?tab=${LEGAL_TERMS_NAME}`, "_blank");
               if (windowsProxy === null || typeof windowsProxy == "undefined")

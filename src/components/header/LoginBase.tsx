@@ -9,8 +9,6 @@ import { Avatar, Identity, Badge, Name, Address } from "@coinbase/onchainkit/ide
 import { useAuth } from "@/contexts/auth/authContext";
 import RntButton from "../common/rntButton";
 import { env } from "@/utils/env";
-import { padRight } from "web3-utils";
-import { padding } from "@mui/system";
 
 function LoginBase() {
   const { isLoadingAuth, isAuthenticated, login } = useAuth();
