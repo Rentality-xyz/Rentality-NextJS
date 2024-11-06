@@ -19,6 +19,9 @@ import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { env } from "@/utils/env";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import mapNotFoundCars from "@/images/map_not_found_cars.png";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import Loading from "@/components/common/Loading";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -158,89 +161,87 @@ export default function Search() {
   };
 
   return (
-    <>
-      <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["maps", "marker", "places"]} language="en">
-        <div className="flex flex-col" title="Search">
-          <SearchAndFilters
-            initValue={searchCarRequest}
-            sortBy={sortBy}
-            setSortBy={setSortBy}
-            onSearchClick={handleSearchClick}
-            onFilterApply={handleFilterApply}
-            t={t}
-          />
-          <div className="mb-8 flex flex-row"></div>
+    <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["maps", "marker", "places"]} language="en">
+      <div className="flex flex-col" title="Search">
+        <SearchAndFilters
+          initValue={searchCarRequest}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          onSearchClick={handleSearchClick}
+          onFilterApply={handleFilterApply}
+          t={t}
+        />
+        <div className="mb-8 flex flex-row"></div>
 
-          <div className="flex gap-3 max-xl:flex-col-reverse">
-            <div className="my-4 flex flex-col gap-4 xl:w-8/12 2xl:w-7/12 fullHD:w-6/12">
-              {isLoading ? (
-                <div className="pl-[18px]">Loading...</div>
-              ) : (
-                <>
-                  <div className="text-l pl-[18px] font-bold">
-                    {searchResult?.carInfos?.length ?? 0} {t_page("info.cars_available")}
-                  </div>
-                  {searchResult?.carInfos?.length > 0 ? (
-                    searchResult.carInfos.map((value: SearchCarInfo) => {
-                      return (
-                        <div key={value.carId} id={`car-${value.carId}`}>
-                          <CarSearchItem
-                            key={value.carId}
-                            searchInfo={value}
-                            handleRentCarRequest={handleRentCarRequest}
-                            disableButton={requestSending}
-                            isSelected={value.highlighted}
-                            setSelected={setHighlightedCar}
-                            t={t_page}
-                          />
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <div>
-                      <div className="flex max-w-screen-xl flex-col border border-gray-600 p-2 text-center font-['Montserrat',Arial,sans-serif] text-white">
-                        {/*{t_page("info.no_cars")}*/}
-                        <p className="text-3xl">{t_page("info.launched_miami")}</p>
-                        <p className="mt-4 text-2xl text-rentality-secondary">{t_page("info.soon_other_locations")}</p>
-                        <p className="mt-4 text-base">{t_page("info.changing_request")}</p>
-                      </div>
-                      <Image src={mapNotFoundCars} alt="" className="mt-2" />
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-            <div className="my-4 max-xl:mb-8 xl:w-4/12 2xl:w-5/12 fullHD:w-6/12">
-              <CarSearchMap
-                searchResult={searchResult}
-                setSelected={(carID: number) => {
-                  setHighlightedCar(carID);
-                  sortCars(carID);
-                }}
-                isExpanded={isExpanded}
-                defaultCenter={
-                  searchCarRequest.searchLocation.latitude &&
-                  searchCarRequest.searchLocation.longitude &&
-                  searchCarRequest.searchLocation.latitude > 0 &&
-                  searchCarRequest.searchLocation.longitude > 0
-                    ? { lat: searchCarRequest.searchLocation.latitude, lng: searchCarRequest.searchLocation.longitude }
-                    : null
-                }
-              />
-              <div
-                className="absolute left-1/2 flex h-[48px] w-[48px] -translate-x-1/2 transform cursor-pointer items-center justify-center bg-[url('../images/ellipseUpBtn.png')] bg-cover bg-center bg-no-repeat xl:hidden"
-                onClick={handleArrowClick}
-              >
-                <Image
-                  src={mapArrow}
-                  alt=""
-                  className={`h-[22px] w-[32px] ${isExpanded ? "rotate-0 transform" : "rotate-180 transform"}`}
-                />
+        <div className="flex gap-3 max-xl:flex-col-reverse">
+          <div className="my-4 flex flex-col gap-4 xl:w-8/12 2xl:w-7/12 fullHD:w-6/12">
+            <RntSuspense
+              isLoading={isLoading || isLoadingAuth || (isAuthenticated && ethereumInfo === undefined)}
+              fallback={<div className="pl-[18px]">{t("common.info.loading")}</div>}
+            >
+              <div className="text-l pl-[18px] font-bold">
+                {searchResult?.carInfos?.length ?? 0} {t_page("info.cars_available")}
               </div>
+              {searchResult?.carInfos?.length > 0 ? (
+                searchResult.carInfos.map((value: SearchCarInfo) => {
+                  return (
+                    <div key={value.carId} id={`car-${value.carId}`}>
+                      <CarSearchItem
+                        key={value.carId}
+                        searchInfo={value}
+                        handleRentCarRequest={handleRentCarRequest}
+                        disableButton={requestSending}
+                        isSelected={value.highlighted}
+                        setSelected={setHighlightedCar}
+                        t={t_page}
+                      />
+                    </div>
+                  );
+                })
+              ) : (
+                <div>
+                  <div className="flex max-w-screen-xl flex-col border border-gray-600 p-2 text-center font-['Montserrat',Arial,sans-serif] text-white">
+                    {/*{t_page("info.no_cars")}*/}
+                    <p className="text-3xl">{t_page("info.launched_miami")}</p>
+                    <p className="mt-4 text-2xl text-rentality-secondary">{t_page("info.soon_other_locations")}</p>
+                    <p className="mt-4 text-base">{t_page("info.changing_request")}</p>
+                  </div>
+                  <Image src={mapNotFoundCars} alt="" className="mt-2" />
+                </div>
+              )}
+            </RntSuspense>
+            {}
+          </div>
+          <div className="my-4 max-xl:mb-8 xl:w-4/12 2xl:w-5/12 fullHD:w-6/12">
+            <CarSearchMap
+              searchResult={searchResult}
+              setSelected={(carID: number) => {
+                setHighlightedCar(carID);
+                sortCars(carID);
+              }}
+              isExpanded={isExpanded}
+              defaultCenter={
+                searchCarRequest.searchLocation.latitude &&
+                searchCarRequest.searchLocation.longitude &&
+                searchCarRequest.searchLocation.latitude > 0 &&
+                searchCarRequest.searchLocation.longitude > 0
+                  ? { lat: searchCarRequest.searchLocation.latitude, lng: searchCarRequest.searchLocation.longitude }
+                  : null
+              }
+            />
+            <div
+              className="absolute left-1/2 flex h-[48px] w-[48px] -translate-x-1/2 transform cursor-pointer items-center justify-center bg-[url('../images/ellipseUpBtn.png')] bg-cover bg-center bg-no-repeat xl:hidden"
+              onClick={handleArrowClick}
+            >
+              <Image
+                src={mapArrow}
+                alt=""
+                className={`h-[22px] w-[32px] ${isExpanded ? "rotate-0 transform" : "rotate-180 transform"}`}
+              />
             </div>
           </div>
         </div>
-      </APIProvider>
-    </>
+      </div>
+    </APIProvider>
   );
 }

@@ -20,6 +20,7 @@ import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { formatEther } from "viem";
 import { FileToUpload } from "@/model/FileToUpload";
+import { useTranslation } from "react-i18next";
 
 const useGuestClaims = () => {
   const rentalityContract = useRentality();
@@ -27,8 +28,9 @@ const useGuestClaims = () => {
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [updateRequired, setUpdateRequired] = useState<Boolean>(true);
   const [claims, setClaims] = useState<Claim[]>([]);
+  const { t } = useTranslation();
   const [tripInfos, setTripInfos] = useState<TripInfoForClaimCreation[]>([
-    { tripId: 0, guestAddress: "", tripDescription: "Loading...", tripStart: new Date() },
+    { tripId: 0, guestAddress: "", tripDescription: t("common.info.loading"), tripStart: new Date() },
   ]);
 
   function updateData() {

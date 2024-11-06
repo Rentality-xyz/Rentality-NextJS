@@ -1,6 +1,7 @@
 import { KycStatus } from "@/hooks/kyc/useCustomCivic";
 import RntButton from "../common/rntButton";
 import DotStatus from "../profileInfo/dotStatus";
+import { useTranslation } from "react-i18next";
 
 function CustomCivicForm({
   status,
@@ -19,10 +20,12 @@ function CustomCivicForm({
   openIssueReasons: () => void;
   handleCancelClick: () => void;
 }) {
+  const { t } = useTranslation();
+
   if (status === "Loading")
     return (
       <section className="flex flex-col md:px-4">
-        <p>Loading...</p>
+        <p>{t("common.info.loading")}</p>
       </section>
     );
   if (status === "Init error")
