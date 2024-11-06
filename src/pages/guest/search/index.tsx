@@ -35,7 +35,8 @@ export default function Search() {
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const userInfo = useUserInfo();
   const router = useRouter();
-  const { isAuthenticated, login } = useAuth();
+  const { isLoadingAuth, isAuthenticated, login } = useAuth();
+  const ethereumInfo = useEthereum();
   const { t } = useTranslation();
 
   const t_page: TFunction = (path, options) => {
@@ -159,6 +160,10 @@ export default function Search() {
   const handleArrowClick = () => {
     setIsExpanded(!isExpanded);
   };
+
+  if (isLoadingAuth || (isAuthenticated && ethereumInfo === undefined)) {
+    return <Loading />;
+  }
 
   return (
     <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["maps", "marker", "places"]} language="en">
