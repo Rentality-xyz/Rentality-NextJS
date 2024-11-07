@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Stack, styled, Switch, Typography } from "@mui/material";
 import ChooseBlockchainComponent from "@/components/choose_blockchain/ChooseBlockchainComponent";
 import LoginBase from "./LoginBase";
-import useUserMode, { isHost } from "@/hooks/useUserMode";
+import useUserMode, { isAdmin, isHost } from "@/hooks/useUserMode";
 import Image from "next/image";
 import HeaderLogo from "@/components/sideNavMenu/headerLogo";
 import RntMobileStoresDialog from "@/components/common/rntMobileStoresDialog";
@@ -22,6 +22,7 @@ import imgCopy from "@/images/ic_copy_24dp.svg";
 import icBaseScan from "@/images/base-scan-log.svg";
 import icWalletBalance from "@/images/ic_wallet_balance.svg";
 import { useTranslation } from "react-i18next";
+import { AdminBurgerNavMenu } from "../sideNavMenu/adminSideNavMenu";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 72,
@@ -91,7 +92,14 @@ export default function Header() {
       body.classList.remove("overflow-hidden");
     }
   }, [isBurgerMenuShown, isFilterOnSearchPageShown]);
-  const burgerNavMenu = isHost(userMode) ? <HostBurgerNavMenu /> : <GuestBurgerNavMenu />;
+
+  const burgerNavMenu = isHost(userMode) ? (
+    <HostBurgerNavMenu />
+  ) : isAdmin(userMode) ? (
+    <AdminBurgerNavMenu />
+  ) : (
+    <GuestBurgerNavMenu />
+  );
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsSelectedHost(event.target.checked);
