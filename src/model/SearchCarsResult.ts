@@ -19,7 +19,7 @@ export type SearchCarInfo = {
   seatsNumber: string;
   transmission: string;
   engineTypeText: string;
-  milesIncludedPerDay: string;
+  milesIncludedPerDayText: string;
   pricePerDay: number;
   pricePerDayWithDiscount: number;
   tripDays: number;

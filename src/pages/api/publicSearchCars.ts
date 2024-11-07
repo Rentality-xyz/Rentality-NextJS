@@ -279,7 +279,7 @@ async function formatSearchAvailableCarsContractResponse(
         seatsNumber: metaData.seatsNumber,
         transmission: metaData.transmission,
         engineTypeText: getEngineTypeString(i.car.engineType) ?? ENGINE_TYPE_PETROL_STRING,
-        milesIncludedPerDay: getMilesIncludedPerDayText(i.car.milesIncludedPerDay ?? 0),
+        milesIncludedPerDayText: getMilesIncludedPerDayText(i.car.milesIncludedPerDay ?? 0),
         pricePerDay: pricePerDay,
         pricePerDayWithDiscount: Number(i.car.pricePerDayWithDiscount) / 100,
         tripDays: tripDays,
