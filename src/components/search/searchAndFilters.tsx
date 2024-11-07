@@ -167,7 +167,7 @@ export default function SearchAndFilters({
           <RntInput
             isTransparentStyle={true}
             iconFrontLabel={icCalendar}
-            className="basis-1/2"
+            className="basis-1/3"
             inputClassName="pr-4 z-10"
             labelClassName="pl-[18px] z-10 font-bold"
             id="dateFrom"
@@ -179,7 +179,7 @@ export default function SearchAndFilters({
           <RntInput
             isTransparentStyle={true}
             iconFrontLabel={icCalendar}
-            className="basis-1/2"
+            className="basis-1/3"
             inputClassName="pr-4 z-10"
             labelClassName="pl-[18px] z-10 font-bold"
             id="dateTo"
