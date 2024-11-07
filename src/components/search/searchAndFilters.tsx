@@ -25,6 +25,7 @@ import icSearch from "@/images/ic_search.svg";
 import icCalendar from "../../images/ic_calendar.png";
 import PanelFilteringByYear from "@/components/search/panelFilteringByYear";
 import PanelFilteringByPrice from "@/components/search/panelFilteringByPrice";
+import { nameof } from "@/utils/nameof";
 
 export default function SearchAndFilters({
   initValue,
@@ -67,7 +68,7 @@ export default function SearchAndFilters({
     const value = e.target.value;
     const name = e.target.name;
 
-    if (name === "location") {
+    if (name === nameof(searchCarRequest, "searchLocation")) {
       return;
     }
 
@@ -150,7 +151,7 @@ export default function SearchAndFilters({
           className="w-full"
           inputClassName="mt-1 z-10"
           labelClassName="pl-3.5 font-bold"
-          id="location"
+          id={nameof(searchCarRequest, "searchLocation")}
           label={t_comp("location_label")}
           placeholder={t_comp("location_placeholder")}
           includeStreetAddress={true}
@@ -170,7 +171,7 @@ export default function SearchAndFilters({
             className="basis-1/3"
             inputClassName="pr-4 z-10"
             labelClassName="pl-[18px] z-10 font-bold"
-            id="dateFrom"
+            id={nameof(searchCarRequest, "dateFromInDateTimeStringFormat")}
             label={`${t_comp("datetime_from")} ${gmtLabel}`}
             type="datetime-local"
             value={searchCarRequest.dateFromInDateTimeStringFormat}
@@ -182,7 +183,7 @@ export default function SearchAndFilters({
             className="basis-1/3"
             inputClassName="pr-4 z-10"
             labelClassName="pl-[18px] z-10 font-bold"
-            id="dateTo"
+            id={nameof(searchCarRequest, "dateToInDateTimeStringFormat")}
             label={`${t_comp("datetime_to")} ${gmtLabel}`}
             type="datetime-local"
             value={searchCarRequest.dateToInDateTimeStringFormat}
