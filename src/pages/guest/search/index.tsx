@@ -11,7 +11,7 @@ import CarSearchMap from "@/components/guest/carMap/carSearchMap";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
 import Image from "next/image";
-import mapArrow from "@/images/arrUpBtn.png";
+import icMapMobile from "@/images/ic_map_mobile.png";
 import SearchAndFilters from "@/components/search/searchAndFilters";
 import { useAuth } from "@/contexts/auth/authContext";
 import useCarSearchParams from "@/hooks/guest/useCarSearchParams";
@@ -169,8 +169,6 @@ export default function Search() {
             onFilterApply={handleFilterApply}
             t={t}
           />
-          <div className="mb-8 flex flex-row"></div>
-
           <div className="flex gap-3 max-xl:flex-col-reverse">
             <div className="my-4 flex flex-col gap-4 xl:w-8/12 2xl:w-7/12 fullHD:w-6/12">
               {isLoading ? (
@@ -228,14 +226,10 @@ export default function Search() {
                 }
               />
               <div
-                className="absolute left-1/2 flex h-[48px] w-[48px] -translate-x-1/2 transform cursor-pointer items-center justify-center bg-[url('../images/ellipseUpBtn.png')] bg-cover bg-center bg-no-repeat xl:hidden"
+                className="absolute left-1/2 flex -translate-x-1/2 cursor-pointer xl:hidden"
                 onClick={handleArrowClick}
               >
-                <Image
-                  src={mapArrow}
-                  alt=""
-                  className={`h-[22px] w-[32px] ${isExpanded ? "rotate-0 transform" : "rotate-180 transform"}`}
-                />
+                <Image src={icMapMobile} alt="" className={`h-[48px] w-[48px]`} />
               </div>
             </div>
           </div>
