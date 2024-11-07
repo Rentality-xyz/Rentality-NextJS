@@ -92,6 +92,7 @@ const useCustomCivic = () => {
         isKycProcessing &&
         (gatewayStatus === GatewayStatus.CHECKING || gatewayStatus === GatewayStatus.USER_INFORMATION_REJECTED)
       ) {
+        setStatus("Paying");
         try {
           var url = new URL(`/api/updateCivic`, window.location.origin);
           url.searchParams.append("address", ethereumInfo.walletAddress);
