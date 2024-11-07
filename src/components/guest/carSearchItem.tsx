@@ -113,7 +113,7 @@ export default function CarSearchItem({
             </div>
 
             <div className="grid grid-cols-2">
-              <span> {t_item("price_without_taxes")}</span>
+              <span>{t_item("price_without_taxes")}</span>
               <span className="ml-8">${displayMoneyWith2Digits(searchInfo.totalPriceWithDiscount)}</span>
             </div>
           </div>

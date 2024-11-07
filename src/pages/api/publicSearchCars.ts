@@ -306,6 +306,7 @@ async function formatSearchAvailableCarsContractResponse(
         dropOffDeliveryFee: Number(i.car.dropOf) / 100,
         isCarDetailsConfirmed: isCarDetailsConfirmed,
         isTestCar: testWallets.includes(i.car.host),
+        distanceToUser: Number(i.distance),
       };
 
       return item;

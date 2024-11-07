@@ -261,24 +261,13 @@ const useSearchCars = () => {
     return b.pricePerDay - a.pricePerDay;
   }
 
-  function sortByIncludedDistance(a: SearchCarInfo, b: SearchCarInfo) {
-    return (
-      Number(
-        b.milesIncludedPerDayText === UNLIMITED_MILES_VALUE_TEXT ? Number.POSITIVE_INFINITY : b.milesIncludedPerDayText
-      ) -
-      Number(
-        a.milesIncludedPerDayText === UNLIMITED_MILES_VALUE_TEXT ? Number.POSITIVE_INFINITY : a.milesIncludedPerDayText
-      )
-    );
+  function sortByDistanceToUser(a: SearchCarInfo, b: SearchCarInfo) {
+    return (a.distanceToUser = b.distanceToUser);
   }
 
   const sortSearchResult = useCallback((sortBy: SortOptionKey) => {
     const sortLogic =
-      sortBy === "distance"
-        ? sortByIncludedDistance
-        : sortBy === "priceDesc"
-          ? sortByDailyPriceDes
-          : sortByDailyPriceAsc;
+      sortBy === "distance" ? sortByDistanceToUser : sortBy === "priceDesc" ? sortByDailyPriceDes : sortByDailyPriceAsc;
 
     setSearchResult((current) => {
       return {
