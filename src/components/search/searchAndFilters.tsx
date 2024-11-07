@@ -200,11 +200,11 @@ export default function SearchAndFilters({
       </div>
       <div className="flex flex-col">
         <div className="mt-4 flex flex-wrap items-center gap-4">
-          <div className="select-container w-full sm:w-48">
+          <div className="sm:w-48">
             <RntCarMakeSelect
               id={t_comp("select_filter_make")}
-              className="border-gradient text-lg"
-              selectClassName="bg-transparent text-rentality-secondary text-center custom-select px-4 border-0 cursor-pointer"
+              className="text-lg"
+              selectClassName="cursor-pointer"
               promptText={t_comp("select_filter_make")}
               label=""
               value={searchCarFilters?.brand ?? ""}
@@ -216,14 +216,13 @@ export default function SearchAndFilters({
                 });
               }}
             />
-            <span className="custom-arrow bg-[url('../images/arrowDownTurquoise.svg')]"></span>
           </div>
 
-          <div className="select-container w-full sm:w-48">
+          <div className="sm:w-48">
             <RntCarModelSelect
               id={t_comp("select_filter_model")}
-              className="border-gradient text-lg"
-              selectClassName="bg-transparent text-rentality-secondary text-center custom-select px-4 border-0 cursor-pointer"
+              className="text-lg"
+              selectClassName="cursor-pointer"
               promptText={t_comp("select_filter_model")}
               label=""
               value={searchCarFilters?.model ?? ""}
@@ -236,7 +235,6 @@ export default function SearchAndFilters({
                 });
               }}
             />
-            <span className="custom-arrow bg-[url('../images/arrowDownTurquoise.svg')]"></span>
           </div>
 
           <PanelFilteringByYear

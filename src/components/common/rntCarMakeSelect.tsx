@@ -37,6 +37,7 @@ export default function RntCarMakeSelect({
 
   return (
     <RntSelect
+      isTransparentStyle={true}
       id={id}
       className={className}
       selectClassName={selectClassName}
