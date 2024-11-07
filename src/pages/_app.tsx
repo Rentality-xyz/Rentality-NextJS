@@ -21,7 +21,7 @@ import { wagmiConfig } from "@/wagmi.config";
 import { env } from "@/utils/env";
 import Layout from "@/components/layout/layout";
 import { initEruda, initHotjar } from "@/utils/init";
-import FacebookPixelScript from "@/components/marketing/facebookPixelScript";
+import FacebookPixelScript from "@/components/marketing/FacebookPixelScript";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
