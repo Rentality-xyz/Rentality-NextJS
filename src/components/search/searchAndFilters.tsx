@@ -135,6 +135,8 @@ export default function SearchAndFilters({
 
   function handleResetClick() {
     setSearchCarFilters({});
+    setSelectedMakeID("");
+    setSelectedModelID("");
     setResetFilters(true);
     setSortBy("");
   }
