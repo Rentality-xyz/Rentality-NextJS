@@ -8,9 +8,15 @@ import { IPanelFilterProps } from "@/components/search/panelFilterProps";
 import Slider from "@mui/material/Slider";
 import RntButton from "@/components/common/rntButton";
 
-export default function PanelFilteringByPrice({ id, onClickReset, onClickApply, isResetFilters }: IPanelFilterProps) {
+export default function PanelFilteringByPrice({
+  id,
+  onClickReset,
+  onClickApply,
+  isResetFilters,
+  maxValue,
+}: IPanelFilterProps) {
   const minPrice = 0;
-  const maxPrice = 2000;
+  const maxPrice = maxValue ?? 2000;
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [value, setValue] = useState([minPrice, maxPrice]);

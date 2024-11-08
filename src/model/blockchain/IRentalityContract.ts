@@ -15,6 +15,7 @@ import {
   ContractCreateTripRequestWithDelivery,
   ContractDeliveryData,
   ContractDeliveryPrices,
+  ContractFilterInfoDTO,
   ContractFullClaimInfo,
   ContractFullKYCInfoDTO,
   ContractKYCInfo,
@@ -60,6 +61,7 @@ export interface IRentalityContract {
   addUserDiscount(discounts: ContractBaseDiscount): Promise<ContractTransactionResponse>;
 
   /// GUEST functions
+  getFilterInfo(duration: bigint): Promise<ContractFilterInfoDTO>;
   searchAvailableCars(
     startDateTime: bigint,
     endDateTime: bigint,

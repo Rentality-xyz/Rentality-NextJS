@@ -26,6 +26,7 @@ import icCalendar from "../../images/ic_calendar.png";
 import PanelFilteringByYear from "@/components/search/panelFilteringByYear";
 import PanelFilteringByPrice from "@/components/search/panelFilteringByPrice";
 import { nameof } from "@/utils/nameof";
+import useSearchFilterLimits from "@/hooks/guest/useSearchFilterLimits";
 
 export default function SearchAndFilters({
   initValue,
@@ -44,6 +45,7 @@ export default function SearchAndFilters({
 }) {
   const [timeZoneId, setTimeZoneId] = useState("");
   const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(initValue);
+  const { minCarYear, maxCarPrice } = useSearchFilterLimits();
 
   const gmtLabel = isEmpty(timeZoneId) ? "" : `(GMT${moment.tz(timeZoneId).format("Z").slice(0, 3)})`;
   const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
@@ -258,6 +260,7 @@ export default function SearchAndFilters({
               setResetFilters(false);
             }}
             isResetFilters={resetFilters}
+            minValue={minCarYear}
           />
 
           <PanelFilteringByPrice
@@ -278,6 +281,7 @@ export default function SearchAndFilters({
               setResetFilters(false);
             }}
             isResetFilters={resetFilters}
+            maxValue={maxCarPrice}
           />
 
           <div className="flex justify-between gap-4 max-sm:w-full">

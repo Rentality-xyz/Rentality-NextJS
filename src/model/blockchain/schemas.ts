@@ -453,6 +453,11 @@ export type ContractAllCarsDTO = {
   totalPageCount: bigint;
 };
 
+export type ContractFilterInfoDTO = {
+  maxCarPrice: bigint;
+  minCarYearOfProduction: bigint;
+};
+
 export type TripStatus = bigint;
 export const TripStatus = {
   Pending: BigInt(0), // Created

@@ -11,6 +11,7 @@ import {
   ContractCarInfoDTO,
   ContractChatInfo,
   ContractClaim,
+  ContractFilterInfoDTO,
   ContractFullClaimInfo,
   ContractLocationInfo,
   ContractPublicHostCarDTO,
@@ -342,4 +343,13 @@ export function validateContractAllCarsDTO(obj: ContractAllCarsDTO): obj is Cont
     (obj.cars.length === 0 ||
       (validateType(obj.cars[0], emptyContractAdminCarDTO) && validateType(obj.cars[0].car, emptyContractCarDetails)))
   );
+}
+
+const emptyContractFilterInfoDTO: ContractFilterInfoDTO = {
+  maxCarPrice: BigInt(0),
+  minCarYearOfProduction: BigInt(0),
+};
+
+export function validateContractFilterInfoDTO(obj: ContractFilterInfoDTO): obj is ContractFilterInfoDTO {
+  return validateType(obj, emptyContractFilterInfoDTO);
 }
