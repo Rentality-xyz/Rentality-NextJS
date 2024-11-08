@@ -64,6 +64,8 @@ export type ContractUpdateCarInfoRequest = {
   timeBufferBetweenTripsInSec: bigint;
   currentlyListed: boolean;
   insuranceIncluded: boolean;
+  engineType: EngineType;
+  tokenUri: string;
 };
 
 export type ContractSearchCarParams = {
