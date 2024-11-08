@@ -538,6 +538,20 @@ export const Role = {
   KYCManager: BigInt(4),
 };
 
+export type CarUpdateStatus = bigint;
+export const CarUpdateStatus = {
+  Add: BigInt(0),
+  Update: BigInt(1),
+  Burn: BigInt(2),
+};
+
+export type EventType = bigint;
+export const EventType = {
+  Car: BigInt(0),
+  Claim: BigInt(1),
+  Trip: BigInt(2),
+};
+
 export type EngineType = bigint;
 export const EngineType = {
   PETROL: BigInt(1),
