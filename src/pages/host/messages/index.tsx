@@ -68,7 +68,6 @@ export default function Messages() {
               return t("chat." + name, options);
             }}
           />
-          )
         </RntSuspense>
       </CheckingLoadingAuth>
     </>

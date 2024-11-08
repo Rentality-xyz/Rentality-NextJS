@@ -8,9 +8,6 @@ import {
   LEGAL_PROHIBITEDUSES_NAME,
   LEGAL_TERMS_NAME,
 } from "@/utils/constants";
-import useUserMode, { isHost } from "@/hooks/useUserMode";
-import { HostBurgerNavMenu } from "@/components/sideNavMenu/hostSideNavMenu";
-import { GuestBurgerNavMenu } from "@/components/sideNavMenu/guestSideNavMenu";
 
 enum ELegalMatters {
   TERMS = LEGAL_TERMS_NAME,

@@ -261,9 +261,9 @@ const useAdminPanelInfo = () => {
         )) as unknown as IRentalityAdminGateway;
         setRentalityAdminGateway(rentalityAdminGateway);
 
-        const platformFee = Number(await rentalityAdminGateway.getPlatformFeeInPPM()) / 10_000.0 ?? 0;
+        const platformFee = Number((await rentalityAdminGateway.getPlatformFeeInPPM()) ?? 0) / 10_000.0;
         const claimWaitingTime = Number(await rentalityAdminGateway.getClaimWaitingTime());
-        const kycCommission = Number(await rentalityAdminGateway.getKycCommission()) / 100 ?? 0;
+        const kycCommission = Number((await rentalityAdminGateway.getKycCommission()) ?? 0) / 100;
 
         const ownerAddress = await rentalityAdminGateway.owner();
         const userServiceAddress = await rentalityAdminGateway.getUserServiceAddress();
