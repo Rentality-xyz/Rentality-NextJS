@@ -81,7 +81,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
       <div className="relative flex min-h-[100vh] w-full flex-row overflow-hidden pt-14 text-rnt-temp-sidemenu-text">
         <aside
           id="main-side-menu"
-          className={`fixed bottom-0 h-full bg-rentality-bg-left-sidebar lg:block ${
+          className={`fixed hidden h-full bg-rentality-bg-left-sidebar lg:block ${
             isFooterVisible ? `bottom-20` : `top-14`
           } transition-all duration-300`}
         >
