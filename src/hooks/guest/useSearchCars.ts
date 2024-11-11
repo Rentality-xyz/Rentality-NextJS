@@ -17,7 +17,6 @@ import moment from "moment";
 import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { formatEther } from "viem";
-import { UNLIMITED_MILES_VALUE_TEXT } from "@/model/HostCarInfo";
 
 export type SortOptions = {
   [key: string]: string;
@@ -262,7 +261,7 @@ const useSearchCars = () => {
   }
 
   function sortByDistanceToUser(a: SearchCarInfo, b: SearchCarInfo) {
-    return (a.distanceToUser = b.distanceToUser);
+    return a.distanceToUser - b.distanceToUser;
   }
 
   const sortSearchResult = useCallback((sortBy: SortOptionKey) => {
