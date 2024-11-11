@@ -415,7 +415,6 @@ export default function CarEditForm({
                   id="engineType"
                   label={t_car("engine_type")}
                   labelClassName="pl-4"
-                  readOnly={!isNewCar}
                   validationError={errors.engineTypeText?.message?.toString()}
                   value={field.value}
                   onChange={(e) => {
@@ -475,7 +474,6 @@ export default function CarEditForm({
                   label={t_car("tank_size")}
                   labelClassName="pl-4"
                   placeholder="e.g. 16"
-                  readOnly={!isNewCar}
                   {...register("tankVolumeInGal", {
                     setValueAs: (v) => (v === "" || v === Number.isNaN(v) ? undefined : parseInt(v, 10)),
                     onChange: () => {
