@@ -17,6 +17,7 @@ import moment from "moment";
 import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { formatEther } from "viem";
+import { bigIntReplacer } from "@/utils/json";
 
 export type SortOptions = {
   [key: string]: string;
@@ -108,6 +109,19 @@ const useSearchCars = () => {
       if (availableCarsData.length > 0) {
         availableCarsData[0].highlighted = true;
       }
+
+      console.debug(
+        "cars:",
+        JSON.stringify(
+          availableCarsData.map((i) => ({
+            car: `${i.brand} ${i.model} ${i.year}`,
+            pricePerDay: i.pricePerDay,
+            distanceToUser: i.distanceToUser,
+          })),
+          bigIntReplacer,
+          2
+        )
+      );
 
       setSearchResult({
         searchCarRequest: request,
