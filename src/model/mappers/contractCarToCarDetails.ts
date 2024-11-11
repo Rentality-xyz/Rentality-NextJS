@@ -61,5 +61,6 @@ export const mapContractCarToCarDetails = async (
     timeBufferBetweenTripsInMin: Number(carInfo.timeBufferBetweenTripsInSec) / 60,
     isInsuranceIncluded: carInfo.insuranceIncluded,
     isCarMetadataEdited: false,
+    metadataUrl: tokenURI,
   };
 };

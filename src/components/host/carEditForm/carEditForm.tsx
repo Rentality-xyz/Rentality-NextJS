@@ -147,11 +147,12 @@ export default function CarEditForm({
         formData.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING ? formData.fullBatteryChargePrice : 0,
       timeBufferBetweenTripsInMin: formData.timeBufferBetweenTripsInMin,
       isInsuranceIncluded: formData.isInsuranceIncluded,
-      ownerAddress: "",
-      wheelDrive: "",
-      trunkSize: "",
-      bodyType: "",
+      ownerAddress: initValue?.ownerAddress ?? "",
+      wheelDrive: initValue?.wheelDrive ?? "",
+      trunkSize: initValue?.trunkSize ?? "",
+      bodyType: initValue?.bodyType ?? "",
       isCarMetadataEdited: isCarMetadataEdited,
+      metadataUrl: initValue?.metadataUrl ?? "",
     };
 
     const isValidForm = verifyCar(carInfoFormParams);

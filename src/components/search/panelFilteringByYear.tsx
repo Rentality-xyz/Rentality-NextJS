@@ -8,8 +8,8 @@ import { IPanelFilterProps } from "@/components/search/panelFilterProps";
 import Slider from "@mui/material/Slider";
 import RntButton from "@/components/common/rntButton";
 
-export default function PanelFilteringByYear({ id, onClickReset, onClickApply, isResetFilters }: IPanelFilterProps) {
-  const minYear = 2000;
+export default function PanelFilteringByYear({ id, onClickReset, onClickApply, isResetFilters, minValue }: IPanelFilterProps) {
+  const minYear = minValue ?? 2000;
   const maxYear = new Date().getFullYear();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);

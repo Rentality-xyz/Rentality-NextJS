@@ -140,8 +140,27 @@ const useSaveCar = () => {
 
     setDataSaved(false);
 
+    let metadataURL: string | undefined = hostCarInfo.metadataUrl;
+
+    if (hostCarInfo.isCarMetadataEdited) {
+      const savedImages = await saveCarImages(hostCarInfo.images, ethereumInfo);
+
+      const dataToSave = {
+        ...hostCarInfo,
+        images: savedImages,
+      };
+
+      metadataURL = await uploadMetadataToIPFS(dataToSave);
+    }
+
+    if (!metadataURL) {
+      console.error("updateCar error: Upload JSON to Pinata error");
+      return Err("ERROR");
+    }
+
     const engineParams: bigint[] = [];
     if (hostCarInfo.engineTypeText === ENGINE_TYPE_PETROL_STRING) {
+      engineParams.push(BigInt(hostCarInfo.tankVolumeInGal));
       engineParams.push(BigInt(hostCarInfo.fuelPricePerGal * 100));
     } else if (hostCarInfo.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING) {
       engineParams.push(BigInt(hostCarInfo.fullBatteryChargePrice * 100));
@@ -158,6 +177,8 @@ const useSaveCar = () => {
       timeBufferBetweenTripsInSec: BigInt(hostCarInfo.timeBufferBetweenTripsInMin * 60),
       securityDepositPerTripInUsdCents: BigInt(hostCarInfo.securityDeposit * 100),
       insuranceIncluded: hostCarInfo.isInsuranceIncluded,
+      engineType: getEngineTypeCode(hostCarInfo.engineTypeText),
+      tokenUri: metadataURL,
     };
 
     let transaction: ContractTransactionResponse;
@@ -180,25 +201,6 @@ const useSaveCar = () => {
         );
       } else {
         transaction = await rentalityContract.updateCarInfo(updateCarRequest);
-      }
-
-      await transaction.wait();
-
-      if (hostCarInfo.isCarMetadataEdited) {
-        const savedImages = await saveCarImages(hostCarInfo.images, ethereumInfo);
-
-        const dataToSave = {
-          ...hostCarInfo,
-          images: savedImages,
-        };
-
-        const metadataURL = await uploadMetadataToIPFS(dataToSave);
-
-        if (!metadataURL) {
-          console.error("updateCar error: Upload JSON to Pinata error");
-          return Err("ERROR");
-        }
-        transaction = await rentalityContract.updateCarTokenUri(updateCarRequest.carId, metadataURL);
       }
 
       await transaction.wait();
