@@ -26,6 +26,8 @@ export const DEFAULT_SEARCH_LOCATION: LocationInfo = {
 };
 export const DEFAULT_SEARCH_DATE_FROM = moment({ hour: 9 }).add(1, "day").toDate();
 export const DEFAULT_SEARCH_DATE_TO = moment({ hour: 9 }).add(4, "day").toDate();
+export const DEFAULT_MIN_FILTER_YEAR = 1900;
+export const DEFAULT_MAX_FILTER_PRICE = 10000;
 
 export const LEGAL_TERMS_NAME = "TERMS";
 export const LEGAL_CANCELLATION_NAME = "CANCELLATION";

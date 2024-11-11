@@ -174,6 +174,7 @@ export default function Search() {
           setSortBy={setSortBy}
           onSearchClick={handleSearchClick}
           onFilterApply={handleFilterApply}
+          filterLimits={searchResult.filterLimits}
           t={t}
         />
         <div className="flex gap-3 max-xl:flex-col-reverse">

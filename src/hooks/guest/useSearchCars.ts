@@ -18,6 +18,7 @@ import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { formatEther } from "viem";
 import { bigIntReplacer } from "@/utils/json";
+import { PublicSearchCarsResponse } from "@/pages/api/publicSearchCars";
 
 export type SortOptions = {
   [key: string]: string;
@@ -85,12 +86,23 @@ const useSearchCars = () => {
       }
 
       const apiJson = await apiResponse.json();
-      if (!Array.isArray(apiJson)) {
+      if (
+        apiJson === undefined ||
+        apiJson.availableCarsData === undefined ||
+        apiJson.filterLimits === undefined ||
+        !Array.isArray(apiJson.availableCarsData)
+      ) {
         console.error("searchAvailableCars fetch wrong response format:");
         return;
       }
 
-      const availableCarsData = apiJson as SearchCarInfo[];
+      const publicSearchCarsResponse = apiJson as PublicSearchCarsResponse;
+      if ("error" in publicSearchCarsResponse) {
+        console.error(`searchAvailableCars fetch error: + ${publicSearchCarsResponse.error}`);
+        return;
+      }
+
+      const availableCarsData = publicSearchCarsResponse.availableCarsData;
 
       for (const carInfoI of availableCarsData) {
         for (const carInfoJ of availableCarsData) {
@@ -127,6 +139,7 @@ const useSearchCars = () => {
         searchCarRequest: request,
         searchCarFilters: filters,
         carInfos: availableCarsData,
+        filterLimits: publicSearchCarsResponse.filterLimits,
       });
       return true;
     } catch (e) {
@@ -288,6 +301,7 @@ const useSearchCars = () => {
         searchCarFilters: current.searchCarFilters,
         //TODO carInfos: current.carInfos.toSorted(sortLogic),
         carInfos: [...current.carInfos].sort(sortLogic),
+        filterLimits: current.filterLimits,
       };
     });
   }, []);

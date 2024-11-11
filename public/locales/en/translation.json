@@ -596,7 +596,8 @@
     "apply": "Apply",
     "low_resolution": "The resolution is too low!",
     "success": "Success",
-    "add_fund_to_wallet": "Please add funds to your wallet on Base network to continue."
+    "add_fund_to_wallet": "Please add funds to your wallet on Base network to continue.",
+    "per_day": "/day"
   },
   "become_host": {
     "title": "Become a host",

@@ -3,10 +3,16 @@ import { emptyLocationInfo } from "./LocationInfo";
 import { DEFAULT_SEARCH_DATE_FROM, DEFAULT_SEARCH_DATE_TO } from "@/utils/constants";
 import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
 
+export type FilterLimits = {
+  minCarYear: number;
+  maxCarPrice: number;
+};
+
 export type SearchCarsResult = {
   searchCarRequest: SearchCarRequest;
   searchCarFilters: SearchCarFilters;
   carInfos: SearchCarInfo[];
+  filterLimits: FilterLimits;
 };
 
 export type SearchCarInfo = {
@@ -64,4 +70,5 @@ export const emptySearchCarsResult: SearchCarsResult = {
   searchCarRequest: emptySearchCarRequest,
   searchCarFilters: {},
   carInfos: [],
+  filterLimits: { minCarYear: Number.NEGATIVE_INFINITY, maxCarPrice: Number.POSITIVE_INFINITY },
 };

@@ -1,10 +1,11 @@
 import { getEtherContractWithSigner } from "@/abis";
 import { ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "@/model/EngineType";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
-import { SearchCarInfo } from "@/model/SearchCarsResult";
+import { FilterLimits, SearchCarInfo } from "@/model/SearchCarsResult";
 import { emptyLocationInfo } from "@/model/LocationInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import {
+  ContractFilterInfoDTO,
   ContractLocationInfo,
   ContractSearchCarParams,
   ContractSearchCarWithDistance,
@@ -22,7 +23,14 @@ import { env } from "@/utils/env";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { allSupportedBlockchainList } from "@/model/blockchain/blockchainList";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export type PublicSearchCarsResponse =
+  | {
+      availableCarsData: SearchCarInfo[];
+      filterLimits: FilterLimits;
+    }
+  | { error: string };
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse<PublicSearchCarsResponse>) {
   const privateKey = env.SIGNER_PRIVATE_KEY;
   if (isEmpty(privateKey)) {
     console.error("API checkTrips error: private key was not set");
@@ -180,14 +188,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       contractSearchCarParams
     );
   }
+  const getFilterInfoDto: ContractFilterInfoDTO = await rentality.getFilterInfo(BigInt(1));
 
-  const availableCarsData = await formatSearchAvailableCarsContractResponse(
-    rentality,
-    chainIdNumber,
-    availableCarsView
-  );
+  const availableCarsData = await formatSearchAvailableCarsContractResponse(chainIdNumber, availableCarsView);
+  const filterLimits = {
+    minCarYear: Number(getFilterInfoDto.minCarYearOfProduction),
+    maxCarPrice: Number(getFilterInfoDto.maxCarPrice) / 100,
+  };
 
-  res.status(200).json(availableCarsData);
+  res.status(200).json({ availableCarsData, filterLimits });
 }
 
 function getTotalDiscount(pricePerDay: number, tripDays: number, totalPriceWithDiscount: number) {
@@ -243,7 +252,6 @@ function formatSearchAvailableCarsContractRequest(
 }
 
 async function formatSearchAvailableCarsContractResponse(
-  rentality: IRentalityContract,
   chainId: number,
   searchCarsViewsView: ContractSearchCarWithDistance[]
 ) {

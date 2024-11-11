@@ -19,14 +19,14 @@ import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { placeDetailsToLocationInfo } from "@/utils/location";
 import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
 import RntCarModelSelect from "@/components/common/rntCarModelSelect";
-import { SortOptionKey, SortOptions } from "@/hooks/guest/useSearchCars";
+import { SortOptionKey } from "@/hooks/guest/useSearchCars";
 import icLocation from "../../images/ic_location.png";
 import icSearch from "@/images/ic_search.svg";
 import icCalendar from "../../images/ic_calendar.png";
 import PanelFilteringByYear from "@/components/search/panelFilteringByYear";
 import PanelFilteringByPrice from "@/components/search/panelFilteringByPrice";
 import { nameof } from "@/utils/nameof";
-import useSearchFilterLimits from "@/hooks/guest/useSearchFilterLimits";
+import { FilterLimits } from "@/model/SearchCarsResult";
 
 export default function SearchAndFilters({
   initValue,
@@ -34,6 +34,7 @@ export default function SearchAndFilters({
   setSortBy,
   onSearchClick,
   onFilterApply,
+  filterLimits,
   t,
 }: {
   initValue: SearchCarRequest;
@@ -41,11 +42,11 @@ export default function SearchAndFilters({
   setSortBy: (value: string | undefined) => void;
   onSearchClick: (searchCarRequest: SearchCarRequest) => Promise<void>;
   onFilterApply: (filters: SearchCarFilters) => Promise<void>;
+  filterLimits: FilterLimits;
   t: TFunctionNext;
 }) {
   const [timeZoneId, setTimeZoneId] = useState("");
   const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(initValue);
-  const { minCarYear, maxCarPrice } = useSearchFilterLimits();
 
   const gmtLabel = isEmpty(timeZoneId) ? "" : `(GMT${moment.tz(timeZoneId).format("Z").slice(0, 3)})`;
   const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
@@ -260,7 +261,7 @@ export default function SearchAndFilters({
               setResetFilters(false);
             }}
             isResetFilters={resetFilters}
-            minValue={minCarYear}
+            minValue={filterLimits.minCarYear}
           />
 
           <PanelFilteringByPrice
@@ -281,7 +282,7 @@ export default function SearchAndFilters({
               setResetFilters(false);
             }}
             isResetFilters={resetFilters}
-            maxValue={maxCarPrice}
+            maxValue={filterLimits.maxCarPrice}
           />
 
           <div className="flex justify-between gap-4 max-sm:w-full">

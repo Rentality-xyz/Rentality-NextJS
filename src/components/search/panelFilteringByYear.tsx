@@ -1,4 +1,4 @@
-import React, { ElementRef, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import arrowUpTurquoise from "@/images/arrowUpTurquoise.svg";
 import arrowDownTurquoise from "@/images/arrowDownTurquoise.svg";
@@ -7,14 +7,22 @@ import { useTranslation } from "react-i18next";
 import { IPanelFilterProps } from "@/components/search/panelFilterProps";
 import Slider from "@mui/material/Slider";
 import RntButton from "@/components/common/rntButton";
+import { DEFAULT_MIN_FILTER_YEAR } from "@/utils/constants";
 
-export default function PanelFilteringByYear({ id, onClickReset, onClickApply, isResetFilters, minValue }: IPanelFilterProps) {
-  const minYear = minValue ?? 2000;
+export default function PanelFilteringByYear({
+  id,
+  onClickReset,
+  onClickApply,
+  isResetFilters,
+  minValue,
+}: IPanelFilterProps) {
+  const minYear = minValue !== undefined && Number.isFinite(minValue) ? minValue : DEFAULT_MIN_FILTER_YEAR;
   const maxYear = new Date().getFullYear();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [value, setValue] = useState([minYear, maxYear]);
   const [selectedValue, setSelectedValue] = useState(value);
+  const { t } = useTranslation();
 
   const toggleDropdown = () => {
     setIsOpen((prevIsOpen) => {
@@ -25,8 +33,6 @@ export default function PanelFilteringByYear({ id, onClickReset, onClickApply, i
       return !prevIsOpen;
     });
   };
-
-  const { t } = useTranslation();
 
   const t_comp = (element: string) => {
     return t("search_and_filters." + element);
@@ -76,12 +82,24 @@ export default function PanelFilteringByYear({ id, onClickReset, onClickApply, i
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!minValue || !Number.isFinite(minValue)) return;
+    const minYear = minValue !== undefined && Number.isFinite(minValue) ? minValue : DEFAULT_MIN_FILTER_YEAR;
+
+    setValue((prev) => {
+      return prev[0] >= minYear ? prev : [minYear, prev[1]];
+    });
+    setSelectedValue((prev) => {
+      return prev[0] >= minYear ? prev : [minYear, prev[1]];
+    });
+  }, [minValue]);
+
   return (
     <div ref={dropdownRef} id={id} className="relative w-full sm:w-48">
       <RntButtonTransparent className="w-full" onClick={toggleDropdown}>
         <div className="relative flex items-center justify-center text-rentality-secondary">
           <div className="text-lg">
-            {value[0] === minYear && value[1] === maxYear ? t_comp("select_filter_years") : `${value[0]} - ${value[1]}`}
+            {value[0] <= minYear && value[1] >= maxYear ? t_comp("select_filter_years") : `${value[0]} - ${value[1]}`}
           </div>
           <Image src={isOpen ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="absolute right-4" />
         </div>
