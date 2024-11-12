@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { isEmpty } from "@/utils/string";
 import { env } from "@/utils/env";
+import { VinInfo } from "@/pages/api/car-api/vinInfo";
 
 export type CarAPIMetadata = {
   url: string;
@@ -94,8 +95,21 @@ async function checkVINNumber(vinNumber: string): Promise<boolean> {
   return response.data.result;
 }
 
+async function getVINNumber(vinNumber: string): Promise<VinInfo | undefined> {
+  const response: AxiosResponse = await axios.get(`/api/car-api/vinInfo?vin=${vinNumber}`);
+
+  if (response.status !== 200) {
+  
+    console.log("Car API for vin info response error code " + response.status + " with data " + response.data);
+    return
+  }
+  const data = await response.data;
+  return data.result
+
+}
+
 const useCarAPI = () => {
-  return { getAllCarMakes, getCarModelByMake, getCarYearsByMakeAndModel, checkVINNumber } as const;
+  return { getAllCarMakes, getCarModelByMake, getCarYearsByMakeAndModel, checkVINNumber, getVINNumber } as const;
 };
 
 export default useCarAPI;

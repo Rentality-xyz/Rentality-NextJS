@@ -5,15 +5,19 @@ import Image from "next/image";
 import { AdminCarDetails } from "@/model/admin/AdminCarDetails";
 import { cn } from "@/utils";
 import RntSuspense from "@/components/common/rntSuspense";
+import { useState } from "react";
+import AdminCarLocation from "../AdminCarLocation";
+import { VinInfo } from "@/pages/api/car-api/vinInfo";
+
 
 type AllCarsTableProps = {
   isLoading: boolean;
   data: AdminCarDetails[];
+  checkVin: (vin: string) => Promise<VinInfo | undefined >
 };
 
-export default function AllCarsTable({ isLoading, data }: AllCarsTableProps) {
+export default function AllCarsTable({ isLoading, data, checkVin }: AllCarsTableProps) {
   const { t } = useTranslation();
-
   const t_aac: TFunction = (name, options) => {
     return t("admin_all_cars." + name, options);
   };
@@ -45,38 +49,17 @@ export default function AllCarsTable({ isLoading, data }: AllCarsTableProps) {
             <th className={`${cn(headerSpanClassName, "min-w-[20ch]")}`}>
               {`${t_aac("latitude")}\n${t_aac("longitude")}\n${t_aac("timeZoneId")}`}
             </th>
-            <th className={`${cn(headerSpanClassName, "min-w-[45ch]")}`}>{t_aac("homeAddress")}</th>
+            <th className={`${cn(headerSpanClassName, "min-w-[20ch]")}`}>{t_aac("homeAddress")}</th>
+            <th className={`${cn(headerSpanClassName, "min-w-[20ch]")}`}>{t_aac("checkVin")}</th>
           </tr>
         </thead>
         <tbody className="text-sm">
-          {data.map((carDetails, index) => {
-            return (
-              <tr key={carDetails.carId} className="border-b-[1px] border-b-gray-500">
-                <td className={rowSpanClassName}>{index + 1}</td>
-                <td className={rowSpanClassName}>{carDetails.carId}</td>
-                <td className={rowSpanClassName}>{carDetails.hostName}</td>
-                <td className={rowSpanClassName}>{carDetails.isListed ? "Listed" : "Not listed"}</td>
-                <td className={rowSpanClassName}>
-                  <Image src={carDetails.carPhotoUrl} alt="" width={150} height={100} className="object-cover py-2" />
-                </td>
-                <td className={rowSpanClassName}>
-                  <div>{`${carDetails.country} / ${carDetails.state}`}</div>
-                  <div>{carDetails.city}</div>
-                </td>
-                <td className={rowSpanClassName}>
-                  <div className={`${carDetails.isUniue ? "" : "text-red-500"}`}>{carDetails.locationLatitude}</div>
-                  <div className={`${carDetails.isUniue ? "" : "text-red-500"}`}>{carDetails.locationLongitude}</div>
-                  <div>{carDetails.timeZoneId}</div>
-                </td>
-                <td className={rowSpanClassName}>
-                  <span className={`${carDetails.isUserAddressFull ? "" : "text-red-500"}`}>
-                    {carDetails.userAddress}
-                  </span>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
+  {data.map((carDetails, index) => {
+    return (
+    <AdminCarLocation key={carDetails.vinNumber} index={index} carDetails={carDetails} checkVin={checkVin}/>
+    );
+  })}
+</tbody>
       </table>
     </RntSuspense>
   );

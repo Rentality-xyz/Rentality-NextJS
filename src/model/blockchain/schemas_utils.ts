@@ -50,6 +50,7 @@ const emptyContractCarDetails: ContractCarDetails = {
   geoVerified: false,
   currentlyListed: false,
   locationInfo: emptyContractLocationInfo,
+  vinNumber: ""
 };
 
 export function validateContractCarDetails(obj: ContractCarDetails): obj is ContractCarDetails {
