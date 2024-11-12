@@ -370,7 +370,7 @@ export type ContractCarDetails = {
   geoVerified: boolean;
   currentlyListed: boolean;
   locationInfo: ContractLocationInfo;
-  vinNumber: string;
+  carVinNumber: string;
 };
 
 export type ContractFloridaTaxes = {
