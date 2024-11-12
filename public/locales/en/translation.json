@@ -556,7 +556,12 @@
     "latitude": "Latitude",
     "longitude": "Longitude",
     "timeZoneId": "Time zone",
-    "homeAddress": "Home address"
+    "homeAddress": "Home address",
+    "checkVin": "Check Vin",
+    "vin_corect": "Correct Vin",
+    "vin_incorect": "Incorect",
+    "vin_unchecked": "Uncheked",
+    "vin_loading": "Loading..."
   },
   "mobile_stores_dialog": {
     "title": "Be the First to Know!",

@@ -184,7 +184,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
           null,
           null,
           null,
-          null,
+          [ethereumInfo.walletAddress],
           [ethereumInfo.walletAddress],
           null
         );

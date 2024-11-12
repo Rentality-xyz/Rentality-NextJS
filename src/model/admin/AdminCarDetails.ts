@@ -12,4 +12,5 @@ export type AdminCarDetails = {
   hostName: string;
   isUniue: boolean;
   isUserAddressFull: boolean;
+  vinNumber: string;
 };

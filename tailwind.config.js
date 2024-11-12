@@ -47,6 +47,8 @@ module.exports = {
         "status-on-trip": "#220e50",
         "status-completed": "#22d7d3",
 
+        "rentality-alert-text": "#f87171",
+
         "rnt-temp-header-bg": "#e5e7eb", //#e5e7eb bg-gray-200
         "rnt-temp-header-text": "#ffffff", //#0f172a text-gray-900
         "rnt-temp-sidemenu-bg": "#4b5563", //#4b5563 bg-gray-600

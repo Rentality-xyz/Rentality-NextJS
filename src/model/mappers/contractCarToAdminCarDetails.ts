@@ -23,5 +23,6 @@ export const mapContractCarToAdminCarDetails = async (
     hostName: car.hostName,
     isUniue: true,
     isUserAddressFull: isUserAddressFull,
+    vinNumber: car.carVinNumber,
   };
 };

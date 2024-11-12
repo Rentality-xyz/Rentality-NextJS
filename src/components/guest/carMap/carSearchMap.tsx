@@ -10,10 +10,10 @@ import { env } from "@/utils/env";
 import { ClusteredMapMarkers } from "@/components/guest/carMap/clusteredMapMarkers";
 
 export default function CarSearchMap({
-   searchResult,
-   setSelected,
-   isExpanded,
-   defaultCenter
+  searchResult,
+  setSelected,
+  isExpanded,
+  defaultCenter,
 }: {
   searchResult: SearchCarsResult;
   setSelected?: (carID: number) => void | null;
@@ -25,7 +25,7 @@ export default function CarSearchMap({
   const mapTop = useRef<number>(0);
   const mapWidth = useRef<number>(0);
   const [mapHeight, setMapHeight] = useState<string>("0vh");
-  const [mapContainerStyle, setMapContainerStyle] = useState<CSSProperties>()
+  const [mapContainerStyle, setMapContainerStyle] = useState<CSSProperties>();
 
   const handleScroll = () => {
     if (window.innerWidth < 1280) {
@@ -54,7 +54,7 @@ export default function CarSearchMap({
       newHeight -= parentRect.bottom - window.innerHeight;
     }
 
-    setMapHeight(newHeight + 'px' );
+    setMapHeight(newHeight + "px");
 
     if (parentRect.top <= 0 && !isSticked) {
       mapLeft.current = Math.ceil(rect.left);
@@ -97,7 +97,7 @@ export default function CarSearchMap({
       setMapContainerStyle({
         borderRadius: "30px",
         height: isExpanded ? "100vh" : "0vh",
-      })
+      });
     } else {
       setMapContainerStyle({
         position: isSticked ? "fixed" : "relative",
@@ -106,9 +106,9 @@ export default function CarSearchMap({
         width: isSticked ? mapWidth.current + "px" : "100%",
         height: isSticked ? mapHeight : "70vh",
         borderRadius: "30px",
-      })
+      });
     }
-  },[isSticked, mapHeight, isExpanded])
+  }, [isSticked, mapHeight, isExpanded]);
 
   return (
     <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]} language="en">
