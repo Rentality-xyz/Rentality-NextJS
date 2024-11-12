@@ -1,6 +1,6 @@
+import axios from "@/utils/cachedAxios"
 import { NextApiRequest, NextApiResponse } from "next";
 import { getAuthToken } from "@/hooks/useCarAPI";
-import axios from "axios";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   let responseCode: number = 0;
@@ -13,6 +13,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         accept: "application/json",
         Authorization: `Bearer ${authToken}`,
       },
+      cache: {
+        ttl: 3600
+      }
     })
     .then((res) => {
       responseCode = res.status;
