@@ -5,6 +5,7 @@ import { VinInfo } from "@/pages/api/car-api/vinInfo";
 import { useTranslation } from "react-i18next";
 import RntButton from "../common/rntButton";
 import { cn } from "@/utils";
+import { formatAddress } from "@/utils/addressFormatters";
 
 type VinData = {
   checked: boolean;
@@ -57,7 +58,10 @@ const AllCarsTableRow = ({
     <tr key={carDetails.carId} className="border-b-[1px] border-b-gray-500">
       <td className={rowSpanClassName}>{index + 1}</td>
       <td className={rowSpanClassName}>{carDetails.carId}</td>
-      <td className={rowSpanClassName}>{carDetails.hostName}</td>
+      <td className={rowSpanClassName}>
+        <div>{carDetails.hostName}</div>
+        <div>{formatAddress(carDetails.hostAddress, 5, 4)}</div>
+      </td>
       <td className={rowSpanClassName}>{carDetails.isListed ? t("vehicles.listed") : t("vehicles.unlisted")}</td>
       <td className={rowSpanClassName}>
         <Image src={carDetails.carPhotoUrl} alt="" width={150} height={100} className="object-cover py-2" />
