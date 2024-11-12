@@ -425,7 +425,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
           null,
           null,
           null,
-          null,
+          [ethereumInfo.walletAddress],
           [ethereumInfo.walletAddress],
           null
         );
