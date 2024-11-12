@@ -1,5 +1,6 @@
+import axios from "@/utils/cachedAxios"
 import { getAuthToken, CarAPIMetadata, CarModelsListElement } from "@/hooks/useCarAPI";
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 
 type ModelsResponse = {
@@ -18,6 +19,9 @@ async function fetchAPage(authToken: string, make_id: string, pageNumber: number
         accept: "application/json",
         Authorization: `Bearer ${authToken}`,
       },
+      cache: {
+        ttl: 3600
+      }
     })
     .then((res: AxiosResponse<ModelsResponse>) => {
       carModelsList = carModelsList.concat(res.data.data);

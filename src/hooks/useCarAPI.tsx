@@ -1,4 +1,5 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
+import axios from "@/utils/cachedAxios"
 import { isEmpty } from "@/utils/string";
 import { env } from "@/utils/env";
 import { VinInfo } from "@/pages/api/car-api/vinInfo";
@@ -37,7 +38,6 @@ export async function getAuthToken() {
   if (!CARAPI_TOKEN || isEmpty(CARAPI_TOKEN)) {
     throw new Error("CARAPI_TOKEN is not set");
   }
-
   const response = await axios.post(
     "https://carapi.app/api/auth/login",
     {
@@ -46,9 +46,12 @@ export async function getAuthToken() {
     },
     {
       headers: {
-        accept: "text/plain",
+        "accept": "text/plain",
         "content-type": "application/json",
       },
+      cache: {
+        ttl: 86400
+      }
     }
   );
 
