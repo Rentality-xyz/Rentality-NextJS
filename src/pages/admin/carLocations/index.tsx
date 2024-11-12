@@ -9,8 +9,8 @@ import { useTranslation } from "react-i18next";
 export default function AllCars() {
   const itemsPerPage = 10;
   const { isLoading, data, fetchData } = useAdminAllCars();
+  const { getVINNumber } = useCarAPI();
   const { t } = useTranslation();
-  const {getVINNumber} = useCarAPI()
 
   async function fetchDataForPage(page: number) {
     await fetchData(page, itemsPerPage);
@@ -28,7 +28,7 @@ export default function AllCars() {
           totalPages={data.totalPageCount}
           selectPage={fetchDataForPage}
         >
-          <AllCarsTable isLoading={isLoading} data={data.data} checkVin={getVINNumber}/>
+          <AllCarsTable isLoading={isLoading} data={data.data} checkVin={getVINNumber} />
         </PaginationWrapper>
       </div>
     </>

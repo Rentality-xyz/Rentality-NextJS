@@ -1,5 +1,3 @@
-import { ReactNode } from "react";
-
 export type AdminCarDetails = {
   carId: number;
   carPhotoUrl: string;
@@ -15,4 +13,4 @@ export type AdminCarDetails = {
   isUniue: boolean;
   isUserAddressFull: boolean;
   vinNumber: string;
-}
+};

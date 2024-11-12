@@ -99,13 +99,11 @@ async function getVINNumber(vinNumber: string): Promise<VinInfo | undefined> {
   const response: AxiosResponse = await axios.get(`/api/car-api/vinInfo?vin=${vinNumber}`);
 
   if (response.status !== 200) {
-  
     console.log("Car API for vin info response error code " + response.status + " with data " + response.data);
-    return
+    return;
   }
   const data = await response.data;
-  return data.result
-
+  return data.result;
 }
 
 const useCarAPI = () => {
