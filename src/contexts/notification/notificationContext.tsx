@@ -157,7 +157,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
           return;
       }
     },
-    [rentalityContract, isHost]
+    [rentalityContract, isHost, addNotifications]
   );
 
   useEffect(() => {
