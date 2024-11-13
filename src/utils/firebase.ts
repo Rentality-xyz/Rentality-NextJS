@@ -19,6 +19,7 @@ const firebaseConfig = {
 let app: FirebaseApp;
 let analyticsPromise: Promise<Analytics | null>;
 let db: Firestore;
+let defaultDB: Firestore;
 let storage: FirebaseStorage;
 let auth: Auth;
 let login: (token: string) => Promise<User | undefined>;
@@ -28,6 +29,7 @@ let logout: () => Promise<void>;
 if (!isEmpty(firebaseConfig.projectId)) {
   app = initializeApp(firebaseConfig);
   analyticsPromise = isSupported().then((yes) => (yes ? getAnalytics(app) : null));
+  defaultDB = getFirestore(app);
   db = getFirestore(app, "rentality-chat-db");
   storage = getStorage(app);
   auth = getAuth(app);
@@ -52,4 +54,4 @@ if (!isEmpty(firebaseConfig.projectId)) {
   };
 }
 
-export { app, analyticsPromise, db, storage, auth, login as loginWithCustomToken, loginWithPassword, logout };
+export { app, analyticsPromise, db, defaultDB, storage, auth, login as loginWithCustomToken, loginWithPassword, logout };
