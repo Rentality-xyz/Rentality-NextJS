@@ -23,6 +23,7 @@ import { formatEther, verifyMessage } from "ethers";
 import { DEFAULT_AGREEMENT_MESSAGE, LEGAL_TERMS_NAME, MIN_ETH_ON_WALLET_FOR_TRANSACTION } from "@/utils/constants";
 import { signMessage } from "@/utils/ether";
 import { useLogin } from "@privy-io/react-auth";
+import { isUserHasEnoughFunds } from "@/utils/wallet";
 
 function UserProfileInfo({
   savedProfileSettings,
@@ -115,10 +116,8 @@ function UserCommonInformationForm({
     if (!ethereumInfo) return;
     if (!formData.isTerms) return;
 
-    const userBalanceWeth = await ethereumInfo.signer.provider?.getBalance(await ethereumInfo.signer.getAddress());
-    const userBalanceEth = Number(formatEther(userBalanceWeth ?? 0)) ?? 0;
-    if (userBalanceEth < MIN_ETH_ON_WALLET_FOR_TRANSACTION) {
-      showInfo("You're almost there! Just add a little more to your wallet to continue.");
+    if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
+      showInfo(t("common.add_fund_to_wallet"));
       return;
     }
 

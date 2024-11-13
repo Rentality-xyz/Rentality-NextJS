@@ -479,7 +479,8 @@
                 { "type": "string", "name": "longitude" },
                 { "type": "string", "name": "timeZoneId" }
               ]
-            }
+            },
+            { "type": "string", "name": "carVinNumber" }
           ]
         }
       ]
@@ -662,6 +663,24 @@
             { "type": "uint32", "name": "sevenDaysDiscount" },
             { "type": "uint32", "name": "thirtyDaysDiscount" },
             { "type": "bool", "name": "initialized" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getFilterInfo",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "uint64", "name": "duration" }],
+      "outputs": [
+        {
+          "type": "tuple",
+          "name": "",
+          "components": [
+            { "type": "uint64", "name": "maxCarPrice" },
+            { "type": "uint256", "name": "minCarYearOfProduction" }
           ]
         }
       ]
@@ -1653,7 +1672,9 @@
             { "type": "uint64", "name": "milesIncludedPerDay" },
             { "type": "uint32", "name": "timeBufferBetweenTripsInSec" },
             { "type": "bool", "name": "currentlyListed" },
-            { "type": "bool", "name": "insuranceIncluded" }
+            { "type": "bool", "name": "insuranceIncluded" },
+            { "type": "uint8", "name": "engineType" },
+            { "type": "string", "name": "tokenUri" }
           ]
         }
       ],
@@ -1676,7 +1697,9 @@
             { "type": "uint64", "name": "milesIncludedPerDay" },
             { "type": "uint32", "name": "timeBufferBetweenTripsInSec" },
             { "type": "bool", "name": "currentlyListed" },
-            { "type": "bool", "name": "insuranceIncluded" }
+            { "type": "bool", "name": "insuranceIncluded" },
+            { "type": "uint8", "name": "engineType" },
+            { "type": "string", "name": "tokenUri" }
           ]
         },
         {
@@ -1700,17 +1723,6 @@
           ]
         },
         { "type": "string", "name": "geoApiKey" }
-      ],
-      "outputs": []
-    },
-    {
-      "type": "function",
-      "name": "updateCarTokenUri",
-      "constant": false,
-      "payable": false,
-      "inputs": [
-        { "type": "uint256", "name": "carId" },
-        { "type": "string", "name": "tokenUri" }
       ],
       "outputs": []
     },

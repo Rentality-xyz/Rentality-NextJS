@@ -4,7 +4,8 @@ import CarEditForm from "@/components/host/carEditForm/carEditForm";
 import useFetchCarInfo from "@/hooks/host/useFetchCarInfo";
 import { useTranslation } from "react-i18next";
 import useSaveCar from "@/hooks/host/useSaveCar";
-import Loading from "@/components/common/Loading";
+import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function EditCar() {
   const router = useRouter();
@@ -21,22 +22,23 @@ export default function EditCar() {
   return (
     <>
       <PageTitle title={t("vehicles.edit_car_title")} />
-      {isLoading && <Loading />}
-      {!isLoading && hostCarInfo.carId <= 0 && (
-        <h1 className="py-8 text-2xl font-bold text-red-800">{t("vehicles.can_not_edit")}</h1>
-      )}
-      {!isLoading && hostCarInfo.carId > 0 && (
-        <>
-          <CarEditForm
-            initValue={hostCarInfo}
-            isNewCar={false}
-            saveCarInfo={async (hostCarInfo) => {
-              return await updateCar(hostCarInfo);
-            }}
-            t={t}
-          />
-        </>
-      )}
+      <CheckingLoadingAuth>
+        <RntSuspense isLoading={isLoading}>
+          {hostCarInfo.carId <= 0 && (
+            <h1 className="py-8 text-2xl font-bold text-red-800">{t("vehicles.can_not_edit")}</h1>
+          )}
+          {hostCarInfo.carId > 0 && (
+            <CarEditForm
+              initValue={hostCarInfo}
+              isNewCar={false}
+              saveCarInfo={async (hostCarInfo) => {
+                return await updateCar(hostCarInfo);
+              }}
+              t={t}
+            />
+          )}
+        </RntSuspense>
+      </CheckingLoadingAuth>
     </>
   );
 }

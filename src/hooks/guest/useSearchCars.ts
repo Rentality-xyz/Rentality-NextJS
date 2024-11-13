@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { calculateDays } from "@/utils/date";
+import { calculateDays, UTC_TIME_ZONE_ID } from "@/utils/date";
 import { SearchCarInfo, SearchCarsResult, emptySearchCarsResult } from "@/model/SearchCarsResult";
 import { useRentality } from "@/contexts/rentalityContext";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
@@ -13,6 +13,12 @@ import { isEmpty } from "@/utils/string";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { getSignedLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
+import moment from "moment";
+import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
+import { isUserHasEnoughFunds } from "@/utils/wallet";
+import { formatEther } from "viem";
+import { bigIntReplacer } from "@/utils/json";
+import { PublicSearchCarsResponse } from "@/pages/api/publicSearchCars";
 
 export type SortOptions = {
   [key: string]: string;
@@ -31,8 +37,9 @@ const useSearchCars = () => {
 
       var url = new URL(`/api/publicSearchCars`, window.location.origin);
       if (ethereumInfo?.chainId) url.searchParams.append("chainId", ethereumInfo.chainId.toString());
-      if (request.dateFrom) url.searchParams.append("dateFrom", request.dateFrom.toISOString());
-      if (request.dateTo) url.searchParams.append("dateTo", request.dateTo.toISOString());
+      if (request.dateFromInDateTimeStringFormat)
+        url.searchParams.append("dateFrom", request.dateFromInDateTimeStringFormat);
+      if (request.dateToInDateTimeStringFormat) url.searchParams.append("dateTo", request.dateToInDateTimeStringFormat);
       if (request.searchLocation.country) url.searchParams.append("country", request.searchLocation.country);
       if (request.searchLocation.state) url.searchParams.append("state", request.searchLocation.state);
       if (request.searchLocation.city) url.searchParams.append("city", request.searchLocation.city);
@@ -79,12 +86,23 @@ const useSearchCars = () => {
       }
 
       const apiJson = await apiResponse.json();
-      if (!Array.isArray(apiJson)) {
+      if (
+        apiJson === undefined ||
+        apiJson.availableCarsData === undefined ||
+        apiJson.filterLimits === undefined ||
+        !Array.isArray(apiJson.availableCarsData)
+      ) {
         console.error("searchAvailableCars fetch wrong response format:");
         return;
       }
 
-      const availableCarsData = apiJson as SearchCarInfo[];
+      const publicSearchCarsResponse = apiJson as PublicSearchCarsResponse;
+      if ("error" in publicSearchCarsResponse) {
+        console.error(`searchAvailableCars fetch error: + ${publicSearchCarsResponse.error}`);
+        return;
+      }
+
+      const availableCarsData = publicSearchCarsResponse.availableCarsData;
 
       for (const carInfoI of availableCarsData) {
         for (const carInfoJ of availableCarsData) {
@@ -104,10 +122,24 @@ const useSearchCars = () => {
         availableCarsData[0].highlighted = true;
       }
 
+      console.debug(
+        "cars:",
+        JSON.stringify(
+          availableCarsData.map((i) => ({
+            car: `${i.brand} ${i.model} ${i.year}`,
+            pricePerDay: i.pricePerDay,
+            distanceToUser: i.distanceToUser,
+          })),
+          bigIntReplacer,
+          2
+        )
+      );
+
       setSearchResult({
         searchCarRequest: request,
         searchCarFilters: filters,
         carInfos: availableCarsData,
+        filterLimits: publicSearchCarsResponse.filterLimits,
       });
       return true;
     } catch (e) {
@@ -118,25 +150,34 @@ const useSearchCars = () => {
     }
   };
 
-  const createTripRequest = async (carId: number, searchCarRequest: SearchCarRequest) => {
+  async function createTripRequest(
+    carId: number,
+    searchCarRequest: SearchCarRequest,
+    timeZoneId: string
+  ): Promise<Result<boolean, TransactionErrorCode>> {
     if (!ethereumInfo) {
-      console.error("createTripRequest: ethereumInfo is null");
-      return false;
+      console.error("createTripRequest error: ethereumInfo is null");
+      return Err("ERROR");
     }
+
     if (!rentalityContract) {
-      console.error("createTripRequest: rentalityContract is null");
-      return false;
+      console.error("createTripRequest error: rentalityContract is null");
+      return Err("ERROR");
     }
+
+    const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
+    const dateFrom = moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, notEmtpyTimeZoneId).toDate();
+    const dateTo = moment.tz(searchCarRequest.dateToInDateTimeStringFormat, notEmtpyTimeZoneId).toDate();
+
+    const days = calculateDays(dateFrom, dateTo);
+    if (days < 0) {
+      console.error("Date to' must be greater than 'Date from'");
+      return Err("ERROR");
+    }
+    const startUnixTime = getBlockchainTimeFromDate(dateFrom);
+    const endUnixTime = getBlockchainTimeFromDate(dateTo);
 
     try {
-      const days = calculateDays(searchCarRequest.dateFrom, searchCarRequest.dateTo);
-      if (days < 0) {
-        console.error("Date to' must be greater than 'Date from'");
-        return false;
-      }
-      const startUnixTime = getBlockchainTimeFromDate(searchCarRequest.dateFrom);
-      const endUnixTime = getBlockchainTimeFromDate(searchCarRequest.dateTo);
-
       if (
         searchCarRequest.isDeliveryToGuest ||
         !searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation ||
@@ -175,7 +216,7 @@ const useSearchCars = () => {
         const pickupLocationResult = await getSignedLocationInfo(pickupLocationInfo, ethereumInfo.chainId);
         if (!pickupLocationResult.ok) {
           console.error("Sign location error");
-          return false;
+          return Err("ERROR");
         }
 
         const returnLocationResult =
@@ -184,7 +225,7 @@ const useSearchCars = () => {
             : await getSignedLocationInfo(returnLocationInfo, ethereumInfo.chainId);
         if (!returnLocationResult.ok) {
           console.error("Sign location error");
-          return false;
+          return Err("ERROR");
         }
 
         const tripRequest: ContractCreateTripRequestWithDelivery = {
@@ -195,6 +236,12 @@ const useSearchCars = () => {
           pickUpInfo: pickupLocationResult.value,
           returnInfo: returnLocationResult.value,
         };
+        const totalPriceInEth = Number(formatEther(paymentsNeeded.totalPrice));
+
+        if (!(await isUserHasEnoughFunds(ethereumInfo.signer, totalPriceInEth))) {
+          console.error("createTripRequest error: user don't have enough funds");
+          return Err("NOT_ENOUGH_FUNDS");
+        }
 
         const transaction = await rentalityContract.createTripRequestWithDelivery(tripRequest, {
           value: paymentsNeeded.totalPrice,
@@ -214,18 +261,24 @@ const useSearchCars = () => {
           currencyType: ETH_DEFAULT_ADDRESS,
         };
 
+        const totalPriceInEth = Number(formatEther(paymentsNeeded.totalPrice));
+
+        if (!(await isUserHasEnoughFunds(ethereumInfo.signer, totalPriceInEth))) {
+          console.error("createTripRequest error: user don't have enough funds");
+          return Err("NOT_ENOUGH_FUNDS");
+        }
         const transaction = await rentalityContract.createTripRequest(tripRequest, {
           value: paymentsNeeded.totalPrice,
         });
         await transaction.wait();
       }
 
-      return true;
+      return Ok(true);
     } catch (e) {
       console.error("createTripRequest error:" + e);
-      return false;
+      return Err("ERROR");
     }
-  };
+  }
 
   function sortByDailyPriceAsc(a: SearchCarInfo, b: SearchCarInfo) {
     return a.pricePerDay - b.pricePerDay;
@@ -234,17 +287,13 @@ const useSearchCars = () => {
     return b.pricePerDay - a.pricePerDay;
   }
 
-  function sortByIncludedDistance(a: SearchCarInfo, b: SearchCarInfo) {
-    return Number(a.milesIncludedPerDay) - Number(b.milesIncludedPerDay);
+  function sortByDistanceToUser(a: SearchCarInfo, b: SearchCarInfo) {
+    return a.distanceToUser - b.distanceToUser;
   }
 
   const sortSearchResult = useCallback((sortBy: SortOptionKey) => {
     const sortLogic =
-      sortBy === "distance"
-        ? sortByIncludedDistance
-        : sortBy === "priceDesc"
-          ? sortByDailyPriceDes
-          : sortByDailyPriceAsc;
+      sortBy === "distance" ? sortByDistanceToUser : sortBy === "priceDesc" ? sortByDailyPriceDes : sortByDailyPriceAsc;
 
     setSearchResult((current) => {
       return {
@@ -252,6 +301,7 @@ const useSearchCars = () => {
         searchCarFilters: current.searchCarFilters,
         //TODO carInfos: current.carInfos.toSorted(sortLogic),
         carInfos: [...current.carInfos].sort(sortLogic),
+        filterLimits: current.filterLimits,
       };
     });
   }, []);

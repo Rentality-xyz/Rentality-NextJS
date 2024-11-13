@@ -1,10 +1,11 @@
 import { getEtherContractWithSigner } from "@/abis";
 import { ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "@/model/EngineType";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
-import { SearchCarInfo } from "@/model/SearchCarsResult";
+import { FilterLimits, SearchCarInfo } from "@/model/SearchCarsResult";
 import { emptyLocationInfo } from "@/model/LocationInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import {
+  ContractFilterInfoDTO,
   ContractLocationInfo,
   ContractSearchCarParams,
   ContractSearchCarWithDistance,
@@ -18,12 +19,18 @@ import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Wallet } from "ethers";
 import moment from "moment";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { bigIntReplacer } from "@/utils/json";
 import { env } from "@/utils/env";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { allSupportedBlockchainList } from "@/model/blockchain/blockchainList";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export type PublicSearchCarsResponse =
+  | {
+      availableCarsData: SearchCarInfo[];
+      filterLimits: FilterLimits;
+    }
+  | { error: string };
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse<PublicSearchCarsResponse>) {
   const privateKey = env.SIGNER_PRIVATE_KEY;
   if (isEmpty(privateKey)) {
     console.error("API checkTrips error: private key was not set");
@@ -87,8 +94,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       longitude: Number(longitude as string),
       timeZoneId: "",
     },
-    dateFrom: new Date(dateFrom as string),
-    dateTo: new Date(dateTo as string),
+    dateFromInDateTimeStringFormat: dateFrom as string,
+    dateToInDateTimeStringFormat: dateTo as string,
     isDeliveryToGuest: isDeliveryToGuestValue,
     deliveryInfo: {
       pickupLocation:
@@ -181,14 +188,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       contractSearchCarParams
     );
   }
+  const getFilterInfoDto: ContractFilterInfoDTO = await rentality.getFilterInfo(BigInt(1));
 
-  const availableCarsData = await formatSearchAvailableCarsContractResponse(
-    rentality,
-    chainIdNumber,
-    availableCarsView
-  );
+  const availableCarsData = await formatSearchAvailableCarsContractResponse(chainIdNumber, availableCarsView);
+  const filterLimits = {
+    minCarYear: Number(getFilterInfoDto.minCarYearOfProduction),
+    maxCarPrice: Number(getFilterInfoDto.maxCarPrice) / 100,
+  };
 
-  res.status(200).json(availableCarsData);
+  res.status(200).json({ availableCarsData, filterLimits });
 }
 
 function getTotalDiscount(pricePerDay: number, tripDays: number, totalPriceWithDiscount: number) {
@@ -220,8 +228,8 @@ function formatSearchAvailableCarsContractRequest(
   searchCarFilters: SearchCarFilters,
   timeZoneId: string
 ) {
-  const startCarLocalDateTime = moment.tz(searchCarRequest.dateFrom, timeZoneId).toDate();
-  const endCarLocalDateTime = moment.tz(searchCarRequest.dateTo, timeZoneId).toDate();
+  const startCarLocalDateTime = moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, timeZoneId).toDate();
+  const endCarLocalDateTime = moment.tz(searchCarRequest.dateToInDateTimeStringFormat, timeZoneId).toDate();
   const contractDateFromUTC = getBlockchainTimeFromDate(startCarLocalDateTime);
   const contractDateToUTC = getBlockchainTimeFromDate(endCarLocalDateTime);
   const contractSearchCarParams: ContractSearchCarParams = {
@@ -244,7 +252,6 @@ function formatSearchAvailableCarsContractRequest(
 }
 
 async function formatSearchAvailableCarsContractResponse(
-  rentality: IRentalityContract,
   chainId: number,
   searchCarsViewsView: ContractSearchCarWithDistance[]
 ) {
@@ -280,7 +287,7 @@ async function formatSearchAvailableCarsContractResponse(
         seatsNumber: metaData.seatsNumber,
         transmission: metaData.transmission,
         engineTypeText: getEngineTypeString(i.car.engineType) ?? ENGINE_TYPE_PETROL_STRING,
-        milesIncludedPerDay: getMilesIncludedPerDayText(i.car.milesIncludedPerDay ?? 0),
+        milesIncludedPerDayText: getMilesIncludedPerDayText(i.car.milesIncludedPerDay ?? 0),
         pricePerDay: pricePerDay,
         pricePerDayWithDiscount: Number(i.car.pricePerDayWithDiscount) / 100,
         tripDays: tripDays,
@@ -307,6 +314,7 @@ async function formatSearchAvailableCarsContractResponse(
         dropOffDeliveryFee: Number(i.car.dropOf) / 100,
         isCarDetailsConfirmed: isCarDetailsConfirmed,
         isTestCar: testWallets.includes(i.car.host),
+        distanceToUser: Number(i.distance),
       };
 
       return item;

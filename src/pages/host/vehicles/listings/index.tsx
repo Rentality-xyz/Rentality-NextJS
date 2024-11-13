@@ -6,16 +6,14 @@ import { useUserInfo } from "@/contexts/userInfoContext";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import Loading from "@/components/common/Loading";
-import InvitationToConnect from "@/components/common/invitationToConnect";
-import { useAuth } from "@/contexts/auth/authContext";
+import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function Listings() {
   const [isLoadingMyListings, myListings] = useMyListings();
   const router = useRouter();
   const userInfo = useUserInfo();
   const { showError } = useRntSnackbars();
-  const { isLoadingAuth, isAuthenticated } = useAuth();
 
   const handleAddListing = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -37,21 +35,22 @@ export default function Listings() {
           {t("vehicles.add_listing")}
         </RntButton>
       </div>
-      {isLoadingAuth && <Loading />}
-      {!isLoadingAuth && !isAuthenticated && <InvitationToConnect />}
-      {!isLoadingMyListings && isAuthenticated && (
-        <div className="my-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
-          {myListings != null && myListings.length > 0 ? (
-            myListings.map((value) => {
-              return <ListingItem key={value.carId} carInfo={value} t={t} />;
-            })
-          ) : (
-            <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-              {t("vehicles.no_listed_cars")}
-            </div>
-          )}
-        </div>
-      )}
+
+      <CheckingLoadingAuth>
+        <RntSuspense isLoading={isLoadingMyListings}>
+          <div className="my-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
+            {myListings != null && myListings.length > 0 ? (
+              myListings.map((value) => {
+                return <ListingItem key={value.carId} carInfo={value} t={t} />;
+              })
+            ) : (
+              <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
+                {t("vehicles.no_listed_cars")}
+              </div>
+            )}
+          </div>
+        </RntSuspense>
+      </CheckingLoadingAuth>
     </>
   );
 }

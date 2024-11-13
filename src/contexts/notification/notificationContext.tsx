@@ -12,7 +12,7 @@ import { isEventLog } from "@/utils/ether";
 import { bigIntReplacer } from "@/utils/json";
 import { hasValue } from "@/utils/arrays";
 import { EventLog, Listener } from "ethers";
-import { ClaimStatus, ContractFullClaimInfo, ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
+import { ClaimStatus, ContractFullClaimInfo, ContractTripDTO, EventType, TripStatus } from "@/model/blockchain/schemas";
 import { getBlockCountForSearch } from "@/model/blockchain/blockchainList";
 import { useAuth } from "../auth/authContext";
 
@@ -34,54 +34,44 @@ export function useNotification() {
   return useContext(NotificationContext);
 }
 
-function getNotificationFromCreateTripEvent(
-  tripInfos: ContractTripDTO[],
-  isHost: boolean
-): (value: EventLog) => Promise<NotificationInfo | undefined> {
-  return async (event) => {
-    const tripId = BigInt(event.args[0]);
-    const tripDTO = tripInfos.find((i) => i.trip.tripId === tripId);
-
-    if (!tripDTO) return;
-
-    const eventDate = (await event.getBlock()).date ?? new Date();
-    return createCreateTripNotification(tripDTO, isHost, eventDate);
-  };
-}
-
-function getNotificationFromTripChangedEvent(
-  tripInfos: ContractTripDTO[],
-  isHost: boolean
-): (value: EventLog) => Promise<NotificationInfo | undefined> {
-  return async (event) => {
-    const tripId = BigInt(event.args[0]);
-    const tripStatus: TripStatus = BigInt(event.args[1]);
-    const tripDTO = tripInfos.find((i) => i.trip.tripId === tripId);
-
-    if (!tripDTO) return;
-    const eventDate = (await event.getBlock()).date ?? new Date();
-    return createTripChangedNotification(tripStatus, tripDTO, isHost, eventDate);
-  };
-}
-
-function getNotificationFromClaimStatusChanged(
+function getNotificationFromRentalityEvent(
   tripInfos: ContractTripDTO[],
   claimInfos: ContractFullClaimInfo[],
   isHost: boolean
 ): (value: EventLog) => Promise<NotificationInfo | undefined> {
   return async (event) => {
-    const claimId = BigInt(event.args[0]);
-    const claimStatus: ClaimStatus = BigInt(event.args[1]);
+    const eventType = BigInt(event.args[0]);
 
-    if (claimStatus !== ClaimStatus.NotPaid) return;
-    const claimInfo = claimInfos.find((i) => i.claim.claimId === claimId);
-    if (!claimInfo) return;
+    switch (eventType) {
+      case EventType.Trip:
+        const tripId = BigInt(event.args[1]);
+        const tripStatus = BigInt(event.args[2]);
 
-    const tripDTO = tripInfos.find((i) => i.trip.tripId === claimInfo.claim.tripId);
+        const tripDTO = tripInfos.find((i) => i.trip.tripId === tripId);
+        if (!tripDTO) return;
 
-    if (!tripDTO) return;
-    const eventDate = (await event.getBlock()).date ?? new Date();
-    return createClaimCreatedChangedNotification(tripDTO, claimInfo, isHost, eventDate);
+        const eventDate = (await event.getBlock()).date ?? new Date();
+
+        if (tripStatus === TripStatus.Pending) {
+          return createCreateTripNotification(tripDTO, isHost, eventDate);
+        } else {
+          return createTripChangedNotification(tripStatus, tripDTO, isHost, eventDate);
+        }
+      case EventType.Claim:
+        const claimId = BigInt(event.args[1]);
+        const claimStatus: ClaimStatus = BigInt(event.args[2]);
+
+        if (claimStatus !== ClaimStatus.NotPaid) return;
+
+        const claimInfo = claimInfos.find((i) => i.claim.claimId === claimId);
+        if (!claimInfo) return;
+
+        const claimTripDTO = tripInfos.find((i) => i.trip.tripId === claimInfo.claim.tripId);
+        if (!claimTripDTO) return;
+
+        const claimEventDate = (await event.getBlock()).date ?? new Date();
+        return createClaimCreatedChangedNotification(claimTripDTO, claimInfo, isHost, claimEventDate);
+    }
   };
 }
 
@@ -113,71 +103,61 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
     });
   }, []);
 
-  const tripCreatedListener: Listener = useCallback(
+  const rentalityEventListener: Listener = useCallback(
     async ({ args }) => {
-      console.log(`Trip was created | args: ${JSON.stringify(args, bigIntReplacer)}`);
+      console.log(`Rentality Event | args: ${JSON.stringify(args, bigIntReplacer)}`);
 
       if (!rentalityContract) return;
 
-      const tripId = BigInt(args[0]);
+      const eventType = BigInt(args[0]);
 
-      try {
-        const tripInfo: ContractTripDTO = await rentalityContract.getTrip(tripId);
-        const notification = await createCreateTripNotification(tripInfo, isHost, new Date());
-        if (!notification) return;
+      switch (eventType) {
+        case EventType.Trip:
+          const tripId = BigInt(args[1]);
+          const tripStatus = BigInt(args[2]);
 
-        addNotifications([notification]);
-      } catch (e) {
-        console.error("tripCreatedListener error:" + e);
+          if (tripStatus === TripStatus.Pending) {
+            try {
+              const tripInfo: ContractTripDTO = await rentalityContract.getTrip(tripId);
+              const notification = await createCreateTripNotification(tripInfo, isHost, new Date());
+              if (!notification) return;
+
+              addNotifications([notification]);
+            } catch (e) {
+              console.error("rentalityEventListener error:" + e);
+            }
+          } else {
+            try {
+              const tripInfo: ContractTripDTO = await rentalityContract.getTrip(tripId);
+              const notification = await createTripChangedNotification(tripStatus, tripInfo, isHost, new Date());
+              if (!notification) return;
+
+              addNotifications([notification]);
+            } catch (e) {
+              console.error("rentalityEventListener error:" + e);
+            }
+          }
+          return;
+
+        case EventType.Claim:
+          const claimId = BigInt(args[1]);
+
+          try {
+            const claimInfo: ContractFullClaimInfo = await rentalityContract.getClaim(claimId);
+            if (!claimInfo) return;
+
+            const tripInfo: ContractTripDTO = await rentalityContract.getTrip(claimInfo.claim.tripId);
+            const notification = await createClaimCreatedChangedNotification(tripInfo, claimInfo, isHost, new Date());
+            if (!notification) return;
+
+            addNotifications([notification]);
+          } catch (e) {
+            console.error("rentalityEventListener error:" + e);
+          }
+          return;
       }
     },
-    [rentalityContract, isHost]
-  );
-
-  const tripStatusChangedListener: Listener = useCallback(
-    async ({ args }) => {
-      console.log(`Trip was changed | args: ${JSON.stringify(args, bigIntReplacer)}`);
-
-      if (!rentalityContract) return;
-
-      const tripId = BigInt(args[0]);
-      const tripStatus: TripStatus = BigInt(args[1]);
-
-      try {
-        const tripInfo: ContractTripDTO = await rentalityContract.getTrip(tripId);
-        const notification = await createTripChangedNotification(tripStatus, tripInfo, isHost, new Date());
-        if (!notification) return;
-
-        addNotifications([notification]);
-      } catch (e) {
-        console.error("tripStatusChangedListener error:" + e);
-      }
-    },
-    [rentalityContract, isHost]
-  );
-
-  const claimStatusChangedListener: Listener = useCallback(
-    async ({ args }) => {
-      console.log(`Claim was changed | args: ${JSON.stringify(args, bigIntReplacer)}`);
-
-      if (!rentalityContract) return;
-
-      const claimId = BigInt(args[0]);
-
-      try {
-        const claimInfo: ContractFullClaimInfo = await rentalityContract.getClaim(claimId);
-        if (!claimInfo) return;
-
-        const tripInfo: ContractTripDTO = await rentalityContract.getTrip(claimInfo.claim.tripId);
-        const notification = await createClaimCreatedChangedNotification(tripInfo, claimInfo, isHost, new Date());
-        if (!notification) return;
-
-        addNotifications([notification]);
-      } catch (e) {
-        console.error("claimStatusChangedListener error:" + e);
-      }
-    },
-    [rentalityContract, isHost]
+    [rentalityContract, isHost, addNotifications]
   );
 
   useEffect(() => {
@@ -186,14 +166,9 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
       if (!rentalityContract) return;
 
       try {
-        const tripServiceContract = await getEtherContractWithSigner("tripService", ethereumInfo.signer);
-        if (tripServiceContract == null) {
-          console.error("initialLoading error: tripServiceContract is null");
-          return false;
-        }
-        const claimServiceContract = await getEtherContractWithSigner("claimService", ethereumInfo.signer);
-        if (claimServiceContract == null) {
-          console.error("initialLoading error: claimServiceContract is null");
+        const notificationService = await getEtherContractWithSigner("notificationService", ethereumInfo.signer);
+        if (!notificationService) {
+          console.error("initialLoading error: notificationService is null");
           return false;
         }
 
@@ -205,48 +180,28 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
           ? await rentalityContract.getMyClaimsAsHost()
           : await rentalityContract.getMyClaimsAsGuest();
 
-        const eventTripCreatedFilter = isHost
-          ? tripServiceContract.filters.TripCreated(null, [ethereumInfo.walletAddress], null)
-          : tripServiceContract.filters.TripCreated(null, null, [ethereumInfo.walletAddress]);
-        const eventTripCreatedHistory = (
-          await tripServiceContract.queryFilter(eventTripCreatedFilter, fromBlock, toBlock)
+        const rentalityEventFilter = notificationService.filters.RentalityEvent(
+          null,
+          null,
+          null,
+          [ethereumInfo.walletAddress],
+          [ethereumInfo.walletAddress],
+          null
+        );
+        const rentalityEventHistory = (
+          await notificationService.queryFilter(rentalityEventFilter, fromBlock, toBlock)
         ).filter(isEventLog);
-        const notificationsTripCreatedHistory = await Promise.all(
-          eventTripCreatedHistory.map(getNotificationFromCreateTripEvent(tripInfos, isHost))
+
+        const notificationsRentalityEventHistory = await Promise.all(
+          rentalityEventHistory.map(getNotificationFromRentalityEvent(tripInfos, claimInfos, isHost))
         );
 
-        const eventTripStatusChangedFilter = isHost
-          ? tripServiceContract.filters.TripStatusChanged(null, null, [ethereumInfo.walletAddress], null)
-          : tripServiceContract.filters.TripStatusChanged(null, null, null, [ethereumInfo.walletAddress]);
-        const eventTripStatusChangedHistory = (
-          await tripServiceContract.queryFilter(eventTripStatusChangedFilter, fromBlock, toBlock)
-        ).filter(isEventLog);
-        const notificationsTripStatusChangedHistory = await Promise.all(
-          eventTripStatusChangedHistory.map(getNotificationFromTripChangedEvent(tripInfos, isHost))
-        );
-
-        const eventClaimStatusChangedFilter = isHost
-          ? claimServiceContract.filters.ClaimStatusChanged(null, null, [ethereumInfo.walletAddress], null)
-          : claimServiceContract.filters.ClaimStatusChanged(null, null, null, [ethereumInfo.walletAddress]);
-        const eventClaimStatusChangedHistory = (
-          await claimServiceContract.queryFilter(eventClaimStatusChangedFilter, fromBlock, toBlock)
-        ).filter(isEventLog);
-        const notificationsClaimStatusChangedHistory = await Promise.all(
-          eventClaimStatusChangedHistory.map(getNotificationFromClaimStatusChanged(tripInfos, claimInfos, isHost))
-        );
-
-        const notifications: NotificationInfo[] = notificationsTripCreatedHistory
-          .concat(notificationsTripStatusChangedHistory)
-          .concat(notificationsClaimStatusChangedHistory)
-          .filter(hasValue);
+        const notifications: NotificationInfo[] = notificationsRentalityEventHistory.filter(hasValue);
 
         addNotifications(notifications);
 
-        await tripServiceContract.removeAllListeners();
-        await tripServiceContract.on(eventTripCreatedFilter, tripCreatedListener);
-        await tripServiceContract.on(eventTripStatusChangedFilter, tripStatusChangedListener);
-        await claimServiceContract.removeAllListeners();
-        await claimServiceContract.on(eventClaimStatusChangedFilter, claimStatusChangedListener);
+        await notificationService.removeAllListeners();
+        await notificationService.on(rentalityEventFilter, rentalityEventListener);
       } catch (e) {
         console.error("initialLoading error:" + e);
       } finally {
@@ -255,15 +210,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
     };
 
     initialLoading();
-  }, [
-    ethereumInfo,
-    rentalityContract,
-    isHost,
-    tripCreatedListener,
-    tripStatusChangedListener,
-    claimStatusChangedListener,
-    addNotifications,
-  ]);
+  }, [ethereumInfo, rentalityContract, isHost, rentalityEventListener, addNotifications]);
 
   useEffect(() => {
     if (!isAuthenticated && notificationInfos.length > 0) {

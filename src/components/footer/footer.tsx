@@ -18,13 +18,17 @@ import {
   LEGAL_TERMS_NAME,
 } from "@/utils/constants";
 import useUserMode, { isHost } from "@/hooks/useUserMode";
+import React, { forwardRef } from "react";
 
-export default function Footer() {
+const Footer = forwardRef<HTMLDivElement>((props, ref) => {
   const { userMode } = useUserMode();
   const pathnameUserMode = isHost(userMode) ? "/host" : "/guest";
 
   return (
-    <footer className="relative h-[500px] bg-[url('../images/bg-gradient-flip.jpg')] bg-cover bg-scroll bg-center bg-no-repeat min-[560px]:h-[450px] lg:h-[290px]">
+    <footer
+      ref={ref}
+      className="relative h-[500px] bg-[url('../images/bg-gradient-flip.jpg')] bg-cover bg-scroll bg-center bg-no-repeat min-[560px]:h-[450px] lg:h-[290px]"
+    >
       <Image src={bgCar} alt="" className="absolute bottom-0 left-0" />
       <div
         id={"footer-content"}
@@ -148,4 +152,7 @@ export default function Footer() {
       </div>
     </footer>
   );
-}
+});
+
+Footer.displayName = "Footer";
+export default Footer;

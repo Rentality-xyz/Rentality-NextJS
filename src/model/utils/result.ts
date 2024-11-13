@@ -7,3 +7,6 @@ export const Ok = <T>(data: T): Result<T, never> => {
 export const Err = <E>(error: E): Result<never, E> => {
   return { ok: false, error };
 };
+
+export type ErrorCode = "ERROR";
+export type TransactionErrorCode = ErrorCode | "NOT_ENOUGH_FUNDS";

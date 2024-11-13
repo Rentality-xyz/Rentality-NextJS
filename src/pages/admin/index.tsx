@@ -19,6 +19,7 @@ export default function Admin() {
     saveClaimWaitingTime,
     grantAdminRole,
     updateKycInfoForAddress,
+    setTestKycInfoForAddress,
     createTestTrip,
   } = useAdminPanelInfo();
   const [ethToWithdraw, setEthToWithdraw] = useState("0");
@@ -27,6 +28,8 @@ export default function Admin() {
   const [newClaimWaitingTime, setNewClaimWaitingTime] = useState("");
   const [addressForAdminRole, setAddressForAdminRole] = useState("0x");
   const [addressToUpdateKyc, setAddressToUpdateKyc] = useState("0x");
+  const [addressToSetTestKycInfo, setAddressToSetTestKycInfo] = useState("0x");
+
   const [testCarId, setTestCarId] = useState("");
   const { showError } = useRntSnackbars();
   const { t } = useTranslation();
@@ -144,6 +147,21 @@ export default function Admin() {
       await updateKycInfoForAddress(addressToUpdateKyc);
     } catch (e) {
       showError(t_errors("update_kyc_error") + e);
+    }
+  }
+
+  async function handleSetTestKycInfo() {
+    if (
+      isEmpty(addressToSetTestKycInfo) ||
+      !addressToSetTestKycInfo.startsWith("0x") ||
+      addressToSetTestKycInfo.length !== 42
+    )
+      return;
+
+    try {
+      await setTestKycInfoForAddress(addressToSetTestKycInfo);
+    } catch (e) {
+      showError(t_errors("set_test_kyc_info_error") + e);
     }
   }
 
@@ -270,6 +288,26 @@ export default function Admin() {
           handleUpdateKycInfo();
         }}
       />
+      {env.NEXT_PUBLIC_INCLUDE_TESTNETS === "true" && (
+        <RntInputWithButton
+          id="set_test_kyc_info_for_address"
+          placeholder="0x"
+          label="Set test KYC info for address (only KYC manager)"
+          value={addressToSetTestKycInfo}
+          onChange={(e) => {
+            setAddressToSetTestKycInfo(e.target.value);
+          }}
+          buttonText={"Set"}
+          buttonDisabled={
+            isEmpty(addressToSetTestKycInfo) ||
+            !addressToSetTestKycInfo.startsWith("0x") ||
+            addressToSetTestKycInfo.length !== 42
+          }
+          onButtonClick={() => {
+            handleSetTestKycInfo();
+          }}
+        />
+      )}
       {env.NEXT_PUBLIC_INCLUDE_TESTNETS === "true" && (
         <RntInputWithButton
           id="create_test_trip_request"

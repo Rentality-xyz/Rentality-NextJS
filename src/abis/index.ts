@@ -2,12 +2,10 @@ import RentalityGatewayJSON_ABI from "./RentalityGateway.v0_2_0.abi.json";
 import RentalityGatewayJSON_ADDRESSES from "./RentalityGateway.v0_2_0.addresses.json";
 import RentalityAdminGatewayJSON_ABI from "./RentalityAdminGateway.v0_2_0.abi.json";
 import RentalityAdminGatewayJSON_ADDRESSES from "./RentalityAdminGateway.v0_2_0.addresses.json";
-import RentalityTripServiceJSON_ABI from "./RentalityTripService.v0_2_0.abi.json";
-import RentalityTripServiceJSON_ADDRESSES from "./RentalityTripService.v0_2_0.addresses.json";
-import RentalityClaimServiceJSON_ABI from "./RentalityClaimService.v0_2_0.abi.json";
-import RentalityClaimServiceJSON_ADDRESSES from "./RentalityClaimService.v0_2_0.addresses.json";
 import RentalityLocationVerifierJSON_ADDRESSES from "./RentalityLocationVerifier.v0_2_0.addresses.json";
 import RentalityLocationVerifierJSON_ABI from "./RentalityLocationVerifier.v0_2_0.abi.json";
+import RentalityNotificationServiceJSON_ADDRESSES from "./RentalityNotificationService.v0_2_0.addresses.json";
+import RentalityNotificationServiceJSON_ABI from "./RentalityNotificationService.v0_2_0.abi.json";
 import { Contract, Signer } from "ethers";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 
@@ -22,13 +20,9 @@ const rentalityContracts = {
     addresses: RentalityAdminGatewayJSON_ADDRESSES.addresses,
     abi: RentalityAdminGatewayJSON_ABI.abi,
   },
-  tripService: {
-    addresses: RentalityTripServiceJSON_ADDRESSES.addresses,
-    abi: RentalityTripServiceJSON_ABI.abi,
-  },
-  claimService: {
-    addresses: RentalityClaimServiceJSON_ADDRESSES.addresses,
-    abi: RentalityClaimServiceJSON_ABI.abi,
+  notificationService: {
+    addresses: RentalityNotificationServiceJSON_ADDRESSES.addresses,
+    abi: RentalityNotificationServiceJSON_ABI.abi,
   },
   verifierService: {
     addresses: RentalityLocationVerifierJSON_ADDRESSES.addresses,

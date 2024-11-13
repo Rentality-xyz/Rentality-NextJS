@@ -2,12 +2,14 @@ import AllCarsTable from "@/components/admin/addCars/AllCarsTable";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useAdminAllCars from "@/hooks/admin/useAdminAllCars";
+import useCarAPI from "@/hooks/useCarAPI";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function AllCars() {
   const itemsPerPage = 10;
   const { isLoading, data, fetchData } = useAdminAllCars();
+  const { getVINNumber } = useCarAPI();
   const { t } = useTranslation();
 
   async function fetchDataForPage(page: number) {
@@ -17,7 +19,6 @@ export default function AllCars() {
   useEffect(() => {
     fetchData(1, itemsPerPage);
   }, [fetchData]);
-
   return (
     <>
       <PageTitle title={t("admin_all_cars.page_title")} />
@@ -27,7 +28,7 @@ export default function AllCars() {
           totalPages={data.totalPageCount}
           selectPage={fetchDataForPage}
         >
-          <AllCarsTable isLoading={isLoading} data={data.data} />
+          <AllCarsTable isLoading={isLoading} data={data.data} checkVin={getVINNumber} />
         </PaginationWrapper>
       </div>
     </>

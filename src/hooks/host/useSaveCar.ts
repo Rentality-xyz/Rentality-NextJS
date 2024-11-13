@@ -3,14 +3,16 @@ import { HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE, verifyCar } from 
 import { useRentality } from "@/contexts/rentalityContext";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeCode } from "@/model/EngineType";
 import { SMARTCONTRACT_VERSION } from "@/abis";
-import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
 import { ContractCreateCarRequest, ContractUpdateCarInfoRequest } from "@/model/blockchain/schemas";
 import { deleteFileFromIPFS, uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
 import { getSignedLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { getIpfsHashFromUrl, getNftJSONFromCarInfo } from "@/utils/ipfsUtils";
 import { ContractTransactionResponse } from "ethers";
 import { env } from "@/utils/env";
-import { UploadedCarImage } from "@/model/FileToUpload";
+import { PlatformCarImage, UploadedCarImage } from "@/model/FileToUpload";
+import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
+import { isUserHasEnoughFunds } from "@/utils/wallet";
 
 const useSaveCar = () => {
   const rentalityContract = useRentality();
@@ -39,43 +41,26 @@ const useSaveCar = () => {
     }
   };
 
-  async function addNewCar(hostCarInfo: HostCarInfo) {
+  async function addNewCar(hostCarInfo: HostCarInfo): Promise<Result<boolean, TransactionErrorCode>> {
     if (!ethereumInfo) {
-      console.error("saveCar error: ethereumInfo is null");
-      return false;
+      console.error("addNewCar error: ethereumInfo is null");
+      return Err("ERROR");
     }
 
     if (!rentalityContract) {
-      console.error("saveCar error: rentalityContract is null");
-      return false;
+      console.error("addNewCar error: rentalityContract is null");
+      return Err("ERROR");
     }
 
+    if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
+      console.error("addNewCar error: user don't have enough funds");
+      return Err("NOT_ENOUGH_FUNDS");
+    }
+
+    setDataSaved(false);
+
     try {
-      setDataSaved(false);
-
-      const savedImages: UploadedCarImage[] = [];
-
-      if (hostCarInfo.images.length > 0) {
-        for (const image of hostCarInfo.images) {
-          if ("file" in image) {
-            const response = await uploadFileToIPFS(image.file, "RentalityCarImage", {
-              createdAt: new Date().toISOString(),
-              createdBy: ethereumInfo?.walletAddress ?? "",
-              version: SMARTCONTRACT_VERSION,
-              chainId: ethereumInfo?.chainId ?? 0,
-            });
-
-            if (!response.success || !response.pinataURL) {
-              throw new Error("Uploaded image to Pinata error");
-            }
-            savedImages.push({ url: response.pinataURL, isPrimary: image.isPrimary });
-          } else if (image.isDeleted) {
-            await deleteFileFromIPFS(getIpfsHashFromUrl(image.url));
-          } else {
-            savedImages.push(image);
-          }
-        }
-      }
+      const savedImages = await saveCarImages(hostCarInfo.images, ethereumInfo);
 
       const dataToSave = {
         ...hostCarInfo,
@@ -85,8 +70,8 @@ const useSaveCar = () => {
       const metadataURL = await uploadMetadataToIPFS(dataToSave);
 
       if (!metadataURL) {
-        console.error("Upload JSON to Pinata error");
-        return false;
+        console.error("addNewCar error: Upload JSON to Pinata error");
+        return Err("ERROR");
       }
 
       const engineParams: bigint[] = [];
@@ -102,8 +87,8 @@ const useSaveCar = () => {
         ethereumInfo.chainId
       );
       if (!locationResult.ok) {
-        console.error("Sign location error");
-        return false;
+        console.error("addNewCar error: Sign location error");
+        return Err("ERROR");
       }
 
       const request: ContractCreateCarRequest = {
@@ -128,58 +113,85 @@ const useSaveCar = () => {
 
       const transaction = await rentalityContract.addCar(request);
       await transaction.wait();
-      return true;
+      return Ok(true);
     } catch (e) {
-      console.error("Upload error" + e);
-      return false;
+      console.error("addNewCar error: Upload error" + e);
+      return Err("ERROR");
     } finally {
       setDataSaved(true);
     }
   }
 
-  async function updateCar(hostCarInfo: HostCarInfo) {
+  async function updateCar(hostCarInfo: HostCarInfo): Promise<Result<boolean, TransactionErrorCode>> {
     if (!ethereumInfo) {
-      console.error("saveCar error: ethereumInfo is null");
-      return false;
+      console.error("updateCar error: ethereumInfo is null");
+      return Err("ERROR");
     }
+
     if (!rentalityContract) {
-      console.error("saveCar error: rentalityContract is null");
-      return false;
+      console.error("updateCar error: rentalityContract is null");
+      return Err("ERROR");
     }
 
-    try {
-      setDataSaved(false);
+    if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
+      console.error("updateCar error: user don't have enough funds");
+      return Err("NOT_ENOUGH_FUNDS");
+    }
 
-      const engineParams: bigint[] = [];
-      if (hostCarInfo.engineTypeText === ENGINE_TYPE_PETROL_STRING) {
-        engineParams.push(BigInt(hostCarInfo.fuelPricePerGal * 100));
-      } else if (hostCarInfo.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING) {
-        engineParams.push(BigInt(hostCarInfo.fullBatteryChargePrice * 100));
-      }
+    setDataSaved(false);
 
-      const updateCarRequest: ContractUpdateCarInfoRequest = {
-        carId: BigInt(hostCarInfo.carId),
-        currentlyListed: hostCarInfo.currentlyListed,
-        engineParams: engineParams,
-        pricePerDayInUsdCents: BigInt(hostCarInfo.pricePerDay * 100),
-        milesIncludedPerDay: BigInt(
-          isUnlimitedMiles(hostCarInfo.milesIncludedPerDay) ? UNLIMITED_MILES_VALUE : hostCarInfo.milesIncludedPerDay
-        ),
-        timeBufferBetweenTripsInSec: BigInt(hostCarInfo.timeBufferBetweenTripsInMin * 60),
-        securityDepositPerTripInUsdCents: BigInt(hostCarInfo.securityDeposit * 100),
-        insuranceIncluded: hostCarInfo.isInsuranceIncluded,
+    let metadataURL: string | undefined = hostCarInfo.metadataUrl;
+
+    if (hostCarInfo.isCarMetadataEdited) {
+      const savedImages = await saveCarImages(hostCarInfo.images, ethereumInfo);
+
+      const dataToSave = {
+        ...hostCarInfo,
+        images: savedImages,
       };
 
-      let transaction: ContractTransactionResponse;
+      metadataURL = await uploadMetadataToIPFS(dataToSave);
+    }
 
+    if (!metadataURL) {
+      console.error("updateCar error: Upload JSON to Pinata error");
+      return Err("ERROR");
+    }
+
+    const engineParams: bigint[] = [];
+    if (hostCarInfo.engineTypeText === ENGINE_TYPE_PETROL_STRING) {
+      engineParams.push(BigInt(hostCarInfo.tankVolumeInGal));
+      engineParams.push(BigInt(hostCarInfo.fuelPricePerGal * 100));
+    } else if (hostCarInfo.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING) {
+      engineParams.push(BigInt(hostCarInfo.fullBatteryChargePrice * 100));
+    }
+
+    const updateCarRequest: ContractUpdateCarInfoRequest = {
+      carId: BigInt(hostCarInfo.carId),
+      currentlyListed: hostCarInfo.currentlyListed,
+      engineParams: engineParams,
+      pricePerDayInUsdCents: BigInt(hostCarInfo.pricePerDay * 100),
+      milesIncludedPerDay: BigInt(
+        isUnlimitedMiles(hostCarInfo.milesIncludedPerDay) ? UNLIMITED_MILES_VALUE : hostCarInfo.milesIncludedPerDay
+      ),
+      timeBufferBetweenTripsInSec: BigInt(hostCarInfo.timeBufferBetweenTripsInMin * 60),
+      securityDepositPerTripInUsdCents: BigInt(hostCarInfo.securityDeposit * 100),
+      insuranceIncluded: hostCarInfo.isInsuranceIncluded,
+      engineType: getEngineTypeCode(hostCarInfo.engineTypeText),
+      tokenUri: metadataURL,
+    };
+
+    let transaction: ContractTransactionResponse;
+
+    try {
       if (hostCarInfo.isLocationEdited) {
         const locationResult = await getSignedLocationInfo(
           mapLocationInfoToContractLocationInfo(hostCarInfo.locationInfo),
           ethereumInfo.chainId
         );
         if (!locationResult.ok) {
-          console.error("Sign location error");
-          return false;
+          console.error("updateCar error: Sign location error");
+          return Err("ERROR");
         }
 
         transaction = await rentalityContract.updateCarInfoWithLocation(
@@ -193,56 +205,44 @@ const useSaveCar = () => {
 
       await transaction.wait();
 
-      if (hostCarInfo.isCarMetadataEdited) {
-        const savedImages: UploadedCarImage[] = [];
-        if (hostCarInfo.images.length > 0) {
-          for (const image of hostCarInfo.images) {
-            if ("file" in image) {
-              const response = await uploadFileToIPFS(image.file, "RentalityCarImage", {
-                createdAt: new Date().toISOString(),
-                createdBy: ethereumInfo?.walletAddress ?? "",
-                version: SMARTCONTRACT_VERSION,
-                chainId: ethereumInfo?.chainId ?? 0,
-              });
-
-              if (!response.success || !response.pinataURL) {
-                throw new Error("Uploaded image to Pinata error");
-              }
-              savedImages.push({ url: response.pinataURL, isPrimary: image.isPrimary });
-            } else if (image.isDeleted) {
-              await deleteFileFromIPFS(getIpfsHashFromUrl(image.url));
-            } else {
-              savedImages.push(image);
-            }
-          }
-        }
-
-        const dataToSave = {
-          ...hostCarInfo,
-          images: savedImages,
-        };
-
-        const metadataURL = await uploadMetadataToIPFS(dataToSave);
-
-        if (!metadataURL) {
-          console.error("Upload JSON to Pinata error");
-          return false;
-        }
-        transaction = await rentalityContract.updateCarTokenUri(updateCarRequest.carId, metadataURL);
-      }
-
-      await transaction.wait();
-
-      setDataSaved(true);
-      return true;
+      return Ok(true);
     } catch (e) {
-      console.error("Upload error" + e);
+      console.error("updateCar error: Upload error" + e);
+      return Err("ERROR");
+    } finally {
       setDataSaved(true);
-      return false;
     }
   }
 
   return { dataSaved, addNewCar, updateCar } as const;
 };
+
+async function saveCarImages(carImages: PlatformCarImage[], ethereumInfo: EthereumInfo): Promise<UploadedCarImage[]> {
+  const savedImages: UploadedCarImage[] = [];
+
+  if (carImages.length > 0) {
+    for (const image of carImages) {
+      if ("file" in image) {
+        const response = await uploadFileToIPFS(image.file, "RentalityCarImage", {
+          createdAt: new Date().toISOString(),
+          createdBy: ethereumInfo?.walletAddress ?? "",
+          version: SMARTCONTRACT_VERSION,
+          chainId: ethereumInfo?.chainId ?? 0,
+        });
+
+        if (!response.success || !response.pinataURL) {
+          throw new Error("Uploaded image to Pinata error");
+        }
+        savedImages.push({ url: response.pinataURL, isPrimary: image.isPrimary });
+      } else if (image.isDeleted) {
+        await deleteFileFromIPFS(getIpfsHashFromUrl(image.url));
+      } else {
+        savedImages.push(image);
+      }
+    }
+  }
+
+  return savedImages;
+}
 
 export default useSaveCar;

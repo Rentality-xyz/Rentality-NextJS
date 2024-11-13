@@ -17,6 +17,12 @@ function GuestNavMenu() {
   const { notifications } = useNotification();
   const { chatInfos } = useChat();
   const { getPageLastVisitedDateTime } = usePageLastVisit();
+  const { t } = useTranslation();
+
+  const t_nav: TFunction = (name, options) => {
+    return t("nav_menu." + name, options);
+  };
+
   const bookedLastVisitedDateTime = getPageLastVisitedDateTime("guest_trips_booked");
   const historyLastVisitedDateTime = getPageLastVisitedDateTime("guest_trips_history");
   const claimsLastVisitedDateTime = getPageLastVisitedDateTime("guest_claims");
@@ -38,10 +44,7 @@ function GuestNavMenu() {
   const notificationsNotificationCount = notifications.filter(
     (n) => n.datestamp > notificationsLastVisitedDateTime
   ).length;
-  const { t } = useTranslation();
-  const t_nav: TFunction = (name, options) => {
-    return t("nav_menu." + name, options);
-  };
+
   return (
     <>
       <SideNavMenuGroup title={t_nav("search")} href="/guest/search" icon={MenuIcons.Search} />

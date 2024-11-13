@@ -33,10 +33,12 @@ function TransactionHistoryFiltersComponent({ defaultFilters, onApply }: Transac
   return (
     <form className="flex flex-col flex-wrap items-center gap-4 sm:flex-row lg:items-end" onSubmit={handleApplyClick}>
       <RntInput
-        className="sm:max-w-[15rem]"
+        isTransparentStyle={true}
+        className="sm:max-w-[10.5rem]"
         id="dateFrom"
         label={t("common.from")}
         labelClassName="pl-4"
+        inputClassName="pr-4"
         type="date"
         value={dateToHtmlDateFormat(filters.dateFrom)}
         onChange={(e) => {
@@ -47,10 +49,12 @@ function TransactionHistoryFiltersComponent({ defaultFilters, onApply }: Transac
         }}
       />
       <RntInput
-        className="sm:max-w-[15rem]"
+        isTransparentStyle={true}
+        className="sm:max-w-[10.5rem]"
         id="dateTo"
         label={t("common.to")}
         labelClassName="pl-4"
+        inputClassName="pr-4"
         type="date"
         value={dateToHtmlDateFormat(filters.dateTo)}
         onChange={(e) => {
@@ -68,23 +72,30 @@ function TransactionHistoryFiltersComponent({ defaultFilters, onApply }: Transac
         //   }
         // }}
       />
-      <RntSelect
-        className="sm:max-w-[15rem]"
-        id="status"
-        label={t("all_trips_table.tripStatus")}
-        labelClassName="pl-4"
-        value={filters.status?.toString()}
-        onChange={(e) => {
-          setFilters((prev) => ({ ...prev, status: e.target.value !== "none" ? BigInt(e.target.value) : undefined }));
-        }}
-      >
-        <option value={"none"}>{t("transaction_history.all_statuses")}</option>
-        {allTripStatuses.map((i) => (
-          <option key={i.id.toString()} value={i.id.toString()}>
-            {i.text}
-          </option>
-        ))}
-      </RntSelect>
+      <div className="sm:w-48">
+        <RntSelect
+          isTransparentStyle={true}
+          className="mt-1 sm:max-w-[15rem]"
+          selectClassName="cursor-pointer"
+          id="status"
+          label={t("all_trips_table.tripStatus")}
+          labelClassName="pl-4"
+          value={filters.status?.toString()}
+          onChange={(e) => {
+            setFilters((prev) => ({
+              ...prev,
+              status: e.target.value !== "none" ? BigInt(e.target.value) : undefined,
+            }));
+          }}
+        >
+          <option value={"none"}>{t("transaction_history.all_statuses")}</option>
+          {allTripStatuses.map((i) => (
+            <option key={i.id.toString()} value={i.id.toString()}>
+              {i.text}
+            </option>
+          ))}
+        </RntSelect>
+      </div>
 
       <RntButton className="w-36 sm:w-40" type="submit" disabled={isSubmitting}>
         {t("common.apply")}

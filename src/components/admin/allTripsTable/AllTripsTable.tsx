@@ -17,6 +17,7 @@ import {
   getPaymentStatusText,
   getTripStatusTextFromAdminStatus,
 } from "@/model/admin/AdminTripDetails";
+import RntSuspense from "@/components/common/rntSuspense";
 
 type AllTripsTableProps = {
   isLoading: boolean;
@@ -56,16 +57,15 @@ export default function AllTripsTable({ isLoading, data, payToHost, refundToGues
   const headerSpanClassName = "text-center font-semibold px-2 font-light text-sm";
   const rowSpanClassName = "px-2 h-12 text-center";
 
-  if (isLoading) {
-    return (
-      <div className="rounded-b-2xl bg-rentality-bg p-4 pb-8">
-        <Loading />
-      </div>
-    );
-  }
-
   return (
-    <>
+    <RntSuspense
+      isLoading={isLoading}
+      fallback={
+        <div className="rounded-b-2xl bg-rentality-bg p-4 pb-8">
+          <Loading />
+        </div>
+      }
+    >
       <div className="text-xl lg:hidden">{t("common.low_resolution")}</div>
       <table className="hidden w-full table-auto border-spacing-2 overflow-x-auto lg:block">
         <thead className="mb-2">
@@ -182,6 +182,6 @@ export default function AllTripsTable({ isLoading, data, payToHost, refundToGues
           })}
         </tbody>
       </table>
-    </>
+    </RntSuspense>
   );
 }

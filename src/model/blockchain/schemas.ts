@@ -64,6 +64,8 @@ export type ContractUpdateCarInfoRequest = {
   timeBufferBetweenTripsInSec: bigint;
   currentlyListed: boolean;
   insuranceIncluded: boolean;
+  engineType: EngineType;
+  tokenUri: string;
 };
 
 export type ContractSearchCarParams = {
@@ -368,6 +370,7 @@ export type ContractCarDetails = {
   geoVerified: boolean;
   currentlyListed: boolean;
   locationInfo: ContractLocationInfo;
+  carVinNumber: string;
 };
 
 export type ContractFloridaTaxes = {
@@ -449,6 +452,11 @@ export type ContractAdminCarDTO = {
 export type ContractAllCarsDTO = {
   cars: ContractAdminCarDTO[];
   totalPageCount: bigint;
+};
+
+export type ContractFilterInfoDTO = {
+  maxCarPrice: bigint;
+  minCarYearOfProduction: bigint;
 };
 
 export type TripStatus = bigint;
@@ -534,6 +542,20 @@ export const Role = {
   Manager: BigInt(2),
   Admin: BigInt(3),
   KYCManager: BigInt(4),
+};
+
+export type CarUpdateStatus = bigint;
+export const CarUpdateStatus = {
+  Add: BigInt(0),
+  Update: BigInt(1),
+  Burn: BigInt(2),
+};
+
+export type EventType = bigint;
+export const EventType = {
+  Car: BigInt(0),
+  Claim: BigInt(1),
+  Trip: BigInt(2),
 };
 
 export type EngineType = bigint;
