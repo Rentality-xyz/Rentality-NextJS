@@ -1,10 +1,9 @@
 import { AxiosResponse } from "axios";
-import axios from "@/utils/cachedAxios"
+import axios from "@/utils/cachedAxios";
 import { isEmpty } from "@/utils/string";
 import { env } from "@/utils/env";
 import { VinInfo } from "@/pages/api/car-api/vinInfo";
-
-import { defaultDB } from "@/utils/firebase";
+import { cacheDbInfo } from "@/utils/firebase";
 import { collection, addDoc, getDocs, deleteDoc } from "firebase/firestore";
 
 export type CarAPIMetadata = {
@@ -29,56 +28,58 @@ export type CarModelsListElement = {
   name: string;
 };
 
-function getExpirationTimestamp(token: string) : number {
-  const parsedToken = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+function getExpirationTimestamp(token: string): number {
+  const parsedToken = JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
   return parsedToken.exp;
 }
 
 async function getNewAuthToken() {
-    const CARAPI_SECRET: string = env.CARAPI_SECRET!;
+  const CARAPI_SECRET: string = env.CARAPI_SECRET!;
 
-    if (!CARAPI_SECRET || isEmpty(CARAPI_SECRET)) {
-      throw new Error("CARAPI_SECRET is not set");
-    }
-
-    const CARAPI_TOKEN: string = env.CARAPI_TOKEN!;
-
-    if (!CARAPI_TOKEN || isEmpty(CARAPI_TOKEN)) {
-      throw new Error("CARAPI_TOKEN is not set");
-    }
-
-    const response = await axios.post(
-      "https://carapi.app/api/auth/login",
-      {
-        api_secret: CARAPI_SECRET,
-        api_token: CARAPI_TOKEN,
-      },
-      {
-        headers: {
-          "accept": "text/plain",
-          "content-type": "application/json",
-        },
-        cache: {
-          ttl: 86400
-        }
-      }
-    );
-
-    return response.data;
+  if (!CARAPI_SECRET || isEmpty(CARAPI_SECRET)) {
+    throw new Error("CARAPI_SECRET is not set");
   }
 
+  const CARAPI_TOKEN: string = env.CARAPI_TOKEN!;
+
+  if (!CARAPI_TOKEN || isEmpty(CARAPI_TOKEN)) {
+    throw new Error("CARAPI_TOKEN is not set");
+  }
+
+  const response = await axios.post(
+    "https://carapi.app/api/auth/login",
+    {
+      api_secret: CARAPI_SECRET,
+      api_token: CARAPI_TOKEN,
+    },
+    {
+      headers: {
+        accept: "text/plain",
+        "content-type": "application/json",
+      },
+      cache: {
+        ttl: 86400,
+      },
+    }
+  );
+
+  return response.data;
+}
+
 export async function getAuthToken() {
-  const collectionRef = collection(defaultDB, "car-api-cache");
+  if (!cacheDbInfo.db) return "";
+
+  const collectionRef = collection(cacheDbInfo.db, cacheDbInfo.collections.carApi);
   const querySnapshot = await getDocs(collectionRef);
 
-  if(!querySnapshot.empty){
+  if (!querySnapshot.empty) {
     const doc = querySnapshot.docs[0];
     const cachedToken = doc.data().token;
 
-    if (Math.floor(Date.now() / 1000) <= getExpirationTimestamp(cachedToken)){
+    if (Math.floor(Date.now() / 1000) <= getExpirationTimestamp(cachedToken)) {
       console.debug("Car API: Got an auth token from cache");
       return cachedToken;
-    } else{
+    } else {
       await deleteDoc(doc.ref);
     }
   }
@@ -87,7 +88,7 @@ export async function getAuthToken() {
 
   try {
     await addDoc(collectionRef, {
-      token: newToken
+      token: newToken,
     });
     console.debug("Car API: Posted an auth token to cache");
   } catch (e) {

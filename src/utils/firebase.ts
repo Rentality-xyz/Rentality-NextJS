@@ -18,8 +18,9 @@ const firebaseConfig = {
 
 let app: FirebaseApp;
 let analyticsPromise: Promise<Analytics | null>;
-let db: Firestore;
-let defaultDB: Firestore;
+let chatDb: Firestore | undefined;
+let cacheDb: Firestore | undefined;
+let kycDb: Firestore | undefined;
 let storage: FirebaseStorage;
 let auth: Auth;
 let login: (token: string) => Promise<User | undefined>;
@@ -29,8 +30,9 @@ let logout: () => Promise<void>;
 if (!isEmpty(firebaseConfig.projectId)) {
   app = initializeApp(firebaseConfig);
   analyticsPromise = isSupported().then((yes) => (yes ? getAnalytics(app) : null));
-  defaultDB = getFirestore(app);
-  db = getFirestore(app, "rentality-chat-db");
+  chatDb = getFirestore(app, "rentality-chat-db");
+  cacheDb = getFirestore(app, "rentality-cache-db");
+  kycDb = getFirestore(app, "rentality-kyc-info-db");
   storage = getStorage(app);
   auth = getAuth(app);
   login = async (token: string) => {
@@ -54,4 +56,19 @@ if (!isEmpty(firebaseConfig.projectId)) {
   };
 }
 
-export { app, analyticsPromise, db, defaultDB, storage, auth, login as loginWithCustomToken, loginWithPassword, logout };
+const chatDbInfo = { db: chatDb, collections: { chats: "chats", userchats: "userchats" } as const };
+const cacheDbInfo = { db: cacheDb, collections: { carApi: "car-api-cache" } as const };
+const kycDbInfo = { db: cacheDb, collections: { kycInfos: "kycInfos" } as const };
+
+export {
+  app,
+  analyticsPromise,
+  chatDbInfo,
+  cacheDbInfo,
+  kycDbInfo,
+  storage,
+  auth,
+  login as loginWithCustomToken,
+  loginWithPassword,
+  logout,
+};

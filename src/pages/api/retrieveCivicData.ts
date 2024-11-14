@@ -1,9 +1,8 @@
 import { isEmpty } from "@/utils/string";
 import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { db, storage, loginWithPassword } from "@/utils/firebase";
+import { kycDbInfo, storage, loginWithPassword } from "@/utils/firebase";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { FIREBASE_DB_NAME } from "@/chat/model/firebaseTypes";
 import { ref, uploadBytes } from "firebase/storage";
 import { env } from "@/utils/env";
 import moment from "moment";
@@ -299,7 +298,7 @@ async function saveDocs(address: string, docs: PiiDocData[]): Promise<Result<Pii
 }
 
 async function savePiiInfoToFirebase(allInfo: AllPiiInfo, docs: PiiDocData[]): Promise<Result<boolean, string>> {
-  if (!db) return Err("db is null");
+  if (!kycDbInfo.db) return Err("db is null");
   if (!storage) return Err("storage is null");
 
   const CIVIC_USER_EMAIL = env.CIVIC_USER_EMAIL;
@@ -323,7 +322,7 @@ async function savePiiInfoToFirebase(allInfo: AllPiiInfo, docs: PiiDocData[]): P
   }
   allInfo.links = savedDocsResult.value;
 
-  const kycInfoRef = doc(db, FIREBASE_DB_NAME.kycInfos, allInfo.verifiedInformation.address);
+  const kycInfoRef = doc(kycDbInfo.db, kycDbInfo.collections.kycInfos, allInfo.verifiedInformation.address);
   const kycInfoQuerySnapshot = await getDoc(kycInfoRef);
 
   if (!kycInfoQuerySnapshot.exists()) {

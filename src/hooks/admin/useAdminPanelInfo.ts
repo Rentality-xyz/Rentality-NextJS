@@ -5,12 +5,11 @@ import { getEtherContractWithSigner } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { ContractCivicKYCInfo, Role } from "@/model/blockchain/schemas";
-import { db } from "@/utils/firebase";
+import { kycDbInfo } from "@/utils/firebase";
 import { isEmpty } from "@/utils/string";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import moment from "moment";
 import { collection, getDocs, query } from "firebase/firestore";
-import { FIREBASE_DB_NAME } from "@/chat/model/firebaseTypes";
 import { bigIntReplacer } from "@/utils/json";
 
 export type AdminContractInfo = {
@@ -158,11 +157,15 @@ const useAdminPanelInfo = () => {
       console.error("updateKycInfoForAddress error: ethereumInfo is null");
       return false;
     }
+    if (!kycDbInfo.db) {
+      console.error("updateKycInfoForAddress error: db is null");
+      return false;
+    }
 
     try {
       setIsLoading(true);
 
-      const kycInfoQuery = query(collection(db, FIREBASE_DB_NAME.kycInfos));
+      const kycInfoQuery = query(collection(kycDbInfo.db, kycDbInfo.collections.kycInfos));
       const kycInfoQuerySnapshot = await getDocs(kycInfoQuery);
       const verifiedInformation = kycInfoQuerySnapshot.docs
         .find((i) => i.data().verifiedInformation?.address === address)

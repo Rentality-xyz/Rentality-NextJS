@@ -13,16 +13,15 @@ import { Contract, Listener } from "ethers";
 import { useNotification } from "../../notification/notificationContext";
 import useUserMode, { isHost } from "@/hooks/useUserMode";
 import { Unsubscribe, doc, onSnapshot } from "firebase/firestore";
-import { db } from "@/utils/firebase";
+import { chatDbInfo } from "@/utils/firebase";
 import {
   ChatId,
-  FIREBASE_DB_NAME,
   FirebaseUserChat,
   checkUserChats,
   getChatMessages,
   markUserChatAsSeen,
   saveMessageToFirebase,
-} from "@/chat/model/firebaseTypes";
+} from "@/chat/model/chatFirebaseTypes";
 import { ChatMessage } from "@/model/ChatMessage";
 import { useAuth } from "@/contexts/auth/authContext";
 
@@ -95,7 +94,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
     async (toAddress: string, tripId: number, message: string, tag: string = "TEXT") => {
       if (isEmpty(message)) return;
       if (!ethereumInfo) return;
-      if (!db) return;
+      if (!chatDbInfo.db) return;
 
       const chatInfo = chatInfos.find((ci) => ci.tripId === tripId);
       if (!chatInfo) return;
@@ -114,7 +113,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         createdAt: moment().unix(),
       };
 
-      await saveMessageToFirebase(db, newMessage);
+      await saveMessageToFirebase(chatDbInfo, newMessage);
     },
     [chatInfos, ethereumInfo]
   );
@@ -287,6 +286,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
   const getMessages = useCallback(
     async (tripId: number) => {
       if (!ethereumInfo) return [];
+      if (!chatDbInfo.db) return [];
 
       const existChatInfo = chatInfos.find((ci) => ci.tripId === tripId);
 
@@ -302,7 +302,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         existChatInfo.guestAddress
       );
 
-      const firebaseMessages = await getChatMessages(db, chatId);
+      const firebaseMessages = await getChatMessages(chatDbInfo, chatId);
       return firebaseMessages.map((cm) => {
         return {
           fromAddress: cm.senderId,
@@ -321,6 +321,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
   useEffect(() => {
     if (selectedChat === undefined) return;
     if (!ethereumInfo) return;
+    if (!chatDbInfo.db) return;
 
     const chatId = new ChatId(
       ethereumInfo.chainId.toString(),
@@ -329,9 +330,9 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
       selectedChat.guestAddress
     );
 
-    markUserChatAsSeen(db, ethereumInfo.walletAddress, chatId);
+    markUserChatAsSeen(chatDbInfo, ethereumInfo.walletAddress, chatId);
 
-    const chatsRef = doc(db, FIREBASE_DB_NAME.chats, chatId.toString());
+    const chatsRef = doc(chatDbInfo.db, chatDbInfo.collections.chats, chatId.toString());
     console.debug(`Sub for chat ${chatId.toString()}`);
     const unSub = onSnapshot(chatsRef, (res) => {
       const data = res.data();
@@ -385,7 +386,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
       if (!ethereumInfo) return;
       if (!rentalityContract) return;
       if (!rentalityNotificationService) return;
-      if (!db) return;
+      if (!chatDbInfo.db) return;
       if (isChatInitializing.current) return;
 
       try {
@@ -396,7 +397,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         const infos = (await getChatInfosWithoutMessages(rentalityContract)) ?? [];
 
         const promisses = infos.map(async (i) => {
-          await checkUserChats(db, i.hostAddress, i.guestAddress);
+          await checkUserChats(chatDbInfo, i.hostAddress, i.guestAddress);
 
           const chatId = new ChatId(
             ethereumInfo.chainId.toString(),
@@ -405,7 +406,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
             i.guestAddress
           );
 
-          const firebaseMessages = await getChatMessages(db, chatId);
+          const firebaseMessages = await getChatMessages(chatDbInfo, chatId);
           const messages: ChatMessage[] = firebaseMessages.map((cm) => {
             return {
               fromAddress: cm.senderId,
@@ -434,7 +435,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         await rentalityNotificationService.on(rentalityEventFilter, rentalityEventListener);
         setIsChatReloadRequire(false);
 
-        const chatsRef = doc(db, FIREBASE_DB_NAME.userchats, ethereumInfo.walletAddress);
+        const chatsRef = doc(chatDbInfo.db, chatDbInfo.collections.userchats, ethereumInfo.walletAddress);
 
         console.debug("Sub for userchats");
         unSub = onSnapshot(chatsRef, (res) => {
@@ -493,7 +494,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
       if (!ethereumInfo) return;
       if (!rentalityContract) return;
       if (!rentalityNotificationService) return;
-      if (!db) return;
+      if (!chatDbInfo.db) return;
       if (isChatInitializing.current) return;
 
       if (rentalityNotificationService) {
