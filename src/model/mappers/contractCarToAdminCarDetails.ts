@@ -21,7 +21,9 @@ export const mapContractCarToAdminCarDetails = async (
     locationLongitude: car.locationInfo.longitude,
     isListed: car.currentlyListed,
     hostName: car.hostName,
+    hostAddress: car.host,
     isUniue: true,
     isUserAddressFull: isUserAddressFull,
+    vinNumber: car.carVinNumber,
   };
 };

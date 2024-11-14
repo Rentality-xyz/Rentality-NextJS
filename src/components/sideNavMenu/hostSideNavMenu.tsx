@@ -18,6 +18,12 @@ function HostNavMenu() {
   const { notifications } = useNotification();
   const { chatInfos } = useChat();
   const { getPageLastVisitedDateTime } = usePageLastVisit();
+  const { t } = useTranslation();
+
+  const t_nav: TFunction = (name, options) => {
+    return t("nav_menu." + name, options);
+  };
+
   const bookedLastVisitedDateTime = getPageLastVisitedDateTime("host_trips_booked");
   const historyLastVisitedDateTime = getPageLastVisitedDateTime("host_trips_history");
   const claimsLastVisitedDateTime = getPageLastVisitedDateTime("host_claims");
@@ -39,10 +45,7 @@ function HostNavMenu() {
   const notificationsNotificationCount = notifications.filter(
     (n) => n.datestamp > notificationsLastVisitedDateTime
   ).length;
-  const { t } = useTranslation();
-  const t_nav: TFunction = (name, options) => {
-    return t("nav_menu." + name, options);
-  };
+
   return (
     <>
       <SideNavMenuGroup title={t_nav("trips")}>

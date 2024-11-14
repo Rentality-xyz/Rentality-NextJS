@@ -41,23 +41,33 @@ export default function RntCarModelSelect({
     }
   }, [make_id]);
 
+  const isReadOnly = readOnly || modelsList.length <= 0;
+
   return (
     <RntSelect
+      isTransparentStyle={true}
       id={id}
+      style={
+        isReadOnly
+          ? { cursor: "not-allowed", backgroundColor: "transparent", color: "#6B7381" }
+          : { backgroundColor: "transparent" }
+      }
       className={className}
       selectClassName={selectClassName}
       label={label}
       labelClassName="pl-4"
       value={value}
       validationError={validationError}
-      readOnly={readOnly || false}
+      readOnly={isReadOnly}
       onChange={function (e) {
         const newValue = e.target.value;
         const newID: string = e.target.options[e.target.selectedIndex].getAttribute("data-id") || "";
         if (onModelSelect) onModelSelect(newID, newValue);
       }}
     >
-      <option value="">{promptText}</option>
+      <option value="" hidden>
+        {promptText}
+      </option>
       {modelsList.map((carModelsListElement, index) => (
         <option key={"car-model-" + index} data-id={carModelsListElement.id} value={carModelsListElement.name}>
           {carModelsListElement.name}

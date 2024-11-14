@@ -67,7 +67,7 @@ export default function CreateTrip() {
         <TripConditions
           pricePerDay={carInfo.pricePerDay}
           securityDeposit={carInfo.securityDeposit}
-          milesIncludedPerDay={Number(carInfo.milesIncludedPerDay)}
+          milesIncludedPerDay={Number(carInfo.milesIncludedPerDayText)}
           pricePer10PercentFuel={carInfo.pricePer10PercentFuel}
           deliveryPrices={carInfo.deliveryPrices}
           insuranceDetails={{
@@ -104,6 +104,7 @@ export default function CreateTrip() {
           searchRequest={searchCarRequest}
           hostHomeLocation={carInfo.hostHomeLocation}
           deliveryDetails={carInfo.deliveryDetails}
+          timeZoneId={carInfo.timeZoneId}
         />
         <CreateTripGuestInsurance
           insuranceDetails={{

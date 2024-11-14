@@ -8,7 +8,7 @@ import { useRentality } from "../../rentalityContext";
 import { isEmpty } from "@/utils/string";
 import moment from "moment";
 import { useEthereum } from "../../web3/ethereumContext";
-import { ContractChatInfo, ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
+import { ContractChatInfo, ContractTripDTO, EventType, TripStatus } from "@/model/blockchain/schemas";
 import { Contract, Listener } from "ethers";
 import { useNotification } from "../../notification/notificationContext";
 import useUserMode, { isHost } from "@/hooks/useUserMode";
@@ -181,91 +181,87 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
     [userMode]
   );
 
-  const [rentalityTripService, setRentalityTripService] = useState<Contract | undefined>(undefined);
+  const [rentalityNotificationService, setRentalityNotificationService] = useState<Contract | undefined>(undefined);
 
   useEffect(() => {
-    const getRentalityTripService = async () => {
+    const getRentalityNotificationService = async () => {
       if (!ethereumInfo) return;
 
-      const tripService = await getEtherContractWithSigner("tripService", ethereumInfo.signer);
-      if (!tripService) {
-        console.error("getRentalityTripService error: tripService is null");
+      const notificationService = await getEtherContractWithSigner("notificationService", ethereumInfo.signer);
+      if (!notificationService) {
+        console.error("getRentalityNotificationService error: notificationService is null");
         return;
       }
-      setRentalityTripService(tripService);
+      setRentalityNotificationService(notificationService);
     };
 
-    getRentalityTripService();
+    getRentalityNotificationService();
   }, [ethereumInfo]);
 
-  const tripCreatedListener: Listener = useCallback(
+  const rentalityEventListener: Listener = useCallback(
     async ({ args }) => {
       if (!rentalityContract) return;
 
-      const tripId = BigInt(args[0]);
-      console.debug(`tripCreatedListener call. TripId: ${tripId}`);
-
-      try {
-        const tripInfo: ContractTripDTO = await rentalityContract.getTrip(tripId);
-        const metaData = parseMetaData(await getMetaDataFromIpfs(tripInfo.metadataURI));
-        const tripStatus = tripInfo.trip.status;
-
-        setChatInfos((prev) => {
-          if (prev.find((ci) => ci.tripId === Number(tripId)) !== undefined) {
-            return prev;
-          }
-
-          return [
-            ...prev,
-            {
-              tripId: Number(tripInfo.trip.tripId),
-
-              guestAddress: tripInfo.trip.guest,
-              guestName: tripInfo.trip.guestName,
-              guestPhotoUrl: getIpfsURI(tripInfo.guestPhotoUrl),
-
-              hostAddress: tripInfo.trip.host,
-              hostName: tripInfo.trip.hostName,
-              hostPhotoUrl: getIpfsURI(tripInfo.hostPhotoUrl),
-
-              tripTitle: `${tripStatus} trip with ${tripInfo.trip.hostName} ${tripInfo.brand} ${tripInfo.model}`,
-              startDateTime: getDateFromBlockchainTime(tripInfo.trip.startDateTime),
-              endDateTime: getDateFromBlockchainTime(tripInfo.trip.endDateTime),
-              timeZoneId: tripInfo.timeZoneId,
-              lastMessage: "Click to open chat",
-              updatedAt: moment.unix(0).toDate(),
-              isSeen: true,
-              seenAt: null,
-
-              carPhotoUrl: getIpfsURI(metaData.mainImage),
-              tripStatus: tripStatus,
-              carTitle: `${tripInfo.brand} ${tripInfo.model} ${tripInfo.yearOfProduction}`,
-              carLicenceNumber: metaData.licensePlate,
-
-              messages: [],
-            },
-          ];
-        });
-      } catch (e) {
-        console.error("tripCreatedListener error:" + e);
+      const eventType = BigInt(args[0]);
+      if (eventType !== EventType.Trip) {
+        return;
       }
-    },
-    [rentalityContract]
-  );
 
-  const tripStatusChangedListener: Listener = useCallback(
-    async ({ args }) => {
-      if (!rentalityContract) return;
-
-      const tripId = Number(args[0]);
-      const tripStatus: TripStatus = BigInt(args[1]);
+      const tripId = Number(args[1]);
+      const tripStatus: TripStatus = BigInt(args[2]);
 
       console.debug(`tripStatusChangedListener call. TripId: ${tripId} status: ${tripStatus}`);
+      if (tripStatus === TripStatus.Pending) {
+        try {
+          const tripInfo: ContractTripDTO = await rentalityContract.getTrip(BigInt(tripId));
+          const metaData = parseMetaData(await getMetaDataFromIpfs(tripInfo.metadataURI));
+          const tripStatus = tripInfo.trip.status;
 
-      setChatInfos((prev) => {
-        const result = prev.map((ci) => (ci.tripId === tripId ? { ...ci, tripStatus: tripStatus } : ci));
-        return result;
-      });
+          setChatInfos((prev) => {
+            if (prev.find((ci) => ci.tripId === Number(tripId)) !== undefined) {
+              return prev;
+            }
+
+            return [
+              ...prev,
+              {
+                tripId: Number(tripInfo.trip.tripId),
+
+                guestAddress: tripInfo.trip.guest,
+                guestName: tripInfo.trip.guestName,
+                guestPhotoUrl: getIpfsURI(tripInfo.guestPhotoUrl),
+
+                hostAddress: tripInfo.trip.host,
+                hostName: tripInfo.trip.hostName,
+                hostPhotoUrl: getIpfsURI(tripInfo.hostPhotoUrl),
+
+                tripTitle: `${tripStatus} trip with ${tripInfo.trip.hostName} ${tripInfo.brand} ${tripInfo.model}`,
+                startDateTime: getDateFromBlockchainTime(tripInfo.trip.startDateTime),
+                endDateTime: getDateFromBlockchainTime(tripInfo.trip.endDateTime),
+                timeZoneId: tripInfo.timeZoneId,
+                lastMessage: "Click to open chat",
+                updatedAt: moment.unix(0).toDate(),
+                isSeen: true,
+                seenAt: null,
+
+                carPhotoUrl: getIpfsURI(metaData.mainImage),
+                tripStatus: tripStatus,
+                carTitle: `${tripInfo.brand} ${tripInfo.model} ${tripInfo.yearOfProduction}`,
+                carLicenceNumber: metaData.licensePlate,
+
+                messages: [],
+              },
+            ];
+          });
+        } catch (e) {
+          console.error("rentalityEventListener error:" + e);
+        }
+      } else {
+        setChatInfos((prev) => {
+          const result = prev.map((ci) => (ci.tripId === tripId ? { ...ci, tripStatus: tripStatus } : ci));
+          return result;
+        });
+      }
     },
     [rentalityContract]
   );
@@ -386,7 +382,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
       if (!isChatReloadRequire) return;
       if (!ethereumInfo) return;
       if (!rentalityContract) return;
-      if (!rentalityTripService) return;
+      if (!rentalityNotificationService) return;
       if (!db) return;
       if (isChatInitializing.current) return;
 
@@ -423,16 +419,17 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         const chatInfos = await Promise.all(promisses);
         setChatInfos(chatInfos);
 
-        const eventTripCreatedFilter = isHost(userMode)
-          ? rentalityTripService.filters.TripCreated(null, [ethereumInfo.walletAddress], null)
-          : rentalityTripService.filters.TripCreated(null, null, [ethereumInfo.walletAddress]);
+        const rentalityEventFilter = rentalityNotificationService.filters.RentalityEvent(
+          null,
+          null,
+          null,
+          [ethereumInfo.walletAddress],
+          [ethereumInfo.walletAddress],
+          null
+        );
 
-        const eventTripStatusChangedFilter = isHost(userMode)
-          ? rentalityTripService.filters.TripStatusChanged(null, null, [ethereumInfo.walletAddress], null)
-          : rentalityTripService.filters.TripStatusChanged(null, null, null, [ethereumInfo.walletAddress]);
-        await rentalityTripService.removeAllListeners();
-        await rentalityTripService.on(eventTripCreatedFilter, tripCreatedListener);
-        await rentalityTripService.on(eventTripStatusChangedFilter, tripStatusChangedListener);
+        await rentalityNotificationService.removeAllListeners();
+        await rentalityNotificationService.on(rentalityEventFilter, rentalityEventListener);
         setIsChatReloadRequire(false);
 
         const chatsRef = doc(db, FIREBASE_DB_NAME.userchats, ethereumInfo.walletAddress);
@@ -493,12 +490,12 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
       if (!isChatReloadRequire) return;
       if (!ethereumInfo) return;
       if (!rentalityContract) return;
-      if (!rentalityTripService) return;
+      if (!rentalityNotificationService) return;
       if (!db) return;
       if (isChatInitializing.current) return;
 
-      if (rentalityTripService) {
-        rentalityTripService.removeAllListeners();
+      if (rentalityNotificationService) {
+        rentalityNotificationService.removeAllListeners();
       }
       if (unSub) {
         console.debug("unSub for userchats");
@@ -508,11 +505,10 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
   }, [
     ethereumInfo,
     rentalityContract,
-    rentalityTripService,
+    rentalityNotificationService,
     userMode,
     getChatInfosWithoutMessages,
-    tripCreatedListener,
-    tripStatusChangedListener,
+    rentalityEventListener,
     isChatReloadRequire,
   ]);
 

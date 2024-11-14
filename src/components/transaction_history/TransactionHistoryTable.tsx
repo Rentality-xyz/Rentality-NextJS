@@ -9,6 +9,7 @@ import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import Link from "next/link";
+import RntSuspense from "../common/rntSuspense";
 
 type TransactionHistoryTableProps = {
   isLoading: boolean;
@@ -27,16 +28,15 @@ function TransactionHistoryTable({ isLoading, data, isHost }: TransactionHistory
   const headerSpanClassName = "text-center font-semibold px-2 font-light text-sm";
   const rowSpanClassName = "px-2 h-12 text-center";
 
-  if (isLoading) {
-    return (
-      <div className="rounded-b-2xl bg-rentality-bg p-4 pb-8">
-        <Loading />
-      </div>
-    );
-  }
-
   return (
-    <>
+    <RntSuspense
+      isLoading={isLoading}
+      fallback={
+        <div className="rounded-b-2xl bg-rentality-bg p-4 pb-8">
+          <Loading />
+        </div>
+      }
+    >
       <table className="hidden w-full table-auto border-spacing-2 overflow-x-auto lg:block">
         <thead className="mb-2">
           <tr>
@@ -123,7 +123,7 @@ function TransactionHistoryTable({ isLoading, data, isHost }: TransactionHistory
           );
         })}
       </div>
-    </>
+    </RntSuspense>
   );
 }
 

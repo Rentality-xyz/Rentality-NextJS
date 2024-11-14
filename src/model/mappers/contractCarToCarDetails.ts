@@ -63,5 +63,6 @@ export const mapContractCarToCarDetails = async (
     isGuestInsuranceRequired: insuranceInfo.required,
     insurancePerDayPriceInUsd: Number(insuranceInfo.priceInUsdCents) / 100,
     isCarMetadataEdited: false,
+    metadataUrl: tokenURI,
   };
 };

@@ -30,6 +30,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
         const timeZoneId = await getTimeZoneIdFromAddress(formatLocationInfoUpToCity(searchCarRequest.searchLocation));
         const { contractDateFromUTC, contractDateToUTC, contractSearchCarParams } =
           formatSearchAvailableCarsContractRequest(searchCarRequest, {}, timeZoneId);
+
         const pickUpInfo: ContractLocationInfo = {
           ...emptyContractLocationInfo,
           latitude: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
@@ -100,7 +101,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           carName: metaData.name,
           tankSizeInGal: Number(metaData.tankVolumeInGal),
 
-          milesIncludedPerDay: getMilesIncludedPerDayText(availableCarDTO.milesIncludedPerDay ?? 0),
+          milesIncludedPerDayText: getMilesIncludedPerDayText(availableCarDTO.milesIncludedPerDay ?? 0),
           pricePerDay: pricePerDay,
           pricePerDayWithDiscount: Number(availableCarDTO.pricePerDayWithDiscount) / 100,
           tripDays: tripDays,
@@ -147,6 +148,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           salesTax: Number(availableCarDTO.salesTax),
           governmentTax: Number(availableCarDTO.governmentTax),
           isGuestHasInsurance: availableCarDTO.isGuestHasInsurance,
+          distanceToUser: Number(availableCarDTO.distance),
         };
         setCarInfo(selectedCarDetails);
 

@@ -11,7 +11,6 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import ModifyTripForm from "./modifyTripForm";
 import { useChat } from "@/contexts/chat/firebase/chatContext";
 import GuestConfirmFinishForm from "./guestConfirmFinishForm";
-import { useRouter } from "next/navigation";
 
 function isInTheFuture(date: Date) {
   return date > new Date();

@@ -1,9 +1,10 @@
 import { getEtherContractWithSigner } from "@/abis";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
-import { SearchCarInfoDTO } from "@/model/SearchCarsResult";
+import { FilterLimits, SearchCarInfo, SearchCarInfoDTO } from "@/model/SearchCarsResult";
 import { emptyLocationInfo, formatLocationInfoUpToCity } from "@/model/LocationInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import {
+  ContractFilterInfoDTO,
   ContractLocationInfo,
   ContractSearchCarParams,
   ContractSearchCarWithDistance,
@@ -21,7 +22,14 @@ import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { allSupportedBlockchainList } from "@/model/blockchain/blockchainList";
 import { getTimeZoneIdFromAddress } from "@/utils/timezone";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export type PublicSearchCarsResponse =
+  | {
+      availableCarsData: SearchCarInfoDTO[];
+      filterLimits: FilterLimits;
+    }
+  | { error: string };
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse<PublicSearchCarsResponse>) {
   const privateKey = env.SIGNER_PRIVATE_KEY;
   if (isEmpty(privateKey)) {
     console.error("API checkTrips error: private key was not set");
@@ -85,8 +93,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       longitude: Number(longitude as string),
       timeZoneId: "",
     },
-    dateFrom: new Date(dateFrom as string),
-    dateTo: new Date(dateTo as string),
+    dateFromInDateTimeStringFormat: dateFrom as string,
+    dateToInDateTimeStringFormat: dateTo as string,
     isDeliveryToGuest: isDeliveryToGuestValue,
     deliveryInfo: {
       pickupLocation:
@@ -181,14 +189,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       emptyContractLocationInfo
     );
   }
+  const getFilterInfoDto: ContractFilterInfoDTO = await rentality.getFilterInfo(BigInt(1));
 
-  const availableCarsData = await formatSearchAvailableCarsContractResponse(
-    rentality,
-    chainIdNumber,
-    availableCarsView
-  );
+  const availableCarsData = await formatSearchAvailableCarsContractResponse(chainIdNumber, availableCarsView);
+  const filterLimits = {
+    minCarYear: Number(getFilterInfoDto.minCarYearOfProduction),
+    maxCarPrice: Number(getFilterInfoDto.maxCarPrice) / 100,
+  };
 
-  res.status(200).json(availableCarsData);
+  res.status(200).json({ availableCarsData, filterLimits });
 }
 
 function getTotalDiscount(pricePerDay: number, tripDays: number, totalPriceWithDiscount: number) {
@@ -220,8 +229,8 @@ function formatSearchAvailableCarsContractRequest(
   searchCarFilters: SearchCarFilters,
   timeZoneId: string
 ) {
-  const startCarLocalDateTime = moment.tz(searchCarRequest.dateFrom, timeZoneId).toDate();
-  const endCarLocalDateTime = moment.tz(searchCarRequest.dateTo, timeZoneId).toDate();
+  const startCarLocalDateTime = moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, timeZoneId).toDate();
+  const endCarLocalDateTime = moment.tz(searchCarRequest.dateToInDateTimeStringFormat, timeZoneId).toDate();
   const contractDateFromUTC = getBlockchainTimeFromDate(startCarLocalDateTime);
   const contractDateToUTC = getBlockchainTimeFromDate(endCarLocalDateTime);
   const contractSearchCarParams: ContractSearchCarParams = {
@@ -244,7 +253,6 @@ function formatSearchAvailableCarsContractRequest(
 }
 
 async function formatSearchAvailableCarsContractResponse(
-  rentality: IRentalityContract,
   chainId: number,
   searchCarsViewsView: ContractSearchCarWithDistance[]
 ) {
@@ -286,7 +294,7 @@ async function formatSearchAvailableCarsContractResponse(
         carName: metaData.name,
         tankSizeInGal: Number(metaData.tankVolumeInGal),
 
-        milesIncludedPerDay: getMilesIncludedPerDayText(i.car.milesIncludedPerDay ?? 0),
+        milesIncludedPerDayText: getMilesIncludedPerDayText(i.car.milesIncludedPerDay ?? 0),
         pricePerDay: pricePerDay,
         pricePerDayWithDiscount: Number(i.car.pricePerDayWithDiscount) / 100,
         tripDays: tripDays,
@@ -317,6 +325,7 @@ async function formatSearchAvailableCarsContractResponse(
         isTestCar: testWallets.includes(i.car.host),
         isInsuranceRequired: i.car.insuranceInfo.required,
         insurancePerDayPriceInUsd: Number(i.car.insuranceInfo.priceInUsdCents) / 100,
+        distanceToUser: Number(i.distance),
       };
 
       return item;

@@ -1,15 +1,15 @@
 import { useMemo } from "react";
-import moment from "moment";
 import { isEmpty } from "@/utils/string";
 import { DEFAULT_SEARCH_DATE_FROM, DEFAULT_SEARCH_DATE_TO, DEFAULT_SEARCH_LOCATION } from "@/utils/constants";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { emptyLocationInfo, LocationInfo } from "@/model/LocationInfo";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
+import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
 
 type SearchCarQueryParams = {
   address: string;
-  from: number;
-  to: number;
+  from: string;
+  to: string;
   isDelivery: boolean;
   pickUp?: string;
   dropOff?: string;
@@ -53,8 +53,8 @@ export function useCarSearchParams() {
   const router = useRouter();
 
   const address = searchParams.get("address") as SearchCarQueryParams["address"];
-  const from = searchParams.get("from") ? parseInt(searchParams.get("from") as string) : undefined;
-  const to = searchParams.get("to") ? parseInt(searchParams.get("to") as string) : undefined;
+  const from = searchParams.get("from") as SearchCarQueryParams["from"];
+  const to = searchParams.get("to") as SearchCarQueryParams["to"];
   const isDelivery = searchParams.get("isDelivery") !== null && searchParams.get("isDelivery") === "true";
   const pickUp = searchParams.get("pickUp") as SearchCarQueryParams["pickUp"];
   const dropOff = searchParams.get("dropOff") as SearchCarQueryParams["dropOff"];
@@ -74,11 +74,11 @@ export function useCarSearchParams() {
     if (request.searchLocation && !isEmpty(request.searchLocation.address)) {
       setParam(params, "address", locationInfoToParamAddress(request.searchLocation));
     }
-    if (request.dateFrom.getTime() > 0) {
-      setParam(params, "from", moment(request.dateFrom).unix().toString());
+    if (!isEmpty(request.dateFromInDateTimeStringFormat)) {
+      setParam(params, "from", request.dateFromInDateTimeStringFormat);
     }
-    if (request.dateTo.getTime() > 0) {
-      setParam(params, "to", moment(request.dateTo).unix().toString());
+    if (!isEmpty(request.dateToInDateTimeStringFormat)) {
+      setParam(params, "to", request.dateToInDateTimeStringFormat);
     }
     if (request.isDeliveryToGuest) {
       setParam(params, "isDelivery", request.isDeliveryToGuest.toString());
@@ -126,8 +126,8 @@ export function useCarSearchParams() {
   const searchCarRequest: SearchCarRequest = useMemo(() => {
     return {
       searchLocation: paramAddressToLocationInfo(address, DEFAULT_SEARCH_LOCATION),
-      dateFrom: from ? moment.unix(from).toDate() : DEFAULT_SEARCH_DATE_FROM,
-      dateTo: to ? moment.unix(to).toDate() : DEFAULT_SEARCH_DATE_TO,
+      dateFromInDateTimeStringFormat: !isEmpty(from) ? from : dateToHtmlDateTimeFormat(DEFAULT_SEARCH_DATE_FROM),
+      dateToInDateTimeStringFormat: !isEmpty(to) ? to : dateToHtmlDateTimeFormat(DEFAULT_SEARCH_DATE_TO),
       isDeliveryToGuest: isDelivery,
       deliveryInfo: {
         pickupLocation:

@@ -5,7 +5,7 @@ import GuestSideNavMenu from "../sideNavMenu/guestSideNavMenu";
 import AdminSideNavMenu from "../sideNavMenu/adminSideNavMenu";
 import { useAppContext } from "@/contexts/appContext";
 import useUserMode, { isAdmin, isHost } from "@/hooks/useUserMode";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { DialogActions } from "@/utils/dialogActions";
 import { t } from "i18next";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
@@ -53,19 +53,46 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
     };
   }, [smallScreenDialogShown, showDialog, hideDialogs, t]);
 
+  const footerRef = useRef<HTMLDivElement>(null);
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsFooterVisible(entry.isIntersecting);
+      },
+      { root: null, threshold: 0.1 }
+    );
+
+    if (footerRef.current) {
+      observer.observe(footerRef.current);
+    }
+
+    return () => {
+      if (footerRef.current) {
+        observer.unobserve(footerRef.current);
+      }
+    };
+  }, []);
+
   return (
     <>
       <Header />
       <div className="relative flex min-h-[100vh] w-full flex-row overflow-hidden pt-14 text-rnt-temp-sidemenu-text">
-        <aside id="main-side-menu" className="hidden bg-rentality-bg-left-sidebar lg:block">
+        <aside
+          id="main-side-menu"
+          className={`fixed hidden h-full bg-rentality-bg-left-sidebar lg:block ${
+            isFooterVisible ? `bottom-20` : `top-14`
+          } transition-all duration-300`}
+        >
           {sideNavMenu}
         </aside>
 
-        <div className="relative flex w-full min-w-0 flex-col xl:grow">
+        <div className="relative flex w-full min-w-0 flex-col lg:ml-[300px] xl:grow">
           <main className="flex h-full flex-col px-4 py-4 text-rnt-temp-main-text sm:px-8">{children}</main>
         </div>
       </div>
-      <Footer />
+      <Footer ref={footerRef} />
     </>
   );
 }

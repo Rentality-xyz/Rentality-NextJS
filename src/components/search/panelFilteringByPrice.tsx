@@ -7,14 +7,22 @@ import { useTranslation } from "react-i18next";
 import { IPanelFilterProps } from "@/components/search/panelFilterProps";
 import Slider from "@mui/material/Slider";
 import RntButton from "@/components/common/rntButton";
+import { DEFAULT_MAX_FILTER_PRICE } from "@/utils/constants";
 
-export default function PanelFilteringByPrice({ id, onClickReset, onClickApply, isResetFilters }: IPanelFilterProps) {
+export default function PanelFilteringByPrice({
+  id,
+  onClickReset,
+  onClickApply,
+  isResetFilters,
+  maxValue,
+}: IPanelFilterProps) {
   const minPrice = 0;
-  const maxPrice = 2000;
+  const maxPrice = maxValue !== undefined && Number.isFinite(maxValue) ? maxValue : DEFAULT_MAX_FILTER_PRICE;
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [value, setValue] = useState([minPrice, maxPrice]);
   const [selectedValue, setSelectedValue] = useState(value);
+  const { t } = useTranslation();
 
   const toggleDropdown = () => {
     setIsOpen((prevIsOpen) => {
@@ -25,8 +33,6 @@ export default function PanelFilteringByPrice({ id, onClickReset, onClickApply, 
       return !prevIsOpen;
     });
   };
-
-  const { t } = useTranslation();
 
   const t_comp = (element: string) => {
     return t("search_and_filters." + element);
@@ -76,6 +82,18 @@ export default function PanelFilteringByPrice({ id, onClickReset, onClickApply, 
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!maxValue || !Number.isFinite(maxValue)) return;
+    const maxPrice = maxValue !== undefined && Number.isFinite(maxValue) ? maxValue : DEFAULT_MAX_FILTER_PRICE;
+
+    setValue((prev) => {
+      return prev[1] <= maxPrice ? prev : [prev[0], maxPrice];
+    });
+    setSelectedValue((prev) => {
+      return prev[1] <= maxPrice ? prev : [prev[0], maxPrice];
+    });
+  }, [maxValue]);
+
   return (
     <div ref={dropdownRef} id={id} className="relative w-full sm:w-48">
       <RntButtonTransparent
@@ -86,9 +104,9 @@ export default function PanelFilteringByPrice({ id, onClickReset, onClickApply, 
       >
         <div className="relative flex items-center justify-center text-rentality-secondary">
           <div className="text-lg">
-            {value[0] === minPrice && value[1] === maxPrice
+            {value[0] <= minPrice && value[1] >= maxPrice
               ? t_comp("select_filter_price")
-              : `${value[0]} - ${value[1]}`}
+              : `$${value[0]} - $${value[1]}`}
           </div>
           <Image src={isOpen ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="absolute right-4" />
         </div>
@@ -97,7 +115,8 @@ export default function PanelFilteringByPrice({ id, onClickReset, onClickApply, 
       {isOpen && (
         <div className="absolute z-10 w-full rounded-lg border border-gray-500 bg-rentality-bg-left-sidebar px-4 py-2 shadow-md sm:left-[-17px] sm:w-56">
           <div className="mb-4 text-lg text-white">
-            ${value[0]} - ${value[1]}/day
+            ${value[0]} - ${value[1]}
+            {t("common.per_day")}
           </div>
 
           <div className="mb-4 flex items-center justify-center">

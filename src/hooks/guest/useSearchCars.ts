@@ -1,8 +1,10 @@
 import { useCallback, useState } from "react";
-import { SearchCarInfo, SearchCarInfoDTO, SearchCarsResult, emptySearchCarsResult } from "@/model/SearchCarsResult";
+import { SearchCarInfo, SearchCarsResult, emptySearchCarsResult } from "@/model/SearchCarsResult";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isEmpty } from "@/utils/string";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
+import { bigIntReplacer } from "@/utils/json";
+import { PublicSearchCarsResponse } from "@/pages/api/publicSearchCars";
 
 export type SortOptions = {
   [key: string]: string;
@@ -20,8 +22,9 @@ const useSearchCars = () => {
 
       var url = new URL(`/api/publicSearchCars`, window.location.origin);
       if (ethereumInfo?.chainId) url.searchParams.append("chainId", ethereumInfo.chainId.toString());
-      if (request.dateFrom) url.searchParams.append("dateFrom", request.dateFrom.toISOString());
-      if (request.dateTo) url.searchParams.append("dateTo", request.dateTo.toISOString());
+      if (request.dateFromInDateTimeStringFormat)
+        url.searchParams.append("dateFrom", request.dateFromInDateTimeStringFormat);
+      if (request.dateToInDateTimeStringFormat) url.searchParams.append("dateTo", request.dateToInDateTimeStringFormat);
       if (request.searchLocation.country) url.searchParams.append("country", request.searchLocation.country);
       if (request.searchLocation.state) url.searchParams.append("state", request.searchLocation.state);
       if (request.searchLocation.city) url.searchParams.append("city", request.searchLocation.city);
@@ -68,12 +71,23 @@ const useSearchCars = () => {
       }
 
       const apiJson = await apiResponse.json();
-      if (!Array.isArray(apiJson)) {
+      if (
+        apiJson === undefined ||
+        apiJson.availableCarsData === undefined ||
+        apiJson.filterLimits === undefined ||
+        !Array.isArray(apiJson.availableCarsData)
+      ) {
         console.error("searchAvailableCars fetch wrong response format:");
         return;
       }
 
-      const availableCarsData = apiJson as SearchCarInfoDTO[];
+      const publicSearchCarsResponse = apiJson as PublicSearchCarsResponse;
+      if ("error" in publicSearchCarsResponse) {
+        console.error(`searchAvailableCars fetch error: + ${publicSearchCarsResponse.error}`);
+        return;
+      }
+
+      const availableCarsData = publicSearchCarsResponse.availableCarsData;
 
       for (const carInfoI of availableCarsData) {
         for (const carInfoJ of availableCarsData) {
@@ -93,10 +107,24 @@ const useSearchCars = () => {
         availableCarsData[0].highlighted = true;
       }
 
+      console.debug(
+        "cars:",
+        JSON.stringify(
+          availableCarsData.map((i) => ({
+            car: `${i.brand} ${i.model} ${i.year}`,
+            pricePerDay: i.pricePerDay,
+            distanceToUser: i.distanceToUser,
+          })),
+          bigIntReplacer,
+          2
+        )
+      );
+
       setSearchResult({
         searchCarRequest: request,
         searchCarFilters: filters,
         carInfos: availableCarsData.map((i) => ({ ...i, engineType: BigInt(i.engineType) })),
+        filterLimits: publicSearchCarsResponse.filterLimits,
       });
       return true;
     } catch (e) {
@@ -114,17 +142,13 @@ const useSearchCars = () => {
     return b.pricePerDay - a.pricePerDay;
   }
 
-  function sortByIncludedDistance(a: SearchCarInfo, b: SearchCarInfo) {
-    return Number(a.milesIncludedPerDay) - Number(b.milesIncludedPerDay);
+  function sortByDistanceToUser(a: SearchCarInfo, b: SearchCarInfo) {
+    return a.distanceToUser - b.distanceToUser;
   }
 
   const sortSearchResult = useCallback((sortBy: SortOptionKey) => {
     const sortLogic =
-      sortBy === "distance"
-        ? sortByIncludedDistance
-        : sortBy === "priceDesc"
-          ? sortByDailyPriceDes
-          : sortByDailyPriceAsc;
+      sortBy === "distance" ? sortByDistanceToUser : sortBy === "priceDesc" ? sortByDailyPriceDes : sortByDailyPriceAsc;
 
     setSearchResult((current) => {
       return {
@@ -132,6 +156,7 @@ const useSearchCars = () => {
         searchCarFilters: current.searchCarFilters,
         //TODO carInfos: current.carInfos.toSorted(sortLogic),
         carInfos: [...current.carInfos].sort(sortLogic),
+        filterLimits: current.filterLimits,
       };
     });
   }, []);

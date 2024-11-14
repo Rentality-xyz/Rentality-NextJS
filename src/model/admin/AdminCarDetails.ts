@@ -10,6 +10,8 @@ export type AdminCarDetails = {
   locationLongitude: string;
   isListed: boolean;
   hostName: string;
+  hostAddress: string;
   isUniue: boolean;
   isUserAddressFull: boolean;
+  vinNumber: string;
 };
