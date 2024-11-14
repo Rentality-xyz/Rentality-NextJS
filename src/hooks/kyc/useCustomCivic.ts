@@ -6,6 +6,7 @@ import { tryParseMetamaskError } from "@/utils/metamask";
 import { isEmpty } from "@/utils/string";
 import { GatewayStatus, useGateway } from "@civic/ethereum-gateway-react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export type KycStatus =
   | "Loading"
@@ -23,6 +24,7 @@ const useCustomCivic = () => {
   const [commissionFee, setCommissionFee] = useState(0);
   const { gatewayStatus, requestGatewayToken, pendingRequests, reinitialize } = useGateway();
   const [isKycProcessing, setIsKycProcessing] = useState(false);
+  const { t } = useTranslation();
 
   async function payCommission(): Promise<Result<boolean, string>> {
     if (!rentalityContract) {
@@ -48,7 +50,7 @@ const useCustomCivic = () => {
       const metamaskErrorResult = tryParseMetamaskError(e);
       if (metamaskErrorResult.ok && metamaskErrorResult.value.message.includes("insufficient funds")) {
         setStatus("Not paid");
-        return Err("You're almost there! Just add a little more to your wallet to continue.");
+        return Err(t("common.add_fund_to_wallet"));
       }
       console.error("payCommission error:" + e);
       setStatus("Not paid");
@@ -90,6 +92,7 @@ const useCustomCivic = () => {
         isKycProcessing &&
         (gatewayStatus === GatewayStatus.CHECKING || gatewayStatus === GatewayStatus.USER_INFORMATION_REJECTED)
       ) {
+        setStatus("Paying");
         try {
           var url = new URL(`/api/updateCivic`, window.location.origin);
           url.searchParams.append("address", ethereumInfo.walletAddress);

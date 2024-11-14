@@ -32,6 +32,7 @@ import { placeDetailsToLocationInfoWithTimeZone } from "@/utils/location";
 import CarAddPhoto from "./CarAddPhoto";
 import { env } from "@/utils/env";
 import { APIProvider } from "@vis.gl/react-google-maps";
+import { Result, TransactionErrorCode } from "@/model/utils/result";
 
 export default function CarEditForm({
   initValue,
@@ -41,7 +42,7 @@ export default function CarEditForm({
 }: {
   initValue?: HostCarInfo;
   isNewCar: boolean;
-  saveCarInfo: (hostCarInfo: HostCarInfo) => Promise<boolean>;
+  saveCarInfo: (hostCarInfo: HostCarInfo) => Promise<Result<boolean, TransactionErrorCode>>;
   t: TFunction;
 }) {
   const router = useRouter();
@@ -149,11 +150,12 @@ export default function CarEditForm({
       timeBufferBetweenTripsInMin: formData.timeBufferBetweenTripsInMin,
       isGuestInsuranceRequired: formData.isGuestInsuranceRequired,
       insurancePerDayPriceInUsd: formData.insurancePerDayPriceInUsd,
-      ownerAddress: "",
-      wheelDrive: "",
-      trunkSize: "",
-      bodyType: "",
+      ownerAddress: initValue?.ownerAddress ?? "",
+      wheelDrive: initValue?.wheelDrive ?? "",
+      trunkSize: initValue?.trunkSize ?? "",
+      bodyType: initValue?.bodyType ?? "",
       isCarMetadataEdited: isCarMetadataEdited,
+      metadataUrl: initValue?.metadataUrl ?? "",
     };
 
     const isValidForm = verifyCar(carInfoFormParams);
@@ -172,23 +174,22 @@ export default function CarEditForm({
       return;
     }
 
-    try {
-      setMessage(t("vehicles.wait_loading"));
-      const result = await saveCarInfo(carInfoFormParams);
+    setMessage(t("vehicles.wait_loading"));
+    const result = await saveCarInfo(carInfoFormParams);
 
-      if (!result) {
-        throw new Error("handleSave error");
-      }
+    if (result.ok) {
       if (isNewCar) {
         showInfo(t("vehicles.car_listed"));
       } else {
         showInfo(t("vehicles.edited"));
       }
       router.push("/host/vehicles");
-    } catch (e) {
-      showError(t("vehicles.saving_failed"));
-    } finally {
-      setMessage("");
+    } else {
+      if (result.error === "NOT_ENOUGH_FUNDS") {
+        showError(t("common.add_fund_to_wallet"));
+      } else {
+        showError(t("vehicles.saving_failed"));
+      }
     }
   }
 
@@ -417,7 +418,6 @@ export default function CarEditForm({
                   id="engineType"
                   label={t_car("engine_type")}
                   labelClassName="pl-4"
-                  readOnly={!isNewCar}
                   validationError={errors.engineTypeText?.message?.toString()}
                   value={field.value}
                   onChange={(e) => {
@@ -477,7 +477,6 @@ export default function CarEditForm({
                   label={t_car("tank_size")}
                   labelClassName="pl-4"
                   placeholder="e.g. 16"
-                  readOnly={!isNewCar}
                   {...register("tankVolumeInGal", {
                     setValueAs: (v) => (v === "" || v === Number.isNaN(v) ? undefined : parseInt(v, 10)),
                     onChange: () => {

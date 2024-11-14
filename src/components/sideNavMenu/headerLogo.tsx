@@ -7,7 +7,7 @@ export default function HeaderLogo({ onClick }: { onClick?: MouseEventHandler<HT
   return (
     <div className="w-40 max-lg:hidden">
       <Link href={"https://rentality.xyz/"} onClick={onClick}>
-        <Image alt="" width={200} height={200} src={logo} />
+        <Image alt="" width={150} height={40} src={logo} />
       </Link>
     </div>
   );

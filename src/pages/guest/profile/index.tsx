@@ -1,25 +1,21 @@
-import Loading from "@/components/common/Loading";
 import { UserInsurance } from "@/components/guest/UserInsurance";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import UserProfileInfo from "@/components/profileInfo/userProfileInfo";
 import AddFunds from "@/components/RnD/AddFunds";
 import useProfileSettings from "@/hooks/useProfileSettings";
 import { useTranslation } from "react-i18next";
-import InvitationToConnect from "@/components/common/invitationToConnect";
-import { useAuth } from "@/contexts/auth/authContext";
+import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function Profile() {
   const [isLoading, savedProfileSettings, saveProfileSettings] = useProfileSettings();
   const { t } = useTranslation();
-  const { isAuthenticated } = useAuth();
 
   return (
     <>
       <PageTitle title={t("profile.title")} />
-      {isLoading && <Loading />}
-      {!isLoading && !isAuthenticated && <InvitationToConnect />}
-      {!isLoading && isAuthenticated && (
-        <>
+      <CheckingLoadingAuth>
+        <RntSuspense isLoading={isLoading}>
           <UserProfileInfo
             savedProfileSettings={savedProfileSettings}
             saveProfileSettings={saveProfileSettings}
@@ -29,8 +25,8 @@ export default function Profile() {
           <UserInsurance />
           <hr />
           <AddFunds />
-        </>
-      )}
+        </RntSuspense>
+      </CheckingLoadingAuth>
     </>
   );
 }

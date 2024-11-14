@@ -1,6 +1,8 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
+import axios from "@/utils/cachedAxios";
 import { isEmpty } from "@/utils/string";
 import { env } from "@/utils/env";
+import { VinInfo } from "@/pages/api/car-api/vinInfo";
 
 export type CarAPIMetadata = {
   url: string;
@@ -36,7 +38,6 @@ export async function getAuthToken() {
   if (!CARAPI_TOKEN || isEmpty(CARAPI_TOKEN)) {
     throw new Error("CARAPI_TOKEN is not set");
   }
-
   const response = await axios.post(
     "https://carapi.app/api/auth/login",
     {
@@ -47,6 +48,9 @@ export async function getAuthToken() {
       headers: {
         accept: "text/plain",
         "content-type": "application/json",
+      },
+      cache: {
+        ttl: 86400,
       },
     }
   );
@@ -94,8 +98,19 @@ async function checkVINNumber(vinNumber: string): Promise<boolean> {
   return response.data.result;
 }
 
+async function getVINNumber(vinNumber: string): Promise<VinInfo | undefined> {
+  const response: AxiosResponse = await axios.get(`/api/car-api/vinInfo?vin=${vinNumber}`);
+
+  if (response.status !== 200) {
+    console.log("Car API for vin info response error code " + response.status + " with data " + response.data);
+    return;
+  }
+  const data = await response.data;
+  return data.result;
+}
+
 const useCarAPI = () => {
-  return { getAllCarMakes, getCarModelByMake, getCarYearsByMakeAndModel, checkVINNumber } as const;
+  return { getAllCarMakes, getCarModelByMake, getCarYearsByMakeAndModel, checkVINNumber, getVINNumber } as const;
 };
 
 export default useCarAPI;

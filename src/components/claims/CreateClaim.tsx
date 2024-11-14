@@ -13,6 +13,7 @@ import { usePathname } from "next/navigation";
 import { createClaimFormSchema, CreateClaimFormValues } from "./createClaimFormSchema";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Result, TransactionErrorCode } from "@/model/utils/result";
 
 const hostClaimTypes = [
   ClaimType.Tolls,
@@ -40,7 +41,7 @@ export default function CreateClaim({
   isHost,
 }: {
   tripInfos: TripInfoForClaimCreation[];
-  createClaim: (createClaimRequest: CreateClaimRequest) => Promise<boolean>;
+  createClaim: (createClaimRequest: CreateClaimRequest) => Promise<Result<boolean, TransactionErrorCode>>;
   isHost: boolean;
 }) {
   const pathname = usePathname();
@@ -72,31 +73,11 @@ export default function CreateClaim({
       amountInUsdCents: (Number(formData.amountInUsd) ?? 0) * 100,
       localFileUrls: formData.localFileUrls,
     };
-    const success = await createClaim(createClaimRequest);
-    if (success) {
+    const result = await createClaim(createClaimRequest);
+    if (result.ok) {
       reset();
     }
   }
-
-  // const handleCreateClaim = async () => {
-  //   if (!createClaimParams.isChecked) return;
-
-  //   const createClaimRequest: CreateClaimRequest = {
-  //     tripId: Number(createClaimParams.selectedTripId),
-  //     guestAddress: tripInfos.find((ti) => ti.tripId === Number(createClaimParams.selectedTripId))?.guestAddress ?? "",
-  //     claimType: BigInt(createClaimParams.incidentType),
-  //     description: createClaimParams.description,
-  //     amountInUsdCents: (Number(createClaimParams.amountInUsd) ?? 0) * 100,
-  //     localFileUrls: createClaimParams.localFileUrls,
-  //   };
-  //   const success = await createClaim(createClaimRequest);
-  //   if (success) {
-  //     setCreateClaimParams({
-  //       ...emptyCreateClaimParams,
-  //       incidentType: isHost ? hostClaimTypes[0].toString() : guestClaimTypes[0].toString(),
-  //     });
-  //   }
-  // };
 
   return (
     <form

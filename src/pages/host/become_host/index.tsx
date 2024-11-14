@@ -1,4 +1,3 @@
-import Loading from "@/components/common/Loading";
 import DeliveryPriceForm from "@/components/host/deliveryPriceForm";
 import TripDiscountsForm from "@/components/host/tripDiscountsForm";
 import PageTitle from "@/components/pageTitle/pageTitle";
@@ -16,14 +15,12 @@ import tutorialVideo from "@/images/tutorial_video.png";
 import RntButton from "@/components/common/rntButton";
 import { CheckboxLight } from "@/components/common/rntCheckbox";
 import Link from "next/link";
-import Listings from "@/pages/host/vehicles/listings";
 import { useAuth } from "@/contexts/auth/authContext";
-import { DialogActions } from "@/utils/dialogActions";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { GatewayStatus, useGateway } from "@civic/ethereum-gateway-react";
 import useMyListings from "@/hooks/host/useMyListings";
 import AddCar from "@/pages/host/vehicles/add";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function BecomeHost() {
   const { login } = useAuth();
@@ -157,161 +154,152 @@ export default function BecomeHost() {
   return (
     <>
       <PageTitle title={t("become_host.title")} />
-      {!isPageLoaded && <Loading />}
-      {isPageLoaded && (
-        <>
-          <div className="mt-5 flex flex-col justify-between xl:flex-row">
-            <div>
-              <div className="pl-4 text-start">{t("become_host.all_steps_car_sharing")}</div>
+      <RntSuspense isLoading={!isPageLoaded}>
+        <div className="mt-5 flex flex-col justify-between xl:flex-row">
+          <div>
+            <div className="pl-4 text-start">{t("become_host.all_steps_car_sharing")}</div>
 
-              <div className="mt-5 w-full max-w-md">
-                {/* Контейнер для прогресс-бара */}
-                <div className="relative h-10 w-full overflow-hidden rounded-full bg-[#BFBFBF]">
-                  {/* Прогресс */}
-                  <div
-                    className="flex h-full items-center justify-center bg-rentality-secondary font-semibold text-white transition-all duration-500"
-                    style={{ width: `${progress}%` }} // Устанавливаем ширину прогресс-бара в зависимости от прогресса
-                  >
-                    {/* Текст внутри прогресс-бара */}
-                    <span className="absolute inset-0 flex items-center justify-start pl-4 text-[#004F51]">
-                      {countStepsTaken} of 5 steps
-                    </span>
-                  </div>
+            <div className="mt-5 w-full max-w-md">
+              {/* Контейнер для прогресс-бара */}
+              <div className="relative h-10 w-full overflow-hidden rounded-full bg-[#BFBFBF]">
+                {/* Прогресс */}
+                <div
+                  className="flex h-full items-center justify-center bg-rentality-secondary font-semibold text-white transition-all duration-500"
+                  style={{ width: `${progress}%` }} // Устанавливаем ширину прогресс-бара в зависимости от прогресса
+                >
+                  {/* Текст внутри прогресс-бара */}
+                  <span className="absolute inset-0 flex items-center justify-start pl-4 text-[#004F51]">
+                    {countStepsTaken} of 5 steps
+                  </span>
                 </div>
               </div>
+            </div>
 
-              <div
-                className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
-                onClick={handleClickBlockConnectWallet}
-              >
-                <div className="flex text-lg text-white">
-                  <CheckboxLight className="underline" checked={isStepConnectWalletCompleted ?? false} />
-                  <span className="pr-1 text-rentality-secondary">1.</span>
-                  {t("become_host.connect_wallet")}
-                </div>
-                <Image src={arrowDownTurquoise} alt="" className="ml-1" />
+            <div
+              className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
+              onClick={handleClickBlockConnectWallet}
+            >
+              <div className="flex text-lg text-white">
+                <CheckboxLight className="underline" checked={isStepConnectWalletCompleted ?? false} />
+                <span className="pr-1 text-rentality-secondary">1.</span>
+                {t("become_host.connect_wallet")}
               </div>
+              <Image src={arrowDownTurquoise} alt="" className="ml-1" />
+            </div>
 
-              <div
-                className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
-                onClick={handleClickOpenBlockUserInfo}
-              >
-                <div className="flex text-lg text-white">
-                  <CheckboxLight
-                    className="underline"
-                    checked={isStepUserInfoCompleted}
-                    onChange={() => {
-                      setIsStepUserInfoCompleted(!isStepUserInfoCompleted);
-                    }}
-                  />
-                  <span className="pr-1 text-rentality-secondary">2.</span>
-                  {t("become_host.enter_user_info")}
-                </div>
-                <Image src={openBlockUserInfo ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
+            <div
+              className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
+              onClick={handleClickOpenBlockUserInfo}
+            >
+              <div className="flex text-lg text-white">
+                <CheckboxLight
+                  className="underline"
+                  checked={isStepUserInfoCompleted}
+                  onChange={() => {
+                    setIsStepUserInfoCompleted(!isStepUserInfoCompleted);
+                  }}
+                />
+                <span className="pr-1 text-rentality-secondary">2.</span>
+                {t("become_host.enter_user_info")}
               </div>
-              {openBlockUserInfo && (
-                <div className="ml-10">
-                  <UserCommonInformationForm
-                    savedProfileSettings={savedProfileSettings}
-                    saveProfileSettings={saveProfileSettings}
-                    isHost={true}
-                  />
-                </div>
-              )}
-
-              <div
-                className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
-                onClick={handleClickOpenBlockDriverLicense}
-              >
-                <div className="flex text-lg text-white">
-                  <CheckboxLight className="underline" checked={isStepDriverLicenseCompleted ?? false} />
-                  <span className="pr-1 text-rentality-secondary">3.</span>
-                  {t("become_host.driver_license")}
-                </div>
-                <Image src={openBlockDriverLicense ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
-              </div>
-              {openBlockDriverLicense && (
-                <div className="ml-10">
-                  <UserDriverLicenseVerification savedProfileSettings={savedProfileSettings} />
-                </div>
-              )}
-
-              <div
-                className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
-                onClick={handleClickOpenBlockListingCar}
-              >
-                <div className="flex text-lg text-white">
-                  <CheckboxLight
-                    className="underline"
-                    checked={isStepListingCarCompleted}
-                    onChange={() => {
-                      setIsStepListingCarCompleted(!isStepListingCarCompleted);
-                    }}
-                  />
-                  <span className="pr-1 text-rentality-secondary">4.</span>
-                  {t("become_host.listing_car")}
-                </div>
-                <Image src={openBlockListingCar ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
-              </div>
-              {openBlockListingCar && (
-                <div className="ml-10 mt-4">
-                  <AddCar />
-                </div>
-              )}
-
-              <div
-                className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
-                onClick={handleClickOpenBlockDiscountsAndPrice}
-              >
-                <div className="flex text-lg text-white">
-                  <CheckboxLight
-                    className="underline"
-                    checked={isStepDiscountsAndPriceCompleted}
-                    onChange={() => {
-                      setIsStepDiscountsAndPriceCompleted(!isStepDiscountsAndPriceCompleted);
-                    }}
-                  />
-                  <span className="pr-1 text-rentality-secondary">5.</span>
-                  {t("become_host.discounts_and_price")}
-                </div>
-                <Image
-                  src={openBlockDiscountsAndPrice ? arrowUpTurquoise : arrowDownTurquoise}
-                  alt=""
-                  className="ml-1"
+              <Image src={openBlockUserInfo ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
+            </div>
+            {openBlockUserInfo && (
+              <div className="ml-10">
+                <UserCommonInformationForm
+                  savedProfileSettings={savedProfileSettings}
+                  saveProfileSettings={saveProfileSettings}
+                  isHost={true}
                 />
               </div>
-              {openBlockDiscountsAndPrice && (
-                <div className="ml-10 flex flex-col min-[560px]:flex-row min-[560px]:gap-20">
-                  <TripDiscountsForm
-                    savedTripsDiscounts={savedTripsDiscounts}
-                    saveTripsDiscounts={saveTripDiscounts}
-                    isUserHasHostRole={userRole === "Host"}
-                    t={t}
-                  />
-                  <DeliveryPriceForm
-                    savedDeliveryPrices={savedDeliveryPrices}
-                    saveDeliveryPrices={saveDeliveryPrices}
-                    isUserHasHostRole={userRole === "Host"}
-                    t={t}
-                  />
-                </div>
-              )}
-              <div className="mt-10 w-fit pl-4">
-                <Link href={`/guest`}>
-                  {t("become_host.to_search_page")}
-                  <span className="pl-1 text-rentality-secondary">{">>"}</span>
-                </Link>
+            )}
+
+            <div
+              className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
+              onClick={handleClickOpenBlockDriverLicense}
+            >
+              <div className="flex text-lg text-white">
+                <CheckboxLight className="underline" checked={isStepDriverLicenseCompleted ?? false} />
+                <span className="pr-1 text-rentality-secondary">3.</span>
+                {t("become_host.driver_license")}
               </div>
+              <Image src={openBlockDriverLicense ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
             </div>
-            <div className="flex flex-col max-xl:mt-8">
-              <Image src={tutorialVideo} alt="Tutorial video" className="ml-1" />
-              <RntButton type="submit" className="mt-4 w-full">
-                {t("become_host.btn_how_to_start")}
-              </RntButton>
+            {openBlockDriverLicense && (
+              <div className="ml-10">
+                <UserDriverLicenseVerification savedProfileSettings={savedProfileSettings} />
+              </div>
+            )}
+
+            <div
+              className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
+              onClick={handleClickOpenBlockListingCar}
+            >
+              <div className="flex text-lg text-white">
+                <CheckboxLight
+                  className="underline"
+                  checked={isStepListingCarCompleted}
+                  onChange={() => {
+                    setIsStepListingCarCompleted(!isStepListingCarCompleted);
+                  }}
+                />
+                <span className="pr-1 text-rentality-secondary">4.</span>
+                {t("become_host.listing_car")}
+              </div>
+              <Image src={openBlockListingCar ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
+            </div>
+            {openBlockListingCar && (
+              <div className="ml-10 mt-4">
+                <AddCar />
+              </div>
+            )}
+
+            <div
+              className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
+              onClick={handleClickOpenBlockDiscountsAndPrice}
+            >
+              <div className="flex text-lg text-white">
+                <CheckboxLight
+                  className="underline"
+                  checked={isStepDiscountsAndPriceCompleted}
+                  onChange={() => {
+                    setIsStepDiscountsAndPriceCompleted(!isStepDiscountsAndPriceCompleted);
+                  }}
+                />
+                <span className="pr-1 text-rentality-secondary">5.</span>
+                {t("become_host.discounts_and_price")}
+              </div>
+              <Image src={openBlockDiscountsAndPrice ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
+            </div>
+            {openBlockDiscountsAndPrice && (
+              <div className="ml-10 flex flex-col min-[560px]:flex-row min-[560px]:gap-20">
+                <TripDiscountsForm
+                  savedTripsDiscounts={savedTripsDiscounts}
+                  saveTripsDiscounts={saveTripDiscounts}
+                  isUserHasHostRole={userRole === "Host"}
+                />
+                <DeliveryPriceForm
+                  savedDeliveryPrices={savedDeliveryPrices}
+                  saveDeliveryPrices={saveDeliveryPrices}
+                  isUserHasHostRole={userRole === "Host"}
+                />
+              </div>
+            )}
+            <div className="mt-10 w-fit pl-4">
+              <Link href={`/guest`}>
+                {t("become_host.to_search_page")}
+                <span className="pl-1 text-rentality-secondary">{">>"}</span>
+              </Link>
             </div>
           </div>
-        </>
-      )}
+          <div className="flex flex-col max-xl:mt-8">
+            <Image src={tutorialVideo} alt="Tutorial video" className="ml-1" />
+            <RntButton type="submit" className="mt-4 w-full">
+              {t("become_host.btn_how_to_start")}
+            </RntButton>
+          </div>
+        </div>
+      </RntSuspense>
     </>
   );
 }

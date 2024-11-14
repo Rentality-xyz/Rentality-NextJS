@@ -13,6 +13,7 @@ import {
   ContractCarInfoDTO,
   ContractChatInfo,
   ContractClaim,
+  ContractFilterInfoDTO,
   ContractFullClaimInfo,
   ContractInsuranceCarInfo,
   ContractInsuranceDTO,
@@ -55,6 +56,7 @@ const emptyContractCarDetails: ContractCarDetails = {
   geoVerified: false,
   currentlyListed: false,
   locationInfo: emptyContractLocationInfo,
+  carVinNumber: "",
 };
 
 export function validateContractCarDetails(obj: ContractCarDetails): obj is ContractCarDetails {
@@ -431,4 +433,13 @@ export function validateContractAvailableCarDTO(obj: ContractAvailableCarDTO): o
     validateType(obj.insuranceInfo, emptyContractInsuranceCarInfo) &&
     validateType(obj.carDiscounts, emptyContractBaseDiscount)
   );
+}
+
+const emptyContractFilterInfoDTO: ContractFilterInfoDTO = {
+  maxCarPrice: BigInt(0),
+  minCarYearOfProduction: BigInt(0),
+};
+
+export function validateContractFilterInfoDTO(obj: ContractFilterInfoDTO): obj is ContractFilterInfoDTO {
+  return validateType(obj, emptyContractFilterInfoDTO);
 }

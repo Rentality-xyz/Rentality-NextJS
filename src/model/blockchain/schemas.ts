@@ -64,6 +64,8 @@ export type ContractUpdateCarInfoRequest = {
   milesIncludedPerDay: bigint;
   timeBufferBetweenTripsInSec: bigint;
   currentlyListed: boolean;
+  engineType: EngineType;
+  tokenUri: string;
   insuranceRequired: boolean;
   insurancePriceInUsdCents: bigint;
 };
@@ -406,6 +408,7 @@ export type ContractCarDetails = {
   geoVerified: boolean;
   currentlyListed: boolean;
   locationInfo: ContractLocationInfo;
+  carVinNumber: string;
 };
 
 export type ContractFloridaTaxes = {
@@ -529,6 +532,10 @@ export type ContractCarInfoWithInsurance = {
   carInfo: ContractCarInfo;
   insuranceInfo: ContractInsuranceCarInfo;
 };
+export type ContractFilterInfoDTO = {
+  maxCarPrice: bigint;
+  minCarYearOfProduction: bigint;
+};
 
 export type TripStatus = bigint;
 export const TripStatus = {
@@ -620,6 +627,20 @@ export const InsuranceType = {
   None: BigInt(0),
   General: BigInt(1),
   OneTime: BigInt(2),
+};
+
+export type CarUpdateStatus = bigint;
+export const CarUpdateStatus = {
+  Add: BigInt(0),
+  Update: BigInt(1),
+  Burn: BigInt(2),
+};
+
+export type EventType = bigint;
+export const EventType = {
+  Car: BigInt(0),
+  Claim: BigInt(1),
+  Trip: BigInt(2),
 };
 
 export type EngineType = bigint;

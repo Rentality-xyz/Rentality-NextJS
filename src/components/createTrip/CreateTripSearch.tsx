@@ -1,29 +1,43 @@
 import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { DeliveryDetails } from "@/model/SearchCarsResult";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { dateFormatLongMonthDateTime } from "@/utils/datetimeFormatters";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
+import { isEmpty } from "@/utils/string";
+import moment from "moment";
 import { useTranslation } from "react-i18next";
 
 export function CreateTripSearch({
   searchRequest,
   hostHomeLocation,
   deliveryDetails,
+  timeZoneId,
 }: {
   searchRequest: SearchCarRequest;
   hostHomeLocation: string;
   deliveryDetails: DeliveryDetails;
+  timeZoneId: string;
 }) {
   const { t } = useTranslation();
+  const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
 
   return (
     <div className="grid grid-cols-2 gap-2">
       <div className="flex flex-col items-center">
         <p className="text-rentality-secondary">{t("create_trip.trip_start")}</p>
-        <p>{dateFormatLongMonthDateTime(searchRequest.dateFrom)}</p>
+        <p>
+          {dateFormatLongMonthDateTime(
+            moment.tz(searchRequest.dateFromInDateTimeStringFormat, notEmtpyTimeZoneId).toDate()
+          )}
+        </p>
       </div>
       <div className="flex flex-col items-center">
         <p className="text-rentality-secondary">{t("create_trip.trip_end")}</p>
-        <p>{dateFormatLongMonthDateTime(searchRequest.dateTo)}</p>
+        <p>
+          {dateFormatLongMonthDateTime(
+            moment.tz(searchRequest.dateToInDateTimeStringFormat, notEmtpyTimeZoneId).toDate()
+          )}
+        </p>
       </div>
       <hr className="col-span-2" />
       <div className="flex flex-col items-center">

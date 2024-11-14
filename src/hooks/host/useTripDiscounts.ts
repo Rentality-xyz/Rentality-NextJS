@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
-import { ethers } from "ethers";
-import { isEmpty } from "@/utils/string";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { ContractBaseDiscount } from "@/model/blockchain/schemas";
+import { Err, TransactionErrorCode, Ok, Result } from "@/model/utils/result";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { isUserHasEnoughFunds } from "@/utils/wallet";
 
 export type DiscountFormValues = {
   discount3DaysAndMoreInPercents: number;
@@ -18,15 +19,28 @@ const emptyDiscountFormValues: DiscountFormValues = {
 };
 
 const useTripDiscounts = () => {
+  const ethereumInfo = useEthereum();
   const rentalityContract = useRentality();
   const userInfo = useUserInfo();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [tripDiscounts, setTripDiscounts] = useState<DiscountFormValues>(emptyDiscountFormValues);
 
-  const saveTripDiscounts = async (newDiscountFormValues: DiscountFormValues) => {
+  const saveTripDiscounts = async (
+    newDiscountFormValues: DiscountFormValues
+  ): Promise<Result<boolean, TransactionErrorCode>> => {
+    if (!ethereumInfo) {
+      console.error("saveTripDiscounts error: ethereumInfo is null");
+      return Err("ERROR");
+    }
+
     if (!rentalityContract) {
       console.error("saveTripDiscounts error: rentalityContract is null");
-      return false;
+      return Err("ERROR");
+    }
+
+    if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
+      console.error("saveTripDiscounts error: user don't have enough funds");
+      return Err("NOT_ENOUGH_FUNDS");
     }
 
     try {
@@ -36,13 +50,12 @@ const useTripDiscounts = () => {
         thirtyDaysDiscount: BigInt(newDiscountFormValues.discount30DaysAndMoreInPercents * 10_000),
         initialized: true,
       };
-
       const transaction = await rentalityContract.addUserDiscount(discounts);
       await transaction.wait();
-      return true;
+      return Ok(true);
     } catch (e) {
       console.error("saveTripDiscounts error:" + e);
-      return false;
+      return Err("ERROR");
     }
   };
 

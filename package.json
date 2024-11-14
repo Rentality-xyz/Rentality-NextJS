@@ -1,6 +1,6 @@
 {
   "name": "rentality-app",
-  "version": "0.6.0",
+  "version": "0.6.8",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -34,6 +34,7 @@
     "@waku/sdk": "^0.0.24",
     "autoprefixer": "10.4.14",
     "axios": "^1.4.0",
+    "axios-cache-interceptor": "^1.6.2",
     "clsx": "^2.1.1",
     "eslint": "8.38.0",
     "eslint-config-next": "^14.1.0",

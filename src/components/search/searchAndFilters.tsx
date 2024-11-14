@@ -16,7 +16,6 @@ import Image from "next/image";
 import SearchDeliveryLocations from "@/components/search/searchDeliveryLocations";
 import { formatLocationInfoUpToCity } from "@/model/LocationInfo";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
-import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
 import { placeDetailsToLocationInfo } from "@/utils/location";
 import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
 import RntCarModelSelect from "@/components/common/rntCarModelSelect";
@@ -26,6 +25,8 @@ import icSearch from "@/images/ic_search.svg";
 import icCalendar from "../../images/ic_calendar.png";
 import PanelFilteringByYear from "@/components/search/panelFilteringByYear";
 import PanelFilteringByPrice from "@/components/search/panelFilteringByPrice";
+import { nameof } from "@/utils/nameof";
+import { FilterLimits } from "@/model/SearchCarsResult";
 
 export default function SearchAndFilters({
   initValue,
@@ -33,6 +34,7 @@ export default function SearchAndFilters({
   setSortBy,
   onSearchClick,
   onFilterApply,
+  filterLimits,
   t,
 }: {
   initValue: SearchCarRequest;
@@ -40,6 +42,7 @@ export default function SearchAndFilters({
   setSortBy: (value: string | undefined) => void;
   onSearchClick: (searchCarRequest: SearchCarRequest) => Promise<void>;
   onFilterApply: (filters: SearchCarFilters) => Promise<void>;
+  filterLimits: FilterLimits;
   t: TFunctionNext;
 }) {
   const [timeZoneId, setTimeZoneId] = useState("");
@@ -49,14 +52,14 @@ export default function SearchAndFilters({
   const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
   const isSearchAllowed =
     formatLocationInfoUpToCity(searchCarRequest.searchLocation).length > 0 &&
-    moment.tz(searchCarRequest.dateFrom, notEmtpyTimeZoneId) >= moment.tz(notEmtpyTimeZoneId) &&
-    new Date(searchCarRequest.dateTo) > new Date(searchCarRequest.dateFrom);
+    moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, notEmtpyTimeZoneId) >= moment.tz(notEmtpyTimeZoneId) &&
+    new Date(searchCarRequest.dateToInDateTimeStringFormat) > new Date(searchCarRequest.dateFromInDateTimeStringFormat);
 
   const t_comp = (element: string) => {
     return t("search_and_filters." + element);
   };
 
-  const sortOption: object = t("search_and_filters.sort_options", {
+  const sortOption: Record<string, string> = t("search_and_filters.sort_options", {
     returnObjects: true,
   });
 
@@ -68,14 +71,7 @@ export default function SearchAndFilters({
     const value = e.target.value;
     const name = e.target.name;
 
-    if (name === "location") {
-      return;
-    }
-    if (name === "dateFrom" || name === "dateTo") {
-      setSearchCarRequest({
-        ...searchCarRequest,
-        [name]: moment(value).toDate(),
-      });
+    if (name === nameof(searchCarRequest, "searchLocation")) {
       return;
     }
 
@@ -143,7 +139,10 @@ export default function SearchAndFilters({
 
   function handleResetClick() {
     setSearchCarFilters({});
+    setSelectedMakeID("");
+    setSelectedModelID("");
     setResetFilters(true);
+    setSortBy("");
   }
 
   const [resetFilters, setResetFilters] = useState(false);
@@ -157,7 +156,7 @@ export default function SearchAndFilters({
           className="w-full"
           inputClassName="mt-1 z-10"
           labelClassName="pl-3.5 font-bold"
-          id="location"
+          id={nameof(searchCarRequest, "searchLocation")}
           label={t_comp("location_label")}
           placeholder={t_comp("location_placeholder")}
           includeStreetAddress={true}
@@ -174,25 +173,25 @@ export default function SearchAndFilters({
           <RntInput
             isTransparentStyle={true}
             iconFrontLabel={icCalendar}
-            className="basis-1/2"
+            className="basis-1/3"
             inputClassName="pr-4 z-10"
             labelClassName="pl-[18px] z-10 font-bold"
-            id="dateFrom"
+            id={nameof(searchCarRequest, "dateFromInDateTimeStringFormat")}
             label={`${t_comp("datetime_from")} ${gmtLabel}`}
             type="datetime-local"
-            value={dateToHtmlDateTimeFormat(searchCarRequest.dateFrom)}
+            value={searchCarRequest.dateFromInDateTimeStringFormat}
             onChange={handleSearchInputChange}
           />
           <RntInput
             isTransparentStyle={true}
             iconFrontLabel={icCalendar}
-            className="basis-1/2"
+            className="basis-1/3"
             inputClassName="pr-4 z-10"
             labelClassName="pl-[18px] z-10 font-bold"
-            id="dateTo"
+            id={nameof(searchCarRequest, "dateToInDateTimeStringFormat")}
             label={`${t_comp("datetime_to")} ${gmtLabel}`}
             type="datetime-local"
-            value={dateToHtmlDateTimeFormat(searchCarRequest.dateTo)}
+            value={searchCarRequest.dateToInDateTimeStringFormat}
             onChange={handleSearchInputChange}
           />
           <RntButton
@@ -207,11 +206,11 @@ export default function SearchAndFilters({
       </div>
       <div className="flex flex-col">
         <div className="mt-4 flex flex-wrap items-center gap-4">
-          <div className="select-container w-full sm:w-48">
+          <div className="sm:w-48">
             <RntCarMakeSelect
               id={t_comp("select_filter_make")}
-              className="border-gradient text-lg"
-              selectClassName="bg-transparent text-rentality-secondary text-center custom-select px-4 border-0"
+              className="text-lg"
+              selectClassName="cursor-pointer"
               promptText={t_comp("select_filter_make")}
               label=""
               value={searchCarFilters?.brand ?? ""}
@@ -223,14 +222,13 @@ export default function SearchAndFilters({
                 });
               }}
             />
-            <span className="custom-arrow bg-[url('../images/arrowDownTurquoise.svg')]"></span>
           </div>
 
-          <div className="select-container w-full sm:w-48">
+          <div className="sm:w-48">
             <RntCarModelSelect
               id={t_comp("select_filter_model")}
-              className="border-gradient text-lg"
-              selectClassName="bg-transparent text-rentality-secondary text-center custom-select px-4 border-0"
+              className="text-lg"
+              selectClassName="cursor-pointer"
               promptText={t_comp("select_filter_model")}
               label=""
               value={searchCarFilters?.model ?? ""}
@@ -243,7 +241,6 @@ export default function SearchAndFilters({
                 });
               }}
             />
-            <span className="custom-arrow bg-[url('../images/arrowDownTurquoise.svg')]"></span>
           </div>
 
           <PanelFilteringByYear
@@ -264,6 +261,7 @@ export default function SearchAndFilters({
               setResetFilters(false);
             }}
             isResetFilters={resetFilters}
+            minValue={filterLimits.minCarYear}
           />
 
           <PanelFilteringByPrice
@@ -284,6 +282,7 @@ export default function SearchAndFilters({
               setResetFilters(false);
             }}
             isResetFilters={resetFilters}
+            maxValue={filterLimits.maxCarPrice}
           />
 
           <div className="flex justify-between gap-4 max-sm:w-full">
@@ -294,14 +293,14 @@ export default function SearchAndFilters({
             <div className="select-container">
               <RntSelect
                 className="w-40 text-lg"
-                selectClassName="buttonGradient text-white text-center custom-select px-4 border-0"
+                selectClassName="buttonGradient text-white text-center custom-select px-4 border-0 cursor-pointer"
                 id="sort"
                 readOnly={false}
-                value={sortBy ?? ""}
+                value={sortBy ? sortOption[sortBy] : ""}
                 onChange={(e) => {
-                  const newValue = e.target.value;
-                  if (isSortOptionKey(newValue)) {
-                    setSortBy(newValue);
+                  const newDataKey = e.target.options[e.target.selectedIndex].getAttribute("data-key") || "";
+                  if (isSortOptionKey(newDataKey)) {
+                    setSortBy(newDataKey);
                   }
                 }}
               >
@@ -309,7 +308,7 @@ export default function SearchAndFilters({
                   {t_comp("sort_by")}
                 </option>
                 {Object.entries(sortOption ?? {}).map(([key, value]) => (
-                  <option key={key} value={value}>
+                  <option key={key} value={value} data-key={key}>
                     {value}
                   </option>
                 ))}

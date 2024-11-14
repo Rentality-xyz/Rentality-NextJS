@@ -15,7 +15,10 @@
     "legal": "Legal",
     "transaction_history": "Transaction history",
     "logout": "Logout",
-    "profile": "Profile settings"
+    "profile": "Profile settings",
+    "contract_info": "Contract info",
+    "car_locations": "Car locations",
+    "all_trips_table": "All trips table"
   },
   "search_and_filters": {
     "location_label": "Pick up & Return Location",
@@ -180,6 +183,7 @@
       "claim_waiting_time_error": "Save claim waiting time error:",
       "grant_admin_role_error": "Grant admin role error:",
       "update_kyc_error": "Update KYC info error:",
+      "set_test_kyc_info_error": "Set test KYC info error:",
       "commission_value_range": "Value should be between 0.0001% and 100% (min value is 0.0001%)",
       "kyc_commission_value_range": "Value should be greater than 0",
       "claim_waiting_time_value_range": "Value should be greater than 0",
@@ -621,7 +625,12 @@
     "latitude": "Latitude",
     "longitude": "Longitude",
     "timeZoneId": "Time zone",
-    "homeAddress": "Home address"
+    "homeAddress": "Home address",
+    "checkVin": "Check Vin",
+    "vin_corect": "Correct Vin",
+    "vin_incorect": "Incorect",
+    "vin_unchecked": "Uncheked",
+    "vin_loading": "Loading..."
   },
   "mobile_stores_dialog": {
     "title": "Be the First to Know!",
@@ -662,7 +671,9 @@
     "low_resolution": "The resolution is too low!",
     "success": "Success",
     "day": "day",
-    "trip": "trip"
+    "trip": "trip",
+    "add_fund_to_wallet": "Please add funds to your wallet on Base network to continue.",
+    "per_day": "/day"
   },
   "become_host": {
     "title": "Become a host",
@@ -674,6 +685,13 @@
     "driver_license": "Pass driver license verification",
     "listing_car": "Listing you first car",
     "discounts_and_price": "Manage discounts and delivery price"
+  },
+  "header": {
+    "wallet_balance": "Wallet Balance",
+    "open_in_base_explorer": "Open in Base Explorer",
+    "copy_address": "Copy Address",
+    "edit_profile": "Edit Profile",
+    "logout": "Logout"
   },
   "insurance": {
     "page_title": "Insurance",

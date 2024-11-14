@@ -20,16 +20,14 @@ import { UTC_TIME_ZONE_ID, calculateDays } from "@/utils/date";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import TripCardForDetails from "../tripCard/tripCardForDetails";
 import useUserMode, { isHost } from "@/hooks/useUserMode";
-import Loading from "../common/Loading";
 import { useTranslation } from "react-i18next";
-import InvitationToConnect from "@/components/common/invitationToConnect";
-import { useAuth } from "@/contexts/auth/authContext";
+import CheckingLoadingAuth from "../common/CheckingLoadingAuth";
+import RntSuspense from "../common/rntSuspense";
 
 export default function TripInfo() {
   const { userMode } = useUserMode();
   const router = useRouter();
   const { tripId: tripIdQuery, back } = router.query;
-  const { isAuthenticated } = useAuth();
 
   const tripId = BigInt((tripIdQuery as string) ?? "0");
   const backPath = back as string;
@@ -51,9 +49,8 @@ export default function TripInfo() {
   return (
     <>
       <PageTitle title={t_details("title", { tripId: tripId.toString() })} />
-      {isLoading && !isAuthenticated && <InvitationToConnect />}
-      {!isLoading && (
-        <>
+      <CheckingLoadingAuth>
+        <RntSuspense isLoading={isLoading}>
           <TripCardForDetails key={Number(tripId)} isHost={isHost(userMode)} tripInfo={tripInfo} t={t} />
 
           <div className="my-6 flex flex-wrap">
@@ -261,7 +258,7 @@ export default function TripInfo() {
                     </tr>
                     <tr>
                       <td>{t_details("discount_amount")}</td>
-                      <td className="text-rentality-alert-text text-end">
+                      <td className="text-end text-rentality-alert-text">
                         -${displayMoneyWith2Digits(tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithDiscountInUsd)}
                       </td>
                     </tr>
@@ -301,7 +298,7 @@ export default function TripInfo() {
                     </tr>
                     <tr>
                       <td>{t_details("reimbursement")}</td>
-                      <td className="text-rentality-alert-text text-end">
+                      <td className="text-end text-rentality-alert-text">
                         -${displayMoneyWith2Digits(tripInfo.resolveAmountInUsd)}
                       </td>
                     </tr>
@@ -417,8 +414,8 @@ export default function TripInfo() {
               {t("common.back")}
             </RntButton>
           </div>
-        </>
-      )}
+        </RntSuspense>
+      </CheckingLoadingAuth>
     </>
   );
 }

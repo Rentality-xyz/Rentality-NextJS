@@ -3,4 +3,6 @@ export interface IPanelFilterProps {
   onClickReset: () => void;
   onClickApply: (selectedValues: number[]) => void;
   isResetFilters: boolean;
+  minValue?: number;
+  maxValue?: number;
 }

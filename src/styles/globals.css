@@ -400,6 +400,10 @@ input:disabled {
   border-color: #373737;
 }
 
+#privy-modal-content {
+  overflow-y: auto;
+}
+
 .border-gradient {
   /*padding: 10px;*/
   /*display: inline-block;*/

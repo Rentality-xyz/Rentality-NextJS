@@ -17,6 +17,7 @@ import {
   ContractCreateTripRequestWithDelivery,
   ContractDeliveryData,
   ContractDeliveryPrices,
+  ContractFilterInfoDTO,
   ContractFullClaimInfo,
   ContractFullKYCInfoDTO,
   ContractInsuranceDTO,
@@ -53,7 +54,6 @@ export interface IRentalityContract {
   /// HOST CARS functions
   addCar(request: ContractCreateCarRequest): Promise<ContractTransactionResponse>;
   updateCarInfo(request: ContractUpdateCarInfoRequest): Promise<ContractTransactionResponse>;
-  updateCarTokenUri(carId: bigint, tokenUri: string): Promise<ContractTransactionResponse>;
   updateCarInfoWithLocation(
     request: ContractUpdateCarInfoRequest,
     location: ContractSignedLocationInfo,
@@ -93,7 +93,13 @@ export interface IRentalityContract {
   checkOutByHost(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
   finishTrip(tripId: bigint): Promise<ContractTransactionResponse>;
 
-  ///   GUEST
+  /// GUEST functions
+  getFilterInfo(duration: bigint): Promise<ContractFilterInfoDTO>;
+  searchAvailableCars(
+    startDateTime: bigint,
+    endDateTime: bigint,
+    searchParams: ContractSearchCarParams
+  ): Promise<ContractSearchCarWithDistance[]>;
   searchAvailableCarsWithDelivery(
     startDateTime: bigint,
     endDateTime: bigint,

@@ -155,10 +155,6 @@ const useAdminPanelInfo = () => {
   };
 
   async function updateKycInfoForAddress(address: string) {
-    if (!rentalityAdminGateway) {
-      console.error("updateKycInfoForAddress error: rentalityAdminGateway is null");
-      return false;
-    }
     if (!ethereumInfo) {
       console.error("updateKycInfoForAddress error: ethereumInfo is null");
       return false;
@@ -199,6 +195,38 @@ const useAdminPanelInfo = () => {
       return true;
     } catch (e) {
       console.error("updateKycInfoForAddress error" + e);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function setTestKycInfoForAddress(address: string) {
+    if (!ethereumInfo) {
+      console.error("setDrivingLicenceForAddress error: ethereumInfo is null");
+      return false;
+    }
+
+    try {
+      setIsLoading(true);
+
+      const contractCivicKYCInfo: ContractCivicKYCInfo = {
+        fullName: "Test Fullname",
+        licenseNumber: "TEST13579",
+        expirationDate: BigInt(0),
+        issueCountry: "US",
+        email: "testemail@test.com",
+      };
+
+      const rentality = (await getEtherContractWithSigner(
+        "gateway",
+        ethereumInfo.signer
+      )) as unknown as IRentalityContract;
+      const transaction = await rentality.setCivicKYCInfo(address, contractCivicKYCInfo);
+      await transaction.wait();
+      return true;
+    } catch (e) {
+      console.error("setDrivingLicenceForAddress error" + e);
       return false;
     } finally {
       setIsLoading(false);
@@ -322,6 +350,7 @@ const useAdminPanelInfo = () => {
     saveClaimWaitingTime,
     grantAdminRole,
     updateKycInfoForAddress,
+    setTestKycInfoForAddress,
     createTestTrip,
   } as const;
 };

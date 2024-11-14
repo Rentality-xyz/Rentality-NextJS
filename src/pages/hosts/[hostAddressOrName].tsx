@@ -3,8 +3,8 @@ import { isEmpty } from "@/utils/string";
 import PublicListingItem from "@/components/hosts/publicListingItem";
 import useHostPublicListings from "@/hooks/host/useHostPublicListings";
 import { useTranslation } from "react-i18next";
-import Loading from "@/components/common/Loading";
 import PageTitle from "@/components/pageTitle/pageTitle";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function HostPublicInfo() {
   const router = useRouter();
@@ -19,8 +19,7 @@ export default function HostPublicInfo() {
   return (
     <>
       <PageTitle title={t("hosts.listings", { address: hostAddressOrName })} />
-      {isLoading && <Loading />}
-      {!isLoading && (
+      <RntSuspense isLoading={isLoading}>
         <div className="my-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
           {hostListings != null && hostListings.length > 0 ? (
             hostListings.map((value) => {
@@ -30,7 +29,7 @@ export default function HostPublicInfo() {
             <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">{t("hosts.no_cars")}</div>
           )}
         </div>
-      )}
+      </RntSuspense>
     </>
   );
 }
