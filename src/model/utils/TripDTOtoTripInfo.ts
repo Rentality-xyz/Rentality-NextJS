@@ -24,6 +24,8 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
     Math.ceil(Number(tripDTO.trip.pricePerDayInUsdCents) / Number(tripDTO.trip.milesIncludedPerDay)) / 100;
   const tankVolumeInGal = Number(metaData.tankVolumeInGal);
 
+  const insurancePerDayInUsd = Number(tripDTO.paidForInsuranceInUsdCents) / 100 / tripDays;
+
   let item: TripInfo = {
     tripId: Number(tripDTO.trip.tripId),
 
@@ -138,6 +140,8 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
     currencyRate:
       Number(tripDTO.trip.paymentInfo.currencyRate) / 10 ** Number(tripDTO.trip.paymentInfo.currencyDecimals),
     isCarDetailsConfirmed: isCarDetailsConfirmed ?? false,
+    insurancePerDayInUsd: insurancePerDayInUsd,
+    insuranceTotalInUsd: insurancePerDayInUsd * tripDays,
   };
   return item;
 };

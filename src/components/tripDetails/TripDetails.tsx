@@ -309,6 +309,18 @@ export default function TripInfo() {
                   </tbody>
                 </table>
                 <hr className="my-4" />
+                <div className="flex grow flex-row p-2 text-rentality-secondary">{t_details("insurance_info")}:</div>
+                <table className="m-2">
+                  <tbody>
+                    <tr>
+                      <td>
+                        {t_details("insurance_fee_per_day", { insurancePerDayInUsd: tripInfo.insurancePerDayInUsd })}
+                      </td>
+                      <td className="text-end">${displayMoneyWith2Digits(tripInfo.insuranceTotalInUsd)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <hr className="my-4" />
                 <div className="flex grow flex-row p-2 text-rentality-secondary">
                   {t_details("reimbursement_info")}:
                 </div>

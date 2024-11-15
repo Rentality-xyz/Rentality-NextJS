@@ -496,7 +496,9 @@
       "start_fuel_or_battery_level": "Start fuel or battery level",
       "end_fuel_or_battery_level": "End fuel or battery level",
       "dl_number": "DL number",
-      "dl_validity_period": "DL validity period"
+      "dl_validity_period": "DL validity period",
+      "insurance_info": "Insurance info",
+      "insurance_fee_per_day": "Insurance  fee ${{insurancePerDayInUsd, number}}/day"
     }
   },
   "vehicles": {

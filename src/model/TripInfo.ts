@@ -117,6 +117,8 @@ export type TripInfo = {
   guestInsuranceCompanyName: string;
   guestInsurancePolicyNumber: string;
   isCarDetailsConfirmed: boolean;
+  insurancePerDayInUsd: number;
+  insuranceTotalInUsd: number;
 };
 
 export const getRefuelCharge = (tripInfo: TripInfo, endFuelLevelInPercents: number) => {
