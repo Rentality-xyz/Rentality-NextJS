@@ -266,6 +266,13 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                   {tripInfo.pricePer10PercentFuel / tripInfo.currencyRate} (USD{" "}
                   {displayMoneyWith2Digits(tripInfo.pricePer10PercentFuel)})
                 </div>
+                {tripInfo.insuranceTotalInUsd > 0 && (
+                  <div className="">
+                    Insurance fee ${displayMoneyWith2Digits(tripInfo.insurancePerDayInUsd)}/day: ETH{" "}
+                    {tripInfo.insuranceTotalInUsd / tripInfo.currencyRate} (USD{" "}
+                    {displayMoneyWith2Digits(tripInfo.insuranceTotalInUsd)})
+                  </div>
+                )}
               </div>
               <div className="m-4 flex flex-col">
                 The person identified as “Guest” and the person identified as “Host” on the Basic Agreement Information
