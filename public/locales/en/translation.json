@@ -318,7 +318,8 @@
     "trip_earnings": "Trip earnings",
     "cancellation_fee": "Cancellation fee",
     "reimbursements": "Reimbursements",
-    "rentality_fee": "Rentality fee",
+    "insurance_fee": "Rentality fee",
+    "rentality_fee": "Insurance fee",
     "taxes": "Taxes",
     "details": "Details"
   },
