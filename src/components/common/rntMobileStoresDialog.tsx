@@ -39,7 +39,7 @@ export default function RntMobileStoresDialog() {
   return (
     <>
       <button
-        className="flex items-center rounded-md border border-gray-500 hover:border-gray-400 lg:px-4"
+        className="hidden items-center rounded-md border border-gray-500 hover:border-gray-400 lg:px-4 xl:flex"
         onClick={() => {
           setIsOpened(true);
         }}
