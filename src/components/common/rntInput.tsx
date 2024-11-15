@@ -3,8 +3,7 @@ import { forwardRef, useId } from "react";
 import RntValidationError from "./RntValidationError";
 import { cn } from "@/utils";
 import Image, { StaticImageData } from "next/image";
-import icLocation from "@/images/ic_location.png";
-import bgBlockSearch from "@/images/bg_block_search.png";
+import bgInput from "@/images/bg_input.png";
 import * as React from "react";
 
 interface RntInputProps extends React.ComponentPropsWithoutRef<"input"> {
@@ -56,7 +55,7 @@ const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
             <label className={cn("flex items-center", lClassName)} htmlFor={reactId}>
               {!isEmpty(iconFrontLabel?.src) && <Image src={iconFrontLabel!!} alt="" className="mr-2" />}
               {label}
-              <Image src={bgBlockSearch} alt="" className="absolute left-0 top-[30px] h-[62%] w-full rounded-full" />
+              <Image src={bgInput} alt="" className="absolute left-0 top-[30px] h-[62%] w-full rounded-full" />
             </label>
           ) : (
             <label className={lClassName} htmlFor={id}>

@@ -17,7 +17,8 @@
     "profile": "Profile settings",
     "contract_info": "Contract info",
     "car_locations": "Car locations",
-    "all_trips_table": "All trips table"
+    "all_trips_table": "All trips table",
+    "referrals_and_points": "Referrals & Points"
   },
   "search_and_filters": {
     "location_label": "Pick up & Return Location",
@@ -621,5 +622,14 @@
     "copy_address": "Copy Address",
     "edit_profile": "Edit Profile",
     "logout": "Logout"
+  },"referrals_and_point": {
+    "title": "Points map",
+    "collect_and_claim_points": "Collect & Claim you points for discounts and airdrop",
+    "section_own_points": "Collect yours own points",
+    "section_referral_link": "Send a referral link and get points",
+    "section_points_your_referrals": "Points from your referrals",
+    "section_points_history": "Points History",
+    "copy_referral_link": "Copy referral link",
+    "referral_code": "Or send a referral code"
   }
 }

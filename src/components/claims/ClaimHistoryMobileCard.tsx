@@ -95,7 +95,7 @@ export default function ClaimHistoryMobileCard({ claim, index, isHost, payClaim,
           </div>
           {isVisible && (
             <div className="mb-4 mt-2">
-              <div className="flex space-x-2 overflow-x-auto">
+              <div id="claim-photos-scrolling" className="flex space-x-2 overflow-x-auto">
                 {claim.fileUrls
                   .filter((i) => !isEmpty(i))
                   .slice(0, 5)

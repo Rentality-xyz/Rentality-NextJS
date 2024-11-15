@@ -18,7 +18,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { formatEther } from "ethers";
 import icLogout from "@/images/ic_logout.png";
 import icProfileSettings from "@/images/ic_profile_settings.png";
-import imgCopy from "@/images/ic_copy_24dp.svg";
+import imgCopy from "@/images/ic_copy_white_24dp.svg";
 import icBaseScan from "@/images/base-scan-log.svg";
 import icWalletBalance from "@/images/ic_wallet_balance.svg";
 import { useTranslation } from "react-i18next";

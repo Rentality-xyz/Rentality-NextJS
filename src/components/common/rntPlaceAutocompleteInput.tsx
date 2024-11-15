@@ -6,8 +6,7 @@ import { cn } from "@/utils";
 import { env } from "@/utils/env";
 import Image, { StaticImageData } from "next/image";
 import * as React from "react";
-import { color } from "@mui/system";
-import bgBlockSearch from "@/images/bg_block_search.png";
+import bgInput from "@/images/bg_input.png";
 
 export type PlaceDetails = {
   addressString: string;
@@ -165,7 +164,7 @@ export default function RntPlaceAutocompleteInput({
           <label className={cn("flex items-center", lClassName)} htmlFor={id}>
             {!isEmpty(iconFrontLabel?.src) && <Image src={iconFrontLabel!!} alt="" className="mr-2" />}
             {label}
-            <Image src={bgBlockSearch} alt="" className="absolute left-0 top-[34px] h-[60%] w-full rounded-full" />
+            <Image src={bgInput} alt="" className="absolute left-0 top-[34px] h-[60%] w-full rounded-full" />
           </label>
         ) : (
           <label className={lClassName} htmlFor={id}>

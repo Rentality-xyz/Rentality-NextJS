@@ -89,6 +89,11 @@ function GuestNavMenu() {
           href="/guest/transaction_history"
           icon={MenuIcons.TransactionHistory}
         />
+        <SideNavMenuItem
+          text={t_nav("referrals_and_points")}
+          href="/guest/points"
+          icon={MenuIcons.ReferralsAndPoints}
+        />
         <SideNavMenuItem text={t_nav("profile")} href="/guest/profile" icon={MenuIcons.ProfileSettings} />
         {isAuthenticated ? (
           <SideNavMenuItem text={t_nav("logout")} href="/" onClick={logout} icon={MenuIcons.Logout} />
