@@ -95,11 +95,6 @@ export interface IRentalityContract {
 
   /// GUEST functions
   getFilterInfo(duration: bigint): Promise<ContractFilterInfoDTO>;
-  searchAvailableCars(
-    startDateTime: bigint,
-    endDateTime: bigint,
-    searchParams: ContractSearchCarParams
-  ): Promise<ContractSearchCarWithDistance[]>;
   searchAvailableCarsWithDelivery(
     startDateTime: bigint,
     endDateTime: bigint,

@@ -64,10 +64,10 @@ export type ContractUpdateCarInfoRequest = {
   milesIncludedPerDay: bigint;
   timeBufferBetweenTripsInSec: bigint;
   currentlyListed: boolean;
-  engineType: EngineType;
-  tokenUri: string;
   insuranceRequired: boolean;
   insurancePriceInUsdCents: bigint;
+  engineType: EngineType;
+  tokenUri: string;
 };
 
 export type ContractSearchCarParams = {
@@ -492,6 +492,11 @@ export type ContractAllCarsDTO = {
   totalPageCount: bigint;
 };
 
+export type ContractFilterInfoDTO = {
+  maxCarPrice: bigint;
+  minCarYearOfProduction: bigint;
+};
+
 export type ContractInsuranceCarInfo = {
   required: boolean;
   priceInUsdCents: bigint;
@@ -531,10 +536,6 @@ export type ContractInsuranceDTO = {
 export type ContractCarInfoWithInsurance = {
   carInfo: ContractCarInfo;
   insuranceInfo: ContractInsuranceCarInfo;
-};
-export type ContractFilterInfoDTO = {
-  maxCarPrice: bigint;
-  minCarYearOfProduction: bigint;
 };
 
 export type TripStatus = bigint;
@@ -622,13 +623,6 @@ export const Role = {
   KYCManager: BigInt(4),
 };
 
-export type InsuranceType = bigint;
-export const InsuranceType = {
-  None: BigInt(0),
-  General: BigInt(1),
-  OneTime: BigInt(2),
-};
-
 export type CarUpdateStatus = bigint;
 export const CarUpdateStatus = {
   Add: BigInt(0),
@@ -641,6 +635,13 @@ export const EventType = {
   Car: BigInt(0),
   Claim: BigInt(1),
   Trip: BigInt(2),
+};
+
+export type InsuranceType = bigint;
+export const InsuranceType = {
+  None: BigInt(0),
+  General: BigInt(1),
+  OneTime: BigInt(2),
 };
 
 export type EngineType = bigint;

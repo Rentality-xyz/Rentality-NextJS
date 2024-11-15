@@ -805,6 +805,24 @@
     },
     {
       "type": "function",
+      "name": "getFilterInfo",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "uint64", "name": "duration" }],
+      "outputs": [
+        {
+          "type": "tuple",
+          "name": "",
+          "components": [
+            { "type": "uint64", "name": "maxCarPrice" },
+            { "type": "uint256", "name": "minCarYearOfProduction" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
       "name": "getInsurancesBy",
       "constant": true,
       "stateMutability": "view",
@@ -837,24 +855,6 @@
             { "type": "string", "name": "creatorFullName" },
             { "type": "uint64", "name": "startDateTime" },
             { "type": "uint64", "name": "endDateTime" }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "function",
-      "name": "getFilterInfo",
-      "constant": true,
-      "stateMutability": "view",
-      "payable": false,
-      "inputs": [{ "type": "uint64", "name": "duration" }],
-      "outputs": [
-        {
-          "type": "tuple",
-          "name": "",
-          "components": [
-            { "type": "uint64", "name": "maxCarPrice" },
-            { "type": "uint256", "name": "minCarYearOfProduction" }
           ]
         }
       ]
@@ -1699,6 +1699,17 @@
           ]
         },
         { "type": "string", "name": "geoApiKey" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "updateCarTokenUri",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "uint256", "name": "carId" },
+        { "type": "string", "name": "tokenUri" }
       ],
       "outputs": []
     },
