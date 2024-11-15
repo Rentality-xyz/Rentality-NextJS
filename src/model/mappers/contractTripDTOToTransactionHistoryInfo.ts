@@ -49,6 +49,7 @@ export const mapContractTripDTOToTransactionHistoryInfo = async (
     tripEarnings: Number(tripDto.trip.transactionInfo.tripEarnings) / 100,
     cancellationFee: cancellationFee,
     reimbursements: reimbursements,
+    insuranceFeeInUsd: Number(tripDto.paidForInsuranceInUsdCents) / 100,
     rentalityFee: Number(tripDto.trip.transactionInfo.rentalityFee) / 100,
     salesTax: Number(tripDto.trip.paymentInfo.salesTax) / 100,
     governmentTax: Number(tripDto.trip.paymentInfo.governmentTax) / 100,
