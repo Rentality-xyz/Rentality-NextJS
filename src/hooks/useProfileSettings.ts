@@ -7,6 +7,7 @@ import { ContractFullKYCInfoDTO, ContractKYCInfo } from "@/model/blockchain/sche
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { usePrivy } from "@privy-io/react-auth";
+import { zeroHash } from "viem";
 
 export type ProfileSettings = {
   profilePhotoUrl: string;
@@ -75,7 +76,7 @@ const useProfileSettings = () => {
     }
   };
 
-  const saveProfileSettings = async (newProfileSettings: ProfileSettings) => {
+  const saveProfileSettings = async (newProfileSettings: ProfileSettings, refHash?: string) => {
     if (!rentalityContract) {
       console.error("saveProfileSettings error: rentalityContract is null");
       return false;
@@ -86,7 +87,8 @@ const useProfileSettings = () => {
         newProfileSettings.nickname,
         newProfileSettings.phoneNumber,
         newProfileSettings.profilePhotoUrl,
-        newProfileSettings.tcSignature
+        newProfileSettings.tcSignature,
+        refHash? refHash : zeroHash 
       );
 
       await transaction.wait();

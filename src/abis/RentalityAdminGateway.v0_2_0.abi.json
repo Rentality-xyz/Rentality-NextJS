@@ -340,6 +340,15 @@
     },
     {
       "type": "function",
+      "name": "getInsuranceService",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "address", "name": "" }]
+    },
+    {
+      "type": "function",
       "name": "getKycCommission",
       "constant": true,
       "stateMutability": "view",
@@ -432,7 +441,8 @@
         { "type": "address", "name": "paymentServiceAddress" },
         { "type": "address", "name": "claimServiceAddress" },
         { "type": "address", "name": "carDeliveryAddress" },
-        { "type": "address", "name": "viewServiceAddress" }
+        { "type": "address", "name": "viewServiceAddress" },
+        { "type": "address", "name": "insuranceServiceAddress" }
       ],
       "outputs": []
     },
@@ -507,6 +517,14 @@
       "constant": false,
       "payable": false,
       "inputs": [{ "type": "uint256", "name": "timeInSec" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "setInsuranceService",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "insurance" }],
       "outputs": []
     },
     {
