@@ -12,7 +12,7 @@ import { ContractTransactionResponse } from "ethers";
 import { env } from "@/utils/env";
 import { PlatformCarImage, UploadedCarImage } from "@/model/FileToUpload";
 import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
-import { isUserHasEnoughFunds } from "@/utils/wallet";
+import { isUserHasEnoughFunds, ZERO_HASH } from "@/utils/wallet";
 
 const useSaveCar = () => {
   const rentalityContract = useRentality();
@@ -111,7 +111,8 @@ const useSaveCar = () => {
         currentlyListed: dataToSave.currentlyListed,
       };
 
-      const transaction = await rentalityContract.addCar(request);
+                                                  /// TODO: get from input                
+      const transaction = await rentalityContract.addCar(request, ZERO_HASH);
       await transaction.wait();
       return Ok(true);
     } catch (e) {

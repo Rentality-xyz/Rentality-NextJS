@@ -12,6 +12,7 @@ import moment from "moment";
 import { collection, getDocs, query } from "firebase/firestore";
 import { FIREBASE_DB_NAME } from "@/chat/model/firebaseTypes";
 import { bigIntReplacer } from "@/utils/json";
+import { ZERO_HASH } from "@/utils/wallet";
 
 export type AdminContractInfo = {
   platformFee: number;
@@ -188,8 +189,8 @@ const useAdminPanelInfo = () => {
       const rentality = (await getEtherContractWithSigner(
         "gateway",
         ethereumInfo.signer
-      )) as unknown as IRentalityContract;
-      const transaction = await rentality.setCivicKYCInfo(address, contractCivicKYCInfo);
+      )) as unknown as IRentalityContract;                                          /// TODO: get from input
+      const transaction = await rentality.setCivicKYCInfo(address, contractCivicKYCInfo, ZERO_HASH);
       await transaction.wait();
       return true;
     } catch (e) {
@@ -220,8 +221,8 @@ const useAdminPanelInfo = () => {
       const rentality = (await getEtherContractWithSigner(
         "gateway",
         ethereumInfo.signer
-      )) as unknown as IRentalityContract;
-      const transaction = await rentality.setCivicKYCInfo(address, contractCivicKYCInfo);
+      )) as unknown as IRentalityContract;                                            /// TODO: get from input
+      const transaction = await rentality.setCivicKYCInfo(address, contractCivicKYCInfo, ZERO_HASH);
       await transaction.wait();
       return true;
     } catch (e) {
