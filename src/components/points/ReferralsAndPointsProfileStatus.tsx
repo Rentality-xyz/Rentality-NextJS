@@ -50,7 +50,7 @@ function GetProfileStatus({ index, status }: GetProfileStatusProps) {
       break;
     }
     case PointsProfileStatus.NextStep: {
-      nameReferralClassName = "bg-[#7F7F7F]";
+      nameReferralClassName = "bg-neutral-500";
       countPointsClassName = "bg-rentality-secondary-dark";
       headerTextClassName = "text-gray-400";
       nameReferral = "Listing first car";

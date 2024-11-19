@@ -15,9 +15,9 @@ export default function ReferralsAndPointsContent({ isHost }: ReferralsAndPoints
   const { t } = useTranslation();
 
   return (
-    <div className="ml-4">
-      <p className="mt-2">{t("referrals_and_point.collect_and_claim_points")}</p>
-      <div className="border-rentality-star-point mt-3 flex w-fit items-center rounded-lg border px-3 py-2 font-['Montserrat',Arial,sans-serif]">
+    <div className="">
+      <p className="ml-4 mt-2">{t("referrals_and_point.collect_and_claim_points")}</p>
+      <div className="mt-3 flex w-fit items-center rounded-lg border border-rentality-star-point px-3 py-2 font-['Montserrat',Arial,sans-serif]">
         <Image src={icStarPointsWhite} alt="" className="mr-1 h-[22px]" />
         <p>
           Your Balance <span className="text-rentality-secondary">5 000</span> points

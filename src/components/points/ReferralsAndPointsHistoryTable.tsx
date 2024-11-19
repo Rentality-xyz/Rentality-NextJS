@@ -17,7 +17,7 @@ export default function ReferralsAndPointsHistoryTable({
   const rowSpanClassName = "px-2 h-12 text-center";
 
   return (
-    <table className="mt-4 w-full table-auto border-spacing-2 max-lg:hidden">
+    <table className="mt-4 w-full table-auto border-spacing-2">
       <thead className="mb-2">
         <tr className="border-b-[2px] border-b-gray-500">
           <th className={headerSpanClassName}></th>

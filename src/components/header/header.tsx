@@ -23,6 +23,7 @@ import icBaseScan from "@/images/base-scan-log.svg";
 import icWalletBalance from "@/images/ic_wallet_balance.svg";
 import { useTranslation } from "react-i18next";
 import { AdminBurgerNavMenu } from "../sideNavMenu/adminSideNavMenu";
+import HeadBtnReferralsAndPoints from "@/components/header/HeadBtnReferralsAndPoints";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 72,
@@ -153,7 +154,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="fixed z-50 flex w-full items-center justify-between border-b-2 border-b-[#ffffff1f] bg-rentality-bg-left-sidebar text-rnt-temp-header-text max-lg:pl-4 lg:py-1 lg:pl-14 lg:pr-6">
+    <header className="fixed z-50 flex w-full items-center justify-between border-b border-b-[#ffffff1f] bg-rentality-bg-left-sidebar text-rnt-temp-header-text max-lg:pl-4 lg:py-1 lg:pl-14 lg:pr-6">
       <div className="flex max-lg:w-full max-lg:justify-between">
         <HeaderLogo />
         <div className="flex min-w-[20px] items-center lg:hidden">
@@ -176,6 +177,7 @@ export default function Header() {
           </div>
         </div>
       </div>
+      <HeadBtnReferralsAndPoints />
       <div className="ml-2 flex flex-row items-center max-lg:w-full max-lg:justify-between">
         <RntMobileStoresDialog />
         <Stack direction="row" spacing={1} alignItems="center" className="max-lg:mx-3 lg:ml-12">

@@ -19,7 +19,7 @@ export default function ReferralsAndPointsFromYourReferralsTable({
   const rowSpanClassName = "px-2 h-12 text-center";
 
   return (
-    <table className="mt-8 w-full table-auto border-spacing-2 max-lg:hidden">
+    <table className="mt-8 w-full table-auto border-spacing-2">
       <thead className="mb-2">
         <tr className="border-b-[2px] border-b-gray-500">
           <th className={headerSpanClassName}></th>
@@ -45,7 +45,7 @@ export default function ReferralsAndPointsFromYourReferralsTable({
               <td className={cn("text-gray-400", rowSpanClassName)}>400</td>
               <td className={cn("flex items-center justify-center", rowSpanClassName)}>
                 100
-                <Image src={icStarPointsYellow} alt="" className="ml-1 h-[22px]" />
+                <Image src={icStarPointsYellow} alt="" className="ml-1 h-[22px] w-[22px] lg:ml-4" />
               </td>
             </tr>
           );
