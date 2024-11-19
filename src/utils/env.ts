@@ -55,6 +55,7 @@ export const env = createEnv({
     NEXT_PUBLIC_HOTJAR_SITE_ID: z.coerce.number(),
     NEXT_PUBLIC_HOTJAR_VERSION: z.coerce.number(),
     NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS: booleanEnvType.optional(),
+    NEXT_PUBLIC_SKIP_KYC_PAYMENT: booleanEnvType.optional(),
 
     NEXT_PUBLIC_FB_PIXEL_ID: z.coerce.number(),
   },
@@ -86,6 +87,7 @@ export const env = createEnv({
     NEXT_PUBLIC_HOTJAR_SITE_ID: process.env.NEXT_PUBLIC_HOTJAR_SITE_ID,
     NEXT_PUBLIC_HOTJAR_VERSION: process.env.NEXT_PUBLIC_HOTJAR_VERSION,
     NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS: process.env.NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS,
+    NEXT_PUBLIC_SKIP_KYC_PAYMENT: process.env.NEXT_PUBLIC_SKIP_KYC_PAYMENT,
 
     NEXT_PUBLIC_FB_PIXEL_ID: process.env.NEXT_PUBLIC_FB_PIXEL_ID,
   },
