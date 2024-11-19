@@ -14,7 +14,7 @@ import Image from "next/image";
 import icMapMobile from "@/images/ic_map_mobile.png";
 import SearchAndFilters from "@/components/search/searchAndFilters";
 import { useAuth } from "@/contexts/auth/authContext";
-import useCarSearchParams from "@/hooks/guest/useCarSearchParams";
+import useCarSearchParams, { createQueryString } from "@/hooks/guest/useCarSearchParams";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import useCreateTripRequest from "@/hooks/guest/useCreateTripRequest";
 import { env } from "@/utils/env";
@@ -119,7 +119,7 @@ export default function Search() {
   };
 
   function handleShowRequestDetails(carInfo: SearchCarInfo) {
-    router.push(`/guest/createTrip?carId=${carInfo.carId} `);
+    router.push(`/guest/createTrip?${createQueryString(searchCarRequest, searchCarFilters, carInfo.carId)}`);
   }
 
   const setHighlightedCar = useCallback(

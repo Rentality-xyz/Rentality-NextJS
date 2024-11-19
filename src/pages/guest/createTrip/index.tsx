@@ -2,7 +2,7 @@ import RntButton from "@/components/common/rntButton";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import { useTranslation } from "react-i18next";
 import { TransmissionType } from "@/model/Transmission";
-import useCarSearchParams from "@/hooks/guest/useCarSearchParams";
+import useCarSearchParams, { createQueryString } from "@/hooks/guest/useCarSearchParams";
 import useCreateTripRequest from "@/hooks/guest/useCreateTripRequest";
 import useSearchCar from "@/hooks/guest/useSearchCar";
 import Loading from "@/components/common/Loading";
@@ -15,15 +15,28 @@ import { CreateTripHostedBy } from "@/components/createTrip/CreateTripHostedBy";
 import { CreateTripSearch } from "@/components/createTrip/CreateTripSearch";
 import { CreateTripGuestInsurance } from "@/components/createTrip/CreateTripGuestInsurance";
 import { PreReceiptDetails } from "@/components/createTrip/PreReceiptDetails";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/auth/authContext";
+import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
+import { isEmpty } from "@/utils/string";
+import { DialogActions } from "@/utils/dialogActions";
+import { useUserInfo } from "@/contexts/userInfoContext";
+import { useState } from "react";
 
 export default function CreateTrip() {
+  const router = useRouter();
   const { searchCarRequest, searchCarFilters } = useCarSearchParams();
   const { isLoading, carInfo } = useSearchCar(searchCarRequest, searchCarFilters.carId);
   const { createTripRequest } = useCreateTripRequest();
   const { t } = useTranslation();
+  const userInfo = useUserInfo();
+  const { isLoadingAuth, isAuthenticated, login } = useAuth();
+  const { showDialog, hideDialogs } = useRntDialogs();
+  const { showInfo, showError, hideSnackbars } = useRntSnackbars();
+  const [requestSending, setRequestSending] = useState<boolean>(false);
 
   function handleBackToSearchClick() {
-    alert("TODO handleBackToSearchClick");
+    router.push(`/guest/search?${createQueryString(searchCarRequest, searchCarFilters)}`);
   }
 
   function handleTripRulesClick() {
@@ -32,6 +45,70 @@ export default function CreateTrip() {
 
   function handlePreAgreementDetailsClick() {
     alert("TODO handlePreAgreementDetailsClick");
+  }
+
+  async function handeCreateTripClick() {
+    if (!isAuthenticated) {
+      const action = (
+        <>
+          {DialogActions.Button(t("common.info.login"), () => {
+            hideDialogs();
+            login();
+          })}
+          {/*{DialogActions.Cancel(hideDialogs)}*/}
+        </>
+      );
+      showDialog(t("common.info.connect_wallet"), action);
+      return;
+    }
+
+    if (isEmpty(userInfo?.drivingLicense)) {
+      showError(t("errors.user_info"));
+      await router.push("/guest/profile");
+      return;
+    }
+
+    if (isEmpty(searchCarRequest.dateFromInDateTimeStringFormat)) {
+      showError(t("errors.date_from"));
+      return;
+    }
+    if (isEmpty(searchCarRequest.dateToInDateTimeStringFormat)) {
+      showError(t("errors.date_to"));
+      return;
+    }
+    if (!carInfo) {
+      showError("car is not found");
+      return;
+    }
+
+    if (carInfo?.tripDays < 0) {
+      showError(t("errors.date_eq"));
+      return;
+    }
+    if (carInfo.ownerAddress === userInfo?.address) {
+      showError(t("errors.own_car"));
+      return;
+    }
+
+    setRequestSending(true);
+
+    showInfo(t("common.info.sign"));
+
+    const result = await createTripRequest(carInfo.carId, searchCarRequest, carInfo.timeZoneId);
+
+    hideDialogs();
+    hideSnackbars();
+    setRequestSending(false);
+
+    if (result.ok) {
+      router.push("/guest/trips");
+    } else {
+      if (result.error === "NOT_ENOUGH_FUNDS") {
+        showError(t("common.add_fund_to_wallet"));
+      } else {
+        showError(t("errors.request"));
+      }
+    }
   }
 
   if (isLoading || !carInfo) return <Loading />;
@@ -127,7 +204,7 @@ export default function CreateTrip() {
             isGuestHasInsurance: carInfo.isGuestHasInsurance,
           }}
         />
-        <RntButton className="h-16 w-full">
+        <RntButton className="h-16 w-full" disabled={requestSending} onClick={handeCreateTripClick}>
           {t("create_trip.rent_for_n_days", { tripDays: carInfo.tripDays })}
         </RntButton>
       </div>

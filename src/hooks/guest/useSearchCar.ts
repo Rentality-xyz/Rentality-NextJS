@@ -145,8 +145,8 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
             discount7DaysAndMoreInPercents: Number(availableCarDTO.carDiscounts.sevenDaysDiscount) / 10_000,
             discount30DaysAndMoreInPercents: Number(availableCarDTO.carDiscounts.thirtyDaysDiscount) / 10_000,
           },
-          salesTax: Number(availableCarDTO.salesTax),
-          governmentTax: Number(availableCarDTO.governmentTax),
+          salesTax: Number(availableCarDTO.salesTax) / 100,
+          governmentTax: Number(availableCarDTO.governmentTax) / 100,
           isGuestHasInsurance: availableCarDTO.isGuestHasInsurance,
           distanceToUser: Number(availableCarDTO.distance),
         };
