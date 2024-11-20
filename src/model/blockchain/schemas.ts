@@ -657,5 +657,6 @@ export interface AllRefferalInfoDTO {
 
 export interface RefferalHistory {
   points: number; 
+  date: number;
   method: RefferalProgram;
 }
