@@ -4,13 +4,14 @@ import { IRentalityAdminGateway, IRentalityContract } from "@/model/blockchain/I
 import { getEtherContractWithSigner } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
-import { ContractCivicKYCInfo, Role } from "@/model/blockchain/schemas";
+import { ContractCivicKYCInfo, ContractCreateTripRequestWithDelivery, Role } from "@/model/blockchain/schemas";
 import { kycDbInfo } from "@/utils/firebase";
 import { isEmpty } from "@/utils/string";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import moment from "moment";
 import { collection, getDocs, query } from "firebase/firestore";
 import { bigIntReplacer } from "@/utils/json";
+import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 
 export type AdminContractInfo = {
   platformFee: number;
@@ -253,16 +254,24 @@ const useAdminPanelInfo = () => {
         ethereumInfo.signer
       )) as unknown as IRentalityContract;
 
-      const paymentsNeeded = await rentalityContract.calculatePayments(BigInt(carId), BigInt(3), ETH_DEFAULT_ADDRESS);
+      const paymentsNeeded = await rentalityContract.calculatePaymentsWithDelivery(
+        BigInt(carId),
+        BigInt(3),
+        ETH_DEFAULT_ADDRESS,
+        emptyContractLocationInfo,
+        emptyContractLocationInfo
+      );
 
-      const tripRequest = {
+      const tripRequest: ContractCreateTripRequestWithDelivery = {
         carId: BigInt(carId),
         startDateTime: getBlockchainTimeFromDate(moment().toDate()),
         endDateTime: getBlockchainTimeFromDate(moment().add(3, "days").toDate()),
         currencyType: ETH_DEFAULT_ADDRESS,
+        pickUpInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
+        returnInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
       };
 
-      const transaction = await rentalityContract.createTripRequest(tripRequest, {
+      const transaction = await rentalityContract.createTripRequestWithDelivery(tripRequest, {
         value: BigInt(Math.ceil(Number(paymentsNeeded.totalPrice) * 0.991)),
       });
       await transaction.wait();

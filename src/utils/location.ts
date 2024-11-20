@@ -2,9 +2,9 @@ import { PlaceDetails } from "@/components/common/rntPlaceAutocompleteInput";
 import { LocationInfo } from "@/model/LocationInfo";
 import { ContractLocationInfo, ContractSignedLocationInfo } from "@/model/blockchain/schemas";
 import { fixedNumber } from "./numericFormatters";
-import { getTimeZoneIdFromAddress } from "./fetchTimeZoneId";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { SignLocationResponse } from "@/pages/api/signLocation";
+import { getTimeZoneIdFromLocation } from "./timezone";
 
 export function formatLocationAddressFromLocationInfo(locationInfo: LocationInfo) {
   return formatLocationAddress(locationInfo.address, locationInfo.country, locationInfo.state, locationInfo.city);
@@ -74,7 +74,7 @@ export async function placeDetailsToLocationInfoWithTimeZone(placeDetails: Place
     city: placeDetails.city?.long_name ?? "",
     latitude: latitude,
     longitude: longitude,
-    timeZoneId: await getTimeZoneIdFromAddress(latitude, longitude),
+    timeZoneId: await getTimeZoneIdFromLocation(latitude, longitude),
   };
 }
 

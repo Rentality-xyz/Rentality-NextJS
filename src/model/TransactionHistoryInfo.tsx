@@ -14,6 +14,7 @@ export type TransactionHistoryInfo = {
   tripEarnings: number;
   cancellationFee: number;
   reimbursements: number;
+  insuranceFeeInUsd: number;
   rentalityFee: number;
   salesTax: number;
   governmentTax: number;

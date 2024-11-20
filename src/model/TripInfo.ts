@@ -114,9 +114,13 @@ export type TripInfo = {
     drivingLicenseNumber: string;
     drivingLicenseExpirationDate: Date;
   };
+  guestInsuranceType?: "General Insurance ID" | "One-Time trip insurance";
+  guestInsurancePhoto: string;
   guestInsuranceCompanyName: string;
   guestInsurancePolicyNumber: string;
   isCarDetailsConfirmed: boolean;
+  insurancePerDayInUsd: number;
+  insuranceTotalInUsd: number;
 };
 
 export const getRefuelCharge = (tripInfo: TripInfo, endFuelLevelInPercents: number) => {

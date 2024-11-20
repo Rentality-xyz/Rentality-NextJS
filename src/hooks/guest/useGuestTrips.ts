@@ -193,7 +193,7 @@ const useGuestTrips = () => {
           console.error("getTrips error: contract is null");
           return;
         }
-        const tripsBookedView: ContractTripDTO[] = await rentalityContract.getTripsAsGuest();
+        const tripsBookedView: ContractTripDTO[] = await rentalityContract.getTripsAs(false);
 
         const tripsBookedData =
           tripsBookedView.length === 0

@@ -14,8 +14,9 @@ import Image from "next/image";
 import icMapMobile from "@/images/ic_map_mobile.png";
 import SearchAndFilters from "@/components/search/searchAndFilters";
 import { useAuth } from "@/contexts/auth/authContext";
-import useCarSearchParams from "@/hooks/guest/useCarSearchParams";
+import useCarSearchParams, { createQueryString } from "@/hooks/guest/useCarSearchParams";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
+import useCreateTripRequest from "@/hooks/guest/useCreateTripRequest";
 import { env } from "@/utils/env";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import mapNotFoundCars from "@/images/map_not_found_cars.png";
@@ -26,8 +27,8 @@ import RntSuspense from "@/components/common/rntSuspense";
 export default function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
 
-  const [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest, setSearchResult] =
-    useSearchCars();
+  const [isLoading, searchAvailableCars, searchResult, sortSearchResult, setSearchResult] = useSearchCars();
+  const { createTripRequest } = useCreateTripRequest();
 
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string | undefined>(undefined);
@@ -117,6 +118,10 @@ export default function Search() {
     }
   };
 
+  function handleShowRequestDetails(carInfo: SearchCarInfo) {
+    router.push(`/guest/createTrip?${createQueryString(searchCarRequest, searchCarFilters, carInfo.carId)}`);
+  }
+
   const setHighlightedCar = useCallback(
     (carID: number) => {
       setSearchResult((prev) => {
@@ -198,6 +203,7 @@ export default function Search() {
                         isSelected={value.highlighted}
                         setSelected={setHighlightedCar}
                         t={t_page}
+                        handleShowRequestDetails={handleShowRequestDetails}
                       />
                     </div>
                   );

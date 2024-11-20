@@ -42,7 +42,8 @@ export type HostCarInfo = {
   wheelDrive: string;
   bodyType: string;
   trunkSize: string;
-  isInsuranceIncluded: boolean;
+  isGuestInsuranceRequired: boolean;
+  insurancePerDayPriceInUsd: number;
   isCarMetadataEdited: boolean;
 
   metadataUrl: string;
@@ -78,7 +79,8 @@ export const emptyHostCarInfo: HostCarInfo = {
   engineTypeText: ENGINE_TYPE_PETROL_STRING,
   fullBatteryChargePrice: 0,
   timeBufferBetweenTripsInMin: 0,
-  isInsuranceIncluded: false,
+  isGuestInsuranceRequired: false,
+  insurancePerDayPriceInUsd: 0,
   isCarMetadataEdited: false,
   metadataUrl: "",
 };

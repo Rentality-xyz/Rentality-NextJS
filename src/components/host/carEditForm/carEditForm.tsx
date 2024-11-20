@@ -83,7 +83,8 @@ export default function CarEditForm({
             securityDeposit: initValue.securityDeposit,
             fuelPricePerGal: initValue.fuelPricePerGal,
             fullBatteryChargePrice: initValue.fullBatteryChargePrice,
-            isInsuranceIncluded: initValue.isInsuranceIncluded,
+            isGuestInsuranceRequired: initValue.isGuestInsuranceRequired,
+            insurancePerDayPriceInUsd: initValue.insurancePerDayPriceInUsd,
 
             timeBufferBetweenTripsInMin: initValue.timeBufferBetweenTripsInMin,
             currentlyListed: initValue.currentlyListed,
@@ -106,6 +107,7 @@ export default function CarEditForm({
   const isElectricEngine = engineTypeText === "Electro";
   const isLocationEdited = watch("isLocationEdited");
   const locationInfo = watch("locationInfo");
+  const isGuestInsuranceRequired = watch("isGuestInsuranceRequired");
 
   const [isCarMetadataEdited, setIsCarMetadataEdited] = useState(isNewCar);
   const [selectedMakeID, setSelectedMakeID] = useState<string>("");
@@ -146,7 +148,8 @@ export default function CarEditForm({
       fullBatteryChargePrice:
         formData.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING ? formData.fullBatteryChargePrice : 0,
       timeBufferBetweenTripsInMin: formData.timeBufferBetweenTripsInMin,
-      isInsuranceIncluded: formData.isInsuranceIncluded,
+      isGuestInsuranceRequired: formData.isGuestInsuranceRequired,
+      insurancePerDayPriceInUsd: formData.insurancePerDayPriceInUsd,
       ownerAddress: initValue?.ownerAddress ?? "",
       wheelDrive: initValue?.wheelDrive ?? "",
       trunkSize: initValue?.trunkSize ?? "",
@@ -701,18 +704,29 @@ export default function CarEditForm({
             </div>
           </div>
 
-          <Controller
-            name="isInsuranceIncluded"
-            control={control}
-            render={({ field }) => (
-              <RntCheckbox
-                className="mt-4"
-                label={t_car("insurance_included")}
-                checked={field.value}
-                onChange={field.onChange}
-              />
-            )}
-          />
+          <div className="mt-4 flex flex-wrap items-center gap-4">
+            <Controller
+              name="isGuestInsuranceRequired"
+              control={control}
+              render={({ field }) => (
+                <RntCheckbox
+                  className="mt-4"
+                  label={t_car("guest_insurance_required")}
+                  checked={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+            <RntInput
+              className="lg:w-60"
+              id="insurancePerDayPriceInUsd"
+              label={t_car("insurance_per_day")}
+              placeholder="e.g. 25"
+              disabled={!isGuestInsuranceRequired}
+              {...register("insurancePerDayPriceInUsd", { valueAsNumber: true })}
+              validationError={errors.insurancePerDayPriceInUsd?.message?.toString()}
+            />
+          </div>
         </div>
 
         {isElectricEngine ? (

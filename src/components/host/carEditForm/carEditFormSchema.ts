@@ -121,8 +121,15 @@ const defaultCarEditFormSchema = z.object({
     .min(1, "Deposit is too small")
     .max(100_000, "Deposit is too big")
     .step(0.01, "only 2 decimals are allowed"),
-  isInsuranceIncluded: z.boolean().default(false),
-
+  isGuestInsuranceRequired: z.boolean().default(false),
+  insurancePerDayPriceInUsd: z
+    .number({
+      required_error: "Value is required",
+      invalid_type_error: "value must be a number",
+    })
+    .min(1, "Price is too small")
+    .max(10_000, "Price is too big")
+    .step(0.01, "only 2 decimals are allowed"),
   timeBufferBetweenTripsInMin: z.number(),
   currentlyListed: z.boolean().default(true),
 });

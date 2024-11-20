@@ -11,6 +11,7 @@
     "messages": "Messages",
     "notifications": "Notifications",
     "more": "More",
+    "insurance": "Insurance",
     "legal": "Legal",
     "transaction_history": "Transaction history",
     "logout": "Logout",
@@ -80,9 +81,11 @@
       "delivery_fee_drop_off": "Drop off",
       "taxes": "Taxes",
       "deposit": "Deposit",
+      "insurance": "Insurance",
       "per_day": "/day",
       "days": "day(s)",
-      "price_without_taxes": "Price excl. taxes"
+      "price_without_taxes": "Price excl. taxes",
+      "insurance_required": "Insurance required"
     },
     "search_car_delivery_extra_info": {
       "title": "Trip Info",
@@ -94,6 +97,63 @@
       "insurance_included_title": "Insurance included in trip price",
       "insurance_included_text": "Check with the host for insurance conditions"
     }
+  },
+  "create_trip": {
+    "trip_rules": "Trip Rules",
+    "pre_agreement_details": "Pre-agreement details",
+    "new_search": "← New Search",
+    "rent_for_n_days": "Rent for {{tripDays, number}} day(s)",
+    "see_in_full": "See in full",
+    "all_n_photo": "All {{count, number}} photo",
+    "n_days_discount": "{{count, number}}+ day discount",
+    "days_discount": "Days discount",
+    "insurance_not_required": "extra insurance not required",
+    "insurance_required_and_guest_has": "you must have a valid insurance policy.",
+    "insurance_required_and_guest_does_not_have": "${{insurancePerDayPriceInUsd, number}}/day extra fee",
+    "n_miles": "{{milesIncludedPerDay, number}} ml",
+    "trip_conditions": "Trip conditions",
+    "insurance": "Insurance",
+    "price": "Price",
+    "security_deposit": "Security deposit",
+    "daily_mileage": "Daily mileage",
+    "price_per_overmile": "Price per overmile",
+    "price_per_10_tank": "Price per 10% charge/tank",
+    "delivery_fee": "Delivery fee",
+    "delivery_fee_value": "from 1 to 25 mile ${{from1To25milesPrice}} per mile, over 25 miles ${{over25MilesPrice}} per mile",
+    "cancellation": "Cancellation",
+    "cancellation_value": "free cancellation before the trip started",
+    "taxes": "Taxes",
+    "taxes_value": "Sales and Government Tax will be added",
+    "discounts": "Discounts:",
+    "3_day_discount": "3+ day discount:",
+    "7_day_discount": "7+ day discount:",
+    "30_day_discount": "30+ day discount:",
+    "hosted_by": "HOSTED BY {{hostName, string}}",
+    "contacts_after_booking": "Contacts, full address and vehicle data available after booking",
+    "trip_start": "Trip start",
+    "trip_end": "Trip end",
+    "pickup_location": "Pickup location",
+    "full_address_after_booking": "Full host address available after booking",
+    "return_location": "Return location",
+    "delivery": "Delivery",
+    "host_home_location": "Host home location",
+    "delivery_free": "delivery free",
+    "deliver_to_guest": "Deliver to guest",
+    "n_miles_to_location": "{{distanceInMiles, number}} miles to Pick-Up location ${{priceInUsd, number}}",
+    "guest_insurance": "Guest insurance",
+    "this_trip_includes_insurance": "This trip includes insurance ${{insurancePerDayPriceInUsd}}/day extra fee",
+    "see_trip_pre_receipt_details": "See trip pre-receipt details",
+    "price_per_day": "Price per day",
+    "trip_days": "Trip days",
+    "trip_price": "Trip price",
+    "discount_amount": "Discount Amount",
+    "delivery_fee_to_pick_up_location": "Delivery fee to Pick-Up location",
+    "delivery_fee_from_drop_off_location": "Delivery fee from Drop-Off location",
+    "sales_tax": "Sales Tax",
+    "government_tax": "Government Tax",
+    "total_charge": "Total charge",
+    "insurance_fee_n_per_day": "Insurance fee ${{insurancePerDayPriceInUsd, number}}/day",
+    "total_payable": "Total payable"
   },
   "admin": {
     "contract_null": "Contract is null:",
@@ -233,7 +293,14 @@
 
     "basic_info": "Basic information",
     "pass_license_verif": "Please pass driver license verification",
-    "driver_license_info": "Driving license information"
+    "driver_license_info": "Driving license information",
+
+    "user_insurance": {
+      "please_upload_photo": "Please, upload photo you ID insurance card",
+      "insurance_requirements": "See insurance requirements",
+      "insurance_uploaded": "Insurance card uploaded",
+      "insurance_not_uploaded": "Insurance card not uploaded"
+    }
   },
   "transaction_history": {
     "title": "Transaction history",
@@ -251,7 +318,8 @@
     "trip_earnings": "Trip earnings",
     "cancellation_fee": "Cancellation fee",
     "reimbursements": "Reimbursements",
-    "rentality_fee": "Rentality fee",
+    "insurance_fee": "Rentality fee",
+    "rentality_fee": "Insurance fee",
     "taxes": "Taxes",
     "details": "Details"
   },
@@ -429,7 +497,10 @@
       "start_fuel_or_battery_level": "Start fuel or battery level",
       "end_fuel_or_battery_level": "End fuel or battery level",
       "dl_number": "DL number",
-      "dl_validity_period": "DL validity period"
+      "dl_validity_period": "DL validity period",
+      "insurance": "Insurance",
+      "insurance_info": "Insurance info",
+      "insurance_fee_per_day": "Insurance  fee ${{insurancePerDayInUsd, number}}/day"
     }
   },
   "vehicles": {
@@ -484,7 +555,8 @@
     "secure_dep": "Security deposit",
     "fuel_price": "Fuel price per gal",
     "unlimited": "Unlimited",
-    "insurance_included": "Insurance included",
+    "guest_insurance_required": "Guest Insurance required",
+    "insurance_per_day": "Insurance per day",
     "overmiles_fee": "${{price, string}}/mi fee for additional miles driven`",
     "battery_charge": "Battery charge price:",
     "full_charge": "Full battery charge cost",
@@ -602,6 +674,8 @@
     "apply": "Apply",
     "low_resolution": "The resolution is too low!",
     "success": "Success",
+    "day": "day",
+    "trip": "trip",
     "add_fund_to_wallet": "Please add funds to your wallet on Base network to continue.",
     "per_day": "/day"
   },
@@ -622,5 +696,20 @@
     "copy_address": "Copy Address",
     "edit_profile": "Edit Profile",
     "logout": "Logout"
+  },
+  "insurance": {
+    "page_title": "Insurance",
+    "please_enter_your_insurance": "Please, enter you General Insurance ID or/and One-Time trip insurance",
+    "insurance_list": "Insurance list",
+    "add_insurance": "Add Insurance",
+    "trip_filter": "Trip filter",
+    "trip": "Trip",
+    "insurance_type": "Insurance type",
+    "view_document": "View document",
+    "insurance_company_name": "Insurance company name",
+    "insurance_policy_number": "Insurance policy number",
+    "comment": "Comment",
+    "uploaded_by": "Uploaded by",
+    "trip_details": "Trip details"
   }
 }

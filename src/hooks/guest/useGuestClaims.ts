@@ -146,7 +146,7 @@ const useGuestClaims = () => {
           console.error("getClaims error: contract is null");
           return;
         }
-        const claimsView: ContractFullClaimInfo[] = await rentalityContract.getMyClaimsAsGuest();
+        const claimsView: ContractFullClaimInfo[] = await rentalityContract.getMyClaimsAs(false);
 
         const claimsData =
           claimsView.length === 0
@@ -182,7 +182,7 @@ const useGuestClaims = () => {
                 })
               );
 
-        const guestTripsView: ContractTripDTO[] = (await rentalityContract.getTripsAsGuest()).filter(
+        const guestTripsView: ContractTripDTO[] = (await rentalityContract.getTripsAs(false)).filter(
           (i) => i.trip.status !== TripStatus.Pending && i.trip.status !== TripStatus.Rejected
         );
 

@@ -6,6 +6,8 @@ import {
   ContractAdminTripDTO,
   ContractAllCarsDTO,
   ContractAllTripsDTO,
+  ContractAvailableCarDTO,
+  ContractBaseDiscount,
   ContractCarDetails,
   ContractCarInfo,
   ContractCarInfoDTO,
@@ -13,6 +15,9 @@ import {
   ContractClaim,
   ContractFilterInfoDTO,
   ContractFullClaimInfo,
+  ContractInsuranceCarInfo,
+  ContractInsuranceDTO,
+  ContractInsuranceInfo,
   ContractLocationInfo,
   ContractPublicHostCarDTO,
   ContractSearchCar,
@@ -21,6 +26,7 @@ import {
   ContractTrip,
   ContractTripDTO,
   EngineType,
+  InsuranceType,
   TripStatus,
 } from "./schemas";
 
@@ -74,8 +80,8 @@ const emptyContractCarInfo: ContractCarInfo = {
   geoVerified: false,
   timeBufferBetweenTripsInSec: BigInt(0),
   timeZoneId: "",
-  insuranceIncluded: false,
   locationHash: "",
+  insuranceIncluded: true,
 };
 
 export function validateContractCarInfo(obj: ContractCarInfo): obj is ContractCarInfo {
@@ -171,6 +177,11 @@ export function validateContractFullClaimInfo(obj: ContractFullClaimInfo): obj i
   return validateType(obj, emptyContractFullClaimInfo) && validateType(obj.claim, emptyContractClaim);
 }
 
+const emptyContractInsuranceCarInfo: ContractInsuranceCarInfo = {
+  required: false,
+  priceInUsdCents: BigInt(0),
+};
+
 const emptyContractSearchCar: ContractSearchCar = {
   carId: BigInt(0),
   brand: "",
@@ -194,6 +205,7 @@ const emptyContractSearchCar: ContractSearchCar = {
   dropOf: BigInt(0),
   insuranceIncluded: false,
   locationInfo: emptyContractLocationInfo,
+  insuranceInfo: emptyContractInsuranceCarInfo,
 };
 
 export function validateContractSearchCar(obj: ContractSearchCar): obj is ContractSearchCar {
@@ -296,6 +308,8 @@ const emptyContractTripDTO: ContractTripDTO = {
   returnLocation: emptyContractLocationInfo,
   guestPhoneNumber: "",
   hostPhoneNumber: "",
+  insurancesInfo: [],
+  paidForInsuranceInUsdCents: BigInt(0),
 };
 
 export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {
@@ -343,6 +357,81 @@ export function validateContractAllCarsDTO(obj: ContractAllCarsDTO): obj is Cont
     validateType(obj, emptyContractAllCarsDTO) &&
     (obj.cars.length === 0 ||
       (validateType(obj.cars[0], emptyContractAdminCarDTO) && validateType(obj.cars[0].car, emptyContractCarDetails)))
+  );
+}
+
+const emptyContractInsuranceInfo: ContractInsuranceInfo = {
+  companyName: "",
+  policyNumber: "",
+  photo: "",
+  comment: "",
+  insuranceType: InsuranceType.None,
+  createdTime: BigInt(0),
+  createdBy: "",
+};
+
+const emptyContractInsuranceDTO: ContractInsuranceDTO = {
+  tripId: BigInt(0),
+  carBrand: "",
+  carModel: "",
+  carYear: BigInt(0),
+  insuranceInfo: emptyContractInsuranceInfo,
+  createdByHost: false,
+  creatorPhoneNumber: "",
+  creatorFullName: "",
+  startDateTime: BigInt(0),
+  endDateTime: BigInt(0),
+};
+
+export function validateContractInsuranceDTO(obj: ContractInsuranceDTO): obj is ContractInsuranceDTO {
+  return validateType(obj, emptyContractInsuranceDTO) && validateType(obj.insuranceInfo, emptyContractInsuranceInfo);
+}
+
+const emptyContractBaseDiscount: ContractBaseDiscount = {
+  threeDaysDiscount: BigInt(0),
+  sevenDaysDiscount: BigInt(0),
+  thirtyDaysDiscount: BigInt(0),
+  initialized: false,
+};
+
+const emptyContractAvailableCarDTO: ContractAvailableCarDTO = {
+  carId: BigInt(0),
+  brand: "",
+  model: "",
+  yearOfProduction: BigInt(0),
+  pricePerDayInUsdCents: BigInt(0),
+  securityDepositPerTripInUsdCents: BigInt(0),
+  engineType: EngineType.PETROL,
+  milesIncludedPerDay: BigInt(0),
+  host: "",
+  hostName: "",
+  hostPhotoUrl: "",
+  metadataURI: "",
+  pricePerDayWithDiscount: BigInt(0),
+  taxes: BigInt(0),
+  totalPriceWithDiscount: BigInt(0),
+  tripDays: BigInt(0),
+  aboveTwentyFiveMilesInUsdCents: BigInt(0),
+  underTwentyFiveMilesInUsdCents: BigInt(0),
+  pickUp: BigInt(0),
+  dropOf: BigInt(0),
+  insuranceIncluded: false,
+  locationInfo: emptyContractLocationInfo,
+  insuranceInfo: emptyContractInsuranceCarInfo,
+  carDiscounts: emptyContractBaseDiscount,
+  fuelPrice: BigInt(0),
+  salesTax: BigInt(0),
+  governmentTax: BigInt(0),
+  isGuestHasInsurance: false,
+  distance: BigInt(0),
+};
+
+export function validateContractAvailableCarDTO(obj: ContractAvailableCarDTO): obj is ContractAvailableCarDTO {
+  return (
+    validateType(obj, emptyContractAvailableCarDTO) &&
+    validateType(obj.locationInfo, emptyContractLocationInfo) &&
+    validateType(obj.insuranceInfo, emptyContractInsuranceCarInfo) &&
+    validateType(obj.carDiscounts, emptyContractBaseDiscount)
   );
 }
 

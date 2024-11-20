@@ -3,8 +3,9 @@ import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtil
 import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { isEmpty } from "@/utils/string";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
-import { ContractTripDTO, EngineType, TripStatus } from "@/model/blockchain/schemas";
+import { ContractTripDTO, EngineType, InsuranceType, TripStatus } from "@/model/blockchain/schemas";
 import { calculateDays } from "@/utils/date";
+import { bigIntReplacer } from "@/utils/json";
 
 export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetailsConfirmed?: boolean) => {
   const metaData = parseMetaData(await getMetaDataFromIpfs(tripDTO.metadataURI));
@@ -23,6 +24,21 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
   const overmilePrice =
     Math.ceil(Number(tripDTO.trip.pricePerDayInUsdCents) / Number(tripDTO.trip.milesIncludedPerDay)) / 100;
   const tankVolumeInGal = Number(metaData.tankVolumeInGal);
+
+  const insurancePerDayInUsd = Number(tripDTO.paidForInsuranceInUsdCents) / 100 / tripDays;
+
+  const insurancesInfoList = [...tripDTO.insurancesInfo].sort((a, b) => Number(b.createdTime) - Number(a.createdTime));
+  const insurancesInfo =
+    insurancesInfoList.find((i) => i.insuranceType === InsuranceType.General) ??
+    insurancesInfoList.find((i) => i.insuranceType === InsuranceType.OneTime);
+
+  const guestInsuranceType =
+    insurancesInfo?.insuranceType === InsuranceType.General
+      ? "General Insurance ID"
+      : insurancesInfo?.insuranceType === InsuranceType.OneTime
+        ? "One-Time trip insurance"
+        : undefined;
+  const guestInsurancePhoto = insurancesInfo?.photo ?? "";
 
   let item: TripInfo = {
     tripId: Number(tripDTO.trip.tripId),
@@ -138,6 +154,11 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
     currencyRate:
       Number(tripDTO.trip.paymentInfo.currencyRate) / 10 ** Number(tripDTO.trip.paymentInfo.currencyDecimals),
     isCarDetailsConfirmed: isCarDetailsConfirmed ?? false,
+    insurancePerDayInUsd: insurancePerDayInUsd,
+    insuranceTotalInUsd: insurancePerDayInUsd * tripDays,
+
+    guestInsuranceType: guestInsuranceType,
+    guestInsurancePhoto: guestInsurancePhoto,
   };
   return item;
 };

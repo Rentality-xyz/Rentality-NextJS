@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { getIpfsURI } from "@/utils/ipfsUtils";
 import { useRentality } from "@/contexts/rentalityContext";
-import { formatPhoneNumber, getBlockchainTimeFromDate, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
-import moment from "moment";
-import { ContractFullKYCInfoDTO, ContractKYCInfo } from "@/model/blockchain/schemas";
+import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
+import { ContractFullKYCInfoDTO } from "@/model/blockchain/schemas";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { usePrivy } from "@privy-io/react-auth";
