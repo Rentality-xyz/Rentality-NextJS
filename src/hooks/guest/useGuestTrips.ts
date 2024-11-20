@@ -5,6 +5,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { ContractTrip, ContractTripDTO, EngineType, TripStatus } from "@/model/blockchain/schemas";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 import { mapTripDTOtoTripInfo } from "@/model/utils/TripDTOtoTripInfo";
+import { ZERO_HASH } from "@/utils/wallet";
 
 const useGuestTrips = () => {
   const rentalityContract = useRentality();
@@ -83,8 +84,8 @@ const useGuestTrips = () => {
       try {
         const endFuelLevelInPercents = BigInt(Number(params[0]) * 100);
         const endOdometr = BigInt(params[1]);
-
-        let transaction = await rentalityContract.checkOutByGuest(tripId, [endFuelLevelInPercents, endOdometr]);
+                                                                                                              /// TODO: get from input   
+        let transaction = await rentalityContract.checkOutByGuest(tripId, [endFuelLevelInPercents, endOdometr],ZERO_HASH);
         await transaction.wait();
         return true;
       } catch (e) {
@@ -99,8 +100,8 @@ const useGuestTrips = () => {
         return false;
       }
 
-      try {
-        let transaction = await rentalityContract.confirmCheckOut(tripId);
+      try {                                                               /// TODO: get from input   
+        let transaction = await rentalityContract.confirmCheckOut(tripId, ZERO_HASH);
         await transaction.wait();
         return true;
       } catch (e) {

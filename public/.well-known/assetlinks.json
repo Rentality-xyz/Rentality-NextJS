@@ -3,9 +3,9 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "xyz.rentality",
+      "package_name": "xyz.rentality.rentality",
       "sha256_cert_fingerprints": [
-        "9D:26:11:01:D0:68:B3:FD:0B:D8:6D:E8:DC:5F:BB:10:80:C5:37:2C:8A:F7:E2:29:3E:C0:FF:F6:8E:D1:93:9C"
+        "71:66:8D:12:8E:E6:65:7D:81:34:78:03:DB:0E:18:63:7A:D3:D3:47:33:E8:92:DA:38:BA:4C:24:77:A3:4C:18"
       ]
     }
   }

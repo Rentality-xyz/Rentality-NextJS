@@ -370,7 +370,7 @@ export type ContractCarDetails = {
   geoVerified: boolean;
   currentlyListed: boolean;
   locationInfo: ContractLocationInfo;
-  vinNumber: string;
+  carVinNumber: string;
 };
 
 export type ContractFloridaTaxes = {
@@ -563,3 +563,99 @@ export const EngineType = {
   PETROL: BigInt(1),
   ELECTRIC: BigInt(2),
 };
+
+export enum RefferalProgram {
+  SetKYC,
+  PassCivic,
+  AddFirstCar,
+  AddCar,
+  CreateTrip,
+  FinishTripAsHost,
+  FinishTripAsGuest,
+  UnlistedCar,
+  Daily,
+  DailyListing,
+}
+
+export enum Tear {
+  Tear1,
+  Tear2,
+  Tear3,
+  Tear4,
+}
+
+export enum RefferalAccrualType {
+  OneTime,
+  Permanent,
+}
+
+
+
+export interface ReadyToClaim {
+  points: number;
+  refType: RefferalProgram;
+  oneTime: boolean;
+}
+
+export interface ReadyToClaimRefferalHash {
+  points: number;
+  refType: RefferalProgram;
+  oneTime: boolean;
+  claimed: boolean;
+}
+
+export interface TearPoints {
+  from: number;
+  to: number;
+}
+
+export interface RefferalDiscount {
+  pointsCosts: number;
+  percents: number;
+}
+
+export interface TearDTO {
+  points: TearPoints;
+  tear: Tear;
+}
+
+export interface ReadyToClaimDTO {
+  toClaim: ReadyToClaim[];
+  totalPoints: number;
+  toNextDailyClaim: number;
+}
+
+export interface RefferalHashDTO {
+  toClaim: ReadyToClaimRefferalHash[];
+  totalPoints: number;
+  hash: string; 
+}
+
+export interface RefferalProgramInfoDTO {
+  refferalType: RefferalAccrualType;
+  method: RefferalProgram;
+  points: number; 
+}
+
+export interface HashPointsDTO {
+  method: RefferalProgram;
+  points: number;
+}
+
+export interface RefferalDiscountsDTO {
+  method: RefferalProgram;
+  tear: Tear;
+  discount: RefferalDiscount;
+}
+
+export interface AllRefferalInfoDTO {
+  programPoints: RefferalProgramInfoDTO[];
+  hashPoints: HashPointsDTO[];
+  discounts: RefferalDiscountsDTO[];
+  tear: TearDTO[];
+}
+
+export interface RefferalHistory {
+  points: number; 
+  method: RefferalProgram;
+}
