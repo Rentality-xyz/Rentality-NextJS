@@ -57,7 +57,7 @@ export default function ClaimHistoryMobileCard({ claim, index, isHost, payClaim,
       <p>
         <strong>Payment deadline</strong>
       </p>
-      <p className={claim.deadlineDate <= moment.tz(claim.timeZoneId).toDate() ? "text-red-400" : ""}>
+      <p className={claim.deadlineDate <= moment.tz(claim.timeZoneId).toDate() ? "text-rentality-alert-text" : ""}>
         {dateFormatShortMonthDateTime(claim.deadlineDate, claim.timeZoneId)}
       </p>
       <hr className="col-span-2" />
@@ -69,7 +69,7 @@ export default function ClaimHistoryMobileCard({ claim, index, isHost, payClaim,
       <p>
         <strong>Amount $</strong>
       </p>
-      <p className={claim.status === ClaimStatus.Overdue ? "text-red-400" : ""}>
+      <p className={claim.status === ClaimStatus.Overdue ? "text-rentality-alert-text" : ""}>
         ${displayMoneyFromCentsWith2Digits(claim.amountInUsdCents)}
       </p>
       <hr className="col-span-2" />

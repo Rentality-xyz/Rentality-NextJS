@@ -50,7 +50,7 @@ function СarDetailsForDetails({ tripInfo, isHost, t }: { tripInfo: TripInfo; is
           <div className="me-2">
             <Link href={`/${pathRoot}/messages?tridId=${tripInfo.tripId}`}>
               <i className="fi fi-rs-envelope-open pr-1 text-rentality-icons"></i>
-              <strong className="text-l">{t("booked.chat")}</strong>
+              <strong className="text-lg">{t("booked.chat")}</strong>
             </Link>
           </div>
         </div>
@@ -58,7 +58,7 @@ function СarDetailsForDetails({ tripInfo, isHost, t }: { tripInfo: TripInfo; is
           <div>
             <a href={hostPhoneNumberLink}>
               <i className="fi fi-br-phone-flip pr-1 text-rentality-icons"></i>
-              <strong className="text-l">{t("booked.contact")}</strong>
+              <strong className="text-lg">{t("booked.contact")}</strong>
             </a>
           </div>
         </div>

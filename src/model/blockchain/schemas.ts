@@ -50,9 +50,10 @@ export type ContractCreateCarRequest = {
   milesIncludedPerDay: bigint;
   timeBufferBetweenTripsInSec: bigint;
   geoApiKey: string;
-  insuranceIncluded: boolean;
   locationInfo: ContractSignedLocationInfo;
   currentlyListed: boolean;
+  insuranceRequired: boolean;
+  insurancePriceInUsdCents: bigint;
 };
 
 export type ContractUpdateCarInfoRequest = {
@@ -63,7 +64,8 @@ export type ContractUpdateCarInfoRequest = {
   milesIncludedPerDay: bigint;
   timeBufferBetweenTripsInSec: bigint;
   currentlyListed: boolean;
-  insuranceIncluded: boolean;
+  insuranceRequired: boolean;
+  insurancePriceInUsdCents: bigint;
   engineType: EngineType;
   tokenUri: string;
 };
@@ -157,6 +159,8 @@ export type ContractTripDTO = {
   returnLocation: ContractLocationInfo;
   guestPhoneNumber: string;
   hostPhoneNumber: string;
+  insurancesInfo: ContractInsuranceInfo[];
+  paidForInsuranceInUsdCents: bigint;
 };
 
 export type ContractChatInfo = {
@@ -276,6 +280,7 @@ export type ContractTripReceiptDTO = {
   endFuelLevel: bigint;
   startOdometer: bigint;
   endOdometer: bigint;
+  insuranceFee: bigint;
 };
 
 export type ContractCalculatePaymentsDTO = {
@@ -342,6 +347,39 @@ export type ContractSearchCar = {
   dropOf: bigint;
   insuranceIncluded: boolean;
   locationInfo: ContractLocationInfo;
+  insuranceInfo: ContractInsuranceCarInfo;
+};
+
+export type ContractAvailableCarDTO = {
+  carId: bigint;
+  brand: string;
+  model: string;
+  yearOfProduction: bigint;
+  pricePerDayInUsdCents: bigint;
+  pricePerDayWithDiscount: bigint;
+  tripDays: bigint;
+  totalPriceWithDiscount: bigint;
+  taxes: bigint;
+  securityDepositPerTripInUsdCents: bigint;
+  engineType: EngineType;
+  milesIncludedPerDay: bigint;
+  host: string;
+  hostName: string;
+  hostPhotoUrl: string;
+  metadataURI: string;
+  underTwentyFiveMilesInUsdCents: bigint;
+  aboveTwentyFiveMilesInUsdCents: bigint;
+  pickUp: bigint;
+  dropOf: bigint;
+  insuranceIncluded: boolean;
+  locationInfo: ContractLocationInfo;
+  insuranceInfo: ContractInsuranceCarInfo;
+  fuelPrice: bigint;
+  carDiscounts: ContractBaseDiscount;
+  salesTax: bigint;
+  governmentTax: bigint;
+  distance: bigint;
+  isGuestHasInsurance: boolean;
 };
 
 export type ContractGeoData = {
@@ -459,6 +497,47 @@ export type ContractFilterInfoDTO = {
   minCarYearOfProduction: bigint;
 };
 
+export type ContractInsuranceCarInfo = {
+  required: boolean;
+  priceInUsdCents: bigint;
+};
+
+export type ContractSaveInsuranceRequest = {
+  companyName: string;
+  policyNumber: string;
+  photo: string;
+  comment: string;
+  insuranceType: InsuranceType;
+};
+
+export type ContractInsuranceInfo = {
+  companyName: string;
+  policyNumber: string;
+  photo: string;
+  comment: string;
+  insuranceType: InsuranceType;
+  createdTime: bigint;
+  createdBy: string;
+};
+
+export type ContractInsuranceDTO = {
+  tripId: bigint;
+  carBrand: string;
+  carModel: string;
+  carYear: bigint;
+  insuranceInfo: ContractInsuranceInfo;
+  createdByHost: boolean;
+  creatorPhoneNumber: string;
+  creatorFullName: string;
+  startDateTime: bigint;
+  endDateTime: bigint;
+};
+
+export type ContractCarInfoWithInsurance = {
+  carInfo: ContractCarInfo;
+  insuranceInfo: ContractInsuranceCarInfo;
+};
+
 export type TripStatus = bigint;
 export const TripStatus = {
   Pending: BigInt(0), // Created
@@ -556,6 +635,13 @@ export const EventType = {
   Car: BigInt(0),
   Claim: BigInt(1),
   Trip: BigInt(2),
+};
+
+export type InsuranceType = bigint;
+export const InsuranceType = {
+  None: BigInt(0),
+  General: BigInt(1),
+  OneTime: BigInt(2),
 };
 
 export type EngineType = bigint;

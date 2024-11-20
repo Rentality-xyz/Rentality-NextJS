@@ -1,22 +1,8 @@
 import { useCallback, useState } from "react";
-import { calculateDays, UTC_TIME_ZONE_ID } from "@/utils/date";
 import { SearchCarInfo, SearchCarsResult, emptySearchCarsResult } from "@/model/SearchCarsResult";
-import { useRentality } from "@/contexts/rentalityContext";
-import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import {
-  ContractCreateTripRequest,
-  ContractCreateTripRequestWithDelivery,
-  ContractLocationInfo,
-} from "@/model/blockchain/schemas";
 import { isEmpty } from "@/utils/string";
-import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
-import { getSignedLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
-import moment from "moment";
-import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
-import { isUserHasEnoughFunds } from "@/utils/wallet";
-import { formatEther } from "viem";
 import { bigIntReplacer } from "@/utils/json";
 import { PublicSearchCarsResponse } from "@/pages/api/publicSearchCars";
 
@@ -27,7 +13,6 @@ export type SortOptionKey = keyof SortOptions;
 
 const useSearchCars = () => {
   const ethereumInfo = useEthereum();
-  const rentalityContract = useRentality();
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [searchResult, setSearchResult] = useState<SearchCarsResult>(emptySearchCarsResult);
 
@@ -138,7 +123,7 @@ const useSearchCars = () => {
       setSearchResult({
         searchCarRequest: request,
         searchCarFilters: filters,
-        carInfos: availableCarsData,
+        carInfos: availableCarsData.map((i) => ({ ...i, engineType: BigInt(i.engineType) })),
         filterLimits: publicSearchCarsResponse.filterLimits,
       });
       return true;
@@ -149,136 +134,6 @@ const useSearchCars = () => {
       setIsLoading(false);
     }
   };
-
-  async function createTripRequest(
-    carId: number,
-    searchCarRequest: SearchCarRequest,
-    timeZoneId: string
-  ): Promise<Result<boolean, TransactionErrorCode>> {
-    if (!ethereumInfo) {
-      console.error("createTripRequest error: ethereumInfo is null");
-      return Err("ERROR");
-    }
-
-    if (!rentalityContract) {
-      console.error("createTripRequest error: rentalityContract is null");
-      return Err("ERROR");
-    }
-
-    const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
-    const dateFrom = moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, notEmtpyTimeZoneId).toDate();
-    const dateTo = moment.tz(searchCarRequest.dateToInDateTimeStringFormat, notEmtpyTimeZoneId).toDate();
-
-    const days = calculateDays(dateFrom, dateTo);
-    if (days < 0) {
-      console.error("Date to' must be greater than 'Date from'");
-      return Err("ERROR");
-    }
-    const startUnixTime = getBlockchainTimeFromDate(dateFrom);
-    const endUnixTime = getBlockchainTimeFromDate(dateTo);
-
-    try {
-      if (
-        searchCarRequest.isDeliveryToGuest ||
-        !searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation ||
-        !searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
-      ) {
-        const carDeliveryData = await rentalityContract.getDeliveryData(BigInt(carId));
-        const carLocationInfo: ContractLocationInfo = {
-          userAddress: carDeliveryData.locationInfo.userAddress,
-          country: carDeliveryData.locationInfo.country,
-          state: carDeliveryData.locationInfo.state,
-          city: carDeliveryData.locationInfo.city,
-          latitude: carDeliveryData.locationInfo.latitude,
-          longitude: carDeliveryData.locationInfo.longitude,
-          timeZoneId: carDeliveryData.locationInfo.timeZoneId,
-        };
-
-        const pickupLocationInfo: ContractLocationInfo =
-          searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation ||
-          isEmpty(searchCarRequest.deliveryInfo.pickupLocation.locationInfo.address)
-            ? carLocationInfo
-            : mapLocationInfoToContractLocationInfo(searchCarRequest.deliveryInfo.pickupLocation.locationInfo);
-        const returnLocationInfo =
-          searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation ||
-          isEmpty(searchCarRequest.deliveryInfo.returnLocation.locationInfo.address)
-            ? carLocationInfo
-            : mapLocationInfoToContractLocationInfo(searchCarRequest.deliveryInfo.returnLocation.locationInfo);
-
-        const paymentsNeeded = await rentalityContract.calculatePaymentsWithDelivery(
-          BigInt(carId),
-          BigInt(days),
-          ETH_DEFAULT_ADDRESS,
-          pickupLocationInfo,
-          returnLocationInfo
-        );
-
-        const pickupLocationResult = await getSignedLocationInfo(pickupLocationInfo, ethereumInfo.chainId);
-        if (!pickupLocationResult.ok) {
-          console.error("Sign location error");
-          return Err("ERROR");
-        }
-
-        const returnLocationResult =
-          returnLocationInfo.userAddress === pickupLocationInfo.userAddress
-            ? pickupLocationResult
-            : await getSignedLocationInfo(returnLocationInfo, ethereumInfo.chainId);
-        if (!returnLocationResult.ok) {
-          console.error("Sign location error");
-          return Err("ERROR");
-        }
-
-        const tripRequest: ContractCreateTripRequestWithDelivery = {
-          carId: BigInt(carId),
-          startDateTime: startUnixTime,
-          endDateTime: endUnixTime,
-          currencyType: ETH_DEFAULT_ADDRESS,
-          pickUpInfo: pickupLocationResult.value,
-          returnInfo: returnLocationResult.value,
-        };
-        const totalPriceInEth = Number(formatEther(paymentsNeeded.totalPrice));
-
-        if (!(await isUserHasEnoughFunds(ethereumInfo.signer, totalPriceInEth))) {
-          console.error("createTripRequest error: user don't have enough funds");
-          return Err("NOT_ENOUGH_FUNDS");
-        }
-
-        const transaction = await rentalityContract.createTripRequestWithDelivery(tripRequest, {
-          value: paymentsNeeded.totalPrice,
-        });
-        await transaction.wait();
-      } else {
-        const paymentsNeeded = await rentalityContract.calculatePayments(
-          BigInt(carId),
-          BigInt(days),
-          ETH_DEFAULT_ADDRESS
-        );
-
-        const tripRequest: ContractCreateTripRequest = {
-          carId: BigInt(carId),
-          startDateTime: startUnixTime,
-          endDateTime: endUnixTime,
-          currencyType: ETH_DEFAULT_ADDRESS,
-        };
-
-        const totalPriceInEth = Number(formatEther(paymentsNeeded.totalPrice));
-
-        if (!(await isUserHasEnoughFunds(ethereumInfo.signer, totalPriceInEth))) {
-          console.error("createTripRequest error: user don't have enough funds");
-          return Err("NOT_ENOUGH_FUNDS");
-        }
-        const transaction = await rentalityContract.createTripRequest(tripRequest, {
-          value: paymentsNeeded.totalPrice,
-        });
-        await transaction.wait();
-      }
-
-      return Ok(true);
-    } catch (e) {
-      console.error("createTripRequest error:" + e);
-      return Err("ERROR");
-    }
-  }
 
   function sortByDailyPriceAsc(a: SearchCarInfo, b: SearchCarInfo) {
     return a.pricePerDay - b.pricePerDay;
@@ -305,7 +160,7 @@ const useSearchCars = () => {
       };
     });
   }, []);
-  return [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest, setSearchResult] as const;
+  return [isLoading, searchAvailableCars, searchResult, sortSearchResult, setSearchResult] as const;
 };
 
 export default useSearchCars;

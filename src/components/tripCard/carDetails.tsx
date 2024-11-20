@@ -66,7 +66,7 @@ function СarDetails({
         ) : null}
         <div className="mt-4 flex flex-col">
           <div>
-            <strong className="text-l">{t("booked.total")}</strong>
+            <strong className="text-lg">{t("booked.total")}</strong>
           </div>
           <div>${tripInfo.totalDayPriceInUsd}</div>
         </div>

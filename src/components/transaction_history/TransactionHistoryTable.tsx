@@ -61,6 +61,7 @@ function TransactionHistoryTable({ isLoading, data, isHost }: TransactionHistory
             <th className={headerSpanClassName}></th>
             <th className={headerSpanClassName}></th>
             <th className={headerSpanClassName}></th>
+            <th className={headerSpanClassName}></th>
           </tr>
         </thead>
         <thead className="mb-2">
@@ -76,6 +77,7 @@ function TransactionHistoryTable({ isLoading, data, isHost }: TransactionHistory
             <th className={headerSpanClassName}>{t_th("trip_earnings")}</th>
             <th className={headerSpanClassName}>{t_th("cancellation_fee")}</th>
             <th className={headerSpanClassName}>{t_th("reimbursements")}</th>
+            <th className={headerSpanClassName}>{t_th("insurance_fee")}</th>
             <th className={headerSpanClassName}>{t_th("rentality_fee")}</th>
             <th className={headerSpanClassName}>{t_th("taxes")}</th>
             <th className={headerSpanClassName}></th>
@@ -102,6 +104,7 @@ function TransactionHistoryTable({ isLoading, data, isHost }: TransactionHistory
                 <td className={rowSpanClassName}>${transaction.tripEarnings}</td>
                 <td className={rowSpanClassName}>${transaction.cancellationFee}</td>
                 <td className={rowSpanClassName}>${transaction.reimbursements}</td>
+                <td className={rowSpanClassName}>${transaction.insuranceFeeInUsd}</td>
                 <td className={rowSpanClassName}>${transaction.rentalityFee}</td>
                 <td className={rowSpanClassName}>
                   ${displayMoneyWith2Digits(transaction.salesTax + transaction.governmentTax)}
