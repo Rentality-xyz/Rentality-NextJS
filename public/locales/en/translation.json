@@ -623,7 +623,8 @@
     "copy_address": "Copy Address",
     "edit_profile": "Edit Profile",
     "logout": "Logout"
-  },"referrals_and_point": {
+  },
+  "referrals_and_point": {
     "title": "Points map",
     "collect_and_claim_points": "Collect & Claim you points for discounts and airdrop",
     "section_own_points": "Collect yours own points",
@@ -631,6 +632,18 @@
     "section_points_your_referrals": "Points from your referrals",
     "section_points_history": "Points History",
     "copy_referral_link": "Copy referral link",
-    "referral_code": "Or send a referral code"
+    "referral_code": "Or send a referral code",
+    "referral_program": {
+      "set_kyc": "KYC Verification",
+      "pass_civic": "Pass Civic",
+      "add_first_car": "Add First Car",
+      "add_car": "Add Another Car",
+      "create_trip": "Create a Trip",
+      "finish_trip_as_host": "Finish Trip as Host",
+      "finish_trip_as_guest": "Finish Trip as Guest",
+      "unlisted_car": "Unlisted Car",
+      "daily": "Daily Bonus",
+      "daily_listing": "Daily Listing Bonus"
+    }
   }
 }
