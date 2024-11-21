@@ -659,4 +659,5 @@ export interface RefferalHistory {
   points: number; 
   date: number;
   method: RefferalProgram;
+  oneTime: boolean;
 }

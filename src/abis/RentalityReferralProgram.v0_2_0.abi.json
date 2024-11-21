@@ -156,7 +156,8 @@
           "components": [
             { "type": "int256", "name": "points" },
             { "type": "uint256", "name": "date" },
-            { "type": "uint8", "name": "method" }
+            { "type": "uint8", "name": "method" },
+            { "type": "bool", "name": "oneTime"}
           ]
         }
       ]
