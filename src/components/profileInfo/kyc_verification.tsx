@@ -4,6 +4,7 @@ import CustomCivicDialog from "../kyc/customCivicDialog";
 import RntButton from "../common/rntButton";
 import DotStatus from "./dotStatus";
 import { GatewayStatus, useGateway } from "@civic/ethereum-gateway-react";
+import { CivicProvider } from "@/contexts/web3/civicContext";
 
 export default function KycVerification({ t }: { t: TFunction }) {
   const { showCustomDialog, hideDialogs } = useRntDialogs();
@@ -26,6 +27,14 @@ export default function KycVerification({ t }: { t: TFunction }) {
 }
 
 function RntDriverLicenseVerified({ t }: { t: TFunction }) {
+  return (
+    <CivicProvider>
+      <RntDriverLicenseVerifiedContent t={t} />
+    </CivicProvider>
+  );
+}
+
+function RntDriverLicenseVerifiedContent({ t }: { t: TFunction }) {
   const { gatewayStatus } = useGateway();
   const isActive = gatewayStatus === GatewayStatus.ACTIVE;
 
