@@ -15,7 +15,6 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth/authContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { formatEther } from "ethers";
 import icLogout from "@/images/ic_logout.png";
 import icProfileSettings from "@/images/ic_profile_settings.png";
 import imgCopy from "@/images/ic_copy_24dp.svg";
@@ -132,26 +131,6 @@ export default function Header() {
     navigator.clipboard.writeText(text);
   };
 
-  const [balance, setBalance] = useState<string>("0");
-  const getWalletBalance = async (): Promise<string> => {
-    try {
-      const walletAddress = ethereumInfo?.walletAddress ?? "";
-      const balance = await ethereumInfo?.provider.getBalance(walletAddress);
-      return balance ? parseFloat(formatEther(balance)).toFixed(4) : "0";
-    } catch (error) {
-      console.error("Error while retrieving balance:", error);
-      return "0";
-    }
-  };
-  useEffect(() => {
-    const fetchBalance = async () => {
-      const walletBalance = await getWalletBalance();
-      setBalance(walletBalance);
-    };
-
-    fetchBalance();
-  }, []);
-
   return (
     <header className="fixed z-50 flex w-full items-center justify-between border-b-2 border-b-[#ffffff1f] bg-rentality-bg-left-sidebar text-rnt-temp-header-text max-lg:pl-4 lg:py-1 lg:pl-14 lg:pr-6">
       <div className="flex max-lg:w-full max-lg:justify-between">
@@ -197,7 +176,7 @@ export default function Header() {
                     <Image src={icWalletBalance} width={30} height={30} alt="" />
                     <div className="flex flex-col">
                       <span className="ml-3">{t("header.wallet_balance")}</span>
-                      <span className="ml-3 text-sm">{`${balance} ETH`}</span>
+                      <span className="ml-3 text-sm">{`${(ethereumInfo?.walletBalance ?? 0).toFixed(4)} ETH`}</span>
                     </div>
                   </div>
                   <Link
