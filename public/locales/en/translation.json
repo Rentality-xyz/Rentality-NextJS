@@ -634,16 +634,18 @@
     "copy_referral_link": "Copy referral link",
     "referral_code": "Or send a referral code",
     "referral_program": {
-      "set_kyc": "KYC Verification",
-      "pass_civic": "Pass Civic",
-      "add_first_car": "Add First Car",
-      "add_car": "Add Another Car",
+      "set_kyc": "Save profile",
+      "pass_civic": "Get KYC Pass",
+      "add_first_car": "Listing first car",
+      "add_car": "Listing new car",
       "create_trip": "Create a Trip",
-      "finish_trip_as_host": "Finish Trip as Host",
-      "finish_trip_as_guest": "Finish Trip as Guest",
+      "finish_trip_as_host_one_time": "First trip complete",
+      "finish_trip_as_host": "For each 1 day of trip",
+      "finish_trip_as_guest_one_time": "First trip complete",
+      "finish_trip_as_guest": "For each 1 day of trip",
       "unlisted_car": "Unlisted Car",
-      "daily": "Daily Bonus",
-      "daily_listing": "Daily Listing Bonus"
+      "daily": "Daily check-in",
+      "daily_listing": "Daily car listed"
     }
   }
 }
