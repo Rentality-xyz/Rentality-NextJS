@@ -2,6 +2,14 @@ import { useCallback, useState } from "react";
 import { RefferalHistory, RefferalProgram } from "@/model/blockchain/schemas";
 import { Err, Ok, Result } from "@/model/utils/result";
 import useInviteLink from "@/hooks/useRefferalProgram";
+import { calculateDays, UTC_TIME_ZONE_ID } from "@/utils/date";
+import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
+
+export type ReferralHistoryInfo = {
+  points: number;
+  date: Date;
+  method: RefferalProgram;
+};
 
 const usePointsHistory = () => {
   const [
@@ -16,13 +24,14 @@ const usePointsHistory = () => {
     manageRefferalDiscount,
     manageTearInfo,
   ] = useInviteLink();
+
   const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<RefferalHistory[]>([]);
-  const [allData, setAllData] = useState<RefferalHistory[] | null>(null);
+  const [data, setData] = useState<ReferralHistoryInfo[]>([]);
+  const [allData, setAllData] = useState<ReferralHistoryInfo[] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPageCount, setTotalPageCount] = useState<number>(0);
 
-  const filterData = useCallback((data: RefferalHistory[], page: number = 1, itemsPerPage: number = 10) => {
+  const filterData = useCallback((data: ReferralHistoryInfo[], page: number = 1, itemsPerPage: number = 10) => {
     const slicedData = data.slice((page - 1) * itemsPerPage, page * itemsPerPage);
     setCurrentPage(page);
     setData(slicedData);
@@ -43,42 +52,21 @@ const usePointsHistory = () => {
         setCurrentPage(page);
         setTotalPageCount(0);
 
-        // const historyData = await getPointsHistory();
-        // тестовые данные вместо вызова getPointsHistory()
-        const historyData: RefferalHistory[] = [
-          {
-            points: 100,
-            method: RefferalProgram.SetKYC,
-          },
-          {
-            points: 200,
-            method: RefferalProgram.CreateTrip,
-          },
-          {
-            points: -300,
-            method: RefferalProgram.FinishTripAsGuest,
-          },
-          {
-            points: 400,
-            method: RefferalProgram.FinishTripAsGuest,
-          },
-          {
-            points: 500,
-            method: RefferalProgram.FinishTripAsGuest,
-          },
-          {
-            points: 600,
-            method: RefferalProgram.FinishTripAsGuest,
-          },
-          {
-            points: -700,
-            method: RefferalProgram.FinishTripAsGuest,
-          },
-        ];
+        const historyData = await getPointsHistory();
 
         if (historyData) {
-          setAllData(historyData);
-          filterData(historyData, page, itemsPerPage);
+          const data: ReferralHistoryInfo[] = await Promise.all(
+            historyData.map(async (historyDataDto) => {
+              return {
+                points: historyDataDto.points,
+                date: getDateFromBlockchainTimeWithTZ(historyDataDto.date, UTC_TIME_ZONE_ID),
+                method: historyDataDto.method,
+              };
+            })
+          );
+
+          setAllData(data);
+          filterData(data, page, itemsPerPage);
         }
         return Ok(true);
       } catch (e) {

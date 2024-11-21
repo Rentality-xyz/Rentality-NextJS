@@ -4,10 +4,14 @@ import Loading from "@/components/common/Loading";
 import RntSuspense from "../common/rntSuspense";
 import { RefferalHistory, RefferalProgram } from "@/model/blockchain/schemas";
 import { useTranslation } from "react-i18next";
+import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
+import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import { ReferralHistoryInfo } from "@/hooks/points/usePointsHistory";
 
 type ReferralsAndPointsHistoryTableProps = {
   isLoading: boolean;
-  data: RefferalHistory[];
+  data: ReferralHistoryInfo[];
 };
 
 export default function ReferralsAndPointsHistoryTable({ isLoading, data }: ReferralsAndPointsHistoryTableProps) {
@@ -48,8 +52,12 @@ export default function ReferralsAndPointsHistoryTable({ isLoading, data }: Refe
           {data.map((entry, index) => (
             <tr key={index} className="border-b-[2px] border-b-gray-500">
               <td className={rowSpanClassName}>{ReferralProgramDescriptions[entry.method] || "Description"}</td>
-              <td className={cn("text-center text-gray-400", rowSpanClassName)}>{"entry.date"}</td>
-              <td className={cn("text-center", rowSpanClassName)}>{entry.points}</td>
+              <td className={cn("text-center text-gray-400", rowSpanClassName)}>
+                {dateFormatShortMonthDateTime(entry.date, UTC_TIME_ZONE_ID)}
+              </td>
+              <td className={cn("text-center", rowSpanClassName, entry.points > 0 ? "text-white" : "text-red-500")}>
+                {entry.points}
+              </td>
             </tr>
           ))}
         </tbody>

@@ -6,7 +6,7 @@ export default function HeadBtnReferralsAndPoints() {
   return (
     <>
       <button
-        className="hidden items-center rounded-md border border-gray-500 px-4 py-2 hover:border-gray-400 xl:flex"
+        className="ml-[116px] hidden items-center rounded-md border border-gray-500 px-4 py-2 hover:border-gray-400 xl:flex"
         onClick={() => {
           // setIsOpened(true);
         }}

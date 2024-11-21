@@ -155,8 +155,9 @@ export default function Header() {
 
   return (
     <header className="fixed z-50 flex w-full items-center justify-between border-b border-b-[#ffffff1f] bg-rentality-bg-left-sidebar text-rnt-temp-header-text max-lg:pl-4 lg:py-1 lg:pl-14 lg:pr-6">
-      <div className="flex max-lg:w-full max-lg:justify-between">
+      <div className="flex items-center max-lg:w-full max-lg:justify-between">
         <HeaderLogo />
+        <HeadBtnReferralsAndPoints />
         <div className="flex min-w-[20px] items-center lg:hidden">
           {isBurgerMenuShown && (
             <div id="burger-menu-wrapper" className="fixed left-0 top-[50px] z-[100] h-full w-full overflow-auto">
@@ -177,7 +178,6 @@ export default function Header() {
           </div>
         </div>
       </div>
-      <HeadBtnReferralsAndPoints />
       <div className="ml-2 flex flex-row items-center max-lg:w-full max-lg:justify-between">
         <RntMobileStoresDialog />
         <Stack direction="row" spacing={1} alignItems="center" className="max-lg:mx-3 lg:ml-12">
