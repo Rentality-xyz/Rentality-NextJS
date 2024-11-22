@@ -208,7 +208,8 @@
                 { "type": "uint256", "name": "points" },
                 { "type": "uint8", "name": "refType" },
                 { "type": "bool", "name": "oneTime" },
-                { "type": "bool", "name": "claimed" }
+                { "type": "bool", "name": "claimed" },
+                { "type": "address", "name": "user"}
               ]
             },
             { "type": "uint256", "name": "totalPoints" },
