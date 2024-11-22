@@ -9,7 +9,6 @@ import RntSuspense from "@/components/common/rntSuspense";
 export default function Profile() {
   const [isLoading, savedProfileSettings, saveProfileSettings] = useProfileSettings();
   const { t } = useTranslation();
-
   return (
     <>
       <PageTitle title={t("profile.title")} />
