@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { getEtherContractWithSigner } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { IRentalityAdminGateway, IRentalityReferralProgramContract } from "@/model/blockchain/IRentalityContract";
-import { AllRefferalInfoDTO, ReadyToClaim, RefferalAccrualType, RefferalHashDTO, RefferalHistory, RefferalProgram, Tear } from "@/model/blockchain/schemas";
+import { AllRefferalInfoDTO, ReadyToClaim, ReadyToClaimRefferalHash, RefferalAccrualType, RefferalHashDTO, RefferalHistory, RefferalProgram, Tear } from "@/model/blockchain/schemas";
 
 const useInviteLink = () => {
   const [rentalityContract, setRentalityContract] = useState<IRentalityReferralProgramContract | null>(null);
@@ -235,6 +235,9 @@ const useInviteLink = () => {
       return null;
     }
   };
+  const calculateUniqUsers = (pointsInfo: ReadyToClaimRefferalHash[]) => {
+   return new Set(pointsInfo.map(points => points.user)).size
+} 
 
 
   const manageRefferalDiscount = async (
@@ -301,7 +304,8 @@ const useInviteLink = () => {
     getRefferalPointsInfo,
     getPointsHistory,
     manageRefferalDiscount,
-    manageTearInfo
+    manageTearInfo,
+    calculateUniqUsers
   ] as const;
 };
 

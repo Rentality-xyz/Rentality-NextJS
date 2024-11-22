@@ -602,6 +602,7 @@ export interface ReadyToClaimRefferalHash {
   refType: RefferalProgram;
   oneTime: boolean;
   claimed: boolean;
+  user: string;
 }
 
 export interface TearPoints {
