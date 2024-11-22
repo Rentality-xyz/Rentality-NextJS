@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import { cn } from "@/utils";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "../common/rntSuspense";
-import { RefferalHistory, RefferalProgram } from "@/model/blockchain/schemas";
-import { useTranslation } from "react-i18next";
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
-import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { ReferralHistoryInfo } from "@/hooks/points/usePointsHistory";
 
