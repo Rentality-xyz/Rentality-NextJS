@@ -6,7 +6,7 @@ import { IRentalityAdminGateway, IRentalityReferralProgramContract } from "@/mod
 import {
   AllRefferalInfoDTO,
   ReadyToClaim,
-  RefferalAccrualType,
+ ReadyToClaimRefferalHash, RefferalAccrualType,
   RefferalHashDTO,
   RefferalHistory,
   RefferalProgram,
@@ -20,7 +20,9 @@ const useInviteLink = () => {
   const [points, setPoints] = useState(0);
   const ethereumInfo = useEthereum();
 
-  const getPoints = async () => {
+
+
+      const getPoints = async () => {
     if (!rentalityContract) {
       console.error("get hash error: rentalityContract is null");
       return null;
@@ -48,7 +50,7 @@ const useInviteLink = () => {
       return null;
     }
     try {
-      setHash(await rentalityContract.refferalHash(ethereumInfo.walletAddress));
+      setHash(await rentalityContract.referralHash(ethereumInfo.walletAddress));
     } catch (e) {
       console.error("get hash error:" + e);
       return null;
@@ -56,14 +58,17 @@ const useInviteLink = () => {
   };
 
   useEffect(() => {
-    const getRentalityContact = async () => {
-      if (!ethereumInfo || !ethereumInfo.provider) {
-        if (rentalityContract !== null) {
-          console.debug(`Reset rentalityContract`);
-          setRentalityContract(null);
-        }
-        return;
+
+
+    if (!ethereumInfo || !ethereumInfo.provider) {
+      if (rentalityContract !== null) {
+        console.debug(`Reset rentalityContract`);
+        setRentalityContract(null);
       }
+      return;
+    }
+    const getRentalityContact = async () => {
+
 
       const rentality = (await getEtherContractWithSigner(
         "admin",
@@ -78,22 +83,25 @@ const useInviteLink = () => {
     };
 
     getRentalityContact();
-  }, [ethereumInfo]);
+  }, [ethereumInfo, ethereumInfo && ethereumInfo.signer]);
 
   useEffect(() => {
-    const getRentalityContact = async () => {
-      if (!ethereumInfo || !ethereumInfo.provider) {
-        if (rentalityContract !== null) {
-          console.debug(`Reset rentalityContract`);
-          setRentalityContract(null);
-        }
-        return;
+
+
+    if (!ethereumInfo || !ethereumInfo.provider) {
+      if (rentalityContract !== null) {
+        console.debug(`Reset rentalityContract`);
+        setRentalityContract(null);
       }
+      return;
+    }
+    const getRentalityContact = async () => {
 
       const rentality = (await getEtherContractWithSigner(
         "refferalPogram",
         ethereumInfo.signer
       )) as unknown as IRentalityReferralProgramContract;
+
 
       if (!rentality) {
         console.error("getRentalityContact error: rentalityContract is null");
@@ -105,7 +113,7 @@ const useInviteLink = () => {
     getRentalityContact();
     getHash();
     getPoints();
-  }, [ethereumInfo]);
+  }, [ethereumInfo, ethereumInfo && ethereumInfo.signer]);
 
   const claimPoints = async () => {
     if (!rentalityContract) {
@@ -230,6 +238,9 @@ const useInviteLink = () => {
       return null;
     }
   };
+  const calculateUniqUsers = (pointsInfo: ReadyToClaimRefferalHash[]) => {
+   return new Set(pointsInfo.map(points => points.user)).size
+}
 
   const manageRefferalDiscount = async (program: RefferalProgram, tear: Tear, points: number, pecrents: number) => {
     if (!rentalityAdminContract) {
@@ -276,6 +287,7 @@ const useInviteLink = () => {
     getPointsHistory,
     manageRefferalDiscount,
     manageTearInfo,
+    calculateUniqUsers
   ] as const;
 };
 
