@@ -146,7 +146,7 @@ export default function RntVINCheckingInput({
           }
         }}
         onBlur={() => {
-          if(!isVINVerified && !isVINCheckOverriden) {
+          if(value.length === MAX_VIN_LENGTH && !isVINVerified && !isVINCheckOverriden) {
             setIsVINConfirmDialogOpen(true);
           }
         }}

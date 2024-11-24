@@ -34,6 +34,8 @@ import { env } from "@/utils/env";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import { Result, TransactionErrorCode } from "@/model/utils/result";
 import { isFor } from "@babel/types";
+import useCarAPI from "@/hooks/useCarAPI";
+import { VinInfo } from "@/pages/api/car-api/vinInfo";
 
 export default function CarEditForm({
   initValue,
@@ -110,6 +112,8 @@ export default function CarEditForm({
   const locationInfo = watch("locationInfo");
   const isGuestInsuranceRequired = watch("isGuestInsuranceRequired");
 
+  const vinNumber = watch("vinNumber")
+
   const [isCarMetadataEdited, setIsCarMetadataEdited] = useState(isNewCar);
   const [selectedMakeID, setSelectedMakeID] = useState<string>("");
   const [selectedModelID, setSelectedModelID] = useState<string>("");
@@ -120,6 +124,8 @@ export default function CarEditForm({
   const isFormEnabled = useMemo<boolean>(() => {
     return isVINVerified || isVINCheckOverriden;
   },[isVINVerified, isVINCheckOverriden]);
+
+  const { getVINNumber } = useCarAPI();
 
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
@@ -226,6 +232,14 @@ export default function CarEditForm({
     showDialog(t("vehicles.lost_unsaved"), action);
   }
 
+  if(isVINVerified){
+    getVINNumber(vinNumber).then((vinInfo: VinInfo | undefined) => {
+      setValue('brand', vinInfo?.brand ?? '');
+      setValue('model', vinInfo?.model ?? '');
+      setValue('releaseYear', parseInt(vinInfo?.yearOfProduction ?? "2001"));
+    })
+  }
+
   return (
     <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]} language="en">
       <form onSubmit={(e) => {e.preventDefault();}}>
@@ -259,13 +273,13 @@ export default function CarEditForm({
               control={control}
               defaultValue=""
               render={({ field: { onChange, value } }) =>
-                isNewCar ? (
+                isNewCar && !isVINVerified ? (
                   <RntCarMakeSelect
                     id="brand"
                     className="lg:w-60"
                     label={t_car("brand")}
                     value={value}
-                    readOnly={!isFormEnabled}
+                    readOnly={!isFormEnabled || isVINVerified}
                     onMakeSelect={(newID, newMake) => {
                       onChange(newMake);
                       setSelectedMakeID(newID);
@@ -290,7 +304,7 @@ export default function CarEditForm({
               control={control}
               defaultValue=""
               render={({ field: { onChange, value } }) =>
-                isNewCar ? (
+                isNewCar && !isVINVerified ? (
                   <RntCarModelSelect
                     id="model"
                     className="lg:w-60"
@@ -322,7 +336,7 @@ export default function CarEditForm({
               control={control}
               defaultValue={0}
               render={({ field: { onChange, value } }) =>
-                isNewCar ? (
+                isNewCar && !isVINVerified ? (
                   <RntCarYearSelect
                     id="releaseYear"
                     className="lg:w-60"
