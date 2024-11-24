@@ -59,12 +59,14 @@ export function getAdminTextColorForPaymentStatus(paymentStatus: PaymentStatus) 
   }
 }
 
-export function getDotStatusColor(color: `#${string}` | "success" | "error") {
+export function getDotStatusColor(color: `#${string}` | "success" | "error" | "warning") {
   switch (color) {
     case "success":
       return "bg-[#2EB100]";
     case "error":
       return "bg-[#DB001A]";
+    case "warning":
+      return "bg-[#FFC000]";
     default:
       return `bg-[${color}]`;
   }

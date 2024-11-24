@@ -8,7 +8,7 @@ function DotStatus({
   text,
 }: {
   containerClassName?: string;
-  color: `#${string}` | "success" | "error";
+  color: `#${string}` | "success" | "error" | "warning";
   text: string;
 }) {
   const containerClassNameMerged = cn("flex gap-2 items-center", containerClassName);
