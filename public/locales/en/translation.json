@@ -677,7 +677,13 @@
     "day": "day",
     "trip": "trip",
     "add_fund_to_wallet": "Please add funds to your wallet on Base network to continue.",
-    "per_day": "/day"
+    "per_day": "/day",
+    "vin_successfully_checked": "VIN successfully checked",
+    "vin_not_found": "VIN not found in US car database",
+    "vin_not_found_overriden": "VIN not found in US car database. You confirmed that the VIN number is valid and corresponds to your vehicle",
+    "vin_not_found_dialog_heading": "VIN not found in US car database",
+    "vin_not_found_dialog_description1": "Please confirm that the VIN number ",
+    "vin_not_found_dialog_description2": " is valid and corresponds to your vehicle"
   },
   "become_host": {
     "title": "Become a host",
