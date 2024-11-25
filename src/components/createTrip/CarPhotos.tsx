@@ -11,7 +11,7 @@ export function CarPhotos({ carPhotos }: { carPhotos: string[] }) {
   }
 
   return (
-    <div className="relative mx-auto h-[20rem] w-full">
+    <div className="relative mx-auto h-[20rem] w-full overflow-hidden">
       <CarPhotosLayout carPhotos={carPhotos} />
       <RntButton className="absolute bottom-2 right-4 h-10 w-fit px-2" onClick={handleAllPhotoClick}>
         {carPhotos.length > 6
