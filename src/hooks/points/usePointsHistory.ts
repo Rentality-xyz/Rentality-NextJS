@@ -5,6 +5,7 @@ import useInviteLink from "@/hooks/useRefferalProgram";
 import { calculateDays, UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { useTranslation } from "react-i18next";
+import { ReferralProgramDescription } from "@/components/points/ReferralProgramDescriptions";
 
 export type ReferralHistoryInfo = {
   points: number;
@@ -14,18 +15,6 @@ export type ReferralHistoryInfo = {
 
 const usePointsHistory = () => {
   const { t } = useTranslation();
-  const ReferralProgramDescriptions: { [key in RefferalProgram]: string } = {
-    [RefferalProgram.SetKYC]: t("referrals_and_point.referral_program.set_kyc"),
-    [RefferalProgram.PassCivic]: t("referrals_and_point.referral_program.pass_civic"),
-    [RefferalProgram.AddFirstCar]: t("referrals_and_point.referral_program.add_first_car"),
-    [RefferalProgram.AddCar]: t("referrals_and_point.referral_program.add_car"),
-    [RefferalProgram.CreateTrip]: t("referrals_and_point.referral_program.create_trip"),
-    [RefferalProgram.FinishTripAsHost]: t("referrals_and_point.referral_program.finish_trip_as_host"),
-    [RefferalProgram.FinishTripAsGuest]: t("referrals_and_point.referral_program.finish_trip_as_guest"),
-    [RefferalProgram.UnlistedCar]: t("referrals_and_point.referral_program.unlisted_car"),
-    [RefferalProgram.Daily]: t("referrals_and_point.referral_program.daily"),
-    [RefferalProgram.DailyListing]: t("referrals_and_point.referral_program.daily_listing"),
-  };
 
   const [
     inviteHash,
@@ -38,6 +27,7 @@ const usePointsHistory = () => {
     getPointsHistory,
     manageRefferalDiscount,
     manageTearInfo,
+    calculateUniqUsers,
   ] = useInviteLink();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -84,7 +74,7 @@ const usePointsHistory = () => {
               };
 
               const methodDescriptions =
-                dynamicDescriptions[historyDataDto.method] || ReferralProgramDescriptions[historyDataDto.method];
+                dynamicDescriptions[historyDataDto.method] || ReferralProgramDescription(t, historyDataDto.method);
 
               return {
                 points: historyDataDto.points,

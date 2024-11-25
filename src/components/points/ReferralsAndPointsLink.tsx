@@ -5,6 +5,7 @@ import Image from "next/image";
 import RntButton from "@/components/common/rntButton";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import useInviteLink from "@/hooks/useRefferalProgram";
+import useProfileSettings from "@/hooks/useProfileSettings";
 
 export default function ReferralsAndPointsLink() {
   const { t } = useTranslation();
@@ -20,11 +21,14 @@ export default function ReferralsAndPointsLink() {
     getPointsHistory,
     manageRefferalDiscount,
     manageTearInfo,
+    calculateUniqUsers,
   ] = useInviteLink();
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
   };
+
+  const [isLoadingProfileSettings] = useProfileSettings();
 
   return (
     <div className="rounded-lg bg-rentality-bg-left-sidebar p-3">
@@ -40,11 +44,14 @@ export default function ReferralsAndPointsLink() {
             style={{ color: "white" }}
             readOnly={true}
             type="text"
-            value={inviteHash ? `https://app.rentality.xyz/${inviteHash}` : ""}
+            value={inviteHash && !isLoadingProfileSettings ? `https://app.rentality.xyz/${inviteHash}` : ""}
           />
           <RntButton
             className="ml-auto flex w-16 items-center justify-center text-white md:w-36"
-            onClick={() => copyToClipboard(inviteHash ? `https://app.rentality.xyz/${inviteHash}` : "")}
+            disabled={!(inviteHash && !isLoadingProfileSettings)}
+            onClick={() =>
+              copyToClipboard(inviteHash && !isLoadingProfileSettings ? `https://app.rentality.xyz/${inviteHash}` : "")
+            }
           >
             <Image src={imgCopy} alt="" className="h-5 w-5 md:mr-1" />
             <div className="ml-0.5 flex">
@@ -62,11 +69,12 @@ export default function ReferralsAndPointsLink() {
             style={{ color: "white" }}
             readOnly={true}
             type="text"
-            value={inviteHash}
+            value={inviteHash && !isLoadingProfileSettings ? inviteHash : ""}
           />
           <RntButton
             className="ml-auto flex w-16 items-center justify-center text-white md:w-36"
-            onClick={() => copyToClipboard(inviteHash ?? "")}
+            disabled={!(inviteHash && !isLoadingProfileSettings)}
+            onClick={() => copyToClipboard(inviteHash && !isLoadingProfileSettings ? inviteHash : "")}
           >
             <Image src={imgCopy} alt="" className="h-5 w-5 md:mr-1" />
             <div className="ml-0.5 flex">

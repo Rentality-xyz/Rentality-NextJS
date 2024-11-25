@@ -1,7 +1,6 @@
 import Image from "next/image";
 import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 import React from "react";
-import { TransactionHistoryInfo } from "@/model/TransactionHistoryInfo";
 import { cn } from "@/utils";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "@/components/common/rntSuspense";
@@ -17,7 +16,7 @@ export default function ReferralsAndPointsFromYourReferralsTable({
   data,
 }: ReferralsAndPointsFromYourReferralsTableProps) {
   const headerSpanClassName = "text-center font-semibold px-2 font-light text-sm";
-  const rowSpanClassName = "px-2 h-12 text-center";
+  const rowSpanClassName = "px-2 h-12";
 
   return (
     <RntSuspense
@@ -38,27 +37,17 @@ export default function ReferralsAndPointsFromYourReferralsTable({
           </tr>
         </thead>
         <tbody className="text-sm">
-          {Array.from({
-            length: 4,
-            // currentPage === 0
-            //   ? Math.min(itemsPerPage, transactions.length)
-            //   : Math.max(0, transactions.length - currentPage * itemsPerPage),
-          }).map((_, index) => {
-            // const itemNumber = currentPage * itemsPerPage + index;
-
-            return (
-              <tr /*{key={transactions[itemNumber].transHistoryId}}*/ className="border-b-[2px] border-b-gray-500">
-                {/*<td className={rowSpanClassName}>{transactions[itemNumber].car}</td>*/}
-                <td className={rowSpanClassName}>Save profile</td>
-                <td className={cn("text-gray-400", rowSpanClassName)}>4</td>
-                <td className={cn("text-gray-400", rowSpanClassName)}>400</td>
-                <td className={cn("flex items-center justify-center", rowSpanClassName)}>
-                  100
-                  <Image src={icStarPointsYellow} alt="" className="ml-1 h-[22px] w-[22px] lg:ml-4" />
-                </td>
-              </tr>
-            );
-          })}
+          {data.map((entry, index) => (
+            <tr key={index} className="border-b-[2px] border-b-gray-500">
+              <td className={rowSpanClassName}>{entry.methodDescriptions || "Description"}</td>
+              <td className={cn("text-center text-gray-400", rowSpanClassName)}>{entry.totalReferrals}</td>
+              <td className={cn("text-center text-gray-400", rowSpanClassName)}>{entry.totalReceived}</td>
+              <td className={cn("flex items-center justify-center", rowSpanClassName)}>
+                {entry.readyToClaim}
+                <Image src={icStarPointsYellow} alt="" className="ml-1 h-[22px] w-[22px] lg:ml-4" />
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </RntSuspense>

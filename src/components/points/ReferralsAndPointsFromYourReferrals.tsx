@@ -14,10 +14,14 @@ import usePointsFromYourReferrals, { PointsFromYourReferralsInfo } from "@/hooks
 export default function ReferralsAndPointsFromYourReferrals() {
   const { t } = useTranslation();
   const itemsPerPage = 4;
-  const { isLoading, data, fetchData } = usePointsFromYourReferrals();
+  const { isLoading, data, fetchData, claimAllReferralPoints } = usePointsFromYourReferrals();
 
   async function fetchDataForPage(page: number) {
     await fetchData(page, itemsPerPage);
+  }
+
+  async function claimPoints() {
+    await claimAllReferralPoints();
   }
 
   useEffect(() => {
@@ -33,11 +37,11 @@ export default function ReferralsAndPointsFromYourReferrals() {
         </div>
         <RntButton
           className="flex w-full items-center justify-center text-white max-sm:mt-4 sm:ml-auto sm:w-60 2xl:w-64"
-          // onClick={() => copyToClipboard(tripInfo.guest.walletAddress)}
+          onClick={() => claimPoints()}
         >
           <Image src={icStarPointsYellow} alt="" className="mr-2 h-7 w-7" />
           <div className="ml-0.5 flex">
-            Claim <span className="px-1 font-semibold text-rentality-star-point">1850</span> points
+            Claim <span className="px-1 font-semibold text-rentality-star-point">{data.totalReadyToClaim}</span> points
             <span className="ml-4">●</span>
           </div>
         </RntButton>
