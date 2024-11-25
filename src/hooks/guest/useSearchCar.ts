@@ -23,38 +23,42 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
   useEffect(() => {
     const checkCarAvailabilityWithDelivery = async (request: SearchCarRequest, carId: number) => {
       if (!rentalityContract) return;
+      if (carId === 0) return;
 
       try {
         setIsLoading(true);
 
-        const timeZoneId = await getTimeZoneIdFromAddress(formatLocationInfoUpToCity(searchCarRequest.searchLocation));
+        const timeZoneId = await getTimeZoneIdFromAddress(formatLocationInfoUpToCity(request.searchLocation));
         const { contractDateFromUTC, contractDateToUTC, contractSearchCarParams } =
-          formatSearchAvailableCarsContractRequest(searchCarRequest, {}, timeZoneId);
+          formatSearchAvailableCarsContractRequest(request, {}, timeZoneId);
 
         const pickUpInfo: ContractLocationInfo = {
           ...emptyContractLocationInfo,
-          latitude: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
+          latitude: request.deliveryInfo.pickupLocation.isHostHomeLocation
             ? ""
-            : searchCarRequest.deliveryInfo.pickupLocation.locationInfo.latitude.toFixed(6),
-          longitude: searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation
+            : request.deliveryInfo.pickupLocation.locationInfo.latitude.toFixed(6),
+          longitude: request.deliveryInfo.pickupLocation.isHostHomeLocation
             ? ""
-            : searchCarRequest.deliveryInfo.pickupLocation.locationInfo.longitude.toFixed(6),
+            : request.deliveryInfo.pickupLocation.locationInfo.longitude.toFixed(6),
         };
         const returnInfo: ContractLocationInfo = {
           ...emptyContractLocationInfo,
-          latitude: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+          latitude: request.deliveryInfo.returnLocation.isHostHomeLocation
             ? ""
-            : searchCarRequest.deliveryInfo.returnLocation.locationInfo.latitude.toFixed(6),
-          longitude: searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation
+            : request.deliveryInfo.returnLocation.locationInfo.latitude.toFixed(6),
+          longitude: request.deliveryInfo.returnLocation.isHostHomeLocation
             ? ""
-            : searchCarRequest.deliveryInfo.returnLocation.locationInfo.longitude.toFixed(6),
+            : request.deliveryInfo.returnLocation.locationInfo.longitude.toFixed(6),
         };
 
-        console.log("contractDateFromUTC", JSON.stringify(contractDateFromUTC, bigIntReplacer, 2));
-        console.log("contractDateToUTC", JSON.stringify(contractDateToUTC, bigIntReplacer, 2));
-        console.log("contractSearchCarParams", JSON.stringify(contractSearchCarParams, bigIntReplacer, 2));
-        console.log("pickUpInfo", JSON.stringify(pickUpInfo, null, 2));
-        console.log("returnInfo", JSON.stringify(returnInfo, null, 2));
+        console.log(
+          "checkCarAvailabilityWithDelivery request",
+          JSON.stringify(
+            { carId, contractDateFromUTC, contractDateToUTC, contractSearchCarParams, pickUpInfo, returnInfo },
+            bigIntReplacer,
+            2
+          )
+        );
 
         const availableCarDTO = await rentalityContract.checkCarAvailabilityWithDelivery(
           BigInt(carId),
