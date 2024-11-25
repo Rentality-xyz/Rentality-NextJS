@@ -6,7 +6,7 @@ import { ContractInsuranceInfo, ContractSaveInsuranceRequest, InsuranceType } fr
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { GuestGeneralInsurance } from "@/model/GuestInsurance";
-import { FileToUpload } from "@/model/FileToUpload";
+import { FileToUpload, PlatformFile } from "@/model/FileToUpload";
 import { bigIntReplacer } from "@/utils/json";
 import { getIpfsURI } from "@/utils/ipfsUtils";
 
@@ -16,28 +16,35 @@ const useGuestInsurance = () => {
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [guestInsurance, setGuestInsurance] = useState<GuestGeneralInsurance>({ photo: "" });
 
-  const saveGuestInsurance = async (file: FileToUpload) => {
+  const saveGuestInsurance = async (file: PlatformFile) => {
     if (!rentalityContract) {
       console.error("saveGuestInsurance: rentalityContract is null");
       return false;
     }
 
-    try {
-      const response = await uploadFileToIPFS(file.file, "RentalityGuestInsurance", {
-        createdAt: new Date().toISOString(),
-        createdBy: ethereumInfo?.walletAddress ?? "",
-        version: SMARTCONTRACT_VERSION,
-        chainId: ethereumInfo?.chainId ?? 0,
-      });
+    let pinataURL: string;
 
-      if (!response.success || !response.pinataURL) {
-        throw new Error("Uploaded image to Pinata error");
+    try {
+      if ("file" in file) {
+        const response = await uploadFileToIPFS(file.file, "RentalityGuestInsurance", {
+          createdAt: new Date().toISOString(),
+          createdBy: ethereumInfo?.walletAddress ?? "",
+          version: SMARTCONTRACT_VERSION,
+          chainId: ethereumInfo?.chainId ?? 0,
+        });
+
+        if (!response.success || !response.pinataURL) {
+          throw new Error("Uploaded image to Pinata error");
+        }
+        pinataURL = response.pinataURL;
+      } else {
+        pinataURL = ""; //file deleted
       }
 
       const insuranceInfo: ContractSaveInsuranceRequest = {
         companyName: "",
         policyNumber: "",
-        photo: response.pinataURL,
+        photo: pinataURL,
         comment: "",
         insuranceType: InsuranceType.General,
       };

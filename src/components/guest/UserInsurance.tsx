@@ -25,7 +25,7 @@ export function UserInsurance() {
   const userInsurancePhoto = watch("userInsurancePhoto");
 
   async function onFormSubmit(formData: UserInsuranceFormValues) {
-    if (!("file" in formData.userInsurancePhoto)) return;
+    if (!("file" in formData.userInsurancePhoto) && !formData.userInsurancePhoto.isDeleted) return;
 
     try {
       showInfo(t("common.info.sign"));

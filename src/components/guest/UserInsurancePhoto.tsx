@@ -57,7 +57,7 @@ export function UserInsurancePhoto({
 
   function handleDeleteClick() {
     if (!photo) return;
-    onPhotoChanged({ url: "" });
+    onPhotoChanged({ url: "", isDeleted: true });
   }
 
   return (
