@@ -99,7 +99,6 @@
     }
   },
   "create_trip": {
-    "trip_rules": "Trip Rules",
     "pre_agreement_details": "Pre-agreement details",
     "new_search": "← New Search",
     "rent_for_n_days": "Rent for {{tripDays, number}} day(s)",
@@ -154,6 +153,28 @@
     "total_charge": "Total charge",
     "insurance_fee_n_per_day": "Insurance fee ${{insurancePerDayPriceInUsd, number}}/day",
     "total_payable": "Total payable"
+  },
+  "trip_rules": {
+    "trip_rules": "Trip Rules",
+    "rule_1_title": "1. Start and Return on time",
+    "rule_1_text": "Start and end your trip on time according to the time in the reservation order.",
+    "rule_2_title": "2. Keep your license handy",
+    "rule_2_text": "Make sure to carry your physical driver’s license with you whenever you’re behind the wheel.",
+    "rule_3_title": "3. Refuel the vehicle",
+    "rule_3_text": "Please return the vehicle with the same fuel level you started with. You’ll be charged retroactively for any missing fuel/battery charge.",
+    "rule_4_title": "4. No smoking",
+    "rule_4_text": "Guests who violate the no-smoking policy may be imposed by the host, and may be banned from the platform.",
+    "rule_5_title": "5. Keep the vehicle tidy",
+    "rule_5_text": "If the vehicle is found to be unreasonably dirty upon return, you may be subject to a cleaning fine by the host.",
+    "rule_6_title": "6. Tolls and tickets",
+    "rule_6_text": "You’re responsible for paying the cost of any certain tickets, tolls or fees incurred during your trip. Hosts may request reimbursement within 90 days post-trip.",
+    "rule_7_title": "7. Distance included in trip",
+    "rule_7_text": "In your trip receipt indicates distance included per trip and price per 1 overmile. For any additional miles driven, you’ll be charged.",
+    "rule_8_title": "8. Guest-to-host communication",
+    "rule_8_text": "In case of extraordinary situations, immediately contact the host via chat and phone number indicated in the trip card.",
+    "rule_9_title": "9. Car sharing agreement",
+    "rule_9_text": "Check Car sharing agreement and have it handy which can be found and downloaded in Trip details.",
+    "got_it": "Got it"
   },
   "admin": {
     "contract_null": "Contract is null:",
