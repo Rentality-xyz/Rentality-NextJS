@@ -1,9 +1,9 @@
 import RntInput from "@/components/common/rntInput";
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import useCarAPI from "@/hooks/useCarAPI";
 import RntButton from "@/components/common/rntButton";
-import * as React from "react";
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import { t } from "i18next";
 
 type RntVINCheckingInputProps = {
   id: string;
@@ -18,6 +18,9 @@ type RntVINCheckingInputProps = {
   onVINVerified: (isVerified: boolean) => void;
   onVINCheckOverriden: (isVINCheckOverriden: boolean) => void;
 };
+
+const MAX_VIN_LENGTH: number = 17;
+
 export default function RntVINCheckingInput({
   id,
   className,
@@ -32,16 +35,20 @@ export default function RntVINCheckingInput({
   isVINCheckOverriden,
 }: RntVINCheckingInputProps) {
   const { checkVINNumber } = useCarAPI();
-  const [isVINConfirmDialogOpen, setIsVINConfirmDialogOpen] = React.useState(false);
+  const [isVINConfirmDialogOpen, setIsVINConfirmDialogOpen] = useState(false);
 
-  const validationError = useMemo(() => {
+  const validationError = useMemo<string>(() => {
     if (readOnly) return "";
-    if (value.length != 17) {
-      return "VIN should be 17 digits";
+    return value.length != MAX_VIN_LENGTH ? `VIN should be ${MAX_VIN_LENGTH} digits` : "";
+  }, [value, readOnly]);
+
+  const validationMessage = useMemo<string>( () => {
+    if( !validationError && !isVINVerified){
+      return isVINCheckOverriden ? t("common.vin_not_found_overriden") : t("common.vin_not_found");
     } else {
-      return !isVINVerified && !isVINCheckOverriden ? "VIN is not verified" : "";
+      return ""
     }
-  }, [value, isVINVerified, isVINCheckOverriden, readOnly]);
+  },[isVINVerified, validationError, isVINCheckOverriden]);
 
   return (
     <>
@@ -63,7 +70,7 @@ export default function RntVINCheckingInput({
             background: "#240F50",
           }}
         >
-          <div className="text-rentality-secondary">Vehicle not identified</div>
+          <div className="text-rentality-secondary">{t("common.vin_not_found_dialog_heading")}</div>
         </DialogTitle>
         <DialogContent
           sx={{
@@ -76,7 +83,7 @@ export default function RntVINCheckingInput({
             }}
             id="alert-dialog-description"
           >
-            We could not identify your vehicle based on your VIN. Confirm that this VIN {value} is correct or edit it
+            { t("common.vin_not_found_dialog_description1")  + value + t("common.vin_not_found_dialog_description2")}
           </DialogContentText>
         </DialogContent>
         <DialogActions
@@ -85,9 +92,6 @@ export default function RntVINCheckingInput({
             justifyContent: "center",
           }}
         >
-          <RntButton onClick={() => setIsVINConfirmDialogOpen(false)} autoFocus>
-            Edit
-          </RntButton>
           <RntButton
             onClick={() => {
               onVINCheckOverriden(true);
@@ -95,6 +99,9 @@ export default function RntVINCheckingInput({
             }}
           >
             Confirm
+          </RntButton>
+          <RntButton onClick={() => setIsVINConfirmDialogOpen(false)} autoFocus>
+            Edit
           </RntButton>
         </DialogActions>
       </Dialog>
@@ -108,9 +115,11 @@ export default function RntVINCheckingInput({
         value={value}
         validationError={validationError}
         validationClassName="pl-4"
+        validationSuccessMessage={isVINVerified ? t("common.vin_successfully_checked") : ""}
+        validationMessage={validationMessage}
         onChange={(e) => {
           const vinNumber = e.target.value;
-          if (vinNumber.length === 17) {
+          if (vinNumber.length === MAX_VIN_LENGTH) {
             checkVINNumber(vinNumber).then((result) => {
               onVINVerified(result);
             });
@@ -120,15 +129,28 @@ export default function RntVINCheckingInput({
           onVINCheckOverriden(false);
           onChange != null && onChange(e);
         }}
+        onKeyDown={(event) => {
+          const target = event.target as HTMLInputElement;
+
+          if(target.value.length !== MAX_VIN_LENGTH){
+            return;
+          }
+
+          if(event.key === "Enter" && !isVINVerified && !isVINCheckOverriden) {
+            setIsVINConfirmDialogOpen(true);
+            return;
+          }
+
+          if (event.key !== "Backspace" && event.key !== "Delete") {
+            event.preventDefault();
+          }
+        }}
+        onBlur={() => {
+          if(value.length === MAX_VIN_LENGTH && !isVINVerified && !isVINCheckOverriden) {
+            setIsVINConfirmDialogOpen(true);
+          }
+        }}
       />
-      {value.length === 17 && !isVINVerified && !readOnly && (
-        <div className="flex flex-col">
-          <label className="mb-1">&nbsp;</label>
-          <RntButton type="button" className="w-[100px]" onClick={() => setIsVINConfirmDialogOpen(true)}>
-            Confirm
-          </RntButton>
-        </div>
-      )}
     </>
   );
 }
