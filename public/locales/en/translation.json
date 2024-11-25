@@ -299,7 +299,8 @@
       "please_upload_photo": "Please, upload photo you ID insurance card",
       "insurance_requirements": "See insurance requirements",
       "insurance_uploaded": "Insurance card uploaded",
-      "insurance_not_uploaded": "Insurance card not uploaded"
+      "insurance_not_uploaded": "Insurance card not uploaded",
+      "insurance_info": "According to Rentality's Terms of Service, all guests must have trip insurance coverage. Please upload a valid personal insurance policy (insurance ID card) that includes coverage for vehicle damage and third-party liability for rented or carshare vehicles. The host will review your policy, and if it doesn’t meet the required coverage, they’ll offer you a daily Short-Term Car Insurance option for your trip."
     }
   },
   "transaction_history": {

@@ -6,7 +6,7 @@ import { ContractInsuranceInfo, ContractSaveInsuranceRequest, InsuranceType } fr
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { GuestGeneralInsurance } from "@/model/GuestInsurance";
-import { FileToUpload, PlatformFile } from "@/model/FileToUpload";
+import { PlatformFile } from "@/model/FileToUpload";
 import { bigIntReplacer } from "@/utils/json";
 import { getIpfsURI } from "@/utils/ipfsUtils";
 

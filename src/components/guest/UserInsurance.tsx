@@ -7,13 +7,14 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useGuestInsurance from "@/hooks/guest/useGuestInsurance";
-import { useRntSnackbars } from "@/contexts/rntDialogsContext";
+import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { isEmpty } from "@/utils/string";
 import { UserInsurancePhoto } from "./UserInsurancePhoto";
 import { userInsuranceFormSchema, UserInsuranceFormValues } from "./userInsuranceFormSchema";
 
 export function UserInsurance() {
   const { isLoading, guestInsurance, saveGuestInsurance } = useGuestInsurance();
+  const { showDialog } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { handleSubmit, formState, control, setValue, watch } = useForm<UserInsuranceFormValues>({
     defaultValues: {},
@@ -44,7 +45,9 @@ export function UserInsurance() {
     }
   }
 
-  function handleInfoClick() {}
+  function handleInfoClick() {
+    showDialog(t("profile.user_insurance.insurance_info"));
+  }
 
   useEffect(() => {
     setValue("userInsurancePhoto", { url: guestInsurance.photo });
