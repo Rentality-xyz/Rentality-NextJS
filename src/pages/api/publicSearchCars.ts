@@ -182,10 +182,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       returnInfo
     );
   } else {
-    availableCarsView = await rentality.searchAvailableCars(
+    availableCarsView = await rentality.searchAvailableCarsWithDelivery(
       contractDateFromUTC,
       contractDateToUTC,
-      contractSearchCarParams
+      contractSearchCarParams,
+      emptyContractLocationInfo,
+      emptyContractLocationInfo
     );
   }
   const getFilterInfoDto: ContractFilterInfoDTO = await rentality.getFilterInfo(BigInt(1));

@@ -240,7 +240,7 @@ export interface IRentalityReferralProgramContract {
   // user points
   addressToPoints(address: string): Promise<number>;
   // user ref hash
-  refferalHash(user: string): Promise<string>;
+  referralHash(user: string): Promise<string>;
   // when last time daily was claimed
   getCarDailyClaimedTime(carId: number): Promise<number>;
   // claim user points
