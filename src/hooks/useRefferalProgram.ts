@@ -6,7 +6,7 @@ import { IRentalityAdminGateway, IRentalityReferralProgramContract } from "@/mod
 import {
   AllRefferalInfoDTO,
   ReadyToClaim,
- ReadyToClaimRefferalHash, RefferalAccrualType,
+ReadyToClaimDTO, ReadyToClaimRefferalHash, RefferalAccrualType,
   RefferalHashDTO,
   RefferalHistory,
   RefferalProgram,
@@ -132,7 +132,7 @@ const useInviteLink = () => {
     }
   };
 
-  const getReadyToClaim = async (): Promise<ReadyToClaim | null> => {
+  const getReadyToClaim = async (): Promise<ReadyToClaimDTO | null> => {
     if (!rentalityContract) {
       console.error("get hash error: rentalityContract is null");
       return null;
