@@ -30,6 +30,7 @@ import {
   ContractTripReceiptDTO,
   ContractUpdateCarInfoRequest,
   ReadyToClaim,
+  ReadyToClaimDTO,
   RefferalAccrualType,
   RefferalHashDTO,
   RefferalHistory,
@@ -245,7 +246,6 @@ export interface IRentalityReferralProgramContract {
   // claim user points
   claimPoints(user: string): Promise<void>;
   // get info about not claimed points
-  getReadyToClaim(user: string): Promise<ReadyToClaim>;
   // info about not claimed points, from ref hash
   getReadyToClaimFromRefferalHash(user: string): Promise<RefferalHashDTO>
   // claim points from user ref hash
@@ -255,7 +255,7 @@ export interface IRentalityReferralProgramContract {
   // get points reduces and increases
   getPointsHistory(): Promise<RefferalHistory[]>;
 
-  getReadyToClaim(user: string): Promise<ReadyToClaim>;
+  getReadyToClaim(user: string): Promise<ReadyToClaimDTO>;
   
 
   

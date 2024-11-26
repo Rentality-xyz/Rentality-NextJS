@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { getEtherContractWithSigner } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { IRentalityAdminGateway, IRentalityReferralProgramContract } from "@/model/blockchain/IRentalityContract";
-import { AllRefferalInfoDTO, ReadyToClaim, RefferalAccrualType, RefferalHashDTO, RefferalHistory, RefferalProgram, Tear } from "@/model/blockchain/schemas";
+import { AllRefferalInfoDTO, ReadyToClaim, ReadyToClaimDTO, RefferalAccrualType, RefferalHashDTO, RefferalHistory, RefferalProgram, Tear } from "@/model/blockchain/schemas";
 
 const useInviteLink = () => {
   const [rentalityContract, setRentalityContract] = useState<IRentalityReferralProgramContract | null>(null);
@@ -119,7 +119,7 @@ const useInviteLink = () => {
   };
 
 
-  const getReadyToClaim = async (): Promise<ReadyToClaim | null> => {
+  const getReadyToClaim = async (): Promise<ReadyToClaimDTO | null> => {
     if (!rentalityContract) {
       console.error("get hash error: rentalityContract is null");
       return null;
