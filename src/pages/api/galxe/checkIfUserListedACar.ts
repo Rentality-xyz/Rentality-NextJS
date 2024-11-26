@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  const privateKey = env.SIGNER_PRIVATE_KEY;
+  const privateKey = env.NEXT_PUBLIC_SERVER_SIGNER_PRIVATE_KEY;
   if (isEmpty(privateKey)) {
     console.error("API checkIfUserListedACar error: private key was not set");
     res.status(500).json({ error: "private key was not set" });

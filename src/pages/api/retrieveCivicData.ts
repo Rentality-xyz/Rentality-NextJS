@@ -13,6 +13,7 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { JsonRpcProvider, Wallet } from "ethers";
 import { ContractCivicKYCInfo } from "@/model/blockchain/schemas";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
+import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 
 export type RetrieveCivicDataRequest = {
   requestId: string;
@@ -63,28 +64,28 @@ const GET_ALL_PIIS_URL = "https://api.civic.com/partner/piirequest/REQUEST_ID";
 const UPDATE_STATUS_URL = "https://api.civic.com/partner/piirequest/REQUEST_ID/status";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<RetrieveCivicDataResponse>) {
-  const CIVIC_CLIENT_ID = env.CIVIC_CLIENT_ID;
+  const CIVIC_CLIENT_ID = env.NEXT_PUBLIC_SERVER_CIVIC_CLIENT_ID;
   if (!CIVIC_CLIENT_ID || isEmpty(CIVIC_CLIENT_ID)) {
     console.error("retrieveCivicData error: CIVIC_CLIENT_ID was not set");
     res.status(500).json({ error: getErrorMessage("retrieveCivicData error: CIVIC_CLIENT_ID was not set") });
     return;
   }
 
-  const CIVIC_CLIENT_SECRET = env.CIVIC_CLIENT_SECRET;
+  const CIVIC_CLIENT_SECRET = env.NEXT_PUBLIC_SERVER_CIVIC_CLIENT_SECRET;
   if (!CIVIC_CLIENT_SECRET || isEmpty(CIVIC_CLIENT_SECRET)) {
     console.error("retrieveCivicData error: CIVIC_CLIENT_SECRET was not set");
     res.status(500).json({ error: getErrorMessage("retrieveCivicData error: CIVIC_CLIENT_SECRET was not set") });
     return;
   }
 
-  const MANAGER_PRIVATE_KEY = env.MANAGER_PRIVATE_KEY;
+  const MANAGER_PRIVATE_KEY = env.NEXT_PUBLIC_SERVER_MANAGER_PRIVATE_KEY;
   if (isEmpty(MANAGER_PRIVATE_KEY)) {
     console.error("retrieveCivicData error: private key was not set");
     res.status(500).json({ error: getErrorMessage("private key was not set") });
     return;
   }
 
-  const SIGNER_PRIVATE_KEY = env.SIGNER_PRIVATE_KEY;
+  const SIGNER_PRIVATE_KEY = env.NEXT_PUBLIC_SERVER_SIGNER_PRIVATE_KEY;
   if (isEmpty(SIGNER_PRIVATE_KEY)) {
     console.error("retrieveCivicData error: private key was not set");
     res.status(500).json({ error: getErrorMessage("private key was not set") });
@@ -106,7 +107,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  let providerApiUrl = process.env[`PROVIDER_API_URL_${chainIdNumber}`];
+  // const providerApiUrl = process.env[`NEXT_PUBLIC_PROVIDER_API_URL_${chainIdNumber}`];
+  const providerApiUrl = getProviderApiUrlFromEnv(chainIdNumber);
+
   if (!providerApiUrl) {
     console.error(`retrieveCivicData error: API URL for chain id ${chainIdNumber} was not set`);
     res
@@ -302,13 +305,13 @@ async function savePiiInfoToFirebase(allInfo: AllPiiInfo, docs: PiiDocData[]): P
   if (!db) return Err("db is null");
   if (!storage) return Err("storage is null");
 
-  const CIVIC_USER_EMAIL = env.CIVIC_USER_EMAIL;
+  const CIVIC_USER_EMAIL = env.NEXT_PUBLIC_SERVER_CIVIC_USER_EMAIL;
   if (!CIVIC_USER_EMAIL || isEmpty(CIVIC_USER_EMAIL)) {
     console.error("retrieveCivicData error: CIVIC_USER_EMAIL was not set");
     return Err("CIVIC_USER_EMAIL was not set");
   }
 
-  const CIVIC_USER_PASSWORD = env.CIVIC_USER_PASSWORD;
+  const CIVIC_USER_PASSWORD = env.NEXT_PUBLIC_SERVER_CIVIC_USER_PASSWORD;
   if (!CIVIC_USER_PASSWORD || isEmpty(CIVIC_USER_PASSWORD)) {
     console.error("retrieveCivicData error: CIVIC_USER_PASSWORD was not set");
     return Err("CIVIC_USER_PASSWORD was not set");

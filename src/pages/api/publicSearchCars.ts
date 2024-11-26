@@ -22,6 +22,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { env } from "@/utils/env";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { allSupportedBlockchainList } from "@/model/blockchain/blockchainList";
+import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 
 export type PublicSearchCarsResponse =
   | {
@@ -31,7 +32,7 @@ export type PublicSearchCarsResponse =
   | { error: string };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<PublicSearchCarsResponse>) {
-  const privateKey = env.SIGNER_PRIVATE_KEY;
+  const privateKey = env.NEXT_PUBLIC_SERVER_SIGNER_PRIVATE_KEY;
   if (isEmpty(privateKey)) {
     console.error("API checkTrips error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
@@ -65,7 +66,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  let providerApiUrl = process.env[`PROVIDER_API_URL_${chainIdNumber}`];
+  // const providerApiUrl = process.env[`NEXT_PUBLIC_PROVIDER_API_URL_${chainIdNumber}`];
+  const providerApiUrl = getProviderApiUrlFromEnv(chainIdNumber);
+
   if (!providerApiUrl) {
     console.error(`API checkTrips error: API URL for chain id ${chainIdNumber} was not set`);
     res.status(500).json({ error: `API checkTrips error: API URL for chain id ${chainIdNumber} was not set` });
@@ -257,7 +260,7 @@ async function formatSearchAvailableCarsContractResponse(
 ) {
   if (searchCarsViewsView.length === 0) return [];
 
-  const testWallets = env.TEST_WALLETS_ADDRESSES?.split(",") ?? [];
+  const testWallets = env.NEXT_PUBLIC_SERVER_TEST_WALLETS_ADDRESSES?.split(",") ?? [];
 
   const cars = await Promise.all(
     searchCarsViewsView.map(async (i: ContractSearchCarWithDistance, index) => {

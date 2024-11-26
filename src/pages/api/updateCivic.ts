@@ -5,6 +5,7 @@ import { Err, Ok, Result } from "@/model/utils/result";
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { JsonRpcProvider, Wallet } from "ethers";
+import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 
 export type UpdateCivicRequest = {
   chainId: number;
@@ -20,7 +21,7 @@ export type UpdateCivicResponse =
     };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<UpdateCivicResponse>) {
-  const MANAGER_PRIVATE_KEY = env.MANAGER_PRIVATE_KEY;
+  const MANAGER_PRIVATE_KEY = env.NEXT_PUBLIC_SERVER_MANAGER_PRIVATE_KEY;
   if (isEmpty(MANAGER_PRIVATE_KEY)) {
     console.error("updateCivic error: private key was not set");
     res.status(500).json({ error: getErrorMessage("private key was not set") });
@@ -43,7 +44,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  let providerApiUrl = process.env[`PROVIDER_API_URL_${chainId}`];
+  // const providerApiUrl = process.env[`NEXT_PUBLIC_PROVIDER_API_URL_${chainId}`];
+  const providerApiUrl = getProviderApiUrlFromEnv(chainId);
+
   if (!providerApiUrl) {
     console.error(`updateCivic error: API URL for chain id ${chainId} was not set`);
     res.status(500).json({ error: getErrorMessage(`updateCivic error: API URL for chain id ${chainId} was not set`) });
