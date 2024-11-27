@@ -12,6 +12,7 @@ import UserAvatarWithName from "../common/userAvatarWithName";
 import { isEmpty } from "@/utils/string";
 import { isHost, UserMode } from "@/hooks/useUserMode";
 import RntGalleryLink from "../common/RntGalleryLink";
+import { InsuranceType } from "@/model/blockchain/schemas";
 
 function TripReceipt({ tripId, tripInfo, userMode }: { tripId: bigint; tripInfo: TripInfo; userMode: UserMode }) {
   const { t } = useTranslation();
@@ -197,6 +198,10 @@ function TripReceipt({ tripId, tripInfo, userMode }: { tripId: bigint; tripInfo:
                 {dateFormatShortMonthDateYear(tripInfo.guest.drivingLicenseExpirationDate, UTC_TIME_ZONE_ID)}
               </td>
             </tr>
+            <tr>
+              <td>{t_details("dl_issue_country")}:</td>
+              <td className="text-end">{tripInfo.guest.drivingLicenseIssueCountry}</td>
+            </tr>
           </tbody>
         </table>
         <hr className="my-4" />
@@ -204,17 +209,23 @@ function TripReceipt({ tripId, tripInfo, userMode }: { tripId: bigint; tripInfo:
         <table className="m-2">
           <tbody>
             <tr>
-              <td>{tripInfo.guestInsuranceType ?? ""}</td>
+              <td>
+                {tripInfo.guestInsuranceType === InsuranceType.General
+                  ? "General Insurance ID"
+                  : tripInfo.guestInsuranceType === InsuranceType.OneTime
+                    ? "One-Time trip insurance"
+                    : ""}
+              </td>
               <td className="text-end">
                 <RntGalleryLink photos={[tripInfo.guestInsurancePhoto]} />
               </td>
             </tr>
             <tr>
-              <td>Insurance company name:</td>
+              <td>{t_details("insurance_policy_name")}:</td>
               <td className="text-end">{tripInfo.guestInsuranceCompanyName}</td>
             </tr>
             <tr>
-              <td>Insurance policy number:</td>
+              <td>{t_details("insurance_policy_number")}:</td>
               <td className="text-end">{tripInfo.guestInsurancePolicyNumber}</td>
             </tr>
           </tbody>

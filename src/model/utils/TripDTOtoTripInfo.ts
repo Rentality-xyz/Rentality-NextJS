@@ -32,12 +32,6 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
     insurancesInfoList.find((i) => i.insuranceType === InsuranceType.General) ??
     insurancesInfoList.find((i) => i.insuranceType === InsuranceType.OneTime);
 
-  const guestInsuranceType =
-    insurancesInfo?.insuranceType === InsuranceType.General
-      ? "General Insurance ID"
-      : insurancesInfo?.insuranceType === InsuranceType.OneTime
-        ? "One-Time trip insurance"
-        : undefined;
   const guestInsurancePhoto = insurancesInfo?.photo ?? "";
 
   let item: TripInfo = {
@@ -122,9 +116,10 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
         tripDTO.guestDrivingLicenseExpirationDate,
         UTC_TIME_ZONE_ID
       ),
+      drivingLicenseIssueCountry: tripDTO.guestDrivingLicenseIssueCountry,
     },
-    guestInsuranceCompanyName: tripDTO.trip.guestInsuranceCompanyName,
-    guestInsurancePolicyNumber: tripDTO.trip.guestInsurancePolicyNumber,
+    guestInsuranceCompanyName: insurancesInfo?.companyName ?? "",
+    guestInsurancePolicyNumber: insurancesInfo?.policyNumber ?? "",
 
     pricePerDayInUsd: Number(tripDTO.trip.pricePerDayInUsdCents) / 100.0,
     totalDayPriceInUsd: Number(tripDTO.trip.paymentInfo.totalDayPriceInUsdCents) / 100.0,
@@ -157,7 +152,7 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
     insurancePerDayInUsd: insurancePerDayInUsd,
     insuranceTotalInUsd: insurancePerDayInUsd * tripDays,
 
-    guestInsuranceType: guestInsuranceType,
+    guestInsuranceType: insurancesInfo?.insuranceType,
     guestInsurancePhoto: guestInsurancePhoto,
   };
   return item;

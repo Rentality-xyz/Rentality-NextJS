@@ -215,6 +215,7 @@ export function validateContractSearchCar(obj: ContractSearchCar): obj is Contra
 const emptyContractSearchCarWithDistance: ContractSearchCarWithDistance = {
   car: emptyContractSearchCar,
   distance: BigInt(0),
+  isGuestHasInsurance: false,
 };
 
 export function validateContractSearchCarWithDistance(
@@ -280,8 +281,6 @@ const emptyContractTrip: ContractTrip = {
   transactionInfo: emptyContractTransactionInfo,
   engineType: EngineType.PETROL,
   fuelPrice: BigInt(0),
-  guestInsuranceCompanyName: "",
-  guestInsurancePolicyNumber: "",
   finishDateTime: BigInt(0),
   pickUpHash: "",
   returnHash: "",
@@ -310,6 +309,7 @@ const emptyContractTripDTO: ContractTripDTO = {
   hostPhoneNumber: "",
   insurancesInfo: [],
   paidForInsuranceInUsdCents: BigInt(0),
+  guestDrivingLicenseIssueCountry: "",
 };
 
 export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {

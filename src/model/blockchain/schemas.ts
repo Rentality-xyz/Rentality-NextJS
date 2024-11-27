@@ -125,8 +125,6 @@ export type ContractTrip = {
   createdDateTime: bigint;
   approvedDateTime: bigint;
   rejectedDateTime: bigint;
-  guestInsuranceCompanyName: string;
-  guestInsurancePolicyNumber: string;
   rejectedBy: string;
   checkedInByHostDateTime: bigint;
   startParamLevels: bigint[];
@@ -161,6 +159,7 @@ export type ContractTripDTO = {
   hostPhoneNumber: string;
   insurancesInfo: ContractInsuranceInfo[];
   paidForInsuranceInUsdCents: bigint;
+  guestDrivingLicenseIssueCountry: string;
 };
 
 export type ContractChatInfo = {
@@ -322,6 +321,7 @@ export type ContractFullKYCInfoDTO = {
 export type ContractSearchCarWithDistance = {
   car: ContractSearchCar;
   distance: bigint;
+  isGuestHasInsurance: boolean;
 };
 
 export type ContractSearchCar = {

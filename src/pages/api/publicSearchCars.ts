@@ -325,6 +325,7 @@ async function formatSearchAvailableCarsContractResponse(
         isTestCar: testWallets.includes(i.car.host),
         isInsuranceRequired: i.car.insuranceInfo.required,
         insurancePerDayPriceInUsd: Number(i.car.insuranceInfo.priceInUsdCents) / 100,
+        isGuestHasInsurance: i.isGuestHasInsurance,
         distanceToUser: Number(i.distance),
       };
 

@@ -1,4 +1,4 @@
-import { EngineType, TripStatus } from "./blockchain/schemas";
+import { EngineType, InsuranceType, TripStatus } from "./blockchain/schemas";
 
 export enum TripStatusEnum {
   Pending, // Created
@@ -113,8 +113,9 @@ export type TripInfo = {
     photoUrl: string;
     drivingLicenseNumber: string;
     drivingLicenseExpirationDate: Date;
+    drivingLicenseIssueCountry: string;
   };
-  guestInsuranceType?: "General Insurance ID" | "One-Time trip insurance";
+  guestInsuranceType?: InsuranceType;
   guestInsurancePhoto: string;
   guestInsuranceCompanyName: string;
   guestInsurancePolicyNumber: string;

@@ -521,9 +521,12 @@
       "end_fuel_or_battery_level": "End fuel or battery level",
       "dl_number": "DL number",
       "dl_validity_period": "DL validity period",
+      "dl_issue_country": "Issue Country",
       "insurance": "Insurance",
       "insurance_info": "Insurance info",
-      "insurance_fee_per_day": "Insurance  fee ${{insurancePerDayInUsd, number}}/day"
+      "insurance_fee_per_day": "Insurance  fee ${{insurancePerDayInUsd, number}}/day",
+      "insurance_policy_name": "Insurance company name",
+      "insurance_policy_number": "Insurance policy number"
     }
   },
   "vehicles": {
