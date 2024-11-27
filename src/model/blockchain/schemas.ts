@@ -572,7 +572,6 @@ export enum RefferalProgram {
   CreateTrip,
   FinishTripAsHost,
   FinishTripAsGuest,
-  AddFirstCar,
   AddCar,
   UnlistedCar,
   Daily,
