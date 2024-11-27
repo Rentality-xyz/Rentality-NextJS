@@ -2,7 +2,13 @@ import { useCallback, useState } from "react";
 import { Err, Ok, Result } from "@/model/utils/result";
 import useInviteLink from "@/hooks/useRefferalProgram";
 import { useTranslation } from "react-i18next";
-import { AllRefferalInfoDTO, ReadyToClaim, RefferalHistory, RefferalProgram } from "@/model/blockchain/schemas";
+import {
+  AllRefferalInfoDTO,
+  ReadyToClaim,
+  ReadyToClaimDTO,
+  RefferalHistory,
+  RefferalProgram,
+} from "@/model/blockchain/schemas";
 import { ReferralProgramDescription } from "@/components/points/ReferralProgramDescriptions";
 import { PointsProfileStatus } from "@/components/points/ReferralsAndPointsProfileStatus";
 
@@ -42,25 +48,24 @@ const useOwnPoints = () => {
     manageRefferalDiscount,
     manageTearInfo,
     calculateUniqUsers,
+    isLoadingInviteLink,
   ] = useInviteLink();
 
-  const [isLoading, setIsLoading] = useState<boolean | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<AllOwnPointsInfo | null>(null);
   const [totalReadyToClaim, setTotalReadyToClaim] = useState<number>(0);
 
-  const fetchData = useCallback(async (): Promise<Result<boolean, string>> => {
-    if (data !== null) {
-      return Ok(true);
-    }
+  const fetchData = useCallback(
+    async (
+      readyToClaim: ReadyToClaimDTO,
+      pointsHistory: RefferalHistory[],
+      pointsInfo: AllRefferalInfoDTO
+    ): Promise<Result<boolean, string>> => {
+      if (data !== null) {
+        return Ok(true);
+      }
 
-    try {
-      setIsLoading(true);
-
-      const readyToClaim = await getReadyToClaim();
-      const pointsHistory = await getPointsHistory();
-      const pointsInfo = await getRefferalPointsInfo();
-
-      if (readyToClaim && pointsHistory && pointsInfo) {
+      try {
         const ownAccountCreationPointsInfo = getOwnAccountCreationPointsInfo(
           readyToClaim.toClaim,
           pointsInfo,
@@ -75,26 +80,22 @@ const useOwnPoints = () => {
           ownRegularPointsInfo: ownRegularPointsInfo,
         };
 
-        console.log(
-          "ddiLog pointsInfo :",
-          JSON.stringify(combineData, (key, value) => (typeof value === "bigint" ? value.toString() : value), 2)
-        );
         // console.log(
-        //     "ddiLog readyToClaim:",
-        //     JSON.stringify(readyToClaim, (key, value) => (typeof value === "bigint" ? value.toString() : value), 2)
+        //     "combineData:",
+        //     JSON.stringify(combineData, (key, value) => (typeof value === "bigint" ? value.toString() : value), 2)
         // );
         setTotalReadyToClaim(readyToClaim.totalPoints);
         setData(combineData);
-        // filterData(combinedData, page, itemsPerPage);
+        return Ok(true);
+      } catch (e) {
+        console.error("fetchData error" + e);
+        return Err("Get data error. See logs for more details");
+      } finally {
+        setIsLoading(false);
       }
-      return Ok(true);
-    } catch (e) {
-      console.error("fetchData error" + e);
-      return Err("Get data error. See logs for more details");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [data]);
+    },
+    [data]
+  );
 
   const claimAllPoints = useCallback(async (): Promise<void> => {
     try {

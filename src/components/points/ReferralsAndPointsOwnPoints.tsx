@@ -9,8 +9,24 @@ import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 import useOwnPoints from "@/hooks/points/useOwnPoints";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "../common/rntSuspense";
+import useInviteLink from "@/hooks/useRefferalProgram";
 
 export default function ReferralsAndPointsOwnPoints() {
+  const [
+    inviteHash,
+    points,
+    claimPointsInviteLink,
+    getReadyToClaim,
+    getReadyToClaimFromRefferalHash,
+    claimRefferalPoints,
+    getRefferalPointsInfo,
+    getPointsHistory,
+    manageRefferalDiscount,
+    manageTearInfo,
+    calculateUniqUsers,
+    isLoadingInviteLink,
+  ] = useInviteLink();
+
   const { t } = useTranslation();
   const { isLoading, data, fetchData, claimAllPoints } = useOwnPoints();
 
@@ -18,15 +34,20 @@ export default function ReferralsAndPointsOwnPoints() {
     await claimAllPoints();
   }
 
-  // useEffect(() => {
-  //   if (!isLoadingInviteLink) {
-  //     fetchData();
-  //   }
-  // }, [isLoadingInviteLink]);
-
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    const fetchReadyToClaim = async () => {
+      const readyToClaim = await getReadyToClaim();
+      const pointsHistory = await getPointsHistory();
+      const pointsInfo = await getRefferalPointsInfo();
+      if (readyToClaim && pointsHistory && pointsInfo) {
+        await fetchData(readyToClaim, pointsHistory, pointsInfo);
+      }
+    };
+
+    if (!isLoadingInviteLink) {
+      fetchReadyToClaim();
+    }
+  }, [isLoadingInviteLink]);
 
   return (
     <div id="referrals-and-points-own-points" className="mt-4 rounded-lg bg-rentality-bg-left-sidebar p-3">

@@ -65,9 +65,6 @@ const usePointsHistory = () => {
               const isOneTime = historyDataDto.oneTime;
 
               const dynamicDescriptions: { [key: number]: string } = {
-                [RefferalProgram.FinishTripAsHost]: isOneTime
-                  ? t("referrals_and_point.referral_program.finish_trip_as_host_one_time")
-                  : t("referrals_and_point.referral_program.finish_trip_as_host"),
                 [RefferalProgram.FinishTripAsGuest]: isOneTime
                   ? t("referrals_and_point.referral_program.finish_trip_as_guest_one_time")
                   : t("referrals_and_point.referral_program.finish_trip_as_guest"),
