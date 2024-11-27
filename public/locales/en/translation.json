@@ -234,7 +234,9 @@
 
     "basic_info": "Basic information",
     "pass_license_verif": "Please pass driver license verification",
-    "driver_license_info": "Driving license information"
+    "driver_license_info": "Driving license information",
+
+    "ref_link": "Ref-link or code for more points  \n"
   },
   "transaction_history": {
     "title": "Transaction history",
@@ -633,6 +635,8 @@
     "section_points_history": "Points History",
     "copy_referral_link": "Copy referral link",
     "referral_code": "Or send a referral code",
+    "account_creation": "Account creation",
+    "regularly": "Regularly",
     "referral_program": {
       "set_kyc": "Save profile",
       "pass_civic": "Get KYC Pass",

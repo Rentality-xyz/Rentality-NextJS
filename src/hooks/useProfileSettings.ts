@@ -20,6 +20,7 @@ export type ProfileSettings = {
   drivingLicenseExpire: Date | undefined;
   issueCountry: string;
   email: string;
+  reflink: string;
 };
 
 const emptyProfileSettings: ProfileSettings = {
@@ -33,6 +34,7 @@ const emptyProfileSettings: ProfileSettings = {
   drivingLicenseExpire: undefined,
   issueCountry: "",
   email: "",
+  reflink: "",
 };
 
 const useProfileSettings = () => {
@@ -65,6 +67,7 @@ const useProfileSettings = () => {
             : undefined,
         issueCountry: myKYCInfo.additionalKYC.issueCountry,
         email: myKYCInfo.additionalKYC.email,
+        reflink: myKYCInfo.additionalKYC.reflink,
       };
       console.log("useProfileSettings.getProfileSettings() return data");
       return myProfileSettings;
@@ -88,7 +91,7 @@ const useProfileSettings = () => {
         newProfileSettings.phoneNumber,
         newProfileSettings.profilePhotoUrl,
         newProfileSettings.tcSignature,
-        refHash? refHash : ZERO_HASH 
+        refHash ? refHash : ZERO_HASH
       );
 
       await transaction.wait();

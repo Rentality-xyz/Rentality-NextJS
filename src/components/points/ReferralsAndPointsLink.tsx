@@ -34,7 +34,6 @@ export default function ReferralsAndPointsLink() {
     <div className="rounded-lg bg-rentality-bg-left-sidebar p-3">
       <div className="flex">
         <p className="text-rentality-secondary">{t("referrals_and_point.section_referral_link")}</p>
-        <i className="fi fi-rs-info ml-3 cursor-pointer text-rentality-secondary"></i>
       </div>
       <div className="mt-4 items-center justify-start md:flex">
         <div className="w-full max-md:ml-5 md:w-1/3">{t("referrals_and_point.copy_referral_link")}</div>

@@ -307,6 +307,7 @@ export type ContractCivicKYCInfo = {
 export type ContractAdditionalKYCInfo = {
   issueCountry: string;
   email: string;
+  reflink: string;
 };
 
 export type ContractFullKYCInfoDTO = {
@@ -564,14 +565,15 @@ export const EngineType = {
   ELECTRIC: BigInt(2),
 };
 
+//порядок не менять! учитывается в useOwnPoints
 export enum RefferalProgram {
   SetKYC,
   PassCivic,
-  AddFirstCar,
-  AddCar,
   CreateTrip,
   FinishTripAsHost,
   FinishTripAsGuest,
+  AddFirstCar,
+  AddCar,
   UnlistedCar,
   Daily,
   DailyListing,
@@ -588,8 +590,6 @@ export enum RefferalAccrualType {
   OneTime,
   Permanent,
 }
-
-
 
 export interface ReadyToClaim {
   points: number;
@@ -629,13 +629,13 @@ export interface ReadyToClaimDTO {
 export interface RefferalHashDTO {
   toClaim: ReadyToClaimRefferalHash[];
   totalPoints: number;
-  hash: string; 
+  hash: string;
 }
 
 export interface RefferalProgramInfoDTO {
   refferalType: RefferalAccrualType;
   method: RefferalProgram;
-  points: number; 
+  points: number;
 }
 
 export interface HashPointsDTO {
@@ -657,7 +657,7 @@ export interface AllRefferalInfoDTO {
 }
 
 export interface RefferalHistory {
-  points: number; 
+  points: number;
   date: number;
   method: RefferalProgram;
   oneTime: boolean;

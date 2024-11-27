@@ -6,67 +6,57 @@ import { cn } from "@/utils";
 
 type ReferralsAndPointsProfileStatusProps = {
   index: number;
-  isHost: boolean;
+  nameReferral: string;
+  countPoints: number;
   status: PointsProfileStatus;
 };
 
 export enum PointsProfileStatus {
-  Saved = "Saved",
+  Done = "Done",
   NextStep = "NextStep",
-  DoNow = "DoNow",
   ReadyToClaim = "ReadyToClaim",
 }
 
 export default function ReferralsAndPointsProfileStatus({
   index,
-  isHost,
+  nameReferral,
+  countPoints,
   status,
 }: ReferralsAndPointsProfileStatusProps) {
-  return <GetProfileStatus index={index} status={status} />;
+  return <GetProfileStatus index={index} nameReferral={nameReferral} countPoints={countPoints} status={status} />;
 }
 
 type GetProfileStatusProps = {
   index: number;
+  nameReferral: string;
+  countPoints: number;
   status: PointsProfileStatus;
 };
 
-function GetProfileStatus({ index, status }: GetProfileStatusProps) {
+function GetProfileStatus({ index, nameReferral, countPoints, status }: GetProfileStatusProps) {
   let icStarPoints = null;
   let mainDivClassName = "";
   let nameReferralClassName = "";
   let countPointsClassName = "";
   let headerTextClassName = "";
-  let nameReferral = "";
-  let countPoints = "";
+  let _countPoints = "";
   let headerText = "";
 
   switch (status) {
-    case PointsProfileStatus.Saved: {
+    case PointsProfileStatus.Done: {
       mainDivClassName = "border border-rentality-button-medium";
       nameReferralClassName = "bg-rentality-additional-dark";
       countPointsClassName = "bg-rentality-secondary-dark";
-      nameReferral = "Save profile";
-      countPoints = "✓ Done";
+      _countPoints = "✓ Done";
       break;
     }
     case PointsProfileStatus.NextStep: {
       nameReferralClassName = "bg-neutral-500";
       countPointsClassName = "bg-rentality-secondary-dark";
       headerTextClassName = "text-gray-400";
-      nameReferral = "Listing first car";
-      countPoints = "+ 100";
-      headerText = "Next step";
+      _countPoints = countPoints.toString();
+      // headerText = "Next step";
       icStarPoints = icStarPointsWhite;
-      break;
-    }
-    case PointsProfileStatus.DoNow: {
-      nameReferralClassName = "bg-rentality-button-dark font-semibold";
-      countPointsClassName = "bg-rentality-secondary-dark";
-      headerTextClassName = "text-rentality-secondary";
-      nameReferral = "Get KYC Pass";
-      countPoints = "+ 500";
-      headerText = "Do now";
-      icStarPoints = icStarPointsYellow;
       break;
     }
     case PointsProfileStatus.ReadyToClaim: {
@@ -74,9 +64,8 @@ function GetProfileStatus({ index, status }: GetProfileStatusProps) {
       nameReferralClassName = "bg-rentality-button-dark font-semibold";
       countPointsClassName = "bg-rentality-secondary-dark text-rentality-star-point";
       headerTextClassName = "text-rentality-star-point";
-      nameReferral = "Daily chek-in";
-      countPoints = "+ 20";
-      headerText = "Ready to claim";
+      _countPoints = countPoints.toString();
+      // headerText = "Ready to claim";
       icStarPoints = icStarPointsYellow;
       break;
     }
@@ -84,11 +73,11 @@ function GetProfileStatus({ index, status }: GetProfileStatusProps) {
 
   return (
     <div className="relative flex items-center">
-      {index !== 0 && <div className="bg-rentality-secondary-dark absolute bottom-16 left-[-24px] h-px w-6"></div>}
+      {index !== 0 && <div className="absolute bottom-16 left-[-24px] h-px w-6 bg-rentality-secondary-dark"></div>}
       <div className="my-4 mr-4">
         <p className={cn("mb-1 text-center text-sm", headerTextClassName)}>{headerText}</p>
         <div className={cn("h-24 w-24 rounded-lg", mainDivClassName)}>
-          <div className={cn("flex h-2/3 w-full items-center rounded-t-lg px-2 text-center", nameReferralClassName)}>
+          <div className={cn("flex h-2/3 w-full items-center rounded-t-lg p-1 text-center", nameReferralClassName)}>
             {nameReferral}
           </div>
           <div
@@ -97,7 +86,7 @@ function GetProfileStatus({ index, status }: GetProfileStatusProps) {
               countPointsClassName
             )}
           >
-            {countPoints}
+            {_countPoints}
             {icStarPoints !== null && <Image src={icStarPoints} alt="" className="ml-1 h-[20px] w-[20px]" />}
           </div>
         </div>

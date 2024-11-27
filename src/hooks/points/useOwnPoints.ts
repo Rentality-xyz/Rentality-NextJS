@@ -1,15 +1,30 @@
 import { useCallback, useState } from "react";
 import { Err, Ok, Result } from "@/model/utils/result";
 import useInviteLink from "@/hooks/useRefferalProgram";
-import { ReadyToClaimRefferalHash, RefferalProgram } from "@/model/blockchain/schemas";
-import { ReferralProgramDescription } from "@/components/points/ReferralProgramDescriptions";
 import { useTranslation } from "react-i18next";
+import { AllRefferalInfoDTO, ReadyToClaim, RefferalHistory, RefferalProgram } from "@/model/blockchain/schemas";
+import { ReferralProgramDescription } from "@/components/points/ReferralProgramDescriptions";
+import { PointsProfileStatus } from "@/components/points/ReferralsAndPointsProfileStatus";
 
-export type OwnPointsInfo = {
+type OwnAccountCreationPointsInfo = {
+  index: number;
   methodDescriptions: string;
-  totalReferrals: number;
-  totalReceived: number;
-  readyToClaim: number;
+  countPoints: number;
+  done: boolean;
+  status: PointsProfileStatus;
+};
+
+type OwnRegularPointsInfo = {
+  methodDescriptions: string;
+  countPoints: number;
+  done: boolean;
+  nextDailyClaim: number;
+  status: PointsProfileStatus;
+};
+
+type AllOwnPointsInfo = {
+  ownAccountCreationPointsInfo: OwnAccountCreationPointsInfo[];
+  ownRegularPointsInfo: OwnRegularPointsInfo[];
 };
 
 const useOwnPoints = () => {
@@ -29,28 +44,49 @@ const useOwnPoints = () => {
     calculateUniqUsers,
   ] = useInviteLink();
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<OwnPointsInfo[]>([]);
-  const [allData, setAllData] = useState<OwnPointsInfo[] | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean | undefined>(undefined);
+  const [data, setData] = useState<AllOwnPointsInfo | null>(null);
   const [totalReadyToClaim, setTotalReadyToClaim] = useState<number>(0);
 
   const fetchData = useCallback(async (): Promise<Result<boolean, string>> => {
-    if (allData !== null) {
+    if (data !== null) {
       return Ok(true);
     }
 
     try {
       setIsLoading(true);
 
-      const readyToClaimFromRefferal = await getReadyToClaimFromRefferalHash();
+      const readyToClaim = await getReadyToClaim();
+      const pointsHistory = await getPointsHistory();
+      const pointsInfo = await getRefferalPointsInfo();
 
-      if (readyToClaimFromRefferal) {
-        // console.log("Combined Data:", JSON.stringify(combinedData, null, 2));
-        setTotalReadyToClaim(totalReadyToClaim);
-        // setAllData(combinedData);
+      if (readyToClaim && pointsHistory && pointsInfo) {
+        const ownAccountCreationPointsInfo = getOwnAccountCreationPointsInfo(
+          readyToClaim.toClaim,
+          pointsInfo,
+          pointsHistory,
+          t
+        );
+
+        const ownRegularPointsInfo = getOwnRegularPointsInfo(readyToClaim.toClaim, pointsInfo, pointsHistory, t);
+
+        const combineData: AllOwnPointsInfo = {
+          ownAccountCreationPointsInfo: ownAccountCreationPointsInfo,
+          ownRegularPointsInfo: ownRegularPointsInfo,
+        };
+
+        console.log(
+          "ddiLog pointsInfo :",
+          JSON.stringify(combineData, (key, value) => (typeof value === "bigint" ? value.toString() : value), 2)
+        );
+        // console.log(
+        //     "ddiLog readyToClaim:",
+        //     JSON.stringify(readyToClaim, (key, value) => (typeof value === "bigint" ? value.toString() : value), 2)
+        // );
+        setTotalReadyToClaim(readyToClaim.totalPoints);
+        setData(combineData);
         // filterData(combinedData, page, itemsPerPage);
       }
-
       return Ok(true);
     } catch (e) {
       console.error("fetchData error" + e);
@@ -58,7 +94,7 @@ const useOwnPoints = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [allData]);
+  }, [data]);
 
   const claimAllPoints = useCallback(async (): Promise<void> => {
     try {
@@ -69,14 +105,88 @@ const useOwnPoints = () => {
   }, [claimPoints]);
 
   return {
-    isLoading,
     data: {
       data: data,
       totalReadyToClaim: totalReadyToClaim,
     },
     fetchData,
+    isLoading,
     claimAllPoints: claimAllPoints,
   } as const;
 };
 
 export default useOwnPoints;
+
+const getOwnAccountCreationPointsInfo = (
+  readyToClaim: ReadyToClaim[],
+  pointsInfo: AllRefferalInfoDTO,
+  pointsHistory: RefferalHistory[],
+  t: any
+): OwnAccountCreationPointsInfo[] => {
+  const filteredReadyToClaim = readyToClaim.filter((item) => item.oneTime);
+  const allRefTypes = new Set<RefferalProgram>(filteredReadyToClaim.map((item) => item.refType));
+
+  const result = Array.from(allRefTypes).map((refType) => {
+    const claimItem = filteredReadyToClaim.find((item) => item.refType === refType);
+    const points = claimItem?.points || 0;
+
+    const programPointItem = pointsInfo.programPoints.find((item) => item.method === refType);
+    const programPoints = programPointItem?.points || 0;
+
+    const done = pointsHistory.some((entry) => entry.method === refType);
+
+    const status = done
+      ? PointsProfileStatus.Done
+      : points > 0
+        ? PointsProfileStatus.ReadyToClaim
+        : PointsProfileStatus.NextStep;
+
+    const countPoints = status === PointsProfileStatus.NextStep ? programPoints : points;
+
+    return {
+      index: Number(refType.valueOf()),
+      methodDescriptions: ReferralProgramDescription(t, refType),
+      countPoints: countPoints,
+      done: done,
+      status: status,
+    };
+  });
+
+  return result.sort((a, b) => a.index - b.index);
+};
+
+const getOwnRegularPointsInfo = (
+  readyToClaim: ReadyToClaim[],
+  pointsInfo: AllRefferalInfoDTO,
+  pointsHistory: RefferalHistory[],
+  t: any
+): OwnRegularPointsInfo[] => {
+  const filteredReadyToClaim = readyToClaim.filter((item) => !item.oneTime);
+  const allRefTypes = new Set<RefferalProgram>(filteredReadyToClaim.map((item) => item.refType));
+
+  return Array.from(allRefTypes).map((refType) => {
+    const claimItem = filteredReadyToClaim.find((item) => item.refType === refType);
+    const points = claimItem?.points || 0;
+
+    const programPointItem = pointsInfo.programPoints.find((item) => item.method === refType);
+    const programPoints = programPointItem?.points || 0;
+
+    const done = pointsHistory.some((entry) => entry.method === refType);
+
+    const status = done
+      ? PointsProfileStatus.Done
+      : points > 0
+        ? PointsProfileStatus.ReadyToClaim
+        : PointsProfileStatus.NextStep;
+
+    const countPoints = status === PointsProfileStatus.NextStep ? programPoints : points;
+
+    return {
+      methodDescriptions: ReferralProgramDescription(t, refType),
+      countPoints: countPoints,
+      done: done,
+      nextDailyClaim: 0,
+      status: status,
+    };
+  });
+};

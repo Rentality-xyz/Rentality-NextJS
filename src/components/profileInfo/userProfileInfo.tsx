@@ -77,6 +77,7 @@ function UserCommonInformationForm({
       nickname: savedProfileSettings.nickname,
       phoneNumber: savedProfileSettings.phoneNumber,
       tcSignature: savedProfileSettings.tcSignature,
+      reflink: savedProfileSettings.reflink,
     },
     resolver: zodResolver(profileInfoFormSchema),
   });
@@ -156,6 +157,7 @@ function UserCommonInformationForm({
         drivingLicenseExpire: undefined,
         issueCountry: "",
         email: "",
+        reflink: "",
       };
 
       showInfo(t("common.info.sign"));
@@ -252,6 +254,15 @@ function UserCommonInformationForm({
                 validationError={errors.phoneNumber?.message}
               />
             )}
+          />
+
+          <RntInput
+            className="lg:w-72"
+            labelClassName="pl-[16px]"
+            id="reflink"
+            label={t("profile.ref_link")}
+            {...register("reflink")}
+            validationError={errors.reflink?.message}
           />
         </div>
       </fieldset>

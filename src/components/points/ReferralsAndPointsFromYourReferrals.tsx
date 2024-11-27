@@ -33,7 +33,6 @@ export default function ReferralsAndPointsFromYourReferrals() {
       <div className="items-center sm:flex">
         <div className="flex items-center">
           <p className="text-rentality-secondary">{t("referrals_and_point.section_points_your_referrals")}</p>
-          <i className="fi fi-rs-info ml-3 cursor-pointer text-rentality-secondary"></i>
         </div>
         <RntButton
           className="flex w-full items-center justify-center text-white max-sm:mt-4 sm:ml-auto sm:w-60 2xl:w-64"

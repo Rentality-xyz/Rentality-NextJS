@@ -6,7 +6,6 @@ import ReferralsAndPointsProfileStatus, {
 import Image from "next/image";
 import RntButton from "@/components/common/rntButton";
 import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
-import usePointsFromYourReferrals from "@/hooks/points/usePointsFromYourReferrals";
 import useOwnPoints from "@/hooks/points/useOwnPoints";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "../common/rntSuspense";
@@ -15,13 +14,15 @@ export default function ReferralsAndPointsOwnPoints() {
   const { t } = useTranslation();
   const { isLoading, data, fetchData, claimAllPoints } = useOwnPoints();
 
-  async function fetchDataForPage() {
-    await fetchData();
-  }
-
   async function claimPoints() {
     await claimAllPoints();
   }
+
+  // useEffect(() => {
+  //   if (!isLoadingInviteLink) {
+  //     fetchData();
+  //   }
+  // }, [isLoadingInviteLink]);
 
   useEffect(() => {
     fetchData();
@@ -32,7 +33,6 @@ export default function ReferralsAndPointsOwnPoints() {
       <div id="rp-section-own-points" className="items-center sm:flex">
         <div className="flex items-center">
           <p className="text-rentality-secondary">{t("referrals_and_point.section_own_points")}</p>
-          <i className="fi fi-rs-info ml-3 cursor-pointer text-rentality-secondary"></i>
         </div>
         <RntButton
           className="flex w-full items-center justify-center text-white max-sm:mt-4 sm:ml-auto sm:w-60 2xl:w-64"
@@ -40,7 +40,9 @@ export default function ReferralsAndPointsOwnPoints() {
         >
           <Image src={icStarPointsYellow} alt="" className="mr-2 h-7 w-7" />
           <div className="ml-0.5 flex">
-            Claim <span className="px-1 font-semibold text-rentality-star-point">540</span> points
+            Claim{" "}
+            <span className="px-1 font-semibold text-rentality-star-point">{data.totalReadyToClaim.toString()}</span>{" "}
+            points
             <span className="ml-4">●</span>
           </div>
         </RntButton>
@@ -55,36 +57,36 @@ export default function ReferralsAndPointsOwnPoints() {
         }
       >
         <div id="rp-own-points-account-creation" className="mt-4 px-4">
-          <p className="text-gray-300">Account creation</p>
+          <p className="text-gray-300">{t("referrals_and_point.account_creation")}</p>
           <hr className="my-2 border-gray-300" />
           <div id="rp-account-points-status-scrolling" className="flex space-x-2 overflow-x-auto">
-            {Array.from({
-              length: 8,
-            })
-              // .filter((i) => !isEmpty(i))
-              // .slice(0, 5)
-              .map((url, index) => (
-                <div key={index}>
-                  <ReferralsAndPointsProfileStatus index={index} isHost={true} status={PointsProfileStatus.Saved} />
-                </div>
-              ))}
+            {data.data?.ownAccountCreationPointsInfo.map((info, index) => (
+              <div key={index}>
+                <ReferralsAndPointsProfileStatus
+                  index={index}
+                  nameReferral={info.methodDescriptions}
+                  countPoints={info.countPoints}
+                  status={info.status}
+                />
+              </div>
+            ))}
           </div>
         </div>
 
         <div id="rp-own-points-regularly" className="mt-2 px-4">
-          <p className="text-gray-300">Regularly</p>
+          <p className="text-gray-300">{t("referrals_and_point.regularly")}</p>
           <hr className="my-2 border-gray-300" />
           <div id="rp-regularly-points-status-scrolling" className="flex space-x-2 overflow-x-auto">
-            {Array.from({
-              length: 8,
-            })
-              // .filter((i) => !isEmpty(i))
-              // .slice(0, 5)
-              .map((url, index) => (
-                <div key={index}>
-                  <ReferralsAndPointsProfileStatus index={index} isHost={true} status={PointsProfileStatus.NextStep} />
-                </div>
-              ))}
+            {data.data?.ownRegularPointsInfo.map((info, index) => (
+              <div key={index}>
+                <ReferralsAndPointsProfileStatus
+                  index={index}
+                  nameReferral={info.methodDescriptions}
+                  countPoints={info.countPoints}
+                  status={info.status}
+                />
+              </div>
+            ))}
           </div>
         </div>
       </RntSuspense>
