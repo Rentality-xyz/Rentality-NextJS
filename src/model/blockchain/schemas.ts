@@ -570,7 +570,6 @@ export enum RefferalProgram {
   SetKYC,
   PassCivic,
   CreateTrip,
-  FinishTripAsHost,
   FinishTripAsGuest,
   AddCar,
   UnlistedCar,
