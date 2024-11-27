@@ -142,6 +142,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           isTestCar: false,
           isInsuranceRequired: availableCarDTO.insuranceInfo.required,
           insurancePerDayPriceInUsd: Number(availableCarDTO.insuranceInfo.priceInUsdCents) / 100,
+          isGuestHasInsurance: availableCarDTO.isGuestHasInsurance,
 
           pricePer10PercentFuel: pricePer10PercentFuel,
           tripDiscounts: {
@@ -151,7 +152,6 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           },
           salesTax: Number(availableCarDTO.salesTax) / 100,
           governmentTax: Number(availableCarDTO.governmentTax) / 100,
-          isGuestHasInsurance: availableCarDTO.isGuestHasInsurance,
           distanceToUser: Number(availableCarDTO.distance),
         };
         setCarInfo(selectedCarDetails);

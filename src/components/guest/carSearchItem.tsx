@@ -41,9 +41,10 @@ export default function CarSearchItem({
     handleShowRequestDetails(searchInfo);
   }
 
-  const insurancePriceTotal = searchInfo.isInsuranceRequired
-    ? searchInfo.insurancePerDayPriceInUsd * searchInfo.tripDays
-    : 0;
+  const insurancePriceTotal =
+    searchInfo.isInsuranceRequired && !searchInfo.isGuestHasInsurance
+      ? searchInfo.insurancePerDayPriceInUsd * searchInfo.tripDays
+      : 0;
 
   return (
     <div className={mainClasses} onClick={() => setSelected(searchInfo.carId)}>
