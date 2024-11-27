@@ -569,7 +569,6 @@ export enum RefferalProgram {
   PassCivic,
   AddCar,
   CreateTrip,
-  FinishTripAsHost,
   FinishTripAsGuest,
   UnlistedCar,
   Daily,

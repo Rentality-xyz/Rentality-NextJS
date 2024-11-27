@@ -5,10 +5,13 @@ import useProfileSettings from "@/hooks/useProfileSettings";
 import { useTranslation } from "react-i18next";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
+import useInviteLink from "@/hooks/useRefferalProgram";
+import RntButton from "@/components/common/rntButton";
 
 export default function Profile() {
   const [isLoading, savedProfileSettings, saveProfileSettings] = useProfileSettings();
   const { t } = useTranslation();
+
   return (
     <>
       <PageTitle title={t("profile.title")} />
