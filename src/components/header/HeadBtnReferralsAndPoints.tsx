@@ -16,6 +16,7 @@ export default function HeadBtnReferralsAndPoints() {
     manageRefferalDiscount,
     manageTearInfo,
     calculateUniqUsers,
+    isLoading,
   ] = useInviteLink();
 
   const [totalReadyToClaim, setTotalReadyToClaim] = useState<number>(0);
@@ -29,7 +30,7 @@ export default function HeadBtnReferralsAndPoints() {
     };
 
     fetchReadyToClaim();
-  }, []);
+  }, [isLoading]);
 
   return (
     <>

@@ -22,6 +22,7 @@ export default function ReferralsAndPointsLink() {
     manageRefferalDiscount,
     manageTearInfo,
     calculateUniqUsers,
+    isLoading,
   ] = useInviteLink();
 
   const copyToClipboard = (text: string) => {
