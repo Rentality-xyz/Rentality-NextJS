@@ -135,6 +135,25 @@
     },
     {
       "type": "function",
+      "name": "getEmptyToClaim",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "tuple[]",
+          "name": "",
+          "components": [
+            { "type": "uint256", "name": "points" },
+            { "type": "uint8", "name": "refType" },
+            { "type": "bool", "name": "oneTime" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
       "name": "getMyStartDiscount",
       "constant": true,
       "stateMutability": "view",
@@ -157,7 +176,7 @@
             { "type": "int256", "name": "points" },
             { "type": "uint256", "name": "date" },
             { "type": "uint8", "name": "method" },
-            { "type": "bool", "name": "oneTime"}
+            { "type": "bool", "name": "oneTime" }
           ]
         }
       ]
@@ -209,7 +228,7 @@
                 { "type": "uint8", "name": "refType" },
                 { "type": "bool", "name": "oneTime" },
                 { "type": "bool", "name": "claimed" },
-                { "type": "address", "name": "user"}
+                { "type": "address", "name": "user" }
               ]
             },
             { "type": "uint256", "name": "totalPoints" },
