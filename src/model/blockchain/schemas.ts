@@ -567,7 +567,6 @@ export const EngineType = {
 export enum RefferalProgram {
   SetKYC,
   PassCivic,
-  AddFirstCar,
   AddCar,
   CreateTrip,
   FinishTripAsHost,
