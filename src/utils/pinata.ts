@@ -3,7 +3,7 @@ import axios from "axios";
 import { env } from "./env";
 import { Err, Ok, Result } from "@/model/utils/result";
 
-const pinataJwt = env.NEXT_PUBLIC_USE_PINATA_JWT;
+const pinataJwt = env.NEXT_PUBLIC_PINATA_JWT;
 
 export async function uploadJSONToIPFS(JSONBody: {}, fileNameTag?: string, keyValues?: {}) {
   const url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;
