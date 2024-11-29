@@ -112,7 +112,7 @@ export default function CarEditForm({
   const locationInfo = watch("locationInfo");
   const isGuestInsuranceRequired = watch("isGuestInsuranceRequired");
 
-  const vinNumber = watch("vinNumber")
+  const vinNumber = watch("vinNumber");
 
   const [isCarMetadataEdited, setIsCarMetadataEdited] = useState(isNewCar);
   const [selectedMakeID, setSelectedMakeID] = useState<string>("");
@@ -122,8 +122,8 @@ export default function CarEditForm({
   const [isVINCheckOverriden, setIsVINCheckOverriden] = useState<boolean>(false);
 
   const isFormEnabled = useMemo<boolean>(() => {
-    return isVINVerified || isVINCheckOverriden;
-  },[isVINVerified, isVINCheckOverriden]);
+    return isVINVerified || isVINCheckOverriden || !isNewCar;
+  }, [isVINVerified, isVINCheckOverriden, isNewCar]);
 
   const { getVINNumber } = useCarAPI();
 
@@ -232,17 +232,21 @@ export default function CarEditForm({
     showDialog(t("vehicles.lost_unsaved"), action);
   }
 
-  if(isVINVerified){
+  if (isVINVerified) {
     getVINNumber(vinNumber).then((vinInfo: VinInfo | undefined) => {
-      setValue('brand', vinInfo?.brand ?? '');
-      setValue('model', vinInfo?.model ?? '');
-      setValue('releaseYear', parseInt(vinInfo?.yearOfProduction ?? "2001"));
-    })
+      setValue("brand", vinInfo?.brand ?? "");
+      setValue("model", vinInfo?.model ?? "");
+      setValue("releaseYear", parseInt(vinInfo?.yearOfProduction ?? "2001"));
+    });
   }
 
   return (
     <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]} language="en">
-      <form onSubmit={(e) => {e.preventDefault();}}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
         <div className="mt-4">
           <div className="mb-4 pl-4 text-lg">
             <strong>{t_car("car")}</strong>
@@ -865,7 +869,7 @@ const MilesIncludedPerDay = ({
   t_car,
 }: {
   value: number | typeof UNLIMITED_MILES_VALUE_TEXT;
-  readOnly: boolean,
+  readOnly: boolean;
   onChange: (value: number | typeof UNLIMITED_MILES_VALUE_TEXT) => void;
   validationError?: string;
   t_car: TFunction;
@@ -929,7 +933,7 @@ const FullBatteryChargePrice = ({
   t_car,
 }: {
   value: number;
-  readOnly: boolean,
+  readOnly: boolean;
   onChange: (value: number) => void;
   validationError?: string;
   t_car: TFunction;
