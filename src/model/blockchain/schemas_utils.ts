@@ -206,6 +206,7 @@ const emptyContractSearchCar: ContractSearchCar = {
   insuranceIncluded: false,
   locationInfo: emptyContractLocationInfo,
   insuranceInfo: emptyContractInsuranceCarInfo,
+  isGuestHasInsurance: false,
 };
 
 export function validateContractSearchCar(obj: ContractSearchCar): obj is ContractSearchCar {
@@ -215,7 +216,6 @@ export function validateContractSearchCar(obj: ContractSearchCar): obj is Contra
 const emptyContractSearchCarWithDistance: ContractSearchCarWithDistance = {
   car: emptyContractSearchCar,
   distance: BigInt(0),
-  isGuestHasInsurance: false,
 };
 
 export function validateContractSearchCarWithDistance(
@@ -284,6 +284,8 @@ const emptyContractTrip: ContractTrip = {
   finishDateTime: BigInt(0),
   pickUpHash: "",
   returnHash: "",
+  guestInsuranceCompanyName: "",
+  guestInsurancePolicyNumber: "",
 };
 
 export function validateContractTrip(obj: ContractTrip): obj is ContractTrip {
