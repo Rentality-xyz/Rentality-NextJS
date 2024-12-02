@@ -16,7 +16,7 @@ export const env = createEnv({
 
     NEXT_PUBLIC_DEFAULT_CHAIN_ID: z.coerce.number().positive(),
 
-    NEXT_PUBLIC_USE_PINATA_JWT: z.string().min(1),
+    NEXT_PUBLIC_PINATA_JWT: z.string().min(1),
     NEXT_PUBLIC_PRIVY_APP_ID: z.string().min(1),
     NEXT_PUBLIC_CIVIC_GATEKEEPER_NETWORK: z.string().min(1),
     NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: z.string().min(1),
@@ -68,7 +68,7 @@ export const env = createEnv({
 
     NEXT_PUBLIC_DEFAULT_CHAIN_ID: process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID,
 
-    NEXT_PUBLIC_USE_PINATA_JWT: process.env.NEXT_PUBLIC_USE_PINATA_JWT,
+    NEXT_PUBLIC_PINATA_JWT: process.env.NEXT_PUBLIC_PINATA_JWT,
     NEXT_PUBLIC_PRIVY_APP_ID: process.env.NEXT_PUBLIC_PRIVY_APP_ID,
     NEXT_PUBLIC_CIVIC_GATEKEEPER_NETWORK: process.env.NEXT_PUBLIC_CIVIC_GATEKEEPER_NETWORK,
     NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
