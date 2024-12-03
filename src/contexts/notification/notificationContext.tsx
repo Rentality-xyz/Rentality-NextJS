@@ -17,7 +17,7 @@ import { getBlockCountForSearch } from "@/model/blockchain/blockchainList";
 import { useAuth } from "../auth/authContext";
 
 export type NotificationContextInfo = {
-  isLoading: Boolean;
+  isLoading: boolean;
   notifications: NotificationInfo[];
   loadMore: () => Promise<void>;
   addNotifications: (notifications: NotificationInfo[]) => void;
@@ -85,7 +85,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
   const { isAuthenticated } = useAuth();
   const ethereumInfo = useEthereum();
   const rentalityContract = useRentality();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [notificationInfos, setNotificationInfos] = useState<NotificationInfo[]>([]);
 
   const loadMore = async () => {};

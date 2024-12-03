@@ -7,7 +7,7 @@ import { TripInfo } from "@/model/TripInfo";
 
 const useTripInfo = (tripId: bigint) => {
   const rentalityContract = useRentality();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [tripInfo, setTripInfo] = useState<TripInfo | null>(null);
 
   const getTrip = async (rentalityContract: IRentalityContract, tripId: bigint) => {

@@ -17,7 +17,7 @@ import { formatSearchAvailableCarsContractRequest } from "@/utils/searchMapper";
 const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
   const ethereumInfo = useEthereum();
   const rentalityContract = useRentality();
-  const [isLoading, setIsLoading] = useState<Boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [carInfo, setCarInfo] = useState<SearchCarInfoDetails>();
 
   useEffect(() => {

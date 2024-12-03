@@ -17,7 +17,7 @@ import { isUserHasEnoughFunds } from "@/utils/wallet";
 const useSaveCar = () => {
   const rentalityContract = useRentality();
   const ethereumInfo = useEthereum();
-  const [dataSaved, setDataSaved] = useState<Boolean>(true);
+  const [dataSaved, setDataSaved] = useState<boolean>(true);
 
   const uploadMetadataToIPFS = async (hostCarInfo: HostCarInfo) => {
     if (!verifyCar(hostCarInfo)) {

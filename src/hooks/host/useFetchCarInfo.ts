@@ -11,7 +11,7 @@ import { mapContractCarToCarDetails } from "@/model/mappers/contractCarToCarDeta
 const useFetchCarInfo = (carId: number) => {
   const ethereumInfo = useEthereum();
   const rentalityContract = useRentality();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hostCarInfo, setHostCarInfo] = useState<HostCarInfo>(emptyHostCarInfo);
 
   useEffect(() => {

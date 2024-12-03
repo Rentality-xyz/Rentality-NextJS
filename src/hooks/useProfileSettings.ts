@@ -36,7 +36,7 @@ const emptyProfileSettings: ProfileSettings = {
 const useProfileSettings = () => {
   const { ready, authenticated } = usePrivy();
   const rentalityContract = useRentality();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [profileSettings, setProfileSettings] = useState<ProfileSettings>(emptyProfileSettings);
 
   const getProfileSettings = async (rentalityContract: IRentalityContract | null) => {

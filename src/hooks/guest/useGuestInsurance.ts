@@ -14,8 +14,8 @@ import { Err, Ok, Result } from "@/model/utils/result";
 const useGuestInsurance = () => {
   const rentalityContract = useRentality();
   const ethereumInfo = useEthereum();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
-  const [isUpdateRequired, setIsUpdateRequired] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isUpdateRequired, setIsUpdateRequired] = useState<boolean>(true);
   const [guestInsurance, setGuestInsurance] = useState<GuestGeneralInsurance>({ photo: "" });
 
   const saveGuestInsurance = useCallback(

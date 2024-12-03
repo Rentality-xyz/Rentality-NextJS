@@ -25,8 +25,8 @@ import { useTranslation } from "react-i18next";
 const useGuestClaims = () => {
   const rentalityContract = useRentality();
   const ethereumInfo = useEthereum();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
-  const [updateRequired, setUpdateRequired] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [updateRequired, setUpdateRequired] = useState<boolean>(true);
   const [claims, setClaims] = useState<Claim[]>([]);
   const { t } = useTranslation();
   const [tripInfos, setTripInfos] = useState<TripInfoForClaimCreation[]>([

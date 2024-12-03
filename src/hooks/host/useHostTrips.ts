@@ -8,8 +8,8 @@ import { mapTripDTOtoTripInfo } from "@/model/utils/TripDTOtoTripInfo";
 
 const useHostTrips = () => {
   const rentalityContract = useRentality();
-  const [isLoadingTrips, setIsLoadingTrips] = useState<Boolean>(true);
-  const [updateRequired, setUpdateRequired] = useState<Boolean>(true);
+  const [isLoadingTrips, setIsLoadingTrips] = useState<boolean>(true);
+  const [updateRequired, setUpdateRequired] = useState<boolean>(true);
   const [tripsBooked, setTripsBooked] = useState<TripInfo[]>([]);
   const [tripsHistory, setTripsHistory] = useState<TripInfo[]>([]);
 
