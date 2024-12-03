@@ -155,7 +155,7 @@ function CarAddPhoto({
           );
         })}
         {carImages.filter((i) => "file" in i || !i.isDeleted).length < MAX_ADD_IMAGE && (
-          <div className="h-40 w-48 min-w-[12rem] cursor-pointer overflow-hidden rounded-2xl bg-gray-200 bg-opacity-40 bg-[url('../images/add_circle_outline_white_48dp.svg')] bg-center bg-no-repeat">
+          <div className="h-40 w-48 min-w-[12rem] cursor-pointer overflow-hidden rounded-2xl bg-gray-200/40 bg-[url('../images/add_circle_outline_white_48dp.svg')] bg-center bg-no-repeat">
             <div className="h-full w-full" onClick={handleImageClick} />
             <input
               className="hidden"

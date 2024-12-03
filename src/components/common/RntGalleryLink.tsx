@@ -53,7 +53,7 @@ function RntGalleryDialog({ photos, handleBackClick }: { photos: string[]; handl
             <>
               <div
                 key={index}
-                className="h-40 w-48 cursor-pointer overflow-hidden rounded-2xl bg-gray-200 bg-opacity-80"
+                className="h-40 w-48 cursor-pointer overflow-hidden rounded-2xl bg-gray-200/80"
                 onClick={() => window.open(photo)}
               >
                 <Image className="h-full w-full object-cover" width={1000} height={1000} src={photo} alt="" />
