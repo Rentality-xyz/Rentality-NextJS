@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { TripInfo, TripInfoShortDetails } from "@/model/TripInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
@@ -12,6 +12,10 @@ const useGuestTripsList = () => {
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [updateRequired, setUpdateRequired] = useState<Boolean>(true);
   const [trips, setTrips] = useState<TripInfoShortDetails[]>([]);
+
+  const refetchData = useCallback(() => {
+    setUpdateRequired(true);
+  }, []);
 
   useEffect(() => {
     const getTrips = async (rentalityContract: IRentalityContract) => {
@@ -56,7 +60,7 @@ const useGuestTripsList = () => {
     getTrips(rentalityContract);
   }, [updateRequired, rentalityContract]);
 
-  return { isLoading, trips } as const;
+  return { isLoading, trips, refetchData } as const;
 };
 
 export default useGuestTripsList;

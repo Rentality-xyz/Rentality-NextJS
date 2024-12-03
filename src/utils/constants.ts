@@ -34,3 +34,6 @@ export const LEGAL_CANCELLATION_NAME = "CANCELLATION";
 export const LEGAL_PROHIBITEDUSES_NAME = "PROHIBITEDUSES";
 export const LEGAL_PRIVACY_NAME = "PRIVACY";
 export const MIN_ETH_ON_WALLET_FOR_TRANSACTION = 0.0004;
+
+export const GENERAL_INSURANCE_TYPE_ID = "generalInsurance";
+export const ONE_TIME_INSURANCE_TYPE_ID = "oneTimeInsurance";
