@@ -1,55 +1,216 @@
-import { useState } from "react";
+// TODO Transate
 import { useTranslation } from "react-i18next";
 import RntButtonTransparent from "../common/rntButtonTransparent";
 import RntSelect from "../common/rntSelect";
 import { UserInsurancePhoto } from "../guest/UserInsurancePhoto";
 import RntInput from "../common/rntInput";
 import RntButton from "../common/rntButton";
+import useToggleState from "@/hooks/useToggleState";
+import useGuestTripsList from "@/hooks/guest/useGuestTripsList";
+import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
+import { Controller, useForm } from "react-hook-form";
+import { addGuestInsuranceFormSchema, AddGuestInsuranceFormValues } from "./addGuestInsuranceFormSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import RntValidationError from "../common/RntValidationError";
+import { isEmpty } from "@/utils/string";
+
+const GENERAL_INSURANCE_TYPE_ID = "generalInsurance";
+const ONE_TIME_INSURANCE_TYPE_ID = "oneTimeInsurance";
 
 export default function AddGuestInsurance() {
-  const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
+  const [isFormOpen, toggleFormOpen] = useToggleState(false);
+  const { isLoading: isTripsLoading, trips } = useGuestTripsList();
 
-  if (isOpen) return <RntButtonTransparent>{t("insurance.add_insurance")}</RntButtonTransparent>;
+  const { register, handleSubmit, formState, control, watch, setError } = useForm<AddGuestInsuranceFormValues>({
+    defaultValues: {
+      insuranceType: GENERAL_INSURANCE_TYPE_ID,
+      comment: "",
+    },
+    resolver: zodResolver(addGuestInsuranceFormSchema),
+  });
+  const { errors, isSubmitting } = formState;
+  const insuranceType = watch("insuranceType");
+
+  async function onFormSubmit(formData: AddGuestInsuranceFormValues) {
+    console.log("formData", JSON.stringify(formData, null, 2));
+    if (formData.insuranceType === GENERAL_INSURANCE_TYPE_ID && formData.photos === undefined) {
+      setError("photos", { message: "Photo is required", type: "required" });
+      return;
+    }
+    if (formData.insuranceType === ONE_TIME_INSURANCE_TYPE_ID) {
+      let isValid = true;
+
+      if (formData.selectedTripId === undefined) {
+        setError("selectedTripId", { message: "value is required", type: "required" });
+        isValid = false;
+      }
+      if (isEmpty(formData.companyName)) {
+        setError("companyName", { message: "value is required", type: "required" });
+        isValid = false;
+      }
+      if (isEmpty(formData.policeNumber)) {
+        setError("policeNumber", { message: "value is required", type: "required" });
+        isValid = false;
+      }
+      if (!isValid) return;
+    }
+    alert("call");
+  }
+
+  if (!isFormOpen)
+    return (
+      <RntButtonTransparent
+        onClick={() => {
+          toggleFormOpen();
+        }}
+      >
+        {t("insurance.add_insurance")}
+      </RntButtonTransparent>
+    );
+
   return (
-    <div className="flex flex-col gap-2">
-      <RntButtonTransparent disabled={true}>{t("insurance.add_insurance")}</RntButtonTransparent>
+    <div className="flex flex-col gap-4">
+      <RntButtonTransparent
+        onClick={() => {
+          toggleFormOpen();
+        }}
+      >
+        {t("insurance.add_insurance")}
+      </RntButtonTransparent>
       <hr />
-      <div className="hidden w-1/2 flex-col gap-2">
-        <div className="flex w-1/2 flex-col gap-2">
-          <div className="flex flex-col">
+      <form className="flex w-full flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
+        <div className="flex flex-row gap-4">
+          <div className="flex w-1/2 flex-col gap-2">
             <h3>Insurance type</h3>
-            <p>General Insurance ID</p>
-            <p> One-Time trip insurance</p>
+
+            <Controller
+              name="insuranceType"
+              control={control}
+              render={({ field }) => (
+                <div className="flex flex-col">
+                  <div className="flex gap-2">
+                    <input
+                      type="radio"
+                      id={GENERAL_INSURANCE_TYPE_ID}
+                      name="insurance"
+                      value={GENERAL_INSURANCE_TYPE_ID}
+                      checked={field.value === GENERAL_INSURANCE_TYPE_ID}
+                      onChange={field.onChange}
+                    />
+                    <label htmlFor="generalInsurance">General Insurance ID</label>
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type="radio"
+                      id={ONE_TIME_INSURANCE_TYPE_ID}
+                      name="insurance"
+                      value={ONE_TIME_INSURANCE_TYPE_ID}
+                      checked={field.value === ONE_TIME_INSURANCE_TYPE_ID}
+                      onChange={field.onChange}
+                    />
+                    <label htmlFor="oneTimeInsurance">One-Time trip insurance</label>
+                  </div>
+                </div>
+              )}
+            />
           </div>
-          <RntSelect label="Trip:"></RntSelect>
-        </div>
-        <p>Upload up to 5 photos insurance policy</p>
+          {insuranceType === ONE_TIME_INSURANCE_TYPE_ID &&
+            (isTripsLoading ? (
+              "Loading..."
+            ) : (
+              <Controller
+                name="selectedTripId"
+                control={control}
+                render={({ field }) => (
+                  <RntSelect
+                    className="w-1/2"
+                    id="selectedTrip"
+                    label="Trip:"
+                    labelClassName="pl-4"
+                    disabled={trips.length === 0}
+                    value={field.value}
+                    onChange={(e) => {
+                      console.log(`RntSelect onChange ${e.target.value}`);
 
-        {/* <Controller
-        name="userInsurancePhoto"
-        control={control}
-        render={({ field }) => (*/}
-        <>
-          <UserInsurancePhoto
-            insurancePhoto={undefined} //{field.value}
-            onInsurancePhotoChanged={(newValue) => {
-              // field.onChange(newValue);
-            }}
-          />
-          {/* <RntValidationError validationError={errors.userInsurancePhoto?.message?.toString()} /> */}
-        </>
-        {/* )}
-      /> */}
-
-        <div className="flex gap-4">
-          <RntInput label="Insurance company name" />
-          <RntInput label="Insurance policy number" />
+                      field.onChange(Number(e.target.value));
+                    }}
+                    validationError={errors.selectedTripId?.message?.toString()}
+                  >
+                    {trips.length === 0 ? (
+                      <option>No trips</option>
+                    ) : (
+                      <>
+                        <option className="hidden" disabled selected>
+                          Select trip
+                        </option>
+                        {trips.map((i) => (
+                          <option
+                            key={i.tripId}
+                            value={i.tripId}
+                          >{`${i.tripId} ${i.brand} ${i.model} ${i.year} ${dateRangeFormatShortMonthDateYear(i.tripStart, i.tripEnd)}`}</option>
+                        ))}
+                      </>
+                    )}
+                  </RntSelect>
+                )}
+              />
+            ))}
         </div>
-        <RntInput label="Comment" />
-        <RntButton>Save</RntButton>
-      </div>
-      <hr className="hidden" />
+        {insuranceType === GENERAL_INSURANCE_TYPE_ID && (
+          <>
+            <p>Upload up to 5 photos insurance policy</p>
+
+            <Controller
+              name="photos"
+              control={control}
+              render={({ field }) => (
+                <>
+                  <UserInsurancePhoto
+                    insurancePhoto={field.value}
+                    onInsurancePhotoChanged={(newValue) => {
+                      field.onChange(newValue);
+                    }}
+                  />
+                  <RntValidationError validationError={errors.photos?.message?.toString()} />
+                </>
+              )}
+            />
+          </>
+        )}
+
+        {insuranceType === ONE_TIME_INSURANCE_TYPE_ID && (
+          <div className="flex gap-4">
+            <RntInput
+              id="companyName"
+              label={"Insurance company name"}
+              labelClassName="pl-4"
+              {...register("companyName")}
+              validationError={errors.companyName?.message?.toString()}
+            />
+
+            <RntInput
+              id="policeNumber"
+              label={"Insurance policy number"}
+              labelClassName="pl-4"
+              {...register("policeNumber")}
+              validationError={errors.policeNumber?.message?.toString()}
+            />
+          </div>
+        )}
+
+        <RntInput
+          id="comment"
+          label={"Comment"}
+          labelClassName="pl-4"
+          {...register("comment")}
+          validationError={errors.comment?.message?.toString()}
+        />
+        <RntButton className="mt-4" type="submit" disabled={isSubmitting}>
+          Save
+        </RntButton>
+      </form>
+      <hr />
     </div>
   );
 }

@@ -1,9 +1,16 @@
+// TODO Transate
 import { cn } from "@/utils";
 import { isEmpty } from "@/utils/string";
 import React from "react";
 import RntButton from "./rntButton";
 import Image from "next/image";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
+
+type RntGalleryLinkPros = {
+  photos: string[];
+  titleCallback?: (photos: string[]) => string;
+  titleClassNameCallback?: (photos: string[]) => string;
+};
 
 function RntGalleryLink({
   photos,
@@ -19,14 +26,13 @@ function RntGalleryLink({
     const noEmptyPhotos = photos.filter((i) => !isEmpty(i));
     return noEmptyPhotos.length > 0 ? "text-rentality-secondary cursor-pointer" : "text-gray-500 ";
   },
-}: {
-  photos: string[];
-  titleCallback?: (photos: string[]) => string;
-  titleClassNameCallback?: (photos: string[]) => string;
-}) {
+}: RntGalleryLinkPros) {
   const { showCustomDialog, hideDialogs } = useRntDialogs();
+  const noEmptyPhotos = photos.filter((i) => !isEmpty(i));
 
   function handleClick() {
+    if (noEmptyPhotos.length === 0) return;
+
     showCustomDialog(<RntGalleryDialog photos={photos} handleBackClick={hideDialogs} />);
   }
 
