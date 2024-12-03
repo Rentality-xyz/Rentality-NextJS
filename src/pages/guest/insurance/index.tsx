@@ -6,6 +6,8 @@ import GuestInsuranceFilters from "@/components/insurance/GuestInsuranceFilters"
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import GuestInsuranceTable from "@/components/insurance/GuestInsuranceTable";
 import useGuestInsurances, { GuestInsuranceFiltersType } from "@/hooks/insurance/useGuestInsurances";
+import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
+import RntSuspense from "@/components/common/rntSuspense";
 
 const defaultFilters: GuestInsuranceFiltersType = {};
 
@@ -31,19 +33,23 @@ export default function GuestInsurance() {
   return (
     <>
       <PageTitle title={t("insurance.page_title")} />
-      <p>{t("insurance.please_enter_your_insurance")}</p>
-      <AddGuestInsurance />
-      <p>{t("insurance.insurance_list")}</p>
-      <GuestInsuranceFilters defaultFilters={defaultFilters} onApply={handleApplyFilters} />
-      <div className="mt-5 flex flex-col gap-4 rounded-2xl bg-rentality-bg p-4 pb-8">
-        <PaginationWrapper
-          currentPage={data.currentPage}
-          totalPages={data.totalPageCount}
-          selectPage={fetchDataForPage}
-        >
-          <GuestInsuranceTable isLoading={isLoading} data={data.data} />
-        </PaginationWrapper>
-      </div>
+      <CheckingLoadingAuth>
+        <RntSuspense isLoading={isLoading}>
+          <p className="my-4">{t("insurance.please_enter_your_insurance")}</p>
+          <AddGuestInsurance />
+          <p className="mt-4">{t("insurance.insurance_list")}</p>
+          <GuestInsuranceFilters defaultFilters={defaultFilters} onApply={handleApplyFilters} />
+          <div className="mt-5 flex flex-col gap-4 rounded-2xl bg-rentality-bg p-4 pb-8">
+            <PaginationWrapper
+              currentPage={data.currentPage}
+              totalPages={data.totalPageCount}
+              selectPage={fetchDataForPage}
+            >
+              <GuestInsuranceTable isLoading={isLoading} data={data.data} />
+            </PaginationWrapper>
+          </div>
+        </RntSuspense>
+      </CheckingLoadingAuth>
     </>
   );
 }
