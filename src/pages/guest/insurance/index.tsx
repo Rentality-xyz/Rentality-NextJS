@@ -35,9 +35,8 @@ export default function GuestInsurance() {
       <PageTitle title={t("insurance.page_title")} />
       <CheckingLoadingAuth>
         <RntSuspense isLoading={isLoading}>
-          <p className="my-4">{t("insurance.please_enter_your_insurance")}</p>
           <AddGuestInsurance />
-          <p className="mt-4">{t("insurance.insurance_list")}</p>
+          <h2 className="mt-4">{t("insurance.insurance_list")}</h2>
           <GuestInsuranceFilters defaultFilters={defaultFilters} onApply={handleApplyFilters} />
           <div className="mt-5 flex flex-col gap-4 rounded-2xl bg-rentality-bg p-4 pb-8">
             <PaginationWrapper

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { TripInfo, TripInfoShortDetails } from "@/model/TripInfo";
+import { TripInfoShortDetails } from "@/model/TripInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
 import { ContractTripDTO } from "@/model/blockchain/schemas";
@@ -7,10 +7,10 @@ import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 import { mapTripDTOtoTripInfoShordDetails } from "@/model/utils/TripDTOtoTripInfo";
 import { bigIntReplacer } from "@/utils/json";
 
-const useGuestTripsList = () => {
+const useTripsList = (isHost: boolean) => {
   const rentalityContract = useRentality();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
-  const [updateRequired, setUpdateRequired] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [updateRequired, setUpdateRequired] = useState<boolean>(true);
   const [trips, setTrips] = useState<TripInfoShortDetails[]>([]);
 
   const refetchData = useCallback(() => {
@@ -30,7 +30,7 @@ const useGuestTripsList = () => {
           console.error("getTrips error: contract is null");
           return;
         }
-        const tripsView: ContractTripDTO[] = await rentalityContract.getTripsAs(false);
+        const tripsView: ContractTripDTO[] = await rentalityContract.getTripsAs(isHost);
 
         console.log("tripsView", JSON.stringify(tripsView, bigIntReplacer, 2));
 
@@ -63,4 +63,4 @@ const useGuestTripsList = () => {
   return { isLoading, trips, refetchData } as const;
 };
 
-export default useGuestTripsList;
+export default useTripsList;

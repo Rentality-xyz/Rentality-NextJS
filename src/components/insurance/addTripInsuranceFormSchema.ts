@@ -11,7 +11,7 @@ const insuranceFileFormSchema = z.union([
   }),
 ]);
 
-export const addGuestInsuranceFormSchema = z.object({
+export const addTripInsuranceFormSchema = z.object({
   insuranceType: z.string().trim().min(1, "Type is not selected"),
   photos: insuranceFileFormSchema.optional(),
   selectedTripId: z
@@ -26,4 +26,4 @@ export const addGuestInsuranceFormSchema = z.object({
   comment: z.string().optional(),
 });
 
-export type AddGuestInsuranceFormValues = z.infer<typeof addGuestInsuranceFormSchema>;
+export type AddTripInsuranceFormValues = z.infer<typeof addTripInsuranceFormSchema>;

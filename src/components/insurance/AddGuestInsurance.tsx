@@ -6,35 +6,35 @@ import { UserInsurancePhoto } from "../guest/UserInsurancePhoto";
 import RntInput from "../common/rntInput";
 import RntButton from "../common/rntButton";
 import useToggleState from "@/hooks/useToggleState";
-import useGuestTripsList from "@/hooks/guest/useGuestTripsList";
+import useTripsList from "@/hooks/guest/useTripsList";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { Controller, useForm } from "react-hook-form";
-import { addGuestInsuranceFormSchema, AddGuestInsuranceFormValues } from "./addGuestInsuranceFormSchema";
+import { addTripInsuranceFormSchema, AddTripInsuranceFormValues } from "./addTripInsuranceFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import RntValidationError from "../common/RntValidationError";
 import { isEmpty } from "@/utils/string";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
-import useSaveTripInsurance from "@/hooks/guest/useSaveTripInsurance";
+import useSaveGuestTripInsurance from "@/hooks/guest/useSaveGuestTripInsurance";
 import { GENERAL_INSURANCE_TYPE_ID, ONE_TIME_INSURANCE_TYPE_ID } from "@/utils/constants";
 
 export default function AddGuestInsurance() {
   const { t } = useTranslation();
   const [isFormOpen, toggleFormOpen] = useToggleState(false);
-  const { isLoading: isTripsLoading, trips, refetchData } = useGuestTripsList();
+  const { isLoading: isTripsLoading, trips, refetchData } = useTripsList(false);
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
-  const { saveTripInsurance } = useSaveTripInsurance();
+  const { saveTripInsurance } = useSaveGuestTripInsurance();
 
-  const { register, handleSubmit, formState, control, watch, setError } = useForm<AddGuestInsuranceFormValues>({
+  const { register, handleSubmit, formState, control, watch, setError } = useForm<AddTripInsuranceFormValues>({
     defaultValues: {
       insuranceType: GENERAL_INSURANCE_TYPE_ID,
       comment: "",
     },
-    resolver: zodResolver(addGuestInsuranceFormSchema),
+    resolver: zodResolver(addTripInsuranceFormSchema),
   });
   const { errors, isSubmitting } = formState;
   const insuranceType = watch("insuranceType");
 
-  async function onFormSubmit(formData: AddGuestInsuranceFormValues) {
+  async function onFormSubmit(formData: AddTripInsuranceFormValues) {
     console.log("formData", JSON.stringify(formData, null, 2));
     if (formData.insuranceType === GENERAL_INSURANCE_TYPE_ID && formData.photos === undefined) {
       setError("photos", { message: "Photo is required", type: "required" });
