@@ -3,6 +3,7 @@ import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractPublicHostCarDTO } from "@/model/blockchain/schemas";
 import { validateContractPublicHostCarDTO } from "@/model/blockchain/schemas_utils";
+import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { env } from "@/utils/env";
 import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { isEmpty } from "@/utils/string";
@@ -24,7 +25,7 @@ const getHostAddressFromQuery = async (query: string | string[] | undefined, pro
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const privateKey = env.SIGNER_PRIVATE_KEY;
+  const privateKey = env.NEXT_PUBLIC_SERVER_SIGNER_PRIVATE_KEY;
   if (isEmpty(privateKey)) {
     console.error("API hostPublicListings error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
@@ -40,7 +41,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
-  let providerApiUrl = process.env[`PROVIDER_API_URL_${chainIdNumber}`];
+  // const providerApiUrl = process.env[`NEXT_PUBLIC_PROVIDER_API_URL_${chainIdNumber}`];
+  const providerApiUrl = getProviderApiUrlFromEnv(chainIdNumber);
+
   if (!providerApiUrl) {
     console.error(`API hostPublicListings error: API URL for chain id ${chainIdNumber} was not set`);
     res.status(500).json({ error: `API hostPublicListings error: API URL for chain id ${chainIdNumber} was not set` });

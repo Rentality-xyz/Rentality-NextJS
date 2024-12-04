@@ -45,3 +45,5 @@ package-lock.json
 .vscode/
 
 docker/env.nextjs
+.env.*
+.env

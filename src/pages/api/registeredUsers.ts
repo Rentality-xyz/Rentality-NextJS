@@ -57,13 +57,13 @@ async function getRegisteredUsers(
 ): Promise<Result<RegisteredUser[], string>> {
   if (!kycDbInfo.db) return Err("db is null");
 
-  const CIVIC_USER_EMAIL = env.CIVIC_USER_EMAIL;
+  const CIVIC_USER_EMAIL = env.NEXT_PUBLIC_SERVER_CIVIC_USER_EMAIL;
   if (!CIVIC_USER_EMAIL || isEmpty(CIVIC_USER_EMAIL)) {
     console.error("getRegisteredUsers error: CIVIC_USER_EMAIL was not set");
     return Err("CIVIC_USER_EMAIL was not set");
   }
 
-  const CIVIC_USER_PASSWORD = env.CIVIC_USER_PASSWORD;
+  const CIVIC_USER_PASSWORD = env.NEXT_PUBLIC_SERVER_CIVIC_USER_PASSWORD;
   if (!CIVIC_USER_PASSWORD || isEmpty(CIVIC_USER_PASSWORD)) {
     console.error("getRegisteredUsers error: CIVIC_USER_PASSWORD was not set");
     return Err("CIVIC_USER_PASSWORD was not set");

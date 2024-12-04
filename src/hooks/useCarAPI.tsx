@@ -34,13 +34,13 @@ function getExpirationTimestamp(token: string): number {
 }
 
 async function getNewAuthToken() {
-  const CARAPI_SECRET: string = env.CARAPI_SECRET!;
+  const CARAPI_SECRET: string = env.NEXT_PUBLIC_SERVER_CARAPI_SECRET!;
 
   if (!CARAPI_SECRET || isEmpty(CARAPI_SECRET)) {
     throw new Error("CARAPI_SECRET is not set");
   }
 
-  const CARAPI_TOKEN: string = env.CARAPI_TOKEN!;
+  const CARAPI_TOKEN: string = env.NEXT_PUBLIC_SERVER_CARAPI_TOKEN!;
 
   if (!CARAPI_TOKEN || isEmpty(CARAPI_TOKEN)) {
     throw new Error("CARAPI_TOKEN is not set");
