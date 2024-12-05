@@ -178,17 +178,27 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         const tripInfos = await rentalityContract.getTripsAs(isHost);
         const claimInfos = await rentalityContract.getMyClaimsAs(isHost);
 
-        const rentalityEventFilter = notificationService.filters.RentalityEvent(
+        const rentalityEventFilterFromUser = notificationService.filters.RentalityEvent(
           null,
           null,
           null,
           [ethereumInfo.walletAddress],
+          null,
+          null
+        );
+        const rentalityEventFilterToUser = notificationService.filters.RentalityEvent(
+          null,
+          null,
+          null,
+          null,
           [ethereumInfo.walletAddress],
           null
         );
         const rentalityEventHistory = (
-          await notificationService.queryFilter(rentalityEventFilter, fromBlock, toBlock)
-        ).filter(isEventLog);
+          await notificationService.queryFilter(rentalityEventFilterFromUser, fromBlock, toBlock)
+        )
+          .concat(await notificationService.queryFilter(rentalityEventFilterToUser, fromBlock, toBlock))
+          .filter(isEventLog);
 
         const notificationsRentalityEventHistory = await Promise.all(
           rentalityEventHistory.map(getNotificationFromRentalityEvent(tripInfos, claimInfos, isHost))
@@ -199,7 +209,8 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         addNotifications(notifications);
 
         await notificationService.removeAllListeners();
-        await notificationService.on(rentalityEventFilter, rentalityEventListener);
+        await notificationService.on(rentalityEventFilterFromUser, rentalityEventListener);
+        await notificationService.on(rentalityEventFilterToUser, rentalityEventListener);
       } catch (e) {
         console.error("initialLoading error:" + e);
       } finally {

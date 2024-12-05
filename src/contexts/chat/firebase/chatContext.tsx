@@ -420,17 +420,26 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         const chatInfos = await Promise.all(promisses);
         setChatInfos(chatInfos);
 
-        const rentalityEventFilter = rentalityNotificationService.filters.RentalityEvent(
+        const rentalityEventFilterFromUser = rentalityNotificationService.filters.RentalityEvent(
           null,
           null,
           null,
           [ethereumInfo.walletAddress],
+          null,
+          null
+        );
+        const rentalityEventFilterToUser = rentalityNotificationService.filters.RentalityEvent(
+          null,
+          null,
+          null,
+          null,
           [ethereumInfo.walletAddress],
           null
         );
 
         await rentalityNotificationService.removeAllListeners();
-        await rentalityNotificationService.on(rentalityEventFilter, rentalityEventListener);
+        await rentalityNotificationService.on(rentalityEventFilterFromUser, rentalityEventListener);
+        await rentalityNotificationService.on(rentalityEventFilterToUser, rentalityEventListener);
         setIsChatReloadRequire(false);
 
         const chatsRef = doc(chatDbInfo.db, chatDbInfo.collections.userchats, ethereumInfo.walletAddress);
