@@ -5,6 +5,7 @@ import { TripInsurance } from "@/model/insurance/model";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
+import { bigIntReplacer } from "@/utils/json";
 import moment from "moment";
 import { useCallback, useState } from "react";
 
@@ -64,6 +65,7 @@ export default function useHostInsurances() {
         if (insuranceData && insuranceData.length > 0) {
           validateContractInsuranceDTO(insuranceData[0]);
         }
+        console.log("insuranceData", JSON.stringify(insuranceData, bigIntReplacer, 2));
 
         const data: TripInsurance[] = insuranceData.map((i) => ({
           tripId: Number(i.tripId),
@@ -72,10 +74,7 @@ export default function useHostInsurances() {
               ? "For all trips"
               : `#${i.tripId} ${i.carBrand} ${i.carModel} ${i.carYear} ${dateRangeFormatShortMonthDateYear(new Date(), new Date())}`,
           insurance: {
-            type:
-              i.insuranceInfo.insuranceType === InsuranceType.General
-                ? "General Insurance ID"
-                : "One-Time trip insurance",
+            type: i.insuranceInfo.insuranceType,
             photos: [i.insuranceInfo.photo],
             companyName: i.insuranceInfo.companyName,
             policyNumber: i.insuranceInfo.policyNumber,
