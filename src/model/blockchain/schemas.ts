@@ -411,6 +411,7 @@ export type ContractCarDetails = {
   currentlyListed: boolean;
   locationInfo: ContractLocationInfo;
   carVinNumber: string;
+  carMetadataURI: string;
 };
 
 export type ContractFloridaTaxes = {
@@ -538,6 +539,7 @@ export type ContractInsuranceDTO = {
 export type ContractCarInfoWithInsurance = {
   carInfo: ContractCarInfo;
   insuranceInfo: ContractInsuranceCarInfo;
+  carMetadataURI: string;
 };
 
 export type TripStatus = bigint;

@@ -57,6 +57,7 @@ const emptyContractCarDetails: ContractCarDetails = {
   currentlyListed: false,
   locationInfo: emptyContractLocationInfo,
   carVinNumber: "",
+  carMetadataURI: "",
 };
 
 export function validateContractCarDetails(obj: ContractCarDetails): obj is ContractCarDetails {

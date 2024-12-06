@@ -30,8 +30,12 @@ const useFetchCarInfo = (carId: number) => {
           return emptyHostCarInfo;
         }
 
-        const tokenURI = await rentalityContract.getCarMetadataURI(carInfoDetails.carId);
-        return mapContractCarToCarDetails(carInfo.carInfo, carInfo.insuranceInfo, carInfoDetails, tokenURI);
+        return mapContractCarToCarDetails(
+          carInfo.carInfo,
+          carInfo.insuranceInfo,
+          carInfoDetails,
+          carInfo.carMetadataURI
+        );
       } catch (e) {
         console.error("getCarInfo error:" + e);
       }
