@@ -160,7 +160,7 @@ export default function CarEditForm({
         formData.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING ? formData.fullBatteryChargePrice : 0,
       timeBufferBetweenTripsInMin: formData.timeBufferBetweenTripsInMin,
       isGuestInsuranceRequired: formData.isGuestInsuranceRequired,
-      insurancePerDayPriceInUsd: formData.insurancePerDayPriceInUsd,
+      insurancePerDayPriceInUsd: formData.insurancePerDayPriceInUsd ?? 0,
       ownerAddress: initValue?.ownerAddress ?? "",
       wheelDrive: initValue?.wheelDrive ?? "",
       trunkSize: initValue?.trunkSize ?? "",
