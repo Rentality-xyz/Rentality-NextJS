@@ -71,9 +71,9 @@ jobs:
           INPUT_ENV_TEST_WALLETS_ADDRESSES: ${{ secrets.TEST_WALLETS_ADDRESSES }}
       - name: "Build Rentality App"
         run: make build
-#      - name: "Deploy to Firebase Demo"
-#        uses: FirebaseExtended/action-hosting-deploy@v0
-#        with:
-#          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_RENTALITY_NEXTJS }}"
-#          projectId: rentality-demo
-#          channelId: live
+      - name: "Deploy to Firebase Demo"
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_RENTALITY_NEXTJS }}"
+          projectId: rentality-demo
+          channelId: preview-1
