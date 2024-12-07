@@ -2,7 +2,7 @@ init-local:
 	git clone git@github.com:Rentality-xyz/Rentality-demo-contracts.git demo-rentality-web3-contracts
 	rm -rf demo-rentality-web3-contracts/.git
 
-	cp .env-nextjs.local demo-rentality-web3-contracts/.env
+	cp .env-contracts.local demo-rentality-web3-contracts/.env
 	cp .env-nextjs.local .env
 
 clean-local:
@@ -18,7 +18,7 @@ build:
 	cd demo-rentality-web3-contracts; \
 	export DOCKER_BUILDKIT=0 && docker build . --network rentality-build-network -t contracts-rentality:latest
 
-	cp -R demo-rentality-web3-contracts/src/abis/ src/abis
+	cp -r demo-rentality-web3-contracts/src/abis src/
 
 	export DOCKER_BUILDKIT=0 && docker build . --network rentality-build-network -t nextjs-rentality:latest
 
