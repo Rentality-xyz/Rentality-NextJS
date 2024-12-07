@@ -1,0 +1,76 @@
+name: Deploy to Demo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy_demo_website:
+    runs-on: ubuntu-latest
+    environment:
+      name: Demo
+    steps:
+      - name: "Checkout Contracts Repo"
+        uses: actions/checkout@v4
+        with:
+          repository: Rentality-xyz/Rentality-demo-contracts
+          ref: 'master'
+          sparse-checkout: |
+            contracts
+            scripts
+            src
+          path: "demo-rentality-web3-contracts"
+          token: ${{ secrets.RENTALITY_PAT }}
+      - name: "Generate environment"
+        uses: ozaytsev86/create-env-file@v2.0.0
+        with:
+          ENV_DEBUG: false,
+
+          ENV_NEXT_PUBLIC_DEFAULT_CHAIN_ID : ${{ vars.NEXT_PUBLIC_DEFAULT_CHAIN_ID }},
+          ENV_NEXT_PUBLIC_INCLUDE_LOCALNETS : ${{ vars.NEXT_PUBLIC_INCLUDE_LOCALNETS }},
+          ENV_NEXT_PUBLIC_INCLUDE_MAINNETS : ${{ vars.NEXT_PUBLIC_INCLUDE_MAINNETS }},
+          ENV_NEXT_PUBLIC_INCLUDE_TESTNETS: ${{ vars.NEXT_PUBLIC_INCLUDE_TESTNETS }},
+          ENV_NEXT_PUBLIC_SKIP_KYC_PAYMENT : ${{ vars.NEXT_PUBLIC_SKIP_KYC_PAYMENT }},
+          ENV_NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS : ${{ vars.NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS }},
+
+          ENV_CARAPI_SECRET: ${{ secrets.CARAPI_SECRET }}
+          ENV_CARAPI_TOKEN: ${{ secrets.CARAPI_TOKEN }}
+          ENV_CIVIC_CLIENT_ID: ${{ secrets.CIVIC_CLIENT_ID }}
+          ENV_CIVIC_CLIENT_SECRET: ${{ secrets.CIVIC_CLIENT_SECRET }}
+          ENV_CIVIC_USER_EMAIL: ${{ secrets.CIVIC_USER_EMAIL }}
+          ENV_CIVIC_USER_PASSWORD: ${{ secrets.CIVIC_USER_PASSWORD }}
+          ENV_MANAGER_PRIVATE_KEY: ${{ secrets.MANAGER_PRIVATE_KEY}}
+          ENV_NEXT_PUBLIC_CIVIC_GATEKEEPER_NETWORK: ${{ secrets.NEXT_PUBLIC_CIVIC_GATEKEEPER_NETWORK}}
+          ENV_NEXT_PUBLIC_COINBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_COINBASE_API_KEY }}
+          ENV_NEXT_PUBLIC_COINBASE_SCHEMA_ID: ${{ secrets.NEXT_PUBLIC_COINBASE_SCHEMA_ID }}
+          ENV_NEXT_PUBLIC_FB_PIXEL_ID: ${{ secrets.NEXT_PUBLIC_FB_PIXEL_ID }}
+          ENV_NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
+          ENV_NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
+          ENV_NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
+          ENV_NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}
+          ENV_NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
+          ENV_NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID}}
+          ENV_NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET }}
+          ENV_NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}}
+          ENV_NEXT_PUBLIC_HOTJAR_SITE_ID: ${{ secrets.NEXT_PUBLIC_HOTJAR_SITE_ID }}
+          ENV_NEXT_PUBLIC_HOTJAR_VERSION: ${{ secrets.NEXT_PUBLIC_HOTJAR_VERSION }}
+          ENV_NEXT_PUBLIC_PINATA_JWT: ${{ secrets.NEXT_PUBLIC_PINATA_JWT }}
+          ENV_NEXT_PUBLIC_PRIVY_APP_ID: ${{ secrets.NEXT_PUBLIC_PRIVY_APP_ID }}
+          ENV_PROVIDER_API_URL_11155111: ${{ secrets.PROVIDER_API_URL_11155111 }}
+          ENV_PROVIDER_API_URL_11155420: ${{ secrets.PROVIDER_API_URL_11155420 }}
+          ENV_PROVIDER_API_URL_1337: ${{ secrets.PROVIDER_API_URL_1337 }}
+          ENV_PROVIDER_API_URL_5611: ${{ secrets.PROVIDER_API_URL_5611}}
+          ENV_PROVIDER_API_URL_8453: ${{ secrets.PROVIDER_API_URL_8453}}
+          ENV_PROVIDER_API_URL_84532: ${{ secrets.PROVIDER_API_URL_84532 }}
+          ENV_SIGNER_PRIVATE_KEY: ${{ secrets.SIGNER_PRIVATE_KEY}}
+          ENV_TEST_WALLETS_ADDRESSES: ${{ secrets.TEST_WALLETS_ADDRESSES }}
+
+#      - name: "Build Rentality App"
+#        run: make build
+#      - name: "Deploy to Firebase Demo"
+#        uses: FirebaseExtended/action-hosting-deploy@v0
+#        with:
+#          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_RENTALITY_NEXTJS }}"
+#          projectId: rentality-demo
+#          channelId: live
