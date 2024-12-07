@@ -71,8 +71,12 @@ jobs:
           INPUT_ENV_TEST_WALLETS_ADDRESSES: ${{ secrets.TEST_WALLETS_ADDRESSES }}
       - name: "Build Rentality App"
         run: make build
+      - name: "Remove Contracts Repo"
+        run: rm -rf demo-rentality-web3-contracts
       - name: "Deploy to Firebase Demo"
         uses: FirebaseExtended/action-hosting-deploy@v0
+        env:
+          FIREBASE_CLI_EXPERIMENTS: webframeworks
         with:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_RENTALITY_NEXTJS }}"
           projectId: rentality-demo
