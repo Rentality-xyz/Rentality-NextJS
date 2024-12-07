@@ -22,18 +22,20 @@ jobs:
             src
           path: "demo-rentality-web3-contracts"
           token: ${{ secrets.RENTALITY_PAT }}
+      - name: "Setup Node"
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
       - name: "Generate environment"
         uses: ozaytsev86/create-env-file@v2.0.0
         with:
           ENV_DEBUG: false,
-
           ENV_NEXT_PUBLIC_DEFAULT_CHAIN_ID : ${{ vars.NEXT_PUBLIC_DEFAULT_CHAIN_ID }},
           ENV_NEXT_PUBLIC_INCLUDE_LOCALNETS : ${{ vars.NEXT_PUBLIC_INCLUDE_LOCALNETS }},
           ENV_NEXT_PUBLIC_INCLUDE_MAINNETS : ${{ vars.NEXT_PUBLIC_INCLUDE_MAINNETS }},
           ENV_NEXT_PUBLIC_INCLUDE_TESTNETS: ${{ vars.NEXT_PUBLIC_INCLUDE_TESTNETS }},
           ENV_NEXT_PUBLIC_SKIP_KYC_PAYMENT : ${{ vars.NEXT_PUBLIC_SKIP_KYC_PAYMENT }},
           ENV_NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS : ${{ vars.NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS }},
-
           ENV_CARAPI_SECRET: ${{ secrets.CARAPI_SECRET }}
           ENV_CARAPI_TOKEN: ${{ secrets.CARAPI_TOKEN }}
           ENV_CIVIC_CLIENT_ID: ${{ secrets.CIVIC_CLIENT_ID }}
@@ -65,9 +67,8 @@ jobs:
           ENV_PROVIDER_API_URL_84532: ${{ secrets.PROVIDER_API_URL_84532 }}
           ENV_SIGNER_PRIVATE_KEY: ${{ secrets.SIGNER_PRIVATE_KEY}}
           ENV_TEST_WALLETS_ADDRESSES: ${{ secrets.TEST_WALLETS_ADDRESSES }}
-
-#      - name: "Build Rentality App"
-#        run: make build
+      - name: "Build Rentality App"
+        run: make build
 #      - name: "Deploy to Firebase Demo"
 #        uses: FirebaseExtended/action-hosting-deploy@v0
 #        with:
