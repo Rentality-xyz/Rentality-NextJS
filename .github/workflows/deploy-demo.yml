@@ -70,12 +70,12 @@ jobs:
           ENVKEY_PROVIDER_API_URL_84532: ${{ secrets.PROVIDER_API_URL_84532 }}
           ENVKEY_SIGNER_PRIVATE_KEY: ${{ secrets.SIGNER_PRIVATE_KEY}}
           ENVKEY_TEST_WALLETS_ADDRESSES: ${{ secrets.TEST_WALLETS_ADDRESSES }}
-      - name: "Test"
-        run: cat .env
       - name: "Build Rentality App"
         run: make build
       - name: "Remove Contracts Repo"
         run: rm -rf demo-rentality-web3-contracts
+      - name: "Fix for Firebase deployment":
+        run: npm uninstall next && npm install next@13.4.7 && npm install firebase-frameworks
       - name: "Deploy to Firebase Demo"
         uses: FirebaseExtended/action-hosting-deploy@v0
         env:
