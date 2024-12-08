@@ -1,0 +1,86 @@
+name: Deploy to Prod
+
+on:
+  release:
+    branches:
+      - main
+
+jobs:
+  deploy_demo_website:
+    runs-on: ubuntu-latest
+    environment:
+      name: Production
+    steps:
+      - name: "Checkout Nextjs Repo"
+        uses: actions/checkout@master
+      - name: "Checkout Contracts Repo"
+        uses: actions/checkout@v4
+        with:
+          repository: Rentality-xyz/Rentality-demo-contracts
+          ref: 'main'
+          sparse-checkout: |
+            contracts
+            scripts
+            src
+          path: "demo-rentality-web3-contracts"
+          token: ${{ secrets.RENTALITY_PAT }}
+      - name: "Setup Node"
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: "Generate environment"
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          fail_on_empty: true
+          ENVKEY_DEBUG: false
+          ENVKEY_NEXT_PUBLIC_DEFAULT_CHAIN_ID: ${{ vars.NEXT_PUBLIC_DEFAULT_CHAIN_ID }}
+          ENVKEY_NEXT_PUBLIC_INCLUDE_LOCALNETS: ${{ vars.NEXT_PUBLIC_INCLUDE_LOCALNETS }}
+          ENVKEY_NEXT_PUBLIC_INCLUDE_MAINNETS: ${{ vars.NEXT_PUBLIC_INCLUDE_MAINNETS }}
+          ENVKEY_NEXT_PUBLIC_INCLUDE_TESTNETS: ${{ vars.NEXT_PUBLIC_INCLUDE_TESTNETS }}
+          ENVKEY_NEXT_PUBLIC_SKIP_KYC_PAYMENT: ${{ vars.NEXT_PUBLIC_SKIP_KYC_PAYMENT }}
+          ENVKEY_NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS: ${{ vars.NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS }}
+          ENVKEY_CARAPI_SECRET: ${{ secrets.CARAPI_SECRET }}
+          ENVKEY_CARAPI_TOKEN: ${{ secrets.CARAPI_TOKEN }}
+          ENVKEY_CIVIC_CLIENT_ID: ${{ secrets.CIVIC_CLIENT_ID }}
+          ENVKEY_CIVIC_CLIENT_SECRET: ${{ secrets.CIVIC_CLIENT_SECRET }}
+          ENVKEY_CIVIC_USER_EMAIL: ${{ secrets.CIVIC_USER_EMAIL }}
+          ENVKEY_CIVIC_USER_PASSWORD: ${{ secrets.CIVIC_USER_PASSWORD }}
+          ENVKEY_MANAGER_PRIVATE_KEY: ${{ secrets.MANAGER_PRIVATE_KEY}}
+          ENVKEY_NEXT_PUBLIC_CIVIC_GATEKEEPER_NETWORK: ${{ secrets.NEXT_PUBLIC_CIVIC_GATEKEEPER_NETWORK}}
+          ENVKEY_NEXT_PUBLIC_COINBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_COINBASE_API_KEY }}
+          ENVKEY_NEXT_PUBLIC_COINBASE_SCHEMA_ID: ${{ secrets.NEXT_PUBLIC_COINBASE_SCHEMA_ID }}
+          ENVKEY_NEXT_PUBLIC_FB_PIXEL_ID: ${{ secrets.NEXT_PUBLIC_FB_PIXEL_ID }}
+          ENVKEY_NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
+          ENVKEY_NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
+          ENVKEY_NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
+          ENVKEY_NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}
+          ENVKEY_NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
+          ENVKEY_NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID}}
+          ENVKEY_NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET }}
+          ENVKEY_NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}}
+          ENVKEY_NEXT_PUBLIC_HOTJAR_SITE_ID: ${{ secrets.NEXT_PUBLIC_HOTJAR_SITE_ID }}
+          ENVKEY_NEXT_PUBLIC_HOTJAR_VERSION: ${{ secrets.NEXT_PUBLIC_HOTJAR_VERSION }}
+          ENVKEY_NEXT_PUBLIC_PINATA_JWT: ${{ secrets.NEXT_PUBLIC_PINATA_JWT }}
+          ENVKEY_NEXT_PUBLIC_PRIVY_APP_ID: ${{ secrets.NEXT_PUBLIC_PRIVY_APP_ID }}
+          ENVKEY_PROVIDER_API_URL_11155111: ${{ secrets.PROVIDER_API_URL_11155111 }}
+          ENVKEY_PROVIDER_API_URL_11155420: ${{ secrets.PROVIDER_API_URL_11155420 }}
+          ENVKEY_PROVIDER_API_URL_1337: ${{ secrets.PROVIDER_API_URL_1337 }}
+          ENVKEY_PROVIDER_API_URL_5611: ${{ secrets.PROVIDER_API_URL_5611}}
+          ENVKEY_PROVIDER_API_URL_8453: ${{ secrets.PROVIDER_API_URL_8453}}
+          ENVKEY_PROVIDER_API_URL_84532: ${{ secrets.PROVIDER_API_URL_84532 }}
+          ENVKEY_SIGNER_PRIVATE_KEY: ${{ secrets.SIGNER_PRIVATE_KEY}}
+          ENVKEY_TEST_WALLETS_ADDRESSES: ${{ secrets.TEST_WALLETS_ADDRESSES }}
+      - name: "Build Rentality App"
+        run: make build
+      - name: "Remove Contracts Repo"
+        run: rm -rf demo-rentality-web3-contracts
+      - name: "Fix for Firebase deployment"
+        run: npm install firebase-frameworks
+      - name: "Deploy to Firebase Demo"
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        env:
+          FIREBASE_CLI_EXPERIMENTS: webframeworks
+        with:
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_RENTALITY_NEXTJS_PRD }}"
+          projectId: Rentality-App
+          channelId: preview-1
