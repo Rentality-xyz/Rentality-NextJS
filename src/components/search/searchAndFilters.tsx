@@ -61,7 +61,7 @@ export default function SearchAndFilters({
 
   const sortOption: Record<string, string> = t("search_and_filters.sort_options", {
     returnObjects: true,
-  });
+  }) as Record<string, string>;
 
   function isSortOptionKey(key: PropertyKey): key is SortOptionKey {
     return sortOption.hasOwnProperty(key);
