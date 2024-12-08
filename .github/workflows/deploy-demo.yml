@@ -71,6 +71,8 @@ jobs:
           ENV_PROVIDER_API_URL_84532: ${{ secrets.PROVIDER_API_URL_84532 }}
           ENV_SIGNER_PRIVATE_KEY: ${{ secrets.SIGNER_PRIVATE_KEY}}
           ENV_TEST_WALLETS_ADDRESSES: ${{ secrets.TEST_WALLETS_ADDRESSES }}
+      - name: "Test"
+        run: cat .env
       - name: "Build Rentality App"
         run: make build
       - name: "Remove Contracts Repo"
