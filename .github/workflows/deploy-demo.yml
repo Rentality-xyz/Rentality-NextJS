@@ -29,7 +29,7 @@ jobs:
         with:
           node-version: '20'
       - name: "Generate environment"
-        uses: ozaytsev86/create-env-file@v1
+        uses: SpicyPizza/create-envfile@v2.0
         with:
           INPUT_ENV_DEBUG: false,
           INPUT_ENV_NEXT_PUBLIC_DEFAULT_CHAIN_ID : ${{ vars.NEXT_PUBLIC_DEFAULT_CHAIN_ID }},
