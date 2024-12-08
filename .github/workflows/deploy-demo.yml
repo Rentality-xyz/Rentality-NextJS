@@ -72,7 +72,7 @@ jobs:
           ENV_SIGNER_PRIVATE_KEY: ${{ secrets.SIGNER_PRIVATE_KEY}}
           ENV_TEST_WALLETS_ADDRESSES: ${{ secrets.TEST_WALLETS_ADDRESSES }}
       - name: "Test"
-        run: ls
+        run: ls -la
       - name: "Build Rentality App"
         run: make build
       - name: "Remove Contracts Repo"
