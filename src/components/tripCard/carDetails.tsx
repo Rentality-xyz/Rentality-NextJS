@@ -8,7 +8,7 @@ import RntButtonTransparent from "../common/rntButtonTransparent";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import CarDetailsVerificationDialog from "./CarDetailsVerificationDialog";
 
-function СarDetails({
+function CarDetails({
   tripInfo,
   isHost,
   t,
@@ -91,4 +91,4 @@ function СarDetails({
   );
 }
 
-export default memo(СarDetails);
+export default memo(CarDetails);

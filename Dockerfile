@@ -12,7 +12,7 @@ WORKDIR /home/app
 
 COPY . .
 
-RUN npm install && npm run build
+RUN npm ci && npm run build
 
 EXPOSE 3000
 
