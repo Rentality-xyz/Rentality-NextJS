@@ -20,6 +20,22 @@ if exist .env.backup (
 	echo Creating backup env file 
 	ren .env .env.backup 
 )
+if exist .env.production.backup (	 
+	echo %ESC%[91mFile .env.production.backup already exists. Maybe some deployment script runs in parallel!!!%ESC%[0m 
+	pause
+    exit /B 0    
+) else (
+	echo Creating backup env.production file 
+	ren .env.production .env.production.backup 
+)
+if exist .env.production.local.backup (	 
+	echo %ESC%[91mFile .env.production.local.backup already exists. Maybe some deployment script runs in parallel!!!%ESC%[0m 
+	pause
+    exit /B 0    
+) else (
+	echo Creating backup env.production.local file 
+	ren .env.production.local .env.production.local.backup 
+)
 
 set PROJECT_ENV_FILENANE=.env.%PROJECT_ID%.local
 echo Coping "deploy\%PROJECT_ENV_FILENANE%" to ".env" ...
@@ -32,11 +48,15 @@ if exist .env.backup (
 	echo Returning backup env file...
 	del .env 
 	ren .env.backup .env 
-) else ( 
-	echo %ESC%[91mFile .env.backup already isn't exist!!!%ESC%[0m 
-	pause
-    exit /B 0
-)
+) 
+if exist .env.production.backup ( 
+	echo Returning backup env.production file...
+	ren .env.production.backup .env.production
+)  
+if exist .env.production.local.backup ( 
+	echo Returning backup env.production.local file...
+	ren .env.production.local.backup .env.production.local
+) 
 
 echo:
 echo %PROJECT_ID% deployed successfully
