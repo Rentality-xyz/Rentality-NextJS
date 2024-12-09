@@ -4,6 +4,8 @@ import { Avatar } from "@mui/material";
 import { useMemo } from "react";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { getEngineTypeString } from "@/model/EngineType";
+import Image from "next/image";
+import MenuIcons, { getImageForMenu } from "../sideNavMenu/menuIcons";
 
 type TFunction = (key: string, options?: { [key: string]: any }) => string;
 
@@ -106,6 +108,10 @@ export default function CarSearchItem({
               <span>{t_item("price_without_taxes")}</span>
               <span className="ml-8">${displayMoneyWith2Digits(searchInfo.totalPriceWithDiscount)}</span>
             </div>
+
+            {searchInfo.isInsuranceRequired && (
+              <p className="mt-4 text-rentality-secondary">{t_item("insurance_required")}</p>
+            )}
           </div>
           <div className="flex w-auto flex-col">
             <div>- {getEngineTypeString(searchInfo.engineType)}</div>
@@ -128,7 +134,9 @@ export default function CarSearchItem({
               <span className="max-md:ml-4">${displayMoneyWith2Digits(searchInfo.securityDeposit)}</span>
               {searchInfo.isInsuranceRequired && (
                 <>
-                  <span>{t_item("insurance")}</span>
+                  <span>
+                    <Image src={getImageForMenu(MenuIcons.Insurance)} width={20} height={20} alt="" />
+                  </span>
                   <span className="max-md:ml-4">${displayMoneyWith2Digits(insurancePriceTotal)}</span>
                 </>
               )}
@@ -147,9 +155,6 @@ export default function CarSearchItem({
             <div className="ml-2 sm:ml-8" onClick={handleInfoClick}>
               <i className="fi fi-rs-info text-2xl text-rentality-secondary"></i>
             </div>
-            {searchInfo.isInsuranceRequired && (
-              <div className="mx-4 pb-1 text-sm text-rentality-secondary">{t_item("insurance_required")}</div>
-            )}
           </div>
           <RntButton
             className="h-14 w-44 text-base"
