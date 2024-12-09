@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  check_pr:
+  check_pr_production:
     runs-on: ubuntu-latest
     environment:
       name: Production
