@@ -1,12 +1,12 @@
 name: Deploy to Prod
 
 on:
-  release:
+  pull_request:
     branches:
       - main
 
 jobs:
-  deploy_demo_website:
+  check_pr:
     runs-on: ubuntu-latest
     environment:
       name: Production
@@ -72,15 +72,3 @@ jobs:
           ENVKEY_TEST_WALLETS_ADDRESSES: ${{ secrets.TEST_WALLETS_ADDRESSES }}
       - name: "Build Rentality App"
         run: make build
-      - name: "Remove Contracts Repo"
-        run: rm -rf demo-rentality-web3-contracts
-      - name: "Fix for Firebase deployment"
-        run: npm install firebase-frameworks && npm install firebase-tools
-      - name: "Deploy to Firebase Demo"
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        env:
-          FIREBASE_CLI_EXPERIMENTS: webframeworks
-        with:
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_RENTALITY_NEXTJS_PRD }}"
-          projectId: Rentality-App
-          channelId: preview-1
