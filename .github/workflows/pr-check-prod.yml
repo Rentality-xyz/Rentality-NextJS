@@ -1,4 +1,4 @@
-name: Deploy to Prod
+name: Check PR Prod
 
 on:
   pull_request:
