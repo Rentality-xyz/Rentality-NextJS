@@ -82,7 +82,7 @@ const useGuestInsurance = () => {
         }
         const insurancesView: ContractInsuranceInfo[] = await rentalityContract.getMyInsurancesAsGuest();
 
-        const generalInsurances = insurancesView.filter((i) => i.insuranceType === InsuranceType.General);
+        const generalInsurances = [...insurancesView.filter((i) => i.insuranceType === InsuranceType.General)];
         if (generalInsurances.length === 0) return { photo: "" };
 
         generalInsurances.sort((a, b) => {
