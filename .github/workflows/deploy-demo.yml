@@ -75,7 +75,7 @@ jobs:
       - name: "Remove Contracts Repo"
         run: rm -rf demo-rentality-web3-contracts
       - name: "Fix for Firebase deployment"
-        run: npm install firebase-frameworks
+        run: npm install firebase-frameworks && npm install firebase-tools
       - name: "Deploy to Firebase Demo"
         uses: FirebaseExtended/action-hosting-deploy@v0
         env:
