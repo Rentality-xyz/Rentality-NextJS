@@ -47,6 +47,25 @@ export function UserInsurance() {
     await saveInsurance(formData.userInsurancePhoto);
   }
 
+  async function handlePhotoDelete() {
+    const action = (
+      <>
+        {DialogActions.Button(t("common.confirm"), async (e) => {
+          if ("disabled" in e.target) {
+            e.target.disabled = true;
+          }
+          await saveInsurance({ url: "", isDeleted: true });
+          hideDialogs();
+          if ("disabled" in e.target) {
+            e.target.disabled = false;
+          }
+        })}
+        {DialogActions.Cancel(hideDialogs)}
+      </>
+    );
+    showDialog(t("profile.user_insurance.confirm_deletion"), action);
+  }
+
   async function saveInsurance(insurancePhoto: PlatformFile) {
     showInfo(t("common.info.sign"));
     const result = await saveGuestInsurance(insurancePhoto);
@@ -89,6 +108,7 @@ export function UserInsurance() {
               onInsurancePhotoChanged={(newValue) => {
                 field.onChange(newValue);
               }}
+              onDelete={handlePhotoDelete}
             />
             <RntValidationError validationError={errors.userInsurancePhoto?.message?.toString()} />
           </>

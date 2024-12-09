@@ -9,9 +9,11 @@ import { useTranslation } from "react-i18next";
 export function UserInsurancePhoto({
   insurancePhoto: photo,
   onInsurancePhotoChanged: onPhotoChanged,
+  onDelete,
 }: {
   insurancePhoto?: PlatformFile;
   onInsurancePhotoChanged: (newValue: PlatformFile) => void;
+  onDelete?: () => Promise<void>;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
@@ -55,9 +57,14 @@ export function UserInsurancePhoto({
     inputRef.current?.click();
   }
 
-  function handleDeleteClick() {
+  async function handleDeleteClick() {
     if (!photo) return;
-    onPhotoChanged({ url: "", isDeleted: true });
+
+    if (onDelete !== undefined && "url" in photo && !isEmpty(photo.url)) {
+      await onDelete();
+    } else {
+      onPhotoChanged({ url: "", isDeleted: true });
+    }
   }
 
   return (
