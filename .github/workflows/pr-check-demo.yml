@@ -1,4 +1,4 @@
-name: Deploy to Demo
+name: Check PR Demo
 
 on:
   pull_request:
