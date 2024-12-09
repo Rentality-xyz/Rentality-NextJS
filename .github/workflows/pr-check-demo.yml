@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  check_pr:
+  check_pr_demo:
     runs-on: ubuntu-latest
     environment:
       name: Demo
