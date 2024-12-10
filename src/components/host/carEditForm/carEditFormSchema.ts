@@ -23,7 +23,6 @@ const insuranceFormSchema = z
       isGuestInsuranceRequired: z.literal(false),
       insurancePerDayPriceInUsd: z
         .number({
-          required_error: "Value is required",
           invalid_type_error: "value must be a number",
         })
         .optional(),

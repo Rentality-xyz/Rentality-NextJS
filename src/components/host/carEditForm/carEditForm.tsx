@@ -92,7 +92,7 @@ export default function CarEditForm({
             timeBufferBetweenTripsInMin: initValue.timeBufferBetweenTripsInMin,
             currentlyListed: initValue.currentlyListed,
           }
-        : { carId: 0, isLocationEdited: true, currentlyListed: true, images: [] },
+        : { carId: 0, isLocationEdited: true, currentlyListed: true, images: [], isGuestInsuranceRequired: false },
     resolver: zodResolver(carEditFormSchema),
   });
   const { errors, isSubmitting } = formState;
