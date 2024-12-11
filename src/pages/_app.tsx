@@ -22,6 +22,7 @@ import { env } from "@/utils/env";
 import Layout from "@/components/layout/layout";
 import { initEruda, initHotjar } from "@/utils/init";
 import FacebookPixelScript from "@/components/marketing/FacebookPixelScript";
+import PlatformInitChecker from "@/components/common/PlatformInitChecker";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -55,9 +56,11 @@ export default function App({ Component, pageProps }: AppProps) {
                     <FirebaseChatProvider>
                       <AppContextProvider>
                         <RntDialogsProvider>
-                          <Layout>
-                            <Component {...pageProps} />
-                          </Layout>
+                          <PlatformInitChecker>
+                            <Layout>
+                              <Component {...pageProps} />
+                            </Layout>
+                          </PlatformInitChecker>
                         </RntDialogsProvider>
                       </AppContextProvider>
                     </FirebaseChatProvider>
