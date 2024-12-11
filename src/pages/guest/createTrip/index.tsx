@@ -157,6 +157,7 @@ export default function CreateTrip() {
           <RntTripRulesModal buttonClassName="w-full" />
           <RntButtonTransparent
             className="w-full text-lg text-rentality-secondary"
+            disabled={true}
             onClick={handlePreAgreementDetailsClick}
           >
             {t("create_trip.pre_agreement_details")}
