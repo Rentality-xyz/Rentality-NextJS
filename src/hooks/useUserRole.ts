@@ -5,7 +5,7 @@ export type ROLE = "Guest" | "Host";
 
 const useUserRole = () => {
   const rentalityContract = useRentality();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [userRole, setUserRole] = useState<ROLE>("Guest");
 
   useEffect(() => {

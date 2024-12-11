@@ -2,7 +2,7 @@ import Loading from "./Loading";
 
 interface RntSuspenseProps {
   children: React.ReactNode;
-  isLoading?: Boolean;
+  isLoading?: boolean;
   fallback?: React.ReactNode;
 }
 

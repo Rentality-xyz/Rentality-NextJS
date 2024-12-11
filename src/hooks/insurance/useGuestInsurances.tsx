@@ -76,10 +76,7 @@ export default function useGuestInsurances() {
               ? "For all trips"
               : `#${i.tripId} ${i.carBrand} ${i.carModel} ${i.carYear} ${dateRangeFormatShortMonthDateYear(new Date(), new Date())}`,
           insurance: {
-            type:
-              i.insuranceInfo.insuranceType === InsuranceType.General
-                ? "General Insurance ID"
-                : "One-Time trip insurance",
+            type: i.insuranceInfo.insuranceType,
             photos: [i.insuranceInfo.photo],
             companyName: i.insuranceInfo.companyName,
             policyNumber: i.insuranceInfo.policyNumber,

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
@@ -6,51 +6,72 @@ import { ContractInsuranceInfo, ContractSaveInsuranceRequest, InsuranceType } fr
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { GuestGeneralInsurance } from "@/model/GuestInsurance";
-import { FileToUpload } from "@/model/FileToUpload";
+import { PlatformFile } from "@/model/FileToUpload";
 import { bigIntReplacer } from "@/utils/json";
 import { getIpfsURI } from "@/utils/ipfsUtils";
+import { Err, Ok, Result } from "@/model/utils/result";
 
 const useGuestInsurance = () => {
   const rentalityContract = useRentality();
   const ethereumInfo = useEthereum();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isUpdateRequired, setIsUpdateRequired] = useState<boolean>(true);
   const [guestInsurance, setGuestInsurance] = useState<GuestGeneralInsurance>({ photo: "" });
 
-  const saveGuestInsurance = async (file: FileToUpload) => {
-    if (!rentalityContract) {
-      console.error("saveGuestInsurance: rentalityContract is null");
-      return false;
-    }
-
-    try {
-      const response = await uploadFileToIPFS(file.file, "RentalityGuestInsurance", {
-        createdAt: new Date().toISOString(),
-        createdBy: ethereumInfo?.walletAddress ?? "",
-        version: SMARTCONTRACT_VERSION,
-        chainId: ethereumInfo?.chainId ?? 0,
-      });
-
-      if (!response.success || !response.pinataURL) {
-        throw new Error("Uploaded image to Pinata error");
+  const saveGuestInsurance = useCallback(
+    async (file: PlatformFile): Promise<Result<boolean, string>> => {
+      if (!rentalityContract) {
+        console.error("saveGuestInsurance: rentalityContract is null");
+        return Err("rentalityContract is null");
+      }
+      if (!("file" in file) && !file.isDeleted) {
+        console.error("Only add new file or delete existing is allowed");
+        return Err("Only add new file or delete existing is allowed");
       }
 
-      const insuranceInfo: ContractSaveInsuranceRequest = {
-        companyName: "",
-        policyNumber: "",
-        photo: response.pinataURL,
-        comment: "",
-        insuranceType: InsuranceType.General,
-      };
+      let insuranceInfo: ContractSaveInsuranceRequest;
 
-      console.log("insuranceInfo", JSON.stringify(insuranceInfo, bigIntReplacer, 2));
-      const transaction = await rentalityContract.saveGuestInsurance(insuranceInfo);
-      await transaction.wait();
-      return true;
-    } catch (e) {
-      console.error("saveGuestInsurance error:" + e);
-      return false;
-    }
-  };
+      try {
+        if ("file" in file) {
+          const response = await uploadFileToIPFS(file.file, "RentalityGuestInsurance", {
+            createdAt: new Date().toISOString(),
+            createdBy: ethereumInfo?.walletAddress ?? "",
+            version: SMARTCONTRACT_VERSION,
+            chainId: ethereumInfo?.chainId ?? 0,
+          });
+
+          if (!response.success || !response.pinataURL) {
+            throw new Error("Uploaded image to Pinata error");
+          }
+          insuranceInfo = {
+            companyName: "",
+            policyNumber: "",
+            photo: response.pinataURL,
+            comment: "",
+            insuranceType: InsuranceType.General,
+          };
+        } else {
+          insuranceInfo = {
+            companyName: "",
+            policyNumber: "",
+            photo: "",
+            comment: "",
+            insuranceType: InsuranceType.None,
+          };
+        }
+
+        console.debug("insuranceInfo", JSON.stringify(insuranceInfo, bigIntReplacer, 2));
+        const transaction = await rentalityContract.saveGuestInsurance(insuranceInfo);
+        await transaction.wait();
+        setIsUpdateRequired(true);
+        return Ok(true);
+      } catch (e) {
+        console.error("saveGuestInsurance error:" + e);
+        return Err("saveGuestInsurance error:" + e);
+      }
+    },
+    [ethereumInfo, rentalityContract]
+  );
 
   useEffect(() => {
     const getGuestInsurance = async (rentalityContract: IRentalityContract): Promise<GuestGeneralInsurance> => {
@@ -61,7 +82,7 @@ const useGuestInsurance = () => {
         }
         const insurancesView: ContractInsuranceInfo[] = await rentalityContract.getMyInsurancesAsGuest();
 
-        const generalInsurances = insurancesView.filter((i) => i.insuranceType === InsuranceType.General);
+        const generalInsurances = [...insurancesView.filter((i) => i.insuranceType === InsuranceType.General)];
         if (generalInsurances.length === 0) return { photo: "" };
 
         generalInsurances.sort((a, b) => {
@@ -75,6 +96,7 @@ const useGuestInsurance = () => {
     };
 
     if (!rentalityContract) return;
+    if (!isUpdateRequired) return;
 
     setIsLoading(true);
 
@@ -82,8 +104,11 @@ const useGuestInsurance = () => {
       .then((data) => {
         setGuestInsurance(data);
       })
-      .finally(() => setIsLoading(false));
-  }, [rentalityContract]);
+      .finally(() => {
+        setIsLoading(false);
+        setIsUpdateRequired(false);
+      });
+  }, [rentalityContract, isUpdateRequired]);
 
   return {
     isLoading,

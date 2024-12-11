@@ -6,14 +6,17 @@ import Loading from "../common/Loading";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
-import useGuestInsurance from "@/hooks/guest/useGuestInsurance";
-import { useRntSnackbars } from "@/contexts/rntDialogsContext";
+import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { isEmpty } from "@/utils/string";
 import { UserInsurancePhoto } from "./UserInsurancePhoto";
 import { userInsuranceFormSchema, UserInsuranceFormValues } from "./userInsuranceFormSchema";
+import useGuestInsurance from "@/hooks/guest/useGuestInsurance";
+import { PlatformFile } from "@/model/FileToUpload";
+import { DialogActions } from "@/utils/dialogActions";
 
 export function UserInsurance() {
   const { isLoading, guestInsurance, saveGuestInsurance } = useGuestInsurance();
+  const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { handleSubmit, formState, control, setValue, watch } = useForm<UserInsuranceFormValues>({
     defaultValues: {},
@@ -25,26 +28,60 @@ export function UserInsurance() {
   const userInsurancePhoto = watch("userInsurancePhoto");
 
   async function onFormSubmit(formData: UserInsuranceFormValues) {
-    if (!("file" in formData.userInsurancePhoto)) return;
+    if (!("file" in formData.userInsurancePhoto) && !formData.userInsurancePhoto.isDeleted) return;
 
-    try {
-      showInfo(t("common.info.sign"));
-
-      const result = await saveGuestInsurance(formData.userInsurancePhoto);
-      hideSnackbars();
-
-      if (!result) {
-        throw new Error("Save Guest Insurance info error");
-      }
-      showInfo(t("common.info.success"));
-    } catch (e) {
-      console.error("handleSubmit error:" + e);
-      showError(t("profile.save_err"));
+    if ("isDeleted" in formData.userInsurancePhoto && formData.userInsurancePhoto.isDeleted) {
+      const action = (
+        <>
+          {DialogActions.Button(t("common.confirm"), async () => {
+            await saveInsurance(formData.userInsurancePhoto);
+            hideDialogs();
+          })}
+          {DialogActions.Cancel(hideDialogs)}
+        </>
+      );
+      showDialog(t("profile.user_insurance.confirm_deletion"), action);
       return;
+    }
+
+    await saveInsurance(formData.userInsurancePhoto);
+  }
+
+  async function handlePhotoDelete() {
+    const action = (
+      <>
+        {DialogActions.Button(t("common.confirm"), async (e) => {
+          if ("disabled" in e.target) {
+            e.target.disabled = true;
+          }
+          await saveInsurance({ url: "", isDeleted: true });
+          hideDialogs();
+          if ("disabled" in e.target) {
+            e.target.disabled = false;
+          }
+        })}
+        {DialogActions.Cancel(hideDialogs)}
+      </>
+    );
+    showDialog(t("profile.user_insurance.confirm_deletion"), action);
+  }
+
+  async function saveInsurance(insurancePhoto: PlatformFile) {
+    showInfo(t("common.info.sign"));
+    const result = await saveGuestInsurance(insurancePhoto);
+    hideSnackbars();
+
+    if (!result.ok) {
+      console.error("saveInsurance error: Save Guest Insurance info error");
+      showError(t("profile.save_err"));
+    } else {
+      showInfo(t("common.info.success"));
     }
   }
 
-  function handleInfoClick() {}
+  function handleInfoClick() {
+    showDialog(t("profile.user_insurance.insurance_info"));
+  }
 
   useEffect(() => {
     setValue("userInsurancePhoto", { url: guestInsurance.photo });
@@ -71,6 +108,7 @@ export function UserInsurance() {
               onInsurancePhotoChanged={(newValue) => {
                 field.onChange(newValue);
               }}
+              onDelete={handlePhotoDelete}
             />
             <RntValidationError validationError={errors.userInsurancePhoto?.message?.toString()} />
           </>

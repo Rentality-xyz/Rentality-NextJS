@@ -68,6 +68,7 @@ export type SearchCarInfo = {
   isTestCar: boolean;
   isInsuranceRequired: boolean;
   insurancePerDayPriceInUsd: number;
+  isGuestHasInsurance: boolean;
   distanceToUser: number;
 };
 
@@ -78,7 +79,6 @@ export type SearchCarInfoDetails = SearchCarInfo & {
   tripDiscounts: TripDiscountsFormValues;
   salesTax: number;
   governmentTax: number;
-  isGuestHasInsurance: boolean;
 };
 
 const emptySearchCarRequest: SearchCarRequest = {

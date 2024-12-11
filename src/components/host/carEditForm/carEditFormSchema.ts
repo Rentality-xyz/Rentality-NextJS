@@ -17,6 +17,30 @@ const carFileFormSchema = z.union([
   }),
 ]);
 
+const insuranceFormSchema = z
+  .union([
+    z.object({
+      isGuestInsuranceRequired: z.literal(false),
+      insurancePerDayPriceInUsd: z
+        .number({
+          invalid_type_error: "value must be a number",
+        })
+        .optional(),
+    }),
+    z.object({
+      isGuestInsuranceRequired: z.literal(true),
+      insurancePerDayPriceInUsd: z
+        .number({
+          required_error: "Value is required",
+          invalid_type_error: "value must be a number",
+        })
+        .min(1, "Price is too small")
+        .max(10_000, "Price is too big")
+        .step(0.01, "only 2 decimals are allowed"),
+    }),
+  ])
+  .default({ isGuestInsuranceRequired: false });
+
 const locationInfoFormSchema = z.object({
   address: z.string().trim().min(1, "Address is too short"),
   country: z.string().trim().min(1, "Country is too small"),
@@ -41,98 +65,96 @@ const locationInfoFormSchema = z.object({
   timeZoneId: z.string().trim(),
 });
 
-const defaultCarEditFormSchema = z.object({
-  carId: z
-    .number({
-      required_error: "carId is required",
-      invalid_type_error: "carId must be a number",
-    })
-    .optional(),
+const defaultCarEditFormSchema = z
+  .object({
+    carId: z
+      .number({
+        required_error: "carId is required",
+        invalid_type_error: "carId must be a number",
+      })
+      .optional(),
 
-  vinNumber: z.string().trim().min(1, "Vin number is too short").max(17, "Vin number is too long"),
-  brand: z.string().trim().min(1, "Brand is too short").max(30, "Brand is too long"),
-  model: z.string().trim().min(1, "Model is too short").max(30, "Model is too long"),
-  releaseYear: z
-    .number({
-      required_error: "Release year is required",
-      invalid_type_error: "Release year must be a number",
-    })
-    .min(1900, "Release year is too small")
-    .max(2100, "Release year is too big")
-    .int("Release year must be an integer"),
+    vinNumber: z.string().trim().min(1, "Vin number is too short").max(17, "Vin number is too long"),
+    brand: z.string().trim().min(1, "Brand is too short").max(30, "Brand is too long"),
+    model: z.string().trim().min(1, "Model is too short").max(30, "Model is too long"),
+    releaseYear: z
+      .number({
+        required_error: "Release year is required",
+        invalid_type_error: "Release year must be a number",
+      })
+      .min(1900, "Release year is too small")
+      .max(2100, "Release year is too big")
+      .int("Release year must be an integer"),
 
-  images: z.array(carFileFormSchema).min(1, "Please, download an image"),
+    images: z.array(carFileFormSchema).min(1, "Please, download an image"),
 
-  name: z.string().trim().min(1, "Name is too short").max(25, "Name is too long"),
-  licensePlate: z.string().trim().min(1, "License plate is too short").max(15, "License plate is too long"),
-  licenseState: z.string().trim().min(1, "License state is too short").max(50, "License state is too long"),
-  engineTypeText: z.union([z.literal(ENGINE_TYPE_PETROL_STRING), z.literal(ENGINE_TYPE_ELECTRIC_STRING)]),
-  seatsNumber: z
-    .number({
-      required_error: "Seats number is required",
-      invalid_type_error: "Seats number must be a number",
-    })
-    .min(1, "Seats number is too small")
-    .max(20, "Seats number is too big")
-    .int("Seats number must be an integer"),
-  doorsNumber: z
-    .number({
-      required_error: "Doors number is required",
-      invalid_type_error: "Doors number must be a number",
-    })
-    .min(1, "Doors number is too small")
-    .max(5, "Doors number is too big")
-    .int("Doors number must be an integer"),
-  transmission: z.union([z.literal(TRANSMISSION_MANUAL_STRING), z.literal(TRANSMISSION_AUTOMATIC_STRING)]),
-  color: z
-    .string()
-    .trim()
-    .min(1, "Color is too short")
-    .max(15, "Color is too long")
-    .regex(new RegExp(/^[\w- ]+$/), "Color contains invalid characters"),
+    name: z.string().trim().min(1, "Name is too short").max(25, "Name is too long"),
+    licensePlate: z.string().trim().min(1, "License plate is too short").max(15, "License plate is too long"),
+    licenseState: z.string().trim().min(1, "License state is too short").max(50, "License state is too long"),
+    engineTypeText: z.union([z.literal(ENGINE_TYPE_PETROL_STRING), z.literal(ENGINE_TYPE_ELECTRIC_STRING)]),
+    seatsNumber: z
+      .number({
+        required_error: "Seats number is required",
+        invalid_type_error: "Seats number must be a number",
+      })
+      .min(1, "Seats number is too small")
+      .max(20, "Seats number is too big")
+      .int("Seats number must be an integer"),
+    doorsNumber: z
+      .number({
+        required_error: "Doors number is required",
+        invalid_type_error: "Doors number must be a number",
+      })
+      .min(1, "Doors number is too small")
+      .max(5, "Doors number is too big")
+      .int("Doors number must be an integer"),
+    transmission: z.union([z.literal(TRANSMISSION_MANUAL_STRING), z.literal(TRANSMISSION_AUTOMATIC_STRING)]),
+    color: z
+      .string()
+      .trim()
+      .min(1, "Color is too short")
+      .max(15, "Color is too long")
+      .regex(new RegExp(/^[\w- ]+$/), "Color contains invalid characters"),
 
-  description: z.string().trim().min(1, "Description is too short").max(500, "Description is too long"),
+    description: z.string().trim().min(1, "Description is too short").max(500, "Description is too long"),
 
-  isLocationEdited: z.boolean().default(true),
-  locationInfo: locationInfoFormSchema.default(emptyLocationInfo),
-  milesIncludedPerDay: z
-    .number({
-      required_error: "Miles included is required",
-      invalid_type_error: "Miles included must be a number",
-    })
-    .min(1, "Miles included is too small")
-    .max(700, "Miles included is too big")
-    .int("Miles included must be an integer")
-    .or(z.literal(UNLIMITED_MILES_VALUE_TEXT)),
+    isLocationEdited: z.boolean().default(true),
+    locationInfo: locationInfoFormSchema.default(emptyLocationInfo),
+    milesIncludedPerDay: z
+      .number({
+        required_error: "Miles included is required",
+        invalid_type_error: "Miles included must be a number",
+      })
+      .min(1, "Miles included is too small")
+      .max(700, "Miles included is too big")
+      .int("Miles included must be an integer")
+      .or(z.literal(UNLIMITED_MILES_VALUE_TEXT)),
 
-  pricePerDay: z
-    .number({
-      required_error: "Price is required",
-      invalid_type_error: "Price must be a number",
-    })
-    .min(1, "Price is too small")
-    .max(10_000, "Price is too big")
-    .step(0.01, "only 2 decimals are allowed"),
-  securityDeposit: z
-    .number({
-      required_error: "Deposit is required",
-      invalid_type_error: "Deposit must be a number",
-    })
-    .min(1, "Deposit is too small")
-    .max(100_000, "Deposit is too big")
-    .step(0.01, "only 2 decimals are allowed"),
-  isGuestInsuranceRequired: z.boolean().default(false),
-  insurancePerDayPriceInUsd: z
-    .number({
-      required_error: "Value is required",
-      invalid_type_error: "value must be a number",
-    })
-    .min(1, "Price is too small")
-    .max(10_000, "Price is too big")
-    .step(0.01, "only 2 decimals are allowed"),
-  timeBufferBetweenTripsInMin: z.number(),
-  currentlyListed: z.boolean().default(true),
-});
+    pricePerDay: z
+      .number({
+        required_error: "Price is required",
+        invalid_type_error: "Price must be a number",
+      })
+      .min(1, "Price is too small")
+      .max(10_000, "Price is too big")
+      .step(0.01, "only 2 decimals are allowed"),
+    securityDeposit: z
+      .number({
+        required_error: "Deposit is required",
+        invalid_type_error: "Deposit must be a number",
+      })
+      .min(1, "Deposit is too small")
+      .max(100_000, "Deposit is too big")
+      .step(0.01, "only 2 decimals are allowed"),
+    timeBufferBetweenTripsInMin: z
+      .number({
+        required_error: "Value is required",
+        invalid_type_error: "Value must be a number",
+      })
+      .default(0),
+    currentlyListed: z.boolean().default(true),
+  })
+  .and(insuranceFormSchema);
 
 const petrolCarSchema = z.object({
   engineTypeText: z.literal(ENGINE_TYPE_PETROL_STRING),

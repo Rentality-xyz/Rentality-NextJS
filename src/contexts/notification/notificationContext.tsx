@@ -17,7 +17,7 @@ import { getBlockCountForSearch } from "@/model/blockchain/blockchainList";
 import { useAuth } from "../auth/authContext";
 
 export type NotificationContextInfo = {
-  isLoading: Boolean;
+  isLoading: boolean;
   notifications: NotificationInfo[];
   loadMore: () => Promise<void>;
   addNotifications: (notifications: NotificationInfo[]) => void;
@@ -85,7 +85,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
   const { isAuthenticated } = useAuth();
   const ethereumInfo = useEthereum();
   const rentalityContract = useRentality();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [notificationInfos, setNotificationInfos] = useState<NotificationInfo[]>([]);
 
   const loadMore = async () => {};
@@ -178,17 +178,27 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         const tripInfos = await rentalityContract.getTripsAs(isHost);
         const claimInfos = await rentalityContract.getMyClaimsAs(isHost);
 
-        const rentalityEventFilter = notificationService.filters.RentalityEvent(
+        const rentalityEventFilterFromUser = notificationService.filters.RentalityEvent(
           null,
           null,
           null,
           [ethereumInfo.walletAddress],
+          null,
+          null
+        );
+        const rentalityEventFilterToUser = notificationService.filters.RentalityEvent(
+          null,
+          null,
+          null,
+          null,
           [ethereumInfo.walletAddress],
           null
         );
         const rentalityEventHistory = (
-          await notificationService.queryFilter(rentalityEventFilter, fromBlock, toBlock)
-        ).filter(isEventLog);
+          await notificationService.queryFilter(rentalityEventFilterFromUser, fromBlock, toBlock)
+        )
+          .concat(await notificationService.queryFilter(rentalityEventFilterToUser, fromBlock, toBlock))
+          .filter(isEventLog);
 
         const notificationsRentalityEventHistory = await Promise.all(
           rentalityEventHistory.map(getNotificationFromRentalityEvent(tripInfos, claimInfos, isHost))
@@ -199,7 +209,8 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         addNotifications(notifications);
 
         await notificationService.removeAllListeners();
-        await notificationService.on(rentalityEventFilter, rentalityEventListener);
+        await notificationService.on(rentalityEventFilterFromUser, rentalityEventListener);
+        await notificationService.on(rentalityEventFilterToUser, rentalityEventListener);
       } catch (e) {
         console.error("initialLoading error:" + e);
       } finally {

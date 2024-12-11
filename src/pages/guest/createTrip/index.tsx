@@ -22,6 +22,7 @@ import { isEmpty } from "@/utils/string";
 import { DialogActions } from "@/utils/dialogActions";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { useState } from "react";
+import RntTripRulesModal from "@/components/common/rntTripRulesModal";
 
 export default function CreateTrip() {
   const router = useRouter();
@@ -37,10 +38,6 @@ export default function CreateTrip() {
 
   function handleBackToSearchClick() {
     router.push(`/guest/search?${createQueryString(searchCarRequest, searchCarFilters)}`);
-  }
-
-  function handleTripRulesClick() {
-    alert("TODO handleTripRulesClick");
   }
 
   function handlePreAgreementDetailsClick() {
@@ -157,9 +154,7 @@ export default function CreateTrip() {
         <CreateTripDiscounts tripDiscounts={carInfo.tripDiscounts} />
         <hr />
         <div className="grid w-full grid-cols-2 gap-8">
-          <RntButtonTransparent className="w-full text-lg text-rentality-secondary" onClick={handleTripRulesClick}>
-            {t("create_trip.trip_rules")}
-          </RntButtonTransparent>
+          <RntTripRulesModal buttonClassName="w-full" />
           <RntButtonTransparent
             className="w-full text-lg text-rentality-secondary"
             onClick={handlePreAgreementDetailsClick}

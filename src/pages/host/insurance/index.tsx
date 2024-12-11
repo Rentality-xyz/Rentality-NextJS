@@ -6,6 +6,8 @@ import HostInsuranceFilters from "@/components/insurance/HostInsuranceFilters";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import HostInsuranceTable from "@/components/insurance/HostInsuranceTable";
 import useHostInsurances, { HostInsuranceFiltersType } from "@/hooks/insurance/useHostInsurances";
+import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
+import RntSuspense from "@/components/common/rntSuspense";
 
 const defaultFilters: HostInsuranceFiltersType = {};
 
@@ -31,19 +33,22 @@ export default function HostInsurance() {
   return (
     <>
       <PageTitle title={t("insurance.page_title")} />
-      <p>{t("insurance.please_enter_your_insurance")}</p>
-      <AddHostInsurance />
-      <p>{t("insurance.insurance_list")}</p>
-      <HostInsuranceFilters defaultFilters={defaultFilters} onApply={handleApplyFilters} />
-      <div className="mt-5 flex flex-col gap-4 rounded-2xl bg-rentality-bg p-4 pb-8">
-        <PaginationWrapper
-          currentPage={data.currentPage}
-          totalPages={data.totalPageCount}
-          selectPage={fetchDataForPage}
-        >
-          <HostInsuranceTable isLoading={isLoading} data={data.data} />
-        </PaginationWrapper>
-      </div>
+      <CheckingLoadingAuth>
+        <RntSuspense isLoading={isLoading}>
+          <AddHostInsurance />
+          <h2 className="mt-4">{t("insurance.insurance_list")}</h2>
+          <HostInsuranceFilters defaultFilters={defaultFilters} onApply={handleApplyFilters} />
+          <div className="mt-5 flex flex-col gap-4 rounded-2xl bg-rentality-bg p-4 pb-8">
+            <PaginationWrapper
+              currentPage={data.currentPage}
+              totalPages={data.totalPageCount}
+              selectPage={fetchDataForPage}
+            >
+              <HostInsuranceTable isLoading={isLoading} data={data.data} />
+            </PaginationWrapper>
+          </div>
+        </RntSuspense>
+      </CheckingLoadingAuth>
     </>
   );
 }

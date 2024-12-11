@@ -161,6 +161,7 @@ export type ContractTripDTO = {
   hostPhoneNumber: string;
   insurancesInfo: ContractInsuranceInfo[];
   paidForInsuranceInUsdCents: bigint;
+  guestDrivingLicenseIssueCountry: string;
 };
 
 export type ContractChatInfo = {
@@ -348,6 +349,7 @@ export type ContractSearchCar = {
   insuranceIncluded: boolean;
   locationInfo: ContractLocationInfo;
   insuranceInfo: ContractInsuranceCarInfo;
+  isGuestHasInsurance: boolean;
 };
 
 export type ContractAvailableCarDTO = {
@@ -409,6 +411,7 @@ export type ContractCarDetails = {
   currentlyListed: boolean;
   locationInfo: ContractLocationInfo;
   carVinNumber: string;
+  carMetadataURI: string;
 };
 
 export type ContractFloridaTaxes = {
@@ -536,6 +539,7 @@ export type ContractInsuranceDTO = {
 export type ContractCarInfoWithInsurance = {
   carInfo: ContractCarInfo;
   insuranceInfo: ContractInsuranceCarInfo;
+  carMetadataURI: string;
 };
 
 export type TripStatus = bigint;

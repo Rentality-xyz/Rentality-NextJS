@@ -11,7 +11,7 @@ import { mapContractCarToCarDetails } from "@/model/mappers/contractCarToCarDeta
 const useFetchCarInfo = (carId: number) => {
   const ethereumInfo = useEthereum();
   const rentalityContract = useRentality();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hostCarInfo, setHostCarInfo] = useState<HostCarInfo>(emptyHostCarInfo);
 
   useEffect(() => {
@@ -30,8 +30,12 @@ const useFetchCarInfo = (carId: number) => {
           return emptyHostCarInfo;
         }
 
-        const tokenURI = await rentalityContract.getCarMetadataURI(carInfoDetails.carId);
-        return mapContractCarToCarDetails(carInfo.carInfo, carInfo.insuranceInfo, carInfoDetails, tokenURI);
+        return mapContractCarToCarDetails(
+          carInfo.carInfo,
+          carInfo.insuranceInfo,
+          carInfoDetails,
+          carInfo.carMetadataURI
+        );
       } catch (e) {
         console.error("getCarInfo error:" + e);
       }

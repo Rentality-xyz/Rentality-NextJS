@@ -57,6 +57,7 @@ const emptyContractCarDetails: ContractCarDetails = {
   currentlyListed: false,
   locationInfo: emptyContractLocationInfo,
   carVinNumber: "",
+  carMetadataURI: "",
 };
 
 export function validateContractCarDetails(obj: ContractCarDetails): obj is ContractCarDetails {
@@ -206,6 +207,7 @@ const emptyContractSearchCar: ContractSearchCar = {
   insuranceIncluded: false,
   locationInfo: emptyContractLocationInfo,
   insuranceInfo: emptyContractInsuranceCarInfo,
+  isGuestHasInsurance: false,
 };
 
 export function validateContractSearchCar(obj: ContractSearchCar): obj is ContractSearchCar {
@@ -280,11 +282,11 @@ const emptyContractTrip: ContractTrip = {
   transactionInfo: emptyContractTransactionInfo,
   engineType: EngineType.PETROL,
   fuelPrice: BigInt(0),
-  guestInsuranceCompanyName: "",
-  guestInsurancePolicyNumber: "",
   finishDateTime: BigInt(0),
   pickUpHash: "",
   returnHash: "",
+  guestInsuranceCompanyName: "",
+  guestInsurancePolicyNumber: "",
 };
 
 export function validateContractTrip(obj: ContractTrip): obj is ContractTrip {
@@ -310,6 +312,7 @@ const emptyContractTripDTO: ContractTripDTO = {
   hostPhoneNumber: "",
   insurancesInfo: [],
   paidForInsuranceInUsdCents: BigInt(0),
+  guestDrivingLicenseIssueCountry: "",
 };
 
 export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {

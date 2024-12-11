@@ -1,9 +1,16 @@
+// TODO Transate
 import { cn } from "@/utils";
 import { isEmpty } from "@/utils/string";
 import React from "react";
 import RntButton from "./rntButton";
 import Image from "next/image";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
+
+type RntGalleryLinkPros = {
+  photos: string[];
+  titleCallback?: (photos: string[]) => string;
+  titleClassNameCallback?: (photos: string[]) => string;
+};
 
 function RntGalleryLink({
   photos,
@@ -19,14 +26,13 @@ function RntGalleryLink({
     const noEmptyPhotos = photos.filter((i) => !isEmpty(i));
     return noEmptyPhotos.length > 0 ? "text-rentality-secondary cursor-pointer" : "text-gray-500 ";
   },
-}: {
-  photos: string[];
-  titleCallback?: (photos: string[]) => string;
-  titleClassNameCallback?: (photos: string[]) => string;
-}) {
+}: RntGalleryLinkPros) {
   const { showCustomDialog, hideDialogs } = useRntDialogs();
+  const noEmptyPhotos = photos.filter((i) => !isEmpty(i));
 
   function handleClick() {
+    if (noEmptyPhotos.length === 0) return;
+
     showCustomDialog(<RntGalleryDialog photos={photos} handleBackClick={hideDialogs} />);
   }
 
@@ -47,7 +53,7 @@ function RntGalleryDialog({ photos, handleBackClick }: { photos: string[]; handl
             <>
               <div
                 key={index}
-                className="h-40 w-48 cursor-pointer overflow-hidden rounded-2xl bg-gray-200 bg-opacity-80"
+                className="h-40 w-48 cursor-pointer overflow-hidden rounded-2xl bg-gray-200/80"
                 onClick={() => window.open(photo)}
               >
                 <Image className="h-full w-full object-cover" width={1000} height={1000} src={photo} alt="" />

@@ -42,4 +42,8 @@ package-lock.json
 
 /privatekeys.txt
 /private_keys.txt
-.vscode/
+.vscode/ 
+
+docker/env.nextjs
+.env.*
+.env 

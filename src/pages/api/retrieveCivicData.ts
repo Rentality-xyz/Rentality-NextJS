@@ -12,6 +12,7 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { JsonRpcProvider, Wallet } from "ethers";
 import { ContractCivicKYCInfo } from "@/model/blockchain/schemas";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
+import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 
 export type RetrieveCivicDataRequest = {
   requestId: string;
@@ -105,7 +106,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  let providerApiUrl = process.env[`PROVIDER_API_URL_${chainIdNumber}`];
+  // const providerApiUrl = process.env[`NEXT_PUBLIC_PROVIDER_API_URL_${chainIdNumber}`];
+  const providerApiUrl = getProviderApiUrlFromEnv(chainIdNumber);
+
   if (!providerApiUrl) {
     console.error(`retrieveCivicData error: API URL for chain id ${chainIdNumber} was not set`);
     res

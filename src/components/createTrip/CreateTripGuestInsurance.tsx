@@ -1,3 +1,4 @@
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { useTranslation } from "react-i18next";
 
 export function CreateTripGuestInsurance({
@@ -9,7 +10,12 @@ export function CreateTripGuestInsurance({
     isGuestHasInsurance: boolean;
   };
 }) {
+  const { showDialog } = useRntDialogs();
   const { t } = useTranslation();
+
+  function handleInfoClick() {
+    showDialog(t("profile.user_insurance.insurance_info"));
+  }
 
   const insuranceText = !insuranceDetails.isInsuranceRequired
     ? t("create_trip.insurance_not_required")
@@ -21,7 +27,7 @@ export function CreateTripGuestInsurance({
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex flex-row items-center gap-2 text-rentality-secondary">
+      <div className="flex flex-row items-center gap-2 text-rentality-secondary" onClick={handleInfoClick}>
         <span className="mb-1">{t("create_trip.guest_insurance")}</span>
         <i className="fi fi-rs-info"></i>
       </div>

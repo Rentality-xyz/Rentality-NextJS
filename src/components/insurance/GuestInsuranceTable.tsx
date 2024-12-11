@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import Loading from "../common/Loading";
 import RntGalleryLink from "../common/RntGalleryLink";
-import { TripInsurance } from "@/model/insurance/model";
+import { getInsuranceStatusText, getInsuranceTypeText, TripInsurance } from "@/model/insurance/model";
 
 type GuestInsuranceTableProps = {
   isLoading: boolean;
@@ -30,6 +30,7 @@ export default function GuestInsuranceTable({ isLoading, data }: GuestInsuranceT
           <tr className="border-b-[2px] border-b-gray-500">
             <th className={`${headerSpanClassName} min-w-[15ch]`}>{t("insurance.trip")}</th>
             <th className={`${headerSpanClassName} min-w-[20h]`}>{t("insurance.insurance_type")}</th>
+            <th className={`${headerSpanClassName} min-w-[15h]`}>{t("insurance.insurance_data_status")}</th>
             <th className={`${headerSpanClassName} min-w-[15ch]`}>{t("insurance.view_document")}</th>
             <th className={`${headerSpanClassName} min-w-[15ch]`}>{t("insurance.insurance_company_name")}</th>
             <th className={`${headerSpanClassName} min-w-[15ch]`}>{t("insurance.insurance_policy_number")}</th>
@@ -43,7 +44,8 @@ export default function GuestInsuranceTable({ isLoading, data }: GuestInsuranceT
             return (
               <tr key={index} className="border-b-[2px] border-b-gray-500">
                 <td className={rowSpanClassName}>{i.tripInfo}</td>
-                <td className={rowSpanClassName}>{i.insurance.type}</td>
+                <td className={rowSpanClassName}>{getInsuranceTypeText(i.insurance.type, t)}</td>
+                <td className={rowSpanClassName}>{getInsuranceStatusText(i.insurance.type, t)}</td>
                 <td className={rowSpanClassName}>
                   <RntGalleryLink photos={i.insurance.photos} />
                 </td>

@@ -9,9 +9,11 @@ import { useTranslation } from "react-i18next";
 export function UserInsurancePhoto({
   insurancePhoto: photo,
   onInsurancePhotoChanged: onPhotoChanged,
+  onDelete,
 }: {
   insurancePhoto?: PlatformFile;
   onInsurancePhotoChanged: (newValue: PlatformFile) => void;
+  onDelete?: () => Promise<void>;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
@@ -55,9 +57,14 @@ export function UserInsurancePhoto({
     inputRef.current?.click();
   }
 
-  function handleDeleteClick() {
+  async function handleDeleteClick() {
     if (!photo) return;
-    onPhotoChanged({ url: "" });
+
+    if (onDelete !== undefined && "url" in photo && !isEmpty(photo.url)) {
+      await onDelete();
+    } else {
+      onPhotoChanged({ url: "", isDeleted: true });
+    }
   }
 
   return (
@@ -89,7 +96,7 @@ export function UserInsurancePhoto({
       )}
       <div
         className={cn(
-          "h-40 w-48 cursor-pointer overflow-hidden rounded-2xl bg-gray-200 bg-opacity-40 bg-[url('../images/add_circle_outline_white_48dp.svg')] bg-center bg-no-repeat",
+          "h-40 w-48 cursor-pointer overflow-hidden rounded-2xl bg-gray-200/40 bg-[url('../images/add_circle_outline_white_48dp.svg')] bg-center bg-no-repeat",
           !isEmpty(photoUrl) ? "hidden" : ""
         )}
       >
