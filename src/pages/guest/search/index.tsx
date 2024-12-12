@@ -24,7 +24,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "@/components/common/rntSuspense";
 
-export default function Search() {
+function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
 
   const [isLoading, searchAvailableCars, searchResult, sortSearchResult, setSearchResult] = useSearchCars();
@@ -251,3 +251,7 @@ export default function Search() {
     </APIProvider>
   );
 }
+
+Search.allowAnonymousAccess = true;
+
+export default Search;
