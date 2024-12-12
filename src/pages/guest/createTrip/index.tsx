@@ -111,8 +111,8 @@ export default function CreateTrip() {
   if (isLoading || !carInfo) return <Loading />;
 
   return (
-    <div className="grid grid-cols-[3fr_1fr] gap-8">
-      <div className="flex flex-col gap-4">
+    <div className="flex flex-wrap">
+      <div className="flex w-full flex-col gap-4 xl:w-3/4 xl:pr-4">
         {/* <CarPhotos carPhotos={carInfo.images.slice(0, 1)} />
         <CarPhotos carPhotos={carInfo.images.slice(0, 2)} />
         <CarPhotos carPhotos={carInfo.images.slice(0, 3)} />
@@ -169,7 +169,7 @@ export default function CreateTrip() {
           hostAddress={carInfo.hostHomeLocation}
         />
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="mt-8 flex w-full flex-col gap-4 xl:mt-0 xl:w-1/4 xl:pl-4">
         <div className="mx-auto text-xl font-bold text-rentality-secondary" onClick={handleBackToSearchClick}>
           {t("create_trip.new_search")}
         </div>
