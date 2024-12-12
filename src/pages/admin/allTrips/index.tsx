@@ -13,7 +13,7 @@ const defaultFilters: AdminAllTripsFilters = {
   endDateTimeUtc: moment({ day: 1, hour: 0 }).add(1, "month").toDate(),
 };
 
-export default function AllTrips() {
+function AllTrips() {
   const itemsPerPage = 10;
   const [filters, setFilters] = useState<AdminAllTripsFilters>(defaultFilters);
   const { isLoading, data, fetchData, payToHost, refundToGuest } = useAdminAllTrips();
@@ -69,3 +69,5 @@ export default function AllTrips() {
     </>
   );
 }
+
+export default AllTrips;

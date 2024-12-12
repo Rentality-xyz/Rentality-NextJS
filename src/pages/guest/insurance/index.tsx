@@ -11,7 +11,7 @@ import RntSuspense from "@/components/common/rntSuspense";
 
 const defaultFilters: GuestInsuranceFiltersType = {};
 
-export default function GuestInsurance() {
+function GuestInsurance() {
   const itemsPerPage = 10;
   const [filters, setFilters] = useState<GuestInsuranceFiltersType>(defaultFilters);
   const { isLoading, data, fetchData } = useGuestInsurances();
@@ -52,3 +52,5 @@ export default function GuestInsurance() {
     </>
   );
 }
+
+export default GuestInsurance;

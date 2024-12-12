@@ -23,7 +23,7 @@ import AddCar from "@/pages/host/vehicles/add";
 import RntSuspense from "@/components/common/rntSuspense";
 import { CivicProvider } from "@/contexts/web3/civicContext";
 
-export default function BecomeHost() {
+function BecomeHost() {
   return (
     <CivicProvider>
       <BecomeHostContent />
@@ -312,3 +312,5 @@ function BecomeHostContent() {
     </>
   );
 }
+
+export default BecomeHost;

@@ -24,7 +24,7 @@ import { useUserInfo } from "@/contexts/userInfoContext";
 import { useState } from "react";
 import RntTripRulesModal from "@/components/common/rntTripRulesModal";
 
-export default function CreateTrip() {
+function CreateTrip() {
   const router = useRouter();
   const { searchCarRequest, searchCarFilters } = useCarSearchParams();
   const { isLoading, carInfo } = useSearchCar(searchCarRequest, searchCarFilters.carId);
@@ -206,3 +206,5 @@ export default function CreateTrip() {
     </div>
   );
 }
+
+export default CreateTrip;
