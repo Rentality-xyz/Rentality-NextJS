@@ -7,7 +7,7 @@ import useSaveCar from "@/hooks/host/useSaveCar";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
 
-export default function EditCar() {
+function EditCar() {
   const router = useRouter();
   const { carId } = router.query;
   const { t } = useTranslation();
@@ -42,3 +42,5 @@ export default function EditCar() {
     </>
   );
 }
+
+export default EditCar;

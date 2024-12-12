@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
 
-export default function Messages() {
+function Messages() {
   const { isLoadingClient, chatInfos, selectChat, updateAllChats, sendMessage } = useChat();
 
   const router = useRouter();
@@ -73,3 +73,5 @@ export default function Messages() {
     </>
   );
 }
+
+export default Messages;
