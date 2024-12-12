@@ -38,7 +38,7 @@ export function CarTitleAndPrices({
     pricePerDay > pricePerDayWithDiscount ? (pricePerDay - pricePerDayWithDiscount) * tripDays : undefined;
 
   return (
-    <div className="flex flex-row items-center justify-between">
+    <div className="flex flex-wrap items-center justify-between">
       <h1 className="text-3xl">
         <strong>{carTitle}</strong>
       </h1>
