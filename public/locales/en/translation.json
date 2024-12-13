@@ -152,7 +152,8 @@
     "government_tax": "Government Tax",
     "total_charge": "Total charge",
     "insurance_fee_n_per_day": "Insurance fee ${{insurancePerDayPriceInUsd, number}}/day",
-    "total_payable": "Total payable"
+    "total_payable": "Total payable",
+    "car_photo_title": "Car photos"
   },
   "trip_rules": {
     "trip_rules": "Trip Rules",

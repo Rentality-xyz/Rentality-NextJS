@@ -2,12 +2,15 @@ import Image from "next/image";
 import RntButton from "../common/rntButton";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/utils";
+import ImageCarouselDialog from "./ImageCarouselDialog";
+import useToggleState from "@/hooks/useToggleState";
 
 export function CarPhotos({ carPhotos }: { carPhotos: string[] }) {
   const { t } = useTranslation();
+  const [isCarouselOpen, toogleCarouselOpen] = useToggleState(false);
 
   function handleAllPhotoClick() {
-    alert("TODO handleAllPhotoClick");
+    toogleCarouselOpen(true);
   }
 
   return (
@@ -18,6 +21,7 @@ export function CarPhotos({ carPhotos }: { carPhotos: string[] }) {
           ? t("create_trip.all_n_photo", { count: carPhotos.length })
           : t("create_trip.see_in_full")}
       </RntButton>
+      <ImageCarouselDialog images={carPhotos} isOpen={isCarouselOpen} onClose={() => toogleCarouselOpen(false)} />
     </div>
   );
 }
