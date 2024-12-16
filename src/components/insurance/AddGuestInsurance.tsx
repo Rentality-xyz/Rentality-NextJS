@@ -24,7 +24,15 @@ export default function AddGuestInsurance() {
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { saveTripInsurance } = useSaveGuestTripInsurance();
 
-  const { register, handleSubmit, formState, control, watch, setError } = useForm<AddTripInsuranceFormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState,
+    control,
+    watch,
+    setError,
+    reset: resetFormValues,
+  } = useForm<AddTripInsuranceFormValues>({
     defaultValues: {
       insuranceType: GENERAL_INSURANCE_TYPE_ID,
       comment: "",
@@ -74,6 +82,7 @@ export default function AddGuestInsurance() {
       showError(t("profile.save_err"));
     } else {
       showInfo(t("common.info.success"));
+      resetFormValues();
       refetchData();
     }
   }
