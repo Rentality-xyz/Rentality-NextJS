@@ -60,17 +60,17 @@ export default function CreateTrip() {
     }
 
     if (isEmpty(userInfo?.drivingLicense)) {
-      showError(t("errors.user_info"));
+      showError(t("search_page.errors.user_info"));
       await router.push("/guest/profile");
       return;
     }
 
     if (isEmpty(searchCarRequest.dateFromInDateTimeStringFormat)) {
-      showError(t("errors.date_from"));
+      showError(t("search_page.errors.date_from"));
       return;
     }
     if (isEmpty(searchCarRequest.dateToInDateTimeStringFormat)) {
-      showError(t("errors.date_to"));
+      showError(t("search_page.errors.date_to"));
       return;
     }
     if (!carInfo) {
@@ -79,11 +79,11 @@ export default function CreateTrip() {
     }
 
     if (carInfo?.tripDays < 0) {
-      showError(t("errors.date_eq"));
+      showError(t("search_page.errors.date_eq"));
       return;
     }
     if (carInfo.ownerAddress === userInfo?.address) {
-      showError(t("errors.own_car"));
+      showError(t("search_page.errors.own_car"));
       return;
     }
 
@@ -103,7 +103,7 @@ export default function CreateTrip() {
       if (result.error === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
       } else {
-        showError(t("errors.request"));
+        showError(t("search_page.errors.request"));
       }
     }
   }
