@@ -199,7 +199,7 @@ export default function AddHostInsurance() {
           </div>
           {insuranceType === GENERAL_INSURANCE_TYPE_ID && (
             <>
-              <p>Upload up to 5 photos insurance policy</p>
+              <p>Upload photo of ID insurance card</p>
 
               <Controller
                 name="photos"
