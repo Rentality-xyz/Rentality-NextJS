@@ -3,15 +3,16 @@ import { ContractInsuranceDTO, InsuranceType } from "@/model/blockchain/schemas"
 import { validateContractInsuranceDTO } from "@/model/blockchain/schemas_utils";
 import { TripInsurance } from "@/model/insurance/model";
 import { Err, Ok, Result } from "@/model/utils/result";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
-import { getDateFromBlockchainTime } from "@/utils/formInput";
+import { getDateFromBlockchainTime, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { bigIntReplacer } from "@/utils/json";
 import moment from "moment";
 import { useCallback, useState } from "react";
 
-export type GuestInsuranceFiltersType = {};
+export type InsuranceFiltersType = {};
 
-export default function useGuestInsurances() {
+export default function useInsurances(isHost: boolean) {
   const rentalityContract = useRentality();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<TripInsurance[]>([]);
@@ -20,7 +21,7 @@ export default function useGuestInsurances() {
   const [totalPageCount, setTotalPageCount] = useState<number>(0);
 
   const filterData = useCallback(
-    (data: TripInsurance[], filters?: GuestInsuranceFiltersType, page: number = 1, itemsPerPage: number = 10) => {
+    (data: TripInsurance[], filters?: InsuranceFiltersType, page: number = 1, itemsPerPage: number = 10) => {
       const filteredData = !filters
         ? data
         : data.filter(
@@ -41,7 +42,7 @@ export default function useGuestInsurances() {
 
   const fetchData = useCallback(
     async (
-      filters?: GuestInsuranceFiltersType,
+      filters?: InsuranceFiltersType,
       page: number = 1,
       itemsPerPage: number = 10
     ): Promise<Result<boolean, string>> => {
@@ -59,33 +60,43 @@ export default function useGuestInsurances() {
         setIsLoading(true);
         setCurrentPage(page);
         setTotalPageCount(0);
-        console.debug(`filters: ${JSON.stringify(filters, bigIntReplacer)}`);
 
-        const insuranceData: ContractInsuranceDTO[] = await rentalityContract.getInsurancesBy(false);
+        const insuranceData: ContractInsuranceDTO[] = await rentalityContract.getInsurancesBy(isHost);
 
         if (insuranceData && insuranceData.length > 0) {
           validateContractInsuranceDTO(insuranceData[0]);
         }
-
         console.log("insuranceData", JSON.stringify(insuranceData, bigIntReplacer, 2));
 
-        const data: TripInsurance[] = insuranceData.map((i) => ({
-          tripId: Number(i.tripId),
-          tripInfo:
-            i.insuranceInfo.insuranceType === InsuranceType.General
-              ? "For all trips"
-              : `#${i.tripId} ${i.carBrand} ${i.carModel} ${i.carYear} ${dateRangeFormatShortMonthDateYear(new Date(), new Date())}`,
-          insurance: {
-            type: i.insuranceInfo.insuranceType,
-            photos: [i.insuranceInfo.photo],
-            companyName: i.insuranceInfo.companyName,
-            policyNumber: i.insuranceInfo.policyNumber,
-            comment: i.insuranceInfo.comment,
-            uploadedBy: `${i.createdByHost ? "Host" : "Guest"} ${i.creatorFullName} uploaded ${moment(getDateFromBlockchainTime(i.insuranceInfo.createdTime)).format("DD.MM.YY hh:mm A")}`,
-          },
-          hostPhoneNumber: i.creatorPhoneNumber,
-          guestPhoneNumber: i.creatorPhoneNumber,
-        }));
+        const data: TripInsurance[] = insuranceData.map((i) => {
+          const timeZoneId = UTC_TIME_ZONE_ID;
+          const startDateTime = getDateFromBlockchainTimeWithTZ(i.startDateTime, timeZoneId);
+
+          return {
+            tripId: Number(i.tripId),
+            insuranceType: i.insuranceInfo.insuranceType,
+            tripInfo:
+              i.insuranceInfo.insuranceType === InsuranceType.General
+                ? "For all trips"
+                : `#${i.tripId} ${i.carBrand} ${i.carModel} ${i.carYear} ${dateRangeFormatShortMonthDateYear(startDateTime, getDateFromBlockchainTimeWithTZ(i.endDateTime, timeZoneId))}`,
+            startDateTime: startDateTime,
+            insurance: {
+              type: i.insuranceInfo.insuranceType,
+              photos: [i.insuranceInfo.photo],
+              companyName: i.insuranceInfo.companyName,
+              policyNumber: i.insuranceInfo.policyNumber,
+              comment: i.insuranceInfo.comment,
+              uploadedBy: `${i.createdByHost ? "Host" : "Guest"} ${i.creatorFullName} uploaded ${moment(getDateFromBlockchainTime(i.insuranceInfo.createdTime)).format("DD.MM.YY hh:mm A")}`,
+            },
+            hostPhoneNumber: i.creatorPhoneNumber,
+            guestPhoneNumber: i.creatorPhoneNumber,
+          };
+        });
+        data.sort((a, b) => {
+          const timeDiff = b.startDateTime.getTime() - a.startDateTime.getTime();
+          if (timeDiff !== 0) return timeDiff;
+          return Number(a.insuranceType - b.insuranceType);
+        });
 
         setAllData(data);
         filterData(data, filters, page, itemsPerPage);
@@ -98,7 +109,7 @@ export default function useGuestInsurances() {
         setIsLoading(false);
       }
     },
-    [rentalityContract, allData, filterData]
+    [rentalityContract, allData, filterData, isHost]
   );
 
   return {

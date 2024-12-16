@@ -12,7 +12,9 @@ export type Insurance = {
 
 export type TripInsurance = {
   tripId: number;
+  insuranceType: InsuranceType;
   tripInfo: string; // "For all trips" | `#${tripId} ${carBrand} ${carModel} ${carYear} ${dateFrom, MMM DD} - ${dateTo, MMM DD YYYY}`
+  startDateTime: Date;
   insurance: Insurance;
   hostPhoneNumber: string;
   guestPhoneNumber: string;
