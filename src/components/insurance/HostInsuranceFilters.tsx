@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next";
-import { HostInsuranceFiltersType } from "@/hooks/insurance/useHostInsurances";
 import RntSelect from "../common/rntSelect";
 import RntButton from "../common/rntButton";
+import { InsuranceFiltersType } from "@/hooks/insurance/useInsurances";
 
 interface HostInsuranceFiltersProps {
-  defaultFilters?: HostInsuranceFiltersType;
-  onApply: (filters: HostInsuranceFiltersType) => Promise<void>;
+  defaultFilters?: InsuranceFiltersType;
+  onApply: (filters: InsuranceFiltersType) => Promise<void>;
 }
 
 export default function HostInsuranceFilters({ defaultFilters, onApply }: HostInsuranceFiltersProps) {
