@@ -5,19 +5,19 @@ import AddGuestInsurance from "@/components/insurance/AddGuestInsurance";
 import GuestInsuranceFilters from "@/components/insurance/GuestInsuranceFilters";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import GuestInsuranceTable from "@/components/insurance/GuestInsuranceTable";
-import useGuestInsurances, { GuestInsuranceFiltersType } from "@/hooks/insurance/useGuestInsurances";
+import useInsurances, { InsuranceFiltersType } from "@/hooks/insurance/useInsurances";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
 
-const defaultFilters: GuestInsuranceFiltersType = {};
+const defaultFilters: InsuranceFiltersType = {};
 
 export default function GuestInsurance() {
   const itemsPerPage = 10;
-  const [filters, setFilters] = useState<GuestInsuranceFiltersType>(defaultFilters);
-  const { isLoading, data, fetchData } = useGuestInsurances();
+  const [filters, setFilters] = useState<InsuranceFiltersType>(defaultFilters);
+  const { isLoading, data, fetchData } = useInsurances(false);
   const { t } = useTranslation();
 
-  async function handleApplyFilters(filters: GuestInsuranceFiltersType) {
+  async function handleApplyFilters(filters: InsuranceFiltersType) {
     setFilters(filters);
     await fetchData(filters, 1, itemsPerPage);
   }

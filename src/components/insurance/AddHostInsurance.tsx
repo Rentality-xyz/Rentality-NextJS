@@ -24,7 +24,15 @@ export default function AddHostInsurance() {
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { saveTripInsurance } = useSaveGuestTripInsurance();
 
-  const { register, handleSubmit, formState, control, watch, setError } = useForm<AddTripInsuranceFormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState,
+    control,
+    watch,
+    setError,
+    reset: resetFormValues,
+  } = useForm<AddTripInsuranceFormValues>({
     defaultValues: {
       insuranceType: GENERAL_INSURANCE_TYPE_ID,
       comment: "",
@@ -81,6 +89,7 @@ export default function AddHostInsurance() {
       showError(t("profile.save_err"));
     } else {
       showInfo(t("common.info.success"));
+      resetFormValues();
       refetchData();
     }
   }
@@ -190,7 +199,7 @@ export default function AddHostInsurance() {
           </div>
           {insuranceType === GENERAL_INSURANCE_TYPE_ID && (
             <>
-              <p>Upload up to 5 photos insurance policy</p>
+              <p>Upload photo of ID insurance card</p>
 
               <Controller
                 name="photos"
