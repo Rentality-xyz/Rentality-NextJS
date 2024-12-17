@@ -3,7 +3,6 @@ import { forwardRef } from "react";
 import RntValidationError from "./RntValidationError";
 import { cn } from "@/utils";
 import Image, { StaticImageData } from "next/image";
-import bgBlockSearch from "@/images/bg_block_search.png";
 import * as React from "react";
 
 export interface RntSelectProps extends React.ComponentPropsWithoutRef<"select"> {

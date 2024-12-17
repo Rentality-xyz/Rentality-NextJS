@@ -6,7 +6,9 @@ import useUserMode, { isAdmin, isHost } from "@/hooks/useUserMode";
 import Image from "next/image";
 import HeaderLogo from "@/components/sideNavMenu/headerLogo";
 import RntMobileStoresDialog from "@/components/common/rntMobileStoresDialog";
+// @ts-ignore
 import burgerMenuClose from "@/images/ic-menu-burge-close-white-20.svg";
+// @ts-ignore
 import burgerMenu from "@/images/ic-menu-burge-white-20.svg";
 import { useAppContext } from "@/contexts/appContext";
 import { HostBurgerNavMenu } from "@/components/sideNavMenu/hostSideNavMenu";
@@ -15,10 +17,15 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth/authContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
+// @ts-ignore
 import icLogout from "@/images/ic_logout.png";
+// @ts-ignore
 import icProfileSettings from "@/images/ic_profile_settings.png";
+// @ts-ignore
 import imgCopy from "@/images/ic_copy_24dp.svg";
+// @ts-ignore
 import icBaseScan from "@/images/base-scan-log.svg";
+// @ts-ignore
 import icWalletBalance from "@/images/ic_wallet_balance.svg";
 import { useTranslation } from "react-i18next";
 import { AdminBurgerNavMenu } from "../sideNavMenu/adminSideNavMenu";
