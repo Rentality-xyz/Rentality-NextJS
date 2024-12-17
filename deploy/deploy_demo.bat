@@ -42,7 +42,8 @@ echo Coping "deploy\%PROJECT_ENV_FILENANE%" to ".env" ...
 copy deploy\%PROJECT_ENV_FILENANE% .env 
 
 call firebase use %PROJECT_ID%
-call firebase deploy
+call firebase hosting:channel:deploy preview-1 
+REM call firebase deploy
 
 if exist .env.backup (	 
 	echo Returning backup env file...
