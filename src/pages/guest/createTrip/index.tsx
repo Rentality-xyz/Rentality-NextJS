@@ -23,18 +23,48 @@ import { DialogActions } from "@/utils/dialogActions";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { useState } from "react";
 import RntTripRulesModal from "@/components/common/rntTripRulesModal";
+import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
+import RntSuspense from "@/components/common/rntSuspense";
+import { SearchCarInfoDetails } from "@/model/SearchCarsResult";
+import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 
 export default function CreateTrip() {
-  const router = useRouter();
   const { searchCarRequest, searchCarFilters } = useCarSearchParams();
   const { isLoading, carInfo } = useSearchCar(searchCarRequest, searchCarFilters.carId);
+
+  return (
+    <CheckingLoadingAuth>
+      <RntSuspense isLoading={isLoading}>
+        {!carInfo && <p>Car is not found</p>}
+        {carInfo && (
+          <CreateTripDetailsContent
+            carInfo={carInfo}
+            searchCarRequest={searchCarRequest}
+            searchCarFilters={searchCarFilters}
+          />
+        )}
+      </RntSuspense>
+    </CheckingLoadingAuth>
+  );
+}
+
+function CreateTripDetailsContent({
+  carInfo,
+  searchCarRequest,
+  searchCarFilters,
+}: {
+  carInfo: SearchCarInfoDetails;
+  searchCarRequest: SearchCarRequest;
+  searchCarFilters: SearchCarFilters;
+}) {
+  const router = useRouter();
   const { createTripRequest } = useCreateTripRequest();
-  const { t } = useTranslation();
   const userInfo = useUserInfo();
   const { isLoadingAuth, isAuthenticated, login } = useAuth();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const [requestSending, setRequestSending] = useState<boolean>(false);
+  const { t } = useTranslation();
 
   function handleBackToSearchClick() {
     router.push(`/guest/search?${createQueryString(searchCarRequest, searchCarFilters)}`);
@@ -108,18 +138,10 @@ export default function CreateTrip() {
     }
   }
 
-  if (isLoading || !carInfo) return <Loading />;
-
   return (
     <div className="flex flex-wrap">
       <div className="flex w-full flex-col gap-4 xl:w-3/4 xl:pr-4">
-        {/* <CarPhotos carPhotos={carInfo.images.slice(0, 1)} />
-        <CarPhotos carPhotos={carInfo.images.slice(0, 2)} />
-        <CarPhotos carPhotos={carInfo.images.slice(0, 3)} />
-        <CarPhotos carPhotos={carInfo.images.slice(0, 4)} />
-        <CarPhotos carPhotos={carInfo.images.slice(0, 5)} />
-        <CarPhotos carPhotos={carInfo.images.slice(0, 6)} /> */}
-        <CarPhotos carPhotos={carInfo.images.slice(0, 7)} />
+        <CarPhotos carPhotos={carInfo.images} />
         <CarTitleAndPrices
           carTitle={`${carInfo.brand} ${carInfo.model} ${carInfo.year}`}
           pricePerDay={carInfo.pricePerDay}
