@@ -23,18 +23,48 @@ import { DialogActions } from "@/utils/dialogActions";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { useState } from "react";
 import RntTripRulesModal from "@/components/common/rntTripRulesModal";
+import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
+import RntSuspense from "@/components/common/rntSuspense";
+import { SearchCarInfoDetails } from "@/model/SearchCarsResult";
+import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 
 export default function CreateTrip() {
-  const router = useRouter();
   const { searchCarRequest, searchCarFilters } = useCarSearchParams();
   const { isLoading, carInfo } = useSearchCar(searchCarRequest, searchCarFilters.carId);
+
+  return (
+    <CheckingLoadingAuth>
+      <RntSuspense isLoading={isLoading}>
+        {!carInfo && <p>Car is not found</p>}
+        {carInfo && (
+          <CreateTripDetailsContent
+            carInfo={carInfo}
+            searchCarRequest={searchCarRequest}
+            searchCarFilters={searchCarFilters}
+          />
+        )}
+      </RntSuspense>
+    </CheckingLoadingAuth>
+  );
+}
+
+function CreateTripDetailsContent({
+  carInfo,
+  searchCarRequest,
+  searchCarFilters,
+}: {
+  carInfo: SearchCarInfoDetails;
+  searchCarRequest: SearchCarRequest;
+  searchCarFilters: SearchCarFilters;
+}) {
+  const router = useRouter();
   const { createTripRequest } = useCreateTripRequest();
-  const { t } = useTranslation();
   const userInfo = useUserInfo();
   const { isLoadingAuth, isAuthenticated, login } = useAuth();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const [requestSending, setRequestSending] = useState<boolean>(false);
+  const { t } = useTranslation();
 
   function handleBackToSearchClick() {
     router.push(`/guest/search?${createQueryString(searchCarRequest, searchCarFilters)}`);
@@ -60,17 +90,17 @@ export default function CreateTrip() {
     }
 
     if (isEmpty(userInfo?.drivingLicense)) {
-      showError(t("errors.user_info"));
+      showError(t("search_page.errors.user_info"));
       await router.push("/guest/profile");
       return;
     }
 
     if (isEmpty(searchCarRequest.dateFromInDateTimeStringFormat)) {
-      showError(t("errors.date_from"));
+      showError(t("search_page.errors.date_from"));
       return;
     }
     if (isEmpty(searchCarRequest.dateToInDateTimeStringFormat)) {
-      showError(t("errors.date_to"));
+      showError(t("search_page.errors.date_to"));
       return;
     }
     if (!carInfo) {
@@ -79,11 +109,11 @@ export default function CreateTrip() {
     }
 
     if (carInfo?.tripDays < 0) {
-      showError(t("errors.date_eq"));
+      showError(t("search_page.errors.date_eq"));
       return;
     }
     if (carInfo.ownerAddress === userInfo?.address) {
-      showError(t("errors.own_car"));
+      showError(t("search_page.errors.own_car"));
       return;
     }
 
@@ -103,23 +133,15 @@ export default function CreateTrip() {
       if (result.error === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
       } else {
-        showError(t("errors.request"));
+        showError(t("search_page.errors.request"));
       }
     }
   }
 
-  if (isLoading || !carInfo) return <Loading />;
-
   return (
     <div className="flex flex-wrap">
       <div className="flex w-full flex-col gap-4 xl:w-3/4 xl:pr-4">
-        {/* <CarPhotos carPhotos={carInfo.images.slice(0, 1)} />
-        <CarPhotos carPhotos={carInfo.images.slice(0, 2)} />
-        <CarPhotos carPhotos={carInfo.images.slice(0, 3)} />
-        <CarPhotos carPhotos={carInfo.images.slice(0, 4)} />
-        <CarPhotos carPhotos={carInfo.images.slice(0, 5)} />
-        <CarPhotos carPhotos={carInfo.images.slice(0, 6)} /> */}
-        <CarPhotos carPhotos={carInfo.images.slice(0, 7)} />
+        <CarPhotos carPhotos={carInfo.images} />
         <CarTitleAndPrices
           carTitle={`${carInfo.brand} ${carInfo.model} ${carInfo.year}`}
           pricePerDay={carInfo.pricePerDay}
