@@ -8,6 +8,7 @@ import { IPanelFilterProps } from "@/components/search/panelFilterProps";
 import Slider from "@mui/material/Slider";
 import RntButton from "@/components/common/rntButton";
 import { DEFAULT_MIN_FILTER_YEAR } from "@/utils/constants";
+import { createPortal } from "react-dom";
 
 export default function PanelFilteringByYear({
   id,
@@ -15,6 +16,7 @@ export default function PanelFilteringByYear({
   onClickApply,
   isResetFilters,
   minValue,
+  scrollInfo,
 }: IPanelFilterProps) {
   const minYear = minValue !== undefined && Number.isFinite(minValue) ? minValue : DEFAULT_MIN_FILTER_YEAR;
   const maxYear = new Date().getFullYear();
@@ -23,6 +25,8 @@ export default function PanelFilteringByYear({
   const [value, setValue] = useState([minYear, maxYear]);
   const [selectedValue, setSelectedValue] = useState(value);
   const { t } = useTranslation();
+  const buttonRef = useRef<HTMLDivElement>(null);
+  const [positionDropdown, setPositionDropdown] = useState({ top: 0, left: 0 });
 
   const toggleDropdown = () => {
     setIsOpen((prevIsOpen) => {
@@ -94,10 +98,26 @@ export default function PanelFilteringByYear({
     });
   }, [minValue]);
 
+  useEffect(() => {
+    if (isOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setPositionDropdown({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+      });
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (scrollInfo !== null) {
+      setIsOpen(false);
+    }
+  }, [scrollInfo]);
+
   return (
-    <div ref={dropdownRef} id={id} className="relative w-full sm:w-48">
-      <RntButtonTransparent className="w-full" onClick={toggleDropdown}>
-        <div className="relative flex items-center justify-center text-rentality-secondary">
+    <div ref={buttonRef} id={id} className="relative">
+      <RntButtonTransparent className="w-48" onClick={toggleDropdown}>
+        <div ref={dropdownRef} className="relative flex items-center justify-center text-rentality-secondary">
           <div className="text-lg">
             {value[0] <= minYear && value[1] >= maxYear ? t_comp("select_filter_years") : `${value[0]} - ${value[1]}`}
           </div>
@@ -105,37 +125,45 @@ export default function PanelFilteringByYear({
         </div>
       </RntButtonTransparent>
 
-      {isOpen && (
-        <div className="absolute z-10 w-full rounded-lg border border-gray-500 bg-rentality-bg-left-sidebar px-4 py-2 shadow-md sm:left-[-17px] sm:w-56">
-          <div className="mb-4 text-lg text-white">
-            {value[0]} - {value[1]}
-          </div>
+      {isOpen &&
+        createPortal(
+          <div
+            className="absolute z-10 w-56 rounded-lg border border-gray-500 bg-rentality-bg-left-sidebar px-4 py-2 shadow-md"
+            style={{
+              top: `${positionDropdown.top}px`,
+              left: `${positionDropdown.left - 17}px`,
+            }}
+          >
+            <div className="mb-4 text-lg text-white">
+              {value[0]} - {value[1]}
+            </div>
 
-          <div className="mb-4 flex items-center justify-center">
-            <Slider
-              value={value}
-              min={minYear}
-              max={maxYear}
-              onChange={handleSliderChange}
-              valueLabelDisplay="auto"
-              className="w-full text-rentality-secondary-shade"
-            />
-          </div>
+            <div className="mb-4 flex items-center justify-center">
+              <Slider
+                value={value}
+                min={minYear}
+                max={maxYear}
+                onChange={handleSliderChange}
+                valueLabelDisplay="auto"
+                className="w-full text-rentality-secondary-shade"
+              />
+            </div>
 
-          <div className="flex justify-between">
-            <RntButton
-              className="w-20 border border-gray-300 bg-transparent text-gray-300 hover:border-white hover:text-white"
-              minHeight="38px"
-              onClick={handleReset}
-            >
-              {t_comp("button_reset")}
-            </RntButton>
-            <RntButton className="w-20" minHeight="38px" onClick={handleApply}>
-              {t_comp("button_apply")}
-            </RntButton>
-          </div>
-        </div>
-      )}
+            <div className="flex justify-between">
+              <RntButton
+                className="w-20 border border-gray-300 bg-transparent text-gray-300 hover:border-white hover:text-white"
+                minHeight="38px"
+                onClick={handleReset}
+              >
+                {t_comp("button_reset")}
+              </RntButton>
+              <RntButton className="w-20" minHeight="38px" onClick={handleApply}>
+                {t_comp("button_apply")}
+              </RntButton>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

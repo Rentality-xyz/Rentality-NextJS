@@ -4,7 +4,7 @@ import RntInput from "../common/rntInput";
 import RntPlaceAutoComplete from "../common/rntPlaceAutocomplete";
 import RntSelect from "../common/rntSelect";
 import { TFunction as TFunctionNext } from "i18next";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ParseLocationResponse } from "@/pages/api/parseLocation";
 import moment from "moment";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
@@ -146,6 +146,11 @@ export default function SearchAndFilters({
   }
 
   const [resetFilters, setResetFilters] = useState(false);
+  const [scrollPanelFilter, setScrollPanelFilter] = useState<number | null>(null);
+  const onScrollPanelFilter = (e: React.UIEvent<HTMLDivElement>) => {
+    const scrollLeft = e.currentTarget.scrollLeft;
+    setScrollPanelFilter(scrollLeft);
+  };
 
   return (
     <>
@@ -204,136 +209,136 @@ export default function SearchAndFilters({
           </RntButton>
         </div>
       </div>
-      <div className="flex flex-col">
-        <div className="mt-4 flex flex-wrap items-center gap-4">
-          <div className="sm:w-48">
-            <RntCarMakeSelect
-              id={t_comp("select_filter_make")}
-              className="text-lg"
-              selectClassName="cursor-pointer"
-              promptText={t_comp("select_filter_make")}
-              label=""
-              value={searchCarFilters?.brand ?? ""}
-              onMakeSelect={(newID, newMake) => {
-                setSelectedMakeID(newID);
-                setSearchCarFilters({
-                  ...searchCarFilters,
-                  brand: newMake,
-                });
-              }}
-            />
-          </div>
-
-          <div className="sm:w-48">
-            <RntCarModelSelect
-              id={t_comp("select_filter_model")}
-              className="text-lg"
-              selectClassName="cursor-pointer"
-              promptText={t_comp("select_filter_model")}
-              label=""
-              value={searchCarFilters?.model ?? ""}
-              make_id={selectedMakeID}
-              onModelSelect={(newID, newModel) => {
-                setSelectedModelID(newID);
-                setSearchCarFilters({
-                  ...searchCarFilters,
-                  model: newModel,
-                });
-              }}
-            />
-          </div>
-
-          <PanelFilteringByYear
-            id={"panel-filtering-year"}
-            onClickReset={() => {
+      <div onScroll={onScrollPanelFilter} className="scrollbar-none mt-4 flex items-center gap-4 overflow-x-auto">
+        <div className="min-w-48">
+          <RntCarMakeSelect
+            id={t_comp("select_filter_make")}
+            className="text-lg"
+            selectClassName="cursor-pointer mr-4"
+            promptText={t_comp("select_filter_make")}
+            label=""
+            value={searchCarFilters?.brand ?? ""}
+            onMakeSelect={(newID, newMake) => {
+              setSelectedMakeID(newID);
               setSearchCarFilters({
                 ...searchCarFilters,
-                yearOfProductionFrom: 0,
-                yearOfProductionTo: 0,
+                brand: newMake,
               });
             }}
-            onClickApply={(selectedValues) => {
-              setSearchCarFilters({
-                ...searchCarFilters,
-                yearOfProductionFrom: selectedValues[0],
-                yearOfProductionTo: selectedValues[1],
-              });
-              setResetFilters(false);
-            }}
-            isResetFilters={resetFilters}
-            minValue={filterLimits.minCarYear}
           />
-
-          <PanelFilteringByPrice
-            id={"panel-filtering-price"}
-            onClickReset={() => {
-              setSearchCarFilters({
-                ...searchCarFilters,
-                pricePerDayInUsdFrom: 0,
-                pricePerDayInUsdTo: 0,
-              });
-            }}
-            onClickApply={(selectedValues) => {
-              setSearchCarFilters({
-                ...searchCarFilters,
-                pricePerDayInUsdFrom: selectedValues[0],
-                pricePerDayInUsdTo: selectedValues[1],
-              });
-              setResetFilters(false);
-            }}
-            isResetFilters={resetFilters}
-            maxValue={filterLimits.maxCarPrice}
-          />
-
-          <div className="flex justify-between gap-4 max-sm:w-full">
-            <RntButton className="w-40" onClick={handleResetClick}>
-              {t_comp("button_reset_filters")}
-            </RntButton>
-
-            <div className="select-container">
-              <RntSelect
-                className="w-40 text-lg"
-                selectClassName="buttonGradient text-white text-center custom-select px-4 border-0 cursor-pointer"
-                id="sort"
-                readOnly={false}
-                value={sortBy ? sortOption[sortBy] : ""}
-                onChange={(e) => {
-                  const newDataKey = e.target.options[e.target.selectedIndex].getAttribute("data-key") || "";
-                  if (isSortOptionKey(newDataKey)) {
-                    setSortBy(newDataKey);
-                  }
-                }}
-              >
-                <option className="hidden" value="" disabled>
-                  {t_comp("sort_by")}
-                </option>
-                {Object.entries(sortOption ?? {}).map(([key, value]) => (
-                  <option key={key} value={value} data-key={key}>
-                    {value}
-                  </option>
-                ))}
-              </RntSelect>
-              <span className="custom-arrow bg-[url('../images/arrowDownWhite.svg')]"></span>
-            </div>
-          </div>
-
-          <RntButtonTransparent className="w-full sm:w-48" onClick={handleClickOpenDeliveryLocation}>
-            <div className="relative flex items-center justify-center text-rentality-secondary">
-              <div className="text-lg">{t_comp("button_deliver_to_me")}</div>
-              <Image
-                src={openDeliveryLocation ? arrowUpTurquoise : arrowDownTurquoise}
-                alt=""
-                className="max-sm:absolute max-sm:right-4 sm:ml-3"
-              />
-            </div>
-          </RntButtonTransparent>
         </div>
-        {openDeliveryLocation && (
-          <div>
-            <SearchDeliveryLocations searchCarRequest={searchCarRequest} setSearchCarRequest={setSearchCarRequest} />
+
+        <div className="">
+          <RntCarModelSelect
+            id={t_comp("select_filter_model")}
+            className="text-lg"
+            selectClassName="cursor-pointer "
+            promptText={t_comp("select_filter_model")}
+            label=""
+            value={searchCarFilters?.model ?? ""}
+            make_id={selectedMakeID}
+            onModelSelect={(newID, newModel) => {
+              setSelectedModelID(newID);
+              setSearchCarFilters({
+                ...searchCarFilters,
+                model: newModel,
+              });
+            }}
+          />
+        </div>
+
+        <PanelFilteringByYear
+          id={"panel-filtering-year"}
+          scrollInfo={scrollPanelFilter}
+          onClickReset={() => {
+            setSearchCarFilters({
+              ...searchCarFilters,
+              yearOfProductionFrom: 0,
+              yearOfProductionTo: 0,
+            });
+          }}
+          onClickApply={(selectedValues) => {
+            setSearchCarFilters({
+              ...searchCarFilters,
+              yearOfProductionFrom: selectedValues[0],
+              yearOfProductionTo: selectedValues[1],
+            });
+            setResetFilters(false);
+          }}
+          isResetFilters={resetFilters}
+          minValue={filterLimits.minCarYear}
+        />
+
+        <PanelFilteringByPrice
+          id={"panel-filtering-price"}
+          scrollInfo={scrollPanelFilter}
+          onClickReset={() => {
+            setSearchCarFilters({
+              ...searchCarFilters,
+              pricePerDayInUsdFrom: 0,
+              pricePerDayInUsdTo: 0,
+            });
+          }}
+          onClickApply={(selectedValues) => {
+            setSearchCarFilters({
+              ...searchCarFilters,
+              pricePerDayInUsdFrom: selectedValues[0],
+              pricePerDayInUsdTo: selectedValues[1],
+            });
+            setResetFilters(false);
+          }}
+          isResetFilters={resetFilters}
+          maxValue={filterLimits.maxCarPrice}
+        />
+
+        <div className="flex justify-between gap-4 max-sm:w-full">
+          <RntButton className="w-40" onClick={handleResetClick}>
+            {t_comp("button_reset_filters")}
+          </RntButton>
+
+          <div className="select-container">
+            <RntSelect
+              className="w-40 text-lg"
+              selectClassName="buttonGradient text-white text-center custom-select px-4 border-0 cursor-pointer"
+              id="sort"
+              readOnly={false}
+              value={sortBy ? sortOption[sortBy] : ""}
+              onChange={(e) => {
+                const newDataKey = e.target.options[e.target.selectedIndex].getAttribute("data-key") || "";
+                if (isSortOptionKey(newDataKey)) {
+                  setSortBy(newDataKey);
+                }
+              }}
+            >
+              <option className="hidden" value="" disabled>
+                {t_comp("sort_by")}
+              </option>
+              {Object.entries(sortOption ?? {}).map(([key, value]) => (
+                <option key={key} value={value} data-key={key}>
+                  {value}
+                </option>
+              ))}
+            </RntSelect>
+            <span className="custom-arrow bg-[url('../images/arrowDownWhite.svg')]"></span>
           </div>
-        )}
+        </div>
+
+        <RntButtonTransparent className="w-48" onClick={handleClickOpenDeliveryLocation}>
+          <div className="relative flex w-48 items-center justify-center text-rentality-secondary">
+            <div className="text-lg">{t_comp("button_deliver_to_me")}</div>
+            <Image
+              src={openDeliveryLocation ? arrowUpTurquoise : arrowDownTurquoise}
+              alt=""
+              className="max-sm:absolute max-sm:right-4 sm:ml-3"
+            />
+          </div>
+        </RntButtonTransparent>
       </div>
+      {openDeliveryLocation && (
+        <div>
+          <SearchDeliveryLocations searchCarRequest={searchCarRequest} setSearchCarRequest={setSearchCarRequest} />
+        </div>
+      )}
     </>
   );
 }
