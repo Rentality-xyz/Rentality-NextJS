@@ -3,7 +3,7 @@ import { forwardRef, useId } from "react";
 import RntValidationError from "./RntValidationError";
 import { cn } from "@/utils";
 import Image, { StaticImageData } from "next/image";
-import icLocation from "@/images/ic_location.png";
+// @ts-ignore
 import bgBlockSearch from "@/images/bg_block_search.png";
 import * as React from "react";
 import DotStatus from "@/components/profileInfo/dotStatus";
