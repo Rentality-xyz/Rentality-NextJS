@@ -10,8 +10,8 @@ import moment from "moment";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import * as React from "react";
-import arrowUpTurquoise from "../../images/arrowUpTurquoise.svg";
-import arrowDownTurquoise from "../../images/arrowDownTurquoise.svg";
+import arrowUpTurquoise from "../../images/arrows/arrowUpTurquoise.svg";
+import arrowDownTurquoise from "../../images/arrows/arrowDownTurquoise.svg";
 import Image from "next/image";
 import SearchDeliveryLocations from "@/components/search/searchDeliveryLocations";
 import { formatLocationInfoUpToCity } from "@/model/LocationInfo";
@@ -322,7 +322,7 @@ export default function SearchAndFilters({
                 </option>
               ))}
             </RntSelect>
-            <span className="custom-arrow bg-[url('../images/arrowDownWhite.svg')]"></span>
+            <span className="custom-arrow bg-[url('../images/arrows/arrowDownWhite.svg')]"></span>
           </div>
         </div>
 

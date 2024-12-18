@@ -1,5 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/utils";
+import arrowLeft from "../../images/arrows/rntArrowLeft.svg";
+import arrowRight from "../../images/arrows/rntArrowRight.svg";
+import Image from "next/image";
 
 type ScrollingHorizontallyProps = {
   className?: string | undefined;
@@ -35,15 +38,44 @@ export default function ScrollingHorizontally({ children, className, onScroll }:
     }
   };
 
+  const updateArrowsVisibility = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+
+      // Показываем/скрываем стрелки в зависимости от позиции прокрутки
+      setShowLeftArrow(scrollLeft > 0);
+      setShowRightArrow(scrollWidth > clientWidth && scrollLeft < scrollWidth - clientWidth);
+    }
+  };
+
+  useEffect(() => {
+    updateArrowsVisibility();
+    window.addEventListener("resize", updateArrowsVisibility);
+
+    return () => {
+      window.removeEventListener("resize", updateArrowsVisibility);
+    };
+  }, []);
+
   return (
     <div className={wrapperClassName}>
       {/* Левая стрелка */}
       {showLeftArrow && (
         <button
           onClick={() => scrollByAmount(-200)} // Прокрутка влево
-          className="absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-gray-500 p-2 text-white"
+          className="absolute left-0 top-1/2 z-10 w-[40px] -translate-y-1/2"
         >
-          ◀{/*<img src="/path/to/arrowLeft.svg" alt="Scroll Left" />*/}
+          <Image src={arrowLeft} alt="" />
+        </button>
+      )}
+
+      {/* Правая стрелка */}
+      {showRightArrow && (
+        <button
+          onClick={() => scrollByAmount(200)} // Прокрутка вправо
+          className="absolute right-0 top-1/2 z-10 w-[40px] -translate-y-1/2"
+        >
+          <Image src={arrowRight} alt="" />
         </button>
       )}
 
@@ -56,16 +88,6 @@ export default function ScrollingHorizontally({ children, className, onScroll }:
       >
         {children}
       </div>
-
-      {/* Правая стрелка */}
-      {showRightArrow && (
-        <button
-          onClick={() => scrollByAmount(200)} // Прокрутка вправо
-          className="absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-gray-500 p-2 text-white"
-        >
-          ▶{/*<img src="/path/to/arrowLeft.svg" alt="Scroll Right"/>*/}
-        </button>
-      )}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import arrowUpTurquoise from "@/images/arrowUpTurquoise.svg";
-import arrowDownTurquoise from "@/images/arrowDownTurquoise.svg";
+import arrowUpTurquoise from "@/images/arrows/arrowUpTurquoise.svg";
+import arrowDownTurquoise from "@/images/arrows/arrowDownTurquoise.svg";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import { useTranslation } from "react-i18next";
 import { IPanelFilterProps } from "@/components/search/panelFilterProps";
