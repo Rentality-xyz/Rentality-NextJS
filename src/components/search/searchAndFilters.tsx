@@ -27,6 +27,7 @@ import PanelFilteringByYear from "@/components/search/panelFilteringByYear";
 import PanelFilteringByPrice from "@/components/search/panelFilteringByPrice";
 import { nameof } from "@/utils/nameof";
 import { FilterLimits } from "@/model/SearchCarsResult";
+import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 
 export default function SearchAndFilters({
   initValue,
@@ -146,6 +147,7 @@ export default function SearchAndFilters({
   }
 
   const [resetFilters, setResetFilters] = useState(false);
+
   const [scrollPanelFilter, setScrollPanelFilter] = useState<number | null>(null);
   const onScrollPanelFilter = (e: React.UIEvent<HTMLDivElement>) => {
     const scrollLeft = e.currentTarget.scrollLeft;
@@ -209,7 +211,8 @@ export default function SearchAndFilters({
           </RntButton>
         </div>
       </div>
-      <div onScroll={onScrollPanelFilter} className="scrollbar-none mt-4 flex items-center gap-4 overflow-x-auto">
+      {/*<div onScroll={onScrollPanelFilter} className="scrollbar-none flex items-center gap-4 overflow-x-auto">*/}
+      <ScrollingHorizontally onScroll={onScrollPanelFilter} className="mt-4">
         <div className="min-w-48">
           <RntCarMakeSelect
             id={t_comp("select_filter_make")}
@@ -333,7 +336,8 @@ export default function SearchAndFilters({
             />
           </div>
         </RntButtonTransparent>
-      </div>
+      </ScrollingHorizontally>
+      {/*</div>*/}
       {openDeliveryLocation && (
         <div>
           <SearchDeliveryLocations searchCarRequest={searchCarRequest} setSearchCarRequest={setSearchCarRequest} />
