@@ -211,7 +211,6 @@ export default function SearchAndFilters({
           </RntButton>
         </div>
       </div>
-      {/*<div onScroll={onScrollPanelFilter} className="scrollbar-none flex items-center gap-4 overflow-x-auto">*/}
       <ScrollingHorizontally onScroll={onScrollPanelFilter} className="mt-4">
         <div className="min-w-48">
           <RntCarMakeSelect
@@ -337,7 +336,6 @@ export default function SearchAndFilters({
           </div>
         </RntButtonTransparent>
       </ScrollingHorizontally>
-      {/*</div>*/}
       {openDeliveryLocation && (
         <div>
           <SearchDeliveryLocations searchCarRequest={searchCarRequest} setSearchCarRequest={setSearchCarRequest} />

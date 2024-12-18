@@ -63,7 +63,7 @@ export default function ScrollingHorizontally({ children, className, onScroll }:
       {showLeftArrow && (
         <button
           onClick={() => scrollByAmount(-200)} // Прокрутка влево
-          className="absolute left-0 top-1/2 z-10 w-[40px] -translate-y-1/2"
+          className="absolute left-0 top-1/2 z-10 w-10 -translate-y-1/2"
         >
           <Image src={arrowLeft} alt="" />
         </button>
@@ -73,7 +73,7 @@ export default function ScrollingHorizontally({ children, className, onScroll }:
       {showRightArrow && (
         <button
           onClick={() => scrollByAmount(200)} // Прокрутка вправо
-          className="absolute right-0 top-1/2 z-10 w-[40px] -translate-y-1/2"
+          className="absolute right-0 top-1/2 z-10 w-10 -translate-y-1/2"
         >
           <Image src={arrowRight} alt="" />
         </button>
