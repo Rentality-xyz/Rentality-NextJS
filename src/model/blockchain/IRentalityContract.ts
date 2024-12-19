@@ -50,6 +50,7 @@ export interface IRentalityContract {
     civicKycInfo: ContractCivicKYCInfo,
     refferalHash: string
   ): Promise<ContractTransactionResponse>;
+  setMyCivicKYCInfo(civicKycInfo: ContractCivicKYCInfo): Promise<ContractTransactionResponse>;
   getKycCommission(): Promise<bigint>;
   calculateKycCommission(currency: string): Promise<bigint>;
   payKycCommission(currency: string, value: object): Promise<ContractTransactionResponse>;

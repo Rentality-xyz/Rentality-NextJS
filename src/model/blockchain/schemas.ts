@@ -535,6 +535,7 @@ export type ContractInsuranceDTO = {
   creatorFullName: string;
   startDateTime: bigint;
   endDateTime: bigint;
+  isActual: boolean;
 };
 
 export type ContractCarInfoWithInsurance = {
