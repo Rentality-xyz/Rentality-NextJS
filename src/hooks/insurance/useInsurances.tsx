@@ -87,6 +87,7 @@ export default function useInsurances(isHost: boolean) {
               policyNumber: i.insuranceInfo.policyNumber,
               comment: i.insuranceInfo.comment,
               uploadedBy: `${i.createdByHost ? "Host" : "Guest"} ${i.creatorFullName} uploaded ${moment(getDateFromBlockchainTime(i.insuranceInfo.createdTime)).format("DD.MM.YY hh:mm A")}`,
+              isActual: i.isActual,
             },
             hostPhoneNumber: i.creatorPhoneNumber,
             guestPhoneNumber: i.creatorPhoneNumber,

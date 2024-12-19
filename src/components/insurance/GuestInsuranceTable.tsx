@@ -45,7 +45,7 @@ export default function GuestInsuranceTable({ isLoading, data }: GuestInsuranceT
               <tr key={index} className="border-b-[2px] border-b-gray-500">
                 <td className={rowSpanClassName}>{i.tripInfo}</td>
                 <td className={rowSpanClassName}>{getInsuranceTypeText(i.insurance.type, t)}</td>
-                <td className={rowSpanClassName}>{getInsuranceStatusText(i.insurance.type, t)}</td>
+                <td className={rowSpanClassName}>{getInsuranceStatusText(i.insurance.isActual, t)}</td>
                 <td className={rowSpanClassName}>
                   <RntGalleryLink photos={i.insurance.photos} />
                 </td>

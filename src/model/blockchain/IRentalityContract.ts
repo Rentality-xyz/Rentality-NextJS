@@ -45,6 +45,7 @@ export interface IRentalityContract {
     TCSignature: string
   ): Promise<ContractTransactionResponse>;
   setCivicKYCInfo(user: string, civicKycInfo: ContractCivicKYCInfo): Promise<ContractTransactionResponse>;
+  setMyCivicKYCInfo(civicKycInfo: ContractCivicKYCInfo): Promise<ContractTransactionResponse>;
   getKycCommission(): Promise<bigint>;
   calculateKycCommission(currency: string): Promise<bigint>;
   payKycCommission(currency: string, value: object): Promise<ContractTransactionResponse>;

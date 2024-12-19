@@ -384,6 +384,7 @@ const emptyContractInsuranceDTO: ContractInsuranceDTO = {
   creatorFullName: "",
   startDateTime: BigInt(0),
   endDateTime: BigInt(0),
+  isActual: false,
 };
 
 export function validateContractInsuranceDTO(obj: ContractInsuranceDTO): obj is ContractInsuranceDTO {
