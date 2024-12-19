@@ -1,7 +1,6 @@
 import DeliveryPriceForm from "@/components/host/deliveryPriceForm";
 import TripDiscountsForm from "@/components/host/tripDiscountsForm";
 import PageTitle from "@/components/pageTitle/pageTitle";
-import { UserCommonInformationForm, UserDriverLicenseVerification } from "@/components/profileInfo/userProfileInfo";
 import useDeliveryPrices from "@/hooks/host/useDeliveryPrices";
 import useTripDiscounts from "@/hooks/host/useTripDiscounts";
 import useProfileSettings from "@/hooks/useProfileSettings";
@@ -21,6 +20,8 @@ import { GatewayStatus, useGateway } from "@civic/ethereum-gateway-react";
 import useMyListings from "@/hooks/host/useMyListings";
 import AddCar from "@/pages/host/vehicles/add";
 import RntSuspense from "@/components/common/rntSuspense";
+import UserCommonInformationForm from "@/components/profileInfo/UserCommonInformationForm";
+import UserDriverLicenseVerification from "@/components/profileInfo/UserDriverLicenseVerification";
 
 export default function BecomeHost() {
   const { login } = useAuth();

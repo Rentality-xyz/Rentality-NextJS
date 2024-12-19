@@ -106,6 +106,7 @@ export interface IRentalityContract {
     TCSignature: string
   ): Promise<ContractTransactionResponse>;
   setCivicKYCInfo(user: string, civicKycInfo: ContractCivicKYCInfo): Promise<ContractTransactionResponse>;
+  setMyCivicKYCInfo(civicKycInfo: ContractCivicKYCInfo): Promise<ContractTransactionResponse>;
 
   createTripRequestWithDelivery(
     request: ContractCreateTripRequestWithDelivery,
