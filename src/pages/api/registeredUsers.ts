@@ -1,8 +1,7 @@
 import { isEmpty } from "@/utils/string";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { db, loginWithPassword } from "@/utils/firebase";
+import { kycDbInfo, loginWithPassword } from "@/utils/firebase";
 import { collection, getDocs, query } from "firebase/firestore";
-import { FIREBASE_DB_NAME } from "@/chat/model/firebaseTypes";
 import moment from "moment";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { env } from "@/utils/env";
@@ -56,7 +55,7 @@ async function getRegisteredUsers(
   dateFrom: Date | undefined,
   dateTo: Date | undefined
 ): Promise<Result<RegisteredUser[], string>> {
-  if (!db) return Err("db is null");
+  if (!kycDbInfo.db) return Err("db is null");
 
   const CIVIC_USER_EMAIL = env.CIVIC_USER_EMAIL;
   if (!CIVIC_USER_EMAIL || isEmpty(CIVIC_USER_EMAIL)) {
@@ -73,7 +72,7 @@ async function getRegisteredUsers(
   const user = await loginWithPassword(CIVIC_USER_EMAIL, CIVIC_USER_PASSWORD);
 
   const result: RegisteredUser[] = [];
-  const kycInfoQuery = query(collection(db, FIREBASE_DB_NAME.kycInfos));
+  const kycInfoQuery = query(collection(kycDbInfo.db, kycDbInfo.collections.kycInfos));
   const kycInfoQuerySnapshot = await getDocs(kycInfoQuery);
   kycInfoQuerySnapshot.forEach((doc) => {
     const updateDate = doc.data().updateDate;

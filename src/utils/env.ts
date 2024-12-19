@@ -17,7 +17,7 @@ export const env = createEnv({
     SIGNER_PRIVATE_KEY: z.string(),
     MANAGER_PRIVATE_KEY: z.string(),
 
-    PROVIDER_API_URL_1337: z.string().url(),
+    PROVIDER_API_URL_1337: z.string().url().optional(),
     PROVIDER_API_URL_5611: z.string().url().optional(),
     PROVIDER_API_URL_8453: z.string().url(),
     PROVIDER_API_URL_84532: z.string().url(),
@@ -36,7 +36,7 @@ export const env = createEnv({
 
     NEXT_PUBLIC_DEFAULT_CHAIN_ID: z.coerce.number().positive(),
 
-    NEXT_PUBLIC_USE_PINATA_JWT: z.string().min(1),
+    NEXT_PUBLIC_PINATA_JWT: z.string().min(1),
     NEXT_PUBLIC_PRIVY_APP_ID: z.string().min(1),
     NEXT_PUBLIC_CIVIC_GATEKEEPER_NETWORK: z.string().min(1),
     NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: z.string().min(1),
@@ -55,6 +55,7 @@ export const env = createEnv({
     NEXT_PUBLIC_HOTJAR_SITE_ID: z.coerce.number(),
     NEXT_PUBLIC_HOTJAR_VERSION: z.coerce.number(),
     NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS: booleanEnvType.optional(),
+    NEXT_PUBLIC_SKIP_KYC_PAYMENT: booleanEnvType.optional(),
 
     NEXT_PUBLIC_FB_PIXEL_ID: z.coerce.number(),
   },
@@ -67,7 +68,7 @@ export const env = createEnv({
 
     NEXT_PUBLIC_DEFAULT_CHAIN_ID: process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID,
 
-    NEXT_PUBLIC_USE_PINATA_JWT: process.env.NEXT_PUBLIC_USE_PINATA_JWT,
+    NEXT_PUBLIC_PINATA_JWT: process.env.NEXT_PUBLIC_PINATA_JWT,
     NEXT_PUBLIC_PRIVY_APP_ID: process.env.NEXT_PUBLIC_PRIVY_APP_ID,
     NEXT_PUBLIC_CIVIC_GATEKEEPER_NETWORK: process.env.NEXT_PUBLIC_CIVIC_GATEKEEPER_NETWORK,
     NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -86,6 +87,7 @@ export const env = createEnv({
     NEXT_PUBLIC_HOTJAR_SITE_ID: process.env.NEXT_PUBLIC_HOTJAR_SITE_ID,
     NEXT_PUBLIC_HOTJAR_VERSION: process.env.NEXT_PUBLIC_HOTJAR_VERSION,
     NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS: process.env.NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS,
+    NEXT_PUBLIC_SKIP_KYC_PAYMENT: process.env.NEXT_PUBLIC_SKIP_KYC_PAYMENT,
 
     NEXT_PUBLIC_FB_PIXEL_ID: process.env.NEXT_PUBLIC_FB_PIXEL_ID,
   },

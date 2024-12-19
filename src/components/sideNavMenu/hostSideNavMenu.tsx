@@ -64,6 +64,7 @@ function HostNavMenu() {
       </SideNavMenuGroup>
       <SideNavMenuGroup title={t_nav("vehicles")}>
         <SideNavMenuItem text={t_nav("listing")} href="/host/vehicles/listings" icon={MenuIcons.Listings} />
+        <SideNavMenuItem text={t_nav("insurance")} href="/host/insurance" icon={MenuIcons.Insurance} />
         <SideNavMenuItem
           text={t_nav("claims")}
           href="/host/claims"

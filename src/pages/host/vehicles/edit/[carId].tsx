@@ -25,7 +25,7 @@ export default function EditCar() {
       <CheckingLoadingAuth>
         <RntSuspense isLoading={isLoading}>
           {hostCarInfo.carId <= 0 && (
-            <h1 className="py-8 text-2xl font-bold text-red-800">{t("vehicles.can_not_edit")}</h1>
+            <h1 className="py-8 text-2xl font-bold text-rentality-alert-text">{t("vehicles.can_not_edit")}</h1>
           )}
           {hostCarInfo.carId > 0 && (
             <CarEditForm

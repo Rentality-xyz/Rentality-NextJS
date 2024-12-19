@@ -5,6 +5,7 @@ import { Err, Ok, Result } from "@/model/utils/result";
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { JsonRpcProvider, Wallet } from "ethers";
+import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 
 export type UpdateCivicRequest = {
   chainId: number;
@@ -43,7 +44,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  let providerApiUrl = process.env[`PROVIDER_API_URL_${chainId}`];
+  // const providerApiUrl = process.env[`NEXT_PUBLIC_PROVIDER_API_URL_${chainId}`];
+  const providerApiUrl = getProviderApiUrlFromEnv(chainId);
+
   if (!providerApiUrl) {
     console.error(`updateCivic error: API URL for chain id ${chainId} was not set`);
     res.status(500).json({ error: getErrorMessage(`updateCivic error: API URL for chain id ${chainId} was not set`) });

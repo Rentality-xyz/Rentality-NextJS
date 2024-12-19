@@ -5,7 +5,7 @@ import { isEmpty } from "@/utils/string";
 
 const useHostPublicListings = (hostAddressOrName: string) => {
   const ethereumInfo = useEthereum();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hostPublicListings, setHostPublicListings] = useState<BaseCarInfo[]>([]);
 
   useEffect(() => {

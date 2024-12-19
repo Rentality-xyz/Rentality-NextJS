@@ -67,7 +67,7 @@ const useTransactionHistory = (isHost: boolean) => {
         setCurrentPage(page);
         setTotalPageCount(0);
 
-        const tripInfos = isHost ? await rentalityContract.getTripsAsHost() : await rentalityContract.getTripsAsGuest();
+        const tripInfos = await rentalityContract.getTripsAs(isHost);
 
         if (tripInfos && tripInfos.length > 0) {
           validateContractTripDTO(tripInfos[0]);

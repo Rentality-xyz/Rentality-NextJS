@@ -21,8 +21,17 @@ import { GatewayStatus, useGateway } from "@civic/ethereum-gateway-react";
 import useMyListings from "@/hooks/host/useMyListings";
 import AddCar from "@/pages/host/vehicles/add";
 import RntSuspense from "@/components/common/rntSuspense";
+import { CivicProvider } from "@/contexts/web3/civicContext";
 
 export default function BecomeHost() {
+  return (
+    <CivicProvider>
+      <BecomeHostContent />
+    </CivicProvider>
+  );
+}
+
+function BecomeHostContent() {
   const { login } = useAuth();
   const ethereumInfo = useEthereum();
   const [isLoadingProfileSettings, savedProfileSettings, saveProfileSettings] = useProfileSettings();

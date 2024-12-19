@@ -60,7 +60,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
             <div className="m-4 flex flex-col">
               <div className="m-4 flex flex-col">
                 <h1
-                  className={`mb-4 text-4xl ${tripInfo.isTripCanceled || tripInfo.isTripRejected ? "text-[#FF0000]" : ""}`}
+                  className={`mb-4 text-4xl ${tripInfo.isTripCanceled || tripInfo.isTripRejected ? "text-rentality-alert-text" : ""}`}
                 >
                   Car sharing agreement #{tripId.toString()}{" "}
                   {tripInfo.isTripCanceled
@@ -199,7 +199,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                 <div className="text-xl">TRIP SUMMARY</div>
                 <div className="">Reservation ID {tripInfo.tripId}</div>
                 <div className="">
-                  Booked ON: {dateFormatLongMonthYearDateTime(tripInfo.approvedDateTime, tripInfo.timeZoneId)}
+                  Booked ON: {dateFormatLongMonthYearDateTime(tripInfo.createdDateTime, tripInfo.timeZoneId)}
                 </div>
                 <div className="">Trip days: {moment(tripInfo.tripEnd).diff(tripInfo.tripStart, "days")}</div>
                 <div className="">
@@ -266,6 +266,13 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                   {tripInfo.pricePer10PercentFuel / tripInfo.currencyRate} (USD{" "}
                   {displayMoneyWith2Digits(tripInfo.pricePer10PercentFuel)})
                 </div>
+                {tripInfo.insuranceTotalInUsd > 0 && (
+                  <div className="">
+                    Insurance fee ${displayMoneyWith2Digits(tripInfo.insurancePerDayInUsd)}/day: ETH{" "}
+                    {tripInfo.insuranceTotalInUsd / tripInfo.currencyRate} (USD{" "}
+                    {displayMoneyWith2Digits(tripInfo.insuranceTotalInUsd)})
+                  </div>
+                )}
               </div>
               <div className="m-4 flex flex-col">
                 The person identified as “Guest” and the person identified as “Host” on the Basic Agreement Information

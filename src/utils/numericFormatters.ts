@@ -17,14 +17,14 @@ export const formatEthWithDecimals = (value: bigint, decimals: bigint) => {
   return `${Number(value) / 10 ** Number(decimals)}`;
 };
 
-export const displayMoneyWith2Digits = (value: number | undefined) => {
-  if (!value) return Number(0).toFixed(2);
+export const displayMoneyWith2Digits = (value: number | undefined, undefinedText?: string) => {
+  if (value === undefined && undefinedText !== undefined) return undefinedText;
+  if (value === undefined) return Number(0).toFixed(2);
   return value.toFixed(2);
 };
 
 export const displayMoneyWith2DigitsOrNa = (value: number | undefined) => {
-  if (value === undefined) return "N/A";
-  return value.toFixed(2);
+  return displayMoneyWith2Digits(value, "N/A");
 };
 
 export const displayMoneyFromCentsWith2Digits = (value: number | bigint): string => {

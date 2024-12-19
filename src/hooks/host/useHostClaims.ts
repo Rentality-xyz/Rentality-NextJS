@@ -25,8 +25,8 @@ import { useTranslation } from "react-i18next";
 const useHostClaims = () => {
   const rentalityContract = useRentality();
   const ethereumInfo = useEthereum();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
-  const [updateRequired, setUpdateRequired] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [updateRequired, setUpdateRequired] = useState<boolean>(true);
   const [claims, setClaims] = useState<Claim[]>([]);
   const { t } = useTranslation();
   const [tripInfos, setTripInfos] = useState<TripInfoForClaimCreation[]>([
@@ -146,7 +146,7 @@ const useHostClaims = () => {
           console.error("getClaims error: contract is null");
           return;
         }
-        const claimsView: ContractFullClaimInfo[] = await rentalityContract.getMyClaimsAsHost();
+        const claimsView: ContractFullClaimInfo[] = await rentalityContract.getMyClaimsAs(true);
 
         const claimsData =
           claimsView.length === 0
@@ -182,7 +182,7 @@ const useHostClaims = () => {
                 })
               );
 
-        const hostTripsView: ContractTripDTO[] = (await rentalityContract.getTripsAsHost()).filter(
+        const hostTripsView: ContractTripDTO[] = (await rentalityContract.getTripsAs(true)).filter(
           (i) => i.trip.status !== TripStatus.Pending && i.trip.status !== TripStatus.Rejected
         );
 

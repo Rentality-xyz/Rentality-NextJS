@@ -1,4 +1,4 @@
-import { EngineType, TripStatus } from "./blockchain/schemas";
+import { EngineType, InsuranceType, TripStatus } from "./blockchain/schemas";
 
 export enum TripStatusEnum {
   Pending, // Created
@@ -113,10 +113,53 @@ export type TripInfo = {
     photoUrl: string;
     drivingLicenseNumber: string;
     drivingLicenseExpirationDate: Date;
+    drivingLicenseIssueCountry: string;
   };
+  guestInsuranceType?: InsuranceType;
+  guestInsurancePhoto: string;
   guestInsuranceCompanyName: string;
   guestInsurancePolicyNumber: string;
   isCarDetailsConfirmed: boolean;
+  insurancePerDayInUsd: number;
+  insuranceTotalInUsd: number;
+};
+
+export type TripInfoShortDetails = {
+  tripId: number;
+  carId: number;
+  brand: string;
+  model: string;
+  year: string;
+  tripStart: Date;
+  tripEnd: Date;
+  tripDays: number;
+  locationStart: string;
+  locationEnd: string;
+  status: TripStatus;
+  rejectedBy: string;
+  rejectedDate: Date | undefined;
+  isTripRejected: boolean;
+  isTripCanceled: boolean;
+  timeZoneId: string;
+
+  host: {
+    walletAddress: string;
+    name: string;
+    phoneNumber: string;
+    photoUrl: string;
+    drivingLicenseNumber: string;
+    drivingLicenseExpirationDate: Date;
+  };
+
+  guest: {
+    walletAddress: string;
+    name: string;
+    phoneNumber: string;
+    photoUrl: string;
+    drivingLicenseNumber: string;
+    drivingLicenseExpirationDate: Date;
+    drivingLicenseIssueCountry: string;
+  };
 };
 
 export const getRefuelCharge = (tripInfo: TripInfo, endFuelLevelInPercents: number) => {
