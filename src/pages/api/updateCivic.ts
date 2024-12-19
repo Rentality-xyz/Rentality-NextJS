@@ -21,7 +21,7 @@ export type UpdateCivicResponse =
     };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<UpdateCivicResponse>) {
-  const MANAGER_PRIVATE_KEY = env.NEXT_PUBLIC_SERVER_MANAGER_PRIVATE_KEY;
+  const MANAGER_PRIVATE_KEY = env.MANAGER_PRIVATE_KEY;
   if (isEmpty(MANAGER_PRIVATE_KEY)) {
     console.error("updateCivic error: private key was not set");
     res.status(500).json({ error: getErrorMessage("private key was not set") });

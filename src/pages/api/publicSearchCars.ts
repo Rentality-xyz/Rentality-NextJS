@@ -32,7 +32,7 @@ export type PublicSearchCarsResponse =
   | { error: string };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<PublicSearchCarsResponse>) {
-  const privateKey = env.NEXT_PUBLIC_SERVER_SIGNER_PRIVATE_KEY;
+  const privateKey = env.SIGNER_PRIVATE_KEY;
   if (isEmpty(privateKey)) {
     console.error("API checkTrips error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
@@ -260,7 +260,7 @@ async function formatSearchAvailableCarsContractResponse(
 ) {
   if (searchCarsViewsView.length === 0) return [];
 
-  const testWallets = env.NEXT_PUBLIC_SERVER_TEST_WALLETS_ADDRESSES?.split(",") ?? [];
+  const testWallets = env.TEST_WALLETS_ADDRESSES?.split(",") ?? [];
 
   const cars = await Promise.all(
     searchCarsViewsView.map(async (i: ContractSearchCarWithDistance, index) => {

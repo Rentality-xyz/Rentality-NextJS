@@ -8,6 +8,26 @@ const booleanEnvType = z.union([z.literal("true"), z.literal("false")], {
 export const env = createEnv({
   server: {
     NEXT_USE_STRICT_MODE: booleanEnvType.optional(),
+
+    CIVIC_CLIENT_ID: z.string().optional(),
+    CIVIC_CLIENT_SECRET: z.string().optional(),
+    CIVIC_USER_EMAIL: z.string().email().optional(),
+    CIVIC_USER_PASSWORD: z.string().optional(),
+
+    SIGNER_PRIVATE_KEY: z.string(),
+    MANAGER_PRIVATE_KEY: z.string(),
+
+    PROVIDER_API_URL_1337: z.string().url(),
+    PROVIDER_API_URL_5611: z.string().url().optional(),
+    PROVIDER_API_URL_8453: z.string().url(),
+    PROVIDER_API_URL_84532: z.string().url(),
+    PROVIDER_API_URL_11155111: z.string().url().optional(),
+    PROVIDER_API_URL_11155420: z.string().url().optional(),
+
+    CARAPI_TOKEN: z.string(),
+    CARAPI_SECRET: z.string(),
+
+    TEST_WALLETS_ADDRESSES: z.string(),
   },
   client: {
     NEXT_PUBLIC_INCLUDE_MAINNETS: booleanEnvType,
@@ -38,30 +58,10 @@ export const env = createEnv({
     NEXT_PUBLIC_SKIP_KYC_PAYMENT: booleanEnvType.optional(),
 
     NEXT_PUBLIC_FB_PIXEL_ID: z.coerce.number(),
-
-    NEXT_PUBLIC_SERVER_CIVIC_CLIENT_ID: z.string().optional(),
-    NEXT_PUBLIC_SERVER_CIVIC_CLIENT_SECRET: z.string().optional(),
-    NEXT_PUBLIC_SERVER_CIVIC_USER_EMAIL: z.string().email().optional(),
-    NEXT_PUBLIC_SERVER_CIVIC_USER_PASSWORD: z.string().optional(),
-
-    NEXT_PUBLIC_SERVER_SIGNER_PRIVATE_KEY: z.string(),
-    NEXT_PUBLIC_SERVER_MANAGER_PRIVATE_KEY: z.string(),
-
-    NEXT_PUBLIC_SERVER_PROVIDER_API_URL_1337: z.string().url(),
-    NEXT_PUBLIC_SERVER_PROVIDER_API_URL_5611: z.string().url().optional(),
-    NEXT_PUBLIC_SERVER_PROVIDER_API_URL_8453: z.string().url(),
-    NEXT_PUBLIC_SERVER_PROVIDER_API_URL_84532: z.string().url(),
-    NEXT_PUBLIC_SERVER_PROVIDER_API_URL_11155111: z.string().url().optional(),
-    NEXT_PUBLIC_SERVER_PROVIDER_API_URL_11155420: z.string().url().optional(),
-
-    NEXT_PUBLIC_SERVER_CARAPI_TOKEN: z.string(),
-    NEXT_PUBLIC_SERVER_CARAPI_SECRET: z.string(),
-
-    NEXT_PUBLIC_SERVER_TEST_WALLETS_ADDRESSES: z.string(),
   },
 
   // If you're using Next.js < 13.4.4, you'll need to specify the runtimeEnv manually
-  runtimeEnv: {
+  experimental__runtimeEnv: {
     NEXT_PUBLIC_INCLUDE_MAINNETS: process.env.NEXT_PUBLIC_INCLUDE_MAINNETS,
     NEXT_PUBLIC_INCLUDE_TESTNETS: process.env.NEXT_PUBLIC_INCLUDE_TESTNETS,
     NEXT_PUBLIC_INCLUDE_LOCALNETS: process.env.NEXT_PUBLIC_INCLUDE_LOCALNETS,
@@ -90,28 +90,6 @@ export const env = createEnv({
     NEXT_PUBLIC_SKIP_KYC_PAYMENT: process.env.NEXT_PUBLIC_SKIP_KYC_PAYMENT,
 
     NEXT_PUBLIC_FB_PIXEL_ID: process.env.NEXT_PUBLIC_FB_PIXEL_ID,
-
-    NEXT_USE_STRICT_MODE: process.env.NEXT_USE_STRICT_MODE,
-
-    NEXT_PUBLIC_SERVER_CIVIC_CLIENT_ID: process.env.NEXT_PUBLIC_SERVER_CIVIC_CLIENT_ID,
-    NEXT_PUBLIC_SERVER_CIVIC_CLIENT_SECRET: process.env.NEXT_PUBLIC_SERVER_CIVIC_CLIENT_SECRET,
-    NEXT_PUBLIC_SERVER_CIVIC_USER_EMAIL: process.env.NEXT_PUBLIC_SERVER_CIVIC_USER_EMAIL,
-    NEXT_PUBLIC_SERVER_CIVIC_USER_PASSWORD: process.env.NEXT_PUBLIC_SERVER_CIVIC_USER_PASSWORD,
-
-    NEXT_PUBLIC_SERVER_SIGNER_PRIVATE_KEY: process.env.NEXT_PUBLIC_SERVER_SIGNER_PRIVATE_KEY,
-    NEXT_PUBLIC_SERVER_MANAGER_PRIVATE_KEY: process.env.NEXT_PUBLIC_SERVER_MANAGER_PRIVATE_KEY,
-
-    NEXT_PUBLIC_SERVER_PROVIDER_API_URL_1337: process.env.NEXT_PUBLIC_SERVER_PROVIDER_API_URL_1337,
-    NEXT_PUBLIC_SERVER_PROVIDER_API_URL_5611: process.env.NEXT_PUBLIC_SERVER_PROVIDER_API_URL_5611,
-    NEXT_PUBLIC_SERVER_PROVIDER_API_URL_8453: process.env.NEXT_PUBLIC_SERVER_PROVIDER_API_URL_8453,
-    NEXT_PUBLIC_SERVER_PROVIDER_API_URL_84532: process.env.NEXT_PUBLIC_SERVER_PROVIDER_API_URL_84532,
-    NEXT_PUBLIC_SERVER_PROVIDER_API_URL_11155111: process.env.NEXT_PUBLIC_SERVER_PROVIDER_API_URL_11155111,
-    NEXT_PUBLIC_SERVER_PROVIDER_API_URL_11155420: process.env.NEXT_PUBLIC_SERVER_PROVIDER_API_URL_11155420,
-
-    NEXT_PUBLIC_SERVER_CARAPI_TOKEN: process.env.NEXT_PUBLIC_SERVER_CARAPI_TOKEN,
-    NEXT_PUBLIC_SERVER_CARAPI_SECRET: process.env.NEXT_PUBLIC_SERVER_CARAPI_SECRET,
-
-    NEXT_PUBLIC_SERVER_TEST_WALLETS_ADDRESSES: process.env.NEXT_PUBLIC_SERVER_TEST_WALLETS_ADDRESSES,
   },
   // For Next.js >= 13.4.4, you only need to destructure client variables:
   //    experimental__runtimeEnv: {

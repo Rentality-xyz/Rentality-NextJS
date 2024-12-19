@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  const SIGNER_PRIVATE_KEY = env.NEXT_PUBLIC_SERVER_SIGNER_PRIVATE_KEY;
+  const SIGNER_PRIVATE_KEY = env.SIGNER_PRIVATE_KEY;
   if (isEmpty(SIGNER_PRIVATE_KEY)) {
     console.error("SignLocation error: SIGNER_PRIVATE_KEY was not set");
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
