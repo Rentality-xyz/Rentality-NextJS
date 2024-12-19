@@ -1,6 +1,6 @@
 {
   "name": "rentality-app",
-  "version": "0.6.8-prod.5",
+  "version": "0.6.8-prod.6",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -12,7 +12,7 @@
     "format": "npx prettier --write ."
   },
   "dependencies": {
-    "@civic/ethereum-gateway-react": "v1.4.1-beta.2",
+    "@civic/ethereum-gateway-react": "v1.4.5",
     "@coinbase/onchainkit": "^0.23.4",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
