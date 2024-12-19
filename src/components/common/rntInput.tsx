@@ -4,7 +4,10 @@ import RntValidationError from "./RntValidationError";
 import { cn } from "@/utils";
 import Image, { StaticImageData } from "next/image";
 import bgInput from "@/images/bg_input.png";
+// @ts-ignore
+import bgBlockSearch from "@/images/bg_block_search.png";
 import * as React from "react";
+import DotStatus from "@/components/profileInfo/dotStatus";
 
 interface RntInputProps extends React.ComponentPropsWithoutRef<"input"> {
   labelClassName?: string;
@@ -12,6 +15,8 @@ interface RntInputProps extends React.ComponentPropsWithoutRef<"input"> {
   validationClassName?: string;
   label?: string;
   validationError?: string;
+  validationSuccessMessage?: string;
+  validationMessage?:string;
   isTransparentStyle?: boolean;
   iconFrontLabel?: StaticImageData;
 }
@@ -32,6 +37,8 @@ const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
       value,
       readOnly,
       validationError,
+      validationSuccessMessage,
+      validationMessage,
       onChange: onChangeHandler,
       onBlur: onBlurHandler,
       ...rest
@@ -78,6 +85,8 @@ const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
           ref={ref}
         />
         <RntValidationError className={validationClassName} validationError={validationError} />
+        { validationSuccessMessage && <DotStatus containerClassName="text-sm text-rnt-temp-main-text whitespace-nowrap mt-2 pl-4" color="success" text={validationSuccessMessage} /> }
+        { validationMessage && <DotStatus containerClassName="text-sm text-rnt-temp-main-text whitespace-nowrap mt-2 pl-4" color="warning" text={validationMessage} /> }
       </div>
     );
   }

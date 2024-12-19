@@ -42,8 +42,6 @@ export class ChatId {
   }
 }
 
-export const FIREBASE_DB_NAME = { chats: "chats", userchats: "userchats", kycInfos: "kycInfos" } as const;
-
 export type FirebaseChatMessage = {
   chatId: ChatId;
   senderId: string;
@@ -125,18 +123,20 @@ export const userChatsConverter = {
   },
 };
 
-export async function saveMessageToFirebase(db: Firestore, message: FirebaseChatMessage) {
-  if (!db) return;
+type ChatDbInfo = { db: Firestore | undefined; collections: { chats: "chats"; userchats: "userchats" } };
 
-  await Promise.all([saveChatMessage(db, message), updateUserChats(db, message)]);
+export async function saveMessageToFirebase(dbInfo: ChatDbInfo, message: FirebaseChatMessage) {
+  if (!dbInfo.db) return;
+
+  await Promise.all([saveChatMessage(dbInfo, message), updateUserChats(dbInfo, message)]);
 }
 
-async function saveChatMessage(db: Firestore, message: FirebaseChatMessage) {
-  if (!db) return;
+async function saveChatMessage(dbInfo: ChatDbInfo, message: FirebaseChatMessage) {
+  if (!dbInfo.db) return;
 
   const firebaseMessage = { ...message, chatId: message.chatId.toString() };
 
-  const chatsRef = doc(db, FIREBASE_DB_NAME.chats, firebaseMessage.chatId);
+  const chatsRef = doc(dbInfo.db, dbInfo.collections.chats, firebaseMessage.chatId);
   const chatsQuerySnapshot = await getDoc(chatsRef);
   if (!chatsQuerySnapshot.exists()) {
     await setDoc(chatsRef, {
@@ -151,17 +151,17 @@ async function saveChatMessage(db: Firestore, message: FirebaseChatMessage) {
   }
 }
 
-async function updateUserChats(db: Firestore, message: FirebaseChatMessage) {
-  if (!db) return;
+async function updateUserChats(dbInfo: ChatDbInfo, message: FirebaseChatMessage) {
+  if (!dbInfo.db) return;
 
   await Promise.all([
-    updateUserChatsForUser(db, message.chatId.hostAddress, message),
-    updateUserChatsForUser(db, message.chatId.guestAddress, message),
+    updateUserChatsForUser(dbInfo, message.chatId.hostAddress, message),
+    updateUserChatsForUser(dbInfo, message.chatId.guestAddress, message),
   ]);
 }
 
-async function updateUserChatsForUser(db: Firestore, userAddress: string, message: FirebaseChatMessage) {
-  if (!db) return;
+async function updateUserChatsForUser(dbInfo: ChatDbInfo, userAddress: string, message: FirebaseChatMessage) {
+  if (!dbInfo.db) return;
   if (userAddress !== message.chatId.hostAddress && userAddress !== message.chatId.guestAddress) {
     console.error("user does not belong to this chat id");
     return;
@@ -175,7 +175,7 @@ async function updateUserChatsForUser(db: Firestore, userAddress: string, messag
     isSeen: message.senderId === userAddress,
   };
 
-  const userchatsRef = doc(db, FIREBASE_DB_NAME.userchats, userAddress);
+  const userchatsRef = doc(dbInfo.db, dbInfo.collections.userchats, userAddress);
   const userchatsQuerySnapshot = await getDoc(userchatsRef);
 
   if (!userchatsQuerySnapshot.exists()) {
@@ -203,14 +203,14 @@ async function updateUserChatsForUser(db: Firestore, userAddress: string, messag
   }
 }
 
-export async function markUserChatAsSeen(db: Firestore, userAddress: string, chatId: ChatId) {
-  if (!db) return;
+export async function markUserChatAsSeen(dbInfo: ChatDbInfo, userAddress: string, chatId: ChatId) {
+  if (!dbInfo.db) return;
   if (userAddress !== chatId.hostAddress && userAddress !== chatId.guestAddress) {
     console.error("user does not belong to this chat id");
     return;
   }
 
-  const userchatsRef = doc(db, FIREBASE_DB_NAME.userchats, userAddress);
+  const userchatsRef = doc(dbInfo.db, dbInfo.collections.userchats, userAddress);
   const userchatsQuerySnapshot = await getDoc(userchatsRef);
 
   if (userchatsQuerySnapshot.exists()) {
@@ -228,10 +228,10 @@ export async function markUserChatAsSeen(db: Firestore, userAddress: string, cha
   }
 }
 
-export async function checkUserChats(db: Firestore, hostAddress: string, guestAddress: string) {
-  if (!db) return;
+export async function checkUserChats(dbInfo: ChatDbInfo, hostAddress: string, guestAddress: string) {
+  if (!dbInfo.db) return;
 
-  const hostUserchatsRef = doc(db, FIREBASE_DB_NAME.userchats, hostAddress);
+  const hostUserchatsRef = doc(dbInfo.db, dbInfo.collections.userchats, hostAddress);
   const hostUserchatsQuerySnapshot = await getDoc(hostUserchatsRef);
 
   if (!hostUserchatsQuerySnapshot.exists()) {
@@ -241,7 +241,7 @@ export async function checkUserChats(db: Firestore, hostAddress: string, guestAd
     });
   }
 
-  const guestUserchatsRef = doc(db, FIREBASE_DB_NAME.userchats, guestAddress);
+  const guestUserchatsRef = doc(dbInfo.db, dbInfo.collections.userchats, guestAddress);
   const guestUserchatsQuerySnapshot = await getDoc(guestUserchatsRef);
 
   if (!guestUserchatsQuerySnapshot.exists()) {
@@ -252,8 +252,10 @@ export async function checkUserChats(db: Firestore, hostAddress: string, guestAd
   }
 }
 
-export async function getChatMessages(db: Firestore, chatId: ChatId): Promise<FirebaseChatMessage[]> {
-  const chatsRef = doc(db, FIREBASE_DB_NAME.chats, chatId.toString());
+export async function getChatMessages(dbInfo: ChatDbInfo, chatId: ChatId): Promise<FirebaseChatMessage[]> {
+  if (!dbInfo.db) return [];
+
+  const chatsRef = doc(dbInfo.db, dbInfo.collections.chats, chatId.toString());
   const chatsQuerySnapshot = await getDoc(chatsRef);
 
   if (!chatsQuerySnapshot.exists()) return [];

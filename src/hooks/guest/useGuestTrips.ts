@@ -9,8 +9,8 @@ import { ZERO_HASH } from "@/utils/wallet";
 
 const useGuestTrips = () => {
   const rentalityContract = useRentality();
-  const [isLoadingTrips, setIsLoadingTrips] = useState<Boolean>(true);
-  const [updateRequired, setUpdateRequired] = useState<Boolean>(true);
+  const [isLoadingTrips, setIsLoadingTrips] = useState<boolean>(true);
+  const [updateRequired, setUpdateRequired] = useState<boolean>(true);
   const [tripsBooked, setTripsBooked] = useState<TripInfo[]>([]);
   const [tripsHistory, setTripsHistory] = useState<TripInfo[]>([]);
 
@@ -194,7 +194,7 @@ const useGuestTrips = () => {
           console.error("getTrips error: contract is null");
           return;
         }
-        const tripsBookedView: ContractTripDTO[] = await rentalityContract.getTripsAsGuest();
+        const tripsBookedView: ContractTripDTO[] = await rentalityContract.getTripsAs(false);
 
         const tripsBookedData =
           tripsBookedView.length === 0

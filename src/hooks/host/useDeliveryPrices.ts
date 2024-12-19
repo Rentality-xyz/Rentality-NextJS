@@ -19,7 +19,7 @@ const useDeliveryPrices = () => {
   const ethereumInfo = useEthereum();
   const rentalityContract = useRentality();
   const userInfo = useUserInfo();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [deliveryPrices, setDeliveryPrices] = useState<DeliveryPrices>(emptyDeliveryPrices);
 
   const saveDeliveryPrices = async (

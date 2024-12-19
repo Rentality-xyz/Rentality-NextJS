@@ -1,3 +1,5 @@
+import { Prettify } from "viem";
+
 export type FileToUpload = {
   file: File;
   localUrl: string;
@@ -8,18 +10,22 @@ export type UploadedFile = {
   isDeleted?: boolean;
 };
 
-export type PlatformFile = FileToUpload | UploadedFile;
+export type PlatformFile = Prettify<FileToUpload | UploadedFile>;
 
-export type CarImageToUpload = FileToUpload & {
-  isPrimary?: boolean;
-};
+export type CarImageToUpload = Prettify<
+  FileToUpload & {
+    isPrimary?: boolean;
+  }
+>;
 
-export type UploadedCarImage = UploadedFile & {
-  isPrimary?: boolean;
-};
+export type UploadedCarImage = Prettify<
+  UploadedFile & {
+    isPrimary?: boolean;
+  }
+>;
 
 export function isUploadedCarImage(file: PlatformFile): file is UploadedCarImage {
   return "url" in file;
 }
 
-export type PlatformCarImage = CarImageToUpload | UploadedCarImage;
+export type PlatformCarImage = Prettify<CarImageToUpload | UploadedCarImage>;

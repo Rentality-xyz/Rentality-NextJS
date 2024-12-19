@@ -3,15 +3,19 @@ import axios from "axios";
 import { env } from "./env";
 import { Err, Ok, Result } from "@/model/utils/result";
 
-const pinataJwt = env.NEXT_PUBLIC_USE_PINATA_JWT;
+const pinataJwt = env.NEXT_PUBLIC_PINATA_JWT;
 
 export async function uploadJSONToIPFS(JSONBody: {}, fileNameTag?: string, keyValues?: {}) {
   const url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;
+  const fileNameExt =
+    keyValues !== undefined && "chainId" in keyValues && typeof keyValues.chainId === "string"
+      ? `_${keyValues.chainId}`
+      : "";
 
   const pinataData = {
     pinataContent: JSONBody,
     pinataOptions: { cidVersion: 0 },
-    pinataMetadata: { name: fileNameTag, keyvalues: keyValues },
+    pinataMetadata: { name: fileNameTag + fileNameExt, keyvalues: keyValues },
   };
 
   return axios
@@ -40,6 +44,10 @@ export async function uploadJSONToIPFS(JSONBody: {}, fileNameTag?: string, keyVa
 
 export async function uploadFileToIPFS(file: File, fileNameTag?: string, keyValues?: {}) {
   const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
+  const fileNameExt =
+    keyValues !== undefined && "chainId" in keyValues && typeof keyValues.chainId === "string"
+      ? `_${keyValues.chainId}`
+      : "";
 
   if (!fileNameTag) {
     fileNameTag = "rentalityFile";
@@ -49,7 +57,7 @@ export async function uploadFileToIPFS(file: File, fileNameTag?: string, keyValu
   data.append("file", file);
 
   const metadata = JSON.stringify({
-    name: fileNameTag,
+    name: fileNameTag + fileNameExt,
     keyvalues: keyValues,
   });
   data.append("pinataMetadata", metadata);

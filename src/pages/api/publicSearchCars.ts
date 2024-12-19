@@ -1,8 +1,7 @@
 import { getEtherContractWithSigner } from "@/abis";
-import { ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "@/model/EngineType";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
-import { FilterLimits, SearchCarInfo } from "@/model/SearchCarsResult";
-import { emptyLocationInfo } from "@/model/LocationInfo";
+import { FilterLimits, SearchCarInfo, SearchCarInfoDTO } from "@/model/SearchCarsResult";
+import { emptyLocationInfo, formatLocationInfoUpToCity } from "@/model/LocationInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import {
   ContractFilterInfoDTO,
@@ -11,9 +10,8 @@ import {
   ContractSearchCarWithDistance,
 } from "@/model/blockchain/schemas";
 import { emptyContractLocationInfo, validateContractSearchCarWithDistance } from "@/model/blockchain/schemas_utils";
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
-import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getIpfsURIs, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Wallet } from "ethers";
@@ -22,10 +20,12 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { env } from "@/utils/env";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { allSupportedBlockchainList } from "@/model/blockchain/blockchainList";
+import { getTimeZoneIdFromAddress } from "@/utils/timezone";
+import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 
 export type PublicSearchCarsResponse =
   | {
-      availableCarsData: SearchCarInfo[];
+      availableCarsData: SearchCarInfoDTO[];
       filterLimits: FilterLimits;
     }
   | { error: string };
@@ -65,7 +65,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  let providerApiUrl = process.env[`PROVIDER_API_URL_${chainIdNumber}`];
+  // const providerApiUrl = process.env[`NEXT_PUBLIC_PROVIDER_API_URL_${chainIdNumber}`];
+  const providerApiUrl = getProviderApiUrlFromEnv(chainIdNumber);
+
   if (!providerApiUrl) {
     console.error(`API checkTrips error: API URL for chain id ${chainIdNumber} was not set`);
     res.status(500).json({ error: `API checkTrips error: API URL for chain id ${chainIdNumber} was not set` });
@@ -279,16 +281,22 @@ async function formatSearchAvailableCarsContractResponse(
       const pricePerDay = Number(i.car.pricePerDayInUsdCents) / 100;
       const totalPriceWithDiscount = Number(i.car.totalPriceWithDiscount) / 100;
 
-      let item: SearchCarInfo = {
+      let item: SearchCarInfoDTO = {
         carId: Number(i.car.carId),
         ownerAddress: i.car.host.toString(),
-        image: getIpfsURI(metaData.mainImage),
+        images: getIpfsURIs(metaData.images),
         brand: i.car.brand,
         model: i.car.model,
         year: i.car.yearOfProduction.toString(),
-        seatsNumber: metaData.seatsNumber,
+        doorsNumber: Number(metaData.doorsNumber),
+        seatsNumber: Number(metaData.seatsNumber),
         transmission: metaData.transmission,
-        engineTypeText: getEngineTypeString(i.car.engineType) ?? ENGINE_TYPE_PETROL_STRING,
+        engineType: Number(i.car.engineType),
+        carDescription: metaData.description,
+        color: metaData.color,
+        carName: metaData.name,
+        tankSizeInGal: Number(metaData.tankVolumeInGal),
+
         milesIncludedPerDayText: getMilesIncludedPerDayText(i.car.milesIncludedPerDay ?? 0),
         pricePerDay: pricePerDay,
         pricePerDayWithDiscount: Number(i.car.pricePerDayWithDiscount) / 100,
@@ -306,16 +314,21 @@ async function formatSearchAvailableCarsContractResponse(
         highlighted: false,
         daysDiscount: getDaysDiscount(tripDays),
         totalDiscount: getTotalDiscount(pricePerDay, tripDays, totalPriceWithDiscount),
-        hostHomeLocation: `${i.car.locationInfo.city}, ${i.car.locationInfo.state}, ${i.car.locationInfo.country}`,
+        hostHomeLocation: formatLocationInfoUpToCity(i.car.locationInfo),
         deliveryPrices: {
           from1To25milesPrice: Number(i.car.underTwentyFiveMilesInUsdCents) / 100,
           over25MilesPrice: Number(i.car.aboveTwentyFiveMilesInUsdCents) / 100,
         },
         isInsuranceIncluded: i.car.insuranceIncluded,
-        pickUpDeliveryFee: Number(i.car.pickUp) / 100,
-        dropOffDeliveryFee: Number(i.car.dropOf) / 100,
+        deliveryDetails: {
+          pickUp: { distanceInMiles: Number(i.distance), priceInUsd: Number(i.car.pickUp) / 100 },
+          dropOff: { distanceInMiles: Number(i.distance), priceInUsd: Number(i.car.dropOf) / 100 },
+        },
         isCarDetailsConfirmed: isCarDetailsConfirmed,
         isTestCar: testWallets.includes(i.car.host),
+        isInsuranceRequired: i.car.insuranceInfo.required,
+        insurancePerDayPriceInUsd: Number(i.car.insuranceInfo.priceInUsdCents) / 100,
+        isGuestHasInsurance: i.car.isGuestHasInsurance,
         distanceToUser: Number(i.distance),
       };
 
@@ -329,42 +342,7 @@ async function formatSearchAvailableCarsContractResponse(
   return cars;
 }
 
-async function getTimeZoneIdFromAddress(address: string) {
-  if (isEmpty(address)) return UTC_TIME_ZONE_ID;
-
-  const GOOGLE_MAPS_API_KEY = env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  if (isEmpty(GOOGLE_MAPS_API_KEY)) {
-    console.error("getUtcOffsetMinutesFromLocation error: GOOGLE_MAPS_API_KEY was not set");
-    return "";
-  }
-
-  const googleGeoCodeResponse = await fetch(
-    `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${GOOGLE_MAPS_API_KEY}`
-  );
-
-  if (!googleGeoCodeResponse.ok) {
-    console.error(`getUtcOffsetMinutesFromLocation error: googleGeoCodeResponse is ${googleGeoCodeResponse.status}`);
-    return UTC_TIME_ZONE_ID;
-  }
-
-  const googleGeoCodeJson = await googleGeoCodeResponse.json();
-  const locationLat = googleGeoCodeJson.results[0]?.geometry?.location?.lat ?? 0;
-  const locationLng = googleGeoCodeJson.results[0]?.geometry?.location?.lng ?? 0;
-
-  var googleTimeZoneResponse = await fetch(
-    `https://maps.googleapis.com/maps/api/timezone/json?location=${locationLat},${locationLng}&timestamp=0&key=${GOOGLE_MAPS_API_KEY}`
-  );
-  if (!googleTimeZoneResponse.ok) {
-    console.error(`getUtcOffsetMinutesFromLocation error: googleTimeZoneResponse is ${googleTimeZoneResponse.status}`);
-    return UTC_TIME_ZONE_ID;
-  }
-
-  const googleTimeZoneJson = await googleTimeZoneResponse.json();
-
-  return googleTimeZoneJson?.timeZoneId ?? UTC_TIME_ZONE_ID;
-}
-
-function sortByTestWallet(a: SearchCarInfo, b: SearchCarInfo) {
+function sortByTestWallet(a: SearchCarInfoDTO, b: SearchCarInfoDTO) {
   if (a.isTestCar && !b.isTestCar) {
     return 1;
   } else if (!a.isTestCar && b.isTestCar) {

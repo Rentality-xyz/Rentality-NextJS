@@ -7,7 +7,7 @@ import {
   UNLIMITED_MILES_VALUE_TEXT,
   verifyCar,
 } from "@/model/HostCarInfo";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
 import RntCheckbox from "@/components/common/rntCheckbox";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/EngineType";
@@ -33,6 +33,9 @@ import CarAddPhoto from "./CarAddPhoto";
 import { env } from "@/utils/env";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import { Result, TransactionErrorCode } from "@/model/utils/result";
+import { isFor } from "@babel/types";
+import useCarAPI from "@/hooks/useCarAPI";
+import { VinInfo } from "@/pages/api/car-api/vinInfo";
 
 export default function CarEditForm({
   initValue,
@@ -83,12 +86,13 @@ export default function CarEditForm({
             securityDeposit: initValue.securityDeposit,
             fuelPricePerGal: initValue.fuelPricePerGal,
             fullBatteryChargePrice: initValue.fullBatteryChargePrice,
-            isInsuranceIncluded: initValue.isInsuranceIncluded,
+            isGuestInsuranceRequired: initValue.isGuestInsuranceRequired,
+            insurancePerDayPriceInUsd: initValue.insurancePerDayPriceInUsd,
 
             timeBufferBetweenTripsInMin: initValue.timeBufferBetweenTripsInMin,
             currentlyListed: initValue.currentlyListed,
           }
-        : { carId: 0, isLocationEdited: true, currentlyListed: true, images: [] },
+        : { carId: 0, isLocationEdited: true, currentlyListed: true, images: [], isGuestInsuranceRequired: false },
     resolver: zodResolver(carEditFormSchema),
   });
   const { errors, isSubmitting } = formState;
@@ -106,6 +110,9 @@ export default function CarEditForm({
   const isElectricEngine = engineTypeText === "Electro";
   const isLocationEdited = watch("isLocationEdited");
   const locationInfo = watch("locationInfo");
+  const isGuestInsuranceRequired = watch("isGuestInsuranceRequired");
+
+  const vinNumber = watch("vinNumber");
 
   const [isCarMetadataEdited, setIsCarMetadataEdited] = useState(isNewCar);
   const [selectedMakeID, setSelectedMakeID] = useState<string>("");
@@ -113,6 +120,12 @@ export default function CarEditForm({
 
   const [isVINVerified, setIsVINVerified] = useState<boolean>(false);
   const [isVINCheckOverriden, setIsVINCheckOverriden] = useState<boolean>(false);
+
+  const isFormEnabled = useMemo<boolean>(() => {
+    return isVINVerified || isVINCheckOverriden || !isNewCar;
+  }, [isVINVerified, isVINCheckOverriden, isNewCar]);
+
+  const { getVINNumber } = useCarAPI();
 
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
@@ -146,7 +159,8 @@ export default function CarEditForm({
       fullBatteryChargePrice:
         formData.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING ? formData.fullBatteryChargePrice : 0,
       timeBufferBetweenTripsInMin: formData.timeBufferBetweenTripsInMin,
-      isInsuranceIncluded: formData.isInsuranceIncluded,
+      isGuestInsuranceRequired: formData.isGuestInsuranceRequired,
+      insurancePerDayPriceInUsd: formData.insurancePerDayPriceInUsd ?? 0,
       ownerAddress: initValue?.ownerAddress ?? "",
       wheelDrive: initValue?.wheelDrive ?? "",
       trunkSize: initValue?.trunkSize ?? "",
@@ -218,9 +232,21 @@ export default function CarEditForm({
     showDialog(t("vehicles.lost_unsaved"), action);
   }
 
+  if (isVINVerified) {
+    getVINNumber(vinNumber).then((vinInfo: VinInfo | undefined) => {
+      setValue("brand", vinInfo?.brand ?? "");
+      setValue("model", vinInfo?.model ?? "");
+      setValue("releaseYear", parseInt(vinInfo?.yearOfProduction ?? "2001"));
+    });
+  }
+
   return (
     <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]} language="en">
-      <form onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
         <div className="mt-4">
           <div className="mb-4 pl-4 text-lg">
             <strong>{t_car("car")}</strong>
@@ -251,12 +277,13 @@ export default function CarEditForm({
               control={control}
               defaultValue=""
               render={({ field: { onChange, value } }) =>
-                isNewCar ? (
+                isNewCar && !isVINVerified ? (
                   <RntCarMakeSelect
                     id="brand"
                     className="lg:w-60"
                     label={t_car("brand")}
                     value={value}
+                    readOnly={!isFormEnabled || isVINVerified}
                     onMakeSelect={(newID, newMake) => {
                       onChange(newMake);
                       setSelectedMakeID(newID);
@@ -281,13 +308,13 @@ export default function CarEditForm({
               control={control}
               defaultValue=""
               render={({ field: { onChange, value } }) =>
-                isNewCar ? (
+                isNewCar && !isVINVerified ? (
                   <RntCarModelSelect
                     id="model"
                     className="lg:w-60"
                     label={t_car("model")}
                     make_id={selectedMakeID}
-                    readOnly={!isNewCar}
+                    readOnly={!isNewCar || !isFormEnabled}
                     value={value}
                     onModelSelect={(newID: string, newModel) => {
                       onChange(newModel);
@@ -313,14 +340,14 @@ export default function CarEditForm({
               control={control}
               defaultValue={0}
               render={({ field: { onChange, value } }) =>
-                isNewCar ? (
+                isNewCar && !isVINVerified ? (
                   <RntCarYearSelect
                     id="releaseYear"
                     className="lg:w-60"
                     label={t_car("release")}
                     make_id={selectedMakeID}
                     model_id={selectedModelID}
-                    readOnly={!isNewCar}
+                    readOnly={!isNewCar || !isFormEnabled}
                     value={value}
                     onYearSelect={(newYear) => {
                       onChange(newYear);
@@ -350,6 +377,7 @@ export default function CarEditForm({
             <>
               <CarAddPhoto
                 carImages={field.value}
+                readOnly={!isFormEnabled}
                 onCarImagesChanged={(newValue) => {
                   field.onChange(newValue);
                   setIsCarMetadataEdited(true);
@@ -372,6 +400,7 @@ export default function CarEditForm({
               label={t_car("car_name")}
               labelClassName="pl-4"
               placeholder="e.g. Eleanor"
+              readOnly={!isFormEnabled}
               {...register("name", {
                 onChange: () => {
                   setIsCarMetadataEdited(true);
@@ -385,6 +414,7 @@ export default function CarEditForm({
               label={t_car("licence_plate")}
               labelClassName="pl-4"
               placeholder="e.g. ABC-12D"
+              readOnly={!isFormEnabled}
               {...register("licensePlate", {
                 onChange: () => {
                   setIsCarMetadataEdited(true);
@@ -398,6 +428,7 @@ export default function CarEditForm({
               label={t_car("licence_state")}
               labelClassName="pl-4"
               placeholder="e.g. Florida"
+              readOnly={!isFormEnabled}
               {...register("licenseState", {
                 onChange: () => {
                   setIsCarMetadataEdited(true);
@@ -417,6 +448,7 @@ export default function CarEditForm({
                   labelClassName="pl-4"
                   validationError={errors.engineTypeText?.message?.toString()}
                   value={field.value}
+                  readOnly={!isFormEnabled}
                   onChange={(e) => {
                     field.onChange(e);
                     if (e.target.value === ENGINE_TYPE_ELECTRIC_STRING) {
@@ -444,6 +476,7 @@ export default function CarEditForm({
               label={t_car("seats_amount")}
               labelClassName="pl-4"
               placeholder="e.g. 5"
+              readOnly={!isFormEnabled}
               {...register("seatsNumber", {
                 valueAsNumber: true,
                 onChange: () => {
@@ -458,6 +491,7 @@ export default function CarEditForm({
               label={t_car("doors")}
               labelClassName="pl-4"
               placeholder="e.g. 2"
+              readOnly={!isFormEnabled}
               {...register("doorsNumber", {
                 valueAsNumber: true,
                 onChange: () => {
@@ -474,6 +508,7 @@ export default function CarEditForm({
                   label={t_car("tank_size")}
                   labelClassName="pl-4"
                   placeholder="e.g. 16"
+                  readOnly={!isFormEnabled}
                   {...register("tankVolumeInGal", {
                     setValueAs: (v) => (v === "" || v === Number.isNaN(v) ? undefined : parseInt(v, 10)),
                     onChange: () => {
@@ -489,6 +524,7 @@ export default function CarEditForm({
                   id="transmission"
                   label={t_car("transmission")}
                   labelClassName="pl-4"
+                  readOnly={!isFormEnabled}
                   {...register("transmission", {
                     onChange: () => {
                       setIsCarMetadataEdited(true);
@@ -509,6 +545,7 @@ export default function CarEditForm({
               label={t_car("color")}
               labelClassName="pl-4"
               placeholder="e.g. Green"
+              readOnly={!isFormEnabled}
               {...register("color", {
                 onChange: () => {
                   setIsCarMetadataEdited(true);
@@ -528,6 +565,7 @@ export default function CarEditForm({
               rows={5}
               id="description"
               placeholder="e.g. Dupont Pepper Grey 1967 Ford Mustang fastback"
+              readOnly={!isFormEnabled}
               {...register("description", {
                 onChange: () => {
                   setIsCarMetadataEdited(true);
@@ -555,7 +593,7 @@ export default function CarEditForm({
                     placeholder="Miami"
                     initValue={autocomplete}
                     includeStreetAddress={true}
-                    readOnly={!isLocationEdited}
+                    readOnly={!isLocationEdited || !isFormEnabled}
                     onChange={(e) => setAutocomplete(e.target.value)}
                     onAddressChange={async (placeDetails) => {
                       field.onChange(await placeDetailsToLocationInfoWithTimeZone(placeDetails));
@@ -578,7 +616,7 @@ export default function CarEditForm({
             <RntButton
               className="w-40"
               type="button"
-              disabled={isLocationEdited}
+              disabled={isLocationEdited || !isFormEnabled}
               onClick={() => setValue("isLocationEdited", true)}
             >
               Edit
@@ -645,6 +683,7 @@ export default function CarEditForm({
               <div className="flex flex-wrap items-start gap-4">
                 <MilesIncludedPerDay
                   value={field.value}
+                  readOnly={!isFormEnabled}
                   onChange={field.onChange}
                   validationError={errors.milesIncludedPerDay?.message?.toString()}
                   t_car={t_car}
@@ -665,6 +704,7 @@ export default function CarEditForm({
               label={t_car("rent")}
               labelClassName="pl-4"
               placeholder="e.g. 100"
+              readOnly={!isFormEnabled}
               {...register("pricePerDay", { valueAsNumber: true })}
               validationError={errors.pricePerDay?.message?.toString()}
             />
@@ -674,6 +714,7 @@ export default function CarEditForm({
               label={t_car("secure_dep")}
               labelClassName="pl-4"
               placeholder="e.g. 300"
+              readOnly={!isFormEnabled}
               {...register("securityDeposit", { valueAsNumber: true })}
               validationError={errors.securityDeposit?.message?.toString()}
             />
@@ -684,6 +725,7 @@ export default function CarEditForm({
                 label={t_car("fuel_price")}
                 labelClassName="pl-4"
                 placeholder="e.g. 5.00"
+                readOnly={!isFormEnabled}
                 {...register("fuelPricePerGal", {
                   setValueAs: (v) => (v === "" || v === Number.isNaN(v) ? undefined : parseInt(v, 10)),
                 })}
@@ -701,18 +743,30 @@ export default function CarEditForm({
             </div>
           </div>
 
-          <Controller
-            name="isInsuranceIncluded"
-            control={control}
-            render={({ field }) => (
-              <RntCheckbox
-                className="mt-4"
-                label={t_car("insurance_included")}
-                checked={field.value}
-                onChange={field.onChange}
-              />
-            )}
-          />
+          <div className="mt-4 flex flex-wrap items-center gap-4">
+            <Controller
+              name="isGuestInsuranceRequired"
+              control={control}
+              render={({ field }) => (
+                <RntCheckbox
+                  className="mt-4"
+                  label={t_car("guest_insurance_required")}
+                  readOnly={!isFormEnabled}
+                  checked={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+            <RntInput
+              className="lg:w-60"
+              id="insurancePerDayPriceInUsd"
+              label={t_car("insurance_per_day")}
+              placeholder="e.g. 25"
+              disabled={!isGuestInsuranceRequired || !isFormEnabled}
+              {...register("insurancePerDayPriceInUsd", { valueAsNumber: true })}
+              validationError={errors.insurancePerDayPriceInUsd?.message?.toString()}
+            />
+          </div>
         </div>
 
         {isElectricEngine ? (
@@ -726,6 +780,7 @@ export default function CarEditForm({
               render={({ field }) => (
                 <FullBatteryChargePrice
                   value={field.value}
+                  readOnly={!isFormEnabled}
                   onChange={(newValue) => {
                     field.onChange(newValue);
                   }}
@@ -749,6 +804,7 @@ export default function CarEditForm({
               id="timeBufferBetweenTrips"
               label={t_car("time_buffer")}
               labelClassName="pl-4"
+              readOnly={!isFormEnabled}
               {...register("timeBufferBetweenTripsInMin", { valueAsNumber: true })}
               validationError={errors.timeBufferBetweenTripsInMin?.message?.toString()}
             >
@@ -773,6 +829,7 @@ export default function CarEditForm({
                   label={t_car("listing_status")}
                   labelClassName="pl-4"
                   value={field.value ? "true" : "false"}
+                  readOnly={!isFormEnabled}
                   onChange={(e) => {
                     field.onChange(e.target.value === "true");
                   }}
@@ -786,7 +843,12 @@ export default function CarEditForm({
         </div>
 
         <div className="mb-8 mt-8 flex flex-row justify-between gap-4 sm:justify-start">
-          <RntButton type="submit" className="h-16 w-40" disabled={isSubmitting}>
+          <RntButton
+            type="button"
+            className="h-16 w-40"
+            disabled={isSubmitting}
+            onClick={handleSubmit(async (data) => await onFormSubmit(data))}
+          >
             {t("common.save")}
           </RntButton>
           <RntButton type="button" className="h-16 w-40" onClick={handleBack}>
@@ -801,11 +863,13 @@ export default function CarEditForm({
 
 const MilesIncludedPerDay = ({
   value,
+  readOnly,
   onChange,
   validationError,
   t_car,
 }: {
   value: number | typeof UNLIMITED_MILES_VALUE_TEXT;
+  readOnly: boolean;
   onChange: (value: number | typeof UNLIMITED_MILES_VALUE_TEXT) => void;
   validationError?: string;
   t_car: TFunction;
@@ -833,6 +897,7 @@ const MilesIncludedPerDay = ({
           labelClassName="pl-4"
           placeholder="e.g. 200"
           value={milesIncludedPerDay}
+          readOnly={readOnly}
           onChange={(e) => {
             const newValue =
               e.target.value === UNLIMITED_MILES_VALUE_TEXT ? UNLIMITED_MILES_VALUE_TEXT : Number(e.target.value);
@@ -848,6 +913,7 @@ const MilesIncludedPerDay = ({
         className="ml-4 mt-8"
         label={t_car("unlimited_miles")}
         checked={isUnlimited}
+        readOnly={readOnly}
         onChange={(e) => {
           //setValue("milesIncludedPerDay", e.target.checked ? UNLIMITED_MILES_VALUE : 0)
           //field.onChange(e.target.checked ? UNLIMITED_MILES_VALUE : 0);
@@ -861,11 +927,13 @@ const MilesIncludedPerDay = ({
 
 const FullBatteryChargePrice = ({
   value,
+  readOnly,
   onChange,
   validationError,
   t_car,
 }: {
   value: number;
+  readOnly: boolean;
   onChange: (value: number) => void;
   validationError?: string;
   t_car: TFunction;
@@ -885,6 +953,7 @@ const FullBatteryChargePrice = ({
           label={t_car("full_charge")}
           placeholder="e.g. 50"
           value={fullBatteryChargePrice}
+          readOnly={readOnly}
           onChange={(e) => {
             const newValue = Number(e.target.value);
             if (Number.isFinite(newValue)) {

@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { getIpfsURI } from "@/utils/ipfsUtils";
 import { useRentality } from "@/contexts/rentalityContext";
-import { formatPhoneNumber, getBlockchainTimeFromDate, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
-import moment from "moment";
-import { ContractFullKYCInfoDTO, ContractKYCInfo } from "@/model/blockchain/schemas";
+import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
+import { ContractFullKYCInfoDTO } from "@/model/blockchain/schemas";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { usePrivy } from "@privy-io/react-auth";
@@ -40,7 +39,7 @@ const emptyProfileSettings: ProfileSettings = {
 const useProfileSettings = () => {
   const { ready, authenticated } = usePrivy();
   const rentalityContract = useRentality();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [profileSettings, setProfileSettings] = useState<ProfileSettings>(emptyProfileSettings);
 
   const getProfileSettings = async (rentalityContract: IRentalityContract | null) => {

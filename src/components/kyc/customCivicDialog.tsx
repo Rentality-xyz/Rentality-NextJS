@@ -3,8 +3,9 @@ import CivicConditions from "./civicConditions";
 import CivicIssueReasons from "./civicIssueReasons";
 import CustomCivicForm from "./customCivicForm";
 import useCustomCivic from "@/hooks/kyc/useCustomCivic";
+import { CivicProvider } from "@/contexts/web3/civicContext";
 
-function CustomCivicDialog({
+function CustomCivicDialogContent({
   showError,
   handleCancelClick,
 }: {
@@ -51,6 +52,20 @@ function CustomCivicDialog({
       openConditions={() => setIsShowConditions(true)}
       openIssueReasons={() => setIsShowIssueReasons(true)}
     />
+  );
+}
+
+function CustomCivicDialog({
+  showError,
+  handleCancelClick,
+}: {
+  showError: (message: string) => void;
+  handleCancelClick: () => void;
+}) {
+  return (
+    <CivicProvider>
+      <CustomCivicDialogContent showError={showError} handleCancelClick={handleCancelClick} />
+    </CivicProvider>
   );
 }
 

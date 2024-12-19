@@ -8,10 +8,12 @@ import { cn } from "@/utils";
 
 function CarAddPhoto({
   carImages,
+  readOnly,
   onCarImagesChanged: onCarImagesChange,
   onJsonFileLoaded: onOtherTypeFileLoad,
 }: {
   carImages: PlatformCarImage[];
+  readOnly: boolean;
   onCarImagesChanged: (newValue: PlatformCarImage[]) => void;
   onJsonFileLoaded?: (file: File) => Promise<void>;
 }) {
@@ -81,6 +83,7 @@ function CarAddPhoto({
   }
 
   function handleImageClick() {
+    if (readOnly) return;
     currentIndexRef.current = -1;
     inputRef.current?.click();
   }
@@ -122,6 +125,7 @@ function CarAddPhoto({
                 <button
                   className="absolute bottom-0 left-0 z-10 bg-rentality-additional px-2"
                   type="button"
+                  disabled={readOnly}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleDeleteClick(index);
@@ -132,6 +136,7 @@ function CarAddPhoto({
                 <button
                   className="absolute bottom-0 right-0 bg-rentality-additional px-2"
                   type="button"
+                  disabled={readOnly}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleEditClick(index);
@@ -143,15 +148,23 @@ function CarAddPhoto({
               <RntCheckbox
                 className="absolute -left-2 -top-2"
                 checked={carImage.isPrimary}
+                readOnly={readOnly}
                 onChange={(e) => handleCheckboxClick(index)}
               />
             </div>
           );
         })}
         {carImages.filter((i) => "file" in i || !i.isDeleted).length < MAX_ADD_IMAGE && (
-          <div className="h-40 w-48 min-w-[12rem] cursor-pointer overflow-hidden rounded-2xl bg-gray-200 bg-opacity-40 bg-[url('../images/add_circle_outline_white_48dp.svg')] bg-center bg-no-repeat">
+          <div className="h-40 w-48 min-w-[12rem] cursor-pointer overflow-hidden rounded-2xl bg-gray-200/40 bg-[url('../images/add_circle_outline_white_48dp.svg')] bg-center bg-no-repeat">
             <div className="h-full w-full" onClick={handleImageClick} />
-            <input className="hidden" type="file" accept="image/*" ref={inputRef} onChange={handleImageChange} />
+            <input
+              className="hidden"
+              type="file"
+              accept="image/*"
+              readOnly={readOnly}
+              ref={inputRef}
+              onChange={handleImageChange}
+            />
           </div>
         )}
       </div>
