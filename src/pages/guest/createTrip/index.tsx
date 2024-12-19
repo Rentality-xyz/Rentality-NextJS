@@ -5,7 +5,6 @@ import { TransmissionType } from "@/model/Transmission";
 import useCarSearchParams, { createQueryString } from "@/hooks/guest/useCarSearchParams";
 import useCreateTripRequest from "@/hooks/guest/useCreateTripRequest";
 import useSearchCar from "@/hooks/guest/useSearchCar";
-import Loading from "@/components/common/Loading";
 import { CarPhotos } from "@/components/createTrip/CarPhotos";
 import { CarTitleAndPrices } from "@/components/createTrip/CarTitleAndPrices";
 import { AboutCar } from "@/components/createTrip/AboutCar";
@@ -60,7 +59,7 @@ function CreateTripDetailsContent({
   const router = useRouter();
   const { createTripRequest } = useCreateTripRequest();
   const userInfo = useUserInfo();
-  const { isLoadingAuth, isAuthenticated, login } = useAuth();
+  const { isAuthenticated, login } = useAuth();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const [requestSending, setRequestSending] = useState<boolean>(false);
@@ -86,12 +85,6 @@ function CreateTripDetailsContent({
         </>
       );
       showDialog(t("common.info.connect_wallet"), action);
-      return;
-    }
-
-    if (isEmpty(userInfo?.drivingLicense)) {
-      showError(t("search_page.errors.user_info"));
-      await router.push("/guest/profile");
       return;
     }
 
