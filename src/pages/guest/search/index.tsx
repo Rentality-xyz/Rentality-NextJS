@@ -72,12 +72,6 @@ export default function Search() {
       return;
     }
 
-    if (isEmpty(userInfo?.drivingLicense)) {
-      showError(t("errors.user_info"));
-      await router.push("/guest/profile");
-      return;
-    }
-
     if (isEmpty(searchResult.searchCarRequest.dateFromInDateTimeStringFormat)) {
       showError(t("errors.date_from"));
       return;
