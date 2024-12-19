@@ -660,12 +660,14 @@ export const EngineType = {
 export enum RefferalProgram {
   SetKYC,
   PassCivic,
+  AddCar,
   CreateTrip,
   FinishTripAsGuest,
-  AddCar,
   UnlistedCar,
   Daily,
   DailyListing,
+  AddFirstCar,
+  FinishTripAsHost,
 }
 
 export enum Tear {
