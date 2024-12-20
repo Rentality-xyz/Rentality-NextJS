@@ -77,6 +77,7 @@ function GuestNavMenu() {
         />
       </SideNavMenuGroup>
       <SideNavMenuGroup title={t_nav("more")}>
+        <SideNavMenuItem text={t_nav("insurance")} href="/guest/insurance" icon={MenuIcons.Insurance} />
         <SideNavMenuItem
           text={t_nav("claims")}
           href="/guest/claims"

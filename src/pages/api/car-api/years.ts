@@ -1,4 +1,4 @@
-import axios from "@/utils/cachedAxios"
+import axios from "@/utils/cachedAxios";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getAuthToken } from "@/hooks/useCarAPI";
 
@@ -14,8 +14,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         Authorization: `Bearer ${authToken}`,
       },
       cache: {
-        ttl: 3600
-      }
+        ttl: 3600,
+      },
     })
     .then((res) => {
       carYearsList = res.data;

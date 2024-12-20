@@ -4,14 +4,14 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { HostCarInfo, emptyHostCarInfo } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { ContractCarDetails, ContractCarInfo } from "@/model/blockchain/schemas";
+import { ContractCarDetails, ContractCarInfo, ContractCarInfoWithInsurance } from "@/model/blockchain/schemas";
 import { bigIntReplacer } from "@/utils/json";
 import { mapContractCarToCarDetails } from "@/model/mappers/contractCarToCarDetails";
 
 const useFetchCarInfo = (carId: number) => {
   const ethereumInfo = useEthereum();
   const rentalityContract = useRentality();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hostCarInfo, setHostCarInfo] = useState<HostCarInfo>(emptyHostCarInfo);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const useFetchCarInfo = (carId: number) => {
       }
 
       try {
-        const carInfo: ContractCarInfo = await rentalityContract.getCarInfoById(BigInt(carId));
+        const carInfo: ContractCarInfoWithInsurance = await rentalityContract.getCarInfoById(BigInt(carId));
         const carInfoDetails: ContractCarDetails = await rentalityContract.getCarDetails(BigInt(carId));
 
         const signerAddress = await signer.getAddress();
@@ -30,8 +30,12 @@ const useFetchCarInfo = (carId: number) => {
           return emptyHostCarInfo;
         }
 
-        const tokenURI = await rentalityContract.getCarMetadataURI(carInfoDetails.carId);
-        return mapContractCarToCarDetails(carInfo, carInfoDetails, tokenURI);
+        return mapContractCarToCarDetails(
+          carInfo.carInfo,
+          carInfo.insuranceInfo,
+          carInfoDetails,
+          carInfo.carMetadataURI
+        );
       } catch (e) {
         console.error("getCarInfo error:" + e);
       }

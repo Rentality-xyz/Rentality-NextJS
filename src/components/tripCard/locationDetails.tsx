@@ -9,7 +9,7 @@ function LocationDetails({ tripInfo, t }: { tripInfo: TripInfo; t: TFunction }) 
         <div className="flex flex-col 2xl:mt-6">
           <div>
             <i className="fi fi-rs-marker pr-1 text-rentality-icons"></i>
-            <strong className="text-l whitespace-nowrap">{t("booked.pick_up_location")}</strong>
+            <strong className="whitespace-nowrap text-lg">{t("booked.pick_up_location")}</strong>
           </div>
           <p>{tripInfo.locationStart}&nbsp;</p>
           {/* <div>Miami, CA, USA</div> */}
@@ -17,7 +17,7 @@ function LocationDetails({ tripInfo, t }: { tripInfo: TripInfo; t: TFunction }) 
         <div className="flex flex-col 2xl:mt-4">
           <div>
             <i className="fi fi-rs-marker pr-1 text-rentality-icons"></i>
-            <strong className="text-l whitespace-nowrap">{t("booked.return_location")}</strong>
+            <strong className="whitespace-nowrap text-lg">{t("booked.return_location")}</strong>
           </div>
           <p>{tripInfo.locationEnd}&nbsp;</p>
           {/* <div>Miami, CA, USA</div> */}

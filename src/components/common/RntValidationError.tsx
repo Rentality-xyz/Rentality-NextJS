@@ -6,7 +6,7 @@ interface RntValidationErrorProps extends React.ComponentPropsWithoutRef<"p"> {
 }
 
 const RntValidationError = ({ className, validationError, ...rest }: RntValidationErrorProps) => {
-  const vClassName = cn("text-red-400 mt-2", className);
+  const vClassName = cn("text-rentality-alert-text mt-2", className);
 
   return (
     <>

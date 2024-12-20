@@ -17,7 +17,7 @@ import { isUserHasEnoughFunds, ZERO_HASH } from "@/utils/wallet";
 const useSaveCar = () => {
   const rentalityContract = useRentality();
   const ethereumInfo = useEthereum();
-  const [dataSaved, setDataSaved] = useState<Boolean>(true);
+  const [dataSaved, setDataSaved] = useState<boolean>(true);
 
   const uploadMetadataToIPFS = async (hostCarInfo: HostCarInfo) => {
     if (!verifyCar(hostCarInfo)) {
@@ -106,9 +106,10 @@ const useSaveCar = () => {
         engineType: getEngineTypeCode(dataToSave.engineTypeText),
         engineParams: engineParams,
         timeBufferBetweenTripsInSec: BigInt(dataToSave.timeBufferBetweenTripsInMin * 60),
-        insuranceIncluded: dataToSave.isInsuranceIncluded,
         locationInfo: locationResult.value,
         currentlyListed: dataToSave.currentlyListed,
+        insuranceRequired: dataToSave.isGuestInsuranceRequired,
+        insurancePriceInUsdCents: BigInt(dataToSave.insurancePerDayPriceInUsd * 100),
       };
 
                                                   /// TODO: get from input                
@@ -177,9 +178,10 @@ const useSaveCar = () => {
       ),
       timeBufferBetweenTripsInSec: BigInt(hostCarInfo.timeBufferBetweenTripsInMin * 60),
       securityDepositPerTripInUsdCents: BigInt(hostCarInfo.securityDeposit * 100),
-      insuranceIncluded: hostCarInfo.isInsuranceIncluded,
       engineType: getEngineTypeCode(hostCarInfo.engineTypeText),
       tokenUri: metadataURL,
+      insuranceRequired: hostCarInfo.isGuestInsuranceRequired,
+      insurancePriceInUsdCents: BigInt(hostCarInfo.insurancePerDayPriceInUsd * 100),
     };
 
     let transaction: ContractTransactionResponse;

@@ -29,7 +29,7 @@ export default function ClaimHistory({ isHost, claims, payClaim, cancelClaim, t 
   };
   const headerSpanClassName = "text-start px-2 font-light text-sm";
   const rowSpanClassName = "px-2 h-16";
-  const redTextClassName = cn(rowSpanClassName, "text-red-400");
+  const redTextClassName = cn(rowSpanClassName, "text-rentality-alert-text");
   const { showCustomDialog, hideDialogs } = useRntDialogs();
   const pathname = usePathname();
 

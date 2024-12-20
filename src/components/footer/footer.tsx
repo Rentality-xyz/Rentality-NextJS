@@ -1,13 +1,23 @@
 import Image from "next/image";
+// @ts-ignore
 import logo from "../../images/logo.svg";
+// @ts-ignore
 import bgCar from "../../images/red-generic-sport-ca.png";
+// @ts-ignore
 import linkedin from "../../images/social/linkedin-logo.svg";
+// @ts-ignore
 import twitter from "../../images/social/x-logo.svg";
+// @ts-ignore
 import discord from "../../images/social/discord-logo.svg";
+// @ts-ignore
 import telegram from "../../images/social/telegram-logo.svg";
+// @ts-ignore
 import mirror from "../../images/social/mirror-logo.svg";
+// @ts-ignore
 import instagram from "../../images/social/instagram-logo.svg";
+// @ts-ignore
 import medium from "../../images/social/medium-logo.svg";
+// @ts-ignore
 import warpcast from "../../images/social/warpcast-logo.svg";
 import Link from "next/link";
 import moment from "moment";

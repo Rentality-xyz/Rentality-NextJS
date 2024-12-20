@@ -8,7 +8,7 @@ import { ContractCarInfoDTO } from "@/model/blockchain/schemas";
 
 const useMyListings = () => {
   const rentalityContract = useRentality();
-  const [isLoadingMyListings, setIsLoadingMyListings] = useState<Boolean>(true);
+  const [isLoadingMyListings, setIsLoadingMyListings] = useState<boolean>(true);
   const [myListings, setMyListings] = useState<BaseCarInfo[]>([]);
 
   const getMyListings = async (rentalityContract: IRentalityContract | null) => {
