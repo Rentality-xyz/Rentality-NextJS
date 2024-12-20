@@ -160,7 +160,7 @@ export default function Header() {
         <HeadBtnReferralsAndPoints />
         <div className="flex min-w-[20px] items-center lg:hidden">
           {isBurgerMenuShown && (
-            <div id="burger-menu-wrapper" className="fixed left-0 top-[50px] z-[100] h-full w-full overflow-auto">
+            <div id="burger-menu-wrapper" className="fixed left-0 top-[57px] z-[100] h-full w-full overflow-auto">
               <aside id="burger-menu" className="bg-rentality-bg-left-sidebar">
                 {burgerNavMenu}
               </aside>

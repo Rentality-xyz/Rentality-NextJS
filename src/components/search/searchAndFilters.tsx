@@ -28,6 +28,8 @@ import PanelFilteringByPrice from "@/components/search/panelFilteringByPrice";
 import { nameof } from "@/utils/nameof";
 import { FilterLimits } from "@/model/SearchCarsResult";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
+import bgInput from "@/images/bg_input.png";
+import { PlaceDetails } from "../common/rntPlaceAutocompleteInput";
 
 export default function SearchAndFilters({
   initValue,
@@ -136,6 +138,8 @@ export default function SearchAndFilters({
 
   function handleSearchClick() {
     onSearchClick(searchCarRequest);
+    setNewSearchInputChange(searchInputChange);
+    setSearchFormVisible(false);
   }
 
   function handleResetClick() {
@@ -154,63 +158,139 @@ export default function SearchAndFilters({
     setScrollPanelFilter(scrollLeft);
   };
 
+  const [isSearchFormVisible, setSearchFormVisible] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  // Закрытие при клике вне блока
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node) && isSearchFormVisible) {
+        setSearchFormVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isSearchFormVisible]);
+
+  useEffect(() => {
+    const body = document.body;
+    if (isSearchFormVisible) {
+      body.classList.add("overflow-hidden");
+    } else {
+      body.classList.remove("overflow-hidden");
+    }
+  }, [isSearchFormVisible]);
+
+  const [searchInputChange, setSearchInputChange] = useState("");
+  const [newSearchInputChange, setNewSearchInputChange] = useState("");
+
+  const renderSearchBlockContent = () => (
+    <>
+      <RntPlaceAutoComplete
+        isTransparentStyle={true}
+        iconFrontLabel={icLocation}
+        className="w-full"
+        inputClassName="mt-1 z-10"
+        labelClassName="pl-3.5 font-bold"
+        id={nameof(searchCarRequest, "searchLocation")}
+        label={t_comp("location_label")}
+        placeholder={t_comp("location_placeholder")}
+        includeStreetAddress={true}
+        initValue={formatLocationInfoUpToCity(searchCarRequest.searchLocation)}
+        onChange={(e) => {
+          handleSearchInputChange(e);
+          setSearchInputChange(e.target.value);
+        }}
+        onAddressChange={async (placeDetails) => {
+          setSearchCarRequest({
+            ...searchCarRequest,
+            searchLocation: placeDetailsToLocationInfo(placeDetails),
+          });
+          if (!placeDetails.isEditing) {
+            setSearchInputChange(placeDetails.addressString);
+          }
+        }}
+      />
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between xl:justify-around">
+        <RntInput
+          isTransparentStyle={true}
+          iconFrontLabel={icCalendar}
+          className="basis-1/3"
+          inputClassName="pr-4 z-10"
+          labelClassName="pl-[18px] z-10 font-bold"
+          id={nameof(searchCarRequest, "dateFromInDateTimeStringFormat")}
+          label={`${t_comp("datetime_from")} ${gmtLabel}`}
+          type="datetime-local"
+          value={searchCarRequest.dateFromInDateTimeStringFormat}
+          onChange={handleSearchInputChange}
+        />
+        <RntInput
+          isTransparentStyle={true}
+          iconFrontLabel={icCalendar}
+          className="basis-1/3"
+          inputClassName="pr-4 z-10"
+          labelClassName="pl-[18px] z-10 font-bold"
+          id={nameof(searchCarRequest, "dateToInDateTimeStringFormat")}
+          label={`${t_comp("datetime_to")} ${gmtLabel}`}
+          type="datetime-local"
+          value={searchCarRequest.dateToInDateTimeStringFormat}
+          onChange={handleSearchInputChange}
+        />
+        <RntButton
+          className="mt-2 flex w-full items-center justify-center md:w-48"
+          disabled={!isSearchAllowed}
+          onClick={handleSearchClick}
+        >
+          <Image src={icSearch} alt="" className="mr-2 h-[16px]" />
+          {t_comp("button_search")}
+        </RntButton>
+      </div>
+    </>
+  );
+
   return (
     <>
-      <div className="search mb-2 mt-1 flex flex-col gap-4 xl:flex-row xl:items-end">
-        <RntPlaceAutoComplete
-          isTransparentStyle={true}
-          iconFrontLabel={icLocation}
-          className="w-full"
-          inputClassName="mt-1 z-10"
-          labelClassName="pl-3.5 font-bold"
-          id={nameof(searchCarRequest, "searchLocation")}
-          label={t_comp("location_label")}
-          placeholder={t_comp("location_placeholder")}
-          includeStreetAddress={true}
-          initValue={formatLocationInfoUpToCity(searchCarRequest.searchLocation)}
-          onChange={handleSearchInputChange}
-          onAddressChange={async (placeDetails) => {
-            setSearchCarRequest({
-              ...searchCarRequest,
-              searchLocation: placeDetailsToLocationInfo(placeDetails),
-            });
-          }}
-        />
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between xl:justify-around">
-          <RntInput
-            isTransparentStyle={true}
-            iconFrontLabel={icCalendar}
-            className="basis-1/3"
-            inputClassName="pr-4 z-10"
-            labelClassName="pl-[18px] z-10 font-bold"
-            id={nameof(searchCarRequest, "dateFromInDateTimeStringFormat")}
-            label={`${t_comp("datetime_from")} ${gmtLabel}`}
-            type="datetime-local"
-            value={searchCarRequest.dateFromInDateTimeStringFormat}
-            onChange={handleSearchInputChange}
-          />
-          <RntInput
-            isTransparentStyle={true}
-            iconFrontLabel={icCalendar}
-            className="basis-1/3"
-            inputClassName="pr-4 z-10"
-            labelClassName="pl-[18px] z-10 font-bold"
-            id={nameof(searchCarRequest, "dateToInDateTimeStringFormat")}
-            label={`${t_comp("datetime_to")} ${gmtLabel}`}
-            type="datetime-local"
-            value={searchCarRequest.dateToInDateTimeStringFormat}
-            onChange={handleSearchInputChange}
-          />
-          <RntButton
-            className="mt-2 flex w-full items-center justify-center md:w-48"
-            disabled={!isSearchAllowed}
-            onClick={handleSearchClick}
+      <div
+        className="relative flex h-[50px] w-full cursor-text flex-col pl-5 pt-1 text-sm sm:hidden"
+        onClick={() => setSearchFormVisible(true)}
+      >
+        <span className="whitespace-nowrap font-semibold">
+          {newSearchInputChange || formatLocationInfoUpToCity(searchCarRequest.searchLocation)}
+        </span>
+        <span>
+          {formatDate(searchCarRequest.dateFromInDateTimeStringFormat)} -{" "}
+          {formatDate(searchCarRequest.dateToInDateTimeStringFormat)}
+        </span>
+        <Image src={bgInput} alt="" className="absolute left-0 top-0 h-full w-full rounded-full" />
+      </div>
+
+      {/* блок поиска, который открывается на малых экранах */}
+      <div
+        className={`fixed inset-0 top-[57px] z-50 flex bg-black/50 sm:hidden ${isSearchFormVisible ? "block" : "hidden"}`}
+      >
+        <div
+          ref={modalRef}
+          className="relative flex h-fit w-full max-w-md flex-col gap-4 bg-rentality-bg-left-sidebar p-4"
+        >
+          <button
+            type="button"
+            title=""
+            className="absolute right-2 top-2 text-gray-500 hover:text-black"
+            onClick={() => setSearchFormVisible(false)}
           >
-            <Image src={icSearch} alt="" className="mr-2 h-[16px]" />
-            {t_comp("button_search")}
-          </RntButton>
+            ✖
+          </button>
+          {renderSearchBlockContent()}
         </div>
       </div>
+
+      {/* блок поиска для экранов больше sm */}
+      <div className="search mb-2 mt-1 hidden flex-col gap-4 sm:flex xl:flex-row xl:items-end">
+        {renderSearchBlockContent()}
+      </div>
+
       <ScrollingHorizontally onScroll={onScrollPanelFilter} className="mt-4">
         <div className="min-w-48">
           <RntCarMakeSelect
@@ -343,4 +423,21 @@ export default function SearchAndFilters({
       )}
     </>
   );
+}
+
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) {
+    return "";
+  }
+
+  const formatter = new Intl.DateTimeFormat("ru-RU", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  return formatter.format(date); //.replace(",", "");
 }
