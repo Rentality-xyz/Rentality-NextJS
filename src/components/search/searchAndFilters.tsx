@@ -256,13 +256,16 @@ export default function SearchAndFilters({
         className="relative flex h-[50px] w-full cursor-text flex-col pl-5 pt-1 text-sm sm:hidden"
         onClick={() => setSearchFormVisible(true)}
       >
-        <span className="whitespace-nowrap font-semibold">
-          {newSearchInputChange || formatLocationInfoUpToCity(searchCarRequest.searchLocation)}
-        </span>
-        <span>
-          {formatDate(searchCarRequest.dateFromInDateTimeStringFormat)} -{" "}
-          {formatDate(searchCarRequest.dateToInDateTimeStringFormat)}
-        </span>
+        <div className="z-10 flex flex-col">
+          <span className="whitespace-nowrap font-semibold">
+            {newSearchInputChange || formatLocationInfoUpToCity(searchCarRequest.searchLocation)}
+          </span>
+          <span>
+            {formatDate(searchCarRequest.dateFromInDateTimeStringFormat)} -{" "}
+            {formatDate(searchCarRequest.dateToInDateTimeStringFormat)}
+          </span>
+        </div>
+
         <Image src={bgInput} alt="" className="absolute left-0 top-0 h-full w-full rounded-full" />
       </div>
 
