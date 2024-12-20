@@ -1,9 +1,8 @@
 import { isEmpty } from "@/utils/string";
 import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { db, storage, loginWithPassword } from "@/utils/firebase";
+import { kycDbInfo, storage, loginWithPassword } from "@/utils/firebase";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { FIREBASE_DB_NAME } from "@/chat/model/firebaseTypes";
 import { ref, uploadBytes } from "firebase/storage";
 import { env } from "@/utils/env";
 import moment from "moment";
@@ -13,6 +12,7 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { JsonRpcProvider, Wallet } from "ethers";
 import { ContractCivicKYCInfo } from "@/model/blockchain/schemas";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
+import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 
 export type RetrieveCivicDataRequest = {
   requestId: string;
@@ -106,7 +106,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  let providerApiUrl = process.env[`PROVIDER_API_URL_${chainIdNumber}`];
+  // const providerApiUrl = process.env[`NEXT_PUBLIC_PROVIDER_API_URL_${chainIdNumber}`];
+  const providerApiUrl = getProviderApiUrlFromEnv(chainIdNumber);
+
   if (!providerApiUrl) {
     console.error(`retrieveCivicData error: API URL for chain id ${chainIdNumber} was not set`);
     res
@@ -299,7 +301,7 @@ async function saveDocs(address: string, docs: PiiDocData[]): Promise<Result<Pii
 }
 
 async function savePiiInfoToFirebase(allInfo: AllPiiInfo, docs: PiiDocData[]): Promise<Result<boolean, string>> {
-  if (!db) return Err("db is null");
+  if (!kycDbInfo.db) return Err("db is null");
   if (!storage) return Err("storage is null");
 
   const CIVIC_USER_EMAIL = env.CIVIC_USER_EMAIL;
@@ -323,7 +325,7 @@ async function savePiiInfoToFirebase(allInfo: AllPiiInfo, docs: PiiDocData[]): P
   }
   allInfo.links = savedDocsResult.value;
 
-  const kycInfoRef = doc(db, FIREBASE_DB_NAME.kycInfos, allInfo.verifiedInformation.address);
+  const kycInfoRef = doc(kycDbInfo.db, kycDbInfo.collections.kycInfos, allInfo.verifiedInformation.address);
   const kycInfoQuerySnapshot = await getDoc(kycInfoRef);
 
   if (!kycInfoQuerySnapshot.exists()) {

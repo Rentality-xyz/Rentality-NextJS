@@ -69,7 +69,9 @@ export const CivicProvider = ({ children }: { children?: React.ReactNode }) => {
       wallet={wallet}
       gatekeeperNetwork={gatekeeperNetwork}
       wrapper={CustomWrapper}
-      options={{ autoShowModal: false, disableAutoRestartOnValidationFailure: true }}
+      // Set chainPollingIntervalMs to choose how frequently Civic polls the chain for pass updates.
+      // Default is 5 seconds.
+      options={{ autoShowModal: false, disableAutoRestartOnValidationFailure: true, chainPollingIntervalMs: 10000 }}
     >
       {children}
     </GatewayProvider>

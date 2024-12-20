@@ -8,7 +8,7 @@ import RntButtonTransparent from "../common/rntButtonTransparent";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import CarDetailsVerificationDialog from "./CarDetailsVerificationDialog";
 
-function СarDetails({
+function CarDetails({
   tripInfo,
   isHost,
   t,
@@ -66,7 +66,7 @@ function СarDetails({
         ) : null}
         <div className="mt-4 flex flex-col">
           <div>
-            <strong className="text-l">{t("booked.total")}</strong>
+            <strong className="text-lg">{t("booked.total")}</strong>
           </div>
           <div>${tripInfo.totalDayPriceInUsd}</div>
         </div>
@@ -91,4 +91,4 @@ function СarDetails({
   );
 }
 
-export default memo(СarDetails);
+export default memo(CarDetails);

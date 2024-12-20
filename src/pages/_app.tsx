@@ -48,6 +48,8 @@ export default function App({ Component, pageProps }: AppProps) {
           <UserInfoProvider>
             <WagmiProvider config={wagmiConfig}>
               <QueryClientProvider client={queryClient}>
+                {/*
+                // @ts-ignore */}
                 <OnchainKitProvider apiKey={env.NEXT_PUBLIC_COINBASE_API_KEY} chain={base}>
                   <NotificationProvider isHost={isHost}>
                     <FirebaseChatProvider>

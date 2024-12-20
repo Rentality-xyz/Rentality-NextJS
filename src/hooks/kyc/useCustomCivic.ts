@@ -2,6 +2,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
+import { env } from "@/utils/env";
 import { tryParseMetamaskError } from "@/utils/metamask";
 import { isEmpty } from "@/utils/string";
 import { GatewayStatus, useGateway } from "@civic/ethereum-gateway-react";
@@ -62,8 +63,12 @@ const useCustomCivic = () => {
     if (!rentalityContract) return;
     if (!requestGatewayToken) return;
     if (!ethereumInfo) return;
-    if (status !== "Commission paid") return;
-    if (!(await rentalityContract.isKycCommissionPaid(ethereumInfo.walletAddress))) return;
+    if (env.NEXT_PUBLIC_SKIP_KYC_PAYMENT !== "true" && status !== "Commission paid") return;
+    if (
+      env.NEXT_PUBLIC_SKIP_KYC_PAYMENT !== "true" &&
+      !(await rentalityContract.isKycCommissionPaid(ethereumInfo.walletAddress))
+    )
+      return;
 
     if (gatewayStatus === GatewayStatus.USER_INFORMATION_REJECTED) {
       reinitialize();
@@ -90,6 +95,7 @@ const useCustomCivic = () => {
 
       if (
         isKycProcessing &&
+        env.NEXT_PUBLIC_SKIP_KYC_PAYMENT !== "true" &&
         (gatewayStatus === GatewayStatus.CHECKING || gatewayStatus === GatewayStatus.USER_INFORMATION_REJECTED)
       ) {
         setStatus("Paying");
@@ -184,7 +190,10 @@ const useCustomCivic = () => {
           return;
         }
 
-        if (await rentalityContract.isKycCommissionPaid(ethereumInfo.walletAddress)) {
+        if (
+          env.NEXT_PUBLIC_SKIP_KYC_PAYMENT === "true" ||
+          (await rentalityContract.isKycCommissionPaid(ethereumInfo.walletAddress))
+        ) {
           setStatus("Commission paid");
           return;
         }

@@ -3,11 +3,13 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
+import { formatEther } from "viem";
 
 export type EthereumInfo = {
   provider: BrowserProvider;
   signer: Signer;
   walletAddress: string;
+  walletBalance: number;
   chainId: number;
   isWalletConnected: boolean;
   connectWallet: () => Promise<void>;
@@ -75,6 +77,10 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
 
         const currentChainId = Number(wallets[0].chainId.split(":")[1]);
         const currentWalletAddress = wallets[0].address;
+        const currentWalletBalanceInWeth = await etherv6Provider.getBalance(currentWalletAddress);
+        const currentWalletBalanceInEth = currentWalletBalanceInWeth
+          ? parseFloat(formatEther(currentWalletBalanceInWeth))
+          : 0;
 
         setEthereumInfo((prev) => {
           if (prev !== undefined && prev !== null) {
@@ -85,6 +91,7 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
             provider: etherv6Provider,
             signer: signer,
             walletAddress: currentWalletAddress,
+            walletBalance: currentWalletBalanceInEth,
             chainId: currentChainId,
             isWalletConnected: ready && authenticated,
             connectWallet: async () => {

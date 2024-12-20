@@ -6,7 +6,9 @@ import useUserMode, { isAdmin, isHost } from "@/hooks/useUserMode";
 import Image from "next/image";
 import HeaderLogo from "@/components/sideNavMenu/headerLogo";
 import RntMobileStoresDialog from "@/components/common/rntMobileStoresDialog";
+// @ts-ignore
 import burgerMenuClose from "@/images/ic-menu-burge-close-white-20.svg";
+// @ts-ignore
 import burgerMenu from "@/images/ic-menu-burge-white-20.svg";
 import { useAppContext } from "@/contexts/appContext";
 import { HostBurgerNavMenu } from "@/components/sideNavMenu/hostSideNavMenu";
@@ -15,11 +17,15 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth/authContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { formatEther } from "ethers";
+// @ts-ignore
 import icLogout from "@/images/ic_logout.png";
+// @ts-ignore
 import icProfileSettings from "@/images/ic_profile_settings.png";
+// @ts-ignore
 import imgCopy from "@/images/ic_copy_white_24dp.svg";
+// @ts-ignore
 import icBaseScan from "@/images/base-scan-log.svg";
+// @ts-ignore
 import icWalletBalance from "@/images/ic_wallet_balance.svg";
 import { useTranslation } from "react-i18next";
 import { AdminBurgerNavMenu } from "../sideNavMenu/adminSideNavMenu";
@@ -133,26 +139,6 @@ export default function Header() {
     navigator.clipboard.writeText(text);
   };
 
-  const [balance, setBalance] = useState<string>("0");
-  const getWalletBalance = async (): Promise<string> => {
-    try {
-      const walletAddress = ethereumInfo?.walletAddress ?? "";
-      const balance = await ethereumInfo?.provider.getBalance(walletAddress);
-      return balance ? parseFloat(formatEther(balance)).toFixed(4) : "0";
-    } catch (error) {
-      console.error("Error while retrieving balance:", error);
-      return "0";
-    }
-  };
-  useEffect(() => {
-    const fetchBalance = async () => {
-      const walletBalance = await getWalletBalance();
-      setBalance(walletBalance);
-    };
-
-    fetchBalance();
-  }, []);
-
   return (
     <header className="fixed z-50 flex w-full items-center justify-between border-b border-b-[#ffffff1f] bg-rentality-bg-left-sidebar text-rnt-temp-header-text max-lg:pl-4 lg:py-1 lg:pl-14 lg:pr-6">
       <div className="flex items-center max-lg:w-full max-lg:justify-between">
@@ -199,7 +185,7 @@ export default function Header() {
                     <Image src={icWalletBalance} width={30} height={30} alt="" />
                     <div className="flex flex-col">
                       <span className="ml-3">{t("header.wallet_balance")}</span>
-                      <span className="ml-3 text-sm">{`${balance} ETH`}</span>
+                      <span className="ml-3 text-sm">{`${(ethereumInfo?.walletBalance ?? 0).toFixed(4)} ETH`}</span>
                     </div>
                   </div>
                   <Link

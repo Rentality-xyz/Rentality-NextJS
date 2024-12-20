@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+// @ts-ignore
 import arrowUpTurquoise from "@/images/arrows/arrowUpTurquoise.svg";
+// @ts-ignore
 import arrowDownTurquoise from "@/images/arrows/arrowDownTurquoise.svg";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import { useTranslation } from "react-i18next";
