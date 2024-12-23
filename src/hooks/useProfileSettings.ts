@@ -77,7 +77,7 @@ const useProfileSettings = () => {
     }
   };
 
-  const saveProfileSettings = async (newProfileSettings: ProfileSettings, refHash?: string) => {
+  const saveProfileSettings = async (newProfileSettings: ProfileSettings) => {
     if (!rentalityContract) {
       console.error("saveProfileSettings error: rentalityContract is null");
       return false;
