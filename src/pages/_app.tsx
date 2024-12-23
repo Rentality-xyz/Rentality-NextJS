@@ -22,6 +22,10 @@ import { env } from "@/utils/env";
 import Layout from "@/components/layout/layout";
 import { initEruda, initHotjar } from "@/utils/init";
 import FacebookPixelScript from "@/components/marketing/FacebookPixelScript";
+import dynamic from "next/dynamic";
+
+const DimoAuthProvider = dynamic(() => import('@dimo-network/login-with-dimo').then(mod => mod.DimoAuthProvider), { ssr: false });
+
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -45,6 +49,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <FacebookPixelScript />
       <Web3Setup>
         <RentalityProvider>
+          <DimoAuthProvider>
           <UserInfoProvider>
             <WagmiProvider config={wagmiConfig}>
               <QueryClientProvider client={queryClient}>
@@ -66,6 +71,7 @@ export default function App({ Component, pageProps }: AppProps) {
               </QueryClientProvider>
             </WagmiProvider>
           </UserInfoProvider>
+          </DimoAuthProvider>
         </RentalityProvider>
       </Web3Setup>
     </>
