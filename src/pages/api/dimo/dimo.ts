@@ -26,9 +26,12 @@ type VCDimoResult = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const user = <string>req.query.user!
 
-  console.log("ZERO")
-  const {auth, dimo, clientId} = await authOnDimo()
-  console.log("ONE")
+  const authResult = await authOnDimo()
+  if(authResult === null)
+    return
+
+  const {auth, dimo, clientId} = authResult
+
   const userCarsOnDimo = await dimo.identity.query({
     query: `
     {
@@ -46,13 +49,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }`
   });
-  console.log("TRE")
   const result = await Promise.all((userCarsOnDimo as unknown as DIMOSharedCarsResponse).data.vehicles.nodes.map(async (token) => {
       const id = token.tokenId;
 
 
   const privToken = await tokenExchange(id, auth, dimo, [1, 2, 3, 4, 5])
-  console.log("FOUR")
   const getVinByTokenId = async (id: number): Promise<string | null> => {
     try {
     const vinResponse = await dimo.telemetry.query({
@@ -65,7 +66,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       `,
     });
-    console.log("FIVE")
     return (vinResponse as unknown as {data: {vinVCLatest: { vin: string | null}}}).data.vinVCLatest.vin
   }
   

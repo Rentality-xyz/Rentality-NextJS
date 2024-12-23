@@ -27,7 +27,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const tokenId = <string>req.query.tokenId
     const id = Number.parseInt(tokenId)
 
-    const {auth, dimo} = await authOnDimo()
+   
+  const authResult = await authOnDimo()
+  if(authResult === null)
+    return
+
+  const {auth, dimo} = authResult
 
     const privToken = tokenExchange(id, auth, dimo, [1, 2, 3, 4, 5])
 
