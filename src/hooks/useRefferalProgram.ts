@@ -6,7 +6,9 @@ import { IRentalityAdminGateway, IRentalityReferralProgramContract } from "@/mod
 import {
   AllRefferalInfoDTO,
   ReadyToClaim,
-ReadyToClaimDTO, ReadyToClaimRefferalHash, RefferalAccrualType,
+  ReadyToClaimDTO,
+  ReadyToClaimRefferalHash,
+  RefferalAccrualType,
   RefferalHashDTO,
   RefferalHistory,
   RefferalProgram,
@@ -14,23 +16,21 @@ ReadyToClaimDTO, ReadyToClaimRefferalHash, RefferalAccrualType,
 } from "@/model/blockchain/schemas";
 
 const useInviteLink = () => {
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
   const [rentalityContract, setRentalityContract] = useState<IRentalityReferralProgramContract | null>(null);
   const [rentalityAdminContract, setRentalityAdminContract] = useState<IRentalityAdminGateway | null>(null);
   const [inviteHash, setHash] = useState("");
   const [points, setPoints] = useState(0);
   const ethereumInfo = useEthereum();
 
-
-
-      const getPoints = async () => {
+  const getPoints = async () => {
     if (!rentalityContract) {
-      setIsLoading(true)
+      setIsLoading(true);
       console.error("get hash error: rentalityContract is null");
       return null;
     }
     if (!ethereumInfo) {
-      setIsLoading(true)
+      setIsLoading(true);
       console.error("get hash error: ethereum info is null");
       return null;
     }
@@ -46,12 +46,12 @@ const useInviteLink = () => {
   const getHash = async () => {
     if (!rentalityContract) {
       console.error("get hash error: rentalityContract is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     if (!ethereumInfo) {
       console.error("get hash error: ethereum info is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     try {
@@ -63,19 +63,15 @@ const useInviteLink = () => {
   };
 
   useEffect(() => {
-
-
     if (!ethereumInfo || !ethereumInfo.provider) {
       if (rentalityContract !== null) {
         console.debug(`Reset rentalityContract`);
         setRentalityContract(null);
-        setIsLoading(true)
+        setIsLoading(true);
       }
       return;
     }
     const getRentalityContact = async () => {
-
-
       const rentality = (await getEtherContractWithSigner(
         "admin",
         ethereumInfo.signer
@@ -86,37 +82,33 @@ const useInviteLink = () => {
         return;
       }
       setRentalityAdminContract(rentality);
-      setIsLoading(false)
+      setIsLoading(false);
     };
 
     getRentalityContact();
   }, [ethereumInfo, ethereumInfo && ethereumInfo.signer]);
 
   useEffect(() => {
-
-
     if (!ethereumInfo || !ethereumInfo.provider) {
       if (rentalityContract !== null) {
         console.debug(`Reset rentalityContract`);
         setRentalityContract(null);
-        setIsLoading(true)
+        setIsLoading(true);
       }
       return;
     }
     const getRentalityContact = async () => {
-
       const rentality = (await getEtherContractWithSigner(
         "refferalPogram",
         ethereumInfo.signer
       )) as unknown as IRentalityReferralProgramContract;
-
 
       if (!rentality) {
         console.error("getRentalityContact error: rentalityContract is null");
         return;
       }
       setRentalityContract(rentality);
-      setIsLoading(false)
+      setIsLoading(false);
     };
 
     getRentalityContact();
@@ -127,12 +119,12 @@ const useInviteLink = () => {
   const claimPoints = async () => {
     if (!rentalityContract) {
       console.error("get hash error: rentalityContract is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     if (!ethereumInfo) {
       console.error("get hash error: ethereum info is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     try {
@@ -146,12 +138,12 @@ const useInviteLink = () => {
   const getReadyToClaim = async (): Promise<ReadyToClaimDTO | null> => {
     if (!rentalityContract) {
       console.error("get hash error: rentalityContract is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     if (!ethereumInfo) {
       console.error("get hash error: ethereum info is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     try {
@@ -165,12 +157,12 @@ const useInviteLink = () => {
   const getReadyToClaimFromRefferalHash = async (): Promise<RefferalHashDTO | null> => {
     if (!rentalityContract) {
       console.error("get hash error: rentalityContract is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     if (!ethereumInfo) {
       console.error("get hash error: ethereum info is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     try {
@@ -184,12 +176,12 @@ const useInviteLink = () => {
   const claimRefferalPoints = async () => {
     if (!rentalityContract) {
       console.error("get hash error: rentalityContract is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     if (!ethereumInfo) {
       console.error("get hash error: ethereum info is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     try {
@@ -203,12 +195,12 @@ const useInviteLink = () => {
   const getRefferalPointsInfo = async (): Promise<AllRefferalInfoDTO | null> => {
     if (!rentalityContract) {
       console.error("get hash error: rentalityContract is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     if (!ethereumInfo) {
       console.error("get hash error: ethereum info is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     try {
@@ -222,12 +214,12 @@ const useInviteLink = () => {
   const getPointsHistory = async (): Promise<RefferalHistory[] | null> => {
     if (!rentalityContract) {
       console.error("get hash error: rentalityContract is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     if (!ethereumInfo) {
       console.error("get hash error: ethereum info is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     try {
@@ -246,12 +238,12 @@ const useInviteLink = () => {
   ) => {
     if (!rentalityAdminContract) {
       console.error("get hash error: rentalityContract is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     if (!ethereumInfo) {
       console.error("get hash error: ethereum info is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     try {
@@ -262,18 +254,18 @@ const useInviteLink = () => {
     }
   };
   const calculateUniqUsers = (pointsInfo: ReadyToClaimRefferalHash[]) => {
-   return new Set(pointsInfo.map(points => points.user)).size
-}
+    return new Set(pointsInfo.map((points) => points.user)).size;
+  };
 
   const manageRefferalDiscount = async (program: RefferalProgram, tear: Tear, points: number, pecrents: number) => {
     if (!rentalityAdminContract) {
       console.error("get hash error: rentalityContract is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     if (!ethereumInfo) {
       console.error("get hash error: ethereum info is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     try {
@@ -287,12 +279,12 @@ const useInviteLink = () => {
   const manageTearInfo = async (tear: Tear, from: number, to: number) => {
     if (!rentalityAdminContract) {
       console.error("get hash error: rentalityContract is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     if (!ethereumInfo) {
       console.error("get hash error: ethereum info is null");
-      setIsLoading(true)
+      setIsLoading(true);
       return null;
     }
     try {
@@ -315,7 +307,7 @@ const useInviteLink = () => {
     manageRefferalDiscount,
     manageTearInfo,
     calculateUniqUsers,
-    isLoading
+    isLoading,
   ] as const;
 };
 
