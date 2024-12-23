@@ -193,8 +193,8 @@ const useAdminPanelInfo = () => {
       const rentality = (await getEtherContractWithSigner(
         "gateway",
         ethereumInfo.signer
-      )) as unknown as IRentalityContract;                                          /// TODO: get from input
-      const transaction = await rentality.setCivicKYCInfo(address, contractCivicKYCInfo, ZERO_HASH);
+      )) as unknown as IRentalityContract;
+      const transaction = await rentality.setCivicKYCInfo(address, contractCivicKYCInfo);
       await transaction.wait();
       return true;
     } catch (e) {
@@ -225,8 +225,8 @@ const useAdminPanelInfo = () => {
       const rentality = (await getEtherContractWithSigner(
         "gateway",
         ethereumInfo.signer
-      )) as unknown as IRentalityContract;                                            /// TODO: get from input
-      const transaction = await rentality.setCivicKYCInfo(address, contractCivicKYCInfo, ZERO_HASH);
+      )) as unknown as IRentalityContract;
+      const transaction = await rentality.setCivicKYCInfo(address, contractCivicKYCInfo);
       await transaction.wait();
       return true;
     } catch (e) {
