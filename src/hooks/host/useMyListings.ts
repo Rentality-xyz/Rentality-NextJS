@@ -27,7 +27,7 @@ const useMyListings = () => {
                 if (index === 0) {
                   validateContractCarInfoDTO(i);
                 }
-                // const metaData = parseMetaData(await getMetaDataFromIpfs(i.metadataURI));
+                const metaData = parseMetaData(await getMetaDataFromIpfs(i.metadataURI));
 
                 const pricePerDay = Number(i.carInfo.pricePerDayInUsdCents) / 100;
                 const securityDeposit = Number(i.carInfo.securityDepositPerTripInUsdCents) / 100;
@@ -36,13 +36,11 @@ const useMyListings = () => {
                 let item: BaseCarInfo = {
                   carId: Number(i.carInfo.carId),
                   ownerAddress: i.carInfo.createdBy.toString(),
-                  // image: getIpfsURI(metaData.mainImage),
+                  image: getIpfsURI(metaData.mainImage),
                   brand: i.carInfo.brand,
                   model: i.carInfo.model,
                   year: i.carInfo.yearOfProduction.toString(),
-                  // licensePlate: metaData.licensePlate,
-                  licensePlate: "",
-                  image: "",
+                  licensePlate: metaData.licensePlate,
                   pricePerDay: pricePerDay,
                   securityDeposit: securityDeposit,
                   milesIncludedPerDay: milesIncludedPerDay,

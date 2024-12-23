@@ -32,29 +32,22 @@ export type DimoCarResponseWithTimestamp  = {
   id: number,
   model: string
 }
+
+type Car = {
+  model: string;
+  brand: string;
+  image: string;
+  dimoTokenId: number; 
+  carId: number;
+  isSynced: boolean;
+};
 export default function Dimo() {
 
-  const clientId = process.env.NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID;
-  const apiKey = process.env.NEXT_PUBLIC_SERVER_DIMO_API_KEY;
-  const domain = process.env.NEXT_PUBLIC_SERVER_DIMO_DOMAIN;
-
-  if(!clientId || !apiKey || !domain) {
-    console.error("DIMO .env is not set")
-    return
-  }
-
-  initializeDimoSDK({
-    clientId,
-    redirectUri: domain,
-    apiKey,
-  });
-
-
-  /// wallets for testing
+  /// wallets for testing, unncomment wallet address from useDimoAuthState
   // const walletAddress = '0xCAA591fA19a86762D1ed1B98b2057Ee233240b65'
   const walletAddress = '0xFD04ca16023A51beA99c750B3391F3CFd156d6c4' //17
   
-  const { isAuthenticated, getValidJWT } = useDimoAuthState();
+  const { isAuthenticated, getValidJWT, /*walletAddress*/ } = useDimoAuthState();
   const [jwt, setJwt] = useState<string | null>(null);
   const [dimoVehicles, setDimoVehicles] = useState<DimoCarResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -62,6 +55,11 @@ export default function Dimo() {
   const userInfo = useUserInfo();
   const router = useRouter()
   const rentalityContract = useRentality()
+
+  const clientId = process.env.NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID;
+  const apiKey = process.env.NEXT_PUBLIC_SERVER_DIMO_API_KEY;
+  const domain = process.env.NEXT_PUBLIC_SERVER_DIMO_DOMAIN;
+
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -76,6 +74,19 @@ export default function Dimo() {
     }
   }, [walletAddress, userInfo]);
  
+  if(!clientId || !apiKey || !domain) {
+    console.error("DIMO .env is not set")
+    return <div>{"dimo env not set"}</div>; 
+    }
+
+  initializeDimoSDK({
+    clientId,
+    redirectUri: domain,
+    apiKey,
+  });
+
+
+
   const createRentalityCar = (car: DimoCarResponse) => {
     localStorage.setItem('dimo', JSON.stringify({...car,timestamp: new Date().getTime()}))
     router.push('/host/vehicles/add')
@@ -110,7 +121,7 @@ export default function Dimo() {
     }
   };
   let onRentalityAndDimoNotSync;
-  let onRentalityAndDimoNotSyncMapped;
+  let onRentalityAndDimoNotSyncMapped: Car[] = [];
   let onDimoOnly;
   let onRentalityAndDimoSync;
 if (myListings && dimoVehicles) {
