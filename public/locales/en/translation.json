@@ -666,9 +666,9 @@
     "vin_loading": "Loading..."
   },
   "mobile_stores_dialog": {
-    "title": "Be the First to Know!",
-    "app_is_coming_soon": "Our app is coming soon to the App Store and Play Market.",
-    "leave_your_email": "Leave your email, and we’ll notify you as soon as it’s available for download!"
+    "title": "Get the Rentality app!",
+    "scan_qr_code": "Scan this QR code and download Rentality app now",
+    "available_on": "Available on"
   },
   "common": {
     "info": {
