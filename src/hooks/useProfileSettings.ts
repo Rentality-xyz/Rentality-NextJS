@@ -6,6 +6,7 @@ import { ContractFullKYCInfoDTO } from "@/model/blockchain/schemas";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { usePrivy } from "@privy-io/react-auth";
+import { ZERO_HASH } from "@/utils/wallet";
 
 export type ProfileSettings = {
   profilePhotoUrl: string;
@@ -88,7 +89,8 @@ const useProfileSettings = () => {
         newProfileSettings.nickname,
         newProfileSettings.phoneNumber,
         newProfileSettings.profilePhotoUrl,
-        newProfileSettings.tcSignature
+        newProfileSettings.tcSignature,
+        ZERO_HASH
       );
 
       await transaction.wait();
