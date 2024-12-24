@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import RntButtonTransparent from "../common/rntButtonTransparent";
 import useToggleState from "@/hooks/useToggleState";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
-import useSaveGuestTripInsurance from "@/hooks/guest/useSaveGuestTripInsurance";
 import { Controller, useForm } from "react-hook-form";
 import { addTripInsuranceFormSchema, AddTripInsuranceFormValues } from "./addTripInsuranceFormSchema";
 import { ONE_TIME_INSURANCE_TYPE_ID } from "@/utils/constants";
@@ -14,13 +13,18 @@ import RntInput from "../common/rntInput";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import RntSelect from "../common/rntSelect";
 import useTripsList from "@/hooks/guest/useTripsList";
+import useSaveHostTripInsurance from "@/hooks/host/useSaveHostTripInsurance";
 
-export default function AddHostInsurance() {
+interface AddHostInsuranceProps {
+  onNewInsuranceAdded?: () => Promise<void>;
+}
+
+export default function AddHostInsurance({ onNewInsuranceAdded }: AddHostInsuranceProps) {
   const { t } = useTranslation();
   const [isFormOpen, toggleFormOpen] = useToggleState(false);
   const { isLoading: isTripsLoading, trips, refetchData } = useTripsList(true);
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
-  const { saveTripInsurance } = useSaveGuestTripInsurance();
+  const { saveTripInsurance } = useSaveHostTripInsurance();
 
   const {
     register,
@@ -38,7 +42,6 @@ export default function AddHostInsurance() {
     resolver: zodResolver(addTripInsuranceFormSchema),
   });
   const { errors, isSubmitting } = formState;
-  const insuranceType = watch("insuranceType");
 
   async function onFormSubmit(formData: AddTripInsuranceFormValues) {
     console.log("formData", JSON.stringify(formData, null, 2));
@@ -76,6 +79,7 @@ export default function AddHostInsurance() {
       showInfo(t("common.info.success"));
       resetFormValues();
       refetchData();
+      onNewInsuranceAdded !== undefined && onNewInsuranceAdded();
     }
   }
 

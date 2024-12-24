@@ -44,9 +44,10 @@ export default function useInsurances(isHost: boolean) {
     async (
       filters?: InsuranceFiltersType,
       page: number = 1,
-      itemsPerPage: number = 10
+      itemsPerPage: number = 10,
+      refetch: boolean = false
     ): Promise<Result<boolean, string>> => {
-      if (allData !== undefined) {
+      if (allData !== undefined && !refetch) {
         filterData(allData, filters, page, itemsPerPage);
         return Ok(true);
       }
