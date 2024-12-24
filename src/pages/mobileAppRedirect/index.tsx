@@ -5,7 +5,7 @@ import icGooglePlay from "@/images/marketplace/ic_google_play.png";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Redirect() {
+export default function MobileAppRedirect() {
   useEffect(() => {
     const devicePlatform = getDevicePlatform();
 
