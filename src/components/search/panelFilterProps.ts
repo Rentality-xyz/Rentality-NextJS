@@ -5,4 +5,5 @@ export interface IPanelFilterProps {
   isResetFilters: boolean;
   minValue?: number;
   maxValue?: number;
+  scrollInfo: number | null;
 }

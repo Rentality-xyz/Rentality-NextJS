@@ -495,6 +495,96 @@ export type ContractAllCarsDTO = {
   totalPageCount: bigint;
 };
 
+export type ContractReadyToClaim = {
+  points: bigint;
+  refType: RefferalProgram;
+  oneTime: boolean;
+};
+
+export type ContractReadyToClaimRefferalHash = {
+  points: bigint;
+  refType: RefferalProgram;
+  oneTime: boolean;
+  claimed: boolean;
+};
+
+export type ContractReadyToClaimFromHash = {
+  points: bigint;
+  refType: RefferalProgram;
+  oneTime: boolean;
+  claimed: boolean;
+  user: string;
+};
+
+export type ContractTearPoints = {
+  from: bigint;
+  to: bigint;
+};
+
+export type ContractRefferalDiscount = {
+  pointsCosts: bigint;
+  percents: bigint;
+};
+
+export type ContractTearDTO = {
+  points: ContractTearPoints;
+  tear: Tear;
+};
+
+export type ContractReadyToClaimDTO = {
+  toClaim: ContractReadyToClaim[];
+  totalPoints: bigint;
+  toNextDailyClaim: bigint;
+};
+
+export type ContractRefferalHashDTO = {
+  toClaim: ContractReadyToClaimFromHash[];
+  totalPoints: bigint;
+  hash: string;
+};
+
+export type ContractRefferalProgramInfoDTO = {
+  refferalType: RefferalAccrualType;
+  method: RefferalProgram;
+  points: bigint;
+};
+
+export type ContractHashPointsDTO = {
+  method: RefferalProgram;
+  points: bigint;
+};
+
+export type ContractRefferalDiscountsDTO = {
+  method: RefferalProgram;
+  tear: Tear;
+  discount: ContractRefferalDiscount;
+};
+
+export type ContractAllRefferalInfoDTO = {
+  programPoints: ContractRefferalProgramInfoDTO[];
+  hashPoints: ContractHashPointsDTO[];
+  discounts: ContractRefferalDiscountsDTO[];
+  tear: ContractTearDTO[];
+};
+
+export type ContractRefferalHistory = {
+  points: bigint;
+  method: RefferalProgram;
+};
+
+export type ContractHistory = {
+  points: bigint;
+  date: bigint;
+  method: RefferalProgram;
+};
+
+export type ContractProgramHistory = {
+  points: bigint;
+  date: bigint;
+  method: RefferalProgram;
+  oneTime: boolean;
+};
+
 export type ContractFilterInfoDTO = {
   maxCarPrice: bigint;
   minCarYearOfProduction: bigint;
@@ -626,6 +716,34 @@ export const Role = {
   Manager: BigInt(2),
   Admin: BigInt(3),
   KYCManager: BigInt(4),
+};
+
+export type RefferalProgram = bigint;
+export const RefferalProgram = {
+  SetKYC: BigInt(0),
+  PassCivic: BigInt(1),
+  AddCar: BigInt(2),
+  CreateTrip: BigInt(3),
+  FinishTripAsGuest: BigInt(4),
+  UnlistedCar: BigInt(5),
+  Daily: BigInt(6),
+  DailyListing: BigInt(7),
+  AddFirstCar: BigInt(8),
+  FinishTripAsHost: BigInt(9),
+};
+
+export type Tear = bigint;
+export const Tear = {
+  Tear1: BigInt(0),
+  Tear2: BigInt(1),
+  Tear3: BigInt(2),
+  Tear4: BigInt(3),
+};
+
+export type RefferalAccrualType = bigint;
+export const RefferalAccrualType = {
+  OneTime: BigInt(0),
+  Permanent: BigInt(1),
 };
 
 export type CarUpdateStatus = bigint;

@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 // @ts-ignore
-import arrowUpTurquoise from "@/images/arrowUpTurquoise.svg";
+import arrowUpTurquoise from "@/images/arrows/arrowUpTurquoise.svg";
 // @ts-ignore
-import arrowDownTurquoise from "@/images/arrowDownTurquoise.svg";
+import arrowDownTurquoise from "@/images/arrows/arrowDownTurquoise.svg";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import { useTranslation } from "react-i18next";
 import { IPanelFilterProps } from "@/components/search/panelFilterProps";
 import Slider from "@mui/material/Slider";
 import RntButton from "@/components/common/rntButton";
 import { DEFAULT_MAX_FILTER_PRICE } from "@/utils/constants";
+import { createPortal } from "react-dom";
 
 export default function PanelFilteringByPrice({
   id,
@@ -17,6 +18,7 @@ export default function PanelFilteringByPrice({
   onClickApply,
   isResetFilters,
   maxValue,
+  scrollInfo,
 }: IPanelFilterProps) {
   const minPrice = 0;
   const maxPrice = maxValue !== undefined && Number.isFinite(maxValue) ? maxValue : DEFAULT_MAX_FILTER_PRICE;
@@ -25,6 +27,8 @@ export default function PanelFilteringByPrice({
   const [value, setValue] = useState([minPrice, maxPrice]);
   const [selectedValue, setSelectedValue] = useState(value);
   const { t } = useTranslation();
+  const buttonRef = useRef<HTMLDivElement>(null);
+  const [positionDropdown, setPositionDropdown] = useState({ top: 0, left: 0 });
 
   const toggleDropdown = () => {
     setIsOpen((prevIsOpen) => {
@@ -96,15 +100,31 @@ export default function PanelFilteringByPrice({
     });
   }, [maxValue]);
 
+  useEffect(() => {
+    if (isOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setPositionDropdown({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+      });
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (scrollInfo !== null) {
+      setIsOpen(false);
+    }
+  }, [scrollInfo]);
+
   return (
-    <div ref={dropdownRef} id={id} className="relative w-full sm:w-48">
+    <div ref={buttonRef} id={id} className="relative">
       <RntButtonTransparent
-        className="w-full"
+        className="w-48"
         onClick={() => {
           toggleDropdown();
         }}
       >
-        <div className="relative flex items-center justify-center text-rentality-secondary">
+        <div ref={dropdownRef} className="relative flex items-center justify-center text-rentality-secondary">
           <div className="text-lg">
             {value[0] <= minPrice && value[1] >= maxPrice
               ? t_comp("select_filter_price")
@@ -114,38 +134,46 @@ export default function PanelFilteringByPrice({
         </div>
       </RntButtonTransparent>
 
-      {isOpen && (
-        <div className="absolute z-10 w-full rounded-lg border border-gray-500 bg-rentality-bg-left-sidebar px-4 py-2 shadow-md sm:left-[-17px] sm:w-56">
-          <div className="mb-4 text-lg text-white">
-            ${value[0]} - ${value[1]}
-            {t("common.per_day")}
-          </div>
+      {isOpen &&
+        createPortal(
+          <div
+            className="absolute z-10 w-56 rounded-lg border border-gray-500 bg-rentality-bg-left-sidebar px-4 py-2 shadow-md"
+            style={{
+              top: `${positionDropdown.top}px`,
+              left: `${positionDropdown.left - 17}px`,
+            }}
+          >
+            <div className="mb-4 text-lg text-white">
+              ${value[0]} - ${value[1]}
+              {t("common.per_day")}
+            </div>
 
-          <div className="mb-4 flex items-center justify-center">
-            <Slider
-              value={value}
-              min={minPrice}
-              max={maxPrice}
-              onChange={handleSliderChange}
-              valueLabelDisplay="auto"
-              className="w-full text-rentality-secondary-shade"
-            />
-          </div>
+            <div className="mb-4 flex items-center justify-center">
+              <Slider
+                value={value}
+                min={minPrice}
+                max={maxPrice}
+                onChange={handleSliderChange}
+                valueLabelDisplay="auto"
+                className="w-full text-rentality-secondary-shade"
+              />
+            </div>
 
-          <div className="flex justify-between">
-            <RntButton
-              className="w-20 border border-gray-300 bg-transparent text-gray-300 hover:border-white hover:text-white"
-              minHeight="38px"
-              onClick={handleReset}
-            >
-              {t_comp("button_reset")}
-            </RntButton>
-            <RntButton className="w-20" minHeight="38px" onClick={handleApply}>
-              {t_comp("button_apply")}
-            </RntButton>
-          </div>
-        </div>
-      )}
+            <div className="flex justify-between">
+              <RntButton
+                className="w-20 border border-gray-300 bg-transparent text-gray-300 hover:border-white hover:text-white"
+                minHeight="38px"
+                onClick={handleReset}
+              >
+                {t_comp("button_reset")}
+              </RntButton>
+              <RntButton className="w-20" minHeight="38px" onClick={handleApply}>
+                {t_comp("button_apply")}
+              </RntButton>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
