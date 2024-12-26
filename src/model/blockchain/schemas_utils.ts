@@ -58,6 +58,7 @@ const emptyContractCarDetails: ContractCarDetails = {
   locationInfo: emptyContractLocationInfo,
   carVinNumber: "",
   carMetadataURI: "",
+  dimoTokenId: 0
 };
 
 export function validateContractCarDetails(obj: ContractCarDetails): obj is ContractCarDetails {
@@ -95,6 +96,7 @@ export function validateContractCarInfoDTO(obj: ContractCarInfoDTO): obj is Cont
     carInfo: emptyContractCarInfo,
     metadataURI: "",
     isEditable: false,
+    dimoTokenId: 0
   };
 
   return validateType(obj, emptyContractCarInfoDTO) && validateType(obj.carInfo, emptyContractCarInfo);

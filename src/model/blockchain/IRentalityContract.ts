@@ -66,7 +66,7 @@ export interface IRentalityContract {
   getCarMetadataURI(carId: bigint): Promise<string>;
   getCarInfoById(carId: bigint): Promise<ContractCarInfoWithInsurance>;
   getCarDetails(carId: bigint): Promise<ContractCarDetails>;
-
+  saveDimoTokenIds(dimoTokenIds: number[], carIds: number[]): Promise<ContractTransactionResponse>;
   getDiscount(user: string): Promise<ContractBaseDiscount>;
   addUserDiscount(discounts: ContractBaseDiscount): Promise<ContractTransactionResponse>;
   addUserDeliveryPrices(

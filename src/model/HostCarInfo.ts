@@ -45,8 +45,9 @@ export type HostCarInfo = {
   isGuestInsuranceRequired: boolean;
   insurancePerDayPriceInUsd: number;
   isCarMetadataEdited: boolean;
-
+  dimoTokenId: number;
   metadataUrl: string;
+  insurancePriceInUsdCents: number;
 };
 
 export const emptyHostCarInfo: HostCarInfo = {
@@ -83,6 +84,8 @@ export const emptyHostCarInfo: HostCarInfo = {
   insurancePerDayPriceInUsd: 0,
   isCarMetadataEdited: false,
   metadataUrl: "",
+  dimoTokenId: 0,
+  insurancePriceInUsdCents: 0,
 };
 
 export const verifyCar = (carInfoFormParams: HostCarInfo) => {
