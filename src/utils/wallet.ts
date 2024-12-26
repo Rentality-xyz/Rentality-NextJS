@@ -1,6 +1,6 @@
 import { formatEther } from "viem";
-import { MIN_ETH_ON_WALLET_FOR_TRANSACTION } from "./constants";
-import { Signer } from "ethers";
+import { ETH_DEFAULT_ADDRESS, MIN_ETH_ON_WALLET_FOR_TRANSACTION } from "./constants";
+import { Signer, zeroPadBytes } from "ethers";
 
 export async function isUserHasEnoughFunds(signer: Signer, valueToCheck: number = MIN_ETH_ON_WALLET_FOR_TRANSACTION) {
   const userAddress = await signer.getAddress();
@@ -16,3 +16,5 @@ export async function isUserHasEnoughFunds(signer: Signer, valueToCheck: number 
 
   return userBalanceEth >= valueToCheck;
 }
+
+export const ZERO_HASH = zeroPadBytes(ETH_DEFAULT_ADDRESS,32)

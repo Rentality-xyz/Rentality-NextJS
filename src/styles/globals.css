@@ -75,6 +75,16 @@
     }
   }
 
+  @layer utilities {
+    .scrollbar-none {
+      scrollbar-width: none; /* Для Firefox */
+      -ms-overflow-style: none; /* Для Internet Explorer */
+    }
+    .scrollbar-none::-webkit-scrollbar {
+      display: none; /* Для Chrome, Safari, Opera */
+    }
+  }
+
   .alt-border-rnt-gradient-2-fixed-bg {
     border: 2px solid transparent;
     background:
@@ -510,7 +520,7 @@ input:disabled {
   pointer-events: none;
   width: 1.3rem;
   height: 1.3rem;
-  /*background: url("../images/arrowDownTurquoise.svg") no-repeat right center;*/
+  /*background: url("../images/arrows/arrowDownTurquoise.svg") no-repeat right center;*/
   background-size: contain;
 }
 

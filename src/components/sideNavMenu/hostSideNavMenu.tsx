@@ -93,6 +93,7 @@ function HostNavMenu() {
           href="/host/transaction_history"
           icon={MenuIcons.TransactionHistory}
         />
+        <SideNavMenuItem text={t_nav("referrals_and_points")} href="/host/points" icon={MenuIcons.ReferralsAndPoints} />
         <SideNavMenuItem text={t_nav("profile")} href="/host/profile" icon={MenuIcons.ProfileSettings} />
         {isAuthenticated ? (
           <SideNavMenuItem text={t_nav("logout")} href="/" onClick={logout} icon={MenuIcons.Logout} />
