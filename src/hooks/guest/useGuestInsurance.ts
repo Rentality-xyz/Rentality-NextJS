@@ -87,8 +87,10 @@ const useGuestInsurance = () => {
         if (
           insurancesView.length === 0 ||
           insurancesView[insurancesView.length - 1].insuranceType !== InsuranceType.General
-        )
+        ) {
+          setGuestInsurance(EMPTY_GUEST_GENERAL_INSURANCE);
           return;
+        }
 
         setGuestInsurance({ photo: getIpfsURI(insurancesView[insurancesView.length - 1].photo) });
       } catch (e) {

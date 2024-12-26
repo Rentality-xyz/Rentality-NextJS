@@ -22,6 +22,7 @@ import mapNotFoundCars from "@/images/map_not_found_cars.png";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "@/components/common/rntSuspense";
+import useGuestInsurance from "@/hooks/guest/useGuestInsurance";
 
 export default function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -37,6 +38,7 @@ export default function Search() {
   const router = useRouter();
   const { isLoadingAuth, isAuthenticated, login } = useAuth();
   const ethereumInfo = useEthereum();
+  const { isLoading: isLoadingInsurance, guestInsurance } = useGuestInsurance();
   const { t } = useTranslation();
 
   const handleSearchClick = async (request: SearchCarRequest) => {
@@ -192,6 +194,7 @@ export default function Search() {
                         isSelected={value.highlighted}
                         setSelected={setHighlightedCar}
                         handleShowRequestDetails={handleShowRequestDetails}
+                        isGuestHasInsurance={!isLoadingInsurance && !isEmpty(guestInsurance.photo)}
                       />
                     </div>
                   );
