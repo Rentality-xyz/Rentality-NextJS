@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { RefferalHistory, RefferalProgram } from "@/model/blockchain/schemas";
+import { ContractRefferalHistory, RefferalProgram } from "@/model/blockchain/schemas";
 import { Err, Ok, Result } from "@/model/utils/result";
 import useInviteLink from "@/hooks/useRefferalProgram";
 import { calculateDays, UTC_TIME_ZONE_ID } from "@/utils/date";
@@ -14,27 +14,13 @@ export type ReferralHistoryInfo = {
 };
 
 const usePointsHistory = () => {
-  const { t } = useTranslation();
-
-  const [
-    inviteHash,
-    points,
-    claimPoints,
-    getReadyToClaim,
-    getReadyToClaimFromRefferalHash,
-    claimRefferalPoints,
-    getRefferalPointsInfo,
-    getPointsHistory,
-    manageRefferalDiscount,
-    manageTearInfo,
-    calculateUniqUsers,
-  ] = useInviteLink();
-
+  const { getPointsHistory } = useInviteLink();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<ReferralHistoryInfo[]>([]);
   const [allData, setAllData] = useState<ReferralHistoryInfo[] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPageCount, setTotalPageCount] = useState<number>(0);
+  const { t } = useTranslation();
 
   const filterData = useCallback((data: ReferralHistoryInfo[], page: number = 1, itemsPerPage: number = 10) => {
     const slicedData = data.slice((page - 1) * itemsPerPage, page * itemsPerPage);
@@ -64,17 +50,15 @@ const usePointsHistory = () => {
             historyData.map(async (historyDataDto) => {
               const isOneTime = historyDataDto.oneTime;
 
-              const dynamicDescriptions: { [key: number]: string } = {
-                [RefferalProgram.FinishTripAsGuest]: isOneTime
-                  ? t("referrals_and_point.referral_program.finish_trip_as_guest_one_time")
-                  : t("referrals_and_point.referral_program.finish_trip_as_guest"),
-              };
-
               const methodDescriptions =
-                dynamicDescriptions[historyDataDto.method] || ReferralProgramDescription(t, historyDataDto.method);
+                historyDataDto.method === RefferalProgram.FinishTripAsGuest
+                  ? isOneTime
+                    ? t("referrals_and_point.referral_program.finish_trip_as_guest_one_time")
+                    : t("referrals_and_point.referral_program.finish_trip_as_guest")
+                  : ReferralProgramDescription(t, historyDataDto.method);
 
               return {
-                points: historyDataDto.points,
+                points: Number(historyDataDto.points),
                 date: getDateFromBlockchainTimeWithTZ(historyDataDto.date, UTC_TIME_ZONE_ID),
                 methodDescriptions,
               };

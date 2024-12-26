@@ -3,10 +3,10 @@ import { Err, Ok, Result } from "@/model/utils/result";
 import useInviteLink from "@/hooks/useRefferalProgram";
 import { useTranslation } from "react-i18next";
 import {
-  AllRefferalInfoDTO,
-  ReadyToClaim,
-  ReadyToClaimDTO,
-  RefferalHistory,
+  ContractAllRefferalInfoDTO,
+  ContractReadyToClaim,
+  ContractReadyToClaimDTO,
+  ContractRefferalHistory,
   RefferalProgram,
 } from "@/model/blockchain/schemas";
 import { ReferralProgramDescription } from "@/components/points/ReferralProgramDescriptions";
@@ -34,32 +34,17 @@ type AllOwnPointsInfo = {
 };
 
 const useOwnPoints = () => {
-  const { t } = useTranslation();
-
-  const [
-    inviteHash,
-    points,
-    claimPoints,
-    getReadyToClaim,
-    getReadyToClaimFromRefferalHash,
-    claimRefferalPoints,
-    getRefferalPointsInfo,
-    getPointsHistory,
-    manageRefferalDiscount,
-    manageTearInfo,
-    calculateUniqUsers,
-    isLoadingInviteLink,
-  ] = useInviteLink();
-
+  const { claimPoints } = useInviteLink();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<AllOwnPointsInfo | null>(null);
   const [totalReadyToClaim, setTotalReadyToClaim] = useState<number>(0);
+  const { t } = useTranslation();
 
   const fetchData = useCallback(
     async (
-      readyToClaim: ReadyToClaimDTO,
-      pointsHistory: RefferalHistory[],
-      pointsInfo: AllRefferalInfoDTO
+      readyToClaim: ContractReadyToClaimDTO,
+      pointsHistory: ContractRefferalHistory[],
+      pointsInfo: ContractAllRefferalInfoDTO
     ): Promise<Result<boolean, string>> => {
       if (data !== null) {
         return Ok(true);
@@ -84,7 +69,7 @@ const useOwnPoints = () => {
         //     "combineData:",
         //     JSON.stringify(combineData, (key, value) => (typeof value === "bigint" ? value.toString() : value), 2)
         // );
-        setTotalReadyToClaim(readyToClaim.totalPoints);
+        setTotalReadyToClaim(Number(readyToClaim.totalPoints));
         setData(combineData);
         return Ok(true);
       } catch (e) {
@@ -119,9 +104,9 @@ const useOwnPoints = () => {
 export default useOwnPoints;
 
 const getOwnAccountCreationPointsInfo = (
-  readyToClaim: ReadyToClaim[],
-  pointsInfo: AllRefferalInfoDTO,
-  pointsHistory: RefferalHistory[],
+  readyToClaim: ContractReadyToClaim[],
+  pointsInfo: ContractAllRefferalInfoDTO,
+  pointsHistory: ContractRefferalHistory[],
   t: any
 ): OwnAccountCreationPointsInfo[] => {
   const filteredReadyToClaim = readyToClaim.filter((item) => item.oneTime);
@@ -129,10 +114,10 @@ const getOwnAccountCreationPointsInfo = (
 
   const result = Array.from(allRefTypes).map((refType) => {
     const claimItem = filteredReadyToClaim.find((item) => item.refType === refType);
-    const points = claimItem?.points || 0;
+    const points = Number(claimItem?.points) || 0;
 
     const programPointItem = pointsInfo.programPoints.find((item) => item.method === refType);
-    const programPoints = programPointItem?.points || 0;
+    const programPoints = Number(programPointItem?.points) || 0;
 
     const done = pointsHistory.some((entry) => entry.method === refType);
 
@@ -153,13 +138,14 @@ const getOwnAccountCreationPointsInfo = (
     };
   });
 
-  return result.sort((a, b) => a.index - b.index);
+  result.sort((a, b) => a.index - b.index);
+  return result;
 };
 
 const getOwnRegularPointsInfo = (
-  readyToClaim: ReadyToClaim[],
-  pointsInfo: AllRefferalInfoDTO,
-  pointsHistory: RefferalHistory[],
+  readyToClaim: ContractReadyToClaim[],
+  pointsInfo: ContractAllRefferalInfoDTO,
+  pointsHistory: ContractRefferalHistory[],
   t: any
 ): OwnRegularPointsInfo[] => {
   const filteredReadyToClaim = readyToClaim.filter((item) => !item.oneTime);
@@ -167,10 +153,10 @@ const getOwnRegularPointsInfo = (
 
   return Array.from(allRefTypes).map((refType) => {
     const claimItem = filteredReadyToClaim.find((item) => item.refType === refType);
-    const points = claimItem?.points || 0;
+    const points = Number(claimItem?.points) || 0;
 
     const programPointItem = pointsInfo.programPoints.find((item) => item.method === refType);
-    const programPoints = programPointItem?.points || 0;
+    const programPoints = Number(programPointItem?.points) || 0;
 
     const done = pointsHistory.some((entry) => entry.method === refType);
 

@@ -313,7 +313,6 @@ export type ContractCivicKYCInfo = {
 export type ContractAdditionalKYCInfo = {
   issueCountry: string;
   email: string;
-  reflink: string;
 };
 
 export type ContractFullKYCInfoDTO = {
@@ -496,6 +495,96 @@ export type ContractAllCarsDTO = {
   totalPageCount: bigint;
 };
 
+export type ContractReadyToClaim = {
+  points: bigint;
+  refType: RefferalProgram;
+  oneTime: boolean;
+};
+
+export type ContractReadyToClaimRefferalHash = {
+  points: bigint;
+  refType: RefferalProgram;
+  oneTime: boolean;
+  claimed: boolean;
+};
+
+export type ContractReadyToClaimFromHash = {
+  points: bigint;
+  refType: RefferalProgram;
+  oneTime: boolean;
+  claimed: boolean;
+  user: string;
+};
+
+export type ContractTearPoints = {
+  from: bigint;
+  to: bigint;
+};
+
+export type ContractRefferalDiscount = {
+  pointsCosts: bigint;
+  percents: bigint;
+};
+
+export type ContractTearDTO = {
+  points: ContractTearPoints;
+  tear: Tear;
+};
+
+export type ContractReadyToClaimDTO = {
+  toClaim: ContractReadyToClaim[];
+  totalPoints: bigint;
+  toNextDailyClaim: bigint;
+};
+
+export type ContractRefferalHashDTO = {
+  toClaim: ContractReadyToClaimFromHash[];
+  totalPoints: bigint;
+  hash: string;
+};
+
+export type ContractRefferalProgramInfoDTO = {
+  refferalType: RefferalAccrualType;
+  method: RefferalProgram;
+  points: bigint;
+};
+
+export type ContractHashPointsDTO = {
+  method: RefferalProgram;
+  points: bigint;
+};
+
+export type ContractRefferalDiscountsDTO = {
+  method: RefferalProgram;
+  tear: Tear;
+  discount: ContractRefferalDiscount;
+};
+
+export type ContractAllRefferalInfoDTO = {
+  programPoints: ContractRefferalProgramInfoDTO[];
+  hashPoints: ContractHashPointsDTO[];
+  discounts: ContractRefferalDiscountsDTO[];
+  tear: ContractTearDTO[];
+};
+
+export type ContractRefferalHistory = {
+  points: bigint;
+  method: RefferalProgram;
+};
+
+export type ContractHistory = {
+  points: bigint;
+  date: bigint;
+  method: RefferalProgram;
+};
+
+export type ContractProgramHistory = {
+  points: bigint;
+  date: bigint;
+  method: RefferalProgram;
+  oneTime: boolean;
+};
+
 export type ContractFilterInfoDTO = {
   maxCarPrice: bigint;
   minCarYearOfProduction: bigint;
@@ -629,6 +718,34 @@ export const Role = {
   KYCManager: BigInt(4),
 };
 
+export type RefferalProgram = bigint;
+export const RefferalProgram = {
+  SetKYC: BigInt(0),
+  PassCivic: BigInt(1),
+  AddCar: BigInt(2),
+  CreateTrip: BigInt(3),
+  FinishTripAsGuest: BigInt(4),
+  UnlistedCar: BigInt(5),
+  Daily: BigInt(6),
+  DailyListing: BigInt(7),
+  AddFirstCar: BigInt(8),
+  FinishTripAsHost: BigInt(9),
+};
+
+export type Tear = bigint;
+export const Tear = {
+  Tear1: BigInt(0),
+  Tear2: BigInt(1),
+  Tear3: BigInt(2),
+  Tear4: BigInt(3),
+};
+
+export type RefferalAccrualType = bigint;
+export const RefferalAccrualType = {
+  OneTime: BigInt(0),
+  Permanent: BigInt(1),
+};
+
 export type CarUpdateStatus = bigint;
 export const CarUpdateStatus = {
   Add: BigInt(0),
@@ -655,101 +772,3 @@ export const EngineType = {
   PETROL: BigInt(1),
   ELECTRIC: BigInt(2),
 };
-
-//порядок не менять! учитывается в useOwnPoints
-export enum RefferalProgram {
-  SetKYC,
-  PassCivic,
-  AddCar,
-  CreateTrip,
-  FinishTripAsGuest,
-  UnlistedCar,
-  Daily,
-  DailyListing,
-  AddFirstCar,
-  FinishTripAsHost,
-}
-
-export enum Tear {
-  Tear1,
-  Tear2,
-  Tear3,
-  Tear4,
-}
-
-export enum RefferalAccrualType {
-  OneTime,
-  Permanent,
-}
-
-export interface ReadyToClaim {
-  points: number;
-  refType: RefferalProgram;
-  oneTime: boolean;
-}
-
-export interface ReadyToClaimRefferalHash {
-  points: number;
-  refType: RefferalProgram;
-  oneTime: boolean;
-  claimed: boolean;
-  user: string;
-}
-
-export interface TearPoints {
-  from: number;
-  to: number;
-}
-
-export interface RefferalDiscount {
-  pointsCosts: number;
-  percents: number;
-}
-
-export interface TearDTO {
-  points: TearPoints;
-  tear: Tear;
-}
-
-export interface ReadyToClaimDTO {
-  toClaim: ReadyToClaim[];
-  totalPoints: number;
-  toNextDailyClaim: number;
-}
-
-export interface RefferalHashDTO {
-  toClaim: ReadyToClaimRefferalHash[];
-  totalPoints: number;
-  hash: string;
-}
-
-export interface RefferalProgramInfoDTO {
-  refferalType: RefferalAccrualType;
-  method: RefferalProgram;
-  points: number;
-}
-
-export interface HashPointsDTO {
-  method: RefferalProgram;
-  points: number;
-}
-
-export interface RefferalDiscountsDTO {
-  method: RefferalProgram;
-  tear: Tear;
-  discount: RefferalDiscount;
-}
-
-export interface AllRefferalInfoDTO {
-  programPoints: RefferalProgramInfoDTO[];
-  hashPoints: HashPointsDTO[];
-  discounts: RefferalDiscountsDTO[];
-  tear: TearDTO[];
-}
-
-export interface RefferalHistory {
-  points: number;
-  date: number;
-  method: RefferalProgram;
-  oneTime: boolean;
-}

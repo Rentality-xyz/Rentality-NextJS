@@ -8,22 +8,8 @@ import useInviteLink from "@/hooks/useRefferalProgram";
 import useProfileSettings from "@/hooks/useProfileSettings";
 
 export default function ReferralsAndPointsLink() {
+  const { inviteHash } = useInviteLink();
   const { t } = useTranslation();
-
-  const [
-    inviteHash,
-    points,
-    claimPoints,
-    getReadyToClaim,
-    getReadyToClaimFromRefferalHash,
-    claimRefferalPoints,
-    getRefferalPointsInfo,
-    getPointsHistory,
-    manageRefferalDiscount,
-    manageTearInfo,
-    calculateUniqUsers,
-    isLoading,
-  ] = useInviteLink();
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
