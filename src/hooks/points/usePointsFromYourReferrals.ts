@@ -1,7 +1,11 @@
 import { useCallback, useState } from "react";
 import { Err, Ok, Result } from "@/model/utils/result";
 import useInviteLink from "@/hooks/useRefferalProgram";
-import { ReadyToClaimRefferalHash, RefferalProgram } from "@/model/blockchain/schemas";
+import {
+  ContractReadyToClaimFromHash,
+  ContractReadyToClaimRefferalHash,
+  RefferalProgram,
+} from "@/model/blockchain/schemas";
 import { ReferralProgramDescription } from "@/components/points/ReferralProgramDescriptions";
 import { useTranslation } from "react-i18next";
 
@@ -13,28 +17,14 @@ export type PointsFromYourReferralsInfo = {
 };
 
 const usePointsFromYourReferrals = () => {
-  const { t } = useTranslation();
-
-  const [
-    inviteHash,
-    points,
-    claimPoints,
-    getReadyToClaim,
-    getReadyToClaimFromRefferalHash,
-    claimRefferalPoints,
-    getRefferalPointsInfo,
-    getPointsHistory,
-    manageRefferalDiscount,
-    manageTearInfo,
-    calculateUniqUsers,
-  ] = useInviteLink();
-
+  const { getReadyToClaimFromRefferalHash, claimRefferalPoints } = useInviteLink();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<PointsFromYourReferralsInfo[]>([]);
   const [allData, setAllData] = useState<PointsFromYourReferralsInfo[] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPageCount, setTotalPageCount] = useState<number>(0);
   const [totalReadyToClaim, setTotalReadyToClaim] = useState<number>(0);
+  const { t } = useTranslation();
 
   const filterData = useCallback((data: PointsFromYourReferralsInfo[], page: number = 1, itemsPerPage: number = 10) => {
     const slicedData = data.slice((page - 1) * itemsPerPage, page * itemsPerPage);
@@ -102,71 +92,74 @@ const usePointsFromYourReferrals = () => {
 
 export default usePointsFromYourReferrals;
 
-const calculateTotalReferralsByRefType = (referrals: ReadyToClaimRefferalHash[]): Record<RefferalProgram, number> => {
+const calculateTotalReferralsByRefType = (referrals: ContractReadyToClaimFromHash[]): Record<number, number> => {
   const groupedData = referrals.reduce(
     (acc, item) => {
       const { refType, user } = item;
+      const refTypeNumber = Number(refType);
 
-      if (!acc[refType]) {
-        acc[refType] = new Set<string>();
+      if (!acc[refTypeNumber]) {
+        acc[refTypeNumber] = new Set<string>();
       }
 
-      acc[refType].add(user);
+      acc[refTypeNumber].add(user);
 
       return acc;
     },
-    {} as Record<RefferalProgram, Set<string>>
+    {} as Record<number, Set<string>>
   );
 
   return Object.keys(groupedData).reduce(
     (acc, key) => {
-      const refType = key as unknown as RefferalProgram;
+      const refType = key as unknown as number;
       acc[refType] = groupedData[refType].size;
       return acc;
     },
-    {} as Record<RefferalProgram, number>
+    {} as Record<number, number>
   );
 };
 
-const calculateTotalReceivedByRefType = (referrals: ReadyToClaimRefferalHash[]): Record<RefferalProgram, number> => {
+const calculateTotalReceivedByRefType = (referrals: ContractReadyToClaimFromHash[]): Record<number, number> => {
   return referrals.reduce(
     (acc, item) => {
       const { refType, points, claimed } = item;
+      const refTypeNumber = Number(refType);
 
       if (claimed) {
-        if (!acc[refType]) {
-          acc[refType] = 0;
+        if (!acc[refTypeNumber]) {
+          acc[refTypeNumber] = 0;
         }
 
-        acc[refType] += points;
+        acc[refTypeNumber] += Number(points);
       }
 
       return acc;
     },
-    {} as Record<RefferalProgram, number>
+    {} as Record<number, number>
   );
 };
 
-const calculateReadyToClaimByRefType = (referrals: ReadyToClaimRefferalHash[]): Record<RefferalProgram, number> => {
+const calculateReadyToClaimByRefType = (referrals: ContractReadyToClaimFromHash[]): Record<number, number> => {
   return referrals.reduce(
     (acc, item) => {
       const { refType, points, claimed } = item;
+      const refTypeNumber = Number(refType);
 
       if (!claimed) {
-        if (!acc[refType]) {
-          acc[refType] = 0;
+        if (!acc[refTypeNumber]) {
+          acc[refTypeNumber] = 0;
         }
 
-        acc[refType] += points;
+        acc[refTypeNumber] += Number(points);
       }
 
       return acc;
     },
-    {} as Record<RefferalProgram, number>
+    {} as Record<number, number>
   );
 };
 
-const combineReferralData = (referrals: ReadyToClaimRefferalHash[], t: any): PointsFromYourReferralsInfo[] => {
+const combineReferralData = (referrals: ContractReadyToClaimFromHash[], t: any): PointsFromYourReferralsInfo[] => {
   const totalReferrals = calculateTotalReferralsByRefType(referrals);
   const totalReceived = calculateTotalReceivedByRefType(referrals);
   const readyToClaim = calculateReadyToClaimByRefType(referrals);
@@ -175,8 +168,8 @@ const combineReferralData = (referrals: ReadyToClaimRefferalHash[], t: any): Poi
 
   return Array.from(allRefTypes).map((refType) => ({
     methodDescriptions: ReferralProgramDescription(t, refType),
-    totalReferrals: totalReferrals[refType] || 0,
-    totalReceived: totalReceived[refType] || 0,
-    readyToClaim: readyToClaim[refType] || 0,
+    totalReferrals: totalReferrals[Number(refType)] || 0,
+    totalReceived: totalReceived[Number(refType)] || 0,
+    readyToClaim: readyToClaim[Number(refType)] || 0,
   }));
 };

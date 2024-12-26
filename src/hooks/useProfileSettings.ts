@@ -66,7 +66,7 @@ const useProfileSettings = () => {
             : undefined,
         issueCountry: myKYCInfo.additionalKYC.issueCountry,
         email: myKYCInfo.additionalKYC.email,
-        reflink: myKYCInfo.additionalKYC.reflink,
+        reflink: "", //TODO was not found  myKYCInfo.additionalKYC.reflink,
       };
       console.log("useProfileSettings.getProfileSettings() return data");
       return myProfileSettings;

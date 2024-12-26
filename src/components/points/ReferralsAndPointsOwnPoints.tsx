@@ -1,8 +1,6 @@
 import { useTranslation } from "react-i18next";
 import React, { useEffect } from "react";
-import ReferralsAndPointsProfileStatus, {
-  PointsProfileStatus,
-} from "@/components/points/ReferralsAndPointsProfileStatus";
+import ReferralsAndPointsProfileStatus from "@/components/points/ReferralsAndPointsProfileStatus";
 import Image from "next/image";
 import RntButton from "@/components/common/rntButton";
 import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
@@ -12,20 +10,7 @@ import RntSuspense from "../common/rntSuspense";
 import useInviteLink from "@/hooks/useRefferalProgram";
 
 export default function ReferralsAndPointsOwnPoints() {
-  const [
-    inviteHash,
-    points,
-    claimPointsInviteLink,
-    getReadyToClaim,
-    getReadyToClaimFromRefferalHash,
-    claimRefferalPoints,
-    getRefferalPointsInfo,
-    getPointsHistory,
-    manageRefferalDiscount,
-    manageTearInfo,
-    calculateUniqUsers,
-    isLoadingInviteLink,
-  ] = useInviteLink();
+  const { getReadyToClaim, getRefferalPointsInfo, getPointsHistory, isLoading: isLoadingInviteLink } = useInviteLink();
 
   const { t } = useTranslation();
   const { isLoading, data, fetchData, claimAllPoints } = useOwnPoints();
