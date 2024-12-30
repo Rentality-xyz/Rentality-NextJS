@@ -138,7 +138,7 @@ export default function PanelFilteringByYear({
               {value[0]} - {value[1]}
             </div>
 
-            <div className="mb-4 flex items-center justify-center">
+            <div className="mb-4 flex items-center justify-center" onClick={(event) => event.stopPropagation()}>
               <Slider
                 value={value}
                 min={minYear}
