@@ -4,15 +4,16 @@ import { getEtherContractWithSigner } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { IRentalityAdminGateway, IRentalityReferralProgramContract } from "@/model/blockchain/IRentalityContract";
 import {
-  AllRefferalInfoDTO,
-  ReadyToClaim,
-  ReadyToClaimDTO,
-  ReadyToClaimRefferalHash,
+  ContractAllRefferalInfoDTO,
+  ContractReadyToClaimDTO,
+  ContractReadyToClaimRefferalHash,
   RefferalAccrualType,
-  RefferalHashDTO,
-  RefferalHistory,
+  ContractRefferalHashDTO,
+  ContractRefferalHistory,
   RefferalProgram,
   Tear,
+  ContractReadyToClaimFromHash,
+  ContractProgramHistory,
 } from "@/model/blockchain/schemas";
 
 const useInviteLink = () => {
@@ -135,7 +136,7 @@ const useInviteLink = () => {
     }
   };
 
-  const getReadyToClaim = async (): Promise<ReadyToClaimDTO | null> => {
+  const getReadyToClaim = async (): Promise<ContractReadyToClaimDTO | null> => {
     if (!rentalityContract) {
       console.error("get hash error: rentalityContract is null");
       setIsLoading(true);
@@ -154,7 +155,7 @@ const useInviteLink = () => {
     }
   };
 
-  const getReadyToClaimFromRefferalHash = async (): Promise<RefferalHashDTO | null> => {
+  const getReadyToClaimFromRefferalHash = async (): Promise<ContractRefferalHashDTO | null> => {
     if (!rentalityContract) {
       console.error("get hash error: rentalityContract is null");
       setIsLoading(true);
@@ -192,7 +193,7 @@ const useInviteLink = () => {
     }
   };
 
-  const getRefferalPointsInfo = async (): Promise<AllRefferalInfoDTO | null> => {
+  const getRefferalPointsInfo = async (): Promise<ContractAllRefferalInfoDTO | null> => {
     if (!rentalityContract) {
       console.error("get hash error: rentalityContract is null");
       setIsLoading(true);
@@ -211,7 +212,7 @@ const useInviteLink = () => {
     }
   };
 
-  const getPointsHistory = async (): Promise<RefferalHistory[] | null> => {
+  const getPointsHistory = async (): Promise<ContractProgramHistory[] | null> => {
     if (!rentalityContract) {
       console.error("get hash error: rentalityContract is null");
       setIsLoading(true);
@@ -253,7 +254,7 @@ const useInviteLink = () => {
       return null;
     }
   };
-  const calculateUniqUsers = (pointsInfo: ReadyToClaimRefferalHash[]) => {
+  const calculateUniqUsers = (pointsInfo: ContractReadyToClaimFromHash[]) => {
     return new Set(pointsInfo.map((points) => points.user)).size;
   };
 
@@ -295,7 +296,7 @@ const useInviteLink = () => {
     }
   };
 
-  return [
+  return {
     inviteHash,
     points,
     claimPoints,
@@ -308,7 +309,7 @@ const useInviteLink = () => {
     manageTearInfo,
     calculateUniqUsers,
     isLoading,
-  ] as const;
+  } as const;
 };
 
 export default useInviteLink;

@@ -1,6 +1,6 @@
 import { ContractTransactionResponse } from "ethers";
 import {
-  AllRefferalInfoDTO,
+  ContractAllRefferalInfoDTO,
   ContractAllCarsDTO,
   ContractAllTripsDTO,
   ContractAvailableCarDTO,
@@ -14,7 +14,6 @@ import {
   ContractCivicKYCInfo,
   ContractCreateCarRequest,
   ContractCreateClaimRequest,
-  ContractCreateTripRequest,
   ContractCreateTripRequestWithDelivery,
   ContractDeliveryData,
   ContractDeliveryPrices,
@@ -33,13 +32,14 @@ import {
   ContractTripFilter,
   ContractTripReceiptDTO,
   ContractUpdateCarInfoRequest,
-  ReadyToClaimDTO,
+  ContractReadyToClaimDTO,
   RefferalAccrualType,
-  RefferalHashDTO,
-  RefferalHistory,
+  ContractRefferalHashDTO,
+  ContractRefferalHistory,
   RefferalProgram,
   Role,
   Tear,
+  ContractProgramHistory,
 } from "./schemas";
 
 export interface IRentalityContract {
@@ -221,7 +221,7 @@ export interface IRentalityAdminGateway {
 
   manageTearInfo(tear: Tear, from: number, to: number): Promise<void>;
 
-  getRefferalPointsInfo(): Promise<AllRefferalInfoDTO>;
+  getRefferalPointsInfo(): Promise<ContractAllRefferalInfoDTO>;
 }
 
 export interface IRentalityChatHelperContract {
@@ -259,15 +259,15 @@ export interface IRentalityReferralProgramContract {
   claimPoints(user: string): Promise<void>;
   // get info about not claimed points
   // info about not claimed points, from ref hash
-  getReadyToClaimFromRefferalHash(user: string): Promise<RefferalHashDTO>;
+  getReadyToClaimFromRefferalHash(user: string): Promise<ContractRefferalHashDTO>;
   // claim points from user ref hash
   claimRefferalPoints(user: string): Promise<void>;
   // get full information about point, tears, e.t.c
-  getRefferalPointsInfo(): Promise<AllRefferalInfoDTO>;
+  getRefferalPointsInfo(): Promise<ContractAllRefferalInfoDTO>;
   // get points reduces and increases
-  getPointsHistory(): Promise<RefferalHistory[]>;
+  getPointsHistory(): Promise<ContractProgramHistory[]>;
 
-  getReadyToClaim(user: string): Promise<ReadyToClaimDTO>;
+  getReadyToClaim(user: string): Promise<ContractReadyToClaimDTO>;
 }
 
 type ContractChatKeyInfo = {
