@@ -4,20 +4,7 @@ import React, { useEffect, useState } from "react";
 import useInviteLink from "@/hooks/useRefferalProgram";
 
 export default function HeadBtnReferralsAndPoints() {
-  const [
-    inviteHash,
-    points,
-    claimPoints,
-    getReadyToClaim,
-    getReadyToClaimFromRefferalHash,
-    claimRefferalPoints,
-    getRefferalPointsInfo,
-    getPointsHistory,
-    manageRefferalDiscount,
-    manageTearInfo,
-    calculateUniqUsers,
-    isLoading,
-  ] = useInviteLink();
+  const { claimPoints, getReadyToClaim, isLoading } = useInviteLink();
 
   const [totalReadyToClaim, setTotalReadyToClaim] = useState<number>(0);
 
@@ -25,7 +12,7 @@ export default function HeadBtnReferralsAndPoints() {
     const fetchReadyToClaim = async () => {
       const readyToClaim = await getReadyToClaim();
       if (readyToClaim) {
-        setTotalReadyToClaim(readyToClaim.totalPoints);
+        setTotalReadyToClaim(Number(readyToClaim.totalPoints));
       }
     };
 

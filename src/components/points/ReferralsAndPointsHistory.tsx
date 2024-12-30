@@ -1,11 +1,8 @@
 import { useTranslation } from "react-i18next";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import ReferralsAndPointsHistoryTable from "@/components/points/ReferralsAndPointsHistoryTable";
-import useInviteLink from "@/hooks/useRefferalProgram";
-import { RefferalHistory } from "@/model/blockchain/schemas";
 import usePointsHistory from "@/hooks/points/usePointsHistory";
-import { da } from "date-fns/locale";
 
 export default function ReferralsAndPointsHistory() {
   const { t } = useTranslation();
