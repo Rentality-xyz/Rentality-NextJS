@@ -28,7 +28,7 @@ export default function RntMobileStoresDialog() {
   return (
     <>
       <button
-        className="items-center rounded-md border border-gray-500 hover:border-gray-400 lg:px-4 xl:flex"
+        className="items-center rounded-md border border-gray-500 hover:border-gray-400 lg:px-4"
         onClick={handleClick}
       >
         <Image src={imgStore} alt="Mobile Store" className="min-w-[54px] lg:min-w-[94px]" />
