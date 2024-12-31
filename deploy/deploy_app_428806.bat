@@ -32,10 +32,6 @@ if exist .env.backup (
 	echo Returning backup env file...
 	del .env 
 	ren .env.backup .env 
-) else ( 
-	echo %ESC%[91mFile .env.backup already isn't exist!!!%ESC%[0m 
-	pause
-    exit /B 0
 )
 
 echo:
