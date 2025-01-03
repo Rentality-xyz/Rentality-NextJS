@@ -47,3 +47,4 @@ package-lock.json
 docker/env.nextjs
 .env.*
 .env 
+.firebasebackup/

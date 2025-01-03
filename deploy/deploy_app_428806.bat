@@ -11,31 +11,39 @@ echo %ESC%[91mMAKE SURE THAT YOU HAVE UPDATED THE CONFIGURATION OF GOOGLE ANALYT
 echo Deploying %ESC%[93m%PROJECT_ID%%ESC%[0m... Press any key to deploy ...
 pause >nul
 
+:: backup all .env* files
+set backupFolder=.firebasebackup
 echo Checking .env files ...
-if exist .env.backup (	 
-	echo %ESC%[91mFile .env.backup already exists. Maybe some deployment script runs in parallel!!!%ESC%[0m 
-	pause
-    exit /B 0    
-) else (
-	echo Creating backup env file 
-	ren .env .env.backup 
+if not exist "%backupFolder%" (
+    mkdir "%backupFolder%"
+    echo Backup folder "%backupFolder%" created.
+)
+for %%f in (.env*) do (
+    move "%%f" "%backupFolder%\"
+    echo Moved %%f to %backupFolder%.
 )
 
+:: use project .env file
 set PROJECT_ENV_FILENANE=.env.%PROJECT_ID%.local
 echo Coping "deploy\%PROJECT_ENV_FILENANE%" to ".env" ...
 copy deploy\%PROJECT_ENV_FILENANE% .env 
 
 call firebase use %PROJECT_ID%
 call firebase deploy
+  
+echo %PROJECT_ID% deployed successfully
 
-if exist .env.backup (	 
-	echo Returning backup env file...
-	del .env 
-	ren .env.backup .env 
+:: restore .env* files
+if not exist "%backupFolder%" (
+    echo Backup folder "%backupFolder%" does not exist. No files to restore.
+    pause
+    exit /b
+)
+for %%f in ("%backupFolder%\*") do (
+    move "%%f" ".\"
+    echo Restored %%~nxf from %backupFolder%.
 )
 
-echo:
-echo %PROJECT_ID% deployed successfully
 pause
 
 :setESC
