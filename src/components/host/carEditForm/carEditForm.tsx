@@ -632,6 +632,7 @@ export default function CarEditForm({
               placeholder="USA"
               readOnly={true}
               value={locationInfo?.country}
+              validationError={errors.locationInfo?.country?.message?.toString()}
             />
             <RntInput
               className="lg:w-40"
@@ -641,6 +642,7 @@ export default function CarEditForm({
               placeholder="e.g. Florida"
               readOnly={true}
               value={locationInfo?.state}
+              validationError={errors.locationInfo?.state?.message?.toString()}
             />
             <RntInput
               className="lg:w-40"
@@ -650,6 +652,7 @@ export default function CarEditForm({
               placeholder="e.g. Miami"
               readOnly={true}
               value={locationInfo?.city}
+              validationError={errors.locationInfo?.city?.message?.toString()}
             />
             <RntInput
               className="w-[48%] lg:w-60"
@@ -659,6 +662,7 @@ export default function CarEditForm({
               placeholder="e.g. 42.123456"
               readOnly={true}
               value={locationInfo?.latitude}
+              validationError={errors.locationInfo?.latitude?.message?.toString()}
             />
             <RntInput
               className="w-[48%] lg:w-60"
@@ -668,6 +672,7 @@ export default function CarEditForm({
               placeholder="e.g. 42.123456"
               readOnly={true}
               value={locationInfo?.longitude}
+              validationError={errors.locationInfo?.longitude?.message?.toString()}
             />
           </div>
         </div>
