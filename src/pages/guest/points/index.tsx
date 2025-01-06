@@ -10,7 +10,9 @@ export default function ReferralsAndPoints() {
   return (
     <>
       <PageTitle title={t("referrals_and_point.title")} />
-      <CheckingLoadingAuth>{<ReferralsAndPointsContent isHost={false} />}</CheckingLoadingAuth>
+      <CheckingLoadingAuth>
+        <ReferralsAndPointsContent isHost={false} />
+      </CheckingLoadingAuth>
     </>
   );
 }

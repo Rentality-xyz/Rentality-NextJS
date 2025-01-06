@@ -34,7 +34,6 @@ type AllOwnPointsInfo = {
 };
 
 const useOwnPoints = () => {
-  const { claimPoints } = useInviteLink();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<AllOwnPointsInfo | null>(null);
   const [totalReadyToClaim, setTotalReadyToClaim] = useState<number>(0);
@@ -82,14 +81,6 @@ const useOwnPoints = () => {
     [data]
   );
 
-  const claimAllPoints = useCallback(async (): Promise<void> => {
-    try {
-      await claimPoints();
-    } catch (e) {
-      console.error("fetchData error" + e);
-    }
-  }, [claimPoints]);
-
   return {
     data: {
       data: data,
@@ -97,7 +88,6 @@ const useOwnPoints = () => {
     },
     fetchData,
     isLoading,
-    claimAllPoints: claimAllPoints,
   } as const;
 };
 

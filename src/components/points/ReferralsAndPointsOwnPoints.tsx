@@ -1,3 +1,4 @@
+// TODO translate
 import { useTranslation } from "react-i18next";
 import React, { useEffect } from "react";
 import ReferralsAndPointsProfileStatus from "@/components/points/ReferralsAndPointsProfileStatus";
@@ -10,13 +11,19 @@ import RntSuspense from "../common/rntSuspense";
 import useInviteLink from "@/hooks/useRefferalProgram";
 
 export default function ReferralsAndPointsOwnPoints() {
-  const { getReadyToClaim, getRefferalPointsInfo, getPointsHistory, isLoading: isLoadingInviteLink } = useInviteLink();
+  const {
+    getReadyToClaim,
+    getRefferalPointsInfo,
+    getPointsHistory,
+    isLoading: isLoadingInviteLink,
+    claimPoints,
+  } = useInviteLink();
 
   const { t } = useTranslation();
-  const { isLoading, data, fetchData, claimAllPoints } = useOwnPoints();
+  const { isLoading, data, fetchData } = useOwnPoints();
 
-  async function claimPoints() {
-    await claimAllPoints();
+  async function handleClaimPointsClick() {
+    await claimPoints();
   }
 
   useEffect(() => {
@@ -42,7 +49,7 @@ export default function ReferralsAndPointsOwnPoints() {
         </div>
         <RntButton
           className="flex w-full items-center justify-center text-white max-sm:mt-4 sm:ml-auto sm:w-60 2xl:w-64"
-          onClick={() => claimPoints()}
+          onClick={handleClaimPointsClick}
         >
           <Image src={icStarPointsYellow} alt="" className="mr-2 h-7 w-7" />
           <div className="ml-0.5 flex">

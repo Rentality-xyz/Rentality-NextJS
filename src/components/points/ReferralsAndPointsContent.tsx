@@ -1,6 +1,7 @@
+// TODO translate
 import Image from "next/image";
 import icStarPointsWhite from "@/images/ic_star_points_white.svg";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import ReferralsAndPointsOwnPoints from "@/components/points/ReferralsAndPointsOwnPoints";
 import ReferralsAndPointsLink from "@/components/points/ReferralsAndPointsLink";
@@ -17,7 +18,7 @@ export default function ReferralsAndPointsContent({ isHost }: ReferralsAndPoints
   const { points } = useInviteLink();
 
   return (
-    <div className="">
+    <div>
       <p className="ml-4 mt-2">{t("referrals_and_point.collect_and_claim_points")}</p>
       <div className="mt-3 flex w-fit items-center rounded-lg border border-rentality-star-point px-3 py-2 font-['Montserrat',Arial,sans-serif]">
         <Image src={icStarPointsWhite} alt="" className="mr-1 h-[22px]" />
