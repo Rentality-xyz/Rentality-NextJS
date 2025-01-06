@@ -1,8 +1,8 @@
 import { useCallback, useState } from "react";
-import { ContractRefferalHistory, RefferalProgram } from "@/model/blockchain/schemas";
+import { RefferalProgram } from "@/model/blockchain/schemas";
 import { Err, Ok, Result } from "@/model/utils/result";
 import useInviteLink from "@/hooks/useRefferalProgram";
-import { calculateDays, UTC_TIME_ZONE_ID } from "@/utils/date";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { useTranslation } from "react-i18next";
 import { ReferralProgramDescription } from "@/components/points/ReferralProgramDescriptions";

@@ -1,11 +1,7 @@
 import { useCallback, useState } from "react";
 import { Err, Ok, Result } from "@/model/utils/result";
 import useInviteLink from "@/hooks/useRefferalProgram";
-import {
-  ContractReadyToClaimFromHash,
-  ContractReadyToClaimRefferalHash,
-  RefferalProgram,
-} from "@/model/blockchain/schemas";
+import { ContractReadyToClaimFromHash, RefferalProgram } from "@/model/blockchain/schemas";
 import { ReferralProgramDescription } from "@/components/points/ReferralProgramDescriptions";
 import { useTranslation } from "react-i18next";
 
