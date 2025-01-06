@@ -26,6 +26,9 @@ import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
 import { SearchCarInfoDetails } from "@/model/SearchCarsResult";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
+import EnterPromoDialog from "@/features/promocodes/components/dialogs/EnterPromoDialog";
+import { getDiscountablePriceFromCarInfo, getNotDiscountablePriceFromCarInfo } from "@/utils/price";
+import useCreateTripWithPromo from "@/features/promocodes/hooks/useCreateTripWithPromo";
 
 export default function CreateTrip() {
   const { searchCarRequest, searchCarFilters } = useCarSearchParams();
@@ -58,9 +61,10 @@ function CreateTripDetailsContent({
 }) {
   const router = useRouter();
   const { createTripRequest } = useCreateTripRequest();
+  const { createTripRequestWithPromo } = useCreateTripWithPromo();
   const userInfo = useUserInfo();
   const { isAuthenticated, login } = useAuth();
-  const { showDialog, hideDialogs } = useRntDialogs();
+  const { showDialog, showCustomDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const { t } = useTranslation();
@@ -110,11 +114,63 @@ function CreateTripDetailsContent({
       return;
     }
 
+    showCustomDialog(
+      <EnterPromoDialog
+        days={carInfo.tripDays}
+        priceDiscountable={getDiscountablePriceFromCarInfo(carInfo)}
+        priceNotDiscountable={getNotDiscountablePriceFromCarInfo(carInfo)}
+        createTripRequest={async (promo) => {
+          createTripWithPromo(promo);
+        }}
+      />
+    );
+  }
+
+  async function createTripWithPromo(promo?: string) {
+    if (!isAuthenticated) {
+      const action = (
+        <>
+          {DialogActions.Button(t("common.info.login"), () => {
+            hideDialogs();
+            login();
+          })}
+          {/*{DialogActions.Cancel(hideDialogs)}*/}
+        </>
+      );
+      showDialog(t("common.info.connect_wallet"), action);
+      return;
+    }
+
+    if (isEmpty(searchCarRequest.dateFromInDateTimeStringFormat)) {
+      showError(t("search_page.errors.date_from"));
+      return;
+    }
+    if (isEmpty(searchCarRequest.dateToInDateTimeStringFormat)) {
+      showError(t("search_page.errors.date_to"));
+      return;
+    }
+    if (!carInfo) {
+      showError("car is not found");
+      return;
+    }
+
+    if (carInfo?.tripDays < 0) {
+      showError(t("search_page.errors.date_eq"));
+      return;
+    }
+    if (carInfo.ownerAddress === userInfo?.address) {
+      showError(t("search_page.errors.own_car"));
+      return;
+    }
+
     setRequestSending(true);
 
     showInfo(t("common.info.sign"));
 
-    const result = await createTripRequest(carInfo.carId, searchCarRequest, carInfo.timeZoneId);
+    const result =
+      promo === undefined || isEmpty(promo)
+        ? await createTripRequest(carInfo.carId, searchCarRequest, carInfo.timeZoneId)
+        : await createTripRequestWithPromo(carInfo.carId, searchCarRequest, carInfo.timeZoneId, promo);
 
     hideDialogs();
     hideSnackbars();
