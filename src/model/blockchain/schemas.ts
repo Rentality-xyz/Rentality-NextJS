@@ -633,6 +633,11 @@ export type ContractCarInfoWithInsurance = {
   carMetadataURI: string;
 };
 
+export type ContractCheckPromoDTO = {
+  isFound: boolean;
+  isValid: boolean;
+  value: bigint;
+};
 export type TripStatus = bigint;
 export const TripStatus = {
   Pending: BigInt(0), // Created
