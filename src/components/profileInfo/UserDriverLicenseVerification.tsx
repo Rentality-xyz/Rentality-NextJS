@@ -103,7 +103,7 @@ function UserDriverLicenseVerification({ savedProfileSettings }: { savedProfileS
                   className="lg:w-60"
                   inputClassName="pr-4"
                   id="dateFrom"
-                  label={t("all_trips_table.start_date")}
+                  label={t("profile.driving_license_validity_period")}
                   type="date"
                   value={dateToHtmlDateFormat(field.value)}
                   onChange={(e) => {
