@@ -16,7 +16,7 @@ interface RntInputProps extends React.ComponentPropsWithoutRef<"input"> {
   label?: string;
   validationError?: string;
   validationSuccessMessage?: string;
-  validationMessage?:string;
+  validationMessage?: string;
   isTransparentStyle?: boolean;
   iconFrontLabel?: StaticImageData;
 }
@@ -85,8 +85,20 @@ const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
           ref={ref}
         />
         <RntValidationError className={validationClassName} validationError={validationError} />
-        { validationSuccessMessage && <DotStatus containerClassName="text-sm text-rnt-temp-main-text whitespace-nowrap mt-2 pl-4" color="success" text={validationSuccessMessage} /> }
-        { validationMessage && <DotStatus containerClassName="text-sm text-rnt-temp-main-text whitespace-nowrap mt-2 pl-4" color="warning" text={validationMessage} /> }
+        {validationSuccessMessage && (
+          <DotStatus
+            containerClassName="text-sm text-rnt-temp-main-text whitespace-nowrap mt-2 pl-4"
+            color="success"
+            text={validationSuccessMessage}
+          />
+        )}
+        {validationMessage && (
+          <DotStatus
+            containerClassName="text-sm text-rnt-temp-main-text whitespace-nowrap mt-2 pl-4"
+            color="warning"
+            text={validationMessage}
+          />
+        )}
       </div>
     );
   }
