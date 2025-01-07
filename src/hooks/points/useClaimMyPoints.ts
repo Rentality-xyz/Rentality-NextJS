@@ -53,7 +53,7 @@ function useClaimMyPointsContractActions() {
 
     try {
       const transaction = await rentalityContracts.referralProgram.claimPoints(ethereumInfo.walletAddress);
-      transaction.wait();
+      await transaction.wait();
       return Ok(true);
     } catch (e) {
       console.error("claimMyPoints error:" + e);

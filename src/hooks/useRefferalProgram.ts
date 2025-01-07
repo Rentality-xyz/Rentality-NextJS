@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import {
   ContractAllRefferalInfoDTO,
@@ -11,10 +11,15 @@ import { useRentality } from "@/contexts/rentalityContext";
 
 const useRefferalProgram = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [updateRequired, setUpdateRequired] = useState<boolean>(true);
   const [inviteHash, setHash] = useState("");
   const [points, setPoints] = useState(0);
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
+
+  const updateData = useCallback(() => {
+    setUpdateRequired(true);
+  }, []);
 
   useEffect(() => {
     const getHash = async () => {
@@ -58,33 +63,19 @@ const useRefferalProgram = () => {
 
     if (!rentalityContracts) {
       setIsLoading(true);
+      return;
     }
+
+    if (!updateRequired) return;
+
+    setUpdateRequired(false);
 
     getHash();
     getPoints();
     setIsLoading(false);
-  }, [rentalityContracts, ethereumInfo]);
+  }, [rentalityContracts, ethereumInfo, updateRequired]);
 
-  const claimPoints = async () => {
-    if (!rentalityContracts) {
-      console.error("get hash error: rentalityContract is null");
-      setIsLoading(true);
-      return null;
-    }
-    if (!ethereumInfo) {
-      console.error("get hash error: ethereum info is null");
-      setIsLoading(true);
-      return null;
-    }
-    try {
-      await rentalityContracts.referralProgram.claimPoints(ethereumInfo.walletAddress);
-    } catch (e) {
-      console.error("get hash error:" + e);
-      return null;
-    }
-  };
-
-  const getReadyToClaim = async (): Promise<ContractReadyToClaimDTO | null> => {
+  const getReadyToClaim = useCallback(async (): Promise<ContractReadyToClaimDTO | null> => {
     if (!rentalityContracts) {
       console.error("get hash error: rentalityContract is null");
       setIsLoading(true);
@@ -101,7 +92,7 @@ const useRefferalProgram = () => {
       console.error("get hash error:" + e);
       return null;
     }
-  };
+  }, [ethereumInfo, rentalityContracts]);
 
   const getReadyToClaimFromRefferalHash = async (): Promise<ContractRefferalHashDTO | null> => {
     if (!rentalityContracts) {
@@ -141,7 +132,7 @@ const useRefferalProgram = () => {
     }
   };
 
-  const getRefferalPointsInfo = async (): Promise<ContractAllRefferalInfoDTO | null> => {
+  const getRefferalPointsInfo = useCallback(async (): Promise<ContractAllRefferalInfoDTO | null> => {
     if (!rentalityContracts) {
       console.error("get hash error: rentalityContract is null");
       setIsLoading(true);
@@ -158,9 +149,9 @@ const useRefferalProgram = () => {
       console.error("get hash error:" + e);
       return null;
     }
-  };
+  }, [ethereumInfo, rentalityContracts]);
 
-  const getPointsHistory = async (): Promise<ContractProgramHistory[] | null> => {
+  const getPointsHistory = useCallback(async (): Promise<ContractProgramHistory[] | null> => {
     if (!rentalityContracts) {
       console.error("get hash error: rentalityContract is null");
       setIsLoading(true);
@@ -177,7 +168,7 @@ const useRefferalProgram = () => {
       console.error("get hash error:" + e);
       return null;
     }
-  };
+  }, [ethereumInfo, rentalityContracts]);
 
   const calculateUniqUsers = (pointsInfo: ContractReadyToClaimFromHash[]) => {
     return new Set(pointsInfo.map((points) => points.user)).size;
@@ -186,7 +177,7 @@ const useRefferalProgram = () => {
   return {
     inviteHash,
     points,
-    claimPoints,
+    updateData,
     getReadyToClaim,
     getReadyToClaimFromRefferalHash,
     claimRefferalPoints,
