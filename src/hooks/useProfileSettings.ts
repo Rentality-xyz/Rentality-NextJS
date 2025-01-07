@@ -87,23 +87,21 @@ const useProfileSettings = () => {
     }
 
     try {
+      const refHash = !isEmpty(newProfileSettings.reflink)
+        ? newProfileSettings.reflink.length >= 66
+          ? newProfileSettings.reflink
+          : ethers.encodeBytes32String(newProfileSettings.reflink)
+        : ZERO_HASH;
+
       const transaction = await rentalityContracts.gateway.setKYCInfo(
         newProfileSettings.nickname,
         newProfileSettings.phoneNumber,
         newProfileSettings.profilePhotoUrl,
         newProfileSettings.tcSignature,
-        ZERO_HASH
+        refHash
       );
 
       await transaction.wait();
-
-      if (!isEmpty(newProfileSettings.reflink)) {
-        const refLink =
-          newProfileSettings.reflink.length >= 66
-            ? newProfileSettings.reflink
-            : ethers.encodeBytes32String(newProfileSettings.reflink);
-        //TODO reflink
-      }
       return true;
     } catch (e) {
       console.error("saveProfileSettings error:" + e);
