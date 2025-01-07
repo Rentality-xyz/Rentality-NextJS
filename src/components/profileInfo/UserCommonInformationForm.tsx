@@ -122,7 +122,6 @@ function UserCommonInformationForm({
         drivingLicenseExpire: undefined,
         issueCountry: "",
         email: "",
-        reflink: "",
       };
 
       showInfo(t("common.info.sign"));

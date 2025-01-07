@@ -804,5 +804,14 @@
       "daily": "Daily check-in",
       "daily_listing": "Daily car listed"
     }
+  },
+  "promo": {
+    "input_label": "Promo code",
+    "input_hint": "Enter promo code",
+    "promo_success_1": "you're {{value, string}}% off for the trip",
+    "promo_success_2": "deposit and insurance will not be discounted",
+    "promo_error": "Coupon cannot be used",
+    "button_default_text": "Rent for {{days, number}} day(s) \n${{price, string}}",
+    "button_promo_text": "Rent for ${{price, string}} after discount"
   }
 }
