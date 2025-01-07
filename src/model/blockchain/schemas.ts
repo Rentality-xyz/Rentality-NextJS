@@ -633,11 +633,35 @@ export type ContractCarInfoWithInsurance = {
   carMetadataURI: string;
 };
 
+export type ContractPromoUsedInfo = {
+  promo: ContractPromo;
+  promoCode: string;
+  usedAt: bigint;
+};
+
+export type ContractPromo = {
+  promoType: PromoType;
+  code: string;
+  startDate: bigint;
+  expireDate: bigint;
+  createdBy: string;
+  createdAt: bigint;
+  status: PromoStatus;
+};
+
+export type ContractPromoTripData = {
+  promo: string;
+  hostEarningsInCurrency: bigint;
+  hostEarnings: bigint;
+};
+
 export type ContractCheckPromoDTO = {
   isFound: boolean;
   isValid: boolean;
+  isDiscount: boolean;
   value: bigint;
 };
+
 export type TripStatus = bigint;
 export const TripStatus = {
   Pending: BigInt(0), // Created
@@ -770,6 +794,19 @@ export const InsuranceType = {
   None: BigInt(0),
   General: BigInt(1),
   OneTime: BigInt(2),
+};
+
+export type PromoType = bigint;
+export const PromoType = {
+  OneTime: BigInt(0),
+  Wildcard: BigInt(1),
+};
+
+export type PromoStatus = bigint;
+export const PromoStatus = {
+  Active: BigInt(0),
+  Idle: BigInt(1),
+  Used: BigInt(2),
 };
 
 export type EngineType = bigint;

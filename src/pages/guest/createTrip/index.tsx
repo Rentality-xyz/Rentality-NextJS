@@ -28,7 +28,7 @@ import { SearchCarInfoDetails } from "@/model/SearchCarsResult";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import EnterPromoDialog from "@/features/promocodes/components/dialogs/EnterPromoDialog";
 import { getDiscountablePriceFromCarInfo, getNotDiscountablePriceFromCarInfo } from "@/utils/price";
-import useCreateTripWithPromo from "@/features/promocodes/hooks/useCreateTripWithPromo";
+import { EMPTY_PROMOCODE } from "@/utils/constants";
 
 export default function CreateTrip() {
   const { searchCarRequest, searchCarFilters } = useCarSearchParams();
@@ -61,7 +61,6 @@ function CreateTripDetailsContent({
 }) {
   const router = useRouter();
   const { createTripRequest } = useCreateTripRequest();
-  const { createTripRequestWithPromo } = useCreateTripWithPromo();
   const userInfo = useUserInfo();
   const { isAuthenticated, login } = useAuth();
   const { showDialog, showCustomDialog, hideDialogs } = useRntDialogs();
@@ -126,7 +125,7 @@ function CreateTripDetailsContent({
     );
   }
 
-  async function createTripWithPromo(promo?: string) {
+  async function createTripWithPromo(promoCode?: string) {
     if (!isAuthenticated) {
       const action = (
         <>
@@ -167,10 +166,8 @@ function CreateTripDetailsContent({
 
     showInfo(t("common.info.sign"));
 
-    const result =
-      promo === undefined || isEmpty(promo)
-        ? await createTripRequest(carInfo.carId, searchCarRequest, carInfo.timeZoneId)
-        : await createTripRequestWithPromo(carInfo.carId, searchCarRequest, carInfo.timeZoneId, promo);
+    promoCode = !isEmpty(promoCode) ? promoCode! : EMPTY_PROMOCODE;
+    const result = await createTripRequest(carInfo.carId, searchCarRequest, carInfo.timeZoneId, promoCode);
 
     hideDialogs();
     hideSnackbars();

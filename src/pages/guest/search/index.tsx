@@ -23,16 +23,15 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "@/components/common/rntSuspense";
 import useGuestInsurance from "@/hooks/guest/useGuestInsurance";
-import useCreateTripWithPromo from "@/features/promocodes/hooks/useCreateTripWithPromo";
 import EnterPromoDialog from "@/features/promocodes/components/dialogs/EnterPromoDialog";
 import { getDiscountablePriceFromCarInfo, getNotDiscountablePriceFromCarInfo } from "@/utils/price";
+import { EMPTY_PROMOCODE } from "@/utils/constants";
 
 export default function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
 
   const [isLoading, searchAvailableCars, searchResult, sortSearchResult, setSearchResult] = useSearchCars();
   const { createTripRequest } = useCreateTripRequest();
-  const { createTripRequestWithPromo } = useCreateTripWithPromo();
 
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string | undefined>(undefined);
@@ -104,7 +103,7 @@ export default function Search() {
     );
   };
 
-  async function createTripWithPromo(carInfo: SearchCarInfo, promo?: string) {
+  async function createTripWithPromo(carInfo: SearchCarInfo, promoCode?: string) {
     if (!isAuthenticated) {
       const action = (
         <>
@@ -141,10 +140,8 @@ export default function Search() {
 
     showInfo(t("common.info.sign"));
 
-    const result =
-      promo === undefined || isEmpty(promo)
-        ? await createTripRequest(carInfo.carId, searchResult.searchCarRequest, carInfo.timeZoneId)
-        : await createTripRequestWithPromo(carInfo.carId, searchResult.searchCarRequest, carInfo.timeZoneId, promo);
+    promoCode = !isEmpty(promoCode) ? promoCode! : EMPTY_PROMOCODE;
+    const result = await createTripRequest(carInfo.carId, searchResult.searchCarRequest, carInfo.timeZoneId, promoCode);
 
     hideDialogs();
     hideSnackbars();
