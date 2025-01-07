@@ -40,6 +40,7 @@ import {
   Role,
   Tear,
   ContractProgramHistory,
+  ContractCheckPromoDTO,
 } from "./schemas";
 
 export interface IRentalityContract {
@@ -126,10 +127,12 @@ export interface IRentalityContract {
     daysOfTrip: bigint,
     currency: string,
     pickUpLocation: ContractLocationInfo,
-    returnLocation: ContractLocationInfo
+    returnLocation: ContractLocationInfo,
+    promoCode: string
   ): Promise<ContractCalculatePaymentsDTO>;
   createTripRequestWithDelivery(
     request: ContractCreateTripRequestWithDelivery,
+    promoCode: string,
     value: object
   ): Promise<ContractTransactionResponse>;
   checkInByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
@@ -155,6 +158,9 @@ export interface IRentalityContract {
     insuranceInfo: ContractSaveInsuranceRequest
   ): Promise<ContractTransactionResponse>;
   saveGuestInsurance(insuranceInfo: ContractSaveInsuranceRequest): Promise<ContractTransactionResponse>;
+
+  //PROMO functions
+  checkPromo(code: string): Promise<ContractCheckPromoDTO>;
 
   /// GENERAL functions
   address: string;
