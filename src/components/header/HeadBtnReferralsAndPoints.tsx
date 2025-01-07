@@ -1,10 +1,10 @@
 import Image from "next/image";
 import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 import React, { useEffect, useState } from "react";
-import useInviteLink from "@/hooks/useRefferalProgram";
+import useRefferalProgram from "@/hooks/useRefferalProgram";
 
 export default function HeadBtnReferralsAndPoints() {
-  const { claimPoints, getReadyToClaim, isLoading } = useInviteLink();
+  const { claimPoints, getReadyToClaim, isLoading } = useRefferalProgram();
 
   const [totalReadyToClaim, setTotalReadyToClaim] = useState<number>(0);
 

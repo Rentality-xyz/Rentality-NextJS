@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { RefferalProgram } from "@/model/blockchain/schemas";
 import { Err, Ok, Result } from "@/model/utils/result";
-import useInviteLink from "@/hooks/useRefferalProgram";
+import useRefferalProgram from "@/hooks/useRefferalProgram";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { useTranslation } from "react-i18next";
@@ -14,7 +14,7 @@ export type ReferralHistoryInfo = {
 };
 
 const usePointsHistory = () => {
-  const { getPointsHistory } = useInviteLink();
+  const { getPointsHistory } = useRefferalProgram();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<ReferralHistoryInfo[]>([]);
   const [allData, setAllData] = useState<ReferralHistoryInfo[] | null>(null);
