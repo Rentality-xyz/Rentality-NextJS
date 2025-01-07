@@ -15,7 +15,7 @@ import { isUserHasEnoughFunds } from "@/utils/wallet";
 
 const useCreateTripRequest = () => {
   const ethereumInfo = useEthereum();
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
 
   async function createTripRequest(
     carId: number,
@@ -27,7 +27,7 @@ const useCreateTripRequest = () => {
       return Err("ERROR");
     }
 
-    if (!rentalityContract) {
+    if (!rentalityContracts) {
       console.error("createTripRequest error: rentalityContract is null");
       return Err("ERROR");
     }
@@ -44,7 +44,7 @@ const useCreateTripRequest = () => {
     const startUnixTime = getBlockchainTimeFromDate(dateFrom);
     const endUnixTime = getBlockchainTimeFromDate(dateTo);
 
-    const carDeliveryData = await rentalityContract.getDeliveryData(BigInt(carId));
+    const carDeliveryData = await rentalityContracts.gateway.getDeliveryData(BigInt(carId));
     const carLocationInfo: ContractLocationInfo = {
       userAddress: carDeliveryData.locationInfo.userAddress,
       country: carDeliveryData.locationInfo.country,
@@ -72,7 +72,7 @@ const useCreateTripRequest = () => {
             ? carLocationInfo
             : mapLocationInfoToContractLocationInfo(searchCarRequest.deliveryInfo.returnLocation.locationInfo);
 
-        const paymentsNeeded = await rentalityContract.calculatePaymentsWithDelivery(
+        const paymentsNeeded = await rentalityContracts.gateway.calculatePaymentsWithDelivery(
           BigInt(carId),
           BigInt(days),
           ETH_DEFAULT_ADDRESS,
@@ -110,12 +110,12 @@ const useCreateTripRequest = () => {
           return Err("NOT_ENOUGH_FUNDS");
         }
 
-        const transaction = await rentalityContract.createTripRequestWithDelivery(tripRequest, {
+        const transaction = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, {
           value: paymentsNeeded.totalPrice,
         });
         await transaction.wait();
       } else {
-        const paymentsNeeded = await rentalityContract.calculatePaymentsWithDelivery(
+        const paymentsNeeded = await rentalityContracts.gateway.calculatePaymentsWithDelivery(
           BigInt(carId),
           BigInt(days),
           ETH_DEFAULT_ADDRESS,
@@ -138,7 +138,7 @@ const useCreateTripRequest = () => {
           console.error("createTripRequest error: user don't have enough funds");
           return Err("NOT_ENOUGH_FUNDS");
         }
-        const transaction = await rentalityContract.createTripRequestWithDelivery(tripRequest, {
+        const transaction = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, {
           value: paymentsNeeded.totalPrice,
         });
         await transaction.wait();

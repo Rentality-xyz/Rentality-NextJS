@@ -38,7 +38,7 @@ const emptyProfileSettings: ProfileSettings = {
 
 const useProfileSettings = () => {
   const { ready, authenticated } = usePrivy();
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [profileSettings, setProfileSettings] = useState<ProfileSettings>(emptyProfileSettings);
 
@@ -79,13 +79,13 @@ const useProfileSettings = () => {
   };
 
   const saveProfileSettings = async (newProfileSettings: ProfileSettings) => {
-    if (!rentalityContract) {
+    if (!rentalityContracts) {
       console.error("saveProfileSettings error: rentalityContract is null");
       return false;
     }
 
     try {
-      const transaction = await rentalityContract.setKYCInfo(
+      const transaction = await rentalityContracts.gateway.setKYCInfo(
         newProfileSettings.nickname,
         newProfileSettings.phoneNumber,
         newProfileSettings.profilePhotoUrl,
@@ -102,15 +102,15 @@ const useProfileSettings = () => {
   };
 
   useEffect(() => {
-    if (rentalityContract === undefined) return;
+    if (!rentalityContracts) return;
 
-    getProfileSettings(rentalityContract)
+    getProfileSettings(rentalityContracts.gateway)
       .then((data) => {
         setProfileSettings(data ?? emptyProfileSettings);
         setIsLoading(false);
       })
       .catch(() => setIsLoading(false));
-  }, [rentalityContract]);
+  }, [rentalityContracts]);
 
   return [isLoading, profileSettings, saveProfileSettings] as const;
 };

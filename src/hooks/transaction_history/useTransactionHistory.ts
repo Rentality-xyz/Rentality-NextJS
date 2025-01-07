@@ -14,7 +14,7 @@ export type TransactionHistoryFilters = {
 };
 
 const useTransactionHistory = (isHost: boolean) => {
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<TransactionHistoryInfo[]>([]);
   const [allData, setAllData] = useState<TransactionHistoryInfo[] | undefined>(undefined);
@@ -57,7 +57,7 @@ const useTransactionHistory = (isHost: boolean) => {
         return Ok(true);
       }
 
-      if (!rentalityContract) {
+      if (!rentalityContracts) {
         console.error("fetchData error: rentalityContract is null");
         return Err("Contract is not initialized");
       }
@@ -67,7 +67,7 @@ const useTransactionHistory = (isHost: boolean) => {
         setCurrentPage(page);
         setTotalPageCount(0);
 
-        const tripInfos = await rentalityContract.getTripsAs(isHost);
+        const tripInfos = await rentalityContracts.gateway.getTripsAs(isHost);
 
         if (tripInfos && tripInfos.length > 0) {
           validateContractTripDTO(tripInfos[0]);
@@ -94,7 +94,7 @@ const useTransactionHistory = (isHost: boolean) => {
         setIsLoading(false);
       }
     },
-    [rentalityContract, isHost, allData, filterData]
+    [rentalityContracts, isHost, allData, filterData]
   );
 
   return {

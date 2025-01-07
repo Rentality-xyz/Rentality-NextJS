@@ -31,19 +31,19 @@ export function useUserInfoUpdate() {
 
 export const UserInfoProvider = ({ children }: { children?: React.ReactNode }) => {
   const [currentUserInfo, setCurrentUserInfo] = useState<UserInfo | undefined>(undefined);
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const ethereumInfo = useEthereum();
 
   useEffect(() => {
     const loadUserInfo = async () => {
-      if (!rentalityContract) {
+      if (!rentalityContracts) {
         return;
       }
       if (!ethereumInfo) {
         return;
       }
       try {
-        const myKYCInfo: ContractFullKYCInfoDTO = await rentalityContract.getMyFullKYCInfo();
+        const myKYCInfo: ContractFullKYCInfoDTO = await rentalityContracts.gateway.getMyFullKYCInfo();
 
         if (myKYCInfo == null) return;
 
@@ -60,7 +60,7 @@ export const UserInfoProvider = ({ children }: { children?: React.ReactNode }) =
       }
     };
     loadUserInfo();
-  }, [rentalityContract, ethereumInfo]);
+  }, [rentalityContracts, ethereumInfo]);
 
   return (
     <UserInfoContext.Provider value={currentUserInfo}>
