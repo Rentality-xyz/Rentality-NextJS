@@ -67,11 +67,9 @@ export interface IRentalityContract {
 
   /// HOST CARS functions
   addCar(request: ContractCreateCarRequest, refferalHash: string): Promise<ContractTransactionResponse>;
-  updateCarInfo(request: ContractUpdateCarInfoRequest): Promise<ContractTransactionResponse>;
   updateCarInfoWithLocation(
     request: ContractUpdateCarInfoRequest,
-    location: ContractSignedLocationInfo,
-    geoApiKey: string
+    location: ContractSignedLocationInfo
   ): Promise<ContractTransactionResponse>;
   updateCarTokenUri(carId: bigint, tokenUri: string): Promise<ContractTransactionResponse>;
   getMyCars(): Promise<ContractCarInfoDTO[]>;
