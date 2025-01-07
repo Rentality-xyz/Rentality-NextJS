@@ -7,7 +7,7 @@ import { validateContractCarInfoDTO } from "@/model/blockchain/schemas_utils";
 import { ContractCarInfoDTO } from "@/model/blockchain/schemas";
 
 const useMyListings = () => {
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const [isLoadingMyListings, setIsLoadingMyListings] = useState<boolean>(true);
   const [myListings, setMyListings] = useState<BaseCarInfo[]>([]);
 
@@ -58,15 +58,15 @@ const useMyListings = () => {
   };
 
   useEffect(() => {
-    if (rentalityContract === undefined) return;
+    if (!rentalityContracts) return;
 
-    getMyListings(rentalityContract)
+    getMyListings(rentalityContracts.gateway)
       .then((data) => {
         setMyListings(data ?? []);
         setIsLoadingMyListings(false);
       })
       .catch(() => setIsLoadingMyListings(false));
-  }, [rentalityContract]);
+  }, [rentalityContracts]);
 
   return [isLoadingMyListings, myListings] as const;
 };

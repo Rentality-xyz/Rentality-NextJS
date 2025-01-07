@@ -4,13 +4,12 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { HostCarInfo, emptyHostCarInfo } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { ContractCarDetails, ContractCarInfo, ContractCarInfoWithInsurance } from "@/model/blockchain/schemas";
-import { bigIntReplacer } from "@/utils/json";
+import { ContractCarDetails, ContractCarInfoWithInsurance } from "@/model/blockchain/schemas";
 import { mapContractCarToCarDetails } from "@/model/mappers/contractCarToCarDetails";
 
 const useFetchCarInfo = (carId: number) => {
   const ethereumInfo = useEthereum();
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hostCarInfo, setHostCarInfo] = useState<HostCarInfo>(emptyHostCarInfo);
 
@@ -43,15 +42,15 @@ const useFetchCarInfo = (carId: number) => {
 
     if (isNaN(carId) || carId == -1) return;
     if (!ethereumInfo) return;
-    if (!rentalityContract) return;
+    if (!rentalityContracts) return;
 
-    getCarInfo(rentalityContract, ethereumInfo.signer)
+    getCarInfo(rentalityContracts.gateway, ethereumInfo.signer)
       .then((data) => {
         setHostCarInfo(data ?? emptyHostCarInfo);
         setIsLoading(false);
       })
       .catch(() => setIsLoading(false));
-  }, [carId, rentalityContract, ethereumInfo]);
+  }, [carId, rentalityContracts, ethereumInfo]);
 
   return { isLoading, hostCarInfo } as const;
 };
