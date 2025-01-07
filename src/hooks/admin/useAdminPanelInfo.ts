@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { IRentalityAdminGateway, IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { getEtherContractWithSigner } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
+import { EMPTY_PROMOCODE, ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { ContractCivicKYCInfo, ContractCreateTripRequestWithDelivery, Role } from "@/model/blockchain/schemas";
 import { kycDbInfo } from "@/utils/firebase";
 import { isEmpty } from "@/utils/string";
@@ -260,7 +260,8 @@ const useAdminPanelInfo = () => {
         BigInt(3),
         ETH_DEFAULT_ADDRESS,
         emptyContractLocationInfo,
-        emptyContractLocationInfo
+        emptyContractLocationInfo,
+        EMPTY_PROMOCODE
       );
 
       const tripRequest: ContractCreateTripRequestWithDelivery = {
@@ -272,7 +273,7 @@ const useAdminPanelInfo = () => {
         returnInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
       };
 
-      const transaction = await rentalityContract.createTripRequestWithDelivery(tripRequest, {
+      const transaction = await rentalityContract.createTripRequestWithDelivery(tripRequest, EMPTY_PROMOCODE, {
         value: BigInt(Math.ceil(Number(paymentsNeeded.totalPrice) * 0.991)),
       });
       await transaction.wait();

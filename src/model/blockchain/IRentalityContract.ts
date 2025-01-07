@@ -129,10 +129,12 @@ export interface IRentalityContract {
     daysOfTrip: bigint,
     currency: string,
     pickUpLocation: ContractLocationInfo,
-    returnLocation: ContractLocationInfo
+    returnLocation: ContractLocationInfo,
+    promoCode: string
   ): Promise<ContractCalculatePaymentsDTO>;
   createTripRequestWithDelivery(
     request: ContractCreateTripRequestWithDelivery,
+    promoCode: string,
     value: object
   ): Promise<ContractTransactionResponse>;
   checkInByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
@@ -161,19 +163,6 @@ export interface IRentalityContract {
 
   //PROMO functions
   checkPromo(code: string): Promise<ContractCheckPromoDTO>;
-  calculatePaymentsWithDeliveryAndPromo(
-    carId: bigint,
-    daysOfTrip: bigint,
-    currency: string,
-    pickUpLocation: ContractLocationInfo,
-    returnLocation: ContractLocationInfo,
-    procoCode: string
-  ): Promise<ContractCalculatePaymentsDTO>;
-  createTripRequestWithDeliveryAndPromo(
-    request: ContractCreateTripRequestWithDelivery,
-    procoCode: string,
-    value: object
-  ): Promise<ContractTransactionResponse>;
 
   /// GENERAL functions
   address: string;

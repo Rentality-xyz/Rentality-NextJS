@@ -7,6 +7,8 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { usePrivy } from "@privy-io/react-auth";
 import { ZERO_HASH } from "@/utils/wallet";
+import { isEmpty } from "@/utils/string";
+import { ethers } from "ethers";
 
 export type ProfileSettings = {
   profilePhotoUrl: string;
@@ -94,6 +96,14 @@ const useProfileSettings = () => {
       );
 
       await transaction.wait();
+
+      if (!isEmpty(newProfileSettings.reflink)) {
+        const refLink =
+          newProfileSettings.reflink.length >= 66
+            ? newProfileSettings.reflink
+            : ethers.encodeBytes32String(newProfileSettings.reflink);
+        //TODO reflink
+      }
       return true;
     } catch (e) {
       console.error("saveProfileSettings error:" + e);

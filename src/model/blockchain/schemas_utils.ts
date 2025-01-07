@@ -452,6 +452,7 @@ export function validateContractFilterInfoDTO(obj: ContractFilterInfoDTO): obj i
 const emptyContractCheckPromoDTO: ContractCheckPromoDTO = {
   isFound: false,
   isValid: false,
+  isDiscount: false,
   value: BigInt(0),
 };
 
