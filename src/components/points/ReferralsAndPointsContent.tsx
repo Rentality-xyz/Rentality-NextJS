@@ -1,13 +1,14 @@
 // TODO translate
 import Image from "next/image";
 import icStarPointsWhite from "@/images/ic_star_points_white.svg";
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import ReferralsAndPointsOwnPoints from "@/components/points/ReferralsAndPointsOwnPoints";
 import ReferralsAndPointsLink from "@/components/points/ReferralsAndPointsLink";
 import ReferralsAndPointsHistory from "@/components/points/ReferralsAndPointsHistory";
 import ReferralsAndPointsFromYourReferrals from "@/components/points/ReferralsAndPointsFromYourReferrals";
 import useRefferalProgram from "@/hooks/useRefferalProgram";
+import useClaimMyPoints from "@/hooks/points/useClaimMyPoints";
 
 type ReferralsAndPointsContentProps = {
   isHost: boolean;
@@ -15,7 +16,14 @@ type ReferralsAndPointsContentProps = {
 
 export default function ReferralsAndPointsContent({ isHost }: ReferralsAndPointsContentProps) {
   const { t } = useTranslation();
-  const { points } = useRefferalProgram();
+  const { points, updateData } = useRefferalProgram();
+  const { readyToClaim } = useClaimMyPoints();
+
+  useEffect(() => {
+    console.log("updateData call");
+
+    updateData();
+  }, [updateData, readyToClaim]);
 
   return (
     <div>

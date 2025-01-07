@@ -45,7 +45,7 @@ export default function ReferralsAndPointsOwnPoints() {
     if (!isLoadingInviteLink) {
       savePoints();
     }
-  }, [isLoadingInviteLink, readyToClaim]);
+  }, [isLoadingInviteLink, readyToClaim, getReadyToClaim, getRefferalPointsInfo, getPointsHistory, t]);
 
   return (
     <div id="referrals-and-points-own-points" className="mt-4 rounded-lg bg-rentality-bg-left-sidebar p-3">
