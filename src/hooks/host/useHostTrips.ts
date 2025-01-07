@@ -8,7 +8,7 @@ import { mapTripDTOtoTripInfo } from "@/model/utils/TripDTOtoTripInfo";
 import { ZERO_HASH } from "@/utils/wallet";
 
 const useHostTrips = () => {
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const [isLoadingTrips, setIsLoadingTrips] = useState<boolean>(true);
   const [updateRequired, setUpdateRequired] = useState<boolean>(true);
   const [tripsBooked, setTripsBooked] = useState<TripInfo[]>([]);
@@ -24,13 +24,13 @@ const useHostTrips = () => {
 
   useEffect(() => {
     const acceptRequest = async (tripId: bigint, params: string[]) => {
-      if (!rentalityContract) {
+      if (!rentalityContracts) {
         console.error("acceptRequest error: rentalityContract is null");
         return false;
       }
 
       try {
-        const transaction = await rentalityContract.approveTripRequest(tripId);
+        const transaction = await rentalityContracts.gateway.approveTripRequest(tripId);
         await transaction.wait();
         return true;
       } catch (e) {
@@ -40,13 +40,13 @@ const useHostTrips = () => {
     };
 
     const rejectRequest = async (tripId: bigint, params: string[]) => {
-      if (!rentalityContract) {
+      if (!rentalityContracts) {
         console.error("rejectRequest error: rentalityContract is null");
         return false;
       }
 
       try {
-        const transaction = await rentalityContract.rejectTripRequest(tripId);
+        const transaction = await rentalityContracts.gateway.rejectTripRequest(tripId);
         await transaction.wait();
         return true;
       } catch (e) {
@@ -56,7 +56,7 @@ const useHostTrips = () => {
     };
 
     const checkInTrip = async (tripId: bigint, params: string[]) => {
-      if (!rentalityContract) {
+      if (!rentalityContracts) {
         console.error("checkInTrip error: rentalityContract is null");
         return false;
       }
@@ -67,7 +67,7 @@ const useHostTrips = () => {
         const insuranceCompany = params[2];
         const insuranceNumber = params[3];
 
-        const transaction = await rentalityContract.checkInByHost(
+        const transaction = await rentalityContracts.gateway.checkInByHost(
           tripId,
           [startFuelLevelInPercents, startOdometr],
           insuranceCompany,
@@ -82,7 +82,7 @@ const useHostTrips = () => {
     };
 
     const checkOutTrip = async (tripId: bigint, params: string[]) => {
-      if (!rentalityContract) {
+      if (!rentalityContracts) {
         console.error("checkOutTrip error: rentalityContract is null");
         return false;
       }
@@ -91,7 +91,10 @@ const useHostTrips = () => {
         const endFuelLevelInPercents = BigInt(Number(params[0]) * 100);
         const endOdometr = BigInt(params[1]);
 
-        const transaction = await rentalityContract.checkOutByHost(tripId, [endFuelLevelInPercents, endOdometr]);
+        const transaction = await rentalityContracts.gateway.checkOutByHost(tripId, [
+          endFuelLevelInPercents,
+          endOdometr,
+        ]);
         await transaction.wait();
         return true;
       } catch (e) {
@@ -101,13 +104,13 @@ const useHostTrips = () => {
     };
 
     const finishTrip = async (tripId: bigint, params: string[]) => {
-      if (!rentalityContract) {
+      if (!rentalityContracts) {
         console.error("finishTrip error: rentalityContract is null");
         return false;
       }
 
       try {
-        const transaction = await rentalityContract.finishTrip(tripId, ZERO_HASH);
+        const transaction = await rentalityContracts.gateway.finishTrip(tripId, ZERO_HASH);
         await transaction.wait();
         return true;
       } catch (e) {
@@ -263,12 +266,12 @@ const useHostTrips = () => {
     };
 
     if (!updateRequired) return;
-    if (!rentalityContract) return;
+    if (!rentalityContracts) return;
 
     setUpdateRequired(false);
     setIsLoadingTrips(true);
 
-    getTrips(rentalityContract)
+    getTrips(rentalityContracts.gateway)
       .then((data) => {
         setTripsBooked(
           data
@@ -287,7 +290,7 @@ const useHostTrips = () => {
         setIsLoadingTrips(false);
       })
       .catch(() => setIsLoadingTrips(false));
-  }, [updateRequired, rentalityContract]);
+  }, [updateRequired, rentalityContracts]);
 
   return [isLoadingTrips, tripsBooked, tripsHistory, updateData] as const;
 };

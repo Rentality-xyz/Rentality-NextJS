@@ -1,11 +1,7 @@
 import { useCallback, useState } from "react";
 import { Err, Ok, Result } from "@/model/utils/result";
-import useInviteLink from "@/hooks/useRefferalProgram";
-import {
-  ContractReadyToClaimFromHash,
-  ContractReadyToClaimRefferalHash,
-  RefferalProgram,
-} from "@/model/blockchain/schemas";
+import useRefferalProgram from "@/hooks/useRefferalProgram";
+import { ContractReadyToClaimFromHash, RefferalProgram } from "@/model/blockchain/schemas";
 import { ReferralProgramDescription } from "@/components/points/ReferralProgramDescriptions";
 import { useTranslation } from "react-i18next";
 
@@ -17,7 +13,7 @@ export type PointsFromYourReferralsInfo = {
 };
 
 const usePointsFromYourReferrals = () => {
-  const { getReadyToClaimFromRefferalHash, claimRefferalPoints } = useInviteLink();
+  const { getReadyToClaimFromRefferalHash, claimRefferalPoints } = useRefferalProgram();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<PointsFromYourReferralsInfo[]>([]);
   const [allData, setAllData] = useState<PointsFromYourReferralsInfo[] | null>(null);

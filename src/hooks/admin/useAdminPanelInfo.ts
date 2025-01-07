@@ -1,7 +1,5 @@
 import { formatEther, parseEther } from "ethers";
 import { useEffect, useRef, useState } from "react";
-import { IRentalityAdminGateway, IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { getEtherContractWithSigner } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { EMPTY_PROMOCODE, ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { ContractCivicKYCInfo, ContractCreateTripRequestWithDelivery, Role } from "@/model/blockchain/schemas";
@@ -13,6 +11,7 @@ import { collection, getDocs, query } from "firebase/firestore";
 import { bigIntReplacer } from "@/utils/json";
 import { ZERO_HASH } from "@/utils/wallet";
 import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
+import { useRentality, useRentalityAdmin } from "@/contexts/rentalityContext";
 
 export type AdminContractInfo = {
   platformFee: number;
@@ -50,12 +49,13 @@ const emptyAdminContractInfo = {
 
 const useAdminPanelInfo = () => {
   const ethereumInfo = useEthereum();
+  const { rentalityContracts } = useRentality();
+  const { admin } = useRentalityAdmin();
   const [adminContractInfo, setAdminContractInfo] = useState<AdminContractInfo>(emptyAdminContractInfo);
-  const [rentalityAdminGateway, setRentalityAdminGateway] = useState<IRentalityAdminGateway | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
 
   const withdrawFromPlatform = async (value: number) => {
-    if (!rentalityAdminGateway) {
+    if (!admin) {
       console.error("saveKycCommission error: rentalityAdminGateway is null");
       return false;
     }
@@ -63,7 +63,7 @@ const useAdminPanelInfo = () => {
     try {
       setIsLoading(true);
       const valueToWithdrawInWei = parseEther(value.toString());
-      let transaction = await rentalityAdminGateway.withdrawFromPlatform(valueToWithdrawInWei, ETH_DEFAULT_ADDRESS);
+      let transaction = await admin.withdrawFromPlatform(valueToWithdrawInWei, ETH_DEFAULT_ADDRESS);
       await transaction.wait();
       return true;
     } catch (e) {
@@ -75,7 +75,7 @@ const useAdminPanelInfo = () => {
   };
 
   const setPlatformFeeInPPM = async (value: number) => {
-    if (!rentalityAdminGateway) {
+    if (!admin) {
       console.error("saveKycCommission error: rentalityAdminGateway is null");
       return false;
     }
@@ -83,7 +83,7 @@ const useAdminPanelInfo = () => {
     try {
       setIsLoading(true);
 
-      let transaction = await rentalityAdminGateway.setPlatformFeeInPPM(BigInt(Math.round(value * 10_000)));
+      let transaction = await admin.setPlatformFeeInPPM(BigInt(Math.round(value * 10_000)));
       await transaction.wait();
       return true;
     } catch (e) {
@@ -95,7 +95,7 @@ const useAdminPanelInfo = () => {
   };
 
   const saveKycCommission = async (value: number) => {
-    if (!rentalityAdminGateway) {
+    if (!admin) {
       console.error("saveKycCommission error: rentalityAdminGateway is null");
       return false;
     }
@@ -103,7 +103,7 @@ const useAdminPanelInfo = () => {
     try {
       setIsLoading(true);
 
-      let transaction = await rentalityAdminGateway.setKycCommission(BigInt(Math.round(value * 100)));
+      let transaction = await admin.setKycCommission(BigInt(Math.round(value * 100)));
       await transaction.wait();
       return true;
     } catch (e) {
@@ -115,7 +115,7 @@ const useAdminPanelInfo = () => {
   };
 
   const saveClaimWaitingTime = async (value: number) => {
-    if (!rentalityAdminGateway) {
+    if (!admin) {
       console.error("saveClaimWaitingTime error: rentalityAdminGateway is null");
       return false;
     }
@@ -123,7 +123,7 @@ const useAdminPanelInfo = () => {
     try {
       setIsLoading(true);
 
-      let transaction = await rentalityAdminGateway.setClaimsWaitingTime(BigInt(value));
+      let transaction = await admin.setClaimsWaitingTime(BigInt(value));
       await transaction.wait();
       return true;
     } catch (e) {
@@ -135,7 +135,7 @@ const useAdminPanelInfo = () => {
   };
 
   const grantAdminRole = async (address: string) => {
-    if (!rentalityAdminGateway) {
+    if (!admin) {
       console.error("grantAdminRole error: rentalityAdminGateway is null");
       return false;
     }
@@ -143,7 +143,7 @@ const useAdminPanelInfo = () => {
     try {
       setIsLoading(true);
 
-      let transaction = await rentalityAdminGateway.manageRole(Role.Admin, address, true);
+      let transaction = await admin.manageRole(Role.Admin, address, true);
       await transaction.wait();
       return true;
     } catch (e) {
@@ -155,6 +155,10 @@ const useAdminPanelInfo = () => {
   };
 
   async function updateKycInfoForAddress(address: string) {
+    if (!rentalityContracts) {
+      console.error("updateKycInfoForAddress error: rentalityContract is null");
+      return false;
+    }
     if (!ethereumInfo) {
       console.error("updateKycInfoForAddress error: ethereumInfo is null");
       return false;
@@ -190,11 +194,7 @@ const useAdminPanelInfo = () => {
 
       console.debug("contractCivicKYCInfo", JSON.stringify(contractCivicKYCInfo, bigIntReplacer, 2));
 
-      const rentality = (await getEtherContractWithSigner(
-        "gateway",
-        ethereumInfo.signer
-      )) as unknown as IRentalityContract;                                          /// TODO: get from input
-      const transaction = await rentality.setCivicKYCInfo(address, contractCivicKYCInfo, ZERO_HASH);
+      const transaction = await rentalityContracts.gateway.setCivicKYCInfo(address, contractCivicKYCInfo, ZERO_HASH);
       await transaction.wait();
       return true;
     } catch (e) {
@@ -210,6 +210,10 @@ const useAdminPanelInfo = () => {
       console.error("setDrivingLicenceForAddress error: ethereumInfo is null");
       return false;
     }
+    if (!rentalityContracts) {
+      console.error("setDrivingLicenceForAddress error: rentalityContract is null");
+      return false;
+    }
 
     try {
       setIsLoading(true);
@@ -222,11 +226,7 @@ const useAdminPanelInfo = () => {
         email: "testemail@test.com",
       };
 
-      const rentality = (await getEtherContractWithSigner(
-        "gateway",
-        ethereumInfo.signer
-      )) as unknown as IRentalityContract;                                            /// TODO: get from input
-      const transaction = await rentality.setCivicKYCInfo(address, contractCivicKYCInfo, ZERO_HASH);
+      const transaction = await rentalityContracts.gateway.setCivicKYCInfo(address, contractCivicKYCInfo, ZERO_HASH);
       await transaction.wait();
       return true;
     } catch (e) {
@@ -238,24 +238,19 @@ const useAdminPanelInfo = () => {
   }
 
   async function createTestTrip(carId: string) {
-    if (!rentalityAdminGateway) {
-      console.error("createTestTrip error: rentalityAdminGateway is null");
-      return false;
-    }
     if (!ethereumInfo) {
       console.error("createTestTrip error: ethereumInfo is null");
+      return false;
+    }
+    if (!rentalityContracts) {
+      console.error("createTestTrip error: rentalityContract is null");
       return false;
     }
 
     try {
       setIsLoading(true);
 
-      const rentalityContract = (await getEtherContractWithSigner(
-        "gateway",
-        ethereumInfo.signer
-      )) as unknown as IRentalityContract;
-
-      const paymentsNeeded = await rentalityContract.calculatePaymentsWithDelivery(
+      const paymentsNeeded = await rentalityContracts.gateway.calculatePaymentsWithDelivery(
         BigInt(carId),
         BigInt(3),
         ETH_DEFAULT_ADDRESS,
@@ -273,7 +268,7 @@ const useAdminPanelInfo = () => {
         returnInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
       };
 
-      const transaction = await rentalityContract.createTripRequestWithDelivery(tripRequest, EMPTY_PROMOCODE, {
+      const transaction = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, EMPTY_PROMOCODE, {
         value: BigInt(Math.ceil(Number(paymentsNeeded.totalPrice) * 0.991)),
       });
       await transaction.wait();
@@ -292,29 +287,24 @@ const useAdminPanelInfo = () => {
   useEffect(() => {
     const initialize = async () => {
       if (!ethereumInfo) return;
+      if (!admin) return;
       if (isIniialized.current) return;
 
       try {
         isIniialized.current = true;
 
-        const rentalityAdminGateway = (await getEtherContractWithSigner(
-          "admin",
-          ethereumInfo.signer
-        )) as unknown as IRentalityAdminGateway;
-        setRentalityAdminGateway(rentalityAdminGateway);
+        const platformFee = Number((await admin.getPlatformFeeInPPM()) ?? 0) / 10_000.0;
+        const claimWaitingTime = Number(await admin.getClaimWaitingTime());
+        const kycCommission = Number((await admin.getKycCommission()) ?? 0) / 100;
 
-        const platformFee = Number((await rentalityAdminGateway.getPlatformFeeInPPM()) ?? 0) / 10_000.0;
-        const claimWaitingTime = Number(await rentalityAdminGateway.getClaimWaitingTime());
-        const kycCommission = Number((await rentalityAdminGateway.getKycCommission()) ?? 0) / 100;
-
-        const ownerAddress = await rentalityAdminGateway.owner();
-        const userServiceAddress = await rentalityAdminGateway.getUserServiceAddress();
-        const currencyConverterAddress = await rentalityAdminGateway.getCurrencyConverterServiceAddress();
-        const carServiceAddress = await rentalityAdminGateway.getCarServiceAddress();
-        const claimServiceAddress = await rentalityAdminGateway.getClaimServiceAddress();
-        const paymentServiceAddress = await rentalityAdminGateway.getPaymentService();
-        const tripServiceAddress = await rentalityAdminGateway.getTripServiceAddress();
-        const platformContractAddress = await rentalityAdminGateway.getRentalityPlatformAddress();
+        const ownerAddress = await admin.owner();
+        const userServiceAddress = await admin.getUserServiceAddress();
+        const currencyConverterAddress = await admin.getCurrencyConverterServiceAddress();
+        const carServiceAddress = await admin.getCarServiceAddress();
+        const claimServiceAddress = await admin.getClaimServiceAddress();
+        const paymentServiceAddress = await admin.getPaymentService();
+        const tripServiceAddress = await admin.getTripServiceAddress();
+        const platformContractAddress = await admin.getRentalityPlatformAddress();
         const platformBalance = (await ethereumInfo.provider.getBalance(platformContractAddress)) ?? 0;
         const paymentBalance = (await ethereumInfo.provider.getBalance(paymentServiceAddress)) ?? 0;
 
@@ -344,7 +334,7 @@ const useAdminPanelInfo = () => {
     };
 
     initialize();
-  }, [ethereumInfo]);
+  }, [ethereumInfo, admin]);
 
   return {
     isLoading,
