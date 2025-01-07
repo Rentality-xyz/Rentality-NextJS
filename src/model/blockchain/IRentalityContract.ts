@@ -260,12 +260,12 @@ export interface IRentalityReferralProgramContract {
   // when last time daily was claimed
   getCarDailyClaimedTime(carId: number): Promise<number>;
   // claim user points
-  claimPoints(user: string): Promise<void>;
+  claimPoints(user: string): Promise<ContractTransactionResponse>;
   // get info about not claimed points
   // info about not claimed points, from ref hash
   getReadyToClaimFromRefferalHash(user: string): Promise<ContractRefferalHashDTO>;
   // claim points from user ref hash
-  claimRefferalPoints(user: string): Promise<void>;
+  claimRefferalPoints(user: string): Promise<ContractTransactionResponse>;
   // get full information about point, tears, e.t.c
   getRefferalPointsInfo(): Promise<ContractAllRefferalInfoDTO>;
   // get points reduces and increases

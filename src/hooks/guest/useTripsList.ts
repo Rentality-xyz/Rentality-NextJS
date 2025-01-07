@@ -8,7 +8,7 @@ import { mapTripDTOtoTripInfoShordDetails } from "@/model/utils/TripDTOtoTripInf
 import { bigIntReplacer } from "@/utils/json";
 
 const useTripsList = (isHost: boolean) => {
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [updateRequired, setUpdateRequired] = useState<boolean>(true);
   const [trips, setTrips] = useState<TripInfoShortDetails[]>([]);
@@ -55,10 +55,10 @@ const useTripsList = (isHost: boolean) => {
     };
 
     if (!updateRequired) return;
-    if (!rentalityContract) return;
+    if (!rentalityContracts) return;
 
-    getTrips(rentalityContract);
-  }, [updateRequired, rentalityContract]);
+    getTrips(rentalityContracts.gateway);
+  }, [updateRequired, rentalityContracts]);
 
   return { isLoading, trips, refetchData } as const;
 };

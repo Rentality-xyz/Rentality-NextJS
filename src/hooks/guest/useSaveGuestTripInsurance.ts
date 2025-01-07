@@ -9,7 +9,7 @@ import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 
 const useSaveGuestTripInsurance = () => {
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const ethereumInfo = useEthereum();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -25,7 +25,7 @@ const useSaveGuestTripInsurance = () => {
       if (!ethereumInfo) {
         return Err("ethereumInfo is null");
       }
-      if (!rentalityContract) {
+      if (!rentalityContracts) {
         return Err("rentalityContract is null");
       }
 
@@ -49,7 +49,7 @@ const useSaveGuestTripInsurance = () => {
               photoUrl = response.pinataURL;
             }
 
-            const transaction = await rentalityContract.saveGuestInsurance({
+            const transaction = await rentalityContracts.gateway.saveGuestInsurance({
               insuranceType: InsuranceType.General,
               photo: photoUrl,
               companyName: "",
@@ -67,7 +67,7 @@ const useSaveGuestTripInsurance = () => {
           if (policeNumber === undefined) return Err("policeNumber is undefined");
 
           try {
-            const transaction = await rentalityContract.saveTripInsuranceInfo(BigInt(tripId), {
+            const transaction = await rentalityContracts.gateway.saveTripInsuranceInfo(BigInt(tripId), {
               insuranceType: InsuranceType.OneTime,
               photo: "",
               companyName: companyName,
@@ -83,7 +83,7 @@ const useSaveGuestTripInsurance = () => {
           return Err("insuranceType is incorrect");
       }
     },
-    [rentalityContract, ethereumInfo]
+    [rentalityContracts, ethereumInfo]
   );
 
   return { isLoading, saveTripInsurance } as const;

@@ -5,7 +5,7 @@ import { Err, Ok, Result } from "@/model/utils/result";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
 
 const useSaveMyKycUserData = () => {
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   async function saveMyKycUserData(
@@ -15,7 +15,7 @@ const useSaveMyKycUserData = () => {
     issueCountry: string,
     email: string
   ): Promise<Result<boolean, string>> {
-    if (!rentalityContract) {
+    if (!rentalityContracts) {
       console.error("saveProfileSettings error: rentalityContract is null");
       return Err("rentalityContract is null");
     }
@@ -29,7 +29,7 @@ const useSaveMyKycUserData = () => {
         issueCountry: issueCountry,
         email: email,
       };
-      const transaction = await rentalityContract.setMyCivicKYCInfo(myCivicKYCInfo);
+      const transaction = await rentalityContracts.gateway.setMyCivicKYCInfo(myCivicKYCInfo);
       await transaction.wait();
       return Ok(true);
     } catch (e) {

@@ -13,7 +13,7 @@ import { Err, Ok, Result } from "@/model/utils/result";
 const EMPTY_GUEST_GENERAL_INSURANCE = { photo: "" };
 
 const useGuestInsurance = () => {
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const ethereumInfo = useEthereum();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isUpdateRequired, setIsUpdateRequired] = useState<boolean>(true);
@@ -21,7 +21,7 @@ const useGuestInsurance = () => {
 
   const saveGuestInsurance = useCallback(
     async (file: PlatformFile): Promise<Result<boolean, string>> => {
-      if (!rentalityContract) {
+      if (!rentalityContracts) {
         console.error("saveGuestInsurance: rentalityContract is null");
         return Err("rentalityContract is null");
       }
@@ -62,7 +62,7 @@ const useGuestInsurance = () => {
         }
 
         console.debug("insuranceInfo", JSON.stringify(insuranceInfo, bigIntReplacer, 2));
-        const transaction = await rentalityContract.saveGuestInsurance(insuranceInfo);
+        const transaction = await rentalityContracts.gateway.saveGuestInsurance(insuranceInfo);
         await transaction.wait();
         setIsUpdateRequired(true);
         return Ok(true);
@@ -71,18 +71,18 @@ const useGuestInsurance = () => {
         return Err("saveGuestInsurance error:" + e);
       }
     },
-    [ethereumInfo, rentalityContract]
+    [ethereumInfo, rentalityContracts]
   );
 
   useEffect(() => {
     const fetchGuestInsurance = async () => {
-      if (!rentalityContract) return;
+      if (!rentalityContracts) return;
       if (!isUpdateRequired) return;
 
       setIsLoading(true);
 
       try {
-        const insurancesView: ContractInsuranceInfo[] = await rentalityContract.getMyInsurancesAsGuest();
+        const insurancesView: ContractInsuranceInfo[] = await rentalityContracts.gateway.getMyInsurancesAsGuest();
 
         if (
           insurancesView.length === 0 ||
@@ -103,7 +103,7 @@ const useGuestInsurance = () => {
     };
 
     fetchGuestInsurance();
-  }, [rentalityContract, isUpdateRequired]);
+  }, [rentalityContracts, isUpdateRequired]);
 
   return {
     isLoading,

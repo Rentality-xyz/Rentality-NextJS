@@ -20,7 +20,7 @@ import { isUserHasEnoughFunds, ZERO_HASH } from "@/utils/wallet";
 import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 
 const useSaveCar = () => {
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const ethereumInfo = useEthereum();
   const [dataSaved, setDataSaved] = useState<boolean>(true);
 
@@ -52,7 +52,7 @@ const useSaveCar = () => {
       return Err("ERROR");
     }
 
-    if (!rentalityContract) {
+    if (!rentalityContracts) {
       console.error("addNewCar error: rentalityContract is null");
       return Err("ERROR");
     }
@@ -117,7 +117,7 @@ const useSaveCar = () => {
         insurancePriceInUsdCents: BigInt(dataToSave.insurancePerDayPriceInUsd * 100),
       };
 
-      const transaction = await rentalityContract.addCar(request, ZERO_HASH);
+      const transaction = await rentalityContracts.gateway.addCar(request, ZERO_HASH);
       await transaction.wait();
       return Ok(true);
     } catch (e) {
@@ -134,7 +134,7 @@ const useSaveCar = () => {
       return Err("ERROR");
     }
 
-    if (!rentalityContract) {
+    if (!rentalityContracts) {
       console.error("updateCar error: rentalityContract is null");
       return Err("ERROR");
     }
@@ -209,7 +209,7 @@ const useSaveCar = () => {
           signature: "0x",
         };
       }
-      transaction = await rentalityContract.updateCarInfoWithLocation(updateCarRequest, locationInfo);
+      transaction = await rentalityContracts.gateway.updateCarInfoWithLocation(updateCarRequest, locationInfo);
 
       await transaction.wait();
 
