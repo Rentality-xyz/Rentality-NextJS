@@ -9,7 +9,7 @@ import {
 } from "@/model/blockchain/schemas";
 import { useRentality } from "@/contexts/rentalityContext";
 
-const useInviteLink = () => {
+const useRefferalProgram = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [inviteHash, setHash] = useState("");
   const [points, setPoints] = useState(0);
@@ -197,4 +197,4 @@ const useInviteLink = () => {
   } as const;
 };
 
-export default useInviteLink;
+export default useRefferalProgram;

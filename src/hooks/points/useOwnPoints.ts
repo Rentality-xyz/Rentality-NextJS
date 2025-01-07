@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
 import { Err, Ok, Result } from "@/model/utils/result";
-import useInviteLink from "@/hooks/useRefferalProgram";
 import { useTranslation } from "react-i18next";
 import {
   ContractAllRefferalInfoDTO,

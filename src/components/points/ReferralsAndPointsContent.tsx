@@ -7,7 +7,7 @@ import ReferralsAndPointsOwnPoints from "@/components/points/ReferralsAndPointsO
 import ReferralsAndPointsLink from "@/components/points/ReferralsAndPointsLink";
 import ReferralsAndPointsHistory from "@/components/points/ReferralsAndPointsHistory";
 import ReferralsAndPointsFromYourReferrals from "@/components/points/ReferralsAndPointsFromYourReferrals";
-import useInviteLink from "@/hooks/useRefferalProgram";
+import useRefferalProgram from "@/hooks/useRefferalProgram";
 
 type ReferralsAndPointsContentProps = {
   isHost: boolean;
@@ -15,7 +15,7 @@ type ReferralsAndPointsContentProps = {
 
 export default function ReferralsAndPointsContent({ isHost }: ReferralsAndPointsContentProps) {
   const { t } = useTranslation();
-  const { points } = useInviteLink();
+  const { points } = useRefferalProgram();
 
   return (
     <div>

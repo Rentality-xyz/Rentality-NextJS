@@ -8,7 +8,7 @@ import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 import useOwnPoints from "@/hooks/points/useOwnPoints";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "../common/rntSuspense";
-import useInviteLink from "@/hooks/useRefferalProgram";
+import useRefferalProgram from "@/hooks/useRefferalProgram";
 
 export default function ReferralsAndPointsOwnPoints() {
   const {
@@ -17,7 +17,7 @@ export default function ReferralsAndPointsOwnPoints() {
     getPointsHistory,
     isLoading: isLoadingInviteLink,
     claimPoints,
-  } = useInviteLink();
+  } = useRefferalProgram();
 
   const { t } = useTranslation();
   const { isLoading, data, fetchData } = useOwnPoints();
