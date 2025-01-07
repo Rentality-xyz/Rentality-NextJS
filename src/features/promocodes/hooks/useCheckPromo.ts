@@ -2,20 +2,20 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { validateContractCheckPromoDTO } from "@/model/blockchain/schemas_utils";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { bigIntReplacer } from "@/utils/json";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 
 function useCheckPromo() {
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
 
   const checkPromo = useCallback(
     async (code: string): Promise<Result<{ value: number }, Error>> => {
-      if (!rentalityContract) {
+      if (!rentalityContracts) {
         console.error("fetchData error: rentalityContract is null");
         return Err(new Error("Contract is not initialized"));
       }
 
       try {
-        const checkPromoDto = await rentalityContract.checkPromo(code);
+        const checkPromoDto = await rentalityContracts.gateway.checkPromo(code);
         validateContractCheckPromoDTO(checkPromoDto);
 
         console.debug("checkPromoDto", JSON.stringify(checkPromoDto, bigIntReplacer, 2));
@@ -32,7 +32,7 @@ function useCheckPromo() {
         return Err(new Error("checkPromo erro: " + error));
       }
     },
-    [rentalityContract]
+    [rentalityContracts]
   );
 
   return { checkPromo } as const;
