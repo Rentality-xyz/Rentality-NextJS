@@ -10,6 +10,7 @@ import {
 } from "@/model/blockchain/schemas";
 import { ReferralProgramDescription } from "@/components/points/ReferralProgramDescriptions";
 import { PointsProfileStatus } from "@/components/points/ReferralsAndPointsProfileStatus";
+import { TFunction } from "i18next";
 
 type OwnAccountCreationPointsInfo = {
   index: number;
@@ -27,7 +28,7 @@ type OwnRegularPointsInfo = {
   status: PointsProfileStatus;
 };
 
-type AllOwnPointsInfo = {
+export type AllOwnPointsInfo = {
   ownAccountCreationPointsInfo: OwnAccountCreationPointsInfo[];
   ownRegularPointsInfo: OwnRegularPointsInfo[];
 };
@@ -35,7 +36,6 @@ type AllOwnPointsInfo = {
 const useOwnPoints = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<AllOwnPointsInfo | null>(null);
-  const [totalReadyToClaim, setTotalReadyToClaim] = useState<number>(0);
   const { t } = useTranslation();
 
   const fetchData = useCallback(
@@ -67,7 +67,6 @@ const useOwnPoints = () => {
         //     "combineData:",
         //     JSON.stringify(combineData, (key, value) => (typeof value === "bigint" ? value.toString() : value), 2)
         // );
-        setTotalReadyToClaim(Number(readyToClaim.totalPoints));
         setData(combineData);
         return Ok(true);
       } catch (e) {
@@ -83,7 +82,6 @@ const useOwnPoints = () => {
   return {
     data: {
       data: data,
-      totalReadyToClaim: totalReadyToClaim,
     },
     fetchData,
     isLoading,
@@ -92,12 +90,37 @@ const useOwnPoints = () => {
 
 export default useOwnPoints;
 
-const getOwnAccountCreationPointsInfo = (
+export function getAllPoints(
+  readyToClaim: ContractReadyToClaimDTO,
+  pointsHistory: ContractRefferalHistory[],
+  pointsInfo: ContractAllRefferalInfoDTO,
+  t: TFunction
+): Result<AllOwnPointsInfo, Error> {
+  try {
+    const ownAccountCreationPointsInfo = getOwnAccountCreationPointsInfo(
+      readyToClaim.toClaim,
+      pointsInfo,
+      pointsHistory,
+      t
+    );
+    const ownRegularPointsInfo = getOwnRegularPointsInfo(readyToClaim.toClaim, pointsInfo, pointsHistory, t);
+
+    return Ok({
+      ownAccountCreationPointsInfo: ownAccountCreationPointsInfo,
+      ownRegularPointsInfo: ownRegularPointsInfo,
+    });
+  } catch (e) {
+    console.error("fetchData error" + e);
+    return Err(new Error("getAllPoints error. See logs for more details"));
+  }
+}
+
+function getOwnAccountCreationPointsInfo(
   readyToClaim: ContractReadyToClaim[],
   pointsInfo: ContractAllRefferalInfoDTO,
   pointsHistory: ContractRefferalHistory[],
-  t: any
-): OwnAccountCreationPointsInfo[] => {
+  t: TFunction
+): OwnAccountCreationPointsInfo[] {
   const filteredReadyToClaim = readyToClaim.filter((item) => item.oneTime);
   const allRefTypes = new Set<RefferalProgram>(filteredReadyToClaim.map((item) => item.refType));
 
@@ -129,14 +152,14 @@ const getOwnAccountCreationPointsInfo = (
 
   result.sort((a, b) => a.index - b.index);
   return result;
-};
+}
 
-const getOwnRegularPointsInfo = (
+function getOwnRegularPointsInfo(
   readyToClaim: ContractReadyToClaim[],
   pointsInfo: ContractAllRefferalInfoDTO,
   pointsHistory: ContractRefferalHistory[],
-  t: any
-): OwnRegularPointsInfo[] => {
+  t: TFunction
+): OwnRegularPointsInfo[] {
   const filteredReadyToClaim = readyToClaim.filter((item) => !item.oneTime);
   const allRefTypes = new Set<RefferalProgram>(filteredReadyToClaim.map((item) => item.refType));
 
@@ -165,4 +188,4 @@ const getOwnRegularPointsInfo = (
       status: status,
     };
   });
-};
+}
