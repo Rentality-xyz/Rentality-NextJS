@@ -148,7 +148,7 @@ export default function PanelFilteringByPrice({
               {t("common.per_day")}
             </div>
 
-            <div className="mb-4 flex items-center justify-center">
+            <div className="mb-4 flex items-center justify-center" onClick={(event) => event.stopPropagation()}>
               <Slider
                 value={value}
                 min={minPrice}

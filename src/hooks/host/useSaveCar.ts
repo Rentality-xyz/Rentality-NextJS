@@ -4,7 +4,11 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeCode } from "@/model/EngineType";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
-import { ContractCreateCarRequest, ContractUpdateCarInfoRequest } from "@/model/blockchain/schemas";
+import {
+  ContractCreateCarRequest,
+  ContractSignedLocationInfo,
+  ContractUpdateCarInfoRequest,
+} from "@/model/blockchain/schemas";
 import { deleteFileFromIPFS, uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
 import { getSignedLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { getIpfsHashFromUrl, getNftJSONFromCarInfo } from "@/utils/ipfsUtils";
@@ -13,6 +17,7 @@ import { env } from "@/utils/env";
 import { PlatformCarImage, UploadedCarImage } from "@/model/FileToUpload";
 import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
 import { isUserHasEnoughFunds, ZERO_HASH } from "@/utils/wallet";
+import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 
 const useSaveCar = () => {
   const rentalityContract = useRentality();
@@ -186,6 +191,8 @@ const useSaveCar = () => {
     let transaction: ContractTransactionResponse;
 
     try {
+      let locationInfo: ContractSignedLocationInfo;
+
       if (hostCarInfo.isLocationEdited) {
         const locationResult = await getSignedLocationInfo(
           mapLocationInfoToContractLocationInfo(hostCarInfo.locationInfo),
@@ -195,15 +202,14 @@ const useSaveCar = () => {
           console.error("updateCar error: Sign location error");
           return Err("ERROR");
         }
-
-        transaction = await rentalityContract.updateCarInfoWithLocation(
-          updateCarRequest,
-          locationResult.value,
-          env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-        );
+        locationInfo = locationResult.value;
       } else {
-        transaction = await rentalityContract.updateCarInfo(updateCarRequest);
+        locationInfo = {
+          locationInfo: emptyContractLocationInfo,
+          signature: "0x",
+        };
       }
+      transaction = await rentalityContract.updateCarInfoWithLocation(updateCarRequest, locationInfo);
 
       await transaction.wait();
 
