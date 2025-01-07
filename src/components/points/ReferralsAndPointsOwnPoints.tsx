@@ -1,14 +1,15 @@
 // TODO translate
 import { useTranslation } from "react-i18next";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ReferralsAndPointsProfileStatus from "@/components/points/ReferralsAndPointsProfileStatus";
 import Image from "next/image";
 import RntButton from "@/components/common/rntButton";
 import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
-import useOwnPoints from "@/hooks/points/useOwnPoints";
+import { AllOwnPointsInfo, getAllPoints } from "@/hooks/points/useOwnPoints";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "../common/rntSuspense";
 import useRefferalProgram from "@/hooks/useRefferalProgram";
+import useClaimMyPoints from "@/hooks/points/useClaimMyPoints";
 
 export default function ReferralsAndPointsOwnPoints() {
   const {
@@ -16,30 +17,35 @@ export default function ReferralsAndPointsOwnPoints() {
     getRefferalPointsInfo,
     getPointsHistory,
     isLoading: isLoadingInviteLink,
-    claimPoints,
   } = useRefferalProgram();
-
+  const { isLoading: isLoadingMyPoints, readyToClaim, claimMyPoints } = useClaimMyPoints();
+  const [isLoading, setIsLoading] = useState(true);
+  const [allPoints, setAllPoints] = useState<AllOwnPointsInfo | null>(null);
   const { t } = useTranslation();
-  const { isLoading, data, fetchData } = useOwnPoints();
 
   async function handleClaimPointsClick() {
-    await claimPoints();
+    await claimMyPoints();
   }
 
   useEffect(() => {
-    const fetchReadyToClaim = async () => {
+    const savePoints = async () => {
       const readyToClaim = await getReadyToClaim();
-      const pointsHistory = await getPointsHistory();
       const pointsInfo = await getRefferalPointsInfo();
+      const pointsHistory = await getPointsHistory();
+
       if (readyToClaim && pointsHistory && pointsInfo) {
-        await fetchData(readyToClaim, pointsHistory, pointsInfo);
+        const result = getAllPoints(readyToClaim, pointsHistory, pointsInfo, t);
+        if (result.ok) {
+          setAllPoints(result.value);
+          setIsLoading(false);
+        }
       }
     };
 
     if (!isLoadingInviteLink) {
-      fetchReadyToClaim();
+      savePoints();
     }
-  }, [isLoadingInviteLink]);
+  }, [isLoadingInviteLink, readyToClaim]);
 
   return (
     <div id="referrals-and-points-own-points" className="mt-4 rounded-lg bg-rentality-bg-left-sidebar p-3">
@@ -53,10 +59,15 @@ export default function ReferralsAndPointsOwnPoints() {
         >
           <Image src={icStarPointsYellow} alt="" className="mr-2 h-7 w-7" />
           <div className="ml-0.5 flex">
-            Claim{" "}
-            <span className="px-1 font-semibold text-rentality-star-point">{data.totalReadyToClaim.toString()}</span>{" "}
-            points
-            <span className="ml-4">●</span>
+            {isLoadingMyPoints ? (
+              <>Loading...</>
+            ) : (
+              <>
+                Claim <span className="px-1 font-semibold text-rentality-star-point">{readyToClaim.toString()}</span>{" "}
+                points
+                <span className="ml-4">●</span>
+              </>
+            )}
           </div>
         </RntButton>
       </div>
@@ -73,7 +84,7 @@ export default function ReferralsAndPointsOwnPoints() {
           <p className="text-gray-300">{t("referrals_and_point.account_creation")}</p>
           <hr className="my-2 border-gray-300" />
           <div id="rp-account-points-status-scrolling" className="flex space-x-2 overflow-x-auto">
-            {data.data?.ownAccountCreationPointsInfo.map((info, index) => (
+            {allPoints?.ownAccountCreationPointsInfo.map((info, index) => (
               <div key={index}>
                 <ReferralsAndPointsProfileStatus
                   index={index}
@@ -90,7 +101,7 @@ export default function ReferralsAndPointsOwnPoints() {
           <p className="text-gray-300">{t("referrals_and_point.regularly")}</p>
           <hr className="my-2 border-gray-300" />
           <div id="rp-regularly-points-status-scrolling" className="flex space-x-2 overflow-x-auto">
-            {data.data?.ownRegularPointsInfo.map((info, index) => (
+            {allPoints?.ownRegularPointsInfo.map((info, index) => (
               <div key={index}>
                 <ReferralsAndPointsProfileStatus
                   index={index}
