@@ -10,6 +10,7 @@ export default function HeadBtnReferralsAndPoints() {
   return (
     <button
       className="ml-[116px] hidden items-center rounded-md border border-gray-500 px-4 py-2 hover:border-gray-400 xl:flex"
+      disabled={readyToClaim === 0}
       onClick={() => claimMyPoints()}
     >
       <Image src={icStarPointsYellow} alt="" className="mr-2 h-7 w-7" />

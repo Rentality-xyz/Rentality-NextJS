@@ -55,6 +55,7 @@ export default function ReferralsAndPointsOwnPoints() {
         </div>
         <RntButton
           className="flex w-full items-center justify-center text-white max-sm:mt-4 sm:ml-auto sm:w-60 2xl:w-64"
+          disabled={readyToClaim === 0}
           onClick={handleClaimPointsClick}
         >
           <Image src={icStarPointsYellow} alt="" className="mr-2 h-7 w-7" />
