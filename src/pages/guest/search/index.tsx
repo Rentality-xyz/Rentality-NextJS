@@ -161,9 +161,12 @@ export default function Search() {
     }
   }
 
-  function handleShowRequestDetails(carInfo: SearchCarInfo) {
-    router.push(`/guest/createTrip?${createQueryString(searchCarRequest, searchCarFilters, carInfo.carId)}`);
-  }
+  const getRequestDetailsLink = useCallback(
+    (carId: number) => {
+      return `/guest/createTrip?${createQueryString(searchCarRequest, searchCarFilters, carId)}`;
+    },
+    [searchCarRequest, searchCarFilters]
+  );
 
   const setHighlightedCar = useCallback(
     (carID: number) => {
@@ -245,7 +248,7 @@ export default function Search() {
                         disableButton={requestSending}
                         isSelected={value.highlighted}
                         setSelected={setHighlightedCar}
-                        handleShowRequestDetails={handleShowRequestDetails}
+                        getRequestDetailsLink={getRequestDetailsLink}
                         isGuestHasInsurance={!isLoadingInsurance && !isEmpty(guestInsurance.photo)}
                       />
                     </div>
