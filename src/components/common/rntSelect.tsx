@@ -73,9 +73,9 @@ const RntSelect = forwardRef<HTMLSelectElement, RntSelectProps>(
             {children}
           </select>
           {isTransparentStyle && readOnly ? (
-            <span className="custom-arrow top-[70%] bg-[url('../images/arrowDownDisabled.svg')]"></span>
+            <span className="custom-arrow top-[70%] bg-[url('../images/arrows/arrowDownDisabled.svg')]"></span>
           ) : (
-            <span className="custom-arrow top-[70%] bg-[url('../images/arrowDownTurquoise.svg')]"></span>
+            <span className="custom-arrow top-[70%] bg-[url('../images/arrows/arrowDownTurquoise.svg')]"></span>
           )}
           <RntValidationError className={validationClassName} validationError={validationError} />
         </div>

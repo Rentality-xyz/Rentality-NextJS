@@ -3,7 +3,7 @@ import RntButton from "./rntButton";
 import { TripInfo } from "@/model/TripInfo";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import Image from "next/image";
-import imgCopy from "@/images/ic_copy_24dp.svg";
+import imgCopy from "@/images/ic_copy_white_24dp.svg";
 import { Dialog, DialogActions, DialogContent, DialogContentText } from "@mui/material";
 
 export default function RntWalletsModal({ tripInfo }: { tripInfo: TripInfo }) {

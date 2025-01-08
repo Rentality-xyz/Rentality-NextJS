@@ -5,7 +5,7 @@ import { hexToBytes } from "@waku/utils/bytes";
 import { Signer } from "ethers";
 import moment from "moment";
 import { isEmpty } from "@/utils/string";
-import { ChatMessage } from "./model/chatMessage";
+import { ChatMessage } from "./models/chatMessage";
 import { signUserChatMessage } from "./crypto";
 import { wakuPeerExchangeDiscovery } from "@waku/discovery";
 

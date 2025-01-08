@@ -20,7 +20,7 @@ const emptyDiscountFormValues: DiscountFormValues = {
 
 const useTripDiscounts = () => {
   const ethereumInfo = useEthereum();
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const userInfo = useUserInfo();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [tripDiscounts, setTripDiscounts] = useState<DiscountFormValues>(emptyDiscountFormValues);
@@ -33,7 +33,7 @@ const useTripDiscounts = () => {
       return Err("ERROR");
     }
 
-    if (!rentalityContract) {
+    if (!rentalityContracts) {
       console.error("saveTripDiscounts error: rentalityContract is null");
       return Err("ERROR");
     }
@@ -50,7 +50,7 @@ const useTripDiscounts = () => {
         thirtyDaysDiscount: BigInt(newDiscountFormValues.discount30DaysAndMoreInPercents * 10_000),
         initialized: true,
       };
-      const transaction = await rentalityContract.addUserDiscount(discounts);
+      const transaction = await rentalityContracts.gateway.addUserDiscount(discounts);
       await transaction.wait();
       return Ok(true);
     } catch (e) {
@@ -62,7 +62,7 @@ const useTripDiscounts = () => {
   useEffect(() => {
     const getTripDiscounts = async () => {
       try {
-        if (rentalityContract == null) {
+        if (!rentalityContracts) {
           console.error("getTripDiscounts error: contract is null");
           return;
         }
@@ -74,7 +74,7 @@ const useTripDiscounts = () => {
 
         setIsLoading(true);
 
-        const discounts = await rentalityContract.getDiscount(userInfo.address);
+        const discounts = await rentalityContracts.gateway.getDiscount(userInfo.address);
 
         const discountFormValues: DiscountFormValues = {
           discount3DaysAndMoreInPercents: Number(discounts.threeDaysDiscount) / 10_000,
@@ -89,10 +89,10 @@ const useTripDiscounts = () => {
       }
     };
 
-    if (!rentalityContract) return;
+    if (!rentalityContracts) return;
     if (!userInfo) return;
     getTripDiscounts();
-  }, [rentalityContract, userInfo]);
+  }, [rentalityContracts, userInfo]);
 
   return [isLoading, tripDiscounts, saveTripDiscounts] as const;
 };
