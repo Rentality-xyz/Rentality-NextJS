@@ -4,13 +4,13 @@ import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
-import { useRentality } from "../../rentalityContext";
+import { useRentality } from "../../../contexts/rentalityContext";
 import { isEmpty } from "@/utils/string";
 import moment from "moment";
-import { useEthereum } from "../../web3/ethereumContext";
+import { useEthereum } from "../../../contexts/web3/ethereumContext";
 import { ContractChatInfo, ContractTripDTO, EventType, TripStatus } from "@/model/blockchain/schemas";
 import { Contract, Listener } from "ethers";
-import { useNotification } from "../../notification/notificationContext";
+import { useNotification } from "../../../contexts/notification/notificationContext";
 import useUserMode, { isHost } from "@/hooks/useUserMode";
 import { Unsubscribe, doc, onSnapshot } from "firebase/firestore";
 import { chatDbInfo } from "@/utils/firebase";
@@ -21,7 +21,7 @@ import {
   getChatMessages,
   markUserChatAsSeen,
   saveMessageToFirebase,
-} from "@/chat/model/chatFirebaseTypes";
+} from "@/features/chat/models/chatFirebaseTypes";
 import { ChatMessage } from "@/model/ChatMessage";
 import { useAuth } from "@/contexts/auth/authContext";
 
