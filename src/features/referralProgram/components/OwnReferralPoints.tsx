@@ -49,7 +49,7 @@ export default function OwnReferralPoints() {
   }, [isLoadingInviteLink, readyToClaim, getReadyToClaim, getReferralPointsInfo, getPointsHistory, t]);
 
   return (
-    <div id="referrals-and-points-own-points" className="mt-4 rounded-lg bg-rentality-bg-left-sidebar p-3">
+    <div id="referrals-and-points-own-points" className="rounded-lg bg-rentality-bg-left-sidebar p-3">
       <div id="rp-section-own-points" className="items-center sm:flex">
         <div className="flex items-center">
           <p className="text-rentality-secondary">{t("referrals_and_point.section_own_points")}</p>

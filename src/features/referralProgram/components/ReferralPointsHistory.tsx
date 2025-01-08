@@ -18,7 +18,7 @@ export default function ReferralPointsHistory() {
   }, [fetchData]);
 
   return (
-    <div className="mt-4 w-full rounded-lg bg-rentality-bg-left-sidebar p-3">
+    <div className="w-full rounded-lg bg-rentality-bg-left-sidebar p-3">
       <p className="text-rentality-secondary">{t("referrals_and_point.section_points_history")}</p>
       <PaginationWrapper currentPage={data.currentPage} totalPages={data.totalPageCount} selectPage={fetchDataForPage}>
         <ReferralPointsHistoryTable isLoading={isLoading} data={data.data} />
