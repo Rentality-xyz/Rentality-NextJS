@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useRef } from "react";
 import { TripInfo } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
 import RntButton from "@/components/common/rntButton";
@@ -10,6 +10,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import RntFuelLevelSelect from "@/components/common/RntFuelLevelSelect";
+import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton";
 
 interface ChangeStatusHostConfirmedFormProps {
   tripInfo: TripInfo;
@@ -26,14 +27,22 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
     });
     const { errors, isSubmitting } = formState;
 
+    const carPhotosUploadButtonRef = useRef<any>(null);
+
     async function onFormSubmit(formData: ChangeStatusHostConfirmedFormValues) {
       changeStatusCallback(() => {
+
+        let tripPhotosUrls: string[] = [];
+        if(process.env.FF_TRIP_PHOTOS){
+          tripPhotosUrls=carPhotosUploadButtonRef.current.saveUploadedFiles();
+        }
+
         return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), [
           formData.fuelOrBatteryLevel.toString(),
           formData.odotemer.toString(),
           formData.insuranceCompanyName ?? "",
           formData.insurancePolicyNumber ?? "",
-        ]);
+        ], tripPhotosUrls);
       });
     }
 
@@ -52,7 +61,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
             </strong>
           </div>
 
-          <div className="flex flex-row flex-wrap gap-12 py-4">
+          <div className="flex flex-row gap-4 py-4">
             <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
               <Controller
                 name="fuelOrBatteryLevel"
@@ -92,6 +101,14 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
                 validationError={errors.insurancePolicyNumber?.message?.toString()}
               />
             </div>
+            { process.env.FF_TRIP_PHOTOS && (
+            <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
+              <CarPhotosUploadButton
+                ref={carPhotosUploadButtonRef}
+                isStart={true}
+              />
+            </div>
+            )}
           </div>
 
           <div className="flex flex-row gap-4">
@@ -104,7 +121,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
               disabled={disableButton || isSubmitting}
               onClick={() => {
                 changeStatusCallback(() => {
-                  return tripInfo.allowedActions[1].action(BigInt(tripInfo.tripId), []);
+                  return tripInfo.allowedActions[1].action(BigInt(tripInfo.tripId), [], []);
                 });
               }}
             >
