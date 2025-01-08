@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { enterPromoFormSchema, EnterPromoFormValues } from "../../models/enterPromoFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
+import { PROMOCODE_MAX_LENGTH } from "@/utils/constants";
 
 type DialogStatus = "NONE" | "LOADING" | "SUCCESS" | "ERROR";
 
@@ -96,8 +97,13 @@ function EnterPromoDialog({ days, priceDiscountable, priceNotDiscountable, creat
         label={t("promo.input_label")}
         placeholder={t("promo.input_hint")}
         {...register("enteredPromo", {
-          onChange: () => {
+          onChange: (e) => {
             dispatch({ type: PromoActionType.RESET });
+
+            const value = e.target.value;
+            if (value !== undefined && typeof value === "string" && value.length >= PROMOCODE_MAX_LENGTH) {
+              handleSubmit(async (data) => await onFormSubmit(data))();
+            }
           },
         })}
         validationError={errors.enteredPromo?.message}
