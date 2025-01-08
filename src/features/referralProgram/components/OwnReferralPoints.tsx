@@ -1,17 +1,18 @@
 // TODO translate
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
-import ReferralsAndPointsProfileStatus from "@/features/referralProgram/components/ReferralsAndPointsProfileStatus";
 import Image from "next/image";
 import RntButton from "@/components/common/rntButton";
 import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
-import { AllOwnPointsInfo, getAllPoints } from "@/features/referralProgram/hooks/useOwnPoints";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "../../../components/common/rntSuspense";
 import useReferralProgram from "@/features/referralProgram/hooks/useReferralProgram";
 import useClaimMyPoints from "@/features/referralProgram/hooks/useClaimMyPoints";
+import ReferralProgramStatusCard from "@/features/referralProgram/components/ReferralProgramStatusCard";
+import { AllOwnPointsInfo } from "../models";
+import { getAllPoints } from "../utils";
 
-export default function ReferralsAndPointsOwnPoints() {
+export default function OwnReferralPoints() {
   const {
     getReadyToClaim,
     getReferralPointsInfo,
@@ -87,7 +88,7 @@ export default function ReferralsAndPointsOwnPoints() {
           <div id="rp-account-points-status-scrolling" className="flex space-x-2 overflow-x-auto">
             {allPoints?.ownAccountCreationPointsInfo.map((info, index) => (
               <div key={index}>
-                <ReferralsAndPointsProfileStatus
+                <ReferralProgramStatusCard
                   index={index}
                   nameReferral={info.methodDescriptions}
                   countPoints={info.countPoints}
@@ -104,7 +105,7 @@ export default function ReferralsAndPointsOwnPoints() {
           <div id="rp-regularly-points-status-scrolling" className="flex space-x-2 overflow-x-auto">
             {allPoints?.ownRegularPointsInfo.map((info, index) => (
               <div key={index}>
-                <ReferralsAndPointsProfileStatus
+                <ReferralProgramStatusCard
                   index={index}
                   nameReferral={info.methodDescriptions}
                   countPoints={info.countPoints}

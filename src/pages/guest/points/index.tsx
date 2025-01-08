@@ -1,5 +1,5 @@
-import GuestReferralPageContent from "@/features/referralProgram/pages/GuestReferralPageContent";
+import ReferralPageContent from "@/features/referralProgram/pages/ReferralPageContent";
 
 export default function ReferralsAndPoints() {
-  return <GuestReferralPageContent />;
+  return <ReferralPageContent />;
 }
