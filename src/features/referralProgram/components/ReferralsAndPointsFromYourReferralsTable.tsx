@@ -4,7 +4,7 @@ import React from "react";
 import { cn } from "@/utils";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "@/components/common/rntSuspense";
-import { PointsFromYourReferralsInfo } from "@/hooks/points/usePointsFromYourReferrals";
+import { PointsFromYourReferralsInfo } from "@/features/referralProgram/hooks/usePointsFromYourReferrals";
 
 type ReferralsAndPointsFromYourReferralsTableProps = {
   isLoading: boolean;

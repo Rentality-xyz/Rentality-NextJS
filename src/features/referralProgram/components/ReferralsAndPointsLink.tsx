@@ -4,7 +4,7 @@ import imgCopy from "@/images/ic_copy_white_24dp.svg";
 import Image from "next/image";
 import RntButton from "@/components/common/rntButton";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
-import useReferralProgram from "@/hooks/useReferralProgram";
+import useReferralProgram from "@/features/referralProgram/hooks/useReferralProgram";
 import useProfileSettings from "@/hooks/useProfileSettings";
 
 export default function ReferralsAndPointsLink() {

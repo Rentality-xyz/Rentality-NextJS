@@ -1,11 +1,11 @@
 import { useCallback, useState } from "react";
 import { RefferalProgram as ReferralProgram } from "@/model/blockchain/schemas";
 import { Err, Ok, Result } from "@/model/utils/result";
-import useReferralProgram from "@/hooks/useReferralProgram";
+import useReferralProgram from "@/features/referralProgram/hooks/useReferralProgram";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { useTranslation } from "react-i18next";
-import { ReferralProgramDescription } from "@/components/points/ReferralProgramDescriptions";
+import { ReferralProgramDescription } from "@/features/referralProgram/components/ReferralProgramDescriptions";
 
 export type ReferralHistoryInfo = {
   points: number;

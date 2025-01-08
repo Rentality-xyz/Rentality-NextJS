@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
 import React, { useEffect } from "react";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
-import ReferralsAndPointsHistoryTable from "@/components/points/ReferralsAndPointsHistoryTable";
-import usePointsHistory from "@/hooks/points/usePointsHistory";
+import ReferralsAndPointsHistoryTable from "@/features/referralProgram/components/ReferralsAndPointsHistoryTable";
+import usePointsHistory from "@/features/referralProgram/hooks/usePointsHistory";
 
 export default function ReferralsAndPointsHistory() {
   const { t } = useTranslation();

@@ -8,8 +8,8 @@ import {
   ContractRefferalHistory as ContractReferralHistory,
   RefferalProgram as ReferralProgram,
 } from "@/model/blockchain/schemas";
-import { ReferralProgramDescription } from "@/components/points/ReferralProgramDescriptions";
-import { PointsProfileStatus } from "@/components/points/ReferralsAndPointsProfileStatus";
+import { ReferralProgramDescription } from "@/features/referralProgram/components/ReferralProgramDescriptions";
+import { PointsProfileStatus } from "@/features/referralProgram/components/ReferralsAndPointsProfileStatus";
 import { TFunction } from "i18next";
 
 type OwnAccountCreationPointsInfo = {

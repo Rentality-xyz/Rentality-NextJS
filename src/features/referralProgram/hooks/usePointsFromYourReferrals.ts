@@ -1,8 +1,8 @@
 import { useCallback, useState } from "react";
 import { Err, Ok, Result } from "@/model/utils/result";
-import useReferralProgram from "@/hooks/useReferralProgram";
+import useReferralProgram from "@/features/referralProgram/hooks/useReferralProgram";
 import { ContractReadyToClaimFromHash, RefferalProgram as ReferralProgram } from "@/model/blockchain/schemas";
-import { ReferralProgramDescription } from "@/components/points/ReferralProgramDescriptions";
+import { ReferralProgramDescription } from "@/features/referralProgram/components/ReferralProgramDescriptions";
 import { useTranslation } from "react-i18next";
 
 export type PointsFromYourReferralsInfo = {

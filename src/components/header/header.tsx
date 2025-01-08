@@ -29,7 +29,7 @@ import icBaseScan from "@/images/base-scan-log.svg";
 import icWalletBalance from "@/images/ic_wallet_balance.svg";
 import { useTranslation } from "react-i18next";
 import { AdminBurgerNavMenu } from "../sideNavMenu/adminSideNavMenu";
-import HeadBtnReferralsAndPoints from "@/components/header/HeadBtnReferralsAndPoints";
+import HeadBtnReferralsAndPoints from "@/features/referralProgram/components/HeadBtnReferralsAndPoints";
 import { isMobileAppRentality } from "@/utils/devicePlatform";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({

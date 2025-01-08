@@ -3,12 +3,12 @@ import Image from "next/image";
 import icStarPointsWhite from "@/images/ic_star_points_white.svg";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import ReferralsAndPointsOwnPoints from "@/components/points/ReferralsAndPointsOwnPoints";
-import ReferralsAndPointsLink from "@/components/points/ReferralsAndPointsLink";
-import ReferralsAndPointsHistory from "@/components/points/ReferralsAndPointsHistory";
-import ReferralsAndPointsFromYourReferrals from "@/components/points/ReferralsAndPointsFromYourReferrals";
-import useReferralProgram from "@/hooks/useReferralProgram";
-import useClaimMyPoints from "@/hooks/points/useClaimMyPoints";
+import ReferralsAndPointsOwnPoints from "@/features/referralProgram/components/ReferralsAndPointsOwnPoints";
+import ReferralsAndPointsLink from "@/features/referralProgram/components/ReferralsAndPointsLink";
+import ReferralsAndPointsHistory from "@/features/referralProgram/components/ReferralsAndPointsHistory";
+import ReferralsAndPointsFromYourReferrals from "@/features/referralProgram/components/ReferralsAndPointsFromYourReferrals";
+import useReferralProgram from "@/features/referralProgram/hooks/useReferralProgram";
+import useClaimMyPoints from "@/features/referralProgram/hooks/useClaimMyPoints";
 
 type ReferralsAndPointsContentProps = {
   isHost: boolean;
