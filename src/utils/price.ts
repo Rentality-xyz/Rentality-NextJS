@@ -14,7 +14,7 @@ export function getDiscountablePrice(
 export function getDiscountablePriceFromCarInfo(carInfo: SearchCarInfoDetails | SearchCarInfo) {
   return "salesTax" in carInfo
     ? getDiscountablePrice(
-        carInfo.pricePerDay,
+        carInfo.pricePerDayWithDiscount,
         carInfo.tripDays,
         carInfo.deliveryDetails.pickUp.priceInUsd,
         carInfo.deliveryDetails.dropOff.priceInUsd,
@@ -22,7 +22,7 @@ export function getDiscountablePriceFromCarInfo(carInfo: SearchCarInfoDetails | 
         carInfo.governmentTax
       )
     : getDiscountablePrice(
-        carInfo.pricePerDay,
+        carInfo.pricePerDayWithDiscount,
         carInfo.tripDays,
         carInfo.deliveryDetails.pickUp.priceInUsd,
         carInfo.deliveryDetails.dropOff.priceInUsd,

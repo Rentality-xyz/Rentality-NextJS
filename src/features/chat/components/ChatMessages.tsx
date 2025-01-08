@@ -1,6 +1,6 @@
 import { ChatInfo } from "@/model/ChatInfo";
 import ChatMessage from "./ChatMessage";
-import { decodeClaimChatMessage, isClaimChatMessage } from "./utils";
+import { decodeClaimChatMessage, isClaimChatMessage } from "../utils";
 import { useEffect, useRef } from "react";
 
 export default function ChatMessages({ selectedChat, isHost }: { selectedChat: ChatInfo; isHost: boolean }) {
