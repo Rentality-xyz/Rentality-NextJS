@@ -65,6 +65,7 @@
     "viem": "^2.16.3",
     "wagmi": "^2.10.8",
     "zod": "^3.23.8",
+    "zustand": "^4.5.5",
     "@dimo-network/data-sdk": "^1.2.1",
     "@dimo-network/login-with-dimo": "0.0.14"
   },

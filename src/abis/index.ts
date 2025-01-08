@@ -6,6 +6,8 @@ import RentalityLocationVerifierJSON_ADDRESSES from "./RentalityLocationVerifier
 import RentalityLocationVerifierJSON_ABI from "./RentalityLocationVerifier.v0_2_0.abi.json";
 import RentalityNotificationServiceJSON_ADDRESSES from "./RentalityNotificationService.v0_2_0.addresses.json";
 import RentalityNotificationServiceJSON_ABI from "./RentalityNotificationService.v0_2_0.abi.json";
+import RentalityRefferalProgramServiceJSON_ABI from "./RentalityReferralProgram.v0_2_0.abi.json";
+import RentalityRefferalProgramServiceJSON_ADDRESSES from "./RentalityReferralProgram.v0_2_0.addresses.json";
 import { Contract, Signer } from "ethers";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 
@@ -27,6 +29,10 @@ const rentalityContracts = {
   verifierService: {
     addresses: RentalityLocationVerifierJSON_ADDRESSES.addresses,
     abi: RentalityLocationVerifierJSON_ABI.abi,
+  },
+  refferalPogram: {
+    addresses: RentalityRefferalProgramServiceJSON_ADDRESSES.addresses,
+    abi: RentalityRefferalProgramServiceJSON_ABI.abi,
   },
 };
 

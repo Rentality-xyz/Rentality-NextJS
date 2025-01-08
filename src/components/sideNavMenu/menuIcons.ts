@@ -13,6 +13,7 @@ import icSearch from "@/images/ic-search-128.svg";
 import icInsurance from "@/images/ic_insurance.png";
 import toAppStore from "@/images/to_app_store.png";
 import toGooglePlay from "@/images/to_google_play.png";
+import icReferralsAndPoints from "@/images/ic_referrals_and_points.png";
 
 enum MenuIcons {
   Booked,
@@ -29,6 +30,7 @@ enum MenuIcons {
   Insurance,
   ToAppStore,
   ToGooglePlay,
+  ReferralsAndPoints,
 }
 
 export const getImageForMenu = (state: MenuIcons): StaticImageData => {
@@ -61,6 +63,8 @@ export const getImageForMenu = (state: MenuIcons): StaticImageData => {
       return toAppStore;
     case MenuIcons.ToGooglePlay:
       return toGooglePlay;
+    case MenuIcons.ReferralsAndPoints:
+      return icReferralsAndPoints;
   }
 };
 

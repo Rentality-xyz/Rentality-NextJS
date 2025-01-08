@@ -4,13 +4,13 @@ import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
-import { useRentality } from "../../rentalityContext";
+import { useRentality } from "../../../contexts/rentalityContext";
 import { isEmpty } from "@/utils/string";
 import moment from "moment";
-import { useEthereum } from "../../web3/ethereumContext";
+import { useEthereum } from "../../../contexts/web3/ethereumContext";
 import { ContractChatInfo, ContractTripDTO, EventType, TripStatus } from "@/model/blockchain/schemas";
 import { Contract, Listener } from "ethers";
-import { useNotification } from "../../notification/notificationContext";
+import { useNotification } from "../../../contexts/notification/notificationContext";
 import useUserMode, { isHost } from "@/hooks/useUserMode";
 import { Unsubscribe, doc, onSnapshot } from "firebase/firestore";
 import { chatDbInfo } from "@/utils/firebase";
@@ -21,7 +21,7 @@ import {
   getChatMessages,
   markUserChatAsSeen,
   saveMessageToFirebase,
-} from "@/chat/model/chatFirebaseTypes";
+} from "@/features/chat/models/chatFirebaseTypes";
 import { ChatMessage } from "@/model/ChatMessage";
 import { useAuth } from "@/contexts/auth/authContext";
 
@@ -76,7 +76,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
   const ethereumInfo = useEthereum();
 
   /// Chat client
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const { userMode } = useUserMode();
 
   const [isChatReloadRequire, setIsChatReloadRequire] = useState(true);
@@ -199,7 +199,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
   const rentalityEventListener: Listener = useCallback(
     async ({ args }) => {
-      if (!rentalityContract) return;
+      if (!rentalityContracts) return;
 
       const eventType = BigInt(args[0]);
       if (eventType !== EventType.Trip) {
@@ -212,7 +212,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
       console.debug(`tripStatusChangedListener call. TripId: ${tripId} status: ${tripStatus}`);
       if (tripStatus === TripStatus.Pending) {
         try {
-          const tripInfo: ContractTripDTO = await rentalityContract.getTrip(BigInt(tripId));
+          const tripInfo: ContractTripDTO = await rentalityContracts.gateway.getTrip(BigInt(tripId));
           const metaData = parseMetaData(await getMetaDataFromIpfs(tripInfo.metadataURI));
           const tripStatus = tripInfo.trip.status;
 
@@ -262,7 +262,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         });
       }
     },
-    [rentalityContract]
+    [rentalityContracts]
   );
 
   const selectChat = useCallback(
@@ -382,7 +382,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
     const initChatInfos = async () => {
       if (!isChatReloadRequire) return;
       if (!ethereumInfo) return;
-      if (!rentalityContract) return;
+      if (!rentalityContracts) return;
       if (!rentalityNotificationService) return;
       if (!chatDbInfo.db) return;
       if (isChatInitializing.current) return;
@@ -392,7 +392,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         setIsLoading(true);
         console.log(`Chat initializing...`);
 
-        const infos = (await getChatInfosWithoutMessages(rentalityContract)) ?? [];
+        const infos = (await getChatInfosWithoutMessages(rentalityContracts.gateway)) ?? [];
 
         const promisses = infos.map(async (i) => {
           await checkUserChats(chatDbInfo, i.hostAddress, i.guestAddress);
@@ -499,7 +499,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
     return () => {
       if (!isChatReloadRequire) return;
       if (!ethereumInfo) return;
-      if (!rentalityContract) return;
+      if (!rentalityContracts) return;
       if (!rentalityNotificationService) return;
       if (!chatDbInfo.db) return;
       if (isChatInitializing.current) return;
@@ -514,7 +514,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
     };
   }, [
     ethereumInfo,
-    rentalityContract,
+    rentalityContracts,
     rentalityNotificationService,
     userMode,
     getChatInfosWithoutMessages,

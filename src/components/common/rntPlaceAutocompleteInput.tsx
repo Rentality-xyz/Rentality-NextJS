@@ -6,8 +6,7 @@ import { cn } from "@/utils";
 import { env } from "@/utils/env";
 import Image, { StaticImageData } from "next/image";
 import * as React from "react";
-import { color } from "@mui/system";
-import bgBlockSearch from "@/images/bg_block_search.png";
+import bgInput from "@/images/bg_input.png";
 
 export type PlaceDetails = {
   addressString: string;
@@ -36,6 +35,7 @@ export type PlaceDetails = {
     longitude: number;
   };
   utcOffsetMinutes: number;
+  isEditing: boolean;
 };
 
 export interface RntPlaceAutocompleteInputProps extends React.ComponentPropsWithoutRef<"input"> {
@@ -95,6 +95,7 @@ export default function RntPlaceAutocompleteInput({
         addressString: "",
         location: { latitude: 0, longitude: 0 },
         utcOffsetMinutes: 0,
+        isEditing,
       });
       return;
     }
@@ -144,6 +145,7 @@ export default function RntPlaceAutocompleteInput({
             street_number: street_number,
             location: location,
             utcOffsetMinutes: utcOffsetMinutes,
+            isEditing,
           });
         }
       }
@@ -158,6 +160,7 @@ export default function RntPlaceAutocompleteInput({
     "w-full h-12 border-2 rounded-full pl-4 disabled:bg-gray-300 disabled:text-gray-600",
     inputClassName
   );
+
   return (
     <div className={cClassName}>
       {!isEmpty(label) &&
@@ -165,7 +168,7 @@ export default function RntPlaceAutocompleteInput({
           <label className={cn("flex items-center", lClassName)} htmlFor={id}>
             {!isEmpty(iconFrontLabel?.src) && <Image src={iconFrontLabel!!} alt="" className="mr-2" />}
             {label}
-            <Image src={bgBlockSearch} alt="" className="absolute left-0 top-[34px] h-[60%] w-full rounded-full" />
+            <Image src={bgInput} alt="" className="absolute left-0 top-[34px] h-[60%] w-full rounded-full" />
           </label>
         ) : (
           <label className={lClassName} htmlFor={id}>
@@ -215,34 +218,6 @@ export default function RntPlaceAutocompleteInput({
       ) : null}
 
       <RntValidationError className={validationClassName} validationError={validationError} />
-
-      {/* <div
-        style={{
-          marginTop: "20px",
-          width: "200px",
-          height: "200px",
-          display: "flex",
-          flex: "1",
-          flexDirection: "column",
-          marginBottom: "100px",
-        }}
-      >
-        {!isPlacePredictionsLoading && (
-          <ul>
-            {placePredictions.map((item, index) => {
-              return (<li key={index}>{item.description}</li>)
-            })}
-          </ul>
-          // <List
-          //   dataSource={placePredictions}
-          //   renderItem={(item) => (
-          //     <List.Item onClick={() => setValue(item.description)}>
-          //       <List.Item.Meta title={item.description} />
-          //     </List.Item>
-          //   )}
-          // />
-        )}
-      </div> */}
     </div>
   );
 }

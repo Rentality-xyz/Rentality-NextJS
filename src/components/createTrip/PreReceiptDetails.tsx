@@ -56,7 +56,7 @@ export function PreReceiptDetails({
       <p className="text-right">${displayMoneyWith2Digits(pricePerDay * tripDays)}</p>
 
       <p>{t("create_trip.discount_amount")}</p>
-      <p className="text-rentality-alert-text text-right">
+      <p className="text-right text-rentality-alert-text">
         -${displayMoneyWith2Digits((pricePerDay - pricePerDayWithDiscount) * tripDays)}
       </p>
 
