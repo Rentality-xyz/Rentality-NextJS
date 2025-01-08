@@ -95,7 +95,10 @@ export default function Search() {
       <EnterPromoDialog
         days={carInfo.tripDays}
         priceDiscountable={getDiscountablePriceFromCarInfo(carInfo)}
-        priceNotDiscountable={getNotDiscountablePriceFromCarInfo(carInfo)}
+        priceNotDiscountable={getNotDiscountablePriceFromCarInfo({
+          ...carInfo,
+          isGuestHasInsurance: !isLoadingInsurance && !isEmpty(guestInsurance.photo),
+        })}
         createTripRequest={async (promo) => {
           createTripWithPromo(carInfo, promo);
         }}
