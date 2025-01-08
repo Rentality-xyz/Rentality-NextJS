@@ -1,7 +1,7 @@
 import Image from "next/image";
 import icStarPointsWhite from "@/images/ic_star_points_white.svg";
 import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
-import React, { ReactNode } from "react";
+import React from "react";
 import { cn } from "@/utils";
 
 type ReferralsAndPointsProfileStatusProps = {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { cn } from "@/utils";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "../../../components/common/rntSuspense";

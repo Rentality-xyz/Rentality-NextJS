@@ -2,8 +2,8 @@ import { useCallback, useState } from "react";
 import { Err, Ok, Result } from "@/model/utils/result";
 import useReferralProgram from "@/features/referralProgram/hooks/useReferralProgram";
 import { ContractReadyToClaimFromHash, RefferalProgram as ReferralProgram } from "@/model/blockchain/schemas";
-import { ReferralProgramDescription } from "@/features/referralProgram/components/ReferralProgramDescriptions";
 import { useTranslation } from "react-i18next";
+import { getReferralProgramDescriptionText } from "../utils";
 
 export type PointsFromYourReferralsInfo = {
   methodDescriptions: string;
@@ -163,7 +163,7 @@ const combineReferralData = (referrals: ContractReadyToClaimFromHash[], t: any):
   const allRefTypes = new Set<ReferralProgram>(referrals.map((item) => item.refType));
 
   return Array.from(allRefTypes).map((refType) => ({
-    methodDescriptions: ReferralProgramDescription(t, refType),
+    methodDescriptions: getReferralProgramDescriptionText(t, refType),
     totalReferrals: totalReferrals[Number(refType)] || 0,
     totalReceived: totalReceived[Number(refType)] || 0,
     readyToClaim: readyToClaim[Number(refType)] || 0,
