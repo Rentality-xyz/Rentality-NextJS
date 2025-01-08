@@ -8,9 +8,9 @@ import {
   ContractRefferalHistory as ContractReferralHistory,
   RefferalProgram as ReferralProgram,
 } from "@/model/blockchain/schemas";
-import { ReferralProgramDescription } from "@/features/referralProgram/components/ReferralProgramDescriptions";
 import { PointsProfileStatus } from "@/features/referralProgram/components/ReferralsAndPointsProfileStatus";
 import { TFunction } from "i18next";
+import { getReferralProgramDescriptionText } from "../utils";
 
 type OwnAccountCreationPointsInfo = {
   index: number;
@@ -143,7 +143,7 @@ function getOwnAccountCreationPointsInfo(
 
     return {
       index: Number(refType.valueOf()),
-      methodDescriptions: ReferralProgramDescription(t, refType),
+      methodDescriptions: getReferralProgramDescriptionText(t, refType),
       countPoints: countPoints,
       done: done,
       status: status,
@@ -181,7 +181,7 @@ function getOwnRegularPointsInfo(
     const countPoints = status === PointsProfileStatus.NextStep ? programPoints : points;
 
     return {
-      methodDescriptions: ReferralProgramDescription(t, refType),
+      methodDescriptions: getReferralProgramDescriptionText(t, refType),
       countPoints: countPoints,
       done: done,
       nextDailyClaim: 0,

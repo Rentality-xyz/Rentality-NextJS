@@ -5,7 +5,7 @@ import useReferralProgram from "@/features/referralProgram/hooks/useReferralProg
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { useTranslation } from "react-i18next";
-import { ReferralProgramDescription } from "@/features/referralProgram/components/ReferralProgramDescriptions";
+import { getReferralProgramDescriptionText } from "../utils";
 
 export type ReferralHistoryInfo = {
   points: number;
@@ -55,7 +55,7 @@ const usePointsHistory = () => {
                   ? isOneTime
                     ? t("referrals_and_point.referral_program.finish_trip_as_guest_one_time")
                     : t("referrals_and_point.referral_program.finish_trip_as_guest")
-                  : ReferralProgramDescription(t, historyDataDto.method);
+                  : getReferralProgramDescriptionText(t, historyDataDto.method);
 
               return {
                 points: Number(historyDataDto.points),

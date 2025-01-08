@@ -20,8 +20,6 @@ export default function ReferralsAndPointsContent({ isHost }: ReferralsAndPoints
   const { readyToClaim } = useClaimMyPoints();
 
   useEffect(() => {
-    console.log("updateData call");
-
     updateData();
   }, [updateData, readyToClaim]);
 

@@ -1,17 +1,11 @@
 import { useTranslation } from "react-i18next";
 import Image from "next/image";
-import icStarPointsWhite from "@/images/ic_star_points_white.svg";
 import React, { useEffect } from "react";
-import TransactionHistoryTable from "@/components/transaction_history/TransactionHistoryTable";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import ReferralsAndPointsFromYourReferralsTable from "@/features/referralProgram/components/ReferralsAndPointsFromYourReferralsTable";
 import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 import RntButton from "@/components/common/rntButton";
-import RntButtonTransparent from "@/components/common/rntButtonTransparent";
-import usePointsHistory from "@/features/referralProgram/hooks/usePointsHistory";
-import usePointsFromYourReferrals, {
-  PointsFromYourReferralsInfo,
-} from "@/features/referralProgram/hooks/usePointsFromYourReferrals";
+import usePointsFromYourReferrals from "@/features/referralProgram/hooks/usePointsFromYourReferrals";
 
 export default function ReferralsAndPointsFromYourReferrals() {
   const { t } = useTranslation();
