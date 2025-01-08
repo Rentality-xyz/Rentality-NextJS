@@ -414,7 +414,7 @@ export type ContractCarDetails = {
   locationInfo: ContractLocationInfo;
   carVinNumber: string;
   carMetadataURI: string;
-  dimoTokenId: number;
+  dimoTokenId: bigint;
 };
 
 export type ContractFloridaTaxes = {
