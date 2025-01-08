@@ -1,5 +1,5 @@
-import { twMerge } from "tailwind-merge";
-import { ChangeEventHandler } from "react";
+import { cn } from "@/utils";
+import { MouseEventHandler } from "react";
 
 interface RntCheckboxProps extends React.ComponentPropsWithoutRef<"input"> {
   label?: string;
@@ -8,7 +8,6 @@ interface RntCheckboxProps extends React.ComponentPropsWithoutRef<"input"> {
 }
 
 const RntCheckbox = ({ className, label, checked, readOnly, onChange, ...rest }: RntCheckboxProps) => {
-  const c = twMerge("", className);
   const checkBoxBgStyle = readOnly
     ? "bg-gray-400"
     : checked
@@ -16,7 +15,7 @@ const RntCheckbox = ({ className, label, checked, readOnly, onChange, ...rest }:
       : "bg-white group-hover:bg-[#bbb]";
 
   return (
-    <div className={c}>
+    <div className={className}>
       <label className="group flex cursor-pointer select-none flex-row items-center">
         <input
           className="hidden"
@@ -37,9 +36,8 @@ const RntCheckbox = ({ className, label, checked, readOnly, onChange, ...rest }:
 };
 
 export function CheckboxLight({ className, label, checked, onChange, ...rest }: RntCheckboxProps) {
-  const c = twMerge("", className);
   return (
-    <div className={c}>
+    <div className={className}>
       <label className="group flex w-fit cursor-pointer select-none flex-row items-center">
         <input className="hidden" type="checkbox" checked={checked} onChange={onChange} />
         <span className={`relative mr-4 h-6 w-6 shrink-0 rounded-md border-2`}>
@@ -49,6 +47,33 @@ export function CheckboxLight({ className, label, checked, onChange, ...rest }: 
         </span>
         {label}
       </label>
+    </div>
+  );
+}
+
+export function CheckboxTerms({
+  className,
+  label,
+  checked,
+  onChange,
+  onLabelClick,
+  ...rest
+}: RntCheckboxProps & {
+  onLabelClick?: MouseEventHandler<HTMLLabelElement> | undefined;
+}) {
+  return (
+    <div className={cn(className, "flex flex-row items-center")}>
+      <label className="group flex w-fit cursor-pointer select-none flex-row items-center">
+        <input className="hidden" type="checkbox" checked={checked} onChange={onChange} />
+        <span className={`relative mr-4 h-6 w-6 shrink-0 rounded-md border-2`}>
+          {checked ? (
+            <span className="absolute right-0.5 top-[-8px] h-6 w-2.5 shrink-0 rotate-45 border-b-2 border-r-2 border-white"></span>
+          ) : null}
+        </span>
+      </label>
+      <span className="cursor-pointer select-none" onClick={onLabelClick}>
+        {label}
+      </span>
     </div>
   );
 }

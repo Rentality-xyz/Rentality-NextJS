@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRentality } from "./rentalityContext";
-import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
+import { getIpfsURI } from "@/utils/ipfsUtils";
 import { useEthereum } from "./web3/ethereumContext";
-import { ContractKYCInfo } from "@/model/blockchain/schemas";
+import { ContractFullKYCInfoDTO, ContractKYCInfo } from "@/model/blockchain/schemas";
 import { tryGetEnsName } from "@/utils/ether";
 
 export type UserInfo = {
@@ -36,24 +36,24 @@ export const UserInfoProvider = ({ children }: { children?: React.ReactNode }) =
 
   useEffect(() => {
     const loadUserInfo = async () => {
-      if (rentalityContract === null) {
+      if (!rentalityContract) {
         return;
       }
-      if (ethereumInfo === null) {
+      if (!ethereumInfo) {
         return;
       }
       try {
-        const myKYCInfo: ContractKYCInfo = await rentalityContract.getMyKYCInfo();
+        const myKYCInfo: ContractFullKYCInfoDTO = await rentalityContract.getMyFullKYCInfo();
 
         if (myKYCInfo == null) return;
 
         setCurrentUserInfo({
           address: ethereumInfo.walletAddress,
           ensName: await tryGetEnsName(ethereumInfo.provider, ethereumInfo.walletAddress),
-          firstName: myKYCInfo.name,
-          lastName: myKYCInfo.surname,
-          profilePhotoUrl: getIpfsURIfromPinata(myKYCInfo.profilePhoto),
-          drivingLicense: myKYCInfo.licenseNumber,
+          firstName: myKYCInfo.kyc.name,
+          lastName: myKYCInfo.kyc.name,
+          profilePhotoUrl: getIpfsURI(myKYCInfo.kyc.profilePhoto),
+          drivingLicense: myKYCInfo.kyc.licenseNumber,
         });
       } catch (e) {
         console.error("UserInfoProvider error:" + e);

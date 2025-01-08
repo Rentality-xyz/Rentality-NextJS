@@ -9,7 +9,7 @@ export type PageTitleLink = {
 export default function PageTitle({ title, actions }: { title: string; actions?: PageTitleLink[] }) {
   return (
     <div id="page-title" className="flex flex-row items-center justify-between">
-      <div className="text-2xl">
+      <div className="pl-4 text-2xl">
         <strong>{title}</strong>
       </div>
       {actions == undefined || actions.length === 0

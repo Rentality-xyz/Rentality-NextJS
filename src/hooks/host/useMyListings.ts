@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BaseCarInfo } from "@/model/BaseCarInfo";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useRentality } from "@/contexts/rentalityContext";
 import { validateContractCarInfoDTO } from "@/model/blockchain/schemas_utils";
@@ -8,10 +8,10 @@ import { ContractCarInfoDTO } from "@/model/blockchain/schemas";
 
 const useMyListings = () => {
   const rentalityContract = useRentality();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [isLoadingMyListings, setIsLoadingMyListings] = useState<boolean>(true);
   const [myListings, setMyListings] = useState<BaseCarInfo[]>([]);
 
-  const getMyListings = async (rentalityContract: IRentalityContract) => {
+  const getMyListings = async (rentalityContract: IRentalityContract | null) => {
     try {
       if (rentalityContract == null) {
         console.error("getMyListings error: contract is null");
@@ -36,7 +36,7 @@ const useMyListings = () => {
                 let item: BaseCarInfo = {
                   carId: Number(i.carInfo.carId),
                   ownerAddress: i.carInfo.createdBy.toString(),
-                  image: getIpfsURIfromPinata(metaData.image),
+                  image: getIpfsURI(metaData.mainImage),
                   brand: i.carInfo.brand,
                   model: i.carInfo.model,
                   year: i.carInfo.yearOfProduction.toString(),
@@ -58,17 +58,17 @@ const useMyListings = () => {
   };
 
   useEffect(() => {
-    if (!rentalityContract) return;
+    if (rentalityContract === undefined) return;
 
     getMyListings(rentalityContract)
       .then((data) => {
         setMyListings(data ?? []);
-        setIsLoading(false);
+        setIsLoadingMyListings(false);
       })
-      .catch(() => setIsLoading(false));
+      .catch(() => setIsLoadingMyListings(false));
   }, [rentalityContract]);
 
-  return [isLoading, myListings] as const;
+  return [isLoadingMyListings, myListings] as const;
 };
 
 export default useMyListings;

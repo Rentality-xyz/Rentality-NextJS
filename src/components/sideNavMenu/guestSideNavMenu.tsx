@@ -2,7 +2,7 @@ import BaseBurgerNavMenu from "./baseBurgerNavMenu";
 import BaseSideNavMenu from "./baseSideNavMenu";
 import SideNavMenuGroup from "./sideNavMenuGroup";
 import SideNavMenuItem from "./sideNavMenuItem";
-import MenuIcons from "@/components/sideNavMenu/menuIcons";
+import MenuIcons, { getImageForMenu } from "@/components/sideNavMenu/menuIcons";
 import { useNotification } from "@/contexts/notification/notificationContext";
 import usePageLastVisit from "@/hooks/usePageLastVisit";
 import { NotificationType } from "@/model/NotificationInfo";
@@ -10,12 +10,19 @@ import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
 import { useChat } from "@/contexts/chat/firebase/chatContext";
 import { useAuth } from "@/contexts/auth/authContext";
+import * as React from "react";
 
 function GuestNavMenu() {
   const { isAuthenticated, logout } = useAuth();
   const { notifications } = useNotification();
   const { chatInfos } = useChat();
   const { getPageLastVisitedDateTime } = usePageLastVisit();
+  const { t } = useTranslation();
+
+  const t_nav: TFunction = (name, options) => {
+    return t("nav_menu." + name, options);
+  };
+
   const bookedLastVisitedDateTime = getPageLastVisitedDateTime("guest_trips_booked");
   const historyLastVisitedDateTime = getPageLastVisitedDateTime("guest_trips_history");
   const claimsLastVisitedDateTime = getPageLastVisitedDateTime("guest_claims");
@@ -37,10 +44,7 @@ function GuestNavMenu() {
   const notificationsNotificationCount = notifications.filter(
     (n) => n.datestamp > notificationsLastVisitedDateTime
   ).length;
-  const { t } = useTranslation();
-  const t_nav: TFunction = (name, options) => {
-    return t("nav_menu." + name, options);
-  };
+
   return (
     <>
       <SideNavMenuGroup title={t_nav("search")} href="/guest/search" icon={MenuIcons.Search} />
@@ -73,18 +77,14 @@ function GuestNavMenu() {
         />
       </SideNavMenuGroup>
       <SideNavMenuGroup title={t_nav("more")}>
+        <SideNavMenuItem text={t_nav("insurance")} href="/guest/insurance" icon={MenuIcons.Insurance} />
         <SideNavMenuItem
           text={t_nav("claims")}
           href="/guest/claims"
           icon={MenuIcons.Claims}
           notificationCount={claimsNotificationCount}
         />
-        <SideNavMenuItem
-          text={t_nav("legal")}
-          href="https://rentality.xyz/legalmatters"
-          icon={MenuIcons.Legal}
-          target="_blank"
-        />
+        <SideNavMenuItem text={t_nav("legal")} href="/guest/legal" icon={MenuIcons.Legal} />
         <SideNavMenuItem
           text={t_nav("transaction_history")}
           href="/guest/transaction_history"
@@ -102,7 +102,7 @@ function GuestNavMenu() {
 
 export default function GuestSideNavMenu() {
   return (
-    <BaseSideNavMenu accountType={"Guest"}>
+    <BaseSideNavMenu>
       <GuestNavMenu />
     </BaseSideNavMenu>
   );
@@ -110,7 +110,7 @@ export default function GuestSideNavMenu() {
 
 export function GuestBurgerNavMenu() {
   return (
-    <BaseBurgerNavMenu accountType={"Guest"}>
+    <BaseBurgerNavMenu>
       <GuestNavMenu />
     </BaseBurgerNavMenu>
   );

@@ -1,62 +1,76 @@
 import { useEffect, useState } from "react";
-import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
+import { getIpfsURI } from "@/utils/ipfsUtils";
 import { useRentality } from "@/contexts/rentalityContext";
-import { formatPhoneNumber, getBlockchainTimeFromDate, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
-import moment from "moment";
-import { ContractKYCInfo } from "@/model/blockchain/schemas";
+import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
+import { ContractFullKYCInfoDTO } from "@/model/blockchain/schemas";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import { usePrivy } from "@privy-io/react-auth";
 
 export type ProfileSettings = {
   profilePhotoUrl: string;
-  firstName: string;
-  lastName: string;
+  nickname: string;
   phoneNumber: string;
+  tcSignature: string;
+  fullname: string;
+  documentType: string;
   drivingLicenseNumber: string;
   drivingLicenseExpire: Date | undefined;
-  tcSignature: string;
+  issueCountry: string;
+  email: string;
 };
 
 const emptyProfileSettings: ProfileSettings = {
   profilePhotoUrl: "",
-  firstName: "",
-  lastName: "",
+  nickname: "",
   phoneNumber: "",
+  tcSignature: "",
+  fullname: "",
+  documentType: "",
   drivingLicenseNumber: "",
   drivingLicenseExpire: undefined,
-  tcSignature: "",
+  issueCountry: "",
+  email: "",
 };
 
 const useProfileSettings = () => {
+  const { ready, authenticated } = usePrivy();
   const rentalityContract = useRentality();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [profileSettings, setProfileSettings] = useState<ProfileSettings>(emptyProfileSettings);
 
-  const getProfileSettings = async (rentalityContract: IRentalityContract) => {
+  const getProfileSettings = async (rentalityContract: IRentalityContract | null) => {
     try {
       if (rentalityContract == null) {
         console.error("getTrip error: contract is null");
         return;
       }
-      const myKYCInfo: ContractKYCInfo = await rentalityContract.getMyKYCInfo();
+      const myKYCInfo: ContractFullKYCInfoDTO = await rentalityContract.getMyFullKYCInfo();
 
       if (myKYCInfo == null) return;
 
       let myProfileSettings: ProfileSettings = {
-        profilePhotoUrl: getIpfsURIfromPinata(myKYCInfo.profilePhoto),
-        firstName: myKYCInfo.name,
-        lastName: myKYCInfo.surname,
-        phoneNumber: formatPhoneNumber(myKYCInfo.mobilePhoneNumber),
-        drivingLicenseNumber: myKYCInfo.licenseNumber,
+        profilePhotoUrl: getIpfsURI(myKYCInfo.kyc.profilePhoto),
+        nickname: myKYCInfo.kyc.name,
+        phoneNumber: formatPhoneNumber(myKYCInfo.kyc.mobilePhoneNumber),
+        tcSignature: myKYCInfo.kyc.TCSignature,
+        fullname: myKYCInfo.kyc.surname,
+        documentType: "driving license",
+        drivingLicenseNumber: myKYCInfo.kyc.licenseNumber,
         drivingLicenseExpire:
-          myKYCInfo.expirationDate > 0
-            ? getDateFromBlockchainTimeWithTZ(myKYCInfo.expirationDate, UTC_TIME_ZONE_ID)
+          myKYCInfo.kyc.expirationDate > 0
+            ? getDateFromBlockchainTimeWithTZ(myKYCInfo.kyc.expirationDate, UTC_TIME_ZONE_ID)
             : undefined,
-        tcSignature: myKYCInfo.TCSignature,
+        issueCountry: myKYCInfo.additionalKYC.issueCountry,
+        email: myKYCInfo.additionalKYC.email,
       };
+      console.log("useProfileSettings.getProfileSettings() return data");
       return myProfileSettings;
     } catch (e) {
-      console.error("getProfileSettings error:" + e);
+      console.error(
+        `useProfileSettings.getProfileSettings() error | privy ready: ${ready} | Privy authenticated: ${authenticated} | error:`,
+        e
+      );
     }
   };
 
@@ -67,18 +81,10 @@ const useProfileSettings = () => {
     }
 
     try {
-      const expirationDate =
-        newProfileSettings.drivingLicenseExpire !== undefined
-          ? getBlockchainTimeFromDate(moment.utc(newProfileSettings.drivingLicenseExpire.toDateString()).toDate())
-          : BigInt(0);
-
       const transaction = await rentalityContract.setKYCInfo(
-        newProfileSettings.firstName,
-        newProfileSettings.lastName,
+        newProfileSettings.nickname,
         newProfileSettings.phoneNumber,
         newProfileSettings.profilePhotoUrl,
-        newProfileSettings.drivingLicenseNumber,
-        expirationDate,
         newProfileSettings.tcSignature
       );
 
@@ -91,7 +97,7 @@ const useProfileSettings = () => {
   };
 
   useEffect(() => {
-    if (!rentalityContract) return;
+    if (rentalityContract === undefined) return;
 
     getProfileSettings(rentalityContract)
       .then((data) => {

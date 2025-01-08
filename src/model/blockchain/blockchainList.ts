@@ -1,4 +1,5 @@
 import { hasContractForChainId } from "@/abis";
+import { env } from "@/utils/env";
 import { isEmpty } from "@/utils/string";
 import { defineChain } from "viem";
 import {
@@ -75,11 +76,9 @@ export const allSupportedBlockchainList: BlockchainBaseInfo[] = [
 ];
 
 export const getExistBlockchainList = (): BlockchainBaseInfo[] => {
-  var isIncludeTestnets = process.env.NEXT_PUBLIC_INCLUDE_TESTNETS?.toLowerCase() === "true";
-  var isIncludeLocalnets = process.env.NEXT_PUBLIC_INCLUDE_LOCALNETS?.toLowerCase() === "true";
-  var isIncludeMainnets = !isEmpty(process.env.NEXT_PUBLIC_INCLUDE_MAINNETS)
-    ? process.env.NEXT_PUBLIC_INCLUDE_MAINNETS?.toLowerCase() === "true"
-    : true;
+  var isIncludeTestnets = env.NEXT_PUBLIC_INCLUDE_TESTNETS === "true";
+  var isIncludeLocalnets = env.NEXT_PUBLIC_INCLUDE_LOCALNETS === "true";
+  var isIncludeMainnets = env.NEXT_PUBLIC_INCLUDE_MAINNETS === "true";
 
   return allSupportedBlockchainList.filter(
     (bc) =>

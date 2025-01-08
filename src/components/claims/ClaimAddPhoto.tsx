@@ -41,11 +41,18 @@ function ClaimAddPhoto({
     }
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       const fileUrl = event.target?.result as string;
 
       if (currentIndex === -1) {
-        setFilesToUpload([...filesToUpload, { file: file, localUrl: fileUrl }]);
+        const fileNameExt = file.name.slice(file.name.lastIndexOf(".") + 1);
+        if (fileNameExt == "heic") {
+          const convertHeicToPng = await import("@/utils/heic2any");
+          const convertedFile = await convertHeicToPng.default(file);
+          setFilesToUpload([...filesToUpload, convertedFile]);
+        } else {
+          setFilesToUpload([...filesToUpload, { file: file, localUrl: fileUrl }]);
+        }
       } else {
         const newFilesToUpload = filesToUpload.map((value, index) => {
           return index === currentIndex ? { file: file, localUrl: fileUrl } : value;
@@ -58,7 +65,7 @@ function ClaimAddPhoto({
 
   return (
     <div className="my-2">
-      <p className="mb-1 mt-2">Up to 5 photos possible</p>
+      <p className="mb-1 mt-2 pl-3.5">Up to 5 photos possible</p>
       <div className="flex flex-row gap-4">
         {filesToUpload.map((fileToUpload, index) => {
           return (
@@ -78,7 +85,7 @@ function ClaimAddPhoto({
                   alt=""
                 />
               ) : (
-                <div className="relative h-full w-full bg-gray-200 bg-opacity-60 bg-center bg-no-repeat">
+                <div className="relative h-full w-full bg-gray-200/60 bg-center bg-no-repeat">
                   <span className="absolute bottom-4 w-full text-center">{fileToUpload.file.name}</span>
                 </div>
               )}
@@ -87,7 +94,7 @@ function ClaimAddPhoto({
           );
         })}
         {filesToUpload.length < MAX_ADD_IMAGE ? (
-          <div className="h-40 w-48 cursor-pointer overflow-hidden rounded-2xl bg-gray-200 bg-opacity-40 bg-[url('../images/add_circle_outline_white_48dp.svg')] bg-center bg-no-repeat">
+          <div className="h-40 w-48 cursor-pointer overflow-hidden rounded-2xl bg-gray-200/40 bg-[url('../images/add_circle_outline_white_48dp.svg')] bg-center bg-no-repeat">
             <div className="h-full w-full" onClick={handleImageClick} />
             <input className="hidden" type="file" accept="image/*" ref={inputRef} onChange={handleImageChange} />
           </div>

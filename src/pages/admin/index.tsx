@@ -1,13 +1,13 @@
 import RntInput from "@/components/common/rntInput";
 import RntInputWithButton from "@/components/common/rntInputWithButton";
-import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import useAdminPanelInfo from "@/hooks/admin/useAdminPanelInfo";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
 import { isEmpty } from "@/utils/string";
+import { env } from "@/utils/env";
 
 export default function Admin() {
   const {
@@ -17,12 +17,21 @@ export default function Admin() {
     setPlatformFeeInPPM,
     saveKycCommission,
     saveClaimWaitingTime,
+    grantAdminRole,
+    updateKycInfoForAddress,
+    setTestKycInfoForAddress,
+    createTestTrip,
   } = useAdminPanelInfo();
   const [ethToWithdraw, setEthToWithdraw] = useState("0");
   const [newPlatformFee, setNewPlatformFee] = useState("");
   const [newKycCommission, setNewKycCommission] = useState("");
   const [newClaimWaitingTime, setNewClaimWaitingTime] = useState("");
-  const { showError } = useRntDialogs();
+  const [addressForAdminRole, setAddressForAdminRole] = useState("0x");
+  const [addressToUpdateKyc, setAddressToUpdateKyc] = useState("0x");
+  const [addressToSetTestKycInfo, setAddressToSetTestKycInfo] = useState("0x");
+
+  const [testCarId, setTestCarId] = useState("");
+  const { showError } = useRntSnackbars();
   const { t } = useTranslation();
   const t_admin: TFunction = (name, options) => {
     return t("admin." + name, options);
@@ -40,18 +49,16 @@ export default function Admin() {
 
   if (adminContractInfo == null) {
     return (
-      <Layout>
-        <div className="flex flex-col">
-          <div className="flex flex-row items-center justify-between">
-            <div className="text-2xl">
-              <strong>{t_admin("contract_info")}</strong>
-            </div>
-          </div>
-          <div className="mt-4">
-            <label>{t_admin("contract_null")}</label>
+      <>
+        <div className="flex flex-row items-center justify-between">
+          <div className="text-2xl">
+            <strong>{t_admin("contract_info")}</strong>
           </div>
         </div>
-      </Layout>
+        <div className="mt-4">
+          <label>{t_admin("contract_null")}</label>
+        </div>
+      </>
     );
   }
 
@@ -63,7 +70,7 @@ export default function Admin() {
       showError(t_errors("less_than_zero"));
       return;
     }
-    if (value > adminContractInfo.platformBalance) {
+    if (value > adminContractInfo.paymentBalance) {
       showError(t_errors("greater_than_contract_balance"));
       return;
     }
@@ -122,89 +129,201 @@ export default function Admin() {
     }
   };
 
-  return (
-    <Layout>
-      <div className="flex flex-col gap-4">
-        <PageTitle title="Contract info" />
-        <div className="grid grid-cols-2 gap-4 text-lg">
-          <RntInput
-            id="balance"
-            label="Platform contract balance:"
-            value={adminContractInfo.platformBalance + " ETH"}
-            readOnly={true}
-          />
-          <RntInput
-            id="balance1"
-            label="Payment contract balance:"
-            value={adminContractInfo.paymentBalance + " ETH"}
-            readOnly={true}
-          />
-          <RntInput
-            className="col-span-2"
-            id="owner"
-            label={t_admin("owner_addr")}
-            value={adminContractInfo.ownerAddress}
-            readOnly={true}
-          />
-        </div>
+  const handleGrantAdminRole = async () => {
+    if (isEmpty(addressForAdminRole) || !addressForAdminRole.startsWith("0x") || addressForAdminRole.length !== 42)
+      return;
 
-        <RntInputWithButton
-          id="withdraw"
-          placeholder="0.00 ETH"
-          label={t_admin("withdraw")}
-          value={ethToWithdraw}
-          onChange={(e) => {
-            setEthToWithdraw(e.target.value);
-          }}
-          buttonText={t_admin("withdraw_button")}
-          buttonDisabled={!Number.parseFloat(ethToWithdraw)}
-          onButtonClick={() => {
-            handleWithdraw();
-          }}
+    try {
+      await grantAdminRole(addressForAdminRole);
+    } catch (e) {
+      showError(t_errors("grant_admin_role_error") + e);
+    }
+  };
+
+  async function handleUpdateKycInfo() {
+    if (isEmpty(addressToUpdateKyc) || !addressToUpdateKyc.startsWith("0x") || addressToUpdateKyc.length !== 42) return;
+
+    try {
+      await updateKycInfoForAddress(addressToUpdateKyc);
+    } catch (e) {
+      showError(t_errors("update_kyc_error") + e);
+    }
+  }
+
+  async function handleSetTestKycInfo() {
+    if (
+      isEmpty(addressToSetTestKycInfo) ||
+      !addressToSetTestKycInfo.startsWith("0x") ||
+      addressToSetTestKycInfo.length !== 42
+    )
+      return;
+
+    try {
+      await setTestKycInfoForAddress(addressToSetTestKycInfo);
+    } catch (e) {
+      showError(t_errors("set_test_kyc_info_error") + e);
+    }
+  }
+
+  async function handleCreateTestTrip() {
+    if (isEmpty(testCarId)) return;
+
+    try {
+      await createTestTrip(testCarId);
+    } catch (e) {
+      showError("handleCreateTestTrip error: " + e);
+    }
+  }
+
+  return (
+    <>
+      <PageTitle title="Contract info" />
+      <div className="grid grid-cols-2 gap-4 text-lg">
+        <RntInput
+          id="balance"
+          label="Platform contract balance:"
+          value={adminContractInfo.platformBalance + " ETH"}
+          readOnly={true}
         />
-        <RntInputWithButton
-          id="platform_commission"
-          placeholder="10%"
-          label="Set new platform commission (%):"
-          value={newPlatformFee}
-          onChange={(e) => {
-            setNewPlatformFee(e.target.value);
-          }}
-          buttonText={t("common.save")}
-          buttonDisabled={!Number.parseFloat(newPlatformFee)}
-          onButtonClick={() => {
-            handleSavePlatformCommission();
-          }}
+        <RntInput
+          id="balance1"
+          label="Payment contract balance:"
+          value={adminContractInfo.paymentBalance + " ETH"}
+          readOnly={true}
         />
-        <RntInputWithButton
-          id="kyc_commission"
-          placeholder="3"
-          label="Price pass driver license verification, $:"
-          value={newKycCommission}
-          onChange={(e) => {
-            setNewKycCommission(e.target.value);
-          }}
-          buttonText={t("common.save")}
-          buttonDisabled={!Number.parseFloat(newKycCommission)}
-          onButtonClick={() => {
-            handleSaveKycCommission();
-          }}
-        />
-        <RntInputWithButton
-          id="claim_waiting_time"
-          placeholder="3"
-          label="Claim waiting time, sec:"
-          value={newClaimWaitingTime}
-          onChange={(e) => {
-            setNewClaimWaitingTime(e.target.value);
-          }}
-          buttonText={t("common.save")}
-          buttonDisabled={!Number.parseFloat(newClaimWaitingTime)}
-          onButtonClick={() => {
-            handleSaveClaimWaitingTime();
-          }}
+        <RntInput
+          className="col-span-2"
+          id="owner"
+          label={t_admin("owner_addr")}
+          value={adminContractInfo.ownerAddress}
+          readOnly={true}
         />
       </div>
-    </Layout>
+
+      <RntInputWithButton
+        id="withdraw"
+        placeholder="0.00 ETH"
+        label={t_admin("withdraw")}
+        value={ethToWithdraw}
+        onChange={(e) => {
+          setEthToWithdraw(e.target.value);
+        }}
+        buttonText={t_admin("withdraw_button")}
+        buttonDisabled={!Number.parseFloat(ethToWithdraw)}
+        onButtonClick={() => {
+          handleWithdraw();
+        }}
+      />
+      <RntInputWithButton
+        id="platform_commission"
+        placeholder="10%"
+        label="Set new platform commission (%):"
+        value={newPlatformFee}
+        onChange={(e) => {
+          setNewPlatformFee(e.target.value);
+        }}
+        buttonText={t("common.save")}
+        buttonDisabled={!Number.parseFloat(newPlatformFee)}
+        onButtonClick={() => {
+          handleSavePlatformCommission();
+        }}
+      />
+      <RntInputWithButton
+        id="kyc_commission"
+        placeholder="3"
+        label="Price pass driver license verification, $:"
+        value={newKycCommission}
+        onChange={(e) => {
+          setNewKycCommission(e.target.value);
+        }}
+        buttonText={t("common.save")}
+        buttonDisabled={!Number.parseFloat(newKycCommission)}
+        onButtonClick={() => {
+          handleSaveKycCommission();
+        }}
+      />
+      <RntInputWithButton
+        id="claim_waiting_time"
+        placeholder="3"
+        label="Claim waiting time, sec:"
+        value={newClaimWaitingTime}
+        onChange={(e) => {
+          setNewClaimWaitingTime(e.target.value);
+        }}
+        buttonText={t("common.save")}
+        buttonDisabled={!Number.parseFloat(newClaimWaitingTime)}
+        onButtonClick={() => {
+          handleSaveClaimWaitingTime();
+        }}
+      />
+      <RntInputWithButton
+        id="grand_admin_role"
+        placeholder="0x"
+        label="Grant admin role to address"
+        value={addressForAdminRole}
+        onChange={(e) => {
+          setAddressForAdminRole(e.target.value);
+        }}
+        buttonText={"Grant"}
+        buttonDisabled={
+          isEmpty(addressForAdminRole) || !addressForAdminRole.startsWith("0x") || addressForAdminRole.length !== 42
+        }
+        onButtonClick={() => {
+          handleGrantAdminRole();
+        }}
+      />
+      <RntInputWithButton
+        id="update_kyc_for_address"
+        placeholder="0x"
+        label="Update KYC info for address (only KYC manager)"
+        value={addressToUpdateKyc}
+        onChange={(e) => {
+          setAddressToUpdateKyc(e.target.value);
+        }}
+        buttonText={"Update"}
+        buttonDisabled={
+          isEmpty(addressToUpdateKyc) || !addressToUpdateKyc.startsWith("0x") || addressToUpdateKyc.length !== 42
+        }
+        onButtonClick={() => {
+          handleUpdateKycInfo();
+        }}
+      />
+      {env.NEXT_PUBLIC_INCLUDE_TESTNETS === "true" && (
+        <RntInputWithButton
+          id="set_test_kyc_info_for_address"
+          placeholder="0x"
+          label="Set test KYC info for address (only KYC manager)"
+          value={addressToSetTestKycInfo}
+          onChange={(e) => {
+            setAddressToSetTestKycInfo(e.target.value);
+          }}
+          buttonText={"Set"}
+          buttonDisabled={
+            isEmpty(addressToSetTestKycInfo) ||
+            !addressToSetTestKycInfo.startsWith("0x") ||
+            addressToSetTestKycInfo.length !== 42
+          }
+          onButtonClick={() => {
+            handleSetTestKycInfo();
+          }}
+        />
+      )}
+      {env.NEXT_PUBLIC_INCLUDE_TESTNETS === "true" && (
+        <RntInputWithButton
+          id="create_test_trip_request"
+          placeholder="car id"
+          label="Create 3 days trip request for car (with -1% price) "
+          value={testCarId}
+          onChange={(e) => {
+            setTestCarId(e.target.value);
+          }}
+          buttonText={"Create"}
+          buttonDisabled={isEmpty(testCarId)}
+          onButtonClick={() => {
+            handleCreateTestTrip();
+          }}
+        />
+      )}
+    </>
   );
 }

@@ -1,12 +1,12 @@
 import RntPlaceAutocompleteInput from "./rntPlaceAutocompleteInput";
-import { useGoogleMapsContext } from "@/contexts/googleMapsContext";
 import { RntPlaceAutocompleteInputProps } from "./rntPlaceAutocompleteInput";
 import RntInput from "./rntInput";
+import { useApiIsLoaded } from "@vis.gl/react-google-maps";
 
 export default function RntPlaceAutoComplete(props: RntPlaceAutocompleteInputProps) {
-  const { googleMapsAPIIsLoaded } = useGoogleMapsContext();
+  const apiIsLoaded = useApiIsLoaded();
 
-  if (googleMapsAPIIsLoaded) return <RntPlaceAutocompleteInput {...props} />;
+  if (apiIsLoaded) return <RntPlaceAutocompleteInput {...props} />;
 
   const { initValue, includeStreetAddress, onAddressChange, ...inputProps } = props;
   return <RntInput {...inputProps} />;

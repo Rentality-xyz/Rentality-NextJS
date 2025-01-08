@@ -8,8 +8,8 @@ import { mapTripDTOtoTripInfo } from "@/model/utils/TripDTOtoTripInfo";
 
 const useGuestTrips = () => {
   const rentalityContract = useRentality();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
-  const [updateRequired, setUpdateRequired] = useState<Boolean>(true);
+  const [isLoadingTrips, setIsLoadingTrips] = useState<boolean>(true);
+  const [updateRequired, setUpdateRequired] = useState<boolean>(true);
   const [tripsBooked, setTripsBooked] = useState<TripInfo[]>([]);
   const [tripsHistory, setTripsHistory] = useState<TripInfo[]>([]);
 
@@ -193,7 +193,7 @@ const useGuestTrips = () => {
           console.error("getTrips error: contract is null");
           return;
         }
-        const tripsBookedView: ContractTripDTO[] = await rentalityContract.getTripsAsGuest();
+        const tripsBookedView: ContractTripDTO[] = await rentalityContract.getTripsAs(false);
 
         const tripsBookedData =
           tripsBookedView.length === 0
@@ -226,7 +226,7 @@ const useGuestTrips = () => {
     if (!rentalityContract) return;
 
     setUpdateRequired(false);
-    setIsLoading(true);
+    setIsLoadingTrips(true);
 
     getTrips(rentalityContract)
       .then((data) => {
@@ -244,12 +244,12 @@ const useGuestTrips = () => {
             })
             .reverse() ?? []
         );
-        setIsLoading(false);
+        setIsLoadingTrips(false);
       })
-      .catch(() => setIsLoading(false));
+      .catch(() => setIsLoadingTrips(false));
   }, [updateRequired, rentalityContract]);
 
-  return { isLoading, tripsBooked, tripsHistory, updateData, confirmCarDetails } as const;
+  return { isLoadingTrips, tripsBooked, tripsHistory, updateData, confirmCarDetails } as const;
 };
 
 export default useGuestTrips;

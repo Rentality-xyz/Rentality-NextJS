@@ -2,6 +2,7 @@ import { isEmpty } from "@/utils/string";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "./EngineType";
 import { emptyLocationInfo, LocationInfo } from "./LocationInfo";
 import { TRANSMISSION_MANUAL_STRING, TransmissionType } from "./Transmission";
+import { PlatformCarImage } from "./FileToUpload";
 
 export const UNLIMITED_MILES_VALUE_TEXT = "Unlimited";
 export const UNLIMITED_MILES_VALUE = 999_999_999;
@@ -9,7 +10,7 @@ export const UNLIMITED_MILES_VALUE = 999_999_999;
 export type HostCarInfo = {
   carId: number;
   ownerAddress: string;
-  image: string;
+  images: PlatformCarImage[];
   vinNumber: string;
   brand: string;
   model: string;
@@ -41,7 +42,11 @@ export type HostCarInfo = {
   wheelDrive: string;
   bodyType: string;
   trunkSize: string;
-  isInsuranceIncluded: boolean;
+  isGuestInsuranceRequired: boolean;
+  insurancePerDayPriceInUsd: number;
+  isCarMetadataEdited: boolean;
+
+  metadataUrl: string;
 };
 export type CreateInvestCar = {
   hostCarInfo: HostCarInfo;
@@ -57,7 +62,7 @@ export const emptyHostCarInfo: HostCarInfo = {
   brand: "",
   model: "",
   releaseYear: 0,
-  image: "",
+  images: [],
   name: "",
   licensePlate: "",
   licenseState: "",
@@ -80,7 +85,10 @@ export const emptyHostCarInfo: HostCarInfo = {
   engineTypeText: ENGINE_TYPE_PETROL_STRING,
   fullBatteryChargePrice: 0,
   timeBufferBetweenTripsInMin: 0,
-  isInsuranceIncluded: false,
+  isGuestInsuranceRequired: false,
+  insurancePerDayPriceInUsd: 0,
+  isCarMetadataEdited: false,
+  metadataUrl: "",
 };
 
 export const verifyCar = (carInfoFormParams: HostCarInfo) => {

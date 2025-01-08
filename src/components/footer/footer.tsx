@@ -1,18 +1,44 @@
 import Image from "next/image";
+// @ts-ignore
 import logo from "../../images/logo.svg";
+// @ts-ignore
 import bgCar from "../../images/red-generic-sport-ca.png";
-import linkedin from "../../images/ic-linkedin-50.png";
-import twitter from "../../images/ic_twitter.svg";
-import discord from "../../images/ic-discord-50.png";
-import email from "../../images/ic-email-50.png";
-import telegram from "../../images/ic_telegram.svg";
-import mirror from "../../images/ic_mirror_logo.svg";
+// @ts-ignore
+import linkedin from "../../images/social/linkedin-logo.svg";
+// @ts-ignore
+import twitter from "../../images/social/x-logo.svg";
+// @ts-ignore
+import discord from "../../images/social/discord-logo.svg";
+// @ts-ignore
+import telegram from "../../images/social/telegram-logo.svg";
+// @ts-ignore
+import mirror from "../../images/social/mirror-logo.svg";
+// @ts-ignore
+import instagram from "../../images/social/instagram-logo.svg";
+// @ts-ignore
+import medium from "../../images/social/medium-logo.svg";
+// @ts-ignore
+import warpcast from "../../images/social/warpcast-logo.svg";
 import Link from "next/link";
 import moment from "moment";
+import {
+  LEGAL_CANCELLATION_NAME,
+  LEGAL_PRIVACY_NAME,
+  LEGAL_PROHIBITEDUSES_NAME,
+  LEGAL_TERMS_NAME,
+} from "@/utils/constants";
+import useUserMode, { isHost } from "@/hooks/useUserMode";
+import React, { forwardRef } from "react";
 
-export default function Footer() {
+const Footer = forwardRef<HTMLDivElement>((props, ref) => {
+  const { userMode } = useUserMode();
+  const pathnameUserMode = isHost(userMode) ? "/host" : "/guest";
+
   return (
-    <footer className="relative h-[500px] bg-[url('../images/bg-gradient-flip.jpg')] bg-cover bg-scroll bg-center bg-no-repeat min-[560px]:h-[450px] lg:h-[290px]">
+    <footer
+      ref={ref}
+      className="relative h-[500px] bg-[url('../images/bg-gradient-flip.jpg')] bg-cover bg-scroll bg-center bg-no-repeat min-[560px]:h-[450px] lg:h-[290px]"
+    >
       <Image src={bgCar} alt="" className="absolute bottom-0 left-0" />
       <div
         id={"footer-content"}
@@ -23,7 +49,7 @@ export default function Footer() {
           className="z-0 flex h-1/3 w-max flex-col pt-[30px] max-lg:mx-auto sm:h-full lg:ml-[540px] lg:pt-[40px] min-[1536px]:ml-[540px] min-[1720px]:ml-auto"
         >
           <Link
-            href="https://rentality.xyz/legalmatters"
+            href={`${pathnameUserMode}/legal?tab=${LEGAL_TERMS_NAME}`}
             target="_blank"
             className="cursor-pointer pb-1 font-['Montserrat',Arial,sans-serif] text-xl font-semibold hover:underline"
           >
@@ -31,7 +57,7 @@ export default function Footer() {
           </Link>
 
           <Link
-            href="https://rentality.xyz/legalmatters/terms"
+            href={`${pathnameUserMode}/legal?tab=${LEGAL_TERMS_NAME}`}
             target="_blank"
             className="cursor-pointer pb-1.5 font-['Montserrat',Arial,sans-serif] text-base hover:underline"
           >
@@ -39,7 +65,7 @@ export default function Footer() {
           </Link>
 
           <Link
-            href="https://rentality.xyz/legalmatters/cancellation"
+            href={`${pathnameUserMode}/legal?tab=${LEGAL_CANCELLATION_NAME}`}
             target="_blank"
             className="cursor-pointer pb-1.5 font-['Montserrat',Arial,sans-serif] text-base hover:underline"
           >
@@ -47,7 +73,7 @@ export default function Footer() {
           </Link>
 
           <Link
-            href="https://rentality.xyz/legalmatters/prohibiteduses"
+            href={`${pathnameUserMode}/legal?tab=${LEGAL_PROHIBITEDUSES_NAME}`}
             target="_blank"
             className="cursor-pointer pb-1.5 font-['Montserrat',Arial,sans-serif] text-base hover:underline"
           >
@@ -55,7 +81,7 @@ export default function Footer() {
           </Link>
 
           <Link
-            href="https://rentality.xyz/legalmatters/privacy"
+            href={`${pathnameUserMode}/legal?tab=${LEGAL_PRIVACY_NAME}`}
             target="_blank"
             className="cursor-pointer pb-1.5 font-['Montserrat',Arial,sans-serif] text-base hover:underline"
           >
@@ -74,43 +100,58 @@ export default function Footer() {
           <div>
             <a
               href="mailto:info@rentality.xyz"
-              className="pt-4 font-['Montserrat',Arial,sans-serif] text-base font-normal max-lg:hidden lg:pt-9"
+              className="pt-4 font-['Montserrat',Arial,sans-serif] text-base font-normal lg:pt-9"
             >
               <div>info@rentality.xyz</div>
             </a>
 
-            <div className="mt-1.5 flex w-[232px]">
-              <a
-                href="https://www.linkedin.com/company/rentalitycorp/?viewAsMember=true"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Image src={linkedin} alt="" className="mt-0.5 w-[30px]" />
-              </a>
+            <div className="mt-1.5 flex flex-col">
+              <div className="flex">
+                <a
+                  href="https://www.linkedin.com/company/rentalitycorp/?viewAsMember=true"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Image src={linkedin} alt="" className="w-[30px]" />
+                </a>
 
-              <a href="https://twitter.com/Rentality_Info" target="_blank" rel="noopener noreferrer">
-                <Image src={twitter} alt="" className="ml-3 mt-1.5 w-[22px]" />
-              </a>
+                <a href="https://twitter.com/Rentality_Info" target="_blank" rel="noopener noreferrer">
+                  <Image src={twitter} alt="" className="ml-1.5 w-[30px]" />
+                </a>
 
-              <a href="https://discord.gg/rentality" target="_blank" rel="noopener noreferrer">
-                <Image src={discord} alt="" className="ml-3 mt-0.5 w-[30px]" />
-              </a>
+                <a href="https://discord.gg/rentality" target="_blank" rel="noopener noreferrer">
+                  <Image src={discord} alt="" className="ml-1.5 w-[30px]" />
+                </a>
 
-              <a href="mailto:info@rentality.xyz" className="lg:hidden">
-                <Image src={email} alt="" className="ml-3 mt-0.5 w-[30px]" />
-              </a>
+                {/*<a href="mailto:info@rentality.xyz" className="lg:hidden">*/}
+                {/*  <Image src={email} alt="" className="ml-1.5 w-[30px]" />*/}
+                {/*</a>*/}
 
-              <a href="https://t.me/rentality_xyz" target="_blank" rel="noopener noreferrer">
-                <Image src={telegram} alt="" className="ml-3 mt-0.5 w-[30px]" />
-              </a>
+                <a href="https://t.me/rentality_xyz" target="_blank" rel="noopener noreferrer">
+                  <Image src={telegram} alt="" className="ml-1.5 w-[30px]" />
+                </a>
+              </div>
+              <div className="flex">
+                <a
+                  href="https://mirror.xyz/0x263660F0ab0014e956d42f85DccD918bBa2Df587"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Image src={mirror} alt="" className="w-[30px]" />
+                </a>
 
-              <a
-                href="https://mirror.xyz/0x263660F0ab0014e956d42f85DccD918bBa2Df587"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Image src={mirror} alt="" className="ml-1 w-[36px]" />
-              </a>
+                <a href="https://warpcast.com/rentality" target="_blank" rel="noopener noreferrer">
+                  <Image src={warpcast} alt="" className="ml-1.5 w-[30px]" />
+                </a>
+
+                <a href="https://www.instagram.com/rentality_/" target="_blank" rel="noopener noreferrer">
+                  <Image src={instagram} alt="" className="ml-1.5 w-[30px]" />
+                </a>
+
+                <a href="https://medium.com/@rentality" target="_blank" rel="noopener noreferrer">
+                  <Image src={medium} alt="" className="ml-1.5 w-[30px]" />
+                </a>
+              </div>
             </div>
             <div className="z-0 mt-8 sm:hidden">
               UIcons by <a href="https://www.flaticon.com/uicons">Flaticon</a>
@@ -121,4 +162,7 @@ export default function Footer() {
       </div>
     </footer>
   );
-}
+});
+
+Footer.displayName = "Footer";
+export default Footer;

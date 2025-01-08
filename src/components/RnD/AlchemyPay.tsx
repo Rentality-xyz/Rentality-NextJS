@@ -2,6 +2,8 @@ import React, { memo } from "react";
 import RntButton from "../common/rntButton";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import crypto from "crypto";
+import { DevicePlatform, getDevicePlatform } from "@/utils/devicePlatform";
+import { useTranslation } from "react-i18next";
 
 function encrypt(plainText: string, secretKeyData: string) {
   try {
@@ -31,17 +33,25 @@ function buildLink(address: string): string {
 }
 
 function AlchemyPay() {
+  const { t } = useTranslation();
   const ethereumInfo = useEthereum();
+  const devicePlatform = getDevicePlatform();
+  const isIOS = devicePlatform === DevicePlatform.iOS;
 
   return (
-    <div className="flex items-center gap-4">
-      <span className="text-lg">Coming soon Alchemy Pay service: </span>
-      <RntButton
-        className="w-44"
-        disabled={true} /* onClick={() => window.open(buildLink(ethereumInfo?.walletAddress ?? ""))} */
-      >
-        Buy Crypto
-      </RntButton>
+    <div className="flex items-center gap-4 pl-[18px]">
+      <span className="text-lg">
+        {isIOS ? t("profile.soon_alchemy_pay_service") : t("profile.soon_alchemy_pay_service") + ":"}
+      </span>
+      {!isIOS && (
+        <RntButton
+          className="w-44"
+          disabled={true} // Пока что кнопка отключена
+          /* onClick={() => window.open(buildLink(ethereumInfo?.walletAddress ?? ""))} */
+        >
+          Buy Crypto
+        </RntButton>
+      )}
     </div>
   );
 }

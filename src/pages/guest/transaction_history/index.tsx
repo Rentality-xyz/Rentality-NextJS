@@ -1,26 +1,18 @@
-import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import TransactionHistoryContent from "@/components/transaction_history/transactionHistoryContent";
-import useTransactionHistory from "@/hooks/transaction_history/useTransactionHistory";
 import { useTranslation } from "react-i18next";
+import React from "react";
+import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 
 export default function TransactionHistory() {
-  const [isLoading, transactions] = useTransactionHistory(false);
   const { t } = useTranslation();
 
   return (
-    <Layout>
-      <div className="flex flex-col">
-        <PageTitle title={t("transaction_history.title")} />
-        {/*TODO прибрати !*/}
-        {!isLoading ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-            {t("common.info.loading")}
-          </div>
-        ) : (
-          <TransactionHistoryContent isHost={false} transactions={transactions} t={t} />
-        )}
-      </div>
-    </Layout>
+    <>
+      <PageTitle title={t("transaction_history.title")} />
+      <CheckingLoadingAuth>
+        <TransactionHistoryContent isHost={false} />
+      </CheckingLoadingAuth>
+    </>
   );
 }

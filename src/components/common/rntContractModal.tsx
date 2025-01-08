@@ -7,6 +7,13 @@ import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { dateFormatLongMonthYearDateTime, dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { getMilesIncludedPerDayText, isUnlimitedMiles } from "@/model/HostCarInfo";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import {
+  LEGAL_CANCELLATION_NAME,
+  LEGAL_PRIVACY_NAME,
+  LEGAL_PROHIBITEDUSES_NAME,
+  LEGAL_TERMS_NAME,
+} from "@/utils/constants";
+import useUserMode, { isHost } from "@/hooks/useUserMode";
 
 export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint; tripInfo: TripInfo }) {
   const [open, setOpen] = React.useState(false);
@@ -18,6 +25,9 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
   const handleClose = () => {
     setOpen(false);
   };
+
+  const { userMode } = useUserMode();
+  const pathnameUserMode = isHost(userMode) ? "/host" : "/guest";
 
   return (
     <React.Fragment>
@@ -50,7 +60,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
             <div className="m-4 flex flex-col">
               <div className="m-4 flex flex-col">
                 <h1
-                  className={`mb-4 text-4xl ${tripInfo.isTripCanceled || tripInfo.isTripRejected ? "text-[#FF0000]" : ""}`}
+                  className={`mb-4 text-4xl ${tripInfo.isTripCanceled || tripInfo.isTripRejected ? "text-rentality-alert-text" : ""}`}
                 >
                   Car sharing agreement #{tripId.toString()}{" "}
                   {tripInfo.isTripCanceled
@@ -77,29 +87,41 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                     <ol className="ms-3 list-inside list-decimal [counter-reset:section]">
                       <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
                         &nbsp;
-                        <a className="underline" href="https://rentality.xyz/legalmatters/terms" target="_blank">
+                        <a
+                          className="underline"
+                          href={`${pathnameUserMode}/legal?tab=${LEGAL_TERMS_NAME}`}
+                          target="_blank"
+                        >
                           Terms of service
                         </a>
                         &nbsp;
-                        <a className="underline" href="https://rentality.xyz/legalmatters/terms" target="_blank">
-                          (published at https://rentality.xyz/legalmatters/terms)
-                        </a>
-                      </li>
-                      <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
-                        &nbsp;
-                        <a className="underline" href="https://rentality.xyz/legalmatters/cancellation" target="_blank">
-                          Cancellation policy
-                        </a>
-                        &nbsp;
-                        <a className="underline" href="https://rentality.xyz/legalmatters/cancellation" target="_blank">
-                          (published at https://rentality.xyz/legalmatters/cancellation)
+                        <a className="underline" href={`/host/legal?tab=${LEGAL_TERMS_NAME}`} target="_blank">
+                          (published at https://app.rentality.xyz/legalmatters/terms)
                         </a>
                       </li>
                       <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
                         &nbsp;
                         <a
                           className="underline"
-                          href="https://rentality.xyz/legalmatters/prohibiteduses"
+                          href={`${pathnameUserMode}/legal?tab=${LEGAL_CANCELLATION_NAME}`}
+                          target="_blank"
+                        >
+                          Cancellation policy
+                        </a>
+                        &nbsp;
+                        <a
+                          className="underline"
+                          href={`${pathnameUserMode}/legal?tab=${LEGAL_CANCELLATION_NAME}`}
+                          target="_blank"
+                        >
+                          (published at https://app.rentality.xyz/legalmatters/cancellation)
+                        </a>
+                      </li>
+                      <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
+                        &nbsp;
+                        <a
+                          className="underline"
+                          href={`${pathnameUserMode}/legal?tab=${LEGAL_PROHIBITEDUSES_NAME}`}
                           target="_blank"
                         >
                           Prohibited Uses
@@ -107,20 +129,28 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                         &nbsp;
                         <a
                           className="underline"
-                          href="https://rentality.xyz/legalmatters/prohibiteduses"
+                          href={`${pathnameUserMode}/legal?tab=${LEGAL_PROHIBITEDUSES_NAME}`}
                           target="_blank"
                         >
-                          (published at https://rentality.xyz/legalmatters/prohibiteduses)
+                          (published at https://app.rentality.xyz/legalmatters/prohibiteduses)
                         </a>
                       </li>
                       <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
                         &nbsp;
-                        <a className="underline" href="https://rentality.xyz/legalmatters/privacy" target="_blank">
+                        <a
+                          className="underline"
+                          href={`${pathnameUserMode}/legal?tab=${LEGAL_PRIVACY_NAME}`}
+                          target="_blank"
+                        >
                           Privacy policy
                         </a>
                         &nbsp;
-                        <a className="underline" href="https://rentality.xyz/legalmatters/privacy" target="_blank">
-                          (published at https://rentality.xyz/legalmattersprivacy)
+                        <a
+                          className="underline"
+                          href={`${pathnameUserMode}/legal?tab=${LEGAL_PRIVACY_NAME}`}
+                          target="_blank"
+                        >
+                          (published at https://app.rentality.xyz/legalmattersprivacy)
                         </a>
                       </li>
                     </ol>
@@ -169,7 +199,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                 <div className="text-xl">TRIP SUMMARY</div>
                 <div className="">Reservation ID {tripInfo.tripId}</div>
                 <div className="">
-                  Booked ON: {dateFormatLongMonthYearDateTime(tripInfo.approvedDateTime, tripInfo.timeZoneId)}
+                  Booked ON: {dateFormatLongMonthYearDateTime(tripInfo.createdDateTime, tripInfo.timeZoneId)}
                 </div>
                 <div className="">Trip days: {moment(tripInfo.tripEnd).diff(tripInfo.tripStart, "days")}</div>
                 <div className="">
@@ -236,6 +266,13 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                   {tripInfo.pricePer10PercentFuel / tripInfo.currencyRate} (USD{" "}
                   {displayMoneyWith2Digits(tripInfo.pricePer10PercentFuel)})
                 </div>
+                {tripInfo.insuranceTotalInUsd > 0 && (
+                  <div className="">
+                    Insurance fee ${displayMoneyWith2Digits(tripInfo.insurancePerDayInUsd)}/day: ETH{" "}
+                    {tripInfo.insuranceTotalInUsd / tripInfo.currencyRate} (USD{" "}
+                    {displayMoneyWith2Digits(tripInfo.insuranceTotalInUsd)})
+                  </div>
+                )}
               </div>
               <div className="m-4 flex flex-col">
                 The person identified as “Guest” and the person identified as “Host” on the Basic Agreement Information

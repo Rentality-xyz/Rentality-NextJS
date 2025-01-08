@@ -2,73 +2,56 @@ import CarSearchItem from "@/components/guest/carSearchItem";
 import useSearchCars from "@/hooks/guest/useSearchCars";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
-import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
-import { SearchCarRequest, emptySearchCarRequest } from "@/model/SearchCarRequest";
 import { SearchCarInfo } from "@/model/SearchCarsResult";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { isEmpty } from "@/utils/string";
 import { DialogActions } from "@/utils/dialogActions";
-import Layout from "@/components/layout/layout";
-import { GoogleMapsProvider } from "@/contexts/googleMapsContext";
 import CarSearchMap from "@/components/guest/carMap/carSearchMap";
 import { useTranslation } from "react-i18next";
-import { TFunction } from "@/utils/i18n";
-import moment from "moment";
 import Image from "next/image";
-import mapArrow from "@/images/arrUpBtn.png";
-import FilterSlidingPanel from "@/components/search/filterSlidingPanel";
+import icMapMobile from "@/images/ic_map_mobile.png";
 import SearchAndFilters from "@/components/search/searchAndFilters";
 import { useAuth } from "@/contexts/auth/authContext";
-
-const defaultDateFrom = moment({ hour: 9 }).add(1, "day").toDate();
-const defaultDateTo = moment({ hour: 9 }).add(4, "day").toDate();
-
-const customEmptySearchCarRequest: SearchCarRequest = {
-  ...emptySearchCarRequest,
-  searchLocation: {
-    ...emptySearchCarRequest.searchLocation,
-    city: "Miami",
-    state: "Florida",
-    country: "US",
-    latitude: 25.782407,
-    longitude: -80.229458,
-  },
-  dateFrom: dateToHtmlDateTimeFormat(defaultDateFrom),
-  dateTo: dateToHtmlDateTimeFormat(defaultDateTo),
-};
-
-type AdvancedMarkerElement = google.maps.marker.AdvancedMarkerElement;
+import useCarSearchParams, { createQueryString } from "@/hooks/guest/useCarSearchParams";
+import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
+import useCreateTripRequest from "@/hooks/guest/useCreateTripRequest";
+import { env } from "@/utils/env";
+import { APIProvider } from "@vis.gl/react-google-maps";
+import mapNotFoundCars from "@/images/map_not_found_cars.png";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import Loading from "@/components/common/Loading";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function Search() {
-  const [isLoading, searchAvailableCars, searchResult, sortSearchResult, createTripRequest, setSearchResult] =
-    useSearchCars(customEmptySearchCarRequest);
-  const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(customEmptySearchCarRequest);
-  const [requestSending, setRequestSending] = useState<boolean>(false);
-  const [openFilterPanel, setOpenFilterPanel] = useState(false);
-  const { showInfo, showError, showDialog, hideDialogs } = useRntDialogs();
-  const [sortBy, setSortBy] = useState<string | undefined>(undefined);
+  const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
 
+  const [isLoading, searchAvailableCars, searchResult, sortSearchResult, setSearchResult] = useSearchCars();
+  const { createTripRequest } = useCreateTripRequest();
+
+  const [requestSending, setRequestSending] = useState<boolean>(false);
+  const [sortBy, setSortBy] = useState<string | undefined>(undefined);
+  const { showDialog, hideDialogs } = useRntDialogs();
+  const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const userInfo = useUserInfo();
   const router = useRouter();
-  const { isAuthenticated, login } = useAuth();
-
+  const { isLoadingAuth, isAuthenticated, login } = useAuth();
+  const ethereumInfo = useEthereum();
   const { t } = useTranslation();
 
-  const t_page: TFunction = (path, options) => {
-    return t("search_page." + path, options);
-  };
-  const t_errors: TFunction = (name, options) => {
-    return t_page("errors." + name, options);
+  const handleSearchClick = async (request: SearchCarRequest) => {
+    updateSearchParams(request, searchCarFilters);
+    searchAvailableCars(request, searchCarFilters);
   };
 
-  const handleSearchClick = async () => {
-    const result = await searchAvailableCars(searchCarRequest);
-
-    if (result) {
-      setSortBy(undefined);
-    }
+  const handleFilterApply = async (filters: SearchCarFilters) => {
+    updateSearchParams(searchCarRequest, filters);
+    searchAvailableCars(searchCarRequest, filters);
   };
+
+  useEffect(() => {
+    searchAvailableCars(searchCarRequest, searchCarFilters);
+  }, []);
 
   const handleRentCarRequest = async (carInfo: SearchCarInfo) => {
     if (!isAuthenticated) {
@@ -78,86 +61,88 @@ export default function Search() {
             hideDialogs();
             login();
           })}
-          {DialogActions.Cancel(hideDialogs)}
+          {/*{DialogActions.Cancel(hideDialogs)}*/}
         </>
       );
       showDialog(t("common.info.connect_wallet"), action);
       return;
     }
 
-    try {
-      if (isEmpty(userInfo?.drivingLicense)) {
-        showError(t_errors("user_info"));
-        await router.push("/guest/profile");
-        return;
-      }
+    if (isEmpty(searchResult.searchCarRequest.dateFromInDateTimeStringFormat)) {
+      showError(t("search_page.errors.date_from"));
+      return;
+    }
+    if (isEmpty(searchResult.searchCarRequest.dateToInDateTimeStringFormat)) {
+      showError(t("search_page.errors.date_to"));
+      return;
+    }
 
-      if (searchResult.searchCarRequest.dateFrom == null) {
-        showError(t_errors("date_from"));
-        return;
-      }
-      if (searchResult.searchCarRequest.dateTo == null) {
-        showError(t_errors("date_to"));
-        return;
-      }
+    if (carInfo.tripDays < 0) {
+      showError(t("search_page.errors.date_eq"));
+      return;
+    }
+    if (carInfo.ownerAddress === userInfo?.address) {
+      showError(t("search_page.errors.own_car"));
+      return;
+    }
 
-      if (carInfo.tripDays < 0) {
-        showError(t_errors("date_eq"));
-        return;
-      }
-      if (carInfo.ownerAddress === userInfo?.address) {
-        showError(t_errors("own_car"));
-        return;
-      }
+    setRequestSending(true);
 
-      setRequestSending(true);
+    showInfo(t("common.info.sign"));
 
-      showInfo(t("common.info.sign"));
-      const result = await createTripRequest(carInfo.carId, searchResult.searchCarRequest, carInfo.timeZoneId);
+    const result = await createTripRequest(carInfo.carId, searchResult.searchCarRequest, carInfo.timeZoneId);
 
-      setRequestSending(false);
-      hideDialogs();
-      if (!result) {
-        showError(t_errors("request"));
-        return;
-      }
+    hideDialogs();
+    hideSnackbars();
+    setRequestSending(false);
+
+    if (result.ok) {
       router.push("/guest/trips");
-    } catch (e) {
-      showError(t_errors("request"));
-      console.error("sendRentCarRequest error:" + e);
-
-      setRequestSending(false);
+    } else {
+      if (result.error === "NOT_ENOUGH_FUNDS") {
+        showError(t("common.add_fund_to_wallet"));
+      } else {
+        showError(t("search_page.errors.request"));
+      }
     }
   };
 
+  function handleShowRequestDetails(carInfo: SearchCarInfo) {
+    router.push(`/guest/createTrip?${createQueryString(searchCarRequest, searchCarFilters, carInfo.carId)}`);
+  }
+
   const setHighlightedCar = useCallback(
     (carID: number) => {
-      const newSearchResult = { ...searchResult };
+      setSearchResult((prev) => {
+        const newSearchResult = { ...prev };
 
-      newSearchResult.carInfos.forEach((item: SearchCarInfo) => {
-        item.highlighted = item.carId == carID;
+        newSearchResult.carInfos.forEach((item: SearchCarInfo) => {
+          item.highlighted = item.carId == carID;
+        });
+        return newSearchResult;
       });
-
-      setSearchResult(newSearchResult);
     },
-    [searchResult]
+    [setSearchResult]
   );
 
-  const sortCars = useCallback(() => {
-    const newSearchResult = { ...searchResult };
+  const sortCars = useCallback(
+    (selectedCarId: number) => {
+      setSearchResult((prev) => {
+        const newSearchResult = { ...prev };
 
-    newSearchResult.carInfos.sort((a: SearchCarInfo, b: SearchCarInfo) => {
-      if (a.highlighted && !b.highlighted) {
-        return -1;
-      } else if (!a.highlighted && b.highlighted) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
+        const selectedCarIndex = newSearchResult.carInfos.findIndex((car) => car.carId === selectedCarId);
 
-    setSearchResult(newSearchResult);
-  }, [searchResult]);
+        if (selectedCarIndex !== -1) {
+          setTimeout(() => {
+            document.getElementById(`car-${selectedCarId}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+          }, 0);
+        }
+
+        return newSearchResult;
+      });
+    },
+    [setSearchResult]
+  );
 
   useEffect(() => {
     if (sortBy === undefined) return;
@@ -170,94 +155,89 @@ export default function Search() {
     setIsExpanded(!isExpanded);
   };
 
-  return (
-    <Layout>
-      <GoogleMapsProvider libraries={["maps", "marker", "places"]} language="en">
-        <div className="flex flex-col" title="Search">
-          <SearchAndFilters
-            searchCarRequest={searchCarRequest}
-            setSearchCarRequest={setSearchCarRequest}
-            sortBy={sortBy}
-            setSortBy={setSortBy}
-            handleSearchClick={handleSearchClick}
-            setOpenFilterPanel={setOpenFilterPanel}
-            t={t}
-          />
-          <div className="mb-8 flex flex-row"></div>
+  if (isLoadingAuth || (isAuthenticated && ethereumInfo === undefined)) {
+    return <Loading />;
+  }
 
-          <div className="flex gap-3 max-xl:flex-col-reverse">
-            <div className="my-4 flex flex-col gap-4 xl:w-8/12 2xl:w-7/12 fullHD:w-6/12">
-              {isLoading ? (
-                <div className="pl-[18px]">Loading...</div>
-              ) : (
-                <>
-                  <div className="text-l pl-[18px] font-bold">
-                    {searchResult?.carInfos?.length ?? 0} {t_page("info.cars_available")}
-                  </div>
-                  {searchResult?.carInfos?.length > 0 ? (
-                    searchResult.carInfos.map((value: SearchCarInfo) => {
-                      return (
-                        <CarSearchItem
-                          key={value.carId}
-                          searchInfo={value}
-                          handleRentCarRequest={handleRentCarRequest}
-                          disableButton={requestSending}
-                          isSelected={value.highlighted}
-                          setSelected={setHighlightedCar}
-                          t={t_page}
-                        />
-                      );
-                    })
-                  ) : (
-                    <div className="flex max-w-screen-xl flex-wrap justify-between pl-[18px] text-center xl:h-full">
-                      {t_page("info.no_cars")}
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-            <div className="my-4 max-xl:mb-8 xl:w-4/12 2xl:w-5/12 fullHD:w-6/12">
-              <CarSearchMap
-                searchResult={searchResult}
-                setSelected={(carID: number) => {
-                  setHighlightedCar(carID);
-                  sortCars();
-                }}
-                isExpanded={isExpanded}
-                defaultCenter={
-                  searchCarRequest.searchLocation.latitude &&
-                  searchCarRequest.searchLocation.longitude &&
-                  searchCarRequest.searchLocation.latitude > 0 &&
-                  searchCarRequest.searchLocation.longitude > 0
-                    ? new google.maps.LatLng(
-                        searchCarRequest.searchLocation.latitude,
-                        searchCarRequest.searchLocation.longitude
-                      )
-                    : null
-                }
-              />
-              <div
-                className="absolute left-1/2 flex h-[48px] w-[48px] -translate-x-1/2 transform cursor-pointer items-center justify-center bg-[url('../images/ellipseUpBtn.png')] bg-cover bg-center bg-no-repeat xl:hidden"
-                onClick={handleArrowClick}
-              >
-                <Image
-                  src={mapArrow}
-                  alt=""
-                  className={`h-[22px] w-[32px] ${isExpanded ? "rotate-0 transform" : "rotate-180 transform"}`}
-                />
+  return (
+    <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["maps", "marker", "places"]} language="en">
+      <div className="flex flex-col" title="Search">
+        <SearchAndFilters
+          initValue={searchCarRequest}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          onSearchClick={handleSearchClick}
+          onFilterApply={handleFilterApply}
+          filterLimits={searchResult.filterLimits}
+          t={t}
+        />
+        <div className="flex gap-3 max-xl:flex-col-reverse">
+          <div className="my-4 flex flex-col gap-4 xl:w-8/12 2xl:w-7/12 fullHD:w-6/12">
+            <RntSuspense
+              isLoading={isLoading || isLoadingAuth || (isAuthenticated && ethereumInfo === undefined)}
+              fallback={<div className="pl-[18px]">{t("common.info.loading")}</div>}
+            >
+              <div className="text-l pl-[18px] font-bold">
+                {searchResult?.carInfos?.length ?? 0} {t("search_page.info.cars_available")}
               </div>
+              {searchResult?.carInfos?.length > 0 ? (
+                searchResult.carInfos.map((value: SearchCarInfo) => {
+                  return (
+                    <div key={value.carId} id={`car-${value.carId}`}>
+                      <CarSearchItem
+                        key={value.carId}
+                        searchInfo={value}
+                        handleRentCarRequest={handleRentCarRequest}
+                        disableButton={requestSending}
+                        isSelected={value.highlighted}
+                        setSelected={setHighlightedCar}
+                        handleShowRequestDetails={handleShowRequestDetails}
+                      />
+                    </div>
+                  );
+                })
+              ) : (
+                <div>
+                  <div className="flex max-w-screen-xl flex-col border border-gray-600 p-2 text-center font-['Montserrat',Arial,sans-serif] text-white">
+                    {/*{t_page("info.no_cars")}*/}
+                    <p className="text-3xl">{t("search_page.info.launched_miami")}</p>
+                    <p className="mt-4 text-2xl text-rentality-secondary">
+                      {t("search_page.info.soon_other_locations")}
+                    </p>
+                    <p className="mt-4 text-base">{t("search_page.info.changing_request")}</p>
+                  </div>
+                  <Image src={mapNotFoundCars} alt="" className="mt-2" />
+                </div>
+              )}
+            </RntSuspense>
+            {}
+          </div>
+          <div className="my-4 max-xl:mb-8 xl:w-4/12 2xl:w-5/12 fullHD:w-6/12">
+            <CarSearchMap
+              searchResult={searchResult}
+              setSelected={(carID: number) => {
+                setHighlightedCar(carID);
+                sortCars(carID);
+              }}
+              isExpanded={isExpanded}
+              defaultCenter={
+                searchCarRequest.searchLocation.latitude &&
+                searchCarRequest.searchLocation.longitude &&
+                searchCarRequest.searchLocation.latitude > 0 &&
+                searchCarRequest.searchLocation.longitude > 0
+                  ? { lat: searchCarRequest.searchLocation.latitude, lng: searchCarRequest.searchLocation.longitude }
+                  : null
+              }
+            />
+            <div
+              className="absolute left-1/2 flex -translate-x-1/2 cursor-pointer xl:hidden"
+              onClick={handleArrowClick}
+            >
+              <Image src={icMapMobile} alt="" className={`h-[48px] w-[48px]`} />
             </div>
           </div>
         </div>
-        <FilterSlidingPanel
-          searchCarRequest={searchCarRequest}
-          setSearchCarRequest={setSearchCarRequest}
-          handleSearchClick={handleSearchClick}
-          openFilterPanel={openFilterPanel}
-          setOpenFilterPanel={setOpenFilterPanel}
-          t={t}
-        />
-      </GoogleMapsProvider>
-    </Layout>
+      </div>
+    </APIProvider>
   );
 }

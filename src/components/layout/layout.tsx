@@ -1,83 +1,98 @@
-import { useRouter } from "next/router";
 import Header from "@/components/header/header";
 import Footer from "@/components/footer/footer";
 import HostSideNavMenu from "../sideNavMenu/hostSideNavMenu";
 import GuestSideNavMenu from "../sideNavMenu/guestSideNavMenu";
 import AdminSideNavMenu from "../sideNavMenu/adminSideNavMenu";
-import { useEffect } from "react";
 import { useAppContext } from "@/contexts/appContext";
+import useUserMode, { isAdmin, isHost } from "@/hooks/useUserMode";
+import React, { useEffect, useRef, useState } from "react";
+import { DialogActions } from "@/utils/dialogActions";
+import { t } from "i18next";
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
 
 export default function Layout({ children }: { children?: React.ReactNode }) {
-  const router = useRouter();
-  const { isHideBurgerMenu, isHideFilterOnSearchPage } = useAppContext();
-
-  const isGuest = router.route.startsWith("/guest");
+  const { isBurgerMenuShown, isFilterOnSearchPageShown, openBurgerMenu, closeBurgerMenu } = useAppContext();
+  const { userMode } = useUserMode();
 
   useEffect(() => {
     const body = document.body;
-    if (isHideBurgerMenu || isHideFilterOnSearchPage) {
+    if (isBurgerMenuShown || isFilterOnSearchPageShown) {
       body.classList.add("overflow-hidden");
     } else {
       body.classList.remove("overflow-hidden");
     }
-  }, [isHideBurgerMenu, isHideFilterOnSearchPage]);
+  }, [isBurgerMenuShown, isFilterOnSearchPageShown]);
 
-  if (isGuest)
-    return (
-      <>
-        <div className="flex overflow-hidden text-rnt-temp-sidemenu-text">
-          <GuestSideNavMenu />
-          <div className="w-full xl:flex xl:grow xl:flex-col">
-            <Header accountType="Guest" />
-            <main className="h-full px-4 py-4 text-rnt-temp-main-text sm:px-8">{children}</main>
-          </div>
-        </div>
-        <Footer />
-      </>
+  const sideNavMenu = isHost(userMode) ? (
+    <HostSideNavMenu />
+  ) : isAdmin(userMode) ? (
+    <AdminSideNavMenu />
+  ) : (
+    <GuestSideNavMenu />
+  );
+
+  const { showDialog, hideDialogs } = useRntDialogs();
+  const [smallScreenDialogShown, setSmallScreenDialogShown] = useState(false);
+
+  useEffect(() => {
+    const checkScreenWidth = () => {
+      const screenWidth = window.matchMedia("(max-width: 409px)");
+
+      if (screenWidth.matches && !smallScreenDialogShown) {
+        const action = <>{DialogActions.OK(hideDialogs)}</>;
+        showDialog(t("common.info.small_screen"), action);
+        setSmallScreenDialogShown(true);
+      }
+    };
+
+    checkScreenWidth();
+
+    window.addEventListener("resize", checkScreenWidth);
+    return () => {
+      window.removeEventListener("resize", checkScreenWidth);
+    };
+  }, [smallScreenDialogShown, showDialog, hideDialogs, t]);
+
+  const footerRef = useRef<HTMLDivElement>(null);
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsFooterVisible(entry.isIntersecting);
+      },
+      { root: null, threshold: 0.1 }
     );
 
-  const isHost = router.route.startsWith("/host");
+    if (footerRef.current) {
+      observer.observe(footerRef.current);
+    }
 
-  if (isHost)
-    return (
-      <>
-        <div className="flex overflow-hidden text-rnt-temp-sidemenu-text">
-          <HostSideNavMenu />
-          <div className="w-full">
-            <Header accountType="Host" />
-            <main className="px-4 py-4 text-rnt-temp-main-text sm:px-8 lg:min-h-[600px]">{children}</main>
-          </div>
-        </div>
-        <Footer />
-      </>
-    );
-
-  const isAdmin = router.route.startsWith("/admin");
-
-  if (isAdmin)
-    return (
-      <>
-        <div className="flex overflow-hidden text-rnt-temp-sidemenu-text">
-          <AdminSideNavMenu />
-          <div className="w-full">
-            <Header accountType="Admin" />
-            <main className="px-4 py-4 text-rnt-temp-main-text sm:px-8 lg:min-h-[600px]">{children}</main>
-          </div>
-        </div>
-        <Footer />
-      </>
-    );
+    return () => {
+      if (footerRef.current) {
+        observer.unobserve(footerRef.current);
+      }
+    };
+  }, []);
 
   return (
     <>
-      <div className="flex overflow-hidden text-rnt-temp-sidemenu-text">
-        <GuestSideNavMenu />
-        <div className="w-full">
-          <Header accountType="Guest" />
-          <main className="px-4 py-4 text-rnt-temp-main-text sm:px-8 lg:min-h-[600px]">{children}</main>
+      <Header />
+      <div className="relative flex min-h-[100vh] w-full flex-row overflow-hidden pt-14 text-rnt-temp-sidemenu-text">
+        <aside
+          id="main-side-menu"
+          className={`fixed hidden h-full bg-rentality-bg-left-sidebar lg:block ${
+            isFooterVisible ? `bottom-20` : `top-14`
+          } transition-all duration-300`}
+        >
+          {sideNavMenu}
+        </aside>
+
+        <div className="relative flex w-full min-w-0 flex-col lg:ml-[300px] xl:grow">
+          <main className="flex h-full flex-col px-4 py-4 text-rnt-temp-main-text sm:px-8">{children}</main>
         </div>
       </div>
-      <Footer />
+      <Footer ref={footerRef} />
     </>
   );
 }

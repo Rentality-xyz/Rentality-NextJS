@@ -165,9 +165,9 @@ function CurrentStatusInfo({
 
   const handleGuestFinishTrip = async () => {
     hideDialogs();
-    if (tripInfo.allowedActions.length > 0) {
-      await tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), []);
-    }
+    changeStatusCallback(() => {
+      return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), []);
+    });
   };
 
   const handleCancel = () => {
@@ -204,7 +204,7 @@ function CurrentStatusInfo({
   return (
     <div id="trip-action-info" className="flex w-full flex-1 flex-col justify-between gap-2 p-4 md:w-1/4 md:p-2 xl:p-4">
       <div className="flex flex-col whitespace-pre-line">
-        <p className="text-center text-[#52D1C9]">{actionHeader}</p>
+        <p className="text-center text-rentality-secondary">{actionHeader}</p>
         <p className="mt-4 text-center text-lg">
           <strong>{actionText}</strong>
         </p>
@@ -212,10 +212,10 @@ function CurrentStatusInfo({
       </div>
 
       {!isAdditionalActionHidden || tripInfo.allowedActions.length === 0 ? null : (
-        <div className="flex flex-col gap-4 max-md:flex-row 2xl:flex-row">
+        <div className="flex flex-col gap-4 sm:flex-row md:flex-col">
           {(tripInfo.status === TripStatus.CheckedInByHost || tripInfo.status === TripStatus.Started) && isHost ? (
             <RntButton
-              className="h-12 w-full px-4"
+              className="w-full px-4"
               onClick={() => {
                 showModifyTripDialog();
               }}
@@ -224,11 +224,12 @@ function CurrentStatusInfo({
             </RntButton>
           ) : tripInfo.status === TripStatus.CompletedWithoutGuestComfirmation && isHost ? (
             <a className="w-full" href={`tel:${tripInfo.guest.phoneNumber}`}>
-              <RntButton className="h-12 w-full px-4">Contact to guest</RntButton>
+              <RntButton className="w-full px-4">Contact to guest</RntButton>
             </a>
           ) : tripInfo.status === TripStatus.CompletedWithoutGuestComfirmation && !isHost ? (
             <RntButton
-              className="h-12 w-full px-4"
+              className="w-full px-4"
+              disabled={disableButton}
               onClick={() => {
                 showGuestConfirmFinishDialog();
               }}
@@ -242,7 +243,7 @@ function CurrentStatusInfo({
                 return index === 0 ? (
                   <RntButton
                     key={action.text}
-                    className="h-12 w-full px-4"
+                    className="w-full px-4"
                     disabled={disableButton}
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
@@ -259,7 +260,7 @@ function CurrentStatusInfo({
                 ) : (
                   <RntButtonTransparent
                     key={action.text}
-                    className="h-12 w-full px-4"
+                    className="w-full px-4"
                     disabled={disableButton}
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {

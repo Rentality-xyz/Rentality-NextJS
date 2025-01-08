@@ -1,24 +1,46 @@
-import { Root } from "react-dom/client";
-import { emptySearchCarRequest, SearchCarRequest } from "./SearchCarRequest";
+import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
+import { emptyLocationInfo } from "./LocationInfo";
+import { DEFAULT_SEARCH_DATE_FROM, DEFAULT_SEARCH_DATE_TO } from "@/utils/constants";
+import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
+import { EngineType } from "./blockchain/schemas";
+import { TransmissionType } from "./Transmission";
+import { TripDiscountsFormValues } from "@/components/host/tripDiscountsFormSchema";
 
-type AdvancedMarkerElement = google.maps.marker.AdvancedMarkerElement;
+export type FilterLimits = {
+  minCarYear: number;
+  maxCarPrice: number;
+};
 
 export type SearchCarsResult = {
   searchCarRequest: SearchCarRequest;
+  searchCarFilters: SearchCarFilters;
   carInfos: SearchCarInfo[];
+  filterLimits: FilterLimits;
+};
+
+export type DeliveryDetails = {
+  pickUp: { distanceInMiles: number; priceInUsd: number };
+  dropOff: { distanceInMiles: number; priceInUsd: number };
 };
 
 export type SearchCarInfo = {
   carId: number;
   ownerAddress: string;
-  image: string;
+  images: string[];
   brand: string;
   model: string;
   year: string;
-  seatsNumber: string;
-  transmission: string;
-  engineTypeText: string;
-  milesIncludedPerDay: string;
+
+  carName: string;
+  seatsNumber: number;
+  doorsNumber: number;
+  engineType: EngineType;
+  transmission: TransmissionType;
+  tankSizeInGal: number;
+  color: string;
+  carDescription: string;
+
+  milesIncludedPerDayText: string;
   pricePerDay: number;
   pricePerDayWithDiscount: number;
   tripDays: number;
@@ -41,12 +63,38 @@ export type SearchCarInfo = {
     from1To25milesPrice: number;
     over25MilesPrice: number;
   };
-  pickUpDeliveryFee: number;
-  dropOffDeliveryFee: number;
+  deliveryDetails: DeliveryDetails;
   isCarDetailsConfirmed: boolean;
+  isTestCar: boolean;
+  isInsuranceRequired: boolean;
+  insurancePerDayPriceInUsd: number;
+  isGuestHasInsurance: boolean;
+  distanceToUser: number;
+};
+
+export type SearchCarInfoDTO = Omit<SearchCarInfo, "engineType"> & { engineType: number };
+
+export type SearchCarInfoDetails = SearchCarInfo & {
+  pricePer10PercentFuel: number;
+  tripDiscounts: TripDiscountsFormValues;
+  salesTax: number;
+  governmentTax: number;
+};
+
+const emptySearchCarRequest: SearchCarRequest = {
+  searchLocation: emptyLocationInfo,
+  dateFromInDateTimeStringFormat: dateToHtmlDateTimeFormat(DEFAULT_SEARCH_DATE_FROM),
+  dateToInDateTimeStringFormat: dateToHtmlDateTimeFormat(DEFAULT_SEARCH_DATE_TO),
+  isDeliveryToGuest: false,
+  deliveryInfo: {
+    pickupLocation: { isHostHomeLocation: true },
+    returnLocation: { isHostHomeLocation: true },
+  },
 };
 
 export const emptySearchCarsResult: SearchCarsResult = {
   searchCarRequest: emptySearchCarRequest,
+  searchCarFilters: {},
   carInfos: [],
+  filterLimits: { minCarYear: Number.NEGATIVE_INFINITY, maxCarPrice: Number.POSITIVE_INFINITY },
 };

@@ -1,11 +1,11 @@
-import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
-import { ContractCarDetails, ContractCarInfo } from "../blockchain/schemas";
-import { getMilesIncludedPerDayText, HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE_TEXT } from "../HostCarInfo";
+import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { ContractCarDetails, ContractCarInfo, ContractInsuranceCarInfo } from "../blockchain/schemas";
+import { HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE_TEXT } from "../HostCarInfo";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "../EngineType";
-import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
 
 export const mapContractCarToCarDetails = async (
   carInfo: ContractCarInfo,
+  insuranceInfo: ContractInsuranceCarInfo,
   carInfoDetails: ContractCarDetails,
   tokenURI: string
 ): Promise<HostCarInfo> => {
@@ -15,6 +15,7 @@ export const mapContractCarToCarDetails = async (
   const securityDeposit = Number(carInfo.securityDepositPerTripInUsdCents) / 100;
   const engineTypeString = getEngineTypeString(carInfo.engineType);
 
+  const tankVolumeInGal = engineTypeString === ENGINE_TYPE_PETROL_STRING ? Number(carInfo.engineParams[0]) : 0;
   const fuelPricePerGal = engineTypeString === ENGINE_TYPE_PETROL_STRING ? Number(carInfo.engineParams[1]) / 100 : 0;
   const fullBatteryChargePrice =
     engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? Number(carInfo.engineParams[0]) / 100 : 0;
@@ -22,7 +23,7 @@ export const mapContractCarToCarDetails = async (
   return {
     carId: Number(carInfo.carId),
     ownerAddress: carInfo.createdBy.toString(),
-    image: getIpfsURIfromPinata(metaData.image),
+    images: metaData.images.map((image, index) => ({ url: getIpfsURI(image), isPrimary: index === 0 })),
     vinNumber: carInfo.carVinNumber,
     brand: carInfo.brand,
     model: carInfo.model,
@@ -32,7 +33,7 @@ export const mapContractCarToCarDetails = async (
     licenseState: metaData.licenseState,
     seatsNumber: metaData.seatsNumber,
     doorsNumber: metaData.doorsNumber,
-    tankVolumeInGal: metaData.tankVolumeInGal,
+    tankVolumeInGal: tankVolumeInGal,
     wheelDrive: metaData.wheelDrive,
     transmission: metaData.transmission,
     trunkSize: metaData.trunkSize,
@@ -59,6 +60,9 @@ export const mapContractCarToCarDetails = async (
     fuelPricePerGal: fuelPricePerGal,
     fullBatteryChargePrice: fullBatteryChargePrice,
     timeBufferBetweenTripsInMin: Number(carInfo.timeBufferBetweenTripsInSec) / 60,
-    isInsuranceIncluded: carInfo.insuranceIncluded,
+    isGuestInsuranceRequired: insuranceInfo.required,
+    insurancePerDayPriceInUsd: Number(insuranceInfo.priceInUsdCents) / 100,
+    isCarMetadataEdited: false,
+    metadataUrl: tokenURI,
   };
 };

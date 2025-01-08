@@ -6,6 +6,7 @@ module.exports = {
     "./src/pages/**/*.{js,ts,jsx,tsx}",
     "./src/components/**/*.{js,ts,jsx,tsx}",
     "./src/app/**/*.{js,ts,jsx,tsx}",
+    "./src/utils/tailwind.ts",
     path.join(path.dirname(require.resolve("@coinbase/onchainkit")), "**/*.js"),
   ],
   theme: {
@@ -45,6 +46,8 @@ module.exports = {
         "status-pending": "#7c58d7",
         "status-on-trip": "#220e50",
         "status-completed": "#22d7d3",
+
+        "rentality-alert-text": "#f87171",
 
         "rnt-temp-header-bg": "#e5e7eb", //#e5e7eb bg-gray-200
         "rnt-temp-header-text": "#ffffff", //#0f172a text-gray-900
@@ -139,5 +142,6 @@ module.exports = {
       },
     },
   },
+  safelist: ["bg-[#FFFF00]", "bg-[#7355D7]"],
   plugins: [],
 };

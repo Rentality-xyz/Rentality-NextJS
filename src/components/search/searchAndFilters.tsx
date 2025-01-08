@@ -3,8 +3,6 @@ import RntButton from "../common/rntButton";
 import RntInput from "../common/rntInput";
 import RntPlaceAutoComplete from "../common/rntPlaceAutocomplete";
 import RntSelect from "../common/rntSelect";
-import { SortOptionKey } from "@/hooks/guest/useSearchCars";
-import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { TFunction as TFunctionNext } from "i18next";
 import { useEffect, useState } from "react";
 import { ParseLocationResponse } from "@/pages/api/parseLocation";
@@ -16,57 +14,54 @@ import arrowUpTurquoise from "../../images/arrowUpTurquoise.svg";
 import arrowDownTurquoise from "../../images/arrowDownTurquoise.svg";
 import Image from "next/image";
 import SearchDeliveryLocations from "@/components/search/searchDeliveryLocations";
-import { useAppContext } from "@/contexts/appContext";
-
-function formatLocation(city: string, state: string, country: string) {
-  city = city != null && city.length > 0 ? city + ", " : "";
-  state = state != null && state.length > 0 ? state + ", " : "";
-  country = country != null && country.length > 0 ? country + ", " : "";
-  const location = `${city}${state}${country}`;
-  if (location.length > 2) {
-    return location.slice(0, -2);
-  }
-
-  return location;
-}
+import { formatLocationInfoUpToCity } from "@/model/LocationInfo";
+import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
+import { placeDetailsToLocationInfo } from "@/utils/location";
+import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
+import RntCarModelSelect from "@/components/common/rntCarModelSelect";
+import { SortOptionKey } from "@/hooks/guest/useSearchCars";
+import icLocation from "../../images/ic_location.png";
+import icSearch from "@/images/ic_search.svg";
+import icCalendar from "../../images/ic_calendar.png";
+import PanelFilteringByYear from "@/components/search/panelFilteringByYear";
+import PanelFilteringByPrice from "@/components/search/panelFilteringByPrice";
+import { nameof } from "@/utils/nameof";
+import { FilterLimits } from "@/model/SearchCarsResult";
 
 export default function SearchAndFilters({
-  searchCarRequest,
-  setSearchCarRequest,
+  initValue,
   sortBy,
   setSortBy,
-  handleSearchClick,
-  setOpenFilterPanel,
+  onSearchClick,
+  onFilterApply,
+  filterLimits,
   t,
 }: {
-  searchCarRequest: SearchCarRequest;
-  setSearchCarRequest: (value: SearchCarRequest) => void;
+  initValue: SearchCarRequest;
   sortBy: string | undefined;
   setSortBy: (value: string | undefined) => void;
-  handleSearchClick: () => Promise<void>;
-  setOpenFilterPanel: (value: boolean) => void;
+  onSearchClick: (searchCarRequest: SearchCarRequest) => Promise<void>;
+  onFilterApply: (filters: SearchCarFilters) => Promise<void>;
+  filterLimits: FilterLimits;
   t: TFunctionNext;
 }) {
   const [timeZoneId, setTimeZoneId] = useState("");
+  const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(initValue);
 
   const gmtLabel = isEmpty(timeZoneId) ? "" : `(GMT${moment.tz(timeZoneId).format("Z").slice(0, 3)})`;
   const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
   const isSearchAllowed =
-    formatLocation(
-      searchCarRequest.searchLocation.city,
-      searchCarRequest.searchLocation.state,
-      searchCarRequest.searchLocation.country
-    ).length > 0 &&
-    moment.tz(searchCarRequest.dateFrom, notEmtpyTimeZoneId) >= moment.tz(notEmtpyTimeZoneId) &&
-    new Date(searchCarRequest.dateTo) > new Date(searchCarRequest.dateFrom);
+    formatLocationInfoUpToCity(searchCarRequest.searchLocation).length > 0 &&
+    moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, notEmtpyTimeZoneId) >= moment.tz(notEmtpyTimeZoneId) &&
+    new Date(searchCarRequest.dateToInDateTimeStringFormat) > new Date(searchCarRequest.dateFromInDateTimeStringFormat);
 
   const t_comp = (element: string) => {
     return t("search_and_filters." + element);
   };
 
-  const sortOption: object = t("search_and_filters.sort_options", {
+  const sortOption: Record<string, string> = t("search_and_filters.sort_options", {
     returnObjects: true,
-  });
+  }) as Record<string, string>;
 
   function isSortOptionKey(key: PropertyKey): key is SortOptionKey {
     return sortOption.hasOwnProperty(key);
@@ -76,7 +71,7 @@ export default function SearchAndFilters({
     const value = e.target.value;
     const name = e.target.name;
 
-    if (name === "location") {
+    if (name === nameof(searchCarRequest, "searchLocation")) {
       return;
     }
 
@@ -88,11 +83,7 @@ export default function SearchAndFilters({
 
   useEffect(() => {
     const getGMTFromLocation = async () => {
-      const address = formatLocation(
-        searchCarRequest.searchLocation.city,
-        searchCarRequest.searchLocation.state,
-        searchCarRequest.searchLocation.country
-      );
+      const address = formatLocationInfoUpToCity(searchCarRequest.searchLocation);
       if (isEmpty(address)) {
         setTimeZoneId("");
         return;
@@ -116,11 +107,7 @@ export default function SearchAndFilters({
     };
 
     getGMTFromLocation();
-  }, [
-    searchCarRequest.searchLocation.city,
-    searchCarRequest.searchLocation.state,
-    searchCarRequest.searchLocation.country,
-  ]);
+  }, [searchCarRequest.searchLocation]);
 
   const [openDeliveryLocation, setOpenDeliveryLocation] = useState(false);
 
@@ -132,107 +119,212 @@ export default function SearchAndFilters({
     });
   };
 
-  const { openFilterOnSearchPage } = useAppContext();
+  useEffect(() => {
+    setSearchCarRequest(initValue);
+  }, [initValue]);
+
+  const [selectedModelID, setSelectedModelID] = useState<string>("");
+  const [searchCarFilters, setSearchCarFilters] = useState<SearchCarFilters | null>(null);
+  const [selectedMakeID, setSelectedMakeID] = useState<string>("");
+
+  useEffect(() => {
+    if (searchCarFilters) {
+      onFilterApply(searchCarFilters);
+    }
+  }, [searchCarFilters]);
+
+  function handleSearchClick() {
+    onSearchClick(searchCarRequest);
+  }
+
+  function handleResetClick() {
+    setSearchCarFilters({});
+    setSelectedMakeID("");
+    setSelectedModelID("");
+    setResetFilters(true);
+    setSortBy("");
+  }
+
+  const [resetFilters, setResetFilters] = useState(false);
 
   return (
     <>
-      <div className="search my-2 flex flex-col gap-4 xl:flex-row xl:items-end">
+      <div className="search mb-2 mt-1 flex flex-col gap-4 xl:flex-row xl:items-end">
         <RntPlaceAutoComplete
-          className="xl:w-2/3"
-          labelClassName="pl-[18px]"
-          id="location"
+          isTransparentStyle={true}
+          iconFrontLabel={icLocation}
+          className="w-full"
+          inputClassName="mt-1 z-10"
+          labelClassName="pl-3.5 font-bold"
+          id={nameof(searchCarRequest, "searchLocation")}
           label={t_comp("location_label")}
           placeholder={t_comp("location_placeholder")}
           includeStreetAddress={true}
-          initValue={formatLocation(
-            searchCarRequest.searchLocation.city,
-            searchCarRequest.searchLocation.state,
-            searchCarRequest.searchLocation.country
-          )}
+          initValue={formatLocationInfoUpToCity(searchCarRequest.searchLocation)}
           onChange={handleSearchInputChange}
           onAddressChange={async (placeDetails) => {
-            const country = placeDetails.country?.short_name ?? "";
-            const state = placeDetails.state?.long_name ?? "";
-            const city = placeDetails.city?.long_name ?? "";
-            const locationLat = placeDetails.location?.latitude;
-            const locationLng = placeDetails.location?.longitude;
-
             setSearchCarRequest({
               ...searchCarRequest,
-              searchLocation: {
-                address: placeDetails.addressString,
-                country: country,
-                state: state,
-                city: city,
-                latitude: locationLat ?? 0,
-                longitude: locationLng ?? 0,
-                timeZoneId: "",
-              },
+              searchLocation: placeDetailsToLocationInfo(placeDetails),
             });
           }}
         />
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between xl:justify-around">
           <RntInput
-            className="basis-1/2"
-            inputClassName="pr-4"
-            labelClassName="pl-[18px]"
-            id="dateFrom"
+            isTransparentStyle={true}
+            iconFrontLabel={icCalendar}
+            className="basis-1/3"
+            inputClassName="pr-4 z-10"
+            labelClassName="pl-[18px] z-10 font-bold"
+            id={nameof(searchCarRequest, "dateFromInDateTimeStringFormat")}
             label={`${t_comp("datetime_from")} ${gmtLabel}`}
             type="datetime-local"
-            value={searchCarRequest.dateFrom}
+            value={searchCarRequest.dateFromInDateTimeStringFormat}
             onChange={handleSearchInputChange}
           />
           <RntInput
-            className="basis-1/2"
-            inputClassName="pr-4"
-            labelClassName="pl-[18px]"
-            id="dateTo"
+            isTransparentStyle={true}
+            iconFrontLabel={icCalendar}
+            className="basis-1/3"
+            inputClassName="pr-4 z-10"
+            labelClassName="pl-[18px] z-10 font-bold"
+            id={nameof(searchCarRequest, "dateToInDateTimeStringFormat")}
             label={`${t_comp("datetime_to")} ${gmtLabel}`}
             type="datetime-local"
-            value={searchCarRequest.dateTo}
+            value={searchCarRequest.dateToInDateTimeStringFormat}
             onChange={handleSearchInputChange}
-          />{" "}
-          <RntButton className="mt-2 w-full md:w-48" disabled={!isSearchAllowed} onClick={() => handleSearchClick()}>
+          />
+          <RntButton
+            className="mt-2 flex w-full items-center justify-center md:w-48"
+            disabled={!isSearchAllowed}
+            onClick={handleSearchClick}
+          >
+            <Image src={icSearch} alt="" className="mr-2 h-[16px]" />
             {t_comp("button_search")}
           </RntButton>
         </div>
       </div>
       <div className="flex flex-col">
         <div className="mt-4 flex flex-wrap items-center gap-4">
-          <RntButton
-            className="w-40"
-            onClick={() => {
-              setOpenFilterPanel(true);
-              openFilterOnSearchPage();
+          <div className="sm:w-48">
+            <RntCarMakeSelect
+              id={t_comp("select_filter_make")}
+              className="text-lg"
+              selectClassName="cursor-pointer"
+              promptText={t_comp("select_filter_make")}
+              label=""
+              value={searchCarFilters?.brand ?? ""}
+              onMakeSelect={(newID, newMake) => {
+                setSelectedMakeID(newID);
+                setSearchCarFilters({
+                  ...searchCarFilters,
+                  brand: newMake,
+                });
+              }}
+            />
+          </div>
+
+          <div className="sm:w-48">
+            <RntCarModelSelect
+              id={t_comp("select_filter_model")}
+              className="text-lg"
+              selectClassName="cursor-pointer"
+              promptText={t_comp("select_filter_model")}
+              label=""
+              value={searchCarFilters?.model ?? ""}
+              make_id={selectedMakeID}
+              onModelSelect={(newID, newModel) => {
+                setSelectedModelID(newID);
+                setSearchCarFilters({
+                  ...searchCarFilters,
+                  model: newModel,
+                });
+              }}
+            />
+          </div>
+
+          <PanelFilteringByYear
+            id={"panel-filtering-year"}
+            onClickReset={() => {
+              setSearchCarFilters({
+                ...searchCarFilters,
+                yearOfProductionFrom: 0,
+                yearOfProductionTo: 0,
+              });
             }}
-          >
-            {t_comp("button_filter")}
-          </RntButton>
-          <RntSelect
-            className="w-40"
-            id="sort"
-            readOnly={false}
-            value={sortBy ?? ""}
-            onChange={(e) => {
-              const newValue = e.target.value;
-              if (isSortOptionKey(newValue)) {
-                setSortBy(newValue);
-              }
+            onClickApply={(selectedValues) => {
+              setSearchCarFilters({
+                ...searchCarFilters,
+                yearOfProductionFrom: selectedValues[0],
+                yearOfProductionTo: selectedValues[1],
+              });
+              setResetFilters(false);
             }}
-          >
-            <option className="hidden" value="" disabled>
-              {t_comp("sort_by")}
-            </option>
-            {Object.entries(sortOption ?? {}).map(([key, value]) => (
-              <option key={key} value={value}>
-                {value}
-              </option>
-            ))}
-          </RntSelect>
+            isResetFilters={resetFilters}
+            minValue={filterLimits.minCarYear}
+          />
+
+          <PanelFilteringByPrice
+            id={"panel-filtering-price"}
+            onClickReset={() => {
+              setSearchCarFilters({
+                ...searchCarFilters,
+                pricePerDayInUsdFrom: 0,
+                pricePerDayInUsdTo: 0,
+              });
+            }}
+            onClickApply={(selectedValues) => {
+              setSearchCarFilters({
+                ...searchCarFilters,
+                pricePerDayInUsdFrom: selectedValues[0],
+                pricePerDayInUsdTo: selectedValues[1],
+              });
+              setResetFilters(false);
+            }}
+            isResetFilters={resetFilters}
+            maxValue={filterLimits.maxCarPrice}
+          />
+
+          <div className="flex justify-between gap-4 max-sm:w-full">
+            <RntButton className="w-40" onClick={handleResetClick}>
+              {t_comp("button_reset_filters")}
+            </RntButton>
+
+            <div className="select-container">
+              <RntSelect
+                className="w-40 text-lg"
+                selectClassName="buttonGradient text-white text-center custom-select px-4 border-0 cursor-pointer"
+                id="sort"
+                readOnly={false}
+                value={sortBy ? sortOption[sortBy] : ""}
+                onChange={(e) => {
+                  const newDataKey = e.target.options[e.target.selectedIndex].getAttribute("data-key") || "";
+                  if (isSortOptionKey(newDataKey)) {
+                    setSortBy(newDataKey);
+                  }
+                }}
+              >
+                <option className="hidden" value="" disabled>
+                  {t_comp("sort_by")}
+                </option>
+                {Object.entries(sortOption ?? {}).map(([key, value]) => (
+                  <option key={key} value={value} data-key={key}>
+                    {value}
+                  </option>
+                ))}
+              </RntSelect>
+              <span className="custom-arrow bg-[url('../images/arrowDownWhite.svg')]"></span>
+            </div>
+          </div>
+
           <RntButtonTransparent className="w-full sm:w-48" onClick={handleClickOpenDeliveryLocation}>
-            <div className="flex items-center justify-center text-[#52D1C9]">
-              <div className="text-lg">Deliver to me</div>
-              <Image src={openDeliveryLocation ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
+            <div className="relative flex items-center justify-center text-rentality-secondary">
+              <div className="text-lg">{t_comp("button_deliver_to_me")}</div>
+              <Image
+                src={openDeliveryLocation ? arrowUpTurquoise : arrowDownTurquoise}
+                alt=""
+                className="max-sm:absolute max-sm:right-4 sm:ml-3"
+              />
             </div>
           </RntButtonTransparent>
         </div>

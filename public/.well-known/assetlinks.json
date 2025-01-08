@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "xyz.rentality.rentality",
+      "sha256_cert_fingerprints": [
+        "71:66:8D:12:8E:E6:65:7D:81:34:78:03:DB:0E:18:63:7A:D3:D3:47:33:E8:92:DA:38:BA:4C:24:77:A3:4C:18"
+      ]
+    }
+  }
+]

@@ -1,10 +1,10 @@
 import { FocusEvent } from "react";
-import { twMerge } from "tailwind-merge";
 import { TextField } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import RntValidationError from "./RntValidationError";
+import { cn } from "@/utils";
 
 export default function RntDatePicker({
   className,
@@ -38,9 +38,9 @@ export default function RntDatePicker({
   const isShowLabel = label !== undefined && label?.length > 0;
 
   type = type ?? "text";
-  const cClassName = twMerge("text-black flex flex-col w-full", className);
-  const lClassName = twMerge("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
-  const iClassName = twMerge(
+  const cClassName = cn("text-black flex flex-col w-full", className);
+  const lClassName = cn("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
+  const iClassName = cn(
     "w-full h-12 border-2 rounded-full pl-4 disabled:bg-gray-300 disabled:text-gray-600",
     inputClassName
   );

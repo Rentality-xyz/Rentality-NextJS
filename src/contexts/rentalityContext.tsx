@@ -3,21 +3,23 @@ import { getEtherContractWithSigner } from "@/abis";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useEthereum } from "./web3/ethereumContext";
 
-const RentalityContext = createContext<IRentalityContract | null>(null);
+const RentalityContext = createContext<IRentalityContract | null | undefined>(undefined);
 
 export function useRentality() {
   return useContext(RentalityContext);
 }
 
 export const RentalityProvider = ({ children }: { children?: React.ReactNode }) => {
-  const [rentalityContract, setRentalityContract] = useState<IRentalityContract | null>(null);
+  const [rentalityContract, setRentalityContract] = useState<IRentalityContract | null | undefined>(undefined);
   const ethereumInfo = useEthereum();
 
   useEffect(() => {
     const getRentalityContact = async () => {
       if (!ethereumInfo || !ethereumInfo.provider) {
-        if (rentalityContract !== null) {
+        if (rentalityContract !== null && rentalityContract !== undefined) {
           console.debug(`Reset rentalityContract`);
+          setRentalityContract(null);
+        } else if (ethereumInfo === null) {
           setRentalityContract(null);
         }
         return;

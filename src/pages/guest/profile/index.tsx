@@ -1,34 +1,32 @@
-import Layout from "@/components/layout/layout";
+import { UserInsurance } from "@/components/guest/UserInsurance";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import UserProfileInfo from "@/components/profileInfo/userProfileInfo";
 import AddFunds from "@/components/RnD/AddFunds";
 import useProfileSettings from "@/hooks/useProfileSettings";
 import { useTranslation } from "react-i18next";
+import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function Profile() {
   const [isLoading, savedProfileSettings, saveProfileSettings] = useProfileSettings();
   const { t } = useTranslation();
 
   return (
-    <Layout>
-      <div className="flex flex-col">
-        <PageTitle title={t("profile.title")} />
-        {isLoading ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-            {t("common.info.loading")}
-          </div>
-        ) : (
-          <>
-            <UserProfileInfo
-              savedProfileSettings={savedProfileSettings}
-              saveProfileSettings={saveProfileSettings}
-              isHost={false}
-              t={t}
-            />
-            <AddFunds />
-          </>
-        )}
-      </div>
-    </Layout>
+    <>
+      <PageTitle title={t("profile.title")} />
+      <CheckingLoadingAuth>
+        <RntSuspense isLoading={isLoading}>
+          <UserProfileInfo
+            savedProfileSettings={savedProfileSettings}
+            saveProfileSettings={saveProfileSettings}
+            isHost={false}
+          />
+          <hr />
+          <UserInsurance />
+          <hr />
+          <AddFunds />
+        </RntSuspense>
+      </CheckingLoadingAuth>
+    </>
   );
 }

@@ -20,7 +20,7 @@ function TripCard({
   t,
 }: {
   tripInfo: TripInfo;
-  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<void>;
+  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<boolean>;
   disableButton: boolean;
   isHost: boolean;
   confirmCarDetails?: (tripId: number) => Promise<void>;
@@ -34,7 +34,7 @@ function TripCard({
 
   useEffect(() => {
     if (window.innerWidth <= 1280 && !isAdditionalActionHidden && allowedActionsRef.current) {
-      allowedActionsRef.current.scrollIntoView({ behavior: "smooth" });
+      allowedActionsRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
   }, [isAdditionalActionHidden]);
 
@@ -48,7 +48,11 @@ function TripCard({
           {
             <CurrentStatusInfo
               tripInfo={tripInfo}
-              changeStatusCallback={changeStatusCallback}
+              changeStatusCallback={async (changeStatus) => {
+                if (await changeStatusCallback(changeStatus)) {
+                  setIsAdditionalActionHidden(true);
+                }
+              }}
               disableButton={disableButton}
               isAdditionalActionHidden={isAdditionalActionHidden}
               setIsAdditionalActionHidden={setIsAdditionalActionHidden}
@@ -62,7 +66,7 @@ function TripCard({
         <div className="2xl:w-46 flex flex-col p-4 text-end max-2xl:w-full md:p-2 xl:p-4 2xl:flex-shrink-0">
           <div className="flex max-2xl:justify-between 2xl:flex-col 2xl:gap-2 2xl:pr-8">
             <TripContacts tripInfo={tripInfo} isHost={isHost} t={t} />
-            <div className="text-[#52D1C9] 2xl:mt-10">
+            <div className="text-rentality-secondary 2xl:mt-10">
               <Link href={`/${pathRoot}/trips/tripInfo/${tripInfo.tripId}?back=${pathname}`}>
                 <strong>{t("booked.more_info")}</strong>
               </Link>
@@ -79,7 +83,11 @@ function TripCard({
         <TripAdditionalActions
           refForScrool={allowedActionsRef}
           tripInfo={tripInfo}
-          changeStatusCallback={changeStatusCallback}
+          changeStatusCallback={async (changeStatus) => {
+            if (await changeStatusCallback(changeStatus)) {
+              setIsAdditionalActionHidden(true);
+            }
+          }}
           disableButton={disableButton}
           isHost={isHost}
           t={t}
