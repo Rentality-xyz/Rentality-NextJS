@@ -2,11 +2,11 @@ import { useCallback, useState } from "react";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { useTranslation } from "react-i18next";
 import {
-  ContractAllRefferalInfoDTO,
+  ContractAllRefferalInfoDTO as ContractAllReferralInfoDTO,
   ContractReadyToClaim,
   ContractReadyToClaimDTO,
-  ContractRefferalHistory,
-  RefferalProgram,
+  ContractRefferalHistory as ContractReferralHistory,
+  RefferalProgram as ReferralProgram,
 } from "@/model/blockchain/schemas";
 import { ReferralProgramDescription } from "@/components/points/ReferralProgramDescriptions";
 import { PointsProfileStatus } from "@/components/points/ReferralsAndPointsProfileStatus";
@@ -41,8 +41,8 @@ const useOwnPoints = () => {
   const fetchData = useCallback(
     async (
       readyToClaim: ContractReadyToClaimDTO,
-      pointsHistory: ContractRefferalHistory[],
-      pointsInfo: ContractAllRefferalInfoDTO
+      pointsHistory: ContractReferralHistory[],
+      pointsInfo: ContractAllReferralInfoDTO
     ): Promise<Result<boolean, string>> => {
       if (data !== null) {
         return Ok(true);
@@ -92,8 +92,8 @@ export default useOwnPoints;
 
 export function getAllPoints(
   readyToClaim: ContractReadyToClaimDTO,
-  pointsHistory: ContractRefferalHistory[],
-  pointsInfo: ContractAllRefferalInfoDTO,
+  pointsHistory: ContractReferralHistory[],
+  pointsInfo: ContractAllReferralInfoDTO,
   t: TFunction
 ): Result<AllOwnPointsInfo, Error> {
   try {
@@ -117,12 +117,12 @@ export function getAllPoints(
 
 function getOwnAccountCreationPointsInfo(
   readyToClaim: ContractReadyToClaim[],
-  pointsInfo: ContractAllRefferalInfoDTO,
-  pointsHistory: ContractRefferalHistory[],
+  pointsInfo: ContractAllReferralInfoDTO,
+  pointsHistory: ContractReferralHistory[],
   t: TFunction
 ): OwnAccountCreationPointsInfo[] {
   const filteredReadyToClaim = readyToClaim.filter((item) => item.oneTime);
-  const allRefTypes = new Set<RefferalProgram>(filteredReadyToClaim.map((item) => item.refType));
+  const allRefTypes = new Set<ReferralProgram>(filteredReadyToClaim.map((item) => item.refType));
 
   const result = Array.from(allRefTypes).map((refType) => {
     const claimItem = filteredReadyToClaim.find((item) => item.refType === refType);
@@ -156,12 +156,12 @@ function getOwnAccountCreationPointsInfo(
 
 function getOwnRegularPointsInfo(
   readyToClaim: ContractReadyToClaim[],
-  pointsInfo: ContractAllRefferalInfoDTO,
-  pointsHistory: ContractRefferalHistory[],
+  pointsInfo: ContractAllReferralInfoDTO,
+  pointsHistory: ContractReferralHistory[],
   t: TFunction
 ): OwnRegularPointsInfo[] {
   const filteredReadyToClaim = readyToClaim.filter((item) => !item.oneTime);
-  const allRefTypes = new Set<RefferalProgram>(filteredReadyToClaim.map((item) => item.refType));
+  const allRefTypes = new Set<ReferralProgram>(filteredReadyToClaim.map((item) => item.refType));
 
   return Array.from(allRefTypes).map((refType) => {
     const claimItem = filteredReadyToClaim.find((item) => item.refType === refType);

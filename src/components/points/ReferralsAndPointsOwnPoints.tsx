@@ -8,16 +8,16 @@ import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 import { AllOwnPointsInfo, getAllPoints } from "@/hooks/points/useOwnPoints";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "../common/rntSuspense";
-import useRefferalProgram from "@/hooks/useRefferalProgram";
+import useReferralProgram from "@/hooks/useReferralProgram";
 import useClaimMyPoints from "@/hooks/points/useClaimMyPoints";
 
 export default function ReferralsAndPointsOwnPoints() {
   const {
     getReadyToClaim,
-    getRefferalPointsInfo,
+    getReferralPointsInfo,
     getPointsHistory,
     isLoading: isLoadingInviteLink,
-  } = useRefferalProgram();
+  } = useReferralProgram();
   const { isLoading: isLoadingMyPoints, readyToClaim, claimMyPoints } = useClaimMyPoints();
   const [isLoading, setIsLoading] = useState(true);
   const [allPoints, setAllPoints] = useState<AllOwnPointsInfo | null>(null);
@@ -30,7 +30,7 @@ export default function ReferralsAndPointsOwnPoints() {
   useEffect(() => {
     const savePoints = async () => {
       const readyToClaim = await getReadyToClaim();
-      const pointsInfo = await getRefferalPointsInfo();
+      const pointsInfo = await getReferralPointsInfo();
       const pointsHistory = await getPointsHistory();
 
       if (readyToClaim && pointsHistory && pointsInfo) {
@@ -45,7 +45,7 @@ export default function ReferralsAndPointsOwnPoints() {
     if (!isLoadingInviteLink) {
       savePoints();
     }
-  }, [isLoadingInviteLink, readyToClaim, getReadyToClaim, getRefferalPointsInfo, getPointsHistory, t]);
+  }, [isLoadingInviteLink, readyToClaim, getReadyToClaim, getReferralPointsInfo, getPointsHistory, t]);
 
   return (
     <div id="referrals-and-points-own-points" className="mt-4 rounded-lg bg-rentality-bg-left-sidebar p-3">
