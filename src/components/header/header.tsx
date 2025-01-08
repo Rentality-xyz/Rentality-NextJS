@@ -30,6 +30,7 @@ import icWalletBalance from "@/images/ic_wallet_balance.svg";
 import { useTranslation } from "react-i18next";
 import { AdminBurgerNavMenu } from "../sideNavMenu/adminSideNavMenu";
 import HeadBtnReferralsAndPoints from "@/components/header/HeadBtnReferralsAndPoints";
+import { isMobileAppRentality } from "@/utils/devicePlatform";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 72,
@@ -165,7 +166,7 @@ export default function Header() {
         </div>
       </div>
       <div className="ml-2 flex flex-row items-center max-lg:w-full max-lg:justify-between">
-        <RntMobileStoresDialog />
+        {!isMobileAppRentality() && <RntMobileStoresDialog />}
         <Stack direction="row" spacing={1} alignItems="center" className="max-lg:mx-3 lg:ml-12">
           <Typography className="font-['Montserrat',Arial,sans-serif] text-lg max-lg:hidden">Guest</Typography>
           <Typography className="font-['Montserrat',Arial,sans-serif] text-lg lg:hidden">
