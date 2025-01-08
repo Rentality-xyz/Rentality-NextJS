@@ -7,7 +7,7 @@ import RntInputTransparent from "@/components/common/rntInputTransparent";
 import useReferralProgram from "@/features/referralProgram/hooks/useReferralProgram";
 import useProfileSettings from "@/hooks/useProfileSettings";
 
-export default function ReferralsAndPointsLink() {
+export default function ReferralLinks() {
   const { inviteHash } = useReferralProgram();
   const { t } = useTranslation();
 
