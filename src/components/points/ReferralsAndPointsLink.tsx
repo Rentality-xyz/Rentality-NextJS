@@ -4,11 +4,11 @@ import imgCopy from "@/images/ic_copy_white_24dp.svg";
 import Image from "next/image";
 import RntButton from "@/components/common/rntButton";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
-import useRefferalProgram from "@/hooks/useRefferalProgram";
+import useReferralProgram from "@/hooks/useReferralProgram";
 import useProfileSettings from "@/hooks/useProfileSettings";
 
 export default function ReferralsAndPointsLink() {
-  const { inviteHash } = useRefferalProgram();
+  const { inviteHash } = useReferralProgram();
   const { t } = useTranslation();
 
   const copyToClipboard = (text: string) => {

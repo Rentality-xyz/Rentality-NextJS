@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
-import { RefferalProgram } from "@/model/blockchain/schemas";
+import { RefferalProgram as ReferralProgram } from "@/model/blockchain/schemas";
 import { Err, Ok, Result } from "@/model/utils/result";
-import useRefferalProgram from "@/hooks/useRefferalProgram";
+import useReferralProgram from "@/hooks/useReferralProgram";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { useTranslation } from "react-i18next";
@@ -14,7 +14,7 @@ export type ReferralHistoryInfo = {
 };
 
 const usePointsHistory = () => {
-  const { getPointsHistory } = useRefferalProgram();
+  const { getPointsHistory } = useReferralProgram();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<ReferralHistoryInfo[]>([]);
   const [allData, setAllData] = useState<ReferralHistoryInfo[] | null>(null);
@@ -51,7 +51,7 @@ const usePointsHistory = () => {
               const isOneTime = historyDataDto.oneTime;
 
               const methodDescriptions =
-                historyDataDto.method === RefferalProgram.FinishTripAsGuest
+                historyDataDto.method === ReferralProgram.FinishTripAsGuest
                   ? isOneTime
                     ? t("referrals_and_point.referral_program.finish_trip_as_guest_one_time")
                     : t("referrals_and_point.referral_program.finish_trip_as_guest")

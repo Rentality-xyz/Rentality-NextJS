@@ -1,27 +1,27 @@
-import { RefferalProgram } from "@/model/blockchain/schemas";
+import { RefferalProgram as ReferralProgram } from "@/model/blockchain/schemas";
 import { TFunction } from "i18next";
 
-export const ReferralProgramDescription = (t: TFunction, program: RefferalProgram): string => {
+export const ReferralProgramDescription = (t: TFunction, program: ReferralProgram): string => {
   switch (program) {
-    case RefferalProgram.SetKYC:
+    case ReferralProgram.SetKYC:
       return t("referrals_and_point.referral_program.set_kyc");
-    case RefferalProgram.PassCivic:
+    case ReferralProgram.PassCivic:
       return t("referrals_and_point.referral_program.pass_civic");
-    case RefferalProgram.AddFirstCar:
+    case ReferralProgram.AddFirstCar:
       return t("referrals_and_point.referral_program.add_first_car");
-    case RefferalProgram.AddCar:
+    case ReferralProgram.AddCar:
       return t("referrals_and_point.referral_program.add_car");
-    case RefferalProgram.CreateTrip:
+    case ReferralProgram.CreateTrip:
       return t("referrals_and_point.referral_program.create_trip");
-    case RefferalProgram.FinishTripAsHost:
+    case ReferralProgram.FinishTripAsHost:
       return t("referrals_and_point.referral_program.finish_trip_as_host");
-    case RefferalProgram.FinishTripAsGuest:
+    case ReferralProgram.FinishTripAsGuest:
       return t("referrals_and_point.referral_program.finish_trip_as_guest");
-    case RefferalProgram.UnlistedCar:
+    case ReferralProgram.UnlistedCar:
       return t("referrals_and_point.referral_program.unlisted_car");
-    case RefferalProgram.Daily:
+    case ReferralProgram.Daily:
       return t("referrals_and_point.referral_program.daily");
-    case RefferalProgram.DailyListing:
+    case ReferralProgram.DailyListing:
       return t("referrals_and_point.referral_program.daily_listing");
     default:
       return "";

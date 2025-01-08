@@ -7,7 +7,7 @@ import ReferralsAndPointsOwnPoints from "@/components/points/ReferralsAndPointsO
 import ReferralsAndPointsLink from "@/components/points/ReferralsAndPointsLink";
 import ReferralsAndPointsHistory from "@/components/points/ReferralsAndPointsHistory";
 import ReferralsAndPointsFromYourReferrals from "@/components/points/ReferralsAndPointsFromYourReferrals";
-import useRefferalProgram from "@/hooks/useRefferalProgram";
+import useReferralProgram from "@/hooks/useReferralProgram";
 import useClaimMyPoints from "@/hooks/points/useClaimMyPoints";
 
 type ReferralsAndPointsContentProps = {
@@ -16,7 +16,7 @@ type ReferralsAndPointsContentProps = {
 
 export default function ReferralsAndPointsContent({ isHost }: ReferralsAndPointsContentProps) {
   const { t } = useTranslation();
-  const { points, updateData } = useRefferalProgram();
+  const { points, updateData } = useReferralProgram();
   const { readyToClaim } = useClaimMyPoints();
 
   useEffect(() => {
