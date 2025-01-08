@@ -1,15 +1,15 @@
 // TODO translate
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
-import ReferralsAndPointsProfileStatus from "@/components/points/ReferralsAndPointsProfileStatus";
+import ReferralsAndPointsProfileStatus from "@/features/referralProgram/components/ReferralsAndPointsProfileStatus";
 import Image from "next/image";
 import RntButton from "@/components/common/rntButton";
 import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
-import { AllOwnPointsInfo, getAllPoints } from "@/hooks/points/useOwnPoints";
+import { AllOwnPointsInfo, getAllPoints } from "@/features/referralProgram/hooks/useOwnPoints";
 import Loading from "@/components/common/Loading";
-import RntSuspense from "../common/rntSuspense";
-import useReferralProgram from "@/hooks/useReferralProgram";
-import useClaimMyPoints from "@/hooks/points/useClaimMyPoints";
+import RntSuspense from "../../../components/common/rntSuspense";
+import useReferralProgram from "@/features/referralProgram/hooks/useReferralProgram";
+import useClaimMyPoints from "@/features/referralProgram/hooks/useClaimMyPoints";
 
 export default function ReferralsAndPointsOwnPoints() {
   const {

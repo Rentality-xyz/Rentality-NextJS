@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { cn } from "@/utils";
 import Loading from "@/components/common/Loading";
-import RntSuspense from "../common/rntSuspense";
+import RntSuspense from "../../../components/common/rntSuspense";
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
-import { ReferralHistoryInfo } from "@/hooks/points/usePointsHistory";
+import { ReferralHistoryInfo } from "@/features/referralProgram/hooks/usePointsHistory";
 
 type ReferralsAndPointsHistoryTableProps = {
   isLoading: boolean;
