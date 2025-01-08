@@ -1,5 +1,6 @@
-import { twMerge } from "tailwind-merge";
-import { MouseEventHandler } from "react";
+import { cn } from "@/utils";
+
+interface RntButtonTransparentProps extends React.ComponentPropsWithoutRef<"button"> {}
 
 export default function RntButtonTransparent({
   className,
@@ -8,15 +9,9 @@ export default function RntButtonTransparent({
   onClick,
   disabled,
   ...props
-}: {
-  className?: string;
-  type?: string;
-  children?: React.ReactNode;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
-  disabled?: boolean;
-}) {
+}: RntButtonTransparentProps) {
   const bgColor = disabled ? "bg-gray-500" : "border-gradient";
-  const c = twMerge("h-12 w-56 rounded-full text-white text-lg " + bgColor, className);
+  const c = cn("py-1 w-56 rounded-full text-white text-lg min-h-[48px]", bgColor, className);
   return (
     <button
       type={type === "submit" ? "submit" : undefined}

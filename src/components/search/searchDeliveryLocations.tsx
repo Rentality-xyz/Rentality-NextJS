@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import RntPlaceAutoComplete from "@/components/common/rntPlaceAutocomplete";
-import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { emptyLocationInfo, LocationInfo } from "@/model/LocationInfo";
 import { CheckboxLight } from "../common/rntCheckbox";
+import { placeDetailsToLocationInfo } from "@/utils/location";
+import { SearchCarRequest } from "@/model/SearchCarRequest";
 
 export default function SearchDeliveryLocations({
   searchCarRequest,
   setSearchCarRequest,
 }: {
   searchCarRequest: SearchCarRequest;
-  setSearchCarRequest: (value: SearchCarRequest) => void;
+  setSearchCarRequest: (value: React.SetStateAction<SearchCarRequest>) => void;
 }) {
   const [pickupLocationInfo, setPickupLocationInfo] = useState<LocationInfo | undefined>(undefined);
   const [returnLocationInfo, setReturnLocationInfo] = useState<LocationInfo | undefined>(undefined);
@@ -33,35 +34,18 @@ export default function SearchDeliveryLocations({
           onAddressChange={async (placeDetails) => {
             if (searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation) return;
 
-            const locationLat = placeDetails.location?.latitude ?? 0;
-            const locationLng = placeDetails.location?.longitude ?? 0;
-            setPickupLocationInfo({
-              address: placeDetails.addressString,
-              country: placeDetails.country?.short_name ?? "",
-              state: placeDetails.state?.long_name ?? "",
-              city: placeDetails.city?.long_name ?? "",
-              latitude: locationLat,
-              longitude: locationLng,
-              timeZoneId: "",
-            });
-            setSearchCarRequest({
-              ...searchCarRequest,
+            const locationInfo = placeDetailsToLocationInfo(placeDetails);
+            setPickupLocationInfo(locationInfo);
+            setSearchCarRequest((prev) => ({
+              ...prev,
               deliveryInfo: {
-                ...searchCarRequest.deliveryInfo,
+                ...prev.deliveryInfo,
                 pickupLocation: {
                   isHostHomeLocation: false,
-                  locationInfo: {
-                    address: placeDetails.addressString,
-                    country: placeDetails.country?.short_name ?? "",
-                    state: placeDetails.state?.short_name ?? "",
-                    city: placeDetails.city?.long_name ?? "",
-                    latitude: locationLat,
-                    longitude: locationLng,
-                    timeZoneId: "",
-                  },
+                  locationInfo: locationInfo,
                 },
               },
-            });
+            }));
           }}
         />
         <CheckboxLight
@@ -69,8 +53,8 @@ export default function SearchDeliveryLocations({
           label="Host home locatione"
           checked={searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation}
           onChange={(e) =>
-            setSearchCarRequest({
-              ...searchCarRequest,
+            setSearchCarRequest((prev) => ({
+              ...prev,
               deliveryInfo: {
                 ...searchCarRequest.deliveryInfo,
                 pickupLocation: e.target.checked
@@ -82,7 +66,7 @@ export default function SearchDeliveryLocations({
                       locationInfo: pickupLocationInfo ?? emptyLocationInfo,
                     },
               },
-            })
+            }))
           }
         />
       </div>
@@ -102,37 +86,20 @@ export default function SearchDeliveryLocations({
           onAddressChange={async (placeDetails) => {
             if (searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation) return;
 
-            const locationLat = placeDetails.location?.latitude ?? 0;
-            const locationLng = placeDetails.location?.longitude ?? 0;
+            const locationInfo = placeDetailsToLocationInfo(placeDetails);
 
-            setReturnLocationInfo({
-              address: placeDetails.addressString,
-              country: placeDetails.country?.short_name ?? "",
-              state: placeDetails.state?.short_name ?? "",
-              city: placeDetails.city?.long_name ?? "",
-              latitude: locationLat,
-              longitude: locationLng,
-              timeZoneId: "",
-            });
+            setReturnLocationInfo(locationInfo);
 
-            setSearchCarRequest({
-              ...searchCarRequest,
+            setSearchCarRequest((prev) => ({
+              ...prev,
               deliveryInfo: {
-                ...searchCarRequest.deliveryInfo,
+                ...prev.deliveryInfo,
                 returnLocation: {
                   isHostHomeLocation: false,
-                  locationInfo: {
-                    address: placeDetails.addressString,
-                    country: placeDetails.country?.short_name ?? "",
-                    state: placeDetails.state?.short_name ?? "",
-                    city: placeDetails.city?.long_name ?? "",
-                    latitude: locationLat,
-                    longitude: locationLng,
-                    timeZoneId: "",
-                  },
+                  locationInfo: locationInfo,
                 },
               },
-            });
+            }));
           }}
         />
         <CheckboxLight
@@ -140,8 +107,8 @@ export default function SearchDeliveryLocations({
           label="Host home locatione"
           checked={searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation}
           onChange={(e) =>
-            setSearchCarRequest({
-              ...searchCarRequest,
+            setSearchCarRequest((prev) => ({
+              ...prev,
               deliveryInfo: {
                 ...searchCarRequest.deliveryInfo,
                 returnLocation: e.target.checked
@@ -153,7 +120,7 @@ export default function SearchDeliveryLocations({
                       locationInfo: returnLocationInfo ?? emptyLocationInfo,
                     },
               },
-            })
+            }))
           }
         />
       </div>

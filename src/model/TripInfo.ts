@@ -1,4 +1,4 @@
-import { EngineType, TripStatus } from "./blockchain/schemas";
+import { EngineType, InsuranceType, TripStatus } from "./blockchain/schemas";
 
 export enum TripStatusEnum {
   Pending, // Created
@@ -32,30 +32,6 @@ export const getTripStatusTextFromStatus = (status: TripStatus) => {
     case TripStatus.Rejected:
     default:
       return "Rejected";
-  }
-};
-
-export const getTripStatusBgColorClassFromStatus = (status: TripStatus) => {
-  switch (status) {
-    case TripStatus.Pending:
-      return "bg-yellow-600";
-    case TripStatus.Confirmed:
-      return "bg-lime-500";
-    case TripStatus.CheckedInByHost:
-      return "bg-blue-600";
-    case TripStatus.Started:
-      return "bg-blue-800";
-    case TripStatus.CheckedOutByGuest:
-      return "bg-purple-600";
-    case TripStatus.CompletedWithoutGuestComfirmation:
-      return "bg-orange-400";
-    case TripStatus.Finished:
-      return "bg-purple-800";
-    case TripStatus.Closed:
-      return "bg-fuchsia-700";
-    case TripStatus.Rejected:
-    default:
-      return "bg-red-500";
   }
 };
 
@@ -137,10 +113,53 @@ export type TripInfo = {
     photoUrl: string;
     drivingLicenseNumber: string;
     drivingLicenseExpirationDate: Date;
+    drivingLicenseIssueCountry: string;
   };
+  guestInsuranceType?: InsuranceType;
+  guestInsurancePhoto: string;
   guestInsuranceCompanyName: string;
   guestInsurancePolicyNumber: string;
   isCarDetailsConfirmed: boolean;
+  insurancePerDayInUsd: number;
+  insuranceTotalInUsd: number;
+};
+
+export type TripInfoShortDetails = {
+  tripId: number;
+  carId: number;
+  brand: string;
+  model: string;
+  year: string;
+  tripStart: Date;
+  tripEnd: Date;
+  tripDays: number;
+  locationStart: string;
+  locationEnd: string;
+  status: TripStatus;
+  rejectedBy: string;
+  rejectedDate: Date | undefined;
+  isTripRejected: boolean;
+  isTripCanceled: boolean;
+  timeZoneId: string;
+
+  host: {
+    walletAddress: string;
+    name: string;
+    phoneNumber: string;
+    photoUrl: string;
+    drivingLicenseNumber: string;
+    drivingLicenseExpirationDate: Date;
+  };
+
+  guest: {
+    walletAddress: string;
+    name: string;
+    phoneNumber: string;
+    photoUrl: string;
+    drivingLicenseNumber: string;
+    drivingLicenseExpirationDate: Date;
+    drivingLicenseIssueCountry: string;
+  };
 };
 
 export const getRefuelCharge = (tripInfo: TripInfo, endFuelLevelInPercents: number) => {

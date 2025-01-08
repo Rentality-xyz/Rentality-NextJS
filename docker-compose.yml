@@ -4,7 +4,7 @@ services:
     image: nextjs-rentality:latest
     ports:
       - 3000:3000
-    env_file: ./docker/env.nextjs
+    env_file: .env-nextjs.local
     depends_on:
       - ganache
     networks:
@@ -34,4 +34,3 @@ volumes:
       o: bind
   abis-volume:
     external: true
-    name: abis-volume

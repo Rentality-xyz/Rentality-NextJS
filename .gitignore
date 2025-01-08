@@ -27,6 +27,8 @@ yarn-error.log*
 # local env files
 .env*.local
 .env.demo*
+.env.deploy_*
+.env.for_devs
 
 # vercel
 .vercel
@@ -37,8 +39,11 @@ next-env.d.ts
 *.localhost.json
 .firebase/
 package-lock.json
-/.project
+
 /privatekeys.txt
 /private_keys.txt
-.env.deploy_*
-.vscode/
+.vscode/ 
+
+docker/env.nextjs
+.env.*
+.env 

@@ -1,19 +1,16 @@
 import ChatPage from "@/components/chat/ChatPage";
-import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
-import { useChat, useChatKeys } from "@/contexts/chat/firebase/chatContext";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
-import { DialogActions } from "@/utils/dialogActions";
+import { useChat } from "@/contexts/chat/firebase/chatContext";
 import { isEmpty } from "@/utils/string";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function Messages() {
   const { isLoadingClient, chatInfos, selectChat, updateAllChats, sendMessage } = useChat();
-  const { isLoading: isChatKeysLoading, isChatKeysSaved, saveChatKeys } = useChatKeys();
-  const { showInfo, showDialog, hideDialogs } = useRntDialogs();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -41,23 +38,6 @@ export default function Messages() {
     if (isEmpty(message)) {
       return;
     }
-    if (isChatKeysLoading) {
-      showInfo(t("chat.loading_message"));
-      return;
-    }
-    if (!isChatKeysSaved) {
-      const action = (
-        <>
-          {DialogActions.Button(t("common.save"), () => {
-            hideDialogs();
-            saveChatKeys();
-          })}
-          {DialogActions.Cancel(hideDialogs)}
-        </>
-      );
-      showDialog(t("chat.keys_message"), action);
-      return;
-    }
 
     await sendMessage(toAddress, tripId, message);
   };
@@ -74,14 +54,10 @@ export default function Messages() {
   }, [chatInfos]);
 
   return (
-    <Layout>
-      <div className="flex flex-col">
-        <PageTitle title={t("chat.title")} />
-        {isLoadingClient ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-            {t("common.info.loading")}
-          </div>
-        ) : (
+    <>
+      <PageTitle title={t("chat.title")} />
+      <CheckingLoadingAuth>
+        <RntSuspense isLoading={isLoadingClient}>
           <ChatPage
             isHost={false}
             chats={sortedChatInfos}
@@ -92,8 +68,8 @@ export default function Messages() {
               return t("chat." + name, options);
             }}
           />
-        )}
-      </div>
-    </Layout>
+        </RntSuspense>
+      </CheckingLoadingAuth>
+    </>
   );
 }

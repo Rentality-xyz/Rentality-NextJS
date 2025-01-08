@@ -10,6 +10,9 @@ import icNotifications from "@/images/ic_notifications.png";
 import icProfileSettings from "@/images/ic_profile_settings.png";
 import icTransactionHistory from "@/images/ic_transaction_history.png";
 import icSearch from "@/images/ic-search-128.svg";
+import icInsurance from "@/images/ic_insurance.png";
+import toAppStore from "@/images/to_app_store.png";
+import toGooglePlay from "@/images/to_google_play.png";
 import icInvest from "@/images/ic_invest.jpeg";
 import icCreateInvest from "@/images/ic-create-invest.jpg";
 
@@ -25,6 +28,9 @@ enum MenuIcons {
   ProfileSettings,
   TransactionHistory,
   Search,
+  Insurance,
+  ToAppStore,
+  ToGooglePlay,
   Invest,
   CreateInvest,
 }
@@ -53,6 +59,12 @@ export const getImageForMenu = (state: MenuIcons): StaticImageData => {
       return icTransactionHistory;
     case MenuIcons.Search:
       return icSearch;
+    case MenuIcons.Insurance:
+      return icInsurance;
+    case MenuIcons.ToAppStore:
+      return toAppStore;
+    case MenuIcons.ToGooglePlay:
+      return toGooglePlay;
     case MenuIcons.Invest:
       return icInvest;
     case MenuIcons.CreateInvest:

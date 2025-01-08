@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { useUserInfo } from "@/contexts/userInfoContext";
+import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { isUserHasEnoughFunds } from "@/utils/wallet";
 
 export type DeliveryPrices = {
   from1To25milesPrice: number;
@@ -13,15 +16,28 @@ const emptyDeliveryPrices: DeliveryPrices = {
 };
 
 const useDeliveryPrices = () => {
+  const ethereumInfo = useEthereum();
   const rentalityContract = useRentality();
   const userInfo = useUserInfo();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [deliveryPrices, setDeliveryPrices] = useState<DeliveryPrices>(emptyDeliveryPrices);
 
-  const saveDeliveryPrices = async (newDeliveryPrices: DeliveryPrices) => {
+  const saveDeliveryPrices = async (
+    newDeliveryPrices: DeliveryPrices
+  ): Promise<Result<boolean, TransactionErrorCode>> => {
+    if (!ethereumInfo) {
+      console.error("saveDeliveryPrices error: ethereumInfo is null");
+      return Err("ERROR");
+    }
+
     if (!rentalityContract) {
       console.error("saveDeliveryPrices error: rentalityContract is null");
-      return false;
+      return Err("ERROR");
+    }
+
+    if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
+      console.error("saveDeliveryPrices error: user don't have enough funds");
+      return Err("NOT_ENOUGH_FUNDS");
     }
 
     try {
@@ -30,10 +46,10 @@ const useDeliveryPrices = () => {
         BigInt(newDeliveryPrices.over25MilesPrice * 100)
       );
       await transaction.wait();
-      return true;
+      return Ok(true);
     } catch (e) {
-      console.error("saveTripDiscounts error:" + e);
-      return false;
+      console.error("saveDeliveryPrices error:" + e);
+      return Err("ERROR");
     }
   };
 

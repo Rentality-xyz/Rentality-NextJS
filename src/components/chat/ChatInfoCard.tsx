@@ -2,14 +2,15 @@
 
 import { MouseEventHandler } from "react";
 import { ChatInfo } from "@/model/ChatInfo";
-import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
+import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { Avatar } from "@mui/material";
 import Link from "next/link";
-import { twMerge } from "tailwind-merge";
 import icInfo from "@/images/ic-info-teal.svg";
 import Image from "next/image";
 import { TFunction } from "@/utils/i18n";
 import { usePathname } from "next/navigation";
+import { cn } from "@/utils";
+import { getTripStatusBgColorFromStatus } from "@/utils/tailwind";
 
 export default function ChatInfoCard({
   chatInfo,
@@ -30,10 +31,13 @@ export default function ChatInfoCard({
   const otherPhotoUrl = isHost ? chatInfo.guestPhotoUrl : chatInfo.hostPhotoUrl;
   const otherName = isHost ? chatInfo.guestName : chatInfo.hostName;
 
-  let statusBgColor = getTripStatusBgColorClassFromStatus(chatInfo.tripStatus);
-  const statusClassName = twMerge("px-2 text-rnt-temp-status-text", statusBgColor);
+  let statusBgColor = getTripStatusBgColorFromStatus(chatInfo.tripStatus);
+  const statusClassName = cn("px-2 text-rnt-temp-status-text", statusBgColor);
 
   const pathname = usePathname();
+  const unreadMessageCount = chatInfo.messages.filter(
+    (m) => chatInfo.seenAt === null || m.datestamp > chatInfo.seenAt
+  ).length;
 
   return (
     <div key={chatInfo.tripId} className={className}>
@@ -56,10 +60,18 @@ export default function ChatInfoCard({
         <span className="text-sm text-rentality-secondary max-sm:hidden">{t("trip_info")}</span>
       </Link>
       <div
-        className={`col-span-2 cursor-pointer truncate ${!chatInfo.isSeen ? "font-semibold" : ""}`}
+        className={cn(
+          "col-span-2 flex cursor-pointer flex-row justify-between truncate",
+          !chatInfo.isSeen ? "font-semibold" : ""
+        )}
         onClick={onClickCallback}
       >
-        {chatInfo.lastMessage}
+        <span>{chatInfo.lastMessage}</span>
+        {!chatInfo.isSeen && unreadMessageCount > 0 && (
+          <span className="min-w-[1.75rem] rounded-full bg-rentality-secondary pt-0.5 text-center">
+            {unreadMessageCount > 9 ? "9+" : unreadMessageCount}
+          </span>
+        )}
       </div>
     </div>
   );

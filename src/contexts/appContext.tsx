@@ -1,10 +1,10 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 interface IAppContext {
-  isHideBurgerMenu: boolean;
+  isBurgerMenuShown: boolean;
   openBurgerMenu: () => void;
   closeBurgerMenu: () => void;
-  isHideFilterOnSearchPage: boolean;
+  isFilterOnSearchPageShown: boolean;
   openFilterOnSearchPage: () => void;
   closeFilterOnSearchPage: () => void;
 }
@@ -12,43 +12,44 @@ interface IAppContext {
 const AppContext = createContext<IAppContext | undefined>(undefined);
 
 export const AppContextProvider = ({ children }: { children?: React.ReactNode }) => {
-  const [isHideBurgerMenu, setIsHideBurgerMenu] = useState(false);
-  const [isHideFilterOnSearchPage, setHideFilterOnSearchPage] = useState(false);
+  const [isBurgerMenuShown, setIsBurgerMenuShown] = useState(false);
+  const [isFilterOnSearchPageShown, setIsFilterOnSearchPageShown] = useState(false);
 
   const openBurgerMenu = useCallback(() => {
-    setIsHideBurgerMenu(true);
+    setIsBurgerMenuShown(true);
   }, []);
 
   const closeBurgerMenu = useCallback(() => {
-    setIsHideBurgerMenu(false);
+    setIsBurgerMenuShown(false);
   }, []);
 
   const openFilterOnSearchPage = useCallback(() => {
-    setHideFilterOnSearchPage(true);
+    setIsFilterOnSearchPageShown(true);
   }, []);
 
   const closeFilterOnSearchPage = useCallback(() => {
-    setHideFilterOnSearchPage(false);
+    setIsFilterOnSearchPageShown(false);
   }, []);
 
   const value = useMemo(
     () => ({
-      isHideBurgerMenu,
+      isBurgerMenuShown,
       openBurgerMenu,
       closeBurgerMenu,
-      isHideFilterOnSearchPage,
+      isFilterOnSearchPageShown,
       openFilterOnSearchPage,
       closeFilterOnSearchPage,
     }),
     [
-      isHideBurgerMenu,
+      isBurgerMenuShown,
       openBurgerMenu,
       closeBurgerMenu,
-      isHideFilterOnSearchPage,
+      isFilterOnSearchPageShown,
       openFilterOnSearchPage,
       closeFilterOnSearchPage,
     ]
   );
+
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 

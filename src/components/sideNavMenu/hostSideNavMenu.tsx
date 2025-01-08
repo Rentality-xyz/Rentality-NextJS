@@ -18,6 +18,12 @@ function HostNavMenu() {
   const { notifications } = useNotification();
   const { chatInfos } = useChat();
   const { getPageLastVisitedDateTime } = usePageLastVisit();
+  const { t } = useTranslation();
+
+  const t_nav: TFunction = (name, options) => {
+    return t("nav_menu." + name, options);
+  };
+
   const bookedLastVisitedDateTime = getPageLastVisitedDateTime("host_trips_booked");
   const historyLastVisitedDateTime = getPageLastVisitedDateTime("host_trips_history");
   const claimsLastVisitedDateTime = getPageLastVisitedDateTime("host_claims");
@@ -39,10 +45,7 @@ function HostNavMenu() {
   const notificationsNotificationCount = notifications.filter(
     (n) => n.datestamp > notificationsLastVisitedDateTime
   ).length;
-  const { t } = useTranslation();
-  const t_nav: TFunction = (name, options) => {
-    return t("nav_menu." + name, options);
-  };
+
   return (
     <>
       <SideNavMenuGroup title={t_nav("trips")}>
@@ -61,6 +64,7 @@ function HostNavMenu() {
       </SideNavMenuGroup>
       <SideNavMenuGroup title={t_nav("vehicles")}>
         <SideNavMenuItem text={t_nav("listing")} href="/host/vehicles/listings" icon={MenuIcons.Listings} />
+        <SideNavMenuItem text={t_nav("insurance")} href="/host/insurance" icon={MenuIcons.Insurance} />
         <SideNavMenuItem
           text={t_nav("claims")}
           href="/host/claims"
@@ -83,12 +87,7 @@ function HostNavMenu() {
         />
       </SideNavMenuGroup>
       <SideNavMenuGroup title={t_nav("more")}>
-        <SideNavMenuItem
-          text={t_nav("legal")}
-          href="https://rentality.xyz/legalmatters"
-          icon={MenuIcons.Legal}
-          target="_blank"
-        />
+        <SideNavMenuItem text={t_nav("legal")} href="/host/legal" icon={MenuIcons.Legal} />
         <SideNavMenuItem
           text={t_nav("transaction_history")}
           href="/host/transaction_history"
@@ -106,7 +105,7 @@ function HostNavMenu() {
 
 export default function HostSideNavMenu() {
   return (
-    <BaseSideNavMenu accountType={"Host"}>
+    <BaseSideNavMenu>
       <HostNavMenu />
     </BaseSideNavMenu>
   );
@@ -114,7 +113,7 @@ export default function HostSideNavMenu() {
 
 export function HostBurgerNavMenu() {
   return (
-    <BaseBurgerNavMenu accountType={"Host"}>
+    <BaseBurgerNavMenu>
       <HostNavMenu />
     </BaseBurgerNavMenu>
   );

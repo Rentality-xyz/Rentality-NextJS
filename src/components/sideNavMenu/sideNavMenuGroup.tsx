@@ -28,7 +28,7 @@ export default function SideNavMenuGroup({
   };
 
   return (
-    <div className="pt-4">
+    <div>
       <div className="py-2 text-xl font-bold">
         {href != null ? (
           <Link className="flex flex-row items-center gap-2" href={href} onClick={handleOnClick} target={target}>

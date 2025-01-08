@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
-import { twMerge } from "tailwind-merge";
 import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocompleteService";
 import { isEmpty } from "@/utils/string";
 import RntValidationError from "./RntValidationError";
+import { cn } from "@/utils";
+import { env } from "@/utils/env";
+import Image, { StaticImageData } from "next/image";
+import * as React from "react";
+import { color } from "@mui/system";
+import bgBlockSearch from "@/images/bg_block_search.png";
 
-type PlaceDetails = {
+export type PlaceDetails = {
   addressString: string;
   country?: {
     short_name: string;
@@ -42,6 +47,8 @@ export interface RntPlaceAutocompleteInputProps extends React.ComponentPropsWith
   onAddressChange: (praceDetails: PlaceDetails) => void;
   validationClassName?: string;
   validationError?: string;
+  isTransparentStyle?: boolean;
+  iconFrontLabel?: StaticImageData;
 }
 
 export default function RntPlaceAutocompleteInput({
@@ -59,12 +66,14 @@ export default function RntPlaceAutocompleteInput({
   onAddressChange: onAddressChangeHandler,
   validationClassName,
   validationError,
+  isTransparentStyle = false,
+  iconFrontLabel,
 }: RntPlaceAutocompleteInputProps) {
   const [enteredAddress, setEnteredAddress] = useState(initValue);
   const [isEditing, setIsEditing] = useState(false);
 
   const { placesService, placePredictions, getPlacePredictions, isPlacePredictionsLoading } = usePlacesService({
-    apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    apiKey: env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     options: {
       input: "",
       types: includeStreetAddress
@@ -143,22 +152,30 @@ export default function RntPlaceAutocompleteInput({
   }, [placePredictions]);
 
   type = type ?? "text";
-  const cClassName = twMerge("relative text-black flex flex-col w-full", className);
-  const lClassName = twMerge("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
-  const iClassName = twMerge(
+  const cClassName = cn("relative text-black flex flex-col w-full", className);
+  const lClassName = cn("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
+  const iClassName = cn(
     "w-full h-12 border-2 rounded-full pl-4 disabled:bg-gray-300 disabled:text-gray-600",
     inputClassName
   );
   return (
     <div className={cClassName}>
-      {!isEmpty(label) && (
-        <label className={lClassName} htmlFor={id}>
-          {label}
-        </label>
-      )}
+      {!isEmpty(label) &&
+        (isTransparentStyle ? (
+          <label className={cn("flex items-center", lClassName)} htmlFor={id}>
+            {!isEmpty(iconFrontLabel?.src) && <Image src={iconFrontLabel!!} alt="" className="mr-2" />}
+            {label}
+            <Image src={bgBlockSearch} alt="" className="absolute left-0 top-[34px] h-[60%] w-full rounded-full" />
+          </label>
+        ) : (
+          <label className={lClassName} htmlFor={id}>
+            {label}
+          </label>
+        ))}
       <input
         // ref={ref}
         className={iClassName}
+        style={isTransparentStyle ? { backgroundColor: "transparent", border: "0px", color: "white" } : {}}
         autoComplete="off"
         id={id}
         name={id}

@@ -1,3 +1,4 @@
+import { env } from "@/utils/env";
 import { Html, Head, Main, NextScript } from "next/document";
 
 export default function Document() {
@@ -10,12 +11,20 @@ export default function Document() {
           rel="stylesheet"
           href="https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css"
         />
-        <link
-          rel="stylesheet"
-          href="https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css"
-        />
+        {env.NEXT_PUBLIC_FB_PIXEL_ID > 0 && (
+          <noscript>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              height="1"
+              width="1"
+              alt=""
+              style={{ display: "none" }}
+              src={`https://www.facebook.com/tr?id=${env.NEXT_PUBLIC_FB_PIXEL_ID}&ev=PageView&noscript=1`}
+            />
+          </noscript>
+        )}
       </Head>
-      <body className="backgroundMain">
+      <body className="backgroundMain font-['Montserrat',Arial,sans-serif] text-white">
         <Main />
         <NextScript />
       </body>

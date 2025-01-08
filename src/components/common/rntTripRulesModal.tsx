@@ -10,11 +10,14 @@ import tripRulesTollsAndTickets from "@/images/trip_rules_tolls_and_tickets.png"
 import tripRulesDistanceIncluded from "@/images/trip_rules_distance_included.png";
 import tripRulesGuestToHostCommunication from "@/images/trip_rules_host_to_guest_communications.png";
 import tripRulesCarSharingAgreement from "@/images/trip_rules_car_sharing_agreement.png";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
+import { useTranslation } from "react-i18next";
+import { cn } from "@/utils";
 
-export default function RntTripRulesModal({}: {}) {
+export default function RntTripRulesModal({ buttonClassName }: { buttonClassName?: string }) {
   const [open, setOpen] = React.useState(false);
+  const { t } = useTranslation();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -26,9 +29,9 @@ export default function RntTripRulesModal({}: {}) {
 
   return (
     <React.Fragment>
-      <RntButtonTransparent className="w-36" onClick={handleClickOpen}>
-        <div className="text-[#52D1C9]">
-          <strong className="text-l">Trip Rules</strong>
+      <RntButtonTransparent className={cn("w-36", buttonClassName)} onClick={handleClickOpen}>
+        <div className="text-rentality-secondary">
+          <strong className="text-l">{t("trip_rules.trip_rules")}</strong>
         </div>
       </RntButtonTransparent>
       <Dialog
@@ -49,7 +52,7 @@ export default function RntTripRulesModal({}: {}) {
             background: "#240F50",
           }}
         >
-          <div className="text-[#52D1C9]">Trip rules</div>
+          <div className="text-rentality-secondary">{t("trip_rules.trip_rules")}</div>
         </DialogTitle>
         <DialogContent
           sx={{
@@ -63,130 +66,51 @@ export default function RntTripRulesModal({}: {}) {
             id="alert-dialog-description"
           >
             <div className="flex flex-col md:grid md:grid-cols-3 md:gap-4">
-              <div className="bg-rentality-bg p-2">
-                <div className="flex">
-                  <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesNoStartReturn} width={60} height={60} alt="" />
-                  </div>
-                  <div className="w-11/12">
-                    <strong>1. Start and Return on time</strong>
-                    <div className="text-gray-500">
-                      Start and end your trip on time according to the time in the reservation order.
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-rentality-bg p-2">
-                <div className="flex">
-                  <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesLicense} width={60} height={60} alt="" />
-                  </div>
-                  <div className="w-11/12">
-                    <strong>2. Keep your license handy</strong>
-                    <div className="text-gray-500">
-                      Make sure to carry your physical driver`&apos;s license with you whenever you`&apos;re behind the
-                      wheel.
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-rentality-bg p-2">
-                <div className="flex">
-                  <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesRefuelling} width={60} height={60} alt="" />
-                  </div>
-                  <div className="w-11/12">
-                    <strong>3. Refuel the vehicle</strong>
-                    <div className="text-gray-500">
-                      Please return the vehicle with the same fuel level you started with. You`&apos;ll be charged
-                      retroactively for any missing fuel/battery charge.
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-rentality-bg p-2">
-                <div className="flex">
-                  <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesNoSmoking} width={60} height={60} alt="" />
-                  </div>
-                  <div className="w-11/12">
-                    <strong>4. No smoking</strong>
-                    <div className="text-gray-500">
-                      Guests who violate the no-smoking policy may be imposed by the host, and may be banned from the
-                      platform.
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-rentality-bg p-2">
-                <div className="flex">
-                  <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesKeepTheVehicleTidy} width={60} height={60} alt="" />
-                  </div>
-                  <div className="w-11/12">
-                    <strong>5. Keep the vehicle tidy</strong>
-                    <div className="text-gray-500">
-                      If the vehicle is found to be unreasonably dirty upon return, you may be subject to a cleaning
-                      fine by the host.
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-rentality-bg p-2">
-                <div className="flex">
-                  <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesTollsAndTickets} width={60} height={60} alt="" />
-                  </div>
-                  <div className="w-11/12">
-                    <strong>6. Tolls and tickets</strong>
-                    <div className="text-gray-500">
-                      You’re responsible for paying the cost of any certain tickets, tolls or fees incurred during your
-                      trip. Hosts may request reimbursement within 90 days post-trip.
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-rentality-bg p-2">
-                <div className="flex">
-                  <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesDistanceIncluded} width={60} height={60} alt="" />
-                  </div>
-                  <div className="w-11/12">
-                    <strong>7. Distance included in trip</strong>
-                    <div className="text-gray-500">
-                      In your trip receipt indicates distance included per trip and price per 1 overmile. For any
-                      additional miles driven, you`&apos;ll be charged.
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-rentality-bg p-2">
-                <div className="flex">
-                  <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesGuestToHostCommunication} width={60} height={60} alt="" />
-                  </div>
-                  <div className="w-11/12">
-                    <strong>8. Guest-to-host communication</strong>
-                    <div className="text-gray-500">
-                      In case of extraordinary situations, immediately contact the host via chat and phone number
-                      indicated in the trip card.
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-rentality-bg p-2">
-                <div className="flex">
-                  <div className="mx-3 mt-1 w-1/12">
-                    <Image src={tripRulesCarSharingAgreement} width={60} height={60} alt="" />
-                  </div>
-                  <div className="w-11/12">
-                    <strong>9. Car sharing agreement</strong>
-                    <div className="text-gray-500">
-                      Check Car sharing agreement and have it handy which can be found and downloaded in Trip details.
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <TripRuleCard
+                iconSrc={tripRulesNoStartReturn}
+                title={t("trip_rules.rule_1_title")}
+                text={t("trip_rules.rule_1_text")}
+              />
+              <TripRuleCard
+                iconSrc={tripRulesLicense}
+                title={t("trip_rules.rule_2_title")}
+                text={t("trip_rules.rule_2_text")}
+              />
+              <TripRuleCard
+                iconSrc={tripRulesRefuelling}
+                title={t("trip_rules.rule_3_title")}
+                text={t("trip_rules.rule_3_text")}
+              />
+              <TripRuleCard
+                iconSrc={tripRulesNoSmoking}
+                title={t("trip_rules.rule_4_title")}
+                text={t("trip_rules.rule_4_text")}
+              />
+              <TripRuleCard
+                iconSrc={tripRulesKeepTheVehicleTidy}
+                title={t("trip_rules.rule_5_title")}
+                text={t("trip_rules.rule_5_text")}
+              />
+              <TripRuleCard
+                iconSrc={tripRulesTollsAndTickets}
+                title={t("trip_rules.rule_6_title")}
+                text={t("trip_rules.rule_6_text")}
+              />
+              <TripRuleCard
+                iconSrc={tripRulesDistanceIncluded}
+                title={t("trip_rules.rule_7_title")}
+                text={t("trip_rules.rule_7_text")}
+              />
+              <TripRuleCard
+                iconSrc={tripRulesGuestToHostCommunication}
+                title={t("trip_rules.rule_8_title")}
+                text={t("trip_rules.rule_8_text")}
+              />
+              <TripRuleCard
+                iconSrc={tripRulesCarSharingAgreement}
+                title={t("trip_rules.rule_9_title")}
+                text={t("trip_rules.rule_9_text")}
+              />
             </div>
           </DialogContentText>
         </DialogContent>
@@ -197,10 +121,26 @@ export default function RntTripRulesModal({}: {}) {
           }}
         >
           <RntButton onClick={handleClose} autoFocus>
-            Got it
+            {t("trip_rules.got_it")}
           </RntButton>
         </DialogActions>
       </Dialog>
     </React.Fragment>
+  );
+}
+
+function TripRuleCard({ iconSrc, title, text }: { iconSrc: StaticImageData; title: string; text: string }) {
+  return (
+    <div className="bg-rentality-bg p-2">
+      <div className="flex">
+        <div className="mx-3 mt-1 w-1/12">
+          <Image src={iconSrc} width={60} height={60} alt="" />
+        </div>
+        <div className="w-11/12">
+          <strong>{title}</strong>
+          <div className="text-gray-500">{text}</div>
+        </div>
+      </div>
+    </div>
   );
 }

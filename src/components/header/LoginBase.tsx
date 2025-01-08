@@ -5,13 +5,13 @@ import { DialogActions } from "@/utils/dialogActions";
 import { useTranslation } from "react-i18next";
 import { Avatar as MuiAvatar } from "@mui/material";
 import { isEmpty } from "@/utils/string";
-// @ts-ignore
 import { Avatar, Identity, Badge, Name, Address } from "@coinbase/onchainkit/identity";
 import { useAuth } from "@/contexts/auth/authContext";
 import RntButton from "../common/rntButton";
+import { env } from "@/utils/env";
 
 function LoginBase() {
-  const { isLoading, isAuthenticated, login } = useAuth();
+  const { isLoadingAuth, isAuthenticated, login } = useAuth();
   const userInfo = useUserInfo();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { t } = useTranslation();
@@ -24,35 +24,18 @@ function LoginBase() {
         }`
       : null;
 
-  useEffect(() => {
-    if (isLoading) return;
-
-    if (!isAuthenticated) {
-      const action = (
-        <>
-          {DialogActions.Button(t("common.info.login"), () => {
-            hideDialogs();
-            login();
-          })}
-          {DialogActions.Cancel(hideDialogs)}
-        </>
-      );
-      showDialog(t("common.info.connect_wallet"), action);
-    }
-  }, [isLoading, isAuthenticated]);
-
-  if (!isLoading && !isAuthenticated)
+  if (!isLoadingAuth && !isAuthenticated)
     return (
-      <RntButton className="h-10 w-28 text-sm sm:w-48 sm:text-base" onClick={login}>
+      <RntButton className="h-10 w-14 text-[10px] max-sm:my-1 max-sm:mr-1 sm:w-48 sm:text-base" onClick={login}>
         {t("common.info.login")}
       </RntButton>
     );
 
   if (userInfo === undefined)
     return (
-      <div className="flex flex-row-reverse items-center gap-4 space-x-4 bg-transparent px-2 py-1">
+      <div className="flex flex-row-reverse items-center gap-4 bg-transparent py-1 lg:space-x-4 lg:px-2">
         <div className="overflow-hidden">
-          <MuiAvatar className="h-20 w-20" alt="" src="" />
+          <MuiAvatar className="h-10 w-10 lg:h-12 lg:w-12" alt="" src="" />
         </div>
         <div className="w-[12ch]"></div>
       </div>
@@ -60,21 +43,21 @@ function LoginBase() {
 
   return (
     <Identity
-      className="bg-transparent xl:flex-row-reverse xl:gap-4"
-      address={userInfo.address}
-      schemaId={process.env.NEXT_PUBLIC_COINBASE_SCHEMA_ID ?? ""}
+      className="cursor-pointer bg-transparent lg:flex-row-reverse xl:gap-4"
+      address={userInfo.address as `0x${string}`}
+      schemaId={env.NEXT_PUBLIC_COINBASE_SCHEMA_ID as `0x${string}`}
     >
       <Name className="hidden text-white xl:flex" />
-      <Address className="hidden text-white xl:flex" />
+      {/*<Address className="hidden text-white xl:flex" />*/}
       <Avatar
-        className="h-20 w-20"
+        className="h-10 w-10 lg:h-12 lg:w-12"
         loadingComponent={
-          <MuiAvatar className="h-20 w-20" alt={userFullName} src={userInfo?.profilePhotoUrl}>
+          <MuiAvatar className="h-10 w-10 lg:h-12 lg:w-12" alt={userFullName} src={userInfo?.profilePhotoUrl}>
             {userInitials}
           </MuiAvatar>
         }
         defaultComponent={
-          <MuiAvatar className="h-20 w-20" alt={userFullName} src={userInfo?.profilePhotoUrl}>
+          <MuiAvatar className="h-10 w-10 lg:h-12 lg:w-12" alt={userFullName} src={userInfo?.profilePhotoUrl}>
             {userInitials}
           </MuiAvatar>
         }

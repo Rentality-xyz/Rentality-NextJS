@@ -3,7 +3,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { formatPhoneNumber, getDateFromBlockchainTime, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { Claim, getClaimStatusTextFromStatus, getClaimTypeTextFromClaimType } from "@/model/Claim";
-import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
 import {
   ContractCreateClaimRequest,
   ContractFullClaimInfo,
@@ -12,52 +12,49 @@ import {
 } from "@/model/blockchain/schemas";
 import { validateContractFullClaimInfo, validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
-import { useChat } from "@/contexts/chat/firebase/chatContext";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { SMARTCONTRACT_VERSION } from "@/abis";
-import { getIpfsURIfromPinata } from "@/utils/ipfsUtils";
+import { getIpfsURI } from "@/utils/ipfsUtils";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
+import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
+import { isUserHasEnoughFunds } from "@/utils/wallet";
+import { formatEther } from "viem";
+import { FileToUpload } from "@/model/FileToUpload";
+import { useTranslation } from "react-i18next";
 
 const useGuestClaims = () => {
   const rentalityContract = useRentality();
   const ethereumInfo = useEthereum();
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
-  const [updateRequired, setUpdateRequired] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [updateRequired, setUpdateRequired] = useState<boolean>(true);
   const [claims, setClaims] = useState<Claim[]>([]);
-  const chatContextInfo = useChat();
+  const { t } = useTranslation();
   const [tripInfos, setTripInfos] = useState<TripInfoForClaimCreation[]>([
-    { tripId: 0, guestAddress: "", tripDescription: "Loading...", tripStart: new Date() },
+    { tripId: 0, guestAddress: "", tripDescription: t("common.info.loading"), tripStart: new Date() },
   ]);
 
-  const updateData = () => {
+  function updateData() {
     setUpdateRequired(true);
-  };
+  }
 
-  const createClaim = async (createClaimRequest: CreateClaimRequest) => {
-    if (rentalityContract === null) {
-      console.error("createClaim: rentalityContract is null");
-      return false;
+  async function createClaim(createClaimRequest: CreateClaimRequest): Promise<Result<boolean, TransactionErrorCode>> {
+    if (!ethereumInfo) {
+      console.error("createClaim error: ethereumInfo is null");
+      return Err("ERROR");
+    }
+
+    if (!rentalityContract) {
+      console.error("createClaim error: rentalityContract is null");
+      return Err("ERROR");
+    }
+
+    if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
+      console.error("createClaim error: user don't have enough funds");
+      return Err("NOT_ENOUGH_FUNDS");
     }
 
     try {
-      const filesToSave = createClaimRequest.localFileUrls.filter((i) => i);
-      const savedFiles: string[] = [];
-
-      if (filesToSave.length > 0) {
-        for (const file of filesToSave) {
-          const response = await uploadFileToIPFS(file.file, "RentalityClaimFile", {
-            createdAt: new Date().toISOString(),
-            createdBy: ethereumInfo?.walletAddress ?? "",
-            version: SMARTCONTRACT_VERSION,
-            chainId: ethereumInfo?.chainId ?? 0,
-          });
-
-          if (!response.success || !response.pinataURL) {
-            throw new Error("Uploaded image to Pinata error");
-          }
-          savedFiles.push(response.pinataURL);
-        }
-      }
+      const savedFiles = await saveClaimFiles(createClaimRequest.localFileUrls, ethereumInfo);
 
       const claimRequest: ContractCreateClaimRequest = {
         tripId: BigInt(createClaimRequest.tripId),
@@ -77,49 +74,70 @@ const useGuestClaims = () => {
       //   message,
       //   "SYSTEM|CLAIM_REQUEST"
       // );
-      return true;
+      return Ok(true);
     } catch (e) {
       console.error("createClaim error:" + e);
-      return false;
+      return Err("ERROR");
     }
-  };
+  }
 
-  const payClaim = async (claimId: number) => {
+  async function payClaim(claimId: number): Promise<Result<boolean, TransactionErrorCode>> {
+    if (!ethereumInfo) {
+      console.error("payClaim error: ethereumInfo is null");
+      return Err("ERROR");
+    }
+
     if (!rentalityContract) {
       console.error("payClaim error: rentalityContract is null");
-      return false;
+      return Err("ERROR");
     }
 
     try {
-      const claimAmountInEth = claims.find((i) => i.claimId === claimId)?.amountInEth ?? 0;
+      const claimAmountInWeth = await rentalityContract.calculateClaimValue(BigInt(claimId));
+      const claimAmountInEth = Number(formatEther(claimAmountInWeth));
 
-      let transaction = await rentalityContract.payClaim(BigInt(claimId), {
-        value: claimAmountInEth,
+      if (!(await isUserHasEnoughFunds(ethereumInfo.signer, claimAmountInEth))) {
+        console.error("payClaim error: user don't have enough funds");
+        return Err("NOT_ENOUGH_FUNDS");
+      }
+
+      const transaction = await rentalityContract.payClaim(BigInt(claimId), {
+        value: claimAmountInWeth,
       });
 
       await transaction.wait();
-      return true;
+      return Ok(true);
     } catch (e) {
       console.error("payClaim error:" + e);
-      return false;
+      return Err("ERROR");
     }
-  };
+  }
 
-  const cancelClaim = async (claimId: number) => {
+  async function cancelClaim(claimId: number): Promise<Result<boolean, TransactionErrorCode>> {
+    if (!ethereumInfo) {
+      console.error("cancelClaim error: ethereumInfo is null");
+      return Err("ERROR");
+    }
+
     if (!rentalityContract) {
       console.error("cancelClaim error: rentalityContract is null");
-      return false;
+      return Err("ERROR");
+    }
+
+    if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
+      console.error("cancelClaim error: user don't have enough funds");
+      return Err("NOT_ENOUGH_FUNDS");
     }
 
     try {
       const transaction = await rentalityContract.rejectClaim(BigInt(claimId));
       await transaction.wait();
-      return true;
+      return Ok(true);
     } catch (e) {
       console.error("cancelClaim error:" + e);
-      return false;
+      return Err("ERROR");
     }
-  };
+  }
 
   useEffect(() => {
     const getClaims = async (rentalityContract: IRentalityContract) => {
@@ -128,7 +146,7 @@ const useGuestClaims = () => {
           console.error("getClaims error: contract is null");
           return;
         }
-        const claimsView: ContractFullClaimInfo[] = await rentalityContract.getMyClaimsAsGuest();
+        const claimsView: ContractFullClaimInfo[] = await rentalityContract.getMyClaimsAs(false);
 
         const claimsData =
           claimsView.length === 0
@@ -157,14 +175,14 @@ const useGuestClaims = () => {
                     hostPhoneNumber: formatPhoneNumber(i.hostPhoneNumber),
                     guestPhoneNumber: formatPhoneNumber(i.guestPhoneNumber),
                     isIncomingClaim: i.claim.isHostClaims,
-                    fileUrls: i.claim.photosUrl.split("|").map((url) => getIpfsURIfromPinata(url)),
+                    fileUrls: i.claim.photosUrl.split("|").map((url) => getIpfsURI(url)),
                     timeZoneId: i.timeZoneId,
                   };
                   return item;
                 })
               );
 
-        const guestTripsView: ContractTripDTO[] = (await rentalityContract.getTripsAsGuest()).filter(
+        const guestTripsView: ContractTripDTO[] = (await rentalityContract.getTripsAs(false)).filter(
           (i) => i.trip.status !== TripStatus.Pending && i.trip.status !== TripStatus.Rejected
         );
 
@@ -236,5 +254,28 @@ const useGuestClaims = () => {
     updateData,
   } as const;
 };
+
+async function saveClaimFiles(filesToSave: FileToUpload[], ethereumInfo: EthereumInfo): Promise<string[]> {
+  filesToSave = filesToSave.filter((i) => i);
+
+  const savedFiles: string[] = [];
+
+  if (filesToSave.length > 0) {
+    for (const file of filesToSave) {
+      const response = await uploadFileToIPFS(file.file, "RentalityClaimFile", {
+        createdAt: new Date().toISOString(),
+        createdBy: ethereumInfo?.walletAddress ?? "",
+        version: SMARTCONTRACT_VERSION,
+        chainId: ethereumInfo?.chainId ?? 0,
+      });
+
+      if (!response.success || !response.pinataURL) {
+        throw new Error("Uploaded image to Pinata error");
+      }
+      savedFiles.push(response.pinataURL);
+    }
+  }
+  return savedFiles;
+}
 
 export default useGuestClaims;

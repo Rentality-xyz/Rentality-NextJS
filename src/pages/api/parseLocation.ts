@@ -1,4 +1,5 @@
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import { env } from "@/utils/env";
 import { isEmpty } from "@/utils/string";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -52,8 +53,11 @@ export const getLocationDetails = async (
     "" ??
     getAddressComponents(placeDetails, "sublocality_level_1")?.long_name ??
     "";
-  const locationLat = placeDetails?.geometry?.location?.lat.toString() ?? "";
-  const locationLng = placeDetails?.geometry?.location?.lng.toString() ?? "";
+  const placeLat = placeDetails?.geometry?.location?.lat ?? 0; //because lat returns as number and not as ()=>number
+  const placeLng = placeDetails?.geometry?.location?.lng ?? 0; //because lat returns as number and not as ()=>number
+
+  const locationLat = typeof placeLat === "number" ? placeLat.toFixed(6) : placeLat().toFixed(6);
+  const locationLng = typeof placeLng === "number" ? placeLng.toFixed(6) : placeLng().toFixed(6);
 
   var googleTimeZoneResponse = await fetch(
     `https://maps.googleapis.com/maps/api/timezone/json?location=${locationLat},${locationLng}&timestamp=${timestamp ?? 0}&key=${GOOGLE_MAPS_API_KEY}`
@@ -85,8 +89,8 @@ export const getLocationDetails = async (
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ParseLocationResponse>) {
-  const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  if (!GOOGLE_MAPS_API_KEY) {
+  const GOOGLE_MAPS_API_KEY = env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  if (isEmpty(GOOGLE_MAPS_API_KEY)) {
     console.error("ParseLocation error: GOOGLE_MAPS_API_KEY was not set");
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;

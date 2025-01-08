@@ -53,8 +53,10 @@ export type ContractCreateCarRequest = {
   milesIncludedPerDay: bigint;
   timeBufferBetweenTripsInSec: bigint;
   geoApiKey: string;
-  insuranceIncluded: boolean;
   locationInfo: ContractSignedLocationInfo;
+  currentlyListed: boolean;
+  insuranceRequired: boolean;
+  insurancePriceInUsdCents: bigint;
 };
 
 export type ContractUpdateCarInfoRequest = {
@@ -65,7 +67,10 @@ export type ContractUpdateCarInfoRequest = {
   milesIncludedPerDay: bigint;
   timeBufferBetweenTripsInSec: bigint;
   currentlyListed: boolean;
-  insuranceIncluded: boolean;
+  insuranceRequired: boolean;
+  insurancePriceInUsdCents: bigint;
+  engineType: EngineType;
+  tokenUri: string;
 };
 
 export type ContractSearchCarParams = {
@@ -157,6 +162,9 @@ export type ContractTripDTO = {
   returnLocation: ContractLocationInfo;
   guestPhoneNumber: string;
   hostPhoneNumber: string;
+  insurancesInfo: ContractInsuranceInfo[];
+  paidForInsuranceInUsdCents: bigint;
+  guestDrivingLicenseIssueCountry: string;
 };
 
 export type ContractChatInfo = {
@@ -276,6 +284,7 @@ export type ContractTripReceiptDTO = {
   endFuelLevel: bigint;
   startOdometer: bigint;
   endOdometer: bigint;
+  insuranceFee: bigint;
 };
 
 export type ContractCalculatePaymentsDTO = {
@@ -294,6 +303,24 @@ export type ContractKYCInfo = {
   createDate: bigint;
   isTCPassed: boolean;
   TCSignature: string;
+};
+
+export type ContractCivicKYCInfo = {
+  fullName: string;
+  licenseNumber: string;
+  expirationDate: bigint;
+  issueCountry: string;
+  email: string;
+};
+
+export type ContractAdditionalKYCInfo = {
+  issueCountry: string;
+  email: string;
+};
+
+export type ContractFullKYCInfoDTO = {
+  kyc: ContractKYCInfo;
+  additionalKYC: ContractAdditionalKYCInfo;
 };
 
 export type ContractSearchCarWithDistance = {
@@ -324,6 +351,40 @@ export type ContractSearchCar = {
   dropOf: bigint;
   insuranceIncluded: boolean;
   locationInfo: ContractLocationInfo;
+  insuranceInfo: ContractInsuranceCarInfo;
+  isGuestHasInsurance: boolean;
+};
+
+export type ContractAvailableCarDTO = {
+  carId: bigint;
+  brand: string;
+  model: string;
+  yearOfProduction: bigint;
+  pricePerDayInUsdCents: bigint;
+  pricePerDayWithDiscount: bigint;
+  tripDays: bigint;
+  totalPriceWithDiscount: bigint;
+  taxes: bigint;
+  securityDepositPerTripInUsdCents: bigint;
+  engineType: EngineType;
+  milesIncludedPerDay: bigint;
+  host: string;
+  hostName: string;
+  hostPhotoUrl: string;
+  metadataURI: string;
+  underTwentyFiveMilesInUsdCents: bigint;
+  aboveTwentyFiveMilesInUsdCents: bigint;
+  pickUp: bigint;
+  dropOf: bigint;
+  insuranceIncluded: boolean;
+  locationInfo: ContractLocationInfo;
+  insuranceInfo: ContractInsuranceCarInfo;
+  fuelPrice: bigint;
+  carDiscounts: ContractBaseDiscount;
+  salesTax: bigint;
+  governmentTax: bigint;
+  distance: bigint;
+  isGuestHasInsurance: boolean;
 };
 
 export type ContractGeoData = {
@@ -352,6 +413,8 @@ export type ContractCarDetails = {
   geoVerified: boolean;
   currentlyListed: boolean;
   locationInfo: ContractLocationInfo;
+  carVinNumber: string;
+  carMetadataURI: string;
 };
 
 export type ContractFloridaTaxes = {
@@ -406,6 +469,83 @@ export type ContractKycCommissionData = {
   commissionPaid: boolean;
 };
 
+export type ContractTripFilter = {
+  paymentStatus: PaymentStatus;
+  status: AdminTripStatus;
+  location: ContractLocationInfo;
+  startDateTime: bigint;
+  endDateTime: bigint;
+};
+
+export type ContractAdminTripDTO = {
+  trip: ContractTrip;
+  carMetadataURI: string;
+  carLocation: ContractLocationInfo;
+};
+
+export type ContractAllTripsDTO = {
+  trips: ContractAdminTripDTO[];
+  totalPageCount: bigint;
+};
+
+export type ContractAdminCarDTO = {
+  car: ContractCarDetails;
+  carMetadataURI: string;
+};
+
+export type ContractAllCarsDTO = {
+  cars: ContractAdminCarDTO[];
+  totalPageCount: bigint;
+};
+
+export type ContractFilterInfoDTO = {
+  maxCarPrice: bigint;
+  minCarYearOfProduction: bigint;
+};
+
+export type ContractInsuranceCarInfo = {
+  required: boolean;
+  priceInUsdCents: bigint;
+};
+
+export type ContractSaveInsuranceRequest = {
+  companyName: string;
+  policyNumber: string;
+  photo: string;
+  comment: string;
+  insuranceType: InsuranceType;
+};
+
+export type ContractInsuranceInfo = {
+  companyName: string;
+  policyNumber: string;
+  photo: string;
+  comment: string;
+  insuranceType: InsuranceType;
+  createdTime: bigint;
+  createdBy: string;
+};
+
+export type ContractInsuranceDTO = {
+  tripId: bigint;
+  carBrand: string;
+  carModel: string;
+  carYear: bigint;
+  insuranceInfo: ContractInsuranceInfo;
+  createdByHost: boolean;
+  creatorPhoneNumber: string;
+  creatorFullName: string;
+  startDateTime: bigint;
+  endDateTime: bigint;
+  isActual: boolean;
+};
+
+export type ContractCarInfoWithInsurance = {
+  carInfo: ContractCarInfo;
+  insuranceInfo: ContractInsuranceCarInfo;
+  carMetadataURI: string;
+};
+
 export type TripStatus = bigint;
 export const TripStatus = {
   Pending: BigInt(0), // Created
@@ -416,6 +556,7 @@ export const TripStatus = {
   Finished: BigInt(5), //CheckedOutByHost
   Closed: BigInt(6), //Finished
   Rejected: BigInt(7), //Canceled
+
   CompletedWithoutGuestComfirmation: BigInt(100), //Finished
 };
 
@@ -451,6 +592,64 @@ export const TaxesLocationType = {
   City: BigInt(0),
   State: BigInt(1),
   Country: BigInt(2),
+};
+
+export type PaymentStatus = bigint;
+export const PaymentStatus = {
+  Any: BigInt(0),
+  PaidToHost: BigInt(1),
+  Unpaid: BigInt(2),
+  RefundToGuest: BigInt(3),
+  Prepayment: BigInt(4),
+};
+
+export type AdminTripStatus = bigint;
+export const AdminTripStatus = {
+  Any: BigInt(0),
+  Created: BigInt(1),
+  Approved: BigInt(2),
+  CheckedInByHost: BigInt(3),
+  CheckedInByGuest: BigInt(4),
+  CheckedOutByGuest: BigInt(5),
+  CheckedOutByHost: BigInt(6),
+  Finished: BigInt(7),
+  GuestCanceledBeforeApprove: BigInt(8),
+  HostCanceledBeforeApprove: BigInt(9),
+  GuestCanceledAfterApprove: BigInt(10),
+  HostCanceledAfterApprove: BigInt(11),
+  CompletedWithoutGuestConfirmation: BigInt(12),
+  CompletedByGuest: BigInt(13),
+  CompletedByAdmin: BigInt(14),
+};
+
+export type Role = bigint;
+export const Role = {
+  Guest: BigInt(0),
+  Host: BigInt(1),
+  Manager: BigInt(2),
+  Admin: BigInt(3),
+  KYCManager: BigInt(4),
+};
+
+export type CarUpdateStatus = bigint;
+export const CarUpdateStatus = {
+  Add: BigInt(0),
+  Update: BigInt(1),
+  Burn: BigInt(2),
+};
+
+export type EventType = bigint;
+export const EventType = {
+  Car: BigInt(0),
+  Claim: BigInt(1),
+  Trip: BigInt(2),
+};
+
+export type InsuranceType = bigint;
+export const InsuranceType = {
+  None: BigInt(0),
+  General: BigInt(1),
+  OneTime: BigInt(2),
 };
 
 export type EngineType = bigint;

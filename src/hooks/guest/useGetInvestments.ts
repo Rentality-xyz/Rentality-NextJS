@@ -40,8 +40,8 @@ const useGetInvestments = () => {
       "currencyConverter",
       ethereumInfo.signer
     )) as unknown as IRentalityCurrencyConverterContract;
-    const inEth = await contract.getFromUsdLatest(ETH_DEFAULT_ADDRESS, BigInt(amount * 100));
-    await rentalityContract.invest(investId, { value: inEth[0] });
+    const {valueInEth} = await contract.getFromUsdLatest(ETH_DEFAULT_ADDRESS, BigInt(amount * 100));
+    await rentalityContract.invest(investId, { value: valueInEth });
   };
 
   useEffect(() => {

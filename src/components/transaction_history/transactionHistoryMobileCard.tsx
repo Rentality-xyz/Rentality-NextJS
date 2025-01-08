@@ -2,8 +2,9 @@ import Link from "next/link";
 import { TransactionHistoryInfo } from "@/model/TransactionHistoryInfo";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import React from "react";
-import { getTripStatusBgColorClassFromStatus, getTripStatusTextFromStatus } from "@/model/TripInfo";
+import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { usePathname } from "next/navigation";
+import { getTripStatusBgColorFromStatus } from "@/utils/tailwind";
 
 type TransactionHistoryMobileCardProps = {
   isHost: boolean;
@@ -14,12 +15,12 @@ export default function TransactionHistoryMobileCard(props: TransactionHistoryMo
   const { isHost, transaction } = props;
   const pathname = usePathname();
   const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${transaction.transHistoryId}?back=${pathname}`;
-  let statusBgColor = getTripStatusBgColorClassFromStatus(transaction.status);
+  let statusBgColor = getTripStatusBgColorFromStatus(transaction.status);
 
   return (
     <div key={transaction.transHistoryId} className="mt-8">
       <div className="mb-2 flex justify-between text-sm">
-        <span className="text-rentality-secondary-shade">
+        <span className="text-rentality-secondary">
           {dateRangeFormatShortMonthDateYear(
             transaction.startDateTime,
             transaction.endDateTime,
@@ -49,7 +50,7 @@ export default function TransactionHistoryMobileCard(props: TransactionHistoryMo
       <div className="mb-2 flex justify-between text-sm">
         <strong className="font-normal">{transaction.car}</strong>
         <Link href={detailsLink}>
-          <span className="font-normal text-rentality-secondary-shade">Details</span>
+          <span className="font-normal text-rentality-secondary">Details</span>
         </Link>
       </div>
       <hr className="border-b-2 border-b-gray-300" />

@@ -1,101 +1,99 @@
 import ClaimHistory from "@/components/claims/ClaimHistory";
-import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useGuestClaims from "@/hooks/guest/useGuestClaims";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
-import { useRouter } from "next/navigation";
+import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useTranslation } from "react-i18next";
 import CreateClaim from "@/components/claims/CreateClaim";
 import { CreateClaimRequest } from "@/model/CreateClaimRequest";
-import { TFunction } from "@/utils/i18n";
+import { Err, Result, TransactionErrorCode } from "@/model/utils/result";
+import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function Claims() {
-  // const [isLoading, claims, tripInfos, createClaim, cancelClaim, payClaim] = useGuestClaims();
   const { t } = useTranslation();
-  const { showInfo, showError, hideDialogs } = useRntDialogs();
+  const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { isLoading, claims, tripInfos, createClaim, payClaim, cancelClaim, updateData } = useGuestClaims();
-  const router = useRouter();
-  const t_h_claims: TFunction = (name, options) => {
-    return t("claims.host." + name, options);
-  };
 
-  const handlePayClaim = async (claimId: number) => {
-    try {
-      showInfo(t("common.info.sign"));
-      const result = await payClaim(claimId);
-      hideDialogs();
-      if (!result) {
-        showError(t('claims.errors.pay_claim_failed"'));
-        return;
-      }
-      updateData();
-    } catch (e) {
-      showError(t('claims.errors.pay_claim_failed"'));
-      console.error("handlePayClaim error:" + e);
-    }
-  };
-
-  const handleCancelClaim = async (claimId: number) => {
-    try {
-      showInfo(t("common.info.sign"));
-      const result = await cancelClaim(claimId);
-      hideDialogs();
-      if (!result) {
-        showError(t_h_claims("claim_cancel_failed"));
-        return;
-      }
-      updateData();
-    } catch (e) {
-      showError(t_h_claims("claim_cancel_failed"));
-      console.error("handleCancelClaim error:" + e);
-    }
-  };
-
-  const handleCreateClaim = async (createClaimRequest: CreateClaimRequest) => {
+  async function handleCreateClaim(
+    createClaimRequest: CreateClaimRequest
+  ): Promise<Result<boolean, TransactionErrorCode>> {
     if (!createClaimRequest.tripId) {
-      showError(t_h_claims("select_trip"));
-      return false;
+      showError(t("claims.host.select_trip"));
+      return Err("ERROR");
     }
     if (!createClaimRequest.claimType && createClaimRequest.claimType !== BigInt(0)) {
-      showError(t_h_claims("select_type"));
-      return false;
+      showError(t("claims.host.select_type"));
+      return Err("ERROR");
     }
     if (!createClaimRequest.description) {
-      showError(t_h_claims("enter_description"));
-      return false;
+      showError(t("claims.host.enter_description"));
+      return Err("ERROR");
     }
     if (!createClaimRequest.amountInUsdCents) {
-      showError(t_h_claims("enter_amount"));
-      return false;
+      showError(t("claims.host.enter_amount"));
+      return Err("ERROR");
     }
 
-    try {
-      showInfo(t("common.info.sign"));
-      const result = await createClaim(createClaimRequest);
-      hideDialogs();
-      if (!result) {
-        showError(t_h_claims("claim_failed"));
-        return false;
-      }
+    showInfo(t("common.info.sign"));
+
+    const result = await createClaim(createClaimRequest);
+
+    hideSnackbars();
+
+    if (result.ok) {
       updateData();
-      return true;
-    } catch (e) {
-      showError(t_h_claims("claim_failed"));
-      console.error("handleCreateClaim error:" + e);
-      return false;
+    } else {
+      if (result.error === "NOT_ENOUGH_FUNDS") {
+        showError(t("common.add_fund_to_wallet"));
+      } else {
+        showError(t("claims.host.claim_failed"));
+      }
     }
-  };
+    return result;
+  }
+
+  async function handleCancelClaim(claimId: number) {
+    showInfo(t("common.info.sign"));
+
+    const result = await cancelClaim(claimId);
+
+    hideSnackbars();
+
+    if (result.ok) {
+      updateData();
+    } else {
+      if (result.error === "NOT_ENOUGH_FUNDS") {
+        showError(t("common.add_fund_to_wallet"));
+      } else {
+        showError(t("claims.host.claim_cancel_failed"));
+      }
+    }
+  }
+
+  async function handlePayClaim(claimId: number) {
+    showInfo(t("common.info.sign"));
+
+    const result = await payClaim(claimId);
+
+    hideSnackbars();
+
+    if (result.ok) {
+      updateData();
+    } else {
+      if (result.error === "NOT_ENOUGH_FUNDS") {
+        showError(t("common.add_fund_to_wallet"));
+      } else {
+        showError(t("claims.errors.pay_claim_failed"));
+      }
+    }
+  }
 
   return (
-    <Layout>
-      <div className="flex flex-col">
-        <PageTitle title={t("claims.title")} />
-        <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={false} />
-        {isLoading ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-            {t("common.info.loading")}
-          </div>
-        ) : (
+    <>
+      <PageTitle title={t("claims.title")} />
+      <CheckingLoadingAuth>
+        <RntSuspense isLoading={isLoading}>
+          <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={false} />
           <ClaimHistory
             claims={claims}
             payClaim={handlePayClaim}
@@ -105,8 +103,8 @@ export default function Claims() {
               return t("claims." + path, options);
             }}
           />
-        )}
-      </div>
-    </Layout>
+        </RntSuspense>
+      </CheckingLoadingAuth>
+    </>
   );
 }

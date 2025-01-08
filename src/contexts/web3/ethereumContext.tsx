@@ -3,18 +3,20 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
+import { formatEther } from "viem";
 
 export type EthereumInfo = {
   provider: BrowserProvider;
   signer: Signer;
   walletAddress: string;
+  walletBalance: number;
   chainId: number;
   isWalletConnected: boolean;
   connectWallet: () => Promise<void>;
   requestChainIdChange: (chainId: number) => Promise<boolean>;
 };
 
-const EthereumContext = createContext<EthereumInfo | null>(null);
+const EthereumContext = createContext<EthereumInfo | null | undefined>(undefined);
 
 export function useEthereum() {
   return useContext(EthereumContext);
@@ -24,7 +26,7 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
   const { connectWallet, ready, authenticated } = usePrivy();
   const { wallets, ready: walletsReady } = useWallets();
   const router = useRouter();
-  const [ethereumInfo, setEthereumInfo] = useState<EthereumInfo | null>(null);
+  const [ethereumInfo, setEthereumInfo] = useState<EthereumInfo | null | undefined>(undefined);
   const [isReloadPageRequested, setIsReloadPageRequested] = useState<boolean>(false);
 
   const isInitiating = useRef(false);
@@ -75,9 +77,13 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
 
         const currentChainId = Number(wallets[0].chainId.split(":")[1]);
         const currentWalletAddress = wallets[0].address;
+        const currentWalletBalanceInWeth = await etherv6Provider.getBalance(currentWalletAddress);
+        const currentWalletBalanceInEth = currentWalletBalanceInWeth
+          ? parseFloat(formatEther(currentWalletBalanceInWeth))
+          : 0;
 
         setEthereumInfo((prev) => {
-          if (prev !== null) {
+          if (prev !== undefined && prev !== null) {
             setIsReloadPageRequested(prev.chainId !== currentChainId);
           }
 
@@ -85,6 +91,7 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
             provider: etherv6Provider,
             signer: signer,
             walletAddress: currentWalletAddress,
+            walletBalance: currentWalletBalanceInEth,
             chainId: currentChainId,
             isWalletConnected: ready && authenticated,
             connectWallet: async () => {
@@ -102,11 +109,11 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
   }, [wallets, connectWallet, ready, authenticated, walletsReady]);
 
   useEffect(() => {
-    if (!authenticated && ethereumInfo !== null) {
+    if (!authenticated && ethereumInfo !== null && ready) {
       console.debug(`User has logged out. Reset ethereumInfo`);
       setEthereumInfo(null);
     }
-  }, [authenticated, ethereumInfo]);
+  }, [authenticated, ethereumInfo, ready]);
 
   useEffect(() => {
     if (!isReloadPageRequested) return;

@@ -1,27 +1,26 @@
-import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import TripCard from "@/components/tripCard/tripCard";
 import useGuestTrips from "@/hooks/guest/useGuestTrips";
 import { useTranslation } from "react-i18next";
+import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
+import RntSuspense from "@/components/common/rntSuspense";
 
 export default function History() {
-  const { isLoading, tripsHistory, confirmCarDetails } = useGuestTrips();
+  const { isLoadingTrips, tripsHistory, confirmCarDetails } = useGuestTrips();
   const { t } = useTranslation();
 
-  const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {};
+  const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
+    return true;
+  };
   const handleConfirmCarDetails = async (tripId: number) => {
     await confirmCarDetails(tripId);
   };
 
   return (
-    <Layout>
-      <div className="flex flex-col">
-        <PageTitle title={t("booked.history_title")} />
-        {isLoading ? (
-          <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-            {t("common.info.loading")}
-          </div>
-        ) : (
+    <>
+      <PageTitle title={t("booked.history_title")} />
+      <CheckingLoadingAuth>
+        <RntSuspense isLoading={isLoadingTrips}>
           <div className="my-4 flex flex-col gap-4 pr-4">
             {tripsHistory != null && tripsHistory.length > 0 ? (
               tripsHistory.map((value) => {
@@ -42,8 +41,8 @@ export default function History() {
               </div>
             )}
           </div>
-        )}
-      </div>
-    </Layout>
+        </RntSuspense>
+      </CheckingLoadingAuth>
+    </>
   );
 }

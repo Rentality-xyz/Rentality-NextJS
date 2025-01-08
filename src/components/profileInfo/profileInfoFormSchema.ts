@@ -1,29 +1,15 @@
-import moment from "moment";
 import { z } from "zod";
 
 export const profileInfoFormSchema = z.object({
   profilePhotoUrl: z.string(),
-  firstName: z
+  nickname: z
     .string()
+    .trim()
     .min(1, "first name is too short")
     .max(30, "first name is too long")
-    .regex(new RegExp(/^[\w-]+$/), "first name contains invalid characters"),
-  lastName: z
-    .string()
-    .min(1, "last name is too short")
-    .max(30, "last name is too long")
-    .regex(new RegExp(/^[\w-]+$/), "last name contains invalid characters"),
+    .regex(new RegExp(/^[\w-]+$/), "nickname contains invalid characters"),
   phoneNumber: z.string().max(30, "phone number is too long"),
-  drivingLicenseNumber: z.string().max(15, "License number is too long"),
-  drivingLicenseExpire: z
-    .date({
-      errorMap: (issue, { defaultError }) => ({
-        message: issue.code === "invalid_date" ? "Please enter date in format mm/dd/year" : defaultError,
-      }),
-    })
-    .min(moment().toDate(), "Date should be in the future")
-    .or(z.undefined()),
-  //.refine((data) => !isNaN(data?.getTime() ?? 0), { message: "Please enter date in format mm/dd/year" }),
+  isTerms: z.boolean(),
   tcSignature: z.string(),
 });
 

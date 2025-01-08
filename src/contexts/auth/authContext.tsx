@@ -1,8 +1,9 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { useLogin, useLogout, usePrivy, useWallets } from "@privy-io/react-auth";
+import { bigIntReplacer } from "@/utils/json";
 
 interface useAuthInterface {
-  isLoading: boolean;
+  isLoadingAuth: boolean;
   isAuthenticated: boolean;
 
   login: () => void;
@@ -20,12 +21,30 @@ export function useAuth() {
 }
 
 export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
-  const { connectWallet, ready, authenticated, login, logout } = usePrivy();
+  const { connectWallet, ready, authenticated } = usePrivy();
   const { wallets, ready: walletsReady } = useWallets();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const custonLogin = useCallback(() => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isLoadingAuth, setIsLoadingAuth] = useState<boolean>(true);
+
+  const { login } = useLogin({
+    onComplete: (user, isNewUser, wasAlreadyAuthenticated, loginMethod, linkedAccount) => {
+      console.log(
+        `Privy callback authContext.tsx. useLogin.onComplete -> data:${JSON.stringify({ user, isNewUser, wasAlreadyAuthenticated, loginMethod, linkedAccount })}`
+      );
+    },
+    onError: (error) => {
+      console.log(`Privy callback authContext.tsx. useLogin.onError -> error:${JSON.stringify(error)}`);
+    },
+  });
+
+  const { logout } = useLogout({
+    onSuccess: () => {
+      console.log("Privy callback authContext.tsx. useLogout.onSuccess");
+    },
+  });
+
+  const customLogin = useCallback(() => {
     if (authenticated && wallets.length === 0) {
       connectWallet();
       return;
@@ -34,21 +53,38 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
   }, [authenticated, wallets, connectWallet, login]);
 
   useEffect(() => {
-    if (!ready) return;
-    if (!walletsReady) return;
-
-    setIsAuthenticated(authenticated && wallets.length > 0);
-    setIsLoading(false);
+    const isAuth = ready && walletsReady && authenticated && wallets.length > 0;
+    setIsAuthenticated(isAuth);
+    setIsLoadingAuth(!ready || !walletsReady);
   }, [ready, walletsReady, authenticated, wallets]);
+
+  useEffect(() => {
+    console.log(`AuthProvider usePrivy.ready has changed to ${ready}`);
+  }, [ready]);
+  useEffect(() => {
+    console.log(`AuthProvider usePrivy.authenticated has changed to ${authenticated}`);
+  }, [authenticated]);
+  useEffect(() => {
+    console.log(`AuthProvider useWallets.ready has changed to ${walletsReady}`);
+  }, [walletsReady]);
+  useEffect(() => {
+    console.log(`AuthProvider wallets has changed to ${JSON.stringify(wallets, bigIntReplacer, 2)}`);
+  }, [wallets]);
+  useEffect(() => {
+    console.log(`AuthProvider isLoadingAuth has changed to ${isLoadingAuth}`);
+  }, [isLoadingAuth]);
+  useEffect(() => {
+    console.log(`AuthProvider isAuthenticated has changed to ${isAuthenticated}`);
+  }, [isAuthenticated]);
 
   const value = useMemo(
     () => ({
-      isLoading: isLoading,
+      isLoadingAuth: isLoadingAuth,
       isAuthenticated: isAuthenticated,
-      login: custonLogin,
+      login: customLogin,
       logout: logout,
     }),
-    [isLoading, isAuthenticated, custonLogin, logout]
+    [isLoadingAuth, isAuthenticated, customLogin, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

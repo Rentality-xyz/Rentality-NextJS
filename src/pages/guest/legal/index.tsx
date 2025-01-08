@@ -1,12 +1,5 @@
-import LegalContent from "@/pages/legal_content";
-import Layout from "@/components/layout/layout";
+import LegalContent from "@/pages/legal_matters";
 
 export default function Legal() {
-  return (
-    <div>
-      <Layout>
-        <LegalContent />
-      </Layout>
-    </div>
-  );
+  return <LegalContent />;
 }

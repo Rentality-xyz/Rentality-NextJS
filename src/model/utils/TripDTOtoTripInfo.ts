@@ -1,9 +1,9 @@
-import { TripInfo } from "@/model/TripInfo";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { TripInfo, TripInfoShortDetails } from "@/model/TripInfo";
+import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { isEmpty } from "@/utils/string";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
-import { ContractTripDTO, EngineType, TripStatus } from "@/model/blockchain/schemas";
+import { ContractTripDTO, EngineType, InsuranceType, TripStatus } from "@/model/blockchain/schemas";
 import { calculateDays } from "@/utils/date";
 
 export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetailsConfirmed?: boolean) => {
@@ -24,12 +24,21 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
     Math.ceil(Number(tripDTO.trip.pricePerDayInUsdCents) / Number(tripDTO.trip.milesIncludedPerDay)) / 100;
   const tankVolumeInGal = Number(metaData.tankVolumeInGal);
 
+  const insurancePerDayInUsd = Number(tripDTO.paidForInsuranceInUsdCents) / 100 / tripDays;
+
+  const insurancesInfoList = [...tripDTO.insurancesInfo].sort((a, b) => Number(b.createdTime) - Number(a.createdTime));
+  const insurancesInfo =
+    insurancesInfoList.find((i) => i.insuranceType === InsuranceType.General) ??
+    insurancesInfoList.find((i) => i.insuranceType === InsuranceType.OneTime);
+
+  const guestInsurancePhoto = insurancesInfo?.photo ?? "";
+
   let item: TripInfo = {
     tripId: Number(tripDTO.trip.tripId),
 
     carId: Number(tripDTO.trip.carId),
     carVinNumber: metaData.vinNumber,
-    image: getIpfsURIfromPinata(metaData.image),
+    image: getIpfsURI(metaData.mainImage),
     carDescription: metaData.description,
     carDoorsNumber: metaData.doorsNumber,
     carSeatsNumber: metaData.seatsNumber,
@@ -106,9 +115,10 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
         tripDTO.guestDrivingLicenseExpirationDate,
         UTC_TIME_ZONE_ID
       ),
+      drivingLicenseIssueCountry: tripDTO.guestDrivingLicenseIssueCountry,
     },
-    guestInsuranceCompanyName: tripDTO.trip.guestInsuranceCompanyName,
-    guestInsurancePolicyNumber: tripDTO.trip.guestInsurancePolicyNumber,
+    guestInsuranceCompanyName: insurancesInfo?.companyName ?? "",
+    guestInsurancePolicyNumber: insurancesInfo?.policyNumber ?? "",
 
     pricePerDayInUsd: Number(tripDTO.trip.pricePerDayInUsdCents) / 100.0,
     totalDayPriceInUsd: Number(tripDTO.trip.paymentInfo.totalDayPriceInUsdCents) / 100.0,
@@ -138,6 +148,73 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
     currencyRate:
       Number(tripDTO.trip.paymentInfo.currencyRate) / 10 ** Number(tripDTO.trip.paymentInfo.currencyDecimals),
     isCarDetailsConfirmed: isCarDetailsConfirmed ?? false,
+    insurancePerDayInUsd: insurancePerDayInUsd,
+    insuranceTotalInUsd: insurancePerDayInUsd * tripDays,
+
+    guestInsuranceType: insurancesInfo?.insuranceType,
+    guestInsurancePhoto: guestInsurancePhoto,
   };
   return item;
 };
+
+export function mapTripDTOtoTripInfoShordDetails(tripDTO: ContractTripDTO): TripInfoShortDetails {
+  const timeZoneId = !isEmpty(tripDTO.timeZoneId) ? tripDTO.timeZoneId : UTC_TIME_ZONE_ID;
+
+  const tripDays = calculateDays(
+    getDateFromBlockchainTimeWithTZ(tripDTO.trip.startDateTime, timeZoneId),
+    getDateFromBlockchainTimeWithTZ(tripDTO.trip.endDateTime, timeZoneId)
+  );
+
+  return {
+    tripId: Number(tripDTO.trip.tripId),
+
+    carId: Number(tripDTO.trip.carId),
+    brand: tripDTO.brand,
+    model: tripDTO.model,
+    year: tripDTO.yearOfProduction?.toString(),
+    timeZoneId: timeZoneId,
+    status:
+      tripDTO.trip.status === TripStatus.Finished &&
+      tripDTO.trip.tripFinishedBy.toLowerCase() === tripDTO.trip.host.toLowerCase()
+        ? TripStatus.CompletedWithoutGuestComfirmation
+        : tripDTO.trip.status,
+    tripStart: getDateFromBlockchainTimeWithTZ(tripDTO.trip.startDateTime, timeZoneId),
+    tripEnd: getDateFromBlockchainTimeWithTZ(tripDTO.trip.endDateTime, timeZoneId),
+    tripDays: tripDays,
+    locationStart: tripDTO.pickUpLocation.userAddress,
+    locationEnd: tripDTO.returnLocation.userAddress,
+
+    rejectedBy: tripDTO.trip.rejectedBy,
+    rejectedDate:
+      tripDTO.trip.rejectedDateTime > 0
+        ? getDateFromBlockchainTimeWithTZ(tripDTO.trip.rejectedDateTime, timeZoneId)
+        : undefined,
+    isTripRejected: tripDTO.trip.rejectedDateTime > 0 && tripDTO.trip.approvedDateTime === BigInt(0),
+    isTripCanceled: tripDTO.trip.rejectedDateTime > 0 && tripDTO.trip.approvedDateTime > 0,
+
+    host: {
+      walletAddress: tripDTO.trip.host,
+      name: tripDTO.trip.hostName,
+      phoneNumber: formatPhoneNumber(tripDTO.hostPhoneNumber),
+      photoUrl: tripDTO.hostPhotoUrl,
+      drivingLicenseNumber: tripDTO.hostDrivingLicenseNumber,
+      drivingLicenseExpirationDate: getDateFromBlockchainTimeWithTZ(
+        tripDTO.hostDrivingLicenseExpirationDate,
+        UTC_TIME_ZONE_ID
+      ),
+    },
+
+    guest: {
+      walletAddress: tripDTO.trip.guest,
+      name: tripDTO.trip.guestName,
+      phoneNumber: formatPhoneNumber(tripDTO.guestPhoneNumber),
+      photoUrl: tripDTO.guestPhotoUrl,
+      drivingLicenseNumber: tripDTO.guestDrivingLicenseNumber,
+      drivingLicenseExpirationDate: getDateFromBlockchainTimeWithTZ(
+        tripDTO.guestDrivingLicenseExpirationDate,
+        UTC_TIME_ZONE_ID
+      ),
+      drivingLicenseIssueCountry: tripDTO.guestDrivingLicenseIssueCountry,
+    },
+  };
+}

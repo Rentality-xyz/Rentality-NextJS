@@ -3,7 +3,9 @@ import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { ContractPublicHostCarDTO } from "@/model/blockchain/schemas";
 import { validateContractPublicHostCarDTO } from "@/model/blockchain/schemas_utils";
-import { getIpfsURIfromPinata, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
+import { env } from "@/utils/env";
+import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Provider, Wallet } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -23,26 +25,28 @@ const getHostAddressFromQuery = async (query: string | string[] | undefined, pro
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const privateKey = process.env.NEXT_WALLET_PRIVATE_KEY;
-  if (!privateKey) {
-    console.error("API checkTrips error: private key was not set");
+  const privateKey = env.SIGNER_PRIVATE_KEY;
+  if (isEmpty(privateKey)) {
+    console.error("API hostPublicListings error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
     return;
   }
 
   const { chainId, host: hostQuery } = req.query;
 
-  const chainIdNumber = Number(chainId) > 0 ? Number(chainId) : Number(process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID);
+  const chainIdNumber = Number(chainId) > 0 ? Number(chainId) : env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
   if (!chainIdNumber) {
-    console.error("API checkTrips error: chainId was not provided");
+    console.error("API hostPublicListings error: chainId was not provided");
     res.status(400).json({ error: "chainId was not provided" });
     return;
   }
 
-  let providerApiUrl = process.env[`PROVIDER_API_URL_${chainIdNumber}`];
+  // const providerApiUrl = process.env[`NEXT_PUBLIC_PROVIDER_API_URL_${chainIdNumber}`];
+  const providerApiUrl = getProviderApiUrlFromEnv(chainIdNumber);
+
   if (!providerApiUrl) {
-    console.error(`API checkTrips error: API URL for chain id ${chainIdNumber} was not set`);
-    res.status(500).json({ error: `API checkTrips error: API URL for chain id ${chainIdNumber} was not set` });
+    console.error(`API hostPublicListings error: API URL for chain id ${chainIdNumber} was not set`);
+    res.status(500).json({ error: `API hostPublicListings error: API URL for chain id ${chainIdNumber} was not set` });
     return;
   }
 
@@ -50,12 +54,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const hostAddress = await getHostAddressFromQuery(hostQuery, provider);
 
   if (!hostAddress || isEmpty(hostAddress)) {
-    console.error("API checkTrips error: hostAddress was not provided");
+    console.error("API hostPublicListings error: hostAddress was not provided");
     res.status(400).json({ error: "hostAddress was not provided" });
     return;
   }
 
-  console.log(`Calling checkTrips API for ${chainIdNumber} chain id and ${hostAddress} host...`);
+  console.log(`\nCalling hostPublicListings API for ${chainIdNumber} chain id and ${hostAddress} host...`);
 
   const wallet = new Wallet(privateKey, provider);
   try {
@@ -80,7 +84,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               const item: BaseCarInfo = {
                 carId: Number(i.carId),
                 ownerAddress: hostAddress,
-                image: getIpfsURIfromPinata(metaData.image),
+                image: getIpfsURI(metaData.mainImage),
                 brand: i.brand,
                 model: i.model,
                 year: i.yearOfProduction.toString(),
