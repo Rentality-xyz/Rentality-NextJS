@@ -27,6 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const user = <string>req.query.user!
 
   const authResult = await authOnDimo()
+
   if(authResult === null)
     return
 

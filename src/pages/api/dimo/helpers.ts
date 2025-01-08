@@ -23,7 +23,7 @@ export async function authOnDimo() {
     return {auth, dimo, clientId}
 }
 export async function tokenExchange(tokenId: number,auth: {headers: {Authorization: string}}, dimo: DIMO, privileges: number[]) {
-    return await dimo.tokenexchange.exchange({
+  return await dimo.tokenexchange.exchange({
         ...auth,
         privileges,
         tokenId,

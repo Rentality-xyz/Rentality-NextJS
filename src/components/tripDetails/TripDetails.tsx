@@ -36,7 +36,7 @@ export default function TripInfo() {
               <TripStatusDateTimes tripInfo={tripInfo} />
             </div>
             <div className="w-full xl:w-1/3">
-              <TripReceipt tripId={tripId} tripInfo={tripInfo} userMode={userMode} />
+              <TripReceipt tripId={tripId} tripInfo={tripInfo} userMode={userMode}/>
             </div>
           </div>
           <div className="mb-8 mt-4 flex flex-row justify-center gap-4">
