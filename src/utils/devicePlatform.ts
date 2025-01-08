@@ -26,6 +26,6 @@ export enum DevicePlatform {
   Unknown = "Unknown",
 }
 
-export function isMobileAppRentality(): Boolean {
+export function isMobileAppRentality(): boolean {
   return navigator.userAgent.includes("RentalityApp");
 }

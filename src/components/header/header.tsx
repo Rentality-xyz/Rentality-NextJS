@@ -140,6 +140,11 @@ export default function Header() {
     navigator.clipboard.writeText(text);
   };
 
+  const [isRentalityMobileApp, setIsRentalityMobileApp] = useState(false);
+  useEffect(() => {
+    setIsRentalityMobileApp(isMobileAppRentality());
+  }, []);
+
   return (
     <header className="fixed z-50 flex w-full items-center justify-between border-b border-b-[#ffffff1f] bg-rentality-bg-left-sidebar text-rnt-temp-header-text max-lg:pl-4 lg:py-1 lg:pl-14 lg:pr-6">
       <div className="flex items-center max-lg:w-full max-lg:justify-between">
@@ -166,7 +171,7 @@ export default function Header() {
         </div>
       </div>
       <div className="ml-2 flex flex-row items-center max-lg:w-full max-lg:justify-between">
-        {!isMobileAppRentality() && <RntMobileStoresDialog />}
+        {!isRentalityMobileApp && <RntMobileStoresDialog />}
         <Stack direction="row" spacing={1} alignItems="center" className="max-lg:mx-3 lg:ml-12">
           <Typography className="font-['Montserrat',Arial,sans-serif] text-lg max-lg:hidden">Guest</Typography>
           <Typography className="font-['Montserrat',Arial,sans-serif] text-lg lg:hidden">
