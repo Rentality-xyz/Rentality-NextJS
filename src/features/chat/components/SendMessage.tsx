@@ -1,9 +1,9 @@
-import RntButton from "../common/rntButton";
+import RntButton from "../../../components/common/rntButton";
 import { TFunction } from "@/utils/i18n";
 import { useForm } from "react-hook-form";
 import { sendMessageFormSchema, SendMessageFormValues } from "./sendMessageFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import RntInputMultiline from "../common/rntInputMultiline";
+import RntInputMultiline from "../../../components/common/rntInputMultiline";
 
 export default function SendMessage({
   sendMessageCallback,

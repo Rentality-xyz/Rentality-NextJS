@@ -39,3 +39,4 @@ export const GENERAL_INSURANCE_TYPE_ID = "generalInsurance";
 export const ONE_TIME_INSURANCE_TYPE_ID = "oneTimeInsurance";
 
 export const EMPTY_PROMOCODE = "";
+export const PROMOCODE_MAX_LENGTH = 5;
