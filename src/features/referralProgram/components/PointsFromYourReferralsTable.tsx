@@ -4,17 +4,14 @@ import React from "react";
 import { cn } from "@/utils";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "@/components/common/rntSuspense";
-import { PointsFromYourReferralsInfo } from "@/hooks/points/usePointsFromYourReferrals";
+import { PointsFromYourReferralsInfo } from "@/features/referralProgram/hooks/usePointsFromYourReferrals";
 
-type ReferralsAndPointsFromYourReferralsTableProps = {
+type PointsFromYourReferralsTableProps = {
   isLoading: boolean;
   data: PointsFromYourReferralsInfo[];
 };
 
-export default function ReferralsAndPointsFromYourReferralsTable({
-  isLoading,
-  data,
-}: ReferralsAndPointsFromYourReferralsTableProps) {
+export default function PointsFromYourReferralsTable({ isLoading, data }: PointsFromYourReferralsTableProps) {
   const headerSpanClassName = "text-center font-semibold px-2 font-light text-sm";
   const rowSpanClassName = "px-2 h-12";
 

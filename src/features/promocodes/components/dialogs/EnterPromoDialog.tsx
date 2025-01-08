@@ -8,6 +8,7 @@ import { enterPromoFormSchema, EnterPromoFormValues } from "../../models/enterPr
 import { zodResolver } from "@hookform/resolvers/zod";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { PROMOCODE_MAX_LENGTH } from "@/utils/constants";
+import { getPromoPrice } from "../../utils";
 
 type DialogStatus = "NONE" | "LOADING" | "SUCCESS" | "ERROR";
 
@@ -136,13 +137,6 @@ function EnterPromoDialog({ days, priceDiscountable, priceNotDiscountable, creat
       </RntButton>
     </form>
   );
-}
-
-function getPromoPrice(price: number, promoValue: number) {
-  promoValue = Math.max(promoValue, 0);
-  promoValue = Math.min(promoValue, 100);
-
-  return (price * (100 - promoValue)) / 100;
 }
 
 export default EnterPromoDialog;
