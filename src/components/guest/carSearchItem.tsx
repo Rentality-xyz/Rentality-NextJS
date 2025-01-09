@@ -121,31 +121,44 @@ export default function CarSearchItem({
               <span className="ml-8">${displayMoneyWith2Digits(searchInfo.totalPriceWithDiscount)}</span>
             </div>
 
-            {isDisplayInsurance && <p className="mt-4 text-rentality-secondary">{t_comp("insurance_required")}</p>}
+            {isDisplayInsurance && <p className="mt-2 text-rentality-secondary">{t_comp("insurance_required")}</p>}
           </div>
-          <div className="flex flex-col max-md:mt-2">
-            <div className="grid grid-cols-2 md:h-full md:items-stretch">
+          <div className="flex flex-col justify-between max-md:mt-2">
+            <div className="flex justify-between md:grid md:grid-cols-2">
               <span>{t_comp("delivery_fee_pick_up")}</span>
               <span className="max-md:ml-4">
                 ${displayMoneyWith2Digits(searchInfo.deliveryDetails.pickUp.priceInUsd)}
               </span>
+            </div>
+
+            <div className="flex justify-between md:grid md:grid-cols-2">
               <span>{t_comp("delivery_fee_drop_off")}</span>
               <span className="max-md:ml-4">
                 ${displayMoneyWith2Digits(searchInfo.deliveryDetails.dropOff.priceInUsd)}
               </span>
+            </div>
+
+            <div className="flex justify-between md:grid md:grid-cols-2">
               <span>{t_comp("taxes")}</span>
               <span className="max-md:ml-4">${displayMoneyWith2Digits(searchInfo.taxes)}</span>
+            </div>
+
+            <div className="flex justify-between md:grid md:grid-cols-2">
               <span>{t_comp("deposit")}</span>
               <span className="max-md:ml-4">${displayMoneyWith2Digits(searchInfo.securityDeposit)}</span>
-              {isDisplayInsurance && (
-                <>
-                  <span>
-                    <Image src={getImageForMenu(MenuIcons.Insurance)} width={20} height={20} alt="" />
-                  </span>
-                  <span className="max-md:ml-4">${displayMoneyWith2Digits(insurancePriceTotal)}</span>
-                </>
-              )}
             </div>
+
+            {isDisplayInsurance && (
+              <div className="flex justify-between md:grid md:grid-cols-2">
+                <span>
+                  <Image src={getImageForMenu(MenuIcons.Insurance)} width={20} height={20} alt="" />
+                </span>
+                <span className="max-md:ml-4">${displayMoneyWith2Digits(insurancePriceTotal)}</span>
+              </div>
+            )}
+            {/*<div className="grid grid-cols-2 md:h-full md:items-stretch">*/}
+            {/*  */}
+            {/*</div>*/}
           </div>
         </div>
         <div className="mt-6 flex items-center justify-around">
