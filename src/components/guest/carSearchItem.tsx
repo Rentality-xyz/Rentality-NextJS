@@ -13,7 +13,7 @@ import RntInputTransparent from "@/components/common/rntInputTransparent";
 import carSeatsIcon from "@/images/car_seats.svg";
 import carTransmissionIcon from "@/images/car_transmission.svg";
 import { AboutCarIcon } from "@/components/createTrip/AboutCarIcon";
-import { getDiscountablePriceFromCarInfo, getNotDiscountablePriceFromCarInfo } from "@/utils/price";
+import { getDiscountablePriceFromCarInfo, getNotDiscountablePrice } from "@/utils/price";
 import { getPromoPrice, PromoActionType, reducer } from "@/features/promocodes/promoCode";
 import { PROMOCODE_MAX_LENGTH } from "@/utils/constants";
 import { useForm } from "react-hook-form";
@@ -103,8 +103,8 @@ export default function CarSearchItem({
         </div>
         <div className="mt-2 flex flex-col text-sm md:grid md:grid-cols-[2fr_1fr] md:justify-between">
           <div className="flex flex-col">
-            {isNaN(searchInfo.pricePerDayWithDiscount) ||
-            searchInfo.pricePerDayWithDiscount === searchInfo.pricePerDay ? (
+            {isNaN(searchInfo.pricePerDayWithHostDiscount) ||
+            searchInfo.pricePerDayWithHostDiscount === searchInfo.pricePerDay ? (
               <div className="text-base">
                 <strong>
                   ${displayMoneyWith2Digits(searchInfo.pricePerDay)}
@@ -114,7 +114,7 @@ export default function CarSearchItem({
             ) : (
               <div className="text-base">
                 <strong>
-                  ${displayMoneyWith2Digits(searchInfo.pricePerDayWithDiscount)}
+                  ${displayMoneyWith2Digits(searchInfo.pricePerDayWithHostDiscount)}
                   {t_comp("per_day")}
                 </strong>
                 <strong className="ml-8 text-[#8B8B8F] line-through">
@@ -142,7 +142,7 @@ export default function CarSearchItem({
 
             <div className="flex justify-between md:grid md:grid-cols-2">
               <span>{t_comp("price_without_taxes")}</span>
-              <span className="ml-8">${displayMoneyWith2Digits(searchInfo.totalPriceWithDiscount)}</span>
+              <span className="ml-8">${displayMoneyWith2Digits(searchInfo.totalPriceWithHostDiscount)}</span>
             </div>
 
             {isDisplayInsurance && <p className="mt-2 text-rentality-secondary">{t_comp("insurance_required")}</p>}
@@ -218,13 +218,14 @@ export default function CarSearchItem({
               ? t("promo.button_promo_text", {
                   price: displayMoneyWith2Digits(
                     getPromoPrice(getDiscountablePriceFromCarInfo(searchInfo), state.promo.value) +
-                      getNotDiscountablePriceFromCarInfo(searchInfo)
+                      getNotDiscountablePrice(insurancePriceTotal, searchInfo.securityDeposit)
                   ),
                 })
               : t("promo.button_default_text", {
                   days: searchInfo.tripDays,
                   price: displayMoneyWith2Digits(
-                    getDiscountablePriceFromCarInfo(searchInfo) + getNotDiscountablePriceFromCarInfo(searchInfo)
+                    getDiscountablePriceFromCarInfo(searchInfo) +
+                      getNotDiscountablePrice(insurancePriceTotal, searchInfo.securityDeposit)
                   ),
                 })}
           </RntButton>

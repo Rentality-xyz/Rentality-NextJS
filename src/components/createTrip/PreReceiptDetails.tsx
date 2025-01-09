@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 export function PreReceiptDetails({
   pricePerDay,
-  pricePerDayWithDiscount,
+  pricePerDayWithHostDiscount,
   tripDays,
   deliveryDetails,
   salesTax,
@@ -13,7 +13,7 @@ export function PreReceiptDetails({
   insuranceDetails,
 }: {
   pricePerDay: number;
-  pricePerDayWithDiscount: number;
+  pricePerDayWithHostDiscount: number;
   tripDays: number;
   deliveryDetails: DeliveryDetails;
   salesTax: number;
@@ -33,7 +33,7 @@ export function PreReceiptDetails({
       : 0;
 
   const totalCharge =
-    pricePerDayWithDiscount * tripDays +
+    pricePerDayWithHostDiscount * tripDays +
     deliveryDetails.pickUp.priceInUsd +
     deliveryDetails.dropOff.priceInUsd +
     salesTax +
@@ -57,7 +57,7 @@ export function PreReceiptDetails({
 
       <p>{t("create_trip.discount_amount")}</p>
       <p className="text-right text-rentality-alert-text">
-        -${displayMoneyWith2Digits((pricePerDay - pricePerDayWithDiscount) * tripDays)}
+        -${displayMoneyWith2Digits((pricePerDay - pricePerDayWithHostDiscount) * tripDays)}
       </p>
 
       <p>{t("create_trip.delivery_fee_to_pick_up_location")}</p>
