@@ -314,6 +314,7 @@ const emptyContractTripDTO: ContractTripDTO = {
   insurancesInfo: [],
   paidForInsuranceInUsdCents: BigInt(0),
   guestDrivingLicenseIssueCountry: "",
+  promoDiscount: BigInt(0),
 };
 
 export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {

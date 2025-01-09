@@ -166,7 +166,7 @@ function CreateTripDetailsContent({
         <CarTitleAndPrices
           carTitle={`${carInfo.brand} ${carInfo.model} ${carInfo.year}`}
           pricePerDay={carInfo.pricePerDay}
-          pricePerDayWithDiscount={carInfo.pricePerDayWithDiscount}
+          pricePerDayWithHostDiscount={carInfo.pricePerDayWithHostDiscount}
           tripDays={carInfo.tripDays}
           tripDiscounts={carInfo.tripDiscounts}
         />
@@ -228,7 +228,7 @@ function CreateTripDetailsContent({
         />
         <PreReceiptDetails
           pricePerDay={carInfo.pricePerDay}
-          pricePerDayWithDiscount={carInfo.pricePerDayWithDiscount}
+          pricePerDayWithHostDiscount={carInfo.pricePerDayWithHostDiscount}
           tripDays={carInfo.tripDays}
           deliveryDetails={carInfo.deliveryDetails}
           salesTax={carInfo.salesTax}

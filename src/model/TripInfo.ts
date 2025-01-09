@@ -84,7 +84,7 @@ export type TripInfo = {
   timeZoneId: string;
   pricePerDayInUsd: number;
   totalDayPriceInUsd: number;
-  totalPriceWithDiscountInUsd: number;
+  totalPriceWithHostDiscountInUsd: number;
   pickUpDeliveryFeeInUsd: number;
   dropOffDeliveryFeeInUsd: number;
   depositInUsd: number;
@@ -96,6 +96,7 @@ export type TripInfo = {
   salesTaxInUsd: number;
   governmentTaxInUsd: number;
   totalPriceInUsd: number;
+  paidByGuestInUsd: number;
 
   host: {
     walletAddress: string;
