@@ -53,19 +53,19 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         return;
       }
 
-      const rentalityRefferalPogram = (await getEtherContractWithSigner(
-        "refferalPogram",
+      const rentalityReferralPogram = (await getEtherContractWithSigner(
+        "referralProgram",
         ethereumInfo.signer
       )) as unknown as IRentalityReferralProgramContract;
-      if (!rentalityRefferalPogram) {
-        console.error("getRentalityContact error: rentalityRefferalPogram is null");
+      if (!rentalityReferralPogram) {
+        console.error("getRentalityContact error: rentalityReferralProgram is null");
         setRentalityContracts(null);
         return;
       }
 
       setRentalityContracts({
         gateway: rentalityGateway,
-        referralProgram: rentalityRefferalPogram,
+        referralProgram: rentalityReferralPogram,
       });
     };
 

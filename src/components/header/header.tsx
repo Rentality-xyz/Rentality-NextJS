@@ -29,7 +29,7 @@ import icBaseScan from "@/images/base-scan-log.svg";
 import icWalletBalance from "@/images/ic_wallet_balance.svg";
 import { useTranslation } from "react-i18next";
 import { AdminBurgerNavMenu } from "../sideNavMenu/adminSideNavMenu";
-import HeadBtnReferralsAndPoints from "@/components/header/HeadBtnReferralsAndPoints";
+import ClaimMyPointsHeaderButton from "@/features/referralProgram/components/ClaimMyPointsHeaderButton";
 import { isMobileAppRentality } from "@/utils/devicePlatform";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
@@ -149,7 +149,7 @@ export default function Header() {
     <header className="fixed z-50 flex w-full items-center justify-between border-b border-b-[#ffffff1f] bg-rentality-bg-left-sidebar text-rnt-temp-header-text max-lg:pl-4 lg:py-1 lg:pl-14 lg:pr-6">
       <div className="flex items-center max-lg:w-full max-lg:justify-between">
         <HeaderLogo />
-        <HeadBtnReferralsAndPoints />
+        <ClaimMyPointsHeaderButton />
         <div className="flex min-w-[20px] items-center lg:hidden">
           {isBurgerMenuShown && (
             <div id="burger-menu-wrapper" className="fixed left-0 top-[57px] z-[100] h-full w-full overflow-auto">

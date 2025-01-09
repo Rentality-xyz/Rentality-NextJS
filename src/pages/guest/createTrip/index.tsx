@@ -213,9 +213,6 @@ function CreateTripDetailsContent({
         />
       </div>
       <div className="mt-8 flex w-full flex-col gap-4 xl:mt-0 xl:w-1/4 xl:pl-4">
-        <div className="mx-auto text-xl font-bold text-rentality-secondary" onClick={handleBackToSearchClick}>
-          {t("create_trip.new_search")}
-        </div>
         <CreateTripSearch
           searchRequest={searchCarRequest}
           hostHomeLocation={carInfo.hostHomeLocation}

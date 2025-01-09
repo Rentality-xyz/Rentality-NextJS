@@ -1,12 +1,14 @@
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 import RntButton from "../common/rntButton";
 import { Avatar } from "@mui/material";
+import { useMemo, useState, useEffect } from "react";
 import React, { useMemo, useReducer } from "react";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { getEngineTypeIcon, getEngineTypeString } from "@/model/EngineType";
 import Image from "next/image";
 import MenuIcons, { getImageForMenu } from "../sideNavMenu/menuIcons";
 import { useTranslation } from "react-i18next";
+import Link from "next/link";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import carSeatsIcon from "@/images/car_seats.svg";
 import carTransmissionIcon from "@/images/car_transmission.svg";
@@ -24,20 +26,21 @@ type TFunction = (key: string, options?: { [key: string]: any }) => string;
 export default function CarSearchItem({
   searchInfo,
   handleRentCarRequest,
-  handleShowRequestDetails,
   disableButton,
   isSelected,
   setSelected,
   isGuestHasInsurance,
+  getRequestDetailsLink,
 }: {
   searchInfo: SearchCarInfo;
   handleRentCarRequest: (carInfo: SearchCarInfo, PromoCode?: string) => void;
-  handleShowRequestDetails: (carInfo: SearchCarInfo) => void;
   disableButton: boolean;
   isSelected: boolean;
   setSelected: (carID: number) => void;
   isGuestHasInsurance: boolean;
+  getRequestDetailsLink: (carId: number) => string;
 }) {
+  const [requestDetailsLink, setRequestDetailsLink] = useState<string>("");
   const { t } = useTranslation();
 
   const t_comp: TFunction = (name, options) => {
@@ -49,6 +52,9 @@ export default function CarSearchItem({
     return isSelected ? classNames + " border-2" : classNames;
   }, [isSelected]);
 
+  useEffect(() => {
+    setRequestDetailsLink(getRequestDetailsLink(searchInfo.carId));
+  }, [getRequestDetailsLink, searchInfo]);
   function handleImageClick() {
     handleShowRequestDetails(searchInfo);
   }
@@ -78,11 +84,13 @@ export default function CarSearchItem({
       <div
         style={{ backgroundImage: `url(${searchInfo.images[0]})` }}
         className="relative min-h-[12rem] w-full flex-shrink-0 bg-cover bg-center md:w-64"
-        onClick={handleImageClick}
       >
         {searchInfo.isCarDetailsConfirmed && (
           <i className="fi fi-br-hexagon-check absolute right-2 top-2 text-3xl text-green-500"></i>
         )}
+        <Link href={requestDetailsLink} target="_blank">
+          <div className={"h-full w-full"} />
+        </Link>
       </div>
       <div className="flex w-full flex-col justify-between p-2 sm:pb-2 sm:pl-4 sm:pr-2 sm:pt-2">
         <div className="flex flex-row items-center justify-between">

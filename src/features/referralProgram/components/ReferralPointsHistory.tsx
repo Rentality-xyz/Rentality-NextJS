@@ -1,10 +1,10 @@
 import { useTranslation } from "react-i18next";
 import React, { useEffect } from "react";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
-import ReferralsAndPointsHistoryTable from "@/components/points/ReferralsAndPointsHistoryTable";
-import usePointsHistory from "@/hooks/points/usePointsHistory";
+import ReferralPointsHistoryTable from "@/features/referralProgram/components/ReferralPointsHistoryTable";
+import usePointsHistory from "@/features/referralProgram/hooks/usePointsHistory";
 
-export default function ReferralsAndPointsHistory() {
+export default function ReferralPointsHistory() {
   const { t } = useTranslation();
   const itemsPerPage = 4;
   const { isLoading, data, fetchData } = usePointsHistory();
@@ -18,10 +18,10 @@ export default function ReferralsAndPointsHistory() {
   }, [fetchData]);
 
   return (
-    <div className="mt-4 w-full rounded-lg bg-rentality-bg-left-sidebar p-3">
+    <div className="w-full rounded-lg bg-rentality-bg-left-sidebar p-3">
       <p className="text-rentality-secondary">{t("referrals_and_point.section_points_history")}</p>
       <PaginationWrapper currentPage={data.currentPage} totalPages={data.totalPageCount} selectPage={fetchDataForPage}>
-        <ReferralsAndPointsHistoryTable isLoading={isLoading} data={data.data} />
+        <ReferralPointsHistoryTable isLoading={isLoading} data={data.data} />
       </PaginationWrapper>
     </div>
   );
