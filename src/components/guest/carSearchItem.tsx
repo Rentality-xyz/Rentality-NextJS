@@ -1,12 +1,16 @@
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 import RntButton from "../common/rntButton";
 import { Avatar } from "@mui/material";
-import { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
-import { getEngineTypeString } from "@/model/EngineType";
+import { getEngineTypeIcon, getEngineTypeString } from "@/model/EngineType";
 import Image from "next/image";
 import MenuIcons, { getImageForMenu } from "../sideNavMenu/menuIcons";
 import { useTranslation } from "react-i18next";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
+import carSeatsIcon from "@/images/car_seats.svg";
+import carTransmissionIcon from "@/images/car_transmission.svg";
+import { AboutCarIcon } from "@/components/createTrip/AboutCarIcon";
 
 type TFunction = (key: string, options?: { [key: string]: any }) => string;
 
@@ -29,6 +33,11 @@ export default function CarSearchItem({
 }) {
   const { t } = useTranslation();
 
+  const [formInputPromoCode, setFormInputPromoCode] = useState("");
+  function handlePromoCodeChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setFormInputPromoCode(e.target.value);
+  }
+
   const t_comp: TFunction = (name, options) => {
     return t("search_page.car_search_item." + name, options);
   };
@@ -39,10 +48,6 @@ export default function CarSearchItem({
   }, [isSelected]);
 
   function handleImageClick() {
-    handleShowRequestDetails(searchInfo);
-  }
-
-  function handleInfoClick() {
     handleShowRequestDetails(searchInfo);
   }
 
@@ -60,14 +65,20 @@ export default function CarSearchItem({
           <i className="fi fi-br-hexagon-check absolute right-2 top-2 text-3xl text-green-500"></i>
         )}
       </div>
-      <div className="flex w-full flex-col justify-between p-2 sm:p-4">
-        <div className="flex flex-row items-baseline justify-between">
-          <div className="w-full overflow-hidden">
+      <div className="flex w-full flex-col justify-between p-2 sm:pb-2 sm:pl-4 sm:pr-2 sm:pt-2">
+        <div className="flex flex-row items-center justify-between">
+          <div className="w-full overflow-hidden max-sm:mr-2">
             <strong className="truncate text-lg">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>
           </div>
+          <div className="flex items-center">
+            <div className="mr-2 truncate text-lg font-medium">{searchInfo.hostName ?? "-"}</div>
+            <div className="h-12 w-12 self-center">
+              <Avatar src={searchInfo.hostPhotoUrl} sx={{ width: "3rem", height: "3rem" }}></Avatar>
+            </div>
+          </div>
         </div>
-        <div className="mt-2 flex text-sm md:grid md:grid-cols-[2fr_1fr] md:justify-between">
-          <div className="flex w-8/12 flex-col lg:w-9/12">
+        <div className="mt-2 flex flex-col text-sm md:grid md:grid-cols-[2fr_1fr] md:justify-between">
+          <div className="flex flex-col">
             {isNaN(searchInfo.pricePerDayWithDiscount) ||
             searchInfo.pricePerDayWithDiscount === searchInfo.pricePerDay ? (
               <div className="text-base">
@@ -89,7 +100,7 @@ export default function CarSearchItem({
               </div>
             )}
 
-            <div className="mt-4 grid grid-cols-2">
+            <div className="mt-4 flex justify-between md:grid md:grid-cols-2">
               <div>
                 <span>${displayMoneyWith2Digits(searchInfo.pricePerDay)}</span>
                 <span className="mx-0.5">x</span>
@@ -100,25 +111,20 @@ export default function CarSearchItem({
               <span className="ml-8">${displayMoneyWith2Digits(searchInfo.pricePerDay * searchInfo.tripDays)}</span>
             </div>
 
-            <div className="grid grid-cols-2">
+            <div className="flex justify-between md:grid md:grid-cols-2">
               <span className="text-rentality-secondary">{searchInfo.daysDiscount}</span>
               <span className="ml-8 text-rentality-secondary">{searchInfo.totalDiscount}</span>
             </div>
 
-            <div className="grid grid-cols-2">
+            <div className="flex justify-between md:grid md:grid-cols-2">
               <span>{t_comp("price_without_taxes")}</span>
               <span className="ml-8">${displayMoneyWith2Digits(searchInfo.totalPriceWithDiscount)}</span>
             </div>
 
             {isDisplayInsurance && <p className="mt-4 text-rentality-secondary">{t_comp("insurance_required")}</p>}
           </div>
-          <div className="flex w-auto flex-col">
-            <div>- {getEngineTypeString(searchInfo.engineType)}</div>
-            <div>- {searchInfo.transmission}</div>
-            <div>
-              - {searchInfo.seatsNumber} {t_comp("seats")}
-            </div>
-            <div className="mt-4 grid grid-cols-2">
+          <div className="flex flex-col max-md:mt-2">
+            <div className="grid grid-cols-2 md:h-full md:items-stretch">
               <span>{t_comp("delivery_fee_pick_up")}</span>
               <span className="max-md:ml-4">
                 ${displayMoneyWith2Digits(searchInfo.deliveryDetails.pickUp.priceInUsd)}
@@ -142,27 +148,32 @@ export default function CarSearchItem({
             </div>
           </div>
         </div>
-        <div className="mt-4 grid w-full grid-cols-[1fr_auto] items-end">
-          <div className="flex flex-row items-center truncate">
-            <div className="mr-2 h-12 w-12 self-center">
-              <Avatar src={searchInfo.hostPhotoUrl} sx={{ width: "3rem", height: "3rem" }}></Avatar>
-            </div>
-            <div className="flex flex-col">
-              <p className="text-xs">{t_comp("host")}</p>
-              <p className="text-sm">{searchInfo.hostName ?? "-"}</p>
-            </div>
-            <div className="ml-2 sm:ml-8" onClick={handleInfoClick}>
-              <i className="fi fi-rs-info text-2xl text-rentality-secondary"></i>
-            </div>
-          </div>
+        <div className="mt-6 flex items-center justify-around">
+          <AboutCarIcon image={carSeatsIcon} text={`${searchInfo.seatsNumber} ${t_comp("seats")}`} />
+          <AboutCarIcon
+            image={getEngineTypeIcon(searchInfo.engineType)}
+            width={50}
+            text={getEngineTypeString(searchInfo.engineType)}
+          />
+          <AboutCarIcon image={carTransmissionIcon} text={searchInfo.transmission} />
+        </div>
+        <div className="mt-6 flex w-full max-sm:flex-col">
+          <RntInputTransparent
+            className="mr-2 w-full sm:w-[35%]"
+            style={{ color: "white" }}
+            inputClassName="text-center"
+            type="text"
+            placeholder="Promo Code"
+            value={formInputPromoCode}
+            onChange={handlePromoCodeChange}
+          />
           <RntButton
-            className="h-14 w-44 text-base"
+            className="w-full text-base max-sm:mt-4 sm:w-[65%]"
             onClick={() => handleRentCarRequest(searchInfo)}
             disabled={disableButton}
           >
-            <div>{t_comp("rent_for", { days: searchInfo.tripDays })}</div>
             <div>
-              {t_comp("total")} $
+              {t_comp("rent_for", { days: searchInfo.tripDays })} {t_comp("total")} $
               {displayMoneyWith2Digits(
                 searchInfo.totalPriceWithDiscount +
                   searchInfo.taxes +

@@ -20,7 +20,7 @@ import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { isEmpty } from "@/utils/string";
 import { DialogActions } from "@/utils/dialogActions";
 import { useUserInfo } from "@/contexts/userInfoContext";
-import { useState } from "react";
+import React, { useState } from "react";
 import RntTripRulesModal from "@/components/common/rntTripRulesModal";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
@@ -29,6 +29,7 @@ import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import EnterPromoDialog from "@/features/promocodes/components/dialogs/EnterPromoDialog";
 import { getDiscountablePriceFromCarInfo, getNotDiscountablePriceFromCarInfo } from "@/utils/price";
 import { EMPTY_PROMOCODE } from "@/utils/constants";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
 
 export default function CreateTrip() {
   const { searchCarRequest, searchCarFilters } = useCarSearchParams();
@@ -184,6 +185,11 @@ function CreateTripDetailsContent({
     }
   }
 
+  const [formInputPromoCode, setFormInputPromoCode] = useState("");
+  function handlePromoCodeChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setFormInputPromoCode(e.target.value);
+  }
+
   return (
     <div className="flex flex-wrap">
       <div className="flex w-full flex-col gap-4 xl:w-3/4 xl:pr-4">
@@ -268,7 +274,15 @@ function CreateTripDetailsContent({
             isGuestHasInsurance: carInfo.isGuestHasInsurance,
           }}
         />
-        <RntButton className="h-16 w-full" disabled={requestSending} onClick={handeCreateTripClick}>
+        <RntInputTransparent
+          className="w-full"
+          style={{ color: "white" }}
+          type="text"
+          placeholder="Enter Promo Code"
+          value={formInputPromoCode}
+          onChange={handlePromoCodeChange}
+        />
+        <RntButton className="w-full" disabled={requestSending} onClick={handeCreateTripClick}>
           {t("create_trip.rent_for_n_days", { tripDays: carInfo.tripDays })}
         </RntButton>
       </div>
