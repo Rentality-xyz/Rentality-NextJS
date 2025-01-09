@@ -159,7 +159,7 @@ export interface IRentalityContract {
   saveGuestInsurance(insuranceInfo: ContractSaveInsuranceRequest): Promise<ContractTransactionResponse>;
 
   //PROMO functions
-  checkPromo(code: string): Promise<ContractCheckPromoDTO>;
+  checkPromo(code: string, startDateTime: bigint, endDateTime: bigint): Promise<ContractCheckPromoDTO>;
 
   /// GENERAL functions
   address: string;
