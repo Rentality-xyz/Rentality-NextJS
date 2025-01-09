@@ -2,13 +2,13 @@ import BaseBurgerNavMenu from "./baseBurgerNavMenu";
 import BaseSideNavMenu from "./baseSideNavMenu";
 import SideNavMenuGroup from "./sideNavMenuGroup";
 import SideNavMenuItem from "./sideNavMenuItem";
-import MenuIcons, { getImageForMenu } from "@/components/sideNavMenu/menuIcons";
+import MenuIcons from "@/components/sideNavMenu/menuIcons";
 import { useNotification } from "@/contexts/notification/notificationContext";
 import usePageLastVisit from "@/hooks/usePageLastVisit";
 import { NotificationType } from "@/model/NotificationInfo";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
-import { useChat } from "@/contexts/chat/firebase/chatContext";
+import { useChat } from "@/features/chat/contexts/chatContext";
 import { useAuth } from "@/contexts/auth/authContext";
 import * as React from "react";
 
@@ -91,6 +91,11 @@ function GuestNavMenu() {
           icon={MenuIcons.TransactionHistory}
         />
         <SideNavMenuItem text={"Invest"} href="/guest/invest" icon={MenuIcons.Invest} />
+        <SideNavMenuItem
+          text={t_nav("referrals_and_points")}
+          href="/guest/points"
+          icon={MenuIcons.ReferralsAndPoints}
+        />
         <SideNavMenuItem text={t_nav("profile")} href="/guest/profile" icon={MenuIcons.ProfileSettings} />
         {isAuthenticated ? (
           <SideNavMenuItem text={t_nav("logout")} href="/" onClick={logout} icon={MenuIcons.Logout} />

@@ -15,6 +15,7 @@ import toAppStore from "@/images/to_app_store.png";
 import toGooglePlay from "@/images/to_google_play.png";
 import icInvest from "@/images/ic_invest.jpeg";
 import icCreateInvest from "@/images/ic-create-invest.jpg";
+import icReferralsAndPoints from "@/images/ic_referrals_and_points.png";
 
 enum MenuIcons {
   Booked,
@@ -33,6 +34,7 @@ enum MenuIcons {
   ToGooglePlay,
   Invest,
   CreateInvest,
+  ReferralsAndPoints,
 }
 
 export const getImageForMenu = (state: MenuIcons): StaticImageData => {
@@ -65,6 +67,8 @@ export const getImageForMenu = (state: MenuIcons): StaticImageData => {
       return toAppStore;
     case MenuIcons.ToGooglePlay:
       return toGooglePlay;
+    case MenuIcons.ReferralsAndPoints:
+      return icReferralsAndPoints;
     case MenuIcons.Invest:
       return icInvest;
     case MenuIcons.CreateInvest:

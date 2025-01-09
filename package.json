@@ -64,7 +64,8 @@
     "ua-parser-js": "^2.0.0",
     "viem": "^2.16.3",
     "wagmi": "^2.10.8",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@types/google.maps": "^3.57.0",

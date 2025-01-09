@@ -22,6 +22,10 @@ import mapNotFoundCars from "@/images/map_not_found_cars.png";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "@/components/common/rntSuspense";
+import useGuestInsurance from "@/hooks/guest/useGuestInsurance";
+import EnterPromoDialog from "@/features/promocodes/components/dialogs/EnterPromoDialog";
+import { getDiscountablePriceFromCarInfo, getNotDiscountablePriceFromCarInfo } from "@/utils/price";
+import { EMPTY_PROMOCODE } from "@/utils/constants";
 
 export default function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -31,12 +35,13 @@ export default function Search() {
 
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string | undefined>(undefined);
-  const { showDialog, hideDialogs } = useRntDialogs();
+  const { showDialog, showCustomDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const userInfo = useUserInfo();
   const router = useRouter();
   const { isLoadingAuth, isAuthenticated, login } = useAuth();
   const ethereumInfo = useEthereum();
+  const { isLoading: isLoadingInsurance, guestInsurance } = useGuestInsurance();
   const { t } = useTranslation();
 
   const handleSearchClick = async (request: SearchCarRequest) => {
@@ -86,11 +91,57 @@ export default function Search() {
       return;
     }
 
+    showCustomDialog(
+      <EnterPromoDialog
+        days={carInfo.tripDays}
+        priceDiscountable={getDiscountablePriceFromCarInfo(carInfo)}
+        priceNotDiscountable={getNotDiscountablePriceFromCarInfo(carInfo)}
+        createTripRequest={async (promo) => {
+          createTripWithPromo(carInfo, promo);
+        }}
+      />
+    );
+  };
+
+  async function createTripWithPromo(carInfo: SearchCarInfo, promoCode?: string) {
+    if (!isAuthenticated) {
+      const action = (
+        <>
+          {DialogActions.Button(t("common.info.login"), () => {
+            hideDialogs();
+            login();
+          })}
+          {/*{DialogActions.Cancel(hideDialogs)}*/}
+        </>
+      );
+      showDialog(t("common.info.connect_wallet"), action);
+      return;
+    }
+
+    if (isEmpty(searchResult.searchCarRequest.dateFromInDateTimeStringFormat)) {
+      showError(t("search_page.errors.date_from"));
+      return;
+    }
+    if (isEmpty(searchResult.searchCarRequest.dateToInDateTimeStringFormat)) {
+      showError(t("search_page.errors.date_to"));
+      return;
+    }
+
+    if (carInfo.tripDays < 0) {
+      showError(t("search_page.errors.date_eq"));
+      return;
+    }
+    if (carInfo.ownerAddress === userInfo?.address) {
+      showError(t("search_page.errors.own_car"));
+      return;
+    }
+
     setRequestSending(true);
 
     showInfo(t("common.info.sign"));
 
-    const result = await createTripRequest(carInfo.carId, searchResult.searchCarRequest, carInfo.timeZoneId);
+    promoCode = !isEmpty(promoCode) ? promoCode! : EMPTY_PROMOCODE;
+    const result = await createTripRequest(carInfo.carId, searchResult.searchCarRequest, carInfo.timeZoneId, promoCode);
 
     hideDialogs();
     hideSnackbars();
@@ -105,7 +156,7 @@ export default function Search() {
         showError(t("search_page.errors.request"));
       }
     }
-  };
+  }
 
   function handleShowRequestDetails(carInfo: SearchCarInfo) {
     router.push(`/guest/createTrip?${createQueryString(searchCarRequest, searchCarFilters, carInfo.carId)}`);
@@ -192,6 +243,7 @@ export default function Search() {
                         isSelected={value.highlighted}
                         setSelected={setHighlightedCar}
                         handleShowRequestDetails={handleShowRequestDetails}
+                        isGuestHasInsurance={!isLoadingInsurance && !isEmpty(guestInsurance.photo)}
                       />
                     </div>
                   );

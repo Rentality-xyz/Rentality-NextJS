@@ -10,7 +10,7 @@ import { NotificationType } from "@/model/NotificationInfo";
 import usePageLastVisit from "@/hooks/usePageLastVisit";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
-import { useChat } from "@/contexts/chat/firebase/chatContext";
+import { useChat } from "@/features/chat/contexts/chatContext";
 import { useAuth } from "@/contexts/auth/authContext";
 
 function HostNavMenu() {
@@ -93,6 +93,7 @@ function HostNavMenu() {
           href="/host/transaction_history"
           icon={MenuIcons.TransactionHistory}
         />
+        <SideNavMenuItem text={t_nav("referrals_and_points")} href="/host/points" icon={MenuIcons.ReferralsAndPoints} />
         <SideNavMenuItem text={"Create invest"} href="/host/create_invest" icon={MenuIcons.CreateInvest} />
         <SideNavMenuItem text={t_nav("profile")} href="/host/profile" icon={MenuIcons.ProfileSettings} />
         {isAuthenticated ? (

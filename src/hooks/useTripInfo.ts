@@ -6,7 +6,7 @@ import { mapTripDTOtoTripInfo } from "@/model/utils/TripDTOtoTripInfo";
 import { TripInfo } from "@/model/TripInfo";
 
 const useTripInfo = (tripId: bigint) => {
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [tripInfo, setTripInfo] = useState<TripInfo | null>(null);
 
@@ -29,15 +29,15 @@ const useTripInfo = (tripId: bigint) => {
   };
 
   useEffect(() => {
-    if (!rentalityContract) return;
+    if (!rentalityContracts) return;
 
-    getTrip(rentalityContract, tripId)
+    getTrip(rentalityContracts.gateway, tripId)
       .then((data) => {
         setTripInfo(data ?? null);
         setIsLoading(false);
       })
       .catch(() => setIsLoading(false));
-  }, [rentalityContract, tripId]);
+  }, [rentalityContracts, tripId]);
 
   return [isLoading, tripInfo] as const;
 };
