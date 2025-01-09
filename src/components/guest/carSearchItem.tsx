@@ -68,8 +68,8 @@ export default function CarSearchItem({
         </div>
         <div className="mt-2 flex text-sm md:grid md:grid-cols-[2fr_1fr] md:justify-between">
           <div className="flex w-8/12 flex-col lg:w-9/12">
-            {isNaN(searchInfo.pricePerDayWithDiscount) ||
-            searchInfo.pricePerDayWithDiscount === searchInfo.pricePerDay ? (
+            {isNaN(searchInfo.pricePerDayWithHostDiscount) ||
+            searchInfo.pricePerDayWithHostDiscount === searchInfo.pricePerDay ? (
               <div className="text-base">
                 <strong>
                   ${displayMoneyWith2Digits(searchInfo.pricePerDay)}
@@ -79,7 +79,7 @@ export default function CarSearchItem({
             ) : (
               <div className="text-base">
                 <strong>
-                  ${displayMoneyWith2Digits(searchInfo.pricePerDayWithDiscount)}
+                  ${displayMoneyWith2Digits(searchInfo.pricePerDayWithHostDiscount)}
                   {t_comp("per_day")}
                 </strong>
                 <strong className="ml-8 text-[#8B8B8F] line-through">
@@ -107,7 +107,7 @@ export default function CarSearchItem({
 
             <div className="grid grid-cols-2">
               <span>{t_comp("price_without_taxes")}</span>
-              <span className="ml-8">${displayMoneyWith2Digits(searchInfo.totalPriceWithDiscount)}</span>
+              <span className="ml-8">${displayMoneyWith2Digits(searchInfo.totalPriceWithHostDiscount)}</span>
             </div>
 
             {isDisplayInsurance && <p className="mt-4 text-rentality-secondary">{t_comp("insurance_required")}</p>}
@@ -166,7 +166,7 @@ export default function CarSearchItem({
             <div>
               {t_comp("total")} $
               {displayMoneyWith2Digits(
-                searchInfo.totalPriceWithDiscount +
+                searchInfo.totalPriceWithHostDiscount +
                   searchInfo.taxes +
                   searchInfo.securityDeposit +
                   searchInfo.deliveryDetails.pickUp.priceInUsd +
