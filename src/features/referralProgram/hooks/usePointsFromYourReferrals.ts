@@ -1,9 +1,9 @@
 import { useCallback, useState } from "react";
 import { Err, Ok, Result } from "@/model/utils/result";
-import useRefferalProgram from "@/hooks/useRefferalProgram";
-import { ContractReadyToClaimFromHash, RefferalProgram } from "@/model/blockchain/schemas";
-import { ReferralProgramDescription } from "@/components/points/ReferralProgramDescriptions";
+import useReferralProgram from "@/features/referralProgram/hooks/useReferralProgram";
+import { ContractReadyToClaimFromHash, RefferalProgram as ReferralProgram } from "@/model/blockchain/schemas";
 import { useTranslation } from "react-i18next";
+import { getReferralProgramDescriptionText } from "../utils";
 
 export type PointsFromYourReferralsInfo = {
   methodDescriptions: string;
@@ -13,7 +13,7 @@ export type PointsFromYourReferralsInfo = {
 };
 
 const usePointsFromYourReferrals = () => {
-  const { getReadyToClaimFromRefferalHash, claimRefferalPoints } = useRefferalProgram();
+  const { getReadyToClaimFromReferralHash, claimReferralPoints } = useReferralProgram();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<PointsFromYourReferralsInfo[]>([]);
   const [allData, setAllData] = useState<PointsFromYourReferralsInfo[] | null>(null);
@@ -43,10 +43,10 @@ const usePointsFromYourReferrals = () => {
         setCurrentPage(page);
         setTotalPageCount(0);
 
-        const readyToClaimFromRefferal = await getReadyToClaimFromRefferalHash();
+        const readyToClaimFromReferral = await getReadyToClaimFromReferralHash();
 
-        if (readyToClaimFromRefferal) {
-          const combinedData = combineReferralData(readyToClaimFromRefferal.toClaim, t);
+        if (readyToClaimFromReferral) {
+          const combinedData = combineReferralData(readyToClaimFromReferral.toClaim, t);
           const totalReadyToClaim = combinedData.reduce((total, item) => total + item.readyToClaim, 0);
           // console.log("Combined Data:", JSON.stringify(combinedData, null, 2));
           setTotalReadyToClaim(totalReadyToClaim);
@@ -67,11 +67,11 @@ const usePointsFromYourReferrals = () => {
 
   const claimAllReferralPoints = useCallback(async (): Promise<void> => {
     try {
-      await claimRefferalPoints();
+      await claimReferralPoints();
     } catch (e) {
       console.error("fetchData error" + e);
     }
-  }, [claimRefferalPoints]);
+  }, [claimReferralPoints]);
 
   return {
     isLoading,
@@ -160,10 +160,10 @@ const combineReferralData = (referrals: ContractReadyToClaimFromHash[], t: any):
   const totalReceived = calculateTotalReceivedByRefType(referrals);
   const readyToClaim = calculateReadyToClaimByRefType(referrals);
 
-  const allRefTypes = new Set<RefferalProgram>(referrals.map((item) => item.refType));
+  const allRefTypes = new Set<ReferralProgram>(referrals.map((item) => item.refType));
 
   return Array.from(allRefTypes).map((refType) => ({
-    methodDescriptions: ReferralProgramDescription(t, refType),
+    methodDescriptions: getReferralProgramDescriptionText(t, refType),
     totalReferrals: totalReferrals[Number(refType)] || 0,
     totalReceived: totalReceived[Number(refType)] || 0,
     readyToClaim: readyToClaim[Number(refType)] || 0,

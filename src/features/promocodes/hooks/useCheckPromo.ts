@@ -23,7 +23,7 @@ function useCheckPromo() {
         if (!checkPromoDto.isFound) {
           return Err(new Error("Promo is not found"));
         }
-        if (!checkPromoDto.isValid) {
+        if (!checkPromoDto.isValid || !checkPromoDto.isDiscount) {
           return Err(new Error("Promo is not valid"));
         }
 
