@@ -1,7 +1,7 @@
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 import RntButton from "../common/rntButton";
 import { Avatar } from "@mui/material";
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import React, { useMemo, useReducer } from "react";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { getEngineTypeIcon, getEngineTypeString } from "@/model/EngineType";
@@ -55,9 +55,6 @@ export default function CarSearchItem({
   useEffect(() => {
     setRequestDetailsLink(getRequestDetailsLink(searchInfo.carId));
   }, [getRequestDetailsLink, searchInfo]);
-  function handleImageClick() {
-    handleShowRequestDetails(searchInfo);
-  }
 
   const isDisplayInsurance = searchInfo.isInsuranceRequired && !isGuestHasInsurance;
   const insurancePriceTotal = isDisplayInsurance ? searchInfo.insurancePerDayPriceInUsd * searchInfo.tripDays : 0;
