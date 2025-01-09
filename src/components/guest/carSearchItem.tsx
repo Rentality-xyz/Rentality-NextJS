@@ -20,8 +20,11 @@ import { useForm } from "react-hook-form";
 import { enterPromoFormSchema, EnterPromoFormValues } from "@/features/promocodes/models/enterPromoFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useCheckPromo from "@/features/promocodes/hooks/useCheckPromo";
+import { cn } from "@/utils";
 
 type TFunction = (key: string, options?: { [key: string]: any }) => string;
+
+const ccsDivider = "max-md:hidden absolute top-1/2 h-[80%] w-px translate-y-[-50%] bg-gray-500";
 
 export default function CarSearchItem({
   searchInfo,
@@ -48,7 +51,7 @@ export default function CarSearchItem({
   };
 
   const mainClasses = useMemo(() => {
-    const classNames = "bg-rentality-bg rnt-card flex flex-col md:flex-row rounded-xl overflow-hidden cursor-pointer";
+    const classNames = "bg-rentality-bg rnt-card flex flex-col rounded-xl overflow-hidden cursor-pointer";
     return isSelected ? classNames + " border-2" : classNames;
   }, [isSelected]);
 
@@ -80,7 +83,7 @@ export default function CarSearchItem({
     <div className={mainClasses} onClick={() => setSelected(searchInfo.carId)}>
       <div
         style={{ backgroundImage: `url(${searchInfo.images[0]})` }}
-        className="relative min-h-[12rem] w-full flex-shrink-0 bg-cover bg-center md:w-64"
+        className="relative min-h-[15rem] w-full flex-shrink-0 bg-cover bg-center md:min-h-[20rem]"
       >
         {searchInfo.isCarDetailsConfirmed && (
           <i className="fi fi-br-hexagon-check absolute right-2 top-2 text-3xl text-green-500"></i>
@@ -101,8 +104,8 @@ export default function CarSearchItem({
             </div>
           </div>
         </div>
-        <div className="mt-2 flex flex-col text-sm md:grid md:grid-cols-[2fr_1fr] md:justify-between">
-          <div className="flex flex-col">
+        <div className="mt-2 flex w-full flex-col text-sm md:grid md:grid-cols-[40%_1fr_1fr] md:gap-4">
+          <div className="relative flex flex-col">
             {isNaN(searchInfo.pricePerDayWithHostDiscount) ||
             searchInfo.pricePerDayWithHostDiscount === searchInfo.pricePerDay ? (
               <div className="text-base">
@@ -146,8 +149,9 @@ export default function CarSearchItem({
             </div>
 
             {isDisplayInsurance && <p className="mt-2 text-rentality-secondary">{t_comp("insurance_required")}</p>}
+            <div className={cn("right-[10px] fullHD:right-[22px]", ccsDivider)}></div>
           </div>
-          <div className="flex flex-col justify-between max-md:mt-2">
+          <div className="relative flex flex-col justify-between max-md:mt-2">
             <div className="flex justify-between md:grid md:grid-cols-2">
               <span>{t_comp("delivery_fee_pick_up")}</span>
               <span className="max-md:ml-4">
@@ -180,16 +184,28 @@ export default function CarSearchItem({
                 <span className="max-md:ml-4">${displayMoneyWith2Digits(insurancePriceTotal)}</span>
               </div>
             )}
+            <div className={cn("right-[2px]", ccsDivider)}></div>
           </div>
-        </div>
-        <div className="mt-6 flex items-center justify-around">
-          <AboutCarIcon image={carSeatsIcon} text={`${searchInfo.seatsNumber} ${t_comp("seats")}`} />
-          <AboutCarIcon
-            image={getEngineTypeIcon(searchInfo.engineType)}
-            width={50}
-            text={getEngineTypeString(searchInfo.engineType)}
-          />
-          <AboutCarIcon image={carTransmissionIcon} text={searchInfo.transmission} />
+          <div className="flex flex-col items-center">
+            <div className="flex justify-between max-md:mt-6 max-md:w-full md:h-full md:flex-col">
+              <AboutCarIcon
+                className="grid-cols-2 md:grid"
+                image={carSeatsIcon}
+                text={`${searchInfo.seatsNumber} ${t_comp("seats")}`}
+              />
+              <AboutCarIcon
+                className="grid-cols-2 md:grid"
+                image={getEngineTypeIcon(searchInfo.engineType)}
+                width={50}
+                text={getEngineTypeString(searchInfo.engineType)}
+              />
+              <AboutCarIcon
+                className="grid-cols-2 md:grid"
+                image={carTransmissionIcon}
+                text={searchInfo.transmission}
+              />
+            </div>
+          </div>
         </div>
         <div className="mt-6 flex w-full max-sm:flex-col">
           <RntInputTransparent
