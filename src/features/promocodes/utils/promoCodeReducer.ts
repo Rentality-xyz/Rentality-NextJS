@@ -31,7 +31,7 @@ export type PromoState =
       promo: { code: string; value: number };
     };
 
-export function reducer(state: PromoState, action: PromoAction): PromoState {
+export function promoCodeReducer(state: PromoState, action: PromoAction): PromoState {
   const { type } = action;
   switch (type) {
     case PromoActionType.RESET:
@@ -45,11 +45,4 @@ export function reducer(state: PromoState, action: PromoAction): PromoState {
     default:
       return state;
   }
-}
-
-export function getPromoPrice(price: number, promoValue: number) {
-  promoValue = Math.max(promoValue, 0);
-  promoValue = Math.min(promoValue, 100);
-
-  return (price * (100 - promoValue)) / 100;
 }
