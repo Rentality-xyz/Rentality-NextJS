@@ -12,6 +12,7 @@ import {
   ContractCarInfo,
   ContractCarInfoDTO,
   ContractChatInfo,
+  ContractCheckPromoDTO,
   ContractClaim,
   ContractFilterInfoDTO,
   ContractFullClaimInfo,
@@ -446,4 +447,15 @@ const emptyContractFilterInfoDTO: ContractFilterInfoDTO = {
 
 export function validateContractFilterInfoDTO(obj: ContractFilterInfoDTO): obj is ContractFilterInfoDTO {
   return validateType(obj, emptyContractFilterInfoDTO);
+}
+
+const emptyContractCheckPromoDTO: ContractCheckPromoDTO = {
+  isFound: false,
+  isValid: false,
+  isDiscount: false,
+  value: BigInt(0),
+};
+
+export function validateContractCheckPromoDTO(obj: ContractCheckPromoDTO): obj is ContractCheckPromoDTO {
+  return validateType(obj, emptyContractCheckPromoDTO);
 }

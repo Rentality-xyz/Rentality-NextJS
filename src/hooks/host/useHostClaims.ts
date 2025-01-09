@@ -23,7 +23,7 @@ import { FileToUpload } from "@/model/FileToUpload";
 import { useTranslation } from "react-i18next";
 
 const useHostClaims = () => {
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const ethereumInfo = useEthereum();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [updateRequired, setUpdateRequired] = useState<boolean>(true);
@@ -43,7 +43,7 @@ const useHostClaims = () => {
       return Err("ERROR");
     }
 
-    if (!rentalityContract) {
+    if (!rentalityContracts) {
       console.error("createClaim error: rentalityContract is null");
       return Err("ERROR");
     }
@@ -64,7 +64,7 @@ const useHostClaims = () => {
         photosUrl: savedFiles.join("|"),
       };
 
-      const transaction = await rentalityContract.createClaim(claimRequest);
+      const transaction = await rentalityContracts.gateway.createClaim(claimRequest);
       await transaction.wait();
 
       // const message = encodeClaimChatMessage(createClaimRequest);
@@ -87,13 +87,13 @@ const useHostClaims = () => {
       return Err("ERROR");
     }
 
-    if (!rentalityContract) {
+    if (!rentalityContracts) {
       console.error("payClaim error: rentalityContract is null");
       return Err("ERROR");
     }
 
     try {
-      const claimAmountInWeth = await rentalityContract.calculateClaimValue(BigInt(claimId));
+      const claimAmountInWeth = await rentalityContracts.gateway.calculateClaimValue(BigInt(claimId));
       const claimAmountInEth = Number(formatEther(claimAmountInWeth));
 
       if (!(await isUserHasEnoughFunds(ethereumInfo.signer, claimAmountInEth))) {
@@ -101,7 +101,7 @@ const useHostClaims = () => {
         return Err("NOT_ENOUGH_FUNDS");
       }
 
-      const transaction = await rentalityContract.payClaim(BigInt(claimId), {
+      const transaction = await rentalityContracts.gateway.payClaim(BigInt(claimId), {
         value: claimAmountInWeth,
       });
 
@@ -119,7 +119,7 @@ const useHostClaims = () => {
       return Err("ERROR");
     }
 
-    if (!rentalityContract) {
+    if (!rentalityContracts) {
       console.error("cancelClaim error: rentalityContract is null");
       return Err("ERROR");
     }
@@ -130,7 +130,7 @@ const useHostClaims = () => {
     }
 
     try {
-      const transaction = await rentalityContract.rejectClaim(BigInt(claimId));
+      const transaction = await rentalityContracts.gateway.rejectClaim(BigInt(claimId));
       await transaction.wait();
       return Ok(true);
     } catch (e) {
@@ -219,18 +219,18 @@ const useHostClaims = () => {
     };
 
     if (!updateRequired) return;
-    if (!rentalityContract) return;
+    if (!rentalityContracts) return;
 
     setUpdateRequired(false);
     setIsLoading(true);
 
-    getClaims(rentalityContract)
+    getClaims(rentalityContracts.gateway)
       .then((data) => {
         setClaims(data?.claimsData ?? []);
         setTripInfos(data?.hostTripsData ?? []);
       })
       .finally(() => setIsLoading(false));
-  }, [updateRequired, rentalityContract]);
+  }, [updateRequired, rentalityContracts]);
 
   const sortedClaims = useMemo(() => {
     return [...claims].sort((a, b) => {

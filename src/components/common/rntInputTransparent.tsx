@@ -27,6 +27,7 @@ const RntInputTransparent = forwardRef<HTMLInputElement, RntInputProps>(
       validationError,
       onChange: onChangeHandler,
       onBlur: onBlurHandler,
+      style,
       ...rest
     },
     ref
@@ -55,7 +56,10 @@ const RntInputTransparent = forwardRef<HTMLInputElement, RntInputProps>(
               id={controlId}
               name={id}
               type={type}
-              style={{ backgroundColor: "transparent" }}
+              style={{
+                backgroundColor: "transparent",
+                ...style,
+              }}
               readOnly={readOnly}
               disabled={readOnly}
               placeholder={placeholder}

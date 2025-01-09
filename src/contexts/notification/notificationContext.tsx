@@ -84,7 +84,7 @@ function getFromBlock(chainId: number, toBlock: number): number {
 export const NotificationProvider = ({ isHost, children }: { isHost: boolean; children?: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
   const ethereumInfo = useEthereum();
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [notificationInfos, setNotificationInfos] = useState<NotificationInfo[]>([]);
 
@@ -107,7 +107,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
     async ({ args }) => {
       console.log(`Rentality Event | args: ${JSON.stringify(args, bigIntReplacer)}`);
 
-      if (!rentalityContract) return;
+      if (!rentalityContracts) return;
 
       const eventType = BigInt(args[0]);
 
@@ -118,7 +118,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
 
           if (tripStatus === TripStatus.Pending) {
             try {
-              const tripInfo: ContractTripDTO = await rentalityContract.getTrip(tripId);
+              const tripInfo: ContractTripDTO = await rentalityContracts.gateway.getTrip(tripId);
               const notification = await createCreateTripNotification(tripInfo, isHost, new Date());
               if (!notification) return;
 
@@ -128,7 +128,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
             }
           } else {
             try {
-              const tripInfo: ContractTripDTO = await rentalityContract.getTrip(tripId);
+              const tripInfo: ContractTripDTO = await rentalityContracts.gateway.getTrip(tripId);
               const notification = await createTripChangedNotification(tripStatus, tripInfo, isHost, new Date());
               if (!notification) return;
 
@@ -143,10 +143,10 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
           const claimId = BigInt(args[1]);
 
           try {
-            const claimInfo: ContractFullClaimInfo = await rentalityContract.getClaim(claimId);
+            const claimInfo: ContractFullClaimInfo = await rentalityContracts.gateway.getClaim(claimId);
             if (!claimInfo) return;
 
-            const tripInfo: ContractTripDTO = await rentalityContract.getTrip(claimInfo.claim.tripId);
+            const tripInfo: ContractTripDTO = await rentalityContracts.gateway.getTrip(claimInfo.claim.tripId);
             const notification = await createClaimCreatedChangedNotification(tripInfo, claimInfo, isHost, new Date());
             if (!notification) return;
 
@@ -157,13 +157,13 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
           return;
       }
     },
-    [rentalityContract, isHost, addNotifications]
+    [rentalityContracts, isHost, addNotifications]
   );
 
   useEffect(() => {
     const initialLoading = async () => {
       if (!ethereumInfo) return;
-      if (!rentalityContract) return;
+      if (!rentalityContracts) return;
 
       try {
         const notificationService = await getEtherContractWithSigner("notificationService", ethereumInfo.signer);
@@ -175,8 +175,8 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         const toBlock = await ethereumInfo.provider.getBlockNumber();
         const fromBlock = getFromBlock(ethereumInfo.chainId, toBlock);
 
-        const tripInfos = await rentalityContract.getTripsAs(isHost);
-        const claimInfos = await rentalityContract.getMyClaimsAs(isHost);
+        const tripInfos = await rentalityContracts.gateway.getTripsAs(isHost);
+        const claimInfos = await rentalityContracts.gateway.getMyClaimsAs(isHost);
 
         const rentalityEventFilterFromUser = notificationService.filters.RentalityEvent(
           null,
@@ -219,7 +219,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
     };
 
     initialLoading();
-  }, [ethereumInfo, rentalityContract, isHost, rentalityEventListener, addNotifications]);
+  }, [ethereumInfo, rentalityContracts, isHost, rentalityEventListener, addNotifications]);
 
   useEffect(() => {
     if (!isAuthenticated && notificationInfos.length > 0) {

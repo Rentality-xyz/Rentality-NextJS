@@ -17,6 +17,7 @@ export default function CarSearchItem({
   disableButton,
   isSelected,
   setSelected,
+  isGuestHasInsurance,
 }: {
   searchInfo: SearchCarInfo;
   handleRentCarRequest: (carInfo: SearchCarInfo) => void;
@@ -24,6 +25,7 @@ export default function CarSearchItem({
   disableButton: boolean;
   isSelected: boolean;
   setSelected: (carID: number) => void;
+  isGuestHasInsurance: boolean;
 }) {
   const { t } = useTranslation();
 
@@ -44,10 +46,8 @@ export default function CarSearchItem({
     handleShowRequestDetails(searchInfo);
   }
 
-  const insurancePriceTotal =
-    searchInfo.isInsuranceRequired && !searchInfo.isGuestHasInsurance
-      ? searchInfo.insurancePerDayPriceInUsd * searchInfo.tripDays
-      : 0;
+  const isDisplayInsurance = searchInfo.isInsuranceRequired && !isGuestHasInsurance;
+  const insurancePriceTotal = isDisplayInsurance ? searchInfo.insurancePerDayPriceInUsd * searchInfo.tripDays : 0;
 
   return (
     <div className={mainClasses} onClick={() => setSelected(searchInfo.carId)}>
@@ -110,9 +110,7 @@ export default function CarSearchItem({
               <span className="ml-8">${displayMoneyWith2Digits(searchInfo.totalPriceWithDiscount)}</span>
             </div>
 
-            {searchInfo.isInsuranceRequired && (
-              <p className="mt-4 text-rentality-secondary">{t_comp("insurance_required")}</p>
-            )}
+            {isDisplayInsurance && <p className="mt-4 text-rentality-secondary">{t_comp("insurance_required")}</p>}
           </div>
           <div className="flex w-auto flex-col">
             <div>- {getEngineTypeString(searchInfo.engineType)}</div>
@@ -133,7 +131,7 @@ export default function CarSearchItem({
               <span className="max-md:ml-4">${displayMoneyWith2Digits(searchInfo.taxes)}</span>
               <span>{t_comp("deposit")}</span>
               <span className="max-md:ml-4">${displayMoneyWith2Digits(searchInfo.securityDeposit)}</span>
-              {searchInfo.isInsuranceRequired && (
+              {isDisplayInsurance && (
                 <>
                   <span>
                     <Image src={getImageForMenu(MenuIcons.Insurance)} width={20} height={20} alt="" />

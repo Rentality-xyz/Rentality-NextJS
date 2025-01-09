@@ -1,7 +1,5 @@
-import { getEtherContractWithSigner } from "@/abis";
-import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { useRentalityAdmin } from "@/contexts/rentalityContext";
 import { AdminTripDetails } from "@/model/admin/AdminTripDetails";
-import { IRentalityAdminGateway } from "@/model/blockchain/IRentalityContract";
 import { AdminTripStatus, ContractTripFilter, PaymentStatus } from "@/model/blockchain/schemas";
 import { emptyContractLocationInfo, validateContractAllTripsDTO } from "@/model/blockchain/schemas_utils";
 import { LocationInfo } from "@/model/LocationInfo";
@@ -10,7 +8,7 @@ import { Err, Ok, Result } from "@/model/utils/result";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import { bigIntReplacer } from "@/utils/json";
 import { mapContractLocationInfoToLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 
 export type AdminAllTripsFilters = {
   status?: AdminTripStatus;
@@ -21,8 +19,7 @@ export type AdminAllTripsFilters = {
 };
 
 const useAdminAllTrips = () => {
-  const ethereumInfo = useEthereum();
-  const [rentalityAdminGateway, setRentalityAdminGateway] = useState<IRentalityAdminGateway | undefined>(undefined);
+  const { admin } = useRentalityAdmin();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<AdminTripDetails[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -34,7 +31,7 @@ const useAdminAllTrips = () => {
       page: number = 1,
       itemsPerPage: number = 10
     ): Promise<Result<boolean, string>> => {
-      if (!rentalityAdminGateway) {
+      if (!admin) {
         console.error("fetchData error: rentalityAdminGateway is null");
         return Err("Contract is not initialized");
       }
@@ -55,11 +52,7 @@ const useAdminAllTrips = () => {
           endDateTime: filters?.endDateTimeUtc ? getBlockchainTimeFromDate(filters.endDateTimeUtc) : BigInt(0),
         };
 
-        const allAdminTrips = await rentalityAdminGateway.getAllTrips(
-          contractFilters,
-          BigInt(page),
-          BigInt(itemsPerPage)
-        );
+        const allAdminTrips = await admin.getAllTrips(contractFilters, BigInt(page), BigInt(itemsPerPage));
         validateContractAllTripsDTO(allAdminTrips);
 
         const data: AdminTripDetails[] = await Promise.all(
@@ -83,18 +76,18 @@ const useAdminAllTrips = () => {
         setIsLoading(false);
       }
     },
-    [rentalityAdminGateway]
+    [admin]
   );
 
   const payToHost = useCallback(
     async (tripId: number): Promise<Result<boolean, string>> => {
-      if (!rentalityAdminGateway) {
+      if (!admin) {
         console.error("payToHost error: rentalityAdminGateway is null");
         return Err("Contract is not initialized");
       }
 
       try {
-        let transaction = await rentalityAdminGateway.payToHost(BigInt(tripId));
+        let transaction = await admin.payToHost(BigInt(tripId));
         await transaction.wait();
         return Ok(true);
       } catch (e) {
@@ -102,18 +95,18 @@ const useAdminAllTrips = () => {
         return Err("Transaction error. See logs for more details");
       }
     },
-    [rentalityAdminGateway]
+    [admin]
   );
 
   const refundToGuest = useCallback(
     async (tripId: number): Promise<Result<boolean, string>> => {
-      if (!rentalityAdminGateway) {
+      if (!admin) {
         console.error("refundToGuest error: rentalityAdminGateway is null");
         return Err("Contract is not initialized");
       }
 
       try {
-        let transaction = await rentalityAdminGateway.refundToGuest(BigInt(tripId));
+        let transaction = await admin.refundToGuest(BigInt(tripId));
         await transaction.wait();
         return Ok(true);
       } catch (e) {
@@ -121,32 +114,8 @@ const useAdminAllTrips = () => {
         return Err("Transaction error. See logs for more details");
       }
     },
-    [rentalityAdminGateway]
+    [admin]
   );
-
-  const isIniialized = useRef<boolean>(false);
-
-  useEffect(() => {
-    const initialize = async () => {
-      if (!ethereumInfo) return;
-      if (isIniialized.current) return;
-
-      try {
-        isIniialized.current = true;
-
-        const rentalityAdminGateway = (await getEtherContractWithSigner(
-          "admin",
-          ethereumInfo.signer
-        )) as unknown as IRentalityAdminGateway;
-        setRentalityAdminGateway(rentalityAdminGateway);
-      } catch (e) {
-        console.error("initialize error" + e);
-        isIniialized.current = false;
-      }
-    };
-
-    initialize();
-  }, [ethereumInfo]);
 
   return {
     isLoading,

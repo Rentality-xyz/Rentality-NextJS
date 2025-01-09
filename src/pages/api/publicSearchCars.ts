@@ -1,6 +1,6 @@
 import { getEtherContractWithSigner } from "@/abis";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
-import { FilterLimits, SearchCarInfo, SearchCarInfoDTO } from "@/model/SearchCarsResult";
+import { FilterLimits, SearchCarInfoDTO } from "@/model/SearchCarsResult";
 import { emptyLocationInfo, formatLocationInfoUpToCity } from "@/model/LocationInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import {

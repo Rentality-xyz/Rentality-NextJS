@@ -16,13 +16,13 @@ import { formatSearchAvailableCarsContractRequest } from "@/utils/searchMapper";
 
 const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
   const ethereumInfo = useEthereum();
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [carInfo, setCarInfo] = useState<SearchCarInfoDetails>();
 
   useEffect(() => {
     const checkCarAvailabilityWithDelivery = async (request: SearchCarRequest, carId: number) => {
-      if (!rentalityContract) return;
+      if (!rentalityContracts) return;
       if (carId === 0) return;
 
       try {
@@ -60,7 +60,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           )
         );
 
-        const availableCarDTO = await rentalityContract.checkCarAvailabilityWithDelivery(
+        const availableCarDTO = await rentalityContracts.gateway.checkCarAvailabilityWithDelivery(
           BigInt(carId),
           contractDateFromUTC,
           contractDateToUTC,
@@ -72,7 +72,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           validateContractAvailableCarDTO(availableCarDTO);
         }
         console.log("availableCarDTO:", JSON.stringify(availableCarDTO, bigIntReplacer, 2));
-        const carInfo = await rentalityContract.getCarInfoById(BigInt(carId));
+        const carInfo = await rentalityContracts.gateway.getCarInfoById(BigInt(carId));
 
         const tankVolumeInGal =
           availableCarDTO.engineType === EngineType.PETROL ? Number(carInfo.carInfo.engineParams[0]) : 0;
@@ -166,12 +166,12 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
     };
 
     if (!ethereumInfo) return;
-    if (!rentalityContract) return;
+    if (!rentalityContracts) return;
     if (!carId) return;
     if (isEmpty(searchCarRequest.searchLocation.address)) return;
 
     checkCarAvailabilityWithDelivery(searchCarRequest, carId);
-  }, [ethereumInfo, rentalityContract, searchCarRequest, carId]);
+  }, [ethereumInfo, rentalityContracts, searchCarRequest, carId]);
 
   return { isLoading, carInfo } as const;
 };

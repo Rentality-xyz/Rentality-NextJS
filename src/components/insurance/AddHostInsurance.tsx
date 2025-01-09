@@ -3,26 +3,28 @@ import { useTranslation } from "react-i18next";
 import RntButtonTransparent from "../common/rntButtonTransparent";
 import useToggleState from "@/hooks/useToggleState";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
-import useSaveGuestTripInsurance from "@/hooks/guest/useSaveGuestTripInsurance";
 import { Controller, useForm } from "react-hook-form";
 import { addTripInsuranceFormSchema, AddTripInsuranceFormValues } from "./addTripInsuranceFormSchema";
-import { GENERAL_INSURANCE_TYPE_ID, ONE_TIME_INSURANCE_TYPE_ID } from "@/utils/constants";
+import { ONE_TIME_INSURANCE_TYPE_ID } from "@/utils/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { isEmpty } from "@/utils/string";
 import RntButton from "../common/rntButton";
 import RntInput from "../common/rntInput";
-import RntValidationError from "../common/RntValidationError";
-import { UserInsurancePhoto } from "../guest/UserInsurancePhoto";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import RntSelect from "../common/rntSelect";
 import useTripsList from "@/hooks/guest/useTripsList";
+import useSaveHostTripInsurance from "@/hooks/host/useSaveHostTripInsurance";
 
-export default function AddHostInsurance() {
+interface AddHostInsuranceProps {
+  onNewInsuranceAdded?: () => Promise<void>;
+}
+
+export default function AddHostInsurance({ onNewInsuranceAdded }: AddHostInsuranceProps) {
   const { t } = useTranslation();
   const [isFormOpen, toggleFormOpen] = useToggleState(false);
   const { isLoading: isTripsLoading, trips, refetchData } = useTripsList(true);
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
-  const { saveTripInsurance } = useSaveGuestTripInsurance();
+  const { saveTripInsurance } = useSaveHostTripInsurance();
 
   const {
     register,
@@ -34,42 +36,28 @@ export default function AddHostInsurance() {
     reset: resetFormValues,
   } = useForm<AddTripInsuranceFormValues>({
     defaultValues: {
-      insuranceType: GENERAL_INSURANCE_TYPE_ID,
+      insuranceType: ONE_TIME_INSURANCE_TYPE_ID,
       comment: "",
     },
     resolver: zodResolver(addTripInsuranceFormSchema),
   });
   const { errors, isSubmitting } = formState;
-  const insuranceType = watch("insuranceType");
 
   async function onFormSubmit(formData: AddTripInsuranceFormValues) {
     console.log("formData", JSON.stringify(formData, null, 2));
     let isValid = true;
 
-    if (formData.insuranceType === GENERAL_INSURANCE_TYPE_ID) {
-      if (formData.photos === undefined) {
-        setError("photos", { message: "Photo is required", type: "required" });
-        isValid = false;
-      }
-
-      if (formData.selectedTripId === undefined) {
-        setError("selectedTripId", { message: "value is required", type: "required" });
-        isValid = false;
-      }
+    if (formData.selectedTripId === undefined) {
+      setError("selectedTripId", { message: "value is required", type: "required" });
+      isValid = false;
     }
-    if (formData.insuranceType === ONE_TIME_INSURANCE_TYPE_ID) {
-      if (formData.selectedTripId === undefined) {
-        setError("selectedTripId", { message: "value is required", type: "required" });
-        isValid = false;
-      }
-      if (isEmpty(formData.companyName)) {
-        setError("companyName", { message: "value is required", type: "required" });
-        isValid = false;
-      }
-      if (isEmpty(formData.policeNumber)) {
-        setError("policeNumber", { message: "value is required", type: "required" });
-        isValid = false;
-      }
+    if (isEmpty(formData.companyName)) {
+      setError("companyName", { message: "value is required", type: "required" });
+      isValid = false;
+    }
+    if (isEmpty(formData.policeNumber)) {
+      setError("policeNumber", { message: "value is required", type: "required" });
+      isValid = false;
     }
     if (!isValid) return;
 
@@ -91,6 +79,7 @@ export default function AddHostInsurance() {
       showInfo(t("common.info.success"));
       resetFormValues();
       refetchData();
+      onNewInsuranceAdded !== undefined && onNewInsuranceAdded();
     }
   }
 
@@ -130,17 +119,6 @@ export default function AddHostInsurance() {
                 control={control}
                 render={({ field }) => (
                   <div className="flex flex-col">
-                    <div className="flex gap-2">
-                      <input
-                        type="radio"
-                        id={GENERAL_INSURANCE_TYPE_ID}
-                        name="insurance"
-                        value={GENERAL_INSURANCE_TYPE_ID}
-                        checked={field.value === GENERAL_INSURANCE_TYPE_ID}
-                        onChange={field.onChange}
-                      />
-                      <label htmlFor="generalInsurance">General Insurance ID</label>
-                    </div>
                     <div className="flex gap-2">
                       <input
                         type="radio"
@@ -197,47 +175,24 @@ export default function AddHostInsurance() {
               />
             )}
           </div>
-          {insuranceType === GENERAL_INSURANCE_TYPE_ID && (
-            <>
-              <p>Upload photo of ID insurance card</p>
 
-              <Controller
-                name="photos"
-                control={control}
-                render={({ field }) => (
-                  <>
-                    <UserInsurancePhoto
-                      insurancePhoto={field.value}
-                      onInsurancePhotoChanged={(newValue) => {
-                        field.onChange(newValue);
-                      }}
-                    />
-                    <RntValidationError validationError={errors.photos?.message?.toString()} />
-                  </>
-                )}
-              />
-            </>
-          )}
+          <div className="flex gap-4">
+            <RntInput
+              id="companyName"
+              label={"Insurance company name"}
+              labelClassName="pl-4"
+              {...register("companyName")}
+              validationError={errors.companyName?.message?.toString()}
+            />
 
-          {insuranceType === ONE_TIME_INSURANCE_TYPE_ID && (
-            <div className="flex gap-4">
-              <RntInput
-                id="companyName"
-                label={"Insurance company name"}
-                labelClassName="pl-4"
-                {...register("companyName")}
-                validationError={errors.companyName?.message?.toString()}
-              />
-
-              <RntInput
-                id="policeNumber"
-                label={"Insurance policy number"}
-                labelClassName="pl-4"
-                {...register("policeNumber")}
-                validationError={errors.policeNumber?.message?.toString()}
-              />
-            </div>
-          )}
+            <RntInput
+              id="policeNumber"
+              label={"Insurance policy number"}
+              labelClassName="pl-4"
+              {...register("policeNumber")}
+              validationError={errors.policeNumber?.message?.toString()}
+            />
+          </div>
 
           <RntInput
             id="comment"
