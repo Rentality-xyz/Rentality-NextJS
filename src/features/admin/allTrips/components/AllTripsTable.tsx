@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import RntButton from "@/components/common/rntButton";
+import Loading from "@/components/common/Loading";
+import RntSuspense from "@/components/common/rntSuspense";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2DigitsOrNa } from "@/utils/numericFormatters";
 import { usePathname } from "next/navigation";
@@ -8,16 +10,17 @@ import { cn } from "@/utils";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
-import { getAdminTripStatusBgColorFromStatus, getAdminTextColorForPaymentStatus } from "@/utils/tailwind";
+import {
+  getAdminTripStatusBgColorFromStatus,
+  getAdminTextColorForPaymentStatus,
+} from "@/features/admin/allTrips/utils/tailwind";
 import { Result } from "@/model/utils/result";
-import Loading from "@/components/common/Loading";
 import { PaymentStatus } from "@/model/blockchain/schemas";
 import {
   AdminTripDetails,
   getPaymentStatusText,
   getTripStatusTextFromAdminStatus,
-} from "@/model/admin/AdminTripDetails";
-import RntSuspense from "@/components/common/rntSuspense";
+} from "@/features/admin/allTrips/models/AdminTripDetails";
 
 type AllTripsTableProps = {
   isLoading: boolean;

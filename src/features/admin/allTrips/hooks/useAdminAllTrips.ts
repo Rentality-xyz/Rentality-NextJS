@@ -1,9 +1,9 @@
 import { useRentalityAdmin } from "@/contexts/rentalityContext";
-import { AdminTripDetails } from "@/model/admin/AdminTripDetails";
+import { AdminTripDetails } from "@/features/admin/allTrips/models/AdminTripDetails";
 import { AdminTripStatus, ContractTripFilter, PaymentStatus } from "@/model/blockchain/schemas";
 import { emptyContractLocationInfo, validateContractAllTripsDTO } from "@/model/blockchain/schemas_utils";
 import { LocationInfo } from "@/model/LocationInfo";
-import { mapContractTripToAdminTripDetails } from "@/model/mappers/contractTripToAdminTripDetails";
+import { mapContractTripToAdminTripDetails } from "@/features/admin/allTrips/models/mappers/contractTripToAdminTripDetails";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import { bigIntReplacer } from "@/utils/json";
