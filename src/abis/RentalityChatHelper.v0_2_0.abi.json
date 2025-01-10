@@ -15,7 +15,6 @@
       "name": "BeaconUpgraded",
       "inputs": [{ "type": "address", "name": "beacon", "indexed": true }]
     },
-    { "type": "event", "anonymous": false, "name": "EIP712DomainChanged", "inputs": [] },
     {
       "type": "event",
       "anonymous": false,
@@ -30,49 +29,40 @@
     },
     {
       "type": "function",
-      "name": "eip712Domain",
+      "name": "getChatPublicKeys",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address[]", "name": "addresses" }],
+      "outputs": [
+        {
+          "type": "tuple[]",
+          "name": "",
+          "components": [
+            { "type": "address", "name": "userAddress" },
+            { "type": "string", "name": "publicKey" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getMyChatKeys",
       "constant": true,
       "stateMutability": "view",
       "payable": false,
       "inputs": [],
       "outputs": [
-        { "type": "bytes1", "name": "fields" },
-        { "type": "string", "name": "name" },
-        { "type": "string", "name": "version" },
-        { "type": "uint256", "name": "chainId" },
-        { "type": "address", "name": "verifyingContract" },
-        { "type": "bytes32", "name": "salt" },
-        { "type": "uint256[]", "name": "extensions" }
+        { "type": "string", "name": "" },
+        { "type": "string", "name": "" }
       ]
-    },
-    {
-      "type": "function",
-      "name": "getDimoTokenId",
-      "constant": true,
-      "stateMutability": "view",
-      "payable": false,
-      "inputs": [{ "type": "uint256", "name": "carId" }],
-      "outputs": [{ "type": "uint256", "name": "" }]
-    },
-    {
-      "type": "function",
-      "name": "getDimoVihicles",
-      "constant": true,
-      "stateMutability": "view",
-      "payable": false,
-      "inputs": [],
-      "outputs": [{ "type": "uint256[]", "name": "" }]
     },
     {
       "type": "function",
       "name": "initialize",
       "constant": false,
       "payable": false,
-      "inputs": [
-        { "type": "address", "name": "_userService" },
-        { "type": "address", "name": "_carToken" },
-        { "type": "address", "name": "_admin" }
-      ],
+      "inputs": [{ "type": "address", "name": "_userService" }],
       "outputs": []
     },
     {
@@ -86,23 +76,12 @@
     },
     {
       "type": "function",
-      "name": "saveButch",
+      "name": "setMyChatPublicKey",
       "constant": false,
       "payable": false,
       "inputs": [
-        { "type": "uint256[]", "name": "dimoTokenIds" },
-        { "type": "uint256[]", "name": "carIds" }
-      ],
-      "outputs": []
-    },
-    {
-      "type": "function",
-      "name": "saveDimoTokenId",
-      "constant": false,
-      "payable": false,
-      "inputs": [
-        { "type": "uint256", "name": "dimoTokenId" },
-        { "type": "uint256", "name": "carId" }
+        { "type": "string", "name": "chatPrivateKey" },
+        { "type": "string", "name": "chatPublicKey" }
       ],
       "outputs": []
     },

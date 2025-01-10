@@ -116,7 +116,8 @@
                       ]
                     },
                     { "type": "string", "name": "carVinNumber" },
-                    { "type": "string", "name": "carMetadataURI" }
+                    { "type": "string", "name": "carMetadataURI" },
+                    { "type": "uint256", "name": "dimoTokenId" }
                   ]
                 },
                 { "type": "string", "name": "carMetadataURI" }
@@ -298,6 +299,15 @@
     {
       "type": "function",
       "name": "getDeliveryServiceAddress",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "address", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "getDimoService",
       "constant": true,
       "stateMutability": "view",
       "payable": false,
@@ -493,7 +503,8 @@
         { "type": "address", "name": "insuranceServiceAddress" },
         { "type": "address", "name": "rentalityTripsViewAddress" },
         { "type": "address", "name": "refferalProgramAddress" },
-        { "type": "address", "name": "promoServiceAddress" }
+        { "type": "address", "name": "promoServiceAddress" },
+        { "type": "address", "name": "dimoServiceAddress" }
       ],
       "outputs": []
     },
@@ -697,6 +708,14 @@
       "constant": false,
       "payable": false,
       "inputs": [{ "type": "address", "name": "contractAddress" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "updateDimoService",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "dimoServiceAddress" }],
       "outputs": []
     },
     {

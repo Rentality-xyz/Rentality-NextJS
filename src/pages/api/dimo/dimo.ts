@@ -25,7 +25,6 @@ type VCDimoResult = {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const user = <string>req.query.user!
-
   const authResult = await authOnDimo()
 
   if(authResult === null)
@@ -50,6 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }`
   });
+
   const result = await Promise.all((userCarsOnDimo as unknown as DIMOSharedCarsResponse).data.vehicles.nodes.map(async (token) => {
       const id = token.tokenId;
 
@@ -67,7 +67,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       `,
     });
-    return (vinResponse as unknown as {data: {vinVCLatest: { vin: string | null}}}).data.vinVCLatest.vin
+     return (vinResponse as unknown as { data: { vinVCLatest: { vin: string | null } | null } })
+    ?.data
+    ?.vinVCLatest
+    ?.vin || null;
   }
   
   catch (error) {
@@ -77,12 +80,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
    
   let vin = await getVinByTokenId(id)
-
   if(vin === null) {
     try {
     await dimo.attestation.createVinVC({
       ...privToken,
-      tokenId: id
+      tokenId: id,
+      force: true
     }); 
     vin = await getVinByTokenId(id)
   }
