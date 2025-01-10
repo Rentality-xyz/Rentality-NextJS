@@ -5,7 +5,7 @@ import "../utils/i18n";
 import type { AppProps } from "next/app";
 import { Web3Setup } from "@/contexts/web3/web3Setup";
 import { UserInfoProvider } from "@/contexts/userInfoContext";
-import { FirebaseChatProvider } from "@/contexts/chat/firebase/chatContext";
+import { FirebaseChatProvider } from "@/features/chat/contexts/chatContext";
 import { AppContextProvider } from "@/contexts/appContext";
 import { RentalityProvider } from "@/contexts/rentalityContext";
 import { RntDialogsProvider } from "@/contexts/rntDialogsContext";

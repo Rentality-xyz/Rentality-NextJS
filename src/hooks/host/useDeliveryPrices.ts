@@ -17,7 +17,7 @@ const emptyDeliveryPrices: DeliveryPrices = {
 
 const useDeliveryPrices = () => {
   const ethereumInfo = useEthereum();
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const userInfo = useUserInfo();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [deliveryPrices, setDeliveryPrices] = useState<DeliveryPrices>(emptyDeliveryPrices);
@@ -30,7 +30,7 @@ const useDeliveryPrices = () => {
       return Err("ERROR");
     }
 
-    if (!rentalityContract) {
+    if (!rentalityContracts) {
       console.error("saveDeliveryPrices error: rentalityContract is null");
       return Err("ERROR");
     }
@@ -41,7 +41,7 @@ const useDeliveryPrices = () => {
     }
 
     try {
-      const transaction = await rentalityContract.addUserDeliveryPrices(
+      const transaction = await rentalityContracts.gateway.addUserDeliveryPrices(
         BigInt(newDeliveryPrices.from1To25milesPrice * 100),
         BigInt(newDeliveryPrices.over25MilesPrice * 100)
       );
@@ -56,7 +56,7 @@ const useDeliveryPrices = () => {
   useEffect(() => {
     const getDeliveryPrices = async () => {
       try {
-        if (rentalityContract == null) {
+        if (rentalityContracts == null) {
           console.error("getDeliveryPrices error: contract is null");
           return;
         }
@@ -68,7 +68,7 @@ const useDeliveryPrices = () => {
 
         setIsLoading(true);
 
-        const data = await rentalityContract.getUserDeliveryPrices(userInfo.address);
+        const data = await rentalityContracts.gateway.getUserDeliveryPrices(userInfo.address);
 
         const deliveryPricesFormValues: DeliveryPrices = {
           from1To25milesPrice: Number(data.underTwentyFiveMilesInUsdCents) / 100,
@@ -82,10 +82,10 @@ const useDeliveryPrices = () => {
       }
     };
 
-    if (!rentalityContract) return;
+    if (!rentalityContracts) return;
     if (!userInfo) return;
     getDeliveryPrices();
-  }, [rentalityContract, userInfo]);
+  }, [rentalityContracts, userInfo]);
 
   return [isLoading, deliveryPrices, saveDeliveryPrices] as const;
 };

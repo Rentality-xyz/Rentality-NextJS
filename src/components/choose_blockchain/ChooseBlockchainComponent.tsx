@@ -1,6 +1,6 @@
 import { Button, Stack } from "@mui/material";
-import arrowUp from "../../images/arrowUp.svg";
-import arrowDown from "../../images/arrowDown.svg";
+import arrowUp from "../../images/arrows/arrowUp.svg";
+import arrowDown from "../../images/arrows/arrowDown.svg";
 import blockchainChosen from "../../images/blockchainChosen.svg";
 import Image from "next/image";
 import { ElementRef, useEffect, useRef, useState } from "react";

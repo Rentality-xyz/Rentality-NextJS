@@ -1,7 +1,6 @@
 import DeliveryPriceForm from "@/components/host/deliveryPriceForm";
 import TripDiscountsForm from "@/components/host/tripDiscountsForm";
 import PageTitle from "@/components/pageTitle/pageTitle";
-import { UserCommonInformationForm, UserDriverLicenseVerification } from "@/components/profileInfo/userProfileInfo";
 import useDeliveryPrices from "@/hooks/host/useDeliveryPrices";
 import useTripDiscounts from "@/hooks/host/useTripDiscounts";
 import useProfileSettings from "@/hooks/useProfileSettings";
@@ -9,8 +8,8 @@ import useUserRole from "@/hooks/useUserRole";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import arrowUpTurquoise from "@/images/arrowUpTurquoise.svg";
-import arrowDownTurquoise from "@/images/arrowDownTurquoise.svg";
+import arrowUpTurquoise from "@/images/arrows/arrowUpTurquoise.svg";
+import arrowDownTurquoise from "@/images/arrows/arrowDownTurquoise.svg";
 import tutorialVideo from "@/images/tutorial_video.png";
 import RntButton from "@/components/common/rntButton";
 import { CheckboxLight } from "@/components/common/rntCheckbox";
@@ -22,6 +21,8 @@ import useMyListings from "@/hooks/host/useMyListings";
 import AddCar from "@/pages/host/vehicles/add";
 import RntSuspense from "@/components/common/rntSuspense";
 import { CivicProvider } from "@/contexts/web3/civicContext";
+import UserCommonInformationForm from "@/components/profileInfo/UserCommonInformationForm";
+import UserDriverLicenseVerification from "@/components/profileInfo/UserDriverLicenseVerification";
 
 function BecomeHost() {
   return (

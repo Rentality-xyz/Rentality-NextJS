@@ -1,9 +1,6 @@
 import ListingItem from "@/components/host/listingItem";
 import useMyListings from "@/hooks/host/useMyListings";
 import RntButton from "@/components/common/rntButton";
-import { isEmpty } from "@/utils/string";
-import { useUserInfo } from "@/contexts/userInfoContext";
-import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
@@ -12,19 +9,12 @@ import RntSuspense from "@/components/common/rntSuspense";
 function Listings() {
   const [isLoadingMyListings, myListings] = useMyListings();
   const router = useRouter();
-  const userInfo = useUserInfo();
-  const { showError } = useRntSnackbars();
+  const { t } = useTranslation();
 
   const handleAddListing = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (isEmpty(userInfo?.drivingLicense)) {
-      showError("In order to add a car, please enter user information");
-      await router.push("/host/profile");
-      return;
-    }
     await router.push("/host/vehicles/add");
   };
-  const { t } = useTranslation();
   return (
     <>
       <div id="page-title" className="flex flex-row items-center justify-between">

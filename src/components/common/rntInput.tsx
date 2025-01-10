@@ -3,7 +3,8 @@ import { forwardRef, useId } from "react";
 import RntValidationError from "./RntValidationError";
 import { cn } from "@/utils";
 import Image, { StaticImageData } from "next/image";
-import icLocation from "@/images/ic_location.png";
+import bgInput from "@/images/bg_input.png";
+// @ts-ignore
 import bgBlockSearch from "@/images/bg_block_search.png";
 import * as React from "react";
 import DotStatus from "@/components/profileInfo/dotStatus";
@@ -15,7 +16,7 @@ interface RntInputProps extends React.ComponentPropsWithoutRef<"input"> {
   label?: string;
   validationError?: string;
   validationSuccessMessage?: string;
-  validationMessage?:string;
+  validationMessage?: string;
   isTransparentStyle?: boolean;
   iconFrontLabel?: StaticImageData;
 }
@@ -61,7 +62,7 @@ const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
             <label className={cn("flex items-center", lClassName)} htmlFor={reactId}>
               {!isEmpty(iconFrontLabel?.src) && <Image src={iconFrontLabel!!} alt="" className="mr-2" />}
               {label}
-              <Image src={bgBlockSearch} alt="" className="absolute left-0 top-[30px] h-[62%] w-full rounded-full" />
+              <Image src={bgInput} alt="" className="absolute left-0 top-[30px] h-[62%] w-full rounded-full" />
             </label>
           ) : (
             <label className={lClassName} htmlFor={id}>
@@ -84,8 +85,20 @@ const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
           ref={ref}
         />
         <RntValidationError className={validationClassName} validationError={validationError} />
-        { validationSuccessMessage && <DotStatus containerClassName="text-sm text-rnt-temp-main-text whitespace-nowrap mt-2 pl-4" color="success" text={validationSuccessMessage} /> }
-        { validationMessage && <DotStatus containerClassName="text-sm text-rnt-temp-main-text whitespace-nowrap mt-2 pl-4" color="warning" text={validationMessage} /> }
+        {validationSuccessMessage && (
+          <DotStatus
+            containerClassName="text-sm text-rnt-temp-main-text whitespace-nowrap mt-2 pl-4"
+            color="success"
+            text={validationSuccessMessage}
+          />
+        )}
+        {validationMessage && (
+          <DotStatus
+            containerClassName="text-sm text-rnt-temp-main-text whitespace-nowrap mt-2 pl-4"
+            color="warning"
+            text={validationMessage}
+          />
+        )}
       </div>
     );
   }

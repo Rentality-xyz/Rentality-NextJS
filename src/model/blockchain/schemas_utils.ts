@@ -12,6 +12,7 @@ import {
   ContractCarInfo,
   ContractCarInfoDTO,
   ContractChatInfo,
+  ContractCheckPromoDTO,
   ContractClaim,
   ContractFilterInfoDTO,
   ContractFullClaimInfo,
@@ -313,6 +314,7 @@ const emptyContractTripDTO: ContractTripDTO = {
   insurancesInfo: [],
   paidForInsuranceInUsdCents: BigInt(0),
   guestDrivingLicenseIssueCountry: "",
+  promoDiscount: BigInt(0),
 };
 
 export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {
@@ -384,6 +386,7 @@ const emptyContractInsuranceDTO: ContractInsuranceDTO = {
   creatorFullName: "",
   startDateTime: BigInt(0),
   endDateTime: BigInt(0),
+  isActual: false,
 };
 
 export function validateContractInsuranceDTO(obj: ContractInsuranceDTO): obj is ContractInsuranceDTO {
@@ -445,4 +448,15 @@ const emptyContractFilterInfoDTO: ContractFilterInfoDTO = {
 
 export function validateContractFilterInfoDTO(obj: ContractFilterInfoDTO): obj is ContractFilterInfoDTO {
   return validateType(obj, emptyContractFilterInfoDTO);
+}
+
+const emptyContractCheckPromoDTO: ContractCheckPromoDTO = {
+  isFound: false,
+  isValid: false,
+  isDiscount: false,
+  value: BigInt(0),
+};
+
+export function validateContractCheckPromoDTO(obj: ContractCheckPromoDTO): obj is ContractCheckPromoDTO {
+  return validateType(obj, emptyContractCheckPromoDTO);
 }

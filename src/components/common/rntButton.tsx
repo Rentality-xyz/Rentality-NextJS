@@ -9,7 +9,7 @@ export default function RntButton({ className, type, children, minHeight = "48px
   const bgColor = !className?.includes("bg-") ? "buttonGradient" : "";
   type = type ?? "button";
   const c = cn(
-    `py-1 w-56 rounded-full text-white text-lg disabled:bg-gray-500 min-h-[${minHeight}]`,
+    `transition duration-150 active:scale-95 active:opacity-75 py-1 w-56 rounded-full text-white text-lg disabled:bg-gray-500 min-h-[${minHeight}]`,
     bgColor,
     className
   );

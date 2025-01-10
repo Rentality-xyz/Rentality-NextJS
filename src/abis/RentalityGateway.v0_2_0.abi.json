@@ -46,7 +46,8 @@
             { "type": "bool", "name": "insuranceRequired" },
             { "type": "uint256", "name": "insurancePriceInUsdCents" }
           ]
-        }
+        },
+        { "type": "bytes32", "name": "refferalHash" }
       ],
       "outputs": [{ "type": "uint256", "name": "" }]
     },
@@ -141,7 +142,8 @@
             { "type": "string", "name": "longitude" },
             { "type": "string", "name": "timeZoneId" }
           ]
-        }
+        },
+        { "type": "string", "name": "promoCode" }
       ],
       "outputs": [
         {
@@ -317,7 +319,8 @@
       "payable": false,
       "inputs": [
         { "type": "uint256", "name": "tripId" },
-        { "type": "uint64[]", "name": "panelParams" }
+        { "type": "uint64[]", "name": "panelParams" },
+        { "type": "bytes32", "name": "refferalHash" }
       ],
       "outputs": []
     },
@@ -334,10 +337,37 @@
     },
     {
       "type": "function",
+      "name": "checkPromo",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        { "type": "string", "name": "promo" },
+        { "type": "uint256", "name": "startDateTime" },
+        { "type": "uint256", "name": "endDateTime" }
+      ],
+      "outputs": [
+        {
+          "type": "tuple",
+          "name": "",
+          "components": [
+            { "type": "bool", "name": "isFound" },
+            { "type": "bool", "name": "isValid" },
+            { "type": "bool", "name": "isDiscount" },
+            { "type": "uint256", "name": "value" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
       "name": "confirmCheckOut",
       "constant": false,
       "payable": false,
-      "inputs": [{ "type": "uint256", "name": "tripId" }],
+      "inputs": [
+        { "type": "uint256", "name": "tripId" },
+        { "type": "bytes32", "name": "" }
+      ],
       "outputs": []
     },
     {
@@ -416,7 +446,8 @@
               ]
             }
           ]
-        }
+        },
+        { "type": "string", "name": "promoCode" }
       ],
       "outputs": []
     },
@@ -425,7 +456,10 @@
       "name": "finishTrip",
       "constant": false,
       "payable": false,
-      "inputs": [{ "type": "uint256", "name": "tripId" }],
+      "inputs": [
+        { "type": "uint256", "name": "tripId" },
+        { "type": "bytes32", "name": "" }
+      ],
       "outputs": []
     },
     {
@@ -856,7 +890,8 @@
             { "type": "string", "name": "creatorPhoneNumber" },
             { "type": "string", "name": "creatorFullName" },
             { "type": "uint64", "name": "startDateTime" },
-            { "type": "uint64", "name": "endDateTime" }
+            { "type": "uint64", "name": "endDateTime" },
+            { "type": "bool", "name": "isActual" }
           ]
         }
       ]
@@ -1172,7 +1207,8 @@
               ]
             },
             { "type": "uint256", "name": "paidForInsuranceInUsdCents" },
-            { "type": "string", "name": "guestDrivingLicenseIssueCountry" }
+            { "type": "string", "name": "guestDrivingLicenseIssueCountry" },
+            { "type": "uint256", "name": "promoDiscount" }
           ]
         }
       ]
@@ -1360,7 +1396,8 @@
               ]
             },
             { "type": "uint256", "name": "paidForInsuranceInUsdCents" },
-            { "type": "string", "name": "guestDrivingLicenseIssueCountry" }
+            { "type": "string", "name": "guestDrivingLicenseIssueCountry" },
+            { "type": "uint256", "name": "promoDiscount" }
           ]
         }
       ]
@@ -1617,7 +1654,8 @@
             { "type": "string", "name": "issueCountry" },
             { "type": "string", "name": "email" }
           ]
-        }
+        },
+        { "type": "bytes32", "name": "" }
       ],
       "outputs": []
     },
@@ -1630,31 +1668,26 @@
         { "type": "string", "name": "nickName" },
         { "type": "string", "name": "mobilePhoneNumber" },
         { "type": "string", "name": "profilePhoto" },
-        { "type": "bytes", "name": "TCSignature" }
+        { "type": "bytes", "name": "TCSignature" },
+        { "type": "bytes32", "name": "hash" }
       ],
       "outputs": []
     },
     {
       "type": "function",
-      "name": "updateCarInfo",
+      "name": "setMyCivicKYCInfo",
       "constant": false,
       "payable": false,
       "inputs": [
         {
           "type": "tuple",
-          "name": "request",
+          "name": "civicKycInfo",
           "components": [
-            { "type": "uint256", "name": "carId" },
-            { "type": "uint64", "name": "pricePerDayInUsdCents" },
-            { "type": "uint64", "name": "securityDepositPerTripInUsdCents" },
-            { "type": "uint64[]", "name": "engineParams" },
-            { "type": "uint64", "name": "milesIncludedPerDay" },
-            { "type": "uint32", "name": "timeBufferBetweenTripsInSec" },
-            { "type": "bool", "name": "currentlyListed" },
-            { "type": "bool", "name": "insuranceRequired" },
-            { "type": "uint256", "name": "insurancePriceInUsdCents" },
-            { "type": "uint8", "name": "engineType" },
-            { "type": "string", "name": "tokenUri" }
+            { "type": "string", "name": "fullName" },
+            { "type": "string", "name": "licenseNumber" },
+            { "type": "uint64", "name": "expirationDate" },
+            { "type": "string", "name": "issueCountry" },
+            { "type": "string", "name": "email" }
           ]
         }
       ],
@@ -1702,8 +1735,7 @@
             },
             { "type": "bytes", "name": "signature" }
           ]
-        },
-        { "type": "string", "name": "geoApiKey" }
+        }
       ],
       "outputs": []
     },

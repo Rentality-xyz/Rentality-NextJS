@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next";
 import RntSelect from "../common/rntSelect";
 import RntButton from "../common/rntButton";
-import { GuestInsuranceFiltersType } from "@/hooks/insurance/useGuestInsurances";
+import { InsuranceFiltersType } from "@/hooks/insurance/useInsurances";
 
 interface GuestInsuranceFiltersProps {
-  defaultFilters?: GuestInsuranceFiltersType;
-  onApply: (filters: GuestInsuranceFiltersType) => Promise<void>;
+  defaultFilters?: InsuranceFiltersType;
+  onApply: (filters: InsuranceFiltersType) => Promise<void>;
 }
 
 export default function GuestInsuranceFilters({ defaultFilters, onApply }: GuestInsuranceFiltersProps) {
