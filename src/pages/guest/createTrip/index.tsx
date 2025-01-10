@@ -30,11 +30,12 @@ import { getDiscountablePriceFromCarInfo, getNotDiscountablePriceFromCarInfo } f
 import { EMPTY_PROMOCODE, PROMOCODE_MAX_LENGTH } from "@/utils/constants";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
-import { getPromoPrice, PromoActionType, reducer } from "@/features/promocodes/promoCode";
 import useCheckPromo from "@/features/promocodes/hooks/useCheckPromo";
 import { useForm } from "react-hook-form";
 import { enterPromoFormSchema, EnterPromoFormValues } from "@/features/promocodes/models/enterPromoFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { PromoActionType, promoCodeReducer } from "@/features/promocodes/utils/promoCodeReducer";
+import { getPromoPrice } from "@/features/promocodes/utils";
 
 export default function CreateTrip() {
   const { searchCarRequest, searchCarFilters } = useCarSearchParams();
@@ -141,16 +142,22 @@ function CreateTripDetailsContent({
     }
   }
 
-  const [state, dispatch] = useReducer(reducer, { status: "NONE" });
+  const [state, dispatch] = useReducer(promoCodeReducer, { status: "NONE" });
   const { checkPromo } = useCheckPromo();
   const { register, handleSubmit, formState } = useForm<EnterPromoFormValues>({
     resolver: zodResolver(enterPromoFormSchema),
   });
   const { errors, isSubmitting } = formState;
+
   async function onFormSubmit(formData: EnterPromoFormValues) {
     dispatch({ type: PromoActionType.LOADING });
 
-    const result = await checkPromo(formData.enteredPromo);
+    const result = await checkPromo(
+      formData.enteredPromo,
+      searchCarRequest.dateFromInDateTimeStringFormat,
+      searchCarRequest.dateToInDateTimeStringFormat,
+      carInfo.timeZoneId
+    );
 
     if (!result.ok) {
       dispatch({ type: PromoActionType.ERROR });
