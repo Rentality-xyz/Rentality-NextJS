@@ -1,4 +1,4 @@
-import { AdminTripStatus, PaymentStatus, TripStatus } from "../blockchain/schemas";
+import { AdminTripStatus, PaymentStatus } from "@/model/blockchain/schemas";
 
 export type AdminTripDetails = {
   tripId: number;

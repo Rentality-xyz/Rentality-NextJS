@@ -1,10 +1,10 @@
-import { AdminTripStatus, ContractTrip, PaymentStatus, TripStatus } from "../blockchain/schemas";
 import { calculateDays, UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { isEmpty } from "@/utils/string";
 import { getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
-import { formatLocationInfoUpToCity, LocationInfo } from "../LocationInfo";
-import { AdminTripDetails } from "../admin/AdminTripDetails";
+import { AdminTripStatus, ContractTrip, PaymentStatus, TripStatus } from "@/model/blockchain/schemas";
+import { formatLocationInfoUpToCity, LocationInfo } from "@/model/LocationInfo";
+import { AdminTripDetails } from "../AdminTripDetails";
 
 function getAdminStatusFromTrip(trip: ContractTrip): AdminTripStatus {
   switch (trip.status) {
