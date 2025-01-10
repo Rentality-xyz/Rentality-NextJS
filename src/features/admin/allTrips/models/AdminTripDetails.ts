@@ -29,6 +29,9 @@ export type AdminTripDetails = {
   platformCommissionInUsd: number | undefined;
   accruableSalesTaxInUsd: number | undefined;
   accruableGovernmentTaxInUsd: number | undefined;
+  promoCode?: string;
+  promoCodeValueInPercents?: number;
+  promoCodeEnterDate?: Date;
 };
 
 export const getTripStatusTextFromAdminStatus = (status: AdminTripStatus) => {

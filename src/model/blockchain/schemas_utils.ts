@@ -335,6 +335,9 @@ const emptyContractAdminTripDTO: ContractAdminTripDTO = {
   trip: emptyContractTrip,
   carLocation: emptyContractLocationInfo,
   carMetadataURI: "",
+  promoCode: "",
+  promoCodeValueInPercents: BigInt(0),
+  promoCodeEnterDate: BigInt(0),
 };
 
 export function validateContractAllTripsDTO(obj: ContractAllTripsDTO): obj is ContractAllTripsDTO {

@@ -479,6 +479,9 @@ export type ContractAdminTripDTO = {
   trip: ContractTrip;
   carMetadataURI: string;
   carLocation: ContractLocationInfo;
+  promoCode: string;
+  promoCodeValueInPercents: bigint;
+  promoCodeEnterDate: bigint;
 };
 
 export type ContractAllTripsDTO = {
