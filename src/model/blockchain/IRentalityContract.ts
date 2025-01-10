@@ -35,7 +35,6 @@ import {
   ContractReadyToClaimDTO,
   RefferalAccrualType,
   ContractRefferalHashDTO,
-  ContractRefferalHistory,
   RefferalProgram,
   Role,
   Tear,
@@ -51,12 +50,12 @@ export interface IRentalityContract {
     mobilePhoneNumber: string,
     profilePhoto: string,
     TCSignature: string,
-    refferalHash: string
+    referralHash: string
   ): Promise<ContractTransactionResponse>;
   setCivicKYCInfo(
     user: string,
     civicKycInfo: ContractCivicKYCInfo,
-    refferalHash: string
+    referralHash: string
   ): Promise<ContractTransactionResponse>;
   setMyCivicKYCInfo(civicKycInfo: ContractCivicKYCInfo): Promise<ContractTransactionResponse>;
   getKycCommission(): Promise<bigint>;
@@ -66,7 +65,7 @@ export interface IRentalityContract {
   useKycCommission(user: string): Promise<ContractTransactionResponse>;
 
   /// HOST CARS functions
-  addCar(request: ContractCreateCarRequest, refferalHash: string): Promise<ContractTransactionResponse>;
+  addCar(request: ContractCreateCarRequest, referralHash: string): Promise<ContractTransactionResponse>;
   updateCarInfoWithLocation(
     request: ContractUpdateCarInfoRequest,
     location: ContractSignedLocationInfo
@@ -103,7 +102,7 @@ export interface IRentalityContract {
     insuranceNumber: string
   ): Promise<ContractTransactionResponse>;
   checkOutByHost(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
-  finishTrip(tripId: bigint, refferalHash: string): Promise<ContractTransactionResponse>;
+  finishTrip(tripId: bigint, referralHash: string): Promise<ContractTransactionResponse>;
 
   /// GUEST functions
   getFilterInfo(duration: bigint): Promise<ContractFilterInfoDTO>;
@@ -136,8 +135,8 @@ export interface IRentalityContract {
     value: object
   ): Promise<ContractTransactionResponse>;
   checkInByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
-  checkOutByGuest(tripId: bigint, panelParams: bigint[], refferalHash: string): Promise<ContractTransactionResponse>;
-  confirmCheckOut(tripId: bigint, refferalHash: string): Promise<ContractTransactionResponse>;
+  checkOutByGuest(tripId: bigint, panelParams: bigint[], referralHash: string): Promise<ContractTransactionResponse>;
+  confirmCheckOut(tripId: bigint, referralHash: string): Promise<ContractTransactionResponse>;
 
   // CLAIMS functions
   getMyClaimsAs(host: boolean): Promise<ContractFullClaimInfo[]>;
@@ -160,7 +159,7 @@ export interface IRentalityContract {
   saveGuestInsurance(insuranceInfo: ContractSaveInsuranceRequest): Promise<ContractTransactionResponse>;
 
   //PROMO functions
-  checkPromo(code: string): Promise<ContractCheckPromoDTO>;
+  checkPromo(code: string, startDateTime: bigint, endDateTime: bigint): Promise<ContractCheckPromoDTO>;
 
   /// GENERAL functions
   address: string;

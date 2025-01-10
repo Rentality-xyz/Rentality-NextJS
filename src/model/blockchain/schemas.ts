@@ -164,6 +164,7 @@ export type ContractTripDTO = {
   insurancesInfo: ContractInsuranceInfo[];
   paidForInsuranceInUsdCents: bigint;
   guestDrivingLicenseIssueCountry: string;
+  promoDiscount: bigint;
 };
 
 export type ContractChatInfo = {

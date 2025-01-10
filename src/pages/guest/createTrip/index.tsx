@@ -20,15 +20,22 @@ import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { isEmpty } from "@/utils/string";
 import { DialogActions } from "@/utils/dialogActions";
 import { useUserInfo } from "@/contexts/userInfoContext";
-import { useState } from "react";
+import React, { useReducer, useState } from "react";
 import RntTripRulesModal from "@/components/common/rntTripRulesModal";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
 import { SearchCarInfoDetails } from "@/model/SearchCarsResult";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
-import EnterPromoDialog from "@/features/promocodes/components/dialogs/EnterPromoDialog";
 import { getDiscountablePriceFromCarInfo, getNotDiscountablePriceFromCarInfo } from "@/utils/price";
-import { EMPTY_PROMOCODE } from "@/utils/constants";
+import { EMPTY_PROMOCODE, PROMOCODE_MAX_LENGTH } from "@/utils/constants";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
+import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
+import useCheckPromo from "@/features/promocodes/hooks/useCheckPromo";
+import { useForm } from "react-hook-form";
+import { enterPromoFormSchema, EnterPromoFormValues } from "@/features/promocodes/models/enterPromoFormSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PromoActionType, promoCodeReducer } from "@/features/promocodes/utils/promoCodeReducer";
+import { getPromoPrice } from "@/features/promocodes/utils";
 
 export default function CreateTrip() {
   const { searchCarRequest, searchCarFilters } = useCarSearchParams();
@@ -74,55 +81,6 @@ function CreateTripDetailsContent({
 
   function handlePreAgreementDetailsClick() {
     alert("TODO handlePreAgreementDetailsClick");
-  }
-
-  async function handeCreateTripClick() {
-    if (!isAuthenticated) {
-      const action = (
-        <>
-          {DialogActions.Button(t("common.info.login"), () => {
-            hideDialogs();
-            login();
-          })}
-          {/*{DialogActions.Cancel(hideDialogs)}*/}
-        </>
-      );
-      showDialog(t("common.info.connect_wallet"), action);
-      return;
-    }
-
-    if (isEmpty(searchCarRequest.dateFromInDateTimeStringFormat)) {
-      showError(t("search_page.errors.date_from"));
-      return;
-    }
-    if (isEmpty(searchCarRequest.dateToInDateTimeStringFormat)) {
-      showError(t("search_page.errors.date_to"));
-      return;
-    }
-    if (!carInfo) {
-      showError("car is not found");
-      return;
-    }
-
-    if (carInfo?.tripDays < 0) {
-      showError(t("search_page.errors.date_eq"));
-      return;
-    }
-    if (carInfo.ownerAddress === userInfo?.address) {
-      showError(t("search_page.errors.own_car"));
-      return;
-    }
-
-    showCustomDialog(
-      <EnterPromoDialog
-        days={carInfo.tripDays}
-        priceDiscountable={getDiscountablePriceFromCarInfo(carInfo)}
-        priceNotDiscountable={getNotDiscountablePriceFromCarInfo(carInfo)}
-        createTripRequest={async (promo) => {
-          createTripWithPromo(promo);
-        }}
-      />
-    );
   }
 
   async function createTripWithPromo(promoCode?: string) {
@@ -184,6 +142,30 @@ function CreateTripDetailsContent({
     }
   }
 
+  const [state, dispatch] = useReducer(promoCodeReducer, { status: "NONE" });
+  const { checkPromo } = useCheckPromo();
+  const { register, handleSubmit, formState } = useForm<EnterPromoFormValues>({
+    resolver: zodResolver(enterPromoFormSchema),
+  });
+  const { errors, isSubmitting } = formState;
+
+  async function onFormSubmit(formData: EnterPromoFormValues) {
+    dispatch({ type: PromoActionType.LOADING });
+
+    const result = await checkPromo(
+      formData.enteredPromo,
+      searchCarRequest.dateFromInDateTimeStringFormat,
+      searchCarRequest.dateToInDateTimeStringFormat,
+      carInfo.timeZoneId
+    );
+
+    if (!result.ok) {
+      dispatch({ type: PromoActionType.ERROR });
+    } else {
+      dispatch({ type: PromoActionType.SUCCESS, payload: { code: formData.enteredPromo, value: result.value.value } });
+    }
+  }
+
   return (
     <div className="flex flex-wrap">
       <div className="flex w-full flex-col gap-4 xl:w-3/4 xl:pr-4">
@@ -191,7 +173,7 @@ function CreateTripDetailsContent({
         <CarTitleAndPrices
           carTitle={`${carInfo.brand} ${carInfo.model} ${carInfo.year}`}
           pricePerDay={carInfo.pricePerDay}
-          pricePerDayWithDiscount={carInfo.pricePerDayWithDiscount}
+          pricePerDayWithHostDiscount={carInfo.pricePerDayWithHostDiscount}
           tripDays={carInfo.tripDays}
           tripDiscounts={carInfo.tripDiscounts}
         />
@@ -238,9 +220,6 @@ function CreateTripDetailsContent({
         />
       </div>
       <div className="mt-8 flex w-full flex-col gap-4 xl:mt-0 xl:w-1/4 xl:pl-4">
-        <div className="mx-auto text-xl font-bold text-rentality-secondary" onClick={handleBackToSearchClick}>
-          {t("create_trip.new_search")}
-        </div>
         <CreateTripSearch
           searchRequest={searchCarRequest}
           hostHomeLocation={carInfo.hostHomeLocation}
@@ -256,7 +235,7 @@ function CreateTripDetailsContent({
         />
         <PreReceiptDetails
           pricePerDay={carInfo.pricePerDay}
-          pricePerDayWithDiscount={carInfo.pricePerDayWithDiscount}
+          pricePerDayWithHostDiscount={carInfo.pricePerDayWithHostDiscount}
           tripDays={carInfo.tripDays}
           deliveryDetails={carInfo.deliveryDetails}
           salesTax={carInfo.salesTax}
@@ -268,8 +247,50 @@ function CreateTripDetailsContent({
             isGuestHasInsurance: carInfo.isGuestHasInsurance,
           }}
         />
-        <RntButton className="h-16 w-full" disabled={requestSending} onClick={handeCreateTripClick}>
-          {t("create_trip.rent_for_n_days", { tripDays: carInfo.tripDays })}
+        <RntInputTransparent
+          className="w-full"
+          style={{ color: "white" }}
+          type="text"
+          placeholder="Enter Promo Code"
+          {...register("enteredPromo", {
+            onChange: (e) => {
+              dispatch({ type: PromoActionType.RESET });
+
+              const value = e.target.value;
+              if (value !== undefined && typeof value === "string" && value.length >= PROMOCODE_MAX_LENGTH) {
+                handleSubmit(async (data) => await onFormSubmit(data))();
+              }
+            },
+          })}
+          validationError={errors.enteredPromo?.message}
+        />
+        <div>
+          {state.status === "SUCCESS" && (
+            <>
+              <p>{t("promo.promo_success_1", { value: state.promo.value })}</p>
+              <p className="text-sm">{t("promo.promo_success_2")}</p>
+            </>
+          )}
+          {state.status === "ERROR" && <p className="text-rentality-alert-text">{t("promo.promo_error")}</p>}
+        </div>
+        <RntButton
+          className="w-full"
+          disabled={requestSending || state.status === "LOADING"}
+          onClick={() => createTripWithPromo(state.status === "SUCCESS" ? state.promo.code : undefined)}
+        >
+          {state.status === "SUCCESS"
+            ? t("promo.button_promo_text", {
+                price: displayMoneyWith2Digits(
+                  getPromoPrice(getDiscountablePriceFromCarInfo(carInfo), state.promo.value) +
+                    getNotDiscountablePriceFromCarInfo(carInfo)
+                ),
+              })
+            : t("promo.button_default_text", {
+                days: carInfo.tripDays,
+                price: displayMoneyWith2Digits(
+                  getDiscountablePriceFromCarInfo(carInfo) + getNotDiscountablePriceFromCarInfo(carInfo)
+                ),
+              })}
         </RntButton>
       </div>
     </div>

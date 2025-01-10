@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import {
-  ContractAllRefferalInfoDTO,
+  ContractAllRefferalInfoDTO as ContractAllReferralInfoDTO,
   ContractReadyToClaimDTO,
-  ContractRefferalHashDTO,
+  ContractRefferalHashDTO as ContractReferralHashDTO,
   ContractReadyToClaimFromHash,
   ContractProgramHistory,
 } from "@/model/blockchain/schemas";
 import { useRentality } from "@/contexts/rentalityContext";
 
-const useRefferalProgram = () => {
+const useReferralProgram = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [updateRequired, setUpdateRequired] = useState<boolean>(true);
   const [inviteHash, setHash] = useState("");
@@ -94,7 +94,7 @@ const useRefferalProgram = () => {
     }
   }, [ethereumInfo, rentalityContracts]);
 
-  const getReadyToClaimFromRefferalHash = async (): Promise<ContractRefferalHashDTO | null> => {
+  const getReadyToClaimFromReferralHash = async (): Promise<ContractReferralHashDTO | null> => {
     if (!rentalityContracts) {
       console.error("get hash error: rentalityContract is null");
       setIsLoading(true);
@@ -113,7 +113,7 @@ const useRefferalProgram = () => {
     }
   };
 
-  const claimRefferalPoints = async () => {
+  const claimReferralPoints = async () => {
     if (!rentalityContracts) {
       console.error("get hash error: rentalityContract is null");
       setIsLoading(true);
@@ -132,7 +132,7 @@ const useRefferalProgram = () => {
     }
   };
 
-  const getRefferalPointsInfo = useCallback(async (): Promise<ContractAllRefferalInfoDTO | null> => {
+  const getReferralPointsInfo = useCallback(async (): Promise<ContractAllReferralInfoDTO | null> => {
     if (!rentalityContracts) {
       console.error("get hash error: rentalityContract is null");
       setIsLoading(true);
@@ -179,13 +179,13 @@ const useRefferalProgram = () => {
     points,
     updateData,
     getReadyToClaim,
-    getReadyToClaimFromRefferalHash,
-    claimRefferalPoints,
-    getRefferalPointsInfo,
+    getReadyToClaimFromReferralHash,
+    claimReferralPoints,
+    getReferralPointsInfo,
     getPointsHistory,
     calculateUniqUsers,
     isLoading,
   } as const;
 };
 
-export default useRefferalProgram;
+export default useReferralProgram;

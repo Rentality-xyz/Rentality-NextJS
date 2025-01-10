@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { cn } from "@/utils";
 import Loading from "@/components/common/Loading";
-import RntSuspense from "../common/rntSuspense";
+import RntSuspense from "../../../components/common/rntSuspense";
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
-import { ReferralHistoryInfo } from "@/hooks/points/usePointsHistory";
+import { ReferralHistoryInfo } from "@/features/referralProgram/hooks/usePointsHistory";
 
-type ReferralsAndPointsHistoryTableProps = {
+type ReferralPointsHistoryTableProps = {
   isLoading: boolean;
   data: ReferralHistoryInfo[];
 };
 
-export default function ReferralsAndPointsHistoryTable({ isLoading, data }: ReferralsAndPointsHistoryTableProps) {
+export default function ReferralPointsHistoryTable({ isLoading, data }: ReferralPointsHistoryTableProps) {
   const headerSpanClassName = "text-center font-semibold px-2 font-light text-sm";
   const rowSpanClassName = "px-2 h-12 w-1/3";
 

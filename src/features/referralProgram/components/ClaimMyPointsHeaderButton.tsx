@@ -2,9 +2,9 @@
 import Image from "next/image";
 import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 import React from "react";
-import useClaimMyPoints from "@/hooks/points/useClaimMyPoints";
+import useClaimMyPoints from "@/features/referralProgram/hooks/useClaimMyPoints";
 
-export default function HeadBtnReferralsAndPoints() {
+export default function ClaimMyPointsHeaderButton() {
   const { isLoading, readyToClaim, claimMyPoints } = useClaimMyPoints();
 
   return (

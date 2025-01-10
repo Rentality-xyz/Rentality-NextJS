@@ -4,13 +4,13 @@ import { useTranslation } from "react-i18next";
 export function CarTitleAndPrices({
   carTitle,
   pricePerDay,
-  pricePerDayWithDiscount,
+  pricePerDayWithHostDiscount,
   tripDays,
   tripDiscounts,
 }: {
   carTitle: string;
   pricePerDay: number;
-  pricePerDayWithDiscount: number;
+  pricePerDayWithHostDiscount: number;
   tripDays: number;
   tripDiscounts: {
     discount3DaysAndMoreInPercents: number;
@@ -35,7 +35,7 @@ export function CarTitleAndPrices({
     ? t("create_trip.n_days_discount", { count: discountDays })
     : t("create_trip.days_discount");
   const discountTotal =
-    pricePerDay > pricePerDayWithDiscount ? (pricePerDay - pricePerDayWithDiscount) * tripDays : undefined;
+    pricePerDay > pricePerDayWithHostDiscount ? (pricePerDay - pricePerDayWithHostDiscount) * tripDays : undefined;
 
   return (
     <div className="flex flex-wrap items-center justify-between">
@@ -50,7 +50,7 @@ export function CarTitleAndPrices({
         )}
         <span className="text-3xl">
           <strong>
-            ${displayMoneyWith2Digits(pricePerDayWithDiscount)}/{t("common.day")}
+            ${displayMoneyWith2Digits(pricePerDayWithHostDiscount)}/{t("common.day")}
           </strong>
         </span>
       </span>
