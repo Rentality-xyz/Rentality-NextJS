@@ -9,7 +9,6 @@ import { isEmpty } from "@/utils/string";
 import { DialogActions } from "@/utils/dialogActions";
 import CarSearchMap from "@/components/guest/carMap/carSearchMap";
 import { useTranslation } from "react-i18next";
-import { TFunction } from "@/utils/i18n";
 import Image from "next/image";
 import icMapMobile from "@/images/ic_map_mobile.png";
 import SearchAndFilters from "@/components/search/searchAndFilters";
@@ -23,6 +22,8 @@ import mapNotFoundCars from "@/images/map_not_found_cars.png";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "@/components/common/rntSuspense";
+import useGuestInsurance from "@/hooks/guest/useGuestInsurance";
+import { EMPTY_PROMOCODE } from "@/utils/constants";
 
 function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -32,17 +33,14 @@ function Search() {
 
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string | undefined>(undefined);
-  const { showDialog, hideDialogs } = useRntDialogs();
+  const { showDialog, showCustomDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const userInfo = useUserInfo();
   const router = useRouter();
   const { isLoadingAuth, isAuthenticated, login } = useAuth();
   const ethereumInfo = useEthereum();
+  const { isLoading: isLoadingInsurance, guestInsurance } = useGuestInsurance();
   const { t } = useTranslation();
-
-  const t_page: TFunction = (path, options) => {
-    return t("search_page." + path, options);
-  };
 
   const handleSearchClick = async (request: SearchCarRequest) => {
     updateSearchParams(request, searchCarFilters);
@@ -58,7 +56,7 @@ function Search() {
     searchAvailableCars(searchCarRequest, searchCarFilters);
   }, []);
 
-  const handleRentCarRequest = async (carInfo: SearchCarInfo) => {
+  async function createTripWithPromo(carInfo: SearchCarInfo, promoCode?: string) {
     if (!isAuthenticated) {
       const action = (
         <>
@@ -73,27 +71,21 @@ function Search() {
       return;
     }
 
-    if (isEmpty(userInfo?.drivingLicense)) {
-      showError(t("errors.user_info"));
-      await router.push("/guest/profile");
-      return;
-    }
-
     if (isEmpty(searchResult.searchCarRequest.dateFromInDateTimeStringFormat)) {
-      showError(t("errors.date_from"));
+      showError(t("search_page.errors.date_from"));
       return;
     }
     if (isEmpty(searchResult.searchCarRequest.dateToInDateTimeStringFormat)) {
-      showError(t("errors.date_to"));
+      showError(t("search_page.errors.date_to"));
       return;
     }
 
     if (carInfo.tripDays < 0) {
-      showError(t("errors.date_eq"));
+      showError(t("search_page.errors.date_eq"));
       return;
     }
     if (carInfo.ownerAddress === userInfo?.address) {
-      showError(t("errors.own_car"));
+      showError(t("search_page.errors.own_car"));
       return;
     }
 
@@ -101,7 +93,8 @@ function Search() {
 
     showInfo(t("common.info.sign"));
 
-    const result = await createTripRequest(carInfo.carId, searchResult.searchCarRequest, carInfo.timeZoneId);
+    promoCode = !isEmpty(promoCode) ? promoCode! : EMPTY_PROMOCODE;
+    const result = await createTripRequest(carInfo.carId, searchResult.searchCarRequest, carInfo.timeZoneId, promoCode);
 
     hideDialogs();
     hideSnackbars();
@@ -113,14 +106,17 @@ function Search() {
       if (result.error === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
       } else {
-        showError(t("errors.request"));
+        showError(t("search_page.errors.request"));
       }
     }
-  };
-
-  function handleShowRequestDetails(carInfo: SearchCarInfo) {
-    router.push(`/guest/createTrip?${createQueryString(searchCarRequest, searchCarFilters, carInfo.carId)}`);
   }
+
+  const getRequestDetailsLink = useCallback(
+    (carId: number) => {
+      return `/guest/createTrip?${createQueryString(searchCarRequest, searchCarFilters, carId)}`;
+    },
+    [searchCarRequest, searchCarFilters]
+  );
 
   const setHighlightedCar = useCallback(
     (carID: number) => {
@@ -189,7 +185,7 @@ function Search() {
               fallback={<div className="pl-[18px]">{t("common.info.loading")}</div>}
             >
               <div className="text-l pl-[18px] font-bold">
-                {searchResult?.carInfos?.length ?? 0} {t_page("info.cars_available")}
+                {searchResult?.carInfos?.length ?? 0} {t("search_page.info.cars_available")}
               </div>
               {searchResult?.carInfos?.length > 0 ? (
                 searchResult.carInfos.map((value: SearchCarInfo) => {
@@ -198,12 +194,14 @@ function Search() {
                       <CarSearchItem
                         key={value.carId}
                         searchInfo={value}
-                        handleRentCarRequest={handleRentCarRequest}
+                        handleRentCarRequest={createTripWithPromo}
                         disableButton={requestSending}
                         isSelected={value.highlighted}
                         setSelected={setHighlightedCar}
-                        t={t_page}
-                        handleShowRequestDetails={handleShowRequestDetails}
+                        getRequestDetailsLink={getRequestDetailsLink}
+                        isGuestHasInsurance={!isLoadingInsurance && !isEmpty(guestInsurance.photo)}
+                        startDateTimeStringFormat={searchResult.searchCarRequest.dateFromInDateTimeStringFormat}
+                        endDateTimeStringFormat={searchResult.searchCarRequest.dateToInDateTimeStringFormat}
                       />
                     </div>
                   );
@@ -212,9 +210,11 @@ function Search() {
                 <div>
                   <div className="flex max-w-screen-xl flex-col border border-gray-600 p-2 text-center font-['Montserrat',Arial,sans-serif] text-white">
                     {/*{t_page("info.no_cars")}*/}
-                    <p className="text-3xl">{t_page("info.launched_miami")}</p>
-                    <p className="mt-4 text-2xl text-rentality-secondary">{t_page("info.soon_other_locations")}</p>
-                    <p className="mt-4 text-base">{t_page("info.changing_request")}</p>
+                    <p className="text-3xl">{t("search_page.info.launched_miami")}</p>
+                    <p className="mt-4 text-2xl text-rentality-secondary">
+                      {t("search_page.info.soon_other_locations")}
+                    </p>
+                    <p className="mt-4 text-base">{t("search_page.info.changing_request")}</p>
                   </div>
                   <Image src={mapNotFoundCars} alt="" className="mt-2" />
                 </div>

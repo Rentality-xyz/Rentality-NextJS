@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
-import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { ContractInsuranceInfo, ContractSaveInsuranceRequest, InsuranceType } from "@/model/blockchain/schemas";
 import { uploadFileToIPFS } from "@/utils/pinata";
@@ -11,16 +10,18 @@ import { bigIntReplacer } from "@/utils/json";
 import { getIpfsURI } from "@/utils/ipfsUtils";
 import { Err, Ok, Result } from "@/model/utils/result";
 
+const EMPTY_GUEST_GENERAL_INSURANCE = { photo: "" };
+
 const useGuestInsurance = () => {
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const ethereumInfo = useEthereum();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isUpdateRequired, setIsUpdateRequired] = useState<boolean>(true);
-  const [guestInsurance, setGuestInsurance] = useState<GuestGeneralInsurance>({ photo: "" });
+  const [guestInsurance, setGuestInsurance] = useState<GuestGeneralInsurance>(EMPTY_GUEST_GENERAL_INSURANCE);
 
   const saveGuestInsurance = useCallback(
     async (file: PlatformFile): Promise<Result<boolean, string>> => {
-      if (!rentalityContract) {
+      if (!rentalityContracts) {
         console.error("saveGuestInsurance: rentalityContract is null");
         return Err("rentalityContract is null");
       }
@@ -61,7 +62,7 @@ const useGuestInsurance = () => {
         }
 
         console.debug("insuranceInfo", JSON.stringify(insuranceInfo, bigIntReplacer, 2));
-        const transaction = await rentalityContract.saveGuestInsurance(insuranceInfo);
+        const transaction = await rentalityContracts.gateway.saveGuestInsurance(insuranceInfo);
         await transaction.wait();
         setIsUpdateRequired(true);
         return Ok(true);
@@ -70,45 +71,39 @@ const useGuestInsurance = () => {
         return Err("saveGuestInsurance error:" + e);
       }
     },
-    [ethereumInfo, rentalityContract]
+    [ethereumInfo, rentalityContracts]
   );
 
   useEffect(() => {
-    const getGuestInsurance = async (rentalityContract: IRentalityContract): Promise<GuestGeneralInsurance> => {
+    const fetchGuestInsurance = async () => {
+      if (!rentalityContracts) return;
+      if (!isUpdateRequired) return;
+
+      setIsLoading(true);
+
       try {
-        if (rentalityContract == null) {
-          console.error("getGuestInsurance error: contract is null");
-          return { photo: "" };
+        const insurancesView: ContractInsuranceInfo[] = await rentalityContracts.gateway.getMyInsurancesAsGuest();
+
+        if (
+          insurancesView.length === 0 ||
+          insurancesView[insurancesView.length - 1].insuranceType !== InsuranceType.General
+        ) {
+          setGuestInsurance(EMPTY_GUEST_GENERAL_INSURANCE);
+          return;
         }
-        const insurancesView: ContractInsuranceInfo[] = await rentalityContract.getMyInsurancesAsGuest();
 
-        const generalInsurances = [...insurancesView.filter((i) => i.insuranceType === InsuranceType.General)];
-        if (generalInsurances.length === 0) return { photo: "" };
-
-        generalInsurances.sort((a, b) => {
-          return Number(b.createdTime - a.createdTime);
-        });
-        return { photo: getIpfsURI(generalInsurances[generalInsurances.length - 1].photo) };
+        setGuestInsurance({ photo: getIpfsURI(insurancesView[insurancesView.length - 1].photo) });
       } catch (e) {
-        console.error("getGuestInsurance error:" + e);
-        return { photo: "" };
+        console.error("fetchGuestInsurance error:" + e);
+        return;
+      } finally {
+        setIsLoading(false);
+        setIsUpdateRequired(false);
       }
     };
 
-    if (!rentalityContract) return;
-    if (!isUpdateRequired) return;
-
-    setIsLoading(true);
-
-    getGuestInsurance(rentalityContract)
-      .then((data) => {
-        setGuestInsurance(data);
-      })
-      .finally(() => {
-        setIsLoading(false);
-        setIsUpdateRequired(false);
-      });
-  }, [rentalityContract, isUpdateRequired]);
+    fetchGuestInsurance();
+  }, [rentalityContracts, isUpdateRequired]);
 
   return {
     isLoading,
