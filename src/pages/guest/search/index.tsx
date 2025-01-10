@@ -200,6 +200,8 @@ export default function Search() {
                         setSelected={setHighlightedCar}
                         getRequestDetailsLink={getRequestDetailsLink}
                         isGuestHasInsurance={!isLoadingInsurance && !isEmpty(guestInsurance.photo)}
+                        startDateTimeStringFormat={searchResult.searchCarRequest.dateFromInDateTimeStringFormat}
+                        endDateTimeStringFormat={searchResult.searchCarRequest.dateToInDateTimeStringFormat}
                       />
                     </div>
                   );

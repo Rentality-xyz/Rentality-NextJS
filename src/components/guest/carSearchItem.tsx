@@ -14,13 +14,14 @@ import carSeatsIcon from "@/images/car_seats.svg";
 import carTransmissionIcon from "@/images/car_transmission.svg";
 import { AboutCarIcon } from "@/components/createTrip/AboutCarIcon";
 import { getDiscountablePriceFromCarInfo, getNotDiscountablePrice } from "@/utils/price";
-import { getPromoPrice, PromoActionType, reducer } from "@/features/promocodes/promoCode";
 import { PROMOCODE_MAX_LENGTH } from "@/utils/constants";
 import { useForm } from "react-hook-form";
 import { enterPromoFormSchema, EnterPromoFormValues } from "@/features/promocodes/models/enterPromoFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useCheckPromo from "@/features/promocodes/hooks/useCheckPromo";
 import { cn } from "@/utils";
+import { PromoActionType, promoCodeReducer } from "@/features/promocodes/utils/promoCodeReducer";
+import { getPromoPrice } from "@/features/promocodes/utils";
 
 type TFunction = (key: string, options?: { [key: string]: any }) => string;
 
@@ -34,6 +35,8 @@ export default function CarSearchItem({
   setSelected,
   isGuestHasInsurance,
   getRequestDetailsLink,
+  startDateTimeStringFormat,
+  endDateTimeStringFormat,
 }: {
   searchInfo: SearchCarInfo;
   handleRentCarRequest: (carInfo: SearchCarInfo, PromoCode?: string) => void;
@@ -42,6 +45,8 @@ export default function CarSearchItem({
   setSelected: (carID: number) => void;
   isGuestHasInsurance: boolean;
   getRequestDetailsLink: (carId: number) => string;
+  startDateTimeStringFormat: string;
+  endDateTimeStringFormat: string;
 }) {
   const [requestDetailsLink, setRequestDetailsLink] = useState<string>("");
   const { t } = useTranslation();
@@ -62,15 +67,21 @@ export default function CarSearchItem({
   const isDisplayInsurance = searchInfo.isInsuranceRequired && !isGuestHasInsurance;
   const insurancePriceTotal = isDisplayInsurance ? searchInfo.insurancePerDayPriceInUsd * searchInfo.tripDays : 0;
 
-  const [state, dispatch] = useReducer(reducer, { status: "NONE" });
+  const [state, dispatch] = useReducer(promoCodeReducer, { status: "NONE" });
   const { checkPromo } = useCheckPromo();
   const { register, handleSubmit } = useForm<EnterPromoFormValues>({
     resolver: zodResolver(enterPromoFormSchema),
   });
+
   async function onFormSubmit(formData: EnterPromoFormValues) {
     dispatch({ type: PromoActionType.LOADING });
 
-    const result = await checkPromo(formData.enteredPromo);
+    const result = await checkPromo(
+      formData.enteredPromo,
+      startDateTimeStringFormat,
+      endDateTimeStringFormat,
+      searchInfo.timeZoneId
+    );
 
     if (!result.ok) {
       dispatch({ type: PromoActionType.ERROR });
