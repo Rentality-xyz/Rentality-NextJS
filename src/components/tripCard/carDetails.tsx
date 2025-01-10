@@ -50,7 +50,7 @@ function CarDetails({
   };
 
   return (
-    <div id="trip-main-info" className="flex w-full flex-1 flex-col justify-between gap-4 p-4 md:w-1/4 md:p-2 xl:p-4">
+    <div id="trip-main-info" className="flex w-full flex-col justify-between gap-4">
       <div className="flex flex-col">
         <div>
           <strong className="text-xl">{`${tripInfo.brand} ${tripInfo.model} ${tripInfo.year}`}</strong>
