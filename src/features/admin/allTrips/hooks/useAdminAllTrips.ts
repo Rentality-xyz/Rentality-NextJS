@@ -3,11 +3,11 @@ import { AdminTripDetails } from "@/features/admin/allTrips/models/AdminTripDeta
 import { AdminTripStatus, ContractTripFilter, PaymentStatus } from "@/model/blockchain/schemas";
 import { emptyContractLocationInfo, validateContractAllTripsDTO } from "@/model/blockchain/schemas_utils";
 import { LocationInfo } from "@/model/LocationInfo";
-import { mapContractTripToAdminTripDetails } from "@/features/admin/allTrips/models/mappers/contractTripToAdminTripDetails";
+import { mapContractAdminTripDTOToAdminTripDetails } from "@/features/admin/allTrips/models/mappers/contractTripToAdminTripDetails";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import { bigIntReplacer } from "@/utils/json";
-import { mapContractLocationInfoToLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
+import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { useCallback, useState } from "react";
 
 export type AdminAllTripsFilters = {
@@ -57,11 +57,7 @@ const useAdminAllTrips = () => {
 
         const data: AdminTripDetails[] = await Promise.all(
           allAdminTrips.trips.map(async (adminTripDto) => {
-            return mapContractTripToAdminTripDetails(
-              adminTripDto.trip,
-              mapContractLocationInfoToLocationInfo(adminTripDto.carLocation),
-              adminTripDto.carMetadataURI
-            );
+            return mapContractAdminTripDTOToAdminTripDetails(adminTripDto);
           })
         );
 

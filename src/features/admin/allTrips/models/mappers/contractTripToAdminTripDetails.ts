@@ -2,9 +2,16 @@ import { calculateDays, UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { isEmpty } from "@/utils/string";
 import { getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
-import { AdminTripStatus, ContractTrip, PaymentStatus, TripStatus } from "@/model/blockchain/schemas";
+import {
+  AdminTripStatus,
+  ContractAdminTripDTO,
+  ContractTrip,
+  PaymentStatus,
+  TripStatus,
+} from "@/model/blockchain/schemas";
 import { formatLocationInfoUpToCity, LocationInfo } from "@/model/LocationInfo";
 import { AdminTripDetails } from "../AdminTripDetails";
+import { mapContractLocationInfoToLocationInfo } from "@/utils/location";
 
 function getAdminStatusFromTrip(trip: ContractTrip): AdminTripStatus {
   switch (trip.status) {
@@ -76,15 +83,15 @@ function getPaymentStatusFromTrip(adminStatus: AdminTripStatus, trip: ContractTr
   }
 }
 
-export const mapContractTripToAdminTripDetails = async (
-  trip: ContractTrip,
-  locationInfo: LocationInfo,
-  metadataURI: string
+export const mapContractAdminTripDTOToAdminTripDetails = async (
+  adminTripDto: ContractAdminTripDTO
 ): Promise<AdminTripDetails> => {
+  const locationInfo = mapContractLocationInfoToLocationInfo(adminTripDto.carLocation);
+  const trip = adminTripDto.trip;
   const timeZoneId: string = !isEmpty(locationInfo.timeZoneId) ? locationInfo.timeZoneId : UTC_TIME_ZONE_ID;
   const hostLocation = formatLocationInfoUpToCity(locationInfo);
 
-  const metaData = parseMetaData(await getMetaDataFromIpfs(metadataURI));
+  const metaData = parseMetaData(await getMetaDataFromIpfs(adminTripDto.carMetadataURI));
   const plateNumber = metaData.licensePlate;
   const carDescription = `${metaData.brand} ${metaData.model} ${metaData.yearOfProduction}`;
   const adminTripStatus = getAdminStatusFromTrip(trip);
@@ -137,5 +144,8 @@ export const mapContractTripToAdminTripDetails = async (
       paymentStatus === PaymentStatus.PaidToHost ? Number(trip.paymentInfo.salesTax) / 100.0 : undefined,
     accruableGovernmentTaxInUsd:
       paymentStatus === PaymentStatus.PaidToHost ? Number(trip.paymentInfo.governmentTax) / 100.0 : undefined,
+    promoCode: adminTripDto.promoCode,
+    promoCodeValueInPercents: Number(adminTripDto.promoCodeValueInPercents),
+    promoCodeEnterDate: getDateFromBlockchainTimeWithTZ(adminTripDto.promoCodeEnterDate, timeZoneId),
   };
 };
