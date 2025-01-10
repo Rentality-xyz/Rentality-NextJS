@@ -58,7 +58,7 @@ function TripReceipt({ tripId, tripInfo, userMode }: { tripId: bigint; tripInfo:
           <tr>
             <td>{t_details("discount_amount")}</td>
             <td className="text-end text-rentality-alert-text">
-              -${displayMoneyWith2Digits(tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithDiscountInUsd)}
+              -${displayMoneyWith2Digits(tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithHostDiscountInUsd)}
             </td>
           </tr>
           <tr>

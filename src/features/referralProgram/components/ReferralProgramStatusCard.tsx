@@ -1,39 +1,18 @@
 import Image from "next/image";
 import icStarPointsWhite from "@/images/ic_star_points_white.svg";
 import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
-import React, { ReactNode } from "react";
+import React from "react";
 import { cn } from "@/utils";
+import { PointsProfileStatus } from "../models";
 
-type ReferralsAndPointsProfileStatusProps = {
+interface ReferralProgramStatusCardProps {
   index: number;
   nameReferral: string;
   countPoints: number;
   status: PointsProfileStatus;
-};
-
-export enum PointsProfileStatus {
-  Done = "Done",
-  NextStep = "NextStep",
-  ReadyToClaim = "ReadyToClaim",
 }
 
-export default function ReferralsAndPointsProfileStatus({
-  index,
-  nameReferral,
-  countPoints,
-  status,
-}: ReferralsAndPointsProfileStatusProps) {
-  return <GetProfileStatus index={index} nameReferral={nameReferral} countPoints={countPoints} status={status} />;
-}
-
-type GetProfileStatusProps = {
-  index: number;
-  nameReferral: string;
-  countPoints: number;
-  status: PointsProfileStatus;
-};
-
-function GetProfileStatus({ index, nameReferral, countPoints, status }: GetProfileStatusProps) {
+function ReferralProgramStatusCard({ index, nameReferral, countPoints, status }: ReferralProgramStatusCardProps) {
   let icStarPoints = null;
   let mainDivClassName = "";
   let nameReferralClassName = "";
@@ -94,3 +73,5 @@ function GetProfileStatus({ index, nameReferral, countPoints, status }: GetProfi
     </div>
   );
 }
+
+export default ReferralProgramStatusCard;
