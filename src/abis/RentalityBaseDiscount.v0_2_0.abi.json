@@ -15,7 +15,6 @@
       "name": "BeaconUpgraded",
       "inputs": [{ "type": "address", "name": "beacon", "indexed": true }]
     },
-    { "type": "event", "anonymous": false, "name": "EIP712DomainChanged", "inputs": [] },
     {
       "type": "event",
       "anonymous": false,
@@ -30,49 +29,77 @@
     },
     {
       "type": "function",
-      "name": "eip712Domain",
+      "name": "addUserDiscount",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "user" },
+        { "type": "bytes", "name": "newDiscounts" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "calculateSumWithDiscount",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "user" },
+        { "type": "uint64", "name": "daysOfTrip" },
+        { "type": "uint64", "name": "price" }
+      ],
+      "outputs": [{ "type": "uint64", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "defaultDiscount",
       "constant": true,
       "stateMutability": "view",
       "payable": false,
       "inputs": [],
       "outputs": [
-        { "type": "bytes1", "name": "fields" },
-        { "type": "string", "name": "name" },
-        { "type": "string", "name": "version" },
-        { "type": "uint256", "name": "chainId" },
-        { "type": "address", "name": "verifyingContract" },
-        { "type": "bytes32", "name": "salt" },
-        { "type": "uint256[]", "name": "extensions" }
+        { "type": "uint32", "name": "threeDaysDiscount" },
+        { "type": "uint32", "name": "sevenDaysDiscount" },
+        { "type": "uint32", "name": "thirtyDaysDiscount" },
+        { "type": "bool", "name": "initialized" }
       ]
     },
     {
       "type": "function",
-      "name": "getDimoTokenId",
+      "name": "getDiscount",
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "inputs": [{ "type": "uint256", "name": "carId" }],
-      "outputs": [{ "type": "uint256", "name": "" }]
+      "inputs": [{ "type": "address", "name": "userAddress" }],
+      "outputs": [{ "type": "bytes", "name": "" }]
     },
     {
       "type": "function",
-      "name": "getDimoVihicles",
+      "name": "getParsedDiscount",
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "inputs": [],
-      "outputs": [{ "type": "uint256[]", "name": "" }]
+      "inputs": [{ "type": "address", "name": "userAddress" }],
+      "outputs": [
+        {
+          "type": "tuple",
+          "name": "",
+          "components": [
+            { "type": "uint32", "name": "threeDaysDiscount" },
+            { "type": "uint32", "name": "sevenDaysDiscount" },
+            { "type": "uint32", "name": "thirtyDaysDiscount" },
+            { "type": "bool", "name": "initialized" }
+          ]
+        }
+      ]
     },
     {
       "type": "function",
       "name": "initialize",
       "constant": false,
       "payable": false,
-      "inputs": [
-        { "type": "address", "name": "_userService" },
-        { "type": "address", "name": "_carToken" },
-        { "type": "address", "name": "_admin" }
-      ],
+      "inputs": [{ "type": "address", "name": "_userService" }],
       "outputs": []
     },
     {
@@ -86,24 +113,10 @@
     },
     {
       "type": "function",
-      "name": "saveButch",
+      "name": "setDiscount",
       "constant": false,
       "payable": false,
-      "inputs": [
-        { "type": "uint256[]", "name": "dimoTokenIds" },
-        { "type": "uint256[]", "name": "carIds" }
-      ],
-      "outputs": []
-    },
-    {
-      "type": "function",
-      "name": "saveDimoTokenId",
-      "constant": false,
-      "payable": false,
-      "inputs": [
-        { "type": "uint256", "name": "dimoTokenId" },
-        { "type": "uint256", "name": "carId" }
-      ],
+      "inputs": [{ "type": "bytes", "name": "newDiscounts" }],
       "outputs": []
     },
     {

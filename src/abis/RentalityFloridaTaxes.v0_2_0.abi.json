@@ -15,7 +15,6 @@
       "name": "BeaconUpgraded",
       "inputs": [{ "type": "address", "name": "beacon", "indexed": true }]
     },
-    { "type": "event", "anonymous": false, "name": "EIP712DomainChanged", "inputs": [] },
     {
       "type": "event",
       "anonymous": false,
@@ -30,49 +29,73 @@
     },
     {
       "type": "function",
-      "name": "eip712Domain",
+      "name": "calculateTaxes",
       "constant": true,
       "stateMutability": "view",
       "payable": false,
-      "inputs": [],
+      "inputs": [
+        { "type": "uint64", "name": "tripDays" },
+        { "type": "uint64", "name": "totalCost" }
+      ],
       "outputs": [
-        { "type": "bytes1", "name": "fields" },
-        { "type": "string", "name": "name" },
-        { "type": "string", "name": "version" },
-        { "type": "uint256", "name": "chainId" },
-        { "type": "address", "name": "verifyingContract" },
-        { "type": "bytes32", "name": "salt" },
-        { "type": "uint256[]", "name": "extensions" }
+        { "type": "uint64", "name": "" },
+        { "type": "uint64", "name": "" }
       ]
     },
     {
       "type": "function",
-      "name": "getDimoTokenId",
-      "constant": true,
-      "stateMutability": "view",
-      "payable": false,
-      "inputs": [{ "type": "uint256", "name": "carId" }],
-      "outputs": [{ "type": "uint256", "name": "" }]
-    },
-    {
-      "type": "function",
-      "name": "getDimoVihicles",
+      "name": "getGovernmentTaxPerDay",
       "constant": true,
       "stateMutability": "view",
       "payable": false,
       "inputs": [],
-      "outputs": [{ "type": "uint256[]", "name": "" }]
+      "outputs": [{ "type": "uint32", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "getGovernmentTaxPerDayFrom",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "uint64", "name": "daysAmount" }],
+      "outputs": [{ "type": "uint64", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "getLocation",
+      "constant": true,
+      "stateMutability": "pure",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        { "type": "bytes32", "name": "" },
+        { "type": "uint8", "name": "" }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getSalesTaxFrom",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "uint64", "name": "value" }],
+      "outputs": [{ "type": "uint64", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "getSalesTaxPPM",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "uint32", "name": "" }]
     },
     {
       "type": "function",
       "name": "initialize",
       "constant": false,
       "payable": false,
-      "inputs": [
-        { "type": "address", "name": "_userService" },
-        { "type": "address", "name": "_carToken" },
-        { "type": "address", "name": "_admin" }
-      ],
+      "inputs": [{ "type": "address", "name": "_userService" }],
       "outputs": []
     },
     {
@@ -86,25 +109,23 @@
     },
     {
       "type": "function",
-      "name": "saveButch",
+      "name": "setTaxes",
       "constant": false,
       "payable": false,
-      "inputs": [
-        { "type": "uint256[]", "name": "dimoTokenIds" },
-        { "type": "uint256[]", "name": "carIds" }
-      ],
+      "inputs": [{ "type": "bytes", "name": "newTaxes" }],
       "outputs": []
     },
     {
       "type": "function",
-      "name": "saveDimoTokenId",
-      "constant": false,
+      "name": "taxes",
+      "constant": true,
+      "stateMutability": "view",
       "payable": false,
-      "inputs": [
-        { "type": "uint256", "name": "dimoTokenId" },
-        { "type": "uint256", "name": "carId" }
-      ],
-      "outputs": []
+      "inputs": [],
+      "outputs": [
+        { "type": "uint32", "name": "salesTaxPPM" },
+        { "type": "uint32", "name": "governmentTaxPerDayInUsdCents" }
+      ]
     },
     {
       "type": "function",

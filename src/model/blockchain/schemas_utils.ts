@@ -59,7 +59,7 @@ const emptyContractCarDetails: ContractCarDetails = {
   locationInfo: emptyContractLocationInfo,
   carVinNumber: "",
   carMetadataURI: "",
-  dimoTokenId: 0
+  dimoTokenId: BigInt(0)
 };
 
 export function validateContractCarDetails(obj: ContractCarDetails): obj is ContractCarDetails {
