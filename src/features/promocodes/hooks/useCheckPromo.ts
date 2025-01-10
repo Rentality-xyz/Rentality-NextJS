@@ -30,10 +30,15 @@ function useCheckPromo() {
 
         const startUnixTime = getBlockchainTimeFromDate(dateFrom);
         const endUnixTime = getBlockchainTimeFromDate(dateTo);
+
+        console.log(
+          "checkPromoDto call",
+          JSON.stringify({ code, notEmtpyTimeZoneId, dateFrom, startUnixTime, dateTo, endUnixTime }, bigIntReplacer, 2)
+        );
         const checkPromoDto = await rentalityContracts.gateway.checkPromo(code, startUnixTime, endUnixTime);
         validateContractCheckPromoDTO(checkPromoDto);
 
-        console.debug("checkPromoDto", JSON.stringify(checkPromoDto, bigIntReplacer, 2));
+        console.log("checkPromoDto", JSON.stringify(checkPromoDto, bigIntReplacer, 2));
 
         if (!checkPromoDto.isFound) {
           return Err(new Error("Promo is not found"));
