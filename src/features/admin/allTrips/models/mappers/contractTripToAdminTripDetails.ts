@@ -144,8 +144,8 @@ export const mapContractAdminTripDTOToAdminTripDetails = async (
       paymentStatus === PaymentStatus.PaidToHost ? Number(trip.paymentInfo.salesTax) / 100.0 : undefined,
     accruableGovernmentTaxInUsd:
       paymentStatus === PaymentStatus.PaidToHost ? Number(trip.paymentInfo.governmentTax) / 100.0 : undefined,
-    promoCode: adminTripDto.promoCode,
-    promoCodeValueInPercents: Number(adminTripDto.promoCodeValueInPercents),
-    promoCodeEnterDate: getDateFromBlockchainTimeWithTZ(adminTripDto.promoCodeEnterDate, timeZoneId),
+    promoCode: adminTripDto.promoInfo.promoCode,
+    promoCodeValueInPercents: Number(adminTripDto.promoInfo.promoCodeValueInPercents),
+    promoCodeEnterDate: getDateFromBlockchainTimeWithTZ(adminTripDto.promoInfo.promoCodeEnterDate, timeZoneId),
   };
 };
