@@ -61,7 +61,11 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
             governmentTaxInUsd
           ),
           promoDiscountInPercents
-        ) + getNotDiscountablePrice(Number(tripDTO.paidForInsuranceInUsdCents) / 100.0, depositInUsd)
+        ) +
+          promoDiscountInPercents !==
+        100
+        ? getNotDiscountablePrice(Number(tripDTO.paidForInsuranceInUsdCents) / 100.0, depositInUsd)
+        : 0
       : totalPriceInUsd;
 
   let item: TripInfo = {
