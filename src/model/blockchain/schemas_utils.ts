@@ -20,6 +20,7 @@ import {
   ContractInsuranceDTO,
   ContractInsuranceInfo,
   ContractLocationInfo,
+  ContractPromoDTO,
   ContractPublicHostCarDTO,
   ContractSearchCar,
   ContractSearchCarWithDistance,
@@ -330,14 +331,16 @@ const emptyContractAllTripsDTO: ContractAllTripsDTO = {
   trips: [],
   totalPageCount: BigInt(0),
 };
-
+const emptyContractPromoDTO: ContractPromoDTO = {
+  promoCode: "",
+  promoCodeEnterDate: BigInt(0),
+  promoCodeValueInPercents: BigInt(0),
+};
 const emptyContractAdminTripDTO: ContractAdminTripDTO = {
   trip: emptyContractTrip,
   carLocation: emptyContractLocationInfo,
   carMetadataURI: "",
-  promoCode: "",
-  promoCodeValueInPercents: BigInt(0),
-  promoCodeEnterDate: BigInt(0),
+  promoInfo: emptyContractPromoDTO,
 };
 
 export function validateContractAllTripsDTO(obj: ContractAllTripsDTO): obj is ContractAllTripsDTO {
@@ -346,7 +349,8 @@ export function validateContractAllTripsDTO(obj: ContractAllTripsDTO): obj is Co
     (obj.trips.length === 0 ||
       (validateType(obj.trips[0], emptyContractAdminTripDTO) &&
         validateType(obj.trips[0].trip, emptyContractTrip) &&
-        validateType(obj.trips[0].carLocation, emptyContractLocationInfo)))
+        validateType(obj.trips[0].carLocation, emptyContractLocationInfo) &&
+        validateType(obj.trips[0].promoInfo, emptyContractPromoDTO)))
   );
 }
 
