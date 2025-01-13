@@ -25,7 +25,7 @@ function CarPhotoWithStatus({ carImageUrl, tripStatus }: { carImageUrl: string; 
   return (
     <div
       style={{ backgroundImage: `url(${carImageUrl})` }}
-      className="relative min-h-[12rem] w-full flex-shrink-0 bg-cover bg-center md:w-[40%] fullHD:w-[46%]"
+      className="relative min-h-[12rem] w-full bg-cover bg-center"
     >
       {tripStatus == TripStatus.CompletedWithoutGuestComfirmation ? (
         <div className={statusClassName}>
