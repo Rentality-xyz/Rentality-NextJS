@@ -281,9 +281,8 @@ function CreateTripDetailsContent({
           {state.status === "SUCCESS"
             ? t("promo.button_promo_text", {
                 price: displayMoneyWith2Digits(
-                  getPromoPrice(getDiscountablePriceFromCarInfo(carInfo), state.promo.value) + state.promo.value !== 100
-                    ? getNotDiscountablePriceFromCarInfo(carInfo)
-                    : 0
+                  getPromoPrice(getDiscountablePriceFromCarInfo(carInfo), state.promo.value) +
+                    (state.promo.value !== 100 ? getNotDiscountablePriceFromCarInfo(carInfo) : 0)
                 ),
               })
             : t("promo.button_default_text", {

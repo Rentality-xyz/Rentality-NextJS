@@ -52,10 +52,9 @@ export const mapContractTripDTOToTransactionHistoryInfo = async (
           ),
           promoDiscountInPercents
         ) +
-          promoDiscountInPercents !==
-        100
-        ? getNotDiscountablePrice(Number(tripDto.paidForInsuranceInUsdCents) / 100.0, depositInUsd)
-        : 0
+        (promoDiscountInPercents !== 100
+          ? getNotDiscountablePrice(Number(tripDto.paidForInsuranceInUsdCents) / 100.0, depositInUsd)
+          : 0)
       : totalPriceInUsd;
 
   const cancellationFee = getCancellationFee(tripDto);
