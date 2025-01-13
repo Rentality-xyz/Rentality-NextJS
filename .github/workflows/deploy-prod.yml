@@ -82,4 +82,4 @@ jobs:
         with:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_RENTALITY_NEXTJS_PRD }}"
           projectId: rentality-app-428806
-          channelId: preview-1
+          channelId: live
