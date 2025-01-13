@@ -482,6 +482,7 @@ export type ContractAdminTripDTO = {
   trip: ContractTrip;
   carMetadataURI: string;
   carLocation: ContractLocationInfo;
+  promoInfo: ContractPromoDTO;
 };
 
 export type ContractAllTripsDTO = {
@@ -664,6 +665,12 @@ export type ContractCheckPromoDTO = {
   isValid: boolean;
   isDiscount: boolean;
   value: bigint;
+};
+
+export type ContractPromoDTO = {
+  promoCode: string;
+  promoCodeValueInPercents: bigint;
+  promoCodeEnterDate: bigint;
 };
 
 export type TripStatus = bigint;
