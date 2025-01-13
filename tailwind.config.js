@@ -7,7 +7,7 @@ module.exports = {
     "./src/components/**/*.{js,ts,jsx,tsx}",
     "./src/features/**/*.{js,ts,jsx,tsx}",
     "./src/app/**/*.{js,ts,jsx,tsx}",
-    "./src/utils/tailwind.ts",
+    "./src/**/tailwind.ts",
     path.join(path.dirname(require.resolve("@coinbase/onchainkit")), "**/*.js"),
   ],
   theme: {
