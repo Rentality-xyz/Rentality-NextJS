@@ -1,16 +1,19 @@
+import React, { useState } from "react";
 import RntButton from "@/components/common/rntButton";
 import RntInput from "@/components/common/rntInput";
 import RntPlaceAutoComplete from "@/components/common/rntPlaceAutocomplete";
 import RntSelect from "@/components/common/rntSelect";
-import { AdminAllTripsFilters } from "@/hooks/admin/useAdminAllTrips";
-import { getPaymentStatusText, getTripStatusTextFromAdminStatus } from "@/model/admin/AdminTripDetails";
+import { AdminAllTripsFilters } from "@/features/admin/allTrips/hooks/useAdminAllTrips";
+import {
+  getPaymentStatusText,
+  getTripStatusTextFromAdminStatus,
+} from "@/features/admin/allTrips/models/AdminTripDetails";
 import { AdminTripStatus, PaymentStatus } from "@/model/blockchain/schemas";
 import { formatLocationInfoUpToCity } from "@/model/LocationInfo";
 import { dateToHtmlDateFormat } from "@/utils/datetimeFormatters";
 import { placeDetailsToLocationInfo } from "@/utils/location";
 import { isEmpty } from "@/utils/string";
 import moment from "moment";
-import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { env } from "@/utils/env";
 import { APIProvider } from "@vis.gl/react-google-maps";
