@@ -40,6 +40,14 @@ export function getNotDiscountablePriceFromCarInfo(carInfo: SearchCarInfoDetails
   return getNotDiscountablePrice(insuranceCharge, carInfo.securityDeposit);
 }
 
+export function getPromoPrice(carInfo: SearchCarInfoDetails | SearchCarInfo, promoValue: number) {
+  if (promoValue <= 0) return getDiscountablePriceFromCarInfo(carInfo) + getNotDiscountablePriceFromCarInfo(carInfo);
+  if (promoValue === 100) return 0;
+  return (
+    getDiscountablePriceFromCarInfo(carInfo) * (1 - promoValue / 100) + getNotDiscountablePriceFromCarInfo(carInfo)
+  );
+}
+
 export function getTotalPrice(
   pricePerDay: number,
   tripDays: number,

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import RntButton from "@/components/common/rntButton";
+import Loading from "@/components/common/Loading";
+import RntSuspense from "@/components/common/rntSuspense";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2DigitsOrNa } from "@/utils/numericFormatters";
 import { usePathname } from "next/navigation";
@@ -8,16 +10,18 @@ import { cn } from "@/utils";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
-import { getAdminTripStatusBgColorFromStatus, getAdminTextColorForPaymentStatus } from "@/utils/tailwind";
+import {
+  getAdminTripStatusBgColorFromStatus,
+  getAdminTextColorForPaymentStatus,
+} from "@/features/admin/allTrips/utils/tailwind";
 import { Result } from "@/model/utils/result";
-import Loading from "@/components/common/Loading";
 import { PaymentStatus } from "@/model/blockchain/schemas";
 import {
   AdminTripDetails,
   getPaymentStatusText,
   getTripStatusTextFromAdminStatus,
-} from "@/model/admin/AdminTripDetails";
-import RntSuspense from "@/components/common/rntSuspense";
+} from "@/features/admin/allTrips/models/AdminTripDetails";
+import { isEmpty } from "@/utils/string";
 
 type AllTripsTableProps = {
   isLoading: boolean;
@@ -74,6 +78,9 @@ export default function AllTripsTable({ isLoading, data, payToHost, refundToGues
             <th className={`${headerSpanClassName} min-w-[15ch]`}>{t_att("vehicle")}</th>
             <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_att("plateNumber")}</th>
             <th className={`${headerSpanClassName} min-w-[25ch]`}>{t_att("tripStatus")}</th>
+            <th className={`${headerSpanClassName} min-w-[15ch]`}>{t_att("promoCode")}</th>
+            <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_att("promoCodeValue")}</th>
+            <th className={`${headerSpanClassName} min-w-[18ch]`}>{t_att("promoCodeDate")}</th>
             <th className={`${headerSpanClassName}`}>{t_att("paymentManagement")}</th>
             <th className={`${headerSpanClassName} min-w-[17ch]`}>{t_att("paymentsStatus")}</th>
             <th className={`${headerSpanClassName} min-w-[18ch]`}>{t_att("location")}</th>
@@ -106,6 +113,7 @@ export default function AllTripsTable({ isLoading, data, payToHost, refundToGues
             const detailsLink = `/admin/trips/tripInfo/${tripItem.tripId}?back=${pathname}`;
             const tripStatusBgColor = getAdminTripStatusBgColorFromStatus(tripItem.tripStatus);
             const paymentStatusTextColor = getAdminTextColorForPaymentStatus(tripItem.paymentsStatus);
+            const isUsedPromocode = !isEmpty(tripItem.promoCode);
 
             return (
               <tr key={tripItem.tripId} className="border-b-[2px] border-b-gray-500">
@@ -114,6 +122,13 @@ export default function AllTripsTable({ isLoading, data, payToHost, refundToGues
                 <td className={rowSpanClassName}>{tripItem.plateNumber}</td>
                 <td className={cn(rowSpanClassName, tripStatusBgColor, "font-semibold")}>
                   {getTripStatusTextFromAdminStatus(tripItem.tripStatus)}
+                </td>
+                <td className={rowSpanClassName}>{tripItem.promoCode}</td>
+                <td className={rowSpanClassName}>{isUsedPromocode ? `${tripItem.promoCodeValueInPercents}%` : ""}</td>
+                <td className={rowSpanClassName}>
+                  {isUsedPromocode && tripItem.promoCodeEnterDate
+                    ? dateFormatShortMonthDateTime(tripItem.promoCodeEnterDate, tripItem.timeZoneId)
+                    : ""}
                 </td>
                 <td className={rowSpanClassName}>
                   {tripItem.paymentsStatus === PaymentStatus.Unpaid && (

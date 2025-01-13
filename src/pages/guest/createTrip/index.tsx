@@ -282,7 +282,7 @@ function CreateTripDetailsContent({
             ? t("promo.button_promo_text", {
                 price: displayMoneyWith2Digits(
                   getPromoPrice(getDiscountablePriceFromCarInfo(carInfo), state.promo.value) +
-                    getNotDiscountablePriceFromCarInfo(carInfo)
+                    (state.promo.value !== 100 ? getNotDiscountablePriceFromCarInfo(carInfo) : 0)
                 ),
               })
             : t("promo.button_default_text", {

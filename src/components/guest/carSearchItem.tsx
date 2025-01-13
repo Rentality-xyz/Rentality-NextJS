@@ -247,7 +247,9 @@ export default function CarSearchItem({
               ? t("promo.button_promo_text", {
                   price: displayMoneyWith2Digits(
                     getPromoPrice(getDiscountablePriceFromCarInfo(searchInfo), state.promo.value) +
-                      getNotDiscountablePrice(insurancePriceTotal, searchInfo.securityDeposit)
+                      (state.promo.value !== 100
+                        ? getNotDiscountablePrice(insurancePriceTotal, searchInfo.securityDeposit)
+                        : 0)
                   ),
                 })
               : t("promo.button_default_text", {
