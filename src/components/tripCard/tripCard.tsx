@@ -42,9 +42,9 @@ function TripCard({
     <div className="rnt-card flex flex-col overflow-hidden rounded-xl bg-rentality-bg">
       <div className="flex flex-col md:flex-row">
         <CarPhotoWithStatus carImageUrl={tripInfo.image} tripStatus={tripInfo.status} />
-        <div id="trip-item-info" className="flex w-full grid-cols-[1fr_2fr_2fr_1fr] flex-col gap-4 p-4 md:grid">
-          <СarDetails tripInfo={tripInfo} isHost={isHost} t={t} confirmCarDetails={confirmCarDetails} />
-          {
+        <div id="trip-item-info" className="flex w-full grid-cols-[3fr_2fr_1fr] flex-col gap-4 p-4 md:grid">
+          <div className="flex max-md:flex-col">
+            <СarDetails tripInfo={tripInfo} isHost={isHost} t={t} confirmCarDetails={confirmCarDetails} />
             <CurrentStatusInfo
               tripInfo={tripInfo}
               changeStatusCallback={async (changeStatus) => {
@@ -58,8 +58,8 @@ function TripCard({
               isHost={isHost}
               t={t}
             />
-          }
-          <div className="flex h-full w-full flex-col justify-between gap-4 max-md:mt-2 md:pl-4 fullHD:pl-8">
+          </div>
+          <div className="flex h-full w-full flex-col gap-4 max-md:mt-4 md:pl-4 fullHD:pl-8">
             <DateDetails tripInfo={tripInfo} t={t} />
             <LocationDetails tripInfo={tripInfo} t={t} />
           </div>

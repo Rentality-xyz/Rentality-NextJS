@@ -202,13 +202,13 @@ function CurrentStatusInfo({
   };
 
   return (
-    <div id="trip-action-info" className="flex w-full flex-col justify-between">
+    <div id="trip-action-info" className="flex w-full flex-col justify-between max-md:mt-8">
       <div className="flex flex-col whitespace-pre-line">
         <p className="text-center text-rentality-secondary">{actionHeader}</p>
         <p className="mt-4 text-center text-lg">
           <strong>{actionText}</strong>
         </p>
-        <p className="mt-4 text-center text-sm">{actionDescription}</p>
+        <p className="text-center text-sm md:mt-4">{actionDescription}</p>
       </div>
 
       {!isAdditionalActionHidden || tripInfo.allowedActions.length === 0 ? null : (
