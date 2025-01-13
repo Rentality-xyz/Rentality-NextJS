@@ -1,4 +1,4 @@
-import { AdminTripStatus, PaymentStatus, TripStatus } from "../blockchain/schemas";
+import { AdminTripStatus, PaymentStatus } from "@/model/blockchain/schemas";
 
 export type AdminTripDetails = {
   tripId: number;
@@ -29,6 +29,9 @@ export type AdminTripDetails = {
   platformCommissionInUsd: number | undefined;
   accruableSalesTaxInUsd: number | undefined;
   accruableGovernmentTaxInUsd: number | undefined;
+  promoCode?: string;
+  promoCodeValueInPercents?: number;
+  promoCodeEnterDate?: Date;
 };
 
 export const getTripStatusTextFromAdminStatus = (status: AdminTripStatus) => {
