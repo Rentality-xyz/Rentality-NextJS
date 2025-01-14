@@ -8,7 +8,6 @@ import AddGuestInsurance from "@/features/insurance/components/AddGuestInsurance
 import GuestInsuranceFilters from "@/features/insurance/components/GuestInsuranceFilters";
 import GuestInsuranceTable from "@/features/insurance/components/GuestInsuranceTable";
 import useInsurances, { InsuranceFiltersType } from "@/features/insurance/hooks/useInsurances";
-import UserInsurance from "@/features/insurance/components/UserInsurance";
 
 const defaultFilters: InsuranceFiltersType = {};
 
