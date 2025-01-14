@@ -5,14 +5,14 @@ import Image from "next/image";
 import RntButton from "@/components/common/rntButton";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import useReferralProgram from "@/features/referralProgram/hooks/useReferralProgram";
-import useProfileSettings from "@/hooks/useProfileSettings";
 import { copyToClipboard } from "@/utils/clipboard";
+import { isEmpty } from "@/utils/string";
 
 export default function ReferralLinks() {
-  const { inviteHash } = useReferralProgram();
+  const { inviteHash, usedInviteHash } = useReferralProgram();
   const { t } = useTranslation();
 
-  const [isLoadingProfileSettings] = useProfileSettings();
+  const inviteLink = !isEmpty(inviteHash) ? new URL(`/${inviteHash}`, window.location.origin).toString() : "";
 
   return (
     <div className="rounded-lg bg-rentality-bg-left-sidebar p-3">
@@ -20,21 +20,19 @@ export default function ReferralLinks() {
         <p className="text-rentality-secondary">{t("referrals_and_point.section_referral_link")}</p>
       </div>
       <div className="mt-4 items-center justify-start md:flex">
-        <div className="w-full max-md:ml-5 md:w-1/3">{t("referrals_and_point.copy_referral_link")}</div>
+        <div className="w-full max-md:ml-5 md:w-1/3">{t("referrals_and_point.send_referral_link")}</div>
         <div className="flex md:w-2/3">
           <RntInputTransparent
             className="w-[75%] md:mr-4 md:w-[70%]"
             style={{ color: "white" }}
             readOnly={true}
             type="text"
-            value={inviteHash && !isLoadingProfileSettings ? `https://app.rentality.xyz/${inviteHash}` : ""}
+            value={inviteLink}
           />
           <RntButton
             className="ml-auto flex w-16 items-center justify-center text-white md:w-36"
-            disabled={!(inviteHash && !isLoadingProfileSettings)}
-            onClick={() =>
-              copyToClipboard(inviteHash && !isLoadingProfileSettings ? `https://app.rentality.xyz/${inviteHash}` : "")
-            }
+            disabled={!inviteHash}
+            onClick={() => copyToClipboard(inviteLink)}
           >
             <Image src={imgCopy} alt="" className="h-5 w-5 md:mr-1" />
             <div className="ml-0.5 flex">
@@ -48,23 +46,12 @@ export default function ReferralLinks() {
         <div className="w-full max-md:ml-5 md:w-1/3">{t("referrals_and_point.referral_code")}</div>
         <div className="flex md:w-2/3">
           <RntInputTransparent
-            className="w-[75%] md:mr-4 md:w-[70%]"
+            className="w-full md:mr-4"
             style={{ color: "white" }}
             readOnly={true}
             type="text"
-            value={inviteHash && !isLoadingProfileSettings ? inviteHash : ""}
+            value={usedInviteHash}
           />
-          <RntButton
-            className="ml-auto flex w-16 items-center justify-center text-white md:w-36"
-            disabled={!(inviteHash && !isLoadingProfileSettings)}
-            onClick={() => copyToClipboard(inviteHash && !isLoadingProfileSettings ? inviteHash : "")}
-          >
-            <Image src={imgCopy} alt="" className="h-5 w-5 md:mr-1" />
-            <div className="ml-0.5 flex">
-              <span className="max-md:hidden">Copy</span>
-              <span className="ml-4 max-md:hidden">●</span>
-            </div>
-          </RntButton>
         </div>
       </div>
     </div>

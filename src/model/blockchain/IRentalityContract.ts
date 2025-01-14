@@ -40,6 +40,7 @@ import {
   Tear,
   ContractProgramHistory,
   ContractCheckPromoDTO,
+  ContractMyRefferalInfoDTO,
 } from "./schemas";
 
 export interface IRentalityContract {
@@ -273,6 +274,7 @@ export interface IRentalityReferralProgramContract {
   getPointsHistory(): Promise<ContractProgramHistory[]>;
 
   getReadyToClaim(user: string): Promise<ContractReadyToClaimDTO>;
+  getMyRefferalInfo(): Promise<ContractMyRefferalInfoDTO>;
 }
 
 type ContractChatKeyInfo = {
