@@ -16,11 +16,7 @@ export default function Profile() {
       <PageTitle title={t("profile.title")} />
       <CheckingLoadingAuth>
         <RntSuspense isLoading={isLoading}>
-          <UserProfileInfo
-            savedProfileSettings={savedProfileSettings}
-            saveProfileSettings={saveProfileSettings}
-            isHost={false}
-          />
+          <UserProfileInfo savedProfileSettings={savedProfileSettings} saveProfileSettings={saveProfileSettings} />
           <hr />
           <UserInsurance />
           <hr />

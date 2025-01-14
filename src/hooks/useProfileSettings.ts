@@ -7,8 +7,6 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { usePrivy } from "@privy-io/react-auth";
 import { ZERO_HASH } from "@/utils/wallet";
-import { isEmpty } from "@/utils/string";
-import { ethers } from "ethers";
 
 export type ProfileSettings = {
   profilePhotoUrl: string;
@@ -21,7 +19,6 @@ export type ProfileSettings = {
   drivingLicenseExpire: Date | undefined;
   issueCountry: string;
   email: string;
-  reflink: string;
 };
 
 const emptyProfileSettings: ProfileSettings = {
@@ -35,7 +32,6 @@ const emptyProfileSettings: ProfileSettings = {
   drivingLicenseExpire: undefined,
   issueCountry: "",
   email: "",
-  reflink: "",
 };
 
 const useProfileSettings = () => {
@@ -68,7 +64,6 @@ const useProfileSettings = () => {
             : undefined,
         issueCountry: myKYCInfo.additionalKYC.issueCountry,
         email: myKYCInfo.additionalKYC.email,
-        reflink: "", //TODO was not found  myKYCInfo.additionalKYC.reflink,
       };
       console.log("useProfileSettings.getProfileSettings() return data");
       return myProfileSettings;
@@ -87,18 +82,12 @@ const useProfileSettings = () => {
     }
 
     try {
-      const refHash = !isEmpty(newProfileSettings.reflink)
-        ? newProfileSettings.reflink.length >= 66
-          ? newProfileSettings.reflink
-          : ethers.encodeBytes32String(newProfileSettings.reflink)
-        : ZERO_HASH;
-
       const transaction = await rentalityContracts.gateway.setKYCInfo(
         newProfileSettings.nickname,
         newProfileSettings.phoneNumber,
         newProfileSettings.profilePhotoUrl,
         newProfileSettings.tcSignature,
-        refHash
+        ZERO_HASH
       );
 
       await transaction.wait();
