@@ -21,15 +21,14 @@ import { verifyMessage } from "ethers";
 import { DEFAULT_AGREEMENT_MESSAGE, LEGAL_TERMS_NAME } from "@/utils/constants";
 import { signMessage } from "@/utils/ether";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
+import useUserMode from "@/hooks/useUserMode";
 
 function UserCommonInformationForm({
   savedProfileSettings,
   saveProfileSettings,
-  isHost,
 }: {
   savedProfileSettings: ProfileSettings;
   saveProfileSettings: (newProfileSettings: ProfileSettings) => Promise<boolean>;
-  isHost: boolean;
 }) {
   const ethereumInfo = useEthereum();
   const { showDialog, hideDialogs } = useRntDialogs();
@@ -37,12 +36,13 @@ function UserCommonInformationForm({
   const { t } = useTranslation();
 
   const { register, handleSubmit, formState, control, setValue, watch } = useForm<ProfileInfoFormValues>({
+  const { userMode } = useUserMode();
+  const isHost = userMode === "Host";
     defaultValues: {
       profilePhotoUrl: savedProfileSettings.profilePhotoUrl,
       nickname: savedProfileSettings.nickname,
       phoneNumber: savedProfileSettings.phoneNumber,
       tcSignature: savedProfileSettings.tcSignature,
-      reflink: savedProfileSettings.reflink,
     },
     resolver: zodResolver(profileInfoFormSchema),
   });

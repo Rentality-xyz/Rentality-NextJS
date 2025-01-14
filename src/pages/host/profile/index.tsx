@@ -23,11 +23,7 @@ export default function Profile() {
       <PageTitle title={t("profile.title")} />
       <CheckingLoadingAuth>
         <RntSuspense isLoading={isLoading || isLoadingDiscounts || isLoadingDeliveryPrices}>
-          <UserProfileInfo
-            savedProfileSettings={savedProfileSettings}
-            saveProfileSettings={saveProfileSettings}
-            isHost={true}
-          />
+          <UserProfileInfo savedProfileSettings={savedProfileSettings} saveProfileSettings={saveProfileSettings} />
           <div className="flex flex-col min-[560px]:flex-row min-[560px]:gap-20">
             <TripDiscountsForm
               savedTripsDiscounts={savedTripsDiscounts}
@@ -40,7 +36,6 @@ export default function Profile() {
               isUserHasHostRole={userRole === "Host"}
             />
           </div>
-
           <AddFunds />
         </RntSuspense>
       </CheckingLoadingAuth>
