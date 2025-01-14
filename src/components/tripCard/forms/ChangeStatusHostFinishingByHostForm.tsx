@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState, useRef } from "react";
 import { getRefuelCharge, TripInfo } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
 import RntButton from "@/components/common/rntButton";
@@ -42,6 +42,8 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
     let depositToBeReturned = depositPaid - refuelCharge - overmilesCharge;
     depositToBeReturned = depositToBeReturned > 0 ? depositToBeReturned : 0;
 
+    const carPhotosUploadButtonRef = useRef<any>(null);
+
     useEffect(() => {
       const endOdometr = odometer ?? 0;
       const tripDays = calculateDays(tripInfo.tripStart, tripInfo.tripEnd);
@@ -52,10 +54,19 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
 
     async function onFormSubmit(formData: ChangeStatusHostFinishingByHostFormValues) {
       changeStatusCallback(() => {
-        return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), [
-          formData.fuelOrBatteryLevel.toString(),
-          formData.odotemer.toString(),
-        ]);
+
+        let tripPhotosUrls: string[] = [];
+        if(process.env.FF_TRIP_PHOTOS){
+          tripPhotosUrls=carPhotosUploadButtonRef.current.saveUploadedFiles();
+        }
+
+        return tripInfo.allowedActions[0].action(
+          BigInt(tripInfo.tripId),
+          [
+            formData.fuelOrBatteryLevel.toString(),
+            formData.odotemer.toString(),
+          ],
+          tripPhotosUrls);
       });
     }
 

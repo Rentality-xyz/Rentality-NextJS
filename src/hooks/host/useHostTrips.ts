@@ -66,26 +66,12 @@ const useHostTrips = () => {
         const insuranceCompany = params[2];
         const insuranceNumber = params[3];
 
-        let transaction;
-
-        if(process.env.FF_TRIP_PHOTOS){
-          transaction = await rentalityContracts.gateway.checkInByHostWithPhotos(
-            tripId,
-            [startFuelLevelInPercents, startOdometr],
-            insuranceCompany,
-            insuranceNumber,
-            tripPhotosUrls
-          );
-        }else{
-          transaction = await rentalityContracts.gateway.checkInByHost(
+        const transaction = await rentalityContracts.gateway.checkInByHost(
             tripId,
             [startFuelLevelInPercents, startOdometr],
             insuranceCompany,
             insuranceNumber
           );
-        }
-
-
         await transaction.wait();
         return true;
       } catch (e) {
@@ -95,7 +81,7 @@ const useHostTrips = () => {
     };
 
     const checkOutTrip = async (tripId: bigint, params: string[], tripPhotosUrls: string[]) => {
-      if (!rentalityContract) {
+      if (!rentalityContracts) {
         console.error("checkOutTrip error: rentalityContract is null");
         return false;
       }
@@ -104,21 +90,10 @@ const useHostTrips = () => {
         const endFuelLevelInPercents = BigInt(Number(params[0]) * 100);
         const endOdometr = BigInt(params[1]);
 
-        let transaction;
-
-        if(process.env.FF_TRIP_PHOTOS){
-          transaction = await rentalityContracts.gateway.checkOutByHostWithPhotos(
-            tripId,
-            [endFuelLevelInPercents, endOdometr],
-            tripPhotosUrls
-          );
-        }else{
-          transaction = await rentalityContracts.gateway.checkOutByHost(
-            tripId,
-            [endFuelLevelInPercents, endOdometr]
-          );
-        }
-
+        const transaction = await rentalityContracts.gateway.checkOutByHost(
+          tripId,
+          [endFuelLevelInPercents, endOdometr]
+        );
 
         await transaction.wait();
         return true;

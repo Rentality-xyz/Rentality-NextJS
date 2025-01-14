@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { TripInfo } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
 import RntButton from "@/components/common/rntButton";
@@ -11,6 +11,8 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import RntFuelLevelSelect from "@/components/common/RntFuelLevelSelect";
 import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton";
+import useFeatureFlags from "@/hooks/useFeatureFlags";
+import useUserMode, { isHost } from "@/hooks/useUserMode";
 
 interface ChangeStatusHostConfirmedFormProps {
   tripInfo: TripInfo;
@@ -21,6 +23,7 @@ interface ChangeStatusHostConfirmedFormProps {
 
 const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHostConfirmedFormProps>(
   ({ tripInfo, changeStatusCallback, disableButton, t }, ref) => {
+    const { userMode } = useUserMode();
     const { register, control, handleSubmit, formState } = useForm<ChangeStatusHostConfirmedFormValues>({
       defaultValues: {},
       resolver: zodResolver(changeStatusHostConfirmedFormSchema),
@@ -29,21 +32,32 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
 
     const carPhotosUploadButtonRef = useRef<any>(null);
 
-    async function onFormSubmit(formData: ChangeStatusHostConfirmedFormValues) {
-      changeStatusCallback(() => {
+    const { hasFeatureFlag } = useFeatureFlags();
+    const [ hasTripPhotosFeatureFlag, setHasTripPhotosFeatureFlag ] = useState<boolean>(false);
 
-        let tripPhotosUrls: string[] = [];
-        if(process.env.FF_TRIP_PHOTOS){
-          tripPhotosUrls=carPhotosUploadButtonRef.current.saveUploadedFiles();
-        }
-
-        return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), [
-          formData.fuelOrBatteryLevel.toString(),
-          formData.odotemer.toString(),
-          formData.insuranceCompanyName ?? "",
-          formData.insurancePolicyNumber ?? "",
-        ], tripPhotosUrls);
+    useEffect(() => {
+      hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+        setHasTripPhotosFeatureFlag(hasTripPhotosFeatureFlag);
       });
+    },[]);
+
+    async function onFormSubmit(formData: ChangeStatusHostConfirmedFormValues) {
+
+         changeStatusCallback(async () => {
+
+          let tripPhotosUrls: string[] = [];
+
+          if (hasTripPhotosFeatureFlag) {
+            tripPhotosUrls = await carPhotosUploadButtonRef.current.saveUploadedFiles();
+          }
+
+          return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), [
+            formData.fuelOrBatteryLevel.toString(),
+            formData.odotemer.toString(),
+            formData.insuranceCompanyName ?? "",
+            formData.insurancePolicyNumber ?? "",
+          ], tripPhotosUrls);
+        });
     }
 
     return (
@@ -101,13 +115,15 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
                 validationError={errors.insurancePolicyNumber?.message?.toString()}
               />
             </div>
-            { process.env.FF_TRIP_PHOTOS && (
-            <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
-              <CarPhotosUploadButton
-                ref={carPhotosUploadButtonRef}
-                isStart={true}
-              />
-            </div>
+            { hasTripPhotosFeatureFlag && (
+              <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
+                <CarPhotosUploadButton
+                  ref={carPhotosUploadButtonRef}
+                  isHost={isHost(userMode)}
+                  isStart={true}
+                  tripId={tripInfo.tripId}
+                />
+              </div>
             )}
           </div>
 

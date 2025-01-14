@@ -2,7 +2,7 @@ import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import { TripInfo } from "@/model/TripInfo";
 import RntButton from "../common/rntButton";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
-import { Dispatch, SetStateAction, memo, useState } from "react";
+import { Dispatch, SetStateAction, memo, useState, useRef } from "react";
 import moment from "moment";
 import { TripStatus } from "@/model/blockchain/schemas";
 import { TFunction } from "i18next";
@@ -129,6 +129,8 @@ function CurrentStatusInfo({
   const [isFinishingByHost, setIsFinishingByHost] = useState(false);
   const { sendMessage, getMessages } = useChat();
 
+  const carPhotosUploadButtonRef = useRef<any>(null);
+
   const [actionHeader, actionText, actionDescription] = getActionTextsForStatus(
     tripInfo,
     isHost,
@@ -154,9 +156,15 @@ function CurrentStatusInfo({
         const messageToSend = `Host finished the trip without guest confirmation.\n${messageToGuest}\nPlease confirm finish trip or contact me if you have any questions.`;
         await sendMessage(tripInfo.guest.walletAddress, tripInfo.tripId, messageToSend);
       };
+
+      let tripPhotosUrls: string[] = [];
+      if(process.env.FF_TRIP_PHOTOS){
+        tripPhotosUrls=carPhotosUploadButtonRef.current.saveUploadedFiles();
+      }
+
       tripInfo.allowedActions[0].action = async (tripId: bigint, params: string[]) => {
         await sendMessageToGuest();
-        return savedAction(tripId, params);
+        return savedAction(tripId, params, tripPhotosUrls);
       };
     }
     setIsFinishingByHost(true);
@@ -165,8 +173,17 @@ function CurrentStatusInfo({
 
   const handleGuestFinishTrip = async () => {
     hideDialogs();
+
+    let tripPhotosUrls: string[] = [];
+    if(process.env.FF_TRIP_PHOTOS){
+      tripPhotosUrls=carPhotosUploadButtonRef.current.saveUploadedFiles();
+    }
+
     changeStatusCallback(() => {
-      return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), []);
+      return tripInfo.allowedActions[0].action(
+        BigInt(tripInfo.tripId),
+        [],
+        tripPhotosUrls);
     });
   };
 
@@ -247,8 +264,18 @@ function CurrentStatusInfo({
                     disabled={disableButton}
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
+
+                        let tripPhotosUrls: string[] = [];
+                        if(process.env.FF_TRIP_PHOTOS){
+                          tripPhotosUrls=carPhotosUploadButtonRef.current.saveUploadedFiles();
+                        }
+
                         changeStatusCallback(() => {
-                          return action.action(BigInt(tripInfo.tripId), []);
+                          return action.action(
+                            BigInt(tripInfo.tripId),
+                            [],
+                            tripPhotosUrls
+                          );
                         });
                       } else {
                         setIsAdditionalActionHidden(false);
@@ -264,8 +291,18 @@ function CurrentStatusInfo({
                     disabled={disableButton}
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
+
+                        let tripPhotosUrls: string[] = [];
+                        if(process.env.FF_TRIP_PHOTOS){
+                          tripPhotosUrls=carPhotosUploadButtonRef.current.saveUploadedFiles();
+                        }
+
                         changeStatusCallback(() => {
-                          return action.action(BigInt(tripInfo.tripId), []);
+                          return action.action(
+                            BigInt(tripInfo.tripId),
+                            [],
+                            tripPhotosUrls
+                          );
                         });
                       } else {
                         setIsAdditionalActionHidden(false);

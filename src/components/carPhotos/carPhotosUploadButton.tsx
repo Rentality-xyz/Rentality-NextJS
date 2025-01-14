@@ -1,5 +1,5 @@
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
-import React, { Ref, useImperativeHandle, useMemo, useRef, useState } from "react";
+import React, { forwardRef, Ref, useImperativeHandle, useMemo, useRef, useState } from "react";
 // @ts-ignore
 import carCarIcon from "@/images/upload-car-photo.png";
 // @ts-ignore
@@ -17,15 +17,18 @@ const INTERIOR_PHOTOS_COUNT_REQUIRED = 9;
 const DATA_PHOTOS_COUNT_REQUIRED = 2;
 const MAX_FILE_COUNT = 16;
 
-export default function CarPhotosUploadButton(
+const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
   {
-    ref,
     isStart,
+    isHost,
+    tripId
   } : {
-    ref: Ref<any>,
-    isStart: boolean
-  }){
-
+    isStart: boolean,
+    isHost: boolean,
+    tripId: number
+  },
+  ref
+) {
   const ethereumInfo = useEthereum();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -44,12 +47,22 @@ export default function CarPhotosUploadButton(
       }
 
       try {
+
+        const isHostStringValue = isHost ? "host" : "guest";
+        const isStartStringValue = isStart ? "start" : "finish";
+
         for (const uploadedFile of Array.from(uploadedFiles)) {
-          const response = await uploadFileToIPFS(uploadedFile, "dfsdfsdf", {
+
+          const fileName = `${tripId}-${isHostStringValue}-${isStartStringValue}-${uploadedFile.name}`;
+
+          const response = await uploadFileToIPFS(uploadedFile, fileName, {
             createdAt: new Date().toISOString(),
             createdBy: ethereumInfo?.walletAddress ?? "",
             version: SMARTCONTRACT_VERSION,
             chainId: ethereumInfo?.chainId ?? 0,
+            tripId: Number(tripId),
+            isHost: isHostStringValue,
+            isStart: isStartStringValue
           })
 
           if (!response.success || !response.pinataURL) {
@@ -64,21 +77,27 @@ export default function CarPhotosUploadButton(
 
       return savedFilesURLs;
     }
-  }))
+  }),[ethereumInfo?.chainId, ethereumInfo?.walletAddress, isStart, tripId, uploadedFiles])
 
   return (
     <>
       <input
         type="file"
         className="flex invisible w-0 h-0"
+        ref={fileInputRef}
+        multiple
         onChange={(e) => {
-        if (e.target.files && e.target.files.length <= MAX_FILE_COUNT) {
-          setUploadedFiles(e.target.files)
-        }
-      }} ref={fileInputRef} multiple />
+          if (e.target.files && e.target.files.length <= MAX_FILE_COUNT) {
+            setUploadedFiles(e.target.files)
+          }
+        }}
+      />
       <RntButtonTransparent
         className="w-[20rem] bg-rentality-bg rounded-xl text-white border-rnt-gradient-2"
-        onClick={()=>fileInputRef.current?.click()}
+        onClick={(e) => {
+          e.preventDefault();
+          fileInputRef.current?.click();
+        }}
       >
         <div className="flex items-center justify-center text-md text-rentality-secondary p-2">
           Take a photo at {isStart ? "start" : "finish"}
@@ -114,5 +133,7 @@ export default function CarPhotosUploadButton(
         </div>
       </RntButtonTransparent>
     </>
-    )
-  }
+  )
+})
+
+export default CarPhotosUploadButton;

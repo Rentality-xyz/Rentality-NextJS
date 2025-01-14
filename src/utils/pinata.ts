@@ -121,3 +121,56 @@ export async function deleteFileFromIPFS(ipfsHash: string): Promise<Result<boole
       return Err(error.message);
     });
 }
+
+export interface GetPhotosForTripResponseType {
+  checkinByHost: string[],
+  checkOutByHost: string[],
+  checkInByGuest: string[],
+  checkOutByGuest: string[]
+}
+
+export async function getPhotosForTrip(tripId : Number) : Promise<GetPhotosForTripResponseType> {
+  const url = `https://api.pinata.cloud/data/pinList?metadata[keyvalues]={"tripId":{"value":"${tripId}","op":"eq"}}`;
+
+  const response = await axios
+    .get(url,
+    {
+      headers: {
+        Authorization: `Bearer ${pinataJwt}`
+      }
+    });
+
+    if (response.rows === undefined ) {
+        throw new Error ("Incorrect response format getting photos for the trip")
+    }
+
+    console.log(response.rows);
+
+    const returnValue : GetPhotosForTripResponseType = {
+      checkinByHost: [],
+      checkOutByHost: [],
+      checkInByGuest: [],
+      checkOutByGuest: []
+    };
+
+    for(const row in response.rows){
+      const isHost : boolean = row.metadata.keyvalues.isHost === "host";
+      const isStart : boolean = row.metadata.keyvalues.isStart === "start";
+      const urlToFile = `https://gateway.pinata.cloud/ipfs/${row.ipfs_pin_hash}`;
+
+      if(isHost){
+        if(isStart){
+          returnValue.checkinByHost.push(urlToFile);
+        } else {
+          returnValue.checkOutByHost.push(urlToFile);
+        }
+      } else {
+        if(isStart){
+          returnValue.checkInByGuest.push(urlToFile);
+        } else {
+          returnValue.checkOutByGuest.push(urlToFile);
+        }
+      }
+    }
+
+}
