@@ -6,14 +6,11 @@ import RntButton from "@/components/common/rntButton";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import useReferralProgram from "@/features/referralProgram/hooks/useReferralProgram";
 import useProfileSettings from "@/hooks/useProfileSettings";
+import { copyToClipboard } from "@/utils/clipboard";
 
 export default function ReferralLinks() {
   const { inviteHash } = useReferralProgram();
   const { t } = useTranslation();
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-  };
 
   const [isLoadingProfileSettings] = useProfileSettings();
 
