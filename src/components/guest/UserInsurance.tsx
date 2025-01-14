@@ -9,25 +9,28 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { isEmpty } from "@/utils/string";
 import { UserInsurancePhoto } from "./UserInsurancePhoto";
-import { userInsuranceFormSchema, UserInsuranceFormValues } from "./userInsuranceFormSchema";
 import useGuestInsurance from "@/hooks/guest/useGuestInsurance";
 import { PlatformFile } from "@/model/FileToUpload";
 import { DialogActions } from "@/utils/dialogActions";
+import {
+  userCommonInformationFormSchema,
+  UserCommonInformationFormValues,
+} from "../profileInfo/userCommonInformationFormSchema";
 
 export function UserInsurance() {
   const { isLoading, guestInsurance, saveGuestInsurance } = useGuestInsurance();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
-  const { handleSubmit, formState, control, setValue, watch } = useForm<UserInsuranceFormValues>({
+  const { handleSubmit, formState, control, setValue, watch } = useForm<UserCommonInformationFormValues>({
     defaultValues: {},
-    resolver: zodResolver(userInsuranceFormSchema),
+    resolver: zodResolver(userCommonInformationFormSchema),
   });
   const { errors, isSubmitting } = formState;
   const { t } = useTranslation();
 
   const userInsurancePhoto = watch("userInsurancePhoto");
 
-  async function onFormSubmit(formData: UserInsuranceFormValues) {
+  async function onFormSubmit(formData: UserCommonInformationFormValues) {
     if (!("file" in formData.userInsurancePhoto) && !formData.userInsurancePhoto.isDeleted) return;
 
     if ("isDeleted" in formData.userInsurancePhoto && formData.userInsurancePhoto.isDeleted) {
