@@ -26,7 +26,7 @@ export default function ListingItem({ carInfo, t }: { carInfo: BaseCarInfo; t: T
       </div> */}
       <div
         style={{ backgroundImage: `url(${carInfo.image})` }}
-        className="relative min-h-[12rem] w-full flex-shrink-0 bg-cover bg-center md:w-64"
+        className="relative min-h-[12rem] w-full flex-shrink-0 bg-cover bg-center md:w-[48%] fullHD:w-[40%]"
       >
         <div className={statusClassName}>
           <strong>{`${getListingStatusTextFromStatus(carInfo.currentlyListed, t)}`}</strong>

@@ -248,10 +248,10 @@ function CreateTripDetailsContent({
           }}
         />
         <RntInputTransparent
-          className="w-full"
+          className="mt-4 w-full"
           style={{ color: "white" }}
           type="text"
-          placeholder="Enter Promo Code"
+          placeholder={t("promo.input_hint")}
           {...register("enteredPromo", {
             onChange: (e) => {
               dispatch({ type: PromoActionType.RESET });
