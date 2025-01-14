@@ -106,7 +106,7 @@ export default function AddHostInsurance({ onNewInsuranceAdded }: AddHostInsuran
             toggleFormOpen();
           }}
         >
-          {t("insurance.add_insurance")}
+          {t("common.hide")}
         </RntButtonTransparent>
         <hr />
         <form className="flex w-full flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>

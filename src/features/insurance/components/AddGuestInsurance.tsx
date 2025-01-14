@@ -9,13 +9,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { isEmpty } from "@/utils/string";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import useSaveGuestTripInsurance from "@/hooks/guest/useSaveGuestTripInsurance";
-import { GENERAL_INSURANCE_TYPE_ID, ONE_TIME_INSURANCE_TYPE_ID } from "@/utils/constants";
+import { ONE_TIME_INSURANCE_TYPE_ID } from "@/utils/constants";
 import { addTripInsuranceFormSchema, AddTripInsuranceFormValues } from "../models/addTripInsuranceFormSchema";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import RntSelect from "@/components/common/rntSelect";
 import RntValidationError from "@/components/common/RntValidationError";
 import RntInput from "@/components/common/rntInput";
 import RntButton from "@/components/common/rntButton";
+import UserInsurance from "./UserInsurance";
 
 interface AddGuestInsuranceProps {
   onNewInsuranceAdded?: () => Promise<void>;
@@ -38,7 +39,7 @@ export default function AddGuestInsurance({ onNewInsuranceAdded }: AddGuestInsur
     reset: resetFormValues,
   } = useForm<AddTripInsuranceFormValues>({
     defaultValues: {
-      insuranceType: GENERAL_INSURANCE_TYPE_ID,
+      insuranceType: ONE_TIME_INSURANCE_TYPE_ID,
       comment: "",
     },
     resolver: zodResolver(addTripInsuranceFormSchema),
@@ -48,10 +49,6 @@ export default function AddGuestInsurance({ onNewInsuranceAdded }: AddGuestInsur
 
   async function onFormSubmit(formData: AddTripInsuranceFormValues) {
     console.log("formData", JSON.stringify(formData, null, 2));
-    if (formData.insuranceType === GENERAL_INSURANCE_TYPE_ID && formData.photos === undefined) {
-      setError("photos", { message: "Photo is required", type: "required" });
-      return;
-    }
     if (formData.insuranceType === ONE_TIME_INSURANCE_TYPE_ID) {
       let isValid = true;
 
@@ -115,128 +112,79 @@ export default function AddGuestInsurance({ onNewInsuranceAdded }: AddGuestInsur
             toggleFormOpen();
           }}
         >
-          {t("insurance.add_insurance")}
+          {t("common.hide")}
         </RntButtonTransparent>
+        <hr />
+        <UserInsurance />
         <hr />
         <form className="flex w-full flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
           <div className="flex flex-row gap-4">
-            <div className="flex w-1/2 flex-col gap-2">
-              <h3>Insurance type</h3>
+            <div className="flex w-full flex-row gap-4">
+              <div className="my-auto w-1/2">
+                <strong>One-Time trip insurance</strong>
+              </div>
+              <div className="w-1/2">
+                {isTripsLoading ? (
+                  "Loading..."
+                ) : (
+                  <Controller
+                    name="selectedTripId"
+                    control={control}
+                    render={({ field }) => (
+                      <RntSelect
+                        className="w-full"
+                        id="selectedTrip"
+                        label="Trip:"
+                        labelClassName="pl-4"
+                        disabled={trips.length === 0}
+                        value={field.value}
+                        onChange={(e) => {
+                          console.log(`RntSelect onChange ${e.target.value}`);
 
-              <Controller
-                name="insuranceType"
-                control={control}
-                render={({ field }) => (
-                  <div className="flex flex-col">
-                    <div className="flex gap-2">
-                      <input
-                        type="radio"
-                        id={GENERAL_INSURANCE_TYPE_ID}
-                        name="insurance"
-                        value={GENERAL_INSURANCE_TYPE_ID}
-                        checked={field.value === GENERAL_INSURANCE_TYPE_ID}
-                        onChange={field.onChange}
-                      />
-                      <label htmlFor="generalInsurance">General Insurance ID</label>
-                    </div>
-                    <div className="flex gap-2">
-                      <input
-                        type="radio"
-                        id={ONE_TIME_INSURANCE_TYPE_ID}
-                        name="insurance"
-                        value={ONE_TIME_INSURANCE_TYPE_ID}
-                        checked={field.value === ONE_TIME_INSURANCE_TYPE_ID}
-                        onChange={field.onChange}
-                      />
-                      <label htmlFor="oneTimeInsurance">One-Time trip insurance</label>
-                    </div>
-                  </div>
+                          field.onChange(Number(e.target.value));
+                        }}
+                        validationError={errors.selectedTripId?.message?.toString()}
+                      >
+                        {trips.length === 0 ? (
+                          <option>No trips</option>
+                        ) : (
+                          <>
+                            <option className="hidden" disabled selected>
+                              Select trip
+                            </option>
+                            {trips.map((i) => (
+                              <option
+                                key={i.tripId}
+                                value={i.tripId}
+                              >{`${i.tripId} ${i.brand} ${i.model} ${i.year} ${dateRangeFormatShortMonthDateYear(i.tripStart, i.tripEnd)}`}</option>
+                            ))}
+                          </>
+                        )}
+                      </RntSelect>
+                    )}
+                  />
                 )}
-              />
+              </div>
             </div>
-            {insuranceType === ONE_TIME_INSURANCE_TYPE_ID &&
-              (isTripsLoading ? (
-                "Loading..."
-              ) : (
-                <Controller
-                  name="selectedTripId"
-                  control={control}
-                  render={({ field }) => (
-                    <RntSelect
-                      className="w-1/2"
-                      id="selectedTrip"
-                      label="Trip:"
-                      labelClassName="pl-4"
-                      disabled={trips.length === 0}
-                      value={field.value}
-                      onChange={(e) => {
-                        console.log(`RntSelect onChange ${e.target.value}`);
-
-                        field.onChange(Number(e.target.value));
-                      }}
-                      validationError={errors.selectedTripId?.message?.toString()}
-                    >
-                      {trips.length === 0 ? (
-                        <option>No trips</option>
-                      ) : (
-                        <>
-                          <option className="hidden" disabled selected>
-                            Select trip
-                          </option>
-                          {trips.map((i) => (
-                            <option
-                              key={i.tripId}
-                              value={i.tripId}
-                            >{`${i.tripId} ${i.brand} ${i.model} ${i.year} ${dateRangeFormatShortMonthDateYear(i.tripStart, i.tripEnd)}`}</option>
-                          ))}
-                        </>
-                      )}
-                    </RntSelect>
-                  )}
-                />
-              ))}
           </div>
-          {insuranceType === GENERAL_INSURANCE_TYPE_ID && (
-            <>
-              <p>Upload photo of ID insurance card</p>
 
-              <Controller
-                name="photos"
-                control={control}
-                render={({ field }) => (
-                  <>
-                    <UserInsurancePhoto
-                      insurancePhoto={field.value}
-                      onInsurancePhotoChanged={(newValue) => {
-                        field.onChange(newValue);
-                      }}
-                    />
-                    <RntValidationError validationError={errors.photos?.message?.toString()} />
-                  </>
-                )}
-              />
-            </>
-          )}
+          <div className="flex gap-4">
+            <RntInput
+              id="companyName"
+              label={"Insurance company name"}
+              labelClassName="pl-4"
+              {...register("companyName")}
+              validationError={errors.companyName?.message?.toString()}
+            />
 
-          {insuranceType === ONE_TIME_INSURANCE_TYPE_ID && (
-            <div className="flex gap-4">
-              <RntInput
-                id="companyName"
-                label={"Insurance company name"}
-                labelClassName="pl-4"
-                {...register("companyName")}
-                validationError={errors.companyName?.message?.toString()}
-              />
-
-              <RntInput
-                id="policeNumber"
-                label={"Insurance policy number"}
-                labelClassName="pl-4"
-                {...register("policeNumber")}
-                validationError={errors.policeNumber?.message?.toString()}
-              />
-            </div>
-          )}
+            <RntInput
+              id="policeNumber"
+              label={"Insurance policy number"}
+              labelClassName="pl-4"
+              {...register("policeNumber")}
+              validationError={errors.policeNumber?.message?.toString()}
+            />
+          </div>
 
           <RntInput
             id="comment"
