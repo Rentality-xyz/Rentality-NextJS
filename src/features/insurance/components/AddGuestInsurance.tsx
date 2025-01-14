@@ -1,21 +1,21 @@
 // TODO Transate
 import { useTranslation } from "react-i18next";
-import RntButtonTransparent from "../common/rntButtonTransparent";
-import RntSelect from "../common/rntSelect";
-import { UserInsurancePhoto } from "../guest/UserInsurancePhoto";
-import RntInput from "../common/rntInput";
-import RntButton from "../common/rntButton";
+import { UserInsurancePhoto } from "./UserInsurancePhoto";
 import useToggleState from "@/hooks/useToggleState";
 import useTripsList from "@/hooks/guest/useTripsList";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { Controller, useForm } from "react-hook-form";
-import { addTripInsuranceFormSchema, AddTripInsuranceFormValues } from "./addTripInsuranceFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import RntValidationError from "../common/RntValidationError";
 import { isEmpty } from "@/utils/string";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import useSaveGuestTripInsurance from "@/hooks/guest/useSaveGuestTripInsurance";
 import { GENERAL_INSURANCE_TYPE_ID, ONE_TIME_INSURANCE_TYPE_ID } from "@/utils/constants";
+import { addTripInsuranceFormSchema, AddTripInsuranceFormValues } from "../models/addTripInsuranceFormSchema";
+import RntButtonTransparent from "@/components/common/rntButtonTransparent";
+import RntSelect from "@/components/common/rntSelect";
+import RntValidationError from "@/components/common/RntValidationError";
+import RntInput from "@/components/common/rntInput";
+import RntButton from "@/components/common/rntButton";
 
 interface AddGuestInsuranceProps {
   onNewInsuranceAdded?: () => Promise<void>;
