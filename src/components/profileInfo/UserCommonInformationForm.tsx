@@ -13,7 +13,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ProfileInfoFormValues, profileInfoFormSchema } from "./profileInfoFormSchema";
+import { UserCommonInformationFormValues, userCommonInformationFormSchema } from "./userCommonInformationFormSchema";
 import DotStatus from "./dotStatus";
 import { useTranslation } from "react-i18next";
 import { CheckboxTerms } from "../common/rntCheckbox";
@@ -34,17 +34,16 @@ function UserCommonInformationForm({
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { t } = useTranslation();
-
-  const { register, handleSubmit, formState, control, setValue, watch } = useForm<ProfileInfoFormValues>({
   const { userMode } = useUserMode();
   const isHost = userMode === "Host";
+  const { register, handleSubmit, formState, control, setValue, watch } = useForm<UserCommonInformationFormValues>({
     defaultValues: {
       profilePhotoUrl: savedProfileSettings.profilePhotoUrl,
       nickname: savedProfileSettings.nickname,
       phoneNumber: savedProfileSettings.phoneNumber,
       tcSignature: savedProfileSettings.tcSignature,
     },
-    resolver: zodResolver(profileInfoFormSchema),
+    resolver: zodResolver(userCommonInformationFormSchema),
   });
   const { errors, isSubmitting } = formState;
 
@@ -78,7 +77,7 @@ function UserCommonInformationForm({
     };
   }
 
-  async function onFormSubmit(formData: ProfileInfoFormValues) {
+  async function onFormSubmit(formData: UserCommonInformationFormValues) {
     if (!ethereumInfo) return;
     if (!formData.isTerms) return;
 
