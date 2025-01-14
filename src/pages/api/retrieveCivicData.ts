@@ -13,7 +13,6 @@ import { JsonRpcProvider, Wallet } from "ethers";
 import { ContractCivicKYCInfo } from "@/model/blockchain/schemas";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
-import { ZERO_HASH } from "@/utils/wallet";
 
 export type RetrieveCivicDataRequest = {
   requestId: string;

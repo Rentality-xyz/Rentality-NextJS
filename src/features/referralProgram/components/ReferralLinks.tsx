@@ -12,7 +12,9 @@ export default function ReferralLinks() {
   const { inviteHash, usedInviteHash } = useReferralProgram();
   const { t } = useTranslation();
 
-  const inviteLink = !isEmpty(inviteHash) ? new URL(`/${inviteHash}`, window.location.origin).toString() : "";
+  const inviteLink = !isEmpty(inviteHash)
+    ? new URL(`/referralLink/${inviteHash}`, window.location.origin).toString()
+    : "";
 
   return (
     <div className="rounded-lg bg-rentality-bg-left-sidebar p-3">
@@ -27,7 +29,7 @@ export default function ReferralLinks() {
             style={{ color: "white" }}
             readOnly={true}
             type="text"
-            value={inviteLink}
+            value={inviteHash}
           />
           <RntButton
             className="ml-auto flex w-16 items-center justify-center text-white md:w-36"

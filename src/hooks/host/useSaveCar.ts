@@ -16,7 +16,7 @@ import { ContractTransactionResponse } from "ethers";
 import { env } from "@/utils/env";
 import { PlatformCarImage, UploadedCarImage } from "@/model/FileToUpload";
 import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
-import { isUserHasEnoughFunds, ZERO_HASH } from "@/utils/wallet";
+import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 
 const useSaveCar = () => {
