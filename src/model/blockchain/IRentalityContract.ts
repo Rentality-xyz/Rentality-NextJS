@@ -50,7 +50,8 @@ export interface IRentalityContract {
     nickName: string,
     mobilePhoneNumber: string,
     profilePhoto: string,
-    TCSignature: string
+    TCSignature: string,
+    hash: string
   ): Promise<ContractTransactionResponse>;
   setCivicKYCInfo(user: string, civicKycInfo: ContractCivicKYCInfo): Promise<ContractTransactionResponse>;
   setMyCivicKYCInfo(civicKycInfo: ContractCivicKYCInfo): Promise<ContractTransactionResponse>;

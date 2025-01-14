@@ -7,6 +7,8 @@ import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { usePrivy } from "@privy-io/react-auth";
 import { ZERO_HASH } from "@/utils/wallet";
+import useReferralLinkLocalStorage from "@/features/referralProgram/hooks/useSaveReferralLinkToLocalStorage";
+import { isEmpty } from "@/utils/string";
 
 export type ProfileSettings = {
   profilePhotoUrl: string;
@@ -39,6 +41,7 @@ const useProfileSettings = () => {
   const { rentalityContracts } = useRentality();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [profileSettings, setProfileSettings] = useState<ProfileSettings>(emptyProfileSettings);
+  const { getLocalReferralCode } = useReferralLinkLocalStorage();
 
   const getProfileSettings = async (rentalityContract: IRentalityContract | null) => {
     try {
@@ -82,11 +85,15 @@ const useProfileSettings = () => {
     }
 
     try {
+      const localReferralHash = getLocalReferralCode();
+      const referralHash = !isEmpty(localReferralHash) ? localReferralHash : ZERO_HASH;
+
       const transaction = await rentalityContracts.gateway.setKYCInfo(
         newProfileSettings.nickname,
         newProfileSettings.phoneNumber,
         newProfileSettings.profilePhotoUrl,
-        newProfileSettings.tcSignature
+        newProfileSettings.tcSignature,
+        referralHash
       );
 
       await transaction.wait();
