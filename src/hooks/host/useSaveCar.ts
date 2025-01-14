@@ -117,7 +117,7 @@ const useSaveCar = () => {
         insurancePriceInUsdCents: BigInt(dataToSave.insurancePerDayPriceInUsd * 100),
       };
 
-      const transaction = await rentalityContracts.gateway.addCar(request, ZERO_HASH);
+      const transaction = await rentalityContracts.gateway.addCar(request);
       await transaction.wait();
       return Ok(true);
     } catch (e) {
