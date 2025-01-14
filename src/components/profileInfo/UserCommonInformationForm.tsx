@@ -47,7 +47,7 @@ function UserCommonInformationForm({
   });
   const { errors, isSubmitting } = formState;
 
-  function fileChangeCallback(field: ControllerRenderProps<ProfileInfoFormValues, "profilePhotoUrl">) {
+  function fileChangeCallback(field: ControllerRenderProps<UserCommonInformationFormValues, "profilePhotoUrl">) {
     return async (e: ChangeEvent<HTMLInputElement>) => {
       if (!e.target.files?.length) {
         return;
@@ -217,15 +217,6 @@ function UserCommonInformationForm({
                 validationError={errors.phoneNumber?.message}
               />
             )}
-          />
-
-          <RntInput
-            className="lg:w-72"
-            labelClassName="pl-[16px]"
-            id="reflink"
-            label={t("profile.ref_link")}
-            {...register("reflink")}
-            validationError={errors.reflink?.message}
           />
         </div>
       </fieldset>
