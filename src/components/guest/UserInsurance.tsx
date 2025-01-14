@@ -12,25 +12,22 @@ import { UserInsurancePhoto } from "./UserInsurancePhoto";
 import useGuestInsurance from "@/hooks/guest/useGuestInsurance";
 import { PlatformFile } from "@/model/FileToUpload";
 import { DialogActions } from "@/utils/dialogActions";
-import {
-  userCommonInformationFormSchema,
-  UserCommonInformationFormValues,
-} from "../profileInfo/userCommonInformationFormSchema";
+import { userInsuranceFormSchema, UserInsuranceFormValues } from "@/features/insurance/models/userInsuranceFormSchema";
 
 export function UserInsurance() {
   const { isLoading, guestInsurance, saveGuestInsurance } = useGuestInsurance();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
-  const { handleSubmit, formState, control, setValue, watch } = useForm<UserCommonInformationFormValues>({
+  const { handleSubmit, formState, control, setValue, watch } = useForm<UserInsuranceFormValues>({
     defaultValues: {},
-    resolver: zodResolver(userCommonInformationFormSchema),
+    resolver: zodResolver(userInsuranceFormSchema),
   });
   const { errors, isSubmitting } = formState;
   const { t } = useTranslation();
 
   const userInsurancePhoto = watch("userInsurancePhoto");
 
-  async function onFormSubmit(formData: UserCommonInformationFormValues) {
+  async function onFormSubmit(formData: UserInsuranceFormValues) {
     if (!("file" in formData.userInsurancePhoto) && !formData.userInsurancePhoto.isDeleted) return;
 
     if ("isDeleted" in formData.userInsurancePhoto && formData.userInsurancePhoto.isDeleted) {

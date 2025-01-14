@@ -59,13 +59,6 @@ export interface IRentalityContract {
   payKycCommission(currency: string, value: object): Promise<ContractTransactionResponse>;
   isKycCommissionPaid(user: string): Promise<boolean>;
   useKycCommission(user: string): Promise<ContractTransactionResponse>;
-  setKYCWithInsuranceInfo(
-    nickName: string,
-    mobilePhoneNumber: string,
-    profilePhoto: string,
-    TCSignature: string,
-    insuranceInfo: ContractSaveInsuranceRequest
-  ): Promise<ContractTransactionResponse>;
 
   /// HOST CARS functions
   addCar(request: ContractCreateCarRequest): Promise<ContractTransactionResponse>;
