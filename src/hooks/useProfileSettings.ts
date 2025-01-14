@@ -86,8 +86,7 @@ const useProfileSettings = () => {
         newProfileSettings.nickname,
         newProfileSettings.phoneNumber,
         newProfileSettings.profilePhotoUrl,
-        newProfileSettings.tcSignature,
-        ZERO_HASH
+        newProfileSettings.tcSignature
       );
 
       await transaction.wait();

@@ -110,7 +110,7 @@ const useHostTrips = () => {
       }
 
       try {
-        const transaction = await rentalityContracts.gateway.finishTrip(tripId, ZERO_HASH);
+        const transaction = await rentalityContracts.gateway.finishTrip(tripId);
         await transaction.wait();
         return true;
       } catch (e) {
