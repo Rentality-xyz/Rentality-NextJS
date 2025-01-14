@@ -10,6 +10,7 @@ import RntSuspense from "../common/rntSuspense";
 import TripStatusDateTimes from "./TripStatusDateTimes";
 import TripReceipt from "./TripReceipt";
 import TripAboutCar from "./TripAboutCar";
+import TripPhotos from "@/components/carPhotos/tripPhotos";
 
 export default function TripInfo() {
   const { userMode } = useUserMode();
@@ -34,6 +35,7 @@ export default function TripInfo() {
             <div className="w-full xl:w-2/3">
               <TripAboutCar tripInfo={tripInfo} />
               <TripStatusDateTimes tripInfo={tripInfo} />
+              <TripPhotos tripId={tripId} />
             </div>
             <div className="w-full xl:w-1/3">
               <TripReceipt tripId={tripId} tripInfo={tripInfo} userMode={userMode} />

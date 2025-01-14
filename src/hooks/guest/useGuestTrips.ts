@@ -65,20 +65,10 @@ const useGuestTrips = () => {
         const startFuelLevelInPercents = BigInt(Number(params[0]) * 100);
         const startOdometr = BigInt(params[1]);
 
-        let transaction;
-
-        if(process.env.FF_TRIP_PHOTOS){
-          transaction = await rentalityContracts.gateway.checkInByGuestWithPhoto(
-            tripId,
-            [startFuelLevelInPercents, startOdometr],
-            tripPhotosUrls
-          );
-        }else{
-          transaction = await rentalityContracts.checkInByGuest(
-            tripId,
-            [startFuelLevelInPercents, startOdometr]
-          );
-        }
+        const transaction = await rentalityContracts.gateway.checkInByGuest(
+          tripId,
+          [startFuelLevelInPercents, startOdometr]
+        );
 
         await transaction.wait();
         return true;
@@ -98,21 +88,11 @@ const useGuestTrips = () => {
         const endFuelLevelInPercents = BigInt(Number(params[0]) * 100);
         const endOdometr = BigInt(params[1]);
 
-        let transaction;
-
-        if(process.env.FF_TRIP_PHOTOS){
-          transaction = await rentalityContracts.checkOutByGuestWithPhoto(
-            tripId,
-            [endFuelLevelInPercents, endOdometr],
-            tripPhotosUrls
-          );
-        }else{
-          transaction = await rentalityContracts.checkOutByGuest(
-            tripId,
-            [endFuelLevelInPercents, endOdometr]
-          );
-        }
-
+        const transaction = await rentalityContracts.gateway.checkOutByGuest(
+          tripId,
+          [endFuelLevelInPercents, endOdometr],
+          ZERO_HASH
+        );
 
         await transaction.wait();
         return true;

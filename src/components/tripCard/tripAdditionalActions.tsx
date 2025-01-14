@@ -1,4 +1,4 @@
-import React, { MutableRefObject, memo, useState } from "react";
+import React, { MutableRefObject, memo, useState, useRef } from "react";
 import { TripInfo } from "@/model/TripInfo";
 import RntButton from "../common/rntButton";
 import { TripStatus } from "@/model/blockchain/schemas";
@@ -10,6 +10,7 @@ import AllowedActionsHost from "./forms/AllowedActionsHost";
 import ChangeStatusHostConfirmedForm from "./forms/ChangeStatusHostConfirmedForm";
 import ChangeStatusGuestStartedForm from "./forms/ChangeStatusGuestStartedForm";
 import ChangeStatusHostFinishingByHostForm from "./forms/ChangeStatusHostFinishingByHostForm";
+import useFeatureFlags from "@/hooks/useFeatureFlags";
 
 function TripAdditionalActions({
   tripInfo,
@@ -36,6 +37,9 @@ function TripAdditionalActions({
   const [confirmParams, setConfirmParams] = useState<boolean[]>([]);
   const { showDialog } = useRntDialogs();
 
+  const carPhotosUploadButtonRef = useRef<any>(null);
+  const { hasFeatureFlag } = useFeatureFlags();
+
   const handleButtonClick = () => {
     if (tripInfo == null || tripInfo.allowedActions == null || tripInfo.allowedActions.length == 0) {
       return;
@@ -57,8 +61,20 @@ function TripAdditionalActions({
       return;
     }
 
-    changeStatusCallback(() => {
-      return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), inputParams);
+    hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+      let tripPhotosUrls: string[] = [];
+
+      if(hasTripPhotosFeatureFlag){
+        tripPhotosUrls=carPhotosUploadButtonRef.current.saveUploadedFiles();
+      }
+
+      changeStatusCallback(() => {
+        return tripInfo.allowedActions[0].action(
+          BigInt(tripInfo.tripId),
+          inputParams,
+          tripPhotosUrls
+        );
+      });
     });
   };
 
@@ -134,8 +150,18 @@ function TripAdditionalActions({
               disabled={disableButton}
               onClick={() => {
                 if (action.params == null || action.params.length == 0) {
-                  changeStatusCallback(() => {
-                    return action.action(BigInt(tripInfo.tripId), []);
+                  hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+                    let tripPhotosUrls: string[] = [];
+                    if(hasTripPhotosFeatureFlag){
+                      tripPhotosUrls=carPhotosUploadButtonRef.current.saveUploadedFiles();
+                    }
+                    changeStatusCallback(() => {
+                      return action.action(
+                        BigInt(tripInfo.tripId),
+                        [],
+                        tripPhotosUrls
+                      );
+                    });
                   });
                 } else {
                   handleButtonClick();
