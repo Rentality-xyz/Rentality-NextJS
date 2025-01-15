@@ -2,6 +2,7 @@ import { validateType } from "@/utils/typeValidator";
 import {
   ClaimStatus,
   ClaimType,
+  ContractAdditionalKYCInfo,
   ContractAdminCarDTO,
   ContractAdminTripDTO,
   ContractAllCarsDTO,
@@ -16,9 +17,11 @@ import {
   ContractClaim,
   ContractFilterInfoDTO,
   ContractFullClaimInfo,
+  ContractFullKYCInfoDTO,
   ContractInsuranceCarInfo,
   ContractInsuranceDTO,
   ContractInsuranceInfo,
+  ContractKYCInfo,
   ContractLocationInfo,
   ContractPromoDTO,
   ContractPublicHostCarDTO,
@@ -466,4 +469,34 @@ const emptyContractCheckPromoDTO: ContractCheckPromoDTO = {
 
 export function validateContractCheckPromoDTO(obj: ContractCheckPromoDTO): obj is ContractCheckPromoDTO {
   return validateType(obj, emptyContractCheckPromoDTO);
+}
+
+const emptyContractKYCInfo: ContractKYCInfo = {
+  name: "",
+  surname: "",
+  mobilePhoneNumber: "",
+  profilePhoto: "",
+  licenseNumber: "",
+  expirationDate: BigInt(0),
+  createDate: BigInt(0),
+  isTCPassed: false,
+  TCSignature: "",
+};
+
+const emptyContractAdditionalKYCInfo: ContractAdditionalKYCInfo = {
+  issueCountry: "",
+  email: "",
+};
+
+const emptyContractFullKYCInfoDTO: ContractFullKYCInfoDTO = {
+  kyc: emptyContractKYCInfo,
+  additionalKYC: emptyContractAdditionalKYCInfo,
+};
+
+export function validateContractFullKYCInfoDTO(obj: ContractFullKYCInfoDTO): obj is ContractFullKYCInfoDTO {
+  return (
+    validateType(obj, emptyContractFullKYCInfoDTO) &&
+    validateType(obj.kyc, emptyContractKYCInfo) &&
+    validateType(obj.additionalKYC, emptyContractAdditionalKYCInfo)
+  );
 }

@@ -1,7 +1,10 @@
 import { useRentalityAdmin } from "@/contexts/rentalityContext";
+import { validateContractFullKYCInfoDTO } from "@/model/blockchain/schemas_utils";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { bigIntReplacer } from "@/utils/json";
 import { useCallback, useState } from "react";
+import { mapContractFullKYCInfoDTOToAdminUserDetails } from "../models/mappers";
+import { AdminUserDetails } from "../models";
 
 export enum UserType {
   Any = "Any",
@@ -13,10 +16,6 @@ export interface AdminAllUsersFilters {
   userType?: UserType;
   nickname?: string;
 }
-
-export type AdminUserDetails = {};
-
-const MOCK_DATA: AdminUserDetails[] = [];
 
 function useAdminAllUsers() {
   const { admin } = useRentalityAdmin();
@@ -45,19 +44,19 @@ function useAdminAllUsers() {
         // const contractFilters: ContractUserFilter = {
         // };
 
-        // const allAdminUsers = await admin.getAllUsers(contractFilters, BigInt(page), BigInt(itemsPerPage));
-        // validateContractAllUsersDTO(allAdminUsers);
+        const platformUsersInfos = await admin.getPlatformUsersInfo(); //(contractFilters, BigInt(page), BigInt(itemsPerPage));
+        if (platformUsersInfos.length > 0) {
+          validateContractFullKYCInfoDTO(platformUsersInfos[0]);
+        }
 
-        // const data: AdminUserDetails[] = await Promise.all(
-        //   allAdminUsers.users.map(async (adminUserDto) => {
-        //     return mapContractUserToAdminUserDetails(
-        //       adminUserDto
-        //     );
-        //   })
-        // );
+        const data: AdminUserDetails[] = await Promise.all(
+          platformUsersInfos.map(async (platformUsersInfo) => {
+            return mapContractFullKYCInfoDTOToAdminUserDetails(platformUsersInfo);
+          })
+        );
 
-        const allAdminTrips = { totalPageCount: 5 };
-        const data: AdminUserDetails[] = MOCK_DATA;
+        // const data: AdminUserDetails[] = MOCK_DATA;
+        const allAdminTrips = { totalPageCount: 1 };
 
         setData(data);
         setTotalPageCount(Number(allAdminTrips.totalPageCount));
