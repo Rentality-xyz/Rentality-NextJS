@@ -24,7 +24,7 @@ import { CivicProvider } from "@/contexts/web3/civicContext";
 import UserCommonInformationForm from "@/components/profileInfo/UserCommonInformationForm";
 import UserDriverLicenseVerification from "@/components/profileInfo/UserDriverLicenseVerification";
 
-export default function BecomeHost() {
+function BecomeHost() {
   return (
     <CivicProvider>
       <BecomeHostContent />
@@ -219,7 +219,6 @@ function BecomeHostContent() {
                 <UserCommonInformationForm
                   savedProfileSettings={savedProfileSettings}
                   saveProfileSettings={saveProfileSettings}
-                  isHost={true}
                 />
               </div>
             )}
@@ -313,3 +312,5 @@ function BecomeHostContent() {
     </>
   );
 }
+
+export default BecomeHost;
