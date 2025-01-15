@@ -140,11 +140,11 @@ export async function getPhotosForTrip(tripId : Number) : Promise<GetPhotosForTr
       }
     });
 
-    if (response.rows === undefined ) {
+    if (response.data.rows === undefined ) {
         throw new Error ("Incorrect response format getting photos for the trip")
     }
 
-    console.log(response.rows);
+    console.log(response.data.rows);
 
     const returnValue : GetPhotosForTripResponseType = {
       checkinByHost: [],
@@ -153,7 +153,8 @@ export async function getPhotosForTrip(tripId : Number) : Promise<GetPhotosForTr
       checkOutByGuest: []
     };
 
-    for(const row in response.rows){
+    for(let i: number = 0; i< response.data.rows.length; i++){
+      const row = response.data.rows[i];
       const isHost : boolean = row.metadata.keyvalues.isHost === "host";
       const isStart : boolean = row.metadata.keyvalues.isStart === "start";
       const urlToFile = `https://gateway.pinata.cloud/ipfs/${row.ipfs_pin_hash}`;
@@ -173,4 +174,5 @@ export async function getPhotosForTrip(tripId : Number) : Promise<GetPhotosForTr
       }
     }
 
+  return returnValue;
 }

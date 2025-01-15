@@ -35,7 +35,7 @@ export default function TripInfo() {
             <div className="w-full xl:w-2/3">
               <TripAboutCar tripInfo={tripInfo} />
               <TripStatusDateTimes tripInfo={tripInfo} />
-              <TripPhotos tripId={tripId} />
+              <TripPhotos tripId={tripInfo.tripId} />
             </div>
             <div className="w-full xl:w-1/3">
               <TripReceipt tripId={tripId} tripInfo={tripInfo} userMode={userMode} />

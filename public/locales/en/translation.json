@@ -495,8 +495,6 @@
       "trip_photos_checked_out_by_host" : "Checked-out by host",
       "trip_photos_checked_in_by_guest" : "Checked-in by guest",
       "trip_photos_checked_out_by_guest" : "Checked-out by guest",
-      "trip_photos_photos": "photos",
-      "trip_photos_no_photos": "No photos",
       "canceled": "canceled",
       "rejected": "rejected",
       "basic_car_details": "Basic car details",
@@ -742,7 +740,11 @@
     "vin_not_found_overriden": "VIN not found in US car database. You confirmed that the VIN number is valid and corresponds to your vehicle",
     "vin_not_found_dialog_heading": "VIN not found in US car database",
     "vin_not_found_dialog_description1": "Please confirm that the VIN number ",
-    "vin_not_found_dialog_description2": " is valid and corresponds to your vehicle"
+    "vin_not_found_dialog_description2": " is valid and corresponds to your vehicle",
+    "photos_required": "Please upload photos",
+    "trip_photos_photos": "photos",
+    "trip_photos_no_photos": "no photos",
+    "trip_photos_see_all": "See all"
   },
   "become_host": {
     "title": "Become a host",

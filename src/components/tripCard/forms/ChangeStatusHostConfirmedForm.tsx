@@ -13,6 +13,7 @@ import RntFuelLevelSelect from "@/components/common/RntFuelLevelSelect";
 import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton";
 import useFeatureFlags from "@/hooks/useFeatureFlags";
 import useUserMode, { isHost } from "@/hooks/useUserMode";
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
 
 interface ChangeStatusHostConfirmedFormProps {
   tripInfo: TripInfo;
@@ -23,17 +24,19 @@ interface ChangeStatusHostConfirmedFormProps {
 
 const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHostConfirmedFormProps>(
   ({ tripInfo, changeStatusCallback, disableButton, t }, ref) => {
-    const { userMode } = useUserMode();
     const { register, control, handleSubmit, formState } = useForm<ChangeStatusHostConfirmedFormValues>({
       defaultValues: {},
       resolver: zodResolver(changeStatusHostConfirmedFormSchema),
     });
     const { errors, isSubmitting } = formState;
 
+    const { userMode } = useUserMode();
     const carPhotosUploadButtonRef = useRef<any>(null);
 
     const { hasFeatureFlag } = useFeatureFlags();
     const [ hasTripPhotosFeatureFlag, setHasTripPhotosFeatureFlag ] = useState<boolean>(false);
+
+    const { showDialog } = useRntDialogs();
 
     useEffect(() => {
       hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
@@ -43,20 +46,21 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
 
     async function onFormSubmit(formData: ChangeStatusHostConfirmedFormValues) {
 
-         changeStatusCallback(async () => {
+        let tripPhotosUrls: string[] = [];
 
-          let tripPhotosUrls: string[] = [];
-
-          if (hasTripPhotosFeatureFlag) {
-            tripPhotosUrls = await carPhotosUploadButtonRef.current.saveUploadedFiles();
+        if (hasTripPhotosFeatureFlag) {
+          tripPhotosUrls = await carPhotosUploadButtonRef.current.saveUploadedFiles();
+          if(tripPhotosUrls.length === 0){
+            showDialog(t("common.photos_required"));
           }
-
+        }
+        changeStatusCallback(async () => {
           return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), [
-            formData.fuelOrBatteryLevel.toString(),
-            formData.odotemer.toString(),
-            formData.insuranceCompanyName ?? "",
-            formData.insurancePolicyNumber ?? "",
-          ], tripPhotosUrls);
+              formData.fuelOrBatteryLevel.toString(),
+              formData.odotemer.toString(),
+              formData.insuranceCompanyName ?? "",
+              formData.insurancePolicyNumber ?? "",
+            ], tripPhotosUrls);
         });
     }
 

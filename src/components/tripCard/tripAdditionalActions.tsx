@@ -1,4 +1,4 @@
-import React, { MutableRefObject, memo, useState, useRef } from "react";
+import React, { MutableRefObject, memo, useState, useRef, useEffect } from "react";
 import { TripInfo } from "@/model/TripInfo";
 import RntButton from "../common/rntButton";
 import { TripStatus } from "@/model/blockchain/schemas";
@@ -11,6 +11,7 @@ import ChangeStatusHostConfirmedForm from "./forms/ChangeStatusHostConfirmedForm
 import ChangeStatusGuestStartedForm from "./forms/ChangeStatusGuestStartedForm";
 import ChangeStatusHostFinishingByHostForm from "./forms/ChangeStatusHostFinishingByHostForm";
 import useFeatureFlags from "@/hooks/useFeatureFlags";
+import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton";
 
 function TripAdditionalActions({
   tripInfo,
@@ -40,6 +41,14 @@ function TripAdditionalActions({
   const carPhotosUploadButtonRef = useRef<any>(null);
   const { hasFeatureFlag } = useFeatureFlags();
 
+  const [ hasTripPhotosFeatureFlag, setHasTripPhotosFeatureFlag ] = useState<boolean>(false);
+
+  useEffect(() => {
+    hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+      setHasTripPhotosFeatureFlag(hasTripPhotosFeatureFlag);
+    });
+  },[]);
+
   const handleButtonClick = () => {
     if (tripInfo == null || tripInfo.allowedActions == null || tripInfo.allowedActions.length == 0) {
       return;
@@ -61,20 +70,12 @@ function TripAdditionalActions({
       return;
     }
 
-    hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
-      let tripPhotosUrls: string[] = [];
-
-      if(hasTripPhotosFeatureFlag){
-        tripPhotosUrls=carPhotosUploadButtonRef.current.saveUploadedFiles();
-      }
-
-      changeStatusCallback(() => {
-        return tripInfo.allowedActions[0].action(
-          BigInt(tripInfo.tripId),
-          inputParams,
-          tripPhotosUrls
-        );
-      });
+    changeStatusCallback(() => {
+      return tripInfo.allowedActions[0].action(
+        BigInt(tripInfo.tripId),
+        inputParams,
+        []
+      );
     });
   };
 
@@ -121,25 +122,38 @@ function TripAdditionalActions({
           })}
         </strong>
       </div>
-
-      {isHost ? (
-        <AllowedActionsHost
-          tripInfo={tripInfo}
-          inputParams={inputParams}
-          setInputParams={setInputParams}
-          confirmParams={confirmParams}
-          setConfirmParams={setConfirmParams}
-          t={t}
-        />
-      ) : (
-        <AllowedActionsGuest
-          tripInfo={tripInfo}
-          inputParams={inputParams}
-          setInputParams={setInputParams}
-          confirmParams={confirmParams}
-          setConfirmParams={setConfirmParams}
-        />
-      )}
+      <div className="flex flex-row gap-4 py-4">
+        {isHost ? (
+          <AllowedActionsHost
+            tripInfo={tripInfo}
+            inputParams={inputParams}
+            setInputParams={setInputParams}
+            confirmParams={confirmParams}
+            setConfirmParams={setConfirmParams}
+            t={t}
+          />
+        ) : (
+          <AllowedActionsGuest
+            tripInfo={tripInfo}
+            inputParams={inputParams}
+            setInputParams={setInputParams}
+            confirmParams={confirmParams}
+            setConfirmParams={setConfirmParams}
+          />
+        )}
+        <div className="flex flex-col gap-4 py-4 w-1/2">
+          {hasTripPhotosFeatureFlag && tripInfo.status == TripStatus.CheckedInByHost && (
+            <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
+              <CarPhotosUploadButton
+                ref={carPhotosUploadButtonRef}
+                isHost={isHost}
+                isStart={true}
+                tripId={tripInfo.tripId}
+              />
+            </div>
+          )}
+        </div>
+      </div>
 
       <div className="flex flex-row gap-4">
         {tripInfo.allowedActions.map((action) => {
@@ -151,20 +165,35 @@ function TripAdditionalActions({
               onClick={() => {
                 if (action.params == null || action.params.length == 0) {
                   hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
-                    let tripPhotosUrls: string[] = [];
                     if(hasTripPhotosFeatureFlag){
-                      tripPhotosUrls=carPhotosUploadButtonRef.current.saveUploadedFiles();
+                      const tripPhotosUrls = carPhotosUploadButtonRef.current.saveUploadedFiles();
+                      if(tripPhotosUrls.length == 0){
+                        showDialog(t("common.photos_required"));
+                        return;
+                      }
                     }
                     changeStatusCallback(() => {
                       return action.action(
                         BigInt(tripInfo.tripId),
                         [],
-                        tripPhotosUrls
+                        []
                       );
                     });
                   });
                 } else {
-                  handleButtonClick();
+                  hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+                    if(hasTripPhotosFeatureFlag){
+                      carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
+                        if(tripPhotosUrls.length === 0){
+                          showDialog(t("common.photos_required"));
+                        } else {
+                          handleButtonClick();
+                        }
+                      });
+                    } else {
+                      handleButtonClick();
+                    }
+                  });
                 }
               }}
             >
