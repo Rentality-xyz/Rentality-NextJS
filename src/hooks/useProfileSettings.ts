@@ -88,6 +88,8 @@ const useProfileSettings = () => {
       const localReferralHash = getLocalReferralCode();
       const referralHash = !isEmpty(localReferralHash) ? localReferralHash : ZERO_4_BYTES_HASH;
 
+      console.log("referralHash", JSON.stringify(referralHash, null, 2));
+
       const transaction = await rentalityContracts.gateway.setKYCInfo(
         newProfileSettings.nickname,
         newProfileSettings.phoneNumber,
