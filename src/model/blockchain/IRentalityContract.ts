@@ -222,6 +222,7 @@ export interface IRentalityAdminGateway {
   manageTearInfo(tear: Tear, from: number, to: number): Promise<void>;
 
   getRefferalPointsInfo(): Promise<ContractAllRefferalInfoDTO>;
+  getPlatformUsersInfo(): Promise<ContractFullKYCInfoDTO[]>;
 }
 
 export interface IRentalityChatHelperContract {

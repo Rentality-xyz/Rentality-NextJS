@@ -7,6 +7,7 @@ interface AllUsersFiltersProps {
 }
 
 function AllUsersFilters({ defaultFilters, onApply }: AllUsersFiltersProps) {
+  return <></>;
   return <div>AllUsersFilters</div>;
 }
 

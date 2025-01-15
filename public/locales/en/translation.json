@@ -649,6 +649,21 @@
     "end_date": "End date",
     "allStatuses": "All statuses"
   },
+  "admin_all_users": {
+    "page_title": "All users table",
+    "avatar": "Avatar",
+    "wallet": "Wallet",
+    "profile-creation-date": "Profile creation date",
+    "nickname": "Nickname",
+    "issue-country": "KYC Issue Country",
+    "phone-number": "Phone number",
+    "name": "Name",
+    "e-mail": "e-mail",
+    "driving-license-number": "Driving license number",
+    "driving-license-validity-period": "Driving license validity period",
+    "cars-in-listing": "Cars in Listing",
+    "see_listing": "See Listing"
+  },
   "admin_all_cars": {
     "page_title": "Car locations",
     "carId": "Car id",
