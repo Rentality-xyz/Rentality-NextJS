@@ -1,19 +1,19 @@
 // TODO Transate
 import { useTranslation } from "react-i18next";
-import RntButtonTransparent from "../common/rntButtonTransparent";
 import useToggleState from "@/hooks/useToggleState";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { Controller, useForm } from "react-hook-form";
-import { addTripInsuranceFormSchema, AddTripInsuranceFormValues } from "./addTripInsuranceFormSchema";
+import { addTripInsuranceFormSchema, AddTripInsuranceFormValues } from "../models/addTripInsuranceFormSchema";
 import { ONE_TIME_INSURANCE_TYPE_ID } from "@/utils/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { isEmpty } from "@/utils/string";
-import RntButton from "../common/rntButton";
-import RntInput from "../common/rntInput";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
-import RntSelect from "../common/rntSelect";
 import useTripsList from "@/hooks/guest/useTripsList";
 import useSaveHostTripInsurance from "@/hooks/host/useSaveHostTripInsurance";
+import RntButtonTransparent from "@/components/common/rntButtonTransparent";
+import RntSelect from "@/components/common/rntSelect";
+import RntInput from "@/components/common/rntInput";
+import RntButton from "@/components/common/rntButton";
 
 interface AddHostInsuranceProps {
   onNewInsuranceAdded?: () => Promise<void>;
@@ -106,7 +106,7 @@ export default function AddHostInsurance({ onNewInsuranceAdded }: AddHostInsuran
             toggleFormOpen();
           }}
         >
-          {t("insurance.add_insurance")}
+          {t("common.hide")}
         </RntButtonTransparent>
         <hr />
         <form className="flex w-full flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>

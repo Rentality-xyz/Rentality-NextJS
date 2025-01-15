@@ -20,7 +20,7 @@ function СarDetailsForDetails({ tripInfo, isHost, t }: { tripInfo: TripInfo; is
   const hostPhoneNumberLink = `tel:${tripInfo.host.phoneNumber}`;
 
   return (
-    <div id="trip-main-info" className="flex w-full flex-1 flex-col justify-between gap-4 p-4 md:w-1/4 md:p-2 xl:p-4">
+    <div id="trip-main-info" className="flex w-full flex-1 flex-col justify-between gap-4">
       <div className="flex flex-col">
         <div>
           <strong className="text-xl">{`${tripInfo.brand} ${tripInfo.model} ${tripInfo.year}`}</strong>
@@ -45,7 +45,7 @@ function СarDetailsForDetails({ tripInfo, isHost, t }: { tripInfo: TripInfo; is
           label={isHost ? "YOUR GUEST" : "HOSTED BY"}
         />
       </div>
-      <div className="2xl:flex 2xl:flex-row">
+      <div className="flex justify-between">
         <div>
           <div className="me-2">
             <Link href={`/${pathRoot}/messages?tridId=${tripInfo.tripId}`}>

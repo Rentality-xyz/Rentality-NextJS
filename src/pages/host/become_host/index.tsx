@@ -219,7 +219,6 @@ function BecomeHostContent() {
                 <UserCommonInformationForm
                   savedProfileSettings={savedProfileSettings}
                   saveProfileSettings={saveProfileSettings}
-                  isHost={true}
                 />
               </div>
             )}

@@ -40,12 +40,11 @@ function TripCard({
 
   return (
     <div className="rnt-card flex flex-col overflow-hidden rounded-xl bg-rentality-bg">
-      <div className="max-2xl:flex-wrap md:flex 2xl:flex-nowrap">
+      <div className="flex flex-col md:flex-row">
         <CarPhotoWithStatus carImageUrl={tripInfo.image} tripStatus={tripInfo.status} />
-
-        <div id="trip-item-info" className="flex w-full flex-col md:flex-row">
-          <СarDetails tripInfo={tripInfo} isHost={isHost} t={t} confirmCarDetails={confirmCarDetails} />
-          {
+        <div id="trip-item-info" className="flex w-full grid-cols-[3fr_2fr_1fr] flex-col gap-4 p-4 md:grid">
+          <div className="flex max-md:flex-col">
+            <СarDetails tripInfo={tripInfo} isHost={isHost} t={t} confirmCarDetails={confirmCarDetails} />
             <CurrentStatusInfo
               tripInfo={tripInfo}
               changeStatusCallback={async (changeStatus) => {
@@ -59,18 +58,17 @@ function TripCard({
               isHost={isHost}
               t={t}
             />
-          }
-          <DateDetails tripInfo={tripInfo} t={t} />
-          <LocationDetails tripInfo={tripInfo} t={t} />
-        </div>
-        <div className="2xl:w-46 flex flex-col p-4 text-end max-2xl:w-full md:p-2 xl:p-4 2xl:flex-shrink-0">
-          <div className="flex max-2xl:justify-between 2xl:flex-col 2xl:gap-2 2xl:pr-8">
+          </div>
+          <div className="flex h-full w-full flex-col gap-4 max-md:mt-4 md:pl-4 fullHD:pl-8">
+            <DateDetails tripInfo={tripInfo} t={t} />
+            <LocationDetails tripInfo={tripInfo} t={t} />
+          </div>
+          <div className="flex w-full gap-4 max-md:mt-2 max-md:justify-between md:flex-col">
             <TripContacts tripInfo={tripInfo} isHost={isHost} t={t} />
-            <div className="text-rentality-secondary 2xl:mt-10">
+            <div className="text-rentality-secondary">
               <Link href={`/${pathRoot}/trips/tripInfo/${tripInfo.tripId}?back=${pathname}`}>
                 <strong>{t("booked.more_info")}</strong>
               </Link>
-              <i className="fi fi-br-angle-small-down pl-1"></i>
             </div>
           </div>
         </div>

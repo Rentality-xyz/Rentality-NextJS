@@ -6,9 +6,9 @@ import { TripInfo } from "@/model/TripInfo";
 
 function TripRules({ tripInfo, t }: { tripInfo: TripInfo; t: TFunction }) {
   return (
-    <div className="2xl:w-46 flex flex-col p-4 text-end max-2xl:w-full md:p-2 xl:p-4 2xl:flex-shrink-0">
-      <div className="flex max-2xl:justify-between 2xl:flex-col 2xl:gap-2 2xl:pr-8">
-        <div className="flex flex-row justify-between gap-x-10 2xl:mt-6">
+    <div className="flex flex-col">
+      <div className="flex max-2xl:justify-between 2xl:flex-col 2xl:gap-2">
+        <div className="flex flex-row justify-between gap-x-10">
           <RntTripRulesModal />
         </div>
         <div className="flex flex-row justify-between gap-x-10 2xl:mt-6">
