@@ -417,7 +417,7 @@ async function saveKycInfo(
     return Err("rentality is null");
   }
   try {
-    const transaction = await rentality.setCivicKYCInfo(verifiedInformation.address, contractCivicKYCInfo, ZERO_HASH);
+    const transaction = await rentality.setCivicKYCInfo(verifiedInformation.address, contractCivicKYCInfo);
     await transaction.wait();
     return Ok(true);
   } catch (e) {

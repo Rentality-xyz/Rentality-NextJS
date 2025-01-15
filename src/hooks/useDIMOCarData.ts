@@ -25,7 +25,7 @@ function roundToNearestTen(num: number) {
 }
 
 const useDIMOCarData = (carId: number) => {
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const [panelData, setPanelData] = useState<DimoPanelData>(EmptyDimoPanelData);
 
   useEffect(() => {
@@ -37,13 +37,13 @@ const useDIMOCarData = (carId: number) => {
   }, [carId]);
 
   const getCarPanelParams = async (carId: number): Promise<DimoPanelData> => {
-    if (!rentalityContract) {
+    if (!rentalityContracts) {
       console.error("Get DIMO panel params data error: Rentality contract is null");
       return EmptyDimoPanelData;
     }
 
     try {
-      const carDetails = await rentalityContract.getCarDetails(BigInt(carId));
+      const carDetails = await rentalityContracts.gateway.getCarDetails(BigInt(carId));
 
       if (carDetails.dimoTokenId === BigInt(0)) {
         return EmptyDimoPanelData
