@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
 
-export default function Profile() {
+function Profile() {
   const [isLoading, savedProfileSettings, saveProfileSettings] = useProfileSettings();
   const [isLoadingDiscounts, savedTripsDiscounts, saveTripDiscounts] = useTripDiscounts();
   const [isLoadingDeliveryPrices, savedDeliveryPrices, saveDeliveryPrices] = useDeliveryPrices();
@@ -41,3 +41,5 @@ export default function Profile() {
     </>
   );
 }
+
+export default Profile;

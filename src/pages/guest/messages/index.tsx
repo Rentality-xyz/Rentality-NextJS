@@ -1,5 +1,7 @@
 import GuestChatPageContent from "@/features/chat/pages/GuestChatPageContent";
 
-export default function Messages() {
+function Messages() {
   return <GuestChatPageContent />;
 }
+
+export default Messages;

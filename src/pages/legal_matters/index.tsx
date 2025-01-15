@@ -16,7 +16,7 @@ enum ELegalMatters {
   PRIVACY = LEGAL_PRIVACY_NAME,
 }
 
-export default function LegalContent() {
+function LegalContent() {
   const { t } = useTranslation();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<ELegalMatters>(ELegalMatters.TERMS);
@@ -106,3 +106,5 @@ export default function LegalContent() {
     </>
   );
 }
+
+export default LegalContent;

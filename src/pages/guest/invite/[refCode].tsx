@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
-export default function Invite() {
+function Invite() {
   const route = useRouter();
   useEffect(() => {
     const pathParts = route.asPath.split("/");
@@ -12,3 +12,5 @@ export default function Invite() {
 
   return <div></div>;
 }
+
+export default Invite;

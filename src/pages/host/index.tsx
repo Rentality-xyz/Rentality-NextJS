@@ -1,5 +1,7 @@
 import Vehicles from "./vehicles";
 
-export default function Host() {
+function Host() {
   return <Vehicles />;
 }
+
+export default Host;

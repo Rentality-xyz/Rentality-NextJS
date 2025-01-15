@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
 
-export default function History() {
+function History() {
   const { isLoadingTrips, tripsHistory, confirmCarDetails } = useGuestTrips();
   const { t } = useTranslation();
 
@@ -46,3 +46,5 @@ export default function History() {
     </>
   );
 }
+
+export default History;
