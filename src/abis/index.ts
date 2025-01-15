@@ -44,7 +44,7 @@ export async function getEtherContractWithSigner(contract: keyof typeof rentalit
     }
 
     // const chainId = Number((await signer.provider?.getNetwork())?.chainId);
-    const chainId = 1337
+    const chainId = 102
     if (!getExistBlockchainList().find((i) => i.chainId === chainId)) {
       console.error(`getEtherContract error: Chain id ${chainId} is not supported`);
       return null;
