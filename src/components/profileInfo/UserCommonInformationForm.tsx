@@ -120,7 +120,6 @@ function UserCommonInformationForm({
         drivingLicenseNumber: "",
         drivingLicenseExpire: undefined,
         issueCountry: "",
-        email: "",
       };
 
       showInfo(t("common.info.sign"));
@@ -217,6 +216,14 @@ function UserCommonInformationForm({
                 validationError={errors.phoneNumber?.message}
               />
             )}
+          />
+          <RntInput
+            className="lg:w-60"
+            labelClassName="pl-[16px]"
+            id="email"
+            label={t("profile.email")}
+            {...register("email")}
+            validationError={errors.email?.message}
           />
         </div>
       </fieldset>

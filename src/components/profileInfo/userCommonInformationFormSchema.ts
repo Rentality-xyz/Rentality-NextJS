@@ -11,6 +11,7 @@ export const userCommonInformationFormSchema = z.object({
   phoneNumber: z.string().max(30, "phone number is too long"),
   isTerms: z.boolean(),
   tcSignature: z.string(),
+  email: z.string().email(),
 });
 
 export type UserCommonInformationFormValues = z.infer<typeof userCommonInformationFormSchema>;
