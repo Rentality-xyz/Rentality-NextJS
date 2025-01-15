@@ -3,6 +3,8 @@ import { DIMO } from "@dimo-network/data-sdk/dist/index.d.ts";
 
 
 export async function authOnDimo() {
+ 
+
     const clientId = process.env.NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID;
     const apiKey = process.env.NEXT_PUBLIC_SERVER_DIMO_API_KEY;
     const domain = process.env.NEXT_PUBLIC_SERVER_DIMO_DOMAIN;
