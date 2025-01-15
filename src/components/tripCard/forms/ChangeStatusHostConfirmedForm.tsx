@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useEffect, useMemo } from "react";
 import { TripInfo } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
 import RntButton from "@/components/common/rntButton";
@@ -10,6 +10,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import RntFuelLevelSelect from "@/components/common/RntFuelLevelSelect";
+import useDIMOCarData from "@/hooks/useDIMOCarData";
 
 interface ChangeStatusHostConfirmedFormProps {
   tripInfo: TripInfo;
@@ -20,10 +21,18 @@ interface ChangeStatusHostConfirmedFormProps {
 
 const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHostConfirmedFormProps>(
   ({ tripInfo, changeStatusCallback, disableButton, t }, ref) => {
-    const { register, control, handleSubmit, formState } = useForm<ChangeStatusHostConfirmedFormValues>({
+    const {panelData,getCarPanelParams} = useDIMOCarData(tripInfo ? tripInfo.carId : 0);
+    const { register, control, handleSubmit, formState, setValue } = useForm<ChangeStatusHostConfirmedFormValues>({
       defaultValues: {},
       resolver: zodResolver(changeStatusHostConfirmedFormSchema),
     });
+    useEffect(() => {
+     if(panelData) {
+      setValue("fuelOrBatteryLevel", panelData.fuelOrBatteryLevel);
+      setValue("odotemer", panelData.odotemer);
+     }
+  }, [panelData]);
+   
     const { errors, isSubmitting } = formState;
 
     async function onFormSubmit(formData: ChangeStatusHostConfirmedFormValues) {
@@ -57,24 +66,43 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
               <Controller
                 name="fuelOrBatteryLevel"
                 control={control}
-                render={({ field }) => (
-                  <RntFuelLevelSelect
+                render={({ field, fieldState }) => (
+                  (panelData && panelData.fuelOrBatteryLevel !== 0) ? (
+                    <RntInput
                     className="py-2"
                     id="fuel_level"
                     label="Fuel or battery level, %"
-                    value={field.value}
-                    onLevelChange={field.onChange}
-                    validationError={errors.fuelOrBatteryLevel?.message?.toString()}
+                    value={panelData.fuelOrBatteryLevel}
+                    disabled
                   />
+                  ) : (
+                    <RntFuelLevelSelect
+                      className="py-2"
+                      id="fuel_level"
+                      label="Fuel or battery level, %"
+                      value={field.value}
+                      onLevelChange={field.onChange}
+                      validationError={fieldState.error?.message}
+                    />
+                  )
                 )}
               />
+              {panelData && panelData.odotemer !== 0? (
+                <RntInput
+                  className="py-2"
+                  id="Odometer"
+                  label="Odometer"
+                  value={panelData.odotemer}
+                  disabled
+                />
+              ): (
               <RntInput
                 className="py-2"
                 id="Odometer"
                 label="Odometer"
                 {...register("odotemer", { valueAsNumber: true })}
                 validationError={errors.odotemer?.message?.toString()}
-              />
+              />)}
             </div>
             <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
               <RntInput
@@ -93,9 +121,8 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
               />
             </div>
           </div>
-
           <div className="flex flex-row gap-4">
-            <RntButton type="submit" className="h-16 px-4 max-md:w-full" disabled={disableButton || isSubmitting}>
+            <RntButton type="submit" className="h-16 px-4 max-md:w-full" disabled={disableButton || isSubmitting }>
               Start
             </RntButton>
             <RntButton

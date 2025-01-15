@@ -27,10 +27,12 @@ const localhostGanache = defineChain({
     symbol: "ETH",
   },
   rpcUrls: {
-    default: { http: ["http://127.0.0.1:7545"] },
+    default: { http: ["http://127.0.0.1:8545"] },
   },
   testnet: true,
 });
+
+
 
 const chainIdToHex = (chainId: number) => {
   return "0x" + chainId.toString(16);
