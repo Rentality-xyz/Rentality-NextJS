@@ -1,12 +1,14 @@
 
 import { NextApiRequest, NextApiResponse } from "next";
 import { authOnDimo, tokenExchange } from "./helpers";
+import { getIpfsURI } from "@/utils/ipfsUtils";
 
 type DIMOSharedCarsResponse = {
   data: {
     vehicles: {
       nodes: [{
     tokenId: number;
+    imageURI: string;
     definition: {
       make: string;
       model: string;
@@ -39,6 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         totalCount
         nodes {
           tokenId
+          imageURI
           definition {
             make
             model
@@ -95,6 +98,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
     
   }
+  token.imageURI = getIpfsURI(token.imageURI)
     return {
       ...token,
       vin
