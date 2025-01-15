@@ -25,12 +25,8 @@ function TripContacts({
 
   return (
     <>
-      <div className="2xl:mt-6 2xl:flex 2xl:flex-col">
-        <ChatLink tripId={tripInfo.tripId} asHost={isHost} t={t} />
-      </div>
-      <div className="2xl:mt-2 2xl:flex 2xl:flex-col">
-        <TelLink phoneNumber={phoneNumber} t={t} />
-      </div>
+      <ChatLink tripId={tripInfo.tripId} asHost={isHost} t={t} />
+      <TelLink phoneNumber={phoneNumber} t={t} />
     </>
   );
 }

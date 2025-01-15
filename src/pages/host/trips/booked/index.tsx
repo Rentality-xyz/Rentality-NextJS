@@ -9,7 +9,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import RntSuspense from "@/components/common/rntSuspense";
 
-export default function Booked() {
+function Booked() {
   const ethereumInfo = useEthereum();
   const [isLoadingTrips, tripsBooked, _, updateData] = useHostTrips();
   const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
@@ -75,3 +75,5 @@ export default function Booked() {
     </>
   );
 }
+
+export default Booked;

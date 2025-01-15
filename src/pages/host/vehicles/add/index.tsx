@@ -3,7 +3,7 @@ import CarEditForm from "@/components/host/carEditForm/carEditForm";
 import { useTranslation } from "react-i18next";
 import useSaveCar from "@/hooks/host/useSaveCar";
 
-export default function AddCar() {
+function AddCar() {
   const { addNewCar } = useSaveCar();
   const { t } = useTranslation();
 
@@ -20,3 +20,5 @@ export default function AddCar() {
     </>
   );
 }
+
+export default AddCar;

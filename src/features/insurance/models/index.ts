@@ -1,5 +1,5 @@
+import { InsuranceType } from "@/model/blockchain/schemas";
 import { TFunction } from "@/utils/i18n";
-import { InsuranceType } from "../blockchain/schemas";
 
 export type Insurance = {
   type: InsuranceType;

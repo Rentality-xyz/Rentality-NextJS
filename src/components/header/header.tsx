@@ -31,6 +31,7 @@ import { useTranslation } from "react-i18next";
 import { AdminBurgerNavMenu } from "../sideNavMenu/adminSideNavMenu";
 import ClaimMyPointsHeaderButton from "@/features/referralProgram/components/ClaimMyPointsHeaderButton";
 import { isMobileAppRentality } from "@/utils/devicePlatform";
+import { copyToClipboard } from "@/utils/clipboard";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 72,
@@ -136,9 +137,6 @@ export default function Header() {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-  };
 
   const [isRentalityMobileApp, setIsRentalityMobileApp] = useState(false);
   useEffect(() => {

@@ -37,7 +37,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PromoActionType, promoCodeReducer } from "@/features/promocodes/utils/promoCodeReducer";
 import { getPromoPrice } from "@/features/promocodes/utils";
 
-export default function CreateTrip() {
+function CreateTrip() {
   const { searchCarRequest, searchCarFilters } = useCarSearchParams();
   const { isLoading, carInfo } = useSearchCar(searchCarRequest, searchCarFilters.carId);
 
@@ -248,10 +248,10 @@ function CreateTripDetailsContent({
           }}
         />
         <RntInputTransparent
-          className="w-full"
+          className="mt-4 w-full"
           style={{ color: "white" }}
           type="text"
-          placeholder="Enter Promo Code"
+          placeholder={t("promo.input_hint")}
           {...register("enteredPromo", {
             onChange: (e) => {
               dispatch({ type: PromoActionType.RESET });
@@ -282,7 +282,7 @@ function CreateTripDetailsContent({
             ? t("promo.button_promo_text", {
                 price: displayMoneyWith2Digits(
                   getPromoPrice(getDiscountablePriceFromCarInfo(carInfo), state.promo.value) +
-                    getNotDiscountablePriceFromCarInfo(carInfo)
+                    (state.promo.value !== 100 ? getNotDiscountablePriceFromCarInfo(carInfo) : 0)
                 ),
               })
             : t("promo.button_default_text", {
@@ -296,3 +296,5 @@ function CreateTripDetailsContent({
     </div>
   );
 }
+
+export default CreateTrip;

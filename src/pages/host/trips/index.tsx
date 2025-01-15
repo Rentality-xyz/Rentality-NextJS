@@ -1,5 +1,7 @@
 import Booked from "./booked";
 
-export default function Trips() {
+function Trips() {
   return <Booked />;
 }
+
+export default Trips;

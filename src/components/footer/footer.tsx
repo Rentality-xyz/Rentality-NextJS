@@ -37,16 +37,16 @@ const Footer = forwardRef<HTMLDivElement>((props, ref) => {
   return (
     <footer
       ref={ref}
-      className="relative h-[500px] bg-[url('../images/bg-gradient-flip.jpg')] bg-cover bg-scroll bg-center bg-no-repeat min-[560px]:h-[450px] lg:h-[290px]"
+      className="relative h-[600px] bg-[url('../images/bg-gradient-flip.jpg')] bg-cover bg-scroll bg-center bg-no-repeat min-[560px]:h-[450px] lg:h-[290px]"
     >
-      <Image src={bgCar} alt="" className="absolute bottom-0 left-0" />
+      <Image src={bgCar} alt="" className="absolute bottom-0 left-0 max-[560px]:bottom-8" />
       <div
         id={"footer-content"}
         className="mx-auto flex h-full max-w-[1192px] flex-row text-white max-[560px]:flex-col"
       >
         <div
           id="footer-legal-matters"
-          className="z-0 flex h-1/3 w-max flex-col pt-[30px] max-lg:mx-auto sm:h-full lg:ml-[540px] lg:pt-[40px] min-[1536px]:ml-[540px] min-[1720px]:ml-auto"
+          className="z-0 flex h-1/3 w-max flex-col pt-[30px] max-lg:mx-auto sm:h-full lg:ml-[540px] lg:pt-[40px] min-[1536px]:ml-[540px] min-[1720px]:ml-auto max-[560px]:items-center"
         >
           <Link
             href={`${pathnameUserMode}/legal?tab=${LEGAL_TERMS_NAME}`}
@@ -88,13 +88,13 @@ const Footer = forwardRef<HTMLDivElement>((props, ref) => {
             <strong>Privacy policy</strong>
           </Link>
           <div className="z-0 mt-auto hidden sm:flex">
-            UIcons by <a href="https://www.flaticon.com/uicons">Flaticon</a>
+            UIcons by&nbsp;<a href="https://www.flaticon.com/uicons">Flaticon</a>
           </div>
         </div>
 
         <div
           id={"footer-info-block"}
-          className="z-0 flex h-full w-max flex-col pt-[30px] max-lg:mx-auto lg:ml-auto lg:pt-[40px]"
+          className="z-0 flex h-full w-max flex-col pt-[30px] max-lg:mx-auto lg:ml-auto lg:pt-[40px] max-[560px]:items-center"
         >
           <Image src={logo} alt="" className="mb-2 h-auto min-w-[180px] max-w-[180px]" />
           <div>
@@ -153,11 +153,13 @@ const Footer = forwardRef<HTMLDivElement>((props, ref) => {
                 </a>
               </div>
             </div>
-            <div className="z-0 mt-8 sm:hidden">
-              UIcons by <a href="https://www.flaticon.com/uicons">Flaticon</a>
-            </div>
           </div>
-          <div className="z-0 mt-auto font-['Montserrat',Arial,sans-serif]">©{moment().year()} by Rentality LLC</div>
+          <div className="z-0 min-[560px]:mt-auto mt-52 font-['Montserrat',Arial,sans-serif]">©{moment().year()} by
+            Rentality LLC
+          </div>
+          <div className="z-0 text-xs sm:hidden text-center">
+            UIcons by <a href="https://www.flaticon.com/uicons">Flaticon</a>
+          </div>
         </div>
       </div>
     </footer>

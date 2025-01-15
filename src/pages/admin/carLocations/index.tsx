@@ -6,7 +6,7 @@ import useCarAPI from "@/hooks/useCarAPI";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-export default function AllCars() {
+function AllCars() {
   const itemsPerPage = 10;
   const { isLoading, data, fetchData } = useAdminAllCars();
   const { getVINNumber } = useCarAPI();
@@ -34,3 +34,5 @@ export default function AllCars() {
     </>
   );
 }
+
+export default AllCars;
