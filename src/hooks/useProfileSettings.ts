@@ -94,6 +94,7 @@ const useProfileSettings = () => {
         newProfileSettings.nickname,
         newProfileSettings.phoneNumber,
         newProfileSettings.profilePhotoUrl,
+        newProfileSettings.email,
         newProfileSettings.tcSignature,
         referralHash
       );

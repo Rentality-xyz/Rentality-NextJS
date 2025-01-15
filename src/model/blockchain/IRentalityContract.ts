@@ -50,6 +50,7 @@ export interface IRentalityContract {
     nickName: string,
     mobilePhoneNumber: string,
     profilePhoto: string,
+    email: string,
     TCSignature: string,
     hash: string
   ): Promise<ContractTransactionResponse>;
@@ -222,6 +223,7 @@ export interface IRentalityAdminGateway {
   manageTearInfo(tear: Tear, from: number, to: number): Promise<void>;
 
   getRefferalPointsInfo(): Promise<ContractAllRefferalInfoDTO>;
+  getPlatformUsersInfo(): Promise<ContractFullKYCInfoDTO[]>;
 }
 
 export interface IRentalityChatHelperContract {
