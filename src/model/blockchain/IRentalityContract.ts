@@ -50,6 +50,7 @@ export interface IRentalityContract {
     nickName: string,
     mobilePhoneNumber: string,
     profilePhoto: string,
+    email: string,
     TCSignature: string,
     hash: string
   ): Promise<ContractTransactionResponse>;
