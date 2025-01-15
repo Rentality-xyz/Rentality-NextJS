@@ -21,7 +21,7 @@ function History() {
       <PageTitle title={t("booked.history_title")} />
       <CheckingLoadingAuth>
         <RntSuspense isLoading={isLoadingTrips}>
-          <div className="my-4 flex flex-col gap-4 pr-4">
+          <div className="my-4 flex flex-col gap-4">
             {tripsHistory != null && tripsHistory.length > 0 ? (
               tripsHistory.map((value) => {
                 return (

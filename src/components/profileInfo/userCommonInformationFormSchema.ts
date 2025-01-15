@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const profileInfoFormSchema = z.object({
+export const userCommonInformationFormSchema = z.object({
   profilePhotoUrl: z.string(),
   nickname: z
     .string()
@@ -11,7 +11,6 @@ export const profileInfoFormSchema = z.object({
   phoneNumber: z.string().max(30, "phone number is too long"),
   isTerms: z.boolean(),
   tcSignature: z.string(),
-  reflink: z.string(),
 });
 
-export type ProfileInfoFormValues = z.infer<typeof profileInfoFormSchema>;
+export type UserCommonInformationFormValues = z.infer<typeof userCommonInformationFormSchema>;

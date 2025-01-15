@@ -226,7 +226,7 @@ export default function CarSearchItem({
             style={{ color: "white" }}
             inputClassName="text-center"
             type="text"
-            placeholder="Promo Code"
+            placeholder={t("promo.input_label")}
             {...register("enteredPromo", {
               onChange: (e) => {
                 dispatch({ type: PromoActionType.RESET });

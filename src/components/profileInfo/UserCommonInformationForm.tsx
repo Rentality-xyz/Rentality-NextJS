@@ -13,7 +13,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ProfileInfoFormValues, profileInfoFormSchema } from "./profileInfoFormSchema";
+import { UserCommonInformationFormValues, userCommonInformationFormSchema } from "./userCommonInformationFormSchema";
 import DotStatus from "./dotStatus";
 import { useTranslation } from "react-i18next";
 import { CheckboxTerms } from "../common/rntCheckbox";
@@ -21,34 +21,33 @@ import { verifyMessage } from "ethers";
 import { DEFAULT_AGREEMENT_MESSAGE, LEGAL_TERMS_NAME } from "@/utils/constants";
 import { signMessage } from "@/utils/ether";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
+import useUserMode from "@/hooks/useUserMode";
 
 function UserCommonInformationForm({
   savedProfileSettings,
   saveProfileSettings,
-  isHost,
 }: {
   savedProfileSettings: ProfileSettings;
   saveProfileSettings: (newProfileSettings: ProfileSettings) => Promise<boolean>;
-  isHost: boolean;
 }) {
   const ethereumInfo = useEthereum();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { t } = useTranslation();
-
-  const { register, handleSubmit, formState, control, setValue, watch } = useForm<ProfileInfoFormValues>({
+  const { userMode } = useUserMode();
+  const isHost = userMode === "Host";
+  const { register, handleSubmit, formState, control, setValue, watch } = useForm<UserCommonInformationFormValues>({
     defaultValues: {
       profilePhotoUrl: savedProfileSettings.profilePhotoUrl,
       nickname: savedProfileSettings.nickname,
       phoneNumber: savedProfileSettings.phoneNumber,
       tcSignature: savedProfileSettings.tcSignature,
-      reflink: savedProfileSettings.reflink,
     },
-    resolver: zodResolver(profileInfoFormSchema),
+    resolver: zodResolver(userCommonInformationFormSchema),
   });
   const { errors, isSubmitting } = formState;
 
-  function fileChangeCallback(field: ControllerRenderProps<ProfileInfoFormValues, "profilePhotoUrl">) {
+  function fileChangeCallback(field: ControllerRenderProps<UserCommonInformationFormValues, "profilePhotoUrl">) {
     return async (e: ChangeEvent<HTMLInputElement>) => {
       if (!e.target.files?.length) {
         return;
@@ -78,7 +77,7 @@ function UserCommonInformationForm({
     };
   }
 
-  async function onFormSubmit(formData: ProfileInfoFormValues) {
+  async function onFormSubmit(formData: UserCommonInformationFormValues) {
     if (!ethereumInfo) return;
     if (!formData.isTerms) return;
 
@@ -218,15 +217,6 @@ function UserCommonInformationForm({
                 validationError={errors.phoneNumber?.message}
               />
             )}
-          />
-
-          <RntInput
-            className="lg:w-72"
-            labelClassName="pl-[16px]"
-            id="reflink"
-            label={t("profile.ref_link")}
-            {...register("reflink")}
-            validationError={errors.reflink?.message}
           />
         </div>
       </fieldset>

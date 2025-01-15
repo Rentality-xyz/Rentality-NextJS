@@ -1,7 +1,6 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { ContractInsuranceDTO, InsuranceType } from "@/model/blockchain/schemas";
 import { validateContractInsuranceDTO } from "@/model/blockchain/schemas_utils";
-import { TripInsurance } from "@/model/insurance/model";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
@@ -9,6 +8,7 @@ import { getDateFromBlockchainTime, getDateFromBlockchainTimeWithTZ } from "@/ut
 import { bigIntReplacer } from "@/utils/json";
 import moment from "moment";
 import { useCallback, useState } from "react";
+import { TripInsurance } from "../models";
 
 export type InsuranceFiltersType = {};
 
