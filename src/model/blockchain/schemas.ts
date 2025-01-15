@@ -574,6 +574,11 @@ export type ContractRefferalHistory = {
   method: RefferalProgram;
 };
 
+export type ContractMyRefferalInfoDTO = {
+  myHash: string;
+  savedHash: string;
+};
+
 export type ContractHistory = {
   points: bigint;
   date: bigint;

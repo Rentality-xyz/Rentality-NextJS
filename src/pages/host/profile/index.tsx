@@ -2,7 +2,6 @@ import DeliveryPriceForm from "@/components/host/deliveryPriceForm";
 import TripDiscountsForm from "@/components/host/tripDiscountsForm";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import UserProfileInfo from "@/components/profileInfo/userProfileInfo";
-import AddFunds from "@/components/RnD/AddFunds";
 import useDeliveryPrices from "@/hooks/host/useDeliveryPrices";
 import useTripDiscounts from "@/hooks/host/useTripDiscounts";
 import useProfileSettings from "@/hooks/useProfileSettings";
@@ -23,11 +22,8 @@ export default function Profile() {
       <PageTitle title={t("profile.title")} />
       <CheckingLoadingAuth>
         <RntSuspense isLoading={isLoading || isLoadingDiscounts || isLoadingDeliveryPrices}>
-          <UserProfileInfo
-            savedProfileSettings={savedProfileSettings}
-            saveProfileSettings={saveProfileSettings}
-            isHost={true}
-          />
+          <UserProfileInfo savedProfileSettings={savedProfileSettings} saveProfileSettings={saveProfileSettings} />
+          <hr />
           <div className="flex flex-col min-[560px]:flex-row min-[560px]:gap-20">
             <TripDiscountsForm
               savedTripsDiscounts={savedTripsDiscounts}
@@ -40,8 +36,6 @@ export default function Profile() {
               isUserHasHostRole={userRole === "Host"}
             />
           </div>
-
-          <AddFunds />
         </RntSuspense>
       </CheckingLoadingAuth>
     </>
