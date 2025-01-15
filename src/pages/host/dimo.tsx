@@ -18,7 +18,8 @@ import RentalityCarItem from "@/components/host/rentalityCarItem";
 export type DimoCarResponse = {
   definition: DimoCar,
   tokenId: number,
-  vin: string
+  vin: string,
+  imageURI: string
 }
 export type DimoCarResponseWithTimestamp  = {
   definition: DimoCar,
