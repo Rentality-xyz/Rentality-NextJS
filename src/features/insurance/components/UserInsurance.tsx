@@ -1,20 +1,21 @@
 import { Controller, useForm } from "react-hook-form";
-import RntButton from "../common/rntButton";
-import RntValidationError from "../common/RntValidationError";
-import DotStatus from "../profileInfo/dotStatus";
-import Loading from "../common/Loading";
+
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { isEmpty } from "@/utils/string";
 import { UserInsurancePhoto } from "./UserInsurancePhoto";
-import { userInsuranceFormSchema, UserInsuranceFormValues } from "./userInsuranceFormSchema";
 import useGuestInsurance from "@/hooks/guest/useGuestInsurance";
 import { PlatformFile } from "@/model/FileToUpload";
 import { DialogActions } from "@/utils/dialogActions";
+import { userInsuranceFormSchema, UserInsuranceFormValues } from "@/features/insurance/models/userInsuranceFormSchema";
+import Loading from "@/components/common/Loading";
+import RntValidationError from "@/components/common/RntValidationError";
+import RntButton from "@/components/common/rntButton";
+import DotStatus from "@/components/profileInfo/dotStatus";
 
-export function UserInsurance() {
+function UserInsurance() {
   const { isLoading, guestInsurance, saveGuestInsurance } = useGuestInsurance();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
@@ -90,8 +91,8 @@ export function UserInsurance() {
   if (isLoading) return <Loading />;
 
   return (
-    <form className="flex flex-col gap-4 lg:my-8" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
-      <strong>{t("profile.user_insurance.please_upload_photo")}</strong>
+    <form className="flex flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
+      <strong>General Insurance ID</strong>
 
       <div className="ml-2 flex flex-row items-center gap-2 text-rentality-secondary-shade" onClick={handleInfoClick}>
         <i className="fi fi-rs-info"></i>
@@ -129,3 +130,5 @@ export function UserInsurance() {
     </form>
   );
 }
+
+export default UserInsurance;

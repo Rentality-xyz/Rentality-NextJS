@@ -8,11 +8,13 @@ import {
   ContractProgramHistory,
 } from "@/model/blockchain/schemas";
 import { useRentality } from "@/contexts/rentalityContext";
+import { ZERO_4_BYTES_HASH } from "@/utils/wallet";
 
 const useReferralProgram = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [updateRequired, setUpdateRequired] = useState<boolean>(true);
   const [inviteHash, setHash] = useState("");
+  const [usedInviteHash, setUsedInviteHash] = useState("");
   const [points, setPoints] = useState(0);
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
@@ -34,7 +36,9 @@ const useReferralProgram = () => {
         return null;
       }
       try {
-        setHash(await rentalityContracts.referralProgram.referralHash(ethereumInfo.walletAddress));
+        const response = await rentalityContracts.referralProgram.getMyRefferalInfo();
+        setHash(response.myHash !== ZERO_4_BYTES_HASH ? response.myHash : "");
+        setUsedInviteHash(response.savedHash !== ZERO_4_BYTES_HASH ? response.savedHash : "");
       } catch (e) {
         console.error("get hash error:" + e);
         return null;
@@ -176,6 +180,7 @@ const useReferralProgram = () => {
 
   return {
     inviteHash,
+    usedInviteHash,
     points,
     updateData,
     getReadyToClaim,

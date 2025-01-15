@@ -226,7 +226,7 @@ export default function CarSearchItem({
             style={{ color: "white" }}
             inputClassName="text-center"
             type="text"
-            placeholder="Promo Code"
+            placeholder={t("promo.input_label")}
             {...register("enteredPromo", {
               onChange: (e) => {
                 dispatch({ type: PromoActionType.RESET });
@@ -247,7 +247,9 @@ export default function CarSearchItem({
               ? t("promo.button_promo_text", {
                   price: displayMoneyWith2Digits(
                     getPromoPrice(getDiscountablePriceFromCarInfo(searchInfo), state.promo.value) +
-                      getNotDiscountablePrice(insurancePriceTotal, searchInfo.securityDeposit)
+                      (state.promo.value !== 100
+                        ? getNotDiscountablePrice(insurancePriceTotal, searchInfo.securityDeposit)
+                        : 0)
                   ),
                 })
               : t("promo.button_default_text", {

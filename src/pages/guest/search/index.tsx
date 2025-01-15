@@ -25,7 +25,7 @@ import RntSuspense from "@/components/common/rntSuspense";
 import useGuestInsurance from "@/hooks/guest/useGuestInsurance";
 import { EMPTY_PROMOCODE } from "@/utils/constants";
 
-export default function Search() {
+function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
 
   const [isLoading, searchAvailableCars, searchResult, sortSearchResult, setSearchResult] = useSearchCars();
@@ -251,3 +251,7 @@ export default function Search() {
     </APIProvider>
   );
 }
+
+Search.allowAnonymousAccess = true;
+
+export default Search;

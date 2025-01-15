@@ -1,5 +1,7 @@
 import ReferralPageContent from "@/features/referralProgram/pages/ReferralPageContent";
 
-export default function ReferralsAndPoints() {
+function ReferralsAndPoints() {
   return <ReferralPageContent />;
 }
+
+export default ReferralsAndPoints;
