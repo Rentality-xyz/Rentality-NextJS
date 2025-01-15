@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import React from "react";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 
-export default function TransactionHistory() {
+function TransactionHistory() {
   const { t } = useTranslation();
 
   return (
@@ -16,3 +16,5 @@ export default function TransactionHistory() {
     </>
   );
 }
+
+export default TransactionHistory;

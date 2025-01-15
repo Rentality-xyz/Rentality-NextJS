@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-export default function CarInfo() {
+function CarInfo() {
   const router = useRouter();
   const { carId } = router.query;
 
@@ -12,3 +12,5 @@ export default function CarInfo() {
     </>
   );
 }
+
+export default CarInfo;

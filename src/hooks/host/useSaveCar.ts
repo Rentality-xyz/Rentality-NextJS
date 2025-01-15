@@ -16,7 +16,7 @@ import { ContractTransactionResponse } from "ethers";
 import { env } from "@/utils/env";
 import { PlatformCarImage, UploadedCarImage } from "@/model/FileToUpload";
 import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
-import { isUserHasEnoughFunds, ZERO_HASH } from "@/utils/wallet";
+import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 
 const useSaveCar = () => {
@@ -117,7 +117,7 @@ const useSaveCar = () => {
         insurancePriceInUsdCents: BigInt(dataToSave.insurancePerDayPriceInUsd * 100),
       };
 
-      const transaction = await rentalityContracts.gateway.addCar(request, ZERO_HASH);
+      const transaction = await rentalityContracts.gateway.addCar(request);
       await transaction.wait();
       return Ok(true);
     } catch (e) {

@@ -1,5 +1,7 @@
 import Listings from "./listings";
 
-export default function Vehicles() {
+function Vehicles() {
   return <Listings />;
 }
+
+export default Vehicles;

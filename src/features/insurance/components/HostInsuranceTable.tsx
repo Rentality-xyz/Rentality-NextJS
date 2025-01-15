@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { usePathname } from "next/navigation";
-import { getInsuranceStatusText, getInsuranceTypeText, TripInsurance } from "@/model/insurance/model";
 import Link from "next/link";
-import RntGalleryLink from "../common/RntGalleryLink";
-import Loading from "../common/Loading";
+import Loading from "@/components/common/Loading";
+import { getInsuranceStatusText, getInsuranceTypeText, TripInsurance } from "../models";
+import RntGalleryLink from "@/components/common/RntGalleryLink";
 
 type HostInsuranceTableProps = {
   isLoading: boolean;

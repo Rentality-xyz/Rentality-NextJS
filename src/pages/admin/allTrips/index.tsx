@@ -1,5 +1,7 @@
 import AllTripsPageContent from "@/features/admin/allTrips/pages/AllTripsPageContent";
 
-export default function AllTrips() {
+function AllTrips() {
   return <AllTripsPageContent />;
 }
+
+export default AllTrips;
