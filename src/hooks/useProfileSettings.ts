@@ -6,7 +6,7 @@ import { ContractFullKYCInfoDTO } from "@/model/blockchain/schemas";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { usePrivy } from "@privy-io/react-auth";
-import { ZERO_HASH } from "@/utils/wallet";
+import { ZERO_4_BYTES_HASH } from "@/utils/wallet";
 import useReferralLinkLocalStorage from "@/features/referralProgram/hooks/useSaveReferralLinkToLocalStorage";
 import { isEmpty } from "@/utils/string";
 
@@ -86,7 +86,7 @@ const useProfileSettings = () => {
 
     try {
       const localReferralHash = getLocalReferralCode();
-      const referralHash = !isEmpty(localReferralHash) ? localReferralHash : ZERO_HASH;
+      const referralHash = !isEmpty(localReferralHash) ? localReferralHash : ZERO_4_BYTES_HASH;
 
       const transaction = await rentalityContracts.gateway.setKYCInfo(
         newProfileSettings.nickname,
