@@ -50,7 +50,7 @@ const Footer = forwardRef<HTMLDivElement>((props, ref) => {
       >
         <div
           id="footer-legal-matters"
-          className="z-0 flex h-1/3 w-max flex-col items-center pt-[30px] max-lg:mx-auto sm:h-full lg:ml-[540px] lg:pt-[40px] min-[1536px]:ml-[540px] min-[1720px]:ml-auto"
+          className="z-0 flex h-1/3 w-max flex-col max-[560px]:items-center pt-[30px] max-lg:mx-auto sm:h-full lg:ml-[540px] lg:pt-[40px] min-[1536px]:ml-[540px] min-[1720px]:ml-auto"
         >
           <Link
             href={`${pathnameUserMode}/legal?tab=${LEGAL_TERMS_NAME}`}
