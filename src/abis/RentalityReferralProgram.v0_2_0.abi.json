@@ -122,8 +122,7 @@
     {
       "type": "function",
       "name": "getDiscount",
-      "constant": true,
-      "stateMutability": "view",
+      "constant": false,
       "payable": false,
       "inputs": [
         { "type": "uint8", "name": "selector" },

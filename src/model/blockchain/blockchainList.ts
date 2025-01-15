@@ -18,22 +18,8 @@ import {
   Chain,
 } from "viem/chains";
 
-// const localhostGanache = defineChain({
-//   id: 1_337,
-//   name: "Localhost Ganache",
-//   nativeCurrency: {
-//     decimals: 18,
-//     name: "Ether",
-//     symbol: "ETH",
-//   },
-//   rpcUrls: {
-//     default: { http: ["http://127.0.0.1:8545"] },
-//   },
-//   testnet: true,
-// });
-
 const localhostGanache = defineChain({
-  id: 102,
+  id: 1_337,
   name: "Localhost Ganache",
   nativeCurrency: {
     decimals: 18,
@@ -41,11 +27,10 @@ const localhostGanache = defineChain({
     symbol: "ETH",
   },
   rpcUrls: {
-    default: { http: ["https://virtual.base-sepolia.rpc.tenderly.co/0c3babfe-73d1-48f6-b0af-8151ef15e6cc"] },
+    default: { http: ["http://127.0.0.1:8545"] },
   },
   testnet: true,
 });
-
 
 
 
@@ -101,8 +86,8 @@ export const getExistBlockchainList = (): BlockchainBaseInfo[] => {
     (bc) =>
       hasContractForChainId(bc.chainId) &&
       (bc.isTestnet || isIncludeMainnets) &&
-      (!bc.isTestnet || bc.chainId === 102 || isIncludeTestnets) &&
-      (bc.chainId !== 102 || isIncludeLocalnets)
+      (!bc.isTestnet || bc.chainId === 1337 || isIncludeTestnets) &&
+      (bc.chainId !== 1337 || isIncludeLocalnets)
   );
 };
 

@@ -54,7 +54,7 @@ export default function Dimo() {
   const [isLoadingMyListings, myListings] = useMyListings();
   const userInfo = useUserInfo();
   const router = useRouter()
-  const rentalityContract = useRentality()
+  const { rentalityContracts }= useRentality()
 
   const clientId = process.env.NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID;
   const apiKey = process.env.NEXT_PUBLIC_SERVER_DIMO_API_KEY;
@@ -165,11 +165,11 @@ if (myListings && dimoVehicles) {
   
   }
  const handleSaveDimoTokens = async (dimoTokens: number[], carIds: number[]) => {
-  if(!rentalityContract) {
+  if(!rentalityContracts) {
     console.error("Save dimo tokens id error: Rentality contract is null")
     return
   }
-   await rentalityContract.saveDimoTokenIds(dimoTokens,carIds)
+   await rentalityContracts.gateway.saveDimoTokenIds(dimoTokens,carIds)
    console.log("Dimo tokens saved!")
 }
   return (

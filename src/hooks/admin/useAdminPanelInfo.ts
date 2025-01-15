@@ -194,7 +194,7 @@ const useAdminPanelInfo = () => {
 
       console.debug("contractCivicKYCInfo", JSON.stringify(contractCivicKYCInfo, bigIntReplacer, 2));
 
-      const transaction = await rentalityContracts.gateway.setCivicKYCInfo(address, contractCivicKYCInfo, ZERO_HASH);
+      const transaction = await rentalityContracts.gateway.setCivicKYCInfo(address, contractCivicKYCInfo);
       await transaction.wait();
       return true;
     } catch (e) {
@@ -226,7 +226,7 @@ const useAdminPanelInfo = () => {
         email: "testemail@test.com",
       };
 
-      const transaction = await rentalityContracts.gateway.setCivicKYCInfo(address, contractCivicKYCInfo, ZERO_HASH);
+      const transaction = await rentalityContracts.gateway.setCivicKYCInfo(address, contractCivicKYCInfo);
       await transaction.wait();
       return true;
     } catch (e) {

@@ -118,7 +118,7 @@ const useSaveCar = () => {
         dimoTokenId: BigInt(dataToSave.dimoTokenId)
       };
 
-      const transaction = await rentalityContracts.gateway.addCar(request, ZERO_HASH);
+      const transaction = await rentalityContracts.gateway.addCar(request);
       await transaction.wait();
       return Ok(true);
     } catch (e) {

@@ -17,4 +17,4 @@ export async function isUserHasEnoughFunds(signer: Signer, valueToCheck: number 
   return userBalanceEth >= valueToCheck;
 }
 
-export const ZERO_HASH = zeroPadBytes(ETH_DEFAULT_ADDRESS, 32);
+export const ZERO_HASH = zeroPadBytes('0x', 4);

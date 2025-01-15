@@ -90,8 +90,7 @@ const useGuestTrips = () => {
         /// TODO: get from input
         let transaction = await rentalityContracts.gateway.checkOutByGuest(
           tripId,
-          [endFuelLevelInPercents, endOdometr],
-          ZERO_HASH
+          [endFuelLevelInPercents, endOdometr]
         );
         await transaction.wait();
         return true;
@@ -109,7 +108,7 @@ const useGuestTrips = () => {
 
       try {
         /// TODO: get from input
-        let transaction = await rentalityContracts.gateway.confirmCheckOut(tripId, ZERO_HASH);
+        let transaction = await rentalityContracts.gateway.confirmCheckOut(tripId);
         await transaction.wait();
         return true;
       } catch (e) {
