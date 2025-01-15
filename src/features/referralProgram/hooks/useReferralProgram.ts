@@ -8,6 +8,7 @@ import {
   ContractProgramHistory,
 } from "@/model/blockchain/schemas";
 import { useRentality } from "@/contexts/rentalityContext";
+import { ZERO_4_BYTES_HASH } from "@/utils/wallet";
 
 const useReferralProgram = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -36,8 +37,8 @@ const useReferralProgram = () => {
       }
       try {
         const response = await rentalityContracts.referralProgram.getMyRefferalInfo();
-        setHash(response.myHash);
-        setUsedInviteHash(response.savedHash);
+        setHash(response.myHash !== ZERO_4_BYTES_HASH ? response.myHash : "");
+        setUsedInviteHash(response.savedHash !== ZERO_4_BYTES_HASH ? response.savedHash : "");
       } catch (e) {
         console.error("get hash error:" + e);
         return null;

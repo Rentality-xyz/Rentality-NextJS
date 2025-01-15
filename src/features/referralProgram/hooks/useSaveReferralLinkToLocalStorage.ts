@@ -11,18 +11,14 @@ function useReferralLinkLocalStorage() {
   const saveReferralCode = useCallback((referralLink: string) => {
     if (typeof window !== "undefined") {
       localStorage.setItem(REFERRAL_CODE_STORAGE_KEY, referralLink);
-      console.log("saveReferralLink:", referralLink);
     }
   }, []);
 
-  const reset = useCallback(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(REFERRAL_CODE_STORAGE_KEY, "");
-      console.log("reset ReferralLink:");
-    }
-  }, []);
+  const resetReferralCode = useCallback(() => {
+    saveReferralCode("");
+  }, [saveReferralCode]);
 
-  return { getLocalReferralCode, saveReferralCode } as const;
+  return { getLocalReferralCode, saveReferralCode, resetReferralCode } as const;
 }
 
 export default useReferralLinkLocalStorage;
