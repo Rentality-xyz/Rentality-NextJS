@@ -1,5 +1,6 @@
 import { ContractTransactionResponse } from "ethers";
 import {
+  ContractAllRefferalInfoDTO,
   ContractAllCarsDTO,
   ContractAllTripsDTO,
   ContractAvailableCarDTO,
@@ -13,7 +14,6 @@ import {
   ContractCivicKYCInfo,
   ContractCreateCarRequest,
   ContractCreateClaimRequest,
-  ContractCreateTripRequest,
   ContractCreateTripRequestWithDelivery,
   ContractDeliveryData,
   ContractDeliveryPrices,
@@ -32,7 +32,14 @@ import {
   ContractTripFilter,
   ContractTripReceiptDTO,
   ContractUpdateCarInfoRequest,
+  ContractReadyToClaimDTO,
+  RefferalAccrualType,
+  ContractRefferalHashDTO,
+  RefferalProgram,
   Role,
+  Tear,
+  ContractProgramHistory,
+  ContractCheckPromoDTO,
 } from "./schemas";
 
 export interface IRentalityContract {
@@ -42,9 +49,13 @@ export interface IRentalityContract {
     nickName: string,
     mobilePhoneNumber: string,
     profilePhoto: string,
-    TCSignature: string
+    TCSignature: string,
+    referralHash: string
   ): Promise<ContractTransactionResponse>;
-  setCivicKYCInfo(user: string, civicKycInfo: ContractCivicKYCInfo): Promise<ContractTransactionResponse>;
+  setCivicKYCInfo(
+    user: string,
+    civicKycInfo: ContractCivicKYCInfo
+  ): Promise<ContractTransactionResponse>;
   setMyCivicKYCInfo(civicKycInfo: ContractCivicKYCInfo): Promise<ContractTransactionResponse>;
   getKycCommission(): Promise<bigint>;
   calculateKycCommission(currency: string): Promise<bigint>;
@@ -54,11 +65,9 @@ export interface IRentalityContract {
 
   /// HOST CARS functions
   addCar(request: ContractCreateCarRequest): Promise<ContractTransactionResponse>;
-  updateCarInfo(request: ContractUpdateCarInfoRequest): Promise<ContractTransactionResponse>;
   updateCarInfoWithLocation(
     request: ContractUpdateCarInfoRequest,
-    location: ContractSignedLocationInfo,
-    geoApiKey: string
+    location: ContractSignedLocationInfo
   ): Promise<ContractTransactionResponse>;
   updateCarTokenUri(carId: bigint, tokenUri: string): Promise<ContractTransactionResponse>;
   getMyCars(): Promise<ContractCarInfoDTO[]>;
@@ -116,10 +125,12 @@ export interface IRentalityContract {
     daysOfTrip: bigint,
     currency: string,
     pickUpLocation: ContractLocationInfo,
-    returnLocation: ContractLocationInfo
+    returnLocation: ContractLocationInfo,
+    promoCode: string
   ): Promise<ContractCalculatePaymentsDTO>;
   createTripRequestWithDelivery(
     request: ContractCreateTripRequestWithDelivery,
+    promoCode: string,
     value: object
   ): Promise<ContractTransactionResponse>;
   checkInByGuest(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
@@ -145,6 +156,12 @@ export interface IRentalityContract {
     insuranceInfo: ContractSaveInsuranceRequest
   ): Promise<ContractTransactionResponse>;
   saveGuestInsurance(insuranceInfo: ContractSaveInsuranceRequest): Promise<ContractTransactionResponse>;
+
+  //PROMO functions
+  checkPromo(code: string, startDateTime: bigint, endDateTime: bigint): Promise<ContractCheckPromoDTO>;
+
+  // DIMO functions
+  saveDimoTokenIds(dimoTokenIds: bigint[], rentalityCarIds: bigint[]): Promise<ContractTransactionResponse>;
 
   /// GENERAL functions
   address: string;
@@ -197,6 +214,19 @@ export interface IRentalityAdminGateway {
 
   getKycCommission(): Promise<bigint>;
   setKycCommission(valueInUsdCents: bigint): Promise<ContractTransactionResponse>;
+
+  manageRefferalBonusAccrual(
+    accrualType: RefferalAccrualType,
+    program: RefferalProgram,
+    points: number,
+    pointsWithReffHash: number
+  ): Promise<void>;
+
+  manageRefferalDiscount(program: RefferalProgram, tear: Tear, points: number, percents: number): Promise<void>;
+
+  manageTearInfo(tear: Tear, from: number, to: number): Promise<void>;
+
+  getRefferalPointsInfo(): Promise<ContractAllRefferalInfoDTO>;
 }
 
 export interface IRentalityChatHelperContract {
@@ -221,6 +251,28 @@ export interface IRentalityCurrencyConverterContract {
   getEthToUsdRateWithCache(): Promise<{ ethToUsdRate: bigint; ethToUsdDecimals: bigint }>;
   getEthFromUsdWithCache(valueInUsdCents: bigint): Promise<bigint>;
   getUsdFromEthWithCache(valueInEth: bigint): Promise<bigint>;
+}
+
+export interface IRentalityReferralProgramContract {
+  // user points
+  addressToPoints(address: string): Promise<number>;
+  // user ref hash
+  referralHash(user: string): Promise<string>;
+  // when last time daily was claimed
+  getCarDailyClaimedTime(carId: number): Promise<number>;
+  // claim user points
+  claimPoints(user: string): Promise<ContractTransactionResponse>;
+  // get info about not claimed points
+  // info about not claimed points, from ref hash
+  getReadyToClaimFromRefferalHash(user: string): Promise<ContractRefferalHashDTO>;
+  // claim points from user ref hash
+  claimRefferalPoints(user: string): Promise<ContractTransactionResponse>;
+  // get full information about point, tears, e.t.c
+  getRefferalPointsInfo(): Promise<ContractAllRefferalInfoDTO>;
+  // get points reduces and increases
+  getPointsHistory(): Promise<ContractProgramHistory[]>;
+
+  getReadyToClaim(user: string): Promise<ContractReadyToClaimDTO>;
 }
 
 type ContractChatKeyInfo = {

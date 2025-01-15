@@ -19,7 +19,7 @@ export type KycStatus =
   | "Init error";
 
 const useCustomCivic = () => {
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const ethereumInfo = useEthereum();
   const [status, setStatus] = useState<KycStatus>("Loading");
   const [commissionFee, setCommissionFee] = useState(0);
@@ -28,7 +28,7 @@ const useCustomCivic = () => {
   const { t } = useTranslation();
 
   async function payCommission(): Promise<Result<boolean, string>> {
-    if (!rentalityContract) {
+    if (!rentalityContracts) {
       console.error("payCommission error: rentalityContract is null");
       return Err("rentalityContract is null");
     }
@@ -41,8 +41,10 @@ const useCustomCivic = () => {
     try {
       setStatus("Paying");
 
-      const commissionPrice = await rentalityContract.calculateKycCommission(ETH_DEFAULT_ADDRESS);
-      const transaction = await rentalityContract.payKycCommission(ETH_DEFAULT_ADDRESS, { value: commissionPrice });
+      const commissionPrice = await rentalityContracts.gateway.calculateKycCommission(ETH_DEFAULT_ADDRESS);
+      const transaction = await rentalityContracts.gateway.payKycCommission(ETH_DEFAULT_ADDRESS, {
+        value: commissionPrice,
+      });
       await transaction.wait();
 
       setStatus("Commission paid");
@@ -60,13 +62,13 @@ const useCustomCivic = () => {
   }
 
   async function requestKyc() {
-    if (!rentalityContract) return;
+    if (!rentalityContracts) return;
     if (!requestGatewayToken) return;
     if (!ethereumInfo) return;
     if (env.NEXT_PUBLIC_SKIP_KYC_PAYMENT !== "true" && status !== "Commission paid") return;
     if (
       env.NEXT_PUBLIC_SKIP_KYC_PAYMENT !== "true" &&
-      !(await rentalityContract.isKycCommissionPaid(ethereumInfo.walletAddress))
+      !(await rentalityContracts.gateway.isKycCommissionPaid(ethereumInfo.walletAddress))
     )
       return;
 
@@ -79,7 +81,7 @@ const useCustomCivic = () => {
 
   useEffect(() => {
     const checkStatusChange = async () => {
-      if (!rentalityContract) return;
+      if (!rentalityContracts) return;
       if (!ethereumInfo) return;
 
       if (gatewayStatus === GatewayStatus.ACTIVE) {
@@ -134,7 +136,7 @@ const useCustomCivic = () => {
     };
 
     checkStatusChange();
-  }, [rentalityContract, ethereumInfo, gatewayStatus, isKycProcessing]);
+  }, [rentalityContracts, ethereumInfo, gatewayStatus, isKycProcessing]);
 
   const isFetchingPiiData = useRef<boolean>(false);
   useEffect(() => {
@@ -176,13 +178,13 @@ const useCustomCivic = () => {
   useEffect(() => {
     const initialize = async () => {
       if (isInitialized.current) return;
-      if (!rentalityContract) return;
+      if (!rentalityContracts) return;
       if (!ethereumInfo) return;
 
       try {
         isInitialized.current = true;
 
-        const commissionPrice = await rentalityContract.getKycCommission();
+        const commissionPrice = await rentalityContracts.gateway.getKycCommission();
         setCommissionFee(Number(commissionPrice) / 100);
 
         if (gatewayStatus === GatewayStatus.ACTIVE) {
@@ -192,7 +194,7 @@ const useCustomCivic = () => {
 
         if (
           env.NEXT_PUBLIC_SKIP_KYC_PAYMENT === "true" ||
-          (await rentalityContract.isKycCommissionPaid(ethereumInfo.walletAddress))
+          (await rentalityContracts.gateway.isKycCommissionPaid(ethereumInfo.walletAddress))
         ) {
           setStatus("Commission paid");
           return;
@@ -215,7 +217,7 @@ const useCustomCivic = () => {
     };
 
     initialize();
-  }, [rentalityContract, ethereumInfo, gatewayStatus]);
+  }, [rentalityContracts, ethereumInfo, gatewayStatus]);
 
   return { status, commissionFee, payCommission, passKyc: requestKyc } as const;
 };

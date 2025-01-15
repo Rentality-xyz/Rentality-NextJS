@@ -40,7 +40,7 @@ export default function CarMapMarker({
       zIndex={zIndex}
     >
       <div id={carInfo.carId.toString()} className={className}>
-        ${carInfo.pricePerDayWithDiscount}
+        ${carInfo.pricePerDayWithHostDiscount}
       </div>
     </AdvancedMarker>
   );
