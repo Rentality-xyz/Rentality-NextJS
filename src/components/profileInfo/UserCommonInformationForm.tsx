@@ -131,7 +131,7 @@ function UserCommonInformationForm({
       if (!result) {
         throw new Error("Save profile info error");
       }
-      showInfo(t("common.info.success"));
+      showInfo(t("common.info.save_profile_success"));
     } catch (e) {
       console.error("handleSubmit error:" + e);
       showError(t("profile.save_err"));
