@@ -37,7 +37,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PromoActionType, promoCodeReducer } from "@/features/promocodes/utils/promoCodeReducer";
 import { getPromoPrice } from "@/features/promocodes/utils";
 
-export default function CreateTrip() {
+function CreateTrip() {
   const { searchCarRequest, searchCarFilters } = useCarSearchParams();
   const { isLoading, carInfo } = useSearchCar(searchCarRequest, searchCarFilters.carId);
 
@@ -296,3 +296,5 @@ function CreateTripDetailsContent({
     </div>
   );
 }
+
+export default CreateTrip;

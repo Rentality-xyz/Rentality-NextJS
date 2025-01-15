@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
 
-export default function Profile() {
+function Profile() {
   const [isLoading, savedProfileSettings, saveProfileSettings] = useProfileSettings();
   const { t } = useTranslation();
 
@@ -20,3 +20,5 @@ export default function Profile() {
     </>
   );
 }
+
+export default Profile;

@@ -5,7 +5,7 @@ import TripCard from "@/components/tripCard/tripCard";
 import useHostTrips from "@/hooks/host/useHostTrips";
 import { useTranslation } from "react-i18next";
 
-export default function History() {
+function History() {
   const [isLoadingTrips, _, tripsHistory] = useHostTrips();
   const { t } = useTranslation();
 
@@ -43,3 +43,5 @@ export default function History() {
     </>
   );
 }
+
+export default History;
