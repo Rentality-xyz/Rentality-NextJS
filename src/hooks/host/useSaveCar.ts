@@ -117,7 +117,7 @@ const useSaveCar = () => {
         insurancePriceInUsdCents: BigInt(dataToSave.insurancePerDayPriceInUsd * 100),
       };
 
-      const transaction = await rentalityContracts.gateway.addCar(request, ZERO_HASH);
+      const transaction = await rentalityContracts.gateway.addCar(request);
       await transaction.wait();
       return Ok(true);
     } catch (e) {
@@ -225,7 +225,7 @@ const useSaveCar = () => {
   return { dataSaved, addNewCar, updateCar } as const;
 };
 
-async function saveCarImages(carImages: PlatformCarImage[], ethereumInfo: EthereumInfo): Promise<UploadedCarImage[]> {
+export async function saveCarImages(carImages: PlatformCarImage[], ethereumInfo: EthereumInfo): Promise<UploadedCarImage[]> {
   const savedImages: UploadedCarImage[] = [];
 
   if (carImages.length > 0) {

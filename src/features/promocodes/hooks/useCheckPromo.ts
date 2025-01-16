@@ -8,14 +8,14 @@ function useCheckPromo() {
   const { rentalityContracts } = useRentality();
 
   const checkPromo = useCallback(
-    async (code: string): Promise<Result<{ value: number }, Error>> => {
+    async (code: string, startDate: number, endDate: number): Promise<Result<{ value: number }, Error>> => {
       if (!rentalityContracts) {
         console.error("fetchData error: rentalityContract is null");
         return Err(new Error("Contract is not initialized"));
       }
 
       try {
-        const checkPromoDto = await rentalityContracts.gateway.checkPromo(code);
+        const checkPromoDto = await rentalityContracts.gateway.checkPromo(code, BigInt(startDate), BigInt(endDate));
         validateContractCheckPromoDTO(checkPromoDto);
 
         console.debug("checkPromoDto", JSON.stringify(checkPromoDto, bigIntReplacer, 2));

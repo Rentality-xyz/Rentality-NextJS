@@ -78,7 +78,7 @@ function EnterPromoDialog({ days, priceDiscountable, priceNotDiscountable, creat
   async function onFormSubmit(formData: EnterPromoFormValues) {
     dispatch({ type: PromoActionType.LOADING });
 
-    const result = await checkPromo(formData.enteredPromo);
+    const result = await checkPromo(formData.enteredPromo, createTripRequest.startDate, formData.endDate);
 
     if (!result.ok) {
       dispatch({ type: PromoActionType.ERROR });

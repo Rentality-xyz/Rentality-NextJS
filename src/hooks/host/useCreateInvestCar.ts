@@ -13,9 +13,11 @@ import { uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
 import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { getNftJSONFromCarInfo } from "@/utils/ipfsUtils";
 import { ContractTransactionResponse } from "ethers";
+import { saveCarImages } from "./useSaveCar";
+import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
 
 const useCreateInvestCar = () => {
-  const rentalityContract = useRentality();
+  const {rentalityContracts} = useRentality();
   const ethereumInfo = useEthereum();
   const [dataSaved, setDataSaved] = useState<Boolean>(true);
 
@@ -43,47 +45,39 @@ const useCreateInvestCar = () => {
 
   async function createInvest(
     hostCarInfo: HostCarInfo,
-    image: File,
     carPrice: number,
     hostPercents: number,
     nftName: string,
     nftSym: string
-  ) {
+  ): Promise<Result<boolean, TransactionErrorCode>> {
     if (!ethereumInfo) {
       console.error("saveCar error: ethereumInfo is null");
-      return false;
+      return Err("ERROR");
     }
 
-    if (!rentalityContract) {
+    if (!rentalityContracts) {
       console.error("saveCar error: rentalityContract is null");
-      return false;
-    }
+      return Err("ERROR");
+    };
+  
 
     try {
       setDataSaved(false);
 
-      const response = await uploadFileToIPFS(image, "RentalityCarImage", {
-        createdAt: new Date().toISOString(),
-        createdBy: ethereumInfo.walletAddress,
-        version: SMARTCONTRACT_VERSION,
-        chainId: ethereumInfo?.chainId,
-      });
-
-      if (response.success !== true) {
-        console.error("Uploaded image to Pinata error");
-        return false;
-      }
-
-      const dataToSave = {
-        ...hostCarInfo,
-        image: response.pinataURL,
-      };
+    
+        const savedImages = await saveCarImages(hostCarInfo.images, ethereumInfo);
+  
+        const dataToSave = {
+          ...hostCarInfo,
+          images: savedImages,
+        };
+      
 
       const metadataURL = await uploadMetadataToIPFS(dataToSave);
 
       if (!metadataURL) {
         console.error("Upload JSON to Pinata error");
-        return false;
+        return Err("ERROR");
       }
 
       const engineParams: bigint[] = [];
@@ -115,8 +109,10 @@ const useCreateInvestCar = () => {
         engineType: getEngineTypeCode(dataToSave.engineTypeText),
         engineParams: engineParams,
         timeBufferBetweenTripsInSec: BigInt(dataToSave.timeBufferBetweenTripsInMin * 60),
-        insuranceIncluded: dataToSave.isInsuranceIncluded,
+        insuranceRequired: dataToSave.isGuestInsuranceRequired,
+        insurancePriceInUsdCents: BigInt(dataToSave.insurancePerDayPriceInUsd),
         locationInfo: location,
+        currentlyListed: dataToSave.currentlyListed,
       };
       const createInvestRequest = {
         car: request,
@@ -125,76 +121,20 @@ const useCreateInvestCar = () => {
         inProgress: true,
       };
 
-      const transaction = await rentalityContract.createCarInvestment(createInvestRequest, nftName, nftSym);
+      const transaction = await rentalityContracts.investment.createCarInvestment(createInvestRequest, nftName, nftSym);
       await transaction.wait();
-      return true;
+      return Ok(true);
     } catch (e) {
       console.error("Upload error" + e);
-      return false;
+      return Err("ERROR");
     } finally {
       setDataSaved(true);
     }
   }
 
-  async function updateCar(hostCarInfo: HostCarInfo) {
-    if (!rentalityContract) {
-      console.error("saveCar error: rentalityContract is null");
-      return false;
-    }
+ 
 
-    try {
-      setDataSaved(false);
-
-      const engineParams: bigint[] = [];
-      if (hostCarInfo.engineTypeText === ENGINE_TYPE_PETROL_STRING) {
-        engineParams.push(BigInt(hostCarInfo.fuelPricePerGal * 100));
-      } else if (hostCarInfo.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING) {
-        engineParams.push(BigInt(hostCarInfo.fullBatteryChargePrice * 100));
-      }
-
-      const updateCarRequest: ContractUpdateCarInfoRequest = {
-        carId: BigInt(hostCarInfo.carId),
-        currentlyListed: hostCarInfo.currentlyListed,
-        engineParams: engineParams,
-        pricePerDayInUsdCents: BigInt(hostCarInfo.pricePerDay * 100),
-        milesIncludedPerDay: BigInt(
-          isUnlimitedMiles(hostCarInfo.milesIncludedPerDay) ? UNLIMITED_MILES_VALUE : hostCarInfo.milesIncludedPerDay
-        ),
-        timeBufferBetweenTripsInSec: BigInt(hostCarInfo.timeBufferBetweenTripsInMin * 60),
-        securityDepositPerTripInUsdCents: BigInt(hostCarInfo.securityDeposit * 100),
-        insuranceIncluded: hostCarInfo.isInsuranceIncluded,
-      };
-
-      let transaction: ContractTransactionResponse;
-
-      if (hostCarInfo.isLocationEdited) {
-        const location: ContractSignedLocationInfo = {
-          locationInfo: mapLocationInfoToContractLocationInfo(hostCarInfo.locationInfo),
-          signature: "",
-        };
-
-        console.log(`location: ${JSON.stringify(location)}`);
-
-        transaction = await rentalityContract.updateCarInfoWithLocation(
-          updateCarRequest,
-          location,
-          process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ""
-        );
-      } else {
-        transaction = await rentalityContract.updateCarInfo(updateCarRequest);
-      }
-
-      await transaction.wait();
-      setDataSaved(true);
-      return true;
-    } catch (e) {
-      console.error("Upload error" + e);
-      setDataSaved(true);
-      return false;
-    }
-  }
-
-  return { dataSaved, createInvest, updateCar } as const;
+  return { dataSaved, createInvest } as const;
 };
 
 export default useCreateInvestCar;

@@ -3,6 +3,7 @@ import {TFunction} from "@/utils/i18n";
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
 import useCreateInvestCar from "@/hooks/host/useCreateInvestCar";
 import {useState} from "react";
+import { HostCarInfo } from "@/model/HostCarInfo";
 
 /// TODO: checkInputs on correctness
 export default function CreateCarInvestment({t}: { t: TFunction }) {
@@ -65,10 +66,10 @@ export default function CreateCarInvestment({t}: { t: TFunction }) {
             </div>
             <CarEditForm
                 isNewCar={true}
-                saveCarInfo={async (hostCarInfo, image) => {
+                saveCarInfo={async (hostCarInfo: HostCarInfo) => {
                     let price = Number.parseInt(carPrice.toString())
                     let percents = Number.parseInt(hostPercentage.toString())
-                    return await createInvest(hostCarInfo, image, price, percents, nftName, nftSym);
+                    return await createInvest(hostCarInfo, price, percents, nftName, nftSym);
                 }}
                 t={t}
             />
