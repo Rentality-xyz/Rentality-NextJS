@@ -86,7 +86,8 @@ const useProfileSettings = () => {
 
     try {
       const localReferralHash = getLocalReferralCode();
-      const referralHash = !isEmpty(localReferralHash) ? localReferralHash : ZERO_4_BYTES_HASH;
+      const referralHash =
+        !isEmpty(localReferralHash) && localReferralHash.startsWith("0x") ? localReferralHash : ZERO_4_BYTES_HASH;
 
       console.log("referralHash", JSON.stringify(referralHash, null, 2));
 
