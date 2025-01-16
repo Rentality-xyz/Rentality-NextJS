@@ -41,7 +41,7 @@ const useProfileSettings = () => {
   const { rentalityContracts } = useRentality();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [profileSettings, setProfileSettings] = useState<ProfileSettings>(emptyProfileSettings);
-  const { getLocalReferralCode } = useReferralLinkLocalStorage();
+  const { getLocalReferralCode, resetReferralCode } = useReferralLinkLocalStorage();
 
   const getProfileSettings = async (rentalityContract: IRentalityContract | null) => {
     try {
@@ -101,6 +101,7 @@ const useProfileSettings = () => {
       );
 
       await transaction.wait();
+      resetReferralCode();
       return true;
     } catch (e) {
       console.error("saveProfileSettings error:" + e);
