@@ -41,6 +41,7 @@ import {
   ContractProgramHistory,
   ContractCheckPromoDTO,
   ContractMyRefferalInfoDTO,
+  ContractAdminKYCInfoDTO,
 } from "./schemas";
 
 export interface IRentalityContract {
@@ -223,7 +224,7 @@ export interface IRentalityAdminGateway {
   manageTearInfo(tear: Tear, from: number, to: number): Promise<void>;
 
   getRefferalPointsInfo(): Promise<ContractAllRefferalInfoDTO>;
-  getPlatformUsersInfo(): Promise<ContractFullKYCInfoDTO[]>;
+  getPlatformUsersInfo(): Promise<ContractAdminKYCInfoDTO[]>;
 }
 
 export interface IRentalityChatHelperContract {
