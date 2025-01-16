@@ -30,16 +30,16 @@ function CarPhotosLayout({ carPhotos }: { carPhotos: string[] }) {
   if (carPhotos.length <= 1) return <CarPhoto carImageUrl={carPhotos[0]} />;
   if (carPhotos.length === 2)
     return (
-      <div className="grid h-full w-full grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+      <div className="grid h-full max-h-[22rem] w-full grid-cols-[minmax(0,3fr)_minmax(0,2fr)] fullHD:max-h-[30rem]">
         <CarPhoto carImageUrl={carPhotos[0]} />
         <CarPhoto carImageUrl={carPhotos[1]} />
       </div>
     );
   if (carPhotos.length === 3)
     return (
-      <div className="grid h-full w-full grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+      <div className="grid h-full max-h-[22rem] w-full grid-cols-[minmax(0,3fr)_minmax(0,2fr)] fullHD:max-h-[30rem]">
         <CarPhoto carImageUrl={carPhotos[0]} />
-        <div className="grid grid-rows-2">
+        <div className="grid max-h-[22rem] grid-rows-2 fullHD:max-h-[30rem]">
           <CarPhoto carImageUrl={carPhotos[1]} />
           <CarPhoto carImageUrl={carPhotos[2]} />
         </div>
@@ -47,9 +47,9 @@ function CarPhotosLayout({ carPhotos }: { carPhotos: string[] }) {
     );
   if (carPhotos.length === 4)
     return (
-      <div className="grid h-full w-full grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+      <div className="grid h-full max-h-[22rem] w-full grid-cols-[minmax(0,3fr)_minmax(0,2fr)] fullHD:max-h-[30rem]">
         <CarPhoto carImageUrl={carPhotos[0]} />
-        <div className="grid grid-rows-[minmax(0,3fr)_minmax(0,2fr)]">
+        <div className="grid max-h-[22rem] grid-rows-[minmax(0,3fr)_minmax(0,2fr)] fullHD:max-h-[30rem]">
           <CarPhoto carImageUrl={carPhotos[1]} />
           <div className="grid grid-cols-2">
             <CarPhoto carImageUrl={carPhotos[2]} />
@@ -60,9 +60,9 @@ function CarPhotosLayout({ carPhotos }: { carPhotos: string[] }) {
     );
 
   return (
-    <div className="grid h-full w-full grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+    <div className="grid h-full max-h-[22rem] w-full grid-cols-[minmax(0,3fr)_minmax(0,2fr)] fullHD:max-h-[30rem]">
       <CarPhoto carImageUrl={carPhotos[0]} />
-      <div className="grid grid-rows-[minmax(0,3fr)_minmax(0,2fr)]">
+      <div className="grid max-h-[22rem] grid-rows-[minmax(0,3fr)_minmax(0,2fr)] fullHD:max-h-[30rem]">
         <div className={cn("grid", carPhotos.length > 4 ? "grid-cols-2" : "")}>
           {carPhotos[1] && <CarPhoto carImageUrl={carPhotos[1]} />}
           {carPhotos[4] && <CarPhoto carImageUrl={carPhotos[4]} />}
