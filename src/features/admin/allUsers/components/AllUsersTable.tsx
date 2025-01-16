@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Avatar } from "@mui/material";
 import { dateFormatLongMonthYearDateTime, dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { AdminUserDetails } from "../models";
+import { formatAddress } from "@/utils/addressFormatters";
 
 interface AllUsersTableProps {
   isLoading: boolean;
@@ -62,7 +63,7 @@ function AllUsersTable({ isLoading, data }: AllUsersTableProps) {
                     sx={{ width: "3rem", height: "3rem" }}
                   ></Avatar>
                 </td>
-                <td className={rowSpanClassName}>{userDetails.walletAddress}</td>
+                <td className={rowSpanClassName}>{formatAddress(userDetails.walletAddress, 5, 4)}</td>
                 <td className={rowSpanClassName}>{dateFormatLongMonthYearDateTime(userDetails.createDate)}</td>
                 <td className={rowSpanClassName}>{userDetails.name}</td>
                 <td className={rowSpanClassName}>{userDetails.issueCountry}</td>
