@@ -15,6 +15,7 @@ export default function ReferralLinks() {
   const inviteLink = !isEmpty(inviteHash)
     ? new URL(`/referralLink/${inviteHash}`, window.location.origin).toString()
     : "";
+  const inviteCode = !isEmpty(inviteHash) ? (inviteHash.startsWith("0x") ? inviteHash.slice(2) : inviteHash) : "";
 
   return (
     <div className="rounded-lg bg-rentality-bg-left-sidebar p-3">
@@ -29,7 +30,7 @@ export default function ReferralLinks() {
             style={{ color: "white" }}
             readOnly={true}
             type="text"
-            value={inviteHash}
+            value={inviteCode}
           />
           <RntButton
             className="ml-auto flex w-16 items-center justify-center text-white md:w-36"
