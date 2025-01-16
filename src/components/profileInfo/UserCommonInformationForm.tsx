@@ -41,6 +41,7 @@ function UserCommonInformationForm({
       profilePhotoUrl: savedProfileSettings.profilePhotoUrl,
       nickname: savedProfileSettings.nickname,
       phoneNumber: savedProfileSettings.phoneNumber,
+      email: savedProfileSettings.email,
       tcSignature: savedProfileSettings.tcSignature,
     },
     resolver: zodResolver(userCommonInformationFormSchema),
