@@ -1,9 +1,9 @@
 import { useRentalityAdmin } from "@/contexts/rentalityContext";
-import { validateContractFullKYCInfoDTO } from "@/model/blockchain/schemas_utils";
+import { validateContractAdminKYCInfoDTO } from "@/model/blockchain/schemas_utils";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { bigIntReplacer } from "@/utils/json";
 import { useCallback, useState } from "react";
-import { mapContractFullKYCInfoDTOToAdminUserDetails } from "../models/mappers";
+import { mapContractAdminKYCInfoDTOToAdminUserDetails } from "../models/mappers";
 import { AdminUserDetails } from "../models";
 
 export enum UserType {
@@ -46,12 +46,12 @@ function useAdminAllUsers() {
 
         const platformUsersInfos = await admin.getPlatformUsersInfo(); //(contractFilters, BigInt(page), BigInt(itemsPerPage));
         if (platformUsersInfos.length > 0) {
-          validateContractFullKYCInfoDTO(platformUsersInfos[0]);
+          validateContractAdminKYCInfoDTO(platformUsersInfos[0]);
         }
 
         const data: AdminUserDetails[] = await Promise.all(
           platformUsersInfos.map(async (platformUsersInfo) => {
-            return mapContractFullKYCInfoDTOToAdminUserDetails(platformUsersInfo);
+            return mapContractAdminKYCInfoDTOToAdminUserDetails(platformUsersInfo);
           })
         );
 
