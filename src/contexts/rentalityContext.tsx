@@ -1,6 +1,7 @@
 import {
   IRentalityAdminGateway,
   IRentalityContract,
+  IRentalityCurrencyConverterContract,
   IRentalityInvestment,
   IRentalityReferralProgramContract,
 } from "@/model/blockchain/IRentalityContract";
@@ -13,6 +14,7 @@ interface IRentalityContracts {
   gateway: IRentalityContract;
   referralProgram: IRentalityReferralProgramContract;
   investment: IRentalityInvestment;
+  currencyConverter: IRentalityCurrencyConverterContract;
 }
 
 interface RentalityContextType {
@@ -75,10 +77,16 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         return;
       }
 
+      let currencyConverter = (await getEtherContractWithSigner(
+        "currencyConverter",
+        ethereumInfo.signer
+      )) as unknown as IRentalityCurrencyConverterContract;
+
       setRentalityContracts({
         gateway: rentalityGateway,
         referralProgram: rentalityRefferalPogram,
-        investment: rentalityInvestment
+        investment: rentalityInvestment,
+        currencyConverter
       });
     };
 

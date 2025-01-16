@@ -7,7 +7,7 @@ import { IRentalityCurrencyConverterContract, IRentalityInvestment } from "@/mod
 import { getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 const useGetInvestments = () => {
-  const rentalityContract = useRentality();
+  const {rentalityContracts} = useRentality();
   const ethereumInfo = useEthereum();
   const [investments, setInvestments] = useState<InvestmentWithMetadata[]>([]);
   const [isLoading, setIsLoading] = useState<Boolean>(true);
@@ -20,45 +20,37 @@ const useGetInvestments = () => {
 
   const handleClaimIncome = async (investId: number) => {
     if (!ethereumInfo) return;
-    if (!rentalityContract) return;
+    if (!rentalityContracts) return;
 
-    await rentalityContract.claimAllMy(investId);
+    await rentalityContracts.investment.claimAllMy(investId);
   };
 
   const handleStartHosting = async (investId: number) => {
     if (!ethereumInfo) return;
-    let contract = (await getEtherContractWithSigner(
-      "investService",
-      ethereumInfo.signer
-    )) as unknown as IRentalityInvestment;
-    await contract.claimAndCreatePool(investId);
+    if (!rentalityContracts) return;
+    await rentalityContracts.investment.claimAndCreatePool(investId);
   };
   const handleInvest = async (amount: number, investId: number) => {
     if (!ethereumInfo) return;
-    if (!rentalityContract) return;
-    let contract = (await getEtherContractWithSigner(
-      "currencyConverter",
-      ethereumInfo.signer
-    )) as unknown as IRentalityCurrencyConverterContract;
-    const {valueInEth} = await contract.getFromUsdLatest(ETH_DEFAULT_ADDRESS, BigInt(amount * 100));
-    await rentalityContract.invest(investId, { value: valueInEth });
+    if (!rentalityContracts) return;
+   
+    const {valueInEth} = await rentalityContracts.currencyConverter.getFromUsdLatest(ETH_DEFAULT_ADDRESS, BigInt(amount * 100));
+    await rentalityContracts.investment.invest(investId, { value: valueInEth });
   };
 
   useEffect(() => {
     let initialize = async () => {
+      if (!rentalityContracts) return;
       if (!ethereumInfo) return;
-      let contract = (await getEtherContractWithSigner(
-        "investService",
-        ethereumInfo.signer
-      )) as unknown as IRentalityInvestment;
-      let investmentInfo = await contract.getAllInvestments();
+     
+      let investmentInfo = await rentalityContracts.investment.getAllInvestments();
 
       const result = await Promise.all(
         investmentInfo.map(async (value) => {
           const metadata = parseMetaData(await getMetaDataFromIpfs(value.investment.car.tokenUri));
           return {
             investment: value,
-            metadata,
+            metadata: {...metadata, image: metadata.mainImage},
           };
         })
       );
@@ -67,8 +59,8 @@ const useGetInvestments = () => {
       // setUpdate(false)
     };
     initialize();
-  }, [ethereumInfo, rentalityContract]);
+  }, [ethereumInfo, rentalityContracts]);
 
   return { isLoading, investments, updateData, handleInvest, address, handleStartHosting, handleClaimIncome } as const;
-};
+}
 export default useGetInvestments;
