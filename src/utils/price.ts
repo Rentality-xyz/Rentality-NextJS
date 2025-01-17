@@ -1,29 +1,26 @@
 import { SearchCarInfo, SearchCarInfoDetails } from "@/model/SearchCarsResult";
 
 export function getDiscountablePrice(
-  pricePerDay: number,
-  tripDays: number,
+  totalPricePerDayWithHostDiscount: number,
   pickUpFee: number,
   dropOfFee: number,
   salesTax: number,
   governmentTax: number
 ) {
-  return pricePerDay * tripDays + pickUpFee + dropOfFee + salesTax + governmentTax;
+  return totalPricePerDayWithHostDiscount + pickUpFee + dropOfFee + salesTax + governmentTax;
 }
 
 export function getDiscountablePriceFromCarInfo(carInfo: SearchCarInfoDetails | SearchCarInfo) {
   return "salesTax" in carInfo
     ? getDiscountablePrice(
-        carInfo.pricePerDayWithDiscount,
-        carInfo.tripDays,
+        carInfo.pricePerDayWithHostDiscount * carInfo.tripDays,
         carInfo.deliveryDetails.pickUp.priceInUsd,
         carInfo.deliveryDetails.dropOff.priceInUsd,
         carInfo.salesTax,
         carInfo.governmentTax
       )
     : getDiscountablePrice(
-        carInfo.pricePerDayWithDiscount,
-        carInfo.tripDays,
+        carInfo.pricePerDayWithHostDiscount * carInfo.tripDays,
         carInfo.deliveryDetails.pickUp.priceInUsd,
         carInfo.deliveryDetails.dropOff.priceInUsd,
         carInfo.taxes,
@@ -43,6 +40,14 @@ export function getNotDiscountablePriceFromCarInfo(carInfo: SearchCarInfoDetails
   return getNotDiscountablePrice(insuranceCharge, carInfo.securityDeposit);
 }
 
+export function getPromoPrice(carInfo: SearchCarInfoDetails | SearchCarInfo, promoValue: number) {
+  if (promoValue <= 0) return getDiscountablePriceFromCarInfo(carInfo) + getNotDiscountablePriceFromCarInfo(carInfo);
+  if (promoValue === 100) return 0;
+  return (
+    getDiscountablePriceFromCarInfo(carInfo) * (1 - promoValue / 100) + getNotDiscountablePriceFromCarInfo(carInfo)
+  );
+}
+
 export function getTotalPrice(
   pricePerDay: number,
   tripDays: number,
@@ -54,7 +59,7 @@ export function getTotalPrice(
   securityDeposit: number
 ) {
   return (
-    getDiscountablePrice(pricePerDay, tripDays, pickUpFee, dropOfFee, salesTax, governmentTax) +
+    getDiscountablePrice(pricePerDay * tripDays, pickUpFee, dropOfFee, salesTax, governmentTax) +
     getNotDiscountablePrice(insuranceFee, securityDeposit)
   );
 }

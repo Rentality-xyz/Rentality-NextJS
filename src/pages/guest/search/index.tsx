@@ -23,11 +23,9 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "@/components/common/rntSuspense";
 import useGuestInsurance from "@/hooks/guest/useGuestInsurance";
-import EnterPromoDialog from "@/features/promocodes/components/dialogs/EnterPromoDialog";
-import { getDiscountablePriceFromCarInfo, getNotDiscountablePriceFromCarInfo } from "@/utils/price";
 import { EMPTY_PROMOCODE } from "@/utils/constants";
 
-export default function Search() {
+function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
 
   const [isLoading, searchAvailableCars, searchResult, sortSearchResult, setSearchResult] = useSearchCars();
@@ -44,6 +42,22 @@ export default function Search() {
   const { isLoading: isLoadingInsurance, guestInsurance } = useGuestInsurance();
   const { t } = useTranslation();
 
+  useEffect(() => {
+    if (ethereumInfo === undefined) return;
+
+    if (!(ethereumInfo?.isWalletConnected ?? false)) {
+      const action = (
+        <>
+          {DialogActions.Button(t("common.info.login"), () => {
+            hideDialogs();
+            login();
+          })}
+        </>
+      );
+      showDialog(t("common.info.connect_wallet"), action);
+    }
+  }, [ethereumInfo]);
+
   const handleSearchClick = async (request: SearchCarRequest) => {
     updateSearchParams(request, searchCarFilters);
     searchAvailableCars(request, searchCarFilters);
@@ -57,51 +71,6 @@ export default function Search() {
   useEffect(() => {
     searchAvailableCars(searchCarRequest, searchCarFilters);
   }, []);
-
-  const handleRentCarRequest = async (carInfo: SearchCarInfo) => {
-    if (!isAuthenticated) {
-      const action = (
-        <>
-          {DialogActions.Button(t("common.info.login"), () => {
-            hideDialogs();
-            login();
-          })}
-          {/*{DialogActions.Cancel(hideDialogs)}*/}
-        </>
-      );
-      showDialog(t("common.info.connect_wallet"), action);
-      return;
-    }
-
-    if (isEmpty(searchResult.searchCarRequest.dateFromInDateTimeStringFormat)) {
-      showError(t("search_page.errors.date_from"));
-      return;
-    }
-    if (isEmpty(searchResult.searchCarRequest.dateToInDateTimeStringFormat)) {
-      showError(t("search_page.errors.date_to"));
-      return;
-    }
-
-    if (carInfo.tripDays < 0) {
-      showError(t("search_page.errors.date_eq"));
-      return;
-    }
-    if (carInfo.ownerAddress === userInfo?.address) {
-      showError(t("search_page.errors.own_car"));
-      return;
-    }
-
-    showCustomDialog(
-      <EnterPromoDialog
-        days={carInfo.tripDays}
-        priceDiscountable={getDiscountablePriceFromCarInfo(carInfo)}
-        priceNotDiscountable={getNotDiscountablePriceFromCarInfo(carInfo)}
-        createTripRequest={async (promo) => {
-          createTripWithPromo(carInfo, promo);
-        }}
-      />
-    );
-  };
 
   async function createTripWithPromo(carInfo: SearchCarInfo, promoCode?: string) {
     if (!isAuthenticated) {
@@ -158,9 +127,12 @@ export default function Search() {
     }
   }
 
-  function handleShowRequestDetails(carInfo: SearchCarInfo) {
-    router.push(`/guest/createTrip?${createQueryString(searchCarRequest, searchCarFilters, carInfo.carId)}`);
-  }
+  const getRequestDetailsLink = useCallback(
+    (carId: number) => {
+      return `/guest/createTrip?${createQueryString(searchCarRequest, searchCarFilters, carId)}`;
+    },
+    [searchCarRequest, searchCarFilters]
+  );
 
   const setHighlightedCar = useCallback(
     (carID: number) => {
@@ -238,12 +210,14 @@ export default function Search() {
                       <CarSearchItem
                         key={value.carId}
                         searchInfo={value}
-                        handleRentCarRequest={handleRentCarRequest}
+                        handleRentCarRequest={createTripWithPromo}
                         disableButton={requestSending}
                         isSelected={value.highlighted}
                         setSelected={setHighlightedCar}
-                        handleShowRequestDetails={handleShowRequestDetails}
+                        getRequestDetailsLink={getRequestDetailsLink}
                         isGuestHasInsurance={!isLoadingInsurance && !isEmpty(guestInsurance.photo)}
+                        startDateTimeStringFormat={searchResult.searchCarRequest.dateFromInDateTimeStringFormat}
+                        endDateTimeStringFormat={searchResult.searchCarRequest.dateToInDateTimeStringFormat}
                       />
                     </div>
                   );
@@ -293,3 +267,7 @@ export default function Search() {
     </APIProvider>
   );
 }
+
+Search.allowAnonymousAccess = true;
+
+export default Search;

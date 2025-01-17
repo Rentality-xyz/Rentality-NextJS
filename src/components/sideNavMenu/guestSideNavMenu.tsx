@@ -69,6 +69,7 @@ function GuestNavMenu() {
           icon={MenuIcons.Messages}
           notificationCount={messagesNotificationCount}
         />
+          <SideNavMenuItem text={"Invest"} href="/guest/invest" icon={MenuIcons.Invest} />
         <SideNavMenuItem
           text={t_nav("notifications")}
           href="/guest/notifications"
@@ -90,7 +91,6 @@ function GuestNavMenu() {
           href="/guest/transaction_history"
           icon={MenuIcons.TransactionHistory}
         />
-        <SideNavMenuItem text={"Invest"} href="/guest/invest" icon={MenuIcons.Invest} />
         <SideNavMenuItem
           text={t_nav("referrals_and_points")}
           href="/guest/points"

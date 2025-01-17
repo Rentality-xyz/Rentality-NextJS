@@ -7,12 +7,12 @@ export default function CreateInvest() {
   const { t } = useTranslation();
 
   return (
-    <Layout>
+    <>
       <div className="flex flex-col gap-4">
         <PageTitle title={"Create investment"} />
 
         <CreateCarInvestment t={t} />
       </div>
-    </Layout>
+    </>
   );
 }

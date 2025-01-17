@@ -11,6 +11,7 @@ export default function Document() {
           rel="stylesheet"
           href="https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css"
         />
+        <link rel="preload" href="/platform_loader.gif" as="image" />
         {env.NEXT_PUBLIC_FB_PIXEL_ID > 0 && (
           <noscript>
             {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -13,7 +13,6 @@ import { JsonRpcProvider, Wallet } from "ethers";
 import { ContractCivicKYCInfo } from "@/model/blockchain/schemas";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
-import { ZERO_HASH } from "@/utils/wallet";
 
 export type RetrieveCivicDataRequest = {
   requestId: string;
@@ -417,7 +416,7 @@ async function saveKycInfo(
     return Err("rentality is null");
   }
   try {
-    const transaction = await rentality.setCivicKYCInfo(verifiedInformation.address, contractCivicKYCInfo, ZERO_HASH);
+    const transaction = await rentality.setCivicKYCInfo(verifiedInformation.address, contractCivicKYCInfo);
     await transaction.wait();
     return Ok(true);
   } catch (e) {

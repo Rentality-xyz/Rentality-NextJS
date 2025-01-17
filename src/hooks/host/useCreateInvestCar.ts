@@ -113,6 +113,7 @@ const useCreateInvestCar = () => {
         insurancePriceInUsdCents: BigInt(dataToSave.insurancePerDayPriceInUsd),
         locationInfo: location,
         currentlyListed: dataToSave.currentlyListed,
+        dimoTokenId: BigInt(0),
       };
       const createInvestRequest = {
         car: request,

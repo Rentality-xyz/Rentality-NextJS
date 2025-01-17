@@ -57,6 +57,7 @@ export type ContractCreateCarRequest = {
   currentlyListed: boolean;
   insuranceRequired: boolean;
   insurancePriceInUsdCents: bigint;
+  dimoTokenId: bigint;
 };
 
 export type ContractUpdateCarInfoRequest = {
@@ -165,6 +166,7 @@ export type ContractTripDTO = {
   insurancesInfo: ContractInsuranceInfo[];
   paidForInsuranceInUsdCents: bigint;
   guestDrivingLicenseIssueCountry: string;
+  promoDiscount: bigint;
 };
 
 export type ContractChatInfo = {
@@ -481,6 +483,7 @@ export type ContractAdminTripDTO = {
   trip: ContractTrip;
   carMetadataURI: string;
   carLocation: ContractLocationInfo;
+  promoInfo: ContractPromoDTO;
 };
 
 export type ContractAllTripsDTO = {
@@ -575,6 +578,11 @@ export type ContractRefferalHistory = {
   method: RefferalProgram;
 };
 
+export type ContractMyRefferalInfoDTO = {
+  myHash: string;
+  savedHash: string;
+};
+
 export type ContractHistory = {
   points: bigint;
   date: bigint;
@@ -663,6 +671,12 @@ export type ContractCheckPromoDTO = {
   isValid: boolean;
   isDiscount: boolean;
   value: bigint;
+};
+
+export type ContractPromoDTO = {
+  promoCode: string;
+  promoCodeValueInPercents: bigint;
+  promoCodeEnterDate: bigint;
 };
 
 export type TripStatus = bigint;

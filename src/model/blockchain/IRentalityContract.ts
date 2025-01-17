@@ -25,10 +25,7 @@ import {
   ContractInsuranceDTO,
   ContractInsuranceInfo,
   ContractLocationInfo,
-  ContractProgramHistory,
   ContractPublicHostCarDTO,
-  ContractReadyToClaimDTO,
-  ContractRefferalHashDTO,
   ContractSaveInsuranceRequest,
   ContractSearchCarParams,
   ContractSearchCarWithDistance,
@@ -37,8 +34,16 @@ import {
   ContractTripFilter,
   ContractTripReceiptDTO,
   ContractUpdateCarInfoRequest,
+  ContractReadyToClaimDTO,
+  RefferalAccrualType,
+  ContractRefferalHashDTO,
+  RefferalProgram,
   InvestmentDTO,
   Role,
+  Tear,
+  ContractProgramHistory,
+  ContractCheckPromoDTO,
+  ContractMyRefferalInfoDTO,
 } from "./schemas";
 
 export interface IRentalityContract {
@@ -217,7 +222,6 @@ export interface IRentalityAdminGateway {
   withdrawAllFromPlatform(currencyType: string): Promise<ContractTransactionResponse>;
   setPlatformFeeInPPM(valueInPPM: bigint): Promise<ContractTransactionResponse>;
   updateGeoServiceAddress(newGeoServiceAddress: string): Promise<ContractTransactionResponse>;
-  updateGeoParserAddress(newGeoParserAddress: string): Promise<ContractTransactionResponse>;
   setClaimsWaitingTime(timeInSec: bigint): Promise<ContractTransactionResponse>;
   getClaimWaitingTime(): Promise<bigint>;
   getPlatformFeeInPPM(): Promise<bigint>;
@@ -232,6 +236,20 @@ export interface IRentalityAdminGateway {
 
   getKycCommission(): Promise<bigint>;
   setKycCommission(valueInUsdCents: bigint): Promise<ContractTransactionResponse>;
+
+  manageRefferalBonusAccrual(
+    accrualType: RefferalAccrualType,
+    program: RefferalProgram,
+    points: number,
+    pointsWithReffHash: number
+  ): Promise<void>;
+
+  manageRefferalDiscount(program: RefferalProgram, tear: Tear, points: number, percents: number): Promise<void>;
+
+  manageTearInfo(tear: Tear, from: number, to: number): Promise<void>;
+
+  getRefferalPointsInfo(): Promise<ContractAllRefferalInfoDTO>;
+  getPlatformUsersInfo(): Promise<ContractFullKYCInfoDTO[]>;
 }
 
 export interface IRentalityChatHelperContract {
@@ -279,6 +297,7 @@ export interface IRentalityReferralProgramContract {
   getPointsHistory(): Promise<ContractProgramHistory[]>;
 
   getReadyToClaim(user: string): Promise<ContractReadyToClaimDTO>;
+  getMyRefferalInfo(): Promise<ContractMyRefferalInfoDTO>;
 }
 
 

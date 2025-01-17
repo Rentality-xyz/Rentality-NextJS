@@ -1,5 +1,7 @@
 import TripInfo from "@/components/tripDetails/TripDetails";
 
-export default function AdminTripDetails() {
+function AdminTripDetails() {
   return <TripInfo />;
 }
+
+export default AdminTripDetails;
