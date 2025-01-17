@@ -94,6 +94,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 milesIncludedPerDay: milesIncludedPerDay,
                 currentlyListed: i.currentlyListed,
                 isEditable: false,
+                dimoTokenId: 0,
+                vinNumber: ""
               };
               return item;
             })

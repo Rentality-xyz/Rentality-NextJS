@@ -116,8 +116,7 @@
                       ]
                     },
                     { "type": "string", "name": "carVinNumber" },
-                    { "type": "string", "name": "carMetadataURI" },
-                    { "type": "uint256", "name": "dimoTokenId" }
+                    { "type": "string", "name": "carMetadataURI" }
                   ]
                 },
                 { "type": "string", "name": "carMetadataURI" }
@@ -316,25 +315,7 @@
     },
     {
       "type": "function",
-      "name": "getDimoService",
-      "constant": true,
-      "stateMutability": "view",
-      "payable": false,
-      "inputs": [],
-      "outputs": [{ "type": "address", "name": "" }]
-    },
-    {
-      "type": "function",
       "name": "getInsuranceService",
-      "constant": true,
-      "stateMutability": "view",
-      "payable": false,
-      "inputs": [],
-      "outputs": [{ "type": "address", "name": "" }]
-    },
-    {
-      "type": "function",
-      "name": "getInvestmentAddress",
       "constant": true,
       "stateMutability": "view",
       "payable": false,
@@ -367,45 +348,6 @@
       "payable": false,
       "inputs": [],
       "outputs": [{ "type": "uint32", "name": "" }]
-    },
-    {
-      "type": "function",
-      "name": "getPlatformUsersInfo",
-      "constant": true,
-      "stateMutability": "view",
-      "payable": false,
-      "inputs": [],
-      "outputs": [
-        {
-          "type": "tuple[]",
-          "name": "result",
-          "components": [
-            {
-              "type": "tuple",
-              "name": "kyc",
-              "components": [
-                { "type": "string", "name": "name" },
-                { "type": "string", "name": "surname" },
-                { "type": "string", "name": "mobilePhoneNumber" },
-                { "type": "string", "name": "profilePhoto" },
-                { "type": "string", "name": "licenseNumber" },
-                { "type": "uint64", "name": "expirationDate" },
-                { "type": "uint256", "name": "createDate" },
-                { "type": "bool", "name": "isTCPassed" },
-                { "type": "bytes", "name": "TCSignature" }
-              ]
-            },
-            {
-              "type": "tuple",
-              "name": "additionalKYC",
-              "components": [
-                { "type": "string", "name": "issueCountry" },
-                { "type": "string", "name": "email" }
-              ]
-            }
-          ]
-        }
-      ]
     },
     {
       "type": "function",
@@ -560,9 +502,7 @@
         { "type": "address", "name": "insuranceServiceAddress" },
         { "type": "address", "name": "rentalityTripsViewAddress" },
         { "type": "address", "name": "refferalProgramAddress" },
-        { "type": "address", "name": "promoServiceAddress" },
-        { "type": "address", "name": "dimoServiceAddress" },
-        { "type": "address", "name": "investmentAddress" }
+        { "type": "address", "name": "promoServiceAddress" }
       ],
       "outputs": []
     },
@@ -770,26 +710,10 @@
     },
     {
       "type": "function",
-      "name": "updateDimoService",
-      "constant": false,
-      "payable": false,
-      "inputs": [{ "type": "address", "name": "dimoServiceAddress" }],
-      "outputs": []
-    },
-    {
-      "type": "function",
       "name": "updateGeoServiceAddress",
       "constant": false,
       "payable": false,
       "inputs": [{ "type": "address", "name": "newGeoServiceAddress" }],
-      "outputs": []
-    },
-    {
-      "type": "function",
-      "name": "updateInvestmentAddress",
-      "constant": false,
-      "payable": false,
-      "inputs": [{ "type": "address", "name": "investmentAddress" }],
       "outputs": []
     },
     {

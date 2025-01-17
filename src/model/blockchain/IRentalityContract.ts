@@ -77,7 +77,7 @@ export interface IRentalityContract {
   getCarMetadataURI(carId: bigint): Promise<string>;
   getCarInfoById(carId: bigint): Promise<ContractCarInfoWithInsurance>;
   getCarDetails(carId: bigint): Promise<ContractCarDetails>;
-
+  saveDimoTokenIds(dimoTokenIds: number[], carIds: number[]): Promise<ContractTransactionResponse>;
   getDiscount(user: string): Promise<ContractBaseDiscount>;
   addUserDiscount(discounts: ContractBaseDiscount): Promise<ContractTransactionResponse>;
   addUserDeliveryPrices(
@@ -161,6 +161,9 @@ export interface IRentalityContract {
 
   //PROMO functions
   checkPromo(code: string, startDateTime: bigint, endDateTime: bigint): Promise<ContractCheckPromoDTO>;
+
+  // DIMO functions
+  saveDimoTokenIds(dimoTokenIds: bigint[], rentalityCarIds: bigint[]): Promise<ContractTransactionResponse>;
 
   /// GENERAL functions
   address: string;
@@ -265,7 +268,7 @@ export interface IRentalityCurrencyConverterContract {
   getFromUsdLatest(
     currency: string,
     valueInUsdCents: bigint
-  ): Promise<{ valueInEth: bigint; ethToUsdRate: bigint; ethToUsdDecimals: bigint }>;
+  ): Promise<[bigint]>;
   getUsdFromEthLatest(
     valueInEth: bigint
   ): Promise<{ valueInUsdCents: bigint; ethToUsdRate: bigint; ethToUsdDecimals: bigint }>;

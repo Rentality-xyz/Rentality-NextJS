@@ -25,6 +25,10 @@ import FacebookPixelScript from "@/components/marketing/FacebookPixelScript";
 import PlatformInitChecker from "@/components/common/PlatformInitChecker";
 import WalletConnectChecker from "@/components/common/WalletConnectChecker";
 import { NextComponentType, NextPageContext } from "next";
+import dynamic from "next/dynamic";
+
+const DimoAuthProvider = dynamic(() => import('@dimo-network/login-with-dimo').then(mod => mod.DimoAuthProvider), { ssr: false });
+
 
 type CustomAppProps = AppProps & {
   Component: NextComponentType<NextPageContext, any, any> & { allowAnonymousAccess?: boolean };
@@ -54,6 +58,7 @@ export default function App({ Component, pageProps }: CustomAppProps) {
       <FacebookPixelScript />
       <Web3Setup>
         <RentalityProvider>
+          <DimoAuthProvider>
           <UserInfoProvider>
             <WagmiProvider config={wagmiConfig}>
               <QueryClientProvider client={queryClient}>
@@ -79,6 +84,7 @@ export default function App({ Component, pageProps }: CustomAppProps) {
               </QueryClientProvider>
             </WagmiProvider>
           </UserInfoProvider>
+          </DimoAuthProvider>
         </RentalityProvider>
       </Web3Setup>
     </>
