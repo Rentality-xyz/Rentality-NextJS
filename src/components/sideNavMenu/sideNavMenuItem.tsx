@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import MenuIcons, { getImageForMenu } from "@/components/sideNavMenu/menuIcons";
 import { useAppContext } from "@/contexts/appContext";
+import { cn } from "@/utils";
 
 export default function SideNavMenuItem({
   text,
@@ -27,8 +28,14 @@ export default function SideNavMenuItem({
     }
   };
 
+  let isSelected = false;
+  if (typeof window !== "undefined") {
+    const currentPathname = window.location.pathname;
+    isSelected = currentPathname === href && href.trim() !== "/";
+  }
+
   return (
-    <div className="flex h-12 py-1">
+    <div className={`flex h-12 py-1 pl-14 ${isSelected ? "rounded-r-full bg-rentality-primary" : ""}`}>
       <Link className="flex flex-row items-center gap-2" href={href} onClick={handleOnClick} target={target}>
         {icon != null && <Image src={getImageForMenu(icon)} width={30} height={30} alt="" />}
         <span>{text}</span>

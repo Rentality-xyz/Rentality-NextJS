@@ -27,9 +27,15 @@ export default function SideNavMenuGroup({
     }
   };
 
+  let isSelected = false;
+  if (typeof window !== "undefined") {
+    const currentPathname = window.location.pathname;
+    isSelected = currentPathname === href && href.trim() !== "/";
+  }
+
   return (
     <div>
-      <div className="py-2 text-xl font-bold">
+      <div className={`py-2 text-xl font-bold pl-14 ${isSelected ? "bg-rentality-primary rounded-r-full" : ""}`}>
         {href != null ? (
           <Link className="flex flex-row items-center gap-2" href={href} onClick={handleOnClick} target={target}>
             {icon != null && <Image src={getImageForMenu(icon)} width={30} height={30} alt="" />}
