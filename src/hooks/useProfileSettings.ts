@@ -43,41 +43,6 @@ const useProfileSettings = () => {
   const [profileSettings, setProfileSettings] = useState<ProfileSettings>(emptyProfileSettings);
   const { getLocalReferralCode, resetReferralCode } = useReferralLinkLocalStorage();
 
-  const getProfileSettings = async (rentalityContract: IRentalityContract | null) => {
-    try {
-      if (rentalityContract == null) {
-        console.error("getTrip error: contract is null");
-        return;
-      }
-      const myKYCInfo: ContractFullKYCInfoDTO = await rentalityContract.getMyFullKYCInfo();
-
-      if (myKYCInfo == null) return;
-
-      let myProfileSettings: ProfileSettings = {
-        profilePhotoUrl: getIpfsURI(myKYCInfo.kyc.profilePhoto),
-        nickname: myKYCInfo.kyc.name,
-        phoneNumber: formatPhoneNumber(myKYCInfo.kyc.mobilePhoneNumber),
-        tcSignature: myKYCInfo.kyc.TCSignature,
-        fullname: myKYCInfo.kyc.surname,
-        documentType: "driving license",
-        drivingLicenseNumber: myKYCInfo.kyc.licenseNumber,
-        drivingLicenseExpire:
-          myKYCInfo.kyc.expirationDate > 0
-            ? getDateFromBlockchainTimeWithTZ(myKYCInfo.kyc.expirationDate, UTC_TIME_ZONE_ID)
-            : undefined,
-        issueCountry: myKYCInfo.additionalKYC.issueCountry,
-        email: myKYCInfo.additionalKYC.email,
-      };
-      console.log("useProfileSettings.getProfileSettings() return data");
-      return myProfileSettings;
-    } catch (e) {
-      console.error(
-        `useProfileSettings.getProfileSettings() error | privy ready: ${ready} | Privy authenticated: ${authenticated} | error:`,
-        e
-      );
-    }
-  };
-
   const saveProfileSettings = async (newProfileSettings: ProfileSettings) => {
     if (!rentalityContracts) {
       console.error("saveProfileSettings error: rentalityContract is null");
@@ -110,6 +75,38 @@ const useProfileSettings = () => {
   };
 
   useEffect(() => {
+    const getProfileSettings = async (rentalityContract: IRentalityContract | null) => {
+      try {
+        if (rentalityContract == null) {
+          console.error("getTrip error: contract is null");
+          return;
+        }
+        const myKYCInfo: ContractFullKYCInfoDTO = await rentalityContract.getMyFullKYCInfo();
+
+        if (myKYCInfo == null) return;
+
+        let myProfileSettings: ProfileSettings = {
+          profilePhotoUrl: getIpfsURI(myKYCInfo.kyc.profilePhoto),
+          nickname: myKYCInfo.kyc.name,
+          phoneNumber: formatPhoneNumber(myKYCInfo.kyc.mobilePhoneNumber),
+          tcSignature: myKYCInfo.kyc.TCSignature,
+          fullname: myKYCInfo.kyc.surname,
+          documentType: "driving license",
+          drivingLicenseNumber: myKYCInfo.kyc.licenseNumber,
+          drivingLicenseExpire:
+            myKYCInfo.kyc.expirationDate > 0
+              ? getDateFromBlockchainTimeWithTZ(myKYCInfo.kyc.expirationDate, UTC_TIME_ZONE_ID)
+              : undefined,
+          issueCountry: myKYCInfo.additionalKYC.issueCountry,
+          email: myKYCInfo.additionalKYC.email,
+        };
+        console.log("useProfileSettings.getProfileSettings() return data");
+        return myProfileSettings;
+      } catch (e) {
+        console.error(`useProfileSettings.getProfileSettings() error:`, e);
+      }
+    };
+
     if (!rentalityContracts) return;
 
     getProfileSettings(rentalityContracts.gateway)
