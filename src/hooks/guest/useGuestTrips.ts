@@ -87,10 +87,10 @@ const useGuestTrips = () => {
         const endFuelLevelInPercents = BigInt(Number(params[0]) * 100);
         const endOdometr = BigInt(params[1]);
         /// TODO: get from input
-        let transaction = await rentalityContracts.gateway.checkOutByGuest(tripId, [
-          endFuelLevelInPercents,
-          endOdometr,
-        ]);
+        let transaction = await rentalityContracts.gateway.checkOutByGuest(
+          tripId,
+          [endFuelLevelInPercents, endOdometr]
+        );
         await transaction.wait();
         return true;
       } catch (e) {

@@ -62,6 +62,11 @@ function HostNavMenu() {
           icon={MenuIcons.History}
           notificationCount={historyNotificationCount}
         />
+          <SideNavMenuItem
+          text={"dimo"}
+          href="/host/dimo"
+          icon={MenuIcons.History}
+        />
       </SideNavMenuGroup>
       <SideNavMenuGroup title={t_nav("vehicles")}>
         <SideNavMenuItem text={t_nav("listing")} href="/host/vehicles/listings" icon={MenuIcons.Listings} />

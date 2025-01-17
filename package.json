@@ -14,6 +14,8 @@
   "dependencies": {
     "@civic/ethereum-gateway-react": "^1.4.5",
     "@coinbase/onchainkit": "^0.23.4",
+    "@dimo-network/data-sdk": "=1.2.1",
+    "@dimo-network/login-with-dimo": "^0.0.14",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@googlemaps/markerclusterer": "^2.5.3",
@@ -71,6 +73,8 @@
     "@types/google.maps": "^3.57.0",
     "@types/react-datepicker": "^4.19.3",
     "eruda": "^3.2.3",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.6.5"
   }

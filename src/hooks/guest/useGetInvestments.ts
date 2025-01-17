@@ -34,8 +34,8 @@ const useGetInvestments = () => {
     if (!ethereumInfo) return;
     if (!rentalityContracts) return;
    
-    const {valueInEth} = await rentalityContracts.currencyConverter.getFromUsdLatest(ETH_DEFAULT_ADDRESS, BigInt(amount * 100));
-    await rentalityContracts.investment.invest(investId, { value: valueInEth });
+   const valueInEth = await rentalityContracts.currencyConverter.getFromUsdLatest(ETH_DEFAULT_ADDRESS, BigInt(amount * 100));
+   await rentalityContracts.investment.invest(investId, { value: valueInEth[0] });
   };
 
   useEffect(() => {

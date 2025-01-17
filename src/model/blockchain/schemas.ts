@@ -38,6 +38,7 @@ export type ContractCarInfoDTO = {
   carInfo: ContractCarInfo;
   metadataURI: string;
   isEditable: boolean;
+  dimoTokenId: number;
 };
 
 export type ContractCreateCarRequest = {
@@ -417,6 +418,7 @@ export type ContractCarDetails = {
   locationInfo: ContractLocationInfo;
   carVinNumber: string;
   carMetadataURI: string;
+  dimoTokenId: bigint;
 };
 
 export type ContractFloridaTaxes = {
