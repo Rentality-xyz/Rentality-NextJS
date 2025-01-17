@@ -542,3 +542,9 @@ input:disabled {
   background-color: #e0e0e0;
   color: #000;
 }
+
+.custom-button {
+  height: 48px !important;
+  border-radius: 9999px !important;
+  width: fit-content !important;
+}
