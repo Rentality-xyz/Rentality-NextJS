@@ -66,8 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   // const providerApiUrl = process.env[`NEXT_PUBLIC_PROVIDER_API_URL_${chainIdNumber}`];
-  // const providerApiUrl = getProviderApiUrlFromEnv(chainIdNumber);
-  const providerApiUrl = 'https://virtual.base-sepolia.rpc.tenderly.co/0c3babfe-73d1-48f6-b0af-8151ef15e6cc'
+  const providerApiUrl = getProviderApiUrlFromEnv(chainIdNumber);
 
   if (!providerApiUrl) {
     console.error(`API checkTrips error: API URL for chain id ${chainIdNumber} was not set`);
