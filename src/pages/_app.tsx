@@ -11,7 +11,7 @@ import { RentalityProvider } from "@/contexts/rentalityContext";
 import { RntDialogsProvider } from "@/contexts/rntDialogsContext";
 import { NotificationProvider } from "@/contexts/notification/notificationContext";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { ReactElement, ReactNode, useEffect } from "react";
 import { analyticsPromise } from "@/utils/firebase";
 import { base } from "viem/chains";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
@@ -24,11 +24,17 @@ import { initEruda, initHotjar } from "@/utils/init";
 import FacebookPixelScript from "@/components/marketing/FacebookPixelScript";
 import PlatformInitChecker from "@/components/common/PlatformInitChecker";
 import WalletConnectChecker from "@/components/common/WalletConnectChecker";
-import { NextComponentType, NextPageContext } from "next";
+import { NextComponentType, NextPage, NextPageContext } from "next";
 
 type CustomAppProps = AppProps & {
-  Component: NextComponentType<NextPageContext, any, any> & { allowAnonymousAccess?: boolean };
+  Component: NextComponentType<NextPageContext, any, any> & {
+    allowAnonymousAccess?: boolean
+  } & NextPageWithLayout;
 };
+
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode
+}
 
 export default function App({ Component, pageProps }: CustomAppProps) {
   const router = useRouter();
@@ -49,38 +55,42 @@ export default function App({ Component, pageProps }: CustomAppProps) {
     initEruda();
   }, []);
 
-  return (
-    <>
-      <FacebookPixelScript />
-      <Web3Setup>
-        <RentalityProvider>
-          <UserInfoProvider>
-            <WagmiProvider config={wagmiConfig}>
-              <QueryClientProvider client={queryClient}>
-                {/*
+  if(Component.getLayout){
+    return Component.getLayout(<Component {...pageProps} />)
+  } else {
+    return (
+      <>
+        <FacebookPixelScript />
+        <Web3Setup>
+          <RentalityProvider>
+            <UserInfoProvider>
+              <WagmiProvider config={wagmiConfig}>
+                <QueryClientProvider client={queryClient}>
+                  {/*
                 // @ts-ignore */}
-                <OnchainKitProvider apiKey={env.NEXT_PUBLIC_COINBASE_API_KEY} chain={base}>
-                  <NotificationProvider isHost={isHost}>
-                    <FirebaseChatProvider>
-                      <AppContextProvider>
-                        <RntDialogsProvider>
-                          <PlatformInitChecker>
-                            <WalletConnectChecker allowAnonymousAccess={allowAnonymousAccess}>
-                              <Layout>
-                                <Component {...pageProps} />
-                              </Layout>
-                            </WalletConnectChecker>
-                          </PlatformInitChecker>
-                        </RntDialogsProvider>
-                      </AppContextProvider>
-                    </FirebaseChatProvider>
-                  </NotificationProvider>
-                </OnchainKitProvider>
-              </QueryClientProvider>
-            </WagmiProvider>
-          </UserInfoProvider>
-        </RentalityProvider>
-      </Web3Setup>
-    </>
-  );
+                  <OnchainKitProvider apiKey={env.NEXT_PUBLIC_COINBASE_API_KEY} chain={base}>
+                    <NotificationProvider isHost={isHost}>
+                      <FirebaseChatProvider>
+                        <AppContextProvider>
+                          <RntDialogsProvider>
+                            <PlatformInitChecker>
+                              <WalletConnectChecker allowAnonymousAccess={allowAnonymousAccess}>
+                                <Layout>
+                                  <Component {...pageProps} />
+                                </Layout>
+                              </WalletConnectChecker>
+                            </PlatformInitChecker>
+                          </RntDialogsProvider>
+                        </AppContextProvider>
+                      </FirebaseChatProvider>
+                    </NotificationProvider>
+                  </OnchainKitProvider>
+                </QueryClientProvider>
+              </WagmiProvider>
+            </UserInfoProvider>
+          </RentalityProvider>
+        </Web3Setup>
+      </>
+    );
+  }
 }

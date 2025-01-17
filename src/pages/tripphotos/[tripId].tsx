@@ -1,11 +1,16 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { ReactElement, useEffect, useMemo, useState } from "react";
 import { getPhotosForTrip, GetPhotosForTripResponseType } from "@/utils/pinata";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
+import type { NextPageWithLayout } from "../_app"
 
-export default function TripPhotos() {
+const TripPhotos: NextPageWithLayout = () => {
+
+  const IMG_WIDTH: number = 100
+  const IMG_HEIGHT: number = 100;
+  const IMG_CLASS_NAME: string = "h-full w-full object-cover p-2 max-w-lg max-h-lg";
 
   const { t } = useTranslation();
 
@@ -46,9 +51,9 @@ export default function TripPhotos() {
         return (
           <Image
             key={index}
-            className="h-full w-full object-cover p-2"
-            width={500}
-            height={500}
+            className={IMG_CLASS_NAME}
+            width={IMG_WIDTH}
+            height={IMG_HEIGHT}
             src={fileUrl}
             alt=""
           />
@@ -56,78 +61,80 @@ export default function TripPhotos() {
       })}
     </div>
     :
-    <div className="flex flex-col lg:flex-row">
+    <div className="flex flex-col lg:flex-row p-2">
       <div className="flex flex-col w-1/2">
-        <div className="w-full">
-          {t("booked.details.trip_photos_checked_in_by_guest")}
-          {fileUrls.checkInByGuest.length == 0 ?
-            t("common.trip_photos_no_photos") :
-            fileUrls.checkInByGuest.map((fileUrl: string, index: number) => {
+        <div>{t("booked.details.trip_photos_checked_in_by_guest")}</div>
+        {fileUrls.checkInByGuest.length == 0 ?
+          t("common.trip_photos_no_photos") :
+          fileUrls.checkInByGuest.map((fileUrl: string, index: number) => {
+          return (
+            <Image
+              key={index}
+              className={IMG_CLASS_NAME}
+              width={IMG_WIDTH}
+              height={IMG_HEIGHT}
+              src={fileUrl}
+              alt=""
+            />
+          )
+        })}
+        <div>{t("booked.details.trip_photos_checked_out_by_guest")}</div>
+        {fileUrls.checkOutByGuest.length == 0 ?
+          t("common.trip_photos_no_photos") :
+          fileUrls.checkOutByGuest.map((fileUrl: string, index: number) => {
             return (
               <Image
                 key={index}
-                className="h-full w-full object-cover p-2"
-                width={500}
-                height={500}
+                className={IMG_CLASS_NAME}
+                width={IMG_WIDTH}
+                height={IMG_HEIGHT}
                 src={fileUrl}
                 alt=""
               />
             )
           })}
-        </div>
-        <div className="w-full">
-          {t("booked.details.trip_photos_checked_out_by_guest")}
-          {fileUrls.checkOutByGuest.length == 0 ?
-            t("common.trip_photos_no_photos") :
-            fileUrls.checkOutByGuest.map((fileUrl: string, index: number) => {
-              return (
-                <Image
-                  key={index}
-                  className="h-full w-full object-cover p-2"
-                  width={500}
-                  height={500}
-                  src={fileUrl}
-                  alt=""
-                />
-              )
-            })}
-        </div>
       </div>
       <div className="flex flex-col w-1/2">
-        <div className="w-full">
-          {t("booked.details.trip_photos_checked_in_by_host")}
-          {fileUrls.checkinByHost.length == 0 ?
-            t("common.trip_photos_no_photos") :
-            fileUrls.checkinByHost.map((fileUrl: string, index: number) => {
-              return (
-                <Image
-                  key={index}
-                  className="h-full w-full object-cover p-2"
-                  width={500}
-                  height={500}
-                  src={fileUrl}
-                  alt=""
-                />
-              )
-            })}
-        </div>
-        <div className="w-full">
-          {t("booked.details.trip_photos_checked_out_by_host")}
-          {fileUrls.checkOutByHost.length == 0 ?
-            t("common.trip_photos_no_photos") :
-            fileUrls.checkOutByHost.map((fileUrl: string, index: number) => {
-              return (
-                <Image
-                  key={index}
-                  className="h-full w-full object-cover p-2"
-                  width={500}
-                  height={500}
-                  src={fileUrl}
-                  alt=""
-                />
-              )
-            })}
-        </div>
+        <div>{t("booked.details.trip_photos_checked_in_by_host")}</div>
+        {fileUrls.checkinByHost.length == 0 ?
+          t("common.trip_photos_no_photos") :
+          fileUrls.checkinByHost.map((fileUrl: string, index: number) => {
+            return (
+              <Image
+                key={index}
+                className={IMG_CLASS_NAME}
+                width={IMG_WIDTH}
+                height={IMG_HEIGHT}
+                src={fileUrl}
+                alt=""
+              />
+            )
+          })}
+        <div>{t("booked.details.trip_photos_checked_out_by_host")}</div>
+        {fileUrls.checkOutByHost.length == 0 ?
+          t("common.trip_photos_no_photos") :
+          fileUrls.checkOutByHost.map((fileUrl: string, index: number) => {
+            return (
+              <Image
+                key={index}
+                className={IMG_CLASS_NAME}
+                width={IMG_WIDTH}
+                height={IMG_HEIGHT}
+                src={fileUrl}
+                alt=""
+              />
+            )
+          })}
       </div>
     </div>
 }
+
+TripPhotos.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <>
+      {page}
+    </>
+  )
+}
+
+export default TripPhotos;
