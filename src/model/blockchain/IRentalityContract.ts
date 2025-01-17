@@ -40,6 +40,8 @@ import {
   Tear,
   ContractProgramHistory,
   ContractCheckPromoDTO,
+  ContractMyRefferalInfoDTO,
+  ContractAdminKYCInfoDTO,
 } from "./schemas";
 
 export interface IRentalityContract {
@@ -49,8 +51,9 @@ export interface IRentalityContract {
     nickName: string,
     mobilePhoneNumber: string,
     profilePhoto: string,
+    email: string,
     TCSignature: string,
-    referralHash: string
+    hash: string
   ): Promise<ContractTransactionResponse>;
   setCivicKYCInfo(
     user: string,
@@ -227,6 +230,7 @@ export interface IRentalityAdminGateway {
   manageTearInfo(tear: Tear, from: number, to: number): Promise<void>;
 
   getRefferalPointsInfo(): Promise<ContractAllRefferalInfoDTO>;
+  getPlatformUsersInfo(): Promise<ContractAdminKYCInfoDTO[]>;
 }
 
 export interface IRentalityChatHelperContract {
@@ -273,6 +277,7 @@ export interface IRentalityReferralProgramContract {
   getPointsHistory(): Promise<ContractProgramHistory[]>;
 
   getReadyToClaim(user: string): Promise<ContractReadyToClaimDTO>;
+  getMyRefferalInfo(): Promise<ContractMyRefferalInfoDTO>;
 }
 
 type ContractChatKeyInfo = {

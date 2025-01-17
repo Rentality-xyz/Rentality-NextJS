@@ -1,5 +1,7 @@
 import HostChatPageContent from "@/features/chat/pages/HostChatPageContent";
 
-export default function Messages() {
+function Messages() {
   return <HostChatPageContent />;
 }
+
+export default Messages;

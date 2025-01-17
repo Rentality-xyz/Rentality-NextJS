@@ -40,7 +40,7 @@ export function PreReceiptDetails({
     governmentTax;
 
   return (
-    <div className="mt-4 grid grid-cols-[auto_1fr] items-end gap-1 bg-rentality-bg px-2">
+    <div className="mt-4 grid grid-cols-[auto_1fr] items-end gap-1 rounded-xl bg-rentality-bg p-2">
       <h3 className="col-span-2 mx-auto mb-2 text-rentality-secondary">
         {t("create_trip.see_trip_pre_receipt_details")}
       </h3>
@@ -103,8 +103,6 @@ export function PreReceiptDetails({
       <p className="text-xl">
         <strong>${displayMoneyWith2Digits(totalCharge + securityDeposit + insuranceCharge)}</strong>
       </p>
-
-      <hr className="col-span-2" />
     </div>
   );
 }

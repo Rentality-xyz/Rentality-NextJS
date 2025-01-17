@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import RntSuspense from "@/components/common/rntSuspense";
 
-export default function HostPublicInfo() {
+function HostPublicInfo() {
   const router = useRouter();
 
   const { hostAddressOrName: hostQuery } = router.query;
@@ -33,3 +33,7 @@ export default function HostPublicInfo() {
     </>
   );
 }
+
+HostPublicInfo.allowAnonymousAccess = true;
+
+export default HostPublicInfo;
