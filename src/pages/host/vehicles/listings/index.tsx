@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
 
-export default function Listings() {
+function Listings() {
   const [isLoadingMyListings, myListings] = useMyListings();
   const router = useRouter();
   const { t } = useTranslation();
@@ -44,3 +44,5 @@ export default function Listings() {
     </>
   );
 }
+
+export default Listings;

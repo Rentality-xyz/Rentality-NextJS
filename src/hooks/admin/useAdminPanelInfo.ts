@@ -9,7 +9,6 @@ import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import moment from "moment";
 import { collection, getDocs, query } from "firebase/firestore";
 import { bigIntReplacer } from "@/utils/json";
-import { ZERO_HASH } from "@/utils/wallet";
 import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 import { useRentality, useRentalityAdmin } from "@/contexts/rentalityContext";
 

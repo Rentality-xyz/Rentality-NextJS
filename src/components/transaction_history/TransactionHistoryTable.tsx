@@ -99,13 +99,13 @@ function TransactionHistoryTable({ isLoading, data, isHost }: TransactionHistory
                 <td className={rowSpanClassName}>
                   {dateFormatShortMonthDateTime(transaction.endDateTime, transaction.timeZoneId)}
                 </td>
-                <td className={rowSpanClassName}>${transaction.tripPayment}</td>
-                <td className={rowSpanClassName}>${transaction.refund}</td>
-                <td className={rowSpanClassName}>${transaction.tripEarnings}</td>
-                <td className={rowSpanClassName}>${transaction.cancellationFee}</td>
-                <td className={rowSpanClassName}>${transaction.reimbursements}</td>
-                <td className={rowSpanClassName}>${transaction.insuranceFeeInUsd}</td>
-                <td className={rowSpanClassName}>${transaction.rentalityFee}</td>
+                <td className={rowSpanClassName}>${displayMoneyWith2Digits(transaction.tripPayment)}</td>
+                <td className={rowSpanClassName}>${displayMoneyWith2Digits(transaction.refund)}</td>
+                <td className={rowSpanClassName}>${displayMoneyWith2Digits(transaction.tripEarnings)}</td>
+                <td className={rowSpanClassName}>${displayMoneyWith2Digits(transaction.cancellationFee)}</td>
+                <td className={rowSpanClassName}>${displayMoneyWith2Digits(transaction.reimbursements)}</td>
+                <td className={rowSpanClassName}>${displayMoneyWith2Digits(transaction.insuranceFeeInUsd)}</td>
+                <td className={rowSpanClassName}>${displayMoneyWith2Digits(transaction.rentalityFee)}</td>
                 <td className={rowSpanClassName}>
                   ${displayMoneyWith2Digits(transaction.salesTax + transaction.governmentTax)}
                 </td>

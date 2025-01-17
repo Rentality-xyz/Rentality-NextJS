@@ -323,6 +323,12 @@ export type ContractFullKYCInfoDTO = {
   additionalKYC: ContractAdditionalKYCInfo;
 };
 
+export type ContractAdminKYCInfoDTO = {
+  kyc: ContractKYCInfo;
+  additionalKYC: ContractAdditionalKYCInfo;
+  wallet: string;
+};
+
 export type ContractSearchCarWithDistance = {
   car: ContractSearchCar;
   distance: bigint;
@@ -575,6 +581,11 @@ export type ContractAllRefferalInfoDTO = {
 export type ContractRefferalHistory = {
   points: bigint;
   method: RefferalProgram;
+};
+
+export type ContractMyRefferalInfoDTO = {
+  myHash: string;
+  savedHash: string;
 };
 
 export type ContractHistory = {

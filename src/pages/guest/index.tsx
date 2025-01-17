@@ -1,5 +1,9 @@
 import Search from "./search";
 
-export default function Guest() {
+function Guest() {
   return <Search />;
 }
+
+Guest.allowAnonymousAccess = Search.allowAnonymousAccess;
+
+export default Guest;

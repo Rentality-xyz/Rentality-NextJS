@@ -25,7 +25,7 @@ import RntSuspense from "@/components/common/rntSuspense";
 import useGuestInsurance from "@/hooks/guest/useGuestInsurance";
 import { EMPTY_PROMOCODE } from "@/utils/constants";
 
-export default function Search() {
+function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
 
   const [isLoading, searchAvailableCars, searchResult, sortSearchResult, setSearchResult] = useSearchCars();
@@ -41,6 +41,22 @@ export default function Search() {
   const ethereumInfo = useEthereum();
   const { isLoading: isLoadingInsurance, guestInsurance } = useGuestInsurance();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (ethereumInfo === undefined) return;
+
+    if (!(ethereumInfo?.isWalletConnected ?? false)) {
+      const action = (
+        <>
+          {DialogActions.Button(t("common.info.login"), () => {
+            hideDialogs();
+            login();
+          })}
+        </>
+      );
+      showDialog(t("common.info.connect_wallet"), action);
+    }
+  }, [ethereumInfo]);
 
   const handleSearchClick = async (request: SearchCarRequest) => {
     updateSearchParams(request, searchCarFilters);
@@ -251,3 +267,7 @@ export default function Search() {
     </APIProvider>
   );
 }
+
+Search.allowAnonymousAccess = true;
+
+export default Search;
