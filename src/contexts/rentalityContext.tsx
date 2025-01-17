@@ -1,15 +1,13 @@
-import {
-  IRentalityAdminGateway,
-  IRentalityContract,
-  IRentalityReferralProgramContract,
-} from "@/model/blockchain/IRentalityContract";
 import { getEtherContractWithSigner } from "../abis";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useEthereum } from "./web3/ethereumContext";
 import { useRouter } from "next/router";
+import { IRentalityReferralProgramContract } from "@/features/blockchain/models/IRentalityReferralProgram";
+import { IRentalityAdminGatewayContract } from "@/features/blockchain/models/IRentalityAdminGatewayContract";
+import { IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGatewayContract";
 
-interface IRentalityContracts {
-  gateway: IRentalityContract;
+export interface IRentalityContracts {
+  gateway: IRentalityGatewayContract;
   referralProgram: IRentalityReferralProgramContract;
 }
 
@@ -18,7 +16,7 @@ interface RentalityContextType {
 }
 
 interface RentalityAdminContextType {
-  admin: IRentalityAdminGateway | null | undefined;
+  admin: IRentalityAdminGatewayContract | null | undefined;
 }
 
 const RentalityContext = createContext<RentalityContextType | null>(null);
@@ -28,7 +26,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
   const router = useRouter();
   const ethereumInfo = useEthereum();
   const [rentalityContracts, setRentalityContracts] = useState<IRentalityContracts | null | undefined>(undefined);
-  const [rentalityAdmin, setRentalityAdmin] = useState<IRentalityAdminGateway | null | undefined>(undefined);
+  const [rentalityAdmin, setRentalityAdmin] = useState<IRentalityAdminGatewayContract | null | undefined>(undefined);
 
   const isAdmin = router.route.startsWith("/admin");
 
@@ -46,7 +44,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
       const rentalityGateway = (await getEtherContractWithSigner(
         "gateway",
         ethereumInfo.signer
-      )) as unknown as IRentalityContract;
+      )) as unknown as IRentalityGatewayContract;
       if (!rentalityGateway) {
         console.error("getRentalityContact error: rentalityGateway is null");
         setRentalityContracts(null);
@@ -86,7 +84,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
       const rentalityAdmin = (await getEtherContractWithSigner(
         "admin",
         ethereumInfo.signer
-      )) as unknown as IRentalityAdminGateway;
+      )) as unknown as IRentalityAdminGatewayContract;
       if (!rentalityAdmin) {
         console.error("getRentalityContact error: rentalityAdmin is null");
         setRentalityAdmin(null);
