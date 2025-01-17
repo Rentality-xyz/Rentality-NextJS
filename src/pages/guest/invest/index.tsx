@@ -20,7 +20,7 @@ export default function Invest() {
   };
 
   return (
-    <Layout>
+    <>
       {investments.map((value) => {
         return (
           <InvestCar
@@ -39,6 +39,6 @@ export default function Invest() {
           />
         );
       })}
-    </Layout>
+    </>
   );
 }

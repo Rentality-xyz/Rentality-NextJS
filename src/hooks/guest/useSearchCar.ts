@@ -87,7 +87,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
 
         const tripDays = Number(availableCarDTO.tripDays);
         const pricePerDay = Number(availableCarDTO.pricePerDayInUsdCents) / 100;
-        const totalPriceWithDiscount = Number(availableCarDTO.totalPriceWithDiscount) / 100;
+        const totalPriceWithHostDiscount = Number(availableCarDTO.totalPriceWithDiscount) / 100;
 
         const selectedCarDetails: SearchCarInfoDetails = {
           carId: Number(availableCarDTO.carId),
@@ -107,9 +107,9 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
 
           milesIncludedPerDayText: getMilesIncludedPerDayText(availableCarDTO.milesIncludedPerDay ?? 0),
           pricePerDay: pricePerDay,
-          pricePerDayWithDiscount: Number(availableCarDTO.pricePerDayWithDiscount) / 100,
+          pricePerDayWithHostDiscount: Number(availableCarDTO.pricePerDayWithDiscount) / 100,
           tripDays: tripDays,
-          totalPriceWithDiscount: totalPriceWithDiscount,
+          totalPriceWithHostDiscount: totalPriceWithHostDiscount,
           taxes: Number(availableCarDTO.taxes) / 100,
           securityDeposit: Number(availableCarDTO.securityDepositPerTripInUsdCents) / 100,
           hostPhotoUrl: availableCarDTO.hostPhotoUrl,
@@ -121,7 +121,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           },
           highlighted: false,
           daysDiscount: getDaysDiscount(tripDays),
-          totalDiscount: getTotalDiscount(pricePerDay, tripDays, totalPriceWithDiscount),
+          totalDiscount: getTotalDiscount(pricePerDay, tripDays, totalPriceWithHostDiscount),
           hostHomeLocation: formatLocationInfoUpToCity(availableCarDTO.locationInfo),
           deliveryPrices: {
             from1To25milesPrice: Number(availableCarDTO.underTwentyFiveMilesInUsdCents) / 100,
@@ -189,8 +189,8 @@ function getDaysDiscount(tripDays: number) {
   }
 }
 
-function getTotalDiscount(pricePerDay: number, tripDays: number, totalPriceWithDiscount: number) {
-  const totalDiscount = pricePerDay * tripDays - totalPriceWithDiscount;
+function getTotalDiscount(pricePerDay: number, tripDays: number, totalPriceWithHostDiscount: number) {
+  const totalDiscount = pricePerDay * tripDays - totalPriceWithHostDiscount;
   let result: string = "";
   if (totalDiscount > 0) {
     result = "-$" + displayMoneyWith2Digits(totalDiscount);

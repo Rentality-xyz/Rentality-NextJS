@@ -3,6 +3,8 @@ import { calculateDays, UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { TransactionHistoryInfo } from "../TransactionHistoryInfo";
 import { isEmpty } from "@/utils/string";
+import { getPromoPrice } from "@/features/promocodes/utils";
+import { getDiscountablePrice, getNotDiscountablePrice } from "@/utils/price";
 
 function getCancellationFee(tripDto: ContractTripDTO) {
   return 0;
@@ -22,15 +24,38 @@ export const mapContractTripDTOToTransactionHistoryInfo = async (
 
   const startDateTime = getDateFromBlockchainTimeWithTZ(tripDto.trip.startDateTime, timeZoneId);
   const endDateTime = getDateFromBlockchainTimeWithTZ(tripDto.trip.endDateTime, timeZoneId);
+
+  const totalPriceWithHostDiscountInUsd = Number(tripDto.trip.paymentInfo.priceWithDiscount) / 100.0;
+  const pickUpDeliveryFeeInUsd = Number(tripDto.trip.paymentInfo.pickUpFee) / 100.0;
+  const dropOffDeliveryFeeInUsd = Number(tripDto.trip.paymentInfo.dropOfFee) / 100.0;
+  const salesTaxInUsd = Number(tripDto.trip.paymentInfo.salesTax) / 100.0;
+  const governmentTaxInUsd = Number(tripDto.trip.paymentInfo.governmentTax) / 100.0;
+  const depositInUsd = Number(tripDto.trip.paymentInfo.depositInUsdCents) / 100.0;
+
+  const totalPriceInUsd =
+    totalPriceWithHostDiscountInUsd +
+    governmentTaxInUsd +
+    salesTaxInUsd +
+    pickUpDeliveryFeeInUsd +
+    dropOffDeliveryFeeInUsd;
+  const promoDiscountInPercents = Number(tripDto.promoDiscount);
+
   const tripPayment =
-    Number(
-      tripDto.trip.paymentInfo.priceWithDiscount +
-        tripDto.trip.paymentInfo.depositInUsdCents +
-        tripDto.trip.paymentInfo.salesTax +
-        tripDto.trip.paymentInfo.governmentTax +
-        tripDto.trip.paymentInfo.pickUpFee +
-        tripDto.trip.paymentInfo.dropOfFee
-    ) / 100;
+    promoDiscountInPercents > 0
+      ? getPromoPrice(
+          getDiscountablePrice(
+            totalPriceWithHostDiscountInUsd,
+            pickUpDeliveryFeeInUsd,
+            dropOffDeliveryFeeInUsd,
+            salesTaxInUsd,
+            governmentTaxInUsd
+          ),
+          promoDiscountInPercents
+        ) +
+        (promoDiscountInPercents !== 100
+          ? getNotDiscountablePrice(Number(tripDto.paidForInsuranceInUsdCents) / 100.0, depositInUsd)
+          : 0)
+      : totalPriceInUsd;
 
   const cancellationFee = getCancellationFee(tripDto);
   const reimbursements = Number(tripDto.trip.paymentInfo.resolveAmountInUsdCents) / 100;

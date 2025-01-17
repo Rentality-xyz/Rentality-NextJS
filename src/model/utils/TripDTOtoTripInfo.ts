@@ -5,6 +5,8 @@ import { isEmpty } from "@/utils/string";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { ContractTripDTO, EngineType, InsuranceType, TripStatus } from "@/model/blockchain/schemas";
 import { calculateDays } from "@/utils/date";
+import { getDiscountablePrice, getNotDiscountablePrice } from "@/utils/price";
+import { getPromoPrice } from "@/features/promocodes/utils";
 
 export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetailsConfirmed?: boolean) => {
   const metaData = parseMetaData(await getMetaDataFromIpfs(tripDTO.metadataURI));
@@ -24,7 +26,7 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
     Math.ceil(Number(tripDTO.trip.pricePerDayInUsdCents) / Number(tripDTO.trip.milesIncludedPerDay)) / 100;
   const tankVolumeInGal = Number(metaData.tankVolumeInGal);
 
-  const insurancePerDayInUsd = Number(tripDTO.paidForInsuranceInUsdCents) / 100 / tripDays;
+  const insurancePerDayInUsd = Number(tripDTO.paidForInsuranceInUsdCents) / 100.0 / tripDays;
 
   const insurancesInfoList = [...tripDTO.insurancesInfo].sort((a, b) => Number(b.createdTime) - Number(a.createdTime));
   const insurancesInfo =
@@ -32,6 +34,38 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
     insurancesInfoList.find((i) => i.insuranceType === InsuranceType.OneTime);
 
   const guestInsurancePhoto = insurancesInfo?.photo ?? "";
+
+  const totalPriceWithHostDiscountInUsd = Number(tripDTO.trip.paymentInfo.priceWithDiscount) / 100.0;
+  const pickUpDeliveryFeeInUsd = Number(tripDTO.trip.paymentInfo.pickUpFee) / 100.0;
+  const dropOffDeliveryFeeInUsd = Number(tripDTO.trip.paymentInfo.dropOfFee) / 100.0;
+  const salesTaxInUsd = Number(tripDTO.trip.paymentInfo.salesTax) / 100.0;
+  const governmentTaxInUsd = Number(tripDTO.trip.paymentInfo.governmentTax) / 100.0;
+  const depositInUsd = Number(tripDTO.trip.paymentInfo.depositInUsdCents) / 100.0;
+
+  const totalPriceInUsd =
+    totalPriceWithHostDiscountInUsd +
+    governmentTaxInUsd +
+    salesTaxInUsd +
+    pickUpDeliveryFeeInUsd +
+    dropOffDeliveryFeeInUsd;
+  const promoDiscountInPercents = Number(tripDTO.promoDiscount);
+
+  const paidByGuestInUsd =
+    promoDiscountInPercents > 0
+      ? getPromoPrice(
+          getDiscountablePrice(
+            totalPriceWithHostDiscountInUsd,
+            pickUpDeliveryFeeInUsd,
+            dropOffDeliveryFeeInUsd,
+            salesTaxInUsd,
+            governmentTaxInUsd
+          ),
+          promoDiscountInPercents
+        ) +
+        (promoDiscountInPercents !== 100
+          ? getNotDiscountablePrice(Number(tripDTO.paidForInsuranceInUsdCents) / 100.0, depositInUsd)
+          : 0)
+      : totalPriceInUsd;
 
   let item: TripInfo = {
     tripId: Number(tripDTO.trip.tripId),
@@ -122,20 +156,14 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
 
     pricePerDayInUsd: Number(tripDTO.trip.pricePerDayInUsdCents) / 100.0,
     totalDayPriceInUsd: Number(tripDTO.trip.paymentInfo.totalDayPriceInUsdCents) / 100.0,
-    totalPriceWithDiscountInUsd: Number(tripDTO.trip.paymentInfo.priceWithDiscount) / 100.0,
-    pickUpDeliveryFeeInUsd: Number(tripDTO.trip.paymentInfo.pickUpFee) / 100.0,
-    dropOffDeliveryFeeInUsd: Number(tripDTO.trip.paymentInfo.dropOfFee) / 100.0,
-    salesTaxInUsd: Number(tripDTO.trip.paymentInfo.salesTax) / 100.0,
-    governmentTaxInUsd: Number(tripDTO.trip.paymentInfo.governmentTax) / 100.0,
-    depositInUsd: Number(tripDTO.trip.paymentInfo.depositInUsdCents) / 100.0,
-    totalPriceInUsd:
-      Number(
-        tripDTO.trip.paymentInfo.priceWithDiscount +
-          tripDTO.trip.paymentInfo.governmentTax +
-          tripDTO.trip.paymentInfo.salesTax +
-          tripDTO.trip.paymentInfo.pickUpFee +
-          tripDTO.trip.paymentInfo.dropOfFee
-      ) / 100.0,
+    totalPriceWithHostDiscountInUsd: totalPriceWithHostDiscountInUsd,
+    pickUpDeliveryFeeInUsd: pickUpDeliveryFeeInUsd,
+    dropOffDeliveryFeeInUsd: dropOffDeliveryFeeInUsd,
+    salesTaxInUsd: salesTaxInUsd,
+    governmentTaxInUsd: governmentTaxInUsd,
+    depositInUsd: depositInUsd,
+    totalPriceInUsd: totalPriceInUsd,
+    paidByGuestInUsd: paidByGuestInUsd,
 
     resolveAmountInUsd: Number(tripDTO.trip.paymentInfo.resolveAmountInUsdCents) / 100.0,
     resolveFuelAmountInUsd: Number(tripDTO.trip.paymentInfo.resolveFuelAmountInUsdCents) / 100.0,

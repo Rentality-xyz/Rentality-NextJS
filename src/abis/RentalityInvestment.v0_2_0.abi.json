@@ -69,7 +69,6 @@
                 { "type": "uint64", "name": "milesIncludedPerDay" },
                 { "type": "uint32", "name": "timeBufferBetweenTripsInSec" },
                 { "type": "string", "name": "geoApiKey" },
-                { "type": "bool", "name": "insuranceIncluded" },
                 {
                   "type": "tuple",
                   "name": "locationInfo",
@@ -87,9 +86,13 @@
                         { "type": "string", "name": "timeZoneId" }
                       ]
                     },
-                    { "type": "string", "name": "signature" }
+                    { "type": "bytes", "name": "signature" }
                   ]
-                }
+                },
+                { "type": "bool", "name": "currentlyListed" },
+                { "type": "bool", "name": "insuranceRequired" },
+                { "type": "uint256", "name": "insurancePriceInUsdCents" },
+                { "type": "uint256", "name": "dimoTokenId" }
               ]
             },
             { "type": "uint256", "name": "priceInUsd" },
@@ -134,7 +137,6 @@
                     { "type": "uint64", "name": "milesIncludedPerDay" },
                     { "type": "uint32", "name": "timeBufferBetweenTripsInSec" },
                     { "type": "string", "name": "geoApiKey" },
-                    { "type": "bool", "name": "insuranceIncluded" },
                     {
                       "type": "tuple",
                       "name": "locationInfo",
@@ -152,9 +154,13 @@
                             { "type": "string", "name": "timeZoneId" }
                           ]
                         },
-                        { "type": "string", "name": "signature" }
+                        { "type": "bytes", "name": "signature" }
                       ]
-                    }
+                    },
+                    { "type": "bool", "name": "currentlyListed" },
+                    { "type": "bool", "name": "insuranceRequired" },
+                    { "type": "uint256", "name": "insurancePriceInUsdCents" },
+                    { "type": "uint256", "name": "dimoTokenId" }
                   ]
                 },
                 { "type": "uint256", "name": "priceInUsd" },
@@ -193,7 +199,8 @@
       "inputs": [
         { "type": "address", "name": "_userService" },
         { "type": "address", "name": "_currencyConverter" },
-        { "type": "address", "name": "_carService" }
+        { "type": "address", "name": "_carService" },
+        { "type": "address", "name": "_insuranceServce" }
       ],
       "outputs": []
     },

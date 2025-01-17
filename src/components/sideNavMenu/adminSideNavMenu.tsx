@@ -11,6 +11,7 @@ function AdminNavMenu() {
       <SideNavMenuGroup title={t("nav_menu.contract_info")} href="/admin" />
       <SideNavMenuGroup title={t("nav_menu.car_locations")} href="/admin/carLocations" />
       <SideNavMenuGroup title={t("nav_menu.all_trips_table")} href="/admin/allTrips" />
+      <SideNavMenuGroup title={t("nav_menu.all_users_table")} href="/admin/allUsers" />
     </>
   );
 }

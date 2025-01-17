@@ -9,7 +9,7 @@ import { TFunction } from "@/utils/i18n";
 import { isEmpty } from "@/utils/string";
 import { env } from "@/utils/env";
 
-export default function Admin() {
+function Admin() {
   const {
     isLoading,
     adminContractInfo,
@@ -327,3 +327,5 @@ export default function Admin() {
     </>
   );
 }
+
+export default Admin;
