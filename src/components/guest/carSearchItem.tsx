@@ -22,6 +22,7 @@ import useCheckPromo from "@/features/promocodes/hooks/useCheckPromo";
 import { cn } from "@/utils";
 import { PromoActionType, promoCodeReducer } from "@/features/promocodes/utils/promoCodeReducer";
 import { getPromoPrice } from "@/features/promocodes/utils";
+import carIcon from "@/images/car.svg";
 
 type TFunction = (key: string, options?: { [key: string]: any }) => string;
 
@@ -34,6 +35,7 @@ export default function CarSearchItem({
   isSelected,
   setSelected,
   isGuestHasInsurance,
+  isYourOwnCar,
   getRequestDetailsLink,
   startDateTimeStringFormat,
   endDateTimeStringFormat,
@@ -44,6 +46,7 @@ export default function CarSearchItem({
   isSelected: boolean;
   setSelected: (carID: number) => void;
   isGuestHasInsurance: boolean;
+  isYourOwnCar: boolean;
   getRequestDetailsLink: (carId: number) => string;
   startDateTimeStringFormat: string;
   endDateTimeStringFormat: string;
@@ -97,6 +100,11 @@ export default function CarSearchItem({
           style={{ backgroundImage: `url(${searchInfo.images[0]})` }}
           className="relative min-h-[15rem] w-full flex-shrink-0 bg-cover bg-center md:min-h-[20rem]"
         >
+          {isYourOwnCar && (
+            <div className="absolute mt-2 ml-2 flex h-[56px] w-[80px] justify-center rounded-xl bg-black bg-opacity-50">
+              <Image src={carIcon} alt="" className="w-[48px]" />
+            </div>
+          )}
           {searchInfo.isCarDetailsConfirmed && (
             <i className="fi fi-br-hexagon-check absolute right-2 top-2 text-3xl text-green-500"></i>
           )}
