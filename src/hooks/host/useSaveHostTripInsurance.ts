@@ -9,7 +9,7 @@ import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 
 const useSaveHostTripInsurance = () => {
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const ethereumInfo = useEthereum();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -25,7 +25,7 @@ const useSaveHostTripInsurance = () => {
       if (!ethereumInfo) {
         return Err("ethereumInfo is null");
       }
-      if (!rentalityContract) {
+      if (!rentalityContracts) {
         return Err("rentalityContract is null");
       }
       if (tripId === undefined) return Err("tripId is undefined");
@@ -80,14 +80,17 @@ const useSaveHostTripInsurance = () => {
       }
 
       try {
-        const transaction = await rentalityContract.saveTripInsuranceInfo(BigInt(tripId), contractSaveInsuranceRequest);
+        const transaction = await rentalityContracts.gateway.saveTripInsuranceInfo(
+          BigInt(tripId),
+          contractSaveInsuranceRequest
+        );
         await transaction.wait();
         return Ok(true);
       } catch (e) {
         return Err(`saveTripInsurance error: ${e}`);
       }
     },
-    [rentalityContract, ethereumInfo]
+    [rentalityContracts, ethereumInfo]
   );
 
   return { isLoading, saveTripInsurance } as const;

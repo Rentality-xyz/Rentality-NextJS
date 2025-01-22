@@ -26,6 +26,10 @@ export default function HostInsurance() {
     await fetchData(filters, page, itemsPerPage);
   }
 
+  async function handleNewInsuranceAdded() {
+    await fetchData(filters, 1, itemsPerPage, true);
+  }
+
   useEffect(() => {
     fetchData(defaultFilters, 1, itemsPerPage);
   }, [fetchData]);
@@ -35,7 +39,7 @@ export default function HostInsurance() {
       <PageTitle title={t("insurance.page_title")} />
       <CheckingLoadingAuth>
         <RntSuspense isLoading={isLoading}>
-          <AddHostInsurance />
+          <AddHostInsurance onNewInsuranceAdded={handleNewInsuranceAdded} />
           <h2 className="mt-4">{t("insurance.insurance_list")}</h2>
           <HostInsuranceFilters defaultFilters={defaultFilters} onApply={handleApplyFilters} />
           <div className="mt-5 flex flex-col gap-4 rounded-2xl bg-rentality-bg p-4 pb-8">

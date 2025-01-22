@@ -29,12 +29,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
    
   const authResult = await authOnDimo()
+
   if(authResult === null)
     return
 
   const {auth, dimo} = authResult
 
-    const privToken = tokenExchange(id, auth, dimo, [1, 2, 3, 4, 5])
+    const privToken = await tokenExchange(id, auth, dimo, [1, 2, 3, 4, 5])
 
       const panelData = await dimo.telemetry.query({
         ...privToken,

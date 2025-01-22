@@ -1,6 +1,6 @@
 import { getEtherContractWithSigner } from "@/abis";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
-import { FilterLimits, SearchCarInfo, SearchCarInfoDTO } from "@/model/SearchCarsResult";
+import { FilterLimits, SearchCarInfoDTO } from "@/model/SearchCarsResult";
 import { emptyLocationInfo, formatLocationInfoUpToCity } from "@/model/LocationInfo";
 import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import {
@@ -203,8 +203,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   res.status(200).json({ availableCarsData, filterLimits });
 }
 
-function getTotalDiscount(pricePerDay: number, tripDays: number, totalPriceWithDiscount: number) {
-  const totalDiscount = pricePerDay * tripDays - totalPriceWithDiscount;
+function getTotalDiscount(pricePerDay: number, tripDays: number, totalPriceWithHostDiscount: number) {
+  const totalDiscount = pricePerDay * tripDays - totalPriceWithHostDiscount;
   let result: string = "";
   if (totalDiscount > 0) {
     result = "-$" + displayMoneyWith2Digits(totalDiscount);
@@ -279,7 +279,7 @@ async function formatSearchAvailableCarsContractResponse(
 
       const tripDays = Number(i.car.tripDays);
       const pricePerDay = Number(i.car.pricePerDayInUsdCents) / 100;
-      const totalPriceWithDiscount = Number(i.car.totalPriceWithDiscount) / 100;
+      const totalPriceWithHostDiscount = Number(i.car.totalPriceWithDiscount) / 100;
 
       let item: SearchCarInfoDTO = {
         carId: Number(i.car.carId),
@@ -299,9 +299,9 @@ async function formatSearchAvailableCarsContractResponse(
 
         milesIncludedPerDayText: getMilesIncludedPerDayText(i.car.milesIncludedPerDay ?? 0),
         pricePerDay: pricePerDay,
-        pricePerDayWithDiscount: Number(i.car.pricePerDayWithDiscount) / 100,
+        pricePerDayWithHostDiscount: Number(i.car.pricePerDayWithDiscount) / 100,
         tripDays: tripDays,
-        totalPriceWithDiscount: totalPriceWithDiscount,
+        totalPriceWithHostDiscount: totalPriceWithHostDiscount,
         taxes: Number(i.car.taxes) / 100,
         securityDeposit: Number(i.car.securityDepositPerTripInUsdCents) / 100,
         hostPhotoUrl: i.car.hostPhotoUrl,
@@ -313,7 +313,7 @@ async function formatSearchAvailableCarsContractResponse(
         },
         highlighted: false,
         daysDiscount: getDaysDiscount(tripDays),
-        totalDiscount: getTotalDiscount(pricePerDay, tripDays, totalPriceWithDiscount),
+        totalDiscount: getTotalDiscount(pricePerDay, tripDays, totalPriceWithHostDiscount),
         hostHomeLocation: formatLocationInfoUpToCity(i.car.locationInfo),
         deliveryPrices: {
           from1To25milesPrice: Number(i.car.underTwentyFiveMilesInUsdCents) / 100,

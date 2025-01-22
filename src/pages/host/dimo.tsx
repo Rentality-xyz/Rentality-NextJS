@@ -18,7 +18,8 @@ import RentalityCarItem from "@/components/host/rentalityCarItem";
 export type DimoCarResponse = {
   definition: DimoCar,
   tokenId: number,
-  vin: string
+  vin: string,
+  imageURI: string
 }
 export type DimoCarResponseWithTimestamp  = {
   definition: DimoCar,
@@ -44,8 +45,8 @@ type Car = {
 export default function Dimo() {
 
   /// wallets for testing, unncomment wallet address from useDimoAuthState
-  // const walletAddress = '0xCAA591fA19a86762D1ed1B98b2057Ee233240b65'
-  const walletAddress = '0xFD04ca16023A51beA99c750B3391F3CFd156d6c4' //17
+  const walletAddress = '0xCAA591fA19a86762D1ed1B98b2057Ee233240b65'
+  // const walletAddress = '0xFD04ca16023A51beA99c750B3391F3CFd156d6c4' //17
   
   const { isAuthenticated, getValidJWT, /*walletAddress*/ } = useDimoAuthState();
   const [jwt, setJwt] = useState<string | null>(null);
@@ -54,7 +55,7 @@ export default function Dimo() {
   const [isLoadingMyListings, myListings] = useMyListings();
   const userInfo = useUserInfo();
   const router = useRouter()
-  const rentalityContract = useRentality()
+  const { rentalityContracts }= useRentality()
 
   const clientId = process.env.NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID;
   const apiKey = process.env.NEXT_PUBLIC_SERVER_DIMO_API_KEY;
@@ -98,7 +99,6 @@ export default function Dimo() {
           user: walletAddress
         }})
     
-     console.log("JWT: ", response.data)
     } catch (error) {
       console.error("Error fetching data from DIMO API:", error);
     }
@@ -163,13 +163,14 @@ if (myListings && dimoVehicles) {
   });
 
    onDimoOnly = dimoVehicles.filter(dimoCar => myListings.find(car => car.vinNumber === dimoCar.vin) === undefined)
- }
+  
+  }
  const handleSaveDimoTokens = async (dimoTokens: number[], carIds: number[]) => {
-  if(!rentalityContract) {
+  if(!rentalityContracts) {
     console.error("Save dimo tokens id error: Rentality contract is null")
     return
   }
-   await rentalityContract.saveDimoTokenIds(dimoTokens,carIds)
+   await rentalityContracts.gateway.saveDimoTokenIds(dimoTokens,carIds)
    console.log("Dimo tokens saved!")
 }
   return (
