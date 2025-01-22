@@ -129,8 +129,6 @@ function CurrentStatusInfo({
   const [isFinishingByHost, setIsFinishingByHost] = useState(false);
   const { sendMessage, getMessages } = useChat();
 
-  const carPhotosUploadButtonRef = useRef<any>(null);
-
   const [actionHeader, actionText, actionDescription] = getActionTextsForStatus(
     tripInfo,
     isHost,
@@ -149,6 +147,7 @@ function CurrentStatusInfo({
   const handleHostFinishTrip = async (messageToGuest: string) => {
     hideDialogs();
     setMessageToGuest(messageToGuest);
+
     if (tripInfo.allowedActions.length > 0) {
       tripInfo.allowedActions[0].isDisplay = true;
       const savedAction = tripInfo.allowedActions[0].action;
@@ -157,14 +156,9 @@ function CurrentStatusInfo({
         await sendMessage(tripInfo.guest.walletAddress, tripInfo.tripId, messageToSend);
       };
 
-      let tripPhotosUrls: string[] = [];
-      if(process.env.FF_TRIP_PHOTOS){
-        tripPhotosUrls=carPhotosUploadButtonRef.current.saveUploadedFiles();
-      }
-
       tripInfo.allowedActions[0].action = async (tripId: bigint, params: string[]) => {
         await sendMessageToGuest();
-        return savedAction(tripId, params, tripPhotosUrls);
+        return savedAction(tripId, params, []);
       };
     }
     setIsFinishingByHost(true);
@@ -174,16 +168,11 @@ function CurrentStatusInfo({
   const handleGuestFinishTrip = async () => {
     hideDialogs();
 
-    let tripPhotosUrls: string[] = [];
-    if(process.env.FF_TRIP_PHOTOS){
-      tripPhotosUrls=carPhotosUploadButtonRef.current.saveUploadedFiles();
-    }
-
     changeStatusCallback(() => {
       return tripInfo.allowedActions[0].action(
         BigInt(tripInfo.tripId),
         [],
-        tripPhotosUrls);
+        []);
     });
   };
 
@@ -198,6 +187,7 @@ function CurrentStatusInfo({
         handleCancel={handleCancel}
         guestPhoneNumber={tripInfo.guest.phoneNumber}
         t={t}
+        tripId={tripInfo.tripId}
       />
     );
   };
@@ -214,6 +204,7 @@ function CurrentStatusInfo({
             ?.message?.split("\n")[1] ?? ""
         }
         t={t}
+        tripId={tripInfo.tripId}
       />
     );
   };
@@ -265,16 +256,11 @@ function CurrentStatusInfo({
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
 
-                        let tripPhotosUrls: string[] = [];
-                        if(process.env.FF_TRIP_PHOTOS){
-                          tripPhotosUrls=carPhotosUploadButtonRef.current.saveUploadedFiles();
-                        }
-
                         changeStatusCallback(() => {
                           return action.action(
                             BigInt(tripInfo.tripId),
                             [],
-                            tripPhotosUrls
+                            []
                           );
                         });
                       } else {
@@ -292,16 +278,11 @@ function CurrentStatusInfo({
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
 
-                        let tripPhotosUrls: string[] = [];
-                        if(process.env.FF_TRIP_PHOTOS){
-                          tripPhotosUrls=carPhotosUploadButtonRef.current.saveUploadedFiles();
-                        }
-
                         changeStatusCallback(() => {
                           return action.action(
                             BigInt(tripInfo.tripId),
                             [],
-                            tripPhotosUrls
+                            []
                           );
                         });
                       } else {

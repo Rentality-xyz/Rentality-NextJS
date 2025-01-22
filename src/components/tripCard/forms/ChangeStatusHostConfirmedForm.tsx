@@ -125,7 +125,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
                 <CarPhotosUploadButton
                   ref={carPhotosUploadButtonRef}
                   isHost={isHost(userMode)}
-                  isStart={false}
+                  isStart={true}
                   tripId={tripInfo.tripId}
                 />
               </div>

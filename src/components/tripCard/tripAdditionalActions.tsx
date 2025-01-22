@@ -147,7 +147,7 @@ function TripAdditionalActions({
               <CarPhotosUploadButton
                 ref={carPhotosUploadButtonRef}
                 isHost={isHost}
-                isStart={tripInfo.status == TripStatus.CheckedInByHost}
+                isStart={false}
                 tripId={tripInfo.tripId}
               />
             </div>
@@ -186,7 +186,6 @@ function TripAdditionalActions({
                       carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
                         if(tripPhotosUrls.length === 0){
                           showDialog(t("common.photos_required"));
-                          return;
                         } else {
                           handleButtonClick();
                         }

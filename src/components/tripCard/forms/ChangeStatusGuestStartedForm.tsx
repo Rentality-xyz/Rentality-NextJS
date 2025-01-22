@@ -159,14 +159,16 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
                 </div>
               </div>
             </div>
-            <div className="flex flex-1 flex-col">
-              <CarPhotosUploadButton
-                ref={carPhotosUploadButtonRef}
-                isHost={isHost(userMode)}
-                isStart={false}
-                tripId={tripInfo.tripId}
-              />
-            </div>
+            { hasTripPhotosFeatureFlag && (
+              <div className="flex flex-1 flex-col">
+                <CarPhotosUploadButton
+                  ref={carPhotosUploadButtonRef}
+                  isHost={isHost(userMode)}
+                  isStart={true}
+                  tripId={tripInfo.tripId}
+                />
+              </div>
+            )}
             <div className="flex flex-1 flex-col">
               <div className="mt-2 font-bold">Reimbursement charge:</div>
               <div className="mt-2 grid grid-cols-2 text-sm md:mt-4">
