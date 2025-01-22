@@ -121,60 +121,58 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
   const getChatInfosWithoutMessages = useCallback(
     async (rentalityContracts: IRentalityContracts) => {
-      try {
-        if (!rentalityContracts) {
-          console.error("getChatInfos error: contract is null");
-          return;
-        }
-
-        const chatInfosView: ContractChatInfo[] = await rentalityContracts.gateway.getChatInfoFor(isHost(userMode));
-        const chatInfosViewSorted = [...chatInfosView].sort((a, b) => {
-          return Number(b.tripId) - Number(a.tripId);
-        });
-
-        const chatInfosData =
-          chatInfosViewSorted.length === 0
-            ? []
-            : await Promise.all(
-                chatInfosViewSorted.map(async (ci: ContractChatInfo) => {
-                  const metaData = parseMetaData(await getMetaDataFromIpfs(ci.carMetadataUrl));
-                  const tripStatus = ci.tripStatus;
-
-                  let item: ChatInfo = {
-                    tripId: Number(ci.tripId),
-
-                    guestAddress: ci.guestAddress,
-                    guestName: ci.guestName,
-                    guestPhotoUrl: getIpfsURI(ci.guestPhotoUrl),
-
-                    hostAddress: ci.hostAddress,
-                    hostName: ci.hostName,
-                    hostPhotoUrl: getIpfsURI(ci.hostPhotoUrl),
-
-                    tripTitle: `${tripStatus} trip with ${ci.hostName} ${ci.carBrand} ${ci.carModel}`,
-                    startDateTime: getDateFromBlockchainTime(ci.startDateTime),
-                    endDateTime: getDateFromBlockchainTime(ci.endDateTime),
-                    timeZoneId: ci.timeZoneId,
-                    lastMessage: "Click to open chat",
-                    updatedAt: moment.unix(0).toDate(),
-                    isSeen: true,
-                    seenAt: null,
-
-                    carPhotoUrl: getIpfsURI(metaData.mainImage),
-                    tripStatus: tripStatus,
-                    carTitle: `${ci.carBrand} ${ci.carModel} ${ci.carYearOfProduction}`,
-                    carLicenceNumber: metaData.licensePlate,
-
-                    messages: [],
-                  };
-                  return item;
-                })
-              );
-
-        return chatInfosData;
-      } catch (e) {
-        console.error("getChatInfos error:" + e);
+      if (!rentalityContracts) {
+        console.error("getChatInfos error: contract is null");
+        return;
       }
+
+      const result = await rentalityContracts.gatewayProxy.getChatInfoFor(isHost(userMode));
+      if (!result.ok) return;
+
+      const chatInfosViewSorted = [...result.value].sort((a, b) => {
+        return Number(b.tripId) - Number(a.tripId);
+      });
+
+      const chatInfosData =
+        chatInfosViewSorted.length === 0
+          ? []
+          : await Promise.all(
+              chatInfosViewSorted.map(async (ci: ContractChatInfo) => {
+                const metaData = parseMetaData(await getMetaDataFromIpfs(ci.carMetadataUrl));
+                const tripStatus = ci.tripStatus;
+
+                let item: ChatInfo = {
+                  tripId: Number(ci.tripId),
+
+                  guestAddress: ci.guestAddress,
+                  guestName: ci.guestName,
+                  guestPhotoUrl: getIpfsURI(ci.guestPhotoUrl),
+
+                  hostAddress: ci.hostAddress,
+                  hostName: ci.hostName,
+                  hostPhotoUrl: getIpfsURI(ci.hostPhotoUrl),
+
+                  tripTitle: `${tripStatus} trip with ${ci.hostName} ${ci.carBrand} ${ci.carModel}`,
+                  startDateTime: getDateFromBlockchainTime(ci.startDateTime),
+                  endDateTime: getDateFromBlockchainTime(ci.endDateTime),
+                  timeZoneId: ci.timeZoneId,
+                  lastMessage: "Click to open chat",
+                  updatedAt: moment.unix(0).toDate(),
+                  isSeen: true,
+                  seenAt: null,
+
+                  carPhotoUrl: getIpfsURI(metaData.mainImage),
+                  tripStatus: tripStatus,
+                  carTitle: `${ci.carBrand} ${ci.carModel} ${ci.carYearOfProduction}`,
+                  carLicenceNumber: metaData.licensePlate,
+
+                  messages: [],
+                };
+                return item;
+              })
+            );
+
+      return chatInfosData;
     },
     [userMode]
   );
@@ -210,50 +208,49 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
       console.debug(`tripStatusChangedListener call. TripId: ${tripId} status: ${tripStatus}`);
       if (tripStatus === TripStatus.Pending) {
-        try {
-          const tripInfo: ContractTripDTO = await rentalityContracts.gateway.getTrip(BigInt(tripId));
-          const metaData = parseMetaData(await getMetaDataFromIpfs(tripInfo.metadataURI));
-          const tripStatus = tripInfo.trip.status;
+        const tripInfoResult = await rentalityContracts.gatewayProxy.getTrip(BigInt(tripId));
+        if (!tripInfoResult.ok) return;
 
-          setChatInfos((prev) => {
-            if (prev.find((ci) => ci.tripId === Number(tripId)) !== undefined) {
-              return prev;
-            }
+        const tripInfo = tripInfoResult.value;
+        const metaData = parseMetaData(await getMetaDataFromIpfs(tripInfoResult.value.metadataURI));
+        const tripStatus = tripInfo.trip.status;
 
-            return [
-              ...prev,
-              {
-                tripId: Number(tripInfo.trip.tripId),
+        setChatInfos((prev) => {
+          if (prev.find((ci) => ci.tripId === Number(tripId)) !== undefined) {
+            return prev;
+          }
 
-                guestAddress: tripInfo.trip.guest,
-                guestName: tripInfo.trip.guestName,
-                guestPhotoUrl: getIpfsURI(tripInfo.guestPhotoUrl),
+          return [
+            ...prev,
+            {
+              tripId: Number(tripInfo.trip.tripId),
 
-                hostAddress: tripInfo.trip.host,
-                hostName: tripInfo.trip.hostName,
-                hostPhotoUrl: getIpfsURI(tripInfo.hostPhotoUrl),
+              guestAddress: tripInfo.trip.guest,
+              guestName: tripInfo.trip.guestName,
+              guestPhotoUrl: getIpfsURI(tripInfo.guestPhotoUrl),
 
-                tripTitle: `${tripStatus} trip with ${tripInfo.trip.hostName} ${tripInfo.brand} ${tripInfo.model}`,
-                startDateTime: getDateFromBlockchainTime(tripInfo.trip.startDateTime),
-                endDateTime: getDateFromBlockchainTime(tripInfo.trip.endDateTime),
-                timeZoneId: tripInfo.timeZoneId,
-                lastMessage: "Click to open chat",
-                updatedAt: moment.unix(0).toDate(),
-                isSeen: true,
-                seenAt: null,
+              hostAddress: tripInfo.trip.host,
+              hostName: tripInfo.trip.hostName,
+              hostPhotoUrl: getIpfsURI(tripInfo.hostPhotoUrl),
 
-                carPhotoUrl: getIpfsURI(metaData.mainImage),
-                tripStatus: tripStatus,
-                carTitle: `${tripInfo.brand} ${tripInfo.model} ${tripInfo.yearOfProduction}`,
-                carLicenceNumber: metaData.licensePlate,
+              tripTitle: `${tripStatus} trip with ${tripInfo.trip.hostName} ${tripInfo.brand} ${tripInfo.model}`,
+              startDateTime: getDateFromBlockchainTime(tripInfo.trip.startDateTime),
+              endDateTime: getDateFromBlockchainTime(tripInfo.trip.endDateTime),
+              timeZoneId: tripInfo.timeZoneId,
+              lastMessage: "Click to open chat",
+              updatedAt: moment.unix(0).toDate(),
+              isSeen: true,
+              seenAt: null,
 
-                messages: [],
-              },
-            ];
-          });
-        } catch (e) {
-          console.error("rentalityEventListener error:" + e);
-        }
+              carPhotoUrl: getIpfsURI(metaData.mainImage),
+              tripStatus: tripStatus,
+              carTitle: `${tripInfo.brand} ${tripInfo.model} ${tripInfo.yearOfProduction}`,
+              carLicenceNumber: metaData.licensePlate,
+
+              messages: [],
+            },
+          ];
+        });
       } else {
         setChatInfos((prev) => {
           const result = prev.map((ci) => (ci.tripId === tripId ? { ...ci, tripStatus: tripStatus } : ci));
