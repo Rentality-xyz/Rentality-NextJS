@@ -153,6 +153,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           salesTax: Number(availableCarDTO.salesTax) / 100,
           governmentTax: Number(availableCarDTO.governmentTax) / 100,
           distanceToUser: Number(availableCarDTO.distance),
+          dimoTokenId: Number(availableCarDTO.dimoTokenId ? availableCarDTO.dimoTokenId : 0),
         };
         setCarInfo(selectedCarDetails);
 
