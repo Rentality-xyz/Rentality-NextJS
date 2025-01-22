@@ -18,13 +18,8 @@ const useInviteLink = () => {
       console.error("get hash error: rentalityAdminContract is null");
       return null;
     }
-
-    try {
-      return await admin.manageRefferalBonusAccrual(accrualType, program, points, pointsWithReffHash);
-    } catch (e) {
-      console.error("get hash error:" + e);
-      return null;
-    }
+    const result = await admin.manageRefferalBonusAccrual(accrualType, program, points, pointsWithReffHash);
+    return result.ok ? result.value : null;
   };
 
   const manageReferralDiscount = async (program: ReferralProgram, tear: Tear, points: number, percents: number) => {
@@ -33,12 +28,8 @@ const useInviteLink = () => {
       return null;
     }
 
-    try {
-      return await admin.manageRefferalDiscount(program, tear, points, percents);
-    } catch (e) {
-      console.error("get hash error:" + e);
-      return null;
-    }
+    const result = await admin.manageRefferalDiscount(program, tear, points, percents);
+    return result.ok ? result.value : null;
   };
 
   const manageTearInfo = async (tear: Tear, from: number, to: number) => {
@@ -47,12 +38,8 @@ const useInviteLink = () => {
       return null;
     }
 
-    try {
-      return await admin.manageTearInfo(tear, from, to);
-    } catch (e) {
-      console.error("get hash error:" + e);
-      return null;
-    }
+    const result = await admin.manageTearInfo(tear, from, to);
+    return result.ok ? result.value : null;
   };
 
   return {

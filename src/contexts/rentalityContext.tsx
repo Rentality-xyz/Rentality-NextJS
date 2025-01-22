@@ -6,7 +6,10 @@ import {
   IRentalityReferralProgram,
   IRentalityReferralProgramContract,
 } from "@/features/blockchain/models/IRentalityReferralProgram";
-import { IRentalityAdminGatewayContract } from "@/features/blockchain/models/IRentalityAdminGatewayContract";
+import {
+  IRentalityAdminGateway,
+  IRentalityAdminGatewayContract,
+} from "@/features/blockchain/models/IRentalityAdminGateway";
 import { IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGatewayContract";
 import { getEthersContractProxy } from "@/features/blockchain/models/EthersContractProxy";
 
@@ -20,7 +23,7 @@ interface RentalityContextType {
 }
 
 interface RentalityAdminContextType {
-  admin: IRentalityAdminGatewayContract | null | undefined;
+  admin: IRentalityAdminGateway | null | undefined;
 }
 
 const RentalityContext = createContext<RentalityContextType | null>(null);
@@ -30,7 +33,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
   const router = useRouter();
   const ethereumInfo = useEthereum();
   const [rentalityContracts, setRentalityContracts] = useState<IRentalityContracts | null | undefined>(undefined);
-  const [rentalityAdmin, setRentalityAdmin] = useState<IRentalityAdminGatewayContract | null | undefined>(undefined);
+  const [rentalityAdmin, setRentalityAdmin] = useState<IRentalityAdminGateway | null | undefined>(undefined);
 
   const isAdmin = router.route.startsWith("/admin");
 
@@ -95,7 +98,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         return;
       }
 
-      setRentalityAdmin(rentalityAdmin);
+      setRentalityAdmin(getEthersContractProxy(rentalityAdmin));
     };
 
     getRentalityAdminContacts();

@@ -11,6 +11,9 @@ import {
 } from "@/model/blockchain/schemas";
 import { ContractTransactionResponse } from "ethers";
 import { IEthersContract } from "./IEtherContract";
+import { ContractResultWrapper } from "../types";
+
+export interface IRentalityAdminGateway extends ContractResultWrapper<IRentalityAdminGatewayContract> {}
 
 export interface IRentalityAdminGatewayContract extends IEthersContract {
   address: string;
@@ -53,11 +56,16 @@ export interface IRentalityAdminGatewayContract extends IEthersContract {
     program: RefferalProgram,
     points: number,
     pointsWithReffHash: number
-  ): Promise<void>;
+  ): Promise<ContractTransactionResponse>;
 
-  manageRefferalDiscount(program: RefferalProgram, tear: Tear, points: number, percents: number): Promise<void>;
+  manageRefferalDiscount(
+    program: RefferalProgram,
+    tear: Tear,
+    points: number,
+    percents: number
+  ): Promise<ContractTransactionResponse>;
 
-  manageTearInfo(tear: Tear, from: number, to: number): Promise<void>;
+  manageTearInfo(tear: Tear, from: number, to: number): Promise<ContractTransactionResponse>;
 
   getRefferalPointsInfo(): Promise<ContractAllRefferalInfoDTO>;
   getPlatformUsersInfo(): Promise<ContractAdminKYCInfoDTO[]>;

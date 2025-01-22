@@ -35,38 +35,37 @@ function useAdminAllUsers() {
         return Err("Contract is not initialized");
       }
 
-      try {
-        setIsLoading(true);
-        setCurrentPage(page);
-        setTotalPageCount(0);
-        console.debug(`filters: ${JSON.stringify(filters, bigIntReplacer)}`);
+      setIsLoading(true);
+      setCurrentPage(page);
+      setTotalPageCount(0);
+      console.debug(`filters: ${JSON.stringify(filters, bigIntReplacer)}`);
 
-        // const contractFilters: ContractUserFilter = {
-        // };
+      // const contractFilters: ContractUserFilter = {
+      // };
 
-        const platformUsersInfos = await admin.getPlatformUsersInfo(); //(contractFilters, BigInt(page), BigInt(itemsPerPage));
-        if (platformUsersInfos.length > 0) {
-          validateContractAdminKYCInfoDTO(platformUsersInfos[0]);
+      const result = await admin.getPlatformUsersInfo(); //(contractFilters, BigInt(page), BigInt(itemsPerPage));
+
+      if (result.ok) {
+        if (result.value.length > 0) {
+          validateContractAdminKYCInfoDTO(result.value[0]);
         }
 
         const data: AdminUserDetails[] = await Promise.all(
-          platformUsersInfos.map(async (platformUsersInfo) => {
+          result.value.map(async (platformUsersInfo) => {
             return mapContractAdminKYCInfoDTOToAdminUserDetails(platformUsersInfo);
           })
         );
 
-        // const data: AdminUserDetails[] = MOCK_DATA;
         const allAdminTrips = { totalPageCount: 1 };
 
         setData(data);
         setTotalPageCount(Number(allAdminTrips.totalPageCount));
 
-        return Ok(true);
-      } catch (e) {
-        console.error("fetchData error" + e);
-        return Err("Get data error. See logs for more details");
-      } finally {
         setIsLoading(false);
+        return Ok(true);
+      } else {
+        setIsLoading(false);
+        return Err("Get data error. See logs for more details");
       }
     },
     [admin]
