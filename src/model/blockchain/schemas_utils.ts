@@ -216,6 +216,7 @@ const emptyContractSearchCar: ContractSearchCar = {
   locationInfo: emptyContractLocationInfo,
   insuranceInfo: emptyContractInsuranceCarInfo,
   isGuestHasInsurance: false,
+  dimoTokenId: BigInt(0)
 };
 
 export function validateContractSearchCar(obj: ContractSearchCar): obj is ContractSearchCar {
@@ -443,6 +444,7 @@ const emptyContractAvailableCarDTO: ContractAvailableCarDTO = {
   governmentTax: BigInt(0),
   isGuestHasInsurance: false,
   distance: BigInt(0),
+  dimoTokenId: BigInt(0)
 };
 
 export function validateContractAvailableCarDTO(obj: ContractAvailableCarDTO): obj is ContractAvailableCarDTO {
