@@ -30,18 +30,11 @@ const useReferralProgram = () => {
         setIsLoading(true);
         return null;
       }
-      if (!ethereumInfo) {
-        console.error("get hash error: ethereum info is null");
-        setIsLoading(true);
-        return null;
-      }
-      try {
-        const response = await rentalityContracts.referralProgram.getMyRefferalInfo();
-        setHash(response.myHash !== ZERO_4_BYTES_HASH ? response.myHash : "");
-        setUsedInviteHash(response.savedHash !== ZERO_4_BYTES_HASH ? response.savedHash : "");
-      } catch (e) {
-        console.error("get hash error:" + e);
-        return null;
+
+      const result = await rentalityContracts.referralProgram.getMyRefferalInfo();
+      if (result.ok) {
+        setHash(result.value.myHash !== ZERO_4_BYTES_HASH ? result.value.myHash : "");
+        setUsedInviteHash(result.value.savedHash !== ZERO_4_BYTES_HASH ? result.value.savedHash : "");
       }
     };
 
@@ -56,12 +49,10 @@ const useReferralProgram = () => {
         console.error("get hash error: ethereum info is null");
         return null;
       }
-      try {
-        let points = await rentalityContracts.referralProgram.addressToPoints(ethereumInfo.walletAddress);
-        setPoints(Number.parseInt(points.toString()));
-      } catch (e) {
-        console.error("get hash error:" + e);
-        return null;
+
+      const result = await rentalityContracts.referralProgram.addressToPoints(ethereumInfo.walletAddress);
+      if (result.ok) {
+        setPoints(Number(result.value));
       }
     };
 
@@ -90,12 +81,8 @@ const useReferralProgram = () => {
       setIsLoading(true);
       return null;
     }
-    try {
-      return await rentalityContracts.referralProgram.getReadyToClaim(ethereumInfo.walletAddress);
-    } catch (e) {
-      console.error("get hash error:" + e);
-      return null;
-    }
+    const result = await rentalityContracts.referralProgram.getReadyToClaim(ethereumInfo.walletAddress);
+    return result.ok ? result.value : null;
   }, [ethereumInfo, rentalityContracts]);
 
   const getReadyToClaimFromReferralHash = async (): Promise<ContractReferralHashDTO | null> => {
@@ -109,12 +96,9 @@ const useReferralProgram = () => {
       setIsLoading(true);
       return null;
     }
-    try {
-      return await rentalityContracts.referralProgram.getReadyToClaimFromRefferalHash(ethereumInfo.walletAddress);
-    } catch (e) {
-      console.error("get hash error:" + e);
-      return null;
-    }
+
+    const result = await rentalityContracts.referralProgram.getReadyToClaimFromRefferalHash(ethereumInfo.walletAddress);
+    return result.ok ? result.value : null;
   };
 
   const claimReferralPoints = async () => {
@@ -128,12 +112,8 @@ const useReferralProgram = () => {
       setIsLoading(true);
       return null;
     }
-    try {
-      await rentalityContracts.referralProgram.claimRefferalPoints(ethereumInfo.walletAddress);
-    } catch (e) {
-      console.error("get hash error:" + e);
-      return null;
-    }
+    const result = await rentalityContracts.referralProgram.claimRefferalPoints(ethereumInfo.walletAddress);
+    return result.ok ? result.value : null;
   };
 
   const getReferralPointsInfo = useCallback(async (): Promise<ContractAllReferralInfoDTO | null> => {
@@ -142,18 +122,9 @@ const useReferralProgram = () => {
       setIsLoading(true);
       return null;
     }
-    if (!ethereumInfo) {
-      console.error("get hash error: ethereum info is null");
-      setIsLoading(true);
-      return null;
-    }
-    try {
-      return await rentalityContracts.referralProgram.getRefferalPointsInfo();
-    } catch (e) {
-      console.error("get hash error:" + e);
-      return null;
-    }
-  }, [ethereumInfo, rentalityContracts]);
+    const result = await rentalityContracts.referralProgram.getRefferalPointsInfo();
+    return result.ok ? result.value : null;
+  }, [rentalityContracts]);
 
   const getPointsHistory = useCallback(async (): Promise<ContractProgramHistory[] | null> => {
     if (!rentalityContracts) {
@@ -161,18 +132,9 @@ const useReferralProgram = () => {
       setIsLoading(true);
       return null;
     }
-    if (!ethereumInfo) {
-      console.error("get hash error: ethereum info is null");
-      setIsLoading(true);
-      return null;
-    }
-    try {
-      return await rentalityContracts.referralProgram.getPointsHistory();
-    } catch (e) {
-      console.error("get hash error:" + e);
-      return null;
-    }
-  }, [ethereumInfo, rentalityContracts]);
+    const result = await rentalityContracts.referralProgram.getPointsHistory();
+    return result.ok ? result.value : null;
+  }, [rentalityContracts]);
 
   const calculateUniqUsers = (pointsInfo: ContractReadyToClaimFromHash[]) => {
     return new Set(pointsInfo.map((points) => points.user)).size;

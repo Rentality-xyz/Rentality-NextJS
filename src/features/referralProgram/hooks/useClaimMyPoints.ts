@@ -32,12 +32,12 @@ function useClaimMyPointsContractActions() {
       return Err(new Error("ethereum is null"));
     }
 
-    try {
-      const response = await rentalityContracts.referralProgram.getReadyToClaim(ethereumInfo.walletAddress);
-      return Ok(Number(response.totalPoints));
-    } catch (e) {
-      console.error("fetchReadyToClaim error:" + e);
-      return Err(new Error("fetch error:" + e));
+    const result = await rentalityContracts.referralProgram.getReadyToClaim(ethereumInfo.walletAddress);
+
+    if (result.ok) {
+      return Ok(Number(result.value.totalPoints));
+    } else {
+      return Err(new Error("fetch error:" + result.error));
     }
   }, [ethereumInfo, rentalityContracts]);
 
@@ -51,13 +51,11 @@ function useClaimMyPointsContractActions() {
       return Err(new Error("ethereum info is null"));
     }
 
-    try {
-      const transaction = await rentalityContracts.referralProgram.claimPoints(ethereumInfo.walletAddress);
-      await transaction.wait();
-      return Ok(true);
-    } catch (e) {
-      console.error("claimMyPoints error:" + e);
-      return Err(new Error("claimMyPoints error: " + e));
+    const result = await rentalityContracts.referralProgram.claimPoints(ethereumInfo.walletAddress);
+    if (result.ok) {
+      return result;
+    } else {
+      return Err(new Error("claimMyPoints error: " + result.error));
     }
   }, [ethereumInfo, rentalityContracts]);
 
