@@ -52,6 +52,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
           tripPhotosUrls = await carPhotosUploadButtonRef.current.saveUploadedFiles();
           if(tripPhotosUrls.length === 0){
             showDialog(t("common.photos_required"));
+            return;
           }
         }
         changeStatusCallback(async () => {
@@ -124,7 +125,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
                 <CarPhotosUploadButton
                   ref={carPhotosUploadButtonRef}
                   isHost={isHost(userMode)}
-                  isStart={true}
+                  isStart={false}
                   tripId={tripInfo.tripId}
                 />
               </div>

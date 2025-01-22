@@ -142,12 +142,12 @@ function TripAdditionalActions({
           />
         )}
         <div className="flex flex-col gap-4 py-4 w-1/2">
-          {hasTripPhotosFeatureFlag && tripInfo.status == TripStatus.CheckedInByHost && (
+          {hasTripPhotosFeatureFlag && (tripInfo.status == TripStatus.CheckedInByHost || tripInfo.status == TripStatus.CheckedOutByGuest) && (
             <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
               <CarPhotosUploadButton
                 ref={carPhotosUploadButtonRef}
                 isHost={isHost}
-                isStart={true}
+                isStart={tripInfo.status == TripStatus.CheckedInByHost}
                 tripId={tripInfo.tripId}
               />
             </div>
@@ -186,6 +186,7 @@ function TripAdditionalActions({
                       carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
                         if(tripPhotosUrls.length === 0){
                           showDialog(t("common.photos_required"));
+                          return;
                         } else {
                           handleButtonClick();
                         }
