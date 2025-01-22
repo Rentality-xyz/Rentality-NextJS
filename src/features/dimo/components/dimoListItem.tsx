@@ -1,17 +1,16 @@
-
-import RntButton from "../common/rntButton";
+import RntButton from "../../../components/common/rntButton";
 import { TFunction } from "@/utils/i18n";
 import { cn } from "@/utils";
-import { DimoCarResponse  } from "@/pages/host/dimo";
+import { DimoCarResponse } from "@/features/dimo/hooks/useDimo";
 
 export default function DimoListingItem({
   carInfo,
   t,
-  onCreateRentalityCar, 
+  onCreateRentalityCar,
 }: {
   carInfo: DimoCarResponse;
   t: TFunction;
-  onCreateRentalityCar: () => void; 
+  onCreateRentalityCar: () => void;
 }) {
   let statusBgColor = carInfo.tokenId ? "bg-lime-500" : "bg-red-500";
   const statusClassName = cn(
@@ -21,7 +20,6 @@ export default function DimoListingItem({
 
   return (
     <div className="rnt-card flex flex-col overflow-hidden rounded-xl bg-rentality-bg md:flex-row">
-  
       <div className="flex w-full flex-col justify-between p-4">
         <div className="flex flex-row items-baseline justify-between">
           <div>
@@ -32,11 +30,7 @@ export default function DimoListingItem({
           <div className="flex flex-col">
             <div className="text-sm">{`DIMO Token ID: ${carInfo.tokenId}`}</div>
           </div>
-          <RntButton onClick={onCreateRentalityCar}>
-            {
-              "Create car on Rentality"
-            }
-          </RntButton>
+          <RntButton onClick={onCreateRentalityCar}>{"Create car on Rentality"}</RntButton>
         </div>
       </div>
     </div>

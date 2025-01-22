@@ -15,8 +15,18 @@ import React, { useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import axios from "@/utils/cachedAxios";
-import { DimoCarResponse } from "@/pages/host/dimo";
 import { CheckboxLight } from "@/components/common/rntCheckbox";
+import { cn } from "@/utils";
+import { isEmpty } from "@/utils/string";
+import Image from "next/image";
+import bgInput from "@/images/bg_input.png";
+import DimoListingItem from "@/features/dimo/components/dimoListItem";
+import { t } from "i18next";
+import RentalityCarItem from "@/features/dimo/components/rentalityCarItem";
+import useDimo, { DimoCarResponse } from "@/features/dimo/hooks/useDimo";
+import { ca } from "date-fns/locale";
+import { BaseCarInfo } from "@/model/BaseCarInfo";
+import { getIpfsURI } from "@/utils/ipfsUtils";
 
 function Listings() {
   const [isLoadingMyListings, myListings] = useMyListings();
@@ -29,29 +39,9 @@ function Listings() {
   };
 
   //DIMO
-  const [isOnlyDimoCar, setIsOnlyDimoCar] = useState<boolean>(false);
-  const { isAuthenticated, getValidJWT, walletAddress } = useDimoAuthState();
-  const [jwt, setJwt] = useState<string | null>(null);
-  const userInfo = useUserInfo();
-  const { rentalityContracts } = useRentality();
-  const [isLoading, setIsLoading] = useState(true);
-  const [dimoVehicles, setDimoVehicles] = useState<DimoCarResponse[]>([]);
-
   const clientId = process.env.NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID;
   const apiKey = process.env.NEXT_PUBLIC_SERVER_DIMO_API_KEY;
   const domain = process.env.NEXT_PUBLIC_SERVER_DIMO_DOMAIN;
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      setJwt(getValidJWT());
-    }
-  }, [isAuthenticated]);
-
-  useEffect(() => {
-    if (walletAddress) {
-      fetchDimoData();
-    }
-  }, [walletAddress, userInfo]);
 
   if (!clientId || !apiKey || !domain) {
     console.error("DIMO .env is not set");
@@ -63,23 +53,54 @@ function Listings() {
     redirectUri: domain,
     apiKey,
   });
+  const [isShowOnlyDimoCar, setIsShowOnlyDimoCar] = useState<boolean>(false);
+  const {
+    walletAddress,
+    isLoadingDimo,
+    dimoVehicles,
+    isAuthenticated,
+    fetchDimoData,
+    createRentalityCar,
+    onRentalityAndDimoNotSyncMapped,
+    onDimoOnly,
+    onRentalityAndDimoSync,
+  } = useDimo(myListings);
 
-  const fetchDimoData = async () => {
-    try {
-      setIsLoading(true);
-      const response = await axios.get("/api/dimo/dimo", {
-        params: {
-          user: walletAddress,
-        },
-      });
-
-      setDimoVehicles(response.data);
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error fetching data from DIMO API:", error);
-      setIsLoading(false);
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchDimoData();
     }
+  }, [walletAddress, isAuthenticated]);
+
+  const { rentalityContracts } = useRentality();
+  const handleSaveDimoTokens = async (dimoTokens: number[], carIds: number[]) => {
+    if (!rentalityContracts) {
+      console.error("Save dimo tokens id error: Rentality contract is null");
+      return;
+    }
+    await rentalityContracts.gateway.saveDimoTokenIds(dimoTokens, carIds);
+    console.log("Dimo tokens saved!");
   };
+
+  const combinedListings = [
+    ...(myListings || []),
+    ...(onDimoOnly || []).map((dimoCar) => ({
+      carId: dimoCar.definition.id,
+      ownerAddress: "",
+      image: getIpfsURI(dimoCar.imageURI),
+      brand: dimoCar.definition.make,
+      model: dimoCar.definition.model,
+      year: dimoCar.definition.year,
+      licensePlate: "",
+      pricePerDay: 0,
+      securityDeposit: 0,
+      milesIncludedPerDay: 0,
+      currentlyListed: false,
+      isEditable: false,
+      vinNumber: dimoCar.vin,
+      dimoTokenId: dimoCar.tokenId,
+    })),
+  ];
 
   return (
     <>
@@ -92,7 +113,7 @@ function Listings() {
             {t("vehicles.add_listing")}
           </RntButton>
         </div>
-        <div className="flex w-full items-center max-md:mt-2 max-md:justify-between md:gap-4">
+        <div className="flex w-full items-center max-md:mt-2 max-md:flex-col md:gap-4">
           {isAuthenticated ? (
             <ShareVehiclesWithDimo
               mode="popup"
@@ -109,27 +130,75 @@ function Listings() {
             />
           )}
           <CheckboxLight
+            className="max-md:mb-3 max-md:mt-4"
             label="Only DIMO car"
-            checked={isOnlyDimoCar}
+            checked={isShowOnlyDimoCar}
             onChange={() => {
-              setIsOnlyDimoCar(!isOnlyDimoCar);
+              setIsShowOnlyDimoCar(!isShowOnlyDimoCar);
             }}
           />
         </div>
       </div>
 
       <CheckingLoadingAuth>
-        <RntSuspense isLoading={isLoadingMyListings}>
+        <RntSuspense isLoading={isLoadingMyListings || (isLoadingDimo && isAuthenticated)}>
           <div className="my-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
-            {myListings != null && myListings.length > 0 ? (
-              myListings.map((value) => {
-                return <ListingItem key={value.carId} carInfo={value} t={t} />;
-              })
-            ) : (
+            {combinedListings.length === 0 && (
               <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
                 {t("vehicles.no_listed_cars")}
               </div>
             )}
+
+            {combinedListings.length > 0 &&
+              combinedListings.map((value) => {
+                const vehicle = onDimoOnly?.find((car) => car.vin === value.vinNumber);
+                const carForSync = onRentalityAndDimoNotSyncMapped?.find((car) => car.carId === value.carId);
+                const isDimoOnly = onDimoOnly?.some((car) => car.vin === value.vinNumber);
+                const isDimoNotSyncMapped = onRentalityAndDimoNotSyncMapped?.some((car) => car.carId === value.carId);
+                const isDimoSynced = onRentalityAndDimoSync?.some((car) => car.carId === value.carId);
+
+                return isShowOnlyDimoCar && (isDimoOnly || isDimoSynced || isDimoNotSyncMapped) ? (
+                  <ListingItem
+                    key={value.carId}
+                    carInfo={value}
+                    isDimoOnly={isDimoOnly && isAuthenticated}
+                    isDimoSynced={isDimoSynced && isAuthenticated}
+                    isDimoNotSyncMapped={isDimoNotSyncMapped && isAuthenticated}
+                    onCreateRentalityCar={() => {
+                      if (vehicle) {
+                        createRentalityCar(vehicle);
+                      }
+                    }}
+                    onSyncWithDimo={async () => {
+                      if (carForSync) {
+                        await handleSaveDimoTokens([carForSync.dimoTokenId], [carForSync.carId]);
+                      }
+                    }}
+                    t={t}
+                  />
+                ) : (
+                  !isShowOnlyDimoCar && (
+                    <ListingItem
+                      key={value.carId}
+                      carInfo={value}
+                      isDimoOnly={isDimoOnly && isAuthenticated}
+                      isDimoSynced={isDimoSynced && isAuthenticated}
+                      isDimoNotSyncMapped={isDimoNotSyncMapped && isAuthenticated}
+                      onCreateRentalityCar={() => {
+                        if (vehicle) {
+                          createRentalityCar(vehicle);
+                        }
+                      }}
+                      onSyncWithDimo={async () => {
+                        if (carForSync) {
+                          await handleSaveDimoTokens([carForSync.dimoTokenId], [carForSync.carId]);
+                        }
+                      }}
+                      t={t}
+                    />
+                  )
+                );
+              })}
           </div>
         </RntSuspense>
       </CheckingLoadingAuth>
