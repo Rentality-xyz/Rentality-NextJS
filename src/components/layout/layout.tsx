@@ -79,13 +79,12 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
     <>
       <Header />
       <div className="relative flex min-h-[100vh] w-full flex-row overflow-hidden pt-14 text-rnt-temp-sidemenu-text">
-        <aside
-          id="main-side-menu"
-          className={`fixed hidden h-full bg-rentality-bg-left-sidebar lg:block ${
-            isFooterVisible ? `bottom-20` : `top-14`
-          } transition-all duration-300`}
-        >
-          {sideNavMenu}
+        <aside id="main-side-menu" className={`fixed hidden h-full bg-rentality-bg-left-sidebar lg:block`}>
+          <div className={`${
+            isFooterVisible ? `mt-[-400px]` : ``
+          } transition-all duration-300`}>
+            {sideNavMenu}
+          </div>
         </aside>
 
         <div className="relative flex w-full min-w-0 flex-col lg:ml-[300px] xl:grow">
