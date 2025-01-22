@@ -12,10 +12,9 @@ import {
 import { deleteFileFromIPFS, uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
 import { getSignedLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { getIpfsHashFromUrl, getNftJSONFromCarInfo } from "@/utils/ipfsUtils";
-import { ContractTransactionResponse } from "ethers";
 import { env } from "@/utils/env";
 import { PlatformCarImage, UploadedCarImage } from "@/model/FileToUpload";
-import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
+import { Err, Result, TransactionErrorCode } from "@/model/utils/result";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 
@@ -117,9 +116,8 @@ const useSaveCar = () => {
         insurancePriceInUsdCents: BigInt(dataToSave.insurancePerDayPriceInUsd * 100),
       };
 
-      const transaction = await rentalityContracts.gateway.addCar(request);
-      await transaction.wait();
-      return Ok(true);
+      const result = await rentalityContracts.gatewayProxy.addCar(request);
+      return result.ok ? result : Err("ERROR");
     } catch (e) {
       console.error("addNewCar error: Upload error" + e);
       return Err("ERROR");
@@ -188,38 +186,27 @@ const useSaveCar = () => {
       insurancePriceInUsdCents: BigInt(hostCarInfo.insurancePerDayPriceInUsd * 100),
     };
 
-    let transaction: ContractTransactionResponse;
+    let locationInfo: ContractSignedLocationInfo = {
+      locationInfo: emptyContractLocationInfo,
+      signature: "0x",
+    };
 
-    try {
-      let locationInfo: ContractSignedLocationInfo;
-
-      if (hostCarInfo.isLocationEdited) {
-        const locationResult = await getSignedLocationInfo(
-          mapLocationInfoToContractLocationInfo(hostCarInfo.locationInfo),
-          ethereumInfo.chainId
-        );
-        if (!locationResult.ok) {
-          console.error("updateCar error: Sign location error");
-          return Err("ERROR");
-        }
-        locationInfo = locationResult.value;
-      } else {
-        locationInfo = {
-          locationInfo: emptyContractLocationInfo,
-          signature: "0x",
-        };
+    if (hostCarInfo.isLocationEdited) {
+      const locationResult = await getSignedLocationInfo(
+        mapLocationInfoToContractLocationInfo(hostCarInfo.locationInfo),
+        ethereumInfo.chainId
+      );
+      if (!locationResult.ok) {
+        console.error("updateCar error: Sign location error");
+        return Err("ERROR");
       }
-      transaction = await rentalityContracts.gateway.updateCarInfoWithLocation(updateCarRequest, locationInfo);
-
-      await transaction.wait();
-
-      return Ok(true);
-    } catch (e) {
-      console.error("updateCar error: Upload error" + e);
-      return Err("ERROR");
-    } finally {
-      setDataSaved(true);
+      locationInfo = locationResult.value;
     }
+
+    const result = await rentalityContracts.gatewayProxy.updateCarInfoWithLocation(updateCarRequest, locationInfo);
+
+    setDataSaved(true);
+    return result.ok ? result : Err("ERROR");
   }
 
   return { dataSaved, addNewCar, updateCar } as const;
