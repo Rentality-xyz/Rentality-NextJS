@@ -2,13 +2,17 @@ import { getEtherContractWithSigner } from "../abis";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useEthereum } from "./web3/ethereumContext";
 import { useRouter } from "next/router";
-import { IRentalityReferralProgramContract } from "@/features/blockchain/models/IRentalityReferralProgram";
+import {
+  IRentalityReferralProgram,
+  IRentalityReferralProgramContract,
+} from "@/features/blockchain/models/IRentalityReferralProgram";
 import { IRentalityAdminGatewayContract } from "@/features/blockchain/models/IRentalityAdminGatewayContract";
 import { IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGatewayContract";
+import { getEthersContractProxy } from "@/features/blockchain/models/EthersContractProxy";
 
 export interface IRentalityContracts {
   gateway: IRentalityGatewayContract;
-  referralProgram: IRentalityReferralProgramContract;
+  referralProgram: IRentalityReferralProgram;
 }
 
 interface RentalityContextType {
@@ -63,7 +67,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
 
       setRentalityContracts({
         gateway: rentalityGateway,
-        referralProgram: rentalityReferralPogram,
+        referralProgram: getEthersContractProxy(rentalityReferralPogram),
       });
     };
 
