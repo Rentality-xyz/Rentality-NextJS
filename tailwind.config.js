@@ -5,8 +5,9 @@ module.exports = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx}",
     "./src/components/**/*.{js,ts,jsx,tsx}",
+    "./src/features/**/*.{js,ts,jsx,tsx}",
     "./src/app/**/*.{js,ts,jsx,tsx}",
-    "./src/utils/tailwind.ts",
+    "./src/**/tailwind.ts",
     path.join(path.dirname(require.resolve("@coinbase/onchainkit")), "**/*.js"),
   ],
   theme: {
@@ -37,6 +38,8 @@ module.exports = {
         "rentality-additional-tint": "#7E59D7",
         "rentality-secondary": "#5CF4E8",
         "rentality-secondary-shade": "#24D8D4", //sale bg, some (i) text,
+        "rentality-secondary-dark": "#26B4B1",
+        "rentality-star-point": "#EAB600",
 
         "rentality-button-light": "#7da2f6",
         "rentality-button-medium": "#7f5ee7",

@@ -16,13 +16,13 @@ import { formatSearchAvailableCarsContractRequest } from "@/utils/searchMapper";
 
 const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
   const ethereumInfo = useEthereum();
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [carInfo, setCarInfo] = useState<SearchCarInfoDetails>();
 
   useEffect(() => {
     const checkCarAvailabilityWithDelivery = async (request: SearchCarRequest, carId: number) => {
-      if (!rentalityContract) return;
+      if (!rentalityContracts) return;
       if (carId === 0) return;
 
       try {
@@ -60,7 +60,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           )
         );
 
-        const availableCarDTO = await rentalityContract.checkCarAvailabilityWithDelivery(
+        const availableCarDTO = await rentalityContracts.gateway.checkCarAvailabilityWithDelivery(
           BigInt(carId),
           contractDateFromUTC,
           contractDateToUTC,
@@ -72,7 +72,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           validateContractAvailableCarDTO(availableCarDTO);
         }
         console.log("availableCarDTO:", JSON.stringify(availableCarDTO, bigIntReplacer, 2));
-        const carInfo = await rentalityContract.getCarInfoById(BigInt(carId));
+        const carInfo = await rentalityContracts.gateway.getCarInfoById(BigInt(carId));
 
         const tankVolumeInGal =
           availableCarDTO.engineType === EngineType.PETROL ? Number(carInfo.carInfo.engineParams[0]) : 0;
@@ -87,7 +87,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
 
         const tripDays = Number(availableCarDTO.tripDays);
         const pricePerDay = Number(availableCarDTO.pricePerDayInUsdCents) / 100;
-        const totalPriceWithDiscount = Number(availableCarDTO.totalPriceWithDiscount) / 100;
+        const totalPriceWithHostDiscount = Number(availableCarDTO.totalPriceWithDiscount) / 100;
 
         const selectedCarDetails: SearchCarInfoDetails = {
           carId: Number(availableCarDTO.carId),
@@ -107,9 +107,9 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
 
           milesIncludedPerDayText: getMilesIncludedPerDayText(availableCarDTO.milesIncludedPerDay ?? 0),
           pricePerDay: pricePerDay,
-          pricePerDayWithDiscount: Number(availableCarDTO.pricePerDayWithDiscount) / 100,
+          pricePerDayWithHostDiscount: Number(availableCarDTO.pricePerDayWithDiscount) / 100,
           tripDays: tripDays,
-          totalPriceWithDiscount: totalPriceWithDiscount,
+          totalPriceWithHostDiscount: totalPriceWithHostDiscount,
           taxes: Number(availableCarDTO.taxes) / 100,
           securityDeposit: Number(availableCarDTO.securityDepositPerTripInUsdCents) / 100,
           hostPhotoUrl: availableCarDTO.hostPhotoUrl,
@@ -121,7 +121,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           },
           highlighted: false,
           daysDiscount: getDaysDiscount(tripDays),
-          totalDiscount: getTotalDiscount(pricePerDay, tripDays, totalPriceWithDiscount),
+          totalDiscount: getTotalDiscount(pricePerDay, tripDays, totalPriceWithHostDiscount),
           hostHomeLocation: formatLocationInfoUpToCity(availableCarDTO.locationInfo),
           deliveryPrices: {
             from1To25milesPrice: Number(availableCarDTO.underTwentyFiveMilesInUsdCents) / 100,
@@ -167,12 +167,12 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
     };
 
     if (!ethereumInfo) return;
-    if (!rentalityContract) return;
+    if (!rentalityContracts) return;
     if (!carId) return;
     if (isEmpty(searchCarRequest.searchLocation.address)) return;
 
     checkCarAvailabilityWithDelivery(searchCarRequest, carId);
-  }, [ethereumInfo, rentalityContract, searchCarRequest, carId]);
+  }, [ethereumInfo, rentalityContracts, searchCarRequest, carId]);
 
   return { isLoading, carInfo } as const;
 };
@@ -190,8 +190,8 @@ function getDaysDiscount(tripDays: number) {
   }
 }
 
-function getTotalDiscount(pricePerDay: number, tripDays: number, totalPriceWithDiscount: number) {
-  const totalDiscount = pricePerDay * tripDays - totalPriceWithDiscount;
+function getTotalDiscount(pricePerDay: number, tripDays: number, totalPriceWithHostDiscount: number) {
+  const totalDiscount = pricePerDay * tripDays - totalPriceWithHostDiscount;
   let result: string = "";
   if (totalDiscount > 0) {
     result = "-$" + displayMoneyWith2Digits(totalDiscount);

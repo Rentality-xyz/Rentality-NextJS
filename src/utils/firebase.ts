@@ -58,7 +58,7 @@ if (!isEmpty(firebaseConfig.projectId)) {
 
 const chatDbInfo = { db: chatDb, collections: { chats: "chats", userchats: "userchats" } as const };
 const cacheDbInfo = { db: cacheDb, collections: { carApi: "car-api-cache" } as const };
-const kycDbInfo = { db: cacheDb, collections: { kycInfos: "kycInfos" } as const };
+const kycDbInfo = { db: kycDb, collections: { kycInfos: "kycInfos" } as const };
 
 export {
   app,

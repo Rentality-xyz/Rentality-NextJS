@@ -22,13 +22,15 @@ import icLogout from "@/images/ic_logout.png";
 // @ts-ignore
 import icProfileSettings from "@/images/ic_profile_settings.png";
 // @ts-ignore
-import imgCopy from "@/images/ic_copy_24dp.svg";
+import imgCopy from "@/images/ic_copy_white_24dp.svg";
 // @ts-ignore
 import icBaseScan from "@/images/base-scan-log.svg";
 // @ts-ignore
 import icWalletBalance from "@/images/ic_wallet_balance.svg";
 import { useTranslation } from "react-i18next";
 import { AdminBurgerNavMenu } from "../sideNavMenu/adminSideNavMenu";
+import ClaimMyPointsHeaderButton from "@/features/referralProgram/components/ClaimMyPointsHeaderButton";
+import { isMobileAppRentality } from "@/utils/devicePlatform";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 72,
@@ -138,13 +140,19 @@ export default function Header() {
     navigator.clipboard.writeText(text);
   };
 
+  const [isRentalityMobileApp, setIsRentalityMobileApp] = useState(false);
+  useEffect(() => {
+    setIsRentalityMobileApp(isMobileAppRentality());
+  }, []);
+
   return (
-    <header className="fixed z-50 flex w-full items-center justify-between border-b-2 border-b-[#ffffff1f] bg-rentality-bg-left-sidebar text-rnt-temp-header-text max-lg:pl-4 lg:py-1 lg:pl-14 lg:pr-6">
-      <div className="flex max-lg:w-full max-lg:justify-between">
+    <header className="fixed z-50 flex w-full items-center justify-between border-b border-b-[#ffffff1f] bg-rentality-bg-left-sidebar text-rnt-temp-header-text max-lg:pl-4 lg:py-1 lg:pl-14 lg:pr-6">
+      <div className="flex items-center max-lg:w-full max-lg:justify-between">
         <HeaderLogo />
+        <ClaimMyPointsHeaderButton />
         <div className="flex min-w-[20px] items-center lg:hidden">
           {isBurgerMenuShown && (
-            <div id="burger-menu-wrapper" className="fixed left-0 top-[50px] z-[100] h-full w-full overflow-auto">
+            <div id="burger-menu-wrapper" className="fixed left-0 top-[57px] z-[100] h-full w-full overflow-auto">
               <aside id="burger-menu" className="bg-rentality-bg-left-sidebar">
                 {burgerNavMenu}
               </aside>
@@ -163,7 +171,7 @@ export default function Header() {
         </div>
       </div>
       <div className="ml-2 flex flex-row items-center max-lg:w-full max-lg:justify-between">
-        <RntMobileStoresDialog />
+        {!isRentalityMobileApp && <RntMobileStoresDialog />}
         <Stack direction="row" spacing={1} alignItems="center" className="max-lg:mx-3 lg:ml-12">
           <Typography className="font-['Montserrat',Arial,sans-serif] text-lg max-lg:hidden">Guest</Typography>
           <Typography className="font-['Montserrat',Arial,sans-serif] text-lg lg:hidden">

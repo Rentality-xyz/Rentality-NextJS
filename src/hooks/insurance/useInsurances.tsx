@@ -13,7 +13,7 @@ import { useCallback, useState } from "react";
 export type InsuranceFiltersType = {};
 
 export default function useInsurances(isHost: boolean) {
-  const rentalityContract = useRentality();
+  const { rentalityContracts } = useRentality();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<TripInsurance[]>([]);
   const [allData, setAllData] = useState<TripInsurance[] | undefined>(undefined);
@@ -44,14 +44,15 @@ export default function useInsurances(isHost: boolean) {
     async (
       filters?: InsuranceFiltersType,
       page: number = 1,
-      itemsPerPage: number = 10
+      itemsPerPage: number = 10,
+      refetch: boolean = false
     ): Promise<Result<boolean, string>> => {
-      if (allData !== undefined) {
+      if (allData !== undefined && !refetch) {
         filterData(allData, filters, page, itemsPerPage);
         return Ok(true);
       }
 
-      if (!rentalityContract) {
+      if (!rentalityContracts) {
         console.error("fetchData error: rentalityContract is null");
         return Err("Contract is not initialized");
       }
@@ -61,7 +62,7 @@ export default function useInsurances(isHost: boolean) {
         setCurrentPage(page);
         setTotalPageCount(0);
 
-        const insuranceData: ContractInsuranceDTO[] = await rentalityContract.getInsurancesBy(isHost);
+        const insuranceData: ContractInsuranceDTO[] = await rentalityContracts.gateway.getInsurancesBy(isHost);
 
         if (insuranceData && insuranceData.length > 0) {
           validateContractInsuranceDTO(insuranceData[0]);
@@ -110,7 +111,7 @@ export default function useInsurances(isHost: boolean) {
         setIsLoading(false);
       }
     },
-    [rentalityContract, allData, filterData, isHost]
+    [rentalityContracts, allData, filterData, isHost]
   );
 
   return {

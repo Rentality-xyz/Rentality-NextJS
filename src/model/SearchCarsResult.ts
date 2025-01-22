@@ -42,9 +42,9 @@ export type SearchCarInfo = {
 
   milesIncludedPerDayText: string;
   pricePerDay: number;
-  pricePerDayWithDiscount: number;
+  pricePerDayWithHostDiscount: number;
   tripDays: number;
-  totalPriceWithDiscount: number;
+  totalPriceWithHostDiscount: number;
   taxes: number;
   securityDeposit: number;
   hostPhotoUrl: string;

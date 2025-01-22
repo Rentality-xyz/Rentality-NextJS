@@ -42,13 +42,13 @@ export default function RntVINCheckingInput({
     return value.length != MAX_VIN_LENGTH ? `VIN should be ${MAX_VIN_LENGTH} digits` : "";
   }, [value, readOnly]);
 
-  const validationMessage = useMemo<string>( () => {
-    if( !validationError && !isVINVerified){
+  const validationMessage = useMemo<string>(() => {
+    if (!validationError && !isVINVerified) {
       return isVINCheckOverriden ? t("common.vin_not_found_overriden") : t("common.vin_not_found");
     } else {
-      return ""
+      return "";
     }
-  },[isVINVerified, validationError, isVINCheckOverriden]);
+  }, [isVINVerified, validationError, isVINCheckOverriden]);
 
   return (
     <>
@@ -83,7 +83,7 @@ export default function RntVINCheckingInput({
             }}
             id="alert-dialog-description"
           >
-            { t("common.vin_not_found_dialog_description1")  + value + t("common.vin_not_found_dialog_description2")}
+            {t("common.vin_not_found_dialog_description1") + value + t("common.vin_not_found_dialog_description2")}
           </DialogContentText>
         </DialogContent>
         <DialogActions
@@ -132,11 +132,11 @@ export default function RntVINCheckingInput({
         onKeyDown={(event) => {
           const target = event.target as HTMLInputElement;
 
-          if(target.value.length !== MAX_VIN_LENGTH){
+          if (target.value.length !== MAX_VIN_LENGTH) {
             return;
           }
 
-          if(event.key === "Enter" && !isVINVerified && !isVINCheckOverriden) {
+          if (event.key === "Enter" && !isVINVerified && !isVINCheckOverriden) {
             setIsVINConfirmDialogOpen(true);
             return;
           }
@@ -146,7 +146,7 @@ export default function RntVINCheckingInput({
           }
         }}
         onBlur={() => {
-          if(value.length === MAX_VIN_LENGTH && !isVINVerified && !isVINCheckOverriden) {
+          if (value.length === MAX_VIN_LENGTH && !isVINVerified && !isVINCheckOverriden) {
             setIsVINConfirmDialogOpen(true);
           }
         }}

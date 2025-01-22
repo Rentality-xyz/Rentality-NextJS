@@ -12,6 +12,7 @@ import {
   ContractCarInfo,
   ContractCarInfoDTO,
   ContractChatInfo,
+  ContractCheckPromoDTO,
   ContractClaim,
   ContractFilterInfoDTO,
   ContractFullClaimInfo,
@@ -19,6 +20,7 @@ import {
   ContractInsuranceDTO,
   ContractInsuranceInfo,
   ContractLocationInfo,
+  ContractPromoDTO,
   ContractPublicHostCarDTO,
   ContractSearchCar,
   ContractSearchCarWithDistance,
@@ -58,7 +60,7 @@ const emptyContractCarDetails: ContractCarDetails = {
   locationInfo: emptyContractLocationInfo,
   carVinNumber: "",
   carMetadataURI: "",
-  dimoTokenId: 0
+  dimoTokenId: BigInt(0)
 };
 
 export function validateContractCarDetails(obj: ContractCarDetails): obj is ContractCarDetails {
@@ -316,6 +318,7 @@ const emptyContractTripDTO: ContractTripDTO = {
   insurancesInfo: [],
   paidForInsuranceInUsdCents: BigInt(0),
   guestDrivingLicenseIssueCountry: "",
+  promoDiscount: BigInt(0),
 };
 
 export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {
@@ -331,11 +334,16 @@ const emptyContractAllTripsDTO: ContractAllTripsDTO = {
   trips: [],
   totalPageCount: BigInt(0),
 };
-
+const emptyContractPromoDTO: ContractPromoDTO = {
+  promoCode: "",
+  promoCodeEnterDate: BigInt(0),
+  promoCodeValueInPercents: BigInt(0),
+};
 const emptyContractAdminTripDTO: ContractAdminTripDTO = {
   trip: emptyContractTrip,
   carLocation: emptyContractLocationInfo,
   carMetadataURI: "",
+  promoInfo: emptyContractPromoDTO,
 };
 
 export function validateContractAllTripsDTO(obj: ContractAllTripsDTO): obj is ContractAllTripsDTO {
@@ -344,7 +352,8 @@ export function validateContractAllTripsDTO(obj: ContractAllTripsDTO): obj is Co
     (obj.trips.length === 0 ||
       (validateType(obj.trips[0], emptyContractAdminTripDTO) &&
         validateType(obj.trips[0].trip, emptyContractTrip) &&
-        validateType(obj.trips[0].carLocation, emptyContractLocationInfo)))
+        validateType(obj.trips[0].carLocation, emptyContractLocationInfo) &&
+        validateType(obj.trips[0].promoInfo, emptyContractPromoDTO)))
   );
 }
 
@@ -450,4 +459,15 @@ const emptyContractFilterInfoDTO: ContractFilterInfoDTO = {
 
 export function validateContractFilterInfoDTO(obj: ContractFilterInfoDTO): obj is ContractFilterInfoDTO {
   return validateType(obj, emptyContractFilterInfoDTO);
+}
+
+const emptyContractCheckPromoDTO: ContractCheckPromoDTO = {
+  isFound: false,
+  isValid: false,
+  isDiscount: false,
+  value: BigInt(0),
+};
+
+export function validateContractCheckPromoDTO(obj: ContractCheckPromoDTO): obj is ContractCheckPromoDTO {
+  return validateType(obj, emptyContractCheckPromoDTO);
 }
