@@ -21,7 +21,7 @@ interface ChangeStatusHostConfirmedFormProps {
 
 const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHostConfirmedFormProps>(
   ({ tripInfo, changeStatusCallback, disableButton, t }, ref) => {
-    const {panelData,getCarPanelParams} = useDIMOCarData(tripInfo ? tripInfo.carId : 0);
+    const {panelData, getCarPanelParams} = useDIMOCarData(tripInfo ? tripInfo.carId : 0);
     const { register, control, handleSubmit, formState, setValue } = useForm<ChangeStatusHostConfirmedFormValues>({
       defaultValues: {},
       resolver: zodResolver(changeStatusHostConfirmedFormSchema),
