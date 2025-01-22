@@ -165,6 +165,7 @@ export type ContractTripDTO = {
   paidForInsuranceInUsdCents: bigint;
   guestDrivingLicenseIssueCountry: string;
   promoDiscount: bigint;
+  dimoTokenId: bigint;
 };
 
 export type ContractChatInfo = {
