@@ -8,36 +8,10 @@ import RntButton from "@/components/common/rntButton";
 import { useRouter } from "next/router";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { useRentality } from "@/contexts/rentalityContext";
-import DimoListingItem from "@/components/host/dimoListItem";
-import RentalityCarItem from "@/components/host/rentalityCarItem";
+import DimoListingItem from "@/features/dimo/components/dimoListItem";
+import RentalityCarItem from "@/features/dimo/components/rentalityCarItem";
+import { Car, DimoCarResponse } from "@/features/dimo/hooks/useDimo";
 
-export type DimoCarResponse = {
-  definition: DimoCar;
-  tokenId: number;
-  vin: string;
-  imageURI: string;
-};
-export type DimoCarResponseWithTimestamp = {
-  definition: DimoCar;
-  tokenId: number;
-  vin: string;
-  timestamp: number;
-};
-type DimoCar = {
-  make: string;
-  year: string;
-  id: number;
-  model: string;
-};
-
-type Car = {
-  model: string;
-  brand: string;
-  image: string;
-  dimoTokenId: number;
-  carId: number;
-  isSynced: boolean;
-};
 export default function Dimo() {
   /// wallets for testing, unncomment wallet address from useDimoAuthState
   const walletAddress = "0xCAA591fA19a86762D1ed1B98b2057Ee233240b65";

@@ -547,4 +547,6 @@ input:disabled {
   height: 48px !important;
   border-radius: 9999px !important;
   width: fit-content !important;
+  padding-left: 30px !important;
+  padding-right: 30px !important;
 }
