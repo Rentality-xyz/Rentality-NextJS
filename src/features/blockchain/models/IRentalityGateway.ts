@@ -31,6 +31,9 @@ import {
 } from "@/model/blockchain/schemas";
 import { ContractTransactionResponse } from "ethers";
 import { IEthersContract } from "./IEtherContract";
+import { ContractResultWrapper } from "../types";
+
+export interface IRentalityGateway extends ContractResultWrapper<IRentalityGatewayContract> {}
 
 export interface IRentalityGatewayContract extends IEthersContract {
   /// USER PROFILE functions

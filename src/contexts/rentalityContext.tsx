@@ -10,11 +10,12 @@ import {
   IRentalityAdminGateway,
   IRentalityAdminGatewayContract,
 } from "@/features/blockchain/models/IRentalityAdminGateway";
-import { IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGatewayContract";
+import { IRentalityGateway, IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGateway";
 import { getEthersContractProxy } from "@/features/blockchain/models/EthersContractProxy";
 
 export interface IRentalityContracts {
   gateway: IRentalityGatewayContract;
+  gatewayProxy: IRentalityGateway;
   referralProgram: IRentalityReferralProgram;
 }
 
@@ -70,6 +71,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
 
       setRentalityContracts({
         gateway: rentalityGateway,
+        gatewayProxy: getEthersContractProxy(rentalityGateway),
         referralProgram: getEthersContractProxy(rentalityReferralPogram),
       });
     };
