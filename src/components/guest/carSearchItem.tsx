@@ -22,6 +22,7 @@ import useCheckPromo from "@/features/promocodes/hooks/useCheckPromo";
 import { cn } from "@/utils";
 import { PromoActionType, promoCodeReducer } from "@/features/promocodes/utils/promoCodeReducer";
 import { getPromoPrice } from "@/features/promocodes/utils";
+import imgDimoSynced from "@/images/img_dimo_synced.svg";
 
 type TFunction = (key: string, options?: { [key: string]: any }) => string;
 
@@ -105,9 +106,14 @@ export default function CarSearchItem({
       <div className="flex w-full flex-col justify-between p-2 sm:pb-2 sm:pl-4 sm:pr-2 sm:pt-2">
         <div onClick={() => setSelected(searchInfo.carId)}>
           <div className="flex flex-row items-center justify-between">
-            <div className="w-full overflow-hidden max-sm:mr-2">
+            <div className="overflow-hidden max-sm:mr-2">
               <strong className="truncate text-lg">{`${searchInfo.brand} ${searchInfo.model} ${searchInfo.year}`}</strong>
             </div>
+            {searchInfo.dimoTokenId !== 0 && (
+              <div className="max-xl:hidden">
+                <Image src={imgDimoSynced} alt="" className="w-[180px]" />
+              </div>
+            )}
             <div className="flex items-center">
               <div className="mr-2 truncate text-lg font-medium">{searchInfo.hostName ?? "-"}</div>
               <div className="h-12 w-12 self-center">
@@ -126,7 +132,7 @@ export default function CarSearchItem({
                   </strong>
                 </div>
               ) : (
-                <div className="text-base">
+                <div className="flex items-center text-base">
                   <strong>
                     ${displayMoneyWith2Digits(searchInfo.pricePerDayWithHostDiscount)}
                     {t_comp("per_day")}
@@ -135,6 +141,11 @@ export default function CarSearchItem({
                     ${displayMoneyWith2Digits(searchInfo.pricePerDay)}
                     {t_comp("per_day")}
                   </strong>
+                  {searchInfo.dimoTokenId !== 0 && (
+                    <div className="ml-auto xl:hidden">
+                      <Image src={imgDimoSynced} alt="" className="w-[120px]" />
+                    </div>
+                  )}
                 </div>
               )}
 
