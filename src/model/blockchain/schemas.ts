@@ -359,6 +359,7 @@ export type ContractSearchCar = {
   locationInfo: ContractLocationInfo;
   insuranceInfo: ContractInsuranceCarInfo;
   isGuestHasInsurance: boolean;
+  dimoTokenId: bigint;
 };
 
 export type ContractAvailableCarDTO = {
@@ -391,6 +392,7 @@ export type ContractAvailableCarDTO = {
   governmentTax: bigint;
   distance: bigint;
   isGuestHasInsurance: boolean;
+  dimoTokenId: bigint;
 };
 
 export type ContractGeoData = {
