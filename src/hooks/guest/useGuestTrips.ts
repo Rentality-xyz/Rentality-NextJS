@@ -90,8 +90,7 @@ const useGuestTrips = () => {
 
         const transaction = await rentalityContracts.gateway.checkOutByGuest(
           tripId,
-          [endFuelLevelInPercents, endOdometr],
-          ZERO_HASH
+          [endFuelLevelInPercents, endOdometr]
         );
 
         await transaction.wait();
