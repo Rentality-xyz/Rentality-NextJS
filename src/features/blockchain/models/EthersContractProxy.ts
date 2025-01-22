@@ -4,7 +4,14 @@ import { Err, Ok } from "@/model/utils/result";
 import { IEthersContract } from "./IEtherContract";
 
 function isContractTransactionResponse(obj: any): obj is ContractTransactionResponse {
-  return obj && "wait" in obj && typeof obj.wait === "function";
+  return (
+    obj &&
+    typeof obj === "object" &&
+    "provider" in obj &&
+    "chainId" in obj &&
+    "wait" in obj &&
+    typeof obj.wait === "function"
+  );
 }
 
 export function getEthersContractProxy<T extends IEthersContract>(contract: T): ContractResultWrapper<T> {
@@ -16,7 +23,7 @@ export function getEthersContractProxy<T extends IEthersContract>(contract: T): 
         return originalMethod;
       }
 
-      console.debug("called proxy function ", key);
+      console.debug(`${key.toString()} proxy function called`);
 
       return async (...args: any[]) => {
         try {
@@ -30,7 +37,7 @@ export function getEthersContractProxy<T extends IEthersContract>(contract: T): 
 
           return Ok(result);
         } catch (error) {
-          console.error(`proxy function (${key.toString()}) error:`, error);
+          console.error(`${key.toString()} proxy function error:`, error);
           return Err(error);
         }
       };
