@@ -1,10 +1,9 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ChatInfo } from "@/model/ChatInfo";
 import { getEtherContractWithSigner } from "@/abis";
-import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
 import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
-import { useRentality } from "../../../contexts/rentalityContext";
+import { IRentalityContracts, useRentality } from "../../../contexts/rentalityContext";
 import { isEmpty } from "@/utils/string";
 import moment from "moment";
 import { useEthereum } from "../../../contexts/web3/ethereumContext";
@@ -121,14 +120,14 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
   /// Chat Infos
 
   const getChatInfosWithoutMessages = useCallback(
-    async (rentalityContract: IRentalityContract) => {
+    async (rentalityContracts: IRentalityContracts) => {
       try {
-        if (rentalityContract == null) {
+        if (!rentalityContracts) {
           console.error("getChatInfos error: contract is null");
           return;
         }
 
-        const chatInfosView: ContractChatInfo[] = await rentalityContract.getChatInfoFor(isHost(userMode));
+        const chatInfosView: ContractChatInfo[] = await rentalityContracts.gateway.getChatInfoFor(isHost(userMode));
         const chatInfosViewSorted = [...chatInfosView].sort((a, b) => {
           return Number(b.tripId) - Number(a.tripId);
         });
@@ -392,7 +391,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         setIsLoading(true);
         console.log(`Chat initializing...`);
 
-        const infos = (await getChatInfosWithoutMessages(rentalityContracts.gateway)) ?? [];
+        const infos = (await getChatInfosWithoutMessages(rentalityContracts)) ?? [];
 
         const promisses = infos.map(async (i) => {
           await checkUserChats(chatDbInfo, i.hostAddress, i.guestAddress);
