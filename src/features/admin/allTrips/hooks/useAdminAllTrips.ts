@@ -36,40 +36,40 @@ const useAdminAllTrips = () => {
         return Err("Contract is not initialized");
       }
 
-      try {
-        setIsLoading(true);
-        setCurrentPage(page);
-        setTotalPageCount(0);
-        console.debug(`filters: ${JSON.stringify(filters, bigIntReplacer)}`);
+      setIsLoading(true);
+      setCurrentPage(page);
+      setTotalPageCount(0);
+      console.debug(`filters: ${JSON.stringify(filters, bigIntReplacer)}`);
 
-        const contractFilters: ContractTripFilter = {
-          status: filters?.status ? filters.status : AdminTripStatus.Any,
-          paymentStatus: filters?.paymentStatus ? filters.paymentStatus : PaymentStatus.Any,
-          location: filters?.location
-            ? mapLocationInfoToContractLocationInfo(filters.location)
-            : emptyContractLocationInfo,
-          startDateTime: filters?.startDateTimeUtc ? getBlockchainTimeFromDate(filters.startDateTimeUtc) : BigInt(0),
-          endDateTime: filters?.endDateTimeUtc ? getBlockchainTimeFromDate(filters.endDateTimeUtc) : BigInt(0),
-        };
+      const contractFilters: ContractTripFilter = {
+        status: filters?.status ? filters.status : AdminTripStatus.Any,
+        paymentStatus: filters?.paymentStatus ? filters.paymentStatus : PaymentStatus.Any,
+        location: filters?.location
+          ? mapLocationInfoToContractLocationInfo(filters.location)
+          : emptyContractLocationInfo,
+        startDateTime: filters?.startDateTimeUtc ? getBlockchainTimeFromDate(filters.startDateTimeUtc) : BigInt(0),
+        endDateTime: filters?.endDateTimeUtc ? getBlockchainTimeFromDate(filters.endDateTimeUtc) : BigInt(0),
+      };
 
-        const allAdminTrips = await admin.getAllTrips(contractFilters, BigInt(page), BigInt(itemsPerPage));
-        validateContractAllTripsDTO(allAdminTrips);
+      const result = await admin.getAllTrips(contractFilters, BigInt(page), BigInt(itemsPerPage));
+
+      if (result.ok) {
+        validateContractAllTripsDTO(result.value);
 
         const data: AdminTripDetails[] = await Promise.all(
-          allAdminTrips.trips.map(async (adminTripDto) => {
+          result.value.trips.map(async (adminTripDto) => {
             return mapContractAdminTripDTOToAdminTripDetails(adminTripDto);
           })
         );
 
         setData(data);
-        setTotalPageCount(Number(allAdminTrips.totalPageCount));
+        setTotalPageCount(Number(result.value.totalPageCount));
 
-        return Ok(true);
-      } catch (e) {
-        console.error("fetchData error" + e);
-        return Err("Get data error. See logs for more details");
-      } finally {
         setIsLoading(false);
+        return Ok(true);
+      } else {
+        setIsLoading(false);
+        return Err("Get data error. See logs for more details");
       }
     },
     [admin]
@@ -82,12 +82,10 @@ const useAdminAllTrips = () => {
         return Err("Contract is not initialized");
       }
 
-      try {
-        let transaction = await admin.payToHost(BigInt(tripId));
-        await transaction.wait();
-        return Ok(true);
-      } catch (e) {
-        console.error("payToHost error" + e);
+      const result = await admin.payToHost(BigInt(tripId));
+      if (result.ok) {
+        return result;
+      } else {
         return Err("Transaction error. See logs for more details");
       }
     },
@@ -101,12 +99,10 @@ const useAdminAllTrips = () => {
         return Err("Contract is not initialized");
       }
 
-      try {
-        let transaction = await admin.refundToGuest(BigInt(tripId));
-        await transaction.wait();
-        return Ok(true);
-      } catch (e) {
-        console.error("refundToGuest error" + e);
+      const result = await admin.refundToGuest(BigInt(tripId));
+      if (result.ok) {
+        return result;
+      } else {
         return Err("Transaction error. See logs for more details");
       }
     },

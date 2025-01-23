@@ -92,7 +92,14 @@ export default function CarEditForm({
             timeBufferBetweenTripsInMin: initValue.timeBufferBetweenTripsInMin,
             currentlyListed: initValue.currentlyListed,
           }
-        : { carId: 0, isLocationEdited: true, currentlyListed: true, images: [] },
+        : {
+            carId: 0,
+            isLocationEdited: true,
+            currentlyListed: true,
+            images: [],
+            isGuestInsuranceRequired: false,
+            insurancePerDayPriceInUsd: 0,
+          },
     resolver: zodResolver(carEditFormSchema),
   });
 
