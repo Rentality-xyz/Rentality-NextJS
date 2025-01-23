@@ -16,7 +16,7 @@ import { ContractTransactionResponse } from "ethers";
 import { env } from "@/utils/env";
 import { PlatformCarImage, UploadedCarImage } from "@/model/FileToUpload";
 import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
-import { isUserHasEnoughFunds, ZERO_HASH } from "@/utils/wallet";
+import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 
 const useSaveCar = () => {
@@ -115,9 +115,10 @@ const useSaveCar = () => {
         currentlyListed: dataToSave.currentlyListed,
         insuranceRequired: dataToSave.isGuestInsuranceRequired,
         insurancePriceInUsdCents: BigInt(dataToSave.insurancePerDayPriceInUsd * 100),
+        dimoTokenId: BigInt(dataToSave.dimoTokenId)
       };
 
-      const transaction = await rentalityContracts.gateway.addCar(request, ZERO_HASH);
+      const transaction = await rentalityContracts.gateway.addCar(request);
       await transaction.wait();
       return Ok(true);
     } catch (e) {
@@ -225,7 +226,7 @@ const useSaveCar = () => {
   return { dataSaved, addNewCar, updateCar } as const;
 };
 
-async function saveCarImages(carImages: PlatformCarImage[], ethereumInfo: EthereumInfo): Promise<UploadedCarImage[]> {
+export async function saveCarImages(carImages: PlatformCarImage[], ethereumInfo: EthereumInfo): Promise<UploadedCarImage[]> {
   const savedImages: UploadedCarImage[] = [];
 
   if (carImages.length > 0) {

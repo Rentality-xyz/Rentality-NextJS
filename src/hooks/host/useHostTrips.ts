@@ -5,7 +5,6 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { ContractTrip, ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 import { mapTripDTOtoTripInfo } from "@/model/utils/TripDTOtoTripInfo";
-import { ZERO_HASH } from "@/utils/wallet";
 
 const useHostTrips = () => {
   const { rentalityContracts } = useRentality();
@@ -110,7 +109,7 @@ const useHostTrips = () => {
       }
 
       try {
-        const transaction = await rentalityContracts.gateway.finishTrip(tripId, ZERO_HASH);
+        const transaction = await rentalityContracts.gateway.finishTrip(tripId);
         await transaction.wait();
         return true;
       } catch (e) {

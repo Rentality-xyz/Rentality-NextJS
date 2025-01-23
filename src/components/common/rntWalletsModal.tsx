@@ -5,6 +5,7 @@ import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import Image from "next/image";
 import imgCopy from "@/images/ic_copy_white_24dp.svg";
 import { Dialog, DialogActions, DialogContent, DialogContentText } from "@mui/material";
+import { copyToClipboard } from "@/utils/clipboard";
 
 export default function RntWalletsModal({ tripInfo }: { tripInfo: TripInfo }) {
   const [open, setOpen] = React.useState(false);
@@ -23,10 +24,6 @@ export default function RntWalletsModal({ tripInfo }: { tripInfo: TripInfo }) {
       str.substring(6, str.length - 24).replace(/./g, ".") +
       str.substring(str.length - 6, str.length)
     );
-  };
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
   };
 
   return (

@@ -228,8 +228,9 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                 </div>
                 <div className="">
                   Discount ETH{" "}
-                  {(tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithDiscountInUsd) / tripInfo.currencyRate} (USD{" "}
-                  {displayMoneyWith2Digits(tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithDiscountInUsd)})
+                  {(tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithHostDiscountInUsd) / tripInfo.currencyRate}{" "}
+                  (USD {displayMoneyWith2Digits(tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithHostDiscountInUsd)}
+                  )
                 </div>
                 <div className="">
                   Delivery fee to Pick-Up location: ETH {tripInfo.pickUpDeliveryFeeInUsd / tripInfo.currencyRate} (USD{" "}

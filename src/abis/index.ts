@@ -2,10 +2,15 @@ import RentalityGatewayJSON_ABI from "./RentalityGateway.v0_2_0.abi.json";
 import RentalityGatewayJSON_ADDRESSES from "./RentalityGateway.v0_2_0.addresses.json";
 import RentalityAdminGatewayJSON_ABI from "./RentalityAdminGateway.v0_2_0.abi.json";
 import RentalityAdminGatewayJSON_ADDRESSES from "./RentalityAdminGateway.v0_2_0.addresses.json";
+import RentalityInvestServiceJSON_ADDRESSES from "./RentalityInvestment.v0_2_0.addresses.json";
+import RentalityInvestServiceJSON_ABI from "./RentalityInvestment.v0_2_0.abi.json";
 import RentalityLocationVerifierJSON_ADDRESSES from "./RentalityLocationVerifier.v0_2_0.addresses.json";
 import RentalityLocationVerifierJSON_ABI from "./RentalityLocationVerifier.v0_2_0.abi.json";
 import RentalityNotificationServiceJSON_ADDRESSES from "./RentalityNotificationService.v0_2_0.addresses.json";
 import RentalityNotificationServiceJSON_ABI from "./RentalityNotificationService.v0_2_0.abi.json";
+import RentalityCurrencyConverterJSON_ADDRESSES from "./RentalityCurrencyConverter.v0_2_0.addresses.json";
+import RentalityCurrencyConverterJSON_ABI from "./RentalityCurrencyConverter.v0_2_0.abi.json";
+
 import RentalityRefferalProgramServiceJSON_ABI from "./RentalityReferralProgram.v0_2_0.abi.json";
 import RentalityRefferalProgramServiceJSON_ADDRESSES from "./RentalityReferralProgram.v0_2_0.addresses.json";
 import { Contract, Signer } from "ethers";
@@ -29,6 +34,14 @@ const rentalityContracts = {
   verifierService: {
     addresses: RentalityLocationVerifierJSON_ADDRESSES.addresses,
     abi: RentalityLocationVerifierJSON_ABI.abi,
+  },
+  investService: {
+    addresses: RentalityInvestServiceJSON_ADDRESSES.addresses,
+    abi: RentalityInvestServiceJSON_ABI.abi,
+  },
+  currencyConverter: {
+    addresses: RentalityCurrencyConverterJSON_ADDRESSES.addresses,
+    abi: RentalityCurrencyConverterJSON_ABI.abi,
   },
   refferalPogram: {
     addresses: RentalityRefferalProgramServiceJSON_ADDRESSES.addresses,

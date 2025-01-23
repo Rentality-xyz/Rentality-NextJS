@@ -1,3 +1,6 @@
+import { CreateClaimRequest } from "@/model/CreateClaimRequest";
+import { CarMetadata } from "@/utils/ipfsUtils";
+
 export type ContractCarInfo = {
   carId: bigint;
   carVinNumber: string;
@@ -35,6 +38,7 @@ export type ContractCarInfoDTO = {
   carInfo: ContractCarInfo;
   metadataURI: string;
   isEditable: boolean;
+  dimoTokenId: number;
 };
 
 export type ContractCreateCarRequest = {
@@ -54,6 +58,7 @@ export type ContractCreateCarRequest = {
   currentlyListed: boolean;
   insuranceRequired: boolean;
   insurancePriceInUsdCents: bigint;
+  dimoTokenId: bigint;
 };
 
 export type ContractUpdateCarInfoRequest = {
@@ -162,6 +167,7 @@ export type ContractTripDTO = {
   insurancesInfo: ContractInsuranceInfo[];
   paidForInsuranceInUsdCents: bigint;
   guestDrivingLicenseIssueCountry: string;
+  promoDiscount: bigint;
 };
 
 export type ContractChatInfo = {
@@ -412,6 +418,7 @@ export type ContractCarDetails = {
   locationInfo: ContractLocationInfo;
   carVinNumber: string;
   carMetadataURI: string;
+  dimoTokenId: bigint;
 };
 
 export type ContractFloridaTaxes = {
@@ -478,6 +485,7 @@ export type ContractAdminTripDTO = {
   trip: ContractTrip;
   carMetadataURI: string;
   carLocation: ContractLocationInfo;
+  promoInfo: ContractPromoDTO;
 };
 
 export type ContractAllTripsDTO = {
@@ -572,6 +580,11 @@ export type ContractRefferalHistory = {
   method: RefferalProgram;
 };
 
+export type ContractMyRefferalInfoDTO = {
+  myHash: string;
+  savedHash: string;
+};
+
 export type ContractHistory = {
   points: bigint;
   date: bigint;
@@ -660,6 +673,12 @@ export type ContractCheckPromoDTO = {
   isValid: boolean;
   isDiscount: boolean;
   value: bigint;
+};
+
+export type ContractPromoDTO = {
+  promoCode: string;
+  promoCodeValueInPercents: bigint;
+  promoCodeEnterDate: bigint;
 };
 
 export type TripStatus = bigint;
@@ -813,4 +832,25 @@ export type EngineType = bigint;
 export const EngineType = {
   PETROL: BigInt(1),
   ELECTRIC: BigInt(2),
+};
+
+export type CarInvestment = {
+  car: ContractCreateCarRequest;
+  priceInUsd: BigInt;
+  creatorPercents: BigInt;
+  inProgress: boolean;
+};
+export type InvestmentDTO = {
+  investment: CarInvestment;
+  nft: string;
+  investmentId: BigInt;
+  payedInUsd: BigInt;
+  creator: string;
+  isCarBought: boolean;
+  income: BigInt;
+  myIncome: BigInt;
+};
+export type InvestmentWithMetadata = {
+  investment: InvestmentDTO;
+  metadata: CarMetadata;
 };

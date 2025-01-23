@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
 
-export default function History() {
+function History() {
   const { isLoadingTrips, tripsHistory, confirmCarDetails } = useGuestTrips();
   const { t } = useTranslation();
 
@@ -21,7 +21,7 @@ export default function History() {
       <PageTitle title={t("booked.history_title")} />
       <CheckingLoadingAuth>
         <RntSuspense isLoading={isLoadingTrips}>
-          <div className="my-4 flex flex-col gap-4 pr-4">
+          <div className="my-4 flex flex-col gap-4">
             {tripsHistory != null && tripsHistory.length > 0 ? (
               tripsHistory.map((value) => {
                 return (
@@ -46,3 +46,5 @@ export default function History() {
     </>
   );
 }
+
+export default History;
