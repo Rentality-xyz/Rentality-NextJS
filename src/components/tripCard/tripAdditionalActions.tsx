@@ -166,19 +166,28 @@ function TripAdditionalActions({
                 if (action.params == null || action.params.length == 0) {
                   hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
                     if(hasTripPhotosFeatureFlag){
-                      const tripPhotosUrls = carPhotosUploadButtonRef.current.saveUploadedFiles();
-                      if(tripPhotosUrls.length == 0){
-                        showDialog(t("common.photos_required"));
-                        return;
-                      }
+                      carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
+                        if(tripPhotosUrls.length === 0){
+                          showDialog(t("common.photos_required"));
+                        } else {
+                          changeStatusCallback(() => {
+                            return action.action(
+                              BigInt(tripInfo.tripId),
+                              [],
+                              []
+                            );
+                          });
+                        }
+                      });
+                    } else {
+                      changeStatusCallback(() => {
+                        return action.action(
+                          BigInt(tripInfo.tripId),
+                          [],
+                          []
+                        );
+                      });
                     }
-                    changeStatusCallback(() => {
-                      return action.action(
-                        BigInt(tripInfo.tripId),
-                        [],
-                        []
-                      );
-                    });
                   });
                 } else {
                   hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
