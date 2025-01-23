@@ -13,19 +13,8 @@ import {
 } from "@dimo-network/login-with-dimo";
 import React, { useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
-import { useUserInfo } from "@/contexts/userInfoContext";
-import axios from "@/utils/cachedAxios";
 import { CheckboxLight } from "@/components/common/rntCheckbox";
-import { cn } from "@/utils";
-import { isEmpty } from "@/utils/string";
-import Image from "next/image";
-import bgInput from "@/images/bg_input.png";
-import DimoListingItem from "@/features/dimo/components/dimoListItem";
-import { t } from "i18next";
-import RentalityCarItem from "@/features/dimo/components/rentalityCarItem";
 import useDimo, { DimoCarResponse } from "@/features/dimo/hooks/useDimo";
-import { ca } from "date-fns/locale";
-import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { getIpfsURI } from "@/utils/ipfsUtils";
 
 function Listings() {
