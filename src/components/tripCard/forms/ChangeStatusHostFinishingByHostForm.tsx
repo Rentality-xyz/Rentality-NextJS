@@ -54,19 +54,13 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
 
     async function onFormSubmit(formData: ChangeStatusHostFinishingByHostFormValues) {
       changeStatusCallback(() => {
-
-        let tripPhotosUrls: string[] = [];
-        if(process.env.FF_TRIP_PHOTOS){
-          tripPhotosUrls=carPhotosUploadButtonRef.current.saveUploadedFiles();
-        }
-
         return tripInfo.allowedActions[0].action(
           BigInt(tripInfo.tripId),
           [
             formData.fuelOrBatteryLevel.toString(),
             formData.odotemer.toString(),
           ],
-          tripPhotosUrls);
+          []);
       });
     }
 

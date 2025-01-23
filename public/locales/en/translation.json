@@ -733,6 +733,11 @@
     "success": "Success",
     "day": "day",
     "trip": "trip",
+    "required" : "required",
+    "exterior" : "Exterior",
+    "interior" : "Interior",
+    "data" : "Data",
+    "uploaded" : "uploaded",
     "add_fund_to_wallet": "Please add funds to your wallet on Base network to continue.",
     "per_day": "/day",
     "vin_successfully_checked": "VIN successfully checked",
@@ -744,7 +749,8 @@
     "photos_required": "Please upload photos",
     "trip_photos_photos": "photos",
     "trip_photos_no_photos": "no photos",
-    "trip_photos_see_all": "See all"
+    "trip_photos_see_all": "See all",
+    "trip_photos_upload_trip_photo" : "Upload a trip photo"
   },
   "become_host": {
     "title": "Become a host",

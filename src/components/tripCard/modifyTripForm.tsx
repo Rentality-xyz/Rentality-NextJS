@@ -80,6 +80,7 @@ function ModifyTripForm({
             isHost={true}
             isStart={false}
             tripId={tripId}
+            isSimpleButton={true}
           />
         </>
       )}
