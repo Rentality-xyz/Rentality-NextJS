@@ -200,6 +200,7 @@ function Search() {
                         setSelected={setHighlightedCar}
                         getRequestDetailsLink={getRequestDetailsLink}
                         isGuestHasInsurance={!isLoadingInsurance && !isEmpty(guestInsurance.photo)}
+                        isYourOwnCar={userInfo?.address === value.ownerAddress}
                         startDateTimeStringFormat={searchResult.searchCarRequest.dateFromInDateTimeStringFormat}
                         endDateTimeStringFormat={searchResult.searchCarRequest.dateToInDateTimeStringFormat}
                       />

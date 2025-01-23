@@ -12,14 +12,12 @@ const useUserRole = () => {
     const getUserRole = async () => {
       if (!rentalityContracts) return;
 
-      try {
-        const myCars = await rentalityContracts.gateway.getMyCars();
-        setUserRole(myCars.length > 0 ? "Host" : "Guest");
-      } catch (e) {
-        console.error("getUserRole error:" + e);
-      } finally {
-        setIsLoading(false);
+      const result = await rentalityContracts.gatewayProxy.getMyCars();
+
+      if (result.ok) {
+        setUserRole(result.value.length > 0 ? "Host" : "Guest");
       }
+      setIsLoading(false);
     };
     getUserRole();
   }, [rentalityContracts]);

@@ -1,4 +1,4 @@
-import { validateType } from "@/utils/typeValidator";
+import { validateType } from "@/features/blockchain/utils.ts";
 import {
   ClaimStatus,
   ClaimType,

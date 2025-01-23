@@ -59,18 +59,13 @@ const useAdminPanelInfo = () => {
       return false;
     }
 
-    try {
-      setIsLoading(true);
-      const valueToWithdrawInWei = parseEther(value.toString());
-      let transaction = await admin.withdrawFromPlatform(valueToWithdrawInWei, ETH_DEFAULT_ADDRESS);
-      await transaction.wait();
-      return true;
-    } catch (e) {
-      console.error("withdrawFromPlatform error" + e);
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoading(true);
+
+    const valueToWithdrawInWei = parseEther(value.toString());
+    const result = await admin.withdrawFromPlatform(valueToWithdrawInWei, ETH_DEFAULT_ADDRESS);
+
+    setIsLoading(false);
+    return result.ok;
   };
 
   const setPlatformFeeInPPM = async (value: number) => {
@@ -79,18 +74,12 @@ const useAdminPanelInfo = () => {
       return false;
     }
 
-    try {
-      setIsLoading(true);
+    setIsLoading(true);
 
-      let transaction = await admin.setPlatformFeeInPPM(BigInt(Math.round(value * 10_000)));
-      await transaction.wait();
-      return true;
-    } catch (e) {
-      console.error("setPlatformFeeInPPM error" + e);
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
+    const result = await admin.setPlatformFeeInPPM(BigInt(Math.round(value * 10_000)));
+
+    setIsLoading(false);
+    return result.ok;
   };
 
   const saveKycCommission = async (value: number) => {
@@ -99,18 +88,12 @@ const useAdminPanelInfo = () => {
       return false;
     }
 
-    try {
-      setIsLoading(true);
+    setIsLoading(true);
 
-      let transaction = await admin.setKycCommission(BigInt(Math.round(value * 100)));
-      await transaction.wait();
-      return true;
-    } catch (e) {
-      console.error("saveKycCommission error" + e);
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
+    const result = await admin.setKycCommission(BigInt(Math.round(value * 100)));
+
+    setIsLoading(false);
+    return result.ok;
   };
 
   const saveClaimWaitingTime = async (value: number) => {
@@ -119,18 +102,12 @@ const useAdminPanelInfo = () => {
       return false;
     }
 
-    try {
-      setIsLoading(true);
+    setIsLoading(true);
 
-      let transaction = await admin.setClaimsWaitingTime(BigInt(value));
-      await transaction.wait();
-      return true;
-    } catch (e) {
-      console.error("saveClaimWaitingTime error" + e);
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
+    const result = await admin.setClaimsWaitingTime(BigInt(value));
+
+    setIsLoading(false);
+    return result.ok;
   };
 
   const grantAdminRole = async (address: string) => {
@@ -139,18 +116,12 @@ const useAdminPanelInfo = () => {
       return false;
     }
 
-    try {
-      setIsLoading(true);
+    setIsLoading(true);
 
-      let transaction = await admin.manageRole(Role.Admin, address, true);
-      await transaction.wait();
-      return true;
-    } catch (e) {
-      console.error("grantAdminRole error" + e);
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
+    const result = await admin.manageRole(Role.Admin, address, true);
+
+    setIsLoading(false);
+    return result.ok;
   };
 
   async function updateKycInfoForAddress(address: string) {
@@ -292,18 +263,32 @@ const useAdminPanelInfo = () => {
       try {
         isIniialized.current = true;
 
-        const platformFee = Number((await admin.getPlatformFeeInPPM()) ?? 0) / 10_000.0;
-        const claimWaitingTime = Number(await admin.getClaimWaitingTime());
-        const kycCommission = Number((await admin.getKycCommission()) ?? 0) / 100;
+        const platformFeeResult = await admin.getPlatformFeeInPPM();
+        const claimWaitingTimeResult = await admin.getClaimWaitingTime();
+        const kycCommissionResult = await admin.getKycCommission();
+        const ownerResult = await admin.owner();
+        const userServiceAddressResult = await admin.getUserServiceAddress();
+        const currencyConverterServiceAddressResult = await admin.getCurrencyConverterServiceAddress();
+        const carServiceAddressResult = await admin.getCarServiceAddress();
+        const claimServiceAddressResult = await admin.getClaimServiceAddress();
+        const paymentServiceResult = await admin.getPaymentService();
+        const tripServiceAddressResult = await admin.getTripServiceAddress();
+        const rentalityPlatformAddressResult = await admin.getRentalityPlatformAddress();
 
-        const ownerAddress = await admin.owner();
-        const userServiceAddress = await admin.getUserServiceAddress();
-        const currencyConverterAddress = await admin.getCurrencyConverterServiceAddress();
-        const carServiceAddress = await admin.getCarServiceAddress();
-        const claimServiceAddress = await admin.getClaimServiceAddress();
-        const paymentServiceAddress = await admin.getPaymentService();
-        const tripServiceAddress = await admin.getTripServiceAddress();
-        const platformContractAddress = await admin.getRentalityPlatformAddress();
+        const platformFee = platformFeeResult.ok ? Number(platformFeeResult.value) / 10_000.0 : 0;
+        const claimWaitingTime = claimWaitingTimeResult.ok ? Number(claimWaitingTimeResult.value) : 0;
+        const kycCommission = kycCommissionResult.ok ? Number(kycCommissionResult.value) / 100 : 0;
+
+        const ownerAddress = ownerResult.ok ? ownerResult.value : "";
+        const userServiceAddress = userServiceAddressResult.ok ? userServiceAddressResult.value : "";
+        const currencyConverterAddress = currencyConverterServiceAddressResult.ok
+          ? currencyConverterServiceAddressResult.value
+          : "";
+        const carServiceAddress = carServiceAddressResult.ok ? carServiceAddressResult.value : "";
+        const claimServiceAddress = claimServiceAddressResult.ok ? claimServiceAddressResult.value : "";
+        const paymentServiceAddress = paymentServiceResult.ok ? paymentServiceResult.value : "";
+        const tripServiceAddress = tripServiceAddressResult.ok ? tripServiceAddressResult.value : "";
+        const platformContractAddress = rentalityPlatformAddressResult.ok ? rentalityPlatformAddressResult.value : "";
         const platformBalance = (await ethereumInfo.provider.getBalance(platformContractAddress)) ?? 0;
         const paymentBalance = (await ethereumInfo.provider.getBalance(paymentServiceAddress)) ?? 0;
 

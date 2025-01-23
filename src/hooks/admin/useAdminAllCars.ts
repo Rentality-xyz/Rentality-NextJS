@@ -19,16 +19,17 @@ const useAdminAllCars = () => {
         return Err("Contract is not initialized");
       }
 
-      try {
-        setIsLoading(true);
-        setCurrentPage(page);
-        setTotalPageCount(0);
+      setIsLoading(true);
+      setCurrentPage(page);
+      setTotalPageCount(0);
 
-        const allAdminCars = await admin.getAllCars(BigInt(page), BigInt(itemsPerPage));
-        validateContractAllCarsDTO(allAdminCars);
+      const result = await admin.getAllCars(BigInt(page), BigInt(itemsPerPage));
+
+      if (result.ok) {
+        validateContractAllCarsDTO(result.value);
 
         let data: AdminCarDetails[] = await Promise.all(
-          allAdminCars.cars.map(async (adminCarDto) => {
+          result.value.cars.map(async (adminCarDto) => {
             return mapContractCarToAdminCarDetails(adminCarDto.car, adminCarDto.carMetadataURI);
           })
         );
@@ -41,14 +42,13 @@ const useAdminAllCars = () => {
         );
 
         setData(data);
-        setTotalPageCount(Number(allAdminCars.totalPageCount));
+        setTotalPageCount(Number(result.value.totalPageCount));
 
-        return Ok(true);
-      } catch (e) {
-        console.error("fetchData error" + e);
-        return Err("Get data error. See logs for more details");
-      } finally {
         setIsLoading(false);
+        return Ok(true);
+      } else {
+        setIsLoading(false);
+        return Err("Get data error. See logs for more details");
       }
     },
     [admin]
