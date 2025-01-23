@@ -147,7 +147,7 @@ function TripAdditionalActions({
               <CarPhotosUploadButton
                 ref={carPhotosUploadButtonRef}
                 isHost={isHost}
-                isStart={false}
+                isStart={tripInfo.status == TripStatus.CheckedInByHost}
                 tripId={tripInfo.tripId}
               />
             </div>
