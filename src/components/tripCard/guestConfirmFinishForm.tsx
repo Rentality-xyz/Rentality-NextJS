@@ -36,6 +36,22 @@ function GuestConfirmFinishForm({
     });
   },[]);
 
+  const onConfirmClick = () => {
+    hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+      if(hasTripPhotosFeatureFlag){
+        carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
+          if(tripPhotosUrls.length === 0){
+            setNoFilesUploadedError(true)
+          } else {
+            handleFinishTrip()
+          }
+        });
+      } else {
+        handleFinishTrip()
+      }
+    });
+  }
+
   return (
     <div className="flex w-full flex-col items-center gap-2">
       <p className="text-rentality-secondary">Confirm finish trip</p>
@@ -50,22 +66,7 @@ function GuestConfirmFinishForm({
         label="Message from your Host"
         value={messageFromHost}
       />
-      <RntButton className="my-1 w-full" onClick={() => {
-
-        hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
-          if(hasTripPhotosFeatureFlag){
-            carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
-              if(tripPhotosUrls.length === 0){
-                setNoFilesUploadedError(true)
-              } else {
-                handleFinishTrip()
-              }
-            });
-          } else {
-            handleFinishTrip()
-          }
-        });
-      }}>
+      <RntButton className="my-1 w-full" onClick={onConfirmClick}>
         I confirm finish trip
       </RntButton>
       <a className="w-full" href={telLink}>

@@ -36,6 +36,22 @@ function ModifyTripForm({
     });
   },[]);
 
+  const onFinishTripClick = () => {
+    hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+      if (hasTripPhotosFeatureFlag) {
+        carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
+          if (tripPhotosUrls.length === 0) {
+            setNoFilesUploadedError(true)
+          } else {
+            handleFinishTrip(messageToGuest)
+          }
+        });
+      } else {
+        handleFinishTrip(messageToGuest)
+      }
+    });
+  }
+
   return (
     <div className="flex w-full flex-col items-center gap-2">
       <p className="text-rentality-secondary">Finish the trip without guest confirmation</p>
@@ -50,23 +66,7 @@ function ModifyTripForm({
         value={messageToGuest}
         onChange={(e) => setMessageToGuest(e.target.value)}
       />
-      <RntButton className="my-1 w-full" onClick={() => {
-
-        hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
-          if(hasTripPhotosFeatureFlag){
-            carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
-              if(tripPhotosUrls.length === 0){
-                setNoFilesUploadedError(true)
-              } else {
-                handleFinishTrip(messageToGuest)
-              }
-            });
-          } else {
-            handleFinishTrip(messageToGuest)
-          }
-        });
-
-      }}>
+      <RntButton className="my-1 w-full" onClick={onFinishTripClick}>
         Finish the trip without guest confirmation
       </RntButton>
       <a className="w-full" href={telLink}>
