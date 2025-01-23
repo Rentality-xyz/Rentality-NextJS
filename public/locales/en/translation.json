@@ -20,7 +20,9 @@
     "car_locations": "Car locations",
     "all_trips_table": "All trips table",
     "all_users_table": "All users table",
-    "referrals_and_points": "Referrals & Points"
+    "referrals_and_points": "Referrals & Points",
+    "guest_invest": "Invest",
+    "host_invest": "Create invest"
   },
   "search_and_filters": {
     "location_label": "Pick up & Return Location",
@@ -318,7 +320,7 @@
     "basic_info": "Basic information",
     "pass_license_verif": "Please pass driver license verification",
     "driver_license_info": "Driving license information",
-    "ref_link": "Ref-link or code for more points  \n",
+    "ref_link": "Ref-link or code for more points",
     "soon_alchemy_pay_service": "Coming soon Alchemy Pay service",
     "user_insurance": {
       "please_upload_photo": "Please, upload photo you ID insurance card",
@@ -814,5 +816,21 @@
     "token_id": "Token ID:",
     "create_car": "Create car on Rentality",
     "sync_with_dimo": "Sync with DIMO"
+  },
+  "invest": {
+    "guest_page_title": "Investing in RWAs",
+    "host_page_title": "Vehicle Tokenization in RWA",
+    "btn_create_investment": "Create investment",
+    "btn_all_assets": "All assets",
+    "btn_available_to_invest": "Available to Invest",
+    "btn_actually_listed": "Actually Listed",
+    "btn_guest_my_investments": "My investments",
+    "btn_guest_ready_to_claim": "Ready to claim",
+    "btn_host_fully_tokenized": "Fully tokenized",
+    "btn_host_ready_for_listing": "Ready for listing",
+    "tokenization": "Tokenization",
+    "your_expected_earnings": "Your expected earnings:",
+    "from_each_trip": "from each trip",
+    "host_management": "Host's management:"
   }
 }
