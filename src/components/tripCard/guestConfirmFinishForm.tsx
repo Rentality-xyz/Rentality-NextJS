@@ -79,6 +79,7 @@ function GuestConfirmFinishForm({
             isHost={false}
             isStart={false}
             tripId={tripId}
+            isSimpleButton={true}
           />
         </>
       )}
