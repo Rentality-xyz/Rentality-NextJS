@@ -32,7 +32,7 @@ export type Car = {
 };
 
 interface UseDimoReturn {
-  walletAddress: string;
+  walletAddress: string | null;
   isLoadingDimo: boolean;
   dimoVehicles: DimoCarResponse[];
   isAuthenticated: boolean;
@@ -45,8 +45,7 @@ interface UseDimoReturn {
 }
 
 const useDimo = (myListings: any[]): UseDimoReturn => {
-  const walletAddress = "0xCAA591fA19a86762D1ed1B98b2057Ee233240b65";
-  const { isAuthenticated, getValidJWT /*walletAddress*/ } = useDimoAuthState();
+  const { isAuthenticated, getValidJWT, walletAddress } = useDimoAuthState();
   const [jwt, setJwt] = useState<string | null>(null);
   const [isLoadingDimo, setIsLoadingDimo] = useState(true);
   const [dimoVehicles, setDimoVehicles] = useState<DimoCarResponse[]>([]);
