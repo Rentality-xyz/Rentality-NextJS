@@ -1,9 +1,10 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 import RntButton from "@/components/common/rntButton";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
+import imgCircleBtn from "@/images/img_circle_for_transparent_btn.svg";
+import Image from "next/image";
 
 type InvestContentProps = {
   isHost: boolean;
@@ -19,7 +20,7 @@ export default function InvestContent({ isHost }: InvestContentProps) {
     <div className="mt-8">
       {isHost && (
         <RntButton
-          className="mb-6 flex items-center justify-center"
+          className="mb-6 flex w-60 items-center justify-center"
           // onClick={() => claimPoints()}
         >
           <div className="ml-0.5 flex">
@@ -31,37 +32,40 @@ export default function InvestContent({ isHost }: InvestContentProps) {
 
       <ScrollingHorizontally>
         <RntButtonTransparent
-        // onClick={handleClickOpenDeliveryLocation}
+          className="w-40"
+          // onClick={handleClickOpenDeliveryLocation}
         >
-          <div className="flex w-56 justify-center text-white">
-            {t("invest.btn_all_assets")}
-            <span className="ml-4">●</span>
+          <div className="flex items-center justify-center text-white">
+            <span className="ml-4 w-full">{t("invest.btn_all_assets")}</span>
+            <Image src={imgCircleBtn} alt="" className="ml-auto mr-4" />
           </div>
         </RntButtonTransparent>
         <RntButtonTransparent
-        // onClick={handleClickOpenDeliveryLocation}
+          className="w-60"
+          // onClick={handleClickOpenDeliveryLocation}
         >
-          <div className="flex w-56 justify-center text-white">
-            {t("invest.btn_available_to_invest")}
-            <span className="ml-4">●</span>
+          <div className="flex items-center justify-center text-white">
+            <span className="ml-4 w-full">{t("invest.btn_available_to_invest")}</span>
+            <Image src={imgCircleBtn} alt="" className="ml-auto mr-4" />
           </div>
         </RntButtonTransparent>
         {isHost ? (
           <>
             <RntButtonTransparent
-            // onClick={handleClickOpenDeliveryLocation}
+              className="w-52"
+              // onClick={handleClickOpenDeliveryLocation}
             >
-              <div className="flex w-56 justify-center text-white">
-                {t("invest.btn_host_fully_tokenized")}
-                <span className="ml-4">●</span>
+              <div className="flex items-center justify-center text-white">
+                <span className="ml-4 w-full">{t("invest.btn_host_fully_tokenized")}</span>
+                <Image src={imgCircleBtn} alt="" className="ml-auto mr-4" />
               </div>
             </RntButtonTransparent>
             <RntButtonTransparent
             // onClick={handleClickOpenDeliveryLocation}
             >
-              <div className="flex w-56 justify-center text-white">
-                {t("invest.btn_host_ready_for_listing")}
-                <span className="ml-4">●</span>
+              <div className="flex items-center justify-center text-white">
+                <span className="ml-4 w-full">{t("invest.btn_host_ready_for_listing")}</span>
+                <Image src={imgCircleBtn} alt="" className="ml-auto mr-4" />
               </div>
             </RntButtonTransparent>
           </>
@@ -70,27 +74,29 @@ export default function InvestContent({ isHost }: InvestContentProps) {
             <RntButtonTransparent
             // onClick={handleClickOpenDeliveryLocation}
             >
-              <div className="flex w-56 justify-center text-white">
-                {t("invest.btn_guest_my_investments")}
-                <span className="ml-4">●</span>
+              <div className="flex items-center justify-center text-white">
+                <span className="ml-4 w-full">{t("invest.btn_guest_my_investments")}</span>
+                <Image src={imgCircleBtn} alt="" className="ml-auto mr-4" />
               </div>
             </RntButtonTransparent>
             <RntButtonTransparent
-            // onClick={handleClickOpenDeliveryLocation}
+              className="w-52"
+              // onClick={handleClickOpenDeliveryLocation}
             >
-              <div className="flex w-56 justify-center text-white">
-                {t("invest.btn_guest_ready_to_claim")}
-                <span className="ml-4">●</span>
+              <div className="flex items-center justify-center text-white">
+                <span className="ml-4 w-full">{t("invest.btn_guest_ready_to_claim")}</span>
+                <Image src={imgCircleBtn} alt="" className="ml-auto mr-4" />
               </div>
             </RntButtonTransparent>
           </>
         )}
         <RntButtonTransparent
-        // onClick={handleClickOpenDeliveryLocation}
+          className="w-52"
+          // onClick={handleClickOpenDeliveryLocation}
         >
-          <div className="flex w-56 justify-center text-white">
-            {t("invest.btn_actually_listed")}
-            <span className="ml-4">●</span>
+          <div className="flex items-center justify-center text-white">
+            <span className="ml-4 w-full">{t("invest.btn_actually_listed")}</span>
+            <Image src={imgCircleBtn} alt="" className="ml-auto mr-4" />
           </div>
         </RntButtonTransparent>
       </ScrollingHorizontally>
@@ -100,9 +106,7 @@ export default function InvestContent({ isHost }: InvestContentProps) {
           Available to Invest | Waiting for full tokenization
         </div>
         <div className="grid h-[200px] w-full grid-cols-4 gap-2">
-          <div style={{ backgroundImage: `url(${icStarPointsYellow})` }} className="p-2">
-            01
-          </div>
+          <div className="p-2">01</div>
           <div className="relative p-2">
             02
             <div className={ccsDivider}></div>
