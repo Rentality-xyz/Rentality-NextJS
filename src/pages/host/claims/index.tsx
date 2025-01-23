@@ -9,7 +9,7 @@ import { Err, Result, TransactionErrorCode } from "@/model/utils/result";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
 
-export default function Claims() {
+function Claims() {
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { isLoading, claims, tripInfos, createClaim, payClaim, cancelClaim, updateData } = useHostClaims();
   const { t } = useTranslation();
@@ -108,3 +108,5 @@ export default function Claims() {
     </>
   );
 }
+
+export default Claims;

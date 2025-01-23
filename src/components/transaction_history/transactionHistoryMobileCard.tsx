@@ -5,6 +5,7 @@ import React from "react";
 import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { usePathname } from "next/navigation";
 import { getTripStatusBgColorFromStatus } from "@/utils/tailwind";
+import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 
 type TransactionHistoryMobileCardProps = {
   isHost: boolean;
@@ -33,18 +34,18 @@ export default function TransactionHistoryMobileCard(props: TransactionHistoryMo
         <div>
           <div className="mx-4 mb-2 flex justify-between text-sm">
             <span>Trip payments</span>
-            <span>${transaction.tripPayment}</span>
+            <span>${displayMoneyWith2Digits(transaction.tripPayment)}</span>
           </div>
           <div className="mx-4 mb-2 flex justify-between text-sm">
             <span>Refund</span>
-            <span>${transaction.refund}</span>
+            <span>${displayMoneyWith2Digits(transaction.refund)}</span>
           </div>
         </div>
       )}
       {isHost && (
         <div className="mx-4 mb-2 flex justify-between text-sm">
           <span>Host Earnings</span>
-          <span>${transaction.tripEarnings}</span>
+          <span>${displayMoneyWith2Digits(transaction.tripEarnings)}</span>
         </div>
       )}
       <div className="mb-2 flex justify-between text-sm">

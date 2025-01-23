@@ -2,6 +2,7 @@ import { validateType } from "@/utils/typeValidator";
 import {
   ClaimStatus,
   ClaimType,
+  ContractAdditionalKYCInfo,
   ContractAdminCarDTO,
   ContractAdminTripDTO,
   ContractAllCarsDTO,
@@ -16,10 +17,13 @@ import {
   ContractClaim,
   ContractFilterInfoDTO,
   ContractFullClaimInfo,
+  ContractFullKYCInfoDTO,
   ContractInsuranceCarInfo,
   ContractInsuranceDTO,
   ContractInsuranceInfo,
+  ContractKYCInfo,
   ContractLocationInfo,
+  ContractPromoDTO,
   ContractPublicHostCarDTO,
   ContractSearchCar,
   ContractSearchCarWithDistance,
@@ -59,6 +63,7 @@ const emptyContractCarDetails: ContractCarDetails = {
   locationInfo: emptyContractLocationInfo,
   carVinNumber: "",
   carMetadataURI: "",
+  dimoTokenId: BigInt(0)
 };
 
 export function validateContractCarDetails(obj: ContractCarDetails): obj is ContractCarDetails {
@@ -96,6 +101,7 @@ export function validateContractCarInfoDTO(obj: ContractCarInfoDTO): obj is Cont
     carInfo: emptyContractCarInfo,
     metadataURI: "",
     isEditable: false,
+    dimoTokenId: 0
   };
 
   return validateType(obj, emptyContractCarInfoDTO) && validateType(obj.carInfo, emptyContractCarInfo);
@@ -314,6 +320,7 @@ const emptyContractTripDTO: ContractTripDTO = {
   insurancesInfo: [],
   paidForInsuranceInUsdCents: BigInt(0),
   guestDrivingLicenseIssueCountry: "",
+  promoDiscount: BigInt(0),
 };
 
 export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {
@@ -329,11 +336,16 @@ const emptyContractAllTripsDTO: ContractAllTripsDTO = {
   trips: [],
   totalPageCount: BigInt(0),
 };
-
+const emptyContractPromoDTO: ContractPromoDTO = {
+  promoCode: "",
+  promoCodeEnterDate: BigInt(0),
+  promoCodeValueInPercents: BigInt(0),
+};
 const emptyContractAdminTripDTO: ContractAdminTripDTO = {
   trip: emptyContractTrip,
   carLocation: emptyContractLocationInfo,
   carMetadataURI: "",
+  promoInfo: emptyContractPromoDTO,
 };
 
 export function validateContractAllTripsDTO(obj: ContractAllTripsDTO): obj is ContractAllTripsDTO {
@@ -342,7 +354,8 @@ export function validateContractAllTripsDTO(obj: ContractAllTripsDTO): obj is Co
     (obj.trips.length === 0 ||
       (validateType(obj.trips[0], emptyContractAdminTripDTO) &&
         validateType(obj.trips[0].trip, emptyContractTrip) &&
-        validateType(obj.trips[0].carLocation, emptyContractLocationInfo)))
+        validateType(obj.trips[0].carLocation, emptyContractLocationInfo) &&
+        validateType(obj.trips[0].promoInfo, emptyContractPromoDTO)))
   );
 }
 
@@ -458,4 +471,34 @@ const emptyContractCheckPromoDTO: ContractCheckPromoDTO = {
 
 export function validateContractCheckPromoDTO(obj: ContractCheckPromoDTO): obj is ContractCheckPromoDTO {
   return validateType(obj, emptyContractCheckPromoDTO);
+}
+
+const emptyContractKYCInfo: ContractKYCInfo = {
+  name: "",
+  surname: "",
+  mobilePhoneNumber: "",
+  profilePhoto: "",
+  licenseNumber: "",
+  expirationDate: BigInt(0),
+  createDate: BigInt(0),
+  isTCPassed: false,
+  TCSignature: "",
+};
+
+const emptyContractAdditionalKYCInfo: ContractAdditionalKYCInfo = {
+  issueCountry: "",
+  email: "",
+};
+
+const emptyContractFullKYCInfoDTO: ContractFullKYCInfoDTO = {
+  kyc: emptyContractKYCInfo,
+  additionalKYC: emptyContractAdditionalKYCInfo,
+};
+
+export function validateContractFullKYCInfoDTO(obj: ContractFullKYCInfoDTO): obj is ContractFullKYCInfoDTO {
+  return (
+    validateType(obj, emptyContractFullKYCInfoDTO) &&
+    validateType(obj.kyc, emptyContractKYCInfo) &&
+    validateType(obj.additionalKYC, emptyContractAdditionalKYCInfo)
+  );
 }

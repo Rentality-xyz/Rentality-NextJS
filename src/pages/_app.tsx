@@ -22,11 +22,24 @@ import { env } from "@/utils/env";
 import Layout from "@/components/layout/layout";
 import { initEruda, initHotjar } from "@/utils/init";
 import FacebookPixelScript from "@/components/marketing/FacebookPixelScript";
+import PlatformInitChecker from "@/components/common/PlatformInitChecker";
+import WalletConnectChecker from "@/components/common/WalletConnectChecker";
+import { NextComponentType, NextPageContext } from "next";
+import dynamic from "next/dynamic";
 
-export default function App({ Component, pageProps }: AppProps) {
+const DimoAuthProvider = dynamic(() => import('@dimo-network/login-with-dimo').then(mod => mod.DimoAuthProvider), { ssr: false });
+
+
+type CustomAppProps = AppProps & {
+  Component: NextComponentType<NextPageContext, any, any> & { allowAnonymousAccess?: boolean };
+};
+
+export default function App({ Component, pageProps }: CustomAppProps) {
   const router = useRouter();
   const isHost = router.route.startsWith("/host");
   const queryClient = new QueryClient();
+
+  const allowAnonymousAccess = Component.allowAnonymousAccess ?? false;
 
   useEffect(() => {
     analyticsPromise;
@@ -45,6 +58,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <FacebookPixelScript />
       <Web3Setup>
         <RentalityProvider>
+          <DimoAuthProvider>
           <UserInfoProvider>
             <WagmiProvider config={wagmiConfig}>
               <QueryClientProvider client={queryClient}>
@@ -55,9 +69,13 @@ export default function App({ Component, pageProps }: AppProps) {
                     <FirebaseChatProvider>
                       <AppContextProvider>
                         <RntDialogsProvider>
-                          <Layout>
-                            <Component {...pageProps} />
-                          </Layout>
+                          <PlatformInitChecker>
+                            <WalletConnectChecker allowAnonymousAccess={allowAnonymousAccess}>
+                              <Layout>
+                                <Component {...pageProps} />
+                              </Layout>
+                            </WalletConnectChecker>
+                          </PlatformInitChecker>
                         </RntDialogsProvider>
                       </AppContextProvider>
                     </FirebaseChatProvider>
@@ -66,6 +84,7 @@ export default function App({ Component, pageProps }: AppProps) {
               </QueryClientProvider>
             </WagmiProvider>
           </UserInfoProvider>
+          </DimoAuthProvider>
         </RentalityProvider>
       </Web3Setup>
     </>

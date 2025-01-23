@@ -55,7 +55,7 @@ export default function SearchAndFilters({
   const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
   const isSearchAllowed =
     formatLocationInfoUpToCity(searchCarRequest.searchLocation).length > 0 &&
-    moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, notEmtpyTimeZoneId) >= moment.tz(notEmtpyTimeZoneId) &&
+    // moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, notEmtpyTimeZoneId) >= moment.tz(notEmtpyTimeZoneId) &&
     new Date(searchCarRequest.dateToInDateTimeStringFormat) > new Date(searchCarRequest.dateFromInDateTimeStringFormat);
 
   const t_comp = (element: string) => {

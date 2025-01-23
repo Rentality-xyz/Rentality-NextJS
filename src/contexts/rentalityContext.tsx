@@ -1,6 +1,8 @@
 import {
   IRentalityAdminGateway,
   IRentalityContract,
+  IRentalityCurrencyConverterContract,
+  IRentalityInvestment,
   IRentalityReferralProgramContract,
 } from "@/model/blockchain/IRentalityContract";
 import { getEtherContractWithSigner } from "../abis";
@@ -11,6 +13,8 @@ import { useRouter } from "next/router";
 interface IRentalityContracts {
   gateway: IRentalityContract;
   referralProgram: IRentalityReferralProgramContract;
+  investment: IRentalityInvestment;
+  currencyConverter: IRentalityCurrencyConverterContract;
 }
 
 interface RentalityContextType {
@@ -53,19 +57,36 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         return;
       }
 
-      const rentalityRefferalPogram = (await getEtherContractWithSigner(
+      const rentalityReferralPogram = (await getEtherContractWithSigner(
         "refferalPogram",
         ethereumInfo.signer
       )) as unknown as IRentalityReferralProgramContract;
-      if (!rentalityRefferalPogram) {
+      if (!rentalityReferralPogram) {
+        console.error("getRentalityContact error: rentalityReferralProgram is null");
+        setRentalityContracts(null);
+        return;
+      }
+
+      const rentalityInvestment = (await getEtherContractWithSigner(
+        "investService",
+        ethereumInfo.signer
+      )) as unknown as IRentalityInvestment;
+      if (!rentalityReferralPogram) {
         console.error("getRentalityContact error: rentalityRefferalPogram is null");
         setRentalityContracts(null);
         return;
       }
 
+      let currencyConverter = (await getEtherContractWithSigner(
+        "currencyConverter",
+        ethereumInfo.signer
+      )) as unknown as IRentalityCurrencyConverterContract;
+
       setRentalityContracts({
         gateway: rentalityGateway,
-        referralProgram: rentalityRefferalPogram,
+        referralProgram: rentalityReferralPogram,
+        investment: rentalityInvestment,
+        currencyConverter
       });
     };
 

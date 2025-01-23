@@ -1,5 +1,7 @@
 import LegalContent from "@/pages/legal_matters";
 
-export default function Legal() {
+function Legal() {
   return <LegalContent />;
 }
+
+export default Legal;
