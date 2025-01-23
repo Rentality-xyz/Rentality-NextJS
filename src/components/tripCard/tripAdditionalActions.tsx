@@ -1,5 +1,5 @@
 import React, { MutableRefObject, memo, useState, useRef, useEffect } from "react";
-import { TripInfo } from "@/model/TripInfo";
+import { AllowedChangeTripAction, TripInfo } from "@/model/TripInfo";
 import RntButton from "../common/rntButton";
 import { TripStatus } from "@/model/blockchain/schemas";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
@@ -78,6 +78,50 @@ function TripAdditionalActions({
       );
     });
   };
+
+  const onActionBtnClick = (action: AllowedChangeTripAction) => {
+    if (action.params == null || action.params.length == 0) {
+      hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+        if(hasTripPhotosFeatureFlag){
+          carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
+            if(tripPhotosUrls.length === 0){
+              showDialog(t("common.photos_required"));
+            } else {
+              changeStatusCallback(() => {
+                return action.action(
+                  BigInt(tripInfo.tripId),
+                  [],
+                  []
+                );
+              });
+            }
+          });
+        } else {
+          changeStatusCallback(() => {
+            return action.action(
+              BigInt(tripInfo.tripId),
+              [],
+              []
+            );
+          });
+        }
+      });
+    } else {
+      hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+        if(hasTripPhotosFeatureFlag){
+          carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
+            if(tripPhotosUrls.length === 0){
+              showDialog(t("common.photos_required"));
+            } else {
+              handleButtonClick();
+            }
+          });
+        } else {
+          handleButtonClick();
+        }
+      });
+    }
+  }
 
   if (isHost && tripInfo.status === TripStatus.Confirmed)
     return (
@@ -162,49 +206,7 @@ function TripAdditionalActions({
               key={action.text}
               className="h-16 px-4 max-md:w-full"
               disabled={disableButton}
-              onClick={() => {
-                if (action.params == null || action.params.length == 0) {
-                  hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
-                    if(hasTripPhotosFeatureFlag){
-                      carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
-                        if(tripPhotosUrls.length === 0){
-                          showDialog(t("common.photos_required"));
-                        } else {
-                          changeStatusCallback(() => {
-                            return action.action(
-                              BigInt(tripInfo.tripId),
-                              [],
-                              []
-                            );
-                          });
-                        }
-                      });
-                    } else {
-                      changeStatusCallback(() => {
-                        return action.action(
-                          BigInt(tripInfo.tripId),
-                          [],
-                          []
-                        );
-                      });
-                    }
-                  });
-                } else {
-                  hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
-                    if(hasTripPhotosFeatureFlag){
-                      carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
-                        if(tripPhotosUrls.length === 0){
-                          showDialog(t("common.photos_required"));
-                        } else {
-                          handleButtonClick();
-                        }
-                      });
-                    } else {
-                      handleButtonClick();
-                    }
-                  });
-                }
-              }}
+              onClick={() => {onActionBtnClick(action)}}
             >
               {action.text}
             </RntButton>
