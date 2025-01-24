@@ -8,13 +8,10 @@ import {
   ContractProgramHistory,
 } from "@/model/blockchain/schemas";
 import { useRentality } from "@/contexts/rentalityContext";
-import { ZERO_4_BYTES_HASH } from "@/utils/wallet";
 
 const useReferralProgram = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [updateRequired, setUpdateRequired] = useState<boolean>(true);
-  const [inviteHash, setHash] = useState("");
-  const [usedInviteHash, setUsedInviteHash] = useState("");
   const [points, setPoints] = useState(0);
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
@@ -24,20 +21,6 @@ const useReferralProgram = () => {
   }, []);
 
   useEffect(() => {
-    const getHash = async () => {
-      if (!rentalityContracts) {
-        console.error("get hash error: rentalityContract is null");
-        setIsLoading(true);
-        return null;
-      }
-
-      const result = await rentalityContracts.referralProgram.getMyRefferalInfo();
-      if (result.ok) {
-        setHash(result.value.myHash !== ZERO_4_BYTES_HASH ? result.value.myHash : "");
-        setUsedInviteHash(result.value.savedHash !== ZERO_4_BYTES_HASH ? result.value.savedHash : "");
-      }
-    };
-
     const getPoints = async () => {
       if (!rentalityContracts) {
         setIsLoading(true);
@@ -65,7 +48,6 @@ const useReferralProgram = () => {
 
     setUpdateRequired(false);
 
-    getHash();
     getPoints();
     setIsLoading(false);
   }, [rentalityContracts, ethereumInfo, updateRequired]);
@@ -141,8 +123,6 @@ const useReferralProgram = () => {
   };
 
   return {
-    inviteHash,
-    usedInviteHash,
     points,
     updateData,
     getReadyToClaim,
