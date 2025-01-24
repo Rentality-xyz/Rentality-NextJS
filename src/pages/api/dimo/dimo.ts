@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { authOnDimo, tokenExchange } from "./helpers";
 import { getIpfsURI } from "@/utils/ipfsUtils";
 
-type DIMOSharedCarsResponse = {
+export type DIMOSharedCarsResponse = {
   data: {
     vehicles: {
       nodes: [{
