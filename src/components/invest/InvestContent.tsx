@@ -112,7 +112,14 @@ export default function InvestContent({ isHost }: InvestContentProps) {
             <div className={ccsDivider}></div>
           </div>
           <div className="relative p-2 text-center">
-            {t("invest.tokenization")}
+            <p>{t("invest.tokenization")}</p>
+            <div className="flex h-full flex-col justify-center">
+              <p className="text-lg font-bold leading-none">$80 000</p>
+              <p className="leading-snug">Total price</p>
+              <div className="mx-auto my-2 h-0.5 w-[60%] translate-y-[-50%] bg-white"></div>
+              <p className="text-lg font-bold leading-none text-rentality-secondary">$10 000</p>
+              <p className="leading-snug text-rentality-secondary">Balance to be raised</p>
+            </div>
             <div className={ccsDivider}></div>
           </div>
           <div className="flex flex-col items-center justify-center p-2">
