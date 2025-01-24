@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Avatar } from "@mui/material";
 import { dateFormatLongMonthYearDateTime, dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { AdminUserDetails } from "../models";
+import { formatAddress } from "@/utils/addressFormatters";
 
 interface AllUsersTableProps {
   isLoading: boolean;
@@ -32,55 +33,56 @@ function AllUsersTable({ isLoading, data }: AllUsersTableProps) {
         </div>
       }
     >
-      <div className="text-xl lg:hidden">{t("common.low_resolution")}</div>
-      <table className="hidden w-full table-auto border-spacing-2 overflow-x-auto lg:block">
-        <thead className="mb-2">
-          <tr className="border-b-[2px] border-b-gray-500">
-            <th className={`${headerSpanClassName} min-w-[7ch]`}>{t_att("avatar")}</th>
-            <th className={`${headerSpanClassName} min-w-[15ch]`}>{t_att("wallet")}</th>
-            <th className={`${headerSpanClassName} min-w-[17ch]`}>{t_att("profile-creation-date")}</th>
-            <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_att("nickname")}</th>
-            <th className={`${headerSpanClassName} min-w-[8ch]`}>{t_att("issue-country")}</th>
-            <th className={`${headerSpanClassName} min-w-[15ch]`}>{t_att("phone-number")}</th>
-            <th className={`${headerSpanClassName} min-w-[15ch]`}>{t_att("name")}</th>
-            <th className={`${headerSpanClassName} min-w-[15ch]`}>{t_att("e-mail")}</th>
-            <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_att("driving-license-number")}</th>
-            <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_att("driving-license-validity-period")}</th>
-            <th className={`${headerSpanClassName} min-w-[15ch]`}>{t_att("cars-in-listing")}</th>
-          </tr>
-        </thead>
-        <tbody className="text-sm">
-          {data.map((userDetails, index) => {
-            const listingLink = `/hosts/${userDetails.walletAddress}`;
+      <div className="w-full overflow-x-auto">
+        <table className="w-full table-auto border-spacing-2">
+          <thead className="mb-2">
+            <tr className="border-b-[2px] border-b-gray-500">
+              <th className={`${headerSpanClassName} min-w-[7ch]`}>{t_att("avatar")}</th>
+              <th className={`${headerSpanClassName} min-w-[15ch]`}>{t_att("wallet")}</th>
+              <th className={`${headerSpanClassName} min-w-[17ch]`}>{t_att("profile-creation-date")}</th>
+              <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_att("nickname")}</th>
+              <th className={`${headerSpanClassName} min-w-[8ch]`}>{t_att("issue-country")}</th>
+              <th className={`${headerSpanClassName} min-w-[15ch]`}>{t_att("phone-number")}</th>
+              <th className={`${headerSpanClassName} min-w-[15ch]`}>{t_att("name")}</th>
+              <th className={`${headerSpanClassName} min-w-[15ch]`}>{t_att("e-mail")}</th>
+              <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_att("driving-license-number")}</th>
+              <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_att("driving-license-validity-period")}</th>
+              <th className={`${headerSpanClassName} min-w-[15ch]`}>{t_att("cars-in-listing")}</th>
+            </tr>
+          </thead>
+          <tbody className="text-sm">
+            {data.map((userDetails, index) => {
+              const listingLink = `/hosts/${userDetails.walletAddress}`;
 
-            return (
-              <tr key={userDetails.TCSignature} className="border-b-[2px] border-b-gray-500">
-                <td className={rowSpanClassName}>
-                  <Avatar
-                    className="my-2"
-                    src={userDetails.profilePhoto}
-                    sx={{ width: "3rem", height: "3rem" }}
-                  ></Avatar>
-                </td>
-                <td className={rowSpanClassName}>{userDetails.walletAddress}</td>
-                <td className={rowSpanClassName}>{dateFormatLongMonthYearDateTime(userDetails.createDate)}</td>
-                <td className={rowSpanClassName}>{userDetails.name}</td>
-                <td className={rowSpanClassName}>{userDetails.issueCountry}</td>
-                <td className={rowSpanClassName}>{userDetails.mobilePhoneNumber}</td>
-                <td className={rowSpanClassName}>{userDetails.surname}</td>
-                <td className={rowSpanClassName}>{userDetails.email}</td>
-                <td className={rowSpanClassName}>{userDetails.licenseNumber}</td>
-                <td className={rowSpanClassName}>{dateFormatShortMonthDateYear(userDetails.expirationDate)}</td>
-                <td className={rowSpanClassName}>
-                  <Link href={listingLink}>
-                    <span className="text-rentality-secondary">{t_att("see_listing")}</span>
-                  </Link>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+              return (
+                <tr key={userDetails.TCSignature} className="border-b-[2px] border-b-gray-500">
+                  <td className={rowSpanClassName}>
+                    <Avatar
+                      className="my-2"
+                      src={userDetails.profilePhoto}
+                      sx={{ width: "3rem", height: "3rem" }}
+                    ></Avatar>
+                  </td>
+                  <td className={rowSpanClassName}>{formatAddress(userDetails.walletAddress, 5, 4)}</td>
+                  <td className={rowSpanClassName}>{dateFormatLongMonthYearDateTime(userDetails.createDate)}</td>
+                  <td className={rowSpanClassName}>{userDetails.name}</td>
+                  <td className={rowSpanClassName}>{userDetails.issueCountry}</td>
+                  <td className={rowSpanClassName}>{userDetails.mobilePhoneNumber}</td>
+                  <td className={rowSpanClassName}>{userDetails.surname}</td>
+                  <td className={rowSpanClassName}>{userDetails.email}</td>
+                  <td className={rowSpanClassName}>{userDetails.licenseNumber}</td>
+                  <td className={rowSpanClassName}>{dateFormatShortMonthDateYear(userDetails.expirationDate)}</td>
+                  <td className={rowSpanClassName}>
+                    <Link href={listingLink}>
+                      <span className="text-rentality-secondary">{t_att("see_listing")}</span>
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </RntSuspense>
   );
 }

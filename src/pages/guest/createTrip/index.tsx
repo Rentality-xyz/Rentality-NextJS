@@ -36,6 +36,8 @@ import { enterPromoFormSchema, EnterPromoFormValues } from "@/features/promocode
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PromoActionType, promoCodeReducer } from "@/features/promocodes/utils/promoCodeReducer";
 import { getPromoPrice } from "@/features/promocodes/utils";
+import Image from "next/image";
+import carIcon from "@/images/car.svg";
 
 function CreateTrip() {
   const { searchCarRequest, searchCarFilters } = useCarSearchParams();
@@ -166,10 +168,19 @@ function CreateTripDetailsContent({
     }
   }
 
+  const isYourOwnCar = carInfo.ownerAddress === userInfo?.address;
+
   return (
     <div className="flex flex-wrap">
       <div className="flex w-full flex-col gap-4 xl:w-3/4 xl:pr-4">
-        <CarPhotos carPhotos={carInfo.images} />
+        <div className="flex">
+          <CarPhotos carPhotos={carInfo.images} />
+          {isYourOwnCar && (
+            <div className="absolute mt-2 ml-2 flex h-[56px] w-[80px] justify-center rounded-xl bg-black bg-opacity-50">
+              <Image src={carIcon} alt="" className="w-[48px]" />
+            </div>
+          )}
+        </div>
         <CarTitleAndPrices
           carTitle={`${carInfo.brand} ${carInfo.model} ${carInfo.year}`}
           pricePerDay={carInfo.pricePerDay}
