@@ -6,6 +6,7 @@ init-local:
 	cp .env-nextjs.local .env
 
 clean-local:
+	docker stop ganache-build || true && docker rm ganache-build || true
 	rm -rf demo-rentality-web3-contracts
 	rm .env
 
