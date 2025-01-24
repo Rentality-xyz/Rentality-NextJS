@@ -106,7 +106,7 @@ export default function InvestContent({ isHost }: InvestContentProps) {
           Available to Invest | Waiting for full tokenization
         </div>
         <div className="grid h-[200px] w-full grid-cols-4 gap-2">
-          <div className="p-2">01</div>
+          <div className="border-r bg-[url('../images/car_loading.png')] bg-cover bg-center bg-no-repeat p-2"></div>
           <div className="relative p-2">
             02
             <div className={ccsDivider}></div>
