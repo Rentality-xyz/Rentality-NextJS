@@ -94,6 +94,8 @@ function UserCommonInformationForm({
       formData.tcSignature = signature;
       console.debug(`tcSignature after: ${formData.tcSignature}`);
 
+      await new Promise((f) => setTimeout(f, 2000));
+
       var profilePhotoUrl = savedProfileSettings.profilePhotoUrl;
       if (formData.profilePhotoUrl !== savedProfileSettings.profilePhotoUrl) {
         const blob = await (await fetch(formData.profilePhotoUrl)).blob();
