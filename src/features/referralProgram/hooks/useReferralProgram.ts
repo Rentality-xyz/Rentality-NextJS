@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import {
   ContractAllRefferalInfoDTO as ContractAllReferralInfoDTO,
@@ -11,46 +11,8 @@ import { useRentality } from "@/contexts/rentalityContext";
 
 const useReferralProgram = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [updateRequired, setUpdateRequired] = useState<boolean>(true);
-  const [points, setPoints] = useState(0);
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
-
-  const updateData = useCallback(() => {
-    setUpdateRequired(true);
-  }, []);
-
-  useEffect(() => {
-    const getPoints = async () => {
-      if (!rentalityContracts) {
-        setIsLoading(true);
-        console.error("get hash error: rentalityContract is null");
-        return null;
-      }
-      if (!ethereumInfo) {
-        setIsLoading(true);
-        console.error("get hash error: ethereum info is null");
-        return null;
-      }
-
-      const result = await rentalityContracts.referralProgram.addressToPoints(ethereumInfo.walletAddress);
-      if (result.ok) {
-        setPoints(Number(result.value));
-      }
-    };
-
-    if (!rentalityContracts) {
-      setIsLoading(true);
-      return;
-    }
-
-    if (!updateRequired) return;
-
-    setUpdateRequired(false);
-
-    getPoints();
-    setIsLoading(false);
-  }, [rentalityContracts, ethereumInfo, updateRequired]);
 
   const getReadyToClaim = useCallback(async (): Promise<ContractReadyToClaimDTO | null> => {
     if (!rentalityContracts) {
@@ -108,14 +70,11 @@ const useReferralProgram = () => {
   };
 
   return {
-    points,
-    updateData,
+    isLoading,
     getReadyToClaim,
     getReadyToClaimFromReferralHash,
     getReferralPointsInfo,
     getPointsHistory,
-    calculateUniqUsers,
-    isLoading,
   } as const;
 };
 

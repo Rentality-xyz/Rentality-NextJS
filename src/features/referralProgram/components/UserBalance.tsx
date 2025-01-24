@@ -1,13 +1,13 @@
 //TODO translate
 import Image from "next/image";
 import React, { useEffect } from "react";
-import useReferralProgram from "../hooks/useReferralProgram";
 import useClaimMyPoints from "../hooks/useClaimMyPoints";
 import icStarPointsWhite from "@/images/ic_star_points_white.svg";
 import useClaimMyPointsFromReferrals from "../hooks/useClaimMyPointsFromReferrals";
+import useUserBalance from "../hooks/useUserBalance";
 
 function UserBalance() {
-  const { points, updateData } = useReferralProgram();
+  const { points, updateData } = useUserBalance();
   const { readyToClaim } = useClaimMyPoints();
   const { readyToClaim: readyToClaimFromReferrals } = useClaimMyPointsFromReferrals();
 
