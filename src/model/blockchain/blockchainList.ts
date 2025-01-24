@@ -1,6 +1,6 @@
 import { hasContractForChainId } from "@/abis";
+import { getBlockchainInfoFromViem } from "@/features/blockchain/utils.ts";
 import { env } from "@/utils/env";
-import { isEmpty } from "@/utils/string";
 import { defineChain } from "viem";
 import {
   mainnet,
@@ -27,27 +27,10 @@ const localhostGanache = defineChain({
     symbol: "ETH",
   },
   rpcUrls: {
-    default: { http: ["http://127.0.0.1:8545"] },
+    default: { http: ["http://127.0.0.1:7545"] },
   },
   testnet: true,
 });
-
-
-
-
-const chainIdToHex = (chainId: number) => {
-  return "0x" + chainId.toString(16);
-};
-
-const getBlockchainInfoFromViem = (viemChain: Chain) => {
-  return {
-    name: viemChain.name,
-    chainId: viemChain.id,
-    chainIdHexString: chainIdToHex(viemChain.id),
-    isTestnet: viemChain.testnet ?? false,
-    viemChain: viemChain,
-  };
-};
 
 export const allSupportedBlockchainList: BlockchainBaseInfo[] = [
   //Ethereum
@@ -78,51 +61,29 @@ export const allSupportedBlockchainList: BlockchainBaseInfo[] = [
   { ...getBlockchainInfoFromViem(localhostGanache), shortName: "Ganache", logo: "chainLogoGanache.svg" },
 ];
 
-export const getExistBlockchainList = (): BlockchainBaseInfo[] => {
+export function getExistBlockchainList(): BlockchainBaseInfo[] {
   var isIncludeTestnets = env.NEXT_PUBLIC_INCLUDE_TESTNETS === "true";
   var isIncludeLocalnets = env.NEXT_PUBLIC_INCLUDE_LOCALNETS === "true";
   var isIncludeMainnets = env.NEXT_PUBLIC_INCLUDE_MAINNETS === "true";
 
   return allSupportedBlockchainList.filter(
     (bc) =>
-      hasContractForChainId(bc.chainId) &&
       (bc.isTestnet || isIncludeMainnets) &&
+      (bc.chainId !== 1337 || isIncludeLocalnets) &&
       (!bc.isTestnet || bc.chainId === 1337 || isIncludeTestnets) &&
-      (bc.chainId !== 1337 || isIncludeLocalnets)
+      hasContractForChainId(bc.chainId)
   );
-};
+}
 
-export const getBlockCountForSearch = (chainId: number): number => {
+export function getBlockCountForSearch(chainId: number): number {
   switch (chainId) {
-    case mainnet.id:
-      return Number.POSITIVE_INFINITY;
-    case sepolia.id:
-      return Number.POSITIVE_INFINITY;
-    case polygon.id:
-      return Number.POSITIVE_INFINITY;
-    case polygonMumbai.id:
-      return Number.POSITIVE_INFINITY;
     case base.id:
-      return 1000;
     case baseSepolia.id:
       return 1000;
-    case optimism.id:
-      return Number.POSITIVE_INFINITY;
-    case optimismSepolia.id:
-      return Number.POSITIVE_INFINITY;
-    case fuse.id:
-      return Number.POSITIVE_INFINITY;
-    case fuseSparknet.id:
-      return Number.POSITIVE_INFINITY;
-    case opBNB.id:
-      return Number.POSITIVE_INFINITY;
-    case opBNBTestnet.id:
-      return Number.POSITIVE_INFINITY;
-    case localhostGanache.id:
     default:
       return Number.POSITIVE_INFINITY;
   }
-};
+}
 
 type BlockchainBaseInfo = {
   name: string;

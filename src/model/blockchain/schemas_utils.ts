@@ -1,9 +1,10 @@
-import { validateType } from "@/utils/typeValidator";
+import { validateType } from "@/features/blockchain/utils.ts";
 import {
   ClaimStatus,
   ClaimType,
   ContractAdditionalKYCInfo,
   ContractAdminCarDTO,
+  ContractAdminKYCInfoDTO,
   ContractAdminTripDTO,
   ContractAllCarsDTO,
   ContractAllTripsDTO,
@@ -490,14 +491,15 @@ const emptyContractAdditionalKYCInfo: ContractAdditionalKYCInfo = {
   email: "",
 };
 
-const emptyContractFullKYCInfoDTO: ContractFullKYCInfoDTO = {
+const emptyContractAdminKYCInfoDTO: ContractAdminKYCInfoDTO = {
   kyc: emptyContractKYCInfo,
   additionalKYC: emptyContractAdditionalKYCInfo,
+  wallet: "",
 };
 
-export function validateContractFullKYCInfoDTO(obj: ContractFullKYCInfoDTO): obj is ContractFullKYCInfoDTO {
+export function validateContractAdminKYCInfoDTO(obj: ContractAdminKYCInfoDTO): obj is ContractAdminKYCInfoDTO {
   return (
-    validateType(obj, emptyContractFullKYCInfoDTO) &&
+    validateType(obj, emptyContractAdminKYCInfoDTO) &&
     validateType(obj.kyc, emptyContractKYCInfo) &&
     validateType(obj.additionalKYC, emptyContractAdditionalKYCInfo)
   );
