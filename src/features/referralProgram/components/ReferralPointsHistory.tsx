@@ -3,11 +3,15 @@ import React, { useEffect } from "react";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import ReferralPointsHistoryTable from "@/features/referralProgram/components/ReferralPointsHistoryTable";
 import usePointsHistory from "@/features/referralProgram/hooks/usePointsHistory";
+import useClaimMyPoints from "../hooks/useClaimMyPoints";
+import useClaimMyPointsFromReferrals from "../hooks/useClaimMyPointsFromReferrals";
 
 export default function ReferralPointsHistory() {
-  const { t } = useTranslation();
   const itemsPerPage = 4;
   const { isLoading, data, fetchData } = usePointsHistory();
+  const { readyToClaim } = useClaimMyPoints();
+  const { readyToClaim: readyToClaimFromReferrals } = useClaimMyPointsFromReferrals();
+  const { t } = useTranslation();
 
   async function fetchDataForPage(page: number) {
     await fetchData(page, itemsPerPage);
@@ -15,7 +19,7 @@ export default function ReferralPointsHistory() {
 
   useEffect(() => {
     fetchData(1, itemsPerPage);
-  }, [fetchData]);
+  }, [fetchData, readyToClaim, readyToClaimFromReferrals]);
 
   return (
     <div className="w-full rounded-lg bg-rentality-bg-left-sidebar p-3">

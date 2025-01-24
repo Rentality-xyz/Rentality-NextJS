@@ -83,21 +83,6 @@ const useReferralProgram = () => {
     return result.ok ? result.value : null;
   };
 
-  const claimReferralPoints = async () => {
-    if (!rentalityContracts) {
-      console.error("get hash error: rentalityContract is null");
-      setIsLoading(true);
-      return null;
-    }
-    if (!ethereumInfo) {
-      console.error("get hash error: ethereum info is null");
-      setIsLoading(true);
-      return null;
-    }
-    const result = await rentalityContracts.referralProgram.claimRefferalPoints(ethereumInfo.walletAddress);
-    return result.ok ? result.value : null;
-  };
-
   const getReferralPointsInfo = useCallback(async (): Promise<ContractAllReferralInfoDTO | null> => {
     if (!rentalityContracts) {
       console.error("get hash error: rentalityContract is null");
@@ -127,7 +112,6 @@ const useReferralProgram = () => {
     updateData,
     getReadyToClaim,
     getReadyToClaimFromReferralHash,
-    claimReferralPoints,
     getReferralPointsInfo,
     getPointsHistory,
     calculateUniqUsers,
