@@ -13,7 +13,7 @@ export type PointsFromYourReferralsInfo = {
 };
 
 const usePointsFromYourReferrals = () => {
-  const { getReadyToClaimFromReferralHash, claimReferralPoints } = useReferralProgram();
+  const { getReadyToClaimFromReferralHash } = useReferralProgram();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<PointsFromYourReferralsInfo[]>([]);
   const [allData, setAllData] = useState<PointsFromYourReferralsInfo[] | null>(null);
@@ -65,14 +65,6 @@ const usePointsFromYourReferrals = () => {
     [allData]
   );
 
-  const claimAllReferralPoints = useCallback(async (): Promise<void> => {
-    try {
-      await claimReferralPoints();
-    } catch (e) {
-      console.error("fetchData error" + e);
-    }
-  }, [claimReferralPoints]);
-
   return {
     isLoading,
     data: {
@@ -82,7 +74,6 @@ const usePointsFromYourReferrals = () => {
       totalReadyToClaim: totalReadyToClaim,
     },
     fetchData,
-    claimAllReferralPoints,
   } as const;
 };
 

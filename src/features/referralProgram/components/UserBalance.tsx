@@ -4,14 +4,16 @@ import React, { useEffect } from "react";
 import useReferralProgram from "../hooks/useReferralProgram";
 import useClaimMyPoints from "../hooks/useClaimMyPoints";
 import icStarPointsWhite from "@/images/ic_star_points_white.svg";
+import useClaimMyPointsFromReferrals from "../hooks/useClaimMyPointsFromReferrals";
 
 function UserBalance() {
   const { points, updateData } = useReferralProgram();
   const { readyToClaim } = useClaimMyPoints();
+  const { readyToClaim: readyToClaimFromReferrals } = useClaimMyPointsFromReferrals();
 
   useEffect(() => {
     updateData();
-  }, [updateData, readyToClaim]);
+  }, [updateData, readyToClaim, readyToClaimFromReferrals]);
 
   return (
     <div className="flex w-fit items-center rounded-lg border border-rentality-star-point px-3 py-2 font-['Montserrat',Arial,sans-serif]">
