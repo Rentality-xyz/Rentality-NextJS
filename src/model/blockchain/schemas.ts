@@ -326,6 +326,12 @@ export type ContractFullKYCInfoDTO = {
   additionalKYC: ContractAdditionalKYCInfo;
 };
 
+export type ContractAdminKYCInfoDTO = {
+  kyc: ContractKYCInfo;
+  additionalKYC: ContractAdditionalKYCInfo;
+  wallet: string;
+};
+
 export type ContractSearchCarWithDistance = {
   car: ContractSearchCar;
   distance: bigint;

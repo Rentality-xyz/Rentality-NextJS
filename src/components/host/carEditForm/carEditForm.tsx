@@ -92,7 +92,14 @@ export default function CarEditForm({
             timeBufferBetweenTripsInMin: initValue.timeBufferBetweenTripsInMin,
             currentlyListed: initValue.currentlyListed,
           }
-        : { carId: 0, isLocationEdited: true, currentlyListed: true, images: [] },
+        : {
+            carId: 0,
+            isLocationEdited: true,
+            currentlyListed: true,
+            images: [],
+            isGuestInsuranceRequired: false,
+            insurancePerDayPriceInUsd: 0,
+          },
     resolver: zodResolver(carEditFormSchema),
   });
 
@@ -138,8 +145,6 @@ export default function CarEditForm({
   const [isVINVerified, setIsVINVerified] = useState<boolean>(dimoData ? true : false);
   const [isVINCheckOverriden, setIsVINCheckOverriden] = useState<boolean>(false);
 
-
-
   const isFormEnabled = useMemo<boolean>(() => {
     return isVINVerified || isVINCheckOverriden || !isNewCar;
   }, [isVINVerified, isVINCheckOverriden, isNewCar]);
@@ -149,9 +154,6 @@ export default function CarEditForm({
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
   };
-  useEffect(()=>{
-    console.log("FORMA: ",formState.errors)
-  },[formState])
 
   async function onFormSubmit(formData: CarEditFormValues) {
     const carInfoFormParams: HostCarInfo = {
@@ -189,9 +191,9 @@ export default function CarEditForm({
       bodyType: initValue?.bodyType ?? "",
       isCarMetadataEdited: isCarMetadataEdited,
       metadataUrl: initValue?.metadataUrl ?? "",
+      dimoTokenId: formData.dimoTokenId ?? 0,
       insurancePriceInUsdCents: formData.insurancePerDayPriceInUsd ?? 0,
-      dimoTokenId: formData.dimoTokenId ?? 0
-  
+
     };
 
     const isValidForm = verifyCar(carInfoFormParams);
@@ -283,7 +285,7 @@ export default function CarEditForm({
           <Controller
             name="vinNumber"
             control={control}
-            defaultValue={dimoData ? dimoData.vin : ""} 
+            defaultValue={dimoData ? dimoData.vin : ""}
             render={({ field: { onChange, value } }) =>
               dimoData == null ? (
                 <RntVINCheckingInput
@@ -304,7 +306,7 @@ export default function CarEditForm({
                   value={dimoData.vin}
                   className="lg:w-60"
                   label={t_car("vin_num")}
-                  readOnly={true} 
+                  readOnly={true}
                 />
               )
             }
@@ -328,7 +330,7 @@ export default function CarEditForm({
                     }}
                     validationError={errors.brand?.message?.toString()}
                   />
-                ) 
+                )
                 :  isNewCar && dimoData !== undefined ? (
                   <RntInput
                   id="brand"
@@ -337,7 +339,7 @@ export default function CarEditForm({
                   readOnly={true}
                   value={dimoData.definition.make}
                   />
-                ) 
+                )
                 :(
                   <RntInput
                     className="lg:w-60"
@@ -370,7 +372,7 @@ export default function CarEditForm({
                     }}
                     validationError={errors.model?.message?.toString()}
                   />
-                ) 
+                )
                 : isNewCar && dimoData !== undefined ? (
                   <RntInput
                   id="model"
@@ -379,7 +381,7 @@ export default function CarEditForm({
                     readOnly={true}
                     value={dimoData.definition.model}
                   />
-                ) 
+                )
                 :
                 (
                   <RntInput
@@ -413,17 +415,17 @@ export default function CarEditForm({
                     }}
                     validationError={errors.releaseYear?.message?.toString()}
                   />
-                ) 
+                )
                 :  isNewCar && dimoData !== undefined ? (
                   <RntInput
                   id="releaseYear"
                   className="lg:w-60"
                   label={t_car("release")}
-                   
+
                     readOnly={true}
                     value={dimoData.definition.year}
                   />
-                ) 
+                )
                 :(
                   <RntInput
                     className="lg:w-60"
