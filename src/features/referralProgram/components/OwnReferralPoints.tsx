@@ -14,10 +14,10 @@ import { getAllPoints } from "../utils";
 
 export default function OwnReferralPoints() {
   const {
+    isLoading: isLoadingInviteLink,
     getReadyToClaim,
     getReferralPointsInfo,
     getPointsHistory,
-    isLoading: isLoadingInviteLink,
   } = useReferralProgram();
   const { isLoading: isLoadingMyPoints, readyToClaim, claimMyPoints } = useClaimMyPoints();
   const [isLoading, setIsLoading] = useState(true);
