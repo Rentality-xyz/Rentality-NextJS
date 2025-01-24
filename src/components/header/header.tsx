@@ -18,9 +18,9 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/auth/authContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 // @ts-ignore
-import icLogout from "@/images/ic_logout.png";
+import icLogout from "@/images/ic_logout.svg";
 // @ts-ignore
-import icProfileSettings from "@/images/ic_profile_settings.png";
+import icProfileSettings from "@/images/ic_profile_settings.svg";
 // @ts-ignore
 import imgCopy from "@/images/ic_copy_white_24dp.svg";
 // @ts-ignore

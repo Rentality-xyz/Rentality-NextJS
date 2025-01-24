@@ -44,6 +44,9 @@ const RntSelect = forwardRef<HTMLSelectElement, RntSelectProps>(
     const sclassName = cn("w-full h-12 border-2 disabled:border-gray-500 rounded-full pl-4", selectClassName);
     const contClassName = cn(!readOnly && "border-gradient", cn("select-container w-full", containerClassName));
     const cTranspStyleClassName = "custom-select text-center text-rentality-secondary";
+    const arrowStyle = readOnly
+      ? "bg-[url('../images/arrows/arrowDownDisabled.svg')]"
+      : "bg-[url('../images/arrows/arrowDownTurquoise.svg')]";
 
     return (
       <div className={cClassName}>
@@ -72,11 +75,9 @@ const RntSelect = forwardRef<HTMLSelectElement, RntSelectProps>(
           >
             {children}
           </select>
-          {isTransparentStyle && readOnly ? (
-            <span className="custom-arrow top-[70%] bg-[url('../images/arrows/arrowDownDisabled.svg')]"></span>
-          ) : (
-            <span className="custom-arrow top-[70%] bg-[url('../images/arrows/arrowDownTurquoise.svg')]"></span>
-          )}
+          {
+            isTransparentStyle && (<span className={`custom-arrow top-[70%] ${arrowStyle}`}></span>)
+          }
           <RntValidationError className={validationClassName} validationError={validationError} />
         </div>
       </div>

@@ -170,7 +170,7 @@ if (myListings && dimoVehicles) {
     console.error("Save dimo tokens id error: Rentality contract is null")
     return
   }
-   await rentalityContracts.gateway.saveDimoTokenIds(dimoTokens,carIds)
+   await rentalityContracts.gateway.saveDimoTokenIds(dimoTokens.map(BigInt), carIds.map(BigInt))
    console.log("Dimo tokens saved!")
 }
   return (

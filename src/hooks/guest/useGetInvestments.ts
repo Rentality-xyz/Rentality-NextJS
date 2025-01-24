@@ -1,9 +1,7 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { useState, useEffect } from "react";
-import { InvestmentWithMetadata } from "@/model/blockchain/schemas";
+import { InvestmentDTO, InvestmentWithMetadata } from "@/model/blockchain/schemas";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { getEtherContractWithSigner } from "@/abis";
-import { IRentalityCurrencyConverterContract, IRentalityInvestment } from "@/model/blockchain/IRentalityContract";
 import { getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 const useGetInvestments = () => {
@@ -35,7 +33,9 @@ const useGetInvestments = () => {
     if (!rentalityContracts) return;
    
    const valueInEth = await rentalityContracts.currencyConverter.getFromUsdLatest(ETH_DEFAULT_ADDRESS, BigInt(amount * 100));
-   await rentalityContracts.investment.invest(investId, { value: valueInEth[0] });
+   if(valueInEth.ok) {
+   await rentalityContracts.investment.invest(investId, { value:valueInEth.value[0] });
+   }
   };
 
   useEffect(() => {
@@ -43,8 +43,11 @@ const useGetInvestments = () => {
       if (!rentalityContracts) return;
       if (!ethereumInfo) return;
      
-      let investmentInfo = await rentalityContracts.investment.getAllInvestments();
+      let res = await rentalityContracts.investment.getAllInvestments()
 
+      if(res.ok) {
+
+     const investmentInfo: InvestmentDTO[] = res.value;
       const result = await Promise.all(
         investmentInfo.map(async (value) => {
           const metadata = parseMetaData(await getMetaDataFromIpfs(value.investment.car.tokenUri));
@@ -58,6 +61,7 @@ const useGetInvestments = () => {
       setIsLoading(false);
       // setUpdate(false)
     };
+  }
     initialize();
   }, [ethereumInfo, rentalityContracts]);
 
