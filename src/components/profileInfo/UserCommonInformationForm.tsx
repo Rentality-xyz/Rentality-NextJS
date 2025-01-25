@@ -88,14 +88,6 @@ function UserCommonInformationForm({
     }
 
     try {
-      const signature = await signMessage(ethereumInfo.signer, DEFAULT_AGREEMENT_MESSAGE);
-      console.debug(`tcSignature before: ${formData.tcSignature}`);
-      setValue("tcSignature", signature);
-      formData.tcSignature = signature;
-      console.debug(`tcSignature after: ${formData.tcSignature}`);
-
-      await new Promise((f) => setTimeout(f, 2000));
-
       var profilePhotoUrl = savedProfileSettings.profilePhotoUrl;
       if (formData.profilePhotoUrl !== savedProfileSettings.profilePhotoUrl) {
         const blob = await (await fetch(formData.profilePhotoUrl)).blob();
@@ -155,7 +147,7 @@ function UserCommonInformationForm({
       const userAddress = await ethereumInfo.signer.getAddress();
       const verifyAddress = verifyMessage(DEFAULT_AGREEMENT_MESSAGE, savedProfileSettings.tcSignature);
       const isSignatureCorrect = verifyAddress === userAddress;
-      setValue("isTerms", isTerms || isSignatureCorrect);
+      setValue("isTerms", isSignatureCorrect);
     };
 
     checkSignature();
@@ -241,7 +233,16 @@ function UserCommonInformationForm({
             className="ml-4 underline"
             label={t("profile.tc_and_privacy_title")}
             checked={field.value}
-            onChange={() => {
+            onChange={async () => {
+              if (!field.value) {
+                if (!ethereumInfo) return;
+                try {
+                  const signature = await signMessage(ethereumInfo.signer, DEFAULT_AGREEMENT_MESSAGE);
+                  setValue("tcSignature", signature);
+                } catch (error) {
+                  console.error("sign error: ", error);
+                }
+              }
               field.onChange(!field.value);
             }}
             onLabelClick={(e) => {
