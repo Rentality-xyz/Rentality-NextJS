@@ -2,10 +2,10 @@
 import Image from "next/image";
 import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 import React from "react";
-import useClaimMyPoints from "@/features/referralProgram/hooks/useClaimMyPoints";
+import useOwnReferralPoints from "../hooks/useOwnReferralPoints";
 
 export default function ClaimMyPointsHeaderButton() {
-  const { isLoading, readyToClaim, claimMyPoints } = useClaimMyPoints();
+  const { isPending, readyToClaim, claimMyPoints } = useOwnReferralPoints();
 
   return (
     <button
@@ -15,7 +15,7 @@ export default function ClaimMyPointsHeaderButton() {
     >
       <Image src={icStarPointsYellow} alt="" className="mr-2 h-7 w-7" />
       <div className="ml-0.5 flex">
-        {isLoading ? (
+        {isPending ? (
           <>Loading...</>
         ) : (
           <>
