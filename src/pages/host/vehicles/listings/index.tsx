@@ -5,16 +5,11 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
-import {
-  initializeDimoSDK,
-  LoginWithDimo,
-  ShareVehiclesWithDimo,
-  useDimoAuthState,
-} from "@dimo-network/login-with-dimo";
+import { initializeDimoSDK, LoginWithDimo, ShareVehiclesWithDimo } from "@dimo-network/login-with-dimo";
 import React, { useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { CheckboxLight } from "@/components/common/rntCheckbox";
-import useDimo, { DimoCarResponse } from "@/features/dimo/hooks/useDimo";
+import useDimo from "@/features/dimo/hooks/useDimo";
 import { getIpfsURI } from "@/utils/ipfsUtils";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import axios from "axios";
@@ -35,16 +30,13 @@ function Listings() {
   const apiKey = process.env.NEXT_PUBLIC_SERVER_DIMO_API_KEY;
   const domain = process.env.NEXT_PUBLIC_SERVER_DIMO_DOMAIN;
 
-  if (!clientId || !apiKey || !domain) {
-    console.error("DIMO .env is not set");
-    return <div>{"dimo env not set"}</div>;
+  if (clientId && apiKey && domain) {
+    initializeDimoSDK({
+      clientId,
+      redirectUri: domain,
+      apiKey,
+    });
   }
-
-  initializeDimoSDK({
-    clientId,
-    redirectUri: domain,
-    apiKey,
-  });
   const [isShowOnlyDimoCar, setIsShowOnlyDimoCar] = useState<boolean>(false);
  
   
@@ -117,6 +109,11 @@ function Listings() {
       dimoTokenId: dimoCar.tokenId,
     })),
   ];
+
+  if (!clientId || !apiKey || !domain) {
+    console.error("DIMO .env is not set");
+    return <div>{"dimo env not set"}</div>;
+  }
 
   return (
     <>
