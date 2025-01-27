@@ -48,8 +48,8 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         setRentalityContracts(null);
         return;
       }
-
-      const rentalityGateway = (await getEtherContractWithSigner(
+      
+    const rentalityGateway = (await getEtherContractWithSigner(
         "gateway",
         ethereumInfo.signer
       )) as unknown as IRentalityGatewayContract;
