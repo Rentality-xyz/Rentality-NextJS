@@ -16,8 +16,11 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { CheckboxLight } from "@/components/common/rntCheckbox";
 import useDimo, { DimoCarResponse } from "@/features/dimo/hooks/useDimo";
 import { getIpfsURI } from "@/utils/ipfsUtils";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import axios from "axios";
 
 function Listings() {
+  const ethereumInfo = useEthereum()
   const [isLoadingMyListings, myListings] = useMyListings();
   const router = useRouter();
   const { t } = useTranslation();
@@ -43,6 +46,8 @@ function Listings() {
     apiKey,
   });
   const [isShowOnlyDimoCar, setIsShowOnlyDimoCar] = useState<boolean>(false);
+ 
+  
   const {
     walletAddress,
     isLoadingDimo,
@@ -62,14 +67,33 @@ function Listings() {
   }, [walletAddress, isAuthenticated]);
 
   const { rentalityContracts } = useRentality();
-  const handleSaveDimoTokens = async (dimoTokens: number[], carIds: number[]) => {
+  const handleSaveDimoTokens = async (dimoToken: number, carId: number) => {
     if (!rentalityContracts) {
       console.error("Save dimo tokens id error: Rentality contract is null");
       return;
     }
+    if(!ethereumInfo) {
+      console.error("Save dimo token id error: Ethereum Info is null")
+      return;
+    }
+    const dimoSignature = walletAddress === null || dimoToken === 0 ? "0x" : 
+      await axios.post("/api/dimo/signDIMOId", {
+        address: walletAddress,
+        chainId: ethereumInfo.chainId,
+        dimoToken,
+    })
+    .then(response => response.data.signature) 
+    .catch(error => {
+        if (error.response && error.response.status === 404) {
+            return "0x"; 
+        } else {
+            throw error; 
+        }
+    });
     await rentalityContracts.gateway.saveDimoTokenIds(
-      dimoTokens.map((n) => BigInt(n)),
-      carIds.map((n) => BigInt(n))
+      BigInt(dimoToken),
+      BigInt(carId),
+      dimoSignature
     );
     console.log("Dimo tokens saved!");
   };
@@ -163,7 +187,7 @@ function Listings() {
                     }}
                     onSyncWithDimo={async () => {
                       if (carForSync) {
-                        await handleSaveDimoTokens([carForSync.dimoTokenId], [carForSync.carId]);
+                        await handleSaveDimoTokens(carForSync.dimoTokenId, carForSync.carId);
                       }
                     }}
                     t={t}
@@ -183,7 +207,7 @@ function Listings() {
                       }}
                       onSyncWithDimo={async () => {
                         if (carForSync) {
-                          await handleSaveDimoTokens([carForSync.dimoTokenId], [carForSync.carId]);
+                          await handleSaveDimoTokens(carForSync.dimoTokenId, carForSync.carId);
                         }
                       }}
                       t={t}
