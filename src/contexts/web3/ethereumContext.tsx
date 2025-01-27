@@ -4,8 +4,8 @@ import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
 import { formatEther } from "viem";
-import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
-import axios from "axios";
+import { AxiosResponse } from "axios";
+import axios from "@/utils/cachedAxios";
 
 export type EthereumInfo = {
   provider: BrowserProvider;
@@ -30,7 +30,7 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
   const { wallets, ready: walletsReady } = useWallets();
   const router = useRouter();
   const [ethereumInfo, setEthereumInfo] = useState<EthereumInfo | null | undefined>(undefined);
-  const [isReloadPageRequested, setIsReloadPageRequested] = useState<boolean>(false)
+  const [isReloadPageRequested, setIsReloadPageRequested] = useState<boolean>(false);
   const isInitiating = useRef(false);
 
   useEffect(() => {
@@ -84,31 +84,22 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
           ? parseFloat(formatEther(currentWalletBalanceInWeth))
           : 0;
 
-          const rpcUrl = await axios.post(
-            "/api/defaultRpcUrl",
-            {
-              chainId: currentChainId,
-            },
-            {
-              headers: {
-                accept: "text/plain",
-                "content-type": "application/json",
-              },
-            }
-          );
-          const { url } = rpcUrl.data;
+        const rpcUrlResponse: AxiosResponse = await axios.get("/api/defaultRpcUrl", {
+          params: {
+            chainId: currentChainId,
+          },
+        });
+        const { url } = rpcUrlResponse.data;
 
-          if (!url) {
-            console.error("Ethereum info error: Response does not contain the rpc URL");
-            return null;
-          }
-        
+        if (!url) {
+          console.error("Ethereum info error: Response does not contain the rpc URL");
+          return null;
+        }
 
         setEthereumInfo((prev) => {
           if (prev !== undefined && prev !== null) {
             setIsReloadPageRequested(prev.chainId !== currentChainId);
           }
-        
 
           return {
             provider: etherv6Provider,
