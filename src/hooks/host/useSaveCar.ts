@@ -99,13 +99,15 @@ const useSaveCar = () => {
       }
 
       const dimoToken = walletAddress === null ? 0 : dataToSave.dimoTokenId;
+     
       const dimoSignature = walletAddress === null || dimoToken === 0 ? "0x" : 
-      await axios.post("/api/dimo/signDIMOid", {
+      await axios.post("/api/dimo/signDIMOId", {
         address: walletAddress,
         chainId: ethereumInfo.chainId,
         dimoToken,
     })
-    .then(response => response.data.signature) 
+    .then(response => {console.log("SIGN",response.data.signature) 
+      return response.data.signature}) 
     .catch(error => {
         if (error.response && error.response.status === 404) {
             return "0x"; 
@@ -137,6 +139,7 @@ const useSaveCar = () => {
         signedDimoTokenId: dimoSignature
       };
 
+      console.log("SIGNATURE",request)
       const result = await rentalityContracts.gatewayProxy.addCar(request);
       return result.ok ? result : Err("ERROR");
     } catch (e) {

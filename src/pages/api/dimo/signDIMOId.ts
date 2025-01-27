@@ -7,23 +7,23 @@ import { id, JsonRpcProvider, Wallet } from "ethers";
 import { signMessage } from "@/utils/ether";
 
 function parseQuery(req: NextApiRequest): Result<{ address: string; chainId: number; providerApiUrl: string, dimoToken: number }, string> {
-  const { address: addressQuery, chainId: chainIdQuery } = req.query;
+  const { address: addressQuery, chainId: chainIdQuery } = req.body;
   const address = typeof addressQuery === "string" ? addressQuery : "";
-  const chainId = typeof chainIdQuery === "string" ? Number(chainIdQuery) : 0;
-  const dimoToken = typeof req.query.dimoToken === "string" ? Number(req.query.dimoToken) : 0;
-
+  const chainId = typeof chainIdQuery === "number" ? Number(chainIdQuery) : 0;
+  const dimoToken = typeof req.body.dimoToken === "number" ? Number(req.body.dimoToken) : 0;
   if (isEmpty(address)) {
     return Err("'address' is not provided or empty");
   }
   if (Number.isNaN(chainId) || chainId === 0) {
     return Err("'chainId' is not provided or is not a number");
   }
+  
   if(Number.isNaN(dimoToken) || dimoToken === 0) {
     return Err("'dimo token' is not provided or is not a number");  
 }
   let providerApiUrl = process.env[`PROVIDER_API_URL_${chainId}`];
   if (!providerApiUrl) {
-    console.error(`API signLocation error: API URL for chain id ${chainId} was not set`);
+    console.error(`API signDimoId error: API URL for chain id ${chainId} was not set`);
     return Err(`Chain id ${chainId} is not supported`);
   }
 
@@ -51,8 +51,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     query: `
     {
       vehicles(filterBy: {privileged: "${clientId}", owner: "${address}"}, first: 100) {
+         totalCount
         nodes {
           tokenId
+          imageURI
           definition {
             make
             model
@@ -63,9 +65,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }`
   });
-
+ 
   const result = (userCarsOnDimo as unknown as DIMOSharedCarsResponse).data.vehicles.nodes.find(token => {
-    token.tokenId === dimoToken
+   return token.tokenId === dimoToken
   });
   if(!result) {
     return res.status(404).json({error: "Car not found"})
