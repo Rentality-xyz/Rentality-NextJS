@@ -6,6 +6,7 @@ import { getAllPoints } from "../utils";
 import { useTranslation } from "react-i18next";
 import { Err } from "@/model/utils/result";
 import { REFERRAL_USER_BALANCE_QUERY_KEY } from "./useUserBalance";
+import { REFERRAL_POINTS_HISTORY_QUERY_KEY } from "./usePointsHistory";
 
 export const REFERRAL_OWN_POINTS_QUERY_KEY = "ReferralOwnPoints";
 
@@ -85,6 +86,7 @@ function useOwnReferralPoints() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [REFERRAL_OWN_POINTS_QUERY_KEY] });
       queryClient.invalidateQueries({ queryKey: [REFERRAL_USER_BALANCE_QUERY_KEY] });
+      queryClient.invalidateQueries({ queryKey: [REFERRAL_POINTS_HISTORY_QUERY_KEY] });
     },
   });
 
