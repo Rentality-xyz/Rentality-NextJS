@@ -295,7 +295,7 @@ export default function SearchAndFilters({
       </div>
 
       <ScrollingHorizontally onScroll={onScrollPanelFilter} className="mt-4">
-        <div className="min-w-48">
+        <div className="">
           <RntCarMakeSelect
             id={t_comp("select_filter_make")}
             className="text-lg"
