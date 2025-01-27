@@ -1,18 +1,16 @@
 //TODO translate
 import { useTranslation } from "react-i18next";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React from "react";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import PointsFromYourReferralsTable from "@/features/referralProgram/components/PointsFromYourReferralsTable";
 import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 import RntButton from "@/components/common/rntButton";
-import usePointsFromYourReferrals from "@/features/referralProgram/hooks/usePointsFromYourReferrals";
-import useClaimMyPointsFromReferrals from "../hooks/useClaimMyPointsFromReferrals";
+import usePointsFromYourReferrals from "../hooks/usePointsFromYourReferrals";
 
 export default function PointsFromYourReferrals() {
   const itemsPerPage = 4;
-  const { isLoading, data, fetchData } = usePointsFromYourReferrals();
-  const { isLoading: isLoadingMyPoints, readyToClaim, claimMyPoints } = useClaimMyPointsFromReferrals();
+  const { isLoading, isPending, readyToClaim, data, fetchData, claimPoints } = usePointsFromYourReferrals();
   const { t } = useTranslation();
 
   async function fetchDataForPage(page: number) {
@@ -20,12 +18,8 @@ export default function PointsFromYourReferrals() {
   }
 
   async function handleClaimPointsClick() {
-    await claimMyPoints();
+    await claimPoints();
   }
-
-  useEffect(() => {
-    fetchData(1, itemsPerPage);
-  }, [fetchData, readyToClaim]);
 
   return (
     <div className="rounded-lg bg-rentality-bg-left-sidebar p-3">
@@ -40,7 +34,7 @@ export default function PointsFromYourReferrals() {
         >
           <Image src={icStarPointsYellow} alt="" className="mr-2 h-7 w-7" />
           <div className="ml-0.5 flex">
-            {isLoadingMyPoints ? (
+            {isPending ? (
               <>Loading...</>
             ) : (
               <>

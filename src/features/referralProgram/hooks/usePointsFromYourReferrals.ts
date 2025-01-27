@@ -1,8 +1,13 @@
-import { useCallback, useState } from "react";
-import { Err, Ok, Result } from "@/model/utils/result";
-import useReferralProgram from "@/features/referralProgram/hooks/useReferralProgram";
-import { ContractReadyToClaimFromHash, RefferalProgram as ReferralProgram } from "@/model/blockchain/schemas";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { useRentality } from "@/contexts/rentalityContext";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { Err } from "@/model/utils/result";
+import { REFERRAL_USER_BALANCE_QUERY_KEY } from "./useUserBalance";
+import { useMemo } from "react";
+import { usePaginationState } from "@/hooks/pagination";
+import { REFERRAL_POINTS_HISTORY_QUERY_KEY } from "./usePointsHistory";
+import { ContractReadyToClaimFromHash, RefferalProgram as ReferralProgram } from "@/model/blockchain/schemas";
 import { getReferralProgramDescriptionText } from "../utils";
 
 export type PointsFromYourReferralsInfo = {
@@ -12,74 +17,106 @@ export type PointsFromYourReferralsInfo = {
   readyToClaim: number;
 };
 
-const usePointsFromYourReferrals = () => {
-  const { getReadyToClaimFromReferralHash } = useReferralProgram();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<PointsFromYourReferralsInfo[]>([]);
-  const [allData, setAllData] = useState<PointsFromYourReferralsInfo[] | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPageCount, setTotalPageCount] = useState<number>(0);
-  const [totalReadyToClaim, setTotalReadyToClaim] = useState<number>(0);
+export const REFERRAL_POINTS_FROM_YOUR_REFERRALS_QUERY_KEY = "ReferralPointsFromYourReferrals";
+
+function usePointsFromYourReferrals(initialPage: number = 1, initialItemsPerPage: number = 10) {
+  const ethereumInfo = useEthereum();
+  const { rentalityContracts } = useRentality();
+  const queryClient = useQueryClient();
   const { t } = useTranslation();
 
-  const filterData = useCallback((data: PointsFromYourReferralsInfo[], page: number = 1, itemsPerPage: number = 10) => {
-    const slicedData = data.slice((page - 1) * itemsPerPage, page * itemsPerPage);
-    setCurrentPage(page);
-    setData(slicedData);
-    console.log(`slicedData.length: ${slicedData.length} | itemsPerPage: ${itemsPerPage}`);
+  const { currentPage, itemsPerPage, updatePagination } = usePaginationState(initialPage, initialItemsPerPage);
 
-    setTotalPageCount(Math.ceil(data.length / itemsPerPage));
-  }, []);
+  const {
+    isLoading,
+    data: allDataWithReadyToClaim = { readyToClaim: 0, combinedData: [] },
+    error: fetchError,
+  } = useQuery({
+    queryKey: [REFERRAL_POINTS_FROM_YOUR_REFERRALS_QUERY_KEY],
+    queryFn: async () => {
+      if (!rentalityContracts || !ethereumInfo) {
+        throw new Error("Contracts or wallet not initialized");
+      }
+      console.debug("Fetching points from your referrals");
 
-  const fetchData = useCallback(
-    async (page: number = 1, itemsPerPage: number = 10): Promise<Result<boolean, string>> => {
-      if (allData !== null) {
-        filterData(allData, page, itemsPerPage);
-        return Ok(true);
+      const result = await rentalityContracts.referralProgram.getReadyToClaimFromRefferalHash(
+        ethereumInfo.walletAddress
+      );
+
+      if (!result.ok) {
+        throw new Error(result.error.message);
       }
 
+      const combinedData = combineReferralData(result.value.toClaim, t);
+      const readyToClaim = combinedData.reduce((total, item) => total + item.readyToClaim, 0);
+      return { readyToClaim, combinedData };
+    },
+    enabled: !!rentalityContracts && !!ethereumInfo?.walletAddress,
+  });
+
+  const totalPageCount = useMemo(() => {
+    if (!allDataWithReadyToClaim.combinedData) return 0;
+
+    return Math.ceil(allDataWithReadyToClaim.combinedData.length / itemsPerPage);
+  }, [allDataWithReadyToClaim, itemsPerPage]);
+
+  const pageData = useMemo(() => {
+    if (!allDataWithReadyToClaim.combinedData) return [];
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return allDataWithReadyToClaim.combinedData.slice(startIndex, startIndex + itemsPerPage);
+  }, [allDataWithReadyToClaim, currentPage, itemsPerPage]);
+
+  const fetchData = async (page: number = 1, itemsPerPage: number = 10, filters: Record<string, any> = {}) => {
+    await updatePagination(page, itemsPerPage, filters);
+  };
+
+  const {
+    error: saveError,
+    mutateAsync: claimPoints,
+    isPending,
+  } = useMutation({
+    mutationFn: async () => {
       try {
-        setIsLoading(true);
-        setCurrentPage(page);
-        setTotalPageCount(0);
-
-        const readyToClaimFromReferral = await getReadyToClaimFromReferralHash();
-
-        if (readyToClaimFromReferral) {
-          const combinedData = combineReferralData(readyToClaimFromReferral.toClaim, t);
-          const totalReadyToClaim = combinedData.reduce((total, item) => total + item.readyToClaim, 0);
-          // console.log("Combined Data:", JSON.stringify(combinedData, null, 2));
-          setTotalReadyToClaim(totalReadyToClaim);
-          setAllData(combinedData);
-          filterData(combinedData, page, itemsPerPage);
+        if (!rentalityContracts || !ethereumInfo) {
+          console.error("claimPoints error: Missing required contracts or ethereum info");
+          return Err(new Error("Missing required contracts or ethereum info"));
         }
 
-        return Ok(true);
-      } catch (e) {
-        console.error("fetchData error" + e);
-        return Err("Get data error. See logs for more details");
-      } finally {
-        setIsLoading(false);
+        const result = await rentalityContracts.referralProgram.claimPoints(ethereumInfo.walletAddress);
+
+        return result.ok ? result : Err(new Error("claimMyPoints error: " + result.error));
+      } catch (error) {
+        console.error("claimPoints error: ", error);
+        return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
       }
     },
-    [allData]
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [REFERRAL_POINTS_FROM_YOUR_REFERRALS_QUERY_KEY] });
+      queryClient.invalidateQueries({ queryKey: [REFERRAL_USER_BALANCE_QUERY_KEY] });
+      queryClient.invalidateQueries({ queryKey: [REFERRAL_POINTS_HISTORY_QUERY_KEY] });
+    },
+  });
 
   return {
     isLoading,
+    isPending,
+    readyToClaim: allDataWithReadyToClaim.readyToClaim,
     data: {
-      data: data,
+      data: pageData,
       currentPage: currentPage,
       totalPageCount: totalPageCount,
-      totalReadyToClaim: totalReadyToClaim,
     },
     fetchData,
+    fetchError,
+    claimPoints,
+    saveError,
   } as const;
-};
+}
 
 export default usePointsFromYourReferrals;
 
-const calculateTotalReferralsByRefType = (referrals: ContractReadyToClaimFromHash[]): Record<number, number> => {
+function calculateTotalReferralsByRefType(referrals: ContractReadyToClaimFromHash[]): Record<number, number> {
   const groupedData = referrals.reduce(
     (acc, item) => {
       const { refType, user } = item;
@@ -104,9 +141,9 @@ const calculateTotalReferralsByRefType = (referrals: ContractReadyToClaimFromHas
     },
     {} as Record<number, number>
   );
-};
+}
 
-const calculateTotalReceivedByRefType = (referrals: ContractReadyToClaimFromHash[]): Record<number, number> => {
+function calculateTotalReceivedByRefType(referrals: ContractReadyToClaimFromHash[]): Record<number, number> {
   return referrals.reduce(
     (acc, item) => {
       const { refType, points, claimed } = item;
@@ -124,9 +161,9 @@ const calculateTotalReceivedByRefType = (referrals: ContractReadyToClaimFromHash
     },
     {} as Record<number, number>
   );
-};
+}
 
-const calculateReadyToClaimByRefType = (referrals: ContractReadyToClaimFromHash[]): Record<number, number> => {
+function calculateReadyToClaimByRefType(referrals: ContractReadyToClaimFromHash[]): Record<number, number> {
   return referrals.reduce(
     (acc, item) => {
       const { refType, points, claimed } = item;
@@ -144,9 +181,9 @@ const calculateReadyToClaimByRefType = (referrals: ContractReadyToClaimFromHash[
     },
     {} as Record<number, number>
   );
-};
+}
 
-const combineReferralData = (referrals: ContractReadyToClaimFromHash[], t: any): PointsFromYourReferralsInfo[] => {
+function combineReferralData(referrals: ContractReadyToClaimFromHash[], t: any): PointsFromYourReferralsInfo[] {
   const totalReferrals = calculateTotalReferralsByRefType(referrals);
   const totalReceived = calculateTotalReceivedByRefType(referrals);
   const readyToClaim = calculateReadyToClaimByRefType(referrals);
@@ -159,4 +196,4 @@ const combineReferralData = (referrals: ContractReadyToClaimFromHash[], t: any):
     totalReceived: totalReceived[Number(refType)] || 0,
     readyToClaim: readyToClaim[Number(refType)] || 0,
   }));
-};
+}
