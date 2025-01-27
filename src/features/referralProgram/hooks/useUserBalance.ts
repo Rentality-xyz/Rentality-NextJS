@@ -1,8 +1,42 @@
 import { useCallback, useEffect, useState } from "react";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRentality } from "@/contexts/rentalityContext";
+import { useQuery } from "@tanstack/react-query";
 
-const useUserBalance = () => {
+export const REFERRAL_USER_BALANCE_QUERY_KEY = "ReferralUserBalance";
+
+function useUserBalance() {
+  const ethereumInfo = useEthereum();
+  const { rentalityContracts } = useRentality();
+
+  const {
+    isLoading,
+    data: balance = 0,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: [REFERRAL_USER_BALANCE_QUERY_KEY, ethereumInfo?.walletAddress],
+    queryFn: async () => {
+      if (!rentalityContracts || !ethereumInfo) {
+        throw new Error("Contracts or wallet not initialized");
+      }
+      console.debug("Fetching user balance");
+
+      const result = await rentalityContracts.referralProgram.addressToPoints(ethereumInfo.walletAddress);
+
+      if (!result.ok) {
+        throw new Error(result.error.message);
+      }
+
+      return Number(result.value);
+    },
+    enabled: !!rentalityContracts && !!ethereumInfo?.walletAddress,
+  });
+
+  return { isLoading, balance, error, refetch } as const;
+}
+
+function useUserBalanceOld() {
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
 
@@ -22,6 +56,7 @@ const useUserBalance = () => {
       setUpdateRequired(false);
 
       try {
+        console.debug("fetchTotalPoints call");
         const result = await rentalityContracts.referralProgram.addressToPoints(ethereumInfo.walletAddress);
         if (result.ok) {
           setPoints(Number(result.value));
@@ -41,6 +76,6 @@ const useUserBalance = () => {
     points,
     updateData,
   } as const;
-};
+}
 
 export default useUserBalance;
