@@ -151,6 +151,9 @@ export interface IRentalityGatewayContract extends IEthersContract {
   //PROMO functions
   checkPromo(code: string, startDateTime: bigint, endDateTime: bigint): Promise<ContractCheckPromoDTO>;
 
+  // DIMO functions
+  saveDimoTokenIds(dimoTokenIds: bigint[], rentalityCarIds: bigint[]): Promise<ContractTransactionResponse>;
+
   /// GENERAL functions
   address: string;
   owner(): Promise<string>;

@@ -50,7 +50,7 @@ export default function TripInfo() {
               {hasTripPhotosFeatureFlag && (<TripPhotos tripId={tripInfo.tripId}/>)}
             </div>
             <div className="w-full xl:w-1/3">
-              <TripReceipt tripId={tripId} tripInfo={tripInfo} userMode={userMode} />
+              <TripReceipt tripId={tripId} tripInfo={tripInfo} userMode={userMode}/>
             </div>
           </div>
           <div className="mb-8 mt-4 flex flex-row justify-center gap-4">

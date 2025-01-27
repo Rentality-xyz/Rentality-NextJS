@@ -14,6 +14,7 @@ import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton"
 import useFeatureFlags from "@/hooks/useFeatureFlags";
 import useUserMode, { isHost } from "@/hooks/useUserMode";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import useDIMOCarData from "@/features/dimo/hooks/useDIMOCarData";
 
 interface ChangeStatusHostConfirmedFormProps {
   tripInfo: TripInfo;
@@ -24,17 +25,25 @@ interface ChangeStatusHostConfirmedFormProps {
 
 const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHostConfirmedFormProps>(
   ({ tripInfo, changeStatusCallback, disableButton, t }, ref) => {
-    const { register, control, handleSubmit, formState } = useForm<ChangeStatusHostConfirmedFormValues>({
+    const { panelData, getCarPanelParams } = useDIMOCarData(tripInfo ? tripInfo.carId : 0);
+    const { register, control, handleSubmit, formState, setValue } = useForm<ChangeStatusHostConfirmedFormValues>({
       defaultValues: {},
       resolver: zodResolver(changeStatusHostConfirmedFormSchema),
     });
+    useEffect(() => {
+      if (panelData) {
+        setValue("fuelOrBatteryLevel", panelData.fuelOrBatteryLevel);
+        setValue("odotemer", panelData.odotemer);
+      }
+    }, [panelData]);
+
     const { errors, isSubmitting } = formState;
 
     const { userMode } = useUserMode();
     const carPhotosUploadButtonRef = useRef<any>(null);
 
     const { hasFeatureFlag } = useFeatureFlags();
-    const [ hasTripPhotosFeatureFlag, setHasTripPhotosFeatureFlag ] = useState<boolean>(false);
+    const [hasTripPhotosFeatureFlag, setHasTripPhotosFeatureFlag] = useState<boolean>(false);
 
     const { showDialog } = useRntDialogs();
 
@@ -42,27 +51,30 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
       hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
         setHasTripPhotosFeatureFlag(hasTripPhotosFeatureFlag);
       });
-    },[]);
+    }, []);
 
     async function onFormSubmit(formData: ChangeStatusHostConfirmedFormValues) {
+      let tripPhotosUrls: string[] = [];
 
-        let tripPhotosUrls: string[] = [];
-
-        if (hasTripPhotosFeatureFlag) {
-          tripPhotosUrls = await carPhotosUploadButtonRef.current.saveUploadedFiles();
-          if(tripPhotosUrls.length === 0){
-            showDialog(t("common.photos_required"));
-            return;
-          }
+      if (hasTripPhotosFeatureFlag) {
+        tripPhotosUrls = await carPhotosUploadButtonRef.current.saveUploadedFiles();
+        if (tripPhotosUrls.length === 0) {
+          showDialog(t("common.photos_required"));
+          return;
         }
-        changeStatusCallback(async () => {
-          return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), [
-              formData.fuelOrBatteryLevel.toString(),
-              formData.odotemer.toString(),
-              formData.insuranceCompanyName ?? "",
-              formData.insurancePolicyNumber ?? "",
-            ], tripPhotosUrls);
-        });
+      }
+      changeStatusCallback(async () => {
+        return tripInfo.allowedActions[0].action(
+          BigInt(tripInfo.tripId),
+          [
+            formData.fuelOrBatteryLevel.toString(),
+            formData.odotemer.toString(),
+            formData.insuranceCompanyName ?? "",
+            formData.insurancePolicyNumber ?? "",
+          ],
+          tripPhotosUrls
+        );
+      });
     }
 
     return (
@@ -85,24 +97,38 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
               <Controller
                 name="fuelOrBatteryLevel"
                 control={control}
-                render={({ field }) => (
-                  <RntFuelLevelSelect
-                    className="py-2"
-                    id="fuel_level"
-                    label="Fuel or battery level, %"
-                    value={field.value}
-                    onLevelChange={field.onChange}
-                    validationError={errors.fuelOrBatteryLevel?.message?.toString()}
-                  />
-                )}
+                render={({ field, fieldState }) =>
+                  panelData && panelData.fuelOrBatteryLevel !== 0 ? (
+                    <RntInput
+                      className="py-2"
+                      id="fuel_level"
+                      label="Fuel or battery level, %"
+                      value={panelData.fuelOrBatteryLevel}
+                      disabled
+                    />
+                  ) : (
+                    <RntFuelLevelSelect
+                      className="py-2"
+                      id="fuel_level"
+                      label="Fuel or battery level, %"
+                      value={field.value}
+                      onLevelChange={field.onChange}
+                      validationError={fieldState.error?.message}
+                    />
+                  )
+                }
               />
-              <RntInput
-                className="py-2"
-                id="Odometer"
-                label="Odometer"
-                {...register("odotemer", { valueAsNumber: true })}
-                validationError={errors.odotemer?.message?.toString()}
-              />
+              {panelData && panelData.odotemer !== 0 ? (
+                <RntInput className="py-2" id="Odometer" label="Odometer" value={panelData.odotemer} disabled />
+              ) : (
+                <RntInput
+                  className="py-2"
+                  id="Odometer"
+                  label="Odometer"
+                  {...register("odotemer", { valueAsNumber: true })}
+                  validationError={errors.odotemer?.message?.toString()}
+                />
+              )}
             </div>
             <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
               <RntInput
@@ -120,7 +146,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
                 validationError={errors.insurancePolicyNumber?.message?.toString()}
               />
             </div>
-            { hasTripPhotosFeatureFlag && (
+            {hasTripPhotosFeatureFlag && (
               <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
                 <CarPhotosUploadButton
                   ref={carPhotosUploadButtonRef}
@@ -131,7 +157,6 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
               </div>
             )}
           </div>
-
           <div className="flex flex-row gap-4">
             <RntButton type="submit" className="h-16 px-4 max-md:w-full" disabled={disableButton || isSubmitting}>
               Start

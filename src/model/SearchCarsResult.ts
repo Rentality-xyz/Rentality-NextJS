@@ -70,6 +70,7 @@ export type SearchCarInfo = {
   insurancePerDayPriceInUsd: number;
   isGuestHasInsurance: boolean;
   distanceToUser: number;
+  dimoTokenId: number;
 };
 
 export type SearchCarInfoDTO = Omit<SearchCarInfo, "engineType"> & { engineType: number };

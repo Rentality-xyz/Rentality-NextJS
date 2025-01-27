@@ -330,6 +330,7 @@ async function formatSearchAvailableCarsContractResponse(
         insurancePerDayPriceInUsd: Number(i.car.insuranceInfo.priceInUsdCents) / 100,
         isGuestHasInsurance: i.car.isGuestHasInsurance,
         distanceToUser: Number(i.distance),
+        dimoTokenId: Number(i.car.dimoTokenId ? i.car.dimoTokenId : 0),
       };
 
       return item;
