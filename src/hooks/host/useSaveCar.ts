@@ -114,6 +114,7 @@ const useSaveCar = () => {
         currentlyListed: dataToSave.currentlyListed,
         insuranceRequired: dataToSave.isGuestInsuranceRequired,
         insurancePriceInUsdCents: BigInt(dataToSave.insurancePerDayPriceInUsd * 100),
+        dimoTokenId: BigInt(dataToSave.dimoTokenId)
       };
 
       const result = await rentalityContracts.gatewayProxy.addCar(request);

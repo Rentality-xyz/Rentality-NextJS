@@ -825,5 +825,10 @@
     "promo_error": "Coupon cannot be used",
     "button_default_text": "Rent for {{days, number}} day(s) \n${{price, string}}",
     "button_promo_text": "Rent for ${{price, string}} after discount"
+  },
+  "dimo": {
+    "token_id": "Token ID:",
+    "create_car": "Create car on Rentality",
+    "sync_with_dimo": "Sync with DIMO"
   }
 }

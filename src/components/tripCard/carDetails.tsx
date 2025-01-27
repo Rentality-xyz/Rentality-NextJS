@@ -1,12 +1,14 @@
 import { dateFormatShortMonthDate } from "@/utils/datetimeFormatters";
 import { TripInfo } from "@/model/TripInfo";
 import UserAvatarWithName from "@/components/common/userAvatarWithName";
-import { memo } from "react";
+import React, { memo } from "react";
 import { TripStatus } from "@/model/blockchain/schemas";
 import { TFunction } from "@/utils/i18n";
 import RntButtonTransparent from "../common/rntButtonTransparent";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import CarDetailsVerificationDialog from "./CarDetailsVerificationDialog";
+import Image from "next/image";
+import imgDimoSynced from "@/images/img_dimo_synced.svg";
 
 function CarDetails({
   tripInfo,
@@ -52,8 +54,13 @@ function CarDetails({
   return (
     <div id="trip-main-info" className="flex w-full flex-col justify-between gap-4">
       <div className="flex flex-col">
-        <div>
+        <div className="grid-cols-[2fr_1fr] items-center justify-between max-xl:grid">
           <strong className="text-xl">{`${tripInfo.brand} ${tripInfo.model} ${tripInfo.year}`}</strong>
+          {tripInfo.dimoTokenId !== 0 && (
+            <div className="xl:hidden">
+              <Image src={imgDimoSynced} alt="" className="w-[140px]" />
+            </div>
+          )}
         </div>
         <div>{tripInfo.licensePlate}</div>
         {tripInfo.status === TripStatus.Rejected && tripInfo.rejectedDate !== undefined ? (
@@ -71,6 +78,11 @@ function CarDetails({
           <div>${tripInfo.totalDayPriceInUsd}</div>
         </div>
       </div>
+      {tripInfo.dimoTokenId !== 0 && (
+        <div className="max-xl:hidden">
+          <Image src={imgDimoSynced} alt="" className="w-[160px]" />
+        </div>
+      )}
       <div className="flex flex-row justify-between">
         <UserAvatarWithName
           photoUrl={otherUserPhotoUrl}

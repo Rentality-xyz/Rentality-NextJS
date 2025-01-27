@@ -23,6 +23,7 @@ const insuranceFormSchema = z
       isGuestInsuranceRequired: z.literal(false),
       insurancePerDayPriceInUsd: z
         .number({
+          required_error: "Value is required",
           invalid_type_error: "value must be a number",
         })
         .optional(),
@@ -138,6 +139,12 @@ const defaultCarEditFormSchema = z
       .min(1, "Price is too small")
       .max(10_000, "Price is too big")
       .step(0.01, "only 2 decimals are allowed"),
+      dimoTokenId: z
+      .number({
+        required_error: "DIMO token ID is required",
+        invalid_type_error: "DIMO token ID must be a number",
+      }),
+
     securityDeposit: z
       .number({
         required_error: "Deposit is required",
@@ -155,6 +162,7 @@ const defaultCarEditFormSchema = z
     currentlyListed: z.boolean().default(true),
   })
   .and(insuranceFormSchema);
+
 
 const petrolCarSchema = z.object({
   engineTypeText: z.literal(ENGINE_TYPE_PETROL_STRING),

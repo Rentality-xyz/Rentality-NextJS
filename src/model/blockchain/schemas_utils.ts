@@ -64,6 +64,7 @@ const emptyContractCarDetails: ContractCarDetails = {
   locationInfo: emptyContractLocationInfo,
   carVinNumber: "",
   carMetadataURI: "",
+  dimoTokenId: BigInt(0)
 };
 
 export function validateContractCarDetails(obj: ContractCarDetails): obj is ContractCarDetails {
@@ -101,6 +102,7 @@ export function validateContractCarInfoDTO(obj: ContractCarInfoDTO): obj is Cont
     carInfo: emptyContractCarInfo,
     metadataURI: "",
     isEditable: false,
+    dimoTokenId: 0
   };
 
   return validateType(obj, emptyContractCarInfoDTO) && validateType(obj.carInfo, emptyContractCarInfo);
@@ -214,6 +216,7 @@ const emptyContractSearchCar: ContractSearchCar = {
   locationInfo: emptyContractLocationInfo,
   insuranceInfo: emptyContractInsuranceCarInfo,
   isGuestHasInsurance: false,
+  dimoTokenId: BigInt(0)
 };
 
 export function validateContractSearchCar(obj: ContractSearchCar): obj is ContractSearchCar {
@@ -320,6 +323,7 @@ const emptyContractTripDTO: ContractTripDTO = {
   paidForInsuranceInUsdCents: BigInt(0),
   guestDrivingLicenseIssueCountry: "",
   promoDiscount: BigInt(0),
+  dimoTokenId: BigInt(0)
 };
 
 export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {
@@ -441,6 +445,7 @@ const emptyContractAvailableCarDTO: ContractAvailableCarDTO = {
   governmentTax: BigInt(0),
   isGuestHasInsurance: false,
   distance: BigInt(0),
+  dimoTokenId: BigInt(0)
 };
 
 export function validateContractAvailableCarDTO(obj: ContractAvailableCarDTO): obj is ContractAvailableCarDTO {

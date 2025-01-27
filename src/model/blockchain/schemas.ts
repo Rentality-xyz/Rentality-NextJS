@@ -35,6 +35,7 @@ export type ContractCarInfoDTO = {
   carInfo: ContractCarInfo;
   metadataURI: string;
   isEditable: boolean;
+  dimoTokenId: number;
 };
 
 export type ContractCreateCarRequest = {
@@ -54,6 +55,7 @@ export type ContractCreateCarRequest = {
   currentlyListed: boolean;
   insuranceRequired: boolean;
   insurancePriceInUsdCents: bigint;
+  dimoTokenId: bigint;
 };
 
 export type ContractUpdateCarInfoRequest = {
@@ -163,6 +165,7 @@ export type ContractTripDTO = {
   paidForInsuranceInUsdCents: bigint;
   guestDrivingLicenseIssueCountry: string;
   promoDiscount: bigint;
+  dimoTokenId: bigint;
 };
 
 export type ContractChatInfo = {
@@ -357,6 +360,7 @@ export type ContractSearchCar = {
   locationInfo: ContractLocationInfo;
   insuranceInfo: ContractInsuranceCarInfo;
   isGuestHasInsurance: boolean;
+  dimoTokenId: bigint;
 };
 
 export type ContractAvailableCarDTO = {
@@ -389,6 +393,7 @@ export type ContractAvailableCarDTO = {
   governmentTax: bigint;
   distance: bigint;
   isGuestHasInsurance: boolean;
+  dimoTokenId: bigint;
 };
 
 export type ContractGeoData = {
@@ -419,6 +424,7 @@ export type ContractCarDetails = {
   locationInfo: ContractLocationInfo;
   carVinNumber: string;
   carMetadataURI: string;
+  dimoTokenId: bigint;
 };
 
 export type ContractFloridaTaxes = {
