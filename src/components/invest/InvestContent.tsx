@@ -113,8 +113,8 @@ export default function InvestContent({ isHost }: InvestContentProps) {
         <div className="w-full rounded-t-xl bg-blue-600 py-1 pl-4">
           Available to Invest | Waiting for full tokenization
         </div>
-        <div className="grid w-full grid-cols-4 gap-2">
-          <div className="bg-[url('../images/car_loading.png')] bg-cover bg-center bg-no-repeat p-2"></div>
+        <div className="grid w-full grid-cols-[2fr_1.5fr_1fr_1fr] gap-2">
+          <div className="rounded-bl-xl bg-[url('../images/car_tesla.png')] bg-cover bg-center bg-no-repeat p-2"></div>
           <div className="relative p-2">
             <p className="font-bold 2xl:text-xl">BMW 330i 2023</p>
             <p className="font-medium text-[#FFFFFF70]">Miami, Florida, US</p>
