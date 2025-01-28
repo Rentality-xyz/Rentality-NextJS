@@ -1,4 +1,3 @@
-// TODO translate
 import PageTitle from "@/components/pageTitle/pageTitle";
 import { useTranslation } from "react-i18next";
 import React from "react";
