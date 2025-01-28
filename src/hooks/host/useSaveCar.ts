@@ -213,7 +213,7 @@ const useSaveCar = () => {
   return { dataSaved, addNewCar, updateCar } as const;
 };
 
-async function saveCarImages(carImages: PlatformCarImage[], ethereumInfo: EthereumInfo): Promise<UploadedCarImage[]> {
+export async function saveCarImages(carImages: PlatformCarImage[], ethereumInfo: EthereumInfo): Promise<UploadedCarImage[]> {
   const savedImages: UploadedCarImage[] = [];
 
   if (carImages.length > 0) {
