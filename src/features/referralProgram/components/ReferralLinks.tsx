@@ -4,12 +4,12 @@ import imgCopy from "@/images/ic_copy_white_24dp.svg";
 import Image from "next/image";
 import RntButton from "@/components/common/rntButton";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
-import useReferralProgram from "@/features/referralProgram/hooks/useReferralProgram";
 import { copyToClipboard } from "@/utils/clipboard";
 import { isEmpty } from "@/utils/string";
+import useReferralLinks from "../hooks/useReferralLinks";
 
 export default function ReferralLinks() {
-  const { inviteHash, usedInviteHash } = useReferralProgram();
+  const { inviteHash, usedInviteHash } = useReferralLinks();
   const { t } = useTranslation();
 
   const inviteLink = !isEmpty(inviteHash)
