@@ -2,6 +2,8 @@ import RntSelect from "./rntSelect";
 import { RntSelectProps } from "./rntSelect";
 import React, { useEffect, useState } from "react";
 import useCarAPI, { CarMakesListElement } from "@/hooks/useCarAPI";
+import RntFilterSelect from "@/components/common/rntFilterSelect";
+import RntOption from "@/components/common/rntOption";
 
 interface RntCarMakeSelectProps extends RntSelectProps {
   id: string;
@@ -38,7 +40,7 @@ export default function RntCarMakeSelect({
   const isReadOnly = readOnly || makesList.length <= 0;
 
   return (
-    <RntSelect
+    <RntFilterSelect
       isTransparentStyle={true}
       id={id}
       style={
@@ -53,20 +55,21 @@ export default function RntCarMakeSelect({
       value={value}
       validationError={validationError}
       readOnly={isReadOnly}
-      onChange={function (e) {
-        const newValue: string = e.target.value;
-        const newID: string = e.target.options[e.target.selectedIndex].getAttribute("data-id") || "";
-        if (onMakeSelect) onMakeSelect(newID, newValue);
-      }}
+      placeholder={promptText}
     >
-      <option value="" hidden>
-        {promptText}
-      </option>
       {makesList.map((carMakesListElement, index) => (
-        <option key={"car-make-" + index} data-id={carMakesListElement.id} value={carMakesListElement.name}>
+        <RntOption
+          key={"car-make-" + index}
+          data-id={carMakesListElement.id}
+          value={carMakesListElement.name}
+          isSelected={carMakesListElement.name === value}
+          onClick={() => {
+            if (onMakeSelect) onMakeSelect(carMakesListElement.id, carMakesListElement.name);
+          }}
+        >
           {carMakesListElement.name}
-        </option>
+        </RntOption>
       ))}
-    </RntSelect>
+    </RntFilterSelect>
   );
 }
