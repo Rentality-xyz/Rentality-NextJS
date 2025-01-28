@@ -1,52 +1,21 @@
 // TODO translate
 import { useTranslation } from "react-i18next";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
 import RntButton from "@/components/common/rntButton";
 import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "../../../components/common/rntSuspense";
-import useReferralProgram from "@/features/referralProgram/hooks/useReferralProgram";
-import useClaimMyPoints from "@/features/referralProgram/hooks/useClaimMyPoints";
 import ReferralProgramStatusCard from "@/features/referralProgram/components/ReferralProgramStatusCard";
-import { AllOwnPointsInfo } from "../models";
-import { getAllPoints } from "../utils";
+import useOwnReferralPoints from "../hooks/useOwnReferralPoints";
 
 export default function OwnReferralPoints() {
-  const {
-    getReadyToClaim,
-    getReferralPointsInfo,
-    getPointsHistory,
-    isLoading: isLoadingInviteLink,
-  } = useReferralProgram();
-  const { isLoading: isLoadingMyPoints, readyToClaim, claimMyPoints } = useClaimMyPoints();
-  const [isLoading, setIsLoading] = useState(true);
-  const [allPoints, setAllPoints] = useState<AllOwnPointsInfo | null>(null);
+  const { isLoading, isPending, readyToClaim, allPoints, claimMyPoints } = useOwnReferralPoints();
   const { t } = useTranslation();
 
   async function handleClaimPointsClick() {
     await claimMyPoints();
   }
-
-  useEffect(() => {
-    const savePoints = async () => {
-      const readyToClaim = await getReadyToClaim();
-      const pointsInfo = await getReferralPointsInfo();
-      const pointsHistory = await getPointsHistory();
-
-      if (readyToClaim && pointsHistory && pointsInfo) {
-        const result = getAllPoints(readyToClaim, pointsHistory, pointsInfo, t);
-        if (result.ok) {
-          setAllPoints(result.value);
-          setIsLoading(false);
-        }
-      }
-    };
-
-    if (!isLoadingInviteLink) {
-      savePoints();
-    }
-  }, [isLoadingInviteLink, readyToClaim, getReadyToClaim, getReferralPointsInfo, getPointsHistory, t]);
 
   return (
     <div id="referrals-and-points-own-points" className="rounded-lg bg-rentality-bg-left-sidebar p-3">
@@ -61,7 +30,7 @@ export default function OwnReferralPoints() {
         >
           <Image src={icStarPointsYellow} alt="" className="mr-2 h-7 w-7" />
           <div className="ml-0.5 flex">
-            {isLoadingMyPoints ? (
+            {isPending ? (
               <>Loading...</>
             ) : (
               <>

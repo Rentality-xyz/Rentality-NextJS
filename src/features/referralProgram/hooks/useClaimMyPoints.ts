@@ -23,39 +23,33 @@ function useClaimMyPointsContractActions() {
   const { rentalityContracts } = useRentality();
 
   const fetchReadyToClaim = useCallback(async (): Promise<Result<number, Error>> => {
-    if (!rentalityContracts) {
-      console.error("fetchReadyToClaim error: rentalityContract is null");
-      return Err(new Error("rentalityContract is null"));
-    }
-    if (!ethereumInfo) {
-      console.error("fetchReadyToClaim error: ethereum info is null");
-      return Err(new Error("ethereum is null"));
-    }
+    try {
+      if (!rentalityContracts || !ethereumInfo) {
+        return Err(new Error("Missing required contracts or ethereum info"));
+      }
 
-    const result = await rentalityContracts.referralProgram.getReadyToClaim(ethereumInfo.walletAddress);
+      const result = await rentalityContracts.referralProgram.getReadyToClaim(ethereumInfo.walletAddress);
 
-    if (result.ok) {
-      return Ok(Number(result.value.totalPoints));
-    } else {
-      return Err(new Error("fetch error:" + result.error));
+      return result.ok ? Ok(Number(result.value.totalPoints)) : Err(new Error(`Fetch error: ${result.error}`));
+    } catch (error) {
+      console.error("fetchReadyToClaim error: ", error);
+      return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
     }
-  }, [ethereumInfo, rentalityContracts]);
+  }, [rentalityContracts, ethereumInfo]);
 
   const claimMyPoints = useCallback(async (): Promise<Result<boolean, Error>> => {
-    if (!rentalityContracts) {
-      console.error("claimMyPoints error: rentalityContract is null");
-      return Err(new Error("contract is null"));
-    }
-    if (!ethereumInfo) {
-      console.error("claimMyPoints error: ethereum info is null");
-      return Err(new Error("ethereum info is null"));
-    }
+    try {
+      if (!rentalityContracts || !ethereumInfo) {
+        console.error("claimMyPoints error: Missing required contracts or ethereum info");
+        return Err(new Error("Missing required contracts or ethereum info"));
+      }
 
-    const result = await rentalityContracts.referralProgram.claimPoints(ethereumInfo.walletAddress);
-    if (result.ok) {
-      return result;
-    } else {
-      return Err(new Error("claimMyPoints error: " + result.error));
+      const result = await rentalityContracts.referralProgram.claimPoints(ethereumInfo.walletAddress);
+
+      return result.ok ? result : Err(new Error("claimMyPoints error: " + result.error));
+    } catch (error) {
+      console.error("claimMyPoints error: ", error);
+      return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
     }
   }, [ethereumInfo, rentalityContracts]);
 

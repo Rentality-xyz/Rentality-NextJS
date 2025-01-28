@@ -2,7 +2,7 @@ import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import { TripInfo } from "@/model/TripInfo";
 import RntButton from "../common/rntButton";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
-import { Dispatch, SetStateAction, memo, useState } from "react";
+import { Dispatch, SetStateAction, memo, useState, useRef } from "react";
 import moment from "moment";
 import { TripStatus } from "@/model/blockchain/schemas";
 import { TFunction } from "i18next";
@@ -147,6 +147,7 @@ function CurrentStatusInfo({
   const handleHostFinishTrip = async (messageToGuest: string) => {
     hideDialogs();
     setMessageToGuest(messageToGuest);
+
     if (tripInfo.allowedActions.length > 0) {
       tripInfo.allowedActions[0].isDisplay = true;
       const savedAction = tripInfo.allowedActions[0].action;
@@ -154,9 +155,10 @@ function CurrentStatusInfo({
         const messageToSend = `Host finished the trip without guest confirmation.\n${messageToGuest}\nPlease confirm finish trip or contact me if you have any questions.`;
         await sendMessage(tripInfo.guest.walletAddress, tripInfo.tripId, messageToSend);
       };
+
       tripInfo.allowedActions[0].action = async (tripId: bigint, params: string[]) => {
         await sendMessageToGuest();
-        return savedAction(tripId, params);
+        return savedAction(tripId, params, []);
       };
     }
     setIsFinishingByHost(true);
@@ -165,8 +167,12 @@ function CurrentStatusInfo({
 
   const handleGuestFinishTrip = async () => {
     hideDialogs();
+
     changeStatusCallback(() => {
-      return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), []);
+      return tripInfo.allowedActions[0].action(
+        BigInt(tripInfo.tripId),
+        [],
+        []);
     });
   };
 
@@ -181,6 +187,7 @@ function CurrentStatusInfo({
         handleCancel={handleCancel}
         guestPhoneNumber={tripInfo.guest.phoneNumber}
         t={t}
+        tripId={tripInfo.tripId}
       />
     );
   };
@@ -197,6 +204,7 @@ function CurrentStatusInfo({
             ?.message?.split("\n")[1] ?? ""
         }
         t={t}
+        tripId={tripInfo.tripId}
       />
     );
   };
@@ -247,8 +255,13 @@ function CurrentStatusInfo({
                     disabled={disableButton}
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
+
                         changeStatusCallback(() => {
-                          return action.action(BigInt(tripInfo.tripId), []);
+                          return action.action(
+                            BigInt(tripInfo.tripId),
+                            [],
+                            []
+                          );
                         });
                       } else {
                         setIsAdditionalActionHidden(false);
@@ -264,8 +277,13 @@ function CurrentStatusInfo({
                     disabled={disableButton}
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
+
                         changeStatusCallback(() => {
-                          return action.action(BigInt(tripInfo.tripId), []);
+                          return action.action(
+                            BigInt(tripInfo.tripId),
+                            [],
+                            []
+                          );
                         });
                       } else {
                         setIsAdditionalActionHidden(false);

@@ -54,7 +54,7 @@ const useHostTrips = () => {
       }
     };
 
-    const checkInTrip = async (tripId: bigint, params: string[]) => {
+    const checkInTrip = async (tripId: bigint, params: string[], tripPhotosUrls: string[]) => {
       if (!rentalityContracts) {
         console.error("checkInTrip error: rentalityContract is null");
         return false;
@@ -67,11 +67,11 @@ const useHostTrips = () => {
         const insuranceNumber = params[3];
 
         const transaction = await rentalityContracts.gateway.checkInByHost(
-          tripId,
-          [startFuelLevelInPercents, startOdometr],
-          insuranceCompany,
-          insuranceNumber
-        );
+            tripId,
+            [startFuelLevelInPercents, startOdometr],
+            insuranceCompany,
+            insuranceNumber
+          );
         await transaction.wait();
         return true;
       } catch (e) {
@@ -80,7 +80,7 @@ const useHostTrips = () => {
       }
     };
 
-    const checkOutTrip = async (tripId: bigint, params: string[]) => {
+    const checkOutTrip = async (tripId: bigint, params: string[], tripPhotosUrls: string[]) => {
       if (!rentalityContracts) {
         console.error("checkOutTrip error: rentalityContract is null");
         return false;
@@ -90,10 +90,11 @@ const useHostTrips = () => {
         const endFuelLevelInPercents = BigInt(Number(params[0]) * 100);
         const endOdometr = BigInt(params[1]);
 
-        const transaction = await rentalityContracts.gateway.checkOutByHost(tripId, [
-          endFuelLevelInPercents,
-          endOdometr,
-        ]);
+        const transaction = await rentalityContracts.gateway.checkOutByHost(
+          tripId,
+          [endFuelLevelInPercents, endOdometr]
+        );
+
         await transaction.wait();
         return true;
       } catch (e) {
