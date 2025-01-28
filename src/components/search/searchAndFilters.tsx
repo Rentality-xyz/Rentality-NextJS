@@ -30,6 +30,8 @@ import { FilterLimits } from "@/model/SearchCarsResult";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 import bgInput from "@/images/bg_input.png";
 import { PlaceDetails } from "../common/rntPlaceAutocompleteInput";
+import RntOption from "@/components/common/rntOption";
+import RntFilterSelect from "@/components/common/rntFilterSelect";
 
 export default function SearchAndFilters({
   initValue,
@@ -317,7 +319,7 @@ export default function SearchAndFilters({
           <RntCarModelSelect
             id={t_comp("select_filter_model")}
             className="text-lg"
-            selectClassName="cursor-pointer "
+            selectClassName="cursor-pointer"
             promptText={t_comp("select_filter_model")}
             label=""
             value={searchCarFilters?.model ?? ""}
@@ -382,28 +384,24 @@ export default function SearchAndFilters({
           </RntButton>
 
           <div className="select-container">
-            <RntSelect
+            <RntFilterSelect
               className="w-40 text-lg"
-              selectClassName="buttonGradient text-white text-center custom-select px-4 border-0 cursor-pointer"
+              selectClassName="bg-rnt-button-gradient text-white text-center custom-select px-4 border-0 cursor-pointer"
               id="sort"
               readOnly={false}
+              placeholder={t_comp("sort_by")}
               value={sortBy ? sortOption[sortBy] : ""}
-              onChange={(e) => {
-                const newDataKey = e.target.options[e.target.selectedIndex].getAttribute("data-key") || "";
-                if (isSortOptionKey(newDataKey)) {
-                  setSortBy(newDataKey);
-                }
-              }}
             >
-              <option className="hidden" value="" disabled>
-                {t_comp("sort_by")}
-              </option>
               {Object.entries(sortOption ?? {}).map(([key, value]) => (
-                <option key={key} value={value} data-key={key}>
+                <RntOption key={key} value={value} isSelected={sortBy === key} onClick={() => {
+                  if (isSortOptionKey(key)) {
+                    setSortBy(key);
+                  }
+                }}>
                   {value}
-                </option>
+                </RntOption>
               ))}
-            </RntSelect>
+            </RntFilterSelect>
             <span className="custom-arrow bg-[url('../images/arrows/arrowDownWhite.svg')]"></span>
           </div>
         </div>

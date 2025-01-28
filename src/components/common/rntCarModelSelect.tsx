@@ -2,6 +2,8 @@ import RntSelect from "./rntSelect";
 import { RntSelectProps } from "./rntSelect";
 import React, { useEffect, useState } from "react";
 import useCarAPI, { CarModelsListElement } from "@/hooks/useCarAPI";
+import RntFilterSelect from "@/components/common/rntFilterSelect";
+import RntOption from "@/components/common/rntOption";
 
 interface RntCarModelSelectProps extends RntSelectProps {
   id: string;
@@ -44,7 +46,7 @@ export default function RntCarModelSelect({
   const isReadOnly = readOnly || modelsList.length <= 0;
 
   return (
-    <RntSelect
+    <RntFilterSelect
       isTransparentStyle={true}
       id={id}
       style={
@@ -59,20 +61,21 @@ export default function RntCarModelSelect({
       value={value}
       validationError={validationError}
       readOnly={isReadOnly}
-      onChange={function (e) {
-        const newValue = e.target.value;
-        const newID: string = e.target.options[e.target.selectedIndex].getAttribute("data-id") || "";
-        if (onModelSelect) onModelSelect(newID, newValue);
-      }}
+      placeholder={promptText}
     >
-      <option value="" hidden>
-        {promptText}
-      </option>
       {modelsList.map((carModelsListElement, index) => (
-        <option key={"car-model-" + index} data-id={carModelsListElement.id} value={carModelsListElement.name}>
+        <RntOption
+          key={"car-model-" + index}
+          data-id={carModelsListElement.id}
+          value={carModelsListElement.name}
+          isSelected={carModelsListElement.name === value}
+          onClick={() => {
+            if (onModelSelect) onModelSelect(carModelsListElement.id, carModelsListElement.name);
+          }}
+        >
           {carModelsListElement.name}
-        </option>
+        </RntOption>
       ))}
-    </RntSelect>
+    </RntFilterSelect>
   );
 }
