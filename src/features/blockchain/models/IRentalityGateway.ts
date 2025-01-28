@@ -162,6 +162,11 @@ export interface IRentalityGatewayContract extends IEthersContract {
   isCarDetailsConfirmed(carId: bigint): Promise<boolean>;
   confirmCarDetails(carId: bigint): Promise<ContractTransactionResponse>;
 
+  // dimo
+   // DIMO functions
+   saveDimoTokenIds(dimoTokenIds: bigint[], rentalityCarIds: bigint[]): Promise<ContractTransactionResponse>;
+
+
   //not using
   updateServiceAddresses(): Promise<ContractTransactionResponse>;
   getAllCars(): Promise<ContractCarInfo[]>;

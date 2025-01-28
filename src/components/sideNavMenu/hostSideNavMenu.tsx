@@ -56,6 +56,7 @@ function HostNavMenu() {
           icon={MenuIcons.Booked}
           notificationCount={bookedNotificationCount}
         />
+          <SideNavMenuItem text={"Create invest"} href="/host/create_invest" icon={MenuIcons.CreateInvest} />
         <SideNavMenuItem
           text={t_nav("history")}
           href="/host/trips/history"
