@@ -69,7 +69,6 @@ function GuestNavMenu() {
           icon={MenuIcons.Messages}
           notificationCount={messagesNotificationCount}
         />
-          <SideNavMenuItem text={"Invest"} href="/guest/invest" icon={MenuIcons.Invest} />
         <SideNavMenuItem
           text={t_nav("notifications")}
           href="/guest/notifications"
