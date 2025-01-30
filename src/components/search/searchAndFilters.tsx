@@ -2,7 +2,6 @@ import { isEmpty } from "@/utils/string";
 import RntButton from "../common/rntButton";
 import RntInput from "../common/rntInput";
 import RntPlaceAutoComplete from "../common/rntPlaceAutocomplete";
-import RntSelect from "../common/rntSelect";
 import { TFunction as TFunctionNext } from "i18next";
 import { useEffect, useRef, useState } from "react";
 import { ParseLocationResponse } from "@/pages/api/parseLocation";
@@ -29,9 +28,7 @@ import { nameof } from "@/utils/nameof";
 import { FilterLimits } from "@/model/SearchCarsResult";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 import bgInput from "@/images/bg_input.png";
-import { PlaceDetails } from "../common/rntPlaceAutocompleteInput";
-import RntOption from "@/components/common/rntOption";
-import RntFilterSelect from "@/components/common/rntFilterSelect";
+import RntFilterSelect from "../common/RntFilterSelect";
 
 export default function SearchAndFilters({
   initValue,
@@ -300,10 +297,9 @@ export default function SearchAndFilters({
         <div className="min-w-48">
           <RntCarMakeSelect
             id={t_comp("select_filter_make")}
-            className="text-lg"
-            selectClassName="cursor-pointer mr-4"
+            isTransparentStyle={true}
+            className="min-w-[17ch] justify-center bg-transparent pl-0 text-lg text-rentality-secondary"
             promptText={t_comp("select_filter_make")}
-            label=""
             value={searchCarFilters?.brand ?? ""}
             onMakeSelect={(newID, newMake) => {
               setSelectedMakeID(newID);
@@ -318,10 +314,9 @@ export default function SearchAndFilters({
         <div className="">
           <RntCarModelSelect
             id={t_comp("select_filter_model")}
-            className="text-lg"
-            selectClassName="cursor-pointer"
+            isTransparentStyle={true}
+            className="min-w-[15ch] justify-center bg-transparent pl-0 text-lg text-rentality-secondary"
             promptText={t_comp("select_filter_model")}
-            label=""
             value={searchCarFilters?.model ?? ""}
             make_id={selectedMakeID}
             onModelSelect={(newID, newModel) => {
@@ -382,28 +377,23 @@ export default function SearchAndFilters({
           <RntButton className="w-40" onClick={handleResetClick}>
             {t_comp("button_reset_filters")}
           </RntButton>
-
-          <div className="select-container">
-            <RntFilterSelect
-              className="w-40 text-lg"
-              selectClassName="bg-rnt-button-gradient text-white text-center custom-select px-4 border-0 cursor-pointer"
-              id="sort"
-              readOnly={false}
-              placeholder={t_comp("sort_by")}
-              value={sortBy ? sortOption[sortBy] : ""}
-            >
-              {Object.entries(sortOption ?? {}).map(([key, value]) => (
-                <RntOption key={key} value={value} isSelected={sortBy === key} onClick={() => {
-                  if (isSortOptionKey(key)) {
-                    setSortBy(key);
-                  }
-                }}>
-                  {value}
-                </RntOption>
-              ))}
-            </RntFilterSelect>
-            <span className="custom-arrow bg-[url('../images/arrows/arrowDownWhite.svg')]"></span>
-          </div>
+          <RntFilterSelect
+            className="bg-rnt-button-gradient w-52 justify-center border-0 text-lg text-white"
+            //selectClassName="   custom-select px-4  cursor-pointer"
+            id="sort"
+            placeholder={t_comp("sort_by")}
+            value={sortBy ? sortOption[sortBy] : ""}
+            onChange={(e) => {
+              const newDataKey = Object.entries(sortOption ?? {})[e.target.selectedIndex]?.[0];
+              if (isSortOptionKey(newDataKey)) {
+                setSortBy(newDataKey);
+              }
+            }}
+          >
+            {Object.entries(sortOption ?? {}).map(([key, value]) => (
+              <RntFilterSelect.Option key={key} value={value} />
+            ))}
+          </RntFilterSelect>
         </div>
 
         <RntButtonTransparent className="w-48" onClick={handleClickOpenDeliveryLocation}>
