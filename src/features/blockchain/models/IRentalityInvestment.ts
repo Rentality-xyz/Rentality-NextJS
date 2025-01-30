@@ -24,6 +24,5 @@ export interface IRentalityInvestmentContract extends IEthersContract {
         creatorPercents: bigint;
       },
       name_: string,
-      symbol_: string
     ): Promise<ContractTransactionResponse>;
   }

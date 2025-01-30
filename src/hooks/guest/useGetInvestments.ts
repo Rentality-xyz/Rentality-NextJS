@@ -64,7 +64,6 @@ const useGetInvestments = () => {
   }
     initialize();
   }, [ethereumInfo, rentalityContracts]);
-
   return { isLoading, investments, updateData, handleInvest, address, handleStartHosting, handleClaimIncome } as const;
 }
 export default useGetInvestments;
