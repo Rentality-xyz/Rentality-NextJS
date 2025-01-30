@@ -858,6 +858,14 @@ export type InvestmentDTO = {
   isCarBought: boolean;
   income: BigInt;
   myIncome: BigInt;
+  myInvestingSum: BigInt;
+  listingDate: BigInt;
+  myTokens: BigInt;
+  myPart: BigInt;
+  totalHolders: BigInt;
+  totalTokens: BigInt;
+
+
 };
 export type InvestmentWithMetadata = {
   investment: InvestmentDTO;
