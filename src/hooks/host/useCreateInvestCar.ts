@@ -123,7 +123,7 @@ const useCreateInvestCar = () => {
         inProgress: true,
       };
 
-      await rentalityContracts.investment.createCarInvestment(createInvestRequest, nftName, nftSym);
+      await rentalityContracts.investment.createCarInvestment(createInvestRequest, nftName);
       return Ok(true);
     } catch (e) {
       console.error("Upload error" + e);
