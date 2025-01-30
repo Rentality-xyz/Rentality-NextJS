@@ -28,7 +28,6 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
     {
       children,
       className,
-      // selectClassName,
       containerClassName,
       labelClassName,
       label,
@@ -38,7 +37,6 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
       id,
       placeholder,
       value,
-      onChange,
       ...rest
     },
     ref
@@ -46,7 +44,7 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
     const containerCn = cn("relative flex flex-col text-black", containerClassName);
     const labelCn = cn("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
     const selectCn = cn(
-      `relative flex flex-row h-12 w-full cursor-pointer items-center rounded-full border-2 border-gray-500 bg-white pl-4 pr-8`,
+      `relative flex flex-row h-12 w-full cursor-pointer items-center rounded-full border-2 border-gray-500 bg-white pl-4 pr-8 ${disabled ? "bg-gray-300" : ""}`,
       className,
       !disabled ? "active:scale-95 active:opacity-75" : "border-2 border-gray-500 text-gray-500 cursor-not-allowed"
     );
@@ -86,7 +84,6 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
 
     useEffect(() => {
       if (!hiddenSelectRef.current) return;
-      console.log("selected changed:", selected);
       hiddenSelectRef.current.value = selected ?? "";
       hiddenSelectRef.current.dispatchEvent(new Event("change", { bubbles: true }));
     }, [selected]);
@@ -95,16 +92,7 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
       <RntFilterSelectContext.Provider value={{ selected, setSelected, isOpen, setIsOpen, containerRef: selectRef }}>
         <div className={containerCn} ref={containerRef}>
           {/* hidden select element */}
-          <select
-            value={selected ?? ""}
-            ref={hiddenSelectRef}
-            hidden
-            {...rest}
-            onChange={(e) => {
-              console.log("inner select onChanged, value: ", e.target.value);
-              onChange?.(e);
-            }}
-          >
+          <select value={selected ?? ""} ref={hiddenSelectRef} hidden {...rest}>
             {React.Children.map(children, (child) =>
               React.isValidElement(child) ? (
                 <option value={child.props.value} key={child.props.key}>
