@@ -31,7 +31,7 @@ export default function InvestCar({
   const [investmentAmount, setInvestmentAmount] = useState(0);
 
   const handleChangeInvestmentAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputInvestmentAmount = e.target.value.replace(/\D/g, ""); // Удаляем всё, кроме цифр
+    const inputInvestmentAmount = e.target.value.replace(/\D/g, "0"); // Удаляем всё, кроме цифр
     setInvestmentAmount(Number.parseInt(inputInvestmentAmount));
   };
 
@@ -39,8 +39,6 @@ export default function InvestCar({
     (Number.parseInt(searchInfo.investment.investment.priceInUsd.toString()) -
       Number.parseInt(searchInfo.investment.payedInUsd.toString())) /
     100;
-  let myIncome = Number.parseInt(searchInfo.investment.myIncome.toString());
-  myIncome = myIncome > 0 ? myIncome / 100 : myIncome;
 
   let income = Number.parseInt(searchInfo.investment.income.toString());
   income = income > 0 ? income / 100 : income;
@@ -71,29 +69,25 @@ export default function InvestCar({
               <p className="font-medium text-[#FFFFFF70]">
                 {`${searchInfo.investment.investment.car.locationInfo.locationInfo.city}, ${searchInfo.investment.investment.car.locationInfo.locationInfo.state}, ${searchInfo.investment.investment.car.locationInfo.locationInfo.country}`}
               </p>
-              <p className="mt-2 text-rentality-secondary 2xl:text-lg">You have no stake in this asset yet</p>
-              <div className="mt-6 flex">
-                <div className="relative mr-2 inline-block w-2/5">
-                  <span className="pointer-events-none absolute left-2 top-[48%] -translate-y-1/2 text-white">$</span>
-                  <RntInputTransparent
-                    className="text-white"
-                    type="text"
-                    value={investmentAmount}
-                    onChange={handleChangeInvestmentAmount}
-                    placeholder="0"
-                  />
-                </div>
-                <RntButton
-                  className="mb-0.5 flex w-3/5 items-center justify-center"
-                  // onClick={() => claimPoints()}
-                >
-                  <div className="ml-0.5 flex items-center">
-                    {t("invest.btn_invest_now")}
-                    <span className="ml-4">●</span>
-                  </div>
-                </RntButton>
-              </div>
-              <p className="text-center text-[#FFFFFF70]">Enter USD equivalent, transaction in ETH</p>
+              {isHost
+                ? getBlocksForHost(
+                    isCreator,
+                    Number(searchInfo.investment.investmentId),
+                    isReadyToClaim,
+                    handleStartHosting,
+                    t
+                  )
+                : getBlocksForGuest(
+                    Number(searchInfo.investment.myTokens),
+                    Number(searchInfo.investment.myInvestingSum),
+                    investmentAmount,
+                    Number(searchInfo.investment.myIncome),
+                    Number(searchInfo.investment.investmentId),
+                    Number(searchInfo.investment.listingDate),
+                    handleChangeInvestmentAmount,
+                    handleClaimIncome,
+                    t
+                  )}
               <p className="mt-8">Listing status:</p>
               <p className="text-rentality-secondary">Waiting for full tokenization</p>
               <div className={ccsDividerVert}></div>
@@ -119,5 +113,120 @@ export default function InvestCar({
         </div>
       </div>
     </div>
+  );
+}
+
+function getBlocksForGuest(
+  myTokens: number,
+  myInvestingSum: number,
+  investmentAmount: number,
+  myIncome: number,
+  investmentId: number,
+  listingDate: number,
+  handleChangeInvestmentAmount: (e: React.ChangeEvent<HTMLInputElement>) => void,
+  handleClaimIncome: (investId: number) => Promise<void>,
+  t: (key: string) => string
+) {
+  myIncome = myIncome > 0 ? myIncome / 100 : myIncome;
+  return (
+    <>
+      {blockStakeInAssetForGuest(myTokens, myInvestingSum, t)}
+      {myTokens > 0 && myIncome === 0 && listingDate !== 0
+        ? blockExpectCompletedTripsForGuest(t)
+        : myTokens > 0
+          ? btnClaimEarningsForGuest(myIncome, investmentId, handleClaimIncome, t)
+          : blockInvestNowForGuest(investmentAmount, handleChangeInvestmentAmount, t)}
+    </>
+  );
+}
+
+function blockStakeInAssetForGuest(myTokens: number, myInvestingSum: number, t: (key: string) => string) {
+  return (
+    <p className="mt-2 text-rentality-secondary 2xl:text-lg">
+      {myTokens <= 0
+        ? t("invest.no_stake_in_asset")
+        : t("invest.stake_in_asset")
+            .replace("{myTokens}", myTokens.toString())
+            .replace("{myInvestingSum}", myInvestingSum.toString())}
+    </p>
+  );
+}
+
+function blockExpectCompletedTripsForGuest(t: (key: string) => string) {
+  return (
+    <p className="mx-auto mt-6 w-5/6 text-center text-[#FFFFFF70] 2xl:text-lg">{t("invest.expect_completed_trips")}</p>
+  );
+}
+
+function btnClaimEarningsForGuest(
+  myIncome: number,
+  investmentId: number,
+  handleClaimIncome: (investId: number) => Promise<void>,
+  t: (key: string) => string
+) {
+  return (
+    <RntButton
+      className="mx-auto mt-6 flex h-14 w-full items-center justify-center"
+      onClick={() => handleClaimIncome(investmentId)}
+    >
+      <div className="flex w-full items-center justify-center text-white">
+        <span className="ml-4 w-full">
+          {t("invest.btn_claim_earnings")} ${myIncome}
+        </span>
+        <span className="ml-auto mr-4">●</span>
+      </div>
+    </RntButton>
+  );
+}
+
+function blockInvestNowForGuest(
+  investmentAmount: number,
+  handleChangeInvestmentAmount: (e: React.ChangeEvent<HTMLInputElement>) => void,
+  t: (key: string) => string
+) {
+  return (
+    <>
+      <div className="mt-6 flex">
+        <div className="relative mr-2 inline-block w-2/5">
+          <span className="pointer-events-none absolute left-2 top-[48%] -translate-y-1/2 text-white">$</span>
+          <RntInputTransparent
+            className="text-white"
+            type="text"
+            value={investmentAmount <= 0 ? "" : investmentAmount}
+            onChange={handleChangeInvestmentAmount}
+            placeholder="0"
+          />
+        </div>
+        <RntButton className="mb-0.5 flex w-3/5 items-center justify-center">
+          <div className="ml-0.5 flex items-center">
+            {t("invest.btn_invest_now")}
+            <span className="ml-4">●</span>
+          </div>
+        </RntButton>
+      </div>
+      <p className="text-center text-[#FFFFFF70]">Enter USD equivalent, transaction in ETH</p>
+    </>
+  );
+}
+
+function getBlocksForHost(
+  isCreator: boolean,
+  investmentId: number,
+  isReadyToClaim: () => boolean,
+  handleStartHosting: (investId: number) => Promise<void>,
+  t: (key: string) => string
+) {
+  return isCreator && isReadyToClaim() ? (
+    <RntButton
+      className="mx-auto mt-6 flex h-14 w-full items-center justify-center"
+      onClick={() => handleStartHosting(investmentId)}
+    >
+      <div className="flex w-full items-center justify-center text-white">
+        <span className="ml-4 w-full">{t("invest.btn_start_hosting")}</span>
+        <span className="ml-auto mr-4">●</span>
+      </div>
+    </RntButton>
+  ) : (
+    <div className="mt-6 flex h-14 w-full"></div>
   );
 }
