@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Layout from "@/components/layout/layout";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
-import InvestCar from "@/components/investment/investCar";
+import InvestCarGlib from "@/components/investment/investCarGlib";
 import useGetInvestments from "@/hooks/guest/useGetInvestments";
 
 export default function Invest() {
@@ -23,7 +23,7 @@ export default function Invest() {
     <>
       {investments.map((value) => {
         return (
-          <InvestCar
+          <InvestCarGlib
             key={value.investment.investmentId as unknown as number}
             searchInfo={value}
             disableButton={requestSending}
