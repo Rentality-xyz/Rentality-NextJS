@@ -1,16 +1,16 @@
-import RntSelect from "./rntSelect";
 import { RntSelectProps } from "./rntSelect";
 import React, { useEffect, useState } from "react";
 import useCarAPI, { CarMakesListElement } from "@/hooks/useCarAPI";
-import RntFilterSelect from "@/components/common/rntFilterSelect";
-import RntOption from "@/components/common/rntOption";
+import RntFilterSelect from "./RntFilterSelect";
+import { cn } from "@/utils";
 
 interface RntCarMakeSelectProps extends RntSelectProps {
   id: string;
   className?: string;
   selectClassName?: string;
+  containerClassName?: string;
   promptText?: string;
-  label: string;
+  label?: string;
   value: string;
   readOnly?: boolean;
   onMakeSelect?: (newID: string, newMake: string) => void;
@@ -20,12 +20,13 @@ export default function RntCarMakeSelect({
   id,
   label,
   className,
-  selectClassName,
+  containerClassName,
   promptText = "Please select",
   value,
   readOnly,
   onMakeSelect,
   validationError,
+  isTransparentStyle,
 }: RntCarMakeSelectProps) {
   const { getAllCarMakes } = useCarAPI();
 
@@ -41,34 +42,26 @@ export default function RntCarMakeSelect({
 
   return (
     <RntFilterSelect
-      isTransparentStyle={true}
       id={id}
-      style={
-        isReadOnly
-          ? { cursor: "not-allowed", backgroundColor: "transparent", color: "#6B7381" }
-          : { backgroundColor: "transparent" }
-      }
-      className={className}
-      selectClassName={selectClassName}
+      className={cn(className, isTransparentStyle && !isReadOnly && "border-gradient border-0")}
       label={label}
-      labelClassName="pl-4"
-      value={value}
       validationError={validationError}
-      readOnly={isReadOnly}
+      containerClassName={containerClassName}
+      value={value}
+      disabled={isReadOnly}
       placeholder={promptText}
+      onChange={function (e) {
+        const newValue: string = e.target.value;
+        const newID: string = makesList[e.target.selectedIndex]?.id || "";
+        if (onMakeSelect) onMakeSelect(newID, newValue);
+      }}
     >
       {makesList.map((carMakesListElement, index) => (
-        <RntOption
+        <RntFilterSelect.Option
           key={"car-make-" + index}
           data-id={carMakesListElement.id}
           value={carMakesListElement.name}
-          isSelected={carMakesListElement.name === value}
-          onClick={() => {
-            if (onMakeSelect) onMakeSelect(carMakesListElement.id, carMakesListElement.name);
-          }}
-        >
-          {carMakesListElement.name}
-        </RntOption>
+        />
       ))}
     </RntFilterSelect>
   );
