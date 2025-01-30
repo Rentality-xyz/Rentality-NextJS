@@ -1,7 +1,7 @@
 import Layout from "@/components/layout/layout";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import { useTranslation } from "react-i18next";
-import CreateCarInvestment from "@/components/investment/createInvestment";
+import CreateCarInvestment from "@/features/invest/pages/createInvestment";
 
 export default function CreateInvest() {
   const { t } = useTranslation();

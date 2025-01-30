@@ -7,7 +7,7 @@ import { ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "@/model/EngineTy
 
 type TFunction = (key: string, options?: { [key: string]: any }) => string;
 
-export default function InvestCar({
+export default function InvestCarGlib({
   searchInfo,
   handleInvest,
   disableButton,
@@ -67,16 +67,16 @@ export default function InvestCar({
       </div> */}
       <div
         style={{ backgroundImage: `url(${searchInfo.metadata.image})` }}
-        className="relative w-full md:w-64 min-h-[12rem] flex-shrink-0 bg-center bg-cover"
+        className="relative min-h-[12rem] w-full flex-shrink-0 bg-cover bg-center md:w-64"
       ></div>
       <div className="flex w-full flex-col justify-between p-2 sm:p-4">
-        <div className="flex flex-row items-baseline justify-between ">
+        <div className="flex flex-row items-baseline justify-between">
           <div className="w-full overflow-hidden">
-            <strong className="text-lg truncate">{`${searchInfo.investment.investment.car.brand} ${searchInfo.investment.investment.car.model} ${searchInfo.investment.investment.car.yearOfProduction}`}</strong>
+            <strong className="truncate text-lg">{`${searchInfo.investment.investment.car.brand} ${searchInfo.investment.investment.car.model} ${searchInfo.investment.investment.car.yearOfProduction}`}</strong>
           </div>
         </div>
-        <div className="flex md:grid md:grid-cols-[2fr_1fr] text-sm mt-2 md:justify-between">
-          <div className="w-8/12 lg:w-9/12 flex flex-col">
+        <div className="mt-2 flex text-sm md:grid md:grid-cols-[2fr_1fr] md:justify-between">
+          <div className="flex w-8/12 flex-col lg:w-9/12">
             <div className="text-base">
               <strong>
                 {"Price: " + "$" + Number.parseInt(searchInfo.investment.investment.priceInUsd.toString()) / 100}
@@ -88,7 +88,7 @@ export default function InvestCar({
             </div>
           </div>
 
-          <div className="flex flex-col w-auto">
+          <div className="flex w-auto flex-col">
             <div>
               - {getEngineTypeString(searchInfo.investment.investment.car.engineType) ?? ENGINE_TYPE_PETROL_STRING}
             </div>
@@ -100,7 +100,7 @@ export default function InvestCar({
         </div>
         {searchInfo.investment.isCarBought ? (
           <div>
-            <div className="w-8/12 lg:w-9/12 flex flex-col">
+            <div className="flex w-8/12 flex-col lg:w-9/12">
               <div className="text-base">
                 <strong>{"Total profit: " + "$" + displayMoneyWith2Digits(income)}</strong>
               </div>
@@ -109,7 +109,7 @@ export default function InvestCar({
               </div>
             </div>
             {myIncome > 0 ? (
-              <div className="w-full grid grid-cols-[1fr_auto] items-end mt-4">
+              <div className="mt-4 grid w-full grid-cols-[1fr_auto] items-end">
                 <RntButton
                   className="h-14 w-44 text-base"
                   onClick={() => handleClaimIncome(searchInfo.investment.investmentId as unknown as number)}
@@ -131,13 +131,13 @@ export default function InvestCar({
             <div>{"Start hosting"}</div>
           </RntButton>
         ) : (
-          <div className="w-full grid grid-cols-[1fr_auto] items-end mt-4">
+          <div className="mt-4 grid w-full grid-cols-[1fr_auto] items-end">
             <RntInput
               type="number"
               value={investAmount}
               onChange={handleInputChange}
               placeholder="Enter amount"
-              className="p-2 border rounded"
+              className="rounded border p-2"
             />
             <RntButton
               className="h-14 w-44 text-base"
