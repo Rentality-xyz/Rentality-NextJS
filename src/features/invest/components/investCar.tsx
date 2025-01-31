@@ -2,7 +2,7 @@ import RntButton from "../../../components/common/rntButton";
 import React, { useMemo, useState } from "react";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import RntInput from "../../../components/common/rntInput";
-import { InvestmentWithMetadata } from "@/model/blockchain/schemas";
+import { InvestmentDTO, InvestmentWithMetadata } from "@/model/blockchain/schemas";
 import { ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "@/model/EngineType";
 import { useTranslation } from "react-i18next";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
@@ -35,16 +35,8 @@ export default function InvestCar({
     setInvestmentAmount(Number.parseInt(inputInvestmentAmount));
   };
 
-  const priceDiff =
-    (Number.parseInt(searchInfo.investment.investment.priceInUsd.toString()) -
-      Number.parseInt(searchInfo.investment.payedInUsd.toString())) /
-    100;
-
   let income = Number.parseInt(searchInfo.investment.income.toString());
   income = income > 0 ? income / 100 : income;
-  const isReadyToClaim = (): boolean => {
-    return priceDiff <= 0;
-  };
 
   return (
     <div className="mt-6 grid grid-cols-1 gap-4 fullHD:grid-cols-2">
@@ -70,20 +62,10 @@ export default function InvestCar({
                 {`${searchInfo.investment.investment.car.locationInfo.locationInfo.city}, ${searchInfo.investment.investment.car.locationInfo.locationInfo.state}, ${searchInfo.investment.investment.car.locationInfo.locationInfo.country}`}
               </p>
               {isHost
-                ? getBlocksForHost(
-                    isCreator,
-                    Number(searchInfo.investment.investmentId),
-                    isReadyToClaim,
-                    handleStartHosting,
-                    t
-                  )
+                ? getBlocksForHost(isCreator, searchInfo.investment, handleStartHosting, t)
                 : getBlocksForGuest(
-                    Number(searchInfo.investment.myTokens),
-                    Number(searchInfo.investment.myInvestingSum),
+                    searchInfo.investment,
                     investmentAmount,
-                    Number(searchInfo.investment.myIncome),
-                    Number(searchInfo.investment.investmentId),
-                    Number(searchInfo.investment.listingDate),
                     handleChangeInvestmentAmount,
                     handleClaimIncome,
                     t
@@ -96,10 +78,15 @@ export default function InvestCar({
             <div className="relative flex h-full flex-col p-2 text-center max-2xl:py-4">
               <p className="text-xl font-semibold max-2xl:mb-4">{t("invest.tokenization")}</p>
               <div className="flex flex-grow flex-col justify-center">
-                <p className="text-xl font-bold 2xl:text-2xl">$80 000</p>
+                <p className="text-xl font-bold 2xl:text-2xl">${String(searchInfo.investment.investment.priceInUsd)}</p>
                 <p className="2xl:text-lg">Total price</p>
                 <div className="mx-auto my-2 h-0.5 w-[60%] translate-y-[-50%] bg-white"></div>
-                <p className="text-xl font-bold leading-none text-rentality-secondary 2xl:text-2xl">$10 000</p>
+                <p className="text-xl font-bold leading-none text-rentality-secondary 2xl:text-2xl">
+                  $
+                  {String(
+                    Number(searchInfo.investment.investment.priceInUsd) - Number(searchInfo.investment.payedInUsd)
+                  )}
+                </p>
                 <p className="leading-snug text-rentality-secondary 2xl:text-lg">Balance to be raised</p>
               </div>
               <div className={ccsDividerVert}></div>
@@ -116,25 +103,23 @@ export default function InvestCar({
   );
 }
 
+function getInvestmentStatus() {}
+
 function getBlocksForGuest(
-  myTokens: number,
-  myInvestingSum: number,
+  investment: InvestmentDTO,
   investmentAmount: number,
-  myIncome: number,
-  investmentId: number,
-  listingDate: number,
   handleChangeInvestmentAmount: (e: React.ChangeEvent<HTMLInputElement>) => void,
   handleClaimIncome: (investId: number) => Promise<void>,
   t: (key: string) => string
 ) {
-  myIncome = myIncome > 0 ? myIncome / 100 : myIncome;
+  const myIncome = Number(investment.myIncome) > 0 ? Number(investment.myIncome) / 100 : Number(investment.myIncome);
   return (
     <>
-      {blockStakeInAssetForGuest(myTokens, myInvestingSum, t)}
-      {myTokens > 0 && myIncome === 0 && listingDate !== 0
+      {blockStakeInAssetForGuest(Number(investment.myTokens), Number(investment.myInvestingSum), t)}
+      {Number(investment.myTokens) > 0 && myIncome === 0 && Number(investment.listingDate) !== 0
         ? blockExpectCompletedTripsForGuest(t)
-        : myTokens > 0
-          ? btnClaimEarningsForGuest(myIncome, investmentId, handleClaimIncome, t)
+        : Number(investment.myTokens) > 0
+          ? btnClaimEarningsForGuest(myIncome, Number(investment.investmentId), handleClaimIncome, t)
           : blockInvestNowForGuest(investmentAmount, handleChangeInvestmentAmount, t)}
     </>
   );
@@ -211,15 +196,22 @@ function blockInvestNowForGuest(
 
 function getBlocksForHost(
   isCreator: boolean,
-  investmentId: number,
-  isReadyToClaim: () => boolean,
+  investment: InvestmentDTO,
   handleStartHosting: (investId: number) => Promise<void>,
   t: (key: string) => string
 ) {
+  const priceDiff =
+    (Number.parseInt(investment.investment.priceInUsd.toString()) - Number.parseInt(investment.payedInUsd.toString())) /
+    100;
+
+  const isReadyToClaim = (): boolean => {
+    return priceDiff <= 0;
+  };
+
   return isCreator && isReadyToClaim() ? (
     <RntButton
       className="mx-auto mt-6 flex h-14 w-full items-center justify-center"
-      onClick={() => handleStartHosting(investmentId)}
+      onClick={() => handleStartHosting(Number(investment.investmentId))}
     >
       <div className="flex w-full items-center justify-center text-white">
         <span className="ml-4 w-full">{t("invest.btn_start_hosting")}</span>
