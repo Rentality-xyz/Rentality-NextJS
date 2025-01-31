@@ -19,7 +19,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { env } from "@/utils/env";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { allSupportedBlockchainList } from "@/model/blockchain/blockchainList";
-import { getTimeZoneIdFromAddress } from "@/utils/timezone";
+import { getTimeZoneIdFromLocation } from "@/utils/timezone";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGateway";
 
@@ -76,7 +76,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const location = `${city as string}, ${state as string}, ${country as string}`;
 
-  const timeZoneId = await getTimeZoneIdFromAddress(location);
+  const timeZoneId = await getTimeZoneIdFromLocation(Number(latitude), Number(longitude));
   if (isEmpty(timeZoneId)) {
     res.status(500).json({ error: "API checkTrips error: GOOGLE_MAPS_API_KEY was not set" });
     return;

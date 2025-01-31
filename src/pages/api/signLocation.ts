@@ -1,9 +1,9 @@
 import { ContractLocationInfo, ContractSignedLocationInfo } from "@/model/blockchain/schemas";
 import { Err, Ok, Result } from "@/model/utils/result";
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { env } from "@/utils/env";
 import { signLocationInfo } from "@/utils/signLocationInfo";
 import { isEmpty } from "@/utils/string";
+import { getTimeZoneIdFromLocation } from "@/utils/timezone";
 import { JsonRpcProvider, Wallet } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -111,27 +111,18 @@ async function getContractLocationInfoByAddress(
   const placeLat = placeDetails?.geometry?.location?.lat ?? 0; //because lat returns as number and not as ()=>number
   const placeLng = placeDetails?.geometry?.location?.lng ?? 0; //because lat returns as number and not as ()=>number
 
-  const locationLat = typeof placeLat === "number" ? placeLat.toFixed(6) : placeLat().toFixed(6);
-  const locationLng = typeof placeLng === "number" ? placeLng.toFixed(6) : placeLng().toFixed(6);
+  const locationLat = typeof placeLat === "number" ? placeLat : placeLat();
+  const locationLng = typeof placeLng === "number" ? placeLng : placeLng();
 
-  var googleTimeZoneResponse = await fetch(
-    `https://maps.googleapis.com/maps/api/timezone/json?location=${locationLat},${locationLng}&timestamp=0&key=${GOOGLE_MAPS_API_KEY}`
-  );
-  if (!googleTimeZoneResponse.ok) {
-    return Err(`getUtcOffsetMinutesFromLocation error: googleTimeZoneResponse is ${googleTimeZoneResponse.status}`);
-  }
-
-  const googleTimeZoneJson = await googleTimeZoneResponse.json();
-
-  const timeZoneId = googleTimeZoneJson?.timeZoneId ?? UTC_TIME_ZONE_ID;
+  const timeZoneId = await getTimeZoneIdFromLocation(locationLat, locationLng);
 
   const result: ContractLocationInfo = {
     userAddress: address,
     country: country,
     state: state,
     city: city,
-    latitude: locationLat,
-    longitude: locationLng,
+    latitude: locationLat.toFixed(6),
+    longitude: locationLng.toFixed(6),
     timeZoneId: timeZoneId,
   };
 
