@@ -3,9 +3,10 @@ import { Err, Ok, Result } from "@/model/utils/result";
 import { env } from "@/utils/env";
 import { signLocationInfo } from "@/utils/signLocationInfo";
 import { isEmpty } from "@/utils/string";
-import { getTimeZoneIdFromLocation } from "@/utils/timezone";
 import { JsonRpcProvider, Wallet } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import { getTimeZoneIdFromGoogleByLocation } from "@/utils/timezone";
 
 export type SignLocationRequest = {
   address: string;
@@ -18,7 +19,7 @@ export type SignLocationResponse =
     };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<SignLocationResponse>) {
-  const GOOGLE_MAPS_API_KEY = env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const GOOGLE_MAPS_API_KEY = env.GOOGLE_MAPS_API_KEY;
   if (isEmpty(GOOGLE_MAPS_API_KEY)) {
     console.error("SignLocation error: GOOGLE_MAPS_API_KEY was not set");
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
@@ -114,7 +115,7 @@ async function getContractLocationInfoByAddress(
   const locationLat = typeof placeLat === "number" ? placeLat : placeLat();
   const locationLng = typeof placeLng === "number" ? placeLng : placeLng();
 
-  const timeZoneId = await getTimeZoneIdFromLocation(locationLat, locationLng);
+  const timeZoneIdResult = await getTimeZoneIdFromGoogleByLocation(locationLat, locationLng, GOOGLE_MAPS_API_KEY);
 
   const result: ContractLocationInfo = {
     userAddress: address,
@@ -123,7 +124,7 @@ async function getContractLocationInfoByAddress(
     city: city,
     latitude: locationLat.toFixed(6),
     longitude: locationLng.toFixed(6),
-    timeZoneId: timeZoneId,
+    timeZoneId: timeZoneIdResult.ok ? timeZoneIdResult.value : UTC_TIME_ZONE_ID,
   };
 
   return Ok(result);

@@ -1,7 +1,8 @@
 import { env } from "@/utils/env";
 import { isEmpty } from "@/utils/string";
-import { getTimeZoneIdFromLocation } from "@/utils/timezone";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import { getTimeZoneIdFromGoogleByLocation } from "@/utils/timezone";
 
 export type ParseLocationRequest = {
   address: string;
@@ -57,7 +58,7 @@ export const getLocationDetails = async (
   const locationLat = typeof placeLat === "number" ? placeLat : placeLat();
   const locationLng = typeof placeLng === "number" ? placeLng : placeLng();
 
-  const timeZoneId = await getTimeZoneIdFromLocation(locationLat, locationLng);
+  const timeZoneIdResult = await getTimeZoneIdFromGoogleByLocation(locationLat, locationLng, GOOGLE_MAPS_API_KEY);
 
   const result = {
     country: country,
@@ -65,7 +66,7 @@ export const getLocationDetails = async (
     city: city,
     locationLatitude: locationLat.toFixed(6),
     locationLongitude: locationLng.toFixed(6),
-    timeZoneId: timeZoneId,
+    timeZoneId: timeZoneIdResult.ok ? timeZoneIdResult.value : UTC_TIME_ZONE_ID,
   };
 
   return result;
