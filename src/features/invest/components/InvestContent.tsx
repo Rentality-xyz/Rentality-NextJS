@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import RntButton from "@/components/common/rntButton";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import imgCircleBtn from "@/images/img_circle_for_transparent_btn.svg";
 import Image from "next/image";
-import RntInputTransparent from "@/components/common/rntInputTransparent";
-import InvestCarGlib from "@/components/investment/investCarGlib";
 import useGetInvestments from "@/hooks/guest/useGetInvestments";
 import InvestCar from "@/features/invest/components/investCar";
 
