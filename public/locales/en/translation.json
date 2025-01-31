@@ -860,6 +860,11 @@
     "ready_listing": "Ready for listing",
     "listing_progress": "Listing in progress",
     "waiting_full_tokenization": "Waiting for full tokenization",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "earnings_history": "Earnings history",
+    "total_price": "Total price",
+    "balance_raised": "Balance to be raised",
+    "total_earnings": "Total earnings",
+    "your_received_earnings_part": "Your received earnings part"
   }
 }

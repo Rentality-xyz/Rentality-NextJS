@@ -42,16 +42,13 @@ export default function InvestCar({
     setInvestmentAmount(Number.parseInt(inputInvestmentAmount));
   };
 
-  let income = Number.parseInt(searchInfo.investment.income.toString());
-  income = income > 0 ? income / 100 : income;
-
   return (
     <div className="mt-6 grid grid-cols-1 gap-4 fullHD:grid-cols-2">
       <div className="flex w-full flex-col rounded-xl bg-rentality-bg-left-sidebar">
         <div
           className={cn(
             "w-full rounded-t-xl py-1 pl-4",
-            getColorInvestmentStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)
+            getColorInvestmentStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost)
           )}
         >
           <div className="flex max-2xl:flex-col">
@@ -93,22 +90,21 @@ export default function InvestCar({
               <p className="text-xl font-semibold max-2xl:mb-4">{t("invest.tokenization")}</p>
               <div className="flex flex-grow flex-col justify-center">
                 <p className="text-xl font-bold 2xl:text-2xl">${String(searchInfo.investment.investment.priceInUsd)}</p>
-                <p className="2xl:text-lg">Total price</p>
-                <div className="mx-auto my-2 h-0.5 w-[60%] translate-y-[-50%] bg-white"></div>
+                <p className="2xl:text-lg">{t("invest.total_price")}</p>
+                <div className="mx-auto my-2 h-0.5 w-[40%] translate-y-[-50%] bg-white sm:w-[70%]"></div>
                 <p className="text-xl font-bold leading-none text-rentality-secondary 2xl:text-2xl">
                   $
                   {String(
                     Number(searchInfo.investment.investment.priceInUsd) - Number(searchInfo.investment.payedInUsd)
                   )}
                 </p>
-                <p className="leading-snug text-rentality-secondary 2xl:text-lg">Balance to be raised</p>
+                <p className="leading-snug text-rentality-secondary 2xl:text-lg">{t("invest.balance_raised")}</p>
               </div>
               <div className={ccsDividerVert}></div>
               <div className={ccsDividerHor}></div>
             </div>
             <div className="flex flex-col items-center justify-center p-2 max-2xl:py-4">
-              <span className="text-lg text-rentality-secondary 2xl:text-xl fullHD:text-base">{test}</span>
-              <span className="text-lg 2xl:text-xl">40% {t("invest.from_each_trip")}</span>
+              {getBlockIncome(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
             </div>
           </div>
         </div>
@@ -159,12 +155,7 @@ function getTxtInvestmentListingStatus(
           : t("invest.unknown");
 }
 
-function getColorInvestmentStatus(
-  investment: InvestmentDTO,
-  walletAddress: string,
-  isHost: boolean,
-  t: (key: string) => string
-) {
+function getColorInvestmentStatus(investment: InvestmentDTO, walletAddress: string, isHost: boolean) {
   const investStatus = getInvestListingStatus(investment, walletAddress, isHost);
   return investStatus === InvestStatus.ActuallyListed
     ? "bg-[#7355D7]"
@@ -288,5 +279,31 @@ function getBlocksForHost(
     </RntButton>
   ) : (
     <div className="mt-6 flex h-14 w-full"></div>
+  );
+}
+
+function getBlockIncome(investment: InvestmentDTO, walletAddress: string, isHost: boolean, t: (key: string) => string) {
+  const receivedEarnings = (Number(investment.income) * Number(investment.myPart)) / 100;
+  const head = isHost ? t("invest.host_management") : t("invest.your_expected_earnings");
+  const investStatus = getInvestListingStatus(investment, walletAddress, isHost);
+
+  return investStatus === InvestStatus.ActuallyListed ? (
+    <>
+      <p className="text-xl font-semibold text-rentality-secondary max-2xl:mb-4">{t("invest.earnings_history")}</p>
+      <div className="flex w-full flex-grow flex-col items-center justify-center">
+        <p className="text-xl font-bold 2xl:text-2xl">${Number(investment.income)}</p>
+        <p className="2xl:text-lg">{t("invest.total_earnings")}</p>
+        <div className="mx-auto my-2 h-0.5 w-[40%] translate-y-[-50%] bg-white sm:w-[70%]"></div>
+        <p className="text-xl font-bold leading-none text-rentality-secondary 2xl:text-2xl">${receivedEarnings}</p>
+        <p className="text-center leading-snug 2xl:text-lg">{t("invest.your_received_earnings_part")}</p>
+      </div>
+    </>
+  ) : (
+    <>
+      <span className="text-lg text-rentality-secondary 2xl:text-xl fullHD:text-base">{head}</span>
+      <span className="text-lg 2xl:text-xl">
+        {Number(investment.myPart)}% {t("invest.from_each_trip")}
+      </span>
+    </>
   );
 }
