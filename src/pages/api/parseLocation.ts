@@ -1,6 +1,6 @@
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { env } from "@/utils/env";
 import { isEmpty } from "@/utils/string";
+import { getTimeZoneIdFromLocation } from "@/utils/timezone";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export type ParseLocationRequest = {
@@ -16,8 +16,6 @@ export type ParseLocationResponse =
       locationLatitude: string;
       locationLongitude: string;
       timeZoneId: string;
-      rawUtcOffsetInSec: number;
-      dstOffsetInSec: number;
     }
   | {
       error: string;
@@ -56,33 +54,18 @@ export const getLocationDetails = async (
   const placeLat = placeDetails?.geometry?.location?.lat ?? 0; //because lat returns as number and not as ()=>number
   const placeLng = placeDetails?.geometry?.location?.lng ?? 0; //because lat returns as number and not as ()=>number
 
-  const locationLat = typeof placeLat === "number" ? placeLat.toFixed(6) : placeLat().toFixed(6);
-  const locationLng = typeof placeLng === "number" ? placeLng.toFixed(6) : placeLng().toFixed(6);
+  const locationLat = typeof placeLat === "number" ? placeLat : placeLat();
+  const locationLng = typeof placeLng === "number" ? placeLng : placeLng();
 
-  var googleTimeZoneResponse = await fetch(
-    `https://maps.googleapis.com/maps/api/timezone/json?location=${locationLat},${locationLng}&timestamp=${timestamp ?? 0}&key=${GOOGLE_MAPS_API_KEY}`
-  );
-  if (!googleTimeZoneResponse.ok) {
-    return {
-      error: `getUtcOffsetMinutesFromLocation error: googleTimeZoneResponse is ${googleTimeZoneResponse.status}`,
-    };
-  }
-
-  const googleTimeZoneJson = await googleTimeZoneResponse.json();
-
-  const timeZoneId = googleTimeZoneJson?.timeZoneId ?? UTC_TIME_ZONE_ID;
-  const dstOffsetInSec = Number(googleTimeZoneJson?.dstOffset ?? "0");
-  const rawOffsetInSec = Number(googleTimeZoneJson?.rawOffset ?? "0");
+  const timeZoneId = await getTimeZoneIdFromLocation(locationLat, locationLng);
 
   const result = {
     country: country,
     state: state,
     city: city,
-    locationLatitude: locationLat,
-    locationLongitude: locationLng,
+    locationLatitude: locationLat.toFixed(6),
+    locationLongitude: locationLng.toFixed(6),
     timeZoneId: timeZoneId,
-    rawUtcOffsetInSec: rawOffsetInSec,
-    dstOffsetInSec: dstOffsetInSec,
   };
 
   return result;
