@@ -27,7 +27,7 @@ export async function getTimeZoneIdFromAddress(address: string) {
   return getTimeZoneIdFromLocation(locationLat, locationLng);
 }
 
-export const getTimeZoneIdFromLocation = async (latitude: number, longitude: number) => {
+export async function getTimeZoneIdFromLocation(latitude: number, longitude: number) {
   if (longitude === 0) return UTC_TIME_ZONE_ID;
 
   const GOOGLE_MAPS_API_KEY = env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
@@ -48,4 +48,4 @@ export const getTimeZoneIdFromLocation = async (latitude: number, longitude: num
   const googleTimeZoneJson = await googleTimeZoneResponse.json();
 
   return googleTimeZoneJson?.timeZoneId ?? UTC_TIME_ZONE_ID;
-};
+}
