@@ -865,6 +865,9 @@
     "total_price": "Total price",
     "balance_raised": "Balance to be raised",
     "total_earnings": "Total earnings",
-    "your_received_earnings_part": "Your received earnings part"
+    "your_received_earnings_part": "Your received earnings part",
+    "listing_status": "Listing status:",
+    "listing_coming_soon": "listing coming soon",
+    "listed_days": "Listed {date} ({days} days)"
   }
 }
