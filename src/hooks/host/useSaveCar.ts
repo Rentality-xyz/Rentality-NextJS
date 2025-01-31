@@ -106,7 +106,7 @@ const useSaveCar = () => {
         milesIncludedPerDay: BigInt(
           isUnlimitedMiles(dataToSave.milesIncludedPerDay) ? UNLIMITED_MILES_VALUE : dataToSave.milesIncludedPerDay
         ),
-        geoApiKey: env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+        geoApiKey: "",
         engineType: getEngineTypeCode(dataToSave.engineTypeText),
         engineParams: engineParams,
         timeBufferBetweenTripsInSec: BigInt(dataToSave.timeBufferBetweenTripsInMin * 60),
