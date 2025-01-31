@@ -1,14 +1,21 @@
 import RntButton from "../../../components/common/rntButton";
-import React, { useMemo, useState } from "react";
-import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
-import RntInput from "../../../components/common/rntInput";
+import React, { useState } from "react";
 import { InvestmentDTO, InvestmentWithMetadata } from "@/model/blockchain/schemas";
-import { ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "@/model/EngineType";
 import { useTranslation } from "react-i18next";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { cn } from "@/utils";
 
 const ccsDividerVert = "max-2xl:hidden absolute right-[-5px] top-1/2 h-[80%] w-px translate-y-[-50%] bg-gray-500";
 const ccsDividerHor = "2xl:hidden absolute bottom-[-10px] left-[5%] h-px w-[90%] translate-y-[-50%] bg-gray-500";
+
+export enum InvestStatus {
+  Unknown,
+  ActuallyListed,
+  ReadyListing,
+  ListingProgress,
+  WaitingFullTokenization,
+}
 
 export default function InvestCar({
   isHost,
@@ -27,7 +34,7 @@ export default function InvestCar({
 }) {
   const { t } = useTranslation();
   const test = isHost ? t("invest.host_management") : t("invest.your_expected_earnings");
-
+  const ethereumInfo = useEthereum();
   const [investmentAmount, setInvestmentAmount] = useState(0);
 
   const handleChangeInvestmentAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,11 +48,18 @@ export default function InvestCar({
   return (
     <div className="mt-6 grid grid-cols-1 gap-4 fullHD:grid-cols-2">
       <div className="flex w-full flex-col rounded-xl bg-rentality-bg-left-sidebar">
-        <div className="w-full rounded-t-xl bg-blue-600 py-1 pl-4">
+        <div
+          className={cn(
+            "w-full rounded-t-xl py-1 pl-4",
+            getColorInvestmentStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)
+          )}
+        >
           <div className="flex max-2xl:flex-col">
-            <span>Available to Invest</span>
+            <span>{getInvestmentStatus(searchInfo.investment, t)}</span>
             <span className="mx-2 max-2xl:hidden">|</span>
-            <span>Waiting for full tokenization</span>
+            <span>
+              {getTxtInvestmentListingStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
+            </span>
           </div>
         </div>
         <div className="flex w-full flex-col">
@@ -103,7 +117,61 @@ export default function InvestCar({
   );
 }
 
-function getInvestmentStatus() {}
+function getInvestmentStatus(investment: InvestmentDTO, t: (key: string) => string) {
+  return Number(investment.investment.priceInUsd) <= Number(investment.payedInUsd)
+    ? t("invest.fully_tokenized")
+    : t("invest.available_invest");
+}
+
+function getInvestListingStatus(investment: InvestmentDTO, walletAddress: string, isHost: boolean) {
+  return Number(investment.listingDate) > 0
+    ? InvestStatus.ActuallyListed
+    : Number(investment.investment.priceInUsd) <= Number(investment.payedInUsd) &&
+        Number(investment.listingDate) <= 0 &&
+        investment.creator === walletAddress &&
+        isHost
+      ? InvestStatus.ReadyListing
+      : Number(investment.investment.priceInUsd) <= Number(investment.payedInUsd) &&
+          Number(investment.listingDate) <= 0 &&
+          investment.creator != walletAddress &&
+          !isHost
+        ? InvestStatus.ListingProgress
+        : Number(investment.investment.priceInUsd) > Number(investment.payedInUsd)
+          ? InvestStatus.WaitingFullTokenization
+          : InvestStatus.Unknown;
+}
+
+function getTxtInvestmentListingStatus(
+  investment: InvestmentDTO,
+  walletAddress: string,
+  isHost: boolean,
+  t: (key: string) => string
+) {
+  const investStatus = getInvestListingStatus(investment, walletAddress, isHost);
+  return investStatus === InvestStatus.ActuallyListed
+    ? t("invest.actually_listed")
+    : investStatus === InvestStatus.ReadyListing
+      ? t("invest.ready_listing")
+      : investStatus === InvestStatus.ListingProgress
+        ? t("invest.listing_progress")
+        : investStatus === InvestStatus.WaitingFullTokenization
+          ? t("invest.waiting_full_tokenization")
+          : t("invest.unknown");
+}
+
+function getColorInvestmentStatus(
+  investment: InvestmentDTO,
+  walletAddress: string,
+  isHost: boolean,
+  t: (key: string) => string
+) {
+  const investStatus = getInvestListingStatus(investment, walletAddress, isHost);
+  return investStatus === InvestStatus.ActuallyListed
+    ? "bg-[#7355D7]"
+    : investStatus === InvestStatus.ReadyListing || investStatus === InvestStatus.ListingProgress
+      ? "bg-[#A21CAF]"
+      : "bg-[#2563EB]";
+}
 
 function getBlocksForGuest(
   investment: InvestmentDTO,
