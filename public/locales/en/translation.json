@@ -853,6 +853,13 @@
     "btn_claim_earnings": "Claim earnings",
     "no_stake_in_asset": "You have no stake in this asset yet",
     "stake_in_asset": "You have {myTokens} tokens worth ${myInvestingSum}",
-    "expect_completed_trips": "Expect completed trips and claim earnings"
+    "expect_completed_trips": "Expect completed trips and claim earnings",
+    "available_invest": "Available to Invest",
+    "fully_tokenized": "Fully tokenized",
+    "actually_listed": "Actually Listed",
+    "ready_listing": "Ready for listing",
+    "listing_progress": "Listing in progress",
+    "waiting_full_tokenization": "Waiting for full tokenization",
+    "unknown": "Unknown"
   }
 }
