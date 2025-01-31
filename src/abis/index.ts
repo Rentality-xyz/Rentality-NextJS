@@ -1,13 +1,15 @@
-import RentalityGatewayJSON_ABI from "./testAbis/RentalityGateway.v0_2_0.abi.json";
-import RentalityGatewayJSON_ADDRESSES from "./testAbis/RentalityGateway.v0_2_0.addresses.json";
-import RentalityAdminGatewayJSON_ABI from "./testAbis/RentalityAdminGateway.v0_2_0.abi.json";
-import RentalityAdminGatewayJSON_ADDRESSES from "./testAbis/RentalityAdminGateway.v0_2_0.addresses.json";
-import RentalityLocationVerifierJSON_ADDRESSES from "./testAbis/RentalityLocationVerifier.v0_2_0.addresses.json";
-import RentalityLocationVerifierJSON_ABI from "./testAbis/RentalityLocationVerifier.v0_2_0.abi.json";
-import RentalityNotificationServiceJSON_ADDRESSES from "./testAbis/RentalityNotificationService.v0_2_0.addresses.json";
-import RentalityNotificationServiceJSON_ABI from "./testAbis/RentalityNotificationService.v0_2_0.abi.json";
-import RentalityReferralProgramServiceJSON_ABI from "./testAbis/RentalityReferralProgram.v0_2_0.abi.json";
-import RentalityReferralProgramServiceJSON_ADDRESSES from "./testAbis/RentalityReferralProgram.v0_2_0.addresses.json";
+import RentalityGatewayJSON_ABI from "./RentalityGateway.v0_2_0.abi.json";
+import RentalityGatewayJSON_ADDRESSES from "./RentalityGateway.v0_2_0.addresses.json";
+import RentalityAdminGatewayJSON_ABI from "./RentalityAdminGateway.v0_2_0.abi.json";
+import RentalityAdminGatewayJSON_ADDRESSES from "./RentalityAdminGateway.v0_2_0.addresses.json";
+import RentalityLocationVerifierJSON_ADDRESSES from "./RentalityLocationVerifier.v0_2_0.addresses.json";
+import RentalityLocationVerifierJSON_ABI from "./RentalityLocationVerifier.v0_2_0.abi.json";
+import RentalityNotificationServiceJSON_ADDRESSES from "./RentalityNotificationService.v0_2_0.addresses.json";
+import RentalityNotificationServiceJSON_ABI from "./RentalityNotificationService.v0_2_0.abi.json";
+import RentalityReferralProgramServiceJSON_ABI from "./RentalityReferralProgram.v0_2_0.abi.json";
+import RentalityReferralProgramServiceJSON_ADDRESSES from "./RentalityReferralProgram.v0_2_0.addresses.json";
+import RentalityAiDamageAnalyzeJSON_ABI from "./RentalityAiDamageAnalyze.v0_2_0.abi.json";
+import RentalityAiDamageAnalyzeServiceJSON_ADDRESSES from "./RentalityAiDamageAnalyze.v0_2_0.addresses.json";
 import { Contract, Signer } from "ethers";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 
@@ -33,6 +35,10 @@ const rentalityContracts = {
   referralProgram: {
     addresses: RentalityReferralProgramServiceJSON_ADDRESSES.addresses,
     abi: RentalityReferralProgramServiceJSON_ABI.abi,
+  },
+  aiDamageAnalyze: {
+    addresses: RentalityAiDamageAnalyzeServiceJSON_ADDRESSES.addresses,
+    abi: RentalityAiDamageAnalyzeJSON_ABI.abi,
   },
 };
 
