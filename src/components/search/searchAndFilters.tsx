@@ -13,7 +13,7 @@ import arrowUpTurquoise from "../../images/arrows/arrowUpTurquoise.svg";
 import arrowDownTurquoise from "../../images/arrows/arrowDownTurquoise.svg";
 import Image from "next/image";
 import SearchDeliveryLocations from "@/components/search/searchDeliveryLocations";
-import { formatLocationInfoUpToCity } from "@/model/LocationInfo";
+import { formatLocationInfoUpToCity, formatLocationInfoUpToState } from "@/model/LocationInfo";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { placeDetailsToLocationInfo } from "@/utils/location";
 import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
@@ -29,6 +29,8 @@ import { FilterLimits } from "@/model/SearchCarsResult";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 import bgInput from "@/images/bg_input.png";
 import RntFilterSelect from "../common/RntFilterSelect";
+import { AxiosResponse } from "axios";
+import axios from "@/utils/cachedAxios";
 
 export default function SearchAndFilters({
   initValue,
@@ -85,7 +87,7 @@ export default function SearchAndFilters({
 
   useEffect(() => {
     const getGMTFromLocation = async () => {
-      const address = formatLocationInfoUpToCity(searchCarRequest.searchLocation);
+      const address = formatLocationInfoUpToState(searchCarRequest.searchLocation);
       if (isEmpty(address)) {
         setTimeZoneId("");
         return;
@@ -93,13 +95,13 @@ export default function SearchAndFilters({
 
       var url = new URL(`/api/parseLocation`, window.location.origin);
       url.searchParams.append("address", address);
-      const apiResponse = await fetch(url);
+      const apiResponse: AxiosResponse = await axios.get(url.toString());
 
-      if (!apiResponse.ok) {
+      if (apiResponse.status !== 200) {
         setTimeZoneId("");
         return;
       }
-      const apiJson = (await apiResponse.json()) as ParseLocationResponse;
+      const apiJson = apiResponse.data as ParseLocationResponse;
       if ("error" in apiJson) {
         setTimeZoneId("");
         return;
