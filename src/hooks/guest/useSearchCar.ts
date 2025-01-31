@@ -11,7 +11,7 @@ import { getIpfsURIs, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUti
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { bigIntReplacer } from "@/utils/json";
-import { getTimeZoneIdFromLocation } from "@/utils/timezone";
+import { getTimeZoneIdByAddress } from "@/utils/timezone";
 import { formatSearchAvailableCarsContractRequest } from "@/utils/searchMapper";
 
 const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
@@ -28,10 +28,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
       try {
         setIsLoading(true);
 
-        const timeZoneId = await getTimeZoneIdFromLocation(
-          request.searchLocation.latitude,
-          request.searchLocation.longitude
-        );
+        const timeZoneId = await getTimeZoneIdByAddress(request.searchLocation);
         const { contractDateFromUTC, contractDateToUTC, contractSearchCarParams } =
           formatSearchAvailableCarsContractRequest(request, {}, timeZoneId);
 
