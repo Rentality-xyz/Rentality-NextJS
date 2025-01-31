@@ -5,6 +5,10 @@ import { useTranslation } from "react-i18next";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { cn } from "@/utils";
+import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
+import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import { dateFormatLongMonthYearDate } from "@/utils/datetimeFormatters";
+import moment from "moment";
 
 const ccsDividerVert = "max-2xl:hidden absolute right-[-5px] top-1/2 h-[80%] w-px translate-y-[-50%] bg-gray-500";
 const ccsDividerHor = "2xl:hidden absolute bottom-[-10px] left-[5%] h-px w-[90%] translate-y-[-50%] bg-gray-500";
@@ -33,7 +37,6 @@ export default function InvestCar({
   handleClaimIncome: (investId: number) => Promise<void>;
 }) {
   const { t } = useTranslation();
-  const test = isHost ? t("invest.host_management") : t("invest.your_expected_earnings");
   const ethereumInfo = useEthereum();
   const [investmentAmount, setInvestmentAmount] = useState(0);
 
@@ -81,8 +84,10 @@ export default function InvestCar({
                     handleClaimIncome,
                     t
                   )}
-              <p className="mt-8">Listing status:</p>
-              <p className="text-rentality-secondary">Waiting for full tokenization</p>
+              <p className="mt-8">{t("invest.listing_status")}</p>
+              <p className="text-rentality-secondary">
+                {getCarListingStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
+              </p>
               <div className={ccsDividerVert}></div>
               <div className={ccsDividerHor}></div>
             </div>
@@ -306,4 +311,26 @@ function getBlockIncome(investment: InvestmentDTO, walletAddress: string, isHost
       </span>
     </>
   );
+}
+
+function getCarListingStatus(
+  investment: InvestmentDTO,
+  walletAddress: string,
+  isHost: boolean,
+  t: (key: string) => string
+) {
+  const investStatus = getInvestListingStatus(investment, walletAddress, isHost);
+  const date = getDateFromBlockchainTimeWithTZ(Number(investment.listingDate), UTC_TIME_ZONE_ID);
+  const formattedDate = moment(date).tz(UTC_TIME_ZONE_ID);
+  const today = moment().tz(UTC_TIME_ZONE_ID);
+  const daysDiff = today.diff(formattedDate, "days");
+  return investStatus === InvestStatus.ActuallyListed
+    ? t("invest.listed_days").replace("{date}", dateFormatLongMonthYearDate(date)).replace("{days}", String(daysDiff))
+    : investStatus === InvestStatus.ReadyListing
+      ? t("invest.ready_listing")
+      : investStatus === InvestStatus.ListingProgress
+        ? t("invest.listing_coming_soon")
+        : investStatus === InvestStatus.WaitingFullTokenization
+          ? t("invest.waiting_full_tokenization")
+          : t("invest.unknown");
 }
