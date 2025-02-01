@@ -12,7 +12,6 @@ import {
 import { deleteFileFromIPFS, uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
 import { getSignedLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { getIpfsHashFromUrl, getNftJSONFromCarInfo } from "@/utils/ipfsUtils";
-import { env } from "@/utils/env";
 import { PlatformCarImage, UploadedCarImage } from "@/model/FileToUpload";
 import { Err, Result, TransactionErrorCode } from "@/model/utils/result";
 import { isUserHasEnoughFunds } from "@/utils/wallet";

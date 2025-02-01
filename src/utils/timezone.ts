@@ -5,6 +5,7 @@ import { TimezoneResponse } from "@/pages/api/timezoneByLocation";
 import { formatLocationInfoUpToState, LocationInfo } from "@/model/LocationInfo";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { UTC_TIME_ZONE_ID } from "./date";
+import { getLocationInfoFromGoogleByAddress } from "./location";
 
 // Client functions with cache
 export async function getTimeZoneIdByLocation(latitude: number, longitude: number) {
@@ -30,19 +31,19 @@ export async function getTimeZoneIdByAddress(locationInfo: Pick<LocationInfo, "c
   const address = formatLocationInfoUpToState(locationInfo);
   if (isEmpty(address)) {
     console.log("TimeZone Id was not fetched: address is empty");
-    return "";
+    return null;
   }
 
   const response: AxiosResponse = await axios.get(`/api/timezoneByAddress?address=${address}`);
 
   if (response.status !== 200) {
     console.log("TimeZone Id was not fetched: " + response.status + " with data " + response.data);
-    return "";
+    return null;
   }
   const data = response.data as TimezoneResponse;
   if ("error" in data) {
     console.log("TimeZone Id was not fetched: with error " + data.error);
-    return "";
+    return null;
   }
   return data.timezone;
 }
@@ -88,18 +89,16 @@ export async function getTimeZoneIdFromGoogleByAddress(
     return Err("getTimeZoneIdFromAddress error: GOOGLE_MAPS_API_KEY is missed");
   }
 
-  const googleGeoCodeResponse = await fetch(
-    `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${googleMapsApiKey}`
-  );
+  const locationInfoResult = await getLocationInfoFromGoogleByAddress(address, googleMapsApiKey);
 
-  if (!googleGeoCodeResponse.ok) {
-    console.error(`getTimeZoneIdFromAddress error: googleGeoCodeResponse is ${googleGeoCodeResponse.status}`);
-    return Err(`getTimeZoneIdFromAddress error: googleGeoCodeResponse is ${googleGeoCodeResponse.status}`);
+  if (!locationInfoResult.ok) {
+    console.error(`getTimeZoneIdFromAddress error: locationInfoResult error: ${locationInfoResult.error}`);
+    return Err(`getTimeZoneIdFromAddress error: locationInfoResult error: ${locationInfoResult.error}`);
   }
 
-  const googleGeoCodeJson = await googleGeoCodeResponse.json();
-  const locationLat = googleGeoCodeJson.results[0]?.geometry?.location?.lat ?? 0;
-  const locationLng = googleGeoCodeJson.results[0]?.geometry?.location?.lng ?? 0;
-
-  return getTimeZoneIdFromGoogleByLocation(locationLat, locationLng, googleMapsApiKey);
+  return getTimeZoneIdFromGoogleByLocation(
+    locationInfoResult.value.latitude,
+    locationInfoResult.value.longitude,
+    googleMapsApiKey
+  );
 }

@@ -28,7 +28,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
       try {
         setIsLoading(true);
 
-        const timeZoneId = await getTimeZoneIdByAddress(request.searchLocation);
+        const timeZoneId = (await getTimeZoneIdByAddress(request.searchLocation)) ?? "";
         const { contractDateFromUTC, contractDateToUTC, contractSearchCarParams } =
           formatSearchAvailableCarsContractRequest(request, {}, timeZoneId);
 
