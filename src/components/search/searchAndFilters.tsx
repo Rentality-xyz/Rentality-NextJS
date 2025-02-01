@@ -31,6 +31,7 @@ import bgInput from "@/images/bg_input.png";
 import RntFilterSelect from "../common/RntFilterSelect";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/cachedAxios";
+import { getTimeZoneIdByAddress } from "@/utils/timezone";
 
 export default function SearchAndFilters({
   initValue,
@@ -87,27 +88,8 @@ export default function SearchAndFilters({
 
   useEffect(() => {
     const getGMTFromLocation = async () => {
-      const address = formatLocationInfoUpToState(searchCarRequest.searchLocation);
-      if (isEmpty(address)) {
-        setTimeZoneId("");
-        return;
-      }
-
-      var url = new URL(`/api/parseLocation`, window.location.origin);
-      url.searchParams.append("address", address);
-      const apiResponse: AxiosResponse = await axios.get(url.toString());
-
-      if (apiResponse.status !== 200) {
-        setTimeZoneId("");
-        return;
-      }
-      const apiJson = apiResponse.data as ParseLocationResponse;
-      if ("error" in apiJson) {
-        setTimeZoneId("");
-        return;
-      }
-
-      setTimeZoneId(apiJson.timeZoneId);
+      const timeZoneId = await getTimeZoneIdByAddress(searchCarRequest.searchLocation);
+      setTimeZoneId(timeZoneId ?? "");
     };
 
     getGMTFromLocation();
