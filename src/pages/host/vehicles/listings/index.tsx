@@ -5,17 +5,19 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
-import { initializeDimoSDK, LoginWithDimo, ShareVehiclesWithDimo } from "@dimo-network/login-with-dimo";
+import {
+  initializeDimoSDK,
+  LoginWithDimo,
+  ShareVehiclesWithDimo,
+  useDimoAuthState,
+} from "@dimo-network/login-with-dimo";
 import React, { useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { CheckboxLight } from "@/components/common/rntCheckbox";
-import useDimo from "@/features/dimo/hooks/useDimo";
+import useDimo, { DimoCarResponse } from "@/features/dimo/hooks/useDimo";
 import { getIpfsURI } from "@/utils/ipfsUtils";
-import { useEthereum } from "@/contexts/web3/ethereumContext";
-import axios from "axios";
 
 function Listings() {
-  const ethereumInfo = useEthereum()
   const [isLoadingMyListings, myListings] = useMyListings();
   const router = useRouter();
   const { t } = useTranslation();
@@ -26,25 +28,13 @@ function Listings() {
   };
 
   //DIMO
-  const clientId = process.env.NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID;
-  const apiKey = process.env.NEXT_PUBLIC_SERVER_DIMO_API_KEY;
-  const domain = process.env.NEXT_PUBLIC_SERVER_DIMO_DOMAIN;
-
-  if (clientId && apiKey && domain) {
-    initializeDimoSDK({
-      clientId,
-      redirectUri: domain,
-      apiKey,
-    });
-  }
   const [isShowOnlyDimoCar, setIsShowOnlyDimoCar] = useState<boolean>(false);
- 
-  
   const {
     walletAddress,
     isLoadingDimo,
     dimoVehicles,
     isAuthenticated,
+    jwt,
     fetchDimoData,
     createRentalityCar,
     onRentalityAndDimoNotSyncMapped,
@@ -53,39 +43,35 @@ function Listings() {
   } = useDimo(myListings);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      fetchDimoData();
-    }
-  }, [walletAddress, isAuthenticated]);
+    if (!isAuthenticated) return;
+    fetchDimoData();
+  }, [walletAddress, isAuthenticated, fetchDimoData]);
 
   const { rentalityContracts } = useRentality();
-  const handleSaveDimoTokens = async (dimoToken: number, carId: number) => {
+
+  const clientId = process.env.NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID;
+  const apiKey = process.env.NEXT_PUBLIC_SERVER_DIMO_API_KEY;
+  const domain = process.env.NEXT_PUBLIC_SERVER_DIMO_DOMAIN;
+
+  if (!clientId || !apiKey || !domain) {
+    console.error("DIMO .env is not set");
+    return <div>{"dimo env not set"}</div>;
+  }
+
+  initializeDimoSDK({
+    clientId,
+    redirectUri: domain,
+    apiKey,
+  });
+
+  const handleSaveDimoTokens = async (dimoTokens: number[], carIds: number[]) => {
     if (!rentalityContracts) {
       console.error("Save dimo tokens id error: Rentality contract is null");
       return;
     }
-    if(!ethereumInfo) {
-      console.error("Save dimo token id error: Ethereum Info is null")
-      return;
-    }
-    const dimoSignature = walletAddress === null || dimoToken === 0 ? "0x" : 
-      await axios.post("/api/dimo/signDIMOId", {
-        address: walletAddress,
-        chainId: ethereumInfo.chainId,
-        dimoToken,
-    })
-    .then(response => response.data.signature) 
-    .catch(error => {
-        if (error.response && error.response.status === 404) {
-            return "0x"; 
-        } else {
-            throw error; 
-        }
-    });
     await rentalityContracts.gateway.saveDimoTokenIds(
-      BigInt(dimoToken),
-      BigInt(carId),
-      dimoSignature
+      dimoTokens.map((n) => BigInt(n)),
+      carIds.map((n) => BigInt(n))
     );
     console.log("Dimo tokens saved!");
   };
@@ -109,11 +95,6 @@ function Listings() {
       dimoTokenId: dimoCar.tokenId,
     })),
   ];
-
-  if (!clientId || !apiKey || !domain) {
-    console.error("DIMO .env is not set");
-    return <div>{"dimo env not set"}</div>;
-  }
 
   return (
     <>
@@ -184,7 +165,7 @@ function Listings() {
                     }}
                     onSyncWithDimo={async () => {
                       if (carForSync) {
-                        await handleSaveDimoTokens(carForSync.dimoTokenId, carForSync.carId);
+                        await handleSaveDimoTokens([carForSync.dimoTokenId], [carForSync.carId]);
                       }
                     }}
                     t={t}
@@ -204,7 +185,7 @@ function Listings() {
                       }}
                       onSyncWithDimo={async () => {
                         if (carForSync) {
-                          await handleSaveDimoTokens(carForSync.dimoTokenId, carForSync.carId);
+                          await handleSaveDimoTokens([carForSync.dimoTokenId], [carForSync.carId]);
                         }
                       }}
                       t={t}

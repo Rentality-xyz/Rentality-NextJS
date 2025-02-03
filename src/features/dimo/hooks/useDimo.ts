@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useDimoAuthState } from "@dimo-network/login-with-dimo";
 import axios from "@/utils/cachedAxios";
 import { useRouter } from "next/router";
@@ -45,6 +45,7 @@ interface UseDimoReturn {
 }
 
 const useDimo = (myListings: any[]): UseDimoReturn => {
+  // const walletAddress = "0xCAA591fA19a86762D1ed1B98b2057Ee233240b65";
   const { isAuthenticated, getValidJWT, walletAddress } = useDimoAuthState();
   const [jwt, setJwt] = useState<string | null>(null);
   const [isLoadingDimo, setIsLoadingDimo] = useState(true);
@@ -55,10 +56,10 @@ const useDimo = (myListings: any[]): UseDimoReturn => {
     if (isAuthenticated) {
       setJwt(getValidJWT());
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, getValidJWT]);
 
   // Function to fetch Dimo data based on the wallet address
-  const fetchDimoData = async () => {
+  const fetchDimoData = useCallback(async () => {
     try {
       setIsLoadingDimo(true);
       const response = await axios.get("/api/dimo/dimo", {
@@ -66,14 +67,13 @@ const useDimo = (myListings: any[]): UseDimoReturn => {
           user: walletAddress,
         },
       });
-
       setDimoVehicles(response.data);
-      setIsLoadingDimo(false);
     } catch (error) {
       console.error("Error fetching data from DIMO API:", error);
+    } finally {
       setIsLoadingDimo(false);
     }
-  };
+  }, [walletAddress]);
 
   const createRentalityCar = (car: DimoCarResponse) => {
     localStorage.setItem("dimo", JSON.stringify({ ...car, timestamp: new Date().getTime() }));
