@@ -4,10 +4,12 @@ import { InvestmentDTO, InvestmentWithMetadata } from "@/model/blockchain/schema
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
+import { mapInvestmentDTO, MappedInvestmentInfo } from "@/model/InvestmentInfo";
+import { InvestmentInfo } from "@/model/Investment";
 const useGetInvestments = () => {
   const {rentalityContracts} = useRentality();
   const ethereumInfo = useEthereum();
-  const [investments, setInvestments] = useState<InvestmentWithMetadata[]>([]);
+  const [investments, setInvestments] = useState<MappedInvestmentInfo[]>([]);
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [updateRequired, setUpdate] = useState<Boolean>(false);
   const updateData = () => {
@@ -51,10 +53,10 @@ const useGetInvestments = () => {
       const result = await Promise.all(
         investmentInfo.map(async (value) => {
           const metadata = parseMetaData(await getMetaDataFromIpfs(value.investment.car.tokenUri));
-          return {
+          return mapInvestmentDTO({
             investment: value,
             metadata: {...metadata, image: metadata.mainImage},
-          };
+          }, ethereumInfo.chainId);
         })
       );
       setInvestments(result);
