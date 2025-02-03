@@ -28,6 +28,27 @@ function Listings() {
   };
 
   //DIMO
+  const [isShowOnlyDimoCar, setIsShowOnlyDimoCar] = useState<boolean>(false);
+  const {
+    walletAddress,
+    isLoadingDimo,
+    dimoVehicles,
+    isAuthenticated,
+    jwt,
+    fetchDimoData,
+    createRentalityCar,
+    onRentalityAndDimoNotSyncMapped,
+    onDimoOnly,
+    onRentalityAndDimoSync,
+  } = useDimo(myListings);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    fetchDimoData();
+  }, [walletAddress, isAuthenticated, fetchDimoData]);
+
+  const { rentalityContracts } = useRentality();
+
   const clientId = process.env.NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID;
   const apiKey = process.env.NEXT_PUBLIC_SERVER_DIMO_API_KEY;
   const domain = process.env.NEXT_PUBLIC_SERVER_DIMO_DOMAIN;
@@ -42,26 +63,7 @@ function Listings() {
     redirectUri: domain,
     apiKey,
   });
-  const [isShowOnlyDimoCar, setIsShowOnlyDimoCar] = useState<boolean>(false);
-  const {
-    walletAddress,
-    isLoadingDimo,
-    dimoVehicles,
-    isAuthenticated,
-    fetchDimoData,
-    createRentalityCar,
-    onRentalityAndDimoNotSyncMapped,
-    onDimoOnly,
-    onRentalityAndDimoSync,
-  } = useDimo(myListings);
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchDimoData();
-    }
-  }, [walletAddress, isAuthenticated]);
-
-  const { rentalityContracts } = useRentality();
   const handleSaveDimoTokens = async (dimoTokens: number[], carIds: number[]) => {
     if (!rentalityContracts) {
       console.error("Save dimo tokens id error: Rentality contract is null");
