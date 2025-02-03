@@ -1,13 +1,16 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { useState, useEffect } from "react";
-import { InvestmentDTO, InvestmentWithMetadata } from "@/model/blockchain/schemas";
+import { InvestmentDTO } from "@/model/blockchain/schemas";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
+import { InvestmentInfoWithMetadata } from "@/model/InvestmentInfo";
+import { mapContractInvestmentDTOToInvestmentInfoWithMetadata } from "@/model/mappers/contractInvestmentDTOtoInvestmentInfo";
+
 const useGetInvestments = () => {
   const {rentalityContracts} = useRentality();
   const ethereumInfo = useEthereum();
-  const [investments, setInvestments] = useState<InvestmentWithMetadata[]>([]);
+  const [investments, setInvestments] = useState<InvestmentInfoWithMetadata[]>([]);
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   const [updateRequired, setUpdate] = useState<Boolean>(false);
   const updateData = () => {
@@ -51,10 +54,10 @@ const useGetInvestments = () => {
       const result = await Promise.all(
         investmentInfo.map(async (value) => {
           const metadata = parseMetaData(await getMetaDataFromIpfs(value.investment.car.tokenUri));
-          return {
+          return mapContractInvestmentDTOToInvestmentInfoWithMetadata({
             investment: value,
             metadata: {...metadata, image: metadata.mainImage},
-          };
+          }, ethereumInfo.chainId);
         })
       );
       setInvestments(result);
