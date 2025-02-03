@@ -48,6 +48,7 @@ function Listings() {
     isLoadingDimo,
     dimoVehicles,
     isAuthenticated,
+    jwt,
     fetchDimoData,
     createRentalityCar,
     onRentalityAndDimoNotSyncMapped,
