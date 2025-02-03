@@ -314,7 +314,7 @@ export default function CarEditForm({
                 isNewCar && !isVINVerified && dimoData === undefined ? (
                   <RntCarMakeSelect
                     id="brand"
-                    className="lg:w-60"
+                    className="lg:min-w-[17ch]"
                     label={t_car("brand")}
                     value={value}
                     readOnly={!isFormEnabled || isVINVerified}
@@ -353,7 +353,7 @@ export default function CarEditForm({
                 isNewCar && !isVINVerified && dimoData === undefined ? (
                   <RntCarModelSelect
                     id="model"
-                    className="lg:w-60"
+                    className="lg:min-w-[15ch]"
                     label={t_car("model")}
                     make_id={selectedMakeID}
                     readOnly={!isNewCar || !isFormEnabled}

@@ -1,11 +1,10 @@
-import { useCallback, useState } from "react";
 import { RefferalProgram as ReferralProgram } from "@/model/blockchain/schemas";
-import { Err, Ok, Result } from "@/model/utils/result";
-import useReferralProgram from "@/features/referralProgram/hooks/useReferralProgram";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { useTranslation } from "react-i18next";
 import { getReferralProgramDescriptionText } from "../utils";
+import { useRentality } from "@/contexts/rentalityContext";
+import { usePaginationForListApi } from "@/hooks/pagination";
 
 export type ReferralHistoryInfo = {
   points: number;
@@ -13,75 +12,54 @@ export type ReferralHistoryInfo = {
   methodDescriptions: string;
 };
 
-const usePointsHistory = () => {
-  const { getPointsHistory } = useReferralProgram();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<ReferralHistoryInfo[]>([]);
-  const [allData, setAllData] = useState<ReferralHistoryInfo[] | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPageCount, setTotalPageCount] = useState<number>(0);
+export const REFERRAL_POINTS_HISTORY_QUERY_KEY = "ReferralPointsHistory";
+
+const usePointsHistory = (initialPage: number = 1, initialItemsPerPage: number = 10) => {
+  const { rentalityContracts } = useRentality();
   const { t } = useTranslation();
 
-  const filterData = useCallback((data: ReferralHistoryInfo[], page: number = 1, itemsPerPage: number = 10) => {
-    const slicedData = data.slice((page - 1) * itemsPerPage, page * itemsPerPage);
-    setCurrentPage(page);
-    setData(slicedData);
-    console.log(`slicedData.length: ${slicedData.length} | itemsPerPage: ${itemsPerPage}`);
+  const { isLoading, data, error, fetchData } = usePaginationForListApi<ReferralHistoryInfo>(
+    REFERRAL_POINTS_HISTORY_QUERY_KEY,
+    async () => {
+      if (!rentalityContracts) {
+        throw new Error("Contracts not initialized");
+      }
+      console.debug("Fetching points history");
 
-    setTotalPageCount(Math.ceil(data.length / itemsPerPage));
-  }, []);
+      const result = await rentalityContracts.referralProgram.getPointsHistory();
 
-  const fetchData = useCallback(
-    async (page: number = 1, itemsPerPage: number = 10): Promise<Result<boolean, string>> => {
-      if (allData !== null) {
-        filterData(allData, page, itemsPerPage);
-        return Ok(true);
+      if (!result.ok) {
+        throw new Error(result.error.message);
       }
 
-      try {
-        setIsLoading(true);
-        setCurrentPage(page);
-        setTotalPageCount(0);
+      return await Promise.all(
+        result.value.map(async (historyDataDto) => {
+          const isOneTime = historyDataDto.oneTime;
 
-        const historyData = await getPointsHistory();
+          const methodDescriptions =
+            historyDataDto.method === ReferralProgram.FinishTripAsGuest
+              ? isOneTime
+                ? t("referrals_and_point.referral_program.finish_trip_as_guest_one_time")
+                : t("referrals_and_point.referral_program.finish_trip_as_guest")
+              : getReferralProgramDescriptionText(t, historyDataDto.method);
 
-        if (historyData) {
-          const data: ReferralHistoryInfo[] = await Promise.all(
-            historyData.map(async (historyDataDto) => {
-              const isOneTime = historyDataDto.oneTime;
-
-              const methodDescriptions =
-                historyDataDto.method === ReferralProgram.FinishTripAsGuest
-                  ? isOneTime
-                    ? t("referrals_and_point.referral_program.finish_trip_as_guest_one_time")
-                    : t("referrals_and_point.referral_program.finish_trip_as_guest")
-                  : getReferralProgramDescriptionText(t, historyDataDto.method);
-
-              return {
-                points: Number(historyDataDto.points),
-                date: getDateFromBlockchainTimeWithTZ(historyDataDto.date, UTC_TIME_ZONE_ID),
-                methodDescriptions,
-              };
-            })
-          );
-
-          setAllData(data);
-          filterData(data, page, itemsPerPage);
-        }
-        return Ok(true);
-      } catch (e) {
-        console.error("fetchData error" + e);
-        return Err("Get data error. See logs for more details");
-      } finally {
-        setIsLoading(false);
-      }
+          return {
+            points: Number(historyDataDto.points),
+            date: getDateFromBlockchainTimeWithTZ(historyDataDto.date, UTC_TIME_ZONE_ID),
+            methodDescriptions,
+          };
+        })
+      );
     },
-    [allData]
+    !!rentalityContracts,
+    initialPage,
+    initialItemsPerPage
   );
 
   return {
     isLoading,
-    data: { data: data, currentPage: currentPage, totalPageCount: totalPageCount },
+    data: data,
+    error,
     fetchData,
   } as const;
 };

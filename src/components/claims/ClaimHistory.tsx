@@ -13,7 +13,6 @@ import { usePathname } from "next/navigation";
 import ClaimFileList from "./ClaimFileList";
 import ClaimHistoryMobileCard from "./ClaimHistoryMobileCard";
 import { cn } from "@/utils";
-import { minHeight } from "@mui/system";
 
 type Props = {
   isHost: boolean;

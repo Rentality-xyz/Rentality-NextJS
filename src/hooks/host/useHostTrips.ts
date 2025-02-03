@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { TripInfo, AllowedChangeTripAction } from "@/model/TripInfo";
-import { IRentalityContract } from "@/model/blockchain/IRentalityContract";
-import { useRentality } from "@/contexts/rentalityContext";
+import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { ContractTrip, ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 import { mapTripDTOtoTripInfo } from "@/model/utils/TripDTOtoTripInfo";
@@ -54,7 +53,7 @@ const useHostTrips = () => {
       }
     };
 
-    const checkInTrip = async (tripId: bigint, params: string[]) => {
+    const checkInTrip = async (tripId: bigint, params: string[], tripPhotosUrls: string[]) => {
       if (!rentalityContracts) {
         console.error("checkInTrip error: rentalityContract is null");
         return false;
@@ -67,11 +66,11 @@ const useHostTrips = () => {
         const insuranceNumber = params[3];
 
         const transaction = await rentalityContracts.gateway.checkInByHost(
-          tripId,
-          [startFuelLevelInPercents, startOdometr],
-          insuranceCompany,
-          insuranceNumber
-        );
+            tripId,
+            [startFuelLevelInPercents, startOdometr],
+            insuranceCompany,
+            insuranceNumber
+          );
         await transaction.wait();
         return true;
       } catch (e) {
@@ -80,7 +79,7 @@ const useHostTrips = () => {
       }
     };
 
-    const checkOutTrip = async (tripId: bigint, params: string[]) => {
+    const checkOutTrip = async (tripId: bigint, params: string[], tripPhotosUrls: string[]) => {
       if (!rentalityContracts) {
         console.error("checkOutTrip error: rentalityContract is null");
         return false;
@@ -90,10 +89,11 @@ const useHostTrips = () => {
         const endFuelLevelInPercents = BigInt(Number(params[0]) * 100);
         const endOdometr = BigInt(params[1]);
 
-        const transaction = await rentalityContracts.gateway.checkOutByHost(tripId, [
-          endFuelLevelInPercents,
-          endOdometr,
-        ]);
+        const transaction = await rentalityContracts.gateway.checkOutByHost(
+          tripId,
+          [endFuelLevelInPercents, endOdometr]
+        );
+
         await transaction.wait();
         return true;
       } catch (e) {
@@ -234,13 +234,13 @@ const useHostTrips = () => {
       return result;
     };
 
-    const getTrips = async (rentalityContract: IRentalityContract) => {
+    const getTrips = async (rentalityContracts: IRentalityContracts) => {
       try {
-        if (rentalityContract == null) {
+        if (!rentalityContracts) {
           console.error("getTrips error: contract is null");
           return;
         }
-        const tripsBookedView: ContractTripDTO[] = await rentalityContract.getTripsAs(true);
+        const tripsBookedView: ContractTripDTO[] = await rentalityContracts.gateway.getTripsAs(true);
 
         const tripsBookedData =
           tripsBookedView.length === 0
@@ -270,7 +270,7 @@ const useHostTrips = () => {
     setUpdateRequired(false);
     setIsLoadingTrips(true);
 
-    getTrips(rentalityContracts.gateway)
+    getTrips(rentalityContracts)
       .then((data) => {
         setTripsBooked(
           data

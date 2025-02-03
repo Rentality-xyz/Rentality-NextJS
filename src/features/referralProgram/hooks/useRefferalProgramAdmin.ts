@@ -5,7 +5,7 @@ import {
 } from "@/model/blockchain/schemas";
 import { useRentalityAdmin } from "@/contexts/rentalityContext";
 
-const useInviteLink = () => {
+function useRefferalProgramAdmin() {
   const { admin } = useRentalityAdmin();
 
   const manageReferralBonusAccrual = async (
@@ -46,6 +46,6 @@ const useInviteLink = () => {
     manageReferralDiscount,
     manageTearInfo,
   } as const;
-};
+}
 
-export default useInviteLink;
+export default useRefferalProgramAdmin;

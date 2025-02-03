@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState, useRef } from "react";
 import { getRefuelCharge, TripInfo } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
 import RntButton from "@/components/common/rntButton";
@@ -13,6 +13,10 @@ import {
 import { calculateDays } from "@/utils/date";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
+import useFeatureFlags from "@/hooks/useFeatureFlags";
+import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton";
+import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import useUserMode, { isHost } from "@/hooks/useUserMode";
 
 interface ChangeStatusGuestStartedFormProps {
   tripInfo: TripInfo;
@@ -31,6 +35,7 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
       resolver: zodResolver(changeStatusGuestStartedFormSchema),
     });
     const { errors, isSubmitting } = formState;
+    const { userMode } = useUserMode();
 
     const [endLevelInPercents, setEndLevelInPercents] = useState<number | undefined>(undefined);
     const [overmileValue, setOvermileValue] = useState<number>(0);
@@ -42,6 +47,13 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
     let depositToBeReturned = depositPaid - refuelCharge - overmilesCharge;
     depositToBeReturned = depositToBeReturned > 0 ? depositToBeReturned : 0;
 
+    const { hasFeatureFlag } = useFeatureFlags();
+    const [ hasTripPhotosFeatureFlag, setHasTripPhotosFeatureFlag ] = useState<boolean>(false);
+
+    const carPhotosUploadButtonRef = useRef<any>(null);
+
+    const { showDialog } = useRntDialogs();
+
     useEffect(() => {
       const endOdometr = odometer ?? 0;
       const tripDays = calculateDays(tripInfo.tripStart, tripInfo.tripEnd);
@@ -50,12 +62,32 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
       setOvermileValue(overMiles);
     }, [tripInfo, odometer]);
 
+    useEffect(() => {
+      hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+        setHasTripPhotosFeatureFlag(hasTripPhotosFeatureFlag);
+      });
+    },[]);
+
     async function onFormSubmit(formData: ChangeStatusGuestStartedFormValues) {
+
+      let tripPhotosUrls: string[] = [];
+
+      if (hasTripPhotosFeatureFlag) {
+        tripPhotosUrls = await carPhotosUploadButtonRef.current.saveUploadedFiles();
+        if(tripPhotosUrls.length === 0){
+          showDialog(t("common.photos_required"));
+          return;
+        }
+      }
+
       changeStatusCallback(() => {
-        return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), [
-          formData.fuelOrBatteryLevel.toString(),
-          formData.odotemer.toString(),
-        ]);
+        return tripInfo.allowedActions[0].action(
+          BigInt(tripInfo.tripId),
+          [
+            formData.fuelOrBatteryLevel.toString(),
+            formData.odotemer.toString(),
+          ],
+          tripPhotosUrls);
       });
     }
 
@@ -127,6 +159,16 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
                 </div>
               </div>
             </div>
+            { hasTripPhotosFeatureFlag && (
+              <div className="flex flex-1 flex-col">
+                <CarPhotosUploadButton
+                  ref={carPhotosUploadButtonRef}
+                  isHost={isHost(userMode)}
+                  isStart={true}
+                  tripId={tripInfo.tripId}
+                />
+              </div>
+            )}
             <div className="flex flex-1 flex-col">
               <div className="mt-2 font-bold">Reimbursement charge:</div>
               <div className="mt-2 grid grid-cols-2 text-sm md:mt-4">
