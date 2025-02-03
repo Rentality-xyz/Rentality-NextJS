@@ -59,7 +59,7 @@ function Listings() {
   useEffect(() => {
     if (!isAuthenticated) return;
     fetchDimoData();
-  }, [walletAddress, isAuthenticated, fetchDimoData]);
+  }, [walletAddress, isAuthenticated]);
 
   const { rentalityContracts } = useRentality();
   const handleSaveDimoTokens = async (dimoTokens: number[], carIds: number[]) => {
