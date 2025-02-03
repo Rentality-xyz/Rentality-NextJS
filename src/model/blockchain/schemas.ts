@@ -867,7 +867,7 @@ export type InvestmentDTO = {
 
 
 };
-export type InvestmentWithMetadata = {
+export type InvestmentDTOWithMetadata = {
   investment: InvestmentDTO;
   metadata: CarMetadata;
 };
