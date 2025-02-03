@@ -19,9 +19,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { env } from "@/utils/env";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { allSupportedBlockchainList } from "@/model/blockchain/blockchainList";
-import { getTimeZoneIdFromAddress } from "@/utils/timezone";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGateway";
+import { GOOGLE_MAPS_MAP_ID } from "@/utils/constants";
+import { getTimeZoneIdFromGoogleByLocation } from "@/utils/timezone";
 import { correctDaylightSavingTime } from "@/utils/correctDaylightSavingTime";
 
 export type PublicSearchCarsResponse =
@@ -75,10 +76,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  const location = `${city as string}, ${state as string}, ${country as string}`;
-
-  const timeZoneId = await getTimeZoneIdFromAddress(location);
-  if (isEmpty(timeZoneId)) {
+  const timeZoneIdResult = await getTimeZoneIdFromGoogleByLocation(
+    Number(latitude),
+    Number(longitude),
+    GOOGLE_MAPS_MAP_ID
+  );
+  if (!timeZoneIdResult.ok) {
     res.status(500).json({ error: "API checkTrips error: GOOGLE_MAPS_API_KEY was not set" });
     return;
   }
@@ -95,7 +98,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       city: "",
       latitude: Number(latitude as string),
       longitude: Number(longitude as string),
-      timeZoneId: "",
+      timeZoneId: timeZoneIdResult.value,
     },
     dateFromInDateTimeStringFormat: dateFrom as string,
     dateToInDateTimeStringFormat: dateTo as string,
@@ -153,7 +156,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const { contractDateFromUTC, contractDateToUTC, contractSearchCarParams } = formatSearchAvailableCarsContractRequest(
     searchCarRequest,
     searchCarFilters,
-    timeZoneId
+    timeZoneIdResult.value
   );
   let availableCarsView: ContractSearchCarWithDistance[];
 
@@ -234,10 +237,10 @@ function formatSearchAvailableCarsContractRequest(
   timeZoneId: string
 ) {
   const startCarLocalDateTime = moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, timeZoneId).toDate();
-  
+
   let endCarLocalDateTime = moment.tz(searchCarRequest.dateToInDateTimeStringFormat, timeZoneId).toDate();
   endCarLocalDateTime = correctDaylightSavingTime(startCarLocalDateTime, endCarLocalDateTime)
-  
+
   const contractDateFromUTC = getBlockchainTimeFromDate(startCarLocalDateTime);
   const contractDateToUTC = getBlockchainTimeFromDate(endCarLocalDateTime);
   const contractSearchCarParams: ContractSearchCarParams = {
