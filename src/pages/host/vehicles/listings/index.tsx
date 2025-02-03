@@ -57,9 +57,8 @@ function Listings() {
   } = useDimo(myListings);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      fetchDimoData();
-    }
+    if (!isAuthenticated) return;
+    fetchDimoData();
   }, [walletAddress, isAuthenticated]);
 
   const { rentalityContracts } = useRentality();
