@@ -1,7 +1,8 @@
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { env } from "@/utils/env";
 import { isEmpty } from "@/utils/string";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { Err, Ok, Result } from "@/model/utils/result";
+import { getLocationInfoFromGoogleByAddress } from "@/utils/location";
 
 export type ParseLocationRequest = {
   address: string;
@@ -16,102 +17,55 @@ export type ParseLocationResponse =
       locationLatitude: string;
       locationLongitude: string;
       timeZoneId: string;
-      rawUtcOffsetInSec: number;
-      dstOffsetInSec: number;
     }
   | {
       error: string;
     };
 
-const getAddressComponents = (placeDetails: google.maps.places.PlaceResult, fieldName: string) => {
-  return placeDetails.address_components?.find((i) => i?.types?.includes(fieldName));
-};
-
-export const getLocationDetails = async (
-  address: string,
-  GOOGLE_MAPS_API_KEY: string,
-  timestamp?: number
-): Promise<ParseLocationResponse> => {
-  if (isEmpty(address)) {
-    return { error: "'address' is not provided or empty" };
-  }
-
-  const googleGeoCodeResponse = await fetch(
-    `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${GOOGLE_MAPS_API_KEY}`
-  );
-
-  if (!googleGeoCodeResponse.ok) {
-    return { error: `ParseLocation error: googleGeoCodeResponse is ${googleGeoCodeResponse.status}` };
-  }
-  const googleGeoCodeJson = await googleGeoCodeResponse.json();
-  const placeDetails = googleGeoCodeJson.results[0] as google.maps.places.PlaceResult;
-
-  const country = getAddressComponents(placeDetails, "country")?.short_name ?? "";
-  const state = getAddressComponents(placeDetails, "administrative_area_level_1")?.long_name ?? "";
-  const city =
-    getAddressComponents(placeDetails, "locality")?.long_name ??
-    "" ??
-    getAddressComponents(placeDetails, "sublocality_level_1")?.long_name ??
-    "";
-  const placeLat = placeDetails?.geometry?.location?.lat ?? 0; //because lat returns as number and not as ()=>number
-  const placeLng = placeDetails?.geometry?.location?.lng ?? 0; //because lat returns as number and not as ()=>number
-
-  const locationLat = typeof placeLat === "number" ? placeLat.toFixed(6) : placeLat().toFixed(6);
-  const locationLng = typeof placeLng === "number" ? placeLng.toFixed(6) : placeLng().toFixed(6);
-
-  var googleTimeZoneResponse = await fetch(
-    `https://maps.googleapis.com/maps/api/timezone/json?location=${locationLat},${locationLng}&timestamp=${timestamp ?? 0}&key=${GOOGLE_MAPS_API_KEY}`
-  );
-  if (!googleTimeZoneResponse.ok) {
-    return {
-      error: `getUtcOffsetMinutesFromLocation error: googleTimeZoneResponse is ${googleTimeZoneResponse.status}`,
-    };
-  }
-
-  const googleTimeZoneJson = await googleTimeZoneResponse.json();
-
-  const timeZoneId = googleTimeZoneJson?.timeZoneId ?? UTC_TIME_ZONE_ID;
-  const dstOffsetInSec = Number(googleTimeZoneJson?.dstOffset ?? "0");
-  const rawOffsetInSec = Number(googleTimeZoneJson?.rawOffset ?? "0");
-
-  const result = {
-    country: country,
-    state: state,
-    city: city,
-    locationLatitude: locationLat,
-    locationLongitude: locationLng,
-    timeZoneId: timeZoneId,
-    rawUtcOffsetInSec: rawOffsetInSec,
-    dstOffsetInSec: dstOffsetInSec,
-  };
-
-  return result;
-};
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ParseLocationResponse>) {
-  const GOOGLE_MAPS_API_KEY = env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const GOOGLE_MAPS_API_KEY = env.GOOGLE_MAPS_API_KEY;
   if (isEmpty(GOOGLE_MAPS_API_KEY)) {
     console.error("ParseLocation error: GOOGLE_MAPS_API_KEY was not set");
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
 
+  const parseQueryResult = parseQuery(req);
+  if (!parseQueryResult.ok) {
+    res.status(400).json({ error: parseQueryResult.error });
+    return;
+  }
+
+  const { address, timestamp } = parseQueryResult.value;
+  console.log(`\nCalling ParseLocation API with params: 'address'=${address} | 'timestamp'=${timestamp}`);
+
+  const locationInfoResult = await getLocationInfoFromGoogleByAddress(address, GOOGLE_MAPS_API_KEY);
+
+  if (!locationInfoResult.ok) {
+    console.error(locationInfoResult.error);
+    res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
+    return;
+  }
+
+  res.status(200).json({
+    country: locationInfoResult.value.country,
+    state: locationInfoResult.value.state,
+    city: locationInfoResult.value.city,
+    locationLatitude: locationInfoResult.value.latitude.toFixed(6),
+    locationLongitude: locationInfoResult.value.longitude.toFixed(6),
+    timeZoneId: locationInfoResult.value.timeZoneId,
+  });
+  return;
+}
+
+function parseQuery(req: NextApiRequest): Result<ParseLocationRequest, string> {
   const { address: addressQuery, timestamp: timestampQuery } = req.query;
   const address = typeof addressQuery === "string" ? addressQuery : "";
   const timestamp = typeof timestampQuery === "string" ? Number(timestampQuery) : 0;
 
   if (isEmpty(address)) {
-    res.status(500).json({ error: "'address' is not provided or empty" });
-    return;
-  }
-  const locationDetails = await getLocationDetails(address, GOOGLE_MAPS_API_KEY, timestamp);
-
-  if ("error" in locationDetails) {
-    console.error(locationDetails.error);
-    res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
-    return;
+    return Err("'address' is not provided or empty");
   }
 
-  res.status(200).json(locationDetails);
-  return;
+  return Ok({ address, timestamp });
 }
