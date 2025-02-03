@@ -13,7 +13,7 @@ import arrowUpTurquoise from "../../images/arrows/arrowUpTurquoise.svg";
 import arrowDownTurquoise from "../../images/arrows/arrowDownTurquoise.svg";
 import Image from "next/image";
 import SearchDeliveryLocations from "@/components/search/searchDeliveryLocations";
-import { formatLocationInfoUpToCity } from "@/model/LocationInfo";
+import { formatLocationInfoUpToCity, formatLocationInfoUpToState } from "@/model/LocationInfo";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { placeDetailsToLocationInfo } from "@/utils/location";
 import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
@@ -29,6 +29,9 @@ import { FilterLimits } from "@/model/SearchCarsResult";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 import bgInput from "@/images/bg_input.png";
 import RntFilterSelect from "../common/RntFilterSelect";
+import { AxiosResponse } from "axios";
+import axios from "@/utils/cachedAxios";
+import { getTimeZoneIdByAddress } from "@/utils/timezone";
 
 export default function SearchAndFilters({
   initValue,
@@ -85,27 +88,8 @@ export default function SearchAndFilters({
 
   useEffect(() => {
     const getGMTFromLocation = async () => {
-      const address = formatLocationInfoUpToCity(searchCarRequest.searchLocation);
-      if (isEmpty(address)) {
-        setTimeZoneId("");
-        return;
-      }
-
-      var url = new URL(`/api/parseLocation`, window.location.origin);
-      url.searchParams.append("address", address);
-      const apiResponse = await fetch(url);
-
-      if (!apiResponse.ok) {
-        setTimeZoneId("");
-        return;
-      }
-      const apiJson = (await apiResponse.json()) as ParseLocationResponse;
-      if ("error" in apiJson) {
-        setTimeZoneId("");
-        return;
-      }
-
-      setTimeZoneId(apiJson.timeZoneId);
+      const timeZoneId = await getTimeZoneIdByAddress(searchCarRequest.searchLocation);
+      setTimeZoneId(timeZoneId ?? "");
     };
 
     getGMTFromLocation();

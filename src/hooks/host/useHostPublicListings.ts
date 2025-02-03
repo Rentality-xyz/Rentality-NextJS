@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isEmpty } from "@/utils/string";
+import { AxiosResponse } from "axios";
+import axios from "@/utils/cachedAxios";
 
 const useHostPublicListings = (hostAddressOrName: string) => {
   const ethereumInfo = useEthereum();
@@ -20,20 +22,18 @@ const useHostPublicListings = (hostAddressOrName: string) => {
         var url = new URL(`/api/hostPublicListings`, window.location.origin);
         if (chainId) url.searchParams.append("chainId", chainId.toString());
         url.searchParams.append("host", hostAddressOrName);
-        const apiResponse = await fetch(url);
+        const apiResponse: AxiosResponse = await axios.get(url.toString());
 
-        if (!apiResponse.ok) {
-          console.error(`fetchHostPublicListings fetch error: + ${apiResponse.statusText}`);
+        if (apiResponse.status !== 200) {
+          console.error(`fetchHostPublicListings fetch error: + ${apiResponse.status}`);
           return;
         }
-
-        const apiJson = await apiResponse.json();
-        if (!Array.isArray(apiJson)) {
+        if (!Array.isArray(apiResponse.data)) {
           console.error("fetchHostPublicListings fetch wrong response format:");
           return;
         }
 
-        const hostPublicListingsData = apiJson as BaseCarInfo[];
+        const hostPublicListingsData = apiResponse.data as BaseCarInfo[];
         setHostPublicListings(hostPublicListingsData);
       } catch (e) {
         console.error("fetchHostPublicListings error:" + e);

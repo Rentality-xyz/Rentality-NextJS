@@ -28,6 +28,7 @@ export const env = createEnv({
     CARAPI_SECRET: z.string(),
 
     TEST_WALLETS_ADDRESSES: z.string(),
+    GOOGLE_MAPS_API_KEY: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_INCLUDE_MAINNETS: booleanEnvType,
