@@ -1,6 +1,5 @@
 import RntButton from "../../../components/common/rntButton";
 import React, { useState } from "react";
-import { InvestmentDTO, InvestmentWithMetadata } from "@/model/blockchain/schemas";
 import { useTranslation } from "react-i18next";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
@@ -9,6 +8,8 @@ import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { dateFormatLongMonthYearDate } from "@/utils/datetimeFormatters";
 import moment from "moment";
+import { InvestmentInfoWithMetadata } from "@/model/InvestmentInfo";
+import { InvestmentInfo } from "@/model/InvestmentInfo";
 
 const ccsDividerVert = "max-2xl:hidden absolute right-[-5px] top-1/2 h-[80%] w-px translate-y-[-50%] bg-gray-500";
 const ccsDividerHor = "2xl:hidden absolute bottom-[-10px] left-[5%] h-px w-[90%] translate-y-[-50%] bg-gray-500";
@@ -30,7 +31,7 @@ export default function InvestCar({
   handleClaimIncome,
 }: {
   isHost: boolean;
-  searchInfo: InvestmentWithMetadata;
+  searchInfo: InvestmentInfoWithMetadata;
   handleInvest: (amount: number, investId: number) => void;
   isCreator: boolean;
   handleStartHosting: (investId: number) => Promise<void>;
@@ -98,10 +99,7 @@ export default function InvestCar({
                 <p className="2xl:text-lg">{t("invest.total_price")}</p>
                 <div className="mx-auto my-2 h-0.5 w-[40%] translate-y-[-50%] bg-white sm:w-[70%]"></div>
                 <p className="text-xl font-bold leading-none text-rentality-secondary 2xl:text-2xl">
-                  $
-                  {String(
-                    Number(searchInfo.investment.investment.priceInUsd) - Number(searchInfo.investment.payedInUsd)
-                  )}
+                  ${String(searchInfo.investment.investment.priceInUsd - searchInfo.investment.payedInUsd)}
                 </p>
                 <p className="leading-snug text-rentality-secondary 2xl:text-lg">{t("invest.balance_raised")}</p>
               </div>
@@ -118,32 +116,32 @@ export default function InvestCar({
   );
 }
 
-function getInvestmentStatus(investment: InvestmentDTO, t: (key: string) => string) {
-  return Number(investment.investment.priceInUsd) <= Number(investment.payedInUsd)
+function getInvestmentStatus(investment: InvestmentInfo, t: (key: string) => string) {
+  return investment.investment.priceInUsd <= investment.payedInUsd
     ? t("invest.fully_tokenized")
     : t("invest.available_invest");
 }
 
-function getInvestListingStatus(investment: InvestmentDTO, walletAddress: string, isHost: boolean) {
-  return Number(investment.listingDate) > 0
+function getInvestListingStatus(investment: InvestmentInfo, walletAddress: string, isHost: boolean) {
+  return investment.listed
     ? InvestStatus.ActuallyListed
-    : Number(investment.investment.priceInUsd) <= Number(investment.payedInUsd) &&
-        Number(investment.listingDate) <= 0 &&
+    : investment.investment.priceInUsd <= investment.payedInUsd &&
+        !investment.listed &&
         investment.creator === walletAddress &&
         isHost
       ? InvestStatus.ReadyListing
-      : Number(investment.investment.priceInUsd) <= Number(investment.payedInUsd) &&
-          Number(investment.listingDate) <= 0 &&
+      : investment.investment.priceInUsd <= investment.payedInUsd &&
+          !investment.listed &&
           investment.creator != walletAddress &&
           !isHost
         ? InvestStatus.ListingProgress
-        : Number(investment.investment.priceInUsd) > Number(investment.payedInUsd)
+        : investment.investment.priceInUsd > investment.payedInUsd
           ? InvestStatus.WaitingFullTokenization
           : InvestStatus.Unknown;
 }
 
 function getTxtInvestmentListingStatus(
-  investment: InvestmentDTO,
+  investment: InvestmentInfo,
   walletAddress: string,
   isHost: boolean,
   t: (key: string) => string
@@ -160,7 +158,7 @@ function getTxtInvestmentListingStatus(
           : t("invest.unknown");
 }
 
-function getColorInvestmentStatus(investment: InvestmentDTO, walletAddress: string, isHost: boolean) {
+function getColorInvestmentStatus(investment: InvestmentInfo, walletAddress: string, isHost: boolean) {
   const investStatus = getInvestListingStatus(investment, walletAddress, isHost);
   return investStatus === InvestStatus.ActuallyListed
     ? "bg-[#7355D7]"
@@ -170,20 +168,20 @@ function getColorInvestmentStatus(investment: InvestmentDTO, walletAddress: stri
 }
 
 function getBlocksForGuest(
-  investment: InvestmentDTO,
+  investment: InvestmentInfo,
   investmentAmount: number,
   handleChangeInvestmentAmount: (e: React.ChangeEvent<HTMLInputElement>) => void,
   handleClaimIncome: (investId: number) => Promise<void>,
   t: (key: string) => string
 ) {
-  const myIncome = Number(investment.myIncome) > 0 ? Number(investment.myIncome) / 100 : Number(investment.myIncome);
+  const myIncome = investment.myIncome > 0 ? investment.myIncome / 100 : investment.myIncome;
   return (
     <>
-      {blockStakeInAssetForGuest(Number(investment.myTokens), Number(investment.myInvestingSum), t)}
-      {Number(investment.myTokens) > 0 && myIncome === 0 && Number(investment.listingDate) !== 0
+      {blockStakeInAssetForGuest(investment.myTokens, investment.myInvestingSum, t)}
+      {investment.myTokens > 0 && myIncome === 0 && investment.listed
         ? blockExpectCompletedTripsForGuest(t)
-        : Number(investment.myTokens) > 0
-          ? btnClaimEarningsForGuest(myIncome, Number(investment.investmentId), handleClaimIncome, t)
+        : investment.myTokens > 0
+          ? btnClaimEarningsForGuest(myIncome, investment.investmentId, handleClaimIncome, t)
           : blockInvestNowForGuest(investmentAmount, handleChangeInvestmentAmount, t)}
     </>
   );
@@ -260,7 +258,7 @@ function blockInvestNowForGuest(
 
 function getBlocksForHost(
   isCreator: boolean,
-  investment: InvestmentDTO,
+  investment: InvestmentInfo,
   handleStartHosting: (investId: number) => Promise<void>,
   t: (key: string) => string
 ) {
@@ -275,7 +273,7 @@ function getBlocksForHost(
   return isCreator && isReadyToClaim() ? (
     <RntButton
       className="mx-auto mt-6 flex h-14 w-full items-center justify-center"
-      onClick={() => handleStartHosting(Number(investment.investmentId))}
+      onClick={() => handleStartHosting(investment.investmentId)}
     >
       <div className="flex w-full items-center justify-center text-white">
         <span className="ml-4 w-full">{t("invest.btn_start_hosting")}</span>
@@ -287,8 +285,13 @@ function getBlocksForHost(
   );
 }
 
-function getBlockIncome(investment: InvestmentDTO, walletAddress: string, isHost: boolean, t: (key: string) => string) {
-  const receivedEarnings = (Number(investment.income) * Number(investment.myPart)) / 100;
+function getBlockIncome(
+  investment: InvestmentInfo,
+  walletAddress: string,
+  isHost: boolean,
+  t: (key: string) => string
+) {
+  const receivedEarnings = (investment.income * investment.myPart) / 100;
   const head = isHost ? t("invest.host_management") : t("invest.your_expected_earnings");
   const investStatus = getInvestListingStatus(investment, walletAddress, isHost);
 
@@ -296,7 +299,7 @@ function getBlockIncome(investment: InvestmentDTO, walletAddress: string, isHost
     <>
       <p className="text-xl font-semibold text-rentality-secondary max-2xl:mb-4">{t("invest.earnings_history")}</p>
       <div className="flex w-full flex-grow flex-col items-center justify-center">
-        <p className="text-xl font-bold 2xl:text-2xl">${Number(investment.income)}</p>
+        <p className="text-xl font-bold 2xl:text-2xl">${investment.income}</p>
         <p className="2xl:text-lg">{t("invest.total_earnings")}</p>
         <div className="mx-auto my-2 h-0.5 w-[40%] translate-y-[-50%] bg-white sm:w-[70%]"></div>
         <p className="text-xl font-bold leading-none text-rentality-secondary 2xl:text-2xl">${receivedEarnings}</p>
@@ -307,25 +310,26 @@ function getBlockIncome(investment: InvestmentDTO, walletAddress: string, isHost
     <>
       <span className="text-lg text-rentality-secondary 2xl:text-xl fullHD:text-base">{head}</span>
       <span className="text-lg 2xl:text-xl">
-        {Number(investment.myPart)}% {t("invest.from_each_trip")}
+        {investment.myPart}% {t("invest.from_each_trip")}
       </span>
     </>
   );
 }
 
 function getCarListingStatus(
-  investment: InvestmentDTO,
+  investment: InvestmentInfo,
   walletAddress: string,
   isHost: boolean,
   t: (key: string) => string
 ) {
   const investStatus = getInvestListingStatus(investment, walletAddress, isHost);
-  const date = getDateFromBlockchainTimeWithTZ(Number(investment.listingDate), UTC_TIME_ZONE_ID);
-  const formattedDate = moment(date).tz(UTC_TIME_ZONE_ID);
+  const formattedDate = moment(investment.listingDate).tz(UTC_TIME_ZONE_ID);
   const today = moment().tz(UTC_TIME_ZONE_ID);
   const daysDiff = today.diff(formattedDate, "days");
   return investStatus === InvestStatus.ActuallyListed
-    ? t("invest.listed_days").replace("{date}", dateFormatLongMonthYearDate(date)).replace("{days}", String(daysDiff))
+    ? t("invest.listed_days")
+        .replace("{date}", dateFormatLongMonthYearDate(investment.listingDate))
+        .replace("{days}", String(daysDiff))
     : investStatus === InvestStatus.ReadyListing
       ? t("invest.ready_listing")
       : investStatus === InvestStatus.ListingProgress
