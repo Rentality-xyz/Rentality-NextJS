@@ -4,6 +4,7 @@ import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import RntInput from "../common/rntInput";
 import { InvestmentWithMetadata } from "@/model/blockchain/schemas";
 import { ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "@/model/EngineType";
+import { MappedInvestmentInfo } from "@/model/InvestmentInfo";
 
 type TFunction = (key: string, options?: { [key: string]: any }) => string;
 
@@ -18,7 +19,7 @@ export default function InvestCar({
   handleStartHosting,
   handleClaimIncome,
 }: {
-  searchInfo: InvestmentWithMetadata;
+  searchInfo: MappedInvestmentInfo;
   handleInvest: (amount: number, investId: number) => void;
   disableButton: boolean;
   isSelected: boolean;
