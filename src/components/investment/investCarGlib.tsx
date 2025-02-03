@@ -2,8 +2,8 @@ import RntButton from "../common/rntButton";
 import { useMemo, useState } from "react";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import RntInput from "../common/rntInput";
-import { InvestmentWithMetadata } from "@/model/blockchain/schemas";
 import { ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "@/model/EngineType";
+import { InvestmentInfoWithMetadata } from "@/model/InvestmentInfo";
 
 type TFunction = (key: string, options?: { [key: string]: any }) => string;
 
@@ -18,7 +18,7 @@ export default function InvestCarGlib({
   handleStartHosting,
   handleClaimIncome,
 }: {
-  searchInfo: InvestmentWithMetadata;
+  searchInfo: InvestmentInfoWithMetadata;
   handleInvest: (amount: number, investId: number) => void;
   disableButton: boolean;
   isSelected: boolean;
