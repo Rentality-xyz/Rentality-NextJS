@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { cn } from "@/utils";
-import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { dateFormatLongMonthYearDate } from "@/utils/datetimeFormatters";
 import moment from "moment";
@@ -81,6 +80,7 @@ export default function InvestCar({
                 : getBlocksForGuest(
                     searchInfo.investment,
                     investmentAmount,
+                    handleInvest,
                     handleChangeInvestmentAmount,
                     handleClaimIncome,
                     t
@@ -170,6 +170,7 @@ function getColorInvestmentStatus(investment: InvestmentInfo, walletAddress: str
 function getBlocksForGuest(
   investment: InvestmentInfo,
   investmentAmount: number,
+  handleInvest: (amount: number, investId: number) => void,
   handleChangeInvestmentAmount: (e: React.ChangeEvent<HTMLInputElement>) => void,
   handleClaimIncome: (investId: number) => Promise<void>,
   t: (key: string) => string
@@ -182,7 +183,13 @@ function getBlocksForGuest(
         ? blockExpectCompletedTripsForGuest(t)
         : investment.myTokens > 0
           ? btnClaimEarningsForGuest(myIncome, investment.investmentId, handleClaimIncome, t)
-          : blockInvestNowForGuest(investmentAmount, handleChangeInvestmentAmount, t)}
+          : blockInvestNowForGuest(
+              investment.investmentId,
+              investmentAmount,
+              handleInvest,
+              handleChangeInvestmentAmount,
+              t
+            )}
     </>
   );
 }
@@ -227,7 +234,9 @@ function btnClaimEarningsForGuest(
 }
 
 function blockInvestNowForGuest(
+  investmentId: number,
   investmentAmount: number,
+  handleInvest: (amount: number, investId: number) => void,
   handleChangeInvestmentAmount: (e: React.ChangeEvent<HTMLInputElement>) => void,
   t: (key: string) => string
 ) {
@@ -244,7 +253,10 @@ function blockInvestNowForGuest(
             placeholder="0"
           />
         </div>
-        <RntButton className="mb-0.5 flex w-3/5 items-center justify-center">
+        <RntButton
+          className="mb-0.5 flex w-3/5 items-center justify-center"
+          onClick={() => handleInvest(investmentAmount, investmentId)}
+        >
           <div className="ml-0.5 flex items-center">
             {t("invest.btn_invest_now")}
             <span className="ml-4">●</span>
