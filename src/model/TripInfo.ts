@@ -174,7 +174,7 @@ export type AllowedChangeTripAction = {
   readonly: boolean;
   isDisplay: boolean;
   params: ChangeTripParams[];
-  action: (tripId: bigint, params: string[]) => Promise<boolean>;
+  action: (tripId: bigint, params: string[], tripPhotosUrls: string[]) => Promise<boolean>;
 };
 
 export type ChangeTripParams = {
