@@ -33,7 +33,6 @@ import CarAddPhoto from "./CarAddPhoto";
 import { env } from "@/utils/env";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import { Result, TransactionErrorCode } from "@/model/utils/result";
-import { isFor } from "@babel/types";
 import useCarAPI from "@/hooks/useCarAPI";
 import { VinInfo } from "@/pages/api/car-api/vinInfo";
 
