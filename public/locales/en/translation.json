@@ -812,7 +812,7 @@
   },
   "dimo": {
     "token_id": "Token ID:",
-    "create_car": "Create car on Rentality",
+    "create_car": "List a car on Rentality",
     "sync_with_dimo": "Sync with DIMO"
   }
 }
