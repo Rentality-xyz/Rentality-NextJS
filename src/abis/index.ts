@@ -13,6 +13,8 @@ import RentalityCurrencyConverterJSON_ABI from "./investment/RentalityCurrencyCo
 
 import RentalityRefferalProgramServiceJSON_ABI from "./investment/RentalityReferralProgram.v0_2_0.abi.json";
 import RentalityRefferalProgramServiceJSON_ADDRESSES from "./investment/RentalityReferralProgram.v0_2_0.addresses.json";
+import RentalityMotionsCloudJSON_ABI from "./RentalityMotionsCloud.v0_2_0.abi.json";
+import RentalityMotionsCloudServiceJSON_ADDRESSES from "./RentalityMotionsCloud.v0_2_0.addresses.json";
 import { Contract, Signer } from "ethers";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 
@@ -47,6 +49,10 @@ const rentalityContracts = {
     addresses: RentalityRefferalProgramServiceJSON_ADDRESSES.addresses,
     abi: RentalityRefferalProgramServiceJSON_ABI.abi,
   },
+  motionsCloud: {
+    addresses: RentalityMotionsCloudServiceJSON_ADDRESSES.addresses,
+    abi: RentalityMotionsCloudJSON_ABI.abi,
+  }
 };
 
 export async function getEtherContractWithSigner(contract: keyof typeof rentalityContracts, signer: Signer) {

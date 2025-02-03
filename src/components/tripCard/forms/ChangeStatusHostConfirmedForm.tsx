@@ -15,6 +15,7 @@ import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton"
 import useFeatureFlags from "@/hooks/useFeatureFlags";
 import useUserMode, { isHost } from "@/hooks/useUserMode";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import useDIMOCarData from "@/features/dimo/hooks/useDIMOCarData";
 
 interface ChangeStatusHostConfirmedFormProps {
   tripInfo: TripInfo;

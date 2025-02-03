@@ -51,7 +51,7 @@ const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
     const cClassName = cn("relative text-black flex flex-col w-full", className);
     const lClassName = cn("text-rnt-temp-main-text mb-1", labelClassName);
     const iClassName = cn(
-      "w-full h-12 border-2 rounded-full pl-4 disabled:bg-gray-300 disabled:text-gray-600",
+      "w-full h-12 border-2 rounded-full pl-4 disabled:bg-gray-300 disabled:text-gray-600 mr-[-32px]",
       inputClassName
     );
 
@@ -87,14 +87,14 @@ const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
         <RntValidationError className={validationClassName} validationError={validationError} />
         {validationSuccessMessage && (
           <DotStatus
-            containerClassName="text-sm text-rnt-temp-main-text whitespace-nowrap mt-2 pl-4"
+            containerClassName="text-sm text-rnt-temp-main-text mt-2 pl-4 break-words xl:whitespace-nowrap"
             color="success"
             text={validationSuccessMessage}
           />
         )}
         {validationMessage && (
           <DotStatus
-            containerClassName="text-sm text-rnt-temp-main-text whitespace-nowrap mt-2 pl-4"
+            containerClassName="text-sm text-rnt-temp-main-text mt-2 pl-4 break-words xl:whitespace-nowrap"
             color="warning"
             text={validationMessage}
           />
