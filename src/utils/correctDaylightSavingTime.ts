@@ -1,4 +1,4 @@
-export function updateDate(from: Date, to: Date): Date {
+export function correctDaylightSavingTime(from: Date, to: Date): Date {
     const fromOffset = from.getTimezoneOffset()
     const toOffset = to.getTimezoneOffset()
 
