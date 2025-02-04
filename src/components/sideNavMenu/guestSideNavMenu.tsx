@@ -55,7 +55,6 @@ function GuestNavMenu() {
           icon={MenuIcons.Booked}
           notificationCount={bookedNotificationCount}
         />
-        <SideNavMenuItem text={"Glib Create Invest"} href="/guest/glib_invest" icon={MenuIcons.CreateInvest} />
         <SideNavMenuItem
           text={t_nav("history")}
           href="/guest/trips/history"
