@@ -5,13 +5,12 @@ import CreateCarInvestment from "@/features/invest/pages/createInvestment";
 
 export default function CreateInvest() {
   const { t } = useTranslation();
-
   return (
     <>
       <div className="flex flex-col gap-4">
-        <PageTitle title={"Create investment"} />
+        <PageTitle title={t("invest.title_create_investment")} />
 
-        <CreateCarInvestment t={t} />
+        <CreateCarInvestment />
       </div>
     </>
   );

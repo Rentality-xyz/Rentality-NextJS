@@ -868,6 +868,9 @@
     "your_received_earnings_part": "Your received earnings part",
     "listing_status": "Listing status:",
     "listing_coming_soon": "listing coming soon",
-    "listed_days": "Listed {date} ({days} days)"
+    "listed_days": "Listed {date} ({days} days)",
+    "title_create_investment": "Create investment",
+    "tokens_held_by_investors": "{tokens} tokens held by {investors} investors",
+    "view_smart_contract": "View smart contract"
   }
 }

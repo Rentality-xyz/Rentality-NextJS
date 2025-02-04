@@ -9,6 +9,8 @@ import { dateFormatLongMonthYearDate } from "@/utils/datetimeFormatters";
 import moment from "moment";
 import { InvestmentInfoWithMetadata } from "@/model/InvestmentInfo";
 import { InvestmentInfo } from "@/model/InvestmentInfo";
+import { LEGAL_PROHIBITEDUSES_NAME } from "@/utils/constants";
+import Link from "next/link";
 
 const ccsDividerVert = "max-2xl:hidden absolute right-[-5px] top-1/2 h-[80%] w-px translate-y-[-50%] bg-gray-500";
 const ccsDividerHor = "2xl:hidden absolute bottom-[-10px] left-[5%] h-px w-[90%] translate-y-[-50%] bg-gray-500";
@@ -45,6 +47,8 @@ export default function InvestCar({
     setInvestmentAmount(Number.parseInt(inputInvestmentAmount));
   };
 
+  console.log("ddiLog nft=", searchInfo.investment.nftUrl);
+
   return (
     <div className="mt-6 grid grid-cols-1 gap-4 fullHD:grid-cols-2">
       <div className="flex w-full flex-col rounded-xl bg-rentality-bg-left-sidebar">
@@ -60,6 +64,13 @@ export default function InvestCar({
             <span>
               {getTxtInvestmentListingStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
             </span>
+            <Link
+              href={searchInfo.investment.nftUrl}
+              target="_blank"
+              className="mr-4 cursor-pointer hover:underline 2xl:ml-auto"
+            >
+              {t("invest.view_smart_contract")}
+            </Link>
           </div>
         </div>
         <div className="flex w-full flex-col">
@@ -98,10 +109,7 @@ export default function InvestCar({
                 <p className="text-xl font-bold 2xl:text-2xl">${String(searchInfo.investment.investment.priceInUsd)}</p>
                 <p className="2xl:text-lg">{t("invest.total_price")}</p>
                 <div className="mx-auto my-2 h-0.5 w-[40%] translate-y-[-50%] bg-white sm:w-[70%]"></div>
-                <p className="text-xl font-bold leading-none text-rentality-secondary 2xl:text-2xl">
-                  ${String(searchInfo.investment.investment.priceInUsd - searchInfo.investment.payedInUsd)}
-                </p>
-                <p className="leading-snug text-rentality-secondary 2xl:text-lg">{t("invest.balance_raised")}</p>
+                {getBlockTokenizationBalance(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
               </div>
               <div className={ccsDividerVert}></div>
               <div className={ccsDividerHor}></div>
@@ -113,6 +121,35 @@ export default function InvestCar({
         </div>
       </div>
     </div>
+  );
+}
+
+function getBlockTokenizationBalance(
+  investment: InvestmentInfo,
+  walletAddress: string,
+  isHost: boolean,
+  t: (key: string) => string
+) {
+  const investStatus = getInvestListingStatus(investment, walletAddress, isHost);
+
+  return investStatus === InvestStatus.WaitingFullTokenization ? (
+    <>
+      <p className="text-xl font-bold leading-none text-rentality-secondary 2xl:text-2xl">
+        ${String(investment.investment.priceInUsd - investment.payedInUsd)}
+      </p>
+      <p className="leading-snug text-rentality-secondary 2xl:text-lg">{t("invest.balance_raised")}</p>
+    </>
+  ) : (
+    <>
+      <p className="leading-snug text-rentality-secondary 2xl:text-lg">{t("invest.fully_tokenized")}</p>
+      {isHost && (
+        <p className="mt-4 leading-snug text-[#FFFFFF70]">
+          {t("invest.tokens_held_by_investors")
+            .replace("{tokens}", String(investment.totalTokens))
+            .replace("{investors}", String(investment.totalHolders))}
+        </p>
+      )}
+    </>
   );
 }
 
@@ -274,15 +311,11 @@ function getBlocksForHost(
   handleStartHosting: (investId: number) => Promise<void>,
   t: (key: string) => string
 ) {
-  const priceDiff =
-    (Number.parseInt(investment.investment.priceInUsd.toString()) - Number.parseInt(investment.payedInUsd.toString())) /
-    100;
-
   const isReadyToClaim = (): boolean => {
-    return priceDiff <= 0;
+    return isCreator && investment.payedInUsd >= investment.investment.priceInUsd && !investment.listed;
   };
 
-  return isCreator && isReadyToClaim() ? (
+  return isReadyToClaim() ? (
     <RntButton
       className="mx-auto mt-6 flex h-14 w-full items-center justify-center"
       onClick={() => handleStartHosting(investment.investmentId)}
