@@ -871,6 +871,20 @@
     "listed_days": "Listed {date} ({days} days)",
     "title_create_investment": "Create investment",
     "tokens_held_by_investors": "{tokens} tokens held by {investors} investors",
-    "view_smart_contract": "View smart contract"
+    "view_smart_contract": "View smart contract",
+    "filter_for_guest": {
+      "all_assets": "All assets",
+      "available_to_invest": "Available to Invest",
+      "my_investments": "My investments",
+      "ready_to_claim": "Ready to claim",
+      "actually_listed": "Actually Listed"
+    },
+    "filter_for_host": {
+      "all_assets": "All assets",
+      "available_to_invest": "Available to Invest",
+      "fully_tokenized": "Fully tokenized",
+      "ready_for_listing": "Ready for listing",
+      "actually_listed": "Actually Listed"
+    }
   }
 }
