@@ -7,6 +7,7 @@ import imgCircleBtn from "@/images/img_circle_for_transparent_btn.svg";
 import Image from "next/image";
 import useGetInvestments from "@/hooks/guest/useGetInvestments";
 import InvestCar from "@/features/invest/components/investCar";
+import { useRouter } from "next/navigation";
 
 type InvestContentProps = {
   isHost: boolean;
@@ -15,14 +16,16 @@ type InvestContentProps = {
 export default function InvestContent({ isHost }: InvestContentProps) {
   const { t } = useTranslation();
   const { investments, updateData, handleInvest, address, handleStartHosting, handleClaimIncome } = useGetInvestments();
+  const router = useRouter();
+  const handleCreateInvest = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    await router.push("/host/create_invest");
+  };
 
   return (
     <div className="mt-8">
       {isHost && (
-        <RntButton
-          className="mb-6 flex w-60 items-center justify-center"
-          // onClick={() => claimPoints()}
-        >
+        <RntButton className="mb-6 flex w-60 items-center justify-center" onClick={handleCreateInvest}>
           <div className="ml-0.5 flex">
             {t("invest.btn_create_investment")}
             <span className="ml-4">●</span>

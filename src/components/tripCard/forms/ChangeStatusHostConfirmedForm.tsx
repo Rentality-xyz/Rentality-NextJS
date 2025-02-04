@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useMemo, useRef, useState  } from "react";
+import React, { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import { TripInfo } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
 import RntButton from "@/components/common/rntButton";
@@ -10,7 +10,6 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import RntFuelLevelSelect from "@/components/common/RntFuelLevelSelect";
-import useDIMOCarData from "@/features/dimo/hooks/useDIMOCarData";
 import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton";
 import useFeatureFlags from "@/hooks/useFeatureFlags";
 import useUserMode, { isHost } from "@/hooks/useUserMode";
@@ -44,7 +43,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
     const carPhotosUploadButtonRef = useRef<any>(null);
 
     const { hasFeatureFlag } = useFeatureFlags();
-    const [ hasTripPhotosFeatureFlag, setHasTripPhotosFeatureFlag ] = useState<boolean>(false);
+    const [hasTripPhotosFeatureFlag, setHasTripPhotosFeatureFlag] = useState<boolean>(false);
 
     const { showDialog } = useRntDialogs();
 
@@ -52,27 +51,30 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
       hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
         setHasTripPhotosFeatureFlag(hasTripPhotosFeatureFlag);
       });
-    },[]);
+    }, []);
 
     async function onFormSubmit(formData: ChangeStatusHostConfirmedFormValues) {
+      let tripPhotosUrls: string[] = [];
 
-        let tripPhotosUrls: string[] = [];
-
-        if (hasTripPhotosFeatureFlag) {
-          tripPhotosUrls = await carPhotosUploadButtonRef.current.saveUploadedFiles();
-          if(tripPhotosUrls.length === 0){
-            showDialog(t("common.photos_required"));
-            return;
-          }
+      if (hasTripPhotosFeatureFlag) {
+        tripPhotosUrls = await carPhotosUploadButtonRef.current.saveUploadedFiles();
+        if (tripPhotosUrls.length === 0) {
+          showDialog(t("common.photos_required"));
+          return;
         }
-        changeStatusCallback(async () => {
-          return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), [
-              formData.fuelOrBatteryLevel.toString(),
-              formData.odotemer.toString(),
-              formData.insuranceCompanyName ?? "",
-              formData.insurancePolicyNumber ?? "",
-            ], tripPhotosUrls);
-        });
+      }
+      changeStatusCallback(async () => {
+        return tripInfo.allowedActions[0].action(
+          BigInt(tripInfo.tripId),
+          [
+            formData.fuelOrBatteryLevel.toString(),
+            formData.odotemer.toString(),
+            formData.insuranceCompanyName ?? "",
+            formData.insurancePolicyNumber ?? "",
+          ],
+          tripPhotosUrls
+        );
+      });
     }
 
     return (
@@ -144,7 +146,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
                 validationError={errors.insurancePolicyNumber?.message?.toString()}
               />
             </div>
-            { hasTripPhotosFeatureFlag && (
+            {hasTripPhotosFeatureFlag && (
               <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
                 <CarPhotosUploadButton
                   ref={carPhotosUploadButtonRef}
@@ -156,7 +158,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
             )}
           </div>
           <div className="flex flex-row gap-4">
-            <RntButton type="submit" className="h-16 px-4 max-md:w-full" disabled={disableButton || isSubmitting }>
+            <RntButton type="submit" className="h-16 px-4 max-md:w-full" disabled={disableButton || isSubmitting}>
               Start
             </RntButton>
             <RntButton
