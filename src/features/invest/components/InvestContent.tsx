@@ -22,42 +22,42 @@ export default function InvestContent({ isHost }: InvestContentProps) {
     await router.push("/host/create_invest");
   };
 
-  const [filterForGuestBy, setFilterForGuestBy] = useState<string | undefined>(undefined);
-  function isFilterForGuestKey(key: PropertyKey): key is SortOptionKey {
-    return filterForGuest.hasOwnProperty(key);
+  const [filterInvestBy, setFilterInvestBy] = useState<string | undefined>(undefined);
+  function isFilterInvestKey(key: PropertyKey): key is SortOptionKey {
+    return filterInvest.hasOwnProperty(key);
   }
   // Получаем фильтры из переводов
-  const filterForGuest: FilterEnum = t(isHost ? "invest.filter_for_host" : "invest.filter_for_guest", {
+  const filterInvest: FilterEnum = t(isHost ? "invest.filter_for_host" : "invest.filter_for_guest", {
     returnObjects: true,
   }) as FilterEnum;
   // Генерируем Enum на основе ключей
-  const FilterForGuestEnum = Object.keys(filterForGuest).reduce((acc, key) => {
+  const FilterInvestEnum = Object.keys(filterInvest).reduce((acc, key) => {
     acc[key] = key;
     return acc;
   }, {} as FilterEnum);
   // Фильтрация инвестиций
   const filteredInvestments = investments.filter((value) => {
-    if (!filterForGuestBy || filterForGuestBy === FilterForGuestEnum.all_assets) {
+    if (!filterInvestBy || filterInvestBy === FilterInvestEnum.all_assets) {
       return true; // Если "All assets", показываем все
     }
 
-    switch (filterForGuestBy) {
-      case FilterForGuestEnum.actually_listed:
+    switch (filterInvestBy) {
+      case FilterInvestEnum.actually_listed:
         return value.investment.listed;
 
-      case FilterForGuestEnum.my_investments:
+      case FilterInvestEnum.my_investments:
         return value.investment.myTokens > 0;
 
-      case FilterForGuestEnum.available_to_invest:
+      case FilterInvestEnum.available_to_invest:
         return value.investment.investment.priceInUsd > value.investment.payedInUsd;
 
-      case FilterForGuestEnum.ready_to_claim:
+      case FilterInvestEnum.ready_to_claim:
         return value.investment.myIncome > 0;
 
-      case FilterForGuestEnum.fully_tokenized:
+      case FilterInvestEnum.fully_tokenized:
         return value.investment.investment.priceInUsd <= value.investment.payedInUsd;
 
-      case FilterForGuestEnum.ready_for_listing:
+      case FilterInvestEnum.ready_for_listing:
         return value.investment.investment.priceInUsd <= value.investment.payedInUsd && !value.investment.listed;
 
       default:
@@ -79,15 +79,15 @@ export default function InvestContent({ isHost }: InvestContentProps) {
       <RntFilterSelect
         className="border-gradient w-60 justify-center border-0 bg-transparent text-lg text-rentality-secondary"
         id="invest_filter"
-        value={filterForGuestBy ? filterForGuest[filterForGuestBy] : Object.values(filterForGuest ?? {})[0]}
+        value={filterInvestBy ? filterInvest[filterInvestBy] : Object.values(filterInvest ?? {})[0]}
         onChange={(e) => {
-          const newDataKey = Object.entries(filterForGuest ?? {})[e.target.selectedIndex]?.[0];
-          if (isFilterForGuestKey(newDataKey)) {
-            setFilterForGuestBy(newDataKey);
+          const newDataKey = Object.entries(filterInvest ?? {})[e.target.selectedIndex]?.[0];
+          if (isFilterInvestKey(newDataKey)) {
+            setFilterInvestBy(newDataKey);
           }
         }}
       >
-        {Object.entries(filterForGuest ?? {}).map(([key, value]) => (
+        {Object.entries(filterInvest ?? {}).map(([key, value]) => (
           <RntFilterSelect.Option key={key} value={value} />
         ))}
       </RntFilterSelect>

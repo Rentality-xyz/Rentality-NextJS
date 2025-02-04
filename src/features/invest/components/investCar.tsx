@@ -9,7 +9,6 @@ import { dateFormatLongMonthYearDate } from "@/utils/datetimeFormatters";
 import moment from "moment";
 import { InvestmentInfoWithMetadata } from "@/model/InvestmentInfo";
 import { InvestmentInfo } from "@/model/InvestmentInfo";
-import { LEGAL_PROHIBITEDUSES_NAME } from "@/utils/constants";
 import Link from "next/link";
 
 const ccsDividerVert = "max-2xl:hidden absolute right-[-5px] top-1/2 h-[80%] w-px translate-y-[-50%] bg-gray-500";
