@@ -13,7 +13,6 @@ import icSearch from "@/images/ic-search-128.svg";
 import icInsurance from "@/images/ic_insurance.svg";
 import toAppStore from "@/images/to_app_store.png";
 import toGooglePlay from "@/images/to_google_play.png";
-import icCreateInvest from "@/images/ic-create-invest.jpg";
 import icReferralsAndPoints from "@/images/ic_referrals_and_points.png";
 import icInvest from "@/images/ic_invest.png";
 
@@ -33,7 +32,6 @@ enum MenuIcons {
   ToAppStore,
   ToGooglePlay,
   Invest,
-  CreateInvest,
   ReferralsAndPoints,
 }
 
@@ -71,8 +69,6 @@ export const getImageForMenu = (state: MenuIcons): StaticImageData => {
       return icReferralsAndPoints;
     case MenuIcons.Invest:
       return icInvest;
-    case MenuIcons.CreateInvest:
-      return icCreateInvest;
   }
 };
 
