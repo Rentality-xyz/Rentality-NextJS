@@ -45,15 +45,14 @@ export default function CreateCarInvestment() {
           onChange={handleHostPercentsChange}
         />
       </div>
-      <div className="mb-4 gap-4 text-lg">
-        <strong>{"New nft collection info"}</strong>
-      </div>
+      <div className="mb-4 gap-4 text-lg text-[#FFFFFF70]">{t("invest.new_nft_info")}</div>
       <div className="flex flex-wrap gap-4">
         <RntInput
           className="lg:w-60"
           id="pricePerDay"
           label={"NFT name"}
           placeholder="e.g. MyNft"
+          disabled={true}
           value={nftName}
           onChange={(value) => setNftName(value.target.value)}
         />
@@ -62,10 +61,12 @@ export default function CreateCarInvestment() {
           id="securityDeposit"
           label={"NFT symbol"}
           placeholder="e.g. SYM"
+          disabled={true}
           value={nftSym}
           onChange={(value) => setNftSym(value.target.value)}
         />
       </div>
+      <div className="mb-4 gap-4 text-lg text-[#FFFFFF70]">{t("invest.generated_automatically")}</div>
       <CarEditForm
         isNewCar={true}
         saveCarInfo={async (hostCarInfo: HostCarInfo) => {

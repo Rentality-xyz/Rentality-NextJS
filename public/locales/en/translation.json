@@ -872,6 +872,8 @@
     "title_create_investment": "Create investment",
     "tokens_held_by_investors": "{tokens} tokens held by {investors} investors",
     "view_smart_contract": "View smart contract",
+    "new_nft_info": "New nft collection info",
+    "generated_automatically": "Generated automatically after saving the tokenized asset card",
     "filter_for_guest": {
       "all_assets": "All assets",
       "available_to_invest": "Available to Invest",
