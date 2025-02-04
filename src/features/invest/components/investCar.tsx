@@ -47,8 +47,6 @@ export default function InvestCar({
     setInvestmentAmount(Number.parseInt(inputInvestmentAmount));
   };
 
-  console.log("ddiLog nft=", searchInfo.investment.nftUrl);
-
   return (
     <div className="mt-6 grid grid-cols-1 gap-4 fullHD:grid-cols-2">
       <div className="flex w-full flex-col rounded-xl bg-rentality-bg-left-sidebar">

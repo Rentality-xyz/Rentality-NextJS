@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import RntButton from "@/components/common/rntButton";
-import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
-import RntButtonTransparent from "@/components/common/rntButtonTransparent";
-import imgCircleBtn from "@/images/img_circle_for_transparent_btn.svg";
-import Image from "next/image";
 import useGetInvestments from "@/hooks/guest/useGetInvestments";
 import InvestCar from "@/features/invest/components/investCar";
 import { useRouter } from "next/navigation";
+import RntFilterSelect from "@/components/common/RntFilterSelect";
+import { SortOptionKey } from "@/hooks/guest/useSearchCars";
 
 type InvestContentProps = {
   isHost: boolean;
 };
+
+type FilterEnum = Record<string, string>; // Типизация для Enum
 
 export default function InvestContent({ isHost }: InvestContentProps) {
   const { t } = useTranslation();
@@ -21,6 +21,49 @@ export default function InvestContent({ isHost }: InvestContentProps) {
     e.preventDefault();
     await router.push("/host/create_invest");
   };
+
+  const [filterForGuestBy, setFilterForGuestBy] = useState<string | undefined>(undefined);
+  function isFilterForGuestKey(key: PropertyKey): key is SortOptionKey {
+    return filterForGuest.hasOwnProperty(key);
+  }
+  // Получаем фильтры из переводов
+  const filterForGuest: FilterEnum = t(isHost ? "invest.filter_for_host" : "invest.filter_for_guest", {
+    returnObjects: true,
+  }) as FilterEnum;
+  // Генерируем Enum на основе ключей
+  const FilterForGuestEnum = Object.keys(filterForGuest).reduce((acc, key) => {
+    acc[key] = key;
+    return acc;
+  }, {} as FilterEnum);
+  // Фильтрация инвестиций
+  const filteredInvestments = investments.filter((value) => {
+    if (!filterForGuestBy || filterForGuestBy === FilterForGuestEnum.all_assets) {
+      return true; // Если "All assets", показываем все
+    }
+
+    switch (filterForGuestBy) {
+      case FilterForGuestEnum.actually_listed:
+        return value.investment.listed;
+
+      case FilterForGuestEnum.my_investments:
+        return value.investment.myTokens > 0;
+
+      case FilterForGuestEnum.available_to_invest:
+        return value.investment.investment.priceInUsd > value.investment.payedInUsd;
+
+      case FilterForGuestEnum.ready_to_claim:
+        return value.investment.myIncome > 0;
+
+      case FilterForGuestEnum.fully_tokenized:
+        return value.investment.investment.priceInUsd <= value.investment.payedInUsd;
+
+      case FilterForGuestEnum.ready_for_listing:
+        return value.investment.investment.priceInUsd <= value.investment.payedInUsd && !value.investment.listed;
+
+      default:
+        return true;
+    }
+  });
 
   return (
     <div className="mt-8">
@@ -33,92 +76,33 @@ export default function InvestContent({ isHost }: InvestContentProps) {
         </RntButton>
       )}
 
-      <ScrollingHorizontally>
-        <RntButtonTransparent
-          className="min-w-[160px]"
-          // onClick={handleClickOpenDeliveryLocation}
-        >
-          <div className="flex items-center justify-center text-white">
-            <span className="ml-4 w-full">{t("invest.btn_all_assets")}</span>
-            <Image src={imgCircleBtn} alt="" className="ml-auto mr-4" />
-          </div>
-        </RntButtonTransparent>
-        <RntButtonTransparent
-          className="min-w-[240px]"
-          // onClick={handleClickOpenDeliveryLocation}
-        >
-          <div className="flex items-center justify-center text-white">
-            <span className="ml-4 w-full">{t("invest.btn_available_to_invest")}</span>
-            <Image src={imgCircleBtn} alt="" className="ml-auto mr-4" />
-          </div>
-        </RntButtonTransparent>
-        {isHost ? (
-          <>
-            <RntButtonTransparent
-              className="min-w-[208px]"
-              // onClick={handleClickOpenDeliveryLocation}
-            >
-              <div className="flex items-center justify-center text-white">
-                <span className="ml-4 w-full">{t("invest.btn_host_fully_tokenized")}</span>
-                <Image src={imgCircleBtn} alt="" className="ml-auto mr-4" />
-              </div>
-            </RntButtonTransparent>
-            <RntButtonTransparent
-              className="min-w-[224px]"
-              // onClick={handleClickOpenDeliveryLocation}
-            >
-              <div className="flex items-center justify-center text-white">
-                <span className="ml-4 w-full">{t("invest.btn_host_ready_for_listing")}</span>
-                <Image src={imgCircleBtn} alt="" className="ml-auto mr-4" />
-              </div>
-            </RntButtonTransparent>
-          </>
-        ) : (
-          <>
-            <RntButtonTransparent
-              className="min-w-[224px]"
-              // onClick={handleClickOpenDeliveryLocation}
-            >
-              <div className="flex items-center justify-center text-white">
-                <span className="ml-4 w-full">{t("invest.btn_guest_my_investments")}</span>
-                <Image src={imgCircleBtn} alt="" className="ml-auto mr-4" />
-              </div>
-            </RntButtonTransparent>
-            <RntButtonTransparent
-              className="min-w-[208px]"
-              // onClick={handleClickOpenDeliveryLocation}
-            >
-              <div className="flex items-center justify-center text-white">
-                <span className="ml-4 w-full">{t("invest.btn_guest_ready_to_claim")}</span>
-                <Image src={imgCircleBtn} alt="" className="ml-auto mr-4" />
-              </div>
-            </RntButtonTransparent>
-          </>
-        )}
-        <RntButtonTransparent
-          className="min-w-[208px]"
-          // onClick={handleClickOpenDeliveryLocation}
-        >
-          <div className="flex items-center justify-center text-white">
-            <span className="ml-4 w-full">{t("invest.btn_actually_listed")}</span>
-            <Image src={imgCircleBtn} alt="" className="ml-auto mr-4" />
-          </div>
-        </RntButtonTransparent>
-      </ScrollingHorizontally>
+      <RntFilterSelect
+        className="border-gradient w-60 justify-center border-0 bg-transparent text-lg text-rentality-secondary"
+        id="invest_filter"
+        value={filterForGuestBy ? filterForGuest[filterForGuestBy] : Object.values(filterForGuest ?? {})[0]}
+        onChange={(e) => {
+          const newDataKey = Object.entries(filterForGuest ?? {})[e.target.selectedIndex]?.[0];
+          if (isFilterForGuestKey(newDataKey)) {
+            setFilterForGuestBy(newDataKey);
+          }
+        }}
+      >
+        {Object.entries(filterForGuest ?? {}).map(([key, value]) => (
+          <RntFilterSelect.Option key={key} value={value} />
+        ))}
+      </RntFilterSelect>
 
-      {investments.map((value) => {
-        return (
-          <InvestCar
-            isHost={isHost}
-            key={value.investment.investmentId as unknown as number}
-            searchInfo={value}
-            handleInvest={handleInvest}
-            isCreator={value.investment.creator === address}
-            handleStartHosting={handleStartHosting}
-            handleClaimIncome={handleClaimIncome}
-          />
-        );
-      })}
+      {filteredInvestments.map((value) => (
+        <InvestCar
+          isHost={isHost}
+          key={value.investment.investmentId as unknown as number}
+          searchInfo={value}
+          handleInvest={handleInvest}
+          isCreator={value.investment.creator === address}
+          handleStartHosting={handleStartHosting}
+          handleClaimIncome={handleClaimIncome}
+        />
+      ))}
     </div>
   );
 }
