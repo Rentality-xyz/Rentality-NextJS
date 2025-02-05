@@ -7,16 +7,20 @@ import { REFERRAL_LINKS_QUERY_KEY } from "@/features/referralProgram/hooks/useFe
 import { USER_PROFILE_QUERY_KEY } from "./useFetchUserProfile";
 import { Err, Result } from "@/model/utils/result";
 import { logger } from "@/utils/logger";
+import { deleteUserProfilePhoto, saveUserProfilePhoto } from "@/features/filestore/pinata/utils";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
 
 export type SaveUserProfileRequest = {
   nickname: string;
-  profilePhotoUrl: string;
+  profilePhotoSrc: string;
+  oldProfilePhotoUrl: string;
   phoneNumber: string;
   email: string;
   tcSignature: string;
 };
 
-const useSaveUserProfile = () => {
+function useSaveUserProfile() {
+  const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
   const { getLocalReferralCode, resetReferralCode } = useReferralLinkLocalStorage();
   const queryClient = useQueryClient();
@@ -24,9 +28,26 @@ const useSaveUserProfile = () => {
   return useMutation({
     mutationFn: async (request: SaveUserProfileRequest): Promise<Result<boolean, Error>> => {
       try {
-        if (!rentalityContracts) {
+        if (!rentalityContracts || !ethereumInfo) {
           logger.error("saveUserProfile error: Missing required contracts or ethereum info");
           return Err(new Error("Missing required contracts or ethereum info"));
+        }
+
+        const isNewPhoto = request.profilePhotoSrc !== request.oldProfilePhotoUrl;
+        let profilePhotoUrl = request.oldProfilePhotoUrl;
+
+        if (isNewPhoto) {
+          const blob = await (await fetch(request.profilePhotoSrc)).blob();
+          const profileImageFile = new File([blob], "profileImage", { type: "image/png" });
+
+          const saveImageResult = await saveUserProfilePhoto(profileImageFile, ethereumInfo.chainId, {
+            createdAt: new Date().toISOString(),
+            createdBy: ethereumInfo.walletAddress,
+          });
+
+          if (!saveImageResult.ok) return saveImageResult;
+
+          profilePhotoUrl = saveImageResult.value.url;
         }
 
         const localReferralHash = getLocalReferralCode();
@@ -36,11 +57,15 @@ const useSaveUserProfile = () => {
         const result = await rentalityContracts.gateway.setKYCInfo(
           request.nickname,
           request.phoneNumber,
-          request.profilePhotoUrl,
+          profilePhotoUrl,
           request.email,
           request.tcSignature,
           referralHash
         );
+
+        if (isNewPhoto) {
+          await deleteUserProfilePhoto(result.ok ? request.oldProfilePhotoUrl : profilePhotoUrl);
+        }
 
         return result;
       } catch (error) {
@@ -56,6 +81,6 @@ const useSaveUserProfile = () => {
       }
     },
   });
-};
+}
 
 export default useSaveUserProfile;
