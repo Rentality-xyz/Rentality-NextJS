@@ -13,7 +13,10 @@ import {
 import { IRentalityGateway, IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGateway";
 import { getEthersContractProxy } from "@/features/blockchain/models/EthersContractProxy";
 import { IRentalityInvestment, IRentalityInvestmentContract } from "@/features/blockchain/models/IRentalityInvestment";
-import { IRentalityCurrencyConverter, IRentalityCurrencyConverterContract } from "@/features/blockchain/models/IRentalityCurrencyConverter";
+import {
+  IRentalityCurrencyConverter,
+  IRentalityCurrencyConverterContract,
+} from "@/features/blockchain/models/IRentalityCurrencyConverter";
 
 export interface IRentalityContracts {
   gateway: IRentalityGatewayContract;
@@ -52,8 +55,8 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         setRentalityContracts(null);
         return;
       }
-      
-    const rentalityGateway = (await getEtherContractWithSigner(
+
+      const rentalityGateway = (await getEtherContractWithSigner(
         "gateway",
         ethereumInfo.signer
       )) as unknown as IRentalityGatewayContract;
@@ -92,7 +95,6 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         setRentalityContracts(null);
         return;
       }
-
 
       setRentalityContracts({
         gateway: rentalityGateway,

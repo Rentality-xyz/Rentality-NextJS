@@ -157,9 +157,8 @@ export interface IRentalityGatewayContract extends IEthersContract {
   // confirmCarDetails(carId: bigint): Promise<ContractTransactionResponse>;
 
   // dimo
-   // DIMO functions
-   saveDimoTokenIds(dimoTokenIds: bigint[], rentalityCarIds: bigint[]): Promise<ContractTransactionResponse>;
-
+  // DIMO functions
+  saveDimoTokenIds(dimoTokenIds: bigint[], rentalityCarIds: bigint[]): Promise<ContractTransactionResponse>;
 
   //not using
   // owner(): Promise<string>;

@@ -5,15 +5,14 @@ import { useEffect, useState } from "react";
 
 type DimoPanelData = {
   fuelOrBatteryLevel: number;
-  odotemer: number; 
+  odotemer: number;
 };
 const EmptyDimoPanelData: DimoPanelData = {
   fuelOrBatteryLevel: 0,
-  odotemer: 0
-}
+  odotemer: 0,
+};
 
-function calculateFuelPercentage(tankCapacityGallons: number, fuelLiters: number): string  {
-
+function calculateFuelPercentage(tankCapacityGallons: number, fuelLiters: number): string {
   const tankCapacityLiters = tankCapacityGallons * 3.78541;
   if (tankCapacityLiters === 0) return "0";
 
@@ -46,7 +45,7 @@ const useDIMOCarData = (carId: number) => {
       const carDetails = await rentalityContracts.gateway.getCarDetails(BigInt(carId));
 
       if (carDetails.dimoTokenId === BigInt(0)) {
-        return EmptyDimoPanelData
+        return EmptyDimoPanelData;
       }
       const panelParams = await axios.get("/api/dimo/dimoSignals", {
         params: { tokenId: carDetails.dimoTokenId },
@@ -56,13 +55,15 @@ const useDIMOCarData = (carId: number) => {
         const panelResult = panelParams.data;
 
         if (carDetails.engineType !== EngineType.ELECTRIC) {
-    
           return {
             odotemer: Number.parseInt(panelResult.odometr.toFixed(0)) || 0,
-            fuelOrBatteryLevel: panelResult.fuelLevel? Number.parseInt(calculateFuelPercentage(Number(carDetails.engineParams[0]), panelResult.fuelLevel.value)): 0,
+            fuelOrBatteryLevel: panelResult.fuelLevel
+              ? Number.parseInt(
+                  calculateFuelPercentage(Number(carDetails.engineParams[0]), panelResult.fuelLevel.value)
+                )
+              : 0,
           };
         } else {
-         
           return {
             odotemer: Number.parseInt(panelResult.odometr.toFixed(0)) || 0,
             fuelOrBatteryLevel: panelResult.fuelLevel ? roundToNearestTen(panelResult.fuelLevel.value) : 0,

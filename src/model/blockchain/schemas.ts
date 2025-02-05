@@ -865,8 +865,6 @@ export type InvestmentDTO = {
   myPart: BigInt;
   totalHolders: BigInt;
   totalTokens: BigInt;
-
-
 };
 export type InvestmentDTOWithMetadata = {
   investment: InvestmentDTO;
