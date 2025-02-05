@@ -11,7 +11,7 @@ interface WalletConnectCheckerProps {
 function WalletConnectChecker({ allowAnonymousAccess, children }: WalletConnectCheckerProps) {
   const { isAuthenticated } = useAuth();
 
-  if (!isAuthenticated && !allowAnonymousAccess && location.pathname !== "/host/become_host") {
+  if (!isAuthenticated && !allowAnonymousAccess) {
     return (
       <Layout>
         <InvitationToConnect />

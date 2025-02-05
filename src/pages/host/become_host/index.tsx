@@ -23,6 +23,7 @@ import RntSuspense from "@/components/common/rntSuspense";
 import { CivicProvider } from "@/contexts/web3/civicContext";
 import UserCommonInformationForm from "@/components/profileInfo/UserCommonInformationForm";
 import UserDriverLicenseVerification from "@/components/profileInfo/UserDriverLicenseVerification";
+import Search from "@/pages/guest/search";
 
 function BecomeHost() {
   return (
@@ -404,5 +405,7 @@ function BecomeHostContent() {
     </>
   );
 }
+
+BecomeHost.allowAnonymousAccess = true;
 
 export default BecomeHost;
