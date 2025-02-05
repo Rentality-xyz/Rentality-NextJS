@@ -33,29 +33,27 @@ export default function ListingItem({
     statusBgColor
   );
 
-  const notDimoSyncedStyle = !isDimoSynced ? "flex-col" : "";
-
   return (
     <div className="rnt-card flex flex-col overflow-hidden rounded-xl bg-rentality-bg">
       <div
         style={{ backgroundImage: `url(${carInfo.image})` }}
-        className="relative min-h-[12rem] w-full flex-shrink-0 bg-cover bg-center xl:h-[250px] fullHD:h-[320px]"
+        className="relative min-h-[12rem] w-full flex-shrink-0 bg-cover bg-center xl:h-[200px]"
       >
         <div className={statusClassName}>
           <strong>{`${getListingStatusTextFromStatus(carInfo.currentlyListed, t)}`}</strong>
         </div>
       </div>
       <div className="flex h-full w-full flex-col justify-between p-4">
-        <div className={cn("flex justify-between xl:mb-2 xl:flex-row", notDimoSyncedStyle)}>
-          <div className="flex flex-col">
+        <div className={cn(`flex flex-col justify-between ${isDimoNotSyncMapped ? "" : "mb-8"}`)}>
+          <div className="flex w-full flex-row items-baseline justify-between">
             <div>
               <strong className="text-lg font-bold xl:text-xl">{`${carInfo.brand} ${carInfo.model} ${carInfo.year}`}</strong>
             </div>
             <div className="text-sm font-medium text-[#FFFFFF70] lg:text-lg">{carInfo.licensePlate}</div>
           </div>
           {(isDimoOnly || isDimoNotSyncMapped) && (
-            <div className="flex flex-col max-xl:my-2 xl:ml-auto">
-              <div className="flex flex-col items-center rounded-3xl border border-[#FFFFFF05] bg-[#FFFFFF03] p-2.5 xl:ml-auto">
+            <div className="my-2 flex flex-col">
+              <div className="flex flex-col items-center rounded-3xl border border-[#FFFFFF05] bg-[#FFFFFF03] p-2.5">
                 <Image src={imgFoundOnDimo} alt="" className="" />
                 <p className="mt-2 text-base font-medium text-[#FFFFFF70]">
                   {t("dimo.token_id")} {carInfo.dimoTokenId}
@@ -78,8 +76,8 @@ export default function ListingItem({
               </div>
             </div>
           )}
-          <div className="flex flex-col">
-            {isDimoSynced && <Image src={imgDimoSynced} alt="" className="ml-auto max-xl:w-[180px]" />}
+          <div className="mt-2 flex">
+            {isDimoSynced && <Image src={imgDimoSynced} alt="" className="mr-auto w-[180px]" />}
           </div>
         </div>
 
