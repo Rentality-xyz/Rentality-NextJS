@@ -16,11 +16,14 @@ import { PlatformCarImage, UploadedCarImage } from "@/model/FileToUpload";
 import { Err, Result, TransactionErrorCode } from "@/model/utils/result";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
+import axios from "axios";
+import { useDimoAuthState } from "@dimo-network/login-with-dimo";
 
 const useSaveCar = () => {
   const { rentalityContracts } = useRentality();
   const ethereumInfo = useEthereum();
   const [dataSaved, setDataSaved] = useState<boolean>(true);
+  const { walletAddress } = useDimoAuthState();
 
   const uploadMetadataToIPFS = async (hostCarInfo: HostCarInfo) => {
     if (!verifyCar(hostCarInfo)) {
@@ -94,6 +97,24 @@ const useSaveCar = () => {
         return Err("ERROR");
       }
 
+      const dimoToken = walletAddress === null ? 0 : dataToSave.dimoTokenId;
+     
+      const dimoSignature = walletAddress === null || dimoToken === 0 ? "0x" : 
+      await axios.post("/api/dimo/signDIMOId", {
+        address: walletAddress,
+        chainId: ethereumInfo.chainId,
+        dimoToken,
+    })
+    .then(response => {console.log("SIGN",response.data.signature) 
+      return response.data.signature}) 
+    .catch(error => {
+        if (error.response && error.response.status === 404) {
+            return "0x"; 
+        } else {
+            throw error; 
+        }
+    });
+
       const request: ContractCreateCarRequest = {
         tokenUri: metadataURL,
         carVinNumber: dataToSave.vinNumber,
@@ -113,9 +134,11 @@ const useSaveCar = () => {
         currentlyListed: dataToSave.currentlyListed,
         insuranceRequired: dataToSave.isGuestInsuranceRequired,
         insurancePriceInUsdCents: BigInt(dataToSave.insurancePerDayPriceInUsd * 100),
-        dimoTokenId: BigInt(dataToSave.dimoTokenId)
+        dimoTokenId: BigInt(dataToSave.dimoTokenId),
+        signedDimoTokenId: dimoSignature
       };
 
+      console.log("SIGNATURE",request)
       const result = await rentalityContracts.gatewayProxy.addCar(request);
       return result.ok ? result : Err("ERROR");
     } catch (e) {

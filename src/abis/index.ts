@@ -52,7 +52,7 @@ const rentalityContracts = {
   motionsCloud: {
     addresses: RentalityMotionsCloudServiceJSON_ADDRESSES.addresses,
     abi: RentalityMotionsCloudJSON_ABI.abi,
-  }
+  },
 };
 
 export async function getEtherContractWithSigner(contract: keyof typeof rentalityContracts, signer: Signer) {

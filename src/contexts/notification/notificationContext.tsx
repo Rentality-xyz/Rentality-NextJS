@@ -11,10 +11,11 @@ import { useRentality } from "../rentalityContext";
 import { isEventLog } from "@/utils/ether";
 import { bigIntReplacer } from "@/utils/json";
 import { hasValue } from "@/utils/arrays";
-import { EventLog, Listener } from "ethers";
+import { EventLog, JsonRpcProvider, Listener, Wallet } from "ethers";
 import { ClaimStatus, ContractFullClaimInfo, ContractTripDTO, EventType, TripStatus } from "@/model/blockchain/schemas";
 import { getBlockCountForSearch } from "@/model/blockchain/blockchainList";
 import { useAuth } from "../auth/authContext";
+import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 
 export type NotificationContextInfo = {
   isLoading: boolean;
@@ -166,7 +167,14 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
       if (!rentalityContracts) return;
 
       try {
-        const notificationService = await getEtherContractWithSigner("notificationService", ethereumInfo.signer);
+       
+        const provider = new JsonRpcProvider(ethereumInfo.defaultRpcUrl);
+
+        const randomSigner = Wallet.createRandom();
+
+        const signerWithProvider = randomSigner.connect(provider);
+        const notificationService = await getEtherContractWithSigner("notificationService",
+           signerWithProvider);
         if (!notificationService) {
           console.error("initialLoading error: notificationService is null");
           return false;
