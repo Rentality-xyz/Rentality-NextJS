@@ -54,35 +54,35 @@ function CarDetails({
   return (
     <div id="trip-main-info" className="flex w-full flex-col justify-between gap-4">
       <div className="flex flex-col">
-        <div className="grid-cols-[2fr_1fr] items-center justify-between max-xl:grid">
+        <div className="grid-cols-[2fr_1fr] items-start justify-between max-xl:grid">
           <strong className="text-xl">{`${tripInfo.brand} ${tripInfo.model} ${tripInfo.year}`}</strong>
           {tripInfo.dimoTokenId !== 0 && (
-            <div className="xl:hidden">
+            <div className="mt-1 xl:hidden">
               <Image src={imgDimoSynced} alt="" className="w-[140px]" />
             </div>
           )}
         </div>
         <div>{tripInfo.licensePlate}</div>
+        {tripInfo.dimoTokenId !== 0 && (
+          <div className="mt-2 max-xl:hidden">
+            <Image src={imgDimoSynced} alt="" className="w-[160px]" />
+          </div>
+        )}
         {tripInfo.status === TripStatus.Rejected && tripInfo.rejectedDate !== undefined ? (
-          <div className="mt-2">
+          <div className="mt-2 xl:mt-6">
             {t("booked.cancelled_on", {
               rejected: rejectedByText,
               date: dateFormatShortMonthDate(tripInfo.rejectedDate),
             })}
           </div>
         ) : null}
-        <div className="mt-4 flex flex-col">
+        <div className="mt-4 flex flex-col xl:mt-6">
           <div>
             <strong className="text-lg">{t("booked.total")}</strong>
           </div>
           <div>${tripInfo.totalDayPriceInUsd}</div>
         </div>
       </div>
-      {tripInfo.dimoTokenId !== 0 && (
-        <div className="max-xl:hidden">
-          <Image src={imgDimoSynced} alt="" className="w-[160px]" />
-        </div>
-      )}
       <div className="flex flex-row justify-between">
         <UserAvatarWithName
           photoUrl={otherUserPhotoUrl}
