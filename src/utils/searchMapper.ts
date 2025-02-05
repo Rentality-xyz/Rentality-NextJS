@@ -12,9 +12,8 @@ export function formatSearchAvailableCarsContractRequest(
 ) {
   const startCarLocalDateTime = moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, timeZoneId).toDate();
   let endCarLocalDateTime = moment.tz(searchCarRequest.dateToInDateTimeStringFormat, timeZoneId).toDate();
-  
-  
-  endCarLocalDateTime = correctDaylightSavingTime(startCarLocalDateTime, endCarLocalDateTime)
+
+  endCarLocalDateTime = correctDaylightSavingTime(startCarLocalDateTime, endCarLocalDateTime);
   const contractDateFromUTC = getBlockchainTimeFromDate(startCarLocalDateTime);
   const contractDateToUTC = getBlockchainTimeFromDate(endCarLocalDateTime);
   const contractSearchCarParams: ContractSearchCarParams = {

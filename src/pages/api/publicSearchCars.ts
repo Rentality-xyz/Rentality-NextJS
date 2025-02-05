@@ -30,12 +30,14 @@ export type PublicSearchCarsResponse =
       filterLimits: FilterLimits;
     }
   | { error: string };
-  
-  export type ApiUrl = | {
-    url: string;
-  } | {
-    error: string
-  }
+
+export type ApiUrl =
+  | {
+      url: string;
+    }
+  | {
+      error: string;
+    };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<PublicSearchCarsResponse>) {
   const privateKey = env.SIGNER_PRIVATE_KEY;
@@ -247,7 +249,7 @@ function formatSearchAvailableCarsContractRequest(
   const startCarLocalDateTime = moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, timeZoneId).toDate();
 
   let endCarLocalDateTime = moment.tz(searchCarRequest.dateToInDateTimeStringFormat, timeZoneId).toDate();
-  endCarLocalDateTime = correctDaylightSavingTime(startCarLocalDateTime, endCarLocalDateTime)
+  endCarLocalDateTime = correctDaylightSavingTime(startCarLocalDateTime, endCarLocalDateTime);
 
   const contractDateFromUTC = getBlockchainTimeFromDate(startCarLocalDateTime);
   const contractDateToUTC = getBlockchainTimeFromDate(endCarLocalDateTime);

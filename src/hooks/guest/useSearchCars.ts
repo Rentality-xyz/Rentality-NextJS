@@ -124,9 +124,9 @@ const useSearchCars = () => {
         searchCarRequest: request,
         searchCarFilters: filters,
         carInfos: availableCarsData.map((i) => ({
-           ...i,
+          ...i,
           engineType: BigInt(i.engineType),
-          dimoTokenId: Number(i.dimoTokenId) 
+          dimoTokenId: Number(i.dimoTokenId),
         })),
         filterLimits: publicSearchCarsResponse.filterLimits,
       });

@@ -98,22 +98,27 @@ const useSaveCar = () => {
       }
 
       const dimoToken = walletAddress === null ? 0 : dataToSave.dimoTokenId;
-     
-      const dimoSignature = walletAddress === null || dimoToken === 0 ? "0x" : 
-      await axios.post("/api/dimo/signDIMOId", {
-        address: walletAddress,
-        chainId: ethereumInfo.chainId,
-        dimoToken,
-    })
-    .then(response => {console.log("SIGN",response.data.signature) 
-      return response.data.signature}) 
-    .catch(error => {
-        if (error.response && error.response.status === 404) {
-            return "0x"; 
-        } else {
-            throw error; 
-        }
-    });
+
+      const dimoSignature =
+        walletAddress === null || dimoToken === 0
+          ? "0x"
+          : await axios
+              .post("/api/dimo/signDIMOId", {
+                address: walletAddress,
+                chainId: ethereumInfo.chainId,
+                dimoToken,
+              })
+              .then((response) => {
+                console.log("SIGN", response.data.signature);
+                return response.data.signature;
+              })
+              .catch((error) => {
+                if (error.response && error.response.status === 404) {
+                  return "0x";
+                } else {
+                  throw error;
+                }
+              });
 
       const request: ContractCreateCarRequest = {
         tokenUri: metadataURL,
@@ -135,10 +140,10 @@ const useSaveCar = () => {
         insuranceRequired: dataToSave.isGuestInsuranceRequired,
         insurancePriceInUsdCents: BigInt(dataToSave.insurancePerDayPriceInUsd * 100),
         dimoTokenId: BigInt(dataToSave.dimoTokenId),
-        signedDimoTokenId: dimoSignature
+        signedDimoTokenId: dimoSignature,
       };
 
-      console.log("SIGNATURE",request)
+      console.log("SIGNATURE", request);
       const result = await rentalityContracts.gatewayProxy.addCar(request);
       return result.ok ? result : Err("ERROR");
     } catch (e) {
@@ -235,7 +240,10 @@ const useSaveCar = () => {
   return { dataSaved, addNewCar, updateCar } as const;
 };
 
-export async function saveCarImages(carImages: PlatformCarImage[], ethereumInfo: EthereumInfo): Promise<UploadedCarImage[]> {
+export async function saveCarImages(
+  carImages: PlatformCarImage[],
+  ethereumInfo: EthereumInfo
+): Promise<UploadedCarImage[]> {
   const savedImages: UploadedCarImage[] = [];
 
   if (carImages.length > 0) {

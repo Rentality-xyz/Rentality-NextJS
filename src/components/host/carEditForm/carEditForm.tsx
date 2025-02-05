@@ -282,10 +282,10 @@ export default function CarEditForm({
             <strong>{t_car("car")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
-          <Controller
-            name="vinNumber"
-            control={control}
-            defaultValue={dimoData ? dimoData.vin : ""}
+            <Controller
+              name="vinNumber"
+              control={control}
+              defaultValue={dimoData ? dimoData.vin : ""}
               render={({ field: { onChange, value } }) =>
                 dimoData == null ? (
                   <RntVINCheckingInput
@@ -303,9 +303,9 @@ export default function CarEditForm({
                   />
                 ) : (
                   <RntInput value={dimoData.vin} className="lg:w-60" label={t_car("vin_num")} readOnly={true} />
-              )
-            }
-          />
+                )
+              }
+            />
             <Controller
               name="brand"
               control={control}
@@ -325,17 +325,15 @@ export default function CarEditForm({
                     }}
                     validationError={errors.brand?.message?.toString()}
                   />
-                )
-                :  isNewCar && dimoData !== undefined ? (
+                ) : isNewCar && dimoData !== undefined ? (
                   <RntInput
-                  id="brand"
-                  className="lg:w-60"
-                  label={t_car("brand")}
-                  readOnly={true}
-                  value={dimoData.definition.make}
+                    id="brand"
+                    className="lg:w-60"
+                    label={t_car("brand")}
+                    readOnly={true}
+                    value={dimoData.definition.make}
                   />
-                )
-                :isNewCar && dimoData !== undefined ? (
+                ) : isNewCar && dimoData !== undefined ? (
                   <RntInput
                     id="brand"
                     className="lg:w-60"
@@ -375,8 +373,7 @@ export default function CarEditForm({
                     }}
                     validationError={errors.model?.message?.toString()}
                   />
-                )
-                : isNewCar && dimoData !== undefined ? (
+                ) : isNewCar && dimoData !== undefined ? (
                   <RntInput
                     id="model"
                     className="lg:w-60"
@@ -384,8 +381,7 @@ export default function CarEditForm({
                     readOnly={true}
                     value={dimoData.definition.model}
                   />
-                ) :
-                (
+                ) : (
                   <RntInput
                     className="lg:w-60"
                     id="model_text"
@@ -402,7 +398,7 @@ export default function CarEditForm({
               control={control}
               defaultValue={dimoData ? Number.parseInt(dimoData.definition.year) : 2001}
               render={({ field: { onChange, value } }) =>
-                isNewCar && !isVINVerified  && dimoData === undefined ? (
+                isNewCar && !isVINVerified && dimoData === undefined ? (
                   <RntCarYearSelect
                     id="releaseYear"
                     className="lg:w-60"
@@ -417,18 +413,15 @@ export default function CarEditForm({
                     }}
                     validationError={errors.releaseYear?.message?.toString()}
                   />
-                )
-                :  isNewCar && dimoData !== undefined ? (
+                ) : isNewCar && dimoData !== undefined ? (
                   <RntInput
-                  id="releaseYear"
-                  className="lg:w-60"
-                  label={t_car("release")}
-
+                    id="releaseYear"
+                    className="lg:w-60"
+                    label={t_car("release")}
                     readOnly={true}
                     value={dimoData.definition.year}
                   />
-                )
-                :isNewCar && dimoData !== undefined ? (
+                ) : isNewCar && dimoData !== undefined ? (
                   <RntInput
                     id="releaseYear"
                     className="lg:w-60"
@@ -961,7 +954,7 @@ export default function CarEditForm({
 
         <div className="mb-8 mt-8 flex flex-row justify-between gap-4 sm:justify-start">
           <RntButton
-           type="button"
+            type="button"
             className="h-16 w-40"
             disabled={isSubmitting}
             onClick={handleSubmit(async (data) => await onFormSubmit(data))}

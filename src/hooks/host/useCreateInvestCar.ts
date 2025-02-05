@@ -17,7 +17,7 @@ import { saveCarImages } from "./useSaveCar";
 import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
 
 const useCreateInvestCar = () => {
-  const {rentalityContracts} = useRentality();
+  const { rentalityContracts } = useRentality();
   const ethereumInfo = useEthereum();
   const [dataSaved, setDataSaved] = useState<Boolean>(true);
 
@@ -58,20 +58,17 @@ const useCreateInvestCar = () => {
     if (!rentalityContracts) {
       console.error("saveCar error: rentalityContract is null");
       return Err("ERROR");
-    };
-  
+    }
 
     try {
       setDataSaved(false);
 
-    
-        const savedImages = await saveCarImages(hostCarInfo.images, ethereumInfo);
-  
-        const dataToSave = {
-          ...hostCarInfo,
-          images: savedImages,
-        };
-      
+      const savedImages = await saveCarImages(hostCarInfo.images, ethereumInfo);
+
+      const dataToSave = {
+        ...hostCarInfo,
+        images: savedImages,
+      };
 
       const metadataURL = await uploadMetadataToIPFS(dataToSave);
 
@@ -111,12 +108,12 @@ const useCreateInvestCar = () => {
         timeBufferBetweenTripsInSec: BigInt(dataToSave.timeBufferBetweenTripsInMin * 60),
         insuranceRequired: dataToSave.isGuestInsuranceRequired,
         insurancePriceInUsdCents: BigInt(dataToSave.insurancePerDayPriceInUsd),
-        locationInfo: {...location,signature: "0x"},
+        locationInfo: { ...location, signature: "0x" },
         currentlyListed: dataToSave.currentlyListed,
         dimoTokenId: BigInt(0),
         signedDimoTokenId: "0x",
       };
-      
+
       const createInvestRequest = {
         car: request,
         priceInUsd: BigInt(carPrice * 100),
@@ -133,8 +130,6 @@ const useCreateInvestCar = () => {
       setDataSaved(true);
     }
   }
-
- 
 
   return { dataSaved, createInvest } as const;
 };
