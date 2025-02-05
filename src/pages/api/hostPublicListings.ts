@@ -95,7 +95,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 currentlyListed: i.currentlyListed,
                 isEditable: false,
                 dimoTokenId: 0,
-                vinNumber: ""
+                vinNumber: "",
               };
               return item;
             })

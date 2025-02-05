@@ -36,7 +36,7 @@ module.exports = {
         "rentality-additional-dark": "#240F50",
         "rentality-additional-light": "#B398FF",
         "rentality-additional-tint": "#7E59D7",
-        "rentality-secondary": "#5CF4E8",
+        "rentality-secondary": "#5CF4E8", //for text
         "rentality-secondary-shade": "#24D8D4", //sale bg, some (i) text,
         "rentality-secondary-dark": "#26B4B1",
         "rentality-star-point": "#EAB600",

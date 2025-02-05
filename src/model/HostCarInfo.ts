@@ -49,6 +49,12 @@ export type HostCarInfo = {
   metadataUrl: string;
   insurancePriceInUsdCents: number;
 };
+export type CreateInvestCar = {
+  hostCarInfo: HostCarInfo;
+  priceInUsdCents: number;
+  creatorPercents: number;
+  inProgress: boolean;
+};
 
 export const emptyHostCarInfo: HostCarInfo = {
   carId: 0,

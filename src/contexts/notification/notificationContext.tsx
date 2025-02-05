@@ -167,14 +167,12 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
       if (!rentalityContracts) return;
 
       try {
-       
         const provider = new JsonRpcProvider(ethereumInfo.defaultRpcUrl);
 
         const randomSigner = Wallet.createRandom();
 
         const signerWithProvider = randomSigner.connect(provider);
-        const notificationService = await getEtherContractWithSigner("notificationService",
-           signerWithProvider);
+        const notificationService = await getEtherContractWithSigner("notificationService", signerWithProvider);
         if (!notificationService) {
           console.error("initialLoading error: notificationService is null");
           return false;

@@ -12,11 +12,18 @@ import {
 } from "@/features/blockchain/models/IRentalityAdminGateway";
 import { IRentalityGateway, IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGateway";
 import { getEthersContractProxy } from "@/features/blockchain/models/EthersContractProxy";
+import { IRentalityInvestment, IRentalityInvestmentContract } from "@/features/blockchain/models/IRentalityInvestment";
+import {
+  IRentalityCurrencyConverter,
+  IRentalityCurrencyConverterContract,
+} from "@/features/blockchain/models/IRentalityCurrencyConverter";
 
 export interface IRentalityContracts {
   gateway: IRentalityGatewayContract;
   gatewayProxy: IRentalityGateway;
   referralProgram: IRentalityReferralProgram;
+  investment: IRentalityInvestment;
+  currencyConverter: IRentalityCurrencyConverter;
 }
 
 interface RentalityContextType {
@@ -48,8 +55,8 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         setRentalityContracts(null);
         return;
       }
-      
-    const rentalityGateway = (await getEtherContractWithSigner(
+
+      const rentalityGateway = (await getEtherContractWithSigner(
         "gateway",
         ethereumInfo.signer
       )) as unknown as IRentalityGatewayContract;
@@ -60,9 +67,29 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
       }
 
       const rentalityReferralPogram = (await getEtherContractWithSigner(
-        "referralProgram",
+        "refferalPogram",
         ethereumInfo.signer
       )) as unknown as IRentalityReferralProgramContract;
+      if (!rentalityReferralPogram) {
+        console.error("getRentalityContact error: rentalityReferralProgram is null");
+        setRentalityContracts(null);
+        return;
+      }
+
+      const investment = (await getEtherContractWithSigner(
+        "investService",
+        ethereumInfo.signer
+      )) as unknown as IRentalityInvestmentContract;
+      if (!rentalityReferralPogram) {
+        console.error("getRentalityContact error: rentalityReferralProgram is null");
+        setRentalityContracts(null);
+        return;
+      }
+
+      const currencyConverter = (await getEtherContractWithSigner(
+        "currencyConverter",
+        ethereumInfo.signer
+      )) as unknown as IRentalityCurrencyConverterContract;
       if (!rentalityReferralPogram) {
         console.error("getRentalityContact error: rentalityReferralProgram is null");
         setRentalityContracts(null);
@@ -73,6 +100,8 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         gateway: rentalityGateway,
         gatewayProxy: getEthersContractProxy(rentalityGateway),
         referralProgram: getEthersContractProxy(rentalityReferralPogram),
+        investment: getEthersContractProxy(investment),
+        currencyConverter: getEthersContractProxy(currencyConverter),
       });
     };
 

@@ -75,9 +75,7 @@ const RntSelect = forwardRef<HTMLSelectElement, RntSelectProps>(
           >
             {children}
           </select>
-          {
-            isTransparentStyle && (<span className={`custom-arrow top-[70%] ${arrowStyle}`}></span>)
-          }
+          {isTransparentStyle && <span className={`custom-arrow top-[70%] ${arrowStyle}`}></span>}
           <RntValidationError className={validationClassName} validationError={validationError} />
         </div>
       </div>

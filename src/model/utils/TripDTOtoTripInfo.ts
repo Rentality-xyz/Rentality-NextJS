@@ -66,8 +66,8 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
           ? getNotDiscountablePrice(Number(tripDTO.paidForInsuranceInUsdCents) / 100.0, depositInUsd)
           : 0)
       : totalPriceInUsd;
-      
-      const dimoTokenId = Number(tripDTO.dimoTokenId ? tripDTO.dimoTokenId : 0);
+
+  const dimoTokenId = Number(tripDTO.dimoTokenId ? tripDTO.dimoTokenId : 0);
 
   let item: TripInfo = {
     tripId: Number(tripDTO.trip.tripId),

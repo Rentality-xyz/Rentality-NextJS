@@ -8,14 +8,14 @@ function kmToMiles(km: number) {
 type PanelData = {
   data: {
     signalsLatest: {
-      lastSeen: string; 
+      lastSeen: string;
       powertrainTransmissionTravelledDistance: {
-        value: number; 
+        value: number;
       } | null;
       powertrainFuelSystemRelativeLevel: {
         value: number;
       } | null;
-      powertrainFuelSystemSupportedFuelTypes: any | null; 
+      powertrainFuelSystemSupportedFuelTypes: any | null;
       powertrainTractionBatteryStateOfChargeCurrent: {
         value: number;
       } | null;
@@ -24,22 +24,20 @@ type PanelData = {
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const tokenId = <string>req.query.tokenId
-    const id = Number.parseInt(tokenId)
+  const tokenId = <string>req.query.tokenId;
+  const id = Number.parseInt(tokenId);
 
-   
-  const authResult = await authOnDimo()
+  const authResult = await authOnDimo();
 
-  if(authResult === null)
-    return
+  if (authResult === null) return;
 
-  const {auth, dimo} = authResult
+  const { auth, dimo } = authResult;
 
-    const privToken = await tokenExchange(id, auth, dimo, [1, 2, 3, 4, 5])
+  const privToken = await tokenExchange(id, auth, dimo, [1, 2, 3, 4, 5]);
 
-      const panelData = await dimo.telemetry.query({
-        ...privToken,
-        query: `
+  const panelData = await dimo.telemetry.query({
+    ...privToken,
+    query: `
                 query { signalsLatest(tokenId: ${id}) {
                         lastSeen
                         powertrainTransmissionTravelledDistance { value }
@@ -48,18 +46,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                 }
             `,
-        });
-          const parsedResult = panelData as unknown as PanelData
-          const distanceInMiles = parsedResult.data.signalsLatest.powertrainTransmissionTravelledDistance ? 
-          kmToMiles(parsedResult.data.signalsLatest.powertrainTransmissionTravelledDistance.value) :
-          0
+  });
+  const parsedResult = panelData as unknown as PanelData;
+  const distanceInMiles = parsedResult.data.signalsLatest.powertrainTransmissionTravelledDistance
+    ? kmToMiles(parsedResult.data.signalsLatest.powertrainTransmissionTravelledDistance.value)
+    : 0;
 
-          const battery = parsedResult.data.signalsLatest.powertrainTractionBatteryStateOfChargeCurrent
-          const fuelLevel = parsedResult.data.signalsLatest.powertrainFuelSystemRelativeLevel
-            return res.json({
-              odometr: distanceInMiles,
-              fuelLevel,
-              battery
-})
-
+  const battery = parsedResult.data.signalsLatest.powertrainTractionBatteryStateOfChargeCurrent;
+  const fuelLevel = parsedResult.data.signalsLatest.powertrainFuelSystemRelativeLevel;
+  return res.json({
+    odometr: distanceInMiles,
+    fuelLevel,
+    battery,
+  });
 }
