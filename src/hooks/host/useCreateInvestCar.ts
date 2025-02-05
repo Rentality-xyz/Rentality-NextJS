@@ -114,6 +114,7 @@ const useCreateInvestCar = () => {
         locationInfo: {...location,signature: "0x"},
         currentlyListed: dataToSave.currentlyListed,
         dimoTokenId: BigInt(0),
+        signedDimoTokenId: "0x",
       };
       
       const createInvestRequest = {
