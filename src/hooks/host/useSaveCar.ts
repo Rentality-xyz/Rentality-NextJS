@@ -12,7 +12,6 @@ import {
 import { deleteFileFromIPFS, uploadFileToIPFS, uploadJSONToIPFS } from "@/utils/pinata";
 import { getSignedLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { getIpfsHashFromUrl, getNftJSONFromCarInfo } from "@/utils/ipfsUtils";
-import { env } from "@/utils/env";
 import { PlatformCarImage, UploadedCarImage } from "@/model/FileToUpload";
 import { Err, Result, TransactionErrorCode } from "@/model/utils/result";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
@@ -127,7 +126,7 @@ const useSaveCar = () => {
         milesIncludedPerDay: BigInt(
           isUnlimitedMiles(dataToSave.milesIncludedPerDay) ? UNLIMITED_MILES_VALUE : dataToSave.milesIncludedPerDay
         ),
-        geoApiKey: env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+        geoApiKey: "",
         engineType: getEngineTypeCode(dataToSave.engineTypeText),
         engineParams: engineParams,
         timeBufferBetweenTripsInSec: BigInt(dataToSave.timeBufferBetweenTripsInMin * 60),
