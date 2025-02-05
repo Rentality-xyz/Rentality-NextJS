@@ -3,6 +3,8 @@ import { MouseEventHandler } from "react";
 
 interface RntCheckboxProps extends React.ComponentPropsWithoutRef<"input"> {
   label?: string;
+  checkedClassName?: string;
+  checkMarkClassName?: string;
   validationClassName?: string;
   validationError?: string;
 }
@@ -35,14 +37,27 @@ const RntCheckbox = ({ className, label, checked, readOnly, onChange, ...rest }:
   );
 };
 
-export function CheckboxLight({ className, label, checked, onChange, ...rest }: RntCheckboxProps) {
+export function CheckboxLight({
+  className,
+  checkedClassName,
+  checkMarkClassName,
+  label,
+  checked,
+  onChange,
+  ...rest
+}: RntCheckboxProps) {
   return (
     <div className={className}>
       <label className="group flex w-fit cursor-pointer select-none flex-row items-center">
         <input className="hidden" type="checkbox" checked={checked} onChange={onChange} />
-        <span className={`relative mr-4 h-6 w-6 shrink-0 rounded-md border-2`}>
+        <span className={cn(`relative mr-4 h-6 w-6 shrink-0 rounded-md border-2 border-white`, checkedClassName)}>
           {checked ? (
-            <span className="absolute right-0.5 top-[-8px] h-6 w-2.5 shrink-0 rotate-45 border-b-2 border-r-2 border-white"></span>
+            <span
+              className={cn(
+                `absolute right-0.5 top-[-8px] h-6 w-2.5 shrink-0 rotate-45 border-b-2 border-r-2 border-white`,
+                checkMarkClassName
+              )}
+            ></span>
           ) : null}
         </span>
         {label}
