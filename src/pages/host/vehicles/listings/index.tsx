@@ -136,7 +136,7 @@ function Listings() {
 
       <CheckingLoadingAuth>
         <RntSuspense isLoading={isLoadingMyListings || (isLoadingDimo && isAuthenticated)}>
-          <div className="my-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
+          <div className="my-4 grid grid-cols-1 gap-4 xl:grid-cols-2 2xl:grid-cols-3 min-[1660px]:grid-cols-4">
             {combinedListings.length === 0 && (
               <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
                 {t("vehicles.no_listed_cars")}
