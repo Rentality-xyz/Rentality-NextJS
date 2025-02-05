@@ -19,9 +19,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { env } from "@/utils/env";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { allSupportedBlockchainList } from "@/model/blockchain/blockchainList";
-import { getTimeZoneIdFromAddress } from "@/utils/timezone";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGateway";
+import { getTimeZoneIdFromGoogleByLocation } from "@/utils/timezone";
+import { correctDaylightSavingTime } from "@/utils/correctDaylightSavingTime";
 
 export type PublicSearchCarsResponse =
   | {
@@ -66,8 +67,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const chainIdNumber = Number(chainId) > 0 ? Number(chainId) : env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
 
   if (!chainIdNumber) {
-    console.error("API checkTrips error: chainId was not provided");
+    console.error("API publicSearchCar error: chainId was not provided");
     res.status(400).json({ error: "chainId was not provided" });
+    return;
+  }
+  const GOOGLE_MAPS_API_KEY = env.GOOGLE_MAPS_API_KEY;
+  if (isEmpty(GOOGLE_MAPS_API_KEY)) {
+    console.error("API publicSearchCar error: GOOGLE_MAPS_API_KEY was not set");
+    res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
 
@@ -75,19 +82,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const providerApiUrl = getProviderApiUrlFromEnv(chainIdNumber);
 
   if (!providerApiUrl) {
-    console.error(`API checkTrips error: API URL for chain id ${chainIdNumber} was not set`);
-    res.status(500).json({ error: `API checkTrips error: API URL for chain id ${chainIdNumber} was not set` });
+    console.error(`API publicSearchCar error: API URL for chain id ${chainIdNumber} was not set`);
+    res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
 
-  const location = `${city as string}, ${state as string}, ${country as string}`;
+  const timeZoneIdResult = await getTimeZoneIdFromGoogleByLocation(
+    Number(latitude),
+    Number(longitude),
+    GOOGLE_MAPS_API_KEY
+  );
 
-  const timeZoneId = await getTimeZoneIdFromAddress(location);
-  if (isEmpty(timeZoneId)) {
-    res.status(500).json({ error: "API checkTrips error: GOOGLE_MAPS_API_KEY was not set" });
-    return;
-  }
-
+  const timeZoneId = timeZoneIdResult.ok ? timeZoneIdResult.value : "";
   const isDeliveryToGuestValue = (isDeliveryToGuest as string)?.toLowerCase() === "true";
   const pickupLocationValues = (pickupLocation as string)?.split(";");
   const returnLocationValues = (returnLocation as string)?.split(";");
@@ -100,7 +106,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       city: "",
       latitude: Number(latitude as string),
       longitude: Number(longitude as string),
-      timeZoneId: "",
+      timeZoneId: timeZoneId,
     },
     dateFromInDateTimeStringFormat: dateFrom as string,
     dateToInDateTimeStringFormat: dateTo as string,
@@ -239,7 +245,10 @@ function formatSearchAvailableCarsContractRequest(
   timeZoneId: string
 ) {
   const startCarLocalDateTime = moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, timeZoneId).toDate();
-  const endCarLocalDateTime = moment.tz(searchCarRequest.dateToInDateTimeStringFormat, timeZoneId).toDate();
+
+  let endCarLocalDateTime = moment.tz(searchCarRequest.dateToInDateTimeStringFormat, timeZoneId).toDate();
+  endCarLocalDateTime = correctDaylightSavingTime(startCarLocalDateTime, endCarLocalDateTime)
+
   const contractDateFromUTC = getBlockchainTimeFromDate(startCarLocalDateTime);
   const contractDateToUTC = getBlockchainTimeFromDate(endCarLocalDateTime);
   const contractSearchCarParams: ContractSearchCarParams = {
