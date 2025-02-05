@@ -2,7 +2,6 @@ import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtil
 import { ContractCarDetails, ContractCarInfo, ContractInsuranceCarInfo } from "../blockchain/schemas";
 import { HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE_TEXT } from "../HostCarInfo";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "../EngineType";
-import carDetails from "@/components/tripCard/carDetails";
 
 export const mapContractCarToCarDetails = async (
   carInfo: ContractCarInfo,
@@ -66,6 +65,6 @@ export const mapContractCarToCarDetails = async (
     isCarMetadataEdited: false,
     metadataUrl: tokenURI,
     dimoTokenId: Number(carInfoDetails.dimoTokenId),
-    insurancePriceInUsdCents: Number(insuranceInfo.priceInUsdCents)
+    insurancePriceInUsdCents: Number(insuranceInfo.priceInUsdCents),
   };
 };
