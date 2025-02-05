@@ -59,6 +59,7 @@ export type ContractCreateCarRequest = {
   insuranceRequired: boolean;
   insurancePriceInUsdCents: bigint;
   dimoTokenId: bigint;
+  signedDimoTokenId: string;
 };
 
 export type ContractUpdateCarInfoRequest = {

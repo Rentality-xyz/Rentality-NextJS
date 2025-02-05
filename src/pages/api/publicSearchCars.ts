@@ -30,6 +30,12 @@ export type PublicSearchCarsResponse =
       filterLimits: FilterLimits;
     }
   | { error: string };
+  
+  export type ApiUrl = | {
+    url: string;
+  } | {
+    error: string
+  }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<PublicSearchCarsResponse>) {
   const privateKey = env.SIGNER_PRIVATE_KEY;

@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { authOnDimo, tokenExchange } from "./helpers";
 import { getIpfsURI } from "@/utils/ipfsUtils";
 
-type DIMOSharedCarsResponse = {
+export type DIMOSharedCarsResponse = {
   data: {
     vehicles: {
       nodes: [{
@@ -105,6 +105,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   }))
 
-    return res.json(result)
+    return res.json(result.filter(v => v !== null))
 
 }

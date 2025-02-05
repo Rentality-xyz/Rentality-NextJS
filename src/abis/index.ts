@@ -52,7 +52,7 @@ const rentalityContracts = {
   aiDamageAnalyze: {
     addresses: RentalityAiDamageAnalyzeServiceJSON_ADDRESSES.addresses,
     abi: RentalityAiDamageAnalyzeJSON_ABI.abi,
-  }
+  },
 };
 
 export async function getEtherContractWithSigner(contract: keyof typeof rentalityContracts, signer: Signer) {

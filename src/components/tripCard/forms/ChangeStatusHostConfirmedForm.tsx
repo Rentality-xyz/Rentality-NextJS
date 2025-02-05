@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useMemo, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { TripInfo } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
 import RntButton from "@/components/common/rntButton";
