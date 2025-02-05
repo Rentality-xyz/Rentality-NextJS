@@ -333,6 +333,14 @@ export default function CarEditForm({
                     readOnly={true}
                     value={dimoData.definition.make}
                   />
+                ) : isNewCar && dimoData !== undefined ? (
+                  <RntInput
+                    id="brand"
+                    className="lg:w-60"
+                    label={t_car("brand")}
+                    readOnly={true}
+                    value={dimoData.definition.make}
+                  />
                 ) : (
                   <RntInput
                     className="lg:w-60"
@@ -404,6 +412,14 @@ export default function CarEditForm({
                       setIsCarMetadataEdited(true);
                     }}
                     validationError={errors.releaseYear?.message?.toString()}
+                  />
+                ) : isNewCar && dimoData !== undefined ? (
+                  <RntInput
+                    id="releaseYear"
+                    className="lg:w-60"
+                    label={t_car("release")}
+                    readOnly={true}
+                    value={dimoData.definition.year}
                   />
                 ) : isNewCar && dimoData !== undefined ? (
                   <RntInput

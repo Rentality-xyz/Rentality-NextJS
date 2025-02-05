@@ -1,3 +1,6 @@
+import { CreateClaimRequest } from "@/model/CreateClaimRequest";
+import { CarMetadata } from "@/utils/ipfsUtils";
+
 export type ContractCarInfo = {
   carId: bigint;
   carVinNumber: string;
@@ -839,4 +842,31 @@ export type EngineType = bigint;
 export const EngineType = {
   PETROL: BigInt(1),
   ELECTRIC: BigInt(2),
+};
+
+export type CarInvestment = {
+  car: ContractCreateCarRequest;
+  priceInUsd: BigInt;
+  creatorPercents: BigInt;
+  inProgress: boolean;
+};
+export type InvestmentDTO = {
+  investment: CarInvestment;
+  nft: string;
+  investmentId: BigInt;
+  payedInUsd: BigInt;
+  creator: string;
+  isCarBought: boolean;
+  income: BigInt;
+  myIncome: BigInt;
+  myInvestingSum: BigInt;
+  listingDate: BigInt;
+  myTokens: BigInt;
+  myPart: BigInt;
+  totalHolders: BigInt;
+  totalTokens: BigInt;
+};
+export type InvestmentDTOWithMetadata = {
+  investment: InvestmentDTO;
+  metadata: CarMetadata;
 };

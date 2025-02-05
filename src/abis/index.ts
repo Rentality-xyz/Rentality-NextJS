@@ -1,13 +1,18 @@
-import RentalityGatewayJSON_ABI from "./RentalityGateway.v0_2_0.abi.json";
-import RentalityGatewayJSON_ADDRESSES from "./RentalityGateway.v0_2_0.addresses.json";
-import RentalityAdminGatewayJSON_ABI from "./RentalityAdminGateway.v0_2_0.abi.json";
-import RentalityAdminGatewayJSON_ADDRESSES from "./RentalityAdminGateway.v0_2_0.addresses.json";
-import RentalityLocationVerifierJSON_ADDRESSES from "./RentalityLocationVerifier.v0_2_0.addresses.json";
-import RentalityLocationVerifierJSON_ABI from "./RentalityLocationVerifier.v0_2_0.abi.json";
-import RentalityNotificationServiceJSON_ADDRESSES from "./RentalityNotificationService.v0_2_0.addresses.json";
-import RentalityNotificationServiceJSON_ABI from "./RentalityNotificationService.v0_2_0.abi.json";
-import RentalityReferralProgramServiceJSON_ABI from "./RentalityReferralProgram.v0_2_0.abi.json";
-import RentalityReferralProgramServiceJSON_ADDRESSES from "./RentalityReferralProgram.v0_2_0.addresses.json";
+import RentalityGatewayJSON_ABI from "./investment/RentalityGateway.v0_2_0.abi.json";
+import RentalityGatewayJSON_ADDRESSES from "./investment/RentalityGateway.v0_2_0.addresses.json";
+import RentalityAdminGatewayJSON_ABI from "./investment/RentalityAdminGateway.v0_2_0.abi.json";
+import RentalityAdminGatewayJSON_ADDRESSES from "./investment/RentalityAdminGateway.v0_2_0.addresses.json";
+import RentalityInvestServiceJSON_ADDRESSES from "./investment/RentalityInvestment.v0_2_0.addresses.json";
+import RentalityInvestServiceJSON_ABI from "./investment/RentalityInvestment.v0_2_0.abi.json";
+import RentalityLocationVerifierJSON_ADDRESSES from "./investment/RentalityLocationVerifier.v0_2_0.addresses.json";
+import RentalityLocationVerifierJSON_ABI from "./investment/RentalityLocationVerifier.v0_2_0.abi.json";
+import RentalityNotificationServiceJSON_ADDRESSES from "./investment/RentalityNotificationService.v0_2_0.addresses.json";
+import RentalityNotificationServiceJSON_ABI from "./investment/RentalityNotificationService.v0_2_0.abi.json";
+import RentalityCurrencyConverterJSON_ADDRESSES from "./investment/RentalityCurrencyConverter.v0_2_0.addresses.json";
+import RentalityCurrencyConverterJSON_ABI from "./investment/RentalityCurrencyConverter.v0_2_0.abi.json";
+
+import RentalityRefferalProgramServiceJSON_ABI from "./investment/RentalityReferralProgram.v0_2_0.abi.json";
+import RentalityRefferalProgramServiceJSON_ADDRESSES from "./investment/RentalityReferralProgram.v0_2_0.addresses.json";
 import RentalityAiDamageAnalyzeJSON_ABI from "./RentalityAiDamageAnalyze.v0_2_0.abi.json";
 import RentalityAiDamageAnalyzeServiceJSON_ADDRESSES from "./RentalityAiDamageAnalyze.v0_2_0.addresses.json";
 import { Contract, Signer } from "ethers";
@@ -32,9 +37,17 @@ const rentalityContracts = {
     addresses: RentalityLocationVerifierJSON_ADDRESSES.addresses,
     abi: RentalityLocationVerifierJSON_ABI.abi,
   },
-  referralProgram: {
-    addresses: RentalityReferralProgramServiceJSON_ADDRESSES.addresses,
-    abi: RentalityReferralProgramServiceJSON_ABI.abi,
+  investService: {
+    addresses: RentalityInvestServiceJSON_ADDRESSES.addresses,
+    abi: RentalityInvestServiceJSON_ABI.abi,
+  },
+  currencyConverter: {
+    addresses: RentalityCurrencyConverterJSON_ADDRESSES.addresses,
+    abi: RentalityCurrencyConverterJSON_ABI.abi,
+  },
+  refferalPogram: {
+    addresses: RentalityRefferalProgramServiceJSON_ADDRESSES.addresses,
+    abi: RentalityRefferalProgramServiceJSON_ABI.abi,
   },
   aiDamageAnalyze: {
     addresses: RentalityAiDamageAnalyzeServiceJSON_ADDRESSES.addresses,

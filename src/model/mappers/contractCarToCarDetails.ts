@@ -66,6 +66,6 @@ export const mapContractCarToCarDetails = async (
     isCarMetadataEdited: false,
     metadataUrl: tokenURI,
     dimoTokenId: Number(carInfoDetails.dimoTokenId),
-    insurancePriceInUsdCents: Number(insuranceInfo.priceInUsdCents)
+    insurancePriceInUsdCents: Number(insuranceInfo.priceInUsdCents),
   };
 };

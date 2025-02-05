@@ -47,7 +47,8 @@
             { "type": "uint256", "name": "insurancePriceInUsdCents" },
             { "type": "uint256", "name": "dimoTokenId" }
           ]
-        }
+        },
+        { "type": "bytes32", "name": "refferalHash" }
       ],
       "outputs": [{ "type": "uint256", "name": "" }]
     },
@@ -320,7 +321,8 @@
       "payable": false,
       "inputs": [
         { "type": "uint256", "name": "tripId" },
-        { "type": "uint64[]", "name": "panelParams" }
+        { "type": "uint64[]", "name": "panelParams" },
+        { "type": "bytes32", "name": "refferalHash" }
       ],
       "outputs": []
     },
@@ -364,7 +366,10 @@
       "name": "confirmCheckOut",
       "constant": false,
       "payable": false,
-      "inputs": [{ "type": "uint256", "name": "tripId" }],
+      "inputs": [
+        { "type": "uint256", "name": "tripId" },
+        { "type": "bytes32", "name": "" }
+      ],
       "outputs": []
     },
     {
@@ -453,7 +458,10 @@
       "name": "finishTrip",
       "constant": false,
       "payable": false,
-      "inputs": [{ "type": "uint256", "name": "tripId" }],
+      "inputs": [
+        { "type": "uint256", "name": "tripId" },
+        { "type": "bytes32", "name": "" }
+      ],
       "outputs": []
     },
     {
@@ -1673,7 +1681,8 @@
             { "type": "string", "name": "issueCountry" },
             { "type": "string", "name": "email" }
           ]
-        }
+        },
+        { "type": "bytes32", "name": "" }
       ],
       "outputs": []
     },
@@ -1686,9 +1695,8 @@
         { "type": "string", "name": "nickName" },
         { "type": "string", "name": "mobilePhoneNumber" },
         { "type": "string", "name": "profilePhoto" },
-        { "type": "string", "name": "email" },
         { "type": "bytes", "name": "TCSignature" },
-        { "type": "bytes4", "name": "hash" }
+        { "type": "bytes32", "name": "hash" }
       ],
       "outputs": []
     },
