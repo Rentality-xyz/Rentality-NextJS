@@ -48,3 +48,4 @@ docker/env.nextjs
 .env.*
 .env 
 .firebasebackup/
+firebase-debug.log
