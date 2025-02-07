@@ -26,7 +26,7 @@ function ImageCarouselDialog({ images, isOpen, onClose }: ImageCarouselDialogPro
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70" onClick={onClose}>
       <div
-        className="input-border-gradient h-[40vh] w-[100%] rounded-[20px] bg-rentality-bg-left-sidebar p-4 sm:h-[90vh] md:w-[80%]"
+        className="btn_input_border-gradient h-[40vh] w-[100%] rounded-[20px] bg-rentality-bg-left-sidebar p-4 sm:h-[90vh] md:w-[80%]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">

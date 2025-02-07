@@ -423,14 +423,14 @@ input:disabled {
   overflow-y: auto;
 }
 
-.border-gradient {
+.btn_input_border-gradient {
   /*padding: 10px;*/
   /*display: inline-block;*/
   position: relative;
   z-index: 0;
 }
 
-.border-gradient:before {
+.btn_input_border-gradient:before {
   pointer-events: none;
   content: "";
   position: absolute;
@@ -459,7 +459,7 @@ input:disabled {
   }
 }
 
-.input-border-gradient {
+.border-gradient {
   position: relative;
   display: inline-block;
   /* Устанавливаем обертку под размер input */
@@ -469,7 +469,7 @@ input:disabled {
   /* Убираем стандартную рамку */
 }
 
-.input-border-gradient:before {
+.border-gradient:before {
   content: "";
   position: absolute;
   inset: 0;
