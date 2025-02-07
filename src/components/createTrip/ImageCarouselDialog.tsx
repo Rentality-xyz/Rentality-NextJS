@@ -31,7 +31,7 @@ function ImageCarouselDialog({ images, isOpen, carInfo, onClose }: ImageCarousel
       >
         <div className="mb-4 flex items-center justify-between">
           <h2 className="ml-[2.4%] w-full text-center text-2xl font-semibold text-white/70">
-            {carInfo.brand} {carInfo.model} {carInfo.year}
+            {carInfo.brand} {carInfo.model} - {carInfo.year}
           </h2>
           <Image height={28} src={burgerMenuClose} alt="" className="cursor-pointer opacity-70" onClick={onClose} />
         </div>
