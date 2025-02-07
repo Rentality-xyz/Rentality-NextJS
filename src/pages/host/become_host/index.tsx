@@ -23,6 +23,7 @@ import { CivicProvider } from "@/contexts/web3/civicContext";
 import UserCommonInformationForm from "@/components/profileInfo/UserCommonInformationForm";
 import UserDriverLicenseVerification from "@/components/profileInfo/UserDriverLicenseVerification";
 import { isEmpty } from "@/utils/string";
+import useToggleState from "@/hooks/useToggleState";
 
 function BecomeHost() {
   return (
@@ -32,7 +33,7 @@ function BecomeHost() {
   );
 }
 
-type BecameHostSteps = {
+type BecomeHostSteps = {
   isWalletConnected: boolean;
   isUserInfoSaved: boolean;
   isLicenseVerificationPassed: boolean;
@@ -44,12 +45,13 @@ function BecomeHostContent() {
   const { login } = useAuth();
   const ethereumInfo = useEthereum();
   const [isLoadingProfileSettings, savedProfileSettings, saveProfileSettings] = useProfileSettings();
+  const [isLoadingMyListings, myListings] = useMyListings();
   const [isLoadingDiscounts, savedTripsDiscounts, saveTripDiscounts] = useTripDiscounts();
   const [isLoadingDeliveryPrices, savedDeliveryPrices, saveDeliveryPrices] = useDeliveryPrices();
   const { userRole } = useUserRole();
   const { t } = useTranslation();
 
-  const [becameHostSteps, setBecameHostSteps] = useState<BecameHostSteps>({
+  const [becomeHostSteps, setBecomeHostSteps] = useState<BecomeHostSteps>({
     isWalletConnected: false,
     isUserInfoSaved: false,
     isLicenseVerificationPassed: false,
@@ -57,73 +59,72 @@ function BecomeHostContent() {
     isDiscountsAndPriceSaved: false,
   });
 
-  useEffect(() => {
-    if (!ethereumInfo) return;
-    setBecameHostSteps((prev) => ({ ...prev, isWalletConnected: ethereumInfo.isWalletConnected }));
-  }, [ethereumInfo]);
   const handleClickBlockConnectWallet = () => {
-    if (!becameHostSteps.isWalletConnected) {
+    if (!becomeHostSteps.isWalletConnected) {
       login();
     }
   };
+  useEffect(() => {
+    if (!ethereumInfo) return;
+    setBecomeHostSteps((prev) => ({ ...prev, isWalletConnected: ethereumInfo.isWalletConnected }));
+  }, [ethereumInfo]);
 
-  const [openBlockUserInfo, setOpenBlockUserInfo] = useState(false);
+  const [openBlockUserInfo, toggleOpenBlockUserInfo] = useToggleState(false);
   const handleClickOpenBlockUserInfo = () => {
-    if (becameHostSteps.isWalletConnected && !becameHostSteps.isUserInfoSaved) {
-      setOpenBlockUserInfo(!openBlockUserInfo);
+    if (becomeHostSteps.isWalletConnected && !becomeHostSteps.isUserInfoSaved) {
+      toggleOpenBlockUserInfo();
     } else {
-      setOpenBlockUserInfo(false);
+      toggleOpenBlockUserInfo(false);
     }
   };
   useEffect(() => {
     if (isLoadingProfileSettings) {
-      setBecameHostSteps((prev) => ({ ...prev, isUserInfoSaved: false }));
+      setBecomeHostSteps((prev) => ({ ...prev, isUserInfoSaved: false }));
       return;
     }
 
-    setBecameHostSteps((prev) => ({
+    setBecomeHostSteps((prev) => ({
       ...prev,
       isUserInfoSaved: !isEmpty(savedProfileSettings.tcSignature) && savedProfileSettings.tcSignature !== "0x",
     }));
   }, [savedProfileSettings, isLoadingProfileSettings]);
 
-  const [openBlockDriverLicense, setOpenBlockDriverLicense] = useState(false);
+  const [openBlockDriverLicense, toggleOpenBlockDriverLicense] = useToggleState(false);
   const { gatewayStatus } = useGateway();
   const handleClickOpenBlockDriverLicense = () => {
-    if (becameHostSteps.isUserInfoSaved && !becameHostSteps.isLicenseVerificationPassed) {
-      setOpenBlockDriverLicense(!openBlockDriverLicense);
+    if (becomeHostSteps.isUserInfoSaved && !becomeHostSteps.isLicenseVerificationPassed) {
+      toggleOpenBlockDriverLicense();
     } else {
-      setOpenBlockDriverLicense(false);
+      toggleOpenBlockDriverLicense(false);
     }
   };
   useEffect(() => {
-    setBecameHostSteps((prev) => ({ ...prev, isLicenseVerificationPassed: gatewayStatus === GatewayStatus.ACTIVE }));
+    setBecomeHostSteps((prev) => ({ ...prev, isLicenseVerificationPassed: gatewayStatus === GatewayStatus.ACTIVE }));
   }, [gatewayStatus]);
 
-  const [openBlockListingCar, setOpenBlockListingCar] = useState(false);
-  const [isLoadingMyListings, myListings] = useMyListings();
+  const [openBlockListingCar, toggleOpenBlockListingCar] = useToggleState(false);
   const handleClickOpenBlockListingCar = () => {
-    if (becameHostSteps.isLicenseVerificationPassed && !becameHostSteps.isCarListeded) {
-      setOpenBlockListingCar(!openBlockListingCar);
+    if (becomeHostSteps.isLicenseVerificationPassed && !becomeHostSteps.isCarListeded) {
+      toggleOpenBlockListingCar();
     } else {
-      setOpenBlockListingCar(false);
+      toggleOpenBlockListingCar(false);
     }
   };
   useEffect(() => {
     if (isLoadingMyListings) return;
-    setBecameHostSteps((prev) => ({ ...prev, isCarListeded: myListings.length > 0 }));
+    setBecomeHostSteps((prev) => ({ ...prev, isCarListeded: myListings.length > 0 }));
   }, [myListings, isLoadingMyListings]);
 
-  const [openBlockDiscountsAndPrice, setOpenBlockDiscountsAndPrice] = useState(false);
+  const [openBlockDiscountsAndPrice, toggleOpenBlockDiscountsAndPrice] = useToggleState(false);
   const handleClickOpenBlockDiscountsAndPrice = () => {
-    if (becameHostSteps.isCarListeded && !becameHostSteps.isDiscountsAndPriceSaved) {
-      setOpenBlockDiscountsAndPrice(!openBlockDiscountsAndPrice);
+    if (becomeHostSteps.isCarListeded && !becomeHostSteps.isDiscountsAndPriceSaved) {
+      toggleOpenBlockDiscountsAndPrice();
     } else {
-      setOpenBlockDiscountsAndPrice(false);
+      toggleOpenBlockDiscountsAndPrice(false);
     }
   };
   useEffect(() => {
-    setBecameHostSteps((prev) => ({
+    setBecomeHostSteps((prev) => ({
       ...prev,
       isDiscountsAndPriceSaved:
         savedTripsDiscounts.isInitialized &&
@@ -133,52 +134,45 @@ function BecomeHostContent() {
   }, [savedTripsDiscounts, savedDeliveryPrices]);
 
   useEffect(() => {
-    if (becameHostSteps.isUserInfoSaved) {
-      setOpenBlockUserInfo(false);
+    if (becomeHostSteps.isUserInfoSaved) {
+      toggleOpenBlockUserInfo(false);
     }
-    if (becameHostSteps.isLicenseVerificationPassed) {
-      setOpenBlockDriverLicense(false);
+    if (becomeHostSteps.isLicenseVerificationPassed) {
+      toggleOpenBlockDriverLicense(false);
     }
-    if (becameHostSteps.isCarListeded) {
-      setOpenBlockListingCar(false);
+    if (becomeHostSteps.isCarListeded) {
+      toggleOpenBlockListingCar(false);
     }
-    if (becameHostSteps.isDiscountsAndPriceSaved) {
-      setOpenBlockDiscountsAndPrice(false);
+    if (becomeHostSteps.isDiscountsAndPriceSaved) {
+      toggleOpenBlockDiscountsAndPrice(false);
     }
-  }, [becameHostSteps]);
+  }, [
+    becomeHostSteps,
+    toggleOpenBlockUserInfo,
+    toggleOpenBlockDriverLicense,
+    toggleOpenBlockListingCar,
+    toggleOpenBlockDiscountsAndPrice,
+  ]);
 
-  const stepsPassed = Object.values(becameHostSteps).filter((i) => i === true).length;
-  const stepsTotal = Object.values(becameHostSteps).length;
-  const progress = (stepsPassed * 100) / stepsTotal;
+  const stepsPassed = Object.values(becomeHostSteps).filter((i) => i === true).length;
+  const stepsTotal = Object.values(becomeHostSteps).length;
 
   return (
     <>
       <PageTitle title={t("become_host.title")} />
       <div className="mt-5 flex flex-col justify-between xl:flex-row">
         <div>
-          <div className="pl-4 text-start">{t("become_host.all_steps_car_sharing")}</div>
-
-          <div className="mt-5 w-full max-w-md">
-            {/* Контейнер для прогресс-бара */}
-            <div className="relative h-10 w-full overflow-hidden rounded-full bg-[#BFBFBF]">
-              {/* Прогресс */}
-              <div
-                className="flex h-full items-center justify-center bg-rentality-secondary font-semibold text-white transition-all duration-500"
-                style={{ width: `${progress}%` }} // Устанавливаем ширину прогресс-бара в зависимости от прогресса
-              >
-                {/* Текст внутри прогресс-бара */}
-                <span className="absolute inset-0 flex items-center justify-start pl-4 text-[#004F51]">
-                  {stepsPassed} of {stepsTotal} steps
-                </span>
-              </div>
-            </div>
-          </div>
+          <BecomeHostProgress
+            title={t("become_host.all_steps_car_sharing")}
+            stepsPassed={stepsPassed}
+            stepsTotal={stepsTotal}
+          />
 
           <BecomeHostStep
             isOpen={false}
             toggleIsOpen={handleClickBlockConnectWallet}
             isEnabled={true}
-            isPassed={becameHostSteps.isWalletConnected}
+            isPassed={becomeHostSteps.isWalletConnected}
             index={1}
             title={t("become_host.connect_wallet")}
           />
@@ -186,8 +180,8 @@ function BecomeHostContent() {
           <BecomeHostStep
             isOpen={openBlockUserInfo}
             toggleIsOpen={handleClickOpenBlockUserInfo}
-            isEnabled={becameHostSteps.isWalletConnected}
-            isPassed={becameHostSteps.isUserInfoSaved}
+            isEnabled={becomeHostSteps.isWalletConnected}
+            isPassed={becomeHostSteps.isUserInfoSaved}
             index={2}
             title={t("become_host.enter_user_info")}
           >
@@ -202,8 +196,8 @@ function BecomeHostContent() {
           <BecomeHostStep
             isOpen={openBlockDriverLicense}
             toggleIsOpen={handleClickOpenBlockDriverLicense}
-            isEnabled={becameHostSteps.isUserInfoSaved}
-            isPassed={becameHostSteps.isLicenseVerificationPassed}
+            isEnabled={becomeHostSteps.isUserInfoSaved}
+            isPassed={becomeHostSteps.isLicenseVerificationPassed}
             index={3}
             title={t("become_host.driver_license")}
           >
@@ -215,8 +209,8 @@ function BecomeHostContent() {
           <BecomeHostStep
             isOpen={openBlockListingCar}
             toggleIsOpen={handleClickOpenBlockListingCar}
-            isEnabled={becameHostSteps.isLicenseVerificationPassed}
-            isPassed={becameHostSteps.isCarListeded}
+            isEnabled={becomeHostSteps.isLicenseVerificationPassed}
+            isPassed={becomeHostSteps.isCarListeded}
             index={4}
             title={t("become_host.listing_car")}
           >
@@ -228,8 +222,8 @@ function BecomeHostContent() {
           <BecomeHostStep
             isOpen={openBlockDiscountsAndPrice}
             toggleIsOpen={handleClickOpenBlockDiscountsAndPrice}
-            isEnabled={becameHostSteps.isCarListeded}
-            isPassed={becameHostSteps.isDiscountsAndPriceSaved}
+            isEnabled={becomeHostSteps.isCarListeded}
+            isPassed={becomeHostSteps.isDiscountsAndPriceSaved}
             index={5}
             title={t("become_host.discounts_and_price")}
           >
@@ -246,6 +240,7 @@ function BecomeHostContent() {
               />
             </div>
           </BecomeHostStep>
+
           <div className="mt-10 w-fit pl-4">
             <Link href={`/guest`}>
               {t("become_host.to_search_page")}
@@ -253,6 +248,7 @@ function BecomeHostContent() {
             </Link>
           </div>
         </div>
+
         <div className="flex flex-col max-xl:mt-8">
           <Image src={tutorialVideo} alt="Tutorial video" className="ml-1" />
           <RntButton type="submit" className="mt-4 w-full">
@@ -268,6 +264,38 @@ BecomeHost.allowAnonymousAccess = true;
 
 export default BecomeHost;
 
+function BecomeHostProgress({
+  title,
+  stepsPassed,
+  stepsTotal,
+}: {
+  title: string;
+  stepsPassed: number;
+  stepsTotal: number;
+}) {
+  const progress = (stepsPassed * 100) / stepsTotal;
+
+  return (
+    <>
+      <h3 className="pl-4 text-start">{title}</h3>
+      <div className="mt-5 w-full max-w-md">
+        {/* Контейнер для прогресс-бара */}
+        <div className="relative h-10 w-full overflow-hidden rounded-full bg-[#BFBFBF]">
+          {/* Прогресс */}
+          <div
+            className="flex h-full items-center justify-center bg-rentality-secondary font-semibold text-white transition-all duration-500"
+            style={{ width: `${progress}%` }} // Устанавливаем ширину прогресс-бара в зависимости от прогресса
+          >
+            {/* Текст внутри прогресс-бара */}
+            <span className="absolute inset-0 flex items-center justify-start pl-4 text-[#004F51]">
+              {stepsPassed} of {stepsTotal} steps
+            </span>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
 function BecomeHostStep({
   isOpen,
   toggleIsOpen,
