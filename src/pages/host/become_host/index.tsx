@@ -174,177 +174,65 @@ function BecomeHostContent() {
             </div>
           </div>
 
-          <div
-            className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
-            onClick={handleClickBlockConnectWallet}
-          >
-            <div className={`flex text-lg ${!becameHostSteps.isWalletConnected ? "text-white" : "text-[#FFFFFF70]"}`}>
-              <CheckboxLight
-                className={`underline ${becameHostSteps.isWalletConnected ? "text-[#FFFFFF70]" : ""}`}
-                checked={becameHostSteps.isWalletConnected}
-                checkedClassName={becameHostSteps.isWalletConnected ? "border-[#FFFFFF70]" : ""}
-                checkMarkClassName={becameHostSteps.isWalletConnected ? "border-[#FFFFFF70]" : ""}
-              />
-              <span
-                className={`pr-1 ${!becameHostSteps.isWalletConnected ? "text-rentality-secondary" : "text-[#FFFFFF70]"}`}
-              >
-                1.
-              </span>
-              {t("become_host.connect_wallet")}
-            </div>
-          </div>
+          <BecomeHostStep
+            isOpen={false}
+            toggleIsOpen={handleClickBlockConnectWallet}
+            isEnabled={true}
+            isPassed={becameHostSteps.isWalletConnected}
+            index={1}
+            title={t("become_host.connect_wallet")}
+          />
 
-          <div
-            className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
-            onClick={handleClickOpenBlockUserInfo}
+          <BecomeHostStep
+            isOpen={openBlockUserInfo}
+            toggleIsOpen={handleClickOpenBlockUserInfo}
+            isEnabled={becameHostSteps.isWalletConnected}
+            isPassed={becameHostSteps.isUserInfoSaved}
+            index={2}
+            title={t("become_host.enter_user_info")}
           >
-            <div
-              className={`flex text-lg ${becameHostSteps.isWalletConnected && !becameHostSteps.isUserInfoSaved ? "text-white" : "text-[#FFFFFF70]"}`}
-            >
-              <CheckboxLight
-                className="underline"
-                checked={becameHostSteps.isUserInfoSaved}
-                checkedClassName={
-                  becameHostSteps.isWalletConnected && !becameHostSteps.isUserInfoSaved ? "" : "border-[#FFFFFF70]"
-                }
-                checkMarkClassName={
-                  becameHostSteps.isWalletConnected && !becameHostSteps.isUserInfoSaved ? "" : "border-[#FFFFFF70]"
-                }
-              />
-              <span
-                className={`pr-1 ${becameHostSteps.isWalletConnected && !becameHostSteps.isUserInfoSaved ? "text-rentality-secondary" : "text-[#FFFFFF70]"}`}
-              >
-                2.
-              </span>
-              {t("become_host.enter_user_info")}
-            </div>
-            <Image
-              src={openBlockUserInfo ? arrowUpTurquoise : arrowDownTurquoise}
-              alt=""
-              className={`ml-1 ${becameHostSteps.isWalletConnected && !becameHostSteps.isUserInfoSaved ? "" : "hidden"}`}
-            />
-          </div>
-          {openBlockUserInfo && (
             <div className="ml-10">
               <UserCommonInformationForm
                 savedProfileSettings={savedProfileSettings}
                 saveProfileSettings={saveProfileSettings}
               />
             </div>
-          )}
+          </BecomeHostStep>
 
-
-          <div
-            className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
-            onClick={handleClickOpenBlockDriverLicense}
+          <BecomeHostStep
+            isOpen={openBlockDriverLicense}
+            toggleIsOpen={handleClickOpenBlockDriverLicense}
+            isEnabled={becameHostSteps.isUserInfoSaved}
+            isPassed={becameHostSteps.isLicenseVerificationPassed}
+            index={3}
+            title={t("become_host.driver_license")}
           >
-            <div
-              className={`flex text-lg ${becameHostSteps.isUserInfoSaved && !becameHostSteps.isLicenseVerificationPassed ? "text-white" : "text-[#FFFFFF70]"}`}
-            >
-              <CheckboxLight
-                className="underline"
-                checked={becameHostSteps.isLicenseVerificationPassed}
-                checkedClassName={
-                  becameHostSteps.isUserInfoSaved && !becameHostSteps.isLicenseVerificationPassed
-                    ? ""
-                    : "border-[#FFFFFF70]"
-                }
-                checkMarkClassName={
-                  becameHostSteps.isUserInfoSaved && !becameHostSteps.isLicenseVerificationPassed
-                    ? ""
-                    : "border-[#FFFFFF70]"
-                }
-              />
-              <span
-                className={`pr-1 ${becameHostSteps.isUserInfoSaved && !becameHostSteps.isLicenseVerificationPassed ? "text-rentality-secondary" : "text-[#FFFFFF70]"}`}
-              >
-                3.
-              </span>
-              {t("become_host.driver_license")}
-            </div>
-            <Image
-              src={openBlockDriverLicense ? arrowUpTurquoise : arrowDownTurquoise}
-              alt=""
-              className={`ml-1 ${becameHostSteps.isUserInfoSaved && !becameHostSteps.isLicenseVerificationPassed ? "" : "hidden"}`}
-            />
-          </div>
-          {openBlockDriverLicense && (
             <div className="ml-10">
               <UserDriverLicenseVerification savedProfileSettings={savedProfileSettings} />
             </div>
-          )}
+          </BecomeHostStep>
 
-          <div
-            className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
-            onClick={handleClickOpenBlockListingCar}
+          <BecomeHostStep
+            isOpen={openBlockListingCar}
+            toggleIsOpen={handleClickOpenBlockListingCar}
+            isEnabled={becameHostSteps.isLicenseVerificationPassed}
+            isPassed={becameHostSteps.isCarListeded}
+            index={4}
+            title={t("become_host.listing_car")}
           >
-            <div
-              className={`flex text-lg ${becameHostSteps.isLicenseVerificationPassed && !becameHostSteps.isCarListeded ? "text-white" : "text-[#FFFFFF70]"}`}
-            >
-              <CheckboxLight
-                className="underline"
-                checked={becameHostSteps.isCarListeded}
-                checkedClassName={
-                  becameHostSteps.isLicenseVerificationPassed && !becameHostSteps.isCarListeded
-                    ? ""
-                    : "border-[#FFFFFF70]"
-                }
-                checkMarkClassName={
-                  becameHostSteps.isLicenseVerificationPassed && !becameHostSteps.isCarListeded
-                    ? ""
-                    : "border-[#FFFFFF70]"
-                }
-              />
-              <span
-                className={`pr-1 ${becameHostSteps.isLicenseVerificationPassed && !becameHostSteps.isCarListeded ? "text-rentality-secondary" : "text-[#FFFFFF70]"}`}
-              >
-                4.
-              </span>
-              {t("become_host.listing_car")}
-            </div>
-            <Image
-              src={openBlockListingCar ? arrowUpTurquoise : arrowDownTurquoise}
-              alt=""
-              className={`ml-1 ${becameHostSteps.isLicenseVerificationPassed && !becameHostSteps.isCarListeded ? "" : "hidden"}`}
-            />
-          </div>
-          {openBlockListingCar && (
             <div className="ml-10 mt-4">
               <AddCar />
             </div>
-          )}
+          </BecomeHostStep>
 
-          <div
-            className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
-            onClick={handleClickOpenBlockDiscountsAndPrice}
+          <BecomeHostStep
+            isOpen={openBlockDiscountsAndPrice}
+            toggleIsOpen={handleClickOpenBlockDiscountsAndPrice}
+            isEnabled={becameHostSteps.isCarListeded}
+            isPassed={becameHostSteps.isDiscountsAndPriceSaved}
+            index={5}
+            title={t("become_host.discounts_and_price")}
           >
-            <div
-              className={`flex text-lg ${becameHostSteps.isCarListeded && !becameHostSteps.isDiscountsAndPriceSaved ? "text-white" : "text-[#FFFFFF70]"}`}
-            >
-              <CheckboxLight
-                className="underline"
-                checked={becameHostSteps.isDiscountsAndPriceSaved}
-                checkedClassName={
-                  becameHostSteps.isCarListeded && !becameHostSteps.isDiscountsAndPriceSaved ? "" : "border-[#FFFFFF70]"
-                }
-                checkMarkClassName={
-                  becameHostSteps.isCarListeded && !becameHostSteps.isDiscountsAndPriceSaved ? "" : "border-[#FFFFFF70]"
-                }
-              />
-              <span
-                className={`pr-1 ${becameHostSteps.isCarListeded && !becameHostSteps.isDiscountsAndPriceSaved ? "text-rentality-secondary" : "text-[#FFFFFF70]"}`}
-              >
-                5.
-              </span>
-              {t("become_host.discounts_and_price")}
-            </div>
-            <Image
-              src={openBlockDiscountsAndPrice ? arrowUpTurquoise : arrowDownTurquoise}
-              alt=""
-              className={`ml-1 ${becameHostSteps.isCarListeded && !becameHostSteps.isDiscountsAndPriceSaved ? "" : "hidden"}`}
-            />
-          </div>
-          {openBlockDiscountsAndPrice && (
             <div className="ml-10 flex flex-col min-[560px]:flex-row min-[560px]:gap-20">
               <TripDiscountsForm
                 savedTripsDiscounts={savedTripsDiscounts}
@@ -357,7 +245,7 @@ function BecomeHostContent() {
                 isUserHasHostRole={userRole === "Host"}
               />
             </div>
-          )}
+          </BecomeHostStep>
           <div className="mt-10 w-fit pl-4">
             <Link href={`/guest`}>
               {t("become_host.to_search_page")}
@@ -379,3 +267,48 @@ function BecomeHostContent() {
 BecomeHost.allowAnonymousAccess = true;
 
 export default BecomeHost;
+
+function BecomeHostStep({
+  isOpen,
+  toggleIsOpen,
+  index,
+  title,
+  isEnabled,
+  isPassed,
+  children,
+}: {
+  isOpen: boolean;
+  toggleIsOpen: () => void;
+  index: number;
+  title: string;
+  isEnabled: boolean;
+  isPassed: boolean;
+  children?: React.ReactNode;
+}) {
+  return (
+    <>
+      <div className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4" onClick={toggleIsOpen}>
+        <div className={`flex text-lg ${isEnabled && !isPassed ? "text-white" : "text-[#FFFFFF70]"}`}>
+          <CheckboxLight
+            className="underline"
+            checked={isPassed}
+            checkedClassName={isEnabled && !isPassed ? "" : "border-[#FFFFFF70]"}
+            checkMarkClassName={isEnabled && !isPassed ? "" : "border-[#FFFFFF70]"}
+          />
+          <span className={`pr-1 ${isEnabled && !isPassed ? "text-rentality-secondary" : "text-[#FFFFFF70]"}`}>
+            {index}.
+          </span>
+          {title}
+        </div>
+        {children && (
+          <Image
+            src={isOpen ? arrowUpTurquoise : arrowDownTurquoise}
+            alt=""
+            className={`ml-1 ${isEnabled && !isPassed ? "" : "hidden"}`}
+          />
+        )}
+      </div>
+      {isOpen && <>{children}</>}
+    </>
+  );
+}
