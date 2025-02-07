@@ -1,7 +1,16 @@
-import React, { useRef, useState } from "react";
-import RntButton from "../common/rntButton";
 import { useTranslation } from "react-i18next";
 import Image from "next/image";
+import burgerMenuClose from "@/images/ic-menu-burge-close-white-20.svg";
+
+// Import Swiper React components
+import { Swiper, SwiperSlide } from "swiper/react";
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/effect-fade";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+// import required modules
+import { EffectFade, Navigation, Pagination } from "swiper/modules";
 
 interface ImageCarouselDialogPros {
   images: string[];
@@ -10,92 +19,49 @@ interface ImageCarouselDialogPros {
 }
 
 function ImageCarouselDialog({ images, isOpen, onClose }: ImageCarouselDialogPros) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const touchStartX = useRef(0);
-  const touchEndX = useRef(0);
   const { t } = useTranslation();
 
   if (!isOpen || !images || images.length === 0) return null;
 
-  const prevImage = () => {
-    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  };
-
-  const nextImage = () => {
-    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  };
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = () => {
-    if (touchStartX.current - touchEndX.current > 50) {
-      nextImage();
-    } else if (touchEndX.current - touchStartX.current > 50) {
-      prevImage();
-    }
-  };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70" onClick={onClose}>
       <div
-        className="relative flex h-[90vh] w-full max-w-6xl flex-col items-center justify-between gap-4 overflow-hidden rounded-[20px] bg-rentality-additional-dark p-4"
+        className="input-border-gradient h-[40vh] w-[100%] rounded-[20px] bg-rentality-bg-left-sidebar p-4 sm:h-[90vh] md:w-[80%]"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-2xl text-rentality-secondary">{t("create_trip.car_photo_title")}</h2>
-
-        <div className="relative flex h-full min-h-[12rem] w-full items-center justify-center">
-          <button
-            className="absolute left-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-rentality-button-light"
-            onClick={(e) => {
-              e.stopPropagation();
-              prevImage();
-            }}
-          >
-            ❮
-          </button>
-
-          <div
-            className="flex h-full w-full items-center justify-center"
-            onClick={(e) => {
-              e.clientX > window.innerWidth / 2 ? nextImage() : prevImage();
-            }}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
-            <Image src={images[currentIndex]} alt={`Car image ${currentIndex + 1}`} layout="fill" objectFit="contain" />
-          </div>
-
-          <button
-            className="absolute right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-rentality-button-light"
-            onClick={(e) => {
-              e.stopPropagation();
-              nextImage();
-            }}
-          >
-            ❯
-          </button>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="ml-[2.4%] w-full text-center text-2xl font-semibold text-white/70">Tesla Model 3 2025</h2>
+          <Image height={28} src={burgerMenuClose} alt="" className="cursor-pointer opacity-70" onClick={onClose} />
         </div>
 
-        <div className="my-4 flex justify-center space-x-2">
-          {images.map((_, index) => (
-            <button
-              key={index}
-              className={`h-3 w-3 rounded-full transition-colors duration-200 ${
-                currentIndex === index ? "bg-rentality-secondary" : "bg-rentality-button-light"
-              }`}
-              onClick={() => setCurrentIndex(index)}
-            ></button>
-          ))}
+        {/* Swiper для экранов больше md */}
+        <div className="hidden h-[94%] lg:block">
+          <Swiper
+            spaceBetween={30}
+            effect={"fade"}
+            navigation={true}
+            pagination={{ clickable: true }}
+            modules={[EffectFade, Navigation, Pagination]}
+            className="h-full rounded-[20px]"
+          >
+            {images.map((src, index) => (
+              <SwiperSlide key={index} className="flex items-center justify-center">
+                <Image src={src} alt="" fill className="object-cover" />
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
 
-        <RntButton onClick={onClose}>{t("common.back")}</RntButton>
+        {/* Swiper для экранов md и меньше */}
+        <div className="block h-[80%] sm:h-[86%] lg:hidden">
+          <Swiper pagination={{ clickable: true }} modules={[Pagination]} className="h-full rounded-[20px]">
+            {images.map((src, index) => (
+              <SwiperSlide key={index} className="flex items-center justify-center">
+                <Image src={src} alt="" fill className="object-cover" />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       </div>
     </div>
   );
