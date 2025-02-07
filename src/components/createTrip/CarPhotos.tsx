@@ -4,8 +4,10 @@ import { useTranslation } from "react-i18next";
 import { cn } from "@/utils";
 import ImageCarouselDialog from "./ImageCarouselDialog";
 import useToggleState from "@/hooks/useToggleState";
+import { SearchCarFilters } from "@/model/SearchCarRequest";
+import { SearchCarInfoDetails } from "@/model/SearchCarsResult";
 
-export function CarPhotos({ carPhotos }: { carPhotos: string[] }) {
+export function CarPhotos({ carPhotos, carInfo }: { carPhotos: string[]; carInfo: SearchCarInfoDetails }) {
   const { t } = useTranslation();
   const [isCarouselOpen, toogleCarouselOpen] = useToggleState(false);
 
@@ -21,7 +23,12 @@ export function CarPhotos({ carPhotos }: { carPhotos: string[] }) {
           ? t("create_trip.all_n_photo", { count: carPhotos.length })
           : t("create_trip.see_in_full")}
       </RntButton>
-      <ImageCarouselDialog images={carPhotos} isOpen={isCarouselOpen} onClose={() => toogleCarouselOpen(false)} />
+      <ImageCarouselDialog
+        images={carPhotos}
+        isOpen={isCarouselOpen}
+        carInfo={carInfo}
+        onClose={() => toogleCarouselOpen(false)}
+      />
     </div>
   );
 }

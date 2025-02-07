@@ -11,16 +11,16 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 // import required modules
 import { EffectFade, Navigation, Pagination } from "swiper/modules";
+import { SearchCarInfoDetails } from "@/model/SearchCarsResult";
 
 interface ImageCarouselDialogPros {
   images: string[];
   isOpen: boolean;
+  carInfo: SearchCarInfoDetails;
   onClose: () => void;
 }
 
-function ImageCarouselDialog({ images, isOpen, onClose }: ImageCarouselDialogPros) {
-  const { t } = useTranslation();
-
+function ImageCarouselDialog({ images, isOpen, carInfo, onClose }: ImageCarouselDialogPros) {
   if (!isOpen || !images || images.length === 0) return null;
 
   return (
@@ -30,7 +30,9 @@ function ImageCarouselDialog({ images, isOpen, onClose }: ImageCarouselDialogPro
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="ml-[2.4%] w-full text-center text-2xl font-semibold text-white/70">Tesla Model 3 2025</h2>
+          <h2 className="ml-[2.4%] w-full text-center text-2xl font-semibold text-white/70">
+            {carInfo.brand} {carInfo.model} {carInfo.year}
+          </h2>
           <Image height={28} src={burgerMenuClose} alt="" className="cursor-pointer opacity-70" onClick={onClose} />
         </div>
 
