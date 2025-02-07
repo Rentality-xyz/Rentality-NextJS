@@ -545,6 +545,11 @@ input:disabled {
   color: #000;
 }
 
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #888 transparent;
+}
+
 .swiper {
   width: 100%;
   /*height: 94%;*/
