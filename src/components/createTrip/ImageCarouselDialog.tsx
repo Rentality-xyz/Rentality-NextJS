@@ -1,4 +1,3 @@
-import { useTranslation } from "react-i18next";
 import Image from "next/image";
 import burgerMenuClose from "@/images/ic-menu-burge-close-white-20.svg";
 
@@ -11,16 +10,15 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 // import required modules
 import { EffectFade, Navigation, Pagination } from "swiper/modules";
-import { SearchCarInfoDetails } from "@/model/SearchCarsResult";
 
 interface ImageCarouselDialogPros {
   images: string[];
   isOpen: boolean;
-  carInfo: SearchCarInfoDetails;
+  title: String;
   onClose: () => void;
 }
 
-function ImageCarouselDialog({ images, isOpen, carInfo, onClose }: ImageCarouselDialogPros) {
+function ImageCarouselDialog({ images, isOpen, title, onClose }: ImageCarouselDialogPros) {
   if (!isOpen || !images || images.length === 0) return null;
 
   return (
@@ -30,9 +28,7 @@ function ImageCarouselDialog({ images, isOpen, carInfo, onClose }: ImageCarousel
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="ml-[2.4%] w-full text-center text-2xl font-semibold text-white/70">
-            {carInfo.brand} {carInfo.model} - {carInfo.year}
-          </h2>
+          <h2 className="ml-[2.4%] w-full text-center text-2xl font-semibold text-white/70">{title}</h2>
           <Image height={28} src={burgerMenuClose} alt="" className="cursor-pointer opacity-70" onClick={onClose} />
         </div>
 

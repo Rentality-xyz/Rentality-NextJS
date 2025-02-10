@@ -26,7 +26,7 @@ export function CarPhotos({ carPhotos, carInfo }: { carPhotos: string[]; carInfo
       <ImageCarouselDialog
         images={carPhotos}
         isOpen={isCarouselOpen}
-        carInfo={carInfo}
+        title={`${carInfo.brand} ${carInfo.model} - ${carInfo.year}`}
         onClose={() => toogleCarouselOpen(false)}
       />
     </div>
