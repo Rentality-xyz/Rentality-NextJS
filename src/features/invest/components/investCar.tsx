@@ -42,7 +42,7 @@ export default function InvestCar({
   const [investmentAmount, setInvestmentAmount] = useState(0);
 
   const handleChangeInvestmentAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputInvestmentAmount = e.target.value.replace(/\D/g, "0"); // Удаляем всё, кроме цифр
+    const inputInvestmentAmount = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
     setInvestmentAmount(Number.parseInt(inputInvestmentAmount));
   };
 
