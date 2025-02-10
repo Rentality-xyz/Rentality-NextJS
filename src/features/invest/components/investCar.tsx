@@ -285,6 +285,7 @@ function blockInvestNowForGuest(
         </div>
         <RntButton
           className="mb-0.5 flex w-3/5 items-center justify-center"
+          disabled={investmentAmount <= 0}
           onClick={() => handleInvest(investmentAmount, investmentId)}
         >
           <div className="ml-0.5 flex items-center">
