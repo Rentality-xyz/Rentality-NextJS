@@ -26,6 +26,7 @@ export default function InvestCar({
   isHost,
   searchInfo,
   handleInvest,
+  isPendingInvesting,
   isCreator,
   handleStartHosting,
   handleClaimIncome,
@@ -33,6 +34,7 @@ export default function InvestCar({
   isHost: boolean;
   searchInfo: InvestmentInfoWithMetadata;
   handleInvest: (amount: number, investId: number) => void;
+  isPendingInvesting: boolean;
   isCreator: boolean;
   handleStartHosting: (investId: number) => Promise<void>;
   handleClaimIncome: (investId: number) => Promise<void>;
@@ -94,6 +96,7 @@ export default function InvestCar({
                 searchInfo.investment,
                 investmentAmount,
                 handleInvest,
+                isPendingInvesting,
                 handleChangeInvestmentAmount,
                 handleClaimIncome,
                 t
@@ -208,6 +211,7 @@ function getBlocksForGuest(
   investment: InvestmentInfo,
   investmentAmount: number,
   handleInvest: (amount: number, investId: number) => void,
+  isPendingInvesting: boolean,
   handleChangeInvestmentAmount: (e: React.ChangeEvent<HTMLInputElement>) => void,
   handleClaimIncome: (investId: number) => Promise<void>,
   t: (key: string) => string
@@ -224,6 +228,7 @@ function getBlocksForGuest(
               investment.investmentId,
               investmentAmount,
               handleInvest,
+              isPendingInvesting,
               handleChangeInvestmentAmount,
               t
             )}
@@ -274,6 +279,7 @@ function blockInvestNowForGuest(
   investmentId: number,
   investmentAmount: number,
   handleInvest: (amount: number, investId: number) => void,
+  isPendingInvesting: boolean,
   handleChangeInvestmentAmount: (e: React.ChangeEvent<HTMLInputElement>) => void,
   t: (key: string) => string
 ) {
@@ -292,12 +298,18 @@ function blockInvestNowForGuest(
         </div>
         <RntButton
           className="mb-0.5 flex w-3/5 items-center justify-center"
-          disabled={investmentAmount <= 0}
+          disabled={investmentAmount <= 0 || isPendingInvesting}
           onClick={() => handleInvest(investmentAmount, investmentId)}
         >
           <div className="ml-0.5 flex items-center">
-            {t("invest.btn_invest_now")}
-            <span className="ml-4">●</span>
+            {isPendingInvesting ? (
+              "Loading..."
+            ) : (
+              <>
+                {t("invest.btn_invest_now")}
+                <span className="ml-4">●</span>
+              </>
+            )}
           </div>
         </RntButton>
       </div>
