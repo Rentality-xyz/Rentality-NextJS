@@ -1,6 +1,3 @@
-import { CreateClaimRequest } from "@/model/CreateClaimRequest";
-import { CarMetadata } from "@/utils/ipfsUtils";
-
 export type ContractCarInfo = {
   carId: bigint;
   carVinNumber: string;
@@ -38,7 +35,7 @@ export type ContractCarInfoDTO = {
   carInfo: ContractCarInfo;
   metadataURI: string;
   isEditable: boolean;
-  dimoTokenId: number;
+  dimoTokenId: bigint;
 };
 
 export type ContractCreateCarRequest = {
@@ -483,6 +480,36 @@ export type ContractKycCommissionData = {
   commissionPaid: boolean;
 };
 
+export type ContractCarInvestment = {
+  car: ContractCreateCarRequest;
+  priceInUsd: bigint;
+  inProgress: boolean;
+  creatorPercents: bigint;
+};
+
+export type ContractClaimInvestmentDTO = {
+  tokenURI: string;
+  income: bigint;
+  myIncome: bigint;
+};
+
+export type ContractInvestmentDTO = {
+  investment: ContractCarInvestment;
+  nft: string;
+  investmentId: bigint;
+  payedInUsd: bigint;
+  creator: string;
+  isCarBought: boolean;
+  income: bigint;
+  myIncome: bigint;
+  myInvestingSum: bigint;
+  listingDate: bigint;
+  myTokens: bigint;
+  myPart: bigint;
+  totalHolders: bigint;
+  totalTokens: bigint;
+};
+
 export type ContractTripFilter = {
   paymentStatus: PaymentStatus;
   status: AdminTripStatus;
@@ -685,6 +712,11 @@ export type ContractCheckPromoDTO = {
   value: bigint;
 };
 
+export type ContractDimoTokensData = {
+  dimoTokenId: bigint;
+  rentalityTokenId: bigint;
+};
+
 export type ContractPromoDTO = {
   promoCode: string;
   promoCodeValueInPercents: bigint;
@@ -774,6 +806,8 @@ export const Role = {
   Manager: BigInt(2),
   Admin: BigInt(3),
   KYCManager: BigInt(4),
+  AdminView: BigInt(5),
+  InvestmentManager: BigInt(6),
 };
 
 export type RefferalProgram = bigint;
@@ -842,31 +876,4 @@ export type EngineType = bigint;
 export const EngineType = {
   PETROL: BigInt(1),
   ELECTRIC: BigInt(2),
-};
-
-export type CarInvestment = {
-  car: ContractCreateCarRequest;
-  priceInUsd: bigint;
-  creatorPercents: bigint;
-  inProgress: boolean;
-};
-export type InvestmentDTO = {
-  investment: CarInvestment;
-  nft: string;
-  investmentId: bigint;
-  payedInUsd: bigint;
-  creator: string;
-  isCarBought: boolean;
-  income: bigint;
-  myIncome: bigint;
-  myInvestingSum: bigint;
-  listingDate: bigint;
-  myTokens: bigint;
-  myPart: bigint;
-  totalHolders: bigint;
-  totalTokens: bigint;
-};
-export type InvestmentDTOWithMetadata = {
-  investment: InvestmentDTO;
-  metadata: CarMetadata;
 };

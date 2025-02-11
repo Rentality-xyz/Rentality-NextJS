@@ -1,12 +1,14 @@
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
-import { InvestmentDTOWithMetadata } from "../blockchain/schemas";
 import { InvestmentInfoWithMetadata } from "../InvestmentInfo";
+import { CarMetadata } from "@/utils/ipfsUtils";
+import { ContractInvestmentDTO } from "../blockchain/schemas";
 
 export const mapContractInvestmentDTOToInvestmentInfoWithMetadata = (
-  investmentDto: InvestmentDTOWithMetadata,
+  investmentDto: ContractInvestmentDTO,
+  metaData: CarMetadata,
   chainId: number
 ): InvestmentInfoWithMetadata => {
-  const dto = investmentDto.investment;
+  const dto = investmentDto;
   return {
     investment: {
       investment: {
@@ -62,7 +64,7 @@ export const mapContractInvestmentDTOToInvestmentInfoWithMetadata = (
       totalTokens: Number(dto.totalTokens),
       listed: Number(dto.listingDate) !== 0,
     },
-    metadata: investmentDto.metadata,
+    metadata: metaData,
   };
 };
 

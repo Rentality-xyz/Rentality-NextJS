@@ -334,6 +334,15 @@
     },
     {
       "type": "function",
+      "name": "getInvestmentAddress",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "address", "name": "" }]
+    },
+    {
+      "type": "function",
       "name": "getKycCommission",
       "constant": true,
       "stateMutability": "view",
@@ -553,7 +562,8 @@
         { "type": "address", "name": "rentalityTripsViewAddress" },
         { "type": "address", "name": "refferalProgramAddress" },
         { "type": "address", "name": "promoServiceAddress" },
-        { "type": "address", "name": "dimoServiceAddress" }
+        { "type": "address", "name": "dimoServiceAddress" },
+        { "type": "address", "name": "investmentAddress" }
       ],
       "outputs": []
     },
@@ -773,6 +783,14 @@
       "constant": false,
       "payable": false,
       "inputs": [{ "type": "address", "name": "newGeoServiceAddress" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "updateInvestmentAddress",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "investmentAddress" }],
       "outputs": []
     },
     {
