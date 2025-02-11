@@ -303,7 +303,7 @@ function blockInvestNowForGuest(
         >
           <div className="ml-0.5 flex items-center">
             {isPendingInvesting ? (
-              "Loading..."
+              <>{t("invest.loading")}</>
             ) : (
               <>
                 {t("invest.btn_invest_now")}
