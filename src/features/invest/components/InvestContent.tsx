@@ -92,17 +92,19 @@ export default function InvestContent({ isHost }: InvestContentProps) {
         ))}
       </RntFilterSelect>
 
-      {filteredInvestments.map((value) => (
-        <InvestCar
-          isHost={isHost}
-          key={value.investment.investmentId as unknown as number}
-          searchInfo={value}
-          handleInvest={handleInvest}
-          isCreator={value.investment.creator === address}
-          handleStartHosting={handleStartHosting}
-          handleClaimIncome={handleClaimIncome}
-        />
-      ))}
+      <div className="mt-6">
+        {filteredInvestments.map((value) => (
+          <InvestCar
+            isHost={isHost}
+            key={value.investment.investmentId as unknown as number}
+            searchInfo={value}
+            handleInvest={handleInvest}
+            isCreator={value.investment.creator === address}
+            handleStartHosting={handleStartHosting}
+            handleClaimIncome={handleClaimIncome}
+          />
+        ))}
+      </div>
     </div>
   );
 }
