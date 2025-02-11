@@ -846,25 +846,25 @@ export const EngineType = {
 
 export type CarInvestment = {
   car: ContractCreateCarRequest;
-  priceInUsd: BigInt;
-  creatorPercents: BigInt;
+  priceInUsd: bigint;
+  creatorPercents: bigint;
   inProgress: boolean;
 };
 export type InvestmentDTO = {
   investment: CarInvestment;
   nft: string;
-  investmentId: BigInt;
-  payedInUsd: BigInt;
+  investmentId: bigint;
+  payedInUsd: bigint;
   creator: string;
   isCarBought: boolean;
-  income: BigInt;
-  myIncome: BigInt;
-  myInvestingSum: BigInt;
-  listingDate: BigInt;
-  myTokens: BigInt;
-  myPart: BigInt;
-  totalHolders: BigInt;
-  totalTokens: BigInt;
+  income: bigint;
+  myIncome: bigint;
+  myInvestingSum: bigint;
+  listingDate: bigint;
+  myTokens: bigint;
+  myPart: bigint;
+  totalHolders: bigint;
+  totalTokens: bigint;
 };
 export type InvestmentDTOWithMetadata = {
   investment: InvestmentDTO;

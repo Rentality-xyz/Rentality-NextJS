@@ -42,8 +42,15 @@ export default function InvestCar({
   const [investmentAmount, setInvestmentAmount] = useState(0);
 
   const handleChangeInvestmentAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const maxAmount = searchInfo.investment.investment.priceInUsd;
     const inputInvestmentAmount = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
-    setInvestmentAmount(Number.parseInt(inputInvestmentAmount));
+    let numericValue = Number.parseInt(inputInvestmentAmount, 10);
+
+    if (numericValue > maxAmount) {
+      numericValue = maxAmount;
+    }
+
+    setInvestmentAmount(numericValue);
   };
 
   return (
@@ -101,7 +108,7 @@ export default function InvestCar({
         <div className="relative flex h-full flex-col p-2 text-center max-2xl:py-4">
           <p className="text-xl font-semibold max-2xl:mb-4">{t("invest.tokenization")}</p>
           <div className="flex flex-grow flex-col justify-center">
-            <p className="text-xl font-bold 2xl:text-2xl">${String(searchInfo.investment.investment.priceInUsd)}</p>
+            <p className="text-xl font-bold 2xl:text-2xl">${searchInfo.investment.investment.priceInUsd}</p>
             <p className="2xl:text-lg">{t("invest.total_price")}</p>
             <div className="mx-auto my-2 h-0.5 w-[40%] translate-y-[-50%] bg-white sm:w-[70%]"></div>
             {getBlockTokenizationBalance(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
