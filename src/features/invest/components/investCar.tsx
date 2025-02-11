@@ -42,79 +42,82 @@ export default function InvestCar({
   const [investmentAmount, setInvestmentAmount] = useState(0);
 
   const handleChangeInvestmentAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputInvestmentAmount = e.target.value.replace(/\D/g, "0"); // Удаляем всё, кроме цифр
-    setInvestmentAmount(Number.parseInt(inputInvestmentAmount));
+    const maxAmount = searchInfo.investment.investment.priceInUsd;
+    const inputInvestmentAmount = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
+    let numericValue = Number.parseInt(inputInvestmentAmount, 10);
+
+    if (numericValue > maxAmount) {
+      numericValue = maxAmount;
+    }
+
+    setInvestmentAmount(numericValue);
   };
 
   return (
-    <div className="mt-6 grid grid-cols-1 gap-4 fullHD:grid-cols-2">
-      <div className="flex w-full flex-col rounded-xl bg-rentality-bg-left-sidebar">
-        <div
-          className={cn(
-            "w-full rounded-t-xl py-1 pl-4",
-            getColorInvestmentStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost)
-          )}
-        >
-          <div className="flex max-2xl:flex-col">
-            <span>{getInvestmentStatus(searchInfo.investment, t)}</span>
-            <span className="mx-2 max-2xl:hidden">|</span>
-            <span>
-              {getTxtInvestmentListingStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
-            </span>
-            <Link
-              href={searchInfo.investment.nftUrl}
-              target="_blank"
-              className="mr-4 cursor-pointer hover:underline 2xl:ml-auto"
-            >
-              {t("invest.view_smart_contract")}
-            </Link>
-          </div>
+    <div className="mt-4 flex w-full flex-col rounded-xl bg-rentality-bg-left-sidebar">
+      <div
+        className={cn(
+          "w-full rounded-t-xl py-1 pl-4",
+          getColorInvestmentStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost)
+        )}
+      >
+        <div className="flex max-2xl:flex-col">
+          <span>{getInvestmentStatus(searchInfo.investment, t)}</span>
+          <span className="mx-2 max-2xl:hidden">|</span>
+          <span>
+            {getTxtInvestmentListingStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
+          </span>
+          <Link
+            href={searchInfo.investment.nftUrl}
+            target="_blank"
+            className="mr-4 cursor-pointer hover:underline 2xl:ml-auto"
+          >
+            {t("invest.view_smart_contract")}
+          </Link>
         </div>
-        <div className="flex w-full flex-col">
-          <div
-            style={{ backgroundImage: `url(${searchInfo.metadata.image})` }}
-            className="h-[180px] bg-cover bg-center bg-no-repeat p-2 2xl:h-[480px] fullHD:h-[340px]"
-          ></div>
-          <div className="flex w-full grid-cols-[1.5fr_1fr_1fr] flex-col gap-2 2xl:grid">
-            <div className="relative p-2">
-              <p className="text-xl font-bold">
-                {`${searchInfo.investment.investment.car.brand} ${searchInfo.investment.investment.car.model} ${searchInfo.investment.investment.car.yearOfProduction}`}
-              </p>
-              <p className="font-medium text-[#FFFFFF70]">
-                {`${searchInfo.investment.investment.car.locationInfo.locationInfo.city}, ${searchInfo.investment.investment.car.locationInfo.locationInfo.state}, ${searchInfo.investment.investment.car.locationInfo.locationInfo.country}`}
-              </p>
-              {isHost
-                ? getBlocksForHost(isCreator, searchInfo.investment, handleStartHosting, t)
-                : getBlocksForGuest(
-                    searchInfo.investment,
-                    investmentAmount,
-                    handleInvest,
-                    handleChangeInvestmentAmount,
-                    handleClaimIncome,
-                    t
-                  )}
-              <p className="mt-8">{t("invest.listing_status")}</p>
-              <p className="text-rentality-secondary">
-                {getCarListingStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
-              </p>
-              <div className={ccsDividerVert}></div>
-              <div className={ccsDividerHor}></div>
-            </div>
-            <div className="relative flex h-full flex-col p-2 text-center max-2xl:py-4">
-              <p className="text-xl font-semibold max-2xl:mb-4">{t("invest.tokenization")}</p>
-              <div className="flex flex-grow flex-col justify-center">
-                <p className="text-xl font-bold 2xl:text-2xl">${String(searchInfo.investment.investment.priceInUsd)}</p>
-                <p className="2xl:text-lg">{t("invest.total_price")}</p>
-                <div className="mx-auto my-2 h-0.5 w-[40%] translate-y-[-50%] bg-white sm:w-[70%]"></div>
-                {getBlockTokenizationBalance(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
-              </div>
-              <div className={ccsDividerVert}></div>
-              <div className={ccsDividerHor}></div>
-            </div>
-            <div className="flex flex-col items-center justify-center p-2 max-2xl:py-4">
-              {getBlockIncome(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
-            </div>
+      </div>
+      <div className="flex w-full grid-cols-[1.4fr_1.2fr_0.7fr_0.7fr] flex-col gap-2 2xl:grid">
+        <div
+          style={{ backgroundImage: `url(${searchInfo.metadata.image})` }}
+          className="w-full bg-cover bg-center bg-no-repeat p-2 max-2xl:h-[180px] 2xl:rounded-bl-xl"
+        ></div>
+        <div className="relative p-2">
+          <p className="text-xl font-bold">
+            {`${searchInfo.investment.investment.car.brand} ${searchInfo.investment.investment.car.model} ${searchInfo.investment.investment.car.yearOfProduction}`}
+          </p>
+          <p className="font-medium text-[#FFFFFF70]">
+            {`${searchInfo.investment.investment.car.locationInfo.locationInfo.city}, ${searchInfo.investment.investment.car.locationInfo.locationInfo.state}, ${searchInfo.investment.investment.car.locationInfo.locationInfo.country}`}
+          </p>
+          {isHost
+            ? getBlocksForHost(isCreator, searchInfo.investment, handleStartHosting, t)
+            : getBlocksForGuest(
+                searchInfo.investment,
+                investmentAmount,
+                handleInvest,
+                handleChangeInvestmentAmount,
+                handleClaimIncome,
+                t
+              )}
+          <p className="mt-8">{t("invest.listing_status")}</p>
+          <p className="text-rentality-secondary">
+            {getCarListingStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
+          </p>
+          <div className={ccsDividerVert}></div>
+          <div className={ccsDividerHor}></div>
+        </div>
+        <div className="relative flex h-full flex-col p-2 text-center max-2xl:py-4">
+          <p className="text-xl font-semibold max-2xl:mb-4">{t("invest.tokenization")}</p>
+          <div className="flex flex-grow flex-col justify-center">
+            <p className="text-xl font-bold 2xl:text-2xl">${searchInfo.investment.investment.priceInUsd}</p>
+            <p className="2xl:text-lg">{t("invest.total_price")}</p>
+            <div className="mx-auto my-2 h-0.5 w-[40%] translate-y-[-50%] bg-white sm:w-[70%]"></div>
+            {getBlockTokenizationBalance(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
           </div>
+          <div className={ccsDividerVert}></div>
+          <div className={ccsDividerHor}></div>
+        </div>
+        <div className="flex flex-col items-center justify-center p-2 max-2xl:py-4">
+          {getBlockIncome(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
         </div>
       </div>
     </div>
@@ -289,6 +292,7 @@ function blockInvestNowForGuest(
         </div>
         <RntButton
           className="mb-0.5 flex w-3/5 items-center justify-center"
+          disabled={investmentAmount <= 0}
           onClick={() => handleInvest(investmentAmount, investmentId)}
         >
           <div className="ml-0.5 flex items-center">
@@ -350,7 +354,7 @@ function getBlockIncome(
     </>
   ) : (
     <>
-      <span className="text-lg text-rentality-secondary 2xl:text-xl fullHD:text-base">{head}</span>
+      <span className="text-center text-lg text-rentality-secondary 2xl:text-xl fullHD:text-base">{head}</span>
       <span className="text-lg 2xl:text-xl">
         {investment.myPart}% {t("invest.from_each_trip")}
       </span>
