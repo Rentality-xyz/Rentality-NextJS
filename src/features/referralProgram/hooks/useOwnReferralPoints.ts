@@ -84,7 +84,7 @@ function useOwnReferralPoints() {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [REFERRAL_OWN_POINTS_QUERY_KEY] });
+      queryClient.refetchQueries({ queryKey: [REFERRAL_OWN_POINTS_QUERY_KEY] });
       queryClient.invalidateQueries({ queryKey: [REFERRAL_USER_BALANCE_QUERY_KEY] });
       queryClient.invalidateQueries({ queryKey: [REFERRAL_POINTS_HISTORY_QUERY_KEY] });
     },

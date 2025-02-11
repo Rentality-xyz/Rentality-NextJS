@@ -23,6 +23,7 @@ import RntSuspense from "@/components/common/rntSuspense";
 import { CivicProvider } from "@/contexts/web3/civicContext";
 import UserCommonInformationForm from "@/components/profileInfo/UserCommonInformationForm";
 import UserDriverLicenseVerification from "@/components/profileInfo/UserDriverLicenseVerification";
+import Search from "@/pages/guest/search";
 
 function BecomeHost() {
   return (
@@ -66,10 +67,17 @@ function BecomeHostContent() {
   const [isStepUserInfoCompleted, setIsStepUserInfoCompleted] = useState<boolean | undefined>(undefined);
   const [openBlockUserInfo, setOpenBlockUserInfo] = useState(false);
   const handleClickOpenBlockUserInfo = () => {
-    setOpenBlockUserInfo(!openBlockUserInfo);
+    if (isStepConnectWalletCompleted && !isStepUserInfoCompleted) {
+      setOpenBlockUserInfo(!openBlockUserInfo);
+    } else {
+      setOpenBlockUserInfo(false);
+    }
   };
   useEffect(() => {
-    if (isLoadingProfileSettings) return;
+    if (isLoadingProfileSettings) {
+      setIsStepUserInfoCompleted(false);
+      return;
+    }
     setIsStepUserInfoCompleted(!!savedProfileSettings.tcSignature);
   }, [savedProfileSettings, isLoadingProfileSettings]);
   useEffect(() => {
@@ -84,7 +92,11 @@ function BecomeHostContent() {
   const [openBlockDriverLicense, setOpenBlockDriverLicense] = useState(false);
   const { gatewayStatus } = useGateway();
   const handleClickOpenBlockDriverLicense = () => {
-    setOpenBlockDriverLicense(!openBlockDriverLicense);
+    if (isStepUserInfoCompleted && !isStepDriverLicenseCompleted) {
+      setOpenBlockDriverLicense(!openBlockDriverLicense);
+    } else {
+      setOpenBlockDriverLicense(false);
+    }
   };
   useEffect(() => {
     setIsStepDriverLicenseCompleted(gatewayStatus === GatewayStatus.ACTIVE);
@@ -101,7 +113,11 @@ function BecomeHostContent() {
   const [openBlockListingCar, setOpenBlockListingCar] = useState(false);
   const [isLoadingMyListings, myListings] = useMyListings();
   const handleClickOpenBlockListingCar = () => {
-    setOpenBlockListingCar(!openBlockListingCar);
+    if (isStepDriverLicenseCompleted && !isStepListingCarCompleted) {
+      setOpenBlockListingCar(!openBlockListingCar);
+    } else {
+      setOpenBlockListingCar(false);
+    }
   };
   useEffect(() => {
     if (isLoadingMyListings) return;
@@ -118,7 +134,11 @@ function BecomeHostContent() {
   const [isStepDiscountsAndPriceCompleted, setIsStepDiscountsAndPriceCompleted] = useState(false);
   const [openBlockDiscountsAndPrice, setOpenBlockDiscountsAndPrice] = useState(false);
   const handleClickOpenBlockDiscountsAndPrice = () => {
-    setOpenBlockDiscountsAndPrice(!openBlockDiscountsAndPrice);
+    if (isStepListingCarCompleted && !isStepDiscountsAndPriceCompleted) {
+      setOpenBlockDiscountsAndPrice(!openBlockDiscountsAndPrice);
+    } else {
+      setOpenBlockDiscountsAndPrice(false);
+    }
   };
   useEffect(() => {
     setIsStepDiscountsAndPriceCompleted(
@@ -139,6 +159,18 @@ function BecomeHostContent() {
 
   const [isPageLoaded, setIsPageLoaded] = useState(false);
   useEffect(() => {
+    if (isStepUserInfoCompleted) {
+      setOpenBlockUserInfo(false);
+    }
+    if (isStepDriverLicenseCompleted) {
+      setOpenBlockDriverLicense(false);
+    }
+    if (isStepListingCarCompleted) {
+      setOpenBlockListingCar(false);
+    }
+    if (isStepDiscountsAndPriceCompleted) {
+      setOpenBlockDiscountsAndPrice(false);
+    }
     if (
       isStepConnectWalletCompleted !== undefined &&
       isStepUserInfoCompleted !== undefined &&
@@ -155,11 +187,6 @@ function BecomeHostContent() {
     isStepListingCarCompleted,
     isStepDiscountsAndPriceCompleted,
   ]);
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setIsPageLoaded(true);
-  //   }, 3000);
-  // }, [isPageLoaded]);
 
   return (
     <>
@@ -189,30 +216,51 @@ function BecomeHostContent() {
               className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
               onClick={handleClickBlockConnectWallet}
             >
-              <div className="flex text-lg text-white">
-                <CheckboxLight className="underline" checked={isStepConnectWalletCompleted ?? false} />
-                <span className="pr-1 text-rentality-secondary">1.</span>
+              <div className={`flex text-lg ${!isStepConnectWalletCompleted ? "text-white" : "text-[#FFFFFF70]"}`}>
+                <CheckboxLight
+                  className={`underline ${isStepConnectWalletCompleted ? "text-[#FFFFFF70]" : ""}`}
+                  checked={isStepConnectWalletCompleted ?? false}
+                  checkedClassName={isStepConnectWalletCompleted ? "border-[#FFFFFF70]" : ""}
+                  checkMarkClassName={isStepConnectWalletCompleted ? "border-[#FFFFFF70]" : ""}
+                />
+                <span
+                  className={`pr-1 ${!isStepConnectWalletCompleted ? "text-rentality-secondary" : "text-[#FFFFFF70]"}`}
+                >
+                  1.
+                </span>
                 {t("become_host.connect_wallet")}
               </div>
-              <Image src={arrowDownTurquoise} alt="" className="ml-1" />
             </div>
 
             <div
               className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
               onClick={handleClickOpenBlockUserInfo}
             >
-              <div className="flex text-lg text-white">
+              <div
+                className={`flex text-lg ${isStepConnectWalletCompleted && !isStepUserInfoCompleted ? "text-white" : "text-[#FFFFFF70]"}`}
+              >
                 <CheckboxLight
                   className="underline"
-                  checked={isStepUserInfoCompleted}
-                  onChange={() => {
-                    setIsStepUserInfoCompleted(!isStepUserInfoCompleted);
-                  }}
+                  checked={isStepUserInfoCompleted ?? false}
+                  checkedClassName={
+                    isStepConnectWalletCompleted && !isStepUserInfoCompleted ? "" : "border-[#FFFFFF70]"
+                  }
+                  checkMarkClassName={
+                    isStepConnectWalletCompleted && !isStepUserInfoCompleted ? "" : "border-[#FFFFFF70]"
+                  }
                 />
-                <span className="pr-1 text-rentality-secondary">2.</span>
+                <span
+                  className={`pr-1 ${isStepConnectWalletCompleted && !isStepUserInfoCompleted ? "text-rentality-secondary" : "text-[#FFFFFF70]"}`}
+                >
+                  2.
+                </span>
                 {t("become_host.enter_user_info")}
               </div>
-              <Image src={openBlockUserInfo ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
+              <Image
+                src={openBlockUserInfo ? arrowUpTurquoise : arrowDownTurquoise}
+                alt=""
+                className={`ml-1 ${isStepConnectWalletCompleted && !isStepUserInfoCompleted ? "" : "hidden"}`}
+              />
             </div>
             {openBlockUserInfo && (
               <div className="ml-10">
@@ -227,12 +275,31 @@ function BecomeHostContent() {
               className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
               onClick={handleClickOpenBlockDriverLicense}
             >
-              <div className="flex text-lg text-white">
-                <CheckboxLight className="underline" checked={isStepDriverLicenseCompleted ?? false} />
-                <span className="pr-1 text-rentality-secondary">3.</span>
+              <div
+                className={`flex text-lg ${isStepUserInfoCompleted && !isStepDriverLicenseCompleted ? "text-white" : "text-[#FFFFFF70]"}`}
+              >
+                <CheckboxLight
+                  className="underline"
+                  checked={isStepDriverLicenseCompleted ?? false}
+                  checkedClassName={
+                    isStepUserInfoCompleted && !isStepDriverLicenseCompleted ? "" : "border-[#FFFFFF70]"
+                  }
+                  checkMarkClassName={
+                    isStepUserInfoCompleted && !isStepDriverLicenseCompleted ? "" : "border-[#FFFFFF70]"
+                  }
+                />
+                <span
+                  className={`pr-1 ${isStepUserInfoCompleted && !isStepDriverLicenseCompleted ? "text-rentality-secondary" : "text-[#FFFFFF70]"}`}
+                >
+                  3.
+                </span>
                 {t("become_host.driver_license")}
               </div>
-              <Image src={openBlockDriverLicense ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
+              <Image
+                src={openBlockDriverLicense ? arrowUpTurquoise : arrowDownTurquoise}
+                alt=""
+                className={`ml-1 ${isStepUserInfoCompleted && !isStepDriverLicenseCompleted ? "" : "hidden"}`}
+              />
             </div>
             {openBlockDriverLicense && (
               <div className="ml-10">
@@ -244,18 +311,31 @@ function BecomeHostContent() {
               className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
               onClick={handleClickOpenBlockListingCar}
             >
-              <div className="flex text-lg text-white">
+              <div
+                className={`flex text-lg ${isStepDriverLicenseCompleted && !isStepListingCarCompleted ? "text-white" : "text-[#FFFFFF70]"}`}
+              >
                 <CheckboxLight
                   className="underline"
-                  checked={isStepListingCarCompleted}
-                  onChange={() => {
-                    setIsStepListingCarCompleted(!isStepListingCarCompleted);
-                  }}
+                  checked={isStepListingCarCompleted ?? false}
+                  checkedClassName={
+                    isStepDriverLicenseCompleted && !isStepListingCarCompleted ? "" : "border-[#FFFFFF70]"
+                  }
+                  checkMarkClassName={
+                    isStepDriverLicenseCompleted && !isStepListingCarCompleted ? "" : "border-[#FFFFFF70]"
+                  }
                 />
-                <span className="pr-1 text-rentality-secondary">4.</span>
+                <span
+                  className={`pr-1 ${isStepDriverLicenseCompleted && !isStepListingCarCompleted ? "text-rentality-secondary" : "text-[#FFFFFF70]"}`}
+                >
+                  4.
+                </span>
                 {t("become_host.listing_car")}
               </div>
-              <Image src={openBlockListingCar ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
+              <Image
+                src={openBlockListingCar ? arrowUpTurquoise : arrowDownTurquoise}
+                alt=""
+                className={`ml-1 ${isStepDriverLicenseCompleted && !isStepListingCarCompleted ? "" : "hidden"}`}
+              />
             </div>
             {openBlockListingCar && (
               <div className="ml-10 mt-4">
@@ -267,18 +347,31 @@ function BecomeHostContent() {
               className="mt-5 flex w-fit cursor-pointer items-center justify-start pl-4"
               onClick={handleClickOpenBlockDiscountsAndPrice}
             >
-              <div className="flex text-lg text-white">
+              <div
+                className={`flex text-lg ${isStepListingCarCompleted && !isStepDiscountsAndPriceCompleted ? "text-white" : "text-[#FFFFFF70]"}`}
+              >
                 <CheckboxLight
                   className="underline"
-                  checked={isStepDiscountsAndPriceCompleted}
-                  onChange={() => {
-                    setIsStepDiscountsAndPriceCompleted(!isStepDiscountsAndPriceCompleted);
-                  }}
+                  checked={isStepDiscountsAndPriceCompleted ?? false}
+                  checkedClassName={
+                    isStepListingCarCompleted && !isStepDiscountsAndPriceCompleted ? "" : "border-[#FFFFFF70]"
+                  }
+                  checkMarkClassName={
+                    isStepListingCarCompleted && !isStepDiscountsAndPriceCompleted ? "" : "border-[#FFFFFF70]"
+                  }
                 />
-                <span className="pr-1 text-rentality-secondary">5.</span>
+                <span
+                  className={`pr-1 ${isStepListingCarCompleted && !isStepDiscountsAndPriceCompleted ? "text-rentality-secondary" : "text-[#FFFFFF70]"}`}
+                >
+                  5.
+                </span>
                 {t("become_host.discounts_and_price")}
               </div>
-              <Image src={openBlockDiscountsAndPrice ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="ml-1" />
+              <Image
+                src={openBlockDiscountsAndPrice ? arrowUpTurquoise : arrowDownTurquoise}
+                alt=""
+                className={`ml-1 ${isStepListingCarCompleted && !isStepDiscountsAndPriceCompleted ? "" : "hidden"}`}
+              />
             </div>
             {openBlockDiscountsAndPrice && (
               <div className="ml-10 flex flex-col min-[560px]:flex-row min-[560px]:gap-20">
@@ -312,5 +405,7 @@ function BecomeHostContent() {
     </>
   );
 }
+
+BecomeHost.allowAnonymousAccess = true;
 
 export default BecomeHost;
