@@ -1,11 +1,11 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { useState, useEffect } from "react";
-import { InvestmentDTO } from "@/model/blockchain/schemas";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { InvestmentInfoWithMetadata } from "@/model/InvestmentInfo";
 import { mapContractInvestmentDTOToInvestmentInfoWithMetadata } from "@/model/mappers/contractInvestmentDTOtoInvestmentInfo";
+import { ContractInvestmentDTO } from "@/model/blockchain/schemas";
 
 const useGetInvestments = () => {
   const { rentalityContracts } = useRentality();
@@ -52,7 +52,7 @@ const useGetInvestments = () => {
       let res = await rentalityContracts.investment.getAllInvestments();
 
       if (res.ok) {
-        const investmentInfo: InvestmentDTO[] = res.value;
+        const investmentInfo: ContractInvestmentDTO[] = res.value;
         const result = await Promise.all(
           investmentInfo.map(async (value) => {
             const metadata = parseMetaData(await getMetaDataFromIpfs(value.investment.car.tokenUri));

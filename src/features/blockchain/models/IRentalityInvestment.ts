@@ -1,4 +1,4 @@
-import { ContractCreateCarRequest, InvestmentDTO } from "@/model/blockchain/schemas";
+import { ContractCreateCarRequest, ContractInvestmentDTO } from "@/model/blockchain/schemas";
 import { ContractTransactionResponse } from "ethers";
 import { ContractResultWrapper } from "../types";
 import { IEthersContract } from "./IEtherContract";
@@ -10,7 +10,7 @@ export interface IRentalityInvestmentContract extends IEthersContract {
 
   claimAndCreatePool(investId: number): Promise<ContractTransactionResponse>;
 
-  getAllInvestments(): Promise<InvestmentDTO[]>;
+  getAllInvestments(): Promise<ContractInvestmentDTO[]>;
 
   invest(investId: number, value: object): Promise<ContractTransactionResponse>;
 

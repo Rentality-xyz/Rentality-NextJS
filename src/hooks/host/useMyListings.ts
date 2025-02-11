@@ -46,7 +46,7 @@ const useMyListings = () => {
                   currentlyListed: i.carInfo.currentlyListed,
                   isEditable: i.isEditable,
                   vinNumber: i.carInfo.carVinNumber,
-                  dimoTokenId: i.dimoTokenId,
+                  dimoTokenId: Number(i.dimoTokenId),
                 };
                 return item;
               })
