@@ -81,7 +81,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
       <div className="relative flex min-h-[100vh] w-full flex-row overflow-hidden pt-14 text-rnt-temp-sidemenu-text">
         <aside
           id="main-side-menu"
-          className={`fixed hidden h-full overflow-y-auto bg-rentality-bg-left-sidebar pb-14 lg:block`}
+          className={`custom-scroll fixed hidden h-full overflow-y-auto bg-rentality-bg-left-sidebar pb-14 lg:block`}
         >
           <div className={`${isFooterVisible ? `mt-[-400px]` : ``} transition-all duration-300`}>{sideNavMenu}</div>
         </aside>

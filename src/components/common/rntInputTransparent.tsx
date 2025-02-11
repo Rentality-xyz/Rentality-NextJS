@@ -49,7 +49,7 @@ const RntInputTransparent = forwardRef<HTMLInputElement, RntInputProps>(
             {label}
           </label>
         )}
-        <div className="border-gradient">
+        <div className="btn_input_border-gradient">
           <div className="input-wrapper pl-2">
             <input
               className={iClassName}
