@@ -12,7 +12,7 @@ export interface IRentalityInvestmentContract extends IEthersContract {
 
   getAllInvestments(): Promise<ContractInvestmentDTO[]>;
 
-  invest(investId: number, value: object): Promise<ContractTransactionResponse>;
+  invest(investId: number, amount: bigint, value: object): Promise<ContractTransactionResponse>;
 
   claimAllMy(investId: number): Promise<ContractTransactionResponse>;
 
@@ -23,6 +23,7 @@ export interface IRentalityInvestmentContract extends IEthersContract {
       priceInUsd: bigint;
       creatorPercents: bigint;
     },
-    name_: string
+    name_: string,
+    currency: string
   ): Promise<ContractTransactionResponse>;
 }

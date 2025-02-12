@@ -15,6 +15,7 @@ import { getNftJSONFromCarInfo } from "@/utils/ipfsUtils";
 import { ContractTransactionResponse } from "ethers";
 import { saveCarImages } from "./useSaveCar";
 import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
+import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 
 const useCreateInvestCar = () => {
   const { rentalityContracts } = useRentality();
@@ -121,7 +122,7 @@ const useCreateInvestCar = () => {
         inProgress: true,
       };
 
-      await rentalityContracts.investment.createCarInvestment(createInvestRequest, nftName);
+      await rentalityContracts.investment.createCarInvestment(createInvestRequest, nftName, ETH_DEFAULT_ADDRESS);
       return Ok(true);
     } catch (e) {
       console.error("Upload error" + e);
