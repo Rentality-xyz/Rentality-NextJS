@@ -72,7 +72,7 @@ const useGetInvestments = () => {
       );
       if (!valueInEth.ok) throw new Error("Failed to convert currency");
 
-      await rentalityContracts.investment.invest(investId, { value: valueInEth.value[0] });
+      await rentalityContracts.investment.invest(investId, valueInEth.value[0], { value: valueInEth.value[0] });
     },
     onSuccess: updateData,
   });
