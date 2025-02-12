@@ -808,11 +808,9 @@
     "referral_program": {
       "set_kyc": "Save profile",
       "pass_civic": "Get KYC Pass",
-      "add_first_car": "Listing first car",
       "add_car": "Listing new car",
       "create_trip": "Create a Trip",
       "finish_trip_as_host_one_time": "First trip complete",
-      "finish_trip_as_host": "For each 1 day of trip",
       "finish_trip_as_guest_one_time": "First trip complete",
       "finish_trip_as_guest": "For each 1 day of trip",
       "unlisted_car": "Unlisted Car",
