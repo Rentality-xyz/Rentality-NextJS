@@ -820,8 +820,6 @@ export const RefferalProgram = {
   UnlistedCar: BigInt(5),
   Daily: BigInt(6),
   DailyListing: BigInt(7),
-  AddFirstCar: BigInt(8),
-  FinishTripAsHost: BigInt(9),
 };
 
 export type Tear = bigint;
