@@ -7,12 +7,14 @@ import { getAllPoints } from "../utils";
 
 export const REFERRAL_OWN_POINTS_QUERY_KEY = "ReferralOwnPoints";
 
+type QueryData = { readyToClaim: number; allPoints: AllOwnPointsInfo | null };
+
 function useFetchOwnReferralPoints() {
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
   const { t } = useTranslation();
 
-  return useQuery({
+  return useQuery<QueryData>({
     queryKey: [REFERRAL_OWN_POINTS_QUERY_KEY, ethereumInfo?.walletAddress],
     initialData: { readyToClaim: 0, allPoints: null as AllOwnPointsInfo | null },
     queryFn: async () => {
