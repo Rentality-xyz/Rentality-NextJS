@@ -69,6 +69,7 @@ export default function CreateCarInvestment() {
       <div className="mb-4 gap-4 text-lg text-[#FFFFFF70]">{t("invest.generated_automatically")}</div>
       <CarEditForm
         isNewCar={true}
+        isInvestmentCar={true}
         saveCarInfo={async (hostCarInfo: HostCarInfo) => {
           let price = Number.parseInt(carPrice.toString());
           let percents = Number.parseInt(hostPercentage.toString());

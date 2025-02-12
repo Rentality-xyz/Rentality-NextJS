@@ -15,7 +15,16 @@ type FilterEnum = Record<string, string>; // Типизация для Enum
 
 export default function InvestContent({ isHost }: InvestContentProps) {
   const { t } = useTranslation();
-  const { investments, updateData, handleInvest, address, handleStartHosting, handleClaimIncome } = useGetInvestments();
+  const {
+    investments,
+    handleInvest,
+    isPendingInvesting,
+    address,
+    handleStartHosting,
+    isPendingStartingHosting,
+    handleClaimIncome,
+    isPendingClaimingIncome,
+  } = useGetInvestments();
   const router = useRouter();
   const handleCreateInvest = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -96,9 +105,10 @@ export default function InvestContent({ isHost }: InvestContentProps) {
         {filteredInvestments.map((value) => (
           <InvestCar
             isHost={isHost}
-            key={value.investment.investmentId as unknown as number}
+            key={value.investment.investmentId}
             searchInfo={value}
-            handleInvest={handleInvest}
+            handleInvest={(amount, investId) => handleInvest({ amount, investId })}
+            isPendingInvesting={isPendingInvesting(value.investment.investmentId)}
             isCreator={value.investment.creator === address}
             handleStartHosting={handleStartHosting}
             handleClaimIncome={handleClaimIncome}
