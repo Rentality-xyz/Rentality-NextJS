@@ -4,8 +4,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useOwnReferralPointsTransactionStore from "./useOwnReferralPointsTransactionStore";
 import { Err } from "@/model/utils/result";
 import { REFERRAL_OWN_POINTS_QUERY_KEY } from "./useFetchOwnReferralPoints";
-import { REFERRAL_USER_BALANCE_QUERY_KEY } from "./useUserBalance";
-import { REFERRAL_POINTS_HISTORY_QUERY_KEY } from "./usePointsHistory";
+import { REFERRAL_USER_BALANCE_QUERY_KEY } from "./useFetchUserBalance";
+import { REFERRAL_POINTS_HISTORY_QUERY_KEY } from "./useFetchPointsHistory";
 
 function useClaimOwnReferralPoints() {
   const ethereumInfo = useEthereum();
