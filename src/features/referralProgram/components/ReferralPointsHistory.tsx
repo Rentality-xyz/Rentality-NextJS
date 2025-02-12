@@ -2,11 +2,11 @@ import { useTranslation } from "react-i18next";
 import React from "react";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import ReferralPointsHistoryTable from "@/features/referralProgram/components/ReferralPointsHistoryTable";
-import usePointsHistory from "@/features/referralProgram/hooks/usePointsHistory";
+import useFetchPointsHistory from "@/features/referralProgram/hooks/useFetchPointsHistory";
 
 export default function ReferralPointsHistory() {
   const itemsPerPage = 4;
-  const { isLoading, data, fetchData } = usePointsHistory(1, itemsPerPage);
+  const { isLoading, data, fetchData } = useFetchPointsHistory(1, itemsPerPage);
   const { t } = useTranslation();
 
   async function fetchDataForPage(page: number) {
