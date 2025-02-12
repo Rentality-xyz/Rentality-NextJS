@@ -6,11 +6,12 @@ import RntButton from "@/components/common/rntButton";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import { copyToClipboard } from "@/utils/clipboard";
 import { isEmpty } from "@/utils/string";
-import useReferralLinks from "../hooks/useReferralLinks";
+import useFetchReferralLinks from "../hooks/useFetchReferralLinks";
 
 export default function ReferralLinks() {
-  const { inviteHash, usedInviteHash } = useReferralLinks();
+  const { data } = useFetchReferralLinks();
   const { t } = useTranslation();
+  const { inviteHash, usedInviteHash } = data;
 
   const inviteLink = !isEmpty(inviteHash)
     ? new URL(`/referralLink/${inviteHash}`, window.location.origin).toString()
