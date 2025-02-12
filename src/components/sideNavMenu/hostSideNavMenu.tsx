@@ -67,7 +67,7 @@ function HostNavMenu() {
         <SideNavMenuItem text={t_nav("listing")} href="/host/vehicles/listings" icon={MenuIcons.Listings} />
         <SideNavMenuItem text={t_nav("insurance")} href="/host/insurance" icon={MenuIcons.Insurance} />
         <SideNavMenuItem
-          text={t_nav("claims")}
+          text={t_nav("complaints")}
           href="/host/claims"
           icon={MenuIcons.Claims}
           notificationCount={claimsNotificationCount}

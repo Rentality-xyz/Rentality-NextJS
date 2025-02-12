@@ -174,7 +174,7 @@ function CreateTripDetailsContent({
     <div className="flex flex-wrap">
       <div className="flex w-full flex-col gap-4 xl:w-3/4 xl:pr-4">
         <div className="flex">
-          <CarPhotos carPhotos={carInfo.images} />
+          <CarPhotos carPhotos={carInfo.images} carInfo={carInfo} />
           {isYourOwnCar && (
             <div className="absolute ml-2 mt-2 flex h-[56px] w-[80px] justify-center rounded-xl bg-black bg-opacity-50">
               <Image src={carIcon} alt="" className="w-[48px]" />

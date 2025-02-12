@@ -6,6 +6,7 @@ import { z } from "zod";
 
 const carFileFormSchema = z.union([
   z.object({
+    // file: typeof window !== "undefined" ? z.instanceof(File) : z.any(),
     file: z.instanceof(File),
     localUrl: z.string(),
     isPrimary: z.boolean(),
