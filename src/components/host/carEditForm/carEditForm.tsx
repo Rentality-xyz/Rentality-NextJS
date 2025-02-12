@@ -40,11 +40,13 @@ import { DimoCarResponseWithTimestamp } from "@/features/dimo/hooks/useDimo";
 export default function CarEditForm({
   initValue,
   isNewCar,
+  isInvestmentCar,
   saveCarInfo,
   t,
 }: {
   initValue?: HostCarInfo;
   isNewCar: boolean;
+  isInvestmentCar: boolean;
   saveCarInfo: (hostCarInfo: HostCarInfo) => Promise<Result<boolean, TransactionErrorCode>>;
   t: TFunction;
 }) {
@@ -219,12 +221,20 @@ export default function CarEditForm({
       if (dimoData) {
         localStorage.removeItem("dimo");
       }
-      if (isNewCar) {
-        showInfo(t("vehicles.car_listed"));
+      if (isInvestmentCar) {
+        showInfo(t("vehicles.car_invested"));
       } else {
-        showInfo(t("vehicles.edited"));
+        if (isNewCar) {
+          showInfo(t("vehicles.car_listed"));
+        } else {
+          showInfo(t("vehicles.edited"));
+        }
       }
-      router.push("/host/vehicles");
+      if (isInvestmentCar) {
+        router.push("/host/invest");
+      } else {
+        router.push("/host/vehicles");
+      }
     } else {
       if (result.error === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));

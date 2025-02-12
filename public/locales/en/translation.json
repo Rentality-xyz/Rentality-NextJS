@@ -611,7 +611,8 @@
     "no_listed_cars": "You don't have any listed car",
     "miles_per_day": "miles per day",
     "day": "day",
-    "upload_photos_title": "Take and upload up to 10 interior and exterior photos"
+    "upload_photos_title": "Take and upload up to 10 interior and exterior photos",
+    "car_invested": "Your car has been successfully added for investment!"
   },
   "hosts": {
     "invalid_addr": "Host address is invalid",

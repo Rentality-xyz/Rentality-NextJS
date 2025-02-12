@@ -31,6 +31,7 @@ function EditCar() {
             <CarEditForm
               initValue={hostCarInfo}
               isNewCar={false}
+              isInvestmentCar={false}
               saveCarInfo={async (hostCarInfo) => {
                 return await updateCar(hostCarInfo);
               }}
