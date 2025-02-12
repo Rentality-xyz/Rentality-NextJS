@@ -57,10 +57,7 @@ const useGetInvestments = () => {
           investmentInfo.map(async (value) => {
             const metadata = parseMetaData(await getMetaDataFromIpfs(value.investment.car.tokenUri));
             return mapContractInvestmentDTOToInvestmentInfoWithMetadata(
-              {
-                investment: value,
-                metadata: { ...metadata, image: metadata.mainImage },
-              },
+              value,{ ...metadata, image: metadata.mainImage },
               ethereumInfo.chainId
             );
           })
