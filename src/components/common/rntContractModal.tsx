@@ -96,7 +96,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                         </a>
                         &nbsp;
                         <a className="underline" href={`/host/legal?tab=${LEGAL_TERMS_NAME}`} target="_blank">
-                          (published at https://app.rentality.xyz/legalmatters/terms)
+                          (published at https://app.rentality.io/legalmatters/terms)
                         </a>
                       </li>
                       <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
@@ -114,7 +114,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                           href={`${pathnameUserMode}/legal?tab=${LEGAL_CANCELLATION_NAME}`}
                           target="_blank"
                         >
-                          (published at https://app.rentality.xyz/legalmatters/cancellation)
+                          (published at https://app.rentality.io/legalmatters/cancellation)
                         </a>
                       </li>
                       <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
@@ -132,7 +132,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                           href={`${pathnameUserMode}/legal?tab=${LEGAL_PROHIBITEDUSES_NAME}`}
                           target="_blank"
                         >
-                          (published at https://app.rentality.xyz/legalmatters/prohibiteduses)
+                          (published at https://app.rentality.io/legalmatters/prohibiteduses)
                         </a>
                       </li>
                       <li className="[counter-increment:section] marker:[content:counters(section,'.')]">
@@ -150,7 +150,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                           href={`${pathnameUserMode}/legal?tab=${LEGAL_PRIVACY_NAME}`}
                           target="_blank"
                         >
-                          (published at https://app.rentality.xyz/legalmattersprivacy)
+                          (published at https://app.rentality.io/legalmattersprivacy)
                         </a>
                       </li>
                     </ol>
@@ -280,7 +280,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                 above were connected online through a website or mobile application provided by Rentality (collectively,
                 the “Rentality Services”). As part of connecting through the Rentality Services, the Host and Guest
                 agreed to be bound by the Terms of service, Cancellation policy, Prohibited Uses and Privacy Policy
-                published at https:// Rentality.xyz/policies/terms. The guest who booked the trip on the Rentality
+                published at https://rentality.io/policies/terms. The guest who booked the trip on the Rentality
                 platform is recognized as the &quot;Primary Driver&quot; and is liable under these Terms and Conditions,
                 whether or not he or she was personally driving the vehicle.
               </div>
