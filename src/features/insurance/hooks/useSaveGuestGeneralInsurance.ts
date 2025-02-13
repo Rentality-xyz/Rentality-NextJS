@@ -8,6 +8,7 @@ import { bigIntReplacer } from "@/utils/json";
 import { Err, Result } from "@/model/utils/result";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { INSURANCE_GUEST_QUERY_KEY } from "./useFetchGuestGeneralInsurance";
+import { INSURANCE_LIST_QUERY_KEY } from "./useFetchInsurances";
 
 const useSaveGuestGeneralInsurance = () => {
   const { rentalityContracts } = useRentality();
@@ -67,6 +68,7 @@ const useSaveGuestGeneralInsurance = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [INSURANCE_GUEST_QUERY_KEY] });
+      queryClient.invalidateQueries({ queryKey: [INSURANCE_LIST_QUERY_KEY] });
     },
   });
 };
