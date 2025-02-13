@@ -6,6 +6,8 @@ import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { ZERO_4_BYTES_HASH } from "@/utils/wallet";
 import useReferralLinkLocalStorage from "@/features/referralProgram/hooks/useSaveReferralLinkToLocalStorage";
 import { isEmpty } from "@/utils/string";
+import { useQueryClient } from "@tanstack/react-query";
+import { REFERRAL_LINKS_QUERY_KEY } from "@/features/referralProgram/hooks/useFetchReferralLinks";
 
 export type ProfileSettings = {
   profilePhotoUrl: string;
@@ -38,6 +40,7 @@ const useProfileSettings = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [profileSettings, setProfileSettings] = useState<ProfileSettings>(emptyProfileSettings);
   const { getLocalReferralCode, resetReferralCode } = useReferralLinkLocalStorage();
+  const queryClient = useQueryClient();
 
   const saveProfileSettings = async (newProfileSettings: ProfileSettings) => {
     if (!rentalityContracts) {
@@ -63,6 +66,7 @@ const useProfileSettings = () => {
     if (result.ok) {
       resetReferralCode();
     }
+    queryClient.invalidateQueries({ queryKey: [REFERRAL_LINKS_QUERY_KEY] });
     return result.ok;
   };
 

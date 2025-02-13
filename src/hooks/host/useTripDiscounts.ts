@@ -10,12 +10,14 @@ export type DiscountFormValues = {
   discount3DaysAndMoreInPercents: number;
   discount7DaysAndMoreInPercents: number;
   discount30DaysAndMoreInPercents: number;
+  isInitialized: boolean;
 };
 
 const emptyDiscountFormValues: DiscountFormValues = {
   discount3DaysAndMoreInPercents: 0,
   discount7DaysAndMoreInPercents: 0,
   discount30DaysAndMoreInPercents: 0,
+  isInitialized: false,
 };
 
 const useTripDiscounts = () => {
@@ -80,6 +82,7 @@ const useTripDiscounts = () => {
           discount3DaysAndMoreInPercents: Number(discounts.threeDaysDiscount) / 10_000,
           discount7DaysAndMoreInPercents: Number(discounts.sevenDaysDiscount) / 10_000,
           discount30DaysAndMoreInPercents: Number(discounts.thirtyDaysDiscount) / 10_000,
+          isInitialized: discounts.initialized,
         };
         setTripDiscounts(discountFormValues);
       } catch (e) {

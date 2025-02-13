@@ -43,6 +43,7 @@ function TripDiscountsForm({
       discount3DaysAndMoreInPercents: formData.discount3DaysAndMoreInPercents,
       discount7DaysAndMoreInPercents: formData.discount7DaysAndMoreInPercents,
       discount30DaysAndMoreInPercents: formData.discount30DaysAndMoreInPercents,
+      isInitialized: true,
     });
 
     hideDialogs();
