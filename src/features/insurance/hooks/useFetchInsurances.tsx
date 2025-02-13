@@ -53,6 +53,7 @@ function useFetchInsurances(isHost: boolean, initialPage: number = 1, initialIte
             policyNumber: i.insuranceInfo.policyNumber,
             comment: i.insuranceInfo.comment,
             uploadedBy: `${i.createdByHost ? "Host" : "Guest"} ${i.creatorFullName} uploaded ${moment(getDateFromBlockchainTime(i.insuranceInfo.createdTime)).format("DD.MM.YY hh:mm A")}`,
+            uploadedAt: getDateFromBlockchainTime(i.insuranceInfo.createdTime),
             isActual: i.isActual,
           },
           hostPhoneNumber: i.creatorPhoneNumber,
@@ -60,7 +61,7 @@ function useFetchInsurances(isHost: boolean, initialPage: number = 1, initialIte
         };
       });
       data.sort((a, b) => {
-        const timeDiff = b.startDateTime.getTime() - a.startDateTime.getTime();
+        const timeDiff = b.insurance.uploadedAt.getTime() - a.insurance.uploadedAt.getTime();
         if (timeDiff !== 0) return timeDiff;
         return Number(a.insuranceType - b.insuranceType);
       });
