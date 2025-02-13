@@ -109,7 +109,7 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
         </RntButtonTransparent>
       ) : (
         <RntButtonTransparent
-          className="border-rnt-gradient-2 w-[20rem] rounded-xl bg-rentality-bg text-white"
+          className="border-gradient w-[20rem] rounded-xl bg-rentality-bg text-white"
           onClick={(e) => {
             e.preventDefault();
             fileInputRef.current?.click();

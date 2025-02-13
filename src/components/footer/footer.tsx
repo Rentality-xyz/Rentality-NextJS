@@ -116,10 +116,10 @@ const Footer = forwardRef<HTMLDivElement>((props, ref) => {
           <Image src={logo} alt="" className="mb-2 h-auto min-w-[180px] max-w-[180px]" />
           <div>
             <a
-              href="mailto:info@rentality.xyz"
+              href="mailto:info@rentality.io"
               className="pt-4 text-center font-['Montserrat',Arial,sans-serif] text-base font-normal lg:pt-9"
             >
-              <div>info@rentality.xyz</div>
+              <div>info@rentality.io</div>
             </a>
 
             <div className="mt-1.5 flex flex-col items-center">
@@ -140,7 +140,7 @@ const Footer = forwardRef<HTMLDivElement>((props, ref) => {
                   <Image src={discord} alt="" className="ml-1.5 w-[30px]" />
                 </a>
 
-                {/*<a href="mailto:info@rentality.xyz" className="lg:hidden">*/}
+                {/*<a href="mailto:info@rentality.io" className="lg:hidden">*/}
                 {/*  <Image src={email} alt="" className="ml-1.5 w-[30px]" />*/}
                 {/*</a>*/}
               </div>
