@@ -37,7 +37,7 @@ function ChatLink({ tripId, asHost, t }: { tripId: number; asHost: boolean; t: T
   return (
     <Link href={`/${pathRoot}/messages?tridId=${tripId}`}>
       <i className="fi fi-rs-envelope-open pr-1 text-rentality-icons"></i>
-      <strong className="text-l">{t("booked.chat")}</strong>
+      <strong className="text-lg">{t("booked.chat")}</strong>
     </Link>
   );
 }
@@ -48,7 +48,7 @@ function TelLink({ phoneNumber, t }: { phoneNumber: string; t: TFunction }) {
   return (
     <a href={telLink}>
       <i className="fi fi-br-phone-flip pr-1 text-rentality-icons"></i>
-      <strong className="text-l">{t("booked.contact")}</strong>
+      <strong className="text-lg">{t("booked.contact")}</strong>
     </a>
   );
 }
