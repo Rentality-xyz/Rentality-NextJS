@@ -138,7 +138,7 @@ function getBlockTokenizationBalance(
   return investStatus === InvestStatus.WaitingFullTokenization ? (
     <>
       <p className="text-xl font-bold leading-none text-rentality-secondary 2xl:text-2xl">
-        ${String(investment.investment.priceInUsd - investment.payedInUsd)}
+        ${(investment.investment.priceInUsd - investment.payedInUsd).toFixed(2)}
       </p>
       <p className="leading-snug text-rentality-secondary 2xl:text-lg">{t("invest.balance_raised")}</p>
     </>
@@ -220,18 +220,19 @@ function getBlocksForGuest(
   return (
     <>
       {blockStakeInAssetForGuest(investment.myTokens, investment.myInvestingSum, t)}
-      {investment.myTokens > 0 && myIncome === 0 && investment.listed
+      {!investment.listed && !investment.investment.inProgress
         ? blockExpectCompletedTripsForGuest(t)
-        : investment.myTokens > 0
+        : investment.myIncome > 0
           ? btnClaimEarningsForGuest(myIncome, investment.investmentId, handleClaimIncome, t)
-          : blockInvestNowForGuest(
+          : investment.investment.inProgress ?
+           blockInvestNowForGuest(
               investment.investmentId,
               investmentAmount,
               handleInvest,
               isPendingInvesting,
               handleChangeInvestmentAmount,
               t
-            )}
+            ) :<></>}
     </>
   );
 }
@@ -267,7 +268,7 @@ function btnClaimEarningsForGuest(
     >
       <div className="flex w-full items-center justify-center text-white">
         <span className="ml-4 w-full">
-          {t("invest.btn_claim_earnings")} ${myIncome}
+          {t("invest.btn_claim_earnings")} ${myIncome.toFixed(2)}
         </span>
         <span className="ml-auto mr-4">●</span>
       </div>
