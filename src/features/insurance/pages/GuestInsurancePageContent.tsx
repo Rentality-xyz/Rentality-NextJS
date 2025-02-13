@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
@@ -7,32 +7,25 @@ import RntSuspense from "@/components/common/rntSuspense";
 import AddGuestInsurance from "@/features/insurance/components/AddGuestInsurance";
 import GuestInsuranceFilters from "@/features/insurance/components/GuestInsuranceFilters";
 import GuestInsuranceTable from "@/features/insurance/components/GuestInsuranceTable";
-import useInsurances, { InsuranceFiltersType } from "@/features/insurance/hooks/useInsurances";
+import { InsuranceFiltersType } from "@/features/insurance/hooks/useInsurances";
+import useFetchInsurances from "../hooks/useFetchInsurances";
 
 const defaultFilters: InsuranceFiltersType = {};
 
 export default function GuestInsurancePageContent() {
   const itemsPerPage = 10;
   const [filters, setFilters] = useState<InsuranceFiltersType>(defaultFilters);
-  const { isLoading, data, fetchData } = useInsurances(false);
+  const { isLoading, data, fetchData } = useFetchInsurances(false, 1, itemsPerPage);
   const { t } = useTranslation();
 
   async function handleApplyFilters(filters: InsuranceFiltersType) {
     setFilters(filters);
-    await fetchData(filters, 1, itemsPerPage);
+    await fetchData(1, itemsPerPage, filters);
   }
 
   async function fetchDataForPage(page: number) {
-    await fetchData(filters, page, itemsPerPage);
+    await fetchData(page, itemsPerPage, filters);
   }
-
-  async function handleNewInsuranceAdded() {
-    await fetchData(filters, 1, itemsPerPage, true);
-  }
-
-  useEffect(() => {
-    fetchData(defaultFilters, 1, itemsPerPage);
-  }, [fetchData]);
 
   return (
     <>
@@ -48,7 +41,7 @@ export default function GuestInsurancePageContent() {
               totalPages={data.totalPageCount}
               selectPage={fetchDataForPage}
             >
-              <GuestInsuranceTable isLoading={isLoading} data={data.data} />
+              <GuestInsuranceTable isLoading={isLoading} data={data.pageData} />
             </PaginationWrapper>
           </div>
         </RntSuspense>
