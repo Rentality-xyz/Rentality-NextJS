@@ -8,6 +8,8 @@ import cn from "classnames";
 import RntCheckbox from "@/components/common/rntCheckbox";
 import { resizeImage } from "@/utils/image";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
+import imgCircleBtn from "@/images/img_circle_for_transparent_btn.svg";
+import RntButton from "@/components/common/rntButton";
 
 const heightPhoto = 745;
 const widthPhoto = 1242;
@@ -183,15 +185,18 @@ function CarAddPhoto({
               autoCropArea={1}
             />
             <div className="mt-4 flex justify-between">
-              <RntButtonTransparent onClick={handleCancelCrop}>
-                <div className="text-lg font-semibold text-white">{t("cropper.cancel")}</div>
+              <RntButtonTransparent className="w-32" onClick={handleCancelCrop}>
+                <div className="flex items-center justify-center text-lg font-semibold text-white">
+                  <span className="ml-4 w-full">{t("cropper.cancel")}</span>
+                  <Image src={imgCircleBtn} alt="" className="ml-auto mr-4" />
+                </div>
               </RntButtonTransparent>
-              {/*<button className="bg-gray-300 px-4 py-2" onClick={handleCancelCrop}>*/}
-              {/*  {t("cropper.cancel")}*/}
-              {/*</button>*/}
-              <button className="bg-blue-500 px-4 py-2 text-white" onClick={handleCrop}>
-                {t("cropper.crop")}
-              </button>
+              <RntButton className="w-32" onClick={handleCrop}>
+                <div className="flex items-center justify-center text-lg font-semibold text-white">
+                  <span className="ml-4 w-full">{t("cropper.crop")}</span>
+                  <span className="ml-auto mr-4">●</span>
+                </div>
+              </RntButton>
             </div>
           </div>
         </div>
