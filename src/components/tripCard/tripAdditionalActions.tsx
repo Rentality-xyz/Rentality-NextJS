@@ -166,7 +166,7 @@ function TripAdditionalActions({
           })}
         </strong>
       </div>
-      <div className="flex flex-row gap-4 py-4">
+      <div className="flex flex-col md:flex-row gap-4 py-4">
         {isHost ? (
           <AllowedActionsHost
             tripInfo={tripInfo}

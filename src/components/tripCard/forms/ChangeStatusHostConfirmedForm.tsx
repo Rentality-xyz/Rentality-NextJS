@@ -80,8 +80,8 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
             </strong>
           </div>
 
-          <div className="flex flex-row gap-4 py-4">
-            <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
+          <div className="flex flex-col xl:flex-row gap-4 py-4">
+            <div className="flex w-full flex-col md:flex-1 xl:w-1/4 lg:flex-none">
               <Controller
                 name="fuelOrBatteryLevel"
                 control={control}
@@ -104,7 +104,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
                 validationError={errors.odotemer?.message?.toString()}
               />
             </div>
-            <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
+            <div className="flex w-full flex-col md:flex-1 xl:w-1/3 lg:flex-none">
               <RntInput
                 className="py-2"
                 id="insurance_company_name"
@@ -121,7 +121,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
               />
             </div>
             { hasTripPhotosFeatureFlag && (
-              <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
+              <div className="flex w-full flex-col md:flex-1 xl:w-1/3 lg:flex-none">
                 <CarPhotosUploadButton
                   ref={carPhotosUploadButtonRef}
                   isHost={isHost(userMode)}
