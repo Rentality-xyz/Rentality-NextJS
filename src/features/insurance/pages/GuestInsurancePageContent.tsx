@@ -7,8 +7,7 @@ import RntSuspense from "@/components/common/rntSuspense";
 import AddGuestInsurance from "@/features/insurance/components/AddGuestInsurance";
 import GuestInsuranceFilters from "@/features/insurance/components/GuestInsuranceFilters";
 import GuestInsuranceTable from "@/features/insurance/components/GuestInsuranceTable";
-import { InsuranceFiltersType } from "@/features/insurance/hooks/useInsurances";
-import useFetchInsurances from "../hooks/useFetchInsurances";
+import useFetchInsurances, { InsuranceFiltersType } from "../hooks/useFetchInsurances";
 
 const defaultFilters: InsuranceFiltersType = {};
 
