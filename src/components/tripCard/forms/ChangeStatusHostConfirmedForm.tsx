@@ -92,8 +92,8 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
             </strong>
           </div>
 
-          <div className="flex flex-row gap-4 py-4">
-            <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
+          <div className="flex flex-col gap-4 py-4 xl:flex-row">
+            <div className="flex w-full flex-col md:flex-1 lg:flex-none xl:w-1/4">
               <Controller
                 name="fuelOrBatteryLevel"
                 control={control}
@@ -130,7 +130,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
                 />
               )}
             </div>
-            <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
+            <div className="flex w-full flex-col md:flex-1 lg:flex-none xl:w-1/3">
               <RntInput
                 className="py-2"
                 id="insurance_company_name"
@@ -147,7 +147,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
               />
             </div>
             {hasTripPhotosFeatureFlag && (
-              <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
+              <div className="flex w-full flex-col md:flex-1 lg:flex-none xl:w-1/3">
                 <CarPhotosUploadButton
                   ref={carPhotosUploadButtonRef}
                   isHost={isHost(userMode)}
