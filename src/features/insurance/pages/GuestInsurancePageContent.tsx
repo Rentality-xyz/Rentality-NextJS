@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PageTitle from "@/components/pageTitle/pageTitle";
-import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import RntSuspense from "@/components/common/rntSuspense";
 import AddGuestInsurance from "@/features/insurance/components/AddGuestInsurance";
@@ -37,22 +36,20 @@ export default function GuestInsurancePageContent() {
   return (
     <>
       <PageTitle title={t("insurance.page_title")} />
-      <CheckingLoadingAuth>
-        <RntSuspense isLoading={isLoading}>
-          <AddGuestInsurance onNewInsuranceAdded={handleNewInsuranceAdded} />
-          <h2 className="mt-4">{t("insurance.insurance_list")}</h2>
-          <GuestInsuranceFilters defaultFilters={defaultFilters} onApply={handleApplyFilters} />
-          <div className="mt-5 flex flex-col gap-4 rounded-2xl bg-rentality-bg p-4 pb-8">
-            <PaginationWrapper
-              currentPage={data.currentPage}
-              totalPages={data.totalPageCount}
-              selectPage={fetchDataForPage}
-            >
-              <GuestInsuranceTable isLoading={isLoading} data={data.data} />
-            </PaginationWrapper>
-          </div>
-        </RntSuspense>
-      </CheckingLoadingAuth>
+      <RntSuspense isLoading={isLoading}>
+        <AddGuestInsurance onNewInsuranceAdded={handleNewInsuranceAdded} />
+        <h2 className="mt-4">{t("insurance.insurance_list")}</h2>
+        <GuestInsuranceFilters defaultFilters={defaultFilters} onApply={handleApplyFilters} />
+        <div className="mt-5 flex flex-col gap-4 rounded-2xl bg-rentality-bg p-4 pb-8">
+          <PaginationWrapper
+            currentPage={data.currentPage}
+            totalPages={data.totalPageCount}
+            selectPage={fetchDataForPage}
+          >
+            <GuestInsuranceTable isLoading={isLoading} data={data.data} />
+          </PaginationWrapper>
+        </div>
+      </RntSuspense>
     </>
   );
 }
