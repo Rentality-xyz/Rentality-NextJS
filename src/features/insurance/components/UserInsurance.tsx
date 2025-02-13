@@ -122,7 +122,7 @@ function UserInsurance() {
           {t("common.save")}
         </RntButton>
 
-        {"url" in userInsurancePhoto && !isEmpty(userInsurancePhoto.url) ? (
+        {userInsurancePhoto !== undefined && "url" in userInsurancePhoto && !isEmpty(userInsurancePhoto.url) ? (
           <DotStatus color="success" text={t("profile.user_insurance.insurance_uploaded")} />
         ) : (
           <DotStatus color="error" text={t("profile.user_insurance.insurance_not_uploaded")} />
