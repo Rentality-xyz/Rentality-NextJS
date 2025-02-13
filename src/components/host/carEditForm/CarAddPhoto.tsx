@@ -1,10 +1,16 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Image from "next/image";
-import { resizeImage } from "@/utils/image";
+import Cropper, { ReactCropperElement } from "react-cropper";
+import "cropperjs/dist/cropper.css";
 import { PlatformCarImage } from "@/model/FileToUpload";
-import RntCheckbox from "@/components/common/rntCheckbox";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/utils";
+import cn from "classnames";
+import RntCheckbox from "@/components/common/rntCheckbox";
+import { resizeImage } from "@/utils/image";
+import RntButtonTransparent from "@/components/common/rntButtonTransparent";
+
+const heightPhoto = 745;
+const widthPhoto = 1242;
 
 function CarAddPhoto({
   carImages,
@@ -19,15 +25,16 @@ function CarAddPhoto({
 }) {
   const MAX_ADD_IMAGE = 10;
   const inputRef = useRef<HTMLInputElement>(null);
+  const cropperRef = useRef<ReactCropperElement>(null);
   const currentIndexRef = useRef<number>(-1);
   const { t } = useTranslation();
 
-  async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if (!e.target.files?.length) {
-      return;
-    }
+  const [cropImage, setCropImage] = useState<string | null>(null);
+  const [showCropper, setShowCropper] = useState<boolean>(false);
 
-    const currentIndex = currentIndexRef.current;
+  async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!e.target.files?.length) return;
+
     let file = e.target.files[0];
 
     if (file.type === "application/json") {
@@ -47,39 +54,43 @@ function CarAddPhoto({
 
     const reader = new FileReader();
     reader.onload = async (event) => {
-      const fileUrl = event.target?.result as string;
-      const isNewFile = currentIndex === -1;
+      let fileUrl = event.target?.result as string;
 
-      if (isNewFile) {
-        const fileNameExt = file.name.slice(file.name.lastIndexOf(".") + 1);
-        if (fileNameExt == "heic") {
-          const convertHeicToPng = await import("@/utils/heic2any");
-          const convertedFile = await convertHeicToPng.default(file);
-          onCarImagesChange([...carImages, { ...convertedFile, isPrimary: carImages.length === 0 }]);
-        } else {
-          onCarImagesChange([...carImages, { file: file, localUrl: fileUrl, isPrimary: carImages.length === 0 }]);
-        }
+      if (file.type === "image/heic" || file.name.endsWith(".heic")) {
+        const convertHeicToPng = await import("@/utils/heic2any");
+        const convertedFile = await convertHeicToPng.default(file);
+        setCropImage(convertedFile.localUrl);
       } else {
-        if ("url" in carImages[currentIndex]) {
-          const updatedCarImages = carImages.map((value, i) => {
-            return i === currentIndex ? { ...value, isDeleted: true } : value;
-          });
-          updatedCarImages.splice(currentIndex, 0, {
-            file: file,
-            localUrl: fileUrl,
-            isPrimary: updatedCarImages[currentIndex].isPrimary,
-          });
-          onCarImagesChange(updatedCarImages);
-        } else {
-          onCarImagesChange(
-            carImages.map((value, index) => {
-              return index === currentIndex ? { file: file, localUrl: fileUrl, isPrimary: value.isPrimary } : value;
-            })
-          );
-        }
+        setCropImage(fileUrl);
       }
+      setShowCropper(true);
     };
     reader.readAsDataURL(file);
+  }
+
+  async function handleCrop() {
+    if (!cropperRef.current) return;
+
+    const croppedCanvas = cropperRef.current?.cropper.getCroppedCanvas({
+      width: widthPhoto,
+      height: heightPhoto,
+    });
+
+    croppedCanvas.toBlob(async (blob) => {
+      if (!blob) return;
+
+      const croppedFile = new File([blob], `cropped-${Date.now()}.jpg`, { type: "image/jpeg" });
+      const fileUrl = URL.createObjectURL(croppedFile);
+
+      onCarImagesChange([...carImages, { file: croppedFile, localUrl: fileUrl, isPrimary: carImages.length === 0 }]);
+      setShowCropper(false);
+      setCropImage(null);
+    }, "image/jpeg");
+  }
+
+  function handleCancelCrop() {
+    setShowCropper(false);
+    setCropImage(null);
   }
 
   function handleImageClick() {
@@ -88,27 +99,25 @@ function CarAddPhoto({
     inputRef.current?.click();
   }
 
-  function handleEditClick(index: number) {
-    currentIndexRef.current = index;
-    inputRef.current?.click();
+  function handleDeleteClick(index: number) {
+    const newImages = carImages.filter((_, i) => i !== index);
+    onCarImagesChange(newImages);
   }
 
-  function handleDeleteClick(index: number) {
-    if ("url" in carImages[index]) {
-      onCarImagesChange(
-        carImages.map((value, i) => {
-          return i === index ? { ...value, isDeleted: true } : value;
-        })
-      );
-    } else {
-      onCarImagesChange(carImages.filter((_, innerIndex) => innerIndex !== index));
-    }
+  function handleEditClick(index: number) {
+    const carImage = carImages[index];
+    const imageUrl = "url" in carImage ? carImage.url : carImage.localUrl;
+    setCropImage(imageUrl);
+    setShowCropper(true);
+    currentIndexRef.current = index;
   }
 
   function handleCheckboxClick(index: number) {
-    onCarImagesChange(
-      carImages.map((f, i) => (i === index ? { ...f, isPrimary: !(f.isPrimary ?? false) } : { ...f, isPrimary: false }))
-    );
+    const newImages = carImages.map((img, i) => ({
+      ...img,
+      isPrimary: i === index,
+    }));
+    onCarImagesChange(newImages);
   }
 
   return (
@@ -117,9 +126,8 @@ function CarAddPhoto({
       <div className="flex w-full flex-row gap-4 overflow-x-auto p-2 pb-4">
         {carImages.map((carImage, index) => {
           const carImageUrl = "url" in carImage ? carImage.url : carImage.localUrl;
-          const isImageDeleted = "isDeleted" in carImage && carImage.isDeleted;
           return (
-            <div key={index} className={cn("relative", isImageDeleted ? "hidden" : "")}>
+            <div key={index} className={cn("relative")}>
               <div className="relative h-40 w-48 overflow-hidden rounded-2xl">
                 <Image className="h-full w-full object-cover" width={1000} height={1000} src={carImageUrl} alt="" />
                 <button
@@ -149,7 +157,7 @@ function CarAddPhoto({
                 className="absolute -left-2 -top-2"
                 checked={carImage.isPrimary}
                 readOnly={readOnly}
-                onChange={(e) => handleCheckboxClick(index)}
+                onChange={() => handleCheckboxClick(index)}
               />
             </div>
           );
@@ -157,17 +165,37 @@ function CarAddPhoto({
         {carImages.filter((i) => "file" in i || !i.isDeleted).length < MAX_ADD_IMAGE && (
           <div className="h-40 w-48 min-w-[12rem] cursor-pointer overflow-hidden rounded-2xl bg-gray-200/40 bg-[url('../images/add_circle_outline_white_48dp.svg')] bg-center bg-no-repeat">
             <div className="h-full w-full" onClick={handleImageClick} />
-            <input
-              className="hidden"
-              type="file"
-              accept="image/*"
-              readOnly={readOnly}
-              ref={inputRef}
-              onChange={handleImageChange}
-            />
+            <input className="hidden" type="file" accept="image/*" ref={inputRef} onChange={handleImageChange} />
           </div>
         )}
       </div>
+
+      {showCropper && cropImage && (
+        <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black bg-opacity-70">
+          <div className="border-gradient rounded-lg bg-rentality-bg-left-sidebar p-4">
+            <Cropper
+              ref={cropperRef}
+              src={cropImage}
+              style={{ height: heightPhoto / 2, width: widthPhoto / 2 }}
+              aspectRatio={widthPhoto / heightPhoto}
+              viewMode={1}
+              guides={false}
+              autoCropArea={1}
+            />
+            <div className="mt-4 flex justify-between">
+              <RntButtonTransparent onClick={handleCancelCrop}>
+                <div className="text-lg font-semibold text-white">{t("cropper.cancel")}</div>
+              </RntButtonTransparent>
+              {/*<button className="bg-gray-300 px-4 py-2" onClick={handleCancelCrop}>*/}
+              {/*  {t("cropper.cancel")}*/}
+              {/*</button>*/}
+              <button className="bg-blue-500 px-4 py-2 text-white" onClick={handleCrop}>
+                {t("cropper.crop")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
