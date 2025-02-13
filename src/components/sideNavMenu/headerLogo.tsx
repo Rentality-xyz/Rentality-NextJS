@@ -6,7 +6,7 @@ import { MouseEventHandler } from "react";
 export default function HeaderLogo({ onClick }: { onClick?: MouseEventHandler<HTMLAnchorElement> }) {
   return (
     <div className="w-40 max-lg:hidden">
-      <Link href={"https://rentality.xyz/"} onClick={onClick}>
+      <Link href={"https://rentality.io/"} onClick={onClick}>
         <Image alt="" width={150} height={40} src={logo} />
       </Link>
     </div>
