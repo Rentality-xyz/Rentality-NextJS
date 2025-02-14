@@ -187,6 +187,7 @@ function CreateTripDetailsContent({
           pricePerDayWithHostDiscount={carInfo.pricePerDayWithHostDiscount}
           tripDays={carInfo.tripDays}
           tripDiscounts={carInfo.tripDiscounts}
+          dimoTokenId={carInfo.dimoTokenId}
         />
         <AboutCar
           carName={carInfo.carName}

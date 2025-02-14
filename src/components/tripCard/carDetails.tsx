@@ -1,12 +1,14 @@
 import { dateFormatShortMonthDate } from "@/utils/datetimeFormatters";
 import { TripInfo } from "@/model/TripInfo";
 import UserAvatarWithName from "@/components/common/userAvatarWithName";
-import { memo } from "react";
+import React, { memo } from "react";
 import { TripStatus } from "@/model/blockchain/schemas";
 import { TFunction } from "@/utils/i18n";
 import RntButtonTransparent from "../common/rntButtonTransparent";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import CarDetailsVerificationDialog from "./CarDetailsVerificationDialog";
+import Image from "next/image";
+import imgDimoSynced from "@/images/img_dimo_synced.svg";
 
 function CarDetails({
   tripInfo,
@@ -52,19 +54,29 @@ function CarDetails({
   return (
     <div id="trip-main-info" className="flex w-full flex-col justify-between gap-4">
       <div className="flex flex-col">
-        <div>
+        <div className="grid-cols-[2fr_1fr] items-start justify-between max-xl:grid">
           <strong className="text-xl">{`${tripInfo.brand} ${tripInfo.model} ${tripInfo.year}`}</strong>
+          {tripInfo.dimoTokenId !== 0 && (
+            <div className="mt-1 xl:hidden">
+              <Image src={imgDimoSynced} alt="" className="w-[140px]" />
+            </div>
+          )}
         </div>
         <div>{tripInfo.licensePlate}</div>
+        {tripInfo.dimoTokenId !== 0 && (
+          <div className="mt-2 max-xl:hidden">
+            <Image src={imgDimoSynced} alt="" className="w-[160px]" />
+          </div>
+        )}
         {tripInfo.status === TripStatus.Rejected && tripInfo.rejectedDate !== undefined ? (
-          <div className="mt-2">
+          <div className="mt-2 xl:mt-6">
             {t("booked.cancelled_on", {
               rejected: rejectedByText,
               date: dateFormatShortMonthDate(tripInfo.rejectedDate),
             })}
           </div>
         ) : null}
-        <div className="mt-4 flex flex-col">
+        <div className="mt-4 flex flex-col xl:mt-6">
           <div>
             <strong className="text-lg">{t("booked.total")}</strong>
           </div>

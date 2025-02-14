@@ -123,56 +123,54 @@ export async function deleteFileFromIPFS(ipfsHash: string): Promise<Result<boole
 }
 
 export interface GetPhotosForTripResponseType {
-  checkinByHost: string[],
-  checkOutByHost: string[],
-  checkInByGuest: string[],
-  checkOutByGuest: string[]
+  checkinByHost: string[];
+  checkOutByHost: string[];
+  checkInByGuest: string[];
+  checkOutByGuest: string[];
 }
 
-export async function getPhotosForTrip(tripId : Number) : Promise<GetPhotosForTripResponseType> {
+export async function getPhotosForTrip(tripId: Number): Promise<GetPhotosForTripResponseType> {
   const url = `https://api.pinata.cloud/data/pinList?metadata[keyvalues]={"tripId":{"value":"${tripId}","op":"eq"}}`;
 
-  const response = await axios
-    .get(url,
-    {
-      headers: {
-        Authorization: `Bearer ${pinataJwt}`
-      }
-    });
+  const response = await axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${pinataJwt}`,
+    },
+  });
 
-    if (response.data.rows === undefined ) {
-        throw new Error ("Incorrect response format getting photos for the trip")
-    }
+  if (response.data.rows === undefined) {
+    throw new Error("Incorrect response format getting photos for the trip");
+  }
 
-    console.log(response.data.rows);
+  console.log(response.data.rows);
 
-    const returnValue : GetPhotosForTripResponseType = {
-      checkinByHost: [],
-      checkOutByHost: [],
-      checkInByGuest: [],
-      checkOutByGuest: []
-    };
+  const returnValue: GetPhotosForTripResponseType = {
+    checkinByHost: [],
+    checkOutByHost: [],
+    checkInByGuest: [],
+    checkOutByGuest: [],
+  };
 
-    for(let i: number = 0; i< response.data.rows.length; i++){
-      const row = response.data.rows[i];
-      const isHost : boolean = row.metadata.keyvalues.isHost === "host";
-      const isStart : boolean = row.metadata.keyvalues.isStart === "start";
-      const urlToFile = `https://gateway.pinata.cloud/ipfs/${row.ipfs_pin_hash}`;
+  for (let i: number = 0; i < response.data.rows.length; i++) {
+    const row = response.data.rows[i];
+    const isHost: boolean = row.metadata.keyvalues.isHost === "host";
+    const isStart: boolean = row.metadata.keyvalues.isStart === "start";
+    const urlToFile = `https://gateway.pinata.cloud/ipfs/${row.ipfs_pin_hash}`;
 
-      if(isHost){
-        if(isStart){
-          returnValue.checkinByHost.push(urlToFile);
-        } else {
-          returnValue.checkOutByHost.push(urlToFile);
-        }
+    if (isHost) {
+      if (isStart) {
+        returnValue.checkinByHost.push(urlToFile);
       } else {
-        if(isStart){
-          returnValue.checkInByGuest.push(urlToFile);
-        } else {
-          returnValue.checkOutByGuest.push(urlToFile);
-        }
+        returnValue.checkOutByHost.push(urlToFile);
+      }
+    } else {
+      if (isStart) {
+        returnValue.checkInByGuest.push(urlToFile);
+      } else {
+        returnValue.checkOutByGuest.push(urlToFile);
       }
     }
+  }
 
   return returnValue;
 }

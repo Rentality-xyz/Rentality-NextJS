@@ -17,7 +17,7 @@ export const changeStatusHostFinishingByHostFormSchema = z
         invalid_type_error: "Level must be a number",
       })
       .min(0, "Level should be positive")
-      .max(1, "Level is to big")
+      .max(100, "Level is to big")
       .step(0.1),
     odotemer: z
       .number({

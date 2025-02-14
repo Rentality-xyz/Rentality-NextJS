@@ -41,6 +41,14 @@ export const dateFormatLongMonthYearDateTime = (value: Date, timeZone?: string) 
 };
 
 /**
+ * return date in format "MMM D, YYYY"
+ */
+export const dateFormatLongMonthYearDate = (value: Date, timeZone?: string) => {
+  const format = "MMM D, YYYY";
+  return timeZone ? moment(value).tz(timeZone).format(format) : moment(value).format(format);
+};
+
+/**
  * return date in format "YYYY-MM-DD"
  */
 export const dateToHtmlDateFormat = (value: Date | undefined) => {

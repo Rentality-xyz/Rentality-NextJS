@@ -1,5 +1,5 @@
 import { RntSelectProps } from "./rntSelect";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import useCarAPI, { CarModelsListElement } from "@/hooks/useCarAPI";
 import { cn } from "@/utils";
 import RntFilterSelect from "./RntFilterSelect";
@@ -14,6 +14,7 @@ interface RntCarModelSelectProps extends RntSelectProps {
   value: string;
   readOnly?: boolean;
   onModelSelect?: (newID: string, newMake: string) => void;
+  filter?: (item: CarModelsListElement) => boolean;
 }
 
 export default function RntCarModelSelect({
@@ -28,22 +29,27 @@ export default function RntCarModelSelect({
   validationError,
   isTransparentStyle,
   containerClassName,
+  filter,
 }: RntCarModelSelectProps) {
   const { getCarModelByMake } = useCarAPI();
 
-  const [modelsList, setModelsList] = useState<CarModelsListElement[]>([]);
+  const [allModelsList, setAllModelsList] = useState<CarModelsListElement[]>([]);
 
   useEffect(() => {
     if (make_id == "") {
-      setModelsList([]);
+      setAllModelsList([]);
     } else {
-      getCarModelByMake(make_id).then(function (response) {
-        setModelsList(response);
+      getCarModelByMake(make_id).then((data) => {
+        setAllModelsList(data);
       });
     }
-  }, [make_id]);
+  }, [make_id, getCarModelByMake]);
 
-  const isReadOnly = readOnly || modelsList.length <= 0;
+  const modelsList = useMemo(() => {
+    return filter ? allModelsList.filter(filter) : allModelsList;
+  }, [allModelsList, filter]);
+
+  const isReadOnly = readOnly || allModelsList.length <= 0;
 
   return (
     <RntFilterSelect

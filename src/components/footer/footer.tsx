@@ -50,7 +50,7 @@ const Footer = forwardRef<HTMLDivElement>((props, ref) => {
       >
         <div
           id="footer-legal-matters"
-          className="z-0 flex h-1/3 w-max flex-col max-[560px]:items-center pt-[30px] max-lg:mx-auto sm:h-full lg:ml-[540px] lg:pt-[40px] min-[1536px]:ml-[540px] min-[1720px]:ml-auto"
+          className="z-0 flex h-1/3 w-max flex-col pt-[30px] max-lg:mx-auto max-[560px]:items-center sm:h-full lg:ml-[540px] lg:pt-[40px] min-[1536px]:ml-[540px] min-[1720px]:ml-auto"
         >
           <Link
             href={`${pathnameUserMode}/legal?tab=${LEGAL_TERMS_NAME}`}
@@ -97,11 +97,7 @@ const Footer = forwardRef<HTMLDivElement>((props, ref) => {
         </div>
 
         <div className="z-0 flex h-full w-max flex-col items-center pt-[30px] max-lg:mx-auto lg:ml-auto lg:pt-[40px]">
-          <Link
-            href={"https://apps.apple.com/ua/app/rentality/id6736899320"}
-            target="_blank"
-            className=""
-          >
+          <Link href={"https://apps.apple.com/ua/app/rentality/id6736899320"} target="_blank" className="">
             <Image src={appStore} alt="" className="w-[200px]" />
           </Link>
           <Link
@@ -109,7 +105,7 @@ const Footer = forwardRef<HTMLDivElement>((props, ref) => {
             target="_blank"
             className=""
           >
-            <Image src={googlePlay} alt="" className="w-[200px] mt-4" />
+            <Image src={googlePlay} alt="" className="mt-4 w-[200px]" />
           </Link>
         </div>
 

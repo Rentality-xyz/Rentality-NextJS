@@ -56,11 +56,9 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
       changeStatusCallback(() => {
         return tripInfo.allowedActions[0].action(
           BigInt(tripInfo.tripId),
-          [
-            formData.fuelOrBatteryLevel.toString(),
-            formData.odotemer.toString(),
-          ],
-          []);
+          [formData.fuelOrBatteryLevel.toString(), formData.odotemer.toString()],
+          []
+        );
       });
     }
 

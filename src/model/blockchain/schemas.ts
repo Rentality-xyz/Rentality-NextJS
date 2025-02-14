@@ -35,6 +35,7 @@ export type ContractCarInfoDTO = {
   carInfo: ContractCarInfo;
   metadataURI: string;
   isEditable: boolean;
+  dimoTokenId: bigint;
 };
 
 export type ContractCreateCarRequest = {
@@ -54,6 +55,8 @@ export type ContractCreateCarRequest = {
   currentlyListed: boolean;
   insuranceRequired: boolean;
   insurancePriceInUsdCents: bigint;
+  dimoTokenId: bigint;
+  signedDimoTokenId: string;
 };
 
 export type ContractUpdateCarInfoRequest = {
@@ -163,6 +166,7 @@ export type ContractTripDTO = {
   paidForInsuranceInUsdCents: bigint;
   guestDrivingLicenseIssueCountry: string;
   promoDiscount: bigint;
+  dimoTokenId: bigint;
 };
 
 export type ContractChatInfo = {
@@ -261,6 +265,11 @@ export type ContractPaymentInfo = {
   dropOfFee: bigint;
 };
 
+export type ContractCurrency = {
+  currency: string;
+  name: string;
+};
+
 export type ContractTripReceiptDTO = {
   totalDayPriceInUsdCents: bigint;
   totalTripDays: bigint;
@@ -319,6 +328,7 @@ export type ContractAdditionalKYCInfo = {
 export type ContractFullKYCInfoDTO = {
   kyc: ContractKYCInfo;
   additionalKYC: ContractAdditionalKYCInfo;
+  isPhoneVerified: boolean;
 };
 
 export type ContractAdminKYCInfoDTO = {
@@ -357,6 +367,7 @@ export type ContractSearchCar = {
   locationInfo: ContractLocationInfo;
   insuranceInfo: ContractInsuranceCarInfo;
   isGuestHasInsurance: boolean;
+  dimoTokenId: bigint;
 };
 
 export type ContractAvailableCarDTO = {
@@ -389,6 +400,7 @@ export type ContractAvailableCarDTO = {
   governmentTax: bigint;
   distance: bigint;
   isGuestHasInsurance: boolean;
+  dimoTokenId: bigint;
 };
 
 export type ContractGeoData = {
@@ -419,6 +431,7 @@ export type ContractCarDetails = {
   locationInfo: ContractLocationInfo;
   carVinNumber: string;
   carMetadataURI: string;
+  dimoTokenId: bigint;
 };
 
 export type ContractFloridaTaxes = {
@@ -471,6 +484,37 @@ export type ContractSignedLocationInfo = {
 export type ContractKycCommissionData = {
   paidTime: bigint;
   commissionPaid: boolean;
+};
+
+export type ContractCarInvestment = {
+  car: ContractCreateCarRequest;
+  priceInUsd: bigint;
+  inProgress: boolean;
+  creatorPercents: bigint;
+};
+
+export type ContractClaimInvestmentDTO = {
+  tokenURI: string;
+  income: bigint;
+  myIncome: bigint;
+};
+
+export type ContractInvestmentDTO = {
+  investment: ContractCarInvestment;
+  nft: string;
+  investmentId: bigint;
+  payedInUsd: bigint;
+  creator: string;
+  isCarBought: boolean;
+  income: bigint;
+  myIncome: bigint;
+  myInvestingSum: bigint;
+  listingDate: bigint;
+  myTokens: bigint;
+  myPart: bigint;
+  totalHolders: bigint;
+  totalTokens: bigint;
+  currency: string;
 };
 
 export type ContractTripFilter = {
@@ -675,6 +719,11 @@ export type ContractCheckPromoDTO = {
   value: bigint;
 };
 
+export type ContractDimoTokensData = {
+  dimoTokenId: bigint;
+  rentalityTokenId: bigint;
+};
+
 export type ContractPromoDTO = {
   promoCode: string;
   promoCodeValueInPercents: bigint;
@@ -764,6 +813,8 @@ export const Role = {
   Manager: BigInt(2),
   Admin: BigInt(3),
   KYCManager: BigInt(4),
+  AdminView: BigInt(5),
+  InvestmentManager: BigInt(6),
 };
 
 export type RefferalProgram = bigint;
@@ -776,8 +827,6 @@ export const RefferalProgram = {
   UnlistedCar: BigInt(5),
   Daily: BigInt(6),
   DailyListing: BigInt(7),
-  AddFirstCar: BigInt(8),
-  FinishTripAsHost: BigInt(9),
 };
 
 export type Tear = bigint;

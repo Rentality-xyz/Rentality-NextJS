@@ -20,7 +20,9 @@
     "car_locations": "Car locations",
     "all_trips_table": "All trips table",
     "all_users_table": "All users table",
-    "referrals_and_points": "Referrals & Points"
+    "referrals_and_points": "Referrals & Points",
+    "guest_invest": "Invest",
+    "host_invest": "Create invest"
   },
   "search_and_filters": {
     "location_label": "Pick up & Return Location",
@@ -318,7 +320,7 @@
     "basic_info": "Basic information",
     "pass_license_verif": "Please pass driver license verification",
     "driver_license_info": "Driving license information",
-    "ref_link": "Ref-link or code for more points  \n",
+    "ref_link": "Ref-link or code for more points",
     "soon_alchemy_pay_service": "Coming soon Alchemy Pay service",
     "user_insurance": {
       "please_upload_photo": "Please, upload photo you ID insurance card",
@@ -609,7 +611,8 @@
     "no_listed_cars": "You don't have any listed car",
     "miles_per_day": "miles per day",
     "day": "day",
-    "upload_photos_title": "Take and upload up to 10 interior and exterior photos"
+    "upload_photos_title": "Take and upload up to 10 interior and exterior photos",
+    "car_invested": "Your car has been successfully added for investment!"
   },
   "hosts": {
     "invalid_addr": "Host address is invalid",
@@ -805,11 +808,9 @@
     "referral_program": {
       "set_kyc": "Save profile",
       "pass_civic": "Get KYC Pass",
-      "add_first_car": "Listing first car",
       "add_car": "Listing new car",
       "create_trip": "Create a Trip",
       "finish_trip_as_host_one_time": "First trip complete",
-      "finish_trip_as_host": "For each 1 day of trip",
       "finish_trip_as_guest_one_time": "First trip complete",
       "finish_trip_as_guest": "For each 1 day of trip",
       "unlisted_car": "Unlisted Car",
@@ -825,5 +826,67 @@
     "promo_error": "Coupon cannot be used",
     "button_default_text": "Rent for {{days, number}} day(s) \n${{price, string}}",
     "button_promo_text": "Rent for ${{price, string}} after discount"
+  },
+  "dimo": {
+    "token_id": "Token ID:",
+    "create_car": "List a car on Rentality",
+    "sync_with_dimo": "Sync with DIMO"
+  },
+  "invest": {
+    "guest_page_title": "Investing in RWAs",
+    "host_page_title": "Vehicle Tokenization in RWA",
+    "btn_create_investment": "Create investment",
+    "btn_all_assets": "All assets",
+    "btn_available_to_invest": "Available to Invest",
+    "btn_actually_listed": "Actually Listed",
+    "btn_guest_my_investments": "My investments",
+    "btn_guest_ready_to_claim": "Ready to claim",
+    "btn_host_fully_tokenized": "Fully tokenized",
+    "btn_host_ready_for_listing": "Ready for listing",
+    "tokenization": "Tokenization",
+    "your_expected_earnings": "Your expected earnings:",
+    "from_each_trip": "from each trip",
+    "host_management": "Host's management:",
+    "btn_invest_now": "Invest now",
+    "btn_start_hosting": "Start hosting",
+    "btn_claim_earnings": "Claim earnings",
+    "no_stake_in_asset": "You have no stake in this asset yet",
+    "stake_in_asset": "You have {myTokens} tokens worth ${myInvestingSum}",
+    "expect_completed_trips": "Expect completed trips and claim earnings",
+    "available_invest": "Available to Invest",
+    "fully_tokenized": "Fully tokenized",
+    "actually_listed": "Actually Listed",
+    "ready_listing": "Ready for listing",
+    "listing_progress": "Listing in progress",
+    "waiting_full_tokenization": "Waiting for full tokenization",
+    "unknown": "Unknown",
+    "earnings_history": "Earnings history",
+    "total_price": "Total price",
+    "balance_raised": "Balance to be raised",
+    "total_earnings": "Total earnings",
+    "your_received_earnings_part": "Your received earnings part",
+    "listing_status": "Listing status:",
+    "listing_coming_soon": "listing coming soon",
+    "listed_days": "Listed {date} ({days} days)",
+    "title_create_investment": "Create investment",
+    "tokens_held_by_investors": "{tokens} tokens held by {investors} investors",
+    "view_smart_contract": "View smart contract",
+    "new_nft_info": "New nft collection info",
+    "generated_automatically": "Generated automatically after saving the tokenized asset card",
+    "filter_for_guest": {
+      "all_assets": "All assets",
+      "available_to_invest": "Available to Invest",
+      "my_investments": "My investments",
+      "ready_to_claim": "Ready to claim",
+      "actually_listed": "Actually Listed"
+    },
+    "filter_for_host": {
+      "all_assets": "All assets",
+      "available_to_invest": "Available to Invest",
+      "fully_tokenized": "Fully tokenized",
+      "ready_for_listing": "Ready for listing",
+      "actually_listed": "Actually Listed"
+    },
+    "loading": "Loading..."
   }
 }

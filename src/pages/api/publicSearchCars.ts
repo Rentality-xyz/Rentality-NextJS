@@ -31,6 +31,14 @@ export type PublicSearchCarsResponse =
     }
   | { error: string };
 
+export type ApiUrl =
+  | {
+      url: string;
+    }
+  | {
+      error: string;
+    };
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse<PublicSearchCarsResponse>) {
   const privateKey = env.SIGNER_PRIVATE_KEY;
   if (isEmpty(privateKey)) {
@@ -241,7 +249,7 @@ function formatSearchAvailableCarsContractRequest(
   const startCarLocalDateTime = moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, timeZoneId).toDate();
 
   let endCarLocalDateTime = moment.tz(searchCarRequest.dateToInDateTimeStringFormat, timeZoneId).toDate();
-  endCarLocalDateTime = correctDaylightSavingTime(startCarLocalDateTime, endCarLocalDateTime)
+  endCarLocalDateTime = correctDaylightSavingTime(startCarLocalDateTime, endCarLocalDateTime);
 
   const contractDateFromUTC = getBlockchainTimeFromDate(startCarLocalDateTime);
   const contractDateToUTC = getBlockchainTimeFromDate(endCarLocalDateTime);
@@ -339,6 +347,7 @@ async function formatSearchAvailableCarsContractResponse(
         insurancePerDayPriceInUsd: Number(i.car.insuranceInfo.priceInUsdCents) / 100,
         isGuestHasInsurance: i.car.isGuestHasInsurance,
         distanceToUser: Number(i.distance),
+        dimoTokenId: Number(i.car.dimoTokenId ? i.car.dimoTokenId : 0),
       };
 
       return item;
