@@ -25,16 +25,21 @@ import FacebookPixelScript from "@/components/marketing/FacebookPixelScript";
 import PlatformInitChecker from "@/components/common/PlatformInitChecker";
 import WalletConnectChecker from "@/components/common/WalletConnectChecker";
 import { NextComponentType, NextPage, NextPageContext } from "next";
+import dynamic from "next/dynamic";
+
+const DimoAuthProvider = dynamic(() => import("@dimo-network/login-with-dimo").then((mod) => mod.DimoAuthProvider), {
+  ssr: false,
+});
 
 type CustomAppProps = AppProps & {
   Component: NextComponentType<NextPageContext, any, any> & {
-    allowAnonymousAccess?: boolean
+    allowAnonymousAccess?: boolean;
   } & NextPageWithLayout;
 };
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-  getLayout?: (page: ReactElement) => ReactNode
-}
+  getLayout?: (page: ReactElement) => ReactNode;
+};
 
 export default function App({ Component, pageProps }: CustomAppProps) {
   const router = useRouter();
@@ -55,39 +60,41 @@ export default function App({ Component, pageProps }: CustomAppProps) {
     initEruda();
   }, []);
 
-  if(Component.getLayout){
-    return Component.getLayout(<Component {...pageProps} />)
+  if (Component.getLayout) {
+    return Component.getLayout(<Component {...pageProps} />);
   } else {
     return (
       <>
         <FacebookPixelScript />
         <Web3Setup>
           <RentalityProvider>
-            <UserInfoProvider>
-              <WagmiProvider config={wagmiConfig}>
-                <QueryClientProvider client={queryClient}>
-                  {/*
+            <DimoAuthProvider>
+              <UserInfoProvider>
+                <WagmiProvider config={wagmiConfig}>
+                  <QueryClientProvider client={queryClient}>
+                    {/*
                 // @ts-ignore */}
-                  <OnchainKitProvider apiKey={env.NEXT_PUBLIC_COINBASE_API_KEY} chain={base}>
-                    <NotificationProvider isHost={isHost}>
-                      <FirebaseChatProvider>
-                        <AppContextProvider>
-                          <RntDialogsProvider>
-                            <PlatformInitChecker>
-                              <WalletConnectChecker allowAnonymousAccess={allowAnonymousAccess}>
-                                <Layout>
-                                  <Component {...pageProps} />
-                                </Layout>
-                              </WalletConnectChecker>
-                            </PlatformInitChecker>
-                          </RntDialogsProvider>
-                        </AppContextProvider>
-                      </FirebaseChatProvider>
-                    </NotificationProvider>
-                  </OnchainKitProvider>
-                </QueryClientProvider>
-              </WagmiProvider>
-            </UserInfoProvider>
+                    <OnchainKitProvider apiKey={env.NEXT_PUBLIC_COINBASE_API_KEY} chain={base}>
+                      <NotificationProvider isHost={isHost}>
+                        <FirebaseChatProvider>
+                          <AppContextProvider>
+                            <RntDialogsProvider>
+                              <PlatformInitChecker>
+                                <WalletConnectChecker allowAnonymousAccess={allowAnonymousAccess}>
+                                  <Layout>
+                                    <Component {...pageProps} />
+                                  </Layout>
+                                </WalletConnectChecker>
+                              </PlatformInitChecker>
+                            </RntDialogsProvider>
+                          </AppContextProvider>
+                        </FirebaseChatProvider>
+                      </NotificationProvider>
+                    </OnchainKitProvider>
+                  </QueryClientProvider>
+                </WagmiProvider>
+              </UserInfoProvider>
+            </DimoAuthProvider>
           </RentalityProvider>
         </Web3Setup>
       </>

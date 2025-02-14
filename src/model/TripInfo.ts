@@ -97,6 +97,7 @@ export type TripInfo = {
   governmentTaxInUsd: number;
   totalPriceInUsd: number;
   paidByGuestInUsd: number;
+  dimoTokenId: number;
 
   host: {
     walletAddress: string;

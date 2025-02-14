@@ -35,15 +35,18 @@ import { APIProvider } from "@vis.gl/react-google-maps";
 import { Result, TransactionErrorCode } from "@/model/utils/result";
 import useCarAPI from "@/hooks/useCarAPI";
 import { VinInfo } from "@/pages/api/car-api/vinInfo";
+import { DimoCarResponseWithTimestamp } from "@/features/dimo/hooks/useDimo";
 
 export default function CarEditForm({
   initValue,
   isNewCar,
+  isInvestmentCar,
   saveCarInfo,
   t,
 }: {
   initValue?: HostCarInfo;
   isNewCar: boolean;
+  isInvestmentCar: boolean;
   saveCarInfo: (hostCarInfo: HostCarInfo) => Promise<Result<boolean, TransactionErrorCode>>;
   t: TFunction;
 }) {
@@ -101,6 +104,21 @@ export default function CarEditForm({
           },
     resolver: zodResolver(carEditFormSchema),
   });
+
+  let dimoData: DimoCarResponseWithTimestamp | undefined;
+  if (isNewCar && typeof window !== "undefined") {
+    const dimoItem = localStorage.getItem("dimo");
+    if (dimoItem !== null) {
+      const timestamp = new Date().getTime();
+      const expirationTime = 5 * 60 * 1000;
+      const parsedData = JSON.parse(dimoItem);
+      if (parsedData.timestamp && parsedData.timestamp + expirationTime > timestamp) dimoData = parsedData;
+      else {
+        localStorage.removeItem("dimo");
+      }
+    }
+  }
+
   const { errors, isSubmitting } = formState;
 
   const [message, setMessage] = useState<string>("");
@@ -124,7 +142,7 @@ export default function CarEditForm({
   const [selectedMakeID, setSelectedMakeID] = useState<string>("");
   const [selectedModelID, setSelectedModelID] = useState<string>("");
 
-  const [isVINVerified, setIsVINVerified] = useState<boolean>(false);
+  const [isVINVerified, setIsVINVerified] = useState<boolean>(dimoData ? true : false);
   const [isVINCheckOverriden, setIsVINCheckOverriden] = useState<boolean>(false);
 
   const isFormEnabled = useMemo<boolean>(() => {
@@ -136,6 +154,9 @@ export default function CarEditForm({
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
   };
+  useEffect(() => {
+    console.log("FORMA: ", formState.errors);
+  }, [formState]);
 
   async function onFormSubmit(formData: CarEditFormValues) {
     const carInfoFormParams: HostCarInfo = {
@@ -173,6 +194,8 @@ export default function CarEditForm({
       bodyType: initValue?.bodyType ?? "",
       isCarMetadataEdited: isCarMetadataEdited,
       metadataUrl: initValue?.metadataUrl ?? "",
+      insurancePriceInUsdCents: formData.insurancePerDayPriceInUsd ?? 0,
+      dimoTokenId: formData.dimoTokenId ?? 0,
     };
 
     const isValidForm = verifyCar(carInfoFormParams);
@@ -195,12 +218,23 @@ export default function CarEditForm({
     const result = await saveCarInfo(carInfoFormParams);
 
     if (result.ok) {
-      if (isNewCar) {
-        showInfo(t("vehicles.car_listed"));
-      } else {
-        showInfo(t("vehicles.edited"));
+      if (dimoData) {
+        localStorage.removeItem("dimo");
       }
-      router.push("/host/vehicles");
+      if (isInvestmentCar) {
+        showInfo(t("vehicles.car_invested"));
+      } else {
+        if (isNewCar) {
+          showInfo(t("vehicles.car_listed"));
+        } else {
+          showInfo(t("vehicles.edited"));
+        }
+      }
+      if (isInvestmentCar) {
+        router.push("/host/invest");
+      } else {
+        router.push("/host/vehicles");
+      }
     } else {
       if (result.error === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
@@ -261,29 +295,33 @@ export default function CarEditForm({
             <Controller
               name="vinNumber"
               control={control}
-              defaultValue=""
-              render={({ field: { onChange, value } }) => (
-                <RntVINCheckingInput
-                  id="vinNumber"
-                  className="lg:w-60"
-                  label={t_car("vin_num")}
-                  value={value}
-                  isVINCheckOverriden={isVINCheckOverriden}
-                  isVINVerified={isVINVerified}
-                  placeholder="e.g. 4Y1SL65848Z411439"
-                  readOnly={!isNewCar}
-                  onChange={(e) => onChange(e.target.value)}
-                  onVINVerified={(isVINVerified: boolean) => setIsVINVerified(isVINVerified)}
-                  onVINCheckOverriden={(isVINCheckOverriden) => setIsVINCheckOverriden(isVINCheckOverriden)}
-                />
-              )}
+              defaultValue={dimoData ? dimoData.vin : ""}
+              render={({ field: { onChange, value } }) =>
+                dimoData == null ? (
+                  <RntVINCheckingInput
+                    id="vinNumber"
+                    className="lg:w-60"
+                    label={t_car("vin_num")}
+                    value={value}
+                    isVINCheckOverriden={isVINCheckOverriden}
+                    isVINVerified={isVINVerified}
+                    placeholder="e.g. 4Y1SL65848Z411439"
+                    readOnly={!isNewCar}
+                    onChange={(e) => onChange(e.target.value)}
+                    onVINVerified={(verified: boolean) => setIsVINVerified(verified)}
+                    onVINCheckOverriden={(overridden) => setIsVINCheckOverriden(overridden)}
+                  />
+                ) : (
+                  <RntInput value={dimoData.vin} className="lg:w-60" label={t_car("vin_num")} readOnly={true} />
+                )
+              }
             />
             <Controller
               name="brand"
               control={control}
-              defaultValue=""
+              defaultValue={dimoData?.definition?.make || ""}
               render={({ field: { onChange, value } }) =>
-                isNewCar && !isVINVerified ? (
+                isNewCar && !isVINVerified && dimoData === undefined ? (
                   <RntCarMakeSelect
                     id="brand"
                     className="lg:min-w-[17ch]"
@@ -296,6 +334,22 @@ export default function CarEditForm({
                       setIsCarMetadataEdited(true);
                     }}
                     validationError={errors.brand?.message?.toString()}
+                  />
+                ) : isNewCar && dimoData !== undefined ? (
+                  <RntInput
+                    id="brand"
+                    className="lg:w-60"
+                    label={t_car("brand")}
+                    readOnly={true}
+                    value={dimoData.definition.make}
+                  />
+                ) : isNewCar && dimoData !== undefined ? (
+                  <RntInput
+                    id="brand"
+                    className="lg:w-60"
+                    label={t_car("brand")}
+                    readOnly={true}
+                    value={dimoData.definition.make}
                   />
                 ) : (
                   <RntInput
@@ -312,9 +366,9 @@ export default function CarEditForm({
             <Controller
               name="model"
               control={control}
-              defaultValue=""
+              defaultValue={dimoData?.definition?.model || ""}
               render={({ field: { onChange, value } }) =>
-                isNewCar && !isVINVerified ? (
+                isNewCar && !isVINVerified && dimoData === undefined ? (
                   <RntCarModelSelect
                     id="model"
                     className="lg:min-w-[15ch]"
@@ -328,6 +382,14 @@ export default function CarEditForm({
                       setIsCarMetadataEdited(true);
                     }}
                     validationError={errors.model?.message?.toString()}
+                  />
+                ) : isNewCar && dimoData !== undefined ? (
+                  <RntInput
+                    id="model"
+                    className="lg:w-60"
+                    label={t_car("model")}
+                    readOnly={true}
+                    value={dimoData.definition.model}
                   />
                 ) : (
                   <RntInput
@@ -344,9 +406,9 @@ export default function CarEditForm({
             <Controller
               name="releaseYear"
               control={control}
-              defaultValue={0}
+              defaultValue={dimoData ? Number.parseInt(dimoData.definition.year) : 2001}
               render={({ field: { onChange, value } }) =>
-                isNewCar && !isVINVerified ? (
+                isNewCar && !isVINVerified && dimoData === undefined ? (
                   <RntCarYearSelect
                     id="releaseYear"
                     className="lg:w-60"
@@ -360,6 +422,22 @@ export default function CarEditForm({
                       setIsCarMetadataEdited(true);
                     }}
                     validationError={errors.releaseYear?.message?.toString()}
+                  />
+                ) : isNewCar && dimoData !== undefined ? (
+                  <RntInput
+                    id="releaseYear"
+                    className="lg:w-60"
+                    label={t_car("release")}
+                    readOnly={true}
+                    value={dimoData.definition.year}
+                  />
+                ) : isNewCar && dimoData !== undefined ? (
+                  <RntInput
+                    id="releaseYear"
+                    className="lg:w-60"
+                    label={t_car("release")}
+                    readOnly={true}
+                    value={dimoData.definition.year}
                   />
                 ) : (
                   <RntInput
@@ -851,6 +929,37 @@ export default function CarEditForm({
               )}
             />
           </div>
+        </div>
+        <div className="mb-8 mt-8 flex flex-col gap-2">
+          <label htmlFor="dimoTokenId">Dimo token id</label>
+          <Controller
+            name="dimoTokenId"
+            control={control}
+            defaultValue={dimoData?.tokenId || 0}
+            render={({ field }) =>
+              isNewCar && dimoData !== undefined ? (
+                <RntInput
+                  {...field}
+                  id="dimoTokenId"
+                  type="number"
+                  placeholder="DIMO token id"
+                  readOnly={true}
+                  value={dimoData.tokenId}
+                />
+              ) : (
+                <RntInput
+                  {...field}
+                  id="dimoTokenId"
+                  type="number"
+                  placeholder="DIMO token id"
+                  readOnly={dimoData !== undefined}
+                  onChange={(e) => {
+                    field.onChange(Number.parseInt(e.target.value, 10));
+                  }}
+                />
+              )
+            }
+          />
         </div>
 
         <div className="mb-8 mt-8 flex flex-row justify-between gap-4 sm:justify-start">

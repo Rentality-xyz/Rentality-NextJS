@@ -27,13 +27,13 @@ export default function TripInfo() {
 
   const { hasFeatureFlag } = useFeatureFlags();
 
-  const [ hasTripPhotosFeatureFlag, setHasTripPhotosFeatureFlag ] = useState<boolean>(false);
+  const [hasTripPhotosFeatureFlag, setHasTripPhotosFeatureFlag] = useState<boolean>(false);
 
   useEffect(() => {
     hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
       setHasTripPhotosFeatureFlag(hasTripPhotosFeatureFlag);
     });
-  },[]);
+  }, []);
 
   if (tripId == null || tripId === BigInt(0) || tripInfo == null) return null;
 
@@ -47,7 +47,7 @@ export default function TripInfo() {
             <div className="w-full xl:w-2/3">
               <TripAboutCar tripInfo={tripInfo} />
               <TripStatusDateTimes tripInfo={tripInfo} />
-              {hasTripPhotosFeatureFlag && (<TripPhotos tripId={tripInfo.tripId}/>)}
+              {hasTripPhotosFeatureFlag && <TripPhotos tripId={tripInfo.tripId} />}
             </div>
             <div className="w-full xl:w-1/3">
               <TripReceipt tripId={tripId} tripInfo={tripInfo} userMode={userMode} />
