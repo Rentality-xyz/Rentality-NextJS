@@ -29,9 +29,8 @@ import { FilterLimits } from "@/model/SearchCarsResult";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 import bgInput from "@/images/bg_input.png";
 import RntFilterSelect from "../common/RntFilterSelect";
-import { AxiosResponse } from "axios";
-import axios from "@/utils/cachedAxios";
 import { getTimeZoneIdByAddress } from "@/utils/timezone";
+import useFetchExistPlatformCars from "@/features/search/hooks/useFetchExistPlatformCars";
 
 export default function SearchAndFilters({
   initValue,
@@ -59,6 +58,8 @@ export default function SearchAndFilters({
     formatLocationInfoUpToCity(searchCarRequest.searchLocation).length > 0 &&
     moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, notEmtpyTimeZoneId) >= moment.tz(notEmtpyTimeZoneId) &&
     new Date(searchCarRequest.dateToInDateTimeStringFormat) > new Date(searchCarRequest.dateFromInDateTimeStringFormat);
+
+  const { existedMakes, existedModels, setSelectedMake: setSelectedExistedMake } = useFetchExistPlatformCars();
 
   const t_comp = (element: string) => {
     return t("search_and_filters." + element);
@@ -291,6 +292,10 @@ export default function SearchAndFilters({
                 ...searchCarFilters,
                 brand: newMake,
               });
+              setSelectedExistedMake(newMake);
+            }}
+            filter={(i) => {
+              return existedMakes.length === 0 || existedMakes.includes(i.name);
             }}
           />
         </div>
@@ -309,6 +314,9 @@ export default function SearchAndFilters({
                 ...searchCarFilters,
                 model: newModel,
               });
+            }}
+            filter={(i) => {
+              return existedModels.length === 0 || existedModels.includes(i.name);
             }}
           />
         </div>
