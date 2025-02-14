@@ -24,7 +24,7 @@ function ImageCarouselDialog({ images, isOpen, title, onClose }: ImageCarouselDi
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70" onClick={onClose}>
       <div
-        className="border-gradient h-[40vh] w-[100%] rounded-[20px] bg-rentality-bg-left-sidebar p-4 sm:h-[90vh] md:w-[80%]"
+        className="border-gradient h-[40%] w-[100%] rounded-[20px] bg-rentality-bg-left-sidebar p-4 sm:h-[80%] lg:h-[510px] lg:w-[800px] xl:h-[582px] xl:w-[928px] 2xl:h-[800px] 2xl:w-[1312px]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -33,7 +33,7 @@ function ImageCarouselDialog({ images, isOpen, title, onClose }: ImageCarouselDi
         </div>
 
         {/* Swiper для экранов больше md */}
-        <div className="hidden h-[94%] lg:block">
+        <div className="hidden h-[432px] lg:block xl:h-[504px] 2xl:h-[720px]">
           <Swiper
             spaceBetween={30}
             effect={"fade"}
@@ -51,7 +51,7 @@ function ImageCarouselDialog({ images, isOpen, title, onClose }: ImageCarouselDi
         </div>
 
         {/* Swiper для экранов md и меньше */}
-        <div className="block h-[80%] sm:h-[86%] lg:hidden">
+        <div className="block h-[80%] sm:h-[84%] lg:hidden">
           <Swiper pagination={{ clickable: true }} modules={[Pagination]} className="h-full rounded-[20px]">
             {images.map((src, index) => (
               <SwiperSlide key={index} className="flex items-center justify-center">
