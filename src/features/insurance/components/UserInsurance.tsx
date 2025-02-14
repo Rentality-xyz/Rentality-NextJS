@@ -1,12 +1,10 @@
 import { Controller, useForm } from "react-hook-form";
-
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { isEmpty } from "@/utils/string";
 import { UserInsurancePhoto } from "./UserInsurancePhoto";
-import useGuestInsurance from "@/hooks/guest/useGuestInsurance";
 import { PlatformFile } from "@/model/FileToUpload";
 import { DialogActions } from "@/utils/dialogActions";
 import { userInsuranceFormSchema, UserInsuranceFormValues } from "@/features/insurance/models/userInsuranceFormSchema";
@@ -14,9 +12,12 @@ import Loading from "@/components/common/Loading";
 import RntValidationError from "@/components/common/RntValidationError";
 import RntButton from "@/components/common/rntButton";
 import DotStatus from "@/components/profileInfo/dotStatus";
+import useFetchGuestGeneralInsurance from "../hooks/useFetchGuestGeneralInsurance";
+import useSaveGuestGeneralInsurance from "../hooks/useSaveGuestGeneralInsurance";
 
 function UserInsurance() {
-  const { isLoading, guestInsurance, saveGuestInsurance } = useGuestInsurance();
+  const { isLoading, data: guestInsurance } = useFetchGuestGeneralInsurance();
+  const { mutateAsync: saveGuestInsurance } = useSaveGuestGeneralInsurance();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { handleSubmit, formState, control, setValue, watch } = useForm<UserInsuranceFormValues>({
@@ -121,7 +122,7 @@ function UserInsurance() {
           {t("common.save")}
         </RntButton>
 
-        {"url" in userInsurancePhoto && !isEmpty(userInsurancePhoto.url) ? (
+        {userInsurancePhoto !== undefined && "url" in userInsurancePhoto && !isEmpty(userInsurancePhoto.url) ? (
           <DotStatus color="success" text={t("profile.user_insurance.insurance_uploaded")} />
         ) : (
           <DotStatus color="error" text={t("profile.user_insurance.insurance_not_uploaded")} />

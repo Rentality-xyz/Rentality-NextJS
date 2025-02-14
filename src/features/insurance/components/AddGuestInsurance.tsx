@@ -1,6 +1,5 @@
 // TODO Transate
 import { useTranslation } from "react-i18next";
-import { UserInsurancePhoto } from "./UserInsurancePhoto";
 import useToggleState from "@/hooks/useToggleState";
 import useTripsList from "@/hooks/guest/useTripsList";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
@@ -8,74 +7,68 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { isEmpty } from "@/utils/string";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
-import useSaveGuestTripInsurance from "@/hooks/guest/useSaveGuestTripInsurance";
+import useSaveTripInsurance from "@/features/insurance/hooks/useSaveTripInsurance";
 import { ONE_TIME_INSURANCE_TYPE_ID } from "@/utils/constants";
 import { addTripInsuranceFormSchema, AddTripInsuranceFormValues } from "../models/addTripInsuranceFormSchema";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import RntSelect from "@/components/common/rntSelect";
-import RntValidationError from "@/components/common/RntValidationError";
 import RntInput from "@/components/common/rntInput";
 import RntButton from "@/components/common/rntButton";
 import UserInsurance from "./UserInsurance";
 
-interface AddGuestInsuranceProps {
-  onNewInsuranceAdded?: () => Promise<void>;
-}
+interface AddGuestInsuranceProps {}
 
-export default function AddGuestInsurance({ onNewInsuranceAdded }: AddGuestInsuranceProps) {
+export default function AddGuestInsurance({}: AddGuestInsuranceProps) {
   const { t } = useTranslation();
   const [isFormOpen, toggleFormOpen] = useToggleState(false);
   const { isLoading: isTripsLoading, trips, refetchData } = useTripsList(false);
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
-  const { saveTripInsurance } = useSaveGuestTripInsurance();
+  const { mutateAsync: saveTripInsurance } = useSaveTripInsurance();
 
   const {
     register,
     handleSubmit,
     formState,
     control,
-    watch,
     setError,
     reset: resetFormValues,
   } = useForm<AddTripInsuranceFormValues>({
     defaultValues: {
       insuranceType: ONE_TIME_INSURANCE_TYPE_ID,
-      comment: "",
     },
     resolver: zodResolver(addTripInsuranceFormSchema),
   });
   const { errors, isSubmitting } = formState;
-  const insuranceType = watch("insuranceType");
 
   async function onFormSubmit(formData: AddTripInsuranceFormValues) {
-    console.log("formData", JSON.stringify(formData, null, 2));
-    if (formData.insuranceType === ONE_TIME_INSURANCE_TYPE_ID) {
-      let isValid = true;
+    console.debug("formData", JSON.stringify(formData, null, 2));
 
-      if (formData.selectedTripId === undefined) {
-        setError("selectedTripId", { message: "value is required", type: "required" });
-        isValid = false;
-      }
-      if (isEmpty(formData.companyName)) {
-        setError("companyName", { message: "value is required", type: "required" });
-        isValid = false;
-      }
-      if (isEmpty(formData.policeNumber)) {
-        setError("policeNumber", { message: "value is required", type: "required" });
-        isValid = false;
-      }
-      if (!isValid) return;
+    let isValid = true;
+
+    if (formData.selectedTripId === undefined) {
+      setError("selectedTripId", { message: "value is required", type: "required" });
+      isValid = false;
     }
+    if (isEmpty(formData.companyName)) {
+      setError("companyName", { message: "value is required", type: "required" });
+      isValid = false;
+    }
+    if (isEmpty(formData.policeNumber)) {
+      setError("policeNumber", { message: "value is required", type: "required" });
+      isValid = false;
+    }
+    if (!isValid) return;
 
     showInfo(t("common.info.sign"));
-    const result = await saveTripInsurance(
-      formData.insuranceType,
-      formData.photos,
-      formData.selectedTripId,
-      formData.companyName,
-      formData.policeNumber,
-      formData.comment
-    );
+
+    const result = await saveTripInsurance({
+      insuranceType: formData.insuranceType,
+      tripId: formData.selectedTripId,
+      companyName: formData.companyName,
+      policeNumber: formData.policeNumber,
+      comment: formData.comment,
+    });
+
     hideSnackbars();
 
     if (!result.ok) {
@@ -85,7 +78,6 @@ export default function AddGuestInsurance({ onNewInsuranceAdded }: AddGuestInsur
       showInfo(t("common.info.success"));
       resetFormValues();
       refetchData();
-      onNewInsuranceAdded !== undefined && onNewInsuranceAdded();
     }
   }
 
