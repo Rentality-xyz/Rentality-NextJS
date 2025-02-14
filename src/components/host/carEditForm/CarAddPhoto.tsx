@@ -183,6 +183,7 @@ function CarAddPhoto({
               viewMode={1}
               guides={false}
               autoCropArea={1}
+              cropBoxResizable={false}
             />
             <div className="mt-4 flex justify-between">
               <RntButtonTransparent className="w-32" onClick={handleCancelCrop}>
