@@ -11,8 +11,8 @@ import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import imgCircleBtn from "@/images/img_circle_for_transparent_btn.svg";
 import RntButton from "@/components/common/rntButton";
 
-const heightCroppedCanvas = 744;
-const widthCroppedCanvas = 1242;
+const heightCroppedCanvas = 720;
+const widthCroppedCanvas = 1280;
 
 function CarAddPhoto({
   carImages,
@@ -178,7 +178,7 @@ function CarAddPhoto({
             <Cropper
               ref={cropperRef}
               src={cropImage}
-              className={`w-full lg:h-[${heightCroppedCanvas / 2}px] lg:w-[${widthCroppedCanvas / 2}px]`}
+              className="h-auto w-full md:h-[360px] md:w-[640px]"
               aspectRatio={widthCroppedCanvas / heightCroppedCanvas}
               viewMode={1}
               guides={false}
