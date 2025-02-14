@@ -10,6 +10,7 @@ import { resizeImage } from "@/utils/image";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import imgCircleBtn from "@/images/img_circle_for_transparent_btn.svg";
 import RntButton from "@/components/common/rntButton";
+import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 
 const heightCroppedCanvas = 720;
 const widthCroppedCanvas = 1280;
@@ -125,12 +126,12 @@ function CarAddPhoto({
   return (
     <div className="my-2 flex flex-col gap-4">
       <p className="pl-4">{t("vehicles.upload_photos_title")}</p>
-      <div className="flex w-full flex-row gap-4 overflow-x-auto p-2 pb-4">
+      <ScrollingHorizontally>
         {carImages.map((carImage, index) => {
           const carImageUrl = "url" in carImage ? carImage.url : carImage.localUrl;
           return (
-            <div key={index} className={cn("relative")}>
-              <div className="relative h-40 w-48 overflow-hidden rounded-2xl">
+            <div key={index} className="relative">
+              <div className="relative h-[162px] w-[288px] overflow-hidden rounded-2xl">
                 <Image className="h-full w-full object-cover" width={1000} height={1000} src={carImageUrl} alt="" />
                 <button
                   className="absolute bottom-0 left-0 z-10 bg-rentality-additional px-2"
@@ -165,12 +166,12 @@ function CarAddPhoto({
           );
         })}
         {carImages.filter((i) => "file" in i || !i.isDeleted).length < MAX_ADD_IMAGE && (
-          <div className="h-40 w-48 min-w-[12rem] cursor-pointer overflow-hidden rounded-2xl bg-gray-200/40 bg-[url('../images/add_circle_outline_white_48dp.svg')] bg-center bg-no-repeat">
+          <div className="h-[162px] min-w-[288px] cursor-pointer overflow-hidden rounded-2xl bg-gray-200/40 bg-[url('../images/add_circle_outline_white_48dp.svg')] bg-center bg-no-repeat">
             <div className="h-full w-full" onClick={handleImageClick} />
             <input className="hidden" type="file" accept="image/*" ref={inputRef} onChange={handleImageChange} />
           </div>
         )}
-      </div>
+      </ScrollingHorizontally>
 
       {showCropper && cropImage && (
         <div className="fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black bg-opacity-70">
