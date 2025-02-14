@@ -31,7 +31,7 @@ export function usePaginationState(initialPage: number = 1, initialItemsPerPage:
 }
 
 export function usePaginationForListApi<T extends Record<string, any>>(
-  queryKey: string,
+  queryKey: QueryKey,
   fetchListFn: () => Promise<T[]>,
   enabled: boolean,
   initialPage: number = 1,
@@ -44,7 +44,7 @@ export function usePaginationForListApi<T extends Record<string, any>>(
     data: allData,
     error,
   } = useQuery({
-    queryKey: [queryKey],
+    queryKey: [...queryKey],
     queryFn: fetchListFn,
     enabled: enabled,
   });
@@ -72,7 +72,7 @@ export function usePaginationForListApi<T extends Record<string, any>>(
 }
 
 export function usePaginationForListApiWithFilter<T>(
-  queryKey: string,
+  queryKey: QueryKey,
   fetchListFn: (filters: Record<string, any>) => Promise<T[]>,
   initialPage: number = 1,
   initialItemsPerPage: number = 10
@@ -84,7 +84,7 @@ export function usePaginationForListApiWithFilter<T>(
     data: fullData,
     error,
   } = useQuery({
-    queryKey: [queryKey, filters],
+    queryKey: [...queryKey, filters],
     queryFn: () => fetchListFn(filters),
   });
 
@@ -106,7 +106,7 @@ export function usePaginationForListApiWithFilter<T>(
 }
 
 export function usePaginationForListApiWithPages<T>(
-  queryKey: string,
+  queryKey: QueryKey,
   fetchListFn: (page: number, itemsPerPage: number) => Promise<T[]>,
   initialPage: number = 1,
   initialItemsPerPage: number = 10
@@ -118,7 +118,7 @@ export function usePaginationForListApiWithPages<T>(
     data: pageData,
     error,
   } = useQuery({
-    queryKey: [queryKey, currentPage, itemsPerPage],
+    queryKey: [...queryKey, currentPage, itemsPerPage],
     queryFn: () => fetchListFn(currentPage, itemsPerPage),
   });
 
@@ -135,8 +135,9 @@ export function usePaginationForListApiWithPages<T>(
 
   return { isLoading, data: { pageData: pageData || [], currentPage, totalPageCount }, error, fetchData };
 }
+
 export function usePaginationForListApiWithPagesAndFilters<T>(
-  queryKey: string,
+  queryKey: QueryKey,
   fetchListFn: (
     page: number,
     itemsPerPage: number,
@@ -151,7 +152,7 @@ export function usePaginationForListApiWithPagesAndFilters<T>(
   const { currentPage, itemsPerPage, filters, updatePagination } = usePaginationState(initialPage, initialItemsPerPage);
 
   const { isLoading, data, error } = useQuery({
-    queryKey: [queryKey, currentPage, itemsPerPage, filters],
+    queryKey: [...queryKey, currentPage, itemsPerPage, filters],
     queryFn: () => fetchListFn(currentPage, itemsPerPage, filters),
   });
 
