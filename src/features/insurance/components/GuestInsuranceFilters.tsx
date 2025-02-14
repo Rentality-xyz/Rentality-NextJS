@@ -1,8 +1,7 @@
 import { useTranslation } from "react-i18next";
-
-import { InsuranceFiltersType } from "@/features/insurance/hooks/useInsurances";
 import RntSelect from "@/components/common/rntSelect";
 import RntButton from "@/components/common/rntButton";
+import { InsuranceFiltersType } from "../hooks/useFetchInsurances";
 
 interface GuestInsuranceFiltersProps {
   defaultFilters?: InsuranceFiltersType;

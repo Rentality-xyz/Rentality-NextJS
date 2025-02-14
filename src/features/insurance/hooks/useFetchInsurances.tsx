@@ -1,71 +1,32 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { InsuranceType } from "@/model/blockchain/schemas";
 import { validateContractInsuranceDTO } from "@/model/blockchain/schemas_utils";
-import { Err, Ok, Result } from "@/model/utils/result";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { getDateFromBlockchainTime, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { bigIntReplacer } from "@/utils/json";
 import moment from "moment";
-import { useCallback, useState } from "react";
 import { TripInsurance } from "../models";
+import { usePaginationForListApi } from "@/hooks/pagination";
 
 export type InsuranceFiltersType = {};
+export const INSURANCE_LIST_QUERY_KEY = "InsuranceList";
 
-export default function useInsurances(isHost: boolean) {
+function useFetchInsurances(isHost: boolean, initialPage: number = 1, initialItemsPerPage: number = 10) {
   const { rentalityContracts } = useRentality();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<TripInsurance[]>([]);
-  const [allData, setAllData] = useState<TripInsurance[] | undefined>(undefined);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPageCount, setTotalPageCount] = useState<number>(0);
 
-  const filterData = useCallback(
-    (data: TripInsurance[], filters?: InsuranceFiltersType, page: number = 1, itemsPerPage: number = 10) => {
-      const filteredData = !filters
-        ? data
-        : data.filter(
-            (i) => i !== undefined
-            // (filters.dateFrom === undefined || i.startDateTime >= filters.dateFrom) &&
-            // (filters.dateTo === undefined || i.endDateTime <= filters.dateTo) &&
-            // (filters.status === undefined || i.status === filters.status)
-          );
-      const slicedData = filteredData.slice((page - 1) * itemsPerPage, page * itemsPerPage);
-      setCurrentPage(page);
-      setData(slicedData);
-      console.log(`slicedData.length: ${slicedData.length} | itemsPerPage: ${itemsPerPage}`);
-
-      setTotalPageCount(Math.ceil(filteredData.length / itemsPerPage));
-    },
-    []
-  );
-
-  const fetchData = useCallback(
-    async (
-      filters?: InsuranceFiltersType,
-      page: number = 1,
-      itemsPerPage: number = 10,
-      refetch: boolean = false
-    ): Promise<Result<boolean, string>> => {
-      if (allData !== undefined && !refetch) {
-        filterData(allData, filters, page, itemsPerPage);
-        return Ok(true);
-      }
-
+  const { isLoading, data, error, fetchData } = usePaginationForListApi<TripInsurance>(
+    [INSURANCE_LIST_QUERY_KEY, isHost],
+    async () => {
       if (!rentalityContracts) {
-        console.error("fetchData error: rentalityContract is null");
-        return Err("Contract is not initialized");
+        throw new Error("Contracts not initialized");
       }
-
-      setIsLoading(true);
-      setCurrentPage(page);
-      setTotalPageCount(0);
+      console.debug(`Fetching insurance list for ${isHost ? "host" : "guest"}`);
 
       const result = await rentalityContracts.gatewayProxy.getInsurancesBy(isHost);
 
       if (!result.ok) {
-        setIsLoading(false);
-        return Err("Get data error. See logs for more details");
+        throw new Error(result.error.message);
       }
 
       if (result.value && result.value.length > 0) {
@@ -92,6 +53,7 @@ export default function useInsurances(isHost: boolean) {
             policyNumber: i.insuranceInfo.policyNumber,
             comment: i.insuranceInfo.comment,
             uploadedBy: `${i.createdByHost ? "Host" : "Guest"} ${i.creatorFullName} uploaded ${moment(getDateFromBlockchainTime(i.insuranceInfo.createdTime)).format("DD.MM.YY hh:mm A")}`,
+            uploadedAt: getDateFromBlockchainTime(i.insuranceInfo.createdTime),
             isActual: i.isActual,
           },
           hostPhoneNumber: i.creatorPhoneNumber,
@@ -99,23 +61,24 @@ export default function useInsurances(isHost: boolean) {
         };
       });
       data.sort((a, b) => {
-        const timeDiff = b.startDateTime.getTime() - a.startDateTime.getTime();
+        const timeDiff = b.insurance.uploadedAt.getTime() - a.insurance.uploadedAt.getTime();
         if (timeDiff !== 0) return timeDiff;
         return Number(a.insuranceType - b.insuranceType);
       });
 
-      setAllData(data);
-      filterData(data, filters, page, itemsPerPage);
-
-      setIsLoading(false);
-      return Ok(true);
+      return data;
     },
-    [rentalityContracts, allData, filterData, isHost]
+    !!rentalityContracts,
+    initialPage,
+    initialItemsPerPage
   );
 
   return {
     isLoading,
-    data: { data: data, currentPage: currentPage, totalPageCount: totalPageCount },
+    data: data,
+    error,
     fetchData,
   } as const;
 }
+
+export default useFetchInsurances;
