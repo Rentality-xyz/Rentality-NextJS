@@ -7,7 +7,7 @@ import Image from "next/image";
 import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 
 export default function ClaimMyPointsHeaderButton() {
-  const { isLoading, isFetching, data } = useFetchOwnReferralPoints();
+  const { isLoading, isFetching, data } = useFetchOwnReferralPoints("ClaimMyPointsHeaderButton");
   const { mutateAsync: claimMyPoints } = useClaimOwnReferralPoints();
   const isClaiming = useOwnReferralPointsTransactionStore((state) => state.isClaiming);
 
