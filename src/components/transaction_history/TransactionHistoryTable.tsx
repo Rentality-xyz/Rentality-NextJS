@@ -37,7 +37,7 @@ function TransactionHistoryTable({ isLoading, data, isHost }: TransactionHistory
         </div>
       }
     >
-      <table className="hidden w-full table-auto border-spacing-2 overflow-x-auto lg:block">
+      <table className="hidden w-full table-auto border-spacing-2 overflow-x-auto custom-scroll lg:block">
         <thead className="mb-2">
           <tr>
             <th className={headerSpanClassName}></th>
