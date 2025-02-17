@@ -53,6 +53,12 @@ function useFetchOwnReferralPoints(componentName: string) {
         throw new Error(result.error.message);
       }
 
+      console.debug(
+        "totalPoints for component ",
+        componentName,
+        " is ",
+        Number(getReadyToClaimResult.value.totalPoints)
+      );
       return { readyToClaim: Number(getReadyToClaimResult.value.totalPoints), allPoints: result.value };
     },
     enabled: () => {
