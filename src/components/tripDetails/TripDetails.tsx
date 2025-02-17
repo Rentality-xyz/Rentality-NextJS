@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import TripCardForDetails from "../tripCard/tripCardForDetails";
 import useUserMode, { isHost } from "@/hooks/useUserMode";
 import { useTranslation } from "react-i18next";
-import CheckingLoadingAuth from "../common/CheckingLoadingAuth";
 import RntSuspense from "../common/rntSuspense";
 import TripStatusDateTimes from "./TripStatusDateTimes";
 import TripReceipt from "./TripReceipt";
@@ -40,26 +39,24 @@ export default function TripInfo() {
   return (
     <>
       <PageTitle title={t("booked.details.title", { tripId: tripId.toString() })} />
-      <CheckingLoadingAuth>
-        <RntSuspense isLoading={isLoading}>
-          <TripCardForDetails key={Number(tripId)} isHost={isHost(userMode)} tripInfo={tripInfo} t={t} />
-          <div className="my-6 flex flex-wrap">
-            <div className="w-full xl:w-2/3">
-              <TripAboutCar tripInfo={tripInfo} />
-              <TripStatusDateTimes tripInfo={tripInfo} />
-              {hasTripPhotosFeatureFlag && <TripPhotos tripId={tripInfo.tripId} />}
-            </div>
-            <div className="w-full xl:w-1/3">
-              <TripReceipt tripId={tripId} tripInfo={tripInfo} userMode={userMode} />
-            </div>
+      <RntSuspense isLoading={isLoading}>
+        <TripCardForDetails key={Number(tripId)} isHost={isHost(userMode)} tripInfo={tripInfo} t={t} />
+        <div className="my-6 flex flex-wrap">
+          <div className="w-full xl:w-2/3">
+            <TripAboutCar tripInfo={tripInfo} />
+            <TripStatusDateTimes tripInfo={tripInfo} />
+            {hasTripPhotosFeatureFlag && <TripPhotos tripId={tripInfo.tripId} />}
           </div>
-          <div className="mb-8 mt-4 flex flex-row justify-center gap-4">
-            <RntButton className="h-16 w-40" onClick={() => router.push(backPath)}>
-              {t("common.back")}
-            </RntButton>
+          <div className="w-full xl:w-1/3">
+            <TripReceipt tripId={tripId} tripInfo={tripInfo} userMode={userMode} />
           </div>
-        </RntSuspense>
-      </CheckingLoadingAuth>
+        </div>
+        <div className="mb-8 mt-4 flex flex-row justify-center gap-4">
+          <RntButton className="h-16 w-40" onClick={() => router.push(backPath)}>
+            {t("common.back")}
+          </RntButton>
+        </div>
+      </RntSuspense>
     </>
   );
 }

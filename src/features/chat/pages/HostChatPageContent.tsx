@@ -6,7 +6,6 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
 
 export default function HostChatPageContent() {
@@ -56,20 +55,18 @@ export default function HostChatPageContent() {
   return (
     <>
       <PageTitle title={t("chat.title")} />
-      <CheckingLoadingAuth>
-        <RntSuspense isLoading={isLoadingClient}>
-          <ChatPage
-            isHost={true}
-            chats={sortedChatInfos}
-            sendMessage={handleSendMessage}
-            selectedTridId={selectedTridId}
-            selectChat={handleSelectChat}
-            t={(name, options) => {
-              return t("chat." + name, options);
-            }}
-          />
-        </RntSuspense>
-      </CheckingLoadingAuth>
+      <RntSuspense isLoading={isLoadingClient}>
+        <ChatPage
+          isHost={true}
+          chats={sortedChatInfos}
+          sendMessage={handleSendMessage}
+          selectedTridId={selectedTridId}
+          selectChat={handleSelectChat}
+          t={(name, options) => {
+            return t("chat." + name, options);
+          }}
+        />
+      </RntSuspense>
     </>
   );
 }

@@ -4,7 +4,6 @@ import useGuestTrips from "@/hooks/guest/useGuestTrips";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import RntSuspense from "@/components/common/rntSuspense";
@@ -48,28 +47,26 @@ function Booked() {
   return (
     <>
       <PageTitle title={t("booked.title")} />
-      <CheckingLoadingAuth>
-        <RntSuspense isLoading={isLoadingTrips}>
-          <div className="my-4 flex flex-col gap-4">
-            {tripsBooked != null && tripsBooked.length > 0 ? (
-              tripsBooked.map((value) => (
-                <TripCard
-                  key={value.tripId}
-                  tripInfo={value}
-                  changeStatusCallback={changeStatusCallback}
-                  disableButton={tripStatusChanging}
-                  isHost={false}
-                  t={t}
-                />
-              ))
-            ) : (
-              <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between pl-4 text-center">
-                {t("booked.trip_not_found")}
-              </div>
-            )}
-          </div>
-        </RntSuspense>
-      </CheckingLoadingAuth>
+      <RntSuspense isLoading={isLoadingTrips}>
+        <div className="my-4 flex flex-col gap-4">
+          {tripsBooked != null && tripsBooked.length > 0 ? (
+            tripsBooked.map((value) => (
+              <TripCard
+                key={value.tripId}
+                tripInfo={value}
+                changeStatusCallback={changeStatusCallback}
+                disableButton={tripStatusChanging}
+                isHost={false}
+                t={t}
+              />
+            ))
+          ) : (
+            <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between pl-4 text-center">
+              {t("booked.trip_not_found")}
+            </div>
+          )}
+        </div>
+      </RntSuspense>
     </>
   );
 }
