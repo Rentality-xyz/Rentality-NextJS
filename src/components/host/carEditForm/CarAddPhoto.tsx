@@ -114,7 +114,7 @@ function CarAddPhoto({
   return (
     <div className="my-2 flex flex-col gap-4">
       <p className="pl-4">{t("vehicles.upload_photos_title")}</p>
-      <div className="flex w-full flex-row gap-4 overflow-x-auto p-2 pb-4">
+      <div className="flex w-full flex-row gap-4 overflow-x-auto custom-scroll p-2 pb-4">
         {carImages.map((carImage, index) => {
           const carImageUrl = "url" in carImage ? carImage.url : carImage.localUrl;
           const isImageDeleted = "isDeleted" in carImage && carImage.isDeleted;
