@@ -3,7 +3,6 @@ import useMyListings from "@/hooks/host/useMyListings";
 import RntButton from "@/components/common/rntButton";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
 import {
   initializeDimoSDK,
@@ -134,24 +133,43 @@ function Listings() {
         </div>
       </div>
 
-      <CheckingLoadingAuth>
-        <RntSuspense isLoading={isLoadingMyListings || (isLoadingDimo && isAuthenticated)}>
-          <div className="my-4 grid grid-cols-1 gap-4 xl:grid-cols-2 2xl:grid-cols-3 min-[1660px]:grid-cols-4">
-            {combinedListings.length === 0 && (
-              <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
-                {t("vehicles.no_listed_cars")}
-              </div>
-            )}
+      <RntSuspense isLoading={isLoadingMyListings || (isLoadingDimo && isAuthenticated)}>
+        <div className="my-4 grid grid-cols-1 gap-4 xl:grid-cols-2 2xl:grid-cols-3 min-[1660px]:grid-cols-4">
+          {combinedListings.length === 0 && (
+            <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
+              {t("vehicles.no_listed_cars")}
+            </div>
+          )}
 
-            {combinedListings.length > 0 &&
-              combinedListings.map((value) => {
-                const vehicle = onDimoOnly?.find((car) => car.vin === value.vinNumber);
-                const carForSync = onRentalityAndDimoNotSyncMapped?.find((car) => car.carId === value.carId);
-                const isDimoOnly = onDimoOnly?.some((car) => car.vin === value.vinNumber);
-                const isDimoNotSyncMapped = onRentalityAndDimoNotSyncMapped?.some((car) => car.carId === value.carId);
-                const isDimoSynced = onRentalityAndDimoSync?.some((car) => car.carId === value.carId);
+          {combinedListings.length > 0 &&
+            combinedListings.map((value) => {
+              const vehicle = onDimoOnly?.find((car) => car.vin === value.vinNumber);
+              const carForSync = onRentalityAndDimoNotSyncMapped?.find((car) => car.carId === value.carId);
+              const isDimoOnly = onDimoOnly?.some((car) => car.vin === value.vinNumber);
+              const isDimoNotSyncMapped = onRentalityAndDimoNotSyncMapped?.some((car) => car.carId === value.carId);
+              const isDimoSynced = onRentalityAndDimoSync?.some((car) => car.carId === value.carId);
 
-                return isShowOnlyDimoCar && (isDimoOnly || isDimoSynced || isDimoNotSyncMapped) ? (
+              return isShowOnlyDimoCar && (isDimoOnly || isDimoSynced || isDimoNotSyncMapped) ? (
+                <ListingItem
+                  key={value.carId}
+                  carInfo={value}
+                  isDimoOnly={isDimoOnly && isAuthenticated}
+                  isDimoSynced={isDimoSynced && isAuthenticated}
+                  isDimoNotSyncMapped={isDimoNotSyncMapped && isAuthenticated}
+                  onCreateRentalityCar={() => {
+                    if (vehicle) {
+                      createRentalityCar(vehicle);
+                    }
+                  }}
+                  onSyncWithDimo={async () => {
+                    if (carForSync) {
+                      await handleSaveDimoTokens([carForSync.dimoTokenId], [carForSync.carId]);
+                    }
+                  }}
+                  t={t}
+                />
+              ) : (
+                !isShowOnlyDimoCar && (
                   <ListingItem
                     key={value.carId}
                     carInfo={value}
@@ -170,32 +188,11 @@ function Listings() {
                     }}
                     t={t}
                   />
-                ) : (
-                  !isShowOnlyDimoCar && (
-                    <ListingItem
-                      key={value.carId}
-                      carInfo={value}
-                      isDimoOnly={isDimoOnly && isAuthenticated}
-                      isDimoSynced={isDimoSynced && isAuthenticated}
-                      isDimoNotSyncMapped={isDimoNotSyncMapped && isAuthenticated}
-                      onCreateRentalityCar={() => {
-                        if (vehicle) {
-                          createRentalityCar(vehicle);
-                        }
-                      }}
-                      onSyncWithDimo={async () => {
-                        if (carForSync) {
-                          await handleSaveDimoTokens([carForSync.dimoTokenId], [carForSync.carId]);
-                        }
-                      }}
-                      t={t}
-                    />
-                  )
-                );
-              })}
-          </div>
-        </RntSuspense>
-      </CheckingLoadingAuth>
+                )
+              );
+            })}
+        </div>
+      </RntSuspense>
     </>
   );
 }

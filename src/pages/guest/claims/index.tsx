@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import CreateClaim from "@/components/claims/CreateClaim";
 import { CreateClaimRequest } from "@/model/CreateClaimRequest";
 import { Err, Result, TransactionErrorCode } from "@/model/utils/result";
-import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
 
 function Claims() {
@@ -91,20 +90,18 @@ function Claims() {
   return (
     <>
       <PageTitle title={t("claims.title")} />
-      <CheckingLoadingAuth>
-        <RntSuspense isLoading={isLoading}>
-          <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={false} />
-          <ClaimHistory
-            claims={claims}
-            payClaim={handlePayClaim}
-            cancelClaim={handleCancelClaim}
-            isHost={false}
-            t={(path, options) => {
-              return t("claims." + path, options);
-            }}
-          />
-        </RntSuspense>
-      </CheckingLoadingAuth>
+      <RntSuspense isLoading={isLoading}>
+        <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={false} />
+        <ClaimHistory
+          claims={claims}
+          payClaim={handlePayClaim}
+          cancelClaim={handleCancelClaim}
+          isHost={false}
+          t={(path, options) => {
+            return t("claims." + path, options);
+          }}
+        />
+      </RntSuspense>
     </>
   );
 }
