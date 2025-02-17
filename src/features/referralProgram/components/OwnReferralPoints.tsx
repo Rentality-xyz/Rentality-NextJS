@@ -62,7 +62,7 @@ export default function OwnReferralPoints() {
         <div id="rp-own-points-account-creation" className="mt-4 px-4">
           <p className="text-gray-300">{t("referrals_and_point.account_creation")}</p>
           <hr className="my-2 border-gray-300" />
-          <div id="rp-account-points-status-scrolling" className="flex space-x-2 overflow-x-auto custom-scroll">
+          <div id="rp-account-points-status-scrolling" className="custom-scroll flex space-x-2 overflow-x-auto">
             {allPoints?.ownAccountCreationPointsInfo.map((info, index) => (
               <div key={index}>
                 <ReferralProgramStatusCard
@@ -79,7 +79,7 @@ export default function OwnReferralPoints() {
         <div id="rp-own-points-regularly" className="mt-2 px-4">
           <p className="text-gray-300">{t("referrals_and_point.regularly")}</p>
           <hr className="my-2 border-gray-300" />
-          <div id="rp-regularly-points-status-scrolling" className="flex space-x-2 overflow-x-auto custom-scroll">
+          <div id="rp-regularly-points-status-scrolling" className="custom-scroll flex space-x-2 overflow-x-auto">
             {allPoints?.ownRegularPointsInfo.map((info, index) => (
               <div key={index}>
                 <ReferralProgramStatusCard
