@@ -7,11 +7,17 @@ import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "../../../components/common/rntSuspense";
 import ReferralProgramStatusCard from "@/features/referralProgram/components/ReferralProgramStatusCard";
-import useOwnReferralPoints from "../hooks/useOwnReferralPoints";
+import useFetchOwnReferralPoints from "../hooks/useFetchOwnReferralPoints";
+import useClaimOwnReferralPoints from "../hooks/useClaimOwnReferralPoints";
+import useOwnReferralPointsTransactionStore from "../hooks/useOwnReferralPointsTransactionStore";
 
 export default function OwnReferralPoints() {
-  const { isLoading, isPending, readyToClaim, allPoints, claimMyPoints } = useOwnReferralPoints();
+  const { isLoading, isFetching, data } = useFetchOwnReferralPoints();
+  const { mutateAsync: claimMyPoints } = useClaimOwnReferralPoints();
+  const isClaiming = useOwnReferralPointsTransactionStore((state) => state.isClaiming);
   const { t } = useTranslation();
+
+  const { readyToClaim, allPoints } = data;
 
   async function handleClaimPointsClick() {
     await claimMyPoints();
@@ -25,12 +31,14 @@ export default function OwnReferralPoints() {
         </div>
         <RntButton
           className="flex w-full items-center justify-center text-white max-sm:mt-4 sm:ml-auto sm:w-60 2xl:w-64"
-          disabled={readyToClaim === 0}
+          disabled={isLoading || isFetching || isClaiming || readyToClaim === 0}
           onClick={handleClaimPointsClick}
         >
           <Image src={icStarPointsYellow} alt="" className="mr-2 h-7 w-7" />
           <div className="ml-0.5 flex">
-            {isPending ? (
+            {isClaiming ? (
+              <>Claiming...</>
+            ) : isLoading || isFetching ? (
               <>Loading...</>
             ) : (
               <>
@@ -54,7 +62,7 @@ export default function OwnReferralPoints() {
         <div id="rp-own-points-account-creation" className="mt-4 px-4">
           <p className="text-gray-300">{t("referrals_and_point.account_creation")}</p>
           <hr className="my-2 border-gray-300" />
-          <div id="rp-account-points-status-scrolling" className="flex space-x-2 overflow-x-auto">
+          <div id="rp-account-points-status-scrolling" className="flex space-x-2 overflow-x-auto custom-scroll">
             {allPoints?.ownAccountCreationPointsInfo.map((info, index) => (
               <div key={index}>
                 <ReferralProgramStatusCard
@@ -71,7 +79,7 @@ export default function OwnReferralPoints() {
         <div id="rp-own-points-regularly" className="mt-2 px-4">
           <p className="text-gray-300">{t("referrals_and_point.regularly")}</p>
           <hr className="my-2 border-gray-300" />
-          <div id="rp-regularly-points-status-scrolling" className="flex space-x-2 overflow-x-auto">
+          <div id="rp-regularly-points-status-scrolling" className="flex space-x-2 overflow-x-auto custom-scroll">
             {allPoints?.ownRegularPointsInfo.map((info, index) => (
               <div key={index}>
                 <ReferralProgramStatusCard

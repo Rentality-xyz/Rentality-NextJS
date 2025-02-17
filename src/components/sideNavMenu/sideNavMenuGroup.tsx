@@ -35,7 +35,7 @@ export default function SideNavMenuGroup({
 
   return (
     <div>
-      <div className={`py-2 text-xl font-bold pl-14 ${isSelected ? "bg-rentality-primary rounded-r-full" : ""}`}>
+      <div className={`py-2 pl-14 text-xl font-bold ${isSelected ? "rounded-r-full bg-rentality-primary" : ""}`}>
         {href != null ? (
           <Link className="flex flex-row items-center gap-2" href={href} onClick={handleOnClick} target={target}>
             {icon != null && <Image src={getImageForMenu(icon)} width={30} height={30} alt="" />}

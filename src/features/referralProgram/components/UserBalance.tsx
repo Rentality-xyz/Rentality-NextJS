@@ -2,10 +2,10 @@
 import Image from "next/image";
 import React from "react";
 import icStarPointsWhite from "@/images/ic_star_points_white.svg";
-import useUserBalance from "../hooks/useUserBalance";
+import useFetchUserBalance from "../hooks/useFetchUserBalance";
 
 function UserBalance() {
-  const { balance } = useUserBalance();
+  const { data: balance } = useFetchUserBalance();
 
   return (
     <div className="flex w-fit items-center rounded-lg border border-rentality-star-point px-3 py-2 font-['Montserrat',Arial,sans-serif]">

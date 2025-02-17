@@ -7,7 +7,6 @@ import useTripDiscounts from "@/hooks/host/useTripDiscounts";
 import useProfileSettings from "@/hooks/useProfileSettings";
 import useUserRole from "@/hooks/useUserRole";
 import { useTranslation } from "react-i18next";
-import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
 
 function Profile() {
@@ -20,24 +19,22 @@ function Profile() {
   return (
     <>
       <PageTitle title={t("profile.title")} />
-      <CheckingLoadingAuth>
-        <RntSuspense isLoading={isLoading || isLoadingDiscounts || isLoadingDeliveryPrices}>
-          <UserProfileInfo savedProfileSettings={savedProfileSettings} saveProfileSettings={saveProfileSettings} />
-          <hr />
-          <div className="flex flex-col min-[560px]:flex-row min-[560px]:gap-20">
-            <TripDiscountsForm
-              savedTripsDiscounts={savedTripsDiscounts}
-              saveTripsDiscounts={saveTripDiscounts}
-              isUserHasHostRole={userRole === "Host"}
-            />
-            <DeliveryPriceForm
-              savedDeliveryPrices={savedDeliveryPrices}
-              saveDeliveryPrices={saveDeliveryPrices}
-              isUserHasHostRole={userRole === "Host"}
-            />
-          </div>
-        </RntSuspense>
-      </CheckingLoadingAuth>
+      <RntSuspense isLoading={isLoading || isLoadingDiscounts || isLoadingDeliveryPrices}>
+        <UserProfileInfo savedProfileSettings={savedProfileSettings} saveProfileSettings={saveProfileSettings} />
+        <hr />
+        <div className="flex flex-col min-[560px]:flex-row min-[560px]:gap-20">
+          <TripDiscountsForm
+            savedTripsDiscounts={savedTripsDiscounts}
+            saveTripsDiscounts={saveTripDiscounts}
+            isUserHasHostRole={userRole === "Host"}
+          />
+          <DeliveryPriceForm
+            savedDeliveryPrices={savedDeliveryPrices}
+            saveDeliveryPrices={saveDeliveryPrices}
+            isUserHasHostRole={userRole === "Host"}
+          />
+        </div>
+      </RntSuspense>
     </>
   );
 }

@@ -67,6 +67,8 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
           : 0)
       : totalPriceInUsd;
 
+  const dimoTokenId = Number(tripDTO.dimoTokenId ? tripDTO.dimoTokenId : 0);
+
   let item: TripInfo = {
     tripId: Number(tripDTO.trip.tripId),
 
@@ -126,6 +128,7 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
     checkedOutByGuestDateTime: getDateFromBlockchainTimeWithTZ(tripDTO.trip.checkedOutByGuestDateTime, timeZoneId),
     checkedOutByHostDateTime: getDateFromBlockchainTimeWithTZ(tripDTO.trip.checkedOutByHostDateTime, timeZoneId),
     finishedDateTime: getDateFromBlockchainTimeWithTZ(tripDTO.trip.finishDateTime, timeZoneId),
+    dimoTokenId: dimoTokenId,
 
     host: {
       walletAddress: tripDTO.trip.host,

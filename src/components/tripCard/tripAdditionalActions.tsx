@@ -41,13 +41,13 @@ function TripAdditionalActions({
   const carPhotosUploadButtonRef = useRef<any>(null);
   const { hasFeatureFlag } = useFeatureFlags();
 
-  const [ hasTripPhotosFeatureFlag, setHasTripPhotosFeatureFlag ] = useState<boolean>(false);
+  const [hasTripPhotosFeatureFlag, setHasTripPhotosFeatureFlag] = useState<boolean>(false);
 
   useEffect(() => {
     hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
       setHasTripPhotosFeatureFlag(hasTripPhotosFeatureFlag);
     });
-  },[]);
+  }, []);
 
   const handleButtonClick = () => {
     if (tripInfo == null || tripInfo.allowedActions == null || tripInfo.allowedActions.length == 0) {
@@ -71,46 +71,34 @@ function TripAdditionalActions({
     }
 
     changeStatusCallback(() => {
-      return tripInfo.allowedActions[0].action(
-        BigInt(tripInfo.tripId),
-        inputParams,
-        []
-      );
+      return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), inputParams, []);
     });
   };
 
   const onActionBtnClick = (action: AllowedChangeTripAction) => {
     if (action.params == null || action.params.length == 0) {
       hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
-        if(hasTripPhotosFeatureFlag){
+        if (hasTripPhotosFeatureFlag) {
           carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
-            if(tripPhotosUrls.length === 0){
+            if (tripPhotosUrls.length === 0) {
               showDialog(t("common.photos_required"));
             } else {
               changeStatusCallback(() => {
-                return action.action(
-                  BigInt(tripInfo.tripId),
-                  [],
-                  []
-                );
+                return action.action(BigInt(tripInfo.tripId), [], []);
               });
             }
           });
         } else {
           changeStatusCallback(() => {
-            return action.action(
-              BigInt(tripInfo.tripId),
-              [],
-              []
-            );
+            return action.action(BigInt(tripInfo.tripId), [], []);
           });
         }
       });
     } else {
       hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
-        if(hasTripPhotosFeatureFlag){
+        if (hasTripPhotosFeatureFlag) {
           carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
-            if(tripPhotosUrls.length === 0){
+            if (tripPhotosUrls.length === 0) {
               showDialog(t("common.photos_required"));
             } else {
               handleButtonClick();
@@ -121,7 +109,7 @@ function TripAdditionalActions({
         }
       });
     }
-  }
+  };
 
   if (isHost && tripInfo.status === TripStatus.Confirmed)
     return (
@@ -166,7 +154,7 @@ function TripAdditionalActions({
           })}
         </strong>
       </div>
-      <div className="flex flex-row gap-4 py-4">
+      <div className="flex flex-col md:flex-row gap-4 py-4">
         {isHost ? (
           <AllowedActionsHost
             tripInfo={tripInfo}
@@ -185,17 +173,18 @@ function TripAdditionalActions({
             setConfirmParams={setConfirmParams}
           />
         )}
-        <div className="flex flex-col gap-4 py-4 w-1/2">
-          {hasTripPhotosFeatureFlag && (tripInfo.status == TripStatus.CheckedInByHost || tripInfo.status == TripStatus.CheckedOutByGuest) && (
-            <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
-              <CarPhotosUploadButton
-                ref={carPhotosUploadButtonRef}
-                isHost={isHost}
-                isStart={tripInfo.status == TripStatus.CheckedInByHost}
-                tripId={tripInfo.tripId}
-              />
-            </div>
-          )}
+        <div className="flex w-1/2 flex-col gap-4 py-4">
+          {hasTripPhotosFeatureFlag &&
+            (tripInfo.status == TripStatus.CheckedInByHost || tripInfo.status == TripStatus.CheckedOutByGuest) && (
+              <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
+                <CarPhotosUploadButton
+                  ref={carPhotosUploadButtonRef}
+                  isHost={isHost}
+                  isStart={tripInfo.status == TripStatus.CheckedInByHost}
+                  tripId={tripInfo.tripId}
+                />
+              </div>
+            )}
         </div>
       </div>
 
@@ -206,7 +195,9 @@ function TripAdditionalActions({
               key={action.text}
               className="h-16 px-4 max-md:w-full"
               disabled={disableButton}
-              onClick={() => {onActionBtnClick(action)}}
+              onClick={() => {
+                onActionBtnClick(action);
+              }}
             >
               {action.text}
             </RntButton>
