@@ -9,7 +9,7 @@ export const REFERRAL_OWN_POINTS_QUERY_KEY = "ReferralOwnPoints";
 
 type QueryData = { readyToClaim: number; allPoints: AllOwnPointsInfo | null };
 
-function useFetchOwnReferralPoints() {
+function useFetchOwnReferralPoints(componentName: string) {
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
   const { t } = useTranslation();
@@ -22,7 +22,7 @@ function useFetchOwnReferralPoints() {
         throw new Error("Contracts or wallet not initialized");
       }
 
-      console.debug("Fetching AllOwnPointsInfo");
+      console.debug("Fetching AllOwnPointsInfo for component ", componentName);
 
       const [getReadyToClaimResult, getRefferalPointsInfoResult, getPointsHistoryResult] = await Promise.all([
         rentalityContracts.referralProgram.getReadyToClaim(ethereumInfo.walletAddress),
@@ -55,7 +55,17 @@ function useFetchOwnReferralPoints() {
 
       return { readyToClaim: Number(getReadyToClaimResult.value.totalPoints), allPoints: result.value };
     },
-    enabled: !!rentalityContracts && !!ethereumInfo?.walletAddress,
+    enabled: () => {
+      console.debug(
+        "check useFetchOwnReferralPoints enable for component ",
+        componentName,
+        ": rentalityContracts",
+        !!rentalityContracts,
+        " ethereumInfo?.walletAddress ",
+        !!ethereumInfo?.walletAddress
+      );
+      return !!rentalityContracts && !!ethereumInfo?.walletAddress;
+    },
   });
 }
 
