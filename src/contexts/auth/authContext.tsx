@@ -27,16 +27,7 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState<boolean>(true);
 
-  const { login } = useLogin({
-    onComplete: (user, isNewUser, wasAlreadyAuthenticated, loginMethod, linkedAccount) => {
-      console.log(
-        `Privy callback authContext.tsx. useLogin.onComplete -> data:${JSON.stringify({ user, isNewUser, wasAlreadyAuthenticated, loginMethod, linkedAccount })}`
-      );
-    },
-    onError: (error) => {
-      console.log(`Privy callback authContext.tsx. useLogin.onError -> error:${JSON.stringify(error)}`);
-    },
-  });
+  const { login } = useLogin();
 
   const { logout } = useLogout({
     onSuccess: () => {
@@ -58,24 +49,24 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
     setIsLoadingAuth(!ready || !walletsReady);
   }, [ready, walletsReady, authenticated, wallets]);
 
-  useEffect(() => {
-    console.log(`AuthProvider usePrivy.ready has changed to ${ready}`);
-  }, [ready]);
-  useEffect(() => {
-    console.log(`AuthProvider usePrivy.authenticated has changed to ${authenticated}`);
-  }, [authenticated]);
-  useEffect(() => {
-    console.log(`AuthProvider useWallets.ready has changed to ${walletsReady}`);
-  }, [walletsReady]);
-  useEffect(() => {
-    console.log(`AuthProvider wallets has changed to ${JSON.stringify(wallets, bigIntReplacer, 2)}`);
-  }, [wallets]);
-  useEffect(() => {
-    console.log(`AuthProvider isLoadingAuth has changed to ${isLoadingAuth}`);
-  }, [isLoadingAuth]);
-  useEffect(() => {
-    console.log(`AuthProvider isAuthenticated has changed to ${isAuthenticated}`);
-  }, [isAuthenticated]);
+  // useEffect(() => {
+  //   console.log(`AuthProvider usePrivy.ready has changed to ${ready}`);
+  // }, [ready]);
+  // useEffect(() => {
+  //   console.log(`AuthProvider usePrivy.authenticated has changed to ${authenticated}`);
+  // }, [authenticated]);
+  // useEffect(() => {
+  //   console.log(`AuthProvider useWallets.ready has changed to ${walletsReady}`);
+  // }, [walletsReady]);
+  // useEffect(() => {
+  //   console.log(`AuthProvider wallets has changed to ${JSON.stringify(wallets, bigIntReplacer, 2)}`);
+  // }, [wallets]);
+  // useEffect(() => {
+  //   console.log(`AuthProvider isLoadingAuth has changed to ${isLoadingAuth}`);
+  // }, [isLoadingAuth]);
+  // useEffect(() => {
+  //   console.log(`AuthProvider isAuthenticated has changed to ${isAuthenticated}`);
+  // }, [isAuthenticated]);
 
   const value = useMemo(
     () => ({
