@@ -14,16 +14,7 @@ import { useRouter } from "next/router";
 function Login() {
   const { connectWallet, ready, authenticated } = usePrivy();
 
-  const { login } = useLogin({
-    onComplete: (user, isNewUser, wasAlreadyAuthenticated, loginMethod, linkedAccount) => {
-      console.log(
-        `Privy callback login.tsx. useLogin.onComplete -> data:${JSON.stringify({ user, isNewUser, wasAlreadyAuthenticated, loginMethod, linkedAccount })}`
-      );
-    },
-    onError: (error) => {
-      console.log(`Privy callback login.tsx. useLogin.onError -> error:${JSON.stringify(error)}`);
-    },
-  });
+  const { login } = useLogin();
 
   const { logout } = useLogout({
     onSuccess: () => {
