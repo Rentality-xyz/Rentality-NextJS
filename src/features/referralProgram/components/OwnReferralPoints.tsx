@@ -12,7 +12,7 @@ import useClaimOwnReferralPoints from "../hooks/useClaimOwnReferralPoints";
 import useOwnReferralPointsTransactionStore from "../hooks/useOwnReferralPointsTransactionStore";
 
 export default function OwnReferralPoints() {
-  const { isLoading, isFetching, data } = useFetchOwnReferralPoints();
+  const { isLoading, isFetching, data } = useFetchOwnReferralPoints("OwnReferralPoints");
   const { mutateAsync: claimMyPoints } = useClaimOwnReferralPoints();
   const isClaiming = useOwnReferralPointsTransactionStore((state) => state.isClaiming);
   const { t } = useTranslation();
