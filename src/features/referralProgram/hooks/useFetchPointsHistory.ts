@@ -51,9 +51,11 @@ const useFetchPointsHistory = (initialPage: number = 1, initialItemsPerPage: num
         })
       );
     },
-    !!rentalityContracts,
     initialPage,
-    initialItemsPerPage
+    initialItemsPerPage,
+    {
+      enabled: !!rentalityContracts,
+    }
   );
 
   return {

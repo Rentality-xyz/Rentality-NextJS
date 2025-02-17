@@ -68,9 +68,11 @@ function useFetchInsurances(isHost: boolean, initialPage: number = 1, initialIte
 
       return data;
     },
-    !!rentalityContracts,
     initialPage,
-    initialItemsPerPage
+    initialItemsPerPage,
+    {
+      enabled: !!rentalityContracts,
+    }
   );
 
   return {
