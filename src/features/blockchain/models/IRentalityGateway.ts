@@ -3,7 +3,6 @@ import {
   ContractBaseDiscount,
   ContractCalculatePaymentsDTO,
   ContractCarDetails,
-  ContractCarInfo,
   ContractCarInfoDTO,
   ContractCarInfoWithInsurance,
   ContractChatInfo,
@@ -24,10 +23,10 @@ import {
   ContractSearchCarWithDistance,
   ContractSignedLocationInfo,
   ContractTripDTO,
-  ContractTripReceiptDTO,
   ContractUpdateCarInfoRequest,
   ContractCheckPromoDTO,
   ContractFullKYCInfoDTO,
+  ContractCurrency,
 } from "@/model/blockchain/schemas";
 import { ContractTransactionResponse } from "ethers";
 import { IEthersContract } from "./IEtherContract";
@@ -60,10 +59,8 @@ export interface IRentalityGatewayContract extends IEthersContract {
     request: ContractUpdateCarInfoRequest,
     location: ContractSignedLocationInfo
   ): Promise<ContractTransactionResponse>;
-  updateCarTokenUri(carId: bigint, tokenUri: string): Promise<ContractTransactionResponse>;
   getMyCars(): Promise<ContractCarInfoDTO[]>;
   getCarsOfHost(host: string): Promise<ContractPublicHostCarDTO[]>;
-  getCarMetadataURI(carId: bigint): Promise<string>;
   getCarInfoById(carId: bigint): Promise<ContractCarInfoWithInsurance>;
   getCarDetails(carId: bigint): Promise<ContractCarDetails>;
 
@@ -80,7 +77,6 @@ export interface IRentalityGatewayContract extends IEthersContract {
   /// GENERAL
   getTripsAs(host: boolean): Promise<ContractTripDTO[]>;
   getTrip(tripId: bigint): Promise<ContractTripDTO>;
-  getTripContactInfo(tripId: bigint): Promise<ContractTripContactInfo>;
 
   ///   HOST
   approveTripRequest(tripId: bigint): Promise<ContractTransactionResponse>;
@@ -151,23 +147,33 @@ export interface IRentalityGatewayContract extends IEthersContract {
   //PROMO functions
   checkPromo(code: string, startDateTime: bigint, endDateTime: bigint): Promise<ContractCheckPromoDTO>;
 
+  // DIMO functions
+  saveDimoTokenIds(dimoTokenIds: bigint[], rentalityCarIds: bigint[]): Promise<ContractTransactionResponse>;
+
+  // OTHERS
+  getAvaibleCurrencies(): Promise<ContractCurrency[]>;
+  getUniqCarsBrand(): Promise<string[]>;
+  getUniqModelsByBrand(brand: string): Promise<string[]>;
+  setPhoneNumber(user: string, phone: string, isVerified: boolean): Promise<ContractTransactionResponse>;
+
   /// GENERAL functions
   address: string;
-  owner(): Promise<string>;
 
   // temporary is not working (reversed)
-  isCarDetailsConfirmed(carId: bigint): Promise<boolean>;
-  confirmCarDetails(carId: bigint): Promise<ContractTransactionResponse>;
+  // isCarDetailsConfirmed(carId: bigint): Promise<boolean>;
+  // confirmCarDetails(carId: bigint): Promise<ContractTransactionResponse>;
+
+  // dimo
+  // DIMO functions
+  saveDimoTokenIds(dimoTokenIds: bigint[], rentalityCarIds: bigint[]): Promise<ContractTransactionResponse>;
 
   //not using
-  updateServiceAddresses(): Promise<ContractTransactionResponse>;
-  getAllCars(): Promise<ContractCarInfo[]>;
-  getTripReceipt(tripId: bigint): Promise<ContractTripReceiptDTO>;
-  getAvailableCars(): Promise<ContractCarInfo[]>;
-  getAvailableCarsForUser(user: string): Promise<ContractCarInfo[]>;
+  // owner(): Promise<string>;
+  // updateServiceAddresses(): Promise<ContractTransactionResponse>;
+  // getAllCars(): Promise<ContractCarInfo[]>;
+  // getTripReceipt(tripId: bigint): Promise<ContractTripReceiptDTO>;
+  // getAvailableCars(): Promise<ContractCarInfo[]>;
+  // getAvailableCarsForUser(user: string): Promise<ContractCarInfo[]>;
+  //updateCarTokenUri(carId: bigint, tokenUri: string): Promise<ContractTransactionResponse>;
+  // getCarMetadataURI(carId: bigint): Promise<string>;
 }
-
-type ContractTripContactInfo = {
-  guestPhoneNumber: string;
-  hostPhoneNumber: string;
-};

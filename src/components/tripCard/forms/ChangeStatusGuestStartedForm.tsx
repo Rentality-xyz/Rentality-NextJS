@@ -48,7 +48,7 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
     depositToBeReturned = depositToBeReturned > 0 ? depositToBeReturned : 0;
 
     const { hasFeatureFlag } = useFeatureFlags();
-    const [ hasTripPhotosFeatureFlag, setHasTripPhotosFeatureFlag ] = useState<boolean>(false);
+    const [hasTripPhotosFeatureFlag, setHasTripPhotosFeatureFlag] = useState<boolean>(false);
 
     const carPhotosUploadButtonRef = useRef<any>(null);
 
@@ -66,15 +66,14 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
       hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
         setHasTripPhotosFeatureFlag(hasTripPhotosFeatureFlag);
       });
-    },[]);
+    }, []);
 
     async function onFormSubmit(formData: ChangeStatusGuestStartedFormValues) {
-
       let tripPhotosUrls: string[] = [];
 
       if (hasTripPhotosFeatureFlag) {
         tripPhotosUrls = await carPhotosUploadButtonRef.current.saveUploadedFiles();
-        if(tripPhotosUrls.length === 0){
+        if (tripPhotosUrls.length === 0) {
           showDialog(t("common.photos_required"));
           return;
         }
@@ -83,11 +82,9 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
       changeStatusCallback(() => {
         return tripInfo.allowedActions[0].action(
           BigInt(tripInfo.tripId),
-          [
-            formData.fuelOrBatteryLevel.toString(),
-            formData.odotemer.toString(),
-          ],
-          tripPhotosUrls);
+          [formData.fuelOrBatteryLevel.toString(), formData.odotemer.toString()],
+          tripPhotosUrls
+        );
       });
     }
 
@@ -159,7 +156,7 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
                 </div>
               </div>
             </div>
-            { hasTripPhotosFeatureFlag && (
+            {hasTripPhotosFeatureFlag && (
               <div className="flex flex-1 flex-col">
                 <CarPhotosUploadButton
                   ref={carPhotosUploadButtonRef}

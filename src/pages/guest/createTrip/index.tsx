@@ -22,7 +22,6 @@ import { DialogActions } from "@/utils/dialogActions";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import React, { useReducer, useState } from "react";
 import RntTripRulesModal from "@/components/common/rntTripRulesModal";
-import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
 import { SearchCarInfoDetails } from "@/model/SearchCarsResult";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
@@ -44,18 +43,16 @@ function CreateTrip() {
   const { isLoading, carInfo } = useSearchCar(searchCarRequest, searchCarFilters.carId);
 
   return (
-    <CheckingLoadingAuth>
-      <RntSuspense isLoading={isLoading}>
-        {!carInfo && <p>Car is not found</p>}
-        {carInfo && (
-          <CreateTripDetailsContent
-            carInfo={carInfo}
-            searchCarRequest={searchCarRequest}
-            searchCarFilters={searchCarFilters}
-          />
-        )}
-      </RntSuspense>
-    </CheckingLoadingAuth>
+    <RntSuspense isLoading={isLoading}>
+      {!carInfo && <p>Car is not found</p>}
+      {carInfo && (
+        <CreateTripDetailsContent
+          carInfo={carInfo}
+          searchCarRequest={searchCarRequest}
+          searchCarFilters={searchCarFilters}
+        />
+      )}
+    </RntSuspense>
   );
 }
 
@@ -187,6 +184,7 @@ function CreateTripDetailsContent({
           pricePerDayWithHostDiscount={carInfo.pricePerDayWithHostDiscount}
           tripDays={carInfo.tripDays}
           tripDiscounts={carInfo.tripDiscounts}
+          dimoTokenId={carInfo.dimoTokenId}
         />
         <AboutCar
           carName={carInfo.carName}

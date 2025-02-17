@@ -169,10 +169,7 @@ function CurrentStatusInfo({
     hideDialogs();
 
     changeStatusCallback(() => {
-      return tripInfo.allowedActions[0].action(
-        BigInt(tripInfo.tripId),
-        [],
-        []);
+      return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), [], []);
     });
   };
 
@@ -255,13 +252,8 @@ function CurrentStatusInfo({
                     disabled={disableButton}
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
-
                         changeStatusCallback(() => {
-                          return action.action(
-                            BigInt(tripInfo.tripId),
-                            [],
-                            []
-                          );
+                          return action.action(BigInt(tripInfo.tripId), [], []);
                         });
                       } else {
                         setIsAdditionalActionHidden(false);
@@ -277,13 +269,8 @@ function CurrentStatusInfo({
                     disabled={disableButton}
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
-
                         changeStatusCallback(() => {
-                          return action.action(
-                            BigInt(tripInfo.tripId),
-                            [],
-                            []
-                          );
+                          return action.action(BigInt(tripInfo.tripId), [], []);
                         });
                       } else {
                         setIsAdditionalActionHidden(false);

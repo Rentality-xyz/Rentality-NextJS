@@ -14,6 +14,7 @@ import icInsurance from "@/images/ic_insurance.svg";
 import toAppStore from "@/images/to_app_store.png";
 import toGooglePlay from "@/images/to_google_play.png";
 import icReferralsAndPoints from "@/images/ic_referrals_and_points.png";
+import icInvest from "@/images/ic_invest.png";
 
 enum MenuIcons {
   Booked,
@@ -30,6 +31,7 @@ enum MenuIcons {
   Insurance,
   ToAppStore,
   ToGooglePlay,
+  Invest,
   ReferralsAndPoints,
 }
 
@@ -65,6 +67,8 @@ export const getImageForMenu = (state: MenuIcons): StaticImageData => {
       return toGooglePlay;
     case MenuIcons.ReferralsAndPoints:
       return icReferralsAndPoints;
+    case MenuIcons.Invest:
+      return icInvest;
   }
 };
 

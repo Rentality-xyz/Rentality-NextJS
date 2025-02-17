@@ -13,7 +13,7 @@ function GuestConfirmFinishForm({
   handleFinishTrip,
   handleCancel,
   t,
-  tripId
+  tripId,
 }: {
   hostPhoneNumber: string;
   messageFromHost: string;
@@ -25,8 +25,8 @@ function GuestConfirmFinishForm({
   const telLink = `tel:${hostPhoneNumber}`;
 
   const { hasFeatureFlag } = useFeatureFlags();
-  const [ hasTripPhotosFeatureFlag, setHasTripPhotosFeatureFlag ] = useState<boolean>(false);
-  const [ noFilesUploadedError, setNoFilesUploadedError] = useState(false);
+  const [hasTripPhotosFeatureFlag, setHasTripPhotosFeatureFlag] = useState<boolean>(false);
+  const [noFilesUploadedError, setNoFilesUploadedError] = useState(false);
 
   const carPhotosUploadButtonRef = useRef<any>(null);
 
@@ -34,23 +34,23 @@ function GuestConfirmFinishForm({
     hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
       setHasTripPhotosFeatureFlag(hasTripPhotosFeatureFlag);
     });
-  },[]);
+  }, []);
 
   const onConfirmClick = () => {
     hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
-      if(hasTripPhotosFeatureFlag){
+      if (hasTripPhotosFeatureFlag) {
         carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
-          if(tripPhotosUrls.length === 0){
-            setNoFilesUploadedError(true)
+          if (tripPhotosUrls.length === 0) {
+            setNoFilesUploadedError(true);
           } else {
-            handleFinishTrip()
+            handleFinishTrip();
           }
         });
       } else {
-        handleFinishTrip()
+        handleFinishTrip();
       }
     });
-  }
+  };
 
   return (
     <div className="flex w-full flex-col items-center gap-2">
@@ -72,9 +72,9 @@ function GuestConfirmFinishForm({
       <a className="w-full" href={telLink}>
         <RntButtonTransparent className="my-1 w-full">Contact to host</RntButtonTransparent>
       </a>
-      { hasTripPhotosFeatureFlag && (
+      {hasTripPhotosFeatureFlag && (
         <>
-          {noFilesUploadedError && (<div>{t("common.photos_required")}</div>)}
+          {noFilesUploadedError && <div>{t("common.photos_required")}</div>}
           <CarPhotosUploadButton
             ref={carPhotosUploadButtonRef}
             isHost={false}

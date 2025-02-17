@@ -140,7 +140,9 @@ function DropdownPortal({ children }: { children?: React.ReactNode }) {
   if (!context) throw new Error("Dropdown must be used within a RntFilterSelect");
 
   const { containerRef } = context;
-  const [position, setPosition] = useState<{ top: number; left: number; width: number } | undefined>(undefined);
+  const [position, setPosition] = useState<{ top: number; left: number; width: number; realTop: number } | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -150,19 +152,25 @@ function DropdownPortal({ children }: { children?: React.ReactNode }) {
       top: rect.bottom + window.scrollY,
       left: rect.left + window.scrollX,
       width: rect.width,
+      realTop: rect.bottom,
     });
   }, [containerRef]);
 
   if (!position) return null;
 
+  const minDropdownHeight = 400;
+  const viewportHeight = window.innerHeight;
+  const availableSpaceBelow = viewportHeight - (position.realTop + 8);
+  const dropdownHeight = Math.max(availableSpaceBelow, minDropdownHeight) - 8;
+
   return createPortal(
     <div
-      className="absolute z-10 overflow-y-auto rounded-lg border border-gray-500 bg-rentality-bg-left-sidebar px-0 py-2 shadow-md"
+      className="absolute z-10 overflow-y-auto custom-scroll rounded-lg border border-gray-500 bg-rentality-bg-left-sidebar px-0 py-2 shadow-md"
       style={{
         top: `${position.top + 8}px`,
         left: `${position.left}px`,
         // width: `${position.width}px`,
-        maxHeight: `calc(100vh - ${position.top + 8}px)`,
+        maxHeight: `${dropdownHeight}px`,
       }}
     >
       {children}
