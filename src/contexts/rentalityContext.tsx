@@ -17,6 +17,7 @@ import {
   IRentalityCurrencyConverter,
   IRentalityCurrencyConverterContract,
 } from "@/features/blockchain/models/IRentalityCurrencyConverter";
+import { IRentalityAiDamageAnalyze } from "@/features/blockchain/models/IRentalityAiDamageAnalyze";
 
 export interface IRentalityContracts {
   gateway: IRentalityGatewayContract;
@@ -24,6 +25,7 @@ export interface IRentalityContracts {
   referralProgram: IRentalityReferralProgram;
   investment: IRentalityInvestment;
   currencyConverter: IRentalityCurrencyConverter;
+  aiDamageAnalyze: IRentalityAiDamageAnalyze;
 }
 
 interface RentalityContextType {
