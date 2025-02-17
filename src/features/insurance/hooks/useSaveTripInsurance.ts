@@ -51,9 +51,11 @@ const useSaveTripInsurance = () => {
         return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [INSURANCE_GUEST_QUERY_KEY] });
-      queryClient.invalidateQueries({ queryKey: [INSURANCE_LIST_QUERY_KEY] });
+    onSuccess: (data) => {
+      if (data.ok) {
+        queryClient.invalidateQueries({ queryKey: [INSURANCE_GUEST_QUERY_KEY] });
+        queryClient.invalidateQueries({ queryKey: [INSURANCE_LIST_QUERY_KEY] });
+      }
     },
   });
 };
