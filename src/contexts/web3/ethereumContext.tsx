@@ -14,7 +14,6 @@ export type EthereumInfo = {
   walletBalance: number;
   chainId: number;
   isWalletConnected: boolean;
-  connectWallet: () => Promise<void>;
   requestChainIdChange: (chainId: number) => Promise<boolean>;
   defaultRpcUrl: string;
 };
@@ -26,7 +25,7 @@ export function useEthereum() {
 }
 
 export const EthereumProvider = ({ children }: { children?: React.ReactNode }) => {
-  const { connectWallet, ready, authenticated } = usePrivy();
+  const { ready, authenticated } = usePrivy();
   const { wallets, ready: walletsReady } = useWallets();
   const router = useRouter();
   const [ethereumInfo, setEthereumInfo] = useState<EthereumInfo | null | undefined>(undefined);
@@ -108,9 +107,6 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
             walletBalance: currentWalletBalanceInEth,
             chainId: currentChainId,
             isWalletConnected: ready && authenticated,
-            connectWallet: async () => {
-              connectWallet();
-            },
             requestChainIdChange: requestChainIdChange,
             defaultRpcUrl: url,
           };
@@ -121,7 +117,7 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
     };
 
     getEtherProvider();
-  }, [wallets, connectWallet, ready, authenticated, walletsReady]);
+  }, [wallets, ready, authenticated, walletsReady]);
 
   useEffect(() => {
     if (!authenticated && ethereumInfo !== null && ready) {
