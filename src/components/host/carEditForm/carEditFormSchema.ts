@@ -88,7 +88,7 @@ const defaultCarEditFormSchema = z
       .max(2100, "Release year is too big")
       .int("Release year must be an integer"),
 
-    images: z.array(carFileFormSchema).min(1, "Please, download an image"),
+    images: z.array(carFileFormSchema).min(1, "Please upload an image"),
 
     name: z.string().trim().min(1, "Name is too short").max(25, "Name is too long"),
     licensePlate: z.string().trim().min(1, "License plate is too short").max(15, "License plate is too long"),
