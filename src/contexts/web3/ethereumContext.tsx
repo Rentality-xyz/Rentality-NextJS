@@ -106,7 +106,7 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
     };
 
     getEtherProvider();
-  }, [wallets, connectWallet, ready, authenticated, walletsReady]);
+  }, [wallets, ready, authenticated, walletsReady]);
 
   useEffect(() => {
     if (!authenticated && ethereumInfo !== null && ready) {

@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
       return;
     }
     login();
-  }, [authenticated, wallets, connectWallet, login]);
+  }, [authenticated, wallets]);
 
   useEffect(() => {
     const isAuth = ready && walletsReady && authenticated && wallets.length > 0;
@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
       login: customLogin,
       logout: logout,
     }),
-    [isLoadingAuth, isAuthenticated, customLogin, logout]
+    [isLoadingAuth, isAuthenticated]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
