@@ -4,13 +4,13 @@ import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { PlatformCarImage } from "@/model/FileToUpload";
 import { useTranslation } from "react-i18next";
-import cn from "classnames";
-import RntCheckbox from "@/components/common/rntCheckbox";
 import { resizeImage } from "@/utils/image";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import imgCircleBtn from "@/images/img_circle_for_transparent_btn.svg";
 import RntButton from "@/components/common/rntButton";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
+import ic_delete from "@/images/ic_delete.png";
+import ic_edit_car from "@/images/ic_edit_car.png";
 
 const heightCroppedCanvas = 720;
 const widthCroppedCanvas = 1280;
@@ -85,9 +85,18 @@ function CarAddPhoto({
       const croppedFile = new File([blob], `cropped-${Date.now()}.jpg`, { type: "image/jpeg" });
       const fileUrl = URL.createObjectURL(croppedFile);
 
-      onCarImagesChange([...carImages, { file: croppedFile, localUrl: fileUrl, isPrimary: carImages.length === 0 }]);
-      setShowCropper(false);
-      setCropImage(null);
+      if (currentIndexRef.current === -1) {
+        onCarImagesChange([...carImages, { file: croppedFile, localUrl: fileUrl, isPrimary: carImages.length === 0 }]);
+      } else {
+        const newImages = carImages.map((img, i) =>
+          i === currentIndexRef.current
+            ? { ...img, file: croppedFile, localUrl: fileUrl, isPrimary: img.isPrimary }
+            : img
+        );
+        onCarImagesChange(newImages);
+      }
+
+      handleCancelCrop();
     }, "image/jpeg");
   }
 
@@ -108,11 +117,9 @@ function CarAddPhoto({
   }
 
   function handleEditClick(index: number) {
-    const carImage = carImages[index];
-    const imageUrl = "url" in carImage ? carImage.url : carImage.localUrl;
-    setCropImage(imageUrl);
-    setShowCropper(true);
     currentIndexRef.current = index;
+    // handleImageChange;
+    inputRef.current?.click();
   }
 
   function handleCheckboxClick(index: number) {
@@ -128,13 +135,13 @@ function CarAddPhoto({
       <p className="pl-4">{t("vehicles.upload_photos_title")}</p>
       <ScrollingHorizontally>
         {carImages.map((carImage, index) => {
-          const carImageUrl = "url" in carImage ? carImage.url : carImage.localUrl;
+          const carImageUrl = "localUrl" in carImage ? carImage.localUrl : carImage.url;
           return (
             <div key={index} className="relative">
               <div className="relative h-[162px] w-[288px] overflow-hidden rounded-2xl">
                 <Image className="h-full w-full object-cover" width={1000} height={1000} src={carImageUrl} alt="" />
                 <button
-                  className="absolute bottom-0 left-0 z-10 bg-rentality-additional px-2"
+                  className="absolute bottom-1 right-1 z-10 rounded-2xl bg-[#000000] bg-opacity-75 p-1"
                   type="button"
                   disabled={readOnly}
                   onClick={(e) => {
@@ -142,10 +149,10 @@ function CarAddPhoto({
                     handleDeleteClick(index);
                   }}
                 >
-                  {t("common.delete")}
+                  <Image src={ic_delete} alt="" className="w-[24px]" />
                 </button>
                 <button
-                  className="absolute bottom-0 right-0 bg-rentality-additional px-2"
+                  className="absolute right-1 top-1 rounded-2xl bg-[#000000] bg-opacity-75 p-1"
                   type="button"
                   disabled={readOnly}
                   onClick={(e) => {
@@ -153,15 +160,20 @@ function CarAddPhoto({
                     handleEditClick(index);
                   }}
                 >
-                  {t("common.edit")}
+                  <Image src={ic_edit_car} alt="" className="w-[24px]" />
                 </button>
               </div>
-              <RntCheckbox
-                className="absolute -left-2 -top-2"
-                checked={carImage.isPrimary}
-                readOnly={readOnly}
-                onChange={() => handleCheckboxClick(index)}
-              />
+              <div
+                className="bg-opacity-85 absolute left-1 top-1 flex cursor-pointer flex-row items-center gap-2 rounded-2xl bg-[#000000] p-1 transition-colors"
+                onClick={() => handleCheckboxClick(index)}
+                role="button"
+              >
+                <div
+                  className={`flex h-4 w-4 items-center justify-center rounded-full border-2 border-rentality-additional-tint bg-transparent transition-all`}
+                >
+                  {carImage.isPrimary && <div className="h-2 w-2 rounded-full bg-rentality-additional-tint"></div>}
+                </div>
+              </div>
             </div>
           );
         })}
