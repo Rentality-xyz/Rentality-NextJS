@@ -37,7 +37,7 @@ export default function ListingItem({
     <div className="rnt-card flex flex-col overflow-hidden rounded-xl bg-rentality-bg">
       <div
         style={{ backgroundImage: `url(${carInfo.image})` }}
-        className="relative min-h-[12rem] w-full flex-shrink-0 bg-cover bg-center xl:h-[212px]"
+        className="relative h-[212px] w-full flex-shrink-0 bg-cover bg-center"
       >
         <div className={statusClassName}>
           <strong>{`${getListingStatusTextFromStatus(carInfo.currentlyListed, t)}`}</strong>
