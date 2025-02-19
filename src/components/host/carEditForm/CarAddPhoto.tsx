@@ -149,7 +149,7 @@ function CarAddPhoto({
                     handleDeleteClick(index);
                   }}
                 >
-                  <Image src={ic_delete} alt="" className="w-[24px]" />
+                  <Image src={ic_delete} alt="" className="w-[18px]" />
                 </button>
                 <button
                   className="absolute right-1 top-1 rounded-2xl bg-[#000000] bg-opacity-75 p-1"
@@ -160,7 +160,7 @@ function CarAddPhoto({
                     handleEditClick(index);
                   }}
                 >
-                  <Image src={ic_edit_car} alt="" className="w-[24px]" />
+                  <Image src={ic_edit_car} alt="" className="w-[18px]" />
                 </button>
               </div>
               <div
