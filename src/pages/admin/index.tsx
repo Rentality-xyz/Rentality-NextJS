@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
 import { isEmpty } from "@/utils/string";
 import { env } from "@/utils/env";
+import ManageRole from "@/features/admin/general/components/ManageRole";
 
 function Admin() {
   const {
@@ -17,7 +18,6 @@ function Admin() {
     setPlatformFeeInPPM,
     saveKycCommission,
     saveClaimWaitingTime,
-    grantAdminRole,
     updateKycInfoForAddress,
     setTestKycInfoForAddress,
     createTestTrip,
@@ -26,7 +26,6 @@ function Admin() {
   const [newPlatformFee, setNewPlatformFee] = useState("");
   const [newKycCommission, setNewKycCommission] = useState("");
   const [newClaimWaitingTime, setNewClaimWaitingTime] = useState("");
-  const [addressForAdminRole, setAddressForAdminRole] = useState("0x");
   const [addressToUpdateKyc, setAddressToUpdateKyc] = useState("0x");
   const [addressToSetTestKycInfo, setAddressToSetTestKycInfo] = useState("0x");
 
@@ -126,17 +125,6 @@ function Admin() {
       await saveClaimWaitingTime(value);
     } catch (e) {
       showError(t_errors("claim_waiting_time_error") + e);
-    }
-  };
-
-  const handleGrantAdminRole = async () => {
-    if (isEmpty(addressForAdminRole) || !addressForAdminRole.startsWith("0x") || addressForAdminRole.length !== 42)
-      return;
-
-    try {
-      await grantAdminRole(addressForAdminRole);
-    } catch (e) {
-      showError(t_errors("grant_admin_role_error") + e);
     }
   };
 
@@ -256,22 +244,7 @@ function Admin() {
           handleSaveClaimWaitingTime();
         }}
       />
-      <RntInputWithButton
-        id="grand_admin_role"
-        placeholder="0x"
-        label="Grant admin role to address"
-        value={addressForAdminRole}
-        onChange={(e) => {
-          setAddressForAdminRole(e.target.value);
-        }}
-        buttonText={"Grant"}
-        buttonDisabled={
-          isEmpty(addressForAdminRole) || !addressForAdminRole.startsWith("0x") || addressForAdminRole.length !== 42
-        }
-        onButtonClick={() => {
-          handleGrantAdminRole();
-        }}
-      />
+      <ManageRole />
       <RntInputWithButton
         id="update_kyc_for_address"
         placeholder="0x"
