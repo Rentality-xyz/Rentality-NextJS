@@ -2,7 +2,7 @@ import { formatEther, parseEther } from "ethers";
 import { useEffect, useRef, useState } from "react";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { EMPTY_PROMOCODE, ETH_DEFAULT_ADDRESS } from "@/utils/constants";
-import { ContractCivicKYCInfo, ContractCreateTripRequestWithDelivery, Role } from "@/model/blockchain/schemas";
+import { ContractCivicKYCInfo, ContractCreateTripRequestWithDelivery } from "@/model/blockchain/schemas";
 import { kycDbInfo } from "@/utils/firebase";
 import { isEmpty } from "@/utils/string";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
@@ -105,20 +105,6 @@ const useAdminPanelInfo = () => {
     setIsLoading(true);
 
     const result = await admin.setClaimsWaitingTime(BigInt(value));
-
-    setIsLoading(false);
-    return result.ok;
-  };
-
-  const grantAdminRole = async (address: string) => {
-    if (!admin) {
-      console.error("grantAdminRole error: rentalityAdminGateway is null");
-      return false;
-    }
-
-    setIsLoading(true);
-
-    const result = await admin.manageRole(Role.Admin, address, true);
 
     setIsLoading(false);
     return result.ok;
@@ -323,7 +309,6 @@ const useAdminPanelInfo = () => {
     setPlatformFeeInPPM,
     saveKycCommission,
     saveClaimWaitingTime,
-    grantAdminRole,
     updateKycInfoForAddress,
     setTestKycInfoForAddress,
     createTestTrip,
