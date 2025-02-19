@@ -13,6 +13,7 @@ export type ProfileSettings = {
   profilePhotoUrl: string;
   nickname: string;
   phoneNumber: string;
+  isPhoneNumberVerified: boolean;
   tcSignature: string;
   fullname: string;
   documentType: string;
@@ -26,6 +27,7 @@ const emptyProfileSettings: ProfileSettings = {
   profilePhotoUrl: "",
   nickname: "",
   phoneNumber: "",
+  isPhoneNumberVerified: false,
   tcSignature: "",
   fullname: "",
   documentType: "",
@@ -84,6 +86,7 @@ const useProfileSettings = () => {
         profilePhotoUrl: getIpfsURI(result.value.kyc.profilePhoto),
         nickname: result.value.kyc.name,
         phoneNumber: formatPhoneNumber(result.value.kyc.mobilePhoneNumber),
+        isPhoneNumberVerified: result.value.isPhoneVerified,
         tcSignature: result.value.kyc.TCSignature,
         fullname: result.value.kyc.surname,
         documentType: "driving license",
