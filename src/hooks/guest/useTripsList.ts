@@ -45,6 +45,8 @@ const useTripsList = (isHost: boolean) => {
                   return mapTripDTOtoTripInfoShordDetails(i);
                 })
               );
+        tripsData.sort((a, b) => b.tripId - a.tripId);
+
         setTrips(tripsData);
       } catch (e) {
         console.error("getTrips error:" + e);
