@@ -1,6 +1,6 @@
-import { ContractCarDetails } from "../blockchain/schemas";
+import { ContractCarDetails } from "@/model/blockchain/schemas";
+import { AdminCarDetails } from "..";
 import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
-import { AdminCarDetails } from "../admin/AdminCarDetails";
 
 export const mapContractCarToAdminCarDetails = async (
   car: ContractCarDetails,
