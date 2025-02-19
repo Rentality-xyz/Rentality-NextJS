@@ -6,7 +6,7 @@ import { resizeImage } from "@/utils/image";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
-import { ChangeEvent, useEffect } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
@@ -24,9 +24,9 @@ import { isUserHasEnoughFunds } from "@/utils/wallet";
 import useUserMode from "@/hooks/useUserMode";
 
 function UserCommonInformationForm({
-  savedProfileSettings,
-  saveProfileSettings,
-}: {
+                                     savedProfileSettings,
+                                     saveProfileSettings,
+                                   }: {
   savedProfileSettings: ProfileSettings;
   saveProfileSettings: (newProfileSettings: ProfileSettings) => Promise<boolean>;
 }) {
@@ -41,8 +41,10 @@ function UserCommonInformationForm({
       profilePhotoUrl: savedProfileSettings.profilePhotoUrl,
       nickname: savedProfileSettings.nickname,
       phoneNumber: savedProfileSettings.phoneNumber,
+      isPhoneNumberVerified: savedProfileSettings.isPhoneNumberVerified,
       email: savedProfileSettings.email,
       tcSignature: savedProfileSettings.tcSignature,
+      smsCode: "",
     },
     resolver: zodResolver(userCommonInformationFormSchema),
   });
@@ -153,6 +155,68 @@ function UserCommonInformationForm({
     checkSignature();
   }, [ethereumInfo, savedProfileSettings.tcSignature, setValue]);
 
+  const [smsHash, setSmsHash] = useState<string | undefined>(undefined);
+  const [smsTimestamp, setSmsTimestamp] = useState<number | undefined>(undefined);
+  const [isEnteredCodeCorrect, setIsEnteredCodeCorrect] = useState(false);
+
+  const enteredPhoneNumber = watch("phoneNumber");
+
+  async function sendSmsVerificationCode() {
+    if (!enteredPhoneNumber) {
+      showError(t("profile.pls_phone"));
+      return;
+    }
+
+    const response = await fetch("/api/sendSmsVerificationCode", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        phoneNumber: enteredPhoneNumber,
+      }),
+    });
+    const result = await response.json();
+    if (response.ok) {
+      console.log(result);
+      setSmsHash(result.hash);
+      setSmsTimestamp(result.timestamp);
+    } else {
+      showError(result.error);
+    }
+  }
+
+  const enteredCode = watch("smsCode");
+
+  async function compareVerificationCode() {
+    if (!smsHash && !smsTimestamp) return;
+
+    const response = await fetch("/api/compareVerificationCode", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userAddress: ethereumInfo?.walletAddress,
+        phoneNumber: enteredPhoneNumber,
+        enteredCode: enteredCode,
+        smsHash: smsHash,
+        timestamp: smsTimestamp,
+        chainId: ethereumInfo?.chainId,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      showError(result.error);
+      return;
+    }
+
+    if (result.isVerified) {
+      setIsEnteredCodeCorrect(true);
+      return;
+    }
+
+    showError(t("profile.invalid_code"));
+  }
+
   return (
     <form className="flex flex-col gap-4 lg:my-8" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
       <Controller
@@ -195,7 +259,16 @@ function UserCommonInformationForm({
             {...register("nickname")}
             validationError={errors.nickname?.message}
           />
-
+          <RntInput
+            className="lg:w-60"
+            labelClassName="pl-[16px]"
+            id="email"
+            label={t("profile.email")}
+            {...register("email")}
+            validationError={errors.email?.message}
+          />
+        </div>
+        <div className="mt-4 flex flex-wrap items-end gap-4">
           <Controller
             name="phoneNumber"
             control={control}
@@ -212,16 +285,53 @@ function UserCommonInformationForm({
               />
             )}
           />
-          <RntInput
-            className="lg:w-60"
-            labelClassName="pl-[16px]"
-            id="email"
-            label={t("profile.email")}
-            {...register("email")}
-            validationError={errors.email?.message}
-          />
+          {!savedProfileSettings.isPhoneNumberVerified && !isEnteredCodeCorrect && (
+            <RntButton
+              className={"h-8"}
+              onClick={sendSmsVerificationCode}
+              disabled={smsHash !== undefined && smsTimestamp !== undefined}
+            >
+              {t("profile.verify")}
+            </RntButton>
+          )}
         </div>
+        {!isEnteredCodeCorrect && !savedProfileSettings.isPhoneNumberVerified && smsHash && smsTimestamp && (
+          <div className="mt-4 flex flex-wrap items-end gap-4">
+            <Controller
+              name="smsCode"
+              control={control}
+              render={({ field }) => (
+                <RntInput
+                  className="lg:w-60"
+                  labelClassName="pl-[16px]"
+                  id="smsCode"
+                  value={field.value}
+                  inputMode="numeric"
+                  maxLength={6}
+                  onChange={(e) => {
+                    const newValue = e.target.value.replace(/\D/g, "");
+                    field.onChange(newValue.slice(0, 6));
+                  }}
+                  label={t("profile.sms_code")}
+                />
+              )}
+            />
+
+            <RntButton
+              className={"h-8"} onClick={compareVerificationCode}
+              disabled={enteredCode.length != 6}
+            >
+              {t("profile.confirm")}
+            </RntButton>
+          </div>
+        )}
       </fieldset>
+
+      {savedProfileSettings.isPhoneNumberVerified || isEnteredCodeCorrect ? (
+        <DotStatus color="success" text={t("profile.phone_verified")} />
+      ) : (
+        <DotStatus color="error" text={t("profile.phone_not_verified")} />
+      )}
 
       <p className="w-full pl-4 md:w-3/4 xl:w-3/5 2xl:w-1/3">{t("profile.agreement_info")}</p>
 
