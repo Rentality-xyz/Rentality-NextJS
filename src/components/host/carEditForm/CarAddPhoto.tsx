@@ -9,8 +9,8 @@ import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import imgCircleBtn from "@/images/img_circle_for_transparent_btn.svg";
 import RntButton from "@/components/common/rntButton";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
-import ic_delete from "@/images/ic_delete.png";
-import ic_edit_car from "@/images/ic_edit_car.png";
+import ic_delete from "@/images/ic_delete_white.svg";
+import ic_edit_car from "@/images/ic_edit_car_white.png";
 
 const heightCroppedCanvas = 720;
 const widthCroppedCanvas = 1280;
@@ -149,7 +149,7 @@ function CarAddPhoto({
                     handleDeleteClick(index);
                   }}
                 >
-                  <Image src={ic_delete} alt="" className="w-[18px]" />
+                  <Image src={ic_delete} alt="" className="w-[22px]" />
                 </button>
                 <button
                   className="absolute right-1 top-1 rounded-2xl bg-[#000000] bg-opacity-75 p-1"
@@ -160,18 +160,21 @@ function CarAddPhoto({
                     handleEditClick(index);
                   }}
                 >
-                  <Image src={ic_edit_car} alt="" className="w-[18px]" />
+                  <Image src={ic_edit_car} alt="" className="w-[22px]" />
                 </button>
               </div>
               <div
-                className="bg-opacity-85 absolute left-1 top-1 flex cursor-pointer flex-row items-center gap-2 rounded-2xl bg-[#000000] p-1 transition-colors"
+                className="group absolute left-1 top-1 flex cursor-pointer flex-row items-center gap-2 rounded-2xl bg-[#000000] bg-opacity-75 p-1 transition-colors"
                 onClick={() => handleCheckboxClick(index)}
                 role="button"
               >
+                <span className="pointer-events-none absolute left-[50px] top-[-4px] mt-1 -translate-x-1/2 whitespace-nowrap rounded-md bg-black bg-opacity-75 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
+                  main
+                </span>
                 <div
-                  className={`flex h-4 w-4 items-center justify-center rounded-full border-2 border-rentality-additional-tint bg-transparent transition-all`}
+                  className={`flex h-4 w-4 items-center justify-center rounded-full border-2 border-white bg-transparent transition-all`}
                 >
-                  {carImage.isPrimary && <div className="h-2 w-2 rounded-full bg-rentality-additional-tint"></div>}
+                  {carImage.isPrimary && <div className="h-2 w-2 rounded-full bg-white"></div>}
                 </div>
               </div>
             </div>
