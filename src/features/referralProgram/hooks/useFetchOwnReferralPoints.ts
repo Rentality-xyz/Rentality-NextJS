@@ -4,19 +4,21 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { AllOwnPointsInfo } from "../models";
 import { getAllPoints } from "../utils";
+import useOwnReferralPointsSharedStore from "./useOwnReferralPointsSharedStore";
 
 export const REFERRAL_OWN_POINTS_QUERY_KEY = "ReferralOwnPoints";
 
-type QueryData = { readyToClaim: number; allPoints: AllOwnPointsInfo | null };
+type QueryData = { allPoints: AllOwnPointsInfo | null };
 
 function useFetchOwnReferralPoints(componentName: string) {
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
+  const setReadyToClaim = useOwnReferralPointsSharedStore((state) => state.setReadyToClaim);
   const { t } = useTranslation();
 
   return useQuery<QueryData>({
     queryKey: [REFERRAL_OWN_POINTS_QUERY_KEY, ethereumInfo?.walletAddress],
-    initialData: { readyToClaim: 0, allPoints: null as AllOwnPointsInfo | null },
+    initialData: { allPoints: null as AllOwnPointsInfo | null },
     queryFn: async () => {
       if (!rentalityContracts || !ethereumInfo) {
         throw new Error("Contracts or wallet not initialized");
@@ -52,14 +54,11 @@ function useFetchOwnReferralPoints(componentName: string) {
       if (!result.ok) {
         throw new Error(result.error.message);
       }
+      const getReadyToClaim = Number(getReadyToClaimResult.value.totalPoints);
 
-      console.debug(
-        "totalPoints for component ",
-        componentName,
-        " is ",
-        Number(getReadyToClaimResult.value.totalPoints)
-      );
-      return { readyToClaim: Number(getReadyToClaimResult.value.totalPoints), allPoints: result.value };
+      console.debug("totalPoints for component ", componentName, " is ", getReadyToClaim);
+      setReadyToClaim(getReadyToClaim);
+      return { allPoints: result.value };
     },
     enabled: () => {
       console.debug(
