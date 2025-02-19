@@ -48,7 +48,7 @@ function Booked() {
     <>
       <PageTitle title={t("booked.title")} />
       <RntSuspense isLoading={isLoadingTrips}>
-        <div className="my-4 flex flex-col gap-4">
+        <div className="my-4 grid grid-cols-1 gap-4 2xl:grid-cols-2">
           {tripsBooked != null && tripsBooked.length > 0 ? (
             tripsBooked.map((value) => (
               <TripCard

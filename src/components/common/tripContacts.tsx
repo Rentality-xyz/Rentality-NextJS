@@ -7,11 +7,15 @@ function TripContacts({
   tripInfo,
   isHost,
   phoneForHost,
+  chatLinkClassName,
+  telLinkClassName,
   t,
 }: {
   tripInfo: TripInfo;
   isHost: boolean;
   phoneForHost?: boolean;
+  chatLinkClassName?: string;
+  telLinkClassName?: string;
   t: TFunction;
 }) {
   let phoneNumber;
@@ -25,28 +29,38 @@ function TripContacts({
 
   return (
     <>
-      <ChatLink tripId={tripInfo.tripId} asHost={isHost} t={t} />
-      <TelLink phoneNumber={phoneNumber} t={t} />
+      <ChatLink className={chatLinkClassName} tripId={tripInfo.tripId} asHost={isHost} t={t} />
+      <TelLink className={telLinkClassName} phoneNumber={phoneNumber} t={t} />
     </>
   );
 }
 
-function ChatLink({ tripId, asHost, t }: { tripId: number; asHost: boolean; t: TFunction }) {
+function ChatLink({
+  className,
+  tripId,
+  asHost,
+  t,
+}: {
+  className?: string;
+  tripId: number;
+  asHost: boolean;
+  t: TFunction;
+}) {
   const pathRoot = asHost ? "host" : "guest";
 
   return (
-    <Link href={`/${pathRoot}/messages?tridId=${tripId}`}>
+    <Link className={className} href={`/${pathRoot}/messages?tridId=${tripId}`}>
       <i className="fi fi-rs-envelope-open pr-1 text-rentality-icons"></i>
       <strong className="text-lg">{t("booked.chat")}</strong>
     </Link>
   );
 }
 
-function TelLink({ phoneNumber, t }: { phoneNumber: string; t: TFunction }) {
+function TelLink({ className, phoneNumber, t }: { className?: string; phoneNumber: string; t: TFunction }) {
   const telLink = `tel:${phoneNumber}`;
 
   return (
-    <a href={telLink}>
+    <a className={className} href={telLink}>
       <i className="fi fi-br-phone-flip pr-1 text-rentality-icons"></i>
       <strong className="text-lg">{t("booked.contact")}</strong>
     </a>
