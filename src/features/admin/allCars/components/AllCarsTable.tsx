@@ -1,11 +1,11 @@
 import { TFunction } from "@/utils/i18n";
 import { useTranslation } from "react-i18next";
 import Loading from "@/components/common/Loading";
-import { AdminCarDetails } from "@/model/admin/AdminCarDetails";
-import { cn } from "@/utils";
 import RntSuspense from "@/components/common/rntSuspense";
-import AllCarsTableRow from "../AllCarsTableRow";
+import { cn } from "@/utils";
 import { VinInfo } from "@/pages/api/car-api/vinInfo";
+import AllCarsTableRow from "./AllCarsTableRow";
+import { AdminCarDetails } from "../models";
 
 type AllCarsTableProps = {
   isLoading: boolean;
@@ -31,7 +31,7 @@ export default function AllCarsTable({ isLoading, data, checkVin }: AllCarsTable
         </div>
       }
     >
-      <div className="w-full overflow-x-auto custom-scroll">
+      <div className="custom-scroll w-full overflow-x-auto">
         <table className="w-full table-auto border-spacing-2">
           <thead className="mb-2">
             <tr className="border-b-[2px] border-b-gray-500">

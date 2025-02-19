@@ -1,11 +1,11 @@
-import { AdminCarDetails } from "@/model/admin/AdminCarDetails";
 import { useState } from "react";
 import Image from "next/image";
+import { AdminCarDetails } from "@/features/admin/allCars/models";
 import { VinInfo } from "@/pages/api/car-api/vinInfo";
 import { useTranslation } from "react-i18next";
-import RntButton from "../common/rntButton";
 import { cn } from "@/utils";
 import { formatAddress } from "@/utils/addressFormatters";
+import RntButton from "@/components/common/rntButton";
 
 type VinData = {
   checked: boolean;
