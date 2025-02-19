@@ -1,9 +1,9 @@
-import { useRentalityAdmin } from "@/contexts/rentalityContext";
-import { AdminCarDetails } from "@/model/admin/AdminCarDetails";
-import { validateContractAllCarsDTO } from "@/model/blockchain/schemas_utils";
-import { mapContractCarToAdminCarDetails } from "@/model/mappers/contractCarToAdminCarDetails";
-import { Err, Ok, Result } from "@/model/utils/result";
 import { useCallback, useState } from "react";
+import { useRentalityAdmin } from "@/contexts/rentalityContext";
+import { AdminCarDetails } from "@/features/admin/allCars/models";
+import { validateContractAllCarsDTO } from "@/model/blockchain/schemas_utils";
+import { mapContractCarToAdminCarDetails } from "@/features/admin/allCars/models/mappers/contractCarToAdminCarDetails";
+import { Err, Ok, Result } from "@/model/utils/result";
 
 const useAdminAllCars = () => {
   const { admin } = useRentalityAdmin();
