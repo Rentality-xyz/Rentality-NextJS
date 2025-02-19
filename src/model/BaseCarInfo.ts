@@ -13,6 +13,8 @@ export type BaseCarInfo = {
   milesIncludedPerDay: number;
   currentlyListed: boolean;
   isEditable: boolean;
+  vinNumber: string;
+  dimoTokenId: number;
 };
 
 export const getListingStatusTextFromStatus = (currentlyListed: boolean, t: TFunction) => {

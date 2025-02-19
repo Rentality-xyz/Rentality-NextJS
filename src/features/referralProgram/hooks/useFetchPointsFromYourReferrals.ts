@@ -1,12 +1,9 @@
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRentality } from "@/contexts/rentalityContext";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { Err } from "@/model/utils/result";
-import { REFERRAL_USER_BALANCE_QUERY_KEY } from "./useUserBalance";
 import { useMemo } from "react";
 import { usePaginationState } from "@/hooks/pagination";
-import { REFERRAL_POINTS_HISTORY_QUERY_KEY } from "./usePointsHistory";
 import { ContractReadyToClaimFromHash, RefferalProgram as ReferralProgram } from "@/model/blockchain/schemas";
 import { getReferralProgramDescriptionText } from "../utils";
 
@@ -19,18 +16,17 @@ export type PointsFromYourReferralsInfo = {
 
 export const REFERRAL_POINTS_FROM_YOUR_REFERRALS_QUERY_KEY = "ReferralPointsFromYourReferrals";
 
-function usePointsFromYourReferrals(initialPage: number = 1, initialItemsPerPage: number = 10) {
+function useFetchPointsFromYourReferrals(initialPage: number = 1, initialItemsPerPage: number = 10) {
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
-  const queryClient = useQueryClient();
-  const { t } = useTranslation();
-
   const { currentPage, itemsPerPage, updatePagination } = usePaginationState(initialPage, initialItemsPerPage);
+  const { t } = useTranslation();
 
   const {
     isLoading,
+    isFetching,
     data: allDataWithReadyToClaim = { readyToClaim: 0, combinedData: [] },
-    error: fetchError,
+    error,
   } = useQuery({
     queryKey: [REFERRAL_POINTS_FROM_YOUR_REFERRALS_QUERY_KEY],
     queryFn: async () => {
@@ -71,50 +67,21 @@ function usePointsFromYourReferrals(initialPage: number = 1, initialItemsPerPage
     await updatePagination(page, itemsPerPage, filters);
   };
 
-  const {
-    error: saveError,
-    mutateAsync: claimPoints,
-    isPending,
-  } = useMutation({
-    mutationFn: async () => {
-      try {
-        if (!rentalityContracts || !ethereumInfo) {
-          console.error("claimPoints error: Missing required contracts or ethereum info");
-          return Err(new Error("Missing required contracts or ethereum info"));
-        }
-
-        const result = await rentalityContracts.referralProgram.claimPoints(ethereumInfo.walletAddress);
-
-        return result.ok ? result : Err(new Error("claimMyPoints error: " + result.error));
-      } catch (error) {
-        console.error("claimPoints error: ", error);
-        return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [REFERRAL_POINTS_FROM_YOUR_REFERRALS_QUERY_KEY] });
-      queryClient.invalidateQueries({ queryKey: [REFERRAL_USER_BALANCE_QUERY_KEY] });
-      queryClient.invalidateQueries({ queryKey: [REFERRAL_POINTS_HISTORY_QUERY_KEY] });
-    },
-  });
-
   return {
     isLoading,
-    isPending,
-    readyToClaim: allDataWithReadyToClaim.readyToClaim,
+    isFetching,
     data: {
-      data: pageData,
+      readyToClaim: allDataWithReadyToClaim.readyToClaim,
+      pageData: pageData,
       currentPage: currentPage,
       totalPageCount: totalPageCount,
     },
     fetchData,
-    fetchError,
-    claimPoints,
-    saveError,
+    error,
   } as const;
 }
 
-export default usePointsFromYourReferrals;
+export default useFetchPointsFromYourReferrals;
 
 function calculateTotalReferralsByRefType(referrals: ContractReadyToClaimFromHash[]): Record<number, number> {
   const groupedData = referrals.reduce(

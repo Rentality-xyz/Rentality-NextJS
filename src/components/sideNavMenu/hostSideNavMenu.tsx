@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
 import { useChat } from "@/features/chat/contexts/chatContext";
 import { useAuth } from "@/contexts/auth/authContext";
+import * as React from "react";
 
 function HostNavMenu() {
   const { isAuthenticated, logout } = useAuth();
@@ -66,7 +67,7 @@ function HostNavMenu() {
         <SideNavMenuItem text={t_nav("listing")} href="/host/vehicles/listings" icon={MenuIcons.Listings} />
         <SideNavMenuItem text={t_nav("insurance")} href="/host/insurance" icon={MenuIcons.Insurance} />
         <SideNavMenuItem
-          text={t_nav("claims")}
+          text={t_nav("complaints")}
           href="/host/claims"
           icon={MenuIcons.Claims}
           notificationCount={claimsNotificationCount}
@@ -94,6 +95,7 @@ function HostNavMenu() {
           icon={MenuIcons.TransactionHistory}
         />
         <SideNavMenuItem text={t_nav("referrals_and_points")} href="/host/points" icon={MenuIcons.ReferralsAndPoints} />
+        <SideNavMenuItem text={t_nav("host_invest")} href="/host/invest" icon={MenuIcons.Invest} />
         <SideNavMenuItem text={t_nav("profile")} href="/host/profile" icon={MenuIcons.ProfileSettings} />
         {isAuthenticated ? (
           <SideNavMenuItem text={t_nav("logout")} href="/" onClick={logout} icon={MenuIcons.Logout} />

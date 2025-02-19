@@ -6,11 +6,13 @@ import PaginationWrapper from "@/components/common/PaginationWrapper";
 import PointsFromYourReferralsTable from "@/features/referralProgram/components/PointsFromYourReferralsTable";
 import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 import RntButton from "@/components/common/rntButton";
-import usePointsFromYourReferrals from "../hooks/usePointsFromYourReferrals";
+import useFetchPointsFromYourReferrals from "../hooks/useFetchPointsFromYourReferrals";
+import useClaimPointsFromYourReferrals from "../hooks/useClaimPointsFromYourReferrals";
 
 export default function PointsFromYourReferrals() {
   const itemsPerPage = 4;
-  const { isLoading, isPending, readyToClaim, data, fetchData, claimPoints } = usePointsFromYourReferrals();
+  const { isLoading, isFetching, data, fetchData } = useFetchPointsFromYourReferrals();
+  const { mutateAsync: claimPoints, isPending } = useClaimPointsFromYourReferrals();
   const { t } = useTranslation();
 
   async function fetchDataForPage(page: number) {
@@ -29,16 +31,17 @@ export default function PointsFromYourReferrals() {
         </div>
         <RntButton
           className="flex w-full items-center justify-center text-white max-sm:mt-4 sm:ml-auto sm:w-60 2xl:w-64"
-          disabled={readyToClaim === 0}
+          disabled={data.readyToClaim === 0 || isPending}
           onClick={handleClaimPointsClick}
         >
           <Image src={icStarPointsYellow} alt="" className="mr-2 h-7 w-7" />
           <div className="ml-0.5 flex">
             {isPending ? (
-              <>Loading...</>
+              <>Claiming...</>
             ) : (
               <>
-                Claim <span className="px-1 font-semibold text-rentality-star-point">{readyToClaim.toString()}</span>{" "}
+                Claim{" "}
+                <span className="px-1 font-semibold text-rentality-star-point">{data.readyToClaim.toString()}</span>{" "}
                 points
                 <span className="ml-4">●</span>
               </>
@@ -47,7 +50,7 @@ export default function PointsFromYourReferrals() {
         </RntButton>
       </div>
       <PaginationWrapper currentPage={data.currentPage} totalPages={data.totalPageCount} selectPage={fetchDataForPage}>
-        <PointsFromYourReferralsTable isLoading={isLoading} data={data.data} />
+        <PointsFromYourReferralsTable isLoading={isLoading || isFetching} data={data.pageData} />
       </PaginationWrapper>
     </div>
   );

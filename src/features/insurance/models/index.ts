@@ -8,6 +8,7 @@ export type Insurance = {
   policyNumber: string;
   comment: string;
   uploadedBy: string; // `Guest ${guestName} uploaded ${dateTime, DD.MM.YY hh:mm tt}` | `Guest ${guestName} deleted ${dateTime, DD.MM.YY hh:mm tt}`
+  uploadedAt: Date;
   isActual: boolean;
 };
 

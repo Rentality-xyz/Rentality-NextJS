@@ -6,11 +6,14 @@ import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { ZERO_4_BYTES_HASH } from "@/utils/wallet";
 import useReferralLinkLocalStorage from "@/features/referralProgram/hooks/useSaveReferralLinkToLocalStorage";
 import { isEmpty } from "@/utils/string";
+import { useQueryClient } from "@tanstack/react-query";
+import { REFERRAL_LINKS_QUERY_KEY } from "@/features/referralProgram/hooks/useFetchReferralLinks";
 
 export type ProfileSettings = {
   profilePhotoUrl: string;
   nickname: string;
   phoneNumber: string;
+  isPhoneNumberVerified: boolean;
   tcSignature: string;
   fullname: string;
   documentType: string;
@@ -24,6 +27,7 @@ const emptyProfileSettings: ProfileSettings = {
   profilePhotoUrl: "",
   nickname: "",
   phoneNumber: "",
+  isPhoneNumberVerified: false,
   tcSignature: "",
   fullname: "",
   documentType: "",
@@ -38,6 +42,7 @@ const useProfileSettings = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [profileSettings, setProfileSettings] = useState<ProfileSettings>(emptyProfileSettings);
   const { getLocalReferralCode, resetReferralCode } = useReferralLinkLocalStorage();
+  const queryClient = useQueryClient();
 
   const saveProfileSettings = async (newProfileSettings: ProfileSettings) => {
     if (!rentalityContracts) {
@@ -63,6 +68,7 @@ const useProfileSettings = () => {
     if (result.ok) {
       resetReferralCode();
     }
+    queryClient.invalidateQueries({ queryKey: [REFERRAL_LINKS_QUERY_KEY] });
     return result.ok;
   };
 
@@ -80,6 +86,7 @@ const useProfileSettings = () => {
         profilePhotoUrl: getIpfsURI(result.value.kyc.profilePhoto),
         nickname: result.value.kyc.name,
         phoneNumber: formatPhoneNumber(result.value.kyc.mobilePhoneNumber),
+        isPhoneNumberVerified: result.value.isPhoneVerified,
         tcSignature: result.value.kyc.TCSignature,
         fullname: result.value.kyc.surname,
         documentType: "driving license",

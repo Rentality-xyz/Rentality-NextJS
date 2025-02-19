@@ -28,6 +28,11 @@ export const env = createEnv({
     CARAPI_SECRET: z.string(),
 
     TEST_WALLETS_ADDRESSES: z.string(),
+    GOOGLE_MAPS_API_KEY: z.string().min(1),
+
+    TWILIO_ACCOUNT_SID: z.string(),
+    TWILIO_AUTH_TOKEN: z.string(),
+    VERIFICATION_HMAC_SHA256_SECRET_KEY: z.string()
   },
   client: {
     NEXT_PUBLIC_INCLUDE_MAINNETS: booleanEnvType,

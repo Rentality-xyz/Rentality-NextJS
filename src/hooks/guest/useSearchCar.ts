@@ -11,7 +11,7 @@ import { getIpfsURIs, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUti
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { bigIntReplacer } from "@/utils/json";
-import { getTimeZoneIdFromAddress } from "@/utils/timezone";
+import { getTimeZoneIdByAddress } from "@/utils/timezone";
 import { formatSearchAvailableCarsContractRequest } from "@/utils/searchMapper";
 
 const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
@@ -28,7 +28,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
       try {
         setIsLoading(true);
 
-        const timeZoneId = await getTimeZoneIdFromAddress(formatLocationInfoUpToCity(request.searchLocation));
+        const timeZoneId = (await getTimeZoneIdByAddress(request.searchLocation)) ?? "";
         const { contractDateFromUTC, contractDateToUTC, contractSearchCarParams } =
           formatSearchAvailableCarsContractRequest(request, {}, timeZoneId);
 
@@ -153,6 +153,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           salesTax: Number(availableCarDTO.salesTax) / 100,
           governmentTax: Number(availableCarDTO.governmentTax) / 100,
           distanceToUser: Number(availableCarDTO.distance),
+          dimoTokenId: Number(availableCarDTO.dimoTokenId ? availableCarDTO.dimoTokenId : 0),
         };
         setCarInfo(selectedCarDetails);
 

@@ -79,7 +79,7 @@ function GuestNavMenu() {
       <SideNavMenuGroup title={t_nav("more")}>
         <SideNavMenuItem text={t_nav("insurance")} href="/guest/insurance" icon={MenuIcons.Insurance} />
         <SideNavMenuItem
-          text={t_nav("claims")}
+          text={t_nav("complaints")}
           href="/guest/claims"
           icon={MenuIcons.Claims}
           notificationCount={claimsNotificationCount}
@@ -95,6 +95,7 @@ function GuestNavMenu() {
           href="/guest/points"
           icon={MenuIcons.ReferralsAndPoints}
         />
+        <SideNavMenuItem text={t_nav("guest_invest")} href="/guest/invest" icon={MenuIcons.Invest} />
         <SideNavMenuItem text={t_nav("profile")} href="/guest/profile" icon={MenuIcons.ProfileSettings} />
         {isAuthenticated ? (
           <SideNavMenuItem text={t_nav("logout")} href="/" onClick={logout} icon={MenuIcons.Logout} />

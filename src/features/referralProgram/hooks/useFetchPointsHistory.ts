@@ -14,12 +14,12 @@ export type ReferralHistoryInfo = {
 
 export const REFERRAL_POINTS_HISTORY_QUERY_KEY = "ReferralPointsHistory";
 
-const usePointsHistory = (initialPage: number = 1, initialItemsPerPage: number = 10) => {
+const useFetchPointsHistory = (initialPage: number = 1, initialItemsPerPage: number = 10) => {
   const { rentalityContracts } = useRentality();
   const { t } = useTranslation();
 
   const { isLoading, data, error, fetchData } = usePaginationForListApi<ReferralHistoryInfo>(
-    REFERRAL_POINTS_HISTORY_QUERY_KEY,
+    [REFERRAL_POINTS_HISTORY_QUERY_KEY],
     async () => {
       if (!rentalityContracts) {
         throw new Error("Contracts not initialized");
@@ -64,4 +64,4 @@ const usePointsHistory = (initialPage: number = 1, initialItemsPerPage: number =
   } as const;
 };
 
-export default usePointsHistory;
+export default useFetchPointsHistory;

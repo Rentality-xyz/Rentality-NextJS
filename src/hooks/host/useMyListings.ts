@@ -45,6 +45,8 @@ const useMyListings = () => {
                   milesIncludedPerDay: milesIncludedPerDay,
                   currentlyListed: i.carInfo.currentlyListed,
                   isEditable: i.isEditable,
+                  vinNumber: i.carInfo.carVinNumber,
+                  dimoTokenId: Number(i.dimoTokenId),
                 };
                 return item;
               })
