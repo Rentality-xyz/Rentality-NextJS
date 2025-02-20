@@ -54,6 +54,8 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
           for (const uploadedFile of Array.from(uploadedFiles)) {
             const fileName = `${tripId}-${isHostStringValue}-${isStartStringValue}-${uploadedFile.name}`;
 
+            console.debug(`Uploading file ${fileName} to Pinata`);
+
             const response = await uploadFileToIPFS(uploadedFile, fileName, {
               createdAt: new Date().toISOString(),
               createdBy: ethereumInfo?.walletAddress ?? "",
