@@ -1,8 +1,8 @@
+import RntSuspense from "@/components/common/rntSuspense";
 import UserCommonInformationForm from "./UserCommonInformationForm";
 import UserDriverLicenseVerification from "./UserDriverLicenseVerification";
 import useFetchUserProfile from "@/features/profile/hooks/useFetchUserProfile";
 import useSaveUserProfile from "@/features/profile/hooks/useSaveUserProfile";
-import RntSuspense from "../common/rntSuspense";
 
 function UserProfileInfo() {
   const { isLoading, data: userProfile } = useFetchUserProfile();

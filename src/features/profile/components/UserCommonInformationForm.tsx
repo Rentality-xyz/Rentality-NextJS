@@ -6,16 +6,13 @@ import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
 import { ChangeEvent } from "react";
-import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserCommonInformationFormValues, userCommonInformationFormSchema } from "./userCommonInformationFormSchema";
-import DotStatus from "./dotStatus";
 import { useTranslation } from "react-i18next";
-import { CheckboxTerms } from "../common/rntCheckbox";
 import { DEFAULT_AGREEMENT_MESSAGE, LEGAL_TERMS_NAME } from "@/utils/constants";
 import { signMessage } from "@/utils/ether";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
@@ -23,6 +20,9 @@ import useUserMode from "@/hooks/useUserMode";
 import { Result } from "@/model/utils/result";
 import { UserProfile } from "@/features/profile/model";
 import { SaveUserProfileRequest } from "@/features/profile/hooks/useSaveUserProfile";
+import RntPhoneInput from "@/components/common/rntPhoneInput";
+import DotStatus from "@/components/dotStatus";
+import { CheckboxTerms } from "@/components/common/rntCheckbox";
 
 function UserCommonInformationForm({
   userProfile,

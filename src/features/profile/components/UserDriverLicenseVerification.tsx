@@ -3,7 +3,7 @@ import KycVerification from "./kyc_verification";
 import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { isEmpty } from "@/utils/string";
 import useFetchUserProfile from "@/features/profile/hooks/useFetchUserProfile";
-import RntSuspense from "../common/rntSuspense";
+import RntSuspense from "@/components/common/rntSuspense";
 
 function UserDriverLicenseVerification() {
   const { isLoading, data: userProfile } = useFetchUserProfile();
