@@ -1,7 +1,7 @@
 import { KycStatus } from "@/hooks/kyc/useCustomCivic";
 import RntButton from "../common/rntButton";
-import DotStatus from "../profileInfo/dotStatus";
 import { useTranslation } from "react-i18next";
+import DotStatus from "@/components/dotStatus";
 
 function CustomCivicForm({
   status,

@@ -11,9 +11,9 @@ import { userInsuranceFormSchema, UserInsuranceFormValues } from "@/features/ins
 import Loading from "@/components/common/Loading";
 import RntValidationError from "@/components/common/RntValidationError";
 import RntButton from "@/components/common/rntButton";
-import DotStatus from "@/components/profileInfo/dotStatus";
 import useFetchGuestGeneralInsurance from "../hooks/useFetchGuestGeneralInsurance";
 import useSaveGuestGeneralInsurance from "../hooks/useSaveGuestGeneralInsurance";
+import DotStatus from "@/components/dotStatus";
 
 function UserInsurance() {
   const { isLoading, data: guestInsurance } = useFetchGuestGeneralInsurance();
