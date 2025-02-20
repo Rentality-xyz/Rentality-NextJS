@@ -1,52 +1,54 @@
 import RntButton from "@/components/common/rntButton";
 import RntFileButton from "@/components/common/rntFileButton";
 import RntInput from "@/components/common/rntInput";
-import { ProfileSettings } from "@/hooks/useProfileSettings";
 import { resizeImage } from "@/utils/image";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
-import { ChangeEvent, useEffect } from "react";
+import { ChangeEvent } from "react";
 import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
+import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserCommonInformationFormValues, userCommonInformationFormSchema } from "./userCommonInformationFormSchema";
 import DotStatus from "./dotStatus";
 import { useTranslation } from "react-i18next";
 import { CheckboxTerms } from "../common/rntCheckbox";
-import { verifyMessage } from "ethers";
 import { DEFAULT_AGREEMENT_MESSAGE, LEGAL_TERMS_NAME } from "@/utils/constants";
 import { signMessage } from "@/utils/ether";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import useUserMode from "@/hooks/useUserMode";
+import { Result } from "@/model/utils/result";
+import { UserProfile } from "@/features/profile/model";
+import { SaveUserProfileRequest } from "@/features/profile/hooks/useSaveUserProfile";
 
 function UserCommonInformationForm({
-  savedProfileSettings,
-  saveProfileSettings,
+  userProfile,
+  saveUserProfile,
 }: {
-  savedProfileSettings: ProfileSettings;
-  saveProfileSettings: (newProfileSettings: ProfileSettings) => Promise<boolean>;
+  userProfile: UserProfile;
+  saveUserProfile: (request: SaveUserProfileRequest) => Promise<Result<boolean, Error>>;
 }) {
   const ethereumInfo = useEthereum();
-  const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { t } = useTranslation();
   const { userMode } = useUserMode();
-  const isHost = userMode === "Host";
+
   const { register, handleSubmit, formState, control, setValue, watch } = useForm<UserCommonInformationFormValues>({
     defaultValues: {
-      profilePhotoUrl: savedProfileSettings.profilePhotoUrl,
-      nickname: savedProfileSettings.nickname,
-      phoneNumber: savedProfileSettings.phoneNumber,
-      email: savedProfileSettings.email,
-      tcSignature: savedProfileSettings.tcSignature,
+      profilePhotoUrl: userProfile.profilePhotoUrl,
+      nickname: userProfile.nickname,
+      phoneNumber: userProfile.phoneNumber,
+      email: userProfile.email,
+      tcSignature: userProfile.tcSignature,
+      isTerms: userProfile.isSignatureCorrect,
     },
     resolver: zodResolver(userCommonInformationFormSchema),
   });
   const { errors, isSubmitting } = formState;
+  const isTerms = watch("isTerms");
 
   function fileChangeCallback(field: ControllerRenderProps<UserCommonInformationFormValues, "profilePhotoUrl">) {
     return async (e: ChangeEvent<HTMLInputElement>) => {
@@ -88,16 +90,16 @@ function UserCommonInformationForm({
     }
 
     try {
-      var profilePhotoUrl = savedProfileSettings.profilePhotoUrl;
-      if (formData.profilePhotoUrl !== savedProfileSettings.profilePhotoUrl) {
+      var profilePhotoUrl = userProfile.profilePhotoUrl;
+      if (formData.profilePhotoUrl !== userProfile.profilePhotoUrl) {
         const blob = await (await fetch(formData.profilePhotoUrl)).blob();
         const profileImageFile = new File([blob], "profileImage", { type: "image/png" });
 
         const response = await uploadFileToIPFS(profileImageFile, "RentalityProfileImage", {
           createdAt: new Date().toISOString(),
-          createdBy: ethereumInfo?.walletAddress ?? "",
+          createdBy: ethereumInfo.walletAddress ?? "",
           version: SMARTCONTRACT_VERSION,
-          chainId: ethereumInfo?.chainId ?? 0,
+          chainId: ethereumInfo.chainId ?? 0,
         });
 
         if (!response.success || !response.pinataURL) {
@@ -107,20 +109,14 @@ function UserCommonInformationForm({
         profilePhotoUrl = response.pinataURL;
       }
 
-      const dataToSave: ProfileSettings = {
+      const dataToSave: SaveUserProfileRequest = {
         ...formData,
         profilePhotoUrl: profilePhotoUrl,
-        fullname: "",
-        documentType: "",
-        drivingLicenseNumber: "",
-        drivingLicenseExpire: undefined,
-        issueCountry: "",
       };
 
       showInfo(t("common.info.sign"));
-      const result = await saveProfileSettings(dataToSave);
+      const result = await saveUserProfile(dataToSave);
 
-      hideDialogs();
       hideSnackbars();
       if (!result) {
         throw new Error("Save profile info error");
@@ -133,26 +129,6 @@ function UserCommonInformationForm({
     }
   }
 
-  const isTerms = watch("isTerms");
-
-  useEffect(() => {
-    const checkSignature = async () => {
-      if (!ethereumInfo) return;
-
-      if (isEmpty(savedProfileSettings.tcSignature) || savedProfileSettings.tcSignature === "0x") {
-        setValue("isTerms", false);
-        return;
-      }
-
-      const userAddress = await ethereumInfo.signer.getAddress();
-      const verifyAddress = verifyMessage(DEFAULT_AGREEMENT_MESSAGE, savedProfileSettings.tcSignature);
-      const isSignatureCorrect = verifyAddress === userAddress;
-      setValue("isTerms", isSignatureCorrect);
-    };
-
-    checkSignature();
-  }, [ethereumInfo, savedProfileSettings.tcSignature, setValue]);
-
   return (
     <form className="flex flex-col gap-4 lg:my-8" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
       <Controller
@@ -161,10 +137,10 @@ function UserCommonInformationForm({
         render={({ field }) => (
           <>
             <div className="flex flex-row items-center gap-4">
-              <Avatar alt={`${savedProfileSettings.nickname}`} src={field.value} sx={{ width: "7rem", height: "7rem" }}>
-                {savedProfileSettings.nickname}
+              <Avatar alt={`${userProfile.nickname}`} src={field.value} sx={{ width: "7rem", height: "7rem" }}>
+                {userProfile.nickname}
               </Avatar>
-              <div className="text-xl">{savedProfileSettings.nickname}</div>
+              <div className="text-xl">{userProfile.nickname}</div>
             </div>
             <RntFileButton
               className="h-16 w-40"
@@ -180,7 +156,7 @@ function UserCommonInformationForm({
 
       <fieldset className="mt-4">
         <div className="mb-4 pl-[16px] text-lg">
-          {!isEmpty(savedProfileSettings.tcSignature) && savedProfileSettings.tcSignature !== "0x" ? (
+          {!isEmpty(userProfile.tcSignature) && userProfile.tcSignature !== "0x" ? (
             <strong>{t("profile.basic_info")}</strong>
           ) : (
             <strong>{t("profile.welcome_create_account")}</strong>
@@ -248,7 +224,10 @@ function UserCommonInformationForm({
             onLabelClick={(e) => {
               field.onChange(true);
               console.log(`onLabelClick. ${JSON.stringify(e.type)}`);
-              const windowsProxy = window.open(`/${isHost ? "host" : "guest"}/legal?tab=${LEGAL_TERMS_NAME}`, "_blank");
+              const windowsProxy = window.open(
+                `/${userMode === "Host" ? "host" : "guest"}/legal?tab=${LEGAL_TERMS_NAME}`,
+                "_blank"
+              );
               if (windowsProxy === null || typeof windowsProxy == "undefined")
                 showError("Please, turn off your pop-up blocker!");
             }}
@@ -262,7 +241,7 @@ function UserCommonInformationForm({
           {t("profile.confirm&save")}
         </RntButton>
 
-        {!isEmpty(savedProfileSettings.tcSignature) && savedProfileSettings.tcSignature !== "0x" ? (
+        {!isEmpty(userProfile.tcSignature) && userProfile.tcSignature !== "0x" ? (
           <DotStatus color="success" text={t("profile.confirmed")} />
         ) : (
           <DotStatus color="error" text={t("profile.not_confirmed")} />

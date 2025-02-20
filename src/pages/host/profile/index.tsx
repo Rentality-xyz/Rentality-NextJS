@@ -4,13 +4,13 @@ import PageTitle from "@/components/pageTitle/pageTitle";
 import UserProfileInfo from "@/components/profileInfo/userProfileInfo";
 import useDeliveryPrices from "@/hooks/host/useDeliveryPrices";
 import useTripDiscounts from "@/hooks/host/useTripDiscounts";
-import useProfileSettings from "@/hooks/useProfileSettings";
 import useUserRole from "@/hooks/useUserRole";
 import { useTranslation } from "react-i18next";
 import RntSuspense from "@/components/common/rntSuspense";
+import useFetchUserProfile from "@/features/profile/hooks/useFetchUserProfile";
 
 function Profile() {
-  const [isLoading, savedProfileSettings, saveProfileSettings] = useProfileSettings();
+  const { isLoading } = useFetchUserProfile();
   const [isLoadingDiscounts, savedTripsDiscounts, saveTripDiscounts] = useTripDiscounts();
   const [isLoadingDeliveryPrices, savedDeliveryPrices, saveDeliveryPrices] = useDeliveryPrices();
   const { userRole } = useUserRole();
@@ -20,7 +20,7 @@ function Profile() {
     <>
       <PageTitle title={t("profile.title")} />
       <RntSuspense isLoading={isLoading || isLoadingDiscounts || isLoadingDeliveryPrices}>
-        <UserProfileInfo savedProfileSettings={savedProfileSettings} saveProfileSettings={saveProfileSettings} />
+        <UserProfileInfo />
         <hr />
         <div className="flex flex-col min-[560px]:flex-row min-[560px]:gap-20">
           <TripDiscountsForm
