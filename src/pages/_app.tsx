@@ -26,6 +26,7 @@ import PlatformInitChecker from "@/components/common/PlatformInitChecker";
 import WalletConnectChecker from "@/components/common/WalletConnectChecker";
 import { NextComponentType, NextPage, NextPageContext } from "next";
 import dynamic from "next/dynamic";
+import TechnicalWork from "@/pages/technical_work";
 
 const DimoAuthProvider = dynamic(() => import("@dimo-network/login-with-dimo").then((mod) => mod.DimoAuthProvider), {
   ssr: false,
@@ -59,6 +60,10 @@ export default function App({ Component, pageProps }: CustomAppProps) {
   useEffect(() => {
     initEruda();
   }, []);
+
+  if (env.NEXT_PUBLIC_IS_TECHNICAL_WORK === "true") {
+    return <TechnicalWork/>;
+  }
 
   if (Component.getLayout) {
     return Component.getLayout(<Component {...pageProps} />);

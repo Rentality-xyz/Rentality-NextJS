@@ -59,6 +59,8 @@ export const env = createEnv({
     NEXT_PUBLIC_SKIP_KYC_PAYMENT: booleanEnvType.optional(),
 
     NEXT_PUBLIC_FB_PIXEL_ID: z.coerce.number(),
+
+    NEXT_PUBLIC_IS_TECHNICAL_WORK: booleanEnvType,
   },
 
   // If you're using Next.js < 13.4.4, you'll need to specify the runtimeEnv manually
@@ -91,6 +93,8 @@ export const env = createEnv({
     NEXT_PUBLIC_SKIP_KYC_PAYMENT: process.env.NEXT_PUBLIC_SKIP_KYC_PAYMENT,
 
     NEXT_PUBLIC_FB_PIXEL_ID: process.env.NEXT_PUBLIC_FB_PIXEL_ID,
+
+    NEXT_PUBLIC_IS_TECHNICAL_WORK: process.env.NEXT_PUBLIC_IS_TECHNICAL_WORK
   },
   // For Next.js >= 13.4.4, you only need to destructure client variables:
   //    experimental__runtimeEnv: {
