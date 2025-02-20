@@ -31,11 +31,10 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
   const ethereumInfo = useEthereum();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadedFiles, setUploadedFiles] = useState<FileList | null>(null);
+  const { t } = useTranslation();
   const { showError } = useRntSnackbars();
 
   const totalCount = useMemo(() => uploadedFiles?.length || "no", [uploadedFiles?.length]);
-
-  const { t } = useTranslation();
 
   useImperativeHandle(
     ref,
