@@ -7,11 +7,12 @@ import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { Err } from "@/model/utils/result";
 import { useTranslation } from "react-i18next";
+import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 
 const EXTERIOR_PHOTOS_COUNT_REQUIRED = 4;
 const INTERIOR_PHOTOS_COUNT_REQUIRED = 9;
 const DATA_PHOTOS_COUNT_REQUIRED = 2;
-const MAX_FILE_COUNT = 16;
+const MAX_FILE_COUNT = EXTERIOR_PHOTOS_COUNT_REQUIRED + INTERIOR_PHOTOS_COUNT_REQUIRED + DATA_PHOTOS_COUNT_REQUIRED;
 
 const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
   {
@@ -29,8 +30,8 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
 ) {
   const ethereumInfo = useEthereum();
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   const [uploadedFiles, setUploadedFiles] = useState<FileList | null>(null);
+  const { showError } = useRntSnackbars();
 
   const totalCount = useMemo(() => uploadedFiles?.length || "no", [uploadedFiles?.length]);
 
@@ -89,6 +90,8 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
         onChange={(e) => {
           if (e.target.files && e.target.files.length <= MAX_FILE_COUNT) {
             setUploadedFiles(e.target.files);
+          } else {
+            showError(`You can upload ${MAX_FILE_COUNT} photos maximum`);
           }
         }}
       />
