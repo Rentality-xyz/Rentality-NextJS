@@ -1,11 +1,6 @@
+//TODO translate
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
-import React, { forwardRef, Ref, useImperativeHandle, useMemo, useRef, useState } from "react";
-// @ts-ignore
-import carCarIcon from "@/images/upload-car-photo.png";
-// @ts-ignore
-import carSeatsIcon from "@/images/car_seats.png";
-// @ts-ignore
-import carDataIcon from "@/images/upload-car-data.png";
+import React, { forwardRef, useImperativeHandle, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { SMARTCONTRACT_VERSION } from "@/abis";
@@ -121,7 +116,7 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
           <div className="flex items-center justify-center p-2">
             <div className="w-32 border-none p-4 text-sm">
               <div className="flex items-center justify-center">
-                <Image className="me-1" src={carCarIcon} width={50} height={50} alt="" />
+                <Image className="me-1" src="/images/upload-car-photo.png" width={50} height={50} alt="" />
               </div>
               <div className="text-rentality-secondary">{t("common.exterior")}</div>
               <div>
@@ -130,7 +125,7 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
             </div>
             <div className="w-32 p-4 text-sm">
               <div className="flex items-center justify-center">
-                <Image className="me-1" src={carSeatsIcon} width={50} height={50} alt="" />
+                <Image className="me-1" src="/images/car_seats.png" width={50} height={50} alt="" />
               </div>
               <div className="text-rentality-secondary">{t("common.interior")}</div>
               <div>
@@ -139,7 +134,7 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
             </div>
             <div className="w-32 p-4 text-sm">
               <div className="flex items-center justify-center">
-                <Image className="me-1" src={carDataIcon} width={50} height={50} alt="" />
+                <Image className="me-1" src="/images/upload-car-data.png" width={50} height={50} alt="" />
               </div>
               <div className="text-rentality-secondary">{t("common.data")}</div>
               <div>
