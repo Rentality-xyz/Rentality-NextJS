@@ -51,7 +51,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
       hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
         setHasTripPhotosFeatureFlag(hasTripPhotosFeatureFlag);
       });
-    }, []);
+    }, [hasFeatureFlag]);
 
     async function onFormSubmit(formData: ChangeStatusHostConfirmedFormValues) {
       let tripPhotosUrls: string[] = [];
