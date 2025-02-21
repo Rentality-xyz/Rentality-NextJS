@@ -7,6 +7,15 @@ import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityAiDamageAnalyzeContract } from "@/features/blockchain/models/IRentalityAiDamageAnalyze";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 
+type CreateCaseParams = {
+  tripId: number,
+  name: string,
+  email: string,
+  vin: string,
+  chainId: number,
+  caseNum: number
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const {secret, baseUrl} = await createSecret();
     const {newCase, tripId, chainId} = getCase(req)
@@ -29,7 +38,7 @@ if(response.status !== 201) {
 const data = response.data;
 const token = data.case_token['Case token']
 
-const providerApiUrl = getProviderApiUrlFromEnv(Number.parseInt(chainId));
+const providerApiUrl = getProviderApiUrlFromEnv(chainId);
 
   if (!providerApiUrl) {
     console.error(`API aiAssessments error: API URL for chain id ${chainId} was not set`);
@@ -68,13 +77,17 @@ catch(error) {
 }
 
 function getCase(req: NextApiRequest) {
-    const caseNum = <string>req.query.caseNum!;
-    const name = <string>req.query.name!;
-    const email = <string>req.query.email!;
-    const vin = <string>req.query.vin!;
-    const tripId = <string>req.query.tripId!;
-    const chainId = <string>req.query.chainId!;
+    const request =  <CreateCaseParams>req.body;
+console.log('requestBODY', req.body)
     
-    return {newCase: createCase(caseNum, name, email, new Date().toISOString(), vin), tripId, chainId};
+    return {
+      newCase: createCase(
+        request.caseNum.toString(),
+        request.name, request.caseNum.toString(),
+        request.email,
+        new Date().toISOString()),
+      tripId: request.tripId,
+      chainId: request.chainId
+    };
 }
 

@@ -4,7 +4,7 @@ export interface CreateCase {
     "Email": string;               
     "Date of incident"?: string;   
     "VIN number"?: string;         
-    "Language": "en";            
+    "Language": "en"; 
   }
 
   export function createCase(
@@ -23,72 +23,72 @@ export interface CreateCase {
       ...(vinNumber ? { "VIN number": vinNumber } : {}),
     };
   }
-  export type Base64String = string;
+  export type PhotoUrl = string;
 
   export interface AiDamageAnalyzePhoto {
-    right?: Base64String;
-    back_left?: Base64String;
-    back_right?: Base64String;
-    back?: Base64String;
-    front_side_grilled?: Base64String;
-    front_side_hood?: Base64String;
-    front_side_left_bumper?: Base64String;
-    front_side_left_head_light?: Base64String;
-    front_side_right_bumper?: Base64String;
-    front_side_right_head_light?: Base64String;
-    front_side_windshield?: Base64String;
-    left_side_fender?: Base64String;
-    left_side_front_left_door?: Base64String;
-    left_side_front_left_tyre?: Base64String;
-    left_side_front_left_window?: Base64String;
-    left_side_quarter_panel?: Base64String;
-    left_side_rear_left_door?: Base64String;
-    left_side_rear_left_tyre?: Base64String;
-    left_side_rear_left_window?: Base64String;
-    left_side_middle_window?: Base64String;
-    rear_side_left_bumper?: Base64String;
-    rear_side_left_tail_light?: Base64String;
-    rear_side_right_bumper?: Base64String;
-    rear_side_right_tail_light?: Base64String;
-    rear_side_trunk?: Base64String;
-    rear_side_windshield?: Base64String;
-    right_side_fender?: Base64String;
-    right_side_front_right_door?: Base64String;
-    right_side_front_right_tyre?: Base64String;
-    right_side_front_right_window?: Base64String;
-    right_side_quarter_panel?: Base64String;
-    right_side_rear_right_door?: Base64String;
-    right_side_rear_right_tyre?: Base64String;
-    right_side_rear_right_window?: Base64String;
-    right_side_middle_window?: Base64String;
-    roof_left?: Base64String;
-    roof_right?: Base64String;
-    other_side?: Base64String;
+    right?: PhotoUrl;
+    back_left?: PhotoUrl;
+    back_right?: PhotoUrl;
+    back?: PhotoUrl;
+    front_side_grilled?: PhotoUrl;
+    front_side_hood?: PhotoUrl;
+    front_side_left_bumper?: PhotoUrl;
+    front_side_left_head_light?: PhotoUrl;
+    front_side_right_bumper?: PhotoUrl;
+    front_side_right_head_light?: PhotoUrl;
+    front_side_windshield?: PhotoUrl;
+    left_side_fender?: PhotoUrl;
+    left_side_front_left_door?: PhotoUrl;
+    left_side_front_left_tyre?: PhotoUrl;
+    left_side_front_left_window?: PhotoUrl;
+    left_side_quarter_panel?: PhotoUrl;
+    left_side_rear_left_door?: PhotoUrl;
+    left_side_rear_left_tyre?: PhotoUrl;
+    left_side_rear_left_window?: PhotoUrl;
+    left_side_middle_window?: PhotoUrl;
+    rear_side_left_bumper?: PhotoUrl;
+    rear_side_left_tail_light?: PhotoUrl;
+    rear_side_right_bumper?: PhotoUrl;
+    rear_side_right_tail_light?: PhotoUrl;
+    rear_side_trunk?: PhotoUrl;
+    rear_side_windshield?: PhotoUrl;
+    right_side_fender?: PhotoUrl;
+    right_side_front_right_door?: PhotoUrl;
+    right_side_front_right_tyre?: PhotoUrl;
+    right_side_front_right_window?: PhotoUrl;
+    right_side_quarter_panel?: PhotoUrl;
+    right_side_rear_right_door?: PhotoUrl;
+    right_side_rear_right_tyre?: PhotoUrl;
+    right_side_rear_right_window?: PhotoUrl;
+    right_side_middle_window?: PhotoUrl;
+    roof_left?: PhotoUrl;
+    roof_right?: PhotoUrl;
+    other_side?: PhotoUrl;
   }
   
   
 
-  export interface PhotoTypeToAiDamageAnalyzeKeys {
-    "Right": "right";
-    "Back left": "back_left";
-    "Back right": "back_right";
-    "Back": "back";
-    "Grilled": "front_side_grilled";
-    "Hood": "front_side_hood";
-    "Left bumper": "front_side_left_bumper"; 
-    "Left head light": "front_side_left_head_light";
-    "Right bumper": "front_side_right_bumper";
-    "Right head light": "front_side_right_head_light";
-    "Windshield": "front_side_windshield";
-    "Fender": "left_side_fender";
-    "Door": "left_side_front_left_door";
-    "Tyre": "left_side_front_left_tyre";
-    "Window": "left_side_front_left_window";
-    "Quarter Panel": "left_side_quarter_panel";
-    "Left tail light": "rear_side_left_tail_light";
-    "Right tail light": "rear_side_right_tail_light";
-    "Trunk": "rear_side_trunk";
-    "Roof Left": "roof_left";
-    "Roof Right": "roof_right";
-    "Other side": "other_side";
-  }
+  export const photoTypes: { label: string; value: string }[] = Object.entries({
+    "Right": "right",
+    "Back left": "back_left",
+    "Back right": "back_right",
+    "Back": "back",
+    "Grilled": "front_side_grilled",
+    "Hood": "front_side_hood",
+    "Left bumper": "front_side_left_bumper", 
+    "Left head light": "front_side_left_head_light",
+    "Right bumper": "front_side_right_bumper",
+    "Right head light": "front_side_right_head_light",
+    "Windshield": "front_side_windshield",
+    "Fender": "left_side_fender",
+    "Door": "left_side_front_left_door",
+    "Tyre": "left_side_front_left_tyre",
+    "Window": "left_side_front_left_window",
+    "Quarter Panel": "left_side_quarter_panel",
+    "Left tail light": "rear_side_left_tail_light",
+    "Right tail light": "rear_side_right_tail_light",
+    "Trunk": "rear_side_trunk",
+    "Roof Left": "roof_left",
+    "Roof Right": "roof_right",
+    "Other side": "other_side"
+  }).map(([label, value]) => ({ label, value }));

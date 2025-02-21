@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { createSecret } from "./createSecret";
 import axios from "axios";
-import { AiDamageAnalyzePhoto, PhotoTypeToAiDamageAnalyzeKeys } from "@/model/AiDamageAnalyze";
+import { AiDamageAnalyzePhoto } from "@/model/AiDamageAnalyze";
 
 export function imageToBase64(base64String: string) {
     return `data:image/jpeg;base64,${base64String}`;
@@ -16,11 +16,11 @@ export function fileToBase64(file: File): Promise<string> {
     });
 }
 
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const {secret, baseUrl} = await createSecret();
-    const token = <string>req.query.caseToken!;
+    const token = <string>req.query.token!;
     const data = <AiDamageAnalyzePhoto>req.body;
-
     try {
 
     const response = await axios.post(
@@ -36,8 +36,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 
     if(response.status !== 200) {
-        console.log('AiDamageAnalyze: failed to upload photo with error: ', response.data)
-         res.status(500).json({ error: 'AiDamageAnalyze: failed to upload photo with error: ' + response.data});
+        console.log('AiDamageAnalyze: failed to upload photo with error: ', response.data.message)
+         res.status(500).json({ error: 'AiDamageAnalyze: failed to upload photo with error: ' + response.data.message});
         
 
          return
@@ -45,14 +45,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
      res.status(200).json({success: true})
     }
      catch(e) {
-        console.log("AiDamageAnalyze uploading photos error:", e)
-        res.status(500).json({ error: 'AiDamageAnalyze: failed to upload photo with error: ' + e});
+        console.log("AiDamageAnalyze uploading photos error:", e.response.data.message)
+        res.status(500).json({ error: 'AiDamageAnalyze: failed to upload photo with error: ' + e.response.data.message});
         return
     }
 
 
 }
-export const photoMap: PhotoTypeToAiDamageAnalyzeKeys = {
+export const photoMap = {
     "Right": "right",
     "Back left": "back_left",
     "Back right": "back_right",
@@ -77,6 +77,3 @@ export const photoMap: PhotoTypeToAiDamageAnalyzeKeys = {
     "Other side": "other_side",
   };
   
-  export function getAiDamageAnalyzeKey(photoType: keyof PhotoTypeToAiDamageAnalyzeKeys): string {
-    return photoMap[photoType];
-  }
