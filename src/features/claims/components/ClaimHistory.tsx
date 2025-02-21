@@ -1,7 +1,6 @@
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import Link from "next/link";
-import RntButton from "../common/rntButton";
-import { Claim } from "@/model/Claim";
+import { Claim } from "@/features/claims/models";
 import { ClaimStatus } from "@/model/blockchain/schemas";
 import moment from "moment";
 import { TFunction } from "@/utils/i18n";
@@ -13,6 +12,7 @@ import { usePathname } from "next/navigation";
 import ClaimFileList from "./ClaimFileList";
 import ClaimHistoryMobileCard from "./ClaimHistoryMobileCard";
 import { cn } from "@/utils";
+import RntButton from "@/components/common/rntButton";
 
 type Props = {
   isHost: boolean;
@@ -39,7 +39,7 @@ export default function ClaimHistory({ isHost, claims, payClaim, cancelClaim, t 
   return (
     <div className="mt-5 w-full rounded-2xl bg-rentality-bg p-4">
       <h3 className="mb-4 text-xl">{t_history("title")}</h3>
-      <div className="w-full overflow-x-auto custom-scroll">
+      <div className="custom-scroll w-full overflow-x-auto">
         <table className="w-full table-auto border-spacing-2 max-lg:hidden">
           <thead className="w-full">
             <tr className="text-rentality-additional-light">

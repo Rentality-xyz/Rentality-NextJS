@@ -1,4 +1,4 @@
-import { ClaimStatus, ClaimType } from "./blockchain/schemas";
+import { ClaimStatus, ClaimType } from "@/model/blockchain/schemas";
 
 export type Claim = {
   tripId: number;
