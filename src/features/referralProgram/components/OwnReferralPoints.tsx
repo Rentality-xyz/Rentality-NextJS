@@ -12,7 +12,7 @@ import useClaimOwnReferralPoints from "../hooks/useClaimOwnReferralPoints";
 import useOwnReferralPointsSharedStore from "../hooks/useOwnReferralPointsSharedStore";
 
 export default function OwnReferralPoints() {
-  const { isLoading, isFetching, data } = useFetchOwnReferralPoints("OwnReferralPoints");
+  const { isLoading, isFetching, data } = useFetchOwnReferralPoints();
   const { mutateAsync: claimMyPoints } = useClaimOwnReferralPoints();
   const isClaiming = useOwnReferralPointsSharedStore((state) => state.isClaiming);
   const readyToClaim = useOwnReferralPointsSharedStore((state) => state.readyToClaim);
