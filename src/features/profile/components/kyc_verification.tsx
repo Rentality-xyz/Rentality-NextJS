@@ -1,10 +1,10 @@
 import { TFunction } from "@/utils/i18n";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
-import CustomCivicDialog from "../kyc/customCivicDialog";
-import RntButton from "../common/rntButton";
-import DotStatus from "./dotStatus";
 import { GatewayStatus, useGateway } from "@civic/ethereum-gateway-react";
 import { CivicProvider } from "@/contexts/web3/civicContext";
+import CustomCivicDialog from "@/components/kyc/customCivicDialog";
+import RntButton from "@/components/common/rntButton";
+import DotStatus from "@/components/dotStatus";
 
 export default function KycVerification({ t }: { t: TFunction }) {
   const { showCustomDialog, hideDialogs } = useRntDialogs();
