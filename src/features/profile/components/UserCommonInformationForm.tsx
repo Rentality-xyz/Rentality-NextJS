@@ -18,7 +18,7 @@ import { signMessage } from "@/utils/ether";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import useUserMode from "@/hooks/useUserMode";
 import { Result } from "@/model/utils/result";
-import { UserProfile } from "@/features/profile/model";
+import { UserProfile } from "@/features/profile/models";
 import { SaveUserProfileRequest } from "@/features/profile/hooks/useSaveUserProfile";
 import RntPhoneInput from "@/components/common/rntPhoneInput";
 import DotStatus from "@/components/dotStatus";

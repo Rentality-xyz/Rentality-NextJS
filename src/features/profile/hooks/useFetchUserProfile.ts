@@ -4,7 +4,7 @@ import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/form
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { useQuery } from "@tanstack/react-query";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { emptyUserProfile, UserProfile } from "../model";
+import { emptyUserProfile, UserProfile } from "../models";
 import { verifyMessage } from "ethers";
 import { DEFAULT_AGREEMENT_MESSAGE } from "@/utils/constants";
 import { isEmpty } from "@/utils/string";
