@@ -6,15 +6,15 @@ import { CreateClaimRequest } from "@/features/claims/models/CreateClaimRequest"
 import { useTranslation } from "react-i18next";
 import { Err, Result, TransactionErrorCode } from "@/model/utils/result";
 import RntSuspense from "@/components/common/rntSuspense";
-import useFetchHostClaims from "../hooks/useFetchHostClaims";
-import useCreateHostClaim from "../hooks/useCreateHostClaim";
-import useUpdateHostClaim from "../hooks/useUpdateHostClaim";
+import useFetchClaims from "../hooks/useFetchClaims";
+import useUpdateClaim from "../hooks/useUpdateClaim";
+import useCreateClaim from "../hooks/useCreateClaim";
 
 function HostClaimsPageContent() {
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
-  const { isLoading, claims, updateData } = useFetchHostClaims();
-  const { isLoading: isTripsLoading, tripInfos, createClaim } = useCreateHostClaim();
-  const { payClaim, cancelClaim } = useUpdateHostClaim();
+  const { isLoading, data: claims, refetch } = useFetchClaims(true);
+  const { isLoading: isTripsLoading, tripInfos, createClaim } = useCreateClaim(true);
+  const { payClaim, cancelClaim } = useUpdateClaim();
   const { t } = useTranslation();
 
   async function handleCreateClaim(
@@ -44,7 +44,7 @@ function HostClaimsPageContent() {
     hideSnackbars();
 
     if (result.ok) {
-      updateData();
+      refetch();
     } else {
       if (result.error === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
@@ -63,7 +63,7 @@ function HostClaimsPageContent() {
     hideSnackbars();
 
     if (result.ok) {
-      updateData();
+      refetch();
     } else {
       if (result.error === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
@@ -81,7 +81,7 @@ function HostClaimsPageContent() {
     hideSnackbars();
 
     if (result.ok) {
-      updateData();
+      refetch();
     } else {
       if (result.error === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
