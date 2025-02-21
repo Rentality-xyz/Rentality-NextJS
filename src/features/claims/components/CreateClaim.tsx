@@ -18,6 +18,7 @@ import useUserMode from "@/hooks/useUserMode";
 import useCreateClaim from "../hooks/useCreateClaim";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useTranslation } from "react-i18next";
+import useTripsForClaimCreation from "../hooks/useTripsForClaimCreation";
 
 const hostClaimTypes = [
   ClaimType.Tolls,
@@ -43,7 +44,8 @@ export default function CreateClaim({ onClaimAdded }: { onClaimAdded?: () => voi
   const { userMode } = useUserMode();
   const isHost = userMode === "Host";
   const pathname = usePathname();
-  const { isLoading: isTripsLoading, tripInfos, createClaim } = useCreateClaim(false);
+  const { data: tripInfos } = useTripsForClaimCreation(false);
+  const { mutateAsync: createClaim } = useCreateClaim();
   const { register, handleSubmit, formState, control, reset, watch } = useForm<CreateClaimFormValues>({
     defaultValues: {
       selectedTripId: "",
@@ -103,7 +105,7 @@ export default function CreateClaim({ onClaimAdded }: { onClaimAdded?: () => voi
 
     showInfo(t("common.info.sign"));
 
-    const result = await handleCreateClaim(createClaimRequest);
+    const result = await createClaim(createClaimRequest);
 
     hideSnackbars();
 

@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { contractFullClaimInfoToClaim } from "../models/mappers/contractFullClaimInfoToClaim";
 
-export const GUEST_CLAIMS_QUERY_KEY = "ClaimList";
+export const CLAIMS_LIST_QUERY_KEY = "ClaimList";
 
 type QueryData = Claim[];
 
@@ -14,7 +14,7 @@ function useFetchClaims(isHost: boolean) {
   const { rentalityContracts } = useRentality();
 
   return useQuery<QueryData>({
-    queryKey: [GUEST_CLAIMS_QUERY_KEY, isHost, ethereumInfo?.walletAddress],
+    queryKey: [CLAIMS_LIST_QUERY_KEY, isHost, ethereumInfo?.walletAddress],
     initialData: [],
     queryFn: async () => {
       if (!rentalityContracts) {
