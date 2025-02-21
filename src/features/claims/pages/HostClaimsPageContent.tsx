@@ -1,16 +1,20 @@
 import ClaimHistory from "@/features/claims/components/ClaimHistory";
 import CreateClaim from "@/features/claims/components/CreateClaim";
 import PageTitle from "@/components/pageTitle/pageTitle";
-import useHostClaims from "@/features/claims/hooks/useHostClaims";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { CreateClaimRequest } from "@/features/claims/models/CreateClaimRequest";
 import { useTranslation } from "react-i18next";
 import { Err, Result, TransactionErrorCode } from "@/model/utils/result";
 import RntSuspense from "@/components/common/rntSuspense";
+import useFetchHostClaims from "../hooks/useFetchHostClaims";
+import useCreateHostClaim from "../hooks/useCreateHostClaim";
+import useUpdateHostClaim from "../hooks/useUpdateHostClaim";
 
 function HostClaimsPageContent() {
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
-  const { isLoading, claims, tripInfos, createClaim, payClaim, cancelClaim, updateData } = useHostClaims();
+  const { isLoading, claims, updateData } = useFetchHostClaims();
+  const { isLoading: isTripsLoading, tripInfos, createClaim } = useCreateHostClaim();
+  const { payClaim, cancelClaim } = useUpdateHostClaim();
   const { t } = useTranslation();
 
   async function handleCreateClaim(
@@ -90,7 +94,7 @@ function HostClaimsPageContent() {
   return (
     <>
       <PageTitle title={t("claims.title")} />
-      <RntSuspense isLoading={isLoading}>
+      <RntSuspense isLoading={isLoading || isTripsLoading}>
         <CreateClaim createClaim={handleCreateClaim} tripInfos={tripInfos} isHost={true} />
         <ClaimHistory
           claims={claims}
