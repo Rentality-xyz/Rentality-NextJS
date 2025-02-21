@@ -4,25 +4,22 @@ import { useTranslation } from "react-i18next";
 import CreateClaim from "@/features/claims/components/CreateClaim";
 import RntSuspense from "@/components/common/rntSuspense";
 import useFetchClaims from "../hooks/useFetchClaims";
+import useUserMode from "@/hooks/useUserMode";
 
-function GuestClaimsPageContent() {
-  const { isLoading, data: claims, refetch } = useFetchClaims(false);
+function ClaimsPageContent() {
+  const { userMode } = useUserMode();
+  const { isLoading, data: claims } = useFetchClaims(userMode === "Host");
   const { t } = useTranslation();
 
   return (
     <>
       <PageTitle title={t("claims.title")} />
       <RntSuspense isLoading={isLoading}>
-        <CreateClaim onClaimAdded={refetch} />
-        <ClaimHistory
-          claims={claims}
-          onClaimUpdated={() => {
-            refetch();
-          }}
-        />
+        <CreateClaim />
+        <ClaimHistory claims={claims} />
       </RntSuspense>
     </>
   );
 }
 
-export default GuestClaimsPageContent;
+export default ClaimsPageContent;

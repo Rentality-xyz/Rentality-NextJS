@@ -1,7 +1,7 @@
-import GuestClaimsPageContent from "@/features/claims/pages/GuestClaimsPageContent";
+import ClaimsPageContent from "@/features/claims/pages/ClaimsPageContent";
 
 function Claims() {
-  return <GuestClaimsPageContent />;
+  return <ClaimsPageContent />;
 }
 
 export default Claims;
