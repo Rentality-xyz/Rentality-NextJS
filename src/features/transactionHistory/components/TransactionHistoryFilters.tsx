@@ -1,25 +1,25 @@
 import React, { useState } from "react";
-import RntInput from "../common/rntInput";
-import RntSelect from "../common/rntSelect";
-import RntButton from "../common/rntButton";
 import { dateToHtmlDateFormat } from "@/utils/datetimeFormatters";
 import moment from "moment";
 import { TripStatus } from "@/model/blockchain/schemas";
 import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { useTranslation } from "react-i18next";
-import { TransactionHistoryFilters } from "@/hooks/transaction_history/useTransactionHistory";
+import { TransactionHistoryFiltersType } from "@/features/transactionHistory/hooks/useTransactionHistory";
+import RntInput from "@/components/common/rntInput";
+import RntSelect from "@/components/common/rntSelect";
+import RntButton from "@/components/common/rntButton";
 
 const allTripStatuses = Object.values(TripStatus).map((value) => {
   return { id: value, text: getTripStatusTextFromStatus(value) };
 });
 
-type TransactionHistoryFiltersComponentProps = {
-  defaultFilters?: TransactionHistoryFilters;
-  onApply: (filters: TransactionHistoryFilters) => Promise<void>;
+type TransactionHistoryFiltersProps = {
+  defaultFilters?: TransactionHistoryFiltersType;
+  onApply: (filters: TransactionHistoryFiltersType) => Promise<void>;
 };
 
-function TransactionHistoryFiltersComponent({ defaultFilters, onApply }: TransactionHistoryFiltersComponentProps) {
-  const [filters, setFilters] = useState<TransactionHistoryFilters>(defaultFilters ?? {});
+function TransactionHistoryFilters({ defaultFilters, onApply }: TransactionHistoryFiltersProps) {
+  const [filters, setFilters] = useState<TransactionHistoryFiltersType>(defaultFilters ?? {});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { t } = useTranslation();
 
@@ -104,4 +104,4 @@ function TransactionHistoryFiltersComponent({ defaultFilters, onApply }: Transac
   );
 }
 
-export default TransactionHistoryFiltersComponent;
+export default TransactionHistoryFilters;

@@ -1,10 +1,10 @@
-import { ContractTripDTO, TripStatus } from "../blockchain/schemas";
 import { calculateDays, UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
-import { TransactionHistoryInfo } from "../TransactionHistoryInfo";
 import { isEmpty } from "@/utils/string";
 import { getPromoPrice } from "@/features/promocodes/utils";
 import { getDiscountablePrice, getNotDiscountablePrice } from "@/utils/price";
+import { TransactionHistoryInfo } from "..";
+import { ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
 
 function getCancellationFee(tripDto: ContractTripDTO) {
   return 0;
