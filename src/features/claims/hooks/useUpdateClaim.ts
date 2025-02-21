@@ -4,7 +4,7 @@ import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { formatEther } from "viem";
 
-const useUpdateHostClaim = () => {
+const useUpdateClaim = () => {
   const { rentalityContracts } = useRentality();
   const ethereumInfo = useEthereum();
 
@@ -72,4 +72,4 @@ const useUpdateHostClaim = () => {
   } as const;
 };
 
-export default useUpdateHostClaim;
+export default useUpdateClaim;

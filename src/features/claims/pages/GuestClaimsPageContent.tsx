@@ -6,16 +6,16 @@ import CreateClaim from "@/features/claims/components/CreateClaim";
 import { CreateClaimRequest } from "@/features/claims/models/CreateClaimRequest";
 import { Err, Result, TransactionErrorCode } from "@/model/utils/result";
 import RntSuspense from "@/components/common/rntSuspense";
-import useFetchGuestClaims from "../hooks/useFetchGuestClaims";
-import useCreateGuestClaim from "../hooks/useCreateGuestClaim";
-import useUpdateGuestClaim from "../hooks/useUpdateGuestClaim";
+import useFetchClaims from "../hooks/useFetchClaims";
+import useUpdateClaim from "../hooks/useUpdateClaim";
+import useCreateClaim from "../hooks/useCreateClaim";
 
 function GuestClaimsPageContent() {
   const { t } = useTranslation();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
-  const { isLoading, claims, updateData } = useFetchGuestClaims();
-  const { isLoading: isTripsLoading, tripInfos, createClaim } = useCreateGuestClaim();
-  const { payClaim, cancelClaim } = useUpdateGuestClaim();
+  const { isLoading, data: claims, refetch } = useFetchClaims(false);
+  const { isLoading: isTripsLoading, tripInfos, createClaim } = useCreateClaim(false);
+  const { payClaim, cancelClaim } = useUpdateClaim();
 
   async function handleCreateClaim(
     createClaimRequest: CreateClaimRequest
@@ -44,7 +44,7 @@ function GuestClaimsPageContent() {
     hideSnackbars();
 
     if (result.ok) {
-      updateData();
+      refetch();
     } else {
       if (result.error === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
@@ -63,7 +63,7 @@ function GuestClaimsPageContent() {
     hideSnackbars();
 
     if (result.ok) {
-      updateData();
+      refetch();
     } else {
       if (result.error === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
@@ -81,7 +81,7 @@ function GuestClaimsPageContent() {
     hideSnackbars();
 
     if (result.ok) {
-      updateData();
+      refetch();
     } else {
       if (result.error === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));

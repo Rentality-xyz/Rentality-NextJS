@@ -1,20 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
-
-import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
-import { CreateClaimRequest, TripInfoForClaimCreation } from "@/features/claims/models/CreateClaimRequest";
+import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
 import { ContractCreateClaimRequest, ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
+import { CreateClaimRequest, TripInfoForClaimCreation } from "@/features/claims/models/CreateClaimRequest";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { SMARTCONTRACT_VERSION } from "@/abis";
-import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
+import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { FileToUpload } from "@/model/FileToUpload";
 import { useTranslation } from "react-i18next";
 
-const useCreateHostClaim = () => {
+const useCreateClaim = (isHost: boolean) => {
   const { rentalityContracts } = useRentality();
   const ethereumInfo = useEthereum();
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -68,22 +67,22 @@ const useCreateHostClaim = () => {
   }
 
   useEffect(() => {
-    const getClaims = async (rentalityContracts: IRentalityContracts) => {
+    const getTripsForClaims = async (rentalityContracts: IRentalityContracts) => {
       try {
         if (!rentalityContracts) {
           console.error("getClaims error: contract is null");
           return;
         }
 
-        const hostTripsView: ContractTripDTO[] = (await rentalityContracts.gateway.getTripsAs(true)).filter(
+        const guestTripsView: ContractTripDTO[] = (await rentalityContracts.gateway.getTripsAs(isHost)).filter(
           (i) => i.trip.status !== TripStatus.Pending && i.trip.status !== TripStatus.Rejected
         );
 
-        const hostTripsData =
-          hostTripsView.length === 0
+        const guestTripsData =
+          guestTripsView.length === 0
             ? []
             : await Promise.all(
-                hostTripsView.map(async (i: ContractTripDTO, index) => {
+                guestTripsView.map(async (i: ContractTripDTO, index) => {
                   if (index === 0) {
                     validateContractTripDTO(i);
                   }
@@ -105,7 +104,7 @@ const useCreateHostClaim = () => {
                 })
               );
 
-        return hostTripsData;
+        return guestTripsData;
       } catch (e) {
         console.error("getClaims error:" + e);
       }
@@ -115,12 +114,12 @@ const useCreateHostClaim = () => {
 
     setIsLoading(true);
 
-    getClaims(rentalityContracts)
+    getTripsForClaims(rentalityContracts)
       .then((data) => {
         setTripInfos(data ?? []);
       })
       .finally(() => setIsLoading(false));
-  }, [rentalityContracts]);
+  }, [rentalityContracts, isHost]);
 
   const sortedTripInfos = useMemo(() => {
     return [...tripInfos].sort((a, b) => {
@@ -158,4 +157,4 @@ async function saveClaimFiles(filesToSave: FileToUpload[], ethereumInfo: Ethereu
   return savedFiles;
 }
 
-export default useCreateHostClaim;
+export default useCreateClaim;
