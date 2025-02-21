@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { TransactionHistoryInfo } from "@/model/TransactionHistoryInfo";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import React from "react";
 import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { usePathname } from "next/navigation";
 import { getTripStatusBgColorFromStatus } from "@/utils/tailwind";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
+import { TransactionHistoryInfo } from "../models";
 
 type TransactionHistoryMobileCardProps = {
   isHost: boolean;

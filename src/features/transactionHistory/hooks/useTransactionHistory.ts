@@ -1,13 +1,13 @@
 import { useCallback, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { TripStatus } from "@/model/blockchain/schemas";
-import { TransactionHistoryInfo } from "@/model/TransactionHistoryInfo";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { bigIntReplacer } from "@/utils/json";
-import { mapContractTripDTOToTransactionHistoryInfo } from "@/model/mappers/contractTripDTOToTransactionHistoryInfo";
+import { mapContractTripDTOToTransactionHistoryInfo } from "../models/mappers/contractTripDTOToTransactionHistoryInfo";
+import { TransactionHistoryInfo } from "../models";
 
-export type TransactionHistoryFilters = {
+export type TransactionHistoryFiltersType = {
   dateFrom?: Date;
   dateTo?: Date;
   status?: TripStatus;
@@ -24,7 +24,7 @@ const useTransactionHistory = (isHost: boolean) => {
   const filterData = useCallback(
     (
       data: TransactionHistoryInfo[],
-      filters?: TransactionHistoryFilters,
+      filters?: TransactionHistoryFiltersType,
       page: number = 1,
       itemsPerPage: number = 10
     ) => {
@@ -48,7 +48,7 @@ const useTransactionHistory = (isHost: boolean) => {
 
   const fetchData = useCallback(
     async (
-      filters?: TransactionHistoryFilters,
+      filters?: TransactionHistoryFiltersType,
       page: number = 1,
       itemsPerPage: number = 10
     ): Promise<Result<boolean, string>> => {
