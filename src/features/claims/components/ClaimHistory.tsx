@@ -20,13 +20,12 @@ import useCancelClaim from "../hooks/useCancelClaim";
 
 type Props = {
   claims: Claim[];
-  onClaimUpdated?: (claimId: number) => void;
 };
 
 const headerSpanClassName = "text-start px-2 font-light text-sm";
 const rowSpanClassName = "px-2 h-16";
 
-export default function ClaimHistory({ claims, onClaimUpdated }: Props) {
+export default function ClaimHistory({ claims }: Props) {
   const { userMode } = useUserMode();
   const isHost = userMode === "Host";
   const { mutateAsync: payClaim } = usePayClaim();
@@ -52,9 +51,7 @@ export default function ClaimHistory({ claims, onClaimUpdated }: Props) {
 
     hideSnackbars();
 
-    if (result.ok) {
-      onClaimUpdated && onClaimUpdated(claimId);
-    } else {
+    if (!result.ok) {
       if (result.error === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
       } else {
@@ -70,9 +67,7 @@ export default function ClaimHistory({ claims, onClaimUpdated }: Props) {
 
     hideSnackbars();
 
-    if (result.ok) {
-      onClaimUpdated && onClaimUpdated(claimId);
-    } else {
+    if (!result.ok) {
       if (result.error === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
       } else {

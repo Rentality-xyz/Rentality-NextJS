@@ -1,7 +1,7 @@
-import HostClaimsPageContent from "@/features/claims/pages/HostClaimsPageContent";
+import ClaimsPageContent from "@/features/claims/pages/ClaimsPageContent";
 
 function Claims() {
-  return <HostClaimsPageContent />;
+  return <ClaimsPageContent />;
 }
 
 export default Claims;

@@ -40,7 +40,7 @@ const guestClaimTypes = [
   ClaimType.Other,
 ];
 
-export default function CreateClaim({ onClaimAdded }: { onClaimAdded?: () => void }) {
+export default function CreateClaim() {
   const { userMode } = useUserMode();
   const isHost = userMode === "Host";
   const pathname = usePathname();
@@ -109,9 +109,7 @@ export default function CreateClaim({ onClaimAdded }: { onClaimAdded?: () => voi
 
     hideSnackbars();
 
-    if (result.ok) {
-      onClaimAdded && onClaimAdded();
-    } else {
+    if (!result.ok) {
       if (result.error === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
       } else {
