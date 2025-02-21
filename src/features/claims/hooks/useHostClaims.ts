@@ -3,8 +3,8 @@ import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { formatPhoneNumber, getDateFromBlockchainTime, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { getIpfsURI } from "@/utils/ipfsUtils";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
-import { Claim, getClaimTypeTextFromClaimType, getClaimStatusTextFromStatus } from "@/model/Claim";
-import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
+import { Claim, getClaimTypeTextFromClaimType, getClaimStatusTextFromStatus } from "@/features/claims/models";
+import { CreateClaimRequest, TripInfoForClaimCreation } from "@/features/claims/models/CreateClaimRequest";
 import {
   ContractCreateClaimRequest,
   ContractFullClaimInfo,

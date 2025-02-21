@@ -1,5 +1,5 @@
-import { FileToUpload } from "./FileToUpload";
-import { ClaimType } from "./blockchain/schemas";
+import { ClaimType } from "@/model/blockchain/schemas";
+import { FileToUpload } from "@/model/FileToUpload";
 
 export type CreateClaimRequest = {
   tripId: number;

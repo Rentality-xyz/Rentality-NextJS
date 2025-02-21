@@ -1,7 +1,6 @@
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import Link from "next/link";
-import RntButton from "../common/rntButton";
-import { Claim } from "@/model/Claim";
+import { Claim } from "@/features/claims/models";
 import { ClaimStatus } from "@/model/blockchain/schemas";
 import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
 import { usePathname } from "next/navigation";
@@ -10,6 +9,7 @@ import { isEmpty } from "@/utils/string";
 import Image from "next/image";
 import { useState } from "react";
 import { TFunction } from "@/utils/i18n";
+import RntButton from "@/components/common/rntButton";
 
 type Props = {
   isHost: boolean;
@@ -95,7 +95,7 @@ export default function ClaimHistoryMobileCard({ claim, index, isHost, payClaim,
           </div>
           {isVisible && (
             <div className="mb-4 mt-2">
-              <div id="claim-photos-scrolling" className="flex space-x-2 overflow-x-auto custom-scroll">
+              <div id="claim-photos-scrolling" className="custom-scroll flex space-x-2 overflow-x-auto">
                 {claim.fileUrls
                   .filter((i) => !isEmpty(i))
                   .slice(0, 5)

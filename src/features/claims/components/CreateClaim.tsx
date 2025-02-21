@@ -1,19 +1,19 @@
-import RntSelect from "../common/rntSelect";
-import RntInputMultiline from "../common/rntInputMultiline";
-import RntInput from "../common/rntInput";
-import RntCheckbox from "../common/rntCheckbox";
-import RntButton from "../common/rntButton";
-import { getClaimTypeTextFromClaimType } from "@/model/Claim";
+import { getClaimTypeTextFromClaimType } from "@/features/claims/models";
 import Link from "next/link";
 import { isEmpty } from "@/utils/string";
-import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
+import { CreateClaimRequest, TripInfoForClaimCreation } from "@/features/claims/models/CreateClaimRequest";
 import { ClaimType } from "@/model/blockchain/schemas";
-import ClaimAddPhoto from "@/components/claims/ClaimAddPhoto";
+import ClaimAddPhoto from "@/features/claims/components/ClaimAddPhoto";
 import { usePathname } from "next/navigation";
 import { createClaimFormSchema, CreateClaimFormValues } from "./createClaimFormSchema";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Result, TransactionErrorCode } from "@/model/utils/result";
+import RntSelect from "@/components/common/rntSelect";
+import RntInputMultiline from "@/components/common/rntInputMultiline";
+import RntInput from "@/components/common/rntInput";
+import RntCheckbox from "@/components/common/rntCheckbox";
+import RntButton from "@/components/common/rntButton";
 
 const hostClaimTypes = [
   ClaimType.Tolls,

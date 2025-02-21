@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { formatPhoneNumber, getDateFromBlockchainTime, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
-import { Claim, getClaimStatusTextFromStatus, getClaimTypeTextFromClaimType } from "@/model/Claim";
+import { Claim, getClaimStatusTextFromStatus, getClaimTypeTextFromClaimType } from "@/features/claims/models";
 import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
 import {
   ContractCreateClaimRequest,
@@ -10,7 +10,7 @@ import {
   TripStatus,
 } from "@/model/blockchain/schemas";
 import { validateContractFullClaimInfo, validateContractTripDTO } from "@/model/blockchain/schemas_utils";
-import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
+import { CreateClaimRequest, TripInfoForClaimCreation } from "@/features/claims/models/CreateClaimRequest";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { getIpfsURI } from "@/utils/ipfsUtils";
