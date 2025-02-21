@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import {
   NotificationInfo,
   createClaimCreatedChangedNotification,
@@ -6,16 +6,15 @@ import {
   createTripChangedNotification,
 } from "@/model/NotificationInfo";
 import { getEtherContractWithSigner } from "@/abis";
-import { useEthereum } from "../web3/ethereumContext";
-import { useRentality } from "../rentalityContext";
 import { isEventLog } from "@/utils/ether";
 import { bigIntReplacer } from "@/utils/json";
 import { hasValue } from "@/utils/arrays";
 import { EventLog, JsonRpcProvider, Listener, Wallet } from "ethers";
 import { ClaimStatus, ContractFullClaimInfo, ContractTripDTO, EventType, TripStatus } from "@/model/blockchain/schemas";
 import { getBlockCountForSearch } from "@/model/blockchain/blockchainList";
-import { useAuth } from "../auth/authContext";
-import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
+import { useAuth } from "@/contexts/auth/authContext";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { useRentality } from "@/contexts/rentalityContext";
 
 export type NotificationContextInfo = {
   isLoading: boolean;

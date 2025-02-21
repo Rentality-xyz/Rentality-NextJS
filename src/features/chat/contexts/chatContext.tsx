@@ -3,13 +3,10 @@ import { ChatInfo } from "@/model/ChatInfo";
 import { getEtherContractWithSigner } from "@/abis";
 import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
-import { IRentalityContracts, useRentality } from "../../../contexts/rentalityContext";
 import { isEmpty } from "@/utils/string";
 import moment from "moment";
-import { useEthereum } from "../../../contexts/web3/ethereumContext";
-import { ContractChatInfo, ContractTripDTO, EventType, TripStatus } from "@/model/blockchain/schemas";
+import { ContractChatInfo, EventType, TripStatus } from "@/model/blockchain/schemas";
 import { Contract, Listener } from "ethers";
-import { useNotification } from "../../../contexts/notification/notificationContext";
 import useUserMode, { isHost } from "@/hooks/useUserMode";
 import { Unsubscribe, doc, onSnapshot } from "firebase/firestore";
 import { chatDbInfo } from "@/utils/firebase";
@@ -23,6 +20,9 @@ import {
 } from "@/features/chat/models/chatFirebaseTypes";
 import { ChatMessage } from "@/model/ChatMessage";
 import { useAuth } from "@/contexts/auth/authContext";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
+import { useNotification } from "@/features/notifications/contexts/notificationContext";
 
 export type ChatKeysContextInfo = {
   isLoading: boolean;
