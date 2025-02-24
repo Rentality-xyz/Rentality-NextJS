@@ -162,59 +162,71 @@ function UserCommonInformationForm({
   const enteredPhoneNumber = watch("phoneNumber");
 
   async function sendSmsVerificationCode() {
-    if (!enteredPhoneNumber) {
-      showError(t("profile.pls_phone"));
-      return;
-    }
+    try {
+      if (!enteredPhoneNumber) {
+        showError(t("profile.pls_phone"));
+        return;
+      }
 
-    const response = await fetch("/api/sendSmsVerificationCode", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        phoneNumber: enteredPhoneNumber,
-      }),
-    });
-    const result = await response.json();
-    if (response.ok) {
-      console.log(result);
-      setSmsHash(result.hash);
-      setSmsTimestamp(result.timestamp);
-    } else {
-      showError(result.error);
+      const response = await fetch("/api/sendSmsVerificationCode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phoneNumber: enteredPhoneNumber,
+        }),
+      });
+      const result = await response.json();
+
+      if (response.ok) {
+        setSmsHash(result.hash);
+        setSmsTimestamp(result.timestamp);
+      } else {
+        console.error("sendSmsVerificationCode error:" + result.error);
+        showError(t("profile.send_sms_err"));
+      }
+    } catch (e) {
+      console.error("sendSmsVerificationCode error:" + e);
+      showError(t("profile.send_sms_err"));
     }
   }
 
   const enteredCode = watch("smsCode");
 
   async function compareVerificationCode() {
-    if (!smsHash && !smsTimestamp) return;
+    try {
+      if (!smsHash && !smsTimestamp) return;
+      showInfo(t("profile.verification"))
+      const response = await fetch("/api/compareVerificationCode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userAddress: ethereumInfo?.walletAddress,
+          phoneNumber: enteredPhoneNumber,
+          enteredCode: enteredCode,
+          smsHash: smsHash,
+          timestamp: smsTimestamp,
+          chainId: ethereumInfo?.chainId,
+        }),
+      });
 
-    const response = await fetch("/api/compareVerificationCode", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userAddress: ethereumInfo?.walletAddress,
-        phoneNumber: enteredPhoneNumber,
-        enteredCode: enteredCode,
-        smsHash: smsHash,
-        timestamp: smsTimestamp,
-        chainId: ethereumInfo?.chainId,
-      }),
-    });
+      const result = await response.json();
 
-    const result = await response.json();
+      if (!response.ok) {
+        console.error("compareVerificationCode error:" + result.error);
+        showError(t("profile.verify_number_err"));
+        return;
+      }
 
-    if (!response.ok) {
-      showError(result.error);
-      return;
+      if (result.isVerified) {
+        setIsEnteredCodeCorrect(true);
+        return;
+      }
+
+      showError(t("profile.invalid_code"));
+    } catch (e) {
+      console.error("compareVerificationCode error:" + e);
+      showError(t("profile.verify_number_err"));
     }
-
-    if (result.isVerified) {
-      setIsEnteredCodeCorrect(true);
-      return;
-    }
-
-    showError(t("profile.invalid_code"));
   }
 
   return (

@@ -4,13 +4,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Wallet } from "ethers";
-import { ContractCivicKYCInfo } from "@/model/blockchain/schemas";
-import { getBlockchainTimeFromDate } from "@/utils/formInput";
-import moment from "moment/moment";
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGateway";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
-import { ContractAbi } from "web3-types";
 
 const CODE_EXPIRATION_TIME_MS = 5 * 60 * 1000;
 
