@@ -101,7 +101,7 @@ export default function InvestContent({ isHost }: InvestContentProps) {
         ))}
       </RntFilterSelect>
 
-      <div className="mt-6">
+      <div className="mt-6 grid grid-cols-1 gap-4 2xl:grid-cols-2">
         {filteredInvestments.map((value) => (
           <InvestCar
             isHost={isHost}

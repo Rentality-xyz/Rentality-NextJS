@@ -99,7 +99,7 @@ export default function CarSearchItem({
       <Link href={requestDetailsLink} target="_blank">
         <div
           style={{ backgroundImage: `url(${searchInfo.images[0]})` }}
-          className="relative min-h-[212px] w-full flex-shrink-0 bg-cover bg-center sm:min-h-[432px] 2xl:min-h-[382px] min-[1680px]:min-h-[428px]"
+          className="mac:min-h-[428px] relative min-h-[212px] w-full flex-shrink-0 bg-cover bg-center sm:min-h-[432px] 2xl:min-h-[382px]"
         >
           {isYourOwnCar && (
             <div className="absolute ml-2 mt-2 flex h-[56px] w-[80px] justify-center rounded-xl bg-black bg-opacity-50">
