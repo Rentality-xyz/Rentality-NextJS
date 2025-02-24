@@ -18,7 +18,7 @@ export default function AllowedActionsGuest({
   setConfirmParams: (value: SetStateAction<boolean[]>) => void;
 }) {
   return (
-    <div className="flex w-1/2 flex-col gap-4 py-4">
+    <div className="flex w-full flex-col gap-4 py-4">
       {tripInfo.allowedActions[0].params.map((param, index) => {
         return (
           <div className="flex flex-row items-end" key={param.text}>

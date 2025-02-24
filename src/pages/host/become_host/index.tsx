@@ -3,7 +3,6 @@ import TripDiscountsForm from "@/components/host/tripDiscountsForm";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useDeliveryPrices from "@/hooks/host/useDeliveryPrices";
 import useTripDiscounts from "@/hooks/host/useTripDiscounts";
-import useProfileSettings from "@/hooks/useProfileSettings";
 import useUserRole from "@/hooks/useUserRole";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
@@ -20,10 +19,12 @@ import { GatewayStatus, useGateway } from "@civic/ethereum-gateway-react";
 import useMyListings from "@/hooks/host/useMyListings";
 import AddCar from "@/pages/host/vehicles/add";
 import { CivicProvider } from "@/contexts/web3/civicContext";
-import UserCommonInformationForm from "@/components/profileInfo/UserCommonInformationForm";
-import UserDriverLicenseVerification from "@/components/profileInfo/UserDriverLicenseVerification";
+import UserCommonInformationForm from "@/features/profile/components/UserCommonInformationForm";
+import UserDriverLicenseVerification from "@/features/profile/components/UserDriverLicenseVerification";
 import { isEmpty } from "@/utils/string";
 import useToggleState from "@/hooks/useToggleState";
+import useFetchUserProfile from "@/features/profile/hooks/useFetchUserProfile";
+import useSaveUserProfile from "@/features/profile/hooks/useSaveUserProfile";
 
 function BecomeHost() {
   return (
@@ -44,7 +45,9 @@ type BecomeHostSteps = {
 function BecomeHostContent() {
   const { login } = useAuth();
   const ethereumInfo = useEthereum();
-  const [isLoadingProfileSettings, savedProfileSettings, saveProfileSettings] = useProfileSettings();
+  const { isLoading: isLoadingUserProfile, data: userProfile } = useFetchUserProfile();
+  const { isPending: isPendingUserProfile, mutateAsync: saveUserProfile } = useSaveUserProfile();
+
   const [isLoadingMyListings, myListings] = useMyListings();
   const [isLoadingDiscounts, savedTripsDiscounts, saveTripDiscounts] = useTripDiscounts();
   const [isLoadingDeliveryPrices, savedDeliveryPrices, saveDeliveryPrices] = useDeliveryPrices();
@@ -77,17 +80,18 @@ function BecomeHostContent() {
       toggleOpenBlockUserInfo(false);
     }
   };
+
   useEffect(() => {
-    if (isLoadingProfileSettings) {
+    if (isLoadingUserProfile) {
       setBecomeHostSteps((prev) => ({ ...prev, isUserInfoSaved: false }));
       return;
     }
 
     setBecomeHostSteps((prev) => ({
       ...prev,
-      isUserInfoSaved: !isEmpty(savedProfileSettings.tcSignature) && savedProfileSettings.tcSignature !== "0x",
+      isUserInfoSaved: !isEmpty(userProfile.tcSignature) && userProfile.tcSignature !== "0x",
     }));
-  }, [savedProfileSettings, isLoadingProfileSettings]);
+  }, [isLoadingUserProfile, userProfile]);
 
   const [openBlockDriverLicense, toggleOpenBlockDriverLicense] = useToggleState(false);
   const { gatewayStatus } = useGateway();
@@ -186,10 +190,7 @@ function BecomeHostContent() {
             title={t("become_host.enter_user_info")}
           >
             <div className="ml-10">
-              <UserCommonInformationForm
-                savedProfileSettings={savedProfileSettings}
-                saveProfileSettings={saveProfileSettings}
-              />
+              <UserCommonInformationForm userProfile={userProfile} saveUserProfile={saveUserProfile} />
             </div>
           </BecomeHostStep>
 
@@ -202,7 +203,7 @@ function BecomeHostContent() {
             title={t("become_host.driver_license")}
           >
             <div className="ml-10">
-              <UserDriverLicenseVerification savedProfileSettings={savedProfileSettings} />
+              <UserDriverLicenseVerification />
             </div>
           </BecomeHostStep>
 
