@@ -44,9 +44,9 @@ function CarPhotosLayout({ carPhotos }: { carPhotos: string[] }) {
     );
   if (carPhotos.length === 3)
     return (
-      <div className="grid h-full max-h-[22rem] w-full grid-cols-[minmax(0,3fr)_minmax(0,2fr)] fullHD:max-h-[30rem]">
+      <div className="mac:max-h-[326px] grid max-h-[128px] w-full grid-cols-[minmax(0,3fr)_minmax(0,2fr)] sm:max-h-[226px] xl:max-h-[226px] 2xl:max-h-[290px] fullHD:min-h-[388px]">
         <CarPhoto carImageUrl={carPhotos[0]} />
-        <div className="grid max-h-[22rem] grid-rows-2 fullHD:max-h-[30rem]">
+        <div className="mac:max-h-[326px] grid max-h-[128px] grid-rows-2 sm:max-h-[226px] xl:max-h-[226px] 2xl:max-h-[290px] fullHD:min-h-[388px]">
           <CarPhoto carImageUrl={carPhotos[1]} />
           <CarPhoto carImageUrl={carPhotos[2]} />
         </div>
@@ -54,9 +54,9 @@ function CarPhotosLayout({ carPhotos }: { carPhotos: string[] }) {
     );
   if (carPhotos.length === 4)
     return (
-      <div className="grid h-full max-h-[22rem] w-full grid-cols-[minmax(0,3fr)_minmax(0,2fr)] fullHD:max-h-[30rem]">
+      <div className="mac:max-h-[326px] grid max-h-[128px] w-full grid-cols-[minmax(0,3fr)_minmax(0,2fr)] sm:max-h-[226px] xl:max-h-[226px] 2xl:max-h-[290px] fullHD:min-h-[388px]">
         <CarPhoto carImageUrl={carPhotos[0]} />
-        <div className="grid max-h-[22rem] grid-rows-[minmax(0,3fr)_minmax(0,2fr)] fullHD:max-h-[30rem]">
+        <div className="mac:max-h-[326px] grid max-h-[128px] grid-rows-[minmax(0,3fr)_minmax(0,2fr)] sm:max-h-[226px] xl:max-h-[226px] 2xl:max-h-[290px] fullHD:min-h-[388px]">
           <CarPhoto carImageUrl={carPhotos[1]} />
           <div className="grid grid-cols-2">
             <CarPhoto carImageUrl={carPhotos[2]} />
@@ -91,7 +91,7 @@ function CarPhoto({ carImageUrl }: { carImageUrl: string }) {
       alt=""
       width={1000}
       height={1000}
-      className="h-full max-h-[24rem] w-full border-[1px] border-white bg-gray-500 object-cover object-center fullHD:max-h-[32rem]"
+      className="h-full w-full border-[1px] border-white bg-gray-500 object-cover object-center"
     />
 
     // <div
