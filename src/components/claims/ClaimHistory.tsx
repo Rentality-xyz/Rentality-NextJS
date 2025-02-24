@@ -39,7 +39,7 @@ export default function ClaimHistory({ isHost, claims, payClaim, cancelClaim, t 
   return (
     <div className="mt-5 w-full rounded-2xl bg-rentality-bg p-4">
       <h3 className="mb-4 text-xl">{t_history("title")}</h3>
-      <div className="w-full overflow-x-auto">
+      <div className="w-full overflow-x-auto custom-scroll">
         <table className="w-full table-auto border-spacing-2 max-lg:hidden">
           <thead className="w-full">
             <tr className="text-rentality-additional-light">

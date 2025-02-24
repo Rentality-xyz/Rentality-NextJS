@@ -1,7 +1,7 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import useOwnReferralPointsTransactionStore from "./useOwnReferralPointsTransactionStore";
+import useOwnReferralPointsSharedStore from "./useOwnReferralPointsSharedStore";
 import { Err } from "@/model/utils/result";
 import { REFERRAL_OWN_POINTS_QUERY_KEY } from "./useFetchOwnReferralPoints";
 import { REFERRAL_USER_BALANCE_QUERY_KEY } from "./useFetchUserBalance";
@@ -11,7 +11,8 @@ function useClaimOwnReferralPoints() {
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
   const queryClient = useQueryClient();
-  const setIsClaiming = useOwnReferralPointsTransactionStore((state) => state.setIsClaiming);
+  const setIsClaiming = useOwnReferralPointsSharedStore((state) => state.setIsClaiming);
+  const setReadyToClaim = useOwnReferralPointsSharedStore((state) => state.setReadyToClaim);
 
   return useMutation({
     mutationFn: async () => {
@@ -29,16 +30,21 @@ function useClaimOwnReferralPoints() {
         return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
       }
     },
-    onSuccess: () => {
-      queryClient.refetchQueries({ queryKey: [REFERRAL_OWN_POINTS_QUERY_KEY] });
-      queryClient.invalidateQueries({ queryKey: [REFERRAL_USER_BALANCE_QUERY_KEY] });
-      queryClient.invalidateQueries({ queryKey: [REFERRAL_POINTS_HISTORY_QUERY_KEY] });
+    onSuccess: (data) => {
+      if (data.ok) {
+        queryClient.refetchQueries({ queryKey: [REFERRAL_OWN_POINTS_QUERY_KEY] });
+        queryClient.invalidateQueries({ queryKey: [REFERRAL_USER_BALANCE_QUERY_KEY] });
+        queryClient.invalidateQueries({ queryKey: [REFERRAL_POINTS_HISTORY_QUERY_KEY] });
+      }
     },
     onMutate: () => {
       setIsClaiming(true);
     },
-    onSettled: () => {
+    onSettled: (data) => {
       setIsClaiming(false);
+      if (!!data && data.ok) {
+        setReadyToClaim(0);
+      }
     },
   });
 }

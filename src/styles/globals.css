@@ -7,6 +7,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  @apply custom-scroll;
   /* outline: 2px solid lime; */
   /* background: hsl(0 100% 50% / .1); */
 }
@@ -542,7 +543,7 @@ input:disabled {
 
 .custom-scroll {
   scrollbar-width: thin;
-  scrollbar-color: #888 transparent;
+  scrollbar-color: #7152d8 rgba(163, 162, 162, 0.1);
 }
 
 .swiper {

@@ -1,5 +1,5 @@
 import { RntSelectProps } from "./rntSelect";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import useCarAPI, { CarMakesListElement } from "@/hooks/useCarAPI";
 import RntFilterSelect from "./RntFilterSelect";
 import { cn } from "@/utils";
@@ -14,6 +14,7 @@ interface RntCarMakeSelectProps extends RntSelectProps {
   value: string;
   readOnly?: boolean;
   onMakeSelect?: (newID: string, newMake: string) => void;
+  filter?: (item: CarMakesListElement) => boolean;
 }
 
 export default function RntCarMakeSelect({
@@ -27,16 +28,21 @@ export default function RntCarMakeSelect({
   onMakeSelect,
   validationError,
   isTransparentStyle,
+  filter,
 }: RntCarMakeSelectProps) {
   const { getAllCarMakes } = useCarAPI();
 
-  const [makesList, setMakesList] = useState<CarMakesListElement[]>([]);
+  const [allMakesList, setAllMakesList] = useState<CarMakesListElement[]>([]);
 
   useEffect(() => {
-    getAllCarMakes().then(function (response) {
-      setMakesList(response);
+    getAllCarMakes().then((data) => {
+      setAllMakesList(data);
     });
-  }, []);
+  }, [getAllCarMakes]);
+
+  const makesList = useMemo(() => {
+    return filter ? allMakesList.filter(filter) : allMakesList;
+  }, [allMakesList, filter]);
 
   const isReadOnly = readOnly || makesList.length <= 0;
 

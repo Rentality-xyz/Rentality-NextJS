@@ -27,6 +27,8 @@ import {
   ContractCheckPromoDTO,
   ContractFullKYCInfoDTO,
   ContractAiDamageAnalyzeCaseDataDTO,
+  ContractCurrency,
+
 } from "@/model/blockchain/schemas";
 import { ContractTransactionResponse } from "ethers";
 import { IEthersContract } from "./IEtherContract";
@@ -149,6 +151,12 @@ export interface IRentalityGatewayContract extends IEthersContract {
 
   // DIMO functions
   saveDimoTokenIds(dimoTokenIds: bigint[], rentalityCarIds: bigint[]): Promise<ContractTransactionResponse>;
+
+  // OTHERS
+  getAvaibleCurrencies(): Promise<ContractCurrency[]>;
+  getUniqCarsBrand(): Promise<string[]>;
+  getUniqModelsByBrand(brand: string): Promise<string[]>;
+  setPhoneNumber(user: string, phone: string, isVerified: boolean): Promise<ContractTransactionResponse>;
 
   /// GENERAL functions
   address: string;

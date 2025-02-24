@@ -9,15 +9,16 @@ import RntSuspense from "../../../components/common/rntSuspense";
 import ReferralProgramStatusCard from "@/features/referralProgram/components/ReferralProgramStatusCard";
 import useFetchOwnReferralPoints from "../hooks/useFetchOwnReferralPoints";
 import useClaimOwnReferralPoints from "../hooks/useClaimOwnReferralPoints";
-import useOwnReferralPointsTransactionStore from "../hooks/useOwnReferralPointsTransactionStore";
+import useOwnReferralPointsSharedStore from "../hooks/useOwnReferralPointsSharedStore";
 
 export default function OwnReferralPoints() {
   const { isLoading, isFetching, data } = useFetchOwnReferralPoints();
   const { mutateAsync: claimMyPoints } = useClaimOwnReferralPoints();
-  const isClaiming = useOwnReferralPointsTransactionStore((state) => state.isClaiming);
+  const isClaiming = useOwnReferralPointsSharedStore((state) => state.isClaiming);
+  const readyToClaim = useOwnReferralPointsSharedStore((state) => state.readyToClaim);
   const { t } = useTranslation();
 
-  const { readyToClaim, allPoints } = data;
+  const { allPoints } = data;
 
   async function handleClaimPointsClick() {
     await claimMyPoints();
@@ -62,7 +63,7 @@ export default function OwnReferralPoints() {
         <div id="rp-own-points-account-creation" className="mt-4 px-4">
           <p className="text-gray-300">{t("referrals_and_point.account_creation")}</p>
           <hr className="my-2 border-gray-300" />
-          <div id="rp-account-points-status-scrolling" className="flex space-x-2 overflow-x-auto">
+          <div id="rp-account-points-status-scrolling" className="custom-scroll flex space-x-2 overflow-x-auto">
             {allPoints?.ownAccountCreationPointsInfo.map((info, index) => (
               <div key={index}>
                 <ReferralProgramStatusCard
@@ -79,7 +80,7 @@ export default function OwnReferralPoints() {
         <div id="rp-own-points-regularly" className="mt-2 px-4">
           <p className="text-gray-300">{t("referrals_and_point.regularly")}</p>
           <hr className="my-2 border-gray-300" />
-          <div id="rp-regularly-points-status-scrolling" className="flex space-x-2 overflow-x-auto">
+          <div id="rp-regularly-points-status-scrolling" className="custom-scroll flex space-x-2 overflow-x-auto">
             {allPoints?.ownRegularPointsInfo.map((info, index) => (
               <div key={index}>
                 <ReferralProgramStatusCard

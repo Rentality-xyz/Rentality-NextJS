@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { QueryKey, useQuery } from "@tanstack/react-query";
+import { QueryKey, useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 export type PaginatedData<T> = {
   isLoading: boolean;
@@ -31,22 +31,24 @@ export function usePaginationState(initialPage: number = 1, initialItemsPerPage:
 }
 
 export function usePaginationForListApi<T extends Record<string, any>>(
-  queryKey: string,
+  queryKey: QueryKey,
   fetchListFn: () => Promise<T[]>,
-  enabled: boolean,
   initialPage: number = 1,
-  initialItemsPerPage: number = 10
+  initialItemsPerPage: number = 10,
+  queryOptions?: Omit<UseQueryOptions<T[]>, "queryKey">
 ): PaginatedData<T> {
   const { currentPage, itemsPerPage, filters, updatePagination } = usePaginationState(initialPage, initialItemsPerPage);
+  const { enabled = true, gcTime } = queryOptions ?? {};
 
   const {
     isLoading,
     data: allData,
     error,
   } = useQuery({
-    queryKey: [queryKey],
+    queryKey: [...queryKey],
     queryFn: fetchListFn,
-    enabled: enabled,
+    enabled,
+    gcTime,
   });
 
   const filteredData = useMemo(() => {
@@ -72,20 +74,24 @@ export function usePaginationForListApi<T extends Record<string, any>>(
 }
 
 export function usePaginationForListApiWithFilter<T>(
-  queryKey: string,
+  queryKey: QueryKey,
   fetchListFn: (filters: Record<string, any>) => Promise<T[]>,
   initialPage: number = 1,
-  initialItemsPerPage: number = 10
+  initialItemsPerPage: number = 10,
+  queryOptions?: Omit<UseQueryOptions<T[]>, "queryKey">
 ): PaginatedData<T> {
   const { currentPage, itemsPerPage, filters, updatePagination } = usePaginationState(initialPage, initialItemsPerPage);
+  const { enabled = true, gcTime } = queryOptions ?? {};
 
   const {
     isLoading,
     data: fullData,
     error,
   } = useQuery({
-    queryKey: [queryKey, filters],
+    queryKey: [...queryKey, filters],
     queryFn: () => fetchListFn(filters),
+    enabled,
+    gcTime,
   });
 
   const totalPageCount = useMemo(() => {
@@ -106,20 +112,24 @@ export function usePaginationForListApiWithFilter<T>(
 }
 
 export function usePaginationForListApiWithPages<T>(
-  queryKey: string,
+  queryKey: QueryKey,
   fetchListFn: (page: number, itemsPerPage: number) => Promise<T[]>,
   initialPage: number = 1,
-  initialItemsPerPage: number = 10
+  initialItemsPerPage: number = 10,
+  queryOptions?: Omit<UseQueryOptions<T[]>, "queryKey">
 ): PaginatedData<T> {
   const { currentPage, itemsPerPage, updatePagination } = usePaginationState(initialPage, initialItemsPerPage);
+  const { enabled = true, gcTime } = queryOptions ?? {};
 
   const {
     isLoading,
     data: pageData,
     error,
   } = useQuery({
-    queryKey: [queryKey, currentPage, itemsPerPage],
+    queryKey: [...queryKey, currentPage, itemsPerPage],
     queryFn: () => fetchListFn(currentPage, itemsPerPage),
+    enabled,
+    gcTime,
   });
 
   const totalPageCount = useMemo(() => {
@@ -135,8 +145,9 @@ export function usePaginationForListApiWithPages<T>(
 
   return { isLoading, data: { pageData: pageData || [], currentPage, totalPageCount }, error, fetchData };
 }
+
 export function usePaginationForListApiWithPagesAndFilters<T>(
-  queryKey: string,
+  queryKey: QueryKey,
   fetchListFn: (
     page: number,
     itemsPerPage: number,
@@ -146,13 +157,23 @@ export function usePaginationForListApiWithPagesAndFilters<T>(
     totalItems: number;
   }>,
   initialPage: number = 1,
-  initialItemsPerPage: number = 10
+  initialItemsPerPage: number = 10,
+  queryOptions?: Omit<
+    UseQueryOptions<{
+      data: T[];
+      totalItems: number;
+    }>,
+    "queryKey"
+  >
 ): PaginatedData<T> {
   const { currentPage, itemsPerPage, filters, updatePagination } = usePaginationState(initialPage, initialItemsPerPage);
+  const { enabled = true, gcTime } = queryOptions ?? {};
 
   const { isLoading, data, error } = useQuery({
-    queryKey: [queryKey, currentPage, itemsPerPage, filters],
+    queryKey: [...queryKey, currentPage, itemsPerPage, filters],
     queryFn: () => fetchListFn(currentPage, itemsPerPage, filters),
+    enabled,
+    gcTime,
   });
 
   const totalPageCount = useMemo(() => {

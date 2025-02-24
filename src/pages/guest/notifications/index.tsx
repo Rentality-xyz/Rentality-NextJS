@@ -2,7 +2,6 @@ import NotificationPage from "@/components/notification/notificationPage";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import { useNotification } from "@/contexts/notification/notificationContext";
 import { useTranslation } from "react-i18next";
-import CheckingLoadingAuth from "@/components/common/CheckingLoadingAuth";
 import RntSuspense from "@/components/common/rntSuspense";
 
 function Notifications() {
@@ -12,11 +11,9 @@ function Notifications() {
   return (
     <>
       <PageTitle title={t("notifications.title")} />
-      <CheckingLoadingAuth>
-        <RntSuspense isLoading={isLoading}>
-          <NotificationPage notifications={notifications} />
-        </RntSuspense>
-      </CheckingLoadingAuth>
+      <RntSuspense isLoading={isLoading}>
+        <NotificationPage notifications={notifications} />
+      </RntSuspense>
     </>
   );
 }

@@ -1,22 +1,18 @@
+//TODO translate
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
-import React, { forwardRef, Ref, useImperativeHandle, useMemo, useRef, useState } from "react";
-// @ts-ignore
-import carCarIcon from "@/images/upload-car-photo.png";
-// @ts-ignore
-import carSeatsIcon from "@/images/car_seats.png";
-// @ts-ignore
-import carDataIcon from "@/images/upload-car-data.png";
+import React, { forwardRef, useImperativeHandle, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { Err } from "@/model/utils/result";
 import { useTranslation } from "react-i18next";
+import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 
 const EXTERIOR_PHOTOS_COUNT_REQUIRED = 4;
 const INTERIOR_PHOTOS_COUNT_REQUIRED = 9;
 const DATA_PHOTOS_COUNT_REQUIRED = 2;
-const MAX_FILE_COUNT = 16;
+const MAX_FILE_COUNT = EXTERIOR_PHOTOS_COUNT_REQUIRED + INTERIOR_PHOTOS_COUNT_REQUIRED + DATA_PHOTOS_COUNT_REQUIRED;
 
 const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
   {
@@ -34,12 +30,11 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
 ) {
   const ethereumInfo = useEthereum();
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   const [uploadedFiles, setUploadedFiles] = useState<FileList | null>(null);
+  const { t } = useTranslation();
+  const { showError } = useRntSnackbars();
 
   const totalCount = useMemo(() => uploadedFiles?.length || "no", [uploadedFiles?.length]);
-
-  const { t } = useTranslation();
 
   useImperativeHandle(
     ref,
@@ -57,6 +52,8 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
 
           for (const uploadedFile of Array.from(uploadedFiles)) {
             const fileName = `${tripId}-${isHostStringValue}-${isStartStringValue}-${uploadedFile.name}`;
+
+            console.debug(`Uploading file ${fileName} to Pinata`);
 
             const response = await uploadFileToIPFS(uploadedFile, fileName, {
               createdAt: new Date().toISOString(),
@@ -94,6 +91,8 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
         onChange={(e) => {
           if (e.target.files && e.target.files.length <= MAX_FILE_COUNT) {
             setUploadedFiles(e.target.files);
+          } else {
+            showError(`You can upload ${MAX_FILE_COUNT} photos maximum`);
           }
         }}
       />
@@ -121,7 +120,7 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
           <div className="flex items-center justify-center p-2">
             <div className="w-32 border-none p-4 text-sm">
               <div className="flex items-center justify-center">
-                <Image className="me-1" src={carCarIcon} width={50} height={50} alt="" />
+                <Image className="me-1" src="/images/upload-car-photo.png" width={50} height={50} alt="" />
               </div>
               <div className="text-rentality-secondary">{t("common.exterior")}</div>
               <div>
@@ -130,7 +129,7 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
             </div>
             <div className="w-32 p-4 text-sm">
               <div className="flex items-center justify-center">
-                <Image className="me-1" src={carSeatsIcon} width={50} height={50} alt="" />
+                <Image className="me-1" src="/images/car_seats.png" width={50} height={50} alt="" />
               </div>
               <div className="text-rentality-secondary">{t("common.interior")}</div>
               <div>
@@ -139,7 +138,7 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
             </div>
             <div className="w-32 p-4 text-sm">
               <div className="flex items-center justify-center">
-                <Image className="me-1" src={carDataIcon} width={50} height={50} alt="" />
+                <Image className="me-1" src="/images/upload-car-data.png" width={50} height={50} alt="" />
               </div>
               <div className="text-rentality-secondary">{t("common.data")}</div>
               <div>

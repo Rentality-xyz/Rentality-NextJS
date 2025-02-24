@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { cn } from "@/utils";
 import ImageCarouselDialog from "./ImageCarouselDialog";
 import useToggleState from "@/hooks/useToggleState";
-import { SearchCarFilters } from "@/model/SearchCarRequest";
 import { SearchCarInfoDetails } from "@/model/SearchCarsResult";
 
 export function CarPhotos({ carPhotos, carInfo }: { carPhotos: string[]; carInfo: SearchCarInfoDetails }) {

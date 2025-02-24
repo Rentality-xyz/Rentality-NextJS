@@ -165,7 +165,7 @@ function DropdownPortal({ children }: { children?: React.ReactNode }) {
 
   return createPortal(
     <div
-      className="absolute z-10 overflow-y-auto rounded-lg border border-gray-500 bg-rentality-bg-left-sidebar px-0 py-2 shadow-md"
+      className="absolute z-10 overflow-y-auto custom-scroll rounded-lg border border-gray-500 bg-rentality-bg-left-sidebar px-0 py-2 shadow-md"
       style={{
         top: `${position.top + 8}px`,
         left: `${position.left}px`,

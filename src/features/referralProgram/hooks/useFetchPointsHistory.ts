@@ -19,7 +19,7 @@ const useFetchPointsHistory = (initialPage: number = 1, initialItemsPerPage: num
   const { t } = useTranslation();
 
   const { isLoading, data, error, fetchData } = usePaginationForListApi<ReferralHistoryInfo>(
-    REFERRAL_POINTS_HISTORY_QUERY_KEY,
+    [REFERRAL_POINTS_HISTORY_QUERY_KEY],
     async () => {
       if (!rentalityContracts) {
         throw new Error("Contracts not initialized");
@@ -32,7 +32,7 @@ const useFetchPointsHistory = (initialPage: number = 1, initialItemsPerPage: num
         throw new Error(result.error.message);
       }
 
-      return await Promise.all(
+      const data = await Promise.all(
         result.value.map(async (historyDataDto) => {
           const isOneTime = historyDataDto.oneTime;
 
@@ -50,10 +50,15 @@ const useFetchPointsHistory = (initialPage: number = 1, initialItemsPerPage: num
           };
         })
       );
+
+      data.sort((a, b) => b.date.getTime() - a.date.getTime());
+      return data;
     },
-    !!rentalityContracts,
     initialPage,
-    initialItemsPerPage
+    initialItemsPerPage,
+    {
+      enabled: !!rentalityContracts,
+    }
   );
 
   return {

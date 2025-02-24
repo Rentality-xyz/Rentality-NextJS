@@ -1,8 +1,7 @@
 import { useTranslation } from "react-i18next";
-
-import { InsuranceFiltersType } from "@/features/insurance/hooks/useInsurances";
 import RntSelect from "@/components/common/rntSelect";
 import RntButton from "@/components/common/rntButton";
+import { InsuranceFiltersType } from "../hooks/useFetchInsurances";
 
 interface GuestInsuranceFiltersProps {
   defaultFilters?: InsuranceFiltersType;
@@ -13,7 +12,7 @@ export default function GuestInsuranceFilters({ defaultFilters, onApply }: Guest
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-col self-end">
+    <div className="flex flex-col sm:self-end">
       <p>{t("insurance.trip_filter")}</p>
       <div className="flex gap-4">
         <RntSelect disabled={true}>
