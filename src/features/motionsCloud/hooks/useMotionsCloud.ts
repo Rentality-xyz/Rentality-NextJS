@@ -1,13 +1,10 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { MotionsCloudPhoto } from "@/model/MotionsCloud";
-import { fileToBase64, imageToBase64, photoMap } from "@/pages/api/motionscloud/uploadPhoto";
+import { createSecret } from "@/pages/api/motionscloud/createSecret";
 import axios from "@/utils/cachedAxios";
 import { useState } from "react";
 
-async function convertFile(file: File) {
-return await fileToBase64(file);
-}
+
 export default function useMotionsCloud () { 
     const ethereumInfo = useEthereum();
     const rentalityContract = useRentality()
@@ -30,7 +27,7 @@ export default function useMotionsCloud () {
               const response = await axios.post("/api/motionscloud/createCase", 
                 {
                   tripId: tripId,
-                  caseNum: Number(caseInfo.caseNumber) + 5,
+                  caseNum: Number(caseInfo.caseNumber) + 1,
                   email: caseInfo.email,
                   name: caseInfo.name,
                   chainId: ethereumInfo.chainId,
@@ -52,7 +49,7 @@ export default function useMotionsCloud () {
 
         
 
-          const handleUploadPhoto = async (tripId: number, photos: MotionsCloudPhoto ) => {
+          const handleUploadPhoto = async (tripId: number, photos: FormData ) => {
 
             const rentality = rentalityContract.rentalityContracts;
             if(!rentality) {
@@ -66,16 +63,24 @@ export default function useMotionsCloud () {
                 try {
                     setIsLoading(true);
 
-                    // const token = await rentality.motionsCloud.getInsuranceCaseByTrip(BigInt(tripId))
-                    const token ={value:  'ED2msxanRVCgz6yYdEMgpHTA', ok: true}
+                    const token = await rentality.motionsCloud.getInsuranceCaseByTrip(BigInt(tripId))
                     if(!token.ok) { 
                         console.log("Motions cloud: case number is not found")
                         return
                     }
+                    const {secret, baseUrl} = await createSecret();
                     const response = await axios.post(
-                        `/api/motionscloud/uploadPhoto?token=${encodeURIComponent(token.value)}`,
-                        photos
-                    );
+                      `${baseUrl}/api/v1/case/${token.value}/upload_photos`,
+                      photos,
+                      {
+                          headers: {
+                                  'Authorization': `Bearer ${secret.access_token}`, 
+                                  "Content-Type": "multipart/form-data"
+                          }
+                      }
+                  );
+              
+            
                     if(response.status !== 200) {
                         console.log('MotionsCloud: failed to upload photo with error: ', response.data)
                         return

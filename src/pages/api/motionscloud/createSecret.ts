@@ -1,9 +1,9 @@
 import axios from "axios";
 export async function createSecret() {
-        const baseUrl = process.env.MOTIONSCLOUD_BASE_URL;
-        const accountSid = process.env.MOTIONSCLOUD_ACCOUNT_SID;
-        const accountSecret = process.env.MOTIONSCLOUD_ACCOUNT_SECRETKEY;
-
+        const baseUrl = process.env.NEXT_PUBLIC_MOTIONSCLOUD_BASE_URL;
+        const accountSid = process.env.NEXT_PUBLIC_MOTIONSCLOUD_ACCOUNT_SID;
+        const accountSecret = process.env.NEXT_PUBLIC_MOTIONSCLOUD_ACCOUNT_SECRETKEY;
+        
         const response = await axios.post(
             `${baseUrl}/access_token`,
             {},
