@@ -127,7 +127,7 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
                         value={field.value}
                         onLevelChange={(newValue) => {
                           field.onChange(newValue);
-                          setEndLevelInPercents(newValue * 100 ?? 0);
+                          setEndLevelInPercents(newValue * 100);
                         }}
                         validationError={errors.fuelOrBatteryLevel?.message?.toString()}
                       />
