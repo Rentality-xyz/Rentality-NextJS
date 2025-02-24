@@ -74,14 +74,13 @@ const useTransactionHistory = (isHost: boolean) => {
         }
 
         const data: TransactionHistoryInfo[] = await Promise.all(
-          tripInfos.map(async (tripDto) => {
-            return mapContractTripDTOToTransactionHistoryInfo(tripDto);
-          })
+          tripInfos.map((tripDto) => mapContractTripDTOToTransactionHistoryInfo(tripDto))
         );
 
         data.sort((a, b) => {
           return b.startDateTime.getTime() - a.startDateTime.getTime();
         });
+
         console.log("data", JSON.stringify(data, bigIntReplacer, 2));
 
         setAllData(data);
