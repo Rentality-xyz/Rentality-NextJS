@@ -86,7 +86,7 @@ export default function InvestContent({ isHost }: InvestContentProps) {
       )}
 
       <RntFilterSelect
-        className="border-gradient w-60 justify-center border-0 bg-transparent text-lg text-rentality-secondary"
+        className="btn_input_border-gradient w-60 justify-center bg-transparent text-lg text-rentality-secondary"
         id="invest_filter"
         value={filterInvestBy ? filterInvest[filterInvestBy] : Object.values(filterInvest ?? {})[0]}
         onChange={(e) => {
