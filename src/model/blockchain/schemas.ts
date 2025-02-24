@@ -265,6 +265,11 @@ export type ContractPaymentInfo = {
   dropOfFee: bigint;
 };
 
+export type ContractCurrency = {
+  currency: string;
+  name: string;
+};
+
 export type ContractTripReceiptDTO = {
   totalDayPriceInUsdCents: bigint;
   totalTripDays: bigint;
@@ -323,6 +328,7 @@ export type ContractAdditionalKYCInfo = {
 export type ContractFullKYCInfoDTO = {
   kyc: ContractKYCInfo;
   additionalKYC: ContractAdditionalKYCInfo;
+  isPhoneVerified: boolean;
 };
 
 export type ContractAdminKYCInfoDTO = {
@@ -508,6 +514,7 @@ export type ContractInvestmentDTO = {
   myPart: bigint;
   totalHolders: bigint;
   totalTokens: bigint;
+  currency: string;
 };
 
 export type ContractTripFilter = {

@@ -4,10 +4,8 @@ import RntValidationError from "./RntValidationError";
 import { cn } from "@/utils";
 import Image, { StaticImageData } from "next/image";
 import bgInput from "@/images/bg_input.png";
-// @ts-ignore
-import bgBlockSearch from "@/images/bg_block_search.png";
 import * as React from "react";
-import DotStatus from "@/components/profileInfo/dotStatus";
+import DotStatus from "@/components/dotStatus";
 
 interface RntInputProps extends React.ComponentPropsWithoutRef<"input"> {
   labelClassName?: string;

@@ -2,6 +2,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { createSecret } from "@/pages/api/motionscloud/createSecret";
 import axios from "@/utils/cachedAxios";
+import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { useState } from "react";
 
 
@@ -106,7 +107,7 @@ export default function useMotionsCloud () {
                 setIsLoading(true);
                 const response = await rentality.motionsCloud.getInsuranceCaseUrlByTrip(BigInt(tripId))
                 if (response.ok && response.value !== "") { 
-                    return response.value
+                    return await getMetaDataFromIpfs(response.value)
                 }
                 else { 
                   console.error("Motions cloud: response not found",);
