@@ -1,13 +1,10 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { AiDamageAnalyzePhoto } from "@/model/AiDamageAnalyze";
-import { fileToBase64, imageToBase64, photoMap } from "@/pages/api/aiDamageAnalyze/uploadPhoto";
+import { createSecret } from "@/pages/api/aiDamageAnalyze/createSecret";
 import axios from "@/utils/cachedAxios";
 import { useState } from "react";
 
-async function convertFile(file: File) {
-return await fileToBase64(file);
-}
+
 export default function useAiDamageAnalyze () { 
     const ethereumInfo = useEthereum();
     const rentalityContract = useRentality()
@@ -30,7 +27,7 @@ export default function useAiDamageAnalyze () {
               const response = await axios.post("/api/aiDamageAnalyze/createCase", 
                 {
                   tripId: tripId,
-                  caseNum: Number(caseInfo.caseNumber) + 5,
+                  caseNum: Number(caseInfo.caseNumber) + 1,
                   email: caseInfo.email,
                   name: caseInfo.name,
                   chainId: ethereumInfo.chainId,
@@ -52,7 +49,7 @@ export default function useAiDamageAnalyze () {
 
         
 
-          const handleUploadPhoto = async (tripId: number, photos: AiDamageAnalyzePhoto ) => {
+          const handleUploadPhoto = async (tripId: number, photos: FormData ) => {
 
             const rentality = rentalityContract.rentalityContracts;
             if(!rentality) {
@@ -66,16 +63,24 @@ export default function useAiDamageAnalyze () {
                 try {
                     setIsLoading(true);
 
-                    // const token = await rentality.aiDamageAnalyze.getInsuranceCaseByTrip(BigInt(tripId))
-                    const token ={value:  'ED2msxanRVCgz6yYdEMgpHTA', ok: true}
+                    const token = await rentality.aiDamageAnalyze.getInsuranceCaseByTrip(BigInt(tripId))
                     if(!token.ok) { 
                         console.log("Ai damage analyze: case number is not found")
                         return
                     }
+                    const {secret, baseUrl} = await createSecret();
                     const response = await axios.post(
-                        `/api/aiDamageAnalyze/uploadPhoto?token=${encodeURIComponent(token.value)}`,
-                        photos
-                    );
+                      `${baseUrl}/api/v1/case/${token.value}/upload_photos`,
+                      photos,
+                      {
+                          headers: {
+                                  'Authorization': `Bearer ${secret.access_token}`, 
+                                  "Content-Type": "multipart/form-data"
+                          }
+                      }
+                  );
+              
+            
                     if(response.status !== 200) {
                         console.log('AiDamageAnalyze: failed to upload photo with error: ', response.data)
                         return

@@ -66,7 +66,6 @@ const providerApiUrl = getProviderApiUrlFromEnv(chainId);
     return
   }
 try {
-  console.log("token", token)
  await rentality.saveInsuranceCase(token, BigInt(tripId))
 }
 catch(error) {
@@ -78,7 +77,6 @@ catch(error) {
 
 function getCase(req: NextApiRequest) {
     const request =  <CreateCaseParams>req.body;
-console.log('requestBODY', req.body)
     
     return {
       newCase: createCase(

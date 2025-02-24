@@ -71,6 +71,7 @@
     "zustand": "^4.5.5"
   },
   "devDependencies": {
+    "@types/formidable": "^3.4.5",
     "@types/google.maps": "^3.57.0",
     "@types/react-datepicker": "^4.19.3",
     "eruda": "^3.2.3",

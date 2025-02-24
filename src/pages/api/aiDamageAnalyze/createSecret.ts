@@ -1,9 +1,9 @@
 import axios from "axios";
 export async function createSecret() {
-        const baseUrl = process.env.AI_DAMAGE_ANALYZE_BASE_URL;
-        const accountSid = process.env.AI_DAMAGE_ANALYZE_ACCOUNT_SID;
-        const accountSecret = process.env.AI_DAMAGE_ANALYZE_ACCOUNT_SECRETKEY;
-
+        const baseUrl = process.env.NEXT_PUBLIC_AI_DAMAGE_ANALYZE_BASE_URL;
+        const accountSid = process.env.NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SID;
+        const accountSecret = process.env.NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SECRETKEY;
+        
         const response = await axios.post(
             `${baseUrl}/access_token`,
             {},
