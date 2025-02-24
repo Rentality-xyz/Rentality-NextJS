@@ -63,52 +63,58 @@ export default function InvestCar({
           getColorInvestmentStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost)
         )}
       >
-        <div className="flex max-2xl:flex-col">
+        <div className="max-mac:flex-col flex">
           <span>{getInvestmentStatus(searchInfo.investment, t)}</span>
-          <span className="mx-2 max-2xl:hidden">|</span>
+          <span className="max-mac:hidden mx-2">|</span>
           <span>
             {getTxtInvestmentListingStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
           </span>
           <Link
             href={searchInfo.investment.nftUrl}
             target="_blank"
-            className="mr-4 cursor-pointer hover:underline 2xl:ml-auto"
+            className="mac:ml-auto mr-4 cursor-pointer hover:underline"
           >
             {t("invest.view_smart_contract")}
           </Link>
         </div>
       </div>
-      <div className="flex w-full grid-cols-[1.4fr_1.2fr_0.7fr_0.7fr] flex-col gap-2 2xl:grid">
-        <div
-          style={{ backgroundImage: `url(${searchInfo.metadata.image})` }}
-          className="w-full bg-cover bg-center bg-no-repeat p-2 max-2xl:h-[180px] 2xl:rounded-bl-xl"
-        ></div>
-        <div className="relative p-2">
-          <p className="text-xl font-bold">
-            {`${searchInfo.investment.investment.car.brand} ${searchInfo.investment.investment.car.model} ${searchInfo.investment.investment.car.yearOfProduction}`}
-          </p>
-          <p className="font-medium text-[#FFFFFF70]">
-            {`${searchInfo.investment.investment.car.locationInfo.locationInfo.city}, ${searchInfo.investment.investment.car.locationInfo.locationInfo.state}, ${searchInfo.investment.investment.car.locationInfo.locationInfo.country}`}
-          </p>
-          {isHost
-            ? getBlocksForHost(isCreator, searchInfo.investment, handleStartHosting, t)
-            : getBlocksForGuest(
-                searchInfo.investment,
-                investmentAmount,
-                handleInvest,
-                isPendingInvesting,
-                handleChangeInvestmentAmount,
-                handleClaimIncome,
-                t
-              )}
-          <p className="mt-8">{t("invest.listing_status")}</p>
-          <p className="text-rentality-secondary">
-            {getCarListingStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
-          </p>
+      <div
+        // style={{ backgroundImage: `url(${searchInfo.metadata.image})` }}
+        className="mac:min-h-[366px] min-h-[212px] w-full bg-[url('../images/car_bmw.jpg')] bg-cover bg-center bg-no-repeat sm:min-h-[356px] xl:min-h-[514px] 2xl:min-h-[324px] 2xl:rounded-bl-xl fullHD:min-h-[432px]"
+      ></div>
+      <div className="flex h-full w-full grid-cols-[1fr_0.5fr_0.5fr] flex-col gap-2 2xl:grid">
+        <div className="relative flex flex-col justify-between p-2">
+          <div>
+            <p className="text-xl font-bold">
+              {`${searchInfo.investment.investment.car.brand} ${searchInfo.investment.investment.car.model} ${searchInfo.investment.investment.car.yearOfProduction}`}
+            </p>
+            <p className="font-medium text-[#FFFFFF70]">
+              {`${searchInfo.investment.investment.car.locationInfo.locationInfo.city}, ${searchInfo.investment.investment.car.locationInfo.locationInfo.state}, ${searchInfo.investment.investment.car.locationInfo.locationInfo.country}`}
+            </p>
+          </div>
+          <div>
+            {isHost
+              ? getBlocksForHost(isCreator, searchInfo.investment, handleStartHosting, t)
+              : getBlocksForGuest(
+                  searchInfo.investment,
+                  investmentAmount,
+                  handleInvest,
+                  isPendingInvesting,
+                  handleChangeInvestmentAmount,
+                  handleClaimIncome,
+                  t
+                )}
+          </div>
+          <div>
+            <p className="mt-8">{t("invest.listing_status")}</p>
+            <p className="text-rentality-secondary">
+              {getCarListingStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
+            </p>
+          </div>
           <div className={ccsDividerVert}></div>
           <div className={ccsDividerHor}></div>
         </div>
-        <div className="relative flex h-full flex-col p-2 text-center max-2xl:py-4">
+        <div className="relative flex h-full flex-col p-2 text-center max-2xl:py-4 2xl:px-4">
           <p className="text-xl font-semibold max-2xl:mb-4">{t("invest.tokenization")}</p>
           <div className="flex flex-grow flex-col justify-center">
             <p className="text-xl font-bold 2xl:text-2xl">${searchInfo.investment.investment.priceInUsd}</p>
@@ -119,7 +125,7 @@ export default function InvestCar({
           <div className={ccsDividerVert}></div>
           <div className={ccsDividerHor}></div>
         </div>
-        <div className="flex flex-col items-center justify-center p-2 max-2xl:py-4">
+        <div className="flex h-full flex-col items-center justify-center p-2 text-center max-2xl:py-4">
           {getBlockIncome(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
         </div>
       </div>
@@ -368,7 +374,7 @@ function getBlockIncome(
   ) : (
     <>
       <span className="text-center text-lg text-rentality-secondary 2xl:text-xl fullHD:text-base">{head}</span>
-      <span className="text-lg 2xl:text-xl">
+      <span className="text-center text-lg 2xl:text-xl">
         {investment.myPart}% {t("invest.from_each_trip")}
       </span>
     </>
