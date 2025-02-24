@@ -1,4 +1,4 @@
-import { CreateClaimRequest } from "@/model/CreateClaimRequest";
+import { CreateClaimRequest } from "@/features/claims/models/CreateClaimRequest";
 import { dateFormatLongMonthDateTime } from "@/utils/datetimeFormatters";
 import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
 import moment from "moment";

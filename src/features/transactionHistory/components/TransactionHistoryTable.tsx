@@ -2,14 +2,14 @@ import { TFunction } from "@/utils/i18n";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import Loading from "../common/Loading";
-import { TransactionHistoryInfo } from "@/model/TransactionHistoryInfo";
-import TransactionHistoryMobileCard from "./transactionHistoryMobileCard";
 import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import Link from "next/link";
-import RntSuspense from "../common/rntSuspense";
+import { TransactionHistoryInfo } from "../models";
+import RntSuspense from "@/components/common/rntSuspense";
+import Loading from "@/components/common/Loading";
+import TransactionHistoryMobileCard from "./TransactionHistoryMobileCard";
 
 type TransactionHistoryTableProps = {
   isLoading: boolean;
@@ -37,7 +37,7 @@ function TransactionHistoryTable({ isLoading, data, isHost }: TransactionHistory
         </div>
       }
     >
-      <table className="hidden w-full table-auto border-spacing-2 overflow-x-auto custom-scroll lg:block">
+      <table className="custom-scroll hidden w-full table-auto border-spacing-2 overflow-x-auto lg:block">
         <thead className="mb-2">
           <tr>
             <th className={headerSpanClassName}></th>

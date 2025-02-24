@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import RntButton from "../common/rntButton";
+import RntButton from "@/components/common/rntButton";
 
 function ClaimFileList({ fileUrls, handleBackClick }: { fileUrls: string[]; handleBackClick: () => void }) {
   return (
