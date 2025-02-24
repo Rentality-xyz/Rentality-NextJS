@@ -1,45 +1,87 @@
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import Link from "next/link";
-import RntButton from "../common/rntButton";
-import { Claim } from "@/model/Claim";
+import { Claim } from "@/features/claims/models";
 import { ClaimStatus } from "@/model/blockchain/schemas";
 import moment from "moment";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
 import Image from "next/image";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { isEmpty } from "@/utils/string";
 import { usePathname } from "next/navigation";
 import ClaimFileList from "./ClaimFileList";
 import ClaimHistoryMobileCard from "./ClaimHistoryMobileCard";
 import { cn } from "@/utils";
+import RntButton from "@/components/common/rntButton";
+import useUserMode from "@/hooks/useUserMode";
+import { useTranslation } from "react-i18next";
+import usePayClaim from "../hooks/usePayClaim";
+import useCancelClaim from "../hooks/useCancelClaim";
 
 type Props = {
-  isHost: boolean;
   claims: Claim[];
-  payClaim: (claimId: number) => Promise<void>;
-  cancelClaim: (claimId: number) => Promise<void>;
-  t: TFunction;
 };
 
-export default function ClaimHistory({ isHost, claims, payClaim, cancelClaim, t }: Props) {
-  const t_history: TFunction = (path, options) => {
-    return t("history." + path, options);
-  };
-  const headerSpanClassName = "text-start px-2 font-light text-sm";
-  const rowSpanClassName = "px-2 h-16";
-  const redTextClassName = cn(rowSpanClassName, "text-rentality-alert-text");
+const headerSpanClassName = "text-start px-2 font-light text-sm";
+const rowSpanClassName = "px-2 h-16";
+
+export default function ClaimHistory({ claims }: Props) {
+  const { userMode } = useUserMode();
+  const isHost = userMode === "Host";
+  const { mutateAsync: payClaim } = usePayClaim();
+  const { mutateAsync: cancelClaim } = useCancelClaim();
+  const { showInfo, showError, hideSnackbars } = useRntSnackbars();
+
   const { showCustomDialog, hideDialogs } = useRntDialogs();
   const pathname = usePathname();
+  const { t } = useTranslation();
+
+  const t_history: TFunction = (path, options) => {
+    return t("claims.history." + path, options);
+  };
 
   function handleFilesClick(claim: Claim) {
     showCustomDialog(<ClaimFileList fileUrls={claim.fileUrls} handleBackClick={hideDialogs} />);
   }
 
+  async function handleCancelClaim(claimId: number) {
+    showInfo(t("common.info.sign"));
+
+    const result = await cancelClaim(claimId);
+
+    hideSnackbars();
+
+    if (!result.ok) {
+      if (result.error === "NOT_ENOUGH_FUNDS") {
+        showError(t("common.add_fund_to_wallet"));
+      } else {
+        showError(t("claims.host.claim_cancel_failed"));
+      }
+    }
+  }
+
+  async function handlePayClaim(claimId: number) {
+    showInfo(t("common.info.sign"));
+
+    const result = await payClaim(claimId);
+
+    hideSnackbars();
+
+    if (!result.ok) {
+      if (result.error === "NOT_ENOUGH_FUNDS") {
+        showError(t("common.add_fund_to_wallet"));
+      } else {
+        showError(t("claims.errors.pay_claim_failed"));
+      }
+    }
+  }
+
+  const redTextClassName = cn(rowSpanClassName, "text-rentality-alert-text");
+
   return (
     <div className="mt-5 w-full rounded-2xl bg-rentality-bg p-4">
       <h3 className="mb-4 text-xl">{t_history("title")}</h3>
-      <div className="w-full overflow-x-auto custom-scroll">
+      <div className="custom-scroll w-full overflow-x-auto">
         <table className="w-full table-auto border-spacing-2 max-lg:hidden">
           <thead className="w-full">
             <tr className="text-rentality-additional-light">
@@ -154,8 +196,8 @@ export default function ClaimHistory({ isHost, claims, payClaim, cancelClaim, t 
               isHost={isHost}
               claim={claim}
               index={index}
-              payClaim={payClaim}
-              cancelClaim={cancelClaim}
+              payClaim={handlePayClaim}
+              cancelClaim={handleCancelClaim}
               t_history={t_history}
             />
           );

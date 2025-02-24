@@ -1,19 +1,24 @@
-import RntSelect from "../common/rntSelect";
-import RntInputMultiline from "../common/rntInputMultiline";
-import RntInput from "../common/rntInput";
-import RntCheckbox from "../common/rntCheckbox";
-import RntButton from "../common/rntButton";
-import { getClaimTypeTextFromClaimType } from "@/model/Claim";
+import { getClaimTypeTextFromClaimType } from "@/features/claims/models";
 import Link from "next/link";
 import { isEmpty } from "@/utils/string";
-import { CreateClaimRequest, TripInfoForClaimCreation } from "@/model/CreateClaimRequest";
+import { CreateClaimRequest } from "@/features/claims/models/CreateClaimRequest";
 import { ClaimType } from "@/model/blockchain/schemas";
-import ClaimAddPhoto from "@/components/claims/ClaimAddPhoto";
+import ClaimAddPhoto from "@/features/claims/components/ClaimAddPhoto";
 import { usePathname } from "next/navigation";
 import { createClaimFormSchema, CreateClaimFormValues } from "./createClaimFormSchema";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Result, TransactionErrorCode } from "@/model/utils/result";
+import { Err, Result, TransactionErrorCode } from "@/model/utils/result";
+import RntSelect from "@/components/common/rntSelect";
+import RntInputMultiline from "@/components/common/rntInputMultiline";
+import RntInput from "@/components/common/rntInput";
+import RntCheckbox from "@/components/common/rntCheckbox";
+import RntButton from "@/components/common/rntButton";
+import useUserMode from "@/hooks/useUserMode";
+import useCreateClaim from "../hooks/useCreateClaim";
+import { useRntSnackbars } from "@/contexts/rntDialogsContext";
+import { useTranslation } from "react-i18next";
+import useTripsForClaimCreation from "../hooks/useTripsForClaimCreation";
 
 const hostClaimTypes = [
   ClaimType.Tolls,
@@ -35,16 +40,12 @@ const guestClaimTypes = [
   ClaimType.Other,
 ];
 
-export default function CreateClaim({
-  tripInfos,
-  createClaim,
-  isHost,
-}: {
-  tripInfos: TripInfoForClaimCreation[];
-  createClaim: (createClaimRequest: CreateClaimRequest) => Promise<Result<boolean, TransactionErrorCode>>;
-  isHost: boolean;
-}) {
+export default function CreateClaim() {
+  const { userMode } = useUserMode();
+  const isHost = userMode === "Host";
   const pathname = usePathname();
+  const { data: tripInfos } = useTripsForClaimCreation(false);
+  const { mutateAsync: createClaim } = useCreateClaim();
   const { register, handleSubmit, formState, control, reset, watch } = useForm<CreateClaimFormValues>({
     defaultValues: {
       selectedTripId: "",
@@ -57,6 +58,8 @@ export default function CreateClaim({
     resolver: zodResolver(createClaimFormSchema),
   });
   const { errors, isSubmitting } = formState;
+  const { showInfo, showError, hideSnackbars } = useRntSnackbars();
+  const { t } = useTranslation();
 
   const textSendTo = isHost ? "guest" : "host";
   const selectedTripId = watch("selectedTripId");
@@ -73,10 +76,47 @@ export default function CreateClaim({
       amountInUsdCents: (Number(formData.amountInUsd) ?? 0) * 100,
       localFileUrls: formData.localFileUrls,
     };
-    const result = await createClaim(createClaimRequest);
+
+    const result = await handleCreateClaim(createClaimRequest);
     if (result.ok) {
       reset();
     }
+  }
+
+  async function handleCreateClaim(
+    createClaimRequest: CreateClaimRequest
+  ): Promise<Result<boolean, TransactionErrorCode>> {
+    if (!createClaimRequest.tripId) {
+      showError(t("claims.host.select_trip"));
+      return Err("ERROR");
+    }
+    if (!createClaimRequest.claimType && createClaimRequest.claimType !== BigInt(0)) {
+      showError(t("claims.host.select_type"));
+      return Err("ERROR");
+    }
+    if (!createClaimRequest.description) {
+      showError(t("claims.host.enter_description"));
+      return Err("ERROR");
+    }
+    if (!createClaimRequest.amountInUsdCents) {
+      showError(t("claims.host.enter_amount"));
+      return Err("ERROR");
+    }
+
+    showInfo(t("common.info.sign"));
+
+    const result = await createClaim(createClaimRequest);
+
+    hideSnackbars();
+
+    if (!result.ok) {
+      if (result.error === "NOT_ENOUGH_FUNDS") {
+        showError(t("common.add_fund_to_wallet"));
+      } else {
+        showError(t("claims.host.claim_failed"));
+      }
+    }
+    return result;
   }
 
   return (
