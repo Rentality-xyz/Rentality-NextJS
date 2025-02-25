@@ -78,10 +78,7 @@ export default function InvestCar({
           </Link>
         </div>
       </div>
-      <div
-        // style={{ backgroundImage: `url(${searchInfo.metadata.image})` }}
-        className="mac:min-h-[366px] min-h-[212px] w-full bg-[url('../images/car_bmw.jpg')] bg-cover bg-center bg-no-repeat sm:min-h-[356px] xl:min-h-[514px] 2xl:min-h-[324px] 2xl:rounded-bl-xl fullHD:min-h-[432px]"
-      ></div>
+      <div style={{ backgroundImage: `url(${searchInfo.metadata.image})` }}></div>
       <div className="flex h-full w-full grid-cols-[1fr_0.5fr_0.5fr] flex-col gap-2 2xl:grid">
         <div className="relative flex flex-col justify-between p-2">
           <div>
@@ -226,19 +223,22 @@ function getBlocksForGuest(
   return (
     <>
       {blockStakeInAssetForGuest(investment.myTokens, investment.myInvestingSum, t)}
-      {!investment.listed && !investment.investment.inProgress
-        ? blockExpectCompletedTripsForGuest(t)
-        : investment.myIncome > 0
-          ? btnClaimEarningsForGuest(myIncome, investment.investmentId, handleClaimIncome, t)
-          : investment.investment.inProgress ?
-           blockInvestNowForGuest(
-              investment.investmentId,
-              investmentAmount,
-              handleInvest,
-              isPendingInvesting,
-              handleChangeInvestmentAmount,
-              t
-            ) :<></>}
+      {!investment.listed && !investment.investment.inProgress ? (
+        blockExpectCompletedTripsForGuest(t)
+      ) : investment.myIncome > 0 ? (
+        btnClaimEarningsForGuest(myIncome, investment.investmentId, handleClaimIncome, t)
+      ) : investment.investment.inProgress ? (
+        blockInvestNowForGuest(
+          investment.investmentId,
+          investmentAmount,
+          handleInvest,
+          isPendingInvesting,
+          handleChangeInvestmentAmount,
+          t
+        )
+      ) : (
+        <></>
+      )}
     </>
   );
 }
