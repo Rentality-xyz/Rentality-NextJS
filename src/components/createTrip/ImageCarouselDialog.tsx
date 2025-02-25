@@ -62,9 +62,7 @@ export default ImageCarouselDialog;
 function getSwiperSlide(index: number, src: string, isActualImageSize: boolean) {
   return isActualImageSize ? (
     <SwiperSlide key={index} className="flex items-center justify-center overflow-auto">
-      <div className="relative flex h-full w-full items-center justify-center">
-        <Image src={src} alt="" fill className="object-contain" />
-      </div>
+      <Image src={src} alt="" fill className="relative flex h-full w-full items-center justify-center object-contain" />
     </SwiperSlide>
   ) : (
     <SwiperSlide key={index} className="flex items-center justify-center">
