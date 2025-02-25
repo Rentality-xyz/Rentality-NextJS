@@ -278,13 +278,12 @@ async function formatSearchAvailableCarsContractResponse(
 ) {
   if (searchCarsViewsView.length === 0) return [];
 
+  validateContractSearchCarWithDistance(searchCarsViewsView[0]);
+
   const testWallets = env.TEST_WALLETS_ADDRESSES?.split(",") ?? [];
 
   const cars = await Promise.all(
-    searchCarsViewsView.map(async (i: ContractSearchCarWithDistance, index) => {
-      if (index === 0) {
-        validateContractSearchCarWithDistance(i);
-      }
+    searchCarsViewsView.map(async (i: ContractSearchCarWithDistance) => {
       const metaData = parseMetaData(await getMetaDataFromIpfs(i.car.metadataURI));
       let isCarDetailsConfirmed = false;
 

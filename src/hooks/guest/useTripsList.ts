@@ -33,18 +33,16 @@ const useTripsList = (isHost: boolean) => {
 
         console.log("tripsView", JSON.stringify(tripsView, bigIntReplacer, 2));
 
+        if (tripsView.length > 0) {
+          validateContractTripDTO(tripsView[0]);
+        }
+
         const tripsData =
           tripsView.length === 0
             ? []
-            : await Promise.all(
-                tripsView.map(async (i: ContractTripDTO, index) => {
-                  if (index === 0) {
-                    validateContractTripDTO(i);
-                  }
-
-                  return mapTripDTOtoTripInfoShordDetails(i);
-                })
-              );
+            : tripsView.map((tripDto) => {
+                return mapTripDTOtoTripInfoShordDetails(tripDto);
+              });
         tripsData.sort((a, b) => b.tripId - a.tripId);
 
         setTrips(tripsData);

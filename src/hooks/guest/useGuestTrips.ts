@@ -203,22 +203,17 @@ const useGuestTrips = () => {
         }
         const tripsBookedView: ContractTripDTO[] = await rentalityContracts.gateway.getTripsAs(false);
 
+        if (tripsBookedView.length > 0) {
+          validateContractTripDTO(tripsBookedView[0]);
+        }
+
         const tripsBookedData =
           tripsBookedView.length === 0
             ? []
             : await Promise.all(
-                tripsBookedView.map(async (i: ContractTripDTO, index) => {
-                  if (index === 0) {
-                    validateContractTripDTO(i);
-                  }
-
-                  let isCarDetailsConfirmed = false;
-                  // try {
-                  //   isCarDetailsConfirmed = await rentalityContract.isCarDetailsConfirmed(i.trip.carId);
-                  // } catch (ex) {}
-
-                  const item = await mapTripDTOtoTripInfo(i, isCarDetailsConfirmed);
-                  item.allowedActions = getAllowedActions(item.status, i.trip);
+                tripsBookedView.map(async (tripDto) => {
+                  const item = await mapTripDTOtoTripInfo(tripDto, false);
+                  item.allowedActions = getAllowedActions(item.status, tripDto.trip);
 
                   return item;
                 })
