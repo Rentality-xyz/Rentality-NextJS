@@ -9,7 +9,7 @@ import { FirebaseChatProvider } from "@/features/chat/contexts/chatContext";
 import { AppContextProvider } from "@/contexts/appContext";
 import { RentalityProvider } from "@/contexts/rentalityContext";
 import { RntDialogsProvider } from "@/contexts/rntDialogsContext";
-import { NotificationProvider } from "@/contexts/notification/notificationContext";
+import { NotificationProvider } from "@/features/notifications/contexts/notificationContext";
 import { useRouter } from "next/router";
 import { ReactElement, ReactNode, useEffect } from "react";
 import { analyticsPromise } from "@/utils/firebase";

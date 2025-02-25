@@ -27,10 +27,12 @@ function useClaimPointsFromYourReferrals() {
         return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [REFERRAL_POINTS_FROM_YOUR_REFERRALS_QUERY_KEY] });
-      queryClient.invalidateQueries({ queryKey: [REFERRAL_USER_BALANCE_QUERY_KEY] });
-      queryClient.invalidateQueries({ queryKey: [REFERRAL_POINTS_HISTORY_QUERY_KEY] });
+    onSuccess: (data) => {
+      if (data.ok) {
+        queryClient.invalidateQueries({ queryKey: [REFERRAL_POINTS_FROM_YOUR_REFERRALS_QUERY_KEY] });
+        queryClient.invalidateQueries({ queryKey: [REFERRAL_USER_BALANCE_QUERY_KEY] });
+        queryClient.invalidateQueries({ queryKey: [REFERRAL_POINTS_HISTORY_QUERY_KEY] });
+      }
     },
   });
 }

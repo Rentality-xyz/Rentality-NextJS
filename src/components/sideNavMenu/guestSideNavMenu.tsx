@@ -3,7 +3,7 @@ import BaseSideNavMenu from "./baseSideNavMenu";
 import SideNavMenuGroup from "./sideNavMenuGroup";
 import SideNavMenuItem from "./sideNavMenuItem";
 import MenuIcons from "@/components/sideNavMenu/menuIcons";
-import { useNotification } from "@/contexts/notification/notificationContext";
+import { useNotification } from "@/features/notifications/contexts/notificationContext";
 import usePageLastVisit from "@/hooks/usePageLastVisit";
 import { NotificationType } from "@/model/NotificationInfo";
 import { useTranslation } from "react-i18next";
