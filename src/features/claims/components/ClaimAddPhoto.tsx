@@ -41,6 +41,7 @@ function ClaimAddPhoto({
       if (file.type === "image/heic" || file.name.endsWith(".heic")) {
         const convertHeicToPng = await import("@/utils/heic2any");
         const convertedFile = await convertHeicToPng.default(file);
+        file = convertedFile.file;
         fileUrl = convertedFile.localUrl;
       }
 

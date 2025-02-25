@@ -1,8 +1,7 @@
 import { z } from "zod";
 
 const claimFileFormSchema = z.object({
-  file: typeof File !== "undefined" ? z.instanceof(File) : z.any(),
-  // file: z.instanceof(File),
+  file: z.instanceof(File),
   localUrl: z.string(),
 });
 
