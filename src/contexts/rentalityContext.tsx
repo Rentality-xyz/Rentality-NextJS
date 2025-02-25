@@ -17,6 +17,7 @@ import {
   IRentalityCurrencyConverter,
   IRentalityCurrencyConverterContract,
 } from "@/features/blockchain/models/IRentalityCurrencyConverter";
+import { IRentalityAiDamageAnalyze, IRentalityAiDamageAnalyzeContract } from "@/features/blockchain/models/IRentalityAiDamageAnalyze";
 
 export interface IRentalityContracts {
   gateway: IRentalityGatewayContract;
@@ -24,6 +25,7 @@ export interface IRentalityContracts {
   referralProgram: IRentalityReferralProgram;
   investment: IRentalityInvestment;
   currencyConverter: IRentalityCurrencyConverter;
+  aiDamageAnalyze: IRentalityAiDamageAnalyze;
 }
 
 interface RentalityContextType {
@@ -96,12 +98,24 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         return;
       }
 
+      const rentalityAiDamageAnalyze = (await getEtherContractWithSigner(
+        "aiDamageAnalyze",
+        ethereumInfo.signer
+      )) as unknown as IRentalityAiDamageAnalyzeContract;
+      if (!rentalityAiDamageAnalyze) {
+        console.error("getRentalityContact error: rentalityAiDamageAnalyze is null");
+        setRentalityContracts(null);
+        return;
+      }
+
+
       setRentalityContracts({
         gateway: rentalityGateway,
         gatewayProxy: getEthersContractProxy(rentalityGateway),
         referralProgram: getEthersContractProxy(rentalityReferralPogram),
         investment: getEthersContractProxy(investment),
         currencyConverter: getEthersContractProxy(currencyConverter),
+        aiDamageAnalyze: getEthersContractProxy(rentalityAiDamageAnalyze)
       });
     };
 
