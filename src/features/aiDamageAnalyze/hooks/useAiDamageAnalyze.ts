@@ -1,6 +1,6 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { createSecret } from "@/pages/api/aiDamageAnalyze/createSecret";
+import { createSecret } from "@/pages/api/aiDamageAnalyze/createCase";
 import axios from "@/utils/cachedAxios";
 import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { useState } from "react";
@@ -21,16 +21,20 @@ export default function useAiDamageAnalyze () {
                 console.error("Use Ai damage analyze: Ethereum context is not initialized")
                 return
             }
-            const caseInfo = await rentality.gateway.getAiDamageAnalyzeCaseData(BigInt(tripId))
      
             try {
+              const caseInfo = await rentality.gatewayProxy.getAiDamageAnalyzeCaseData(BigInt(tripId))
+              if(!caseInfo.ok) { 
+                  console.log("Ai damage analyze: case number is not found")
+                  return
+              }
                 setIsLoading(true);
               const response = await axios.post("/api/aiDamageAnalyze/createCase", 
                 {
                   tripId: tripId,
-                  caseNum: Number(caseInfo.caseNumber) + 1,
-                  email: caseInfo.email,
-                  name: caseInfo.name,
+                  caseNum: Number(caseInfo.value.caseNumber) + 1,
+                  email: caseInfo.value.email,
+                  name: caseInfo.value.name,
                   chainId: ethereumInfo.chainId,
               });
               if(response.status !== 200) {
