@@ -242,17 +242,17 @@ const useHostTrips = () => {
         }
         const tripsBookedView: ContractTripDTO[] = await rentalityContracts.gateway.getTripsAs(true);
 
+        if (tripsBookedView.length > 0) {
+          validateContractTripDTO(tripsBookedView[0]);
+        }
+
         const tripsBookedData =
           tripsBookedView.length === 0
             ? []
             : await Promise.all(
-                tripsBookedView.map(async (i: ContractTripDTO, index) => {
-                  if (index === 0) {
-                    validateContractTripDTO(i);
-                  }
-
-                  const item = await mapTripDTOtoTripInfo(i);
-                  item.allowedActions = getAllowedActions(item.status, i.trip);
+                tripsBookedView.map(async (tripDto) => {
+                  const item = await mapTripDTOtoTripInfo(tripDto);
+                  item.allowedActions = getAllowedActions(item.status, tripDto.trip);
 
                   return item;
                 })
