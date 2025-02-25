@@ -1,6 +1,6 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { createSecret } from "@/pages/api/motionscloud/createSecret";
+import { createSecret } from "@/pages/api/motionscloud/createCase";
 import axios from "@/utils/cachedAxios";
 import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { useState } from "react";
@@ -21,16 +21,20 @@ export default function useMotionsCloud () {
                 console.error("Use motions cloud: Ethereum context is not initialized")
                 return
             }
-            const caseInfo = await rentality.gateway.getMotionsCloudCaseData(BigInt(tripId))
      
             try {
+              const caseInfo = await rentality.gatewayProxy.getMotionsCloudCaseData(BigInt(tripId))
+              if(!caseInfo.ok) { 
+                  console.log("Motions cloud: case number is not found")
+                  return
+              }
                 setIsLoading(true);
               const response = await axios.post("/api/motionscloud/createCase", 
                 {
                   tripId: tripId,
-                  caseNum: Number(caseInfo.caseNumber) + 1,
-                  email: caseInfo.email,
-                  name: caseInfo.name,
+                  caseNum: Number(caseInfo.value.caseNumber) + 1,
+                  email: caseInfo.value.email,
+                  name: caseInfo.value.name,
                   chainId: ethereumInfo.chainId,
               });
               if(response.status !== 200) {
