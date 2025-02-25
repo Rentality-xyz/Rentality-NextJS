@@ -8,10 +8,10 @@ import { SearchCarInfoDetails } from "@/model/SearchCarsResult";
 
 export function CarPhotos({ carPhotos, carInfo }: { carPhotos: string[]; carInfo: SearchCarInfoDetails }) {
   const { t } = useTranslation();
-  const [isCarouselOpen, toogleCarouselOpen] = useToggleState(false);
+  const [isCarouselOpen, toggleCarouselOpen] = useToggleState(false);
 
   function handleAllPhotoClick() {
-    toogleCarouselOpen(true);
+    toggleCarouselOpen(true);
   }
 
   return (
@@ -26,7 +26,7 @@ export function CarPhotos({ carPhotos, carInfo }: { carPhotos: string[]; carInfo
         images={carPhotos}
         isOpen={isCarouselOpen}
         title={`${carInfo.brand} ${carInfo.model} - ${carInfo.year}`}
-        onClose={() => toogleCarouselOpen(false)}
+        onClose={() => toggleCarouselOpen(false)}
       />
     </div>
   );
