@@ -177,6 +177,7 @@ export default function ClaimHistoryMobileCard({ claim, index, isHost, payClaim,
         images={sliderState.images}
         isOpen={sliderState.isOpen}
         title={sliderState.title}
+        isActualImageSize={true}
         onClose={handleCloseSlider}
       />
     </>
