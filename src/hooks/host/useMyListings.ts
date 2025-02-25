@@ -18,35 +18,36 @@ const useMyListings = () => {
       }
       const myListingsView: ContractCarInfoDTO[] = await rentalityContracts.gateway.getMyCars();
 
+      if (myListingsView.length > 0) {
+        validateContractCarInfoDTO(myListingsView[0]);
+      }
+
       const myListingsData =
         myListingsView.length === 0
           ? []
           : await Promise.all(
-              myListingsView.map(async (i: ContractCarInfoDTO, index) => {
-                if (index === 0) {
-                  validateContractCarInfoDTO(i);
-                }
-                const metaData = parseMetaData(await getMetaDataFromIpfs(i.metadataURI));
+              myListingsView.map(async (carDto) => {
+                const metaData = parseMetaData(await getMetaDataFromIpfs(carDto.metadataURI));
 
-                const pricePerDay = Number(i.carInfo.pricePerDayInUsdCents) / 100;
-                const securityDeposit = Number(i.carInfo.securityDepositPerTripInUsdCents) / 100;
-                const milesIncludedPerDay = Number(i.carInfo.milesIncludedPerDay);
+                const pricePerDay = Number(carDto.carInfo.pricePerDayInUsdCents) / 100;
+                const securityDeposit = Number(carDto.carInfo.securityDepositPerTripInUsdCents) / 100;
+                const milesIncludedPerDay = Number(carDto.carInfo.milesIncludedPerDay);
 
                 let item: BaseCarInfo = {
-                  carId: Number(i.carInfo.carId),
-                  ownerAddress: i.carInfo.createdBy.toString(),
+                  carId: Number(carDto.carInfo.carId),
+                  ownerAddress: carDto.carInfo.createdBy.toString(),
                   image: getIpfsURI(metaData.mainImage),
-                  brand: i.carInfo.brand,
-                  model: i.carInfo.model,
-                  year: i.carInfo.yearOfProduction.toString(),
+                  brand: carDto.carInfo.brand,
+                  model: carDto.carInfo.model,
+                  year: carDto.carInfo.yearOfProduction.toString(),
                   licensePlate: metaData.licensePlate,
                   pricePerDay: pricePerDay,
                   securityDeposit: securityDeposit,
                   milesIncludedPerDay: milesIncludedPerDay,
-                  currentlyListed: i.carInfo.currentlyListed,
-                  isEditable: i.isEditable,
-                  vinNumber: i.carInfo.carVinNumber,
-                  dimoTokenId: Number(i.dimoTokenId),
+                  currentlyListed: carDto.carInfo.currentlyListed,
+                  isEditable: carDto.isEditable,
+                  vinNumber: carDto.carInfo.carVinNumber,
+                  dimoTokenId: Number(carDto.dimoTokenId),
                 };
                 return item;
               })

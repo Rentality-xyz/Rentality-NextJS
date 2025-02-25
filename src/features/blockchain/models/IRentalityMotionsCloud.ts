@@ -9,4 +9,5 @@ export interface IRentalityMotionsCloudContract extends IEthersContract {
   saveInsuranceCaseUrl(iCase: string, url: string): Promise<ContractTransactionResponse>;
   getInsuranceCaseUrlByTrip(tripId: bigint): Promise<string>;
   isCaseExists(iCase: string): Promise<string>;
+  getInsuranceCaseByTrip(tripId: bigint): Promise<string>;
 }

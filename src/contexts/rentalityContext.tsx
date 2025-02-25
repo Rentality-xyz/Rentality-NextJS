@@ -17,6 +17,7 @@ import {
   IRentalityCurrencyConverter,
   IRentalityCurrencyConverterContract,
 } from "@/features/blockchain/models/IRentalityCurrencyConverter";
+import { IRentalityMotionsCloud, IRentalityMotionsCloudContract } from "@/features/blockchain/models/IRentalityMotionsCloud";
 
 export interface IRentalityContracts {
   gateway: IRentalityGatewayContract;
@@ -24,6 +25,7 @@ export interface IRentalityContracts {
   referralProgram: IRentalityReferralProgram;
   investment: IRentalityInvestment;
   currencyConverter: IRentalityCurrencyConverter;
+  motionsCloud: IRentalityMotionsCloud;
 }
 
 interface RentalityContextType {
@@ -96,12 +98,24 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         return;
       }
 
+      const rentalityMotionsCloud = (await getEtherContractWithSigner(
+        "motionsCloud",
+        ethereumInfo.signer
+      )) as unknown as IRentalityMotionsCloudContract;
+      if (!rentalityMotionsCloud) {
+        console.error("getRentalityContact error: rentalityMotionsCloud is null");
+        setRentalityContracts(null);
+        return;
+      }
+
+
       setRentalityContracts({
         gateway: rentalityGateway,
         gatewayProxy: getEthersContractProxy(rentalityGateway),
         referralProgram: getEthersContractProxy(rentalityReferralPogram),
         investment: getEthersContractProxy(investment),
         currencyConverter: getEthersContractProxy(currencyConverter),
+        motionsCloud: getEthersContractProxy(rentalityMotionsCloud)
       });
     };
 
