@@ -3,8 +3,10 @@ import { cn } from "@/utils";
 import { resizeImage } from "@/utils/image";
 import { isEmpty } from "@/utils/string";
 import Image from "next/image";
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
+import ic_edit_car from "@/images/ic_edit_car_white.png";
+import ic_delete from "@/images/ic_delete_white.svg";
 
 export function UserInsurancePhoto({
   insurancePhoto: photo,
@@ -26,19 +28,19 @@ export function UserInsurancePhoto({
 
     let file = e.target.files[0];
 
-    if (!file.type.startsWith("image/")) {
-      alert("Image only");
+    // image/jpeg, image/png
+    if (file.type.startsWith("image/")) {
+      file = await resizeImage(file, 1000);
+    } else if (file.size > 5 * 1024 * 1024) {
+      alert("File is too big");
       return;
     }
-
-    file = await resizeImage(file, 1000);
 
     const reader = new FileReader();
     reader.onload = async (event) => {
       const fileUrl = event.target?.result as string;
 
-      const fileNameExt = file.name.slice(file.name.lastIndexOf(".") + 1);
-      if (fileNameExt == "heic") {
+      if (file.type === "image/heic" || file.name.endsWith(".heic")) {
         const convertHeicToPng = await import("@/utils/heic2any");
         const convertedFile = await convertHeicToPng.default(file);
         onPhotoChanged(convertedFile);
@@ -73,24 +75,24 @@ export function UserInsurancePhoto({
         <div className="relative h-40 w-48 overflow-hidden rounded-2xl">
           <Image className="h-full w-full object-cover" width={1000} height={1000} src={photoUrl} alt="" />
           <button
-            className="absolute bottom-0 left-0 z-10 bg-rentality-additional px-2"
+            className="absolute bottom-1 right-1 z-10 rounded-2xl bg-[#000000] bg-opacity-75 p-1"
             type="button"
             onClick={(e) => {
               e.stopPropagation();
               handleDeleteClick();
             }}
           >
-            {t("common.delete")}
+            <Image src={ic_delete} alt="" className="w-[22px]" />
           </button>
           <button
-            className="absolute bottom-0 right-0 bg-rentality-additional px-2"
+            className="absolute right-1 top-1 rounded-2xl bg-[#000000] bg-opacity-75 p-1"
             type="button"
             onClick={(e) => {
               e.stopPropagation();
               handleEditClick();
             }}
           >
-            {t("common.edit")}
+            <Image src={ic_edit_car} alt="" className="w-[22px]" />
           </button>
         </div>
       )}

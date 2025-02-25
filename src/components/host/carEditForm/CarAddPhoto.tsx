@@ -118,7 +118,6 @@ function CarAddPhoto({
 
   function handleEditClick(index: number) {
     currentIndexRef.current = index;
-    // handleImageChange;
     inputRef.current?.click();
   }
 
