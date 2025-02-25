@@ -229,6 +229,7 @@ export default function ClaimHistory({ claims }: Props) {
         images={sliderState.images}
         isOpen={sliderState.isOpen}
         title={sliderState.title}
+        isActualImageSize={true}
         onClose={handleCloseSlider}
       />
     </>
