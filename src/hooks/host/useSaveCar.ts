@@ -143,6 +143,7 @@ const useSaveCar = () => {
         signedDimoTokenId: dimoSignature,
       };
 
+      console.log("SIGNATURE", request);
       const result = await rentalityContracts.gatewayProxy.addCar(request);
       return result.ok ? result : Err("ERROR");
     } catch (e) {
