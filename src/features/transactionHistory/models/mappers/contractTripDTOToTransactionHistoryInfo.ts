@@ -16,9 +16,7 @@ function getCancellationFee(tripDto: ContractTripDTO) {
   return pricePerDayInUsd;
 }
 
-export const mapContractTripDTOToTransactionHistoryInfo = async (
-  tripDto: ContractTripDTO
-): Promise<TransactionHistoryInfo> => {
+export function mapContractTripDTOToTransactionHistoryInfo(tripDto: ContractTripDTO): TransactionHistoryInfo {
   const timeZoneId: string = !isEmpty(tripDto.timeZoneId) ? tripDto.timeZoneId : UTC_TIME_ZONE_ID;
   const carDescription = `${tripDto.brand} ${tripDto.model} ${tripDto.yearOfProduction}`;
 
@@ -79,4 +77,4 @@ export const mapContractTripDTOToTransactionHistoryInfo = async (
     salesTax: Number(tripDto.trip.paymentInfo.salesTax) / 100,
     governmentTax: Number(tripDto.trip.paymentInfo.governmentTax) / 100,
   };
-};
+}
