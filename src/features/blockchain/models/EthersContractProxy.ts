@@ -1,29 +1,31 @@
 import { ContractResultWrapper } from "../types";
-import { ContractTransactionResponse } from "ethers";
+import { ContractTransactionResponse, ethers } from "ethers";
 import { Err, Ok } from "@/model/utils/result";
 import { IEthersContract } from "./IEtherContract";
 
 export function getEthersContractProxy<T extends IEthersContract>(contract: T): ContractResultWrapper<T> {
   return new Proxy(contract, {
     get(target, key, receiver) {
+    
       const originalMethod = Reflect.get(target, key, receiver);
 
       if (typeof originalMethod !== "function") {
         return originalMethod;
       }
 
-      console.debug(`${key.toString()} proxy function called`);
-
       return async (...args: any[]) => {
         try {
+          const encodedData = (contract as unknown as ethers.Contract).interface.encodeFunctionData(key.toString(), args);
+          console.debug(`Encoded transaction data for ${key.toString()}:`, encodedData);
+
           const result = await originalMethod.apply(target, args);
+          console.debug(`${key.toString()} proxy function called`);
 
           if (isContractTransactionResponse(result)) {
             console.debug("proxy function return ContractTransactionResponse");
             await result.wait();
             return Ok(true);
           }
-
           return Ok(result);
         } catch (error) {
           console.error(`${key.toString()} proxy function error:`, error);

@@ -10,7 +10,7 @@ const PRIVY_TOKEN_ISSUER = "privy.io";
 
 export async function checkRentalityAuthToken(
   req: NextApiRequest
-): Promise<Result<jose.JWTVerifyResult<jose.JWTPayload>, ApiError>> {
+): Promise<Result<jose.JWTVerifyResult, ApiError>> {
   const authToken = req.headers[RENTALITY_AUTH_HEADER] as string;
 
   if (isEmpty(authToken)) {
