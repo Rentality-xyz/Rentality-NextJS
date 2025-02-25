@@ -9,16 +9,17 @@ import RntSuspense from "../../../components/common/rntSuspense";
 import ReferralProgramStatusCard from "@/features/referralProgram/components/ReferralProgramStatusCard";
 import useFetchOwnReferralPoints from "../hooks/useFetchOwnReferralPoints";
 import useClaimOwnReferralPoints from "../hooks/useClaimOwnReferralPoints";
-import useOwnReferralPointsTransactionStore from "../hooks/useOwnReferralPointsTransactionStore";
+import useOwnReferralPointsSharedStore from "../hooks/useOwnReferralPointsSharedStore";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 
 export default function OwnReferralPoints() {
   const { isLoading, isFetching, data } = useFetchOwnReferralPoints();
   const { mutateAsync: claimMyPoints } = useClaimOwnReferralPoints();
-  const isClaiming = useOwnReferralPointsTransactionStore((state) => state.isClaiming);
+  const isClaiming = useOwnReferralPointsSharedStore((state) => state.isClaiming);
+  const readyToClaim = useOwnReferralPointsSharedStore((state) => state.readyToClaim);
   const { t } = useTranslation();
 
-  const { readyToClaim, allPoints } = data;
+  const { allPoints } = data;
 
   async function handleClaimPointsClick() {
     await claimMyPoints();
