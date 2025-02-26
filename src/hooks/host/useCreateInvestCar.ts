@@ -16,6 +16,7 @@ import { ContractTransactionResponse } from "ethers";
 import { saveCarImages } from "./useSaveCar";
 import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
+import { env } from "@/utils/env";
 
 const useCreateInvestCar = () => {
   const { rentalityContracts } = useRentality();
@@ -103,7 +104,7 @@ const useCreateInvestCar = () => {
         milesIncludedPerDay: BigInt(
           isUnlimitedMiles(dataToSave.milesIncludedPerDay) ? UNLIMITED_MILES_VALUE : dataToSave.milesIncludedPerDay
         ),
-        geoApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? " ",
+        geoApiKey: env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? " ",
         engineType: getEngineTypeCode(dataToSave.engineTypeText),
         engineParams: engineParams,
         timeBufferBetweenTripsInSec: BigInt(dataToSave.timeBufferBetweenTripsInMin * 60),

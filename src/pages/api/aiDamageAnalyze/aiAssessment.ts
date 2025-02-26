@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import crypto from "crypto";
-import { env } from "process";
 import { uploadJSONToIPFS } from "@/utils/pinata";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { JsonRpcProvider, Wallet } from "ethers";
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityAiDamageAnalyzeContract } from "@/features/blockchain/models/IRentalityAiDamageAnalyze";
+import { env } from "@/utils/env";
 
-const SECRET_KEY = process.env.API_AI_DAMAGE_ANALYZE_SECRET;
+const SECRET_KEY = env.API_AI_DAMAGE_ANALYZE_SECRET;
 
 function generateXAuthorization() {
   if (!SECRET_KEY) {

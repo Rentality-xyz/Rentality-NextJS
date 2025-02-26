@@ -14,6 +14,7 @@ NEXT_PUBLIC_IS_TECHNICAL_WORK="true/false"
 # SENSITIVE ENVS (CAN"T BE COMMITTED TO GIT)
 NEXT_PUBLIC_PINATA_JWT="<Pinata JWT>"
 NEXT_PUBLIC_PRIVY_APP_ID="<Privy app id>"
+PRIVY_VERIFICATION_KEY="<Privy verification key>"
 
 NEXT_PUBLIC_CIVIC_GATEKEEPER_NETWORK="<Civic gatekeeper network>"
 CIVIC_CLIENT_ID="<Civic client id>"
@@ -57,3 +58,14 @@ NEXT_PUBLIC_HOTJAR_VERSION="<Hotjar version>"
 
 #Meta Pixel Code 
 NEXT_PUBLIC_FB_PIXEL_ID="<FB pixel ID>"
+
+#DIMO
+NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID="<Dimo client id>"
+NEXT_PUBLIC_SERVER_DIMO_API_KEY="<Dimo API key>"
+NEXT_PUBLIC_SERVER_DIMO_DOMAIN="<URL >"
+
+#Ai damage analyze
+API_AI_DAMAGE_ANALYZE_SECRET="<Ai damage analyze secret>"
+NEXT_PUBLIC_AI_DAMAGE_ANALYZE_BASE_URL="<Ai damage analyze>"
+NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SID="<Ai damage analyze account SID>"
+NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SECRETKEY="<Ai damage analyze account secret key>"
