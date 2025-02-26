@@ -5,6 +5,11 @@ import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { mapContractInvestmentDTOToInvestmentInfoWithMetadata } from "@/model/mappers/contractInvestmentDTOtoInvestmentInfo";
 import { ContractInvestmentDTO } from "@/model/blockchain/schemas";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { InvestmentInfoWithMetadata } from "@/model/InvestmentInfo";
+
+export const INVESTMENTS_LIST_QUERY_KEY = "InvestmentsList";
+
+type QueryData = InvestmentInfoWithMetadata[];
 
 const useGetInvestments = () => {
   const { rentalityContracts } = useRentality();
@@ -14,7 +19,7 @@ const useGetInvestments = () => {
 
   // Получение инвестиций
   const { data: investments = [], isLoading } = useQuery({
-    queryKey: ["investments", address],
+    queryKey: [INVESTMENTS_LIST_QUERY_KEY, address],
     queryFn: async () => {
       if (!rentalityContracts || !ethereumInfo) return [];
 
@@ -37,7 +42,7 @@ const useGetInvestments = () => {
   });
 
   // Функция обновления данных
-  const updateData = () => queryClient.invalidateQueries({ queryKey: ["investments", address] });
+  const updateData = () => queryClient.invalidateQueries({ queryKey: [INVESTMENTS_LIST_QUERY_KEY, address] });
 
   // Мутация для клейма дохода
   const { mutateAsync: handleClaimIncome, isPending: isPendingClaimingIncome } = useMutation({

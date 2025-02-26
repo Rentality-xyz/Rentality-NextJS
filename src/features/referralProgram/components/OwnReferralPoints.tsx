@@ -10,6 +10,7 @@ import ReferralProgramStatusCard from "@/features/referralProgram/components/Ref
 import useFetchOwnReferralPoints from "../hooks/useFetchOwnReferralPoints";
 import useClaimOwnReferralPoints from "../hooks/useClaimOwnReferralPoints";
 import useOwnReferralPointsSharedStore from "../hooks/useOwnReferralPointsSharedStore";
+import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 
 export default function OwnReferralPoints() {
   const { isLoading, isFetching, data } = useFetchOwnReferralPoints();
@@ -63,7 +64,7 @@ export default function OwnReferralPoints() {
         <div id="rp-own-points-account-creation" className="mt-4 px-4">
           <p className="text-gray-300">{t("referrals_and_point.account_creation")}</p>
           <hr className="my-2 border-gray-300" />
-          <div id="rp-account-points-status-scrolling" className="custom-scroll flex space-x-2 overflow-x-auto">
+          <ScrollingHorizontally>
             {allPoints?.ownAccountCreationPointsInfo.map((info, index) => (
               <div key={index}>
                 <ReferralProgramStatusCard
@@ -74,13 +75,13 @@ export default function OwnReferralPoints() {
                 />
               </div>
             ))}
-          </div>
+          </ScrollingHorizontally>
         </div>
 
         <div id="rp-own-points-regularly" className="mt-2 px-4">
           <p className="text-gray-300">{t("referrals_and_point.regularly")}</p>
           <hr className="my-2 border-gray-300" />
-          <div id="rp-regularly-points-status-scrolling" className="custom-scroll flex space-x-2 overflow-x-auto">
+          <ScrollingHorizontally>
             {allPoints?.ownRegularPointsInfo.map((info, index) => (
               <div key={index}>
                 <ReferralProgramStatusCard
@@ -91,7 +92,7 @@ export default function OwnReferralPoints() {
                 />
               </div>
             ))}
-          </div>
+          </ScrollingHorizontally>
         </div>
       </RntSuspense>
     </div>
