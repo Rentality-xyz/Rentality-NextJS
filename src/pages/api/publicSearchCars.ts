@@ -80,7 +80,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  // const providerApiUrl = process.env[`NEXT_PUBLIC_PROVIDER_API_URL_${chainIdNumber}`];
   const providerApiUrl = getProviderApiUrlFromEnv(chainIdNumber);
 
   if (!providerApiUrl) {

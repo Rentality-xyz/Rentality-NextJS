@@ -15,6 +15,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { CheckboxLight } from "@/components/common/rntCheckbox";
 import useDimo, { DimoCarResponse } from "@/features/dimo/hooks/useDimo";
 import { getIpfsURI } from "@/utils/ipfsUtils";
+import { env } from "@/utils/env";
 
 function Listings() {
   const [isLoadingMyListings, myListings] = useMyListings();
@@ -48,9 +49,9 @@ function Listings() {
 
   const { rentalityContracts } = useRentality();
 
-  const clientId = process.env.NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID;
-  const apiKey = process.env.NEXT_PUBLIC_SERVER_DIMO_API_KEY;
-  const domain = process.env.NEXT_PUBLIC_SERVER_DIMO_DOMAIN;
+  const clientId = env.NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID;
+  const apiKey = env.NEXT_PUBLIC_SERVER_DIMO_API_KEY;
+  const domain = env.NEXT_PUBLIC_SERVER_DIMO_DOMAIN;
 
   if (!clientId || !apiKey || !domain) {
     console.error("DIMO .env is not set");
