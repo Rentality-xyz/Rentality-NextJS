@@ -57,3 +57,8 @@ NEXT_PUBLIC_HOTJAR_VERSION="<Hotjar version>"
 
 #Meta Pixel Code 
 NEXT_PUBLIC_FB_PIXEL_ID="<FB pixel ID>"
+
+#TWILIO
+TWILIO_ACCOUNT_SID="<Twilio account SID>"
+TWILIO_AUTH_TOKEN="<Twilio auth token>"
+VERIFICATION_HMAC_SHA256_SECRET_KEY="<sha256 secret key>"
