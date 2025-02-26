@@ -1,6 +1,7 @@
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGateway";
 import { ContractPublicHostCarDTO } from "@/model/blockchain/schemas";
+import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { env } from "@/utils/env";
 import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Wallet } from "ethers";
@@ -37,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  const providerApiUrl = process.env[`PROVIDER_API_URL_${chainId}`];
+  const providerApiUrl = getProviderApiUrlFromEnv(chainId);
   if (!providerApiUrl) {
     console.error(`API checkIfUserListedACar error: API URL for chain id ${chainId} was not set`);
     res.status(500).json({ error: `API URL for chain id ${chainId} was not set` });

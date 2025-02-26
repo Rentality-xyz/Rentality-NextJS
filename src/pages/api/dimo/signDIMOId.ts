@@ -5,6 +5,8 @@ import { Err, Ok, Result } from "@/model/utils/result";
 import { isEmpty } from "@/utils/string";
 import { id, JsonRpcProvider, Wallet } from "ethers";
 import { signMessage } from "@/utils/ether";
+import { env } from "@/utils/env";
+import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 
 function parseQuery(
   req: NextApiRequest
@@ -23,7 +25,7 @@ function parseQuery(
   if (Number.isNaN(dimoToken) || dimoToken === 0) {
     return Err("'dimo token' is not provided or is not a number");
   }
-  let providerApiUrl = process.env[`PROVIDER_API_URL_${chainId}`];
+  const providerApiUrl = getProviderApiUrlFromEnv(chainId);
   if (!providerApiUrl) {
     console.error(`API signDimoId error: API URL for chain id ${chainId} was not set`);
     return Err(`Chain id ${chainId} is not supported`);
@@ -73,7 +75,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(404).json({ error: "Car not found" });
   }
 
-  const SIGNER_PRIVATE_KEY = process.env.SIGNER_PRIVATE_KEY;
+  const SIGNER_PRIVATE_KEY = env.SIGNER_PRIVATE_KEY;
   if (!SIGNER_PRIVATE_KEY) {
     console.error("SignDimo error: SIGNER_PRIVATE_KEY was not set");
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
