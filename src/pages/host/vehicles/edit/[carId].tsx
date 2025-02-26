@@ -3,8 +3,8 @@ import PageTitle from "@/components/pageTitle/pageTitle";
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
 import useFetchCarInfo from "@/hooks/host/useFetchCarInfo";
 import { useTranslation } from "react-i18next";
-import useSaveCar from "@/hooks/host/useSaveCar";
 import RntSuspense from "@/components/common/rntSuspense";
+import useUpdateCar from "@/hooks/host/useUpdateCar";
 
 function EditCar() {
   const router = useRouter();
@@ -14,7 +14,7 @@ function EditCar() {
   const carIdNumber = Number(carId) ?? -1;
 
   const { isLoading, hostCarInfo } = useFetchCarInfo(carIdNumber);
-  const { updateCar } = useSaveCar();
+  const { mutateAsync: updateCar } = useUpdateCar();
 
   if (!carId) return null;
 
