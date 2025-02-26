@@ -5,9 +5,7 @@ import { resizeImage } from "@/utils/image";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
-import { ChangeEvent } from "react";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import RntPhoneInput from "../common/rntPhoneInput";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
@@ -34,17 +32,18 @@ function UserCommonInformationForm({
   saveUserProfile: (request: SaveUserProfileRequest) => Promise<Result<boolean, Error>>;
 }) {
   const ethereumInfo = useEthereum();
-  const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { t } = useTranslation();
   const { userMode } = useUserMode();
-  const isHost = userMode === "Host";
+
   const { register, handleSubmit, formState, control, setValue, watch } = useForm<UserCommonInformationFormValues>({
     defaultValues: {
       profilePhotoUrl: userProfile.profilePhotoUrl,
       nickname: userProfile.nickname,
       phoneNumber: userProfile.phoneNumber,
+      isPhoneNumberVerified: userProfile.isPhoneNumberVerified,
       email: userProfile.email,
+      smsCode: "",
       tcSignature: userProfile.tcSignature,
       isTerms: userProfile.isSignatureCorrect,
     },
@@ -52,6 +51,8 @@ function UserCommonInformationForm({
   });
   const { errors, isSubmitting } = formState;
   const isTerms = watch("isTerms");
+  const enteredCode = watch("smsCode");
+  const enteredPhoneNumber = watch("phoneNumber");
 
   function fileChangeCallback(field: ControllerRenderProps<UserCommonInformationFormValues, "profilePhotoUrl">) {
     return async (e: ChangeEvent<HTMLInputElement>) => {
@@ -136,7 +137,7 @@ function UserCommonInformationForm({
   const [smsTimestamp, setSmsTimestamp] = useState<number | undefined>(undefined);
   const [isEnteredCodeCorrect, setIsEnteredCodeCorrect] = useState(false);
 
-  const enteredPhoneNumber = watch("phoneNumber");
+
 
   async function sendSmsVerificationCode() {
     try {
@@ -166,8 +167,6 @@ function UserCommonInformationForm({
       showError(t("profile.send_sms_err"));
     }
   }
-
-  const enteredCode = watch("smsCode");
 
   async function compareVerificationCode() {
     try {
@@ -274,7 +273,7 @@ function UserCommonInformationForm({
               />
             )}
           />
-          {!savedProfileSettings.isPhoneNumberVerified && !isEnteredCodeCorrect && (
+          {!userProfile.isPhoneNumberVerified && !isEnteredCodeCorrect && (
             <RntButton
               className={"h-8"}
               onClick={sendSmsVerificationCode}
@@ -284,7 +283,7 @@ function UserCommonInformationForm({
             </RntButton>
           )}
         </div>
-        {!isEnteredCodeCorrect && !savedProfileSettings.isPhoneNumberVerified && smsHash && smsTimestamp && (
+        {!isEnteredCodeCorrect && !userProfile.isPhoneNumberVerified && smsHash && smsTimestamp && (
           <div className="mt-4 flex flex-wrap items-end gap-4">
             <Controller
               name="smsCode"
@@ -308,7 +307,7 @@ function UserCommonInformationForm({
 
             <RntButton
               className={"h-8"} onClick={compareVerificationCode}
-              disabled={enteredCode.length != 6}
+              disabled={enteredCode?.length != 6}
             >
               {t("profile.confirm")}
             </RntButton>
@@ -316,7 +315,7 @@ function UserCommonInformationForm({
         )}
       </fieldset>
 
-      {savedProfileSettings.isPhoneNumberVerified || isEnteredCodeCorrect ? (
+      {userProfile.isPhoneNumberVerified || isEnteredCodeCorrect ? (
         <DotStatus color="success" text={t("profile.phone_verified")} />
       ) : (
         <DotStatus color="error" text={t("profile.phone_not_verified")} />
