@@ -32,7 +32,7 @@ const useFetchPointsHistory = (initialPage: number = 1, initialItemsPerPage: num
         throw new Error(result.error.message);
       }
 
-      return await Promise.all(
+      const data = await Promise.all(
         result.value.map(async (historyDataDto) => {
           const isOneTime = historyDataDto.oneTime;
 
@@ -50,6 +50,9 @@ const useFetchPointsHistory = (initialPage: number = 1, initialItemsPerPage: num
           };
         })
       );
+
+      data.sort((a, b) => b.date.getTime() - a.date.getTime());
+      return data;
     },
     initialPage,
     initialItemsPerPage,

@@ -30,6 +30,8 @@ export const env = createEnv({
     TEST_WALLETS_ADDRESSES: z.string(),
     GOOGLE_MAPS_API_KEY: z.string().min(1),
 
+    PRIVY_VERIFICATION_KEY: z.string().min(1),
+
     TWILIO_ACCOUNT_SID: z.string(),
     TWILIO_AUTH_TOKEN: z.string(),
     VERIFICATION_HMAC_SHA256_SECRET_KEY: z.string()

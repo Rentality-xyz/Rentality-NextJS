@@ -29,7 +29,7 @@ export default function AllowedActionsHost({
       {tripInfo.allowedActions[0].params.map((param, index) => {
         return (
           <div className="flex flex-col md:flex-row" key={param.text}>
-            <div className="flex w-full items-end md:w-1/2 xl:w-1/3">
+            <div className="flex w-full items-end xl:w-1/2">
               {param.type === "fuel" ? (
                 <RntSelect
                   className="w-full"
@@ -93,7 +93,7 @@ export default function AllowedActionsHost({
 
             {tripInfo.status === TripStatus.CheckedOutByGuest ? (
               param.type === "fuel" ? (
-                <div className="grid grid-cols-2 text-sm md:mx-8 md:w-1/2 xl:mx-28 xl:w-1/4">
+                <div className="grid grid-cols-2 text-sm md:mx-8 xl:w-1/3">
                   <span className="col-span-2 font-bold">{t("booked.reimbursement")}</span>
                   <span>{t("booked.pickUp_fuel")}</span>
                   <span>{tripInfo.startFuelLevelInPercents}%</span>
@@ -105,7 +105,7 @@ export default function AllowedActionsHost({
                   <span>${displayMoneyWith2Digits(refuelCharge)}</span>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 text-sm md:mx-8 md:w-1/2 xl:mx-28 xl:w-1/4">
+                <div className="grid grid-cols-2 text-sm md:mx-8 xl:w-1/3">
                   <span>{t("booked.overmiles")}</span>
                   <span>{tripInfo.overmileValue}</span>
                   <span>{t("booked.overmile_price")}</span>
