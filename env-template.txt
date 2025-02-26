@@ -69,3 +69,8 @@ API_MOTIONSCLOUD_SECRET="<Motion cloud secret>"
 NEXT_PUBLIC_MOTIONSCLOUD_BASE_URL="<Motion cloud>"
 NEXT_PUBLIC_MOTIONSCLOUD_ACCOUNT_SID="<Motion cloud account SID>"
 NEXT_PUBLIC_MOTIONSCLOUD_ACCOUNT_SECRETKEY="<Motion cloud account secret key>"
+
+#TWILIO
+TWILIO_ACCOUNT_SID="<Twilio account SID>"
+TWILIO_AUTH_TOKEN="<Twilio auth token>"
+VERIFICATION_HMAC_SHA256_SECRET_KEY="<sha256 secret key>"

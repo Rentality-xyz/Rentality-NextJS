@@ -48,6 +48,7 @@ const useFetchUserProfile = () => {
         profilePhotoUrl: getIpfsURI(result.value.kyc.profilePhoto),
         nickname: result.value.kyc.name,
         phoneNumber: formatPhoneNumber(result.value.kyc.mobilePhoneNumber),
+        isPhoneNumberVerified: result.value.isPhoneVerified,
         tcSignature: signature,
         isSignatureCorrect: isSignatureCorrect,
         fullname: result.value.kyc.surname,
