@@ -69,3 +69,8 @@ API_AI_DAMAGE_ANALYZE_SECRET="<Ai damage analyze secret>"
 NEXT_PUBLIC_AI_DAMAGE_ANALYZE_BASE_URL="<Ai damage analyze>"
 NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SID="<Ai damage analyze account SID>"
 NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SECRETKEY="<Ai damage analyze account secret key>"
+
+#TWILIO
+TWILIO_ACCOUNT_SID="<Twilio account SID>"
+TWILIO_AUTH_TOKEN="<Twilio auth token>"
+VERIFICATION_HMAC_SHA256_SECRET_KEY="<sha256 secret key>"
