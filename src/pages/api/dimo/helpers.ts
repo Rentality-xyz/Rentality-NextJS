@@ -1,4 +1,3 @@
-// @ts-ignore
 import { env } from "@/utils/env";
 import { DIMO } from "@dimo-network/data-sdk";
 
