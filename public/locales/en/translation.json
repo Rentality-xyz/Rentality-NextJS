@@ -719,7 +719,10 @@
       "back_to_car_search": "← Back to car search",
       "we_on_base_network": "We’ve on the Base network",
       "welcome_to_web3": "Welcome to Web 3.0 platform!",
-      "save_profile_success": "Thank You for Completing Your Profile! You're all set to enjoy our exclusive rewards and benefits. Check your mail for updates and offers."
+      "save_profile_success": "Thank You for Completing Your Profile! You're all set to enjoy our exclusive rewards and benefits. Check your mail for updates and offers.",
+      "page_not_found": "This page could not be found",
+      "temporarily_unavailable": "Temporarily unavailable",
+      "new_functionality_deploy": "New functionality is being deployed. The platform will be up and running soon!"
     },
     "platform_loading": "Platform initialization",
     "upload": "Upload",

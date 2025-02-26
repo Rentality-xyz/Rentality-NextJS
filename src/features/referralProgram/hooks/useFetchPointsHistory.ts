@@ -32,24 +32,22 @@ const useFetchPointsHistory = (initialPage: number = 1, initialItemsPerPage: num
         throw new Error(result.error.message);
       }
 
-      const data = await Promise.all(
-        result.value.map(async (historyDataDto) => {
-          const isOneTime = historyDataDto.oneTime;
+      const data = result.value.map((historyDataDto) => {
+        const isOneTime = historyDataDto.oneTime;
 
-          const methodDescriptions =
-            historyDataDto.method === ReferralProgram.FinishTripAsGuest
-              ? isOneTime
-                ? t("referrals_and_point.referral_program.finish_trip_as_guest_one_time")
-                : t("referrals_and_point.referral_program.finish_trip_as_guest")
-              : getReferralProgramDescriptionText(t, historyDataDto.method);
+        const methodDescriptions =
+          historyDataDto.method === ReferralProgram.FinishTripAsGuest
+            ? isOneTime
+              ? t("referrals_and_point.referral_program.finish_trip_as_guest_one_time")
+              : t("referrals_and_point.referral_program.finish_trip_as_guest")
+            : getReferralProgramDescriptionText(t, historyDataDto.method);
 
-          return {
-            points: Number(historyDataDto.points),
-            date: getDateFromBlockchainTimeWithTZ(historyDataDto.date, UTC_TIME_ZONE_ID),
-            methodDescriptions,
-          };
-        })
-      );
+        return {
+          points: Number(historyDataDto.points),
+          date: getDateFromBlockchainTimeWithTZ(historyDataDto.date, UTC_TIME_ZONE_ID),
+          methodDescriptions,
+        };
+      });
 
       data.sort((a, b) => b.date.getTime() - a.date.getTime());
       return data;
