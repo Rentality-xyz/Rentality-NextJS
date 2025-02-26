@@ -54,7 +54,7 @@ function CarDetails({
   return (
     <div id="trip-main-info" className="flex w-full flex-col justify-between gap-4">
       <div className="flex flex-col">
-        <div className="grid-cols-[2fr_1fr] items-start justify-between max-xl:grid">
+        <div className="items-start justify-between">
           <strong className="text-xl">{`${tripInfo.brand} ${tripInfo.model} ${tripInfo.year}`}</strong>
           {tripInfo.dimoTokenId !== 0 && (
             <div className="mt-1 xl:hidden">

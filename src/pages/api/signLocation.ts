@@ -6,6 +6,7 @@ import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Wallet } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getLocationInfoFromGoogleByAddress, mapLocationInfoToContractLocationInfo } from "@/utils/location";
+import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 
 export type SignLocationRequest = {
   address: string;
@@ -72,7 +73,7 @@ function parseQuery(
     return Err("'chainId' is not provided or is not a number");
   }
 
-  let providerApiUrl = process.env[`PROVIDER_API_URL_${chainId}`];
+  const providerApiUrl = getProviderApiUrlFromEnv(chainId);
   if (!providerApiUrl) {
     console.error(`API signLocation error: API URL for chain id ${chainId} was not set`);
     return Err(`Chain id ${chainId} is not supported`);

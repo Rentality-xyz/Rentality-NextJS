@@ -1,9 +1,6 @@
 import DeliveryPriceForm from "@/components/host/deliveryPriceForm";
 import TripDiscountsForm from "@/components/host/tripDiscountsForm";
 import PageTitle from "@/components/pageTitle/pageTitle";
-import useDeliveryPrices from "@/hooks/host/useDeliveryPrices";
-import useTripDiscounts from "@/hooks/host/useTripDiscounts";
-import useUserRole from "@/hooks/useUserRole";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
@@ -16,7 +13,6 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/auth/authContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { GatewayStatus, useGateway } from "@civic/ethereum-gateway-react";
-import useMyListings from "@/hooks/host/useMyListings";
 import AddCar from "@/pages/host/vehicles/add";
 import { CivicProvider } from "@/contexts/web3/civicContext";
 import UserCommonInformationForm from "@/features/profile/components/UserCommonInformationForm";
@@ -25,6 +21,11 @@ import { isEmpty } from "@/utils/string";
 import useToggleState from "@/hooks/useToggleState";
 import useFetchUserProfile from "@/features/profile/hooks/useFetchUserProfile";
 import useSaveUserProfile from "@/features/profile/hooks/useSaveUserProfile";
+import useFetchDeliveryPrices from "@/hooks/host/useFetchDeliveryPrices";
+import useSaveDeliveryPrices from "@/hooks/host/useSaveDeliveryPrices";
+import useFetchTripDiscounts from "@/hooks/host/useFetchTripDiscounts";
+import useSaveTripDiscounts from "@/hooks/host/useSaveTripDiscounts";
+import useFetchMyListings from "@/hooks/host/useFetchMyListings";
 
 function BecomeHost() {
   return (
@@ -48,10 +49,11 @@ function BecomeHostContent() {
   const { isLoading: isLoadingUserProfile, data: userProfile } = useFetchUserProfile();
   const { isPending: isPendingUserProfile, mutateAsync: saveUserProfile } = useSaveUserProfile();
 
-  const [isLoadingMyListings, myListings] = useMyListings();
-  const [isLoadingDiscounts, savedTripsDiscounts, saveTripDiscounts] = useTripDiscounts();
-  const [isLoadingDeliveryPrices, savedDeliveryPrices, saveDeliveryPrices] = useDeliveryPrices();
-  const { userRole } = useUserRole();
+  const { isLoading: isLoadingMyListings, data: myListings } = useFetchMyListings();
+  const { isLoading: isLoadingDeliveryPrices, data: savedDeliveryPrices } = useFetchDeliveryPrices();
+  const { mutateAsync: saveDeliveryPrices } = useSaveDeliveryPrices();
+  const { isLoading: isLoadingDiscounts, data: savedTripsDiscounts } = useFetchTripDiscounts();
+  const { mutateAsync: saveTripDiscounts } = useSaveTripDiscounts();
   const { t } = useTranslation();
 
   const [becomeHostSteps, setBecomeHostSteps] = useState<BecomeHostSteps>({
@@ -229,16 +231,8 @@ function BecomeHostContent() {
             title={t("become_host.discounts_and_price")}
           >
             <div className="ml-10 flex flex-col min-[560px]:flex-row min-[560px]:gap-20">
-              <TripDiscountsForm
-                savedTripsDiscounts={savedTripsDiscounts}
-                saveTripsDiscounts={saveTripDiscounts}
-                isUserHasHostRole={userRole === "Host"}
-              />
-              <DeliveryPriceForm
-                savedDeliveryPrices={savedDeliveryPrices}
-                saveDeliveryPrices={saveDeliveryPrices}
-                isUserHasHostRole={userRole === "Host"}
-              />
+              <TripDiscountsForm savedTripsDiscounts={savedTripsDiscounts} saveTripsDiscounts={saveTripDiscounts} />
+              <DeliveryPriceForm savedDeliveryPrices={savedDeliveryPrices} saveDeliveryPrices={saveDeliveryPrices} />
             </div>
           </BecomeHostStep>
 
@@ -297,6 +291,7 @@ function BecomeHostProgress({
     </>
   );
 }
+
 function BecomeHostStep({
   isOpen,
   toggleIsOpen,

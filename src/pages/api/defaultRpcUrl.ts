@@ -1,6 +1,7 @@
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiUrl } from "./publicSearchCars";
+import { env } from "@/utils/env";
 
 type QueryParams = {
   chainId: string;
@@ -8,19 +9,14 @@ type QueryParams = {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ApiUrl>) {
   try {
-    let { chainId: chainIdQuery } = req.query;
+    const { chainId: chainIdQuery } = req.query;
 
-    if (!chainIdQuery) {
-      const defaultChain = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
-
-      if (!defaultChain) {
-        console.error("API defaultRpcUrl error: chainId was not provided");
-        res.status(400).json({ error: "chainId was not provided" });
-        return;
-      }
-      chainIdQuery = defaultChain;
+    const chainId = typeof chainIdQuery === "string" ? Number.parseInt(chainIdQuery) : env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
+    if (!chainId) {
+      console.error("API defaultRpcUrl error: chainId was not provided");
+      res.status(400).json({ error: "chainId was not provided" });
+      return;
     }
-    const chainId = typeof chainIdQuery === "string" ? Number.parseInt(chainIdQuery) : 0;
 
     const providerApiUrl = getProviderApiUrlFromEnv(chainId);
     if (!providerApiUrl) {

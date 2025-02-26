@@ -8,9 +8,6 @@ import { emptyUserProfile, UserProfile } from "../models";
 import { ethers, verifyMessage } from "ethers";
 import { DEFAULT_AGREEMENT_MESSAGE } from "@/utils/constants";
 import { isEmpty } from "@/utils/string";
-import { ContractFullKYCInfoDTO } from "@/model/blockchain/schemas";
-import { Result } from "@/model/utils/result";
-import { useWallets } from "@privy-io/react-auth";
 import { isContract, verifySignature } from "@/utils/verifyERC1271";
 
 export const USER_PROFILE_QUERY_KEY = "UserProfile";
@@ -23,8 +20,8 @@ const checkSignature = async (wallet: string, provider: ethers.Provider, signatu
     return verifySignature(wallet, DEFAULT_AGREEMENT_MESSAGE, signature, provider);
   } else {
     return verifyMessage(DEFAULT_AGREEMENT_MESSAGE, signature) === wallet;
-}
-}
+  }
+};
 const useFetchUserProfile = () => {
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
@@ -44,8 +41,8 @@ const useFetchUserProfile = () => {
 
       const signature = result.value.kyc.TCSignature;
       const isEmptySignature = isEmpty(signature) || signature === "0x";
-      const isSignatureCorrect = 
-        !isEmptySignature && await checkSignature(ethereumInfo.walletAddress, ethereumInfo.provider, signature);
+      const isSignatureCorrect =
+        !isEmptySignature && (await checkSignature(ethereumInfo.walletAddress, ethereumInfo.provider, signature));
 
       const userProfile: UserProfile = {
         profilePhotoUrl: getIpfsURI(result.value.kyc.profilePhoto),
@@ -68,7 +65,6 @@ const useFetchUserProfile = () => {
     },
     enabled: !!rentalityContracts,
   });
-
 };
 
 export default useFetchUserProfile;

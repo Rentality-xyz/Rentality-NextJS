@@ -248,7 +248,8 @@
       },
       "cancel": "Cancel",
       "pay": "Pay"
-    }
+    },
+    "photos_of_complaints": "Photos of complaints"
   },
   "legal": {
     "title": "Legal matters"
@@ -899,5 +900,9 @@
       "actually_listed": "Actually Listed"
     },
     "loading": "Loading..."
+  },
+  "cropper" : {
+    "cancel" : "Cancel",
+    "crop" : "Crop"
   }
 }
