@@ -1,6 +1,6 @@
 // @ts-ignore
 import { env } from "@/utils/env";
-import { DIMO } from "@dimo-network/data-sdk/dist/index.d.ts";
+import { DIMO } from "@dimo-network/data-sdk";
 
 export async function authOnDimo() {
   const clientId = env.NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID;
