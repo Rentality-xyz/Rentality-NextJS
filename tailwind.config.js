@@ -91,6 +91,7 @@ module.exports = {
         // lg: "1024px",
         // xl: "1280px",
         // "2xl": "1536px",
+        mac: "1680px",
         fullHD: "1920px",
 
         // TODO Obsolete

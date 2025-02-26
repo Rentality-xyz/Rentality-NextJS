@@ -19,6 +19,7 @@ import useCreateClaim from "../hooks/useCreateClaim";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useTranslation } from "react-i18next";
 import useTripsForClaimCreation from "../hooks/useTripsForClaimCreation";
+import { FileToUpload } from "@/model/FileToUpload";
 
 const hostClaimTypes = [
   ClaimType.Tolls,

@@ -9,14 +9,14 @@ function DateDetails({ tripInfo, t }: { tripInfo: TripInfo; t: TFunction }) {
       <div className="flex flex-col">
         <div>
           <i className="fi fi-rs-calendar pr-1 text-rentality-icons"></i>
-          <strong className="text-l">{t("booked.trip_start")}</strong>
+          <strong className="text-lg">{t("booked.trip_start")}</strong>
         </div>
         <div>{dateFormatLongMonthDateTime(tripInfo.tripStart, tripInfo.timeZoneId)}</div>
       </div>
       <div className="flex flex-col">
         <div>
           <i className="fi fi-rs-calendar pr-1 text-rentality-icons"></i>
-          <strong className="text-l">{t("booked.trip_end")}</strong>
+          <strong className="text-lg">{t("booked.trip_end")}</strong>
         </div>
         <div className="whitespace-nowrap">{dateFormatLongMonthDateTime(tripInfo.tripEnd, tripInfo.timeZoneId)}</div>
       </div>

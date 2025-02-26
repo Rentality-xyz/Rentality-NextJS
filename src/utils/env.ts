@@ -32,9 +32,11 @@ export const env = createEnv({
 
     PRIVY_VERIFICATION_KEY: z.string().min(1),
 
+    API_AI_DAMAGE_ANALYZE_SECRET: z.string(),
+
     TWILIO_ACCOUNT_SID: z.string(),
     TWILIO_AUTH_TOKEN: z.string(),
-    VERIFICATION_HMAC_SHA256_SECRET_KEY: z.string()
+    VERIFICATION_HMAC_SHA256_SECRET_KEY: z.string(),
   },
   client: {
     NEXT_PUBLIC_INCLUDE_MAINNETS: booleanEnvType,
@@ -67,6 +69,14 @@ export const env = createEnv({
     NEXT_PUBLIC_FB_PIXEL_ID: z.coerce.number(),
 
     NEXT_PUBLIC_IS_TECHNICAL_WORK: booleanEnvType,
+
+    NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID: z.string().min(1),
+    NEXT_PUBLIC_SERVER_DIMO_API_KEY: z.string().min(1),
+    NEXT_PUBLIC_SERVER_DIMO_DOMAIN: z.string().min(1),
+
+    NEXT_PUBLIC_AI_DAMAGE_ANALYZE_BASE_URL: z.string().min(1),
+    NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SID: z.string().min(1),
+    NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SECRETKEY: z.string().min(1),
   },
 
   // If you're using Next.js < 13.4.4, you'll need to specify the runtimeEnv manually
@@ -100,7 +110,15 @@ export const env = createEnv({
 
     NEXT_PUBLIC_FB_PIXEL_ID: process.env.NEXT_PUBLIC_FB_PIXEL_ID,
 
-    NEXT_PUBLIC_IS_TECHNICAL_WORK: process.env.NEXT_PUBLIC_IS_TECHNICAL_WORK
+    NEXT_PUBLIC_IS_TECHNICAL_WORK: process.env.NEXT_PUBLIC_IS_TECHNICAL_WORK,
+
+    NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID: process.env.NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID,
+    NEXT_PUBLIC_SERVER_DIMO_API_KEY: process.env.NEXT_PUBLIC_SERVER_DIMO_API_KEY,
+    NEXT_PUBLIC_SERVER_DIMO_DOMAIN: process.env.NEXT_PUBLIC_SERVER_DIMO_DOMAIN,
+
+    NEXT_PUBLIC_AI_DAMAGE_ANALYZE_BASE_URL: process.env.NEXT_PUBLIC_AI_DAMAGE_ANALYZE_BASE_URL,
+    NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SID: process.env.NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SID,
+    NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SECRETKEY: process.env.NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SECRETKEY,
   },
   // For Next.js >= 13.4.4, you only need to destructure client variables:
   //    experimental__runtimeEnv: {

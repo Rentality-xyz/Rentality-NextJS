@@ -4,11 +4,19 @@ import { cn } from "@/utils";
 import { memo } from "react";
 import { getTripStatusBgColorFromStatus } from "@/utils/tailwind";
 
-function CarPhotoWithStatus({ carImageUrl, tripStatus }: { carImageUrl: string; tripStatus: TripStatus }) {
+function CarPhotoWithStatus({
+  minHeight = "212px",
+  carImageUrl,
+  tripStatus,
+}: {
+  minHeight?: string;
+  carImageUrl: string;
+  tripStatus: TripStatus;
+}) {
   let statusBgColor = getTripStatusBgColorFromStatus(tripStatus);
   let completedTripStatusTextFirstWord = "";
   let completedTripStatusTextSecondPart = "";
-  let statusClassName = "absolute max-w-[90%] right-0 top-2 py-2 rounded-l-3xl text-rnt-temp-status-text text-end";
+  let statusClassName = "absolute right-0 top-2 py-2 rounded-l-3xl text-rnt-temp-status-text text-end";
   statusClassName = cn(statusClassName, statusBgColor);
 
   const tripStatusText = getTripStatusTextFromStatus(tripStatus);
@@ -24,8 +32,8 @@ function CarPhotoWithStatus({ carImageUrl, tripStatus }: { carImageUrl: string; 
 
   return (
     <div
-      style={{ backgroundImage: `url(${carImageUrl})` }}
-      className="relative min-h-[12rem] w-full bg-cover bg-center"
+      style={{ backgroundImage: `url(${carImageUrl})`, minHeight: `${minHeight}` }}
+      className="relative w-full bg-cover bg-center"
     >
       {tripStatus == TripStatus.CompletedWithoutGuestComfirmation ? (
         <div className={statusClassName}>

@@ -31,7 +31,7 @@ export default function RntTripRulesModal({ buttonClassName }: { buttonClassName
     <React.Fragment>
       <RntButtonTransparent className={cn("w-36", buttonClassName)} onClick={handleClickOpen}>
         <div className="text-rentality-secondary">
-          <strong className="text-l">{t("trip_rules.trip_rules")}</strong>
+          <strong className="text-lg">{t("trip_rules.trip_rules")}</strong>
         </div>
       </RntButtonTransparent>
       <Dialog
