@@ -2,22 +2,22 @@ import RntButton from "@/components/common/rntButton";
 import RntInput from "@/components/common/rntInput";
 import { memo } from "react";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
-import { DiscountFormValues } from "@/hooks/host/useTripDiscounts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { tripDiscountsFormSchema, TripDiscountsFormValues } from "./tripDiscountsFormSchema";
-import { Result, TransactionErrorCode } from "@/model/utils/result";
+import { Result } from "@/model/utils/result";
 import { useTranslation } from "react-i18next";
+import useUserRole from "@/hooks/useUserRole";
+import { TripDiscounts } from "@/hooks/host/useFetchTripDiscounts";
 
 function TripDiscountsForm({
   savedTripsDiscounts,
   saveTripsDiscounts,
-  isUserHasHostRole,
 }: {
-  savedTripsDiscounts: DiscountFormValues;
-  saveTripsDiscounts: (newTripsDiscounts: DiscountFormValues) => Promise<Result<boolean, TransactionErrorCode>>;
-  isUserHasHostRole: boolean;
+  savedTripsDiscounts: TripDiscounts;
+  saveTripsDiscounts: (newTripsDiscounts: TripDiscounts) => Promise<Result<boolean, Error>>;
 }) {
+  const { userRole } = useUserRole();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { register, handleSubmit, formState } = useForm<TripDiscountsFormValues>({
@@ -32,7 +32,7 @@ function TripDiscountsForm({
   const { t } = useTranslation();
 
   async function onFormSubmit(formData: TripDiscountsFormValues) {
-    if (!isUserHasHostRole) {
+    if (userRole !== "Host") {
       showDialog(t("profile.save_discount_err_is_not_host"));
       return;
     }
@@ -52,7 +52,7 @@ function TripDiscountsForm({
     if (result.ok) {
       showInfo(t("common.info.success"));
     } else {
-      if (result.error === "NOT_ENOUGH_FUNDS") {
+      if (result.error.message === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
       } else {
         showError(t("profile.save_discount_err"));
