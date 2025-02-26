@@ -67,32 +67,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const hostPublicListingsView: ContractPublicHostCarDTO[] = await rentality.getCarsOfHost(hostAddress);
 
+    if (hostPublicListingsView.length > 0) {
+      validateContractPublicHostCarDTO(hostPublicListingsView[0]);
+    }
     const hostPublicListingsData =
       hostPublicListingsView.length === 0
         ? []
         : await Promise.all(
-            hostPublicListingsView.map(async (i: ContractPublicHostCarDTO, index) => {
-              if (index === 0) {
-                validateContractPublicHostCarDTO(i);
-              }
-              const metaData = parseMetaData(await getMetaDataFromIpfs(i.metadataURI));
+            hostPublicListingsView.map(async (hostCarDto) => {
+              const metaData = parseMetaData(await getMetaDataFromIpfs(hostCarDto.metadataURI));
 
-              const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
-              const securityDeposit = Number(i.securityDepositPerTripInUsdCents) / 100;
-              const milesIncludedPerDay = Number(i.milesIncludedPerDay);
+              const pricePerDay = Number(hostCarDto.pricePerDayInUsdCents) / 100;
+              const securityDeposit = Number(hostCarDto.securityDepositPerTripInUsdCents) / 100;
+              const milesIncludedPerDay = Number(hostCarDto.milesIncludedPerDay);
 
               const item: BaseCarInfo = {
-                carId: Number(i.carId),
+                carId: Number(hostCarDto.carId),
                 ownerAddress: hostAddress,
                 image: getIpfsURI(metaData.mainImage),
-                brand: i.brand,
-                model: i.model,
-                year: i.yearOfProduction.toString(),
+                brand: hostCarDto.brand,
+                model: hostCarDto.model,
+                year: hostCarDto.yearOfProduction.toString(),
                 licensePlate: metaData.licensePlate,
                 pricePerDay: pricePerDay,
                 securityDeposit: securityDeposit,
                 milesIncludedPerDay: milesIncludedPerDay,
-                currentlyListed: i.currentlyListed,
+                currentlyListed: hostCarDto.currentlyListed,
                 isEditable: false,
                 dimoTokenId: 0,
                 vinNumber: "",

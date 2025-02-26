@@ -50,10 +50,8 @@ function useAdminAllUsers() {
           validateContractAdminKYCInfoDTO(result.value[0]);
         }
 
-        const data: AdminUserDetails[] = await Promise.all(
-          result.value.map(async (platformUsersInfo) => {
-            return mapContractAdminKYCInfoDTOToAdminUserDetails(platformUsersInfo);
-          })
+        const data: AdminUserDetails[] = result.value.map((platformUsersInfo) =>
+          mapContractAdminKYCInfoDTOToAdminUserDetails(platformUsersInfo)
         );
 
         const allAdminTrips = { totalPageCount: 1 };

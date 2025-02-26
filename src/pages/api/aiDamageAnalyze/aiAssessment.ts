@@ -4,7 +4,6 @@ import { env } from "process";
 import { uploadJSONToIPFS } from "@/utils/pinata";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { JsonRpcProvider, Wallet } from "ethers";
-import { isEmpty } from "@/utils/string";
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityAiDamageAnalyzeContract } from "@/features/blockchain/models/IRentalityAiDamageAnalyze";
 

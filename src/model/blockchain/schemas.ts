@@ -730,6 +730,14 @@ export type ContractPromoDTO = {
   promoCodeEnterDate: bigint;
 };
 
+export type ContractAiDamageAnalyzeCaseDataDTO = {
+  caseNumber: bigint;
+  email: string;
+  name: string;
+  iCase: string;
+  vin: string;
+}
+
 export type TripStatus = bigint;
 export const TripStatus = {
   Pending: BigInt(0), // Created

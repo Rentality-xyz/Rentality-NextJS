@@ -5,7 +5,7 @@ import { resizeImage } from "@/utils/image";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect } from "react";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
@@ -35,8 +35,7 @@ function UserCommonInformationForm({
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { t } = useTranslation();
   const { userMode } = useUserMode();
-
-  const { register, handleSubmit, formState, control, setValue, watch } = useForm<UserCommonInformationFormValues>({
+  const { register, handleSubmit, formState, control, setValue, watch, reset } = useForm<UserCommonInformationFormValues>({
     defaultValues: {
       profilePhotoUrl: userProfile.profilePhotoUrl,
       nickname: userProfile.nickname,
@@ -53,6 +52,17 @@ function UserCommonInformationForm({
   const isTerms = watch("isTerms");
   const enteredCode = watch("smsCode");
   const enteredPhoneNumber = watch("phoneNumber");
+
+  useEffect(() => {
+    reset({
+      profilePhotoUrl: userProfile.profilePhotoUrl,
+      nickname: userProfile.nickname,
+      phoneNumber: userProfile.phoneNumber,
+      email: userProfile.email,
+      tcSignature: userProfile.tcSignature,
+      isTerms: userProfile.isSignatureCorrect,
+    });
+  }, [userProfile]);
 
   function fileChangeCallback(field: ControllerRenderProps<UserCommonInformationFormValues, "profilePhotoUrl">) {
     return async (e: ChangeEvent<HTMLInputElement>) => {
