@@ -30,18 +30,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
   const jsonData = req.body;
-  const chainIdNumber = env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
-  if (!chainIdNumber) {
+  const chainId = env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
+  if (!chainId) {
     console.error("API aiAssessments error: chainId was not provided");
     res.status(400).json({ error: "chainId was not provided" });
     return;
   }
 
-  const providerApiUrl = getProviderApiUrlFromEnv(Number.parseInt(chainIdNumber));
+  const providerApiUrl = getProviderApiUrlFromEnv(chainId);
 
   if (!providerApiUrl) {
-    console.error(`API aiAssessments error: API URL for chain id ${chainIdNumber} was not set`);
-    res.status(500).json({ error: `API aiAssessments error: API URL for chain id ${chainIdNumber} was not set` });
+    console.error(`API aiAssessments error: API URL for chain id ${chainId} was not set`);
+    res.status(500).json({ error: `API aiAssessments error: API URL for chain id ${chainId} was not set` });
     return;
   }
   const SIGNER_PRIVATE_KEY = env.SIGNER_PRIVATE_KEY;
