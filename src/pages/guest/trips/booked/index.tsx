@@ -50,16 +50,19 @@ function Booked() {
       <RntSuspense isLoading={isLoadingTrips}>
         <div className="my-4 grid grid-cols-1 gap-4 2xl:grid-cols-2">
           {tripsBooked != null && tripsBooked.length > 0 ? (
-            tripsBooked.map((value) => (
-              <TripCard
-                key={value.tripId}
-                tripInfo={value}
-                changeStatusCallback={changeStatusCallback}
-                disableButton={tripStatusChanging}
-                isHost={false}
-                t={t}
-              />
-            ))
+            tripsBooked.map((value) => {
+              return (
+                <TripCard
+                  key={value.tripId}
+                  tripInfo={value}
+                  changeStatusCallback={changeStatusCallback}
+                  disableButton={tripStatusChanging}
+                  isHost={false}
+                  isBooked={true}
+                  t={t}
+                />
+              );
+            })
           ) : (
             <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between pl-4 text-center">
               {t("booked.trip_not_found")}
