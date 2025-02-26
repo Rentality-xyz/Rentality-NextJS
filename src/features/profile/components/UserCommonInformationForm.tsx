@@ -5,7 +5,7 @@ import { resizeImage } from "@/utils/image";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
-import { ChangeEvent, useEffect } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
@@ -59,8 +59,10 @@ function UserCommonInformationForm({
       nickname: userProfile.nickname,
       phoneNumber: userProfile.phoneNumber,
       email: userProfile.email,
+      isPhoneNumberVerified: userProfile.isPhoneNumberVerified,
       tcSignature: userProfile.tcSignature,
       isTerms: userProfile.isSignatureCorrect,
+      smsCode: "",
     });
   }, [userProfile]);
 
@@ -146,8 +148,6 @@ function UserCommonInformationForm({
   const [smsHash, setSmsHash] = useState<string | undefined>(undefined);
   const [smsTimestamp, setSmsTimestamp] = useState<number | undefined>(undefined);
   const [isEnteredCodeCorrect, setIsEnteredCodeCorrect] = useState(false);
-
-
 
   async function sendSmsVerificationCode() {
     try {
