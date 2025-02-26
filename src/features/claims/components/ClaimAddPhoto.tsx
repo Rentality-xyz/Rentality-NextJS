@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import Image from "next/image";
 import { resizeImage } from "@/utils/image";
 import { FileToUpload } from "@/model/FileToUpload";
+import ic_edit_car from "@/images/ic_edit_car_white.png";
 
 function ClaimAddPhoto({
   filesToUpload,
@@ -14,20 +15,13 @@ function ClaimAddPhoto({
   const inputRef = useRef<HTMLInputElement>(null);
   const currentIndexRef = useRef<number>(-1);
 
-  const handleEditClick = (index: number) => {
-    currentIndexRef.current = index;
-    inputRef.current?.click();
-  };
-
   const handleImageClick = () => {
     currentIndexRef.current = -1;
     inputRef.current?.click();
   };
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files?.length) {
-      return;
-    }
+    if (!e.target.files?.length) return;
 
     const currentIndex = currentIndexRef.current;
     let file = e.target.files[0];
@@ -42,17 +36,17 @@ function ClaimAddPhoto({
 
     const reader = new FileReader();
     reader.onload = async (event) => {
-      const fileUrl = event.target?.result as string;
+      let fileUrl = event.target?.result as string;
+
+      if (file.type === "image/heic" || file.name.endsWith(".heic")) {
+        const convertHeicToPng = await import("@/utils/heic2any");
+        const convertedFile = await convertHeicToPng.default(file);
+        file = convertedFile.file;
+        fileUrl = convertedFile.localUrl;
+      }
 
       if (currentIndex === -1) {
-        const fileNameExt = file.name.slice(file.name.lastIndexOf(".") + 1);
-        if (fileNameExt == "heic") {
-          const convertHeicToPng = await import("@/utils/heic2any");
-          const convertedFile = await convertHeicToPng.default(file);
-          setFilesToUpload([...filesToUpload, convertedFile]);
-        } else {
-          setFilesToUpload([...filesToUpload, { file: file, localUrl: fileUrl }]);
-        }
+        setFilesToUpload([...filesToUpload, { file: file, localUrl: fileUrl }]);
       } else {
         const newFilesToUpload = filesToUpload.map((value, index) => {
           return index === currentIndex ? { file: file, localUrl: fileUrl } : value;
@@ -63,33 +57,35 @@ function ClaimAddPhoto({
     reader.readAsDataURL(file);
   };
 
+  const handleEditClick = (index: number) => {
+    currentIndexRef.current = index;
+    inputRef.current?.click();
+  };
+
   return (
     <div className="my-2">
       <p className="mb-1 mt-2 pl-3.5">Up to 5 photos possible</p>
       <div className="flex flex-row gap-4">
         {filesToUpload.map((fileToUpload, index) => {
           return (
-            <div
-              key={index}
-              className="relative h-40 w-48 overflow-hidden rounded-2xl"
-              onClick={() => {
-                handleEditClick(index);
-              }}
-            >
-              {fileToUpload.file.type.startsWith("image/") ? (
-                <Image
-                  className="h-full w-full object-cover"
-                  width={1000}
-                  height={1000}
-                  src={fileToUpload.localUrl}
-                  alt=""
-                />
-              ) : (
-                <div className="relative h-full w-full bg-gray-200/60 bg-center bg-no-repeat">
-                  <span className="absolute bottom-4 w-full text-center">{fileToUpload.file.name}</span>
-                </div>
-              )}
-              <div className="absolute bottom-0 right-0 bg-rentality-additional px-2">edit</div>
+            <div key={index} className="relative h-40 w-48 overflow-hidden rounded-2xl">
+              <Image
+                className="h-full w-full object-cover"
+                width={1000}
+                height={1000}
+                src={fileToUpload.localUrl}
+                alt=""
+              />
+              <button
+                className="absolute right-1 top-1 rounded-2xl bg-[#000000] bg-opacity-75 p-1"
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEditClick(index);
+                }}
+              >
+                <Image src={ic_edit_car} alt="" className="w-[22px]" />
+              </button>
             </div>
           );
         })}
