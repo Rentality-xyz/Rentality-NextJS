@@ -2,16 +2,15 @@
 import React from "react";
 import useFetchOwnReferralPoints from "../hooks/useFetchOwnReferralPoints";
 import useClaimOwnReferralPoints from "../hooks/useClaimOwnReferralPoints";
-import useOwnReferralPointsTransactionStore from "../hooks/useOwnReferralPointsTransactionStore";
+import useOwnReferralPointsSharedStore from "../hooks/useOwnReferralPointsSharedStore";
 import Image from "next/image";
 import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 
 export default function ClaimMyPointsHeaderButton() {
-  const { isLoading, isFetching, data } = useFetchOwnReferralPoints("ClaimMyPointsHeaderButton");
+  const { isLoading, isFetching } = useFetchOwnReferralPoints();
   const { mutateAsync: claimMyPoints } = useClaimOwnReferralPoints();
-  const isClaiming = useOwnReferralPointsTransactionStore((state) => state.isClaiming);
-
-  const { readyToClaim } = data;
+  const isClaiming = useOwnReferralPointsSharedStore((state) => state.isClaiming);
+  const readyToClaim = useOwnReferralPointsSharedStore((state) => state.readyToClaim);
 
   return (
     <button

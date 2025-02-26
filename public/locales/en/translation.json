@@ -222,7 +222,7 @@
     }
   },
   "claims": {
-    "title": "Claims",
+    "title": "Complaints",
     "host": {
       "select_trip": "Please select trip",
       "select_type": "Please select claim type",
