@@ -30,7 +30,7 @@ export default function RntWalletsModal({ tripInfo }: { tripInfo: TripInfo }) {
     <React.Fragment>
       <RntButtonTransparent className="w-36" onClick={handleClickOpen}>
         <div className="text-rentality-secondary">
-          <strong className="text-l">Wallets</strong>
+          <strong className="text-lg">Wallets</strong>
         </div>
       </RntButtonTransparent>
       <Dialog

@@ -32,7 +32,7 @@ import { placeDetailsToLocationInfoWithTimeZone } from "@/utils/location";
 import CarAddPhoto from "./CarAddPhoto";
 import { env } from "@/utils/env";
 import { APIProvider } from "@vis.gl/react-google-maps";
-import { Result, TransactionErrorCode } from "@/model/utils/result";
+import { Result } from "@/model/utils/result";
 import useCarAPI from "@/hooks/useCarAPI";
 import { VinInfo } from "@/pages/api/car-api/vinInfo";
 import { DimoCarResponseWithTimestamp } from "@/features/dimo/hooks/useDimo";
@@ -47,7 +47,7 @@ export default function CarEditForm({
   initValue?: HostCarInfo;
   isNewCar: boolean;
   isInvestmentCar: boolean;
-  saveCarInfo: (hostCarInfo: HostCarInfo) => Promise<Result<boolean, TransactionErrorCode>>;
+  saveCarInfo: (hostCarInfo: HostCarInfo) => Promise<Result<boolean, Error>>;
   t: TFunction;
 }) {
   const router = useRouter();
@@ -236,7 +236,7 @@ export default function CarEditForm({
         router.push("/host/vehicles");
       }
     } else {
-      if (result.error === "NOT_ENOUGH_FUNDS") {
+      if (result.error.message === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
       } else {
         showError(t("vehicles.saving_failed"));
@@ -434,19 +434,50 @@ export default function CarEditForm({
                 ) : isNewCar && dimoData !== undefined ? (
                   <RntInput
                     id="releaseYear"
-                    className="lg:w-60"
+                    className="lg:w-52"
                     label={t_car("release")}
                     readOnly={true}
                     value={dimoData.definition.year}
                   />
                 ) : (
                   <RntInput
-                    className="lg:w-60"
+                    className="lg:w-52"
                     id="releaseYear_text"
                     label={t_car("release")}
                     labelClassName="pl-4"
                     readOnly={true}
                     value={value}
+                  />
+                )
+              }
+            />
+            <Controller
+              name="dimoTokenId"
+              control={control}
+              defaultValue={dimoData?.tokenId || 0}
+              render={({ field }) =>
+                isNewCar && dimoData !== undefined ? (
+                  <RntInput
+                    {...field}
+                    id="dimoTokenId"
+                    className="lg:w-36"
+                    type="text"
+                    label="Dimo token id"
+                    readOnly={true}
+                    value={dimoData.tokenId}
+                  />
+                ) : (
+                  <RntInput
+                    {...field}
+                    id="dimoTokenId"
+                    className="lg:w-36"
+                    type="text"
+                    label="Dimo token id"
+                    readOnly={dimoData !== undefined}
+                    onChange={(e) => {
+                      const inputID = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
+                      field.onChange(Number.parseInt(inputID, 10));
+                    }}
                   />
                 )
               }
@@ -929,37 +960,6 @@ export default function CarEditForm({
               )}
             />
           </div>
-        </div>
-        <div className="mb-8 mt-8 flex flex-col gap-2">
-          <label htmlFor="dimoTokenId">Dimo token id</label>
-          <Controller
-            name="dimoTokenId"
-            control={control}
-            defaultValue={dimoData?.tokenId || 0}
-            render={({ field }) =>
-              isNewCar && dimoData !== undefined ? (
-                <RntInput
-                  {...field}
-                  id="dimoTokenId"
-                  type="number"
-                  placeholder="DIMO token id"
-                  readOnly={true}
-                  value={dimoData.tokenId}
-                />
-              ) : (
-                <RntInput
-                  {...field}
-                  id="dimoTokenId"
-                  type="number"
-                  placeholder="DIMO token id"
-                  readOnly={dimoData !== undefined}
-                  onChange={(e) => {
-                    field.onChange(Number.parseInt(e.target.value, 10));
-                  }}
-                />
-              )
-            }
-          />
         </div>
 
         <div className="mb-8 mt-8 flex flex-row justify-between gap-4 sm:justify-start">

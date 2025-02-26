@@ -424,6 +424,8 @@ input:disabled {
   /*display: inline-block;*/
   position: relative;
   z-index: 0;
+  border: none;
+  /* Убираем стандартную рамку */
 }
 
 .btn_input_border-gradient:before {

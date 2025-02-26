@@ -1,10 +1,10 @@
 import PageTitle from "@/components/pageTitle/pageTitle";
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
 import { useTranslation } from "react-i18next";
-import useSaveCar from "@/hooks/host/useSaveCar";
+import useSaveNewCar from "@/hooks/host/useSaveNewCar";
 
 function AddCar() {
-  const { addNewCar } = useSaveCar();
+  const { mutateAsync: saveNewCar } = useSaveNewCar();
   const { t } = useTranslation();
 
   return (
@@ -14,7 +14,7 @@ function AddCar() {
         isNewCar={true}
         isInvestmentCar={false}
         saveCarInfo={async (hostCarInfo) => {
-          return await addNewCar(hostCarInfo);
+          return await saveNewCar(hostCarInfo);
         }}
         t={t}
       />
