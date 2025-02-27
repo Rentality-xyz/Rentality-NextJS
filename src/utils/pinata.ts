@@ -130,7 +130,7 @@ export interface GetPhotosForTripResponseType {
 }
 
 export async function getPhotosForTrip(tripId: Number): Promise<GetPhotosForTripResponseType> {
-  const url = `https://api.pinata.cloud/data/pinList?metadata[keyvalues]={"tripId":{"value":"${tripId}","op":"eq"}}`;
+  const url = `https://api.pinata.cloud/data/pinList?pageLimit=60&metadata[keyvalues]={"tripId":{"value":"${tripId}","op":"eq"}}`;
 
   const response = await axios.get(url, {
     headers: {
