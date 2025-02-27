@@ -35,7 +35,6 @@ export default function AllCarsTable({ isLoading, data, checkVin }: AllCarsTable
         <table className="w-full table-auto border-spacing-2">
           <thead className="mb-2">
             <tr className="border-b-[2px] border-b-gray-500">
-              <th className={`${cn(headerSpanClassName, "min-w-[6ch]")}`}>#</th>
               <th className={`${cn(headerSpanClassName, "min-w-[6ch]")}`}>{t_comp("carId")}</th>
               <th className={`${cn(headerSpanClassName, "min-w-[15ch]")}`}>{t_comp("host")}</th>
               <th className={`${cn(headerSpanClassName, "min-w-[10ch]")}`}>{t_comp("status")}</th>
@@ -52,9 +51,7 @@ export default function AllCarsTable({ isLoading, data, checkVin }: AllCarsTable
           </thead>
           <tbody className="text-sm">
             {data.map((carDetails, index) => {
-              return (
-                <AllCarsTableRow key={carDetails.vinNumber} index={index} carDetails={carDetails} checkVin={checkVin} />
-              );
+              return <AllCarsTableRow key={carDetails.vinNumber} carDetails={carDetails} checkVin={checkVin} />;
             })}
           </tbody>
         </table>
