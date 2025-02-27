@@ -45,15 +45,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(500).json({ error: `API aiAssessments error: API URL for chain id ${chainId} was not set` });
     return;
   }
-  const SIGNER_PRIVATE_KEY = env.SIGNER_PRIVATE_KEY;
+  const MANAGER_PRIVATE_KEY = env.MANAGER_PRIVATE_KEY;
 
-  if (!SIGNER_PRIVATE_KEY) {
+  if (!MANAGER_PRIVATE_KEY) {
     console.error("API aiAssesments error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
     return;
   }
   const provider = new JsonRpcProvider(providerApiUrl);
-  const wallet = new Wallet(SIGNER_PRIVATE_KEY, provider);
+  const wallet = new Wallet(MANAGER_PRIVATE_KEY, provider);
   const rentality = (await getEtherContractWithSigner(
     "aiDamageAnalyze",
     wallet
