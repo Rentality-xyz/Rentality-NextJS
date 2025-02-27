@@ -25,7 +25,7 @@ const useTripsForClaimCreation = (isHost: boolean) => {
         throw new Error("Contracts not initialized");
       }
 
-      const result = await rentalityContracts.gatewayProxy.getTripsAs(isHost);
+      const result = await rentalityContracts.gateway.getTripsAs(isHost);
       if (!result.ok) {
         throw result.error;
       }

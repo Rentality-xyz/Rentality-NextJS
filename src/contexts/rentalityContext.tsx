@@ -23,7 +23,7 @@ import {
 } from "@/features/blockchain/models/IRentalityAiDamageAnalyze";
 
 export interface IRentalityContracts {
-  gatewayProxy: IRentalityGateway;
+  gateway: IRentalityGateway;
   referralProgram: IRentalityReferralProgram;
   investment: IRentalityInvestment;
   currencyConverter: IRentalityCurrencyConverter;
@@ -111,7 +111,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
       }
 
       setRentalityContracts({
-        gatewayProxy: getEthersContractProxy(rentalityGateway),
+        gateway: getEthersContractProxy(rentalityGateway),
         referralProgram: getEthersContractProxy(rentalityReferralPogram),
         investment: getEthersContractProxy(investment),
         currencyConverter: getEthersContractProxy(currencyConverter),

@@ -58,7 +58,7 @@ const useSaveGuestGeneralInsurance = () => {
         }
 
         console.debug("insuranceInfo", JSON.stringify(insuranceInfo, bigIntReplacer, 2));
-        const result = await rentalityContracts.gatewayProxy.saveGuestInsurance(insuranceInfo);
+        const result = await rentalityContracts.gateway.saveGuestInsurance(insuranceInfo);
 
         return result.ok ? result : Err(new Error("claimMyPoints error: " + result.error));
       } catch (error) {

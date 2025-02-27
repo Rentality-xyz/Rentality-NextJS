@@ -67,7 +67,7 @@ const useTransactionHistory = (isHost: boolean) => {
         setCurrentPage(page);
         setTotalPageCount(0);
 
-        const result = await rentalityContracts.gatewayProxy.getTripsAs(isHost);
+        const result = await rentalityContracts.gateway.getTripsAs(isHost);
 
         if (!result.ok) {
           console.error("fetchData error: " + result.error);

@@ -14,7 +14,7 @@ const useTripInfo = (tripId: bigint) => {
         console.error("getTrip error: contract is null");
         return;
       }
-      const result = await rentalityContracts.gatewayProxy.getTrip(tripId);
+      const result = await rentalityContracts.gateway.getTrip(tripId);
 
       if (!result.ok || result.value === null) return;
 
