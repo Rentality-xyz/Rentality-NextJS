@@ -13,7 +13,7 @@ import { NotificationProvider } from "@/features/notifications/contexts/notifica
 import { useRouter } from "next/router";
 import { ReactElement, ReactNode, useEffect } from "react";
 import { analyticsPromise } from "@/utils/firebase";
-import { base } from "viem/chains";
+import { base } from "wagmi/chains";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
@@ -62,7 +62,7 @@ export default function App({ Component, pageProps }: CustomAppProps) {
   }, []);
 
   if (env.NEXT_PUBLIC_IS_TECHNICAL_WORK === "true") {
-    return <TechnicalWork/>;
+    return <TechnicalWork />;
   }
 
   if (Component.getLayout) {
@@ -76,7 +76,7 @@ export default function App({ Component, pageProps }: CustomAppProps) {
             <DimoAuthProvider>
               <UserInfoProvider>
                 <WagmiProvider config={wagmiConfig}>
-                  <QueryClientProvider client={queryClient}> 
+                  <QueryClientProvider client={queryClient}>
                     <OnchainKitProvider apiKey={env.NEXT_PUBLIC_COINBASE_API_KEY} chain={base}>
                       <NotificationProvider isHost={isHost}>
                         <FirebaseChatProvider>
