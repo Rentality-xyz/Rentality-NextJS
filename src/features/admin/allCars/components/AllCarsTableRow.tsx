@@ -17,9 +17,7 @@ const rowSpanClassName = "px-2 h-12 text-center whitespace-pre-line";
 const AllCarsTableRow = ({
   carDetails,
   checkVin,
-  index,
 }: {
-  index: number;
   carDetails: AdminCarDetails;
   checkVin: (vin: string) => Promise<VinInfo | undefined>;
 }) => {
@@ -56,7 +54,6 @@ const AllCarsTableRow = ({
 
   return (
     <tr key={carDetails.carId} className="border-b-[1px] border-b-gray-500">
-      <td className={rowSpanClassName}>{index + 1}</td>
       <td className={rowSpanClassName}>{carDetails.carId}</td>
       <td className={rowSpanClassName}>
         <div>{carDetails.hostName}</div>
