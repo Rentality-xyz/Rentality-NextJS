@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const chainId = env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
   if (!chainId) {
     console.error("API aiAssessments error: chainId was not provided");
-    res.status(400).json({ error: "chainId was not provided" });
+    res.status(500).json({ error: "chainId was not provided" });
     return;
   }
 
@@ -63,7 +63,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (!verifyXAuthorization(token)) {
     console.error(`API aiAssessments error: token was not correct`);
-    return res.status(500).json({ error: "token was not correct" });
+    return res.status(401).json({ error: "token was not correct" });
   }
 
   if (!caseExists) {
@@ -75,7 +75,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (pinataResponse.success === false) {
     console.error("API aiAssessments error: fail to save data");
-    return res.status(400).json({ error: "fail to save data" });
+    return res.status(500).json({ error: "fail to save data" });
   }
 
   const tx = await rentality.saveInsuranceCaseUrl(jsonData.case_token, pinataResponse.pinataURL);
