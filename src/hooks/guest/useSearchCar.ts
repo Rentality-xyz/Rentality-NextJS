@@ -60,7 +60,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           )
         );
 
-        const availableCarDTO = await rentalityContracts.gateway.checkCarAvailabilityWithDelivery(
+        const result = await rentalityContracts.gatewayProxy.checkCarAvailabilityWithDelivery(
           BigInt(carId),
           contractDateFromUTC,
           contractDateToUTC,
@@ -68,14 +68,24 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           pickUpInfo,
           returnInfo
         );
+        if (!result.ok) {
+          console.error("checkCarAvailabilityWithDelivery error:" + result.error);
+          return false;
+        }
+
+        const availableCarDTO = result.value;
         if (availableCarDTO) {
           validateContractAvailableCarDTO(availableCarDTO);
         }
         console.log("availableCarDTO:", JSON.stringify(availableCarDTO, bigIntReplacer, 2));
-        const carInfo = await rentalityContracts.gateway.getCarInfoById(BigInt(carId));
+        const carInfoResult = await rentalityContracts.gatewayProxy.getCarInfoById(BigInt(carId));
 
+        if (!carInfoResult.ok) {
+          console.error("checkCarAvailabilityWithDelivery error:" + carInfoResult.error);
+          return false;
+        }
         const tankVolumeInGal =
-          availableCarDTO.engineType === EngineType.PETROL ? Number(carInfo.carInfo.engineParams[0]) : 0;
+          availableCarDTO.engineType === EngineType.PETROL ? Number(carInfoResult.value.carInfo.engineParams[0]) : 0;
 
         const pricePer10PercentFuel =
           availableCarDTO.engineType === EngineType.PETROL

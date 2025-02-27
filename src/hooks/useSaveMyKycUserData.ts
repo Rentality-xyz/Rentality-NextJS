@@ -29,8 +29,12 @@ const useSaveMyKycUserData = () => {
         issueCountry: issueCountry,
         email: email,
       };
-      const transaction = await rentalityContracts.gateway.setMyCivicKYCInfo(myCivicKYCInfo);
-      await transaction.wait();
+      const result = await rentalityContracts.gatewayProxy.setMyCivicKYCInfo(myCivicKYCInfo);
+
+      if (!result.ok) {
+        console.error("save MyKycUserData error:" + result.error);
+        return Err("save MyKycUserData error:" + result.error);
+      }
       return Ok(true);
     } catch (e) {
       console.error("save MyKycUserData error:" + e);

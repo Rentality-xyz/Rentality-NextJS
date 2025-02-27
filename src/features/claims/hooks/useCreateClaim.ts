@@ -4,7 +4,7 @@ import { ContractCreateClaimRequest } from "@/model/blockchain/schemas";
 import { CreateClaimRequest } from "@/features/claims/models/CreateClaimRequest";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { SMARTCONTRACT_VERSION } from "@/abis";
-import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
+import { Err, Result } from "@/model/utils/result";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { FileToUpload } from "@/model/FileToUpload";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -16,20 +16,20 @@ const useCreateClaim = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (createClaimRequest: CreateClaimRequest): Promise<Result<boolean, TransactionErrorCode>> => {
+    mutationFn: async (createClaimRequest: CreateClaimRequest): Promise<Result<boolean, Error>> => {
       if (!ethereumInfo) {
         console.error("createClaim error: ethereumInfo is null");
-        return Err("ERROR");
+        return Err(new Error("ERROR"));
       }
 
       if (!rentalityContracts) {
         console.error("createClaim error: rentalityContract is null");
-        return Err("ERROR");
+        return Err(new Error("ERROR"));
       }
 
       if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
         console.error("createClaim error: user don't have enough funds");
-        return Err("NOT_ENOUGH_FUNDS");
+        return Err(new Error("NOT_ENOUGH_FUNDS"));
       }
 
       try {
@@ -43,8 +43,7 @@ const useCreateClaim = () => {
           photosUrl: savedFiles.join("|"),
         };
 
-        const transaction = await rentalityContracts.gateway.createClaim(claimRequest);
-        await transaction.wait();
+        const result = await rentalityContracts.gatewayProxy.createClaim(claimRequest);
 
         // const message = encodeClaimChatMessage(createClaimRequest);
         // chatContextInfo.sendMessage(
@@ -53,10 +52,10 @@ const useCreateClaim = () => {
         //   message,
         //   "SYSTEM|CLAIM_REQUEST"
         // );
-        return Ok(true);
+        return result;
       } catch (e) {
         console.error("createClaim error:" + e);
-        return Err("ERROR");
+        return Err(new Error("ERROR"));
       }
     },
     onSuccess: (data) => {

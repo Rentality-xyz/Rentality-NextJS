@@ -41,11 +41,19 @@ const useCustomCivic = () => {
     try {
       setStatus("Paying");
 
-      const commissionPrice = await rentalityContracts.gateway.calculateKycCommission(ETH_DEFAULT_ADDRESS);
-      const transaction = await rentalityContracts.gateway.payKycCommission(ETH_DEFAULT_ADDRESS, {
-        value: commissionPrice,
+      const commissionPriceResult = await rentalityContracts.gatewayProxy.calculateKycCommission(ETH_DEFAULT_ADDRESS);
+      if (!commissionPriceResult.ok) {
+        console.error("payCommission error:" + commissionPriceResult.error);
+        setStatus("Not paid");
+        return Err("Transaction error. See logs for more details");
+      }
+      const result = await rentalityContracts.gatewayProxy.payKycCommission(ETH_DEFAULT_ADDRESS, {
+        value: commissionPriceResult.value,
       });
-      await transaction.wait();
+
+      if (!result.ok) {
+        throw result.error;
+      }
 
       setStatus("Commission paid");
       return Ok(true);
@@ -66,11 +74,12 @@ const useCustomCivic = () => {
     if (!requestGatewayToken) return;
     if (!ethereumInfo) return;
     if (env.NEXT_PUBLIC_SKIP_KYC_PAYMENT !== "true" && status !== "Commission paid") return;
-    if (
-      env.NEXT_PUBLIC_SKIP_KYC_PAYMENT !== "true" &&
-      !(await rentalityContracts.gateway.isKycCommissionPaid(ethereumInfo.walletAddress))
-    )
-      return;
+    if (env.NEXT_PUBLIC_SKIP_KYC_PAYMENT !== "true") {
+      const result = await rentalityContracts.gatewayProxy.isKycCommissionPaid(ethereumInfo.walletAddress);
+      if (!result.ok || !result.value) {
+        return;
+      }
+    }
 
     if (gatewayStatus === GatewayStatus.USER_INFORMATION_REJECTED) {
       reinitialize();
@@ -184,18 +193,27 @@ const useCustomCivic = () => {
       try {
         isInitialized.current = true;
 
-        const commissionPrice = await rentalityContracts.gateway.getKycCommission();
-        setCommissionFee(Number(commissionPrice) / 100);
+        const commissionPriceResult = await rentalityContracts.gatewayProxy.getKycCommission();
+        if (!commissionPriceResult.ok) {
+          throw commissionPriceResult.error;
+        }
+        setCommissionFee(Number(commissionPriceResult.value) / 100);
 
         if (gatewayStatus === GatewayStatus.ACTIVE) {
           setStatus("Kyc passed");
           return;
         }
 
-        if (
-          env.NEXT_PUBLIC_SKIP_KYC_PAYMENT === "true" ||
-          (await rentalityContracts.gateway.isKycCommissionPaid(ethereumInfo.walletAddress))
-        ) {
+        if (env.NEXT_PUBLIC_SKIP_KYC_PAYMENT === "true") {
+          setStatus("Commission paid");
+          return;
+        }
+
+        const isKycCommissionPaidResult = await rentalityContracts.gatewayProxy.isKycCommissionPaid(
+          ethereumInfo.walletAddress
+        );
+
+        if (isKycCommissionPaidResult.ok && isKycCommissionPaidResult.value) {
           setStatus("Commission paid");
           return;
         }

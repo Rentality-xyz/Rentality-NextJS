@@ -28,8 +28,11 @@ const useHostTrips = () => {
       }
 
       try {
-        const transaction = await rentalityContracts.gateway.approveTripRequest(tripId);
-        await transaction.wait();
+        const result = await rentalityContracts.gatewayProxy.approveTripRequest(tripId);
+        if (!result.ok) {
+          console.error("acceptRequest error:" + result.error);
+          return false;
+        }
         return true;
       } catch (e) {
         console.error("acceptRequest error:" + e);
@@ -44,8 +47,11 @@ const useHostTrips = () => {
       }
 
       try {
-        const transaction = await rentalityContracts.gateway.rejectTripRequest(tripId);
-        await transaction.wait();
+        const result = await rentalityContracts.gatewayProxy.rejectTripRequest(tripId);
+        if (!result.ok) {
+          console.error("rejectRequest error:" + result.error);
+          return false;
+        }
         return true;
       } catch (e) {
         console.error("rejectRequest error:" + e);
@@ -65,13 +71,16 @@ const useHostTrips = () => {
         const insuranceCompany = params[2];
         const insuranceNumber = params[3];
 
-        const transaction = await rentalityContracts.gateway.checkInByHost(
+        const result = await rentalityContracts.gatewayProxy.checkInByHost(
           tripId,
           [startFuelLevelInPercents, startOdometr],
           insuranceCompany,
           insuranceNumber
         );
-        await transaction.wait();
+        if (!result.ok) {
+          console.error("checkInTrip error:" + result.error);
+          return false;
+        }
         return true;
       } catch (e) {
         console.error("checkInTrip error:" + e);
@@ -89,12 +98,15 @@ const useHostTrips = () => {
         const endFuelLevelInPercents = BigInt(Number(params[0]) * 100);
         const endOdometr = BigInt(params[1]);
 
-        const transaction = await rentalityContracts.gateway.checkOutByHost(tripId, [
+        const result = await rentalityContracts.gatewayProxy.checkOutByHost(tripId, [
           endFuelLevelInPercents,
           endOdometr,
         ]);
+        if (!result.ok) {
+          console.error("checkOutTrip error:" + result.error);
+          return false;
+        }
 
-        await transaction.wait();
         return true;
       } catch (e) {
         console.error("checkOutTrip error:" + e);
@@ -109,8 +121,11 @@ const useHostTrips = () => {
       }
 
       try {
-        const transaction = await rentalityContracts.gateway.finishTrip(tripId);
-        await transaction.wait();
+        const result = await rentalityContracts.gatewayProxy.finishTrip(tripId);
+        if (!result.ok) {
+          console.error("finishTrip error:" + result.error);
+          return false;
+        }
         return true;
       } catch (e) {
         console.error("finishTrip error" + e);
@@ -240,17 +255,22 @@ const useHostTrips = () => {
           console.error("getTrips error: contract is null");
           return;
         }
-        const tripsBookedView: ContractTripDTO[] = await rentalityContracts.gateway.getTripsAs(true);
+        const result = await rentalityContracts.gatewayProxy.getTripsAs(true);
 
-        if (tripsBookedView.length > 0) {
-          validateContractTripDTO(tripsBookedView[0]);
+        if (!result.ok) {
+          console.error("getTrips error:" + result.error);
+          return;
+        }
+
+        if (result.value.length > 0) {
+          validateContractTripDTO(result.value[0]);
         }
 
         const tripsBookedData =
-          tripsBookedView.length === 0
+          result.value.length === 0
             ? []
             : await Promise.all(
-                tripsBookedView.map(async (tripDto) => {
+                result.value.map(async (tripDto) => {
                   const item = await mapTripDTOtoTripInfo(tripDto);
                   item.allowedActions = getAllowedActions(item.status, tripDto.trip);
 

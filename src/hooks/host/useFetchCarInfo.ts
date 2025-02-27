@@ -20,19 +20,29 @@ const useFetchCarInfo = (carId: number) => {
       }
 
       try {
-        const carInfo: ContractCarInfoWithInsurance = await rentalityContracts.gateway.getCarInfoById(BigInt(carId));
-        const carInfoDetails: ContractCarDetails = await rentalityContracts.gateway.getCarDetails(BigInt(carId));
+        const carInfoResult = await rentalityContracts.gatewayProxy.getCarInfoById(BigInt(carId));
+        const carInfoDetailsResult = await rentalityContracts.gatewayProxy.getCarDetails(BigInt(carId));
+
+        if (!carInfoResult.ok) {
+          console.error("getCarInfo error:" + carInfoResult.error);
+          return;
+        }
+
+        if (!carInfoDetailsResult.ok) {
+          console.error("getCarInfo error:" + carInfoDetailsResult.error);
+          return;
+        }
 
         const signerAddress = await signer.getAddress();
-        if (carInfoDetails.host !== signerAddress) {
+        if (carInfoDetailsResult.value.host !== signerAddress) {
           return emptyHostCarInfo;
         }
 
         return mapContractCarToCarDetails(
-          carInfo.carInfo,
-          carInfo.insuranceInfo,
-          carInfoDetails,
-          carInfo.carMetadataURI
+          carInfoResult.value.carInfo,
+          carInfoResult.value.insuranceInfo,
+          carInfoDetailsResult.value,
+          carInfoResult.value.carMetadataURI
         );
       } catch (e) {
         console.error("getCarInfo error:" + e);
