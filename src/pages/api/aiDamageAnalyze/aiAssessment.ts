@@ -7,12 +7,13 @@ import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityAiDamageAnalyzeContract } from "@/features/blockchain/models/IRentalityAiDamageAnalyze";
 import { env } from "@/utils/env";
 
-const SECRET_KEY = env.API_AI_DAMAGE_ANALYZE_SECRET;
+
 
 function generateXAuthorization() {
+  const SECRET_KEY = env.API_AI_DAMAGE_ANALYZE_SECRET;
   if (!SECRET_KEY) {
     console.error("ai assessment errror: secret key was not set");
-    return;
+    throw new Error('Internal server error: Key');
   }
 
   return crypto.createHmac("sha256", SECRET_KEY).digest("hex");
@@ -23,11 +24,11 @@ function verifyXAuthorization(token: string) {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  try {
   const token = req.headers["x-authorization"] as string | undefined;
   if (!token) {
     console.error("API aiAssessment error: x-athorization token is not correct");
-    res.status(500).json({ error: "token was not set" });
-    return;
+    return res.status(401).json({ error: "token was not set" });
   }
   const jsonData = req.body;
   const chainId = env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
@@ -62,25 +63,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (!verifyXAuthorization(token)) {
     console.error(`API aiAssessments error: token was not correct`);
-    res.status(500).json({ error: "token was not correct" });
-    return;
+    return res.status(500).json({ error: "token was not correct" });
   }
 
   if (!caseExists) {
     console.error(`API aiAssessments error: case not exists`);
-    res.status(500).json({ error: "case not exists" });
-    return;
+    return res.status(500).json({ error: "case not exists" });
   }
 
   const pinataResponse = await uploadJSONToIPFS(jsonData);
 
   if (pinataResponse.success === false) {
     console.error("API aiAssessments error: fail to save data");
-    res.status(400).json({ error: "fail to save data" });
-    return;
+    return res.status(400).json({ error: "fail to save data" });
   }
 
   const tx = await rentality.saveInsuranceCaseUrl(jsonData.case_token, pinataResponse.pinataURL);
   await tx.wait();
-  res.status(200).json({ status: "ok" });
+  return res.status(200).json({ status: "ok" }); 
+}
+catch(error) {
+  return res.status(500).json({ status: "error", error }); 
+}
 }
