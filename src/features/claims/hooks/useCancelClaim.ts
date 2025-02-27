@@ -24,7 +24,7 @@ const useCancelClaim = () => {
       }
 
       try {
-        const result = await rentalityContracts.gatewayProxy.rejectClaim(BigInt(claimId));
+        const result = await rentalityContracts.gateway.rejectClaim(BigInt(claimId));
         return result;
       } catch (e) {
         console.error("cancelClaim error:" + e);

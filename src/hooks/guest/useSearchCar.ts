@@ -60,7 +60,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           )
         );
 
-        const result = await rentalityContracts.gatewayProxy.checkCarAvailabilityWithDelivery(
+        const result = await rentalityContracts.gateway.checkCarAvailabilityWithDelivery(
           BigInt(carId),
           contractDateFromUTC,
           contractDateToUTC,
@@ -78,7 +78,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           validateContractAvailableCarDTO(availableCarDTO);
         }
         console.log("availableCarDTO:", JSON.stringify(availableCarDTO, bigIntReplacer, 2));
-        const carInfoResult = await rentalityContracts.gatewayProxy.getCarInfoById(BigInt(carId));
+        const carInfoResult = await rentalityContracts.gateway.getCarInfoById(BigInt(carId));
 
         if (!carInfoResult.ok) {
           console.error("checkCarAvailabilityWithDelivery error:" + carInfoResult.error);

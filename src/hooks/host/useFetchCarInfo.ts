@@ -20,8 +20,8 @@ const useFetchCarInfo = (carId: number) => {
       }
 
       try {
-        const carInfoResult = await rentalityContracts.gatewayProxy.getCarInfoById(BigInt(carId));
-        const carInfoDetailsResult = await rentalityContracts.gatewayProxy.getCarDetails(BigInt(carId));
+        const carInfoResult = await rentalityContracts.gateway.getCarInfoById(BigInt(carId));
+        const carInfoDetailsResult = await rentalityContracts.gateway.getCarDetails(BigInt(carId));
 
         if (!carInfoResult.ok) {
           console.error("getCarInfo error:" + carInfoResult.error);

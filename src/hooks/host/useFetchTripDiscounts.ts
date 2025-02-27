@@ -32,7 +32,7 @@ function useFetchTripDiscounts() {
         throw new Error("Contracts or wallet not initialized");
       }
 
-      const result = await rentalityContracts.gatewayProxy.getDiscount(ethereumInfo.walletAddress);
+      const result = await rentalityContracts.gateway.getDiscount(ethereumInfo.walletAddress);
       if (!result.ok) {
         throw result.error;
       }

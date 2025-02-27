@@ -20,7 +20,7 @@ const usePayClaim = () => {
       }
 
       try {
-        const calculateClaimValueResult = await rentalityContracts.gatewayProxy.calculateClaimValue(BigInt(claimId));
+        const calculateClaimValueResult = await rentalityContracts.gateway.calculateClaimValue(BigInt(claimId));
 
         if (!calculateClaimValueResult.ok) {
           return Err(new Error("ERROR"));
@@ -33,7 +33,7 @@ const usePayClaim = () => {
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
-        const result = await rentalityContracts.gatewayProxy.payClaim(BigInt(claimId), {
+        const result = await rentalityContracts.gateway.payClaim(BigInt(claimId), {
           value: calculateClaimValueResult.value,
         });
 

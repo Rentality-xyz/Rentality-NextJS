@@ -46,7 +46,7 @@ const useCreateTripRequest = () => {
     const startUnixTime = getBlockchainTimeFromDate(dateFrom);
     const endUnixTime = getBlockchainTimeFromDate(dateTo);
 
-    const carDeliveryDataResult = await rentalityContracts.gatewayProxy.getDeliveryData(BigInt(carId));
+    const carDeliveryDataResult = await rentalityContracts.gateway.getDeliveryData(BigInt(carId));
     if (!carDeliveryDataResult.ok) {
       console.error("createTripRequest error: carDeliveryDataResult resutl an error: " + carDeliveryDataResult.error);
       return Err(new Error("ERROR"));
@@ -78,7 +78,7 @@ const useCreateTripRequest = () => {
             ? carLocationInfo
             : mapLocationInfoToContractLocationInfo(searchCarRequest.deliveryInfo.returnLocation.locationInfo);
 
-        const paymentsResult = await rentalityContracts.gatewayProxy.calculatePaymentsWithDelivery(
+        const paymentsResult = await rentalityContracts.gateway.calculatePaymentsWithDelivery(
           BigInt(carId),
           BigInt(days),
           ETH_DEFAULT_ADDRESS,
@@ -120,14 +120,14 @@ const useCreateTripRequest = () => {
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
-        const result = await rentalityContracts.gatewayProxy.createTripRequestWithDelivery(tripRequest, promoCode, {
+        const result = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, promoCode, {
           value: paymentsResult.value.totalPrice,
         });
         if (!result.ok) {
           return Err(new Error("ERROR"));
         }
       } else {
-        const paymentsResult = await rentalityContracts.gatewayProxy.calculatePaymentsWithDelivery(
+        const paymentsResult = await rentalityContracts.gateway.calculatePaymentsWithDelivery(
           BigInt(carId),
           BigInt(days),
           ETH_DEFAULT_ADDRESS,
@@ -155,7 +155,7 @@ const useCreateTripRequest = () => {
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
-        const result = await rentalityContracts.gatewayProxy.createTripRequestWithDelivery(tripRequest, promoCode, {
+        const result = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, promoCode, {
           value: paymentsResult.value.totalPrice,
         });
         if (!result.ok) {

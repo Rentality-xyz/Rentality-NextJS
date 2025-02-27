@@ -32,7 +32,7 @@ const useSaveUserProfile = () => {
         const referralHash =
           !isEmpty(localReferralHash) && localReferralHash.startsWith("0x") ? localReferralHash : ZERO_4_BYTES_HASH;
 
-        const result = await rentalityContracts.gatewayProxy.setKYCInfo(
+        const result = await rentalityContracts.gateway.setKYCInfo(
           request.nickname,
           request.phoneNumber,
           request.profilePhotoUrl,

@@ -118,7 +118,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
 
           if (tripStatus === TripStatus.Pending) {
             try {
-              const result = await rentalityContracts.gatewayProxy.getTrip(tripId);
+              const result = await rentalityContracts.gateway.getTrip(tripId);
               if (!result.ok) return;
 
               const notification = await createCreateTripNotification(result.value, isHost, new Date());
@@ -130,7 +130,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
             }
           } else {
             try {
-              const result = await rentalityContracts.gatewayProxy.getTrip(tripId);
+              const result = await rentalityContracts.gateway.getTrip(tripId);
               if (!result.ok) return;
 
               const notification = await createTripChangedNotification(tripStatus, result.value, isHost, new Date());
@@ -147,10 +147,10 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
           const claimId = BigInt(args[1]);
 
           try {
-            const getClaimResult = await rentalityContracts.gatewayProxy.getClaim(claimId);
+            const getClaimResult = await rentalityContracts.gateway.getClaim(claimId);
             if (!getClaimResult.ok) return;
 
-            const getTripResult = await rentalityContracts.gatewayProxy.getTrip(getClaimResult.value.claim.tripId);
+            const getTripResult = await rentalityContracts.gateway.getTrip(getClaimResult.value.claim.tripId);
             if (!getTripResult.ok) return;
 
             const notification = await createClaimCreatedChangedNotification(
@@ -191,8 +191,8 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         const toBlock = await ethereumInfo.provider.getBlockNumber();
         const fromBlock = getFromBlock(ethereumInfo.chainId, toBlock);
 
-        const getTripsResult = await rentalityContracts.gatewayProxy.getTripsAs(isHost);
-        const getMyClaimsResult = await rentalityContracts.gatewayProxy.getMyClaimsAs(isHost);
+        const getTripsResult = await rentalityContracts.gateway.getTripsAs(isHost);
+        const getMyClaimsResult = await rentalityContracts.gateway.getMyClaimsAs(isHost);
 
         if (!getTripsResult.ok || !getMyClaimsResult.ok) return;
 

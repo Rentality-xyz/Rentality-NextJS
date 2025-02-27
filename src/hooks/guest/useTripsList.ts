@@ -29,7 +29,7 @@ const useTripsList = (isHost: boolean) => {
           console.error("getTrips error: contract is null");
           return;
         }
-        const result = await rentalityContracts.gatewayProxy.getTripsAs(isHost);
+        const result = await rentalityContracts.gateway.getTripsAs(isHost);
         if (!result.ok) {
           console.error("getTrips error:" + result.error);
           return;

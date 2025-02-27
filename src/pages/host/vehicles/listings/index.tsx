@@ -64,7 +64,7 @@ function Listings() {
       console.error("Save dimo tokens id error: Rentality contract is null");
       return;
     }
-    await rentalityContracts.gatewayProxy.saveDimoTokenIds(
+    await rentalityContracts.gateway.saveDimoTokenIds(
       dimoTokens.map((n) => BigInt(n)),
       carIds.map((n) => BigInt(n))
     );

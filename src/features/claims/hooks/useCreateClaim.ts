@@ -43,7 +43,7 @@ const useCreateClaim = () => {
           photosUrl: savedFiles.join("|"),
         };
 
-        const result = await rentalityContracts.gatewayProxy.createClaim(claimRequest);
+        const result = await rentalityContracts.gateway.createClaim(claimRequest);
 
         // const message = encodeClaimChatMessage(createClaimRequest);
         // chatContextInfo.sendMessage(

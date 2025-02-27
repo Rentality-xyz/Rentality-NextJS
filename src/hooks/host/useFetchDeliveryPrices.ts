@@ -28,7 +28,7 @@ function useFetchDeliveryPrices() {
         throw new Error("Contracts or wallet not initialized");
       }
 
-      const result = await rentalityContracts.gatewayProxy.getUserDeliveryPrices(ethereumInfo.walletAddress);
+      const result = await rentalityContracts.gateway.getUserDeliveryPrices(ethereumInfo.walletAddress);
       if (!result.ok) {
         throw result.error;
       }

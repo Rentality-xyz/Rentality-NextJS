@@ -29,7 +29,7 @@ const useSaveMyKycUserData = () => {
         issueCountry: issueCountry,
         email: email,
       };
-      const result = await rentalityContracts.gatewayProxy.setMyCivicKYCInfo(myCivicKYCInfo);
+      const result = await rentalityContracts.gateway.setMyCivicKYCInfo(myCivicKYCInfo);
 
       if (!result.ok) {
         console.error("save MyKycUserData error:" + result.error);

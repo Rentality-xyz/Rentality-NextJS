@@ -126,7 +126,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         return;
       }
 
-      const result = await rentalityContracts.gatewayProxy.getChatInfoFor(isHost(userMode));
+      const result = await rentalityContracts.gateway.getChatInfoFor(isHost(userMode));
       if (!result.ok) return;
 
       const chatInfosViewSorted = [...result.value].sort((a, b) => {
@@ -208,7 +208,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
       console.debug(`tripStatusChangedListener call. TripId: ${tripId} status: ${tripStatus}`);
       if (tripStatus === TripStatus.Pending) {
-        const tripInfoResult = await rentalityContracts.gatewayProxy.getTrip(BigInt(tripId));
+        const tripInfoResult = await rentalityContracts.gateway.getTrip(BigInt(tripId));
         if (!tripInfoResult.ok) return;
 
         const tripInfo = tripInfoResult.value;

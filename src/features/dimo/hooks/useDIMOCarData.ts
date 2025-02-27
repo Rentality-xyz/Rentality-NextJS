@@ -42,7 +42,7 @@ const useDIMOCarData = (carId: number) => {
     }
 
     try {
-      const result = await rentalityContracts.gatewayProxy.getCarDetails(BigInt(carId));
+      const result = await rentalityContracts.gateway.getCarDetails(BigInt(carId));
 
       if (!result.ok || result.value.dimoTokenId === BigInt(0)) {
         return EmptyDimoPanelData;

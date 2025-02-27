@@ -88,7 +88,7 @@ function useUpdateCar() {
           locationInfo = locationResult.value;
         }
 
-        const result = await rentalityContracts.gatewayProxy.updateCarInfoWithLocation(updateCarRequest, locationInfo);
+        const result = await rentalityContracts.gateway.updateCarInfoWithLocation(updateCarRequest, locationInfo);
 
         return result;
       } catch (error) {

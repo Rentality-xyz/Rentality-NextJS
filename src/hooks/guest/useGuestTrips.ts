@@ -45,7 +45,7 @@ const useGuestTrips = () => {
       }
 
       try {
-        const result = await rentalityContracts.gatewayProxy.rejectTripRequest(tripId);
+        const result = await rentalityContracts.gateway.rejectTripRequest(tripId);
         if (!result.ok) {
           console.error("rejectRequest error:" + result.error);
           return false;
@@ -67,7 +67,7 @@ const useGuestTrips = () => {
         const startFuelLevelInPercents = BigInt(Number(params[0]) * 100);
         const startOdometr = BigInt(params[1]);
 
-        const result = await rentalityContracts.gatewayProxy.checkInByGuest(tripId, [
+        const result = await rentalityContracts.gateway.checkInByGuest(tripId, [
           startFuelLevelInPercents,
           startOdometr,
         ]);
@@ -93,10 +93,7 @@ const useGuestTrips = () => {
         const endFuelLevelInPercents = BigInt(Number(params[0]) * 100);
         const endOdometr = BigInt(params[1]);
 
-        const result = await rentalityContracts.gatewayProxy.checkOutByGuest(tripId, [
-          endFuelLevelInPercents,
-          endOdometr,
-        ]);
+        const result = await rentalityContracts.gateway.checkOutByGuest(tripId, [endFuelLevelInPercents, endOdometr]);
         if (!result.ok) {
           console.error("checkOutTrip error:" + result.error);
           return false;
@@ -117,7 +114,7 @@ const useGuestTrips = () => {
 
       try {
         /// TODO: get from input
-        let result = await rentalityContracts.gatewayProxy.confirmCheckOut(tripId);
+        let result = await rentalityContracts.gateway.confirmCheckOut(tripId);
         if (!result.ok) {
           console.error("confirmCheckOutTrip error:" + result.error);
           return false;
@@ -213,7 +210,7 @@ const useGuestTrips = () => {
           console.error("getTrips error: contract is null");
           return;
         }
-        const result = await rentalityContracts.gatewayProxy.getTripsAs(false);
+        const result = await rentalityContracts.gateway.getTripsAs(false);
 
         if (!result.ok) {
           console.error("getTrips error:" + result.error);

@@ -23,7 +23,7 @@ function useSaveTripDiscounts() {
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
-        const result = await rentalityContracts.gatewayProxy.addUserDiscount({
+        const result = await rentalityContracts.gateway.addUserDiscount({
           threeDaysDiscount: BigInt(newValue.discount3DaysAndMoreInPercents * 10_000),
           sevenDaysDiscount: BigInt(newValue.discount7DaysAndMoreInPercents * 10_000),
           thirtyDaysDiscount: BigInt(newValue.discount30DaysAndMoreInPercents * 10_000),
