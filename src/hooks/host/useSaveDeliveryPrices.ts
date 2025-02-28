@@ -23,7 +23,7 @@ function useSaveDeliveryPrices() {
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
-        const result = await rentalityContracts.gatewayProxy.addUserDeliveryPrices(
+        const result = await rentalityContracts.gateway.addUserDeliveryPrices(
           BigInt(newValue.from1To25milesPrice * 100),
           BigInt(newValue.over25MilesPrice * 100)
         );

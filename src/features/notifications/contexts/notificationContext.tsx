@@ -118,8 +118,10 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
 
           if (tripStatus === TripStatus.Pending) {
             try {
-              const tripInfo: ContractTripDTO = await rentalityContracts.gateway.getTrip(tripId);
-              const notification = await createCreateTripNotification(tripInfo, isHost, new Date());
+              const result = await rentalityContracts.gateway.getTrip(tripId);
+              if (!result.ok) return;
+
+              const notification = await createCreateTripNotification(result.value, isHost, new Date());
               if (!notification) return;
 
               addNotifications([notification]);
@@ -128,8 +130,10 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
             }
           } else {
             try {
-              const tripInfo: ContractTripDTO = await rentalityContracts.gateway.getTrip(tripId);
-              const notification = await createTripChangedNotification(tripStatus, tripInfo, isHost, new Date());
+              const result = await rentalityContracts.gateway.getTrip(tripId);
+              if (!result.ok) return;
+
+              const notification = await createTripChangedNotification(tripStatus, result.value, isHost, new Date());
               if (!notification) return;
 
               addNotifications([notification]);
@@ -143,11 +147,18 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
           const claimId = BigInt(args[1]);
 
           try {
-            const claimInfo: ContractFullClaimInfo = await rentalityContracts.gateway.getClaim(claimId);
-            if (!claimInfo) return;
+            const getClaimResult = await rentalityContracts.gateway.getClaim(claimId);
+            if (!getClaimResult.ok) return;
 
-            const tripInfo: ContractTripDTO = await rentalityContracts.gateway.getTrip(claimInfo.claim.tripId);
-            const notification = await createClaimCreatedChangedNotification(tripInfo, claimInfo, isHost, new Date());
+            const getTripResult = await rentalityContracts.gateway.getTrip(getClaimResult.value.claim.tripId);
+            if (!getTripResult.ok) return;
+
+            const notification = await createClaimCreatedChangedNotification(
+              getTripResult.value,
+              getClaimResult.value,
+              isHost,
+              new Date()
+            );
             if (!notification) return;
 
             addNotifications([notification]);
@@ -180,8 +191,10 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         const toBlock = await ethereumInfo.provider.getBlockNumber();
         const fromBlock = getFromBlock(ethereumInfo.chainId, toBlock);
 
-        const tripInfos = await rentalityContracts.gateway.getTripsAs(isHost);
-        const claimInfos = await rentalityContracts.gateway.getMyClaimsAs(isHost);
+        const getTripsResult = await rentalityContracts.gateway.getTripsAs(isHost);
+        const getMyClaimsResult = await rentalityContracts.gateway.getMyClaimsAs(isHost);
+
+        if (!getTripsResult.ok || !getMyClaimsResult.ok) return;
 
         const rentalityEventFilterFromUser = notificationService.filters.RentalityEvent(
           null,
@@ -206,7 +219,9 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
           .filter(isEventLog);
 
         const notificationsRentalityEventHistory = await Promise.all(
-          rentalityEventHistory.map(getNotificationFromRentalityEvent(tripInfos, claimInfos, isHost))
+          rentalityEventHistory.map(
+            getNotificationFromRentalityEvent(getTripsResult.value, getMyClaimsResult.value, isHost)
+          )
         );
 
         const notifications: NotificationInfo[] = notificationsRentalityEventHistory.filter(hasValue);

@@ -112,7 +112,7 @@ function useSaveNewCar() {
         };
 
         console.debug("SIGNATURE", request);
-        const result = await rentalityContracts.gatewayProxy.addCar(request);
+        const result = await rentalityContracts.gateway.addCar(request);
 
         return result;
       } catch (error) {

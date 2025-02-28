@@ -150,7 +150,7 @@ const useAdminPanelInfo = () => {
 
       console.debug("contractCivicKYCInfo", JSON.stringify(contractCivicKYCInfo, bigIntReplacer, 2));
 
-      const result = await rentalityContracts.gatewayProxy.setCivicKYCInfo(address, contractCivicKYCInfo);
+      const result = await rentalityContracts.gateway.setCivicKYCInfo(address, contractCivicKYCInfo);
       return result.ok;
     } catch (e) {
       console.error("updateKycInfoForAddress error" + e);
@@ -181,7 +181,7 @@ const useAdminPanelInfo = () => {
         email: "testemail@test.com",
       };
 
-      const result = await rentalityContracts.gatewayProxy.setCivicKYCInfo(address, contractCivicKYCInfo);
+      const result = await rentalityContracts.gateway.setCivicKYCInfo(address, contractCivicKYCInfo);
       return result.ok;
     } catch (e) {
       console.error("setDrivingLicenceForAddress error" + e);
@@ -203,7 +203,7 @@ const useAdminPanelInfo = () => {
 
     setIsLoading(true);
 
-    const paymentResult = await rentalityContracts.gatewayProxy.calculatePaymentsWithDelivery(
+    const paymentResult = await rentalityContracts.gateway.calculatePaymentsWithDelivery(
       BigInt(carId),
       BigInt(3),
       ETH_DEFAULT_ADDRESS,
@@ -226,7 +226,7 @@ const useAdminPanelInfo = () => {
       returnInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
     };
 
-    const result = await rentalityContracts.gatewayProxy.createTripRequestWithDelivery(tripRequest, EMPTY_PROMOCODE, {
+    const result = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, EMPTY_PROMOCODE, {
       value: BigInt(Math.ceil(Number(paymentResult.value.totalPrice) * 0.991)),
     });
 

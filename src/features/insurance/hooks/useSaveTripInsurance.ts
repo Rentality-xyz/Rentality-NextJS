@@ -38,7 +38,7 @@ const useSaveTripInsurance = () => {
       if (policeNumber === undefined) return Err(new Error("policeNumber is undefined"));
 
       try {
-        const result = await rentalityContracts.gatewayProxy.saveTripInsuranceInfo(BigInt(tripId), {
+        const result = await rentalityContracts.gateway.saveTripInsuranceInfo(BigInt(tripId), {
           insuranceType: InsuranceType.OneTime,
           photo: "",
           companyName: companyName,

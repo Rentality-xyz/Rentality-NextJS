@@ -67,14 +67,19 @@ const useTransactionHistory = (isHost: boolean) => {
         setCurrentPage(page);
         setTotalPageCount(0);
 
-        const tripInfos = await rentalityContracts.gateway.getTripsAs(isHost);
+        const result = await rentalityContracts.gateway.getTripsAs(isHost);
 
-        if (tripInfos && tripInfos.length > 0) {
-          validateContractTripDTO(tripInfos[0]);
+        if (!result.ok) {
+          console.error("fetchData error: " + result.error);
+          return Err("Get data error. See logs for more details");
+        }
+
+        if (result.value.length > 0) {
+          validateContractTripDTO(result.value[0]);
         }
 
         const data: TransactionHistoryInfo[] = await Promise.all(
-          tripInfos.map((tripDto) => mapContractTripDTOToTransactionHistoryInfo(tripDto))
+          result.value.map((tripDto) => mapContractTripDTOToTransactionHistoryInfo(tripDto))
         );
 
         data.sort((a, b) => {
