@@ -66,6 +66,13 @@ const locationInfoFormSchema = z.object({
   timeZoneId: z.string().trim(),
 });
 
+export const vinNumberSchema = z
+  .string()
+  .trim()
+  .min(1, "Vin number is too short")
+  .max(17, "Vin number is too long")
+  .regex(new RegExp(/^[A-HJ-NPR-Z0-9]*$/), "Vin number contains invalid characters");
+
 const defaultCarEditFormSchema = z
   .object({
     carId: z
@@ -75,7 +82,7 @@ const defaultCarEditFormSchema = z
       })
       .optional(),
 
-    vinNumber: z.string().trim().min(1, "Vin number is too short").max(17, "Vin number is too long"),
+    vinNumber: vinNumberSchema,
     brand: z.string().trim().min(1, "Brand is too short").max(30, "Brand is too long"),
     model: z.string().trim().min(1, "Model is too short").max(30, "Model is too long"),
     releaseYear: z

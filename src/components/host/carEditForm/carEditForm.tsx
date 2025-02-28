@@ -154,9 +154,6 @@ export default function CarEditForm({
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
   };
-  useEffect(() => {
-    console.log("FORMA: ", formState.errors);
-  }, [formState]);
 
   async function onFormSubmit(formData: CarEditFormValues) {
     const carInfoFormParams: HostCarInfo = {
