@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 import { createClaimFormSchema, CreateClaimFormValues } from "./createClaimFormSchema";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Err, Result, TransactionErrorCode } from "@/model/utils/result";
+import { Err, Result } from "@/model/utils/result";
 import RntSelect from "@/components/common/rntSelect";
 import RntInputMultiline from "@/components/common/rntInputMultiline";
 import RntInput from "@/components/common/rntInput";
@@ -19,7 +19,6 @@ import useCreateClaim from "../hooks/useCreateClaim";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useTranslation } from "react-i18next";
 import useTripsForClaimCreation from "../hooks/useTripsForClaimCreation";
-import { FileToUpload } from "@/model/FileToUpload";
 
 const hostClaimTypes = [
   ClaimType.Tolls,
@@ -84,24 +83,22 @@ export default function CreateClaim() {
     }
   }
 
-  async function handleCreateClaim(
-    createClaimRequest: CreateClaimRequest
-  ): Promise<Result<boolean, TransactionErrorCode>> {
+  async function handleCreateClaim(createClaimRequest: CreateClaimRequest): Promise<Result<boolean, Error>> {
     if (!createClaimRequest.tripId) {
       showError(t("claims.host.select_trip"));
-      return Err("ERROR");
+      return Err(new Error("ERROR"));
     }
     if (!createClaimRequest.claimType && createClaimRequest.claimType !== BigInt(0)) {
       showError(t("claims.host.select_type"));
-      return Err("ERROR");
+      return Err(new Error("ERROR"));
     }
     if (!createClaimRequest.description) {
       showError(t("claims.host.enter_description"));
-      return Err("ERROR");
+      return Err(new Error("ERROR"));
     }
     if (!createClaimRequest.amountInUsdCents) {
       showError(t("claims.host.enter_amount"));
-      return Err("ERROR");
+      return Err(new Error("ERROR"));
     }
 
     showInfo(t("common.info.sign"));
@@ -111,7 +108,7 @@ export default function CreateClaim() {
     hideSnackbars();
 
     if (!result.ok) {
-      if (result.error === "NOT_ENOUGH_FUNDS") {
+      if (result.error.message === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
       } else {
         showError(t("claims.host.claim_failed"));

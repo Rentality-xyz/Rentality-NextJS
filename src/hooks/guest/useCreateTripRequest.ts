@@ -8,7 +8,7 @@ import { EMPTY_PROMOCODE, ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { getSignedLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
-import { Err, Ok, Result, TransactionErrorCode } from "@/model/utils/result";
+import { Err, Ok, Result } from "@/model/utils/result";
 import moment from "moment";
 import { formatEther } from "viem";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
@@ -22,15 +22,15 @@ const useCreateTripRequest = () => {
     searchCarRequest: SearchCarRequest,
     timeZoneId: string,
     promoCode: string
-  ): Promise<Result<boolean, TransactionErrorCode>> {
+  ): Promise<Result<boolean, Error>> {
     if (!ethereumInfo) {
       console.error("createTripRequest error: ethereumInfo is null");
-      return Err("ERROR");
+      return Err(new Error("ERROR"));
     }
 
     if (!rentalityContracts) {
       console.error("createTripRequest error: rentalityContract is null");
-      return Err("ERROR");
+      return Err(new Error("ERROR"));
     }
 
     promoCode = !isEmpty(promoCode) ? promoCode : EMPTY_PROMOCODE;
@@ -41,20 +41,24 @@ const useCreateTripRequest = () => {
     const days = calculateDays(dateFrom, dateTo);
     if (days < 0) {
       console.error("Date to' must be greater than 'Date from'");
-      return Err("ERROR");
+      return Err(new Error("ERROR"));
     }
     const startUnixTime = getBlockchainTimeFromDate(dateFrom);
     const endUnixTime = getBlockchainTimeFromDate(dateTo);
 
-    const carDeliveryData = await rentalityContracts.gateway.getDeliveryData(BigInt(carId));
+    const carDeliveryDataResult = await rentalityContracts.gateway.getDeliveryData(BigInt(carId));
+    if (!carDeliveryDataResult.ok) {
+      console.error("createTripRequest error: carDeliveryDataResult resutl an error: " + carDeliveryDataResult.error);
+      return Err(new Error("ERROR"));
+    }
     const carLocationInfo: ContractLocationInfo = {
-      userAddress: carDeliveryData.locationInfo.userAddress,
-      country: carDeliveryData.locationInfo.country,
-      state: carDeliveryData.locationInfo.state,
-      city: carDeliveryData.locationInfo.city,
-      latitude: carDeliveryData.locationInfo.latitude,
-      longitude: carDeliveryData.locationInfo.longitude,
-      timeZoneId: carDeliveryData.locationInfo.timeZoneId,
+      userAddress: carDeliveryDataResult.value.locationInfo.userAddress,
+      country: carDeliveryDataResult.value.locationInfo.country,
+      state: carDeliveryDataResult.value.locationInfo.state,
+      city: carDeliveryDataResult.value.locationInfo.city,
+      latitude: carDeliveryDataResult.value.locationInfo.latitude,
+      longitude: carDeliveryDataResult.value.locationInfo.longitude,
+      timeZoneId: carDeliveryDataResult.value.locationInfo.timeZoneId,
     };
 
     try {
@@ -74,7 +78,7 @@ const useCreateTripRequest = () => {
             ? carLocationInfo
             : mapLocationInfoToContractLocationInfo(searchCarRequest.deliveryInfo.returnLocation.locationInfo);
 
-        const paymentsNeeded = await rentalityContracts.gateway.calculatePaymentsWithDelivery(
+        const paymentsResult = await rentalityContracts.gateway.calculatePaymentsWithDelivery(
           BigInt(carId),
           BigInt(days),
           ETH_DEFAULT_ADDRESS,
@@ -82,11 +86,14 @@ const useCreateTripRequest = () => {
           returnLocationInfo,
           promoCode
         );
+        if (!paymentsResult.ok) {
+          return Err(new Error("ERROR"));
+        }
 
         const pickupLocationResult = await getSignedLocationInfo(pickupLocationInfo, ethereumInfo.chainId);
         if (!pickupLocationResult.ok) {
           console.error("Sign location error");
-          return Err("ERROR");
+          return Err(new Error("ERROR"));
         }
 
         const returnLocationResult =
@@ -95,7 +102,7 @@ const useCreateTripRequest = () => {
             : await getSignedLocationInfo(returnLocationInfo, ethereumInfo.chainId);
         if (!returnLocationResult.ok) {
           console.error("Sign location error");
-          return Err("ERROR");
+          return Err(new Error("ERROR"));
         }
 
         const tripRequest: ContractCreateTripRequestWithDelivery = {
@@ -106,19 +113,21 @@ const useCreateTripRequest = () => {
           pickUpInfo: pickupLocationResult.value,
           returnInfo: returnLocationResult.value,
         };
-        const totalPriceInEth = Number(formatEther(paymentsNeeded.totalPrice));
+        const totalPriceInEth = Number(formatEther(paymentsResult.value.totalPrice));
 
         if (!(await isUserHasEnoughFunds(ethereumInfo.signer, totalPriceInEth))) {
           console.error("createTripRequest error: user don't have enough funds");
-          return Err("NOT_ENOUGH_FUNDS");
+          return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
-        const transaction = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, promoCode, {
-          value: paymentsNeeded.totalPrice,
+        const result = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, promoCode, {
+          value: paymentsResult.value.totalPrice,
         });
-        await transaction.wait();
+        if (!result.ok) {
+          return Err(new Error("ERROR"));
+        }
       } else {
-        const paymentsNeeded = await rentalityContracts.gateway.calculatePaymentsWithDelivery(
+        const paymentsResult = await rentalityContracts.gateway.calculatePaymentsWithDelivery(
           BigInt(carId),
           BigInt(days),
           ETH_DEFAULT_ADDRESS,
@@ -126,6 +135,9 @@ const useCreateTripRequest = () => {
           emptyContractLocationInfo,
           promoCode
         );
+        if (!paymentsResult.ok) {
+          return Err(new Error("ERROR"));
+        }
 
         const tripRequest: ContractCreateTripRequestWithDelivery = {
           carId: BigInt(carId),
@@ -136,23 +148,25 @@ const useCreateTripRequest = () => {
           returnInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
         };
 
-        const totalPriceInEth = Number(formatEther(paymentsNeeded.totalPrice));
+        const totalPriceInEth = Number(formatEther(paymentsResult.value.totalPrice));
 
         if (!(await isUserHasEnoughFunds(ethereumInfo.signer, totalPriceInEth))) {
           console.error("createTripRequest error: user don't have enough funds");
-          return Err("NOT_ENOUGH_FUNDS");
+          return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
-        const transaction = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, promoCode, {
-          value: paymentsNeeded.totalPrice,
+        const result = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, promoCode, {
+          value: paymentsResult.value.totalPrice,
         });
-        await transaction.wait();
+        if (!result.ok) {
+          return Err(new Error("ERROR"));
+        }
       }
 
       return Ok(true);
     } catch (e) {
       console.error("createTripRequest error:" + e);
-      return Err("ERROR");
+      return Err(new Error("ERROR"));
     }
   }
 

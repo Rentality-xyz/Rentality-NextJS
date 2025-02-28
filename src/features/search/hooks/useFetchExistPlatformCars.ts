@@ -18,7 +18,7 @@ function useFetchExistPlatformCars() {
       if (!rentalityContracts) {
         throw new Error("Contracts not initialized");
       }
-      const result = await rentalityContracts.gatewayProxy.getUniqCarsBrand();
+      const result = await rentalityContracts.gateway.getUniqCarsBrand();
 
       if (!result.ok) {
         throw new Error(result.error.message);
@@ -39,7 +39,7 @@ function useFetchExistPlatformCars() {
         throw new Error("selectedMake is null");
       }
 
-      const result = await rentalityContracts.gatewayProxy.getUniqModelsByBrand(selectedMake);
+      const result = await rentalityContracts.gateway.getUniqModelsByBrand(selectedMake);
 
       if (!result.ok) {
         throw new Error(result.error.message);

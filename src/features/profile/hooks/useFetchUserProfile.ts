@@ -34,7 +34,7 @@ const useFetchUserProfile = () => {
         throw new Error("Contracts or wallet not initialized");
       }
 
-      const result = await rentalityContracts.gatewayProxy.getMyFullKYCInfo();
+      const result = await rentalityContracts.gateway.getMyFullKYCInfo();
       if (!result.ok) {
         throw result.error;
       }

@@ -21,7 +21,7 @@ function useFetchClaims(isHost: boolean) {
         throw new Error("Contracts not initialized");
       }
 
-      const result = await rentalityContracts.gatewayProxy.getMyClaimsAs(isHost);
+      const result = await rentalityContracts.gateway.getMyClaimsAs(isHost);
 
       if (!result.ok) {
         throw result.error;

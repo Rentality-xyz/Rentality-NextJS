@@ -72,7 +72,7 @@ export default function ClaimHistory({ claims }: Props) {
     hideSnackbars();
 
     if (!result.ok) {
-      if (result.error === "NOT_ENOUGH_FUNDS") {
+      if (result.error.message === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
       } else {
         showError(t("claims.host.claim_cancel_failed"));
@@ -88,7 +88,7 @@ export default function ClaimHistory({ claims }: Props) {
     hideSnackbars();
 
     if (!result.ok) {
-      if (result.error === "NOT_ENOUGH_FUNDS") {
+      if (result.error.message === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
       } else {
         showError(t("claims.errors.pay_claim_failed"));

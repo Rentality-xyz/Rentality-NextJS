@@ -21,7 +21,7 @@ function useFetchMyListings() {
         throw new Error("Contracts or wallet not initialized");
       }
 
-      const result = await rentalityContracts.gatewayProxy.getMyCars();
+      const result = await rentalityContracts.gateway.getMyCars();
       if (!result.ok) {
         throw result.error;
       }
