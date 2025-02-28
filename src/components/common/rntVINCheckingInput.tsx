@@ -4,6 +4,7 @@ import useCarAPI from "@/hooks/useCarAPI";
 import RntButton from "@/components/common/rntButton";
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { t } from "i18next";
+import { vinNumberSchema } from "../host/carEditForm/carEditFormSchema";
 
 type RntVINCheckingInputProps = {
   id: string;
@@ -119,7 +120,8 @@ export default function RntVINCheckingInput({
         validationMessage={validationMessage}
         onChange={(e) => {
           const vinNumber = e.target.value.toUpperCase();
-          if (!/^[A-HJ-NPR-Z0-9]*$/.test(vinNumber)) {
+          const parseResult = vinNumberSchema.safeParse(vinNumber);
+          if (!parseResult.success && parseResult.error.issues.every((i) => i.code !== "too_small")) {
             return;
           }
           if (vinNumber.length === MAX_VIN_LENGTH) {
