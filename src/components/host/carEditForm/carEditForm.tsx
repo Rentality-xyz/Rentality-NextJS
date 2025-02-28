@@ -1,5 +1,4 @@
 import RntInput from "@/components/common/rntInput";
-import RntSelect from "@/components/common/rntSelect";
 import {
   emptyHostCarInfo,
   HostCarInfo,
@@ -36,6 +35,8 @@ import { Result, TransactionErrorCode } from "@/model/utils/result";
 import useCarAPI from "@/hooks/useCarAPI";
 import { VinInfo } from "@/pages/api/car-api/vinInfo";
 import { DimoCarResponseWithTimestamp } from "@/features/dimo/hooks/useDimo";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
+import RntFilterSelect from "@/components/common/RntFilterSelect";
 
 export default function CarEditForm({
   initValue,
@@ -312,7 +313,13 @@ export default function CarEditForm({
                     onVINCheckOverriden={(overridden) => setIsVINCheckOverriden(overridden)}
                   />
                 ) : (
-                  <RntInput value={dimoData.vin} className="lg:w-60" label={t_car("vin_num")} readOnly={true} />
+                  <RntInputTransparent
+                    value={dimoData.vin}
+                    className="lg:w-60"
+                    label={t_car("vin_num")}
+                    labelClassName="pl-4"
+                    readOnly={true}
+                  />
                 )
               }
             />
@@ -324,6 +331,7 @@ export default function CarEditForm({
                 isNewCar && !isVINVerified && dimoData === undefined ? (
                   <RntCarMakeSelect
                     id="brand"
+                    isTransparentStyle={true}
                     className="lg:min-w-[17ch]"
                     label={t_car("brand")}
                     value={value}
@@ -336,23 +344,16 @@ export default function CarEditForm({
                     validationError={errors.brand?.message?.toString()}
                   />
                 ) : isNewCar && dimoData !== undefined ? (
-                  <RntInput
+                  <RntInputTransparent
                     id="brand"
                     className="lg:w-60"
                     label={t_car("brand")}
-                    readOnly={true}
-                    value={dimoData.definition.make}
-                  />
-                ) : isNewCar && dimoData !== undefined ? (
-                  <RntInput
-                    id="brand"
-                    className="lg:w-60"
-                    label={t_car("brand")}
+                    labelClassName="pl-4"
                     readOnly={true}
                     value={dimoData.definition.make}
                   />
                 ) : (
-                  <RntInput
+                  <RntInputTransparent
                     className="lg:w-60"
                     id="brand_text"
                     label={t_car("brand")}
@@ -371,6 +372,7 @@ export default function CarEditForm({
                 isNewCar && !isVINVerified && dimoData === undefined ? (
                   <RntCarModelSelect
                     id="model"
+                    isTransparentStyle={true}
                     className="lg:min-w-[15ch]"
                     label={t_car("model")}
                     make_id={selectedMakeID}
@@ -384,15 +386,16 @@ export default function CarEditForm({
                     validationError={errors.model?.message?.toString()}
                   />
                 ) : isNewCar && dimoData !== undefined ? (
-                  <RntInput
+                  <RntInputTransparent
                     id="model"
                     className="lg:w-60"
                     label={t_car("model")}
+                    labelClassName="pl-4"
                     readOnly={true}
                     value={dimoData.definition.model}
                   />
                 ) : (
-                  <RntInput
+                  <RntInputTransparent
                     className="lg:w-60"
                     id="model_text"
                     label={t_car("model")}
@@ -411,6 +414,7 @@ export default function CarEditForm({
                 isNewCar && !isVINVerified && dimoData === undefined ? (
                   <RntCarYearSelect
                     id="releaseYear"
+                    isTransparentStyle={true}
                     className="lg:w-60"
                     label={t_car("release")}
                     make_id={selectedMakeID}
@@ -424,23 +428,16 @@ export default function CarEditForm({
                     validationError={errors.releaseYear?.message?.toString()}
                   />
                 ) : isNewCar && dimoData !== undefined ? (
-                  <RntInput
-                    id="releaseYear"
-                    className="lg:w-60"
-                    label={t_car("release")}
-                    readOnly={true}
-                    value={dimoData.definition.year}
-                  />
-                ) : isNewCar && dimoData !== undefined ? (
-                  <RntInput
+                  <RntInputTransparent
                     id="releaseYear"
                     className="lg:w-52"
                     label={t_car("release")}
+                    labelClassName="pl-4"
                     readOnly={true}
                     value={dimoData.definition.year}
                   />
                 ) : (
-                  <RntInput
+                  <RntInputTransparent
                     className="lg:w-52"
                     id="releaseYear_text"
                     label={t_car("release")}
@@ -457,22 +454,24 @@ export default function CarEditForm({
               defaultValue={dimoData?.tokenId || 0}
               render={({ field }) =>
                 isNewCar && dimoData !== undefined ? (
-                  <RntInput
+                  <RntInputTransparent
                     {...field}
                     id="dimoTokenId"
-                    className="lg:w-36"
+                    className="lg:w-40"
                     type="text"
                     label="Dimo token id"
+                    labelClassName="pl-4"
                     readOnly={true}
                     value={dimoData.tokenId}
                   />
                 ) : (
-                  <RntInput
+                  <RntInputTransparent
                     {...field}
                     id="dimoTokenId"
-                    className="lg:w-36"
+                    className="lg:w-40"
                     type="text"
                     label="Dimo token id"
+                    labelClassName="pl-4"
                     readOnly={dimoData !== undefined}
                     onChange={(e) => {
                       const inputID = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
@@ -509,7 +508,7 @@ export default function CarEditForm({
             <strong>{t_car("car_basics")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
-            <RntInput
+            <RntInputTransparent
               className="lg:w-60"
               id="name"
               label={t_car("car_name")}
@@ -523,7 +522,7 @@ export default function CarEditForm({
               })}
               validationError={errors.name?.message?.toString()}
             />
-            <RntInput
+            <RntInputTransparent
               className="lg:w-60"
               id="licensePlate"
               label={t_car("licence_plate")}
@@ -537,7 +536,7 @@ export default function CarEditForm({
               })}
               validationError={errors.licensePlate?.message?.toString()}
             />
-            <RntInput
+            <RntInputTransparent
               className="lg:w-60"
               id="licenseState"
               label={t_car("licence_state")}
@@ -556,14 +555,15 @@ export default function CarEditForm({
               name="engineTypeText"
               control={control}
               render={({ field }) => (
-                <RntSelect
+                <RntFilterSelect
                   className="lg:w-60"
                   id="engineType"
+                  isTransparentStyle={true}
                   label={t_car("engine_type")}
-                  labelClassName="pl-4"
                   validationError={errors.engineTypeText?.message?.toString()}
                   value={field.value}
-                  readOnly={!isFormEnabled}
+                  disabled={!isFormEnabled}
+                  placeholder="Please select"
                   onChange={(e) => {
                     field.onChange(e);
                     if (e.target.value === ENGINE_TYPE_ELECTRIC_STRING) {
@@ -571,10 +571,13 @@ export default function CarEditForm({
                     }
                   }}
                 >
-                  <option className="hidden" disabled selected></option>
-                  <option value={ENGINE_TYPE_PETROL_STRING}>{t_car("gasoline")}</option>
-                  <option value={ENGINE_TYPE_ELECTRIC_STRING}>{t_car("electric")}</option>
-                </RntSelect>
+                  <RntFilterSelect.Option key="year-engine-type-1" value={ENGINE_TYPE_PETROL_STRING}>
+                    {t_car("gasoline")}
+                  </RntFilterSelect.Option>
+                  <RntFilterSelect.Option key="year-engine-type-2" value={ENGINE_TYPE_ELECTRIC_STRING}>
+                    {t_car("electric")}
+                  </RntFilterSelect.Option>
+                </RntFilterSelect>
               )}
             />
           </div>
@@ -585,7 +588,7 @@ export default function CarEditForm({
             <strong>{t_car("basic_details")}</strong>
           </div>
           <div className="details flex flex-wrap gap-4">
-            <RntInput
+            <RntInputTransparent
               className="w-[48%] lg:w-40"
               id="seatsNumber"
               label={t_car("seats_amount")}
@@ -600,7 +603,7 @@ export default function CarEditForm({
               })}
               validationError={errors.seatsNumber?.message?.toString()}
             />
-            <RntInput
+            <RntInputTransparent
               className="w-[48%] lg:w-40"
               id="doorsNumber"
               label={t_car("doors")}
@@ -617,7 +620,7 @@ export default function CarEditForm({
             />
             {!isElectricEngine ? (
               <>
-                <RntInput
+                <RntInputTransparent
                   className="w-[48%] lg:w-40"
                   id="tankVolumeInGal"
                   label={t_car("tank_size")}
@@ -634,27 +637,37 @@ export default function CarEditForm({
                     "tankVolumeInGal" in errors ? errors.tankVolumeInGal?.message?.toString() : undefined
                   }
                 />
-                <RntSelect
-                  className="w-[48%] lg:w-40"
-                  id="transmission"
-                  label={t_car("transmission")}
-                  labelClassName="pl-4"
-                  readOnly={!isFormEnabled}
-                  {...register("transmission", {
-                    onChange: () => {
-                      setIsCarMetadataEdited(true);
-                    },
-                  })}
-                  validationError={errors.transmission?.message?.toString()}
-                >
-                  <option className="hidden" disabled selected></option>
-                  <option value={TRANSMISSION_MANUAL_STRING}>{t_car("manual")}</option>
-                  <option value={TRANSMISSION_AUTOMATIC_STRING}>{t_car("auto")}</option>
-                </RntSelect>
+                <Controller
+                  name="transmission"
+                  control={control}
+                  render={({ field }) => (
+                    <RntFilterSelect
+                      className="w-[48%] lg:w-48"
+                      id="transmission"
+                      isTransparentStyle={true}
+                      label={t_car("transmission")}
+                      disabled={!isFormEnabled}
+                      placeholder="Please select"
+                      value={field.value}
+                      validationError={errors.transmission?.message?.toString()}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setIsCarMetadataEdited(true);
+                      }}
+                    >
+                      <RntFilterSelect.Option key="transmission-1" value={TRANSMISSION_MANUAL_STRING}>
+                        {t_car("manual")}
+                      </RntFilterSelect.Option>
+                      <RntFilterSelect.Option key="transmission-2" value={TRANSMISSION_AUTOMATIC_STRING}>
+                        {t_car("auto")}
+                      </RntFilterSelect.Option>
+                    </RntFilterSelect>
+                  )}
+                />
               </>
             ) : null}
 
-            <RntInput
+            <RntInputTransparent
               className="w-[48%] lg:w-40"
               id="color"
               label={t_car("color")}
@@ -919,44 +932,73 @@ export default function CarEditForm({
             <strong>{t_car("management")}</strong>
           </div>
           <div className="mb-4 flex flex-wrap gap-4">
-            <RntSelect
-              className="lg:w-60"
-              id="timeBufferBetweenTrips"
-              label={t_car("time_buffer")}
-              labelClassName="pl-4"
-              readOnly={!isFormEnabled}
-              {...register("timeBufferBetweenTripsInMin", { valueAsNumber: true })}
-              validationError={errors.timeBufferBetweenTripsInMin?.message?.toString()}
-            >
-              <option value="0">0 min</option>
-              <option value="15">15 min</option>
-              <option value="30">30 min</option>
-              <option value="60">1 hr</option>
-              <option value="90">1.5 hr</option>
-              <option value="120">2 hr</option>
-              <option value="150">2.5 hr</option>
-              <option value="180">3 hr</option>
-            </RntSelect>
+            <Controller
+              name="timeBufferBetweenTripsInMin"
+              control={control}
+              render={({ field }) => (
+                <RntFilterSelect
+                  className="lg:w-60"
+                  id="timeBufferBetweenTrips"
+                  isTransparentStyle={true}
+                  label={t_car("time_buffer")}
+                  disabled={!isFormEnabled}
+                  value={field.value ?? 0}
+                  validationError={errors.timeBufferBetweenTripsInMin?.message?.toString()}
+                  onChange={(e) => {
+                    field.onChange(Number(e.target.value));
+                  }}
+                >
+                  <RntFilterSelect.Option key="time-buffer-1" value="0">
+                    0 min
+                  </RntFilterSelect.Option>
+                  <RntFilterSelect.Option key="time-buffer-2" value={"15"}>
+                    15 min
+                  </RntFilterSelect.Option>
+                  <RntFilterSelect.Option key="time-buffer-3" value={"30"}>
+                    30 min
+                  </RntFilterSelect.Option>
+                  <RntFilterSelect.Option key="time-buffer-4" value={"60"}>
+                    1 hr
+                  </RntFilterSelect.Option>
+                  <RntFilterSelect.Option key="time-buffer-5" value={"90"}>
+                    1.5 hr
+                  </RntFilterSelect.Option>
+                  <RntFilterSelect.Option key="time-buffer-6" value={"120"}>
+                    2 hr
+                  </RntFilterSelect.Option>
+                  <RntFilterSelect.Option key="time-buffer-7" value={"150"}>
+                    2.5 hr
+                  </RntFilterSelect.Option>
+                  <RntFilterSelect.Option key="time-buffer-8" value={"180"}>
+                    3 hr
+                  </RntFilterSelect.Option>
+                </RntFilterSelect>
+              )}
+            />
           </div>
           <div className="flex flex-wrap gap-4">
             <Controller
               name="currentlyListed"
               control={control}
               render={({ field }) => (
-                <RntSelect
+                <RntFilterSelect
                   className="lg:w-60"
                   id="listed"
+                  isTransparentStyle={true}
                   label={t_car("listing_status")}
-                  labelClassName="pl-4"
                   value={field.value ? "true" : "false"}
-                  readOnly={!isFormEnabled}
+                  disabled={!isFormEnabled}
                   onChange={(e) => {
                     field.onChange(e.target.value === "true");
                   }}
                 >
-                  <option value="true">{t_car("listed")}</option>
-                  <option value="false">{t_car("unlisted")}</option>
-                </RntSelect>
+                  <RntFilterSelect.Option key="listing-status-1" value={"true"}>
+                    {t_car("listed")}
+                  </RntFilterSelect.Option>
+                  <RntFilterSelect.Option key="listing-status-2" value={"false"}>
+                    {t_car("unlisted")}
+                  </RntFilterSelect.Option>
+                </RntFilterSelect>
               )}
             />
           </div>

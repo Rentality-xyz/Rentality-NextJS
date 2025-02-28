@@ -371,7 +371,6 @@ export default function SearchAndFilters({
           </RntButton>
           <RntFilterSelect
             className="bg-rnt-button-gradient w-52 justify-center border-0 text-lg text-white"
-            //selectClassName="   custom-select px-4  cursor-pointer"
             id="sort"
             placeholder={t_comp("sort_by")}
             value={sortBy ? sortOption[sortBy] : ""}

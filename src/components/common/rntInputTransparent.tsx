@@ -2,14 +2,10 @@ import { isEmpty } from "@/utils/string";
 import { forwardRef, useId } from "react";
 import RntValidationError from "./RntValidationError";
 import { cn } from "@/utils";
-
-interface RntInputProps extends React.ComponentPropsWithoutRef<"input"> {
-  labelClassName?: string;
-  inputClassName?: string;
-  validationClassName?: string;
-  label?: string;
-  validationError?: string;
-}
+import { StaticImageData } from "next/image";
+import { RntInputProps } from "@/components/common/rntInput";
+import DotStatus from "@/components/dotStatus";
+import * as React from "react";
 
 const RntInputTransparent = forwardRef<HTMLInputElement, RntInputProps>(
   (
@@ -25,6 +21,8 @@ const RntInputTransparent = forwardRef<HTMLInputElement, RntInputProps>(
       value,
       readOnly,
       validationError,
+      validationSuccessMessage,
+      validationMessage,
       onChange: onChangeHandler,
       onBlur: onBlurHandler,
       style,
@@ -49,7 +47,7 @@ const RntInputTransparent = forwardRef<HTMLInputElement, RntInputProps>(
             {label}
           </label>
         )}
-        <div className="btn_input_border-gradient">
+        <div className={cn(`btn_input_border-gradient ${!isEmpty(label) && "mt-1"}`)}>
           <div className="input-wrapper pl-2">
             <input
               className={iClassName}
@@ -72,6 +70,20 @@ const RntInputTransparent = forwardRef<HTMLInputElement, RntInputProps>(
           </div>
         </div>
         <RntValidationError className={validationClassName} validationError={validationError} />
+        {validationSuccessMessage && (
+          <DotStatus
+            containerClassName="text-sm text-rnt-temp-main-text mt-2 pl-4 break-words xl:whitespace-nowrap"
+            color="success"
+            text={validationSuccessMessage}
+          />
+        )}
+        {validationMessage && (
+          <DotStatus
+            containerClassName="text-sm text-rnt-temp-main-text mt-2 pl-4 break-words xl:whitespace-nowrap"
+            color="warning"
+            text={validationMessage}
+          />
+        )}
       </div>
     );
   }
