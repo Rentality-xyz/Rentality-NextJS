@@ -132,10 +132,7 @@ function BecomeHostContent() {
   useEffect(() => {
     setBecomeHostSteps((prev) => ({
       ...prev,
-      isDiscountsAndPriceSaved:
-        savedTripsDiscounts.isInitialized &&
-        savedDeliveryPrices.from1To25milesPrice > 0 &&
-        savedDeliveryPrices.over25MilesPrice > 0,
+      isDiscountsAndPriceSaved: savedTripsDiscounts.isInitialized && savedDeliveryPrices.isInitialized,
     }));
   }, [savedTripsDiscounts, savedDeliveryPrices]);
 

@@ -41,6 +41,7 @@ function DeliveryPriceForm({
     const result = await saveDeliveryPrices({
       from1To25milesPrice: formData.from1To25milesPrice,
       over25MilesPrice: formData.over25MilesPrice,
+      isInitialized: true,
     });
 
     hideDialogs();
