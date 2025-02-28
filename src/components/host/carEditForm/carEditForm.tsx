@@ -154,9 +154,6 @@ export default function CarEditForm({
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
   };
-  useEffect(() => {
-    console.log("FORMA: ", formState.errors);
-  }, [formState]);
 
   async function onFormSubmit(formData: CarEditFormValues) {
     const carInfoFormParams: HostCarInfo = {
@@ -307,7 +304,7 @@ export default function CarEditForm({
                     isVINVerified={isVINVerified}
                     placeholder="e.g. 4Y1SL65848Z411439"
                     readOnly={!isNewCar}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e) => onChange(e.target.value.toUpperCase())}
                     onVINVerified={(verified: boolean) => setIsVINVerified(verified)}
                     onVINCheckOverriden={(overridden) => setIsVINCheckOverriden(overridden)}
                   />
