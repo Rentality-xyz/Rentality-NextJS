@@ -73,7 +73,9 @@ export default function RntCarModelSelect({
           key={"car-make-" + index}
           data-id={carModelsListElement.id}
           value={carModelsListElement.name}
-        />
+        >
+          {carModelsListElement.name}
+        </RntFilterSelect.Option>
       ))}
     </RntFilterSelect>
   );

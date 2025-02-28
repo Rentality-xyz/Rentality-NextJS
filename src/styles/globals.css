@@ -447,6 +447,32 @@ input:disabled {
   mask-composite: exclude;
 }
 
+.textarea_border-gradient {
+  position: relative;
+  z-index: 0;
+  border: none;
+  /* Убираем стандартную рамку */
+}
+
+.textarea_border-gradient:before {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  /*z-index: -1;*/
+  inset: 0;
+  padding: 2px;
+  border-radius: 16px;
+  background: linear-gradient(to bottom, #74bbef 0%, #7257ce 70%, #5e3dd3 100%);
+  -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+  mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
 #pagination>ul>li {
   margin-left: 12px;
 }
@@ -459,7 +485,8 @@ input:disabled {
 
 .border-gradient {
   position: relative;
-  display: inline-block;
+  z-index: 0;
+  /*display: inline-block;*/
   /* Устанавливаем обертку под размер input */
   /*border-radius: 9999px;*/
   /* Скругленные углы */

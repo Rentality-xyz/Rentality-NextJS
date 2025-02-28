@@ -98,7 +98,7 @@ export function UserInsurancePhoto({
       )}
       <div
         className={cn(
-          "h-40 w-48 cursor-pointer overflow-hidden rounded-2xl bg-gray-200/40 bg-[url('../images/add_circle_outline_white_48dp.svg')] bg-center bg-no-repeat",
+          "border-gradient h-40 w-48 cursor-pointer overflow-hidden rounded-2xl bg-transparent bg-[url('../images/add_circle_outline_white_48dp.svg')] bg-center bg-no-repeat",
           !isEmpty(photoUrl) ? "hidden" : ""
         )}
       >

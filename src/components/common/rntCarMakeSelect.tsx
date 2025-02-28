@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import useCarAPI, { CarMakesListElement } from "@/hooks/useCarAPI";
 import RntFilterSelect from "./RntFilterSelect";
 import { cn } from "@/utils";
+import { ENGINE_TYPE_ELECTRIC_STRING } from "@/model/EngineType";
 
 interface RntCarMakeSelectProps extends RntSelectProps {
   id: string;
@@ -68,7 +69,9 @@ export default function RntCarMakeSelect({
           key={"car-make-" + index}
           data-id={carMakesListElement.id}
           value={carMakesListElement.name}
-        />
+        >
+          {carMakesListElement.name}
+        </RntFilterSelect.Option>
       ))}
     </RntFilterSelect>
   );
