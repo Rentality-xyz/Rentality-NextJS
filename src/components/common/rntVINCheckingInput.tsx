@@ -118,7 +118,10 @@ export default function RntVINCheckingInput({
         validationSuccessMessage={isVINVerified ? t("common.vin_successfully_checked") : ""}
         validationMessage={validationMessage}
         onChange={(e) => {
-          const vinNumber = e.target.value;
+          const vinNumber = e.target.value.toUpperCase();
+          if (!/^[A-HJ-NPR-Z0-9]*$/.test(vinNumber)) {
+            return;
+          }
           if (vinNumber.length === MAX_VIN_LENGTH) {
             checkVINNumber(vinNumber).then((result) => {
               onVINVerified(result);
