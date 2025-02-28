@@ -49,7 +49,8 @@ export default function RntCarMakeSelect({
   return (
     <RntFilterSelect
       id={id}
-      className={cn(className, isTransparentStyle && !isReadOnly && "btn_input_border-gradient border-0")}
+      className={className}
+      isTransparentStyle={isTransparentStyle}
       label={label}
       validationError={validationError}
       containerClassName={containerClassName}

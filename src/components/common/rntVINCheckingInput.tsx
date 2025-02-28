@@ -4,6 +4,7 @@ import useCarAPI from "@/hooks/useCarAPI";
 import RntButton from "@/components/common/rntButton";
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { t } from "i18next";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
 
 type RntVINCheckingInputProps = {
   id: string;
@@ -105,7 +106,7 @@ export default function RntVINCheckingInput({
           </RntButton>
         </DialogActions>
       </Dialog>
-      <RntInput
+      <RntInputTransparent
         id={id}
         label={label}
         labelClassName="pl-4"

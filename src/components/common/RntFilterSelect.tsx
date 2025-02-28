@@ -4,10 +4,16 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import RntValidationError from "./RntValidationError";
 import { isEmpty } from "@/utils/string";
+import arrowTriangleDownGradient from "@/images/arrows/arrowTriangleDownGradient.svg";
+import arrowTriangleDownGray from "@/images/arrows/arrowTriangleDownGray.svg";
+import arrowTriangleDownWhite from "@/images/arrows/arrowTriangleDownWhite.svg";
+import Image from "next/image";
 
 interface RntFilterSelectContextType {
   selected: string | undefined;
   setSelected: (value: string | undefined) => void;
+  selectedChild: string | undefined;
+  setSelectedChild: (value: string | undefined) => void;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   containerRef: React.RefObject<HTMLDivElement>;
@@ -21,6 +27,7 @@ interface RntFilterSelectProps extends React.ComponentPropsWithoutRef<"select"> 
   label?: string;
   validationClassName?: string;
   validationError?: string;
+  isTransparentStyle?: boolean;
 }
 
 const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps>(
@@ -33,6 +40,7 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
       label,
       validationClassName,
       validationError,
+      isTransparentStyle = false,
       disabled,
       id,
       placeholder,
@@ -42,13 +50,19 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
     ref
   ) => {
     const containerCn = cn("relative flex flex-col text-black", containerClassName);
-    const labelCn = cn("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
+    const labelCn = cn("text-rnt-temp-main-text whitespace-nowrap mb-1 pl-4", labelClassName);
     const selectCn = cn(
-      `relative flex flex-row h-12 w-full cursor-pointer items-center rounded-full border-2 border-gray-500 bg-white pl-4 pr-8 ${disabled ? "bg-gray-300" : ""}`,
+      `relative flex flex-row h-12 w-full cursor-pointer items-center justify-center rounded-full px-4`,
       className,
-      !disabled ? "active:scale-95 active:opacity-75" : "border-2 border-gray-500 text-gray-500 cursor-not-allowed"
+      !disabled
+        ? "active:scale-95 active:opacity-75 text-white"
+        : "border-2 border-gray-500 text-gray-500 cursor-not-allowed",
+      isTransparentStyle ? "bg-transparent" : "bg-rnt-button-gradient",
+      !isTransparentStyle && disabled && "bg-transparent",
+      isTransparentStyle && !disabled && "btn_input_border-gradient"
     );
     const [selected, setSelected] = useState<string | undefined>(undefined);
+    const [selectedChild, setSelectedChild] = useState<string | undefined>(undefined);
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const hiddenSelectRef = useRef<HTMLSelectElement>(null);
@@ -61,8 +75,15 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
     }, [value]);
 
     useEffect(() => {
-      if (value === undefined || typeof value === "string") {
-        setSelected(value);
+      if (value === undefined || typeof value === "string" || typeof value === "number") {
+        setSelected(value?.toString());
+
+        // Пройдем по дочерним элементам и найдем тот, чье значение соответствует selected
+        React.Children.forEach(children, (child) => {
+          if (React.isValidElement(child) && child.props.value === value?.toString()) {
+            setSelectedChild(child.props.children);
+          }
+        });
       }
     }, [value]);
 
@@ -89,7 +110,9 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
     }, [selected]);
 
     return (
-      <RntFilterSelectContext.Provider value={{ selected, setSelected, isOpen, setIsOpen, containerRef: selectRef }}>
+      <RntFilterSelectContext.Provider
+        value={{ selected, setSelected, selectedChild, setSelectedChild, isOpen, setIsOpen, containerRef: selectRef }}
+      >
         <div className={containerCn} ref={containerRef}>
           {/* hidden select element */}
           <select value={selected ?? ""} ref={hiddenSelectRef} hidden {...rest}>
@@ -109,20 +132,18 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
           )}
           <div ref={selectRef}>
             <div className={selectCn} id={id} ref={ref} onClick={toggleDropdown}>
-              <span className="text-center">{selected || placeholder}</span>
-              <svg
-                className={`absolute right-4 h-[1.3rem] w-[1.3rem] transform transition ${isOpen ? "rotate-180" : "rotate-0"} `}
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#FFF"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polyline points="6 9 12 15 18 9" stroke="currentColor" fill="none" strokeWidth="2px"></polyline>
-              </svg>
+              {selectedChild || placeholder}
+              <Image
+                src={
+                  disabled
+                    ? arrowTriangleDownGray
+                    : isTransparentStyle
+                      ? arrowTriangleDownGradient
+                      : arrowTriangleDownWhite
+                }
+                alt=""
+                className={`ml-4 ${isOpen ? "rotate-180" : "rotate-0"} `}
+              />
             </div>
           </div>
           {isOpen && <DropdownPortal>{children}</DropdownPortal>}
@@ -165,7 +186,7 @@ function DropdownPortal({ children }: { children?: React.ReactNode }) {
 
   return createPortal(
     <div
-      className="absolute z-10 overflow-y-auto custom-scroll rounded-lg border border-gray-500 bg-rentality-bg-left-sidebar px-0 py-2 shadow-md"
+      className="custom-scroll absolute z-10 overflow-y-auto rounded-lg border border-gray-500 bg-rentality-bg-left-sidebar px-0 py-2 shadow-md"
       style={{
         top: `${position.top + 8}px`,
         left: `${position.left}px`,
@@ -187,7 +208,7 @@ const Option = forwardRef<HTMLDivElement, OptionProps>(({ value, children, class
   const context = React.useContext(RntFilterSelectContext);
   if (!context) throw new Error("RntFilterSelect.Option must be used within a RntFilterSelect");
 
-  const { selected, setSelected, setIsOpen } = context;
+  const { selected, setSelected, setSelectedChild, setIsOpen } = context;
   const isSelected = selected === value;
 
   return (
@@ -198,6 +219,7 @@ const Option = forwardRef<HTMLDivElement, OptionProps>(({ value, children, class
         "flex w-full cursor-pointer flex-row items-center gap-2 px-4 transition-colors hover:bg-rentality-additional-light active:bg-rentality-additional-light"
       )}
       onClick={() => {
+        setSelectedChild(children?.toString());
         setSelected(value);
         setIsOpen(false);
       }}
@@ -209,7 +231,7 @@ const Option = forwardRef<HTMLDivElement, OptionProps>(({ value, children, class
       >
         {isSelected && <div className="h-2 w-2 rounded-full bg-rentality-additional-tint"></div>}
       </div>
-      <span>{value}</span>
+      <span>{children}</span>
     </div>
   );
 });
