@@ -307,7 +307,7 @@ export default function CarEditForm({
                     isVINVerified={isVINVerified}
                     placeholder="e.g. 4Y1SL65848Z411439"
                     readOnly={!isNewCar}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e) => onChange(e.target.value.toUpperCase())}
                     onVINVerified={(verified: boolean) => setIsVINVerified(verified)}
                     onVINCheckOverriden={(overridden) => setIsVINCheckOverriden(overridden)}
                   />
