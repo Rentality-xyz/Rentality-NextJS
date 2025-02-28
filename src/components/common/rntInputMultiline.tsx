@@ -9,6 +9,7 @@ interface RntInputMultilineProps extends React.ComponentPropsWithoutRef<"textare
   validationClassName?: string;
   label?: string;
   validationError?: string;
+  isTransparentStyle?: boolean;
 }
 
 const RntInputMultiline = forwardRef<HTMLTextAreaElement, RntInputMultilineProps>(
@@ -25,6 +26,7 @@ const RntInputMultiline = forwardRef<HTMLTextAreaElement, RntInputMultilineProps
       value,
       readOnly,
       validationError,
+      isTransparentStyle = false,
       onChange: onChangeHandler,
       onBlur: onBlurHandler,
       ...rest
@@ -32,10 +34,12 @@ const RntInputMultiline = forwardRef<HTMLTextAreaElement, RntInputMultilineProps
     ref
   ) => {
     const cClassName = cn("text-black flex flex-col w-full", className);
-    const lClassName = cn("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
+    const lClassName = cn("text-rnt-temp-main-text whitespace-nowrap mb-1 pl-4", labelClassName);
     const iClassName = cn(
-      "w-full border-2 rounded-2xl px-4 py-2 disabled:bg-gray-300 disabled:text-gray-600",
-      inputClassName
+      "w-full border-0 rounded-2xl px-4 py-2",
+      inputClassName,
+      isTransparentStyle && "bg-transparent focus:outline-none focus:ring-0 text-white disabled:text-gray-400",
+      readOnly && "bg-transparent"
     );
 
     return (
@@ -45,21 +49,31 @@ const RntInputMultiline = forwardRef<HTMLTextAreaElement, RntInputMultilineProps
             {label}
           </label>
         )}
-        <textarea
-          className={iClassName}
-          rows={rows}
-          id={id}
-          name={id}
-          readOnly={readOnly}
-          disabled={readOnly}
-          placeholder={placeholder}
-          onChange={(e) => onChangeHandler != null && onChangeHandler(e)}
-          onBlur={(e) => onBlurHandler != null && onBlurHandler(e)}
-          value={value}
-          {...rest}
-          ref={ref}
-        />
-
+        <div
+          className={cn(
+            `${!isEmpty(label) && "mt-1"}`,
+            readOnly && "rounded-2xl border-2 border-gray-500 bg-transparent",
+            isTransparentStyle && !readOnly && "textarea_border-gradient"
+          )}
+          style={isTransparentStyle ? { borderRadius: "16px" } : {}}
+        >
+          <div className="input-wrapper pl-2">
+            <textarea
+              className={iClassName}
+              rows={rows}
+              id={id}
+              name={id}
+              readOnly={readOnly}
+              disabled={readOnly}
+              placeholder={placeholder}
+              onChange={(e) => onChangeHandler != null && onChangeHandler(e)}
+              onBlur={(e) => onBlurHandler != null && onBlurHandler(e)}
+              value={value}
+              {...rest}
+              ref={ref}
+            />
+          </div>
+        </div>
         <RntValidationError className={validationClassName} validationError={validationError} />
       </div>
     );

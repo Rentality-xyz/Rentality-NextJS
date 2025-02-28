@@ -97,7 +97,9 @@ export default function InvestContent({ isHost }: InvestContentProps) {
         }}
       >
         {Object.entries(filterInvest ?? {}).map(([key, value]) => (
-          <RntFilterSelect.Option key={key} value={value} />
+          <RntFilterSelect.Option key={key} value={value}>
+            {value}
+          </RntFilterSelect.Option>
         ))}
       </RntFilterSelect>
 

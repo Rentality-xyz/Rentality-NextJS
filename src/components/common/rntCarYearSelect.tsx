@@ -59,7 +59,9 @@ export default function RntCarYearSelect({
       }}
     >
       {yearsList.map((yearsListElement, index) => (
-        <RntFilterSelect.Option key={"year-manufacture-" + index} data-id={yearsListElement} value={yearsListElement} />
+        <RntFilterSelect.Option key={"year-manufacture-" + index} data-id={yearsListElement} value={yearsListElement}>
+          {yearsListElement}
+        </RntFilterSelect.Option>
       ))}
     </RntFilterSelect>
   );
