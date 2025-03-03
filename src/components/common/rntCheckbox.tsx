@@ -44,17 +44,30 @@ export function CheckboxLight({
   label,
   checked,
   onChange,
+  readOnly,
   ...rest
 }: RntCheckboxProps) {
   return (
     <div className={className}>
       <label className="group flex w-fit cursor-pointer select-none flex-row items-center">
-        <input className="hidden" type="checkbox" checked={checked} onChange={onChange} />
-        <span className={cn(`relative mr-4 h-6 w-6 shrink-0 rounded-md border-2 border-white`, checkedClassName)}>
+        <input
+          className="hidden"
+          type="checkbox"
+          checked={checked}
+          readOnly={readOnly}
+          onChange={readOnly ? () => {} : onChange}
+        />
+        <span
+          className={cn(
+            `relative mr-4 h-6 w-6 shrink-0 rounded-md border-2`,
+            readOnly ? "cursor-not-allowed border-gray-500" : "border-rnt-checkbox-border",
+            checkedClassName
+          )}
+        >
           {checked ? (
             <span
               className={cn(
-                `absolute right-0.5 top-[-8px] h-6 w-2.5 shrink-0 rotate-45 border-b-2 border-r-2 border-white`,
+                `border-rnt-checkbox-check-mark absolute right-[6px] top-[1px] h-3.5 w-2 shrink-0 rotate-45 border-b-2 border-r-2`,
                 checkMarkClassName
               )}
             ></span>
@@ -80,9 +93,9 @@ export function CheckboxTerms({
     <div className={cn(className, "flex flex-row items-center")}>
       <label className="group flex w-fit cursor-pointer select-none flex-row items-center">
         <input className="hidden" type="checkbox" checked={checked} onChange={onChange} />
-        <span className={`relative mr-4 h-6 w-6 shrink-0 rounded-md border-2`}>
+        <span className={`border-rnt-checkbox-border relative mr-4 h-6 w-6 shrink-0 rounded-md border-2`}>
           {checked ? (
-            <span className="absolute right-0.5 top-[-8px] h-6 w-2.5 shrink-0 rotate-45 border-b-2 border-r-2 border-white"></span>
+            <span className="border-rnt-checkbox-check-mark absolute right-[6px] top-[1px] h-3.5 w-2 shrink-0 rotate-45 border-b-2 border-r-2"></span>
           ) : null}
         </span>
       </label>

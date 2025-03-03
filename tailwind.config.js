@@ -52,6 +52,9 @@ module.exports = {
 
         "rentality-alert-text": "#f87171",
 
+        "rnt-checkbox-border": "#7257ce",
+        "rnt-checkbox-check-mark": "#C0AEFF",
+
         "rnt-temp-header-bg": "#e5e7eb", //#e5e7eb bg-gray-200
         "rnt-temp-header-text": "#ffffff", //#0f172a text-gray-900
         "rnt-temp-sidemenu-bg": "#4b5563", //#4b5563 bg-gray-600
