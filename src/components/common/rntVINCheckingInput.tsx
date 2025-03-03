@@ -20,7 +20,7 @@ type RntVINCheckingInputProps = {
   onVINCheckOverriden: (isVINCheckOverriden: boolean) => void;
 };
 
-const MAX_VIN_LENGTH: number = 17;
+export const MAX_VIN_LENGTH: number = 17;
 
 export default function RntVINCheckingInput({
   id,

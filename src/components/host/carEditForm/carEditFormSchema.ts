@@ -1,3 +1,4 @@
+import { MAX_VIN_LENGTH } from "@/components/common/rntVINCheckingInput";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/EngineType";
 import { UNLIMITED_MILES_VALUE_TEXT } from "@/model/HostCarInfo";
 import { emptyLocationInfo } from "@/model/LocationInfo";
@@ -68,9 +69,10 @@ const locationInfoFormSchema = z.object({
 
 export const vinNumberSchema = z
   .string()
+  .toUpperCase()
   .trim()
   .min(1, "Vin number is too short")
-  .max(17, "Vin number is too long")
+  .max(MAX_VIN_LENGTH, "Vin number is too long")
   .regex(new RegExp(/^[A-HJ-NPR-Z0-9]*$/), "Vin number contains invalid characters");
 
 const defaultCarEditFormSchema = z
