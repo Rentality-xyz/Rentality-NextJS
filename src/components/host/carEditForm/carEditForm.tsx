@@ -8,7 +8,7 @@ import {
 } from "@/model/HostCarInfo";
 import { useEffect, useMemo, useState } from "react";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
-import RntCheckbox from "@/components/common/rntCheckbox";
+import RntCheckbox, { CheckboxLight } from "@/components/common/rntCheckbox";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/EngineType";
 import RntButton from "@/components/common/rntButton";
 import { TFunction } from "@/utils/i18n";
@@ -731,6 +731,7 @@ export default function CarEditForm({
                   <RntPlaceAutocomplete
                     className="lg:w-full"
                     id="address"
+                    isAsRntInputTransparent={true}
                     label={isNewCar ? t_car("address") : t_car("saved_address")}
                     placeholder="Miami"
                     initValue={autocomplete}
@@ -826,7 +827,7 @@ export default function CarEditForm({
             name="milesIncludedPerDay"
             control={control}
             render={({ field }) => (
-              <div className="flex flex-wrap items-start gap-4">
+              <div className="flex flex-wrap items-center gap-4">
                 <MilesIncludedPerDay
                   value={field.value}
                   readOnly={!isFormEnabled}
@@ -934,19 +935,6 @@ export default function CarEditForm({
 
           <div className="mt-4 flex flex-wrap items-center gap-4">
             <Controller
-              name="isGuestInsuranceRequired"
-              control={control}
-              render={({ field }) => (
-                <RntCheckbox
-                  className="mt-4"
-                  label={t_car("guest_insurance_required")}
-                  readOnly={!isFormEnabled}
-                  checked={field.value}
-                  onChange={field.onChange}
-                />
-              )}
-            />
-            <Controller
               name="insurancePerDayPriceInUsd"
               control={control}
               render={({ field }) => (
@@ -967,6 +955,19 @@ export default function CarEditForm({
                       field.onChange(numericValue);
                     }
                   }}
+                />
+              )}
+            />
+            <Controller
+              name="isGuestInsuranceRequired"
+              control={control}
+              render={({ field }) => (
+                <CheckboxLight
+                  className="mt-7"
+                  label={t_car("guest_insurance_required")}
+                  readOnly={!isFormEnabled}
+                  checked={field.value}
+                  onChange={field.onChange}
                 />
               )}
             />
@@ -1132,7 +1133,6 @@ const MilesIncludedPerDay = ({
           className="lg:w-60"
           id="milesIncludedPerDay"
           label={t_car("max_mileage")}
-          labelClassName="pl-4"
           placeholder="e.g. 200"
           value={milesIncludedPerDay}
           readOnly={readOnly}
@@ -1147,8 +1147,8 @@ const MilesIncludedPerDay = ({
           validationError={validationError}
         />
       )}
-      <RntCheckbox
-        className="ml-4 mt-8"
+      <CheckboxLight
+        className="mt-7"
         label={t_car("unlimited_miles")}
         checked={isUnlimited}
         readOnly={readOnly}
