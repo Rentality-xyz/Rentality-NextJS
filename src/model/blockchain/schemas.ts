@@ -198,7 +198,7 @@ export type ContractAddressPublicKey = {
 };
 
 export type ContractFullClaimInfo = {
-  claim: ContractClaim;
+  claim: ContractClaimV2;
   host: string;
   guest: string;
   guestPhoneNumber: string;
@@ -206,6 +206,22 @@ export type ContractFullClaimInfo = {
   carInfo: ContractCarInfo;
   amountInEth: bigint;
   timeZoneId: string;
+  claimType: ContractClaimTypeV2;
+};
+
+export type ContractClaimV2 = {
+  tripId: bigint;
+  claimId: bigint;
+  deadlineDateInSec: bigint;
+  claimType: bigint;
+  status: ClaimStatus;
+  description: string;
+  amountInUsdCents: bigint;
+  payDateInSec: bigint;
+  rejectedBy: string;
+  rejectedDateInSec: bigint;
+  photosUrl: string;
+  isHostClaims: boolean;
 };
 
 export type ContractClaim = {
@@ -225,10 +241,16 @@ export type ContractClaim = {
 
 export type ContractCreateClaimRequest = {
   tripId: bigint;
-  claimType: ClaimType;
+  claimType: bigint;
   description: string;
   amountInUsdCents: bigint;
   photosUrl: string;
+};
+
+export type ContractClaimTypeV2 = {
+  claimType: bigint;
+  claimName: string;
+  creator: ClaimCreator;
 };
 
 export type ContractParsedGeolocationData = {
@@ -736,7 +758,22 @@ export type ContractAiDamageAnalyzeCaseDataDTO = {
   name: string;
   iCase: string;
   vin: string;
-}
+};
+
+export type ContractInsuranceCase = {
+  iCase: string;
+  pre: boolean;
+};
+
+export type ContractInsuranceCaseDTO = {
+  iCase: ContractInsuranceCase;
+  url: string;
+};
+
+export type ContractTripInsuranceCases = {
+  pre: bigint;
+  post: bigint;
+};
 
 export type TripStatus = bigint;
 export const TripStatus = {
@@ -764,6 +801,13 @@ export const ClaimType = {
   Other: BigInt(7),
   FaultyVehicle: BigInt(8),
   ListingMismatch: BigInt(9),
+};
+
+export type ClaimCreator = bigint;
+export const ClaimCreator = {
+  Host: BigInt(0),
+  Guest: BigInt(1),
+  Both: BigInt(2),
 };
 
 export type ClaimStatus = bigint;
