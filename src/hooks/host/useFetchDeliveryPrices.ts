@@ -5,11 +5,13 @@ import { useQuery } from "@tanstack/react-query";
 export type DeliveryPrices = {
   from1To25milesPrice: number;
   over25MilesPrice: number;
+  isInitialized: boolean;
 };
 
 const emptyDeliveryPrices: DeliveryPrices = {
   from1To25milesPrice: 0,
   over25MilesPrice: 0,
+  isInitialized: false,
 };
 
 export const DELIVERY_PRICES_QUERY_KEY = "DeliveryPrices";
@@ -36,6 +38,7 @@ function useFetchDeliveryPrices() {
       const deliveryPrices: DeliveryPrices = {
         from1To25milesPrice: Number(result.value.underTwentyFiveMilesInUsdCents) / 100,
         over25MilesPrice: Number(result.value.aboveTwentyFiveMilesInUsdCents) / 100,
+        isInitialized: result.value.initialized,
       };
       return deliveryPrices;
     },
