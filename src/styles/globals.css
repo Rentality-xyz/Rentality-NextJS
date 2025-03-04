@@ -647,6 +647,7 @@ input:disabled {
 
 .react-tel-input .country-list {
   background-color: #1E1E30 !important;
+  border: 1px solid #6B7280 !important;
 }
 
 .react-tel-input .country-list .country.highlight {
