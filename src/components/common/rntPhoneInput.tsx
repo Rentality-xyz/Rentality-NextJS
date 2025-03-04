@@ -30,10 +30,7 @@ function RntPhoneInput({
   const isShowLabel = label !== undefined && label?.length > 0;
   const cClassName = cn("text-black flex flex-col w-full", className);
   const lClassName = cn("text-rnt-temp-main-text mb-1", labelClassName);
-  const iClassName = cn(
-    "w-full h-12 disabled:text-gray-400 disabled:cursor-not-allowed text-white border-gradient-2 rounded-full",
-    inputClassName
-  );
+  const iClassName = cn("w-full h-12 text-white border-gradient-2 rounded-full", inputClassName);
 
   return (
     <div className={cClassName}>
