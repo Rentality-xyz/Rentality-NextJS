@@ -515,6 +515,38 @@ input:disabled {
   z-index: 0;
 }
 
+.border-gradient-2 {
+  position: relative;
+  z-index: 0;
+  /*display: inline-block;*/
+  /* Устанавливаем обертку под размер input */
+  /*border-radius: 9999px;*/
+  /* Скругленные углы */
+  border: none;
+  /* Убираем стандартную рамку */
+}
+
+.border-gradient-2:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  /* Толщина градиентной рамки */
+  border-radius: inherit;
+  background: linear-gradient(to bottom, #74bbef 0%, #7257ce 70%, #5e3dd3 100%);
+  -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+  mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  /* Важно: псевдоэлемент не блокирует клики */
+  z-index: 0;
+}
+
 .input-wrapper {
   position: relative;
   z-index: 1;
@@ -598,4 +630,34 @@ input:disabled {
 
 .swiper-pagination-bullet-active {
   background-color: white !important;
+}
+
+.react-tel-input .selected-flag .arrow {
+  border-top: 4px solid #ffffff !important;
+}
+
+.react-tel-input .selected-flag .arrow.up {
+  border-top: 0 solid !important;
+  border-bottom: 4px solid #ffffff !important;
+}
+
+.react-tel-input .selected-flag {
+  background-color: transparent !important;
+}
+
+.react-tel-input .country-list {
+  background-color: #1E1E30 !important;
+}
+
+.react-tel-input .country-list .country.highlight {
+  background-color: #1E1E30 !important;
+}
+
+.react-tel-input .country-list .country .dial-code {
+  color: #BEBEBE !important;
+}
+
+.react-tel-input .country-list .country:hover {
+  background-color: #4b5563 !important;
+  border-radius: 8px;
 }
