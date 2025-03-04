@@ -23,6 +23,7 @@ import { SaveUserProfileRequest } from "@/features/profile/hooks/useSaveUserProf
 import RntPhoneInput from "@/components/common/rntPhoneInput";
 import DotStatus from "@/components/dotStatus";
 import { CheckboxTerms } from "@/components/common/rntCheckbox";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
 
 function UserCommonInformationForm({
   userProfile,
@@ -35,17 +36,18 @@ function UserCommonInformationForm({
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { t } = useTranslation();
   const { userMode } = useUserMode();
-  const { register, handleSubmit, formState, control, setValue, watch, reset } = useForm<UserCommonInformationFormValues>({
-    defaultValues: {
-      profilePhotoUrl: userProfile.profilePhotoUrl,
-      nickname: userProfile.nickname,
-      phoneNumber: userProfile.phoneNumber,
-      email: userProfile.email,
-      tcSignature: userProfile.tcSignature,
-      isTerms: userProfile.isSignatureCorrect,
-    },
-    resolver: zodResolver(userCommonInformationFormSchema),
-  });
+  const { register, handleSubmit, formState, control, setValue, watch, reset } =
+    useForm<UserCommonInformationFormValues>({
+      defaultValues: {
+        profilePhotoUrl: userProfile.profilePhotoUrl,
+        nickname: userProfile.nickname,
+        phoneNumber: userProfile.phoneNumber,
+        email: userProfile.email,
+        tcSignature: userProfile.tcSignature,
+        isTerms: userProfile.isSignatureCorrect,
+      },
+      resolver: zodResolver(userCommonInformationFormSchema),
+    });
   const { errors, isSubmitting } = formState;
   const isTerms = watch("isTerms");
 
@@ -173,7 +175,7 @@ function UserCommonInformationForm({
           )}
         </div>
         <div className="flex flex-wrap gap-4">
-          <RntInput
+          <RntInputTransparent
             className="lg:w-60"
             labelClassName="pl-[16px]"
             id="nickname"
@@ -198,7 +200,7 @@ function UserCommonInformationForm({
               />
             )}
           />
-          <RntInput
+          <RntInputTransparent
             className="lg:w-60"
             labelClassName="pl-[16px]"
             id="email"

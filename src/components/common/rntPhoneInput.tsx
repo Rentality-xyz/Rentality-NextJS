@@ -3,6 +3,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import RntValidationError from "./RntValidationError";
 import { cn } from "@/utils";
+import { isEmpty } from "@/utils/string";
 
 interface RntPhoneInputProps extends React.ComponentPropsWithoutRef<"input"> {
   labelClassName?: string;
@@ -29,7 +30,10 @@ function RntPhoneInput({
   const isShowLabel = label !== undefined && label?.length > 0;
   const cClassName = cn("text-black flex flex-col w-full", className);
   const lClassName = cn("text-rnt-temp-main-text mb-1", labelClassName);
-  const iClassName = cn("w-full h-12 disabled:bg-gray-300 disabled:text-gray-600", inputClassName);
+  const iClassName = cn(
+    "w-full h-12 disabled:text-gray-400 disabled:cursor-not-allowed text-white border-gradient-2 rounded-full",
+    inputClassName
+  );
 
   return (
     <div className={cClassName}>
@@ -51,13 +55,22 @@ function RntPhoneInput({
         onBlur={(e) => onBlurHandler != null && onBlurHandler(e)}
         value={value?.toString()}
         inputStyle={{
+          background: "transparent",
           fontFamily: "'Montserrat', Arial, sans-serif",
           width: "100%",
           height: "48px",
-          borderRadius: "9999px",
+          border: "none",
+        }}
+        buttonStyle={{
+          background: "transparent",
+          border: "none",
+          borderRight: "1px solid",
+          borderImage: "linear-gradient(to bottom, #74bbef 0%, #7257ce 70%, #5e3dd3 100%) 1",
+        }}
+        dropdownStyle={{
+          borderRadius: "16px",
         }}
       />
-
       <RntValidationError className={validationClassName} validationError={validationError} />
     </div>
   );
