@@ -49,6 +49,7 @@ export interface RntPlaceAutocompleteInputProps extends React.ComponentPropsWith
   validationError?: string;
   isTransparentStyle?: boolean;
   isAsRntInputTransparent?: boolean;
+  isDarkPlacePredictions?: boolean;
   iconFrontLabel?: StaticImageData;
 }
 
@@ -69,6 +70,7 @@ export default function RntPlaceAutocompleteInput({
   validationError,
   isTransparentStyle = false,
   isAsRntInputTransparent = false,
+  isDarkPlacePredictions = false,
   iconFrontLabel,
 }: RntPlaceAutocompleteInputProps) {
   const [enteredAddress, setEnteredAddress] = useState(initValue);
@@ -218,12 +220,12 @@ export default function RntPlaceAutocompleteInput({
 
       {isEditing && placePredictions && placePredictions.length > 1 ? (
         <div
-          className={`absolute top-[105%] z-50 block w-full rounded-xl ${isAsRntInputTransparent ? "mt-1 border border-white bg-rentality-bg-left-sidebar text-white" : "border-2 border-black bg-white text-black"}`}
+          className={`absolute top-[105%] z-50 block w-full rounded-xl ${isDarkPlacePredictions ? "mt-1 border border-gray-500 bg-rentality-bg-left-sidebar text-white" : "border-2 border-black bg-white text-black"}`}
         >
           {placePredictions.map((item, index) => {
             return (
               <option
-                className={`cursor-pointer truncate rounded-xl px-4 py-2 ${isAsRntInputTransparent ? "hover:bg-gray-600" : "hover:bg-gray-400"}`}
+                className={`cursor-pointer truncate rounded-xl px-4 py-2 ${isDarkPlacePredictions ? "hover:bg-gray-600" : "hover:bg-gray-400"}`}
                 onClick={() => {
                   setEnteredAddress(item.description);
                   setIsEditing(false);

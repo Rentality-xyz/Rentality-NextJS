@@ -45,6 +45,8 @@ module.exports = {
         "rentality-button-medium": "#7f5ee7",
         "rentality-button-dark": "#593ec0",
         "rentality-icons": "#C0AEFF",
+        "rnt-button-disabled": "#363659",
+        "rnt-text-button-disabled": "#B2B9DB",
 
         "status-pending": "#7c58d7",
         "status-on-trip": "#220e50",
