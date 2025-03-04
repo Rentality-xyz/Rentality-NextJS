@@ -46,7 +46,6 @@ export default function OwnReferralPoints() {
               <>
                 Claim <span className="px-1 font-semibold text-rentality-star-point">{readyToClaim.toString()}</span>{" "}
                 points
-                <span className="ml-4">●</span>
               </>
             )}
           </div>

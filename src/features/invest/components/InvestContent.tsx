@@ -78,10 +78,7 @@ export default function InvestContent({ isHost }: InvestContentProps) {
     <div className="mt-8">
       {isHost && (
         <RntButton className="mb-6 flex w-60 items-center justify-center" onClick={handleCreateInvest}>
-          <div className="ml-0.5 flex">
-            {t("invest.btn_create_investment")}
-            <span className="ml-4">●</span>
-          </div>
+          {t("invest.btn_create_investment")}
         </RntButton>
       )}
 

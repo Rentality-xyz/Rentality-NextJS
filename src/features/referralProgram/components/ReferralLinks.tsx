@@ -36,12 +36,12 @@ export default function ReferralLinks() {
           <RntButton
             className="ml-auto flex w-16 items-center justify-center text-white md:w-36"
             disabled={!inviteHash}
+            isVisibleCircle={false}
             onClick={() => copyToClipboard(inviteLink)}
           >
             <Image src={imgCopy} alt="" className="h-5 w-5 md:mr-1" />
             <div className="ml-0.5 flex">
               <span className="max-md:hidden">Copy</span>
-              <span className="ml-4 max-md:hidden">●</span>
             </div>
           </RntButton>
         </div>

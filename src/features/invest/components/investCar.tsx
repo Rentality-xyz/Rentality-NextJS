@@ -63,16 +63,16 @@ export default function InvestCar({
           getColorInvestmentStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost)
         )}
       >
-        <div className="max-mac:flex-col flex">
+        <div className="flex max-mac:flex-col">
           <span>{getInvestmentStatus(searchInfo.investment, t)}</span>
-          <span className="max-mac:hidden mx-2">|</span>
+          <span className="mx-2 max-mac:hidden">|</span>
           <span>
             {getTxtInvestmentListingStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t)}
           </span>
           <Link
             href={searchInfo.investment.nftUrl}
             target="_blank"
-            className="mac:ml-auto mr-4 cursor-pointer hover:underline"
+            className="mr-4 cursor-pointer hover:underline mac:ml-auto"
           >
             {t("invest.view_smart_contract")}
           </Link>
@@ -272,12 +272,7 @@ function btnClaimEarningsForGuest(
       className="mx-auto mt-6 flex h-14 w-full items-center justify-center"
       onClick={() => handleClaimIncome(investmentId)}
     >
-      <div className="flex w-full items-center justify-center text-white">
-        <span className="ml-4 w-full">
-          {t("invest.btn_claim_earnings")} ${myIncome.toFixed(2)}
-        </span>
-        <span className="ml-auto mr-4">●</span>
-      </div>
+      {t("invest.btn_claim_earnings")} ${myIncome.toFixed(2)}
     </RntButton>
   );
 }
@@ -308,16 +303,7 @@ function blockInvestNowForGuest(
           disabled={investmentAmount <= 0 || isPendingInvesting}
           onClick={() => handleInvest(investmentAmount, investmentId)}
         >
-          <div className="ml-0.5 flex items-center">
-            {isPendingInvesting ? (
-              <>{t("invest.loading")}</>
-            ) : (
-              <>
-                {t("invest.btn_invest_now")}
-                <span className="ml-4">●</span>
-              </>
-            )}
-          </div>
+          {isPendingInvesting ? <>{t("invest.loading")}</> : <>{t("invest.btn_invest_now")}</>}
         </RntButton>
       </div>
       <p className="text-center text-[#FFFFFF70]">Enter USD equivalent, transaction in ETH</p>
@@ -340,10 +326,7 @@ function getBlocksForHost(
       className="mx-auto mt-6 flex h-14 w-full items-center justify-center"
       onClick={() => handleStartHosting(investment.investmentId)}
     >
-      <div className="flex w-full items-center justify-center text-white">
-        <span className="ml-4 w-full">{t("invest.btn_start_hosting")}</span>
-        <span className="ml-auto mr-4">●</span>
-      </div>
+      {t("invest.btn_start_hosting")}
     </RntButton>
   ) : (
     <div className="mt-6 flex h-14 w-full"></div>

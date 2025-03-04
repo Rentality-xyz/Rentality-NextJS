@@ -216,7 +216,7 @@ const Option = forwardRef<HTMLDivElement, OptionProps>(({ value, children, class
       ref={ref}
       className={cn(
         className,
-        "flex w-full cursor-pointer flex-row items-center gap-2 px-4 transition-colors hover:bg-rentality-additional-light active:bg-rentality-additional-light"
+        "flex w-full cursor-pointer flex-row items-center gap-2 rounded-md px-4 transition-colors hover:bg-gray-600 active:bg-rentality-additional-light"
       )}
       onClick={() => {
         setSelectedChild(children?.toString());

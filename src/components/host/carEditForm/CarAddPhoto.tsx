@@ -6,7 +6,6 @@ import { PlatformCarImage } from "@/model/FileToUpload";
 import { useTranslation } from "react-i18next";
 import { resizeImage } from "@/utils/image";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
-import imgCircleBtn from "@/images/img_circle_for_transparent_btn.svg";
 import RntButton from "@/components/common/rntButton";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 import ic_delete from "@/images/ic_delete_white.svg";
@@ -202,16 +201,10 @@ function CarAddPhoto({
             />
             <div className="mt-4 flex justify-between">
               <RntButtonTransparent className="w-32" onClick={handleCancelCrop}>
-                <div className="flex items-center justify-center text-lg font-semibold text-white">
-                  <span className="ml-4 w-full">{t("cropper.cancel")}</span>
-                  <Image src={imgCircleBtn} alt="" className="ml-auto mr-4" />
-                </div>
+                {t("cropper.cancel")}
               </RntButtonTransparent>
               <RntButton className="w-32" onClick={handleCrop}>
-                <div className="flex items-center justify-center text-lg font-semibold text-white">
-                  <span className="ml-4 w-full">{t("cropper.crop")}</span>
-                  <span className="ml-auto mr-4">●</span>
-                </div>
+                {t("cropper.crop")}
               </RntButton>
             </div>
           </div>

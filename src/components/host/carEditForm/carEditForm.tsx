@@ -732,6 +732,7 @@ export default function CarEditForm({
                     className="lg:w-full"
                     id="address"
                     isAsRntInputTransparent={true}
+                    isDarkPlacePredictions={true}
                     label={isNewCar ? t_car("address") : t_car("saved_address")}
                     placeholder="Miami"
                     initValue={autocomplete}
@@ -756,7 +757,7 @@ export default function CarEditForm({
               />
             )}
             <RntButton
-              className="w-40"
+              className="h-14 w-40"
               type="button"
               disabled={isLocationEdited || !isFormEnabled}
               onClick={() => setValue("isLocationEdited", true)}
@@ -1079,13 +1080,13 @@ export default function CarEditForm({
         <div className="mb-8 mt-8 flex flex-row justify-between gap-4 sm:justify-start">
           <RntButton
             type="button"
-            className="h-16 w-40"
+            className="h-14 w-40"
             disabled={isSubmitting}
             onClick={handleSubmit(async (data) => await onFormSubmit(data))}
           >
             {t("common.save")}
           </RntButton>
-          <RntButton type="button" className="h-16 w-40" onClick={handleBack}>
+          <RntButton type="button" className="h-14 w-40" onClick={handleBack}>
             {t("common.back")}
           </RntButton>
         </div>

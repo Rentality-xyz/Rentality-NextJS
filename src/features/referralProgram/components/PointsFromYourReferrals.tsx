@@ -43,7 +43,6 @@ export default function PointsFromYourReferrals() {
                 Claim{" "}
                 <span className="px-1 font-semibold text-rentality-star-point">{data.readyToClaim.toString()}</span>{" "}
                 points
-                <span className="ml-4">●</span>
               </>
             )}
           </div>
