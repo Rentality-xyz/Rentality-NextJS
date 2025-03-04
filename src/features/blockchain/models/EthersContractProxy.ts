@@ -50,7 +50,7 @@ function debugData<T>(contract: T, fn: string, args: any[]) {
     const contractFn = contractInterface.getFunction(fn);
     const fnArgs = contractFn && contractFn.payable ? args.slice(0, args.length - 1) : args
 
-    const encodedData = (contract as unknown as ethers.Contract).interface.encodeFunctionData(fn, fnArgs);
+    const encodedData = contractInterface.encodeFunctionData(fn, fnArgs);
     console.debug(`Encoded transaction data for ${fn.toString()}:`, encodedData);
 
 }
