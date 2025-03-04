@@ -161,14 +161,10 @@ export default function PanelFilteringByPrice({
             </div>
 
             <div className="flex justify-between">
-              <RntButtonTransparent
-                className="w-28 border border-gray-300 bg-transparent text-gray-300 hover:border-white hover:text-white"
-                minHeight="38px"
-                onClick={handleReset}
-              >
+              <RntButtonTransparent className="w-28" onClick={handleReset}>
                 {t_comp("button_reset")}
               </RntButtonTransparent>
-              <RntButton className="w-28" minHeight="38px" onClick={handleApply}>
+              <RntButton className="w-28" onClick={handleApply}>
                 {t_comp("button_apply")}
               </RntButton>
             </div>

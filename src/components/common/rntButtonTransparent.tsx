@@ -4,7 +4,6 @@ import Image from "next/image";
 import React from "react";
 
 interface RntButtonTransparentProps extends React.ComponentPropsWithoutRef<"button"> {
-  minHeight?: string;
   isVisibleCircle?: boolean;
 }
 
@@ -14,7 +13,6 @@ export default function RntButtonTransparent({
   children,
   onClick,
   disabled,
-  minHeight = "48px",
   isVisibleCircle = true,
   ...props
 }: RntButtonTransparentProps) {
@@ -22,9 +20,8 @@ export default function RntButtonTransparent({
     ? "cursor-not-allowed text-rnt-text-button-disabled bg-rnt-button-disabled"
     : "btn_input_border-gradient";
   const c = cn(
-    "transition duration-150 py-1 w-56 flex items-center justify-center rounded-full text-white text-lg",
+    "transition duration-150 py-1 h-12 w-56 flex items-center justify-center rounded-full text-white text-lg",
     !disabled && "active:scale-95 active:opacity-75",
-    `min-h-[${minHeight}]`,
     bgColor,
     className
   );
