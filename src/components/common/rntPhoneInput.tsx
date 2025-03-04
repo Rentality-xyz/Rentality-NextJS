@@ -64,7 +64,7 @@ function RntPhoneInput({
         buttonStyle={{
           background: "transparent",
           border: "none",
-          borderRight: "1px solid",
+          borderRight: "2px solid",
           borderImage: "linear-gradient(to bottom, #74bbef 0%, #7257ce 70%, #5e3dd3 100%) 1",
         }}
         dropdownStyle={{
