@@ -5,6 +5,7 @@ import RntButton from "@/components/common/rntButton";
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { t } from "i18next";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
+import { vinNumberSchema } from "../host/carEditForm/carEditFormSchema";
 
 type RntVINCheckingInputProps = {
   id: string;
@@ -20,7 +21,7 @@ type RntVINCheckingInputProps = {
   onVINCheckOverriden: (isVINCheckOverriden: boolean) => void;
 };
 
-const MAX_VIN_LENGTH: number = 17;
+export const MAX_VIN_LENGTH: number = 17;
 
 export default function RntVINCheckingInput({
   id,
@@ -119,7 +120,11 @@ export default function RntVINCheckingInput({
         validationSuccessMessage={isVINVerified ? t("common.vin_successfully_checked") : ""}
         validationMessage={validationMessage}
         onChange={(e) => {
-          const vinNumber = e.target.value;
+          const vinNumber = e.target.value.toUpperCase();
+          const parseResult = vinNumberSchema.safeParse(vinNumber);
+          if (!parseResult.success && parseResult.error.issues.every((i) => i.code !== "too_small")) {
+            return;
+          }
           if (vinNumber.length === MAX_VIN_LENGTH) {
             checkVINNumber(vinNumber).then((result) => {
               onVINVerified(result);

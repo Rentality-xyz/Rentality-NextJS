@@ -15,8 +15,7 @@ export function getEthersContractProxy<T extends IEthersContract>(contract: T): 
       console.debug(`${key.toString()} proxy function called`);
       return async (...args: any[]) => {
         try {
-          const encodedData = (contract as unknown as ethers.Contract).interface.encodeFunctionData(key.toString(), args);
-          console.debug(`Encoded transaction data for ${key.toString()}:`, encodedData);
+          debugData(contract, key.toString(), args)
 
           const result = await originalMethod.apply(target, args);
 
@@ -44,4 +43,14 @@ function isContractTransactionResponse(obj: any): obj is ContractTransactionResp
     "wait" in obj &&
     typeof obj.wait === "function"
   );
+}
+function debugData<T>(contract: T, fn: string, args: any[]) {
+  
+    const contractInterface = (contract as unknown as ethers.Contract).interface;
+    const contractFn = contractInterface.getFunction(fn);
+    const fnArgs = contractFn && contractFn.payable ? args.slice(0, args.length - 1) : args
+
+    const encodedData = contractInterface.encodeFunctionData(fn, fnArgs);
+    console.debug(`Encoded transaction data for ${fn.toString()}:`, encodedData);
+
 }

@@ -9,6 +9,8 @@ export const userCommonInformationFormSchema = z.object({
     .max(30, "first name is too long")
     .regex(new RegExp(/^[\w-]+$/), "nickname contains invalid characters"),
   phoneNumber: z.string().max(30, "phone number is too long"),
+  smsCode: z.string(),
+  isPhoneNumberVerified: z.boolean(),
   isTerms: z.boolean(),
   tcSignature: z.string(),
   email: z.string().email(),

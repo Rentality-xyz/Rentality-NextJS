@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
-import { ContractTripDTO } from "@/model/blockchain/schemas";
 import { mapTripDTOtoTripInfo } from "@/model/utils/TripDTOtoTripInfo";
 import { TripInfo } from "@/model/TripInfo";
 
@@ -15,11 +14,11 @@ const useTripInfo = (tripId: bigint) => {
         console.error("getTrip error: contract is null");
         return;
       }
-      const tripDTO: ContractTripDTO = await rentalityContracts.gateway.getTrip(tripId);
+      const result = await rentalityContracts.gateway.getTrip(tripId);
 
-      if (tripDTO === null) return;
+      if (!result.ok || result.value === null) return;
 
-      const tripInfo = await mapTripDTOtoTripInfo(tripDTO);
+      const tripInfo = await mapTripDTOtoTripInfo(result.value);
 
       return tripInfo;
     } catch (e) {

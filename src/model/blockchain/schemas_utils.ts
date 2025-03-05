@@ -16,6 +16,7 @@ import {
   ContractChatInfo,
   ContractCheckPromoDTO,
   ContractClaim,
+  ContractClaimTypeV2,
   ContractFilterInfoDTO,
   ContractFullClaimInfo,
   ContractFullKYCInfoDTO,
@@ -171,6 +172,11 @@ export function validateContractClaim(obj: ContractClaim): obj is ContractClaim 
   return validateType(obj, emptyContractClaim);
 }
 
+const emptyClaimType: ContractClaimTypeV2 = {
+  claimType: BigInt(0),
+  claimName: "",
+  creator: BigInt(0),
+};
 export function validateContractFullClaimInfo(obj: ContractFullClaimInfo): obj is ContractFullClaimInfo {
   const emptyContractFullClaimInfo: ContractFullClaimInfo = {
     claim: emptyContractClaim,
@@ -181,9 +187,14 @@ export function validateContractFullClaimInfo(obj: ContractFullClaimInfo): obj i
     carInfo: emptyContractCarInfo,
     amountInEth: BigInt(0),
     timeZoneId: "",
+    claimType: emptyClaimType,
   };
 
-  return validateType(obj, emptyContractFullClaimInfo) && validateType(obj.claim, emptyContractClaim);
+  return (
+    validateType(obj, emptyContractFullClaimInfo) &&
+    validateType(obj.claim, emptyContractClaim) &&
+    validateType(obj.claimType, emptyClaimType)
+  );
 }
 
 const emptyContractInsuranceCarInfo: ContractInsuranceCarInfo = {

@@ -4,9 +4,7 @@ import RntButtonTransparent from "../common/rntButtonTransparent";
 import RntButton from "../common/rntButton";
 import RntInputMultiline from "../common/rntInputMultiline";
 import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton";
-import { isHost } from "@/hooks/useUserMode";
 import useFeatureFlags from "@/hooks/useFeatureFlags";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
 
 function ModifyTripForm({
   guestPhoneNumber,

@@ -62,6 +62,10 @@ const useAdminAllTrips = () => {
           })
         );
 
+        data.sort((a, b) => {
+          return b.tripId - a.tripId;
+        });
+
         setData(data);
         setTotalPageCount(Number(result.value.totalPageCount));
 

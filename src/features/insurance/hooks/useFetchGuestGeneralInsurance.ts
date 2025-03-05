@@ -25,7 +25,7 @@ const useFetchGuestGeneralInsurance = () => {
 
       console.debug("Fetching guest insurance");
 
-      const result = await rentalityContracts.gatewayProxy.getMyInsurancesAsGuest();
+      const result = await rentalityContracts.gateway.getMyInsurancesAsGuest();
 
       if (!result.ok) {
         throw new Error(result.error.message);

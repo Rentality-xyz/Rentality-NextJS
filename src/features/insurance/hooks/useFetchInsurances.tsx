@@ -23,7 +23,7 @@ function useFetchInsurances(isHost: boolean, initialPage: number = 1, initialIte
       }
       console.debug(`Fetching insurance list for ${isHost ? "host" : "guest"}`);
 
-      const result = await rentalityContracts.gatewayProxy.getInsurancesBy(isHost);
+      const result = await rentalityContracts.gateway.getInsurancesBy(isHost);
 
       if (!result.ok) {
         throw new Error(result.error.message);

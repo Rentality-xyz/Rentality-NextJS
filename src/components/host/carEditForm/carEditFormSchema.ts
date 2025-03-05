@@ -1,3 +1,4 @@
+import { MAX_VIN_LENGTH } from "@/components/common/rntVINCheckingInput";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/EngineType";
 import { UNLIMITED_MILES_VALUE_TEXT } from "@/model/HostCarInfo";
 import { emptyLocationInfo } from "@/model/LocationInfo";
@@ -67,6 +68,14 @@ const locationInfoFormSchema = z.object({
   timeZoneId: z.string().trim(),
 });
 
+export const vinNumberSchema = z
+  .string()
+  .toUpperCase()
+  .trim()
+  .min(1, "Vin number is too short")
+  .max(MAX_VIN_LENGTH, "Vin number is too long")
+  .regex(new RegExp(/^[A-HJ-NPR-Z0-9]*$/), "Vin number contains invalid characters");
+
 const defaultCarEditFormSchema = z
   .object({
     carId: z
@@ -76,7 +85,7 @@ const defaultCarEditFormSchema = z
       })
       .optional(),
 
-    vinNumber: z.string().trim().min(1, "Vin number is too short").max(17, "Vin number is too long"),
+    vinNumber: vinNumberSchema,
     brand: z.string().trim().min(1, "Brand is too short").max(30, "Brand is too long"),
     model: z.string().trim().min(1, "Model is too short").max(30, "Model is too long"),
     releaseYear: z

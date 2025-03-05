@@ -31,7 +31,7 @@ import { placeDetailsToLocationInfoWithTimeZone } from "@/utils/location";
 import CarAddPhoto from "./CarAddPhoto";
 import { env } from "@/utils/env";
 import { APIProvider } from "@vis.gl/react-google-maps";
-import { Result, TransactionErrorCode } from "@/model/utils/result";
+import { Result } from "@/model/utils/result";
 import useCarAPI from "@/hooks/useCarAPI";
 import { VinInfo } from "@/pages/api/car-api/vinInfo";
 import { DimoCarResponseWithTimestamp } from "@/features/dimo/hooks/useDimo";
@@ -48,7 +48,7 @@ export default function CarEditForm({
   initValue?: HostCarInfo;
   isNewCar: boolean;
   isInvestmentCar: boolean;
-  saveCarInfo: (hostCarInfo: HostCarInfo) => Promise<Result<boolean, TransactionErrorCode>>;
+  saveCarInfo: (hostCarInfo: HostCarInfo) => Promise<Result<boolean, Error>>;
   t: TFunction;
 }) {
   const router = useRouter();
@@ -155,9 +155,6 @@ export default function CarEditForm({
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
   };
-  useEffect(() => {
-    console.log("FORMA: ", formState.errors);
-  }, [formState]);
 
   async function onFormSubmit(formData: CarEditFormValues) {
     const carInfoFormParams: HostCarInfo = {
@@ -237,7 +234,7 @@ export default function CarEditForm({
         router.push("/host/vehicles");
       }
     } else {
-      if (result.error === "NOT_ENOUGH_FUNDS") {
+      if (result.error.message === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
       } else {
         showError(t("vehicles.saving_failed"));
@@ -308,7 +305,7 @@ export default function CarEditForm({
                     isVINVerified={isVINVerified}
                     placeholder="e.g. 4Y1SL65848Z411439"
                     readOnly={!isNewCar}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e) => onChange(e.target.value.toUpperCase())}
                     onVINVerified={(verified: boolean) => setIsVINVerified(verified)}
                     onVINCheckOverriden={(overridden) => setIsVINCheckOverriden(overridden)}
                   />

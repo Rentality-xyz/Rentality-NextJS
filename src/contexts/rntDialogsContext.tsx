@@ -115,10 +115,14 @@ export const RntDialogsProvider = ({ children }: { children?: React.ReactNode })
   return (
     <>
       <RntDialogsContext.Provider value={valueDialogs}>
-        <RntSnackbarsContext.Provider value={valueSnackbars}>{children}</RntSnackbarsContext.Provider>
+        <RntSnackbarsContext.Provider value={valueSnackbars}>
+          <>
+            {children}
+            <RntDialogs state={dialogState} hide={hideDialogs} />
+            <RntSnackbar state={snackbarState} hide={hideSnackbars} />
+          </>
+        </RntSnackbarsContext.Provider>
       </RntDialogsContext.Provider>
-      <RntDialogs state={dialogState} hide={hideDialogs} />
-      <RntSnackbar state={snackbarState} hide={hideSnackbars} />
     </>
   );
 };
