@@ -274,7 +274,7 @@ function UserCommonInformationForm({
             control={control}
             render={({ field }) => (
               <RntPhoneInput
-                className="lg:w-60"
+                className="z-10 lg:w-60"
                 labelClassName="pl-[16px]"
                 id="phoneNumber"
                 label={t("profile.phone")}
@@ -365,6 +365,7 @@ function UserCommonInformationForm({
           />
         )}
       />
+
       <p className="pl-[16px] text-sm">{t("profile.read_agree")}</p>
 
       <div className="flex items-center gap-2 md:gap-6">
