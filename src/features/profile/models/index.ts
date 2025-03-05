@@ -2,6 +2,7 @@ export type UserProfile = {
   profilePhotoUrl: string;
   nickname: string;
   phoneNumber: string;
+  isPhoneNumberVerified: boolean;
   tcSignature: string;
   isSignatureCorrect: boolean;
   fullname: string;
@@ -16,6 +17,7 @@ export const emptyUserProfile: UserProfile = {
   profilePhotoUrl: "",
   nickname: "",
   phoneNumber: "",
+  isPhoneNumberVerified: false,
   tcSignature: "",
   isSignatureCorrect: false,
   fullname: "",

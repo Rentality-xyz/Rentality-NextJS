@@ -34,7 +34,7 @@ function useCheckPromo() {
         "checkPromoDto call",
         JSON.stringify({ code, notEmtpyTimeZoneId, dateFrom, startUnixTime, dateTo, endUnixTime }, bigIntReplacer, 2)
       );
-      const result = await rentalityContracts.gatewayProxy.checkPromo(code, startUnixTime, endUnixTime);
+      const result = await rentalityContracts.gateway.checkPromo(code, startUnixTime, endUnixTime);
       if (!result.ok) return result;
 
       validateContractCheckPromoDTO(result.value);

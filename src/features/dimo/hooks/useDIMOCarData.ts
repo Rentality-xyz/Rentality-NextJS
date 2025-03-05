@@ -42,11 +42,13 @@ const useDIMOCarData = (carId: number) => {
     }
 
     try {
-      const carDetails = await rentalityContracts.gateway.getCarDetails(BigInt(carId));
+      const result = await rentalityContracts.gateway.getCarDetails(BigInt(carId));
 
-      if (carDetails.dimoTokenId === BigInt(0)) {
+      if (!result.ok || result.value.dimoTokenId === BigInt(0)) {
         return EmptyDimoPanelData;
       }
+
+      const carDetails = result.value;
       const panelParams = await axios.get("/api/dimo/dimoSignals", {
         params: { tokenId: carDetails.dimoTokenId },
       });

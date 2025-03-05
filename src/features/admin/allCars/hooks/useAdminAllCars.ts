@@ -41,6 +41,10 @@ const useAdminAllCars = () => {
             : car
         );
 
+        data.sort((a, b) => {
+          return b.carId - a.carId;
+        });
+
         setData(data);
         setTotalPageCount(Number(result.value.totalPageCount));
 

@@ -1,10 +1,10 @@
-// @ts-ignore
-import { DIMO } from "@dimo-network/data-sdk/dist/index.d.ts";
+import { env } from "@/utils/env";
+import { DIMO } from "@dimo-network/data-sdk";
 
 export async function authOnDimo() {
-  const clientId = process.env.NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID;
-  const apiKey = process.env.NEXT_PUBLIC_SERVER_DIMO_API_KEY;
-  const domain = process.env.NEXT_PUBLIC_SERVER_DIMO_DOMAIN;
+  const clientId = env.NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID;
+  const apiKey = env.NEXT_PUBLIC_SERVER_DIMO_API_KEY;
+  const domain = env.NEXT_PUBLIC_SERVER_DIMO_DOMAIN;
 
   if (!clientId || !apiKey || !domain) {
     console.error("DIMO .env is not set");

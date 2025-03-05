@@ -5,7 +5,7 @@ import { resizeImage } from "@/utils/image";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
-import { ChangeEvent, useEffect } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
@@ -42,7 +42,9 @@ function UserCommonInformationForm({
         profilePhotoUrl: userProfile.profilePhotoUrl,
         nickname: userProfile.nickname,
         phoneNumber: userProfile.phoneNumber,
-        email: userProfile.email,
+        isPhoneNumberVerified: userProfile.isPhoneNumberVerified,
+      email: userProfile.email,
+      smsCode: "",
         tcSignature: userProfile.tcSignature,
         isTerms: userProfile.isSignatureCorrect,
       },
@@ -50,6 +52,8 @@ function UserCommonInformationForm({
     });
   const { errors, isSubmitting } = formState;
   const isTerms = watch("isTerms");
+  const enteredCode = watch("smsCode");
+  const enteredPhoneNumber = watch("phoneNumber");
 
   useEffect(() => {
     reset({
@@ -57,8 +61,10 @@ function UserCommonInformationForm({
       nickname: userProfile.nickname,
       phoneNumber: userProfile.phoneNumber,
       email: userProfile.email,
+      isPhoneNumberVerified: userProfile.isPhoneNumberVerified,
       tcSignature: userProfile.tcSignature,
       isTerms: userProfile.isSignatureCorrect,
+      smsCode: "",
     });
   }, [userProfile]);
 
@@ -141,6 +147,76 @@ function UserCommonInformationForm({
     }
   }
 
+  const [smsHash, setSmsHash] = useState<string | undefined>(undefined);
+  const [smsTimestamp, setSmsTimestamp] = useState<number | undefined>(undefined);
+  const [isEnteredCodeCorrect, setIsEnteredCodeCorrect] = useState(false);
+
+  async function sendSmsVerificationCode() {
+    try {
+      if (!enteredPhoneNumber) {
+        showError(t("profile.pls_phone"));
+        return;
+      }
+
+      const response = await fetch("/api/sendSmsVerificationCode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phoneNumber: enteredPhoneNumber,
+        }),
+      });
+      const result = await response.json();
+
+      if (response.ok) {
+        setSmsHash(result.hash);
+        setSmsTimestamp(result.timestamp);
+      } else {
+        console.error("sendSmsVerificationCode error:" + result.error);
+        showError(t("profile.send_sms_err"));
+      }
+    } catch (e) {
+      console.error("sendSmsVerificationCode error:" + e);
+      showError(t("profile.send_sms_err"));
+    }
+  }
+
+  async function compareVerificationCode() {
+    try {
+      if (!smsHash && !smsTimestamp) return;
+      showInfo(t("profile.verification"))
+      const response = await fetch("/api/compareVerificationCode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userAddress: ethereumInfo?.walletAddress,
+          phoneNumber: enteredPhoneNumber,
+          enteredCode: enteredCode,
+          smsHash: smsHash,
+          timestamp: smsTimestamp,
+          chainId: ethereumInfo?.chainId,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error("compareVerificationCode error:" + result.error);
+        showError(t("profile.verify_number_err"));
+        return;
+      }
+
+      if (result.isVerified) {
+        setIsEnteredCodeCorrect(true);
+        return;
+      }
+
+      showError(t("profile.invalid_code"));
+    } catch (e) {
+      console.error("compareVerificationCode error:" + e);
+      showError(t("profile.verify_number_err"));
+    }
+  }
+
   return (
     <form className="flex flex-col gap-4 lg:my-8" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
       <Controller
@@ -183,7 +259,16 @@ function UserCommonInformationForm({
             {...register("nickname")}
             validationError={errors.nickname?.message}
           />
-
+          <RntInput
+            className="lg:w-60"
+            labelClassName="pl-[16px]"
+            id="email"
+            label={t("profile.email")}
+            {...register("email")}
+            validationError={errors.email?.message}
+          />
+        </div>
+        <div className="mt-4 flex flex-wrap items-end gap-4">
           <Controller
             name="phoneNumber"
             control={control}
@@ -200,16 +285,53 @@ function UserCommonInformationForm({
               />
             )}
           />
-          <RntInputTransparent
-            className="lg:w-60"
-            labelClassName="pl-[16px]"
-            id="email"
-            label={t("profile.email")}
-            {...register("email")}
-            validationError={errors.email?.message}
-          />
+          {!userProfile.isPhoneNumberVerified && !isEnteredCodeCorrect && (
+            <RntButton
+              className={"h-8"}
+              onClick={sendSmsVerificationCode}
+              disabled={smsHash !== undefined && smsTimestamp !== undefined}
+            >
+              {t("profile.verify")}
+            </RntButton>
+          )}
         </div>
+        {!isEnteredCodeCorrect && !userProfile.isPhoneNumberVerified && smsHash && smsTimestamp && (
+          <div className="mt-4 flex flex-wrap items-end gap-4">
+            <Controller
+              name="smsCode"
+              control={control}
+              render={({ field }) => (
+                <RntInputTransparent
+                  className="lg:w-60"
+                  labelClassName="pl-[16px]"
+                  id="smsCode"
+                  value={field.value}
+                  inputMode="numeric"
+                  maxLength={6}
+                  onChange={(e) => {
+                    const newValue = e.target.value.replace(/\D/g, "");
+                    field.onChange(newValue.slice(0, 6));
+                  }}
+                  label={t("profile.sms_code")}
+                />
+              )}
+            />
+
+            <RntButton
+              className={"h-8"} onClick={compareVerificationCode}
+              disabled={enteredCode?.length != 6}
+            >
+              {t("profile.confirm")}
+            </RntButton>
+          </div>
+        )}
       </fieldset>
+
+      {userProfile.isPhoneNumberVerified || isEnteredCodeCorrect ? (
+        <DotStatus color="success" text={t("profile.phone_verified")} />
+      ) : (
+        <DotStatus color="error" text={t("profile.phone_not_verified")} />
+      )}
 
       <p className="w-full pl-4 md:w-3/4 xl:w-3/5 2xl:w-1/3">{t("profile.agreement_info")}</p>
 

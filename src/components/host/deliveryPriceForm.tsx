@@ -2,22 +2,22 @@ import RntButton from "@/components/common/rntButton";
 import RntInput from "@/components/common/rntInput";
 import { memo } from "react";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
-import { DeliveryPrices } from "@/hooks/host/useDeliveryPrices";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DeliveryPricesFormValues, deliveryPricesFormSchema } from "./deliveryPricesFormSchema";
 import { useTranslation } from "react-i18next";
-import { TransactionErrorCode, Result } from "@/model/utils/result";
+import { Result } from "@/model/utils/result";
+import useUserRole from "@/hooks/useUserRole";
+import { DeliveryPrices } from "@/hooks/host/useFetchDeliveryPrices";
 
 function DeliveryPriceForm({
   savedDeliveryPrices,
   saveDeliveryPrices,
-  isUserHasHostRole,
 }: {
   savedDeliveryPrices: DeliveryPrices;
-  saveDeliveryPrices: (newDeliveryPrices: DeliveryPrices) => Promise<Result<boolean, TransactionErrorCode>>;
-  isUserHasHostRole: boolean;
+  saveDeliveryPrices: (newDeliveryPrices: DeliveryPrices) => Promise<Result<boolean, Error>>;
 }) {
+  const { userRole } = useUserRole();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { register, handleSubmit, formState } = useForm<DeliveryPricesFormValues>({
@@ -31,7 +31,7 @@ function DeliveryPriceForm({
   const { t } = useTranslation();
 
   async function onFormSubmit(formData: DeliveryPricesFormValues) {
-    if (!isUserHasHostRole) {
+    if (userRole !== "Host") {
       showDialog(t("profile.save_delivery_prices_err_is_not_host"));
       return;
     }
@@ -41,6 +41,7 @@ function DeliveryPriceForm({
     const result = await saveDeliveryPrices({
       from1To25milesPrice: formData.from1To25milesPrice,
       over25MilesPrice: formData.over25MilesPrice,
+      isInitialized: true,
     });
 
     hideDialogs();
@@ -49,7 +50,7 @@ function DeliveryPriceForm({
     if (result.ok) {
       showInfo(t("common.info.success"));
     } else {
-      if (result.error === "NOT_ENOUGH_FUNDS") {
+      if (result.error.message === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
       } else {
         showError(t("profile.save_delivery_prices_err"));

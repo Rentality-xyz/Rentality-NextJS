@@ -1,23 +1,19 @@
 import ListingItem from "@/components/host/listingItem";
-import useMyListings from "@/hooks/host/useMyListings";
 import RntButton from "@/components/common/rntButton";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import RntSuspense from "@/components/common/rntSuspense";
-import {
-  initializeDimoSDK,
-  LoginWithDimo,
-  ShareVehiclesWithDimo,
-  useDimoAuthState,
-} from "@dimo-network/login-with-dimo";
+import { initializeDimoSDK, LoginWithDimo, ShareVehiclesWithDimo } from "@dimo-network/login-with-dimo";
 import React, { useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { CheckboxLight } from "@/components/common/rntCheckbox";
-import useDimo, { DimoCarResponse } from "@/features/dimo/hooks/useDimo";
+import useDimo from "@/features/dimo/hooks/useDimo";
 import { getIpfsURI } from "@/utils/ipfsUtils";
+import { env } from "@/utils/env";
+import useFetchMyListings from "@/hooks/host/useFetchMyListings";
 
 function Listings() {
-  const [isLoadingMyListings, myListings] = useMyListings();
+  const { isLoading: isLoadingMyListings, data: myListings } = useFetchMyListings();
   const router = useRouter();
   const { t } = useTranslation();
 
@@ -48,9 +44,9 @@ function Listings() {
 
   const { rentalityContracts } = useRentality();
 
-  const clientId = process.env.NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID;
-  const apiKey = process.env.NEXT_PUBLIC_SERVER_DIMO_API_KEY;
-  const domain = process.env.NEXT_PUBLIC_SERVER_DIMO_DOMAIN;
+  const clientId = env.NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID;
+  const apiKey = env.NEXT_PUBLIC_SERVER_DIMO_API_KEY;
+  const domain = env.NEXT_PUBLIC_SERVER_DIMO_DOMAIN;
 
   if (!clientId || !apiKey || !domain) {
     console.error("DIMO .env is not set");

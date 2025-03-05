@@ -133,7 +133,7 @@ function CreateTripDetailsContent({
     if (result.ok) {
       router.push("/guest/trips");
     } else {
-      if (result.error === "NOT_ENOUGH_FUNDS") {
+      if (result.error.message === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));
       } else {
         showError(t("search_page.errors.request"));

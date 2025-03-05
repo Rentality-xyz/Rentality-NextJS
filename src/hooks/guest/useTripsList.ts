@@ -29,18 +29,22 @@ const useTripsList = (isHost: boolean) => {
           console.error("getTrips error: contract is null");
           return;
         }
-        const tripsView: ContractTripDTO[] = await rentalityContracts.gateway.getTripsAs(isHost);
+        const result = await rentalityContracts.gateway.getTripsAs(isHost);
+        if (!result.ok) {
+          console.error("getTrips error:" + result.error);
+          return;
+        }
 
-        console.log("tripsView", JSON.stringify(tripsView, bigIntReplacer, 2));
+        console.log("tripsView", JSON.stringify(result.value, bigIntReplacer, 2));
 
-        if (tripsView.length > 0) {
-          validateContractTripDTO(tripsView[0]);
+        if (result.value.length > 0) {
+          validateContractTripDTO(result.value[0]);
         }
 
         const tripsData =
-          tripsView.length === 0
+          result.value.length === 0
             ? []
-            : tripsView.map((tripDto) => {
+            : result.value.map((tripDto) => {
                 return mapTripDTOtoTripInfoShordDetails(tripDto);
               });
         tripsData.sort((a, b) => b.tripId - a.tripId);

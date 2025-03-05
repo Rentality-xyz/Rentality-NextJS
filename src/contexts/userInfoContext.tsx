@@ -25,7 +25,7 @@ export const UserInfoProvider = ({ children }: { children?: React.ReactNode }) =
       if (!rentalityContracts) return;
       if (!ethereumInfo) return;
 
-      const result = await rentalityContracts.gatewayProxy.getMyFullKYCInfo();
+      const result = await rentalityContracts.gateway.getMyFullKYCInfo();
       if (!result.ok) return;
 
       setCurrentUserInfo({

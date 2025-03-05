@@ -1,5 +1,4 @@
 import RntInput from "@/components/common/rntInput";
-import { TFunction } from "@/utils/i18n";
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
 import useCreateInvestCar from "@/hooks/host/useCreateInvestCar";
 import { useState } from "react";
@@ -10,7 +9,7 @@ import RntInputTransparent from "@/components/common/rntInputTransparent";
 /// TODO: checkInputs on correctness
 export default function CreateCarInvestment() {
   const { t } = useTranslation();
-  const { createInvest } = useCreateInvestCar();
+  const { mutateAsync: createInvest } = useCreateInvestCar();
   const [carPrice, setCarPrice] = useState<number | string>(0);
   const [hostPercentage, setHostPercentage] = useState<number | string>(0);
   const [nftName, setNftName] = useState<string>("");
@@ -74,7 +73,13 @@ export default function CreateCarInvestment() {
         saveCarInfo={async (hostCarInfo: HostCarInfo) => {
           let price = Number.parseInt(carPrice.toString());
           let percents = Number.parseInt(hostPercentage.toString());
-          return await createInvest(hostCarInfo, price, percents, nftName, nftSym);
+          return await createInvest({
+            hostCarInfo,
+            carPrice: price,
+            hostPercents: percents,
+            nftName,
+            nftSym,
+          });
         }}
         t={t}
       />

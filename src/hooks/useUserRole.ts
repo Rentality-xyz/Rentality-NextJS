@@ -12,7 +12,7 @@ const useUserRole = () => {
     const getUserRole = async () => {
       if (!rentalityContracts) return;
 
-      const result = await rentalityContracts.gatewayProxy.getMyCars();
+      const result = await rentalityContracts.gateway.getMyCars();
 
       if (result.ok) {
         setUserRole(result.value.length > 0 ? "Host" : "Guest");
