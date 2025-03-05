@@ -47,7 +47,16 @@ function RntPhoneInput({
         disabled={readOnly}
         placeholder={placeholder}
         country={"us"}
-        onChange={(v, d, e) => onChangeHandler != null && onChangeHandler(e)}
+        onChange={(v, d, e) => {
+            const event = {
+              ...e,
+              target: {
+                ...e?.target,
+                value: v,
+              },
+            } as React.ChangeEvent<HTMLInputElement>;
+          onChangeHandler != null && onChangeHandler(event);
+        }}
         onBlur={(e) => onBlurHandler != null && onBlurHandler(e)}
         value={value?.toString()}
         inputStyle={{
