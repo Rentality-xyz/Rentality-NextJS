@@ -164,6 +164,7 @@ export default function CreateClaim() {
         ) : null}
       </div>
       <RntInputMultiline
+        isTransparentStyle={true}
         id="description"
         labelClassName="pl-3.5"
         rows={3}

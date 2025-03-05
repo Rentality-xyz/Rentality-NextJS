@@ -14,6 +14,9 @@ import RntSelect from "@/components/common/rntSelect";
 import RntInput from "@/components/common/rntInput";
 import RntButton from "@/components/common/rntButton";
 import useSaveTripInsurance from "../hooks/useSaveTripInsurance";
+import RntFilterSelect from "@/components/common/RntFilterSelect";
+import * as React from "react";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
 
 interface AddHostInsuranceProps {}
 
@@ -129,50 +132,50 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
                 )}
               />
             </div>
-            {isTripsLoading ? (
-              "Loading..."
-            ) : (
-              <Controller
-                name="selectedTripId"
-                control={control}
-                render={({ field }) => (
-                  <RntSelect
-                    className="w-1/2"
-                    id="selectedTrip"
-                    label="Trip:"
-                    labelClassName="pl-4"
-                    disabled={trips.length === 0}
-                    value={field.value}
-                    onChange={(e) => {
-                      console.log(`RntSelect onChange ${e.target.value}`);
+            <div className="w-1/2">
+              {isTripsLoading ? (
+                "Loading..."
+              ) : (
+                <Controller
+                  name="selectedTripId"
+                  control={control}
+                  render={({ field }) => (
+                    <RntFilterSelect
+                      className="w-full"
+                      id="selectedTrip"
+                      label="Trip:"
+                      placeholder="Select trip"
+                      disabled={trips.length === 0}
+                      value={field.value}
+                      onChange={(e) => {
+                        console.log(`RntSelect onChange ${e.target.value}`);
 
-                      field.onChange(Number(e.target.value));
-                    }}
-                    validationError={errors.selectedTripId?.message?.toString()}
-                  >
-                    {trips.length === 0 ? (
-                      <option>No trips</option>
-                    ) : (
-                      <>
-                        <option className="hidden" disabled selected>
-                          Select trip
-                        </option>
-                        {trips.map((i) => (
-                          <option
-                            key={i.tripId}
-                            value={i.tripId}
-                          >{`${i.tripId} ${i.brand} ${i.model} ${i.year} ${dateRangeFormatShortMonthDateYear(i.tripStart, i.tripEnd)}`}</option>
-                        ))}
-                      </>
-                    )}
-                  </RntSelect>
-                )}
-              />
-            )}
+                        field.onChange(Number(e.target.value));
+                      }}
+                      validationError={errors.selectedTripId?.message?.toString()}
+                    >
+                      {trips.length === 0 ? (
+                        <RntFilterSelect.Option key="key-host-insurance-1" value="No trips">
+                          No trips
+                        </RntFilterSelect.Option>
+                      ) : (
+                        <>
+                          {trips.map((i) => (
+                            <RntFilterSelect.Option key={i.tripId} value={String(i.tripId)}>
+                              {`${i.tripId} ${i.brand} ${i.model} ${i.year} ${dateRangeFormatShortMonthDateYear(i.tripStart, i.tripEnd)}`}
+                            </RntFilterSelect.Option>
+                          ))}
+                        </>
+                      )}
+                    </RntFilterSelect>
+                  )}
+                />
+              )}
+            </div>
           </div>
 
           <div className="flex gap-4">
-            <RntInput
+            <RntInputTransparent
               id="companyName"
               label={"Insurance company name"}
               labelClassName="pl-4"
@@ -180,7 +183,7 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
               validationError={errors.companyName?.message?.toString()}
             />
 
-            <RntInput
+            <RntInputTransparent
               id="policeNumber"
               label={"Insurance policy number"}
               labelClassName="pl-4"
@@ -189,7 +192,7 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
             />
           </div>
 
-          <RntInput
+          <RntInputTransparent
             id="comment"
             label={"Comment"}
             labelClassName="pl-4"
