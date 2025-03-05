@@ -8,6 +8,7 @@ import { TransactionHistoryFiltersType } from "@/features/transactionHistory/hoo
 import RntInput from "@/components/common/rntInput";
 import RntSelect from "@/components/common/rntSelect";
 import RntButton from "@/components/common/rntButton";
+import RntFilterSelect from "@/components/common/RntFilterSelect";
 
 const allTripStatuses = Object.values(TripStatus).map((value) => {
   return { id: value, text: getTripStatusTextFromStatus(value) };
@@ -73,14 +74,13 @@ function TransactionHistoryFilters({ defaultFilters, onApply }: TransactionHisto
         // }}
       />
       <div className="sm:w-48">
-        <RntSelect
+        <RntFilterSelect
           isTransparentStyle={true}
-          className="mt-1 sm:max-w-[15rem]"
-          selectClassName="cursor-pointer"
+          className="sm:max-w-[15rem]"
           id="status"
           label={t("all_trips_table.tripStatus")}
-          labelClassName="pl-4"
-          value={filters.status?.toString()}
+          placeholder={t("transaction_history.all_statuses")}
+          value={filters.status?.toString() || "none"}
           onChange={(e) => {
             setFilters((prev) => ({
               ...prev,
@@ -88,13 +88,15 @@ function TransactionHistoryFilters({ defaultFilters, onApply }: TransactionHisto
             }));
           }}
         >
-          <option value={"none"}>{t("transaction_history.all_statuses")}</option>
+          <RntFilterSelect.Option key={"key-none"} value={"none"}>
+            {t("transaction_history.all_statuses")}
+          </RntFilterSelect.Option>
           {allTripStatuses.map((i) => (
-            <option key={i.id.toString()} value={i.id.toString()}>
+            <RntFilterSelect.Option key={i.id.toString()} value={i.id.toString()}>
               {i.text}
-            </option>
+            </RntFilterSelect.Option>
           ))}
-        </RntSelect>
+        </RntFilterSelect>
       </div>
 
       <RntButton className="w-36 sm:w-40" type="submit" disabled={isSubmitting}>
