@@ -286,7 +286,11 @@ function UserCommonInformationForm({
             )}
           />
           {!userProfile.isPhoneNumberVerified && !isEnteredCodeCorrect && (
-            <RntButton onClick={sendSmsVerificationCode} disabled={smsHash !== undefined && smsTimestamp !== undefined}>
+            <RntButton
+              className="lg:w-60"
+              onClick={sendSmsVerificationCode}
+              disabled={smsHash !== undefined && smsTimestamp !== undefined}
+            >
               {t("profile.verify")}
             </RntButton>
           )}

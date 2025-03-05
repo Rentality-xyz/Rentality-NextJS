@@ -85,7 +85,7 @@ function DeliveryPriceForm({
         </div>
       </fieldset>
 
-      <RntButton type="submit" className="mt-4 lg:w-60" disabled={isSubmitting}>
+      <RntButton type="submit" className="mt-7 lg:w-60" disabled={isSubmitting}>
         {t("profile.save_delivery_price")}
       </RntButton>
     </form>
