@@ -59,6 +59,7 @@ function ModifyTripForm({
       <p>You will not receive the earnings until the guest confirms the completion of the trip.</p>
 
       <RntInputMultiline
+        isTransparentStyle={true}
         className="mt-6"
         id="message"
         rows={2}
