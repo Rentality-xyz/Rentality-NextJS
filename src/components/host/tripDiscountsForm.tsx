@@ -9,6 +9,7 @@ import { Result } from "@/model/utils/result";
 import { useTranslation } from "react-i18next";
 import useUserRole from "@/hooks/useUserRole";
 import { TripDiscounts } from "@/hooks/host/useFetchTripDiscounts";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
 
 function TripDiscountsForm({
   savedTripsDiscounts,
@@ -67,7 +68,7 @@ function TripDiscountsForm({
           <strong>{t("profile.discounts")}</strong>
         </div>
         <div className="flex flex-col gap-4">
-          <RntInput
+          <RntInputTransparent
             className="lg:w-60"
             labelClassName="pl-[18px]"
             id="discount3DaysAndMoreInPercents"
@@ -75,7 +76,7 @@ function TripDiscountsForm({
             {...register("discount3DaysAndMoreInPercents", { valueAsNumber: true })}
             validationError={errors.discount3DaysAndMoreInPercents?.message?.toString()}
           />
-          <RntInput
+          <RntInputTransparent
             className="lg:w-60"
             labelClassName="pl-[18px]"
             id="discount7DaysAndMoreInPercents"
@@ -83,7 +84,7 @@ function TripDiscountsForm({
             {...register("discount7DaysAndMoreInPercents", { valueAsNumber: true })}
             validationError={errors.discount7DaysAndMoreInPercents?.message?.toString()}
           />
-          <RntInput
+          <RntInputTransparent
             className="lg:w-60"
             labelClassName="pl-[18px]"
             id="discount30DaysAndMoreInPercents"
@@ -94,7 +95,7 @@ function TripDiscountsForm({
         </div>
       </fieldset>
 
-      <RntButton type="submit" className="mt-4" disabled={isSubmitting}>
+      <RntButton type="submit" className="mt-4 lg:w-60" disabled={isSubmitting}>
         {t("profile.save_discount")}
       </RntButton>
     </form>

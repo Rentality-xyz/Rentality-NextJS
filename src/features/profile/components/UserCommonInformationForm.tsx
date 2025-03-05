@@ -43,8 +43,8 @@ function UserCommonInformationForm({
         nickname: userProfile.nickname,
         phoneNumber: userProfile.phoneNumber,
         isPhoneNumberVerified: userProfile.isPhoneNumberVerified,
-      email: userProfile.email,
-      smsCode: "",
+        email: userProfile.email,
+        smsCode: "",
         tcSignature: userProfile.tcSignature,
         isTerms: userProfile.isSignatureCorrect,
       },
@@ -183,7 +183,7 @@ function UserCommonInformationForm({
   async function compareVerificationCode() {
     try {
       if (!smsHash && !smsTimestamp) return;
-      showInfo(t("profile.verification"))
+      showInfo(t("profile.verification"));
       const response = await fetch("/api/compareVerificationCode", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -259,7 +259,7 @@ function UserCommonInformationForm({
             {...register("nickname")}
             validationError={errors.nickname?.message}
           />
-          <RntInput
+          <RntInputTransparent
             className="lg:w-60"
             labelClassName="pl-[16px]"
             id="email"
@@ -286,11 +286,7 @@ function UserCommonInformationForm({
             )}
           />
           {!userProfile.isPhoneNumberVerified && !isEnteredCodeCorrect && (
-            <RntButton
-              className={"h-8"}
-              onClick={sendSmsVerificationCode}
-              disabled={smsHash !== undefined && smsTimestamp !== undefined}
-            >
+            <RntButton onClick={sendSmsVerificationCode} disabled={smsHash !== undefined && smsTimestamp !== undefined}>
               {t("profile.verify")}
             </RntButton>
           )}
@@ -317,10 +313,7 @@ function UserCommonInformationForm({
               )}
             />
 
-            <RntButton
-              className={"h-8"} onClick={compareVerificationCode}
-              disabled={enteredCode?.length != 6}
-            >
+            <RntButton onClick={compareVerificationCode} disabled={enteredCode?.length != 6}>
               {t("profile.confirm")}
             </RntButton>
           </div>

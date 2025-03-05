@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { Result } from "@/model/utils/result";
 import useUserRole from "@/hooks/useUserRole";
 import { DeliveryPrices } from "@/hooks/host/useFetchDeliveryPrices";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
 
 function DeliveryPriceForm({
   savedDeliveryPrices,
@@ -65,7 +66,7 @@ function DeliveryPriceForm({
           <strong>{t("profile.delivery_price")}</strong>
         </div>
         <div className="flex flex-col gap-4">
-          <RntInput
+          <RntInputTransparent
             className="lg:w-60"
             labelClassName="pl-[18px]"
             id="from1To25milesPrice"
@@ -73,7 +74,7 @@ function DeliveryPriceForm({
             {...register("from1To25milesPrice", { valueAsNumber: true })}
             validationError={errors.from1To25milesPrice?.message?.toString()}
           />
-          <RntInput
+          <RntInputTransparent
             className="lg:w-60"
             labelClassName="pl-[18px]"
             id="over25MilesPrice"
@@ -84,7 +85,7 @@ function DeliveryPriceForm({
         </div>
       </fieldset>
 
-      <RntButton type="submit" className="mt-4" disabled={isSubmitting}>
+      <RntButton type="submit" className="mt-4 lg:w-60" disabled={isSubmitting}>
         {t("profile.save_delivery_price")}
       </RntButton>
     </form>
