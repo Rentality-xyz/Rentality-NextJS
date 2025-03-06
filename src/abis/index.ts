@@ -17,6 +17,7 @@ import RentalityAiDamageAnalyzeJSON_ABI from "./RentalityAiDamageAnalyze.v0_2_0.
 import RentalityAiDamageAnalyzeServiceJSON_ADDRESSES from "./RentalityAiDamageAnalyze.v0_2_0.addresses.json";
 import { Contract, Signer } from "ethers";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
+import { logger } from "@/utils/logger";
 
 export const SMARTCONTRACT_VERSION = "v0_2_0";
 

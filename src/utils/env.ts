@@ -1,13 +1,13 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
+import { LOG_LEVELS } from "./logger";
 
-const booleanEnvType = z.union([z.literal("true"), z.literal("false")], {
-  message: "value should be 'true' or 'false'",
-});
+export const NODE_ENVS = ["development", "qa", "production"] as const;
+export type NodeEnv = (typeof NODE_ENVS)[number];
 
 export const env = createEnv({
   server: {
-    NEXT_USE_STRICT_MODE: booleanEnvType.optional(),
+    NEXT_USE_STRICT_MODE: booleanEnvType().optional(),
 
     CIVIC_CLIENT_ID: z.string().optional(),
     CIVIC_CLIENT_SECRET: z.string().optional(),
@@ -39,9 +39,9 @@ export const env = createEnv({
     VERIFICATION_HMAC_SHA256_SECRET_KEY: z.string(),
   },
   client: {
-    NEXT_PUBLIC_INCLUDE_MAINNETS: booleanEnvType,
-    NEXT_PUBLIC_INCLUDE_TESTNETS: booleanEnvType,
-    NEXT_PUBLIC_INCLUDE_LOCALNETS: booleanEnvType,
+    NEXT_PUBLIC_INCLUDE_MAINNETS: booleanEnvType(),
+    NEXT_PUBLIC_INCLUDE_TESTNETS: booleanEnvType(),
+    NEXT_PUBLIC_INCLUDE_LOCALNETS: booleanEnvType(),
 
     NEXT_PUBLIC_DEFAULT_CHAIN_ID: z.coerce.number().positive(),
 
@@ -63,12 +63,12 @@ export const env = createEnv({
 
     NEXT_PUBLIC_HOTJAR_SITE_ID: z.coerce.number(),
     NEXT_PUBLIC_HOTJAR_VERSION: z.coerce.number(),
-    NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS: booleanEnvType.optional(),
-    NEXT_PUBLIC_SKIP_KYC_PAYMENT: booleanEnvType.optional(),
+    NEXT_PUBLIC_USE_ERUDA_DEV_TOOLS: booleanEnvType().optional(),
+    NEXT_PUBLIC_SKIP_KYC_PAYMENT: booleanEnvType().optional(),
 
     NEXT_PUBLIC_FB_PIXEL_ID: z.coerce.number(),
 
-    NEXT_PUBLIC_IS_TECHNICAL_WORK: booleanEnvType,
+    NEXT_PUBLIC_IS_TECHNICAL_WORK: booleanEnvType(),
 
     NEXT_PUBLIC_SERVER_DIMO_CLIENT_ID: z.string().min(1),
     NEXT_PUBLIC_SERVER_DIMO_API_KEY: z.string().min(1),
@@ -77,6 +77,10 @@ export const env = createEnv({
     NEXT_PUBLIC_AI_DAMAGE_ANALYZE_BASE_URL: z.string().min(1),
     NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SID: z.string().min(1),
     NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SECRETKEY: z.string().min(1),
+
+    NEXT_PUBLIC_NODE_ENV: unionOfLiterals(NODE_ENVS).default("development"),
+    NEXT_PUBLIC_MIN_CONSOLE_LOG_LEVEL: unionOfLiterals(LOG_LEVELS).default("trace"),
+    NEXT_PUBLIC_MIN_EXTERNAL_LOG_LEVEL: unionOfLiterals(LOG_LEVELS).default("info"),
   },
 
   // If you're using Next.js < 13.4.4, you'll need to specify the runtimeEnv manually
@@ -119,9 +123,29 @@ export const env = createEnv({
     NEXT_PUBLIC_AI_DAMAGE_ANALYZE_BASE_URL: process.env.NEXT_PUBLIC_AI_DAMAGE_ANALYZE_BASE_URL,
     NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SID: process.env.NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SID,
     NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SECRETKEY: process.env.NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SECRETKEY,
+
+    NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
+    NEXT_PUBLIC_MIN_CONSOLE_LOG_LEVEL: process.env.NEXT_PUBLIC_MIN_CONSOLE_LOG_LEVEL,
+    NEXT_PUBLIC_MIN_EXTERNAL_LOG_LEVEL: process.env.NEXT_PUBLIC_MIN_EXTERNAL_LOG_LEVEL,
   },
   // For Next.js >= 13.4.4, you only need to destructure client variables:
   //    experimental__runtimeEnv: {
   //      NEXT_PUBLIC_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_PUBLISHABLE_KEY,
   //    }
 });
+
+function booleanEnvType() {
+  return z.union([z.literal("true"), z.literal("false")], {
+    message: "value should be 'true' or 'false'",
+  });
+}
+
+function unionOfLiterals<T extends string>(constants: readonly T[]) {
+  const literals = constants.map((x) => z.literal(x)) as unknown as readonly [
+    z.ZodLiteral<T>,
+    z.ZodLiteral<T>,
+    ...z.ZodLiteral<T>[],
+  ];
+
+  return z.union(literals);
+}
