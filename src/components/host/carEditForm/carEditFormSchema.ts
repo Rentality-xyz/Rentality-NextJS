@@ -71,7 +71,6 @@ const locationInfoFormSchema = z.object({
 export const vinNumberSchema = z
   .string()
   .toUpperCase()
-  .trim()
   .min(1, "Vin number is too short")
   .max(MAX_VIN_LENGTH, "Vin number is too long")
   .regex(new RegExp(/^[A-HJ-NPR-Z0-9]*$/), "Vin number contains invalid characters");
