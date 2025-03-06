@@ -90,7 +90,7 @@ function ClaimAddPhoto({
           );
         })}
         {filesToUpload.length < MAX_ADD_IMAGE ? (
-          <div className="h-40 w-48 cursor-pointer overflow-hidden rounded-2xl bg-gray-200/40 bg-[url('../images/add_circle_outline_white_48dp.svg')] bg-center bg-no-repeat">
+          <div className="border-gradient h-40 w-48 cursor-pointer overflow-hidden rounded-2xl bg-transparent bg-[url('/images/icons/add_circle_outline_white_48dp.svg')] bg-center bg-no-repeat">
             <div className="h-full w-full" onClick={handleImageClick} />
             <input className="hidden" type="file" accept="image/*" ref={inputRef} onChange={handleImageChange} />
           </div>

@@ -59,8 +59,7 @@ export default function ListingItem({
                   {t("dimo.token_id")} {carInfo.dimoTokenId}
                 </p>
                 <RntButton
-                  className="mt-4 w-full px-4 text-lg"
-                  minHeight="40px"
+                  className="mt-4 h-[40px] w-full px-4 text-lg"
                   onClick={() => {
                     {
                       if (isDimoOnly) {

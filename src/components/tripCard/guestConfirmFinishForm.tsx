@@ -59,6 +59,7 @@ function GuestConfirmFinishForm({
       <p>Please confirm finish trip or contact the host.</p>
 
       <RntInputMultiline
+        isTransparentStyle={true}
         className="mt-6"
         id="message"
         readOnly={true}

@@ -5,7 +5,7 @@ import { resizeImage } from "@/utils/image";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
@@ -23,6 +23,7 @@ import { SaveUserProfileRequest } from "@/features/profile/hooks/useSaveUserProf
 import RntPhoneInput from "@/components/common/rntPhoneInput";
 import DotStatus from "@/components/dotStatus";
 import { CheckboxTerms } from "@/components/common/rntCheckbox";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
 import { logger } from "@/utils/logger";
 
 function UserCommonInformationForm({
@@ -55,6 +56,8 @@ function UserCommonInformationForm({
   const enteredCode = watch("smsCode");
   const enteredPhoneNumber = watch("phoneNumber");
 
+  const [verifiedPhoneNumber, setVerifiedPhoneNumber] = useState(userProfile.phoneNumber);
+
   useEffect(() => {
     reset({
       profilePhotoUrl: userProfile.profilePhotoUrl,
@@ -66,6 +69,10 @@ function UserCommonInformationForm({
       isTerms: userProfile.isSignatureCorrect,
       smsCode: "",
     });
+
+    if (userProfile.isPhoneNumberVerified) {
+      setVerifiedPhoneNumber(userProfile.phoneNumber);
+    }
   }, [userProfile]);
 
   function fileChangeCallback(field: ControllerRenderProps<UserCommonInformationFormValues, "profilePhotoUrl">) {
@@ -151,6 +158,33 @@ function UserCommonInformationForm({
   const [smsTimestamp, setSmsTimestamp] = useState<number | undefined>(undefined);
   const [isEnteredCodeCorrect, setIsEnteredCodeCorrect] = useState(false);
 
+  const [isResendCodeTimerRunning, setIsResendCodeTimerRunning] = useState(false);
+  const [secondsLeft, setSecondsLeft] = useState(60);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const isCurrentPhoneNotVerified =
+    (!userProfile.isPhoneNumberVerified && !isEnteredCodeCorrect) || enteredPhoneNumber !== verifiedPhoneNumber;
+
+  useEffect(() => {
+    if (isResendCodeTimerRunning && secondsLeft > 0) {
+      timerRef.current = setTimeout(() => {
+        setSecondsLeft((prev) => prev - 1);
+      }, 1000);
+    } else if (secondsLeft === 0) {
+      setIsResendCodeTimerRunning(false);
+    }
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [isResendCodeTimerRunning, secondsLeft]);
+
+  const startTimer = () => {
+    if (!isResendCodeTimerRunning) {
+      setIsResendCodeTimerRunning(true);
+      setSecondsLeft(60);
+    }
+  };
+
   async function sendSmsVerificationCode() {
     try {
       if (!enteredPhoneNumber) {
@@ -170,6 +204,7 @@ function UserCommonInformationForm({
       if (response.ok) {
         setSmsHash(result.hash);
         setSmsTimestamp(result.timestamp);
+        startTimer();
       } else {
         logger.error("sendSmsVerificationCode error:" + result.error);
         showError(t("profile.send_sms_err"));
@@ -206,7 +241,12 @@ function UserCommonInformationForm({
       }
 
       if (result.isVerified) {
+        setIsResendCodeTimerRunning(false);
         setIsEnteredCodeCorrect(true);
+        setVerifiedPhoneNumber(enteredPhoneNumber);
+        setValue("smsCode", "");
+        setSmsHash(undefined);
+        setSmsTimestamp(undefined);
         return;
       }
 
@@ -251,7 +291,7 @@ function UserCommonInformationForm({
           )}
         </div>
         <div className="flex flex-wrap gap-4">
-          <RntInput
+          <RntInputTransparent
             className="lg:w-60"
             labelClassName="pl-[16px]"
             id="nickname"
@@ -259,7 +299,7 @@ function UserCommonInformationForm({
             {...register("nickname")}
             validationError={errors.nickname?.message}
           />
-          <RntInput
+          <RntInputTransparent
             className="lg:w-60"
             labelClassName="pl-[16px]"
             id="email"
@@ -274,7 +314,7 @@ function UserCommonInformationForm({
             control={control}
             render={({ field }) => (
               <RntPhoneInput
-                className="lg:w-60"
+                className="z-10 lg:w-60"
                 labelClassName="pl-[16px]"
                 id="phoneNumber"
                 label={t("profile.phone")}
@@ -285,23 +325,24 @@ function UserCommonInformationForm({
               />
             )}
           />
-          {!userProfile.isPhoneNumberVerified && !isEnteredCodeCorrect && (
-            <RntButton
-              className={"h-8"}
-              onClick={sendSmsVerificationCode}
-              disabled={smsHash !== undefined && smsTimestamp !== undefined}
-            >
-              {t("profile.verify")}
+          {isCurrentPhoneNotVerified && (
+            <RntButton className="lg:w-60" onClick={sendSmsVerificationCode} disabled={isResendCodeTimerRunning}>
+              {smsHash === undefined ? t("profile.verify") : t("profile.resend_code")}
             </RntButton>
           )}
         </div>
-        {!isEnteredCodeCorrect && !userProfile.isPhoneNumberVerified && smsHash && smsTimestamp && (
+
+        {isResendCodeTimerRunning && isCurrentPhoneNotVerified && (
+          <p className="mt-2 w-full pl-4">{t("profile.resend_code_hint", { secondsLeft: secondsLeft })}</p>
+        )}
+
+        {isCurrentPhoneNotVerified && smsHash && smsTimestamp && (
           <div className="mt-4 flex flex-wrap items-end gap-4">
             <Controller
               name="smsCode"
               control={control}
               render={({ field }) => (
-                <RntInput
+                <RntInputTransparent
                   className="lg:w-60"
                   labelClassName="pl-[16px]"
                   id="smsCode"
@@ -317,7 +358,7 @@ function UserCommonInformationForm({
               )}
             />
 
-            <RntButton className={"h-8"} onClick={compareVerificationCode} disabled={enteredCode?.length != 6}>
+            <RntButton onClick={compareVerificationCode} disabled={enteredCode?.length != 6}>
               {t("profile.confirm")}
             </RntButton>
           </div>
@@ -365,6 +406,7 @@ function UserCommonInformationForm({
           />
         )}
       />
+
       <p className="pl-[16px] text-sm">{t("profile.read_agree")}</p>
 
       <div className="flex items-center gap-2 md:gap-6">
