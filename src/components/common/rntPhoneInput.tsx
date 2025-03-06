@@ -49,13 +49,13 @@ function RntPhoneInput({
         placeholder={placeholder}
         country={"us"}
         onChange={(v, d, e) => {
-            const event = {
-              ...e,
-              target: {
-                ...e?.target,
-                value: v,
-              },
-            } as React.ChangeEvent<HTMLInputElement>;
+          const event = {
+            ...e,
+            target: {
+              ...e?.target,
+              value: v,
+            },
+          } as React.ChangeEvent<HTMLInputElement>;
           onChangeHandler != null && onChangeHandler(event);
         }}
         onBlur={(e) => onBlurHandler != null && onBlurHandler(e)}
