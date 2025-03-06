@@ -70,7 +70,7 @@ export default function AllTripsTable({ isLoading, data, payToHost, refundToGues
         </div>
       }
     >
-      <div className="w-full overflow-x-auto custom-scroll">
+      <div className="custom-scroll w-full overflow-x-auto">
         <table className="w-full table-auto border-spacing-2">
           <thead className="mb-2">
             <tr className="border-b-[2px] border-b-gray-500">

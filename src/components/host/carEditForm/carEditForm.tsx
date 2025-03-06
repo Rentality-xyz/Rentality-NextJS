@@ -1,5 +1,4 @@
 import RntInput from "@/components/common/rntInput";
-import RntSelect from "@/components/common/rntSelect";
 import {
   emptyHostCarInfo,
   HostCarInfo,
@@ -9,7 +8,7 @@ import {
 } from "@/model/HostCarInfo";
 import { useEffect, useMemo, useState } from "react";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
-import RntCheckbox from "@/components/common/rntCheckbox";
+import RntCheckbox, { CheckboxLight } from "@/components/common/rntCheckbox";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/EngineType";
 import RntButton from "@/components/common/rntButton";
 import { TFunction } from "@/utils/i18n";
@@ -36,6 +35,8 @@ import { Result } from "@/model/utils/result";
 import useCarAPI from "@/hooks/useCarAPI";
 import { VinInfo } from "@/pages/api/car-api/vinInfo";
 import { DimoCarResponseWithTimestamp } from "@/features/dimo/hooks/useDimo";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
+import RntFilterSelect from "@/components/common/RntFilterSelect";
 
 export default function CarEditForm({
   initValue,
@@ -309,7 +310,12 @@ export default function CarEditForm({
                     onVINCheckOverriden={(overridden) => setIsVINCheckOverriden(overridden)}
                   />
                 ) : (
-                  <RntInput value={dimoData.vin} className="lg:w-60" label={t_car("vin_num")} readOnly={true} />
+                  <RntInputTransparent
+                    value={dimoData.vin}
+                    className="lg:w-60"
+                    label={t_car("vin_num")}
+                    readOnly={true}
+                  />
                 )
               }
             />
@@ -321,6 +327,7 @@ export default function CarEditForm({
                 isNewCar && !isVINVerified && dimoData === undefined ? (
                   <RntCarMakeSelect
                     id="brand"
+                    isTransparentStyle={true}
                     className="lg:min-w-[17ch]"
                     label={t_car("brand")}
                     value={value}
@@ -333,15 +340,7 @@ export default function CarEditForm({
                     validationError={errors.brand?.message?.toString()}
                   />
                 ) : isNewCar && dimoData !== undefined ? (
-                  <RntInput
-                    id="brand"
-                    className="lg:w-60"
-                    label={t_car("brand")}
-                    readOnly={true}
-                    value={dimoData.definition.make}
-                  />
-                ) : isNewCar && dimoData !== undefined ? (
-                  <RntInput
+                  <RntInputTransparent
                     id="brand"
                     className="lg:w-60"
                     label={t_car("brand")}
@@ -349,11 +348,10 @@ export default function CarEditForm({
                     value={dimoData.definition.make}
                   />
                 ) : (
-                  <RntInput
+                  <RntInputTransparent
                     className="lg:w-60"
                     id="brand_text"
                     label={t_car("brand")}
-                    labelClassName="pl-4"
                     readOnly={true}
                     value={value}
                   />
@@ -368,6 +366,7 @@ export default function CarEditForm({
                 isNewCar && !isVINVerified && dimoData === undefined ? (
                   <RntCarModelSelect
                     id="model"
+                    isTransparentStyle={true}
                     className="lg:min-w-[15ch]"
                     label={t_car("model")}
                     make_id={selectedMakeID}
@@ -381,7 +380,7 @@ export default function CarEditForm({
                     validationError={errors.model?.message?.toString()}
                   />
                 ) : isNewCar && dimoData !== undefined ? (
-                  <RntInput
+                  <RntInputTransparent
                     id="model"
                     className="lg:w-60"
                     label={t_car("model")}
@@ -389,11 +388,10 @@ export default function CarEditForm({
                     value={dimoData.definition.model}
                   />
                 ) : (
-                  <RntInput
+                  <RntInputTransparent
                     className="lg:w-60"
                     id="model_text"
                     label={t_car("model")}
-                    labelClassName="pl-4"
                     readOnly={true}
                     value={value}
                   />
@@ -408,7 +406,8 @@ export default function CarEditForm({
                 isNewCar && !isVINVerified && dimoData === undefined ? (
                   <RntCarYearSelect
                     id="releaseYear"
-                    className="lg:w-60"
+                    isTransparentStyle={true}
+                    className="lg:min-w-[12ch]"
                     label={t_car("release")}
                     make_id={selectedMakeID}
                     model_id={selectedModelID}
@@ -421,15 +420,7 @@ export default function CarEditForm({
                     validationError={errors.releaseYear?.message?.toString()}
                   />
                 ) : isNewCar && dimoData !== undefined ? (
-                  <RntInput
-                    id="releaseYear"
-                    className="lg:w-60"
-                    label={t_car("release")}
-                    readOnly={true}
-                    value={dimoData.definition.year}
-                  />
-                ) : isNewCar && dimoData !== undefined ? (
-                  <RntInput
+                  <RntInputTransparent
                     id="releaseYear"
                     className="lg:w-52"
                     label={t_car("release")}
@@ -437,11 +428,10 @@ export default function CarEditForm({
                     value={dimoData.definition.year}
                   />
                 ) : (
-                  <RntInput
+                  <RntInputTransparent
                     className="lg:w-52"
                     id="releaseYear_text"
                     label={t_car("release")}
-                    labelClassName="pl-4"
                     readOnly={true}
                     value={value}
                   />
@@ -454,20 +444,20 @@ export default function CarEditForm({
               defaultValue={dimoData?.tokenId || 0}
               render={({ field }) =>
                 isNewCar && dimoData !== undefined ? (
-                  <RntInput
+                  <RntInputTransparent
                     {...field}
                     id="dimoTokenId"
-                    className="lg:w-36"
+                    className="lg:w-40"
                     type="text"
                     label="Dimo token id"
                     readOnly={true}
                     value={dimoData.tokenId}
                   />
                 ) : (
-                  <RntInput
+                  <RntInputTransparent
                     {...field}
                     id="dimoTokenId"
-                    className="lg:w-36"
+                    className="lg:w-40"
                     type="text"
                     label="Dimo token id"
                     readOnly={dimoData !== undefined}
@@ -506,11 +496,10 @@ export default function CarEditForm({
             <strong>{t_car("car_basics")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
-            <RntInput
+            <RntInputTransparent
               className="lg:w-60"
               id="name"
               label={t_car("car_name")}
-              labelClassName="pl-4"
               placeholder="e.g. Eleanor"
               readOnly={!isFormEnabled}
               {...register("name", {
@@ -520,11 +509,10 @@ export default function CarEditForm({
               })}
               validationError={errors.name?.message?.toString()}
             />
-            <RntInput
+            <RntInputTransparent
               className="lg:w-60"
               id="licensePlate"
               label={t_car("licence_plate")}
-              labelClassName="pl-4"
               placeholder="e.g. ABC-12D"
               readOnly={!isFormEnabled}
               {...register("licensePlate", {
@@ -534,11 +522,10 @@ export default function CarEditForm({
               })}
               validationError={errors.licensePlate?.message?.toString()}
             />
-            <RntInput
+            <RntInputTransparent
               className="lg:w-60"
               id="licenseState"
               label={t_car("licence_state")}
-              labelClassName="pl-4"
               placeholder="e.g. Florida"
               readOnly={!isFormEnabled}
               {...register("licenseState", {
@@ -553,14 +540,15 @@ export default function CarEditForm({
               name="engineTypeText"
               control={control}
               render={({ field }) => (
-                <RntSelect
+                <RntFilterSelect
                   className="lg:w-60"
                   id="engineType"
+                  isTransparentStyle={true}
                   label={t_car("engine_type")}
-                  labelClassName="pl-4"
                   validationError={errors.engineTypeText?.message?.toString()}
                   value={field.value}
-                  readOnly={!isFormEnabled}
+                  disabled={!isFormEnabled}
+                  placeholder="Please select"
                   onChange={(e) => {
                     field.onChange(e);
                     if (e.target.value === ENGINE_TYPE_ELECTRIC_STRING) {
@@ -568,10 +556,13 @@ export default function CarEditForm({
                     }
                   }}
                 >
-                  <option className="hidden" disabled selected></option>
-                  <option value={ENGINE_TYPE_PETROL_STRING}>{t_car("gasoline")}</option>
-                  <option value={ENGINE_TYPE_ELECTRIC_STRING}>{t_car("electric")}</option>
-                </RntSelect>
+                  <RntFilterSelect.Option key="year-engine-type-1" value={ENGINE_TYPE_PETROL_STRING}>
+                    {t_car("gasoline")}
+                  </RntFilterSelect.Option>
+                  <RntFilterSelect.Option key="year-engine-type-2" value={ENGINE_TYPE_ELECTRIC_STRING}>
+                    {t_car("electric")}
+                  </RntFilterSelect.Option>
+                </RntFilterSelect>
               )}
             />
           </div>
@@ -582,80 +573,116 @@ export default function CarEditForm({
             <strong>{t_car("basic_details")}</strong>
           </div>
           <div className="details flex flex-wrap gap-4">
-            <RntInput
-              className="w-[48%] lg:w-40"
-              id="seatsNumber"
-              label={t_car("seats_amount")}
-              labelClassName="pl-4"
-              placeholder="e.g. 5"
-              readOnly={!isFormEnabled}
-              {...register("seatsNumber", {
-                valueAsNumber: true,
-                onChange: () => {
-                  setIsCarMetadataEdited(true);
-                },
-              })}
-              validationError={errors.seatsNumber?.message?.toString()}
+            <Controller
+              name="seatsNumber"
+              control={control}
+              render={({ field }) => (
+                <RntInputTransparent
+                  className="w-[48%] lg:w-40"
+                  id="seatsNumber"
+                  label={t_car("seats_amount")}
+                  placeholder="e.g. 5"
+                  readOnly={!isFormEnabled}
+                  value={field.value}
+                  {...register("seatsNumber", { valueAsNumber: true })}
+                  validationError={errors.seatsNumber?.message?.toString()}
+                  onChange={(e) => {
+                    const inputInvestmentAmount = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
+                    const numericValue = Number.parseInt(inputInvestmentAmount, 10);
+                    if (Number.isFinite(numericValue)) {
+                      setIsCarMetadataEdited(true);
+                      field.onChange(numericValue);
+                    }
+                  }}
+                />
+              )}
             />
-            <RntInput
-              className="w-[48%] lg:w-40"
-              id="doorsNumber"
-              label={t_car("doors")}
-              labelClassName="pl-4"
-              placeholder="e.g. 2"
-              readOnly={!isFormEnabled}
-              {...register("doorsNumber", {
-                valueAsNumber: true,
-                onChange: () => {
-                  setIsCarMetadataEdited(true);
-                },
-              })}
-              validationError={errors.doorsNumber?.message?.toString()}
+            <Controller
+              name="doorsNumber"
+              control={control}
+              render={({ field }) => (
+                <RntInputTransparent
+                  className="w-[48%] lg:w-40"
+                  id="doorsNumber"
+                  label={t_car("doors")}
+                  placeholder="e.g. 2"
+                  readOnly={!isFormEnabled}
+                  value={field.value}
+                  {...register("doorsNumber", { valueAsNumber: true })}
+                  validationError={errors.doorsNumber?.message?.toString()}
+                  onChange={(e) => {
+                    const inputInvestmentAmount = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
+                    const numericValue = Number.parseInt(inputInvestmentAmount, 10);
+                    if (Number.isFinite(numericValue)) {
+                      setIsCarMetadataEdited(true);
+                      field.onChange(numericValue);
+                    }
+                  }}
+                />
+              )}
             />
             {!isElectricEngine ? (
               <>
-                <RntInput
-                  className="w-[48%] lg:w-40"
-                  id="tankVolumeInGal"
-                  label={t_car("tank_size")}
-                  labelClassName="pl-4"
-                  placeholder="e.g. 16"
-                  readOnly={!isFormEnabled}
-                  {...register("tankVolumeInGal", {
-                    setValueAs: (v) => (v === "" || v === Number.isNaN(v) ? undefined : parseInt(v, 10)),
-                    onChange: () => {
-                      setIsCarMetadataEdited(true);
-                    },
-                  })}
-                  validationError={
-                    "tankVolumeInGal" in errors ? errors.tankVolumeInGal?.message?.toString() : undefined
-                  }
+                <Controller
+                  name="tankVolumeInGal"
+                  control={control}
+                  render={({ field }) => (
+                    <RntInputTransparent
+                      className="w-[48%] lg:w-40"
+                      id="tankVolumeInGal"
+                      label={t_car("tank_size")}
+                      placeholder="e.g. 16"
+                      readOnly={!isFormEnabled}
+                      value={field.value}
+                      {...register("tankVolumeInGal", { valueAsNumber: true })}
+                      validationError={
+                        "tankVolumeInGal" in errors ? errors.tankVolumeInGal?.message?.toString() : undefined
+                      }
+                      onChange={(e) => {
+                        const inputInvestmentAmount = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
+                        const numericValue = Number.parseInt(inputInvestmentAmount, 10);
+                        if (Number.isFinite(numericValue)) {
+                          setIsCarMetadataEdited(true);
+                          field.onChange(numericValue);
+                        }
+                      }}
+                    />
+                  )}
                 />
-                <RntSelect
-                  className="w-[48%] lg:w-40"
-                  id="transmission"
-                  label={t_car("transmission")}
-                  labelClassName="pl-4"
-                  readOnly={!isFormEnabled}
-                  {...register("transmission", {
-                    onChange: () => {
-                      setIsCarMetadataEdited(true);
-                    },
-                  })}
-                  validationError={errors.transmission?.message?.toString()}
-                >
-                  <option className="hidden" disabled selected></option>
-                  <option value={TRANSMISSION_MANUAL_STRING}>{t_car("manual")}</option>
-                  <option value={TRANSMISSION_AUTOMATIC_STRING}>{t_car("auto")}</option>
-                </RntSelect>
+                <Controller
+                  name="transmission"
+                  control={control}
+                  render={({ field }) => (
+                    <RntFilterSelect
+                      className="w-[48%] lg:w-48"
+                      id="transmission"
+                      isTransparentStyle={true}
+                      label={t_car("transmission")}
+                      disabled={!isFormEnabled}
+                      placeholder="Please select"
+                      value={field.value}
+                      validationError={errors.transmission?.message?.toString()}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setIsCarMetadataEdited(true);
+                      }}
+                    >
+                      <RntFilterSelect.Option key="transmission-1" value={TRANSMISSION_MANUAL_STRING}>
+                        {t_car("manual")}
+                      </RntFilterSelect.Option>
+                      <RntFilterSelect.Option key="transmission-2" value={TRANSMISSION_AUTOMATIC_STRING}>
+                        {t_car("auto")}
+                      </RntFilterSelect.Option>
+                    </RntFilterSelect>
+                  )}
+                />
               </>
             ) : null}
 
-            <RntInput
+            <RntInputTransparent
               className="w-[48%] lg:w-40"
               id="color"
               label={t_car("color")}
-              labelClassName="pl-4"
               placeholder="e.g. Green"
               readOnly={!isFormEnabled}
               {...register("color", {
@@ -669,13 +696,13 @@ export default function CarEditForm({
         </div>
 
         <div className="mt-4">
-          <div className="mb-4 pl-4 text-lg">
-            <strong>{t_car("more_info")}</strong>
-          </div>
           <div className="flex flex-col">
             <RntInputMultiline
               rows={5}
               id="description"
+              isTransparentStyle={true}
+              label={t_car("more_info")}
+              labelClassName="font-semibold text-lg"
               placeholder="e.g. Dupont Pepper Grey 1967 Ford Mustang fastback"
               readOnly={!isFormEnabled}
               {...register("description", {
@@ -701,6 +728,8 @@ export default function CarEditForm({
                   <RntPlaceAutocomplete
                     className="lg:w-full"
                     id="address"
+                    isAsRntInputTransparent={true}
+                    isDarkPlacePredictions={true}
                     label={isNewCar ? t_car("address") : t_car("saved_address")}
                     placeholder="Miami"
                     initValue={autocomplete}
@@ -715,10 +744,9 @@ export default function CarEditForm({
                 )}
               />
             ) : (
-              <RntInput
+              <RntInputTransparent
                 className="lg:w-full"
                 id="address"
-                labelClassName="pl-4"
                 label={isNewCar ? t_car("address") : t_car("saved_address")}
                 placeholder="Miami"
                 value={autocomplete}
@@ -726,7 +754,7 @@ export default function CarEditForm({
               />
             )}
             <RntButton
-              className="w-40"
+              className="h-14 w-40"
               type="button"
               disabled={isLocationEdited || !isFormEnabled}
               onClick={() => setValue("isLocationEdited", true)}
@@ -736,7 +764,7 @@ export default function CarEditForm({
           </div>
 
           <div className="flex flex-wrap gap-4">
-            <RntInput
+            <RntInputTransparent
               className="lg:w-40"
               id="country"
               label={t_car("country")}
@@ -746,7 +774,7 @@ export default function CarEditForm({
               value={locationInfo?.country}
               validationError={errors.locationInfo?.country?.message?.toString()}
             />
-            <RntInput
+            <RntInputTransparent
               className="lg:w-40"
               id="state"
               label={t_car("state")}
@@ -756,7 +784,7 @@ export default function CarEditForm({
               value={locationInfo?.state}
               validationError={errors.locationInfo?.state?.message?.toString()}
             />
-            <RntInput
+            <RntInputTransparent
               className="lg:w-40"
               id="city"
               label={t_car("city")}
@@ -766,7 +794,7 @@ export default function CarEditForm({
               value={locationInfo?.city}
               validationError={errors.locationInfo?.city?.message?.toString()}
             />
-            <RntInput
+            <RntInputTransparent
               className="w-[48%] lg:w-60"
               id="locationLatitude"
               label={t_car("location_lat")}
@@ -776,7 +804,7 @@ export default function CarEditForm({
               value={locationInfo?.latitude}
               validationError={errors.locationInfo?.latitude?.message?.toString()}
             />
-            <RntInput
+            <RntInputTransparent
               className="w-[48%] lg:w-60"
               id="locationLongitude"
               label={t_car("location_long")}
@@ -797,7 +825,7 @@ export default function CarEditForm({
             name="milesIncludedPerDay"
             control={control}
             render={({ field }) => (
-              <div className="flex flex-wrap items-start gap-4">
+              <div className="flex flex-wrap items-center gap-4">
                 <MilesIncludedPerDay
                   value={field.value}
                   readOnly={!isFormEnabled}
@@ -815,38 +843,81 @@ export default function CarEditForm({
             <strong>{t_car("price")}</strong>
           </div>
           <div className="flex flex-wrap gap-4">
-            <RntInput
-              className="lg:w-60"
-              id="pricePerDay"
-              label={t_car("rent")}
-              labelClassName="pl-4"
-              placeholder="e.g. 100"
-              readOnly={!isFormEnabled}
-              {...register("pricePerDay", { valueAsNumber: true })}
-              validationError={errors.pricePerDay?.message?.toString()}
+            <Controller
+              name="pricePerDay"
+              control={control}
+              render={({ field }) => (
+                <RntInputTransparent
+                  className="lg:w-60"
+                  id="pricePerDay"
+                  label={t_car("rent")}
+                  placeholder="e.g. 100"
+                  readOnly={!isFormEnabled}
+                  value={field.value}
+                  {...register("pricePerDay", { valueAsNumber: true })}
+                  validationError={errors.pricePerDay?.message?.toString()}
+                  onChange={(e) => {
+                    const inputInvestmentAmount = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
+                    const numericValue = Number.parseInt(inputInvestmentAmount, 10);
+                    if (Number.isFinite(numericValue)) {
+                      setIsCarMetadataEdited(true);
+                      field.onChange(numericValue);
+                    }
+                  }}
+                />
+              )}
             />
-            <RntInput
-              className="lg:w-60"
-              id="securityDeposit"
-              label={t_car("secure_dep")}
-              labelClassName="pl-4"
-              placeholder="e.g. 300"
-              readOnly={!isFormEnabled}
-              {...register("securityDeposit", { valueAsNumber: true })}
-              validationError={errors.securityDeposit?.message?.toString()}
+            <Controller
+              name="securityDeposit"
+              control={control}
+              render={({ field }) => (
+                <RntInputTransparent
+                  className="lg:w-60"
+                  id="securityDeposit"
+                  label={t_car("secure_dep")}
+                  placeholder="e.g. 300"
+                  readOnly={!isFormEnabled}
+                  value={field.value}
+                  {...register("securityDeposit", { valueAsNumber: true })}
+                  validationError={errors.securityDeposit?.message?.toString()}
+                  onChange={(e) => {
+                    const inputInvestmentAmount = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
+                    const numericValue = Number.parseInt(inputInvestmentAmount, 10);
+                    if (Number.isFinite(numericValue)) {
+                      setIsCarMetadataEdited(true);
+                      field.onChange(numericValue);
+                    }
+                  }}
+                />
+              )}
             />
             {!isElectricEngine ? (
-              <RntInput
-                className="lg:w-60"
-                id="fuelPricePerGal"
-                label={t_car("fuel_price")}
-                labelClassName="pl-4"
-                placeholder="e.g. 5.00"
-                readOnly={!isFormEnabled}
-                {...register("fuelPricePerGal", {
-                  setValueAs: (v) => (v === "" || v === Number.isNaN(v) ? undefined : parseInt(v, 10)),
-                })}
-                validationError={"fuelPricePerGal" in errors ? errors.fuelPricePerGal?.message?.toString() : undefined}
+              <Controller
+                name="fuelPricePerGal"
+                control={control}
+                render={({ field }) => (
+                  <RntInputTransparent
+                    className="lg:w-60"
+                    id="fuelPricePerGal"
+                    label={t_car("fuel_price")}
+                    labelClassName="pl-4"
+                    placeholder="e.g. 5.00"
+                    readOnly={!isFormEnabled}
+                    value={field.value}
+                    {...register("fuelPricePerGal", { valueAsNumber: true })}
+                    validationError={
+                      "fuelPricePerGal" in errors ? errors.fuelPricePerGal?.message?.toString() : undefined
+                    }
+                    onChange={(e) => {
+                      const inputInvestmentAmount = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
+                      const numericValue = Number.parseInt(inputInvestmentAmount, 10);
+                      if (Number.isFinite(numericValue)) {
+                        setIsCarMetadataEdited(true);
+                        field.onChange(numericValue);
+                      }
+                    }}
+                  />
+                )}
               />
             ) : null}
 
@@ -862,26 +933,41 @@ export default function CarEditForm({
 
           <div className="mt-4 flex flex-wrap items-center gap-4">
             <Controller
+              name="insurancePerDayPriceInUsd"
+              control={control}
+              render={({ field }) => (
+                <RntInputTransparent
+                  className="lg:w-60"
+                  id="insurancePerDayPriceInUsd"
+                  label={t_car("insurance_per_day")}
+                  placeholder="e.g. 25"
+                  readOnly={!isGuestInsuranceRequired || !isFormEnabled}
+                  value={field.value}
+                  {...register("insurancePerDayPriceInUsd", { valueAsNumber: true })}
+                  validationError={errors.insurancePerDayPriceInUsd?.message?.toString()}
+                  onChange={(e) => {
+                    const inputInvestmentAmount = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
+                    const numericValue = Number.parseInt(inputInvestmentAmount, 10);
+                    if (Number.isFinite(numericValue)) {
+                      setIsCarMetadataEdited(true);
+                      field.onChange(numericValue);
+                    }
+                  }}
+                />
+              )}
+            />
+            <Controller
               name="isGuestInsuranceRequired"
               control={control}
               render={({ field }) => (
-                <RntCheckbox
-                  className="mt-4"
+                <CheckboxLight
+                  className="mt-7"
                   label={t_car("guest_insurance_required")}
                   readOnly={!isFormEnabled}
                   checked={field.value}
                   onChange={field.onChange}
                 />
               )}
-            />
-            <RntInput
-              className="lg:w-60"
-              id="insurancePerDayPriceInUsd"
-              label={t_car("insurance_per_day")}
-              placeholder="e.g. 25"
-              disabled={!isGuestInsuranceRequired || !isFormEnabled}
-              {...register("insurancePerDayPriceInUsd", { valueAsNumber: true })}
-              validationError={errors.insurancePerDayPriceInUsd?.message?.toString()}
             />
           </div>
         </div>
@@ -916,44 +1002,73 @@ export default function CarEditForm({
             <strong>{t_car("management")}</strong>
           </div>
           <div className="mb-4 flex flex-wrap gap-4">
-            <RntSelect
-              className="lg:w-60"
-              id="timeBufferBetweenTrips"
-              label={t_car("time_buffer")}
-              labelClassName="pl-4"
-              readOnly={!isFormEnabled}
-              {...register("timeBufferBetweenTripsInMin", { valueAsNumber: true })}
-              validationError={errors.timeBufferBetweenTripsInMin?.message?.toString()}
-            >
-              <option value="0">0 min</option>
-              <option value="15">15 min</option>
-              <option value="30">30 min</option>
-              <option value="60">1 hr</option>
-              <option value="90">1.5 hr</option>
-              <option value="120">2 hr</option>
-              <option value="150">2.5 hr</option>
-              <option value="180">3 hr</option>
-            </RntSelect>
+            <Controller
+              name="timeBufferBetweenTripsInMin"
+              control={control}
+              render={({ field }) => (
+                <RntFilterSelect
+                  className="lg:w-60"
+                  id="timeBufferBetweenTrips"
+                  isTransparentStyle={true}
+                  label={t_car("time_buffer")}
+                  disabled={!isFormEnabled}
+                  value={field.value ?? 0}
+                  validationError={errors.timeBufferBetweenTripsInMin?.message?.toString()}
+                  onChange={(e) => {
+                    field.onChange(Number(e.target.value));
+                  }}
+                >
+                  <RntFilterSelect.Option key="time-buffer-1" value="0">
+                    0 min
+                  </RntFilterSelect.Option>
+                  <RntFilterSelect.Option key="time-buffer-2" value={"15"}>
+                    15 min
+                  </RntFilterSelect.Option>
+                  <RntFilterSelect.Option key="time-buffer-3" value={"30"}>
+                    30 min
+                  </RntFilterSelect.Option>
+                  <RntFilterSelect.Option key="time-buffer-4" value={"60"}>
+                    1 hr
+                  </RntFilterSelect.Option>
+                  <RntFilterSelect.Option key="time-buffer-5" value={"90"}>
+                    1.5 hr
+                  </RntFilterSelect.Option>
+                  <RntFilterSelect.Option key="time-buffer-6" value={"120"}>
+                    2 hr
+                  </RntFilterSelect.Option>
+                  <RntFilterSelect.Option key="time-buffer-7" value={"150"}>
+                    2.5 hr
+                  </RntFilterSelect.Option>
+                  <RntFilterSelect.Option key="time-buffer-8" value={"180"}>
+                    3 hr
+                  </RntFilterSelect.Option>
+                </RntFilterSelect>
+              )}
+            />
           </div>
           <div className="flex flex-wrap gap-4">
             <Controller
               name="currentlyListed"
               control={control}
               render={({ field }) => (
-                <RntSelect
+                <RntFilterSelect
                   className="lg:w-60"
                   id="listed"
+                  isTransparentStyle={true}
                   label={t_car("listing_status")}
-                  labelClassName="pl-4"
                   value={field.value ? "true" : "false"}
-                  readOnly={!isFormEnabled}
+                  disabled={!isFormEnabled}
                   onChange={(e) => {
                     field.onChange(e.target.value === "true");
                   }}
                 >
-                  <option value="true">{t_car("listed")}</option>
-                  <option value="false">{t_car("unlisted")}</option>
-                </RntSelect>
+                  <RntFilterSelect.Option key="listing-status-1" value={"true"}>
+                    {t_car("listed")}
+                  </RntFilterSelect.Option>
+                  <RntFilterSelect.Option key="listing-status-2" value={"false"}>
+                    {t_car("unlisted")}
+                  </RntFilterSelect.Option>
+                </RntFilterSelect>
               )}
             />
           </div>
@@ -962,13 +1077,13 @@ export default function CarEditForm({
         <div className="mb-8 mt-8 flex flex-row justify-between gap-4 sm:justify-start">
           <RntButton
             type="button"
-            className="h-16 w-40"
+            className="h-14 w-40"
             disabled={isSubmitting}
             onClick={handleSubmit(async (data) => await onFormSubmit(data))}
           >
             {t("common.save")}
           </RntButton>
-          <RntButton type="button" className="h-16 w-40" onClick={handleBack}>
+          <RntButton type="button" className="h-14 w-40" onClick={handleBack}>
             {t("common.back")}
           </RntButton>
         </div>
@@ -1005,13 +1120,17 @@ const MilesIncludedPerDay = ({
   return (
     <>
       {isUnlimited ? (
-        <RntInput className="lg:w-60" label={t_car("max_mileage")} readOnly={true} value={UNLIMITED_MILES_VALUE_TEXT} />
+        <RntInputTransparent
+          className="lg:w-60"
+          label={t_car("max_mileage")}
+          readOnly={true}
+          value={UNLIMITED_MILES_VALUE_TEXT}
+        />
       ) : (
-        <RntInput
+        <RntInputTransparent
           className="lg:w-60"
           id="milesIncludedPerDay"
           label={t_car("max_mileage")}
-          labelClassName="pl-4"
           placeholder="e.g. 200"
           value={milesIncludedPerDay}
           readOnly={readOnly}
@@ -1026,8 +1145,8 @@ const MilesIncludedPerDay = ({
           validationError={validationError}
         />
       )}
-      <RntCheckbox
-        className="ml-4 mt-8"
+      <CheckboxLight
+        className="mt-7"
         label={t_car("unlimited_miles")}
         checked={isUnlimited}
         readOnly={readOnly}

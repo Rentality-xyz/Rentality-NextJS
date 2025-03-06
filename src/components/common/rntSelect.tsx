@@ -41,7 +41,10 @@ const RntSelect = forwardRef<HTMLSelectElement, RntSelectProps>(
   ) => {
     const cClassName = cn("text-black flex flex-col w-full", className);
     const lClassName = cn("text-rnt-temp-main-text whitespace-nowrap mb-1", labelClassName);
-    const sclassName = cn("w-full h-12 border-2 disabled:border-gray-500 rounded-full pl-4", selectClassName);
+    const sclassName = cn(
+      "appearance-none w-full h-12 border-2 disabled:border-gray-500 rounded-full pl-4",
+      selectClassName
+    );
     const contClassName = cn(
       !readOnly && "btn_input_border-gradient",
       cn("select-container w-full", containerClassName)
@@ -68,7 +71,7 @@ const RntSelect = forwardRef<HTMLSelectElement, RntSelectProps>(
           <select
             className={cn(isTransparentStyle && cTranspStyleClassName, sclassName)}
             id={id}
-            style={isTransparentStyle ? { backgroundColor: "transparent", border: "0px", paddingLeft: "0px" } : {}}
+            style={isTransparentStyle ? { backgroundColor: "transparent", paddingLeft: "0px" } : {}}
             disabled={readOnly}
             placeholder={placeholder}
             onChange={(e) => onChangeHandler != null && onChangeHandler(e)}

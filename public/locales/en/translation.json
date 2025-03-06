@@ -903,8 +903,8 @@
     },
     "loading": "Loading..."
   },
-  "cropper" : {
-    "cancel" : "Cancel",
-    "crop" : "Crop"
+  "cropper": {
+    "cancel": "Cancel",
+    "crop": "Crop"
   }
 }

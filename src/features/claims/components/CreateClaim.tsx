@@ -12,13 +12,18 @@ import { Err, Result } from "@/model/utils/result";
 import RntSelect from "@/components/common/rntSelect";
 import RntInputMultiline from "@/components/common/rntInputMultiline";
 import RntInput from "@/components/common/rntInput";
-import RntCheckbox from "@/components/common/rntCheckbox";
+import RntCheckbox, { CheckboxLight } from "@/components/common/rntCheckbox";
 import RntButton from "@/components/common/rntButton";
 import useUserMode from "@/hooks/useUserMode";
 import useCreateClaim from "../hooks/useCreateClaim";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useTranslation } from "react-i18next";
 import useTripsForClaimCreation from "../hooks/useTripsForClaimCreation";
+import { FileToUpload } from "@/model/FileToUpload";
+import RntFilterSelect from "@/components/common/RntFilterSelect";
+import * as React from "react";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
+import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 
 const hostClaimTypes = [
   ClaimType.Tolls,
@@ -123,44 +128,53 @@ export default function CreateClaim() {
       onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}
     >
       <div className="flex flex-col items-center gap-4 md:flex-row md:gap-8">
-        <RntSelect
-          className="lg:w-1/2"
-          labelClassName="pl-4"
-          id="trip"
-          label="Trip"
-          {...register("selectedTripId")}
-          validationError={errors.selectedTripId?.message}
-        >
-          <option className="hidden" disabled></option>
-          {tripInfos.map((i) => (
-            <option key={i.tripId} value={i.tripId.toString()}>
-              {i.tripDescription}
-            </option>
-          ))}
-        </RntSelect>
-        <RntSelect
-          className="lg:w-80"
-          labelClassName="pl-4"
-          id="type"
-          label={isHost ? "Incident type" : "Issues type"}
-          {...register("incidentType")}
-          validationError={errors.incidentType?.message}
-        >
-          {(isHost ? hostClaimTypes : guestClaimTypes).map((i) => (
-            <option key={i.toString()} value={i.toString()}>
-              {getClaimTypeTextFromClaimType(i)}
-            </option>
-          ))}
-        </RntSelect>
-
+        <Controller
+          name="selectedTripId"
+          control={control}
+          render={({ field }) => (
+            <RntFilterSelect
+              className="lg:min-w-80"
+              id="trip"
+              label="Trip"
+              placeholder="Select trip"
+              value={field.value}
+              validationError={errors.selectedTripId?.message}
+            >
+              {tripInfos.map((i) => (
+                <RntFilterSelect.Option key={i.tripId} value={i.tripId.toString()}>
+                  {i.tripDescription}
+                </RntFilterSelect.Option>
+              ))}
+            </RntFilterSelect>
+          )}
+        />
+        <Controller
+          name="incidentType"
+          control={control}
+          render={({ field }) => (
+            <RntFilterSelect
+              className="lg:w-80"
+              id="type"
+              label={isHost ? "Incident type" : "Issues type"}
+              value={field.value}
+              validationError={errors.incidentType?.message}
+            >
+              {(isHost ? hostClaimTypes : guestClaimTypes).map((i) => (
+                <RntFilterSelect.Option key={i.toString()} value={i.toString()}>
+                  {getClaimTypeTextFromClaimType(i)}
+                </RntFilterSelect.Option>
+              ))}
+            </RntFilterSelect>
+          )}
+        />
         {!isEmpty(selectedTripId) ? (
           <Link href={`/host/trips/tripInfo/${selectedTripId}?back=${pathname}`} target="_blank">
-            {/* <Image className="sm:hidden" src={icInfo} width={25} alt="" /> max-sm:hidden */}
             <span className="text-rentality-secondary">Trip information</span>
           </Link>
         ) : null}
       </div>
       <RntInputMultiline
+        isTransparentStyle={true}
         id="description"
         labelClassName="pl-3.5"
         rows={3}
@@ -183,7 +197,7 @@ export default function CreateClaim() {
         )}
       />
 
-      <RntInput
+      <RntInputTransparent
         className="w-full lg:w-1/2"
         labelClassName="pl-4"
         id="amount"
@@ -198,7 +212,7 @@ export default function CreateClaim() {
         name="isChecked"
         control={control}
         render={({ field }) => (
-          <RntCheckbox
+          <CheckboxLight
             className="w-full"
             label="I certify that all charges are accurate, and I understand that any false submission or representation may result in restrictions or removal from the Rentality marketplace."
             checked={field.value}
@@ -209,7 +223,7 @@ export default function CreateClaim() {
         )}
       />
 
-      <RntButton type="submit" className="w-72" disabled={isSubmitting || !isChecked}>
+      <RntButton type="submit" className="w-[310px]" disabled={isSubmitting || !isChecked}>
         Confirm and send to {textSendTo}
       </RntButton>
     </form>

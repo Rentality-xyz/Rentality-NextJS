@@ -1,6 +1,7 @@
 import RntSelect, { RntSelectProps } from "@/components/common/rntSelect";
 import React, { useEffect, useState } from "react";
 import useCarAPI from "@/hooks/useCarAPI";
+import RntFilterSelect from "@/components/common/RntFilterSelect";
 
 interface RntCarYearSelectProps extends RntSelectProps {
   id: string;
@@ -11,6 +12,8 @@ interface RntCarYearSelectProps extends RntSelectProps {
   value: number;
   readOnly?: boolean;
   onYearSelect?: (newYear: number) => void;
+  isTransparentStyle?: boolean;
+  promptText?: string;
 }
 
 export default function RntCarYearSelect({
@@ -22,6 +25,8 @@ export default function RntCarYearSelect({
   model_id,
   value,
   onYearSelect,
+  isTransparentStyle = false,
+  promptText = "Please select",
   validationError,
 }: RntCarYearSelectProps) {
   const { getCarYearsByMakeAndModel } = useCarAPI();
@@ -39,25 +44,25 @@ export default function RntCarYearSelect({
   }, [make_id, model_id]);
 
   return (
-    <RntSelect
+    <RntFilterSelect
       id={id}
+      isTransparentStyle={isTransparentStyle}
       className={className}
       label={label}
-      labelClassName="pl-4"
       value={value}
       validationError={validationError}
-      readOnly={readOnly || false}
+      disabled={readOnly || false}
+      placeholder={promptText}
       onChange={function (e) {
         const newValue = e.target.value;
         if (onYearSelect) onYearSelect(parseInt(newValue));
       }}
     >
-      <option value="0">Please select</option>
       {yearsList.map((yearsListElement, index) => (
-        <option key={"car-year-" + index} value={yearsListElement}>
+        <RntFilterSelect.Option key={"year-manufacture-" + index} data-id={yearsListElement} value={yearsListElement}>
           {yearsListElement}
-        </option>
+        </RntFilterSelect.Option>
       ))}
-    </RntSelect>
+    </RntFilterSelect>
   );
 }
