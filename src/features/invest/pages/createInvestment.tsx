@@ -4,6 +4,7 @@ import useCreateInvestCar from "@/hooks/host/useCreateInvestCar";
 import { useState } from "react";
 import { HostCarInfo } from "@/model/HostCarInfo";
 import { useTranslation } from "react-i18next";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
 
 /// TODO: checkInputs on correctness
 export default function CreateCarInvestment() {
@@ -28,7 +29,7 @@ export default function CreateCarInvestment() {
         <strong>{"Investment Info"}</strong>
       </div>
       <div className="flex flex-wrap gap-4">
-        <RntInput
+        <RntInputTransparent
           className="lg:w-60"
           label={"Car price"}
           placeholder="e.g. 10000"
@@ -36,7 +37,7 @@ export default function CreateCarInvestment() {
           onChange={handleInputCarPriceChange}
         />
 
-        <RntInput
+        <RntInputTransparent
           className="lg:w-60"
           label={"Host percentage"}
           placeholder="e.g. 1-100"
@@ -46,7 +47,7 @@ export default function CreateCarInvestment() {
       </div>
       <div className="mb-4 gap-4 text-lg text-[#FFFFFF70]">{t("invest.new_nft_info")}</div>
       <div className="flex flex-wrap gap-4">
-        <RntInput
+        <RntInputTransparent
           className="lg:w-60"
           id="pricePerDay"
           label={"NFT name"}
@@ -55,7 +56,7 @@ export default function CreateCarInvestment() {
           value={nftName}
           onChange={(value) => setNftName(value.target.value)}
         />
-        <RntInput
+        <RntInputTransparent
           className="lg:w-60"
           id="securityDeposit"
           label={"NFT symbol"}

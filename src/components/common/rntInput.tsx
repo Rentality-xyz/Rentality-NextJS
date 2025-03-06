@@ -7,7 +7,7 @@ import bgInput from "@/images/bg_input.png";
 import * as React from "react";
 import DotStatus from "@/components/dotStatus";
 
-interface RntInputProps extends React.ComponentPropsWithoutRef<"input"> {
+export interface RntInputProps extends React.ComponentPropsWithoutRef<"input"> {
   labelClassName?: string;
   inputClassName?: string;
   validationClassName?: string;

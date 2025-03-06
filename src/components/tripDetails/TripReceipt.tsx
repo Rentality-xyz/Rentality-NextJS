@@ -231,7 +231,9 @@ function TripReceipt({ tripId, tripInfo, userMode }: { tripId: bigint; tripInfo:
           </tbody>
         </table>
         <hr className="my-4" />
-        <TripContacts tripInfo={tripInfo} isHost={isHost(userMode)} phoneForHost={false} t={t} />
+        <div className="flex w-full justify-between">
+          <TripContacts tripInfo={tripInfo} isHost={isHost(userMode)} phoneForHost={false} t={t} />
+        </div>
       </div>
       <div className="flex justify-center p-4">
         <RntContractModal tripId={tripId} tripInfo={tripInfo} />

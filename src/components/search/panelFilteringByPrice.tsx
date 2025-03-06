@@ -1,9 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-// @ts-ignore
-import arrowUpTurquoise from "@/images/arrows/arrowUpTurquoise.svg";
-// @ts-ignore
-import arrowDownTurquoise from "@/images/arrows/arrowDownTurquoise.svg";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import { useTranslation } from "react-i18next";
 import { IPanelFilterProps } from "@/components/search/panelFilterProps";
@@ -123,24 +119,31 @@ export default function PanelFilteringByPrice({
         onClick={() => {
           toggleDropdown();
         }}
+        isVisibleCircle={false}
       >
-        <div ref={dropdownRef} className="relative flex items-center justify-center text-rentality-secondary">
+        <div ref={dropdownRef} className="relative flex w-full items-center justify-center text-white">
           <div className="text-lg">
             {value[0] <= minPrice && value[1] >= maxPrice
               ? t_comp("select_filter_price")
               : `$${value[0]} - $${value[1]}`}
           </div>
-          <Image src={isOpen ? arrowUpTurquoise : arrowDownTurquoise} alt="" className="absolute right-4" />
+          <Image
+            src="/images/icons/arrowTriangleDownGradient.svg"
+            alt=""
+            width="12"
+            height="9"
+            className={`ml-4 transition ${isOpen ? "rotate-180" : "rotate-0"} `}
+          />
         </div>
       </RntButtonTransparent>
 
       {isOpen &&
         createPortal(
           <div
-            className="absolute z-10 w-56 rounded-lg border border-gray-500 bg-rentality-bg-left-sidebar px-4 py-2 shadow-md"
+            className="absolute z-10 w-64 rounded-lg border border-gray-500 bg-rentality-bg-left-sidebar px-2 py-2 shadow-md"
             style={{
               top: `${positionDropdown.top}px`,
-              left: `${positionDropdown.left - 17}px`,
+              left: `${positionDropdown.left - 32}px`,
             }}
           >
             <div className="mb-4 text-lg text-white">
@@ -148,26 +151,25 @@ export default function PanelFilteringByPrice({
               {t("common.per_day")}
             </div>
 
-            <div className="mb-4 flex items-center justify-center" onClick={(event) => event.stopPropagation()}>
+            <div className="mb-4 flex items-center justify-center px-2.5" onClick={(event) => event.stopPropagation()}>
               <Slider
+                style={{
+                  color: `#26B4B1`,
+                }}
                 value={value}
                 min={minPrice}
                 max={maxPrice}
                 onChange={handleSliderChange}
                 valueLabelDisplay="auto"
-                className="w-full text-rentality-secondary-shade"
+                className="w-full"
               />
             </div>
 
             <div className="flex justify-between">
-              <RntButton
-                className="w-20 border border-gray-300 bg-transparent text-gray-300 hover:border-white hover:text-white"
-                minHeight="38px"
-                onClick={handleReset}
-              >
+              <RntButtonTransparent className="w-28" onClick={handleReset}>
                 {t_comp("button_reset")}
-              </RntButton>
-              <RntButton className="w-20" minHeight="38px" onClick={handleApply}>
+              </RntButtonTransparent>
+              <RntButton className="w-28" onClick={handleApply}>
                 {t_comp("button_apply")}
               </RntButton>
             </div>
