@@ -1,5 +1,5 @@
 import { cn } from "@/utils";
-import { ChangeEventHandler } from "react";
+import React, { ChangeEventHandler } from "react";
 
 export default function RntFileButton({
   className,
@@ -19,7 +19,7 @@ export default function RntFileButton({
 }) {
   const bgColor = !className?.includes("bg-") ? "bg-rnt-button-gradient" : "";
   const c = cn(
-    "h-12 w-56 rounded-full text-white text-lg flex justify-center items-center disabled:bg-gray-500 cursor-pointer",
+    "h-12 w-56 active:scale-95 active:opacity-75 rounded-full text-white text-lg flex justify-center items-center disabled:bg-gray-500 cursor-pointer",
     bgColor,
     className
   );
@@ -36,6 +36,7 @@ export default function RntFileButton({
         accept={accept}
       />
       {children}
+      <span className={`ml-4`}>●</span>
     </label>
   );
 }

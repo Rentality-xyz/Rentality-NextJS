@@ -45,12 +45,17 @@ module.exports = {
         "rentality-button-medium": "#7f5ee7",
         "rentality-button-dark": "#593ec0",
         "rentality-icons": "#C0AEFF",
+        "rnt-button-disabled": "#363659",
+        "rnt-text-button-disabled": "#B2B9DB",
 
         "status-pending": "#7c58d7",
         "status-on-trip": "#220e50",
         "status-completed": "#22d7d3",
 
         "rentality-alert-text": "#f87171",
+
+        "rnt-checkbox-border": "#7257ce",
+        "rnt-checkbox-check-mark": "#C0AEFF",
 
         "rnt-temp-header-bg": "#e5e7eb", //#e5e7eb bg-gray-200
         "rnt-temp-header-text": "#ffffff", //#0f172a text-gray-900

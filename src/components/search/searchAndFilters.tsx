@@ -4,13 +4,10 @@ import RntInput from "../common/rntInput";
 import RntPlaceAutoComplete from "../common/rntPlaceAutocomplete";
 import { TFunction as TFunctionNext } from "i18next";
 import { useEffect, useRef, useState } from "react";
-import { ParseLocationResponse } from "@/pages/api/parseLocation";
 import moment from "moment";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import * as React from "react";
-import arrowUpTurquoise from "../../images/arrows/arrowUpTurquoise.svg";
-import arrowDownTurquoise from "../../images/arrows/arrowDownTurquoise.svg";
 import Image from "next/image";
 import SearchDeliveryLocations from "@/components/search/searchDeliveryLocations";
 import { formatLocationInfoUpToCity, formatLocationInfoUpToState } from "@/model/LocationInfo";
@@ -174,9 +171,10 @@ export default function SearchAndFilters({
     <>
       <RntPlaceAutoComplete
         isTransparentStyle={true}
+        isDarkPlacePredictions={true}
         iconFrontLabel={icLocation}
         className="w-full"
-        inputClassName="mt-1 z-10"
+        inputClassName="mt-1 z-10 focus:outline-none focus:ring-0"
         labelClassName="pl-3.5 font-bold"
         id={nameof(searchCarRequest, "searchLocation")}
         label={t_comp("location_label")}
@@ -202,7 +200,7 @@ export default function SearchAndFilters({
           isTransparentStyle={true}
           iconFrontLabel={icCalendar}
           className="basis-1/3"
-          inputClassName="pr-4 z-10"
+          inputClassName="pr-4 z-10 focus:outline-none focus:ring-0"
           labelClassName="pl-[18px] z-10 font-bold"
           id={nameof(searchCarRequest, "dateFromInDateTimeStringFormat")}
           label={`${t_comp("datetime_from")} ${gmtLabel}`}
@@ -214,7 +212,7 @@ export default function SearchAndFilters({
           isTransparentStyle={true}
           iconFrontLabel={icCalendar}
           className="basis-1/3"
-          inputClassName="pr-4 z-10"
+          inputClassName="pr-4 z-10 focus:outline-none focus:ring-0"
           labelClassName="pl-[18px] z-10 font-bold"
           id={nameof(searchCarRequest, "dateToInDateTimeStringFormat")}
           label={`${t_comp("datetime_to")} ${gmtLabel}`}
@@ -225,6 +223,7 @@ export default function SearchAndFilters({
         <RntButton
           className="mt-2 flex w-full items-center justify-center md:w-48"
           disabled={!isSearchAllowed}
+          isVisibleCircle={false}
           onClick={handleSearchClick}
         >
           <Image src={icSearch} alt="" className="mr-2 h-[16px]" />
@@ -366,12 +365,11 @@ export default function SearchAndFilters({
         />
 
         <div className="flex justify-between gap-4 max-sm:w-full">
-          <RntButton className="w-40" onClick={handleResetClick}>
+          <RntButton className="w-44" onClick={handleResetClick}>
             {t_comp("button_reset_filters")}
           </RntButton>
           <RntFilterSelect
-            className="bg-rnt-button-gradient w-52 justify-center border-0 text-lg text-white"
-            //selectClassName="   custom-select px-4  cursor-pointer"
+            className="bg-rnt-button-gradient w-56 justify-center border-0 text-lg text-white"
             id="sort"
             placeholder={t_comp("sort_by")}
             value={sortBy ? sortOption[sortBy] : ""}
@@ -383,18 +381,22 @@ export default function SearchAndFilters({
             }}
           >
             {Object.entries(sortOption ?? {}).map(([key, value]) => (
-              <RntFilterSelect.Option key={key} value={value} />
+              <RntFilterSelect.Option key={key} value={value}>
+                {value}
+              </RntFilterSelect.Option>
             ))}
           </RntFilterSelect>
         </div>
 
-        <RntButtonTransparent className="w-48" onClick={handleClickOpenDeliveryLocation}>
-          <div className="relative flex w-48 items-center justify-center text-rentality-secondary">
+        <RntButtonTransparent className="w-48" onClick={handleClickOpenDeliveryLocation} isVisibleCircle={false}>
+          <div className="relative flex w-full items-center justify-center text-white">
             <div className="text-lg">{t_comp("button_deliver_to_me")}</div>
             <Image
-              src={openDeliveryLocation ? arrowUpTurquoise : arrowDownTurquoise}
+              src="/images/icons/arrowTriangleDownGradient.svg"
               alt=""
-              className="max-sm:absolute max-sm:right-4 sm:ml-3"
+              width="12"
+              height="9"
+              className={`ml-4 transition ${openDeliveryLocation ? "rotate-180" : "rotate-0"} `}
             />
           </div>
         </RntButtonTransparent>

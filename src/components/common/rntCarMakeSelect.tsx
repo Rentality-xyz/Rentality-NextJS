@@ -2,7 +2,6 @@ import { RntSelectProps } from "./rntSelect";
 import React, { useEffect, useMemo, useState } from "react";
 import useCarAPI, { CarMakesListElement } from "@/hooks/useCarAPI";
 import RntFilterSelect from "./RntFilterSelect";
-import { cn } from "@/utils";
 
 interface RntCarMakeSelectProps extends RntSelectProps {
   id: string;
@@ -49,7 +48,8 @@ export default function RntCarMakeSelect({
   return (
     <RntFilterSelect
       id={id}
-      className={cn(className, isTransparentStyle && !isReadOnly && "btn_input_border-gradient border-0")}
+      className={className}
+      isTransparentStyle={isTransparentStyle}
       label={label}
       validationError={validationError}
       containerClassName={containerClassName}
@@ -67,7 +67,9 @@ export default function RntCarMakeSelect({
           key={"car-make-" + index}
           data-id={carMakesListElement.id}
           value={carMakesListElement.name}
-        />
+        >
+          {carMakesListElement.name}
+        </RntFilterSelect.Option>
       ))}
     </RntFilterSelect>
   );

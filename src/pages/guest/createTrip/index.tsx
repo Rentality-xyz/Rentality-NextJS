@@ -214,11 +214,7 @@ function CreateTripDetailsContent({
         <hr />
         <div className="grid w-full grid-cols-2 gap-8">
           <RntTripRulesModal buttonClassName="w-full" />
-          <RntButtonTransparent
-            className="w-full text-lg text-rentality-secondary"
-            disabled={true}
-            onClick={handlePreAgreementDetailsClick}
-          >
+          <RntButtonTransparent className="w-full text-lg" disabled={true} onClick={handlePreAgreementDetailsClick}>
             {t("create_trip.pre_agreement_details")}
           </RntButtonTransparent>
         </div>
