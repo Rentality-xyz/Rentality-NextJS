@@ -5,6 +5,7 @@ import { isEmpty } from "@/utils/string";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { bigIntReplacer } from "@/utils/json";
 import { PublicSearchCarsResponse } from "@/pages/api/publicSearchCars";
+import { logger } from "@/utils/logger";
 
 export type SortOptions = {
   [key: string]: string;
@@ -66,7 +67,7 @@ const useSearchCars = () => {
       const apiResponse = await fetch(url);
 
       if (!apiResponse.ok) {
-        console.error(`searchAvailableCars fetch error: + ${apiResponse.statusText}`);
+        logger.error(`searchAvailableCars fetch error: + ${apiResponse.statusText}`);
         return;
       }
 
@@ -77,13 +78,13 @@ const useSearchCars = () => {
         apiJson.filterLimits === undefined ||
         !Array.isArray(apiJson.availableCarsData)
       ) {
-        console.error("searchAvailableCars fetch wrong response format:");
+        logger.error("searchAvailableCars fetch wrong response format:");
         return;
       }
 
       const publicSearchCarsResponse = apiJson as PublicSearchCarsResponse;
       if ("error" in publicSearchCarsResponse) {
-        console.error(`searchAvailableCars fetch error: + ${publicSearchCarsResponse.error}`);
+        logger.error(`searchAvailableCars fetch error: + ${publicSearchCarsResponse.error}`);
         return;
       }
 
@@ -107,7 +108,7 @@ const useSearchCars = () => {
         availableCarsData[0].highlighted = true;
       }
 
-      console.debug(
+      logger.debug(
         "cars:",
         JSON.stringify(
           availableCarsData.map((i) => ({
@@ -131,8 +132,8 @@ const useSearchCars = () => {
         filterLimits: publicSearchCarsResponse.filterLimits,
       });
       return true;
-    } catch (e) {
-      console.error("updateData error:" + e);
+    } catch (error) {
+      logger.error("updateData error:" + error);
       return false;
     } finally {
       setIsLoading(false);

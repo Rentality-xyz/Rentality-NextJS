@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { mapTripDTOtoTripInfo } from "@/model/utils/TripDTOtoTripInfo";
 import { TripInfo } from "@/model/TripInfo";
+import { logger } from "@/utils/logger";
 
 const useTripInfo = (tripId: bigint) => {
   const { rentalityContracts } = useRentality();
@@ -11,7 +12,7 @@ const useTripInfo = (tripId: bigint) => {
   const getTrip = async (rentalityContracts: IRentalityContracts, tripId: bigint) => {
     try {
       if (!rentalityContracts) {
-        console.error("getTrip error: contract is null");
+        logger.error("getTrip error: contract is null");
         return;
       }
       const result = await rentalityContracts.gateway.getTrip(tripId);
@@ -21,8 +22,8 @@ const useTripInfo = (tripId: bigint) => {
       const tripInfo = await mapTripDTOtoTripInfo(result.value);
 
       return tripInfo;
-    } catch (e) {
-      console.error("getTrip error:" + e);
+    } catch (error) {
+      logger.error("getTrip error:" + error);
     }
   };
 

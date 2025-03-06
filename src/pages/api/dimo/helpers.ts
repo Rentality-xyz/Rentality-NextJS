@@ -1,4 +1,5 @@
 import { env } from "@/utils/env";
+import { logger } from "@/utils/logger";
 import { DIMO } from "@dimo-network/data-sdk";
 
 export async function authOnDimo() {
@@ -7,7 +8,7 @@ export async function authOnDimo() {
   const domain = env.NEXT_PUBLIC_SERVER_DIMO_DOMAIN;
 
   if (!clientId || !apiKey || !domain) {
-    console.error("DIMO .env is not set");
+    logger.error("DIMO .env is not set");
     return null;
   }
 

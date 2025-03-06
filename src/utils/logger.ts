@@ -7,11 +7,13 @@ export type LogLevel = (typeof LOG_LEVELS)[number];
 const MIN_CONSOLE_LOG_LEVEL: LogLevel = env.NEXT_PUBLIC_MIN_CONSOLE_LOG_LEVEL || "trace";
 const MIN_EXTERNAL_LOG_LEVEL: LogLevel = env.NEXT_PUBLIC_MIN_EXTERNAL_LOG_LEVEL || "info";
 const ENV: NodeEnv = env.NEXT_PUBLIC_NODE_ENV || "development";
-const IS_PROD_OR_QA = ENV === "production" || ENV === "qa";
 const IS_SERVER = typeof window === "undefined";
+const MAX_CLIENT_LOGS = 100;
 
 // const logging = new Logging();
 // const log = logging.log("rentality-app");
+
+const clientLogQueue: { level: LogLevel; message: string; meta?: object }[] = [];
 
 function shouldLog(level: LogLevel, minLevel: LogLevel): boolean {
   return LOG_LEVELS.indexOf(level) >= LOG_LEVELS.indexOf(minLevel);
@@ -23,6 +25,7 @@ function logToExternal(level: LogLevel, message: string, meta?: object) {
   const metadata = { severity: level.toUpperCase() };
   //   const entry = log.entry(metadata, { message, ...meta });
   //   log.write(entry).catch(console.error);
+  console.log(`log ${message} was sent to server`);
 }
 
 function formatMessage(level: LogLevel, msg: string) {
@@ -35,7 +38,12 @@ const logMessage = (level: LogLevel, msg: string, meta?: object) => {
   if (shouldLog(level, MIN_CONSOLE_LOG_LEVEL as LogLevel)) {
     console[level](formatMessage(level, msg), meta);
   }
-  if (IS_PROD_OR_QA) logToExternal(level, msg, meta);
+  if (!IS_SERVER) {
+    clientLogQueue.push({ level, message: msg, meta });
+    if (clientLogQueue.length > MAX_CLIENT_LOGS) {
+      clientLogQueue.shift();
+    }
+  }
 };
 
 export const logger = {
@@ -44,4 +52,8 @@ export const logger = {
   info: (msg: string, meta?: object) => logMessage("info", msg, meta),
   warn: (msg: string, meta?: object) => logMessage("warn", msg, meta),
   error: (msg: string, meta?: object) => logMessage("error", msg, meta),
+  sendToExternal: (minLevel: LogLevel = "info", lastCount: number = MAX_CLIENT_LOGS) => {
+    const logsToSend = clientLogQueue.filter((log) => shouldLog(log.level, minLevel)).slice(-lastCount);
+    logsToSend.forEach((log) => logToExternal(log.level, log.message, log.meta));
+  },
 };

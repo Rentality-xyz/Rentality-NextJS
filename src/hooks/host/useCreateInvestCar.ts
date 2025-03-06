@@ -10,6 +10,7 @@ import { saveCarImages, uploadMetadataToIPFS } from "./useSaveNewCar";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { INVESTMENTS_LIST_QUERY_KEY } from "../guest/useGetInvestments";
+import { logger } from "@/utils/logger";
 
 function useCreateInvestCar() {
   const ethereumInfo = useEthereum();
@@ -31,12 +32,12 @@ function useCreateInvestCar() {
     }): Promise<Result<boolean, Error>> => {
       try {
         if (!ethereumInfo || !rentalityContracts) {
-          console.error("createInvestCar error: Missing required contracts or ethereum info");
+          logger.error("createInvestCar error: Missing required contracts or ethereum info");
           return Err(new Error("Missing required contracts or ethereum info"));
         }
 
         if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
-          console.error("createInvestCar error: user don't have enough funds");
+          logger.error("createInvestCar error: user don't have enough funds");
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
@@ -50,7 +51,7 @@ function useCreateInvestCar() {
         const metadataURL = await uploadMetadataToIPFS(dataToSave, ethereumInfo);
 
         if (!metadataURL) {
-          console.error("Upload JSON to Pinata error");
+          logger.error("Upload JSON to Pinata error");
           return Err(new Error("ERROR"));
         }
 
@@ -66,7 +67,7 @@ function useCreateInvestCar() {
           locationInfo: mapLocationInfoToContractLocationInfo(dataToSave.locationInfo),
           signature: "",
         };
-        console.debug(`location: ${JSON.stringify(location)}`);
+        logger.debug(`location: ${JSON.stringify(location)}`);
 
         const request: ContractCreateCarRequest = {
           tokenUri: metadataURL,
@@ -106,7 +107,7 @@ function useCreateInvestCar() {
 
         return result;
       } catch (error) {
-        console.error("createInvestCar error: ", error);
+        logger.error("createInvestCar error: ", error);
         return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
       }
     },

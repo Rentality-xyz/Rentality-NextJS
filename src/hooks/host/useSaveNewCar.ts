@@ -14,6 +14,7 @@ import axios from "axios";
 import { useDimoAuthState } from "@dimo-network/login-with-dimo";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MY_LISTINGS_QUERY_KEY } from "./useFetchMyListings";
+import { logger } from "@/utils/logger";
 
 function useSaveNewCar() {
   const ethereumInfo = useEthereum();
@@ -25,12 +26,12 @@ function useSaveNewCar() {
     mutationFn: async (hostCarInfo: HostCarInfo): Promise<Result<boolean, Error>> => {
       try {
         if (!ethereumInfo || !rentalityContracts) {
-          console.error("saveNewCar error: Missing required contracts or ethereum info");
+          logger.error("saveNewCar error: Missing required contracts or ethereum info");
           return Err(new Error("Missing required contracts or ethereum info"));
         }
 
         if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
-          console.error("saveNewCar error: user don't have enough funds");
+          logger.error("saveNewCar error: user don't have enough funds");
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
@@ -44,7 +45,7 @@ function useSaveNewCar() {
         const metadataURL = await uploadMetadataToIPFS(dataToSave, ethereumInfo);
 
         if (!metadataURL) {
-          console.error("saveNewCar error: Upload JSON to Pinata error");
+          logger.error("saveNewCar error: Upload JSON to Pinata error");
           return Err(new Error("ERROR"));
         }
 
@@ -61,7 +62,7 @@ function useSaveNewCar() {
           ethereumInfo.chainId
         );
         if (!locationResult.ok) {
-          console.error("saveNewCar error: Sign location error");
+          logger.error("saveNewCar error: Sign location error");
           return Err(new Error("ERROR"));
         }
 
@@ -77,7 +78,7 @@ function useSaveNewCar() {
                   dimoToken,
                 })
                 .then((response) => {
-                  console.log("SIGN", response.data.signature);
+                  logger.info("SIGN", response.data.signature);
                   return response.data.signature;
                 })
                 .catch((error) => {
@@ -111,12 +112,12 @@ function useSaveNewCar() {
           signedDimoTokenId: dimoSignature,
         };
 
-        console.debug("SIGNATURE", request);
+        logger.debug("SIGNATURE", request);
         const result = await rentalityContracts.gateway.addCar(request);
 
         return result;
       } catch (error) {
-        console.error("saveNewCar error: ", error);
+        logger.error("saveNewCar error: ", error);
         return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
       }
     },
@@ -145,8 +146,8 @@ export async function uploadMetadataToIPFS(hostCarInfo: HostCarInfo, ethereumInf
     if (response.success === true) {
       return response.pinataURL;
     }
-  } catch (e) {
-    console.error("error uploading JSON metadata:", e);
+  } catch (error) {
+    logger.error("error uploading JSON metadata:", error);
   }
 }
 

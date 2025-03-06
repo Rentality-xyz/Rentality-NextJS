@@ -4,6 +4,7 @@ import {
   Tear,
 } from "@/model/blockchain/schemas";
 import { useRentalityAdmin } from "@/contexts/rentalityContext";
+import { logger } from "@/utils/logger";
 
 function useRefferalProgramAdmin() {
   const { admin } = useRentalityAdmin();
@@ -15,7 +16,7 @@ function useRefferalProgramAdmin() {
     pointsWithReffHash: number
   ) => {
     if (!admin) {
-      console.error("get hash error: rentalityAdminContract is null");
+      logger.error("get hash error: rentalityAdminContract is null");
       return null;
     }
     const result = await admin.manageRefferalBonusAccrual(accrualType, program, points, pointsWithReffHash);
@@ -24,7 +25,7 @@ function useRefferalProgramAdmin() {
 
   const manageReferralDiscount = async (program: ReferralProgram, tear: Tear, points: number, percents: number) => {
     if (!admin) {
-      console.error("get hash error: rentalityAdminContract is null");
+      logger.error("get hash error: rentalityAdminContract is null");
       return null;
     }
 
@@ -34,7 +35,7 @@ function useRefferalProgramAdmin() {
 
   const manageTearInfo = async (tear: Tear, from: number, to: number) => {
     if (!admin) {
-      console.error("get hash error: rentalityAdminContract is null");
+      logger.error("get hash error: rentalityAdminContract is null");
       return null;
     }
 

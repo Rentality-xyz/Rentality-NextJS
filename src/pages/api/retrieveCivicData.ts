@@ -13,6 +13,7 @@ import { ContractCivicKYCInfo } from "@/model/blockchain/schemas";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGateway";
+import { logger } from "@/utils/logger";
 
 export type RetrieveCivicDataRequest = {
   requestId: string;
@@ -65,28 +66,28 @@ const UPDATE_STATUS_URL = "https://api.civic.com/partner/piirequest/REQUEST_ID/s
 export default async function handler(req: NextApiRequest, res: NextApiResponse<RetrieveCivicDataResponse>) {
   const CIVIC_CLIENT_ID = env.CIVIC_CLIENT_ID;
   if (!CIVIC_CLIENT_ID || isEmpty(CIVIC_CLIENT_ID)) {
-    console.error("retrieveCivicData error: CIVIC_CLIENT_ID was not set");
+    logger.error("retrieveCivicData error: CIVIC_CLIENT_ID was not set");
     res.status(500).json({ error: getErrorMessage("retrieveCivicData error: CIVIC_CLIENT_ID was not set") });
     return;
   }
 
   const CIVIC_CLIENT_SECRET = env.CIVIC_CLIENT_SECRET;
   if (!CIVIC_CLIENT_SECRET || isEmpty(CIVIC_CLIENT_SECRET)) {
-    console.error("retrieveCivicData error: CIVIC_CLIENT_SECRET was not set");
+    logger.error("retrieveCivicData error: CIVIC_CLIENT_SECRET was not set");
     res.status(500).json({ error: getErrorMessage("retrieveCivicData error: CIVIC_CLIENT_SECRET was not set") });
     return;
   }
 
   const MANAGER_PRIVATE_KEY = env.MANAGER_PRIVATE_KEY;
   if (isEmpty(MANAGER_PRIVATE_KEY)) {
-    console.error("retrieveCivicData error: private key was not set");
+    logger.error("retrieveCivicData error: private key was not set");
     res.status(500).json({ error: getErrorMessage("private key was not set") });
     return;
   }
 
   const SIGNER_PRIVATE_KEY = env.SIGNER_PRIVATE_KEY;
   if (isEmpty(SIGNER_PRIVATE_KEY)) {
-    console.error("retrieveCivicData error: private key was not set");
+    logger.error("retrieveCivicData error: private key was not set");
     res.status(500).json({ error: getErrorMessage("private key was not set") });
     return;
   }
@@ -101,21 +102,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const chainIdNumber = typeof chainId === "string" && !isEmpty(chainId) && Number(chainId) > 0 ? Number(chainId) : 0;
   if (!chainIdNumber) {
-    console.error("retrieveCivicData error: chainId was not provided");
+    logger.error("retrieveCivicData error: chainId was not provided");
     res.status(400).json({ error: "chainId was not provided" });
     return;
   }
 
   const providerApiUrl = getProviderApiUrlFromEnv(chainIdNumber);
   if (!providerApiUrl) {
-    console.error(`retrieveCivicData error: API URL for chain id ${chainIdNumber} was not set`);
+    logger.error(`retrieveCivicData error: API URL for chain id ${chainIdNumber} was not set`);
     res
       .status(500)
       .json({ error: getErrorMessage(`retrieveCivicData error: API URL for chain id ${chainIdNumber} was not set`) });
     return;
   }
 
-  console.log(`\nCalling retrieveCivicData API with requestId:${requestId} and chainId:${chainIdNumber}`);
+  logger.info(`\nCalling retrieveCivicData API with requestId:${requestId} and chainId:${chainIdNumber}`);
   const authTokenResult = await getAuthToken(CIVIC_CLIENT_ID, CIVIC_CLIENT_SECRET);
 
   if (!authTokenResult.ok) {
@@ -128,31 +129,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     res.status(500).json({ error: getErrorMessage(`allPIIsResult error: ${allPIIsResult.error}`) });
     return;
   }
-  console.log(`PII data was received successfully`);
+  logger.info(`PII data was received successfully`);
 
   const PiiDocDatas = await getPiiDocs(allPIIsResult.value.links, authTokenResult.value);
   if (!PiiDocDatas.ok) {
     res.status(500).json({ error: getErrorMessage(`PiiDocDatas error: ${PiiDocDatas.error}`) });
     return;
   }
-  console.log(`PII docs were received successfully`);
+  logger.info(`PII docs were received successfully`);
 
   const saveDataResult = await savePiiInfoToFirebase(allPIIsResult.value, PiiDocDatas.value);
 
-  console.log(`saveDataResult: ${JSON.stringify(saveDataResult)}`);
+  logger.info(`saveDataResult: ${JSON.stringify(saveDataResult)}`);
 
   if (!saveDataResult.ok) {
     res.status(500).json({ error: getErrorMessage(`saveDataResult error: ${saveDataResult.error}`) });
     return;
   }
-  console.log(`PII data was saved successfully`);
+  logger.info(`PII data was saved successfully`);
 
   const updateStatusResult = await updateStatus(requestId, true, authTokenResult.value);
   if (!updateStatusResult.ok) {
     res.status(500).json({ error: getErrorMessage(`updateStatusResult error: ${updateStatusResult.error}`) });
     return;
   }
-  console.log(`Civic status was updated successfully`);
+  logger.info(`Civic status was updated successfully`);
 
   const resetUserKycCommissionResult = await resetUserKycCommission(
     allPIIsResult.value.verifiedInformation,
@@ -166,7 +167,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       .json({ error: getErrorMessage(`resetUserKycCommissionResult error: ${resetUserKycCommissionResult.error}`) });
     return;
   }
-  console.log(`User KYC Commission was reset successfully`);
+  logger.info(`User KYC Commission was reset successfully`);
 
   const saveKycInfoResult = await saveKycInfo(
     allPIIsResult.value.verifiedInformation,
@@ -205,8 +206,8 @@ async function getAuthToken(clientId: string, clientSecret: string): Promise<Res
       }
       return Err("response does not contain access_token");
     })
-    .catch(function (error) {
-      console.error("getAuthToken error", error);
+    .catch((error) => {
+      logger.error("getAuthToken error", error);
       return Err(error.message);
     });
 }
@@ -226,8 +227,8 @@ async function getAllPIIs(requestId: string, authToken: string): Promise<Result<
       }
       return Ok({ ...response.data, updateDate: moment().toISOString() } as AllPiiInfo);
     })
-    .catch(function (error) {
-      console.error("getAllPIIs error", error);
+    .catch((error) => {
+      logger.error("getAllPIIs error", error);
       return Err(error.message);
     });
 }
@@ -246,8 +247,8 @@ async function getPIIByLink(
     .then(function (response) {
       return Ok({ data: response.data, mimeType: response.headers["content-type"].toString() });
     })
-    .catch(function (error) {
-      console.error("getPIIByLink error", error);
+    .catch((error) => {
+      logger.error("getPIIByLink error", error);
       return Err(error.message);
     });
 }
@@ -284,7 +285,7 @@ async function saveDocs(address: string, docs: PiiDocData[]): Promise<Result<Pii
       );
       return { rel: doc.rel, href: snapshot.ref.fullPath };
     } catch (error) {
-      console.error("saveDocs error", error);
+      logger.error("saveDocs error", error);
 
       return { rel: doc.rel, href: undefined };
     }
@@ -304,13 +305,13 @@ async function savePiiInfoToFirebase(allInfo: AllPiiInfo, docs: PiiDocData[]): P
 
   const CIVIC_USER_EMAIL = env.CIVIC_USER_EMAIL;
   if (!CIVIC_USER_EMAIL || isEmpty(CIVIC_USER_EMAIL)) {
-    console.error("retrieveCivicData error: CIVIC_USER_EMAIL was not set");
+    logger.error("retrieveCivicData error: CIVIC_USER_EMAIL was not set");
     return Err("CIVIC_USER_EMAIL was not set");
   }
 
   const CIVIC_USER_PASSWORD = env.CIVIC_USER_PASSWORD;
   if (!CIVIC_USER_PASSWORD || isEmpty(CIVIC_USER_PASSWORD)) {
-    console.error("retrieveCivicData error: CIVIC_USER_PASSWORD was not set");
+    logger.error("retrieveCivicData error: CIVIC_USER_PASSWORD was not set");
     return Err("CIVIC_USER_PASSWORD was not set");
   }
 
@@ -350,8 +351,8 @@ async function updateStatus(requestId: string, isPassed: boolean, authToken: str
     .then(function (response) {
       return Ok(response.data);
     })
-    .catch(function (error) {
-      console.error("updateStatus error", error);
+    .catch((error) => {
+      logger.error("updateStatus error", error);
       return Err(error.message);
     });
 }
@@ -362,7 +363,7 @@ async function resetUserKycCommission(
   privateKey: string
 ): Promise<Result<boolean, string>> {
   if (!verifiedInformation || isEmpty(verifiedInformation.address)) {
-    console.error("verifiedInformation or address is empty");
+    logger.error("verifiedInformation or address is empty");
     return Err("verifiedInformation or address is empty");
   }
 
@@ -372,16 +373,16 @@ async function resetUserKycCommission(
   const rentality = (await getEtherContractWithSigner("gateway", wallet)) as unknown as IRentalityGatewayContract;
 
   if (rentality === null) {
-    console.error("rentality is null");
+    logger.error("rentality is null");
     return Err("rentality is null");
   }
   try {
     const transaction = await rentality.useKycCommission(verifiedInformation.address);
     await transaction.wait();
     return Ok(true);
-  } catch (e) {
-    console.error("useKycCommission error", e);
-    return Err(`useKycCommission error ${e}`);
+  } catch (error) {
+    logger.error("useKycCommission error", error);
+    return Err(`useKycCommission error ${error}`);
   }
 }
 
@@ -391,7 +392,7 @@ async function saveKycInfo(
   providerApiUrl: string
 ): Promise<Result<boolean, string>> {
   if (!verifiedInformation || isEmpty(verifiedInformation.address)) {
-    console.error("verifiedInformation or address is empty");
+    logger.error("verifiedInformation or address is empty");
     return Err("verifiedInformation or address is empty");
   }
 
@@ -410,16 +411,16 @@ async function saveKycInfo(
   const rentality = (await getEtherContractWithSigner("gateway", wallet)) as unknown as IRentalityGatewayContract;
 
   if (rentality === null) {
-    console.error("rentality is null");
+    logger.error("rentality is null");
     return Err("rentality is null");
   }
   try {
     const transaction = await rentality.setCivicKYCInfo(verifiedInformation.address, contractCivicKYCInfo);
     await transaction.wait();
     return Ok(true);
-  } catch (e) {
-    console.error("useKycCommission error", e);
-    return Err(`useKycCommission error ${e}`);
+  } catch (error) {
+    logger.error("useKycCommission error", error);
+    return Err(`useKycCommission error ${error}`);
   }
 }
 

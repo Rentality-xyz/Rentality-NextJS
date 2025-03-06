@@ -9,6 +9,7 @@ import { Err, Result } from "@/model/utils/result";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { INSURANCE_GUEST_QUERY_KEY } from "./useFetchGuestGeneralInsurance";
 import { INSURANCE_LIST_QUERY_KEY } from "./useFetchInsurances";
+import { logger } from "@/utils/logger";
 
 const useSaveGuestGeneralInsurance = () => {
   const { rentalityContracts } = useRentality();
@@ -18,11 +19,11 @@ const useSaveGuestGeneralInsurance = () => {
   return useMutation({
     mutationFn: async (file: PlatformFile): Promise<Result<boolean, Error>> => {
       if (!rentalityContracts) {
-        console.error("saveGuestInsurance: rentalityContract is null");
+        logger.error("saveGuestInsurance: rentalityContract is null");
         return Err(new Error("rentalityContract is null"));
       }
       if (!("file" in file) && !file.isDeleted) {
-        console.error("Only add new file or delete existing is allowed");
+        logger.error("Only add new file or delete existing is allowed");
         return Err(new Error("Only add new file or delete existing is allowed"));
       }
 
@@ -57,12 +58,11 @@ const useSaveGuestGeneralInsurance = () => {
           };
         }
 
-        console.debug("insuranceInfo", JSON.stringify(insuranceInfo, bigIntReplacer, 2));
         const result = await rentalityContracts.gateway.saveGuestInsurance(insuranceInfo);
 
         return result.ok ? result : Err(new Error("claimMyPoints error: " + result.error));
       } catch (error) {
-        console.error("saveGuestInsurance error: ", error);
+        logger.error("saveGuestInsurance error: ", error);
         return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
       }
     },

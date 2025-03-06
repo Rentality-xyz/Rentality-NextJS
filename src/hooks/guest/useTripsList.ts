@@ -5,6 +5,7 @@ import { ContractTripDTO } from "@/model/blockchain/schemas";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 import { mapTripDTOtoTripInfoShordDetails } from "@/model/utils/TripDTOtoTripInfo";
 import { bigIntReplacer } from "@/utils/json";
+import { logger } from "@/utils/logger";
 
 const useTripsList = (isHost: boolean) => {
   const { rentalityContracts } = useRentality();
@@ -26,16 +27,16 @@ const useTripsList = (isHost: boolean) => {
 
       try {
         if (!rentalityContracts) {
-          console.error("getTrips error: contract is null");
+          logger.error("getTrips error: contract is null");
           return;
         }
         const result = await rentalityContracts.gateway.getTripsAs(isHost);
         if (!result.ok) {
-          console.error("getTrips error:" + result.error);
+          logger.error("getTrips error:" + result.error);
           return;
         }
 
-        console.log("tripsView", JSON.stringify(result.value, bigIntReplacer, 2));
+        logger.info("tripsView", JSON.stringify(result.value, bigIntReplacer, 2));
 
         if (result.value.length > 0) {
           validateContractTripDTO(result.value[0]);
@@ -50,8 +51,8 @@ const useTripsList = (isHost: boolean) => {
         tripsData.sort((a, b) => b.tripId - a.tripId);
 
         setTrips(tripsData);
-      } catch (e) {
-        console.error("getTrips error:" + e);
+      } catch (error) {
+        logger.error("getTrips error:" + error);
       } finally {
         setIsLoading(false);
       }

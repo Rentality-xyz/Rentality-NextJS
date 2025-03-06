@@ -5,6 +5,7 @@ import { collection, getDocs, query } from "firebase/firestore";
 import moment from "moment";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { env } from "@/utils/env";
+import { logger } from "@/utils/logger";
 
 type RegisteredUser = {
   email: string;
@@ -26,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   const { dateFrom, dateTo } = parseQueryResult.value;
-  console.log(`\nCalling registeredUsers API with params: 'dateFrom'=${dateFrom} | 'dateTo'=${dateTo}`);
+  logger.info(`\nCalling registeredUsers API with params: 'dateFrom'=${dateFrom} | 'dateTo'=${dateTo}`);
 
   const getRegisteredUsersResult = await getRegisteredUsers(dateFrom, dateTo);
 
@@ -59,13 +60,13 @@ async function getRegisteredUsers(
 
   const CIVIC_USER_EMAIL = env.CIVIC_USER_EMAIL;
   if (!CIVIC_USER_EMAIL || isEmpty(CIVIC_USER_EMAIL)) {
-    console.error("getRegisteredUsers error: CIVIC_USER_EMAIL was not set");
+    logger.error("getRegisteredUsers error: CIVIC_USER_EMAIL was not set");
     return Err("CIVIC_USER_EMAIL was not set");
   }
 
   const CIVIC_USER_PASSWORD = env.CIVIC_USER_PASSWORD;
   if (!CIVIC_USER_PASSWORD || isEmpty(CIVIC_USER_PASSWORD)) {
-    console.error("getRegisteredUsers error: CIVIC_USER_PASSWORD was not set");
+    logger.error("getRegisteredUsers error: CIVIC_USER_PASSWORD was not set");
     return Err("CIVIC_USER_PASSWORD was not set");
   }
 

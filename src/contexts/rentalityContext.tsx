@@ -21,6 +21,7 @@ import {
   IRentalityAiDamageAnalyze,
   IRentalityAiDamageAnalyzeContract,
 } from "@/features/blockchain/models/IRentalityAiDamageAnalyze";
+import { logger } from "@/utils/logger";
 
 export interface IRentalityContracts {
   gateway: IRentalityGateway;
@@ -65,7 +66,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         ethereumInfo.signer
       )) as unknown as IRentalityGatewayContract;
       if (!rentalityGateway) {
-        console.error("getRentalityContact error: rentalityGateway is null");
+        logger.error("getRentalityContact error: rentalityGateway is null");
         setRentalityContracts(null);
         return;
       }
@@ -75,7 +76,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         ethereumInfo.signer
       )) as unknown as IRentalityReferralProgramContract;
       if (!rentalityReferralPogram) {
-        console.error("getRentalityContact error: rentalityReferralProgram is null");
+        logger.error("getRentalityContact error: rentalityReferralProgram is null");
         setRentalityContracts(null);
         return;
       }
@@ -85,7 +86,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         ethereumInfo.signer
       )) as unknown as IRentalityInvestmentContract;
       if (!rentalityReferralPogram) {
-        console.error("getRentalityContact error: rentalityReferralProgram is null");
+        logger.error("getRentalityContact error: rentalityReferralProgram is null");
         setRentalityContracts(null);
         return;
       }
@@ -95,7 +96,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         ethereumInfo.signer
       )) as unknown as IRentalityCurrencyConverterContract;
       if (!rentalityReferralPogram) {
-        console.error("getRentalityContact error: rentalityReferralProgram is null");
+        logger.error("getRentalityContact error: rentalityReferralProgram is null");
         setRentalityContracts(null);
         return;
       }
@@ -105,7 +106,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         ethereumInfo.signer
       )) as unknown as IRentalityAiDamageAnalyzeContract;
       if (!rentalityAiDamageAnalyze) {
-        console.error("getRentalityContact error: rentalityAiDamageAnalyze is null");
+        logger.error("getRentalityContact error: rentalityAiDamageAnalyze is null");
         setRentalityContracts(null);
         return;
       }
@@ -138,7 +139,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         ethereumInfo.signer
       )) as unknown as IRentalityAdminGatewayContract;
       if (!rentalityAdmin) {
-        console.error("getRentalityContact error: rentalityAdmin is null");
+        logger.error("getRentalityContact error: rentalityAdmin is null");
         setRentalityAdmin(null);
         return;
       }

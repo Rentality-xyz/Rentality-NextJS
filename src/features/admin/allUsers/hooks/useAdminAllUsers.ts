@@ -5,6 +5,7 @@ import { bigIntReplacer } from "@/utils/json";
 import { useCallback, useState } from "react";
 import { mapContractAdminKYCInfoDTOToAdminUserDetails } from "../models/mappers";
 import { AdminUserDetails } from "../models";
+import { logger } from "@/utils/logger";
 
 export enum UserType {
   Any = "Any",
@@ -31,14 +32,14 @@ function useAdminAllUsers() {
       itemsPerPage: number = 10
     ): Promise<Result<boolean, string>> => {
       if (!admin) {
-        console.error("fetchData error: rentalityAdminGateway is null");
+        logger.error("fetchData error: rentalityAdminGateway is null");
         return Err("Contract is not initialized");
       }
 
       setIsLoading(true);
       setCurrentPage(page);
       setTotalPageCount(0);
-      console.debug(`filters: ${JSON.stringify(filters, bigIntReplacer)}`);
+      logger.debug(`filters: ${JSON.stringify(filters, bigIntReplacer)}`);
 
       // const contractFilters: ContractUserFilter = {
       // };

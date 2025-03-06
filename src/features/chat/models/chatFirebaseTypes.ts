@@ -1,3 +1,4 @@
+import { logger } from "@/utils/logger";
 import {
   Firestore,
   QueryDocumentSnapshot,
@@ -163,7 +164,7 @@ async function updateUserChats(dbInfo: ChatDbInfo, message: FirebaseChatMessage)
 async function updateUserChatsForUser(dbInfo: ChatDbInfo, userAddress: string, message: FirebaseChatMessage) {
   if (!dbInfo.db) return;
   if (userAddress !== message.chatId.hostAddress && userAddress !== message.chatId.guestAddress) {
-    console.error("user does not belong to this chat id");
+    logger.error("user does not belong to this chat id");
     return;
   }
 
@@ -206,7 +207,7 @@ async function updateUserChatsForUser(dbInfo: ChatDbInfo, userAddress: string, m
 export async function markUserChatAsSeen(dbInfo: ChatDbInfo, userAddress: string, chatId: ChatId) {
   if (!dbInfo.db) return;
   if (userAddress !== chatId.hostAddress && userAddress !== chatId.guestAddress) {
-    console.error("user does not belong to this chat id");
+    logger.error("user does not belong to this chat id");
     return;
   }
 

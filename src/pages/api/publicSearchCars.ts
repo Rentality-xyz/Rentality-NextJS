@@ -23,6 +23,7 @@ import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGateway";
 import { getTimeZoneIdFromGoogleByLocation } from "@/utils/timezone";
 import { correctDaylightSavingTime } from "@/utils/correctDaylightSavingTime";
+import { logger } from "@/utils/logger";
 
 export type PublicSearchCarsResponse =
   | {
@@ -42,7 +43,7 @@ export type ApiUrl =
 export default async function handler(req: NextApiRequest, res: NextApiResponse<PublicSearchCarsResponse>) {
   const privateKey = env.SIGNER_PRIVATE_KEY;
   if (isEmpty(privateKey)) {
-    console.error("API checkTrips error: private key was not set");
+    logger.error("API checkTrips error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
     return;
   }
@@ -69,13 +70,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const chainIdNumber = Number(chainId) > 0 ? Number(chainId) : env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
 
   if (!chainIdNumber) {
-    console.error("API publicSearchCar error: chainId was not provided");
+    logger.error("API publicSearchCar error: chainId was not provided");
     res.status(400).json({ error: "chainId was not provided" });
     return;
   }
   const GOOGLE_MAPS_API_KEY = env.GOOGLE_MAPS_API_KEY;
   if (isEmpty(GOOGLE_MAPS_API_KEY)) {
-    console.error("API publicSearchCar error: GOOGLE_MAPS_API_KEY was not set");
+    logger.error("API publicSearchCar error: GOOGLE_MAPS_API_KEY was not set");
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
@@ -83,7 +84,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const providerApiUrl = getProviderApiUrlFromEnv(chainIdNumber);
 
   if (!providerApiUrl) {
-    console.error(`API publicSearchCar error: API URL for chain id ${chainIdNumber} was not set`);
+    logger.error(`API publicSearchCar error: API URL for chain id ${chainIdNumber} was not set`);
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
@@ -146,7 +147,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     pricePerDayInUsdTo: pricePerDayInUsdTo ? Number(pricePerDayInUsdTo) : undefined,
   };
 
-  console.log(
+  logger.info(
     `\nCalling searchAvailableCars API for ${chainIdNumber} chain id with searchCarRequest: ${JSON.stringify(
       searchCarRequest
     )} and searchCarFilters: ${JSON.stringify(searchCarFilters)}`
@@ -288,8 +289,8 @@ async function formatSearchAvailableCarsContractResponse(
 
       // try {
       //   isCarDetailsConfirmed = await rentality.isCarDetailsConfirmed(i.car.carId);
-      // } catch (ex) {
-      //   console.error("formatSearchAvailableCarsContractResponse error:", ex);
+      // } catch (error) {
+      //   logger.error("formatSearchAvailableCarsContractResponse error:", error);
       // }
 
       const tripDays = Number(i.car.tripDays);

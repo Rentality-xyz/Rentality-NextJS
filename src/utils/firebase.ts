@@ -5,6 +5,7 @@ import { Firestore, getFirestore } from "firebase/firestore";
 import { FirebaseStorage, getStorage } from "firebase/storage";
 import { isEmpty } from "./string";
 import { env } from "./env";
+import { logger } from "./logger";
 
 const firebaseConfig = {
   apiKey: env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -40,7 +41,7 @@ if (!isEmpty(firebaseConfig.projectId)) {
       const userCredential = await signInWithCustomToken(auth, token);
       return userCredential.user;
     } catch (error) {
-      console.error(`firebase login error:`, error);
+      logger.error(`firebase login error:`, error);
     }
   };
   logout = async () => {
@@ -51,7 +52,7 @@ if (!isEmpty(firebaseConfig.projectId)) {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       return userCredential.user;
     } catch (error) {
-      console.error(`firebase login error:`, error);
+      logger.error(`firebase login error:`, error);
     }
   };
 }

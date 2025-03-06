@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .then((res) => {
       responseCode = res.status;
     })
-    .catch(function (error) {
+    .catch((error) => {
       responseCode = error.response?.status || 503;
     });
 
