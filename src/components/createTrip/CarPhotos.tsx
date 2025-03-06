@@ -43,9 +43,9 @@ function CarPhotosLayout({ carPhotos }: { carPhotos: string[] }) {
     );
   if (carPhotos.length === 3)
     return (
-      <div className="mac:max-h-[326px] grid max-h-[128px] w-full grid-cols-[minmax(0,3fr)_minmax(0,2fr)] sm:max-h-[226px] xl:max-h-[226px] 2xl:max-h-[290px] fullHD:min-h-[388px]">
+      <div className="grid max-h-[128px] w-full grid-cols-[minmax(0,3fr)_minmax(0,2fr)] sm:max-h-[226px] xl:max-h-[226px] 2xl:max-h-[290px] mac:max-h-[326px] fullHD:min-h-[388px]">
         <CarPhoto className="border-r" carImageUrl={carPhotos[0]} />
-        <div className="mac:max-h-[326px] grid max-h-[128px] grid-rows-2 sm:max-h-[226px] xl:max-h-[226px] 2xl:max-h-[290px] fullHD:min-h-[388px]">
+        <div className="grid max-h-[128px] grid-rows-2 sm:max-h-[226px] xl:max-h-[226px] 2xl:max-h-[290px] mac:max-h-[326px] fullHD:min-h-[388px]">
           <CarPhoto className="border-b" carImageUrl={carPhotos[1]} />
           <CarPhoto carImageUrl={carPhotos[2]} />
         </div>
@@ -53,9 +53,9 @@ function CarPhotosLayout({ carPhotos }: { carPhotos: string[] }) {
     );
   if (carPhotos.length === 4)
     return (
-      <div className="mac:max-h-[326px] grid max-h-[128px] w-full grid-cols-[minmax(0,3fr)_minmax(0,2fr)] sm:max-h-[226px] xl:max-h-[226px] 2xl:max-h-[290px] fullHD:max-h-[388px]">
+      <div className="grid max-h-[128px] w-full grid-cols-[minmax(0,3fr)_minmax(0,2fr)] sm:max-h-[226px] xl:max-h-[226px] 2xl:max-h-[290px] mac:max-h-[326px] fullHD:max-h-[388px]">
         <CarPhoto className="border-r" carImageUrl={carPhotos[0]} />
-        <div className="mac:max-h-[326px] grid max-h-[128px] grid-rows-[minmax(0,3fr)_minmax(0,2fr)] sm:max-h-[226px] xl:max-h-[226px] 2xl:max-h-[290px] fullHD:max-h-[388px]">
+        <div className="grid max-h-[128px] grid-rows-[minmax(0,3fr)_minmax(0,2fr)] sm:max-h-[226px] xl:max-h-[226px] 2xl:max-h-[290px] mac:max-h-[326px] fullHD:max-h-[388px]">
           <CarPhoto className="border-b" carImageUrl={carPhotos[1]} />
           <div className="grid grid-cols-2">
             <CarPhoto className="border-r" carImageUrl={carPhotos[2]} />

@@ -54,7 +54,8 @@
       inset: 0;
       border: 2px solid transparent;
       border-radius: inherit;
-      background: linear-gradient(to top,
+      background: linear-gradient(
+          to top,
           #4831b1 -4.59%,
           #5d41c4 5.74%,
           #7152d8 20.36%,
@@ -64,7 +65,9 @@
           #7f76ed 73.38%,
           #7e93f3 89.09%,
           #7cbafc 106.23%,
-          #7bc9ff 111.99%) border-box;
+          #7bc9ff 111.99%
+        )
+        border-box;
       -webkit-mask:
         linear-gradient(#fff 0 0) padding-box,
         linear-gradient(#fff 0 0) border-box;
@@ -95,17 +98,20 @@
     background:
       linear-gradient(#110d1c, #110d1c) padding-box,
       linear-gradient(218.45deg, #1c0b4299 0%, #1809351a 98.75%) padding-box,
-      linear-gradient(to top,
-        #4831b1 -4.59%,
-        #5d41c4 5.74%,
-        #7152d8 20.36%,
-        #7c5ce4 35%,
-        #805fe8 49.61%,
-        #8065e9 59.7%,
-        #7f76ed 73.38%,
-        #7e93f3 89.09%,
-        #7cbafc 106.23%,
-        #7bc9ff 111.99%) border-box;
+      linear-gradient(
+          to top,
+          #4831b1 -4.59%,
+          #5d41c4 5.74%,
+          #7152d8 20.36%,
+          #7c5ce4 35%,
+          #805fe8 49.61%,
+          #8065e9 59.7%,
+          #7f76ed 73.38%,
+          #7e93f3 89.09%,
+          #7cbafc 106.23%,
+          #7bc9ff 111.99%
+        )
+        border-box;
   }
 
   .bg-rnt-dialog {
@@ -170,7 +176,7 @@ body {
     "footer";
 }
 
-.main-grid>header {
+.main-grid > header {
   @apply text-rnt-temp-header-text;
   grid-area: header;
   width: 100%;
@@ -179,21 +185,21 @@ body {
   justify-content: stretch;
 }
 
-.main-grid>aside {
+.main-grid > aside {
   @apply bg-rentality-bg-left-sidebar text-rnt-temp-sidemenu-text;
   grid-area: aside;
   width: 100%;
   height: auto;
 }
 
-.main-grid>main {
+.main-grid > main {
   @apply bg-rentality-bg-main text-rnt-temp-main-text;
   grid-area: main;
   height: 100%;
   width: 100%;
 }
 
-.main-grid>footer {
+.main-grid > footer {
   @apply text-rnt-temp-footer-text;
   grid-area: footer;
   width: 100%;
@@ -276,7 +282,8 @@ main option {
   /* @apply bg-rnt-temp-sidemenu-bg; */
 }
 
-@media (min-width: 1024px) {}
+@media (min-width: 1024px) {
+}
 
 /* footer */
 
@@ -316,12 +323,12 @@ main option {
 }
 
 /* On mouse-over, add a grey background color */
-.rentality-checkbox:hover input~.rentality-checkmark {
+.rentality-checkbox:hover input ~ .rentality-checkmark {
   background-color: #bbb;
 }
 
 /* When the checkbox is checked, add a blue background */
-.rentality-checkbox input:checked~.rentality-checkmark {
+.rentality-checkbox input:checked ~ .rentality-checkmark {
   background-color: #6c29d9;
 }
 
@@ -333,7 +340,7 @@ main option {
 }
 
 /* Show the checkmark when checked */
-.rentality-checkbox input:checked~.rentality-checkmark:after {
+.rentality-checkbox input:checked ~ .rentality-checkmark:after {
   display: block;
 }
 
@@ -353,10 +360,12 @@ main option {
 /* Civic */
 .civicButton {
   /*background-color: #6D28D9 !important;*/
-  background: linear-gradient(360deg,
-      rgba(88, 63, 188, 1) 0%,
-      rgba(128, 95, 228, 1) 50%,
-      rgba(127, 160, 243, 1) 100%) !important;
+  background: linear-gradient(
+    360deg,
+    rgba(88, 63, 188, 1) 0%,
+    rgba(128, 95, 228, 1) 50%,
+    rgba(127, 160, 243, 1) 100%
+  ) !important;
   border-radius: 9999px !important;
   border: none !important;
   height: 48px !important;
@@ -409,7 +418,7 @@ input:disabled {
   border-radius: 9999px 0 0 9999px !important;
 }
 
-#privy-dialog>div>div {
+#privy-dialog > div > div {
   background-color: #1e1e30;
   border-width: 2px;
   border-color: #373737;
@@ -464,16 +473,16 @@ input:disabled {
   border-radius: 16px;
   background: linear-gradient(to bottom, #74bbef 0%, #7257ce 70%, #5e3dd3 100%);
   -webkit-mask:
-          linear-gradient(#fff 0 0) content-box,
-          linear-gradient(#fff 0 0);
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   mask:
-          linear-gradient(#fff 0 0) content-box,
-          linear-gradient(#fff 0 0);
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
 }
 
-#pagination>ul>li {
+#pagination > ul > li {
   margin-left: 12px;
 }
 
@@ -535,11 +544,11 @@ input:disabled {
   border-radius: inherit;
   background: linear-gradient(to bottom, #74bbef 0%, #7257ce 70%, #5e3dd3 100%);
   -webkit-mask:
-          linear-gradient(#fff 0 0) content-box,
-          linear-gradient(#fff 0 0);
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   mask:
-          linear-gradient(#fff 0 0) content-box,
-          linear-gradient(#fff 0 0);
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
@@ -651,16 +660,16 @@ input:disabled {
 }
 
 .react-tel-input .country-list {
-  background-color: #1E1E30 !important;
-  border: 1px solid #6B7280 !important;
+  background-color: #1e1e30 !important;
+  border: 1px solid #6b7280 !important;
 }
 
 .react-tel-input .country-list .country.highlight {
-  background-color: #1E1E30 !important;
+  background-color: #1e1e30 !important;
 }
 
 .react-tel-input .country-list .country .dial-code {
-  color: #BEBEBE !important;
+  color: #bebebe !important;
 }
 
 .react-tel-input .country-list .country:hover {

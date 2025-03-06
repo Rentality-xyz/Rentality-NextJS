@@ -69,7 +69,7 @@ function UserCommonInformationForm({
       smsCode: "",
     });
 
-    if(userProfile.isPhoneNumberVerified) {
+    if (userProfile.isPhoneNumberVerified) {
       setVerifiedPhoneNumber(userProfile.phoneNumber);
     }
   }, [userProfile]);
@@ -161,10 +161,8 @@ function UserCommonInformationForm({
   const [secondsLeft, setSecondsLeft] = useState(60);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const isCurrentPhoneNotVerified = (!userProfile.isPhoneNumberVerified && !isEnteredCodeCorrect)
-    || (enteredPhoneNumber !== verifiedPhoneNumber)
-
-
+  const isCurrentPhoneNotVerified =
+    (!userProfile.isPhoneNumberVerified && !isEnteredCodeCorrect) || enteredPhoneNumber !== verifiedPhoneNumber;
 
   useEffect(() => {
     if (isResendCodeTimerRunning && secondsLeft > 0) {
@@ -245,7 +243,7 @@ function UserCommonInformationForm({
         setIsResendCodeTimerRunning(false);
         setIsEnteredCodeCorrect(true);
         setVerifiedPhoneNumber(enteredPhoneNumber);
-        setValue("smsCode","");
+        setValue("smsCode", "");
         setSmsHash(undefined);
         setSmsTimestamp(undefined);
         return;
@@ -327,19 +325,15 @@ function UserCommonInformationForm({
             )}
           />
           {isCurrentPhoneNotVerified && (
-            <RntButton
-              className="lg:w-60"
-              onClick={sendSmsVerificationCode}
-              disabled={isResendCodeTimerRunning}
-            >
-              { smsHash === undefined ? t("profile.verify") : t("profile.resend_code")}
+            <RntButton className="lg:w-60" onClick={sendSmsVerificationCode} disabled={isResendCodeTimerRunning}>
+              {smsHash === undefined ? t("profile.verify") : t("profile.resend_code")}
             </RntButton>
           )}
         </div>
 
-        {isResendCodeTimerRunning && isCurrentPhoneNotVerified &&
-          (<p className="w-full pl-4 mt-2">{t("profile.resend_code_hint", {"secondsLeft": secondsLeft})}</p>)
-        }
+        {isResendCodeTimerRunning && isCurrentPhoneNotVerified && (
+          <p className="mt-2 w-full pl-4">{t("profile.resend_code_hint", { secondsLeft: secondsLeft })}</p>
+        )}
 
         {isCurrentPhoneNotVerified && smsHash && smsTimestamp && (
           <div className="mt-4 flex flex-wrap items-end gap-4">
