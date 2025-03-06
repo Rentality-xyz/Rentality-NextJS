@@ -17,6 +17,7 @@ import RentalityMotionsCloudJSON_ABI from "./RentalityMotionsCloud.v0_2_0.abi.js
 import RentalityMotionsCloudServiceJSON_ADDRESSES from "./RentalityMotionsCloud.v0_2_0.addresses.json";
 import { Contract, Signer } from "ethers";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
+import { logger } from "@/utils/logger";
 
 export const SMARTCONTRACT_VERSION = "v0_2_0";
 
