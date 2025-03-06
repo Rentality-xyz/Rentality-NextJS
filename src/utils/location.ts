@@ -6,6 +6,7 @@ import { Err, Ok, Result } from "@/model/utils/result";
 import { SignLocationResponse } from "@/pages/api/signLocation";
 import { getTimeZoneIdByAddress, getTimeZoneIdFromGoogleByLocation } from "./timezone";
 import { isEmpty } from "./string";
+import { logger } from "./logger";
 
 export function formatLocationAddressFromLocationInfo(locationInfo: LocationInfo) {
   return formatLocationAddress(locationInfo.address, locationInfo.country, locationInfo.state, locationInfo.city);
@@ -100,7 +101,7 @@ export async function getSignedLocationInfo(
   if ("error" in apiJson) {
     return Err("Sign location error");
   }
-  console.log(`LocationInfo: ${JSON.stringify(apiJson, null, 2)}`);
+  logger.info(`LocationInfo: ${JSON.stringify(apiJson, null, 2)}`);
   return Ok(apiJson);
 }
 
@@ -124,7 +125,7 @@ export async function getLocationInfoFromGoogleByAddress(
   );
 
   if (!googleGeoCodeResponse.ok) {
-    console.error(`getLocationInfoFromGoogleByAddress error: googleGeoCodeResponse is ${googleGeoCodeResponse.status}`);
+    logger.error(`getLocationInfoFromGoogleByAddress error: googleGeoCodeResponse is ${googleGeoCodeResponse.status}`);
     return Err(`getLocationInfoFromGoogleByAddress error: googleGeoCodeResponse is ${googleGeoCodeResponse.status}`);
   }
 

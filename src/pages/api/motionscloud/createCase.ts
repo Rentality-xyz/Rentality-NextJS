@@ -6,6 +6,7 @@ import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityMotionsCloudContract } from "@/features/blockchain/models/IRentalityMotionsCloud";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { env } from "@/utils/env";
+import { logger } from "@/utils/logger";
 
 type CreateCaseParams = {
   tripId: number;
@@ -27,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     },
   });
   if (response.status !== 201) {
-    console.log("MotionsCloud: failed to create secret with error: ", response.data);
+    logger.info("MotionsCloud: failed to create secret with error: ", response.data);
     res.status(500).json({ error: "MotionsCloud: failed to create secret with error: " + response.data });
     return;
   }
@@ -37,14 +38,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const providerApiUrl = getProviderApiUrlFromEnv(chainId);
 
   if (!providerApiUrl) {
-    console.error(`API aiAssessments error: API URL for chain id ${chainId} was not set`);
+    logger.error(`API aiAssessments error: API URL for chain id ${chainId} was not set`);
     res.status(500).json({ error: `API aiAssessments error: API URL for chain id ${chainId} was not set` });
     return;
   }
 
   const SIGNER_PRIVATE_KEY = env.SIGNER_PRIVATE_KEY;
   if (!SIGNER_PRIVATE_KEY) {
-    console.error("API aiAssesments error: private key was not set");
+    logger.error("API aiAssesments error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
     return;
   }
@@ -57,14 +58,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   )) as unknown as IRentalityMotionsCloudContract;
   const caseExists = await rentality.isCaseExists(token);
   if (caseExists) {
-    console.log("MotionsCloud: case exists: ", token);
+    logger.info("MotionsCloud: case exists: ", token);
     res.status(500).json({ error: "MotionsCloud: case exists: " + token });
     return;
   }
   try {
     await rentality.saveInsuranceCase(token, BigInt(tripId));
   } catch (error) {
-    console.error("MotionsCloud: failed to save insurance case with error: ", error);
+    logger.error("MotionsCloud: failed to save insurance case with error: ", error);
   }
 
   res.status(200).json({ success: true });

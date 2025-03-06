@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { REFERRAL_LINKS_QUERY_KEY } from "@/features/referralProgram/hooks/useFetchReferralLinks";
 import { USER_PROFILE_QUERY_KEY } from "./useFetchUserProfile";
 import { Err, Result } from "@/model/utils/result";
+import { logger } from "@/utils/logger";
 
 export type SaveUserProfileRequest = {
   nickname: string;
@@ -24,7 +25,7 @@ const useSaveUserProfile = () => {
     mutationFn: async (request: SaveUserProfileRequest): Promise<Result<boolean, Error>> => {
       try {
         if (!rentalityContracts) {
-          console.error("saveUserProfile error: Missing required contracts or ethereum info");
+          logger.error("saveUserProfile error: Missing required contracts or ethereum info");
           return Err(new Error("Missing required contracts or ethereum info"));
         }
 
@@ -43,7 +44,7 @@ const useSaveUserProfile = () => {
 
         return result;
       } catch (error) {
-        console.error("saveUserProfile error: ", error);
+        logger.error("saveUserProfile error: ", error);
         return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
       }
     },

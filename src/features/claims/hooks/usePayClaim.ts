@@ -5,6 +5,7 @@ import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatEther } from "viem";
 import { CLAIMS_LIST_QUERY_KEY } from "./useFetchClaims";
+import { logger } from "@/utils/logger";
 
 const usePayClaim = () => {
   const { rentalityContracts } = useRentality();
@@ -14,7 +15,7 @@ const usePayClaim = () => {
   return useMutation({
     mutationFn: async (claimId: number): Promise<Result<boolean, Error>> => {
       if (!rentalityContracts || !ethereumInfo) {
-        console.error("payClaim error: Missing required contracts or ethereum info");
+        logger.error("payClaim error: Missing required contracts or ethereum info");
         //return Err(new Error("Missing required contracts or ethereum info"));
         return Err(new Error("ERROR"));
       }
@@ -29,7 +30,7 @@ const usePayClaim = () => {
         const claimAmountInEth = Number(formatEther(calculateClaimValueResult.value));
 
         if (!(await isUserHasEnoughFunds(ethereumInfo.signer, claimAmountInEth))) {
-          console.error("payClaim error: user don't have enough funds");
+          logger.error("payClaim error: user don't have enough funds");
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
@@ -38,8 +39,8 @@ const usePayClaim = () => {
         });
 
         return result;
-      } catch (e) {
-        console.error("payClaim error:" + e);
+      } catch (error) {
+        logger.error("payClaim error:" + error);
         return Err(new Error("ERROR"));
       }
     },

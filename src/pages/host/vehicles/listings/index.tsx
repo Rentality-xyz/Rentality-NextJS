@@ -11,6 +11,7 @@ import useDimo from "@/features/dimo/hooks/useDimo";
 import { getIpfsURI } from "@/utils/ipfsUtils";
 import { env } from "@/utils/env";
 import useFetchMyListings from "@/hooks/host/useFetchMyListings";
+import { logger } from "@/utils/logger";
 
 function Listings() {
   const { isLoading: isLoadingMyListings, data: myListings } = useFetchMyListings();
@@ -49,7 +50,7 @@ function Listings() {
   const domain = env.NEXT_PUBLIC_SERVER_DIMO_DOMAIN;
 
   if (!clientId || !apiKey || !domain) {
-    console.error("DIMO .env is not set");
+    logger.error("DIMO .env is not set");
     return <div>{"dimo env not set"}</div>;
   }
 
@@ -61,14 +62,14 @@ function Listings() {
 
   const handleSaveDimoTokens = async (dimoTokens: number[], carIds: number[]) => {
     if (!rentalityContracts) {
-      console.error("Save dimo tokens id error: Rentality contract is null");
+      logger.error("Save dimo tokens id error: Rentality contract is null");
       return;
     }
     await rentalityContracts.gateway.saveDimoTokenIds(
       dimoTokens.map((n) => BigInt(n)),
       carIds.map((n) => BigInt(n))
     );
-    console.log("Dimo tokens saved!");
+    logger.info("Dimo tokens saved!");
   };
 
   const combinedListings = [
@@ -106,15 +107,15 @@ function Listings() {
           {isAuthenticated ? (
             <ShareVehiclesWithDimo
               mode="popup"
-              onSuccess={(authData) => console.log("Success:", authData)}
-              onError={(error) => console.error("Error:", error)}
+              onSuccess={(authData) => logger.info("Success:", authData)}
+              onError={(error) => logger.error("Error:", error)}
               permissionTemplateId={"1"}
             />
           ) : (
             <LoginWithDimo
               mode="popup"
-              onSuccess={(authData) => console.log("Success:", authData)}
-              onError={(error) => console.error("Error:", error)}
+              onSuccess={(authData) => logger.info("Success:", authData)}
+              onError={(error) => logger.error("Error:", error)}
               permissionTemplateId={"1"}
             />
           )}

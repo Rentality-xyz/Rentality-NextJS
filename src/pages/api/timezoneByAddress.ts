@@ -4,6 +4,7 @@ import { isEmpty } from "@/utils/string";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { TimezoneResponse } from "./timezoneByLocation";
 import { getTimeZoneIdFromGoogleByAddress } from "@/utils/timezone";
+import { logger } from "@/utils/logger";
 
 export type TimezoneByAddressRequest = {
   address: string;
@@ -12,7 +13,7 @@ export type TimezoneByAddressRequest = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse<TimezoneResponse>) {
   const GOOGLE_MAPS_API_KEY = env.GOOGLE_MAPS_API_KEY;
   if (isEmpty(GOOGLE_MAPS_API_KEY)) {
-    console.error("TimezoneByAddress error: GOOGLE_MAPS_API_KEY was not set");
+    logger.error("TimezoneByAddress error: GOOGLE_MAPS_API_KEY was not set");
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
@@ -24,12 +25,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   const { address } = parseQueryResult.value;
-  console.log(`\nCalling TimezoneByAddress API with params: 'address'=${address}`);
+  logger.info(`\nCalling TimezoneByAddress API with params: 'address'=${address}`);
 
   const timeZoneIdResult = await getTimeZoneIdFromGoogleByAddress(address, GOOGLE_MAPS_API_KEY);
 
   if (!timeZoneIdResult.ok) {
-    console.error(timeZoneIdResult.error);
+    logger.error(timeZoneIdResult.error);
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }

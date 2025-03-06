@@ -10,8 +10,8 @@ function encrypt(plainText: string, secretKeyData: string) {
     var hmac = crypto.createHmac("sha1", secretKeyData);
     var signed = hmac.update(Buffer.from(plainText, "utf-8")).digest("base64");
     return signed;
-  } catch (e) {
-    console.log(`HmacSHA1 encrypting exception, msg is ${e}`);
+  } catch (error) {
+    console.log(`HmacSHA1 encrypting exception, msg is ${error}`);
   }
   return null;
 }

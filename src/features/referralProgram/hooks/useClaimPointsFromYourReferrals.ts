@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { REFERRAL_POINTS_FROM_YOUR_REFERRALS_QUERY_KEY } from "./useFetchPointsFromYourReferrals";
 import { REFERRAL_USER_BALANCE_QUERY_KEY } from "./useFetchUserBalance";
 import { REFERRAL_POINTS_HISTORY_QUERY_KEY } from "./useFetchPointsHistory";
+import { logger } from "@/utils/logger";
 
 function useClaimPointsFromYourReferrals() {
   const ethereumInfo = useEthereum();
@@ -15,7 +16,7 @@ function useClaimPointsFromYourReferrals() {
     mutationFn: async () => {
       try {
         if (!rentalityContracts || !ethereumInfo) {
-          console.error("claimPoints error: Missing required contracts or ethereum info");
+          logger.error("claimPoints error: Missing required contracts or ethereum info");
           return Err(new Error("Missing required contracts or ethereum info"));
         }
 
@@ -23,7 +24,7 @@ function useClaimPointsFromYourReferrals() {
 
         return result.ok ? result : Err(new Error("claimMyPoints error: " + result.error));
       } catch (error) {
-        console.error("claimPoints error: ", error);
+        logger.error("claimPoints error: ", error);
         return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
       }
     },

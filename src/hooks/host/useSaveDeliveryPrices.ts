@@ -4,6 +4,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DELIVERY_PRICES_QUERY_KEY, DeliveryPrices } from "./useFetchDeliveryPrices";
+import { logger } from "@/utils/logger";
 
 function useSaveDeliveryPrices() {
   const ethereumInfo = useEthereum();
@@ -14,12 +15,12 @@ function useSaveDeliveryPrices() {
     mutationFn: async (newValue: DeliveryPrices): Promise<Result<boolean, Error>> => {
       try {
         if (!ethereumInfo || !rentalityContracts) {
-          console.error("saveDeliveryPrices error: Missing required contracts or ethereum info");
+          logger.error("saveDeliveryPrices error: Missing required contracts or ethereum info");
           return Err(new Error("Missing required contracts or ethereum info"));
         }
 
         if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
-          console.error("saveDeliveryPrices error: user don't have enough funds");
+          logger.error("saveDeliveryPrices error: user don't have enough funds");
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
@@ -30,7 +31,7 @@ function useSaveDeliveryPrices() {
 
         return result;
       } catch (error) {
-        console.error("saveDeliveryPrices error: ", error);
+        logger.error("saveDeliveryPrices error: ", error);
         return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
       }
     },

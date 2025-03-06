@@ -14,6 +14,7 @@ import RntSelect from "@/components/common/rntSelect";
 import RntInput from "@/components/common/rntInput";
 import RntButton from "@/components/common/rntButton";
 import useSaveTripInsurance from "../hooks/useSaveTripInsurance";
+import { logger } from "@/utils/logger";
 
 interface AddHostInsuranceProps {}
 
@@ -40,7 +41,6 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
   const { errors, isSubmitting } = formState;
 
   async function onFormSubmit(formData: AddTripInsuranceFormValues) {
-    console.debug("formData", JSON.stringify(formData, null, 2));
     let isValid = true;
 
     if (formData.selectedTripId === undefined) {
@@ -70,7 +70,7 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
     hideSnackbars();
 
     if (!result.ok) {
-      console.error("saveTripInsurance error: Save Guest Insurance info error");
+      logger.error("saveTripInsurance error: Save Guest Insurance info error");
       showError(t("profile.save_err"));
     } else {
       showInfo(t("common.info.success"));
@@ -144,7 +144,7 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
                     disabled={trips.length === 0}
                     value={field.value}
                     onChange={(e) => {
-                      console.log(`RntSelect onChange ${e.target.value}`);
+                      logger.info(`RntSelect onChange ${e.target.value}`);
 
                       field.onChange(Number(e.target.value));
                     }}

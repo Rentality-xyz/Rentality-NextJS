@@ -8,6 +8,7 @@ import {
 import { Err, Ok, Result } from "@/model/utils/result";
 import { TFunction } from "i18next";
 import { AllOwnPointsInfo, OwnAccountCreationPointsInfo, OwnRegularPointsInfo, PointsProfileStatus } from "../models";
+import { logger } from "@/utils/logger";
 
 export function getReferralProgramDescriptionText(t: TFunction, program: ReferralProgram): string {
   switch (program) {
@@ -51,8 +52,8 @@ export function getAllPoints(
       ownAccountCreationPointsInfo: ownAccountCreationPointsInfo,
       ownRegularPointsInfo: ownRegularPointsInfo,
     });
-  } catch (e) {
-    console.error("fetchData error" + e);
+  } catch (error) {
+    logger.error("fetchData error" + error);
     return Err(new Error("getAllPoints error. See logs for more details"));
   }
 }

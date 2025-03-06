@@ -13,8 +13,8 @@ export default function convertHeicToPng(heicFile: File): Promise<FileToUpload> 
       const pngFile = new File([resultBlob as Blob], fileNameWithoutExtension + ".png", { type: "image/png" });
       return { file: pngFile, localUrl: url };
     })
-    .catch((e) => {
-      console.log("[convertHeicToPng][" + e.code + "][" + e.message + "]");
+    .catch((error) => {
+      console.log("[convertHeicToPng][" + error.code + "][" + error.message + "]");
       throw new Error("Conversion failed"); // Выбрасываем исключение
     });
 }

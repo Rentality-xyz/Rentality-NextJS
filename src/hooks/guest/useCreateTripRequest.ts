@@ -12,6 +12,7 @@ import { Err, Ok, Result } from "@/model/utils/result";
 import moment from "moment";
 import { formatEther } from "viem";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
+import { logger } from "@/utils/logger";
 
 const useCreateTripRequest = () => {
   const ethereumInfo = useEthereum();
@@ -24,12 +25,12 @@ const useCreateTripRequest = () => {
     promoCode: string
   ): Promise<Result<boolean, Error>> {
     if (!ethereumInfo) {
-      console.error("createTripRequest error: ethereumInfo is null");
+      logger.error("createTripRequest error: ethereumInfo is null");
       return Err(new Error("ERROR"));
     }
 
     if (!rentalityContracts) {
-      console.error("createTripRequest error: rentalityContract is null");
+      logger.error("createTripRequest error: rentalityContract is null");
       return Err(new Error("ERROR"));
     }
 
@@ -40,7 +41,7 @@ const useCreateTripRequest = () => {
 
     const days = calculateDays(dateFrom, dateTo);
     if (days < 0) {
-      console.error("Date to' must be greater than 'Date from'");
+      logger.error("Date to' must be greater than 'Date from'");
       return Err(new Error("ERROR"));
     }
     const startUnixTime = getBlockchainTimeFromDate(dateFrom);
@@ -48,7 +49,7 @@ const useCreateTripRequest = () => {
 
     const carDeliveryDataResult = await rentalityContracts.gateway.getDeliveryData(BigInt(carId));
     if (!carDeliveryDataResult.ok) {
-      console.error("createTripRequest error: carDeliveryDataResult resutl an error: " + carDeliveryDataResult.error);
+      logger.error("createTripRequest error: carDeliveryDataResult resutl an error: " + carDeliveryDataResult.error);
       return Err(new Error("ERROR"));
     }
     const carLocationInfo: ContractLocationInfo = {
@@ -92,7 +93,7 @@ const useCreateTripRequest = () => {
 
         const pickupLocationResult = await getSignedLocationInfo(pickupLocationInfo, ethereumInfo.chainId);
         if (!pickupLocationResult.ok) {
-          console.error("Sign location error");
+          logger.error("Sign location error");
           return Err(new Error("ERROR"));
         }
 
@@ -101,7 +102,7 @@ const useCreateTripRequest = () => {
             ? pickupLocationResult
             : await getSignedLocationInfo(returnLocationInfo, ethereumInfo.chainId);
         if (!returnLocationResult.ok) {
-          console.error("Sign location error");
+          logger.error("Sign location error");
           return Err(new Error("ERROR"));
         }
 
@@ -116,7 +117,7 @@ const useCreateTripRequest = () => {
         const totalPriceInEth = Number(formatEther(paymentsResult.value.totalPrice));
 
         if (!(await isUserHasEnoughFunds(ethereumInfo.signer, totalPriceInEth))) {
-          console.error("createTripRequest error: user don't have enough funds");
+          logger.error("createTripRequest error: user don't have enough funds");
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
@@ -151,7 +152,7 @@ const useCreateTripRequest = () => {
         const totalPriceInEth = Number(formatEther(paymentsResult.value.totalPrice));
 
         if (!(await isUserHasEnoughFunds(ethereumInfo.signer, totalPriceInEth))) {
-          console.error("createTripRequest error: user don't have enough funds");
+          logger.error("createTripRequest error: user don't have enough funds");
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
@@ -164,8 +165,8 @@ const useCreateTripRequest = () => {
       }
 
       return Ok(true);
-    } catch (e) {
-      console.error("createTripRequest error:" + e);
+    } catch (error) {
+      logger.error("createTripRequest error:" + error);
       return Err(new Error("ERROR"));
     }
   }

@@ -5,6 +5,7 @@ import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { ContractCarDetails, ContractCarInfoWithInsurance } from "@/model/blockchain/schemas";
 import { mapContractCarToCarDetails } from "@/model/mappers/contractCarToCarDetails";
+import { logger } from "@/utils/logger";
 
 const useFetchCarInfo = (carId: number) => {
   const ethereumInfo = useEthereum();
@@ -15,7 +16,7 @@ const useFetchCarInfo = (carId: number) => {
   useEffect(() => {
     const getCarInfo = async (rentalityContracts: IRentalityContracts, signer: Signer) => {
       if (!rentalityContracts) {
-        console.error("getCarInfo error: contract is null");
+        logger.error("getCarInfo error: contract is null");
         return;
       }
 
@@ -24,12 +25,12 @@ const useFetchCarInfo = (carId: number) => {
         const carInfoDetailsResult = await rentalityContracts.gateway.getCarDetails(BigInt(carId));
 
         if (!carInfoResult.ok) {
-          console.error("getCarInfo error:" + carInfoResult.error);
+          logger.error("getCarInfo error:" + carInfoResult.error);
           return;
         }
 
         if (!carInfoDetailsResult.ok) {
-          console.error("getCarInfo error:" + carInfoDetailsResult.error);
+          logger.error("getCarInfo error:" + carInfoDetailsResult.error);
           return;
         }
 
@@ -44,8 +45,8 @@ const useFetchCarInfo = (carId: number) => {
           carInfoDetailsResult.value,
           carInfoResult.value.carMetadataURI
         );
-      } catch (e) {
-        console.error("getCarInfo error:" + e);
+      } catch (error) {
+        logger.error("getCarInfo error:" + error);
       }
     };
 

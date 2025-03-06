@@ -4,6 +4,7 @@ import { AdminCarDetails } from "@/features/admin/allCars/models";
 import { validateContractAllCarsDTO } from "@/model/blockchain/schemas_utils";
 import { mapContractCarToAdminCarDetails } from "@/features/admin/allCars/models/mappers/contractCarToAdminCarDetails";
 import { Err, Ok, Result } from "@/model/utils/result";
+import { logger } from "@/utils/logger";
 
 const useAdminAllCars = () => {
   const { admin } = useRentalityAdmin();
@@ -15,7 +16,7 @@ const useAdminAllCars = () => {
   const fetchData = useCallback(
     async (page: number = 1, itemsPerPage: number = 10): Promise<Result<boolean, string>> => {
       if (!admin) {
-        console.error("fetchData error: rentalityAdminGateway is null");
+        logger.error("fetchData error: rentalityAdminGateway is null");
         return Err("Contract is not initialized");
       }
 

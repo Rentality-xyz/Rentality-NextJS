@@ -3,6 +3,7 @@ import { IRentalityGatewayContract } from "@/features/blockchain/models/IRentali
 import { ContractPublicHostCarDTO } from "@/model/blockchain/schemas";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { env } from "@/utils/env";
+import { logger } from "@/utils/logger";
 import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Wallet } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -26,21 +27,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const privateKey = env.SIGNER_PRIVATE_KEY;
   if (isEmpty(privateKey)) {
-    console.error("API checkIfUserListedACar error: private key was not set");
+    logger.error("API checkIfUserListedACar error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
     return;
   }
 
   const chainId = env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
   if (!chainId) {
-    console.error("API checkIfUserListedACar error: chainId was not set");
+    logger.error("API checkIfUserListedACar error: chainId was not set");
     res.status(500).json({ error: "chainId was not set" });
     return;
   }
 
   const providerApiUrl = getProviderApiUrlFromEnv(chainId);
   if (!providerApiUrl) {
-    console.error(`API checkIfUserListedACar error: API URL for chain id ${chainId} was not set`);
+    logger.error(`API checkIfUserListedACar error: API URL for chain id ${chainId} was not set`);
     res.status(500).json({ error: `API URL for chain id ${chainId} was not set` });
     return;
   }
@@ -54,12 +55,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const userAddress = getAddressFromQuery(addressQuery);
   if (!userAddress || isEmpty(userAddress)) {
-    console.error("API checkIfUserListedACar error: userAddress was not provided");
+    logger.error("API checkIfUserListedACar error: userAddress was not provided");
     res.status(400).json({ error: "userAddress was not provided" });
     return;
   }
 
-  console.log(`\nCalling checkIfUserListedACar API for user ${userAddress}...`);
+  logger.info(`\nCalling checkIfUserListedACar API for user ${userAddress}...`);
 
   try {
     const provider = new JsonRpcProvider(providerApiUrl);
@@ -75,7 +76,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       .json({ cars_listed: userListingsView.length });
     return;
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: "An error occurred during blockchain method call" });
     return;
   }

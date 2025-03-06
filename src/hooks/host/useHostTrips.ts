@@ -4,6 +4,7 @@ import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { ContractTrip, ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 import { mapTripDTOtoTripInfo } from "@/model/utils/TripDTOtoTripInfo";
+import { logger } from "@/utils/logger";
 
 const useHostTrips = () => {
   const { rentalityContracts } = useRentality();
@@ -23,45 +24,45 @@ const useHostTrips = () => {
   useEffect(() => {
     const acceptRequest = async (tripId: bigint, params: string[]) => {
       if (!rentalityContracts) {
-        console.error("acceptRequest error: rentalityContract is null");
+        logger.error("acceptRequest error: rentalityContract is null");
         return false;
       }
 
       try {
         const result = await rentalityContracts.gateway.approveTripRequest(tripId);
         if (!result.ok) {
-          console.error("acceptRequest error:" + result.error);
+          logger.error("acceptRequest error:" + result.error);
           return false;
         }
         return true;
-      } catch (e) {
-        console.error("acceptRequest error:" + e);
+      } catch (error) {
+        logger.error("acceptRequest error:" + error);
         return false;
       }
     };
 
     const rejectRequest = async (tripId: bigint, params: string[]) => {
       if (!rentalityContracts) {
-        console.error("rejectRequest error: rentalityContract is null");
+        logger.error("rejectRequest error: rentalityContract is null");
         return false;
       }
 
       try {
         const result = await rentalityContracts.gateway.rejectTripRequest(tripId);
         if (!result.ok) {
-          console.error("rejectRequest error:" + result.error);
+          logger.error("rejectRequest error:" + result.error);
           return false;
         }
         return true;
-      } catch (e) {
-        console.error("rejectRequest error:" + e);
+      } catch (error) {
+        logger.error("rejectRequest error:" + error);
         return false;
       }
     };
 
     const checkInTrip = async (tripId: bigint, params: string[], tripPhotosUrls: string[]) => {
       if (!rentalityContracts) {
-        console.error("checkInTrip error: rentalityContract is null");
+        logger.error("checkInTrip error: rentalityContract is null");
         return false;
       }
 
@@ -78,19 +79,19 @@ const useHostTrips = () => {
           insuranceNumber
         );
         if (!result.ok) {
-          console.error("checkInTrip error:" + result.error);
+          logger.error("checkInTrip error:" + result.error);
           return false;
         }
         return true;
-      } catch (e) {
-        console.error("checkInTrip error:" + e);
+      } catch (error) {
+        logger.error("checkInTrip error:" + error);
         return false;
       }
     };
 
     const checkOutTrip = async (tripId: bigint, params: string[], tripPhotosUrls: string[]) => {
       if (!rentalityContracts) {
-        console.error("checkOutTrip error: rentalityContract is null");
+        logger.error("checkOutTrip error: rentalityContract is null");
         return false;
       }
 
@@ -100,32 +101,32 @@ const useHostTrips = () => {
 
         const result = await rentalityContracts.gateway.checkOutByHost(tripId, [endFuelLevelInPercents, endOdometr]);
         if (!result.ok) {
-          console.error("checkOutTrip error:" + result.error);
+          logger.error("checkOutTrip error:" + result.error);
           return false;
         }
 
         return true;
-      } catch (e) {
-        console.error("checkOutTrip error:" + e);
+      } catch (error) {
+        logger.error("checkOutTrip error:" + error);
         return false;
       }
     };
 
     const finishTrip = async (tripId: bigint, params: string[]) => {
       if (!rentalityContracts) {
-        console.error("finishTrip error: rentalityContract is null");
+        logger.error("finishTrip error: rentalityContract is null");
         return false;
       }
 
       try {
         const result = await rentalityContracts.gateway.finishTrip(tripId);
         if (!result.ok) {
-          console.error("finishTrip error:" + result.error);
+          logger.error("finishTrip error:" + result.error);
           return false;
         }
         return true;
-      } catch (e) {
-        console.error("finishTrip error" + e);
+      } catch (error) {
+        logger.error("finishTrip error" + error);
         return false;
       }
     };
@@ -249,13 +250,13 @@ const useHostTrips = () => {
     const getTrips = async (rentalityContracts: IRentalityContracts) => {
       try {
         if (!rentalityContracts) {
-          console.error("getTrips error: contract is null");
+          logger.error("getTrips error: contract is null");
           return;
         }
         const result = await rentalityContracts.gateway.getTripsAs(true);
 
         if (!result.ok) {
-          console.error("getTrips error:" + result.error);
+          logger.error("getTrips error:" + result.error);
           return;
         }
 
@@ -276,8 +277,8 @@ const useHostTrips = () => {
               );
 
         return tripsBookedData;
-      } catch (e) {
-        console.error("getTrips error:" + e);
+      } catch (error) {
+        logger.error("getTrips error:" + error);
       }
     };
 

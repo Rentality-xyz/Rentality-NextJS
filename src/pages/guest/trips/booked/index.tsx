@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import RntSuspense from "@/components/common/rntSuspense";
+import { logger } from "@/utils/logger";
 
 function Booked() {
   const ethereumInfo = useEthereum();
@@ -17,12 +18,12 @@ function Booked() {
 
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
     if (!ethereumInfo) {
-      console.error("changeStatusCallback error: ethereumInfo is null");
+      logger.error("changeStatusCallback error: ethereumInfo is null");
       return false;
     }
 
     if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
-      console.error("changeStatusCallback error: user don't have enough funds");
+      logger.error("changeStatusCallback error: user don't have enough funds");
       showError(t("common.add_fund_to_wallet"));
       return false;
     }
