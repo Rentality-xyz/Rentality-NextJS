@@ -28,7 +28,6 @@ import bgInput from "@/images/bg_input.png";
 import RntFilterSelect from "../common/RntFilterSelect";
 import { getTimeZoneIdByAddress } from "@/utils/timezone";
 import useFetchExistPlatformCars from "@/features/search/hooks/useFetchExistPlatformCars";
-import arrowTriangleDownGradient from "@/images/arrows/arrowTriangleDownGradient.svg";
 
 export default function SearchAndFilters({
   initValue,
@@ -393,9 +392,11 @@ export default function SearchAndFilters({
           <div className="relative flex w-full items-center justify-center text-white">
             <div className="text-lg">{t_comp("button_deliver_to_me")}</div>
             <Image
-              src={arrowTriangleDownGradient}
+              src="/images/icons/arrowTriangleDownGradient.svg"
               alt=""
-              className={`ml-4 ${openDeliveryLocation ? "rotate-180" : "rotate-0"} `}
+              width="12"
+              height="9"
+              className={`ml-4 transition ${openDeliveryLocation ? "rotate-180" : "rotate-0"} `}
             />
           </div>
         </RntButtonTransparent>

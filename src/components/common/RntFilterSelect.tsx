@@ -4,9 +4,6 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import RntValidationError from "./RntValidationError";
 import { isEmpty } from "@/utils/string";
-import arrowTriangleDownGradient from "@/images/arrows/arrowTriangleDownGradient.svg";
-import arrowTriangleDownGray from "@/images/arrows/arrowTriangleDownGray.svg";
-import arrowTriangleDownWhite from "@/images/arrows/arrowTriangleDownWhite.svg";
 import Image from "next/image";
 
 interface RntFilterSelectContextType {
@@ -136,13 +133,15 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
               <Image
                 src={
                   disabled
-                    ? arrowTriangleDownGray
+                    ? "/images/icons/arrowTriangleDownGray.svg"
                     : isTransparentStyle
-                      ? arrowTriangleDownGradient
-                      : arrowTriangleDownWhite
+                      ? "/images/icons/arrowTriangleDownGradient.svg"
+                      : "/images/icons/arrowTriangleDownWhite.svg"
                 }
+                width="12"
+                height="9"
                 alt=""
-                className={`ml-4 ${isOpen ? "rotate-180" : "rotate-0"} `}
+                className={`ml-4 transition ${isOpen ? "rotate-180" : "rotate-0"} `}
               />
             </div>
           </div>
