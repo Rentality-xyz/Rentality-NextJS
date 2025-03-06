@@ -5,7 +5,7 @@ import { resizeImage } from "@/utils/image";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
@@ -55,6 +55,8 @@ function UserCommonInformationForm({
   const enteredCode = watch("smsCode");
   const enteredPhoneNumber = watch("phoneNumber");
 
+  const [verifiedPhoneNumber, setVerifiedPhoneNumber] = useState(userProfile.phoneNumber);
+
   useEffect(() => {
     reset({
       profilePhotoUrl: userProfile.profilePhotoUrl,
@@ -66,6 +68,10 @@ function UserCommonInformationForm({
       isTerms: userProfile.isSignatureCorrect,
       smsCode: "",
     });
+
+    if(userProfile.isPhoneNumberVerified) {
+      setVerifiedPhoneNumber(userProfile.phoneNumber);
+    }
   }, [userProfile]);
 
   function fileChangeCallback(field: ControllerRenderProps<UserCommonInformationFormValues, "profilePhotoUrl">) {
@@ -151,6 +157,35 @@ function UserCommonInformationForm({
   const [smsTimestamp, setSmsTimestamp] = useState<number | undefined>(undefined);
   const [isEnteredCodeCorrect, setIsEnteredCodeCorrect] = useState(false);
 
+  const [isResendCodeTimerRunning, setIsResendCodeTimerRunning] = useState(false);
+  const [secondsLeft, setSecondsLeft] = useState(60);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const isCurrentPhoneNotVerified = (!userProfile.isPhoneNumberVerified && !isEnteredCodeCorrect)
+    || (enteredPhoneNumber !== verifiedPhoneNumber)
+
+
+
+  useEffect(() => {
+    if (isResendCodeTimerRunning && secondsLeft > 0) {
+      timerRef.current = setTimeout(() => {
+        setSecondsLeft((prev) => prev - 1);
+      }, 1000);
+    } else if (secondsLeft === 0) {
+      setIsResendCodeTimerRunning(false);
+    }
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [isResendCodeTimerRunning, secondsLeft]);
+
+  const startTimer = () => {
+    if (!isResendCodeTimerRunning) {
+      setIsResendCodeTimerRunning(true);
+      setSecondsLeft(60);
+    }
+  };
+
   async function sendSmsVerificationCode() {
     try {
       if (!enteredPhoneNumber) {
@@ -170,6 +205,7 @@ function UserCommonInformationForm({
       if (response.ok) {
         setSmsHash(result.hash);
         setSmsTimestamp(result.timestamp);
+        startTimer();
       } else {
         console.error("sendSmsVerificationCode error:" + result.error);
         showError(t("profile.send_sms_err"));
@@ -206,7 +242,12 @@ function UserCommonInformationForm({
       }
 
       if (result.isVerified) {
+        setIsResendCodeTimerRunning(false);
         setIsEnteredCodeCorrect(true);
+        setVerifiedPhoneNumber(enteredPhoneNumber);
+        setValue("smsCode","");
+        setSmsHash(undefined);
+        setSmsTimestamp(undefined);
         return;
       }
 
@@ -285,17 +326,22 @@ function UserCommonInformationForm({
               />
             )}
           />
-          {!userProfile.isPhoneNumberVerified && !isEnteredCodeCorrect && (
+          {isCurrentPhoneNotVerified && (
             <RntButton
               className="lg:w-60"
               onClick={sendSmsVerificationCode}
-              disabled={smsHash !== undefined && smsTimestamp !== undefined}
+              disabled={isResendCodeTimerRunning}
             >
-              {t("profile.verify")}
+              { smsHash === undefined ? t("profile.verify") : t("profile.resend_code")}
             </RntButton>
           )}
         </div>
-        {!isEnteredCodeCorrect && !userProfile.isPhoneNumberVerified && smsHash && smsTimestamp && (
+
+        {isResendCodeTimerRunning && isCurrentPhoneNotVerified &&
+          (<p className="w-full pl-4 mt-2">{t("profile.resend_code_hint", {"secondsLeft": secondsLeft})}</p>)
+        }
+
+        {isCurrentPhoneNotVerified && smsHash && smsTimestamp && (
           <div className="mt-4 flex flex-wrap items-end gap-4">
             <Controller
               name="smsCode"
