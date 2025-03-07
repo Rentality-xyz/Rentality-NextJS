@@ -67,7 +67,7 @@ export function CheckboxLight({
           {checked ? (
             <span
               className={cn(
-                `border-rnt-checkbox-check-mark absolute right-[6px] top-[1px] h-3.5 w-2 shrink-0 rotate-45 border-b-2 border-r-2`,
+                `absolute right-[6px] top-[1px] h-3.5 w-2 shrink-0 rotate-45 border-b-2 border-r-2 border-rnt-checkbox-check-mark`,
                 checkMarkClassName
               )}
             ></span>
@@ -93,9 +93,9 @@ export function CheckboxTerms({
     <div className={cn(className, "flex flex-row items-center")}>
       <label className="group flex w-fit cursor-pointer select-none flex-row items-center">
         <input className="hidden" type="checkbox" checked={checked} onChange={onChange} />
-        <span className={`border-rnt-checkbox-border relative mr-4 h-6 w-6 shrink-0 rounded-md border-2`}>
+        <span className={`relative mr-4 h-6 w-6 shrink-0 rounded-md border-2 border-rnt-checkbox-border`}>
           {checked ? (
-            <span className="border-rnt-checkbox-check-mark absolute right-[6px] top-[1px] h-3.5 w-2 shrink-0 rotate-45 border-b-2 border-r-2"></span>
+            <span className="absolute right-[6px] top-[1px] h-3.5 w-2 shrink-0 rotate-45 border-b-2 border-r-2 border-rnt-checkbox-check-mark"></span>
           ) : null}
         </span>
       </label>

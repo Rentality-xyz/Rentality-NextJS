@@ -180,7 +180,7 @@ function CarAddPhoto({
         })}
         {carImages.filter((i) => "localUrl" in i || !i.isDeleted).length < MAX_ADD_IMAGE && (
           <div
-            className={`h-[162px] min-w-[288px] overflow-hidden rounded-2xl bg-transparent bg-center bg-no-repeat ${readOnly ? "cursor-not-allowed border-2 border-gray-500 bg-[url('../images/add_circle_outline_disabled_48dp.svg')]" : "border-gradient-2 cursor-pointer bg-[url('../images/add_circle_outline_white_48dp.svg')]"}`}
+            className={`h-[162px] min-w-[288px] overflow-hidden rounded-2xl bg-transparent bg-center bg-no-repeat ${readOnly ? "cursor-not-allowed border-2 border-gray-500 bg-[url('/images/icons/add_circle_outline_disabled_48dp.svg')]" : "border-gradient-2 cursor-pointer bg-[url('/images/icons/add_circle_outline_white_48dp.svg')]"}`}
           >
             <div className="h-full w-full" onClick={handleImageClick} />
             <input className="hidden" type="file" accept="image/*" ref={inputRef} onChange={handleImageChange} />
