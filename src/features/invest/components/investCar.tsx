@@ -1,5 +1,5 @@
 import RntButton from "../../../components/common/rntButton";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
@@ -10,6 +10,7 @@ import moment from "moment";
 import { InvestmentInfoWithMetadata } from "@/model/InvestmentInfo";
 import { InvestmentInfo } from "@/model/InvestmentInfo";
 import Link from "next/link";
+import { isUnlimitedMiles } from "@/model/HostCarInfo";
 
 const ccsDividerVert = "max-2xl:hidden absolute right-[-5px] top-1/2 h-[80%] w-px translate-y-[-50%] bg-gray-500";
 const ccsDividerHor = "2xl:hidden absolute bottom-[-10px] left-[5%] h-px w-[90%] translate-y-[-50%] bg-gray-500";
@@ -78,7 +79,10 @@ export default function InvestCar({
           </Link>
         </div>
       </div>
-      <div style={{ backgroundImage: `url(${searchInfo.metadata.image})` }}></div>
+      <div
+        style={{ backgroundImage: `url(${searchInfo.metadata.image})` }}
+        className="min-h-[212px] w-full bg-cover bg-center bg-no-repeat sm:min-h-[356px] xl:min-h-[514px] 2xl:min-h-[324px] mac:min-h-[366px] fullHD:min-h-[432px]"
+      ></div>
       <div className="flex h-full w-full grid-cols-[1fr_0.5fr_0.5fr] flex-col gap-2 2xl:grid">
         <div className="relative flex flex-col justify-between p-2">
           <div>
