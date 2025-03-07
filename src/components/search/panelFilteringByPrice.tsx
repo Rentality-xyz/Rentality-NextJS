@@ -7,7 +7,6 @@ import Slider from "@mui/material/Slider";
 import RntButton from "@/components/common/rntButton";
 import { DEFAULT_MAX_FILTER_PRICE } from "@/utils/constants";
 import { createPortal } from "react-dom";
-import arrowTriangleDownGradient from "@/images/arrows/arrowTriangleDownGradient.svg";
 
 export default function PanelFilteringByPrice({
   id,
@@ -128,7 +127,13 @@ export default function PanelFilteringByPrice({
               ? t_comp("select_filter_price")
               : `$${value[0]} - $${value[1]}`}
           </div>
-          <Image src={arrowTriangleDownGradient} alt="" className={`ml-4 ${isOpen ? "rotate-180" : "rotate-0"} `} />
+          <Image
+            src="/images/icons/arrowTriangleDownGradient.svg"
+            alt=""
+            width="12"
+            height="9"
+            className={`ml-4 transition ${isOpen ? "rotate-180" : "rotate-0"} `}
+          />
         </div>
       </RntButtonTransparent>
 
