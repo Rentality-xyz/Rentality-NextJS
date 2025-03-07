@@ -46,8 +46,8 @@ export default function InvestCar({
 
   const handleChangeInvestmentAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const maxAmount = searchInfo.investment.investment.priceInUsd;
-    const inputInvestmentAmount = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
-    let numericValue = Number.parseInt(inputInvestmentAmount, 10);
+    const inputInvestmentAmount = e.target.value.replace(/[^\d.]/g, "") || "0"; // Удаляем всё, кроме цифр
+    let numericValue = Number.parseFloat(inputInvestmentAmount);
 
     if (numericValue > maxAmount) {
       numericValue = maxAmount;
