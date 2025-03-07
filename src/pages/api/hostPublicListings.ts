@@ -103,7 +103,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     res.status(200).json(hostPublicListingsData);
   } catch (error) {
-    logger.error(error);
+    logger.error("API hostPublicListings error:", error);
     res.status(500).json({ error: "An error occurred during blockchain method call" });
   }
 }
