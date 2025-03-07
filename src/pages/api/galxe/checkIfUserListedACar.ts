@@ -76,7 +76,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       .json({ cars_listed: userListingsView.length });
     return;
   } catch (error) {
-    logger.error(error);
+    logger.error("API checkIfUserListedACar error:", error);
     res.status(500).json({ error: "An error occurred during blockchain method call" });
     return;
   }

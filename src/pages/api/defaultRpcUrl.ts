@@ -30,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     };
     res.status(200).json(result);
   } catch (error) {
-    logger.error(error);
+    logger.error("API defaultRpcUrl error:", error);
     res.status(500).json({ error: "An error occurred during blockchain method call" });
   }
 }

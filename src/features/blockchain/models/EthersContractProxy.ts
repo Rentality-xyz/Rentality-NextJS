@@ -12,7 +12,7 @@ export function getEthersContractProxy<T extends IEthersContract>(contract: T): 
       if (typeof originalMethod !== "function") {
         return originalMethod;
       }
-      logger.debug(`${key.toString()} proxy function called`);
+
       return async (...args: any[]) => {
         try {
           debugData(contract, key.toString(), args);
@@ -20,7 +20,6 @@ export function getEthersContractProxy<T extends IEthersContract>(contract: T): 
           const result = await originalMethod.apply(target, args);
 
           if (isContractTransactionResponse(result)) {
-            logger.debug("proxy function return ContractTransactionResponse");
             await result.wait();
             return Ok(true);
           }
@@ -44,11 +43,11 @@ function isContractTransactionResponse(obj: any): obj is ContractTransactionResp
     typeof obj.wait === "function"
   );
 }
-function debugData<T>(contract: T, fn: string, args: any[]) {
+function debugData<T>(contract: T, fnName: string, args: any[]) {
   const contractInterface = (contract as unknown as ethers.Contract).interface;
-  const contractFn = contractInterface.getFunction(fn);
+  const contractFn = contractInterface.getFunction(fnName);
   const fnArgs = contractFn && contractFn.payable ? args.slice(0, args.length - 1) : args;
 
-  const encodedData = contractInterface.encodeFunctionData(fn, fnArgs);
-  logger.debug(`Encoded transaction data for ${fn.toString()}:`, encodedData);
+  const encodedData = contractInterface.encodeFunctionData(fnName, fnArgs);
+  logger.debug(`${fnName} proxy function called with encoded transaction data:`, encodedData);
 }

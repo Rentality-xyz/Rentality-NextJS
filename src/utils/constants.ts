@@ -2,6 +2,12 @@ import { LocationInfo } from "@/model/LocationInfo";
 import { ethers } from "ethers";
 import moment from "moment";
 
+export const LOG_LEVELS = ["trace", "debug", "info", "warn", "error"] as const;
+export type LogLevel = (typeof LOG_LEVELS)[number];
+
+export const NODE_ENVS = ["development", "qa", "production"] as const;
+export type NodeEnv = (typeof NODE_ENVS)[number];
+
 export const DEFAULT_LOCAL_HOST_CHAIN_ID = 1337;
 export const DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM = 12;
 export const DEFAULT_GOOGLE_MAPS_SEARCH_CENTER = {

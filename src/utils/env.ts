@@ -1,9 +1,6 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
-import { LOG_LEVELS } from "./logger";
-
-export const NODE_ENVS = ["development", "qa", "production"] as const;
-export type NodeEnv = (typeof NODE_ENVS)[number];
+import { LOG_LEVELS, NODE_ENVS } from "./constants";
 
 export const env = createEnv({
   server: {
