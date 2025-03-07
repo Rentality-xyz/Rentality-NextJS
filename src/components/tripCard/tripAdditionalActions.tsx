@@ -154,7 +154,7 @@ function TripAdditionalActions({
           })}
         </strong>
       </div>
-      <div className="flex flex-col md:flex-row gap-4 py-4">
+      <div className="flex flex-col gap-4 py-4 md:flex-row">
         {isHost ? (
           <AllowedActionsHost
             tripInfo={tripInfo}
@@ -193,7 +193,7 @@ function TripAdditionalActions({
           return (
             <RntButton
               key={action.text}
-              className="h-16 px-4 max-md:w-full"
+              className="px-4 max-md:w-full"
               disabled={disableButton}
               onClick={() => {
                 onActionBtnClick(action);
