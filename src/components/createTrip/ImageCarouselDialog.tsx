@@ -10,6 +10,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 // import required modules
 import { EffectFade, Navigation, Pagination } from "swiper/modules";
+import { useEffect, useState } from "react";
 
 interface ImageCarouselDialogPros {
   images: string[];
@@ -25,7 +26,7 @@ function ImageCarouselDialog({ images, isOpen, title, isActualImageSize = false,
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70" onClick={onClose}>
       <div
-        className="border-gradient h-[40%] w-[100%] rounded-[20px] bg-rentality-bg-left-sidebar p-4 sm:h-[80%] lg:h-[510px] lg:w-[800px] xl:h-[582px] xl:w-[928px] 2xl:h-[800px] 2xl:w-[1312px]"
+        className="border-gradient h-[40%] w-[100%] rounded-[20px] bg-rentality-bg-left-sidebar p-4 sm:h-[80%] lg:h-[510px] lg:w-[800px] xl:h-[582px] xl:w-[928px] 2xl:h-[720px] 2xl:w-[1280px] fullHD:h-[800px] fullHD:w-[1312px]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -34,7 +35,7 @@ function ImageCarouselDialog({ images, isOpen, title, isActualImageSize = false,
         </div>
 
         {/* Swiper для экранов больше md */}
-        <div className="hidden h-[432px] lg:block xl:h-[504px] 2xl:h-[720px]">
+        <div className="hidden h-[90%] lg:block xl:h-[92%] 2xl:h-[94%]">
           <Swiper
             spaceBetween={30}
             effect={isActualImageSize ? "" : "fade"}
