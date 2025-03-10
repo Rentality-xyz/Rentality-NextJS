@@ -8,6 +8,7 @@ import { bigIntReplacer } from "@/utils/json";
 import moment from "moment";
 import { TripInsurance } from "../models";
 import { usePaginationForListApi } from "@/hooks/pagination";
+import { logger } from "@/utils/logger";
 
 export type InsuranceFiltersType = {};
 export const INSURANCE_LIST_QUERY_KEY = "InsuranceList";
@@ -21,7 +22,7 @@ function useFetchInsurances(isHost: boolean, initialPage: number = 1, initialIte
       if (!rentalityContracts) {
         throw new Error("Contracts not initialized");
       }
-      console.debug(`Fetching insurance list for ${isHost ? "host" : "guest"}`);
+      logger.debug(`Fetching insurance list for ${isHost ? "host" : "guest"}`);
 
       const result = await rentalityContracts.gateway.getInsurancesBy(isHost);
 
@@ -32,7 +33,7 @@ function useFetchInsurances(isHost: boolean, initialPage: number = 1, initialIte
       if (result.value && result.value.length > 0) {
         validateContractInsuranceDTO(result.value[0]);
       }
-      console.debug("insuranceData", JSON.stringify(result.value, bigIntReplacer, 2));
+      logger.debug("insuranceData", JSON.stringify(result.value, bigIntReplacer, 2));
 
       const data: TripInsurance[] = result.value.map((i) => {
         const timeZoneId = UTC_TIME_ZONE_ID;
