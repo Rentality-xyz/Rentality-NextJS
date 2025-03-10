@@ -94,7 +94,7 @@ export default function ChooseBlockchainComponent() {
                   />
                   <span className="whitespace-nowrap">{i.shortName}</span>
                   <div className="flex w-full items-end">
-                    {selectedBlockchain == i && <Image src={"/images/icons/blockchainChosen.svg"} alt="" className="mr-0" />}
+                    {selectedBlockchain == i && <Image src={"/images/icons/blockchainChosen.svg"} width={20} height={20} alt="" className="mr-0" />}
                   </div>
                 </Button>
               );
