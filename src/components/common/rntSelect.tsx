@@ -59,7 +59,7 @@ const RntSelect = forwardRef<HTMLSelectElement, RntSelectProps>(
         {!isEmpty(label) &&
           (isTransparentStyle ? (
             <label className={cn("flex items-center", lClassName)} htmlFor={id}>
-              {!isEmpty(iconFrontLabel?.src) && <Image src={iconFrontLabel!!} alt="" className="mr-2" />}
+              {!isEmpty(iconFrontLabel?.src) && <Image src={iconFrontLabel!!} width={24} height={24} alt="" className="mr-2" />}
               {label}
             </label>
           ) : (
