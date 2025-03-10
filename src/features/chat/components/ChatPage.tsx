@@ -54,7 +54,7 @@ export default function ChatPage({
             {t("back")}
           </RntButton>
 
-          <div className="text-2xl font-bold">{selectedChat.hostName}</div>
+          <div className="pl-4 text-2xl font-bold">{selectedChat.hostName}</div>
           <ChatHeader selectedChat={selectedChat} t={t} />
           <ChatMessages selectedChat={selectedChat} isHost={isHost} />
           <SendMessage
