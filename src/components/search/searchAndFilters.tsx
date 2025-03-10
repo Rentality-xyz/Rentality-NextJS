@@ -16,15 +16,11 @@ import { placeDetailsToLocationInfo } from "@/utils/location";
 import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
 import RntCarModelSelect from "@/components/common/rntCarModelSelect";
 import { SortOptionKey } from "@/hooks/guest/useSearchCars";
-import icLocation from "../../images/ic_location.png";
-import icSearch from "@/images/ic_search.svg";
-import icCalendar from "../../images/ic_calendar.png";
 import PanelFilteringByYear from "@/components/search/panelFilteringByYear";
 import PanelFilteringByPrice from "@/components/search/panelFilteringByPrice";
 import { nameof } from "@/utils/nameof";
 import { FilterLimits } from "@/model/SearchCarsResult";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
-import bgInput from "@/images/bg_input.png";
 import RntFilterSelect from "../common/RntFilterSelect";
 import { getTimeZoneIdByAddress } from "@/utils/timezone";
 import useFetchExistPlatformCars from "@/features/search/hooks/useFetchExistPlatformCars";
@@ -172,7 +168,7 @@ export default function SearchAndFilters({
       <RntPlaceAutoComplete
         isTransparentStyle={true}
         isDarkPlacePredictions={true}
-        iconFrontLabel={icLocation}
+        iconFrontLabel={"/images/icons/ic_location.png"}
         className="w-full"
         inputClassName="mt-1 z-10 focus:outline-none focus:ring-0"
         labelClassName="pl-3.5 font-bold"
@@ -198,7 +194,7 @@ export default function SearchAndFilters({
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between xl:justify-around">
         <RntInput
           isTransparentStyle={true}
-          iconFrontLabel={icCalendar}
+          iconFrontLabel={"/images/icons/ic_calendar.png"}
           className="basis-1/3"
           inputClassName="pr-4 z-10 focus:outline-none focus:ring-0"
           labelClassName="pl-[18px] z-10 font-bold"
@@ -210,7 +206,7 @@ export default function SearchAndFilters({
         />
         <RntInput
           isTransparentStyle={true}
-          iconFrontLabel={icCalendar}
+          iconFrontLabel={"/images/icons/ic_calendar.png"}
           className="basis-1/3"
           inputClassName="pr-4 z-10 focus:outline-none focus:ring-0"
           labelClassName="pl-[18px] z-10 font-bold"
@@ -226,7 +222,7 @@ export default function SearchAndFilters({
           isVisibleCircle={false}
           onClick={handleSearchClick}
         >
-          <Image src={icSearch} alt="" className="mr-2 h-[16px]" />
+          <Image src={"/images/icons/ic_search.svg"} width={19} height={19} alt="" className="mr-2 h-[16px]" />
           {t_comp("button_search")}
         </RntButton>
       </div>
@@ -249,7 +245,7 @@ export default function SearchAndFilters({
           </span>
         </div>
 
-        <Image src={bgInput} alt="" className="absolute left-0 top-0 h-full w-full rounded-full" />
+        <Image src={"/images/bg_input.png"} width={1550} height={90} alt="" className="absolute left-0 top-0 h-full w-full rounded-full" />
       </div>
 
       {/* блок поиска, который открывается на малых экранах */}

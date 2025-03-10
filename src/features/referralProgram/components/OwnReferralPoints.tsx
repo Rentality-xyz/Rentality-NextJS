@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import React from "react";
 import Image from "next/image";
 import RntButton from "@/components/common/rntButton";
-import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "../../../components/common/rntSuspense";
 import ReferralProgramStatusCard from "@/features/referralProgram/components/ReferralProgramStatusCard";
@@ -36,7 +35,7 @@ export default function OwnReferralPoints() {
           disabled={isLoading || isFetching || isClaiming || readyToClaim === 0}
           onClick={handleClaimPointsClick}
         >
-          <Image src={icStarPointsYellow} alt="" className="mr-2 h-7 w-7" />
+          <Image src={"/images/icons/ic_star_points_yellow.svg"} width={47} height={47} alt="" className="mr-2 h-7 w-7" />
           <div className="ml-0.5 flex">
             {isClaiming ? (
               <>Claiming...</>

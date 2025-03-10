@@ -2,7 +2,6 @@ import React, { useRef } from "react";
 import Image from "next/image";
 import { resizeImage } from "@/utils/image";
 import { FileToUpload } from "@/model/FileToUpload";
-import ic_edit_car from "@/images/ic_edit_car_white.png";
 
 function ClaimAddPhoto({
   filesToUpload,
@@ -84,7 +83,7 @@ function ClaimAddPhoto({
                   handleEditClick(index);
                 }}
               >
-                <Image src={ic_edit_car} alt="" className="w-[22px]" />
+                <Image src={"/images/icons/ic_edit_car_white.png"} width={48} height={48} alt="" className="w-[22px]" />
               </button>
             </div>
           );

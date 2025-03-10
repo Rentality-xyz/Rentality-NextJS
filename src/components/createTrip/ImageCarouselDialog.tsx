@@ -1,5 +1,4 @@
 import Image from "next/image";
-import burgerMenuClose from "@/images/ic-menu-burge-close-white-20.svg";
 
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -31,7 +30,7 @@ function ImageCarouselDialog({ images, isOpen, title, isActualImageSize = false,
       >
         <div className="mb-4 flex items-center justify-between">
           <h2 className="ml-[2.4%] w-full text-center text-2xl font-semibold text-white/70">{title}</h2>
-          <Image height={28} src={burgerMenuClose} alt="" className="cursor-pointer opacity-70" onClick={onClose} />
+          <Image height={28} width={28} src={"/images/icons/ic-menu-burge-close-white-20.svg"} alt="" className="cursor-pointer opacity-70" onClick={onClose} />
         </div>
 
         {/* Swiper для экранов больше md */}

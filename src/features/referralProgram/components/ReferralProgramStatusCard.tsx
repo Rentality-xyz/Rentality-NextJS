@@ -1,6 +1,4 @@
 import Image from "next/image";
-import icStarPointsWhite from "@/images/ic_star_points_white.svg";
-import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 import React from "react";
 import { cn } from "@/utils";
 import { PointsProfileStatus } from "../models";
@@ -35,7 +33,7 @@ function ReferralProgramStatusCard({ index, nameReferral, countPoints, status }:
       headerTextClassName = "text-gray-400";
       _countPoints = countPoints.toString();
       // headerText = "Next step";
-      icStarPoints = icStarPointsWhite;
+      icStarPoints = "/images/icons/ic_star_points_white.svg";
       break;
     }
     case PointsProfileStatus.ReadyToClaim: {
@@ -45,7 +43,7 @@ function ReferralProgramStatusCard({ index, nameReferral, countPoints, status }:
       headerTextClassName = "text-rentality-star-point";
       _countPoints = countPoints.toString();
       // headerText = "Ready to claim";
-      icStarPoints = icStarPointsYellow;
+      icStarPoints = "/images/icons/ic_star_points_yellow.svg";
       break;
     }
   }
@@ -66,7 +64,7 @@ function ReferralProgramStatusCard({ index, nameReferral, countPoints, status }:
             )}
           >
             {_countPoints}
-            {icStarPoints !== null && <Image src={icStarPoints} alt="" className="ml-1 h-[20px] w-[20px]" />}
+            {icStarPoints !== null && <Image src={icStarPoints} height={27} width={26} alt="" className="ml-1 h-[20px] w-[20px]" />}
           </div>
         </div>
       </div>

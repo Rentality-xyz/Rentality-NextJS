@@ -3,7 +3,6 @@ import { forwardRef, useId } from "react";
 import RntValidationError from "./RntValidationError";
 import { cn } from "@/utils";
 import Image, { StaticImageData } from "next/image";
-import bgInput from "@/images/bg_input.png";
 import * as React from "react";
 import DotStatus from "@/components/dotStatus";
 
@@ -16,7 +15,7 @@ export interface RntInputProps extends React.ComponentPropsWithoutRef<"input"> {
   validationSuccessMessage?: string;
   validationMessage?: string;
   isTransparentStyle?: boolean;
-  iconFrontLabel?: StaticImageData;
+  iconFrontLabel?: string;
 }
 
 const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
@@ -58,9 +57,9 @@ const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
         {!isEmpty(label) &&
           (isTransparentStyle ? (
             <label className={cn("flex items-center", lClassName)} htmlFor={reactId}>
-              {!isEmpty(iconFrontLabel?.src) && <Image src={iconFrontLabel!!} alt="" className="mr-2" />}
+              {!isEmpty(iconFrontLabel) && <Image src={iconFrontLabel!!} width={19} height={20} alt="" className="mr-2" />}
               {label}
-              <Image src={bgInput} alt="" className="absolute left-0 top-[30px] h-[62%] w-full rounded-full" />
+              <Image src={"/images/bg_input.png"} width={1550} height={90} alt="" className="absolute left-0 top-[30px] h-[62%] w-full rounded-full" />
             </label>
           ) : (
             <label className={lClassName} htmlFor={id}>
