@@ -25,7 +25,7 @@ export default function SendMessage({
 
   return (
     <form className="mb-12 flex flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
-      <div className="text-2xl">{t("send")}</div>
+      <div className="pl-4 text-2xl">{t("send")}</div>
       <RntInputMultiline
         isTransparentStyle={true}
         className="text-lg"
