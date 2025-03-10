@@ -27,6 +27,9 @@ export default function GuestInsuranceFilters({ defaultFilters, onApply }: Guest
               value={field.value ?? "All"}
               disabled={true}
               label={t("insurance.trip_filter")}
+              onChange={(e) => {
+                field.onChange(e);
+              }}
             >
               <RntFilterSelect.Option key="guest-insurance-filters" value="All">
                 All

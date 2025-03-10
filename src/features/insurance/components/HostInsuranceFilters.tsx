@@ -27,6 +27,9 @@ export default function HostInsuranceFilters({ defaultFilters, onApply }: HostIn
               value={field.value ?? "All"}
               disabled={true}
               label={t("insurance.trip_filter")}
+              onChange={(e) => {
+                field.onChange(e);
+              }}
             >
               <RntFilterSelect.Option key="host-insurance-filters" value="All">
                 All
