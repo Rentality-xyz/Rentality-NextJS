@@ -15,6 +15,7 @@ import { getBlockCountForSearch } from "@/model/blockchain/blockchainList";
 import { useAuth } from "@/contexts/auth/authContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRentality } from "@/contexts/rentalityContext";
+import { logger } from "@/utils/logger";
 
 export type NotificationContextInfo = {
   isLoading: boolean;
@@ -105,7 +106,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
 
   const rentalityEventListener: Listener = useCallback(
     async ({ args }) => {
-      console.log(`Rentality Event | args: ${JSON.stringify(args, bigIntReplacer)}`);
+      logger.info(`Rentality Event | args: ${JSON.stringify(args, bigIntReplacer)}`);
 
       if (!rentalityContracts) return;
 
@@ -125,8 +126,8 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
               if (!notification) return;
 
               addNotifications([notification]);
-            } catch (e) {
-              console.error("rentalityEventListener error:" + e);
+            } catch (error) {
+              logger.error("rentalityEventListener error:" + error);
             }
           } else {
             try {
@@ -137,8 +138,8 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
               if (!notification) return;
 
               addNotifications([notification]);
-            } catch (e) {
-              console.error("rentalityEventListener error:" + e);
+            } catch (error) {
+              logger.error("rentalityEventListener error:" + error);
             }
           }
           return;
@@ -162,8 +163,8 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
             if (!notification) return;
 
             addNotifications([notification]);
-          } catch (e) {
-            console.error("rentalityEventListener error:" + e);
+          } catch (error) {
+            logger.error("rentalityEventListener error:" + error);
           }
           return;
       }
@@ -184,7 +185,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         const signerWithProvider = randomSigner.connect(provider);
         const notificationService = await getEtherContractWithSigner("notificationService", signerWithProvider);
         if (!notificationService) {
-          console.error("initialLoading error: notificationService is null");
+          logger.error("initialLoading error: notificationService is null");
           return false;
         }
 
@@ -231,8 +232,8 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         await notificationService.removeAllListeners();
         await notificationService.on(rentalityEventFilterFromUser, rentalityEventListener);
         await notificationService.on(rentalityEventFilterToUser, rentalityEventListener);
-      } catch (e) {
-        console.error("initialLoading error:" + e);
+      } catch (error) {
+        logger.error("initialLoading error:" + error);
       } finally {
         setIsLoading(false);
       }
@@ -243,7 +244,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
 
   useEffect(() => {
     if (!isAuthenticated && notificationInfos.length > 0) {
-      console.debug(`User has logged out. Reset notificationInfos`);
+      logger.debug(`User has logged out. Reset notificationInfos`);
       setNotificationInfos([]);
     }
   }, [isAuthenticated, notificationInfos]);

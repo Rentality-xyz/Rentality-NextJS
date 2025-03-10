@@ -3,6 +3,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { env } from "@/utils/env";
+import { logger } from "@/utils/logger";
 import { tryParseMetamaskError } from "@/utils/metamask";
 import { isEmpty } from "@/utils/string";
 import { GatewayStatus, useGateway } from "@civic/ethereum-gateway-react";
@@ -29,12 +30,12 @@ const useCustomCivic = () => {
 
   async function payCommission(): Promise<Result<boolean, string>> {
     if (!rentalityContracts) {
-      console.error("payCommission error: rentalityContract is null");
+      logger.error("payCommission error: rentalityContract is null");
       return Err("rentalityContract is null");
     }
 
     if (!(status === "Not paid" || status === "Kyc failed")) {
-      console.error(`payCommission error: status is not "Not paid" nor "Kyc failed"`);
+      logger.error(`payCommission error: status is not "Not paid" nor "Kyc failed"`);
       return Err(`status is not "Not paid" nor "Kyc failed"`);
     }
 
@@ -43,7 +44,7 @@ const useCustomCivic = () => {
 
       const commissionPriceResult = await rentalityContracts.gateway.calculateKycCommission(ETH_DEFAULT_ADDRESS);
       if (!commissionPriceResult.ok) {
-        console.error("payCommission error:" + commissionPriceResult.error);
+        logger.error("payCommission error:" + commissionPriceResult.error);
         setStatus("Not paid");
         return Err("Transaction error. See logs for more details");
       }
@@ -57,13 +58,13 @@ const useCustomCivic = () => {
 
       setStatus("Commission paid");
       return Ok(true);
-    } catch (e) {
-      const metamaskErrorResult = tryParseMetamaskError(e);
+    } catch (error) {
+      const metamaskErrorResult = tryParseMetamaskError(error);
       if (metamaskErrorResult.ok && metamaskErrorResult.value.message.includes("insufficient funds")) {
         setStatus("Not paid");
         return Err(t("common.add_fund_to_wallet"));
       }
-      console.error("payCommission error:" + e);
+      logger.error("payCommission error:" + error);
       setStatus("Not paid");
       return Err("Transaction error. See logs for more details");
     }
@@ -99,7 +100,7 @@ const useCustomCivic = () => {
       }
 
       if (gatewayStatus === GatewayStatus.COLLECTING_USER_INFORMATION && !isKycProcessing) {
-        console.log(`KYC processing is started`);
+        logger.info(`KYC processing is started`);
         setIsKycProcessing(true);
         return;
       }
@@ -115,16 +116,16 @@ const useCustomCivic = () => {
           url.searchParams.append("address", ethereumInfo.walletAddress);
           url.searchParams.append("chainId", ethereumInfo.chainId.toString());
 
-          console.log(`calling updateCivic...`);
+          logger.info(`calling updateCivic...`);
 
           const apiResponse = await fetch(url);
 
           if (!apiResponse.ok) {
-            console.error(`updateCivic fetch error: + ${apiResponse.statusText}`);
+            logger.error(`updateCivic fetch error: + ${apiResponse.statusText}`);
             return;
           }
-        } catch (e) {
-          console.error("updateCivic error:" + e);
+        } catch (error) {
+          logger.error("updateCivic error:" + error);
         }
         setStatus("Kyc failed");
         return;
@@ -150,7 +151,7 @@ const useCustomCivic = () => {
   const isFetchingPiiData = useRef<boolean>(false);
   useEffect(() => {
     const retrieveCivicData = async () => {
-      console.log(`KycVerification pendingRequests: ${JSON.stringify(pendingRequests)}`);
+      logger.info(`KycVerification pendingRequests: ${JSON.stringify(pendingRequests)}`);
 
       if (!pendingRequests) return;
       if (!ethereumInfo) return;
@@ -163,12 +164,12 @@ const useCustomCivic = () => {
         url.searchParams.append("requestId", pendingRequests.presentationRequestId);
         url.searchParams.append("chainId", ethereumInfo.chainId.toString());
 
-        console.log(`calling retrieveCivicData...`);
+        logger.info(`calling retrieveCivicData...`);
 
         const apiResponse = await fetch(url);
 
         if (!apiResponse.ok) {
-          console.error(`getInfo fetch error: + ${apiResponse.statusText}`);
+          logger.error(`getInfo fetch error: + ${apiResponse.statusText}`);
           return;
         }
       } finally {
@@ -180,7 +181,7 @@ const useCustomCivic = () => {
 
   //TODO DELETE THIS IS FOR DEBUG
   useEffect(() => {
-    console.debug(`gatewayStatus changed: ${gatewayStatus}`);
+    logger.debug(`gatewayStatus changed: ${gatewayStatus}`);
   }, [gatewayStatus]);
 
   const isInitialized = useRef<boolean>(false);
@@ -227,9 +228,9 @@ const useCustomCivic = () => {
         }
 
         setStatus("Kyc failed");
-      } catch (e) {
+      } catch (error) {
         isInitialized.current = false;
-        console.error("initialize error:" + e);
+        logger.error("initialize error:" + error);
         setStatus("Init error");
       }
     };

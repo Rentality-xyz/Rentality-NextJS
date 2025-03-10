@@ -4,6 +4,7 @@ import { Err, Ok, Result } from "@/model/utils/result";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import { bigIntReplacer } from "@/utils/json";
+import { logger } from "@/utils/logger";
 import { isEmpty } from "@/utils/string";
 import moment from "moment";
 import { useCallback } from "react";
@@ -19,7 +20,7 @@ function useCheckPromo() {
       timeZoneId: string
     ): Promise<Result<{ value: number }, Error>> => {
       if (!rentalityContracts) {
-        console.error("fetchData error: rentalityContract is null");
+        logger.error("fetchData error: rentalityContract is null");
         return Err(new Error("Contract is not initialized"));
       }
 
@@ -30,7 +31,7 @@ function useCheckPromo() {
       const startUnixTime = getBlockchainTimeFromDate(dateFrom);
       const endUnixTime = getBlockchainTimeFromDate(dateTo);
 
-      console.debug(
+      logger.debug(
         "checkPromoDto call",
         JSON.stringify({ code, notEmtpyTimeZoneId, dateFrom, startUnixTime, dateTo, endUnixTime }, bigIntReplacer, 2)
       );
@@ -39,7 +40,7 @@ function useCheckPromo() {
 
       validateContractCheckPromoDTO(result.value);
 
-      console.log("checkPromoDto", JSON.stringify(result.value, bigIntReplacer, 2));
+      logger.info("checkPromoDto", JSON.stringify(result.value, bigIntReplacer, 2));
 
       if (!result.value.isFound) {
         return Err(new Error("Promo is not found"));

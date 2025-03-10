@@ -1,5 +1,6 @@
 import { Err, Ok, Result } from "@/model/utils/result";
 import { isEmpty } from "./string";
+import { logger } from "./logger";
 
 interface CommunityData {
   email: string;
@@ -33,7 +34,7 @@ export default async function sendCommunityDataToGoogleTable(data: CommunityData
       return Err(JSON.stringify(json));
     }
   } catch (error) {
-    console.error("Error sending data to Google Table:", error);
+    logger.error("Error sending data to Google Table:", error);
     return Err("An error occurred while sending data.");
   }
 }

@@ -1,6 +1,7 @@
 import { HostCarInfo } from "@/model/HostCarInfo";
 import { isEmpty } from "./string";
 import { isUploadedCarImage, UploadedCarImage } from "@/model/FileToUpload";
+import { logger } from "./logger";
 
 export function getIpfsHashFromUrl(pinataURI: string) {
   if (!pinataURI || pinataURI.length === 0) return "";
@@ -42,12 +43,12 @@ export async function getMetaDataFromIpfs(tokenURI: string) {
       },
     });
     return await response.json();
-  } catch (ex) {
-    console.error("load metadata from pinata gateway error:", ex);
+  } catch (error) {
+    logger.error("load metadata from pinata gateway error:", error);
 
     ipfsURI = getIpfsURIfromPinata(tokenURI);
     try {
-      console.log("try fetch " + ipfsURI);
+      logger.info("try fetch " + ipfsURI);
 
       const response = await fetch(ipfsURI, {
         headers: {
@@ -55,8 +56,8 @@ export async function getMetaDataFromIpfs(tokenURI: string) {
         },
       });
       return await response.json();
-    } catch (ex) {
-      console.error("load metadata from IPFS error:", ex);
+    } catch (error) {
+      logger.error("load metadata from IPFS error:", error);
     }
   }
   return {};

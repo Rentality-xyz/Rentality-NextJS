@@ -14,6 +14,7 @@ import RntButton from "@/components/common/rntButton";
 import useFetchGuestGeneralInsurance from "../hooks/useFetchGuestGeneralInsurance";
 import useSaveGuestGeneralInsurance from "../hooks/useSaveGuestGeneralInsurance";
 import DotStatus from "@/components/dotStatus";
+import { logger } from "@/utils/logger";
 
 function UserInsurance() {
   const { isLoading, data: guestInsurance } = useFetchGuestGeneralInsurance();
@@ -74,7 +75,7 @@ function UserInsurance() {
     hideSnackbars();
 
     if (!result.ok) {
-      console.error("saveInsurance error: Save Guest Insurance info error");
+      logger.error("saveInsurance error: Save Guest Insurance info error");
       showError(t("profile.save_err"));
     } else {
       showInfo(t("common.info.success"));

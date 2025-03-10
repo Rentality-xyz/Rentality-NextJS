@@ -4,6 +4,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TripDiscounts, TRIP_DISCOUNTS_QUERY_KEY } from "./useFetchTripDiscounts";
+import { logger } from "@/utils/logger";
 
 function useSaveTripDiscounts() {
   const ethereumInfo = useEthereum();
@@ -14,12 +15,12 @@ function useSaveTripDiscounts() {
     mutationFn: async (newValue: TripDiscounts): Promise<Result<boolean, Error>> => {
       try {
         if (!ethereumInfo || !rentalityContracts) {
-          console.error("saveTripDiscounts error: Missing required contracts or ethereum info");
+          logger.error("saveTripDiscounts error: Missing required contracts or ethereum info");
           return Err(new Error("Missing required contracts or ethereum info"));
         }
 
         if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
-          console.error("saveTripDiscounts error: user don't have enough funds");
+          logger.error("saveTripDiscounts error: user don't have enough funds");
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
@@ -32,7 +33,7 @@ function useSaveTripDiscounts() {
 
         return result;
       } catch (error) {
-        console.error("saveTripDiscounts error: ", error);
+        logger.error("saveTripDiscounts error: ", error);
         return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
       }
     },

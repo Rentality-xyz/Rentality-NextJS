@@ -11,6 +11,7 @@ import { collection, getDocs, query } from "firebase/firestore";
 import { bigIntReplacer } from "@/utils/json";
 import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 import { useRentality, useRentalityAdmin } from "@/contexts/rentalityContext";
+import { logger } from "@/utils/logger";
 
 export type AdminContractInfo = {
   platformFee: number;
@@ -55,7 +56,7 @@ const useAdminPanelInfo = () => {
 
   const withdrawFromPlatform = async (value: number) => {
     if (!admin) {
-      console.error("saveKycCommission error: rentalityAdminGateway is null");
+      logger.error("saveKycCommission error: rentalityAdminGateway is null");
       return false;
     }
 
@@ -70,7 +71,7 @@ const useAdminPanelInfo = () => {
 
   const setPlatformFeeInPPM = async (value: number) => {
     if (!admin) {
-      console.error("saveKycCommission error: rentalityAdminGateway is null");
+      logger.error("saveKycCommission error: rentalityAdminGateway is null");
       return false;
     }
 
@@ -84,7 +85,7 @@ const useAdminPanelInfo = () => {
 
   const saveKycCommission = async (value: number) => {
     if (!admin) {
-      console.error("saveKycCommission error: rentalityAdminGateway is null");
+      logger.error("saveKycCommission error: rentalityAdminGateway is null");
       return false;
     }
 
@@ -98,7 +99,7 @@ const useAdminPanelInfo = () => {
 
   const saveClaimWaitingTime = async (value: number) => {
     if (!admin) {
-      console.error("saveClaimWaitingTime error: rentalityAdminGateway is null");
+      logger.error("saveClaimWaitingTime error: rentalityAdminGateway is null");
       return false;
     }
 
@@ -112,15 +113,15 @@ const useAdminPanelInfo = () => {
 
   async function updateKycInfoForAddress(address: string) {
     if (!rentalityContracts) {
-      console.error("updateKycInfoForAddress error: rentalityContract is null");
+      logger.error("updateKycInfoForAddress error: rentalityContract is null");
       return false;
     }
     if (!ethereumInfo) {
-      console.error("updateKycInfoForAddress error: ethereumInfo is null");
+      logger.error("updateKycInfoForAddress error: ethereumInfo is null");
       return false;
     }
     if (!kycDbInfo.db) {
-      console.error("updateKycInfoForAddress error: db is null");
+      logger.error("updateKycInfoForAddress error: db is null");
       return false;
     }
 
@@ -134,7 +135,7 @@ const useAdminPanelInfo = () => {
         ?.data().verifiedInformation;
 
       if (verifiedInformation === undefined) {
-        console.error(`verifiedInformation for ${address} was not found`);
+        logger.error(`verifiedInformation for ${address} was not found`);
         return;
       }
 
@@ -148,12 +149,10 @@ const useAdminPanelInfo = () => {
         email: verifiedInformation.email,
       };
 
-      console.debug("contractCivicKYCInfo", JSON.stringify(contractCivicKYCInfo, bigIntReplacer, 2));
-
       const result = await rentalityContracts.gateway.setCivicKYCInfo(address, contractCivicKYCInfo);
       return result.ok;
-    } catch (e) {
-      console.error("updateKycInfoForAddress error" + e);
+    } catch (error) {
+      logger.error("updateKycInfoForAddress error" + error);
       return false;
     } finally {
       setIsLoading(false);
@@ -162,11 +161,11 @@ const useAdminPanelInfo = () => {
 
   async function setTestKycInfoForAddress(address: string) {
     if (!ethereumInfo) {
-      console.error("setDrivingLicenceForAddress error: ethereumInfo is null");
+      logger.error("setDrivingLicenceForAddress error: ethereumInfo is null");
       return false;
     }
     if (!rentalityContracts) {
-      console.error("setDrivingLicenceForAddress error: rentalityContract is null");
+      logger.error("setDrivingLicenceForAddress error: rentalityContract is null");
       return false;
     }
 
@@ -183,8 +182,8 @@ const useAdminPanelInfo = () => {
 
       const result = await rentalityContracts.gateway.setCivicKYCInfo(address, contractCivicKYCInfo);
       return result.ok;
-    } catch (e) {
-      console.error("setDrivingLicenceForAddress error" + e);
+    } catch (error) {
+      logger.error("setDrivingLicenceForAddress error" + error);
       return false;
     } finally {
       setIsLoading(false);
@@ -193,11 +192,11 @@ const useAdminPanelInfo = () => {
 
   async function createTestTrip(carId: string) {
     if (!ethereumInfo) {
-      console.error("createTestTrip error: ethereumInfo is null");
+      logger.error("createTestTrip error: ethereumInfo is null");
       return false;
     }
     if (!rentalityContracts) {
-      console.error("createTestTrip error: rentalityContract is null");
+      logger.error("createTestTrip error: rentalityContract is null");
       return false;
     }
 
@@ -292,8 +291,8 @@ const useAdminPanelInfo = () => {
         };
         setAdminContractInfo(result);
         setIsLoading(false);
-      } catch (e) {
-        console.error("initialize error" + e);
+      } catch (error) {
+        logger.error("initialize error" + error);
         isIniialized.current = false;
         return null;
       }

@@ -1,11 +1,12 @@
 import { checkRentalityAuthToken } from "@/features/auth/utils/serverAuth";
+import { logger } from "@/utils/logger";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const authResult = await checkRentalityAuthToken(req);
 
   if (!authResult.ok) {
-    console.error("testAuth error: ", authResult.error.message);
+    logger.error("testAuth error: ", authResult.error.message);
     res.status(authResult.error.statusCode).json({
       error:
         authResult.error.statusCode !== 500

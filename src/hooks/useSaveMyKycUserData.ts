@@ -3,6 +3,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { ContractCivicKYCInfo } from "@/model/blockchain/schemas";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
+import { logger } from "@/utils/logger";
 
 const useSaveMyKycUserData = () => {
   const { rentalityContracts } = useRentality();
@@ -16,7 +17,7 @@ const useSaveMyKycUserData = () => {
     email: string
   ): Promise<Result<boolean, string>> {
     if (!rentalityContracts) {
-      console.error("saveProfileSettings error: rentalityContract is null");
+      logger.error("saveProfileSettings error: rentalityContract is null");
       return Err("rentalityContract is null");
     }
 
@@ -32,13 +33,13 @@ const useSaveMyKycUserData = () => {
       const result = await rentalityContracts.gateway.setMyCivicKYCInfo(myCivicKYCInfo);
 
       if (!result.ok) {
-        console.error("save MyKycUserData error:" + result.error);
+        logger.error("save MyKycUserData error:" + result.error);
         return Err("save MyKycUserData error:" + result.error);
       }
       return Ok(true);
-    } catch (e) {
-      console.error("save MyKycUserData error:" + e);
-      return Err("save MyKycUserData error:" + e);
+    } catch (error) {
+      logger.error("save MyKycUserData error:" + error);
+      return Err("save MyKycUserData error:" + error);
     } finally {
       setIsLoading(false);
     }

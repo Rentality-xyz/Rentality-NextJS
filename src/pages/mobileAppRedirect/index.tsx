@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { DevicePlatform, getDevicePlatform } from "@/utils/devicePlatform";
 import Image from "next/image";
 import Link from "next/link";
+import { logger } from "@/utils/logger";
 
 function MobileAppRedirect() {
   useEffect(() => {
@@ -17,7 +18,7 @@ function MobileAppRedirect() {
       return;
     }
 
-    console.log("Unable to detect device.");
+    logger.info("Unable to detect device.");
   }, []);
 
   return (
@@ -26,10 +27,22 @@ function MobileAppRedirect() {
       <p>If you are not redirected automatically, select your platform:</p>
       <div className="mt-4 sm:flex">
         <Link href="https://apps.apple.com/ua/app/rentality/id6736899320">
-          <Image src={"/images/marketplace/ic_appstore.svg"} width={1884} height={628} alt="" className="w-[200px] sm:mr-4" />
+          <Image
+            src={"/images/marketplace/ic_appstore.svg"}
+            width={1884}
+            height={628}
+            alt=""
+            className="w-[200px] sm:mr-4"
+          />
         </Link>
         <Link href="https://play.google.com/store/apps/details?id=xyz.rentality.rentality">
-          <Image src={"/images/marketplace/ic_google_play.svg"} width={1884} height={628} alt="" className="max-sm:mt-4" />
+          <Image
+            src={"/images/marketplace/ic_google_play.svg"}
+            width={1884}
+            height={628}
+            alt=""
+            className="max-sm:mt-4"
+          />
         </Link>
       </div>
     </div>

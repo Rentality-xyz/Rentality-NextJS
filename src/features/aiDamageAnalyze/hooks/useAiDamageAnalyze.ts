@@ -3,6 +3,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { createSecret } from "@/pages/api/aiDamageAnalyze/createCase";
 import axios from "@/utils/cachedAxios";
 import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
+import { logger } from "@/utils/logger";
 import { useState } from "react";
 
 export default function useAiDamageAnalyze() {
@@ -13,18 +14,18 @@ export default function useAiDamageAnalyze() {
   const handleCreateCase = async (tripId: number) => {
     const rentality = rentalityContract.rentalityContracts;
     if (!rentality) {
-      console.error("Use Ai damage analyze: Rentality contract is not initialized");
+      logger.error("Use Ai damage analyze: Rentality contract is not initialized");
       return;
     }
     if (!ethereumInfo) {
-      console.error("Use Ai damage analyze: Ethereum context is not initialized");
+      logger.error("Use Ai damage analyze: Ethereum context is not initialized");
       return;
     }
 
     try {
       const caseInfo = await rentality.gateway.getAiDamageAnalyzeCaseData(BigInt(tripId));
       if (!caseInfo.ok) {
-        console.log("Ai damage analyze: case number is not found");
+        logger.info("Ai damage analyze: case number is not found");
         return;
       }
       setIsLoading(true);
@@ -36,14 +37,14 @@ export default function useAiDamageAnalyze() {
         chainId: ethereumInfo.chainId,
       });
       if (response.status !== 200) {
-        console.log("AiDamageAnalyze: failed to create case with error: ", response.data);
+        logger.info("AiDamageAnalyze: failed to create case with error: ", response.data);
         return;
       } else {
-        console.log("AiDamageAnalyze: case created!");
+        logger.info("AiDamageAnalyze: case created!");
         return;
       }
     } catch (error) {
-      console.error("Error creating aiDamageAnalyze case:", error);
+      logger.error("Error creating aiDamageAnalyze case:", error);
     } finally {
       setIsLoading(false);
     }
@@ -52,11 +53,11 @@ export default function useAiDamageAnalyze() {
   const handleUploadPhoto = async (tripId: number, photos: FormData) => {
     const rentality = rentalityContract.rentalityContracts;
     if (!rentality) {
-      console.error("Use Ai damage analyze: Rentality contract is not initialized");
+      logger.error("Use Ai damage analyze: Rentality contract is not initialized");
       return;
     }
     if (!ethereumInfo) {
-      console.error("Use Ai damage analyze: Ethereum context is not initialized");
+      logger.error("Use Ai damage analyze: Ethereum context is not initialized");
       return;
     }
     try {
@@ -64,7 +65,7 @@ export default function useAiDamageAnalyze() {
 
       const token = await rentality.aiDamageAnalyze.getInsuranceCaseByTrip(BigInt(tripId));
       if (!token.ok) {
-        console.log("Ai damage analyze: case number is not found");
+        logger.info("Ai damage analyze: case number is not found");
         return;
       }
       const { secret, baseUrl } = await createSecret();
@@ -76,11 +77,11 @@ export default function useAiDamageAnalyze() {
       });
 
       if (response.status !== 200) {
-        console.log("AiDamageAnalyze: failed to upload photo with error: ", response.data);
+        logger.info("AiDamageAnalyze: failed to upload photo with error: ", response.data);
         return;
       }
     } catch (error) {
-      console.error("Error creating aiDamageAnalyze case:", error);
+      logger.error("Error creating aiDamageAnalyze case:", error);
     } finally {
       setIsLoading(false);
     }
@@ -89,11 +90,11 @@ export default function useAiDamageAnalyze() {
   const getAiResponseByTripIfExists = async (tripId: number) => {
     const rentality = rentalityContract.rentalityContracts;
     if (!rentality) {
-      console.error("Use Ai damage analyze: Rentality contract is not initialized");
+      logger.error("Use Ai damage analyze: Rentality contract is not initialized");
       return;
     }
     if (!ethereumInfo) {
-      console.error("Use Ai damage analyze: Ethereum context is not initialized");
+      logger.error("Use Ai damage analyze: Ethereum context is not initialized");
       return;
     }
     try {
@@ -102,11 +103,11 @@ export default function useAiDamageAnalyze() {
       if (response.ok && response.value !== "") {
         return await getMetaDataFromIpfs(response.value);
       } else {
-        console.error("Ai damage analyze: response not found");
+        logger.error("Ai damage analyze: response not found");
         return;
       }
     } catch (error) {
-      console.error("Error geting aiDamageAnalyze ai response:", error);
+      logger.error("Error geting aiDamageAnalyze ai response:", error);
       return;
     } finally {
       setIsLoading(false);

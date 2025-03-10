@@ -7,6 +7,7 @@ import { JsonRpcProvider, Wallet } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getLocationInfoFromGoogleByAddress, mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
+import { logger } from "@/utils/logger";
 
 export type SignLocationRequest = {
   address: string;
@@ -21,14 +22,14 @@ export type SignLocationResponse =
 export default async function handler(req: NextApiRequest, res: NextApiResponse<SignLocationResponse>) {
   const GOOGLE_MAPS_API_KEY = env.GOOGLE_MAPS_API_KEY;
   if (isEmpty(GOOGLE_MAPS_API_KEY)) {
-    console.error("SignLocation error: GOOGLE_MAPS_API_KEY was not set");
+    logger.error("SignLocation error: GOOGLE_MAPS_API_KEY was not set");
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
 
   const SIGNER_PRIVATE_KEY = env.SIGNER_PRIVATE_KEY;
   if (isEmpty(SIGNER_PRIVATE_KEY)) {
-    console.error("SignLocation error: SIGNER_PRIVATE_KEY was not set");
+    logger.error("SignLocation error: SIGNER_PRIVATE_KEY was not set");
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
@@ -40,12 +41,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   const { address, chainId, providerApiUrl } = parseQueryResult.value;
-  console.log(`\nCalling signLocation API with params: 'address'=${address} | 'chainId'=${chainId}`);
+  logger.info(`\nCalling signLocation API with params: 'address'=${address} | 'chainId'=${chainId}`);
 
   const locationInfoResult = await getLocationInfoFromGoogleByAddress(address, GOOGLE_MAPS_API_KEY);
 
   if (!locationInfoResult.ok) {
-    console.error(locationInfoResult.error);
+    logger.error(locationInfoResult.error);
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
@@ -75,7 +76,7 @@ function parseQuery(
 
   const providerApiUrl = getProviderApiUrlFromEnv(chainId);
   if (!providerApiUrl) {
-    console.error(`API signLocation error: API URL for chain id ${chainId} was not set`);
+    logger.error(`API signLocation error: API URL for chain id ${chainId} was not set`);
     return Err(`Chain id ${chainId} is not supported`);
   }
 

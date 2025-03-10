@@ -1,5 +1,6 @@
 import protobuf from "protobufjs";
 import { bytesToHex } from "@waku/utils/bytes";
+import { logger } from "@/utils/logger";
 
 export type ChatMessagePayload = {
   from: string;
@@ -47,7 +48,7 @@ export class ChatMessage {
       !payload.tags ||
       !payload.signature
     ) {
-      console.error("Some fields are missed on decoded ChatMessage", payload);
+      logger.error("Some fields are missed on decoded ChatMessage", payload);
       return;
     }
 

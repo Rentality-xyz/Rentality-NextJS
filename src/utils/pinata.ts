@@ -2,6 +2,7 @@ import FormData from "form-data";
 import axios from "axios";
 import { env } from "./env";
 import { Err, Ok, Result } from "@/model/utils/result";
+import { logger } from "./logger";
 
 const pinataJwt = env.NEXT_PUBLIC_PINATA_JWT;
 
@@ -27,14 +28,14 @@ export async function uploadJSONToIPFS(JSONBody: {}, fileNameTag?: string, keyVa
       },
     })
     .then(function (response) {
-      console.log("JSON uploaded", response.data.IpfsHash);
+      logger.info("JSON uploaded", response.data.IpfsHash);
       return {
         success: true,
         pinataURL: "https://gateway.pinata.cloud/ipfs/" + response.data.IpfsHash,
       } as const;
     })
-    .catch(function (error) {
-      console.error(error);
+    .catch((error) => {
+      logger.error(error);
       return {
         success: false,
         message: error.message,
@@ -88,14 +89,14 @@ export async function uploadFileToIPFS(file: File, fileNameTag?: string, keyValu
       },
     })
     .then((response) => {
-      console.log("file uploaded", response.data.IpfsHash);
+      logger.info("file uploaded", response.data.IpfsHash);
       return {
         success: true,
         pinataURL: "https://gateway.pinata.cloud/ipfs/" + response.data.IpfsHash,
       } as const;
     })
     .catch((error) => {
-      console.error(error);
+      logger.error(error);
       return {
         success: false,
         message: error.message,
@@ -113,11 +114,11 @@ export async function deleteFileFromIPFS(ipfsHash: string): Promise<Result<boole
       },
     })
     .then((response) => {
-      console.log("file deleted", response.data.IpfsHash);
+      logger.info("file deleted", response.data.IpfsHash);
       return Ok(true);
     })
     .catch((error) => {
-      console.error(error);
+      logger.error(error);
       return Err(error.message);
     });
 }
@@ -142,7 +143,7 @@ export async function getPhotosForTrip(tripId: Number): Promise<GetPhotosForTrip
     throw new Error("Incorrect response format getting photos for the trip");
   }
 
-  console.log(response.data.rows);
+  logger.info(response.data.rows);
 
   const returnValue: GetPhotosForTripResponseType = {
     checkinByHost: [],
