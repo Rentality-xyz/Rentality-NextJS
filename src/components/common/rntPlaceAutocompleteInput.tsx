@@ -6,7 +6,6 @@ import { cn } from "@/utils";
 import { env } from "@/utils/env";
 import Image, { StaticImageData } from "next/image";
 import * as React from "react";
-import bgInput from "@/images/bg_input.png";
 
 export type PlaceDetails = {
   addressString: string;
@@ -50,7 +49,7 @@ export interface RntPlaceAutocompleteInputProps extends React.ComponentPropsWith
   isTransparentStyle?: boolean;
   isAsRntInputTransparent?: boolean;
   isDarkPlacePredictions?: boolean;
-  iconFrontLabel?: StaticImageData;
+  iconFrontLabel?: string;
 }
 
 export default function RntPlaceAutocompleteInput({
@@ -173,9 +172,9 @@ export default function RntPlaceAutocompleteInput({
       {!isEmpty(label) &&
         (isTransparentStyle ? (
           <label className={cn("flex items-center", lClassName)} htmlFor={id}>
-            {!isEmpty(iconFrontLabel?.src) && <Image src={iconFrontLabel!!} alt="" className="mr-2" />}
+            {!isEmpty(iconFrontLabel) && <Image src={iconFrontLabel!!} width={15} height={20} alt="" className="mr-2" />}
             {label}
-            <Image src={bgInput} alt="" className="absolute left-0 top-[34px] h-[60%] w-full rounded-full" />
+            <Image src={"/images/bg_input.png"} width={1550} height={90}  alt="" className="absolute left-0 top-[34px] h-[60%] w-full rounded-full" />
           </label>
         ) : (
           <label className={lClassName} htmlFor={id}>

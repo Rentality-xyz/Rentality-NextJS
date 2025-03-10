@@ -1,7 +1,5 @@
 import Image from "next/image";
 import { Dialog, DialogContent } from "@mui/material";
-import imgStore from "@/images/app-google-store.svg";
-import imgQRCode from "@/images/qr_code_app.png";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DevicePlatform, getDevicePlatform } from "@/utils/devicePlatform";
@@ -31,7 +29,7 @@ export default function RntMobileStoresDialog() {
         className="items-center rounded-md border border-gray-500 hover:border-gray-400 lg:px-4"
         onClick={handleClick}
       >
-        <Image src={imgStore} alt="Mobile Store" className="min-w-[54px] lg:min-w-[94px]" />
+        <Image src={"/images/marketplace/app-google-store.svg"} width={51} height={24} alt="Mobile Store" className="min-w-[54px] lg:min-w-[94px]" />
       </button>
       <Dialog
         maxWidth="lg"
@@ -58,9 +56,9 @@ export default function RntMobileStoresDialog() {
               {t("mobile_stores_dialog.title")}
             </p>
             <p className="w-60 text-center">{t("mobile_stores_dialog.scan_qr_code")}</p>
-            <Image src={imgQRCode} alt="Mobile Store" className="min-w-[54px] lg:min-w-[94px]" />
+            <Image src={"/images/qr_code_app.png"} width={328} height={328} alt="Mobile Store" className="min-w-[54px] lg:min-w-[94px]" />
             <p className="text-center">{t("mobile_stores_dialog.available_on")}</p>
-            <Image src={imgStore} alt="Mobile Store" className="min-w-[54px] lg:min-w-[94px]" />
+            <Image src={"/images/marketplace/app-google-store.svg"} width={51} height={24} alt="Mobile Store" className="min-w-[54px] lg:min-w-[94px]" />
           </div>
         </DialogContent>
       </Dialog>

@@ -10,8 +10,6 @@ import MenuIcons, { getImageForMenu } from "../sideNavMenu/menuIcons";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
-import carSeatsIcon from "@/images/car_seats.svg";
-import carTransmissionIcon from "@/images/car_transmission.svg";
 import { AboutCarIcon } from "@/components/createTrip/AboutCarIcon";
 import { getDiscountablePriceFromCarInfo, getNotDiscountablePrice } from "@/utils/price";
 import { PROMOCODE_MAX_LENGTH } from "@/utils/constants";
@@ -22,8 +20,6 @@ import useCheckPromo from "@/features/promocodes/hooks/useCheckPromo";
 import { cn } from "@/utils";
 import { PromoActionType, promoCodeReducer } from "@/features/promocodes/utils/promoCodeReducer";
 import { getPromoPrice } from "@/features/promocodes/utils";
-import imgDimoSynced from "@/images/img_dimo_synced.svg";
-import carIcon from "@/images/car.svg";
 
 type TFunction = (key: string, options?: { [key: string]: any }) => string;
 
@@ -103,7 +99,7 @@ export default function CarSearchItem({
         >
           {isYourOwnCar && (
             <div className="absolute ml-2 mt-2 flex h-[56px] w-[80px] justify-center rounded-xl bg-black bg-opacity-50">
-              <Image src={carIcon} alt="" className="w-[48px]" />
+              <Image src={"/images/icons/car.svg"} width={140} height={55} alt="" className="w-[48px]" />
             </div>
           )}
           {searchInfo.isCarDetailsConfirmed && (
@@ -119,7 +115,7 @@ export default function CarSearchItem({
             </div>
             {searchInfo.dimoTokenId !== 0 && (
               <div className="max-xl:hidden">
-                <Image src={imgDimoSynced} alt="" className="w-[180px]" />
+                <Image src={"/images/img_dimo_synced.svg"} width={196} height={35} alt="" className="w-[180px]" />
               </div>
             )}
             <div className="flex items-center">
@@ -151,7 +147,7 @@ export default function CarSearchItem({
                   </strong>
                   {searchInfo.dimoTokenId !== 0 && (
                     <div className="ml-auto xl:hidden">
-                      <Image src={imgDimoSynced} alt="" className="w-[120px]" />
+                      <Image src={"/images/img_dimo_synced.svg"} width={196} height={35} alt="" className="w-[120px]" />
                     </div>
                   )}
                 </div>
@@ -220,7 +216,9 @@ export default function CarSearchItem({
               <div className="flex justify-between max-md:mt-6 max-md:w-full md:h-full md:flex-col">
                 <AboutCarIcon
                   className="grid-cols-2 md:grid"
-                  image={carSeatsIcon}
+                  image={"/images/icons/car_info/car_seats.svg"}
+                  width={88}
+                  height={88}
                   text={`${searchInfo.seatsNumber} ${t_comp("seats")}`}
                 />
                 <AboutCarIcon
@@ -231,7 +229,9 @@ export default function CarSearchItem({
                 />
                 <AboutCarIcon
                   className="grid-cols-2 md:grid"
-                  image={carTransmissionIcon}
+                  image={"/images/icons/car_info/car_transmission.svg"}
+                  width={75}
+                  height={75}
                   text={searchInfo.transmission}
                 />
               </div>

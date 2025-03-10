@@ -3,11 +3,6 @@ import { AboutCarIcon } from "./AboutCarIcon";
 import { useTranslation } from "react-i18next";
 import { TransmissionType } from "@/model/Transmission";
 import { EngineType } from "@/model/blockchain/schemas";
-import carDoorsIcon from "@/images/car_doors.svg";
-import carSeatsIcon from "@/images/car_seats.svg";
-import carTransmissionIcon from "@/images/car_transmission.svg";
-import carTankSizeIcon from "@/images/car_tank_size.svg";
-import carColourIcon from "@/images/car_colour.svg";
 
 export function AboutCar({
   carName,
@@ -43,17 +38,17 @@ export function AboutCar({
           <strong className="text-xl text-rentality-secondary">{t("booked.details.basic_car_details")}</strong>
         </h3>
         <div className="flex flex-wrap gap-8 max-sm:flex-col">
-          <AboutCarIcon image={carDoorsIcon} text={`${doorsNumber} ${t("booked.details.doors")}`} />
-          <AboutCarIcon image={carSeatsIcon} text={`${seatsNumber} ${t("booked.details.seats")}`} />
+          <AboutCarIcon image={"/images/icons/car_info/car_doors.svg"} width={96} height={88} text={`${doorsNumber} ${t("booked.details.doors")}`} />
+          <AboutCarIcon image={"/images/icons/car_info/car_seats.svg"} width={88} height={88} text={`${seatsNumber} ${t("booked.details.seats")}`} />
           <AboutCarIcon
             image={getEngineTypeIcon(engineType)}
             width={50}
             title={t("vehicles.engine_type")}
             text={getEngineTypeString(engineType)}
           />
-          <AboutCarIcon image={carTransmissionIcon} title={t("vehicles.transmission")} text={transmission} />
-          <AboutCarIcon image={carTankSizeIcon} title={t("vehicles.tank_size")} text={tankSizeInGal} />
-          <AboutCarIcon image={carColourIcon} title={t("booked.details.car_colour")} text={carColor} />
+          <AboutCarIcon image={"/images/icons/car_info/car_transmission.svg"} width={75} height={75} title={t("vehicles.transmission")} text={transmission} />
+          <AboutCarIcon image={"/images/icons/car_info/car_tank_size.svg"} width={78} height={104} title={t("vehicles.tank_size")} text={tankSizeInGal} />
+          <AboutCarIcon image={"/images/icons/car_info/car_colour.svg"} width={90} height={76} title={t("booked.details.car_colour")} text={carColor} />
         </div>
       </div>
 

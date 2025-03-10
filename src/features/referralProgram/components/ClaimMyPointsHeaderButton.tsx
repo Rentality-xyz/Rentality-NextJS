@@ -4,7 +4,6 @@ import useFetchOwnReferralPoints from "../hooks/useFetchOwnReferralPoints";
 import useClaimOwnReferralPoints from "../hooks/useClaimOwnReferralPoints";
 import useOwnReferralPointsSharedStore from "../hooks/useOwnReferralPointsSharedStore";
 import Image from "next/image";
-import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 
 export default function ClaimMyPointsHeaderButton() {
   const { isLoading, isFetching } = useFetchOwnReferralPoints();
@@ -18,7 +17,7 @@ export default function ClaimMyPointsHeaderButton() {
       disabled={isLoading || isFetching || isClaiming || readyToClaim === 0}
       onClick={() => claimMyPoints()}
     >
-      <Image src={icStarPointsYellow} alt="" className="mr-2 h-7 w-7" />
+      <Image src={"/images/icons/ic_star_points_yellow.svg"} width={47} height={47} alt="" className="mr-2 h-7 w-7" />
       <div className="ml-0.5 flex">
         {isClaiming ? (
           <>Claiming...</>

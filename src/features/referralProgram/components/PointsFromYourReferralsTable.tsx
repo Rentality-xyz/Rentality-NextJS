@@ -1,5 +1,4 @@
 import Image from "next/image";
-import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 import React from "react";
 import { cn } from "@/utils";
 import Loading from "@/components/common/Loading";
@@ -41,7 +40,7 @@ export default function PointsFromYourReferralsTable({ isLoading, data }: Points
               <td className={cn("text-center text-gray-400", rowSpanClassName)}>{entry.totalReceived}</td>
               <td className={cn("flex items-center justify-center", rowSpanClassName)}>
                 {entry.readyToClaim}
-                <Image src={icStarPointsYellow} alt="" className="ml-1 h-[22px] w-[22px] lg:ml-4" />
+                <Image src={"/images/icons/ic_star_points_yellow.svg"} width={47} height={47} alt="" className="ml-1 h-[22px] w-[22px] lg:ml-4" />
               </td>
             </tr>
           ))}

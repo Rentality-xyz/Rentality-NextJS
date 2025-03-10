@@ -5,8 +5,6 @@ import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { cn } from "@/utils";
-import imgDimoSynced from "@/images/img_dimo_synced.svg";
-import imgFoundOnDimo from "@/images/img_found_on_dimo.svg";
 import Image from "next/image";
 import * as React from "react";
 
@@ -54,7 +52,7 @@ export default function ListingItem({
           {(isDimoOnly || isDimoNotSyncMapped) && (
             <div className="my-2 flex flex-col">
               <div className="flex flex-col items-center rounded-3xl border border-[#FFFFFF05] bg-[#FFFFFF03] p-2.5">
-                <Image src={imgFoundOnDimo} alt="" className="" />
+                <Image src={"/images/img_found_on_dimo.svg"} width={208} height={35} alt="" className="" />
                 <p className="mt-2 text-base font-medium text-[#FFFFFF70]">
                   {t("dimo.token_id")} {carInfo.dimoTokenId}
                 </p>
@@ -76,7 +74,7 @@ export default function ListingItem({
             </div>
           )}
           <div className="mt-2 flex">
-            {isDimoSynced && <Image src={imgDimoSynced} alt="" className="mr-auto w-[180px]" />}
+            {isDimoSynced && <Image src={"/images/img_dimo_synced.svg"} width={196} height={35} alt="" className="mr-auto w-[180px]" />}
           </div>
         </div>
 
