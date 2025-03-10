@@ -6,6 +6,7 @@ import { useMemo } from "react";
 import { usePaginationState } from "@/hooks/pagination";
 import { ContractReadyToClaimFromHash, RefferalProgram as ReferralProgram } from "@/model/blockchain/schemas";
 import { getReferralProgramDescriptionText } from "../utils";
+import { logger } from "@/utils/logger";
 
 export type PointsFromYourReferralsInfo = {
   methodDescriptions: string;
@@ -33,7 +34,7 @@ function useFetchPointsFromYourReferrals(initialPage: number = 1, initialItemsPe
       if (!rentalityContracts || !ethereumInfo) {
         throw new Error("Contracts or wallet not initialized");
       }
-      console.debug("Fetching points from your referrals");
+      logger.debug("Fetching points from your referrals");
 
       const result = await rentalityContracts.referralProgram.getReadyToClaimFromRefferalHash(
         ethereumInfo.walletAddress

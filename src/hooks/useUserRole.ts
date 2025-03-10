@@ -1,6 +1,7 @@
 import { getEtherContractWithSigner } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { IRentalityUserServiceContract } from "@/features/blockchain/models/IRentalityUserService";
+import { logger } from "@/utils/logger";
 import { useQuery } from "@tanstack/react-query";
 
 export enum UserRole {
@@ -44,7 +45,7 @@ const useUserRole = () => {
         userRole |= UserRole.InvestManager;
       }
 
-      console.debug("Rentality user role: ", userRole);
+      logger.debug("Rentality user role: ", userRole);
 
       return userRole;
     },

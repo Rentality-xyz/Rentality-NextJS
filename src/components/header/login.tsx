@@ -10,6 +10,7 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { DialogActions } from "@/utils/dialogActions";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
+import { logger } from "@/utils/logger";
 
 function Login() {
   const { connectWallet, ready, authenticated } = usePrivy();
@@ -18,7 +19,7 @@ function Login() {
 
   const { logout } = useLogout({
     onSuccess: () => {
-      console.log("Privy callback login.tsx. useLogout.onSuccess");
+      logger.info("Privy callback login.tsx. useLogout.onSuccess");
     },
   });
   const userInfo = useUserInfo();

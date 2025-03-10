@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { getReferralProgramDescriptionText } from "../utils";
 import { useRentality } from "@/contexts/rentalityContext";
 import { usePaginationForListApi } from "@/hooks/pagination";
+import { logger } from "@/utils/logger";
 
 export type ReferralHistoryInfo = {
   points: number;
@@ -24,7 +25,7 @@ const useFetchPointsHistory = (initialPage: number = 1, initialItemsPerPage: num
       if (!rentalityContracts) {
         throw new Error("Contracts not initialized");
       }
-      console.debug("Fetching points history");
+      logger.debug("Fetching points history");
 
       const result = await rentalityContracts.referralProgram.getPointsHistory();
 

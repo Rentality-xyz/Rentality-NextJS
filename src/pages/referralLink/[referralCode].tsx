@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { isEmpty } from "@/utils/string";
 import useReferralLinkLocalStorage from "@/features/referralProgram/hooks/useSaveReferralLinkToLocalStorage";
+import { logger } from "@/utils/logger";
 
 function ReferralLink() {
   const router = useRouter();
@@ -17,7 +18,7 @@ function ReferralLink() {
     }
   }, [referralCode, saveReferralCode, router]);
 
-  console.log("ReferralLink", JSON.stringify({ referralCodeQuery, referralCode }, null, 2));
+  logger.info("ReferralLink", JSON.stringify({ referralCodeQuery, referralCode }, null, 2));
 
   return <></>;
 }

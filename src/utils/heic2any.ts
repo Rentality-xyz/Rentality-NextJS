@@ -1,5 +1,6 @@
 import heic2any from "heic2any";
 import { FileToUpload } from "@/model/FileToUpload";
+import { logger } from "./logger";
 
 export default function convertHeicToPng(heicFile: File): Promise<FileToUpload> {
   return heic2any({
@@ -14,7 +15,7 @@ export default function convertHeicToPng(heicFile: File): Promise<FileToUpload> 
       return { file: pngFile, localUrl: url };
     })
     .catch((error) => {
-      console.log("[convertHeicToPng][" + error.code + "][" + error.message + "]");
+      logger.info("[convertHeicToPng][" + error.code + "][" + error.message + "]");
       throw new Error("Conversion failed"); // Выбрасываем исключение
     });
 }
