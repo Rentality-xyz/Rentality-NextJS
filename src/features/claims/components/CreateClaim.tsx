@@ -206,8 +206,9 @@ export default function CreateClaim() {
       />
 
       <RntInputTransparent
-        className="w-full lg:w-1/2"
-        labelClassName="pl-4"
+        className="w-full"
+        wrapperClassName="w-full lg:w-1/2"
+        labelClassName="pl-4 w-full"
         id="amount"
         autoComplete="off"
         label={`What compensation amount do you think the ${isHost ? "guest" : "host"} should pay for the incident?`}
