@@ -3,6 +3,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { InsuranceType } from "@/model/blockchain/schemas";
 import { GuestGeneralInsurance } from "@/model/GuestInsurance";
 import { getIpfsURI } from "@/utils/ipfsUtils";
+import { logger } from "@/utils/logger";
 import { useQuery } from "@tanstack/react-query";
 
 export const INSURANCE_GUEST_QUERY_KEY = "InsuranceGuest";
@@ -23,7 +24,7 @@ const useFetchGuestGeneralInsurance = () => {
         throw new Error("Contracts or wallet not initialized");
       }
 
-      console.debug("Fetching guest insurance");
+      logger.debug("Fetching guest insurance");
 
       const result = await rentalityContracts.gateway.getMyInsurancesAsGuest();
 

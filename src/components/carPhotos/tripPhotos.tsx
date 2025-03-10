@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getPhotosForTrip, GetPhotosForTripResponseType } from "@/utils/pinata";
-import useToggleState from "@/hooks/useToggleState";
 import ImageCarouselDialog from "../createTrip/ImageCarouselDialog";
 
 const defaultCarouselState = {
@@ -177,7 +176,7 @@ const TripPhotos = ({ tripId }: { tripId: number }) => {
                       <span
                         className="cursor-pointer"
                         onClick={() =>
-                          handleShowPhotos(t("common.trip_photos_no_photos"), [
+                          handleShowPhotos(t("booked.details.trip_photos_all"), [
                             ...fileUrls.checkinByHost,
                             ...fileUrls.checkInByGuest,
                             ...fileUrls.checkOutByGuest,
