@@ -508,6 +508,7 @@
       "trip_photos_checked_out_by_host": "Checked-out by host",
       "trip_photos_checked_in_by_guest": "Checked-in by guest",
       "trip_photos_checked_out_by_guest": "Checked-out by guest",
+      "trip_photos_all": "All trip photos",
       "canceled": "canceled",
       "rejected": "rejected",
       "basic_car_details": "Basic car details",
