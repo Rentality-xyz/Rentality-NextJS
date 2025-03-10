@@ -46,3 +46,4 @@ export const ONE_TIME_INSURANCE_TYPE_ID = "oneTimeInsurance";
 
 export const EMPTY_PROMOCODE = "";
 export const PROMOCODE_MAX_LENGTH = 5;
+export const PLATFORM_INIT_TIMEOUT = 1000 * 60;

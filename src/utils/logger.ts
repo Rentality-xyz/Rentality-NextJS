@@ -10,7 +10,7 @@ const MAX_CLIENT_LOGS = 20;
 
 // const logging = new Logging();
 // const log = logging.log("rentality-app");
-type StoredLog = { timestamp: string; level: LogLevel; message: string; meta?: object };
+export type StoredLog = { timestamp: string; level: LogLevel; message: string; meta?: object };
 const clientLogQueue: StoredLog[] = [];
 
 function shouldLog(level: LogLevel, minLevel: LogLevel): boolean {
@@ -30,7 +30,13 @@ function logMessage(level: LogLevel, message?: any, ...optionalParams: any[]) {
       timestamp: moment().toISOString(),
       level,
       message,
-      meta: { optionalParams: optionalParams },
+      meta: {
+        optionalParams: optionalParams.map((i) => {
+          if (i instanceof Error) {
+            return { error: i.message, stack: i.stack };
+          } else return i;
+        }),
+      },
     });
     if (clientLogQueue.length > MAX_CLIENT_LOGS) {
       clientLogQueue.shift();
@@ -61,4 +67,5 @@ export const logger = {
   warn: (message: string, ...optionalParams: any[]) => logMessage("warn", message, ...optionalParams),
   error: (message: string, ...optionalParams: any[]) => logMessage("error", message, ...optionalParams),
   sendToExternal: sendLogsToExternal,
+  getLastStoredLogs: () => [...clientLogQueue],
 };
