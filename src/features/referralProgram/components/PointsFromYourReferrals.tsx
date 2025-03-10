@@ -4,7 +4,6 @@ import Image from "next/image";
 import React from "react";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import PointsFromYourReferralsTable from "@/features/referralProgram/components/PointsFromYourReferralsTable";
-import icStarPointsYellow from "@/images/ic_star_points_yellow.svg";
 import RntButton from "@/components/common/rntButton";
 import useFetchPointsFromYourReferrals from "../hooks/useFetchPointsFromYourReferrals";
 import useClaimPointsFromYourReferrals from "../hooks/useClaimPointsFromYourReferrals";
@@ -34,7 +33,7 @@ export default function PointsFromYourReferrals() {
           disabled={data.readyToClaim === 0 || isPending}
           onClick={handleClaimPointsClick}
         >
-          <Image src={icStarPointsYellow} alt="" className="mr-2 h-7 w-7" />
+          <Image src={"/images/icons/ic_star_points_yellow.svg"} width={47} height={47} alt="" className="mr-2 h-7 w-7" />
           <div className="ml-0.5 flex">
             {isPending ? (
               <>Claiming...</>

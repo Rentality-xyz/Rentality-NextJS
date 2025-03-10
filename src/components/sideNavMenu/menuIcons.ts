@@ -1,20 +1,3 @@
-import { StaticImageData } from "next/image";
-import icBooked from "@/images/ic_booked.svg";
-import icClaims from "@/images/ic_claims.svg";
-import icHistory from "@/images/ic_history.svg";
-import icLegal from "@/images/ic_legal.svg";
-import icListings from "@/images/ic_listings.svg";
-import icLogout from "@/images/ic_logout.svg";
-import icMessages from "@/images/ic_messages.svg";
-import icNotifications from "@/images/ic_notifications.svg";
-import icProfileSettings from "@/images/ic_profile_settings.svg";
-import icTransactionHistory from "@/images/ic_transaction_history.svg";
-import icSearch from "@/images/ic-search-128.svg";
-import icInsurance from "@/images/ic_insurance.svg";
-import toAppStore from "@/images/to_app_store.png";
-import toGooglePlay from "@/images/to_google_play.png";
-import icReferralsAndPoints from "@/images/ic_referrals_and_points.png";
-import icInvest from "@/images/ic_invest.png";
 
 enum MenuIcons {
   Booked,
@@ -35,40 +18,40 @@ enum MenuIcons {
   ReferralsAndPoints,
 }
 
-export const getImageForMenu = (state: MenuIcons): StaticImageData => {
+export const getImageForMenu = (state: MenuIcons): string => {
   switch (state) {
     case MenuIcons.Booked:
-      return icBooked;
+      return "/images/icons/menu/ic_booked.svg";
     case MenuIcons.Claims:
-      return icClaims;
+      return "/images/icons/menu/ic_claims.svg";
     case MenuIcons.History:
-      return icHistory;
+      return "/images/icons/menu/ic_history.svg";
     case MenuIcons.Legal:
-      return icLegal;
+      return "/images/icons/menu/ic_legal.svg";
     case MenuIcons.Listings:
-      return icListings;
+      return "/images/icons/menu/ic_listings.svg";
     case MenuIcons.Logout:
-      return icLogout;
+      return "/images/icons/menu/ic_logout.svg";
     case MenuIcons.Messages:
-      return icMessages;
+      return "/images/icons/menu/ic_messages.svg";
     case MenuIcons.Notifications:
-      return icNotifications;
+      return "/images/icons/menu/ic_notifications.svg";
     case MenuIcons.ProfileSettings:
-      return icProfileSettings;
+      return "/images/icons/menu/ic_profile_settings.svg";
     case MenuIcons.TransactionHistory:
-      return icTransactionHistory;
+      return "/images/icons/menu/ic_transaction_history.svg";
     case MenuIcons.Search:
-      return icSearch;
+      return "/images/icons/menu/ic-search-128.svg";
     case MenuIcons.Insurance:
-      return icInsurance;
+      return "/images/icons/menu/ic_insurance.svg";
     case MenuIcons.ToAppStore:
-      return toAppStore;
+      return "/images/marketplace/ic_appstore.svg";
     case MenuIcons.ToGooglePlay:
-      return toGooglePlay;
+      return "/images/marketplace/ic_google_play.svg";
     case MenuIcons.ReferralsAndPoints:
-      return icReferralsAndPoints;
+      return "/images/icons/menu/ic_referrals_and_points.png";
     case MenuIcons.Invest:
-      return icInvest;
+      return "/images/icons/menu/ic_invest.png";
   }
 };
 

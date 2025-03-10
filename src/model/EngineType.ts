@@ -1,6 +1,4 @@
 import { EngineType } from "./blockchain/schemas";
-import carEngineTypePetrolIcon from "@/images/car_engine_type_petrol.svg";
-import electricEngineTypeIcon from "@/images/car_engine_type_electric.svg";
 
 export const ENGINE_TYPE_PETROL_STRING = "Gasoline";
 export const ENGINE_TYPE_ELECTRIC_STRING = "Electro";
@@ -38,10 +36,10 @@ export function getEngineTypeCode(engineTypeString: string): bigint {
 export const getEngineTypeIcon = (engineType: EngineType): string => {
   switch (engineType) {
     case EngineType.PETROL:
-      return carEngineTypePetrolIcon; // Путь к изображению для бензинового двигателя
+      return "/images/icons/car_info/car_engine_type_petrol.svg"; // Путь к изображению для бензинового двигателя
     case EngineType.ELECTRIC:
-      return electricEngineTypeIcon; // Путь к изображению для электрического двигателя
+      return "/car_engine_type_electric.svg"; // Путь к изображению для электрического двигателя
     default:
-      return carEngineTypePetrolIcon; // Путь к изображению по умолчанию или пустая строка
+      return "/images/icons/car_info/car_engine_type_petrol.svg"; // Путь к изображению по умолчанию или пустая строка
   }
 };
