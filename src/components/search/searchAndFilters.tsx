@@ -389,7 +389,7 @@ export default function SearchAndFilters({
         </div>
 
         <RntButtonTransparent className="w-48" onClick={handleClickOpenDeliveryLocation} isVisibleCircle={false}>
-          <div className="relative flex w-full items-center justify-center text-white">
+          <div className="relative flex w-48 items-center justify-center text-white">
             <div className="text-lg">{t_comp("button_deliver_to_me")}</div>
             <Image
               src="/images/icons/arrowTriangleDownGradient.svg"
