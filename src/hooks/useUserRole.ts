@@ -1,28 +1,71 @@
-import { useRentality } from "@/contexts/rentalityContext";
-import { useEffect, useState } from "react";
+import { getEtherContractWithSigner } from "@/abis";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { IRentalityUserServiceContract } from "@/features/blockchain/models/IRentalityUserService";
+import { useQuery } from "@tanstack/react-query";
 
-export type ROLE = "Guest" | "Host";
+export enum UserRole {
+  None = 0,
+  Guest = 1 << 0,
+  Host = 1 << 1,
+  InvestManager = 1 << 2,
+}
+
+export const USER_ROLE_QUERY_KEY = "UserRole";
+
+type QueryData = UserRole;
 
 const useUserRole = () => {
-  const { rentalityContracts } = useRentality();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [userRole, setUserRole] = useState<ROLE>("Guest");
+  const ethereumInfo = useEthereum();
 
-  useEffect(() => {
-    const getUserRole = async () => {
-      if (!rentalityContracts) return;
-
-      const result = await rentalityContracts.gateway.getMyCars();
-
-      if (result.ok) {
-        setUserRole(result.value.length > 0 ? "Host" : "Guest");
+  const { isLoading, data: userRole } = useQuery<QueryData>({
+    queryKey: [USER_ROLE_QUERY_KEY, ethereumInfo?.walletAddress],
+    initialData: UserRole.Guest,
+    queryFn: async () => {
+      if (!ethereumInfo) {
+        throw new Error("Wallet not initialized");
       }
-      setIsLoading(false);
-    };
-    getUserRole();
-  }, [rentalityContracts]);
 
-  return { isLoading, userRole } as const;
+      const rentalityUserService = (await getEtherContractWithSigner(
+        "userService",
+        ethereumInfo.signer
+      )) as unknown as IRentalityUserServiceContract;
+      if (!rentalityUserService) {
+        throw new Error("useUserRole error: rentalityUserService is null");
+      }
+
+      let userRole = UserRole.Guest;
+      const isHost = await rentalityUserService.isHost(ethereumInfo.walletAddress);
+      const isInvestManager = await rentalityUserService.isInvestorManager(ethereumInfo.walletAddress);
+
+      if (isHost) {
+        userRole |= UserRole.Host;
+      }
+      if (isInvestManager) {
+        userRole |= UserRole.InvestManager;
+      }
+
+      return userRole;
+    },
+    enabled: !!ethereumInfo,
+  });
+
+  return { isLoading, userRole, isGuest, isHost, isInvestManager } as const;
 };
+
+function isGuest(role: UserRole) {
+  return isRole(role, UserRole.Guest);
+}
+
+function isHost(role: UserRole) {
+  return isRole(role, UserRole.Host);
+}
+
+function isInvestManager(role: UserRole) {
+  return isRole(role, UserRole.InvestManager);
+}
+
+function isRole(role: UserRole, roleToCheck: UserRole) {
+  return (role & roleToCheck) === roleToCheck;
+}
 
 export default useUserRole;

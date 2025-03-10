@@ -6,15 +6,15 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 
 function Home() {
-  const { isLoading, userRole } = useUserRole();
+  const { isLoading, userRole, isHost } = useUserRole();
   const { isAuthenticated } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && userRole === "Host") {
+    if (!isLoading && isHost(userRole)) {
       router.push("/host");
     }
-  }, [isLoading, userRole]);
+  }, [isLoading, userRole, isHost, router]);
 
   if (!isAuthenticated) {
     return <Search />;
