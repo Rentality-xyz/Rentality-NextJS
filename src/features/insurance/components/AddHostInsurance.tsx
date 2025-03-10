@@ -85,7 +85,7 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
   if (!isFormOpen)
     return (
       <>
-        <h2 className="my-4">{t("insurance.please_enter_your_insurance")}</h2>
+        <h2 className="my-4 pl-4">{t("insurance.please_enter_your_insurance")}</h2>
         <RntButtonTransparent
           onClick={() => {
             toggleFormOpen();
@@ -98,7 +98,7 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
 
   return (
     <>
-      <h2 className="my-4">{t("insurance.please_enter_your_insurance")}</h2>
+      <h2 className="my-4 pl-4">{t("insurance.please_enter_your_insurance")}</h2>
       <div className="flex flex-col gap-4">
         <RntButtonTransparent
           onClick={() => {
@@ -111,12 +111,12 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
         <form className="flex w-full flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
           <div className="flex flex-row gap-4">
             <div className="flex w-1/2 flex-col gap-2">
-              <h3>Insurance type</h3>
+              <h3 className="pl-4">Insurance type</h3>
               <Controller
                 name="insuranceType"
                 control={control}
                 render={({ field }) => (
-                  <div className="flex flex-col">
+                  <div className="flex flex-col pl-4">
                     <div className="flex gap-2">
                       <input
                         type="radio"
@@ -159,13 +159,11 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
                           No trips
                         </RntFilterSelect.Option>
                       ) : (
-                        <>
-                          {trips.map((i) => (
-                            <RntFilterSelect.Option key={i.tripId} value={String(i.tripId)}>
-                              {`${i.tripId} ${i.brand} ${i.model} ${i.year} ${dateRangeFormatShortMonthDateYear(i.tripStart, i.tripEnd)}`}
-                            </RntFilterSelect.Option>
-                          ))}
-                        </>
+                        trips.map((i) => (
+                          <RntFilterSelect.Option key={i.tripId} value={String(i.tripId)}>
+                            {`${i.tripId} ${i.brand} ${i.model} ${i.year} ${dateRangeFormatShortMonthDateYear(i.tripStart, i.tripEnd)}`}
+                          </RntFilterSelect.Option>
+                        ))
                       )}
                     </RntFilterSelect>
                   )}
@@ -178,7 +176,6 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
             <RntInputTransparent
               id="companyName"
               label={"Insurance company name"}
-              labelClassName="pl-4"
               {...register("companyName")}
               validationError={errors.companyName?.message?.toString()}
             />
@@ -186,7 +183,6 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
             <RntInputTransparent
               id="policeNumber"
               label={"Insurance policy number"}
-              labelClassName="pl-4"
               {...register("policeNumber")}
               validationError={errors.policeNumber?.message?.toString()}
             />
@@ -195,7 +191,6 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
           <RntInputTransparent
             id="comment"
             label={"Comment"}
-            labelClassName="pl-4"
             {...register("comment")}
             validationError={errors.comment?.message?.toString()}
           />

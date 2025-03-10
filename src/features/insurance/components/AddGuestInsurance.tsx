@@ -87,7 +87,7 @@ export default function AddGuestInsurance({}: AddGuestInsuranceProps) {
   if (!isFormOpen)
     return (
       <>
-        <h2 className="my-4">{t("insurance.please_enter_your_insurance")}</h2>
+        <h2 className="my-4 pl-4">{t("insurance.please_enter_your_insurance")}</h2>
         <RntButtonTransparent
           onClick={() => {
             toggleFormOpen();
@@ -100,7 +100,7 @@ export default function AddGuestInsurance({}: AddGuestInsuranceProps) {
 
   return (
     <>
-      <h2 className="my-4">{t("insurance.please_enter_your_insurance")}</h2>
+      <h2 className="my-4 pl-4">{t("insurance.please_enter_your_insurance")}</h2>
       <div className="flex flex-col gap-4">
         <RntButtonTransparent
           onClick={() => {
@@ -115,7 +115,7 @@ export default function AddGuestInsurance({}: AddGuestInsuranceProps) {
         <form className="flex w-full flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
           <div className="flex flex-row gap-4">
             <div className="flex w-full flex-row gap-4">
-              <div className="my-auto w-1/2">
+              <div className="my-auto w-1/2 pl-4">
                 <strong>One-Time trip insurance</strong>
               </div>
               <div className="w-1/2">
@@ -145,13 +145,11 @@ export default function AddGuestInsurance({}: AddGuestInsuranceProps) {
                             No trips
                           </RntFilterSelect.Option>
                         ) : (
-                          <>
-                            {trips.map((i) => (
-                              <RntFilterSelect.Option key={i.tripId} value={String(i.tripId)}>
-                                {`${i.tripId} ${i.brand} ${i.model} ${i.year} ${dateRangeFormatShortMonthDateYear(i.tripStart, i.tripEnd)}`}
-                              </RntFilterSelect.Option>
-                            ))}
-                          </>
+                          trips.map((i) => (
+                            <RntFilterSelect.Option key={i.tripId} value={String(i.tripId)}>
+                              {`${i.tripId} ${i.brand} ${i.model} ${i.year} ${dateRangeFormatShortMonthDateYear(i.tripStart, i.tripEnd)}`}
+                            </RntFilterSelect.Option>
+                          ))
                         )}
                       </RntFilterSelect>
                     )}

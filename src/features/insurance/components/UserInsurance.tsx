@@ -93,7 +93,7 @@ function UserInsurance() {
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
-      <strong>General Insurance ID</strong>
+      <strong className="pl-4">General Insurance ID</strong>
 
       <div className="ml-2 flex flex-row items-center gap-2 text-rentality-secondary-shade" onClick={handleInfoClick}>
         <i className="fi fi-rs-info"></i>
