@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useLogin, useLogout, usePrivy, useWallets } from "@privy-io/react-auth";
 import { bigIntReplacer } from "@/utils/json";
+import { logger } from "@/utils/logger";
 
 interface useAuthInterface {
   isLoadingAuth: boolean;
@@ -31,7 +32,7 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
 
   const { logout } = useLogout({
     onSuccess: () => {
-      console.log("Privy callback authContext.tsx. useLogout.onSuccess");
+      logger.info("Privy callback authContext.tsx. useLogout.onSuccess");
     },
   });
 
@@ -50,22 +51,22 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
   }, [ready, walletsReady, authenticated, wallets]);
 
   // useEffect(() => {
-  //   console.log(`AuthProvider usePrivy.ready has changed to ${ready}`);
+  //   logger.info(`AuthProvider usePrivy.ready has changed to ${ready}`);
   // }, [ready]);
   // useEffect(() => {
-  //   console.log(`AuthProvider usePrivy.authenticated has changed to ${authenticated}`);
+  //   logger.info(`AuthProvider usePrivy.authenticated has changed to ${authenticated}`);
   // }, [authenticated]);
   // useEffect(() => {
-  //   console.log(`AuthProvider useWallets.ready has changed to ${walletsReady}`);
+  //   logger.info(`AuthProvider useWallets.ready has changed to ${walletsReady}`);
   // }, [walletsReady]);
   // useEffect(() => {
-  //   console.log(`AuthProvider wallets has changed to ${JSON.stringify(wallets, bigIntReplacer, 2)}`);
+  //   logger.info(`AuthProvider wallets has changed to ${JSON.stringify(wallets, bigIntReplacer, 2)}`);
   // }, [wallets]);
   // useEffect(() => {
-  //   console.log(`AuthProvider isLoadingAuth has changed to ${isLoadingAuth}`);
+  //   logger.info(`AuthProvider isLoadingAuth has changed to ${isLoadingAuth}`);
   // }, [isLoadingAuth]);
   // useEffect(() => {
-  //   console.log(`AuthProvider isAuthenticated has changed to ${isAuthenticated}`);
+  //   logger.info(`AuthProvider isAuthenticated has changed to ${isAuthenticated}`);
   // }, [isAuthenticated]);
 
   const value = useMemo(

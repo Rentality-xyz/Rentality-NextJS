@@ -47,8 +47,6 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
 
         if (!selectedBlockchain) {
           logger.error(`requestChainIdChange error: chain id ${chainId} is not supported`);
-
-          console.assert();
           return false;
         }
 
