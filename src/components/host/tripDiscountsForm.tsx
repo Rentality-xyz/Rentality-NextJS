@@ -1,5 +1,4 @@
 import RntButton from "@/components/common/rntButton";
-import RntInput from "@/components/common/rntInput";
 import { memo } from "react";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,7 +17,7 @@ function TripDiscountsForm({
   savedTripsDiscounts: TripDiscounts;
   saveTripsDiscounts: (newTripsDiscounts: TripDiscounts) => Promise<Result<boolean, Error>>;
 }) {
-  const { userRole } = useUserRole();
+  const { userRole, isHost } = useUserRole();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { register, handleSubmit, formState } = useForm<TripDiscountsFormValues>({
@@ -33,7 +32,7 @@ function TripDiscountsForm({
   const { t } = useTranslation();
 
   async function onFormSubmit(formData: TripDiscountsFormValues) {
-    if (userRole !== "Host") {
+    if (!isHost(userRole)) {
       showDialog(t("profile.save_discount_err_is_not_host"));
       return;
     }
