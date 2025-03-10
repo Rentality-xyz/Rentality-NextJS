@@ -36,7 +36,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PromoActionType, promoCodeReducer } from "@/features/promocodes/utils/promoCodeReducer";
 import { getPromoPrice } from "@/features/promocodes/utils";
 import Image from "next/image";
-import carIcon from "@/images/car.svg";
 
 function CreateTrip() {
   const { searchCarRequest, searchCarFilters } = useCarSearchParams();
@@ -174,7 +173,7 @@ function CreateTripDetailsContent({
           <CarPhotos carPhotos={carInfo.images} carInfo={carInfo} />
           {isYourOwnCar && (
             <div className="absolute ml-2 mt-2 flex h-[56px] w-[80px] justify-center rounded-xl bg-black bg-opacity-50">
-              <Image src={carIcon} alt="" className="w-[48px]" />
+              <Image src={"/images/icons/car.svg"} width={140} height={55} alt="" className="w-[48px]" />
             </div>
           )}
         </div>

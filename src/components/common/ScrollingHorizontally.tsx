@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/utils";
-import arrowLeft from "../../images/arrows/rntArrowLeft.svg";
-import arrowRight from "../../images/arrows/rntArrowRight.svg";
 import Image from "next/image";
 
 type ScrollingHorizontallyProps = {
@@ -66,7 +64,7 @@ export default function ScrollingHorizontally({ children, className, onScroll }:
           className="absolute left-[8px] top-1/2 z-10 w-10 -translate-y-1/2"
         >
           <div className="btn_input_border-gradient h-full w-full">
-            <Image src={arrowLeft} alt="" />
+            <Image src={"/images/icons/arrows/rntArrowLeft.svg"} width={121} height={121} alt="" />
           </div>
         </button>
       )}
@@ -78,7 +76,7 @@ export default function ScrollingHorizontally({ children, className, onScroll }:
           className="absolute right-[8px] top-1/2 z-10 w-10 -translate-y-1/2"
         >
           <div className="btn_input_border-gradient h-full w-full">
-            <Image src={arrowRight} alt="" />
+            <Image src={"/images/icons/arrows/rntArrowRight.svg"} width={121} height={121} alt="" />
           </div>
         </button>
       )}

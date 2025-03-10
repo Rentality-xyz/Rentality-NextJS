@@ -1,5 +1,4 @@
 import { cn } from "@/utils";
-import imgCircleBtn from "@/images/img_circle_for_transparent_btn.svg";
 import Image from "next/image";
 import React from "react";
 
@@ -34,7 +33,7 @@ export default function RntButtonTransparent({
       onClick={onClick}
     >
       {children}
-      <Image src={imgCircleBtn} alt="" className={`ml-4 ${disabled ? "hidden" : !isVisibleCircle && "hidden"}`} />
+      <Image src={"/images/icons/img_circle_for_transparent_btn.svg"} width={10} height={10} alt="" className={`ml-4 ${disabled ? "hidden" : !isVisibleCircle && "hidden"}`} />
       <span className={`ml-4 ${!disabled ? "hidden" : !isVisibleCircle && "hidden"}`}>●</span>
     </button>
   );
