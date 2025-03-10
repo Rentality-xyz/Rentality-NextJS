@@ -11,6 +11,7 @@ export interface RntInputProps extends React.ComponentPropsWithoutRef<"input"> {
   labelClassName?: string;
   inputClassName?: string;
   validationClassName?: string;
+  wrapperClassName?: string;
   label?: string;
   validationError?: string;
   validationSuccessMessage?: string;

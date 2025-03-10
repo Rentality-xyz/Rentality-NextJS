@@ -438,36 +438,13 @@ export default function CarEditForm({
                 )
               }
             />
-            <Controller
-              name="dimoTokenId"
-              control={control}
-              defaultValue={dimoData?.tokenId || 0}
-              render={({ field }) =>
-                isNewCar && dimoData !== undefined ? (
-                  <RntInputTransparent
-                    {...field}
-                    id="dimoTokenId"
-                    className="lg:w-40"
-                    type="text"
-                    label="Dimo token id"
-                    readOnly={true}
-                    value={dimoData.tokenId}
-                  />
-                ) : (
-                  <RntInputTransparent
-                    {...field}
-                    id="dimoTokenId"
-                    className="lg:w-40"
-                    type="text"
-                    label="Dimo token id"
-                    readOnly={dimoData !== undefined}
-                    onChange={(e) => {
-                      const inputID = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
-                      field.onChange(Number.parseInt(inputID, 10));
-                    }}
-                  />
-                )
-              }
+            <RntInputTransparent
+              id="dimoTokenId"
+              className="lg:w-40"
+              type="text"
+              label="Dimo token id"
+              readOnly={true}
+              value={dimoData?.tokenId || 0}
             />
           </div>
         </div>
