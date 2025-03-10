@@ -1,4 +1,5 @@
 import { useRentality } from "@/contexts/rentalityContext";
+import { logger } from "@/utils/logger";
 import { ZERO_4_BYTES_HASH } from "@/utils/wallet";
 import { useQuery } from "@tanstack/react-query";
 
@@ -15,7 +16,7 @@ const useFetchReferralLinks = () => {
       if (!rentalityContracts) {
         throw new Error("Contracts not initialized");
       }
-      console.debug("Fetching referral links");
+      logger.debug("Fetching referral links");
 
       const result = await rentalityContracts.referralProgram.getMyRefferalInfo();
 

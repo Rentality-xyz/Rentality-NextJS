@@ -3,10 +3,11 @@ import { env } from "@/utils/env";
 import crypto from "crypto";
 import { NextApiRequest, NextApiResponse } from "next";
 import { isEmpty } from "@/utils/string";
+import { logger } from "@/utils/logger";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
-    console.error(`sendSmsVerificationCode error: method not allowed`);
+    logger.error(`sendSmsVerificationCode error: method not allowed`);
     res.status(405).json({ error: "Method not allowed" });
     return;
   }
@@ -14,28 +15,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { phoneNumber } = req.body;
 
   if (!phoneNumber || typeof phoneNumber !== "string") {
-    console.error(`sendSmsVerificationCode error: invalid phone number`);
+    logger.error(`sendSmsVerificationCode error: invalid phone number`);
     res.status(400).json({ error: "Invalid phone number" });
     return;
   }
 
   const TWILIO_ACCOUNT_SID = env.TWILIO_ACCOUNT_SID;
   if (isEmpty(TWILIO_ACCOUNT_SID)) {
-    console.error("sendSmsVerificationCode error: twilio account sid was not set");
+    logger.error("sendSmsVerificationCode error: twilio account sid was not set");
     res.status(500).json({ error: "Twilio account sid was not set" });
     return;
   }
 
   const TWILIO_AUTH_TOKEN = env.TWILIO_AUTH_TOKEN;
   if (isEmpty(TWILIO_AUTH_TOKEN)) {
-    console.error("sendSmsVerificationCode error: twilio auth token was not set");
+    logger.error("sendSmsVerificationCode error: twilio auth token was not set");
     res.status(500).json({ error: "Twilio auth token was not set" });
     return;
   }
 
   const VERIFICATION_HMAC_SHA256_SECRET_KEY = env.VERIFICATION_HMAC_SHA256_SECRET_KEY;
   if (isEmpty(VERIFICATION_HMAC_SHA256_SECRET_KEY)) {
-    console.error("sendSmsVerificationCode error: SHA256 secret key was not set");
+    logger.error("sendSmsVerificationCode error: SHA256 secret key was not set");
     res.status(500).json({ error: "SHA256 secret key was not set" });
     return;
   }
@@ -56,11 +57,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       from: "rentality",
       to: phoneNumber,
     });
-    console.log("Sms verification code sent successfully");
+    logger.info("Sms verification code sent successfully");
     res.status(200).json({ hash, timestamp });
     return;
   } catch (error) {
-    console.error(`sendSmsVerificationCode error: failed to send message ${error}`);
+    logger.error(`sendSmsVerificationCode error: failed to send message ${error}`);
     res.status(500).json({ error: "Failed to send message" });
     return;
   }

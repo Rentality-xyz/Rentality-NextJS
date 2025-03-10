@@ -8,6 +8,7 @@ import RntButtonTransparent from "../common/rntButtonTransparent";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import CarDetailsVerificationDialog from "./CarDetailsVerificationDialog";
 import Image from "next/image";
+import { logger } from "@/utils/logger";
 
 function CarDetails({
   tripInfo,
@@ -35,7 +36,7 @@ function CarDetails({
 
   const handleConfirmCarDetailsClick = async () => {
     if (!confirmCarDetails) {
-      console.error("handleConfirmCarDetailsClick error: confirmCarDetails is undefined");
+      logger.error("handleConfirmCarDetailsClick error: confirmCarDetails is undefined");
       return;
     }
 

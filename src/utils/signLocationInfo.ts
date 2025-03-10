@@ -1,6 +1,7 @@
 import { Signer } from "ethers";
 import { getContractAddress, getEtherContractWithSigner } from "@/abis";
 import { ContractLocationInfo } from "@/model/blockchain/schemas";
+import { logger } from "./logger";
 
 export async function signLocationInfo(signer: Signer, locationInfo: ContractLocationInfo) {
   const chainId = Number((await signer.provider?.getNetwork())?.chainId);
@@ -32,7 +33,7 @@ export async function signLocationInfo(signer: Signer, locationInfo: ContractLoc
 export async function signLocationInfoWithVerify(signer: Signer, location: ContractLocationInfo) {
   let contract = await getEtherContractWithSigner("verifierService", signer);
   if (contract === null) {
-    console.error("contract is null");
+    logger.error("contract is null");
     return;
   }
   let signature = await signLocationInfo(signer, location);
@@ -41,7 +42,7 @@ export async function signLocationInfoWithVerify(signer: Signer, location: Contr
     signature,
   };
   let result = await contract.verify(signed);
-  console.log("Signer   address: ", await signer.getAddress());
-  console.log("verified address: ", result);
+  logger.info("Signer   address: ", await signer.getAddress());
+  logger.info("verified address: ", result);
   return { signature, verifyAddress: result };
 }

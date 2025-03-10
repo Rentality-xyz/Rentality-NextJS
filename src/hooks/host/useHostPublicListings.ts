@@ -4,6 +4,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isEmpty } from "@/utils/string";
 import { AxiosResponse } from "axios";
 import axios from "@/utils/cachedAxios";
+import { logger } from "@/utils/logger";
 
 const useHostPublicListings = (hostAddressOrName: string) => {
   const ethereumInfo = useEthereum();
@@ -25,18 +26,18 @@ const useHostPublicListings = (hostAddressOrName: string) => {
         const apiResponse: AxiosResponse = await axios.get(url.toString());
 
         if (apiResponse.status !== 200) {
-          console.error(`fetchHostPublicListings fetch error: + ${apiResponse.status}`);
+          logger.error(`fetchHostPublicListings fetch error: + ${apiResponse.status}`);
           return;
         }
         if (!Array.isArray(apiResponse.data)) {
-          console.error("fetchHostPublicListings fetch wrong response format:");
+          logger.error("fetchHostPublicListings fetch wrong response format:");
           return;
         }
 
         const hostPublicListingsData = apiResponse.data as BaseCarInfo[];
         setHostPublicListings(hostPublicListingsData);
-      } catch (e) {
-        console.error("fetchHostPublicListings error:" + e);
+      } catch (error) {
+        logger.error("fetchHostPublicListings error:" + error);
       } finally {
         setIsLoading(false);
       }

@@ -6,6 +6,7 @@ import { Err } from "@/model/utils/result";
 import { REFERRAL_OWN_POINTS_QUERY_KEY } from "./useFetchOwnReferralPoints";
 import { REFERRAL_USER_BALANCE_QUERY_KEY } from "./useFetchUserBalance";
 import { REFERRAL_POINTS_HISTORY_QUERY_KEY } from "./useFetchPointsHistory";
+import { logger } from "@/utils/logger";
 
 function useClaimOwnReferralPoints() {
   const ethereumInfo = useEthereum();
@@ -18,7 +19,7 @@ function useClaimOwnReferralPoints() {
     mutationFn: async () => {
       try {
         if (!rentalityContracts || !ethereumInfo) {
-          console.error("claimMyPoints error: Missing required contracts or ethereum info");
+          logger.error("claimMyPoints error: Missing required contracts or ethereum info");
           return Err(new Error("Missing required contracts or ethereum info"));
         }
 
@@ -26,7 +27,7 @@ function useClaimOwnReferralPoints() {
 
         return result.ok ? result : Err(new Error("claimMyPoints error: " + result.error));
       } catch (error) {
-        console.error("claimMyPoints error: ", error);
+        logger.error("claimMyPoints error: ", error);
         return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
       }
     },

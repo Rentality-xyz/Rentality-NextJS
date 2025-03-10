@@ -72,8 +72,8 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
 
             savedFilesURLs.push(response.pinataURL);
           }
-        } catch (e: any) {
-          return Err(e.message);
+        } catch (error) {
+          return Err(error instanceof Error ? error.message : "unknown error");
         }
 
         return savedFilesURLs;

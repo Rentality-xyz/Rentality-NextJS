@@ -1,3 +1,4 @@
+import { logger } from "@/utils/logger";
 import { useCallback } from "react";
 
 const REFERRAL_CODE_STORAGE_KEY = "REFERRAL_CODE_STORAGE_KEY";
@@ -8,7 +9,7 @@ function useReferralLinkLocalStorage() {
       if (typeof window === "undefined") return "";
       return localStorage.getItem(REFERRAL_CODE_STORAGE_KEY) ?? "";
     } catch (error) {
-      console.error("getLocalReferralCode error: ", error);
+      logger.error("getLocalReferralCode error: ", error);
       return "";
     }
   }, []);
@@ -19,7 +20,7 @@ function useReferralLinkLocalStorage() {
         localStorage.setItem(REFERRAL_CODE_STORAGE_KEY, referralLink.trim());
       }
     } catch (error) {
-      console.error("saveReferralCode error: ", error);
+      logger.error("saveReferralCode error: ", error);
     }
   }, []);
 

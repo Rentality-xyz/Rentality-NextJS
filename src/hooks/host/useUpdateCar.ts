@@ -10,6 +10,7 @@ import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MY_LISTINGS_QUERY_KEY } from "./useFetchMyListings";
 import { saveCarImages, uploadMetadataToIPFS } from "./useSaveNewCar";
+import { logger } from "@/utils/logger";
 
 function useUpdateCar() {
   const { rentalityContracts } = useRentality();
@@ -20,12 +21,12 @@ function useUpdateCar() {
     mutationFn: async (hostCarInfo: HostCarInfo): Promise<Result<boolean, Error>> => {
       try {
         if (!ethereumInfo || !rentalityContracts) {
-          console.error("updateCar error: Missing required contracts or ethereum info");
+          logger.error("updateCar error: Missing required contracts or ethereum info");
           return Err(new Error("Missing required contracts or ethereum info"));
         }
 
         if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
-          console.error("updateCar error: user don't have enough funds");
+          logger.error("updateCar error: user don't have enough funds");
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
@@ -43,7 +44,7 @@ function useUpdateCar() {
         }
 
         if (!metadataURL) {
-          console.error("updateCar error: Upload JSON to Pinata error");
+          logger.error("updateCar error: Upload JSON to Pinata error");
           return Err(new Error("ERROR"));
         }
 
@@ -82,7 +83,7 @@ function useUpdateCar() {
             ethereumInfo.chainId
           );
           if (!locationResult.ok) {
-            console.error("updateCar error: Sign location error");
+            logger.error("updateCar error: Sign location error");
             return Err(new Error("ERROR"));
           }
           locationInfo = locationResult.value;
@@ -92,7 +93,7 @@ function useUpdateCar() {
 
         return result;
       } catch (error) {
-        console.error("updateCar error: ", error);
+        logger.error("updateCar error: ", error);
         return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
       }
     },

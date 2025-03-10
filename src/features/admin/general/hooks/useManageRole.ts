@@ -1,6 +1,7 @@
 import { Role } from "@/model/blockchain/schemas";
 import { useRentalityAdmin } from "@/contexts/rentalityContext";
 import { useState } from "react";
+import { logger } from "@/utils/logger";
 
 const useManageRole = () => {
   const { admin } = useRentalityAdmin();
@@ -8,7 +9,7 @@ const useManageRole = () => {
 
   async function manageRole(address: string, action: "grand" | "revoke", role: Role) {
     if (!admin) {
-      console.error("manageRole error: rentalityAdminGateway is null");
+      logger.error("manageRole error: rentalityAdminGateway is null");
       return false;
     }
 

@@ -6,6 +6,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { INSURANCE_LIST_QUERY_KEY } from "./useFetchInsurances";
 import { INSURANCE_GUEST_QUERY_KEY } from "./useFetchGuestGeneralInsurance";
+import { logger } from "@/utils/logger";
 
 export type SaveTripInsuranceRequest = {
   insuranceType: string;
@@ -23,7 +24,7 @@ const useSaveTripInsurance = () => {
   return useMutation({
     mutationFn: async (request: SaveTripInsuranceRequest): Promise<Result<boolean, Error>> => {
       if (!rentalityContracts || !ethereumInfo) {
-        console.error("saveGuestTripInsurance error: Missing required contracts or ethereum info");
+        logger.error("saveGuestTripInsurance error: Missing required contracts or ethereum info");
         return Err(new Error("Missing required contracts or ethereum info"));
       }
 
@@ -47,7 +48,7 @@ const useSaveTripInsurance = () => {
         });
         return result.ok ? result : Err(new Error("saveTripInsurance error: " + result.error));
       } catch (error) {
-        console.error("saveTripInsurance error: ", error);
+        logger.error("saveTripInsurance error: ", error);
         return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
       }
     },

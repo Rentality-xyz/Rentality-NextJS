@@ -24,6 +24,7 @@ import RntPhoneInput from "@/components/common/rntPhoneInput";
 import DotStatus from "@/components/dotStatus";
 import { CheckboxTerms } from "@/components/common/rntCheckbox";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
+import { logger } from "@/utils/logger";
 
 function UserCommonInformationForm({
   userProfile,
@@ -89,7 +90,7 @@ function UserCommonInformationForm({
       }
 
       if (!isEmpty(field.value) && field.value.startsWith("blob")) {
-        console.log("Revoking ObjectURL");
+        logger.info("Revoking ObjectURL");
         URL.revokeObjectURL(field.value);
       }
       const fileNameExt = file.name.slice(file.name.lastIndexOf(".") + 1);
@@ -146,8 +147,8 @@ function UserCommonInformationForm({
         throw new Error("Save profile info error");
       }
       showInfo(t("common.info.save_profile_success"));
-    } catch (e) {
-      console.error("handleSubmit error:" + e);
+    } catch (error) {
+      logger.error("handleSubmit error:" + error);
       showError(t("profile.save_err"));
       return;
     }
@@ -205,11 +206,11 @@ function UserCommonInformationForm({
         setSmsTimestamp(result.timestamp);
         startTimer();
       } else {
-        console.error("sendSmsVerificationCode error:" + result.error);
+        logger.error("sendSmsVerificationCode error:" + result.error);
         showError(t("profile.send_sms_err"));
       }
-    } catch (e) {
-      console.error("sendSmsVerificationCode error:" + e);
+    } catch (error) {
+      logger.error("sendSmsVerificationCode error:" + error);
       showError(t("profile.send_sms_err"));
     }
   }
@@ -234,7 +235,7 @@ function UserCommonInformationForm({
       const result = await response.json();
 
       if (!response.ok) {
-        console.error("compareVerificationCode error:" + result.error);
+        logger.error("compareVerificationCode error:" + result.error);
         showError(t("profile.verify_number_err"));
         return;
       }
@@ -250,8 +251,8 @@ function UserCommonInformationForm({
       }
 
       showError(t("profile.invalid_code"));
-    } catch (e) {
-      console.error("compareVerificationCode error:" + e);
+    } catch (error) {
+      logger.error("compareVerificationCode error:" + error);
       showError(t("profile.verify_number_err"));
     }
   }
@@ -387,14 +388,14 @@ function UserCommonInformationForm({
                   const signature = await signMessage(ethereumInfo.signer, DEFAULT_AGREEMENT_MESSAGE);
                   setValue("tcSignature", signature);
                 } catch (error) {
-                  console.error("sign error: ", error);
+                  logger.error("sign error: ", error);
                 }
               }
               field.onChange(!field.value);
             }}
             onLabelClick={(e) => {
               field.onChange(true);
-              console.log(`onLabelClick. ${JSON.stringify(e.type)}`);
+              logger.info(`onLabelClick. ${JSON.stringify(e.type)}`);
               const windowsProxy = window.open(
                 `/${userMode === "Host" ? "host" : "guest"}/legal?tab=${LEGAL_TERMS_NAME}`,
                 "_blank"

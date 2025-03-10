@@ -18,6 +18,7 @@ import RentalityUserServiceJSON_ABI from "./RentalityUserService.v0_2_0.abi.json
 import RentalityUserServiceJSON_ADDRESSES from "./RentalityUserService.v0_2_0.addresses.json";
 import { Contract, Signer } from "ethers";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
+import { logger } from "@/utils/logger";
 
 export const SMARTCONTRACT_VERSION = "v0_2_0";
 
@@ -63,26 +64,26 @@ const rentalityContracts = {
 export async function getEtherContractWithSigner(contract: keyof typeof rentalityContracts, signer: Signer) {
   try {
     if (!signer) {
-      console.error("getEtherContract error: signer is null");
+      logger.error("getEtherContract error: signer is null");
       return null;
     }
 
     const chainId = Number((await signer.provider?.getNetwork())?.chainId);
     if (!getExistBlockchainList().find((i) => i.chainId === chainId)) {
-      console.error(`getEtherContract error: Chain id ${chainId} is not supported`);
+      logger.error(`getEtherContract error: Chain id ${chainId} is not supported`);
       return null;
     }
 
     const selectedChain = rentalityContracts[contract].addresses.find((i) => i.chainId === chainId);
 
     if (!selectedChain) {
-      console.error(`getEtherContract error: ${contract} address for chainId ${chainId} is not found`);
+      logger.error(`getEtherContract error: ${contract} address for chainId ${chainId} is not found`);
       return null;
     }
     const etherContract = new Contract(selectedChain.address, rentalityContracts[contract].abi, signer);
     return etherContract;
-  } catch (e) {
-    console.error("getEtherContract error:" + e);
+  } catch (error) {
+    logger.error("getEtherContract error:" + error);
     return null;
   }
 }
@@ -94,19 +95,19 @@ export function hasContractForChainId(chainId: number) {
 export function getContractAddress(contract: keyof typeof rentalityContracts, chainId: number) {
   try {
     if (!getExistBlockchainList().find((i) => i.chainId === chainId)) {
-      console.error(`getEtherContract error: Chain id ${chainId} is not supported`);
+      logger.error(`getEtherContract error: Chain id ${chainId} is not supported`);
       return null;
     }
 
     const selectedChain = rentalityContracts[contract].addresses.find((i) => i.chainId === chainId);
 
     if (!selectedChain) {
-      console.error(`getEtherContract error: ${contract} address for chainId ${chainId} is not found`);
+      logger.error(`getEtherContract error: ${contract} address for chainId ${chainId} is not found`);
       return null;
     }
     return selectedChain.address;
-  } catch (e) {
-    console.error("get address error error:" + e);
+  } catch (error) {
+    logger.error("get address error error:" + error);
     return null;
   }
 }

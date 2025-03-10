@@ -7,12 +7,13 @@ import { JsonRpcProvider, Wallet } from "ethers";
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGateway";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
+import { logger } from "@/utils/logger";
 
 const CODE_EXPIRATION_TIME_MS = 5 * 60 * 1000;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
-    console.error("compareVerificationCode error: method not allowed");
+    logger.error("compareVerificationCode error: method not allowed");
     res.status(405).json({ error: "Method not allowed" });
     return;
   }
@@ -33,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     !chainId ||
     typeof chainId !== "number"
   ) {
-    console.error("compareVerificationCode error: invalid parameters");
+    logger.error("compareVerificationCode error: invalid parameters");
     res.status(400).json({ error: "Invalid parameters" });
     return;
   }
@@ -41,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const now = Date.now();
 
   if (now - timestamp > CODE_EXPIRATION_TIME_MS) {
-    console.error("compareVerificationCode error: verification code expired");
+    logger.error("compareVerificationCode error: verification code expired");
     res.status(400).json({ error: "Verification code expired" });
     return;
   }
@@ -54,14 +55,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const isVerified = smsHash === enteredCodeHash;
 
   if (!isVerified) {
-    console.log(`Phone number didn't verified`);
+    logger.info(`Phone number didn't verified`);
     res.status(200).json({ isVerified: false });
     return;
   }
 
   const MANAGER_PRIVATE_KEY = env.MANAGER_PRIVATE_KEY;
   if (isEmpty(MANAGER_PRIVATE_KEY)) {
-    console.error("compareVerificationCode error: private key was not set");
+    logger.error("compareVerificationCode error: private key was not set");
     res.status(500).json({ error: "Manager private key was not set" });
     return;
   }
@@ -69,7 +70,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const providerApiUrl = getProviderApiUrlFromEnv(chainId);
 
   if (!providerApiUrl) {
-    console.error(`compareVerificationCode error: API URL for chain id ${chainId} was not set`);
+    logger.error(`compareVerificationCode error: API URL for chain id ${chainId} was not set`);
     res.status(500).json({ error: `compareVerificationCode error: API URL for chain id ${chainId} was not set` });
     return;
   }
@@ -82,12 +83,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   );
 
   if (!saveVerificationStatusResult.ok) {
-    console.error(`compareVerificationCode error: ${saveVerificationStatusResult.error}`);
+    logger.error(`compareVerificationCode error: ${saveVerificationStatusResult.error}`);
     res.status(500).json({ error: saveVerificationStatusResult.error });
     return;
   }
 
-  console.log(`Phone number verified successfully`);
+  logger.info(`Phone number verified successfully`);
   res.status(200).json({ isVerified: true });
   return;
 }
@@ -99,7 +100,7 @@ async function saveVerificationSuccessStatus(
   providerApiUrl: string
 ): Promise<Result<boolean, string>> {
   if (!userAddress || isEmpty(userAddress)) {
-    console.error("User address is empty");
+    logger.error("User address is empty");
     return Err("User address  is empty");
   }
 
@@ -109,7 +110,7 @@ async function saveVerificationSuccessStatus(
   const rentality = (await getEtherContractWithSigner("gateway", wallet)) as unknown as IRentalityGatewayContract;
 
   if (rentality === null) {
-    console.error("rentality is null");
+    logger.error("rentality is null");
     return Err("rentality is null");
   }
 
@@ -117,8 +118,8 @@ async function saveVerificationSuccessStatus(
     const transaction = await rentality.setPhoneNumber(userAddress, phoneNumber, true);
     await transaction.wait();
     return Ok(true);
-  } catch (e) {
-    console.error("saveVerificationSuccessStatus error", e);
-    return Err(`saveVerificationSuccessStatus error ${e}`);
+  } catch (error) {
+    logger.error("saveVerificationSuccessStatus error", error);
+    return Err(`saveVerificationSuccessStatus error ${error}`);
   }
 }
