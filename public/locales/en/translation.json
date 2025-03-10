@@ -21,8 +21,8 @@
     "all_trips_table": "All trips table",
     "all_users_table": "All users table",
     "referrals_and_points": "Referrals & Points",
-    "guest_invest": "Invest",
-    "host_invest": "Create invest"
+    "invest": "Invest",
+    "create_invest": "Create invest"
   },
   "search_and_filters": {
     "location_label": "Pick up & Return Location",
@@ -887,14 +887,14 @@
     "view_smart_contract": "View smart contract",
     "new_nft_info": "New nft collection info",
     "generated_automatically": "Generated automatically after saving the tokenized asset card",
-    "filter_for_guest": {
+    "filter_for_user": {
       "all_assets": "All assets",
       "available_to_invest": "Available to Invest",
       "my_investments": "My investments",
       "ready_to_claim": "Ready to claim",
       "actually_listed": "Actually Listed"
     },
-    "filter_for_host": {
+    "filter_for_investor": {
       "all_assets": "All assets",
       "available_to_invest": "Available to Invest",
       "fully_tokenized": "Fully tokenized",

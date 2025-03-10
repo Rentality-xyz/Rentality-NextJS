@@ -9,7 +9,7 @@ export default function HostInvest() {
   return (
     <>
       <PageTitle title={t("invest.guest_page_title")} />
-      <InvestContent isHost={false} />
+      <InvestContent />
     </>
   );
 }
