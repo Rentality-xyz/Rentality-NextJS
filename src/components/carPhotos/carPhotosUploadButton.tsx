@@ -9,6 +9,7 @@ import { Err } from "@/model/utils/result";
 import { useTranslation } from "react-i18next";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import RntButton from "@/components/common/rntButton";
+import { logger } from "@/utils/logger";
 
 const EXTERIOR_PHOTOS_COUNT_REQUIRED = 4;
 const INTERIOR_PHOTOS_COUNT_REQUIRED = 9;
@@ -54,7 +55,7 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
           for (const uploadedFile of Array.from(uploadedFiles)) {
             const fileName = `${tripId}-${isHostStringValue}-${isStartStringValue}-${uploadedFile.name}`;
 
-            console.debug(`Uploading file ${fileName} to Pinata`);
+            logger.debug(`Uploading file ${fileName} to Pinata`);
 
             const response = await uploadFileToIPFS(uploadedFile, fileName, {
               createdAt: new Date().toISOString(),
