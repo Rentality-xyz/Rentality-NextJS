@@ -6,14 +6,14 @@ import InvestCar from "@/features/invest/components/investCar";
 import { useRouter } from "next/navigation";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
 import { SortOptionKey } from "@/hooks/guest/useSearchCars";
+import useUserRole from "@/hooks/useUserRole";
 
-type InvestContentProps = {
-  isHost: boolean;
-};
+type InvestContentProps = {};
 
 type FilterEnum = Record<string, string>; // Типизация для Enum
 
-export default function InvestContent({ isHost }: InvestContentProps) {
+export default function InvestContent({}: InvestContentProps) {
+  const { userRole, isInvestManager } = useUserRole();
   const { t } = useTranslation();
   const {
     investments,
@@ -36,9 +36,12 @@ export default function InvestContent({ isHost }: InvestContentProps) {
     return filterInvest.hasOwnProperty(key);
   }
   // Получаем фильтры из переводов
-  const filterInvest: FilterEnum = t(isHost ? "invest.filter_for_host" : "invest.filter_for_guest", {
-    returnObjects: true,
-  }) as FilterEnum;
+  const filterInvest: FilterEnum = t(
+    isInvestManager(userRole) ? "invest.filter_for_investor" : "invest.filter_for_user",
+    {
+      returnObjects: true,
+    }
+  ) as FilterEnum;
   // Генерируем Enum на основе ключей
   const FilterInvestEnum = Object.keys(filterInvest).reduce((acc, key) => {
     acc[key] = key;
@@ -76,7 +79,7 @@ export default function InvestContent({ isHost }: InvestContentProps) {
 
   return (
     <div className="mt-8">
-      {isHost && (
+      {isInvestManager(userRole) && (
         <RntButton className="mb-6 flex w-60 items-center justify-center" onClick={handleCreateInvest}>
           {t("invest.btn_create_investment")}
         </RntButton>
@@ -103,7 +106,7 @@ export default function InvestContent({ isHost }: InvestContentProps) {
       <div className="mt-6 grid grid-cols-1 gap-4 2xl:grid-cols-2">
         {filteredInvestments.map((value) => (
           <InvestCar
-            isHost={isHost}
+            isHost={isInvestManager(userRole)}
             key={value.investment.investmentId}
             searchInfo={value}
             handleInvest={(amount, investId) => handleInvest({ amount, investId })}
