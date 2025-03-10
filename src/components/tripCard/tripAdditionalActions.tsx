@@ -173,10 +173,10 @@ function TripAdditionalActions({
             setConfirmParams={setConfirmParams}
           />
         )}
-        <div className="flex w-1/2 flex-col gap-4 py-4">
+        <div className="flex w-full flex-col gap-4 py-4">
           {hasTripPhotosFeatureFlag &&
             (tripInfo.status == TripStatus.CheckedInByHost || tripInfo.status == TripStatus.CheckedOutByGuest) && (
-              <div className="flex w-full flex-col md:flex-1 lg:w-1/3 lg:flex-none">
+              <div className="flex w-full flex-col">
                 <CarPhotosUploadButton
                   ref={carPhotosUploadButtonRef}
                   isHost={isHost}
@@ -193,7 +193,7 @@ function TripAdditionalActions({
           return (
             <RntButton
               key={action.text}
-              className="h-16 px-4 max-md:w-full"
+              className="px-4 max-md:w-full"
               disabled={disableButton}
               onClick={() => {
                 onActionBtnClick(action);

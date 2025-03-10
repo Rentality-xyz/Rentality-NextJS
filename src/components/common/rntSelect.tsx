@@ -51,8 +51,8 @@ const RntSelect = forwardRef<HTMLSelectElement, RntSelectProps>(
     );
     const cTranspStyleClassName = "custom-select text-center text-rentality-secondary";
     const arrowStyle = readOnly
-      ? "bg-[url('../images/arrows/arrowDownDisabled.svg')]"
-      : "bg-[url('../images/arrows/arrowDownTurquoise.svg')]";
+      ? "bg-[url('/images/icons/arrowDownDisabled.svg')]"
+      : "bg-[url('/images/icons/arrowDownTurquoise.svg')]";
 
     return (
       <div className={cClassName}>

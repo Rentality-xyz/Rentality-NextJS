@@ -1,8 +1,3 @@
-import carDoorsIcon from "@/images/car_doors.svg";
-import carSeatsIcon from "@/images/car_seats.svg";
-import carTransmissionIcon from "@/images/car_transmission.svg";
-import carTankSizeIcon from "@/images/car_tank_size.svg";
-import carColourIcon from "@/images/car_colour.svg";
 import { getEngineTypeIcon, getEngineTypeString } from "@/model/EngineType";
 import { TripInfo } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
@@ -30,11 +25,11 @@ function TripAboutCar({ tripInfo }: { tripInfo: TripInfo }) {
       </div>
       <div className="flex flex-wrap p-2 max-sm:flex-col">
         <div className="m-2 flex w-28 items-center">
-          <Image className="me-1" src={carDoorsIcon} width={30} height={30} alt="" />
+          <Image className="me-1" src={"/images/icons/car_info/car_doors.svg"} width={30} height={30} alt="" />
           {tripInfo.carDoorsNumber} {t_details("doors")}
         </div>
         <div className="m-2 flex w-28 items-center">
-          <Image className="me-1" src={carSeatsIcon} width={30} height={30} alt="" />
+          <Image className="me-1" src={"/images/icons/car_info/car_seats.svg"} width={30} height={30} alt="" />
           {tripInfo.carSeatsNumber} {t_details("seats")}
         </div>
         <div className="m-2 flex w-48 items-center">
@@ -42,15 +37,15 @@ function TripAboutCar({ tripInfo }: { tripInfo: TripInfo }) {
           {t("vehicles.engine_type")} {getEngineTypeString(tripInfo.engineType)}
         </div>
         <div className="word-break m-2 flex w-40 items-center">
-          <Image className="me-1" src={carTransmissionIcon} width={30} height={30} alt="" />
+          <Image className="me-1" src={"/images/icons/car_info/car_transmission.svg"} width={30} height={30} alt="" />
           {t("vehicles.transmission")}: {tripInfo.carTransmission}
         </div>
         <div className="m-2 flex w-44 items-center">
-          <Image className="me-1" src={carTankSizeIcon} width={30} height={30} alt="" />
+          <Image className="me-1" src={"/images/icons/car_info/car_tank_size.svg"} width={30} height={30} alt="" />
           {t("vehicles.tank_size")}: {tripInfo.tankVolumeInGal}
         </div>
         <div className="m-2 flex w-40 items-center">
-          <Image className="me-1" src={carColourIcon} width={30} height={30} alt="" />
+          <Image className="me-1" src={"/images/icons/car_info/car_colour.svg"} width={30} height={30} alt="" />
           {t_details("car_colour")}: {tripInfo.carColor}
         </div>
       </div>

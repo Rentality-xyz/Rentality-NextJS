@@ -18,7 +18,7 @@ function DeliveryPriceForm({
   savedDeliveryPrices: DeliveryPrices;
   saveDeliveryPrices: (newDeliveryPrices: DeliveryPrices) => Promise<Result<boolean, Error>>;
 }) {
-  const { userRole } = useUserRole();
+  const { userRole, isHost } = useUserRole();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { register, handleSubmit, formState } = useForm<DeliveryPricesFormValues>({
@@ -32,7 +32,7 @@ function DeliveryPriceForm({
   const { t } = useTranslation();
 
   async function onFormSubmit(formData: DeliveryPricesFormValues) {
-    if (userRole !== "Host") {
+    if (!isHost(userRole)) {
       showDialog(t("profile.save_delivery_prices_err_is_not_host"));
       return;
     }

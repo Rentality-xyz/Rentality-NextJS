@@ -3,7 +3,6 @@ import RntButton from "./rntButton";
 import { TripInfo } from "@/model/TripInfo";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import Image from "next/image";
-import imgCopy from "@/images/ic_copy_white_24dp.svg";
 import { Dialog, DialogActions, DialogContent, DialogContentText } from "@mui/material";
 import { copyToClipboard } from "@/utils/clipboard";
 
@@ -64,7 +63,7 @@ export default function RntWalletsModal({ tripInfo }: { tripInfo: TripInfo }) {
                   className="ms-2 flex h-8 w-16 items-center justify-center md:w-24"
                   onClick={() => copyToClipboard(tripInfo.guest.walletAddress)}
                 >
-                  <Image src={imgCopy} alt="Copy" className="h-5 w-5 md:mr-1" />
+                  <Image src={"/images/icons/ic_copy_white_24dp.svg"} width={24} height={24} alt="Copy" className="h-5 w-5 md:mr-1" />
                   <span className="max-md:hidden">Copy</span>
                 </RntButton>
               </div>
@@ -75,7 +74,7 @@ export default function RntWalletsModal({ tripInfo }: { tripInfo: TripInfo }) {
                   className="ms-2 flex h-8 w-16 items-center justify-center md:w-24"
                   onClick={() => copyToClipboard(tripInfo.host.walletAddress)}
                 >
-                  <Image src={imgCopy} alt="Copy" className="h-5 w-5 md:mr-1" />
+                  <Image src={"/images/icons/ic_copy_white_24dp.svg"} width={24} height={24} alt="Copy" className="h-5 w-5 md:mr-1" />
                   <span className="max-md:hidden">Copy</span>
                 </RntButton>
               </div>

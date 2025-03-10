@@ -10,7 +10,6 @@ import { DialogActions } from "@/utils/dialogActions";
 import CarSearchMap from "@/components/guest/carMap/carSearchMap";
 import { useTranslation } from "react-i18next";
 import Image from "next/image";
-import icMapMobile from "@/images/ic_map_mobile.png";
 import SearchAndFilters from "@/components/search/searchAndFilters";
 import { useAuth } from "@/contexts/auth/authContext";
 import useCarSearchParams, { createQueryString } from "@/hooks/guest/useCarSearchParams";
@@ -18,7 +17,6 @@ import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import useCreateTripRequest from "@/hooks/guest/useCreateTripRequest";
 import { env } from "@/utils/env";
 import { APIProvider } from "@vis.gl/react-google-maps";
-import mapNotFoundCars from "@/images/map_not_found_cars.png";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "@/components/common/rntSuspense";
@@ -217,7 +215,7 @@ function Search() {
                     </p>
                     <p className="mt-4 text-base">{t("search_page.info.changing_request")}</p>
                   </div>
-                  <Image src={mapNotFoundCars} alt="" className="mt-2" />
+                  <Image src={"/images/map_not_found_cars.png"} width={2912} height={1632} alt="" className="mt-2" />
                 </div>
               )}
             </RntSuspense>
@@ -244,7 +242,7 @@ function Search() {
               className="absolute left-1/2 flex -translate-x-1/2 cursor-pointer xl:hidden"
               onClick={handleArrowClick}
             >
-              <Image src={icMapMobile} alt="" className={`h-[48px] w-[48px]`} />
+              <Image src={"/images/icons/ic_map_mobile.png"} width={100} height={100} alt="" className={`h-[48px] w-[48px]`} />
             </div>
           </div>
         </div>

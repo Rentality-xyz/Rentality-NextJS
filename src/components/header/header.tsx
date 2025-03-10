@@ -6,10 +6,6 @@ import useUserMode, { isAdmin, isHost } from "@/hooks/useUserMode";
 import Image from "next/image";
 import HeaderLogo from "@/components/sideNavMenu/headerLogo";
 import RntMobileStoresDialog from "@/components/common/rntMobileStoresDialog";
-// @ts-ignore
-import burgerMenuClose from "@/images/ic-menu-burge-close-white-20.svg";
-// @ts-ignore
-import burgerMenu from "@/images/ic-menu-burge-white-20.svg";
 import { useAppContext } from "@/contexts/appContext";
 import { HostBurgerNavMenu } from "@/components/sideNavMenu/hostSideNavMenu";
 import { GuestBurgerNavMenu } from "@/components/sideNavMenu/guestSideNavMenu";
@@ -18,15 +14,6 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/auth/authContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 // @ts-ignore
-import icLogout from "@/images/ic_logout.svg";
-// @ts-ignore
-import icProfileSettings from "@/images/ic_profile_settings.svg";
-// @ts-ignore
-import imgCopy from "@/images/ic_copy_white_24dp.svg";
-// @ts-ignore
-import icBaseScan from "@/images/base-scan-log.svg";
-// @ts-ignore
-import icWalletBalance from "@/images/ic_wallet_balance.svg";
 import { useTranslation } from "react-i18next";
 import { AdminBurgerNavMenu } from "../sideNavMenu/adminSideNavMenu";
 import ClaimMyPointsHeaderButton from "@/features/referralProgram/components/ClaimMyPointsHeaderButton";
@@ -160,7 +147,8 @@ export default function Header() {
           <div className="flex w-full min-w-0 flex-col xl:grow">
             <Image
               height={28}
-              src={isBurgerMenuShown ? burgerMenuClose : burgerMenu}
+              width={28}
+              src={isBurgerMenuShown ? "/images/icons/ic-menu-burge-close-white-20.svg" : "/images/icons/ic-menu-burge-white-20.svg"}
               alt=""
               className="lg:hidden"
               onClick={isBurgerMenuShown ? closeBurgerMenu : openBurgerMenu}
@@ -186,7 +174,7 @@ export default function Header() {
               {isOpen && (
                 <div className="absolute right-2 z-10 flex w-60 flex-col rounded-lg border border-gray-500 bg-rentality-bg-left-sidebar py-2 pl-2 font-['Montserrat',Arial,sans-serif] text-white sm:right-[-16px]">
                   <div className="mb-3 flex items-center leading-tight">
-                    <Image src={icWalletBalance} width={30} height={30} alt="" />
+                    <Image src={"/images/icons/ic_wallet_balance.svg"} width={30} height={30} alt="" />
                     <div className="flex flex-col">
                       <span className="ml-3">{t("header.wallet_balance")}</span>
                       <span className="ml-3 text-sm">{`${(ethereumInfo?.walletBalance ?? 0).toFixed(4)} ETH`}</span>
@@ -197,22 +185,22 @@ export default function Header() {
                     href={`https://basescan.org/address/${ethereumInfo?.walletAddress ?? ""}`}
                     target={"_blank"}
                   >
-                    <Image src={icBaseScan} width={30} height={30} alt="" />
+                    <Image src={"/images/icons/base-scan-log.svg"} width={30} height={30} alt="" />
                     <span className="ml-3">{t("header.open_in_base_explorer")}</span>
                   </Link>
                   <div
                     className="mb-3 flex cursor-pointer items-center hover:underline"
                     onClick={() => copyToClipboard(ethereumInfo?.walletAddress ?? "")}
                   >
-                    <Image src={imgCopy} width={30} height={30} alt="" />
+                    <Image src={"/images/icons/ic_copy_white_24dp.svg"} width={30} height={30} alt="" />
                     <span className="ml-3">{t("header.copy_address")}</span>
                   </div>
                   <Link className="mb-3 flex cursor-pointer items-center hover:underline" href="/guest/profile">
-                    <Image src={icProfileSettings} width={30} height={30} alt="" />
+                    <Image src={"/images/icons/ic_profile_settings.svg"} width={30} height={30} alt="" />
                     <span className="ml-3">{t("header.edit_profile")}</span>
                   </Link>
                   <Link className="flex cursor-pointer items-center hover:underline" href="/" onClick={logout}>
-                    <Image src={icLogout} width={30} height={30} alt="" />
+                    <Image src={"/images/icons/ic_logout.svg"} width={30} height={30} alt="" />
                     <span className="ml-3">{t("header.logout")}</span>
                   </Link>
                 </div>

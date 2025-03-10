@@ -15,6 +15,7 @@ import useFeatureFlags from "@/hooks/useFeatureFlags";
 import useUserMode, { isHost } from "@/hooks/useUserMode";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import useDIMOCarData from "@/features/dimo/hooks/useDIMOCarData";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
 
 interface ChangeStatusHostConfirmedFormProps {
   tripInfo: TripInfo;
@@ -93,14 +94,13 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
           </div>
 
           <div className="flex flex-col gap-4 py-4 xl:flex-row">
-            <div className="flex w-full flex-col md:flex-1 lg:flex-none xl:w-1/4">
+            <div className="flex w-full flex-col md:flex-1 lg:flex-none xl:w-1/3">
               <Controller
                 name="fuelOrBatteryLevel"
                 control={control}
                 render={({ field, fieldState }) =>
                   panelData && panelData.fuelOrBatteryLevel !== 0 ? (
-                    <RntInput
-                      className="py-2"
+                    <RntInputTransparent
                       id="fuel_level"
                       label="Fuel or battery level, %"
                       value={panelData.fuelOrBatteryLevel}
@@ -108,7 +108,6 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
                     />
                   ) : (
                     <RntFuelLevelSelect
-                      className="py-2"
                       id="fuel_level"
                       label="Fuel or battery level, %"
                       value={field.value}
@@ -119,9 +118,9 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
                 }
               />
               {panelData && panelData.odotemer !== 0 ? (
-                <RntInput className="py-2" id="Odometer" label="Odometer" value={panelData.odotemer} disabled />
+                <RntInputTransparent id="Odometer" label="Odometer" value={panelData.odotemer} disabled />
               ) : (
-                <RntInput
+                <RntInputTransparent
                   className="py-2"
                   id="Odometer"
                   label="Odometer"
@@ -131,14 +130,13 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
               )}
             </div>
             <div className="flex w-full flex-col md:flex-1 lg:flex-none xl:w-1/3">
-              <RntInput
-                className="py-2"
+              <RntInputTransparent
                 id="insurance_company_name"
                 label="Insurance company name"
                 {...register("insuranceCompanyName")}
                 validationError={errors.insuranceCompanyName?.message?.toString()}
               />
-              <RntInput
+              <RntInputTransparent
                 className="py-2"
                 id="insurance_policy_number"
                 label="Insurance policy number"
@@ -158,12 +156,12 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
             )}
           </div>
           <div className="flex flex-row gap-4">
-            <RntButton type="submit" className="h-16 px-4 max-md:w-full" disabled={disableButton || isSubmitting}>
+            <RntButton type="submit" className="w-1/3 px-4 max-md:w-full" disabled={disableButton || isSubmitting}>
               Start
             </RntButton>
             <RntButton
               type="button"
-              className="h-16 px-4 max-md:w-full"
+              className="w-1/3 px-4 max-md:w-full"
               disabled={disableButton || isSubmitting}
               onClick={() => {
                 changeStatusCallback(() => {

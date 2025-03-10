@@ -1,7 +1,6 @@
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { useTranslation } from "react-i18next";
 import Image from "next/image";
-import imgDimoSynced from "@/images/img_dimo_synced.svg";
 import React from "react";
 
 export function CarTitleAndPrices({
@@ -49,7 +48,7 @@ export function CarTitleAndPrices({
       </h1>
       {dimoTokenId !== 0 && (
         <div className="max-xl:my-2">
-          <Image src={imgDimoSynced} alt="" className="w-[180px]" />
+          <Image src={"/images/img_dimo_synced.svg"} width={196} height={35} alt="" className="w-[180px]" />
         </div>
       )}
       <span className="flex items-center gap-4">
