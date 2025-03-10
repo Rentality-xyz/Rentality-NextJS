@@ -8,6 +8,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { Err } from "@/model/utils/result";
 import { useTranslation } from "react-i18next";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
+import RntButton from "@/components/common/rntButton";
 
 const EXTERIOR_PHOTOS_COUNT_REQUIRED = 4;
 const INTERIOR_PHOTOS_COUNT_REQUIRED = 9;
@@ -107,54 +108,57 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
           {t("common.trip_photos_upload_trip_photo")}
         </RntButtonTransparent>
       ) : (
-        <RntButtonTransparent
-          className="border-gradient w-[20rem] rounded-xl bg-rentality-bg text-white"
-          onClick={(e) => {
-            e.preventDefault();
-            fileInputRef.current?.click();
-          }}
-        >
-          <div className="text-md flex items-center justify-center p-2 text-rentality-secondary">
-            Take a photo at {isStart ? "start" : "finish"}
-          </div>
-          <div className="flex items-center justify-center p-2">
-            <div className="w-32 border-none p-4 text-sm">
-              <div className="flex items-center justify-center">
-                <Image className="me-1" src="/images/upload-car-photo.png" width={50} height={50} alt="" />
+        <div className="border-gradient w-[20rem] rounded-xl pb-2">
+          <RntButton
+            className="w-full bg-rentality-bg text-white"
+            isVisibleCircle={false}
+            onClick={(e) => {
+              e.preventDefault();
+              fileInputRef.current?.click();
+            }}
+          >
+            <div className="text-md flex items-center justify-center p-2 text-rentality-secondary">
+              Take a photo at {isStart ? "start" : "finish"}
+            </div>
+            <div className="flex items-center justify-center p-2">
+              <div className="w-32 border-none p-4 text-sm">
+                <div className="flex items-center justify-center">
+                  <Image className="me-1" src="/images/upload-car-photo.png" width={50} height={50} alt="" />
+                </div>
+                <div className="text-rentality-secondary">{t("common.exterior")}</div>
+                <div>
+                  {EXTERIOR_PHOTOS_COUNT_REQUIRED}&nbsp;{t("common.required")}
+                </div>
               </div>
-              <div className="text-rentality-secondary">{t("common.exterior")}</div>
-              <div>
-                {EXTERIOR_PHOTOS_COUNT_REQUIRED}&nbsp;{t("common.required")}
+              <div className="w-32 p-4 text-sm">
+                <div className="flex items-center justify-center">
+                  <Image className="me-1" src="/images/car_seats.png" width={50} height={50} alt="" />
+                </div>
+                <div className="text-rentality-secondary">{t("common.interior")}</div>
+                <div>
+                  {INTERIOR_PHOTOS_COUNT_REQUIRED}&nbsp;{t("common.required")}
+                </div>
+              </div>
+              <div className="w-32 p-4 text-sm">
+                <div className="flex items-center justify-center">
+                  <Image className="me-1" src="/images/upload-car-data.png" width={50} height={50} alt="" />
+                </div>
+                <div className="text-rentality-secondary">{t("common.data")}</div>
+                <div>
+                  {DATA_PHOTOS_COUNT_REQUIRED}&nbsp;{t("common.required")}
+                </div>
               </div>
             </div>
-            <div className="w-32 p-4 text-sm">
-              <div className="flex items-center justify-center">
-                <Image className="me-1" src="/images/car_seats.png" width={50} height={50} alt="" />
-              </div>
-              <div className="text-rentality-secondary">{t("common.interior")}</div>
-              <div>
-                {INTERIOR_PHOTOS_COUNT_REQUIRED}&nbsp;{t("common.required")}
+            <div className="flex items-center justify-center p-2">
+              <hr className="w-80 border-t-2" />
+            </div>
+            <div className="flex items-center justify-center p-2">
+              <div className="text-sm">
+                {totalCount}&nbsp;{t("common.trip_photos_photos")}&nbsp;{t("common.uploaded")}
               </div>
             </div>
-            <div className="w-32 p-4 text-sm">
-              <div className="flex items-center justify-center">
-                <Image className="me-1" src="/images/upload-car-data.png" width={50} height={50} alt="" />
-              </div>
-              <div className="text-rentality-secondary">{t("common.data")}</div>
-              <div>
-                {DATA_PHOTOS_COUNT_REQUIRED}&nbsp;{t("common.required")}
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center justify-center p-2">
-            <hr className="w-80 border-t-2" />
-          </div>
-          <div className="flex items-center justify-center p-2">
-            <div className="text-sm">
-              {totalCount}&nbsp;{t("common.trip_photos_photos")}&nbsp;{t("common.uploaded")}
-            </div>
-          </div>
-        </RntButtonTransparent>
+          </RntButton>
+        </div>
       )}
     </>
   );

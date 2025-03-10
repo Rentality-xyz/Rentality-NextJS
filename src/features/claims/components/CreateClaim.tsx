@@ -24,6 +24,8 @@ import RntFilterSelect from "@/components/common/RntFilterSelect";
 import * as React from "react";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
+import { ENGINE_TYPE_ELECTRIC_STRING } from "@/model/EngineType";
+import { TRANSMISSION_AUTOMATIC_STRING } from "@/model/Transmission";
 
 const hostClaimTypes = [
   ClaimType.Tolls,
@@ -139,6 +141,9 @@ export default function CreateClaim() {
               placeholder="Select trip"
               value={field.value}
               validationError={errors.selectedTripId?.message}
+              onChange={(e) => {
+                field.onChange(e);
+              }}
             >
               {tripInfos.map((i) => (
                 <RntFilterSelect.Option key={i.tripId} value={i.tripId.toString()}>
@@ -158,6 +163,9 @@ export default function CreateClaim() {
               label={isHost ? "Incident type" : "Issues type"}
               value={field.value}
               validationError={errors.incidentType?.message}
+              onChange={(e) => {
+                field.onChange(e);
+              }}
             >
               {(isHost ? hostClaimTypes : guestClaimTypes).map((i) => (
                 <RntFilterSelect.Option key={i.toString()} value={i.toString()}>

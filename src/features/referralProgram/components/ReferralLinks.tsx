@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import React from "react";
-import imgCopy from "@/images/ic_copy_white_24dp.svg";
 import Image from "next/image";
 import RntButton from "@/components/common/rntButton";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
@@ -39,7 +38,7 @@ export default function ReferralLinks() {
             isVisibleCircle={false}
             onClick={() => copyToClipboard(inviteLink)}
           >
-            <Image src={imgCopy} alt="" className="h-5 w-5 md:mr-1" />
+            <Image src={"/images/icons/ic_copy_white_24dp.svg"} width={24} height={24} alt="" className="h-5 w-5 md:mr-1" />
             <div className="ml-0.5 flex">
               <span className="max-md:hidden">Copy</span>
             </div>

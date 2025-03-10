@@ -5,7 +5,6 @@ import { ChatInfo } from "@/model/ChatInfo";
 import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { Avatar } from "@mui/material";
 import Link from "next/link";
-import icInfo from "@/images/ic-info-teal.svg";
 import Image from "next/image";
 import { TFunction } from "@/utils/i18n";
 import { usePathname } from "next/navigation";
@@ -56,7 +55,7 @@ export default function ChatInfoCard({
         <div>{chatInfo.carTitle}</div>
       </div>
       <Link href={`/${isHost ? "host" : "guest"}/trips/tripInfo/${chatInfo.tripId}?back=${pathname}`}>
-        <Image className="sm:hidden" src={icInfo} width={25} alt="" />
+        <Image className="sm:hidden" src={"/images/icons/ic-info-teal.svg"} width={25} height={25} alt="" />
         <span className="text-sm text-rentality-secondary max-sm:hidden">{t("trip_info")}</span>
       </Link>
       <div
