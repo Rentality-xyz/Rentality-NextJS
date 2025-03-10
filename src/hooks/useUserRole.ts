@@ -44,6 +44,8 @@ const useUserRole = () => {
         userRole |= UserRole.InvestManager;
       }
 
+      console.debug("Rentality user role: ", userRole);
+
       return userRole;
     },
     enabled: !!ethereumInfo,
