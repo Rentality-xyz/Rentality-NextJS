@@ -245,7 +245,13 @@ export default function SearchAndFilters({
           </span>
         </div>
 
-        <Image src={"/images/bg_input.png"} width={1550} height={90} alt="" className="absolute left-0 top-0 h-full w-full rounded-full" />
+        <Image
+          src={"/images/bg_input.png"}
+          width={1550}
+          height={90}
+          alt=""
+          className="absolute left-0 top-0 h-full w-full rounded-full"
+        />
       </div>
 
       {/* блок поиска, который открывается на малых экранах */}

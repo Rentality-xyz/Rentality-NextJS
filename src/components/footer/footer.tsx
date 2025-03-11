@@ -19,7 +19,13 @@ const Footer = forwardRef<HTMLDivElement>((props, ref) => {
       ref={ref}
       className="relative h-[800px] bg-[url('/images/bg-gradient-flip.jpg')] bg-cover bg-scroll bg-center bg-no-repeat min-[560px]:h-[450px] lg:h-[290px]"
     >
-      <Image src={"/images/red-generic-sport-ca.png"} width={620} height={262} alt="" className="absolute bottom-0 left-0 max-[560px]:bottom-8" />
+      <Image
+        src={"/images/red-generic-sport-ca.png"}
+        width={620}
+        height={262}
+        alt=""
+        className="absolute bottom-0 left-0 max-[560px]:bottom-8"
+      />
       <div
         id={"footer-content"}
         className="mx-auto flex h-full max-w-[1192px] flex-row text-white max-[560px]:flex-col"
@@ -81,7 +87,13 @@ const Footer = forwardRef<HTMLDivElement>((props, ref) => {
             target="_blank"
             className=""
           >
-            <Image src={"/images/marketplace/ic_google_play.svg"} width={1885} height={628} alt="" className="mt-4 w-[200px]" />
+            <Image
+              src={"/images/marketplace/ic_google_play.svg"}
+              width={1885}
+              height={628}
+              alt=""
+              className="mt-4 w-[200px]"
+            />
           </Link>
         </div>
 
@@ -89,7 +101,13 @@ const Footer = forwardRef<HTMLDivElement>((props, ref) => {
           id={"footer-info-block"}
           className="z-0 flex h-full w-max flex-col items-center pt-[30px] max-lg:mx-auto lg:ml-auto lg:pt-[40px]"
         >
-          <Image src={"/images/logo.svg"} width={171} height={37} alt="" className="mb-2 h-auto min-w-[180px] max-w-[180px]" />
+          <Image
+            src={"/logo_rentality.svg"}
+            width={171}
+            height={37}
+            alt=""
+            className="mb-2 h-auto min-w-[180px] max-w-[180px]"
+          />
           <div>
             <a
               href="mailto:info@rentality.io"
@@ -113,7 +131,13 @@ const Footer = forwardRef<HTMLDivElement>((props, ref) => {
                 </a>
 
                 <a href="https://discord.gg/rentality" target="_blank" rel="noopener noreferrer">
-                  <Image src={"/images/social/discord-logo.svg"} width={24} height={24} alt="" className="ml-1.5 w-[30px]" />
+                  <Image
+                    src={"/images/social/discord-logo.svg"}
+                    width={24}
+                    height={24}
+                    alt=""
+                    className="ml-1.5 w-[30px]"
+                  />
                 </a>
               </div>
               <div className="flex gap-4">
@@ -126,11 +150,23 @@ const Footer = forwardRef<HTMLDivElement>((props, ref) => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Image src={"/images/social/mirror-logo.svg"} width={24} height={24} alt="" className="ml-1.5 w-[30px]" />
+                  <Image
+                    src={"/images/social/mirror-logo.svg"}
+                    width={24}
+                    height={24}
+                    alt=""
+                    className="ml-1.5 w-[30px]"
+                  />
                 </a>
 
                 <a href="https://warpcast.com/rentality" target="_blank" rel="noopener noreferrer">
-                  <Image src={"/images/social/warpcast-logo.svg"} width={24} height={24} alt="" className="ml-1.5 w-[30px]" />
+                  <Image
+                    src={"/images/social/warpcast-logo.svg"}
+                    width={24}
+                    height={24}
+                    alt=""
+                    className="ml-1.5 w-[30px]"
+                  />
                 </a>
               </div>
               <div className="flex gap-4">
@@ -139,11 +175,23 @@ const Footer = forwardRef<HTMLDivElement>((props, ref) => {
                 </a>
 
                 <a href="https://medium.com/@rentality" target="_blank" rel="noopener noreferrer">
-                  <Image src={"/images/social/medium-logo.svg"} width={24} height={24} alt="" className="ml-1.5 w-[30px]" />
+                  <Image
+                    src={"/images/social/medium-logo.svg"}
+                    width={24}
+                    height={24}
+                    alt=""
+                    className="ml-1.5 w-[30px]"
+                  />
                 </a>
 
                 <a href="https://www.youtube.com/@Rentality_xyz/videos" target="_blank" rel="noopener noreferrer">
-                  <Image src={"/images/social/youtube-logo.png"} width={24} height={24} alt="" className="ml-1.5 w-[30px]" />
+                  <Image
+                    src={"/images/social/youtube-logo.png"}
+                    width={24}
+                    height={24}
+                    alt=""
+                    className="ml-1.5 w-[30px]"
+                  />
                 </a>
               </div>
             </div>
