@@ -156,7 +156,13 @@ function CarAddPhoto({
                     handleEditClick(index);
                   }}
                 >
-                  <Image src={"/images/icons/ic_edit_car_white.png"} width={48} height={48} alt="" className="w-[22px]" />
+                  <Image
+                    src={"/images/icons/ic_edit_car_white.png"}
+                    width={48}
+                    height={48}
+                    alt=""
+                    className="w-[22px]"
+                  />
                 </button>
               </div>
               <div

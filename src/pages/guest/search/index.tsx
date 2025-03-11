@@ -242,7 +242,13 @@ function Search() {
               className="absolute left-1/2 flex -translate-x-1/2 cursor-pointer xl:hidden"
               onClick={handleArrowClick}
             >
-              <Image src={"/images/icons/ic_map_mobile.png"} width={100} height={100} alt="" className={`h-[48px] w-[48px]`} />
+              <Image
+                src={"/images/icons/ic_map_mobile.png"}
+                width={100}
+                height={100}
+                alt=""
+                className={`h-[48px] w-[48px]`}
+              />
             </div>
           </div>
         </div>

@@ -33,7 +33,13 @@ export default function PointsFromYourReferrals() {
           disabled={data.readyToClaim === 0 || isPending}
           onClick={handleClaimPointsClick}
         >
-          <Image src={"/images/icons/ic_star_points_yellow.svg"} width={47} height={47} alt="" className="mr-2 h-7 w-7" />
+          <Image
+            src={"/images/icons/ic_star_points_yellow.svg"}
+            width={47}
+            height={47}
+            alt=""
+            className="mr-2 h-7 w-7"
+          />
           <div className="ml-0.5 flex">
             {isPending ? (
               <>Claiming...</>

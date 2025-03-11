@@ -155,7 +155,7 @@ export default function ClaimHistory({ claims }: Props) {
                             className="h-full w-full object-cover"
                             width={36}
                             height={36}
-                            src="/icon_photo.png"
+                            src="/images/icons/ic_photo.png"
                             alt=""
                           />
                         </div>

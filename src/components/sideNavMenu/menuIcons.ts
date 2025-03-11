@@ -1,4 +1,3 @@
-
 enum MenuIcons {
   Booked,
   Claims,

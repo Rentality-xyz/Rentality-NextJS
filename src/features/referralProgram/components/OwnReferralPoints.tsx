@@ -35,7 +35,13 @@ export default function OwnReferralPoints() {
           disabled={isLoading || isFetching || isClaiming || readyToClaim === 0}
           onClick={handleClaimPointsClick}
         >
-          <Image src={"/images/icons/ic_star_points_yellow.svg"} width={47} height={47} alt="" className="mr-2 h-7 w-7" />
+          <Image
+            src={"/images/icons/ic_star_points_yellow.svg"}
+            width={47}
+            height={47}
+            alt=""
+            className="mr-2 h-7 w-7"
+          />
           <div className="ml-0.5 flex">
             {isClaiming ? (
               <>Claiming...</>
