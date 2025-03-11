@@ -148,7 +148,11 @@ export default function Header() {
             <Image
               height={28}
               width={28}
-              src={isBurgerMenuShown ? "/images/icons/ic-menu-burge-close-white-20.svg" : "/images/icons/ic-menu-burge-white-20.svg"}
+              src={
+                isBurgerMenuShown
+                  ? "/images/icons/ic-menu-burge-close-white-20.svg"
+                  : "/images/icons/ic-menu-burge-white-20.svg"
+              }
               alt=""
               className="lg:hidden"
               onClick={isBurgerMenuShown ? closeBurgerMenu : openBurgerMenu}

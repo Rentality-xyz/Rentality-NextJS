@@ -64,7 +64,9 @@ function ReferralProgramStatusCard({ index, nameReferral, countPoints, status }:
             )}
           >
             {_countPoints}
-            {icStarPoints !== null && <Image src={icStarPoints} height={27} width={26} alt="" className="ml-1 h-[20px] w-[20px]" />}
+            {icStarPoints !== null && (
+              <Image src={icStarPoints} height={27} width={26} alt="" className="ml-1 h-[20px] w-[20px]" />
+            )}
           </div>
         </div>
       </div>
