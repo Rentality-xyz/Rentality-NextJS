@@ -114,11 +114,11 @@ export default function AddGuestInsurance({}: AddGuestInsuranceProps) {
         <hr />
         <form className="flex w-full flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
           <div className="flex flex-row gap-4">
-            <div className="flex w-full flex-row gap-4">
-              <div className="my-auto w-1/2 pl-4">
+            <div className="flex w-full flex-col gap-4 sm:flex-row">
+              <div className="my-auto w-full pl-4 sm:w-1/2">
                 <strong>One-Time trip insurance</strong>
               </div>
-              <div className="w-1/2">
+              <div className="w-full sm:w-1/2">
                 {isTripsLoading ? (
                   "Loading..."
                 ) : (
@@ -159,7 +159,7 @@ export default function AddGuestInsurance({}: AddGuestInsuranceProps) {
             </div>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row">
             <RntInputTransparent
               id="companyName"
               label={"Insurance company name"}

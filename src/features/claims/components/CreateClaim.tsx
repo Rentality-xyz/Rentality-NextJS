@@ -129,12 +129,13 @@ export default function CreateClaim() {
       className="mt-5 flex w-full flex-col gap-4 py-4"
       onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}
     >
-      <div className="flex flex-col items-center gap-4 md:flex-row md:gap-8">
+      <div className="flex flex-col items-start gap-4 sm:items-center md:flex-row md:gap-8">
         <Controller
           name="selectedTripId"
           control={control}
           render={({ field }) => (
             <RntFilterSelect
+              containerClassName="max-sm:w-full"
               className="lg:min-w-80"
               id="trip"
               label="Trip"
@@ -158,6 +159,7 @@ export default function CreateClaim() {
           control={control}
           render={({ field }) => (
             <RntFilterSelect
+              containerClassName="max-sm:w-full"
               className="lg:w-80"
               id="type"
               label={isHost ? "Incident type" : "Issues type"}

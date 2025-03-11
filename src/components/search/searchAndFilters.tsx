@@ -364,7 +364,7 @@ export default function SearchAndFilters({
           maxValue={filterLimits.maxCarPrice}
         />
 
-        <div className="flex justify-between gap-4 max-sm:w-full">
+        <div className="flex justify-between gap-4">
           <RntButton className="w-44" onClick={handleResetClick}>
             {t_comp("button_reset_filters")}
           </RntButton>
