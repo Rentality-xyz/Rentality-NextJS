@@ -7,8 +7,8 @@ import { cn } from "@/utils";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { dateFormatLongMonthYearDate } from "@/utils/datetimeFormatters";
 import moment from "moment";
-import { InvestmentInfoWithMetadata } from "@/model/InvestmentInfo";
-import { InvestmentInfo } from "@/model/InvestmentInfo";
+import { InvestmentInfoWithMetadata } from "@/features/invest/models/InvestmentInfo";
+import { InvestmentInfo } from "@/features/invest/models/InvestmentInfo";
 import Link from "next/link";
 import { isUnlimitedMiles } from "@/model/HostCarInfo";
 

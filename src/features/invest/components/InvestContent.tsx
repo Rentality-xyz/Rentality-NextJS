@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import RntButton from "@/components/common/rntButton";
-import useGetInvestments from "@/hooks/guest/useGetInvestments";
+import useGetInvestments from "@/features/invest/hooks/useGetInvestments";
 import InvestCar from "@/features/invest/components/investCar";
 import { useRouter } from "next/navigation";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
