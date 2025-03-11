@@ -133,7 +133,7 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
               </div>
               <div className="w-32 p-4 text-sm">
                 <div className="flex items-center justify-center">
-                  <Image className="me-1" src="/images/car_seats.png" width={50} height={50} alt="" />
+                  <Image className="me-1" src="/images/upload-car-seats.png" width={50} height={50} alt="" />
                 </div>
                 <div className="text-rentality-secondary">{t("common.interior")}</div>
                 <div>

@@ -113,7 +113,13 @@ export default function ClaimHistoryMobileCard({ claim, index, isHost, payClaim,
                   handleShowPhotos(claim.fileUrls);
                 }}
               >
-                <Image className="h-full w-full object-cover" width={36} height={36} src="/icon_photo.png" alt="" />
+                <Image
+                  className="h-full w-full object-cover"
+                  width={36}
+                  height={36}
+                  src="/images/icons/ic_photo.png"
+                  alt=""
+                />
               </div>
             </div>
             {/*{isVisible && (*/}
