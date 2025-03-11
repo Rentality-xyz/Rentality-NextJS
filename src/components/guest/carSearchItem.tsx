@@ -217,8 +217,6 @@ export default function CarSearchItem({
                 <AboutCarIcon
                   className="grid-cols-2 md:grid"
                   image={"/images/icons/car_info/car_seats.svg"}
-                  width={88}
-                  height={88}
                   text={`${searchInfo.seatsNumber} ${t_comp("seats")}`}
                 />
                 <AboutCarIcon
@@ -230,8 +228,6 @@ export default function CarSearchItem({
                 <AboutCarIcon
                   className="grid-cols-2 md:grid"
                   image={"/images/icons/car_info/car_transmission.svg"}
-                  width={75}
-                  height={75}
                   text={searchInfo.transmission}
                 />
               </div>

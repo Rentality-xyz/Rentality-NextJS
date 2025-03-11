@@ -38,7 +38,7 @@ export const getEngineTypeIcon = (engineType: EngineType): string => {
     case EngineType.PETROL:
       return "/images/icons/car_info/car_engine_type_petrol.svg"; // Путь к изображению для бензинового двигателя
     case EngineType.ELECTRIC:
-      return "/car_engine_type_electric.svg"; // Путь к изображению для электрического двигателя
+      return "/images/icons/car_info/car_engine_type_electric.svg"; // Путь к изображению для электрического двигателя
     default:
       return "/images/icons/car_info/car_engine_type_petrol.svg"; // Путь к изображению по умолчанию или пустая строка
   }

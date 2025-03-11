@@ -38,17 +38,35 @@ export function AboutCar({
           <strong className="text-xl text-rentality-secondary">{t("booked.details.basic_car_details")}</strong>
         </h3>
         <div className="flex flex-wrap gap-8 max-sm:flex-col">
-          <AboutCarIcon image={"/images/icons/car_info/car_doors.svg"} width={96} height={88} text={`${doorsNumber} ${t("booked.details.doors")}`} />
-          <AboutCarIcon image={"/images/icons/car_info/car_seats.svg"} width={88} height={88} text={`${seatsNumber} ${t("booked.details.seats")}`} />
+          <AboutCarIcon
+            image={"/images/icons/car_info/car_doors.svg"}
+            text={`${doorsNumber} ${t("booked.details.doors")}`}
+          />
+          <AboutCarIcon
+            image={"/images/icons/car_info/car_seats.svg"}
+            text={`${seatsNumber} ${t("booked.details.seats")}`}
+          />
           <AboutCarIcon
             image={getEngineTypeIcon(engineType)}
             width={50}
             title={t("vehicles.engine_type")}
             text={getEngineTypeString(engineType)}
           />
-          <AboutCarIcon image={"/images/icons/car_info/car_transmission.svg"} width={75} height={75} title={t("vehicles.transmission")} text={transmission} />
-          <AboutCarIcon image={"/images/icons/car_info/car_tank_size.svg"} width={78} height={104} title={t("vehicles.tank_size")} text={tankSizeInGal} />
-          <AboutCarIcon image={"/images/icons/car_info/car_colour.svg"} width={90} height={76} title={t("booked.details.car_colour")} text={carColor} />
+          <AboutCarIcon
+            image={"/images/icons/car_info/car_transmission.svg"}
+            title={t("vehicles.transmission")}
+            text={transmission}
+          />
+          <AboutCarIcon
+            image={"/images/icons/car_info/car_tank_size.svg"}
+            title={t("vehicles.tank_size")}
+            text={tankSizeInGal}
+          />
+          <AboutCarIcon
+            image={"/images/icons/car_info/car_colour.svg"}
+            title={t("booked.details.car_colour")}
+            text={carColor}
+          />
         </div>
       </div>
 
