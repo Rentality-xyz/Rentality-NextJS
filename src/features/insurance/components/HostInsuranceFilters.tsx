@@ -17,7 +17,7 @@ export default function HostInsuranceFilters({ defaultFilters, onApply }: HostIn
 
   return (
     <div className="flex flex-col sm:self-end">
-      <div className="flex gap-4">
+      <div className="flex gap-4 max-sm:justify-between">
         <Controller
           name="currentlyListed"
           control={control}

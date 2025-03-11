@@ -109,8 +109,8 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
         </RntButtonTransparent>
         <hr />
         <form className="flex w-full flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
-          <div className="flex flex-row gap-4">
-            <div className="flex w-1/2 flex-col gap-2">
+          <div className="flex w-full flex-col gap-4 sm:flex-row">
+            <div className="flex w-full flex-col gap-2 sm:w-1/2">
               <h3 className="pl-4">Insurance type</h3>
               <Controller
                 name="insuranceType"
@@ -132,7 +132,7 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
                 )}
               />
             </div>
-            <div className="w-1/2">
+            <div className="w-full sm:w-1/2">
               {isTripsLoading ? (
                 "Loading..."
               ) : (
@@ -172,7 +172,7 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
             </div>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row">
             <RntInputTransparent
               id="companyName"
               label={"Insurance company name"}
