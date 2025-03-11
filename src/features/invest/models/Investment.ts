@@ -6,6 +6,7 @@ export type CarInvestment = {
   creatorPercents: BigInt;
   inProgress: boolean;
 };
+
 export type InvestmentInfo = {
   investment: CarInvestment;
   nft: string;

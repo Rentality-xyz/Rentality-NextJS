@@ -1,5 +1,5 @@
+import { ContractSignedLocationInfo, EngineType } from "@/model/blockchain/schemas";
 import { CarMetadata } from "@/utils/ipfsUtils";
-import { ContractSignedLocationInfo, EngineType } from "./blockchain/schemas";
 
 export type CreateCarRequest = {
   tokenUri: string;

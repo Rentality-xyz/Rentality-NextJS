@@ -9,7 +9,7 @@ import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { saveCarImages, uploadMetadataToIPFS } from "./useSaveNewCar";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
-import { INVESTMENTS_LIST_QUERY_KEY } from "../guest/useGetInvestments";
+import { INVESTMENTS_LIST_QUERY_KEY } from "../../features/invest/hooks/useGetInvestments";
 import { logger } from "@/utils/logger";
 
 function useCreateInvestCar() {

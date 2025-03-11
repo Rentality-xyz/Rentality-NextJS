@@ -1,4 +1,3 @@
-import RntInput from "@/components/common/rntInput";
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
 import useCreateInvestCar from "@/hooks/host/useCreateInvestCar";
 import { useState } from "react";
