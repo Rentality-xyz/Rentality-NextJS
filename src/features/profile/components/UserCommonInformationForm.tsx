@@ -409,7 +409,7 @@ function UserCommonInformationForm({
       <p className="pl-[16px] text-sm">{t("profile.read_agree")}</p>
 
       <div className="flex items-center gap-2 md:gap-6">
-        <RntButton type="submit" disabled={isSubmitting || !isTerms}>
+        <RntButton className="max-sm:w-80" type="submit" disabled={isSubmitting || !isTerms}>
           {t("profile.confirm&save")}
         </RntButton>
 
