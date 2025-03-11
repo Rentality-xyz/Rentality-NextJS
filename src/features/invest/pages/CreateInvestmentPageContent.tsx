@@ -5,8 +5,7 @@ import { HostCarInfo } from "@/model/HostCarInfo";
 import { useTranslation } from "react-i18next";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 
-/// TODO: checkInputs on correctness
-export default function CreateCarInvestment() {
+function CreateInvestmentPageContent() {
   const { t } = useTranslation();
   const { mutateAsync: createInvest } = useCreateInvestCar();
   const [carPrice, setCarPrice] = useState<number | string>(0);
@@ -85,3 +84,5 @@ export default function CreateCarInvestment() {
     </div>
   );
 }
+
+export default CreateInvestmentPageContent;

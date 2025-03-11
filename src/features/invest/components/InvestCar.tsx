@@ -1,5 +1,5 @@
 import RntButton from "../../../components/common/rntButton";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
@@ -7,10 +7,9 @@ import { cn } from "@/utils";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { dateFormatLongMonthYearDate } from "@/utils/datetimeFormatters";
 import moment from "moment";
-import { InvestmentInfoWithMetadata } from "@/features/invest/models/InvestmentInfo";
-import { InvestmentInfo } from "@/features/invest/models/InvestmentInfo";
+import { InvestmentInfoWithMetadata } from "@/features/invest/models/investmentInfo";
+import { InvestmentInfo } from "@/features/invest/models/investmentInfo";
 import Link from "next/link";
-import { isUnlimitedMiles } from "@/model/HostCarInfo";
 
 const ccsDividerVert = "max-2xl:hidden absolute right-[-5px] top-1/2 h-[80%] w-px translate-y-[-50%] bg-gray-500";
 const ccsDividerHor = "2xl:hidden absolute bottom-[-10px] left-[5%] h-px w-[90%] translate-y-[-50%] bg-gray-500";

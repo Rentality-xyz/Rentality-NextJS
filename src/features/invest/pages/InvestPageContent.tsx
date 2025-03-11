@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import RntButton from "@/components/common/rntButton";
 import useGetInvestments from "@/features/invest/hooks/useGetInvestments";
-import InvestCar from "@/features/invest/components/investCar";
+import InvestCar from "@/features/invest/components/InvestCar";
 import { useRouter } from "next/navigation";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
 import { SortOptionKey } from "@/hooks/guest/useSearchCars";
@@ -12,7 +12,7 @@ type InvestContentProps = {};
 
 type FilterEnum = Record<string, string>; // Типизация для Enum
 
-export default function InvestContent({}: InvestContentProps) {
+function InvestPageContent({}: InvestContentProps) {
   const { userRole, isInvestManager } = useUserRole();
   const { t } = useTranslation();
   const {
@@ -120,3 +120,5 @@ export default function InvestContent({}: InvestContentProps) {
     </div>
   );
 }
+
+export default InvestPageContent;

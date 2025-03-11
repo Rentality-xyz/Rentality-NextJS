@@ -4,7 +4,7 @@ import { getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { ContractInvestmentDTO } from "@/model/blockchain/schemas";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { InvestmentInfoWithMetadata } from "@/features/invest/models/InvestmentInfo";
+import { InvestmentInfoWithMetadata } from "@/features/invest/models/investmentInfo";
 import { mapContractInvestmentDTOToInvestmentInfoWithMetadata } from "../models/mappers/contractInvestmentDTOtoInvestmentInfo";
 
 export const INVESTMENTS_LIST_QUERY_KEY = "InvestmentsList";
