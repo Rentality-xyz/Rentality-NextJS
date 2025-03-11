@@ -133,10 +133,10 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
               <Image
                 src={
                   disabled
-                    ? "/images/icons/arrowTriangleDownGray.svg"
+                    ? "/images/icons/arrows/arrowTriangleDownGray.svg"
                     : isTransparentStyle
-                      ? "/images/icons/arrowTriangleDownGradient.svg"
-                      : "/images/icons/arrowTriangleDownWhite.svg"
+                      ? "/images/icons/arrows/arrowTriangleDownGradient.svg"
+                      : "/images/icons/arrows/arrowTriangleDownWhite.svg"
                 }
                 width="12"
                 height="9"
