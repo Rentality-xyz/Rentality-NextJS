@@ -5,7 +5,7 @@ import useOwnReferralPointsSharedStore from "../hooks/useOwnReferralPointsShared
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 
-export default function ClaimMyPointsHeaderButton() {
+export default function ClaimMyPointsMobileButton() {
   const { isLoading, isFetching } = useFetchOwnReferralPoints();
   const { mutateAsync: claimMyPoints } = useClaimOwnReferralPoints();
   const {t} = useTranslation();
@@ -14,19 +14,19 @@ export default function ClaimMyPointsHeaderButton() {
 
   return (
     <button
-      className="ml-[116px] hidden items-center rounded-md border border-gray-500 px-4 py-2 hover:border-gray-400 xl:flex"
+      className={"mb-3 flex cursor-pointer items-center hover:underline xl:hidden"}
       disabled={isLoading || isFetching || isClaiming || readyToClaim === 0}
       onClick={() => claimMyPoints()}
     >
-      <Image src={"/images/icons/ic_star_points_yellow.svg"} width={47} height={47} alt="" className="mr-2 h-7 w-7" />
-      <div className="ml-0.5 flex">
+      <Image src={"/images/icons/ic_star_points_white.svg"} width={30} height={30} alt="" className="" />
+      <div className="ml-3 flex">
         {isClaiming ? (
           <>{t("referrals_and_point.claiming")}</>
         ) : isLoading || isFetching ? (
           <>{t("referrals_and_point.loading")}</>
         ) : (
           <>
-            {t("referrals_and_point.claim")} <span className="px-1 font-semibold text-rentality-secondary">{readyToClaim.toString()}</span> {t("referrals_and_point.points")}
+            {`${t("referrals_and_point.claim")} ${readyToClaim} ${t("referrals_and_point.points")}`}
           </>
         )}
       </div>

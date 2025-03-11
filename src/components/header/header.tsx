@@ -19,6 +19,7 @@ import { AdminBurgerNavMenu } from "../sideNavMenu/adminSideNavMenu";
 import ClaimMyPointsHeaderButton from "@/features/referralProgram/components/ClaimMyPointsHeaderButton";
 import { isMobileAppRentality } from "@/utils/devicePlatform";
 import { copyToClipboard } from "@/utils/clipboard";
+import ClaimMyPointsMobileButton from "@/features/referralProgram/components/ClaimMyPointsMobileButton";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 72,
@@ -199,6 +200,7 @@ export default function Header() {
                     <Image src={"/images/icons/menu/ic_profile_settings.svg"} width={30} height={30} alt="" />
                     <span className="ml-3">{t("header.edit_profile")}</span>
                   </Link>
+                  <ClaimMyPointsMobileButton/>
                   <Link className="flex cursor-pointer items-center hover:underline" href="/" onClick={logout}>
                     <Image src={"/images/icons/menu/ic_logout.svg"} width={30} height={30} alt="" />
                     <span className="ml-3">{t("header.logout")}</span>
