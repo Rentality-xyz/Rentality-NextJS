@@ -1,5 +1,5 @@
 import { ContractInvestmentDTO } from "@/model/blockchain/schemas";
-import { InvestmentInfoWithMetadata } from "@/features/invest/models/InvestmentInfo";
+import { InvestmentInfoWithMetadata } from "@/features/invest/models/investmentInfo";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { CarMetadata } from "@/utils/ipfsUtils";
 
