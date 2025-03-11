@@ -56,6 +56,7 @@ const RntInputTransparent = forwardRef<HTMLInputElement, RntInputProps>(
         >
           <div className="input-wrapper pl-2">
             <input
+              autoComplete="off"
               className={iClassName}
               id={controlId}
               name={id}
