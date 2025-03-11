@@ -394,7 +394,7 @@ export default function SearchAndFilters({
           <div className="relative flex w-full items-center justify-center text-white">
             <div className="text-lg">{t_comp("button_deliver_to_me")}</div>
             <Image
-              src="/images/icons/arrowTriangleDownGradient.svg"
+              src="/images/icons/arrows/arrowTriangleDownGradient.svg"
               alt=""
               width="12"
               height="9"
