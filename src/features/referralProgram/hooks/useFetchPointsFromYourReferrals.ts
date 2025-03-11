@@ -29,7 +29,7 @@ function useFetchPointsFromYourReferrals(initialPage: number = 1, initialItemsPe
     data: allDataWithReadyToClaim = { readyToClaim: 0, combinedData: [] },
     error,
   } = useQuery({
-    queryKey: [REFERRAL_POINTS_FROM_YOUR_REFERRALS_QUERY_KEY],
+    queryKey: [REFERRAL_POINTS_FROM_YOUR_REFERRALS_QUERY_KEY, ethereumInfo?.walletAddress],
     queryFn: async () => {
       if (!rentalityContracts || !ethereumInfo) {
         throw new Error("Contracts or wallet not initialized");
@@ -48,7 +48,7 @@ function useFetchPointsFromYourReferrals(initialPage: number = 1, initialItemsPe
       const readyToClaim = combinedData.reduce((total, item) => total + item.readyToClaim, 0);
       return { readyToClaim, combinedData };
     },
-    enabled: !!rentalityContracts && !!ethereumInfo?.walletAddress,
+    enabled: !!rentalityContracts && !!ethereumInfo,
   });
 
   const totalPageCount = useMemo(() => {
