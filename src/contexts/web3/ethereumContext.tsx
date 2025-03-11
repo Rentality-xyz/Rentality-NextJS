@@ -4,8 +4,6 @@ import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
 import { formatEther } from "viem";
-import { AxiosResponse } from "axios";
-import axios from "@/utils/cachedAxios";
 import { logger } from "@/utils/logger";
 
 export type EthereumInfo = {
@@ -16,7 +14,6 @@ export type EthereumInfo = {
   chainId: number;
   isWalletConnected: boolean;
   requestChainIdChange: (chainId: number) => Promise<boolean>;
-  defaultRpcUrl: string;
 };
 
 const EthereumContext = createContext<EthereumInfo | null | undefined>(undefined);
@@ -84,18 +81,6 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
           ? parseFloat(formatEther(currentWalletBalanceInWeth))
           : 0;
 
-        const rpcUrlResponse: AxiosResponse = await axios.get("/api/defaultRpcUrl", {
-          params: {
-            chainId: currentChainId,
-          },
-        });
-        const { url } = rpcUrlResponse.data;
-
-        if (!url) {
-          logger.error("Ethereum info error: Response does not contain the rpc URL");
-          return null;
-        }
-
         setEthereumInfo((prev) => {
           if (prev !== undefined && prev !== null) {
             setIsReloadPageRequested(prev.chainId !== currentChainId);
@@ -109,7 +94,6 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
             chainId: currentChainId,
             isWalletConnected: ready && authenticated,
             requestChainIdChange: requestChainIdChange,
-            defaultRpcUrl: url,
           };
         });
       } finally {

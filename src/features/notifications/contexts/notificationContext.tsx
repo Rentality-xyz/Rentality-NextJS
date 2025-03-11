@@ -16,6 +16,10 @@ import { useAuth } from "@/contexts/auth/authContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRentality } from "@/contexts/rentalityContext";
 import { logger } from "@/utils/logger";
+import { AxiosResponse } from "axios";
+import axios from "@/utils/cachedAxios";
+import { fetchDefaultRpcUrl } from "../utils/fetchDefaultRpcUrl";
+import { isEmpty } from "@/utils/string";
 
 export type NotificationContextInfo = {
   isLoading: boolean;
@@ -178,8 +182,13 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
       if (!rentalityContracts) return;
 
       try {
-        const provider = new JsonRpcProvider(ethereumInfo.defaultRpcUrl);
+        const defaultRpcUrl = await fetchDefaultRpcUrl(ethereumInfo.chainId);
 
+        if (isEmpty(defaultRpcUrl)) {
+          return null;
+        }
+
+        const provider = new JsonRpcProvider(defaultRpcUrl);
         const randomSigner = Wallet.createRandom();
 
         const signerWithProvider = randomSigner.connect(provider);
