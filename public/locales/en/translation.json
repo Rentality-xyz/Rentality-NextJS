@@ -828,6 +828,10 @@
     "referral_code": "Referral code",
     "account_creation": "Account creation",
     "regularly": "Regularly",
+    "loading": "Loading...",
+    "claiming": "Claiming...",
+    "claim": "Claim",
+    "points": "points",
     "referral_program": {
       "set_kyc": "Save profile",
       "pass_civic": "Get KYC Pass",
