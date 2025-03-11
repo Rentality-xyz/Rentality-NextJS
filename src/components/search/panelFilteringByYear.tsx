@@ -120,7 +120,7 @@ export default function PanelFilteringByYear({
             {value[0] <= minYear && value[1] >= maxYear ? t_comp("select_filter_years") : `${value[0]} - ${value[1]}`}
           </div>
           <Image
-            src="/images/icons/arrowTriangleDownGradient.svg"
+            src="/images/icons/arrows/arrowTriangleDownGradient.svg"
             alt=""
             width="12"
             height="9"
