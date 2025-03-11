@@ -74,7 +74,9 @@ export default function ListingItem({
             </div>
           )}
           <div className="mt-2 flex">
-            {isDimoSynced && <Image src={"/images/img_dimo_synced.svg"} width={196} height={35} alt="" className="mr-auto w-[180px]" />}
+            {isDimoSynced && (
+              <Image src={"/images/img_dimo_synced.svg"} width={196} height={35} alt="" className="mr-auto w-[180px]" />
+            )}
           </div>
         </div>
 

@@ -57,9 +57,17 @@ const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
         {!isEmpty(label) &&
           (isTransparentStyle ? (
             <label className={cn("flex items-center", lClassName)} htmlFor={reactId}>
-              {!isEmpty(iconFrontLabel) && <Image src={iconFrontLabel!!} width={19} height={20} alt="" className="mr-2" />}
+              {!isEmpty(iconFrontLabel) && (
+                <Image src={iconFrontLabel!!} width={19} height={20} alt="" className="mr-2" />
+              )}
               {label}
-              <Image src={"/images/bg_input.png"} width={1550} height={90} alt="" className="absolute left-0 top-[30px] h-[62%] w-full rounded-full" />
+              <Image
+                src={"/images/bg_input.png"}
+                width={1550}
+                height={90}
+                alt=""
+                className="absolute left-0 top-[30px] h-[62%] w-full rounded-full"
+              />
             </label>
           ) : (
             <label className={lClassName} htmlFor={id}>
