@@ -26,7 +26,11 @@ function LoginBase() {
 
   if (!isLoadingAuth && !isAuthenticated)
     return (
-      <RntButton className="h-10 w-14 text-[10px] max-sm:my-1 max-sm:mr-1 sm:w-48 sm:text-base" onClick={login}>
+      <RntButton
+        className="h-10 w-14 text-[10px] max-sm:my-1 max-sm:mr-1 sm:w-48 sm:text-base"
+        onClick={login}
+        isVisibleCircle={false}
+      >
         {t("common.info.login")}
       </RntButton>
     );
