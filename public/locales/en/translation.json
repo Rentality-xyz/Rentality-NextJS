@@ -61,7 +61,7 @@
       "date_from": "Please enter 'Date from'",
       "date_to": "Please enter 'Date to'",
       "date_eq": "'Date to' must be greater than 'Date from'",
-      "request": "Your create trip request failed. Please make sure you entered trip details right and try again",
+      "request": "Almost there! Please complete your profile to proceed with your trip booking.",
       "own_car": "You cannot book your own car"
     },
     "info": {
@@ -89,7 +89,8 @@
       "per_day": "/day",
       "days": "day(s)",
       "price_without_taxes": "Price excl. taxes",
-      "insurance_required": "Insurance required"
+      "insurance_required": "Insurance required",
+      "booked": "Your trip is booked! Check the Booking section for details"
     },
     "search_car_delivery_extra_info": {
       "title": "Trip Info",
@@ -365,6 +366,9 @@
   },
   "booked": {
     "status_changed": "Status successfully changed!",
+    "host_confirmed": "Trip confirmed! The guest is ready to pick up the car. Check your Booking section for details.",
+    "trip_started": "Trip started! Safe travels.",
+    "trip_finished": "Trip finished! Thanks for using Rentality. Leave a review to help other users!",
     "status_req_failed": "Change trip status request failed. Please try again",
     "title": "Booked",
     "trip_not_found": "You don't have any booked trips",
@@ -560,6 +564,7 @@
     "upload_photo": "Please upload vehicle photo",
     "image_not_upload": "Image is not uploaded",
     "wait_loading": "Please wait.. uploading (upto 5 mins)",
+    "successfully_listed": "Your car is now live on Rentality!",
     "car_listed": "Successfully listed your car!",
     "saving_failed": "Save car request failed. Please try again",
     "lost_unsaved": "Unsaved data will be lost",
@@ -723,7 +728,7 @@
       "back_to_car_search": "← Back to car search",
       "we_on_base_network": "We’ve on the Base network",
       "welcome_to_web3": "Welcome to Web 3.0 platform!",
-      "save_profile_success": "Thank You for Completing Your Profile! You're all set to enjoy our exclusive rewards and benefits. Check your mail for updates and offers.",
+      "save_profile_success": "Profile saved successfully! Now you can enjoy seamless bookings and exclusive rewards. Check your messages!",
       "page_not_found": "This page could not be found",
       "temporarily_unavailable": "Temporarily unavailable",
       "new_functionality_deploy": "New functionality is being deployed. The platform will be up and running soon!",
@@ -764,7 +769,7 @@
     "interior": "Interior",
     "data": "Data",
     "uploaded": "uploaded",
-    "add_fund_to_wallet": "Please add funds to your wallet on Base network to continue.",
+    "add_fund_to_wallet": "Oops! Your wallet balance is too low to complete this transaction. Please add funds to your wallet on Base network and ,Complete Your Profile to Rent a Car!",
     "per_day": "/day",
     "vin_successfully_checked": "VIN successfully checked",
     "vin_not_found": "VIN not found in US car database",
@@ -803,6 +808,7 @@
     "add_insurance": "Add Insurance",
     "trip_filter": "Trip filter",
     "trip": "Trip",
+    "successfully_activated": "Insurance successfully activated! Drive worry-free.",
     "insurance_type": "Insurance type",
     "insurance_type_general": "General Insurance ID",
     "insurance_type_one_time": "One-Time trip insurance",
@@ -832,6 +838,8 @@
     "claiming": "Claiming...",
     "claim": "Claim",
     "points": "points",
+    "copy": "Copy",
+    "copied": "Referral link copied! \uD83C\uDF89 Share it with friends and earn rewards!",
     "referral_program": {
       "set_kyc": "Save profile",
       "pass_civic": "Get KYC Pass",
