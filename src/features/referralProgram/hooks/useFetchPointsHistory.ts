@@ -4,7 +4,7 @@ import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { useTranslation } from "react-i18next";
 import { getReferralProgramDescriptionText } from "../utils";
 import { useRentality } from "@/contexts/rentalityContext";
-import { usePaginationForListApi } from "@/hooks/pagination";
+import { usePaginationForListApi } from "@/hooks/pagination/usePaginationForListApi";
 
 export type ReferralHistoryInfo = {
   points: number;
