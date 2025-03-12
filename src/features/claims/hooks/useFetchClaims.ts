@@ -1,7 +1,7 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { Claim } from "@/features/claims/models";
 import { validateContractFullClaimInfo } from "@/model/blockchain/schemas_utils";
-import { useQuery } from "@tanstack/react-query";
+import { DefinedUseQueryResult, useQuery } from "@tanstack/react-query";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { contractFullClaimInfoToClaim } from "../models/mappers/contractFullClaimInfoToClaim";
 
@@ -13,9 +13,8 @@ function useFetchClaims(isHost: boolean) {
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
 
-  return useQuery<QueryData>({
+  const queryResult = useQuery<QueryData>({
     queryKey: [CLAIMS_LIST_QUERY_KEY, isHost, ethereumInfo?.walletAddress],
-    initialData: [],
     queryFn: async () => {
       if (!rentalityContracts) {
         throw new Error("Contracts not initialized");
@@ -39,8 +38,10 @@ function useFetchClaims(isHost: boolean) {
 
       return claimsData;
     },
-    enabled: !!rentalityContracts,
   });
+
+  const data = queryResult.data ?? [];
+  return { ...queryResult, data: data } as DefinedUseQueryResult<QueryData, Error>;
 }
 
 export default useFetchClaims;

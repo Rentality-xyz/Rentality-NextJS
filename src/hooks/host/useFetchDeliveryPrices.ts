@@ -1,6 +1,6 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { useQuery } from "@tanstack/react-query";
+import { DefinedUseQueryResult, useQuery } from "@tanstack/react-query";
 
 export type DeliveryPrices = {
   from1To25milesPrice: number;
@@ -22,9 +22,8 @@ function useFetchDeliveryPrices() {
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
 
-  return useQuery<QueryData>({
+  const queryResult = useQuery<QueryData>({
     queryKey: [DELIVERY_PRICES_QUERY_KEY, ethereumInfo?.walletAddress],
-    initialData: emptyDeliveryPrices,
     queryFn: async () => {
       if (!rentalityContracts || !ethereumInfo) {
         throw new Error("Contracts or wallet not initialized");
@@ -42,8 +41,10 @@ function useFetchDeliveryPrices() {
       };
       return deliveryPrices;
     },
-    enabled: !!rentalityContracts && !!ethereumInfo,
   });
+
+  const data = queryResult.data ?? emptyDeliveryPrices;
+  return { ...queryResult, data: data } as DefinedUseQueryResult<QueryData, Error>;
 }
 
 export default useFetchDeliveryPrices;

@@ -18,9 +18,8 @@ type QueryData = UserRole;
 const useUserRole = () => {
   const ethereumInfo = useEthereum();
 
-  const { isLoading, data: userRole } = useQuery<QueryData>({
+  const queryResult = useQuery<QueryData>({
     queryKey: [USER_ROLE_QUERY_KEY, ethereumInfo?.walletAddress],
-    initialData: UserRole.Guest,
     queryFn: async () => {
       if (!ethereumInfo) {
         throw new Error("Wallet not initialized");
@@ -49,10 +48,10 @@ const useUserRole = () => {
 
       return userRole;
     },
-    enabled: !!ethereumInfo,
   });
 
-  return { isLoading, userRole, isGuest, isHost, isInvestManager } as const;
+  const data = queryResult.data ?? UserRole.Guest;
+  return { ...queryResult, data: data, userRole: data, isGuest, isHost, isInvestManager } as const;
 };
 
 function isGuest(role: UserRole) {

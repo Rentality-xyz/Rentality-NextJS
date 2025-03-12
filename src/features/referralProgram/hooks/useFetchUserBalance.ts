@@ -1,6 +1,6 @@
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRentality } from "@/contexts/rentalityContext";
-import { useQuery } from "@tanstack/react-query";
+import { DefinedUseQueryResult, useQuery } from "@tanstack/react-query";
 import { logger } from "@/utils/logger";
 
 export const REFERRAL_USER_BALANCE_QUERY_KEY = "ReferralUserBalance";
@@ -10,14 +10,12 @@ function useFetchUserBalance() {
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
 
-  return useQuery<QueryData>({
+  const queryResult = useQuery<QueryData>({
     queryKey: [REFERRAL_USER_BALANCE_QUERY_KEY, ethereumInfo?.walletAddress],
-    initialData: 0,
     queryFn: async () => {
       if (!rentalityContracts || !ethereumInfo) {
         throw new Error("Contracts or wallet not initialized");
       }
-      logger.debug("Fetching user balance");
 
       const result = await rentalityContracts.referralProgram.addressToPoints(ethereumInfo.walletAddress);
 
@@ -27,8 +25,10 @@ function useFetchUserBalance() {
 
       return Number(result.value);
     },
-    enabled: !!rentalityContracts && !!ethereumInfo?.walletAddress,
   });
+
+  const data = queryResult.data ?? 0;
+  return { ...queryResult, data: data } as DefinedUseQueryResult<QueryData, Error>;
 }
 
 export default useFetchUserBalance;

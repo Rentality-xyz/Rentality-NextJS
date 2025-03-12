@@ -3,7 +3,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { InsuranceType } from "@/model/blockchain/schemas";
 import { GuestGeneralInsurance } from "@/model/GuestInsurance";
 import { getIpfsURI } from "@/utils/ipfsUtils";
-import { useQuery } from "@tanstack/react-query";
+import { DefinedUseQueryResult, useQuery } from "@tanstack/react-query";
 
 export const INSURANCE_GUEST_QUERY_KEY = "InsuranceGuest";
 
@@ -15,9 +15,8 @@ const useFetchGuestGeneralInsurance = () => {
   const { rentalityContracts } = useRentality();
   const ethereumInfo = useEthereum();
 
-  return useQuery<QueryData>({
+  const queryResult = useQuery<QueryData>({
     queryKey: [INSURANCE_GUEST_QUERY_KEY, ethereumInfo?.walletAddress],
-    initialData: EMPTY_GUEST_GENERAL_INSURANCE,
     queryFn: async () => {
       if (!rentalityContracts || !ethereumInfo) {
         throw new Error("Contracts or wallet not initialized");
@@ -35,8 +34,10 @@ const useFetchGuestGeneralInsurance = () => {
 
       return { photo: getIpfsURI(result.value[result.value.length - 1].photo) };
     },
-    enabled: !!rentalityContracts && !!ethereumInfo?.walletAddress,
   });
+
+  const data = queryResult.data ?? EMPTY_GUEST_GENERAL_INSURANCE;
+  return { ...queryResult, data: data } as DefinedUseQueryResult<QueryData, Error>;
 };
 
 export default useFetchGuestGeneralInsurance;

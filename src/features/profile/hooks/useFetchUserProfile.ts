@@ -2,7 +2,7 @@ import { getIpfsURI } from "@/utils/ipfsUtils";
 import { useRentality } from "@/contexts/rentalityContext";
 import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { UTC_TIME_ZONE_ID } from "@/utils/date";
-import { useQuery } from "@tanstack/react-query";
+import { DefinedUseQueryResult, useQuery } from "@tanstack/react-query";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { emptyUserProfile, UserProfile } from "../models";
 import { ethers, verifyMessage } from "ethers";
@@ -26,9 +26,8 @@ const useFetchUserProfile = () => {
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
 
-  return useQuery<QueryData>({
+  const queryResult = useQuery<QueryData>({
     queryKey: [USER_PROFILE_QUERY_KEY, ethereumInfo?.walletAddress],
-    initialData: emptyUserProfile,
     queryFn: async () => {
       if (!rentalityContracts || !ethereumInfo) {
         throw new Error("Contracts or wallet not initialized");
@@ -63,8 +62,10 @@ const useFetchUserProfile = () => {
       };
       return userProfile;
     },
-    enabled: !!rentalityContracts,
   });
+
+  const data = queryResult.data ?? emptyUserProfile;
+  return { ...queryResult, data: data } as DefinedUseQueryResult<QueryData, Error>;
 };
 
 export default useFetchUserProfile;

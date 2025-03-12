@@ -6,7 +6,7 @@ import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 import { TripInfoForClaimCreation } from "@/features/claims/models/CreateClaimRequest";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "@tanstack/react-query";
+import { DefinedUseQueryResult, useQuery } from "@tanstack/react-query";
 
 export const TRIPS_FOR_CLAIM_CREATION_QUERY_KEY = "TripsForClaimCreation";
 
@@ -17,9 +17,8 @@ const useTripsForClaimCreation = (isHost: boolean) => {
   const { rentalityContracts } = useRentality();
   const { t } = useTranslation();
 
-  return useQuery<QueryData>({
+  const queryResult = useQuery<QueryData>({
     queryKey: [TRIPS_FOR_CLAIM_CREATION_QUERY_KEY, ethereumInfo?.walletAddress],
-    initialData: [{ tripId: 0, guestAddress: "", tripDescription: t("common.info.loading"), tripStart: new Date() }],
     queryFn: async () => {
       if (!rentalityContracts) {
         throw new Error("Contracts not initialized");
@@ -57,8 +56,12 @@ const useTripsForClaimCreation = (isHost: boolean) => {
       });
       return tripsForClaimCreation;
     },
-    enabled: !!rentalityContracts,
   });
+
+  const data = queryResult.data ?? [
+    { tripId: 0, guestAddress: "", tripDescription: t("common.info.loading"), tripStart: new Date() },
+  ];
+  return { ...queryResult, data: data } as DefinedUseQueryResult<QueryData, Error>;
 };
 
 export default useTripsForClaimCreation;

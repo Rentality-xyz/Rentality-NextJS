@@ -2,7 +2,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isEmpty } from "@/utils/string";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const EXIST_CAR_MAKES_QUERY_KEY = "ExistCarMakes";
 export const EXIST_CAR_MODELS_QUERY_KEY = "ExistCarModels";
@@ -26,7 +26,6 @@ function useFetchExistPlatformCars() {
 
       return result.value;
     },
-    enabled: !!rentalityContracts,
   });
 
   const { isLoading: isModelsLoading, data: existedModels = [] } = useQuery({
@@ -47,7 +46,7 @@ function useFetchExistPlatformCars() {
 
       return result.value;
     },
-    enabled: !!rentalityContracts,
+    enabled: !!selectedMake && !isEmpty(selectedMake),
   });
 
   return { existedMakes, existedModels, selectedMake, setSelectedMake, isLoading: isMakesLoading || isModelsLoading };
