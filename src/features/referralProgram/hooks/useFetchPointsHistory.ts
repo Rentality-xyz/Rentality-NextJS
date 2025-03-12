@@ -54,10 +54,7 @@ const useFetchPointsHistory = (initialPage: number = 1, initialItemsPerPage: num
       return data;
     },
     initialPage,
-    initialItemsPerPage,
-    {
-      enabled: !!rentalityContracts,
-    }
+    initialItemsPerPage
   );
 
   return {

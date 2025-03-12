@@ -1,6 +1,6 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { useQuery } from "@tanstack/react-query";
+import { DefinedUseQueryResult, useQuery } from "@tanstack/react-query";
 
 export type TripDiscounts = {
   discount3DaysAndMoreInPercents: number;
@@ -24,9 +24,8 @@ function useFetchTripDiscounts() {
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
 
-  return useQuery<QueryData>({
+  const queryResult = useQuery<QueryData>({
     queryKey: [TRIP_DISCOUNTS_QUERY_KEY, ethereumInfo?.walletAddress],
-    initialData: emptyDiscountFormValues,
     queryFn: async () => {
       if (!rentalityContracts || !ethereumInfo) {
         throw new Error("Contracts or wallet not initialized");
@@ -46,8 +45,10 @@ function useFetchTripDiscounts() {
 
       return tripDiscounts;
     },
-    enabled: !!rentalityContracts && !!ethereumInfo,
   });
+
+  const data = queryResult.data ?? emptyDiscountFormValues;
+  return { ...queryResult, data: data } as DefinedUseQueryResult<QueryData, Error>;
 }
 
 export default useFetchTripDiscounts;

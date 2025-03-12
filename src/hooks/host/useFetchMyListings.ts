@@ -1,6 +1,6 @@
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRentality } from "@/contexts/rentalityContext";
-import { useQuery } from "@tanstack/react-query";
+import { DefinedUseQueryResult, useQuery } from "@tanstack/react-query";
 import { BaseCarInfo } from "@/model/BaseCarInfo";
 import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { validateContractCarInfoDTO } from "@/model/blockchain/schemas_utils";
@@ -13,9 +13,8 @@ function useFetchMyListings() {
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
 
-  return useQuery<QueryData>({
+  const queryResult = useQuery<QueryData>({
     queryKey: [MY_LISTINGS_QUERY_KEY, ethereumInfo?.walletAddress],
-    initialData: [],
     queryFn: async () => {
       if (!rentalityContracts || !ethereumInfo) {
         throw new Error("Contracts or wallet not initialized");
@@ -61,8 +60,10 @@ function useFetchMyListings() {
 
       return myListingsData;
     },
-    enabled: !!rentalityContracts && !!ethereumInfo,
   });
+
+  const data = queryResult.data ?? [];
+  return { ...queryResult, data: data } as DefinedUseQueryResult<QueryData, Error>;
 }
 
 export default useFetchMyListings;

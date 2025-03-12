@@ -1,6 +1,6 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { useQuery } from "@tanstack/react-query";
+import { DefinedUseQueryResult, useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { AllOwnPointsInfo } from "../models";
 import { getAllPoints } from "../utils";
@@ -16,9 +16,8 @@ function useFetchOwnReferralPoints() {
   const setReadyToClaim = useOwnReferralPointsSharedStore((state) => state.setReadyToClaim);
   const { t } = useTranslation();
 
-  return useQuery<QueryData>({
+  const queryResult = useQuery<QueryData>({
     queryKey: [REFERRAL_OWN_POINTS_QUERY_KEY, ethereumInfo?.walletAddress],
-    initialData: { allPoints: null as AllOwnPointsInfo | null },
     queryFn: async () => {
       if (!rentalityContracts || !ethereumInfo) {
         throw new Error("Contracts or wallet not initialized");
@@ -57,8 +56,10 @@ function useFetchOwnReferralPoints() {
       setReadyToClaim(getReadyToClaim);
       return { allPoints: result.value };
     },
-    enabled: !!rentalityContracts && !!ethereumInfo?.walletAddress,
   });
+
+  const data = queryResult.data ?? { allPoints: null };
+  return { ...queryResult, data: data } as DefinedUseQueryResult<QueryData, Error>;
 }
 
 export default useFetchOwnReferralPoints;

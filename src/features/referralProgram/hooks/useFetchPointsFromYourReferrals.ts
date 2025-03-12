@@ -34,7 +34,6 @@ function useFetchPointsFromYourReferrals(initialPage: number = 1, initialItemsPe
       if (!rentalityContracts || !ethereumInfo) {
         throw new Error("Contracts or wallet not initialized");
       }
-      logger.debug("Fetching points from your referrals");
 
       const result = await rentalityContracts.referralProgram.getReadyToClaimFromRefferalHash(
         ethereumInfo.walletAddress
