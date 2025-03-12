@@ -6,11 +6,19 @@ import { ContractCreateCarRequest, ContractSignedLocationInfo } from "@/model/bl
 import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { Err, Result } from "@/model/utils/result";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
-import { saveCarImages, uploadMetadataToIPFS } from "./useSaveNewCar";
+import { saveCarImages, uploadMetadataToIPFS } from "../../../hooks/host/useSaveNewCar";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
-import { INVESTMENTS_LIST_QUERY_KEY } from "../guest/useGetInvestments";
+import { INVESTMENTS_LIST_QUERY_KEY } from "./useFetchInvestments";
 import { logger } from "@/utils/logger";
+
+type CreateInvestCarRequest = {
+  hostCarInfo: HostCarInfo;
+  carPrice: number;
+  hostPercents: number;
+  nftName: string;
+  nftSym: string;
+};
 
 function useCreateInvestCar() {
   const ethereumInfo = useEthereum();
@@ -23,13 +31,7 @@ function useCreateInvestCar() {
       carPrice,
       hostPercents,
       nftName,
-    }: {
-      hostCarInfo: HostCarInfo;
-      carPrice: number;
-      hostPercents: number;
-      nftName: string;
-      nftSym: string;
-    }): Promise<Result<boolean, Error>> => {
+    }: CreateInvestCarRequest): Promise<Result<boolean>> => {
       try {
         if (!ethereumInfo || !rentalityContracts) {
           logger.error("createInvestCar error: Missing required contracts or ethereum info");

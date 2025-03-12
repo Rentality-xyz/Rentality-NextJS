@@ -1,7 +1,7 @@
 import PageTitle from "@/components/pageTitle/pageTitle";
 import { useTranslation } from "react-i18next";
 import React from "react";
-import InvestContent from "@/features/invest/components/InvestContent";
+import InvestPageContent from "@/features/invest/pages/InvestPageContent";
 
 export default function HostInvest() {
   const { t } = useTranslation();
@@ -9,7 +9,7 @@ export default function HostInvest() {
   return (
     <>
       <PageTitle title={t("invest.host_page_title")} />
-      <InvestContent />
+      <InvestPageContent />
     </>
   );
 }
