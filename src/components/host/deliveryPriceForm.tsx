@@ -1,6 +1,6 @@
 import RntButton from "@/components/common/rntButton";
 import RntInput from "@/components/common/rntInput";
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,7 +21,7 @@ function DeliveryPriceForm({
   const { userRole, isHost } = useUserRole();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
-  const { register, handleSubmit, formState } = useForm<DeliveryPricesFormValues>({
+  const { register, handleSubmit, formState, reset } = useForm<DeliveryPricesFormValues>({
     defaultValues: {
       from1To25milesPrice: savedDeliveryPrices.from1To25milesPrice,
       over25MilesPrice: savedDeliveryPrices.over25MilesPrice,
@@ -30,6 +30,13 @@ function DeliveryPriceForm({
   });
   const { errors, isSubmitting } = formState;
   const { t } = useTranslation();
+
+  useEffect(() => {
+    reset({
+      from1To25milesPrice: savedDeliveryPrices.from1To25milesPrice,
+      over25MilesPrice: savedDeliveryPrices.over25MilesPrice,
+    });
+  }, [savedDeliveryPrices, reset]);
 
   async function onFormSubmit(formData: DeliveryPricesFormValues) {
     if (!isHost(userRole)) {
