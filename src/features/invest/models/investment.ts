@@ -1,13 +1,13 @@
 import { HostCarInfo } from "@/model/HostCarInfo";
 
-export type CarInvestment = {
+export type CarInvestmentold = {
   car: HostCarInfo;
   priceInUsd: BigInt;
   creatorPercents: BigInt;
   inProgress: boolean;
 };
 
-export type InvestmentInfo = {
-  investment: CarInvestment;
+export type InvestmentInfoold = {
+  investment: CarInvestmentold;
   nft: string;
 };
