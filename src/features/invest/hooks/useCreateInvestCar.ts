@@ -6,10 +6,10 @@ import { ContractCreateCarRequest, ContractSignedLocationInfo } from "@/model/bl
 import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { Err, Result } from "@/model/utils/result";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
-import { saveCarImages, uploadMetadataToIPFS } from "./useSaveNewCar";
+import { saveCarImages, uploadMetadataToIPFS } from "../../../hooks/host/useSaveNewCar";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
-import { INVESTMENTS_LIST_QUERY_KEY } from "../../features/invest/hooks/useGetInvestments";
+import { INVESTMENTS_LIST_QUERY_KEY } from "./useGetInvestments";
 import { logger } from "@/utils/logger";
 
 function useCreateInvestCar() {

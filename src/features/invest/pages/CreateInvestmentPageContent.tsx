@@ -1,26 +1,28 @@
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
-import useCreateInvestCar from "@/hooks/host/useCreateInvestCar";
+import useCreateInvestCar from "@/features/invest/hooks/useCreateInvestCar";
 import { useState } from "react";
 import { HostCarInfo } from "@/model/HostCarInfo";
 import { useTranslation } from "react-i18next";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 
 function CreateInvestmentPageContent() {
-  const { t } = useTranslation();
-  const { mutateAsync: createInvest } = useCreateInvestCar();
   const [carPrice, setCarPrice] = useState<number | string>(0);
   const [hostPercentage, setHostPercentage] = useState<number | string>(0);
   const [nftName, setNftName] = useState<string>("");
   const [nftSym, setNftSym] = useState<string>("");
+  const { mutateAsync: createInvest } = useCreateInvestCar();
+  const { t } = useTranslation();
 
-  const handleInputCarPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
+  const handleInputCarPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
     setCarPrice(value === "" ? "" : Number.parseInt(value));
   };
-  const handleHostPercentsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
+
+  const handleHostPercentsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
     setHostPercentage(value === "" ? "" : Number.parseInt(value));
   };
+
   return (
     <div>
       <div className="mb-4 gap-4 text-lg">
