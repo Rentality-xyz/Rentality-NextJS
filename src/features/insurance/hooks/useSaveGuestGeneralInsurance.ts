@@ -60,7 +60,7 @@ const useSaveGuestGeneralInsurance = () => {
 
         const result = await rentalityContracts.gateway.saveGuestInsurance(insuranceInfo);
 
-        return result.ok ? result : Err(new Error("claimMyPoints error: " + result.error));
+        return result.ok ? result : Err(new Error("saveGuestInsurance error: " + result.error));
       } catch (error) {
         logger.error("saveGuestInsurance error: ", error);
         return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
