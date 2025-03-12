@@ -31,8 +31,8 @@ export default function Document() {
           className="mx-auto max-w-[1920px] overflow-hidden border-x-0 border-x-[#ffffff1f] min-[1921px]:border-x"
         >
           <Main />
-          <NextScript />
         </div>
+        <NextScript />
       </body>
     </Html>
   );
