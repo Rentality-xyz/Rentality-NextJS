@@ -132,7 +132,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="fixed z-50 flex w-full items-center justify-between border-b border-b-[#ffffff1f] bg-rentality-bg-left-sidebar text-rnt-temp-header-text max-lg:pl-4 lg:py-1 lg:pl-14 lg:pr-6">
+    <header className="fixed left-1/2 top-0 z-50 flex w-full max-w-[1920px] -translate-x-1/2 items-center justify-between border-b border-b-[#ffffff1f] bg-rentality-bg-left-sidebar text-rnt-temp-header-text max-lg:pl-4 lg:py-1 lg:pl-14 lg:pr-6">
       <div className="flex items-center max-lg:w-full max-lg:justify-between">
         <HeaderLogo />
         <ClaimMyPointsHeaderButton />
@@ -204,7 +204,7 @@ export default function Header() {
                     <Image src={"/images/icons/menu/ic_profile_settings.svg"} width={30} height={30} alt="" />
                     <span className="ml-3">{t("header.edit_profile")}</span>
                   </Link>
-                  <ClaimMyPointsMobileButton/>
+                  <ClaimMyPointsMobileButton />
                   <Link className="flex cursor-pointer items-center hover:underline" href="/" onClick={logout}>
                     <Image src={"/images/icons/menu/ic_logout.svg"} width={30} height={30} alt="" />
                     <span className="ml-3">{t("header.logout")}</span>
