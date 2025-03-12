@@ -64,19 +64,11 @@ function TransactionHistoryFilters({ defaultFilters, onApply }: TransactionHisto
             dateTo: e.target.value ? moment(e.target.value).toDate() : undefined,
           }));
         }}
-        // onChange={(e) => {
-        //   const newValue = moment(e.target.value);
-        //   if (newValue.isValid()) {
-        //     setFilters((prev) => {
-        //       return { ...prev, dateTo: newValue.toDate() };
-        //     });
-        //   }
-        // }}
       />
-      <div className="sm:w-48">
+      <div className="flex items-center max-sm:w-full max-sm:justify-between">
         <RntFilterSelect
           isTransparentStyle={true}
-          className="sm:max-w-[15rem]"
+          className="w-48"
           id="status"
           label={t("all_trips_table.tripStatus")}
           placeholder={t("transaction_history.all_statuses")}
@@ -97,11 +89,10 @@ function TransactionHistoryFilters({ defaultFilters, onApply }: TransactionHisto
             </RntFilterSelect.Option>
           ))}
         </RntFilterSelect>
+        <RntButton className="ml-4 mt-7 w-36 sm:w-40" type="submit" disabled={isSubmitting}>
+          {t("common.apply")}
+        </RntButton>
       </div>
-
-      <RntButton className="w-36 sm:w-40" type="submit" disabled={isSubmitting}>
-        {t("common.apply")}
-      </RntButton>
     </form>
   );
 }
