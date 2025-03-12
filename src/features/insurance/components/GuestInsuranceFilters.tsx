@@ -17,7 +17,7 @@ export default function GuestInsuranceFilters({ defaultFilters, onApply }: Guest
 
   return (
     <div className="flex flex-col sm:self-end">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 max-sm:justify-between">
         <Controller
           name="currentlyListed"
           control={control}
