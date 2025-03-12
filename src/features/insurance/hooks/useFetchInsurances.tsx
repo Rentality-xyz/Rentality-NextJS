@@ -7,8 +7,8 @@ import { getDateFromBlockchainTime, getDateFromBlockchainTimeWithTZ } from "@/ut
 import { bigIntReplacer } from "@/utils/json";
 import moment from "moment";
 import { TripInsurance } from "../models";
-import { usePaginationForListApi } from "@/hooks/pagination";
 import { logger } from "@/utils/logger";
+import { usePaginationForListApi } from "@/hooks/pagination/usePaginationForListApi";
 
 export type InsuranceFiltersType = {};
 export const INSURANCE_LIST_QUERY_KEY = "InsuranceList";
