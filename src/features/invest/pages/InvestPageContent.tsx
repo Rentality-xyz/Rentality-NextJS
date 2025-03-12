@@ -1,86 +1,84 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import RntButton from "@/components/common/rntButton";
-import useGetInvestments from "@/features/invest/hooks/useGetInvestments";
+import useGetInvestments from "@/features/invest/hooks/useFetchInvestments";
 import InvestCar from "@/features/invest/components/InvestCar";
 import { useRouter } from "next/navigation";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
 import { SortOptionKey } from "@/hooks/guest/useSearchCars";
 import useUserRole from "@/hooks/useUserRole";
+import useClaimIncome from "../hooks/useClaimIncome";
+import useStartHosting from "../hooks/useStartHosting";
+import useInvest from "../hooks/useInvest";
 
 type InvestContentProps = {};
 
 type FilterEnum = Record<string, string>; // Типизация для Enum
 
 function InvestPageContent({}: InvestContentProps) {
-  const { userRole, isInvestManager } = useUserRole();
-  const { t } = useTranslation();
-  const {
-    investments,
-    handleInvest,
-    isPendingInvesting,
-    address,
-    handleStartHosting,
-    isPendingStartingHosting,
-    handleClaimIncome,
-    isPendingClaimingIncome,
-  } = useGetInvestments();
   const router = useRouter();
-  const handleCreateInvest = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    await router.push("/host/create_invest");
-  };
+  const { userRole, isInvestManager } = useUserRole();
+  const { data: investments } = useGetInvestments();
+  const { mutateAsync: handleInvest, isPendingInvesting } = useInvest();
+  const { mutateAsync: handleClaimIncome, isPending: isPendingClaimingIncome } = useClaimIncome();
+  const { mutateAsync: handleStartHosting, isPending: isPendingStartingHosting } = useStartHosting();
 
   const [filterInvestBy, setFilterInvestBy] = useState<string | undefined>(undefined);
+
+  const { t } = useTranslation();
+
+  // Получаем фильтры из переводов
+  const filterInvest: FilterEnum = useMemo(() => {
+    return t(isInvestManager(userRole) ? "invest.filter_for_investor" : "invest.filter_for_user", {
+      returnObjects: true,
+    }) as FilterEnum;
+  }, [isInvestManager, userRole, t]);
+
   function isFilterInvestKey(key: PropertyKey): key is SortOptionKey {
     return filterInvest.hasOwnProperty(key);
   }
-  // Получаем фильтры из переводов
-  const filterInvest: FilterEnum = t(
-    isInvestManager(userRole) ? "invest.filter_for_investor" : "invest.filter_for_user",
-    {
-      returnObjects: true,
-    }
-  ) as FilterEnum;
-  // Генерируем Enum на основе ключей
-  const FilterInvestEnum = Object.keys(filterInvest).reduce((acc, key) => {
-    acc[key] = key;
-    return acc;
-  }, {} as FilterEnum);
+
+  function handleCreateInvestClick(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    router.push("/host/create_invest");
+  }
+
   // Фильтрация инвестиций
-  const filteredInvestments = investments.filter((value) => {
-    if (!filterInvestBy || filterInvestBy === FilterInvestEnum.all_assets) {
-      return true; // Если "All assets", показываем все
-    }
+  const filteredInvestments = useMemo(() => {
+    return investments.filter((value) => {
+      if (!filterInvestBy || filterInvestBy === filterInvest.all_assets) {
+        return true; // Если "All assets", показываем все
+      }
 
-    switch (filterInvestBy) {
-      case FilterInvestEnum.actually_listed:
-        return value.investment.listed;
+      switch (filterInvestBy) {
+        case filterInvest.actually_listed:
+          return value.investment.listed;
 
-      case FilterInvestEnum.my_investments:
-        return value.investment.myTokens > 0;
+        case filterInvest.my_investments:
+          return value.investment.myTokens > 0;
 
-      case FilterInvestEnum.available_to_invest:
-        return value.investment.investment.priceInUsd > value.investment.payedInUsd;
+        case filterInvest.available_to_invest:
+          return value.investment.investment.priceInUsd > value.investment.payedInUsd;
 
-      case FilterInvestEnum.ready_to_claim:
-        return value.investment.myIncome > 0;
+        case filterInvest.ready_to_claim:
+          return value.investment.myIncome > 0;
 
-      case FilterInvestEnum.fully_tokenized:
-        return value.investment.investment.priceInUsd <= value.investment.payedInUsd;
+        case filterInvest.fully_tokenized:
+          return value.investment.investment.priceInUsd <= value.investment.payedInUsd;
 
-      case FilterInvestEnum.ready_for_listing:
-        return value.investment.investment.priceInUsd <= value.investment.payedInUsd && !value.investment.listed;
+        case filterInvest.ready_for_listing:
+          return value.investment.investment.priceInUsd <= value.investment.payedInUsd && !value.investment.listed;
 
-      default:
-        return true;
-    }
-  });
+        default:
+          return true;
+      }
+    });
+  }, [investments, filterInvestBy, filterInvest]);
 
   return (
     <div className="mt-8">
       {isInvestManager(userRole) && (
-        <RntButton className="mb-6 flex w-60 items-center justify-center" onClick={handleCreateInvest}>
+        <RntButton className="mb-6 flex w-60 items-center justify-center" onClick={handleCreateInvestClick}>
           {t("invest.btn_create_investment")}
         </RntButton>
       )}
@@ -111,7 +109,6 @@ function InvestPageContent({}: InvestContentProps) {
             searchInfo={value}
             handleInvest={(amount, investId) => handleInvest({ amount, investId })}
             isPendingInvesting={isPendingInvesting(value.investment.investmentId)}
-            isCreator={value.investment.creator === address}
             handleStartHosting={handleStartHosting}
             handleClaimIncome={handleClaimIncome}
           />

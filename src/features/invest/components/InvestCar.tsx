@@ -10,6 +10,7 @@ import moment from "moment";
 import { InvestmentInfoWithMetadata } from "@/features/invest/models/investmentInfo";
 import { InvestmentInfo } from "@/features/invest/models/investmentInfo";
 import Link from "next/link";
+import { Result } from "@/model/utils/result";
 
 const ccsDividerVert = "max-2xl:hidden absolute right-[-5px] top-1/2 h-[80%] w-px translate-y-[-50%] bg-gray-500";
 const ccsDividerHor = "2xl:hidden absolute bottom-[-10px] left-[5%] h-px w-[90%] translate-y-[-50%] bg-gray-500";
@@ -27,7 +28,6 @@ export default function InvestCar({
   searchInfo,
   handleInvest,
   isPendingInvesting,
-  isCreator,
   handleStartHosting,
   handleClaimIncome,
 }: {
@@ -35,13 +35,14 @@ export default function InvestCar({
   searchInfo: InvestmentInfoWithMetadata;
   handleInvest: (amount: number, investId: number) => void;
   isPendingInvesting: boolean;
-  isCreator: boolean;
-  handleStartHosting: (investId: number) => Promise<void>;
-  handleClaimIncome: (investId: number) => Promise<void>;
+  handleStartHosting: (investId: number) => Promise<Result<boolean>>;
+  handleClaimIncome: (investId: number) => Promise<Result<boolean>>;
 }) {
   const { t } = useTranslation();
   const ethereumInfo = useEthereum();
   const [investmentAmount, setInvestmentAmount] = useState(0);
+
+  const isCreator = searchInfo.investment.creator === ethereumInfo?.walletAddress;
 
   const handleChangeInvestmentAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const maxAmount = searchInfo.investment.investment.priceInUsd;
@@ -219,7 +220,7 @@ function getBlocksForGuest(
   handleInvest: (amount: number, investId: number) => void,
   isPendingInvesting: boolean,
   handleChangeInvestmentAmount: (e: React.ChangeEvent<HTMLInputElement>) => void,
-  handleClaimIncome: (investId: number) => Promise<void>,
+  handleClaimIncome: (investId: number) => Promise<Result<boolean>>,
   t: (key: string) => string
 ) {
   const myIncome = investment.myIncome > 0 ? investment.myIncome / 100 : investment.myIncome;
@@ -267,7 +268,7 @@ function blockExpectCompletedTripsForGuest(t: (key: string) => string) {
 function btnClaimEarningsForGuest(
   myIncome: number,
   investmentId: number,
-  handleClaimIncome: (investId: number) => Promise<void>,
+  handleClaimIncome: (investId: number) => Promise<Result<boolean>>,
   t: (key: string) => string
 ) {
   return (
@@ -317,7 +318,7 @@ function blockInvestNowForGuest(
 function getBlocksForHost(
   isCreator: boolean,
   investment: InvestmentInfo,
-  handleStartHosting: (investId: number) => Promise<void>,
+  handleStartHosting: (investId: number) => Promise<Result<boolean>>,
   t: (key: string) => string
 ) {
   const isReadyToClaim = (): boolean => {
