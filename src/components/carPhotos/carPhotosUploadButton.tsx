@@ -22,11 +22,13 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
     isHost,
     tripId,
     isSimpleButton = false,
+    wrapperClassName,
   }: {
     isStart: boolean;
     isHost: boolean;
     tripId: number;
     isSimpleButton?: boolean;
+    wrapperClassName?: string;
   },
   ref
 ) {
@@ -84,7 +86,7 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
   );
 
   return (
-    <>
+    <div className={wrapperClassName}>
       <input
         type="file"
         className="invisible flex h-0 w-0"
@@ -161,7 +163,7 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
           </RntButton>
         </div>
       )}
-    </>
+    </div>
   );
 });
 
