@@ -1,5 +1,5 @@
 import RntButton from "@/components/common/rntButton";
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -20,7 +20,7 @@ function TripDiscountsForm({
   const { userRole, isHost } = useUserRole();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
-  const { register, handleSubmit, formState } = useForm<TripDiscountsFormValues>({
+  const { register, handleSubmit, formState, reset } = useForm<TripDiscountsFormValues>({
     defaultValues: {
       discount3DaysAndMoreInPercents: savedTripsDiscounts.discount3DaysAndMoreInPercents,
       discount7DaysAndMoreInPercents: savedTripsDiscounts.discount7DaysAndMoreInPercents,
@@ -30,6 +30,14 @@ function TripDiscountsForm({
   });
   const { errors, isSubmitting } = formState;
   const { t } = useTranslation();
+
+  useEffect(() => {
+    reset({
+      discount3DaysAndMoreInPercents: savedTripsDiscounts.discount3DaysAndMoreInPercents,
+      discount7DaysAndMoreInPercents: savedTripsDiscounts.discount7DaysAndMoreInPercents,
+      discount30DaysAndMoreInPercents: savedTripsDiscounts.discount30DaysAndMoreInPercents,
+    });
+  }, [savedTripsDiscounts, reset]);
 
   async function onFormSubmit(formData: TripDiscountsFormValues) {
     if (!isHost(userRole)) {
