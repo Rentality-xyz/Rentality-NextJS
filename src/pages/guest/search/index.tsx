@@ -99,6 +99,7 @@ function Search() {
     setRequestSending(false);
 
     if (result.ok) {
+      showInfo(t("search_page.car_search_item.booked"))
       router.push("/guest/trips");
     } else {
       if (result.error.message === "NOT_ENOUGH_FUNDS") {

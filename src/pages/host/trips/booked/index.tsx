@@ -8,6 +8,8 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import RntSuspense from "@/components/common/rntSuspense";
 import { logger } from "@/utils/logger";
+import { TripInfo } from "@/model/TripInfo";
+import { TripStatus } from "@/model/blockchain/schemas";
 
 function Booked() {
   const ethereumInfo = useEthereum();
@@ -16,7 +18,7 @@ function Booked() {
   const { showInfo, showError } = useRntSnackbars();
   const { t } = useTranslation();
 
-  const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
+  const changeStatusCallback = async (tripInfo: TripInfo, changeStatus: () => Promise<boolean>) => {
     if (!ethereumInfo) {
       logger.error("changeStatusCallback error: ethereumInfo is null");
       return false;
@@ -35,7 +37,7 @@ function Booked() {
     const result = await changeStatus();
 
     if (result) {
-      showInfo(t("booked.status_changed"));
+      showInfoCurrentStatus(tripInfo)
       updateData();
     } else {
       showError(t("booked.status_req_failed"));
@@ -44,6 +46,22 @@ function Booked() {
 
     return result;
   };
+
+  const showInfoCurrentStatus = (tripInfo: TripInfo) => {
+    switch (tripInfo.status) {
+      case TripStatus.Pending:
+        showInfo(t("booked.host_confirmed"))
+        return;
+      case TripStatus.Confirmed:
+        showInfo(t("booked.trip_started"))
+        return;
+      case TripStatus.Started:
+        showInfo(t("booked.trip_finished"))
+        return;
+      default:
+        showInfo(t("booked.status_changed"));
+    }
+  }
 
   return (
     <>
@@ -56,7 +74,7 @@ function Booked() {
                 <TripCard
                   key={value.tripId}
                   tripInfo={value}
-                  changeStatusCallback={changeStatusCallback}
+                  changeStatusCallback={(changeStatus) => changeStatusCallback(value, changeStatus)}
                   disableButton={tripStatusChanging}
                   isHost={true}
                   isBooked={true}
