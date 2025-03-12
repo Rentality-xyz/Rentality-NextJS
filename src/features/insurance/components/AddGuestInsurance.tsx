@@ -84,7 +84,7 @@ export default function AddGuestInsurance({}: AddGuestInsuranceProps) {
   if (!isFormOpen)
     return (
       <>
-        <h2 className="my-4">{t("insurance.please_enter_your_insurance")}</h2>
+        <h2 className="my-4 pl-4">{t("insurance.please_enter_your_insurance")}</h2>
         <RntButtonTransparent
           onClick={() => {
             toggleFormOpen();
@@ -97,7 +97,7 @@ export default function AddGuestInsurance({}: AddGuestInsuranceProps) {
 
   return (
     <>
-      <h2 className="my-4">{t("insurance.please_enter_your_insurance")}</h2>
+      <h2 className="my-4 pl-4">{t("insurance.please_enter_your_insurance")}</h2>
       <div className="flex flex-col gap-4">
         <RntButtonTransparent
           onClick={() => {
@@ -111,11 +111,11 @@ export default function AddGuestInsurance({}: AddGuestInsuranceProps) {
         <hr />
         <form className="flex w-full flex-col gap-4" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
           <div className="flex flex-row gap-4">
-            <div className="flex w-full flex-row gap-4">
-              <div className="my-auto w-1/2">
+            <div className="flex w-full flex-col gap-4 sm:flex-row">
+              <div className="my-auto w-full pl-4 sm:w-1/2">
                 <strong>One-Time trip insurance</strong>
               </div>
-              <div className="w-1/2">
+              <div className="w-full sm:w-1/2">
                 {isTripsLoading ? (
                   "Loading..."
                 ) : (
@@ -142,13 +142,11 @@ export default function AddGuestInsurance({}: AddGuestInsuranceProps) {
                             No trips
                           </RntFilterSelect.Option>
                         ) : (
-                          <>
-                            {trips.map((i) => (
-                              <RntFilterSelect.Option key={i.tripId} value={String(i.tripId)}>
-                                {`${i.tripId} ${i.brand} ${i.model} ${i.year} ${dateRangeFormatShortMonthDateYear(i.tripStart, i.tripEnd)}`}
-                              </RntFilterSelect.Option>
-                            ))}
-                          </>
+                          trips.map((i) => (
+                            <RntFilterSelect.Option key={i.tripId} value={String(i.tripId)}>
+                              {`${i.tripId} ${i.brand} ${i.model} ${i.year} ${dateRangeFormatShortMonthDateYear(i.tripStart, i.tripEnd)}`}
+                            </RntFilterSelect.Option>
+                          ))
                         )}
                       </RntFilterSelect>
                     )}
@@ -158,7 +156,7 @@ export default function AddGuestInsurance({}: AddGuestInsuranceProps) {
             </div>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row">
             <RntInputTransparent
               id="companyName"
               label={"Insurance company name"}

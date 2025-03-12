@@ -15,6 +15,7 @@ const RntInputTransparent = forwardRef<HTMLInputElement, RntInputProps>(
       labelClassName,
       inputClassName,
       validationClassName,
+      wrapperClassName,
       label,
       placeholder,
       type,
@@ -49,11 +50,13 @@ const RntInputTransparent = forwardRef<HTMLInputElement, RntInputProps>(
         )}
         <div
           className={cn(
-            `rounded-full ${readOnly ? "border-2 border-gray-500" : "btn_input_border-gradient"} ${!isEmpty(label) && "mt-1"}`
+            `rounded-full ${readOnly ? "border-2 border-gray-500" : "btn_input_border-gradient"} ${!isEmpty(label) && "mt-1"}`,
+            wrapperClassName
           )}
         >
           <div className="input-wrapper pl-2">
             <input
+              autoComplete="off"
               className={iClassName}
               id={controlId}
               name={id}

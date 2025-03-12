@@ -438,36 +438,13 @@ export default function CarEditForm({
                 )
               }
             />
-            <Controller
-              name="dimoTokenId"
-              control={control}
-              defaultValue={dimoData?.tokenId || 0}
-              render={({ field }) =>
-                isNewCar && dimoData !== undefined ? (
-                  <RntInputTransparent
-                    {...field}
-                    id="dimoTokenId"
-                    className="lg:w-40"
-                    type="text"
-                    label="Dimo token id"
-                    readOnly={true}
-                    value={dimoData.tokenId}
-                  />
-                ) : (
-                  <RntInputTransparent
-                    {...field}
-                    id="dimoTokenId"
-                    className="lg:w-40"
-                    type="text"
-                    label="Dimo token id"
-                    readOnly={dimoData !== undefined}
-                    onChange={(e) => {
-                      const inputID = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
-                      field.onChange(Number.parseInt(inputID, 10));
-                    }}
-                  />
-                )
-              }
+            <RntInputTransparent
+              id="dimoTokenId"
+              className="lg:w-40"
+              type="text"
+              label="Dimo token id"
+              readOnly={true}
+              value={dimoData?.tokenId || 0}
             />
           </div>
         </div>
@@ -573,62 +550,64 @@ export default function CarEditForm({
             <strong>{t_car("basic_details")}</strong>
           </div>
           <div className="details flex flex-wrap gap-4">
-            <Controller
-              name="seatsNumber"
-              control={control}
-              render={({ field }) => (
-                <RntInputTransparent
-                  className="w-[48%] lg:w-40"
-                  id="seatsNumber"
-                  label={t_car("seats_amount")}
-                  placeholder="e.g. 5"
-                  readOnly={!isFormEnabled}
-                  value={field.value}
-                  {...register("seatsNumber", { valueAsNumber: true })}
-                  validationError={errors.seatsNumber?.message?.toString()}
-                  onChange={(e) => {
-                    const inputInvestmentAmount = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
-                    const numericValue = Number.parseInt(inputInvestmentAmount, 10);
-                    if (Number.isFinite(numericValue)) {
-                      setIsCarMetadataEdited(true);
-                      field.onChange(numericValue);
-                    }
-                  }}
-                />
-              )}
-            />
-            <Controller
-              name="doorsNumber"
-              control={control}
-              render={({ field }) => (
-                <RntInputTransparent
-                  className="w-[48%] lg:w-40"
-                  id="doorsNumber"
-                  label={t_car("doors")}
-                  placeholder="e.g. 2"
-                  readOnly={!isFormEnabled}
-                  value={field.value}
-                  {...register("doorsNumber", { valueAsNumber: true })}
-                  validationError={errors.doorsNumber?.message?.toString()}
-                  onChange={(e) => {
-                    const inputInvestmentAmount = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
-                    const numericValue = Number.parseInt(inputInvestmentAmount, 10);
-                    if (Number.isFinite(numericValue)) {
-                      setIsCarMetadataEdited(true);
-                      field.onChange(numericValue);
-                    }
-                  }}
-                />
-              )}
-            />
+            <div className="flex flex-col gap-4 max-lg:w-full lg:flex-row">
+              <Controller
+                name="seatsNumber"
+                control={control}
+                render={({ field }) => (
+                  <RntInputTransparent
+                    className="w-full lg:w-40"
+                    id="seatsNumber"
+                    label={t_car("seats_amount")}
+                    placeholder="e.g. 5"
+                    readOnly={!isFormEnabled}
+                    value={field.value}
+                    {...register("seatsNumber", { valueAsNumber: true })}
+                    validationError={errors.seatsNumber?.message?.toString()}
+                    onChange={(e) => {
+                      const inputInvestmentAmount = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
+                      const numericValue = Number.parseInt(inputInvestmentAmount, 10);
+                      if (Number.isFinite(numericValue)) {
+                        setIsCarMetadataEdited(true);
+                        field.onChange(numericValue);
+                      }
+                    }}
+                  />
+                )}
+              />
+              <Controller
+                name="doorsNumber"
+                control={control}
+                render={({ field }) => (
+                  <RntInputTransparent
+                    className="w-full lg:w-40"
+                    id="doorsNumber"
+                    label={t_car("doors")}
+                    placeholder="e.g. 2"
+                    readOnly={!isFormEnabled}
+                    value={field.value}
+                    {...register("doorsNumber", { valueAsNumber: true })}
+                    validationError={errors.doorsNumber?.message?.toString()}
+                    onChange={(e) => {
+                      const inputInvestmentAmount = e.target.value.replace(/\D/g, "") || "0"; // Удаляем всё, кроме цифр
+                      const numericValue = Number.parseInt(inputInvestmentAmount, 10);
+                      if (Number.isFinite(numericValue)) {
+                        setIsCarMetadataEdited(true);
+                        field.onChange(numericValue);
+                      }
+                    }}
+                  />
+                )}
+              />
+            </div>
             {!isElectricEngine ? (
-              <>
+              <div className="flex flex-col max-lg:w-full lg:flex-row">
                 <Controller
                   name="tankVolumeInGal"
                   control={control}
                   render={({ field }) => (
                     <RntInputTransparent
-                      className="w-[48%] lg:w-40"
+                      className="w-full lg:w-40"
                       id="tankVolumeInGal"
                       label={t_car("tank_size")}
                       placeholder="e.g. 16"
@@ -654,7 +633,9 @@ export default function CarEditForm({
                   control={control}
                   render={({ field }) => (
                     <RntFilterSelect
-                      className="w-[48%] lg:w-48"
+                      className="w-[48%] sm:w-[28%] lg:w-48"
+                      containerClassName="lg:ml-4"
+                      labelClassName="max-lg:mt-4"
                       id="transmission"
                       isTransparentStyle={true}
                       label={t_car("transmission")}
@@ -676,11 +657,11 @@ export default function CarEditForm({
                     </RntFilterSelect>
                   )}
                 />
-              </>
+              </div>
             ) : null}
 
             <RntInputTransparent
-              className="w-[48%] lg:w-40"
+              className="w-full lg:w-40"
               id="color"
               label={t_car("color")}
               placeholder="e.g. Green"
