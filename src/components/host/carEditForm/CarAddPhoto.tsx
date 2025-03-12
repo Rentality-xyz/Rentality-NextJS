@@ -198,7 +198,7 @@ function CarAddPhoto({
             <Cropper
               ref={cropperRef}
               src={cropImage}
-              className="h-auto w-full md:h-[360px] md:w-[640px]"
+              className="h-[450px] w-full md:h-[360px] md:w-[640px]"
               aspectRatio={widthCroppedCanvas / heightCroppedCanvas}
               viewMode={1}
               guides={false}

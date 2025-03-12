@@ -154,7 +154,7 @@ function TripAdditionalActions({
           })}
         </strong>
       </div>
-      <div className="flex flex-col gap-4 py-4 md:flex-row">
+      <div className="flex flex-col gap-4 py-4 fullHD:flex-row">
         {isHost ? (
           <AllowedActionsHost
             tripInfo={tripInfo}
@@ -173,11 +173,12 @@ function TripAdditionalActions({
             setConfirmParams={setConfirmParams}
           />
         )}
-        <div className="flex w-full flex-col gap-4 py-4">
+        <div>
           {hasTripPhotosFeatureFlag &&
             (tripInfo.status == TripStatus.CheckedInByHost || tripInfo.status == TripStatus.CheckedOutByGuest) && (
               <div className="flex w-full flex-col">
                 <CarPhotosUploadButton
+                  wrapperClassName="max-fullHD:m-auto"
                   ref={carPhotosUploadButtonRef}
                   isHost={isHost}
                   isStart={tripInfo.status == TripStatus.CheckedInByHost}
@@ -193,7 +194,7 @@ function TripAdditionalActions({
           return (
             <RntButton
               key={action.text}
-              className="px-4 max-md:w-full"
+              className="px-4 max-fullHD:m-auto max-md:w-full"
               disabled={disableButton}
               onClick={() => {
                 onActionBtnClick(action);
