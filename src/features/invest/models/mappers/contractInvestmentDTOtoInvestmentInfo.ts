@@ -1,7 +1,7 @@
+import { ContractInvestmentDTO } from "@/model/blockchain/schemas";
+import { InvestmentInfoWithMetadata } from "@/features/invest/models/investmentInfo";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
-import { InvestmentInfoWithMetadata } from "../InvestmentInfo";
 import { CarMetadata } from "@/utils/ipfsUtils";
-import { ContractInvestmentDTO } from "../blockchain/schemas";
 
 export const mapContractInvestmentDTOToInvestmentInfoWithMetadata = (
   investmentDto: ContractInvestmentDTO,

@@ -1,5 +1,13 @@
+import { ContractSignedLocationInfo, EngineType } from "@/model/blockchain/schemas";
 import { CarMetadata } from "@/utils/ipfsUtils";
-import { ContractSignedLocationInfo, EngineType } from "./blockchain/schemas";
+
+export enum InvestStatus {
+  Unknown,
+  ActuallyListed,
+  ReadyListing,
+  ListingProgress,
+  WaitingFullTokenization,
+}
 
 export type CreateCarRequest = {
   tokenUri: string;
