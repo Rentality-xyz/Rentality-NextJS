@@ -132,13 +132,13 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="fixed left-1/2 top-0 z-50 flex w-full max-w-[1920px] -translate-x-1/2 items-center justify-between border-b border-b-[#ffffff1f] bg-rentality-bg-left-sidebar text-rnt-temp-header-text max-lg:pl-4 lg:py-1 lg:pl-14 lg:pr-6">
+    <header className="fixed z-50 flex w-full max-w-[1920px] items-center justify-between border-b border-b-[#ffffff1f] bg-rentality-bg-left-sidebar text-rnt-temp-header-text max-lg:pl-4 lg:py-1 lg:pl-14 lg:pr-6 min-[1921px]:left-1/2 min-[1921px]:top-0 min-[1921px]:-translate-x-1/2">
       <div className="flex items-center max-lg:w-full max-lg:justify-between">
         <HeaderLogo />
         <ClaimMyPointsHeaderButton />
         <div className="flex min-w-[20px] items-center lg:hidden">
           {isBurgerMenuShown && (
-            <div id="burger-menu-wrapper" className="fixed left-0 top-[57px] z-[100] h-full w-full overflow-auto">
+            <div id="burger-menu-wrapper" className="fixed left-0 top-[49px] z-[100] h-full w-full overflow-auto">
               <aside id="burger-menu" className="bg-rentality-bg-left-sidebar">
                 {burgerNavMenu}
               </aside>
