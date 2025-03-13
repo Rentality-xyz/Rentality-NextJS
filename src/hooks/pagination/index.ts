@@ -1,4 +1,4 @@
-import { DefinedUseQueryResult } from "@tanstack/react-query";
+import { UseQueryResult } from "@tanstack/react-query";
 
 export type PaginatedData<T> = {
   pageData: T[];
@@ -6,6 +6,12 @@ export type PaginatedData<T> = {
   totalPageCount: number;
 };
 
-export type UsePaginationResult<T> = DefinedUseQueryResult<PaginatedData<T>, Error> & {
+export const DEFAULT_PAGINATED_DATA = {
+  pageData: [],
+  currentPage: 1,
+  totalPageCount: 0,
+};
+
+export type UsePaginationResult<T> = UseQueryResult<PaginatedData<T>, Error> & {
   fetchData: (page?: number, itemsPerPage?: number, filters?: Record<string, any>) => Promise<void>;
 };
