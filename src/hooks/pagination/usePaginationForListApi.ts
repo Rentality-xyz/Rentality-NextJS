@@ -19,7 +19,7 @@ export function usePaginationForListApi<
   const { currentPage, itemsPerPage, filters, updatePagination } = usePaginationState(initialPage, initialItemsPerPage);
   const queryResult = useQuery(options, queryClient);
 
-  const { data: allData } = queryResult;
+  const { data: allData, refetch } = queryResult;
 
   const filteredData = useMemo(() => {
     if (!allData) return [];
