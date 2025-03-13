@@ -7,6 +7,7 @@ import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { usePaginationForListApi } from "@/hooks/pagination/usePaginationForListApi";
 import { TFunction } from "i18next";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { DEFAULT_PAGINATED_DATA } from "@/hooks/pagination";
 
 export type ReferralHistoryInfo = {
   points: number;
@@ -30,7 +31,9 @@ function useFetchPointsHistory(initialPage: number = 1, initialItemsPerPage: num
     initialItemsPerPage
   );
 
-  return queryResult;
+  const data = queryResult.data ?? DEFAULT_PAGINATED_DATA;
+
+  return { ...queryResult, data: data };
 }
 
 async function fetchPointsHistory(rentalityContracts: IRentalityContracts | null | undefined, t: TFunction) {
