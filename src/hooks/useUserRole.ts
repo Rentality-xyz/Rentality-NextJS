@@ -1,5 +1,5 @@
 import { getEtherContractWithSigner } from "@/abis";
-import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
 import { IRentalityUserServiceContract } from "@/features/blockchain/models/IRentalityUserService";
 import { logger } from "@/utils/logger";
 import { useQuery } from "@tanstack/react-query";
@@ -18,42 +18,43 @@ type QueryData = UserRole;
 const useUserRole = () => {
   const ethereumInfo = useEthereum();
 
-  const { isLoading, data: userRole } = useQuery<QueryData>({
+  const queryResult = useQuery<QueryData>({
     queryKey: [USER_ROLE_QUERY_KEY, ethereumInfo?.walletAddress],
-    initialData: UserRole.Guest,
-    queryFn: async () => {
-      if (!ethereumInfo) {
-        throw new Error("Wallet not initialized");
-      }
-
-      const rentalityUserService = (await getEtherContractWithSigner(
-        "userService",
-        ethereumInfo.signer
-      )) as unknown as IRentalityUserServiceContract;
-      if (!rentalityUserService) {
-        throw new Error("useUserRole error: rentalityUserService is null");
-      }
-
-      let userRole = UserRole.Guest;
-      const isHost = await rentalityUserService.isHost(ethereumInfo.walletAddress);
-      const isInvestManager = await rentalityUserService.isInvestorManager(ethereumInfo.walletAddress);
-
-      if (isHost) {
-        userRole |= UserRole.Host;
-      }
-      if (isInvestManager) {
-        userRole |= UserRole.InvestManager;
-      }
-
-      logger.debug("Rentality user role: ", userRole);
-
-      return userRole;
-    },
-    enabled: !!ethereumInfo,
+    queryFn: async () => fetchUserRole(ethereumInfo),
   });
 
-  return { isLoading, userRole, isGuest, isHost, isInvestManager } as const;
+  const data = queryResult.data ?? UserRole.Guest;
+  return { ...queryResult, data: data, userRole: data, isGuest, isHost, isInvestManager } as const;
 };
+
+async function fetchUserRole(ethereumInfo: EthereumInfo | null | undefined) {
+  if (!ethereumInfo) {
+    throw new Error("Wallet not initialized");
+  }
+
+  const rentalityUserService = (await getEtherContractWithSigner(
+    "userService",
+    ethereumInfo.signer
+  )) as unknown as IRentalityUserServiceContract;
+  if (!rentalityUserService) {
+    throw new Error("useUserRole error: rentalityUserService is null");
+  }
+
+  let userRole = UserRole.Guest;
+  const isHost = await rentalityUserService.isHost(ethereumInfo.walletAddress);
+  const isInvestManager = await rentalityUserService.isInvestorManager(ethereumInfo.walletAddress);
+
+  if (isHost) {
+    userRole |= UserRole.Host;
+  }
+  if (isInvestManager) {
+    userRole |= UserRole.InvestManager;
+  }
+
+  logger.debug("Rentality user role: ", userRole);
+
+  return userRole;
+}
 
 function isGuest(role: UserRole) {
   return isRole(role, UserRole.Guest);
