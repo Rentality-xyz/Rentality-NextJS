@@ -2,7 +2,7 @@ import RntCheckbox, { CheckboxLight } from "@/components/common/rntCheckbox";
 import RntInput from "@/components/common/rntInput";
 import RntSelect from "@/components/common/rntSelect";
 import { TripInfo } from "@/model/TripInfo";
-import React, { SetStateAction } from "react";
+import React, { SetStateAction, useEffect } from "react";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
 
@@ -19,6 +19,17 @@ export default function AllowedActionsGuest({
   confirmParams: boolean[];
   setConfirmParams: (value: SetStateAction<boolean[]>) => void;
 }) {
+
+  useEffect(() => {
+    {tripInfo.allowedActions[0].params.map((param, index) => {
+      setInputParams((prev) => {
+        const copy = [...prev];
+        copy[index] = param.value;
+        return copy;
+      });
+    })}
+  })
+
   return (
     <div className="flex w-full flex-col gap-4 py-4">
       {tripInfo.allowedActions[0].params.map((param, index) => {

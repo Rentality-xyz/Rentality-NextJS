@@ -5,7 +5,7 @@ import { TripStatus } from "@/model/blockchain/schemas";
 import { getRefuelCharge, TripInfo } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
-import React, { SetStateAction } from "react";
+import React, { SetStateAction, useEffect } from "react";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 
@@ -24,6 +24,17 @@ export default function AllowedActionsHost({
   setConfirmParams: (value: SetStateAction<boolean[]>) => void;
   t: TFunction;
 }) {
+
+  useEffect(() => {
+    {tripInfo.allowedActions[0].params.map((param, index) => {
+      setInputParams((prev) => {
+        const copy = [...prev];
+        copy[index] = param.value;
+        return copy;
+      });
+    })}
+  })
+
   const refuelCharge = getRefuelCharge(tripInfo, tripInfo.endFuelLevelInPercents);
 
   return (
