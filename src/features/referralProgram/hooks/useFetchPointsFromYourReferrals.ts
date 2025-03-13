@@ -1,12 +1,12 @@
-import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { useRentality } from "@/contexts/rentalityContext";
+import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
+import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useMemo } from "react";
-import { usePaginationState } from "@/hooks/pagination";
 import { ContractReadyToClaimFromHash, RefferalProgram as ReferralProgram } from "@/model/blockchain/schemas";
 import { getReferralProgramDescriptionText } from "../utils";
-import { logger } from "@/utils/logger";
+import { usePaginationState } from "@/hooks/pagination/usePaginationState";
+import { TFunction } from "i18next";
 
 export type PointsFromYourReferralsInfo = {
   methodDescriptions: string;
@@ -29,26 +29,8 @@ function useFetchPointsFromYourReferrals(initialPage: number = 1, initialItemsPe
     data: allDataWithReadyToClaim = { readyToClaim: 0, combinedData: [] },
     error,
   } = useQuery({
-    queryKey: [REFERRAL_POINTS_FROM_YOUR_REFERRALS_QUERY_KEY, ethereumInfo?.walletAddress],
-    queryFn: async () => {
-      if (!rentalityContracts || !ethereumInfo) {
-        throw new Error("Contracts or wallet not initialized");
-      }
-      logger.debug("Fetching points from your referrals");
-
-      const result = await rentalityContracts.referralProgram.getReadyToClaimFromRefferalHash(
-        ethereumInfo.walletAddress
-      );
-
-      if (!result.ok) {
-        throw new Error(result.error.message);
-      }
-
-      const combinedData = combineReferralData(result.value.toClaim, t);
-      const readyToClaim = combinedData.reduce((total, item) => total + item.readyToClaim, 0);
-      return { readyToClaim, combinedData };
-    },
-    enabled: !!rentalityContracts && !!ethereumInfo,
+    queryKey: [REFERRAL_POINTS_FROM_YOUR_REFERRALS_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
+    queryFn: async () => fetchPointsFromYourReferrals(rentalityContracts, ethereumInfo, t),
   });
 
   const totalPageCount = useMemo(() => {
@@ -80,6 +62,26 @@ function useFetchPointsFromYourReferrals(initialPage: number = 1, initialItemsPe
     fetchData,
     error,
   } as const;
+}
+
+async function fetchPointsFromYourReferrals(
+  rentalityContracts: IRentalityContracts | null | undefined,
+  ethereumInfo: EthereumInfo | null | undefined,
+  t: TFunction
+) {
+  if (!rentalityContracts || !ethereumInfo) {
+    throw new Error("Contracts or wallet not initialized");
+  }
+
+  const result = await rentalityContracts.referralProgram.getReadyToClaimFromRefferalHash(ethereumInfo.walletAddress);
+
+  if (!result.ok) {
+    throw new Error(result.error.message);
+  }
+
+  const combinedData = combineReferralData(result.value.toClaim, t);
+  const readyToClaim = combinedData.reduce((total, item) => total + item.readyToClaim, 0);
+  return { readyToClaim, combinedData };
 }
 
 export default useFetchPointsFromYourReferrals;
