@@ -63,6 +63,7 @@ function TripAdditionalActions({
     }
 
     if (
+      isHost &&
       inputParams.length > 0 &&
       inputParams.some((i, index) => tripInfo?.allowedActions[0]?.params[index]?.required === true && isEmpty(i))
     ) {
