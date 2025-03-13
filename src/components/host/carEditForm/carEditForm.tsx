@@ -228,6 +228,7 @@ export default function CarEditForm({
           showInfo(t("vehicles.edited"));
         }
       }
+      showInfo(t("vehicles.successfully_listed"));
       if (isInvestmentCar) {
         router.push("/host/invest");
       } else {
