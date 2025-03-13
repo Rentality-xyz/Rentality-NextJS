@@ -17,9 +17,9 @@ export function usePaginationForListApi<
   queryClient?: QueryClient
 ): UsePaginationResult<TData> {
   const { currentPage, itemsPerPage, filters, updatePagination } = usePaginationState(initialPage, initialItemsPerPage);
-  const queryResult = useQuery(options, queryClient);
+  const { refetch, ...queryResult } = useQuery(options, queryClient);
 
-  const { data: allData, refetch } = queryResult;
+  const { data: allData } = queryResult;
 
   const filteredData = useMemo(() => {
     if (!allData) return [];
