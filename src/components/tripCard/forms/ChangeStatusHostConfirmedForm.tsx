@@ -64,6 +64,12 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
           return;
         }
       }
+
+      if (formData.odotemer === 0 || formData.fuelOrBatteryLevel === 0) {
+        showDialog(t("booked.input_full_odom"));
+        return;
+      }
+
       changeStatusCallback(async () => {
         return tripInfo.allowedActions[0].action(
           BigInt(tripInfo.tripId),
