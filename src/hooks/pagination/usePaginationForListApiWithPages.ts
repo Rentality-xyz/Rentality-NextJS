@@ -37,5 +37,5 @@ export function usePaginationForListApiWithPages<
     ...queryResult,
     data: { pageData: pageData ?? [], currentPage, totalPageCount },
     fetchData,
-  } as UsePaginationResult<TData>;
+  } as unknown as UsePaginationResult<TData>;
 }

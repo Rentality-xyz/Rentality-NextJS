@@ -36,5 +36,9 @@ export function usePaginationForListApiWithFilter<
     await updatePagination(page, itemsPerPage, filters);
   };
 
-  return { ...queryResult, data: { pageData, currentPage, totalPageCount }, fetchData } as UsePaginationResult<TData>;
+  return {
+    ...queryResult,
+    data: { pageData, currentPage, totalPageCount },
+    fetchData,
+  } as unknown as UsePaginationResult<TData>;
 }
