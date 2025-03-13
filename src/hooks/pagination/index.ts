@@ -6,6 +6,7 @@ export type PaginatedData<T> = {
   totalPageCount: number;
 };
 
-export type UsePaginationResult<T> = Omit<UseQueryResult<PaginatedData<T>, Error>, "refetch"> & {
+export type UsePaginationResult<T> = Omit<UseQueryResult<PaginatedData<T>, Error>, "refetch" | "data"> & {
+  data: PaginatedData<T>;
   fetchData: (page?: number, itemsPerPage?: number, filters?: Record<string, any>) => Promise<void>;
 };
