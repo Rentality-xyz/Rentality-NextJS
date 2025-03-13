@@ -1,6 +1,6 @@
-import { useRentality } from "@/contexts/rentalityContext";
-import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { DefinedUseQueryResult, useQuery } from "@tanstack/react-query";
+import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
+import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
+import { useQuery } from "@tanstack/react-query";
 
 export type DeliveryPrices = {
   from1To25milesPrice: number;
@@ -23,28 +23,33 @@ function useFetchDeliveryPrices() {
   const { rentalityContracts } = useRentality();
 
   const queryResult = useQuery<QueryData>({
-    queryKey: [DELIVERY_PRICES_QUERY_KEY, ethereumInfo?.walletAddress],
-    queryFn: async () => {
-      if (!rentalityContracts || !ethereumInfo) {
-        throw new Error("Contracts or wallet not initialized");
-      }
-
-      const result = await rentalityContracts.gateway.getUserDeliveryPrices(ethereumInfo.walletAddress);
-      if (!result.ok) {
-        throw result.error;
-      }
-
-      const deliveryPrices: DeliveryPrices = {
-        from1To25milesPrice: Number(result.value.underTwentyFiveMilesInUsdCents) / 100,
-        over25MilesPrice: Number(result.value.aboveTwentyFiveMilesInUsdCents) / 100,
-        isInitialized: result.value.initialized,
-      };
-      return deliveryPrices;
-    },
+    queryKey: [DELIVERY_PRICES_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
+    queryFn: async () => fetchDeliveryPrices(rentalityContracts, ethereumInfo),
   });
 
   const data = queryResult.data ?? emptyDeliveryPrices;
-  return { ...queryResult, data: data } as DefinedUseQueryResult<QueryData, Error>;
+  return { ...queryResult, data: data };
+}
+
+async function fetchDeliveryPrices(
+  rentalityContracts: IRentalityContracts | null | undefined,
+  ethereumInfo: EthereumInfo | null | undefined
+) {
+  if (!rentalityContracts || !ethereumInfo) {
+    throw new Error("Contracts or wallet not initialized");
+  }
+
+  const result = await rentalityContracts.gateway.getUserDeliveryPrices(ethereumInfo.walletAddress);
+  if (!result.ok) {
+    throw result.error;
+  }
+
+  const deliveryPrices: DeliveryPrices = {
+    from1To25milesPrice: Number(result.value.underTwentyFiveMilesInUsdCents) / 100,
+    over25MilesPrice: Number(result.value.aboveTwentyFiveMilesInUsdCents) / 100,
+    isInitialized: result.value.initialized,
+  };
+  return deliveryPrices;
 }
 
 export default useFetchDeliveryPrices;
