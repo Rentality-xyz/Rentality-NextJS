@@ -10,7 +10,7 @@ import { TripInsurance } from "../models";
 import { logger } from "@/utils/logger";
 import { usePaginationForListApi } from "@/hooks/pagination/usePaginationForListApi";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { DEFAULT_PAGINATED_DATA } from "@/hooks/pagination";
+import { getDefaultPaginatedData } from "@/hooks/pagination";
 
 export type InsuranceFiltersType = {};
 
@@ -29,7 +29,7 @@ function useFetchInsurances(isHost: boolean, initialPage: number = 1, initialIte
     initialItemsPerPage
   );
 
-  const data = queryResult.data ?? DEFAULT_PAGINATED_DATA;
+  const data = queryResult.data ?? getDefaultPaginatedData();
 
   return { ...queryResult, data: data };
 }
