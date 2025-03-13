@@ -24,16 +24,17 @@ export default function AllowedActionsHost({
   setConfirmParams: (value: SetStateAction<boolean[]>) => void;
   t: TFunction;
 }) {
-
   useEffect(() => {
-    {tripInfo.allowedActions[0].params.map((param, index) => {
-      setInputParams((prev) => {
-        const copy = [...prev];
-        copy[index] = param.value;
-        return copy;
+    {
+      tripInfo.allowedActions[0].params.map((param, index) => {
+        setInputParams((prev) => {
+          const copy = [...prev];
+          copy[index] = param.value;
+          return copy;
+        });
       });
-    })}
-  })
+    }
+  }, [tripInfo.allowedActions, setInputParams]);
 
   const refuelCharge = getRefuelCharge(tripInfo, tripInfo.endFuelLevelInPercents);
 

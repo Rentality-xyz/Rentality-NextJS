@@ -19,16 +19,17 @@ export default function AllowedActionsGuest({
   confirmParams: boolean[];
   setConfirmParams: (value: SetStateAction<boolean[]>) => void;
 }) {
-
   useEffect(() => {
-    {tripInfo.allowedActions[0].params.map((param, index) => {
-      setInputParams((prev) => {
-        const copy = [...prev];
-        copy[index] = param.value;
-        return copy;
+    {
+      tripInfo.allowedActions[0].params.map((param, index) => {
+        setInputParams((prev) => {
+          const copy = [...prev];
+          copy[index] = param.value;
+          return copy;
+        });
       });
-    })}
-  })
+    }
+  }, [tripInfo.allowedActions, setInputParams]);
 
   return (
     <div className="flex w-full flex-col gap-4 py-4">
