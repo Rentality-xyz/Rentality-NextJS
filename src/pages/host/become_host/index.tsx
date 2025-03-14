@@ -4,9 +4,6 @@ import PageTitle from "@/components/pageTitle/pageTitle";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import arrowUpTurquoise from "@/images/arrows/arrowUpTurquoise.svg";
-import arrowDownTurquoise from "@/images/arrows/arrowDownTurquoise.svg";
-import tutorialVideo from "@/images/tutorial_video.png";
 import RntButton from "@/components/common/rntButton";
 import { CheckboxLight } from "@/components/common/rntCheckbox";
 import Link from "next/link";
@@ -242,7 +239,7 @@ function BecomeHostContent() {
         </div>
 
         <div className="flex flex-col max-xl:mt-8">
-          <Image src={tutorialVideo} alt="Tutorial video" className="ml-1" />
+          <Image src={"/images/tutorial_video.png"} width={628} height={412} alt="Tutorial video" className="ml-1" />
           <RntButton type="submit" className="mt-4 w-full">
             {t("become_host.btn_how_to_start")}
           </RntButton>
@@ -323,8 +320,10 @@ function BecomeHostStep({
         </div>
         {children && (
           <Image
-            src={isOpen ? arrowUpTurquoise : arrowDownTurquoise}
+            src={isOpen ? "/images/icons/arrows/arrowUpTurquoise.svg" : "/images/icons/arrows/arrowDownTurquoise.svg"}
             alt=""
+            width={20}
+            height={20}
             className={`ml-1 ${isEnabled && !isPassed ? "" : "hidden"}`}
           />
         )}

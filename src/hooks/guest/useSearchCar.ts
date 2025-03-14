@@ -13,6 +13,7 @@ import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { bigIntReplacer } from "@/utils/json";
 import { getTimeZoneIdByAddress } from "@/utils/timezone";
 import { formatSearchAvailableCarsContractRequest } from "@/utils/searchMapper";
+import { logger } from "@/utils/logger";
 
 const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
   const ethereumInfo = useEthereum();
@@ -51,7 +52,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
             : request.deliveryInfo.returnLocation.locationInfo.longitude.toFixed(6),
         };
 
-        console.log(
+        logger.info(
           "checkCarAvailabilityWithDelivery request",
           JSON.stringify(
             { carId, contractDateFromUTC, contractDateToUTC, contractSearchCarParams, pickUpInfo, returnInfo },
@@ -69,7 +70,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           returnInfo
         );
         if (!result.ok) {
-          console.error("checkCarAvailabilityWithDelivery error:" + result.error);
+          logger.error("checkCarAvailabilityWithDelivery error:" + result.error);
           return false;
         }
 
@@ -77,11 +78,11 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
         if (availableCarDTO) {
           validateContractAvailableCarDTO(availableCarDTO);
         }
-        console.log("availableCarDTO:", JSON.stringify(availableCarDTO, bigIntReplacer, 2));
+        logger.info("availableCarDTO:", JSON.stringify(availableCarDTO, bigIntReplacer, 2));
         const carInfoResult = await rentalityContracts.gateway.getCarInfoById(BigInt(carId));
 
         if (!carInfoResult.ok) {
-          console.error("checkCarAvailabilityWithDelivery error:" + carInfoResult.error);
+          logger.error("checkCarAvailabilityWithDelivery error:" + carInfoResult.error);
           return false;
         }
         const tankVolumeInGal =
@@ -168,8 +169,8 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
         setCarInfo(selectedCarDetails);
 
         return true;
-      } catch (e) {
-        console.error("checkCarAvailabilityWithDelivery error:" + e);
+      } catch (error) {
+        logger.error("checkCarAvailabilityWithDelivery error:" + error);
         return false;
       } finally {
         setIsLoading(false);

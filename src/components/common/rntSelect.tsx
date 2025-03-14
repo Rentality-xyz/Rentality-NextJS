@@ -51,15 +51,17 @@ const RntSelect = forwardRef<HTMLSelectElement, RntSelectProps>(
     );
     const cTranspStyleClassName = "custom-select text-center text-rentality-secondary";
     const arrowStyle = readOnly
-      ? "bg-[url('../images/arrows/arrowDownDisabled.svg')]"
-      : "bg-[url('../images/arrows/arrowDownTurquoise.svg')]";
+      ? "bg-[url('/images/icons/arrows/arrowDownDisabled.svg')]"
+      : "bg-[url('/images/icons/arrows/arrowDownTurquoise.svg')]";
 
     return (
       <div className={cClassName}>
         {!isEmpty(label) &&
           (isTransparentStyle ? (
             <label className={cn("flex items-center", lClassName)} htmlFor={id}>
-              {!isEmpty(iconFrontLabel?.src) && <Image src={iconFrontLabel!!} alt="" className="mr-2" />}
+              {!isEmpty(iconFrontLabel?.src) && (
+                <Image src={iconFrontLabel!!} width={24} height={24} alt="" className="mr-2" />
+              )}
               {label}
             </label>
           ) : (

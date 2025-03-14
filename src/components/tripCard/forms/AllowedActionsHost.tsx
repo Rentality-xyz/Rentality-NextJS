@@ -1,6 +1,4 @@
-import RntCheckbox, { CheckboxLight } from "@/components/common/rntCheckbox";
-import RntInput from "@/components/common/rntInput";
-import RntSelect from "@/components/common/rntSelect";
+import { CheckboxLight } from "@/components/common/rntCheckbox";
 import { TripStatus } from "@/model/blockchain/schemas";
 import { getRefuelCharge, TripInfo } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
@@ -8,6 +6,7 @@ import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import React, { SetStateAction } from "react";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
+import { isEmpty } from "@/utils/string";
 
 export default function AllowedActionsHost({
   tripInfo,
@@ -24,6 +23,7 @@ export default function AllowedActionsHost({
   setConfirmParams: (value: SetStateAction<boolean[]>) => void;
   t: TFunction;
 }) {
+
   const refuelCharge = getRefuelCharge(tripInfo, tripInfo.endFuelLevelInPercents);
 
   return (
@@ -41,9 +41,13 @@ export default function AllowedActionsHost({
                   disabled={tripInfo.allowedActions[0].readonly}
                   value={inputParams[index]}
                   onChange={(e) => {
+                    const newValue = e.target.value;
+                    if(isEmpty(newValue)) {
+                      return
+                    }
                     setInputParams((prev) => {
                       const copy = [...prev];
-                      copy[index] = e.target.value;
+                      copy[index] = newValue;
                       return copy;
                     });
                   }}

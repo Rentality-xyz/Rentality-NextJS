@@ -8,6 +8,7 @@ import { isEmpty } from "@/utils/string";
 import { ChatMessage } from "./models/chatMessage";
 import { signUserChatMessage } from "./crypto";
 import { wakuPeerExchangeDiscovery } from "@waku/discovery";
+import { logger } from "@/utils/logger";
 
 const PubsubTopic = "/waku/2/default-waku/proto";
 export function getUserChatContentTopic(address: string) {
@@ -15,7 +16,7 @@ export function getUserChatContentTopic(address: string) {
 }
 
 async function initializeNode() {
-  console.log("Initializing node");
+  logger.info("Initializing node");
   //const node = await createLightNode({ defaultBootstrap: true });
   const node = await createLightNode({
     pubsubTopics: [PubsubTopic],
@@ -27,11 +28,11 @@ async function initializeNode() {
       peerDiscovery: [wakuPeerExchangeDiscovery([PubsubTopic])],
     },
   });
-  console.log("Starting Waku node.");
+  logger.info("Starting Waku node.");
   await node.start();
-  console.log("Waiting for a peer");
+  logger.info("Waiting for a peer");
   await waitForRemotePeer(node, [Protocols.Filter, Protocols.LightPush, Protocols.Store]);
-  console.log("Node initialized");
+  logger.info("Node initialized");
   return node;
 }
 
@@ -89,7 +90,7 @@ export class Client {
     //   this.onUserChatMessage
     // );
 
-    console.log(`Listening for messages at ${contentTopic}`);
+    logger.info(`Listening for messages at ${contentTopic}`);
   }
 
   onUserChatMessage(msg: DecodedMessage) {
@@ -99,7 +100,7 @@ export class Client {
     const chatMessage = ChatMessage.decode(msg.payload);
     if (!chatMessage) return;
 
-    console.log(`Received chat message from ${chatMessage.from}`);
+    logger.info(`Received chat message from ${chatMessage.from}`);
     this.onUserMessageReceived(
       chatMessage.from,
       chatMessage.to,
@@ -139,11 +140,11 @@ export class Client {
             })
             .filter(Boolean)
         );
-        console.log(`For user ${walletAddress} restored ${messages?.length ?? 0} message(s)`);
+        logger.info(`For user ${walletAddress} restored ${messages?.length ?? 0} message(s)`);
         return messages;
       }
-    } catch (e) {
-      console.error("Failed to retrieve messages", e);
+    } catch (error) {
+      logger.error("Failed to retrieve messages", error);
     }
   }
 

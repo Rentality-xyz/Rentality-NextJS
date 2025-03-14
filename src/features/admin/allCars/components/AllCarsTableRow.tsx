@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { cn } from "@/utils";
 import { formatAddress } from "@/utils/addressFormatters";
 import RntButton from "@/components/common/rntButton";
+import { logger } from "@/utils/logger";
 
 type VinData = {
   checked: boolean;
@@ -43,10 +44,10 @@ const AllCarsTableRow = ({
 
     try {
       const response = await checkVin(carDetails.vinNumber);
-      console.debug("RESPONSE", response);
+      logger.debug("RESPONSE", response);
       setVerifyVin({ checked: true, vinInfo: response });
-    } catch (e) {
-      console.error("handleCheckVin error:", e);
+    } catch (error) {
+      logger.error("handleCheckVin error:", error);
     } finally {
       setIsLoadingVinCheck(false);
     }

@@ -26,7 +26,12 @@ export default function Document() {
         )}
       </Head>
       <body className="backgroundMain font-['Montserrat',Arial,sans-serif] text-white">
-        <Main />
+        <div
+          id="main_wrapper"
+          className="mx-auto max-w-[1920px] overflow-hidden border-x-0 border-x-[#ffffff1f] min-[1921px]:border-x"
+        >
+          <Main />
+        </div>
         <NextScript />
       </body>
     </Html>

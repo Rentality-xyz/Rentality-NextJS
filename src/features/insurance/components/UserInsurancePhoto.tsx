@@ -5,8 +5,6 @@ import { isEmpty } from "@/utils/string";
 import Image from "next/image";
 import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
-import ic_edit_car from "@/images/ic_edit_car_white.png";
-import ic_delete from "@/images/ic_delete_white.svg";
 
 export function UserInsurancePhoto({
   insurancePhoto: photo,
@@ -82,7 +80,7 @@ export function UserInsurancePhoto({
               handleDeleteClick();
             }}
           >
-            <Image src={ic_delete} alt="" className="w-[22px]" />
+            <Image src={"/images/icons/ic_delete_white.svg"} width={60} height={60} alt="" className="w-[22px]" />
           </button>
           <button
             className="absolute right-1 top-1 rounded-2xl bg-[#000000] bg-opacity-75 p-1"
@@ -92,7 +90,7 @@ export function UserInsurancePhoto({
               handleEditClick();
             }}
           >
-            <Image src={ic_edit_car} alt="" className="w-[22px]" />
+            <Image src={"/images/icons/ic_edit_car_white.png"} width={48} height={48} alt="" className="w-[22px]" />
           </button>
         </div>
       )}

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useDimoAuthState } from "@dimo-network/login-with-dimo";
 import axios from "@/utils/cachedAxios";
 import { useRouter } from "next/router";
+import { logger } from "@/utils/logger";
 
 export type DimoCarResponse = {
   definition: DimoCar;
@@ -69,7 +70,7 @@ const useDimo = (myListings: any[]): UseDimoReturn => {
       });
       setDimoVehicles(response.data);
     } catch (error) {
-      console.error("Error fetching data from DIMO API:", error);
+      logger.error("Error fetching data from DIMO API:", error);
     } finally {
       setIsLoadingDimo(false);
     }

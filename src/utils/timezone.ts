@@ -6,6 +6,7 @@ import { formatLocationInfoUpToState, LocationInfo } from "@/model/LocationInfo"
 import { Err, Ok, Result } from "@/model/utils/result";
 import { UTC_TIME_ZONE_ID } from "./date";
 import { getLocationInfoFromGoogleByAddress } from "./location";
+import { logger } from "./logger";
 
 // Client functions with cache
 export async function getTimeZoneIdByLocation(latitude: number, longitude: number) {
@@ -14,13 +15,13 @@ export async function getTimeZoneIdByLocation(latitude: number, longitude: numbe
   );
 
   if (response.status !== 200) {
-    console.log("TimeZone Id was not fetched: " + response.status + " with data " + response.data);
+    logger.info("TimeZone Id was not fetched: " + response.status + " with data " + response.data);
     return "";
   }
 
   const data = response.data as TimezoneResponse;
   if ("error" in data) {
-    console.log("TimeZone Id was not fetched: with error " + data.error);
+    logger.info("TimeZone Id was not fetched: with error " + data.error);
     return "";
   }
 
@@ -30,19 +31,19 @@ export async function getTimeZoneIdByLocation(latitude: number, longitude: numbe
 export async function getTimeZoneIdByAddress(locationInfo: Pick<LocationInfo, "country" | "state">) {
   const address = formatLocationInfoUpToState(locationInfo);
   if (isEmpty(address)) {
-    console.log("TimeZone Id was not fetched: address is empty");
+    logger.info("TimeZone Id was not fetched: address is empty");
     return null;
   }
 
   const response: AxiosResponse = await axios.get(`/api/timezoneByAddress?address=${address}`);
 
   if (response.status !== 200) {
-    console.log("TimeZone Id was not fetched: " + response.status + " with data " + response.data);
+    logger.info("TimeZone Id was not fetched: " + response.status + " with data " + response.data);
     return null;
   }
   const data = response.data as TimezoneResponse;
   if ("error" in data) {
-    console.log("TimeZone Id was not fetched: with error " + data.error);
+    logger.info("TimeZone Id was not fetched: with error " + data.error);
     return null;
   }
   return data.timezone;
@@ -65,7 +66,7 @@ export async function getTimeZoneIdFromGoogleByLocation(
   );
 
   if (!googleTimeZoneResponse.ok) {
-    console.error(`getTimeZoneIdFromLocation error: googleTimeZoneResponse is ${googleTimeZoneResponse.status}`);
+    logger.error(`getTimeZoneIdFromLocation error: googleTimeZoneResponse is ${googleTimeZoneResponse.status}`);
     return Err(`getTimeZoneIdFromLocation error: googleTimeZoneResponse is ${googleTimeZoneResponse.status}`);
   }
 
@@ -92,7 +93,7 @@ export async function getTimeZoneIdFromGoogleByAddress(
   const locationInfoResult = await getLocationInfoFromGoogleByAddress(address, googleMapsApiKey);
 
   if (!locationInfoResult.ok) {
-    console.error(`getTimeZoneIdFromAddress error: locationInfoResult error: ${locationInfoResult.error}`);
+    logger.error(`getTimeZoneIdFromAddress error: locationInfoResult error: ${locationInfoResult.error}`);
     return Err(`getTimeZoneIdFromAddress error: locationInfoResult error: ${locationInfoResult.error}`);
   }
 

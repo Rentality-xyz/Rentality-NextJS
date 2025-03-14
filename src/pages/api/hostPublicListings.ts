@@ -6,6 +6,7 @@ import { validateContractPublicHostCarDTO } from "@/model/blockchain/schemas_uti
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { env } from "@/utils/env";
 import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { logger } from "@/utils/logger";
 import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Provider, Wallet } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -27,7 +28,7 @@ const getHostAddressFromQuery = async (query: string | string[] | undefined, pro
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const privateKey = env.SIGNER_PRIVATE_KEY;
   if (isEmpty(privateKey)) {
-    console.error("API hostPublicListings error: private key was not set");
+    logger.error("API hostPublicListings error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
     return;
   }
@@ -36,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const chainIdNumber = Number(chainId) > 0 ? Number(chainId) : env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
   if (!chainIdNumber) {
-    console.error("API hostPublicListings error: chainId was not provided");
+    logger.error("API hostPublicListings error: chainId was not provided");
     res.status(400).json({ error: "chainId was not provided" });
     return;
   }
@@ -44,7 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const providerApiUrl = getProviderApiUrlFromEnv(chainIdNumber);
 
   if (!providerApiUrl) {
-    console.error(`API hostPublicListings error: API URL for chain id ${chainIdNumber} was not set`);
+    logger.error(`API hostPublicListings error: API URL for chain id ${chainIdNumber} was not set`);
     res.status(500).json({ error: `API hostPublicListings error: API URL for chain id ${chainIdNumber} was not set` });
     return;
   }
@@ -53,12 +54,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const hostAddress = await getHostAddressFromQuery(hostQuery, provider);
 
   if (!hostAddress || isEmpty(hostAddress)) {
-    console.error("API hostPublicListings error: hostAddress was not provided");
+    logger.error("API hostPublicListings error: hostAddress was not provided");
     res.status(400).json({ error: "hostAddress was not provided" });
     return;
   }
 
-  console.log(`\nCalling hostPublicListings API for ${chainIdNumber} chain id and ${hostAddress} host...`);
+  logger.info(`\nCalling hostPublicListings API for ${chainIdNumber} chain id and ${hostAddress} host...`);
 
   const wallet = new Wallet(privateKey, provider);
   try {
@@ -102,7 +103,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     res.status(200).json(hostPublicListingsData);
   } catch (error) {
-    console.error(error);
+    logger.error("API hostPublicListings error:", error);
     res.status(500).json({ error: "An error occurred during blockchain method call" });
   }
 }

@@ -1,17 +1,18 @@
 import { useTranslation } from "react-i18next";
 import React from "react";
-import imgCopy from "@/images/ic_copy_white_24dp.svg";
 import Image from "next/image";
 import RntButton from "@/components/common/rntButton";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import { copyToClipboard } from "@/utils/clipboard";
 import { isEmpty } from "@/utils/string";
 import useFetchReferralLinks from "../hooks/useFetchReferralLinks";
+import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 
 export default function ReferralLinks() {
   const { data } = useFetchReferralLinks();
   const { t } = useTranslation();
   const { inviteHash, usedInviteHash } = data;
+  const { showInfo } = useRntSnackbars();
 
   const inviteLink = !isEmpty(inviteHash)
     ? new URL(`/referralLink/${inviteHash}`, window.location.origin).toString()
@@ -37,11 +38,21 @@ export default function ReferralLinks() {
             className="ml-auto flex w-16 items-center justify-center text-white md:w-36"
             disabled={!inviteHash}
             isVisibleCircle={false}
-            onClick={() => copyToClipboard(inviteLink)}
+            onClick={() => {
+              copyToClipboard(inviteLink)
+              showInfo(t("referrals_and_point.copied"))
+            }
+            }
           >
-            <Image src={imgCopy} alt="" className="h-5 w-5 md:mr-1" />
+            <Image
+              src={"/images/icons/ic_copy_white_24dp.svg"}
+              width={24}
+              height={24}
+              alt=""
+              className="h-5 w-5 md:mr-1"
+            />
             <div className="ml-0.5 flex">
-              <span className="max-md:hidden">Copy</span>
+              <span className="max-md:hidden">{t("referrals_and_point.copy")}</span>
             </div>
           </RntButton>
         </div>

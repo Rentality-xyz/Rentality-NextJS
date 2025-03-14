@@ -77,7 +77,7 @@ function AdminPanelPageContent() {
     try {
       await withdrawFromPlatform(value);
       setEthToWithdraw("0");
-    } catch (e) {
+    } catch (error) {
       showError(t_errors("withdraw"));
     }
   };
@@ -93,8 +93,8 @@ function AdminPanelPageContent() {
 
     try {
       await setPlatformFeeInPPM(value);
-    } catch (e) {
-      showError(t_errors("platform_commission_error") + e);
+    } catch (error) {
+      showError(t_errors("platform_commission_error") + error);
     }
   };
 
@@ -108,8 +108,8 @@ function AdminPanelPageContent() {
     }
     try {
       await saveKycCommission(value);
-    } catch (e) {
-      showError(t_errors("kyc_commission_error") + e);
+    } catch (error) {
+      showError(t_errors("kyc_commission_error") + error);
     }
   };
 
@@ -123,8 +123,8 @@ function AdminPanelPageContent() {
     }
     try {
       await saveClaimWaitingTime(value);
-    } catch (e) {
-      showError(t_errors("claim_waiting_time_error") + e);
+    } catch (error) {
+      showError(t_errors("claim_waiting_time_error") + error);
     }
   };
 
@@ -133,8 +133,8 @@ function AdminPanelPageContent() {
 
     try {
       await updateKycInfoForAddress(addressToUpdateKyc);
-    } catch (e) {
-      showError(t_errors("update_kyc_error") + e);
+    } catch (error) {
+      showError(t_errors("update_kyc_error") + error);
     }
   }
 
@@ -148,8 +148,8 @@ function AdminPanelPageContent() {
 
     try {
       await setTestKycInfoForAddress(addressToSetTestKycInfo);
-    } catch (e) {
-      showError(t_errors("set_test_kyc_info_error") + e);
+    } catch (error) {
+      showError(t_errors("set_test_kyc_info_error") + error);
     }
   }
 
@@ -158,8 +158,8 @@ function AdminPanelPageContent() {
 
     try {
       await createTestTrip(testCarId);
-    } catch (e) {
-      showError("handleCreateTestTrip error: " + e);
+    } catch (error) {
+      showError("handleCreateTestTrip error: " + error);
     }
   }
 

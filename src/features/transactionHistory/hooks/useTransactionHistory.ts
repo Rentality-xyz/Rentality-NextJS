@@ -6,6 +6,7 @@ import { Err, Ok, Result } from "@/model/utils/result";
 import { bigIntReplacer } from "@/utils/json";
 import { mapContractTripDTOToTransactionHistoryInfo } from "../models/mappers/contractTripDTOToTransactionHistoryInfo";
 import { TransactionHistoryInfo } from "../models";
+import { logger } from "@/utils/logger";
 
 export type TransactionHistoryFiltersType = {
   dateFrom?: Date;
@@ -39,7 +40,7 @@ const useTransactionHistory = (isHost: boolean) => {
       const slicedData = filteredData.slice((page - 1) * itemsPerPage, page * itemsPerPage);
       setCurrentPage(page);
       setData(slicedData);
-      console.log(`slicedData.length: ${slicedData.length} | itemsPerPage: ${itemsPerPage}`);
+      logger.info(`slicedData.length: ${slicedData.length} | itemsPerPage: ${itemsPerPage}`);
 
       setTotalPageCount(Math.ceil(filteredData.length / itemsPerPage));
     },
@@ -58,7 +59,7 @@ const useTransactionHistory = (isHost: boolean) => {
       }
 
       if (!rentalityContracts) {
-        console.error("fetchData error: rentalityContract is null");
+        logger.error("fetchData error: rentalityContract is null");
         return Err("Contract is not initialized");
       }
 
@@ -70,7 +71,7 @@ const useTransactionHistory = (isHost: boolean) => {
         const result = await rentalityContracts.gateway.getTripsAs(isHost);
 
         if (!result.ok) {
-          console.error("fetchData error: " + result.error);
+          logger.error("fetchData error: " + result.error);
           return Err("Get data error. See logs for more details");
         }
 
@@ -86,13 +87,13 @@ const useTransactionHistory = (isHost: boolean) => {
           return b.startDateTime.getTime() - a.startDateTime.getTime();
         });
 
-        console.log("data", JSON.stringify(data, bigIntReplacer, 2));
+        logger.info("data", JSON.stringify(data, bigIntReplacer, 2));
 
         setAllData(data);
         filterData(data, filters, page, itemsPerPage);
         return Ok(true);
-      } catch (e) {
-        console.error("fetchData error" + e);
+      } catch (error) {
+        logger.error("fetchData error" + error);
         return Err("Get data error. See logs for more details");
       } finally {
         setIsLoading(false);

@@ -3,6 +3,7 @@ import { isEmpty } from "@/utils/string";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { getLocationInfoFromGoogleByAddress } from "@/utils/location";
+import { logger } from "@/utils/logger";
 
 export type ParseLocationRequest = {
   address: string;
@@ -25,7 +26,7 @@ export type ParseLocationResponse =
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ParseLocationResponse>) {
   const GOOGLE_MAPS_API_KEY = env.GOOGLE_MAPS_API_KEY;
   if (isEmpty(GOOGLE_MAPS_API_KEY)) {
-    console.error("ParseLocation error: GOOGLE_MAPS_API_KEY was not set");
+    logger.error("ParseLocation error: GOOGLE_MAPS_API_KEY was not set");
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
@@ -37,12 +38,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   const { address, timestamp } = parseQueryResult.value;
-  console.log(`\nCalling ParseLocation API with params: 'address'=${address} | 'timestamp'=${timestamp}`);
+  logger.info(`\nCalling ParseLocation API with params: 'address'=${address} | 'timestamp'=${timestamp}`);
 
   const locationInfoResult = await getLocationInfoFromGoogleByAddress(address, GOOGLE_MAPS_API_KEY);
 
   if (!locationInfoResult.ok) {
-    console.error(locationInfoResult.error);
+    logger.error(locationInfoResult.error);
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }

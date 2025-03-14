@@ -3,6 +3,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { createSecret } from "@/pages/api/motionscloud/createCase";
 import axios from "@/utils/cachedAxios";
 import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
+import { logger } from "@/utils/logger";
 import { useState } from "react";
 
 export default function useMotionsCloud() {
@@ -13,18 +14,18 @@ export default function useMotionsCloud() {
   const handleCreateCase = async (tripId: number) => {
     const rentality = rentalityContract.rentalityContracts;
     if (!rentality) {
-      console.error("Use motions cloud: Rentality contract is not initialized");
+      logger.error("Use motions cloud: Rentality contract is not initialized");
       return;
     }
     if (!ethereumInfo) {
-      console.error("Use motions cloud: Ethereum context is not initialized");
+      logger.error("Use motions cloud: Ethereum context is not initialized");
       return;
     }
 
     try {
       const caseInfo = await rentality.gateway.getMotionsCloudCaseData(BigInt(tripId));
       if (!caseInfo.ok) {
-        console.log("Motions cloud: case number is not found");
+        logger.info("Motions cloud: case number is not found");
         return;
       }
       setIsLoading(true);
@@ -36,14 +37,14 @@ export default function useMotionsCloud() {
         chainId: ethereumInfo.chainId,
       });
       if (response.status !== 200) {
-        console.log("MotionsCloud: failed to create case with error: ", response.data);
+        logger.info("MotionsCloud: failed to create case with error: ", response.data);
         return;
       } else {
-        console.log("MotionsCloud: case created!");
+        logger.info("MotionsCloud: case created!");
         return;
       }
     } catch (error) {
-      console.error("Error creating motionsCloud case:", error);
+      logger.error("Error creating motionsCloud case:", error);
     } finally {
       setIsLoading(false);
     }
@@ -52,11 +53,11 @@ export default function useMotionsCloud() {
   const handleUploadPhoto = async (tripId: number, photos: FormData) => {
     const rentality = rentalityContract.rentalityContracts;
     if (!rentality) {
-      console.error("Use motions cloud: Rentality contract is not initialized");
+      logger.error("Use motions cloud: Rentality contract is not initialized");
       return;
     }
     if (!ethereumInfo) {
-      console.error("Use motions cloud: Ethereum context is not initialized");
+      logger.error("Use motions cloud: Ethereum context is not initialized");
       return;
     }
     try {
@@ -64,7 +65,7 @@ export default function useMotionsCloud() {
 
       const token = await rentality.motionsCloud.getInsuranceCaseByTrip(BigInt(tripId));
       if (!token.ok) {
-        console.log("Motions cloud: case number is not found");
+        logger.info("Motions cloud: case number is not found");
         return;
       }
       const { secret, baseUrl } = await createSecret();
@@ -76,11 +77,11 @@ export default function useMotionsCloud() {
       });
 
       if (response.status !== 200) {
-        console.log("MotionsCloud: failed to upload photo with error: ", response.data);
+        logger.info("MotionsCloud: failed to upload photo with error: ", response.data);
         return;
       }
     } catch (error) {
-      console.error("Error creating motionsCloud case:", error);
+      logger.error("Error creating motionsCloud case:", error);
     } finally {
       setIsLoading(false);
     }
@@ -89,11 +90,11 @@ export default function useMotionsCloud() {
   const getAiResponseByTripIfExists = async (tripId: number) => {
     const rentality = rentalityContract.rentalityContracts;
     if (!rentality) {
-      console.error("Use motions cloud: Rentality contract is not initialized");
+      logger.error("Use motions cloud: Rentality contract is not initialized");
       return;
     }
     if (!ethereumInfo) {
-      console.error("Use motions cloud: Ethereum context is not initialized");
+      logger.error("Use motions cloud: Ethereum context is not initialized");
       return;
     }
     try {
@@ -102,11 +103,11 @@ export default function useMotionsCloud() {
       if (response.ok && response.value !== "") {
         return await getMetaDataFromIpfs(response.value);
       } else {
-        console.error("Motions cloud: response not found");
+        logger.error("Motions cloud: response not found");
         return;
       }
     } catch (error) {
-      console.error("Error geting motionsCloud ai response:", error);
+      logger.error("Error geting motionsCloud ai response:", error);
       return;
     } finally {
       setIsLoading(false);

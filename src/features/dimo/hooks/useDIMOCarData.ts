@@ -1,5 +1,6 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { EngineType } from "@/model/blockchain/schemas";
+import { logger } from "@/utils/logger";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -37,7 +38,7 @@ const useDIMOCarData = (carId: number) => {
 
   const getCarPanelParams = async (carId: number): Promise<DimoPanelData> => {
     if (!rentalityContracts) {
-      console.error("Get DIMO panel params data error: Rentality contract is null");
+      logger.error("Get DIMO panel params data error: Rentality contract is null");
       return EmptyDimoPanelData;
     }
 
@@ -72,11 +73,11 @@ const useDIMOCarData = (carId: number) => {
           };
         }
       } else {
-        console.error("Fail to get panel data from DIMO");
+        logger.error("Fail to get panel data from DIMO");
         return EmptyDimoPanelData;
       }
     } catch (error) {
-      console.error("Fail to get panel data from DIMO: ", error);
+      logger.error("Fail to get panel data from DIMO: ", error);
       return EmptyDimoPanelData;
     }
   };

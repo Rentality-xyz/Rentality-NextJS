@@ -4,8 +4,7 @@ import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
 import { formatEther } from "viem";
-import { AxiosResponse } from "axios";
-import axios from "@/utils/cachedAxios";
+import { logger } from "@/utils/logger";
 
 export type EthereumInfo = {
   provider: BrowserProvider;
@@ -15,7 +14,6 @@ export type EthereumInfo = {
   chainId: number;
   isWalletConnected: boolean;
   requestChainIdChange: (chainId: number) => Promise<boolean>;
-  defaultRpcUrl: string;
 };
 
 const EthereumContext = createContext<EthereumInfo | null | undefined>(undefined);
@@ -34,10 +32,10 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
 
   useEffect(() => {
     const requestChainIdChange = async (chainId: number) => {
-      console.log("requestChainIdChange: " + chainId);
+      logger.info("requestChainIdChange: " + chainId);
 
       if (!wallets[0]) {
-        console.error("requestChainIdChange error: wallets list is empty");
+        logger.error("requestChainIdChange error: wallets list is empty");
         return false;
       }
 
@@ -45,19 +43,19 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
         const selectedBlockchain = getExistBlockchainList().find((i) => i.chainId == chainId);
 
         if (!selectedBlockchain) {
-          console.error("requestChainIdChange error", `chain id ${chainId} is not supported`);
+          logger.error(`requestChainIdChange error: chain id ${chainId} is not supported`);
           return false;
         }
 
         const currentChainId = Number(wallets[0].chainId.split(":")[1]);
-        console.log(`currentChainId: ${currentChainId}`);
+        logger.info(`currentChainId: ${currentChainId}`);
 
         if (currentChainId !== chainId) {
           await wallets[0].switchChain(chainId);
         }
         return true;
-      } catch (e) {
-        console.error("requestChainIdChange error:" + e);
+      } catch (error) {
+        logger.error("requestChainIdChange error:" + error);
         return false;
       }
     };
@@ -83,18 +81,6 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
           ? parseFloat(formatEther(currentWalletBalanceInWeth))
           : 0;
 
-        const rpcUrlResponse: AxiosResponse = await axios.get("/api/defaultRpcUrl", {
-          params: {
-            chainId: currentChainId,
-          },
-        });
-        const { url } = rpcUrlResponse.data;
-
-        if (!url) {
-          console.error("Ethereum info error: Response does not contain the rpc URL");
-          return null;
-        }
-
         setEthereumInfo((prev) => {
           if (prev !== undefined && prev !== null) {
             setIsReloadPageRequested(prev.chainId !== currentChainId);
@@ -108,7 +94,6 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
             chainId: currentChainId,
             isWalletConnected: ready && authenticated,
             requestChainIdChange: requestChainIdChange,
-            defaultRpcUrl: url,
           };
         });
       } finally {
@@ -121,7 +106,7 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
 
   useEffect(() => {
     if (!authenticated && ethereumInfo !== null && ready) {
-      console.debug(`User has logged out. Reset ethereumInfo`);
+      logger.debug(`User has logged out. Reset ethereumInfo`);
       setEthereumInfo(null);
     }
   }, [authenticated, ethereumInfo, ready]);
@@ -131,7 +116,7 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
 
     setIsReloadPageRequested(false);
     router.refresh();
-    console.log("reloading the page");
+    logger.info("reloading the page");
   }, [router, isReloadPageRequested]);
 
   return <EthereumContext.Provider value={ethereumInfo}>{children}</EthereumContext.Provider>;

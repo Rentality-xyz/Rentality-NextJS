@@ -13,12 +13,14 @@ import { TFunction } from "@/utils/i18n";
 import { useChat } from "@/features/chat/contexts/chatContext";
 import { useAuth } from "@/contexts/auth/authContext";
 import * as React from "react";
+import useUserRole from "@/hooks/useUserRole";
 
 function HostNavMenu() {
   const { isAuthenticated, logout } = useAuth();
   const { notifications } = useNotification();
   const { chatInfos } = useChat();
   const { getPageLastVisitedDateTime } = usePageLastVisit();
+  const { userRole, isInvestManager } = useUserRole();
   const { t } = useTranslation();
 
   const t_nav: TFunction = (name, options) => {
@@ -95,7 +97,11 @@ function HostNavMenu() {
           icon={MenuIcons.TransactionHistory}
         />
         <SideNavMenuItem text={t_nav("referrals_and_points")} href="/host/points" icon={MenuIcons.ReferralsAndPoints} />
-        <SideNavMenuItem text={t_nav("host_invest")} href="/host/invest" icon={MenuIcons.Invest} />
+        <SideNavMenuItem
+          text={isInvestManager(userRole) ? t_nav("create_invest") : t_nav("invest")}
+          href="/host/invest"
+          icon={MenuIcons.Invest}
+        />
         <SideNavMenuItem text={t_nav("profile")} href="/host/profile" icon={MenuIcons.ProfileSettings} />
         {isAuthenticated ? (
           <SideNavMenuItem text={t_nav("logout")} href="/" onClick={logout} icon={MenuIcons.Logout} />

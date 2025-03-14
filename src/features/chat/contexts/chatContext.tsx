@@ -23,6 +23,7 @@ import { useAuth } from "@/contexts/auth/authContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { useNotification } from "@/features/notifications/contexts/notificationContext";
+import { logger } from "@/utils/logger";
 
 export type ChatKeysContextInfo = {
   isLoading: boolean;
@@ -122,7 +123,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
   const getChatInfosWithoutMessages = useCallback(
     async (rentalityContracts: IRentalityContracts) => {
       if (!rentalityContracts) {
-        console.error("getChatInfos error: contract is null");
+        logger.error("getChatInfos error: contract is null");
         return;
       }
 
@@ -185,7 +186,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
       const notificationService = await getEtherContractWithSigner("notificationService", ethereumInfo.signer);
       if (!notificationService) {
-        console.error("getRentalityNotificationService error: notificationService is null");
+        logger.error("getRentalityNotificationService error: notificationService is null");
         return;
       }
       setRentalityNotificationService(notificationService);
@@ -206,7 +207,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
       const tripId = Number(args[1]);
       const tripStatus: TripStatus = BigInt(args[2]);
 
-      console.debug(`tripStatusChangedListener call. TripId: ${tripId} status: ${tripStatus}`);
+      logger.debug(`tripStatusChangedListener call. TripId: ${tripId} status: ${tripStatus}`);
       if (tripStatus === TripStatus.Pending) {
         const tripInfoResult = await rentalityContracts.gateway.getTrip(BigInt(tripId));
         if (!tripInfoResult.ok) return;
@@ -269,7 +270,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
       const existChatInfo = chatInfos.find((ci) => ci.tripId === tripId);
 
       if (!existChatInfo) {
-        console.error(`Chat with tripId ${tripId} is not found`);
+        logger.error(`Chat with tripId ${tripId} is not found`);
         return;
       }
       setSelectedChat(existChatInfo);
@@ -285,7 +286,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
       const existChatInfo = chatInfos.find((ci) => ci.tripId === tripId);
 
       if (!existChatInfo) {
-        console.error(`Chat with tripId ${tripId} is not found`);
+        logger.error(`Chat with tripId ${tripId} is not found`);
         return [];
       }
 
@@ -327,7 +328,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
     markUserChatAsSeen(chatDbInfo, ethereumInfo.walletAddress, chatId);
 
     const chatsRef = doc(chatDbInfo.db, chatDbInfo.collections.chats, chatId.toString());
-    console.debug(`Sub for chat ${chatId.toString()}`);
+    logger.debug(`Sub for chat ${chatId.toString()}`);
     const unSub = onSnapshot(chatsRef, (res) => {
       const data = res.data();
       if (!data) return;
@@ -363,7 +364,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
     return () => {
       if (unSub) {
-        console.debug(`Unsub from chat ${chatId.toString()}`);
+        logger.debug(`Unsub from chat ${chatId.toString()}`);
 
         unSub();
       }
@@ -386,7 +387,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
       try {
         isChatInitializing.current = true;
         setIsLoading(true);
-        console.log(`Chat initializing...`);
+        logger.info(`Chat initializing...`);
 
         const infos = (await getChatInfosWithoutMessages(rentalityContracts)) ?? [];
 
@@ -440,7 +441,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
         const chatsRef = doc(chatDbInfo.db, chatDbInfo.collections.userchats, ethereumInfo.walletAddress);
 
-        console.debug("Sub for userchats");
+        logger.debug("Sub for userchats");
         unSub = onSnapshot(chatsRef, (res) => {
           const data = res.data();
           if (!data) return;
@@ -480,9 +481,9 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
           );
         });
 
-        console.log(`Chat initialized!`);
-      } catch (e) {
-        console.error("initChatInfos error:", e);
+        logger.info(`Chat initialized!`);
+      } catch (error) {
+        logger.error("initChatInfos error:", error);
         return;
       } finally {
         isChatInitializing.current = false;
@@ -504,7 +505,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         rentalityNotificationService.removeAllListeners();
       }
       if (unSub) {
-        console.debug("unSub for userchats");
+        logger.debug("unSub for userchats");
         unSub();
       }
     };
@@ -520,7 +521,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
   useEffect(() => {
     if (!isAuthenticated && chatInfos.length > 0) {
-      console.debug(`User has logged out. Reset chatInfos`);
+      logger.debug(`User has logged out. Reset chatInfos`);
       setChatInfos([]);
     }
   }, [isAuthenticated, chatInfos]);

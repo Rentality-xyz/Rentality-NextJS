@@ -6,6 +6,7 @@ import { getEtherContractWithSigner } from "@/abis";
 import { JsonRpcProvider, Wallet } from "ethers";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGateway";
+import { logger } from "@/utils/logger";
 
 export type UpdateCivicRequest = {
   chainId: number;
@@ -23,7 +24,7 @@ export type UpdateCivicResponse =
 export default async function handler(req: NextApiRequest, res: NextApiResponse<UpdateCivicResponse>) {
   const MANAGER_PRIVATE_KEY = env.MANAGER_PRIVATE_KEY;
   if (isEmpty(MANAGER_PRIVATE_KEY)) {
-    console.error("updateCivic error: private key was not set");
+    logger.error("updateCivic error: private key was not set");
     res.status(500).json({ error: getErrorMessage("private key was not set") });
     return;
   }
@@ -39,19 +40,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const chainId =
     typeof chainIdQuery === "string" && !isEmpty(chainIdQuery) && Number(chainIdQuery) > 0 ? Number(chainIdQuery) : 0;
   if (!chainId) {
-    console.error("updateCivic error: chainId was not provided");
+    logger.error("updateCivic error: chainId was not provided");
     res.status(400).json({ error: "chainId was not provided" });
     return;
   }
 
   const providerApiUrl = getProviderApiUrlFromEnv(chainId);
   if (!providerApiUrl) {
-    console.error(`updateCivic error: API URL for chain id ${chainId} was not set`);
+    logger.error(`updateCivic error: API URL for chain id ${chainId} was not set`);
     res.status(500).json({ error: getErrorMessage(`updateCivic error: API URL for chain id ${chainId} was not set`) });
     return;
   }
 
-  console.log(`\nCalling updateCivic API with address:${address} and chainId:${chainId}`);
+  logger.info(`\nCalling updateCivic API with address:${address} and chainId:${chainId}`);
 
   const resetUserKycCommissionResult = await resetUserKycCommission(address, providerApiUrl, MANAGER_PRIVATE_KEY);
 
@@ -61,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       .json({ error: getErrorMessage(`resetUserKycCommissionResult error: ${resetUserKycCommissionResult.error}`) });
     return;
   }
-  console.log(`User KYC Commission was reset successfully`);
+  logger.info(`User KYC Commission was reset successfully`);
 
   res.status(200).json({
     success: true,
@@ -75,7 +76,7 @@ async function resetUserKycCommission(
   privateKey: string
 ): Promise<Result<boolean, string>> {
   if (isEmpty(address)) {
-    console.error("address is empty");
+    logger.error("address is empty");
     return Err("address is empty");
   }
 
@@ -85,16 +86,16 @@ async function resetUserKycCommission(
   const rentality = (await getEtherContractWithSigner("gateway", wallet)) as unknown as IRentalityGatewayContract;
 
   if (rentality === null) {
-    console.error("rentality is null");
+    logger.error("rentality is null");
     return Err("rentality is null");
   }
   try {
     const transaction = await rentality.useKycCommission(address);
     await transaction.wait();
     return Ok(true);
-  } catch (e) {
-    console.error("useKycCommission error", e);
-    return Err(`useKycCommission error ${e}`);
+  } catch (error) {
+    logger.error("useKycCommission error", error);
+    return Err(`useKycCommission error ${error}`);
   }
 }
 

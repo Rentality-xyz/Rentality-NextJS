@@ -4,7 +4,7 @@ import fs from "fs";
 
 if (fs.existsSync("./src/")) {
   const jiti = createJiti(fileURLToPath(import.meta.url));
-  console.warn(`Checking environment variables...`);
+  console.info(`Checking environment variables...`);
   // Import env here to validate during build. Using jiti we can import .ts files :)
   jiti("./src/utils/env");
 }

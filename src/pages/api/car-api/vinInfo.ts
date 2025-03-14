@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       responseCode = res.status;
       if (responseCode === 200) data = res.data;
     })
-    .catch(function (error) {
+    .catch((error) => {
       responseCode = error.response?.status || 503;
     });
   if (data !== undefined)

@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { authOnDimo, tokenExchange } from "./helpers";
 import { getIpfsURI } from "@/utils/ipfsUtils";
+import { logger } from "@/utils/logger";
 
 export type DIMOSharedCarsResponse = {
   data: {
@@ -75,7 +76,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               ?.vin || null
           );
         } catch (error) {
-          console.error("Fail to get VIN on DIMO: ", error);
+          logger.error("Fail to get VIN on DIMO: ", error);
           return null;
         }
       };
@@ -90,7 +91,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           });
           vin = await getVinByTokenId(id);
         } catch (error) {
-          console.error("Fail to create vinVC on DIMO: ", error);
+          logger.error("Fail to create vinVC on DIMO: ", error);
           return null;
         }
       }

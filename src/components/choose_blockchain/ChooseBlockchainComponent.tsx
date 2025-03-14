@@ -1,7 +1,4 @@
 import { Button, Stack } from "@mui/material";
-import arrowUp from "../../images/arrows/arrowUp.svg";
-import arrowDown from "../../images/arrows/arrowDown.svg";
-import blockchainChosen from "../../images/blockchainChosen.svg";
 import Image from "next/image";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { assertIsNode } from "@/utils/react";
@@ -54,8 +51,8 @@ export default function ChooseBlockchainComponent() {
   };
 
   const getLogoIconUrl = (logoFileName: string) => {
-    if (!logoFileName) return "/logos/chainLogoUnknown.svg";
-    return `/logos/${logoFileName}`;
+    if (!logoFileName) return "/images/blockchainLogos/chainLogoUnknown.svg";
+    return `/images/blockchainLogos/${logoFileName}`;
   };
 
   return (
@@ -74,7 +71,13 @@ export default function ChooseBlockchainComponent() {
             width={32}
             height={32}
           />
-          <Image src={isShowComponentList ? arrowUp : arrowDown} alt="" className="ml-1" />
+          <Image
+            src={isShowComponentList ? "/images/icons/arrows/arrowUp.svg" : "/images/icons/arrows/arrowDown.svg"}
+            height={20}
+            width={20}
+            alt=""
+            className="ml-1"
+          />
         </Button>
         {isShowComponentList && (
           <div className="absolute left-auto right-0 top-[2.5rem] z-50 w-[220px] rounded-xl border-2 border-[#373737] bg-[#1E1E30]">
@@ -97,7 +100,15 @@ export default function ChooseBlockchainComponent() {
                   />
                   <span className="whitespace-nowrap">{i.shortName}</span>
                   <div className="flex w-full items-end">
-                    {selectedBlockchain == i && <Image src={blockchainChosen} alt="" className="mr-0" />}
+                    {selectedBlockchain == i && (
+                      <Image
+                        src={"/images/icons/blockchainChosen.svg"}
+                        width={20}
+                        height={20}
+                        alt=""
+                        className="mr-0"
+                      />
+                    )}
                   </div>
                 </Button>
               );

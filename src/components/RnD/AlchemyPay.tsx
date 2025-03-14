@@ -4,14 +4,15 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import crypto from "crypto";
 import { DevicePlatform, getDevicePlatform } from "@/utils/devicePlatform";
 import { useTranslation } from "react-i18next";
+import { logger } from "@/utils/logger";
 
 function encrypt(plainText: string, secretKeyData: string) {
   try {
     var hmac = crypto.createHmac("sha1", secretKeyData);
     var signed = hmac.update(Buffer.from(plainText, "utf-8")).digest("base64");
     return signed;
-  } catch (e) {
-    console.log(`HmacSHA1 encrypting exception, msg is ${e}`);
+  } catch (error) {
+    logger.info(`HmacSHA1 encrypting exception, msg is ${error}`);
   }
   return null;
 }

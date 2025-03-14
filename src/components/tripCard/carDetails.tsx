@@ -8,7 +8,7 @@ import RntButtonTransparent from "../common/rntButtonTransparent";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import CarDetailsVerificationDialog from "./CarDetailsVerificationDialog";
 import Image from "next/image";
-import imgDimoSynced from "@/images/img_dimo_synced.svg";
+import { logger } from "@/utils/logger";
 
 function CarDetails({
   tripInfo,
@@ -36,7 +36,7 @@ function CarDetails({
 
   const handleConfirmCarDetailsClick = async () => {
     if (!confirmCarDetails) {
-      console.error("handleConfirmCarDetailsClick error: confirmCarDetails is undefined");
+      logger.error("handleConfirmCarDetailsClick error: confirmCarDetails is undefined");
       return;
     }
 
@@ -58,14 +58,14 @@ function CarDetails({
           <strong className="text-xl">{`${tripInfo.brand} ${tripInfo.model} ${tripInfo.year}`}</strong>
           {tripInfo.dimoTokenId !== 0 && (
             <div className="mt-1 xl:hidden">
-              <Image src={imgDimoSynced} alt="" className="w-[140px]" />
+              <Image src={"/images/img_dimo_synced.svg"} width={196} height={35} alt="" className="w-[140px]" />
             </div>
           )}
         </div>
         <div>{tripInfo.licensePlate}</div>
         {tripInfo.dimoTokenId !== 0 && (
           <div className="mt-2 max-xl:hidden">
-            <Image src={imgDimoSynced} alt="" className="w-[160px]" />
+            <Image src={"/images/img_dimo_synced.svg"} width={196} height={35} alt="" className="w-[160px]" />
           </div>
         )}
         {tripInfo.status === TripStatus.Rejected && tripInfo.rejectedDate !== undefined ? (

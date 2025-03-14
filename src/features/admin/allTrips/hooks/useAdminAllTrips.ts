@@ -9,6 +9,7 @@ import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import { bigIntReplacer } from "@/utils/json";
 import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { useCallback, useState } from "react";
+import { logger } from "@/utils/logger";
 
 export type AdminAllTripsFilters = {
   status?: AdminTripStatus;
@@ -32,14 +33,14 @@ const useAdminAllTrips = () => {
       itemsPerPage: number = 10
     ): Promise<Result<boolean, string>> => {
       if (!admin) {
-        console.error("fetchData error: rentalityAdminGateway is null");
+        logger.error("fetchData error: rentalityAdminGateway is null");
         return Err("Contract is not initialized");
       }
 
       setIsLoading(true);
       setCurrentPage(page);
       setTotalPageCount(0);
-      console.debug(`filters: ${JSON.stringify(filters, bigIntReplacer)}`);
+      logger.debug(`filters: ${JSON.stringify(filters, bigIntReplacer)}`);
 
       const contractFilters: ContractTripFilter = {
         status: filters?.status ? filters.status : AdminTripStatus.Any,
@@ -82,7 +83,7 @@ const useAdminAllTrips = () => {
   const payToHost = useCallback(
     async (tripId: number): Promise<Result<boolean, string>> => {
       if (!admin) {
-        console.error("payToHost error: rentalityAdminGateway is null");
+        logger.error("payToHost error: rentalityAdminGateway is null");
         return Err("Contract is not initialized");
       }
 
@@ -99,7 +100,7 @@ const useAdminAllTrips = () => {
   const refundToGuest = useCallback(
     async (tripId: number): Promise<Result<boolean, string>> => {
       if (!admin) {
-        console.error("refundToGuest error: rentalityAdminGateway is null");
+        logger.error("refundToGuest error: rentalityAdminGateway is null");
         return Err("Contract is not initialized");
       }
 

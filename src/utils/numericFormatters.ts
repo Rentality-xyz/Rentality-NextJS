@@ -1,3 +1,5 @@
+import { logger } from "./logger";
+
 export const currencyFormat = (value: number | bigint) => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -43,7 +45,7 @@ export const decimalToHex = (decimalValue: string): string | null => {
   if (!isNaN(decimalNumber)) {
     return decimalNumber.toString(16);
   } else {
-    console.error("Invalid input. Please provide a valid decimal number.");
+    logger.error("Invalid input. Please provide a valid decimal number.");
     return null;
   }
 };

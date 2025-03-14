@@ -31,8 +31,8 @@ function ManageRole() {
 
     try {
       await manageRole(manageRoleState.address, manageRoleState.action, manageRoleState.role);
-    } catch (e) {
-      showError(t("admin.errors.grant_admin_role_error") + e);
+    } catch (error) {
+      showError(t("admin.errors.grant_admin_role_error") + error);
     }
   };
 

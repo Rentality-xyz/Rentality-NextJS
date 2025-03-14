@@ -128,7 +128,7 @@ export default function PanelFilteringByPrice({
               : `$${value[0]} - $${value[1]}`}
           </div>
           <Image
-            src="/images/icons/arrowTriangleDownGradient.svg"
+            src="/images/icons/arrows/arrowTriangleDownGradient.svg"
             alt=""
             width="12"
             height="9"

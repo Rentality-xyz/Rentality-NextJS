@@ -7,6 +7,7 @@ import { id, JsonRpcProvider, Wallet } from "ethers";
 import { signMessage } from "@/utils/ether";
 import { env } from "@/utils/env";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
+import { logger } from "@/utils/logger";
 
 function parseQuery(
   req: NextApiRequest
@@ -27,7 +28,7 @@ function parseQuery(
   }
   const providerApiUrl = getProviderApiUrlFromEnv(chainId);
   if (!providerApiUrl) {
-    console.error(`API signDimoId error: API URL for chain id ${chainId} was not set`);
+    logger.error(`API signDimoId error: API URL for chain id ${chainId} was not set`);
     return Err(`Chain id ${chainId} is not supported`);
   }
 
@@ -77,7 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const SIGNER_PRIVATE_KEY = env.SIGNER_PRIVATE_KEY;
   if (!SIGNER_PRIVATE_KEY) {
-    console.error("SignDimo error: SIGNER_PRIVATE_KEY was not set");
+    logger.error("SignDimo error: SIGNER_PRIVATE_KEY was not set");
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
