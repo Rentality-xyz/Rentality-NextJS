@@ -7,8 +7,9 @@ import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import "swiper/css/virtual";
 // import required modules
-import { EffectFade, Navigation, Pagination } from "swiper/modules";
+import { EffectFade, Navigation, Pagination, Virtual } from "swiper/modules";
 import { useEffect, useState } from "react";
 
 interface ImageCarouselDialogPros {
@@ -47,33 +48,62 @@ function ImageCarouselDialog({ images, isOpen, title, isActualImageSize = false,
             effect={isActualImageSize ? "" : "fade"}
             navigation={true}
             pagination={{ clickable: true }}
-            modules={[EffectFade, Navigation, Pagination]}
+            modules={[EffectFade, Navigation, Pagination, Virtual]}
             className="h-full rounded-[20px]"
+            virtual
           >
-            {images.map((src, index) => getSwiperSlide(index, src, isActualImageSize))}
+            {images.map((src, index) => (
+              <SwiperSlide
+                key={src}
+                virtualIndex={index}
+                className={`flex items-center justify-center ${isActualImageSize && "overflow-auto"}`}
+              >
+                <Image
+                  src={src}
+                  alt=""
+                  fill
+                  className={
+                    isActualImageSize
+                      ? "relative flex h-full w-full items-center justify-center object-contain"
+                      : "object-cover"
+                  }
+                />
+              </SwiperSlide>
+            ))}
           </Swiper>
         </div>
 
         {/* Swiper для экранов md и меньше */}
         <div className="block h-[80%] sm:h-[84%] lg:hidden">
-          <Swiper pagination={{ clickable: true }} modules={[Pagination]} className="h-full rounded-[20px]">
-            {images.map((src, index) => getSwiperSlide(index, src, isActualImageSize))}
+          <Swiper
+            pagination={{ clickable: true }}
+            modules={[Pagination, Virtual]}
+            className="h-full rounded-[20px]"
+            virtual
+          >
+            {images.map((src, index) => (
+              <SwiperSlide
+                key={src}
+                virtualIndex={index}
+                className={`flex items-center justify-center ${isActualImageSize && "overflow-auto"}`}
+              >
+                <Image
+                  src={src}
+                  alt=""
+                  fill
+                  className={
+                    isActualImageSize
+                      ? "relative flex h-full w-full items-center justify-center object-contain"
+                      : "object-cover"
+                  }
+                />
+              </SwiperSlide>
+            ))}
           </Swiper>
         </div>
       </div>
     </div>
   );
 }
-export default ImageCarouselDialog;
 
-function getSwiperSlide(index: number, src: string, isActualImageSize: boolean) {
-  return isActualImageSize ? (
-    <SwiperSlide key={index} className="flex items-center justify-center overflow-auto">
-      <Image src={src} alt="" fill className="relative flex h-full w-full items-center justify-center object-contain" />
-    </SwiperSlide>
-  ) : (
-    <SwiperSlide key={index} className="flex items-center justify-center">
-      <Image src={src} alt="" fill className="object-cover" />
-    </SwiperSlide>
-  );
-}
+export default ImageCarouselDialog;
