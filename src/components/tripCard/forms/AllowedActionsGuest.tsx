@@ -1,10 +1,9 @@
-import RntCheckbox, { CheckboxLight } from "@/components/common/rntCheckbox";
-import RntInput from "@/components/common/rntInput";
-import RntSelect from "@/components/common/rntSelect";
+import { CheckboxLight } from "@/components/common/rntCheckbox";
 import { TripInfo } from "@/model/TripInfo";
-import React, { SetStateAction, useEffect } from "react";
+import React, { SetStateAction } from "react";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
+import { isEmpty } from "@/utils/string";
 
 export default function AllowedActionsGuest({
   tripInfo,
@@ -19,17 +18,6 @@ export default function AllowedActionsGuest({
   confirmParams: boolean[];
   setConfirmParams: (value: SetStateAction<boolean[]>) => void;
 }) {
-  useEffect(() => {
-    {
-      tripInfo.allowedActions[0].params.map((param, index) => {
-        setInputParams((prev) => {
-          const copy = [...prev];
-          copy[index] = param.value;
-          return copy;
-        });
-      });
-    }
-  }, [tripInfo.allowedActions, setInputParams]);
 
   return (
     <div className="flex w-full flex-col gap-4 py-4">
@@ -46,7 +34,9 @@ export default function AllowedActionsGuest({
                 value={inputParams[index]}
                 onChange={(e) => {
                   const newValue = e.target.value;
-
+                  if(isEmpty(newValue)) {
+                    return
+                  }
                   setInputParams((prev) => {
                     const copy = [...prev];
                     copy[index] = newValue;
