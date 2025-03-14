@@ -13,7 +13,7 @@ export async function fetchDefaultRpcUrl(chainId: number): Promise<string> {
     logger.info("fetchDefaultRpcUrl error: " + response.status + " with data " + response.data);
     return "";
   }
-  const { defaultRpcUrl } = response.data;
+  const { url: defaultRpcUrl } = response.data;
 
   if (!defaultRpcUrl) {
     logger.error("fetchDefaultRpcUrl error: Response does not contain the RPC URL");
