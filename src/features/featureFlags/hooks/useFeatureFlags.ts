@@ -1,4 +1,4 @@
-import { hasFeatureFlag } from "@/utils/featureFlags";
+import { hasFeatureFlag } from "@/features/featureFlags/utils/featureFlags";
 
 const useFeatureFlags = () => {
   return { hasFeatureFlag } as const;

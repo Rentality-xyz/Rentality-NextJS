@@ -10,8 +10,9 @@ import AllowedActionsHost from "./forms/AllowedActionsHost";
 import ChangeStatusHostConfirmedForm from "./forms/ChangeStatusHostConfirmedForm";
 import ChangeStatusGuestStartedForm from "./forms/ChangeStatusGuestStartedForm";
 import ChangeStatusHostFinishingByHostForm from "./forms/ChangeStatusHostFinishingByHostForm";
-import useFeatureFlags from "@/hooks/useFeatureFlags";
+import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
 import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton";
+import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 
 function TripAdditionalActions({
   tripInfo,
@@ -44,7 +45,7 @@ function TripAdditionalActions({
   const [hasTripPhotosFeatureFlag, setHasTripPhotosFeatureFlag] = useState<boolean>(false);
 
   useEffect(() => {
-    hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+    hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
       setHasTripPhotosFeatureFlag(hasTripPhotosFeatureFlag);
     });
   }, []);
@@ -77,7 +78,7 @@ function TripAdditionalActions({
 
   const onActionBtnClick = (action: AllowedChangeTripAction) => {
     if (action.params == null || action.params.length == 0) {
-      hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+      hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
         if (hasTripPhotosFeatureFlag) {
           carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
             if (tripPhotosUrls.length === 0) {
@@ -95,7 +96,7 @@ function TripAdditionalActions({
         }
       });
     } else {
-      hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+      hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
         if (hasTripPhotosFeatureFlag) {
           carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
             if (tripPhotosUrls.length === 0) {

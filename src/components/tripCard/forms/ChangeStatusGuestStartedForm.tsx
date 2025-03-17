@@ -13,10 +13,11 @@ import {
 import { calculateDays } from "@/utils/date";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
-import useFeatureFlags from "@/hooks/useFeatureFlags";
+import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
 import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import useUserMode from "@/hooks/useUserMode";
+import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 
 interface ChangeStatusGuestStartedFormProps {
   tripInfo: TripInfo;
@@ -63,7 +64,7 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
     }, [tripInfo, odometer]);
 
     useEffect(() => {
-      hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+      hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
         setHasTripPhotosFeatureFlag(hasTripPhotosFeatureFlag);
       });
     }, []);

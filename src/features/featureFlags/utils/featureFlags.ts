@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import axios from "@/utils/cachedAxios";
-import { logger } from "./logger";
+import { logger } from "@/utils/logger";
 
 export async function hasFeatureFlag(name: string): Promise<boolean> {
   const response: AxiosResponse = await axios.get(`/api/featureFlags?name=${name}`);
