@@ -68,7 +68,7 @@ function CreateTripDetailsContent({
   const { createTripRequest } = useCreateTripRequest();
   const userInfo = useUserInfo();
   const { isAuthenticated, login } = useAuth();
-  const { showDialog, showCustomDialog, hideDialogs } = useRntDialogs();
+  const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const { t } = useTranslation();
