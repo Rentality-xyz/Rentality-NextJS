@@ -3,16 +3,6 @@ import { useMemo } from "react";
 
 export type UserMode = "Guest" | "Host" | "Admin";
 
-export function isHost(mode: UserMode) {
-  return mode === "Host";
-}
-export function isGuest(mode: UserMode) {
-  return mode === "Guest";
-}
-export function isAdmin(mode: UserMode) {
-  return mode === "Admin";
-}
-
 const useUserMode = () => {
   const router = useRouter();
 
@@ -22,7 +12,19 @@ const useUserMode = () => {
     return "Guest";
   }, [router.route]);
 
-  return { userMode } as const;
+  return { userMode, isHost, isGuest, isAdmin } as const;
 };
+
+function isHost(mode: UserMode) {
+  return mode === "Host";
+}
+
+function isGuest(mode: UserMode) {
+  return mode === "Guest";
+}
+
+function isAdmin(mode: UserMode) {
+  return mode === "Admin";
+}
 
 export default useUserMode;

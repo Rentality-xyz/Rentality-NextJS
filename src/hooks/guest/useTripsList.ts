@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { TripInfoShortDetails } from "@/model/TripInfo";
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
-import { ContractTripDTO } from "@/model/blockchain/schemas";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 import { mapTripDTOtoTripInfoShordDetails } from "@/model/utils/TripDTOtoTripInfo";
 import { bigIntReplacer } from "@/utils/json";

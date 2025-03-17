@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import RntFuelLevelSelect from "@/components/common/RntFuelLevelSelect";
 import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton";
 import useFeatureFlags from "@/hooks/useFeatureFlags";
-import useUserMode, { isHost } from "@/hooks/useUserMode";
+import useUserMode from "@/hooks/useUserMode";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import useDIMOCarData from "@/features/dimo/hooks/useDIMOCarData";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
@@ -40,7 +40,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
 
     const { errors, isSubmitting } = formState;
 
-    const { userMode } = useUserMode();
+    const { userMode, isHost } = useUserMode();
     const carPhotosUploadButtonRef = useRef<any>(null);
 
     const { hasFeatureFlag } = useFeatureFlags();

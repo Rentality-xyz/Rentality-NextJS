@@ -12,19 +12,17 @@ export enum UserRole {
 }
 
 export const USER_ROLE_QUERY_KEY = "UserRole";
-
 type QueryData = UserRole;
 
 const useUserRole = () => {
   const ethereumInfo = useEthereum();
 
-  const queryResult = useQuery<QueryData>({
+  const { data = UserRole.Guest, ...restQueryResult } = useQuery<QueryData>({
     queryKey: [USER_ROLE_QUERY_KEY, ethereumInfo?.walletAddress],
     queryFn: async () => fetchUserRole(ethereumInfo),
   });
 
-  const data = queryResult.data ?? UserRole.Guest;
-  return { ...queryResult, data: data, userRole: data, isGuest, isHost, isInvestManager } as const;
+  return { ...restQueryResult, data, userRole: data, isGuest, isHost, isInvestManager } as const;
 };
 
 async function fetchUserRole(ethereumInfo: EthereumInfo | null | undefined) {
@@ -36,8 +34,9 @@ async function fetchUserRole(ethereumInfo: EthereumInfo | null | undefined) {
     "userService",
     ethereumInfo.signer
   )) as unknown as IRentalityUserServiceContract;
+
   if (!rentalityUserService) {
-    throw new Error("useUserRole error: rentalityUserService is null");
+    throw new Error("fetchUserRole error: rentalityUserService is null");
   }
 
   let userRole = UserRole.Guest;
