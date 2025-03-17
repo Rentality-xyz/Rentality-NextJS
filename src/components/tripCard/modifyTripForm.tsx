@@ -4,7 +4,8 @@ import RntButtonTransparent from "../common/rntButtonTransparent";
 import RntButton from "../common/rntButton";
 import RntInputMultiline from "../common/rntInputMultiline";
 import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton";
-import useFeatureFlags from "@/hooks/useFeatureFlags";
+import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
+import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 
 function ModifyTripForm({
   guestPhoneNumber,
@@ -29,13 +30,13 @@ function ModifyTripForm({
   const carPhotosUploadButtonRef = useRef<any>(null);
 
   useEffect(() => {
-    hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+    hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
       setHasTripPhotosFeatureFlag(hasTripPhotosFeatureFlag);
     });
   }, []);
 
   const onFinishTripClick = () => {
-    hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+    hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
       if (hasTripPhotosFeatureFlag) {
         carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
           if (tripPhotosUrls.length === 0) {

@@ -14,6 +14,8 @@ import { useChat } from "@/features/chat/contexts/chatContext";
 import { useAuth } from "@/contexts/auth/authContext";
 import * as React from "react";
 import useUserRole from "@/hooks/useUserRole";
+import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
+import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 
 function HostNavMenu() {
   const { isAuthenticated, logout } = useAuth();
@@ -21,7 +23,15 @@ function HostNavMenu() {
   const { chatInfos } = useChat();
   const { getPageLastVisitedDateTime } = usePageLastVisit();
   const { userRole, isInvestManager } = useUserRole();
+  const { hasFeatureFlag } = useFeatureFlags();
+  const [hasInvestmentFeatureFlag, setInvestmentFeatureFlag] = React.useState<boolean>(false);
   const { t } = useTranslation();
+
+  React.useEffect(() => {
+    hasFeatureFlag(FEATURE_FLAGS.FF_INVESTMENTS).then((hasInvestmentFeatureFlag: boolean) => {
+      setInvestmentFeatureFlag(hasInvestmentFeatureFlag);
+    });
+  }, [hasFeatureFlag]);
 
   const t_nav: TFunction = (name, options) => {
     return t("nav_menu." + name, options);
@@ -97,11 +107,13 @@ function HostNavMenu() {
           icon={MenuIcons.TransactionHistory}
         />
         <SideNavMenuItem text={t_nav("referrals_and_points")} href="/host/points" icon={MenuIcons.ReferralsAndPoints} />
-        {/* <SideNavMenuItem
-          text={isInvestManager(userRole) ? t_nav("create_invest") : t_nav("invest")}
-          href="/host/invest"
-          icon={MenuIcons.Invest}
-        /> */}
+        {hasInvestmentFeatureFlag && (
+          <SideNavMenuItem
+            text={isInvestManager(userRole) ? t_nav("create_invest") : t_nav("invest")}
+            href="/host/invest"
+            icon={MenuIcons.Invest}
+          />
+        )}
         <SideNavMenuItem text={t_nav("profile")} href="/host/profile" icon={MenuIcons.ProfileSettings} />
         {isAuthenticated ? (
           <SideNavMenuItem text={t_nav("logout")} href="/" onClick={logout} icon={MenuIcons.Logout} />

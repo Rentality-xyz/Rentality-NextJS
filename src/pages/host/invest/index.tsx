@@ -3,14 +3,21 @@ import { useTranslation } from "react-i18next";
 import React, { useEffect } from "react";
 import InvestPageContent from "@/features/invest/pages/InvestPageContent";
 import { useRouter } from "next/navigation";
+import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
+import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 
 export default function HostInvest() {
+  const router = useRouter();
+  const { hasFeatureFlag } = useFeatureFlags();
   const { t } = useTranslation();
 
-  const router = useRouter();
   useEffect(() => {
-    router.push("/404");
-  }, [router]);
+    hasFeatureFlag(FEATURE_FLAGS.FF_INVESTMENTS).then((hasInvestmentFeatureFlag: boolean) => {
+      if (!hasInvestmentFeatureFlag) {
+        router.push("/404");
+      }
+    });
+  }, [hasFeatureFlag, router]);
 
   return (
     <>

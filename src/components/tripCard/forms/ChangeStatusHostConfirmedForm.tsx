@@ -11,11 +11,12 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import RntFuelLevelSelect from "@/components/common/RntFuelLevelSelect";
 import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton";
-import useFeatureFlags from "@/hooks/useFeatureFlags";
+import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
 import useUserMode from "@/hooks/useUserMode";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import useDIMOCarData from "@/features/dimo/hooks/useDIMOCarData";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
+import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 
 interface ChangeStatusHostConfirmedFormProps {
   tripInfo: TripInfo;
@@ -49,7 +50,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
     const { showDialog } = useRntDialogs();
 
     useEffect(() => {
-      hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+      hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
         setHasTripPhotosFeatureFlag(hasTripPhotosFeatureFlag);
       });
     }, [hasFeatureFlag]);

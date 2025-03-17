@@ -4,8 +4,8 @@ import RntButtonTransparent from "../common/rntButtonTransparent";
 import RntButton from "../common/rntButton";
 import RntInputMultiline from "../common/rntInputMultiline";
 import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton";
-import useFeatureFlags from "@/hooks/useFeatureFlags";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
+import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 
 function GuestConfirmFinishForm({
   hostPhoneNumber,
@@ -31,13 +31,13 @@ function GuestConfirmFinishForm({
   const carPhotosUploadButtonRef = useRef<any>(null);
 
   useEffect(() => {
-    hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+    hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
       setHasTripPhotosFeatureFlag(hasTripPhotosFeatureFlag);
     });
   }, []);
 
   const onConfirmClick = () => {
-    hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+    hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
       if (hasTripPhotosFeatureFlag) {
         carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
           if (tripPhotosUrls.length === 0) {
