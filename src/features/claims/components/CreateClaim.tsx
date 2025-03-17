@@ -9,23 +9,17 @@ import { createClaimFormSchema, CreateClaimFormValues } from "./createClaimFormS
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Err, Result } from "@/model/utils/result";
-import RntSelect from "@/components/common/rntSelect";
 import RntInputMultiline from "@/components/common/rntInputMultiline";
-import RntInput from "@/components/common/rntInput";
-import RntCheckbox, { CheckboxLight } from "@/components/common/rntCheckbox";
+import { CheckboxLight } from "@/components/common/rntCheckbox";
 import RntButton from "@/components/common/rntButton";
 import useUserMode from "@/hooks/useUserMode";
 import useCreateClaim from "../hooks/useCreateClaim";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useTranslation } from "react-i18next";
 import useTripsForClaimCreation from "../hooks/useTripsForClaimCreation";
-import { FileToUpload } from "@/model/FileToUpload";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
 import * as React from "react";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
-import RntButtonTransparent from "@/components/common/rntButtonTransparent";
-import { ENGINE_TYPE_ELECTRIC_STRING } from "@/model/EngineType";
-import { TRANSMISSION_AUTOMATIC_STRING } from "@/model/Transmission";
 
 const hostClaimTypes = [
   ClaimType.Tolls,
@@ -48,15 +42,14 @@ const guestClaimTypes = [
 ];
 
 export default function CreateClaim() {
-  const { userMode } = useUserMode();
-  const isHost = userMode === "Host";
+  const { userMode, isHost } = useUserMode();
   const pathname = usePathname();
-  const { data: tripInfos } = useTripsForClaimCreation(false);
+  const { data: tripInfos } = useTripsForClaimCreation(isHost(userMode));
   const { mutateAsync: createClaim } = useCreateClaim();
   const { register, handleSubmit, formState, control, reset, watch } = useForm<CreateClaimFormValues>({
     defaultValues: {
       selectedTripId: "",
-      incidentType: isHost ? hostClaimTypes[0].toString() : guestClaimTypes[0].toString(),
+      incidentType: isHost(userMode) ? hostClaimTypes[0].toString() : guestClaimTypes[0].toString(),
       description: "",
       amountInUsd: 0,
       isChecked: false,
@@ -68,7 +61,7 @@ export default function CreateClaim() {
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { t } = useTranslation();
 
-  const textSendTo = isHost ? "guest" : "host";
+  const textSendTo = isHost(userMode) ? "guest" : "host";
   const selectedTripId = watch("selectedTripId");
   const isChecked = watch("isChecked");
 
@@ -162,14 +155,14 @@ export default function CreateClaim() {
               containerClassName="max-sm:w-full"
               className="lg:w-80"
               id="type"
-              label={isHost ? "Incident type" : "Issues type"}
+              label={isHost(userMode) ? "Incident type" : "Issues type"}
               value={field.value}
               validationError={errors.incidentType?.message}
               onChange={(e) => {
                 field.onChange(e);
               }}
             >
-              {(isHost ? hostClaimTypes : guestClaimTypes).map((i) => (
+              {(isHost(userMode) ? hostClaimTypes : guestClaimTypes).map((i) => (
                 <RntFilterSelect.Option key={i.toString()} value={i.toString()}>
                   {getClaimTypeTextFromClaimType(i)}
                 </RntFilterSelect.Option>
@@ -213,7 +206,7 @@ export default function CreateClaim() {
         labelClassName="pl-4 w-full"
         id="amount"
         autoComplete="off"
-        label={`What compensation amount do you think the ${isHost ? "guest" : "host"} should pay for the incident?`}
+        label={`What compensation amount do you think the ${isHost(userMode) ? "guest" : "host"} should pay for the incident?`}
         {...register("amountInUsd", { valueAsNumber: true })}
         validationError={errors.amountInUsd?.message}
       />

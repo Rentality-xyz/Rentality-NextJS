@@ -16,12 +16,11 @@ const defaultFilters: TransactionHistoryFiltersType = {
 };
 
 function TransactionHistoryPageContent() {
-  const { userMode } = useUserMode();
-  const isHost = userMode === "Host";
+  const { userMode, isHost } = useUserMode();
 
   const itemsPerPage = 5;
   const [filters, setFilters] = useState<TransactionHistoryFiltersType>(defaultFilters);
-  const { isLoading, data, fetchData } = useTransactionHistory(isHost);
+  const { isLoading, data, fetchData } = useTransactionHistory(isHost(userMode));
   const { t } = useTranslation();
 
   async function handleApplyFilters(filters: TransactionHistoryFiltersType) {
@@ -47,7 +46,7 @@ function TransactionHistoryPageContent() {
           totalPages={data.totalPageCount}
           selectPage={fetchDataForPage}
         >
-          <TransactionHistoryTable isLoading={isLoading} data={data.data} isHost={isHost} />
+          <TransactionHistoryTable isLoading={isLoading} data={data.data} isHost={isHost(userMode)} />
         </PaginationWrapper>
       </div>
     </>

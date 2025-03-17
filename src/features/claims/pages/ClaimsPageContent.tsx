@@ -7,8 +7,8 @@ import useFetchClaims from "../hooks/useFetchClaims";
 import useUserMode from "@/hooks/useUserMode";
 
 function ClaimsPageContent() {
-  const { userMode } = useUserMode();
-  const { isLoading, data: claims } = useFetchClaims(userMode === "Host");
+  const { userMode, isHost } = useUserMode();
+  const { isLoading, data: claims } = useFetchClaims(isHost(userMode));
   const { t } = useTranslation();
 
   return (

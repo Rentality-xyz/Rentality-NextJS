@@ -16,7 +16,7 @@ import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import useFeatureFlags from "@/hooks/useFeatureFlags";
 import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
-import useUserMode, { isHost } from "@/hooks/useUserMode";
+import useUserMode from "@/hooks/useUserMode";
 
 interface ChangeStatusGuestStartedFormProps {
   tripInfo: TripInfo;
@@ -35,7 +35,7 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
       resolver: zodResolver(changeStatusGuestStartedFormSchema),
     });
     const { errors, isSubmitting } = formState;
-    const { userMode } = useUserMode();
+    const { userMode, isHost } = useUserMode();
 
     const [endLevelInPercents, setEndLevelInPercents] = useState<number | undefined>(undefined);
     const [overmileValue, setOvermileValue] = useState<number>(0);

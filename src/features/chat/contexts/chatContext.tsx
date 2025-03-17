@@ -7,7 +7,7 @@ import { isEmpty } from "@/utils/string";
 import moment from "moment";
 import { ContractChatInfo, EventType, TripStatus } from "@/model/blockchain/schemas";
 import { Contract, Listener } from "ethers";
-import useUserMode, { isHost } from "@/hooks/useUserMode";
+import useUserMode from "@/hooks/useUserMode";
 import { Unsubscribe, doc, onSnapshot } from "firebase/firestore";
 import { chatDbInfo } from "@/utils/firebase";
 import {
@@ -77,7 +77,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
   /// Chat client
   const { rentalityContracts } = useRentality();
-  const { userMode } = useUserMode();
+  const { userMode, isHost } = useUserMode();
 
   const [isChatReloadRequire, setIsChatReloadRequire] = useState(true);
   const [isLoading, setIsLoading] = useState<boolean>(true);
