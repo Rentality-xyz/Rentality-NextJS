@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Stack, styled, Switch, Typography } from "@mui/material";
 import ChooseBlockchainComponent from "@/components/choose_blockchain/ChooseBlockchainComponent";
 import LoginBase from "./LoginBase";
-import useUserMode, { isAdmin, isHost } from "@/hooks/useUserMode";
+import useUserMode from "@/hooks/useUserMode";
 import Image from "next/image";
 import HeaderLogo from "@/components/sideNavMenu/headerLogo";
 import RntMobileStoresDialog from "@/components/common/rntMobileStoresDialog";
@@ -65,7 +65,7 @@ const AntSwitch = styled(Switch)(({ theme }) => ({
 }));
 
 export default function Header() {
-  const { userMode } = useUserMode();
+  const { userMode, isHost, isAdmin } = useUserMode();
   const [isSelectedHost, setIsSelectedHost] = useState(isHost(userMode));
   const { isAuthenticated, logout } = useAuth();
   const ethereumInfo = useEthereum();

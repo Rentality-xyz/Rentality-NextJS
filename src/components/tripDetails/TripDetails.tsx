@@ -3,7 +3,7 @@ import RntButton from "../common/rntButton";
 import useTripInfo from "@/hooks/useTripInfo";
 import { useRouter } from "next/router";
 import TripCardForDetails from "../tripCard/tripCardForDetails";
-import useUserMode, { isHost } from "@/hooks/useUserMode";
+import useUserMode from "@/hooks/useUserMode";
 import { useTranslation } from "react-i18next";
 import RntSuspense from "../common/rntSuspense";
 import TripStatusDateTimes from "./TripStatusDateTimes";
@@ -14,7 +14,7 @@ import useFeatureFlags from "@/hooks/useFeatureFlags";
 import { useEffect, useState } from "react";
 
 export default function TripInfo() {
-  const { userMode } = useUserMode();
+  const { userMode, isHost } = useUserMode();
   const router = useRouter();
   const { tripId: tripIdQuery, back } = router.query;
 
@@ -48,7 +48,7 @@ export default function TripInfo() {
             {hasTripPhotosFeatureFlag && <TripPhotos tripId={tripInfo.tripId} />}
           </div>
           <div className="w-full xl:w-1/3">
-            <TripReceipt tripId={tripId} tripInfo={tripInfo} userMode={userMode} />
+            <TripReceipt tripId={tripId} tripInfo={tripInfo} />
           </div>
         </div>
         <div className="mb-8 mt-4 flex flex-row justify-center gap-4">

@@ -7,11 +7,11 @@ import {
   LEGAL_PROHIBITEDUSES_NAME,
   LEGAL_TERMS_NAME,
 } from "@/utils/constants";
-import useUserMode, { isHost } from "@/hooks/useUserMode";
+import useUserMode from "@/hooks/useUserMode";
 import React, { forwardRef } from "react";
 
 const Footer = forwardRef<HTMLDivElement>((props, ref) => {
-  const { userMode } = useUserMode();
+  const { userMode, isHost } = useUserMode();
   const pathnameUserMode = isHost(userMode) ? "/host" : "/guest";
 
   return (

@@ -13,7 +13,7 @@ import {
   LEGAL_PROHIBITEDUSES_NAME,
   LEGAL_TERMS_NAME,
 } from "@/utils/constants";
-import useUserMode, { isHost } from "@/hooks/useUserMode";
+import useUserMode from "@/hooks/useUserMode";
 
 export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint; tripInfo: TripInfo }) {
   const [open, setOpen] = React.useState(false);
@@ -26,7 +26,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
     setOpen(false);
   };
 
-  const { userMode } = useUserMode();
+  const { userMode, isHost } = useUserMode();
   const pathnameUserMode = isHost(userMode) ? "/host" : "/guest";
 
   return (

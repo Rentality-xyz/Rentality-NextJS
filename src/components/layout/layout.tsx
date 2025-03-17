@@ -4,7 +4,7 @@ import HostSideNavMenu from "../sideNavMenu/hostSideNavMenu";
 import GuestSideNavMenu from "../sideNavMenu/guestSideNavMenu";
 import AdminSideNavMenu from "../sideNavMenu/adminSideNavMenu";
 import { useAppContext } from "@/contexts/appContext";
-import useUserMode, { isAdmin, isHost } from "@/hooks/useUserMode";
+import useUserMode from "@/hooks/useUserMode";
 import React, { useEffect, useRef, useState } from "react";
 import { DialogActions } from "@/utils/dialogActions";
 import { t } from "i18next";
@@ -12,7 +12,7 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 
 export default function Layout({ children }: { children?: React.ReactNode }) {
   const { isBurgerMenuShown, isFilterOnSearchPageShown, openBurgerMenu, closeBurgerMenu } = useAppContext();
-  const { userMode } = useUserMode();
+  const { userMode, isHost, isAdmin } = useUserMode();
 
   useEffect(() => {
     const body = document.body;
