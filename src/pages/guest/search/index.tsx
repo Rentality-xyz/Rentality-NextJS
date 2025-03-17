@@ -22,6 +22,7 @@ import Loading from "@/components/common/Loading";
 import RntSuspense from "@/components/common/rntSuspense";
 import { EMPTY_PROMOCODE } from "@/utils/constants";
 import useFetchGuestGeneralInsurance from "@/features/insurance/hooks/useFetchGuestGeneralInsurance";
+import useBlockchainNetworkCheck from "@/features/blockchain/hooks/useBlockchainNetworkCheck";
 
 function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -31,13 +32,14 @@ function Search() {
 
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string | undefined>(undefined);
-  const { showDialog, showCustomDialog, hideDialogs } = useRntDialogs();
+  const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const userInfo = useUserInfo();
   const router = useRouter();
   const { isLoadingAuth, isAuthenticated, login } = useAuth();
   const ethereumInfo = useEthereum();
   const { isLoading: isLoadingInsurance, data: guestInsurance } = useFetchGuestGeneralInsurance();
+  useBlockchainNetworkCheck();
   const { t } = useTranslation();
 
   const handleSearchClick = async (request: SearchCarRequest) => {
@@ -99,7 +101,7 @@ function Search() {
     setRequestSending(false);
 
     if (result.ok) {
-      showInfo(t("search_page.car_search_item.booked"))
+      showInfo(t("search_page.car_search_item.booked"));
       router.push("/guest/trips");
     } else {
       if (result.error.message === "NOT_ENOUGH_FUNDS") {
