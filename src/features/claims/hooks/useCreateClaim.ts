@@ -1,15 +1,13 @@
 import { useRentality } from "@/contexts/rentalityContext";
-import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { ContractCreateClaimRequest } from "@/model/blockchain/schemas";
 import { CreateClaimRequest } from "@/features/claims/models/CreateClaimRequest";
-import { uploadFileToIPFS } from "@/utils/pinata";
-import { SMARTCONTRACT_VERSION } from "@/abis";
 import { Err, Result } from "@/model/utils/result";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
-import { FileToUpload } from "@/model/FileToUpload";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CLAIMS_LIST_QUERY_KEY } from "./useFetchClaims";
 import { logger } from "@/utils/logger";
+import { saveFilesForClaim } from "@/features/filestore/pinata/utils";
 
 const useCreateClaim = () => {
   const { rentalityContracts } = useRentality();
@@ -34,14 +32,27 @@ const useCreateClaim = () => {
       }
 
       try {
-        const savedFiles = await saveClaimFiles(createClaimRequest.localFileUrls, ethereumInfo);
+        const saveFilesResult = await saveFilesForClaim(
+          createClaimRequest.localFileUrls.map((i) => i.file),
+          ethereumInfo.chainId,
+          createClaimRequest.tripId,
+          {
+            tripId: createClaimRequest.tripId,
+            createdAt: new Date().toISOString(),
+            createdBy: ethereumInfo?.walletAddress ?? "",
+          }
+        );
+
+        if (!saveFilesResult.ok) {
+          return Err(new Error("ERROR"));
+        }
 
         const claimRequest: ContractCreateClaimRequest = {
           tripId: BigInt(createClaimRequest.tripId),
           claimType: createClaimRequest.claimType,
           description: createClaimRequest.description,
           amountInUsdCents: BigInt(createClaimRequest.amountInUsdCents),
-          photosUrl: savedFiles.join("|"),
+          photosUrl: saveFilesResult.value.urls.join("|"),
         };
 
         const result = await rentalityContracts.gateway.createClaim(claimRequest);
@@ -66,28 +77,5 @@ const useCreateClaim = () => {
     },
   });
 };
-
-async function saveClaimFiles(filesToSave: FileToUpload[], ethereumInfo: EthereumInfo): Promise<string[]> {
-  filesToSave = filesToSave.filter((i) => i);
-
-  const savedFiles: string[] = [];
-
-  if (filesToSave.length > 0) {
-    for (const file of filesToSave) {
-      const response = await uploadFileToIPFS(file.file, "RentalityClaimFile", {
-        createdAt: new Date().toISOString(),
-        createdBy: ethereumInfo?.walletAddress ?? "",
-        version: SMARTCONTRACT_VERSION,
-        chainId: ethereumInfo?.chainId ?? 0,
-      });
-
-      if (!response.success || !response.pinataURL) {
-        throw new Error("Uploaded image to Pinata error");
-      }
-      savedFiles.push(response.pinataURL);
-    }
-  }
-  return savedFiles;
-}
 
 export default useCreateClaim;
