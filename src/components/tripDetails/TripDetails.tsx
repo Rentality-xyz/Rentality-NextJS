@@ -10,8 +10,9 @@ import TripStatusDateTimes from "./TripStatusDateTimes";
 import TripReceipt from "./TripReceipt";
 import TripAboutCar from "./TripAboutCar";
 import TripPhotos from "@/components/carPhotos/tripPhotos";
-import useFeatureFlags from "@/hooks/useFeatureFlags";
+import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
 import { useEffect, useState } from "react";
+import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 
 export default function TripInfo() {
   const { userMode, isHost } = useUserMode();
@@ -29,7 +30,7 @@ export default function TripInfo() {
   const [hasTripPhotosFeatureFlag, setHasTripPhotosFeatureFlag] = useState<boolean>(false);
 
   useEffect(() => {
-    hasFeatureFlag("FF_TRIP_PHOTOS").then((hasTripPhotosFeatureFlag: boolean) => {
+    hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
       setHasTripPhotosFeatureFlag(hasTripPhotosFeatureFlag);
     });
   }, []);

@@ -1,4 +1,4 @@
-name: Build And Deploy to Demo
+name: Build And Deploy to Demo Test
 
 on:
   push:
@@ -9,7 +9,7 @@ jobs:
   build_and_deploy_demo:
     runs-on: ubuntu-latest
     environment:
-      name: Demo
+      name: Demo Test
     steps:
       - name: "Checkout Nextjs Repo"
         uses: actions/checkout@master
@@ -97,5 +97,5 @@ jobs:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
         with:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_RENTALITY_NEXTJS }}"
-          projectId: rentality-demo
+          projectId: rentality-demo-test
           channelId: live
