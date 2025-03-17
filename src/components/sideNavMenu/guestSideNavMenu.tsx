@@ -11,13 +11,23 @@ import { TFunction } from "@/utils/i18n";
 import { useChat } from "@/features/chat/contexts/chatContext";
 import { useAuth } from "@/contexts/auth/authContext";
 import * as React from "react";
+import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
+import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 
 function GuestNavMenu() {
   const { isAuthenticated, logout } = useAuth();
   const { notifications } = useNotification();
   const { chatInfos } = useChat();
   const { getPageLastVisitedDateTime } = usePageLastVisit();
+  const { hasFeatureFlag } = useFeatureFlags();
+  const [hasInvestmentFeatureFlag, setInvestmentFeatureFlag] = React.useState<boolean>(false);
   const { t } = useTranslation();
+
+  React.useEffect(() => {
+    hasFeatureFlag(FEATURE_FLAGS.FF_INVESTMENTS).then((hasInvestmentFeatureFlag: boolean) => {
+      setInvestmentFeatureFlag(hasInvestmentFeatureFlag);
+    });
+  }, [hasFeatureFlag]);
 
   const t_nav: TFunction = (name, options) => {
     return t("nav_menu." + name, options);
@@ -95,7 +105,9 @@ function GuestNavMenu() {
           href="/guest/points"
           icon={MenuIcons.ReferralsAndPoints}
         />
-        {/* <SideNavMenuItem text={t_nav("invest")} href="/guest/invest" icon={MenuIcons.Invest} /> */}
+        {hasInvestmentFeatureFlag && (
+          <SideNavMenuItem text={t_nav("invest")} href="/guest/invest" icon={MenuIcons.Invest} />
+        )}
         <SideNavMenuItem text={t_nav("profile")} href="/guest/profile" icon={MenuIcons.ProfileSettings} />
         {isAuthenticated ? (
           <SideNavMenuItem text={t_nav("logout")} href="/" onClick={logout} icon={MenuIcons.Logout} />
