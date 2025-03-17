@@ -28,6 +28,33 @@ export async function deleteUserProfilePhoto(profileImageUrl: string): Promise<R
   return deleteFileFromIPFS(profileImageUrlHash);
 }
 
+export async function saveFilesForClaim(
+  files: File[],
+  chainId: number,
+  tripId: number,
+  keyValues?: {}
+): Promise<Result<{ urls: string[] }>> {
+  const savedUrls: string[] = [];
+
+  for (const file of files.filter((i) => i)) {
+    const fileName = `${chainId}_RentalityClaimFile_${tripId}`;
+    const uploadResult = await uploadFileToIPFS(file, fileName, keyValues);
+
+    if (!uploadResult.ok) {
+      if (savedUrls.length > 0) {
+        for (const savedUrl of savedUrls) {
+          await deleteFileFromIPFS(savedUrl);
+        }
+      }
+      return uploadResult;
+    }
+
+    savedUrls.push(uploadResult.value.url);
+  }
+
+  return Ok({ urls: savedUrls });
+}
+
 function getMatadata(fileName: string, keyValues?: {}) {
   return JSON.stringify({
     name: fileName,
