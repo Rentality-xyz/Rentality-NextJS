@@ -33,8 +33,7 @@ const headerSpanClassName = "text-start px-2 font-light text-sm";
 const rowSpanClassName = "px-2 h-16";
 
 export default function ClaimHistory({ claims }: Props) {
-  const { userMode } = useUserMode();
-  const isHost = userMode === "Host";
+  const { userMode, isHost } = useUserMode();
   const { mutateAsync: payClaim } = usePayClaim();
   const { mutateAsync: cancelClaim } = useCancelClaim();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
@@ -123,9 +122,9 @@ export default function ClaimHistory({ claims }: Props) {
             </thead>
             <tbody className="w-full text-sm">
               {claims.map((claim) => {
-                const chatLink = `/${isHost ? "host" : "guest"}/messages?tridId=${claim.tripId}`;
-                const telLink = `tel:${isHost ? claim.guestPhoneNumber : claim.hostPhoneNumber}`;
-                const detailsLink = `/${isHost ? "host" : "guest"}/trips/tripInfo/${claim.tripId}?back=${pathname}`;
+                const chatLink = `/${isHost(userMode) ? "host" : "guest"}/messages?tridId=${claim.tripId}`;
+                const telLink = `tel:${isHost(userMode) ? claim.guestPhoneNumber : claim.hostPhoneNumber}`;
+                const detailsLink = `/${isHost(userMode) ? "host" : "guest"}/trips/tripInfo/${claim.tripId}?back=${pathname}`;
 
                 return (
                   <tr key={claim.claimId} className="w-full border-b-[1px] border-b-gray-500">
@@ -214,7 +213,7 @@ export default function ClaimHistory({ claims }: Props) {
             return (
               <ClaimHistoryMobileCard
                 key={claim.claimId}
-                isHost={isHost}
+                isHost={isHost(userMode)}
                 claim={claim}
                 index={index}
                 payClaim={handlePayClaim}

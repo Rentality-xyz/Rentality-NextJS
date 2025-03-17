@@ -1,6 +1,5 @@
 import RntButton from "@/components/common/rntButton";
 import RntFileButton from "@/components/common/rntFileButton";
-import RntInput from "@/components/common/rntInput";
 import { resizeImage } from "@/utils/image";
 import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
@@ -36,7 +35,7 @@ function UserCommonInformationForm({
   const ethereumInfo = useEthereum();
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { t } = useTranslation();
-  const { userMode } = useUserMode();
+  const { userMode, isHost } = useUserMode();
   const { register, handleSubmit, formState, control, setValue, watch, reset } =
     useForm<UserCommonInformationFormValues>({
       defaultValues: {
@@ -397,7 +396,7 @@ function UserCommonInformationForm({
               field.onChange(true);
               logger.info(`onLabelClick. ${JSON.stringify(e.type)}`);
               const windowsProxy = window.open(
-                `/${userMode === "Host" ? "host" : "guest"}/legal?tab=${LEGAL_TERMS_NAME}`,
+                `/${isHost(userMode) ? "host" : "guest"}/legal?tab=${LEGAL_TERMS_NAME}`,
                 "_blank"
               );
               if (windowsProxy === null || typeof windowsProxy == "undefined")

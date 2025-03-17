@@ -9,12 +9,12 @@ import { calculateDays, UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import UserAvatarWithName from "../common/userAvatarWithName";
-import { isEmpty } from "@/utils/string";
-import { isHost, UserMode } from "@/hooks/useUserMode";
+import useUserMode from "@/hooks/useUserMode";
 import RntGalleryLink from "../common/RntGalleryLink";
 import { InsuranceType } from "@/model/blockchain/schemas";
 
-function TripReceipt({ tripId, tripInfo, userMode }: { tripId: bigint; tripInfo: TripInfo; userMode: UserMode }) {
+function TripReceipt({ tripId, tripInfo }: { tripId: bigint; tripInfo: TripInfo }) {
+  const { userMode, isHost } = useUserMode();
   const { t } = useTranslation();
 
   const t_details: TFunction = (name, options) => {
