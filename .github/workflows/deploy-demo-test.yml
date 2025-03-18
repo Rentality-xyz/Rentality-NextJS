@@ -1,13 +1,10 @@
 name: Build And Deploy to Demo Test
 
 on:
-  push:
-    branches:
-      - main
-
-concurrency:
-  group: deploy-demo
-  cancel-in-progress: false
+  workflow_run:
+    workflows: ["Build And Deploy to Demo"]
+    types:
+      - completed
 
 jobs:
   build_and_deploy_demo:
@@ -15,8 +12,6 @@ jobs:
     environment:
       name: Demo Test
     steps:
-      - name: Delay to wait for Deploy Demo first
-        run: sleep 30
       - name: "Checkout Nextjs Repo"
         uses: actions/checkout@master
       - name: "Checkout Contracts Repo"
