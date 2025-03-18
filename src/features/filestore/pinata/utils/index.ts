@@ -8,6 +8,7 @@ import { getIpfsHashFromUrl } from "@/utils/ipfsUtils";
 
 const pinataJwt = env.NEXT_PUBLIC_PINATA_JWT;
 const PIN_FILE_URL = "https://api.pinata.cloud/pinning/pinFileToIPFS";
+const PIN_JSON_URL = "https://api.pinata.cloud/pinning/pinJSONToIPFS";
 const UNPIN_FILE_URL = "https://api.pinata.cloud/pinning/unpin/{id}";
 const GET_TRIP_FILE_LIST_URL = `https://api.pinata.cloud/data/pinList?metadata[keyvalues]={"tripId":{"value":"{tripId}","op":"eq"}}`;
 
@@ -144,6 +145,11 @@ export async function saveTripCarPhotos(
   return Ok({ urls: savedUrls });
 }
 
+export async function saveAiAssessment(JSONBody: {}, chainId: number, fileNameTag?: string, keyValues?: {}) {
+  const fileName = `${chainId}_RentalityAiAssessment`;
+  return uploadJSONToIPFS(JSONBody, fileName, { ...keyValues, chainId: chainId });
+}
+
 export async function deleteFileByUrl(fileUrl: string): Promise<Result<boolean>> {
   const fileUrlHash = getIpfsHashFromUrl(fileUrl);
 
@@ -166,7 +172,7 @@ export async function deleteFilesByUrl(fileUrls: string[]): Promise<Result<boole
   return errors.length === 0 ? Ok(true) : Err(errors);
 }
 
-function getMatadata(fileName: string, keyValues?: {}) {
+function getMetadata(fileName: string, keyValues?: {}) {
   return JSON.stringify({
     name: fileName,
     keyvalues: keyValues,
@@ -194,14 +200,14 @@ function getPinataOptions() {
 async function uploadFileToIPFS(file: File, fileName: string, keyValues?: {}): Promise<Result<{ url: string }>> {
   let data = new FormData();
   data.append("file", file);
-  data.append("pinataMetadata", getMatadata(fileName, keyValues));
+  data.append("pinataMetadata", getMetadata(fileName, keyValues));
   data.append("pinataOptions", getPinataOptions());
 
   return axios
     .post(PIN_FILE_URL, data, {
       maxBodyLength: Infinity,
       headers: {
-        "Content-Type": `multipart/form-data; boundary=undefined}`,
+        "Content-Type": `multipart/form-data; boundary=undefined`,
         Authorization: `Bearer ${pinataJwt}`,
       },
     })
@@ -235,3 +241,36 @@ async function deleteFileFromIPFS(ipfsHash: string): Promise<Result<boolean>> {
       return error instanceof Error ? Err(error) : Err(new Error(error.toString()));
     });
 }
+
+async function uploadJSONToIPFS(
+  JSONBody: {},
+  fileName: string,
+  keyValues?: {}
+): Promise<Result<{ url: string }, Error>> {
+  const pinataData = {
+    pinataContent: JSONBody,
+    pinataOptions: { cidVersion: 0 },
+    pinataMetadata: { name: fileName, keyvalues: keyValues },
+  };
+
+  return axios
+    .post(PIN_JSON_URL, pinataData, {
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        Authorization: `Bearer ${pinataJwt}`,
+      },
+    })
+    .then(function (response) {
+      console.log("JSON uploaded successfully: ", response.data.IpfsHash);
+      return Ok({
+        url: "https://gateway.pinata.cloud/ipfs/" + response.data.IpfsHash,
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      return error instanceof Error ? Err(error) : Err(new Error(error.toString()));
+    });
+}
+
+///-----
