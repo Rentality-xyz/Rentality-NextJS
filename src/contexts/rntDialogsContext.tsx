@@ -15,6 +15,8 @@ interface IRntDialogs {
 interface IRntSnackbars {
   showInfo: (message: string, action?: ReactNode) => void;
   showError: (message: string, action?: ReactNode) => void;
+  showWarning: (message: string, action?: ReactNode) => void;
+  showSuccess: (message: string, action?: ReactNode) => void;
   hideSnackbars: () => void;
 }
 
@@ -59,8 +61,9 @@ export const RntDialogsProvider = ({ children }: { children?: React.ReactNode })
     setSnackbarState((prev) => {
       return {
         ...prev,
-        message: message,
+        message: `ℹ️ ${message}`,
         action: action,
+        backgroundColor: "#7da2f6",
         alertColor: "info",
         isOpen: true,
       };
@@ -71,9 +74,37 @@ export const RntDialogsProvider = ({ children }: { children?: React.ReactNode })
     setSnackbarState((prev) => {
       return {
         ...prev,
-        message: message,
+        message: `❌ ${message}`,
         action: action,
+        backgroundColor: "#f87171",
         alertColor: "error",
+        isOpen: true,
+      };
+    });
+  }, []);
+
+  const showSuccess = useCallback((message: string, action?: ReactNode) => {
+    setSnackbarState((prev) => {
+      return {
+        ...prev,
+        message: `✅ ${message}`,
+        action: action,
+        backgroundColor: "#009898",
+        alertColor: "success",
+        isOpen: true,
+      };
+    });
+  }, []);
+
+  const showWarning = useCallback((message: string, action?: ReactNode) => {
+    setSnackbarState((prev) => {
+      return {
+        ...prev,
+        message: `⚠️ ${message}`,
+        action: action,
+        backgroundColor: "#FFF9C4",
+        textColor: "#000000",
+        alertColor: "warning",
         isOpen: true,
       };
     });
@@ -108,6 +139,8 @@ export const RntDialogsProvider = ({ children }: { children?: React.ReactNode })
     return {
       showInfo: showInfo,
       showError: showError,
+      showWarning: showWarning,
+      showSuccess: showSuccess,
       hideSnackbars: hideSnackbars,
     };
   }, [showInfo, showError, hideSnackbars]);
