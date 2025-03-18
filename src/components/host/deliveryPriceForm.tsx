@@ -20,7 +20,7 @@ function DeliveryPriceForm({
 }) {
   const { userRole, isHost } = useUserRole();
   const { showDialog, hideDialogs } = useRntDialogs();
-  const { showInfo, showError, hideSnackbars } = useRntSnackbars();
+  const { showInfo, showError, showSuccess, hideSnackbars } = useRntSnackbars();
   const { register, handleSubmit, formState, reset } = useForm<DeliveryPricesFormValues>({
     defaultValues: {
       from1To25milesPrice: savedDeliveryPrices.from1To25milesPrice,
@@ -56,7 +56,7 @@ function DeliveryPriceForm({
     hideSnackbars();
 
     if (result.ok) {
-      showInfo(t("common.info.success"));
+      showSuccess(t("common.info.success"));
     } else {
       if (result.error.message === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));

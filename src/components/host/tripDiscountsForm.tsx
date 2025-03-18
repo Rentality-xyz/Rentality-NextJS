@@ -19,7 +19,7 @@ function TripDiscountsForm({
 }) {
   const { userRole, isHost } = useUserRole();
   const { showDialog, hideDialogs } = useRntDialogs();
-  const { showInfo, showError, hideSnackbars } = useRntSnackbars();
+  const { showInfo, showError, showSuccess, hideSnackbars } = useRntSnackbars();
   const { register, handleSubmit, formState, reset } = useForm<TripDiscountsFormValues>({
     defaultValues: {
       discount3DaysAndMoreInPercents: savedTripsDiscounts.discount3DaysAndMoreInPercents,
@@ -58,7 +58,7 @@ function TripDiscountsForm({
     hideSnackbars();
 
     if (result.ok) {
-      showInfo(t("common.info.success"));
+      showSuccess(t("common.info.success"));
     } else {
       if (result.error.message === "NOT_ENOUGH_FUNDS") {
         showError(t("common.add_fund_to_wallet"));

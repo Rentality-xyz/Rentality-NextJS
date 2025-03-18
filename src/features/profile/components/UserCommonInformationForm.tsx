@@ -33,7 +33,7 @@ function UserCommonInformationForm({
   saveUserProfile: (request: SaveUserProfileRequest) => Promise<Result<boolean, Error>>;
 }) {
   const ethereumInfo = useEthereum();
-  const { showInfo, showError, hideSnackbars } = useRntSnackbars();
+  const { showInfo, showError, showSuccess, hideSnackbars } = useRntSnackbars();
   const { t } = useTranslation();
   const { userMode, isHost } = useUserMode();
   const { register, handleSubmit, formState, control, setValue, watch, reset } =
@@ -145,7 +145,7 @@ function UserCommonInformationForm({
       if (!result) {
         throw new Error("Save profile info error");
       }
-      showInfo(t("common.info.save_profile_success"));
+      showSuccess(t("common.info.save_profile_success"));
     } catch (error) {
       logger.error("handleSubmit error:" + error);
       showError(t("profile.save_err"));
