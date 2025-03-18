@@ -14,7 +14,7 @@ import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
 import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 import { Result } from "@/model/utils/result";
-import { deleteFilesByUrl } from "@/features/filestore/pinata/utils";
+import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore/pinata/utils";
 
 function TripAdditionalActions({
   tripInfo,
@@ -82,7 +82,7 @@ function TripAdditionalActions({
     if (action.params == null || action.params.length == 0) {
       hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
         if (hasTripPhotosFeatureFlag) {
-          carPhotosUploadButtonRef.current.saveUploadedFiles().then((result: Result<{ urls: string[] }>) => {
+          carPhotosUploadButtonRef.current.saveUploadedFiles().then((result: Result<UploadedUrlList>) => {
             if (!result.ok || result.value.urls.length === 0) {
               showDialog(t("common.photos_required"));
             } else {
@@ -104,7 +104,7 @@ function TripAdditionalActions({
     } else {
       hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
         if (hasTripPhotosFeatureFlag) {
-          carPhotosUploadButtonRef.current.saveUploadedFiles().then((result: Result<{ urls: string[] }>) => {
+          carPhotosUploadButtonRef.current.saveUploadedFiles().then((result: Result<UploadedUrlList>) => {
             if (!result.ok || result.value.urls.length === 0) {
               showDialog(t("common.photos_required"));
             } else {

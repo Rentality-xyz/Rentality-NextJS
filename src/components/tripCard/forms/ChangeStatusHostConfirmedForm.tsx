@@ -18,7 +18,7 @@ import useDIMOCarData from "@/features/dimo/hooks/useDIMOCarData";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 import { Result } from "@/model/utils/result";
-import { deleteFilesByUrl } from "@/features/filestore/pinata/utils";
+import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore/pinata/utils";
 
 interface ChangeStatusHostConfirmedFormProps {
   tripInfo: TripInfo;
@@ -61,7 +61,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
       let tripPhotosUrls: string[] = [];
 
       if (hasTripPhotosFeatureFlag) {
-        const result: Result<{ urls: string[] }> = await carPhotosUploadButtonRef.current.saveUploadedFiles();
+        const result: Result<UploadedUrlList> = await carPhotosUploadButtonRef.current.saveUploadedFiles();
         if (!result.ok || result.value.urls.length === 0) {
           showDialog(t("common.photos_required"));
           return;

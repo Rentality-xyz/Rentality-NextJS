@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import RntButton from "@/components/common/rntButton";
 import { logger } from "@/utils/logger";
-import { saveTripCarPhotos } from "@/features/filestore/pinata/utils";
+import { saveTripCarPhotos, UploadedUrlList } from "@/features/filestore/pinata/utils";
 
 const EXTERIOR_PHOTOS_COUNT_REQUIRED = 4;
 const INTERIOR_PHOTOS_COUNT_REQUIRED = 9;
@@ -42,7 +42,7 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
   useImperativeHandle(
     ref,
     () => ({
-      async saveUploadedFiles(): Promise<Result<{ urls: string[] }>> {
+      async saveUploadedFiles(): Promise<Result<UploadedUrlList>> {
         if (!ethereumInfo) {
           logger.error("saveUploadedFiles error: Missing required contracts or ethereum info");
           return Err(new Error("Missing required contracts or ethereum info"));
