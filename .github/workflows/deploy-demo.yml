@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: deploy-demo
+  cancel-in-progress: false
+
 jobs:
   build_and_deploy_demo:
     runs-on: ubuntu-latest
