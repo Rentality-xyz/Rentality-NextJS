@@ -2,14 +2,13 @@
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import React, { forwardRef, useImperativeHandle, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { uploadFileToIPFS } from "@/utils/pinata";
-import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { Err } from "@/model/utils/result";
+import { Err, Ok, Result } from "@/model/utils/result";
 import { useTranslation } from "react-i18next";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import RntButton from "@/components/common/rntButton";
 import { logger } from "@/utils/logger";
+import { saveTripCarPhotos } from "@/features/filestore/pinata/utils";
 
 const EXTERIOR_PHOTOS_COUNT_REQUIRED = 4;
 const INTERIOR_PHOTOS_COUNT_REQUIRED = 9;
@@ -43,46 +42,32 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
   useImperativeHandle(
     ref,
     () => ({
-      async saveUploadedFiles() {
+      async saveUploadedFiles(): Promise<Result<{ urls: string[] }>> {
+        if (!ethereumInfo) {
+          logger.error("saveUploadedFiles error: Missing required contracts or ethereum info");
+          return Err(new Error("Missing required contracts or ethereum info"));
+        }
+
         const savedFilesURLs: string[] = [];
 
         if (uploadedFiles === null) {
-          return savedFilesURLs;
+          return Ok({ urls: savedFilesURLs });
         }
 
-        try {
-          const isHostStringValue = isHost ? "host" : "guest";
-          const isStartStringValue = isStart ? "start" : "finish";
-
-          for (const uploadedFile of Array.from(uploadedFiles)) {
-            const fileName = `${tripId}-${isHostStringValue}-${isStartStringValue}-${uploadedFile.name}`;
-
-            logger.debug(`Uploading file ${fileName} to Pinata`);
-
-            const response = await uploadFileToIPFS(uploadedFile, fileName, {
-              createdAt: new Date().toISOString(),
-              createdBy: ethereumInfo?.walletAddress ?? "",
-              version: SMARTCONTRACT_VERSION,
-              chainId: ethereumInfo?.chainId ?? 0,
-              tripId: Number(tripId),
-              isHost: isHostStringValue,
-              isStart: isStartStringValue,
-            });
-
-            if (!response.success || !response.pinataURL) {
-              return Err(`Photo upload failed`);
-            }
-
-            savedFilesURLs.push(response.pinataURL);
+        return saveTripCarPhotos(
+          Array.from(uploadedFiles ?? []),
+          ethereumInfo.chainId,
+          tripId,
+          isHost ? "host" : "guest",
+          isStart ? "start" : "finish",
+          {
+            createdAt: new Date().toISOString(),
+            createdBy: ethereumInfo.walletAddress ?? "",
           }
-        } catch (error) {
-          return Err(error instanceof Error ? error.message : "unknown error");
-        }
-
-        return savedFilesURLs;
+        );
       },
     }),
-    [ethereumInfo?.chainId, ethereumInfo?.walletAddress, isStart, tripId, uploadedFiles]
+    [ethereumInfo, isHost, isStart, tripId, uploadedFiles]
   );
 
   return (

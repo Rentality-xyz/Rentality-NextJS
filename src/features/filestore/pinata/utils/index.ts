@@ -56,6 +56,42 @@ export async function saveGeneralInsurancePhoto(
   return uploadFileToIPFS(file, fileName, { ...keyValues, chainId: chainId });
 }
 
+export async function saveTripCarPhotos(
+  files: File[],
+  chainId: number,
+  tripId: number,
+  uploadedBy: "host" | "guest",
+  tripStatus: "start" | "finish",
+  keyValues?: {}
+): Promise<Result<{ urls: string[] }>> {
+  const savedUrls: string[] = [];
+
+  for (const file of files.filter((i) => i)) {
+    const fileName = `${chainId}_${uploadedBy}-${tripStatus}-Trip-${tripId}-Photo`;
+    const uploadResult = await uploadFileToIPFS(file, fileName, {
+      ...keyValues,
+      tripId: tripId,
+      chainId: chainId,
+      uploadedBy: uploadedBy,
+      tripStatus: tripStatus,
+    });
+
+    if (!uploadResult.ok) {
+      if (savedUrls.length > 0) {
+        logger.info("Reverting uploaded files...");
+        for (const savedUrl of savedUrls) {
+          await deleteFileFromIPFS(savedUrl);
+        }
+      }
+      return uploadResult;
+    }
+
+    savedUrls.push(uploadResult.value.url);
+  }
+
+  return Ok({ urls: savedUrls });
+}
+
 export async function deleteFileByUrl(fileUrl: string): Promise<Result<boolean>> {
   const fileUrlHash = getIpfsHashFromUrl(fileUrl);
 
