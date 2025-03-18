@@ -61,7 +61,7 @@
       "date_from": "Please enter 'Date from'",
       "date_to": "Please enter 'Date to'",
       "date_eq": "'Date to' must be greater than 'Date from'",
-      "request": "Almost there! Please complete your profile to proceed with your trip booking.",
+      "request": "Your create trip request failed. Please make sure you entered trip details right and try again",
       "own_car": "You cannot book your own car"
     },
     "info": {
