@@ -55,6 +55,24 @@ export async function saveFilesForClaim(
   return Ok({ urls: savedUrls });
 }
 
+export async function saveGeneralInsurancePhoto(
+  file: File,
+  chainId: number,
+  keyValues?: {}
+): Promise<Result<{ url: string }>> {
+  const fileName = `${chainId}_RentalityGuestInsurance`;
+  return uploadFileToIPFS(file, fileName, keyValues);
+}
+
+export async function deleteGeneralInsurancePhoto(generalInsurancePhotoUrl: string): Promise<Result<boolean>> {
+  const generalInsurancePhotoUrlHash = getIpfsHashFromUrl(generalInsurancePhotoUrl);
+
+  if (isEmpty(generalInsurancePhotoUrlHash)) {
+    return Err(new Error("generalInsurancePhotoUrl does not contain hash"));
+  }
+  return deleteFileFromIPFS(generalInsurancePhotoUrlHash);
+}
+
 function getMatadata(fileName: string, keyValues?: {}) {
   return JSON.stringify({
     name: fileName,
