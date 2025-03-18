@@ -20,7 +20,7 @@ function UserInsurance() {
   const { isLoading, data: guestInsurance } = useFetchGuestGeneralInsurance();
   const { mutateAsync: saveGuestInsurance } = useSaveGuestGeneralInsurance();
   const { showDialog, hideDialogs } = useRntDialogs();
-  const { showInfo, showError, hideSnackbars } = useRntSnackbars();
+  const { showInfo, showError, showSuccess, hideSnackbars } = useRntSnackbars();
   const { handleSubmit, formState, control, setValue, watch } = useForm<UserInsuranceFormValues>({
     defaultValues: {},
     resolver: zodResolver(userInsuranceFormSchema),
@@ -78,7 +78,7 @@ function UserInsurance() {
       logger.error("saveInsurance error: Save Guest Insurance info error");
       showError(t("profile.save_err"));
     } else {
-      showInfo(t("common.info.success"));
+      showSuccess(t("common.info.success"));
     }
   }
 

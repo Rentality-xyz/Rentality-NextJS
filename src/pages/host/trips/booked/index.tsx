@@ -15,7 +15,7 @@ function Booked() {
   const ethereumInfo = useEthereum();
   const [isLoadingTrips, tripsBooked, _, updateData] = useHostTrips();
   const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
-  const { showInfo, showError } = useRntSnackbars();
+  const { showInfo, showError, showSuccess } = useRntSnackbars();
   const { t } = useTranslation();
 
   const changeStatusCallback = async (tripInfo: TripInfo, changeStatus: () => Promise<boolean>) => {
@@ -50,16 +50,16 @@ function Booked() {
   const showInfoCurrentStatus = (tripInfo: TripInfo) => {
     switch (tripInfo.status) {
       case TripStatus.Pending:
-        showInfo(t("booked.host_confirmed"))
+        showSuccess(t("booked.host_confirmed"))
         return;
       case TripStatus.Confirmed:
-        showInfo(t("booked.trip_started"))
+        showSuccess(t("booked.trip_started"))
         return;
       case TripStatus.Started:
-        showInfo(t("booked.trip_finished"))
+        showSuccess(t("booked.trip_finished"))
         return;
       default:
-        showInfo(t("booked.status_changed"));
+        showSuccess(t("booked.status_changed"));
     }
   }
 

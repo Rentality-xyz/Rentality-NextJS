@@ -13,7 +13,7 @@ function Booked() {
   const ethereumInfo = useEthereum();
   const { isLoadingTrips, tripsBooked, updateData } = useGuestTrips();
   const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
-  const { showInfo, showError } = useRntSnackbars();
+  const { showInfo, showError, showSuccess } = useRntSnackbars();
   const { t } = useTranslation();
 
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
@@ -35,7 +35,7 @@ function Booked() {
     const result = await changeStatus();
 
     if (result) {
-      showInfo(t("booked.status_changed"));
+      showSuccess(t("booked.status_changed"));
       updateData();
     } else {
       showError(t("booked.status_req_failed"));
