@@ -7,7 +7,7 @@ import { REFERRAL_LINKS_QUERY_KEY } from "@/features/referralProgram/hooks/useFe
 import { USER_PROFILE_QUERY_KEY } from "./useFetchUserProfile";
 import { Err, Result } from "@/model/utils/result";
 import { logger } from "@/utils/logger";
-import { deleteUserProfilePhoto, saveUserProfilePhoto } from "@/features/filestore/pinata/utils";
+import { deleteFileByUrl, saveUserProfilePhoto } from "@/features/filestore/pinata/utils";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 
 export type SaveUserProfileRequest = {
@@ -64,7 +64,7 @@ function useSaveUserProfile() {
         );
 
         if (isNewPhoto) {
-          await deleteUserProfilePhoto(result.ok ? request.oldProfilePhotoUrl : profilePhotoUrl);
+          await deleteFileByUrl(result.ok ? request.oldProfilePhotoUrl : profilePhotoUrl);
         }
 
         return result;

@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { INSURANCE_GUEST_QUERY_KEY } from "./useFetchGuestGeneralInsurance";
 import { INSURANCE_LIST_QUERY_KEY } from "./useFetchInsurances";
 import { logger } from "@/utils/logger";
-import { deleteGeneralInsurancePhoto, saveGeneralInsurancePhoto } from "@/features/filestore/pinata/utils";
+import { deleteFileByUrl, saveGeneralInsurancePhoto } from "@/features/filestore/pinata/utils";
 import { isEmpty } from "@/utils/string";
 
 function useSaveGuestGeneralInsurance() {
@@ -39,7 +39,7 @@ function useSaveGuestGeneralInsurance() {
           const result = await rentalityContracts.gateway.saveGuestInsurance(insuranceInfo);
 
           if (result.ok) {
-            await deleteGeneralInsurancePhoto(file.url);
+            await deleteFileByUrl(file.url);
           }
 
           return result;
@@ -62,9 +62,9 @@ function useSaveGuestGeneralInsurance() {
           const result = await rentalityContracts.gateway.saveGuestInsurance(insuranceInfo);
 
           if (!result.ok) {
-            await deleteGeneralInsurancePhoto(uploadResult.value.url);
+            await deleteFileByUrl(uploadResult.value.url);
           } else if (file.oldUrl !== undefined && !isEmpty(file.oldUrl)) {
-            await deleteGeneralInsurancePhoto(file.oldUrl);
+            await deleteFileByUrl(file.oldUrl);
           }
 
           return result;
