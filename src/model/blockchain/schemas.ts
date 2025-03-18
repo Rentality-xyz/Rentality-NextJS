@@ -167,6 +167,7 @@ export type ContractTripDTO = {
   guestDrivingLicenseIssueCountry: string;
   promoDiscount: bigint;
   dimoTokenId: bigint;
+  taxesData: ContractTaxValue[];
 };
 
 export type ContractChatInfo = {
@@ -296,8 +297,6 @@ export type ContractTripReceiptDTO = {
   totalDayPriceInUsdCents: bigint;
   totalTripDays: bigint;
   tripPrice: bigint;
-  discountAmount: bigint;
-  salesTax: bigint;
   governmentTax: bigint;
   depositReceived: bigint;
   reimbursement: bigint;
@@ -314,6 +313,7 @@ export type ContractTripReceiptDTO = {
   startOdometer: bigint;
   endOdometer: bigint;
   insuranceFee: bigint;
+  taxes: ContractTaxValue[];
 };
 
 export type ContractCalculatePaymentsDTO = {
@@ -401,7 +401,6 @@ export type ContractAvailableCarDTO = {
   pricePerDayWithDiscount: bigint;
   tripDays: bigint;
   totalPriceWithDiscount: bigint;
-  taxes: bigint;
   securityDepositPerTripInUsdCents: bigint;
   engineType: EngineType;
   milesIncludedPerDay: bigint;
@@ -418,11 +417,11 @@ export type ContractAvailableCarDTO = {
   insuranceInfo: ContractInsuranceCarInfo;
   fuelPrice: bigint;
   carDiscounts: ContractBaseDiscount;
-  salesTax: bigint;
-  governmentTax: bigint;
   distance: bigint;
   isGuestHasInsurance: boolean;
   dimoTokenId: bigint;
+  taxes: ContractTaxValue[];
+  totalTax: bigint;
 };
 
 export type ContractGeoData = {
@@ -459,6 +458,13 @@ export type ContractCarDetails = {
 export type ContractFloridaTaxes = {
   salesTaxPPM: bigint;
   governmentTaxPerDayInUsdCents: bigint;
+};
+
+export type ContractTaxesDTO = {
+  taxInfo: string;
+  dataType: string;
+  taxId: bigint;
+  totalTax: bigint;
 };
 
 export type ContractBaseDiscount = {
@@ -775,6 +781,12 @@ export type ContractTripInsuranceCases = {
   post: bigint;
 };
 
+export type ContractTaxValue = {
+  name: string;
+  value: bigint;
+  tType: TaxesType;
+};
+
 export type TripStatus = bigint;
 export const TripStatus = {
   Pending: BigInt(0), // Created
@@ -927,6 +939,13 @@ export const PromoStatus = {
   Active: BigInt(0),
   Idle: BigInt(1),
   Used: BigInt(2),
+};
+
+export type TaxesType = bigint;
+export const TaxesType = {
+  InUsdCentsPerDay: BigInt(0),
+  InUsdCents: BigInt(1),
+  PPM: BigInt(2),
 };
 
 export type EngineType = bigint;
