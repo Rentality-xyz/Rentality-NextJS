@@ -18,10 +18,12 @@ import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton"
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import useUserMode from "@/hooks/useUserMode";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
+import { Result } from "@/model/utils/result";
+import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore/pinata/utils";
 
 interface ChangeStatusGuestStartedFormProps {
   tripInfo: TripInfo;
-  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<void>;
+  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<boolean>;
   disableButton: boolean;
   t: TFunction;
 }
@@ -73,10 +75,12 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
       let tripPhotosUrls: string[] = [];
 
       if (hasTripPhotosFeatureFlag) {
-        tripPhotosUrls = await carPhotosUploadButtonRef.current.saveUploadedFiles();
-        if (tripPhotosUrls.length === 0) {
+        const result: Result<UploadedUrlList> = await carPhotosUploadButtonRef.current.saveUploadedFiles();
+        if (!result.ok || result.value.urls.length === 0) {
           showDialog(t("common.photos_required"));
           return;
+        } else {
+          tripPhotosUrls = result.value.urls;
         }
       }
 
@@ -86,6 +90,10 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
           [formData.fuelOrBatteryLevel.toString(), formData.odotemer.toString()],
           tripPhotosUrls
         );
+      }).then((isSuccess) => {
+        if (!isSuccess) {
+          deleteFilesByUrl(tripPhotosUrls);
+        }
       });
     }
 

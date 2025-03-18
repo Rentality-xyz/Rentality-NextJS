@@ -6,6 +6,8 @@ import RntInputMultiline from "../common/rntInputMultiline";
 import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton";
 import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
+import { Result } from "@/model/utils/result";
+import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore/pinata/utils";
 
 function GuestConfirmFinishForm({
   hostPhoneNumber,
@@ -17,7 +19,7 @@ function GuestConfirmFinishForm({
 }: {
   hostPhoneNumber: string;
   messageFromHost: string;
-  handleFinishTrip: () => Promise<void>;
+  handleFinishTrip: () => Promise<boolean>;
   handleCancel: () => void;
   t: TFunction;
   tripId: number;
@@ -39,11 +41,15 @@ function GuestConfirmFinishForm({
   const onConfirmClick = () => {
     hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
       if (hasTripPhotosFeatureFlag) {
-        carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
-          if (tripPhotosUrls.length === 0) {
+        carPhotosUploadButtonRef.current.saveUploadedFiles().then((result: Result<UploadedUrlList>) => {
+          if (!result.ok || result.value.urls.length === 0) {
             setNoFilesUploadedError(true);
           } else {
-            handleFinishTrip();
+            handleFinishTrip().then((isSuccess) => {
+              if (!isSuccess) {
+                deleteFilesByUrl(result.value.urls);
+              }
+            });
           }
         });
       } else {

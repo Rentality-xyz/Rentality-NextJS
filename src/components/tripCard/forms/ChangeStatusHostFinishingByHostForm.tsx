@@ -16,7 +16,7 @@ import {
 
 interface ChangeStatusHostFinishingByHostFormProps {
   tripInfo: TripInfo;
-  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<void>;
+  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<boolean>;
   disableButton: boolean;
   t: TFunction;
 }

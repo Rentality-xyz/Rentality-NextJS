@@ -71,9 +71,11 @@ function TripCard({
             <CurrentStatusInfo
               tripInfo={tripInfo}
               changeStatusCallback={async (changeStatus) => {
-                if (await changeStatusCallback(changeStatus)) {
+                const isSuccess = await changeStatusCallback(changeStatus);
+                if (isSuccess) {
                   setIsAdditionalActionHidden(true);
                 }
+                return isSuccess;
               }}
               disableButton={disableButton}
               isAdditionalActionHidden={isAdditionalActionHidden}
@@ -112,9 +114,11 @@ function TripCard({
           refForScrool={allowedActionsRef}
           tripInfo={tripInfo}
           changeStatusCallback={async (changeStatus) => {
-            if (await changeStatusCallback(changeStatus)) {
+            const isSuccess = await changeStatusCallback(changeStatus);
+            if (isSuccess) {
               setIsAdditionalActionHidden(true);
             }
+            return isSuccess;
           }}
           disableButton={disableButton}
           isHost={isHost}
