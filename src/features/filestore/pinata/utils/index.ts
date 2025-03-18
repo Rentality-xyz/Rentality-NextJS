@@ -9,6 +9,7 @@ import { getIpfsHashFromUrl } from "@/utils/ipfsUtils";
 const pinataJwt = env.NEXT_PUBLIC_PINATA_JWT;
 const PIN_FILE_URL = "https://api.pinata.cloud/pinning/pinFileToIPFS";
 const UNPIN_FILE_URL = "https://api.pinata.cloud/pinning/unpin/{id}";
+const GET_TRIP_FILE_LIST_URL = `https://api.pinata.cloud/data/pinList?metadata[keyvalues]={"tripId":{"value":"{tripId}","op":"eq"}}`;
 
 export async function saveUserProfilePhoto(
   file: File,
@@ -54,6 +55,57 @@ export async function saveGeneralInsurancePhoto(
 ): Promise<Result<{ url: string }>> {
   const fileName = `${chainId}_RentalityGuestInsurance`;
   return uploadFileToIPFS(file, fileName, { ...keyValues, chainId: chainId });
+}
+
+export interface GetPhotosForTripResponseType {
+  checkinByHost: string[];
+  checkOutByHost: string[];
+  checkInByGuest: string[];
+  checkOutByGuest: string[];
+}
+
+export async function getTripCarPhotos(tripId: number): Promise<GetPhotosForTripResponseType> {
+  const url = GET_TRIP_FILE_LIST_URL.replace("{tripId}", tripId.toString());
+
+  const response = await axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${pinataJwt}`,
+    },
+  });
+
+  if (response.data.rows === undefined) {
+    throw new Error("Incorrect response format getting photos for the trip");
+  }
+
+  const returnValue: GetPhotosForTripResponseType = {
+    checkinByHost: [],
+    checkOutByHost: [],
+    checkInByGuest: [],
+    checkOutByGuest: [],
+  };
+
+  for (let i: number = 0; i < response.data.rows.length; i++) {
+    const row = response.data.rows[i];
+    const isHost: boolean = row.metadata.keyvalues.isHost === "host";
+    const isStart: boolean = row.metadata.keyvalues.isStart === "start";
+    const urlToFile = `https://gateway.pinata.cloud/ipfs/${row.ipfs_pin_hash}`;
+
+    if (isHost) {
+      if (isStart) {
+        returnValue.checkinByHost.push(urlToFile);
+      } else {
+        returnValue.checkOutByHost.push(urlToFile);
+      }
+    } else {
+      if (isStart) {
+        returnValue.checkInByGuest.push(urlToFile);
+      } else {
+        returnValue.checkOutByGuest.push(urlToFile);
+      }
+    }
+  }
+
+  return returnValue;
 }
 
 export async function saveTripCarPhotos(
