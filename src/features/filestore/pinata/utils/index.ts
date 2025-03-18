@@ -4,7 +4,9 @@ import { Err, Ok, Result } from "@/model/utils/result";
 import { env } from "@/utils/env";
 import { logger } from "@/utils/logger";
 import { isEmpty } from "@/utils/string";
-import { getIpfsHashFromUrl } from "@/utils/ipfsUtils";
+import { getIpfsHashFromUrl, getNftJSONFromCarInfo } from "@/utils/ipfsUtils";
+import { HostCarInfo } from "@/model/HostCarInfo";
+import { PlatformCarImage, UploadedCarImage } from "@/model/FileToUpload";
 
 const pinataJwt = env.NEXT_PUBLIC_PINATA_JWT;
 const PIN_FILE_URL = "https://api.pinata.cloud/pinning/pinFileToIPFS";
@@ -55,6 +57,70 @@ export async function saveGeneralInsurancePhoto(
 ): Promise<Result<UploadedUrl>> {
   const fileName = `${chainId}_RentalityGuestInsurance`;
   return uploadFileToIPFS(file, fileName, { ...keyValues, chainId: chainId });
+}
+
+type SaveCarMetadataResult = {
+  metadataUrl: string;
+  newUploadedUrls: string[];
+  urlsToDelete: string[];
+};
+
+export async function saveCarMetadata(
+  files: PlatformCarImage[],
+  chainId: number,
+  carInfo: HostCarInfo,
+  keyValues?: {}
+): Promise<Result<SaveCarMetadataResult>> {
+  let metadataUrl = "";
+  let newUploadedUrls: string[] = [];
+  let urlsToDelete: string[] = [];
+  let carImagesToSaveInMetadata: UploadedCarImage[] = [];
+
+  for (const file of files.filter((i) => i)) {
+    if ("url" in file) {
+      if (file.isDeleted) {
+        urlsToDelete.push(file.url);
+      } else {
+        carImagesToSaveInMetadata.push(file);
+      }
+      continue;
+    }
+
+    const fileName = `${chainId}_RentalityCarImage`;
+    const uploadImageResult = await uploadFileToIPFS(file.file, fileName, { ...keyValues, chainId: chainId });
+
+    if (!uploadImageResult.ok) {
+      if (newUploadedUrls.length > 0) {
+        logger.info("Reverting uploaded files...");
+        for (const savedUrl of newUploadedUrls) {
+          await deleteFileFromIPFS(savedUrl);
+        }
+      }
+      return uploadImageResult;
+    }
+
+    newUploadedUrls.push(uploadImageResult.value.url);
+    carImagesToSaveInMetadata.push({ url: uploadImageResult.value.url, isPrimary: file.isPrimary });
+  }
+
+  const nftJSON = getNftJSONFromCarInfo({ ...carInfo, images: carImagesToSaveInMetadata });
+  const metadataFileName = `RentalityNFTMetadata`;
+  const uploadMetadataResult = await uploadJSONToIPFS(nftJSON, metadataFileName, { ...keyValues, chainId: chainId });
+
+  if (!uploadMetadataResult.ok) {
+    if (newUploadedUrls.length > 0) {
+      logger.info("Reverting uploaded files...");
+      for (const savedUrl of newUploadedUrls) {
+        await deleteFileFromIPFS(savedUrl);
+      }
+    }
+    return uploadMetadataResult;
+  } else {
+    metadataUrl = uploadMetadataResult.value.url;
+    newUploadedUrls.push(metadataUrl);
+  }
+
+  return Ok({ metadataUrl, newUploadedUrls, urlsToDelete });
 }
 
 export interface GetPhotosForTripResponseType {
@@ -216,13 +282,13 @@ async function uploadFileToIPFS(file: File, fileName: string, keyValues?: {}): P
       },
     })
     .then((response) => {
-      console.log("File uploaded successfully: ", response.data.IpfsHash);
+      logger.info("File uploaded successfully: ", response.data.IpfsHash);
       return Ok({
         url: "https://gateway.pinata.cloud/ipfs/" + response.data.IpfsHash,
       });
     })
     .catch((error) => {
-      console.error(error);
+      logger.error(error);
       return error instanceof Error ? Err(error) : Err(new Error(error.toString()));
     });
 }
@@ -262,13 +328,13 @@ async function uploadJSONToIPFS(JSONBody: {}, fileName: string, keyValues?: {}):
       },
     })
     .then(function (response) {
-      console.log("JSON uploaded successfully: ", response.data.IpfsHash);
+      logger.error("JSON uploaded successfully: ", response.data.IpfsHash);
       return Ok({
         url: "https://gateway.pinata.cloud/ipfs/" + response.data.IpfsHash,
       });
     })
     .catch((error) => {
-      console.error(error);
+      logger.error(error);
       return error instanceof Error ? Err(error) : Err(new Error(error.toString()));
     });
 }
