@@ -16,16 +16,7 @@ export async function saveUserProfilePhoto(
   keyValues?: {}
 ): Promise<Result<{ url: string }>> {
   const fileName = `${chainId}_RentalityProfileImage`;
-  return uploadFileToIPFS(file, fileName, keyValues);
-}
-
-export async function deleteUserProfilePhoto(profileImageUrl: string): Promise<Result<boolean>> {
-  const profileImageUrlHash = getIpfsHashFromUrl(profileImageUrl);
-
-  if (isEmpty(profileImageUrlHash)) {
-    return Err(new Error("profileImageUrl does not contain hash"));
-  }
-  return deleteFileFromIPFS(profileImageUrlHash);
+  return uploadFileToIPFS(file, fileName, { ...keyValues, chainId: chainId });
 }
 
 export async function saveFilesForClaim(
@@ -38,10 +29,11 @@ export async function saveFilesForClaim(
 
   for (const file of files.filter((i) => i)) {
     const fileName = `${chainId}_RentalityClaimFile_${tripId}`;
-    const uploadResult = await uploadFileToIPFS(file, fileName, keyValues);
+    const uploadResult = await uploadFileToIPFS(file, fileName, { ...keyValues, chainId: chainId });
 
     if (!uploadResult.ok) {
       if (savedUrls.length > 0) {
+        logger.info("Reverting uploaded files...");
         for (const savedUrl of savedUrls) {
           await deleteFileFromIPFS(savedUrl);
         }
@@ -61,16 +53,29 @@ export async function saveGeneralInsurancePhoto(
   keyValues?: {}
 ): Promise<Result<{ url: string }>> {
   const fileName = `${chainId}_RentalityGuestInsurance`;
-  return uploadFileToIPFS(file, fileName, keyValues);
+  return uploadFileToIPFS(file, fileName, { ...keyValues, chainId: chainId });
 }
 
-export async function deleteGeneralInsurancePhoto(generalInsurancePhotoUrl: string): Promise<Result<boolean>> {
-  const generalInsurancePhotoUrlHash = getIpfsHashFromUrl(generalInsurancePhotoUrl);
+export async function deleteFileByUrl(fileUrl: string): Promise<Result<boolean>> {
+  const fileUrlHash = getIpfsHashFromUrl(fileUrl);
 
-  if (isEmpty(generalInsurancePhotoUrlHash)) {
-    return Err(new Error("generalInsurancePhotoUrl does not contain hash"));
+  if (isEmpty(fileUrlHash)) {
+    return Err(new Error(`fileUrl ${fileUrl} does not contain hash`));
   }
-  return deleteFileFromIPFS(generalInsurancePhotoUrlHash);
+  return deleteFileFromIPFS(fileUrlHash);
+}
+
+export async function deleteFilesByUrl(fileUrls: string[]): Promise<Result<boolean, Error[]>> {
+  const errors: Error[] = [];
+
+  for (const fileUrl in fileUrls) {
+    const deleteResult = await deleteFileByUrl(fileUrl);
+
+    if (!deleteResult.ok) {
+      errors.push(deleteResult.error);
+    }
+  }
+  return errors.length === 0 ? Ok(true) : Err(errors);
 }
 
 function getMatadata(fileName: string, keyValues?: {}) {
