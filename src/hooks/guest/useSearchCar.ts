@@ -99,6 +99,9 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
         const tripDays = Number(availableCarDTO.tripDays);
         const pricePerDay = Number(availableCarDTO.pricePerDayInUsdCents) / 100;
         const totalPriceWithHostDiscount = Number(availableCarDTO.totalPriceWithDiscount) / 100;
+        const salesTax = Number(availableCarDTO.taxes.find((i) => i.name.includes("sale"))?.value ?? 0) / 100;
+        const governmentTax =
+          Number(availableCarDTO.taxes.find((i) => i.name.includes("government"))?.value ?? 0) / 100;
 
         const selectedCarDetails: SearchCarInfoDetails = {
           carId: Number(availableCarDTO.carId),
@@ -121,7 +124,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           pricePerDayWithHostDiscount: Number(availableCarDTO.pricePerDayWithDiscount) / 100,
           tripDays: tripDays,
           totalPriceWithHostDiscount: totalPriceWithHostDiscount,
-          taxes: Number(availableCarDTO.taxes) / 100,
+          taxes: Number(availableCarDTO.totalTax) / 100,
           securityDeposit: Number(availableCarDTO.securityDepositPerTripInUsdCents) / 100,
           hostPhotoUrl: availableCarDTO.hostPhotoUrl,
           hostName: availableCarDTO.hostName,
@@ -161,10 +164,10 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
             discount7DaysAndMoreInPercents: Number(availableCarDTO.carDiscounts.sevenDaysDiscount) / 10_000,
             discount30DaysAndMoreInPercents: Number(availableCarDTO.carDiscounts.thirtyDaysDiscount) / 10_000,
           },
-          salesTax: Number(availableCarDTO.salesTax) / 100,
-          governmentTax: Number(availableCarDTO.governmentTax) / 100,
           distanceToUser: Number(availableCarDTO.distance),
           dimoTokenId: Number(availableCarDTO.dimoTokenId ? availableCarDTO.dimoTokenId : 0),
+          salesTax: salesTax,
+          governmentTax: governmentTax,
         };
         setCarInfo(selectedCarDetails);
 
