@@ -1,12 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import crypto from "crypto";
-import { uploadJSONToIPFS } from "@/utils/pinata";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { JsonRpcProvider, Wallet } from "ethers";
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityAiDamageAnalyzeContract } from "@/features/blockchain/models/IRentalityAiDamageAnalyze";
 import { env } from "@/utils/env";
 import { logger } from "@/utils/logger";
+import { deleteFileByUrl, saveAiAssessment } from "@/features/filestore/pinata/utils";
+import { isEmpty } from "@/utils/string";
 
 function generateXAuthorization() {
   const SECRET_KEY = env.API_AI_DAMAGE_ANALYZE_SECRET;
@@ -23,6 +24,8 @@ function verifyXAuthorization(token: string) {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  let uploadedFileUrl: string = "";
+
   try {
     const token = req.headers["x-authorization"] as string | undefined;
     if (!token) {
@@ -70,17 +73,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(500).json({ error: "case not exists" });
     }
 
-    const pinataResponse = await uploadJSONToIPFS(jsonData);
+    const uploadResult = await saveAiAssessment(jsonData, chainId);
 
-    if (pinataResponse.success === false) {
+    if (!uploadResult.ok) {
       logger.error("API aiAssessments error: fail to save data");
       return res.status(500).json({ error: "fail to save data" });
     }
 
-    const tx = await rentality.saveInsuranceCaseUrl(jsonData.case_token, pinataResponse.pinataURL);
+    uploadedFileUrl = uploadResult.value.url;
+    const tx = await rentality.saveInsuranceCaseUrl(jsonData.case_token, uploadedFileUrl);
     await tx.wait();
     return res.status(200).json({ status: "ok" });
   } catch (error) {
+    if (!isEmpty(uploadedFileUrl)) {
+      await deleteFileByUrl(uploadedFileUrl);
+    }
     return res.status(500).json({ status: "error", error });
   }
 }

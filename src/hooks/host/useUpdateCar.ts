@@ -1,4 +1,4 @@
-import { HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE } from "@/model/HostCarInfo";
+import { HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE, verifyCar } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeCode } from "@/model/EngineType";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
@@ -9,8 +9,8 @@ import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MY_LISTINGS_QUERY_KEY } from "./useFetchMyListings";
-import { saveCarImages, uploadMetadataToIPFS } from "./useSaveNewCar";
 import { logger } from "@/utils/logger";
+import { deleteFilesByUrl, saveCarMetadata } from "@/features/filestore/pinata/utils";
 
 function useUpdateCar() {
   const { rentalityContracts } = useRentality();
@@ -30,22 +30,9 @@ function useUpdateCar() {
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
-        let metadataURL: string | undefined = hostCarInfo.metadataUrl;
-
-        if (hostCarInfo.isCarMetadataEdited) {
-          const savedImages = await saveCarImages(hostCarInfo.images, ethereumInfo);
-
-          const dataToSave = {
-            ...hostCarInfo,
-            images: savedImages,
-          };
-
-          metadataURL = await uploadMetadataToIPFS(dataToSave, ethereumInfo);
-        }
-
-        if (!metadataURL) {
-          logger.error("updateCar error: Upload JSON to Pinata error");
-          return Err(new Error("ERROR"));
+        if (!verifyCar(hostCarInfo)) {
+          logger.error("updateCar error: hostCarInfo is not valid");
+          return Err(new Error("hostCarInfo is not valid"));
         }
 
         const engineParams: bigint[] = [];
@@ -55,22 +42,6 @@ function useUpdateCar() {
         } else if (hostCarInfo.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING) {
           engineParams.push(BigInt(hostCarInfo.fullBatteryChargePrice * 100));
         }
-
-        const updateCarRequest: ContractUpdateCarInfoRequest = {
-          carId: BigInt(hostCarInfo.carId),
-          currentlyListed: hostCarInfo.currentlyListed,
-          engineParams: engineParams,
-          pricePerDayInUsdCents: BigInt(hostCarInfo.pricePerDay * 100),
-          milesIncludedPerDay: BigInt(
-            isUnlimitedMiles(hostCarInfo.milesIncludedPerDay) ? UNLIMITED_MILES_VALUE : hostCarInfo.milesIncludedPerDay
-          ),
-          timeBufferBetweenTripsInSec: BigInt(hostCarInfo.timeBufferBetweenTripsInMin * 60),
-          securityDepositPerTripInUsdCents: BigInt(hostCarInfo.securityDeposit * 100),
-          engineType: getEngineTypeCode(hostCarInfo.engineTypeText),
-          tokenUri: metadataURL,
-          insuranceRequired: hostCarInfo.isGuestInsuranceRequired,
-          insurancePriceInUsdCents: BigInt(hostCarInfo.insurancePerDayPriceInUsd * 100),
-        };
 
         let locationInfo: ContractSignedLocationInfo = {
           locationInfo: emptyContractLocationInfo,
@@ -89,7 +60,44 @@ function useUpdateCar() {
           locationInfo = locationResult.value;
         }
 
+        let metadataURL = hostCarInfo.metadataUrl;
+        let newUploadedUrls: string[] = [];
+        let urlsToDelete: string[] = [];
+
+        if (hostCarInfo.isCarMetadataEdited) {
+          const saveMetadataResult = await saveCarMetadata(hostCarInfo.images, ethereumInfo.chainId, hostCarInfo, {
+            createdAt: new Date().toISOString(),
+            createdBy: ethereumInfo.walletAddress,
+          });
+
+          if (!saveMetadataResult.ok) {
+            return saveMetadataResult;
+          }
+
+          metadataURL = saveMetadataResult.value.metadataUrl;
+          newUploadedUrls = saveMetadataResult.value.newUploadedUrls;
+          urlsToDelete = saveMetadataResult.value.urlsToDelete;
+        }
+
+        const updateCarRequest: ContractUpdateCarInfoRequest = {
+          tokenUri: metadataURL,
+          carId: BigInt(hostCarInfo.carId),
+          currentlyListed: hostCarInfo.currentlyListed,
+          engineParams: engineParams,
+          pricePerDayInUsdCents: BigInt(hostCarInfo.pricePerDay * 100),
+          milesIncludedPerDay: BigInt(
+            isUnlimitedMiles(hostCarInfo.milesIncludedPerDay) ? UNLIMITED_MILES_VALUE : hostCarInfo.milesIncludedPerDay
+          ),
+          timeBufferBetweenTripsInSec: BigInt(hostCarInfo.timeBufferBetweenTripsInMin * 60),
+          securityDepositPerTripInUsdCents: BigInt(hostCarInfo.securityDeposit * 100),
+          engineType: getEngineTypeCode(hostCarInfo.engineTypeText),
+          insuranceRequired: hostCarInfo.isGuestInsuranceRequired,
+          insurancePriceInUsdCents: BigInt(hostCarInfo.insurancePerDayPriceInUsd * 100),
+        };
+
         const result = await rentalityContracts.gateway.updateCarInfoWithLocation(updateCarRequest, locationInfo);
+
+        await deleteFilesByUrl(result.ok ? urlsToDelete : newUploadedUrls);
 
         return result;
       } catch (error) {

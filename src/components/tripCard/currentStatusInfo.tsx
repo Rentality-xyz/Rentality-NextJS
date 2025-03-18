@@ -117,7 +117,7 @@ function CurrentStatusInfo({
   t,
 }: {
   tripInfo: TripInfo;
-  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<void>;
+  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<boolean>;
   disableButton: boolean;
   isAdditionalActionHidden: boolean;
   setIsAdditionalActionHidden: Dispatch<SetStateAction<boolean>>;
@@ -144,7 +144,7 @@ function CurrentStatusInfo({
   )
     return <></>;
 
-  const handleHostFinishTrip = async (messageToGuest: string) => {
+  const handleHostFinishTrip = async (messageToGuest: string): Promise<boolean> => {
     hideDialogs();
     setMessageToGuest(messageToGuest);
 
@@ -163,12 +163,13 @@ function CurrentStatusInfo({
     }
     setIsFinishingByHost(true);
     setIsAdditionalActionHidden(false);
+    return true;
   };
 
   const handleGuestFinishTrip = async () => {
     hideDialogs();
 
-    changeStatusCallback(() => {
+    return changeStatusCallback(() => {
       return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), [], []);
     });
   };
