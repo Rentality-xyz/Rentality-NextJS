@@ -7,7 +7,7 @@ import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton"
 import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 import { Result } from "@/model/utils/result";
-import { deleteFilesByUrl } from "@/features/filestore/pinata/utils";
+import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore/pinata/utils";
 
 function ModifyTripForm({
   guestPhoneNumber,
@@ -40,7 +40,7 @@ function ModifyTripForm({
   const onFinishTripClick = () => {
     hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
       if (hasTripPhotosFeatureFlag) {
-        carPhotosUploadButtonRef.current.saveUploadedFiles().then((result: Result<{ urls: string[] }>) => {
+        carPhotosUploadButtonRef.current.saveUploadedFiles().then((result: Result<UploadedUrlList>) => {
           if (!result.ok || result.value.urls.length === 0) {
             setNoFilesUploadedError(true);
           } else {

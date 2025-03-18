@@ -19,7 +19,7 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import useUserMode from "@/hooks/useUserMode";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 import { Result } from "@/model/utils/result";
-import { deleteFilesByUrl } from "@/features/filestore/pinata/utils";
+import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore/pinata/utils";
 
 interface ChangeStatusGuestStartedFormProps {
   tripInfo: TripInfo;
@@ -75,7 +75,7 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
       let tripPhotosUrls: string[] = [];
 
       if (hasTripPhotosFeatureFlag) {
-        const result: Result<{ urls: string[] }> = await carPhotosUploadButtonRef.current.saveUploadedFiles();
+        const result: Result<UploadedUrlList> = await carPhotosUploadButtonRef.current.saveUploadedFiles();
         if (!result.ok || result.value.urls.length === 0) {
           showDialog(t("common.photos_required"));
           return;

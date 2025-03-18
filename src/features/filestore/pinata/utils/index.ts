@@ -12,11 +12,10 @@ const PIN_JSON_URL = "https://api.pinata.cloud/pinning/pinJSONToIPFS";
 const UNPIN_FILE_URL = "https://api.pinata.cloud/pinning/unpin/{id}";
 const GET_TRIP_FILE_LIST_URL = `https://api.pinata.cloud/data/pinList?metadata[keyvalues]={"tripId":{"value":"{tripId}","op":"eq"}}`;
 
-export async function saveUserProfilePhoto(
-  file: File,
-  chainId: number,
-  keyValues?: {}
-): Promise<Result<{ url: string }>> {
+export type UploadedUrl = { url: string };
+export type UploadedUrlList = { urls: string[] };
+
+export async function saveUserProfilePhoto(file: File, chainId: number, keyValues?: {}): Promise<Result<UploadedUrl>> {
   const fileName = `${chainId}_RentalityProfileImage`;
   return uploadFileToIPFS(file, fileName, { ...keyValues, chainId: chainId });
 }
@@ -26,7 +25,7 @@ export async function saveFilesForClaim(
   chainId: number,
   tripId: number,
   keyValues?: {}
-): Promise<Result<{ urls: string[] }>> {
+): Promise<Result<UploadedUrlList>> {
   const savedUrls: string[] = [];
 
   for (const file of files.filter((i) => i)) {
@@ -53,7 +52,7 @@ export async function saveGeneralInsurancePhoto(
   file: File,
   chainId: number,
   keyValues?: {}
-): Promise<Result<{ url: string }>> {
+): Promise<Result<UploadedUrl>> {
   const fileName = `${chainId}_RentalityGuestInsurance`;
   return uploadFileToIPFS(file, fileName, { ...keyValues, chainId: chainId });
 }
@@ -116,7 +115,7 @@ export async function saveTripCarPhotos(
   uploadedBy: "host" | "guest",
   tripStatus: "start" | "finish",
   keyValues?: {}
-): Promise<Result<{ urls: string[] }>> {
+): Promise<Result<UploadedUrlList>> {
   const savedUrls: string[] = [];
 
   for (const file of files.filter((i) => i)) {
@@ -145,7 +144,12 @@ export async function saveTripCarPhotos(
   return Ok({ urls: savedUrls });
 }
 
-export async function saveAiAssessment(JSONBody: {}, chainId: number, fileNameTag?: string, keyValues?: {}) {
+export async function saveAiAssessment(
+  JSONBody: {},
+  chainId: number,
+  fileNameTag?: string,
+  keyValues?: {}
+): Promise<Result<UploadedUrl>> {
   const fileName = `${chainId}_RentalityAiAssessment`;
   return uploadJSONToIPFS(JSONBody, fileName, { ...keyValues, chainId: chainId });
 }
@@ -197,7 +201,7 @@ function getPinataOptions() {
   });
 }
 
-async function uploadFileToIPFS(file: File, fileName: string, keyValues?: {}): Promise<Result<{ url: string }>> {
+async function uploadFileToIPFS(file: File, fileName: string, keyValues?: {}): Promise<Result<UploadedUrl>> {
   let data = new FormData();
   data.append("file", file);
   data.append("pinataMetadata", getMetadata(fileName, keyValues));
@@ -242,11 +246,7 @@ async function deleteFileFromIPFS(ipfsHash: string): Promise<Result<boolean>> {
     });
 }
 
-async function uploadJSONToIPFS(
-  JSONBody: {},
-  fileName: string,
-  keyValues?: {}
-): Promise<Result<{ url: string }, Error>> {
+async function uploadJSONToIPFS(JSONBody: {}, fileName: string, keyValues?: {}): Promise<Result<UploadedUrl>> {
   const pinataData = {
     pinataContent: JSONBody,
     pinataOptions: { cidVersion: 0 },
@@ -272,5 +272,3 @@ async function uploadJSONToIPFS(
       return error instanceof Error ? Err(error) : Err(new Error(error.toString()));
     });
 }
-
-///-----
