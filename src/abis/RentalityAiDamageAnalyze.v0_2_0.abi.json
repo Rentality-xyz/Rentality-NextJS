@@ -68,6 +68,15 @@
     },
     {
       "type": "function",
+      "name": "getInsuranceCaseUrl",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "string", "name": "iCase" }],
+      "outputs": [{ "type": "string", "name": "url" }]
+    },
+    {
+      "type": "function",
       "name": "getInsuranceCasesUrlByTrip",
       "constant": true,
       "stateMutability": "view",
