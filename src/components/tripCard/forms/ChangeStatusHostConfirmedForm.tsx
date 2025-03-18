@@ -17,10 +17,12 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import useDIMOCarData from "@/features/dimo/hooks/useDIMOCarData";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
+import { Result } from "@/model/utils/result";
+import { deleteFilesByUrl } from "@/features/filestore/pinata/utils";
 
 interface ChangeStatusHostConfirmedFormProps {
   tripInfo: TripInfo;
-  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<void>;
+  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<boolean>;
   disableButton: boolean;
   t: TFunction;
 }
@@ -59,10 +61,12 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
       let tripPhotosUrls: string[] = [];
 
       if (hasTripPhotosFeatureFlag) {
-        tripPhotosUrls = await carPhotosUploadButtonRef.current.saveUploadedFiles();
-        if (tripPhotosUrls.length === 0) {
+        const result: Result<{ urls: string[] }> = await carPhotosUploadButtonRef.current.saveUploadedFiles();
+        if (!result.ok || result.value.urls.length === 0) {
           showDialog(t("common.photos_required"));
           return;
+        } else {
+          tripPhotosUrls = result.value.urls;
         }
       }
 
@@ -82,6 +86,10 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
           ],
           tripPhotosUrls
         );
+      }).then((isSuccess) => {
+        if (!isSuccess) {
+          deleteFilesByUrl(tripPhotosUrls);
+        }
       });
     }
 
