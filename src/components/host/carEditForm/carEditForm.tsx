@@ -58,7 +58,7 @@ export default function CarEditForm({
   const { register, control, handleSubmit, formState, setValue, watch } = useForm<CarEditFormValues>({
     defaultValues:
       !isNewCar && initValue !== undefined
-        ? {
+        ? ({
             carId: initValue.carId,
             vinNumber: initValue.vinNumber,
             brand: initValue.brand,
@@ -94,7 +94,8 @@ export default function CarEditForm({
 
             timeBufferBetweenTripsInMin: initValue.timeBufferBetweenTripsInMin,
             currentlyListed: initValue.currentlyListed,
-          }
+            dimoTokenId: initValue.dimoTokenId,
+          } as CarEditFormValues)
         : {
             carId: 0,
             isLocationEdited: true,
@@ -102,6 +103,7 @@ export default function CarEditForm({
             images: [],
             isGuestInsuranceRequired: false,
             insurancePerDayPriceInUsd: 0,
+            dimoTokenId: 0,
           },
     resolver: zodResolver(carEditFormSchema),
   });
@@ -446,6 +448,7 @@ export default function CarEditForm({
               label="Dimo token id"
               readOnly={true}
               value={dimoData?.tokenId || 0}
+              validationError={errors.dimoTokenId?.message?.toString()}
             />
           </div>
         </div>
