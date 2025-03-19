@@ -335,6 +335,7 @@ const emptyContractTripDTO: ContractTripDTO = {
   guestDrivingLicenseIssueCountry: "",
   promoDiscount: BigInt(0),
   dimoTokenId: BigInt(0),
+  taxesData: [],
 };
 
 export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {
@@ -440,7 +441,7 @@ const emptyContractAvailableCarDTO: ContractAvailableCarDTO = {
   hostPhotoUrl: "",
   metadataURI: "",
   pricePerDayWithDiscount: BigInt(0),
-  taxes: BigInt(0),
+  taxes: [],
   totalPriceWithDiscount: BigInt(0),
   tripDays: BigInt(0),
   aboveTwentyFiveMilesInUsdCents: BigInt(0),
@@ -452,11 +453,10 @@ const emptyContractAvailableCarDTO: ContractAvailableCarDTO = {
   insuranceInfo: emptyContractInsuranceCarInfo,
   carDiscounts: emptyContractBaseDiscount,
   fuelPrice: BigInt(0),
-  salesTax: BigInt(0),
-  governmentTax: BigInt(0),
   isGuestHasInsurance: false,
   distance: BigInt(0),
   dimoTokenId: BigInt(0),
+  totalTax: BigInt(0),
 };
 
 export function validateContractAvailableCarDTO(obj: ContractAvailableCarDTO): obj is ContractAvailableCarDTO {

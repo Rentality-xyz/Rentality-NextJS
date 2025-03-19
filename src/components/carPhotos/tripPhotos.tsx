@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getPhotosForTrip, GetPhotosForTripResponseType } from "@/utils/pinata";
 import ImageCarouselDialog from "../createTrip/ImageCarouselDialog";
+import { GetPhotosForTripResponseType, getTripCarPhotos } from "@/features/filestore/pinata/utils";
 
 const defaultCarouselState = {
   isOpen: false,
@@ -37,7 +37,7 @@ const TripPhotos = ({ tripId }: { tripId: number }) => {
   }
 
   useEffect(() => {
-    getPhotosForTrip(tripId).then((fileUrlList: GetPhotosForTripResponseType) => {
+    getTripCarPhotos(tripId).then((fileUrlList: GetPhotosForTripResponseType) => {
       setFileUrls(fileUrlList);
     });
   }, [tripId]);

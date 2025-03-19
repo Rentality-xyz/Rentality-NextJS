@@ -37,13 +37,14 @@ export function UserInsurancePhoto({
     const reader = new FileReader();
     reader.onload = async (event) => {
       const fileUrl = event.target?.result as string;
+      const oldUrl = photo === undefined ? undefined : "url" in photo ? photo.url : photo.oldUrl;
 
       if (file.type === "image/heic" || file.name.endsWith(".heic")) {
         const convertHeicToPng = await import("@/utils/heic2any");
         const convertedFile = await convertHeicToPng.default(file);
-        onPhotoChanged(convertedFile);
+        onPhotoChanged({ ...convertedFile, oldUrl });
       } else {
-        onPhotoChanged({ file: file, localUrl: fileUrl });
+        onPhotoChanged({ file, localUrl: fileUrl, oldUrl });
       }
     };
     reader.readAsDataURL(file);

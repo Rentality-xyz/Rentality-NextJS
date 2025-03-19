@@ -7,3 +7,9 @@ export const Ok = <T>(data: T): Result<T, never> => {
 export const Err = <E>(error: E): Result<never, E> => {
   return { ok: false, error };
 };
+
+export const UnknownErr = (error: unknown): Result<never, Error> => {
+  if (error === undefined || error === null) return Err(new Error("Unkown empty error!"));
+  if (error instanceof Error) return Err(error);
+  return Err(new Error(error.toString()));
+};
