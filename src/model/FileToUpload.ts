@@ -3,6 +3,7 @@ import { Prettify } from "viem";
 export type FileToUpload = {
   file: File;
   localUrl: string;
+  oldUrl?: string;
 };
 
 export type UploadedFile = {

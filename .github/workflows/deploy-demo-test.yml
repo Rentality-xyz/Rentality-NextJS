@@ -1,9 +1,10 @@
 name: Build And Deploy to Demo Test
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Build And Deploy to Demo"]
+    types:
+      - completed
 
 jobs:
   build_and_deploy_demo:
@@ -23,7 +24,6 @@ jobs:
             scripts
             src
           path: "demo-rentality-web3-contracts"
-          token: ${{ secrets.RENTALITY_PAT }}
       - name: "Setup Node"
         uses: actions/setup-node@v4
         with:

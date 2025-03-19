@@ -13,6 +13,8 @@ import ChangeStatusHostFinishingByHostForm from "./forms/ChangeStatusHostFinishi
 import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
 import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
+import { Result } from "@/model/utils/result";
+import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore/pinata/utils";
 
 function TripAdditionalActions({
   tripInfo,
@@ -23,7 +25,7 @@ function TripAdditionalActions({
   t,
 }: {
   tripInfo: TripInfo;
-  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<void>;
+  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<boolean>;
   disableButton: boolean;
   refForScrool?: MutableRefObject<HTMLDivElement>;
   isHost: boolean;
@@ -71,7 +73,7 @@ function TripAdditionalActions({
       return;
     }
 
-    changeStatusCallback(() => {
+    return changeStatusCallback(() => {
       return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), inputParams, []);
     });
   };
@@ -80,12 +82,16 @@ function TripAdditionalActions({
     if (action.params == null || action.params.length == 0) {
       hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
         if (hasTripPhotosFeatureFlag) {
-          carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
-            if (tripPhotosUrls.length === 0) {
+          carPhotosUploadButtonRef.current.saveUploadedFiles().then((result: Result<UploadedUrlList>) => {
+            if (!result.ok || result.value.urls.length === 0) {
               showDialog(t("common.photos_required"));
             } else {
               changeStatusCallback(() => {
                 return action.action(BigInt(tripInfo.tripId), [], []);
+              }).then((isSuccess) => {
+                if (!isSuccess) {
+                  deleteFilesByUrl(result.value.urls);
+                }
               });
             }
           });
@@ -98,11 +104,15 @@ function TripAdditionalActions({
     } else {
       hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
         if (hasTripPhotosFeatureFlag) {
-          carPhotosUploadButtonRef.current.saveUploadedFiles().then((tripPhotosUrls: string[]) => {
-            if (tripPhotosUrls.length === 0) {
+          carPhotosUploadButtonRef.current.saveUploadedFiles().then((result: Result<UploadedUrlList>) => {
+            if (!result.ok || result.value.urls.length === 0) {
               showDialog(t("common.photos_required"));
             } else {
-              handleButtonClick();
+              handleButtonClick()?.then((isSuccess) => {
+                if (!isSuccess) {
+                  deleteFilesByUrl(result.value.urls);
+                }
+              });
             }
           });
         } else {

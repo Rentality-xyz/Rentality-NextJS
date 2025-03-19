@@ -57,7 +57,8 @@ function UserInsurance() {
           if ("disabled" in e.target) {
             e.target.disabled = true;
           }
-          await saveInsurance({ url: "", isDeleted: true });
+          const oldUrl = "url" in userInsurancePhoto ? userInsurancePhoto.url : "";
+          await saveInsurance({ url: oldUrl, isDeleted: true });
           hideDialogs();
           if ("disabled" in e.target) {
             e.target.disabled = false;

@@ -1,11 +1,9 @@
 import RntButton from "@/components/common/rntButton";
 import RntFileButton from "@/components/common/rntFileButton";
 import { resizeImage } from "@/utils/image";
-import { uploadFileToIPFS } from "@/utils/pinata";
 import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { SMARTCONTRACT_VERSION } from "@/abis";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
@@ -113,33 +111,14 @@ function UserCommonInformationForm({
       return;
     }
 
+    showInfo(t("common.info.sign"));
+
     try {
-      var profilePhotoUrl = userProfile.profilePhotoUrl;
-      if (formData.profilePhotoUrl !== userProfile.profilePhotoUrl) {
-        const blob = await (await fetch(formData.profilePhotoUrl)).blob();
-        const profileImageFile = new File([blob], "profileImage", { type: "image/png" });
-
-        const response = await uploadFileToIPFS(profileImageFile, "RentalityProfileImage", {
-          createdAt: new Date().toISOString(),
-          createdBy: ethereumInfo.walletAddress ?? "",
-          version: SMARTCONTRACT_VERSION,
-          chainId: ethereumInfo.chainId ?? 0,
-        });
-
-        if (!response.success || !response.pinataURL) {
-          throw new Error("Uploaded image to Pinata error");
-        }
-
-        profilePhotoUrl = response.pinataURL;
-      }
-
-      const dataToSave: SaveUserProfileRequest = {
+      const result = await saveUserProfile({
         ...formData,
-        profilePhotoUrl: profilePhotoUrl,
-      };
-
-      showInfo(t("common.info.sign"));
-      const result = await saveUserProfile(dataToSave);
+        profilePhotoSrc: formData.profilePhotoUrl,
+        oldProfilePhotoUrl: userProfile.profilePhotoUrl,
+      });
 
       hideSnackbars();
       if (!result) {
