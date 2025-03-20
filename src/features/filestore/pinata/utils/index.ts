@@ -104,7 +104,7 @@ export async function saveCarMetadata(
   }
 
   const nftJSON = getNftJSONFromCarInfo({ ...carInfo, images: carImagesToSaveInMetadata });
-  const metadataFileName = `RentalityNFTMetadata`;
+  const metadataFileName = `${chainId}_RentalityNFTMetadata`;
   const uploadMetadataResult = await uploadJSONToIPFS(nftJSON, metadataFileName, { ...keyValues, chainId: chainId });
 
   if (!uploadMetadataResult.ok) {
@@ -210,12 +210,7 @@ export async function saveTripCarPhotos(
   return Ok({ urls: savedUrls });
 }
 
-export async function saveAiAssessment(
-  JSONBody: {},
-  chainId: number,
-  fileNameTag?: string,
-  keyValues?: {}
-): Promise<Result<UploadedUrl>> {
+export async function saveAiAssessment(JSONBody: {}, chainId: number, keyValues?: {}): Promise<Result<UploadedUrl>> {
   const fileName = `${chainId}_RentalityAiAssessment`;
   return uploadJSONToIPFS(JSONBody, fileName, { ...keyValues, chainId: chainId });
 }
@@ -282,7 +277,7 @@ async function uploadFileToIPFS(file: File, fileName: string, keyValues?: {}): P
       },
     })
     .then((response) => {
-      logger.info("File uploaded successfully: ", response.data.IpfsHash);
+      logger.debug("File uploaded successfully: ", response.data.IpfsHash);
       return Ok({
         url: "https://gateway.pinata.cloud/ipfs/" + response.data.IpfsHash,
       });
@@ -328,7 +323,7 @@ async function uploadJSONToIPFS(JSONBody: {}, fileName: string, keyValues?: {}):
       },
     })
     .then(function (response) {
-      logger.error("JSON uploaded successfully: ", response.data.IpfsHash);
+      logger.debug("JSON uploaded successfully: ", response.data.IpfsHash);
       return Ok({
         url: "https://gateway.pinata.cloud/ipfs/" + response.data.IpfsHash,
       });
