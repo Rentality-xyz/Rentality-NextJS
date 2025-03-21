@@ -13,6 +13,7 @@ import {
   changeStatusHostFinishingByHostFormSchema,
   ChangeStatusHostFinishingByHostFormValues,
 } from "./changeStatusHostFinishingByHostFormSchema";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
 
 interface ChangeStatusHostFinishingByHostFormProps {
   tripInfo: TripInfo;
@@ -82,7 +83,7 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
               <div className="flex flex-col">
                 <div className="mt-2 font-bold">Fuel or Battery level, %</div>
                 <div className="flex flex-row gap-8">
-                  <RntInput
+                  <RntInputTransparent
                     className="w-1/2 py-2"
                     id="fuelAtStartTrip"
                     label="At start trip"
@@ -112,7 +113,7 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
               <div className="flex flex-col">
                 <div className="mt-2 font-bold">Odometer</div>
                 <div className="flex flex-row gap-8">
-                  <RntInput
+                  <RntInputTransparent
                     className="w-1/2 py-2"
                     id="fuelAtStartTrip"
                     label="At start trip"
@@ -120,7 +121,7 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
                     {...register("odotemerStart")}
                     validationError={errors.odotemerStart?.message?.toString()}
                   />
-                  <RntInput
+                  <RntInputTransparent
                     className="w-1/2 py-2"
                     id="fuelAtEndTrip"
                     label="At end trip"
