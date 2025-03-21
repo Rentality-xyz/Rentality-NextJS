@@ -230,7 +230,7 @@ function CurrentStatusInfo({
             </RntButton>
           ) : tripInfo.status === TripStatus.CompletedWithoutGuestComfirmation && isHost ? (
             <a className="w-full" href={`tel:${tripInfo.guest.phoneNumber}`}>
-              <RntButton className="w-full px-4">Contact to guest</RntButton>
+              <RntButton className="w-full px-4 2xl:min-h-[64px] fullHD:min-h-[48px]">Contact to guest</RntButton>
             </a>
           ) : tripInfo.status === TripStatus.CompletedWithoutGuestComfirmation && !isHost ? (
             <RntButton
