@@ -20,6 +20,7 @@ import useUserMode from "@/hooks/useUserMode";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 import { Result } from "@/model/utils/result";
 import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore/pinata/utils";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
 
 interface ChangeStatusGuestStartedFormProps {
   tripInfo: TripInfo;
@@ -117,7 +118,7 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
               <div className="flex flex-col">
                 <div className="mt-2 font-bold">Fuel or Battery level, %</div>
                 <div className="flex flex-row gap-8">
-                  <RntInput
+                  <RntInputTransparent
                     className="w-1/2 py-2"
                     id="fuelAtStartTrip"
                     label="At start trip"
@@ -147,7 +148,7 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
               <div className="flex flex-col">
                 <div className="mt-2 font-bold">Odometer</div>
                 <div className="flex flex-row gap-8">
-                  <RntInput
+                  <RntInputTransparent
                     className="w-1/2 py-2"
                     id="fuelAtStartTrip"
                     label="At start trip"
@@ -155,7 +156,7 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
                     {...register("odotemerStart")}
                     validationError={errors.odotemerStart?.message?.toString()}
                   />
-                  <RntInput
+                  <RntInputTransparent
                     className="w-1/2 py-2"
                     id="fuelAtEndTrip"
                     label="At end trip"
