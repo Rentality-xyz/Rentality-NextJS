@@ -1,5 +1,5 @@
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
-import { TripInfo } from "@/model/TripInfo";
+import { AllowedChangeTripAction, TripInfo } from "@/model/TripInfo";
 import RntButton from "../common/rntButton";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import { Dispatch, SetStateAction, memo, useState, useRef } from "react";
@@ -117,7 +117,7 @@ function CurrentStatusInfo({
   t,
 }: {
   tripInfo: TripInfo;
-  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<boolean>;
+  changeStatusCallback: (action: AllowedChangeTripAction, changeStatus: () => Promise<boolean>) => Promise<boolean>;
   disableButton: boolean;
   isAdditionalActionHidden: boolean;
   setIsAdditionalActionHidden: Dispatch<SetStateAction<boolean>>;
@@ -169,7 +169,7 @@ function CurrentStatusInfo({
   const handleGuestFinishTrip = async () => {
     hideDialogs();
 
-    return changeStatusCallback(() => {
+    return changeStatusCallback(tripInfo.allowedActions[0], () => {
       return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), [], []);
     });
   };
@@ -253,7 +253,7 @@ function CurrentStatusInfo({
                     disabled={disableButton}
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
-                        changeStatusCallback(() => {
+                        changeStatusCallback(action, () => {
                           return action.action(BigInt(tripInfo.tripId), [], []);
                         });
                       } else {
@@ -270,7 +270,7 @@ function CurrentStatusInfo({
                     disabled={disableButton}
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
-                        changeStatusCallback(() => {
+                        changeStatusCallback(action, () => {
                           return action.action(BigInt(tripInfo.tripId), [], []);
                         });
                       } else {
