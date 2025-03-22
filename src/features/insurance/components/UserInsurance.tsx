@@ -79,7 +79,7 @@ function UserInsurance() {
       logger.error("saveInsurance error: Save Guest Insurance info error");
       showError(t("profile.save_err"));
     } else {
-      showSuccess(t("common.info.success"));
+      showSuccess(t("insurance.successfully_activated"));
     }
   }
 
