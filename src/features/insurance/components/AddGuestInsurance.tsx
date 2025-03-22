@@ -75,7 +75,7 @@ export default function AddGuestInsurance({}: AddGuestInsuranceProps) {
       logger.error("saveTripInsurance error: Save Guest Insurance info error");
       showError(t("profile.save_err"));
     } else {
-      showSuccess(t("common.insurance.successfully_activated"));
+      showSuccess(t("insurance.successfully_activated"));
       resetFormValues();
       refetchData();
     }
