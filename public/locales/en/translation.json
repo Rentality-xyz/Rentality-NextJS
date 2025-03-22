@@ -371,6 +371,7 @@
     "host_confirmed": "Trip confirmed! The guest is ready to pick up the car. Check your Booking section for details.",
     "trip_started": "Trip started! Safe travels.",
     "trip_finished": "Trip finished! Thanks for using Rentality. Leave a review to help other users!",
+    "guest_reject_dialog": "Are you sure you want to reject the reservation?",
     "status_req_failed": "Change trip status request failed. Please try again",
     "title": "Booked",
     "trip_not_found": "You don't have any booked trips",

@@ -11,6 +11,8 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import ModifyTripForm from "./modifyTripForm";
 import { useChat } from "@/features/chat/contexts/chatContext";
 import GuestConfirmFinishForm from "./guestConfirmFinishForm";
+import { DialogActions } from "@/utils/dialogActions";
+import * as React from "react";
 
 function isInTheFuture(date: Date) {
   return date > new Date();
@@ -124,7 +126,7 @@ function CurrentStatusInfo({
   isHost: boolean;
   t: TFunction;
 }) {
-  const { showCustomDialog, hideDialogs } = useRntDialogs();
+  const { showCustomDialog, hideDialogs, showDialog } = useRntDialogs();
   const [messageToGuest, setMessageToGuest] = useState("");
   const [isFinishingByHost, setIsFinishingByHost] = useState(false);
   const { sendMessage, getMessages } = useChat();
@@ -207,6 +209,21 @@ function CurrentStatusInfo({
     );
   };
 
+  const showGuestRejectDialog = (action: AllowedChangeTripAction) => {
+    const dialogAction = (
+      <>
+        {DialogActions.OK(() => {
+          hideDialogs();
+          changeStatusCallback(action, () => {
+            return action.action(BigInt(tripInfo.tripId), [], []);
+          });
+        })}
+        {DialogActions.Cancel(hideDialogs)}
+      </>
+    );
+    showDialog(t("booked.guest_reject_dialog"), dialogAction);
+  };
+
   return (
     <div id="trip-action-info" className="flex w-full flex-col justify-between max-md:mt-8">
       <div className="flex flex-col whitespace-pre-line">
@@ -253,9 +270,13 @@ function CurrentStatusInfo({
                     disabled={disableButton}
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
-                        changeStatusCallback(action, () => {
-                          return action.action(BigInt(tripInfo.tripId), [], []);
-                        });
+                        if(action.text === "Reject") {
+                          showGuestRejectDialog(action);
+                        } else {
+                          changeStatusCallback(action, () => {
+                            return action.action(BigInt(tripInfo.tripId), [], []);
+                          });
+                        }
                       } else {
                         setIsAdditionalActionHidden(false);
                       }
