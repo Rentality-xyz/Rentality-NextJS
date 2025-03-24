@@ -9,6 +9,7 @@ import RntInput from "@/components/common/rntInput";
 import RntSelect from "@/components/common/rntSelect";
 import RntButton from "@/components/common/rntButton";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
+import { nameof } from "@/utils/nameof";
 
 const allTripStatuses = Object.values(TripStatus).map((value) => {
   return { id: value, text: getTripStatusTextFromStatus(value) };
@@ -39,7 +40,7 @@ function TransactionHistoryFilters({ defaultFilters, onApply }: TransactionHisto
         id="dateFrom"
         label={t("common.from")}
         labelClassName="pl-4"
-        inputClassName="pr-4"
+        inputClassName="pr-4 z-10 focus:outline-none focus:ring-0"
         type="date"
         value={dateToHtmlDateFormat(filters.dateFrom)}
         onChange={(e) => {
@@ -55,7 +56,7 @@ function TransactionHistoryFilters({ defaultFilters, onApply }: TransactionHisto
         id="dateTo"
         label={t("common.to")}
         labelClassName="pl-4"
-        inputClassName="pr-4"
+        inputClassName="pr-4 z-10 focus:outline-none focus:ring-0"
         type="date"
         value={dateToHtmlDateFormat(filters.dateTo)}
         onChange={(e) => {
