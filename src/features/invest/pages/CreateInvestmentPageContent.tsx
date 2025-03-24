@@ -74,7 +74,10 @@ function CreateInvestmentPageContent() {
           let price = Number.parseInt(carPrice.toString());
           let percents = Number.parseInt(hostPercentage.toString());
           return await createInvest({
-            hostCarInfo,
+            images: hostCarInfo.images,
+            brand: hostCarInfo.brand,
+            model: hostCarInfo.model,
+            releaseYear: hostCarInfo.releaseYear,
             carPrice: price,
             hostPercents: percents,
             nftName,

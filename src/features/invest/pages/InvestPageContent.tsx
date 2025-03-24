@@ -10,6 +10,8 @@ import useUserRole from "@/hooks/useUserRole";
 import useClaimIncome from "../hooks/useClaimIncome";
 import useStartHosting from "../hooks/useStartHosting";
 import useInvest from "../hooks/useInvest";
+import { emptyHostCarInfo } from "@/model/HostCarInfo";
+import useFetchPlatformPercentage from "../hooks/useFetchPercentage";
 
 type InvestContentProps = {};
 
@@ -22,9 +24,9 @@ function InvestPageContent({}: InvestContentProps) {
   const { mutateAsync: handleInvest, isPendingInvesting } = useInvest();
   const { mutateAsync: handleClaimIncome, isPending: isPendingClaimingIncome } = useClaimIncome();
   const { mutateAsync: handleStartHosting, isPending: isPendingStartingHosting } = useStartHosting();
-
   const [filterInvestBy, setFilterInvestBy] = useState<string | undefined>(undefined);
-
+  const [openForm, setOpenForm] = useState(false);
+   const {data: percentage} =  useFetchPlatformPercentage()
   const { t } = useTranslation();
 
   // Получаем фильтры из переводов
@@ -109,7 +111,7 @@ function InvestPageContent({}: InvestContentProps) {
             searchInfo={value}
             handleInvest={(amount, investId) => handleInvest({ amount, investId })}
             isPendingInvesting={isPendingInvesting(value.investment.investmentId)}
-            handleStartHosting={handleStartHosting}
+            handleStartHosting={()=>handleStartHosting({investId: value.investment.investmentId, hostCarInfo: {...emptyHostCarInfo,pricePerDay: 10000}})}
             handleClaimIncome={handleClaimIncome}
           />
         ))}

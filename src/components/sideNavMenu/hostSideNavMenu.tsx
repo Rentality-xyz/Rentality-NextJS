@@ -109,7 +109,7 @@ function HostNavMenu() {
         <SideNavMenuItem text={t_nav("referrals_and_points")} href="/host/points" icon={MenuIcons.ReferralsAndPoints} />
         {hasInvestmentFeatureFlag && (
           <SideNavMenuItem
-            text={isInvestManager(userRole) ? t_nav("create_invest") : t_nav("invest")}
+            text={/*isInvestManager(userRole) ? t_nav("create_invest") : t_nav("invest")*/  t_nav("create_invest")}
             href="/host/invest"
             icon={MenuIcons.Invest}
           />

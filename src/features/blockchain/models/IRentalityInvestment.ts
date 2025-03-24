@@ -8,7 +8,7 @@ export interface IRentalityInvestment extends ContractResultWrapper<IRentalityIn
 export interface IRentalityInvestmentContract extends IEthersContract {
   address: string;
 
-  claimAndCreatePool(investId: number): Promise<ContractTransactionResponse>;
+  claimAndCreatePool(investId: number, createCarRequest: ContractCreateCarRequest): Promise<ContractTransactionResponse>;
 
   getAllInvestments(): Promise<ContractInvestmentDTO[]>;
 

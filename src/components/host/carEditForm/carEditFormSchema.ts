@@ -204,6 +204,7 @@ const electricCarSchema = z.object({
 
 const schemaCond = z.discriminatedUnion("engineTypeText", [petrolCarSchema, electricCarSchema]);
 
-export const carEditFormSchema = z.intersection(schemaCond, defaultCarEditFormSchema);
+// export const carEditFormSchema = z.intersection(schemaCond, defaultCarEditFormSchema);
 
 export type CarEditFormValues = z.infer<typeof carEditFormSchema>;
+export const carEditFormSchema = z.any();
