@@ -205,10 +205,10 @@ export default function CarEditForm({
       showDialog(t("vehicles.fill_fields_photo"));
       return;
     }
-    // if (!isValidForm) {
-    //   showDialog(t("vehicles.fill_fields"));
-    //   return;
-    // }
+    if (!isValidForm) {
+      showDialog(t("vehicles.fill_fields"));
+      return;
+    }
     if (!isImageUploaded) {
       showDialog(t("vehicles.upload_photo"));
       return;
