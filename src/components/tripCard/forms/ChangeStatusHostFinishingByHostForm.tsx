@@ -43,8 +43,6 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
     let depositToBeReturned = depositPaid - refuelCharge - overmilesCharge;
     depositToBeReturned = depositToBeReturned > 0 ? depositToBeReturned : 0;
 
-    const carPhotosUploadButtonRef = useRef<any>(null);
-
     useEffect(() => {
       const endOdometr = odometer ?? 0;
       const tripDays = calculateDays(tripInfo.tripStart, tripInfo.tripEnd);
@@ -78,36 +76,37 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
             </strong>
           </div>
 
-          <div className="mb-4 flex flex-col md:flex-row md:gap-8">
-            <div className="flex flex-1 flex-col">
+          <div className="mb-4 flex flex-col">
+            <div className="flex flex-col">
               <div className="flex flex-col">
                 <div className="mt-2 font-bold">Fuel or Battery level, %</div>
-                <div className="flex flex-row gap-8">
+                <div className="flex gap-8">
                   <RntInputTransparent
-                    className="w-1/2 py-2"
+                    className="w-full py-2"
                     id="fuelAtStartTrip"
                     label="At start trip"
                     readOnly={true}
                     {...register("fuelOrBatteryLevelStart")}
                     validationError={errors.fuelOrBatteryLevelStart?.message?.toString()}
                   />
-                  <Controller
-                    name="fuelOrBatteryLevel"
-                    control={control}
-                    render={({ field }) => (
-                      <RntFuelLevelSelect
-                        className="w-1/2 py-2"
-                        id="fuelAtEndTrip"
-                        label="At end trip"
-                        value={field.value}
-                        onLevelChange={(newValue) => {
-                          field.onChange(newValue);
-                          setEndLevelInPercents(newValue * 100);
-                        }}
-                        validationError={errors.fuelOrBatteryLevel?.message?.toString()}
-                      />
-                    )}
-                  />
+                  <div className="w-full py-2">
+                    <Controller
+                      name="fuelOrBatteryLevel"
+                      control={control}
+                      render={({ field }) => (
+                        <RntFuelLevelSelect
+                          id="fuelAtEndTrip"
+                          label="At end trip"
+                          value={field.value}
+                          onLevelChange={(newValue) => {
+                            field.onChange(newValue);
+                            setEndLevelInPercents(newValue * 100);
+                          }}
+                          validationError={errors.fuelOrBatteryLevel?.message?.toString()}
+                        />
+                      )}
+                    />
+                  </div>
                 </div>
               </div>
               <div className="flex flex-col">
@@ -131,7 +130,7 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
                 </div>
               </div>
             </div>
-            <div className="flex flex-1 flex-col">
+            <div className="flex flex-col">
               <div className="mt-2 font-bold">Reimbursement charge:</div>
               <div className="mt-2 grid grid-cols-2 text-sm md:mt-4">
                 <span className="col-span-1">Pick up Fuel:</span>
@@ -161,7 +160,7 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
                 <span className="col-span-1 text-right">${displayMoneyWith2Digits(overmilesCharge)}</span>
               </div>
             </div>
-            <div className="flex flex-1 flex-col">
+            <div className="flex flex-col">
               <div className="mt-4 font-bold md:mt-2">Security deposit info:</div>
               <div className="mt-2 grid grid-cols-2 gap-x-2 text-sm md:mt-4">
                 <span className="col-span-1">Received deposit:</span>
@@ -187,7 +186,7 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
           </div>
 
           <div className="flex flex-row gap-4">
-            <RntButton type="submit" className="h-16 px-4 max-md:w-full" disabled={disableButton || isSubmitting}>
+            <RntButton type="submit" className="px-4 max-md:w-full" disabled={disableButton || isSubmitting}>
               Finish
             </RntButton>
           </div>
