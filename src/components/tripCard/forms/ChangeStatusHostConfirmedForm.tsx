@@ -108,60 +108,63 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
             </strong>
           </div>
 
-          <div className="flex flex-col gap-4 py-4 xl:flex-row">
-            <div className="flex w-full flex-col md:flex-1 lg:flex-none xl:w-1/3">
-              <Controller
-                name="fuelOrBatteryLevel"
-                control={control}
-                render={({ field, fieldState }) =>
-                  panelData && panelData.fuelOrBatteryLevel !== 0 ? (
-                    <RntInputTransparent
-                      id="fuel_level"
-                      label="Fuel or battery level, %"
-                      value={panelData.fuelOrBatteryLevel}
-                      disabled
-                    />
-                  ) : (
-                    <RntFuelLevelSelect
-                      id="fuel_level"
-                      label="Fuel or battery level, %"
-                      value={field.value}
-                      onLevelChange={field.onChange}
-                      validationError={fieldState.error?.message}
-                    />
-                  )
-                }
-              />
-              {panelData && panelData.odotemer !== 0 ? (
-                <RntInputTransparent id="Odometer" label="Odometer" value={panelData.odotemer} disabled />
-              ) : (
+          <div className="flex flex-col gap-4 py-4 fullHD:grid fullHD:grid-cols-2">
+            <div className="flex flex-col">
+              <div className="flex flex-col">
+                <Controller
+                  name="fuelOrBatteryLevel"
+                  control={control}
+                  render={({ field, fieldState }) =>
+                    panelData && panelData.fuelOrBatteryLevel !== 0 ? (
+                      <RntInputTransparent
+                        id="fuel_level"
+                        label="Fuel or battery level, %"
+                        value={panelData.fuelOrBatteryLevel}
+                        disabled
+                      />
+                    ) : (
+                      <RntFuelLevelSelect
+                        id="fuel_level"
+                        label="Fuel or battery level, %"
+                        value={field.value}
+                        onLevelChange={field.onChange}
+                        validationError={fieldState.error?.message}
+                      />
+                    )
+                  }
+                />
+                {panelData && panelData.odotemer !== 0 ? (
+                  <RntInputTransparent id="Odometer" label="Odometer" value={panelData.odotemer} disabled />
+                ) : (
+                  <RntInputTransparent
+                    className="py-2"
+                    id="Odometer"
+                    label="Odometer"
+                    {...register("odotemer", { valueAsNumber: true })}
+                    validationError={errors.odotemer?.message?.toString()}
+                  />
+                )}
+              </div>
+              <div className="flex flex-col">
+                <RntInputTransparent
+                  id="insurance_company_name"
+                  label="Insurance company name"
+                  {...register("insuranceCompanyName")}
+                  validationError={errors.insuranceCompanyName?.message?.toString()}
+                />
                 <RntInputTransparent
                   className="py-2"
-                  id="Odometer"
-                  label="Odometer"
-                  {...register("odotemer", { valueAsNumber: true })}
-                  validationError={errors.odotemer?.message?.toString()}
+                  id="insurance_policy_number"
+                  label="Insurance policy number"
+                  {...register("insurancePolicyNumber")}
+                  validationError={errors.insurancePolicyNumber?.message?.toString()}
                 />
-              )}
-            </div>
-            <div className="flex w-full flex-col md:flex-1 lg:flex-none xl:w-1/3">
-              <RntInputTransparent
-                id="insurance_company_name"
-                label="Insurance company name"
-                {...register("insuranceCompanyName")}
-                validationError={errors.insuranceCompanyName?.message?.toString()}
-              />
-              <RntInputTransparent
-                className="py-2"
-                id="insurance_policy_number"
-                label="Insurance policy number"
-                {...register("insurancePolicyNumber")}
-                validationError={errors.insurancePolicyNumber?.message?.toString()}
-              />
+              </div>
             </div>
             {hasTripPhotosFeatureFlag && (
-              <div className="flex w-full flex-col md:flex-1 lg:flex-none xl:w-1/3">
+              <div className="flex flex-col fullHD:ml-auto">
                 <CarPhotosUploadButton
+                  wrapperClassName="max-fullHD:m-auto"
                   ref={carPhotosUploadButtonRef}
                   isHost={isHost(userMode)}
                   isStart={true}
@@ -170,7 +173,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
               </div>
             )}
           </div>
-          <div className="flex flex-row gap-4">
+          <div className="mt-2 flex flex-row justify-between gap-4">
             <RntButton type="submit" className="w-1/3 px-4 max-md:w-full" disabled={disableButton || isSubmitting}>
               Start
             </RntButton>

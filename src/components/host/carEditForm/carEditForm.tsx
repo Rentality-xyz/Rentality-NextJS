@@ -1168,8 +1168,8 @@ const FullBatteryChargePrice = ({
   return (
     <div className="flex flex-wrap gap-4">
       <div>
-        <RntInput
-          className="lg:w-48"
+        <RntInputTransparent
+          className="lg:w-52"
           id="fullBatteryChargePrice"
           label={t_car("full_charge")}
           placeholder="e.g. 50"
@@ -1184,17 +1184,17 @@ const FullBatteryChargePrice = ({
           }}
           validationError={validationError}
         />
-        <p className="mt-2 w-full text-center text-sm">{t_car("recommended", { amount: "$30-50" })}</p>
+        <p className="mt-2 w-full pl-4 text-sm">{t_car("recommended", { amount: "$30-50" })}</p>
       </div>
       <div>
-        <RntInput
+        <RntInputTransparent
           className="lg:w-48"
           id="tenPercentBatteryChargePrice"
           label={t_car("cost_for_each")}
           readOnly={true}
           value={(fullBatteryChargePrice ?? 0) / 10}
         />
-        <p className="mt-2 w-full text-center text-sm">{t_car("for_difference")}</p>
+        <p className="mt-2 w-full pl-4 text-sm">{t_car("for_difference")}</p>
       </div>
     </div>
   );

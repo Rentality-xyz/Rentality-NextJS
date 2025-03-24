@@ -1,5 +1,5 @@
 import React, { MutableRefObject, memo, useState, useRef, useEffect } from "react";
-import { AllowedChangeTripAction, TripInfo } from "@/model/TripInfo";
+import { AllowedChangeTripAction, getRefuelCharge, TripInfo } from "@/model/TripInfo";
 import RntButton from "../common/rntButton";
 import { TripStatus } from "@/model/blockchain/schemas";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
@@ -15,6 +15,7 @@ import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton"
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 import { Result } from "@/model/utils/result";
 import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore/pinata/utils";
+import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 
 function TripAdditionalActions({
   tripInfo,
@@ -122,6 +123,47 @@ function TripAdditionalActions({
     }
   };
 
+  const renderAdditionalInfoCheckedOutByGuest = (tripInfo: TripInfo, t: any) => {
+    if (!tripInfo || tripInfo.status !== TripStatus.CheckedOutByGuest) return null;
+
+    return (
+      <>
+        {tripInfo.allowedActions[0].params.map((param, index) =>
+          param.type === "fuel" ? (
+            <>
+              <div className="mt-2 font-bold">{t("booked.reimbursement")}</div>
+              <div key={index} className="mt-2 grid grid-cols-2 text-sm">
+                <span>{t("booked.pickUp_fuel")}</span>
+                <span className="col-span-1 text-right">{tripInfo.startFuelLevelInPercents}%</span>
+                <span>{t("booked.dropOff_fuel")}</span>
+                <span className="col-span-1 text-right">{tripInfo.endFuelLevelInPercents}%</span>
+                <span>{t("booked.price_per_10_percents")}</span>
+                <span className="col-span-1 text-right">
+                  ${displayMoneyWith2Digits(tripInfo.pricePer10PercentFuel)}
+                </span>
+                <span>{t("booked.total_refuel_charge")}</span>
+                <span className="col-span-1 text-right">
+                  ${displayMoneyWith2Digits(getRefuelCharge(tripInfo, tripInfo.endFuelLevelInPercents))}
+                </span>
+              </div>
+            </>
+          ) : (
+            <div key={index} className="mb-3 mt-2 grid grid-cols-2 text-sm">
+              <span>{t("booked.overmiles")}</span>
+              <span className="col-span-1 text-right">{tripInfo.overmileValue}</span>
+              <span>{t("booked.overmile_price")}</span>
+              <span className="col-span-1 text-right">${displayMoneyWith2Digits(tripInfo.overmilePrice)}</span>
+              <span>{t("booked.overmile_charge")}</span>
+              <span className="col-span-1 text-right">
+                ${displayMoneyWith2Digits(tripInfo.overmileValue * tripInfo.overmilePrice)}
+              </span>
+            </div>
+          )
+        )}
+      </>
+    );
+  };
+
   if (isHost && tripInfo.status === TripStatus.Confirmed)
     return (
       <ChangeStatusHostConfirmedForm
@@ -187,7 +229,7 @@ function TripAdditionalActions({
         <div>
           {hasTripPhotosFeatureFlag &&
             (tripInfo.status == TripStatus.CheckedInByHost || tripInfo.status == TripStatus.CheckedOutByGuest) && (
-              <div className="flex w-full flex-col">
+              <div className="mb-1 flex w-full flex-col">
                 <CarPhotosUploadButton
                   wrapperClassName="max-fullHD:m-auto"
                   ref={carPhotosUploadButtonRef}
@@ -199,6 +241,7 @@ function TripAdditionalActions({
             )}
         </div>
       </div>
+      {isHost && renderAdditionalInfoCheckedOutByGuest(tripInfo, t)}
 
       <div className="flex flex-row gap-4">
         {tripInfo.allowedActions.map((action) => {
