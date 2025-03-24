@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useState, useRef } from "react";
-import { getRefuelCharge, TripInfo } from "@/model/TripInfo";
+import { AllowedChangeTripAction, getRefuelCharge, TripInfo } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
 import RntButton from "@/components/common/rntButton";
 import RntInput from "@/components/common/rntInput";
@@ -16,7 +16,7 @@ import {
 
 interface ChangeStatusHostFinishingByHostFormProps {
   tripInfo: TripInfo;
-  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<boolean>;
+  changeStatusCallback: (action: AllowedChangeTripAction, changeStatus: () => Promise<boolean>) => Promise<boolean>;
   disableButton: boolean;
   t: TFunction;
 }
@@ -53,7 +53,7 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
     }, [tripInfo, odometer]);
 
     async function onFormSubmit(formData: ChangeStatusHostFinishingByHostFormValues) {
-      changeStatusCallback(() => {
+      changeStatusCallback(tripInfo.allowedActions[0], () => {
         return tripInfo.allowedActions[0].action(
           BigInt(tripInfo.tripId),
           [formData.fuelOrBatteryLevel.toString(), formData.odotemer.toString()],

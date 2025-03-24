@@ -8,17 +8,17 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import RntSuspense from "@/components/common/rntSuspense";
 import { logger } from "@/utils/logger";
-import { TripInfo } from "@/model/TripInfo";
+import { AllowedChangeTripAction, TripInfo } from "@/model/TripInfo";
 import { TripStatus } from "@/model/blockchain/schemas";
 
 function Booked() {
   const ethereumInfo = useEthereum();
   const [isLoadingTrips, tripsBooked, _, updateData] = useHostTrips();
   const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
-  const { showInfo, showError } = useRntSnackbars();
+  const { showInfo, showError, showSuccess } = useRntSnackbars();
   const { t } = useTranslation();
 
-  const changeStatusCallback = async (tripInfo: TripInfo, changeStatus: () => Promise<boolean>) => {
+  const changeStatusCallback = async (action: AllowedChangeTripAction, changeStatus: () => Promise<boolean>) => {
     if (!ethereumInfo) {
       logger.error("changeStatusCallback error: ethereumInfo is null");
       return false;
@@ -37,7 +37,7 @@ function Booked() {
     const result = await changeStatus();
 
     if (result) {
-      showInfoCurrentStatus(tripInfo)
+      showSuccessCurrentStatus(action)
       updateData();
     } else {
       showError(t("booked.status_req_failed"));
@@ -47,20 +47,21 @@ function Booked() {
     return result;
   };
 
-  const showInfoCurrentStatus = (tripInfo: TripInfo) => {
-    switch (tripInfo.status) {
-      case TripStatus.Pending:
-        showInfo(t("booked.host_confirmed"))
-        return;
-      case TripStatus.Confirmed:
-        showInfo(t("booked.trip_started"))
-        return;
-      case TripStatus.Started:
-        showInfo(t("booked.trip_finished"))
-        return;
-      default:
-        showInfo(t("booked.status_changed"));
-    }
+  const showSuccessCurrentStatus = (action: AllowedChangeTripAction) => {
+      switch (action.text) {
+        case "Confirm":
+            showSuccess(t("booked.host_confirmed"));
+            return;
+        case "Start":
+          showSuccess(t("booked.trip_started"));
+          return;
+        case "Finish":
+          showSuccess(t("booked.trip_finished"));
+          return;
+        default:
+          showSuccess(t("booked.status_changed"));
+          return;
+      }
   }
 
   return (
@@ -74,7 +75,7 @@ function Booked() {
                 <TripCard
                   key={value.tripId}
                   tripInfo={value}
-                  changeStatusCallback={(changeStatus) => changeStatusCallback(value, changeStatus)}
+                  changeStatusCallback={(action, changeStatus) => changeStatusCallback(action, changeStatus)}
                   disableButton={tripStatusChanging}
                   isHost={true}
                   isBooked={true}

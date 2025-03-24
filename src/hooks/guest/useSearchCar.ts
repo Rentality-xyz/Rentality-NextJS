@@ -65,7 +65,6 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           BigInt(carId),
           contractDateFromUTC,
           contractDateToUTC,
-          contractSearchCarParams,
           pickUpInfo,
           returnInfo
         );

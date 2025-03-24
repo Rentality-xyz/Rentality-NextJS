@@ -8,6 +8,7 @@ export type SnackbarState = {
   action: ReactNode;
   anchorOrigin: SnackbarOrigin;
   backgroundColor: string;
+  textColor: string;
   autoHideDuration: number;
 };
 
@@ -18,5 +19,6 @@ export const defaultSnackbarState: SnackbarState = {
   action: null,
   anchorOrigin: { vertical: "top", horizontal: "center" },
   backgroundColor: "#22d7d3",
+  textColor: "#ffffff",
   autoHideDuration: 6000,
 };

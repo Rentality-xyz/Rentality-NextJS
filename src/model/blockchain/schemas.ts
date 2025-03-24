@@ -90,7 +90,6 @@ export type ContractCreateTripRequest = {
   carId: bigint;
   startDateTime: bigint;
   endDateTime: bigint;
-  currencyType: string;
 };
 
 export type ContractCreateTripRequestWithDelivery = {
@@ -208,6 +207,7 @@ export type ContractFullClaimInfo = {
   amountInEth: bigint;
   timeZoneId: string;
   claimType: ContractClaimTypeV2;
+  currency: string;
 };
 
 export type ContractClaimV2 = {
@@ -390,6 +390,7 @@ export type ContractSearchCar = {
   insuranceInfo: ContractInsuranceCarInfo;
   isGuestHasInsurance: boolean;
   dimoTokenId: bigint;
+  hostCurrency: ContractUserCurrency;
 };
 
 export type ContractAvailableCarDTO = {
@@ -422,6 +423,12 @@ export type ContractAvailableCarDTO = {
   dimoTokenId: bigint;
   taxes: ContractTaxValue[];
   totalTax: bigint;
+  hostCurrency: ContractUserCurrency;
+};
+
+export type ContractUserCurrency = {
+  currency: string;
+  initialized: boolean;
 };
 
 export type ContractGeoData = {
