@@ -36,6 +36,7 @@ import {
   InsuranceType,
   TripStatus,
 } from "./schemas";
+import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 
 export const emptyContractLocationInfo: ContractLocationInfo = {
   userAddress: "",
@@ -188,6 +189,7 @@ export function validateContractFullClaimInfo(obj: ContractFullClaimInfo): obj i
     amountInEth: BigInt(0),
     timeZoneId: "",
     claimType: emptyClaimType,
+    currency: ETH_DEFAULT_ADDRESS,
   };
 
   return (
@@ -228,6 +230,7 @@ const emptyContractSearchCar: ContractSearchCar = {
   insuranceInfo: emptyContractInsuranceCarInfo,
   isGuestHasInsurance: false,
   dimoTokenId: BigInt(0),
+  hostCurrency: {currency: ETH_DEFAULT_ADDRESS, initialized: false}
 };
 
 export function validateContractSearchCar(obj: ContractSearchCar): obj is ContractSearchCar {
@@ -457,6 +460,7 @@ const emptyContractAvailableCarDTO: ContractAvailableCarDTO = {
   distance: BigInt(0),
   dimoTokenId: BigInt(0),
   totalTax: BigInt(0),
+  hostCurrency: {currency: ETH_DEFAULT_ADDRESS, initialized: false}
 };
 
 export function validateContractAvailableCarDTO(obj: ContractAvailableCarDTO): obj is ContractAvailableCarDTO {
