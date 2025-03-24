@@ -104,7 +104,6 @@ export interface IRentalityGatewayContract extends IEthersContract {
     carId: bigint,
     startDateTime: bigint,
     endDateTime: bigint,
-    searchParams: ContractSearchCarParams,
     pickUpInfo: ContractLocationInfo,
     returnInfo: ContractLocationInfo
   ): Promise<ContractAvailableCarDTO>;
