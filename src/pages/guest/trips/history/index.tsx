@@ -26,7 +26,7 @@ function History() {
                 <TripCard
                   key={value.tripId}
                   tripInfo={value}
-                  changeStatusCallback={changeStatusCallback}
+                  changeStatusCallback={(action, changeStatus) => changeStatusCallback(changeStatus)}
                   disableButton={true}
                   isHost={false}
                   t={t}
