@@ -25,7 +25,7 @@ function TripAdditionalActions({
   t,
 }: {
   tripInfo: TripInfo;
-  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<boolean>;
+  changeStatusCallback: (action: AllowedChangeTripAction, changeStatus: () => Promise<boolean>) => Promise<boolean>;
   disableButton: boolean;
   refForScrool?: MutableRefObject<HTMLDivElement>;
   isHost: boolean;
@@ -73,7 +73,7 @@ function TripAdditionalActions({
       return;
     }
 
-    return changeStatusCallback(() => {
+    return changeStatusCallback(tripInfo.allowedActions[0], () => {
       return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), inputParams, []);
     });
   };
@@ -86,7 +86,7 @@ function TripAdditionalActions({
             if (!result.ok || result.value.urls.length === 0) {
               showDialog(t("common.photos_required"));
             } else {
-              changeStatusCallback(() => {
+              changeStatusCallback(tripInfo.allowedActions[0], () => {
                 return action.action(BigInt(tripInfo.tripId), [], []);
               }).then((isSuccess) => {
                 if (!isSuccess) {
@@ -96,7 +96,7 @@ function TripAdditionalActions({
             }
           });
         } else {
-          changeStatusCallback(() => {
+          changeStatusCallback(tripInfo.allowedActions[0], () => {
             return action.action(BigInt(tripInfo.tripId), [], []);
           });
         }

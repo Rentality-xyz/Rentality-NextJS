@@ -1,7 +1,7 @@
 import { ElementRef, memo, useEffect, useRef, useState } from "react";
-import { TripInfo } from "@/model/TripInfo";
+import { AllowedChangeTripAction, TripInfo } from "@/model/TripInfo";
 import CarPhotoWithStatus from "./carPhotoWithStatus";
-import СarDetails from "./carDetails";
+import CarDetails from "./carDetails";
 import CurrentStatusInfo from "./currentStatusInfo";
 import DateDetails from "./dateDetails";
 import LocationDetails from "./locationDetails";
@@ -21,7 +21,7 @@ function TripCard({
   t,
 }: {
   tripInfo: TripInfo;
-  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<boolean>;
+  changeStatusCallback: (action: AllowedChangeTripAction, changeStatus: () => Promise<boolean>) => Promise<boolean>;
   disableButton: boolean;
   isHost: boolean;
   isBooked?: boolean;
@@ -67,11 +67,11 @@ function TripCard({
             id="trip-item-info"
             className={`${isBooked ? "grid-cols-[1fr_1fr_1fr]" : "grid-cols-[1fr_1fr]"} flex w-full flex-col gap-4 p-4 md:grid`}
           >
-            <СarDetails tripInfo={tripInfo} isHost={isHost} t={t} confirmCarDetails={confirmCarDetails} />
+            <CarDetails tripInfo={tripInfo} isHost={isHost} t={t} confirmCarDetails={confirmCarDetails} />
             <CurrentStatusInfo
               tripInfo={tripInfo}
-              changeStatusCallback={async (changeStatus) => {
-                const isSuccess = await changeStatusCallback(changeStatus);
+              changeStatusCallback={async (action, changeStatus) => {
+                const isSuccess = await changeStatusCallback(action, changeStatus);
                 if (isSuccess) {
                   setIsAdditionalActionHidden(true);
                 }
@@ -113,8 +113,8 @@ function TripCard({
         <TripAdditionalActions
           refForScrool={allowedActionsRef}
           tripInfo={tripInfo}
-          changeStatusCallback={async (changeStatus) => {
-            const isSuccess = await changeStatusCallback(changeStatus);
+          changeStatusCallback={async (action, changeStatus) => {
+            const isSuccess = await changeStatusCallback(action, changeStatus);
             if (isSuccess) {
               setIsAdditionalActionHidden(true);
             }

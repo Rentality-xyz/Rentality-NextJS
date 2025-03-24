@@ -1,5 +1,5 @@
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
-import { TripInfo } from "@/model/TripInfo";
+import { AllowedChangeTripAction, TripInfo } from "@/model/TripInfo";
 import RntButton from "../common/rntButton";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import { Dispatch, SetStateAction, memo, useState, useRef } from "react";
@@ -11,6 +11,8 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import ModifyTripForm from "./modifyTripForm";
 import { useChat } from "@/features/chat/contexts/chatContext";
 import GuestConfirmFinishForm from "./guestConfirmFinishForm";
+import { DialogActions } from "@/utils/dialogActions";
+import * as React from "react";
 
 function isInTheFuture(date: Date) {
   return date > new Date();
@@ -117,14 +119,14 @@ function CurrentStatusInfo({
   t,
 }: {
   tripInfo: TripInfo;
-  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<boolean>;
+  changeStatusCallback: (action: AllowedChangeTripAction, changeStatus: () => Promise<boolean>) => Promise<boolean>;
   disableButton: boolean;
   isAdditionalActionHidden: boolean;
   setIsAdditionalActionHidden: Dispatch<SetStateAction<boolean>>;
   isHost: boolean;
   t: TFunction;
 }) {
-  const { showCustomDialog, hideDialogs } = useRntDialogs();
+  const { showCustomDialog, hideDialogs, showDialog } = useRntDialogs();
   const [messageToGuest, setMessageToGuest] = useState("");
   const [isFinishingByHost, setIsFinishingByHost] = useState(false);
   const { sendMessage, getMessages } = useChat();
@@ -169,7 +171,7 @@ function CurrentStatusInfo({
   const handleGuestFinishTrip = async () => {
     hideDialogs();
 
-    return changeStatusCallback(() => {
+    return changeStatusCallback(tripInfo.allowedActions[0], () => {
       return tripInfo.allowedActions[0].action(BigInt(tripInfo.tripId), [], []);
     });
   };
@@ -205,6 +207,21 @@ function CurrentStatusInfo({
         tripId={tripInfo.tripId}
       />
     );
+  };
+
+  const showGuestRejectDialog = (action: AllowedChangeTripAction) => {
+    const dialogAction = (
+      <>
+        {DialogActions.OK(() => {
+          hideDialogs();
+          changeStatusCallback(action, () => {
+            return action.action(BigInt(tripInfo.tripId), [], []);
+          });
+        })}
+        {DialogActions.Cancel(hideDialogs)}
+      </>
+    );
+    showDialog(t("booked.guest_reject_dialog"), dialogAction);
   };
 
   return (
@@ -253,9 +270,13 @@ function CurrentStatusInfo({
                     disabled={disableButton}
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
-                        changeStatusCallback(() => {
-                          return action.action(BigInt(tripInfo.tripId), [], []);
-                        });
+                        if(action.text === "Reject") {
+                          showGuestRejectDialog(action);
+                        } else {
+                          changeStatusCallback(action, () => {
+                            return action.action(BigInt(tripInfo.tripId), [], []);
+                          });
+                        }
                       } else {
                         setIsAdditionalActionHidden(false);
                       }
@@ -270,7 +291,7 @@ function CurrentStatusInfo({
                     disabled={disableButton}
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
-                        changeStatusCallback(() => {
+                        changeStatusCallback(action, () => {
                           return action.action(BigInt(tripInfo.tripId), [], []);
                         });
                       } else {
