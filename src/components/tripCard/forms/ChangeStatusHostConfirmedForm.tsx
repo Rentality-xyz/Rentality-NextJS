@@ -108,8 +108,8 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
             </strong>
           </div>
 
-          <div className="mb-4 flex flex-col md:flex-row md:gap-8">
-            <div className="flex flex-1 flex-col">
+          <div className="flex flex-col gap-4 py-4 fullHD:grid fullHD:grid-cols-2">
+            <div className="flex flex-col">
               <div className="flex flex-col">
                 <Controller
                   name="fuelOrBatteryLevel"
@@ -162,8 +162,9 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
               </div>
             </div>
             {hasTripPhotosFeatureFlag && (
-              <div className="flex flex-1 flex-col">
+              <div className="flex flex-col fullHD:ml-auto">
                 <CarPhotosUploadButton
+                  wrapperClassName="max-fullHD:m-auto"
                   ref={carPhotosUploadButtonRef}
                   isHost={isHost(userMode)}
                   isStart={true}
@@ -172,7 +173,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
               </div>
             )}
           </div>
-          <div className="flex flex-row justify-between gap-4">
+          <div className="mt-2 flex flex-row justify-between gap-4">
             <RntButton type="submit" className="w-1/3 px-4 max-md:w-full" disabled={disableButton || isSubmitting}>
               Start
             </RntButton>
