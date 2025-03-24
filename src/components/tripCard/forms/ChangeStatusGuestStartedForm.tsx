@@ -20,6 +20,7 @@ import useUserMode from "@/hooks/useUserMode";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 import { Result } from "@/model/utils/result";
 import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore/pinata/utils";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
 
 interface ChangeStatusGuestStartedFormProps {
   tripInfo: TripInfo;
@@ -112,42 +113,43 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
             </strong>
           </div>
 
-          <div className="mb-4 flex flex-col md:flex-row md:gap-8">
-            <div className="flex flex-1 flex-col">
+          <div className="mb-4 flex flex-col">
+            <div className="flex flex-col">
               <div className="flex flex-col">
                 <div className="mt-2 font-bold">Fuel or Battery level, %</div>
-                <div className="flex flex-row gap-8">
-                  <RntInput
-                    className="w-1/2 py-2"
+                <div className="flex gap-8">
+                  <RntInputTransparent
+                    className="w-full py-2"
                     id="fuelAtStartTrip"
                     label="At start trip"
                     readOnly={true}
                     {...register("fuelOrBatteryLevelStart")}
                     validationError={errors.fuelOrBatteryLevelStart?.message?.toString()}
                   />
-                  <Controller
-                    name="fuelOrBatteryLevel"
-                    control={control}
-                    render={({ field }) => (
-                      <RntFuelLevelSelect
-                        className="w-1/2 py-2"
-                        id="fuelAtEndTrip"
-                        label="At end trip"
-                        value={field.value}
-                        onLevelChange={(newValue) => {
-                          field.onChange(newValue);
-                          setEndLevelInPercents(newValue * 100);
-                        }}
-                        validationError={errors.fuelOrBatteryLevel?.message?.toString()}
-                      />
-                    )}
-                  />
+                  <div className="w-full py-2">
+                    <Controller
+                      name="fuelOrBatteryLevel"
+                      control={control}
+                      render={({ field }) => (
+                        <RntFuelLevelSelect
+                          id="fuelAtEndTrip"
+                          label="At end trip"
+                          value={field.value}
+                          onLevelChange={(newValue) => {
+                            field.onChange(newValue);
+                            setEndLevelInPercents(newValue * 100);
+                          }}
+                          validationError={errors.fuelOrBatteryLevel?.message?.toString()}
+                        />
+                      )}
+                    />
+                  </div>
                 </div>
               </div>
               <div className="flex flex-col">
                 <div className="mt-2 font-bold">Odometer</div>
                 <div className="flex flex-row gap-8">
-                  <RntInput
+                  <RntInputTransparent
                     className="w-1/2 py-2"
                     id="fuelAtStartTrip"
                     label="At start trip"
@@ -155,7 +157,7 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
                     {...register("odotemerStart")}
                     validationError={errors.odotemerStart?.message?.toString()}
                   />
-                  <RntInput
+                  <RntInputTransparent
                     className="w-1/2 py-2"
                     id="fuelAtEndTrip"
                     label="At end trip"
@@ -166,16 +168,17 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
               </div>
             </div>
             {hasTripPhotosFeatureFlag && (
-              <div className="flex flex-1 flex-col">
+              <div className="flex flex-col">
                 <CarPhotosUploadButton
                   ref={carPhotosUploadButtonRef}
+                  wrapperClassName="m-auto my-2"
                   isHost={isHost(userMode)}
                   isStart={true}
                   tripId={tripInfo.tripId}
                 />
               </div>
             )}
-            <div className="flex flex-1 flex-col">
+            <div className="flex flex-col">
               <div className="mt-2 font-bold">Reimbursement charge:</div>
               <div className="mt-2 grid grid-cols-2 text-sm md:mt-4">
                 <span className="col-span-1">Pick up Fuel:</span>
@@ -205,7 +208,7 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
                 <span className="col-span-1 text-right">${displayMoneyWith2Digits(overmilesCharge)}</span>
               </div>
             </div>
-            <div className="flex flex-1 flex-col">
+            <div className="flex flex-col">
               <div className="mt-4 font-bold md:mt-2">Security deposit info:</div>
               <div className="mt-2 grid grid-cols-2 gap-x-2 text-sm md:mt-4">
                 <span className="col-span-1">Received deposit:</span>
@@ -228,7 +231,11 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
           </div>
 
           <div className="flex flex-row gap-4">
-            <RntButton type="submit" className="h-16 px-4 max-md:w-full" disabled={disableButton || isSubmitting}>
+            <RntButton
+              type="submit"
+              className="px-4 max-fullHD:m-auto max-md:w-full"
+              disabled={disableButton || isSubmitting}
+            >
               Finish
             </RntButton>
           </div>
