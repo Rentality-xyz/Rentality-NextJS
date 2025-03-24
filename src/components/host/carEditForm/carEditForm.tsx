@@ -53,7 +53,7 @@ export default function CarEditForm({
 }) {
   const router = useRouter();
   const { showDialog, hideDialogs } = useRntDialogs();
-  const { showInfo, showError } = useRntSnackbars();
+  const { showInfo, showError, showSuccess } = useRntSnackbars();
 
   const { register, control, handleSubmit, formState, setValue, watch } = useForm<CarEditFormValues>({
     defaultValues:
@@ -222,15 +222,15 @@ export default function CarEditForm({
         localStorage.removeItem("dimo");
       }
       if (isInvestmentCar) {
-        showInfo(t("vehicles.car_invested"));
+        showSuccess(t("vehicles.car_invested"));
       } else {
         if (isNewCar) {
-          showInfo(t("vehicles.car_listed"));
+          showSuccess(t("vehicles.car_listed"));
         } else {
-          showInfo(t("vehicles.edited"));
+          showSuccess(t("vehicles.edited"));
         }
       }
-      showInfo(t("vehicles.successfully_listed"));
+      showSuccess(t("vehicles.successfully_listed"));
       if (isInvestmentCar) {
         router.push("/host/invest");
       } else {

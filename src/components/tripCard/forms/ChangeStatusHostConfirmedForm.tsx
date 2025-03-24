@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useRef, useState } from "react";
-import { TripInfo } from "@/model/TripInfo";
+import { AllowedChangeTripAction, TripInfo } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
 import RntButton from "@/components/common/rntButton";
 import RntInput from "@/components/common/rntInput";
@@ -22,7 +22,7 @@ import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore/pinata/u
 
 interface ChangeStatusHostConfirmedFormProps {
   tripInfo: TripInfo;
-  changeStatusCallback: (changeStatus: () => Promise<boolean>) => Promise<boolean>;
+  changeStatusCallback: (action: AllowedChangeTripAction, changeStatus: () => Promise<boolean>) => Promise<boolean>;
   disableButton: boolean;
   t: TFunction;
 }
@@ -75,7 +75,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
         return;
       }
 
-      changeStatusCallback(async () => {
+      changeStatusCallback(tripInfo.allowedActions[0], async () => {
         return tripInfo.allowedActions[0].action(
           BigInt(tripInfo.tripId),
           [
@@ -179,7 +179,7 @@ const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHos
               className="w-1/3 px-4 max-md:w-full"
               disabled={disableButton || isSubmitting}
               onClick={() => {
-                changeStatusCallback(() => {
+                changeStatusCallback(tripInfo.allowedActions[1], () => {
                   return tripInfo.allowedActions[1].action(BigInt(tripInfo.tripId), [], []);
                 });
               }}

@@ -34,7 +34,13 @@ export default function RntSnackbar({ state, hide }: { state: SnackbarState; hid
       action={state.action}
       sx={{ top: "8% !important" }}
     >
-      <div className="max-w-[700px] rounded-[30px_8px_30px_8px] bg-[#009898] p-[14px_16px] text-lg text-white shadow-snackbar">
+      <div
+        className="max-w-[700px] rounded-[30px_8px_30px_8px] p-[14px_16px] text-lg shadow-snackbar"
+        style={{
+          backgroundColor: state.backgroundColor,
+          color: state.textColor
+      }}
+      >
         {state.message}
       </div>
     </Snackbar>

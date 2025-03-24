@@ -8,15 +8,16 @@ import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import RntSuspense from "@/components/common/rntSuspense";
 import { logger } from "@/utils/logger";
+import { AllowedChangeTripAction } from "@/model/TripInfo";
 
 function Booked() {
   const ethereumInfo = useEthereum();
   const { isLoadingTrips, tripsBooked, updateData } = useGuestTrips();
   const [tripStatusChanging, setTripStatusChanging] = useState<boolean>(false);
-  const { showInfo, showError } = useRntSnackbars();
+  const { showInfo, showError, showSuccess } = useRntSnackbars();
   const { t } = useTranslation();
 
-  const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
+  const changeStatusCallback = async (action: AllowedChangeTripAction, changeStatus: () => Promise<boolean>) => {
     if (!ethereumInfo) {
       logger.error("changeStatusCallback error: ethereumInfo is null");
       return false;
@@ -35,7 +36,7 @@ function Booked() {
     const result = await changeStatus();
 
     if (result) {
-      showInfo(t("booked.status_changed"));
+      showSuccessCurrentStatus(action);
       updateData();
     } else {
       showError(t("booked.status_req_failed"));
@@ -44,6 +45,20 @@ function Booked() {
 
     return result;
   };
+
+  const showSuccessCurrentStatus = (action: AllowedChangeTripAction) => {
+    switch (action.text) {
+      case "Start":
+        showSuccess(t("booked.trip_started"));
+        return;
+      case "Finish":
+        showSuccess(t("booked.trip_finished"));
+        return;
+      default:
+        showSuccess(t("booked.status_changed"));
+        return;
+    }
+  }
 
   return (
     <>
@@ -56,7 +71,7 @@ function Booked() {
                 <TripCard
                   key={value.tripId}
                   tripInfo={value}
-                  changeStatusCallback={changeStatusCallback}
+                  changeStatusCallback={(action, changeStatus) => changeStatusCallback(action, changeStatus)}
                   disableButton={tripStatusChanging}
                   isHost={false}
                   isBooked={true}

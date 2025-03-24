@@ -33,7 +33,7 @@ function Search() {
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string | undefined>(undefined);
   const { showDialog, hideDialogs } = useRntDialogs();
-  const { showInfo, showError, hideSnackbars } = useRntSnackbars();
+  const { showInfo, showError, showSuccess, hideSnackbars } = useRntSnackbars();
   const userInfo = useUserInfo();
   const router = useRouter();
   const { isLoadingAuth, isAuthenticated, login } = useAuth();
@@ -101,7 +101,7 @@ function Search() {
     setRequestSending(false);
 
     if (result.ok) {
-      showInfo(t("search_page.car_search_item.booked"));
+      showSuccess(t("search_page.car_search_item.booked"));
       router.push("/guest/trips");
     } else {
       if (result.error.message === "NOT_ENOUGH_FUNDS") {
