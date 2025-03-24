@@ -23,7 +23,7 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
   const [isFormOpen, toggleFormOpen] = useToggleState(false);
   const { isLoading: isTripsLoading, trips, refetchData } = useTripsList(true);
   const { mutateAsync: saveTripInsurance } = useSaveTripInsurance();
-  const { showInfo, showError, hideSnackbars } = useRntSnackbars();
+  const { showInfo, showError, showSuccess, hideSnackbars } = useRntSnackbars();
   const { t } = useTranslation();
 
   const {
@@ -74,7 +74,7 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
       logger.error("saveTripInsurance error: Save Guest Insurance info error");
       showError(t("profile.save_err"));
     } else {
-      showInfo(t("common.info.success"));
+      showSuccess(t("insurance.successfully_activated"));
       resetFormValues();
       refetchData();
     }
