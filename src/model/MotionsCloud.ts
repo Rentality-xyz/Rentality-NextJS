@@ -5,12 +5,14 @@ export interface CreateCase {
   "Date of incident"?: string;
   "VIN number"?: string;
   Language: "en";
+  "Inspection type": "pre" | "post";
 }
 
 export function createCase(
   caseNumber: string,
   fullName: string,
   email: string,
+  pre: boolean,
   dateOfIncident?: string,
   vinNumber?: string
 ): CreateCase {
@@ -21,6 +23,7 @@ export function createCase(
     Language: "en",
     ...(dateOfIncident ? { "Date of incident": dateOfIncident } : {}),
     ...(vinNumber ? { "VIN number": vinNumber } : {}),
+    "Inspection type": pre? "pre" : "post",
   };
 }
 export type PhotoUrl = string;
