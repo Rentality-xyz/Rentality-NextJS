@@ -79,6 +79,14 @@ function UserInsurance() {
       logger.error("saveInsurance error: Save Guest Insurance info error");
       showError(t("profile.save_err"));
     } else {
+      showSuccessSaveInsurance("isDeleted" in insurancePhoto ? (insurancePhoto.isDeleted ?? false) : false);
+    }
+  }
+
+  function showSuccessSaveInsurance(isDeleted: boolean) {
+    if (isDeleted) {
+      showSuccess(t("common.info.success"));
+    } else {
       showSuccess(t("insurance.successfully_activated"));
     }
   }
