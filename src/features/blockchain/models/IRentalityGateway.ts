@@ -163,7 +163,7 @@ export interface IRentalityGatewayContract extends IEthersContract {
   saveDimoTokenIds(dimoTokenIds: bigint[], rentalityCarIds: bigint[]): Promise<ContractTransactionResponse>;
 
   // AiDamageAnalyzee
-  getAiDamageAnalyzeCaseData(tripId: bigint): Promise<ContractAiDamageAnalyzeCaseDataDTO>;
+  getAiDamageAnalyzeCaseData(tripId: bigint, pre: boolean): Promise<ContractAiDamageAnalyzeCaseDataDTO>;
 
   // temporary is not working (reversed)
   // isCarDetailsConfirmed(carId: bigint): Promise<boolean>;

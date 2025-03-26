@@ -8,6 +8,7 @@ import { env } from "@/utils/env";
 import { logger } from "@/utils/logger";
 import { deleteFileByUrl, saveAiAssessment } from "@/features/filestore/pinata/utils";
 import { isEmpty } from "@/utils/string";
+import { parseId } from "@/utils/encodeChainId";
 
 function generateXAuthorization() {
   const SECRET_KEY = env.API_AI_DAMAGE_ANALYZE_SECRET;
@@ -33,13 +34,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ error: "token was not set" });
     }
     const jsonData = req.body;
-    const chainId = env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
+    const case_number = jsonData.data.case_number;
+    const chainId = parseId(case_number);
     if (!chainId) {
-      logger.error("API aiAssessments error: chainId was not provided");
-      res.status(500).json({ error: "chainId was not provided" });
-      return;
+      logger.error("API aiAssessment error: chain id was not set");
+      return
     }
-
     const providerApiUrl = getProviderApiUrlFromEnv(chainId);
 
     if (!providerApiUrl) {
@@ -61,6 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       wallet
     )) as unknown as IRentalityAiDamageAnalyzeContract;
 
+   
     const caseExists = await rentality.isCaseExists(jsonData.case_token);
 
     if (!verifyXAuthorization(token)) {
