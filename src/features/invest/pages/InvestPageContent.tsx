@@ -81,12 +81,12 @@ function InvestPageContent({ isHost }: InvestContentProps) {
 
   return (
     <div className="mt-8">
-      {isInvestManager(userRole) && (
-        <RntButton className="mb-6 flex w-60 items-center justify-center" onClick={handleCreateInvestClick}>
-          {t("invest.btn_create_investment")}
-        </RntButton>
-      )}
-
+      //TODO
+      {/*{isInvestManager(userRole) && (*/}
+      <RntButton className="mb-6 flex w-60 items-center justify-center" onClick={handleCreateInvestClick}>
+        {t("invest.btn_create_investment")}
+      </RntButton>
+      {/*)}*/}
       <RntFilterSelect
         className="btn_input_border-gradient w-60 justify-center bg-transparent text-lg text-rentality-secondary"
         id="invest_filter"
@@ -104,7 +104,6 @@ function InvestPageContent({ isHost }: InvestContentProps) {
           </RntFilterSelect.Option>
         ))}
       </RntFilterSelect>
-
       <div className="mt-6 grid grid-cols-1 gap-4 2xl:grid-cols-2">
         {filteredInvestments.map((value) => (
           <InvestCar
