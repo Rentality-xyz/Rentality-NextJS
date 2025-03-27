@@ -22,8 +22,6 @@ function GuestInvestBlock({
   handleClaimIncome: (investId: number) => Promise<Result<boolean>>;
   t: (key: string) => string;
 }) {
- 
-  const myIncome = investment.myIncome > 0 ? investment.myIncome : investment.myIncome;
   return (
     <>
       <StakeInAsset myTokens={investment.myTokens} myInvestingSum={investment.myInvestingSum} t={t} />
@@ -31,7 +29,7 @@ function GuestInvestBlock({
         <ExpectCompletedTrips t={t} />
       ) : investment.myIncome > 0 ? (
         <ClaimEarnings
-          myIncome={myIncome}
+          myIncome={investment.myIncome}
           investmentId={investment.investmentId}
           handleClaimIncome={handleClaimIncome}
           t={t}

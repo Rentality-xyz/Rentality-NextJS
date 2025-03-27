@@ -1,5 +1,6 @@
 import RntButton from "@/components/common/rntButton";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
+import { useEffect, useState } from "react";
 
 function InvestNow({
   investmentId,
@@ -16,6 +17,18 @@ function InvestNow({
   handleChangeInvestmentAmount: (e: React.ChangeEvent<HTMLInputElement>) => void;
   t: (key: string) => string;
 }) {
+  const [inputValue, setInputValue] = useState(investmentAmount);
+
+  useEffect(() => {
+    setInputValue(investmentAmount);
+  }, [investmentAmount]);
+
+  useEffect(() => {
+    if (!isPendingInvesting) {
+      setInputValue(0);
+    }
+  }, [isPendingInvesting]);
+
   return (
     <>
       <div className="mt-6 flex">
@@ -24,7 +37,7 @@ function InvestNow({
           <RntInputTransparent
             className="text-white"
             type="text"
-            value={investmentAmount <= 0 ? "" : investmentAmount}
+            value={inputValue <= 0 ? "" : inputValue}
             onChange={handleChangeInvestmentAmount}
             placeholder="0"
           />
