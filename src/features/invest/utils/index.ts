@@ -64,15 +64,19 @@ export function getCarListingStatus(
   const formattedDate = moment(investment.listingDate).tz(UTC_TIME_ZONE_ID);
   const today = moment().tz(UTC_TIME_ZONE_ID);
   const daysDiff = today.diff(formattedDate, "days");
-  return investStatus === InvestStatus.ActuallyListed
-    ? t("invest.listed_days")
-        .replace("{date}", dateFormatLongMonthYearDate(investment.listingDate))
-        .replace("{days}", String(daysDiff))
-    : investStatus === InvestStatus.ReadyListing
-      ? t("invest.ready_listing")
-      : investStatus === InvestStatus.ListingProgress
-        ? t("invest.listing_coming_soon")
-        : investStatus === InvestStatus.WaitingFullTokenization
-          ? t("invest.waiting_full_tokenization")
-          : t("invest.unknown");
+
+  const message =
+    investStatus === InvestStatus.ActuallyListed
+      ? t("invest.listed_days")
+          .replace("{date}", dateFormatLongMonthYearDate(investment.listingDate))
+          .replace("{days}", String(daysDiff))
+      : investStatus === InvestStatus.ReadyListing
+        ? t("invest.ready_listing")
+        : investStatus === InvestStatus.ListingProgress
+          ? t("invest.listing_coming_soon")
+          : investStatus === InvestStatus.WaitingFullTokenization
+            ? t("invest.waiting_full_tokenization")
+            : t("invest.unknown");
+
+  return { investStatus, message };
 }

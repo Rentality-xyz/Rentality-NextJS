@@ -13,11 +13,13 @@ import useInvest from "../hooks/useInvest";
 import { emptyHostCarInfo } from "@/model/HostCarInfo";
 import useFetchPlatformPercentage from "../hooks/useFetchPercentage";
 
-type InvestContentProps = {};
+type InvestContentProps = {
+  isHost: boolean;
+};
 
 type FilterEnum = Record<string, string>; // Типизация для Enum
 
-function InvestPageContent({}: InvestContentProps) {
+function InvestPageContent({ isHost }: InvestContentProps) {
   const router = useRouter();
   const { userRole, isInvestManager } = useUserRole();
   const { data: investments } = useGetInvestments();
@@ -26,7 +28,7 @@ function InvestPageContent({}: InvestContentProps) {
   const { mutateAsync: handleStartHosting, isPending: isPendingStartingHosting } = useStartHosting();
   const [filterInvestBy, setFilterInvestBy] = useState<string | undefined>(undefined);
   const [openForm, setOpenForm] = useState(false);
-   const {data: percentage} =  useFetchPlatformPercentage()
+  const { data: percentage } = useFetchPlatformPercentage();
   const { t } = useTranslation();
 
   // Получаем фильтры из переводов
@@ -106,12 +108,17 @@ function InvestPageContent({}: InvestContentProps) {
       <div className="mt-6 grid grid-cols-1 gap-4 2xl:grid-cols-2">
         {filteredInvestments.map((value) => (
           <InvestCar
-            isHost={isInvestManager(userRole)}
+            isHost={isHost}
             key={value.investment.investmentId}
             searchInfo={value}
             handleInvest={(amount, investId) => handleInvest({ amount, investId })}
             isPendingInvesting={isPendingInvesting(value.investment.investmentId)}
-            handleStartHosting={()=>handleStartHosting({investId: value.investment.investmentId, hostCarInfo: {...emptyHostCarInfo,pricePerDay: 10000}})}
+            handleStartHosting={() =>
+              handleStartHosting({
+                investId: value.investment.investmentId,
+                hostCarInfo: { ...emptyHostCarInfo, pricePerDay: 10000 },
+              })
+            }
             handleClaimIncome={handleClaimIncome}
           />
         ))}

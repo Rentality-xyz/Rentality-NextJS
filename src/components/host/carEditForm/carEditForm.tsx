@@ -1,4 +1,3 @@
-import RntInput from "@/components/common/rntInput";
 import {
   emptyHostCarInfo,
   HostCarInfo,
@@ -37,6 +36,7 @@ import { VinInfo } from "@/pages/api/car-api/vinInfo";
 import { DimoCarResponseWithTimestamp } from "@/features/dimo/hooks/useDimo";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
+import RntInput from "@/components/common/rntInput";
 
 export default function CarEditForm({
   initValue,
@@ -48,12 +48,15 @@ export default function CarEditForm({
   initValue?: HostCarInfo;
   isNewCar: boolean;
   isInvestmentCar: boolean;
-  saveCarInfo: (hostCarInfo: HostCarInfo) => Promise<Result<boolean, Error>>;
+  saveCarInfo: (hostCarInfo: HostCarInfo, nftName: string, nftSym: string) => Promise<Result<boolean, Error>>;
   t: TFunction;
 }) {
   const router = useRouter();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, showSuccess } = useRntSnackbars();
+
+  const [nftName, setNftName] = useState<string>("");
+  const [nftSym, setNftSym] = useState<string>("");
 
   const { register, control, handleSubmit, formState, setValue, watch } = useForm<CarEditFormValues>({
     defaultValues:
@@ -215,7 +218,7 @@ export default function CarEditForm({
     }
 
     setMessage(t("vehicles.wait_loading"));
-    const result = await saveCarInfo(carInfoFormParams);
+    const result = await saveCarInfo(carInfoFormParams, nftName, nftSym);
 
     if (result.ok) {
       if (dimoData) {
@@ -1058,6 +1061,28 @@ export default function CarEditForm({
             />
           </div>
         </div>
+
+        <div className="mt-4 flex flex-wrap gap-4">
+          <RntInputTransparent
+            className="lg:w-60"
+            id="pricePerDay"
+            label={"NFT name"}
+            placeholder="e.g. MyNft"
+            disabled={true}
+            value={nftName}
+            onChange={(value) => setNftName(value.target.value)}
+          />
+          <RntInputTransparent
+            className="lg:w-60"
+            id="securityDeposit"
+            label={"NFT symbol"}
+            placeholder="e.g. SYM"
+            disabled={true}
+            value={nftSym}
+            onChange={(value) => setNftSym(value.target.value)}
+          />
+        </div>
+        <div className="gap-4 pl-4 text-lg text-[#FFFFFF70]">{t("invest.generated_automatically")}</div>
 
         <div className="mb-8 mt-8 flex flex-row justify-between gap-4 sm:justify-start">
           <RntButton
