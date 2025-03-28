@@ -251,7 +251,7 @@ function CurrentStatusInfo({
             </a>
           ) : tripInfo.status === TripStatus.CompletedWithoutGuestComfirmation && !isHost ? (
             <RntButton
-              className="w-full px-4"
+              className="w-full px-4 2xl:min-h-[64px] fullHD:min-h-[48px]"
               disabled={disableButton}
               onClick={() => {
                 showGuestConfirmFinishDialog();
