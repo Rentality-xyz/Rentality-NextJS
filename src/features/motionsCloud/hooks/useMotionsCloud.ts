@@ -1,5 +1,6 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { InsuranceCaseDTO } from "@/model/InsuranceCase";
 import { createSecret } from "@/pages/api/motionscloud/createCase";
 import axios from "@/utils/cachedAxios";
 import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
@@ -11,7 +12,7 @@ export default function useMotionsCloud() {
   const rentalityContract = useRentality();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleCreateCase = async (tripId: number) => {
+  const handleCreateCase = async (tripId: number, pre: boolean) => {
     const rentality = rentalityContract.rentalityContracts;
     if (!rentality) {
       logger.error("Use motions cloud: Rentality contract is not initialized");
@@ -23,7 +24,7 @@ export default function useMotionsCloud() {
     }
 
     try {
-      const caseInfo = await rentality.gateway.getMotionsCloudCaseData(BigInt(tripId));
+      const caseInfo = await rentality.gateway.getMotionsCloudCaseData(BigInt(tripId), pre);
       if (!caseInfo.ok) {
         logger.info("Motions cloud: case number is not found");
         return;
@@ -35,6 +36,7 @@ export default function useMotionsCloud() {
         email: caseInfo.value.email,
         name: caseInfo.value.name,
         chainId: ethereumInfo.chainId,
+        pre,
       });
       if (response.status !== 200) {
         logger.info("MotionsCloud: failed to create case with error: ", response.data);
@@ -50,7 +52,7 @@ export default function useMotionsCloud() {
     }
   };
 
-  const handleUploadPhoto = async (tripId: number, photos: FormData) => {
+  const handleUploadPhoto = async (tripId: number, photos: FormData, pre: boolean) => {
     const rentality = rentalityContract.rentalityContracts;
     if (!rentality) {
       logger.error("Use motions cloud: Rentality contract is not initialized");
@@ -63,7 +65,7 @@ export default function useMotionsCloud() {
     try {
       setIsLoading(true);
 
-      const token = await rentality.motionsCloud.getInsuranceCaseByTrip(BigInt(tripId));
+      const token = await rentality.motionsCloud.getInsuranceCaseByTrip(BigInt(tripId), pre);
       if (!token.ok) {
         logger.info("Motions cloud: case number is not found");
         return;
@@ -99,13 +101,30 @@ export default function useMotionsCloud() {
     }
     try {
       setIsLoading(true);
-      const response = await rentality.motionsCloud.getInsuranceCaseUrlByTrip(BigInt(tripId));
-      if (response.ok && response.value !== "") {
-        return await getMetaDataFromIpfs(response.value);
-      } else {
+      const response = await rentality.motionsCloud.getInsuranceCasesUrlByTrip(BigInt(tripId));
+      if (!response.ok) {
         logger.error("Motions cloud: response not found");
         return;
       }
+     
+      const data: InsuranceCaseDTO[] = await Promise.all(response.value.map(async (item) => {
+        const iCase: InsuranceCaseDTO = {
+          iCase: {
+            iCase: item.iCase.iCase,
+          pre: item.iCase.pre,
+          },
+          url: item.url
+        }
+        if(item.url !== "") {
+        const metaData = await getMetaDataFromIpfs(item.url);
+        
+        return {
+          ...iCase,
+          metaData,
+        };
+      }
+      return iCase;}));
+      return data;
     } catch (error) {
       logger.error("Error geting motionsCloud ai response:", error);
       return;
