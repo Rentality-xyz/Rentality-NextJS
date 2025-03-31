@@ -11,15 +11,12 @@ import useClaimIncome from "../hooks/useClaimIncome";
 import useStartHosting from "../hooks/useStartHosting";
 import useInvest from "../hooks/useInvest";
 import { emptyHostCarInfo } from "@/model/HostCarInfo";
-import useFetchPlatformPercentage from "../hooks/useFetchPercentage";
 
-type InvestContentProps = {
-  isHost: boolean;
-};
+type InvestContentProps = {};
 
 type FilterEnum = Record<string, string>; // Типизация для Enum
 
-function InvestPageContent({ isHost }: InvestContentProps) {
+function InvestPageContent({}: InvestContentProps) {
   const router = useRouter();
   const { userRole, isInvestManager } = useUserRole();
   const { data: investments } = useGetInvestments();
@@ -27,8 +24,6 @@ function InvestPageContent({ isHost }: InvestContentProps) {
   const { mutateAsync: handleClaimIncome, isPending: isPendingClaimingIncome } = useClaimIncome();
   const { mutateAsync: handleStartHosting, isPending: isPendingStartingHosting } = useStartHosting();
   const [filterInvestBy, setFilterInvestBy] = useState<string | undefined>(undefined);
-  const [openForm, setOpenForm] = useState(false);
-  const { data: percentage } = useFetchPlatformPercentage();
   const { t } = useTranslation();
 
   // Получаем фильтры из переводов
@@ -106,7 +101,7 @@ function InvestPageContent({ isHost }: InvestContentProps) {
       <div className="mt-6 grid grid-cols-1 gap-4 2xl:grid-cols-2">
         {filteredInvestments.map((value) => (
           <InvestCar
-            isHost={isHost}
+            isHost={isInvestManager(userRole)}
             key={value.investment.investmentId}
             searchInfo={value}
             handleInvest={(amount, investId) => handleInvest({ amount, investId })}

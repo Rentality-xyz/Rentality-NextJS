@@ -13,7 +13,6 @@ import { useAuth } from "@/contexts/auth/authContext";
 import * as React from "react";
 import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
-import { FieldBase } from "protobufjs";
 
 function GuestNavMenu() {
   const { isAuthenticated, logout } = useAuth();

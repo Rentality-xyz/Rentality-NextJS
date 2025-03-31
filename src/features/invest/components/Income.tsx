@@ -12,7 +12,6 @@ function Income({
   isHost: boolean;
   t: (key: string) => string;
 }) {
-
   const head = isHost ? t("invest.host_management") : t("invest.your_expected_earnings");
   const investStatus = getInvestListingStatus(investment, walletAddress, isHost);
 
@@ -23,7 +22,9 @@ function Income({
         <p className="text-xl font-bold 2xl:text-2xl">${investment.totalEarnings}</p>
         <p className="2xl:text-lg">{t("invest.total_earnings")}</p>
         <div className="mx-auto my-2 h-0.5 w-[40%] translate-y-[-50%] bg-white sm:w-[70%]"></div>
-        <p className="text-xl font-bold leading-none text-rentality-secondary 2xl:text-2xl">${investment.totalEarningsByUser}</p>
+        <p className="text-xl font-bold leading-none text-rentality-secondary 2xl:text-2xl">
+          ${investment.totalEarningsByUser}
+        </p>
         <p className="text-center leading-snug 2xl:text-lg">{t("invest.your_received_earnings_part")}</p>
       </div>
     </>

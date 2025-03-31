@@ -554,7 +554,7 @@ export type ContractInvestmentDTO = {
   userReceivedEarnings: bigint;
   name: string;
   symbol: string;
-}
+};
 
 export type ContractTripFilter = {
   paymentStatus: PaymentStatus;
