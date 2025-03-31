@@ -58,7 +58,7 @@ function Booked() {
         showSuccess(t("booked.status_changed"));
         return;
     }
-  }
+  };
 
   return (
     <>

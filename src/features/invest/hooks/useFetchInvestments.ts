@@ -29,6 +29,7 @@ async function fetchInvestments(
   if (!rentalityContracts || !ethereumInfo) {
     throw new Error("Contracts or wallet not initialized");
   }
+
   const result = await rentalityContracts.investment.getAllInvestments();
   if (!result.ok) {
     throw new Error(result.error.message);

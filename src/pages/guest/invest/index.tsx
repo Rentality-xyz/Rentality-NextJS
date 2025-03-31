@@ -22,7 +22,7 @@ export default function GuestInvest() {
   return (
     <>
       <PageTitle title={t("invest.guest_page_title")} />
-      <InvestPageContent isHost={false} />
+      <InvestPageContent />
     </>
   );
 }

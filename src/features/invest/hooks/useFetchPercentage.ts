@@ -13,7 +13,6 @@ type QueryData = number;
 
 const useFetchPlatformPercentage = () => {
   const ethereumInfo = useEthereum();
-  
 
   const queryResult = useQuery<QueryData>({
     queryKey: [INVESTMENTS_LIST_QUERY_KEY, ethereumInfo],
@@ -24,32 +23,27 @@ const useFetchPlatformPercentage = () => {
   return { ...queryResult, data: data };
 };
 
-async function fetchPlatformFee(
-     ethereumInfo: EthereumInfo | null | undefined
-) {
-    
-        if (!ethereumInfo) {
-               logger.error("createInvestCar error: Missing required contracts or ethereum info");
-               throw Err(new Error("Missing required ethereum info"));
-             }    
-          const rentalityAdmin = (await getEtherContractWithSigner(
-            "admin",
-            ethereumInfo.signer
-          )) as unknown as IRentalityAdminGateway;
+async function fetchPlatformFee(ethereumInfo: EthereumInfo | null | undefined) {
+  if (!ethereumInfo) {
+    logger.error("createInvestCar error: Missing required contracts or ethereum info");
+    throw Err(new Error("Missing required ethereum info"));
+  }
+  const rentalityAdmin = (await getEtherContractWithSigner(
+    "admin",
+    ethereumInfo.signer
+  )) as unknown as IRentalityAdminGateway;
 
-          if (!rentalityAdmin) {
-            logger.error("getRentalityContact error: rentalityAdmin is null");
-            throw Err(new Error("Missing required contract"));
-          }
-          const admin = getEthersContractProxy(rentalityAdmin)
+  if (!rentalityAdmin) {
+    logger.error("getRentalityContact error: rentalityAdmin is null");
+    throw Err(new Error("Missing required contract"));
+  }
+  const admin = getEthersContractProxy(rentalityAdmin);
 
   const result = await admin.getPlatformFeeInPPM();
   if (!result.ok) {
     throw new Error(result.error.message);
-    }
-    return Number(result.value) / 10000;
+  }
+  return Number(result.value) / 10000;
 }
-
-  
 
 export default useFetchPlatformPercentage;

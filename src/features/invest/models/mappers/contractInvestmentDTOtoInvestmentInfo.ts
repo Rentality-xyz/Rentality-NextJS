@@ -42,9 +42,10 @@ export const mapContractInvestmentDTOToInvestmentInfoWithMetadata = (
           insurancePriceInUsdCents: Number(dto.investment.car.insurancePriceInUsdCents) / 100,
           dimoTokenId: Number(dto.investment.car.dimoTokenId),
         },
-        priceInUsd: dto.investment.priceInUsd > dto.payedInUsd? 
-        Number(dto.investment.priceInUsd) / 100 : 
-        Number(dto.payedInUsd) / 100,
+        priceInUsd:
+          dto.investment.priceInUsd > dto.payedInUsd
+            ? Number(dto.investment.priceInUsd) / 100
+            : Number(dto.payedInUsd) / 100,
         creatorPercents: Number(dto.investment.creatorPercents),
         inProgress: dto.investment.inProgress,
       },

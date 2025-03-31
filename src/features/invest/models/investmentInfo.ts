@@ -57,7 +57,6 @@ export type InvestmentInfo = {
   collectionSymbol: string;
   totalEarnings: number;
   totalEarningsByUser: number;
-
 };
 
 export type InvestmentInfoWithMetadata = {

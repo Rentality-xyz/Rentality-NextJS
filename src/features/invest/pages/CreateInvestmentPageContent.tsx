@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import useFetchPlatformPercentage from "../hooks/useFetchPercentage";
 import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
-import { Control, Controller, FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import * as React from "react";
 import CarAddPhoto from "@/components/host/carEditForm/CarAddPhoto";
 import RntValidationError from "@/components/common/RntValidationError";
@@ -11,7 +11,7 @@ import { TFunction } from "@/utils/i18n";
 import RntCarModelSelect from "@/components/common/rntCarModelSelect";
 import RntCarYearSelect from "@/components/common/rntCarYearSelect";
 import { useRouter } from "next/navigation";
-import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
+import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { DimoCarResponseWithTimestamp } from "@/features/dimo/hooks/useDimo";
 import RntButton from "@/components/common/rntButton";
 import useCreateInvestCar from "@/features/invest/hooks/useCreateInvestCar";
@@ -20,7 +20,7 @@ function CreateInvestmentPageContent() {
   const { t } = useTranslation();
   const router = useRouter();
   const { mutateAsync: createInvest } = useCreateInvestCar();
-  const { showInfo, showError, showSuccess } = useRntSnackbars();
+  const { showError, showSuccess } = useRntSnackbars();
 
   const { control, handleSubmit, formState } = useForm({
     defaultValues: {
@@ -35,20 +35,11 @@ function CreateInvestmentPageContent() {
 
   const { errors, isSubmitting } = formState;
 
-  const [message, setMessage] = useState<string>("");
-
   const t_car: TFunction = (name, options) => {
     return t("vehicles." + name, options);
   };
 
   const onFormSubmit: SubmitHandler<FieldValues> = async (formData) => {
-    const carInvestFormParams = {
-      brand: formData.brand,
-      model: formData.model,
-      releaseYear: formData.releaseYear,
-      images: formData.images,
-    };
-
     const result = await createInvest({
       images: formData.images,
       brand: formData.brand,
@@ -59,14 +50,6 @@ function CreateInvestmentPageContent() {
       nftName: "",
       nftSym: "",
     });
-
-    console.log("ddiLog carPrice=" + carPrice);
-    console.log("ddiLog hostPercentage=" + hostPercentage);
-    console.log("ddiLog platformPercentage=" + platformPercentage);
-    console.log("ddiLog investorsPercentage=" + investorsPercentage);
-    console.log("ddiLog brand=" + carInvestFormParams.brand);
-    console.log("ddiLog model=" + carInvestFormParams.model);
-    console.log("ddiLog releaseYear=" + carInvestFormParams.releaseYear);
 
     if (result.ok) {
       if (dimoData) {
@@ -245,7 +228,6 @@ function CreateInvestmentPageContent() {
           {t("common.save")}
         </RntButton>
       </div>
-      <label className="mb-4">{message}</label>
     </form>
   );
 }

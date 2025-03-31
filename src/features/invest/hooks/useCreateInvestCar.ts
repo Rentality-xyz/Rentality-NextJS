@@ -41,12 +41,12 @@ function useCreateInvestCar() {
       nftName,
     }: CreateInvestCarRequest): Promise<Result<boolean>> => {
       const hostCarInfo = {
-      ...emptyHostCarInfo,
-      images,
-      brand,
-      model,
-      releaseYear
-      }
+        ...emptyHostCarInfo,
+        images,
+        brand,
+        model,
+        releaseYear,
+      };
 
       try {
         if (!ethereumInfo || !rentalityContracts) {
@@ -59,7 +59,6 @@ function useCreateInvestCar() {
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
-     
         const engineParams: bigint[] = [];
         if (hostCarInfo.engineTypeText === ENGINE_TYPE_PETROL_STRING) {
           engineParams.push(BigInt(hostCarInfo.tankVolumeInGal));
@@ -67,7 +66,7 @@ function useCreateInvestCar() {
         } else if (hostCarInfo.engineTypeText === ENGINE_TYPE_ELECTRIC_STRING) {
           engineParams.push(BigInt(hostCarInfo.fullBatteryChargePrice * 100));
         }
-        
+
         logger.debug(`Location info to save: ${JSON.stringify(location)}`);
 
         const saveMetadataResult = await saveCarMetadata(hostCarInfo.images, ethereumInfo.chainId, hostCarInfo, {
@@ -94,7 +93,7 @@ function useCreateInvestCar() {
           timeBufferBetweenTripsInSec: BigInt(0),
           insuranceRequired: false,
           insurancePriceInUsdCents: BigInt(0),
-          locationInfo: {locationInfo: emptyContractLocationInfo, signature: '0x'},
+          locationInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
           currentlyListed: false,
           dimoTokenId: BigInt(0),
           signedDimoTokenId: "0x",
