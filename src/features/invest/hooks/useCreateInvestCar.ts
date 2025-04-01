@@ -1,4 +1,4 @@
-import { HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE, verifyCar } from "@/model/HostCarInfo";
+import { emptyHostCarInfo, HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE, verifyCar } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeCode } from "@/model/EngineType";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
@@ -11,9 +11,14 @@ import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { INVESTMENTS_LIST_QUERY_KEY } from "./useFetchInvestments";
 import { logger } from "@/utils/logger";
 import { deleteFilesByUrl, saveCarMetadata } from "@/features/filestore/pinata/utils";
+import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
+import { PlatformCarImage } from "@/model/FileToUpload";
 
 type CreateInvestCarRequest = {
-  hostCarInfo: HostCarInfo;
+  images: PlatformCarImage[];
+  brand: string;
+  model: string;
+  releaseYear: number;
   carPrice: number;
   hostPercents: number;
   nftName: string;
@@ -27,11 +32,22 @@ function useCreateInvestCar() {
 
   return useMutation({
     mutationFn: async ({
-      hostCarInfo,
+      images,
+      brand,
+      model,
+      releaseYear,
       carPrice,
       hostPercents,
       nftName,
     }: CreateInvestCarRequest): Promise<Result<boolean>> => {
+      const hostCarInfo = {
+        ...emptyHostCarInfo,
+        images,
+        brand,
+        model,
+        releaseYear,
+      };
+
       try {
         if (!ethereumInfo || !rentalityContracts) {
           logger.error("createInvestCar error: Missing required contracts or ethereum info");
@@ -43,11 +59,6 @@ function useCreateInvestCar() {
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
-        if (!verifyCar(hostCarInfo)) {
-          logger.error("createInvestCar error: hostCarInfo is not valid");
-          return Err(new Error("hostCarInfo is not valid"));
-        }
-
         const engineParams: bigint[] = [];
         if (hostCarInfo.engineTypeText === ENGINE_TYPE_PETROL_STRING) {
           engineParams.push(BigInt(hostCarInfo.tankVolumeInGal));
@@ -56,10 +67,6 @@ function useCreateInvestCar() {
           engineParams.push(BigInt(hostCarInfo.fullBatteryChargePrice * 100));
         }
 
-        const location: ContractSignedLocationInfo = {
-          locationInfo: mapLocationInfoToContractLocationInfo(hostCarInfo.locationInfo),
-          signature: "0x",
-        };
         logger.debug(`Location info to save: ${JSON.stringify(location)}`);
 
         const saveMetadataResult = await saveCarMetadata(hostCarInfo.images, ethereumInfo.chainId, hostCarInfo, {
@@ -77,19 +84,17 @@ function useCreateInvestCar() {
           brand: hostCarInfo.brand,
           model: hostCarInfo.model,
           yearOfProduction: BigInt(hostCarInfo.releaseYear),
-          pricePerDayInUsdCents: BigInt(hostCarInfo.pricePerDay * 100),
-          securityDepositPerTripInUsdCents: BigInt(hostCarInfo.securityDeposit * 100),
-          milesIncludedPerDay: BigInt(
-            isUnlimitedMiles(hostCarInfo.milesIncludedPerDay) ? UNLIMITED_MILES_VALUE : hostCarInfo.milesIncludedPerDay
-          ),
+          pricePerDayInUsdCents: BigInt(0),
+          securityDepositPerTripInUsdCents: BigInt(0),
+          milesIncludedPerDay: BigInt(0),
           geoApiKey: "",
-          engineType: getEngineTypeCode(hostCarInfo.engineTypeText),
-          engineParams: engineParams,
-          timeBufferBetweenTripsInSec: BigInt(hostCarInfo.timeBufferBetweenTripsInMin * 60),
-          insuranceRequired: hostCarInfo.isGuestInsuranceRequired,
-          insurancePriceInUsdCents: BigInt(hostCarInfo.insurancePerDayPriceInUsd),
-          locationInfo: { ...location, signature: "0x" },
-          currentlyListed: hostCarInfo.currentlyListed,
+          engineType: BigInt(0),
+          engineParams: [],
+          timeBufferBetweenTripsInSec: BigInt(0),
+          insuranceRequired: false,
+          insurancePriceInUsdCents: BigInt(0),
+          locationInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
+          currentlyListed: false,
           dimoTokenId: BigInt(0),
           signedDimoTokenId: "0x",
         };

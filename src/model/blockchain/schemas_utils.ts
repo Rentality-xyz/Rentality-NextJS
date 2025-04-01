@@ -230,7 +230,7 @@ const emptyContractSearchCar: ContractSearchCar = {
   insuranceInfo: emptyContractInsuranceCarInfo,
   isGuestHasInsurance: false,
   dimoTokenId: BigInt(0),
-  hostCurrency: {currency: ETH_DEFAULT_ADDRESS, initialized: false}
+  hostCurrency: { currency: ETH_DEFAULT_ADDRESS, initialized: false },
 };
 
 export function validateContractSearchCar(obj: ContractSearchCar): obj is ContractSearchCar {
@@ -460,7 +460,7 @@ const emptyContractAvailableCarDTO: ContractAvailableCarDTO = {
   distance: BigInt(0),
   dimoTokenId: BigInt(0),
   totalTax: BigInt(0),
-  hostCurrency: {currency: ETH_DEFAULT_ADDRESS, initialized: false}
+  hostCurrency: { currency: ETH_DEFAULT_ADDRESS, initialized: false },
 };
 
 export function validateContractAvailableCarDTO(obj: ContractAvailableCarDTO): obj is ContractAvailableCarDTO {
