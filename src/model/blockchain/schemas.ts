@@ -550,6 +550,10 @@ export type ContractInvestmentDTO = {
   totalHolders: bigint;
   totalTokens: bigint;
   currency: string;
+  totalEarnings: bigint;
+  userReceivedEarnings: bigint;
+  name: string;
+  symbol: string;
 };
 
 export type ContractTripFilter = {

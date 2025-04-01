@@ -21,8 +21,7 @@
     "all_trips_table": "All trips table",
     "all_users_table": "All users table",
     "referrals_and_points": "Referrals & Points",
-    "invest": "Invest",
-    "create_invest": "Create invest"
+    "invest": "Investment"
   },
   "search_and_filters": {
     "location_label": "Pick up & Return Location",
@@ -902,7 +901,7 @@
     "total_price": "Total price",
     "balance_raised": "Balance to be raised",
     "total_earnings": "Total earnings",
-    "your_received_earnings_part": "Your received earnings part",
+    "your_received_earnings_part": "Your earnings",
     "listing_status": "Listing status:",
     "listing_coming_soon": "listing coming soon",
     "listed_days": "Listed {date} ({days} days)",
@@ -925,7 +924,13 @@
       "ready_for_listing": "Ready for listing",
       "actually_listed": "Actually Listed"
     },
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "info_message": {
+      "actually_listed_claim": "You can claim your part of earnings for all completed trips.",
+      "actually_listed_expect": "To claim and receive earnings, wait for completed trips.",
+      "listing_progress": "To claim and receive earnings, wait for the vehicle listing and completed trips.",
+      "waiting_full_tokenization": "After full tokenization, the vehicle will be listed on the platform and the investor will be able to receive earnings from each trip."
+    }
   },
   "cropper": {
     "cancel": "Cancel",

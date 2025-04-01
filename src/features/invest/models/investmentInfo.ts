@@ -49,9 +49,14 @@ export type InvestmentInfo = {
   listingDate: Date;
   myTokens: number;
   myPart: number;
+  hostPart: number;
   totalHolders: number;
   totalTokens: number;
   listed: boolean;
+  collectionName: string;
+  collectionSymbol: string;
+  totalEarnings: number;
+  totalEarningsByUser: number;
 };
 
 export type InvestmentInfoWithMetadata = {

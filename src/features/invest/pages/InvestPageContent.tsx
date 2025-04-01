@@ -10,6 +10,7 @@ import useUserRole from "@/hooks/useUserRole";
 import useClaimIncome from "../hooks/useClaimIncome";
 import useStartHosting from "../hooks/useStartHosting";
 import useInvest from "../hooks/useInvest";
+import { emptyHostCarInfo } from "@/model/HostCarInfo";
 
 type InvestContentProps = {};
 
@@ -22,9 +23,7 @@ function InvestPageContent({}: InvestContentProps) {
   const { mutateAsync: handleInvest, isPendingInvesting } = useInvest();
   const { mutateAsync: handleClaimIncome, isPending: isPendingClaimingIncome } = useClaimIncome();
   const { mutateAsync: handleStartHosting, isPending: isPendingStartingHosting } = useStartHosting();
-
   const [filterInvestBy, setFilterInvestBy] = useState<string | undefined>(undefined);
-
   const { t } = useTranslation();
 
   // Получаем фильтры из переводов
@@ -82,7 +81,6 @@ function InvestPageContent({}: InvestContentProps) {
           {t("invest.btn_create_investment")}
         </RntButton>
       )}
-
       <RntFilterSelect
         className="btn_input_border-gradient w-60 justify-center bg-transparent text-lg text-rentality-secondary"
         id="invest_filter"
@@ -100,7 +98,6 @@ function InvestPageContent({}: InvestContentProps) {
           </RntFilterSelect.Option>
         ))}
       </RntFilterSelect>
-
       <div className="mt-6 grid grid-cols-1 gap-4 2xl:grid-cols-2">
         {filteredInvestments.map((value) => (
           <InvestCar
@@ -109,7 +106,12 @@ function InvestPageContent({}: InvestContentProps) {
             searchInfo={value}
             handleInvest={(amount, investId) => handleInvest({ amount, investId })}
             isPendingInvesting={isPendingInvesting(value.investment.investmentId)}
-            handleStartHosting={handleStartHosting}
+            handleStartHosting={() =>
+              handleStartHosting({
+                investId: value.investment.investmentId,
+                hostCarInfo: { ...emptyHostCarInfo, pricePerDay: 10000 },
+              })
+            }
             handleClaimIncome={handleClaimIncome}
           />
         ))}
