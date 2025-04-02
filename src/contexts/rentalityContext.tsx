@@ -90,7 +90,6 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         setRentalityContracts(null);
         return;
       }
-      logger.debug(`investService contract address: ${investment.address} `);
 
       const currencyConverter = (await getEtherContractWithSigner(
         "currencyConverter",
