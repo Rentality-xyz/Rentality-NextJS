@@ -1,6 +1,7 @@
 name: Build And Deploy to Demo
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
