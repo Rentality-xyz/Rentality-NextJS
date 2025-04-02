@@ -85,11 +85,12 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         "investService",
         ethereumInfo.signer
       )) as unknown as IRentalityInvestmentContract;
-      if (!rentalityReferralPogram) {
-        logger.error("getRentalityContact error: rentalityReferralProgram is null");
+      if (!investment) {
+        logger.error("getRentalityContact error: investment is null");
         setRentalityContracts(null);
         return;
       }
+      logger.debug(`investService contract address: ${investment.address} `);
 
       const currencyConverter = (await getEtherContractWithSigner(
         "currencyConverter",

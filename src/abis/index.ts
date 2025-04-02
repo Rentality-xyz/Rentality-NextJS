@@ -60,6 +60,9 @@ const rentalityContracts = {
     abi: RentalityUserServiceJSON_ABI.abi,
   },
 };
+logger.debug(
+  `RentalityInvestServiceJSON_ADDRESSES.addresses: ${JSON.stringify(RentalityInvestServiceJSON_ADDRESSES.addresses)}`
+);
 
 export async function getEtherContractWithSigner(contract: keyof typeof rentalityContracts, signer: Signer) {
   try {
