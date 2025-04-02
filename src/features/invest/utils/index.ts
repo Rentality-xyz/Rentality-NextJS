@@ -12,7 +12,7 @@ export function getInvestmentStatus(investment: InvestmentInfo, t: (key: string)
 export function getInvestListingStatus(investment: InvestmentInfo, walletAddress: string, isHost: boolean) {
   return investment.listed
     ? InvestStatus.ActuallyListed
-    : investment.investment.priceInUsd <= investment.payedInUsd &&
+    : (investment.investment.priceInUsd <= investment.payedInUsd || !investment.investment.inProgress)  &&
         !investment.listed &&
         investment.creator === walletAddress &&
         isHost
