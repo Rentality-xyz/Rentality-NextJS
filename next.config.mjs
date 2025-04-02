@@ -2,6 +2,11 @@ import { fileURLToPath } from "node:url";
 import createJiti from "jiti";
 import fs from "fs";
 
+import RentalityInvestServiceJSON_ADDRESSES from "./src/abis/RentalityInvestment.v0_2_0.addresses.json" with { type: "json" };
+console.debug(
+  `RentalityInvestServiceJSON_ADDRESSES.addresses: ${JSON.stringify(RentalityInvestServiceJSON_ADDRESSES.addresses)}`
+);
+
 if (fs.existsSync("./src/")) {
   const jiti = createJiti(fileURLToPath(import.meta.url));
   console.info(`Checking environment variables...`);
