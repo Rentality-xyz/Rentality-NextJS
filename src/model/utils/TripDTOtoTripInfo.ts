@@ -7,6 +7,7 @@ import { ContractTripDTO, EngineType, InsuranceType, TripStatus } from "@/model/
 import { calculateDays } from "@/utils/date";
 import { getDiscountablePrice, getNotDiscountablePrice } from "@/utils/price";
 import { getPromoPrice } from "@/features/promocodes/utils";
+import { map } from "zod";
 
 export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetailsConfirmed?: boolean) => {
   const metaData = parseMetaData(await getMetaDataFromIpfs(tripDTO.metadataURI));
@@ -38,16 +39,11 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
   const totalPriceWithHostDiscountInUsd = Number(tripDTO.trip.paymentInfo.priceWithDiscount) / 100.0;
   const pickUpDeliveryFeeInUsd = Number(tripDTO.trip.paymentInfo.pickUpFee) / 100.0;
   const dropOffDeliveryFeeInUsd = Number(tripDTO.trip.paymentInfo.dropOfFee) / 100.0;
-  const salesTaxInUsd = Number(tripDTO.trip.paymentInfo.salesTax) / 100.0;
-  const governmentTaxInUsd = Number(tripDTO.trip.paymentInfo.governmentTax) / 100.0;
   const depositInUsd = Number(tripDTO.trip.paymentInfo.depositInUsdCents) / 100.0;
+  const totalTaxes = tripDTO.taxesData.map((t) => Number(t.value) / 100).reduce((acc, curr) => acc + curr, 0);
 
   const totalPriceInUsd =
-    totalPriceWithHostDiscountInUsd +
-    governmentTaxInUsd +
-    salesTaxInUsd +
-    pickUpDeliveryFeeInUsd +
-    dropOffDeliveryFeeInUsd;
+    totalPriceWithHostDiscountInUsd + totalTaxes + pickUpDeliveryFeeInUsd + dropOffDeliveryFeeInUsd;
   const promoDiscountInPercents = Number(tripDTO.promoDiscount);
 
   const paidByGuestInUsd =
@@ -57,8 +53,7 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
             totalPriceWithHostDiscountInUsd,
             pickUpDeliveryFeeInUsd,
             dropOffDeliveryFeeInUsd,
-            salesTaxInUsd,
-            governmentTaxInUsd
+            totalTaxes
           ),
           promoDiscountInPercents
         ) +
@@ -162,8 +157,6 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
     totalPriceWithHostDiscountInUsd: totalPriceWithHostDiscountInUsd,
     pickUpDeliveryFeeInUsd: pickUpDeliveryFeeInUsd,
     dropOffDeliveryFeeInUsd: dropOffDeliveryFeeInUsd,
-    salesTaxInUsd: salesTaxInUsd,
-    governmentTaxInUsd: governmentTaxInUsd,
     depositInUsd: depositInUsd,
     totalPriceInUsd: totalPriceInUsd,
     paidByGuestInUsd: paidByGuestInUsd,
@@ -184,6 +177,13 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
 
     guestInsuranceType: insurancesInfo?.insuranceType,
     guestInsurancePhoto: guestInsurancePhoto,
+    taxesData: tripDTO.taxesData.map((t) => {
+      return {
+        name: t.name,
+        value: Number(t.value) / 100,
+        tType: Number(t.tType),
+      };
+    }),
   };
   return item;
 };

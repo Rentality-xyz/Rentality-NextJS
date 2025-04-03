@@ -11,9 +11,9 @@ function СarDetailsForDetails({ tripInfo, isHost, t }: { tripInfo: TripInfo; is
   const rejectedByText = rejectedByHost
     ? isHost
       ? t("common.you")
-      : tripInfo.host.name ?? t("common.host")
+      : (tripInfo.host.name ?? t("common.host"))
     : isHost
-      ? tripInfo.guest.name ?? t("common.guest")
+      ? (tripInfo.guest.name ?? t("common.guest"))
       : t("common.you");
 
   const pathRoot = isHost ? "host" : "guest";

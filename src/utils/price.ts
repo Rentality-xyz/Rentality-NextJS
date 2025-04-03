@@ -4,10 +4,9 @@ export function getDiscountablePrice(
   totalPricePerDayWithHostDiscount: number,
   pickUpFee: number,
   dropOfFee: number,
-  salesTax: number,
-  governmentTax: number
+  taxes: number
 ) {
-  return totalPricePerDayWithHostDiscount + pickUpFee + dropOfFee + salesTax + governmentTax;
+  return totalPricePerDayWithHostDiscount + pickUpFee + dropOfFee + taxes;
 }
 
 export function getDiscountablePriceFromCarInfo(carInfo: SearchCarInfoDetails | SearchCarInfo) {
@@ -16,15 +15,13 @@ export function getDiscountablePriceFromCarInfo(carInfo: SearchCarInfoDetails | 
         carInfo.pricePerDayWithHostDiscount * carInfo.tripDays,
         carInfo.deliveryDetails.pickUp.priceInUsd,
         carInfo.deliveryDetails.dropOff.priceInUsd,
-        carInfo.salesTax,
-        carInfo.governmentTax
+        carInfo.taxes
       )
     : getDiscountablePrice(
         carInfo.pricePerDayWithHostDiscount * carInfo.tripDays,
         carInfo.deliveryDetails.pickUp.priceInUsd,
         carInfo.deliveryDetails.dropOff.priceInUsd,
-        carInfo.taxes,
-        0
+        carInfo.taxes
       );
 }
 
@@ -53,13 +50,12 @@ export function getTotalPrice(
   tripDays: number,
   pickUpFee: number,
   dropOfFee: number,
-  salesTax: number,
-  governmentTax: number,
+  taxes: number,
   insuranceFee: number,
   securityDeposit: number
 ) {
   return (
-    getDiscountablePrice(pricePerDay * tripDays, pickUpFee, dropOfFee, salesTax, governmentTax) +
+    getDiscountablePrice(pricePerDay * tripDays, pickUpFee, dropOfFee, taxes) +
     getNotDiscountablePrice(insuranceFee, securityDeposit)
   );
 }
