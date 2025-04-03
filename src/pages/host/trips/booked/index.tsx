@@ -37,7 +37,7 @@ function Booked() {
     const result = await changeStatus();
 
     if (result) {
-      showSuccessCurrentStatus(action)
+      showSuccessCurrentStatus(action);
       updateData();
     } else {
       showError(t("booked.status_req_failed"));
@@ -48,21 +48,21 @@ function Booked() {
   };
 
   const showSuccessCurrentStatus = (action: AllowedChangeTripAction) => {
-      switch (action.text) {
-        case "Confirm":
-            showSuccess(t("booked.host_confirmed"));
-            return;
-        case "Start":
-          showSuccess(t("booked.trip_started"));
-          return;
-        case "Finish":
-          showSuccess(t("booked.trip_finished"));
-          return;
-        default:
-          showSuccess(t("booked.status_changed"));
-          return;
-      }
-  }
+    switch (action.text) {
+      case "Confirm":
+        showSuccess(t("booked.host_confirmed"));
+        return;
+      case "Start":
+        showSuccess(t("booked.trip_started"));
+        return;
+      case "Finish":
+        showSuccess(t("booked.trip_finished"));
+        return;
+      default:
+        showSuccess(t("booked.status_changed"));
+        return;
+    }
+  };
 
   return (
     <>
