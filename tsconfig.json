@@ -16,7 +16,7 @@
     "incremental": true,
     "paths": {
       "@/*": ["./src/*"]
-    },    
+    },
     "noUnusedLocals": false
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
