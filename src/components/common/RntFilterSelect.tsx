@@ -9,8 +9,6 @@ import Image from "next/image";
 interface RntFilterSelectContextType {
   selected: string | undefined;
   setSelected: (value: string | undefined) => void;
-  selectedChild: string | undefined;
-  setSelectedChild: (value: string | undefined) => void;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   containerRef: React.RefObject<HTMLDivElement>;
@@ -59,7 +57,6 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
       isTransparentStyle && !disabled && "btn_input_border-gradient"
     );
     const [selected, setSelected] = useState<string | undefined>(undefined);
-    const [selectedChild, setSelectedChild] = useState<string | undefined>(undefined);
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const hiddenSelectRef = useRef<HTMLSelectElement>(null);
@@ -74,13 +71,6 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
     useEffect(() => {
       if (value === undefined || typeof value === "string" || typeof value === "number") {
         setSelected(value?.toString());
-
-        // Пройдем по дочерним элементам и найдем тот, чье значение соответствует selected
-        React.Children.forEach(children, (child) => {
-          if (React.isValidElement(child) && child.props.value === value?.toString()) {
-            setSelectedChild(child.props.children);
-          }
-        });
       }
     }, [value]);
 
@@ -107,9 +97,7 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
     }, [selected]);
 
     return (
-      <RntFilterSelectContext.Provider
-        value={{ selected, setSelected, selectedChild, setSelectedChild, isOpen, setIsOpen, containerRef: selectRef }}
-      >
+      <RntFilterSelectContext.Provider value={{ selected, setSelected, isOpen, setIsOpen, containerRef: selectRef }}>
         <div className={containerCn} ref={containerRef}>
           {/* hidden select element */}
           <select value={selected ?? ""} ref={hiddenSelectRef} hidden {...rest}>
@@ -129,7 +117,7 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
           )}
           <div ref={selectRef}>
             <div className={selectCn} id={id} ref={ref} onClick={toggleDropdown}>
-              {selectedChild || placeholder}
+              {selected || placeholder}
               <Image
                 src={
                   disabled
@@ -207,7 +195,7 @@ const Option = forwardRef<HTMLDivElement, OptionProps>(({ value, children, class
   const context = React.useContext(RntFilterSelectContext);
   if (!context) throw new Error("RntFilterSelect.Option must be used within a RntFilterSelect");
 
-  const { selected, setSelected, setSelectedChild, setIsOpen } = context;
+  const { selected, setSelected, setIsOpen } = context;
   const isSelected = selected === value;
 
   return (
@@ -218,7 +206,6 @@ const Option = forwardRef<HTMLDivElement, OptionProps>(({ value, children, class
         "flex w-full cursor-pointer flex-row items-center gap-2 rounded-md px-4 transition-colors hover:bg-gray-600 active:bg-rentality-additional-light"
       )}
       onClick={() => {
-        setSelectedChild(children?.toString());
         setSelected(value);
         setIsOpen(false);
       }}
