@@ -1,8 +1,6 @@
 import { CheckboxLight } from "@/components/common/rntCheckbox";
-import { TripStatus } from "@/model/blockchain/schemas";
-import { getRefuelCharge, TripInfo } from "@/model/TripInfo";
+import { TripInfo } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
-import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import React, { SetStateAction } from "react";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
 import RntInputTransparent from "@/components/common/rntInputTransparent";

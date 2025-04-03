@@ -3,7 +3,6 @@ import { SearchCarInfo, SearchCarsResult, emptySearchCarsResult } from "@/model/
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isEmpty } from "@/utils/string";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
-import { bigIntReplacer } from "@/utils/json";
 import { PublicSearchCarsResponse } from "@/pages/api/publicSearchCars";
 import { logger } from "@/utils/logger";
 
@@ -107,19 +106,6 @@ const useSearchCars = () => {
       if (availableCarsData.length > 0) {
         availableCarsData[0].highlighted = true;
       }
-
-      logger.debug(
-        "cars:",
-        JSON.stringify(
-          availableCarsData.map((i) => ({
-            car: `${i.brand} ${i.model} ${i.year}`,
-            pricePerDay: i.pricePerDay,
-            distanceToUser: i.distanceToUser,
-          })),
-          bigIntReplacer,
-          2
-        )
-      );
 
       setSearchResult({
         searchCarRequest: request,

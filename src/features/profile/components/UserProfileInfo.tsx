@@ -6,7 +6,7 @@ import useSaveUserProfile from "@/features/profile/hooks/useSaveUserProfile";
 
 function UserProfileInfo() {
   const { isLoading, data: userProfile } = useFetchUserProfile();
-  const { isPending, mutateAsync: saveUserProfile } = useSaveUserProfile();
+  const { mutateAsync: saveUserProfile } = useSaveUserProfile();
   return (
     <RntSuspense isLoading={isLoading}>
       <div className="my-1 flex flex-col gap-4 lg:my-8">

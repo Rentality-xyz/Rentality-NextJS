@@ -10,7 +10,6 @@ import "swiper/css/pagination";
 import "swiper/css/virtual";
 // import required modules
 import { EffectFade, Navigation, Pagination, Virtual } from "swiper/modules";
-import { useEffect, useState } from "react";
 
 interface ImageCarouselDialogPros {
   images: string[];

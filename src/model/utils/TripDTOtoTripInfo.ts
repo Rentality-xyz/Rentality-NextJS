@@ -38,16 +38,11 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
   const totalPriceWithHostDiscountInUsd = Number(tripDTO.trip.paymentInfo.priceWithDiscount) / 100.0;
   const pickUpDeliveryFeeInUsd = Number(tripDTO.trip.paymentInfo.pickUpFee) / 100.0;
   const dropOffDeliveryFeeInUsd = Number(tripDTO.trip.paymentInfo.dropOfFee) / 100.0;
-  const salesTaxInUsd = Number(tripDTO.trip.paymentInfo.salesTax) / 100.0;
-  const governmentTaxInUsd = Number(tripDTO.trip.paymentInfo.governmentTax) / 100.0;
   const depositInUsd = Number(tripDTO.trip.paymentInfo.depositInUsdCents) / 100.0;
+  const totalTaxes = tripDTO.taxesData.map((t) => Number(t.value) / 100).reduce((acc, curr) => acc + curr, 0);
 
   const totalPriceInUsd =
-    totalPriceWithHostDiscountInUsd +
-    governmentTaxInUsd +
-    salesTaxInUsd +
-    pickUpDeliveryFeeInUsd +
-    dropOffDeliveryFeeInUsd;
+    totalPriceWithHostDiscountInUsd + totalTaxes + pickUpDeliveryFeeInUsd + dropOffDeliveryFeeInUsd;
   const promoDiscountInPercents = Number(tripDTO.promoDiscount);
 
   const paidByGuestInUsd =
@@ -57,8 +52,7 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
             totalPriceWithHostDiscountInUsd,
             pickUpDeliveryFeeInUsd,
             dropOffDeliveryFeeInUsd,
-            salesTaxInUsd,
-            governmentTaxInUsd
+            totalTaxes
           ),
           promoDiscountInPercents
         ) +
@@ -162,8 +156,6 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
     totalPriceWithHostDiscountInUsd: totalPriceWithHostDiscountInUsd,
     pickUpDeliveryFeeInUsd: pickUpDeliveryFeeInUsd,
     dropOffDeliveryFeeInUsd: dropOffDeliveryFeeInUsd,
-    salesTaxInUsd: salesTaxInUsd,
-    governmentTaxInUsd: governmentTaxInUsd,
     depositInUsd: depositInUsd,
     totalPriceInUsd: totalPriceInUsd,
     paidByGuestInUsd: paidByGuestInUsd,
@@ -184,6 +176,13 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
 
     guestInsuranceType: insurancesInfo?.insuranceType,
     guestInsurancePhoto: guestInsurancePhoto,
+    taxesData: tripDTO.taxesData.map((t) => {
+      return {
+        name: t.name,
+        value: Number(t.value) / 100,
+        tType: Number(t.tType),
+      };
+    }),
   };
   return item;
 };

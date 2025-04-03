@@ -11,7 +11,7 @@ import { t } from "i18next";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 
 export default function Layout({ children }: { children?: React.ReactNode }) {
-  const { isBurgerMenuShown, isFilterOnSearchPageShown, openBurgerMenu, closeBurgerMenu } = useAppContext();
+  const { isBurgerMenuShown, isFilterOnSearchPageShown } = useAppContext();
   const { userMode, isHost, isAdmin } = useUserMode();
 
   useEffect(() => {

@@ -16,8 +16,6 @@ import { useAuth } from "@/contexts/auth/authContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRentality } from "@/contexts/rentalityContext";
 import { logger } from "@/utils/logger";
-import { AxiosResponse } from "axios";
-import axios from "@/utils/cachedAxios";
 import { fetchDefaultRpcUrl } from "../utils/fetchDefaultRpcUrl";
 import { isEmpty } from "@/utils/string";
 

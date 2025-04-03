@@ -1,19 +1,16 @@
 import { useUserInfo } from "@/contexts/userInfoContext";
-import { memo, useEffect } from "react";
-import { useRntDialogs } from "@/contexts/rntDialogsContext";
-import { DialogActions } from "@/utils/dialogActions";
-import { useTranslation } from "react-i18next";
+import { memo } from "react";
 import { Avatar as MuiAvatar } from "@mui/material";
 import { isEmpty } from "@/utils/string";
-import { Avatar, Identity, Badge, Name, Address } from "@coinbase/onchainkit/identity";
+import { Avatar, Identity, Badge, Name } from "@coinbase/onchainkit/identity";
 import { useAuth } from "@/contexts/auth/authContext";
 import RntButton from "../common/rntButton";
 import { env } from "@/utils/env";
+import { useTranslation } from "react-i18next";
 
 function LoginBase() {
   const { isLoadingAuth, isAuthenticated, login } = useAuth();
   const userInfo = useUserInfo();
-  const { showDialog, hideDialogs } = useRntDialogs();
   const { t } = useTranslation();
 
   const userFullName = `${userInfo?.firstName ?? ""} ${userInfo?.lastName ?? ""}`;
