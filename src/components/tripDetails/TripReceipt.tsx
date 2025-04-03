@@ -69,14 +69,12 @@ function TripReceipt({ tripId, tripInfo }: { tripId: bigint; tripInfo: TripInfo 
             <td>{t_details("dropOff_delivery_fee")}</td>
             <td className="text-end">${displayMoneyWith2Digits(tripInfo.dropOffDeliveryFeeInUsd)}</td>
           </tr>
-          <tr>
-            <td>{t_details("sales_tax")}</td>
-            <td className="text-end">${tripInfo.salesTaxInUsd}</td>
-          </tr>
-          <tr>
-            <td>{t_details("government_tax")}</td>
-            <td className="text-end">${tripInfo.governmentTaxInUsd}</td>
-          </tr>
+          {tripInfo.taxesData.map((t) => (
+            <tr key={t.name + tripId}>
+              <td>{t.name}</td>
+              <td className="text-end">${t.value}</td>
+            </tr>
+          ))}
           <tr>
             <td className="pt-5">
               <strong>{t_details("total_charge")}</strong>

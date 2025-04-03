@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 export default function ClaimMyPointsMobileButton() {
   const { isLoading, isFetching } = useFetchOwnReferralPoints();
   const { mutateAsync: claimMyPoints } = useClaimOwnReferralPoints();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const isClaiming = useOwnReferralPointsSharedStore((state) => state.isClaiming);
   const readyToClaim = useOwnReferralPointsSharedStore((state) => state.readyToClaim);
 
@@ -25,9 +25,7 @@ export default function ClaimMyPointsMobileButton() {
         ) : isLoading || isFetching ? (
           <>{t("referrals_and_point.loading")}</>
         ) : (
-          <>
-            {`${t("referrals_and_point.claim")} ${readyToClaim} ${t("referrals_and_point.points")}`}
-          </>
+          <>{`${t("referrals_and_point.claim")} ${readyToClaim} ${t("referrals_and_point.points")}`}</>
         )}
       </div>
     </button>

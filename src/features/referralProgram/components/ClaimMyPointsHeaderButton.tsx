@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 export default function ClaimMyPointsHeaderButton() {
   const { isLoading, isFetching } = useFetchOwnReferralPoints();
   const { mutateAsync: claimMyPoints } = useClaimOwnReferralPoints();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const isClaiming = useOwnReferralPointsSharedStore((state) => state.isClaiming);
   const readyToClaim = useOwnReferralPointsSharedStore((state) => state.readyToClaim);
 
@@ -26,7 +26,9 @@ export default function ClaimMyPointsHeaderButton() {
           <>{t("referrals_and_point.loading")}</>
         ) : (
           <>
-            {t("referrals_and_point.claim")} <span className="px-1 font-semibold text-rentality-secondary">{readyToClaim.toString()}</span> {t("referrals_and_point.points")}
+            {t("referrals_and_point.claim")}{" "}
+            <span className="px-1 font-semibold text-rentality-secondary">{readyToClaim.toString()}</span>{" "}
+            {t("referrals_and_point.points")}
           </>
         )}
       </div>

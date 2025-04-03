@@ -23,7 +23,7 @@ export function createCase(
     Language: "en",
     ...(dateOfIncident ? { "Date of incident": dateOfIncident } : {}),
     ...(vinNumber ? { "VIN number": vinNumber } : {}),
-    "Inspection type": pre? "pre" : "post",
+    "Inspection type": pre ? "pre" : "post",
   };
 }
 export type PhotoUrl = string;

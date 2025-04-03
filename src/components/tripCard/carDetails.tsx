@@ -27,9 +27,9 @@ function CarDetails({
   const rejectedByText = rejectedByHost
     ? isHost
       ? t("common.you")
-      : tripInfo.host.name ?? t("common.host")
+      : (tripInfo.host.name ?? t("common.host"))
     : isHost
-      ? tripInfo.guest.name ?? t("common.guest")
+      ? (tripInfo.guest.name ?? t("common.guest"))
       : t("common.you");
   const otherUserPhotoUrl = isHost ? tripInfo.guest.photoUrl : tripInfo.host.photoUrl;
   const otherUserName = isHost ? tripInfo.guest.name : tripInfo.host.name;

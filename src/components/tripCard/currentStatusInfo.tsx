@@ -270,7 +270,7 @@ function CurrentStatusInfo({
                     disabled={disableButton}
                     onClick={() => {
                       if (action.params == null || action.params.length == 0) {
-                        if(action.text === "Reject") {
+                        if (action.text === "Reject") {
                           showGuestRejectDialog(action);
                         } else {
                           changeStatusCallback(action, () => {

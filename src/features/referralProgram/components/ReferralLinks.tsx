@@ -39,10 +39,9 @@ export default function ReferralLinks() {
             disabled={!inviteHash}
             isVisibleCircle={false}
             onClick={() => {
-              copyToClipboard(inviteLink)
-              showInfo(t("referrals_and_point.copied"))
-            }
-            }
+              copyToClipboard(inviteLink);
+              showInfo(t("referrals_and_point.copied"));
+            }}
           >
             <Image
               src={"/images/icons/ic_copy_white_24dp.svg"}

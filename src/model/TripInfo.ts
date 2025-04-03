@@ -93,8 +93,6 @@ export type TripInfo = {
   resolveMilesAmountInUsd: number;
   depositReturnedInUsd: number;
   currencyRate: number;
-  salesTaxInUsd: number;
-  governmentTaxInUsd: number;
   totalPriceInUsd: number;
   paidByGuestInUsd: number;
   dimoTokenId: number;
@@ -124,7 +122,20 @@ export type TripInfo = {
   isCarDetailsConfirmed: boolean;
   insurancePerDayInUsd: number;
   insuranceTotalInUsd: number;
+  taxesData: TaxValue[];
 };
+
+export type TaxValue = {
+  name: string;
+  value: number;
+  tType: TaxesType;
+};
+
+export enum TaxesType {
+  InUsdCentsPerDay,
+  InUsdCents,
+  PPM,
+}
 
 export type TripInfoShortDetails = {
   tripId: number;

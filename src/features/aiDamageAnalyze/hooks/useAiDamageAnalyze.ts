@@ -106,24 +106,27 @@ export default function useAiDamageAnalyze() {
         logger.error("Ai damage analyze: response not found");
         return;
       }
-     
-      const data: InsuranceCaseDTO[] = await Promise.all(response.value.map(async (item) => {
-        const iCase: InsuranceCaseDTO = {
-          iCase: {
-            iCase: item.iCase.iCase,
-          pre: item.iCase.pre,
-          },
-          url: item.url
-        }
-        if(item.url !== "") {
-        const metaData = await getMetaDataFromIpfs(item.url);
-        
-        return {
-          ...iCase,
-          metaData,
-        };
-      }
-      return iCase;}));
+
+      const data: InsuranceCaseDTO[] = await Promise.all(
+        response.value.map(async (item) => {
+          const iCase: InsuranceCaseDTO = {
+            iCase: {
+              iCase: item.iCase.iCase,
+              pre: item.iCase.pre,
+            },
+            url: item.url,
+          };
+          if (item.url !== "") {
+            const metaData = await getMetaDataFromIpfs(item.url);
+
+            return {
+              ...iCase,
+              metaData,
+            };
+          }
+          return iCase;
+        })
+      );
       return data;
     } catch (error) {
       logger.error("Error geting aiDamageAnalyze ai response:", error);
