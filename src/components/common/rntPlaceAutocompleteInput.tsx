@@ -4,7 +4,7 @@ import { isEmpty } from "@/utils/string";
 import RntValidationError from "./RntValidationError";
 import { cn } from "@/utils";
 import { env } from "@/utils/env";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import * as React from "react";
 
 export type PlaceDetails = {
@@ -75,7 +75,7 @@ export default function RntPlaceAutocompleteInput({
   const [enteredAddress, setEnteredAddress] = useState(initValue);
   const [isEditing, setIsEditing] = useState(false);
 
-  const { placesService, placePredictions, getPlacePredictions, isPlacePredictionsLoading } = usePlacesService({
+  const { placesService, placePredictions, getPlacePredictions } = usePlacesService({
     apiKey: env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     options: {
       input: "",

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { TripInfo, AllowedChangeTripAction } from "@/model/TripInfo";
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
-import { ContractTrip, ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
+import { ContractTrip, TripStatus } from "@/model/blockchain/schemas";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 import { mapTripDTOtoTripInfo } from "@/model/utils/TripDTOtoTripInfo";
 import { logger } from "@/utils/logger";

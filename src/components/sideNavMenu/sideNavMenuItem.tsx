@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import MenuIcons, { getImageForMenu } from "@/components/sideNavMenu/menuIcons";
 import { useAppContext } from "@/contexts/appContext";
-import { cn } from "@/utils";
 
 export default function SideNavMenuItem({
   text,

@@ -14,7 +14,7 @@ function UserErrorDescription({
 }) {
   const [userErrorDescription, setUserErrorDescription] = useState("");
   const [isPending, setIsPending] = useState(false);
-  const { showInfo, showError, showSuccess } = useRntSnackbars();
+  const { showError, showSuccess } = useRntSnackbars();
   const { t } = useTranslation();
 
   async function submitForm(e: FormEvent<HTMLFormElement>) {

@@ -1,5 +1,5 @@
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
-import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { InsuranceType } from "@/model/blockchain/schemas";
 import { GuestGeneralInsurance } from "@/model/GuestInsurance";
 import { getIpfsURI } from "@/utils/ipfsUtils";

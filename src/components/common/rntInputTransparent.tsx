@@ -2,7 +2,6 @@ import { isEmpty } from "@/utils/string";
 import { forwardRef, useId } from "react";
 import RntValidationError from "./RntValidationError";
 import { cn } from "@/utils";
-import { StaticImageData } from "next/image";
 import { RntInputProps } from "@/components/common/rntInput";
 import DotStatus from "@/components/dotStatus";
 import * as React from "react";

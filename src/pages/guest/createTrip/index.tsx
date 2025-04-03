@@ -2,7 +2,7 @@ import RntButton from "@/components/common/rntButton";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import { useTranslation } from "react-i18next";
 import { TransmissionType } from "@/model/Transmission";
-import useCarSearchParams, { createQueryString } from "@/hooks/guest/useCarSearchParams";
+import useCarSearchParams from "@/hooks/guest/useCarSearchParams";
 import useCreateTripRequest from "@/hooks/guest/useCreateTripRequest";
 import useSearchCar from "@/hooks/guest/useSearchCar";
 import { CarPhotos } from "@/components/createTrip/CarPhotos";
@@ -73,10 +73,6 @@ function CreateTripDetailsContent({
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const { t } = useTranslation();
 
-  function handleBackToSearchClick() {
-    router.push(`/guest/search?${createQueryString(searchCarRequest, searchCarFilters)}`);
-  }
-
   function handlePreAgreementDetailsClick() {
     alert("TODO handlePreAgreementDetailsClick");
   }
@@ -145,7 +141,7 @@ function CreateTripDetailsContent({
   const { register, handleSubmit, formState } = useForm<EnterPromoFormValues>({
     resolver: zodResolver(enterPromoFormSchema),
   });
-  const { errors, isSubmitting } = formState;
+  const { errors } = formState;
 
   async function onFormSubmit(formData: EnterPromoFormValues) {
     dispatch({ type: PromoActionType.LOADING });

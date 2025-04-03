@@ -70,7 +70,7 @@ async function getRegisteredUsers(
     return Err("CIVIC_USER_PASSWORD was not set");
   }
 
-  const user = await loginWithPassword(CIVIC_USER_EMAIL, CIVIC_USER_PASSWORD);
+  await loginWithPassword(CIVIC_USER_EMAIL, CIVIC_USER_PASSWORD);
 
   const result: RegisteredUser[] = [];
   const kycInfoQuery = query(collection(kycDbInfo.db, kycDbInfo.collections.kycInfos));

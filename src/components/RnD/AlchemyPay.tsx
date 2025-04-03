@@ -1,6 +1,5 @@
 import React, { memo } from "react";
 import RntButton from "../common/rntButton";
-import { useEthereum } from "@/contexts/web3/ethereumContext";
 import crypto from "crypto";
 import { DevicePlatform, getDevicePlatform } from "@/utils/devicePlatform";
 import { useTranslation } from "react-i18next";
@@ -35,7 +34,6 @@ function buildLink(address: string): string {
 
 function AlchemyPay() {
   const { t } = useTranslation();
-  const ethereumInfo = useEthereum();
   const devicePlatform = getDevicePlatform();
   const isIOS = devicePlatform === DevicePlatform.iOS;
 

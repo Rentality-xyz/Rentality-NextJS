@@ -1,5 +1,3 @@
-import moment from "moment";
-
 export type AdminUserDetails = {
   name: string;
   surname: string;
