@@ -108,19 +108,6 @@ const useSearchCars = () => {
         availableCarsData[0].highlighted = true;
       }
 
-      logger.debug(
-        "cars:",
-        JSON.stringify(
-          availableCarsData.map((i) => ({
-            car: `${i.brand} ${i.model} ${i.year}`,
-            pricePerDay: i.pricePerDay,
-            distanceToUser: i.distanceToUser,
-          })),
-          bigIntReplacer,
-          2
-        )
-      );
-
       setSearchResult({
         searchCarRequest: request,
         searchCarFilters: filters,
