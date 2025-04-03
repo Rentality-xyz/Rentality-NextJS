@@ -15,6 +15,7 @@ import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { DimoCarResponseWithTimestamp } from "@/features/dimo/hooks/useDimo";
 import RntButton from "@/components/common/rntButton";
 import useCreateInvestCar from "@/features/invest/hooks/useCreateInvestCar";
+import { WeiPerEther } from "ethers";
 
 function CreateInvestmentPageContent() {
   const { t } = useTranslation();
@@ -45,7 +46,7 @@ function CreateInvestmentPageContent() {
       brand: formData.brand,
       model: formData.model,
       releaseYear: formData.releaseYear,
-      carPrice: Number(carPrice),
+      carPrice: Math.floor(Number(carPrice) * 1e18),
       hostPercents: Number(hostPercentage),
       nftName: "",
       nftSym: "",
@@ -75,8 +76,19 @@ function CreateInvestmentPageContent() {
   const [investorsPercentage, setInvestorsPercentage] = useState<number | string>(0);
 
   const handleInputCarPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setCarPrice(value === "" ? "" : Number.parseInt(value));
+    let value = e.target.value;
+
+    value = value.replace(/,/g, ".");
+
+    value = value.replace(/[^0-9.]/g, "");
+
+    value = value.replace(/^0+(?=\d)/, "");
+    const parts = value.split(".");
+    if (parts.length > 2) {
+      value = parts.slice(0, 2).join(".") + (parts.length > 2 ? "" : "");
+    }
+
+    setCarPrice(value);
   };
 
   const handleHostPercentsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,11 +112,17 @@ function CreateInvestmentPageContent() {
         </div>
         <div className="flex flex-wrap gap-4">
           <RntInputTransparent
-            className="lg:w-60"
-            label={"Car price"}
+            className="no-spin lg:w-60"
+            label={"Car price in ETH"}
             placeholder="0"
+            type="number"
             value={carPrice}
             onChange={handleInputCarPriceChange}
+            style={{
+              MozAppearance: "textfield",
+              WebkitAppearance: "none",
+              appearance: "none",
+            }}
           />
 
           <RntInputTransparent

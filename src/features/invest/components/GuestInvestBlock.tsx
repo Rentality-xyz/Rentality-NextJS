@@ -15,16 +15,19 @@ function GuestInvestBlock({
   t,
 }: {
   investment: InvestmentInfo;
-  investmentAmount: number;
+  investmentAmount: number | string;
   handleInvest: (amount: number, investId: number) => void;
   isPendingInvesting: boolean;
   handleChangeInvestmentAmount: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleClaimIncome: (investId: number) => Promise<Result<boolean>>;
   t: (key: string) => string;
 }) {
+  console.log("MY INVESTING SUM", investment.myInvestingSum);
+  console.log("+++++", investment.myInvestingSum + (investment.investment.priceInCurrecy - investment.payedInUsd));
+  console.log("price", investment.investment.priceInCurrecy);
   return (
     <>
-      <StakeInAsset myTokens={investment.myTokens} myInvestingSum={investment.myInvestingSum} t={t} />
+      <StakeInAsset myTokens={investment.myTokens} myInvestingSum={investment.myInvestingSum / 1e18} t={t} />
       {!investment.listed && !investment.investment.inProgress ? (
         <ExpectCompletedTrips t={t} />
       ) : investment.myIncome > 0 ? (

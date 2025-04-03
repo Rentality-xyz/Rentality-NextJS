@@ -888,7 +888,7 @@
     "btn_start_hosting": "Start hosting",
     "btn_claim_earnings": "Claim earnings",
     "no_stake_in_asset": "You have no stake in this asset yet",
-    "stake_in_asset": "You have {myTokens} tokens worth ${myInvestingSum}",
+    "stake_in_asset": "You have {myTokens} tokens worth ETH: {myInvestingSum}",
     "expect_completed_trips": "Expect completed trips and claim earnings",
     "available_invest": "Available to Invest",
     "fully_tokenized": "Fully tokenized",

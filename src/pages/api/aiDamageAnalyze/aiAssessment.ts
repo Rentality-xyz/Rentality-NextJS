@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const chainId = parseId(case_number);
     if (!chainId) {
       logger.error("API aiAssessment error: chain id was not set");
-      return
+      return;
     }
     const providerApiUrl = getProviderApiUrlFromEnv(chainId);
 
@@ -61,7 +61,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       wallet
     )) as unknown as IRentalityAiDamageAnalyzeContract;
 
-   
     const caseExists = await rentality.isCaseExists(jsonData.case_token);
 
     if (!verifyXAuthorization(token)) {
