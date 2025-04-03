@@ -42,10 +42,7 @@ export const mapContractInvestmentDTOToInvestmentInfoWithMetadata = (
           insurancePriceInUsdCents: Number(dto.investment.car.insurancePriceInUsdCents) / 100,
           dimoTokenId: Number(dto.investment.car.dimoTokenId),
         },
-        priceInUsd:
-          dto.investment.priceInUsd > dto.payedInUsd
-            ? Number(dto.investment.priceInUsd) / 100
-            : Number(dto.payedInUsd) / 100,
+        priceInCurrecy: Number(dto.investment.priceInCurrency),
         creatorPercents: Number(dto.investment.creatorPercents),
         inProgress: dto.investment.inProgress,
       },
@@ -56,7 +53,7 @@ export const mapContractInvestmentDTOToInvestmentInfoWithMetadata = (
       isCarBought: dto.isCarBought,
       income: Number(dto.income) / 100,
       myIncome: Number(dto.myIncome) / 100,
-      myInvestingSum: Number(dto.myInvestingSum) / 100,
+      myInvestingSum: Number(dto.myInvestingSum),
       listingDate: getDateFromBlockchainTimeWithTZ(
         Number(dto.listingDate),
         dto.investment.car.locationInfo.locationInfo.timeZoneId
@@ -71,6 +68,8 @@ export const mapContractInvestmentDTOToInvestmentInfoWithMetadata = (
       collectionSymbol: dto.symbol,
       totalEarnings: Number(dto.totalEarnings) / 100,
       totalEarningsByUser: Number(dto.userReceivedEarnings) / 100,
+      payedInCurrency: Number(dto.payedInCurrency),
+      priceInUsdCents: Number(dto.priceInUsdCents),
     },
     metadata: metaData,
   };

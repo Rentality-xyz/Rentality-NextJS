@@ -523,7 +523,7 @@ export type ContractKycCommissionData = {
 
 export type ContractCarInvestment = {
   car: ContractCreateCarRequest;
-  priceInUsd: bigint;
+  priceInCurrency: bigint;
   inProgress: boolean;
   creatorPercents: bigint;
 };
@@ -554,6 +554,8 @@ export type ContractInvestmentDTO = {
   userReceivedEarnings: bigint;
   name: string;
   symbol: string;
+  priceInUsdCents: bigint;
+  payedInCurrency: bigint;
 };
 
 export type ContractTripFilter = {

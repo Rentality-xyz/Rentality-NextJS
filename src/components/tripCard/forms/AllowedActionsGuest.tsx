@@ -18,7 +18,6 @@ export default function AllowedActionsGuest({
   confirmParams: boolean[];
   setConfirmParams: (value: SetStateAction<boolean[]>) => void;
 }) {
-
   return (
     <div className="flex w-full flex-col gap-4 py-4">
       {tripInfo.allowedActions[0].params.map((param, index) => {
@@ -34,8 +33,8 @@ export default function AllowedActionsGuest({
                 value={inputParams[index]}
                 onChange={(e) => {
                   const newValue = e.target.value;
-                  if(isEmpty(newValue)) {
-                    return
+                  if (isEmpty(newValue)) {
+                    return;
                   }
                   setInputParams((prev) => {
                     const copy = [...prev];

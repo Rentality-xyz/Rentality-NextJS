@@ -1164,7 +1164,7 @@ const MilesIncludedPerDay = ({
           //setValue("milesIncludedPerDay", e.target.checked ? UNLIMITED_MILES_VALUE : 0)
           //field.onChange(e.target.checked ? UNLIMITED_MILES_VALUE : 0);
           setIsUnlimited(e.target.checked);
-          onChange(e.target.checked ? UNLIMITED_MILES_VALUE_TEXT : milesIncludedPerDay ?? 0);
+          onChange(e.target.checked ? UNLIMITED_MILES_VALUE_TEXT : (milesIncludedPerDay ?? 0));
         }}
       />
     </>
