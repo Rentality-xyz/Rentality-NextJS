@@ -1,4 +1,4 @@
-import RntSelect, { RntSelectProps } from "@/components/common/rntSelect";
+import { RntSelectProps } from "@/components/common/rntSelect";
 import React, { useEffect, useState } from "react";
 import useCarAPI from "@/hooks/useCarAPI";
 import RntFilterSelect from "@/components/common/RntFilterSelect";

@@ -1,7 +1,6 @@
 import { RntSelectProps } from "./rntSelect";
 import React, { useEffect, useMemo, useState } from "react";
 import useCarAPI, { CarModelsListElement } from "@/hooks/useCarAPI";
-import { cn } from "@/utils";
 import RntFilterSelect from "./RntFilterSelect";
 
 interface RntCarModelSelectProps extends RntSelectProps {

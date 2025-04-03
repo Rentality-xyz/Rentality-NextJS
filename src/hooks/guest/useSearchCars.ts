@@ -3,7 +3,6 @@ import { SearchCarInfo, SearchCarsResult, emptySearchCarsResult } from "@/model/
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isEmpty } from "@/utils/string";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
-import { bigIntReplacer } from "@/utils/json";
 import { PublicSearchCarsResponse } from "@/pages/api/publicSearchCars";
 import { logger } from "@/utils/logger";
 

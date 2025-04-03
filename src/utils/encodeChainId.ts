@@ -1,6 +1,6 @@
 export function parseId(encodedId: string): number {
   const decoded = Buffer.from(encodedId, "base64").toString();
-  const [chainId, caseToken] = decoded.split(":");
+  const [chainId] = decoded.split(":");
   return Number(chainId);
 }
 export function generateId(chainId: number, caseNumber: number): string {

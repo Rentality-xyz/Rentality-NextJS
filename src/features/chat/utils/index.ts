@@ -17,7 +17,7 @@ export function decodeClaimChatMessage(message: string, hostName: string, carDet
   if (!message || !isClaimChatMessage(message)) {
     return message;
   }
-  const [_, unixTimeStamp, amountInUsdCents, guestAddress] = message.split("|");
+  const [_, unixTimeStamp, amountInUsdCents] = message.split("|");
 
   return `Claim requested
   ${dateFormatLongMonthDateTime(moment.unix(Number(unixTimeStamp)).toDate())}

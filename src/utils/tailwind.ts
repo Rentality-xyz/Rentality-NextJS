@@ -1,4 +1,4 @@
-import { AdminTripStatus, PaymentStatus, TripStatus } from "@/model/blockchain/schemas";
+import { TripStatus } from "@/model/blockchain/schemas";
 
 export function getTripStatusBgColorFromStatus(status: TripStatus) {
   switch (status) {

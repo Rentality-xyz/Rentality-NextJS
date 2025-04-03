@@ -13,7 +13,6 @@ import { TFunction } from "@/utils/i18n";
 import { useChat } from "@/features/chat/contexts/chatContext";
 import { useAuth } from "@/contexts/auth/authContext";
 import * as React from "react";
-import useUserRole from "@/hooks/useUserRole";
 import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 
@@ -22,7 +21,6 @@ function HostNavMenu() {
   const { notifications } = useNotification();
   const { chatInfos } = useChat();
   const { getPageLastVisitedDateTime } = usePageLastVisit();
-  const { userRole, isInvestManager } = useUserRole();
   const { hasFeatureFlag } = useFeatureFlags();
   const [hasInvestmentFeatureFlag, setInvestmentFeatureFlag] = React.useState<boolean>(false);
   const { t } = useTranslation();

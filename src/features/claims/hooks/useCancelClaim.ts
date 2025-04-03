@@ -1,6 +1,6 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { Err, Ok, Result } from "@/model/utils/result";
+import { Err, Result } from "@/model/utils/result";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CLAIMS_LIST_QUERY_KEY } from "./useFetchClaims";

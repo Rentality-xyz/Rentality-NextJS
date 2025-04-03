@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { authOnDimo, tokenExchange } from "./helpers";
+import { authOnDimo } from "./helpers";
 import { DIMOSharedCarsResponse } from "./dimo";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { isEmpty } from "@/utils/string";
-import { id, JsonRpcProvider, Wallet } from "ethers";
+import { JsonRpcProvider, Wallet } from "ethers";
 import { signMessage } from "@/utils/ether";
 import { env } from "@/utils/env";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (authResult === null) return;
 
-  const { auth, dimo, clientId } = authResult;
+  const { dimo, clientId } = authResult;
 
   const parseQueryResult = parseQuery(req);
   if (!parseQueryResult.ok) {
