@@ -22,9 +22,6 @@ function GuestInvestBlock({
   handleClaimIncome: (investId: number) => Promise<Result<boolean>>;
   t: (key: string) => string;
 }) {
-  console.log("MY INVESTING SUM", investment.myInvestingSum);
-  console.log("+++++", investment.myInvestingSum + (investment.investment.priceInCurrecy - investment.payedInUsd));
-  console.log("price", investment.investment.priceInCurrecy);
   return (
     <>
       <StakeInAsset myTokens={investment.myTokens} myInvestingSum={investment.myInvestingSum / 1e18} t={t} />
