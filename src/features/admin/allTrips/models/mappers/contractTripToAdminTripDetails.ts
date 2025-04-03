@@ -9,7 +9,7 @@ import {
   PaymentStatus,
   TripStatus,
 } from "@/model/blockchain/schemas";
-import { formatLocationInfoUpToCity, LocationInfo } from "@/model/LocationInfo";
+import { formatLocationInfoUpToCity } from "@/model/LocationInfo";
 import { AdminTripDetails } from "../AdminTripDetails";
 import { mapContractLocationInfoToLocationInfo } from "@/utils/location";
 

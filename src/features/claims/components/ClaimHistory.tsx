@@ -6,7 +6,7 @@ import moment from "moment";
 import { TFunction } from "@/utils/i18n";
 import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
 import Image from "next/image";
-import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
+import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { isEmpty } from "@/utils/string";
 import { usePathname } from "next/navigation";
 import ClaimHistoryMobileCard from "./ClaimHistoryMobileCard";

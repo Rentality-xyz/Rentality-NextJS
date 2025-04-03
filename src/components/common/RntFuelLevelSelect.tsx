@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import RntSelect, { RntSelectProps } from "./rntSelect";
+import { RntSelectProps } from "./rntSelect";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
 
 interface RntFuelLevelSelectProps extends RntSelectProps {

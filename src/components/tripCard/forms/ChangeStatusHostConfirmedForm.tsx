@@ -2,7 +2,6 @@ import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { AllowedChangeTripAction, TripInfo } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
 import RntButton from "@/components/common/rntButton";
-import RntInput from "@/components/common/rntInput";
 import {
   changeStatusHostConfirmedFormSchema,
   ChangeStatusHostConfirmedFormValues,
@@ -29,7 +28,7 @@ interface ChangeStatusHostConfirmedFormProps {
 
 const ChangeStatusHostConfirmedForm = forwardRef<HTMLDivElement, ChangeStatusHostConfirmedFormProps>(
   ({ tripInfo, changeStatusCallback, disableButton, t }, ref) => {
-    const { panelData, getCarPanelParams } = useDIMOCarData(tripInfo ? tripInfo.carId : 0);
+    const { panelData } = useDIMOCarData(tripInfo ? tripInfo.carId : 0);
     const { register, control, handleSubmit, formState, setValue } = useForm<ChangeStatusHostConfirmedFormValues>({
       defaultValues: {},
       resolver: zodResolver(changeStatusHostConfirmedFormSchema),

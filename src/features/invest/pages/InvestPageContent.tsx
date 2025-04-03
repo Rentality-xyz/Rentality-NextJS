@@ -21,8 +21,8 @@ function InvestPageContent({}: InvestContentProps) {
   const { userRole, isInvestManager } = useUserRole();
   const { data: investments } = useGetInvestments();
   const { mutateAsync: handleInvest, isPendingInvesting } = useInvest();
-  const { mutateAsync: handleClaimIncome, isPending: isPendingClaimingIncome } = useClaimIncome();
-  const { mutateAsync: handleStartHosting, isPending: isPendingStartingHosting } = useStartHosting();
+  const { mutateAsync: handleClaimIncome } = useClaimIncome();
+  const { mutateAsync: handleStartHosting } = useStartHosting();
   const [filterInvestBy, setFilterInvestBy] = useState<string | undefined>(undefined);
   const { t } = useTranslation();
 

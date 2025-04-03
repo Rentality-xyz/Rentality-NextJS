@@ -10,7 +10,7 @@ import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import * as React from "react";
 import Image from "next/image";
 import SearchDeliveryLocations from "@/components/search/searchDeliveryLocations";
-import { formatLocationInfoUpToCity, formatLocationInfoUpToState } from "@/model/LocationInfo";
+import { formatLocationInfoUpToCity } from "@/model/LocationInfo";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { placeDetailsToLocationInfo } from "@/utils/location";
 import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";

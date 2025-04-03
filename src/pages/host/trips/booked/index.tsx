@@ -8,8 +8,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import RntSuspense from "@/components/common/rntSuspense";
 import { logger } from "@/utils/logger";
-import { AllowedChangeTripAction, TripInfo } from "@/model/TripInfo";
-import { TripStatus } from "@/model/blockchain/schemas";
+import { AllowedChangeTripAction } from "@/model/TripInfo";
 
 function Booked() {
   const ethereumInfo = useEthereum();

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import RntButton from "./rntButton";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/utils";

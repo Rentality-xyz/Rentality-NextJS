@@ -800,6 +800,17 @@ export type ContractTaxValue = {
   tType: TaxesType;
 };
 
+export type ContractRound = {
+  answer: bigint;
+  startedAt: bigint;
+  updatedAt: bigint;
+};
+
+export type ContractOracleUpdate = {
+  feed: string;
+  answer: bigint;
+};
+
 export type TripStatus = bigint;
 export const TripStatus = {
   Pending: BigInt(0), // Created
@@ -892,6 +903,7 @@ export const Role = {
   KYCManager: BigInt(4),
   AdminView: BigInt(5),
   InvestmentManager: BigInt(6),
+  OracleManager: BigInt(7),
 };
 
 export type RefferalProgram = bigint;

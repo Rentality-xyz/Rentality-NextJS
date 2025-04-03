@@ -12,7 +12,6 @@ import ManageRole from "@/features/admin/general/components/ManageRole";
 
 function AdminPanelPageContent() {
   const {
-    isLoading,
     adminContractInfo,
     withdrawFromPlatform,
     setPlatformFeeInPPM,

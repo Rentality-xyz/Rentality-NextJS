@@ -1,27 +1,9 @@
-import {
-  RefferalAccrualType as ReferralAccrualType,
-  RefferalProgram as ReferralProgram,
-  Tear,
-} from "@/model/blockchain/schemas";
+import { RefferalProgram as ReferralProgram, Tear } from "@/model/blockchain/schemas";
 import { useRentalityAdmin } from "@/contexts/rentalityContext";
 import { logger } from "@/utils/logger";
 
 function useRefferalProgramAdmin() {
   const { admin } = useRentalityAdmin();
-
-  const manageReferralBonusAccrual = async (
-    accrualType: ReferralAccrualType,
-    program: ReferralProgram,
-    points: number,
-    pointsWithReffHash: number
-  ) => {
-    if (!admin) {
-      logger.error("get hash error: rentalityAdminContract is null");
-      return null;
-    }
-    const result = await admin.manageRefferalBonusAccrual(accrualType, program, points, pointsWithReffHash);
-    return result.ok ? result.value : null;
-  };
 
   const manageReferralDiscount = async (program: ReferralProgram, tear: Tear, points: number, percents: number) => {
     if (!admin) {

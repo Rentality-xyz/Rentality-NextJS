@@ -7,7 +7,7 @@ import {
 } from "@/model/HostCarInfo";
 import { useEffect, useMemo, useState } from "react";
 import RntPlaceAutocomplete from "@/components/common/rntPlaceAutocomplete";
-import RntCheckbox, { CheckboxLight } from "@/components/common/rntCheckbox";
+import { CheckboxLight } from "@/components/common/rntCheckbox";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/EngineType";
 import RntButton from "@/components/common/rntButton";
 import { TFunction } from "@/utils/i18n";
@@ -36,7 +36,6 @@ import { VinInfo } from "@/pages/api/car-api/vinInfo";
 import { DimoCarResponseWithTimestamp } from "@/features/dimo/hooks/useDimo";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
-import RntInput from "@/components/common/rntInput";
 
 export default function CarEditForm({
   initValue,
@@ -53,7 +52,7 @@ export default function CarEditForm({
 }) {
   const router = useRouter();
   const { showDialog, hideDialogs } = useRntDialogs();
-  const { showInfo, showError, showSuccess } = useRntSnackbars();
+  const { showError, showSuccess } = useRntSnackbars();
 
   const [nftName, setNftName] = useState<string>("");
   const [nftSym, setNftSym] = useState<string>("");

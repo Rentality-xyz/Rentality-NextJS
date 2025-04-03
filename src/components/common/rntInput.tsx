@@ -2,7 +2,7 @@ import { isEmpty } from "@/utils/string";
 import { forwardRef, useId } from "react";
 import RntValidationError from "./RntValidationError";
 import { cn } from "@/utils";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import * as React from "react";
 import DotStatus from "@/components/dotStatus";
 
@@ -57,7 +57,7 @@ const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
       <div className={cClassName}>
         {!isEmpty(label) &&
           (isTransparentStyle ? (
-            <label className={cn("flex items-center", lClassName)} htmlFor={reactId}>
+            <label className={cn("flex items-center", lClassName)} htmlFor={controlId}>
               {!isEmpty(iconFrontLabel) && (
                 <Image src={iconFrontLabel!!} width={19} height={20} alt="" className="mr-2" />
               )}
@@ -71,15 +71,15 @@ const RntInput = forwardRef<HTMLInputElement, RntInputProps>(
               />
             </label>
           ) : (
-            <label className={lClassName} htmlFor={id}>
+            <label className={lClassName} htmlFor={controlId}>
               {label}
             </label>
           ))}
         <input
           className={iClassName}
           style={isTransparentStyle ? { backgroundColor: "transparent", border: "0px", color: "white" } : {}}
-          id={reactId}
-          name={id}
+          id={controlId}
+          name={controlId}
           type={type}
           readOnly={readOnly}
           disabled={readOnly}

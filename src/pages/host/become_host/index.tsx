@@ -44,12 +44,12 @@ function BecomeHostContent() {
   const { login } = useAuth();
   const ethereumInfo = useEthereum();
   const { isLoading: isLoadingUserProfile, data: userProfile } = useFetchUserProfile();
-  const { isPending: isPendingUserProfile, mutateAsync: saveUserProfile } = useSaveUserProfile();
+  const { mutateAsync: saveUserProfile } = useSaveUserProfile();
 
   const { isLoading: isLoadingMyListings, data: myListings } = useFetchMyListings();
-  const { isLoading: isLoadingDeliveryPrices, data: savedDeliveryPrices } = useFetchDeliveryPrices();
+  const { data: savedDeliveryPrices } = useFetchDeliveryPrices();
   const { mutateAsync: saveDeliveryPrices } = useSaveDeliveryPrices();
-  const { isLoading: isLoadingDiscounts, data: savedTripsDiscounts } = useFetchTripDiscounts();
+  const { data: savedTripsDiscounts } = useFetchTripDiscounts();
   const { mutateAsync: saveTripDiscounts } = useSaveTripDiscounts();
   const { t } = useTranslation();
 

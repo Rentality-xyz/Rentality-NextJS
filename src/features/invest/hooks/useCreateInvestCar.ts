@@ -1,9 +1,8 @@
-import { emptyHostCarInfo, HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE, verifyCar } from "@/model/HostCarInfo";
+import { emptyHostCarInfo } from "@/model/HostCarInfo";
 import { useRentality } from "@/contexts/rentalityContext";
-import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeCode } from "@/model/EngineType";
+import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING } from "@/model/EngineType";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { ContractCreateCarRequest, ContractSignedLocationInfo } from "@/model/blockchain/schemas";
-import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
+import { ContractCreateCarRequest } from "@/model/blockchain/schemas";
 import { Err, Result } from "@/model/utils/result";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
