@@ -38,6 +38,8 @@ export function mapContractTripDTOToTransactionHistoryInfo(tripDto: ContractTrip
     dropOffDeliveryFeeInUsd;
   const promoDiscountInPercents = Number(tripDto.promoDiscount);
 
+  const totalTax = tripDto.taxesData.map((t) => Number(t.value) / 100).reduce((acc, curr) => acc + curr, 0);
+
   const tripPayment =
     promoDiscountInPercents > 0
       ? getPromoPrice(
@@ -45,8 +47,7 @@ export function mapContractTripDTOToTransactionHistoryInfo(tripDto: ContractTrip
             totalPriceWithHostDiscountInUsd,
             pickUpDeliveryFeeInUsd,
             dropOffDeliveryFeeInUsd,
-            salesTaxInUsd,
-            governmentTaxInUsd
+            totalTax
           ),
           promoDiscountInPercents
         ) +
@@ -74,7 +75,6 @@ export function mapContractTripDTOToTransactionHistoryInfo(tripDto: ContractTrip
     reimbursements: reimbursements,
     insuranceFeeInUsd: Number(tripDto.paidForInsuranceInUsdCents) / 100,
     rentalityFee: Number(tripDto.trip.transactionInfo.rentalityFee) / 100,
-    salesTax: Number(tripDto.trip.paymentInfo.salesTax) / 100,
-    governmentTax: Number(tripDto.trip.paymentInfo.governmentTax) / 100,
+    taxes: totalTax,
   };
 }

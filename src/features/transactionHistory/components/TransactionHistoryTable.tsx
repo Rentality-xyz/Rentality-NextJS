@@ -106,9 +106,7 @@ function TransactionHistoryTable({ isLoading, data, isHost }: TransactionHistory
                 <td className={rowSpanClassName}>${displayMoneyWith2Digits(transaction.reimbursements)}</td>
                 <td className={rowSpanClassName}>${displayMoneyWith2Digits(transaction.insuranceFeeInUsd)}</td>
                 <td className={rowSpanClassName}>${displayMoneyWith2Digits(transaction.rentalityFee)}</td>
-                <td className={rowSpanClassName}>
-                  ${displayMoneyWith2Digits(transaction.salesTax + transaction.governmentTax)}
-                </td>
+                <td className={rowSpanClassName}>${displayMoneyWith2Digits(transaction.taxes)}</td>
                 <td className={rowSpanClassName}>
                   <Link href={detailsLink}>
                     <span className="text-rentality-secondary">{t_th("details")}</span>

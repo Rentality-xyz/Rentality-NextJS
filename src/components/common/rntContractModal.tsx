@@ -240,14 +240,11 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                   Delivery fee from Drop-Off location: ETH {tripInfo.dropOffDeliveryFeeInUsd / tripInfo.currencyRate}{" "}
                   (USD {displayMoneyWith2Digits(tripInfo.dropOffDeliveryFeeInUsd)}){" "}
                 </div>
-                <div className="">
-                  Sales Tax: ETH {tripInfo.salesTaxInUsd / tripInfo.currencyRate} (USD{" "}
-                  {displayMoneyWith2Digits(tripInfo.salesTaxInUsd)}){" "}
-                </div>
-                <div className="">
-                  Government Tax: ETH {tripInfo.governmentTaxInUsd / tripInfo.currencyRate} (USD{" "}
-                  {tripInfo.governmentTaxInUsd}){" "}
-                </div>
+                {tripInfo.taxesData.map((t) => (
+                  <div className="" key={t.name + tripId}>
+                    {t.name}: ETH {t.value / tripInfo.currencyRate} (USD {displayMoneyWith2Digits(t.value)}){" "}
+                  </div>
+                ))}
                 <div className="">
                   Total charge: ETH {tripInfo.totalPriceInUsd / tripInfo.currencyRate} (USD{" "}
                   {displayMoneyWith2Digits(tripInfo.totalPriceInUsd)})
