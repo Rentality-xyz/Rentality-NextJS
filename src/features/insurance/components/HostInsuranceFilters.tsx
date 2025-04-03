@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next";
-import RntSelect from "@/components/common/rntSelect";
 import RntButton from "@/components/common/rntButton";
 import { InsuranceFiltersType } from "../hooks/useFetchInsurances";
 import RntFilterSelect from "@/components/common/RntFilterSelect";

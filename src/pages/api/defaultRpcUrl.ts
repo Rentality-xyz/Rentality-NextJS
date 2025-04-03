@@ -4,7 +4,7 @@ import { ApiUrl } from "./publicSearchCars";
 import { env } from "@/utils/env";
 import { logger } from "@/utils/logger";
 
-type QueryParams = {
+export type QueryParams = {
   chainId: string;
 };
 

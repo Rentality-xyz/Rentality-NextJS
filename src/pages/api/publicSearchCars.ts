@@ -54,7 +54,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     dateTo,
     country,
     state,
-    city,
     latitude,
     longitude,
     brand,

@@ -1,4 +1,3 @@
-import RntInput from "@/components/common/rntInput";
 import { useState, useMemo } from "react";
 import useCarAPI from "@/hooks/useCarAPI";
 import RntButton from "@/components/common/rntButton";

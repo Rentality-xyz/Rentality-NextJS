@@ -38,7 +38,7 @@ export default function InvestCar({
   const { t } = useTranslation();
   const ethereumInfo = useEthereum();
   const [investmentAmount, setInvestmentAmount] = useState(0);
-  const { showDialog, hideDialogs } = useRntDialogs();
+  const { showDialog } = useRntDialogs();
 
   const isCreator = searchInfo.investment.creator === ethereumInfo?.walletAddress;
 

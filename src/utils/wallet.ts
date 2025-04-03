@@ -1,5 +1,5 @@
 import { formatEther } from "viem";
-import { ETH_DEFAULT_ADDRESS, MIN_ETH_ON_WALLET_FOR_TRANSACTION } from "./constants";
+import { MIN_ETH_ON_WALLET_FOR_TRANSACTION } from "./constants";
 import { Signer, zeroPadBytes } from "ethers";
 import { logger } from "./logger";
 

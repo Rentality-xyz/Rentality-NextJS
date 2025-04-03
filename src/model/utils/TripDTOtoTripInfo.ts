@@ -7,7 +7,6 @@ import { ContractTripDTO, EngineType, InsuranceType, TripStatus } from "@/model/
 import { calculateDays } from "@/utils/date";
 import { getDiscountablePrice, getNotDiscountablePrice } from "@/utils/price";
 import { getPromoPrice } from "@/features/promocodes/utils";
-import { map } from "zod";
 
 export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetailsConfirmed?: boolean) => {
   const metaData = parseMetaData(await getMetaDataFromIpfs(tripDTO.metadataURI));

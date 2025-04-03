@@ -3,7 +3,6 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import RntValidationError from "./RntValidationError";
 import { cn } from "@/utils";
-import { isEmpty } from "@/utils/string";
 
 interface RntPhoneInputProps extends React.ComponentPropsWithoutRef<"input"> {
   labelClassName?: string;

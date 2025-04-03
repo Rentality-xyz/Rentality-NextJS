@@ -3,7 +3,6 @@ import RntSnackbar from "@/components/common/rntSnackbar";
 import { DialogState, defaultDialogState } from "@/model/ui/dialogState";
 import { defaultSnackbarState, SnackbarState } from "@/model/ui/snackbarState";
 import { DialogActions } from "@/utils/dialogActions";
-import { AlertColor } from "@mui/material";
 import { ReactNode, createContext, useCallback, useContext, useMemo, useState } from "react";
 
 interface IRntDialogs {
@@ -114,19 +113,6 @@ export const RntDialogsProvider = ({ children }: { children?: React.ReactNode })
     setSnackbarState(defaultSnackbarState);
   }, []);
 
-  const showMessager = useCallback((message: string, color: AlertColor | undefined, action?: ReactNode) => {
-    const colorValue = color ?? "info";
-    setSnackbarState((prev) => {
-      return {
-        ...prev,
-        message: message,
-        action: action,
-        alertColor: colorValue,
-        isOpen: true,
-      };
-    });
-  }, []);
-
   const valueDialogs: IRntDialogs = useMemo(() => {
     return {
       showDialog: showDialog,
@@ -143,7 +129,7 @@ export const RntDialogsProvider = ({ children }: { children?: React.ReactNode })
       showSuccess: showSuccess,
       hideSnackbars: hideSnackbars,
     };
-  }, [showInfo, showError, hideSnackbars]);
+  }, [showInfo, showError, showWarning, showSuccess, hideSnackbars]);
 
   return (
     <>

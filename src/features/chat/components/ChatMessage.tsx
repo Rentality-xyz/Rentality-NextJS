@@ -34,36 +34,3 @@ export default function ChatMessage({
     </div>
   );
 }
-function ChatMessageHeader({
-  photoUrl,
-  name,
-  datetime,
-  isMyMessage,
-}: {
-  photoUrl: string;
-  name: string;
-  datetime: Date;
-  isMyMessage: boolean;
-}) {
-  return !isMyMessage ? (
-    <div className="col-span-3 flex flex-row justify-between">
-      <div className="flex flex-row gap-2">
-        <div className="h-12 w-12">
-          <Avatar src={photoUrl} sx={{ width: "3rem", height: "3rem" }}></Avatar>
-        </div>
-        <div className="self-center text-lg font-bold">{name}</div>
-      </div>
-      <div className="self-center text-sm text-gray-600">{dateFormatLongMonthDateTime(datetime)}</div>
-    </div>
-  ) : (
-    <div className="col-span-3 flex flex-row justify-between">
-      <div className="self-center text-sm text-gray-600">{dateFormatLongMonthDateTime(datetime)}</div>
-      <div className="flex flex-row gap-2">
-        <div className="self-center text-lg font-bold">{name}</div>
-        <div className="h-12 w-12">
-          <Avatar src={photoUrl} sx={{ width: "3rem", height: "3rem" }}></Avatar>
-        </div>
-      </div>
-    </div>
-  );
-}

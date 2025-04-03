@@ -1,6 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useLogin, useLogout, usePrivy, useWallets } from "@privy-io/react-auth";
-import { bigIntReplacer } from "@/utils/json";
 import { logger } from "@/utils/logger";
 
 interface useAuthInterface {

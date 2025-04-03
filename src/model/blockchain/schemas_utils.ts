@@ -19,7 +19,6 @@ import {
   ContractClaimTypeV2,
   ContractFilterInfoDTO,
   ContractFullClaimInfo,
-  ContractFullKYCInfoDTO,
   ContractInsuranceCarInfo,
   ContractInsuranceDTO,
   ContractInsuranceInfo,
