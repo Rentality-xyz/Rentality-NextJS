@@ -315,7 +315,7 @@ async function savePiiInfoToFirebase(allInfo: AllPiiInfo, docs: PiiDocData[]): P
     return Err("CIVIC_USER_PASSWORD was not set");
   }
 
-  const user = await loginWithPassword(CIVIC_USER_EMAIL, CIVIC_USER_PASSWORD);
+  await loginWithPassword(CIVIC_USER_EMAIL, CIVIC_USER_PASSWORD);
 
   const savedDocsResult = await saveDocs(allInfo.verifiedInformation.address, docs);
 

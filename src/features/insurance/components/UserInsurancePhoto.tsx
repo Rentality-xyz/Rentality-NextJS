@@ -4,7 +4,6 @@ import { resizeImage } from "@/utils/image";
 import { isEmpty } from "@/utils/string";
 import Image from "next/image";
 import React, { useRef } from "react";
-import { useTranslation } from "react-i18next";
 
 export function UserInsurancePhoto({
   insurancePhoto: photo,
@@ -16,7 +15,6 @@ export function UserInsurancePhoto({
   onDelete?: () => Promise<void>;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { t } = useTranslation();
   const photoUrl = photo !== undefined ? ("url" in photo ? photo.url : photo.localUrl) : "";
 
   async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {

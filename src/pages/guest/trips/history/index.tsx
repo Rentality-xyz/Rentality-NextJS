@@ -5,14 +5,11 @@ import { useTranslation } from "react-i18next";
 import RntSuspense from "@/components/common/rntSuspense";
 
 function History() {
-  const { isLoadingTrips, tripsHistory, confirmCarDetails } = useGuestTrips();
+  const { isLoadingTrips, tripsHistory } = useGuestTrips();
   const { t } = useTranslation();
 
   const changeStatusCallback = async (changeStatus: () => Promise<boolean>) => {
     return true;
-  };
-  const handleConfirmCarDetails = async (tripId: number) => {
-    await confirmCarDetails(tripId);
   };
 
   return (

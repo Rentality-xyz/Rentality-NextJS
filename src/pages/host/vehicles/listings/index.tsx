@@ -26,11 +26,9 @@ function Listings() {
   //DIMO
   const [isShowOnlyDimoCar, setIsShowOnlyDimoCar] = useState<boolean>(false);
   const {
-    walletAddress,
     isLoadingDimo,
-    dimoVehicles,
+    walletAddress,
     isAuthenticated,
-    jwt,
     fetchDimoData,
     createRentalityCar,
     onRentalityAndDimoNotSyncMapped,

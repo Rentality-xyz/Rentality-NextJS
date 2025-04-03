@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { HostCarInfo, emptyHostCarInfo } from "@/model/HostCarInfo";
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { ContractCarDetails, ContractCarInfoWithInsurance } from "@/model/blockchain/schemas";
 import { mapContractCarToCarDetails } from "@/model/mappers/contractCarToCarDetails";
 import { logger } from "@/utils/logger";
 

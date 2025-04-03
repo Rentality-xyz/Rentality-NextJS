@@ -2,7 +2,7 @@ import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import { AllowedChangeTripAction, TripInfo } from "@/model/TripInfo";
 import RntButton from "../common/rntButton";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
-import { Dispatch, SetStateAction, memo, useState, useRef } from "react";
+import { Dispatch, SetStateAction, memo, useState } from "react";
 import moment from "moment";
 import { TripStatus } from "@/model/blockchain/schemas";
 import { TFunction } from "i18next";

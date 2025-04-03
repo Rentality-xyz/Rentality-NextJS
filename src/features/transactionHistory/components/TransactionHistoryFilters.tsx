@@ -6,10 +6,8 @@ import { getTripStatusTextFromStatus } from "@/model/TripInfo";
 import { useTranslation } from "react-i18next";
 import { TransactionHistoryFiltersType } from "@/features/transactionHistory/hooks/useTransactionHistory";
 import RntInput from "@/components/common/rntInput";
-import RntSelect from "@/components/common/rntSelect";
 import RntButton from "@/components/common/rntButton";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
-import { nameof } from "@/utils/nameof";
 
 const allTripStatuses = Object.values(TripStatus).map((value) => {
   return { id: value, text: getTripStatusTextFromStatus(value) };

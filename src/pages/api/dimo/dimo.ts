@@ -21,7 +21,7 @@ export type DIMOSharedCarsResponse = {
   };
 };
 
-type VCDimoResult = {
+export type VCDimoResult = {
   message: string;
   vcQuery: string;
   vcUrl: string;

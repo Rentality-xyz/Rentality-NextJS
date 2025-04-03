@@ -1,4 +1,3 @@
-import { useRentalityAdmin } from "@/contexts/rentalityContext";
 import { useQuery } from "@tanstack/react-query";
 import { IRentalityAdminGateway } from "@/features/blockchain/models/IRentalityAdminGateway";
 import { getEtherContractWithSigner } from "@/abis";
