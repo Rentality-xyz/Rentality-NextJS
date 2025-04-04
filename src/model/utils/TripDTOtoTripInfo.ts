@@ -7,6 +7,8 @@ import { ContractTripDTO, EngineType, InsuranceType, TripStatus } from "@/model/
 import { calculateDays } from "@/utils/date";
 import { getDiscountablePrice, getNotDiscountablePrice } from "@/utils/price";
 import { getPromoPrice } from "@/features/promocodes/utils";
+import { addSpacesBeforeUpperCase } from "@/utils/spaceBeforeUpperCase";
+import { camelToTitleCase } from "@/utils/camelToTitleCase";
 
 export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetailsConfirmed?: boolean) => {
   const metaData = parseMetaData(await getMetaDataFromIpfs(tripDTO.metadataURI));
@@ -177,8 +179,9 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
     guestInsuranceType: insurancesInfo?.insuranceType,
     guestInsurancePhoto: guestInsurancePhoto,
     taxesData: tripDTO.taxesData.map((t) => {
+      let name = camelToTitleCase(addSpacesBeforeUpperCase(t.name));
       return {
-        name: t.name,
+        name,
         value: Number(t.value) / 100,
         tType: Number(t.tType),
       };
