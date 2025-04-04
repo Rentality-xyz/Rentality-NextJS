@@ -177,8 +177,9 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
     guestInsuranceType: insurancesInfo?.insuranceType,
     guestInsurancePhoto: guestInsurancePhoto,
     taxesData: tripDTO.taxesData.map((t) => {
+      let name = (t.name.charAt(0).toUpperCase() + t.name.slice(1)).replace("Tax"," Tax")
       return {
-        name: t.name,
+        name,
         value: Number(t.value) / 100,
         tType: Number(t.tType),
       };
