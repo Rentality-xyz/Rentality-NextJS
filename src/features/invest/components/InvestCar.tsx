@@ -17,6 +17,7 @@ import TokenizationBalance from "./TokenizationBalance";
 import Income from "./Income";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import { WeiPerEther } from "ethers";
+import { formatFloatInput } from "@/utils/formatFloatInput";
 
 const ccsDividerVert = "max-2xl:hidden absolute right-[-5px] top-1/2 h-[80%] w-px translate-y-[-50%] bg-gray-500";
 const ccsDividerHor = "2xl:hidden absolute bottom-[-10px] left-[5%] h-px w-[90%] translate-y-[-50%] bg-gray-500";
@@ -47,11 +48,7 @@ export default function InvestCar({
     const maxAmount = searchInfo.investment.investment.priceInCurrecy - searchInfo.investment.payedInCurrency;
     let value = e.target.value;
 
-    value = value
-      .replace(/,/g, ".")
-      .replace(/[^0-9.]/g, "")
-      .replace(/(\..*)\./g, "$1");
-    value = value.replace(/^0+(?=\d)/, "");
+    value = formatFloatInput(value)
 
     if (parseFloat(value) > maxAmount / 1e18) {
       value = (maxAmount / 1e18).toString();
