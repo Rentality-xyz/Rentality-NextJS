@@ -71,7 +71,7 @@ function TripReceipt({ tripId, tripInfo }: { tripId: bigint; tripInfo: TripInfo 
           </tr>
           {tripInfo.taxesData.map((t) => (
             <tr key={t.name + tripId}>
-              <td>{(t.name.charAt(0).toUpperCase() + t.name.slice(1)).replace("Tax"," Tax")}</td>
+              <td>{t.name}</td>
               <td className="text-end">${t.value}</td>
             </tr>
           ))}
