@@ -9,7 +9,7 @@ export const NODE_ENVS = ["development", "qa", "production"] as const;
 export type NodeEnv = (typeof NODE_ENVS)[number];
 
 export const DEFAULT_LOCAL_HOST_CHAIN_ID = 1337;
-export const DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM = 12;
+export const DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM = 10;
 export const DEFAULT_GOOGLE_MAPS_SEARCH_CENTER = {
   lat: 25.777747,
   lng: -80.216416,

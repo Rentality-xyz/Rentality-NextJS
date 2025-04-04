@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Marker, MarkerClusterer } from "@googlemaps/markerclusterer";
 import { useMap } from "@vis.gl/react-google-maps";
 import { MapRenderer } from "@/components/guest/carMap/carMapRenderer";
+import { DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM } from "@/utils/constants";
 
 export const ClusteredMapMarkers = ({
   carInfos,
@@ -49,9 +50,10 @@ export const ClusteredMapMarkers = ({
 
     if (selectedCar) {
       const bounds = new google.maps.LatLngBounds();
+      const selectedZoom = map.getZoom() || DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM;
       bounds.extend(new google.maps.LatLng(selectedCar.location.lat, selectedCar.location.lng));
       map.fitBounds(bounds);
-      map.setZoom(18);
+      map.setZoom(selectedZoom);
     }
   }, [map, selectedCar]);
 
