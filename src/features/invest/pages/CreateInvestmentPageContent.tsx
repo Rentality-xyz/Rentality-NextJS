@@ -16,6 +16,7 @@ import { DimoCarResponseWithTimestamp } from "@/features/dimo/hooks/useDimo";
 import RntButton from "@/components/common/rntButton";
 import useCreateInvestCar from "@/features/invest/hooks/useCreateInvestCar";
 import { WeiPerEther } from "ethers";
+import { formatFloatInput } from "@/utils/formatFloatInput";
 
 function CreateInvestmentPageContent() {
   const { t } = useTranslation();
@@ -78,15 +79,7 @@ function CreateInvestmentPageContent() {
   const handleInputCarPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
 
-    value = value.replace(/,/g, ".");
-
-    value = value.replace(/[^0-9.]/g, "");
-
-    value = value.replace(/^0+(?=\d)/, "");
-    const parts = value.split(".");
-    if (parts.length > 2) {
-      value = parts.slice(0, 2).join(".") + (parts.length > 2 ? "" : "");
-    }
+    value = formatFloatInput(value);
 
     setCarPrice(value);
   };
@@ -118,11 +111,6 @@ function CreateInvestmentPageContent() {
             type="number"
             value={carPrice}
             onChange={handleInputCarPriceChange}
-            style={{
-              MozAppearance: "textfield",
-              WebkitAppearance: "none",
-              appearance: "none",
-            }}
           />
 
           <RntInputTransparent
