@@ -115,10 +115,11 @@ export default function CarSearchMap({
       <Map
         id="google-maps-guest-search-page"
         mapId={GOOGLE_MAPS_MAP_ID}
+        mapTypeId={"satellite"}
         //className="max-xl:transition-height max-xl:duration-300 max-xl:ease-in-out"
         style={mapContainerStyle}
         defaultCenter={selectedCar?.location || defaultCenter || DEFAULT_GOOGLE_MAPS_SEARCH_CENTER}
-        defaultZoom={selectedCar ? 11 : DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM}
+        defaultZoom={DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM}
       >
         <ClusteredMapMarkers carInfos={searchResult.carInfos} selectedCar={selectedCar} setSelected={setSelected} />
       </Map>
