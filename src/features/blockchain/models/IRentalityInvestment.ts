@@ -23,7 +23,7 @@ export interface IRentalityInvestmentContract extends IEthersContract {
     car: {
       inProgress: boolean;
       car: ContractCreateCarRequest;
-      priceInUsd: bigint;
+      priceInCurrency: bigint;
       creatorPercents: bigint;
     },
     name_: string,

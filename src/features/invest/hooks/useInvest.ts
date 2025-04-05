@@ -19,15 +19,8 @@ const useInvest = () => {
       }
 
       try {
-        const valueInEth = await rentalityContracts.currencyConverter.getFromUsdLatest(
-          ETH_DEFAULT_ADDRESS,
-          BigInt(amount * 100)
-        );
-
-        if (!valueInEth.ok) throw new Error("invest error: Failed to convert currency");
-
-        const result = await rentalityContracts.investment.invest(investId, valueInEth.value[0], {
-          value: valueInEth.value[0],
+        const result = await rentalityContracts.investment.invest(investId, BigInt(amount), {
+          value: BigInt(amount),
         });
 
         return result.ok ? result : Err(new Error("invest error: " + result.error));
