@@ -16,6 +16,8 @@ import GuestInvestBlock from "./GuestInvestBlock";
 import TokenizationBalance from "./TokenizationBalance";
 import Income from "./Income";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import { WeiPerEther } from "ethers";
+import { formatFloatInput } from "@/utils/formatFloatInput";
 
 const ccsDividerVert = "max-2xl:hidden absolute right-[-5px] top-1/2 h-[80%] w-px translate-y-[-50%] bg-gray-500";
 const ccsDividerHor = "2xl:hidden absolute bottom-[-10px] left-[5%] h-px w-[90%] translate-y-[-50%] bg-gray-500";
@@ -37,23 +39,23 @@ export default function InvestCar({
 }) {
   const { t } = useTranslation();
   const ethereumInfo = useEthereum();
-  const [investmentAmount, setInvestmentAmount] = useState(0);
-  const { showDialog } = useRntDialogs();
+  const [investmentAmount, setInvestmentAmount] = useState<number | string>(0);
+  const { showDialog, hideDialogs } = useRntDialogs();
 
   const isCreator = searchInfo.investment.creator === ethereumInfo?.walletAddress;
 
   const handleChangeInvestmentAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const maxAmount = searchInfo.investment.investment.priceInUsd - searchInfo.investment.payedInUsd; //searchInfo.investment.investment.priceInUsd; -> Total price
-    const inputInvestmentAmount = e.target.value.replace(/[^\d.]/g, "") || "0"; // Удаляем всё, кроме цифр
-    let numericValue = Number.parseFloat(inputInvestmentAmount);
+    const maxAmount = searchInfo.investment.investment.priceInCurrecy - searchInfo.investment.payedInCurrency;
+    let value = e.target.value;
 
-    if (numericValue > maxAmount) {
-      numericValue = maxAmount;
+    value = formatFloatInput(value)
+
+    if (parseFloat(value) > maxAmount / 1e18) {
+      value = (maxAmount / 1e18).toString();
     }
 
-    setInvestmentAmount(numericValue);
+    setInvestmentAmount(value);
   };
-
   const listingStatus = getCarListingStatus(searchInfo.investment, ethereumInfo?.walletAddress ?? "", isHost, t);
 
   function getMessageInfo() {
@@ -147,7 +149,9 @@ export default function InvestCar({
         <div className="relative flex h-full flex-col p-2 text-center max-2xl:py-4 2xl:px-4">
           <p className="text-xl font-semibold max-2xl:mb-4">{t("invest.tokenization")}</p>
           <div className="flex flex-grow flex-col justify-center">
-            <p className="text-xl font-bold 2xl:text-2xl">${searchInfo.investment.investment.priceInUsd}</p>
+            <p className="text-xl font-bold 2xl:text-2xl">
+              ETH: {searchInfo.investment.investment.priceInCurrecy / 1e18}
+            </p>
             <p className="2xl:text-lg">{t("invest.total_price")}</p>
             <div className="mx-auto my-2 h-0.5 w-[40%] translate-y-[-50%] bg-white sm:w-[70%]"></div>
             <TokenizationBalance

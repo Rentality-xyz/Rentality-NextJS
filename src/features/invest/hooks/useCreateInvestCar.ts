@@ -100,7 +100,7 @@ function useCreateInvestCar() {
 
         const createInvestRequest = {
           car: request,
-          priceInUsd: BigInt(carPrice * 100),
+          priceInCurrency: BigInt(carPrice),
           creatorPercents: BigInt(hostPercents),
           inProgress: true,
         };

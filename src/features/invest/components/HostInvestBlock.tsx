@@ -16,7 +16,7 @@ function HostInvestBlock({
   const isReadyToClaim = (): boolean => {
     return (
       isCreator &&
-      (investment.payedInUsd >= investment.investment.priceInUsd || !investment.investment.inProgress) &&
+      (investment.payedInCurrency >= investment.investment.priceInCurrecy || !investment.investment.inProgress) &&
       !investment.listed
     );
   };
