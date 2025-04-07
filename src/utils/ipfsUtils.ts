@@ -195,7 +195,8 @@ export function parseMetaData(meta: any) {
 }
 
 export type CarMetadata = {
-  image: string;
+  mainImage: string;
+  images: string[];
   name: string;
   description: string;
   vinNumber: string;
