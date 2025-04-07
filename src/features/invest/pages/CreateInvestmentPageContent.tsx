@@ -15,7 +15,6 @@ import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { DimoCarResponseWithTimestamp } from "@/features/dimo/hooks/useDimo";
 import RntButton from "@/components/common/rntButton";
 import useCreateInvestCar from "@/features/invest/hooks/useCreateInvestCar";
-import { WeiPerEther } from "ethers";
 import { formatFloatInput } from "@/utils/formatFloatInput";
 
 function CreateInvestmentPageContent() {

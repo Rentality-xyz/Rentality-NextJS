@@ -1,16 +1,15 @@
 import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import RntButton from "@/components/common/rntButton";
-import useGetInvestments from "@/features/invest/hooks/useFetchInvestments";
+import useFetchInvestments from "@/features/invest/hooks/useFetchInvestments";
 import InvestCar from "@/features/invest/components/InvestCar";
 import { useRouter } from "next/navigation";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
 import { SortOptionKey } from "@/hooks/guest/useSearchCars";
 import useUserRole from "@/hooks/useUserRole";
 import useClaimIncome from "../hooks/useClaimIncome";
-import useStartHosting from "../hooks/useStartHosting";
 import useInvest from "../hooks/useInvest";
-import { emptyHostCarInfo } from "@/model/HostCarInfo";
+import { Ok } from "@/model/utils/result";
 
 type InvestContentProps = {};
 
@@ -19,10 +18,9 @@ type FilterEnum = Record<string, string>; // Типизация для Enum
 function InvestPageContent({}: InvestContentProps) {
   const router = useRouter();
   const { userRole, isInvestManager } = useUserRole();
-  const { data: investments } = useGetInvestments();
+  const { data: investments } = useFetchInvestments();
   const { mutateAsync: handleInvest, isPendingInvesting } = useInvest();
   const { mutateAsync: handleClaimIncome } = useClaimIncome();
-  const { mutateAsync: handleStartHosting } = useStartHosting();
   const [filterInvestBy, setFilterInvestBy] = useState<string | undefined>(undefined);
   const { t } = useTranslation();
 
@@ -39,7 +37,7 @@ function InvestPageContent({}: InvestContentProps) {
 
   function handleCreateInvestClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    router.push("/host/create_invest");
+    router.push("/host/invest/create");
   }
 
   // Фильтрация инвестиций
@@ -76,6 +74,11 @@ function InvestPageContent({}: InvestContentProps) {
     });
   }, [investments, filterInvestBy, filterInvest]);
 
+  async function handleStartHosting(investmentId: number) {
+    router.push(`/host/invest/start-hosting/${investmentId}`);
+    return Ok(true);
+  }
+
   return (
     <div className="mt-8">
       {isInvestManager(userRole) && (
@@ -108,12 +111,7 @@ function InvestPageContent({}: InvestContentProps) {
             searchInfo={value}
             handleInvest={(amount, investId) => handleInvest({ amount, investId })}
             isPendingInvesting={isPendingInvesting(value.investment.investmentId)}
-            handleStartHosting={() =>
-              handleStartHosting({
-                investId: value.investment.investmentId,
-                hostCarInfo: { ...emptyHostCarInfo, pricePerDay: 10000 },
-              })
-            }
+            handleStartHosting={handleStartHosting}
             handleClaimIncome={handleClaimIncome}
           />
         ))}

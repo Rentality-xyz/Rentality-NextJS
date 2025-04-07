@@ -48,7 +48,7 @@ export default function InvestCar({
     const maxAmount = searchInfo.investment.investment.priceInCurrecy - searchInfo.investment.payedInCurrency;
     let value = e.target.value;
 
-    value = formatFloatInput(value)
+    value = formatFloatInput(value);
 
     if (parseFloat(value) > maxAmount / 1e18) {
       value = (maxAmount / 1e18).toString();
@@ -101,7 +101,7 @@ export default function InvestCar({
         </div>
       </div>
       <div
-        style={{ backgroundImage: `url(${searchInfo.metadata.image})` }}
+        style={{ backgroundImage: `url(${searchInfo.metadata.mainImage})` }}
         className="min-h-[212px] w-full bg-cover bg-center bg-no-repeat sm:min-h-[356px] xl:min-h-[514px] 2xl:min-h-[324px] mac:min-h-[366px] fullHD:min-h-[432px]"
       ></div>
       <div className="flex h-full w-full grid-cols-[1fr_0.5fr_0.5fr] flex-col gap-2 2xl:grid">
