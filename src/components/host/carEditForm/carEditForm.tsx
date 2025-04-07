@@ -39,14 +39,12 @@ import RntFilterSelect from "@/components/common/RntFilterSelect";
 
 export default function CarEditForm({
   initValue,
-  isNewCar,
-  isInvestmentCar,
+  editMode,
   saveCarInfo,
   t,
 }: {
   initValue?: HostCarInfo;
-  isNewCar: boolean;
-  isInvestmentCar: boolean;
+  editMode: "newCar" | "editCar" | "startInvestmentCar";
   saveCarInfo: (hostCarInfo: HostCarInfo, nftName: string, nftSym: string) => Promise<Result<boolean, Error>>;
   t: TFunction;
 }) {
@@ -59,7 +57,7 @@ export default function CarEditForm({
 
   const { register, control, handleSubmit, formState, setValue, watch } = useForm<CarEditFormValues>({
     defaultValues:
-      !isNewCar && initValue !== undefined
+      editMode !== "newCar" && initValue !== undefined
         ? ({
             carId: initValue.carId,
             vinNumber: initValue.vinNumber,
@@ -85,7 +83,7 @@ export default function CarEditForm({
             isLocationEdited: initValue.isLocationEdited,
             locationInfo: initValue.locationInfo,
 
-            milesIncludedPerDay: initValue.milesIncludedPerDay,
+            milesIncludedPerDay: editMode === "startInvestmentCar" ? undefined : initValue.milesIncludedPerDay,
 
             pricePerDay: initValue.pricePerDay,
             securityDeposit: initValue.securityDeposit,
@@ -111,7 +109,7 @@ export default function CarEditForm({
   });
 
   let dimoData: DimoCarResponseWithTimestamp | undefined;
-  if (isNewCar && typeof window !== "undefined") {
+  if (editMode === "newCar" && typeof window !== "undefined") {
     const dimoItem = localStorage.getItem("dimo");
     if (dimoItem !== null) {
       const timestamp = new Date().getTime();
@@ -143,7 +141,7 @@ export default function CarEditForm({
 
   const vinNumber = watch("vinNumber");
 
-  const [isCarMetadataEdited, setIsCarMetadataEdited] = useState(isNewCar);
+  const [isCarMetadataEdited, setIsCarMetadataEdited] = useState(editMode !== "editCar");
   const [selectedMakeID, setSelectedMakeID] = useState<string>("");
   const [selectedModelID, setSelectedModelID] = useState<string>("");
 
@@ -151,8 +149,8 @@ export default function CarEditForm({
   const [isVINCheckOverriden, setIsVINCheckOverriden] = useState<boolean>(false);
 
   const isFormEnabled = useMemo<boolean>(() => {
-    return isVINVerified || isVINCheckOverriden || !isNewCar;
-  }, [isVINVerified, isVINCheckOverriden, isNewCar]);
+    return isVINVerified || isVINCheckOverriden || editMode !== "newCar";
+  }, [isVINVerified, isVINCheckOverriden, editMode]);
 
   const { getVINNumber } = useCarAPI();
 
@@ -201,7 +199,7 @@ export default function CarEditForm({
     };
 
     const isValidForm = verifyCar(carInfoFormParams);
-    const isImageUploaded = !isNewCar || carInfoFormParams.images.length > 0;
+    const isImageUploaded = editMode !== "newCar" || carInfoFormParams.images.length > 0;
 
     if (!isValidForm && !isImageUploaded) {
       showDialog(t("vehicles.fill_fields_photo"));
@@ -223,17 +221,17 @@ export default function CarEditForm({
       if (dimoData) {
         localStorage.removeItem("dimo");
       }
-      if (isInvestmentCar) {
+      if (editMode === "startInvestmentCar") {
         showSuccess(t("vehicles.car_invested"));
       } else {
-        if (isNewCar) {
+        if (editMode === "newCar") {
           showSuccess(t("vehicles.car_listed"));
         } else {
           showSuccess(t("vehicles.edited"));
         }
       }
       showSuccess(t("vehicles.successfully_listed"));
-      if (isInvestmentCar) {
+      if (editMode === "startInvestmentCar") {
         router.push("/host/invest");
       } else {
         router.push("/host/vehicles");
@@ -309,7 +307,7 @@ export default function CarEditForm({
                     isVINCheckOverriden={isVINCheckOverriden}
                     isVINVerified={isVINVerified}
                     placeholder="e.g. 4Y1SL65848Z411439"
-                    readOnly={!isNewCar}
+                    readOnly={editMode === "editCar"}
                     onChange={(e) => onChange(e.target.value.toUpperCase())}
                     onVINVerified={(verified: boolean) => setIsVINVerified(verified)}
                     onVINCheckOverriden={(overridden) => setIsVINCheckOverriden(overridden)}
@@ -329,7 +327,7 @@ export default function CarEditForm({
               control={control}
               defaultValue={dimoData?.definition?.make || ""}
               render={({ field: { onChange, value } }) =>
-                isNewCar && !isVINVerified && dimoData === undefined ? (
+                editMode === "newCar" && !isVINVerified && dimoData === undefined ? (
                   <RntCarMakeSelect
                     id="brand"
                     isTransparentStyle={true}
@@ -344,7 +342,7 @@ export default function CarEditForm({
                     }}
                     validationError={errors.brand?.message?.toString()}
                   />
-                ) : isNewCar && dimoData !== undefined ? (
+                ) : editMode === "newCar" && dimoData !== undefined ? (
                   <RntInputTransparent
                     id="brand"
                     className="lg:w-60"
@@ -368,14 +366,14 @@ export default function CarEditForm({
               control={control}
               defaultValue={dimoData?.definition?.model || ""}
               render={({ field: { onChange, value } }) =>
-                isNewCar && !isVINVerified && dimoData === undefined ? (
+                editMode === "newCar" && !isVINVerified && dimoData === undefined ? (
                   <RntCarModelSelect
                     id="model"
                     isTransparentStyle={true}
                     className="lg:min-w-[15ch]"
                     label={t_car("model")}
                     make_id={selectedMakeID}
-                    readOnly={!isNewCar || !isFormEnabled}
+                    readOnly={editMode !== "newCar" || !isFormEnabled}
                     value={value}
                     onModelSelect={(newID: string, newModel) => {
                       onChange(newModel);
@@ -384,7 +382,7 @@ export default function CarEditForm({
                     }}
                     validationError={errors.model?.message?.toString()}
                   />
-                ) : isNewCar && dimoData !== undefined ? (
+                ) : editMode === "newCar" && dimoData !== undefined ? (
                   <RntInputTransparent
                     id="model"
                     className="lg:w-60"
@@ -408,7 +406,7 @@ export default function CarEditForm({
               control={control}
               defaultValue={dimoData ? Number.parseInt(dimoData.definition.year) : 2001}
               render={({ field: { onChange, value } }) =>
-                isNewCar && !isVINVerified && dimoData === undefined ? (
+                editMode === "newCar" && !isVINVerified && dimoData === undefined ? (
                   <RntCarYearSelect
                     id="releaseYear"
                     isTransparentStyle={true}
@@ -416,7 +414,7 @@ export default function CarEditForm({
                     label={t_car("release")}
                     make_id={selectedMakeID}
                     model_id={selectedModelID}
-                    readOnly={!isNewCar || !isFormEnabled}
+                    readOnly={editMode !== "newCar" || !isFormEnabled}
                     value={value}
                     onYearSelect={(newYear) => {
                       onChange(newYear);
@@ -424,7 +422,7 @@ export default function CarEditForm({
                     }}
                     validationError={errors.releaseYear?.message?.toString()}
                   />
-                ) : isNewCar && dimoData !== undefined ? (
+                ) : editMode === "newCar" && dimoData !== undefined ? (
                   <RntInputTransparent
                     id="releaseYear"
                     className="lg:w-52"
@@ -717,7 +715,7 @@ export default function CarEditForm({
                     id="address"
                     isAsRntInputTransparent={true}
                     isDarkPlacePredictions={true}
-                    label={isNewCar ? t_car("address") : t_car("saved_address")}
+                    label={editMode !== "editCar" ? t_car("address") : t_car("saved_address")}
                     placeholder="Miami"
                     initValue={autocomplete}
                     includeStreetAddress={true}
@@ -734,7 +732,7 @@ export default function CarEditForm({
               <RntInputTransparent
                 className="lg:w-full"
                 id="address"
-                label={isNewCar ? t_car("address") : t_car("saved_address")}
+                label={editMode !== "editCar" ? t_car("address") : t_car("saved_address")}
                 placeholder="Miami"
                 value={autocomplete}
                 readOnly={true}
@@ -1163,7 +1161,7 @@ const MilesIncludedPerDay = ({
           //setValue("milesIncludedPerDay", e.target.checked ? UNLIMITED_MILES_VALUE : 0)
           //field.onChange(e.target.checked ? UNLIMITED_MILES_VALUE : 0);
           setIsUnlimited(e.target.checked);
-          onChange(e.target.checked ? UNLIMITED_MILES_VALUE_TEXT : (milesIncludedPerDay ?? 0));
+          onChange(e.target.checked ? UNLIMITED_MILES_VALUE_TEXT : milesIncludedPerDay ?? 0);
         }}
       />
     </>
