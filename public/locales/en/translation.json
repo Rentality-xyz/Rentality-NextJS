@@ -906,6 +906,7 @@
     "listing_coming_soon": "listing coming soon",
     "listed_days": "Listed {date} ({days} days)",
     "title_create_investment": "Create investment",
+    "title_start_hosting_investment": "Start hosting investment",
     "tokens_held_by_investors": "{tokens} tokens held by {investors} investors",
     "view_smart_contract": "View smart contract",
     "new_nft_info": "New nft collection info",
@@ -930,7 +931,8 @@
       "actually_listed_expect": "To claim and receive earnings, wait for completed trips.",
       "listing_progress": "To claim and receive earnings, wait for the vehicle listing and completed trips.",
       "waiting_full_tokenization": "After full tokenization, the vehicle will be listed on the platform and the investor will be able to receive earnings from each trip."
-    }
+    },
+    "start_hosting_loading_error": "This investment can not be started for hosting!"
   },
   "cropper": {
     "cancel": "Cancel",

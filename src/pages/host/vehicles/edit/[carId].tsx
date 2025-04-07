@@ -28,8 +28,7 @@ function EditCar() {
         {hostCarInfo.carId > 0 && (
           <CarEditForm
             initValue={hostCarInfo}
-            isNewCar={false}
-            isInvestmentCar={false}
+            editMode="editCar"
             saveCarInfo={async (hostCarInfo) => {
               return await updateCar(hostCarInfo);
             }}
