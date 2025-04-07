@@ -89,7 +89,7 @@ function CreateInvestmentPageContent() {
   };
 
   useEffect(() => {
-    setInvestorsPercentage((100 - Number(platformPercentage) - Number(hostPercentage)).toFixed(2));
+    setInvestorsPercentage(Math.round(100 - Number(platformPercentage) - Number(hostPercentage)));
   }, [hostPercentage, platformPercentage]);
 
   return (
