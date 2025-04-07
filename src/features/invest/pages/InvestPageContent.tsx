@@ -39,7 +39,7 @@ function InvestPageContent({}: InvestContentProps) {
 
   function handleCreateInvestClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    router.push("/host/create_invest");
+    router.push("/host/invest/create");
   }
 
   // Фильтрация инвестиций
