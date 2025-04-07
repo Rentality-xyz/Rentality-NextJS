@@ -38,11 +38,7 @@ async function fetchInvestments(
   return Promise.all(
     result.value.map(async (value) => {
       const metadata = parseMetaData(await getMetaDataFromIpfs(value.investment.car.tokenUri));
-      return mapContractInvestmentDTOToInvestmentInfoWithMetadata(
-        value,
-        { ...metadata, image: metadata.mainImage },
-        ethereumInfo.chainId
-      );
+      return mapContractInvestmentDTOToInvestmentInfoWithMetadata(value, metadata, ethereumInfo.chainId);
     })
   );
 }

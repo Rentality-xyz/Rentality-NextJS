@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import RntButton from "@/components/common/rntButton";
-import useGetInvestments from "@/features/invest/hooks/useFetchInvestments";
+import useFetchInvestments from "@/features/invest/hooks/useFetchInvestments";
 import InvestCar from "@/features/invest/components/InvestCar";
 import { useRouter } from "next/navigation";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
@@ -19,7 +19,7 @@ type FilterEnum = Record<string, string>; // Типизация для Enum
 function InvestPageContent({}: InvestContentProps) {
   const router = useRouter();
   const { userRole, isInvestManager } = useUserRole();
-  const { data: investments } = useGetInvestments();
+  const { data: investments } = useFetchInvestments();
   const { mutateAsync: handleInvest, isPendingInvesting } = useInvest();
   const { mutateAsync: handleClaimIncome } = useClaimIncome();
   const { mutateAsync: handleStartHosting } = useStartHosting();
