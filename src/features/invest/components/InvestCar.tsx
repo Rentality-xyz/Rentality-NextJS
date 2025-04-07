@@ -110,9 +110,6 @@ export default function InvestCar({
             <p className="text-xl font-bold">
               {`${searchInfo.investment.investment.car.brand} ${searchInfo.investment.investment.car.model} ${searchInfo.investment.investment.car.yearOfProduction}`}
             </p>
-            <p className="font-medium text-[#FFFFFF70]">
-              {`${searchInfo.investment.investment.car.locationInfo.locationInfo.city}, ${searchInfo.investment.investment.car.locationInfo.locationInfo.state}, ${searchInfo.investment.investment.car.locationInfo.locationInfo.country}`}
-            </p>
           </div>
           <div>
             {isHost ? (
