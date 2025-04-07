@@ -11,8 +11,7 @@ function AddCar() {
     <>
       <PageTitle title={t("vehicles.title")} />
       <CarEditForm
-        isNewCar={true}
-        isInvestmentCar={false}
+        editMode="newCar"
         saveCarInfo={async (hostCarInfo) => {
           return await saveNewCar(hostCarInfo);
         }}
