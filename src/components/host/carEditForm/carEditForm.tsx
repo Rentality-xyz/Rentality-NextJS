@@ -273,13 +273,15 @@ export default function CarEditForm({
     showDialog(t("vehicles.lost_unsaved"), action);
   }
 
-  if (isVINVerified) {
+  useEffect(() => {
+    if (!isVINVerified) return;
+
     getVINNumber(vinNumber).then((vinInfo: VinInfo | undefined) => {
       setValue("brand", vinInfo?.brand ?? "");
       setValue("model", vinInfo?.model ?? "");
       setValue("releaseYear", parseInt(vinInfo?.yearOfProduction ?? "2001"));
     });
-  }
+  }, [isVINVerified, getVINNumber, vinNumber, setValue]);
 
   return (
     <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]} language="en">
@@ -1041,16 +1043,16 @@ export default function CarEditForm({
                   id="listed"
                   isTransparentStyle={true}
                   label={t_car("listing_status")}
-                  value={field.value ? "true" : "false"}
+                  value={field.value ? "listed" : "unlisted"}
                   disabled={!isFormEnabled}
                   onChange={(e) => {
-                    field.onChange(e.target.value === "true");
+                    field.onChange(e.target.value === "listed");
                   }}
                 >
-                  <RntFilterSelect.Option key="listing-status-1" value={"true"}>
+                  <RntFilterSelect.Option key="listing-status-1" value={"listed"}>
                     {t_car("listed")}
                   </RntFilterSelect.Option>
-                  <RntFilterSelect.Option key="listing-status-2" value={"false"}>
+                  <RntFilterSelect.Option key="listing-status-2" value={"unlisted"}>
                     {t_car("unlisted")}
                   </RntFilterSelect.Option>
                 </RntFilterSelect>
