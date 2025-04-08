@@ -5,10 +5,11 @@ import { createPortal } from "react-dom";
 import RntValidationError from "./RntValidationError";
 import { isEmpty } from "@/utils/string";
 import Image from "next/image";
+import { extractTextFromReactNode } from "@/utils/react";
 
 interface RntFilterSelectContextType {
-  selected: string | undefined;
-  setSelected: (value: string | undefined) => void;
+  selected: { value: string; text: string } | undefined;
+  setSelected: (value: { value: string; text: string } | undefined) => void;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   containerRef: React.RefObject<HTMLDivElement>;
@@ -56,7 +57,7 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
       !isTransparentStyle && disabled && "bg-transparent",
       isTransparentStyle && !disabled && "btn_input_border-gradient"
     );
-    const [selected, setSelected] = useState<string | undefined>(undefined);
+    const [selected, setSelected] = useState<{ value: string; text: string } | undefined>(undefined);
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const hiddenSelectRef = useRef<HTMLSelectElement>(null);
@@ -69,10 +70,32 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
     }, [value]);
 
     useEffect(() => {
-      if (value === undefined || typeof value === "string" || typeof value === "number") {
-        setSelected(value?.toString());
+      if (value === undefined) {
+        setSelected(undefined);
+        return;
       }
-    }, [value]);
+
+      if (typeof value === "string" || (typeof value === "number" && !isNaN(value))) {
+        let isFound = false;
+
+        React.Children.forEach(children, (child) => {
+          if (!isFound && React.isValidElement(child) && child.props.value === value?.toString()) {
+            setSelected({
+              value: child.props.value,
+              text: extractTextFromReactNode(child.props.children),
+            });
+            isFound = true;
+          }
+        });
+
+        if (!isFound) {
+          setSelected({
+            value: value.toString(),
+            text: value.toString(),
+          });
+        }
+      }
+    }, [value, children]);
 
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
@@ -92,7 +115,7 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
 
     useEffect(() => {
       if (!hiddenSelectRef.current) return;
-      hiddenSelectRef.current.value = selected ?? "";
+      hiddenSelectRef.current.value = selected?.value ?? "";
       hiddenSelectRef.current.dispatchEvent(new Event("change", { bubbles: true }));
     }, [selected]);
 
@@ -100,7 +123,7 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
       <RntFilterSelectContext.Provider value={{ selected, setSelected, isOpen, setIsOpen, containerRef: selectRef }}>
         <div className={containerCn} ref={containerRef}>
           {/* hidden select element */}
-          <select value={selected ?? ""} ref={hiddenSelectRef} hidden {...rest}>
+          <select value={selected?.value ?? ""} ref={hiddenSelectRef} hidden {...rest}>
             {React.Children.map(children, (child) =>
               React.isValidElement(child) ? (
                 <option value={child.props.value} key={child.props.key}>
@@ -117,7 +140,7 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
           )}
           <div ref={selectRef}>
             <div className={selectCn} id={id} ref={ref} onClick={toggleDropdown}>
-              {selected || placeholder}
+              {selected?.text || placeholder}
               <Image
                 src={
                   disabled
@@ -178,6 +201,7 @@ function DropdownPortal({ children }: { children?: React.ReactNode }) {
         top: `${position.top + 8}px`,
         left: `${position.left}px`,
         // width: `${position.width}px`,
+        minWidth: `${position.width}px`,
         maxHeight: `${dropdownHeight}px`,
       }}
     >
@@ -196,7 +220,7 @@ const Option = forwardRef<HTMLDivElement, OptionProps>(({ value, children, class
   if (!context) throw new Error("RntFilterSelect.Option must be used within a RntFilterSelect");
 
   const { selected, setSelected, setIsOpen } = context;
-  const isSelected = selected === value;
+  const isSelected = selected?.value === value;
 
   return (
     <div
@@ -206,7 +230,7 @@ const Option = forwardRef<HTMLDivElement, OptionProps>(({ value, children, class
         "flex w-full cursor-pointer flex-row items-center gap-2 rounded-md px-4 transition-colors hover:bg-gray-600 active:bg-rentality-additional-light"
       )}
       onClick={() => {
-        setSelected(value);
+        setSelected({ value, text: extractTextFromReactNode(children) });
         setIsOpen(false);
       }}
       role="button"
