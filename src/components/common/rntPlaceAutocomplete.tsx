@@ -8,6 +8,13 @@ export default function RntPlaceAutoComplete(props: RntPlaceAutocompleteInputPro
 
   if (apiIsLoaded) return <RntPlaceAutocompleteInput {...props} />;
 
-  const { initValue, includeStreetAddress, onAddressChange, ...inputProps } = props;
+  const {
+    initValue,
+    includeStreetAddress,
+    onAddressChange,
+    isAsRntInputTransparent,
+    isDarkPlacePredictions,
+    ...inputProps
+  } = props;
   return <RntInputTransparent {...inputProps} />;
 }
