@@ -201,6 +201,7 @@ function DropdownPortal({ children }: { children?: React.ReactNode }) {
         top: `${position.top + 8}px`,
         left: `${position.left}px`,
         // width: `${position.width}px`,
+        minWidth: `${position.width}px`,
         maxHeight: `${dropdownHeight}px`,
       }}
     >
