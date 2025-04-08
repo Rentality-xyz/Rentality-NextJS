@@ -91,6 +91,9 @@ function ManageRole() {
         <option value={Role.InvestmentManager.toString()} selected>
           Investment Manager
         </option>
+        <option value={Role.OracleManager.toString()} selected>
+          Oracle Manager
+        </option>
       </RntSelect>
       <RntButton
         className="w-56 self-end"
