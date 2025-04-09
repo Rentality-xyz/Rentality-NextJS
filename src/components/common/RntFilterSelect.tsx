@@ -74,7 +74,6 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
         setSelected(undefined);
         return;
       }
-      console.log(`selectFiltet value changed: ${value}`);
 
       if (typeof value === "string" || (typeof value === "number" && !isNaN(value))) {
         let isFound = false;
@@ -118,7 +117,7 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
       if (!hiddenSelectRef.current) return;
       hiddenSelectRef.current.value = selected?.value ?? "";
       hiddenSelectRef.current.dispatchEvent(new Event("change", { bubbles: true }));
-    }, [selected]);
+    }, [selected?.value]);
 
     return (
       <RntFilterSelectContext.Provider value={{ selected, setSelected, isOpen, setIsOpen, containerRef: selectRef }}>
