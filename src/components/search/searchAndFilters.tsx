@@ -25,6 +25,22 @@ import RntFilterSelect from "../common/RntFilterSelect";
 import { getTimeZoneIdByAddress } from "@/utils/timezone";
 import useFetchExistPlatformCars from "@/features/search/hooks/useFetchExistPlatformCars";
 
+function isEqual (a: SearchCarFilters | null, b: SearchCarFilters | null) {
+  if (a === b) return true;
+  
+
+  if (a == null || b == null) return false;
+
+  if (a.brand !== b.brand) return false;
+  if (a.model !== b.model) return false;
+  if (a.yearOfProductionFrom !== b.yearOfProductionFrom) return false;
+  if (a.yearOfProductionTo !== b.yearOfProductionTo) return false;
+  if (a.pricePerDayInUsdFrom !== b.pricePerDayInUsdFrom) return false;
+  if (a.pricePerDayInUsdTo !== b.pricePerDayInUsdTo) return false;
+  if (a.carId !== b.carId) return false;
+
+  return true;
+}
 export default function SearchAndFilters({
   initValue,
   sortBy,
@@ -107,9 +123,14 @@ export default function SearchAndFilters({
   const [searchCarFilters, setSearchCarFilters] = useState<SearchCarFilters | null>(null);
   const [selectedMakeID, setSelectedMakeID] = useState<string>("");
 
+
+  const prevFiltersRef = useRef<SearchCarFilters | null>(null);
+
   useEffect(() => {
-    if (searchCarFilters) {
+    // Порівнюємо старі та нові значення
+    if (searchCarFilters && !isEqual(prevFiltersRef.current, searchCarFilters)) {
       onFilterApply(searchCarFilters);
+      prevFiltersRef.current = searchCarFilters;
     }
   }, [searchCarFilters]);
 
