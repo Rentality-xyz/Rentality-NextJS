@@ -74,6 +74,7 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
         setSelected(undefined);
         return;
       }
+      console.log(`selectFiltet value changed: ${value}`);
 
       if (typeof value === "string" || (typeof value === "number" && !isNaN(value))) {
         let isFound = false;
