@@ -55,17 +55,17 @@ function InvestPageContent({}: InvestContentProps) {
           return value.investment.myTokens > 0;
 
         case filterInvest.available_to_invest:
-          return value.investment.investment.priceInCurrecy > value.investment.payedInCurrency;
+          return value.investment.investment.priceInCurrency > value.investment.payedInCurrency;
 
         case filterInvest.ready_to_claim:
           return value.investment.myIncome > 0;
 
         case filterInvest.fully_tokenized:
-          return value.investment.investment.priceInCurrecy <= value.investment.payedInCurrency;
+          return value.investment.investment.priceInCurrency <= value.investment.payedInCurrency;
 
         case filterInvest.ready_for_listing:
           return (
-            value.investment.investment.priceInCurrecy <= value.investment.payedInCurrency && !value.investment.listed
+            value.investment.investment.priceInCurrency <= value.investment.payedInCurrency && !value.investment.listed
           );
 
         default:

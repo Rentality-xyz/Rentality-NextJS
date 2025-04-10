@@ -31,7 +31,7 @@ export type CreateCarRequest = {
 
 export type CarInvestment = {
   car: CreateCarRequest;
-  priceInCurrecy: number;
+  priceInCurrency: number;
   creatorPercents: number;
   inProgress: boolean;
 };
