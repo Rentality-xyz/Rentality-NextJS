@@ -17,7 +17,7 @@ function TokenizationBalance({
   return investStatus === InvestStatus.WaitingFullTokenization ? (
     <>
       <p className="text-xl font-bold leading-none text-rentality-secondary 2xl:text-2xl">
-        ETH: {(investment.investment.priceInCurrecy - investment.payedInCurrency) / 1e18}
+        ETH: {(investment.investment.priceInCurrency - investment.payedInCurrency)}
       </p>
       <p className="leading-snug text-rentality-secondary 2xl:text-lg">{t("invest.balance_raised")}</p>
     </>
