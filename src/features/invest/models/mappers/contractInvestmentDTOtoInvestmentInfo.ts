@@ -68,8 +68,8 @@ export const mapContractInvestmentDTOToInvestmentInfoWithMetadata = (
       collectionSymbol: dto.symbol,
       totalEarnings: Number(dto.totalEarnings) / 1e18,
       totalEarningsByUser: Number(dto.userReceivedEarnings) / 1e18,
-      priceInUsdCents: Number(dto.priceInUsdCents),
       payedInCurrency: Number(dto.payedInCurrency) / 1e18,
+      priceInUsdCents: Number(dto.priceInUsdCents),
     },
     metadata: metaData,
   };
