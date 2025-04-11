@@ -89,7 +89,7 @@ export async function getEtherContractWithSigner(contract: keyof typeof rentalit
 }
 
 export function hasContractForChainId(chainId: number) {
-  return rentalityContracts.gateway.addresses.find((i) => i.chainId === chainId) !== undefined;
+  return chainId !== 204 && rentalityContracts.gateway.addresses.find((i) => i.chainId === chainId) !== undefined;
 }
 
 export function getContractAddress(contract: keyof typeof rentalityContracts, chainId: number) {
