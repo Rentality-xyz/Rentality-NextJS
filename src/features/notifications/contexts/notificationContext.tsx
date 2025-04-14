@@ -192,9 +192,12 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         const signerWithProvider = randomSigner.connect(provider);
         const notificationService = await getEtherContractWithSigner("notificationService", signerWithProvider);
         if (!notificationService) {
-          logger.error("initialLoading error: notificationService is null");
+          logger.error("Notification context initialization error: notificationService is null");
           return false;
         }
+
+        // sleep for 5 sec to avoid 429 error during plaftorm initialization
+        await new Promise((resolve) => setTimeout(resolve, 5000));
 
         const toBlock = await ethereumInfo.provider.getBlockNumber();
         const fromBlock = getFromBlock(ethereumInfo.chainId, toBlock);
@@ -202,7 +205,10 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         const getTripsResult = await rentalityContracts.gateway.getTripsAs(isHost);
         const getMyClaimsResult = await rentalityContracts.gateway.getMyClaimsAs(isHost);
 
-        if (!getTripsResult.ok || !getMyClaimsResult.ok) return;
+        if (!getTripsResult.ok || !getMyClaimsResult.ok) {
+          logger.error("Notification context initialization error!");
+          return;
+        }
 
         const rentalityEventFilterFromUser = notificationService.filters.RentalityEvent(
           null,
@@ -240,7 +246,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         await notificationService.on(rentalityEventFilterFromUser, rentalityEventListener);
         await notificationService.on(rentalityEventFilterToUser, rentalityEventListener);
       } catch (error) {
-        logger.error("initialLoading error:" + error);
+        logger.error("Notification context initialization error:" + error);
       } finally {
         setIsLoading(false);
       }
