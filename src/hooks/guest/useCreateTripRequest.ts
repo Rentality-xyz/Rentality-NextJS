@@ -13,6 +13,7 @@ import moment from "moment";
 import { formatEther } from "viem";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { logger } from "@/utils/logger";
+import { correctDaylightSavingTime } from "@/utils/correctDaylightSavingTime";
 
 const useCreateTripRequest = () => {
   const ethereumInfo = useEthereum();
@@ -36,8 +37,17 @@ const useCreateTripRequest = () => {
 
     promoCode = !isEmpty(promoCode) ? promoCode : EMPTY_PROMOCODE;
     const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
-    const dateFrom = moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, notEmtpyTimeZoneId).toDate();
-    const dateTo = moment.tz(searchCarRequest.dateToInDateTimeStringFormat, notEmtpyTimeZoneId).toDate();
+
+     const startTimeWithoutTimeZone = new Date(searchCarRequest.dateFromInDateTimeStringFormat)
+       
+       const endTimeWithoutTimeZone = correctDaylightSavingTime(
+         startTimeWithoutTimeZone,
+         new Date(searchCarRequest.dateToInDateTimeStringFormat))
+     
+       const dateFrom = moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, notEmtpyTimeZoneId).toDate();
+     
+       const dateTo = moment.tz(endTimeWithoutTimeZone.toDateString(), notEmtpyTimeZoneId).toDate();
+
 
     const days = calculateDays(dateFrom, dateTo);
     if (days < 0) {
