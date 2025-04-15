@@ -14,6 +14,9 @@ function Home() {
     if (!isLoading && isHost(userRole)) {
       router.push("/host");
     }
+    else if (!isLoading && isAuthenticated && !isHost(userRole)) { 
+      router.push("/guest");
+    }
   }, [isLoading, userRole, isHost, router]);
 
   if (!isAuthenticated) {
