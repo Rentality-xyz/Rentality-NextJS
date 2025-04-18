@@ -4,9 +4,9 @@ import axios from "./cachedAxios";
 import { TimezoneResponse } from "@/pages/api/timezoneByLocation";
 import { formatLocationInfoUpToState, LocationInfo } from "@/model/LocationInfo";
 import { Err, Ok, Result } from "@/model/utils/result";
-import { UTC_TIME_ZONE_ID } from "./date";
 import { getLocationInfoFromGoogleByAddress } from "./location";
 import { logger } from "./logger";
+import { UTC_TIME_ZONE_ID } from "./constants";
 
 // Client functions with cache
 export async function getTimeZoneIdByLocation(latitude: number, longitude: number) {

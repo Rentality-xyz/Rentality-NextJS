@@ -9,7 +9,6 @@ import {
   changeStatusGuestStartedFormSchema,
   ChangeStatusGuestStartedFormValues,
 } from "./changeStatusGuestStartedFormSchema";
-import { calculateDays } from "@/utils/date";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
@@ -20,6 +19,7 @@ import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 import { Result } from "@/model/utils/result";
 import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore/pinata/utils";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
+import { calculateDaysByBlockchainLogic } from "@/utils/date";
 
 interface ChangeStatusGuestStartedFormProps {
   tripInfo: TripInfo;
@@ -59,7 +59,7 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
 
     useEffect(() => {
       const endOdometr = odometer ?? 0;
-      const tripDays = calculateDays(tripInfo.tripStart, tripInfo.tripEnd);
+      const tripDays = calculateDaysByBlockchainLogic(tripInfo.tripStart, tripInfo.tripEnd);
       let overMiles = endOdometr - tripInfo.startOdometr - tripInfo.milesIncludedPerDay * tripDays;
       overMiles = overMiles > 0 ? overMiles : 0;
       setOvermileValue(overMiles);
@@ -195,7 +195,7 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
                 <span className="col-span-1">Miles included:</span>
                 <span className="col-span-1 text-right">
                   {getMilesIncludedPerDayText(
-                    tripInfo.milesIncludedPerDay * calculateDays(tripInfo.tripStart, tripInfo.tripEnd)
+                    tripInfo.milesIncludedPerDay * calculateDaysByBlockchainLogic(tripInfo.tripStart, tripInfo.tripEnd)
                   )}{" "}
                   mi per trip
                 </span>

@@ -1,9 +1,10 @@
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import { ContractFullClaimInfo, ContractTripDTO, TripStatus } from "./blockchain/schemas";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
-import { UTC_TIME_ZONE_ID, calculateDays } from "@/utils/date";
 import { isEmpty } from "@/utils/string";
 import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
+import { UTC_TIME_ZONE_ID } from "@/utils/constants";
+import { calculateDaysByBlockchainLogic } from "@/utils/date";
 
 export type NotificationInfo = {
   id: string;
@@ -70,7 +71,7 @@ export function createNotificationInfoFromTrip(
         title: `Trip Confirmed`,
         datestamp: timestamp,
         message: isHost
-          ? `You confirmed ${tripDTO.trip.guestName}'s request ${calculateDays(
+          ? `You confirmed ${tripDTO.trip.guestName}'s request ${calculateDaysByBlockchainLogic(
               startDateTime,
               endDateTime
             )} days trip, with you ${carDescription}, ${dateFormatShortMonthDateTime(
@@ -79,7 +80,7 @@ export function createNotificationInfoFromTrip(
             )} - ${dateFormatShortMonthDateTime(endDateTime, timeZoneId)} for $${displayMoneyFromCentsWith2Digits(
               tripDTO.trip.paymentInfo.totalDayPriceInUsdCents + tripDTO.trip.paymentInfo.depositInUsdCents
             )} including deposit $${displayMoneyFromCentsWith2Digits(tripDTO.trip.paymentInfo.depositInUsdCents)}`
-          : `${tripDTO.trip.hostName} has confirmed your request for a ${calculateDays(
+          : `${tripDTO.trip.hostName} has confirmed your request for a ${calculateDaysByBlockchainLogic(
               startDateTime,
               endDateTime
             )}-day trip on ${carDescription}, scheduled from ${dateFormatShortMonthDateTime(
