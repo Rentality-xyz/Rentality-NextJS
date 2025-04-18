@@ -1,7 +1,7 @@
 import moment from "moment-timezone";
 import { getUIntFromString } from "./numericFormatters";
-import { UTC_TIME_ZONE_ID } from "./date";
 import { isEmpty } from "./string";
+import { UTC_TIME_ZONE_ID } from "./constants";
 
 export const getMoneyInCentsFromString = (str: string | undefined): number => {
   if (!str) return 0;

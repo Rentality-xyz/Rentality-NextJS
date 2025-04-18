@@ -1,10 +1,11 @@
-import { calculateDays, UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { isEmpty } from "@/utils/string";
 import { getPromoPrice } from "@/features/promocodes/utils";
 import { getDiscountablePrice, getNotDiscountablePrice } from "@/utils/price";
 import { TransactionHistoryInfo } from "..";
 import { ContractTripDTO, TripStatus } from "@/model/blockchain/schemas";
+import { UTC_TIME_ZONE_ID } from "@/utils/constants";
+import { calculateDaysByBlockchainLogic } from "@/utils/date";
 
 function getCancellationFee(tripDto: ContractTripDTO) {
   return 0;
@@ -64,7 +65,7 @@ export function mapContractTripDTOToTransactionHistoryInfo(tripDto: ContractTrip
     tripId: Number(tripDto.trip.tripId),
     car: carDescription,
     status: tripDto.trip.status,
-    days: calculateDays(startDateTime, endDateTime),
+    days: calculateDaysByBlockchainLogic(startDateTime, endDateTime),
     startDateTime: startDateTime,
     endDateTime: endDateTime,
     timeZoneId: tripDto.timeZoneId,

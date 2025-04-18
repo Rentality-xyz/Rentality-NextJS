@@ -1,7 +1,6 @@
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { InsuranceType } from "@/model/blockchain/schemas";
 import { validateContractInsuranceDTO } from "@/model/blockchain/schemas_utils";
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { dateRangeFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { getDateFromBlockchainTime, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { bigIntReplacer } from "@/utils/json";
@@ -10,6 +9,7 @@ import { TripInsurance } from "../models";
 import { logger } from "@/utils/logger";
 import { usePaginationForListApi } from "@/hooks/pagination/usePaginationForListApi";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { UTC_TIME_ZONE_ID } from "@/utils/constants";
 
 export type InsuranceFiltersType = {};
 

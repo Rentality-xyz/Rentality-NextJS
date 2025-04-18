@@ -2,13 +2,13 @@ import { TripInfo, TripInfoShortDetails } from "@/model/TripInfo";
 import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { isEmpty } from "@/utils/string";
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { ContractTripDTO, EngineType, InsuranceType, TripStatus } from "@/model/blockchain/schemas";
-import { calculateDays } from "@/utils/date";
 import { getDiscountablePrice, getNotDiscountablePrice } from "@/utils/price";
 import { getPromoPrice } from "@/features/promocodes/utils";
 import { addSpacesBeforeUpperCase } from "@/utils/spaceBeforeUpperCase";
 import { camelToTitleCase } from "@/utils/camelToTitleCase";
+import { UTC_TIME_ZONE_ID } from "@/utils/constants";
+import { calculateDaysByBlockchainLogic } from "@/utils/date";
 
 export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetailsConfirmed?: boolean) => {
   const metaData = parseMetaData(await getMetaDataFromIpfs(tripDTO.metadataURI));
@@ -18,7 +18,7 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
   const endOdometr = Number(tripDTO.trip.endParamLevels[1]);
   const milesIncludedPerDay = Number(tripDTO.trip.milesIncludedPerDay);
 
-  const tripDays = calculateDays(
+  const tripDays = calculateDaysByBlockchainLogic(
     getDateFromBlockchainTimeWithTZ(tripDTO.trip.startDateTime, timeZoneId),
     getDateFromBlockchainTimeWithTZ(tripDTO.trip.endDateTime, timeZoneId)
   );
@@ -193,7 +193,7 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
 export function mapTripDTOtoTripInfoShordDetails(tripDTO: ContractTripDTO): TripInfoShortDetails {
   const timeZoneId = !isEmpty(tripDTO.timeZoneId) ? tripDTO.timeZoneId : UTC_TIME_ZONE_ID;
 
-  const tripDays = calculateDays(
+  const tripDays = calculateDaysByBlockchainLogic(
     getDateFromBlockchainTimeWithTZ(tripDTO.trip.startDateTime, timeZoneId),
     getDateFromBlockchainTimeWithTZ(tripDTO.trip.endDateTime, timeZoneId)
   );

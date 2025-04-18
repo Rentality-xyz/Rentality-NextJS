@@ -1,4 +1,3 @@
-import { calculateDays, UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { isEmpty } from "@/utils/string";
 import { getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
@@ -12,6 +11,8 @@ import {
 import { formatLocationInfoUpToCity } from "@/model/LocationInfo";
 import { AdminTripDetails } from "../AdminTripDetails";
 import { mapContractLocationInfoToLocationInfo } from "@/utils/location";
+import { UTC_TIME_ZONE_ID } from "@/utils/constants";
+import { calculateDaysByBlockchainLogic } from "@/utils/date";
 
 function getAdminStatusFromTrip(trip: ContractTrip): AdminTripStatus {
   switch (trip.status) {
@@ -109,7 +110,7 @@ export const mapContractAdminTripDTOToAdminTripDetails = async (
     tripStartDate: tripStartDate,
     tripEndDate: tripEndDate,
     timeZoneId: timeZoneId,
-    tripDays: calculateDays(tripStartDate, tripEndDate),
+    tripDays: calculateDaysByBlockchainLogic(tripStartDate, tripEndDate),
     hostName: trip.hostName,
     guestName: trip.guestName,
     tripPriceBeforeDiscountInUsd: Number(trip.paymentInfo.totalDayPriceInUsdCents) / 100,
