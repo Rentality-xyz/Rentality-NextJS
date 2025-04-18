@@ -1,4 +1,4 @@
-import { calculateDays, UTC_TIME_ZONE_ID } from "@/utils/date";
+import { parseDateIntervalWithDSTCorrection } from "@/utils/date";
 import { useRentality } from "@/contexts/rentalityContext";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
@@ -9,7 +9,6 @@ import { getSignedLocationInfo, mapLocationInfoToContractLocationInfo } from "@/
 import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 import { Err, Ok, Result } from "@/model/utils/result";
-import moment from "moment";
 import { formatEther } from "viem";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { logger } from "@/utils/logger";
@@ -35,12 +34,14 @@ const useCreateTripRequest = () => {
     }
 
     promoCode = !isEmpty(promoCode) ? promoCode : EMPTY_PROMOCODE;
-    const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
-    const dateFrom = moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, notEmtpyTimeZoneId).toDate();
-    const dateTo = moment.tz(searchCarRequest.dateToInDateTimeStringFormat, notEmtpyTimeZoneId).toDate();
 
-    const days = calculateDays(dateFrom, dateTo);
-    if (days < 0) {
+    const { dateFrom, dateTo, totalDays } = parseDateIntervalWithDSTCorrection(
+      searchCarRequest.dateFromInDateTimeStringFormat,
+      searchCarRequest.dateToInDateTimeStringFormat,
+      timeZoneId
+    );
+
+    if (totalDays < 0) {
       logger.error("Date to' must be greater than 'Date from'");
       return Err(new Error("ERROR"));
     }
@@ -81,7 +82,7 @@ const useCreateTripRequest = () => {
 
         const paymentsResult = await rentalityContracts.gateway.calculatePaymentsWithDelivery(
           BigInt(carId),
-          BigInt(days),
+          BigInt(totalDays),
           ETH_DEFAULT_ADDRESS,
           pickupLocationInfo,
           returnLocationInfo,
@@ -130,7 +131,7 @@ const useCreateTripRequest = () => {
       } else {
         const paymentsResult = await rentalityContracts.gateway.calculatePaymentsWithDelivery(
           BigInt(carId),
-          BigInt(days),
+          BigInt(totalDays),
           ETH_DEFAULT_ADDRESS,
           emptyContractLocationInfo,
           emptyContractLocationInfo,

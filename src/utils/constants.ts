@@ -21,6 +21,7 @@ export const ETH_DEFAULT_ADDRESS = ethers.getAddress("0x000000000000000000000000
 export const DEFAULT_AGREEMENT_MESSAGE =
   "I have read and I agree with Terms of service, Cancellation policy, Prohibited uses and Privacy policy of Rentality.";
 
+export const UTC_TIME_ZONE_ID = "Etc/UTC";
 export const DEFAULT_SEARCH_LOCATION: LocationInfo = {
   address: "Miami, Florida, US",
   country: "US",

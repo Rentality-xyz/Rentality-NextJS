@@ -6,12 +6,12 @@ import moment from "moment";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { dateFormatLongMonthYearDateTime, dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import { getMilesIncludedPerDayText, isUnlimitedMiles } from "@/model/HostCarInfo";
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import {
   LEGAL_CANCELLATION_NAME,
   LEGAL_PRIVACY_NAME,
   LEGAL_PROHIBITEDUSES_NAME,
   LEGAL_TERMS_NAME,
+  UTC_TIME_ZONE_ID,
 } from "@/utils/constants";
 import useUserMode from "@/hooks/useUserMode";
 

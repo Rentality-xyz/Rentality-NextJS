@@ -1,6 +1,6 @@
 import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { DeliveryDetails } from "@/model/SearchCarsResult";
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import { UTC_TIME_ZONE_ID } from "@/utils/constants";
 import { dateFormatLongMonthDateTime } from "@/utils/datetimeFormatters";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { isEmpty } from "@/utils/string";

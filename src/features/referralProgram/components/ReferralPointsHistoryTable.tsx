@@ -4,8 +4,8 @@ import { cn } from "@/utils";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "../../../components/common/rntSuspense";
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { ReferralHistoryInfo } from "@/features/referralProgram/hooks/useFetchPointsHistory";
+import { UTC_TIME_ZONE_ID } from "@/utils/constants";
 
 type ReferralPointsHistoryTableProps = {
   isLoading: boolean;
