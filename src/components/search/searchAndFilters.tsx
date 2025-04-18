@@ -5,7 +5,6 @@ import RntPlaceAutoComplete from "../common/rntPlaceAutocomplete";
 import { TFunction as TFunctionNext } from "i18next";
 import { useEffect, useRef, useState } from "react";
 import moment from "moment";
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import RntButtonTransparent from "@/components/common/rntButtonTransparent";
 import * as React from "react";
 import Image from "next/image";
@@ -24,6 +23,7 @@ import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 import RntFilterSelect from "../common/RntFilterSelect";
 import { getTimeZoneIdByAddress } from "@/utils/timezone";
 import useFetchExistPlatformCars from "@/features/search/hooks/useFetchExistPlatformCars";
+import { UTC_TIME_ZONE_ID } from "@/utils/constants";
 
 export default function SearchAndFilters({
   initValue,

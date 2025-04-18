@@ -5,13 +5,14 @@ import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { useTranslation } from "react-i18next";
 import { TripInfo } from "@/model/TripInfo";
 import { TFunction } from "@/utils/i18n";
-import { calculateDays, UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { dateFormatShortMonthDateYear } from "@/utils/datetimeFormatters";
 import UserAvatarWithName from "../common/userAvatarWithName";
 import useUserMode from "@/hooks/useUserMode";
 import RntGalleryLink from "../common/RntGalleryLink";
 import { InsuranceType } from "@/model/blockchain/schemas";
+import { calculateDaysByBlockchainLogic } from "@/utils/date";
+import { UTC_TIME_ZONE_ID } from "@/utils/constants";
 
 function TripReceipt({ tripId, tripInfo }: { tripId: bigint; tripInfo: TripInfo }) {
   const { userMode, isHost } = useUserMode();
@@ -49,7 +50,7 @@ function TripReceipt({ tripId, tripInfo }: { tripId: bigint; tripInfo: TripInfo 
           </tr>
           <tr>
             <td>{t_details("trip_days")}</td>
-            <td className="text-end">{calculateDays(tripInfo.tripStart, tripInfo.tripEnd)}</td>
+            <td className="text-end">{calculateDaysByBlockchainLogic(tripInfo.tripStart, tripInfo.tripEnd)}</td>
           </tr>
           <tr>
             <td>{t_details("trip_price")}</td>

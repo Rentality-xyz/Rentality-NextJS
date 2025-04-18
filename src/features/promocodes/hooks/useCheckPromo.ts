@@ -1,7 +1,7 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { validateContractCheckPromoDTO } from "@/model/blockchain/schemas_utils";
 import { Err, Ok, Result } from "@/model/utils/result";
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
+import { UTC_TIME_ZONE_ID } from "@/utils/constants";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import { bigIntReplacer } from "@/utils/json";
 import { logger } from "@/utils/logger";

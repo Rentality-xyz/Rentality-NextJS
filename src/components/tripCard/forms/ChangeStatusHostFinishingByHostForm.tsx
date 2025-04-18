@@ -5,7 +5,6 @@ import RntButton from "@/components/common/rntButton";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import RntFuelLevelSelect from "@/components/common/RntFuelLevelSelect";
-import { calculateDays } from "@/utils/date";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import {
@@ -13,6 +12,7 @@ import {
   ChangeStatusHostFinishingByHostFormValues,
 } from "./changeStatusHostFinishingByHostFormSchema";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
+import { calculateDaysByBlockchainLogic } from "@/utils/date";
 
 interface ChangeStatusHostFinishingByHostFormProps {
   tripInfo: TripInfo;
@@ -44,7 +44,7 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
 
     useEffect(() => {
       const endOdometr = odometer ?? 0;
-      const tripDays = calculateDays(tripInfo.tripStart, tripInfo.tripEnd);
+      const tripDays = calculateDaysByBlockchainLogic(tripInfo.tripStart, tripInfo.tripEnd);
       let overMiles = endOdometr - tripInfo.startOdometr - tripInfo.milesIncludedPerDay * tripDays;
       overMiles = overMiles > 0 ? overMiles : 0;
       setOvermileValue(overMiles);
@@ -147,7 +147,7 @@ const ChangeStatusHostFinishingByHostForm = forwardRef<HTMLDivElement, ChangeSta
                 <span className="col-span-1">Miles included:</span>
                 <span className="col-span-1 text-right">
                   {getMilesIncludedPerDayText(
-                    tripInfo.milesIncludedPerDay * calculateDays(tripInfo.tripStart, tripInfo.tripEnd)
+                    tripInfo.milesIncludedPerDay * calculateDaysByBlockchainLogic(tripInfo.tripStart, tripInfo.tripEnd)
                   )}{" "}
                   mi per trip
                 </span>

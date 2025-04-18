@@ -1,5 +1,4 @@
 import { RefferalProgram as ReferralProgram } from "@/model/blockchain/schemas";
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { useTranslation } from "react-i18next";
 import { getReferralProgramDescriptionText } from "../utils";
@@ -7,6 +6,7 @@ import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { usePaginationForListApi } from "@/hooks/pagination/usePaginationForListApi";
 import { TFunction } from "i18next";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { UTC_TIME_ZONE_ID } from "@/utils/constants";
 
 export type ReferralHistoryInfo = {
   points: number;

@@ -1,7 +1,7 @@
 import moment from "moment";
 import { InvestmentInfo, InvestStatus } from "../models/investmentInfo";
-import { UTC_TIME_ZONE_ID } from "@/utils/date";
 import { dateFormatLongMonthYearDate } from "@/utils/datetimeFormatters";
+import { UTC_TIME_ZONE_ID } from "@/utils/constants";
 
 export function getInvestmentStatus(investment: InvestmentInfo, t: (key: string) => string) {
   return investment.investment.priceInCurrecy <= investment.payedInCurrency

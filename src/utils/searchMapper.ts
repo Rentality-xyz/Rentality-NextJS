@@ -1,21 +1,22 @@
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
-import moment from "moment";
 import { getBlockchainTimeFromDate } from "./formInput";
 import { ContractSearchCarParams } from "@/model/blockchain/schemas";
 import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
-import { correctDaylightSavingTime } from "./correctDaylightSavingTime";
+import { parseDateIntervalWithDSTCorrection } from "./date";
 
 export function formatSearchAvailableCarsContractRequest(
   searchCarRequest: SearchCarRequest,
   searchCarFilters: SearchCarFilters,
   timeZoneId: string
 ) {
-  const startCarLocalDateTime = moment.tz(searchCarRequest.dateFromInDateTimeStringFormat, timeZoneId).toDate();
-  let endCarLocalDateTime = moment.tz(searchCarRequest.dateToInDateTimeStringFormat, timeZoneId).toDate();
+  const { dateFrom, dateTo } = parseDateIntervalWithDSTCorrection(
+    searchCarRequest.dateFromInDateTimeStringFormat,
+    searchCarRequest.dateToInDateTimeStringFormat,
+    timeZoneId
+  );
 
-  endCarLocalDateTime = correctDaylightSavingTime(startCarLocalDateTime, endCarLocalDateTime);
-  const contractDateFromUTC = getBlockchainTimeFromDate(startCarLocalDateTime);
-  const contractDateToUTC = getBlockchainTimeFromDate(endCarLocalDateTime);
+  const contractDateFromUTC = getBlockchainTimeFromDate(dateFrom);
+  const contractDateToUTC = getBlockchainTimeFromDate(dateTo);
   const contractSearchCarParams: ContractSearchCarParams = {
     country: searchCarRequest.searchLocation.country ?? "",
     state: searchCarRequest.searchLocation.state ?? "",
