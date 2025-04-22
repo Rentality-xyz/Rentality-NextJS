@@ -21,9 +21,6 @@ function Home() {
       logger.info("Redirecting to guest main page...");
       router.push("/guest");
     }
-    else if (!isLoading && isAuthenticated && !isHost(userRole)) { 
-      router.push("/guest");
-    }
   }, [isLoading, userRole, isHost, router]);
 
   if (!isAuthenticated) {
