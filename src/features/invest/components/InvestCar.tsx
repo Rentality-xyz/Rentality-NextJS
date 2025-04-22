@@ -45,7 +45,7 @@ export default function InvestCar({
   const isCreator = searchInfo.investment.creator === ethereumInfo?.walletAddress;
 
   const handleChangeInvestmentAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const maxAmount = searchInfo.investment.investment.priceInCurrecy - searchInfo.investment.payedInCurrency;
+    const maxAmount = searchInfo.investment.investment.priceInCurrency - searchInfo.investment.payedInCurrency;
     let value = e.target.value;
 
     value = formatFloatInput(value);
@@ -147,7 +147,7 @@ export default function InvestCar({
           <p className="text-xl font-semibold max-2xl:mb-4">{t("invest.tokenization")}</p>
           <div className="flex flex-grow flex-col justify-center">
             <p className="text-xl font-bold 2xl:text-2xl">
-              ETH: {searchInfo.investment.investment.priceInCurrecy / 1e18}
+              ETH: {searchInfo.investment.investment.priceInCurrency}
             </p>
             <p className="2xl:text-lg">{t("invest.total_price")}</p>
             <div className="mx-auto my-2 h-0.5 w-[40%] translate-y-[-50%] bg-white sm:w-[70%]"></div>
