@@ -64,10 +64,10 @@ function TransactionHistoryFilters({ defaultFilters, onApply }: TransactionHisto
           }));
         }}
       />
-      <div className="flex items-center max-sm:w-full max-sm:justify-between">
+      <div className="flex flex-col max-sm:w-full max-sm:justify-between sm:flex-row sm:items-center">
         <RntFilterSelect
           isTransparentStyle={true}
-          className="w-48"
+          className="min-w-[12rem]"
           id="status"
           label={t("all_trips_table.tripStatus")}
           placeholder={t("transaction_history.all_statuses")}
@@ -88,7 +88,7 @@ function TransactionHistoryFilters({ defaultFilters, onApply }: TransactionHisto
             </RntFilterSelect.Option>
           ))}
         </RntFilterSelect>
-        <RntButton className="ml-4 mt-7 w-36 sm:w-40" type="submit" disabled={isSubmitting}>
+        <RntButton className="mt-7 w-full sm:ml-4 sm:w-40" type="submit" disabled={isSubmitting}>
           {t("common.apply")}
         </RntButton>
       </div>
