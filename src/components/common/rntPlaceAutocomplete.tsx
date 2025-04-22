@@ -14,6 +14,8 @@ export default function RntPlaceAutoComplete(props: RntPlaceAutocompleteInputPro
     onAddressChange,
     isAsRntInputTransparent,
     isDarkPlacePredictions,
+    isTransparentStyle,
+    iconFrontLabel,
     ...inputProps
   } = props;
   return <RntInputTransparent {...inputProps} />;
