@@ -12,11 +12,12 @@ function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && isHost(userRole)) {
+    if (isLoading) return;
+
+    if (isHost(userRole)) {
       logger.info("Redirecting to host main page...");
       router.push("/host");
-    }
-    if (!isLoading && !isHost(userRole)) {
+    } else {
       logger.info("Redirecting to guest main page...");
       router.push("/guest");
     }
