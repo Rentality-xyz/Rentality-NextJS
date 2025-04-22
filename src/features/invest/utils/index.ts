@@ -4,7 +4,7 @@ import { dateFormatLongMonthYearDate } from "@/utils/datetimeFormatters";
 import { UTC_TIME_ZONE_ID } from "@/utils/constants";
 
 export function getInvestmentStatus(investment: InvestmentInfo, t: (key: string) => string) {
-  return investment.investment.priceInCurrecy <= investment.payedInCurrency
+  return investment.investment.priceInCurrency <= investment.payedInCurrency
     ? t("invest.fully_tokenized")
     : t("invest.available_invest");
 }
@@ -12,17 +12,17 @@ export function getInvestmentStatus(investment: InvestmentInfo, t: (key: string)
 export function getInvestListingStatus(investment: InvestmentInfo, walletAddress: string, isHost: boolean) {
   return investment.listed
     ? InvestStatus.ActuallyListed
-    : (investment.investment.priceInCurrecy <= investment.payedInCurrency || !investment.investment.inProgress) &&
+    : (investment.investment.priceInCurrency <= investment.payedInCurrency || !investment.investment.inProgress) &&
         !investment.listed &&
         investment.creator === walletAddress &&
         isHost
       ? InvestStatus.ReadyListing
-      : investment.investment.priceInCurrecy <= investment.payedInCurrency &&
+      : investment.investment.priceInCurrency <= investment.payedInCurrency &&
           !investment.listed &&
           investment.creator != walletAddress &&
           !isHost
         ? InvestStatus.ListingProgress
-        : investment.investment.priceInCurrecy > investment.payedInCurrency
+        : investment.investment.priceInCurrency > investment.payedInCurrency
           ? InvestStatus.WaitingFullTokenization
           : InvestStatus.Unknown;
 }
