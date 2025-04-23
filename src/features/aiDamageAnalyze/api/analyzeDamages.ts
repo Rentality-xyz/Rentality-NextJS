@@ -5,9 +5,11 @@ import axios from "axios";
 import { JsonRpcProvider, Wallet } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 import { createAiDamageAnalyzeCase } from "../models";
-import { Err, Ok, Result } from "@/model/utils/result";
+import { Err, Ok, Result, UnknownErr } from "@/model/utils/result";
 import { env } from "@/utils/env";
 import { isEmpty } from "@/utils/string";
+import { logger } from "@/utils/logger";
+import { getTripCarPhotos } from "@/features/filestore/pinata/utils";
 
 export type AnalyzeDamagesParams = {
   tripId: number;
@@ -51,7 +53,21 @@ export default async function analyzeDamagesHandler(req: NextApiRequest, res: Ne
     getApiAccessTokenResult.value.accessToken
   );
   if (!createCaseResult.ok) {
-    console.error(`analyzeDamagesHandler getApiAccessToken error: ${createCaseResult.error.message}`);
+    console.error(`analyzeDamagesHandler createCase error: ${createCaseResult.error.message}`);
+    res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
+    return;
+  }
+
+  const saveCasePhotosResult = await saveCasePhotos(
+    requestResult.value.tripId,
+    createCaseResult.value.token,
+    envsResult.value.baseUrl,
+    getApiAccessTokenResult.value.accessToken,
+    requestResult.value.pre
+  );
+
+  if (!saveCasePhotosResult.ok) {
+    console.error(`analyzeDamagesHandler saveCasePhotos error: ${saveCasePhotosResult.error.message}`);
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
@@ -169,18 +185,67 @@ async function createCase(
     request.vinNumber
   );
 
-  const response = await axios.post(`${baseUrl}/api/v1/case`, newCase, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-  });
-  if (response.status !== 201) {
-    return Err(new Error("AiDamageAnalyze: failed to create case with error: ", response.data));
+  try {
+    const response = await axios.post(`${baseUrl}/api/v1/case`, newCase, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.status !== 201) {
+      return Err(new Error("AiDamageAnalyze: failed to create case with error: ", response.data));
+    }
+    logger.debug("response.data:", JSON.stringify(response.data, null, 2));
+    const data = response.data;
+    const token = data.case_token["Case token"];
+    return Ok({ token });
+  } catch (error) {
+    return UnknownErr(error);
   }
-  const data = response.data;
-  const token = data.case_token["Case token"];
-  return Ok({ token });
+}
+
+async function saveCasePhotos(
+  tripId: number,
+  token: string,
+  baseUrl: string,
+  accessToken: string,
+  pre: boolean
+): Promise<Result<boolean>> {
+  const tripPhotos = await getTripCarPhotos(tripId);
+  if (!tripPhotos) {
+    return Err(new Error("AiDamageAnalyze: no pre trip photos to upload"));
+  }
+
+  const photosToUpload = pre
+    ? [...tripPhotos.checkInByGuest, ...tripPhotos.checkInByHost]
+    : [...tripPhotos.checkOutByGuest, ...tripPhotos.checkOutByHost];
+  if (photosToUpload.length === 0) {
+    return Err(new Error("AiDamageAnalyze: no pre trip photos to upload"));
+  }
+
+  const form = new FormData();
+
+  photosToUpload.forEach((photoUrl) => {
+    form.append("other_side", photoUrl);
+  });
+
+  try {
+    const response = await axios.post(`${baseUrl}/api/v1/case/${token}/upload_photos`, form, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    if (response.status !== 200) {
+      return Err(new Error("AiDamageAnalyze: failed to upload photo with error: ", response.data));
+    }
+    logger.debug("response.data:", JSON.stringify(response.data, null, 2));
+    return Ok(true);
+  } catch (error) {
+    logger.error("Error upload photo:", error);
+    return UnknownErr(error);
+  }
 }
 
 async function saveCaseToBlockchain(
@@ -212,6 +277,7 @@ async function saveCaseToBlockchain(
   if (caseExists) {
     return Err(new Error("AiDamageAnalyze: case exists: " + token));
   }
+
   try {
     await rentalityAiDamageAnalyze.saveInsuranceCase(token, BigInt(tripId), pre);
   } catch (error) {

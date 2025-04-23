@@ -2,10 +2,13 @@ import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { logger } from "@/utils/logger";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { AnalyzeDamagesParams } from "../api/analyzeDamages";
+import { isEmpty } from "@/utils/string";
+import { bigIntReplacer } from "@/utils/json";
+import { getTripCarPhotos } from "@/features/filestore/pinata/utils";
 
 export type AiCheckStatus =
   | "loading"
@@ -19,45 +22,97 @@ export type AiCheckStatus =
   | "post-trip analyzed damage";
 
 export const AI_DAMAGE_ANALYZE_QUERY_KEY = "AiDamageAnalyzeQueryKey";
+type QueryData = { status: AiCheckStatus; lastUpdated: Date };
 
 function useAiDamageCheck(tripId: number) {
   const { rentalityContracts } = useRentality();
   const ethereumInfo = useEthereum();
   const queryClient = useQueryClient();
-  const [status, setStatus] = useState<AiCheckStatus>("loading");
+  const [status, setStatus] = useState<{ status: AiCheckStatus; lastUpdated: Date }>({
+    status: "loading",
+    lastUpdated: new Date(),
+  });
 
   const { mutateAsync: startPreTripCheck } = useMutation({
-    mutationFn: async () => startDamageAnalyzeImpl(tripId, rentalityContracts, ethereumInfo, "pre-trip"),
-    onSuccess: (data) => {
-      if (data.ok) {
-        queryClient.invalidateQueries({ queryKey: [AI_DAMAGE_ANALYZE_QUERY_KEY] });
-      }
+    mutationFn: async () => {
+      setStatus({ status: "pre-trip checking", lastUpdated: new Date() });
+      return startDamageAnalyzeImpl(tripId, rentalityContracts, ethereumInfo, "pre-trip");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [AI_DAMAGE_ANALYZE_QUERY_KEY] });
     },
   });
 
   const { mutateAsync: startPostTripsAnalyze } = useMutation({
-    mutationFn: async () => startDamageAnalyzeImpl(tripId, rentalityContracts, ethereumInfo, "post-trip"),
-    onSuccess: (data) => {
-      if (data.ok) {
-        queryClient.invalidateQueries({ queryKey: [AI_DAMAGE_ANALYZE_QUERY_KEY] });
-      }
+    mutationFn: async () => {
+      setStatus({ status: "post-trip analyzing", lastUpdated: new Date() });
+      return startDamageAnalyzeImpl(tripId, rentalityContracts, ethereumInfo, "post-trip");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [AI_DAMAGE_ANALYZE_QUERY_KEY] });
     },
   });
 
-  useEffect(() => {
-    const init = async () => {};
+  const { data } = useQuery<QueryData>({
+    queryKey: [AI_DAMAGE_ANALYZE_QUERY_KEY, tripId, rentalityContracts, ethereumInfo?.walletAddress],
+    queryFn: async () => fetchAiDamageCheck(tripId, rentalityContracts, ethereumInfo),
+  });
 
-    init();
-  }, []);
+  useEffect(() => {
+    if (!data) return;
+    setStatus((prev) => (prev.lastUpdated < data.lastUpdated ? data : prev));
+  }, [data]);
 
   return {
-    status,
+    status: status.status,
     startPreTripCheck,
     startPostTripsAnalyze,
   } as const;
 }
 
-export default useAiDamageCheck;
+async function fetchAiDamageCheck(
+  tripId: number,
+  rentalityContracts: IRentalityContracts | null | undefined,
+  ethereumInfo: EthereumInfo | null | undefined
+): Promise<{ status: AiCheckStatus; lastUpdated: Date }> {
+  if (!rentalityContracts || !ethereumInfo) {
+    throw new Error("Contracts or wallet not initialized");
+  }
+
+  const tripCasesResult = await rentalityContracts.aiDamageAnalyze.getInsuranceCasesUrlByTrip(BigInt(tripId));
+  if (!tripCasesResult.ok) {
+    throw tripCasesResult.error;
+  }
+
+  logger.debug("tripCasesResult: ", JSON.stringify(tripCasesResult.value, bigIntReplacer, 2));
+
+  const postTripCase = tripCasesResult.value.find((i) => i.iCase.pre === false);
+  if (postTripCase) {
+    if (!isEmpty(postTripCase.url)) {
+      return { status: "post-trip analyzed successful", lastUpdated: new Date() };
+    }
+    return { status: "post-trip analyzing", lastUpdated: new Date() };
+  }
+
+  const tripCarPhotos = await getTripCarPhotos(tripId);
+  logger.debug("tripCarPhotos: ", JSON.stringify(tripCarPhotos, bigIntReplacer, 2));
+
+  const preTripCase = tripCasesResult.value.find((i) => i.iCase.pre === true);
+  if (preTripCase) {
+    if (!isEmpty(preTripCase.url)) {
+      if (tripCarPhotos.checkOutByGuest.length > 0 || tripCarPhotos.checkOutByHost.length > 0) {
+        return { status: "ready to post-trip analyze", lastUpdated: new Date() };
+      }
+      return { status: "pre-trip checked", lastUpdated: new Date() };
+    }
+    return { status: "pre-trip checking", lastUpdated: new Date() };
+  }
+
+  if (tripCarPhotos.checkInByGuest.length > 0 || tripCarPhotos.checkInByHost.length > 0) {
+    return { status: "ready to pre-trip check", lastUpdated: new Date() };
+  }
+  return { status: "no pre-trip photos", lastUpdated: new Date() };
+}
 
 async function startDamageAnalyzeImpl(
   tripId: number,
@@ -80,6 +135,7 @@ async function startDamageAnalyzeImpl(
       return Err(new Error("Failed to get AiDamageAnalyzeCaseData"));
     }
 
+    logger.debug("caseInfoResult:", JSON.stringify(caseInfoResult, bigIntReplacer, 2));
     const body: AnalyzeDamagesParams = {
       tripId: tripId,
       chainId: ethereumInfo.chainId,
@@ -103,3 +159,5 @@ async function startDamageAnalyzeImpl(
     return Err(error instanceof Error ? error : new Error("Unknown error occurred"));
   }
 }
+
+export default useAiDamageCheck;
