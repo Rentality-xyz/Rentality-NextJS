@@ -1,13 +1,9 @@
+//todo translate
 import RntButton from "@/components/common/rntButton";
 import DotStatus from "@/components/dotStatus";
 import React from "react";
 import useAiDamageCheck, { AiCheckStatus } from "../hooks/useAiDamageCheck";
-
-type AiCheckResult = {
-  status: AiCheckStatus;
-  preTripPhotos: string[];
-  postTripPhotos: string[];
-};
+import { isEmpty } from "@/utils/string";
 
 function getStatusText(status: AiCheckStatus): { type: "error" | "success" | "warning"; text: string } {
   switch (status) {
@@ -32,32 +28,53 @@ function getStatusText(status: AiCheckStatus): { type: "error" | "success" | "wa
 }
 
 function SendPhotosToAi({ tripId }: { tripId: number }) {
-  const { status, startPreTripCheck, startPostTripsAnalyze } = useAiDamageCheck(tripId);
+  const { aiCheckReport, startPreTripCheck, startPostTripsAnalyze } = useAiDamageCheck(tripId);
 
   async function handlePreTripCheckClick() {
+    //TODO toast messages
     const result = await startPreTripCheck();
   }
 
   async function handlePostTripAnalyzeClick() {
+    //TODO toast messages
     const result = await startPostTripsAnalyze();
   }
 
-  async function handleViewDamageAnalyzeClick() {}
+  async function handleViewDamageAnalyzeClick() {
+    if (!isEmpty(aiCheckReport.postTripReportUrl)) {
+      window.open(aiCheckReport.postTripReportUrl, "_blank");
+      return;
+    }
+    if (!isEmpty(aiCheckReport.preTripReportUrl)) {
+      window.open(aiCheckReport.preTripReportUrl, "_blank");
+      return;
+    }
+  }
 
-  const isDamageAnalyzeFinished = status === "post-trip analyzed successful" || status === "post-trip analyzed damage";
-  const { type, text } = getStatusText(status);
+  const isPreTripReportReady =
+    aiCheckReport.status === "pre-trip checked" ||
+    aiCheckReport.status === "ready to post-trip analyze" ||
+    aiCheckReport.status === "post-trip analyzing";
+
+  const isDamageAnalyzeFinished =
+    aiCheckReport.status === "post-trip analyzed successful" || aiCheckReport.status === "post-trip analyzed damage";
+  const { type, text } = getStatusText(aiCheckReport.status);
 
   return (
     <div className="flex flex-col gap-4">
       <h3>AI Damage analyze</h3>
-      <RntButton disabled={status !== "ready to pre-trip check"} onClick={handlePreTripCheckClick}>
+      <RntButton disabled={aiCheckReport.status !== "ready to pre-trip check"} onClick={handlePreTripCheckClick}>
         Pre-trip Check
       </RntButton>
       {!isDamageAnalyzeFinished && (
-        <RntButton disabled={status !== "ready to post-trip analyze"} onClick={handlePostTripAnalyzeClick}>
+        <RntButton
+          disabled={aiCheckReport.status !== "ready to post-trip analyze"}
+          onClick={handlePostTripAnalyzeClick}
+        >
           Analyze Damages
         </RntButton>
       )}
+      {isPreTripReportReady && <RntButton onClick={handleViewDamageAnalyzeClick}>View pre trip report</RntButton>}
       {isDamageAnalyzeFinished && <RntButton onClick={handleViewDamageAnalyzeClick}>View damage report</RntButton>}
       <DotStatus color={type} text={text} />
     </div>

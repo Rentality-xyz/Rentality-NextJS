@@ -32,6 +32,8 @@ function useAiDamageCheck(tripId: number) {
     status: "loading",
     lastUpdated: new Date(),
   });
+  const [preTripReportUrl, setPreTripReportUrl] = useState<string>("");
+  const [postTripReportUrl, setPostTripReportUrl] = useState<string>("");
 
   const { mutateAsync: startPreTripCheck } = useMutation({
     mutationFn: async () => {
@@ -55,7 +57,8 @@ function useAiDamageCheck(tripId: number) {
 
   const { data } = useQuery<QueryData>({
     queryKey: [AI_DAMAGE_ANALYZE_QUERY_KEY, tripId, rentalityContracts, ethereumInfo?.walletAddress],
-    queryFn: async () => fetchAiDamageCheck(tripId, rentalityContracts, ethereumInfo),
+    queryFn: async () =>
+      fetchAiDamageCheck(tripId, rentalityContracts, ethereumInfo, setPreTripReportUrl, setPostTripReportUrl),
   });
 
   useEffect(() => {
@@ -64,7 +67,7 @@ function useAiDamageCheck(tripId: number) {
   }, [data]);
 
   return {
-    status: status.status,
+    aiCheckReport: { status: status.status, preTripReportUrl, postTripReportUrl },
     startPreTripCheck,
     startPostTripsAnalyze,
   } as const;
@@ -73,7 +76,9 @@ function useAiDamageCheck(tripId: number) {
 async function fetchAiDamageCheck(
   tripId: number,
   rentalityContracts: IRentalityContracts | null | undefined,
-  ethereumInfo: EthereumInfo | null | undefined
+  ethereumInfo: EthereumInfo | null | undefined,
+  setPreTripReportUrl: (url: string) => void,
+  setPostTripReportUrl: (url: string) => void
 ): Promise<{ status: AiCheckStatus; lastUpdated: Date }> {
   if (!rentalityContracts || !ethereumInfo) {
     throw new Error("Contracts or wallet not initialized");
@@ -89,6 +94,7 @@ async function fetchAiDamageCheck(
   const postTripCase = tripCasesResult.value.find((i) => i.iCase.pre === false);
   if (postTripCase) {
     if (!isEmpty(postTripCase.url)) {
+      setPostTripReportUrl(postTripCase.url);
       return { status: "post-trip analyzed successful", lastUpdated: new Date() };
     }
     return { status: "post-trip analyzing", lastUpdated: new Date() };
@@ -100,6 +106,7 @@ async function fetchAiDamageCheck(
   const preTripCase = tripCasesResult.value.find((i) => i.iCase.pre === true);
   if (preTripCase) {
     if (!isEmpty(preTripCase.url)) {
+      setPreTripReportUrl(preTripCase.url);
       if (tripCarPhotos.checkOutByGuest.length > 0 || tripCarPhotos.checkOutByHost.length > 0) {
         return { status: "ready to post-trip analyze", lastUpdated: new Date() };
       }
