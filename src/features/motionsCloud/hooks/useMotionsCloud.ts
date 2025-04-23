@@ -24,17 +24,17 @@ export default function useMotionsCloud() {
     }
 
     try {
-      const caseInfo = await rentality.gateway.getMotionsCloudCaseData(BigInt(tripId), pre);
-      if (!caseInfo.ok) {
+      const caseInfoResult = await rentality.gateway.getMotionsCloudCaseData(BigInt(tripId), pre);
+      if (!caseInfoResult.ok) {
         logger.info("Motions cloud: case number is not found");
         return;
       }
       setIsLoading(true);
       const response = await axios.post("/api/motionscloud/createCase", {
         tripId: tripId,
-        caseNum: Number(caseInfo.value.caseNumber) + 1,
-        email: caseInfo.value.email,
-        name: caseInfo.value.name,
+        caseNum: Number(caseInfoResult.value.caseNumber) + 1,
+        email: caseInfoResult.value.email,
+        name: caseInfoResult.value.name,
         chainId: ethereumInfo.chainId,
         pre,
       });
@@ -135,5 +135,6 @@ export default function useMotionsCloud() {
       setIsLoading(false);
     }
   };
+
   return [getAiResponseByTripIfExists, handleUploadPhoto, handleCreateCase, isLoading] as const;
 }
