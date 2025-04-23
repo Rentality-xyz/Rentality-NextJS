@@ -13,7 +13,7 @@ const defaultCarouselState = {
 const TripPhotos = ({ tripId }: { tripId: number }) => {
   const { t } = useTranslation();
   const [fileUrls, setFileUrls] = useState<GetPhotosForTripResponseType>({
-    checkinByHost: [],
+    checkInByHost: [],
     checkOutByHost: [],
     checkInByGuest: [],
     checkOutByGuest: [],
@@ -45,13 +45,13 @@ const TripPhotos = ({ tripId }: { tripId: number }) => {
 
   const totalPhotos: number = useMemo(() => {
     return (
-      fileUrls.checkinByHost.length +
+      fileUrls.checkInByHost.length +
       fileUrls.checkInByGuest.length +
       fileUrls.checkOutByGuest.length +
       fileUrls.checkOutByHost.length
     );
   }, [
-    fileUrls.checkinByHost.length,
+    fileUrls.checkInByHost.length,
     fileUrls.checkInByGuest.length,
     fileUrls.checkOutByGuest.length,
     fileUrls.checkOutByHost.length,
@@ -74,7 +74,7 @@ const TripPhotos = ({ tripId }: { tripId: number }) => {
                     <tr>
                       <td>{t("booked.details.trip_photos_checked_in_by_host")}</td>
                       <td className="text-end text-rentality-secondary">
-                        {fileUrls.checkinByHost.length == 0 ? (
+                        {fileUrls.checkInByHost.length == 0 ? (
                           <span className="text-gray-400">{t("common.trip_photos_no_photos")}</span>
                         ) : (
                           <span
@@ -82,11 +82,11 @@ const TripPhotos = ({ tripId }: { tripId: number }) => {
                             onClick={() =>
                               handleShowPhotos(
                                 t("booked.details.trip_photos_checked_in_by_host"),
-                                fileUrls.checkinByHost
+                                fileUrls.checkInByHost
                               )
                             }
                           >
-                            {fileUrls.checkinByHost.length}&nbsp;{t("common.trip_photos_photos")}
+                            {fileUrls.checkInByHost.length}&nbsp;{t("common.trip_photos_photos")}
                           </span>
                         )}
                       </td>
@@ -189,7 +189,7 @@ const TripPhotos = ({ tripId }: { tripId: number }) => {
                             className="cursor-pointer"
                             onClick={() =>
                               handleShowPhotos(t("booked.details.trip_photos_all"), [
-                                ...fileUrls.checkinByHost,
+                                ...fileUrls.checkInByHost,
                                 ...fileUrls.checkInByGuest,
                                 ...fileUrls.checkOutByGuest,
                                 ...fileUrls.checkOutByHost,

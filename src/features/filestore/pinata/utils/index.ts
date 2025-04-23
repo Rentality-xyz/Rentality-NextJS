@@ -124,10 +124,10 @@ export async function saveCarMetadata(
 }
 
 export interface GetPhotosForTripResponseType {
-  checkinByHost: string[];
-  checkOutByHost: string[];
+  checkInByHost: string[];
   checkInByGuest: string[];
   checkOutByGuest: string[];
+  checkOutByHost: string[];
 }
 
 export async function getTripCarPhotos(tripId: number): Promise<GetPhotosForTripResponseType> {
@@ -144,21 +144,21 @@ export async function getTripCarPhotos(tripId: number): Promise<GetPhotosForTrip
   }
 
   const returnValue: GetPhotosForTripResponseType = {
-    checkinByHost: [],
-    checkOutByHost: [],
+    checkInByHost: [],
     checkInByGuest: [],
     checkOutByGuest: [],
+    checkOutByHost: [],
   };
 
   for (let i: number = 0; i < response.data.rows.length; i++) {
     const row = response.data.rows[i];
-    const isHost: boolean = row.metadata.keyvalues.isHost === "host";
-    const isStart: boolean = row.metadata.keyvalues.isStart === "start";
+    const isHost: boolean = row.metadata.keyvalues.uploadedBy === "host";
+    const isStart: boolean = row.metadata.keyvalues.tripStatus === "start";
     const urlToFile = `https://gateway.pinata.cloud/ipfs/${row.ipfs_pin_hash}`;
 
     if (isHost) {
       if (isStart) {
-        returnValue.checkinByHost.push(urlToFile);
+        returnValue.checkInByHost.push(urlToFile);
       } else {
         returnValue.checkOutByHost.push(urlToFile);
       }
