@@ -3,7 +3,7 @@ export interface MotionCloudCase {
   "Full Name": string;
   Email: string;
   Language: "en";
-  "Inspection type": "pre" | "post";
+  "Inspection type": "Pre-inspcetion" | "Post-inspection";
   "Date of incident"?: string;
   "VIN number"?: string;
 }
@@ -17,11 +17,11 @@ export function createMotionCloudCase(
   vinNumber?: string
 ): MotionCloudCase {
   return {
-    "Case number": caseNumber,
+    "Case number": `${caseNumber}-${pre ? "Pre" : "Post"}`,
     "Full Name": fullName,
     Email: email,
     Language: "en",
-    "Inspection type": pre ? "pre" : "post",
+    "Inspection type": pre ? "Pre-inspcetion" : "Post-inspection",
     ...(dateOfIncident ? { "Date of incident": dateOfIncident } : {}),
     ...(vinNumber ? { "VIN number": vinNumber } : {}),
     // "Date of incident": dateOfIncident,
