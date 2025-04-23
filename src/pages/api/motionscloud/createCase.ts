@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
-import { createCase } from "@/model/MotionsCloud";
 import { JsonRpcProvider, Wallet } from "ethers";
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityMotionsCloudContract } from "@/features/blockchain/models/IRentalityMotionsCloud";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
+import { createMotionCloudCase } from "@/features/motionsCloud/models";
 
 type CreateCaseParams = {
   tripId: number;
@@ -81,7 +81,7 @@ function getCase(req: NextApiRequest) {
   const request = <CreateCaseParams>req.body;
 
   return {
-    newCase: createCase(
+    newCase: createMotionCloudCase(
       request.caseNum.toString(),
       request.name,
       request.caseNum.toString(),

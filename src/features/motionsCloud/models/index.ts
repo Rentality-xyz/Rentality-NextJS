@@ -1,29 +1,31 @@
-export interface CreateCase {
+export interface MotionCloudCase {
   "Case number": string;
   "Full Name": string;
   Email: string;
-  "Date of incident"?: string;
-  "VIN number"?: string;
   Language: "en";
   "Inspection type": "pre" | "post";
+  "Date of incident"?: string;
+  "VIN number"?: string;
 }
 
-export function createCase(
+export function createMotionCloudCase(
   caseNumber: string,
   fullName: string,
   email: string,
   pre: boolean,
   dateOfIncident?: string,
   vinNumber?: string
-): CreateCase {
+): MotionCloudCase {
   return {
     "Case number": caseNumber,
     "Full Name": fullName,
     Email: email,
     Language: "en",
+    "Inspection type": pre ? "pre" : "post",
     ...(dateOfIncident ? { "Date of incident": dateOfIncident } : {}),
     ...(vinNumber ? { "VIN number": vinNumber } : {}),
-    "Inspection type": pre ? "pre" : "post",
+    // "Date of incident": dateOfIncident,
+    // "VIN number": vinNumber,
   };
 }
 export type PhotoUrl = string;
