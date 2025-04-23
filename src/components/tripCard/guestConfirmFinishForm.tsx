@@ -42,7 +42,8 @@ function GuestConfirmFinishForm({
     hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
       if (hasTripPhotosFeatureFlag) {
         carPhotosUploadButtonRef.current.saveUploadedFiles().then((result: Result<UploadedUrlList>) => {
-          if (!result.ok || result.value.urls.length === 0) {
+          if (!result.ok) {
+            // || result.value.urls.length === 0
             setNoFilesUploadedError(true);
           } else {
             handleFinishTrip().then((isSuccess) => {

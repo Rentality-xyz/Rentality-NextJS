@@ -84,7 +84,8 @@ function TripAdditionalActions({
       hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
         if (hasTripPhotosFeatureFlag) {
           carPhotosUploadButtonRef.current.saveUploadedFiles().then((result: Result<UploadedUrlList>) => {
-            if (!result.ok || result.value.urls.length === 0) {
+            if (!result.ok) {
+              //|| result.value.urls.length === 0
               showDialog(t("common.photos_required"));
             } else {
               changeStatusCallback(tripInfo.allowedActions[0], () => {
@@ -106,7 +107,8 @@ function TripAdditionalActions({
       hasFeatureFlag(FEATURE_FLAGS.FF_TRIP_PHOTOS).then((hasTripPhotosFeatureFlag: boolean) => {
         if (hasTripPhotosFeatureFlag) {
           carPhotosUploadButtonRef.current.saveUploadedFiles().then((result: Result<UploadedUrlList>) => {
-            if (!result.ok || result.value.urls.length === 0) {
+            if (!result.ok) {
+              //|| result.value.urls.length === 0
               showDialog(t("common.photos_required"));
             } else {
               handleButtonClick()?.then((isSuccess) => {
