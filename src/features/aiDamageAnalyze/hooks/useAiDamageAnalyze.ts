@@ -24,17 +24,17 @@ export default function useAiDamageAnalyze() {
     }
 
     try {
-      const caseInfo = await rentality.gateway.getAiDamageAnalyzeCaseData(BigInt(tripId), pre);
-      if (!caseInfo.ok) {
+      const caseInfoResult = await rentality.gateway.getAiDamageAnalyzeCaseData(BigInt(tripId), pre);
+      if (!caseInfoResult.ok) {
         logger.info("Ai damage analyze: case number is not found");
         return;
       }
       setIsLoading(true);
       const response = await axios.post("/api/aiDamageAnalyze/createCase", {
         tripId: tripId,
-        caseNum: Number(caseInfo.value.caseNumber) + 1,
-        email: caseInfo.value.email,
-        name: caseInfo.value.name,
+        caseNum: Number(caseInfoResult.value.caseNumber) + 1,
+        email: caseInfoResult.value.email,
+        name: caseInfoResult.value.name,
         chainId: ethereumInfo.chainId,
         pre,
       });
@@ -135,5 +135,6 @@ export default function useAiDamageAnalyze() {
       setIsLoading(false);
     }
   };
+
   return [getAiResponseByTripIfExists, handleUploadPhoto, handleCreateCase, isLoading] as const;
 }
