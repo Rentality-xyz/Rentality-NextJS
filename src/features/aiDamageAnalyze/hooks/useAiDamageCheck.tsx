@@ -41,7 +41,9 @@ function useAiDamageCheck(tripId: number) {
       return startDamageAnalyzeImpl(tripId, rentalityContracts, ethereumInfo, "pre-trip");
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [AI_DAMAGE_ANALYZE_QUERY_KEY] });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: [AI_DAMAGE_ANALYZE_QUERY_KEY] });
+      }, 1000);
     },
   });
 
@@ -51,7 +53,9 @@ function useAiDamageCheck(tripId: number) {
       return startDamageAnalyzeImpl(tripId, rentalityContracts, ethereumInfo, "post-trip");
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [AI_DAMAGE_ANALYZE_QUERY_KEY] });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: [AI_DAMAGE_ANALYZE_QUERY_KEY] });
+      }, 1000);
     },
   });
 
