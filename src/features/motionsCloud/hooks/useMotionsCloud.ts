@@ -1,7 +1,8 @@
+//TODO obsolete. remove file
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { InsuranceCaseDTO } from "@/model/InsuranceCase";
-import { createSecret } from "@/pages/api/motionscloud/createCase";
+import { createSecret } from "@/features/motionsCloud/api/createCase";
 import axios from "@/utils/cachedAxios";
 import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { logger } from "@/utils/logger";

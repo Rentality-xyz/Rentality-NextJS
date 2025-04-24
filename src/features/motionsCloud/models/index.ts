@@ -1,3 +1,5 @@
+import { generateMotionCloudCaseNumber } from "../utils";
+
 export interface MotionCloudCase {
   "Case number": string;
   "Full Name": string;
@@ -9,7 +11,8 @@ export interface MotionCloudCase {
 }
 
 export function createMotionCloudCase(
-  caseNumber: string,
+  tripId: number,
+  chainId: number,
   fullName: string,
   email: string,
   pre: boolean,
@@ -17,7 +20,7 @@ export function createMotionCloudCase(
   vinNumber?: string
 ): MotionCloudCase {
   return {
-    "Case number": `${caseNumber}-${pre ? "Pre" : "Post"}`,
+    "Case number": generateMotionCloudCaseNumber(chainId, tripId, pre),
     "Full Name": fullName,
     Email: email,
     Language: "en",
