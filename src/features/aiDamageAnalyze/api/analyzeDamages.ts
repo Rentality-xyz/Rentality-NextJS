@@ -280,7 +280,8 @@ async function saveCaseToBlockchain(
   }
 
   try {
-    await rentalityAiDamageAnalyze.saveInsuranceCase(token, BigInt(tripId), pre);
+    const tx = await rentalityAiDamageAnalyze.saveInsuranceCase(token, BigInt(tripId), pre);
+    await tx.wait();
   } catch (error) {
     return Err(new Error("AiDamageAnalyze: failed to save insurance case with error: " + error));
   }
