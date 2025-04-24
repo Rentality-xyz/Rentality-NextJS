@@ -18,6 +18,7 @@ import { useRentality } from "@/contexts/rentalityContext";
 import { logger } from "@/utils/logger";
 import { fetchDefaultRpcUrl } from "../utils/fetchDefaultRpcUrl";
 import { isEmpty } from "@/utils/string";
+import { sleep } from "@/utils/sleep";
 
 export type NotificationContextInfo = {
   isLoading: boolean;
@@ -197,7 +198,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         }
 
         // sleep for 5 sec to avoid 429 error during plaftorm initialization
-        await new Promise((resolve) => setTimeout(resolve, 5000));
+        await sleep(5000);
 
         const toBlock = await ethereumInfo.provider.getBlockNumber();
         const fromBlock = getFromBlock(ethereumInfo.chainId, toBlock);
