@@ -1,10 +1,11 @@
+//TODO obsolete. remove file
 import { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
-import { createCase } from "@/model/AiDamageAnalyze";
 import { JsonRpcProvider, Wallet } from "ethers";
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityAiDamageAnalyzeContract } from "@/features/blockchain/models/IRentalityAiDamageAnalyze";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
+import { createAiDamageAnalyzeCase } from "@/features/aiDamageAnalyze/models";
 
 type CreateCaseParams = {
   tripId: number;
@@ -81,8 +82,9 @@ function getCase(req: NextApiRequest) {
   const request = <CreateCaseParams>req.body;
 
   return {
-    newCase: createCase(
-      request.caseNum.toString(),
+    newCase: createAiDamageAnalyzeCase(
+      request.tripId,
+      request.chainId,
       request.name,
       request.caseNum.toString(),
       request.pre,

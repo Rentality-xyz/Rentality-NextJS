@@ -76,7 +76,8 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
 
       if (hasTripPhotosFeatureFlag) {
         const result: Result<UploadedUrlList> = await carPhotosUploadButtonRef.current.saveUploadedFiles();
-        if (!result.ok || result.value.urls.length === 0) {
+        if (!result.ok) {
+          // || result.value.urls.length === 0
           showDialog(t("common.photos_required"));
           return;
         } else {

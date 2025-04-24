@@ -9,6 +9,7 @@ import { ChatMessage } from "./models/chatMessage";
 import { signUserChatMessage } from "./crypto";
 import { wakuPeerExchangeDiscovery } from "@waku/discovery";
 import { logger } from "@/utils/logger";
+import { sleep } from "@/utils/sleep";
 
 const PubsubTopic = "/waku/2/default-waku/proto";
 export function getUserChatContentTopic(address: string) {
@@ -121,7 +122,7 @@ export class Client {
     const startTime = moment().subtract(30, "days").toDate();
 
     // TODO: Remove this timeout once https://github.com/status-im/js-waku/issues/913 is done
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    await sleep(200);
 
     try {
       for await (const messagesPromises of this.node.store.queryGenerator(
