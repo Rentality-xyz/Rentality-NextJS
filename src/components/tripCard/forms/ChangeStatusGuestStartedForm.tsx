@@ -173,7 +173,7 @@ const ChangeStatusGuestStartedForm = forwardRef<HTMLDivElement, ChangeStatusGues
                   ref={carPhotosUploadButtonRef}
                   wrapperClassName="m-auto my-2"
                   isHost={isHost(userMode)}
-                  isStart={true}
+                  isStart={false}
                   tripId={tripInfo.tripId}
                 />
               </div>
