@@ -177,7 +177,8 @@ async function createCase(
   accessToken: string
 ): Promise<Result<{ token: string }>> {
   const newCase = createAiDamageAnalyzeCase(
-    request.caseNumber.toString(),
+    request.tripId,
+    request.chainId,
     request.fullName,
     request.email,
     request.pre,

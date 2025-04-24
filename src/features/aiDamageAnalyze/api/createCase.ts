@@ -1,3 +1,4 @@
+//TODO obsolete. remove file
 import { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 import { JsonRpcProvider, Wallet } from "ethers";
@@ -82,7 +83,8 @@ function getCase(req: NextApiRequest) {
 
   return {
     newCase: createAiDamageAnalyzeCase(
-      request.caseNum.toString(),
+      request.tripId,
+      request.chainId,
       request.name,
       request.caseNum.toString(),
       request.pre,

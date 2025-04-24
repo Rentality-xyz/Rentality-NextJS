@@ -1,3 +1,5 @@
+import { generateAiDamageAnalyzeCaseNumber } from "../utils";
+
 export interface AiDamageAnalyzeCase {
   "Case number": string;
   "Full Name": string;
@@ -9,7 +11,8 @@ export interface AiDamageAnalyzeCase {
 }
 
 export function createAiDamageAnalyzeCase(
-  caseNumber: string,
+  tripId: number,
+  chainId: number,
   fullName: string,
   email: string,
   pre: boolean,
@@ -17,7 +20,7 @@ export function createAiDamageAnalyzeCase(
   vinNumber?: string
 ): AiDamageAnalyzeCase {
   return {
-    "Case number": `${caseNumber}-${pre ? "Pre" : "Post"}`,
+    "Case number": generateAiDamageAnalyzeCaseNumber(chainId, tripId, pre),
     "Full Name": fullName,
     Email: email,
     Language: "en",

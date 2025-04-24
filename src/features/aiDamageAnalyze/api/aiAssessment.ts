@@ -8,7 +8,7 @@ import { env } from "@/utils/env";
 import { logger } from "@/utils/logger";
 import { deleteFileByUrl, saveAiAssessment } from "@/features/filestore/pinata/utils";
 import { isEmpty } from "@/utils/string";
-import { parseId } from "@/utils/encodeChainId";
+import { parseAiDamageAnalyzeCaseNumber } from "../utils";
 
 export default async function aiAssessmentHandler(req: NextApiRequest, res: NextApiResponse) {
   let uploadedFileUrl: string = "";
@@ -26,7 +26,7 @@ export default async function aiAssessmentHandler(req: NextApiRequest, res: Next
 
     const jsonData = req.body;
     const case_number = jsonData.data.case_number;
-    const chainId = parseId(case_number);
+    const { chainId } = parseAiDamageAnalyzeCaseNumber(case_number);
     if (!chainId) {
       logger.error("API aiAssessment error: chain id was not set");
       return;
