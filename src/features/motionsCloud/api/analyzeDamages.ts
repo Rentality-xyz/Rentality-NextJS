@@ -280,7 +280,8 @@ async function saveCaseToBlockchain(
   }
 
   try {
-    await rentalityMotionsCloud.saveInsuranceCase(token, BigInt(tripId), pre);
+    const tx = await rentalityMotionsCloud.saveInsuranceCase(token, BigInt(tripId), pre);
+    await tx.wait();
   } catch (error) {
     return Err(new Error("MotionsCloud: failed to save insurance case with error: " + error));
   }
