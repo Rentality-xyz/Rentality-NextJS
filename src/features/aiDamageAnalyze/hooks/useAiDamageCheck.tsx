@@ -9,6 +9,7 @@ import { AnalyzeDamagesParams } from "../api/analyzeDamages";
 import { isEmpty } from "@/utils/string";
 import { bigIntReplacer } from "@/utils/json";
 import { getTripCarPhotos } from "@/features/filestore/pinata/utils";
+import { CaseType } from "@/model/blockchain/schemas";
 
 export type AiCheckStatus =
   | "loading"
@@ -88,14 +89,14 @@ async function fetchAiDamageCheck(
     throw new Error("Contracts or wallet not initialized");
   }
 
-  const tripCasesResult = await rentalityContracts.aiDamageAnalyze.getInsuranceCasesUrlByTrip(BigInt(tripId));
+  const tripCasesResult = await rentalityContracts.aiDamageAnalyze.getCasesByTripId(BigInt(tripId));
   if (!tripCasesResult.ok) {
     throw tripCasesResult.error;
   }
 
   logger.debug("tripCasesResult: ", JSON.stringify(tripCasesResult.value, bigIntReplacer, 2));
 
-  const postTripCase = tripCasesResult.value.find((i) => i.iCase.pre === false);
+  const postTripCase = tripCasesResult.value.find((i) => i.caseType === CaseType.PostTrip);
   if (postTripCase) {
     if (!isEmpty(postTripCase.url)) {
       setPostTripReportUrl(postTripCase.url);
@@ -107,7 +108,7 @@ async function fetchAiDamageCheck(
   const tripCarPhotos = await getTripCarPhotos(tripId);
   logger.debug("tripCarPhotos: ", JSON.stringify(tripCarPhotos, bigIntReplacer, 2));
 
-  const preTripCase = tripCasesResult.value.find((i) => i.iCase.pre === true);
+  const preTripCase = tripCasesResult.value.find((i) => i.caseType === CaseType.PreTrip);
   if (preTripCase) {
     if (!isEmpty(preTripCase.url)) {
       setPreTripReportUrl(preTripCase.url);
@@ -137,9 +138,9 @@ async function startDamageAnalyzeImpl(
       return Err(new Error("Missing required Rentality contract or ethereum info"));
     }
 
-    const caseInfoResult = await rentalityContracts.gateway.getAiDamageAnalyzeCaseData(
+    const caseInfoResult = await rentalityContracts.gateway.getAiDamageAnalyzeCaseRequest(
       BigInt(tripId),
-      type === "pre-trip"
+      type === "pre-trip" ? CaseType.PreTrip : CaseType.PostTrip
     );
     if (!caseInfoResult.ok) {
       logger.error("startPreTripCheck: failed to get AiDamageAnalyzeCaseData with error: ", caseInfoResult.error);
@@ -150,7 +151,7 @@ async function startDamageAnalyzeImpl(
     const body: AnalyzeDamagesParams = {
       tripId: tripId,
       chainId: ethereumInfo.chainId,
-      caseNumber: Number(caseInfoResult.value.caseNumber) + 1,
+      caseNumber: Number(caseInfoResult.value.lastCaseId) + 1,
       email: caseInfoResult.value.email,
       fullName: caseInfoResult.value.name,
       vinNumber: caseInfoResult.value.vin,

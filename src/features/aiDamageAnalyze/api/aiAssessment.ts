@@ -52,7 +52,7 @@ export default async function aiAssessmentHandler(req: NextApiRequest, res: Next
       wallet
     )) as unknown as IRentalityAiDamageAnalyzeContract;
 
-    const caseExists = await rentality.isCaseExists(jsonData.case_token);
+    const caseExists = await rentality.isCaseTokenExists(jsonData.case_token);
 
     if (!caseExists) {
       logger.error(`API aiAssessments error: case not exists`);
