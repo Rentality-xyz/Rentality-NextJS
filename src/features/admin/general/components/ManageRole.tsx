@@ -25,7 +25,7 @@ function ManageRole() {
       manageRoleState.address.length !== 42 ||
       (manageRoleState.action !== "grand" && manageRoleState.action !== "revoke") ||
       manageRoleState.role < Role.Guest ||
-      manageRoleState.role > Role.InvestmentManager
+      manageRoleState.role > Role.OracleManager
     )
       return;
 
