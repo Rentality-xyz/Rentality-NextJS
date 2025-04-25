@@ -231,7 +231,7 @@ export default function RntPlaceAutocompleteInput({
         >
           {placePredictions.map((item, index) => {
             return (
-              <option
+              <div
                 className={`cursor-pointer truncate rounded-xl px-4 py-2 ${isDarkPlacePredictions ? "hover:bg-gray-600" : "hover:bg-gray-400"}`}
                 onClick={() => {
                   setEnteredAddress(item.description);
@@ -240,7 +240,7 @@ export default function RntPlaceAutocompleteInput({
                 key={index}
               >
                 {item.description}
-              </option>
+              </div>
             );
           })}
         </div>
