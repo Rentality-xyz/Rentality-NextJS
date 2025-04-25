@@ -6,6 +6,7 @@ import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityMotionsCloudContract } from "@/features/blockchain/models/IRentalityMotionsCloud";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { createMotionCloudCase } from "@/features/motionsCloud/models";
+import { CaseType } from "@/model/blockchain/schemas";
 
 type CreateCaseParams = {
   tripId: number;
@@ -61,14 +62,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(500).json({ error: "MotionsCloud: failed to get contract with signer" });
     return;
   }
-  const caseExists = await rentality.isCaseExists(token);
+  const caseExists = await rentality.isCaseTokenExists(token);
   if (caseExists) {
     console.log("MotionsCloud: case exists: ", token);
     res.status(500).json({ error: "MotionsCloud: case exists: " + token });
     return;
   }
   try {
-    await rentality.saveInsuranceCase(token, BigInt(tripId), pre);
+    await rentality.saveInsuranceCase(token, BigInt(tripId), pre ? CaseType.PreTrip : CaseType.PostTrip);
   } catch (error) {
     console.error("MotionsCloud: failed to save insurance case with error: ", error);
     return res.status(500).json({ error: "MotionsCloud: failed to save insurance case with error: " + error });

@@ -1,14 +1,15 @@
 import { ContractTransactionResponse } from "ethers";
 import { ContractResultWrapper } from "../types";
 import { IEthersContract } from "./IEtherContract";
-import { ContractInsuranceCaseDTO } from "@/model/blockchain/schemas";
+import { CaseType, ContractMotionCloudCaseDTO } from "@/model/blockchain/schemas";
 
 export interface IRentalityMotionsCloud extends ContractResultWrapper<IRentalityMotionsCloudContract> {}
 
 export interface IRentalityMotionsCloudContract extends IEthersContract {
-  saveInsuranceCase(iCase: string, tripId: bigint, pre: boolean): Promise<ContractTransactionResponse>;
-  saveInsuranceCaseUrl(iCase: string, url: string): Promise<ContractTransactionResponse>;
-  getInsuranceCasesUrlByTrip(tripId: bigint): Promise<ContractInsuranceCaseDTO[]>;
-  isCaseExists(iCase: string): Promise<string>;
-  getInsuranceCaseByTrip(tripId: bigint, pre: boolean): Promise<string>;
+  getReportUrl(caseToken: string): Promise<string>;
+  isCaseTokenExists(caseToken: string): Promise<boolean>;
+  getCasesByTripId(tripId: bigint): Promise<ContractMotionCloudCaseDTO[]>;
+  getCaseTokenForTrip(tripId: bigint, caseType: CaseType): Promise<string>;
+  saveInsuranceCaseUrl(caseToken: string, url: string): Promise<ContractTransactionResponse>;
+  saveInsuranceCase(caseToken: string, tripId: bigint, caseType: CaseType): Promise<ContractTransactionResponse>;
 }
