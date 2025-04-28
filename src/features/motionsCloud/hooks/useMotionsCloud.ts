@@ -7,6 +7,7 @@ import axios from "@/utils/cachedAxios";
 import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
 import { logger } from "@/utils/logger";
 import { useState } from "react";
+import { CaseType } from "@/model/blockchain/schemas";
 
 export default function useMotionsCloud() {
   const ethereumInfo = useEthereum();
@@ -25,7 +26,10 @@ export default function useMotionsCloud() {
     }
 
     try {
-      const caseInfoResult = await rentality.gateway.getMotionsCloudCaseData(BigInt(tripId), pre);
+      const caseInfoResult = await rentality.gateway.getMotionsCloudCaseRequest(
+        BigInt(tripId),
+        pre ? CaseType.PreTrip : CaseType.PostTrip
+      );
       if (!caseInfoResult.ok) {
         logger.info("Motions cloud: case number is not found");
         return;
@@ -33,7 +37,7 @@ export default function useMotionsCloud() {
       setIsLoading(true);
       const response = await axios.post("/api/motionscloud/createCase", {
         tripId: tripId,
-        caseNum: Number(caseInfoResult.value.caseNumber) + 1,
+        caseNum: Number(caseInfoResult.value.lastCaseId) + 1,
         email: caseInfoResult.value.email,
         name: caseInfoResult.value.name,
         chainId: ethereumInfo.chainId,
@@ -66,7 +70,10 @@ export default function useMotionsCloud() {
     try {
       setIsLoading(true);
 
-      const token = await rentality.motionsCloud.getInsuranceCaseByTrip(BigInt(tripId), pre);
+      const token = await rentality.motionsCloud.getCaseTokenForTrip(
+        BigInt(tripId),
+        pre ? CaseType.PreTrip : CaseType.PostTrip
+      );
       if (!token.ok) {
         logger.info("Motions cloud: case number is not found");
         return;
@@ -102,7 +109,7 @@ export default function useMotionsCloud() {
     }
     try {
       setIsLoading(true);
-      const response = await rentality.motionsCloud.getInsuranceCasesUrlByTrip(BigInt(tripId));
+      const response = await rentality.motionsCloud.getCasesByTripId(BigInt(tripId));
       if (!response.ok) {
         logger.error("Motions cloud: response not found");
         return;
@@ -112,8 +119,8 @@ export default function useMotionsCloud() {
         response.value.map(async (item) => {
           const iCase: InsuranceCaseDTO = {
             iCase: {
-              iCase: item.iCase.iCase,
-              pre: item.iCase.pre,
+              iCase: item.caseToken,
+              pre: item.caseType === CaseType.PreTrip,
             },
             url: item.url,
           };

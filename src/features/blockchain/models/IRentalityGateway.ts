@@ -26,8 +26,9 @@ import {
   ContractUpdateCarInfoRequest,
   ContractCheckPromoDTO,
   ContractFullKYCInfoDTO,
-  ContractMotionsCloudCaseDataDTO,
   ContractCurrency,
+  CaseType,
+  ContractMotionsCloudCaseRequestDTO,
 } from "@/model/blockchain/schemas";
 import { ContractTransactionResponse } from "ethers";
 import { IEthersContract } from "./IEtherContract";
@@ -163,7 +164,7 @@ export interface IRentalityGatewayContract extends IEthersContract {
   saveDimoTokenIds(dimoTokenIds: bigint[], rentalityCarIds: bigint[]): Promise<ContractTransactionResponse>;
 
   // MotionsCloude
-  getMotionsCloudCaseData(tripId: bigint, pre: boolean): Promise<ContractMotionsCloudCaseDataDTO>;
+  getMotionsCloudCaseRequest(tripId: bigint, caseType: CaseType): Promise<ContractMotionsCloudCaseRequestDTO>;
 
   // temporary is not working (reversed)
   // isCarDetailsConfirmed(carId: bigint): Promise<boolean>;
