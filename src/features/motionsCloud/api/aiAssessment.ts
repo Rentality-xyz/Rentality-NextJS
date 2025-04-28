@@ -75,7 +75,7 @@ export default async function aiAssessmentHandler(req: NextApiRequest, res: Next
       await deleteFileByUrl(uploadedFileUrl);
     }
     logger.error("API aiAssessments error:", error);
-    return res.status(500).json({ status: "error", error });
+    return res.status(500).json({ error: "handler error" });
   }
 }
 
