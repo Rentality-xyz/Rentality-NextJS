@@ -556,6 +556,7 @@ export type ContractInvestmentDTO = {
   symbol: string;
   priceInUsdCents: bigint;
   payedInCurrency: bigint;
+  listed: boolean;
 };
 
 export type ContractTripFilter = {
@@ -771,11 +772,32 @@ export type ContractPromoDTO = {
   promoCodeEnterDate: bigint;
 };
 
-export type ContractAiDamageAnalyzeCaseDataDTO = {
-  caseNumber: bigint;
+export type ContractCaseTokenInfo = {
+  caseId: bigint;
+  updateDate: bigint;
+  url: string;
+};
+
+export type ContractCaseInfo = {
+  caseId: bigint;
+  tripId: bigint;
+  caseToken: string;
+  createDate: bigint;
+  caseType: CaseType;
+};
+
+export type ContractAiDamageAnalyzeCaseDTO = {
+  caseId: bigint;
+  caseType: CaseType;
+  caseToken: string;
+  url: string;
+};
+
+export type ContractAiDamageAnalyzeCaseRequestDTO = {
+  lastCaseId: bigint;
   email: string;
   name: string;
-  iCase: string;
+  caseToken: string;
   vin: string;
 };
 
@@ -861,8 +883,8 @@ export const CurrencyType = {
 
 export type TaxesLocationType = bigint;
 export const TaxesLocationType = {
-  City: BigInt(0),
-  State: BigInt(1),
+  State: BigInt(0),
+  City: BigInt(1),
   Country: BigInt(2),
 };
 
@@ -964,6 +986,12 @@ export const PromoStatus = {
   Active: BigInt(0),
   Idle: BigInt(1),
   Used: BigInt(2),
+};
+
+export type CaseType = bigint;
+export const CaseType = {
+  PreTrip: BigInt(0),
+  PostTrip: BigInt(1),
 };
 
 export type TaxesType = bigint;
