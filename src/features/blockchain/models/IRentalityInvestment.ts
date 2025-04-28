@@ -29,4 +29,6 @@ export interface IRentalityInvestmentContract extends IEthersContract {
     name_: string,
     currency: string
   ): Promise<ContractTransactionResponse>;
+
+  changeListingStatus(investId: bigint): Promise<ContractTransactionResponse>;
 }
