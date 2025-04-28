@@ -298,7 +298,7 @@ async function deleteFileFromIPFS(ipfsHash: string): Promise<Result<boolean>> {
       },
     })
     .then((response) => {
-      logger.debug(`file ${response.data.IpfsHash} unpinned from pinata`);
+      logger.debug(`file ${ipfsHash} unpinned from pinata`);
       return Ok(true);
     })
     .catch((error) => {
