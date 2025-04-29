@@ -14,7 +14,6 @@ import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { placeDetailsToLocationInfo } from "@/utils/location";
 import RntCarMakeSelect from "@/components/common/rntCarMakeSelect";
 import RntCarModelSelect from "@/components/common/rntCarModelSelect";
-import { SortOptionKey } from "@/hooks/guest/useSearchCars";
 import PanelFilteringByYear from "@/components/search/panelFilteringByYear";
 import PanelFilteringByPrice from "@/components/search/panelFilteringByPrice";
 import { nameof } from "@/utils/nameof";
@@ -24,6 +23,9 @@ import RntFilterSelect from "../common/RntFilterSelect";
 import { getTimeZoneIdByAddress } from "@/utils/timezone";
 import useFetchExistPlatformCars from "@/features/search/hooks/useFetchExistPlatformCars";
 import { UTC_TIME_ZONE_ID } from "@/utils/constants";
+import { LocalizedFilterOption } from "@/model/filters";
+import { useFilters } from "@/hooks/useFilters";
+import { searchSortFilters, SearchSortFilterValueKey } from "@/features/search/models/filters";
 
 export default function SearchAndFilters({
   initValue,
@@ -35,8 +37,8 @@ export default function SearchAndFilters({
   t,
 }: {
   initValue: SearchCarRequest;
-  sortBy: string | undefined;
-  setSortBy: (value: string | undefined) => void;
+  sortBy: LocalizedFilterOption<SearchSortFilterValueKey> | undefined;
+  setSortBy: (value: LocalizedFilterOption<SearchSortFilterValueKey> | undefined) => void;
   onSearchClick: (searchCarRequest: SearchCarRequest) => Promise<void>;
   onFilterApply: (filters: SearchCarFilters) => Promise<void>;
   filterLimits: FilterLimits;
@@ -44,6 +46,7 @@ export default function SearchAndFilters({
 }) {
   const [timeZoneId, setTimeZoneId] = useState("");
   const [searchCarRequest, setSearchCarRequest] = useState<SearchCarRequest>(initValue);
+  const sortFilter = useFilters(searchSortFilters);
 
   const gmtLabel = isEmpty(timeZoneId) ? "" : `(GMT${moment.tz(timeZoneId).format("Z").slice(0, 3)})`;
   const notEmtpyTimeZoneId = !isEmpty(timeZoneId) ? timeZoneId : UTC_TIME_ZONE_ID;
@@ -57,14 +60,6 @@ export default function SearchAndFilters({
   const t_comp = (element: string) => {
     return t("search_and_filters." + element);
   };
-
-  const sortOption: Record<string, string> = t("search_and_filters.sort_options", {
-    returnObjects: true,
-  }) as Record<string, string>;
-
-  function isSortOptionKey(key: PropertyKey): key is SortOptionKey {
-    return sortOption.hasOwnProperty(key);
-  }
 
   function handleSearchInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
@@ -124,7 +119,7 @@ export default function SearchAndFilters({
     setSelectedMakeID("");
     setSelectedModelID("");
     setResetFilters(true);
-    setSortBy("");
+    setSortBy(undefined);
   }
 
   const [resetFilters, setResetFilters] = useState(false);
@@ -374,17 +369,17 @@ export default function SearchAndFilters({
             className="bg-rnt-button-gradient w-56 justify-center border-0 text-lg text-white"
             id="sort"
             placeholder={t_comp("sort_by")}
-            value={sortBy ? sortOption[sortBy] : ""}
+            value={sortBy ? sortBy.text : ""}
             onChange={(e) => {
-              const newDataKey = Object.entries(sortOption ?? {})[e.target.selectedIndex]?.[0];
-              if (isSortOptionKey(newDataKey)) {
-                setSortBy(newDataKey);
+              const selectedOption = sortFilter.options[e.target.selectedIndex];
+              if (selectedOption) {
+                setSortBy(selectedOption);
               }
             }}
           >
-            {Object.entries(sortOption ?? {}).map(([key, value]) => (
-              <RntFilterSelect.Option key={key} value={value}>
-                {value}
+            {sortFilter.options.map(({ key, text }) => (
+              <RntFilterSelect.Option key={key} value={text}>
+                {text}
               </RntFilterSelect.Option>
             ))}
           </RntFilterSelect>
