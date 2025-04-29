@@ -728,6 +728,7 @@
       "loading": "Loading...",
       "fill_fields": "Please fill in all fields",
       "success": "Success",
+      "error": "Transaction processing is failed. Please try again",
       "small_screen": "Please note: your screen resolution is less than 410 pixels. This may lead to some elements being displayed incorrectly. Please use a device with a higher resolution for an optimal experience on our platform.",
       "connect_wallet_now": "Connect now!",
       "back_to_car_search": "← Back to car search",
@@ -941,7 +942,9 @@
       "listing_progress": "To claim and receive earnings, wait for the vehicle listing and completed trips.",
       "waiting_full_tokenization": "After full tokenization, the vehicle will be listed on the platform and the investor will be able to receive earnings from each trip."
     },
-    "start_hosting_loading_error": "This investment can not be started for hosting!"
+    "start_hosting_loading_error": "This investment can not be started for hosting!",
+    "list_investment": "List investment",
+    "unlist_investment": "Unlist investment"
   },
   "cropper": {
     "cancel": "Cancel",

@@ -10,6 +10,7 @@ import { isEmpty } from "@/utils/string";
 import { bigIntReplacer } from "@/utils/json";
 import { getTripCarPhotos } from "@/features/filestore/pinata/utils";
 import { CaseType } from "@/model/blockchain/schemas";
+import { getIpfsURI } from "@/utils/ipfsUtils";
 
 export type AiCheckStatus =
   | "loading"
@@ -99,7 +100,7 @@ async function fetchAiDamageCheck(
   const postTripCase = tripCasesResult.value.find((i) => i.caseType === CaseType.PostTrip);
   if (postTripCase) {
     if (!isEmpty(postTripCase.url)) {
-      setPostTripReportUrl(postTripCase.url);
+      setPostTripReportUrl(getIpfsURI(postTripCase.url));
       return { status: "post-trip analyzed successful", lastUpdated: new Date() };
     }
     return { status: "post-trip analyzing", lastUpdated: new Date() };
@@ -111,7 +112,7 @@ async function fetchAiDamageCheck(
   const preTripCase = tripCasesResult.value.find((i) => i.caseType === CaseType.PreTrip);
   if (preTripCase) {
     if (!isEmpty(preTripCase.url)) {
-      setPreTripReportUrl(preTripCase.url);
+      setPreTripReportUrl(getIpfsURI(preTripCase.url));
       if (tripCarPhotos.checkOutByGuest.length > 0 || tripCarPhotos.checkOutByHost.length > 0) {
         return { status: "ready to post-trip analyze", lastUpdated: new Date() };
       }
