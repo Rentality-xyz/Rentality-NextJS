@@ -7,6 +7,7 @@ export enum InvestStatus {
   ReadyListing,
   ListingProgress,
   WaitingFullTokenization,
+  Unlisted,
 }
 
 export type CreateCarRequest = {
