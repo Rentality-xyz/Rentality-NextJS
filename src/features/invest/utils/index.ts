@@ -10,21 +10,23 @@ export function getInvestmentStatus(investment: InvestmentInfo, t: (key: string)
 }
 
 export function getInvestListingStatus(investment: InvestmentInfo, walletAddress: string, isHost: boolean) {
-  return investment.listed
-    ? InvestStatus.ActuallyListed
-    : (investment.investment.priceInCurrency <= investment.payedInCurrency || !investment.investment.inProgress) &&
-        !investment.listed &&
-        investment.creator === walletAddress &&
-        isHost
-      ? InvestStatus.ReadyListing
-      : investment.investment.priceInCurrency <= investment.payedInCurrency &&
+  return !investment.listed
+    ? InvestStatus.Unlisted
+    : investment.listingDate.getTime() > 0
+      ? InvestStatus.ActuallyListed
+      : (investment.investment.priceInCurrency <= investment.payedInCurrency || !investment.investment.inProgress) &&
           !investment.listed &&
-          investment.creator != walletAddress &&
-          !isHost
-        ? InvestStatus.ListingProgress
-        : investment.investment.priceInCurrency > investment.payedInCurrency
-          ? InvestStatus.WaitingFullTokenization
-          : InvestStatus.Unknown;
+          investment.creator === walletAddress &&
+          isHost
+        ? InvestStatus.ReadyListing
+        : investment.investment.priceInCurrency <= investment.payedInCurrency &&
+            !investment.listed &&
+            investment.creator != walletAddress &&
+            !isHost
+          ? InvestStatus.ListingProgress
+          : investment.investment.priceInCurrency > investment.payedInCurrency
+            ? InvestStatus.WaitingFullTokenization
+            : InvestStatus.Unknown;
 }
 
 export function getTxtInvestmentListingStatus(
@@ -47,11 +49,18 @@ export function getTxtInvestmentListingStatus(
 
 export function getColorInvestmentStatus(investment: InvestmentInfo, walletAddress: string, isHost: boolean) {
   const investStatus = getInvestListingStatus(investment, walletAddress, isHost);
-  return investStatus === InvestStatus.ActuallyListed
-    ? "bg-[#7355D7]"
-    : investStatus === InvestStatus.ReadyListing || investStatus === InvestStatus.ListingProgress
-      ? "bg-[#A21CAF]"
-      : "bg-[#2563EB]";
+
+  switch (investStatus) {
+    case InvestStatus.ActuallyListed:
+      return "bg-[#7355D7]";
+    case InvestStatus.ReadyListing:
+    case InvestStatus.ListingProgress:
+      return "bg-[#A21CAF]";
+    case InvestStatus.Unlisted:
+      return "bg-[#EF4444]";
+    default:
+      return "bg-[#2563EB]";
+  }
 }
 
 export function getCarListingStatus(
