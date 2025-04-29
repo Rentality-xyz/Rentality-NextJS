@@ -47,11 +47,10 @@ export default function InvestCar({
   const handleChangeInvestmentAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const maxAmount = searchInfo.investment.investment.priceInCurrency - searchInfo.investment.payedInCurrency;
     let value = e.target.value;
-
     value = formatFloatInput(value);
 
-    if (parseFloat(value) > maxAmount / 1e18) {
-      value = (maxAmount / 1e18).toString();
+    if (parseFloat(value) > maxAmount) {
+      value = maxAmount.toString();
     }
 
     setInvestmentAmount(value);
