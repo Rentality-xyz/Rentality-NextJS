@@ -33,10 +33,13 @@
     "button_apply": "Apply",
     "button_reset": "Reset",
     "sort_by": "Sort by",
-    "sort_options": {
-      "priceAsc": "Price: low to high",
-      "priceDesc": "Price: high to low",
-      "distance": "Distance"
+    "sort_filter": {
+      "label": "Sort by",
+      "options": {
+        "price_asc": "Price: low to high",
+        "price_desc": "Price: high to low",
+        "distance": "Distance"
+      }
     },
     "button_deliver_to_me": "Deliver to me",
     "select_filter_make": "Make",

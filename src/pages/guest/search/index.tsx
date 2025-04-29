@@ -27,11 +27,10 @@ import useBlockchainNetworkCheck from "@/features/blockchain/hooks/useBlockchain
 function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
 
-  const [isLoading, searchAvailableCars, searchResult, sortSearchResult, setSearchResult] = useSearchCars();
+  const [isLoading, searchAvailableCars, searchResult, sortBy, setSortBy, setSearchResult] = useSearchCars();
   const { createTripRequest } = useCreateTripRequest();
 
   const [requestSending, setRequestSending] = useState<boolean>(false);
-  const [sortBy, setSortBy] = useState<string | undefined>(undefined);
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, showSuccess, hideSnackbars } = useRntSnackbars();
   const userInfo = useUserInfo();
@@ -151,11 +150,6 @@ function Search() {
     },
     [setSearchResult]
   );
-
-  useEffect(() => {
-    if (sortBy === undefined) return;
-    sortSearchResult(sortBy);
-  }, [sortBy, sortSearchResult]);
 
   const [isExpanded, setIsExpanded] = useState(false);
 
