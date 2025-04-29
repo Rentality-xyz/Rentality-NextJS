@@ -45,8 +45,6 @@ function InvestPageContent({}: InvestContentProps) {
   }
 
   const filteredInvestments = useMemo(() => {
-    console.log("selectedFilter", JSON.stringify(selectedFilter, null, 2));
-
     return investments.filter((value) => {
       if (!selectedFilter || selectedFilter.key === "all_assets") {
         return true;

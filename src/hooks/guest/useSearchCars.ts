@@ -1,20 +1,18 @@
-import { useCallback, useState } from "react";
+import { useEffect, useState } from "react";
 import { SearchCarInfo, SearchCarsResult, emptySearchCarsResult } from "@/model/SearchCarsResult";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isEmpty } from "@/utils/string";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { PublicSearchCarsResponse } from "@/pages/api/publicSearchCars";
 import { logger } from "@/utils/logger";
-
-export type SortOptions = {
-  [key: string]: string;
-};
-export type SortOptionKey = keyof SortOptions;
+import { LocalizedFilterOption } from "@/model/filters";
+import { SearchSortFilterValueKey } from "@/features/search/models/filters";
 
 const useSearchCars = () => {
   const ethereumInfo = useEthereum();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [searchResult, setSearchResult] = useState<SearchCarsResult>(emptySearchCarsResult);
+  const [sortBy, setSortBy] = useState<LocalizedFilterOption<SearchSortFilterValueKey> | undefined>(undefined);
 
   const searchAvailableCars = async (request: SearchCarRequest, filters: SearchCarFilters) => {
     try {
@@ -107,14 +105,25 @@ const useSearchCars = () => {
         availableCarsData[0].highlighted = true;
       }
 
+      const sortLogic =
+        sortBy === undefined
+          ? noSort
+          : sortBy.key === "distance"
+            ? sortByDistanceToUser
+            : sortBy.key === "price_desc"
+              ? sortByDailyPriceDes
+              : sortByDailyPriceAsc;
+
       setSearchResult({
         searchCarRequest: request,
         searchCarFilters: filters,
-        carInfos: availableCarsData.map((i) => ({
-          ...i,
-          engineType: BigInt(i.engineType),
-          dimoTokenId: Number(i.dimoTokenId),
-        })),
+        carInfos: availableCarsData
+          .map((i) => ({
+            ...i,
+            engineType: BigInt(i.engineType),
+            dimoTokenId: Number(i.dimoTokenId),
+          }))
+          .sort(sortLogic),
         filterLimits: publicSearchCarsResponse.filterLimits,
       });
       return true;
@@ -126,20 +135,15 @@ const useSearchCars = () => {
     }
   };
 
-  function sortByDailyPriceAsc(a: SearchCarInfo, b: SearchCarInfo) {
-    return a.pricePerDay - b.pricePerDay;
-  }
-  function sortByDailyPriceDes(a: SearchCarInfo, b: SearchCarInfo) {
-    return b.pricePerDay - a.pricePerDay;
-  }
+  useEffect(() => {
+    if (!sortBy) return;
 
-  function sortByDistanceToUser(a: SearchCarInfo, b: SearchCarInfo) {
-    return a.distanceToUser - b.distanceToUser;
-  }
-
-  const sortSearchResult = useCallback((sortBy: SortOptionKey) => {
     const sortLogic =
-      sortBy === "distance" ? sortByDistanceToUser : sortBy === "priceDesc" ? sortByDailyPriceDes : sortByDailyPriceAsc;
+      sortBy.key === "distance"
+        ? sortByDistanceToUser
+        : sortBy.key === "price_desc"
+          ? sortByDailyPriceDes
+          : sortByDailyPriceAsc;
 
     setSearchResult((current) => {
       return {
@@ -150,8 +154,25 @@ const useSearchCars = () => {
         filterLimits: current.filterLimits,
       };
     });
-  }, []);
-  return [isLoading, searchAvailableCars, searchResult, sortSearchResult, setSearchResult] as const;
+  }, [sortBy]);
+
+  return [isLoading, searchAvailableCars, searchResult, sortBy, setSortBy, setSearchResult] as const;
 };
+
+function noSort(a: SearchCarInfo, b: SearchCarInfo) {
+  return 0;
+}
+
+function sortByDailyPriceAsc(a: SearchCarInfo, b: SearchCarInfo) {
+  return a.pricePerDay - b.pricePerDay;
+}
+
+function sortByDailyPriceDes(a: SearchCarInfo, b: SearchCarInfo) {
+  return b.pricePerDay - a.pricePerDay;
+}
+
+function sortByDistanceToUser(a: SearchCarInfo, b: SearchCarInfo) {
+  return a.distanceToUser - b.distanceToUser;
+}
 
 export default useSearchCars;
