@@ -741,6 +741,9 @@
       "platform_init_error": "Platform initialization is taking longer than expected.\nThis might be due to network congestion or ongoing technical maintenance.",
       "try_later_or_describe_problem": "Please try again later. If the issue persists, feel free to describe the problem and send it to us for analysis.",
       "describe_what_happens": "Describe what happened",
+      "internet_troubles": "There seems to be a problem with your internet connection",
+      "check_internet": "Please check it and try again",
+      "try_again": "Try again",
       "share_details_how_reproduce": "Sharing details like how we can reproduce the bug will help us fix the problem.",
       "user_error_submit_success": "Your error description has been submitted",
       "we_appreciate_your_patience": "We appreciate your patience and understanding!"
