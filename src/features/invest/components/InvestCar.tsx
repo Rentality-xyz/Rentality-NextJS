@@ -144,7 +144,9 @@ export default function InvestCar({
         <div className="relative flex h-full flex-col p-2 text-center max-2xl:py-4 2xl:px-4">
           <p className="text-xl font-semibold max-2xl:mb-4">{t("invest.tokenization")}</p>
           <div className="flex flex-grow flex-col justify-center">
-            <p className="text-xl font-bold 2xl:text-2xl">ETH: {searchInfo.investment.investment.priceInCurrency}</p>
+            <p className="text-xl font-bold 2xl:text-2xl">
+              ETH: {searchInfo.investment.investment.priceInCurrency.toFixed(6)}
+            </p>
             <p className="2xl:text-lg">{t("invest.total_price")}</p>
             <div className="mx-auto my-2 h-0.5 w-[40%] translate-y-[-50%] bg-white sm:w-[70%]"></div>
             <TokenizationBalance
