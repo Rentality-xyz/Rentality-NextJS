@@ -54,10 +54,13 @@ export const mapContractInvestmentDTOToInvestmentInfoWithMetadata = (
       income: Number(dto.income) / 1e18,
       myIncome: Number(dto.myIncome) / 1e18,
       myInvestingSum: Number(dto.myInvestingSum),
-      listingDate: getDateFromBlockchainTimeWithTZ(
-        Number(dto.listingDate),
-        dto.investment.car.locationInfo.locationInfo.timeZoneId
-      ),
+      listingDate:
+        dto.listingDate !== BigInt(0)
+          ? getDateFromBlockchainTimeWithTZ(
+              Number(dto.listingDate),
+              dto.investment.car.locationInfo.locationInfo.timeZoneId
+            )
+          : undefined,
       myTokens: Number(dto.myTokens),
       myPart: dto.myPart > 100 ? 100 : Number(dto.myPart),
       hostPart: Number(dto.investment.creatorPercents),

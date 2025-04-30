@@ -43,6 +43,7 @@ function isContractTransactionResponse(obj: any): obj is ContractTransactionResp
     typeof obj.wait === "function"
   );
 }
+
 function debugData<T>(contract: T, fnName: string, args: any[]) {
   const contractInterface = (contract as unknown as ethers.Contract).interface;
   const contractFn = contractInterface.getFunction(fnName);
