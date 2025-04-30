@@ -13,7 +13,7 @@ function StakeInAsset({
         ? t("invest.no_stake_in_asset")
         : t("invest.stake_in_asset")
             .replace("{myTokens}", myTokens.toString())
-            .replace("{myInvestingSum}", myInvestingSum.toString())}
+            .replace("{myInvestingSum}", myInvestingSum.toFixed(6))}
     </p>
   );
 }
