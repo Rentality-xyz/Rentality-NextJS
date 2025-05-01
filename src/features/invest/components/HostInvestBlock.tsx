@@ -35,7 +35,7 @@ function HostInvestBlock({
     investment.listingDate === undefined;
 
   return (
-    <div className="mx-auto flex w-full flex-col items-center justify-center gap-4 marker:mt-6">
+    <div className="mx-auto mt-6 flex w-full flex-col items-center justify-center gap-4 2xl:mt-0">
       {isReadyToClaim && (
         <RntButton className="h-14" onClick={() => handleStartHosting(investment.investmentId)}>
           {t("invest.btn_start_hosting")}
