@@ -12,7 +12,7 @@ export function getInvestmentStatus(investment: InvestmentInfo, t: (key: string)
 export function getInvestListingStatus(investment: InvestmentInfo, walletAddress: string, isHost: boolean) {
   return !investment.listed
     ? InvestStatus.Unlisted
-    : investment.listingDate.getTime() > 0
+    : investment.listingDate !== undefined
       ? InvestStatus.ActuallyListed
       : (investment.investment.priceInCurrency <= investment.payedInCurrency || !investment.investment.inProgress) &&
           !investment.listed &&
@@ -70,15 +70,12 @@ export function getCarListingStatus(
   t: (key: string) => string
 ) {
   const investStatus = getInvestListingStatus(investment, walletAddress, isHost);
-  const formattedDate = moment(investment.listingDate).tz(UTC_TIME_ZONE_ID);
-  const today = moment().tz(UTC_TIME_ZONE_ID);
-  const daysDiff = today.diff(formattedDate, "days");
 
   const message =
-    investStatus === InvestStatus.ActuallyListed
+    investStatus === InvestStatus.ActuallyListed && investment.listingDate !== undefined
       ? t("invest.listed_days")
           .replace("{date}", dateFormatLongMonthYearDate(investment.listingDate))
-          .replace("{days}", String(daysDiff))
+          .replace("{days}", moment().diff(moment(investment.listingDate), "days").toString())
       : investStatus === InvestStatus.ReadyListing
         ? t("invest.ready_listing")
         : investStatus === InvestStatus.ListingProgress

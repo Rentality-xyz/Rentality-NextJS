@@ -47,7 +47,7 @@ export type InvestmentInfo = {
   income: number;
   myIncome: number;
   myInvestingSum: number;
-  listingDate: Date;
+  listingDate: Date | undefined;
   myTokens: number;
   myPart: number;
   hostPart: number;

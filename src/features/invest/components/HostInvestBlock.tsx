@@ -32,7 +32,7 @@ function HostInvestBlock({
   const isReadyToClaim =
     isCreator &&
     (investment.payedInCurrency >= investment.investment.priceInCurrency || !investment.investment.inProgress) &&
-    investment.listingDate.getTime() > 0;
+    investment.listingDate === undefined;
 
   return (
     <div className="mx-auto flex w-full flex-col items-center justify-center gap-4 marker:mt-6">
