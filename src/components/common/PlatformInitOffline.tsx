@@ -14,12 +14,12 @@ function PlatformInitOffline() {
 
   return (
     <div className="flex h-screen w-full flex-col content-center items-center justify-center gap-6">
-      <p className="text-2xl font-bold">{t("common.info.internet_troubles")}</p>
-      <p className="text-lg">{t("common.info.check_internet")}</p>
+      <p className="text-2xl font-bold text-center">{t("common.info.internet_troubles")}</p>
+      <p className="text-lg text-center">{t("common.info.check_internet")}</p>
       <RntButton className="w-72" onClick={handleTryAgainClick}>
         {t("common.info.try_again")}
       </RntButton>
-      <Image src="/images/car_404.png" alt="" className="hidden w-[600px] sm:block" width={1000} height={1000} />
+      <Image src="/images/car_404.png" alt="" className="w-[600px]" width={1000} height={1000} />
     </div>
   );
 }
