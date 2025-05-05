@@ -30,7 +30,7 @@ export default function SideNavMenuItem({
   let isSelected = false;
   if (typeof window !== "undefined") {
     const currentPathname = window.location.pathname;
-    isSelected = currentPathname === href && href.trim() !== "/";
+    isSelected = (currentPathname === href || currentPathname.startsWith(href)) && href.trim() !== "/";
   }
 
   return (

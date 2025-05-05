@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/auth/authContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { GatewayStatus, useGateway } from "@civic/ethereum-gateway-react";
-import AddCar from "@/pages/host/vehicles/add";
+import AddCar from "../vehicles/listings/add";
 import { CivicProvider } from "@/contexts/web3/civicContext";
 import UserCommonInformationForm from "@/features/profile/components/UserCommonInformationForm";
 import UserDriverLicenseVerification from "@/features/profile/components/UserDriverLicenseVerification";
