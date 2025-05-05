@@ -1,6 +1,19 @@
 {
   "abi": [
     {
+      "type": "event",
+      "anonymous": false,
+      "name": "RentalityEvent",
+      "inputs": [
+        { "type": "uint8", "name": "eType", "indexed": true },
+        { "type": "uint256", "name": "id", "indexed": false },
+        { "type": "uint8", "name": "objectStatus", "indexed": false },
+        { "type": "address", "name": "from", "indexed": true },
+        { "type": "address", "name": "to", "indexed": true },
+        { "type": "uint256", "name": "timestamp", "indexed": false }
+      ]
+    },
+    {
       "type": "function",
       "name": "addCar",
       "constant": false,
@@ -1924,6 +1937,1650 @@
       "payable": false,
       "inputs": [{ "type": "address", "name": "user" }],
       "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "addCurrencyType",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "tokenAddress" },
+        { "type": "address", "name": "rentalityTokenService" },
+        { "type": "string", "name": "name" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "addUserCurrency",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "user" },
+        { "type": "address", "name": "currency" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "calculateLatestValueWithFee",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "tokenAddress" },
+        { "type": "uint256", "name": "value" },
+        { "type": "uint256", "name": "commission" }
+      ],
+      "outputs": [
+        { "type": "uint256", "name": "toPay" },
+        { "type": "uint256", "name": "fee" },
+        { "type": "int256", "name": "currencyRate" },
+        { "type": "uint8", "name": "decimals" }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "calculateTripFinsish",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "tuple",
+          "name": "paymentInfo",
+          "components": [
+            { "type": "uint256", "name": "tripId" },
+            { "type": "address", "name": "from" },
+            { "type": "address", "name": "to" },
+            { "type": "uint64", "name": "totalDayPriceInUsdCents" },
+            { "type": "uint64", "name": "salesTax" },
+            { "type": "uint64", "name": "governmentTax" },
+            { "type": "uint64", "name": "priceWithDiscount" },
+            { "type": "uint64", "name": "depositInUsdCents" },
+            { "type": "uint64", "name": "resolveAmountInUsdCents" },
+            { "type": "address", "name": "currencyType" },
+            { "type": "int256", "name": "currencyRate" },
+            { "type": "uint8", "name": "currencyDecimals" },
+            { "type": "uint64", "name": "resolveFuelAmountInUsdCents" },
+            { "type": "uint64", "name": "resolveMilesAmountInUsdCents" },
+            { "type": "uint128", "name": "pickUpFee" },
+            { "type": "uint128", "name": "dropOfFee" }
+          ]
+        },
+        { "type": "uint256", "name": "rentalityFee" },
+        { "type": "uint256", "name": "insurancePriceInUsdCents" },
+        { "type": "address", "name": "promoService" }
+      ],
+      "outputs": [
+        { "type": "uint256", "name": "toHost" },
+        { "type": "uint256", "name": "toGuest" },
+        { "type": "uint256", "name": "toHostInUsd" },
+        { "type": "uint256", "name": "toGuestInUsd" },
+        { "type": "uint256", "name": "total" }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "calculateTripReject",
+      "constant": true,
+      "stateMutability": "pure",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "tuple",
+          "name": "paymentInfo",
+          "components": [
+            { "type": "uint256", "name": "tripId" },
+            { "type": "address", "name": "from" },
+            { "type": "address", "name": "to" },
+            { "type": "uint64", "name": "totalDayPriceInUsdCents" },
+            { "type": "uint64", "name": "salesTax" },
+            { "type": "uint64", "name": "governmentTax" },
+            { "type": "uint64", "name": "priceWithDiscount" },
+            { "type": "uint64", "name": "depositInUsdCents" },
+            { "type": "uint64", "name": "resolveAmountInUsdCents" },
+            { "type": "address", "name": "currencyType" },
+            { "type": "int256", "name": "currencyRate" },
+            { "type": "uint8", "name": "currencyDecimals" },
+            { "type": "uint64", "name": "resolveFuelAmountInUsdCents" },
+            { "type": "uint64", "name": "resolveMilesAmountInUsdCents" },
+            { "type": "uint128", "name": "pickUpFee" },
+            { "type": "uint128", "name": "dropOfFee" }
+          ]
+        },
+        { "type": "uint256", "name": "insurance" },
+        { "type": "uint64", "name": "totalTax" }
+      ],
+      "outputs": [{ "type": "uint256", "name": "tripRejectValue" }]
+    },
+    {
+      "type": "function",
+      "name": "currencyTypeIsAvailable",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "tokenAddress" }],
+      "outputs": [{ "type": "bool", "name": "isAvailable" }]
+    },
+    {
+      "type": "function",
+      "name": "getAllCurrencies",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "tuple[]",
+          "name": "availableOnPlatformCurrencies",
+          "components": [
+            { "type": "address", "name": "currency" },
+            { "type": "string", "name": "name" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getCurrencyRateWithCache",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "tokenAddress" }],
+      "outputs": [
+        { "type": "int256", "name": "cachedRate" },
+        { "type": "uint8", "name": "decimals" }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getCurrentRate",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "tokenAddress" }],
+      "outputs": [
+        { "type": "int256", "name": "rate" },
+        { "type": "uint8", "name": "decimals" }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getFromUsd",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "tokenAddress" },
+        { "type": "uint256", "name": "amount" },
+        { "type": "int256", "name": "currencyRate" },
+        { "type": "uint8", "name": "decimals" }
+      ],
+      "outputs": [{ "type": "uint256", "name": "amountInCurrency" }]
+    },
+    {
+      "type": "function",
+      "name": "getFromUsdLatest",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "tokenAddress" },
+        { "type": "uint256", "name": "valueInUsdCents" }
+      ],
+      "outputs": [
+        { "type": "uint256", "name": "valueInCurrency" },
+        { "type": "int256", "name": "rate" },
+        { "type": "uint8", "name": "decimals" }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getFromUsdWithCache",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "tokenAddress" },
+        { "type": "uint256", "name": "valueInUsdCents" }
+      ],
+      "outputs": [{ "type": "uint256", "name": "cachedValueInCurrency" }]
+    },
+    {
+      "type": "function",
+      "name": "getLatest",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "tokenAddress" }],
+      "outputs": [{ "type": "int256", "name": "latestRate" }]
+    },
+    {
+      "type": "function",
+      "name": "getRate",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "tokenAddress" }],
+      "outputs": [
+        { "type": "int256", "name": "rate" },
+        { "type": "uint8", "name": "decimals" }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getToUsd",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "tokenAddress" },
+        { "type": "uint256", "name": "tokenValue" },
+        { "type": "int256", "name": "tokenToUsd" },
+        { "type": "uint8", "name": "decimals" }
+      ],
+      "outputs": [{ "type": "uint256", "name": "valueInUsd" }]
+    },
+    {
+      "type": "function",
+      "name": "getToUsdLatest",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "tokenAddress" },
+        { "type": "uint256", "name": "amount" }
+      ],
+      "outputs": [
+        { "type": "uint256", "name": "usdLatest" },
+        { "type": "int256", "name": "rate" },
+        { "type": "uint8", "name": "decimals" }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getToUsdWithCache",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "tokenAddress" },
+        { "type": "uint256", "name": "amount" }
+      ],
+      "outputs": [{ "type": "uint256", "name": "cachedValueInUsd" }]
+    },
+    {
+      "type": "function",
+      "name": "getUserCurrency",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [
+        {
+          "type": "tuple",
+          "name": "currency",
+          "components": [
+            { "type": "address", "name": "currency" },
+            { "type": "bool", "name": "initialized" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "initialize",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "_userService" },
+        { "type": "address", "name": "ethPaymentAddress" },
+        { "type": "string", "name": "nativeCurrencyName" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "isETH",
+      "constant": true,
+      "stateMutability": "pure",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "tokenAddress" }],
+      "outputs": [{ "type": "bool", "name": "isEthCurrency" }]
+    },
+    {
+      "type": "function",
+      "name": "proxiableUUID",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "bytes32", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "setDefaultCurrencyType",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "currency" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "upgradeTo",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "newImplementation" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "upgradeToAndCall",
+      "constant": false,
+      "stateMutability": "payable",
+      "payable": true,
+      "inputs": [
+        { "type": "address", "name": "newImplementation" },
+        { "type": "bytes", "name": "data" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "eip712Domain",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        { "type": "bytes1", "name": "fields" },
+        { "type": "string", "name": "name" },
+        { "type": "string", "name": "version" },
+        { "type": "uint256", "name": "chainId" },
+        { "type": "address", "name": "verifyingContract" },
+        { "type": "bytes32", "name": "salt" },
+        { "type": "uint256[]", "name": "extensions" }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "initialize",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "_userService" },
+        { "type": "address", "name": "admin" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "proxiableUUID",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "bytes32", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "upgradeTo",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "newImplementation" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "upgradeToAndCall",
+      "constant": false,
+      "stateMutability": "payable",
+      "payable": true,
+      "inputs": [
+        { "type": "address", "name": "newImplementation" },
+        { "type": "bytes", "name": "data" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "verify",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "tuple",
+          "name": "location",
+          "components": [
+            {
+              "type": "tuple",
+              "name": "locationInfo",
+              "components": [
+                { "type": "string", "name": "userAddress" },
+                { "type": "string", "name": "country" },
+                { "type": "string", "name": "state" },
+                { "type": "string", "name": "city" },
+                { "type": "string", "name": "latitude" },
+                { "type": "string", "name": "longitude" },
+                { "type": "string", "name": "timeZoneId" }
+              ]
+            },
+            { "type": "bytes", "name": "signature" }
+          ]
+        }
+      ],
+      "outputs": [{ "type": "address", "name": "user" }]
+    },
+    {
+      "type": "function",
+      "name": "verifySignedLocationInfo",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "tuple",
+          "name": "locationInfo",
+          "components": [
+            {
+              "type": "tuple",
+              "name": "locationInfo",
+              "components": [
+                { "type": "string", "name": "userAddress" },
+                { "type": "string", "name": "country" },
+                { "type": "string", "name": "state" },
+                { "type": "string", "name": "city" },
+                { "type": "string", "name": "latitude" },
+                { "type": "string", "name": "longitude" },
+                { "type": "string", "name": "timeZoneId" }
+              ]
+            },
+            { "type": "bytes", "name": "signature" }
+          ]
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "eip712Domain",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        { "type": "bytes1", "name": "fields" },
+        { "type": "string", "name": "name" },
+        { "type": "string", "name": "version" },
+        { "type": "uint256", "name": "chainId" },
+        { "type": "address", "name": "verifyingContract" },
+        { "type": "bytes32", "name": "salt" },
+        { "type": "uint256[]", "name": "extensions" }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getCaseTokenForTrip",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        { "type": "uint256", "name": "tripId" },
+        { "type": "uint8", "name": "caseType" }
+      ],
+      "outputs": [{ "type": "string", "name": "caseToken" }]
+    },
+    {
+      "type": "function",
+      "name": "getCasesByTripId",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "uint256", "name": "tripId" }],
+      "outputs": [
+        {
+          "type": "tuple[]",
+          "name": "aiDamageAnalyzeCases",
+          "components": [
+            { "type": "uint256", "name": "caseId" },
+            { "type": "uint8", "name": "caseType" },
+            { "type": "string", "name": "caseToken" },
+            { "type": "string", "name": "url" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getLatestCaseId",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "uint256", "name": "latestCaseId" }]
+    },
+    {
+      "type": "function",
+      "name": "getReportUrl",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "string", "name": "caseToken" }],
+      "outputs": [{ "type": "string", "name": "url" }]
+    },
+    {
+      "type": "function",
+      "name": "initialize",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "_userService" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "isCaseTokenExists",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "string", "name": "caseToken" }],
+      "outputs": [{ "type": "bool", "name": "isExist" }]
+    },
+    {
+      "type": "function",
+      "name": "proxiableUUID",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "bytes32", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "saveInsuranceCase",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "string", "name": "caseToken" },
+        { "type": "uint256", "name": "tripId" },
+        { "type": "uint8", "name": "caseType" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "saveInsuranceCaseUrl",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "string", "name": "caseToken" },
+        { "type": "string", "name": "url" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "upgradeTo",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "newImplementation" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "upgradeToAndCall",
+      "constant": false,
+      "stateMutability": "payable",
+      "payable": true,
+      "inputs": [
+        { "type": "address", "name": "newImplementation" },
+        { "type": "bytes", "name": "data" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "addOneTimeProgram",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "uint8", "name": "selector" },
+        { "type": "int256", "name": "points" },
+        { "type": "int256", "name": "refPoints" },
+        { "type": "bytes4", "name": "calback" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "addPermanentProgram",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "uint8", "name": "selector" },
+        { "type": "int256", "name": "points" },
+        { "type": "bytes4", "name": "calback" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "addressToPoints",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "" }],
+      "outputs": [{ "type": "uint256", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "claimPoints",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "claimRefferalPoints",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "generateReferralHash",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "getAllTearsInfo",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "tuple[]",
+          "name": "",
+          "components": [
+            {
+              "type": "tuple",
+              "name": "points",
+              "components": [
+                { "type": "uint256", "name": "from" },
+                { "type": "uint256", "name": "to" }
+              ]
+            },
+            { "type": "uint8", "name": "tear" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getCarDailyClaimedTime",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "uint256", "name": "carId" }],
+      "outputs": [{ "type": "uint256", "name": "carDailyClaimedTime" }]
+    },
+    {
+      "type": "function",
+      "name": "getEmptyToClaim",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "tuple[]",
+          "name": "",
+          "components": [
+            { "type": "uint256", "name": "points" },
+            { "type": "uint8", "name": "refType" },
+            { "type": "bool", "name": "oneTime" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getMyRefferalInfo",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "tuple",
+          "name": "myRefferalInfoDTO",
+          "components": [
+            { "type": "bytes4", "name": "myHash" },
+            { "type": "bytes4", "name": "savedHash" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getMyStartDiscount",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [{ "type": "uint256", "name": "startDiscount" }]
+    },
+    {
+      "type": "function",
+      "name": "getPointsHistory",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "tuple[]",
+          "name": "programHistory",
+          "components": [
+            { "type": "int256", "name": "points" },
+            { "type": "uint256", "name": "date" },
+            { "type": "uint8", "name": "method" },
+            { "type": "bool", "name": "oneTime" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getReadyToClaim",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [
+        {
+          "type": "tuple",
+          "name": "readyToClaimDTO",
+          "components": [
+            {
+              "type": "tuple[]",
+              "name": "toClaim",
+              "components": [
+                { "type": "uint256", "name": "points" },
+                { "type": "uint8", "name": "refType" },
+                { "type": "bool", "name": "oneTime" }
+              ]
+            },
+            { "type": "uint256", "name": "totalPoints" },
+            { "type": "uint256", "name": "toNextDailyClaim" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getReadyToClaimFromRefferalHash",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [
+        {
+          "type": "tuple",
+          "name": "refferalHashDTO",
+          "components": [
+            {
+              "type": "tuple[]",
+              "name": "toClaim",
+              "components": [
+                { "type": "uint256", "name": "points" },
+                { "type": "uint8", "name": "refType" },
+                { "type": "bool", "name": "oneTime" },
+                { "type": "bool", "name": "claimed" },
+                { "type": "address", "name": "user" }
+              ]
+            },
+            { "type": "uint256", "name": "totalPoints" },
+            { "type": "bytes4", "name": "hash" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getRefferalPointsInfo",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "tuple",
+          "name": "allRefferalInfoDTO",
+          "components": [
+            {
+              "type": "tuple[]",
+              "name": "programPoints",
+              "components": [
+                { "type": "uint8", "name": "refferalType" },
+                { "type": "uint8", "name": "method" },
+                { "type": "int256", "name": "points" }
+              ]
+            },
+            {
+              "type": "tuple[]",
+              "name": "hashPoints",
+              "components": [
+                { "type": "uint8", "name": "method" },
+                { "type": "uint256", "name": "points" }
+              ]
+            },
+            {
+              "type": "tuple[]",
+              "name": "discounts",
+              "components": [
+                { "type": "uint8", "name": "method" },
+                { "type": "uint8", "name": "tear" },
+                {
+                  "type": "tuple",
+                  "name": "discount",
+                  "components": [
+                    { "type": "uint256", "name": "pointsCosts" },
+                    { "type": "uint256", "name": "percents" }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tuple[]",
+              "name": "tear",
+              "components": [
+                {
+                  "type": "tuple",
+                  "name": "points",
+                  "components": [
+                    { "type": "uint256", "name": "from" },
+                    { "type": "uint256", "name": "to" }
+                  ]
+                },
+                { "type": "uint8", "name": "tear" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getTearTypeByPoints",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "uint256", "name": "points" }],
+      "outputs": [{ "type": "uint8", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "getUserService",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "address", "name": "userServiceAddress" }]
+    },
+    {
+      "type": "function",
+      "name": "hashExists",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "bytes4", "name": "hash" }],
+      "outputs": [{ "type": "bool", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "initialize",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "_userService" },
+        { "type": "address", "name": "_refferalLib" },
+        { "type": "address", "name": "carServiceAddress" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "manageRefHashesProgram",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "uint8", "name": "selector" },
+        { "type": "uint256", "name": "points" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "manageRefferalDiscount",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "uint8", "name": "selector" },
+        { "type": "uint8", "name": "tear" },
+        { "type": "uint256", "name": "points" },
+        { "type": "uint256", "name": "percents" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "manageTearInfo",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "uint8", "name": "tear" },
+        { "type": "uint256", "name": "from" },
+        { "type": "uint256", "name": "to" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "passReferralProgram",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "uint8", "name": "selector" },
+        { "type": "bytes", "name": "callbackArgs" },
+        { "type": "address", "name": "user" },
+        { "type": "address", "name": "promoService" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "proxiableUUID",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "bytes32", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "referralHash",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "" }],
+      "outputs": [{ "type": "bytes32", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "referralHashV2",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "" }],
+      "outputs": [{ "type": "bytes4", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "saveRefferalHash",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "bytes4", "name": "hash" },
+        { "type": "bool", "name": "isGuest" },
+        { "type": "address", "name": "sender" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "updateDaily",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [{ "type": "uint256", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "updateLib",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "refLib" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "upgradeTo",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "newImplementation" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "upgradeToAndCall",
+      "constant": false,
+      "stateMutability": "payable",
+      "payable": true,
+      "inputs": [
+        { "type": "address", "name": "newImplementation" },
+        { "type": "bytes", "name": "data" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "useDiscount",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "uint8", "name": "selector" },
+        { "type": "bool", "name": "host" },
+        { "type": "uint256", "name": "tripId" },
+        { "type": "address", "name": "user" }
+      ],
+      "outputs": [{ "type": "uint256", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "ADMIN_VIEW_ROLE",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "bytes32", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "DEFAULT_ADMIN_ROLE",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "bytes32", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "GUEST_ROLE",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "bytes32", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "HOST_ROLE",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "bytes32", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "INVESTMENT_MANAGER_ROLE",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "bytes32", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "KYC_COMMISSION_MANAGER_ROLE",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "bytes32", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "MANAGER_ROLE",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "bytes32", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "ORACLE_MANAGER",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "bytes32", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "RENTALITY_PLATFORM",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "bytes32", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "getKYCInfo",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [
+        {
+          "type": "tuple",
+          "name": "kycInfo",
+          "components": [
+            { "type": "string", "name": "name" },
+            { "type": "string", "name": "surname" },
+            { "type": "string", "name": "mobilePhoneNumber" },
+            { "type": "string", "name": "profilePhoto" },
+            { "type": "string", "name": "licenseNumber" },
+            { "type": "uint64", "name": "expirationDate" },
+            { "type": "uint256", "name": "createDate" },
+            { "type": "bool", "name": "isTCPassed" },
+            { "type": "bytes", "name": "TCSignature" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getKycCommission",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "uint256", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "getMyKYCInfo",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [
+        {
+          "type": "tuple",
+          "name": "kycInfo",
+          "components": [
+            { "type": "string", "name": "name" },
+            { "type": "string", "name": "surname" },
+            { "type": "string", "name": "mobilePhoneNumber" },
+            { "type": "string", "name": "profilePhoto" },
+            { "type": "string", "name": "licenseNumber" },
+            { "type": "uint64", "name": "expirationDate" },
+            { "type": "uint256", "name": "createDate" },
+            { "type": "bool", "name": "isTCPassed" },
+            { "type": "bytes", "name": "TCSignature" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getPlatformUsers",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "address[]", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "getPlatformUsersKYCInfos",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "tuple[]",
+          "name": "result",
+          "components": [
+            {
+              "type": "tuple",
+              "name": "kyc",
+              "components": [
+                { "type": "string", "name": "name" },
+                { "type": "string", "name": "surname" },
+                { "type": "string", "name": "mobilePhoneNumber" },
+                { "type": "string", "name": "profilePhoto" },
+                { "type": "string", "name": "licenseNumber" },
+                { "type": "uint64", "name": "expirationDate" },
+                { "type": "uint256", "name": "createDate" },
+                { "type": "bool", "name": "isTCPassed" },
+                { "type": "bytes", "name": "TCSignature" }
+              ]
+            },
+            {
+              "type": "tuple",
+              "name": "additionalKYC",
+              "components": [
+                { "type": "string", "name": "issueCountry" },
+                { "type": "string", "name": "email" }
+              ]
+            },
+            { "type": "address", "name": "wallet" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getRoleAdmin",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "bytes32", "name": "role" }],
+      "outputs": [{ "type": "bytes32", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "grantAdminRole",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "grantGuestRole",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "grantHostRole",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "grantManagerRole",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "grantPlatformRole",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "grantRole",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "bytes32", "name": "role" },
+        { "type": "address", "name": "account" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "hasPassedKYC",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [{ "type": "bool", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "hasPassedKYCAndTC",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [{ "type": "bool", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "hasRole",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        { "type": "bytes32", "name": "role" },
+        { "type": "address", "name": "account" }
+      ],
+      "outputs": [{ "type": "bool", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "hasValidKYC",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [{ "type": "bool", "name": "isValid" }]
+    },
+    {
+      "type": "function",
+      "name": "initialize",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "_civicVerifier" },
+        { "type": "uint256", "name": "_civicGatekeeperNetwork" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "isAdmin",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [{ "type": "bool", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "isCommissionPaidForUser",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [{ "type": "bool", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "isGuest",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [{ "type": "bool", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "isHost",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [{ "type": "bool", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "isHostOrGuest",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [{ "type": "bool", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "isInvestorManager",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [{ "type": "bool", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "isManager",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [{ "type": "bool", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "isOracleManager",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [{ "type": "bool", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "isRentalityPlatform",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [{ "type": "bool", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "isSignatureManager",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [{ "type": "bool", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "manageRole",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "uint8", "name": "newRole" },
+        { "type": "address", "name": "user" },
+        { "type": "bool", "name": "grant" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "payCommission",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "proxiableUUID",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "bytes32", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "renounceRole",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "bytes32", "name": "role" },
+        { "type": "address", "name": "account" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "revokeAdminRole",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "revokeGuestRole",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "revokeHostRole",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "revokeManagerRole",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "revokeRole",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "bytes32", "name": "role" },
+        { "type": "address", "name": "account" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "setCivicData",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "_civicVerifier" },
+        { "type": "uint256", "name": "_civicGatekeeperNetwork" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "setCivicKYCInfo",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "user" },
+        {
+          "type": "tuple",
+          "name": "civicKycInfo",
+          "components": [
+            { "type": "string", "name": "fullName" },
+            { "type": "string", "name": "licenseNumber" },
+            { "type": "uint64", "name": "expirationDate" },
+            { "type": "string", "name": "issueCountry" },
+            { "type": "string", "name": "email" }
+          ]
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "setKycCommission",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "uint256", "name": "newCommission" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "setMyCivicKYCInfo",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "user" },
+        {
+          "type": "tuple",
+          "name": "civicKycInfo",
+          "components": [
+            { "type": "string", "name": "fullName" },
+            { "type": "string", "name": "licenseNumber" },
+            { "type": "uint64", "name": "expirationDate" },
+            { "type": "string", "name": "issueCountry" },
+            { "type": "string", "name": "email" }
+          ]
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "setNewTCMessage",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "string", "name": "message" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "setPhoneNumber",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "user" },
+        { "type": "string", "name": "phone" },
+        { "type": "bool", "name": "isVerified" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "supportsInterface",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "bytes4", "name": "interfaceId" }],
+      "outputs": [{ "type": "bool", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "upgradeTo",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "newImplementation" }],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "upgradeToAndCall",
+      "constant": false,
+      "stateMutability": "payable",
+      "payable": true,
+      "inputs": [
+        { "type": "address", "name": "newImplementation" },
+        { "type": "bytes", "name": "data" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "useKycCommission",
+      "constant": false,
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": []
     }
+
+
   ]
 }

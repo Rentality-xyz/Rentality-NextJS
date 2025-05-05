@@ -268,7 +268,7 @@ async function saveCaseToBlockchain(
   const wallet = new Wallet(privateKey, provider);
 
   const rentalityAiDamageAnalyze = (await getEtherContractWithSigner(
-    "aiDamageAnalyze",
+    "gateway",
     wallet
   )) as unknown as IRentalityAiDamageAnalyzeContract;
   if (!rentalityAiDamageAnalyze) {

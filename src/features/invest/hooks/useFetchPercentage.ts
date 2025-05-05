@@ -28,7 +28,7 @@ async function fetchPlatformFee(ethereumInfo: EthereumInfo | null | undefined) {
     throw Err(new Error("Missing required ethereum info"));
   }
   const rentalityAdmin = (await getEtherContractWithSigner(
-    "admin",
+    "gateway",
     ethereumInfo.signer
   )) as unknown as IRentalityAdminGateway;
 

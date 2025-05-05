@@ -72,7 +72,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
       }
 
       const rentalityReferralPogram = (await getEtherContractWithSigner(
-        "refferalPogram",
+        "gateway",
         ethereumInfo.signer
       )) as unknown as IRentalityReferralProgramContract;
       if (!rentalityReferralPogram) {
@@ -82,7 +82,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
       }
 
       const investment = (await getEtherContractWithSigner(
-        "investService",
+        "gateway",
         ethereumInfo.signer
       )) as unknown as IRentalityInvestmentContract;
       if (!investment) {
@@ -92,7 +92,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
       }
 
       const currencyConverter = (await getEtherContractWithSigner(
-        "currencyConverter",
+        "gateway",
         ethereumInfo.signer
       )) as unknown as IRentalityCurrencyConverterContract;
       if (!rentalityReferralPogram) {
@@ -102,7 +102,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
       }
 
       const rentalityAiDamageAnalyze = (await getEtherContractWithSigner(
-        "aiDamageAnalyze",
+        "gateway",
         ethereumInfo.signer
       )) as unknown as IRentalityAiDamageAnalyzeContract;
       if (!rentalityAiDamageAnalyze) {
@@ -135,7 +135,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
       }
 
       const rentalityAdmin = (await getEtherContractWithSigner(
-        "admin",
+        "gateway",
         ethereumInfo.signer
       )) as unknown as IRentalityAdminGatewayContract;
       if (!rentalityAdmin) {

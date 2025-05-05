@@ -54,7 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const wallet = new Wallet(SIGNER_PRIVATE_KEY, provider);
 
   const rentality = (await getEtherContractWithSigner(
-    "aiDamageAnalyze",
+    "gateway",
     wallet
   )) as unknown as IRentalityAiDamageAnalyzeContract;
   if (rentality === null) {
