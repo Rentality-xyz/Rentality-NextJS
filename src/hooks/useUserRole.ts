@@ -31,7 +31,7 @@ async function fetchUserRole(ethereumInfo: EthereumInfo | null | undefined) {
   }
 
   const rentalityUserService = (await getEtherContractWithSigner(
-    "userService",
+    "gateway",
     ethereumInfo.signer
   )) as unknown as IRentalityUserServiceContract;
 

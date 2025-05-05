@@ -8,6 +8,7 @@ export async function signLocationInfo(signer: Signer, locationInfo: ContractLoc
 
   const contractAddress = getContractAddress("verifierService", chainId);
 
+
   const domain = {
     name: "RentalityLocationVerifier",
     version: "1",

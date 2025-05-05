@@ -191,7 +191,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         const randomSigner = Wallet.createRandom();
 
         const signerWithProvider = randomSigner.connect(provider);
-        const notificationService = await getEtherContractWithSigner("notificationService", signerWithProvider);
+        const notificationService = await getEtherContractWithSigner("gateway", signerWithProvider);
         if (!notificationService) {
           logger.error("Notification context initialization error: notificationService is null");
           return false;
@@ -204,9 +204,9 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         const fromBlock = getFromBlock(ethereumInfo.chainId, toBlock);
 
         const getTripsResult = await rentalityContracts.gateway.getTripsAs(isHost);
-        const getMyClaimsResult = await rentalityContracts.gateway.getMyClaimsAs(isHost);
+        // const getMyClaimsResult = await rentalityContracts.gateway.getMyClaimsAs(isHost);
 
-        if (!getTripsResult.ok || !getMyClaimsResult.ok) {
+        if (!getTripsResult.ok /* ||!getMyClaimsResult.ok*/) {
           logger.error("Notification context initialization error!");
           return;
         }
@@ -235,7 +235,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
 
         const notificationsRentalityEventHistory = await Promise.all(
           rentalityEventHistory.map(
-            getNotificationFromRentalityEvent(getTripsResult.value, getMyClaimsResult.value, isHost)
+            getNotificationFromRentalityEvent(getTripsResult.value, [], isHost)
           )
         );
 
