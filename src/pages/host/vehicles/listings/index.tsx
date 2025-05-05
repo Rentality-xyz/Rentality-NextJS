@@ -20,7 +20,7 @@ function Listings() {
 
   const handleAddListing = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    await router.push("/host/vehicles/add");
+    await router.push("/host/vehicles/listings/add");
   };
 
   //DIMO
