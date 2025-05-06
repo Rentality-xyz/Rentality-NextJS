@@ -9,6 +9,8 @@ import useFetchDeliveryPrices from "@/hooks/host/useFetchDeliveryPrices";
 import useFetchTripDiscounts from "@/hooks/host/useFetchTripDiscounts";
 import useSaveDeliveryPrices from "@/hooks/host/useSaveDeliveryPrices";
 import useSaveTripDiscounts from "@/hooks/host/useSaveTripDiscounts";
+import UserCurrency from "../components/UserCurrency";
+
 
 function HostProfilePageContent() {
   const { isLoading } = useFetchUserProfile();
@@ -16,6 +18,8 @@ function HostProfilePageContent() {
   const { mutateAsync: saveDeliveryPrices } = useSaveDeliveryPrices();
   const { isLoading: isLoadingDiscounts, data: savedTripsDiscounts } = useFetchTripDiscounts();
   const { mutateAsync: saveTripDiscounts } = useSaveTripDiscounts();
+
+
   const { t } = useTranslation();
 
   return (
@@ -27,6 +31,7 @@ function HostProfilePageContent() {
         <div className="flex flex-col min-[560px]:flex-row min-[560px]:gap-20">
           <TripDiscountsForm savedTripsDiscounts={savedTripsDiscounts} saveTripsDiscounts={saveTripDiscounts} />
           <DeliveryPriceForm savedDeliveryPrices={savedDeliveryPrices} saveDeliveryPrices={saveDeliveryPrices} />
+          <UserCurrency />
         </div>
       </RntSuspense>
     </>

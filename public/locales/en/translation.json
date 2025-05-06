@@ -327,6 +327,8 @@
     "save_delivery_price": "Save delivery price",
     "save_delivery_prices_err": "Save delivery prices request failed. Please try again",
     "save_delivery_prices_err_is_not_host": "Please enter the first vehicle in Listing to enter Delivery price",
+    "save_currency": "сhoose one from the available currencies",
+    "save_currency_btn": "save currency",
     "welcome_create_account": "Welcome, please create your account",
     "confirm&save": "Confirm & Save",
     "pass_verification": "Please, pass driver license verification",
