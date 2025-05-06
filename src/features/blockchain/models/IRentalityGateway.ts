@@ -74,6 +74,7 @@ export interface IRentalityGatewayContract extends IEthersContract {
   ): Promise<ContractTransactionResponse>;
   getUserDeliveryPrices(user: string): Promise<ContractDeliveryPrices>;
   getDeliveryData(carId: bigint): Promise<ContractDeliveryData>;
+  getUserCurrency(user: string): Promise<ContractCurrency>;
 
   /// TRIPS functions
   /// GENERAL
@@ -91,7 +92,7 @@ export interface IRentalityGatewayContract extends IEthersContract {
   ): Promise<ContractTransactionResponse>;
   checkOutByHost(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
   finishTrip(tripId: bigint): Promise<ContractTransactionResponse>;
-
+  addUserCurrency(currency: string): Promise<ContractTransactionResponse>;
   /// GUEST functions
   getFilterInfo(duration: bigint): Promise<ContractFilterInfoDTO>;
   searchAvailableCarsWithDelivery(
