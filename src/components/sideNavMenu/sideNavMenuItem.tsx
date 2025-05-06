@@ -10,28 +10,26 @@ export default function SideNavMenuItem({
   target = "_self",
   onClick,
   notificationCount,
+  selectedMenuHref,
 }: {
   text: string;
   href: string;
   icon: MenuIcons;
   target?: string;
-  onClick?: () => void;
+  onClick?: (href: string) => void;
   notificationCount?: number;
+  selectedMenuHref: string;
 }) {
   const { closeBurgerMenu } = useAppContext();
 
   const handleOnClick = () => {
     closeBurgerMenu();
     if (onClick) {
-      onClick();
+      onClick(href);
     }
   };
 
-  let isSelected = false;
-  if (typeof window !== "undefined") {
-    const currentPathname = window.location.pathname;
-    isSelected = (currentPathname === href || currentPathname.startsWith(href)) && href.trim() !== "/";
-  }
+  const isSelected = selectedMenuHref.startsWith(href) && href.trim() !== "/";
 
   return (
     <div className={`flex h-12 py-1 pl-14 ${isSelected ? "rounded-r-full bg-rentality-primary" : ""}`}>

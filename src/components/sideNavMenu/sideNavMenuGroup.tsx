@@ -10,27 +10,28 @@ export default function SideNavMenuGroup({
   icon,
   target = "_self",
   onClick,
+  selectedMenuHref,
 }: {
   title: string;
   href?: string;
   children?: React.ReactNode;
   icon?: MenuIcons;
   target?: string;
-  onClick?: () => void;
+  onClick?: (href: string) => void;
+  selectedMenuHref?: string;
 }) {
   const { closeBurgerMenu } = useAppContext();
 
   const handleOnClick = () => {
     closeBurgerMenu();
-    if (onClick) {
-      onClick();
+    if (onClick && href) {
+      onClick(href);
     }
   };
 
   let isSelected = false;
-  if (typeof window !== "undefined") {
-    const currentPathname = window.location.pathname;
-    isSelected = currentPathname === href && href.trim() !== "/";
+  if (href && selectedMenuHref) {
+    isSelected = selectedMenuHref.startsWith(href) && href.trim() !== "/";
   }
 
   return (
