@@ -62,7 +62,7 @@ function SendPhotosToAi({ tripId }: { tripId: number }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <h3>Motion cloud AI Damage analyze</h3>
+      <h3>AI Damage analyze</h3>
       <RntButton disabled={aiCheckReport.status !== "ready to pre-trip check"} onClick={handlePreTripCheckClick}>
         Pre-trip Check
       </RntButton>
