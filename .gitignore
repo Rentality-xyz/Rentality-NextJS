@@ -50,3 +50,4 @@ docker/env.nextjs
 .env 
 .firebasebackup/
 firebase-debug.log
+filterRepo.txt
