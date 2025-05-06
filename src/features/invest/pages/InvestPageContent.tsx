@@ -95,7 +95,7 @@ function InvestPageContent({}: InvestContentProps) {
           </RntFilterSelect.Option>
         ))}
       </RntFilterSelect>
-      <div className="mt-6 grid grid-cols-1 gap-4 2xl:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-2">
         {filteredInvestments.map((value) => (
           <InvestCar
             isHost={isInvestManager(userRole)}
