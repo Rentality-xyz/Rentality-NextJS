@@ -47,6 +47,7 @@ function TripCard({
       if (window.innerWidth >= 1920) setImgMinHeight("432px");
       else if (window.innerWidth >= 1680) setImgMinHeight("364px");
       else if (window.innerWidth >= 1536) setImgMinHeight("325px");
+      else if (window.innerWidth >= 1280) setImgMinHeight("280px");
       else if (window.innerWidth >= 640) setImgMinHeight("432px");
       else setImgMinHeight("212px");
     };
