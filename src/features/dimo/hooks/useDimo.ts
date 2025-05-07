@@ -78,7 +78,7 @@ const useDimo = (myListings: any[]): UseDimoReturn => {
 
   const createRentalityCar = (car: DimoCarResponse) => {
     localStorage.setItem("dimo", JSON.stringify({ ...car, timestamp: new Date().getTime() }));
-    router.push("/host/vehicles/add");
+    router.push("/host/vehicles/listings/add");
   };
 
   let onRentalityAndDimoNotSync = [];
