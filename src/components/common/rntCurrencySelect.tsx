@@ -36,6 +36,7 @@ export default function RntCurrencySelect({
   }, [availableCurrency, filter]);
 
   const isReadOnly = readOnly || filteredCurrencies.length <= 0;
+  console.log("FILTERED", filteredCurrencies);
 
   return (
     <RntFilterSelect
@@ -50,20 +51,14 @@ export default function RntCurrencySelect({
       placeholder={promptText}
       onChange={(e) => {
         const selectedValue = e.target.value;
-        const selected = filteredCurrencies.find(
-          (c) => c.name === selectedValue
-        );
+        const selected = filteredCurrencies.find((c) => c.name === selectedValue);
         if (selected && onCurrencySelect) {
           onCurrencySelect(selected.currency, selected.name);
         }
       }}
     >
       {filteredCurrencies.map((currency) => (
-        <RntFilterSelect.Option
-          key={`currency-${currency.currency}`}
-          value={currency.name}
-          data-id={currency.currency}
-        >
+        <RntFilterSelect.Option key={`currency-${currency.currency}`} value={currency.name} data-id={currency.currency}>
           {currency.name}
         </RntFilterSelect.Option>
       ))}

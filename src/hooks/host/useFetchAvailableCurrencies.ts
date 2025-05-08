@@ -3,16 +3,15 @@ import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
 import { useQuery } from "@tanstack/react-query";
 import { ZeroAddress } from "ethers";
 
-
 export const AVAILABLE_CURRENCY_QUERY_KEY = "AvailableCurrency";
 export type AvailableCurrency = {
   currency: string;
   name: string;
-}
+};
 
 const emptyAvailableCurrency: AvailableCurrency = {
   currency: ZeroAddress,
-  name: "ETH"
+  name: "ETH",
 };
 
 type QueryData = AvailableCurrency[];
@@ -42,7 +41,6 @@ async function fetchAvailableCurrencies(
   if (!result.ok) {
     throw result.error;
   }
-
 
   return result.value;
 }
