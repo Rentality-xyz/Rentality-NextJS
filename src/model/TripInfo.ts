@@ -1,4 +1,5 @@
 import { EngineType, InsuranceType, TripStatus } from "./blockchain/schemas";
+import { UserCurrencyDTO } from "./SearchCarsResult";
 
 export enum TripStatusEnum {
   Pending, // Created
@@ -123,6 +124,7 @@ export type TripInfo = {
   insurancePerDayInUsd: number;
   insuranceTotalInUsd: number;
   taxesData: TaxValue[];
+  currency: UserCurrencyDTO;
 };
 
 export type TaxValue = {

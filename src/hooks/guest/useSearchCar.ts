@@ -167,6 +167,11 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           dimoTokenId: Number(availableCarDTO.dimoTokenId ? availableCarDTO.dimoTokenId : 0),
           salesTax: salesTax,
           governmentTax: governmentTax,
+          currency: {
+            currency: availableCarDTO.hostCurrency.currency,
+            name: availableCarDTO.hostCurrency.name,
+            initialized: availableCarDTO.hostCurrency.initialized,
+          },
         };
         setCarInfo(selectedCarDetails);
 
