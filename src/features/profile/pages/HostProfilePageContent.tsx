@@ -21,7 +21,6 @@ function HostProfilePageContent() {
   const { isLoading: isLoadingUserCurrency, data: userCurrency } = useFetchUserCurrency();
 
   const { t } = useTranslation();
-  console.log("USERCURRENCY", userCurrency);
   return (
     <>
       <PageTitle title={t("profile.title")} />
