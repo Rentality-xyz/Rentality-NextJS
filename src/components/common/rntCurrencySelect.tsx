@@ -36,7 +36,6 @@ export default function RntCurrencySelect({
   }, [availableCurrency, filter]);
 
   const isReadOnly = readOnly || filteredCurrencies.length <= 0;
-  console.log("FILTERED", filteredCurrencies);
 
   return (
     <RntFilterSelect

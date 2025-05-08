@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 function UserCurrency({ userCurrency }: { userCurrency: AvailableCurrency }) {
-  console.log("CURENCYCURENCY", userCurrency);
   const { availableCurrency } = useFetchAvailableCurrencies();
   const { mutateAsync: saveUserCurrency } = useSaveUserCurrency();
   const [currency, setCurrency] = useState(userCurrency);
