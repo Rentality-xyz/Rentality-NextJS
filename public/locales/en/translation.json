@@ -94,7 +94,8 @@
       "days": "day(s)",
       "price_without_taxes": "Price excl. taxes",
       "insurance_required": "Insurance required",
-      "booked": "Your trip is booked! Check the Booking section for details"
+      "booked": "Your trip is booked! Check the Booking section for details",
+      "currency": "Currency"
     },
     "search_car_delivery_extra_info": {
       "title": "Trip Info",
@@ -249,7 +250,8 @@
         "describe": "Describe",
         "viewPhotoFile": "View photo/file",
         "amount": "Amount $",
-        "status": "Status"
+        "status": "Status",
+        "currency": "Currency"
       },
       "cancel": "Cancel",
       "pay": "Pay"
@@ -327,8 +329,9 @@
     "save_delivery_price": "Save delivery price",
     "save_delivery_prices_err": "Save delivery prices request failed. Please try again",
     "save_delivery_prices_err_is_not_host": "Please enter the first vehicle in Listing to enter Delivery price",
-    "save_currency": "сhoose one from the available currencies",
-    "save_currency_btn": "save currency",
+    "save_currency": "Choose one from the available currencies",
+    "save_currency_btn": "Save currency",
+    "save_currency_err": "Save user currency request failed. Please try again",
     "welcome_create_account": "Welcome, please create your account",
     "confirm&save": "Confirm & Save",
     "pass_verification": "Please, pass driver license verification",

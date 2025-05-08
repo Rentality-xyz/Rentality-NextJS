@@ -1,37 +1,39 @@
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
+import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { useQuery } from "@tanstack/react-query";
 import { ZeroAddress } from "ethers";
 import { walletActions } from "viem";
 
-
-export const AVAILABLE_CURRENCY_QUERY_KEY = "AvailableCurrency";
-export type AvailableCurrency = {
+export const USER_CURRENCY_QUERY_KEY = "UserCurrency";
+export type UserCurrency = {
   currency: string;
   name: string;
-}
-
-const emptyAvailableCurrency: AvailableCurrency = {
-  currency: ZeroAddress,
-  name: "ETH"
+  initialized: boolean;
 };
 
-type QueryData = AvailableCurrency;
+const emptyAvailableCurrency: UserCurrency = {
+  currency: ZeroAddress,
+  name: "ETH",
+  initialized: false,
+};
+
+type QueryData = UserCurrency;
 
 function useFetchUserCurrency() {
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
 
   const queryResult = useQuery<QueryData>({
-    queryKey: [AVAILABLE_CURRENCY_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
-    queryFn: async () => fetchAvailableCurrencies(rentalityContracts, ethereumInfo),
+    queryKey: [USER_CURRENCY_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
+    queryFn: async () => await fetchUserCurrency(rentalityContracts, ethereumInfo),
   });
 
   const data = queryResult.data ?? emptyAvailableCurrency;
-  return { ...queryResult, userCurrency: data };
+  return { ...queryResult, data: data };
 }
 
-async function fetchAvailableCurrencies(
+async function fetchUserCurrency(
   rentalityContracts: IRentalityContracts | null | undefined,
   ethereumInfo: EthereumInfo | null | undefined
 ) {
@@ -40,10 +42,10 @@ async function fetchAvailableCurrencies(
   }
 
   const result = await rentalityContracts.gateway.getUserCurrency(ethereumInfo.walletAddress);
+
   if (!result.ok) {
     throw result.error;
   }
-
 
   return result.value;
 }

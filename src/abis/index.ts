@@ -16,9 +16,13 @@ import RentalityAiDamageAnalyzeJSON_ABI from "./RentalityAiDamageAnalyzeV2.v0_2_
 import RentalityAiDamageAnalyzeServiceJSON_ADDRESSES from "./RentalityAiDamageAnalyzeV2.v0_2_0.addresses.json";
 import RentalityUserServiceJSON_ABI from "./RentalityUserService.v0_2_0.abi.json";
 import RentalityUserServiceJSON_ADDRESSES from "./RentalityUserService.v0_2_0.addresses.json";
+import RentalityPaymentsServiceJSON_ABI from "./RentalityPaymentService.v0_2_0.abi.json";
+import RentalityPaymentsServiceJSON_ADDRESSES from "./RentalityPaymentService.v0_2_0.addresses.json";
+import ERC20JSON_ABI from "./ERC20.abi.json";
 import { Contract, Signer } from "ethers";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { logger } from "@/utils/logger";
+import { IERC20Contract } from "@/features/blockchain/models/IErc20";
 
 export const SMARTCONTRACT_VERSION = "v0_2_0";
 
@@ -59,6 +63,10 @@ const rentalityContracts = {
     addresses: RentalityUserServiceJSON_ADDRESSES.addresses,
     abi: RentalityUserServiceJSON_ABI.abi,
   },
+  paymentsService: {
+    addresses: RentalityPaymentsServiceJSON_ADDRESSES.addresses,
+    abi: RentalityPaymentsServiceJSON_ABI.abi,
+  },
 };
 
 export async function getEtherContractWithSigner(contract: keyof typeof rentalityContracts, signer: Signer) {
@@ -86,6 +94,24 @@ export async function getEtherContractWithSigner(contract: keyof typeof rentalit
     logger.error("getEtherContract error:" + error);
     return null;
   }
+}
+export async function getErc20ContractWithPaymentsAddress(address: string, signer: Signer) {
+  const chainId = Number((await signer.provider?.getNetwork())?.chainId);
+  if (!getExistBlockchainList().find((i) => i.chainId === chainId)) {
+    logger.error(`getEtherContract error: Chain id ${chainId} is not supported`);
+    return null;
+  }
+  const { addresses } = rentalityContracts.paymentsService;
+  const selectedChain = addresses.find((i) => i.chainId === chainId);
+
+  if (!selectedChain) {
+    logger.error(`getEtherContract error: payments address for chainId ${chainId} is not found`);
+    return null;
+  }
+  return {
+    erc20: new Contract(address, ERC20JSON_ABI.abi, signer) as unknown as IERC20Contract,
+    rentalityPayments: selectedChain.address,
+  };
 }
 
 export function hasContractForChainId(chainId: number) {

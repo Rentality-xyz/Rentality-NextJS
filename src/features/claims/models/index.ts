@@ -1,4 +1,5 @@
 import { ClaimStatus, ClaimType } from "@/model/blockchain/schemas";
+import { UserCurrencyDTO } from "@/model/SearchCarsResult";
 
 export type Claim = {
   tripId: number;
@@ -20,6 +21,7 @@ export type Claim = {
   isIncomingClaim: boolean;
   fileUrls: string[];
   timeZoneId: string;
+  currency: UserCurrencyDTO;
 };
 
 export enum ClaimTypeEnum {

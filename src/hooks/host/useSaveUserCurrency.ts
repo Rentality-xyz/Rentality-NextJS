@@ -25,9 +25,7 @@ function useSaveUserCurrency() {
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
-        const result = await rentalityContracts.gateway.addUserCurrency(
-            newValue.currency
-        );
+        const result = await rentalityContracts.gateway.addUserCurrency(newValue.currency);
 
         return result;
       } catch (error) {

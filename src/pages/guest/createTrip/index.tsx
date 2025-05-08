@@ -119,7 +119,13 @@ function CreateTripDetailsContent({
     showInfo(t("common.info.sign"));
 
     promoCode = !isEmpty(promoCode) ? promoCode! : EMPTY_PROMOCODE;
-    const result = await createTripRequest(carInfo.carId, searchCarRequest, carInfo.timeZoneId, promoCode);
+    const result = await createTripRequest(
+      carInfo.carId,
+      searchCarRequest,
+      carInfo.timeZoneId,
+      promoCode,
+      carInfo.currency
+    );
 
     hideDialogs();
     hideSnackbars();
