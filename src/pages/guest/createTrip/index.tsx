@@ -36,6 +36,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PromoActionType, promoCodeReducer } from "@/features/promocodes/utils/promoCodeReducer";
 import { getPromoPrice } from "@/features/promocodes/utils";
 import Image from "next/image";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import getNetworkName from "@/model/utils/NetworkName";
 
 function CreateTrip() {
   const { searchCarRequest, searchCarFilters } = useCarSearchParams();
@@ -64,6 +66,7 @@ function CreateTripDetailsContent({
   searchCarRequest: SearchCarRequest;
   searchCarFilters: SearchCarFilters;
 }) {
+  const ethereumInfo = useEthereum();
   const router = useRouter();
   const { createTripRequest } = useCreateTripRequest();
   const userInfo = useUserInfo();
@@ -129,7 +132,11 @@ function CreateTripDetailsContent({
       router.push("/guest/trips");
     } else {
       if (result.error.message === "NOT_ENOUGH_FUNDS") {
-        showError(t("common.add_fund_to_wallet"));
+        showError(
+          t("common.add_fund_to_wallet", {
+            network: getNetworkName(ethereumInfo),
+          })
+        );
       } else {
         showError(t("search_page.errors.request"));
       }

@@ -18,6 +18,8 @@ import usePayClaim from "../hooks/usePayClaim";
 import useCancelClaim from "../hooks/useCancelClaim";
 import ImageCarouselDialog from "@/components/createTrip/ImageCarouselDialog";
 import { useState } from "react";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import getNetworkName from "@/model/utils/NetworkName";
 
 type Props = {
   claims: Claim[];
@@ -33,6 +35,7 @@ const headerSpanClassName = "text-start px-2 font-light text-sm";
 const rowSpanClassName = "px-2 h-16";
 
 export default function ClaimHistory({ claims }: Props) {
+  const ethereumInfo = useEthereum();
   const { userMode, isHost } = useUserMode();
   const { mutateAsync: payClaim } = usePayClaim();
   const { mutateAsync: cancelClaim } = useCancelClaim();
@@ -72,7 +75,11 @@ export default function ClaimHistory({ claims }: Props) {
 
     if (!result.ok) {
       if (result.error.message === "NOT_ENOUGH_FUNDS") {
-        showError(t("common.add_fund_to_wallet"));
+        showError(
+          t("common.add_fund_to_wallet", {
+            network: getNetworkName(ethereumInfo),
+          })
+        );
       } else {
         showError(t("claims.host.claim_cancel_failed"));
       }
@@ -88,7 +95,11 @@ export default function ClaimHistory({ claims }: Props) {
 
     if (!result.ok) {
       if (result.error.message === "NOT_ENOUGH_FUNDS") {
-        showError(t("common.add_fund_to_wallet"));
+        showError(
+          t("common.add_fund_to_wallet", {
+            network: getNetworkName(ethereumInfo),
+          })
+        );
       } else {
         showError(t("claims.errors.pay_claim_failed"));
       }

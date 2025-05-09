@@ -9,6 +9,8 @@ import { Result } from "@/model/utils/result";
 import useUserRole from "@/hooks/useUserRole";
 import { DeliveryPrices } from "@/hooks/host/useFetchDeliveryPrices";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import getNetworkName from "@/model/utils/NetworkName";
 
 function DeliveryPriceForm({
   savedDeliveryPrices,
@@ -17,6 +19,7 @@ function DeliveryPriceForm({
   savedDeliveryPrices: DeliveryPrices;
   saveDeliveryPrices: (newDeliveryPrices: DeliveryPrices) => Promise<Result<boolean, Error>>;
 }) {
+  const ethereumInfo = useEthereum();
   const { userRole, isHost } = useUserRole();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, showSuccess, hideSnackbars } = useRntSnackbars();
@@ -58,7 +61,11 @@ function DeliveryPriceForm({
       showSuccess(t("common.info.success"));
     } else {
       if (result.error.message === "NOT_ENOUGH_FUNDS") {
-        showError(t("common.add_fund_to_wallet"));
+        showError(
+          t("common.add_fund_to_wallet", {
+            network: getNetworkName(ethereumInfo),
+          })
+        );
       } else {
         showError(t("profile.save_delivery_prices_err"));
       }
