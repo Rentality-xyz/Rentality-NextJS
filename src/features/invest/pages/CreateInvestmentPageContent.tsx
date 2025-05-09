@@ -16,8 +16,11 @@ import { DimoCarResponseWithTimestamp } from "@/features/dimo/hooks/useDimo";
 import RntButton from "@/components/common/rntButton";
 import useCreateInvestCar from "@/features/invest/hooks/useCreateInvestCar";
 import { formatFloatInput } from "@/utils/formatFloatInput";
+import getNetworkName from "@/model/utils/NetworkName";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
 
 function CreateInvestmentPageContent() {
+  const ethereumInfo = useEthereum();
   const { t } = useTranslation();
   const router = useRouter();
   const { mutateAsync: createInvest } = useCreateInvestCar();
@@ -61,7 +64,11 @@ function CreateInvestmentPageContent() {
       router.push("/host/invest");
     } else {
       if (result.error.message === "NOT_ENOUGH_FUNDS") {
-        showError(t("common.add_fund_to_wallet"));
+        showError(
+          t("common.add_fund_to_wallet", {
+            network: getNetworkName(ethereumInfo),
+          })
+        );
       } else {
         showError(t("vehicles.saving_failed"));
       }

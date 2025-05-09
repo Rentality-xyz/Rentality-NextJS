@@ -778,7 +778,7 @@
     "interior": "Interior",
     "data": "Data",
     "uploaded": "uploaded",
-    "add_fund_to_wallet": "Oops! Your wallet balance is too low to complete this transaction. Please add funds to your wallet on Base network and ,Complete Your Profile to Rent a Car!",
+    "add_fund_to_wallet": "Oops! Your wallet balance is too low to complete this transaction. Please add funds to your wallet on {{network, string}} network and ,Complete Your Profile to Rent a Car!",
     "per_day": "/day",
     "vin_successfully_checked": "VIN successfully checked",
     "vin_not_found": "VIN not found in US car database",

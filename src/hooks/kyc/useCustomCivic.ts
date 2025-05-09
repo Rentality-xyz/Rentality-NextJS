@@ -1,5 +1,6 @@
 import { useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
+import getNetworkName from "@/model/utils/NetworkName";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { env } from "@/utils/env";
@@ -62,7 +63,11 @@ const useCustomCivic = () => {
       const metamaskErrorResult = tryParseMetamaskError(error);
       if (metamaskErrorResult.ok && metamaskErrorResult.value.message.includes("insufficient funds")) {
         setStatus("Not paid");
-        return Err(t("common.add_fund_to_wallet"));
+        return Err(
+          t("common.add_fund_to_wallet", {
+            network: getNetworkName(ethereumInfo),
+          })
+        );
       }
       logger.error("payCommission error:" + error);
       setStatus("Not paid");
