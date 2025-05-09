@@ -9,6 +9,7 @@ import { isUserHasEnoughFunds } from "@/utils/wallet";
 import RntSuspense from "@/components/common/rntSuspense";
 import { logger } from "@/utils/logger";
 import { AllowedChangeTripAction } from "@/model/TripInfo";
+import getNetworkName from "@/model/utils/NetworkName";
 
 function Booked() {
   const ethereumInfo = useEthereum();
@@ -25,7 +26,11 @@ function Booked() {
 
     if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
       logger.error("changeStatusCallback error: user don't have enough funds");
-      showError(t("common.add_fund_to_wallet"));
+      showError(
+        t("common.add_fund_to_wallet", {
+          network: getNetworkName(ethereumInfo),
+        })
+      );
       return false;
     }
 

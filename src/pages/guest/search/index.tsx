@@ -23,6 +23,7 @@ import RntSuspense from "@/components/common/rntSuspense";
 import { EMPTY_PROMOCODE } from "@/utils/constants";
 import useFetchGuestGeneralInsurance from "@/features/insurance/hooks/useFetchGuestGeneralInsurance";
 import useBlockchainNetworkCheck from "@/features/blockchain/hooks/useBlockchainNetworkCheck";
+import getNetworkName from "@/model/utils/NetworkName";
 
 function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -104,7 +105,11 @@ function Search() {
       router.push("/guest/trips");
     } else {
       if (result.error.message === "NOT_ENOUGH_FUNDS") {
-        showError(t("common.add_fund_to_wallet"));
+        showError(
+          t("common.add_fund_to_wallet", {
+            network: getNetworkName(ethereumInfo),
+          })
+        );
       } else {
         showError(t("search_page.errors.request"));
       }

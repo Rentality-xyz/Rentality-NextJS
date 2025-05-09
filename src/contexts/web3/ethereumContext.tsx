@@ -6,12 +6,15 @@ import { useRouter } from "next/navigation";
 import { formatEther } from "viem";
 import { logger } from "@/utils/logger";
 
+const OPBNB_TESTNET = "opbnb_testnet";
+
 export type EthereumInfo = {
   provider: BrowserProvider;
   signer: Signer;
   walletAddress: string;
   walletBalance: number;
   chainId: number;
+  networkName: string;
   isWalletConnected: boolean;
   requestChainIdChange: (chainId: number) => Promise<boolean>;
 };
@@ -29,7 +32,6 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
   const [ethereumInfo, setEthereumInfo] = useState<EthereumInfo | null | undefined>(undefined);
   const [isReloadPageRequested, setIsReloadPageRequested] = useState<boolean>(false);
   const isInitiating = useRef(false);
-
   useEffect(() => {
     const requestChainIdChange = async (chainId: number) => {
       logger.info("requestChainIdChange: " + chainId);
@@ -75,6 +77,12 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
         const signer = await etherv6Provider.getSigner();
 
         const currentChainId = Number(wallets[0].chainId.split(":")[1]);
+
+        const networkName =
+          currentChainId === 5611
+            ? OPBNB_TESTNET /// Ethers knows nathing about this network
+            : (await etherv6Provider.getNetwork()).name;
+
         const currentWalletAddress = wallets[0].address;
         const currentWalletBalanceInWeth = await etherv6Provider.getBalance(currentWalletAddress);
         const currentWalletBalanceInEth = currentWalletBalanceInWeth
@@ -92,6 +100,7 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
             walletAddress: currentWalletAddress,
             walletBalance: currentWalletBalanceInEth,
             chainId: currentChainId,
+            networkName,
             isWalletConnected: ready && authenticated,
             requestChainIdChange: requestChainIdChange,
           };

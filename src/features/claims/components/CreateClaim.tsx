@@ -20,6 +20,8 @@ import useTripsForClaimCreation from "../hooks/useTripsForClaimCreation";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
 import * as React from "react";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import getNetworkName from "@/model/utils/NetworkName";
 
 const hostClaimTypes = [
   ClaimType.Tolls,
@@ -42,6 +44,7 @@ const guestClaimTypes = [
 ];
 
 export default function CreateClaim() {
+  const ethereumInfo = useEthereum();
   const { userMode, isHost } = useUserMode();
   const pathname = usePathname();
   const { data: tripInfos } = useTripsForClaimCreation(isHost(userMode));
@@ -109,7 +112,11 @@ export default function CreateClaim() {
 
     if (!result.ok) {
       if (result.error.message === "NOT_ENOUGH_FUNDS") {
-        showError(t("common.add_fund_to_wallet"));
+        showError(
+          t("common.add_fund_to_wallet", {
+            network: getNetworkName(ethereumInfo),
+          })
+        );
       } else {
         showError(t("claims.host.claim_failed"));
       }
