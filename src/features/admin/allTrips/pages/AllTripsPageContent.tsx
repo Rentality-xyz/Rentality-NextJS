@@ -3,10 +3,10 @@ import PaginationWrapper from "@/components/common/PaginationWrapper";
 import PageTitle from "@/components/pageTitle/pageTitle";
 import useAdminAllTrips, { AdminAllTripsFilters } from "@/features/admin/allTrips/hooks/useAdminAllTrips";
 import AllTripsFilters from "@/features/admin/allTrips/components/AllTripsFilters";
-import AllTripsTable from "@/features/admin/allTrips/components/AllTripsTable";
 import { Result } from "@/model/utils/result";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
+import { AllTripsDataRntTable } from "@/features/admin/allTrips/components/AllTripsRntTable";
 
 const defaultFilters: AdminAllTripsFilters = {
   startDateTimeUtc: moment({ day: 1, hour: 0 }).toDate(),
@@ -58,7 +58,7 @@ export default function AllTripsPageContent() {
           totalPages={data.totalPageCount}
           selectPage={fetchDataForPage}
         >
-          <AllTripsTable
+          <AllTripsDataRntTable
             isLoading={isLoading}
             data={data.data}
             payToHost={handlePayToHost}

@@ -1,13 +1,14 @@
 import { forwardRef, useEffect, useRef, useState } from "react";
-import { cn } from "@/utils";
 import * as React from "react";
 import { createPortal } from "react-dom";
-import RntValidationError from "./RntValidationError";
+import { cn } from "@/utils";
+import { extractTextFromReactNode } from "@/utils/react";
+import { CheckboxLight } from "../common/rntCheckbox";
 import { isEmpty } from "@/utils/string";
 import Image from "next/image";
-import { extractTextFromReactNode } from "@/utils/react";
+import RntValidationError from "@/components/common/RntValidationError";
 
-interface RntFilterSelectContextType {
+interface RntDropdownMenuCheckboxContextType {
   selected: { value: string; text: string } | undefined;
   setSelected: (value: { value: string; text: string } | undefined) => void;
   isOpen: boolean;
@@ -15,20 +16,27 @@ interface RntFilterSelectContextType {
   containerRef: React.RefObject<HTMLDivElement>;
 }
 
-const RntFilterSelectContext = React.createContext<RntFilterSelectContextType | undefined>(undefined);
+const RntDropdownMenuCheckboxContext = React.createContext<RntDropdownMenuCheckboxContextType | undefined>(undefined);
 
-interface RntFilterSelectProps extends React.ComponentPropsWithoutRef<"select"> {
+interface RntDropdownMenuCheckboxProps {
+  id: string;
+  children: React.ReactNode;
+  className?: string;
   containerClassName?: string;
+  placeholder?: string;
   labelClassName?: string;
   label?: string;
   validationClassName?: string;
   validationError?: string;
   isTransparentStyle?: boolean;
+  disabled?: boolean;
+  onChange?: (selected: { value: string; text: string } | undefined) => void;
 }
 
-const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps>(
+const RntDropdownMenuCheckboxComponent = forwardRef<HTMLDivElement, RntDropdownMenuCheckboxProps>(
   (
     {
+      id,
       children,
       className,
       containerClassName,
@@ -37,10 +45,10 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
       validationClassName,
       validationError,
       isTransparentStyle = false,
-      disabled,
-      id,
+      onChange,
+      disabled = false,
       placeholder,
-      value,
+      // value,
       ...rest
     },
     ref
@@ -64,40 +72,6 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
     const selectRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-      if (value !== "") {
-        setIsOpen(false);
-      }
-    }, [value]);
-
-    useEffect(() => {
-      if (value === undefined) {
-        setSelected(undefined);
-        return;
-      }
-
-      if (typeof value === "string" || (typeof value === "number" && !isNaN(value))) {
-        let isFound = false;
-
-        React.Children.forEach(children, (child) => {
-          if (!isFound && React.isValidElement(child) && child.props.value === value?.toString()) {
-            setSelected({
-              value: child.props.value,
-              text: extractTextFromReactNode(child.props.children),
-            });
-            isFound = true;
-          }
-        });
-
-        if (!isFound) {
-          setSelected({
-            value: value.toString(),
-            text: value.toString(),
-          });
-        }
-      }
-    }, [value, children]);
-
-    useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
         if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
           setIsOpen(false);
@@ -106,6 +80,10 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
       document.addEventListener("click", handleClickOutside);
       return () => document.removeEventListener("click", handleClickOutside);
     }, []);
+
+    useEffect(() => {
+      onChange?.(selected);
+    }, [selected]);
 
     const toggleDropdown = () => {
       if (!disabled) {
@@ -120,9 +98,10 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
     }, [selected?.value]);
 
     return (
-      <RntFilterSelectContext.Provider value={{ selected, setSelected, isOpen, setIsOpen, containerRef: selectRef }}>
+      <RntDropdownMenuCheckboxContext.Provider
+        value={{ selected, setSelected, isOpen, setIsOpen, containerRef: selectRef }}
+      >
         <div className={containerCn} ref={containerRef}>
-          {/* hidden select element */}
           <select value={selected?.value ?? ""} ref={hiddenSelectRef} hidden {...rest}>
             {React.Children.map(children, (child) =>
               React.isValidElement(child) ? <option value={child.props.value}>{child.props.children}</option> : null
@@ -157,16 +136,16 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
           {isOpen && <DropdownPortal>{children}</DropdownPortal>}
           <RntValidationError className={validationClassName} validationError={validationError} />
         </div>
-      </RntFilterSelectContext.Provider>
+      </RntDropdownMenuCheckboxContext.Provider>
     );
   }
 );
 
-RntFilterSelectComponent.displayName = "RntFilterSelect";
+RntDropdownMenuCheckboxComponent.displayName = "RntDropdownMenuCheckbox";
 
-function DropdownPortal({ children }: { children?: React.ReactNode }) {
-  const context = React.useContext(RntFilterSelectContext);
-  if (!context) throw new Error("Dropdown must be used within a RntFilterSelect");
+function DropdownPortal({ children }: { children: React.ReactNode }) {
+  const context = React.useContext(RntDropdownMenuCheckboxContext);
+  if (!context) throw new Error("Dropdown must be used within a RntDropdownMenuCheckbox");
 
   const { containerRef } = context;
   const [position, setPosition] = useState<{ top: number; left: number; width: number; realTop: number } | undefined>(
@@ -198,7 +177,6 @@ function DropdownPortal({ children }: { children?: React.ReactNode }) {
       style={{
         top: `${position.top + 8}px`,
         left: `${position.left}px`,
-        // width: `${position.width}px`,
         minWidth: `${position.width}px`,
         maxHeight: `${dropdownHeight}px`,
       }}
@@ -209,42 +187,28 @@ function DropdownPortal({ children }: { children?: React.ReactNode }) {
   );
 }
 
-interface OptionProps extends React.ComponentPropsWithoutRef<"div"> {
+interface OptionProps {
   value: string;
+  children: React.ReactNode;
+  isChecked: boolean;
+  onCheckedChange: (value: string) => void;
 }
 
-const Option = forwardRef<HTMLDivElement, OptionProps>(({ value, children, className, ...rest }, ref) => {
-  const context = React.useContext(RntFilterSelectContext);
-  if (!context) throw new Error("RntFilterSelect.Option must be used within a RntFilterSelect");
-
-  const { selected, setSelected, setIsOpen } = context;
-  const isSelected = selected?.value === value;
-
+const Option = ({ value, children, isChecked, onCheckedChange }: OptionProps) => {
   return (
     <div
-      ref={ref}
       className={cn(
-        className,
         "flex w-full cursor-pointer flex-row items-center gap-2 px-4 transition-colors hover:bg-gray-600 active:bg-rentality-additional-light"
       )}
-      onClick={() => {
-        setSelected({ value, text: extractTextFromReactNode(children) });
-        setIsOpen(false);
-      }}
-      role="button"
-      {...rest}
+      onClick={() => onCheckedChange(value)}
     >
-      <div
-        className={`flex h-4 w-4 items-center justify-center rounded-full border-2 border-rentality-additional-tint bg-transparent transition-all`}
-      >
-        {isSelected && <div className="h-2 w-2 rounded-full bg-rentality-additional-tint"></div>}
-      </div>
-      <span>{children}</span>
+      <CheckboxLight className="my-0.5" label={extractTextFromReactNode(children)} checked={isChecked} />
     </div>
   );
-});
+};
 
-Option.displayName = "FilterSelect.Option";
-const RntFilterSelect = Object.assign(RntFilterSelectComponent, { Option: Option });
+Option.displayName = "RntDropdownMenuCheckbox.Option";
 
-export default RntFilterSelect;
+const RntDropdownMenuCheckbox = Object.assign(RntDropdownMenuCheckboxComponent, { Option });
+
+export default RntDropdownMenuCheckbox;
