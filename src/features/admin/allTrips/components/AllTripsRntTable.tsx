@@ -48,6 +48,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import RntDropdownMenuCheckbox from "@/components/common/RntDropdownMenuCheckbox";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
 
 type AllTripsRntTableProps = {
   isLoading: boolean;
@@ -83,80 +84,70 @@ export function AllTripsDataRntTable({ isLoading, data, payToHost, refundToGuest
         </div>
       }
     >
-      <div className="custom-scroll w-full overflow-x-auto">
-        <div className="flex items-center py-4">
+      <div className="">
+        <RntDropdownMenuCheckbox
+          containerClassName="w-full sm:w-40"
+          id={t("admin.columns")}
+          placeholder={t("admin.columns")}
+        >
+          {table
+            .getAllColumns()
+            .filter((column) => column.getCanHide())
+            .map((column) => {
+              return (
+                <RntDropdownMenuCheckbox.Option
+                  key={column.id}
+                  value={column.id}
+                  isChecked={column.getIsVisible()}
+                  onCheckedChange={() => column.toggleVisibility(!column.getIsVisible())}
+                >
+                  {column.id}
+                </RntDropdownMenuCheckbox.Option>
+              );
+            })}
+        </RntDropdownMenuCheckbox>
+        <div className="mt-4">
           <ScrollingHorizontally>
-            <Input
-              placeholder="Filter Trip id..."
+            <RntInputTransparent
+              placeholder={`Filter ${t_att("tripId")}...`}
               value={(table.getColumn(t_att("tripId"))?.getFilterValue() as string) ?? ""}
               onChange={(event) => table.getColumn(t_att("tripId"))?.setFilterValue(event.target.value)}
-              className="w-60 max-w-sm"
+              wrapperClassName="w-60"
             />
-            <Input
-              placeholder="Filter Vehicle..."
+            <RntInputTransparent
+              placeholder={`Filter ${t_att("vehicle")}...`}
               value={(table.getColumn(t_att("vehicle"))?.getFilterValue() as string) ?? ""}
               onChange={(event) => table.getColumn(t_att("vehicle"))?.setFilterValue(event.target.value)}
-              className="w-60 max-w-sm"
+              wrapperClassName="w-60"
             />
-            <Input
-              placeholder="Filter Trip id..."
-              value={(table.getColumn(t_att("tripId"))?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn(t_att("tripId"))?.setFilterValue(event.target.value)}
-              className="w-60 max-w-sm"
+            <RntInputTransparent
+              placeholder={`Filter ${t_att("plateNumber")}...`}
+              value={(table.getColumn(t_att("plateNumber"))?.getFilterValue() as string) ?? ""}
+              onChange={(event) => table.getColumn(t_att("plateNumber"))?.setFilterValue(event.target.value)}
+              wrapperClassName="w-60"
             />
-            <Input
-              placeholder="Filter Vehicle..."
-              value={(table.getColumn(t_att("vehicle"))?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn(t_att("vehicle"))?.setFilterValue(event.target.value)}
-              className="w-60 max-w-sm"
+            <RntInputTransparent
+              placeholder={`Filter ${t_att("promoCode")}...`}
+              value={(table.getColumn(t_att("promoCode"))?.getFilterValue() as string) ?? ""}
+              onChange={(event) => table.getColumn(t_att("promoCode"))?.setFilterValue(event.target.value)}
+              wrapperClassName="w-60"
             />
-            <Input
-              placeholder="Filter Trip id..."
-              value={(table.getColumn(t_att("tripId"))?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn(t_att("tripId"))?.setFilterValue(event.target.value)}
-              className="w-60 max-w-sm"
+            <RntInputTransparent
+              placeholder={`Filter ${t_att("host")}...`}
+              value={(table.getColumn(t_att("host"))?.getFilterValue() as string) ?? ""}
+              onChange={(event) => table.getColumn(t_att("host"))?.setFilterValue(event.target.value)}
+              wrapperClassName="w-60"
             />
-            <Input
-              placeholder="Filter Vehicle..."
-              value={(table.getColumn(t_att("vehicle"))?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn(t_att("vehicle"))?.setFilterValue(event.target.value)}
-              className="w-60 max-w-sm"
-            />
-            <Input
-              placeholder="Filter Trip id..."
-              value={(table.getColumn(t_att("tripId"))?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn(t_att("tripId"))?.setFilterValue(event.target.value)}
-              className="w-60 max-w-sm"
-            />
-            <Input
-              placeholder="Filter Vehicle..."
-              value={(table.getColumn(t_att("vehicle"))?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn(t_att("vehicle"))?.setFilterValue(event.target.value)}
-              className="w-60 max-w-sm"
+            <RntInputTransparent
+              placeholder={`Filter ${t_att("guest")}...`}
+              value={(table.getColumn(t_att("guest"))?.getFilterValue() as string) ?? ""}
+              onChange={(event) => table.getColumn(t_att("guest"))?.setFilterValue(event.target.value)}
+              wrapperClassName="w-60"
             />
           </ScrollingHorizontally>
-          <RntDropdownMenuCheckbox
-            containerClassName="w-full sm:w-40 ml-auto"
-            id={t("admin.columns")}
-            placeholder={t("admin.columns")}
-          >
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <RntDropdownMenuCheckbox.Option
-                    key={column.id}
-                    value={column.id}
-                    isChecked={column.getIsVisible()}
-                    onCheckedChange={() => column.toggleVisibility(!column.getIsVisible())}
-                  >
-                    {column.id}
-                  </RntDropdownMenuCheckbox.Option>
-                );
-              })}
-          </RntDropdownMenuCheckbox>
         </div>
+      </div>
+      <div className="custom-scroll w-full overflow-x-auto">
         <div className="">
           <RntTable>
             <RntTableHeader>

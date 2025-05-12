@@ -51,7 +51,7 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
   return (
     <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]} language="en">
       <form className="flex flex-col gap-4 fullHD:flex-row" onSubmit={handleApplyClick}>
-        <div className="flex flex-wrap items-end gap-4">
+        <div className="flex flex-wrap items-end gap-4 fullHD:w-1/2 fullHD:justify-between">
           <RntPlaceAutoComplete
             className="w-full sm:w-60"
             inputClassName="mt-1 z-10 pb-1 focus:outline-none focus:ring-0"
@@ -100,7 +100,7 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
             }}
           />
         </div>
-        <div className="flex flex-wrap items-end gap-4">
+        <div className="flex flex-wrap items-end gap-4 fullHD:w-1/2 fullHD:justify-between">
           <RntFilterSelect
             containerClassName="w-full sm:w-60"
             id="status"
@@ -147,7 +147,7 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
               </RntFilterSelect.Option>
             ))}
           </RntFilterSelect>
-          <RntButton className="w-full sm:w-60 fullHD:w-48" type="submit" disabled={isSubmitting}>
+          <RntButton className="w-full sm:w-60" type="submit" disabled={isSubmitting}>
             {t("common.search")}
           </RntButton>
         </div>

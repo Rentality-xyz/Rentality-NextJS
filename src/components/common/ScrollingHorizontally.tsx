@@ -85,7 +85,7 @@ export default function ScrollingHorizontally({ children, className, onScroll }:
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="scrollbar-none flex items-center gap-4 overflow-x-auto pb-4"
+        className="scrollbar-none flex items-center gap-4 overflow-x-auto"
         style={{ scrollBehavior: "smooth" }}
       >
         {children}
