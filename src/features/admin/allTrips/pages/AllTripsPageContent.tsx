@@ -14,7 +14,7 @@ const defaultFilters: AdminAllTripsFilters = {
 };
 
 export default function AllTripsPageContent() {
-  const itemsPerPage = 10;
+  const itemsPerPage = 25;
   const [filters, setFilters] = useState<AdminAllTripsFilters>(defaultFilters);
   const { isLoading, data, fetchData, payToHost, refundToGuest } = useAdminAllTrips();
   const { t } = useTranslation();
