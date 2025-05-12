@@ -173,8 +173,8 @@ function Search() {
           filterLimits={searchResult.filterLimits}
           t={t}
         />
-        <div className="flex gap-3 max-xl:flex-col-reverse">
-          <div className="my-4 flex flex-col gap-4 xl:w-8/12 2xl:w-7/12 fullHD:w-6/12">
+        <div className="flex gap-3 max-2xl:flex-col-reverse">
+          <div className="my-4 flex flex-col gap-4 2xl:w-7/12 fullHD:w-6/12">
             <RntSuspense
               isLoading={isLoading || isLoadingAuth || (isAuthenticated && ethereumInfo === undefined)}
               fallback={<div className="pl-[18px]">{t("common.info.loading")}</div>}
@@ -218,7 +218,7 @@ function Search() {
             </RntSuspense>
             {}
           </div>
-          <div className="my-4 max-xl:mb-8 xl:w-4/12 2xl:w-5/12 fullHD:w-6/12">
+          <div className="my-4 max-2xl:mb-8 2xl:w-5/12 fullHD:w-6/12">
             <CarSearchMap
               searchResult={searchResult}
               setSelected={(carID: number) => {
@@ -236,7 +236,7 @@ function Search() {
               }
             />
             <div
-              className="absolute left-1/2 flex -translate-x-1/2 cursor-pointer xl:hidden"
+              className="absolute left-1/2 flex -translate-x-1/2 cursor-pointer 2xl:hidden"
               onClick={handleArrowClick}
             >
               <Image

@@ -28,7 +28,7 @@ export default function CarSearchMap({
   const [mapContainerStyle, setMapContainerStyle] = useState<CSSProperties>();
 
   const handleScroll = () => {
-    if (window.innerWidth < 1280) {
+    if (window.innerWidth < 1536) {
       return;
     }
 
@@ -67,7 +67,7 @@ export default function CarSearchMap({
   };
 
   const handleResize = () => {
-    if (window.innerWidth < 1280) {
+    if (window.innerWidth < 1536) {
       window.removeEventListener("scroll", handleScroll);
       setIsSticked(false);
     } else {
@@ -80,7 +80,7 @@ export default function CarSearchMap({
   });
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.innerWidth >= 1280) {
+    if (typeof window !== "undefined" && window.innerWidth >= 1536) {
       window.addEventListener("scroll", handleScroll);
     }
 
@@ -93,7 +93,7 @@ export default function CarSearchMap({
   }, []);
 
   useEffect(() => {
-    if (window.innerWidth < 1280) {
+    if (window.innerWidth < 1536) {
       setMapContainerStyle({
         borderRadius: "30px",
         height: isExpanded ? "100vh" : "0vh",
