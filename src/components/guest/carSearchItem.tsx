@@ -173,6 +173,10 @@ export default function CarSearchItem({
                 <span>{t_comp("price_without_taxes")}</span>
                 <span className="ml-8">${displayMoneyWith2Digits(searchInfo.totalPriceWithHostDiscount)}</span>
               </div>
+              <div className="flex justify-between md:grid md:grid-cols-2">
+                <span>{t_comp("currency")}</span>
+                <span className="ml-8">{searchInfo.currency.name}</span>
+              </div>
 
               {isDisplayInsurance && <p className="mt-2 text-rentality-secondary">{t_comp("insurance_required")}</p>}
               <div className={cn("right-[10px] fullHD:right-[22px]", ccsDivider)}></div>
