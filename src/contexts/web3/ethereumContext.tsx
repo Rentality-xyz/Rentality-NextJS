@@ -80,7 +80,7 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
 
         const networkName =
           currentChainId === 5611
-            ? OPBNB_TESTNET /// Ethers knows nathing about this network
+            ? OPBNB_TESTNET /// Ethers knows nothing about this network
             : (await etherv6Provider.getNetwork()).name;
 
         const currentWalletAddress = wallets[0].address;
