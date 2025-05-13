@@ -308,6 +308,11 @@ async function formatSearchAvailableCarsContractResponse(
         isGuestHasInsurance: i.car.isGuestHasInsurance,
         distanceToUser: Number(i.distance),
         dimoTokenId: Number(i.car.dimoTokenId ? i.car.dimoTokenId : 0),
+        currency: {
+          currency: i.car.hostCurrency.currency,
+          name: i.car.hostCurrency.name,
+          initialized: i.car.hostCurrency.initialized,
+        },
       };
 
       return item;

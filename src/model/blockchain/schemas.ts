@@ -167,6 +167,7 @@ export type ContractTripDTO = {
   promoDiscount: bigint;
   dimoTokenId: bigint;
   taxesData: ContractTaxValue[];
+  currency: ContractUserCurrency;
 };
 
 export type ContractChatInfo = {
@@ -207,7 +208,7 @@ export type ContractFullClaimInfo = {
   amountInEth: bigint;
   timeZoneId: string;
   claimType: ContractClaimTypeV2;
-  currency: string;
+  currency: ContractCurrency;
 };
 
 export type ContractClaimV2 = {
@@ -291,6 +292,7 @@ export type ContractPaymentInfo = {
 export type ContractCurrency = {
   currency: string;
   name: string;
+  initialized: boolean;
 };
 
 export type ContractTripReceiptDTO = {
@@ -428,6 +430,7 @@ export type ContractAvailableCarDTO = {
 
 export type ContractUserCurrency = {
   currency: string;
+  name: string;
   initialized: boolean;
 };
 

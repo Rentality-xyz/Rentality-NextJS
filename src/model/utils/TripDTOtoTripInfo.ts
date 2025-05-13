@@ -186,6 +186,7 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
         tType: Number(t.tType),
       };
     }),
+    currency: tripDTO.currency,
   };
   return item;
 };

@@ -86,10 +86,10 @@ export default function ClaimHistory({ claims }: Props) {
     }
   }
 
-  async function handlePayClaim(claimId: number) {
+  async function handlePayClaim(claimId: number, currency: string) {
     showInfo(t("common.info.sign"));
 
-    const result = await payClaim(claimId);
+    const result = await payClaim({ claimId, currency });
 
     hideSnackbars();
 
@@ -125,6 +125,7 @@ export default function ClaimHistory({ claims }: Props) {
                 <th className={`${headerSpanClassName}`}>{t_history("table.viewPhotoFile")}</th>
                 <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_history("table.amount")}</th>
                 <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_history("table.status")}</th>
+                <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_history("table.currency")}</th>
                 <th></th>
                 <th></th>
                 <th></th>
@@ -175,13 +176,14 @@ export default function ClaimHistory({ claims }: Props) {
                     <td className={claim.status === ClaimStatus.Overdue ? redTextClassName : rowSpanClassName}>
                       {claim.statusText}
                     </td>
+                    <td className={rowSpanClassName}>{claim.currency.name}</td>
                     <td className={rowSpanClassName}>
                       {claim.status === ClaimStatus.NotPaid || claim.status === ClaimStatus.Overdue ? (
                         claim.isIncomingClaim ? (
                           <RntButton
                             className="h-8 min-h-[38px] w-24"
                             onClick={() => {
-                              payClaim(claim.claimId);
+                              payClaim({ claimId: claim.claimId, currency: claim.currency.currency });
                             }}
                           >
                             {t_history("pay")}

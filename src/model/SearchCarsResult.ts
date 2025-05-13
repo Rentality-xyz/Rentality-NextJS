@@ -23,6 +23,12 @@ export type DeliveryDetails = {
   dropOff: { distanceInMiles: number; priceInUsd: number };
 };
 
+export type UserCurrencyDTO = {
+  currency: string;
+  name: string;
+  initialized: boolean;
+};
+
 export type SearchCarInfo = {
   carId: number;
   ownerAddress: string;
@@ -71,6 +77,7 @@ export type SearchCarInfo = {
   isGuestHasInsurance: boolean;
   distanceToUser: number;
   dimoTokenId: number;
+  currency: UserCurrencyDTO;
 };
 
 export type SearchCarInfoDTO = Omit<SearchCarInfo, "engineType"> & { engineType: number };

@@ -17,7 +17,7 @@ type Props = {
   isHost: boolean;
   claim: Claim;
   index: number;
-  payClaim: (claimId: number) => Promise<void>;
+  payClaim: (claimId: number, currency: string) => Promise<void>;
   cancelClaim: (claimId: number) => Promise<void>;
   t_history: TFunction;
 };
@@ -101,6 +101,11 @@ export default function ClaimHistoryMobileCard({ claim, index, isHost, payClaim,
         </p>
         <p>{claim.statusText}</p>
         <hr className="col-span-2" />
+        <p>
+          <strong>{t_history("table.currency")}</strong>
+        </p>
+        <p>{claim.currency.name}</p>
+        <hr className="col-span-2" />
         {claim.fileUrls.filter((i) => !isEmpty(i)).length > 0 ? (
           <div className="col-span-2">
             <div className="mb-1 grid w-full grid-cols-2 gap-2">
@@ -151,7 +156,7 @@ export default function ClaimHistoryMobileCard({ claim, index, isHost, payClaim,
             claim.isIncomingClaim ? (
               <RntButton
                 onClick={() => {
-                  payClaim(claim.claimId);
+                  payClaim(claim.claimId, claim.currency.currency);
                 }}
               >
                 {t_history("pay")}
