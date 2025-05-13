@@ -784,7 +784,9 @@
     "trip_photos_photos": "photos",
     "trip_photos_no_photos": "no photos",
     "trip_photos_see_all": "See all",
-    "trip_photos_upload_trip_photo": "Upload a trip photo"
+    "trip_photos_upload_trip_photo": "Upload a trip photo",
+    "export_to_excel": "Export to Excel",
+    "total": "Total:"
   },
   "become_host": {
     "title": "Become a host",

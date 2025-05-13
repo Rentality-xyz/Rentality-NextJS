@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 import { env } from "@/utils/env";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
+import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 
 const allPaymentStatuses = Object.values(PaymentStatus)
   .slice(1)
@@ -50,10 +51,10 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
 
   return (
     <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]} language="en">
-      <form className="flex flex-col gap-4 fullHD:flex-row" onSubmit={handleApplyClick}>
-        <div className="flex flex-wrap items-end gap-4 fullHD:w-1/2 fullHD:justify-between">
+      <ScrollingHorizontally>
+        <form className="flex items-end justify-between gap-4 fullHD:w-full" onSubmit={handleApplyClick}>
           <RntPlaceAutoComplete
-            className="w-full sm:w-60"
+            className="w-60"
             inputClassName="mt-1 z-10 pb-1 focus:outline-none focus:ring-0"
             id="location"
             isTransparentStyle={true}
@@ -68,7 +69,7 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
             }}
           />
           <RntInput
-            className="w-full sm:w-60"
+            className="w-60"
             inputClassName="pr-4 mt-1 pb-1 z-10 focus:outline-none focus:ring-0"
             labelClassName="pl-4"
             id="dateFrom"
@@ -84,7 +85,7 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
             }}
           />
           <RntInput
-            className="w-full sm:w-60"
+            className="w-60"
             inputClassName="pr-4 mt-1 pb-1 z-10 focus:outline-none focus:ring-0"
             labelClassName="pl-4"
             id="dateTo"
@@ -99,10 +100,8 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
               }));
             }}
           />
-        </div>
-        <div className="flex flex-wrap items-end gap-4 fullHD:w-1/2 fullHD:justify-between">
           <RntFilterSelect
-            containerClassName="w-full sm:w-60"
+            containerClassName="w-60"
             id="status"
             isTransparentStyle={true}
             label={t("all_trips_table.tripStatus")}
@@ -125,7 +124,7 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
             ))}
           </RntFilterSelect>
           <RntFilterSelect
-            containerClassName="w-full sm:w-60"
+            containerClassName="w-60"
             id="paymentStatus"
             isTransparentStyle={true}
             label={t("all_trips_table.paymentsStatus")}
@@ -147,11 +146,11 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
               </RntFilterSelect.Option>
             ))}
           </RntFilterSelect>
-          <RntButton className="w-full sm:w-60" type="submit" disabled={isSubmitting}>
+          <RntButton className="w-60" type="submit" disabled={isSubmitting}>
             {t("common.search")}
           </RntButton>
-        </div>
-      </form>
+        </form>
+      </ScrollingHorizontally>
     </APIProvider>
   );
 }
