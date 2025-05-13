@@ -9,13 +9,13 @@ function PlatformInitOffline() {
   const router = useRouter();
 
   function handleTryAgainClick() {
-    router.refresh()
+    router.refresh();
   }
 
   return (
     <div className="flex h-screen w-full flex-col content-center items-center justify-center gap-6">
-      <p className="text-2xl font-bold text-center">{t("common.info.internet_troubles")}</p>
-      <p className="text-lg text-center">{t("common.info.check_internet")}</p>
+      <p className="text-center text-2xl font-bold">{t("common.info.internet_troubles")}</p>
+      <p className="text-center text-lg">{t("common.info.check_internet")}</p>
       <RntButton className="w-72" onClick={handleTryAgainClick}>
         {t("common.info.try_again")}
       </RntButton>

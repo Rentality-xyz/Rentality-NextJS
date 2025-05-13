@@ -22,6 +22,7 @@ import DotStatus from "@/components/dotStatus";
 import { CheckboxTerms } from "@/components/common/rntCheckbox";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import { logger } from "@/utils/logger";
+import getNetworkName from "@/model/utils/NetworkName";
 
 function UserCommonInformationForm({
   userProfile,
@@ -107,7 +108,11 @@ function UserCommonInformationForm({
     if (!formData.isTerms) return;
 
     if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
-      showInfo(t("common.add_fund_to_wallet"));
+      showInfo(
+        t("common.add_fund_to_wallet", {
+          network: getNetworkName(ethereumInfo),
+        })
+      );
       return;
     }
 
