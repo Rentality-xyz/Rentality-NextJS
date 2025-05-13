@@ -43,13 +43,17 @@ function PlatformInitChecker({ children }: PlatformInitCheckerProps) {
   }, []);
 
   useEffect(() => {
-    if (timerExpired && isOnline && isPlatformLoading(isLoadingAuth, isAuthenticated, ethereumInfo, rentalityContracts)) {
+    if (
+      timerExpired &&
+      isOnline &&
+      isPlatformLoading(isLoadingAuth, isAuthenticated, ethereumInfo, rentalityContracts)
+    ) {
       router.push("/platform_init_error");
     }
   }, [timerExpired, isLoadingAuth, isAuthenticated, ethereumInfo, rentalityContracts, router, isOnline]);
 
   if (!isOnline && isPlatformLoading(isLoadingAuth, isAuthenticated, ethereumInfo, rentalityContracts)) {
-    return <PlatformInitOffline/>
+    return <PlatformInitOffline />;
   }
 
   if (isPlatformLoading(isLoadingAuth, isAuthenticated, ethereumInfo, rentalityContracts)) {

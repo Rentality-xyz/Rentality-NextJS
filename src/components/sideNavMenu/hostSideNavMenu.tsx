@@ -25,7 +25,7 @@ function HostNavMenu() {
   const { hasFeatureFlag } = useFeatureFlags();
   const [hasInvestmentFeatureFlag, setInvestmentFeatureFlag] = React.useState<boolean>(false);
   const { t } = useTranslation();
-  const [selectedMenuHref, setSelectedMenuHref] = useState("/")
+  const [selectedMenuHref, setSelectedMenuHref] = useState("/");
 
   React.useEffect(() => {
     hasFeatureFlag(FEATURE_FLAGS.FF_INVESTMENTS).then((hasInvestmentFeatureFlag: boolean) => {

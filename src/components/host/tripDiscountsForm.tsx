@@ -9,6 +9,8 @@ import { useTranslation } from "react-i18next";
 import useUserRole from "@/hooks/useUserRole";
 import { TripDiscounts } from "@/hooks/host/useFetchTripDiscounts";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import getNetworkName from "@/model/utils/NetworkName";
 
 function TripDiscountsForm({
   savedTripsDiscounts,
@@ -17,6 +19,7 @@ function TripDiscountsForm({
   savedTripsDiscounts: TripDiscounts;
   saveTripsDiscounts: (newTripsDiscounts: TripDiscounts) => Promise<Result<boolean, Error>>;
 }) {
+  const ethereumInfo = useEthereum();
   const { userRole, isHost } = useUserRole();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, showSuccess, hideSnackbars } = useRntSnackbars();
@@ -61,7 +64,11 @@ function TripDiscountsForm({
       showSuccess(t("common.info.success"));
     } else {
       if (result.error.message === "NOT_ENOUGH_FUNDS") {
-        showError(t("common.add_fund_to_wallet"));
+        showError(
+          t("common.add_fund_to_wallet", {
+            network: getNetworkName(ethereumInfo),
+          })
+        );
       } else {
         showError(t("profile.save_discount_err"));
       }
