@@ -20,6 +20,7 @@ import {
   RntTableFooter,
   RntTableHead,
   RntTableHeader,
+  RntTableHeaderSorting,
   RntTableRow,
 } from "@/components/table/rntTable";
 import {
@@ -49,6 +50,7 @@ import { usePathname } from "next/navigation";
 import RntDropdownMenuCheckbox from "@/components/common/RntDropdownMenuCheckbox";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
+import Image from "next/image";
 
 type AllTripsRntTableProps = {
   isLoading: boolean;
@@ -86,7 +88,7 @@ export function AllTripsDataRntTable({ isLoading, data, payToHost, refundToGuest
     >
       <div className="">
         <RntDropdownMenuCheckbox
-          containerClassName="w-full sm:w-40"
+          containerClassName="w-full sm:w-60"
           id={t("admin.columns")}
           placeholder={t("admin.columns")}
         >
@@ -225,13 +227,14 @@ function GetColumns(
   return [
     columnHelper.accessor((row) => row.tripId, {
       id: t_att("tripId"),
-      // header: () => <div className={`min-w-[5ch]`}>{t_att("tripId")}</div>,
       header: ({ column }) => {
         return (
-          <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          <RntTableHeaderSorting
+            className="min-w-[5ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
             {t_att("tripId")}
-            <ArrowUpDown />
-          </Button>
+          </RntTableHeaderSorting>
         );
       },
       filterFn: (row, columnId, filterValue: string) => {
@@ -242,17 +245,44 @@ function GetColumns(
 
     columnHelper.accessor((row) => row.carDescription, {
       id: t_att("vehicle"),
-      header: () => <div className={`min-w-[15ch]`}>{t_att("vehicle")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[15ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("vehicle")}
+          </RntTableHeaderSorting>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.plateNumber, {
       id: t_att("plateNumber"),
-      header: () => <div className={`min-w-[10ch]`}>{t_att("plateNumber")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[10ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("plateNumber")}
+          </RntTableHeaderSorting>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.tripStatus, {
       id: t_att("tripStatus"),
-      header: () => <div className={`min-w-[25ch]`}>{t_att("tripStatus")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[25ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("tripStatus")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => {
         const tripStatusBgColor = getAdminTripStatusBgColorFromStatus(info.getValue());
         return <div className={tripStatusBgColor}>{getTripStatusTextFromAdminStatus(info.getValue())}</div>;
@@ -261,12 +291,30 @@ function GetColumns(
 
     columnHelper.accessor((row) => row.promoCode, {
       id: t_att("promoCode"),
-      header: () => <div className={`min-w-[15ch]`}>{t_att("promoCode")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[15ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("promoCode")}
+          </RntTableHeaderSorting>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row, {
       id: t_att("promoCodeValue"),
-      header: () => <div className={`min-w-[15ch]`}>{t_att("promoCodeValue")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[15ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("promoCodeValue")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => {
         const row = info.getValue();
         const isUsedPromocode = !isEmpty(row.promoCode);
@@ -276,7 +324,16 @@ function GetColumns(
 
     columnHelper.accessor((row) => row, {
       id: t_att("promoCodeDate"),
-      header: () => <div className={`min-w-[18ch]`}>{t_att("promoCodeDate")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[19ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("promoCodeDate")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => {
         const row = info.getValue();
         const isUsedPromocode = !isEmpty(row.promoCode);
@@ -292,7 +349,13 @@ function GetColumns(
 
     columnHelper.accessor((row) => row, {
       id: t_att("paymentManagement"),
-      header: () => t_att("paymentManagement"),
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+            {t_att("paymentManagement")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => {
         const row = info.getValue();
         return (
@@ -324,7 +387,16 @@ function GetColumns(
 
     columnHelper.accessor((row) => row.paymentsStatus, {
       id: t_att("paymentsStatus"),
-      header: () => <div className={`min-w-[17ch]`}>{t_att("paymentsStatus")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[17ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("paymentsStatus")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => {
         const paymentStatusTextColor = getAdminTextColorForPaymentStatus(info.getValue());
         return (
@@ -335,12 +407,30 @@ function GetColumns(
 
     columnHelper.accessor((row) => row.hostLocation, {
       id: t_att("location"),
-      header: () => <div className={`min-w-[18ch]`}>{t_att("location")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[18ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("location")}
+          </RntTableHeaderSorting>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row, {
       id: t_att("start"),
-      header: () => <div className={`min-w-[18ch]`}>{t_att("start")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[18ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("start")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => {
         const row = info.getValue();
         return <span>{dateFormatShortMonthDateTime(row.tripStartDate, row.timeZoneId)}</span>;
@@ -349,7 +439,16 @@ function GetColumns(
 
     columnHelper.accessor((row) => row, {
       id: t_att("end"),
-      header: () => <div className={`min-w-[18ch]`}>{t_att("end")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[18ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("end")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => {
         const row = info.getValue();
         return <span>{dateFormatShortMonthDateTime(row.tripEndDate, row.timeZoneId)}</span>;
@@ -358,106 +457,265 @@ function GetColumns(
 
     columnHelper.accessor((row) => row.tripDays, {
       id: t_att("days"),
-      header: () => t_att("days"),
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+            {t_att("days")}
+          </RntTableHeaderSorting>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.hostName, {
       id: t_att("host"),
-      header: () => <div className={`min-w-[15ch]`}>{t_att("host")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[15ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("host")}
+          </RntTableHeaderSorting>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.guestName, {
       id: t_att("guest"),
-      header: () => <div className={`min-w-[15ch]`}>{t_att("guest")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[15ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("guest")}
+          </RntTableHeaderSorting>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.tripPriceBeforeDiscountInUsd, {
       id: t_att("tripPriceBeforeDiscount"),
-      header: () => <div className={`min-w-[15ch]`}>{t_att("tripPriceBeforeDiscount")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[21ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("tripPriceBeforeDiscount")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
     }),
 
     columnHelper.accessor((row) => row.tripDiscountInUsd, {
       id: t_att("discountAmount"),
-      header: () => <div className={`min-w-[12ch]`}>{t_att("discountAmount")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[15ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("discountAmount")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
     }),
 
     columnHelper.accessor((row) => row.tripPriceAfterDiscountInUsd, {
       id: t_att("tripPriceAfterDiscount"),
-      header: () => <div className={`min-w-[15ch]`}>{t_att("tripPriceAfterDiscount")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[19ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("tripPriceAfterDiscount")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
     }),
 
     columnHelper.accessor((row) => row.deliveryFeePickUpInUsd, {
       id: t_att("deliveryFeePickUp"),
-      header: () => <div className={`min-w-[16ch]`}>{t_att("deliveryFeePickUp")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[18ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("deliveryFeePickUp")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
     }),
 
     columnHelper.accessor((row) => row.deliveryFeeDropOffInUsd, {
       id: t_att("deliveryFeeDropOff"),
-      header: () => <div className={`min-w-[16ch]`}>{t_att("deliveryFeeDropOff")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[20ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("deliveryFeeDropOff")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
     }),
 
     columnHelper.accessor((row) => row.salesTaxInUsd, {
       id: t_att("salesTax"),
-      header: () => <div className={`min-w-[10ch]`}>{t_att("salesTax")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[12ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("salesTax")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
     }),
 
     columnHelper.accessor((row) => row.governmentTaxInUsd, {
       id: t_att("governmentTax"),
-      header: () => <div className={`min-w-[10ch]`}>{t_att("governmentTax")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[10ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("governmentTax")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
     }),
 
     columnHelper.accessor((row) => row.totalChargeForTripInUsd, {
       id: t_att("totalChargeForTrip"),
-      header: () => <div className={`min-w-[15ch]`}>{t_att("totalChargeForTrip")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[17ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("totalChargeForTrip")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
     }),
 
     columnHelper.accessor((row) => row.refundForTripInUsd, {
       id: t_att("refundForTrip"),
-      header: () => <div className={`min-w-[10ch]`}>{t_att("refundForTrip")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[14ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("refundForTrip")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
     }),
 
     columnHelper.accessor((row) => row.depositReceivedInUsd, {
       id: t_att("depositReceived"),
-      header: () => <div className={`min-w-[12ch]`}>{t_att("depositReceived")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[16ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("depositReceived")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
     }),
 
     columnHelper.accessor((row) => row.depositReturnedInUsd, {
       id: t_att("depositReturned"),
-      header: () => <div className={`min-w-[12ch]`}>{t_att("depositReturned")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[16ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("depositReturned")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
     }),
 
     columnHelper.accessor((row) => row.reimbursementInUsd, {
       id: t_att("reimbursement"),
-      header: () => <div className={`min-w-[10ch]`}>{t_att("reimbursement")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[10ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("reimbursement")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
     }),
 
     columnHelper.accessor((row) => row.hostEarningsInUsd, {
       id: t_att("hostEarnings"),
-      header: () => <div className={`min-w-[12ch]`}>{t_att("hostEarnings")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[16ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("hostEarnings")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
     }),
 
     columnHelper.accessor((row) => row.platformCommissionInUsd, {
       id: t_att("platformCommission"),
-      header: () => <div className={`min-w-[15ch]`}>{t_att("platformCommission")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[18ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("platformCommission")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
     }),
 
     columnHelper.accessor((row) => row, {
       id: t_att("details"),
-      header: () => <div className={`min-w-[10ch]`}>{t_att("details")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[10ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("details")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => {
         const row = info.getValue();
         const detailsLink = `/admin/trips/tripInfo/${row.tripId}?back=${pathname}`;
@@ -471,13 +729,31 @@ function GetColumns(
 
     columnHelper.accessor((row) => row.accruableSalesTaxInUsd, {
       id: t_att("accruableSalesTax"),
-      header: () => <div className={`min-w-[15ch]`}>{t_att("accruableSalesTax")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[16ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("accruableSalesTax")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
     }),
 
     columnHelper.accessor((row) => row.accruableGovernmentTaxInUsd, {
       id: t_att("accruableGovernmentTax"),
-      header: () => <div className={`min-w-[15ch]`}>{t_att("accruableGovernmentTax")}</div>,
+      header: ({ column }) => {
+        return (
+          <RntTableHeaderSorting
+            className="min-w-[22ch]"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t_att("accruableGovernmentTax")}
+          </RntTableHeaderSorting>
+        );
+      },
       cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
     }),
   ];

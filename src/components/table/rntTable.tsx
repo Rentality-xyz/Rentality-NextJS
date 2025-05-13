@@ -1,6 +1,6 @@
 import * as React from "react";
-
 import { cn } from "@/lib/utils";
+import Image, { ImageProps } from "next/image";
 
 const RntTable = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
@@ -52,6 +52,20 @@ const RntTableCaption = React.forwardRef<HTMLTableCaptionElement, React.HTMLAttr
 );
 RntTableCaption.displayName = "RntTableCaption";
 
+const RntTableHeaderSorting = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, children, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn("flex h-9 cursor-pointer items-center justify-center rounded-md p-5 hover:bg-gray-700", className)}
+      {...props}
+    >
+      {children}
+      <Image src="/images/icons/ic_sorting.svg" width="24" height="24" alt="" className="ml-1" />
+    </div>
+  )
+);
+RntTableHeaderSorting.displayName = "RntTableHeaderSorting";
+
 export {
   RntTable,
   RntTableHeader,
@@ -61,4 +75,5 @@ export {
   RntTableRow,
   RntTableCell,
   RntTableCaption,
+  RntTableHeaderSorting,
 };
