@@ -42,7 +42,7 @@ import { isEmpty } from "@/utils/string";
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import { useState } from "react";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
-import { AdminTripStatus, PaymentStatus } from "@/model/blockchain/schemas";
+import { PaymentStatus } from "@/model/blockchain/schemas";
 import RntButton from "@/components/common/rntButton";
 import { displayMoneyWith2DigitsOrNa } from "@/utils/numericFormatters";
 import Link from "next/link";
@@ -50,7 +50,6 @@ import { usePathname } from "next/navigation";
 import RntDropdownMenuCheckbox from "@/components/common/RntDropdownMenuCheckbox";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
-import Image from "next/image";
 
 type AllTripsRntTableProps = {
   isLoading: boolean;
@@ -86,7 +85,7 @@ export function AllTripsDataRntTable({ isLoading, data, payToHost, refundToGuest
         </div>
       }
     >
-      <div className="">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row">
         <RntDropdownMenuCheckbox
           containerClassName="w-full sm:w-60"
           id={t("admin.columns")}
@@ -108,47 +107,46 @@ export function AllTripsDataRntTable({ isLoading, data, payToHost, refundToGuest
               );
             })}
         </RntDropdownMenuCheckbox>
-        <div className="mt-4">
-          <ScrollingHorizontally>
-            <RntInputTransparent
-              placeholder={`Filter ${t_att("tripId")}...`}
-              value={(table.getColumn(t_att("tripId"))?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn(t_att("tripId"))?.setFilterValue(event.target.value)}
-              wrapperClassName="w-60"
-            />
-            <RntInputTransparent
-              placeholder={`Filter ${t_att("vehicle")}...`}
-              value={(table.getColumn(t_att("vehicle"))?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn(t_att("vehicle"))?.setFilterValue(event.target.value)}
-              wrapperClassName="w-60"
-            />
-            <RntInputTransparent
-              placeholder={`Filter ${t_att("plateNumber")}...`}
-              value={(table.getColumn(t_att("plateNumber"))?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn(t_att("plateNumber"))?.setFilterValue(event.target.value)}
-              wrapperClassName="w-60"
-            />
-            <RntInputTransparent
-              placeholder={`Filter ${t_att("promoCode")}...`}
-              value={(table.getColumn(t_att("promoCode"))?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn(t_att("promoCode"))?.setFilterValue(event.target.value)}
-              wrapperClassName="w-60"
-            />
-            <RntInputTransparent
-              placeholder={`Filter ${t_att("host")}...`}
-              value={(table.getColumn(t_att("host"))?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn(t_att("host"))?.setFilterValue(event.target.value)}
-              wrapperClassName="w-60"
-            />
-            <RntInputTransparent
-              placeholder={`Filter ${t_att("guest")}...`}
-              value={(table.getColumn(t_att("guest"))?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn(t_att("guest"))?.setFilterValue(event.target.value)}
-              wrapperClassName="w-60"
-            />
-          </ScrollingHorizontally>
-        </div>
+        <RntButton className="w-full sm:w-60">{t("common.export_to_excel")}</RntButton>
       </div>
+      <ScrollingHorizontally>
+        <RntInputTransparent
+          placeholder={`Filter ${t_att("tripId")}...`}
+          value={(table.getColumn(t_att("tripId"))?.getFilterValue() as string) ?? ""}
+          onChange={(event) => table.getColumn(t_att("tripId"))?.setFilterValue(event.target.value)}
+          wrapperClassName="w-60"
+        />
+        <RntInputTransparent
+          placeholder={`Filter ${t_att("vehicle")}...`}
+          value={(table.getColumn(t_att("vehicle"))?.getFilterValue() as string) ?? ""}
+          onChange={(event) => table.getColumn(t_att("vehicle"))?.setFilterValue(event.target.value)}
+          wrapperClassName="w-60"
+        />
+        <RntInputTransparent
+          placeholder={`Filter ${t_att("plateNumber")}...`}
+          value={(table.getColumn(t_att("plateNumber"))?.getFilterValue() as string) ?? ""}
+          onChange={(event) => table.getColumn(t_att("plateNumber"))?.setFilterValue(event.target.value)}
+          wrapperClassName="w-60"
+        />
+        <RntInputTransparent
+          placeholder={`Filter ${t_att("promoCode")}...`}
+          value={(table.getColumn(t_att("promoCode"))?.getFilterValue() as string) ?? ""}
+          onChange={(event) => table.getColumn(t_att("promoCode"))?.setFilterValue(event.target.value)}
+          wrapperClassName="w-60"
+        />
+        <RntInputTransparent
+          placeholder={`Filter ${t_att("host")}...`}
+          value={(table.getColumn(t_att("host"))?.getFilterValue() as string) ?? ""}
+          onChange={(event) => table.getColumn(t_att("host"))?.setFilterValue(event.target.value)}
+          wrapperClassName="w-60"
+        />
+        <RntInputTransparent
+          placeholder={`Filter ${t_att("guest")}...`}
+          value={(table.getColumn(t_att("guest"))?.getFilterValue() as string) ?? ""}
+          onChange={(event) => table.getColumn(t_att("guest"))?.setFilterValue(event.target.value)}
+          wrapperClassName="w-60"
+        />
+      </ScrollingHorizontally>
       <div className="custom-scroll w-full overflow-x-auto">
         <div className="">
           <RntTable>
@@ -184,6 +182,17 @@ export function AllTripsDataRntTable({ isLoading, data, payToHost, refundToGuest
                 </RntTableRow>
               )}
             </RntTableBody>
+            <RntTableFooter className="h-9">
+              {table.getFooterGroups().map((footerGroup) => (
+                <RntTableRow key={footerGroup.id}>
+                  {footerGroup.headers.map((header) => (
+                    <RntTableHead key={header.id}>
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.footer, header.getContext())}
+                    </RntTableHead>
+                  ))}
+                </RntTableRow>
+              ))}
+            </RntTableFooter>
           </RntTable>
         </div>
       </div>
@@ -506,7 +515,22 @@ function GetColumns(
           </RntTableHeaderSorting>
         );
       },
-      cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
+      cell: (info) => {
+        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
+      },
+      footer: ({ table, column }) => {
+        const total = table.getRowModel().rows.reduce((sum, row) => {
+          const value = row.getValue<number>(column.id);
+          return sum + (isNaN(value) ? 0 : value);
+        }, 0);
+
+        return (
+          <>
+            {t("common.total")} {total.toFixed(2)}
+          </>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.tripDiscountInUsd, {
@@ -521,7 +545,22 @@ function GetColumns(
           </RntTableHeaderSorting>
         );
       },
-      cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
+      cell: (info) => {
+        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
+      },
+      footer: ({ table, column }) => {
+        const total = table.getRowModel().rows.reduce((sum, row) => {
+          const value = row.getValue<number>(column.id);
+          return sum + (isNaN(value) ? 0 : value);
+        }, 0);
+
+        return (
+          <>
+            {t("common.total")} {total.toFixed(2)}
+          </>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.tripPriceAfterDiscountInUsd, {
@@ -536,7 +575,22 @@ function GetColumns(
           </RntTableHeaderSorting>
         );
       },
-      cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
+      cell: (info) => {
+        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
+      },
+      footer: ({ table, column }) => {
+        const total = table.getRowModel().rows.reduce((sum, row) => {
+          const value = row.getValue<number>(column.id);
+          return sum + (isNaN(value) ? 0 : value);
+        }, 0);
+
+        return (
+          <>
+            {t("common.total")} {total.toFixed(2)}
+          </>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.deliveryFeePickUpInUsd, {
@@ -551,7 +605,22 @@ function GetColumns(
           </RntTableHeaderSorting>
         );
       },
-      cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
+      cell: (info) => {
+        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
+      },
+      footer: ({ table, column }) => {
+        const total = table.getRowModel().rows.reduce((sum, row) => {
+          const value = row.getValue<number>(column.id);
+          return sum + (isNaN(value) ? 0 : value);
+        }, 0);
+
+        return (
+          <>
+            {t("common.total")} {total.toFixed(2)}
+          </>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.deliveryFeeDropOffInUsd, {
@@ -566,7 +635,22 @@ function GetColumns(
           </RntTableHeaderSorting>
         );
       },
-      cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
+      cell: (info) => {
+        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
+      },
+      footer: ({ table, column }) => {
+        const total = table.getRowModel().rows.reduce((sum, row) => {
+          const value = row.getValue<number>(column.id);
+          return sum + (isNaN(value) ? 0 : value);
+        }, 0);
+
+        return (
+          <>
+            {t("common.total")} {total.toFixed(2)}
+          </>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.salesTaxInUsd, {
@@ -581,7 +665,22 @@ function GetColumns(
           </RntTableHeaderSorting>
         );
       },
-      cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
+      cell: (info) => {
+        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
+      },
+      footer: ({ table, column }) => {
+        const total = table.getRowModel().rows.reduce((sum, row) => {
+          const value = row.getValue<number>(column.id);
+          return sum + (isNaN(value) ? 0 : value);
+        }, 0);
+
+        return (
+          <>
+            {t("common.total")} {total.toFixed(2)}
+          </>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.governmentTaxInUsd, {
@@ -596,7 +695,22 @@ function GetColumns(
           </RntTableHeaderSorting>
         );
       },
-      cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
+      cell: (info) => {
+        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
+      },
+      footer: ({ table, column }) => {
+        const total = table.getRowModel().rows.reduce((sum, row) => {
+          const value = row.getValue<number>(column.id);
+          return sum + (isNaN(value) ? 0 : value);
+        }, 0);
+
+        return (
+          <>
+            {t("common.total")} {total.toFixed(2)}
+          </>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.totalChargeForTripInUsd, {
@@ -611,7 +725,22 @@ function GetColumns(
           </RntTableHeaderSorting>
         );
       },
-      cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
+      cell: (info) => {
+        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
+      },
+      footer: ({ table, column }) => {
+        const total = table.getRowModel().rows.reduce((sum, row) => {
+          const value = row.getValue<number>(column.id);
+          return sum + (isNaN(value) ? 0 : value);
+        }, 0);
+
+        return (
+          <>
+            {t("common.total")} {total.toFixed(2)}
+          </>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.refundForTripInUsd, {
@@ -626,7 +755,22 @@ function GetColumns(
           </RntTableHeaderSorting>
         );
       },
-      cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
+      cell: (info) => {
+        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
+      },
+      footer: ({ table, column }) => {
+        const total = table.getRowModel().rows.reduce((sum, row) => {
+          const value = row.getValue<number>(column.id);
+          return sum + (isNaN(value) ? 0 : value);
+        }, 0);
+
+        return (
+          <>
+            {t("common.total")} {total.toFixed(2)}
+          </>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.depositReceivedInUsd, {
@@ -641,7 +785,22 @@ function GetColumns(
           </RntTableHeaderSorting>
         );
       },
-      cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
+      cell: (info) => {
+        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
+      },
+      footer: ({ table, column }) => {
+        const total = table.getRowModel().rows.reduce((sum, row) => {
+          const value = row.getValue<number>(column.id);
+          return sum + (isNaN(value) ? 0 : value);
+        }, 0);
+
+        return (
+          <>
+            {t("common.total")} {total.toFixed(2)}
+          </>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.depositReturnedInUsd, {
@@ -656,7 +815,22 @@ function GetColumns(
           </RntTableHeaderSorting>
         );
       },
-      cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
+      cell: (info) => {
+        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
+      },
+      footer: ({ table, column }) => {
+        const total = table.getRowModel().rows.reduce((sum, row) => {
+          const value = row.getValue<number>(column.id);
+          return sum + (isNaN(value) ? 0 : value);
+        }, 0);
+
+        return (
+          <>
+            {t("common.total")} {total.toFixed(2)}
+          </>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.reimbursementInUsd, {
@@ -671,7 +845,22 @@ function GetColumns(
           </RntTableHeaderSorting>
         );
       },
-      cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
+      cell: (info) => {
+        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
+      },
+      footer: ({ table, column }) => {
+        const total = table.getRowModel().rows.reduce((sum, row) => {
+          const value = row.getValue<number>(column.id);
+          return sum + (isNaN(value) ? 0 : value);
+        }, 0);
+
+        return (
+          <>
+            {t("common.total")} {total.toFixed(2)}
+          </>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.hostEarningsInUsd, {
@@ -686,7 +875,22 @@ function GetColumns(
           </RntTableHeaderSorting>
         );
       },
-      cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
+      cell: (info) => {
+        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
+      },
+      footer: ({ table, column }) => {
+        const total = table.getRowModel().rows.reduce((sum, row) => {
+          const value = row.getValue<number>(column.id);
+          return sum + (isNaN(value) ? 0 : value);
+        }, 0);
+
+        return (
+          <>
+            {t("common.total")} {total.toFixed(2)}
+          </>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.platformCommissionInUsd, {
@@ -701,7 +905,22 @@ function GetColumns(
           </RntTableHeaderSorting>
         );
       },
-      cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
+      cell: (info) => {
+        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
+      },
+      footer: ({ table, column }) => {
+        const total = table.getRowModel().rows.reduce((sum, row) => {
+          const value = row.getValue<number>(column.id);
+          return sum + (isNaN(value) ? 0 : value);
+        }, 0);
+
+        return (
+          <>
+            {t("common.total")} {total.toFixed(2)}
+          </>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row, {
@@ -739,7 +958,22 @@ function GetColumns(
           </RntTableHeaderSorting>
         );
       },
-      cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
+      cell: (info) => {
+        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
+      },
+      footer: ({ table, column }) => {
+        const total = table.getRowModel().rows.reduce((sum, row) => {
+          const value = row.getValue<number>(column.id);
+          return sum + (isNaN(value) ? 0 : value);
+        }, 0);
+
+        return (
+          <>
+            {t("common.total")} {total.toFixed(2)}
+          </>
+        );
+      },
     }),
 
     columnHelper.accessor((row) => row.accruableGovernmentTaxInUsd, {
@@ -754,7 +988,22 @@ function GetColumns(
           </RntTableHeaderSorting>
         );
       },
-      cell: (info) => <span>{displayMoneyWith2DigitsOrNa(info.getValue())}</span>,
+      cell: (info) => {
+        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
+      },
+      footer: ({ table, column }) => {
+        const total = table.getRowModel().rows.reduce((sum, row) => {
+          const value = row.getValue<number>(column.id);
+          return sum + (isNaN(value) ? 0 : value);
+        }, 0);
+
+        return (
+          <>
+            {t("common.total")} {total.toFixed(2)}
+          </>
+        );
+      },
     }),
   ];
 }
