@@ -1,6 +1,6 @@
 import * as React from "react";
-import { cn } from "@/lib/utils";
 import Image, { ImageProps } from "next/image";
+import { cn } from "@/utils";
 
 const RntTable = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
