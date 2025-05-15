@@ -125,7 +125,7 @@ export default function CarEditForm({
     }
   }
 
-  const { errors, isSubmitting } = formState;
+  const { errors, isSubmitting, dirtyFields } = formState;
 
   const [message, setMessage] = useState<string>("");
   const [autocomplete, setAutocomplete] = useState(initValue?.locationInfo.address ?? "");
@@ -268,6 +268,11 @@ export default function CarEditForm({
   }
 
   async function handleBack(e: React.MouseEvent<HTMLButtonElement>) {
+
+    if(Object.keys(dirtyFields).length === 0) {
+        router.push("/host/vehicles/listings");
+        return;
+    }
     const action = (
       <>
         {DialogActions.OK(() => {
