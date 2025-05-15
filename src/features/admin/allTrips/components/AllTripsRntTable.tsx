@@ -579,425 +579,509 @@ function GetColumns(
       },
     }),
 
-    columnHelper.accessor((row) => row.tripPriceBeforeDiscountInUsd, {
-      id: t_att("tripPriceBeforeDiscount"),
-      header: ({ column }) => {
-        return (
-          <RntTableHeaderSorting
-            className="min-w-[21ch]"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t_att("tripPriceBeforeDiscount")}
-          </RntTableHeaderSorting>
-        );
+    columnHelper.accessor(
+      (row) => {
+        const value = row.tripPriceBeforeDiscountInUsd;
+        return isNaN(Number(value)) || value == null ? 0 : Number(value);
       },
-      cell: (info) => {
-        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
-        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
-      },
-      footer: ({ table, column }) => {
-        const total = table.getRowModel().rows.reduce((sum, row) => {
-          const value = row.getValue<number>(column.id);
-          return sum + (isNaN(value) ? 0 : value);
-        }, 0);
+      {
+        id: t_att("tripPriceBeforeDiscount"),
+        header: ({ column }) => {
+          return (
+            <RntTableHeaderSorting
+              className="min-w-[21ch]"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t_att("tripPriceBeforeDiscount")}
+            </RntTableHeaderSorting>
+          );
+        },
+        cell: (info) => {
+          const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+          return <span>{isNaN(value) ? "0.00" : value.toFixed(2)}</span>;
+        },
+        footer: ({ table, column }) => {
+          const total = table.getRowModel().rows.reduce((sum, row) => {
+            const value = row.getValue<number>(column.id);
+            return sum + (isNaN(value) ? 0 : value);
+          }, 0);
 
-        return (
-          <>
-            {t("common.total")} {total.toFixed(2)}
-          </>
-        );
-      },
-    }),
+          return (
+            <>
+              {t("common.total")} {total.toFixed(2)}
+            </>
+          );
+        },
+      }
+    ),
 
-    columnHelper.accessor((row) => row.tripDiscountInUsd, {
-      id: t_att("discountAmount"),
-      header: ({ column }) => {
-        return (
-          <RntTableHeaderSorting
-            className="min-w-[15ch]"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t_att("discountAmount")}
-          </RntTableHeaderSorting>
-        );
+    columnHelper.accessor(
+      (row) => {
+        const value = row.tripDiscountInUsd;
+        return isNaN(Number(value)) || value == null ? 0 : Number(value);
       },
-      cell: (info) => {
-        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
-        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
-      },
-      footer: ({ table, column }) => {
-        const total = table.getRowModel().rows.reduce((sum, row) => {
-          const value = row.getValue<number>(column.id);
-          return sum + (isNaN(value) ? 0 : value);
-        }, 0);
+      {
+        id: t_att("discountAmount"),
+        header: ({ column }) => {
+          return (
+            <RntTableHeaderSorting
+              className="min-w-[15ch]"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t_att("discountAmount")}
+            </RntTableHeaderSorting>
+          );
+        },
+        cell: (info) => {
+          const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+          return <span>{isNaN(value) ? "0.00" : value.toFixed(2)}</span>;
+        },
+        footer: ({ table, column }) => {
+          const total = table.getRowModel().rows.reduce((sum, row) => {
+            const value = row.getValue<number>(column.id);
+            return sum + (isNaN(value) ? 0 : value);
+          }, 0);
 
-        return (
-          <>
-            {t("common.total")} {total.toFixed(2)}
-          </>
-        );
-      },
-    }),
+          return (
+            <>
+              {t("common.total")} {total.toFixed(2)}
+            </>
+          );
+        },
+      }
+    ),
 
-    columnHelper.accessor((row) => row.tripPriceAfterDiscountInUsd, {
-      id: t_att("tripPriceAfterDiscount"),
-      header: ({ column }) => {
-        return (
-          <RntTableHeaderSorting
-            className="min-w-[19ch]"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t_att("tripPriceAfterDiscount")}
-          </RntTableHeaderSorting>
-        );
+    columnHelper.accessor(
+      (row) => {
+        const value = row.tripPriceAfterDiscountInUsd;
+        return isNaN(Number(value)) || value == null ? 0 : Number(value);
       },
-      cell: (info) => {
-        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
-        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
-      },
-      footer: ({ table, column }) => {
-        const total = table.getRowModel().rows.reduce((sum, row) => {
-          const value = row.getValue<number>(column.id);
-          return sum + (isNaN(value) ? 0 : value);
-        }, 0);
+      {
+        id: t_att("tripPriceAfterDiscount"),
+        header: ({ column }) => {
+          return (
+            <RntTableHeaderSorting
+              className="min-w-[19ch]"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t_att("tripPriceAfterDiscount")}
+            </RntTableHeaderSorting>
+          );
+        },
+        cell: (info) => {
+          const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+          return <span>{isNaN(value) ? "0.00" : value.toFixed(2)}</span>;
+        },
+        footer: ({ table, column }) => {
+          const total = table.getRowModel().rows.reduce((sum, row) => {
+            const value = row.getValue<number>(column.id);
+            return sum + (isNaN(value) ? 0 : value);
+          }, 0);
 
-        return (
-          <>
-            {t("common.total")} {total.toFixed(2)}
-          </>
-        );
-      },
-    }),
+          return (
+            <>
+              {t("common.total")} {total.toFixed(2)}
+            </>
+          );
+        },
+      }
+    ),
 
-    columnHelper.accessor((row) => row.deliveryFeePickUpInUsd, {
-      id: t_att("deliveryFeePickUp"),
-      header: ({ column }) => {
-        return (
-          <RntTableHeaderSorting
-            className="min-w-[18ch]"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t_att("deliveryFeePickUp")}
-          </RntTableHeaderSorting>
-        );
+    columnHelper.accessor(
+      (row) => {
+        const value = row.deliveryFeePickUpInUsd;
+        return isNaN(Number(value)) || value == null ? 0 : Number(value);
       },
-      cell: (info) => {
-        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
-        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
-      },
-      footer: ({ table, column }) => {
-        const total = table.getRowModel().rows.reduce((sum, row) => {
-          const value = row.getValue<number>(column.id);
-          return sum + (isNaN(value) ? 0 : value);
-        }, 0);
+      {
+        id: t_att("deliveryFeePickUp"),
+        header: ({ column }) => {
+          return (
+            <RntTableHeaderSorting
+              className="min-w-[18ch]"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t_att("deliveryFeePickUp")}
+            </RntTableHeaderSorting>
+          );
+        },
+        cell: (info) => {
+          const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+          return <span>{isNaN(value) ? "0.00" : value.toFixed(2)}</span>;
+        },
+        footer: ({ table, column }) => {
+          const total = table.getRowModel().rows.reduce((sum, row) => {
+            const value = row.getValue<number>(column.id);
+            return sum + (isNaN(value) ? 0 : value);
+          }, 0);
 
-        return (
-          <>
-            {t("common.total")} {total.toFixed(2)}
-          </>
-        );
-      },
-    }),
+          return (
+            <>
+              {t("common.total")} {total.toFixed(2)}
+            </>
+          );
+        },
+      }
+    ),
 
-    columnHelper.accessor((row) => row.deliveryFeeDropOffInUsd, {
-      id: t_att("deliveryFeeDropOff"),
-      header: ({ column }) => {
-        return (
-          <RntTableHeaderSorting
-            className="min-w-[20ch]"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t_att("deliveryFeeDropOff")}
-          </RntTableHeaderSorting>
-        );
+    columnHelper.accessor(
+      (row) => {
+        const value = row.deliveryFeeDropOffInUsd;
+        return isNaN(Number(value)) || value == null ? 0 : Number(value);
       },
-      cell: (info) => {
-        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
-        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
-      },
-      footer: ({ table, column }) => {
-        const total = table.getRowModel().rows.reduce((sum, row) => {
-          const value = row.getValue<number>(column.id);
-          return sum + (isNaN(value) ? 0 : value);
-        }, 0);
+      {
+        id: t_att("deliveryFeeDropOff"),
+        header: ({ column }) => {
+          return (
+            <RntTableHeaderSorting
+              className="min-w-[20ch]"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t_att("deliveryFeeDropOff")}
+            </RntTableHeaderSorting>
+          );
+        },
+        cell: (info) => {
+          const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+          return <span>{isNaN(value) ? "0.00" : value.toFixed(2)}</span>;
+        },
+        footer: ({ table, column }) => {
+          const total = table.getRowModel().rows.reduce((sum, row) => {
+            const value = row.getValue<number>(column.id);
+            return sum + (isNaN(value) ? 0 : value);
+          }, 0);
 
-        return (
-          <>
-            {t("common.total")} {total.toFixed(2)}
-          </>
-        );
-      },
-    }),
+          return (
+            <>
+              {t("common.total")} {total.toFixed(2)}
+            </>
+          );
+        },
+      }
+    ),
 
-    columnHelper.accessor((row) => row.salesTaxInUsd, {
-      id: t_att("salesTax"),
-      header: ({ column }) => {
-        return (
-          <RntTableHeaderSorting
-            className="min-w-[12ch]"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t_att("salesTax")}
-          </RntTableHeaderSorting>
-        );
+    columnHelper.accessor(
+      (row) => {
+        const value = row.salesTaxInUsd;
+        return isNaN(Number(value)) || value == null ? 0 : Number(value);
       },
-      cell: (info) => {
-        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
-        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
-      },
-      footer: ({ table, column }) => {
-        const total = table.getRowModel().rows.reduce((sum, row) => {
-          const value = row.getValue<number>(column.id);
-          return sum + (isNaN(value) ? 0 : value);
-        }, 0);
+      {
+        id: t_att("salesTax"),
+        header: ({ column }) => {
+          return (
+            <RntTableHeaderSorting
+              className="min-w-[12ch]"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t_att("salesTax")}
+            </RntTableHeaderSorting>
+          );
+        },
+        cell: (info) => {
+          const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+          return <span>{isNaN(value) ? "0.00" : value.toFixed(2)}</span>;
+        },
+        footer: ({ table, column }) => {
+          const total = table.getRowModel().rows.reduce((sum, row) => {
+            const value = row.getValue<number>(column.id);
+            return sum + (isNaN(value) ? 0 : value);
+          }, 0);
 
-        return (
-          <>
-            {t("common.total")} {total.toFixed(2)}
-          </>
-        );
-      },
-    }),
+          return (
+            <>
+              {t("common.total")} {total.toFixed(2)}
+            </>
+          );
+        },
+      }
+    ),
 
-    columnHelper.accessor((row) => row.governmentTaxInUsd, {
-      id: t_att("governmentTax"),
-      header: ({ column }) => {
-        return (
-          <RntTableHeaderSorting
-            className="min-w-[10ch]"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t_att("governmentTax")}
-          </RntTableHeaderSorting>
-        );
+    columnHelper.accessor(
+      (row) => {
+        const value = row.governmentTaxInUsd;
+        return isNaN(Number(value)) || value == null ? 0 : Number(value);
       },
-      cell: (info) => {
-        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
-        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
-      },
-      footer: ({ table, column }) => {
-        const total = table.getRowModel().rows.reduce((sum, row) => {
-          const value = row.getValue<number>(column.id);
-          return sum + (isNaN(value) ? 0 : value);
-        }, 0);
+      {
+        id: t_att("governmentTax"),
+        header: ({ column }) => {
+          return (
+            <RntTableHeaderSorting
+              className="min-w-[10ch]"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t_att("governmentTax")}
+            </RntTableHeaderSorting>
+          );
+        },
+        cell: (info) => {
+          const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+          return <span>{isNaN(value) ? "0.00" : value.toFixed(2)}</span>;
+        },
+        footer: ({ table, column }) => {
+          const total = table.getRowModel().rows.reduce((sum, row) => {
+            const value = row.getValue<number>(column.id);
+            return sum + (isNaN(value) ? 0 : value);
+          }, 0);
 
-        return (
-          <>
-            {t("common.total")} {total.toFixed(2)}
-          </>
-        );
-      },
-    }),
+          return (
+            <>
+              {t("common.total")} {total.toFixed(2)}
+            </>
+          );
+        },
+      }
+    ),
 
-    columnHelper.accessor((row) => row.totalChargeForTripInUsd, {
-      id: t_att("totalChargeForTrip"),
-      header: ({ column }) => {
-        return (
-          <RntTableHeaderSorting
-            className="min-w-[17ch]"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t_att("totalChargeForTrip")}
-          </RntTableHeaderSorting>
-        );
+    columnHelper.accessor(
+      (row) => {
+        const value = row.totalChargeForTripInUsd;
+        return isNaN(Number(value)) || value == null ? 0 : Number(value);
       },
-      cell: (info) => {
-        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
-        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
-      },
-      footer: ({ table, column }) => {
-        const total = table.getRowModel().rows.reduce((sum, row) => {
-          const value = row.getValue<number>(column.id);
-          return sum + (isNaN(value) ? 0 : value);
-        }, 0);
+      {
+        id: t_att("totalChargeForTrip"),
+        header: ({ column }) => {
+          return (
+            <RntTableHeaderSorting
+              className="min-w-[17ch]"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t_att("totalChargeForTrip")}
+            </RntTableHeaderSorting>
+          );
+        },
+        cell: (info) => {
+          const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+          return <span>{isNaN(value) ? "0.00" : value.toFixed(2)}</span>;
+        },
+        footer: ({ table, column }) => {
+          const total = table.getRowModel().rows.reduce((sum, row) => {
+            const value = row.getValue<number>(column.id);
+            return sum + (isNaN(value) ? 0 : value);
+          }, 0);
 
-        return (
-          <>
-            {t("common.total")} {total.toFixed(2)}
-          </>
-        );
-      },
-    }),
+          return (
+            <>
+              {t("common.total")} {total.toFixed(2)}
+            </>
+          );
+        },
+      }
+    ),
 
-    columnHelper.accessor((row) => row.refundForTripInUsd, {
-      id: t_att("refundForTrip"),
-      header: ({ column }) => {
-        return (
-          <RntTableHeaderSorting
-            className="min-w-[14ch]"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t_att("refundForTrip")}
-          </RntTableHeaderSorting>
-        );
+    columnHelper.accessor(
+      (row) => {
+        const value = row.refundForTripInUsd;
+        return isNaN(Number(value)) || value == null ? 0 : Number(value);
       },
-      cell: (info) => {
-        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
-        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
-      },
-      footer: ({ table, column }) => {
-        const total = table.getRowModel().rows.reduce((sum, row) => {
-          const value = row.getValue<number>(column.id);
-          return sum + (isNaN(value) ? 0 : value);
-        }, 0);
+      {
+        id: t_att("refundForTrip"),
+        header: ({ column }) => {
+          return (
+            <RntTableHeaderSorting
+              className="min-w-[14ch]"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t_att("refundForTrip")}
+            </RntTableHeaderSorting>
+          );
+        },
+        cell: (info) => {
+          const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+          return <span>{isNaN(value) ? "0.00" : value.toFixed(2)}</span>;
+        },
+        footer: ({ table, column }) => {
+          const total = table.getRowModel().rows.reduce((sum, row) => {
+            const value = row.getValue<number>(column.id);
+            return sum + (isNaN(value) ? 0 : value);
+          }, 0);
 
-        return (
-          <>
-            {t("common.total")} {total.toFixed(2)}
-          </>
-        );
-      },
-    }),
+          return (
+            <>
+              {t("common.total")} {total.toFixed(2)}
+            </>
+          );
+        },
+      }
+    ),
 
-    columnHelper.accessor((row) => row.depositReceivedInUsd, {
-      id: t_att("depositReceived"),
-      header: ({ column }) => {
-        return (
-          <RntTableHeaderSorting
-            className="min-w-[16ch]"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t_att("depositReceived")}
-          </RntTableHeaderSorting>
-        );
+    columnHelper.accessor(
+      (row) => {
+        const value = row.depositReceivedInUsd;
+        return isNaN(Number(value)) || value == null ? 0 : Number(value);
       },
-      cell: (info) => {
-        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
-        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
-      },
-      footer: ({ table, column }) => {
-        const total = table.getRowModel().rows.reduce((sum, row) => {
-          const value = row.getValue<number>(column.id);
-          return sum + (isNaN(value) ? 0 : value);
-        }, 0);
+      {
+        id: t_att("depositReceived"),
+        header: ({ column }) => {
+          return (
+            <RntTableHeaderSorting
+              className="min-w-[16ch]"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t_att("depositReceived")}
+            </RntTableHeaderSorting>
+          );
+        },
+        cell: (info) => {
+          const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+          return <span>{isNaN(value) ? "0.00" : value.toFixed(2)}</span>;
+        },
+        footer: ({ table, column }) => {
+          const total = table.getRowModel().rows.reduce((sum, row) => {
+            const value = row.getValue<number>(column.id);
+            return sum + (isNaN(value) ? 0 : value);
+          }, 0);
 
-        return (
-          <>
-            {t("common.total")} {total.toFixed(2)}
-          </>
-        );
-      },
-    }),
+          return (
+            <>
+              {t("common.total")} {total.toFixed(2)}
+            </>
+          );
+        },
+      }
+    ),
 
-    columnHelper.accessor((row) => row.depositReturnedInUsd, {
-      id: t_att("depositReturned"),
-      header: ({ column }) => {
-        return (
-          <RntTableHeaderSorting
-            className="min-w-[16ch]"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t_att("depositReturned")}
-          </RntTableHeaderSorting>
-        );
+    columnHelper.accessor(
+      (row) => {
+        const value = row.depositReturnedInUsd;
+        return isNaN(Number(value)) || value == null ? 0 : Number(value);
       },
-      cell: (info) => {
-        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
-        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
-      },
-      footer: ({ table, column }) => {
-        const total = table.getRowModel().rows.reduce((sum, row) => {
-          const value = row.getValue<number>(column.id);
-          return sum + (isNaN(value) ? 0 : value);
-        }, 0);
+      {
+        id: t_att("depositReturned"),
+        header: ({ column }) => {
+          return (
+            <RntTableHeaderSorting
+              className="min-w-[16ch]"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t_att("depositReturned")}
+            </RntTableHeaderSorting>
+          );
+        },
+        cell: (info) => {
+          const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+          return <span>{isNaN(value) ? "0.00" : value.toFixed(2)}</span>;
+        },
+        footer: ({ table, column }) => {
+          const total = table.getRowModel().rows.reduce((sum, row) => {
+            const value = row.getValue<number>(column.id);
+            return sum + (isNaN(value) ? 0 : value);
+          }, 0);
 
-        return (
-          <>
-            {t("common.total")} {total.toFixed(2)}
-          </>
-        );
-      },
-    }),
+          return (
+            <>
+              {t("common.total")} {total.toFixed(2)}
+            </>
+          );
+        },
+      }
+    ),
 
-    columnHelper.accessor((row) => row.reimbursementInUsd, {
-      id: t_att("reimbursement"),
-      header: ({ column }) => {
-        return (
-          <RntTableHeaderSorting
-            className="min-w-[10ch]"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t_att("reimbursement")}
-          </RntTableHeaderSorting>
-        );
+    columnHelper.accessor(
+      (row) => {
+        const value = row.reimbursementInUsd;
+        return isNaN(Number(value)) || value == null ? 0 : Number(value);
       },
-      cell: (info) => {
-        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
-        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
-      },
-      footer: ({ table, column }) => {
-        const total = table.getRowModel().rows.reduce((sum, row) => {
-          const value = row.getValue<number>(column.id);
-          return sum + (isNaN(value) ? 0 : value);
-        }, 0);
+      {
+        id: t_att("reimbursement"),
+        header: ({ column }) => {
+          return (
+            <RntTableHeaderSorting
+              className="min-w-[10ch]"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t_att("reimbursement")}
+            </RntTableHeaderSorting>
+          );
+        },
+        cell: (info) => {
+          const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+          return <span>{isNaN(value) ? "0.00" : value.toFixed(2)}</span>;
+        },
+        footer: ({ table, column }) => {
+          const total = table.getRowModel().rows.reduce((sum, row) => {
+            const value = row.getValue<number>(column.id);
+            return sum + (isNaN(value) ? 0 : value);
+          }, 0);
 
-        return (
-          <>
-            {t("common.total")} {total.toFixed(2)}
-          </>
-        );
-      },
-    }),
+          return (
+            <>
+              {t("common.total")} {total.toFixed(2)}
+            </>
+          );
+        },
+      }
+    ),
 
-    columnHelper.accessor((row) => row.hostEarningsInUsd, {
-      id: t_att("hostEarnings"),
-      header: ({ column }) => {
-        return (
-          <RntTableHeaderSorting
-            className="min-w-[16ch]"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t_att("hostEarnings")}
-          </RntTableHeaderSorting>
-        );
+    columnHelper.accessor(
+      (row) => {
+        const value = row.hostEarningsInUsd;
+        return isNaN(Number(value)) || value == null ? 0 : Number(value);
       },
-      cell: (info) => {
-        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
-        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
-      },
-      footer: ({ table, column }) => {
-        const total = table.getRowModel().rows.reduce((sum, row) => {
-          const value = row.getValue<number>(column.id);
-          return sum + (isNaN(value) ? 0 : value);
-        }, 0);
+      {
+        id: t_att("hostEarnings"),
+        header: ({ column }) => {
+          return (
+            <RntTableHeaderSorting
+              className="min-w-[16ch]"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t_att("hostEarnings")}
+            </RntTableHeaderSorting>
+          );
+        },
+        cell: (info) => {
+          const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+          return <span>{isNaN(value) ? "0.00" : value.toFixed(2)}</span>;
+        },
+        footer: ({ table, column }) => {
+          const total = table.getRowModel().rows.reduce((sum, row) => {
+            const value = row.getValue<number>(column.id);
+            return sum + (isNaN(value) ? 0 : value);
+          }, 0);
 
-        return (
-          <>
-            {t("common.total")} {total.toFixed(2)}
-          </>
-        );
-      },
-    }),
+          return (
+            <>
+              {t("common.total")} {total.toFixed(2)}
+            </>
+          );
+        },
+      }
+    ),
 
-    columnHelper.accessor((row) => row.platformCommissionInUsd, {
-      id: t_att("platformCommission"),
-      header: ({ column }) => {
-        return (
-          <RntTableHeaderSorting
-            className="min-w-[18ch]"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t_att("platformCommission")}
-          </RntTableHeaderSorting>
-        );
+    columnHelper.accessor(
+      (row) => {
+        const value = row.platformCommissionInUsd;
+        return isNaN(Number(value)) || value == null ? 0 : Number(value);
       },
-      cell: (info) => {
-        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
-        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
-      },
-      footer: ({ table, column }) => {
-        const total = table.getRowModel().rows.reduce((sum, row) => {
-          const value = row.getValue<number>(column.id);
-          return sum + (isNaN(value) ? 0 : value);
-        }, 0);
+      {
+        id: t_att("platformCommission"),
+        header: ({ column }) => {
+          return (
+            <RntTableHeaderSorting
+              className="min-w-[18ch]"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t_att("platformCommission")}
+            </RntTableHeaderSorting>
+          );
+        },
+        cell: (info) => {
+          const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+          return <span>{isNaN(value) ? "0.00" : value.toFixed(2)}</span>;
+        },
+        footer: ({ table, column }) => {
+          const total = table.getRowModel().rows.reduce((sum, row) => {
+            const value = row.getValue<number>(column.id);
+            return sum + (isNaN(value) ? 0 : value);
+          }, 0);
 
-        return (
-          <>
-            {t("common.total")} {total.toFixed(2)}
-          </>
-        );
-      },
-    }),
+          return (
+            <>
+              {t("common.total")} {total.toFixed(2)}
+            </>
+          );
+        },
+      }
+    ),
 
     columnHelper.accessor((row) => row, {
       id: t_att("details"),
@@ -1022,64 +1106,76 @@ function GetColumns(
       },
     }),
 
-    columnHelper.accessor((row) => row.accruableSalesTaxInUsd, {
-      id: t_att("accruableSalesTax"),
-      header: ({ column }) => {
-        return (
-          <RntTableHeaderSorting
-            className="min-w-[16ch]"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t_att("accruableSalesTax")}
-          </RntTableHeaderSorting>
-        );
+    columnHelper.accessor(
+      (row) => {
+        const value = row.accruableSalesTaxInUsd;
+        return isNaN(Number(value)) || value == null ? 0 : Number(value);
       },
-      cell: (info) => {
-        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
-        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
-      },
-      footer: ({ table, column }) => {
-        const total = table.getRowModel().rows.reduce((sum, row) => {
-          const value = row.getValue<number>(column.id);
-          return sum + (isNaN(value) ? 0 : value);
-        }, 0);
+      {
+        id: t_att("accruableSalesTax"),
+        header: ({ column }) => {
+          return (
+            <RntTableHeaderSorting
+              className="min-w-[16ch]"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t_att("accruableSalesTax")}
+            </RntTableHeaderSorting>
+          );
+        },
+        cell: (info) => {
+          const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+          return <span>{isNaN(value) ? "0.00" : value.toFixed(2)}</span>;
+        },
+        footer: ({ table, column }) => {
+          const total = table.getRowModel().rows.reduce((sum, row) => {
+            const value = row.getValue<number>(column.id);
+            return sum + (isNaN(value) ? 0 : value);
+          }, 0);
 
-        return (
-          <>
-            {t("common.total")} {total.toFixed(2)}
-          </>
-        );
-      },
-    }),
+          return (
+            <>
+              {t("common.total")} {total.toFixed(2)}
+            </>
+          );
+        },
+      }
+    ),
 
-    columnHelper.accessor((row) => row.accruableGovernmentTaxInUsd, {
-      id: t_att("accruableGovernmentTax"),
-      header: ({ column }) => {
-        return (
-          <RntTableHeaderSorting
-            className="min-w-[22ch]"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t_att("accruableGovernmentTax")}
-          </RntTableHeaderSorting>
-        );
+    columnHelper.accessor(
+      (row) => {
+        const value = row.accruableGovernmentTaxInUsd;
+        return isNaN(Number(value)) || value == null ? 0 : Number(value);
       },
-      cell: (info) => {
-        const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
-        return <span>{isNaN(value) ? 0 : value.toFixed(2)}</span>;
-      },
-      footer: ({ table, column }) => {
-        const total = table.getRowModel().rows.reduce((sum, row) => {
-          const value = row.getValue<number>(column.id);
-          return sum + (isNaN(value) ? 0 : value);
-        }, 0);
+      {
+        id: t_att("accruableGovernmentTax"),
+        header: ({ column }) => {
+          return (
+            <RntTableHeaderSorting
+              className="min-w-[22ch]"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t_att("accruableGovernmentTax")}
+            </RntTableHeaderSorting>
+          );
+        },
+        cell: (info) => {
+          const value = Number(displayMoneyWith2DigitsOrNa(info.getValue()));
+          return <span>{isNaN(value) ? "0.00" : value.toFixed(2)}</span>;
+        },
+        footer: ({ table, column }) => {
+          const total = table.getRowModel().rows.reduce((sum, row) => {
+            const value = row.getValue<number>(column.id);
+            return sum + (isNaN(value) ? 0 : value);
+          }, 0);
 
-        return (
-          <>
-            {t("common.total")} {total.toFixed(2)}
-          </>
-        );
-      },
-    }),
+          return (
+            <>
+              {t("common.total")} {total.toFixed(2)}
+            </>
+          );
+        },
+      }
+    ),
   ];
 }
