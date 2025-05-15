@@ -60,7 +60,8 @@ export default function AllTripsPageContent() {
         >
           <AllTripsDataRntTable
             isLoading={isLoading}
-            data={data.data}
+            dataPage={data.data}
+            filters={filters}
             payToHost={handlePayToHost}
             refundToGuest={handleRefundToGuest}
           />

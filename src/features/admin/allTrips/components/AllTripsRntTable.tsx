@@ -1,4 +1,6 @@
 import * as React from "react";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -47,31 +49,81 @@ import { usePathname } from "next/navigation";
 import RntDropdownMenuCheckbox from "@/components/common/RntDropdownMenuCheckbox";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
+import useAdminAllTrips, { AdminAllTripsFilters } from "@/features/admin/allTrips/hooks/useAdminAllTrips";
 
 type AllTripsRntTableProps = {
   isLoading: boolean;
-  data: AdminTripDetails[];
+  dataPage: AdminTripDetails[];
+  filters: AdminAllTripsFilters;
   payToHost: (tripId: number) => Promise<Result<boolean, string>>;
   refundToGuest: (tripId: number) => Promise<Result<boolean, string>>;
 };
 
-export function AllTripsDataRntTable({ isLoading, data, payToHost, refundToGuest }: AllTripsRntTableProps) {
+export function AllTripsDataRntTable({
+  isLoading,
+  dataPage,
+  filters,
+  payToHost,
+  refundToGuest,
+}: AllTripsRntTableProps) {
   const { t } = useTranslation();
   const t_att: TFunction = (name, options) => {
     return t("all_trips_table." + name, options);
   };
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { showError } = useRntSnackbars();
+  const pathname = usePathname();
 
-  const rerender = React.useReducer(() => ({}), {})[1];
-
-  const columns = GetColumns(payToHost, refundToGuest);
+  const columns = GetColumns(t, t_att, isSubmitting, setIsSubmitting, showError, pathname, payToHost, refundToGuest);
 
   const table = useReactTable({
-    data,
+    data: dataPage,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
+
+  const { data, fetchData } = useAdminAllTrips();
+
+  async function handleExportToExcel() {
+    const allTrips: any[] = [];
+    const pageSize = 100;
+    let currentPage = 1;
+    let totalPages = 1;
+
+    do {
+      const result = await fetchData(filters, data.currentPage, pageSize);
+      if (!result || !result.ok) break;
+
+      allTrips.push(...data.data);
+      totalPages = data.totalPageCount;
+      currentPage++;
+    } while (currentPage <= totalPages);
+
+    const excelData = allTrips.map((row) => {
+      const rowData: Record<string, any> = {};
+
+      columns.forEach((col) => {
+        const key = (col as any).id ?? (col as any).accessorKey;
+
+        const accessorFn = (col as any).accessorFn;
+        const value = typeof accessorFn === "function" ? accessorFn(row, 0) : row[key];
+
+        rowData[key] = value;
+      });
+
+      return rowData;
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "AllTripsTable");
+
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, "AllTripsTable.xlsx");
+  }
 
   return (
     <RntSuspense
@@ -104,7 +156,9 @@ export function AllTripsDataRntTable({ isLoading, data, payToHost, refundToGuest
               );
             })}
         </RntDropdownMenuCheckbox>
-        <RntButton className="w-full sm:w-60">{t("common.export_to_excel")}</RntButton>
+        <RntButton className="w-full sm:w-60" onClick={handleExportToExcel}>
+          {t("common.export_to_excel")}
+        </RntButton>
       </div>
       <ScrollingHorizontally>
         <RntInputTransparent
@@ -198,18 +252,15 @@ export function AllTripsDataRntTable({ isLoading, data, payToHost, refundToGuest
 }
 
 function GetColumns(
+  t: TFunction,
+  t_att: TFunction,
+  isSubmitting: boolean,
+  setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>,
+  showError: (msg: string) => void,
+  pathname: string,
   payToHost: (tripId: number) => Promise<Result<boolean, string>>,
   refundToGuest: (tripId: number) => Promise<Result<boolean, string>>
 ): ColumnDef<AdminTripDetails, any>[] {
-  const { t } = useTranslation();
-  const t_att: TFunction = (name, options) => {
-    return t("all_trips_table." + name, options);
-  };
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { showError } = useRntSnackbars();
-  const pathname = usePathname();
-
   async function handlePayToHost(tripId: number) {
     setIsSubmitting(true);
     const result = await payToHost(tripId);
