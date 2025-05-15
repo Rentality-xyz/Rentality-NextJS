@@ -101,16 +101,41 @@ export function AllTripsDataRntTable({
       currentPage++;
     } while (currentPage <= totalPages);
 
+    // const excelData = allTrips.map((row) => {
+    //   const rowData: Record<string, any> = {};
+    //
+    //   columns.forEach((col) => {
+    //     const key = (col as any).id ?? (col as any).accessorKey;
+    //
+    //     const accessorFn = (col as any).accessorFn;
+    //     const value = typeof accessorFn === "function" ? accessorFn(row, 0) : row[key];
+    //
+    //     rowData[key] = value;
+    //   });
+    //
+    //   return rowData;
+    // });
+
     const excelData = allTrips.map((row) => {
       const rowData: Record<string, any> = {};
 
-      columns.forEach((col) => {
-        const key = (col as any).id ?? (col as any).accessorKey;
+      columns.forEach((col: any) => {
+        const id = col.id ?? col.accessorKey;
 
-        const accessorFn = (col as any).accessorFn;
-        const value = typeof accessorFn === "function" ? accessorFn(row, 0) : row[key];
+        let value: any;
 
-        rowData[key] = value;
+        if (typeof col.accessorFn === "function") {
+          // Используем accessorFn, как задумано
+          value = col.accessorFn(row, 0);
+        } else if (typeof col.accessorKey === "string") {
+          // fallback — если есть accessorKey, достаём напрямую
+          value = row[col.accessorKey];
+        } else {
+          // ещё один fallback, на всякий случай
+          value = row[id];
+        }
+
+        rowData[id] = value;
       });
 
       return rowData;
@@ -328,23 +353,27 @@ function GetColumns(
       },
     }),
 
-    columnHelper.accessor((row) => row.tripStatus, {
-      id: t_att("tripStatus"),
-      header: ({ column }) => {
-        return (
+    columnHelper.accessor(
+      (row) => getTripStatusTextFromAdminStatus(row.tripStatus), // для экспорт в Excel, будет виден текст
+      {
+        id: t_att("tripStatus"),
+        header: ({ column }) => (
           <RntTableHeaderSorting
             className="min-w-[25ch]"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t_att("tripStatus")}
           </RntTableHeaderSorting>
-        );
-      },
-      cell: (info) => {
-        const tripStatusBgColor = getAdminTripStatusBgColorFromStatus(info.getValue());
-        return <div className={tripStatusBgColor}>{getTripStatusTextFromAdminStatus(info.getValue())}</div>;
-      },
-    }),
+        ),
+        cell: (info) => {
+          const tripStatusRaw = info.row.original.tripStatus; // для цвета
+          const tripStatusText = info.getValue(); // для текста
+          const tripStatusBgColor = getAdminTripStatusBgColorFromStatus(tripStatusRaw);
+
+          return <div className={tripStatusBgColor}>{tripStatusText}</div>;
+        },
+      }
+    ),
 
     columnHelper.accessor((row) => row.promoCode, {
       id: t_att("promoCode"),
@@ -360,7 +389,7 @@ function GetColumns(
       },
     }),
 
-    columnHelper.accessor((row) => row, {
+    columnHelper.accessor((row) => (!isEmpty(row.promoCode) ? `${row.promoCodeValueInPercents}%` : ""), {
       id: t_att("promoCodeValue"),
       header: ({ column }) => {
         return (
@@ -379,30 +408,36 @@ function GetColumns(
       },
     }),
 
-    columnHelper.accessor((row) => row, {
-      id: t_att("promoCodeDate"),
-      header: ({ column }) => {
-        return (
-          <RntTableHeaderSorting
-            className="min-w-[19ch]"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t_att("promoCodeDate")}
-          </RntTableHeaderSorting>
-        );
-      },
-      cell: (info) => {
-        const row = info.getValue();
-        const isUsedPromocode = !isEmpty(row.promoCode);
-        return (
-          <span>
-            {isUsedPromocode && row.promoCodeEnterDate
-              ? `${dateFormatShortMonthDateTime(row.promoCodeEnterDate, row.timeZoneId)}`
-              : ""}
-          </span>
-        );
-      },
-    }),
+    columnHelper.accessor(
+      (row) =>
+        !isEmpty(row.promoCode) && row.promoCodeEnterDate
+          ? dateFormatShortMonthDateTime(row.promoCodeEnterDate, row.timeZoneId)
+          : "",
+      {
+        id: t_att("promoCodeDate"),
+        header: ({ column }) => {
+          return (
+            <RntTableHeaderSorting
+              className="min-w-[19ch]"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t_att("promoCodeDate")}
+            </RntTableHeaderSorting>
+          );
+        },
+        cell: (info) => {
+          const row = info.getValue();
+          const isUsedPromocode = !isEmpty(row.promoCode);
+          return (
+            <span>
+              {isUsedPromocode && row.promoCodeEnterDate
+                ? `${dateFormatShortMonthDateTime(row.promoCodeEnterDate, row.timeZoneId)}`
+                : ""}
+            </span>
+          );
+        },
+      }
+    ),
 
     columnHelper.accessor((row) => row, {
       id: t_att("paymentManagement"),
@@ -442,7 +477,7 @@ function GetColumns(
       },
     }),
 
-    columnHelper.accessor((row) => row.paymentsStatus, {
+    columnHelper.accessor((row) => getPaymentStatusText(row.paymentsStatus), {
       id: t_att("paymentsStatus"),
       header: ({ column }) => {
         return (
@@ -455,10 +490,11 @@ function GetColumns(
         );
       },
       cell: (info) => {
-        const paymentStatusTextColor = getAdminTextColorForPaymentStatus(info.getValue());
-        return (
-          <span className={cn("font-semibold", paymentStatusTextColor)}>{getPaymentStatusText(info.getValue())}</span>
-        );
+        const paymentsStatusRaw = info.row.original.paymentsStatus;
+        const paymentsStatusText = info.getValue();
+        const paymentsStatusColor = getAdminTextColorForPaymentStatus(paymentsStatusRaw);
+
+        return <div className={cn("font-semibold", paymentsStatusColor)}>{paymentsStatusText}</div>;
       },
     }),
 
@@ -476,7 +512,7 @@ function GetColumns(
       },
     }),
 
-    columnHelper.accessor((row) => row, {
+    columnHelper.accessor((row) => dateFormatShortMonthDateTime(row.tripStartDate, row.timeZoneId), {
       id: t_att("start"),
       header: ({ column }) => {
         return (
@@ -488,13 +524,9 @@ function GetColumns(
           </RntTableHeaderSorting>
         );
       },
-      cell: (info) => {
-        const row = info.getValue();
-        return <span>{dateFormatShortMonthDateTime(row.tripStartDate, row.timeZoneId)}</span>;
-      },
     }),
 
-    columnHelper.accessor((row) => row, {
+    columnHelper.accessor((row) => dateFormatShortMonthDateTime(row.tripEndDate, row.timeZoneId), {
       id: t_att("end"),
       header: ({ column }) => {
         return (
@@ -505,10 +537,6 @@ function GetColumns(
             {t_att("end")}
           </RntTableHeaderSorting>
         );
-      },
-      cell: (info) => {
-        const row = info.getValue();
-        return <span>{dateFormatShortMonthDateTime(row.tripEndDate, row.timeZoneId)}</span>;
       },
     }),
 
