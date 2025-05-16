@@ -124,3 +124,40 @@ const useAdminAllTrips = () => {
 };
 
 export default useAdminAllTrips;
+
+export async function getAllAdminTrips(
+  admin: ReturnType<typeof useRentalityAdmin>["admin"],
+  filters?: AdminAllTripsFilters
+): Promise<AdminTripDetails[]> {
+  const allTrips: AdminTripDetails[] = [];
+  const pageSize = 100;
+  let currentPage = 1;
+  let totalPageCount = 1;
+
+  if (!admin) return [];
+
+  const contractFilters: ContractTripFilter = {
+    status: filters?.status ?? AdminTripStatus.Any,
+    paymentStatus: filters?.paymentStatus ?? PaymentStatus.Any,
+    location: filters?.location ? mapLocationInfoToContractLocationInfo(filters.location) : emptyContractLocationInfo,
+    startDateTime: filters?.startDateTimeUtc ? getBlockchainTimeFromDate(filters.startDateTimeUtc) : BigInt(0),
+    endDateTime: filters?.endDateTimeUtc ? getBlockchainTimeFromDate(filters.endDateTimeUtc) : BigInt(0),
+  };
+
+  do {
+    const result = await admin.getAllTrips(contractFilters, BigInt(currentPage), BigInt(pageSize));
+    if (!result.ok) break;
+
+    validateContractAllTripsDTO(result.value);
+
+    const pageData: AdminTripDetails[] = await Promise.all(
+      result.value.trips.map(mapContractAdminTripDTOToAdminTripDetails)
+    );
+
+    allTrips.push(...pageData);
+    totalPageCount = Number(result.value.totalPageCount);
+    currentPage++;
+  } while (currentPage <= totalPageCount);
+
+  return allTrips;
+}
