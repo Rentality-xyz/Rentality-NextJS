@@ -61,13 +61,7 @@ type AllTripsRntTableProps = {
   refundToGuest: (tripId: number) => Promise<Result<boolean, string>>;
 };
 
-export function AllTripsDataRntTable({
-  isLoading,
-  dataPage,
-  filters,
-  payToHost,
-  refundToGuest,
-}: AllTripsRntTableProps) {
+export function AllTripsRntTable({ isLoading, dataPage, filters, payToHost, refundToGuest }: AllTripsRntTableProps) {
   const { t } = useTranslation();
   const t_att: TFunction = (name, options) => {
     return t("all_trips_table." + name, options);
