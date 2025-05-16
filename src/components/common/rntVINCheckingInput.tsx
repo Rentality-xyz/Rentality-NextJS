@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import useCarAPI from "@/hooks/useCarAPI";
 import RntButton from "@/components/common/rntButton";
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
@@ -50,6 +50,14 @@ export default function RntVINCheckingInput({
       return "";
     }
   }, [isVINVerified, validationError, isVINCheckOverriden]);
+
+  useEffect(() => {
+    if (readOnly && !isVINVerified) {
+      checkVINNumber(value).then((result) => {
+        onVINVerified(result);
+      });
+    }
+  }, [readOnly, value, isVINVerified, checkVINNumber, onVINVerified]);
 
   return (
     <>
