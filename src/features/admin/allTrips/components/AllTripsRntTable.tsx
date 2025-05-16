@@ -1,7 +1,5 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
+import { useState } from "react";
 import {
   ColumnDef,
   createColumnHelper,
@@ -40,7 +38,7 @@ import { cn } from "@/utils";
 import { isEmpty } from "@/utils/string";
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
-import { AdminTripStatus, ContractTripFilter, PaymentStatus } from "@/model/blockchain/schemas";
+import { PaymentStatus } from "@/model/blockchain/schemas";
 import RntButton from "@/components/common/rntButton";
 import { displayMoneyWith2DigitsOrNa } from "@/utils/numericFormatters";
 import Link from "next/link";
@@ -48,12 +46,11 @@ import { usePathname } from "next/navigation";
 import RntDropdownMenuCheckbox from "@/components/common/RntDropdownMenuCheckbox";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
-import useAdminAllTrips, { AdminAllTripsFilters } from "@/features/admin/allTrips/hooks/useAdminAllTrips";
+import useAdminAllTrips, {
+  AdminAllTripsFilters,
+  getAllAdminTrips,
+} from "@/features/admin/allTrips/hooks/useAdminAllTrips";
 import { useRentalityAdmin } from "@/contexts/rentalityContext";
-import { emptyContractLocationInfo, validateContractAllTripsDTO } from "@/model/blockchain/schemas_utils";
-import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
-import { getBlockchainTimeFromDate } from "@/utils/formInput";
-import { mapContractAdminTripDTOToAdminTripDetails } from "@/features/admin/allTrips/models/mappers/contractTripToAdminTripDetails";
 import { exportToExcel } from "@/utils/exportToExcel";
 
 type AllTripsRntTableProps = {
@@ -92,38 +89,7 @@ export function AllTripsDataRntTable({
   const { admin } = useRentalityAdmin();
 
   async function handleExportToExcel() {
-    const allTrips: AdminTripDetails[] = [];
-    const pageSize = 100;
-    let currentPage = 1;
-    let totalPageCount = 1;
-
-    if (!admin) return;
-
-    do {
-      const contractFilters: ContractTripFilter = {
-        status: filters?.status ?? AdminTripStatus.Any,
-        paymentStatus: filters?.paymentStatus ?? PaymentStatus.Any,
-        location: filters?.location
-          ? mapLocationInfoToContractLocationInfo(filters.location)
-          : emptyContractLocationInfo,
-        startDateTime: filters?.startDateTimeUtc ? getBlockchainTimeFromDate(filters.startDateTimeUtc) : BigInt(0),
-        endDateTime: filters?.endDateTimeUtc ? getBlockchainTimeFromDate(filters.endDateTimeUtc) : BigInt(0),
-      };
-
-      const result = await admin.getAllTrips(contractFilters, BigInt(currentPage), BigInt(pageSize));
-      if (!result.ok) break;
-
-      validateContractAllTripsDTO(result.value);
-
-      const pageData: AdminTripDetails[] = await Promise.all(
-        result.value.trips.map(mapContractAdminTripDTOToAdminTripDetails)
-      );
-
-      allTrips.push(...pageData);
-      totalPageCount = Number(result.value.totalPageCount);
-      currentPage++;
-    } while (currentPage <= totalPageCount);
-
+    const allTrips = await getAllAdminTrips(admin, filters);
     exportToExcel(allTrips, columns, "AllTripsTable.xlsx");
   }
 
