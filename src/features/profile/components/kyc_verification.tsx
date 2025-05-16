@@ -36,7 +36,8 @@ function RntDriverLicenseVerified({ t }: { t: TFunction }) {
 
 function RntDriverLicenseVerifiedContent({ t }: { t: TFunction }) {
   const { gatewayStatus } = useGateway();
-  const isActive = gatewayStatus === GatewayStatus.ACTIVE;
+  const isActiveStatuses = [GatewayStatus.UNKNOWN, GatewayStatus.CHECKING, GatewayStatus.ACTIVE]
+  const isActive = isActiveStatuses.includes(gatewayStatus);
 
   return isActive ? (
     <DotStatus color="success" text={t("profile.license_verified")} />
