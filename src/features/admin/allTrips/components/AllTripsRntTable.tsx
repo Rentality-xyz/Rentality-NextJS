@@ -1,9 +1,9 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import {
   ColumnDef,
-  ColumnFiltersState,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
@@ -39,9 +39,8 @@ import {
 import { cn } from "@/utils";
 import { isEmpty } from "@/utils/string";
 import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
-import { useState } from "react";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
-import { PaymentStatus } from "@/model/blockchain/schemas";
+import { AdminTripStatus, ContractTripFilter, PaymentStatus } from "@/model/blockchain/schemas";
 import RntButton from "@/components/common/rntButton";
 import { displayMoneyWith2DigitsOrNa } from "@/utils/numericFormatters";
 import Link from "next/link";
@@ -50,6 +49,12 @@ import RntDropdownMenuCheckbox from "@/components/common/RntDropdownMenuCheckbox
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import useAdminAllTrips, { AdminAllTripsFilters } from "@/features/admin/allTrips/hooks/useAdminAllTrips";
+import { useRentalityAdmin } from "@/contexts/rentalityContext";
+import { emptyContractLocationInfo, validateContractAllTripsDTO } from "@/model/blockchain/schemas_utils";
+import { mapLocationInfoToContractLocationInfo } from "@/utils/location";
+import { getBlockchainTimeFromDate } from "@/utils/formInput";
+import { mapContractAdminTripDTOToAdminTripDetails } from "@/features/admin/allTrips/models/mappers/contractTripToAdminTripDetails";
+import { exportToExcel } from "@/utils/exportToExcel";
 
 type AllTripsRntTableProps = {
   isLoading: boolean;
@@ -84,70 +89,42 @@ export function AllTripsDataRntTable({
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  const { data, fetchData } = useAdminAllTrips();
+  const { admin } = useRentalityAdmin();
 
   async function handleExportToExcel() {
-    const allTrips: any[] = [];
+    const allTrips: AdminTripDetails[] = [];
     const pageSize = 100;
     let currentPage = 1;
-    let totalPages = 1;
+    let totalPageCount = 1;
+
+    if (!admin) return;
 
     do {
-      const result = await fetchData(filters, data.currentPage, pageSize);
-      if (!result || !result.ok) break;
+      const contractFilters: ContractTripFilter = {
+        status: filters?.status ?? AdminTripStatus.Any,
+        paymentStatus: filters?.paymentStatus ?? PaymentStatus.Any,
+        location: filters?.location
+          ? mapLocationInfoToContractLocationInfo(filters.location)
+          : emptyContractLocationInfo,
+        startDateTime: filters?.startDateTimeUtc ? getBlockchainTimeFromDate(filters.startDateTimeUtc) : BigInt(0),
+        endDateTime: filters?.endDateTimeUtc ? getBlockchainTimeFromDate(filters.endDateTimeUtc) : BigInt(0),
+      };
 
-      allTrips.push(...data.data);
-      totalPages = data.totalPageCount;
+      const result = await admin.getAllTrips(contractFilters, BigInt(currentPage), BigInt(pageSize));
+      if (!result.ok) break;
+
+      validateContractAllTripsDTO(result.value);
+
+      const pageData: AdminTripDetails[] = await Promise.all(
+        result.value.trips.map(mapContractAdminTripDTOToAdminTripDetails)
+      );
+
+      allTrips.push(...pageData);
+      totalPageCount = Number(result.value.totalPageCount);
       currentPage++;
-    } while (currentPage <= totalPages);
+    } while (currentPage <= totalPageCount);
 
-    // const excelData = allTrips.map((row) => {
-    //   const rowData: Record<string, any> = {};
-    //
-    //   columns.forEach((col) => {
-    //     const key = (col as any).id ?? (col as any).accessorKey;
-    //
-    //     const accessorFn = (col as any).accessorFn;
-    //     const value = typeof accessorFn === "function" ? accessorFn(row, 0) : row[key];
-    //
-    //     rowData[key] = value;
-    //   });
-    //
-    //   return rowData;
-    // });
-
-    const excelData = allTrips.map((row) => {
-      const rowData: Record<string, any> = {};
-
-      columns.forEach((col: any) => {
-        const id = col.id ?? col.accessorKey;
-
-        let value: any;
-
-        if (typeof col.accessorFn === "function") {
-          // Используем accessorFn, как задумано
-          value = col.accessorFn(row, 0);
-        } else if (typeof col.accessorKey === "string") {
-          // fallback — если есть accessorKey, достаём напрямую
-          value = row[col.accessorKey];
-        } else {
-          // ещё один fallback, на всякий случай
-          value = row[id];
-        }
-
-        rowData[id] = value;
-      });
-
-      return rowData;
-    });
-
-    const worksheet = XLSX.utils.json_to_sheet(excelData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "AllTripsTable");
-
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-    saveAs(blob, "AllTripsTable.xlsx");
+    exportToExcel(allTrips, columns, "AllTripsTable.xlsx");
   }
 
   return (
