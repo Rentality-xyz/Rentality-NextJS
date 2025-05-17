@@ -67,7 +67,7 @@
       "outputs": [
         {
           "type": "tuple[]",
-          "name": "motionCloudCases",
+          "name": "aiDamageAnalyzeCases",
           "components": [
             { "type": "uint256", "name": "caseId" },
             { "type": "uint8", "name": "caseType" },

@@ -1,21 +1,19 @@
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
-import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { useQuery } from "@tanstack/react-query";
 import { ZeroAddress } from "ethers";
-import { walletActions } from "viem";
 
 export const USER_CURRENCY_QUERY_KEY = "UserCurrency";
 export type UserCurrency = {
   currency: string;
   name: string;
-  initialized: boolean;
+  //initialized: boolean;
 };
 
 const emptyAvailableCurrency: UserCurrency = {
   currency: ZeroAddress,
   name: "ETH",
-  initialized: false,
+  //initialized: false,
 };
 
 type QueryData = UserCurrency;

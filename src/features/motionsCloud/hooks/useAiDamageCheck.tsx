@@ -139,7 +139,7 @@ async function startDamageAnalyzeImpl(
       return Err(new Error("Missing required Rentality contract or ethereum info"));
     }
 
-    const caseInfoResult = await rentalityContracts.gateway.getMotionsCloudCaseRequest(
+    const caseInfoResult = await rentalityContracts.gateway.getAiDamageAnalyzeCaseRequest(
       BigInt(tripId),
       type === "pre-trip" ? CaseType.PreTrip : CaseType.PostTrip
     );

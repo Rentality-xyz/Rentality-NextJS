@@ -274,6 +274,8 @@ async function getPiiDocs(links: PiiLink[], authToken: string): Promise<Result<P
 }
 
 async function saveDocs(address: string, docs: PiiDocData[]): Promise<Result<PiiLink[], string>> {
+  if (!storage) return Err("storage is null");
+
   const saveDocsResultPromise = docs.map(async (doc) => {
     const docRef = ref(storage, `kycdocs/${address}_${doc.rel}.jpg`);
     try {
@@ -301,7 +303,6 @@ async function saveDocs(address: string, docs: PiiDocData[]): Promise<Result<Pii
 
 async function savePiiInfoToFirebase(allInfo: AllPiiInfo, docs: PiiDocData[]): Promise<Result<boolean, string>> {
   if (!kycDbInfo.db) return Err("db is null");
-  if (!storage) return Err("storage is null");
 
   const CIVIC_USER_EMAIL = env.CIVIC_USER_EMAIL;
   if (!CIVIC_USER_EMAIL || isEmpty(CIVIC_USER_EMAIL)) {
