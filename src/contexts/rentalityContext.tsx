@@ -102,7 +102,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
       }
 
       const rentalityMotionsCloud = (await getEtherContractWithSigner(
-        "motionsCloud",
+        "aiDamageAnalyze",
         ethereumInfo.signer
       )) as unknown as IRentalityMotionsCloudContract;
       if (!rentalityMotionsCloud) {

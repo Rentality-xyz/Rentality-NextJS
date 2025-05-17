@@ -26,7 +26,7 @@ export default function useMotionsCloud() {
     }
 
     try {
-      const caseInfoResult = await rentality.gateway.getMotionsCloudCaseRequest(
+      const caseInfoResult = await rentality.gateway.getAiDamageAnalyzeCaseRequest(
         BigInt(tripId),
         pre ? CaseType.PreTrip : CaseType.PostTrip
       );

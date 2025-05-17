@@ -48,7 +48,7 @@ export default async function aiAssessmentHandler(req: NextApiRequest, res: Next
     const provider = new JsonRpcProvider(providerApiUrl);
     const wallet = new Wallet(MANAGER_PRIVATE_KEY, provider);
     const rentality = (await getEtherContractWithSigner(
-      "motionsCloud",
+      "aiDamageAnalyze",
       wallet
     )) as unknown as IRentalityMotionsCloudContract;
 
