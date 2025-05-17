@@ -2,9 +2,8 @@ import RntButton from "@/components/common/rntButton";
 import RntCurrencySelect from "@/components/common/rntCurrencySelect";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import useFetchAvailableCurrencies, { AvailableCurrency } from "@/hooks/host/useFetchAvailableCurrencies";
-import useFetchUserCurrency from "@/hooks/host/useFetchUserCurrency";
 import useSaveUserCurrency from "@/hooks/host/useSaveUserCurrency";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 function UserCurrency({ userCurrency }: { userCurrency: AvailableCurrency }) {
