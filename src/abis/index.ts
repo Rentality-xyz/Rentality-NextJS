@@ -12,7 +12,7 @@ import RentalityCurrencyConverterJSON_ADDRESSES from "./RentalityCurrencyConvert
 import RentalityCurrencyConverterJSON_ABI from "./RentalityCurrencyConverter.v0_2_0.abi.json";
 import RentalityRefferalProgramServiceJSON_ABI from "./RentalityReferralProgram.v0_2_0.abi.json";
 import RentalityRefferalProgramServiceJSON_ADDRESSES from "./RentalityReferralProgram.v0_2_0.addresses.json";
-import RentalityAiDamageAnalyzeJSON_ABI from "./RentalityAiDamageAnalyzeV2.v0_2_0.abi.json";
+import RentalityAiDamageAnalyzeServiceJSON_ABI from "./RentalityAiDamageAnalyzeV2.v0_2_0.abi.json";
 import RentalityAiDamageAnalyzeServiceJSON_ADDRESSES from "./RentalityAiDamageAnalyzeV2.v0_2_0.addresses.json";
 import RentalityUserServiceJSON_ABI from "./RentalityUserService.v0_2_0.abi.json";
 import RentalityUserServiceJSON_ADDRESSES from "./RentalityUserService.v0_2_0.addresses.json";
@@ -57,7 +57,7 @@ const rentalityContracts = {
   },
   aiDamageAnalyze: {
     addresses: RentalityAiDamageAnalyzeServiceJSON_ADDRESSES.addresses,
-    abi: RentalityAiDamageAnalyzeJSON_ABI.abi,
+    abi: RentalityAiDamageAnalyzeServiceJSON_ABI.abi,
   },
   userService: {
     addresses: RentalityUserServiceJSON_ADDRESSES.addresses,
