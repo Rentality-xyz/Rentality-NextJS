@@ -55,13 +55,13 @@ import { exportToExcel } from "@/utils/exportToExcel";
 
 type AllTripsRntTableProps = {
   isLoading: boolean;
-  dataPage: AdminTripDetails[];
+  data: AdminTripDetails[];
   filters: AdminAllTripsFilters;
   payToHost: (tripId: number) => Promise<Result<boolean, string>>;
   refundToGuest: (tripId: number) => Promise<Result<boolean, string>>;
 };
 
-export function AllTripsRntTable({ isLoading, dataPage, filters, payToHost, refundToGuest }: AllTripsRntTableProps) {
+export function AllTripsRntTable({ isLoading, data, filters, payToHost, refundToGuest }: AllTripsRntTableProps) {
   const { t } = useTranslation();
   const t_att: TFunction = (name, options) => {
     return t("all_trips_table." + name, options);
@@ -73,7 +73,7 @@ export function AllTripsRntTable({ isLoading, dataPage, filters, payToHost, refu
   const columns = GetColumns(t, t_att, isSubmitting, setIsSubmitting, showError, pathname, payToHost, refundToGuest);
 
   const table = useReactTable({
-    data: dataPage,
+    data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -160,55 +160,49 @@ export function AllTripsRntTable({ isLoading, dataPage, filters, payToHost, refu
           wrapperClassName="w-60"
         />
       </ScrollingHorizontally>
-      <div className="custom-scroll w-full overflow-x-auto">
-        <div className="">
-          <RntTable>
-            <RntTableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <RntTableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <RntTableHead key={header.id}>
-                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                      </RntTableHead>
-                    );
-                  })}
-                </RntTableRow>
+      <RntTable>
+        <RntTableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <RntTableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <RntTableHead key={header.id}>
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </RntTableHead>
+                );
+              })}
+            </RntTableRow>
+          ))}
+        </RntTableHeader>
+        <RntTableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <RntTableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                {row.getVisibleCells().map((cell) => (
+                  <RntTableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</RntTableCell>
+                ))}
+              </RntTableRow>
+            ))
+          ) : (
+            <RntTableRow>
+              <RntTableCell colSpan={columns.length} className="h-24 text-center">
+                No results.
+              </RntTableCell>
+            </RntTableRow>
+          )}
+        </RntTableBody>
+        <RntTableFooter className="h-9">
+          {table.getFooterGroups().map((footerGroup) => (
+            <RntTableRow key={footerGroup.id}>
+              {footerGroup.headers.map((header) => (
+                <RntTableHead key={header.id}>
+                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.footer, header.getContext())}
+                </RntTableHead>
               ))}
-            </RntTableHeader>
-            <RntTableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <RntTableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                    {row.getVisibleCells().map((cell) => (
-                      <RntTableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </RntTableCell>
-                    ))}
-                  </RntTableRow>
-                ))
-              ) : (
-                <RntTableRow>
-                  <RntTableCell colSpan={columns.length} className="h-24 text-center">
-                    No results.
-                  </RntTableCell>
-                </RntTableRow>
-              )}
-            </RntTableBody>
-            <RntTableFooter className="h-9">
-              {table.getFooterGroups().map((footerGroup) => (
-                <RntTableRow key={footerGroup.id}>
-                  {footerGroup.headers.map((header) => (
-                    <RntTableHead key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.footer, header.getContext())}
-                    </RntTableHead>
-                  ))}
-                </RntTableRow>
-              ))}
-            </RntTableFooter>
-          </RntTable>
-        </div>
-      </div>
+            </RntTableRow>
+          ))}
+        </RntTableFooter>
+      </RntTable>
     </RntSuspense>
   );
 }
@@ -1022,16 +1016,7 @@ function GetColumns(
 
     columnHelper.accessor((row) => row, {
       id: t_att("details"),
-      header: ({ column }) => {
-        return (
-          <RntTableHeaderSorting
-            className="min-w-[10ch]"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t_att("details")}
-          </RntTableHeaderSorting>
-        );
-      },
+      header: () => t_att("details"),
       cell: (info) => {
         const row = info.getValue();
         const detailsLink = `/admin/trips/tripInfo/${row.tripId}?back=${pathname}`;
