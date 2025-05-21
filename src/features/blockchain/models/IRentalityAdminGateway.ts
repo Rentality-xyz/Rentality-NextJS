@@ -1,8 +1,10 @@
 import {
+  ClaimCreator,
   ContractAdminKYCInfoDTO,
   ContractAllCarsDTO,
   ContractAllRefferalInfoDTO,
   ContractAllTripsDTO,
+  ContractClaimTypeV2,
   ContractTripFilter,
   RefferalAccrualType,
   RefferalProgram,
@@ -68,4 +70,10 @@ export interface IRentalityAdminGatewayContract extends IEthersContract {
 
   getRefferalPointsInfo(): Promise<ContractAllRefferalInfoDTO>;
   getPlatformUsersInfo(): Promise<ContractAdminKYCInfoDTO[]>;
+
+  getAllClaimTypes(host: boolean): Promise<ContractClaimTypeV2[]>;
+
+  addClaimType(name: string, claimFor: ClaimCreator): Promise<ContractTransactionResponse>;
+ 
+  removeClaimType(claimType: number): Promise<ContractTransactionResponse>;
 }
