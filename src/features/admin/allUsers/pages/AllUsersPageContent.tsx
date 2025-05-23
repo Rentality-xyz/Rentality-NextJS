@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useAdminAllUsers, { AdminAllUsersFilters, UserType } from "../hooks/useAdminAllUsers";
 import AllUsersFilters from "../components/AllUsersFilters";
-import AllUsersTable from "../components/AllUsersTable";
+import AllUsersRntTable from "../components/AllUsersRntTable";
 
 const defaultFilters: AdminAllUsersFilters = {
   userType: UserType.Any,
 };
 
 function AllUsersPageContent() {
-  const itemsPerPage = 10;
+  const itemsPerPage = 25;
   const [filters, setFilters] = useState<AdminAllUsersFilters>(defaultFilters);
   const { isLoading, data, fetchData } = useAdminAllUsers();
   const { t } = useTranslation();
@@ -39,7 +39,7 @@ function AllUsersPageContent() {
           totalPages={data.totalPageCount}
           selectPage={fetchDataForPage}
         >
-          <AllUsersTable isLoading={isLoading} data={data.data} />
+          <AllUsersRntTable isLoading={isLoading} data={data.data} />
         </PaginationWrapper>
       </div>
     </>

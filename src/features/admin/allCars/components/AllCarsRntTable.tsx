@@ -27,13 +27,13 @@ import RntDropdownMenuCheckbox from "@/components/common/RntDropdownMenuCheckbox
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import GetColumnsForAllCarsTable from "@/features/admin/allCars/components/AllCarsColumnsOfTable";
 
-type AllCarsTableProps = {
+type AllCarsRntTableProps = {
   isLoading: boolean;
   data: AdminCarDetails[];
   checkVin: (vin: string) => Promise<VinInfo | undefined>;
 };
 
-export default function AllCarsRntTable({ isLoading, data, checkVin }: AllCarsTableProps) {
+export default function AllCarsRntTable({ isLoading, data, checkVin }: AllCarsRntTableProps) {
   const { t } = useTranslation();
 
   const t_comp: TFunction = (name, options) => {
@@ -59,29 +59,27 @@ export default function AllCarsRntTable({ isLoading, data, checkVin }: AllCarsTa
         </div>
       }
     >
-      <div className="flex flex-col gap-4 sm:flex-row">
-        <RntDropdownMenuCheckbox
-          containerClassName="w-full sm:w-60"
-          id={t("admin.columns")}
-          placeholder={t("admin.columns")}
-        >
-          {table
-            .getAllColumns()
-            .filter((column) => column.getCanHide() && column.id !== t_comp("carId"))
-            .map((column) => {
-              return (
-                <RntDropdownMenuCheckbox.Option
-                  key={column.id}
-                  value={column.id}
-                  isChecked={column.getIsVisible()}
-                  onCheckedChange={() => column.toggleVisibility(!column.getIsVisible())}
-                >
-                  {column.id}
-                </RntDropdownMenuCheckbox.Option>
-              );
-            })}
-        </RntDropdownMenuCheckbox>
-      </div>
+      <RntDropdownMenuCheckbox
+        containerClassName="w-full sm:w-60"
+        id={t("admin.columns")}
+        placeholder={t("admin.columns")}
+      >
+        {table
+          .getAllColumns()
+          .filter((column) => column.getCanHide())
+          .map((column) => {
+            return (
+              <RntDropdownMenuCheckbox.Option
+                key={column.id}
+                value={column.id}
+                isChecked={column.getIsVisible()}
+                onCheckedChange={() => column.toggleVisibility(!column.getIsVisible())}
+              >
+                {column.id}
+              </RntDropdownMenuCheckbox.Option>
+            );
+          })}
+      </RntDropdownMenuCheckbox>
       <RntInputTransparent
         placeholder={`Filter ${t_comp("host")}...`}
         value={(table.getColumn(t_comp("host"))?.getFilterValue() as string) ?? ""}

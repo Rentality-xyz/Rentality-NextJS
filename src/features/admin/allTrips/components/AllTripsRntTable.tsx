@@ -1,8 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
 import {
-  ColumnDef,
-  createColumnHelper,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -20,28 +18,14 @@ import {
   RntTableHeaderSorting,
   RntTableRow,
 } from "@/components/table/rntTable";
-import {
-  AdminTripDetails,
-  getPaymentStatusText,
-  getTripStatusTextFromAdminStatus,
-} from "@/features/admin/allTrips/models/AdminTripDetails";
+import { AdminTripDetails } from "@/features/admin/allTrips/models/AdminTripDetails";
 import { Result } from "@/model/utils/result";
 import { TFunction } from "@/utils/i18n";
 import { useTranslation } from "react-i18next";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "@/components/common/rntSuspense";
-import {
-  getAdminTextColorForPaymentStatus,
-  getAdminTripStatusBgColorFromStatus,
-} from "@/features/admin/allTrips/utils/tailwind";
-import { cn } from "@/utils";
-import { isEmpty } from "@/utils/string";
-import { dateFormatShortMonthDateTime } from "@/utils/datetimeFormatters";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
-import { PaymentStatus } from "@/model/blockchain/schemas";
 import RntButton from "@/components/common/rntButton";
-import { displayMoneyWith2DigitsOrNa } from "@/utils/numericFormatters";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import RntDropdownMenuCheckbox from "@/components/common/RntDropdownMenuCheckbox";
 import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
