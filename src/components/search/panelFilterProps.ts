@@ -1,3 +1,5 @@
+import { SearchCarFilters } from "@/model/SearchCarRequest";
+
 export interface IPanelFilterProps {
   id: string;
   onClickReset: () => void;
@@ -6,4 +8,5 @@ export interface IPanelFilterProps {
   minValue?: number;
   maxValue?: number;
   scrollInfo: number | null;
+  defaultSearchCarFilters: SearchCarFilters
 }

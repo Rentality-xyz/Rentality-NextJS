@@ -43,7 +43,7 @@ export default function useCarSearchParams() {
   const priceFrom = searchParams.get("priceFrom") ? parseInt(searchParams.get("priceFrom") as string) : undefined;
   const priceTo = searchParams.get("priceTo") ? parseInt(searchParams.get("priceTo") as string) : undefined;
 
-  const carId = searchParams.get("carId") ? parseInt(searchParams.get("carId") as string) : undefined;
+  const carId = searchParams.get("carId") ? (searchParams.get("carId") as string) : undefined;
 
   const searchCarRequest: SearchCarRequest = useMemo(() => {
     return {
@@ -133,8 +133,8 @@ export function createQueryString(request: SearchCarRequest, filters: SearchCarF
   if (filters.pricePerDayInUsdTo && filters.pricePerDayInUsdTo > 0) {
     setParam(params, "priceTo", filters.pricePerDayInUsdTo.toString());
   }
-  if (carId && carId > 0) {
-    setParam(params, "carId", carId.toString());
+  if (filters.carId && !isEmpty(filters.carId)) {
+    setParam(params, "carId", filters.carId);
   }
 
   return params.toString();

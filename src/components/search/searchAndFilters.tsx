@@ -28,6 +28,7 @@ import { useFilters } from "@/hooks/useFilters";
 import { searchSortFilters, SearchSortFilterValueKey } from "@/features/search/models/filters";
 
 export default function SearchAndFilters({
+  defaultSearchCarFilters,
   initValue,
   sortBy,
   setSortBy,
@@ -36,6 +37,7 @@ export default function SearchAndFilters({
   filterLimits,
   t,
 }: {
+  defaultSearchCarFilters: SearchCarFilters;
   initValue: SearchCarRequest;
   sortBy: LocalizedFilterOption<SearchSortFilterValueKey> | undefined;
   setSortBy: (value: LocalizedFilterOption<SearchSortFilterValueKey> | undefined) => void;
@@ -99,7 +101,7 @@ export default function SearchAndFilters({
   }, [initValue]);
 
   const [selectedModelID, setSelectedModelID] = useState<string>("");
-  const [searchCarFilters, setSearchCarFilters] = useState<SearchCarFilters | null>(null);
+  const [searchCarFilters, setSearchCarFilters] = useState<SearchCarFilters | null>(defaultSearchCarFilters);
   const [selectedMakeID, setSelectedMakeID] = useState<string>("");
 
   useEffect(() => {
@@ -287,6 +289,7 @@ export default function SearchAndFilters({
               setSearchCarFilters({
                 ...searchCarFilters,
                 brand: newMake,
+                carId: newID,
               });
               setSelectedExistedMake(newMake);
             }}
@@ -303,7 +306,7 @@ export default function SearchAndFilters({
             className="min-w-[15ch] justify-center bg-transparent pl-0 text-lg text-rentality-secondary"
             promptText={t_comp("select_filter_model")}
             value={searchCarFilters?.model ?? ""}
-            make_id={selectedMakeID}
+            make_id={searchCarFilters?.carId ?? ""}
             onModelSelect={(newID, newModel) => {
               setSelectedModelID(newID);
               setSearchCarFilters({
@@ -337,6 +340,7 @@ export default function SearchAndFilters({
           }}
           isResetFilters={resetFilters}
           minValue={filterLimits.minCarYear}
+          defaultSearchCarFilters={defaultSearchCarFilters}
         />
 
         <PanelFilteringByPrice
@@ -359,6 +363,7 @@ export default function SearchAndFilters({
           }}
           isResetFilters={resetFilters}
           maxValue={filterLimits.maxCarPrice}
+          defaultSearchCarFilters={defaultSearchCarFilters}
         />
 
         <div className="flex justify-between gap-4">
