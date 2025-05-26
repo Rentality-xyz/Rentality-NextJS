@@ -289,7 +289,7 @@ export default function SearchAndFilters({
               setSearchCarFilters({
                 ...searchCarFilters,
                 brand: newMake,
-                carId: newID,
+                carId: parseInt(newID) ?? 0,
               });
               setSelectedExistedMake(newMake);
             }}
@@ -306,7 +306,7 @@ export default function SearchAndFilters({
             className="min-w-[15ch] justify-center bg-transparent pl-0 text-lg text-rentality-secondary"
             promptText={t_comp("select_filter_model")}
             value={searchCarFilters?.model ?? ""}
-            make_id={searchCarFilters?.carId ?? ""}
+            make_id={searchCarFilters?.carId?.toString() ?? ""}
             onModelSelect={(newID, newModel) => {
               setSelectedModelID(newID);
               setSearchCarFilters({

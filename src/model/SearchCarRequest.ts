@@ -7,7 +7,7 @@ export type SearchCarFilters = {
   yearOfProductionTo?: number;
   pricePerDayInUsdFrom?: number;
   pricePerDayInUsdTo?: number;
-  carId?: string;
+  carId?: number;
 };
 
 export type SearchCarRequest = {
