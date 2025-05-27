@@ -1,5 +1,6 @@
 import {
   ContractAdminKYCInfoDTO,
+  ContractAdminKYCInfosDTO,
   ContractAllCarsDTO,
   ContractAllRefferalInfoDTO,
   ContractAllTripsDTO,
@@ -67,5 +68,5 @@ export interface IRentalityAdminGatewayContract extends IEthersContract {
   manageTearInfo(tear: Tear, from: number, to: number): Promise<ContractTransactionResponse>;
 
   getRefferalPointsInfo(): Promise<ContractAllRefferalInfoDTO>;
-  getPlatformUsersInfo(): Promise<ContractAdminKYCInfoDTO[]>;
+  getPlatformUsersInfo(page: bigint, itemsPerPage: bigint): Promise<ContractAdminKYCInfosDTO>;
 }
