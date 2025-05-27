@@ -8,5 +8,5 @@ export interface IPanelFilterProps {
   minValue?: number;
   maxValue?: number;
   scrollInfo: number | null;
-  defaultSearchCarFilters: SearchCarFilters
+  defaultSearchCarFilters: SearchCarFilters;
 }

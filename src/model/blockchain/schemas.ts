@@ -360,9 +360,18 @@ export type ContractAdminKYCInfoDTO = {
   wallet: string;
 };
 
+export type ContractAdminKYCInfosDTO = {
+  kycInfos: ContractAdminKYCInfoDTO[];
+  totalPageCount: bigint;
+}
+
 export type ContractSearchCarWithDistance = {
   car: ContractSearchCar;
   distance: bigint;
+};
+export type ContractSearchCarsWithDistanceDTO = {
+  cars: ContractSearchCarWithDistance[];
+  totalCarsSupply: bigint;
 };
 
 export type ContractSearchCar = {

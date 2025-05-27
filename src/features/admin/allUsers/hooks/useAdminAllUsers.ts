@@ -44,14 +44,14 @@ function useAdminAllUsers() {
       // const contractFilters: ContractUserFilter = {
       // };
 
-      const result = await admin.getPlatformUsersInfo(); //(contractFilters, BigInt(page), BigInt(itemsPerPage));
+      const result = await admin.getPlatformUsersInfo(BigInt(1), BigInt(10)); //(contractFilters, BigInt(page), BigInt(itemsPerPage));
 
       if (result.ok) {
-        if (result.value.length > 0) {
-          validateContractAdminKYCInfoDTO(result.value[0]);
+        if (result.value.kycInfos.length > 0) {
+          validateContractAdminKYCInfoDTO(result.value.kycInfos[0]);
         }
 
-        const data: AdminUserDetails[] = result.value.map((platformUsersInfo) =>
+        const data: AdminUserDetails[] = result.value.kycInfos.map((platformUsersInfo) =>
           mapContractAdminKYCInfoDTOToAdminUserDetails(platformUsersInfo)
         );
 
