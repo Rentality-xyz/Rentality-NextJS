@@ -41,9 +41,6 @@ function AllUsersRntTable({ isLoading, data }: AllUsersRntTableProps) {
     return t("admin_all_users." + name, options);
   };
 
-  const headerSpanClassName = "text-center font-semibold px-2 font-light text-sm";
-  const rowSpanClassName = "px-2 h-12 text-center";
-
   const columns = GetColumnsForAllUsersTable(t_att);
 
   const table = useReactTable({
