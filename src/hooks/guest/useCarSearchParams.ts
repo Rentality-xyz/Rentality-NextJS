@@ -133,8 +133,8 @@ export function createQueryString(request: SearchCarRequest, filters: SearchCarF
   if (filters.pricePerDayInUsdTo && filters.pricePerDayInUsdTo > 0) {
     setParam(params, "priceTo", filters.pricePerDayInUsdTo.toString());
   }
-  if (carId && carId > 0) {
-    setParam(params, "carId", carId.toString());
+  if (filters.carId && filters.carId > 0) {
+    setParam(params, "carId", filters.carId.toString());
   }
 
   return params.toString();

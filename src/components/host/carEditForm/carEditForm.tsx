@@ -268,10 +268,9 @@ export default function CarEditForm({
   }
 
   async function handleBack(e: React.MouseEvent<HTMLButtonElement>) {
-
-    if(Object.keys(dirtyFields).length === 0) {
-        router.push("/host/vehicles/listings");
-        return;
+    if (Object.keys(dirtyFields).length === 0) {
+      router.push("/host/vehicles/listings");
+      return;
     }
     const action = (
       <>

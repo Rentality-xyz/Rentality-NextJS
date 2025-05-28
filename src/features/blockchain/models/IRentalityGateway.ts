@@ -29,6 +29,7 @@ import {
   ContractCurrency,
   CaseType,
   ContractAiDamageAnalyzeCaseRequestDTO,
+  ContractSearchCarsWithDistanceDTO,
 } from "@/model/blockchain/schemas";
 import { ContractTransactionResponse } from "ethers";
 import { IEthersContract } from "./IEtherContract";
@@ -100,8 +101,10 @@ export interface IRentalityGatewayContract extends IEthersContract {
     endDateTime: bigint,
     searchParams: ContractSearchCarParams,
     pickUpInfo: ContractLocationInfo,
-    returnInfo: ContractLocationInfo
-  ): Promise<ContractSearchCarWithDistance[]>;
+    returnInfo: ContractLocationInfo,
+    from: bigint,
+    to: bigint
+  ): Promise<ContractSearchCarsWithDistanceDTO>;
   checkCarAvailabilityWithDelivery(
     carId: bigint,
     startDateTime: bigint,
@@ -156,6 +159,7 @@ export interface IRentalityGatewayContract extends IEthersContract {
   getAvaibleCurrencies(): Promise<ContractCurrency[]>;
   getUniqCarsBrand(): Promise<string[]>;
   getUniqModelsByBrand(brand: string): Promise<string[]>;
+  getTotalCarsAmount(): Promise<bigint>;
   setPhoneNumber(user: string, phone: string, isVerified: boolean): Promise<ContractTransactionResponse>;
 
   /// GENERAL functions

@@ -2,7 +2,12 @@ import { getEtherContractWithSigner } from "@/abis";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { FilterLimits, SearchCarInfoDTO } from "@/model/SearchCarsResult";
 import { emptyLocationInfo, formatLocationInfoUpToCity } from "@/model/LocationInfo";
-import { ContractFilterInfoDTO, ContractLocationInfo, ContractSearchCarWithDistance } from "@/model/blockchain/schemas";
+import {
+  ContractFilterInfoDTO,
+  ContractLocationInfo,
+  ContractSearchCarsWithDistanceDTO,
+  ContractSearchCarWithDistance,
+} from "@/model/blockchain/schemas";
 import { emptyContractLocationInfo, validateContractSearchCarWithDistance } from "@/model/blockchain/schemas_utils";
 import { getIpfsURIs, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
@@ -154,13 +159,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     res.status(500).json({ error: "rentality is null" });
     return;
   }
+  const totalCars = await rentality.getTotalCarsAmount();
+  const startPoint = totalCars > 100 ? BigInt(totalCars - BigInt(100)) : BigInt(0);
 
   const { contractDateFromUTC, contractDateToUTC, contractSearchCarParams } = formatSearchAvailableCarsContractRequest(
     searchCarRequest,
     searchCarFilters,
     timeZoneId
   );
-  let availableCarsView: ContractSearchCarWithDistance[];
+  let availableCarsView: ContractSearchCarsWithDistanceDTO;
 
   if (searchCarRequest.isDeliveryToGuest) {
     const pickUpInfo: ContractLocationInfo = {
@@ -187,7 +194,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       contractDateToUTC,
       contractSearchCarParams,
       pickUpInfo,
-      returnInfo
+      returnInfo,
+      startPoint,
+      totalCars
     );
   } else {
     availableCarsView = await rentality.searchAvailableCarsWithDelivery(
@@ -195,16 +204,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       contractDateToUTC,
       contractSearchCarParams,
       emptyContractLocationInfo,
-      emptyContractLocationInfo
+      emptyContractLocationInfo,
+      startPoint,
+      totalCars
     );
   }
-  const getFilterInfoDto: ContractFilterInfoDTO = await rentality.getFilterInfo(BigInt(1));
+  ///TODO: temporary, uncomment after fix
+  // const getFilterInfoDto: ContractFilterInfoDTO = await rentality.getFilterInfo(BigInt(1));
 
-  const availableCarsData = await formatSearchAvailableCarsContractResponse(chainIdNumber, availableCarsView);
+  const availableCarsData = await formatSearchAvailableCarsContractResponse(chainIdNumber, availableCarsView.cars);
   const filterLimits = {
-    minCarYear: Number(getFilterInfoDto.minCarYearOfProduction),
-    maxCarPrice: Number(getFilterInfoDto.maxCarPrice) / 100,
+    minCarYear: 0,
+    maxCarPrice: 100000,
   };
+  // const filterLimits = {
+  //   minCarYear: Number(getFilterInfoDto.minCarYearOfProduction),
+  //   maxCarPrice: Number(getFilterInfoDto.maxCarPrice) / 100,
+  // };
 
   res.status(200).json({ availableCarsData, filterLimits });
 }

@@ -2,6 +2,7 @@ import { RntSelectProps } from "./rntSelect";
 import React, { useEffect, useMemo, useState } from "react";
 import useCarAPI, { CarMakesListElement } from "@/hooks/useCarAPI";
 import RntFilterSelect from "./RntFilterSelect";
+import { isEmpty } from "@/utils/string";
 
 interface RntCarMakeSelectProps extends RntSelectProps {
   id: string;
@@ -59,7 +60,7 @@ export default function RntCarMakeSelect({
       onChange={function (e) {
         const newValue: string = e.target.value;
         const newID: string = makesList[e.target.selectedIndex]?.id || "";
-        if (onMakeSelect) onMakeSelect(newID, newValue);
+        if (onMakeSelect && !isEmpty(newValue) && !isEmpty(newID)) onMakeSelect(newID, newValue);
       }}
     >
       {makesList.map((carMakesListElement, index) => (

@@ -2,6 +2,7 @@ import { RntSelectProps } from "./rntSelect";
 import React, { useEffect, useMemo, useState } from "react";
 import useCarAPI, { CarModelsListElement } from "@/hooks/useCarAPI";
 import RntFilterSelect from "./RntFilterSelect";
+import { isEmpty } from "@/utils/string";
 
 interface RntCarModelSelectProps extends RntSelectProps {
   id: string;
@@ -64,7 +65,7 @@ export default function RntCarModelSelect({
       onChange={function (e) {
         const newValue: string = e.target.value;
         const newID: string = modelsList[e.target.selectedIndex]?.id || "";
-        if (onModelSelect) onModelSelect(newID, newValue);
+        if (onModelSelect && !isEmpty(newValue)) onModelSelect(newID, newValue);
       }}
     >
       {modelsList.map((carModelsListElement, index) => (
