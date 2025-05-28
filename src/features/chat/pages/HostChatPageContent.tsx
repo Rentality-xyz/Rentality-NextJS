@@ -16,7 +16,7 @@ export default function HostChatPageContent() {
   const searchParams = useSearchParams();
   const { t } = useTranslation();
 
-  const selectedTridId = Number(searchParams.get("tridId") ?? -1);
+  const selectedTridId = Number(searchParams?.get("tridId") ?? -1);
   if (selectedTridId >= 0) {
     selectChat(selectedTridId);
   }

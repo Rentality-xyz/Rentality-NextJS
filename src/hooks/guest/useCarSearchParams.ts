@@ -29,21 +29,21 @@ export default function useCarSearchParams() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const address = searchParams.get("address") as SearchCarQueryParams["address"];
-  const from = searchParams.get("from") as SearchCarQueryParams["from"];
-  const to = searchParams.get("to") as SearchCarQueryParams["to"];
-  const isDelivery = searchParams.get("isDelivery") !== null && searchParams.get("isDelivery") === "true";
-  const pickUp = searchParams.get("pickUp") as SearchCarQueryParams["pickUp"];
-  const dropOff = searchParams.get("dropOff") as SearchCarQueryParams["dropOff"];
+  const address = searchParams?.get("address") as SearchCarQueryParams["address"];
+  const from = searchParams?.get("from") as SearchCarQueryParams["from"];
+  const to = searchParams?.get("to") as SearchCarQueryParams["to"];
+  const isDelivery = searchParams?.get("isDelivery") !== null && searchParams?.get("isDelivery") === "true";
+  const pickUp = searchParams?.get("pickUp") as SearchCarQueryParams["pickUp"];
+  const dropOff = searchParams?.get("dropOff") as SearchCarQueryParams["dropOff"];
 
-  const brand = searchParams.get("brand") as SearchCarQueryParams["brand"];
-  const model = searchParams.get("model") as SearchCarQueryParams["model"];
-  const yearFrom = searchParams.get("yearFrom") ? parseInt(searchParams.get("yearFrom") as string) : undefined;
-  const yearTo = searchParams.get("yearTo") ? parseInt(searchParams.get("yearTo") as string) : undefined;
-  const priceFrom = searchParams.get("priceFrom") ? parseInt(searchParams.get("priceFrom") as string) : undefined;
-  const priceTo = searchParams.get("priceTo") ? parseInt(searchParams.get("priceTo") as string) : undefined;
+  const brand = searchParams?.get("brand") as SearchCarQueryParams["brand"];
+  const model = searchParams?.get("model") as SearchCarQueryParams["model"];
+  const yearFrom = searchParams?.get("yearFrom") ? parseInt(searchParams.get("yearFrom") as string) : undefined;
+  const yearTo = searchParams?.get("yearTo") ? parseInt(searchParams.get("yearTo") as string) : undefined;
+  const priceFrom = searchParams?.get("priceFrom") ? parseInt(searchParams.get("priceFrom") as string) : undefined;
+  const priceTo = searchParams?.get("priceTo") ? parseInt(searchParams?.get("priceTo") as string) : undefined;
 
-  const carId = searchParams.get("carId") ? parseInt(searchParams.get("carId") as string) : undefined;
+  const carId = searchParams?.get("carId") ? parseInt(searchParams?.get("carId") as string) : undefined;
 
   const searchCarRequest: SearchCarRequest = useMemo(() => {
     return {
