@@ -14,6 +14,12 @@ function getIpfsURIfromPinata(pinataURI: string) {
   return "https://ipfs.io/ipfs/" + fileHash;
 }
 
+export function getIpfsURIfromAkave(pinataURI: string) {
+  const fileHash = getIpfsHashFromUrl(pinataURI);
+  if (isEmpty(fileHash)) return "";
+  return "https://o3-rc1.akave.xyz/rnt-test-public-bucket-2/" + fileHash;
+}
+
 export function getIpfsURI(pinataURI: string) {
   if (isEmpty(pinataURI)) return "";
   return getIpfsURIfromPinata(pinataURI);
@@ -32,8 +38,9 @@ export function getPinataGatewayURIfromPinata(pinataURI: string) {
 }
 
 export async function getMetaDataFromIpfs(tokenURI: string) {
-  //var ipfsURI = getPinataGatewayURIfromPinata(tokenURI);
-  var ipfsURI = getIpfsURIfromPinata(tokenURI);
+  //let ipfsURI = getPinataGatewayURIfromPinata(tokenURI);
+  //let ipfsURI = getIpfsURIfromPinata(tokenURI);
+  let ipfsURI = getIpfsURIfromAkave(tokenURI);
   if (!ipfsURI) return "";
 
   try {
@@ -44,7 +51,7 @@ export async function getMetaDataFromIpfs(tokenURI: string) {
     });
     return await response.json();
   } catch (error) {
-    logger.error("load metadata from pinata gateway error:", error);
+    logger.error("load metadata from akave gateway error:", error);
 
     ipfsURI = getIpfsURIfromPinata(tokenURI);
     try {
