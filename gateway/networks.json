@@ -1,8 +1,8 @@
 {
   "base-sepolia": {
-    "Gateway": {
+    "RentalityGateway": {
       "address": "0xB257FE9D206b60882691a24d5dfF8Aa24929cB73",
-      "startBlock": 26323420
+      "startBlock": 12525214
     }
   }
 }
