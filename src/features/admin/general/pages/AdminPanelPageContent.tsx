@@ -9,6 +9,7 @@ import { TFunction } from "@/utils/i18n";
 import { isEmpty } from "@/utils/string";
 import { env } from "@/utils/env";
 import ManageRole from "@/features/admin/general/components/ManageRole";
+import { AdminGeneralDonutChart } from "@/features/admin/general/components/AdminGeneralDonutChart";
 
 function AdminPanelPageContent() {
   const {
@@ -165,6 +166,7 @@ function AdminPanelPageContent() {
   return (
     <>
       <PageTitle title="Contract info" />
+      <AdminGeneralDonutChart></AdminGeneralDonutChart>
       <div className="grid grid-cols-2 gap-4 text-lg">
         <RntInput
           id="balance"
