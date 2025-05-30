@@ -57,6 +57,7 @@ export default function CarEditForm({
 
   const [nftName, setNftName] = useState<string>("");
   const [nftSym, setNftSym] = useState<string>("");
+  const [isUploading, setIsUploading] = useState(false);
 
   const { register, control, handleSubmit, formState, setValue, watch } = useForm<CarEditFormValues>({
     defaultValues:
@@ -217,8 +218,10 @@ export default function CarEditForm({
       return;
     }
 
-    setMessage(t("vehicles.wait_loading"));
+    setIsUploading(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     const result = await saveCarInfo(carInfoFormParams, nftName, nftSym);
+    setIsUploading(false);
 
     if (result.ok) {
       if (dimoData) {
@@ -294,6 +297,9 @@ export default function CarEditForm({
     });
   }, [isVINVerified, getVINNumber, vinNumber, setValue]);
 
+  if (isUploading) {
+    return <div className={"pt-10"}>{t("vehicles.wait_loading")}</div>
+  }
   return (
     <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]} language="en">
       <form
