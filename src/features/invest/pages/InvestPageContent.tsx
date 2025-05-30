@@ -5,15 +5,20 @@ import useFetchInvestments from "@/features/invest/hooks/useFetchInvestments";
 import InvestCar from "@/features/invest/components/InvestCar";
 import { useRouter } from "next/navigation";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
-import { SortOptionKey } from "@/hooks/guest/useSearchCars";
 import useUserRole from "@/hooks/useUserRole";
 import useClaimIncome from "../hooks/useClaimIncome";
 import useInvest from "../hooks/useInvest";
 import { Ok } from "@/model/utils/result";
+import { useFilters } from "@/hooks/useFilters";
+import {
+  investForInvestorFilters,
+  InvestForInvestorFilterValueKey,
+  investForUserFilters,
+  InvestForUserFilterValueKey,
+} from "../models/filters";
+import { LocalizedFilterOption } from "@/model/filters";
 
 type InvestContentProps = {};
-
-type FilterEnum = Record<string, string>; // Типизация для Enum
 
 function InvestPageContent({}: InvestContentProps) {
   const router = useRouter();
@@ -21,63 +26,50 @@ function InvestPageContent({}: InvestContentProps) {
   const { data: investments } = useFetchInvestments();
   const { mutateAsync: handleInvest, isPendingInvesting } = useInvest();
   const { mutateAsync: handleClaimIncome } = useClaimIncome();
-  const [filterInvestBy, setFilterInvestBy] = useState<string | undefined>(undefined);
+  const localizedFilters = useFilters(isInvestManager(userRole) ? investForInvestorFilters : investForUserFilters);
+  const [selectedFilter, setSelectedFilter] = useState<
+    | LocalizedFilterOption<InvestForUserFilterValueKey>
+    | LocalizedFilterOption<InvestForInvestorFilterValueKey>
+    | undefined
+  >(undefined);
   const { t } = useTranslation();
-
-  // Получаем фильтры из переводов
-  const filterInvest: FilterEnum = useMemo(() => {
-    return t(isInvestManager(userRole) ? "invest.filter_for_investor" : "invest.filter_for_user", {
-      returnObjects: true,
-    }) as FilterEnum;
-  }, [isInvestManager, userRole, t]);
-
-  function isFilterInvestKey(key: PropertyKey): key is SortOptionKey {
-    return filterInvest.hasOwnProperty(key);
-  }
 
   function handleCreateInvestClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     router.push("/host/invest/create");
   }
 
-  // Фильтрация инвестиций
-  const filteredInvestments = useMemo(() => {
-    return investments.filter((value) => {
-      if (!filterInvestBy || filterInvestBy === filterInvest.all_assets) {
-        return true; // Если "All assets", показываем все
-      }
-
-      switch (filterInvestBy) {
-        case filterInvest.actually_listed:
-          return value.investment.listed;
-
-        case filterInvest.my_investments:
-          return value.investment.myTokens > 0;
-
-        case filterInvest.available_to_invest:
-          return value.investment.investment.priceInCurrency > value.investment.payedInCurrency;
-
-        case filterInvest.ready_to_claim:
-          return value.investment.myIncome > 0;
-
-        case filterInvest.fully_tokenized:
-          return value.investment.investment.priceInCurrency <= value.investment.payedInCurrency;
-
-        case filterInvest.ready_for_listing:
-          return (
-            value.investment.investment.priceInCurrency <= value.investment.payedInCurrency && !value.investment.listed
-          );
-
-        default:
-          return true;
-      }
-    });
-  }, [investments, filterInvestBy, filterInvest]);
-
   async function handleStartHosting(investmentId: number) {
     router.push(`/host/invest/start-hosting/${investmentId}`);
     return Ok(true);
   }
+
+  const filteredInvestments = useMemo(() => {
+    return investments.filter((value) => {
+      if (!selectedFilter || selectedFilter.key === "all_assets") {
+        return true;
+      }
+
+      switch (selectedFilter.key) {
+        case "actually_listed":
+          return value.investment.listed;
+        case "my_investments":
+          return value.investment.myTokens > 0;
+        case "available_to_invest":
+          return value.investment.investment.priceInCurrency > value.investment.payedInCurrency;
+        case "ready_to_claim":
+          return value.investment.myIncome > 0;
+        case "fully_tokenized":
+          return value.investment.investment.priceInCurrency <= value.investment.payedInCurrency;
+        case "ready_for_listing":
+          return (
+            value.investment.investment.priceInCurrency <= value.investment.payedInCurrency && !value.investment.listed
+          );
+        default:
+          return true;
+      }
+    });
+  }, [investments, selectedFilter]);
 
   return (
     <div className="mt-8">
@@ -89,21 +81,21 @@ function InvestPageContent({}: InvestContentProps) {
       <RntFilterSelect
         className="btn_input_border-gradient w-60 justify-center bg-transparent text-lg text-rentality-secondary"
         id="invest_filter"
-        value={filterInvestBy ? filterInvest[filterInvestBy] : Object.values(filterInvest ?? {})[0]}
+        value={selectedFilter ? selectedFilter.text : (localizedFilters.options[0]?.text ?? "")}
         onChange={(e) => {
-          const newDataKey = Object.entries(filterInvest ?? {})[e.target.selectedIndex]?.[0];
-          if (isFilterInvestKey(newDataKey)) {
-            setFilterInvestBy(newDataKey);
+          const selectedOption = localizedFilters.options[e.target.selectedIndex];
+          if (selectedOption) {
+            setSelectedFilter(selectedOption);
           }
         }}
       >
-        {Object.entries(filterInvest ?? {}).map(([key, value]) => (
-          <RntFilterSelect.Option key={key} value={value}>
-            {value}
+        {localizedFilters.options.map(({ key, text }) => (
+          <RntFilterSelect.Option key={key} value={text}>
+            {text}
           </RntFilterSelect.Option>
         ))}
       </RntFilterSelect>
-      <div className="mt-6 grid grid-cols-1 gap-4 2xl:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-2">
         {filteredInvestments.map((value) => (
           <InvestCar
             isHost={isInvestManager(userRole)}

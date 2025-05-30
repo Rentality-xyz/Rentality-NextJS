@@ -96,7 +96,7 @@ const CarPhotosUploadButton = forwardRef(function CarPhotosUploadButton(
           {t("common.trip_photos_upload_trip_photo")}
         </RntButtonTransparent>
       ) : (
-        <div className="border-gradient w-[20rem] rounded-xl pb-2">
+        <div className="border-gradient h-[240px] w-[20rem] rounded-xl pb-2">
           <RntButton
             className="w-full bg-rentality-bg text-white"
             isVisibleCircle={false}

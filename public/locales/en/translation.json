@@ -33,10 +33,13 @@
     "button_apply": "Apply",
     "button_reset": "Reset",
     "sort_by": "Sort by",
-    "sort_options": {
-      "priceAsc": "Price: low to high",
-      "priceDesc": "Price: high to low",
-      "distance": "Distance"
+    "sort_filter": {
+      "label": "Sort by",
+      "options": {
+        "price_asc": "Price: low to high",
+        "price_desc": "Price: high to low",
+        "distance": "Distance"
+      }
     },
     "button_deliver_to_me": "Deliver to me",
     "select_filter_make": "Make",
@@ -91,7 +94,8 @@
       "days": "day(s)",
       "price_without_taxes": "Price excl. taxes",
       "insurance_required": "Insurance required",
-      "booked": "Your trip is booked! Check the Booking section for details"
+      "booked": "Your trip is booked! Check the Booking section for details",
+      "currency": "Currency"
     },
     "search_car_delivery_extra_info": {
       "title": "Trip Info",
@@ -247,7 +251,8 @@
         "describe": "Describe",
         "viewPhotoFile": "View photo/file",
         "amount": "Amount $",
-        "status": "Status"
+        "status": "Status",
+        "currency": "Currency"
       },
       "cancel": "Cancel",
       "pay": "Pay"
@@ -325,6 +330,9 @@
     "save_delivery_price": "Save delivery price",
     "save_delivery_prices_err": "Save delivery prices request failed. Please try again",
     "save_delivery_prices_err_is_not_host": "Please enter the first vehicle in Listing to enter Delivery price",
+    "save_currency": "Choose one from the available currencies",
+    "save_currency_btn": "Save currency",
+    "save_currency_err": "Save user currency request failed. Please try again",
     "welcome_create_account": "Welcome, please create your account",
     "confirm&save": "Confirm & Save",
     "pass_verification": "Please, pass driver license verification",
@@ -726,6 +734,7 @@
       "loading": "Loading...",
       "fill_fields": "Please fill in all fields",
       "success": "Success",
+      "error": "Transaction processing is failed. Please try again",
       "small_screen": "Please note: your screen resolution is less than 410 pixels. This may lead to some elements being displayed incorrectly. Please use a device with a higher resolution for an optimal experience on our platform.",
       "connect_wallet_now": "Connect now!",
       "back_to_car_search": "← Back to car search",
@@ -739,6 +748,9 @@
       "platform_init_error": "Platform initialization is taking longer than expected.\nThis might be due to network congestion or ongoing technical maintenance.",
       "try_later_or_describe_problem": "Please try again later. If the issue persists, feel free to describe the problem and send it to us for analysis.",
       "describe_what_happens": "Describe what happened",
+      "internet_troubles": "There seems to be a problem with your internet connection",
+      "check_internet": "Please check it and try again",
+      "try_again": "Try again",
       "share_details_how_reproduce": "Sharing details like how we can reproduce the bug will help us fix the problem.",
       "user_error_submit_success": "Your error description has been submitted",
       "we_appreciate_your_patience": "We appreciate your patience and understanding!"
@@ -772,7 +784,7 @@
     "interior": "Interior",
     "data": "Data",
     "uploaded": "uploaded",
-    "add_fund_to_wallet": "Oops! Your wallet balance is too low to complete this transaction. Please add funds to your wallet on Base network and ,Complete Your Profile to Rent a Car!",
+    "add_fund_to_wallet": "Oops! Your wallet balance is too low to complete this transaction. Please add funds to your wallet on {{network, string}} network and ,Complete Your Profile to Rent a Car!",
     "per_day": "/day",
     "vin_successfully_checked": "VIN successfully checked",
     "vin_not_found": "VIN not found in US car database",
@@ -915,18 +927,24 @@
     "new_nft_info": "New nft collection info",
     "generated_automatically": "Generated automatically after saving the tokenized asset card",
     "filter_for_user": {
-      "all_assets": "All assets",
-      "available_to_invest": "Available to Invest",
-      "my_investments": "My investments",
-      "ready_to_claim": "Ready to claim",
-      "actually_listed": "Actually Listed"
+      "label": "",
+      "options": {
+        "all_assets": "All assets",
+        "available_to_invest": "Available to Invest",
+        "my_investments": "My investments",
+        "ready_to_claim": "Ready to claim",
+        "actually_listed": "Actually Listed"
+      }
     },
     "filter_for_investor": {
-      "all_assets": "All assets",
-      "available_to_invest": "Available to Invest",
-      "fully_tokenized": "Fully tokenized",
-      "ready_for_listing": "Ready for listing",
-      "actually_listed": "Actually Listed"
+      "label": "",
+      "options": {
+        "all_assets": "All assets",
+        "available_to_invest": "Available to Invest",
+        "fully_tokenized": "Fully tokenized",
+        "ready_for_listing": "Ready for listing",
+        "actually_listed": "Actually Listed"
+      }
     },
     "loading": "Loading...",
     "info_message": {
@@ -935,7 +953,9 @@
       "listing_progress": "To claim and receive earnings, wait for the vehicle listing and completed trips.",
       "waiting_full_tokenization": "After full tokenization, the vehicle will be listed on the platform and the investor will be able to receive earnings from each trip."
     },
-    "start_hosting_loading_error": "This investment can not be started for hosting!"
+    "start_hosting_loading_error": "This investment can not be started for hosting!",
+    "list_investment": "List investment",
+    "unlist_investment": "Unlist investment"
   },
   "cropper": {
     "cancel": "Cancel",

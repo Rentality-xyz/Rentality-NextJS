@@ -10,6 +10,7 @@ import { env } from "@/utils/env";
 import { isEmpty } from "@/utils/string";
 import { logger } from "@/utils/logger";
 import { getTripCarPhotos } from "@/features/filestore/pinata/utils";
+import { CaseType } from "@/model/blockchain/schemas";
 
 export type AnalyzeDamagesParams = {
   tripId: number;
@@ -274,13 +275,18 @@ async function saveCaseToBlockchain(
     return Err(new Error("failed to get contract with signer"));
   }
 
-  const caseExists = await rentalityAiDamageAnalyze.isCaseExists(token);
+  const caseExists = await rentalityAiDamageAnalyze.isCaseTokenExists(token);
   if (caseExists) {
     return Err(new Error("AiDamageAnalyze: case exists: " + token));
   }
 
   try {
-    await rentalityAiDamageAnalyze.saveInsuranceCase(token, BigInt(tripId), pre);
+    const tx = await rentalityAiDamageAnalyze.saveInsuranceCase(
+      token,
+      BigInt(tripId),
+      pre ? CaseType.PreTrip : CaseType.PostTrip
+    );
+    await tx.wait();
   } catch (error) {
     return Err(new Error("AiDamageAnalyze: failed to save insurance case with error: " + error));
   }

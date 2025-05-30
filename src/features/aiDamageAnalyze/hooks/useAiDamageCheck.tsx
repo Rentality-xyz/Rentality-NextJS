@@ -9,6 +9,8 @@ import { AnalyzeDamagesParams } from "../api/analyzeDamages";
 import { isEmpty } from "@/utils/string";
 import { bigIntReplacer } from "@/utils/json";
 import { getTripCarPhotos } from "@/features/filestore/pinata/utils";
+import { CaseType } from "@/model/blockchain/schemas";
+import { getIpfsURI } from "@/utils/ipfsUtils";
 
 export type AiCheckStatus =
   | "loading"
@@ -41,7 +43,9 @@ function useAiDamageCheck(tripId: number) {
       return startDamageAnalyzeImpl(tripId, rentalityContracts, ethereumInfo, "pre-trip");
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [AI_DAMAGE_ANALYZE_QUERY_KEY] });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: [AI_DAMAGE_ANALYZE_QUERY_KEY] });
+      }, 1000);
     },
   });
 
@@ -51,7 +55,9 @@ function useAiDamageCheck(tripId: number) {
       return startDamageAnalyzeImpl(tripId, rentalityContracts, ethereumInfo, "post-trip");
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [AI_DAMAGE_ANALYZE_QUERY_KEY] });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: [AI_DAMAGE_ANALYZE_QUERY_KEY] });
+      }, 1000);
     },
   });
 
@@ -84,17 +90,17 @@ async function fetchAiDamageCheck(
     throw new Error("Contracts or wallet not initialized");
   }
 
-  const tripCasesResult = await rentalityContracts.aiDamageAnalyze.getInsuranceCasesUrlByTrip(BigInt(tripId));
+  const tripCasesResult = await rentalityContracts.aiDamageAnalyze.getCasesByTripId(BigInt(tripId));
   if (!tripCasesResult.ok) {
     throw tripCasesResult.error;
   }
 
   logger.debug("tripCasesResult: ", JSON.stringify(tripCasesResult.value, bigIntReplacer, 2));
 
-  const postTripCase = tripCasesResult.value.find((i) => i.iCase.pre === false);
+  const postTripCase = tripCasesResult.value.find((i) => i.caseType === CaseType.PostTrip);
   if (postTripCase) {
     if (!isEmpty(postTripCase.url)) {
-      setPostTripReportUrl(postTripCase.url);
+      setPostTripReportUrl(getIpfsURI(postTripCase.url));
       return { status: "post-trip analyzed successful", lastUpdated: new Date() };
     }
     return { status: "post-trip analyzing", lastUpdated: new Date() };
@@ -103,10 +109,10 @@ async function fetchAiDamageCheck(
   const tripCarPhotos = await getTripCarPhotos(tripId);
   logger.debug("tripCarPhotos: ", JSON.stringify(tripCarPhotos, bigIntReplacer, 2));
 
-  const preTripCase = tripCasesResult.value.find((i) => i.iCase.pre === true);
+  const preTripCase = tripCasesResult.value.find((i) => i.caseType === CaseType.PreTrip);
   if (preTripCase) {
     if (!isEmpty(preTripCase.url)) {
-      setPreTripReportUrl(preTripCase.url);
+      setPreTripReportUrl(getIpfsURI(preTripCase.url));
       if (tripCarPhotos.checkOutByGuest.length > 0 || tripCarPhotos.checkOutByHost.length > 0) {
         return { status: "ready to post-trip analyze", lastUpdated: new Date() };
       }
@@ -133,9 +139,9 @@ async function startDamageAnalyzeImpl(
       return Err(new Error("Missing required Rentality contract or ethereum info"));
     }
 
-    const caseInfoResult = await rentalityContracts.gateway.getAiDamageAnalyzeCaseData(
+    const caseInfoResult = await rentalityContracts.gateway.getAiDamageAnalyzeCaseRequest(
       BigInt(tripId),
-      type === "pre-trip"
+      type === "pre-trip" ? CaseType.PreTrip : CaseType.PostTrip
     );
     if (!caseInfoResult.ok) {
       logger.error("startPreTripCheck: failed to get AiDamageAnalyzeCaseData with error: ", caseInfoResult.error);
@@ -146,7 +152,7 @@ async function startDamageAnalyzeImpl(
     const body: AnalyzeDamagesParams = {
       tripId: tripId,
       chainId: ethereumInfo.chainId,
-      caseNumber: Number(caseInfoResult.value.caseNumber) + 1,
+      caseNumber: Number(caseInfoResult.value.lastCaseId) + 1,
       email: caseInfoResult.value.email,
       fullName: caseInfoResult.value.name,
       vinNumber: caseInfoResult.value.vin,

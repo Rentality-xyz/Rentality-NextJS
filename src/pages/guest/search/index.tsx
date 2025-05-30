@@ -23,15 +23,15 @@ import RntSuspense from "@/components/common/rntSuspense";
 import { EMPTY_PROMOCODE } from "@/utils/constants";
 import useFetchGuestGeneralInsurance from "@/features/insurance/hooks/useFetchGuestGeneralInsurance";
 import useBlockchainNetworkCheck from "@/features/blockchain/hooks/useBlockchainNetworkCheck";
+import getNetworkName from "@/model/utils/NetworkName";
 
 function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
 
-  const [isLoading, searchAvailableCars, searchResult, sortSearchResult, setSearchResult] = useSearchCars();
+  const [isLoading, searchAvailableCars, searchResult, sortBy, setSortBy, setSearchResult] = useSearchCars();
   const { createTripRequest } = useCreateTripRequest();
 
   const [requestSending, setRequestSending] = useState<boolean>(false);
-  const [sortBy, setSortBy] = useState<string | undefined>(undefined);
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showInfo, showError, showSuccess, hideSnackbars } = useRntSnackbars();
   const userInfo = useUserInfo();
@@ -94,7 +94,13 @@ function Search() {
     showInfo(t("common.info.sign"));
 
     promoCode = !isEmpty(promoCode) ? promoCode! : EMPTY_PROMOCODE;
-    const result = await createTripRequest(carInfo.carId, searchResult.searchCarRequest, carInfo.timeZoneId, promoCode);
+    const result = await createTripRequest(
+      carInfo.carId,
+      searchResult.searchCarRequest,
+      carInfo.timeZoneId,
+      promoCode,
+      carInfo.currency
+    );
 
     hideDialogs();
     hideSnackbars();
@@ -105,7 +111,11 @@ function Search() {
       router.push("/guest/trips");
     } else {
       if (result.error.message === "NOT_ENOUGH_FUNDS") {
-        showError(t("common.add_fund_to_wallet"));
+        showError(
+          t("common.add_fund_to_wallet", {
+            network: getNetworkName(ethereumInfo),
+          })
+        );
       } else {
         showError(t("search_page.errors.request"));
       }
@@ -152,11 +162,6 @@ function Search() {
     [setSearchResult]
   );
 
-  useEffect(() => {
-    if (sortBy === undefined) return;
-    sortSearchResult(sortBy);
-  }, [sortBy, sortSearchResult]);
-
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleArrowClick = () => {
@@ -171,6 +176,7 @@ function Search() {
     <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["maps", "marker", "places"]} language="en">
       <div className="flex flex-col" title="Search">
         <SearchAndFilters
+          defaultSearchCarFilters={searchCarFilters}
           initValue={searchCarRequest}
           sortBy={sortBy}
           setSortBy={setSortBy}
@@ -179,8 +185,8 @@ function Search() {
           filterLimits={searchResult.filterLimits}
           t={t}
         />
-        <div className="flex gap-3 max-xl:flex-col-reverse">
-          <div className="my-4 flex flex-col gap-4 xl:w-8/12 2xl:w-7/12 fullHD:w-6/12">
+        <div className="flex gap-3 max-2xl:flex-col-reverse">
+          <div className="my-4 flex flex-col gap-4 2xl:w-7/12 fullHD:w-6/12">
             <RntSuspense
               isLoading={isLoading || isLoadingAuth || (isAuthenticated && ethereumInfo === undefined)}
               fallback={<div className="pl-[18px]">{t("common.info.loading")}</div>}
@@ -224,7 +230,7 @@ function Search() {
             </RntSuspense>
             {}
           </div>
-          <div className="my-4 max-xl:mb-8 xl:w-4/12 2xl:w-5/12 fullHD:w-6/12">
+          <div className="my-4 max-2xl:mb-8 2xl:w-5/12 fullHD:w-6/12">
             <CarSearchMap
               searchResult={searchResult}
               setSelected={(carID: number) => {
@@ -242,7 +248,7 @@ function Search() {
               }
             />
             <div
-              className="absolute left-1/2 flex -translate-x-1/2 cursor-pointer xl:hidden"
+              className="absolute left-1/2 flex -translate-x-1/2 cursor-pointer 2xl:hidden"
               onClick={handleArrowClick}
             >
               <Image

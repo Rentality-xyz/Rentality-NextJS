@@ -203,7 +203,9 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                 </div>
                 <div className="">Trip days: {moment(tripInfo.tripEnd).diff(tripInfo.tripStart, "days")}</div>
                 <div className="">
-                  Price per day: ETH {tripInfo.pricePerDayInUsd / tripInfo.currencyRate} (USD{" "}
+                  Price per day: {tripInfo.currency.name}
+                  <span title="The exact amount has been rounded to 6 decimal places"> ⩰ </span>
+                  {(tripInfo.pricePerDayInUsd / tripInfo.currencyRate).toFixed(6)} (USD{" "}
                   {displayMoneyWith2Digits(tripInfo.pricePerDayInUsd)})
                 </div>
                 <div className="">
@@ -220,54 +222,77 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                   {isUnlimitedMiles(tripInfo.milesIncludedPerDay) ? " miles" : " per day"}
                 </div>
                 <div className="text-xl">TRANSACTION INFORMATION</div>
-                <div className="">Transaction currency: ETH</div>
-                <div className="">Currency rate ETH to USD: {tripInfo.currencyRate}</div>
+                <div className="">Transaction currency: {tripInfo.currency.name}</div>
                 <div className="">
-                  Trip price: ETH {tripInfo.totalDayPriceInUsd / tripInfo.currencyRate} (USD{" "}
+                  Currency rate {tripInfo.currency.name} to USD:
+                  <span title="The exact amount has been rounded to 6 decimal places"> ⩰ </span>{" "}
+                  {tripInfo.currencyRate.toFixed(6)}
+                </div>
+                <div className="">
+                  Trip price: {tripInfo.currency.name}
+                  <span title="The exact amount has been rounded to 6 decimal places"> ⩰ </span>
+                  {(tripInfo.totalDayPriceInUsd / tripInfo.currencyRate).toFixed(6)} (USD{" "}
                   {displayMoneyWith2Digits(tripInfo.totalDayPriceInUsd)})
                 </div>
                 <div className="">
-                  Discount ETH{" "}
-                  {(tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithHostDiscountInUsd) / tripInfo.currencyRate}{" "}
+                  Discount {tripInfo.currency.name}{" "}
+                  <span title="The exact amount has been rounded to 6 decimal places"> ⩰ </span>
+                  {(
+                    (tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithHostDiscountInUsd) /
+                    tripInfo.currencyRate
+                  ).toFixed(6)}{" "}
                   (USD {displayMoneyWith2Digits(tripInfo.totalDayPriceInUsd - tripInfo.totalPriceWithHostDiscountInUsd)}
                   )
                 </div>
                 <div className="">
-                  Delivery fee to Pick-Up location: ETH {tripInfo.pickUpDeliveryFeeInUsd / tripInfo.currencyRate} (USD{" "}
+                  Delivery fee to Pick-Up location: {tripInfo.currency.name}
+                  <span title="The exact amount has been rounded to 6 decimal places"> ⩰ </span>
+                  {(tripInfo.pickUpDeliveryFeeInUsd / tripInfo.currencyRate).toFixed(6)} (USD{" "}
                   {displayMoneyWith2Digits(tripInfo.pickUpDeliveryFeeInUsd)}){" "}
                 </div>
                 <div className="">
-                  Delivery fee from Drop-Off location: ETH {tripInfo.dropOffDeliveryFeeInUsd / tripInfo.currencyRate}{" "}
-                  (USD {displayMoneyWith2Digits(tripInfo.dropOffDeliveryFeeInUsd)}){" "}
+                  Delivery fee from Drop-Off location: {tripInfo.currency.name}
+                  <span title="The exact amount has been rounded to 6 decimal places"> ⩰ </span>
+                  {(tripInfo.dropOffDeliveryFeeInUsd / tripInfo.currencyRate).toFixed(6)} (USD{" "}
+                  {displayMoneyWith2Digits(tripInfo.dropOffDeliveryFeeInUsd)}){" "}
                 </div>
                 {tripInfo.taxesData.map((t) => (
                   <div className="" key={t.name + tripId}>
-                    {t.name}: ETH {t.value / tripInfo.currencyRate} (USD {displayMoneyWith2Digits(t.value)}){" "}
+                    {t.name}: {tripInfo.currency.name}
+                    <span title="The exact amount has been rounded to 6 decimal places"> ⩰ </span>
+                    {(t.value / tripInfo.currencyRate).toFixed(6)} (USD {displayMoneyWith2Digits(t.value)}){" "}
                   </div>
                 ))}
                 <div className="">
-                  Total charge: ETH {tripInfo.totalPriceInUsd / tripInfo.currencyRate} (USD{" "}
+                  Total charge: {tripInfo.currency.name}
+                  <span title="The exact amount has been rounded to 6 decimal places"> ⩰ </span>
+                  {(tripInfo.totalPriceInUsd / tripInfo.currencyRate).toFixed(6)} (USD{" "}
                   {displayMoneyWith2Digits(tripInfo.totalPriceInUsd)})
                 </div>
                 <div className="text-xl">Additional transactions </div>
                 <div className="">
-                  Security deposit: ETH {tripInfo.depositInUsd / tripInfo.currencyRate} (USD{" "}
+                  Security deposit: {tripInfo.currency.name}
+                  <span title="The exact amount has been rounded to 6 decimal places"> ⩰ </span>
+                  {(tripInfo.depositInUsd / tripInfo.currencyRate).toFixed(6)} (USD{" "}
                   {displayMoneyWith2Digits(tripInfo.depositInUsd)})
                 </div>
                 <div className="">
                   {isUnlimitedMiles(tripInfo.milesIncludedPerDay)
                     ? `Price per 1 overmile: ${getMilesIncludedPerDayText(tripInfo.milesIncludedPerDay)} miles`
-                    : `Price per 1 overmile: ETH ${tripInfo.overmilePrice / tripInfo.currencyRate} (USD ${displayMoneyWith2Digits(tripInfo.overmilePrice)})`}
+                    : `Price per 1 overmile: ${tripInfo.currency.name}    ${(<span title="The exact amount has been rounded to 6 decimal places">⩰</span>)} ${(tripInfo.overmilePrice / tripInfo.currencyRate).toFixed(6)} (USD ${displayMoneyWith2Digits(tripInfo.overmilePrice)})`}
                 </div>
                 <div className="">
-                  Price for each 10% battery charge or tank refueling: ETH{" "}
-                  {tripInfo.pricePer10PercentFuel / tripInfo.currencyRate} (USD{" "}
+                  Price for each 10% battery charge or tank refueling: {tripInfo.currency.name}{" "}
+                  <span title="The exact amount has been rounded to 6 decimal places"> ⩰ </span>
+                  {(tripInfo.pricePer10PercentFuel / tripInfo.currencyRate).toFixed(6)} (USD{" "}
                   {displayMoneyWith2Digits(tripInfo.pricePer10PercentFuel)})
                 </div>
                 {tripInfo.insuranceTotalInUsd > 0 && (
                   <div className="">
-                    Insurance fee ${displayMoneyWith2Digits(tripInfo.insurancePerDayInUsd)}/day: ETH{" "}
-                    {tripInfo.insuranceTotalInUsd / tripInfo.currencyRate} (USD{" "}
+                    Insurance fee ${displayMoneyWith2Digits(tripInfo.insurancePerDayInUsd)}/day:{" "}
+                    {tripInfo.currency.name}{" "}
+                    <span title="The exact amount has been rounded to 6 decimal places"> ⩰ </span>
+                    {(tripInfo.insuranceTotalInUsd / tripInfo.currencyRate).toFixed()} (USD{" "}
                     {displayMoneyWith2Digits(tripInfo.insuranceTotalInUsd)})
                   </div>
                 )}

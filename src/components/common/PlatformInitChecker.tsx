@@ -5,6 +5,7 @@ import PlatformLoader from "./PlatformLoader";
 import { PLATFORM_INIT_TIMEOUT } from "@/utils/constants";
 import { useRouter } from "next/navigation";
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
+import PlatformInitOffline from "@/components/common/PlatformInitOffline";
 
 interface PlatformInitCheckerProps {
   children: React.ReactNode;
@@ -16,6 +17,7 @@ function PlatformInitChecker({ children }: PlatformInitCheckerProps) {
   const { rentalityContracts } = useRentality();
   const { isLoadingAuth, isAuthenticated } = useAuth();
   const [timerExpired, setTimerExpired] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -26,10 +28,33 @@ function PlatformInitChecker({ children }: PlatformInitCheckerProps) {
   }, []);
 
   useEffect(() => {
-    if (timerExpired && isPlatformLoading(isLoadingAuth, isAuthenticated, ethereumInfo, rentalityContracts)) {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    setIsOnline(navigator.onLine);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (
+      timerExpired &&
+      isOnline &&
+      isPlatformLoading(isLoadingAuth, isAuthenticated, ethereumInfo, rentalityContracts)
+    ) {
       router.push("/platform_init_error");
     }
-  }, [timerExpired, isLoadingAuth, isAuthenticated, ethereumInfo, rentalityContracts, router]);
+  }, [timerExpired, isLoadingAuth, isAuthenticated, ethereumInfo, rentalityContracts, router, isOnline]);
+
+  if (!isOnline && isPlatformLoading(isLoadingAuth, isAuthenticated, ethereumInfo, rentalityContracts)) {
+    return <PlatformInitOffline />;
+  }
 
   if (isPlatformLoading(isLoadingAuth, isAuthenticated, ethereumInfo, rentalityContracts)) {
     return <PlatformLoader />;

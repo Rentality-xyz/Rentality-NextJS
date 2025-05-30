@@ -12,6 +12,7 @@ import { MY_LISTINGS_QUERY_KEY } from "./useFetchMyListings";
 import { logger } from "@/utils/logger";
 import { deleteFilesByUrl, saveCarMetadata } from "@/features/filestore/pinata/utils";
 import { getDimoSignature } from "@/features/dimo/utils";
+import { REFERRAL_OWN_POINTS_QUERY_KEY } from "@/features/referralProgram/hooks/useFetchOwnReferralPoints";
 
 function useSaveNewCar() {
   const ethereumInfo = useEthereum();
@@ -108,6 +109,7 @@ function useSaveNewCar() {
     onSuccess: (data) => {
       if (data.ok) {
         queryClient.invalidateQueries({ queryKey: [MY_LISTINGS_QUERY_KEY] });
+        queryClient.invalidateQueries({ queryKey: [REFERRAL_OWN_POINTS_QUERY_KEY] });
       }
     },
   });

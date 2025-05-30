@@ -4,12 +4,14 @@ import { env } from "@/utils/env";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import SwitchChainDialog from "../components/SwitchChainDialog";
+import { useAuth } from "@/contexts/auth/authContext";
 
 const defaultChainId = env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
 
 function useBlockchainNetworkCheck() {
   const { wallets } = useWallets();
   const { showCustomDialog } = useRntDialogs();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (!wallets || !wallets[0]) {
@@ -19,7 +21,7 @@ function useBlockchainNetworkCheck() {
     const isSelectedSupportedChainId =
       selectedChainId > 0 && getExistBlockchainList().find((chain) => chain.chainId === selectedChainId) !== undefined;
 
-    if (!isSelectedSupportedChainId) {
+    if (!isSelectedSupportedChainId && isAuthenticated) {
       showCustomDialog(
         <SwitchChainDialog
           handleSwitchChain={async (chainId) => {
@@ -29,7 +31,7 @@ function useBlockchainNetworkCheck() {
         />
       );
     }
-  }, [wallets, showCustomDialog]);
+  }, [wallets, showCustomDialog, isAuthenticated]);
 }
 
 export default useBlockchainNetworkCheck;

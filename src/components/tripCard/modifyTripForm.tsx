@@ -73,7 +73,7 @@ function ModifyTripForm({
         value={messageToGuest}
         onChange={(e) => setMessageToGuest(e.target.value)}
       />
-      <RntButton className="my-1 w-full" onClick={onFinishTripClick}>
+      <RntButton className="my-1 h-auto min-h-[48px] w-full" onClick={onFinishTripClick}>
         Finish the trip without guest confirmation
       </RntButton>
       <a className="w-full" href={telLink}>

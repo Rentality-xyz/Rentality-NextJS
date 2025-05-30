@@ -15,12 +15,16 @@ export default function PanelFilteringByYear({
   isResetFilters,
   minValue,
   scrollInfo,
+  defaultSearchCarFilters,
 }: IPanelFilterProps) {
   const minYear = minValue !== undefined && Number.isFinite(minValue) ? minValue : DEFAULT_MIN_FILTER_YEAR;
   const maxYear = new Date().getFullYear();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [value, setValue] = useState([minYear, maxYear]);
+  const [value, setValue] = useState([
+    defaultSearchCarFilters.yearOfProductionFrom ?? minYear,
+    defaultSearchCarFilters.yearOfProductionTo ?? maxYear,
+  ]);
   const [selectedValue, setSelectedValue] = useState(value);
   const { t } = useTranslation();
   const buttonRef = useRef<HTMLDivElement>(null);

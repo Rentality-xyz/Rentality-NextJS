@@ -18,7 +18,7 @@ export default function ChatHeader({ selectedChat, t }: { selectedChat: ChatInfo
         style={{
           backgroundImage: `url(${selectedChat.carPhotoUrl})`,
         }}
-        className="relative min-h-[6rem] w-1/4 flex-shrink-0 bg-cover bg-center"
+        className="relative min-h-[6rem] w-7/12 flex-shrink-0 bg-cover bg-center sm:w-1/2 md:w-1/3 lg:w-1/3 xl:w-1/4"
       >
         <div className={statusClassName}>
           <strong className="text-sm">{getTripStatusTextFromStatus(selectedChat.tripStatus)}</strong>

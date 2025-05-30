@@ -167,6 +167,7 @@ export type ContractTripDTO = {
   promoDiscount: bigint;
   dimoTokenId: bigint;
   taxesData: ContractTaxValue[];
+  currency: ContractUserCurrencyDTO;
 };
 
 export type ContractChatInfo = {
@@ -207,7 +208,7 @@ export type ContractFullClaimInfo = {
   amountInEth: bigint;
   timeZoneId: string;
   claimType: ContractClaimTypeV2;
-  currency: string;
+  currency: ContractUserCurrencyDTO;
 };
 
 export type ContractClaimV2 = {
@@ -359,9 +360,18 @@ export type ContractAdminKYCInfoDTO = {
   wallet: string;
 };
 
+export type ContractAdminKYCInfosDTO = {
+  kycInfos: ContractAdminKYCInfoDTO[];
+  totalPageCount: bigint;
+}
+
 export type ContractSearchCarWithDistance = {
   car: ContractSearchCar;
   distance: bigint;
+};
+export type ContractSearchCarsWithDistanceDTO = {
+  cars: ContractSearchCarWithDistance[];
+  totalCarsSupply: bigint;
 };
 
 export type ContractSearchCar = {
@@ -390,7 +400,7 @@ export type ContractSearchCar = {
   insuranceInfo: ContractInsuranceCarInfo;
   isGuestHasInsurance: boolean;
   dimoTokenId: bigint;
-  hostCurrency: ContractUserCurrency;
+  hostCurrency: ContractUserCurrencyDTO;
 };
 
 export type ContractAvailableCarDTO = {
@@ -423,11 +433,17 @@ export type ContractAvailableCarDTO = {
   dimoTokenId: bigint;
   taxes: ContractTaxValue[];
   totalTax: bigint;
-  hostCurrency: ContractUserCurrency;
+  hostCurrency: ContractUserCurrencyDTO;
 };
 
 export type ContractUserCurrency = {
   currency: string;
+  initialized: boolean;
+};
+
+export type ContractUserCurrencyDTO = {
+  currency: string;
+  name: string;
   initialized: boolean;
 };
 
@@ -556,6 +572,7 @@ export type ContractInvestmentDTO = {
   symbol: string;
   priceInUsdCents: bigint;
   payedInCurrency: bigint;
+  listed: boolean;
 };
 
 export type ContractTripFilter = {
@@ -771,11 +788,32 @@ export type ContractPromoDTO = {
   promoCodeEnterDate: bigint;
 };
 
-export type ContractAiDamageAnalyzeCaseDataDTO = {
-  caseNumber: bigint;
+export type ContractCaseTokenInfo = {
+  caseId: bigint;
+  updateDate: bigint;
+  url: string;
+};
+
+export type ContractCaseInfo = {
+  caseId: bigint;
+  tripId: bigint;
+  caseToken: string;
+  createDate: bigint;
+  caseType: CaseType;
+};
+
+export type ContractAiDamageAnalyzeCaseDTO = {
+  caseId: bigint;
+  caseType: CaseType;
+  caseToken: string;
+  url: string;
+};
+
+export type ContractAiDamageAnalyzeCaseRequestDTO = {
+  lastCaseId: bigint;
   email: string;
   name: string;
-  iCase: string;
+  caseToken: string;
   vin: string;
 };
 
@@ -861,8 +899,8 @@ export const CurrencyType = {
 
 export type TaxesLocationType = bigint;
 export const TaxesLocationType = {
-  City: BigInt(0),
-  State: BigInt(1),
+  State: BigInt(0),
+  City: BigInt(1),
   Country: BigInt(2),
 };
 
@@ -964,6 +1002,12 @@ export const PromoStatus = {
   Active: BigInt(0),
   Idle: BigInt(1),
   Used: BigInt(2),
+};
+
+export type CaseType = bigint;
+export const CaseType = {
+  PreTrip: BigInt(0),
+  PostTrip: BigInt(1),
 };
 
 export type TaxesType = bigint;

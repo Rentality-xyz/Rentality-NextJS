@@ -16,7 +16,6 @@ import GuestInvestBlock from "./GuestInvestBlock";
 import TokenizationBalance from "./TokenizationBalance";
 import Income from "./Income";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
-import { WeiPerEther } from "ethers";
 import { formatFloatInput } from "@/utils/formatFloatInput";
 
 const ccsDividerVert = "max-2xl:hidden absolute right-[-5px] top-1/2 h-[80%] w-px translate-y-[-50%] bg-gray-500";
@@ -47,11 +46,10 @@ export default function InvestCar({
   const handleChangeInvestmentAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const maxAmount = searchInfo.investment.investment.priceInCurrency - searchInfo.investment.payedInCurrency;
     let value = e.target.value;
-
     value = formatFloatInput(value);
 
-    if (parseFloat(value) > maxAmount / 1e18) {
-      value = (maxAmount / 1e18).toString();
+    if (parseFloat(value) > maxAmount) {
+      value = maxAmount.toString();
     }
 
     setInvestmentAmount(value);
@@ -102,7 +100,7 @@ export default function InvestCar({
       </div>
       <div
         style={{ backgroundImage: `url(${searchInfo.metadata.mainImage})` }}
-        className="min-h-[212px] w-full bg-cover bg-center bg-no-repeat sm:min-h-[356px] xl:min-h-[514px] 2xl:min-h-[324px] mac:min-h-[366px] fullHD:min-h-[432px]"
+        className="min-h-[212px] w-full bg-cover bg-center bg-no-repeat sm:min-h-[356px] xl:min-h-[280px] 2xl:min-h-[324px] mac:min-h-[366px] fullHD:min-h-[432px]"
       ></div>
       <div className="flex h-full w-full grid-cols-[1fr_0.5fr_0.5fr] flex-col gap-2 2xl:grid">
         <div className="relative flex flex-col justify-between p-2">
@@ -147,7 +145,7 @@ export default function InvestCar({
           <p className="text-xl font-semibold max-2xl:mb-4">{t("invest.tokenization")}</p>
           <div className="flex flex-grow flex-col justify-center">
             <p className="text-xl font-bold 2xl:text-2xl">
-              ETH: {searchInfo.investment.investment.priceInCurrency}
+              ETH: {searchInfo.investment.investment.priceInCurrency.toFixed(6)}
             </p>
             <p className="2xl:text-lg">{t("invest.total_price")}</p>
             <div className="mx-auto my-2 h-0.5 w-[40%] translate-y-[-50%] bg-white sm:w-[70%]"></div>

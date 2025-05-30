@@ -7,6 +7,7 @@ export enum InvestStatus {
   ReadyListing,
   ListingProgress,
   WaitingFullTokenization,
+  Unlisted,
 }
 
 export type CreateCarRequest = {
@@ -46,7 +47,7 @@ export type InvestmentInfo = {
   income: number;
   myIncome: number;
   myInvestingSum: number;
-  listingDate: Date;
+  listingDate: Date | undefined;
   myTokens: number;
   myPart: number;
   hostPart: number;

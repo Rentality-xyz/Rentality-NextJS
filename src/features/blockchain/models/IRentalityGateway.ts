@@ -26,8 +26,10 @@ import {
   ContractUpdateCarInfoRequest,
   ContractCheckPromoDTO,
   ContractFullKYCInfoDTO,
-  ContractAiDamageAnalyzeCaseDataDTO,
   ContractCurrency,
+  CaseType,
+  ContractAiDamageAnalyzeCaseRequestDTO,
+  ContractSearchCarsWithDistanceDTO,
 } from "@/model/blockchain/schemas";
 import { ContractTransactionResponse } from "ethers";
 import { IEthersContract } from "./IEtherContract";
@@ -73,6 +75,7 @@ export interface IRentalityGatewayContract extends IEthersContract {
   ): Promise<ContractTransactionResponse>;
   getUserDeliveryPrices(user: string): Promise<ContractDeliveryPrices>;
   getDeliveryData(carId: bigint): Promise<ContractDeliveryData>;
+  getUserCurrency(user: string): Promise<ContractCurrency>;
 
   /// TRIPS functions
   /// GENERAL
@@ -90,7 +93,7 @@ export interface IRentalityGatewayContract extends IEthersContract {
   ): Promise<ContractTransactionResponse>;
   checkOutByHost(tripId: bigint, panelParams: bigint[]): Promise<ContractTransactionResponse>;
   finishTrip(tripId: bigint): Promise<ContractTransactionResponse>;
-
+  addUserCurrency(currency: string): Promise<ContractTransactionResponse>;
   /// GUEST functions
   getFilterInfo(duration: bigint): Promise<ContractFilterInfoDTO>;
   searchAvailableCarsWithDelivery(
@@ -98,8 +101,10 @@ export interface IRentalityGatewayContract extends IEthersContract {
     endDateTime: bigint,
     searchParams: ContractSearchCarParams,
     pickUpInfo: ContractLocationInfo,
-    returnInfo: ContractLocationInfo
-  ): Promise<ContractSearchCarWithDistance[]>;
+    returnInfo: ContractLocationInfo,
+    from: bigint,
+    to: bigint
+  ): Promise<ContractSearchCarsWithDistanceDTO>;
   checkCarAvailabilityWithDelivery(
     carId: bigint,
     startDateTime: bigint,
@@ -154,6 +159,7 @@ export interface IRentalityGatewayContract extends IEthersContract {
   getAvaibleCurrencies(): Promise<ContractCurrency[]>;
   getUniqCarsBrand(): Promise<string[]>;
   getUniqModelsByBrand(brand: string): Promise<string[]>;
+  getTotalCarsAmount(): Promise<bigint>;
   setPhoneNumber(user: string, phone: string, isVerified: boolean): Promise<ContractTransactionResponse>;
 
   /// GENERAL functions
@@ -163,7 +169,7 @@ export interface IRentalityGatewayContract extends IEthersContract {
   saveDimoTokenIds(dimoTokenIds: bigint[], rentalityCarIds: bigint[]): Promise<ContractTransactionResponse>;
 
   // AiDamageAnalyzee
-  getAiDamageAnalyzeCaseData(tripId: bigint, pre: boolean): Promise<ContractAiDamageAnalyzeCaseDataDTO>;
+  getAiDamageAnalyzeCaseRequest(tripId: bigint, caseType: CaseType): Promise<ContractAiDamageAnalyzeCaseRequestDTO>;
 
   // temporary is not working (reversed)
   // isCarDetailsConfirmed(carId: bigint): Promise<boolean>;

@@ -36,6 +36,8 @@ import { VinInfo } from "@/pages/api/car-api/vinInfo";
 import { DimoCarResponseWithTimestamp } from "@/features/dimo/hooks/useDimo";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import getNetworkName from "@/model/utils/NetworkName";
 
 export default function CarEditForm({
   initValue,
@@ -48,6 +50,7 @@ export default function CarEditForm({
   saveCarInfo: (hostCarInfo: HostCarInfo, nftName: string, nftSym: string) => Promise<Result<boolean, Error>>;
   t: TFunction;
 }) {
+  const ethereumInfo = useEthereum();
   const router = useRouter();
   const { showDialog, hideDialogs } = useRntDialogs();
   const { showError, showSuccess } = useRntSnackbars();
@@ -122,7 +125,7 @@ export default function CarEditForm({
     }
   }
 
-  const { errors, isSubmitting } = formState;
+  const { errors, isSubmitting, dirtyFields } = formState;
 
   const [message, setMessage] = useState<string>("");
   const [autocomplete, setAutocomplete] = useState(initValue?.locationInfo.address ?? "");
@@ -238,7 +241,11 @@ export default function CarEditForm({
       }
     } else {
       if (result.error.message === "NOT_ENOUGH_FUNDS") {
-        showError(t("common.add_fund_to_wallet"));
+        showError(
+          t("common.add_fund_to_wallet", {
+            network: getNetworkName(ethereumInfo),
+          })
+        );
       } else {
         showError(t("vehicles.saving_failed"));
       }
@@ -261,6 +268,10 @@ export default function CarEditForm({
   }
 
   async function handleBack(e: React.MouseEvent<HTMLButtonElement>) {
+    if (Object.keys(dirtyFields).length === 0) {
+      router.push("/host/vehicles/listings");
+      return;
+    }
     const action = (
       <>
         {DialogActions.OK(() => {
@@ -1163,7 +1174,7 @@ const MilesIncludedPerDay = ({
           //setValue("milesIncludedPerDay", e.target.checked ? UNLIMITED_MILES_VALUE : 0)
           //field.onChange(e.target.checked ? UNLIMITED_MILES_VALUE : 0);
           setIsUnlimited(e.target.checked);
-          onChange(e.target.checked ? UNLIMITED_MILES_VALUE_TEXT : milesIncludedPerDay ?? 0);
+          onChange(e.target.checked ? UNLIMITED_MILES_VALUE_TEXT : (milesIncludedPerDay ?? 0));
         }}
       />
     </>

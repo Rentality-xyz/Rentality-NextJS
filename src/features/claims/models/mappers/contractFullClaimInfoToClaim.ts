@@ -24,5 +24,6 @@ export function contractFullClaimInfoToClaim(contractClaimInfo: ContractFullClai
     isIncomingClaim: isHost !== contractClaimInfo.claim.isHostClaims,
     fileUrls: contractClaimInfo.claim.photosUrl.split("|").map((url) => getIpfsURI(url)),
     timeZoneId: contractClaimInfo.timeZoneId,
+    currency: contractClaimInfo.currency,
   };
 }

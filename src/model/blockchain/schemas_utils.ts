@@ -188,7 +188,11 @@ export function validateContractFullClaimInfo(obj: ContractFullClaimInfo): obj i
     amountInEth: BigInt(0),
     timeZoneId: "",
     claimType: emptyClaimType,
-    currency: ETH_DEFAULT_ADDRESS,
+    currency: {
+      currency: ETH_DEFAULT_ADDRESS,
+      name: "ETH",
+      initialized: false,
+    },
   };
 
   return (
@@ -229,7 +233,7 @@ const emptyContractSearchCar: ContractSearchCar = {
   insuranceInfo: emptyContractInsuranceCarInfo,
   isGuestHasInsurance: false,
   dimoTokenId: BigInt(0),
-  hostCurrency: { currency: ETH_DEFAULT_ADDRESS, initialized: false },
+  hostCurrency: { currency: ETH_DEFAULT_ADDRESS, initialized: false, name: "ETH" },
 };
 
 export function validateContractSearchCar(obj: ContractSearchCar): obj is ContractSearchCar {
@@ -338,6 +342,11 @@ const emptyContractTripDTO: ContractTripDTO = {
   promoDiscount: BigInt(0),
   dimoTokenId: BigInt(0),
   taxesData: [],
+  currency: {
+    currency: ETH_DEFAULT_ADDRESS,
+    name: "ETH",
+    initialized: false,
+  },
 };
 
 export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {
@@ -459,7 +468,7 @@ const emptyContractAvailableCarDTO: ContractAvailableCarDTO = {
   distance: BigInt(0),
   dimoTokenId: BigInt(0),
   totalTax: BigInt(0),
-  hostCurrency: { currency: ETH_DEFAULT_ADDRESS, initialized: false },
+  hostCurrency: { currency: ETH_DEFAULT_ADDRESS, initialized: false, name: "ETH" },
 };
 
 export function validateContractAvailableCarDTO(obj: ContractAvailableCarDTO): obj is ContractAvailableCarDTO {

@@ -12,6 +12,12 @@ import { Err, Ok, Result } from "@/model/utils/result";
 import { formatEther } from "viem";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { logger } from "@/utils/logger";
+import { UserCurrencyDTO } from "@/model/SearchCarsResult";
+import { Signer } from "ethers";
+import { getErc20ContractWithPaymentsAddress } from "@/abis";
+import { IERC20Contract } from "@/features/blockchain/models/IErc20";
+import { formatCurrencyWithSigner } from "@/utils/formatCurrency";
+import approve from "@/utils/approveERC20";
 
 const useCreateTripRequest = () => {
   const ethereumInfo = useEthereum();
@@ -21,7 +27,8 @@ const useCreateTripRequest = () => {
     carId: number,
     searchCarRequest: SearchCarRequest,
     timeZoneId: string,
-    promoCode: string
+    promoCode: string,
+    userCurrency: UserCurrencyDTO
   ): Promise<Result<boolean, Error>> {
     if (!ethereumInfo) {
       logger.error("createTripRequest error: ethereumInfo is null");
@@ -83,7 +90,7 @@ const useCreateTripRequest = () => {
         const paymentsResult = await rentalityContracts.gateway.calculatePaymentsWithDelivery(
           BigInt(carId),
           BigInt(totalDays),
-          ETH_DEFAULT_ADDRESS,
+          userCurrency.currency,
           pickupLocationInfo,
           returnLocationInfo,
           promoCode
@@ -111,19 +118,32 @@ const useCreateTripRequest = () => {
           carId: BigInt(carId),
           startDateTime: startUnixTime,
           endDateTime: endUnixTime,
-          currencyType: ETH_DEFAULT_ADDRESS,
+          currencyType: userCurrency.currency,
           pickUpInfo: pickupLocationResult.value,
           returnInfo: returnLocationResult.value,
         };
-        const totalPriceInEth = Number(formatEther(paymentsResult.value.totalPrice));
+        const totalPriceInCurrency = await formatCurrencyWithSigner(
+          userCurrency.currency,
+          ethereumInfo.signer,
+          paymentsResult.value.totalPrice
+        );
 
-        if (!(await isUserHasEnoughFunds(ethereumInfo.signer, totalPriceInEth))) {
+        if (
+          !(await isUserHasEnoughFunds(ethereumInfo.signer, totalPriceInCurrency, {
+            currency: userCurrency.currency,
+            name: userCurrency.name,
+          }))
+        ) {
           logger.error("createTripRequest error: user don't have enough funds");
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
-
+        let value = totalPriceInCurrency;
+        if (userCurrency.currency !== ETH_DEFAULT_ADDRESS) {
+          await approve(userCurrency.currency, ethereumInfo.signer, BigInt(value));
+          value = BigInt(0);
+        }
         const result = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, promoCode, {
-          value: paymentsResult.value.totalPrice,
+          value,
         });
         if (!result.ok) {
           return Err(new Error("ERROR"));
@@ -132,7 +152,7 @@ const useCreateTripRequest = () => {
         const paymentsResult = await rentalityContracts.gateway.calculatePaymentsWithDelivery(
           BigInt(carId),
           BigInt(totalDays),
-          ETH_DEFAULT_ADDRESS,
+          userCurrency.currency,
           emptyContractLocationInfo,
           emptyContractLocationInfo,
           promoCode
@@ -150,15 +170,28 @@ const useCreateTripRequest = () => {
           returnInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
         };
 
-        const totalPriceInEth = Number(formatEther(paymentsResult.value.totalPrice));
-
-        if (!(await isUserHasEnoughFunds(ethereumInfo.signer, totalPriceInEth))) {
+        const totalPriceInCurrency = await formatCurrencyWithSigner(
+          userCurrency.currency,
+          ethereumInfo.signer,
+          paymentsResult.value.totalPrice
+        );
+        if (
+          !(await isUserHasEnoughFunds(ethereumInfo.signer, totalPriceInCurrency, {
+            currency: userCurrency.currency,
+            name: userCurrency.name,
+          }))
+        ) {
           logger.error("createTripRequest error: user don't have enough funds");
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
 
+        let value = paymentsResult.value.totalPrice;
+        if (userCurrency.currency !== ETH_DEFAULT_ADDRESS) {
+          const tx = await approve(userCurrency.currency, ethereumInfo.signer, BigInt(totalPriceInCurrency));
+          value = BigInt(0);
+        }
         const result = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, promoCode, {
-          value: paymentsResult.value.totalPrice,
+          value,
         });
         if (!result.ok) {
           return Err(new Error("ERROR"));

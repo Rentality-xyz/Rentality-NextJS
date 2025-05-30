@@ -15,12 +15,16 @@ export default function PanelFilteringByPrice({
   isResetFilters,
   maxValue,
   scrollInfo,
+  defaultSearchCarFilters,
 }: IPanelFilterProps) {
   const minPrice = 0;
   const maxPrice = maxValue !== undefined && Number.isFinite(maxValue) ? maxValue : DEFAULT_MAX_FILTER_PRICE;
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [value, setValue] = useState([minPrice, maxPrice]);
+  const [value, setValue] = useState([
+    defaultSearchCarFilters.pricePerDayInUsdFrom ?? minPrice,
+    defaultSearchCarFilters.pricePerDayInUsdTo ?? maxPrice,
+  ]);
   const [selectedValue, setSelectedValue] = useState(value);
   const { t } = useTranslation();
   const buttonRef = useRef<HTMLDivElement>(null);

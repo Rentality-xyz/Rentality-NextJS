@@ -9,6 +9,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import RntSuspense from "@/components/common/rntSuspense";
 import { logger } from "@/utils/logger";
 import { AllowedChangeTripAction } from "@/model/TripInfo";
+import getNetworkName from "@/model/utils/NetworkName";
 
 function Booked() {
   const ethereumInfo = useEthereum();
@@ -25,7 +26,11 @@ function Booked() {
 
     if (!(await isUserHasEnoughFunds(ethereumInfo.signer))) {
       logger.error("changeStatusCallback error: user don't have enough funds");
-      showError(t("common.add_fund_to_wallet"));
+      showError(
+        t("common.add_fund_to_wallet", {
+          network: getNetworkName(ethereumInfo),
+        })
+      );
       return false;
     }
 
@@ -64,7 +69,7 @@ function Booked() {
     <>
       <PageTitle title={t("booked.title")} />
       <RntSuspense isLoading={isLoadingTrips}>
-        <div className="my-4 grid grid-cols-1 gap-4 2xl:grid-cols-2">
+        <div className="my-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
           {tripsBooked != null && tripsBooked.length > 0 ? (
             tripsBooked.map((value) => {
               return (
