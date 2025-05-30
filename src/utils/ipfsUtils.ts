@@ -39,8 +39,8 @@ export function getPinataGatewayURIfromPinata(pinataURI: string) {
 
 export async function getMetaDataFromIpfs(tokenURI: string) {
   //let ipfsURI = getPinataGatewayURIfromPinata(tokenURI);
-  //let ipfsURI = getIpfsURIfromPinata(tokenURI);
-  let ipfsURI = getIpfsURIfromAkave(tokenURI);
+  let ipfsURI = getIpfsURIfromPinata(tokenURI);
+  //let ipfsURI = getIpfsURIfromAkave(tokenURI);
   if (!ipfsURI) return "";
 
   try {
