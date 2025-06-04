@@ -70,7 +70,10 @@ if (!isEmpty(firebaseConfig.projectId)) {
 }
 
 const chatDbInfo = { db: chatDb, collections: { chats: "chats", userchats: "userchats" } as const };
-const cacheDbInfo = { db: cacheDb, collections: { carApi: "car-api-cache", userErrors: "user-errors" } as const };
+const cacheDbInfo = {
+  db: cacheDb,
+  collections: { carApi: "car-api-cache", userErrors: "user-errors", eventProcessing: "event-processing" } as const,
+};
 const kycDbInfo = { db: kycDb, collections: { kycInfos: "kycInfos" } as const };
 
 async function readDocFromFirebaseDb<T>(
