@@ -26,7 +26,7 @@ export default async function analyzeDamagesHandler(req: NextApiRequest, res: Ne
   const requestResult = validateRequest(req);
   if (!requestResult.ok) {
     console.error(`analyzeDamagesHandler validation error: ${requestResult.error.message}`);
-    res.status(401).json({ error: "Validation error: " + requestResult.error.message });
+    res.status(400).json({ error: "Validation error: " + requestResult.error.message });
     return;
   }
 
