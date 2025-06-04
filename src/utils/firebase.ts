@@ -1,11 +1,23 @@
 import { FirebaseApp, initializeApp } from "firebase/app";
 import { Analytics, getAnalytics, isSupported } from "firebase/analytics";
 import { Auth, getAuth, signInWithCustomToken, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
-import { Firestore, getFirestore } from "firebase/firestore";
+import {
+  doc,
+  collection,
+  Firestore,
+  getDoc,
+  getDocs,
+  getFirestore,
+  setDoc,
+  updateDoc,
+  QueryDocumentSnapshot,
+  DocumentData,
+} from "firebase/firestore";
 import { FirebaseStorage, getStorage } from "firebase/storage";
 import { isEmpty } from "./string";
 import { env } from "./env";
 import { logger } from "./logger";
+import { Err, Ok, Result } from "@/model/utils/result";
 
 const firebaseConfig = {
   apiKey: env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -61,12 +73,68 @@ const chatDbInfo = { db: chatDb, collections: { chats: "chats", userchats: "user
 const cacheDbInfo = { db: cacheDb, collections: { carApi: "car-api-cache", userErrors: "user-errors" } as const };
 const kycDbInfo = { db: kycDb, collections: { kycInfos: "kycInfos" } as const };
 
+async function readDocFromFirebaseDb<T>(
+  db: Firestore | undefined,
+  collection: string,
+  params: string[]
+): Promise<Result<T | null>> {
+  if (!db) return Err(new Error("db is null"));
+
+  const documentRef = doc(db, collection, ...params);
+  const documentSnapshot = await getDoc(documentRef);
+
+  if (documentSnapshot.exists()) {
+    return Ok(documentSnapshot.data() as T);
+  }
+
+  return Ok(null);
+}
+
+async function readDocsFromFirebaseDb(
+  db: Firestore | undefined,
+  collectionPath: string
+): Promise<Result<QueryDocumentSnapshot<DocumentData, DocumentData>[] | null>> {
+  if (!db) return Err(new Error("db is null"));
+
+  const collectionRef = collection(db, collectionPath);
+  const collectionSnapshot = await getDocs(collectionRef);
+
+  if (!collectionSnapshot.empty) {
+    return Ok(collectionSnapshot.docs);
+  }
+
+  return Ok(null);
+}
+
+async function saveDocToFirebaseDb<T extends { [x: string]: any }>(
+  db: Firestore | undefined,
+  collection: string,
+  params: string[],
+  value: T
+): Promise<Result<boolean>> {
+  if (!db) return Err(new Error("db is null"));
+
+  const documentRef = doc(db, collection, ...params);
+  const documentSnapshot = await getDoc(documentRef);
+
+  if (!documentSnapshot.exists()) {
+    await setDoc(documentRef, value);
+  } else {
+    await updateDoc(documentRef, value);
+  }
+
+  return Ok(true);
+}
+
 export {
   app,
   analyticsPromise,
   chatDbInfo,
   cacheDbInfo,
   kycDbInfo,
+  readDocFromFirebaseDb,
+  readDocsFromFirebaseDb,
+  saveDocToFirebaseDb,
   storage,
   auth,
   login as loginWithCustomToken,
