@@ -4,8 +4,7 @@ import { isEmpty } from "@/utils/string";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { logger, StoredLog } from "@/utils/logger";
 import { getErrorMessage } from "@/utils/exception";
-import { cacheDbInfo, loginWithPassword } from "@/utils/firebase";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { cacheDbInfo, loginWithPassword, saveDocToFirebaseDb } from "@/utils/firebase";
 import moment from "moment";
 
 export type RequestBody = { userDescription: string; lastLogs: StoredLog[] };
@@ -57,13 +56,15 @@ async function saveUserError(userDescription: string, lastLogs: StoredLog[]): Pr
 
   await loginWithPassword(CIVIC_USER_EMAIL, CIVIC_USER_PASSWORD);
 
-  const userInfoRef = doc(cacheDbInfo.db, cacheDbInfo.collections.userErrors, moment().unix().toString());
-  const cacheDbInfoQuerySnapshot = await getDoc(userInfoRef);
+  const saveResult = await saveDocToFirebaseDb(
+    cacheDbInfo.db,
+    cacheDbInfo.collections.userErrors,
+    [moment().unix().toString()],
+    { userDescription, lastLogs }
+  );
 
-  if (!cacheDbInfoQuerySnapshot.exists()) {
-    await setDoc(userInfoRef, { userDescription, lastLogs });
-  } else {
-    await updateDoc(userInfoRef, { userDescription, lastLogs });
+  if (!saveResult.ok) {
+    return Err(saveResult.error.message);
   }
 
   return Ok(true);

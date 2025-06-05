@@ -3,8 +3,7 @@ import axios from "@/utils/cachedAxios";
 import { isEmpty } from "@/utils/string";
 import { env } from "@/utils/env";
 import { VinInfo } from "@/pages/api/car-api/vinInfo";
-import { cacheDbInfo } from "@/utils/firebase";
-import { collection, addDoc, getDocs, deleteDoc } from "firebase/firestore";
+import { cacheDbInfo, readDocFromFirebaseDb, saveDocToFirebaseDb } from "@/utils/firebase";
 import { logger } from "@/utils/logger";
 
 export type CarAPIMetadata = {
@@ -68,32 +67,34 @@ async function getNewAuthToken() {
 }
 
 export async function getAuthToken() {
-  if (!cacheDbInfo.db) return "";
+  const getTokenResult = await readDocFromFirebaseDb<string>(cacheDbInfo.db, cacheDbInfo.collections.carApi, [
+    "car-api-token",
+  ]);
 
-  const collectionRef = collection(cacheDbInfo.db, cacheDbInfo.collections.carApi);
-  const querySnapshot = await getDocs(collectionRef);
+  if (!getTokenResult.ok) {
+    return "";
+  }
 
-  if (!querySnapshot.empty) {
-    const doc = querySnapshot.docs[0];
-    const cachedToken = doc.data().token;
+  const cachedToken = getTokenResult.value;
 
-    if (Math.floor(Date.now() / 1000) <= getExpirationTimestamp(cachedToken)) {
-      logger.debug("Car API: Got an auth token from cache");
-      return cachedToken;
-    } else {
-      await deleteDoc(doc.ref);
-    }
+  if (cachedToken !== null && Math.floor(Date.now() / 1000) <= getExpirationTimestamp(cachedToken)) {
+    logger.debug("Car API: Got an auth token from cache");
+    return cachedToken;
   }
 
   const newToken = await getNewAuthToken();
 
-  try {
-    await addDoc(collectionRef, {
-      token: newToken,
-    });
+  const saveResult = await saveDocToFirebaseDb(
+    cacheDbInfo.db,
+    cacheDbInfo.collections.carApi,
+    ["car-api-token"],
+    newToken
+  );
+
+  if (saveResult.ok) {
     logger.debug("Car API: Posted an auth token to cache");
-  } catch (error) {
-    logger.error("Car API: Error caching auth token: ", error);
+  } else {
+    logger.error("Car API: Error caching auth token: ", saveResult.error);
   }
 
   return newToken;

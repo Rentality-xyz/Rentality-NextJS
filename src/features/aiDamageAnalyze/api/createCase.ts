@@ -7,6 +7,7 @@ import { IRentalityAiDamageAnalyzeContract } from "@/features/blockchain/models/
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { createAiDamageAnalyzeCase } from "@/features/aiDamageAnalyze/models";
 import { CaseType } from "@/model/blockchain/schemas";
+import { logger } from "@/utils/logger";
 
 type CreateCaseParams = {
   tripId: number;
@@ -29,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     },
   });
   if (response.status !== 201) {
-    console.log("AiDamageAnalyze: failed to create secret with error: ", response.data);
+    logger.error("AiDamageAnalyze: failed to create secret with error: ", response.data);
     res.status(500).json({ error: "AiDamageAnalyze: failed to create secret with error: " + response.data });
     return;
   }
@@ -39,14 +40,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const providerApiUrl = getProviderApiUrlFromEnv(chainId);
 
   if (!providerApiUrl) {
-    console.error(`API aiAssessments error: API URL for chain id ${chainId} was not set`);
+    logger.error(`API aiAssessments error: API URL for chain id ${chainId} was not set`);
     res.status(500).json({ error: "API aiAssessments error: API URL for chain id ${chainId} was not set " });
     return;
   }
   const SIGNER_PRIVATE_KEY = process.env.SIGNER_PRIVATE_KEY;
 
   if (!SIGNER_PRIVATE_KEY) {
-    console.error("API aiAssesments error: private key was not set");
+    logger.error("API aiAssesments error: private key was not set");
     res.status(500).json({ error: "private key was not set" });
     return;
   }
@@ -58,24 +59,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     wallet
   )) as unknown as IRentalityAiDamageAnalyzeContract;
   if (rentality === null) {
-    console.error("AiDamageAnalyze: failed to get contract with signer");
+    logger.error("AiDamageAnalyze: failed to get contract with signer");
     res.status(500).json({ error: "AiDamageAnalyze: failed to get contract with signer" });
     return;
   }
   const caseExists = await rentality.isCaseTokenExists(token);
   if (caseExists) {
-    console.log("AiDamageAnalyze: case exists: ", token);
+    logger.error("AiDamageAnalyze: case exists: ", token);
     res.status(500).json({ error: "AiDamageAnalyze: case exists: " + token });
     return;
   }
   try {
     await rentality.saveInsuranceCase(token, BigInt(tripId), pre ? CaseType.PreTrip : CaseType.PostTrip);
   } catch (error) {
-    console.error("AiDamageAnalyze: failed to save insurance case with error: ", error);
+    logger.error("AiDamageAnalyze: failed to save insurance case with error: ", error);
     return res.status(500).json({ error: "AiDamageAnalyze: failed to save insurance case with error: " + error });
   }
 
-  console.log("AiDamageAnalyze: case created!", token);
+  logger.info("AiDamageAnalyze: case created!", token);
   res.status(200).json({ success: true });
 }
 

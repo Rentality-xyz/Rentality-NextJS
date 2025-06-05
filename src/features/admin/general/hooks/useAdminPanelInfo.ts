@@ -3,11 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { EMPTY_PROMOCODE, ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { ContractCivicKYCInfo, ContractCreateTripRequestWithDelivery } from "@/model/blockchain/schemas";
-import { kycDbInfo } from "@/utils/firebase";
+import { kycDbInfo, readDocFromFirebaseDb } from "@/utils/firebase";
 import { isEmpty } from "@/utils/string";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import moment from "moment";
-import { collection, getDocs, query } from "firebase/firestore";
 import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 import { useRentality, useRentalityAdmin } from "@/contexts/rentalityContext";
 import { logger } from "@/utils/logger";
@@ -127,25 +126,38 @@ const useAdminPanelInfo = () => {
     try {
       setIsLoading(true);
 
-      const kycInfoQuery = query(collection(kycDbInfo.db, kycDbInfo.collections.kycInfos));
-      const kycInfoQuerySnapshot = await getDocs(kycInfoQuery);
-      const verifiedInformation = kycInfoQuerySnapshot.docs
-        .find((i) => i.data().verifiedInformation?.address === address)
-        ?.data().verifiedInformation;
+      const verifiedInformationResult = await readDocFromFirebaseDb<{
+        verifiedInformation: {
+          name: string;
+          documentNumber: string;
+          dateOfExpiry: string;
+          issueCountry: string;
+          email: string;
+        };
+      }>(kycDbInfo.db, kycDbInfo.collections.kycInfos, [address]);
 
-      if (verifiedInformation === undefined) {
-        logger.error(`verifiedInformation for ${address} was not found`);
+      if (!verifiedInformationResult.ok) {
+        logger.error(
+          `updateKycInfoForAddress error: get verified information result error: ${verifiedInformationResult.error}`
+        );
+        return;
+      }
+
+      if (!verifiedInformationResult.value || !verifiedInformationResult.value.verifiedInformation) {
+        logger.error(`updateKycInfoForAddress error: get verified information result is empty`);
         return;
       }
 
       const contractCivicKYCInfo: ContractCivicKYCInfo = {
-        fullName: verifiedInformation.name,
-        licenseNumber: verifiedInformation.documentNumber,
-        expirationDate: !isEmpty(verifiedInformation.dateOfExpiry)
-          ? getBlockchainTimeFromDate(moment.utc(verifiedInformation.dateOfExpiry).toDate())
+        fullName: verifiedInformationResult.value.verifiedInformation.name,
+        licenseNumber: verifiedInformationResult.value.verifiedInformation.documentNumber,
+        expirationDate: !isEmpty(verifiedInformationResult.value.verifiedInformation.dateOfExpiry)
+          ? getBlockchainTimeFromDate(
+              moment.utc(verifiedInformationResult.value.verifiedInformation.dateOfExpiry).toDate()
+            )
           : BigInt(0),
-        issueCountry: verifiedInformation.issueCountry,
-        email: verifiedInformation.email,
+        issueCountry: verifiedInformationResult.value.verifiedInformation.issueCountry,
+        email: verifiedInformationResult.value.verifiedInformation.email,
       };
 
       const result = await rentalityContracts.gateway.setCivicKYCInfo(address, contractCivicKYCInfo);

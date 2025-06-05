@@ -81,8 +81,7 @@ function getNotificationFromRentalityEvent(
 
 function getFromBlock(chainId: number, toBlock: number): number {
   const blockCountForSearch = getBlockCountForSearch(chainId);
-  if (blockCountForSearch === Number.POSITIVE_INFINITY) return 0;
-  return toBlock > blockCountForSearch ? toBlock - blockCountForSearch : 0;
+  return Math.max(0, toBlock - blockCountForSearch);
 }
 
 export const NotificationProvider = ({ isHost, children }: { isHost: boolean; children?: React.ReactNode }) => {
