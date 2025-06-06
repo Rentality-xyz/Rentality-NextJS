@@ -173,96 +173,89 @@ function Search() {
   }
 
   return (
-    <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["maps", "marker", "places"]} language="en">
-      <div className="flex flex-col" title="Search">
-        <SearchAndFilters
-          defaultSearchCarFilters={searchCarFilters}
-          initValue={searchCarRequest}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          onSearchClick={handleSearchClick}
-          onFilterApply={handleFilterApply}
-          filterLimits={searchResult.filterLimits}
-          t={t}
-        />
-        <div className="flex gap-3 max-2xl:flex-col-reverse">
-          <div className="my-4 flex flex-col gap-4 2xl:w-7/12 fullHD:w-6/12">
-            <RntSuspense
-              isLoading={isLoading || isLoadingAuth || (isAuthenticated && ethereumInfo === undefined)}
-              fallback={<div className="pl-[18px]">{t("common.info.loading")}</div>}
-            >
-              <div className="text-l pl-[18px] font-bold">
-                {searchResult?.carInfos?.length ?? 0} {t("search_page.info.cars_available")}
-              </div>
-              {searchResult?.carInfos?.length > 0 ? (
-                searchResult.carInfos.map((value: SearchCarInfo) => {
-                  return (
-                    <div key={value.carId} id={`car-${value.carId}`}>
-                      <CarSearchItem
-                        key={value.carId}
-                        searchInfo={value}
-                        handleRentCarRequest={createTripWithPromo}
-                        disableButton={requestSending}
-                        isSelected={value.highlighted}
-                        setSelected={setHighlightedCar}
-                        getRequestDetailsLink={getRequestDetailsLink}
-                        isGuestHasInsurance={!isLoadingInsurance && !isEmpty(guestInsurance.photo)}
-                        isYourOwnCar={userInfo?.address === value.ownerAddress}
-                        startDateTimeStringFormat={searchResult.searchCarRequest.dateFromInDateTimeStringFormat}
-                        endDateTimeStringFormat={searchResult.searchCarRequest.dateToInDateTimeStringFormat}
-                      />
-                    </div>
-                  );
-                })
-              ) : (
-                <div>
-                  <div className="flex max-w-screen-xl flex-col border border-gray-600 p-2 text-center font-['Montserrat',Arial,sans-serif] text-white">
-                    {/*{t_page("info.no_cars")}*/}
-                    <p className="text-3xl">{t("search_page.info.launched_miami")}</p>
-                    <p className="mt-4 text-2xl text-rentality-secondary">
-                      {t("search_page.info.soon_other_locations")}
-                    </p>
-                    <p className="mt-4 text-base">{t("search_page.info.changing_request")}</p>
-                  </div>
-                  <Image src={"/images/map_not_found_cars.png"} width={2912} height={1632} alt="" className="mt-2" />
-                </div>
-              )}
-            </RntSuspense>
-            {}
-          </div>
-          <div className="my-4 max-2xl:mb-8 2xl:w-5/12 fullHD:w-6/12">
-            <CarSearchMap
-              searchResult={searchResult}
-              setSelected={(carID: number) => {
-                setHighlightedCar(carID);
-                sortCars(carID);
-              }}
-              isExpanded={isExpanded}
-              defaultCenter={
-                searchCarRequest.searchLocation.latitude &&
-                searchCarRequest.searchLocation.longitude &&
-                searchCarRequest.searchLocation.latitude > 0 &&
-                searchCarRequest.searchLocation.longitude > 0
-                  ? { lat: searchCarRequest.searchLocation.latitude, lng: searchCarRequest.searchLocation.longitude }
-                  : null
-              }
-            />
-            <div
-              className="absolute left-1/2 flex -translate-x-1/2 cursor-pointer 2xl:hidden"
-              onClick={handleArrowClick}
-            >
-              <Image
-                src={"/images/icons/ic_map_mobile.png"}
-                width={100}
-                height={100}
-                alt=""
-                className={`h-[48px] w-[48px]`}
-              />
+    <div className="flex flex-col" title="Search">
+      <SearchAndFilters
+        defaultSearchCarFilters={searchCarFilters}
+        initValue={searchCarRequest}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+        onSearchClick={handleSearchClick}
+        onFilterApply={handleFilterApply}
+        filterLimits={searchResult.filterLimits}
+        t={t}
+      />
+      <div className="flex gap-3 max-2xl:flex-col-reverse">
+        <div className="my-4 flex flex-col gap-4 2xl:w-7/12 fullHD:w-6/12">
+          <RntSuspense
+            isLoading={isLoading || isLoadingAuth || (isAuthenticated && ethereumInfo === undefined)}
+            fallback={<div className="pl-[18px]">{t("common.info.loading")}</div>}
+          >
+            <div className="text-l pl-[18px] font-bold">
+              {searchResult?.carInfos?.length ?? 0} {t("search_page.info.cars_available")}
             </div>
+            {searchResult?.carInfos?.length > 0 ? (
+              searchResult.carInfos.map((value: SearchCarInfo) => {
+                return (
+                  <div key={value.carId} id={`car-${value.carId}`}>
+                    <CarSearchItem
+                      key={value.carId}
+                      searchInfo={value}
+                      handleRentCarRequest={createTripWithPromo}
+                      disableButton={requestSending}
+                      isSelected={value.highlighted}
+                      setSelected={setHighlightedCar}
+                      getRequestDetailsLink={getRequestDetailsLink}
+                      isGuestHasInsurance={!isLoadingInsurance && !isEmpty(guestInsurance.photo)}
+                      isYourOwnCar={userInfo?.address === value.ownerAddress}
+                      startDateTimeStringFormat={searchResult.searchCarRequest.dateFromInDateTimeStringFormat}
+                      endDateTimeStringFormat={searchResult.searchCarRequest.dateToInDateTimeStringFormat}
+                    />
+                  </div>
+                );
+              })
+            ) : (
+              <div>
+                <div className="flex max-w-screen-xl flex-col border border-gray-600 p-2 text-center font-['Montserrat',Arial,sans-serif] text-white">
+                  {/*{t_page("info.no_cars")}*/}
+                  <p className="text-3xl">{t("search_page.info.launched_miami")}</p>
+                  <p className="mt-4 text-2xl text-rentality-secondary">{t("search_page.info.soon_other_locations")}</p>
+                  <p className="mt-4 text-base">{t("search_page.info.changing_request")}</p>
+                </div>
+                <Image src={"/images/map_not_found_cars.png"} width={2912} height={1632} alt="" className="mt-2" />
+              </div>
+            )}
+          </RntSuspense>
+          {}
+        </div>
+        <div className="my-4 max-2xl:mb-8 2xl:w-5/12 fullHD:w-6/12">
+          <CarSearchMap
+            searchResult={searchResult}
+            setSelected={(carID: number) => {
+              setHighlightedCar(carID);
+              sortCars(carID);
+            }}
+            isExpanded={isExpanded}
+            defaultCenter={
+              searchCarRequest.searchLocation.latitude &&
+              searchCarRequest.searchLocation.longitude &&
+              searchCarRequest.searchLocation.latitude > 0 &&
+              searchCarRequest.searchLocation.longitude > 0
+                ? { lat: searchCarRequest.searchLocation.latitude, lng: searchCarRequest.searchLocation.longitude }
+                : null
+            }
+          />
+          <div className="absolute left-1/2 flex -translate-x-1/2 cursor-pointer 2xl:hidden" onClick={handleArrowClick}>
+            <Image
+              src={"/images/icons/ic_map_mobile.png"}
+              width={100}
+              height={100}
+              alt=""
+              className={`h-[48px] w-[48px]`}
+            />
           </div>
         </div>
       </div>
-    </APIProvider>
+    </div>
   );
 }
 

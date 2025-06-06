@@ -130,6 +130,11 @@ export async function getLocationInfoFromGoogleByAddress(
   }
 
   const googleGeoCodeJson = await googleGeoCodeResponse.json();
+  if (googleGeoCodeJson.status !== "OK") {
+    logger.error(`getLocationInfoFromGoogleByAddress error: googleGeoCodeResponse is ${googleGeoCodeJson.status}`);
+    return Err(`getLocationInfoFromGoogleByAddress error: googleGeoCodeResponse is ${googleGeoCodeJson.status}`);
+  }
+
   const placeDetails = googleGeoCodeJson.results[0] as google.maps.places.PlaceResult;
   const formattedAddress = placeDetails.formatted_address ?? "";
   const country = getAddressComponents(placeDetails, "country")?.short_name ?? "";

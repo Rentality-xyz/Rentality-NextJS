@@ -323,7 +323,7 @@ async function formatSearchAvailableCarsContractResponse(
         insurancePerDayPriceInUsd: Number(i.car.insuranceInfo.priceInUsdCents) / 100,
         isGuestHasInsurance: i.car.isGuestHasInsurance,
         distanceToUser: Number(i.distance),
-        dimoTokenId: Number(i.car.dimoTokenId ? i.car.dimoTokenId : 0),
+        dimoTokenId: Number(i.car.dimoTpokenId ? i.car.dimoTpokenId : 0),
         currency: {
           currency: i.car.hostCurrency.currency,
           name: i.car.hostCurrency.name,
