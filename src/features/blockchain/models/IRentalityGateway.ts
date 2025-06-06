@@ -55,6 +55,8 @@ export interface IRentalityGatewayContract extends IEthersContract {
   payKycCommission(currency: string, value: object): Promise<ContractTransactionResponse>;
   isKycCommissionPaid(user: string): Promise<boolean>;
   useKycCommission(user: string): Promise<ContractTransactionResponse>;
+  setPhoneNumber(user: string, phone: string, isVerified: boolean): Promise<ContractTransactionResponse>;
+  setEmail(user: string, email: string, isVerified: boolean): Promise<ContractTransactionResponse>;
 
   /// HOST CARS functions
   addCar(request: ContractCreateCarRequest): Promise<ContractTransactionResponse>;
@@ -160,7 +162,6 @@ export interface IRentalityGatewayContract extends IEthersContract {
   getUniqCarsBrand(): Promise<string[]>;
   getUniqModelsByBrand(brand: string): Promise<string[]>;
   getTotalCarsAmount(): Promise<bigint>;
-  setPhoneNumber(user: string, phone: string, isVerified: boolean): Promise<ContractTransactionResponse>;
 
   /// GENERAL functions
   address: string;
