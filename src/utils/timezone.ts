@@ -71,6 +71,10 @@ export async function getTimeZoneIdFromGoogleByLocation(
   }
 
   const googleTimeZoneJson = await googleTimeZoneResponse.json();
+  if (googleTimeZoneJson.status !== "OK") {
+    logger.error(`getTimeZoneIdFromLocation error: googleTimeZoneResponse is ${googleTimeZoneJson.status}`);
+    return Err(`getTimeZoneIdFromLocation error: googleTimeZoneResponse is ${googleTimeZoneJson.status}`);
+  }
 
   if (!googleTimeZoneJson || !googleTimeZoneJson.timeZoneId) {
     return Err("getTimeZoneIdFromLocation error: googleTimeZoneJson.timeZoneId is missed");
