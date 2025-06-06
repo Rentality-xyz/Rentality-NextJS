@@ -175,7 +175,7 @@ function UserCommonInformationForm({
         return;
       }
 
-      const response = await fetch("/api/sendSmsVerificationCode", {
+      const response = await fetch("/api/profile/sendSmsVerificationCode", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -202,7 +202,7 @@ function UserCommonInformationForm({
     try {
       if (!smsHash && !smsTimestamp) return;
       showInfo(t("profile.verification"));
-      const response = await fetch("/api/compareVerificationCode", {
+      const response = await fetch("/api/profile/compareSmsVerificationCode", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
