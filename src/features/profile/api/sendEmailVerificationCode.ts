@@ -172,6 +172,12 @@ function getVerificationLink(
 }
 
 function sendVerificationLink(email: string, link: string): Result<boolean> {
+  if (isEmpty(email)) {
+    return Err(new Error("email is empty"));
+  }
+  if (isEmpty(link)) {
+    return Err(new Error("link is empty"));
+  }
   console.log("sendVerificationLink call", JSON.stringify({ email, link }, null, 2));
   return Ok(true);
 }
