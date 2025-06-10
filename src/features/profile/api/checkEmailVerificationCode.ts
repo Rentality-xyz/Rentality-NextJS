@@ -8,7 +8,7 @@ import { IRentalityGatewayContract } from "@/features/blockchain/models/IRentali
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { logger } from "@/utils/logger";
 import { getEthersContractProxy } from "@/features/blockchain/models/EthersContractProxy";
-import { getEmailVerificationHash } from "../utils/email";
+import { getEmailVerificationHash } from "../utils/emailVerificationCode";
 
 const CODE_EXPIRATION_TIME_MS = 1000 * 60 * 24;
 type CheckEmailVerificationCodeParams = {
