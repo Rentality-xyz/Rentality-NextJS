@@ -401,7 +401,7 @@ export type ContractSearchCar = {
   locationInfo: ContractLocationInfo;
   insuranceInfo: ContractInsuranceCarInfo;
   isGuestHasInsurance: boolean;
-  dimoTpokenId: bigint;
+  dimoTokenId: bigint;
   hostCurrency: ContractUserCurrencyDTO;
 };
 

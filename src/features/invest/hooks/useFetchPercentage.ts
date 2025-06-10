@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { IRentalityAdminGateway } from "@/features/blockchain/models/IRentalityAdminGateway";
+import { IRentalityAdminGatewayContract } from "@/features/blockchain/models/IRentalityAdminGateway";
 import { getEtherContractWithSigner } from "@/abis";
 import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
 import { logger } from "@/utils/logger";
@@ -30,7 +30,7 @@ async function fetchPlatformFee(ethereumInfo: EthereumInfo | null | undefined) {
   const rentalityAdmin = (await getEtherContractWithSigner(
     "admin",
     ethereumInfo.signer
-  )) as unknown as IRentalityAdminGateway;
+  )) as unknown as IRentalityAdminGatewayContract;
 
   if (!rentalityAdmin) {
     logger.error("getRentalityContact error: rentalityAdmin is null");

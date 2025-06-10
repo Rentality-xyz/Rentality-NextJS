@@ -53,8 +53,10 @@ function UserCommonInformationForm({
   const isTerms = watch("isTerms");
   const enteredCode = watch("smsCode");
   const enteredPhoneNumber = watch("phoneNumber");
+  const enteredEmail = watch("email");
 
   const [verifiedPhoneNumber, setVerifiedPhoneNumber] = useState(userProfile.phoneNumber);
+  const [verifiedEmail, setVerifiedEmail] = useState(userProfile.email);
 
   useEffect(() => {
     reset({
@@ -147,6 +149,7 @@ function UserCommonInformationForm({
 
   const isCurrentPhoneNotVerified =
     (!userProfile.isPhoneNumberVerified && !isEnteredCodeCorrect) || enteredPhoneNumber !== verifiedPhoneNumber;
+  const isCurrentPhoneEmailNotVerified = !userProfile.isEmailVerified || enteredEmail !== verifiedEmail;
 
   useEffect(() => {
     if (isResendCodeTimerRunning && secondsLeft > 0) {
@@ -168,6 +171,37 @@ function UserCommonInformationForm({
     }
   };
 
+  async function sendEmailVerificationCode() {
+    try {
+      if (!enteredEmail) {
+        showError(t("profile.pls_email"));
+        return;
+      }
+
+      const response = await fetch("/api/profile/sendEmailVerificationCode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          walletAddress: ethereumInfo?.walletAddress,
+          chainId: ethereumInfo?.chainId,
+        }),
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        logger.error("sendEmailVerificationCode error:" + result.error);
+        showError(t("profile.send_email_err"));
+      } else {
+        // setSmsHash(result.hash);
+        // setSmsTimestamp(result.timestamp);
+        // startTimer();
+      }
+    } catch (error) {
+      logger.error("sendEmailVerificationCode error:" + error);
+      showError(t("profile.send_email_err"));
+    }
+  }
+
   async function sendSmsVerificationCode() {
     try {
       if (!enteredPhoneNumber) {
@@ -175,7 +209,7 @@ function UserCommonInformationForm({
         return;
       }
 
-      const response = await fetch("/api/sendSmsVerificationCode", {
+      const response = await fetch("/api/profile/sendSmsVerificationCode", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -202,7 +236,7 @@ function UserCommonInformationForm({
     try {
       if (!smsHash && !smsTimestamp) return;
       showInfo(t("profile.verification"));
-      const response = await fetch("/api/compareVerificationCode", {
+      const response = await fetch("/api/profile/compareSmsVerificationCode", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -282,6 +316,8 @@ function UserCommonInformationForm({
             {...register("nickname")}
             validationError={errors.nickname?.message}
           />
+        </div>
+        <div className="mt-4 flex flex-wrap items-end gap-4">
           <RntInputTransparent
             className="lg:w-60"
             labelClassName="pl-[16px]"
@@ -290,7 +326,17 @@ function UserCommonInformationForm({
             {...register("email")}
             validationError={errors.email?.message}
           />
+          {isCurrentPhoneEmailNotVerified && (
+            <RntButton className="lg:w-60" onClick={sendEmailVerificationCode} disabled={isResendCodeTimerRunning}>
+              {t("profile.verify")}
+            </RntButton>
+          )}
         </div>
+        <DotStatus
+          containerClassName="mt-2"
+          color={userProfile.isEmailVerified ? "success" : "error"}
+          text={userProfile.isEmailVerified ? t("profile.email_verified") : t("profile.email_not_verified")}
+        />
         <div className="mt-4 flex flex-wrap items-end gap-4">
           <Controller
             name="phoneNumber"
@@ -346,13 +392,17 @@ function UserCommonInformationForm({
             </RntButton>
           </div>
         )}
-      </fieldset>
 
-      {userProfile.isPhoneNumberVerified || isEnteredCodeCorrect ? (
-        <DotStatus color="success" text={t("profile.phone_verified")} />
-      ) : (
-        <DotStatus color="error" text={t("profile.phone_not_verified")} />
-      )}
+        <DotStatus
+          containerClassName="mt-2"
+          color={userProfile.isPhoneNumberVerified || isEnteredCodeCorrect ? "success" : "error"}
+          text={
+            userProfile.isPhoneNumberVerified || isEnteredCodeCorrect
+              ? t("profile.phone_verified")
+              : t("profile.phone_not_verified")
+          }
+        />
+      </fieldset>
 
       <p className="w-full pl-4 md:w-3/4 xl:w-3/5 2xl:w-1/3">{t("profile.agreement_info")}</p>
 
