@@ -1,4 +1,5 @@
 [
+   
   {
     "type": "event",
     "anonymous": false,
@@ -932,6 +933,29 @@
   },
   {
     "type": "function",
+    "name": "getGuestInsurance",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [{ "type": "address", "name": "guest" }],
+    "outputs": [
+      {
+        "type": "tuple[]",
+        "name": "insuranceInfo",
+        "components": [
+          { "type": "string", "name": "companyName" },
+          { "type": "string", "name": "policyNumber" },
+          { "type": "string", "name": "photo" },
+          { "type": "string", "name": "comment" },
+          { "type": "uint8", "name": "insuranceType" },
+          { "type": "uint256", "name": "createdTime" },
+          { "type": "address", "name": "createdBy" }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
     "name": "getInsurancesBy",
     "constant": true,
     "stateMutability": "view",
@@ -1162,6 +1186,33 @@
           { "type": "uint8", "name": "insuranceType" },
           { "type": "uint256", "name": "createdTime" },
           { "type": "address", "name": "createdBy" }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "getTaxesInfoById",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [{ "type": "uint256", "name": "taxId" }],
+    "outputs": [
+      {
+        "type": "tuple",
+        "name": "taxesInfoDTO",
+        "components": [
+          { "type": "string", "name": "location" },
+          { "type": "uint8", "name": "locationType" },
+          {
+            "type": "tuple[]",
+            "name": "taxes",
+            "components": [
+              { "type": "string", "name": "name" },
+              { "type": "uint32", "name": "value" },
+              { "type": "uint8", "name": "tType" }
+            ]
+          }
         ]
       }
     ]
@@ -1797,24 +1848,15 @@
                   { "type": "uint64", "name": "tripDays" },
                   { "type": "uint64", "name": "totalPriceWithDiscount" },
                   { "type": "uint64", "name": "taxes" },
-                  {
-                    "type": "uint64",
-                    "name": "securityDepositPerTripInUsdCents"
-                  },
+                  { "type": "uint64", "name": "securityDepositPerTripInUsdCents" },
                   { "type": "uint8", "name": "engineType" },
                   { "type": "uint64", "name": "milesIncludedPerDay" },
                   { "type": "address", "name": "host" },
                   { "type": "string", "name": "hostName" },
                   { "type": "string", "name": "hostPhotoUrl" },
                   { "type": "string", "name": "metadataURI" },
-                  {
-                    "type": "uint64",
-                    "name": "underTwentyFiveMilesInUsdCents"
-                  },
-                  {
-                    "type": "uint64",
-                    "name": "aboveTwentyFiveMilesInUsdCents"
-                  },
+                  { "type": "uint64", "name": "underTwentyFiveMilesInUsdCents" },
+                  { "type": "uint64", "name": "aboveTwentyFiveMilesInUsdCents" },
                   { "type": "uint64", "name": "pickUp" },
                   { "type": "uint64", "name": "dropOf" },
                   { "type": "bool", "name": "insuranceIncluded" },

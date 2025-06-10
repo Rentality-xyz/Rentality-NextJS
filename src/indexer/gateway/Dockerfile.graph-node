@@ -1,0 +1,17 @@
+# Dockerfile.graph-node
+FROM rust:1.70-slim-bullseye AS builder
+RUN apt-get update && apt-get install -y \
+    cmake pkg-config libssl-dev libpq-dev git clang protobuf-compiler
+
+RUN git clone https://github.com/graphprotocol/graph-node /graph-node
+WORKDIR /graph-node
+RUN cargo build --release
+
+FROM debian:bullseye-slim
+RUN apt-get update && apt-get install -y libssl-dev ca-certificates libpq5
+COPY --from=builder /graph-node/target/release/graph-node /usr/local/bin/
+EXPOSE 8020 8000 8001 8030 8040
+CMD ["graph-node", \
+    "--postgres-url", "postgresql://postgres:postgres@postgres:5432/graph-node", \
+    "--ethereum-rpc", "base-sepolia:https://multi-white-sea.base-sepolia.quiknode.pro/25586abbb1b00f07449f228fbf92b904c9afab2e/", \
+    "--ipfs", "https://ipfs.network.thegraph.com/"]

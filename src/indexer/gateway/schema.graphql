@@ -10,3 +10,198 @@ type RentalityEvent @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
+
+
+type CarInfo @entity(immutable: false) {
+  id: ID!
+  carId: BigInt!
+  carVinNumber: String!
+  carVinNumberHash: Bytes!
+  createdBy: Bytes!
+  host: String!
+  brand: String!
+  model: String!
+  yearOfProduction: BigInt!
+  pricePerDayInUsdCents: BigInt!
+  securityDepositPerTripInUsdCents: BigInt!
+  engineType: Int!
+  engineParams: [BigInt!]!
+  milesIncludedPerDay: BigInt!
+  timeBufferBetweenTripsInSec: BigInt!
+  currentlyListed: Boolean!
+  geoVerified: Boolean!
+  timeZoneId: String!
+  insuranceIncluded: Boolean!
+  locationHash: Bytes!
+  dimoTokenId: BigInt!
+  tokenURI: String!
+  burned: Boolean!
+  trips: [CarTrip!] @derivedFrom(field: "car")
+  user: CarUser! @derivedFrom(field: "cars")
+  taxes: TaxesEntity
+  locationInfo: LocationInfo!
+  insuranceCarInfo: InsuranceCarInfo!
+  
+ 
+}
+
+type LocationInfo @entity(immutable: false) {
+    id: ID!
+    userAddress: String!
+    country: String!
+    state: String!
+    city: String!
+    latitude: String!
+    longitude: String!
+    timeZoneId: String!
+  }
+
+
+  type TripEntity @entity(immutable: false)  {
+  id: ID!
+  tripId: BigInt!
+  carId: BigInt!
+  car: CarTrip @derivedFrom(field: "trips") 
+  status: Int!
+  guest: String!
+  host: String!
+  guestName: String
+  hostName: String
+  pricePerDayInUsdCents: BigInt!
+  startDateTime: BigInt!
+  endDateTime: BigInt!
+  engineType: Int!
+  milesIncludedPerDay: BigInt!
+  fuelPrice: BigInt!
+  createdDateTime: BigInt!
+  approvedDateTime: BigInt
+  rejectedDateTime: BigInt
+  guestInsuranceCompanyName: String
+  guestInsurancePolicyNumber: String
+  rejectedBy: String
+  checkedInByHostDateTime: BigInt
+  checkedInByGuestDateTime: BigInt
+  tripStartedBy: String
+  checkedOutByGuestDateTime: BigInt
+  checkedOutByHostDateTime: BigInt
+  tripFinishedByHost: Boolean!
+  finishDateTime: BigInt
+  tripFinishedBy: String
+  pickUpHash: Bytes
+  returnHash: Bytes
+  paymentInfo: PaymentInfoEntity
+}
+
+
+type PaymentInfoEntity @entity(immutable: false) {
+  id: ID!
+  tripId: BigInt!
+  from: String!
+  to: String!
+  totalDayPriceInUsdCents: BigInt!
+  salesTax: BigInt!
+  governmentTax: BigInt!
+  priceWithDiscount: BigInt!
+  depositInUsdCents: BigInt!
+  resolveAmountInUsdCents: BigInt!
+  currencyType: String!
+  currencyRate: BigInt!
+  currencyDecimals: Int!
+  resolveFuelAmountInUsdCents: BigInt!
+  resolveMilesAmountInUsdCents: BigInt!
+  pickUpFee: BigInt!
+  dropOfFee: BigInt!
+}
+
+type CarTrip @entity(immutable: false) {
+  id: ID!
+  car: CarInfo
+  trips: [TripEntity!]! 
+}
+
+  type InsuranceCarInfo @entity(immutable: false) {
+    id: ID!
+    required: Boolean!
+    priceInUsdCents: BigInt!
+  }
+
+type GuestInsurancesEntity @entity(immutable: false) {
+  id: ID!
+  insurances: [InsuranceInfoEntity!]
+}
+  type InsuranceInfoEntity @entity(immutable: false) {
+  id: String!
+  companyName: String!
+  policyNumber: String!
+  photo: String!
+  comment: String!
+  insuranceType: String!
+  createdTime: BigInt!
+  createdBy: Bytes!
+}
+type TaxesEntity @entity(immutable: false) {
+  id: ID!
+  location: String!
+  locationType: Int!
+  taxesData: [TaxValueEntity!]!
+}
+
+type TaxValueEntity @entity(immutable: false) {
+  id: String!
+  name: String!
+  value: BigInt!
+  tType: String!
+}
+
+type BaseDiscountEntity @entity(immutable: false) {
+  id: ID!
+  user: String
+  threeDaysDiscount: BigInt!
+  sevenDaysDiscount: BigInt!
+  thirtyDaysDiscount: BigInt!
+  initialized: Boolean!
+}
+
+type DeliveryPricesEntity @entity(immutable: false) {
+  id: ID!
+  user: String
+  underTwentyFiveMilesInUsdCents: BigInt!
+  aboveTwentyFiveMilesInUsdCents: BigInt!
+  initialized: Boolean!
+}
+
+type UserCurrencyDTOEntity @entity(immutable: false) {
+  id: ID!
+  user: String
+  currency: Bytes!
+  name: String!
+  initialized: Boolean!
+}
+
+type AggregatorV3Entity @entity(immutable: false) {
+  id: ID!
+  currency: String!
+  current: BigInt!
+  decimals: Int!
+} 
+
+type UserProfileEntity @entity(immutable: false) {
+  id: ID!
+  name: String!          
+  surname: String!      
+  mobilePhoneNumber: String!
+  profilePhoto: String
+  licenseNumber: String!
+  expirationDate: BigInt!  
+  createDate: BigInt!
+  userCurrency: UserCurrencyDTOEntity
+  deliveryPrice: DeliveryPricesEntity
+  discountPrice: BaseDiscountEntity
+  cars: [CarUser!]! @derivedFrom(field: "user")       
+}
+
+type CarUser @entity(immutable: false) {
+  id: ID!
+  user: UserProfileEntity!
+  cars: [CarInfo!]! 
+}

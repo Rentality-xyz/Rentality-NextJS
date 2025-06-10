@@ -5,12 +5,12 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
-    name: RentalityGateway
+    name: RentalityNotificationService
     network: base-sepolia
     source:
-      address: "0xB257FE9D206b60882691a24d5dfF8Aa24929cB73"
-      abi: RentalityGateway
-      startBlock: 12525214
+      address: "0x6538488EAD213996727D1f4eC9738c3C92141180"
+      abi: RentalityNotificationService
+      startBlock: 26718122
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -18,8 +18,14 @@ dataSources:
       entities:
         - RentalityEvent
       abis:
+        - name: RentalityNotificationService
+          file: ./abis/RentalityNotificationService.json
         - name: RentalityGateway
           file: ./abis/RentalityGateway.json
+        - name: RentalityTripService
+          file: ./abis/RentalityTripService.json
+        - name: RentalityUserService
+          file: ./abis/RentalityUserService.json
       eventHandlers:
         - event: RentalityEvent(indexed uint8,uint256,uint8,indexed address,indexed address,uint256)
           handler: handleRentalityEvent

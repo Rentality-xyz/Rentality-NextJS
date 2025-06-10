@@ -34,6 +34,9 @@ export const env = createEnv({
     TWILIO_ACCOUNT_SID: z.string(),
     TWILIO_AUTH_TOKEN: z.string(),
     VERIFICATION_HMAC_SHA256_SECRET_KEY: z.string(),
+
+    INDEXER_API_URL: z.string(),
+
   },
   client: {
     NEXT_PUBLIC_INCLUDE_MAINNETS: booleanEnvType(),
