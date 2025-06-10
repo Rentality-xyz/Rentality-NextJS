@@ -85,6 +85,8 @@ jobs:
           ENVKEY_TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
           ENVKEY_TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
           ENVKEY_VERIFICATION_HMAC_SHA256_SECRET_KEY: ${{ secrets.VERIFICATION_HMAC_SHA256_SECRET_KEY }}
+          ENVKEY_NOTIFICATION_SMTP_USER: ${{ secrets.NOTIFICATION_SMTP_USER }}
+          ENVKEY_NOTIFICATION_SMTP_PASSWORD: ${{ secrets.NOTIFICATION_SMTP_PASSWORD }}
           ENVKEY_INDEXER_API_URL: ${{ secrets.INDEXER_API_URL }}
       - name: "Build Rentality App"
         run: make build

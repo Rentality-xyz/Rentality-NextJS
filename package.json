@@ -53,6 +53,7 @@
     "moment-timezone": "^0.5.45",
     "next": "^14.1.0",
     "next-i18next": "^15.2.0",
+    "nodemailer": "^7.0.3",
     "postcss": "^8.4.35",
     "protobufjs": "^7.3.0",
     "react": "^18.2.0",
@@ -78,6 +79,7 @@
   },
   "devDependencies": {
     "@types/google.maps": "^3.57.0",
+    "@types/nodemailer": "^6.4.17",
     "@types/react-datepicker": "^4.19.3",
     "eruda": "^3.2.3",
     "patch-package": "^8.0.0",

@@ -4,6 +4,7 @@ import {
   ContractAllCarsDTO,
   ContractAllRefferalInfoDTO,
   ContractAllTripsDTO,
+  ContractFullKYCInfoDTO,
   ContractTripFilter,
   RefferalAccrualType,
   RefferalProgram,
@@ -69,4 +70,5 @@ export interface IRentalityAdminGatewayContract extends IEthersContract {
 
   getRefferalPointsInfo(): Promise<ContractAllRefferalInfoDTO>;
   getPlatformUsersInfo(page: bigint, itemsPerPage: bigint): Promise<ContractAdminKYCInfosDTO>;
+  getUserFullKYCInfo(user: string): Promise<ContractFullKYCInfoDTO>;
 }

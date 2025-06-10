@@ -13,7 +13,7 @@ const CODE_EXPIRATION_TIME_MS = 5 * 60 * 1000;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
-    logger.error("compareVerificationCode error: method not allowed");
+    logger.error("compareSmsVerificationCode error: method not allowed");
     res.status(405).json({ error: "Method not allowed" });
     return;
   }
@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     !chainId ||
     typeof chainId !== "number"
   ) {
-    logger.error("compareVerificationCode error: invalid parameters");
+    logger.error("compareSmsVerificationCode error: invalid parameters");
     res.status(400).json({ error: "Invalid parameters" });
     return;
   }
@@ -42,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const now = Date.now();
 
   if (now - timestamp > CODE_EXPIRATION_TIME_MS) {
-    logger.error("compareVerificationCode error: verification code expired");
+    logger.error("compareSmsVerificationCode error: verification code expired");
     res.status(400).json({ error: "Verification code expired" });
     return;
   }
@@ -62,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const MANAGER_PRIVATE_KEY = env.MANAGER_PRIVATE_KEY;
   if (isEmpty(MANAGER_PRIVATE_KEY)) {
-    logger.error("compareVerificationCode error: private key was not set");
+    logger.error("compareSmsVerificationCode error: private key was not set");
     res.status(500).json({ error: "Manager private key was not set" });
     return;
   }
@@ -70,8 +70,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const providerApiUrl = getProviderApiUrlFromEnv(chainId);
 
   if (!providerApiUrl) {
-    logger.error(`compareVerificationCode error: API URL for chain id ${chainId} was not set`);
-    res.status(500).json({ error: `compareVerificationCode error: API URL for chain id ${chainId} was not set` });
+    logger.error(`compareSmsVerificationCode error: API URL for chain id ${chainId} was not set`);
+    res.status(500).json({ error: `compareSmsVerificationCode error: API URL for chain id ${chainId} was not set` });
     return;
   }
 
@@ -83,7 +83,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   );
 
   if (!saveVerificationStatusResult.ok) {
-    logger.error(`compareVerificationCode error: ${saveVerificationStatusResult.error}`);
+    logger.error(`compareSmsVerificationCode error: ${saveVerificationStatusResult.error}`);
     res.status(500).json({ error: saveVerificationStatusResult.error });
     return;
   }
