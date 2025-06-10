@@ -1,7 +1,7 @@
 import CarSearchItem from "@/components/guest/carSearchItem";
 import useSearchCars from "@/hooks/guest/useSearchCars";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useUserInfo } from "@/contexts/userInfoContext";
@@ -24,6 +24,7 @@ import { EMPTY_PROMOCODE } from "@/utils/constants";
 import useFetchGuestGeneralInsurance from "@/features/insurance/hooks/useFetchGuestGeneralInsurance";
 import useBlockchainNetworkCheck from "@/features/blockchain/hooks/useBlockchainNetworkCheck";
 import getNetworkName from "@/model/utils/NetworkName";
+import { getIpfsHashFromUrl, getIpfsURIfromAkave } from "@/utils/ipfsUtils";
 
 function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -168,6 +169,17 @@ function Search() {
     setIsExpanded(!isExpanded);
   };
 
+  const akaveSearchResult = useMemo(
+    () => ({
+      ...searchResult,
+      carInfos: searchResult.carInfos.map((ci) => ({
+        ...ci,
+        images: ci.images.map((i) => getIpfsURIfromAkave(i)),
+      })),
+    }),
+    [searchResult]
+  );
+
   if (isLoadingAuth || (isAuthenticated && ethereumInfo === undefined)) {
     return <Loading />;
   }
@@ -191,10 +203,10 @@ function Search() {
             fallback={<div className="pl-[18px]">{t("common.info.loading")}</div>}
           >
             <div className="text-l pl-[18px] font-bold">
-              {searchResult?.carInfos?.length ?? 0} {t("search_page.info.cars_available")}
+              {akaveSearchResult?.carInfos?.length ?? 0} {t("search_page.info.cars_available")}
             </div>
-            {searchResult?.carInfos?.length > 0 ? (
-              searchResult.carInfos.map((value: SearchCarInfo) => {
+            {akaveSearchResult?.carInfos?.length > 0 ? (
+              akaveSearchResult.carInfos.map((value: SearchCarInfo) => {
                 return (
                   <div key={value.carId} id={`car-${value.carId}`}>
                     <CarSearchItem
@@ -229,7 +241,7 @@ function Search() {
         </div>
         <div className="my-4 max-2xl:mb-8 2xl:w-5/12 fullHD:w-6/12">
           <CarSearchMap
-            searchResult={searchResult}
+            searchResult={akaveSearchResult}
             setSelected={(carID: number) => {
               setHighlightedCar(carID);
               sortCars(carID);

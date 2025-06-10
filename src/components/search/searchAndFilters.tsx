@@ -26,6 +26,8 @@ import { UTC_TIME_ZONE_ID } from "@/utils/constants";
 import { LocalizedFilterOption } from "@/model/filters";
 import { useFilters } from "@/hooks/useFilters";
 import { searchSortFilters, SearchSortFilterValueKey } from "@/features/search/models/filters";
+import { APIProvider } from "@vis.gl/react-google-maps";
+import { env } from "@/utils/env";
 
 export default function SearchAndFilters({
   defaultSearchCarFilters,
@@ -227,7 +229,7 @@ export default function SearchAndFilters({
   );
 
   return (
-    <>
+    <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]} language="en">
       <div
         className="relative flex h-[50px] w-full cursor-text flex-col pl-5 pt-1 text-sm sm:hidden"
         onClick={() => setSearchFormVisible(true)}
@@ -408,7 +410,7 @@ export default function SearchAndFilters({
           <SearchDeliveryLocations searchCarRequest={searchCarRequest} setSearchCarRequest={setSearchCarRequest} />
         </div>
       )}
-    </>
+    </APIProvider>
   );
 }
 
