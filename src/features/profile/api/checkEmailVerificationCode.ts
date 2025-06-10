@@ -20,7 +20,11 @@ type CheckEmailVerificationCodeParams = {
   hash: string;
 };
 
-export default async function checkEmailVerificationCodeHandler(req: NextApiRequest, res: NextApiResponse) {
+export default async function checkEmailVerificationCodeHandler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+  baseUrl: string
+) {
   if (req.method !== "GET") {
     logger.error("checkEmailVerificationCodeHandler error: method not allowed");
     res.status(405).json({ error: "Method not allowed" });
@@ -58,7 +62,8 @@ export default async function checkEmailVerificationCodeHandler(req: NextApiRequ
   }
 
   logger.info(`Email verified successfully`);
-  res.status(200).json({ success: true });
+  res.writeHead(302, { Location: `${baseUrl}/guest/profile` });
+  res.end();
   return;
 }
 
