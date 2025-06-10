@@ -32,12 +32,13 @@ class EmailService {
 
       const { fromTemplate, toTemplate } = getEmailTemplate(event);
 
-      if (fromTemplate && userFromInfo) {
+      if (fromTemplate && userFromInfo && userFromInfo.isEmailVerified) {
         await this.sendEmail(userFromInfo.email, fromTemplate);
       }
       if (
         toTemplate &&
         userToInfo &&
+        userToInfo.isEmailVerified &&
         (userFromInfo === null || userToInfo.email.toLowerCase() !== userFromInfo.email.toLowerCase())
       ) {
         await this.sendEmail(userToInfo.email, toTemplate);
