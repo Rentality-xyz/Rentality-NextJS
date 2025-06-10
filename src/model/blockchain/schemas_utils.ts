@@ -232,7 +232,7 @@ const emptyContractSearchCar: ContractSearchCar = {
   locationInfo: emptyContractLocationInfo,
   insuranceInfo: emptyContractInsuranceCarInfo,
   isGuestHasInsurance: false,
-  dimoTpokenId: BigInt(0),
+  dimoTokenId: BigInt(0),
   hostCurrency: { currency: ETH_DEFAULT_ADDRESS, initialized: false, name: "ETH" },
 };
 
