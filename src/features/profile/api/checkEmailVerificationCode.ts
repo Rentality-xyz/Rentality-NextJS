@@ -57,7 +57,7 @@ export default async function checkEmailVerificationCodeHandler(
   const saveVerificationStatusResult = await saveVerificationSuccessStatus(walletAddress, chainId, email);
   if (!saveVerificationStatusResult.ok) {
     logger.error(`checkEmailVerificationCodeHandler error: ${saveVerificationStatusResult.error}`);
-    res.status(500).json({ error: saveVerificationStatusResult.error });
+    res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
 
