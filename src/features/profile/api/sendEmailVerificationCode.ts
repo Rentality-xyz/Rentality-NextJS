@@ -10,7 +10,9 @@ import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityAdminGatewayContract } from "@/features/blockchain/models/IRentalityAdminGateway";
 import { JsonRpcProvider, Wallet } from "ethers";
 import { getEthersContractProxy } from "@/features/blockchain/models/EthersContractProxy";
-import { getEmailVerificationHash } from "../utils/email";
+import { getEmailVerificationHash } from "../utils/emailVerificationCode";
+import { getEmailVerificationMessageTemplate } from "../utils/emailTemplates";
+import EmailService from "@/features/scheduler/eventProcessing/utils/emailService";
 
 export type SendEmailVerificationCodeBodyParams = {
   walletAddress: string;
@@ -171,7 +173,7 @@ function getVerificationLink(
   return Ok(`${checkUrlBase}?${params.toString()}`);
 }
 
-function sendVerificationLink(email: string, link: string): Result<boolean> {
+async function sendVerificationLink(email: string, link: string): Promise<Result<boolean>> {
   if (isEmpty(email)) {
     return Err(new Error("email is empty"));
   }
@@ -179,31 +181,8 @@ function sendVerificationLink(email: string, link: string): Result<boolean> {
     return Err(new Error("link is empty"));
   }
 
-  const message = {
-    subject: "Verify your email address",
-    html: `
-    <div style="font-family: "Montserrat", Arial, sans-serif; line-height: 1.5;">
-      <h2>Welcome, Rentality user!</h2>
-      <p>Thank you for signing up on Rentality platform. Please verify your email address by clicking the button below:</p>
-      <p>
-        <a href="${link}" target="_blank" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
-          Verify Email
-        </a>
-      </p>
-      <p>If you did not create this account, you can safely ignore this email.</p>
-    </div>
-  `,
-    text: `
-    Welcome, Rentality user!
+  const emailService = new EmailService();
+  const emailTemplate = getEmailVerificationMessageTemplate(link);
 
-    Thank you for signing up on Rentality platform. Please verify your email address by clicking the link below:
-
-    ${link}
-
-    If you did not create this account, you can safely ignore this email.
-  `,
-  };
-
-  console.log("sendVerificationLink call", JSON.stringify({ message }, null, 2));
-  return Ok(true);
+  return emailService.sendEmail(email, emailTemplate);
 }
