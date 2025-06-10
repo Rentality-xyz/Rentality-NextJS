@@ -22,7 +22,7 @@ CIVIC_CLIENT_SECRET="<Civic client secret>"
 CIVIC_USER_EMAIL="<Civic user email>"
 CIVIC_USER_PASSWORD="<Civic user password>"
 
-NEXT_PUBLIC_GOOGLE_MAPS_API_KEY="<Google map api key>" 
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY="<Google map API key>" 
 GOOGLE_MAPS_API_KEY="<Google map api key>" 
 PROVIDER_API_URL_1337="http://127.0.0.1:7545"
 PROVIDER_API_URL_5611="<Provider API URL for CHAIN_ID 5611>"

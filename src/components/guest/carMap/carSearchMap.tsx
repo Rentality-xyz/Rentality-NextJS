@@ -20,6 +20,29 @@ export default function CarSearchMap({
   isExpanded: boolean;
   defaultCenter?: google.maps.LatLngLiteral | null;
 }) {
+  return (
+    <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["maps", "marker"]} language="en">
+      <CarSearchMapContent
+        searchResult={searchResult}
+        setSelected={setSelected}
+        isExpanded={isExpanded}
+        defaultCenter={defaultCenter}
+      />
+    </APIProvider>
+  );
+}
+
+function CarSearchMapContent({
+  searchResult,
+  setSelected,
+  isExpanded,
+  defaultCenter,
+}: {
+  searchResult: SearchCarsResult;
+  setSelected?: (carID: number) => void | null;
+  isExpanded: boolean;
+  defaultCenter?: google.maps.LatLngLiteral | null;
+}) {
   const [isSticked, setIsSticked] = useState<boolean>(false);
   const mapLeft = useRef<number>(0);
   const mapTop = useRef<number>(0);
@@ -111,18 +134,16 @@ export default function CarSearchMap({
   }, [isSticked, mapHeight, isExpanded]);
 
   return (
-    <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]} language="en">
-      <Map
-        id="google-maps-guest-search-page"
-        mapId={GOOGLE_MAPS_MAP_ID}
-        mapTypeId={"satellite"}
-        //className="max-xl:transition-height max-xl:duration-300 max-xl:ease-in-out"
-        style={mapContainerStyle}
-        defaultCenter={selectedCar?.location || defaultCenter || DEFAULT_GOOGLE_MAPS_SEARCH_CENTER}
-        defaultZoom={DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM}
-      >
-        <ClusteredMapMarkers carInfos={searchResult.carInfos} selectedCar={selectedCar} setSelected={setSelected} />
-      </Map>
-    </APIProvider>
+    <Map
+      id="google-maps-guest-search-page"
+      mapId={GOOGLE_MAPS_MAP_ID}
+      mapTypeId={"satellite"}
+      //className="max-xl:transition-height max-xl:duration-300 max-xl:ease-in-out"
+      style={mapContainerStyle}
+      defaultCenter={selectedCar?.location || defaultCenter || DEFAULT_GOOGLE_MAPS_SEARCH_CENTER}
+      defaultZoom={DEFAULT_GOOGLE_MAPS_SEARCH_ZOOM}
+    >
+      <ClusteredMapMarkers carInfos={searchResult.carInfos} selectedCar={selectedCar} setSelected={setSelected} />
+    </Map>
   );
 }
