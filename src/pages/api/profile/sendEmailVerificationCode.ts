@@ -5,7 +5,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const protocol = req.headers["x-forwarded-proto"] || "http";
   const host = req.headers.host;
   const baseUrl = `${protocol}://${host}`;
-  const checkUrlBase = `${baseUrl}/api/checkEmailVerificationCode`;
+  const checkUrlBase = `${baseUrl}/api/profile/checkEmailVerificationCode`;
 
   return await sendEmailVerificationCodeHandler(req, res, checkUrlBase);
 }
