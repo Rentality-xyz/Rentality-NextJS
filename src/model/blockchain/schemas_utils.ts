@@ -521,6 +521,7 @@ const emptyContractAdminKYCInfoDTO: ContractAdminKYCInfoDTO = {
   kyc: emptyContractKYCInfo,
   additionalKYC: emptyContractAdditionalKYCInfo,
   wallet: "",
+  isEmailVerified: false,
 };
 
 export function validateContractAdminKYCInfoDTO(obj: ContractAdminKYCInfoDTO): obj is ContractAdminKYCInfoDTO {
