@@ -1,7 +1,7 @@
 import { ContractLocationInfo, ContractSearchCarParams, ContractSearchCarWithDistance } from "@/model/blockchain/schemas";
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client'
 import { createGraphUrl, getSearchCarQuery } from "./indexerHelper";
-import { GetCarInfosResponse, QueryCarInfo, QueryinsuranceCarInfo, QueryLocationInfo, QueryTaxes, QueryTrips, QueryUserCurrency, QueryUserInfo } from "./schemas";
+import { GetCarInfosResponse, QueryCarInfo } from "./schemas";
 import { calculateDeliveryPrice, calculateDistance, calculateSumWithDiscount, calculateTaxes, calculateTotalTripDays } from "@/utils/computeSearch";
 export interface MappedSearchQuery extends QueryCarInfo  {
     tripDays: number,
