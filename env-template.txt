@@ -37,6 +37,7 @@ PROVIDER_API_URL_11155420="<Provider API URL for CHAIN_ID 11155420>"
 
 SIGNER_PRIVATE_KEY="<Wallet private key for signing structs>"
 MANAGER_PRIVATE_KEY="<Wallet private key (for KYC pass)>"
+ADMIN_VIEWER_PRIVATE_KEY="<Wallet private key (for admin viewer)>"
 TEST_WALLETS_ADDRESSES="<comma seperated wallet addresses>"
 
 #Firebase (Analytics and firestore)

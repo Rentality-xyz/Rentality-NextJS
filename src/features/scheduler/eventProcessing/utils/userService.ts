@@ -66,9 +66,9 @@ class UserService {
 
   private async loadUsers(chainId: ChainId): Promise<Result<boolean>> {
     try {
-      const privateKey = env.MANAGER_PRIVATE_KEY;
+      const privateKey = env.ADMIN_VIEWER_PRIVATE_KEY;
       if (isEmpty(privateKey)) {
-        return Err(new Error("MANAGER_PRIVATE_KEY was not set"));
+        return Err(new Error("ADMIN_VIEWER_PRIVATE_KEY was not set"));
       }
       const providerApiUrl = getProviderApiUrlFromEnv(chainId);
       if (isEmpty(providerApiUrl)) {

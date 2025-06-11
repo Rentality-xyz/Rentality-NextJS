@@ -16,6 +16,7 @@ export const env = createEnv({
 
     SIGNER_PRIVATE_KEY: z.string(),
     MANAGER_PRIVATE_KEY: z.string(),
+    ADMIN_VIEWER_PRIVATE_KEY: z.string(),
 
     PROVIDER_API_URL_1337: z.string().url().optional(),
     PROVIDER_API_URL_5611: z.string().url().optional(),
