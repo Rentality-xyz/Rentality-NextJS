@@ -41,6 +41,8 @@ export const env = createEnv({
 
     NOTIFICATION_SMTP_USER: z.string(),
     NOTIFICATION_SMTP_PASSWORD: z.string(),
+    
+    INDEXER_API_URL: z.string(),
   },
   client: {
     NEXT_PUBLIC_INCLUDE_MAINNETS: booleanEnvType(),

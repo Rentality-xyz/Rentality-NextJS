@@ -1,0 +1,16 @@
+[
+    
+    {
+      "type": "event",
+      "anonymous": false,
+      "name": "RentalityEvent",
+      "inputs": [
+        { "type": "uint8", "name": "eType", "indexed": true },
+        { "type": "uint256", "name": "id", "indexed": false },
+        { "type": "uint8", "name": "objectStatus", "indexed": false },
+        { "type": "address", "name": "from", "indexed": true },
+        { "type": "address", "name": "to", "indexed": true },
+        { "type": "uint256", "name": "timestamp", "indexed": false }
+      ]
+    }
+  ]
