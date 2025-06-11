@@ -22,7 +22,8 @@ class EmailService {
   async processEvent(
     event: RentalityEvent,
     userFromInfo: UserInfo | null,
-    userToInfo: UserInfo | null
+    userToInfo: UserInfo | null,
+    baseUrl: string
   ): Promise<Result<boolean>> {
     try {
       const fromEmail = env.NOTIFICATION_SMTP_USER;
@@ -30,7 +31,7 @@ class EmailService {
         return Err(new Error("NOTIFICATION_EMAIL_USER was not set"));
       }
 
-      const { fromTemplate, toTemplate } = getEmailTemplate(event);
+      const { fromTemplate, toTemplate } = getEmailTemplate(event, baseUrl);
 
       if (fromTemplate && userFromInfo && userFromInfo.isEmailVerified) {
         await this.sendEmail(userFromInfo.email, fromTemplate);

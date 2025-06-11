@@ -10,7 +10,7 @@ type ProcessBlockchainEventsParams = {
   chainIds: number[];
 };
 
-async function processBlockchainEventsHandler(req: NextApiRequest, res: NextApiResponse) {
+async function processBlockchainEventsHandler(req: NextApiRequest, res: NextApiResponse, baseUrl: string) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -35,7 +35,7 @@ async function processBlockchainEventsHandler(req: NextApiRequest, res: NextApiR
     for (const chainId of requestResult.value.chainIds) {
       if (!chainId || typeof chainId !== "number" || chainId <= 0) continue;
 
-      const result = await processEvents(chainId);
+      const result = await processEvents(chainId, baseUrl);
 
       if (!result.ok) {
         logger.error(
