@@ -67,9 +67,6 @@ async function getNewAuthToken() {
 }
 
 export async function getAuthToken() {
-  const getTokenResult = await readDocFromFirebaseDb<string>(cacheDbInfo.db, cacheDbInfo.collections.carApi, [
-    "car-api-token",
-  ]);
   const platformEmail = env.PLATFORM_USER_EMAIL;
   const platformPassword = env.PLATFORM_USER_PASSWORD;
 
@@ -80,11 +77,17 @@ export async function getAuthToken() {
 
   await loginWithPassword(platformEmail, platformPassword);
 
+  const getTokenResult = await readDocFromFirebaseDb<{ token: string }>(
+    cacheDbInfo.db,
+    cacheDbInfo.collections.carApi,
+    ["car-api-token"]
+  );
+
   if (!getTokenResult.ok) {
     return "";
   }
 
-  const cachedToken = getTokenResult.value;
+  const cachedToken = getTokenResult.value?.token ?? null;
 
   if (cachedToken !== null && Math.floor(Date.now() / 1000) <= getExpirationTimestamp(cachedToken)) {
     logger.debug("Car API: Got an auth token from cache");
@@ -93,12 +96,9 @@ export async function getAuthToken() {
 
   const newToken = await getNewAuthToken();
 
-  const saveResult = await saveDocToFirebaseDb(
-    cacheDbInfo.db,
-    cacheDbInfo.collections.carApi,
-    ["car-api-token"],
-    newToken
-  );
+  const saveResult = await saveDocToFirebaseDb(cacheDbInfo.db, cacheDbInfo.collections.carApi, ["car-api-token"], {
+    token: newToken,
+  });
 
   if (saveResult.ok) {
     logger.debug("Car API: Posted an auth token to cache");
