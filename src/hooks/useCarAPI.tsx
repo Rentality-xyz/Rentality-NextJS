@@ -3,7 +3,7 @@ import axios from "@/utils/cachedAxios";
 import { isEmpty } from "@/utils/string";
 import { env } from "@/utils/env";
 import { VinInfo } from "@/pages/api/car-api/vinInfo";
-import { cacheDbInfo, readDocFromFirebaseDb, saveDocToFirebaseDb } from "@/utils/firebase";
+import { cacheDbInfo, loginWithPassword, readDocFromFirebaseDb, saveDocToFirebaseDb } from "@/utils/firebase";
 import { logger } from "@/utils/logger";
 
 export type CarAPIMetadata = {
@@ -70,6 +70,15 @@ export async function getAuthToken() {
   const getTokenResult = await readDocFromFirebaseDb<string>(cacheDbInfo.db, cacheDbInfo.collections.carApi, [
     "car-api-token",
   ]);
+  const platformEmail = env.PLATFORM_USER_EMAIL;
+  const platformPassword = env.PLATFORM_USER_PASSWORD;
+
+  if (isEmpty(platformEmail) || isEmpty(platformPassword)) {
+    logger.debug("getAuthToken error: PLATFORM_USER_EMAIL or PLATFORM_USER_PASSWORD is not set");
+    return "";
+  }
+
+  await loginWithPassword(platformEmail, platformPassword);
 
   if (!getTokenResult.ok) {
     return "";

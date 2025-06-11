@@ -3,13 +3,14 @@ import { useEffect, useRef, useState } from "react";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { EMPTY_PROMOCODE, ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import { ContractCivicKYCInfo, ContractCreateTripRequestWithDelivery } from "@/model/blockchain/schemas";
-import { kycDbInfo, readDocFromFirebaseDb } from "@/utils/firebase";
+import { kycDbInfo, loginWithPassword, readDocFromFirebaseDb } from "@/utils/firebase";
 import { isEmpty } from "@/utils/string";
 import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import moment from "moment";
 import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 import { useRentality, useRentalityAdmin } from "@/contexts/rentalityContext";
 import { logger } from "@/utils/logger";
+import { env } from "@/utils/env";
 
 export type AdminContractInfo = {
   platformFee: number;
@@ -125,6 +126,16 @@ const useAdminPanelInfo = () => {
 
     try {
       setIsLoading(true);
+
+      const publicPlatformEmail = env.NEXT_PUBLIC_USER_EMAIL;
+      const publicPlatformPassword = env.NEXT_PUBLIC_USER_PASSWORD;
+
+      if (isEmpty(publicPlatformEmail) || isEmpty(publicPlatformPassword)) {
+        logger.debug("updateKycInfoForAddress error: NEXT_PUBLIC_USER_EMAIL or NEXT_PUBLIC_USER_PASSWORD is not set");
+        return "";
+      }
+
+      await loginWithPassword(publicPlatformEmail, publicPlatformPassword);
 
       const verifiedInformationResult = await readDocFromFirebaseDb<{
         verifiedInformation: {
