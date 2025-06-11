@@ -25,6 +25,7 @@ function useFetchDeliveryPrices() {
   const queryResult = useQuery<QueryData>({
     queryKey: [DELIVERY_PRICES_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
     queryFn: async () => fetchDeliveryPrices(rentalityContracts, ethereumInfo),
+    refetchOnWindowFocus: false,
   });
 
   const data = queryResult.data ?? emptyDeliveryPrices;

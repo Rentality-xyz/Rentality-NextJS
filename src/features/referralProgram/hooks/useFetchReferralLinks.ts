@@ -13,6 +13,7 @@ const useFetchReferralLinks = () => {
   const queryResult = useQuery<QueryData>({
     queryKey: [REFERRAL_LINKS_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
     queryFn: async () => fetchReferralLinks(rentalityContracts),
+    refetchOnWindowFocus: false,
   });
 
   const data = queryResult.data ?? { inviteHash: "", usedInviteHash: "" };
