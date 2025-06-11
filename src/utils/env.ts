@@ -11,6 +11,9 @@ export const env = createEnv({
     CIVIC_USER_EMAIL: z.string().email().optional(),
     CIVIC_USER_PASSWORD: z.string().optional(),
 
+    PLATFORM_USER_EMAIL: z.string().email(),
+    PLATFORM_USER_PASSWORD: z.string(),
+
     SIGNER_PRIVATE_KEY: z.string(),
     MANAGER_PRIVATE_KEY: z.string(),
 
@@ -42,6 +45,9 @@ export const env = createEnv({
     NEXT_PUBLIC_INCLUDE_MAINNETS: booleanEnvType(),
     NEXT_PUBLIC_INCLUDE_TESTNETS: booleanEnvType(),
     NEXT_PUBLIC_INCLUDE_LOCALNETS: booleanEnvType(),
+
+    NEXT_PUBLIC_USER_EMAIL: z.string().email(),
+    NEXT_PUBLIC_USER_PASSWORD: z.string(),
 
     NEXT_PUBLIC_DEFAULT_CHAIN_ID: z.coerce.number().positive(),
 
@@ -88,6 +94,9 @@ export const env = createEnv({
     NEXT_PUBLIC_INCLUDE_MAINNETS: process.env.NEXT_PUBLIC_INCLUDE_MAINNETS,
     NEXT_PUBLIC_INCLUDE_TESTNETS: process.env.NEXT_PUBLIC_INCLUDE_TESTNETS,
     NEXT_PUBLIC_INCLUDE_LOCALNETS: process.env.NEXT_PUBLIC_INCLUDE_LOCALNETS,
+
+    NEXT_PUBLIC_USER_EMAIL: process.env.NEXT_PUBLIC_USER_EMAIL,
+    NEXT_PUBLIC_USER_PASSWORD: process.env.NEXT_PUBLIC_USER_PASSWORD,
 
     NEXT_PUBLIC_DEFAULT_CHAIN_ID: process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID,
 
