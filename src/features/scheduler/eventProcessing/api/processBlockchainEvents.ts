@@ -8,10 +8,11 @@ import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 
 type ProcessBlockchainEventsParams = {
   chainIds: number[];
+  authToken: string;
 };
 
 async function processBlockchainEventsHandler(req: NextApiRequest, res: NextApiResponse, baseUrl: string) {
-  if (req.method !== "POST") {
+  if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
@@ -27,6 +28,13 @@ async function processBlockchainEventsHandler(req: NextApiRequest, res: NextApiR
     if (!envsResult.ok) {
       logger.error(`analyzeDamagesHandler env validation error: ${envsResult.error.message}`);
       res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
+      return;
+    }
+
+    const authResult = validateAuthToken(requestResult.value.authToken);
+    if (!authResult.ok) {
+      logger.error(`processBlockchainEventsHandler auth error: ${authResult.error.message}`);
+      res.status(401).json({ error: authResult.error.message });
       return;
     }
 
@@ -57,13 +65,23 @@ async function processBlockchainEventsHandler(req: NextApiRequest, res: NextApiR
 }
 
 function validateRequest(req: NextApiRequest): Result<ProcessBlockchainEventsParams> {
-  const request = <ProcessBlockchainEventsParams>JSON.parse(req.body);
+  const { chainIds: chainIdsString, authToken } = req.query;
 
-  if (request.chainIds === undefined || !Array.isArray(request.chainIds) || request.chainIds.length === 0) {
-    return Err(new Error("chainIds is missing or not a array"));
+  if (chainIdsString === undefined || typeof chainIdsString !== "string") {
+    return Err(new Error("chainIds is missing or not a string"));
+  }
+  const chainIds = chainIdsString
+    .split(",")
+    .map((chainId) => parseInt(chainId, 10))
+    .filter((chainId) => !isNaN(chainId) && chainId > 0);
+  if (chainIds.length === 0) {
+    return Err(new Error("chainIds should contain at least one valid chain id"));
+  }
+  if (authToken === undefined || typeof authToken !== "string") {
+    return Err(new Error("Auth token is missing"));
   }
 
-  return Ok(request);
+  return Ok({ chainIds, authToken });
 }
 
 function validateEnvs(chainIds: number[]): Result {
@@ -78,6 +96,19 @@ function validateEnvs(chainIds: number[]): Result {
       return Err(new Error(`API URL for chain id ${chainId} was not set`));
     }
   }
+  return Ok(true);
+}
+
+function validateAuthToken(authToken: string): Result {
+  const envAuthToken = env.API_AUTH_TOKEN;
+  if (isEmpty(envAuthToken)) {
+    return Err(new Error("MANAGER_PRIVATE_KEY was not set"));
+  }
+
+  if (authToken !== envAuthToken) {
+    return Err(new Error("user is not authorized"));
+  }
+
   return Ok(true);
 }
 

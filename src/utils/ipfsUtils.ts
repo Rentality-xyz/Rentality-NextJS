@@ -17,7 +17,7 @@ function getIpfsURIfromPinata(pinataURI: string) {
 export function getIpfsURIfromAkave(pinataURI: string) {
   const fileHash = getIpfsHashFromUrl(pinataURI);
   if (isEmpty(fileHash)) return "";
-  return "https://o3-rc1.akave.xyz/rnt-test-public-bucket-2/" + fileHash;
+  return "https://o3-rc1.akave.xyz/rnt-test-public-bucket-3/" + fileHash;
 }
 
 export function getIpfsURI(pinataURI: string) {
