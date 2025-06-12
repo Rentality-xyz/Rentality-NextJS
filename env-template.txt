@@ -18,9 +18,7 @@ PRIVY_VERIFICATION_KEY="<Privy verification key>"
 
 NEXT_PUBLIC_CIVIC_GATEKEEPER_NETWORK="<Civic gatekeeper network>"
 CIVIC_CLIENT_ID="<Civic client id>"
-CIVIC_CLIENT_SECRET="<Civic client secret>"
-CIVIC_USER_EMAIL="<Civic user email>"
-CIVIC_USER_PASSWORD="<Civic user password>"
+CIVIC_CLIENT_SECRET="<Civic client secret>" 
 NEXT_PUBLIC_USER_EMAIL="<Public user email>"
 NEXT_PUBLIC_USER_PASSWORD="<Public user password>"
 PLATFORM_USER_EMAIL="<Platform user email>"
@@ -86,3 +84,5 @@ NOTIFICATION_SMTP_PASSWORD="<SMTP password>"
 
 #Indexer
 INDEXER_API_URL="<indexer API url>"
+
+API_AUTH_TOKEN="<Rentality API token>"

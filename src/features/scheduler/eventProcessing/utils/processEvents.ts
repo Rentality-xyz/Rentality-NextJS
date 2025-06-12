@@ -43,7 +43,7 @@ export async function processEvents(
 
     for (const { from, to } of blocksToProcess) {
       const eventsResult = await getEvents(chainId, from, to);
-      if (!eventsResult.ok) continue;
+      if (!eventsResult.ok || eventsResult.value.length === 0) continue;
 
       const events = eventsResult.value;
 

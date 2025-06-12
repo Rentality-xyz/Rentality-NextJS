@@ -8,8 +8,6 @@ export const env = createEnv({
 
     CIVIC_CLIENT_ID: z.string().optional(),
     CIVIC_CLIENT_SECRET: z.string().optional(),
-    CIVIC_USER_EMAIL: z.string().email().optional(),
-    CIVIC_USER_PASSWORD: z.string().optional(),
 
     PLATFORM_USER_EMAIL: z.string().email(),
     PLATFORM_USER_PASSWORD: z.string(),
@@ -41,8 +39,10 @@ export const env = createEnv({
 
     NOTIFICATION_SMTP_USER: z.string(),
     NOTIFICATION_SMTP_PASSWORD: z.string(),
-    
+
     INDEXER_API_URL: z.string(),
+
+    API_AUTH_TOKEN: z.string(),
   },
   client: {
     NEXT_PUBLIC_INCLUDE_MAINNETS: booleanEnvType(),
