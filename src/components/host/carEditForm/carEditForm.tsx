@@ -38,6 +38,7 @@ import RntInputTransparent from "@/components/common/rntInputTransparent";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import getNetworkName from "@/model/utils/NetworkName";
+import { logger } from "@/utils/logger";
 
 export default function CarEditForm({
   initValue,
@@ -219,7 +220,7 @@ export default function CarEditForm({
     }
 
     setIsUploading(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
     const result = await saveCarInfo(carInfoFormParams, nftName, nftSym);
     setIsUploading(false);
 
@@ -298,7 +299,7 @@ export default function CarEditForm({
   }, [isVINVerified, getVINNumber, vinNumber, setValue]);
 
   if (isUploading) {
-    return <div className={"pt-10"}>{t("vehicles.wait_loading")}</div>
+    return <div className={"pt-10"}>{t("vehicles.wait_loading")}</div>;
   }
   return (
     <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]} language="en">
@@ -1105,7 +1106,12 @@ export default function CarEditForm({
             type="button"
             className="h-14 w-40"
             disabled={isSubmitting}
-            onClick={handleSubmit(async (data) => await onFormSubmit(data))}
+            onClick={handleSubmit(
+              async (data) => await onFormSubmit(data),
+              (errors) => {
+                logger.warn(`invalid form: ${JSON.stringify(errors)}`);
+              }
+            )}
           >
             {t("common.save")}
           </RntButton>
