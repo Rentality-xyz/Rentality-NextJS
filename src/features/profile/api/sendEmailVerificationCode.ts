@@ -99,9 +99,9 @@ function validateEnvs(chainId: number): Result<boolean> {
     return Err(new Error("VERIFICATION_HMAC_SHA256_SECRET_KEY was not set"));
   }
 
-  const privateKey = env.MANAGER_PRIVATE_KEY;
-  if (isEmpty(privateKey)) {
-    return Err(new Error("MANAGER_PRIVATE_KEY was not set"));
+  const adminPrivateKey = env.ADMIN_VIEWER_PRIVATE_KEY;
+  if (isEmpty(adminPrivateKey)) {
+    return Err(new Error("ADMIN_VIEWER_PRIVATE_KEY was not set"));
   }
 
   const providerApiUrl = getProviderApiUrlFromEnv(chainId);
@@ -113,9 +113,9 @@ function validateEnvs(chainId: number): Result<boolean> {
 }
 
 async function getUserInfo(walletAddress: string, chainId: number): Promise<Result<ContractFullKYCInfoDTO>> {
-  const privateKey = env.MANAGER_PRIVATE_KEY;
+  const privateKey = env.ADMIN_VIEWER_PRIVATE_KEY;
   if (isEmpty(privateKey)) {
-    return Err(new Error("MANAGER_PRIVATE_KEY was not set"));
+    return Err(new Error("ADMIN_VIEWER_PRIVATE_KEY was not set"));
   }
 
   const providerApiUrl = getProviderApiUrlFromEnv(chainId);

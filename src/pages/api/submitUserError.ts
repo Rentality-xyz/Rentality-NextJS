@@ -42,19 +42,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 async function saveUserError(userDescription: string, lastLogs: StoredLog[]): Promise<Result<boolean, string>> {
   if (!cacheDbInfo.db) return Err("db is null");
 
-  const CIVIC_USER_EMAIL = env.CIVIC_USER_EMAIL;
-  if (!CIVIC_USER_EMAIL || isEmpty(CIVIC_USER_EMAIL)) {
-    logger.error("submitUserError error: CIVIC_USER_EMAIL was not set");
-    return Err("CIVIC_USER_EMAIL was not set");
+  const platformEmail = env.PLATFORM_USER_EMAIL;
+  const platformPassword = env.PLATFORM_USER_PASSWORD;
+
+  if (isEmpty(platformEmail) || isEmpty(platformPassword)) {
+    return Err("PLATFORM_USER_EMAIL or PLATFORM_USER_PASSWORD is not set");
   }
 
-  const CIVIC_USER_PASSWORD = env.CIVIC_USER_PASSWORD;
-  if (!CIVIC_USER_PASSWORD || isEmpty(CIVIC_USER_PASSWORD)) {
-    logger.error("submitUserError error: CIVIC_USER_PASSWORD was not set");
-    return Err("CIVIC_USER_PASSWORD was not set");
-  }
-
-  await loginWithPassword(CIVIC_USER_EMAIL, CIVIC_USER_PASSWORD);
+  await loginWithPassword(platformEmail, platformPassword);
 
   const saveResult = await saveDocToFirebaseDb(
     cacheDbInfo.db,

@@ -1,6 +1,14 @@
 import { FirebaseApp, initializeApp } from "firebase/app";
 import { Analytics, getAnalytics, isSupported } from "firebase/analytics";
-import { Auth, getAuth, signInWithCustomToken, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
+import {
+  Auth,
+  getAuth,
+  reauthenticateWithRedirect,
+  signInWithCustomToken,
+  signInWithEmailAndPassword,
+  signOut,
+  User,
+} from "firebase/auth";
 import {
   doc,
   collection,
@@ -39,6 +47,7 @@ let auth: Auth;
 let login: (token: string) => Promise<User | undefined>;
 let loginWithPassword: (email: string, password: string) => Promise<User | undefined>;
 let logout: () => Promise<void>;
+let loggedInEmail: string | null = null;
 
 if (!isEmpty(firebaseConfig.projectId)) {
   app = initializeApp(firebaseConfig);
@@ -57,11 +66,15 @@ if (!isEmpty(firebaseConfig.projectId)) {
     }
   };
   logout = async () => {
+    loggedInEmail = null;
     await signOut(auth);
   };
   loginWithPassword = async (email: string, password: string) => {
+    if (!isEmpty(loggedInEmail) && loggedInEmail === email) return;
+
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      loggedInEmail = email;
       return userCredential.user;
     } catch (error) {
       logger.error(`firebase login error:`, error);

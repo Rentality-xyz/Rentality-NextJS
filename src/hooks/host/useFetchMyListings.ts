@@ -16,6 +16,7 @@ function useFetchMyListings() {
   const queryResult = useQuery<QueryData>({
     queryKey: [MY_LISTINGS_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
     queryFn: async () => fetchMyListings(rentalityContracts, ethereumInfo),
+    refetchOnWindowFocus: false,
   });
 
   const data = queryResult.data ?? [];

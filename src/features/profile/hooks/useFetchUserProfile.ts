@@ -19,6 +19,7 @@ function useFetchUserProfile() {
   const queryResult = useQuery<QueryData>({
     queryKey: [USER_PROFILE_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
     queryFn: async () => fetchUserProfile(rentalityContracts, ethereumInfo),
+    refetchOnWindowFocus: false,
   });
 
   const data = queryResult.data ?? emptyUserProfile;

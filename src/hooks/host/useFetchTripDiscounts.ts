@@ -25,6 +25,7 @@ function useFetchTripDiscounts() {
   const queryResult = useQuery<QueryData>({
     queryKey: [TRIP_DISCOUNTS_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
     queryFn: async () => fetchTripDiscounts(rentalityContracts, ethereumInfo),
+    refetchOnWindowFocus: false,
   });
 
   const data = queryResult.data ?? INITIAL_DATA;

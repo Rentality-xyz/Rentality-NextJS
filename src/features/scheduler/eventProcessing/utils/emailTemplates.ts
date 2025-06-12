@@ -7,7 +7,10 @@ export interface EmailTemplate {
   text: string;
 }
 
-export function getEmailTemplate(event: RentalityEvent): {
+export function getEmailTemplate(
+  event: RentalityEvent,
+  baseUrl: string
+): {
   fromTemplate: EmailTemplate | null;
   toTemplate: EmailTemplate | null;
 } {
@@ -24,9 +27,14 @@ export function getEmailTemplate(event: RentalityEvent): {
               html: `
                         <h2>Car ${event.id} was listed on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>                       
+        
                       `,
-              text: `Car ${event.id} was listed on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `Car ${event.id} was listed on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
           };
         case CarUpdateStatus.Update:
@@ -37,9 +45,13 @@ export function getEmailTemplate(event: RentalityEvent): {
               html: `
                         <h2>Car ${event.id} was updated on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `Car ${event.id} was updated on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `Car ${event.id} was updated on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
           };
         case CarUpdateStatus.Burn:
@@ -50,9 +62,13 @@ export function getEmailTemplate(event: RentalityEvent): {
               html: `
                         <h2>Car ${event.id} was burned on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `Car ${event.id} was burned on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `Car ${event.id} was burned on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
           };
         default:
@@ -68,18 +84,26 @@ export function getEmailTemplate(event: RentalityEvent): {
               html: `
                         <h2>You created new claim ${event.id} on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `You created new claim ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `You created new claim ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
             toTemplate: {
               subject: `Someone created new claim ${event.id} for you on Rentality platform`,
               html: `
                         <h2>Someone created new claim ${event.id} for you on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `Someone created new claim ${event.id} for you on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `Someone created new claim ${event.id} for you on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
           };
         case ClaimStatus.Cancel:
@@ -89,18 +113,26 @@ export function getEmailTemplate(event: RentalityEvent): {
               html: `
                         <h2>You rejected claim ${event.id} on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `You rejected claim ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `You rejected claim ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
             toTemplate: {
               subject: `Claim ${event.id} was rejected on Rentality platform`,
               html: `
                         <h2>Claim ${event.id} was rejected on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `Claim ${event.id} was rejected on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `Claim ${event.id} was rejected on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
           };
         case ClaimStatus.Paid:
@@ -110,18 +142,26 @@ export function getEmailTemplate(event: RentalityEvent): {
               html: `
                         <h2>You paid claim ${event.id} on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `You paid claim ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `You paid claim ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
             toTemplate: {
               subject: `Claim ${event.id} was paid on Rentality platform`,
               html: `
                         <h2>Claim ${event.id} was paid on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `Claim ${event.id} was paid on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `Claim ${event.id} was paid on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
           };
         case ClaimStatus.Overdue:
@@ -131,18 +171,26 @@ export function getEmailTemplate(event: RentalityEvent): {
               html: `
                         <h2>Claim ${event.id} is overdue on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `Claim ${event.id} is overdue on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `Claim ${event.id} is overdue on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
             toTemplate: {
               subject: `Claim ${event.id} is overdue on Rentality platform`,
               html: `
                         <h2>Claim ${event.id} is overdue on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `Claim ${event.id} is overdue on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `Claim ${event.id} is overdue on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
           };
         default:
@@ -158,18 +206,26 @@ export function getEmailTemplate(event: RentalityEvent): {
               html: `
                         <h2>You created new trip ${event.id} on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `You created new trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `You created new trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
             toTemplate: {
               subject: `Someone created new trip ${event.id} on Rentality platform`,
               html: `
                         <h2>Someone created new trip ${event.id} on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `Someone created new trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `Someone created new trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
           };
         case TripStatus.Confirmed:
@@ -179,18 +235,26 @@ export function getEmailTemplate(event: RentalityEvent): {
               html: `
                         <h2>You confirmed trip ${event.id} on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `You confirmed trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `You confirmed trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
             toTemplate: {
               subject: `Trip ${event.id} was confirmed by host on Rentality platform`,
               html: `
                         <h2>Trip ${event.id} was confirmed by host on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `Trip ${event.id} was confirmed by host on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `Trip ${event.id} was confirmed by host on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
           };
         case TripStatus.CheckedInByHost:
@@ -200,18 +264,26 @@ export function getEmailTemplate(event: RentalityEvent): {
               html: `
                         <h2>You checked-in for trip ${event.id} on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `You checked-in for trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `You checked-in for trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
             toTemplate: {
               subject: `Host checked-in for trip ${event.id} on Rentality platform`,
               html: `
                         <h2>Host checked-in for trip ${event.id} on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `Host checked-in for trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `Host checked-in for trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
           };
         case TripStatus.Started:
@@ -221,18 +293,26 @@ export function getEmailTemplate(event: RentalityEvent): {
               html: `
                         <h2>You started trip ${event.id} on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `You started trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `You started trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
             toTemplate: {
               subject: `Guest started trip ${event.id} on Rentality platform`,
               html: `
                         <h2>Guest started trip ${event.id} on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `Guest started trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `Guest started trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
           };
         case TripStatus.CheckedOutByGuest:
@@ -242,18 +322,26 @@ export function getEmailTemplate(event: RentalityEvent): {
               html: `
                         <h2>You checked-out for trip ${event.id} on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `You checked-out for trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `You checked-out for trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
             toTemplate: {
               subject: `Guest checked-out for trip ${event.id} on Rentality platform`,
               html: `
                         <h2>Guest checked-out for trip ${event.id} on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `Guest checked-out for trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `Guest checked-out for trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
           };
         case TripStatus.Finished:
@@ -263,18 +351,26 @@ export function getEmailTemplate(event: RentalityEvent): {
               html: `
                         <h2>You checked-out for trip ${event.id} on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `You checked-out for trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `You checked-out for trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
             toTemplate: {
               subject: `Host checked-out for trip ${event.id} on Rentality platform`,
               html: `
                         <h2>Host checked-out for trip ${event.id} on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `Host checked-out for trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `Host checked-out for trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
           };
         case TripStatus.Closed:
@@ -284,18 +380,26 @@ export function getEmailTemplate(event: RentalityEvent): {
               html: `
                         <h2>You finished trip ${event.id} on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `You finished trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `You finished trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
             toTemplate: {
               subject: `Host finished trip ${event.id} on Rentality platform`,
               html: `
                         <h2>Host finished trip ${event.id} on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `Host finished trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `Host finished trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
           };
         case TripStatus.Rejected:
@@ -305,18 +409,26 @@ export function getEmailTemplate(event: RentalityEvent): {
               html: `
                         <h2>You rejected trip ${event.id} on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `You rejected trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `You rejected trip ${event.id} on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
             toTemplate: {
               subject: `Trip ${event.id} was rejected on Rentality platform`,
               html: `
                         <h2>Trip ${event.id} was rejected on Rentality platform</h2>
                         <p>Hello Rentality user,</p>
-                        <p>find more details in our web application!</p>
+                        <p>find more details in our web 
+                        <a href="${baseUrl}" target="_blank">
+                          application
+                        </a>
+                        !</p>    
                       `,
-              text: `Trip ${event.id} was rejected on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application!`,
+              text: `Trip ${event.id} was rejected on Rentality platform\n\nHello Rentality user,\n\nfind more details in our web application (${baseUrl})!`,
             },
           };
         default:

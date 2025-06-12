@@ -3,7 +3,7 @@ import { ethers, JsonRpcProvider, Wallet } from "ethers";
 import { logger } from "@/utils/logger";
 import { isEmpty } from "@/utils/string";
 import { getBlockCountForSearch } from "@/model/blockchain/blockchainList";
-import { cacheDbInfo, readDocFromFirebaseDb, saveDocToFirebaseDb } from "@/utils/firebase";
+import { cacheDbInfo, loginWithPassword, readDocFromFirebaseDb, saveDocToFirebaseDb } from "@/utils/firebase";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { RentalityEvent } from "../models";
 import { getEtherContractWithSigner } from "@/abis";
@@ -11,8 +11,12 @@ import { isEventLog } from "@/utils/ether";
 import { EventType } from "@/model/blockchain/schemas";
 import UserService from "./userService";
 import EmailService from "./emailService";
+import { env } from "@/utils/env";
 
-export async function processEvents(chainId: number): Promise<Result<{ processed: number; errors: string[] }>> {
+export async function processEvents(
+  chainId: number,
+  baseUrl: string
+): Promise<Result<{ processed: number; errors: string[] }>> {
   try {
     const userService = new UserService();
     const emailService = new EmailService();
@@ -57,7 +61,7 @@ export async function processEvents(chainId: number): Promise<Result<{ processed
           const userFromInfo = userFromInfoResult.ok ? userFromInfoResult.value : null;
           const userToInfo = userToInfoResult.ok ? userToInfoResult.value : null;
 
-          const emailResult = await emailService.processEvent(event, userFromInfo, userToInfo);
+          const emailResult = await emailService.processEvent(event, userFromInfo, userToInfo, baseUrl);
 
           if (!emailResult.ok) {
             errors.push(`Failed to send email for event ${event.id}: ${emailResult.error.message}`);
@@ -70,7 +74,7 @@ export async function processEvents(chainId: number): Promise<Result<{ processed
         }
       }
 
-      //await saveLastProcessedBlockNumber(chainId, to);
+      await saveLastProcessedBlockNumber(chainId, to);
     }
 
     return Ok({ processed, errors });
@@ -80,6 +84,15 @@ export async function processEvents(chainId: number): Promise<Result<{ processed
 }
 
 async function getLastProcessedBlockNumber(chainId: number): Promise<Result<number>> {
+  const platformEmail = env.PLATFORM_USER_EMAIL;
+  const platformPassword = env.PLATFORM_USER_PASSWORD;
+
+  if (isEmpty(platformEmail) || isEmpty(platformPassword)) {
+    return Err(new Error("PLATFORM_USER_EMAIL or PLATFORM_USER_PASSWORD is not set"));
+  }
+
+  await loginWithPassword(platformEmail, platformPassword);
+
   var result = await readDocFromFirebaseDb<{ lastProcessedBlockNumber: number }>(
     cacheDbInfo.db,
     cacheDbInfo.collections.eventProcessing,
