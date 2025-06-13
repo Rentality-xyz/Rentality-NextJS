@@ -46,6 +46,8 @@ async function getNewAuthToken() {
     throw new Error("CARAPI_TOKEN is not set");
   }
 
+  logger.debug("getNewAuthToken: Requesting new auth token");
+
   const response = await axios.post(
     "https://carapi.app/api/auth/login",
     {
