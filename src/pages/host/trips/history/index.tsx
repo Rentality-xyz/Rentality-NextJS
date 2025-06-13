@@ -16,7 +16,7 @@ function History() {
     <>
       <PageTitle title={t("booked.history_title")} />
       <RntSuspense isLoading={isLoadingTrips}>
-        <div className="my-4 grid grid-cols-1 gap-4 2xl:grid-cols-2">
+        <div className="my-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
           {tripsHistory != null && tripsHistory.length > 0 ? (
             tripsHistory.map((value) => {
               return (
