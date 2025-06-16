@@ -39,6 +39,7 @@ import RntFilterSelect from "@/components/common/RntFilterSelect";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import getNetworkName from "@/model/utils/NetworkName";
 import { logger } from "@/utils/logger";
+import { flattenErrors } from "@/utils/forms";
 
 export default function CarEditForm({
   initValue,
@@ -1109,7 +1110,7 @@ export default function CarEditForm({
             onClick={handleSubmit(
               async (data) => await onFormSubmit(data),
               (errors) => {
-                logger.warn(`invalid form: ${JSON.stringify(errors)}`);
+                logger.warn(`invalid form: ${JSON.stringify(flattenErrors(errors), null, 2)}`);
               }
             )}
           >
