@@ -1,6 +1,7 @@
 import { Address, bigInt, ethereum, log } from "@graphprotocol/graph-ts"
 import { CarInfo, CarTrip, CarUser, InsuranceCarInfo, LocationInfo, TaxesEntity, TripEntity, UserCurrencyDTOEntity, UserProfileEntity } from "../../generated/schema"
-import {RentalityEvent, RentalityGateway__getCarDetailsResultCarDetailsLocationInfoStruct} from "../../generated/RentalityNotificationService/RentalityGateway";
+import { RentalityGateway__getCarDetailsResultCarDetailsLocationInfoStruct} from "../../generated/RentalityNotificationService/RentalityGateway";
+import {RentalityEvent} from "../../generated/RentalityNotificationService/RentalityNotificationService";
 import { getRentalityGateway, notImplemented, TaxesLocationType } from "./helpers";
 import { DEFAULT_CURRENCY } from "./userCurrencyHandler";
 

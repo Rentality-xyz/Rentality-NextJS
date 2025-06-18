@@ -134,7 +134,7 @@ export interface IRentalityGatewayContract extends IEthersContract {
   // CLAIMS functions
   getMyClaimsAs(host: boolean): Promise<ContractFullClaimInfo[]>;
   getClaim(claimId: bigint): Promise<ContractFullClaimInfo>;
-  createClaim(request: ContractCreateClaimRequest): Promise<ContractTransactionResponse>;
+  createClaim(request: ContractCreateClaimRequest, isInsuranceClaim: boolean): Promise<ContractTransactionResponse>;
   calculateClaimValue(claimId: bigint): Promise<bigint>;
   payClaim(claimId: bigint, value: object): Promise<ContractTransactionResponse>;
   rejectClaim(claimId: bigint): Promise<ContractTransactionResponse>;

@@ -1,7 +1,7 @@
 import { Address, bigInt, ethereum, log } from "@graphprotocol/graph-ts"
 import { CarInfo, DeliveryPricesEntity, LocationInfo, PaymentInfoEntity, TripEntity, UserProfileEntity } from "../../generated/schema"
 import { getRentalityGateway, notImplemented } from "./helpers"
-import {RentalityEvent} from "../../generated/RentalityNotificationService/RentalityGateway";
+import {RentalityEvent} from "../../generated/RentalityNotificationService/RentalityNotificationService";
 export const DEFAULT_DELIVERY_PRICE = '0x0000000000000000000000000000000000000000';
 export function hanldeDeliveryEvents(event: RentalityEvent): void {
   switch (event.params.objectStatus) {

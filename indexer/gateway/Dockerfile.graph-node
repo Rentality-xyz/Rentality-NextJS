@@ -13,5 +13,5 @@ COPY --from=builder /graph-node/target/release/graph-node /usr/local/bin/
 EXPOSE 8020 8000 8001 8030 8040
 CMD ["graph-node", \
     "--postgres-url", "postgresql://postgres:postgres@postgres:5432/graph-node", \
-    "--ethereum-rpc", "https://base-sepolia.gateway.tenderly.co/", \
+    "--ethereum-rpc", "base-sepolia:https://base-sepolia.gateway.tenderly.co/", \
     "--ipfs", "https://ipfs.network.thegraph.com/"]

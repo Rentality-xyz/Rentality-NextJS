@@ -41,6 +41,7 @@ type CarInfo @entity(immutable: false) {
   taxes: TaxesEntity
   locationInfo: LocationInfo!
   insuranceCarInfo: InsuranceCarInfo!
+  claims: CarClaim @derivedFrom(field: "car")
   
  
 }
@@ -63,10 +64,8 @@ type LocationInfo @entity(immutable: false) {
   carId: BigInt!
   car: CarTrip @derivedFrom(field: "trips") 
   status: Int!
-  guest: String!
-  host: String!
-  guestName: String
-  hostName: String
+  guest: UserProfileEntity!
+  host: UserProfileEntity!
   pricePerDayInUsdCents: BigInt!
   startDateTime: BigInt!
   endDateTime: BigInt!
@@ -87,9 +86,29 @@ type LocationInfo @entity(immutable: false) {
   tripFinishedByHost: Boolean!
   finishDateTime: BigInt
   tripFinishedBy: String
+  startParamLevels: [BigInt!],
+  endParamLevels: [BigInt!]
   pickUpHash: Bytes
   returnHash: Bytes
   paymentInfo: PaymentInfoEntity
+  transactionInfo: TransactionInfoEntity
+  pickUpLocation: LocationInfo,
+  dropOfLocation: LocationInfo,
+  insuranceInfo: [InsuranceInfo!]
+  paidForInsuranceInUsdCents: BigInt!
+  guestDrivingLicenseIssueCountry: String!
+  promoDiscount: BigInt!
+  taxesData: [TaxValueEntity!]
+
+}
+
+type TransactionInfoEntity @entity(immutable: false) {
+  id: ID!
+  rentalityFee: BigInt!,
+  depositRefund: BigInt!,
+  tripEarnings: BigInt!,
+  dateTime: BigInt!
+  statusBeforeCancellation: Int!
 }
 
 
@@ -104,7 +123,7 @@ type PaymentInfoEntity @entity(immutable: false) {
   priceWithDiscount: BigInt!
   depositInUsdCents: BigInt!
   resolveAmountInUsdCents: BigInt!
-  currencyType: String!
+  currencyType: UserCurrencyDTOEntity!
   currencyRate: BigInt!
   currencyDecimals: Int!
   resolveFuelAmountInUsdCents: BigInt!
@@ -205,3 +224,47 @@ type CarUser @entity(immutable: false) {
   user: UserProfileEntity!
   cars: [CarInfo!]! 
 }
+
+type ClaimInfo @entity(immutable: false) {
+    id: ID!
+    trip: TripEntity!
+    deadlineDateInSec: BigInt!
+    status: Int!
+    claimType: Int!
+    description: String!
+    amountInUsdCents: BigInt!
+    payDateInSec: BigInt!
+    rejectedBy: UserProfileEntity
+    rejectedDateInSec: BigInt!
+    photosUrl: String!
+    isHostClaims: Boolean!
+    amountInEth: BigInt!
+    claimTypeV2: ClaimTypeV2!
+    isInsuranceClaim: Boolean!
+    car: CarClaim @derivedFrom(field: "claims")
+
+}
+
+type CarClaim @entity(immutable: false) {
+  id: ID!
+  car: CarInfo!
+  claims: [ClaimInfo!]! 
+}
+
+type ClaimTypeV2 @entity(immutable: false) {
+    id: ID!
+    claimType: Int!
+    claimName: String!
+    creator: Int!
+}
+
+type InsuranceInfo @entity(immutable: false) {
+    id: ID!
+    companyName: String!
+    policyNumber: String!
+    photo: String!
+    comment: String!
+    insuranceType: Int!
+    createdTime: BigInt!
+    createdBy: String!
+  }

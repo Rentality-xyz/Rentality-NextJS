@@ -1,7 +1,7 @@
 import { Address, bigInt, ethereum, log } from "@graphprotocol/graph-ts"
 import { CarInfo, DeliveryPricesEntity, LocationInfo, PaymentInfoEntity, TaxesEntity, TaxValueEntity, TripEntity } from "../../generated/schema"
 import { getRentalityGateway, notImplemented } from "./helpers"
-import {RentalityEvent} from "../../generated/RentalityNotificationService/RentalityGateway";
+import {RentalityEvent} from "../../generated/RentalityNotificationService/RentalityNotificationService";
 
 export function handleTaxesEvent(event: RentalityEvent): void {
   switch (event.params.objectStatus) {

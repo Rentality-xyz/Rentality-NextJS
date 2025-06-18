@@ -5,9 +5,13 @@ import { ContractTrip, TripStatus } from "@/model/blockchain/schemas";
 import { validateContractTripDTO } from "@/model/blockchain/schemas_utils";
 import { mapTripDTOtoTripInfo } from "@/model/utils/TripDTOtoTripInfo";
 import { logger } from "@/utils/logger";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { getQueryTrips } from "@/utils/getQueryTrips";
+import { mapTripEntityToTripInfo } from "@/model/utils/TripQueryToTripInfo";
 
 const useGuestTrips = () => {
   const { rentalityContracts } = useRentality();
+  const ethereumInfo = useEthereum();
   const [isLoadingTrips, setIsLoadingTrips] = useState<boolean>(true);
   const [updateRequired, setUpdateRequired] = useState<boolean>(true);
   const [tripsBooked, setTripsBooked] = useState<TripInfo[]>([]);
@@ -211,6 +215,10 @@ const useGuestTrips = () => {
           logger.error("getTrips error: contract is null");
           return;
         }
+        if(!ethereumInfo) {
+          logger.error("getTrips error: ethereumInfo is null");
+          return;
+        }      
         const result = await rentalityContracts.gateway.getTripsAs(false);
 
         if (!result.ok) {

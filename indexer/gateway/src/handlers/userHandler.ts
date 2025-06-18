@@ -1,5 +1,5 @@
 import { CarInfo, InsuranceCarInfo, LocationInfo, TripEntity, UserCurrencyDTOEntity, UserProfileEntity } from "../../generated/schema"
-import {RentalityEvent} from "../../generated/RentalityNotificationService/RentalityGateway";
+import {RentalityEvent} from "../../generated/RentalityNotificationService/RentalityNotificationService";
 import { getRentalityGateway, getUserService, notImplemented } from "./helpers";
 import { BigInt, bigInt, log } from "@graphprotocol/graph-ts";
 import { DEFAULT_CURRENCY } from "./userCurrencyHandler";
