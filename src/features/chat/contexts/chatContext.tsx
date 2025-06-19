@@ -9,7 +9,7 @@ import { ContractChatInfo, EventType, TripStatus } from "@/model/blockchain/sche
 import { Contract, Listener } from "ethers";
 import useUserMode from "@/hooks/useUserMode";
 import { Unsubscribe, doc, onSnapshot } from "firebase/firestore";
-import { chatDbInfo } from "@/utils/firebase";
+import { chatDbInfo, loginWithPassword } from "@/utils/firebase";
 import {
   ChatId,
   FirebaseUserChat,
@@ -24,6 +24,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { useNotification } from "@/features/notifications/contexts/notificationContext";
 import { logger } from "@/utils/logger";
+import { env } from "@/utils/env";
 
 export type ChatKeysContextInfo = {
   isLoading: boolean;
@@ -388,6 +389,16 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         isChatInitializing.current = true;
         setIsLoading(true);
         logger.info(`Chat initializing...`);
+
+        const publicPlatformEmail = env.NEXT_PUBLIC_USER_EMAIL;
+        const publicPlatformPassword = env.NEXT_PUBLIC_USER_PASSWORD;
+
+        if (isEmpty(publicPlatformEmail) || isEmpty(publicPlatformPassword)) {
+          logger.debug("getChatMessages error: NEXT_PUBLIC_USER_EMAIL or NEXT_PUBLIC_USER_PASSWORD is not set");
+          return [];
+        }
+
+        await loginWithPassword(publicPlatformEmail, publicPlatformPassword);
 
         const infos = (await getChatInfosWithoutMessages(rentalityContracts)) ?? [];
 

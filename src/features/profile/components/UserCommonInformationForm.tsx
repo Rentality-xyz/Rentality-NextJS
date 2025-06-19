@@ -5,7 +5,7 @@ import { isEmpty } from "@/utils/string";
 import { Avatar } from "@mui/material";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { useRntSnackbars } from "@/contexts/rntDialogsContext";
+import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserCommonInformationFormValues, userCommonInformationFormSchema } from "./userCommonInformationFormSchema";
@@ -23,6 +23,7 @@ import { CheckboxTerms } from "@/components/common/rntCheckbox";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import { logger } from "@/utils/logger";
 import getNetworkName from "@/model/utils/NetworkName";
+import { DialogActions } from "@/utils/dialogActions";
 
 function UserCommonInformationForm({
   userProfile,
@@ -33,6 +34,7 @@ function UserCommonInformationForm({
 }) {
   const ethereumInfo = useEthereum();
   const { showInfo, showError, showSuccess, hideSnackbars } = useRntSnackbars();
+  const { showDialog, hideDialogs } = useRntDialogs();
   const { t } = useTranslation();
   const { userMode, isHost } = useUserMode();
   const { register, handleSubmit, formState, control, setValue, watch, reset } =
@@ -56,7 +58,6 @@ function UserCommonInformationForm({
   const enteredEmail = watch("email");
 
   const [verifiedPhoneNumber, setVerifiedPhoneNumber] = useState(userProfile.phoneNumber);
-  const [verifiedEmail, setVerifiedEmail] = useState(userProfile.email);
 
   useEffect(() => {
     reset({
@@ -149,7 +150,7 @@ function UserCommonInformationForm({
 
   const isCurrentPhoneNotVerified =
     (!userProfile.isPhoneNumberVerified && !isEnteredCodeCorrect) || enteredPhoneNumber !== verifiedPhoneNumber;
-  const isCurrentPhoneEmailNotVerified = !userProfile.isEmailVerified || enteredEmail !== verifiedEmail;
+  const isCurrentEmailNotVerified = !userProfile.isEmailVerified || enteredEmail !== userProfile.email;
 
   useEffect(() => {
     if (isResendCodeTimerRunning && secondsLeft > 0) {
@@ -171,13 +172,34 @@ function UserCommonInformationForm({
     }
   };
 
+  async function handleVerifyEmailClick() {
+    if (!isCurrentEmailNotVerified) {
+      showError(t("profile.email_already_verified"));
+      return;
+    }
+    if (isEmpty(userProfile.email)) {
+      showError(t("profile.pls_email"));
+      return;
+    }
+    if (enteredEmail !== userProfile.email) {
+      showError(t("profile.pls_save_email_first"));
+      return;
+    }
+
+    const action = (
+      <>
+        {DialogActions.OK(() => {
+          hideDialogs();
+          sendEmailVerificationCode();
+        })}
+        {DialogActions.Cancel(hideDialogs)}
+      </>
+    );
+    showDialog(t("profile.verify_email_confirm_message", { email: userProfile.email }), action);
+  }
+
   async function sendEmailVerificationCode() {
     try {
-      if (!enteredEmail) {
-        showError(t("profile.pls_email"));
-        return;
-      }
-
       const response = await fetch("/api/profile/sendEmailVerificationCode", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -195,6 +217,7 @@ function UserCommonInformationForm({
         // setSmsHash(result.hash);
         // setSmsTimestamp(result.timestamp);
         // startTimer();
+        showInfo(t("profile.send_email_success"));
       }
     } catch (error) {
       logger.error("sendEmailVerificationCode error:" + error);
@@ -326,8 +349,8 @@ function UserCommonInformationForm({
             {...register("email")}
             validationError={errors.email?.message}
           />
-          {isCurrentPhoneEmailNotVerified && (
-            <RntButton className="lg:w-60" onClick={sendEmailVerificationCode} disabled={isResendCodeTimerRunning}>
+          {isCurrentEmailNotVerified && (
+            <RntButton className="lg:w-60" onClick={handleVerifyEmailClick} disabled={isResendCodeTimerRunning}>
               {t("profile.verify")}
             </RntButton>
           )}

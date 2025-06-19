@@ -57,19 +57,14 @@ async function getRegisteredUsers(
 ): Promise<Result<RegisteredUser[], string>> {
   if (!kycDbInfo.db) return Err("db is null");
 
-  const CIVIC_USER_EMAIL = env.CIVIC_USER_EMAIL;
-  if (!CIVIC_USER_EMAIL || isEmpty(CIVIC_USER_EMAIL)) {
-    logger.error("getRegisteredUsers error: CIVIC_USER_EMAIL was not set");
-    return Err("CIVIC_USER_EMAIL was not set");
+  const platformEmail = env.PLATFORM_USER_EMAIL;
+  const platformPassword = env.PLATFORM_USER_PASSWORD;
+
+  if (isEmpty(platformEmail) || isEmpty(platformPassword)) {
+    return Err("PLATFORM_USER_EMAIL or PLATFORM_USER_PASSWORD is not set");
   }
 
-  const CIVIC_USER_PASSWORD = env.CIVIC_USER_PASSWORD;
-  if (!CIVIC_USER_PASSWORD || isEmpty(CIVIC_USER_PASSWORD)) {
-    logger.error("getRegisteredUsers error: CIVIC_USER_PASSWORD was not set");
-    return Err("CIVIC_USER_PASSWORD was not set");
-  }
-
-  await loginWithPassword(CIVIC_USER_EMAIL, CIVIC_USER_PASSWORD);
+  await loginWithPassword(platformEmail, platformPassword);
 
   const kycInfoDocsResult = await readDocsFromFirebaseDb(kycDbInfo.db, kycDbInfo.collections.kycInfos);
 

@@ -23,6 +23,7 @@ function useFetchAvailableCurrencies() {
   const queryResult = useQuery<QueryData>({
     queryKey: [AVAILABLE_CURRENCY_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
     queryFn: async () => fetchAvailableCurrencies(rentalityContracts, ethereumInfo),
+    refetchOnWindowFocus: false,
   });
 
   const data = queryResult.data ?? [emptyAvailableCurrency];

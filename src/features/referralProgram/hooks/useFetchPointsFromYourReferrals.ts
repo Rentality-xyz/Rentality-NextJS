@@ -31,6 +31,7 @@ function useFetchPointsFromYourReferrals(initialPage: number = 1, initialItemsPe
   } = useQuery({
     queryKey: [REFERRAL_POINTS_FROM_YOUR_REFERRALS_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
     queryFn: async () => fetchPointsFromYourReferrals(rentalityContracts, ethereumInfo, t),
+    refetchOnWindowFocus: false,
   });
 
   const totalPageCount = useMemo(() => {
