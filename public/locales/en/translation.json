@@ -823,6 +823,12 @@
     "edit_profile": "Edit Profile",
     "logout": "Logout"
   },
+  "cookie_banner": {
+    "explanation": "We use cookies and similar technologies to enhance your experience, analyze traffic,\nand deliver content. By clicking “Accept”,\nyou consent to these technologies. Click “Decline” to continue without optional cookies. ",
+    "learn_more": "Learn more",
+    "accept": "Accept",
+    "decline": "Decline"
+  },
   "insurance": {
     "page_title": "Insurance",
     "please_enter_your_insurance": "Please, enter you General Insurance ID or/and One-Time trip insurance",
