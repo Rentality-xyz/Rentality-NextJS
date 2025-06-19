@@ -26,6 +26,9 @@ export default async function aiAssessmentHandler(req: NextApiRequest, res: Next
 
     const jsonData = req.body;
     const case_number = jsonData.data.case_number;
+
+    logger.info(`\nCalling aiAssessment API with params: 'case_number'=${case_number}`);
+
     const { chainId } = parseAiDamageAnalyzeCaseNumber(case_number);
     if (!chainId) {
       logger.error("API aiAssessment error: chain id was not set");

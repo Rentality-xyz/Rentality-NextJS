@@ -37,6 +37,10 @@ export default async function analyzeDamagesHandler(req: NextApiRequest, res: Ne
     return;
   }
 
+  logger.info(
+    `\nCalling AnalyzeDamages API with params: 'tripId'=${requestResult.value.tripId} | 'vinNumber'=${requestResult.value.vinNumber} | 'caseNumber'=${requestResult.value.caseNumber} | 'chainId'=${requestResult.value.chainId} | 'pre'=${requestResult.value.pre}`
+  );
+
   const getApiAccessTokenResult = await getApiAccessToken(
     envsResult.value.baseUrl,
     envsResult.value.accountSid,
@@ -58,6 +62,7 @@ export default async function analyzeDamagesHandler(req: NextApiRequest, res: Ne
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
+  logger.info(`\nCase created: 'token'=${createCaseResult.value.token}`);
 
   const saveCasePhotosResult = await saveCasePhotos(
     requestResult.value.tripId,
