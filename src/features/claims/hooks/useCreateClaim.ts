@@ -55,7 +55,7 @@ const useCreateClaim = () => {
           photosUrl: saveFilesResult.value.urls.join("|"),
         };
 
-        const result = await rentalityContracts.gateway.createClaim(claimRequest);
+        const result = await rentalityContracts.gateway.createClaim(claimRequest, false);
 
         // const message = encodeClaimChatMessage(createClaimRequest);
         // chatContextInfo.sendMessage(

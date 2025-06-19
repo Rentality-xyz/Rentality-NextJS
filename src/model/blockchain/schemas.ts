@@ -241,6 +241,10 @@ export type ContractClaim = {
   isHostClaims: boolean;
 };
 
+export type ContractHostInsuranceRule = {
+  partToInsurance: bigint;
+}
+
 export type ContractCreateClaimRequest = {
   tripId: bigint;
   claimType: bigint;
