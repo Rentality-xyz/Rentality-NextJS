@@ -19,11 +19,7 @@ export type SendEmailVerificationCodeBodyParams = {
   chainId: number;
 };
 
-export default async function sendEmailVerificationCodeHandler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-  checkUrlBase: string
-) {
+export default async function sendEmailVerificationCodeHandler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     logger.error(`sendEmailVerificationCode error: method not allowed`);
     res.status(405).json({ error: "Method not allowed" });
@@ -61,6 +57,8 @@ export default async function sendEmailVerificationCodeHandler(
 
   const { email } = getUserInfoResult.value.additionalKYC;
 
+  const baseUrl = env.BASE_URL;
+  const checkUrlBase = `${baseUrl}/api/profile/checkEmailVerificationCode`;
   const generateVerificationLinkResult = getVerificationLink(walletAddress, chainId, email, checkUrlBase);
   if (!generateVerificationLinkResult.ok) {
     logger.error(`sendEmailVerificationCodeHandler error: ${generateVerificationLinkResult.error.message}`);
@@ -97,6 +95,11 @@ function validateEnvs(chainId: number): Result<boolean> {
   const VERIFICATION_HMAC_SHA256_SECRET_KEY = env.VERIFICATION_HMAC_SHA256_SECRET_KEY;
   if (isEmpty(VERIFICATION_HMAC_SHA256_SECRET_KEY)) {
     return Err(new Error("VERIFICATION_HMAC_SHA256_SECRET_KEY was not set"));
+  }
+
+  const baseUrl = env.BASE_URL;
+  if (isEmpty(baseUrl)) {
+    return Err(new Error("BASE_URL was not set"));
   }
 
   const adminPrivateKey = env.ADMIN_VIEWER_PRIVATE_KEY;

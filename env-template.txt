@@ -86,3 +86,4 @@ NOTIFICATION_SMTP_PASSWORD="<SMTP password>"
 INDEXER_API_URL="<indexer API url>"
 
 API_AUTH_TOKEN="<Rentality API token>"
+BASE_URL="<Base URL (ex demo.rentality.io)>"

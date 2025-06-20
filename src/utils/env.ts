@@ -43,6 +43,7 @@ export const env = createEnv({
     INDEXER_API_URL: z.string(),
 
     API_AUTH_TOKEN: z.string(),
+    BASE_URL: z.string(),
   },
   client: {
     NEXT_PUBLIC_INCLUDE_MAINNETS: booleanEnvType(),
