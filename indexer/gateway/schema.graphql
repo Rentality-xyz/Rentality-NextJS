@@ -41,7 +41,7 @@ type CarInfo @entity(immutable: false) {
   taxes: TaxesEntity
   locationInfo: LocationInfo!
   insuranceCarInfo: InsuranceCarInfo!
-  claims: CarClaim @derivedFrom(field: "car")
+  claims: [CarClaim!] @derivedFrom(field: "car")
   
  
 }
@@ -64,8 +64,8 @@ type LocationInfo @entity(immutable: false) {
   carId: BigInt!
   car: CarTrip @derivedFrom(field: "trips") 
   status: Int!
-  guest: UserProfileEntity!
-  host: UserProfileEntity!
+  guest: UserProfileEntity
+  host: UserProfileEntity
   pricePerDayInUsdCents: BigInt!
   startDateTime: BigInt!
   endDateTime: BigInt!
@@ -241,14 +241,16 @@ type ClaimInfo @entity(immutable: false) {
     amountInEth: BigInt!
     claimTypeV2: ClaimTypeV2!
     isInsuranceClaim: Boolean!
-    car: CarClaim @derivedFrom(field: "claims")
+    car: CarClaim! @derivedFrom(field: "claims") 
+    host: UserProfileEntity!
+    guest: UserProfileEntity
 
 }
 
 type CarClaim @entity(immutable: false) {
   id: ID!
   car: CarInfo!
-  claims: [ClaimInfo!]! 
+  claims: [ClaimInfo!]!
 }
 
 type ClaimTypeV2 @entity(immutable: false) {

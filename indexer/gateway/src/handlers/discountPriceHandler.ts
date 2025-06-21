@@ -16,8 +16,11 @@ export function hanldeDiscountEvents(event: RentalityEvent): void {
 }
 }
 
-function handleUserDiscountPrice(event: RentalityEvent): void {
+export function handleUserDiscountPrice(event: RentalityEvent): void {
 
+  if( BaseDiscountEntity.load(DEFAULT_DISCOUNT_PRICE) == null) {
+    handleAdminDiscountPrice(event);
+  }
   let contract = getRentalityGateway();
   let discountPrices = contract.try_getDiscount(event.params.from)
 

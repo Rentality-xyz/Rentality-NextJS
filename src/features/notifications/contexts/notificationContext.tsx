@@ -19,6 +19,8 @@ import { logger } from "@/utils/logger";
 import { fetchDefaultRpcUrl } from "../utils/fetchDefaultRpcUrl";
 import { isEmpty } from "@/utils/string";
 import { sleep } from "@/utils/sleep";
+import { getQueryTrips } from "@/utils/getQueryTrips";
+import { getQueryClaims } from "@/utils/getQueryClaims";
 
 export type NotificationContextInfo = {
   isLoading: boolean;
@@ -201,7 +203,6 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
 
         const toBlock = await ethereumInfo.provider.getBlockNumber();
         const fromBlock = getFromBlock(ethereumInfo.chainId, toBlock);
-
         const getTripsResult = await rentalityContracts.gateway.getTripsAs(isHost);
         const getMyClaimsResult = await rentalityContracts.gateway.getMyClaimsAs(isHost);
 

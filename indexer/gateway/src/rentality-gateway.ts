@@ -41,8 +41,10 @@ export function handleRentalityEvent(event: RentalityEvent): void {
       default: notImplemented(event);
       break;
 
+    
 }
 }
+// 26966177
 
 
 

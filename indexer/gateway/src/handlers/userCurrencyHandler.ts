@@ -16,7 +16,10 @@ export function handlerCurrencyEvent(event: RentalityEvent): void {
 }
 }
 
-function handleUserCurrency(event: RentalityEvent): void {
+export function handleUserCurrency(event: RentalityEvent): void {
+  if (UserCurrencyDTOEntity.load(DEFAULT_CURRENCY) == null) {
+    handleAdminCurrency(event);
+  }
 
   let contract = getRentalityGateway();
   let userCurrency = contract.try_getUserCurrency(event.params.from)

@@ -15,7 +15,10 @@ export function hanldeDeliveryEvents(event: RentalityEvent): void {
 }
 }
 
-function handleUserDeliveryPrice(event: RentalityEvent): void {
+export function handleUserDeliveryPrice(event: RentalityEvent): void {
+  if( DeliveryPricesEntity.load(DEFAULT_DELIVERY_PRICE) == null) {
+    handleAdminDeliveryPrice(event);
+  }
 
   let contract = getRentalityGateway();
   let delivertPrices = contract.try_getUserDeliveryPrices(event.params.from)

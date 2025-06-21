@@ -16,13 +16,11 @@ function handleUpdateClaimEvent(event: RentalityEvent): void {
   let entity = ClaimInfo.load(event.params.id.toString());
   let newClaim = false;
   if (entity == null) {
-    entity == new ClaimInfo(event.params.id.toString());
+    entity = new ClaimInfo(event.params.id.toString());
     newClaim = true;
-    return;
-  }
+  };
   let contract = getRentalityGateway();
   let claimInfoResult = contract.try_getClaim(event.params.id);
-
   if (claimInfoResult.reverted) {
     log.warning("getClaim reverted for claimId: {}", [event.params.id.toString()]);
     return;
@@ -30,6 +28,10 @@ function handleUpdateClaimEvent(event: RentalityEvent): void {
   
   entity.amountInEth = claimInfoResult.value.amountInEth;
   entity.amountInUsdCents = claimInfoResult.value.claim.amountInUsdCents;
+  if(ClaimTypeV2.load(claimInfoResult.value.claimType.claimType.toString()) == null) { 
+    handleAddClaimTypeEvent(event);
+  }
+  
   entity.claimType = claimInfoResult.value.claim.claimType;
   entity.deadlineDateInSec = claimInfoResult.value.claim.deadlineDateInSec;
   entity.description = claimInfoResult.value.claim.description;
@@ -41,22 +43,24 @@ function handleUpdateClaimEvent(event: RentalityEvent): void {
   entity.rejectedDateInSec = claimInfoResult.value.claim.rejectedDateInSec;
   entity.photosUrl = claimInfoResult.value.claim.photosUrl;
   entity.isHostClaims = claimInfoResult.value.claim.isHostClaims;
+  entity.rejectedBy = claimInfoResult.value.claim.rejectedBy.toHexString();
+  entity.host = claimInfoResult.value.host.toHexString();
+  entity.guest = claimInfoResult.value.guest.toHexString();
 
 
-
-  if (newClaim) {
-  let carClaimId = claimInfoResult.value.carInfo.carId.toString()
-  let carClaim = CarClaim.load(carClaimId);
-  if (carClaim == null) {
-  carClaim = new CarClaim(carClaimId);
-  carClaim.car = carClaimId
-  carClaim.claims = [];
-}
-  const hClaims = carClaim.claims;
-  hClaims.push(event.params.id.toString()); 
-  carClaim.claims = hClaims; 
-
-  carClaim.save();
+  if(newClaim) {
+    const carIdStr = claimInfoResult.value.carInfo.carId.toString();
+    let carClaim = CarClaim.load(carIdStr);
+    if (!carClaim) {
+      carClaim = new CarClaim(carIdStr);
+      carClaim.car = carIdStr
+      carClaim.claims = [];
+    }
+    const claims = carClaim.claims;
+    claims.push(event.params.id.toString()); 
+    carClaim.claims = claims; 
+  
+    carClaim.save();
 }
 
 
@@ -65,6 +69,7 @@ function handleUpdateClaimEvent(event: RentalityEvent): void {
     log.warning("getHostInsuranceClaims reverted for claimId: {}", [event.params.id.toString()]);
     return;
   }
+  entity.isInsuranceClaim = false;
   for (let i = 0; i < insuranceClaims.value.length; i++) { 
     if( insuranceClaims.value[i].claimId.toString() == claimInfoResult.value.claim.claimId.toString()) {
       entity.isInsuranceClaim = true;
@@ -96,18 +101,19 @@ export function handleAddClaimTypeEvent(event: RentalityEvent): void {
       log.warning("getAllClaimTypes reverted for claimTypeId: {}", [event.params.id.toString()]);
       return;
     }
-    allClaimTypes.concat(claimTypesHost.value);
-
+  allClaimTypes = allClaimTypes.concat(claimTypesHost.value);
 
     for (let i = 0; i < allClaimTypes.length; i++) {
-        if (allClaimTypes[i].claimType.toString() == event.params.id.toString()) {
-          let entity = new ClaimTypeV2(i.toString());
-            entity.claimType = allClaimTypes[i].claimType;
+      let entity = new ClaimTypeV2(allClaimTypes[i].claimType.toString());
+      const id = allClaimTypes[i].claimType.toString();
+      log.warning("ClaimTypeV2 id: {}", [id]);
+    
+
+      entity.claimType = allClaimTypes[i].claimType;
             entity.claimName = allClaimTypes[i].claimName;
             entity.creator = allClaimTypes[i].creator;
             entity.save();
-            return;
         }
-    } 
+    
 
   }

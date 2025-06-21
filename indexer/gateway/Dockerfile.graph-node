@@ -15,3 +15,6 @@ CMD ["graph-node", \
     "--postgres-url", "postgresql://postgres:postgres@postgres:5432/graph-node", \
     "--ethereum-rpc", "base-sepolia:https://base-sepolia.gateway.tenderly.co/", \
     "--ipfs", "https://ipfs.network.thegraph.com/"]
+
+    # "base-sepolia:https://base-sepolia.gateway.tenderly.co/"
+

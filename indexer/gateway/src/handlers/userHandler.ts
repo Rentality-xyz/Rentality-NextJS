@@ -2,9 +2,9 @@ import { CarInfo, InsuranceCarInfo, LocationInfo, TripEntity, UserCurrencyDTOEnt
 import {RentalityEvent} from "../../generated/RentalityNotificationService/RentalityNotificationService";
 import { getRentalityGateway, getUserService, notImplemented } from "./helpers";
 import { BigInt, bigInt, log } from "@graphprotocol/graph-ts";
-import { DEFAULT_CURRENCY } from "./userCurrencyHandler";
-import { DEFAULT_DELIVERY_PRICE } from "./deliveryPriceHandler";
-import { DEFAULT_DISCOUNT_PRICE } from "./discountPriceHandler";
+import { DEFAULT_CURRENCY, handleUserCurrency } from "./userCurrencyHandler";
+import { DEFAULT_DELIVERY_PRICE, handleUserDeliveryPrice } from "./deliveryPriceHandler";
+import { DEFAULT_DISCOUNT_PRICE, handleUserDiscountPrice } from "./discountPriceHandler";
 
 
 export function handleUserEvent(event: RentalityEvent): void {
@@ -16,9 +16,9 @@ export function handleUserEvent(event: RentalityEvent): void {
     newProfile = true;
     }
     if(newProfile) {
-        userEntity.userCurrency = DEFAULT_CURRENCY;
-        userEntity.deliveryPrice = DEFAULT_DELIVERY_PRICE;
-        userEntity.discountPrice = DEFAULT_DISCOUNT_PRICE;
+        handleUserDeliveryPrice(event);
+        handleUserCurrency(event);
+        handleUserDiscountPrice(event);
     }
     
     const contract = getUserService();
@@ -45,6 +45,8 @@ function initializeEmpty():void {
     let entity = new UserProfileEntity(DEFAULT_CURRENCY)
     
     entity.userCurrency = DEFAULT_CURRENCY;
+
+  
     entity.deliveryPrice = DEFAULT_DELIVERY_PRICE;
     entity.discountPrice = DEFAULT_DISCOUNT_PRICE;
       

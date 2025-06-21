@@ -169,6 +169,7 @@ export function handleTripCreationEvent(event: RentalityEvent): void {
   tripInsurance.companyName = tripDTO.insurancesInfo[i].companyName;
   tripInsurance.policyNumber = tripDTO.insurancesInfo[i].policyNumber;
   tripInsurance.createdTime = tripDTO.insurancesInfo[i].createdTime;
+  tripInsurance.createdBy = tripDTO.insurancesInfo[i].createdBy.toHexString();
   tripInsurance.insuranceType = tripDTO.insurancesInfo[i].insuranceType;
   tripInsurance.photo = tripDTO.insurancesInfo[i].photo;
   tripInsurance.save();
