@@ -40,6 +40,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import getNetworkName from "@/model/utils/NetworkName";
 import { logger } from "@/utils/logger";
 import { flattenErrors } from "@/utils/forms";
+import { analyticsPromise } from "@/utils/firebase";
 
 export default function CarEditForm({
   initValue,
@@ -60,6 +61,11 @@ export default function CarEditForm({
   const [nftName, setNftName] = useState<string>("");
   const [nftSym, setNftSym] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
+
+  useEffect(() => {
+    // @ts-ignore
+    console.log(`Edit car init data: ${initValue.transmission} ${initValue.engineTypeText} ${initValue.currentlyListed}`)
+  }, [initValue]);
 
   const { register, control, handleSubmit, formState, setValue, watch } = useForm<CarEditFormValues>({
     defaultValues:
