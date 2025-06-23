@@ -40,7 +40,6 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import getNetworkName from "@/model/utils/NetworkName";
 import { logger } from "@/utils/logger";
 import { flattenErrors } from "@/utils/forms";
-import { analyticsPromise } from "@/utils/firebase";
 
 export default function CarEditForm({
   initValue,
