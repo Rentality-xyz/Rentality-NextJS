@@ -9,6 +9,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { DialogActions } from "@/utils/dialogActions";
 import { t } from "i18next";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
+import CookieBanner from "@/components/common/CookieBanner";
 
 export default function Layout({ children }: { children?: React.ReactNode }) {
   const { isBurgerMenuShown, isFilterOnSearchPageShown } = useAppContext();
@@ -91,6 +92,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
         </div>
       </div>
       <Footer ref={footerRef} />
+      <CookieBanner />
     </>
   );
 }
