@@ -61,6 +61,11 @@ export default function CarEditForm({
   const [nftSym, setNftSym] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
 
+  useEffect(() => {
+    // @ts-ignore
+    console.log(`Edit car init data: ${initValue.transmission} ${initValue.engineTypeText} ${initValue.currentlyListed}`)
+  }, [initValue]);
+
   const { register, control, handleSubmit, formState, setValue, watch } = useForm<CarEditFormValues>({
     defaultValues:
       editMode !== "newCar" && initValue !== undefined
