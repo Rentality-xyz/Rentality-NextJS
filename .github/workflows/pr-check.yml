@@ -92,5 +92,6 @@ jobs:
           ENVKEY_NOTIFICATION_SMTP_PASSWORD: ${{ secrets.NOTIFICATION_SMTP_PASSWORD }}
           ENVKEY_INDEXER_API_URL: ${{ secrets.INDEXER_API_URL }}
           ENVKEY_API_AUTH_TOKEN: ${{ secrets.API_AUTH_TOKEN }}
+          ENVKEY_BASE_URL: ${{ vars.BASE_URL }}
       - name: "Build Rentality App"
         run: make build
