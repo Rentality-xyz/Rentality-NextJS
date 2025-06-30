@@ -140,7 +140,7 @@ export interface IRentalityGatewayContract extends IEthersContract {
   calculateClaimValue(claimId: bigint): Promise<bigint>;
   payClaim(claimId: bigint, value: object): Promise<ContractTransactionResponse>;
   rejectClaim(claimId: bigint): Promise<ContractTransactionResponse>;
-  getHostInsuranceClaims(): Promise<ContractClaimV2[]>;
+  getHostInsuranceClaims(): Promise<ContractFullClaimInfo[]>;
   setHostInsurance(insuranceId: bigint): Promise<ContractTransactionResponse>;
   getHostInsuranceRule(host: string): Promise<ContractHostInsuranceRule>;
   getAllInsuranceRules(): Promise<ContractHostInsuranceRule[]>;
