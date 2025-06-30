@@ -243,6 +243,7 @@ export type ContractClaim = {
 
 export type ContractHostInsuranceRule = {
   partToInsurance: bigint;
+  insuranceId: bigint;
 }
 
 export type ContractCreateClaimRequest = {
