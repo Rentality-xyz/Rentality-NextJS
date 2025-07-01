@@ -132,8 +132,10 @@ export default function AddGuestInsurance({}: AddGuestInsuranceProps) {
                         value={field.value}
                         onChange={(e) => {
                           logger.info(`RntSelect onChange ${e.target.value}`);
-
-                          field.onChange(Number(e.target.value));
+                          const value = Number(e.target.value)
+                          if (value !== 0) {
+                            field.onChange(value);
+                          }
                         }}
                         validationError={errors.selectedTripId?.message?.toString()}
                       >
