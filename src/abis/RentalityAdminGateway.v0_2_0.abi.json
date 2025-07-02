@@ -652,7 +652,8 @@
               ]
             },
             { "type": "bool", "name": "isPhoneVerified" },
-            { "type": "bool", "name": "isEmailVerified" }
+            { "type": "bool", "name": "isEmailVerified" },
+            { "type": "string", "name": "pushToken" }
           ]
         }
       ]
@@ -889,14 +890,6 @@
       "constant": false,
       "payable": false,
       "inputs": [{ "type": "address", "name": "newOwner" }],
-      "outputs": []
-    },
-    {
-      "type": "function",
-      "name": "updateDeliveryService",
-      "constant": false,
-      "payable": false,
-      "inputs": [{ "type": "address", "name": "contractAddress" }],
       "outputs": []
     },
     {

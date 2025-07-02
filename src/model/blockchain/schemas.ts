@@ -358,6 +358,7 @@ export type ContractFullKYCInfoDTO = {
   additionalKYC: ContractAdditionalKYCInfo;
   isPhoneVerified: boolean;
   isEmailVerified: boolean;
+  pushToken: string;
 };
 
 export type ContractAdminKYCInfoDTO = {
