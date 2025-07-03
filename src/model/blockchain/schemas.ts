@@ -366,6 +366,7 @@ export type ContractAdminKYCInfoDTO = {
   additionalKYC: ContractAdditionalKYCInfo;
   isEmailVerified: boolean;
   wallet: string;
+  pushToken: string;
 };
 
 export type ContractAdminKYCInfosDTO = {
