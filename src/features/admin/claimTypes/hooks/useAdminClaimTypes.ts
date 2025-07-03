@@ -84,7 +84,7 @@ function useAdminClaimTypes() {
 
   return {
     isLoading,
-    data: { data: data.sort((a, b) => b.claimTypeId - a.claimTypeId)},
+    data: { data: data.sort((a, b) => a.claimTypeId - b.claimTypeId)},
     fetchData,
   } as const;
 }
