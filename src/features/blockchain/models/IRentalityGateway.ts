@@ -50,6 +50,7 @@ export interface IRentalityGatewayContract extends IEthersContract {
     TCSignature: string,
     hash: string
   ): Promise<ContractTransactionResponse>;
+  setPushToken(user: string, pushToken: string): Promise<ContractTransactionResponse>;
   setCivicKYCInfo(user: string, civicKycInfo: ContractCivicKYCInfo): Promise<ContractTransactionResponse>;
   setMyCivicKYCInfo(civicKycInfo: ContractCivicKYCInfo): Promise<ContractTransactionResponse>;
   getKycCommission(): Promise<bigint>;
