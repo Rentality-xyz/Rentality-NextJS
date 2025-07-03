@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { formatEther } from "viem";
 import { logger } from "@/utils/logger";
 
-const OPBNB_TESTNET = "opbnb_testnet";
+const OPBNB_TESTNET = "opBNB Testnet";
 
 export type EthereumInfo = {
   provider: BrowserProvider;
