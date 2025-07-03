@@ -30,7 +30,6 @@ export async function querySearchCar(searchParams: ContractSearchCarParams, star
      query: gql(query),
      variables,
    })
-  
    return response.data
 
 }
@@ -38,7 +37,7 @@ export async function querySearchCar(searchParams: ContractSearchCarParams, star
 export function mapSearchQuery(
     data: GetCarInfosResponse,
     startDateTime: number, endDateTime: number, pickUpLocation: ContractLocationInfo, returnLocation: ContractLocationInfo, userHomeLocation: ContractLocationInfo): MappedSearchQuery[] {
-  return data.carInfos.filter(c => c.trips.length > 0 && c.trips[0].trips.length === 0).
+  return data.carInfos.filter(c => (c.trips.length > 0 && c.trips[0].trips.length === 0) || c.trips.length === 0).
     map(c =>{ 
         const tripDays = calculateTotalTripDays(startDateTime, endDateTime)
         const priceWithDiscount = calculateSumWithDiscount(tripDays, Number.parseInt(c.pricePerDayInUsdCents), c.user.user.discountPrice)
