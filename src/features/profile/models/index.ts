@@ -12,6 +12,7 @@ export type UserProfile = {
   issueCountry: string;
   email: string;
   isEmailVerified: boolean;
+  pushToken: string;
 };
 
 export const emptyUserProfile: UserProfile = {
@@ -28,4 +29,5 @@ export const emptyUserProfile: UserProfile = {
   issueCountry: "",
   email: "",
   isEmailVerified: false,
+  pushToken: "",
 };

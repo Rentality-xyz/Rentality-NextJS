@@ -10,10 +10,13 @@ import { DialogActions } from "@/utils/dialogActions";
 import { t } from "i18next";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import CookieBanner from "@/components/common/CookieBanner";
+import { useNativePushToken } from "@/features/pushNotifications/useNativePushToken";
 
 export default function Layout({ children }: { children?: React.ReactNode }) {
   const { isBurgerMenuShown, isFilterOnSearchPageShown } = useAppContext();
   const { userMode, isHost, isAdmin } = useUserMode();
+
+  useNativePushToken();
 
   useEffect(() => {
     const body = document.body;
