@@ -2,6 +2,7 @@ import { ChangeEvent, MouseEventHandler } from "react";
 import RntInput from "./rntInput";
 import RntButton from "./rntButton";
 import { cn } from "@/utils";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
 
 export default function RntInputWithButton({
   className,
@@ -34,7 +35,7 @@ export default function RntInputWithButton({
 }) {
   return (
     <div className="flex w-full flex-row gap-4">
-      <RntInput
+      <RntInputTransparent
         className={cn(className, "flex-1")}
         labelClassName={labelClassName}
         inputClassName={inputClassName}

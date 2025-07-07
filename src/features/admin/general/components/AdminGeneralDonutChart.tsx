@@ -15,7 +15,7 @@ const COLORS = [
 ];
 
 export const AdminGeneralDonutChart = () => (
-  <div className="mx-auto flex rounded-xl bg-[#181628] p-6">
+  <div className="flex rounded-xl bg-[#181628] p-6">
     <PieChart width={450} height={250}>
       <Pie
         data={data}

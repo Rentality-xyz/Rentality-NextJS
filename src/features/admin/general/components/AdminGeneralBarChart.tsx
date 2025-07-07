@@ -23,6 +23,7 @@ export default function AdminGeneralBarChart() {
         padding: "1rem",
         borderRadius: "1rem",
         height: "300px",
+        width: "100%",
       }}
     >
       <ResponsiveContainer width="100%" height="100%">

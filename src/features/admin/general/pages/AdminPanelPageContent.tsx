@@ -11,6 +11,8 @@ import { env } from "@/utils/env";
 import ManageRole from "@/features/admin/general/components/ManageRole";
 import { AdminGeneralDonutChart } from "@/features/admin/general/components/AdminGeneralDonutChart";
 import AdminGeneralBarChart from "@/features/admin/general/components/AdminGeneralBarChart";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
+import RntInformationTile from "@/components/common/RntInformationTile";
 
 function AdminPanelPageContent() {
   const {
@@ -167,29 +169,39 @@ function AdminPanelPageContent() {
   return (
     <>
       <PageTitle title="Contract info" />
-      <AdminGeneralDonutChart></AdminGeneralDonutChart>
-      <AdminGeneralBarChart></AdminGeneralBarChart>
-      <div className="grid grid-cols-2 gap-4 text-lg">
-        <RntInput
-          id="balance"
-          label="Platform contract balance:"
-          value={adminContractInfo.platformBalance + " ETH"}
-          readOnly={true}
-        />
-        <RntInput
-          id="balance1"
-          label="Payment contract balance:"
-          value={adminContractInfo.paymentBalance + " ETH"}
-          readOnly={true}
-        />
-        <RntInput
-          className="col-span-2"
-          id="owner"
-          label={t_admin("owner_addr")}
-          value={adminContractInfo.ownerAddress}
-          readOnly={true}
+      <RntInputTransparent
+        className="col-span-2 mt-2"
+        id="owner"
+        label={t_admin("owner_addr")}
+        value={adminContractInfo.ownerAddress}
+        readOnly={true}
+      />
+      <div className="mt-4 flex gap-4">
+        <RntInformationTile amount={adminContractInfo.platformBalance + " ETH"} label="Platform contract balance" />
+        <RntInformationTile
+          amount={adminContractInfo.paymentBalance + " ETH"}
+          label="Payment contract balance"
+          variant={"indigo"}
         />
       </div>
+      <div className="my-4 flex w-full gap-4">
+        <AdminGeneralDonutChart></AdminGeneralDonutChart>
+        <AdminGeneralBarChart></AdminGeneralBarChart>
+      </div>
+      {/*<div className="grid grid-cols-2 gap-4 text-lg">*/}
+      {/*  <RntInput*/}
+      {/*    id="balance"*/}
+      {/*    label="Platform contract balance:"*/}
+      {/*    value={adminContractInfo.platformBalance + " ETH"}*/}
+      {/*    readOnly={true}*/}
+      {/*  />*/}
+      {/*  <RntInput*/}
+      {/*    id="balance1"*/}
+      {/*    label="Payment contract balance:"*/}
+      {/*    value={adminContractInfo.paymentBalance + " ETH"}*/}
+      {/*    readOnly={true}*/}
+      {/*  />*/}
+      {/*</div>*/}
 
       <RntInputWithButton
         id="withdraw"
