@@ -15,8 +15,8 @@ const COLORS = [
 ];
 
 export const AdminGeneralDonutChart = () => (
-  <div className="flex rounded-xl bg-[#181628] p-6">
-    <PieChart width={450} height={250}>
+  <div className="flex rounded-xl bg-[#181628] p-6 max-sm:flex-col max-sm:items-center">
+    <PieChart width={350} height={250}>
       <Pie
         data={data}
         cx="50%"
@@ -36,18 +36,20 @@ export const AdminGeneralDonutChart = () => (
         ))}
       </Pie>
     </PieChart>
-    <ul className="mt-6 space-y-2 text-sm">
-      {data.map((entry, index) => (
-        <li key={entry.name} className="flex items-center">
-          <span
-            className="mr-2 inline-block h-3 w-3 rounded-full"
-            style={{ backgroundColor: COLORS[index % COLORS.length] }}
-          />
-          <span>
-            {entry.value}% {entry.name}
-          </span>
-        </li>
-      ))}
-    </ul>
+    <div className="flex items-center justify-center">
+      <ul className="flex flex-col space-y-2">
+        {data.map((entry, index) => (
+          <li key={entry.name} className="flex items-center">
+            <span
+              className="mr-2 inline-block h-3 w-3 rounded-full"
+              style={{ backgroundColor: COLORS[index % COLORS.length] }}
+            />
+            <span>
+              {entry.value}% {entry.name}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
   </div>
 );

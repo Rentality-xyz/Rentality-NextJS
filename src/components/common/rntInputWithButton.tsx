@@ -34,7 +34,7 @@ export default function RntInputWithButton({
   onButtonClick: MouseEventHandler<HTMLButtonElement>;
 }) {
   return (
-    <div className="flex w-full flex-row gap-4">
+    <div className="flex w-full flex-row gap-4 max-md:flex-col">
       <RntInputTransparent
         className={cn(className, "flex-1")}
         labelClassName={labelClassName}
@@ -47,7 +47,7 @@ export default function RntInputWithButton({
         readOnly={readOnly}
         onChange={onChangeHandler}
       />
-      <RntButton className="w-56 self-end" disabled={buttonDisabled} onClick={onButtonClick}>
+      <RntButton className="w-56 self-end max-md:w-full" disabled={buttonDisabled} onClick={onButtonClick}>
         {buttonText}
       </RntButton>
     </div>

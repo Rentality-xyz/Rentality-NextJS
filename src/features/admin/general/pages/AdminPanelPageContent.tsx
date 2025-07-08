@@ -13,6 +13,11 @@ import { AdminGeneralDonutChart } from "@/features/admin/general/components/Admi
 import AdminGeneralBarChart from "@/features/admin/general/components/AdminGeneralBarChart";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import RntInformationTile from "@/components/common/RntInformationTile";
+import RntButton from "@/components/common/rntButton";
+import { copyToClipboard } from "@/utils/clipboard";
+import Image from "next/image";
+import * as React from "react";
+import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 
 function AdminPanelPageContent() {
   const {
@@ -169,40 +174,41 @@ function AdminPanelPageContent() {
   return (
     <>
       <PageTitle title="Contract info" />
-      <RntInputTransparent
-        className="col-span-2 mt-2"
-        id="owner"
-        label={t_admin("owner_addr")}
-        value={adminContractInfo.ownerAddress}
-        readOnly={true}
-      />
-      <div className="mt-4 flex gap-4">
-        <RntInformationTile amount={adminContractInfo.platformBalance + " ETH"} label="Platform contract balance" />
-        <RntInformationTile
-          amount={adminContractInfo.paymentBalance + " ETH"}
-          label="Payment contract balance"
-          variant={"indigo"}
-        />
+      <div className="mt-6 flex flex-col text-lg text-white md:flex-row xl:gap-4 xl:pl-4">
+        <span className="font-bold">{t_admin("owner_addr")}</span>
+        <span className="max-xl:hidden">{adminContractInfo.ownerAddress}</span>
+        <RntButton
+          className="flex h-8 w-full items-center justify-center sm:w-2/3 md:w-full xl:w-36"
+          onClick={() => copyToClipboard(adminContractInfo.ownerAddress)}
+        >
+          <Image
+            src={"/images/icons/ic_copy_white_24dp.svg"}
+            width={24}
+            height={24}
+            alt="Copy"
+            className="mr-1 h-5 w-5"
+          />
+          <span className="text-xs xl:hidden">{adminContractInfo.ownerAddress}</span>
+          <span className="max-xl:hidden">Copy</span>
+        </RntButton>
       </div>
-      <div className="my-4 flex w-full gap-4">
+      <ScrollingHorizontally className="mt-6">
+        <div className="flex flex-none gap-4">
+          <RntInformationTile
+            amount={adminContractInfo.platformBalance.toFixed(2) + " ETH"}
+            label="Platform contract balance"
+          />
+          <RntInformationTile
+            amount={adminContractInfo.paymentBalance.toFixed(2) + " ETH"}
+            label="Payment contract balance"
+            variant={"indigo"}
+          />
+        </div>
+      </ScrollingHorizontally>
+      <div className="my-6 flex w-full gap-4 max-[1440px]:flex-col">
         <AdminGeneralDonutChart></AdminGeneralDonutChart>
         <AdminGeneralBarChart></AdminGeneralBarChart>
       </div>
-      {/*<div className="grid grid-cols-2 gap-4 text-lg">*/}
-      {/*  <RntInput*/}
-      {/*    id="balance"*/}
-      {/*    label="Platform contract balance:"*/}
-      {/*    value={adminContractInfo.platformBalance + " ETH"}*/}
-      {/*    readOnly={true}*/}
-      {/*  />*/}
-      {/*  <RntInput*/}
-      {/*    id="balance1"*/}
-      {/*    label="Payment contract balance:"*/}
-      {/*    value={adminContractInfo.paymentBalance + " ETH"}*/}
-      {/*    readOnly={true}*/}
-      {/*  />*/}
-      {/*</div>*/}
-
       <RntInputWithButton
         id="withdraw"
         placeholder="0.00 ETH"
@@ -219,6 +225,7 @@ function AdminPanelPageContent() {
       />
       <RntInputWithButton
         id="platform_commission"
+        className="mt-8 md:mt-2"
         placeholder="10%"
         label="Set new platform commission (%):"
         value={newPlatformFee}
@@ -233,6 +240,7 @@ function AdminPanelPageContent() {
       />
       <RntInputWithButton
         id="kyc_commission"
+        className="mt-8 md:mt-2"
         placeholder="3"
         label="Price pass driver license verification, $:"
         value={newKycCommission}
@@ -247,6 +255,7 @@ function AdminPanelPageContent() {
       />
       <RntInputWithButton
         id="claim_waiting_time"
+        className="mt-8 md:mt-2"
         placeholder="3"
         label="Claim waiting time, sec:"
         value={newClaimWaitingTime}
@@ -262,6 +271,7 @@ function AdminPanelPageContent() {
       <ManageRole />
       <RntInputWithButton
         id="update_kyc_for_address"
+        className="mt-8 md:mt-2"
         placeholder="0x"
         label="Update KYC info for address (only KYC manager)"
         value={addressToUpdateKyc}
@@ -279,6 +289,7 @@ function AdminPanelPageContent() {
       {env.NEXT_PUBLIC_INCLUDE_TESTNETS === "true" && (
         <RntInputWithButton
           id="set_test_kyc_info_for_address"
+          className="mt-8 md:mt-2"
           placeholder="0x"
           label="Set test KYC info for address (only KYC manager)"
           value={addressToSetTestKycInfo}
@@ -299,6 +310,7 @@ function AdminPanelPageContent() {
       {env.NEXT_PUBLIC_INCLUDE_TESTNETS === "true" && (
         <RntInputWithButton
           id="create_test_trip_request"
+          className="mt-8 md:mt-2"
           placeholder="car id"
           label="Create 3 days trip request for car (with -1% price) "
           value={testCarId}

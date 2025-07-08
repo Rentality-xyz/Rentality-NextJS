@@ -1,4 +1,3 @@
-// InformationTile.tsx
 import React from "react";
 
 type Variant = "violet" | "indigo";
@@ -15,9 +14,9 @@ const VARIANT_BG: Record<Variant, string> = {
 };
 
 const RntInformationTile: React.FC<TileProps> = ({ amount, label, variant = "violet" }) => (
-  <div className="w-full max-w-xs rounded-2xl px-6 py-4" style={{ background: VARIANT_BG[variant] }}>
-    <p className="text-2xl font-semibold leading-none text-white">{amount}</p>
-    <p className="mt-1 text-sm text-white">{label}</p>
+  <div className="flex w-72 flex-col justify-center rounded-2xl px-6 py-6" style={{ background: VARIANT_BG[variant] }}>
+    <p className="text-3xl font-semibold leading-none text-white">{amount}</p>
+    <p className="mt-2 text-lg text-white">{label}</p>
   </div>
 );
 
