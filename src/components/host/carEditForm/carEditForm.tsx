@@ -38,6 +38,8 @@ import RntInputTransparent from "@/components/common/rntInputTransparent";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import getNetworkName from "@/model/utils/NetworkName";
+import { logger } from "@/utils/logger";
+import { flattenErrors } from "@/utils/forms";
 
 export default function CarEditForm({
   initValue,
@@ -57,6 +59,7 @@ export default function CarEditForm({
 
   const [nftName, setNftName] = useState<string>("");
   const [nftSym, setNftSym] = useState<string>("");
+  const [isUploading, setIsUploading] = useState(false);
 
   const { register, control, handleSubmit, formState, setValue, watch } = useForm<CarEditFormValues>({
     defaultValues:
@@ -217,8 +220,10 @@ export default function CarEditForm({
       return;
     }
 
-    setMessage(t("vehicles.wait_loading"));
+    setIsUploading(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
     const result = await saveCarInfo(carInfoFormParams, nftName, nftSym);
+    setIsUploading(false);
 
     if (result.ok) {
       if (dimoData) {
@@ -294,6 +299,9 @@ export default function CarEditForm({
     });
   }, [isVINVerified, getVINNumber, vinNumber, setValue]);
 
+  if (isUploading) {
+    return <div className={"pt-10"}>{t("vehicles.wait_loading")}</div>;
+  }
   return (
     <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]} language="en">
       <form
@@ -1099,7 +1107,12 @@ export default function CarEditForm({
             type="button"
             className="h-14 w-40"
             disabled={isSubmitting}
-            onClick={handleSubmit(async (data) => await onFormSubmit(data))}
+            onClick={handleSubmit(
+              async (data) => await onFormSubmit(data),
+              (errors) => {
+                logger.warn(`invalid form: ${JSON.stringify(flattenErrors(errors), null, 2)}`);
+              }
+            )}
           >
             {t("common.save")}
           </RntButton>

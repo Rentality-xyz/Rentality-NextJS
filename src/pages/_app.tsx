@@ -12,7 +12,6 @@ import { RntDialogsProvider } from "@/contexts/rntDialogsContext";
 import { NotificationProvider } from "@/features/notifications/contexts/notificationContext";
 import { useRouter } from "next/router";
 import { ReactElement, ReactNode, useEffect } from "react";
-import { analyticsPromise } from "@/utils/firebase";
 import { base } from "wagmi/chains";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -20,8 +19,7 @@ import { WagmiProvider } from "wagmi";
 import { wagmiConfig } from "@/wagmi.config";
 import { env } from "@/utils/env";
 import Layout from "@/components/layout/layout";
-import { initEruda, initHotjar } from "@/utils/init";
-import FacebookPixelScript from "@/components/marketing/FacebookPixelScript";
+import { initEruda } from "@/utils/init";
 import PlatformInitChecker from "@/components/common/PlatformInitChecker";
 import WalletConnectChecker from "@/components/common/WalletConnectChecker";
 import { NextComponentType, NextPage, NextPageContext } from "next";
@@ -50,14 +48,6 @@ export default function App({ Component, pageProps }: CustomAppProps) {
   const allowAnonymousAccess = Component.allowAnonymousAccess ?? false;
 
   useEffect(() => {
-    analyticsPromise;
-  }, []);
-
-  useEffect(() => {
-    initHotjar();
-  }, []);
-
-  useEffect(() => {
     initEruda();
   }, []);
 
@@ -70,7 +60,6 @@ export default function App({ Component, pageProps }: CustomAppProps) {
   } else {
     return (
       <>
-        <FacebookPixelScript />
         <Web3Setup>
           <RentalityProvider>
             <DimoAuthProvider>

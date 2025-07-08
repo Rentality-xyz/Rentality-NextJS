@@ -12,6 +12,7 @@
     "format": "npx prettier --write ."
   },
   "dependencies": {
+    "@apollo/client": "^3.13.8",
     "@civic/ethereum-gateway-react": "^1.4.5",
     "@coinbase/onchainkit": "^0.23.4",
     "@dimo-network/data-sdk": "=1.2.1",
@@ -23,7 +24,7 @@
     "@hotjar/browser": "^1.0.9",
     "@mui/material": "^5.14.12",
     "@mui/x-date-pickers": "^5.0.20",
-    "@privy-io/react-auth": "^2.9.1",
+    "@privy-io/react-auth": "2.11.1",
     "@react-google-maps/api": "^2.19.3",
     "@t3-oss/env-nextjs": "^0.11.0",
     "@tanstack/react-query": "^5.48.0",
@@ -45,6 +46,7 @@
     "ethers": "^6.13.5",
     "file-saver": "^2.0.5",
     "firebase": "^10.12.2",
+    "graphql": "^16.11.0",
     "heic2any": "^0.0.4",
     "i18next": "^23.10.1",
     "i18next-http-backend": "^2.5.0",
@@ -53,6 +55,7 @@
     "moment-timezone": "^0.5.45",
     "next": "^14.1.0",
     "next-i18next": "^15.2.0",
+    "nodemailer": "^7.0.3",
     "postcss": "^8.4.35",
     "protobufjs": "^7.3.0",
     "react": "^18.2.0",
@@ -82,6 +85,7 @@
   "devDependencies": {
     "@types/file-saver": "^2.0.7",
     "@types/google.maps": "^3.57.0",
+    "@types/nodemailer": "^6.4.17",
     "@types/react-datepicker": "^4.19.3",
     "eruda": "^3.2.3",
     "patch-package": "^8.0.0",

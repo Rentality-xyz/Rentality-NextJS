@@ -1,8 +1,7 @@
 import { isEmpty } from "@/utils/string";
 import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { kycDbInfo, storage, loginWithPassword } from "@/utils/firebase";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { kycDbInfo, storage, loginWithPassword, saveDocToFirebaseDb } from "@/utils/firebase";
 import { ref, uploadBytes } from "firebase/storage";
 import { env } from "@/utils/env";
 import moment from "moment";
@@ -304,19 +303,14 @@ async function saveDocs(address: string, docs: PiiDocData[]): Promise<Result<Pii
 async function savePiiInfoToFirebase(allInfo: AllPiiInfo, docs: PiiDocData[]): Promise<Result<boolean, string>> {
   if (!kycDbInfo.db) return Err("db is null");
 
-  const CIVIC_USER_EMAIL = env.CIVIC_USER_EMAIL;
-  if (!CIVIC_USER_EMAIL || isEmpty(CIVIC_USER_EMAIL)) {
-    logger.error("retrieveCivicData error: CIVIC_USER_EMAIL was not set");
-    return Err("CIVIC_USER_EMAIL was not set");
+  const platformEmail = env.PLATFORM_USER_EMAIL;
+  const platformPassword = env.PLATFORM_USER_PASSWORD;
+
+  if (isEmpty(platformEmail) || isEmpty(platformPassword)) {
+    return Err("PLATFORM_USER_EMAIL or PLATFORM_USER_PASSWORD is not set");
   }
 
-  const CIVIC_USER_PASSWORD = env.CIVIC_USER_PASSWORD;
-  if (!CIVIC_USER_PASSWORD || isEmpty(CIVIC_USER_PASSWORD)) {
-    logger.error("retrieveCivicData error: CIVIC_USER_PASSWORD was not set");
-    return Err("CIVIC_USER_PASSWORD was not set");
-  }
-
-  await loginWithPassword(CIVIC_USER_EMAIL, CIVIC_USER_PASSWORD);
+  await loginWithPassword(platformEmail, platformPassword);
 
   const savedDocsResult = await saveDocs(allInfo.verifiedInformation.address, docs);
 
@@ -325,15 +319,15 @@ async function savePiiInfoToFirebase(allInfo: AllPiiInfo, docs: PiiDocData[]): P
   }
   allInfo.links = savedDocsResult.value;
 
-  const kycInfoRef = doc(kycDbInfo.db, kycDbInfo.collections.kycInfos, allInfo.verifiedInformation.address);
-  const kycInfoQuerySnapshot = await getDoc(kycInfoRef);
-
-  if (!kycInfoQuerySnapshot.exists()) {
-    await setDoc(kycInfoRef, allInfo);
-  } else {
-    await updateDoc(kycInfoRef, allInfo);
+  const saveResult = await saveDocToFirebaseDb(
+    kycDbInfo.db,
+    kycDbInfo.collections.kycInfos,
+    [allInfo.verifiedInformation.address],
+    allInfo
+  );
+  if (!saveResult.ok) {
+    return Err(saveResult.error.message);
   }
-
   return Ok(true);
 }
 

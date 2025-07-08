@@ -281,6 +281,7 @@
     "pls_name": "Please enter 'Name'",
     "pls_last_name": "Please enter 'Last name'",
     "pls_phone": "Please enter 'Phone number'",
+    "pls_email": "Please enter 'Email'",
     "pls_license": "Please enter 'Driving license number'",
     "pls_license_period": "Please enter 'Driving license validity period'",
     "pls_tc": "Please confirm terms and other documents",
@@ -295,8 +296,15 @@
     "phone_not_verified": "Your phone number is not verified",
     "phone_verified": "Your phone number has been verified",
     "invalid_code": "Invalid code",
+    "email_already_verified": "This email is already verified",
+    "pls_save_email_first": "To verify email please save your changes first",
     "send_sms_err": "Error sending SMS code. Please try again",
     "verify_number_err": "Number verification error. Please try again",
+    "email_not_verified": "Your email is not verified",
+    "email_verified": "Your email has been verified",
+    "verify_email_confirm_message": "You are going to verify address {{email, string}}. If you want to edit your email address, please save your changes first",
+    "send_email_err": "Error sending email code. Please try again",
+    "send_email_success": "Verification link has been sent to your email",
     "document_type": "Document type",
     "driving_license_number": "Driving license number",
     "driving_license_validity_period": "Driving license validity period",
@@ -817,6 +825,12 @@
     "copy_address": "Copy Address",
     "edit_profile": "Edit Profile",
     "logout": "Logout"
+  },
+  "cookie_banner": {
+    "explanation": "We use cookies and similar technologies to enhance your experience, analyze traffic,\nand deliver content. By clicking “Accept”,\nyou consent to these technologies. Click “Decline” to continue without optional cookies. ",
+    "learn_more": "Learn more",
+    "accept": "Accept",
+    "decline": "Decline"
   },
   "insurance": {
     "page_title": "Insurance",

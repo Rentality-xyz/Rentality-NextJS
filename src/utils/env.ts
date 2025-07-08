@@ -8,11 +8,13 @@ export const env = createEnv({
 
     CIVIC_CLIENT_ID: z.string().optional(),
     CIVIC_CLIENT_SECRET: z.string().optional(),
-    CIVIC_USER_EMAIL: z.string().email().optional(),
-    CIVIC_USER_PASSWORD: z.string().optional(),
+
+    PLATFORM_USER_EMAIL: z.string().email(),
+    PLATFORM_USER_PASSWORD: z.string(),
 
     SIGNER_PRIVATE_KEY: z.string(),
     MANAGER_PRIVATE_KEY: z.string(),
+    ADMIN_VIEWER_PRIVATE_KEY: z.string(),
 
     PROVIDER_API_URL_1337: z.string().url().optional(),
     PROVIDER_API_URL_5611: z.string().url().optional(),
@@ -34,11 +36,22 @@ export const env = createEnv({
     TWILIO_ACCOUNT_SID: z.string(),
     TWILIO_AUTH_TOKEN: z.string(),
     VERIFICATION_HMAC_SHA256_SECRET_KEY: z.string(),
+
+    NOTIFICATION_SMTP_USER: z.string(),
+    NOTIFICATION_SMTP_PASSWORD: z.string(),
+
+    INDEXER_API_URL: z.string(),
+
+    API_AUTH_TOKEN: z.string(),
+    BASE_URL: z.string(),
   },
   client: {
     NEXT_PUBLIC_INCLUDE_MAINNETS: booleanEnvType(),
     NEXT_PUBLIC_INCLUDE_TESTNETS: booleanEnvType(),
     NEXT_PUBLIC_INCLUDE_LOCALNETS: booleanEnvType(),
+
+    NEXT_PUBLIC_USER_EMAIL: z.string().email(),
+    NEXT_PUBLIC_USER_PASSWORD: z.string(),
 
     NEXT_PUBLIC_DEFAULT_CHAIN_ID: z.coerce.number().positive(),
 
@@ -85,6 +98,9 @@ export const env = createEnv({
     NEXT_PUBLIC_INCLUDE_MAINNETS: process.env.NEXT_PUBLIC_INCLUDE_MAINNETS,
     NEXT_PUBLIC_INCLUDE_TESTNETS: process.env.NEXT_PUBLIC_INCLUDE_TESTNETS,
     NEXT_PUBLIC_INCLUDE_LOCALNETS: process.env.NEXT_PUBLIC_INCLUDE_LOCALNETS,
+
+    NEXT_PUBLIC_USER_EMAIL: process.env.NEXT_PUBLIC_USER_EMAIL,
+    NEXT_PUBLIC_USER_PASSWORD: process.env.NEXT_PUBLIC_USER_PASSWORD,
 
     NEXT_PUBLIC_DEFAULT_CHAIN_ID: process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID,
 

@@ -18,7 +18,10 @@ export default function PanelFilteringByPrice({
   defaultSearchCarFilters,
 }: IPanelFilterProps) {
   const minPrice = 0;
-  const maxPrice = maxValue !== undefined && Number.isFinite(maxValue) ? maxValue : DEFAULT_MAX_FILTER_PRICE;
+  const maxPrice =
+    maxValue !== undefined && Number.isFinite(maxValue) && maxValue < DEFAULT_MAX_FILTER_PRICE
+      ? maxValue
+      : DEFAULT_MAX_FILTER_PRICE;
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [value, setValue] = useState([

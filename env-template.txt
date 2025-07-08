@@ -18,11 +18,13 @@ PRIVY_VERIFICATION_KEY="<Privy verification key>"
 
 NEXT_PUBLIC_CIVIC_GATEKEEPER_NETWORK="<Civic gatekeeper network>"
 CIVIC_CLIENT_ID="<Civic client id>"
-CIVIC_CLIENT_SECRET="<Civic client secret>"
-CIVIC_USER_EMAIL="<Civic user email>"
-CIVIC_USER_PASSWORD="<Civic user password>"
+CIVIC_CLIENT_SECRET="<Civic client secret>" 
+NEXT_PUBLIC_USER_EMAIL="<Public user email>"
+NEXT_PUBLIC_USER_PASSWORD="<Public user password>"
+PLATFORM_USER_EMAIL="<Platform user email>"
+PLATFORM_USER_PASSWORD="<Platform user password>" 
 
-NEXT_PUBLIC_GOOGLE_MAPS_API_KEY="<Google map api key>" 
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY="<Google map API key>" 
 GOOGLE_MAPS_API_KEY="<Google map api key>" 
 PROVIDER_API_URL_1337="http://127.0.0.1:7545"
 PROVIDER_API_URL_5611="<Provider API URL for CHAIN_ID 5611>"
@@ -33,6 +35,7 @@ PROVIDER_API_URL_11155420="<Provider API URL for CHAIN_ID 11155420>"
 
 SIGNER_PRIVATE_KEY="<Wallet private key for signing structs>"
 MANAGER_PRIVATE_KEY="<Wallet private key (for KYC pass)>"
+ADMIN_VIEWER_PRIVATE_KEY="<Wallet private key (for admin viewer)>"
 TEST_WALLETS_ADDRESSES="<comma seperated wallet addresses>"
 
 #Firebase (Analytics and firestore)
@@ -74,3 +77,13 @@ NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SECRETKEY="<Ai damage analyze account secr
 TWILIO_ACCOUNT_SID="<Twilio account SID>"
 TWILIO_AUTH_TOKEN="<Twilio auth token>"
 VERIFICATION_HMAC_SHA256_SECRET_KEY="<sha256 secret key>"
+
+#NOTIFICATIONS
+NOTIFICATION_SMTP_USER="<SMTP user>"
+NOTIFICATION_SMTP_PASSWORD="<SMTP password>"
+
+#Indexer
+INDEXER_API_URL="<indexer API url>"
+
+API_AUTH_TOKEN="<Rentality API token>"
+BASE_URL="<Base URL (ex demo.rentality.io)>"

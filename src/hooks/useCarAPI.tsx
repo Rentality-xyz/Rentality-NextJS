@@ -3,8 +3,7 @@ import axios from "@/utils/cachedAxios";
 import { isEmpty } from "@/utils/string";
 import { env } from "@/utils/env";
 import { VinInfo } from "@/pages/api/car-api/vinInfo";
-import { cacheDbInfo } from "@/utils/firebase";
-import { collection, addDoc, getDocs, deleteDoc } from "firebase/firestore";
+import { cacheDbInfo, loginWithPassword, readDocFromFirebaseDb, saveDocToFirebaseDb } from "@/utils/firebase";
 import { logger } from "@/utils/logger";
 
 export type CarAPIMetadata = {
@@ -47,6 +46,8 @@ async function getNewAuthToken() {
     throw new Error("CARAPI_TOKEN is not set");
   }
 
+  logger.debug("getNewAuthToken: Requesting new auth token");
+
   const response = await axios.post(
     "https://carapi.app/api/auth/login",
     {
@@ -68,32 +69,43 @@ async function getNewAuthToken() {
 }
 
 export async function getAuthToken() {
-  if (!cacheDbInfo.db) return "";
+  const platformEmail = env.PLATFORM_USER_EMAIL;
+  const platformPassword = env.PLATFORM_USER_PASSWORD;
 
-  const collectionRef = collection(cacheDbInfo.db, cacheDbInfo.collections.carApi);
-  const querySnapshot = await getDocs(collectionRef);
+  if (isEmpty(platformEmail) || isEmpty(platformPassword)) {
+    logger.debug("getAuthToken error: PLATFORM_USER_EMAIL or PLATFORM_USER_PASSWORD is not set");
+    return "";
+  }
 
-  if (!querySnapshot.empty) {
-    const doc = querySnapshot.docs[0];
-    const cachedToken = doc.data().token;
+  await loginWithPassword(platformEmail, platformPassword);
 
-    if (Math.floor(Date.now() / 1000) <= getExpirationTimestamp(cachedToken)) {
-      logger.debug("Car API: Got an auth token from cache");
-      return cachedToken;
-    } else {
-      await deleteDoc(doc.ref);
-    }
+  const getTokenResult = await readDocFromFirebaseDb<{ token: string }>(
+    cacheDbInfo.db,
+    cacheDbInfo.collections.carApi,
+    ["car-api-token"]
+  );
+
+  if (!getTokenResult.ok) {
+    return "";
+  }
+
+  const cachedToken = getTokenResult.value?.token ?? null;
+
+  if (cachedToken !== null && Math.floor(Date.now() / 1000) <= getExpirationTimestamp(cachedToken)) {
+    logger.debug("Car API: Got an auth token from cache");
+    return cachedToken;
   }
 
   const newToken = await getNewAuthToken();
 
-  try {
-    await addDoc(collectionRef, {
-      token: newToken,
-    });
+  const saveResult = await saveDocToFirebaseDb(cacheDbInfo.db, cacheDbInfo.collections.carApi, ["car-api-token"], {
+    token: newToken,
+  });
+
+  if (saveResult.ok) {
     logger.debug("Car API: Posted an auth token to cache");
-  } catch (error) {
-    logger.error("Car API: Error caching auth token: ", error);
+  } else {
+    logger.error("Car API: Error caching auth token: ", saveResult.error);
   }
 
   return newToken;

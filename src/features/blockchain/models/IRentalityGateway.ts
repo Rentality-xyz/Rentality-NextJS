@@ -30,6 +30,8 @@ import {
   CaseType,
   ContractAiDamageAnalyzeCaseRequestDTO,
   ContractSearchCarsWithDistanceDTO,
+  ContractClaimV2,
+  ContractHostInsuranceRule,
 } from "@/model/blockchain/schemas";
 import { ContractTransactionResponse } from "ethers";
 import { IEthersContract } from "./IEtherContract";
@@ -48,6 +50,7 @@ export interface IRentalityGatewayContract extends IEthersContract {
     TCSignature: string,
     hash: string
   ): Promise<ContractTransactionResponse>;
+  setPushToken(user: string, pushToken: string): Promise<ContractTransactionResponse>;
   setCivicKYCInfo(user: string, civicKycInfo: ContractCivicKYCInfo): Promise<ContractTransactionResponse>;
   setMyCivicKYCInfo(civicKycInfo: ContractCivicKYCInfo): Promise<ContractTransactionResponse>;
   getKycCommission(): Promise<bigint>;
@@ -55,6 +58,8 @@ export interface IRentalityGatewayContract extends IEthersContract {
   payKycCommission(currency: string, value: object): Promise<ContractTransactionResponse>;
   isKycCommissionPaid(user: string): Promise<boolean>;
   useKycCommission(user: string): Promise<ContractTransactionResponse>;
+  setPhoneNumber(user: string, phone: string, isVerified: boolean): Promise<ContractTransactionResponse>;
+  setEmail(user: string, email: string, isVerified: boolean): Promise<ContractTransactionResponse>;
 
   /// HOST CARS functions
   addCar(request: ContractCreateCarRequest): Promise<ContractTransactionResponse>;
@@ -132,11 +137,14 @@ export interface IRentalityGatewayContract extends IEthersContract {
   // CLAIMS functions
   getMyClaimsAs(host: boolean): Promise<ContractFullClaimInfo[]>;
   getClaim(claimId: bigint): Promise<ContractFullClaimInfo>;
-  createClaim(request: ContractCreateClaimRequest): Promise<ContractTransactionResponse>;
+  createClaim(request: ContractCreateClaimRequest, isHostInsurance: boolean): Promise<ContractTransactionResponse>;
   calculateClaimValue(claimId: bigint): Promise<bigint>;
   payClaim(claimId: bigint, value: object): Promise<ContractTransactionResponse>;
   rejectClaim(claimId: bigint): Promise<ContractTransactionResponse>;
-
+  getHostInsuranceClaims(): Promise<ContractFullClaimInfo[]>;
+  setHostInsurance(insuranceId: bigint): Promise<ContractTransactionResponse>;
+  getHostInsuranceRule(host: string): Promise<ContractHostInsuranceRule>;
+  getAllInsuranceRules(): Promise<ContractHostInsuranceRule[]>;
   // CHAT functions
   getChatInfoFor(host: boolean): Promise<ContractChatInfo[]>;
 
@@ -160,7 +168,6 @@ export interface IRentalityGatewayContract extends IEthersContract {
   getUniqCarsBrand(): Promise<string[]>;
   getUniqModelsByBrand(brand: string): Promise<string[]>;
   getTotalCarsAmount(): Promise<bigint>;
-  setPhoneNumber(user: string, phone: string, isVerified: boolean): Promise<ContractTransactionResponse>;
 
   /// GENERAL functions
   address: string;

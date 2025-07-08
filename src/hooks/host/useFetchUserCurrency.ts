@@ -25,6 +25,7 @@ function useFetchUserCurrency() {
   const queryResult = useQuery<QueryData>({
     queryKey: [USER_CURRENCY_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
     queryFn: async () => await fetchUserCurrency(rentalityContracts, ethereumInfo),
+    refetchOnWindowFocus: false,
   });
 
   const data = queryResult.data ?? emptyAvailableCurrency;

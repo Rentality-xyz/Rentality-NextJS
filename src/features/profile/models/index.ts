@@ -11,6 +11,7 @@ export type UserProfile = {
   drivingLicenseExpire: Date | undefined;
   issueCountry: string;
   email: string;
+  isEmailVerified: boolean;
 };
 
 export const emptyUserProfile: UserProfile = {
@@ -26,4 +27,5 @@ export const emptyUserProfile: UserProfile = {
   drivingLicenseExpire: undefined,
   issueCountry: "",
   email: "",
+  isEmailVerified: false,
 };

@@ -1,7 +1,6 @@
 import { isEmpty } from "@/utils/string";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { kycDbInfo, loginWithPassword } from "@/utils/firebase";
-import { collection, getDocs, query } from "firebase/firestore";
+import { kycDbInfo, loginWithPassword, readDocsFromFirebaseDb } from "@/utils/firebase";
 import moment from "moment";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { env } from "@/utils/env";
@@ -58,24 +57,24 @@ async function getRegisteredUsers(
 ): Promise<Result<RegisteredUser[], string>> {
   if (!kycDbInfo.db) return Err("db is null");
 
-  const CIVIC_USER_EMAIL = env.CIVIC_USER_EMAIL;
-  if (!CIVIC_USER_EMAIL || isEmpty(CIVIC_USER_EMAIL)) {
-    logger.error("getRegisteredUsers error: CIVIC_USER_EMAIL was not set");
-    return Err("CIVIC_USER_EMAIL was not set");
+  const platformEmail = env.PLATFORM_USER_EMAIL;
+  const platformPassword = env.PLATFORM_USER_PASSWORD;
+
+  if (isEmpty(platformEmail) || isEmpty(platformPassword)) {
+    return Err("PLATFORM_USER_EMAIL or PLATFORM_USER_PASSWORD is not set");
   }
 
-  const CIVIC_USER_PASSWORD = env.CIVIC_USER_PASSWORD;
-  if (!CIVIC_USER_PASSWORD || isEmpty(CIVIC_USER_PASSWORD)) {
-    logger.error("getRegisteredUsers error: CIVIC_USER_PASSWORD was not set");
-    return Err("CIVIC_USER_PASSWORD was not set");
-  }
+  await loginWithPassword(platformEmail, platformPassword);
 
-  await loginWithPassword(CIVIC_USER_EMAIL, CIVIC_USER_PASSWORD);
+  const kycInfoDocsResult = await readDocsFromFirebaseDb(kycDbInfo.db, kycDbInfo.collections.kycInfos);
+
+  if (!kycInfoDocsResult.ok) {
+    logger.error(`getRegisteredUsers error: kycInfoDocsResult error: ${kycInfoDocsResult.error}`);
+    return Err(kycInfoDocsResult.error.message);
+  }
 
   const result: RegisteredUser[] = [];
-  const kycInfoQuery = query(collection(kycDbInfo.db, kycDbInfo.collections.kycInfos));
-  const kycInfoQuerySnapshot = await getDocs(kycInfoQuery);
-  kycInfoQuerySnapshot.forEach((doc) => {
+  kycInfoDocsResult.value?.forEach((doc) => {
     const updateDate = doc.data().updateDate;
     if (
       (!dateFrom || !updateDate || moment(updateDate).toDate() >= dateFrom) &&

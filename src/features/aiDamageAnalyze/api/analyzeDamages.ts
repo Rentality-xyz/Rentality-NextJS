@@ -25,17 +25,21 @@ export type AnalyzeDamagesParams = {
 export default async function analyzeDamagesHandler(req: NextApiRequest, res: NextApiResponse) {
   const requestResult = validateRequest(req);
   if (!requestResult.ok) {
-    console.error(`analyzeDamagesHandler validation error: ${requestResult.error.message}`);
-    res.status(401).json({ error: "Validation error: " + requestResult.error.message });
+    logger.error(`analyzeDamagesHandler validation error: ${requestResult.error.message}`);
+    res.status(400).json({ error: "Validation error: " + requestResult.error.message });
     return;
   }
 
   const envsResult = validateEnvs(requestResult.value.chainId);
   if (!envsResult.ok) {
-    console.error(`analyzeDamagesHandler env validation error: ${envsResult.error.message}`);
+    logger.error(`analyzeDamagesHandler env validation error: ${envsResult.error.message}`);
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
+
+  logger.info(
+    `\nCalling AnalyzeDamages API with params: 'tripId'=${requestResult.value.tripId} | 'vinNumber'=${requestResult.value.vinNumber} | 'caseNumber'=${requestResult.value.caseNumber} | 'chainId'=${requestResult.value.chainId} | 'pre'=${requestResult.value.pre}`
+  );
 
   const getApiAccessTokenResult = await getApiAccessToken(
     envsResult.value.baseUrl,
@@ -43,7 +47,7 @@ export default async function analyzeDamagesHandler(req: NextApiRequest, res: Ne
     envsResult.value.accountSecret
   );
   if (!getApiAccessTokenResult.ok) {
-    console.error(`analyzeDamagesHandler getApiAccessToken error: ${getApiAccessTokenResult.error.message}`);
+    logger.error(`analyzeDamagesHandler getApiAccessToken error: ${getApiAccessTokenResult.error.message}`);
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
@@ -54,10 +58,11 @@ export default async function analyzeDamagesHandler(req: NextApiRequest, res: Ne
     getApiAccessTokenResult.value.accessToken
   );
   if (!createCaseResult.ok) {
-    console.error(`analyzeDamagesHandler createCase error: ${createCaseResult.error.message}`);
+    logger.error(`analyzeDamagesHandler createCase error: ${createCaseResult.error.message}`);
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
+  logger.info(`\nCase created: 'token'=${createCaseResult.value.token}`);
 
   const saveCasePhotosResult = await saveCasePhotos(
     requestResult.value.tripId,
@@ -68,7 +73,7 @@ export default async function analyzeDamagesHandler(req: NextApiRequest, res: Ne
   );
 
   if (!saveCasePhotosResult.ok) {
-    console.error(`analyzeDamagesHandler saveCasePhotos error: ${saveCasePhotosResult.error.message}`);
+    logger.error(`analyzeDamagesHandler saveCasePhotos error: ${saveCasePhotosResult.error.message}`);
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
@@ -81,7 +86,7 @@ export default async function analyzeDamagesHandler(req: NextApiRequest, res: Ne
     envsResult.value.privateKey
   );
   if (!saveCaseResult.ok) {
-    console.error(`analyzeDamagesHandler getApiAccessToken error: ${saveCaseResult.error.message}`);
+    logger.error(`analyzeDamagesHandler getApiAccessToken error: ${saveCaseResult.error.message}`);
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
@@ -291,6 +296,6 @@ async function saveCaseToBlockchain(
     return Err(new Error("AiDamageAnalyze: failed to save insurance case with error: " + error));
   }
 
-  console.log("AiDamageAnalyze: case created!", token);
+  logger.info("AiDamageAnalyze: case created!", token);
   return Ok(true);
 }

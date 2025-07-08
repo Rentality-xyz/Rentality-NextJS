@@ -207,7 +207,9 @@
                 { "type": "string", "name": "email" }
               ]
             },
-            { "type": "bool", "name": "isPhoneVerified" }
+            { "type": "bool", "name": "isPhoneVerified" },
+            { "type": "bool", "name": "isEmailVerified" },
+            { "type": "string", "name": "pushToken" }
           ]
         }
       ]
@@ -245,6 +247,15 @@
       "payable": false,
       "inputs": [],
       "outputs": [{ "type": "address[]", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "getPlatformUsersCount",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "uint256", "name": "" }]
     },
     {
       "type": "function",
@@ -288,7 +299,8 @@
                     { "type": "string", "name": "email" }
                   ]
                 },
-                { "type": "address", "name": "wallet" }
+                { "type": "address", "name": "wallet" },
+                { "type": "bool", "name": "isEmailVerified" }
               ]
             },
             { "type": "uint256", "name": "totalPageCount" }
@@ -409,6 +421,15 @@
     {
       "type": "function",
       "name": "isAdmin",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [{ "type": "address", "name": "user" }],
+      "outputs": [{ "type": "bool", "name": "" }]
+    },
+    {
+      "type": "function",
+      "name": "isAdminViewRole",
       "constant": true,
       "stateMutability": "view",
       "payable": false,
@@ -613,6 +634,18 @@
     },
     {
       "type": "function",
+      "name": "setEmail",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "user" },
+        { "type": "string", "name": "email" },
+        { "type": "bool", "name": "isVerified" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
       "name": "setKYCInfo",
       "constant": false,
       "payable": false,
@@ -672,6 +705,17 @@
         { "type": "address", "name": "user" },
         { "type": "string", "name": "phone" },
         { "type": "bool", "name": "isVerified" }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "setPushToken",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        { "type": "address", "name": "user" },
+        { "type": "string", "name": "pushToken" }
       ],
       "outputs": []
     },

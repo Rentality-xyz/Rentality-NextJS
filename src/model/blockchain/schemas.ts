@@ -241,6 +241,11 @@ export type ContractClaim = {
   isHostClaims: boolean;
 };
 
+export type ContractHostInsuranceRule = {
+  partToInsurance: bigint;
+  insuranceId: bigint;
+}
+
 export type ContractCreateClaimRequest = {
   tripId: bigint;
   claimType: bigint;
@@ -352,23 +357,28 @@ export type ContractFullKYCInfoDTO = {
   kyc: ContractKYCInfo;
   additionalKYC: ContractAdditionalKYCInfo;
   isPhoneVerified: boolean;
+  isEmailVerified: boolean;
+  pushToken: string;
 };
 
 export type ContractAdminKYCInfoDTO = {
   kyc: ContractKYCInfo;
   additionalKYC: ContractAdditionalKYCInfo;
+  isEmailVerified: boolean;
   wallet: string;
+  pushToken: string;
 };
 
 export type ContractAdminKYCInfosDTO = {
   kycInfos: ContractAdminKYCInfoDTO[];
   totalPageCount: bigint;
-}
+};
 
 export type ContractSearchCarWithDistance = {
   car: ContractSearchCar;
   distance: bigint;
 };
+
 export type ContractSearchCarsWithDistanceDTO = {
   cars: ContractSearchCarWithDistance[];
   totalCarsSupply: bigint;
@@ -838,6 +848,12 @@ export type ContractTaxValue = {
   tType: TaxesType;
 };
 
+export type ContractTaxesInfoDTO = {
+  location: string;
+  locationType: TaxesLocationType;
+  taxes: ContractTaxValue[];
+};
+
 export type ContractRound = {
   answer: bigint;
   startedAt: bigint;
@@ -847,6 +863,12 @@ export type ContractRound = {
 export type ContractOracleUpdate = {
   feed: string;
   answer: bigint;
+};
+
+export type ContractPlatformInfoDTO = {
+  totalUsers: bigint;
+  totalTrips: bigint;
+  totalCars: bigint;
 };
 
 export type TripStatus = bigint;
@@ -982,6 +1004,18 @@ export const EventType = {
   Car: BigInt(0),
   Claim: BigInt(1),
   Trip: BigInt(2),
+  User: BigInt(3),
+  Insurance: BigInt(4),
+  Taxes: BigInt(5),
+  Discount: BigInt(6),
+  Delivery: BigInt(7),
+  Currency: BigInt(8),
+};
+
+export type EventCreator = bigint;
+export const EventCreator = {
+  User: BigInt(0),
+  Admin: BigInt(1),
 };
 
 export type InsuranceType = bigint;

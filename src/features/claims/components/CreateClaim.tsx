@@ -163,6 +163,7 @@ export default function CreateClaim() {
               className="lg:w-80"
               id="type"
               label={isHost(userMode) ? "Incident type" : "Issues type"}
+              placeholder="Select type"
               value={field.value}
               validationError={errors.incidentType?.message}
               onChange={(e) => {

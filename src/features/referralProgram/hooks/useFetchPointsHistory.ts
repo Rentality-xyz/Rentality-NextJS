@@ -25,6 +25,7 @@ function useFetchPointsHistory(initialPage: number = 1, initialItemsPerPage: num
     {
       queryKey: [REFERRAL_POINTS_HISTORY_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
       queryFn: async () => fetchPointsHistory(rentalityContracts, t),
+      refetchOnWindowFocus: false,
     },
     initialPage,
     initialItemsPerPage
