@@ -16,6 +16,7 @@ import * as React from "react";
 import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 function HostNavMenu() {
   const { isAuthenticated, logout } = useAuth();
@@ -25,7 +26,21 @@ function HostNavMenu() {
   const { hasFeatureFlag } = useFeatureFlags();
   const [hasInvestmentFeatureFlag, setInvestmentFeatureFlag] = React.useState<boolean>(false);
   const { t } = useTranslation();
-  const [selectedMenuHref, setSelectedMenuHref] = useState("/");
+
+  const router = useRouter();
+  const normalizePathname = (pathname: string) => {
+    if (
+      pathname === "/host" ||
+      pathname.startsWith("/host/vehicles/edit") ||
+      pathname.startsWith("/host/vehicles/listings")
+    ) {
+      return "/host/vehicles/listings";
+    }
+
+    return pathname;
+  };
+
+  const selectedMenuHref = normalizePathname(router.pathname);
 
   React.useEffect(() => {
     hasFeatureFlag(FEATURE_FLAGS.FF_INVESTMENTS).then((hasInvestmentFeatureFlag: boolean) => {
@@ -67,7 +82,6 @@ function HostNavMenu() {
           href="/host/trips/booked"
           icon={MenuIcons.Booked}
           notificationCount={bookedNotificationCount}
-          onClick={setSelectedMenuHref}
           selectedMenuHref={selectedMenuHref}
         />
         <SideNavMenuItem
@@ -75,7 +89,6 @@ function HostNavMenu() {
           href="/host/trips/history"
           icon={MenuIcons.History}
           notificationCount={historyNotificationCount}
-          onClick={setSelectedMenuHref}
           selectedMenuHref={selectedMenuHref}
         />
       </SideNavMenuGroup>
@@ -84,14 +97,12 @@ function HostNavMenu() {
           text={t_nav("listing")}
           href="/host/vehicles/listings"
           icon={MenuIcons.Listings}
-          onClick={setSelectedMenuHref}
           selectedMenuHref={selectedMenuHref}
         />
         <SideNavMenuItem
           text={t_nav("insurance")}
           href="/host/insurance"
           icon={MenuIcons.Insurance}
-          onClick={setSelectedMenuHref}
           selectedMenuHref={selectedMenuHref}
         />
         <SideNavMenuItem
@@ -99,7 +110,6 @@ function HostNavMenu() {
           href="/host/claims"
           icon={MenuIcons.Claims}
           notificationCount={claimsNotificationCount}
-          onClick={setSelectedMenuHref}
           selectedMenuHref={selectedMenuHref}
         />
       </SideNavMenuGroup>
@@ -109,7 +119,6 @@ function HostNavMenu() {
           href="/host/messages"
           icon={MenuIcons.Messages}
           notificationCount={messagesNotificationCount}
-          onClick={setSelectedMenuHref}
           selectedMenuHref={selectedMenuHref}
         />
         <SideNavMenuItem
@@ -117,7 +126,6 @@ function HostNavMenu() {
           href="/host/notifications"
           icon={MenuIcons.Notifications}
           notificationCount={notificationsNotificationCount}
-          onClick={setSelectedMenuHref}
           selectedMenuHref={selectedMenuHref}
         />
       </SideNavMenuGroup>
@@ -126,23 +134,18 @@ function HostNavMenu() {
           text={t_nav("legal")}
           href="/host/legal"
           icon={MenuIcons.Legal}
-          onClick={() => {
-            setSelectedMenuHref("/host/legal");
-          }}
           selectedMenuHref={selectedMenuHref}
         />
         <SideNavMenuItem
           text={t_nav("transaction_history")}
           href="/host/transaction_history"
           icon={MenuIcons.TransactionHistory}
-          onClick={setSelectedMenuHref}
           selectedMenuHref={selectedMenuHref}
         />
         <SideNavMenuItem
           text={t_nav("referrals_and_points")}
           href="/host/points"
           icon={MenuIcons.ReferralsAndPoints}
-          onClick={setSelectedMenuHref}
           selectedMenuHref={selectedMenuHref}
         />
         {hasInvestmentFeatureFlag && (
@@ -150,27 +153,28 @@ function HostNavMenu() {
             text={t_nav("invest")}
             href="/host/invest"
             icon={MenuIcons.Invest}
-            onClick={setSelectedMenuHref}
             selectedMenuHref={selectedMenuHref}
           />
         )}
+      </SideNavMenuGroup>
+      <div className="relative mb-6 mt-6 h-[2px] w-full">
+        <div className="absolute right-[-48px] top-0 h-[2px] w-[97%] bg-[#40404F] sm:w-[98%] lg:w-[96%]" />
+      </div>
+      <SideNavMenuItem
+        text={t_nav("profile")}
+        href="/host/profile"
+        icon={MenuIcons.ProfileSettings}
+        selectedMenuHref={selectedMenuHref}
+      />
+      {isAuthenticated ? (
         <SideNavMenuItem
-          text={t_nav("profile")}
-          href="/host/profile"
-          icon={MenuIcons.ProfileSettings}
-          onClick={setSelectedMenuHref}
+          text={t_nav("logout")}
+          href="/"
+          onClick={logout}
+          icon={MenuIcons.Logout}
           selectedMenuHref={selectedMenuHref}
         />
-        {isAuthenticated ? (
-          <SideNavMenuItem
-            text={t_nav("logout")}
-            href="/"
-            onClick={logout}
-            icon={MenuIcons.Logout}
-            selectedMenuHref={selectedMenuHref}
-          />
-        ) : null}
-      </SideNavMenuGroup>
+      ) : null}
     </>
   );
 }

@@ -206,6 +206,7 @@
     "set_cur_converter": "Set new currency converter address:",
     "platform_addr": "Platform contract address:",
     "set_platform": "Set platform contract address:",
+    "columns": "Columns",
     "errors": {
       "less_than_zero": "Value should be more than 0",
       "greater_than_contract_balance": "Value should be less than contract balance",
@@ -803,7 +804,9 @@
     "trip_photos_photos": "photos",
     "trip_photos_no_photos": "no photos",
     "trip_photos_see_all": "See all",
-    "trip_photos_upload_trip_photo": "Upload a trip photo"
+    "trip_photos_upload_trip_photo": "Upload a trip photo",
+    "export_to_excel": "Export to Excel",
+    "total": "Total:"
   },
   "become_host": {
     "title": "Become a host",
