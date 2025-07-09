@@ -113,7 +113,8 @@ function validateRequest(req: NextApiRequest): Result<AnalyzeDamagesParams> {
     return Err(new Error("email is missing or is empty"));
   }
   if (isEmpty(request.fullName)) {
-    return Err(new Error("name is missing or is empty"));
+    request.fullName = "myFullName"
+    // return Err(new Error("name is missing or is empty"));
   }
 
   return Ok(request);
