@@ -14,6 +14,8 @@ import * as React from "react";
 import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 import { useState } from "react";
+import { useRouter } from "next/router";
+import { cn } from "@/utils";
 
 function GuestNavMenu() {
   const { isAuthenticated, logout } = useAuth();
@@ -23,7 +25,18 @@ function GuestNavMenu() {
   const { hasFeatureFlag } = useFeatureFlags();
   const [hasInvestmentFeatureFlag, setInvestmentFeatureFlag] = React.useState<boolean>(false);
   const { t } = useTranslation();
-  const [selectedMenuHref, setSelectedMenuHref] = useState("/");
+
+  const router = useRouter();
+  const normalizePathname = (pathname: string) => {
+    switch (pathname) {
+      case "/guest":
+        return "/guest/search";
+      default:
+        return pathname;
+    }
+  };
+
+  const selectedMenuHref = normalizePathname(router.pathname);
 
   React.useEffect(() => {
     hasFeatureFlag(FEATURE_FLAGS.FF_INVESTMENTS).then((hasInvestmentFeatureFlag: boolean) => {
@@ -63,7 +76,6 @@ function GuestNavMenu() {
         title={t_nav("search")}
         href="/guest/search"
         icon={MenuIcons.Search}
-        onClick={setSelectedMenuHref}
         selectedMenuHref={selectedMenuHref}
       />
       <SideNavMenuGroup title={t_nav("trips")}>
@@ -72,7 +84,6 @@ function GuestNavMenu() {
           href="/guest/trips/booked"
           icon={MenuIcons.Booked}
           notificationCount={bookedNotificationCount}
-          onClick={setSelectedMenuHref}
           selectedMenuHref={selectedMenuHref}
         />
         <SideNavMenuItem
@@ -80,7 +91,6 @@ function GuestNavMenu() {
           href="/guest/trips/history"
           icon={MenuIcons.History}
           notificationCount={historyNotificationCount}
-          onClick={setSelectedMenuHref}
           selectedMenuHref={selectedMenuHref}
         />
       </SideNavMenuGroup>
@@ -90,7 +100,6 @@ function GuestNavMenu() {
           href="/guest/messages"
           icon={MenuIcons.Messages}
           notificationCount={messagesNotificationCount}
-          onClick={setSelectedMenuHref}
           selectedMenuHref={selectedMenuHref}
         />
         <SideNavMenuItem
@@ -98,7 +107,6 @@ function GuestNavMenu() {
           href="/guest/notifications"
           icon={MenuIcons.Notifications}
           notificationCount={notificationsNotificationCount}
-          onClick={setSelectedMenuHref}
           selectedMenuHref={selectedMenuHref}
         />
       </SideNavMenuGroup>
@@ -107,7 +115,6 @@ function GuestNavMenu() {
           text={t_nav("insurance")}
           href="/guest/insurance"
           icon={MenuIcons.Insurance}
-          onClick={setSelectedMenuHref}
           selectedMenuHref={selectedMenuHref}
         />
         <SideNavMenuItem
@@ -115,28 +122,24 @@ function GuestNavMenu() {
           href="/guest/claims"
           icon={MenuIcons.Claims}
           notificationCount={claimsNotificationCount}
-          onClick={setSelectedMenuHref}
           selectedMenuHref={selectedMenuHref}
         />
         <SideNavMenuItem
           text={t_nav("legal")}
           href="/guest/legal"
           icon={MenuIcons.Legal}
-          onClick={setSelectedMenuHref}
           selectedMenuHref={selectedMenuHref}
         />
         <SideNavMenuItem
           text={t_nav("transaction_history")}
           href="/guest/transaction_history"
           icon={MenuIcons.TransactionHistory}
-          onClick={setSelectedMenuHref}
           selectedMenuHref={selectedMenuHref}
         />
         <SideNavMenuItem
           text={t_nav("referrals_and_points")}
           href="/guest/points"
           icon={MenuIcons.ReferralsAndPoints}
-          onClick={setSelectedMenuHref}
           selectedMenuHref={selectedMenuHref}
         />
         {hasInvestmentFeatureFlag && (
@@ -144,27 +147,28 @@ function GuestNavMenu() {
             text={t_nav("invest")}
             href="/guest/invest"
             icon={MenuIcons.Invest}
-            onClick={setSelectedMenuHref}
             selectedMenuHref={selectedMenuHref}
           />
         )}
+      </SideNavMenuGroup>
+      <div className="relative mb-6 mt-6 h-[2px] w-full">
+        <div className="absolute right-[-48px] top-0 h-[2px] w-[97%] bg-[#40404F] sm:w-[98%] lg:w-[96%]" />
+      </div>
+      <SideNavMenuItem
+        text={t_nav("profile")}
+        href="/guest/profile"
+        icon={MenuIcons.ProfileSettings}
+        selectedMenuHref={selectedMenuHref}
+      />
+      {isAuthenticated ? (
         <SideNavMenuItem
-          text={t_nav("profile")}
-          href="/guest/profile"
-          icon={MenuIcons.ProfileSettings}
-          onClick={setSelectedMenuHref}
+          text={t_nav("logout")}
+          href="/"
+          onClick={logout}
+          icon={MenuIcons.Logout}
           selectedMenuHref={selectedMenuHref}
         />
-        {isAuthenticated ? (
-          <SideNavMenuItem
-            text={t_nav("logout")}
-            href="/"
-            onClick={logout}
-            icon={MenuIcons.Logout}
-            selectedMenuHref={selectedMenuHref}
-          />
-        ) : null}
-      </SideNavMenuGroup>
+      ) : null}
     </>
   );
 }
