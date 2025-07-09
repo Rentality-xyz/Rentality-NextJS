@@ -1,18 +1,24 @@
 import { Err, Ok, Result, UnknownErr } from "@/model/utils/result";
 import { logger } from "@/utils/logger";
-import serviceAccount from "@/serviceAccountKey.json";
 import { initializeApp, cert, getApps } from 'firebase-admin/app';
 import { getMessaging } from "firebase-admin/messaging";
 import { RentalityEvent, UserInfo } from "@/features/scheduler/eventProcessing/models";
 import { getPushTemplate, PushTemplate } from "@/features/scheduler/eventProcessing/utils/pushTemplates";
 import { isEmpty } from "@/utils/string";
+import { env } from "@/utils/env";
 
 class FirebasePushService {
 
   constructor() {
     if (!getApps().length) {
-      initializeApp({ credential: cert(serviceAccount as any) });
+      try {
+        const serviceAccount = JSON.parse(env.FIREBASE_SERVICE_ACCOUNT);
+        initializeApp({ credential: cert(serviceAccount) });
+      } catch (error) {
+        logger.error("Error initializing Firebase Push service account", error);
+      }
     }
+
   }
 
   async processEvent(
