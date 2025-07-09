@@ -37,7 +37,6 @@ function useAiDamageCheck(tripId: number) {
   const [preTripReportUrl, setPreTripReportUrl] = useState<string>("");
   const [postTripReportUrl, setPostTripReportUrl] = useState<string>("");
 
-
   const { mutateAsync: startPreTripCheck } = useMutation({
     mutationFn: async () => {
       setStatus({ status: "pre-trip checking", lastUpdated: new Date() });
@@ -94,7 +93,6 @@ async function fetchAiDamageCheck(
   if (!tripCasesResult.ok) {
     throw tripCasesResult.error;
   }
-
 
   logger.debug("tripCasesResult: ", JSON.stringify(tripCasesResult.value, bigIntReplacer, 2));
 

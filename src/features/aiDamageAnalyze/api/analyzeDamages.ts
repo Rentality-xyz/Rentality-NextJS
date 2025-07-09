@@ -112,10 +112,11 @@ function validateRequest(req: NextApiRequest): Result<AnalyzeDamagesParams> {
   if (isEmpty(request.email)) {
     return Err(new Error("email is missing or is empty"));
   }
-  if (isEmpty(request.fullName)) {
-    request.fullName = "myFullName"
+  /// Temporary: fullName is saved from Civic, which is no longer available.
+  /// Uncomment after updating.
+  // if (isEmpty(request.fullName)) {
     // return Err(new Error("name is missing or is empty"));
-  }
+  // }
 
   return Ok(request);
 }
