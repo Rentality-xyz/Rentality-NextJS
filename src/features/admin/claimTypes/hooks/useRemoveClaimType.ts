@@ -1,33 +1,29 @@
-
-import { useRentalityAdmin } from "@/contexts/rentalityContext";
-import { Err, Ok, Result } from "@/model/utils/result";
-import { logger } from "@/utils/logger";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRentalityAdmin } from '@/contexts/rentalityContext';
 
 
 function useRemoveClaimType() {
   const { admin } = useRentalityAdmin();
-const removeClaimType = async (claimTypeId: number): Promise<Result<boolean, string>> => {
+  const queryClient = useQueryClient();
 
-  if (!admin) {
-    logger.error("fetchData error: rentalityAdminGateway is null");
-    return Err("Contract is not initialized");
-  }
-  try {
-    const result = await admin.removeClaimType(claimTypeId);
-    if (result.ok) {
-      return Ok(true);
-    } else {
-      throw Err(result.error);
-    }
-  } catch (error) {
-    logger.error("removeClaimType error:", error);
-    return Err("Error removing claim type");
-  }
-
-}
-return {
-  removeClaimType
-}
+  return useMutation<boolean, Error, number>({
+    mutationFn: async (claimTypeId: number) => {
+      if (!admin) {
+        throw new Error('Contract is not initialized');
+      }
+      const result = await admin.removeClaimType(claimTypeId);
+      if (!result.ok) {
+        throw result.error;
+      }
+      return true;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['claimTypes'] });
+    },
+    onError: (error: Error) => {
+      console.error('removeClaimType mutation failed:', error.message);
+    },
+  });
 }
 
 export default useRemoveClaimType;

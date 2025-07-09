@@ -10,9 +10,10 @@ import { Result } from "@/model/utils/result";
 import RntSelect from "@/components/common/rntSelect";
 
 interface AddClaimFormProps {
-  addClaimType: (claimName: string, forUsers: ClaimUsers) => Promise<Result<boolean, string>>;
+  addClaimType: (claimName: string, forUsers: ClaimUsers) => Promise<void>;
   isLoading?: boolean;
 }
+
 
 function AddClaimForm({ addClaimType, isLoading = false }: AddClaimFormProps) {
   const { t } = useTranslation();
@@ -26,13 +27,10 @@ function AddClaimForm({ addClaimType, isLoading = false }: AddClaimFormProps) {
     e.preventDefault();
     setErrorMessage(null);
     
-    const result = await addClaimType(claimName, claimUser);
-    if (result.ok) {
+     await addClaimType(claimName, claimUser);
       setClaimName("");
       setClaimUser(ClaimUsers.Host);
-    } else {
-      setErrorMessage(result.error || t_att("error_occurred"));
-    }
+
   };
 
   return (

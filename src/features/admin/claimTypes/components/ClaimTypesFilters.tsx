@@ -33,8 +33,13 @@ function AllUsersFilters({ defaultFilters, onApply }: AllUsersFiltersProps) {
         <div className="flex flex-col gap-2 w-full md:max-w-[300px]">
           <label className="font-medium text-sm">{t_att("filter_by")}</label>
           <RntSelect
-            value={filters.claimTypes ?? ClaimUsers.Both}
-            onChange={(e) => setFilters({ ...filters, claimTypes: e.target.value as unknown as ClaimUsers })}
+        value={String(filters.claimTypes ?? ClaimUsers.Both)}
+        onChange={e =>
+          setFilters({
+            ...filters,
+            claimTypes: Number(e.target.value) as ClaimUsers
+          })
+        }
             className="w-full"
           >
             <option value={ClaimUsers.Host}>{t_att("host")}</option>

@@ -1,34 +1,34 @@
-
-import { useRentalityAdmin } from "@/contexts/rentalityContext";
-import { Err, Ok, Result } from "@/model/utils/result";
-import { logger } from "@/utils/logger";
-import { ClaimUsers } from "../models/claims";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRentalityAdmin } from '@/contexts/rentalityContext';
+import { ClaimUsers } from '../models/claims';
 
 
 function useAddClaimType() {
   const { admin } = useRentalityAdmin();
-const addClaimType = async (claimName: string, forUsers: ClaimUsers): Promise<Result<boolean, string>> => {
+  const queryClient = useQueryClient();
 
-  if (!admin) {
-    logger.error("fetchData error: rentalityAdminGateway is null");
-    return Err("Contract is not initialized");
+     const mutation = useMutation<boolean, Error, { name: string; users: ClaimUsers }>({
+      mutationFn: async ({ name, users }) => {
+        if (!admin) {
+          throw new Error('Contract is not initialized');
+        }
+        const result = await admin.addClaimType(name, BigInt(users));
+        if (!result.ok) {
+          throw result.error;
+        }
+        return true;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['claimTypes'] });
+      },
+      onError: (error: Error) => {
+        console.error('addClaimType mutation failed:', error.message);
+      },
+    });
+ 
+  return {
+     addClaimType: mutation.mutateAsync
+   };
   }
-  try {
-    const result = await admin.addClaimType(claimName, BigInt(forUsers));
-    if (result.ok) {
-      return Ok(true);
-    } else {
-      throw Err(result.error);
-    }
-  } catch (error) {
-    logger.error("addClaimType error:", error);
-    return Err("Error adding claim type");
-  }
-
-}
-return {
-    addClaimType
-}
-}
 
 export default useAddClaimType;

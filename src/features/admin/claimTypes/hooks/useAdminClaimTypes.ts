@@ -1,92 +1,55 @@
-import { useRentalityAdmin } from "@/contexts/rentalityContext";
-import { validateContractAdminKYCInfoDTO } from "@/model/blockchain/schemas_utils";
-import { Err, Ok, Result } from "@/model/utils/result";
-import { bigIntReplacer } from "@/utils/json";
-import { useCallback, useState } from "react";
-import { logger } from "@/utils/logger";
-import { ClaimType, ClaimUsers, mapContractClaimTypeToClaimType } from "../models/claims";
-import { ContractClaimTypeV2 } from "@/model/blockchain/schemas";
-
-const filterUniqueClaims = (claims: ClaimType[]): ClaimType[] => {
-    return claims.reduce((unique: ClaimType[], item) => {
-      if (!unique.some(entry => entry.claimTypeId === item.claimTypeId)) {
-        unique.push(item);
-      }
-      return unique;
-    }, []);
-  };
+import { useQuery } from '@tanstack/react-query';
+import { useRentalityAdmin } from '@/contexts/rentalityContext';
+import { ClaimType, ClaimUsers, mapContractClaimTypeToClaimType } from '../models/claims';
+import { bigIntReplacer } from '@/utils/json';
+import { logger } from '@/utils/logger';
+import { ContractClaimTypeV2 } from '@/model/blockchain/schemas';
 
 export interface ClaimTypesFilters {
   claimTypes?: ClaimUsers;
 }
 
-function useAdminClaimTypes() {
-  const { admin } = useRentalityAdmin();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<ClaimType[]>([]);
-
-  const fetchData = useCallback(
-    async (
-      filters?: ClaimTypesFilters,
-    ): Promise<Result<boolean, string>> => {
-      if (!admin) {
-        logger.error("fetchData error: rentalityAdminGateway is null");
-        return Err("Contract is not initialized");
-      }
-
-      setIsLoading(true);
-      logger.debug(`filters: ${JSON.stringify(filters, bigIntReplacer)}`);
-
-      let claimsResult = [] as ContractClaimTypeV2[];
-      try {
-      if (filters) {
-        const isHost = filters.claimTypes === ClaimUsers.Host;
-        const result = await admin.getAllClaimTypes(isHost); 
-
-
-
-        if((isHost || filters.claimTypes === ClaimUsers.Guest) && result.ok) {
-            claimsResult = result.value;
-        } 
-        else if(result.ok) {  
-            claimsResult = result.value;
-            const guestResult = await admin.getAllClaimTypes(true);
-            if(guestResult.ok) {
-                claimsResult = claimsResult.concat(guestResult.value);
-            }     
-        }
+const filterUniqueClaims = (claims: ClaimType[]): ClaimType[] =>
+  claims.reduce<ClaimType[]>((unique, item) => {
+    if (!unique.some(entry => entry.claimTypeId === item.claimTypeId)) {
+      unique.push(item);
     }
-    else {
-        const guestResult = await admin.getAllClaimTypes(false);
-        if(guestResult.ok) {
-            claimsResult = guestResult.value;
-        }
-        const hostResult = await admin.getAllClaimTypes(true);
-        if(hostResult.ok) {
-            claimsResult = claimsResult.concat(hostResult.value);
-        }
+    return unique;
+  }, []);
 
-    }
+async function fetchClaimTypes(
+  admin: ReturnType<typeof useRentalityAdmin>['admin'],
+  filters?: ClaimTypesFilters
+): Promise<ClaimType[]> {
+  if (!admin) {
+    throw new Error('Contract is not initialized');
+  }
+  logger.debug(`filters: ${JSON.stringify(filters, bigIntReplacer)}`);
 
-        const data = claimsResult.map(mapContractClaimTypeToClaimType);
-     
-        setData(filterUniqueClaims(data));
+    const [guestResult, hostResult] = await Promise.all([
+      admin.getAllClaimTypes(false),
+      admin.getAllClaimTypes(true),
+    ]);
+    if (!guestResult.ok) throw guestResult.error;
+    if (!hostResult.ok) throw hostResult.error;
+    let raw = guestResult.value.concat(hostResult.value);
 
-        setIsLoading(false);
-        return Ok(true);
-      } catch {
-        setIsLoading(false);
-        return Err("Get data error. See logs for more details");
-      }
-    },
-    [admin]
-  );
+  const mapped = raw.map(mapContractClaimTypeToClaimType);
+  let unique = filterUniqueClaims(mapped);
 
-  return {
-    isLoading,
-    data: { data: data.sort((a, b) => a.claimTypeId - b.claimTypeId)},
-    fetchData,
-  } as const;
+  if (filters) {
+    unique = unique.filter(c => c.claimUser === filters.claimTypes);
+  }
+  return unique.sort((a, b) => a.claimTypeId - b.claimTypeId);
 }
 
-export default useAdminClaimTypes;
+export function useAdminClaimTypesQuery(filters: ClaimTypesFilters = {}) {
+  const { admin } = useRentalityAdmin();
+
+  return useQuery<ClaimType[], Error>({
+    queryKey: ['adminClaimTypes', filters.claimTypes],
+    queryFn: () => fetchClaimTypes(admin, filters),
+    enabled: !!admin,
+    staleTime: 5 * 60 * 1000, 
+  });
+}
