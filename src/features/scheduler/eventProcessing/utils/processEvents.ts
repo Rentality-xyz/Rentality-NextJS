@@ -12,6 +12,7 @@ import { EventType } from "@/model/blockchain/schemas";
 import UserService from "./userService";
 import EmailService from "./emailService";
 import { env } from "@/utils/env";
+import FirebasePushService from "@/features/scheduler/eventProcessing/utils/firebasePushService";
 
 export async function processEvents(
   chainId: number,
@@ -20,6 +21,7 @@ export async function processEvents(
   try {
     const userService = new UserService();
     const emailService = new EmailService();
+    const firebasePushService = new FirebasePushService();
 
     const lastProcessedNumberResult = await getLastProcessedBlockNumber(chainId);
     if (!lastProcessedNumberResult.ok) {
@@ -61,10 +63,16 @@ export async function processEvents(
           const userFromInfo = userFromInfoResult.ok ? userFromInfoResult.value : null;
           const userToInfo = userToInfoResult.ok ? userToInfoResult.value : null;
 
+          const firebasePushResult = await firebasePushService.processEvent(event, userFromInfo, userToInfo, baseUrl);
           const emailResult = await emailService.processEvent(event, userFromInfo, userToInfo, baseUrl);
 
-          if (!emailResult.ok) {
-            errors.push(`Failed to send email for event ${event.id}: ${emailResult.error.message}`);
+          if (!emailResult.ok || !firebasePushResult.ok) {
+            if (!emailResult.ok) {
+              errors.push(`Failed to send email for event ${event.id}: ${emailResult.error.message}`);
+            }
+            if (!firebasePushResult.ok) {
+              errors.push(`Failed to send push for event ${event.id}: ${firebasePushResult.error.message}`);
+            }
             continue;
           }
 
