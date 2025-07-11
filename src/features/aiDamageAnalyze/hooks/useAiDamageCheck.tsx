@@ -60,7 +60,6 @@ function useAiDamageCheck(tripId: number) {
       }, 1000);
     },
   });
-
   const { data } = useQuery<QueryData>({
     queryKey: [AI_DAMAGE_ANALYZE_QUERY_KEY, tripId, rentalityContracts, ethereumInfo?.walletAddress],
     queryFn: async () =>
@@ -111,15 +110,22 @@ async function fetchAiDamageCheck(
 
   const preTripCase = tripCasesResult.value.find((i) => i.caseType === CaseType.PreTrip);
   if (preTripCase) {
-    if (!isEmpty(preTripCase.url)) {
+    if (!isEmpty(preTripCase.url) && (tripCarPhotos.checkOutByGuest.length > 0 || tripCarPhotos.checkOutByHost.length > 0) && !postTripCase) {
       setPreTripReportUrl(getIpfsURI(preTripCase.url));
-      if (tripCarPhotos.checkOutByGuest.length > 0 || tripCarPhotos.checkOutByHost.length > 0) {
-        return { status: "ready to post-trip analyze", lastUpdated: new Date() };
-      }
+      return {status: "ready to post-trip analyze", lastUpdated: new Date()}
+
+    }
+   else if (!isEmpty(preTripCase.url)) {
+      setPreTripReportUrl(getIpfsURI(preTripCase.url));
       return { status: "pre-trip checked", lastUpdated: new Date() };
     }
-    return { status: "pre-trip checking", lastUpdated: new Date() };
-  }
+
+    else {
+      return { status: "pre-trip checking", lastUpdated: new Date() };
+    }
+    
+    }
+   
 
   if (tripCarPhotos.checkInByGuest.length > 0 || tripCarPhotos.checkInByHost.length > 0) {
     return { status: "ready to pre-trip check", lastUpdated: new Date() };
