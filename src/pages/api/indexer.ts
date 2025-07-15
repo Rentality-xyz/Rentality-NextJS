@@ -195,7 +195,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       return;
     }
     mappedQuery = mapSearchQuery(query, Number(contractDateFromUTC), Number(contractDateToUTC), pickUpInfo,returnInfo, contractSearchCarParams.userLocation)
-  
   } else {
     const query = await querySearchCar(contractSearchCarParams, Number(contractDateFromUTC), Number(contractDateToUTC))
     if(query === null) {
@@ -203,7 +202,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       return;
     }
     mappedQuery = mapSearchQuery(query, Number(contractDateFromUTC), Number(contractDateToUTC), emptyContractLocationInfo, emptyContractLocationInfo, contractSearchCarParams.userLocation)
-
   }
 
   const getFilterInfoDto: ContractFilterInfoDTO = await rentality.getFilterInfo(BigInt(1));

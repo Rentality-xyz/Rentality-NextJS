@@ -15,6 +15,10 @@ enum MenuIcons {
   ToGooglePlay,
   Invest,
   ReferralsAndPoints,
+  ContractInfo,
+  CarLocation,
+  AllTripsTable,
+  AllUsersTable,
 }
 
 export const getImageForMenu = (state: MenuIcons): string => {
@@ -51,6 +55,14 @@ export const getImageForMenu = (state: MenuIcons): string => {
       return "/images/icons/menu/ic_referrals_and_points.png";
     case MenuIcons.Invest:
       return "/images/icons/menu/ic_invest.png";
+    case MenuIcons.ContractInfo:
+      return "/images/icons/menu/ic_contract_info.svg";
+    case MenuIcons.CarLocation:
+      return "/images/icons/menu/ic_car_location.svg";
+    case MenuIcons.AllTripsTable:
+      return "/images/icons/menu/ic_all_trips_table.svg";
+    case MenuIcons.AllUsersTable:
+      return "/images/icons/menu/ic_all_users_table.svg";
   }
 };
 

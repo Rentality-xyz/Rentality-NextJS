@@ -21,7 +21,8 @@
     "all_trips_table": "All trips table",
     "all_users_table": "All users table",
     "referrals_and_points": "Referrals & Points",
-    "invest": "Investment"
+    "invest": "Investment",
+    "claim_types": "Claim types"
   },
   "search_and_filters": {
     "location_label": "Pick up & Return Location",
@@ -206,6 +207,7 @@
     "set_cur_converter": "Set new currency converter address:",
     "platform_addr": "Platform contract address:",
     "set_platform": "Set platform contract address:",
+    "columns": "Columns",
     "errors": {
       "less_than_zero": "Value should be more than 0",
       "greater_than_contract_balance": "Value should be less than contract balance",
@@ -728,6 +730,21 @@
     "vin_unchecked": "Uncheked",
     "vin_loading": "Loading..."
   },
+  "admin_claim_types": {
+    "page_title": "Claim types",
+    "claim_type_id": "Claim type id",
+    "applicable_to": "Applicable to",
+    "delete": "Delete",
+    "host": "Host",
+    "guest": "Guest",
+    "both": "Both",
+    "claim_name": "Claim name",
+    "create_claim_btn": "Create",
+    "claim_type": "Claim type",
+    "create_claim_type_title": "Create claim type",
+    "filter_by": "Filter by",
+    "filter_apply": "Filter"
+  },
   "mobile_stores_dialog": {
     "title": "Get the Rentality app!",
     "scan_qr_code": "Scan this QR code and download Rentality app now",
@@ -803,7 +820,9 @@
     "trip_photos_photos": "photos",
     "trip_photos_no_photos": "no photos",
     "trip_photos_see_all": "See all",
-    "trip_photos_upload_trip_photo": "Upload a trip photo"
+    "trip_photos_upload_trip_photo": "Upload a trip photo",
+    "export_to_excel": "Export to Excel",
+    "total": "Total:"
   },
   "become_host": {
     "title": "Become a host",

@@ -44,7 +44,7 @@ function useAdminAllUsers() {
       // const contractFilters: ContractUserFilter = {
       // };
 
-      const result = await admin.getPlatformUsersInfo(BigInt(1), BigInt(10)); //(contractFilters, BigInt(page), BigInt(itemsPerPage));
+      const result = await admin.getPlatformUsersInfo(BigInt(page), BigInt(itemsPerPage)); //(contractFilters, BigInt(page), BigInt(itemsPerPage));
 
       if (result.ok) {
         if (result.value.kycInfos.length > 0) {
@@ -55,10 +55,8 @@ function useAdminAllUsers() {
           mapContractAdminKYCInfoDTOToAdminUserDetails(platformUsersInfo)
         );
 
-        const allAdminTrips = { totalPageCount: 1 };
-
         setData(data);
-        setTotalPageCount(Number(allAdminTrips.totalPageCount));
+        setTotalPageCount(Number(result.value.totalPageCount));
 
         setIsLoading(false);
         return Ok(true);

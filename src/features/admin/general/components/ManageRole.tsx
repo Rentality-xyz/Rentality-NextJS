@@ -7,6 +7,9 @@ import { isEmpty } from "@/utils/string";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useTranslation } from "react-i18next";
 import useManageRole from "../hooks/useManageRole";
+import RntInputTransparent from "@/components/common/rntInputTransparent";
+import RntFilterSelect from "@/components/common/RntFilterSelect";
+import ScrollingHorizontally from "@/components/common/ScrollingHorizontally";
 
 function ManageRole() {
   const { isPending, manageRole } = useManageRole();
@@ -37,66 +40,54 @@ function ManageRole() {
   };
 
   return (
-    <div className="flex w-full flex-wrap gap-4">
-      <RntInput
-        id="manageRoleAddress"
-        className="flex-1"
-        placeholder="0x"
-        label="Address"
-        value={manageRoleState.address}
-        maxLength={42}
-        onChange={(e) => {
-          setManageRoleState((prev) => ({ ...prev, address: e.target.value }));
-        }}
-      />
-      <RntSelect
-        id="manageRoleAction"
-        className="w-40"
-        label="Grant/Revoke"
-        value={manageRoleState.action}
-        onChange={(e) => {
-          setManageRoleState((prev) => ({ ...prev, action: e.target.value as "grand" | "revoke" }));
-        }}
-      >
-        <option value={"revoke"}>Revoke</option>
-        <option value={"grand"}>Grand</option>
-      </RntSelect>
-      <RntSelect
-        id="manageRole"
-        className="w-60"
-        label="Role"
-        value={manageRoleState.role.toString()}
-        onChange={(e) => {
-          setManageRoleState((prev) => ({ ...prev, role: BigInt(e.target.value) }));
-        }}
-      >
-        <option value={Role.Guest.toString()} selected>
-          Guest
-        </option>
-        <option value={Role.Host.toString()} selected>
-          Host
-        </option>
-        <option value={Role.Manager.toString()} selected>
-          Manager
-        </option>
-        <option value={Role.Admin.toString()} selected>
-          Admin
-        </option>
-        <option value={Role.KYCManager.toString()} selected>
-          KYC Manager
-        </option>
-        <option value={Role.AdminView.toString()} selected>
-          Admin Viewer
-        </option>
-        <option value={Role.InvestmentManager.toString()} selected>
-          Investment Manager
-        </option>
-        <option value={Role.OracleManager.toString()} selected>
-          Oracle Manager
-        </option>
-      </RntSelect>
+    <div className="flex w-full flex-row gap-4 max-md:flex-col">
+      <ScrollingHorizontally className="mt-8 w-full flex-1 md:mt-2">
+        <RntInputTransparent
+          id="manageRoleAddress"
+          className="max-md:min-w-[30ch]"
+          placeholder="0x"
+          label="Address"
+          value={manageRoleState.address}
+          maxLength={42}
+          onChange={(e) => {
+            setManageRoleState((prev) => ({ ...prev, address: e.target.value }));
+          }}
+        />
+        <RntFilterSelect
+          id="manageRoleAction"
+          isTransparentStyle={true}
+          className="w-40"
+          label="Grant/Revoke"
+          value={manageRoleState.action}
+          onChange={(e) => {
+            setManageRoleState((prev) => ({ ...prev, action: e.target.value as "grand" | "revoke" }));
+          }}
+        >
+          <RntFilterSelect.Option value={"revoke"}>Revoke</RntFilterSelect.Option>
+          <RntFilterSelect.Option value={"grand"}>Grand</RntFilterSelect.Option>
+        </RntFilterSelect>
+        <RntFilterSelect
+          id="manageRole"
+          isTransparentStyle={true}
+          className="w-60"
+          label="Role"
+          value={manageRoleState.role.toString()}
+          onChange={(e) => {
+            setManageRoleState((prev) => ({ ...prev, role: BigInt(e.target.value) }));
+          }}
+        >
+          <RntFilterSelect.Option value={Role.Guest.toString()}>Guest</RntFilterSelect.Option>
+          <RntFilterSelect.Option value={Role.Host.toString()}>Host</RntFilterSelect.Option>
+          <RntFilterSelect.Option value={Role.Manager.toString()}>Manager</RntFilterSelect.Option>
+          <RntFilterSelect.Option value={Role.Admin.toString()}>Admin</RntFilterSelect.Option>
+          <RntFilterSelect.Option value={Role.KYCManager.toString()}>KYC Manager</RntFilterSelect.Option>
+          <RntFilterSelect.Option value={Role.AdminView.toString()}>Admin Viewer</RntFilterSelect.Option>
+          <RntFilterSelect.Option value={Role.InvestmentManager.toString()}>Investment Manager</RntFilterSelect.Option>
+          <RntFilterSelect.Option value={Role.OracleManager.toString()}>Oracle Manager</RntFilterSelect.Option>
+        </RntFilterSelect>
+      </ScrollingHorizontally>
       <RntButton
-        className="w-56 self-end"
+        className="w-56 self-end max-md:w-full"
         disabled={
           isPending ||
           isEmpty(manageRoleState.address) ||
