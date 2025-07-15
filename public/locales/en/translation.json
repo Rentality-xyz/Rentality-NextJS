@@ -21,7 +21,8 @@
     "all_trips_table": "All trips table",
     "all_users_table": "All users table",
     "referrals_and_points": "Referrals & Points",
-    "invest": "Investment"
+    "invest": "Investment",
+    "claim_types": "Claim types"
   },
   "search_and_filters": {
     "location_label": "Pick up & Return Location",
@@ -728,6 +729,21 @@
     "vin_incorect": "Incorect",
     "vin_unchecked": "Uncheked",
     "vin_loading": "Loading..."
+  },
+  "admin_claim_types": {
+    "page_title": "Claim types",
+    "claim_type_id": "Claim type id",
+    "applicable_to": "Applicable to",
+    "delete": "Delete",
+    "host": "Host",
+    "guest": "Guest",
+    "both": "Both",
+    "claim_name": "Claim name",
+    "create_claim_btn": "Create",
+    "claim_type": "Claim type",
+    "create_claim_type_title": "Create claim type",
+    "filter_by": "Filter by",
+    "filter_apply": "Filter"
   },
   "mobile_stores_dialog": {
     "title": "Get the Rentality app!",
