@@ -59,7 +59,6 @@ function SendPhotosToAi({ tripId }: { tripId: number }) {
   const isDamageAnalyzeFinished =
     aiCheckReport.status === "post-trip analyzed successful" || aiCheckReport.status === "post-trip analyzed damage";
   const { type, text } = getStatusText(aiCheckReport.status);
-
   return (
     <div className="flex flex-col gap-4">
       <h3>AI Damage analyze</h3>
