@@ -60,7 +60,6 @@ export function mapSearchQuery(
 }
 
 export function mapRawCarToContractSearchCarWithDistance(raw: any): ContractSearchCarWithDistance {
-    console.log(raw)
     return {
       distance: BigInt(Math.floor(raw.distance ?? 0)),
       car: {
