@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 
 
 export default function useCookieConsent() {
-  const [status, setStatus] = useState<Boolean|null>(null);
+  const [status, setStatus] = useState<Boolean|null>(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("cookiesAccepted");
