@@ -126,7 +126,7 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
           <select value={selected?.value ?? ""} ref={hiddenSelectRef} hidden {...rest}>
             {React.Children.map(children, (child) =>
               React.isValidElement(child) ? (
-                <option value={child.props.value} key={child.props.value}>
+                <option value={child.props.value} key={child.props.key}>
                   {child.props.children}
               </option>
               ) : null
