@@ -9,11 +9,9 @@ import { CheckboxLight } from "@/components/common/rntCheckbox";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth/authContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
-import { GatewayStatus, useGateway } from "@civic/ethereum-gateway-react";
 import AddCar from "../vehicles/listings/add";
 import { CivicProvider } from "@/contexts/web3/civicContext";
 import UserCommonInformationForm from "@/features/profile/components/UserCommonInformationForm";
-import UserDriverLicenseVerification from "@/features/profile/components/UserDriverLicenseVerification";
 import { isEmpty } from "@/utils/string";
 import useToggleState from "@/hooks/useToggleState";
 import useFetchUserProfile from "@/features/profile/hooks/useFetchUserProfile";
@@ -35,7 +33,6 @@ function BecomeHost() {
 type BecomeHostSteps = {
   isWalletConnected: boolean;
   isUserInfoSaved: boolean;
-  isLicenseVerificationPassed: boolean;
   isCarListeded: boolean;
   isDiscountsAndPriceSaved: boolean;
 };
@@ -56,7 +53,6 @@ function BecomeHostContent() {
   const [becomeHostSteps, setBecomeHostSteps] = useState<BecomeHostSteps>({
     isWalletConnected: false,
     isUserInfoSaved: false,
-    isLicenseVerificationPassed: false,
     isCarListeded: false,
     isDiscountsAndPriceSaved: false,
   });
@@ -92,22 +88,9 @@ function BecomeHostContent() {
     }));
   }, [isLoadingUserProfile, userProfile]);
 
-  const [openBlockDriverLicense, toggleOpenBlockDriverLicense] = useToggleState(false);
-  const { gatewayStatus } = useGateway();
-  const handleClickOpenBlockDriverLicense = () => {
-    if (becomeHostSteps.isUserInfoSaved && !becomeHostSteps.isLicenseVerificationPassed) {
-      toggleOpenBlockDriverLicense();
-    } else {
-      toggleOpenBlockDriverLicense(false);
-    }
-  };
-  useEffect(() => {
-    setBecomeHostSteps((prev) => ({ ...prev, isLicenseVerificationPassed: gatewayStatus === GatewayStatus.ACTIVE }));
-  }, [gatewayStatus]);
-
   const [openBlockListingCar, toggleOpenBlockListingCar] = useToggleState(false);
   const handleClickOpenBlockListingCar = () => {
-    if (becomeHostSteps.isLicenseVerificationPassed && !becomeHostSteps.isCarListeded) {
+    if (!becomeHostSteps.isCarListeded) {
       toggleOpenBlockListingCar();
     } else {
       toggleOpenBlockListingCar(false);
@@ -137,9 +120,6 @@ function BecomeHostContent() {
     if (becomeHostSteps.isUserInfoSaved) {
       toggleOpenBlockUserInfo(false);
     }
-    if (becomeHostSteps.isLicenseVerificationPassed) {
-      toggleOpenBlockDriverLicense(false);
-    }
     if (becomeHostSteps.isCarListeded) {
       toggleOpenBlockListingCar(false);
     }
@@ -149,12 +129,11 @@ function BecomeHostContent() {
   }, [
     becomeHostSteps,
     toggleOpenBlockUserInfo,
-    toggleOpenBlockDriverLicense,
     toggleOpenBlockListingCar,
     toggleOpenBlockDiscountsAndPrice,
   ]);
 
-  const stepsPassed = Object.values(becomeHostSteps).filter((i) => i === true).length;
+  const stepsPassed = Object.values(becomeHostSteps).filter((i) => i).length;
   const stepsTotal = Object.values(becomeHostSteps).length;
 
   return (
@@ -191,24 +170,11 @@ function BecomeHostContent() {
           </BecomeHostStep>
 
           <BecomeHostStep
-            isOpen={openBlockDriverLicense}
-            toggleIsOpen={handleClickOpenBlockDriverLicense}
-            isEnabled={becomeHostSteps.isUserInfoSaved}
-            isPassed={becomeHostSteps.isLicenseVerificationPassed}
-            index={3}
-            title={t("become_host.driver_license")}
-          >
-            <div className="ml-10">
-              <UserDriverLicenseVerification />
-            </div>
-          </BecomeHostStep>
-
-          <BecomeHostStep
             isOpen={openBlockListingCar}
             toggleIsOpen={handleClickOpenBlockListingCar}
-            isEnabled={becomeHostSteps.isLicenseVerificationPassed}
+            isEnabled={becomeHostSteps.isUserInfoSaved}
             isPassed={becomeHostSteps.isCarListeded}
-            index={4}
+            index={3}
             title={t("become_host.listing_car")}
           >
             <div className="ml-10 mt-4">
@@ -221,7 +187,7 @@ function BecomeHostContent() {
             toggleIsOpen={handleClickOpenBlockDiscountsAndPrice}
             isEnabled={becomeHostSteps.isCarListeded}
             isPassed={becomeHostSteps.isDiscountsAndPriceSaved}
-            index={5}
+            index={4}
             title={t("become_host.discounts_and_price")}
           >
             <div className="ml-10 flex flex-col min-[560px]:flex-row min-[560px]:gap-20">
