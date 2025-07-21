@@ -21,6 +21,8 @@ import useSaveDeliveryPrices from "@/hooks/host/useSaveDeliveryPrices";
 import useFetchTripDiscounts from "@/hooks/host/useFetchTripDiscounts";
 import useSaveTripDiscounts from "@/hooks/host/useSaveTripDiscounts";
 import useFetchMyListings from "@/hooks/host/useFetchMyListings";
+import useSaveNewCar from "@/hooks/host/useSaveNewCar";
+import CarEditForm from "@/components/host/carEditForm/carEditForm";
 
 function BecomeHost() {
   return (
@@ -178,7 +180,7 @@ function BecomeHostContent() {
             title={t("become_host.listing_car")}
           >
             <div className="ml-10 mt-4">
-              <AddCar />
+              <AddCarBecomeHost />
             </div>
           </BecomeHostStep>
 
@@ -295,6 +297,24 @@ function BecomeHostStep({
         )}
       </div>
       {isOpen && <>{children}</>}
+    </>
+  );
+}
+
+function AddCarBecomeHost() {
+  const { mutateAsync: saveNewCar } = useSaveNewCar();
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <CarEditForm
+        editMode="newCar"
+        isFromBecomeHost={true}
+        saveCarInfo={async (hostCarInfo) => {
+          return await saveNewCar(hostCarInfo);
+        }}
+        t={t}
+      />
     </>
   );
 }

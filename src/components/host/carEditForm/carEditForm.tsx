@@ -44,11 +44,13 @@ import { flattenErrors } from "@/utils/forms";
 export default function CarEditForm({
   initValue,
   editMode,
+  isFromBecomeHost = false,
   saveCarInfo,
   t,
 }: {
   initValue?: HostCarInfo;
   editMode: "newCar" | "editCar" | "startInvestmentCar";
+  isFromBecomeHost?: boolean;
   saveCarInfo: (hostCarInfo: HostCarInfo, nftName: string, nftSym: string) => Promise<Result<boolean, Error>>;
   t: TFunction;
 }) {
@@ -242,7 +244,9 @@ export default function CarEditForm({
       if (editMode === "startInvestmentCar") {
         router.push("/host/invest");
       } else {
-        router.push("/host/vehicles");
+        if (!isFromBecomeHost) {
+          router.push("/host/vehicles");
+        }
       }
     } else {
       if (result.error.message === "NOT_ENOUGH_FUNDS") {
