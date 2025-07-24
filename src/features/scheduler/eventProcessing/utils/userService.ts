@@ -105,6 +105,7 @@ class UserService {
             wallet: userData.wallet.toLowerCase(),
             email: userData.additionalKYC.email,
             isEmailVerified: userData.isEmailVerified,
+            pushToken: userData.pushToken
           };
           const newUserInfos = userInfos?.map((ui) => (ui.chainId === chainId ? newUserInfo : ui)) ?? [newUserInfo];
 
