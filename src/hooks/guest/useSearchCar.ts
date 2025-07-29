@@ -172,6 +172,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
             name: availableCarDTO.hostCurrency.name,
             initialized: availableCarDTO.hostCurrency.initialized,
           },
+          priceInCurrency: 0
         };
         setCarInfo(selectedCarDetails);
 

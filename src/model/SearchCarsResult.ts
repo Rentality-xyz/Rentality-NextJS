@@ -78,6 +78,7 @@ export type SearchCarInfo = {
   distanceToUser: number;
   dimoTokenId: number;
   currency: UserCurrencyDTO;
+  priceInCurrency: number;
 };
 
 export type SearchCarInfoDTO = Omit<SearchCarInfo, "engineType"> & { engineType: number };

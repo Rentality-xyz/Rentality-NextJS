@@ -96,7 +96,8 @@
       "price_without_taxes": "Price excl. taxes",
       "insurance_required": "Insurance required",
       "booked": "Your trip is booked! Check the Booking section for details",
-      "currency": "Currency"
+      "currency": "Currency",
+      "currency_price": "Price in currency"
     },
     "search_car_delivery_extra_info": {
       "title": "Trip Info",
