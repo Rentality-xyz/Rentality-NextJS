@@ -4,7 +4,7 @@ import { env } from "@/utils/env";
 import { isEmpty } from "@/utils/string";
 import nodemailer from "nodemailer";
 import { logger } from "@/utils/logger";
-import { EmailTemplate, getEmailTemplate } from "./emailTemplates";
+import { EmailTemplate, getEmailHtml, getEmailTemplate } from "./emailTemplates";
 
 class EmailService {
   private transporter: nodemailer.Transporter;
@@ -65,8 +65,7 @@ class EmailService {
         from: process.env.GMAIL_USER,
         to: to,
         subject: template.subject,
-        text: template.text,
-        html: template.html,
+        html: getEmailHtml(template),
       };
 
       const info = await this.transporter.sendMail(mailOptions);
