@@ -1,0 +1,27 @@
+dataSources:
+  - kind: ethereum
+    name: RentalityNotificationService
+    network: base-sepolia
+    source:
+      address: "0x37E1950eE1BCC531478fb0507476505AC0a5fAaf"
+      abi: RentalityNotificationService
+      startBlock: 26718122
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - RentalityEvent
+      abis:
+        - name: RentalityNotificationService
+          file: ./abis/RentalityNotificationService.json
+        - name: RentalityGateway
+          file: ./abis/RentalityGateway.json
+        - name: RentalityTripService
+          file: ./abis/RentalityTripService.json
+        - name: RentalityUserService
+          file: ./abis/RentalityUserService.json
+    eventHandlers:
+        - event: RentalityEvent(indexed uint8,uint256,uint8,indexed address,indexed address,uint256)
+          handler: handleRentalityEvent
+    file: ./src/rentality-gateway.ts
