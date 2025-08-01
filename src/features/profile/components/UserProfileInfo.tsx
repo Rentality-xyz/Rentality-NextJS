@@ -11,8 +11,8 @@ function UserProfileInfo() {
     <RntSuspense isLoading={isLoading}>
       <div className="my-1 flex flex-col gap-4 lg:my-8">
         <UserCommonInformationForm userProfile={userProfile} saveUserProfile={saveUserProfile} />
-        <hr />
-        <UserDriverLicenseVerification />
+        {/*<hr />*/}
+        {/*<UserDriverLicenseVerification />*/}
       </div>
     </RntSuspense>
   );
