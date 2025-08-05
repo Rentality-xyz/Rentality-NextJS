@@ -61,6 +61,7 @@ async function fetchUserProfile(
     issueCountry: result.value.additionalKYC.issueCountry,
     email: result.value.additionalKYC.email,
     isEmailVerified: result.value.isEmailVerified,
+    pushToken: result.value.pushToken,
   };
   return userProfile;
 }

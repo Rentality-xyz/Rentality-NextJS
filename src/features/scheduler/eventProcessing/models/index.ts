@@ -4,6 +4,7 @@ export type UserInfo = {
   wallet: string;
   email: string;
   isEmailVerified: boolean;
+  pushToken: string;
 };
 
 export interface RentalityEvent {
