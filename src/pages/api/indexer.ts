@@ -390,12 +390,21 @@ async function formatSearchAvailableCarsQueryResponse(
             }
             let currencyInfo = currencyHashSet.get(i.user.user.userCurrency.currency);
    
-            const totalCents = BigInt(i.pricePerDayInUsdCents) * BigInt(i.tripDays);
 
-            const totalBaseUnits = totalCents * currencyInfo!.rate;
-      
-            const priceInCurrency =
-            Number(totalBaseUnits) / (10 ** currencyInfo!.decimals);
+      let priceInCurrency;
+      const totalCents = BigInt(i.pricePerDayInUsdCents) * BigInt(i.tripDays);
+      if (currencyInfo && currencyInfo.currency === ETH_DEFAULT_ADDRESS) {
+
+      const totalBaseUnits = totalCents * currencyInfo!.rate;
+
+     priceInCurrency =
+      Number(totalBaseUnits) / (10 ** currencyInfo!.decimals);
+      }
+      else {
+        const totalBaseUnits = totalCents * currencyInfo!.rate;
+        priceInCurrency =
+        Number(totalBaseUnits) / (10 ** (currencyInfo!.tokenDecimals + currencyInfo!.decimals - 2));
+      }
       
       
 
