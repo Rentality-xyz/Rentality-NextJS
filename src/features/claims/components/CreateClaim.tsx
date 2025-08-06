@@ -22,6 +22,10 @@ import * as React from "react";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import getNetworkName from "@/model/utils/NetworkName";
+import { useAdminClaimTypesQuery } from "@/features/admin/claimTypes/hooks/useAdminClaimTypes";
+import { ClaimUsers } from "@/features/admin/claimTypes/models/claims";
+import useFetchClaims from "../hooks/useFetchClaims";
+import { useClaimTypesQuery } from "../hooks/useClaimTypes";
 
 const hostClaimTypes = [
   ClaimType.Tolls,
@@ -49,6 +53,12 @@ export default function CreateClaim() {
   const pathname = usePathname();
   const { data: tripInfos } = useTripsForClaimCreation(isHost(userMode));
   const { mutateAsync: createClaim } = useCreateClaim();
+     const {
+          data: claimTypes = [],
+          isLoading: isFetching,
+          isError,
+        } = useClaimTypesQuery();
+  
   const { register, handleSubmit, formState, control, reset, watch } = useForm<CreateClaimFormValues>({
     defaultValues: {
       selectedTripId: "",
@@ -67,6 +77,9 @@ export default function CreateClaim() {
   const textSendTo = isHost(userMode) ? "guest" : "host";
   const selectedTripId = watch("selectedTripId");
   const isChecked = watch("isChecked");
+
+  const hostClaims = claimTypes.filter(claim => claim.claimUser === ClaimUsers.Both || claim.claimUser === ClaimUsers.Host)
+  const guestClaims = claimTypes.filter(claim => claim.claimUser === ClaimUsers.Both || claim.claimUser === ClaimUsers.Guest)
 
   async function onFormSubmit(formData: CreateClaimFormValues) {
     if (!formData.isChecked) return;
@@ -170,9 +183,9 @@ export default function CreateClaim() {
                 field.onChange(e);
               }}
             >
-              {(isHost(userMode) ? hostClaimTypes : guestClaimTypes).map((i) => (
-                <RntFilterSelect.Option key={i.toString()} value={i.toString()}>
-                  {getClaimTypeTextFromClaimType(i)}
+              {(isHost(userMode) ? hostClaims : guestClaims).map((i) => (
+                <RntFilterSelect.Option key={i.claimTypeId} value={i.claimTypeId.toString()}>
+                  {i.claimTypeName}
                 </RntFilterSelect.Option>
               ))}
             </RntFilterSelect>
