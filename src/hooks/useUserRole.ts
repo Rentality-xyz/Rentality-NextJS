@@ -17,13 +17,21 @@ type QueryData = UserRole;
 const useUserRole = () => {
   const ethereumInfo = useEthereum();
 
+
   const { data = UserRole.Guest, ...restQueryResult } = useQuery<QueryData>({
     queryKey: [USER_ROLE_QUERY_KEY, ethereumInfo?.walletAddress],
-    queryFn: async () => fetchUserRole(ethereumInfo),
+    queryFn: async () => {
+      const cached = localStorage.getItem(USER_ROLE_QUERY_KEY + ethereumInfo?.walletAddress);
+      if (cached) return JSON.parse(cached);
+      const result = await fetchUserRole(ethereumInfo);
+      localStorage.setItem(USER_ROLE_QUERY_KEY + ethereumInfo?.walletAddress, JSON.stringify(result));
+      return result;
+    }
   });
 
+
   return { ...restQueryResult, data, userRole: data, isGuest, isHost, isInvestManager } as const;
-};
+}
 
 async function fetchUserRole(ethereumInfo: EthereumInfo | null | undefined) {
   if (!ethereumInfo) {
