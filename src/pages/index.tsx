@@ -4,32 +4,37 @@ import Loading from "@/components/common/Loading";
 import { useAuth } from "@/contexts/auth/authContext";
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
-import { logger } from "@/utils/logger";
 
 function Home() {
-  const { isLoading, userRole, isHost } = useUserRole();
-  const { isAuthenticated } = useAuth();
-  const router = useRouter();
+  const { isAuthenticated, isLoadingAuth } = useAuth();
 
-  useEffect(() => {
-    if (isLoading) return;
-
-    if (isHost(userRole)) {
-      logger.info("Redirecting to host main page...");
-      router.push("/host");
-    } else {
-      logger.info("Redirecting to guest main page...");
-      router.push("/guest");
-    }
-  }, [isLoading, userRole, isHost, router]);
+  if (isLoadingAuth) {
+    return <Loading />;
+  }
 
   if (!isAuthenticated) {
     return <Search />;
   }
 
-  return <Loading />;
+  return <AuthenticatedHome />;
 }
 
+function AuthenticatedHome() {
+  const { isLoading, userRole, isHost } = useUserRole();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoading) return;
+    
+    if (isHost(userRole)) {
+      router.push("/host");
+    } else {
+      router.push("/guest");
+    }
+  }, [isLoading, userRole, isHost, router]);
+
+  return <Loading />;
+}
 Home.allowAnonymousAccess = Search.allowAnonymousAccess;
 
 export default Home;
