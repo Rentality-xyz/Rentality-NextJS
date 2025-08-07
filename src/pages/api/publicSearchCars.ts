@@ -12,7 +12,7 @@ import { emptyContractLocationInfo, validateContractSearchCarWithDistance } from
 import { getIpfsURIs, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { isEmpty } from "@/utils/string";
-import { Contract, JsonRpcProvider, Wallet } from "ethers";
+import { Contract, ethers, JsonRpcProvider, Wallet } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { env } from "@/utils/env";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
@@ -297,21 +297,11 @@ async function formatSearchAvailableCarsContractResponse(
         });
       }
       let currencyInfo = currencyHashSet.get(i.car.hostCurrency.currency);
-
-      let priceInCurrency;
+      
       const totalCents = BigInt(i.car.pricePerDayInUsdCents) * BigInt(i.car.tripDays);
-      if (currencyInfo && currencyInfo.currency === ETH_DEFAULT_ADDRESS) {
-
-      const totalBaseUnits = totalCents * currencyInfo!.rate;
-
-     priceInCurrency =
-      Number(totalBaseUnits) / (10 ** currencyInfo!.decimals);
-      }
-      else {
-        const totalBaseUnits = totalCents * currencyInfo!.rate;
-        priceInCurrency =
-        Number(totalBaseUnits) / (10 ** (currencyInfo!.tokenDecimals + currencyInfo!.decimals - 2));
-      }
+      let priceInCurrency = 
+     (Number(totalCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate);
+      
       // try {
       //   isCarDetailsConfirmed = await rentality.isCarDetailsConfirmed(i.car.carId);
       // } catch (error) {
