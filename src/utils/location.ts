@@ -87,22 +87,28 @@ export async function getSignedLocationInfo(
   locationInfo: LocationInfo | ContractLocationInfo,
   chainId: number
 ): Promise<Result<ContractSignedLocationInfo, string>> {
-  const address = "address" in locationInfo ? locationInfo.address : locationInfo.userAddress;
 
-  var url = new URL(`/api/signLocation`, window.location.origin);
-  url.searchParams.append("address", address);
-  url.searchParams.append("chainId", chainId.toString());
-  const apiResponse = await fetch(url);
+  try {
+    const contractLocationInfo = "address" in locationInfo ? mapLocationInfoToContractLocationInfo(locationInfo) : locationInfo;
+    const response = await fetch("/api/signLocation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contractLocationInfo, chainId }),
+    });
 
-  if (!apiResponse.ok) {
-    return Err("Sign location error");
+    if (!response.ok) {
+      return Err("Sign location error");
+    }
+
+    const json = (await response.json()) as SignLocationResponse;
+    if ("error" in json) {
+      return Err(json.error || "Sign location error");
+    }
+
+    return Ok(json);
+  } catch (e) {
+    return Err(e instanceof Error ? e.message : "Sign location error");
   }
-  const apiJson = (await apiResponse.json()) as SignLocationResponse;
-  if ("error" in apiJson) {
-    return Err("Sign location error");
-  }
-  logger.info(`LocationInfo: ${JSON.stringify(apiJson, null, 2)}`);
-  return Ok(apiJson);
 }
 
 const getAddressComponents = (placeDetails: google.maps.places.PlaceResult, fieldName: string) => {
