@@ -1,16 +1,16 @@
-import { ContractSignedLocationInfo } from "@/model/blockchain/schemas";
+import { ContractLocationInfo, ContractSignedLocationInfo } from "@/model/blockchain/schemas";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { env } from "@/utils/env";
 import { signLocationInfo } from "@/utils/signLocationInfo";
 import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Wallet } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getLocationInfoFromGoogleByAddress, mapLocationInfoToContractLocationInfo } from "@/utils/location";
-import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { logger } from "@/utils/logger";
+import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 
 export type SignLocationRequest = {
-  address: string;
+  contractLocationInfo: ContractLocationInfo;
+  chainId: number;
 };
 
 export type SignLocationResponse =
@@ -20,10 +20,9 @@ export type SignLocationResponse =
     };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<SignLocationResponse>) {
-  const GOOGLE_MAPS_API_KEY = env.GOOGLE_MAPS_API_KEY;
-  if (isEmpty(GOOGLE_MAPS_API_KEY)) {
-    logger.error("SignLocation error: GOOGLE_MAPS_API_KEY was not set");
-    res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
+
+  if (req.method !== "POST") {
+    res.status(405).json({ error: "Method Not Allowed" });
     return;
   }
 
@@ -34,24 +33,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  const parseQueryResult = parseQuery(req);
-  if (!parseQueryResult.ok) {
-    res.status(400).json({ error: parseQueryResult.error });
+  const parsed = parseBody(req);
+  if (!parsed.ok) {
+    res.status(400).json({ error: parsed.error });
     return;
   }
 
-  const { address, chainId, providerApiUrl } = parseQueryResult.value;
-  logger.info(`\nCalling signLocation API with params: 'address'=${address} | 'chainId'=${chainId}`);
+  const { contractLocationInfo, chainId } = parsed.value;
 
-  const locationInfoResult = await getLocationInfoFromGoogleByAddress(address, GOOGLE_MAPS_API_KEY);
-
-  if (!locationInfoResult.ok) {
-    logger.error(locationInfoResult.error);
-    res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
+  const providerApiUrl = getProviderApiUrlFromEnv(chainId);
+  if (!providerApiUrl) {
+    logger.error(`API signLocation error: API URL for chain id ${chainId} was not set`);
+    res.status(400).json({ error: `Chain id ${chainId} is not supported` });
     return;
   }
 
-  const contractLocationInfo = mapLocationInfoToContractLocationInfo(locationInfoResult.value);
   const provider = new JsonRpcProvider(providerApiUrl);
   const signer = new Wallet(SIGNER_PRIVATE_KEY, provider);
   const signature = await signLocationInfo(signer, contractLocationInfo);
@@ -60,25 +56,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   return;
 }
 
-function parseQuery(
-  req: NextApiRequest
-): Result<SignLocationRequest & { chainId: number; providerApiUrl: string }, string> {
-  const { address: addressQuery, chainId: chainIdQuery } = req.query;
-  const address = typeof addressQuery === "string" ? addressQuery : "";
-  const chainId = typeof chainIdQuery === "string" ? Number(chainIdQuery) : 0;
+function parseBody(req: NextApiRequest): Result<SignLocationRequest, string> {
+  const { contractLocationInfo, chainId } = (req.body ?? {}) as Partial<SignLocationRequest>;
 
-  if (isEmpty(address)) {
-    return Err("'address' is not provided or empty");
+  if (!contractLocationInfo) {
+    return Err("'contractLocationInfo' is required");
   }
-  if (Number.isNaN(chainId) || chainId === 0) {
-    return Err("'chainId' is not provided or is not a number");
+  if (typeof chainId !== "number" || !Number.isFinite(chainId) || chainId <= 0) {
+    return Err("'chainId' is required and must be a positive number");
   }
 
-  const providerApiUrl = getProviderApiUrlFromEnv(chainId);
-  if (!providerApiUrl) {
-    logger.error(`API signLocation error: API URL for chain id ${chainId} was not set`);
-    return Err(`Chain id ${chainId} is not supported`);
-  }
-
-  return Ok({ address, chainId, providerApiUrl });
+  return Ok({ contractLocationInfo, chainId });
 }
