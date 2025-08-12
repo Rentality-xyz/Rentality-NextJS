@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import RntButton from "@/components/common/rntButton";
-import RntSelect from "@/components/common/rntSelect";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "@/utils/i18n";
 import { ClaimTypesFilters } from "../hooks/useAdminClaimTypes";
 import { ClaimUsers } from "../models/claims";
+import RntFilterSelect from "@/components/common/RntFilterSelect";
 
 interface AllUsersFiltersProps {
   defaultFilters?: ClaimTypesFilters;
@@ -13,9 +13,12 @@ interface AllUsersFiltersProps {
 
 function AllUsersFilters({ defaultFilters, onApply }: AllUsersFiltersProps) {
   const { t } = useTranslation();
-  const t_att: TFunction = (name, options) => t("admin_claim_types." + name, options);
-  
-  const [filters, setFilters] = useState<ClaimTypesFilters>(defaultFilters || {});
+  const t_att: TFunction = (name, options) =>
+    t("admin_claim_types." + name, options);
+
+  const [filters, setFilters] = useState<ClaimTypesFilters>(
+    defaultFilters || { claimTypes: ClaimUsers.Both }
+  );
   const [isLoading, setIsLoading] = useState(false);
 
   const handleApply = async () => {
@@ -27,31 +30,42 @@ function AllUsersFilters({ defaultFilters, onApply }: AllUsersFiltersProps) {
     }
   };
 
-    return (
+  const claimTypeOptions = [
+    { id: ClaimUsers.Host, labelKey: "host" },
+    { id: ClaimUsers.Guest, labelKey: "guest" },
+    { id: ClaimUsers.Both, labelKey: "both" },
+  ];
+
+  return (
     <div className="rounded-b-2xl bg-rentality-bg p-4 pb-8">
-      <div className="grid grid-cols-1 md:grid-cols-[auto_auto] gap-4 items-end">
-        <div className="flex flex-col gap-2 w-full md:max-w-[300px]">
-          <label className="font-medium text-sm">{t_att("filter_by")}</label>
-          <RntSelect
-        value={String(filters.claimTypes ?? ClaimUsers.Both)}
-        onChange={e =>
-          setFilters({
-            ...filters,
-            claimTypes: Number(e.target.value) as ClaimUsers
-          })
-        }
+      <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-[auto_auto]">
+        <div className="flex w-full flex-col gap-2 md:max-w-[300px]">
+          <label className="text-sm font-medium">{t_att("filter_by")}</label>
+          <RntFilterSelect
+            value={String(filters.claimTypes)}
+            onChange={(e) => {
+              if (e.target.value === "") return
+              const selectedId = Number(e.target.value) as ClaimUsers;
+              setFilters((prev) => ({
+                ...prev,
+                claimTypes: selectedId,
+              }));
+            }}
             className="w-full"
           >
-            <option value={ClaimUsers.Host}>{t_att("host")}</option>
-            <option value={ClaimUsers.Guest}>{t_att("guest")}</option>
-            <option value={ClaimUsers.Both}>{t_att("both")}</option>
-          </RntSelect>
+            {claimTypeOptions.map(({ id, labelKey }) => (
+              <RntFilterSelect.Option
+                key={id}
+                value={String(id)}
+              >
+                {t_att(labelKey)}
+              </RntFilterSelect.Option>
+            ))}
+          </RntFilterSelect>
+
         </div>
 
-        <RntButton
-          onClick={handleApply}
-          disabled={isLoading}
-        >
+        <RntButton onClick={handleApply} disabled={isLoading}>
           {t_att("filter_apply")}
         </RntButton>
       </div>

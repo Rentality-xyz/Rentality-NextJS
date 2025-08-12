@@ -16,6 +16,7 @@ import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { cn } from "@/utils";
+import { ParsedUrlQuery } from "node:querystring";
 
 function GuestNavMenu() {
   const { isAuthenticated, logout } = useAuth();
@@ -27,7 +28,10 @@ function GuestNavMenu() {
   const { t } = useTranslation();
 
   const router = useRouter();
-  const normalizePathname = (pathname: string) => {
+  const normalizePathname = (pathname: string, query: ParsedUrlQuery) => {
+    if (query.back) {
+      return query.back.toString();
+    }
     switch (pathname) {
       case "/guest":
         return "/guest/search";
@@ -36,7 +40,7 @@ function GuestNavMenu() {
     }
   };
 
-  const selectedMenuHref = normalizePathname(router.pathname);
+  const selectedMenuHref = normalizePathname(router.pathname, router.query);
 
   React.useEffect(() => {
     hasFeatureFlag(FEATURE_FLAGS.FF_INVESTMENTS).then((hasInvestmentFeatureFlag: boolean) => {

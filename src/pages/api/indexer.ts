@@ -1,4 +1,3 @@
-import { getEtherContractWithSigner } from "@/abis";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { FilterLimits, SearchCarInfoDTO } from "@/model/SearchCarsResult";
 import { emptyLocationInfo, formatLocationInfoUpToCity } from "@/model/LocationInfo";
@@ -11,7 +10,7 @@ import { emptyContractLocationInfo, validateContractSearchCarWithDistance } from
 import { getIpfsURIs, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { isEmpty } from "@/utils/string";
-import { JsonRpcProvider, Wallet } from "ethers";
+import { Contract, JsonRpcProvider, Wallet } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { env } from "@/utils/env";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
@@ -22,7 +21,9 @@ import { getTimeZoneIdFromGoogleByLocation } from "@/utils/timezone";
 import { logger } from "@/utils/logger";
 import { formatSearchAvailableCarsContractRequest } from "@/utils/searchMapper";
 import { MappedSearchQuery, mapRawCarToContractSearchCarWithDistance, mapSearchQuery, querySearchCar } from "@/utils/api/indexer/querySearchCar";
-
+import rentalityContracts, { getEtherContractWithSigner } from "@/abis";
+import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
+import ERC20JSON_ABI from "../../abis/ERC20.abi.json";
 export type PublicSearchCarsResponse =
   | {
       availableCarsData: SearchCarInfoDTO[];
@@ -212,7 +213,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     minCarYear: Number(getFilterInfoDto.minCarYearOfProduction),
     maxCarPrice: Number(getFilterInfoDto.maxCarPrice) / 100,
   };
-
+ 
   res.status(200).json({ availableCarsData, filterLimits });
 }
 
@@ -264,6 +265,7 @@ async function formatSearchAvailableCarsContractResponse(
       const tripDays = Number(i.car.tripDays);
       const pricePerDay = Number(i.car.pricePerDayInUsdCents) / 100;
       const totalPriceWithHostDiscount = Number(i.car.totalPriceWithDiscount) / 100;
+      
 
       let item: SearchCarInfoDTO = {
         carId: Number(i.car.carId),
@@ -320,6 +322,7 @@ async function formatSearchAvailableCarsContractResponse(
           name: i.car.hostCurrency.name,
           initialized: i.car.hostCurrency.initialized,
         },
+        priceInCurrency: 0,
       };
 
       return item;
@@ -342,10 +345,11 @@ function sortByTestWallet(a: SearchCarInfoDTO, b: SearchCarInfoDTO) {
   }
 }
 
+
 async function formatSearchAvailableCarsQueryResponse(
   chainId: number,
   mappedSearchQuery: MappedSearchQuery[]
-) {
+): Promise<SearchCarInfoDTO[]> {
   if (mappedSearchQuery.length === 0) return [];
 
   const testWallets = env.TEST_WALLETS_ADDRESSES?.split(",") ?? [];
@@ -354,6 +358,44 @@ async function formatSearchAvailableCarsQueryResponse(
     mappedSearchQuery.map(async (i: MappedSearchQuery) => {
       const metaData = parseMetaData(await getMetaDataFromIpfs(i.tokenURI));
       let isCarDetailsConfirmed = false;
+
+      const converterAddress = rentalityContracts.currencyConverter.addresses.find(
+        (i) => i.chainId === chainId
+      );
+      if (!converterAddress) {
+        logger.error(`formatSearchAvailableCarsContractResponse error: currencyConverter address for chainId ${chainId} is not found`);
+        return null;
+      }
+        const provider = new JsonRpcProvider(getProviderApiUrlFromEnv(chainId));
+        const currencyConverter = new Contract(converterAddress.address, rentalityContracts.currencyConverter.abi, provider);
+        const currencyHashSet = new Map<string, { currency: string; rate: bigint, decimals: number, tokenDecimals: number }>();
+
+            if(!currencyHashSet.has(i.user.user.userCurrency.currency)) {
+              let tokenDecimals = 18;
+              if(i.user.user.userCurrency.currency !== ETH_DEFAULT_ADDRESS) {
+                const erc20 = new Contract(i.user.user.userCurrency.currency, ERC20JSON_ABI.abi,provider)
+                tokenDecimals = await erc20.decimals();
+              }
+      
+              const currencyRate = await currencyConverter.getFromUsdCentsLatest(
+                i.user.user.userCurrency.currency,
+                BigInt(BigInt(i.pricePerDayInUsdCents) * BigInt(i.tripDays)),
+              )
+              currencyHashSet.set(i.user.user.userCurrency.currency, {
+                currency: i.user.user.userCurrency.currency,
+                rate: BigInt(currencyRate[1]),
+                decimals: Number(currencyRate[2]),
+                tokenDecimals,
+              });
+            }
+            let currencyInfo = currencyHashSet.get(i.user.user.userCurrency.currency);
+   
+
+            const totalCents = BigInt(i.pricePerDayInUsdCents) * BigInt(i.tripDays);
+            let priceInCurrency = 
+           (Number(totalCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate);
+            
+      
 
       const tripDays = i.tripDays;
       const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
@@ -412,7 +454,7 @@ async function formatSearchAvailableCarsQueryResponse(
         isTestCar: testWallets.includes(i.host),
         isInsuranceRequired: i.insuranceCarInfo.required,
         insurancePerDayPriceInUsd: Number(i.insuranceCarInfo.priceInUsdCents),
-        isGuestHasInsurance: false, // Недоступно в новом формате
+        isGuestHasInsurance: false,
         distanceToUser: i.distance,
         dimoTokenId: Number(i.dimoTokenId),
         currency: {
@@ -420,14 +462,20 @@ async function formatSearchAvailableCarsQueryResponse(
           name: i.user.user.userCurrency.name,
           initialized: i.user.user.userCurrency.initialized,
         },
+        priceInCurrency: Number(priceInCurrency),
       };
 
       return item;
-    })
-  );
+    }));
 
+    const filteredCars = cars.filter(
+      (c): c is SearchCarInfoDTO => c !== null
+    );
+  
   if (allSupportedBlockchainList.find((bch) => !bch.isTestnet && bch.chainId === chainId) !== undefined) {
-    cars.sort((a, b) => sortByTestWallet(a, b));
+    filteredCars.sort((a, b) => sortByTestWallet(a, b));
   }
-  return cars;
+  return filteredCars ?? [];
 }
+
+

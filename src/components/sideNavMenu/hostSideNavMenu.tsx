@@ -17,6 +17,7 @@ import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { ParsedUrlQuery } from "node:querystring";
 
 function HostNavMenu() {
   const { isAuthenticated, logout } = useAuth();
@@ -28,7 +29,10 @@ function HostNavMenu() {
   const { t } = useTranslation();
 
   const router = useRouter();
-  const normalizePathname = (pathname: string) => {
+  const normalizePathname = (pathname: string, query: ParsedUrlQuery) => {
+    if (query.back) {
+      return query.back.toString();
+    }
     if (
       pathname === "/host" ||
       pathname.startsWith("/host/vehicles/edit") ||
@@ -40,7 +44,7 @@ function HostNavMenu() {
     return pathname;
   };
 
-  const selectedMenuHref = normalizePathname(router.pathname);
+  const selectedMenuHref = normalizePathname(router.pathname, router.query);
 
   React.useEffect(() => {
     hasFeatureFlag(FEATURE_FLAGS.FF_INVESTMENTS).then((hasInvestmentFeatureFlag: boolean) => {

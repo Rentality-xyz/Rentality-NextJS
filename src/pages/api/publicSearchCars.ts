@@ -1,4 +1,4 @@
-import { getEtherContractWithSigner } from "@/abis";
+import rentalityContracts, { getEtherContractWithSigner } from "@/abis";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { FilterLimits, SearchCarInfoDTO } from "@/model/SearchCarsResult";
 import { emptyLocationInfo, formatLocationInfoUpToCity } from "@/model/LocationInfo";
@@ -12,7 +12,7 @@ import { emptyContractLocationInfo, validateContractSearchCarWithDistance } from
 import { getIpfsURIs, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { isEmpty } from "@/utils/string";
-import { JsonRpcProvider, Wallet } from "ethers";
+import { Contract, JsonRpcProvider, Wallet } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { env } from "@/utils/env";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
@@ -22,6 +22,8 @@ import { IRentalityGatewayContract } from "@/features/blockchain/models/IRentali
 import { getTimeZoneIdFromGoogleByLocation } from "@/utils/timezone";
 import { logger } from "@/utils/logger";
 import { formatSearchAvailableCarsContractRequest } from "@/utils/searchMapper";
+import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
+import ERC20JSON_ABI from "../../abis/ERC20.abi.json";
 
 export type PublicSearchCarsResponse =
   | {
@@ -221,6 +223,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   //   minCarYear: Number(getFilterInfoDto.minCarYearOfProduction),
   //   maxCarPrice: Number(getFilterInfoDto.maxCarPrice) / 100,
   // };
+  if(availableCarsData === null) {
+    res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
+    return;
+  }
 
   res.status(200).json({ availableCarsData, filterLimits });
 }
@@ -258,12 +264,44 @@ async function formatSearchAvailableCarsContractResponse(
   validateContractSearchCarWithDistance(searchCarsViewsView[0]);
 
   const testWallets = env.TEST_WALLETS_ADDRESSES?.split(",") ?? [];
-
+  const currencyHashSet = new Map<string, { currency: string; rate: bigint, decimals: number, tokenDecimals: number }>();
+  const converterAddress = rentalityContracts.currencyConverter.addresses.find(
+    (i) => i.chainId === chainId
+  );
+  if (!converterAddress) {
+    logger.error(`formatSearchAvailableCarsContractResponse error: currencyConverter address for chainId ${chainId} is not found`);
+    return null;
+  }
+  const provider = new JsonRpcProvider(getProviderApiUrlFromEnv(chainId));
+  const currencyConverter = new Contract(converterAddress.address, rentalityContracts.currencyConverter.abi, provider);
   const cars = await Promise.all(
     searchCarsViewsView.map(async (i: ContractSearchCarWithDistance) => {
       const metaData = parseMetaData(await getMetaDataFromIpfs(i.car.metadataURI));
       let isCarDetailsConfirmed = false;
+      if(!currencyHashSet.has(i.car.hostCurrency.currency)) {
+        let tokenDecimals = 18;
+        if(i.car.hostCurrency.currency !== ETH_DEFAULT_ADDRESS) {
+          const erc20 = new Contract(i.car.hostCurrency.currency, ERC20JSON_ABI.abi,provider)
+          tokenDecimals = await erc20.decimals();
+        }
 
+        const currencyRate = await currencyConverter.getFromUsdCentsLatest(
+          i.car.hostCurrency.currency,
+          BigInt(i.car.pricePerDayInUsdCents * BigInt(i.car.tripDays)),
+        )
+        currencyHashSet.set(i.car.hostCurrency.currency, {
+          currency: i.car.hostCurrency.currency,
+          rate: BigInt(currencyRate[1]),
+          decimals: Number(currencyRate[2]),
+          tokenDecimals: Number(tokenDecimals),
+        });
+      }
+      let currencyInfo = currencyHashSet.get(i.car.hostCurrency.currency);
+      
+      const totalCents = BigInt(i.car.pricePerDayInUsdCents) * BigInt(i.car.tripDays);
+      let priceInCurrency = 
+     (Number(totalCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate);
+      
       // try {
       //   isCarDetailsConfirmed = await rentality.isCarDetailsConfirmed(i.car.carId);
       // } catch (error) {
@@ -329,8 +367,8 @@ async function formatSearchAvailableCarsContractResponse(
           name: i.car.hostCurrency.name,
           initialized: i.car.hostCurrency.initialized,
         },
+        priceInCurrency:  Number(priceInCurrency)
       };
-
       return item;
     })
   );

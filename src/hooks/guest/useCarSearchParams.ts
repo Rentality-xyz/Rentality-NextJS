@@ -21,6 +21,7 @@ type SearchCarQueryParams = {
   priceFrom?: number;
   priceTo?: number;
 
+  brandId?: number;
   carId?: number;
 };
 
@@ -43,6 +44,7 @@ export default function useCarSearchParams() {
   const priceFrom = searchParams?.get("priceFrom") ? parseInt(searchParams.get("priceFrom") as string) : undefined;
   const priceTo = searchParams?.get("priceTo") ? parseInt(searchParams?.get("priceTo") as string) : undefined;
 
+  const brandId = searchParams?.get("brandId") ? parseInt(searchParams?.get("brandId") as string) : undefined;
   const carId = searchParams?.get("carId") ? parseInt(searchParams?.get("carId") as string) : undefined;
 
   const searchCarRequest: SearchCarRequest = useMemo(() => {
@@ -72,9 +74,10 @@ export default function useCarSearchParams() {
       yearOfProductionTo: yearTo,
       pricePerDayInUsdFrom: priceFrom,
       pricePerDayInUsdTo: priceTo,
+      brandId: brandId,
       carId: carId,
     };
-  }, [brand, model, yearFrom, yearTo, priceFrom, priceTo, carId]);
+  }, [brand, model, yearFrom, yearTo, priceFrom, priceTo, brandId, carId]);
 
   function updateSearchParams(request: SearchCarRequest, filters: SearchCarFilters) {
     const pageParams = "?" + createQueryString(request, filters);
@@ -133,8 +136,11 @@ export function createQueryString(request: SearchCarRequest, filters: SearchCarF
   if (filters.pricePerDayInUsdTo && filters.pricePerDayInUsdTo > 0) {
     setParam(params, "priceTo", filters.pricePerDayInUsdTo.toString());
   }
-  if (filters.carId && filters.carId > 0) {
-    setParam(params, "carId", filters.carId.toString());
+  if (filters.brandId && filters.brandId > 0) {
+    setParam(params, "brandId", filters.brandId.toString());
+  }
+  if (carId && carId > 0) {
+    setParam(params, "carId", carId.toString());
   }
 
   return params.toString();
