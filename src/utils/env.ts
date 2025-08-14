@@ -45,7 +45,7 @@ export const env = createEnv({
     API_AUTH_TOKEN: z.string(),
     BASE_URL: z.string(),
 
-    FIREBASE_SERVICE_ACCOUNT: z.string(),
+    FB_SERVICE_ACCOUNT: z.string(),
   },
   client: {
     NEXT_PUBLIC_INCLUDE_MAINNETS: booleanEnvType(),
