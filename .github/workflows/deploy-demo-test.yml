@@ -93,7 +93,7 @@ jobs:
           ENVKEY_INDEXER_API_URL: ${{ secrets.INDEXER_API_URL }}
           ENVKEY_API_AUTH_TOKEN: ${{ secrets.API_AUTH_TOKEN }}
           ENVKEY_BASE_URL: ${{ vars.BASE_URL }}
-          ENVKEY_FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          ENVKEY_FB_SERVICE_ACCOUNT: ${{ secrets.FB_SERVICE_ACCOUNT }}
       - name: "Build Rentality App"
         run: make build
       - name: "Remove Contracts Repo"

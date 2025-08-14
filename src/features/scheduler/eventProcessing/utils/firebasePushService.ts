@@ -12,7 +12,7 @@ class FirebasePushService {
   constructor() {
     if (!getApps().length) {
       try {
-        const serviceAccount = JSON.parse(env.FIREBASE_SERVICE_ACCOUNT);
+        const serviceAccount = JSON.parse(env.FB_SERVICE_ACCOUNT);
         initializeApp({ credential: cert(serviceAccount) });
       } catch (error) {
         logger.error("Error initializing Firebase Push service account", error);
