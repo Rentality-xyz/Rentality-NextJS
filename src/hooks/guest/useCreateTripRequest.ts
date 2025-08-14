@@ -122,14 +122,9 @@ const useCreateTripRequest = () => {
           pickUpInfo: pickupLocationResult.value,
           returnInfo: returnLocationResult.value,
         };
-        const totalPriceInCurrency = await formatCurrencyWithSigner(
-          userCurrency.currency,
-          ethereumInfo.signer,
-          paymentsResult.value.totalPrice
-        );
-
+    
         if (
-          !(await isUserHasEnoughFunds(ethereumInfo.signer, totalPriceInCurrency, {
+          !(await isUserHasEnoughFunds(ethereumInfo.signer,  paymentsResult.value.totalPrice, {
             currency: userCurrency.currency,
             name: userCurrency.name,
           }))
@@ -137,7 +132,7 @@ const useCreateTripRequest = () => {
           logger.error("createTripRequest error: user don't have enough funds");
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
-        let value = totalPriceInCurrency;
+        let value =  paymentsResult.value.totalPrice;
         if (userCurrency.currency !== ETH_DEFAULT_ADDRESS) {
           await approve(userCurrency.currency, ethereumInfo.signer, BigInt(value));
           value = BigInt(0);
@@ -170,13 +165,9 @@ const useCreateTripRequest = () => {
           returnInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
         };
 
-        const totalPriceInCurrency = await formatCurrencyWithSigner(
-          userCurrency.currency,
-          ethereumInfo.signer,
-          paymentsResult.value.totalPrice
-        );
+  
         if (
-          !(await isUserHasEnoughFunds(ethereumInfo.signer, totalPriceInCurrency, {
+          !(await isUserHasEnoughFunds(ethereumInfo.signer, paymentsResult.value.totalPrice, {
             currency: userCurrency.currency,
             name: userCurrency.name,
           }))
@@ -187,7 +178,7 @@ const useCreateTripRequest = () => {
 
         let value = paymentsResult.value.totalPrice;
         if (userCurrency.currency !== ETH_DEFAULT_ADDRESS) {
-          const tx = await approve(userCurrency.currency, ethereumInfo.signer, BigInt(totalPriceInCurrency));
+          const tx = await approve(userCurrency.currency, ethereumInfo.signer, BigInt(paymentsResult.value.totalPrice));
           value = BigInt(0);
         }
         const result = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, promoCode, {

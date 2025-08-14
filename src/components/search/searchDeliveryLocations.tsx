@@ -4,6 +4,7 @@ import { emptyLocationInfo, LocationInfo } from "@/model/LocationInfo";
 import { CheckboxLight } from "../common/rntCheckbox";
 import { placeDetailsToLocationInfo } from "@/utils/location";
 import { SearchCarRequest } from "@/model/SearchCarRequest";
+import { useTranslation } from "react-i18next";
 
 export default function SearchDeliveryLocations({
   searchCarRequest,
@@ -12,6 +13,9 @@ export default function SearchDeliveryLocations({
   searchCarRequest: SearchCarRequest;
   setSearchCarRequest: (value: React.SetStateAction<SearchCarRequest>) => void;
 }) {
+
+  const { t } = useTranslation();
+
   const [pickupLocationInfo, setPickupLocationInfo] = useState<LocationInfo | undefined>(undefined);
   const [returnLocationInfo, setReturnLocationInfo] = useState<LocationInfo | undefined>(undefined);
 
@@ -52,7 +56,7 @@ export default function SearchDeliveryLocations({
         />
         <CheckboxLight
           className="ml-4 mt-0.5"
-          label="Host home locatione"
+          label={t("create_trip.host_home_location")}
           checked={searchCarRequest.deliveryInfo.pickupLocation.isHostHomeLocation}
           onChange={(e) =>
             setSearchCarRequest((prev) => ({
@@ -108,7 +112,7 @@ export default function SearchDeliveryLocations({
         />
         <CheckboxLight
           className="ml-4 mt-0.5"
-          label="Host home locatione"
+          label={t("create_trip.host_home_location")}
           checked={searchCarRequest.deliveryInfo.returnLocation.isHostHomeLocation}
           onChange={(e) =>
             setSearchCarRequest((prev) => ({

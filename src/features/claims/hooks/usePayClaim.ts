@@ -26,23 +26,18 @@ const usePayClaim = () => {
       try {
         const calculateClaimValueResult = await rentalityContracts.gateway.calculateClaimValue(BigInt(claimId));
 
+
         if (!calculateClaimValueResult.ok) {
           return Err(new Error("ERROR"));
         }
 
-        const claimAmountInCurrency = await formatCurrencyWithSigner(
-          currency,
-          ethereumInfo.signer,
-          calculateClaimValueResult.value
-        );
-
-        if (!(await isUserHasEnoughFunds(ethereumInfo.signer, claimAmountInCurrency))) {
+        if (!(await isUserHasEnoughFunds(ethereumInfo.signer, calculateClaimValueResult.value))) {
           logger.error("payClaim error: user don't have enough funds");
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
-        let value = claimAmountInCurrency;
+        let value = calculateClaimValueResult.value;
         if (currency !== ETH_DEFAULT_ADDRESS) {
-          await approve(currency, ethereumInfo.signer, BigInt(claimAmountInCurrency));
+          await approve(currency, ethereumInfo.signer, BigInt(calculateClaimValueResult.value));
           value = BigInt(0);
         }
 
