@@ -62,7 +62,7 @@ export default async function checkEmailVerificationCodeHandler(
   }
 
   logger.info(`Email verified successfully`);
-  res.writeHead(302, { Location: `${baseUrl}/guest/profile` });
+  res.writeHead(302, { Location: `${baseUrl}/guest/profile?emailVerificationHash=${validateVerificationCodeResult.value.hash}` });
   res.end();
   return;
 }
@@ -121,7 +121,7 @@ function validateEnvs(chainId: number): Result<boolean> {
   return Ok(true);
 }
 
-function validateVerificationCode(params: CheckEmailVerificationCodeParams): Result<boolean> {
+function validateVerificationCode(params: CheckEmailVerificationCodeParams): Result<{ hash: string }> {
   const now = Date.now();
 
   if (now - params.timestamp > CODE_EXPIRATION_TIME_MS) {
@@ -141,7 +141,7 @@ function validateVerificationCode(params: CheckEmailVerificationCodeParams): Res
     return Err(new Error("hash is not valid"));
   }
 
-  return Ok(true);
+  return Ok({hash: hashToVerily});
 }
 
 async function saveVerificationSuccessStatus(

@@ -150,7 +150,13 @@ function UserCommonInformationForm({
 
   const isCurrentPhoneNotVerified =
     (!userProfile.isPhoneNumberVerified && !isEnteredCodeCorrect) || enteredPhoneNumber !== verifiedPhoneNumber;
-  const isCurrentEmailNotVerified = !userProfile.isEmailVerified || enteredEmail !== userProfile.email;
+
+  const [emailVerificationHash, setEmailVerificationHash] = useState<string>("");
+  const params = new URLSearchParams(window.location.search);
+  const emailVerificationHashParam = params.get("emailVerificationHash");
+  const isCurrentEmailNotVerified =
+    (!userProfile.isEmailVerified && emailVerificationHash !== emailVerificationHashParam) ||
+    enteredEmail !== userProfile.email;
 
   useEffect(() => {
     if (isResendCodeTimerRunning && secondsLeft > 0) {
@@ -214,9 +220,7 @@ function UserCommonInformationForm({
         logger.error("sendEmailVerificationCode error:" + result.error);
         showError(t("profile.send_email_err"));
       } else {
-        // setSmsHash(result.hash);
-        // setSmsTimestamp(result.timestamp);
-        // startTimer();
+        setEmailVerificationHash(result.hash);
         showInfo(t("profile.send_email_success"));
       }
     } catch (error) {
@@ -357,8 +361,8 @@ function UserCommonInformationForm({
         </div>
         <DotStatus
           containerClassName="mt-2"
-          color={userProfile.isEmailVerified ? "success" : "error"}
-          text={userProfile.isEmailVerified ? t("profile.email_verified") : t("profile.email_not_verified")}
+          color={!isCurrentEmailNotVerified ? "success" : "error"}
+          text={!isCurrentEmailNotVerified ? t("profile.email_verified") : t("profile.email_not_verified")}
         />
         <div className="mt-4 flex flex-wrap items-end gap-4">
           <Controller

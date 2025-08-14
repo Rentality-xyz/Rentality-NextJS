@@ -66,7 +66,7 @@ export default async function sendEmailVerificationCodeHandler(req: NextApiReque
     return;
   }
 
-  const sendVerificationLinkResult = await sendVerificationLink(email, generateVerificationLinkResult.value);
+  const sendVerificationLinkResult = await sendVerificationLink(email, generateVerificationLinkResult.value.url);
   if (!sendVerificationLinkResult.ok) {
     logger.error(`sendEmailVerificationCodeHandler error: ${sendVerificationLinkResult.error.message}`);
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
@@ -74,7 +74,7 @@ export default async function sendEmailVerificationCodeHandler(req: NextApiReque
   }
 
   logger.info(`Email verification link was sent successfully`);
-  res.status(200).json({ success: true });
+  res.status(200).json({ hash: generateVerificationLinkResult.value.hash });
   return;
 }
 
@@ -146,7 +146,7 @@ function getVerificationLink(
   chainId: number,
   email: string,
   checkUrlBase: string
-): Result<string> {
+): Result<{ url: string; hash: string }> {
   const VERIFICATION_HMAC_SHA256_SECRET_KEY = env.VERIFICATION_HMAC_SHA256_SECRET_KEY;
   if (isEmpty(VERIFICATION_HMAC_SHA256_SECRET_KEY)) {
     return Err(new Error("VERIFICATION_HMAC_SHA256_SECRET_KEY was not set"));
@@ -173,7 +173,7 @@ function getVerificationLink(
     chainId: chainId.toString(),
   });
 
-  return Ok(`${checkUrlBase}?${params.toString()}`);
+  return Ok({url: `${checkUrlBase}?${params.toString()}`, hash});
 }
 
 async function sendVerificationLink(email: string, link: string): Promise<Result<boolean>> {
