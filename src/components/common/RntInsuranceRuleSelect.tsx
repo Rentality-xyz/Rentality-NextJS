@@ -51,13 +51,13 @@ export default function RntInsuranceRuleSelect({
       onChange={(e) => {
         const selectedValue = e.target.value;
         const selected = filteredInsuranceRules.find((c) => c.partToInsurance === BigInt(selectedValue));
-        if (selected && onRuleSelect) {
+        if (selected && onRuleSelect && selectedValue !== "") {
           onRuleSelect(selected.partToInsurance, selected.insuranceId);
         }
       }}
     >
       {filteredInsuranceRules.map((insuranceRule) => (
-        <RntFilterSelect.Option key={`insuranceRule-${insuranceRule.insuranceId}`} value={insuranceRule.partToInsurance.toString()} data-id={insuranceRule.insuranceId}>
+        <RntFilterSelect.Option key={`insuranceRule-${insuranceRule.insuranceId}`} value={`${insuranceRule?.partToInsurance ?? ""} %`} data-id={insuranceRule.insuranceId}>
           {`${insuranceRule.partToInsurance} %`}
         </RntFilterSelect.Option>
       ))}
