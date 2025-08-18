@@ -40,7 +40,7 @@ function InsuranceRules({ hostInsuranceRule }: { hostInsuranceRule: HostInsuranc
           isTransparentStyle={true}
           className="min-w-[17ch] justify-center bg-transparent pl-0 text-lg text-rentality-secondary"
           promptText={insuranceRule.partToInsurance.toString()}
-          value={`${insuranceRule?.partToInsurance ?? ""} %`}
+          value={`${insuranceRule?.partToInsurance}`}
           allInsuranceRules={allInsuranceRules}
           onRuleSelect={(partToInsurance, insuranceId) => {
             setInsuranceRule({ partToInsurance, insuranceId });

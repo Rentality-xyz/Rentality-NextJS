@@ -50,14 +50,18 @@ export default function RntInsuranceRuleSelect({
       placeholder={promptText}
       onChange={(e) => {
         const selectedValue = e.target.value;
+        console.log("selectedValue");
+        console.log(selectedValue);
         const selected = filteredInsuranceRules.find((c) => c.partToInsurance === BigInt(selectedValue));
         if (selected && onRuleSelect && selectedValue !== "") {
+          console.log(selected.partToInsurance);
+          console.log(selected.insuranceId);
           onRuleSelect(selected.partToInsurance, selected.insuranceId);
         }
       }}
     >
       {filteredInsuranceRules.map((insuranceRule) => (
-        <RntFilterSelect.Option key={`insuranceRule-${insuranceRule.insuranceId}`} value={`${insuranceRule?.partToInsurance ?? ""} %`} data-id={insuranceRule.insuranceId}>
+        <RntFilterSelect.Option key={`insuranceRule-${insuranceRule.insuranceId}`} value={`${insuranceRule?.partToInsurance}`} data-id={insuranceRule.insuranceId}>
           {`${insuranceRule.partToInsurance} %`}
         </RntFilterSelect.Option>
       ))}
