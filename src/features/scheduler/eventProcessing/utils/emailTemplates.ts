@@ -63,17 +63,17 @@ export function getEmailTemplate(
         case ClaimStatus.NotPaid:
           return {
             fromTemplate: {
-              subject: `You created new claim ${event.id} on Rentality platform`,
-              baseUrl: baseUrl,
-              message: `We’ve received your claim ${event.id}. Please wait for a response.`,
-              actionPath: "/host/claims",
-              actionText: "View Claims"
-            },
-            toTemplate: {
               subject: `Someone created new claim ${event.id} for you on Rentality platform`,
               baseUrl: baseUrl,
               message: `A new claim ${event.id} has been filed involving you. Please review the details and take any necessary action.`,
               actionPath: "/guest/claims",
+              actionText: "View Claims"
+            },
+            toTemplate: {
+              subject: `You created new claim ${event.id} on Rentality platform`,
+              baseUrl: baseUrl,
+              message: `We’ve received your claim ${event.id}. Please wait for a response.`,
+              actionPath: "/host/claims",
               actionText: "View Claims"
             },
           };
@@ -259,14 +259,14 @@ export function getEmailTemplate(
               subject: `You rejected trip ${event.id} on Rentality platform`,
               baseUrl: baseUrl,
               message: `You have successfully rejected trip ${event.id}. The guest has been notified about your decision.`,
-              actionPath: "/host/trips/booked",
+              actionPath: "/host/trips/history",
               actionText: "View Trips",
             },
             toTemplate: {
               subject: `Trip ${event.id} was rejected on Rentality platform`,
               baseUrl: baseUrl,
               message: `Unfortunately, trip ${event.id} has been rejected by the other party.`,
-              actionPath: "/guest/trips/booked",
+              actionPath: "/guest/trips/history",
               actionText: "View Trips",
             },
           };
