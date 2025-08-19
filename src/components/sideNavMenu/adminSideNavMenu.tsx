@@ -56,8 +56,8 @@ function AdminNavMenu() {
           selectedMenuHref={selectedMenuHref}
         />
         <SideNavMenuItem
-          text={t("nav_menu.host_claims")}
-          href="/admin/hostClaims"
+          text={t("nav_menu.host_insurance_claims")}
+          href="/admin/hostInsuranceClaims"
           icon={MenuIcons.Claims}
           selectedMenuHref={selectedMenuHref}
         />

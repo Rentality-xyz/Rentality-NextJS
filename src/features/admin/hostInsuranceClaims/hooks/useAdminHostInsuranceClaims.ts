@@ -1,19 +1,17 @@
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
-import {
-  HostInsuranceClaim,
-  mapContractFullClaimInfoToHostInsuranceClaim,
-} from "@/features/admin/hostClaims/models/hostInsuranceClaim";
 import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
 import { useQuery } from "@tanstack/react-query";
-import { HOST_INSURANCE_RULE_QUERY_KEY } from "@/hooks/host/useFetchHostInsuranceRule";
-import { ContractFullClaimInfo } from "@/model/blockchain/schemas";
+import { contractFullClaimInfoToClaim } from "@/features/claims/models/mappers/contractFullClaimInfoToClaim";
+import { Claim } from "@/features/claims/models";
+
+export const HOST_INSURANCE_CLAIMS_QUERY_KEY = "HostInsuranceClaims";
 
 const useAdminHostInsuranceClaims = () => {
   const ethereumInfo = useEthereum();
   const { rentalityContracts } = useRentality();
 
-  const queryResult = useQuery<HostInsuranceClaim[]>({
-    queryKey: [HOST_INSURANCE_RULE_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
+  const queryResult = useQuery<Claim[]>({
+    queryKey: [HOST_INSURANCE_CLAIMS_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
     queryFn: async () => await fetchHostInsuranceClaims(rentalityContracts, ethereumInfo),
     refetchOnWindowFocus: false,
   });
@@ -30,19 +28,14 @@ async function fetchHostInsuranceClaims(
   }
 
   const result = await rentalityContracts.gateway.getHostInsuranceClaims();
-  console.log("efrgregregi result");
 
   if (!result.ok) {
     throw result.error;
   }
-  console.log(result.value);
-  const mapped =  result.value.map((contractFullClaimInfo) =>
-    mapContractFullClaimInfoToHostInsuranceClaim(contractFullClaimInfo)
+
+  return result.value.map((contractFullClaimInfo) =>
+    contractFullClaimInfoToClaim(contractFullClaimInfo, true)
   );
-
-  console.log(mapped);
-
-  return result.value;
 }
 
 export default useAdminHostInsuranceClaims;

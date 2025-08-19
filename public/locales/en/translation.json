@@ -23,7 +23,7 @@
     "referrals_and_points": "Referrals & Points",
     "invest": "Investment",
     "claim_types": "Claim types",
-    "host_claims": "Host claims"
+    "host_insurance_claims": "Insurance claims"
   },
   "search_and_filters": {
     "location_label": "Pick up & Return Location",
@@ -750,8 +750,8 @@
     "filter_by": "Filter by",
     "filter_apply": "Filter"
   },
-  "admin_host_claims": {
-    "page_title": "Host claims"
+  "admin_host_insurance_claims": {
+    "page_title": "Host insurance claims"
   },
   "mobile_stores_dialog": {
     "title": "Get the Rentality app!",
