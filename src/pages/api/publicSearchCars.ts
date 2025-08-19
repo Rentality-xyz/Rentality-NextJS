@@ -48,6 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
+  console.log("HEEEEERE1")
   const {
     chainId,
     dateFrom,
@@ -67,33 +68,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     returnLocation,
   } = req.query;
   const chainIdNumber = Number(chainId) > 0 ? Number(chainId) : env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
-
+  console.log("HEEEEERE2")
   if (!chainIdNumber) {
     logger.error("API publicSearchCar error: chainId was not provided");
     res.status(400).json({ error: "chainId was not provided" });
     return;
   }
+  console.log("HEEEEERE3")
   const GOOGLE_MAPS_API_KEY = env.GOOGLE_MAPS_API_KEY;
   if (isEmpty(GOOGLE_MAPS_API_KEY)) {
     logger.error("API publicSearchCar error: GOOGLE_MAPS_API_KEY was not set");
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
-
+  console.log("HEEEEERE4")
   const providerApiUrl = getProviderApiUrlFromEnv(chainIdNumber);
 
+  console.log("HEEEEERE5")
   if (!providerApiUrl) {
     logger.error(`API publicSearchCar error: API URL for chain id ${chainIdNumber} was not set`);
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
-
+  console.log("HEEEEERE5")
   const timeZoneIdResult = await getTimeZoneIdFromGoogleByLocation(
     Number(latitude),
     Number(longitude),
     GOOGLE_MAPS_API_KEY
   );
-
+  console.log("HEEEEERE6")
   const timeZoneId = timeZoneIdResult.ok ? timeZoneIdResult.value : "";
   const isDeliveryToGuestValue = (isDeliveryToGuest as string)?.toLowerCase() === "true";
   const pickupLocationValues = (pickupLocation as string)?.split(";");
@@ -137,6 +140,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             },
     },
   };
+  console.log("HEEEEERE7")
   const searchCarFilters: SearchCarFilters = {
     brand: brand as SearchCarFilters["brand"],
     model: model as SearchCarFilters["model"],
@@ -155,8 +159,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const provider = new JsonRpcProvider(providerApiUrl);
   const wallet = new Wallet(privateKey, provider);
 
+  console.log("HEEEEERE8")
   const rentality = (await getEtherContractWithSigner("gateway", wallet)) as unknown as IRentalityGatewayContract;
 
+  console.log("HEEEEERE9", rentality)
   if (rentality === null) {
     res.status(500).json({ error: "rentality is null" });
     return;
@@ -164,6 +170,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const totalCars = await rentality.getTotalCarsAmount();
   const startPoint = totalCars > 100 ? BigInt(totalCars - BigInt(100)) : BigInt(0);
 
+  console.log("HEEEEERE10")
   const { contractDateFromUTC, contractDateToUTC, contractSearchCarParams } = formatSearchAvailableCarsContractRequest(
     searchCarRequest,
     searchCarFilters,
@@ -190,7 +197,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         ? ""
         : searchCarRequest.deliveryInfo.returnLocation.locationInfo.longitude.toFixed(6),
     };
-
+    console.log("HEEEEERE11")
+try {
     availableCarsView = await rentality.searchAvailableCarsWithDelivery(
       contractDateFromUTC,
       contractDateToUTC,
@@ -200,7 +208,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       startPoint,
       totalCars
     );
-  } else {
+
+  }
+    catch (error) {
+    logger.error("ErrorERRORERROR", error);
+    // console.log("availableCarsView", availableCarsView);
+  }} 
+else {
+  try {
     availableCarsView = await rentality.searchAvailableCarsWithDelivery(
       contractDateFromUTC,
       contractDateToUTC,
@@ -210,7 +225,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       startPoint,
       totalCars
     );
+  }catch (error) {
+    logger.error("ErrorERRORERROR:", error);
   }
+}
   ///TODO: temporary, uncomment after fix
   // const getFilterInfoDto: ContractFilterInfoDTO = await rentality.getFilterInfo(BigInt(1));
 
