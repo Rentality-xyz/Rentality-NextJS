@@ -14,6 +14,7 @@ class FirebasePushService {
       try {
         const serviceAccount = JSON.parse(env.FB_SERVICE_ACCOUNT);
         initializeApp({ credential: cert(serviceAccount) });
+        logger.info("FirebasePushService service account created successfully");
       } catch (error) {
         logger.error("Error initializing Firebase Push service account", error);
       }
@@ -60,6 +61,7 @@ class FirebasePushService {
         logger.info("Push sent successfully:", response);
         return Ok(true);
       } else {
+        logger.error("Push sending failed due to:", response);
         return Err(new Error("Push was not sent"));
       }
     } catch (error) {
