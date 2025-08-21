@@ -20,7 +20,7 @@ export function CarPhotos({ carPhotos, carInfo }: { carPhotos: string[]; carInfo
       <RntButton className="absolute bottom-2 right-4 h-10 w-fit px-2" onClick={handleAllPhotoClick}>
         {carPhotos.length > 6
           ? t("create_trip.all_n_photo", { count: carPhotos.length })
-          : t("create_trip.see_in_full")}
+          : t("create_trip.view_gallery")}
       </RntButton>
       <ImageCarouselDialog
         images={carPhotos}
