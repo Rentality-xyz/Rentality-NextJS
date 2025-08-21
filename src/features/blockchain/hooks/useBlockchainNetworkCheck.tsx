@@ -10,7 +10,7 @@ const defaultChainId = env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
 
 function useBlockchainNetworkCheck() {
   const { wallets } = useWallets();
-  const { showCustomDialog } = useRntDialogs();
+  const { showCustomDialog, hideDialogs } = useRntDialogs();
   const { isAuthenticated } = useAuth();
 
   useEffect(() => {
@@ -27,6 +27,7 @@ function useBlockchainNetworkCheck() {
           handleSwitchChain={async (chainId) => {
             await wallets[0].switchChain(chainId);
           }}
+          handleCloseDialog={hideDialogs}
           chainId={defaultChainId}
         />
       );
