@@ -1,26 +1,11 @@
 import { Err, Ok, Result, UnknownErr } from "@/model/utils/result";
 import { logger } from "@/utils/logger";
-import { initializeApp, cert, getApps } from 'firebase-admin/app';
-import { getMessaging } from "firebase-admin/messaging";
 import { RentalityEvent, UserInfo } from "@/features/scheduler/eventProcessing/models";
 import { getPushTemplate, PushTemplate } from "@/features/scheduler/eventProcessing/utils/pushTemplates";
 import { isEmpty } from "@/utils/string";
-import { env } from "@/utils/env";
+import { messaging } from "./firebaseAdmin";
 
 class FirebasePushService {
-
-  constructor() {
-    if (!getApps().length) {
-      try {
-        const serviceAccount = JSON.parse(env.FB_SERVICE_ACCOUNT);
-        initializeApp({ credential: cert(serviceAccount) });
-        logger.info("FirebasePushService service account created successfully");
-      } catch (error) {
-        logger.error("Error initializing Firebase Push service account", error);
-      }
-    }
-
-  }
 
   async processEvent(
     event: RentalityEvent,
@@ -55,7 +40,7 @@ class FirebasePushService {
         token: pushToken,
       };
 
-      const response = await getMessaging().send(message)
+      const response = await messaging.send(message)
 
       if (response) {
         logger.info("Push sent successfully:", response);
