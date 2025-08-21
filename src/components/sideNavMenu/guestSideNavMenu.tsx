@@ -35,6 +35,8 @@ function GuestNavMenu() {
     switch (pathname) {
       case "/guest":
         return "/guest/search";
+      case "/guest/createTrip":
+        return "/guest/search";
       default:
         return pathname;
     }
