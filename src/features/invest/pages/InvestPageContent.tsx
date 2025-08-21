@@ -17,6 +17,10 @@ import {
   InvestForUserFilterValueKey,
 } from "../models/filters";
 import { LocalizedFilterOption } from "@/model/filters";
+import getNetworkName from "@/model/utils/NetworkName";
+import { useRntSnackbars } from "@/contexts/rntDialogsContext";
+import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { isUserHasEnoughFunds } from "@/utils/wallet";
 
 type InvestContentProps = {};
 
@@ -24,7 +28,7 @@ function InvestPageContent({}: InvestContentProps) {
   const router = useRouter();
   const { userRole, isInvestManager } = useUserRole();
   const { data: investments } = useFetchInvestments();
-  const { mutateAsync: handleInvest, isPendingInvesting } = useInvest();
+  const { mutateAsync: invest, isPendingInvesting } = useInvest();
   const { mutateAsync: handleClaimIncome } = useClaimIncome();
   const localizedFilters = useFilters(isInvestManager(userRole) ? investForInvestorFilters : investForUserFilters);
   const [selectedFilter, setSelectedFilter] = useState<
@@ -33,10 +37,29 @@ function InvestPageContent({}: InvestContentProps) {
     | undefined
   >(undefined);
   const { t } = useTranslation();
+  const { showInfo, showError } = useRntSnackbars();
+  const ethereumInfo = useEthereum();
 
   function handleCreateInvestClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     router.push("/host/invest/create");
+  }
+
+  async function handleInvest(amount: number, investId: number) {
+    if (ethereumInfo && !(await isUserHasEnoughFunds(ethereumInfo.signer, amount))) {
+      showInfo(
+        t("common.add_fund_to_wallet", {
+          network: getNetworkName(ethereumInfo),
+        })
+      );
+      return;
+    }
+    const result = await invest({ amount, investId });
+    if (result.ok) {
+      showInfo(t("invest.you_invested"));
+    } else {
+      showError(t("invest.invest_failed"));
+    }
   }
 
   async function handleStartHosting(investmentId: number) {
@@ -101,7 +124,7 @@ function InvestPageContent({}: InvestContentProps) {
             isHost={isInvestManager(userRole)}
             key={value.investment.investmentId}
             searchInfo={value}
-            handleInvest={(amount, investId) => handleInvest({ amount, investId })}
+            handleInvest={(amount, investId) => handleInvest(amount, investId)}
             isPendingInvesting={isPendingInvesting(value.investment.investmentId)}
             handleStartHosting={handleStartHosting}
             handleClaimIncome={handleClaimIncome}
