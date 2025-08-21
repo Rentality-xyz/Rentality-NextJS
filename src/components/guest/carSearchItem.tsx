@@ -92,7 +92,7 @@ export default function CarSearchItem({
 
   return (
     <div className={mainClasses}>
-      <Link href={requestDetailsLink} target="_blank">
+      <Link href={requestDetailsLink}>
         <div
           style={{ backgroundImage: `url(${searchInfo.images[0]})` }}
           className="relative min-h-[212px] w-full flex-shrink-0 bg-cover bg-center sm:min-h-[432px] 2xl:min-h-[382px] mac:min-h-[428px]"
