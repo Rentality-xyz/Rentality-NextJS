@@ -411,6 +411,10 @@ export type ContractSearchCar = {
   isGuestHasInsurance: boolean;
   dimoTokenId: bigint;
   hostCurrency: ContractUserCurrencyDTO;
+  fuelPrice: bigint;
+  carDiscounts: ContractBaseDiscount;
+  taxesValue: ContractTaxValue[];
+
 };
 
 export type ContractAvailableCarDTO = {
