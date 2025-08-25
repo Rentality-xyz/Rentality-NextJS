@@ -74,7 +74,9 @@ export default function CreateClaim() {
   const { showInfo, showError, hideSnackbars } = useRntSnackbars();
   const { t } = useTranslation();
 
-  const textSendTo = isHost(userMode) ? "guest" : "host";
+  const toInsurance = watch("toInsurance");
+
+  const textSendTo = toInsurance ? "insurance" : isHost(userMode) ? "guest" : "host";
   const selectedTripId = watch("selectedTripId");
   const isChecked = watch("isChecked");
 
@@ -91,6 +93,7 @@ export default function CreateClaim() {
       description: formData.description,
       amountInUsdCents: (Number(formData.amountInUsd) ?? 0) * 100,
       localFileUrls: formData.localFileUrls,
+      toInsurance: formData.toInsurance,
     };
 
     const result = await handleCreateClaim(createClaimRequest);
@@ -233,6 +236,23 @@ export default function CreateClaim() {
       />
       <p className="pl-4">After your trip ends, you have 72 hours to respond before your complaints become public</p>
 
+      {isHost(userMode) && (
+        <Controller
+          name="toInsurance"
+          control={control}
+          render={({ field }) => (
+            <CheckboxLight
+              className="w-full"
+              label="To insurance"
+              checked={field.value}
+              onChange={(e) => {
+                field.onChange(e.target.checked);
+              }}
+            />
+          )}
+        />
+      )}
+
       <Controller
         name="isChecked"
         control={control}
@@ -248,7 +268,7 @@ export default function CreateClaim() {
         )}
       />
 
-      <RntButton type="submit" className="w-[310px]" disabled={isSubmitting || !isChecked}>
+      <RntButton type="submit" className="w-[350px]" disabled={isSubmitting || !isChecked}>
         Confirm and send to {textSendTo}
       </RntButton>
     </form>

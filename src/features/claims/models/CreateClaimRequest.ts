@@ -8,6 +8,7 @@ export type CreateClaimRequest = {
   description: string;
   amountInUsdCents: number;
   localFileUrls: FileToUpload[];
+  toInsurance: boolean;
 };
 
 export type TripInfoForClaimCreation = {

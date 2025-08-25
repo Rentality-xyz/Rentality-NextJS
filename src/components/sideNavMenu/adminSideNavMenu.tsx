@@ -49,9 +49,15 @@ function AdminNavMenu() {
           icon={MenuIcons.AllUsersTable}
           selectedMenuHref={selectedMenuHref}
         />
-          <SideNavMenuItem
+        <SideNavMenuItem
           text={t("nav_menu.claim_types")}
           href="/admin/claimTypes"
+          icon={MenuIcons.Claims}
+          selectedMenuHref={selectedMenuHref}
+        />
+        <SideNavMenuItem
+          text={t("nav_menu.host_insurance_claims")}
+          href="/admin/hostInsuranceClaims"
           icon={MenuIcons.Claims}
           selectedMenuHref={selectedMenuHref}
         />
