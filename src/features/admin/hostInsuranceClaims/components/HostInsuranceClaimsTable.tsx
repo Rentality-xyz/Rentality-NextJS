@@ -15,6 +15,14 @@ import ImageCarouselDialog from "@/components/createTrip/ImageCarouselDialog";
 import { cn } from "@/utils";
 import { Claim } from "@/features/claims/models";
 import { useState } from "react";
+import {
+  RntTable,
+  RntTableBody,
+  RntTableCell,
+  RntTableHead,
+  RntTableHeader,
+  RntTableRow,
+} from "@/components/table/rntTable";
 
 interface HostClaimsTableProps {
   isLoading: boolean;
@@ -70,44 +78,44 @@ function HostInsuranceClaimsTable({ isLoading, claims, onPay }: HostClaimsTableP
       <div className="mt-5 w-full rounded-2xl bg-rentality-bg p-4">
         <h3 className="mb-4 text-xl">{t_history("title")}</h3>
         <div className="custom-scroll w-full overflow-x-auto">
-          <table className="w-full table-auto border-spacing-2">
-            <thead className="w-full">
-              <tr className="text-rentality-additional-light">
-                <th className={`${headerSpanClassName} min-w-[12ch]`}>{t_history("table.invoiceType")}</th>
-                <th className={`${headerSpanClassName} min-w-[17ch]`}>{t_history("table.paymentDeadline")}</th>
-                <th className={`${headerSpanClassName}`}>{t_history("table.reservation")}</th>
-                <th className={`${headerSpanClassName} min-w-[15ch]`}>{t_history("table.car")}</th>
-                <th className={`${headerSpanClassName}`}>{t_history("table.describe")}</th>
-                <th className={`${headerSpanClassName}`}>{t_history("table.viewPhotoFile")}</th>
-                <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_history("table.amount")}</th>
-                <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_history("table.status")}</th>
-                <th className={`${headerSpanClassName} min-w-[10ch]`}>{t_history("table.currency")}</th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody className="w-full text-sm">
+          <RntTable className="w-full table-auto border-spacing-2">
+            <RntTableHeader className="w-full">
+              <RntTableRow className="text-rentality-additional-light">
+                <RntTableHead className={`${headerSpanClassName} min-w-[12ch]`}>{t_history("table.invoiceType")}</RntTableHead>
+                <RntTableHead className={`${headerSpanClassName} min-w-[17ch]`}>{t_history("table.paymentDeadline")}</RntTableHead>
+                <RntTableHead className={`${headerSpanClassName}`}>{t_history("table.reservation")}</RntTableHead>
+                <RntTableHead className={`${headerSpanClassName} min-w-[15ch]`}>{t_history("table.car")}</RntTableHead>
+                <RntTableHead className={`${headerSpanClassName}`}>{t_history("table.describe")}</RntTableHead>
+                <RntTableHead className={`${headerSpanClassName}`}>{t_history("table.viewPhotoFile")}</RntTableHead>
+                <RntTableHead className={`${headerSpanClassName} min-w-[10ch]`}>{t_history("table.amount")}</RntTableHead>
+                <RntTableHead className={`${headerSpanClassName} min-w-[10ch]`}>{t_history("table.status")}</RntTableHead>
+                <RntTableHead className={`${headerSpanClassName} min-w-[10ch]`}>{t_history("table.currency")}</RntTableHead>
+                <RntTableHead></RntTableHead>
+                <RntTableHead></RntTableHead>
+                <RntTableHead></RntTableHead>
+                <RntTableHead></RntTableHead>
+              </RntTableRow>
+            </RntTableHeader>
+            <RntTableBody className="w-full text-sm">
               {claims.map((claim) => {
                 const detailsLink = `/admin/trips/tripInfo/${claim.tripId}?back=/admin/hostClaims`;
 
                 return (
-                  <tr key={claim.claimId} className="w-full border-b-[1px] border-b-gray-500">
-                    <td className={rowSpanClassName}>{claim.claimTypeText}</td>
-                    <td
+                  <RntTableRow key={claim.claimId} className="w-full border-b-[1px] border-b-gray-500">
+                    <RntTableCell className={rowSpanClassName}>{claim.claimTypeText}</RntTableCell>
+                    <RntTableCell
                       className={
                         claim.deadlineDate <= moment.tz(claim.timeZoneId).toDate() ? redTextClassName : rowSpanClassName
                       }
                     >
                       {dateFormatShortMonthDateTime(claim.deadlineDate, claim.timeZoneId)}
-                    </td>
-                    <td className={rowSpanClassName}>{claim.tripId}</td>
-                    <td className={rowSpanClassName}>{claim.carInfo}</td>
-                    <td className={`${rowSpanClassName} max-w-[20ch] overflow-hidden text-ellipsis`}>
+                    </RntTableCell>
+                    <RntTableCell className={rowSpanClassName}>{claim.tripId}</RntTableCell>
+                    <RntTableCell className={rowSpanClassName}>{claim.carInfo}</RntTableCell>
+                    <RntTableCell className={`${rowSpanClassName} max-w-[20ch] overflow-hidden text-ellipsis`}>
                       {claim.description}
-                    </td>
-                    <td className={rowSpanClassName}>
+                    </RntTableCell>
+                    <RntTableCell className={rowSpanClassName}>
                       {claim.fileUrls.filter((i) => !isEmpty(i)).length > 0 ? (
                         <div
                           className="h-8 w-8 cursor-pointer"
@@ -124,14 +132,14 @@ function HostInsuranceClaimsTable({ isLoading, claims, onPay }: HostClaimsTableP
                           />
                         </div>
                       ) : null}
-                    </td>
-                    <td className={rowSpanClassName}>${displayMoneyFromCentsWith2Digits(claim.amountInUsdCents)}</td>
-                    <td className={claim.status === ClaimStatus.Overdue ? redTextClassName : rowSpanClassName}>
+                    </RntTableCell>
+                    <RntTableCell className={rowSpanClassName}>${displayMoneyFromCentsWith2Digits(claim.amountInUsdCents)}</RntTableCell>
+                    <RntTableCell className={claim.status === ClaimStatus.Overdue ? redTextClassName : rowSpanClassName}>
                       {claim.statusText}
-                    </td>
-                    <td className={rowSpanClassName}>{claim.currency.name}</td>
+                    </RntTableCell>
+                    <RntTableCell className={rowSpanClassName}>{claim.currency.name}</RntTableCell>
                     {claim.status == ClaimStatus.NotPaid && (
-                      <td className={rowSpanClassName}>
+                      <RntTableCell className={rowSpanClassName}>
                         <RntButton
                           className="h-8 min-h-[38px] w-24"
                           onClick={() => {
@@ -140,18 +148,18 @@ function HostInsuranceClaimsTable({ isLoading, claims, onPay }: HostClaimsTableP
                         >
                           Pay
                         </RntButton>
-                      </td>
+                      </RntTableCell>
                     )}
-                    <td className={rowSpanClassName}>
+                    <RntTableCell className={rowSpanClassName}>
                       <Link href={detailsLink}>
                         <i className="fi fi-br-eye pr-1 text-rentality-secondary"></i>
                       </Link>
-                    </td>
-                  </tr>
+                    </RntTableCell>
+                  </RntTableRow>
                 );
               })}
-            </tbody>
-          </table>
+            </RntTableBody>
+          </RntTable>
         </div>
       </div>
       <ImageCarouselDialog
