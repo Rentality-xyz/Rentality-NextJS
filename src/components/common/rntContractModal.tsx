@@ -278,7 +278,7 @@ export default function RntContractModal({ tripId, tripInfo }: { tripId: bigint;
                 </div>
                 <div className="">
                   {isUnlimitedMiles(tripInfo.milesIncludedPerDay)
-                    ? `Price per 1 overmile: ${getMilesIncludedPerDayText(tripInfo.milesIncludedPerDay)} miles`
+                    ? `0`
                     : `Price per 1 overmile: ${tripInfo.currency.name}    ${(<span title="The exact amount has been rounded to 6 decimal places">⩰</span>)} ${(tripInfo.overmilePrice / tripInfo.currencyRate).toFixed(6)} (USD ${displayMoneyWith2Digits(tripInfo.overmilePrice)})`}
                 </div>
                 <div className="">
