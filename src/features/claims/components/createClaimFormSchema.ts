@@ -20,6 +20,7 @@ export const createClaimFormSchema = z.object({
     .step(0.01, "only 2 decimals are allowed"),
   isChecked: z.boolean(),
   localFileUrls: z.array(claimFileFormSchema),
+  toInsurance: z.boolean(),
 });
 
 export type CreateClaimFormValues = z.infer<typeof createClaimFormSchema>;
