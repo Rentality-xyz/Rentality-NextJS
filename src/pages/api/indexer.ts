@@ -5,6 +5,7 @@ import {
   ContractFilterInfoDTO,
   ContractLocationInfo,
   ContractSearchCarWithDistance,
+  EngineType,
 } from "@/model/blockchain/schemas";
 import { emptyContractLocationInfo, validateContractSearchCarWithDistance } from "@/model/blockchain/schemas_utils";
 import { getIpfsURIs, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
@@ -20,7 +21,7 @@ import { IRentalityGatewayContract } from "@/features/blockchain/models/IRentali
 import { getTimeZoneIdFromGoogleByLocation } from "@/utils/timezone";
 import { logger } from "@/utils/logger";
 import { formatSearchAvailableCarsContractRequest } from "@/utils/searchMapper";
-import { MappedSearchQuery, mapRawCarToContractSearchCarWithDistance, mapSearchQuery, querySearchCar } from "@/utils/api/indexer/querySearchCar";
+import { MappedSearchQuery, mapSearchQuery, querySearchCar } from "@/utils/api/indexer/querySearchCar";
 import rentalityContracts, { getEtherContractWithSigner } from "@/abis";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import ERC20JSON_ABI from "../../abis/ERC20.abi.json";
@@ -241,99 +242,6 @@ function getDaysDiscount(tripDays: number) {
   }
 }
 
-async function formatSearchAvailableCarsContractResponse(
-  chainId: number,
-  searchCarsViewsView: ContractSearchCarWithDistance[]
-) {
-  if (searchCarsViewsView.length === 0) return [];
-
-  validateContractSearchCarWithDistance(searchCarsViewsView[0]);
-
-  const testWallets = env.TEST_WALLETS_ADDRESSES?.split(",") ?? [];
-
-  const cars = await Promise.all(
-    searchCarsViewsView.map(async (i: ContractSearchCarWithDistance) => {
-      const metaData = parseMetaData(await getMetaDataFromIpfs(i.car.metadataURI));
-      let isCarDetailsConfirmed = false;
-
-      // try {
-      //   isCarDetailsConfirmed = await rentality.isCarDetailsConfirmed(i.car.carId);
-      // } catch (error) {
-      //   logger.error("formatSearchAvailableCarsContractResponse error:", error);
-      // }
-
-      const tripDays = Number(i.car.tripDays);
-      const pricePerDay = Number(i.car.pricePerDayInUsdCents) / 100;
-      const totalPriceWithHostDiscount = Number(i.car.totalPriceWithDiscount) / 100;
-      
-
-      let item: SearchCarInfoDTO = {
-        carId: Number(i.car.carId),
-        ownerAddress: i.car.host.toString(),
-        images: getIpfsURIs(metaData.images),
-        brand: i.car.brand,
-        model: i.car.model,
-        year: i.car.yearOfProduction.toString(),
-        doorsNumber: Number(metaData.doorsNumber),
-        seatsNumber: Number(metaData.seatsNumber),
-        transmission: metaData.transmission,
-        engineType: Number(i.car.engineType),
-        carDescription: metaData.description,
-        color: metaData.color,
-        carName: metaData.name,
-        tankSizeInGal: Number(metaData.tankVolumeInGal),
-
-        milesIncludedPerDayText: getMilesIncludedPerDayText(i.car.milesIncludedPerDay ?? 0),
-        pricePerDay: pricePerDay,
-        pricePerDayWithHostDiscount: Number(i.car.pricePerDayWithDiscount) / 100,
-        tripDays: tripDays,
-        totalPriceWithHostDiscount: totalPriceWithHostDiscount,
-        taxes: Number(i.car.taxes) / 100,
-        securityDeposit: Number(i.car.securityDepositPerTripInUsdCents) / 100,
-        hostPhotoUrl: i.car.hostPhotoUrl,
-        hostName: i.car.hostName,
-        timeZoneId: i.car.locationInfo.timeZoneId,
-        location: {
-          lat: Number(i.car.locationInfo.latitude),
-          lng: Number(i.car.locationInfo.longitude),
-        },
-        highlighted: false,
-        daysDiscount: getDaysDiscount(tripDays),
-        totalDiscount: getTotalDiscount(pricePerDay, tripDays, totalPriceWithHostDiscount),
-        hostHomeLocation: formatLocationInfoUpToCity(i.car.locationInfo),
-        deliveryPrices: {
-          from1To25milesPrice: Number(i.car.underTwentyFiveMilesInUsdCents) / 100,
-          over25MilesPrice: Number(i.car.aboveTwentyFiveMilesInUsdCents) / 100,
-        },
-        isInsuranceIncluded: i.car.insuranceIncluded,
-        deliveryDetails: {
-          pickUp: { distanceInMiles: Number(i.distance), priceInUsd: Number(i.car.pickUp) / 100 },
-          dropOff: { distanceInMiles: Number(i.distance), priceInUsd: Number(i.car.dropOf) / 100 },
-        },
-        isCarDetailsConfirmed: isCarDetailsConfirmed,
-        isTestCar: testWallets.includes(i.car.host),
-        isInsuranceRequired: i.car.insuranceInfo.required,
-        insurancePerDayPriceInUsd: Number(i.car.insuranceInfo.priceInUsdCents) / 100,
-        isGuestHasInsurance: i.car.isGuestHasInsurance,
-        distanceToUser: Number(i.distance),
-        dimoTokenId: Number(i.car.dimoTokenId ? i.car.dimoTokenId : 0),
-        currency: {
-          currency: i.car.hostCurrency.currency,
-          name: i.car.hostCurrency.name,
-          initialized: i.car.hostCurrency.initialized,
-        },
-        priceInCurrency: 0,
-      };
-
-      return item;
-    })
-  );
-
-  if (allSupportedBlockchainList.find((bch) => !bch.isTestnet && bch.chainId === chainId) !== undefined) {
-    cars.sort((a, b) => sortByTestWallet(a, b));
-  }
-  return cars;
-}
 
 function sortByTestWallet(a: SearchCarInfoDTO, b: SearchCarInfoDTO) {
   if (a.isTestCar && !b.isTestCar) {
@@ -401,6 +309,19 @@ async function formatSearchAvailableCarsQueryResponse(
       const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
       const totalPriceWithHostDiscount = i.priceWithDiscount / 100;
 
+      const salesTax = Number(i.taxes.taxesData.find((i) => i.tType.includes("sale"))?.value ?? 0) / 100;
+      const governmentTax =
+        Number(i.taxes.taxesData.find((i) => i.tType.includes("government"))?.value ?? 0) / 100;
+        const tankVolumeInGal =
+        BigInt(i.engineType) === EngineType.PETROL ? Number(i.engineParams[0]) : 0;
+        const fuelPrice =  BigInt(i.engineType) === EngineType.PETROL ? Number(i.engineParams[1]) :
+        Number(i.engineParams[0])
+            const pricePer10PercentFuel =
+            BigInt(i.engineType) === EngineType.PETROL
+                  ? (fuelPrice * tankVolumeInGal) / 1000
+                  : fuelPrice / 1000;
+
+
       let item: SearchCarInfoDTO = {
         carId: Number(i.carId),
         ownerAddress: i.host,
@@ -463,6 +384,14 @@ async function formatSearchAvailableCarsQueryResponse(
           initialized: i.user.user.userCurrency.initialized,
         },
         priceInCurrency: Number(priceInCurrency),
+        salesTax,
+        governmentTax,
+        pricePer10PercentFuel,
+        tripDiscounts: {
+          discount3DaysAndMoreInPercents: Number(i.user.user.discountPrice.threeDaysDiscount) / 10_000,
+          discount7DaysAndMoreInPercents: Number(i.user.user.discountPrice.sevenDaysDiscount) / 10_000,
+          discount30DaysAndMoreInPercents: Number(i.user.user.discountPrice.thirtyDaysDiscount) / 10_000,
+        },
       };
 
       return item;

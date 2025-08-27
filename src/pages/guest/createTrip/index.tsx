@@ -20,10 +20,10 @@ import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { isEmpty } from "@/utils/string";
 import { DialogActions } from "@/utils/dialogActions";
 import { useUserInfo } from "@/contexts/userInfoContext";
-import React, { useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import RntTripRulesModal from "@/components/common/rntTripRulesModal";
 import RntSuspense from "@/components/common/rntSuspense";
-import { SearchCarInfoDetails } from "@/model/SearchCarsResult";
+import { SearchCarInfo, SearchCarInfoDetails } from "@/model/SearchCarsResult";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { getDiscountablePriceFromCarInfo, getNotDiscountablePriceFromCarInfo } from "@/utils/price";
 import { EMPTY_PROMOCODE, PROMOCODE_MAX_LENGTH } from "@/utils/constants";
@@ -38,19 +38,44 @@ import { getPromoPrice } from "@/features/promocodes/utils";
 import Image from "next/image";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import getNetworkName from "@/model/utils/NetworkName";
+import { useSearchParams } from "next/navigation";
+import bs58 from 'bs58';
 
 function CreateTrip() {
-  const { searchCarRequest, searchCarFilters } = useCarSearchParams();
-  const { isLoading, carInfo } = useSearchCar(searchCarRequest, searchCarFilters.carId);
+  const router = useRouter();
+  const [carInfo, setCarInfo] = useState<SearchCarInfo | null>(null);
+  const searchParams = useSearchParams();
+  const [carRequest, setCarRequest] = useState<SearchCarRequest | null>(null);
+  const [carFilter, setCarFilter] = useState<SearchCarFilters | null>(null);
 
+
+  useEffect(() => {
+
+    const encoded = searchParams.get("data");
+    if (!encoded) return;
+
+    try {
+      const uint8array = bs58.decode(encoded);
+      const jsonString = new TextDecoder().decode(uint8array);
+      const decodedData = JSON.parse(jsonString, (_key, value) => {
+        if (typeof value === "string" && /^\d+n$/.test(value)) return BigInt(value.slice(0, -1));
+        return value;
+      });
+      setCarInfo(decodedData.carInfo);
+      setCarRequest(decodedData.searchCarRequest);
+      setCarFilter(decodedData.searchCarFilters)
+    } catch (err) {
+      console.error("Failed to decode Base58:", err);
+    }
+  }, []);
   return (
-    <RntSuspense isLoading={isLoading}>
+    <RntSuspense isLoading={false}>
       {!carInfo && <p>Car is not found</p>}
       {carInfo && (
         <CreateTripDetailsContent
           carInfo={carInfo}
-          searchCarRequest={searchCarRequest}
-          searchCarFilters={searchCarFilters}
+          searchCarRequest={carRequest!}
+          searchCarFilters={carFilter!}
         />
       )}
     </RntSuspense>
