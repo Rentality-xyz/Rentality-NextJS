@@ -964,6 +964,8 @@
     "view_smart_contract": "View smart contract",
     "new_nft_info": "New nft collection info",
     "generated_automatically": "Generated automatically after saving the tokenized asset card",
+    "you_invested": "You have successfully invested!",
+    "invest_failed": "Investment error. Try again",
     "filter_for_user": {
       "label": "",
       "options": {
