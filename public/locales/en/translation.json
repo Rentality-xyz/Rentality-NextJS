@@ -115,7 +115,7 @@
     "pre_agreement_details": "Pre-agreement details",
     "new_search": "← New Search",
     "rent_for_n_days": "Rent for {{tripDays, number}} day(s)",
-    "see_in_full": "See in full",
+    "view_gallery": "View Gallery",
     "all_n_photo": "All {{count, number}} photo",
     "n_days_discount": "{{count, number}}+ day discount",
     "days_discount": "Days discount",
