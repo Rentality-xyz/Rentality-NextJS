@@ -19,7 +19,16 @@ function PlatformInitOffline() {
       <RntButton className="w-72" onClick={handleTryAgainClick}>
         {t("common.info.try_again")}
       </RntButton>
-      <Image src="/images/car_404.png" alt="" className="w-[600px]" width={1000} height={1000} />
+      <Image
+        src="/images/car_404.png"
+        alt=""
+        className="w-[600px]"
+        width={1000}
+        height={1000}
+        unoptimized={true}
+        priority={true}
+        loading="eager"
+      />
     </div>
   );
 }
