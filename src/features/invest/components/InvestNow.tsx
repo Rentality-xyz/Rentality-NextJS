@@ -39,7 +39,7 @@ function InvestNow({
             value={Number(inputValue) < 0 ? "" : inputValue}
             onChange={handleChangeInvestmentAmount}
             placeholder="0"
-            type="number"
+            type="text"
             step="any"
           />
         </div>
