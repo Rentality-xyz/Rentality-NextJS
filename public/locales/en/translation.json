@@ -22,7 +22,8 @@
     "all_users_table": "All users table",
     "referrals_and_points": "Referrals & Points",
     "invest": "Investment",
-    "claim_types": "Claim types"
+    "claim_types": "Claim types",
+    "host_insurance_claims": "Insurance claims"
   },
   "search_and_filters": {
     "location_label": "Pick up & Return Location",
@@ -341,8 +342,11 @@
     "save_delivery_prices_err": "Save delivery prices request failed. Please try again",
     "save_delivery_prices_err_is_not_host": "Please enter the first vehicle in Listing to enter Delivery price",
     "save_currency": "Choose one from the available currencies",
+    "save_insurance_rule": "Choose one from the available rules",
     "save_currency_btn": "Save currency",
+    "save_insurance_rule_btn": "Save insurance rule",
     "save_currency_err": "Save user currency request failed. Please try again",
+    "save_insurance_rule_err": "Save insurance rule request failed. Please try again",
     "welcome_create_account": "Welcome, please create your account",
     "confirm&save": "Confirm & Save",
     "pass_verification": "Please, pass driver license verification",
@@ -746,6 +750,9 @@
     "filter_by": "Filter by",
     "filter_apply": "Filter"
   },
+  "admin_host_insurance_claims": {
+    "page_title": "Host insurance claims"
+  },
   "mobile_stores_dialog": {
     "title": "Get the Rentality app!",
     "scan_qr_code": "Scan this QR code and download Rentality app now",
@@ -957,6 +964,8 @@
     "view_smart_contract": "View smart contract",
     "new_nft_info": "New nft collection info",
     "generated_automatically": "Generated automatically after saving the tokenized asset card",
+    "you_invested": "You have successfully invested!",
+    "invest_failed": "Investment error. Try again",
     "filter_for_user": {
       "label": "",
       "options": {
