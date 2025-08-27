@@ -24,6 +24,7 @@ import { EMPTY_PROMOCODE } from "@/utils/constants";
 import useFetchGuestGeneralInsurance from "@/features/insurance/hooks/useFetchGuestGeneralInsurance";
 import useBlockchainNetworkCheck from "@/features/blockchain/hooks/useBlockchainNetworkCheck";
 import getNetworkName from "@/model/utils/NetworkName";
+import bs58 from 'bs58';
 
 function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -122,12 +123,23 @@ function Search() {
     }
   }
 
-  const getRequestDetailsLink = useCallback(
-    (carId: number) => {
-      return `/guest/createTrip?${createQueryString(searchCarRequest, searchCarFilters, carId)}`;
-    },
-    [searchCarRequest, searchCarFilters]
-  );
+  const getRequestDetailsLink = (carInfo: SearchCarInfo) => {
+
+    const data = {
+      carInfo,
+      searchCarFilters,
+      searchCarRequest
+    }
+    const jsonString = JSON.stringify(data, (_key, value) =>
+      typeof value === "bigint" ? value.toString() : value
+    );
+
+    const uint8array = new TextEncoder().encode(jsonString);
+    
+    const encoded = bs58.encode(uint8array);
+    
+    return `/guest/createTrip?data=${encoded}`;
+  };
 
   const setHighlightedCar = useCallback(
     (carID: number) => {
@@ -204,7 +216,7 @@ function Search() {
                       disableButton={requestSending}
                       isSelected={value.highlighted}
                       setSelected={setHighlightedCar}
-                      getRequestDetailsLink={getRequestDetailsLink}
+                      getRequestDetailsLink={() => getRequestDetailsLink(value)}
                       isGuestHasInsurance={!isLoadingInsurance && !isEmpty(guestInsurance.photo)}
                       isYourOwnCar={userInfo?.address === value.ownerAddress}
                       startDateTimeStringFormat={searchResult.searchCarRequest.dateFromInDateTimeStringFormat}

@@ -10,19 +10,13 @@ export function getDiscountablePrice(
 }
 
 export function getDiscountablePriceFromCarInfo(carInfo: SearchCarInfoDetails | SearchCarInfo) {
-  return "salesTax" in carInfo
-    ? getDiscountablePrice(
+    return getDiscountablePrice(
         carInfo.pricePerDayWithHostDiscount * carInfo.tripDays,
         carInfo.deliveryDetails.pickUp.priceInUsd,
         carInfo.deliveryDetails.dropOff.priceInUsd,
         carInfo.taxes
       )
-    : getDiscountablePrice(
-        carInfo.pricePerDayWithHostDiscount * carInfo.tripDays,
-        carInfo.deliveryDetails.pickUp.priceInUsd,
-        carInfo.deliveryDetails.dropOff.priceInUsd,
-        carInfo.taxes
-      );
+
 }
 
 export function getNotDiscountablePrice(insuranceFee: number, securityDeposit: number) {

@@ -413,7 +413,8 @@ export type ContractSearchCar = {
   hostCurrency: ContractUserCurrencyDTO;
   fuelPrice: bigint;
   carDiscounts: ContractBaseDiscount;
-  taxesValue: ContractTaxValue[];
+  taxesInfo: ContractTaxValue[];
+  engineParams: bigint[];
 
 };
 

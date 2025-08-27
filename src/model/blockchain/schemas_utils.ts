@@ -206,6 +206,12 @@ const emptyContractInsuranceCarInfo: ContractInsuranceCarInfo = {
   required: false,
   priceInUsdCents: BigInt(0),
 };
+const emptyContractBaseDiscount: ContractBaseDiscount = {
+  threeDaysDiscount: BigInt(0),
+  sevenDaysDiscount: BigInt(0),
+  thirtyDaysDiscount: BigInt(0),
+  initialized: false,
+};
 
 const emptyContractSearchCar: ContractSearchCar = {
   carId: BigInt(0),
@@ -234,7 +240,12 @@ const emptyContractSearchCar: ContractSearchCar = {
   isGuestHasInsurance: false,
   dimoTokenId: BigInt(0),
   hostCurrency: { currency: ETH_DEFAULT_ADDRESS, initialized: false, name: "ETH" },
+  taxesInfo: [],
+  fuelPrice: BigInt(0),
+  carDiscounts: emptyContractBaseDiscount,
+  engineParams: []
 };
+
 
 export function validateContractSearchCar(obj: ContractSearchCar): obj is ContractSearchCar {
   return validateType(obj, emptyContractSearchCar) && validateType(obj.locationInfo, emptyContractLocationInfo);
@@ -431,12 +442,7 @@ export function validateContractInsuranceDTO(obj: ContractInsuranceDTO): obj is 
   return validateType(obj, emptyContractInsuranceDTO) && validateType(obj.insuranceInfo, emptyContractInsuranceInfo);
 }
 
-const emptyContractBaseDiscount: ContractBaseDiscount = {
-  threeDaysDiscount: BigInt(0),
-  sevenDaysDiscount: BigInt(0),
-  thirtyDaysDiscount: BigInt(0),
-  initialized: false,
-};
+
 
 const emptyContractAvailableCarDTO: ContractAvailableCarDTO = {
   carId: BigInt(0),
