@@ -14,7 +14,7 @@ EXPOSE 8020 8000 8001 8030 8040
 CMD ["graph-node", \
     "--postgres-url", "postgresql://postgres:postgres@postgres:5432/graph-node", \
     "--ethereum-rpc", "base-sepolia:https://base-sepolia.gateway.tenderly.co/", \
-    "--ethereum-rpc", "base:https://base.llamarpc.com/", \
-    "--ethereum-rpc", "opBNB-testnet:https://opbnb-testnet-rpc.bnbchain.org", \
-    "--ethereum-rpc", "opBNB:https://opbnb.therpc.io", \
+    "--ethereum-rpc", "base:https://base.gateway.tenderly.co/", \
+    "--ethereum-rpc", "opBNB-testnet:https://opbnb-testnet.g.alchemy.com/v2/vjS4hgV33RrHIi5pdkd1u", \
+    "--ethereum-rpc", "opBNB:https://opbnb-mainnet.infura.io/v3/e59e1d87d1ac42e69c9de15fba98ce71", \
     "--ipfs", "https://ipfs.network.thegraph.com/"]
