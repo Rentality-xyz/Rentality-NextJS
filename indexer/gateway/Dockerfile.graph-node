@@ -16,4 +16,5 @@ CMD ["graph-node", \
     "--ethereum-rpc", "base-sepolia:https://base-sepolia.gateway.tenderly.co/", \
     "--ethereum-rpc", "base:https://base.llamarpc.com/", \
     "--ethereum-rpc", "opBNB-testnet:https://opbnb-testnet-rpc.bnbchain.org", \
+    "--ethereum-rpc", "opBNB:https://opbnb.therpc.io", \
     "--ipfs", "https://ipfs.network.thegraph.com/"]
