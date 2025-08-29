@@ -12,7 +12,7 @@ import { handleUserInsurance } from "./handlers/insuranceHandler";
 import { handleTaxesEvent } from "./handlers/taxHandler";
 
 export function handleRentalityEvent(event: RentalityEvent): void {
-  log.info("NEW EVENT eTYPE: {}, from: {}, object status: {}",[event.params.eType.toString(), event.params.from.toHexString(), event.params.objectStatus.toString()])
+  log.info("NEW EVENT eTYPE: {}, id: {},  from: {}, object status: {}",[event.params.eType.toString(), event.params.id.toString(), event.params.from.toHexString(), event.params.objectStatus.toString()])
  switch (event.params.eType) {
     case 0: handleCarEvents(event);
       break;
