@@ -153,7 +153,7 @@ const useGuestTrips = () => {
           result.push({
             text: "Start",
             readonly: true,
-            isDisplay: false,
+            isDisplay: true,
             params: [
               {
                 text: "Fuel or battery level, %",
