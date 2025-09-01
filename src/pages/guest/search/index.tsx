@@ -131,7 +131,7 @@ function Search() {
       searchCarRequest
     }
     const jsonString = JSON.stringify(data, (_key, value) =>
-      typeof value === "bigint" ? value.toString() : value
+      typeof value === "bigint" ? `${value}n` : value
     );
 
     const uint8array = new TextEncoder().encode(jsonString);
