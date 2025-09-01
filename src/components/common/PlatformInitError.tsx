@@ -1,13 +1,13 @@
-import React, { ReactElement } from "react";
-import Image from "next/image";
-import { useTranslation } from "react-i18next";
-import RntButton from "@/components/common/rntButton";
 import { RntDialogsProvider, useRntDialogs } from "@/contexts/rntDialogsContext";
-import { Err, Ok } from "@/model/utils/result";
-import axios, { AxiosResponse } from "axios";
-import { RequestBody } from "../api/submitUserError";
+import { useTranslation } from "react-i18next";
+import { RequestBody } from "@/pages/api/submitUserError";
 import { logger } from "@/utils/logger";
+import axios, { AxiosResponse } from "axios";
+import { Err, Ok } from "@/model/utils/result";
 import UserErrorDescription from "@/components/dialogs/UserErrorDescription";
+import RntButton from "@/components/common/rntButton";
+import Image from "next/image";
+import React, { ReactElement } from "react";
 
 function PlatformInitError() {
   const { showCustomDialog, hideDialogs } = useRntDialogs();
