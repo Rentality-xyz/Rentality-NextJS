@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 
 export default function ChatMessages({ selectedChat, isHost }: { selectedChat: ChatInfo; isHost: boolean }) {
   const myPhotoUrl = isHost ? selectedChat.hostPhotoUrl : selectedChat.guestPhotoUrl;
-  const myName = isHost ? selectedChat.hostName : selectedChat.guestName;
+  const myName = isHost ? selectedChat.hostNickname : selectedChat.gustNickname;
   const otherPhotoUrl = isHost ? selectedChat.guestPhotoUrl : selectedChat.hostPhotoUrl;
   const otherName = isHost ? selectedChat.guestName : selectedChat.hostName;
   const myAddress = isHost ? selectedChat.hostAddress : selectedChat.guestAddress;

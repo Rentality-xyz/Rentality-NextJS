@@ -148,6 +148,8 @@ export function validateContractChatInfo(obj: ContractChatInfo): obj is Contract
     carModel: "",
     carYearOfProduction: BigInt(0),
     carMetadataUrl: "",
+    guestNickname: "",
+    hostNickname: ""
   };
 
   return validateType(obj, emptyContractChatInfo);
@@ -358,6 +360,8 @@ const emptyContractTripDTO: ContractTripDTO = {
     name: "ETH",
     initialized: false,
   },
+  guestNickName: "",
+  hostNickName: ""
 };
 
 export function validateContractTripDTO(obj: ContractTripDTO): obj is ContractTripDTO {

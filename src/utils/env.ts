@@ -23,6 +23,13 @@ export const env = createEnv({
     PROVIDER_API_URL_11155111: z.string().url().optional(),
     PROVIDER_API_URL_11155420: z.string().url().optional(),
 
+    INDEXER_URL_1337: z.string().url().optional(),
+    INDEXER_URL_5611: z.string().url().optional(),
+    INDEXER_URL_8453: z.string().url(),
+    INDEXER_URL_84532: z.string().url(),
+    INDEXER_URL_11155111: z.string().url().optional(),
+    INDEXER_URL_11155420: z.string().url().optional(),
+
     CARAPI_TOKEN: z.string(),
     CARAPI_SECRET: z.string(),
 
@@ -39,8 +46,6 @@ export const env = createEnv({
 
     NOTIFICATION_SMTP_USER: z.string(),
     NOTIFICATION_SMTP_PASSWORD: z.string(),
-
-    INDEXER_API_URL: z.string(),
 
     API_AUTH_TOKEN: z.string(),
     BASE_URL: z.string(),
