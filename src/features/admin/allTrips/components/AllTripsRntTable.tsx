@@ -160,7 +160,7 @@ export function AllTripsRntTable({ isLoading, data, filters, payToHost, refundTo
             <RntTableRow key={headerGroup.id} className={"h-20"}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <RntTableHead key={header.id} className="">
+                  <RntTableHead key={header.id}>
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </RntTableHead>
                 );
