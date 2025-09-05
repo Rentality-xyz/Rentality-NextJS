@@ -31,7 +31,7 @@ import {
   ContractAiDamageAnalyzeCaseRequestDTO,
   ContractSearchCarsWithDistanceDTO,
   ContractClaimV2,
-  ContractHostInsuranceRule,
+  ContractHostInsuranceRule, ContractChatInfoAdmin,
 } from "@/model/blockchain/schemas";
 import { ContractTransactionResponse } from "ethers";
 import { IEthersContract } from "./IEtherContract";
@@ -147,6 +147,7 @@ export interface IRentalityGatewayContract extends IEthersContract {
   getAllInsuranceRules(): Promise<ContractHostInsuranceRule[]>;
   // CHAT functions
   getChatInfoFor(host: boolean): Promise<ContractChatInfo[]>;
+  getChatInfoForAdmin(): Promise<ContractChatInfoAdmin[]>;
 
   //INSURANCE functions
   getInsurancesBy(host: boolean): Promise<ContractInsuranceDTO[]>;

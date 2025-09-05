@@ -5,7 +5,7 @@ import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtil
 import { getDateFromBlockchainTime } from "@/utils/formInput";
 import { isEmpty } from "@/utils/string";
 import moment from "moment";
-import { ContractChatInfo, EventType, TripStatus } from "@/model/blockchain/schemas";
+import { ContractChatInfo, ContractChatInfoAdmin, EventType, TripStatus } from "@/model/blockchain/schemas";
 import { Contract, Listener } from "ethers";
 import useUserMode from "@/hooks/useUserMode";
 import { Unsubscribe, doc, onSnapshot } from "firebase/firestore";
@@ -25,6 +25,7 @@ import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { useNotification } from "@/features/notifications/contexts/notificationContext";
 import { logger } from "@/utils/logger";
 import { env } from "@/utils/env";
+import { Random } from "fast-check";
 
 export type ChatKeysContextInfo = {
   isLoading: boolean;
@@ -78,7 +79,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
   /// Chat client
   const { rentalityContracts } = useRentality();
-  const { userMode, isHost } = useUserMode();
+  const { userMode, isHost, isAdmin } = useUserMode();
 
   const [isChatReloadRequire, setIsChatReloadRequire] = useState(true);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -121,7 +122,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
   /// Chat Infos
 
-  const getChatInfosWithoutMessages = useCallback(
+  const getChatInfosWithoutMessagesForUser = useCallback(
     async (rentalityContracts: IRentalityContracts) => {
       if (!rentalityContracts) {
         logger.error("getChatInfos error: contract is null");
@@ -169,6 +170,78 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
                   carLicenceNumber: metaData.licensePlate,
 
                   messages: [],
+                  isPlatformChat: false,
+                };
+                return item;
+              })
+            );
+
+      return chatInfosData;
+    },
+    [userMode]
+  );
+
+  const getChatInfosWithoutMessagesForAdmin = useCallback(
+    async (rentalityContracts: IRentalityContracts) => {
+      if (!rentalityContracts) {
+        logger.error("getChatInfos error: contract is null");
+        return;
+      }
+
+      // const result = await rentalityContracts.gateway.getChatInfoForAdmin();
+      // if (!result.ok) return;
+
+      // const chatInfosViewSorted = result.value;
+      let a : ContractChatInfoAdmin = {
+        chatId: BigInt(Math.floor(Math.random() * Number.MAX_VALUE)),
+        userAddress: "0xFFA",
+        userName: "nameTest",
+        userPhotoUrl: "",
+        timeZoneId: ""
+      }
+      let b : ContractChatInfoAdmin = {
+        chatId: BigInt(Math.floor(Math.random() * Number.MAX_VALUE)),
+        userAddress: "0xFFA2",
+        userName: "nameTest2",
+        userPhotoUrl: "",
+        timeZoneId: ""
+      }
+      const chatInfosViewSorted = [a, b];
+
+      const chatInfosData =
+        chatInfosViewSorted.length === 0
+          ? []
+          : await Promise.all(
+              chatInfosViewSorted.map(async (ci: ContractChatInfoAdmin) => {
+                const tripStatus = TripStatus.Pending;
+
+                let item: ChatInfo = {
+                  tripId: Number(ci.chatId),
+
+                  guestAddress: ci.userAddress,
+                  guestName: ci.userAddress,
+                  guestPhotoUrl: getIpfsURI(ci.userPhotoUrl),
+
+                  hostAddress: ci.userAddress,
+                  hostName: ci.userName,
+                  hostPhotoUrl: getIpfsURI(ci.userPhotoUrl),
+
+                  tripTitle: ``,
+                  startDateTime: moment.unix(0).toDate(),
+                  endDateTime: moment.unix(0).toDate(),
+                  timeZoneId: ci.timeZoneId,
+                  lastMessage: "Click to open chat",
+                  updatedAt: moment.unix(0).toDate(),
+                  isSeen: true,
+                  seenAt: null,
+
+                  carPhotoUrl: "",
+                  tripStatus: tripStatus,
+                  carTitle: "",
+                  carLicenceNumber: "",
+
+                  messages: [],
+                  isPlatformChat: true,
                 };
                 return item;
               })
@@ -250,6 +323,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
               carLicenceNumber: metaData.licensePlate,
 
               messages: [],
+              isPlatformChat: false,
             },
           ];
         });
@@ -281,9 +355,10 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
   const getMessages = useCallback(
     async (tripId: number) => {
+      console.log("chat idddd 333")
       if (!ethereumInfo) return [];
       if (!chatDbInfo.db) return [];
-
+      console.log("chat idddd 222")
       const existChatInfo = chatInfos.find((ci) => ci.tripId === tripId);
 
       if (!existChatInfo) {
@@ -297,7 +372,8 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         existChatInfo.hostAddress,
         existChatInfo.guestAddress
       );
-
+      console.log("chat idddd")
+      console.log(chatId.toString());
       const firebaseMessages = await getChatMessages(chatDbInfo, chatId);
       return firebaseMessages.map((cm) => {
         return {
@@ -400,7 +476,9 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
         await loginWithPassword(publicPlatformEmail, publicPlatformPassword);
 
-        const infos = (await getChatInfosWithoutMessages(rentalityContracts)) ?? [];
+        const infos = isAdmin(userMode)
+          ? ((await getChatInfosWithoutMessagesForAdmin(rentalityContracts)) ?? [])
+          : ((await getChatInfosWithoutMessagesForUser(rentalityContracts)) ?? []);
 
         const promisses = infos.map(async (i) => {
           await checkUserChats(chatDbInfo, i.hostAddress, i.guestAddress);
@@ -411,7 +489,8 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
             i.hostAddress,
             i.guestAddress
           );
-
+          console.log("chat iiiidd new")
+          console.log("chatId", chatId.toString());
           const firebaseMessages = await getChatMessages(chatDbInfo, chatId);
           const messages: ChatMessage[] = firebaseMessages.map((cm) => {
             return {
@@ -525,7 +604,8 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
     rentalityContracts,
     rentalityNotificationService,
     userMode,
-    getChatInfosWithoutMessages,
+    getChatInfosWithoutMessagesForUser,
+    getChatInfosWithoutMessagesForAdmin,
     rentalityEventListener,
     isChatReloadRequire,
   ]);

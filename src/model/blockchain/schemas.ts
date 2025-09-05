@@ -188,6 +188,14 @@ export type ContractChatInfo = {
   timeZoneId: string;
 };
 
+export type ContractChatInfoAdmin = {
+  chatId: bigint;
+  userAddress: string;
+  userName: string;
+  userPhotoUrl: string;
+  timeZoneId: string;
+};
+
 export type ContractChatKeyPair = {
   privateKey: string;
   publicKey: string;

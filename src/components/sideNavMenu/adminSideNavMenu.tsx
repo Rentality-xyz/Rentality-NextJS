@@ -61,6 +61,12 @@ function AdminNavMenu() {
           icon={MenuIcons.Claims}
           selectedMenuHref={selectedMenuHref}
         />
+        <SideNavMenuItem
+          text={t("nav_menu.messages")}
+          href="/admin/messages"
+          icon={MenuIcons.Messages}
+          selectedMenuHref={selectedMenuHref}
+        />
       </SideNavMenuGroup>
 
       {isAuthenticated ? (

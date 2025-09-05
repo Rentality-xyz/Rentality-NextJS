@@ -27,4 +27,6 @@ export type ChatInfo = {
   carLicenceNumber: string;
 
   messages: ChatMessage[];
+
+  isPlatformChat: boolean;
 };

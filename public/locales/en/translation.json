@@ -753,6 +753,9 @@
   "admin_host_insurance_claims": {
     "page_title": "Host insurance claims"
   },
+  "admin_messages": {
+    "page_title": "Messages"
+  },
   "mobile_stores_dialog": {
     "title": "Get the Rentality app!",
     "scan_qr_code": "Scan this QR code and download Rentality app now",
