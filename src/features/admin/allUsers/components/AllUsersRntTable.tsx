@@ -126,7 +126,7 @@ function AllUsersRntTable({ isLoading, data }: AllUsersRntTableProps) {
         />
       </ScrollingHorizontally>
       <RntTable>
-        <RntTableHeader className="h-16">
+        <RntTableHeader className="h-20">
           {table.getHeaderGroups().map((headerGroup) => (
             <RntTableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
