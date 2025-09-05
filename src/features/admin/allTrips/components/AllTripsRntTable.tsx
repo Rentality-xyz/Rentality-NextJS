@@ -157,7 +157,7 @@ export function AllTripsRntTable({ isLoading, data, filters, payToHost, refundTo
       <RntTable>
         <RntTableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <RntTableRow key={headerGroup.id} className={"h-20"}>
+            <RntTableRow key={headerGroup.id} className="h-20">
               {headerGroup.headers.map((header) => {
                 return (
                   <RntTableHead key={header.id}>
