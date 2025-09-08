@@ -3,6 +3,10 @@ name: Build And Deploy to Demo Test
 on:
   workflow_dispatch:
 
+permissions:
+  id-token: write      
+  contents: read       
+
 jobs:
   build_and_deploy_demo:
     runs-on: ubuntu-latest
@@ -21,11 +25,18 @@ jobs:
             scripts
             src
           path: "demo-rentality-web3-contracts"
-          token: ${{ secrets.RENTALITY_PAT }}
+          
       - name: "Setup Node"
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          
+      - name: "Authenticate to Google Cloud via Workload Identity Federation"
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: "projects/466243718843/locations/global/workloadIdentityPools/github-actions-pool-nextjs-test/providers/github-provider-nextjs-test"
+          service_account: "github-action-nextjs-test@rentality-demo-test.iam.gserviceaccount.com"
+
       - name: "Generate environment"
         uses: SpicyPizza/create-envfile@v2.0
         with:
@@ -103,6 +114,5 @@ jobs:
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
         with:
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_RENTALITY_NEXTJS }}"
           projectId: rentality-demo-test
           channelId: live
