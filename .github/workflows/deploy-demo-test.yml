@@ -112,7 +112,10 @@ jobs:
         run: rm -rf demo-rentality-web3-contracts
 
       - name: "Fix for Firebase deployment"
-        run: npm install firebase-frameworks && npm install firebase-tools
+        run: npm install firebase-frameworks && npm install firebase-tools@latest
+
+      - name: "Verify Firebase Tools version"
+        run: npx firebase --version
 
       - name: "Deploy to Firebase Hosting (Demo-Test)"
         run: |
