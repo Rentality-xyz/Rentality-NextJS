@@ -116,6 +116,6 @@ jobs:
 
       - name: "Deploy to Firebase Hosting (Demo-Test)"
         run: |
-          firebase deploy --only hosting --project rentality-demo-test --channel live
+          npx firebase deploy --only hosting --project rentality-demo-test --channel live
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
