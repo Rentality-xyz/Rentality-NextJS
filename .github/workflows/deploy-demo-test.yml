@@ -26,6 +26,7 @@ jobs:
             scripts
             src
           path: "demo-rentality-web3-contracts"
+          token: ${{ secrets.RENTALITY_PAT }}
           
       - name: "Setup Node"
         uses: actions/setup-node@v4
@@ -115,7 +116,11 @@ jobs:
         run: npm install firebase-frameworks firebase-tools
 
       - name: "Deploy to Firebase Hosting (Demo-Test)"
-        run: |
-          npx firebase deploy --only hosting --project rentality-demo-test --service-account "${{ env.GOOGLE_APPLICATION_CREDENTIALS }}"
+        uses: google-github-actions/deploy-firebase@v1
+        
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
+
+        with:
+          projectId: rentality-demo-test
+          channelId: live
