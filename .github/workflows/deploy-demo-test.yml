@@ -1,14 +1,14 @@
 name: Build And Deploy to Demo Test
 
 on:
-  workflow_dispatch:
-
-permissions:
-  id-token: write      
-  contents: read       
+  workflow_dispatch:       
 
 jobs:
-  build_and_deploy_demo:
+  build_and_deploy_demo_test:
+    permissions:
+      id-token: write      
+      contents: read
+  
     runs-on: ubuntu-latest
     environment:
       name: Demo Test
@@ -26,16 +26,17 @@ jobs:
             scripts
             src
           path: "demo-rentality-web3-contracts"
-          token: ${{ secrets.RENTALITY_PAT }}
           
       - name: "Setup Node"
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          
-      - name: "Authenticate to Google Cloud via Workload Identity Federation"
-        uses: google-github-actions/auth@v2
+
+      - id: 'auth'    
+        name: "Authenticate to Google Cloud via Workload Identity Federation"
+        uses: 'google-github-actions/auth@v1'
         with:
+          create_credentials_file: true
           workload_identity_provider: "projects/466243718843/locations/global/workloadIdentityPools/github-actions-pool-nextjs-test/providers/github-provider-nextjs-test"
           service_account: "github-action-nextjs-test@rentality-demo-test.iam.gserviceaccount.com"
 
