@@ -120,6 +120,7 @@ jobs:
         run: npm install -g firebase-tools firebase-frameworks
           
       - name: "Deploy to Firebase Hosting"
-        run: firebase deploy --only hosting --project rentality-demo-test --token "$(gcloud auth print-access-token)"
+        run: firebase deploy --only hosting --project rentality-demo-test #--token "$(gcloud auth print-access-token)"
         env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
           FIREBASE_CLI_EXPERIMENTS: webframeworks
