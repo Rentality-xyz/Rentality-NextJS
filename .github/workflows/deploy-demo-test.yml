@@ -27,7 +27,7 @@ jobs:
             scripts
             src
           path: "demo-rentality-web3-contracts"
-          # token: ${{ secrets.RENTALITY_PAT }}
+          token: ${{ secrets.RENTALITY_PAT }}
           
       # - id: 'auth'
       - name: 'Authenticate to Google Cloud via Workload Identity Federation'
