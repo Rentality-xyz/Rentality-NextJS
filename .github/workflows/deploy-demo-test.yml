@@ -34,7 +34,7 @@ jobs:
         uses: 'google-github-actions/auth@v2'
         with:
           create_credentials_file: true
-          #cleanup_credentials: false
+          cleanup_credentials: false
           workload_identity_provider: 'projects/466243718843/locations/global/workloadIdentityPools/github-actions-pool-nextjs-test/providers/github-provider-nextjs-test'
           service_account: 'github-action-nextjs-test@rentality-demo-test.iam.gserviceaccount.com'
           
@@ -120,7 +120,6 @@ jobs:
         run: npm install -g firebase-tools firebase-frameworks
           
       - name: "Deploy to Firebase Hosting"
-        run: firebase deploy --only hosting --project rentality-demo-test #--token "$(gcloud auth print-access-token)"
+        run: firebase deploy --only hosting --project rentality-demo-test --token "$(gcloud auth print-access-token)"
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
           FIREBASE_CLI_EXPERIMENTS: webframeworks
