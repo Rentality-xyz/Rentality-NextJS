@@ -79,7 +79,7 @@ export function getBlockCountForSearch(chainId: number): number {
   switch (chainId) {
     case base.id:
     case baseSepolia.id:
-      return 499;
+      return 9;
     default:
       return Number.POSITIVE_INFINITY;
   }
