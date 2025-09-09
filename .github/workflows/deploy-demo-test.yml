@@ -135,6 +135,6 @@ jobs:
       #     projectId: rentality-demo-test
 
       - name: "Deploy to Firebase Hosting"
-        run: firebase deploy --only hosting --project rentality-demo-test --token "$(gcloud auth print-access-token --debug)"
+        run: firebase deploy --only hosting --project rentality-demo-test --token "$(gcloud auth print-access-token)" --debug
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
