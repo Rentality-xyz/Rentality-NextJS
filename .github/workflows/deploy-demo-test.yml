@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: "Checkout main"
-      - uses: actions/checkout@v4
+        uses: actions/checkout@v4
 
       - name: 'Authenticate to Google Cloud via Workload Identity Federation'
         uses: 'google-github-actions/auth@v3'
