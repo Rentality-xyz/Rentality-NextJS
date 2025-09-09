@@ -27,7 +27,7 @@ jobs:
           # service_account: 'github-action-nextjs-test@rentality-demo-test.iam.gserviceaccount.com'
 
       - name: "Checkout Contracts Repo"
-        # uses: actions/checkout@v4
+        uses: actions/checkout@v4
         with:
           repository: Rentality-xyz/Rentality-demo-contracts
           ref: "main"
