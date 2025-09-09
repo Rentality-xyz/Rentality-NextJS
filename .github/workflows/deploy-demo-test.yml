@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: "Checkout Contracts Repo"
-        # uses: actions/checkout@v4
+        uses: actions/checkout@v4
         with:
           repository: Rentality-xyz/Rentality-demo-contracts
           ref: "main"
@@ -27,15 +27,15 @@ jobs:
             scripts
             src
           path: "demo-rentality-web3-contracts"
-          token: ${{ secrets.RENTALITY_PAT }}
+          # token: ${{ secrets.RENTALITY_PAT }}
           
       # - id: 'auth'
       - name: 'Authenticate to Google Cloud via Workload Identity Federation'
         uses: 'google-github-actions/auth@v3'
         # uses: 'google-github-actions/auth@v2'
         with:
-          # create_credentials_file: true
-          # cleanup_credentials: false
+          create_credentials_file: true
+          cleanup_credentials: false
           project_id: 'rentality-demo-test'
           workload_identity_provider: 'projects/466243718843/locations/global/workloadIdentityPools/github-actions-pool-nextjs-test/providers/github-provider-nextjs-test'
           # service_account: 'github-action-nextjs-test@rentality-demo-test.iam.gserviceaccount.com'
