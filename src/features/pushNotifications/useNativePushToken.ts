@@ -10,7 +10,7 @@ export function useNativePushToken() {
 
   useEffect(() => {
     // @ts-ignore
-    const token = window.nativeBridge?.getPushToken?.();
+    const token = window.nativeBridge?.getPushToken?.() || localStorage.getItem('pushToken');
     if (token &&
       ethereumInfo?.walletAddress &&
       ethereumInfo?.chainId &&
