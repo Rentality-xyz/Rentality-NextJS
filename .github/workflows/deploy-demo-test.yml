@@ -119,7 +119,17 @@ jobs:
       - name: "Install Firebase Frameworks"
         run: npm install firebase-frameworks
 
-      - name: "Deploy with gcloud"
-        run: gcloud firebase hosting:deploy --project rentality-demo-test --channel live
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ steps.auth.outputs.credentials_file_path }}"
+          channelId: live
+          projectId: rentality-demo-test
+
+      #- name: "Deploy with gcloud"
+        #run: gcloud firebase hosting:deploy --project rentality-demo-test --channel live
+        #env:
+          #FIREBASE_CLI_EXPERIMENTS: webframeworks
