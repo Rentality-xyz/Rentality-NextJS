@@ -21,6 +21,7 @@ jobs:
         uses: 'google-github-actions/auth@v1'
         with:
           create_credentials_file: true
+          cleanup_credentials: false
           workload_identity_provider: 'projects/466243718843/locations/global/workloadIdentityPools/github-actions-pool-nextjs-test/providers/github-provider-nextjs-test'
           service_account: 'github-action-nextjs-test@rentality-demo-test.iam.gserviceaccount.com'
 
