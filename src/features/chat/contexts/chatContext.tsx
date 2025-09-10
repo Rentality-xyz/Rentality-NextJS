@@ -8,7 +8,7 @@ import moment from "moment";
 import { ContractChatInfo, EventType, TripStatus } from "@/model/blockchain/schemas";
 import { Contract, Listener } from "ethers";
 import useUserMode from "@/hooks/useUserMode";
-import { Unsubscribe, doc, onSnapshot } from "firebase/firestore";
+import { Unsubscribe, doc, onSnapshot, setDoc } from "firebase/firestore";
 import { chatDbInfo, loginWithPassword } from "@/utils/firebase";
 import {
   ChatId,
@@ -451,7 +451,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         setIsChatReloadRequire(false);
 
         const chatsRef = doc(chatDbInfo.db, chatDbInfo.collections.userchats, ethereumInfo.walletAddress);
-
+        await setDoc(chatsRef, {}, { merge: true });
         logger.debug("Sub for userchats");
         unSub = onSnapshot(chatsRef, (res) => {
           const data = res.data();
