@@ -25,7 +25,7 @@ jobs:
             scripts
             src
           path: "demo-rentality-web3-contracts"
-          # token: ${{ secrets.RENTALITY_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           
       - name: "Setup Node"
         uses: actions/setup-node@v4
