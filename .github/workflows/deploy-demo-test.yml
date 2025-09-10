@@ -12,7 +12,9 @@ jobs:
     steps:
       # - name: "Checkout main"
       #   uses: actions/checkout@v4
-      
+      - name: "Checkout Nextjs Repo"
+        uses: actions/checkout@master
+        
       - name: "Checkout Contracts Repo"
         uses: actions/checkout@v4
         with:
