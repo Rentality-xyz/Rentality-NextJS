@@ -123,16 +123,16 @@ jobs:
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v3'
 
-      # - name: "Deploy to Firebase Hosting"
-      #   uses: 'google-github-actions/deploy-cloudrun@v3'
-      #   with:
-      #     project_id: 'rentality-demo-test'
-
-      - name: "Debug WIF attributes"
-        run: echo $GITHUB_REPOSITORY
-
       - name: "Deploy to Firebase Hosting"
-        run: firebase deploy --only hosting --project rentality-demo-test --debug
-        env:
-          FIREBASE_CLI_EXPERIMENTS: webframeworks
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
+        uses: 'google-github-actions/deploy-cloudrun@v3'
+        with:
+          project_id: 'rentality-demo-test'
+
+      # - name: "Debug WIF attributes"
+      #   run: echo $GITHUB_REPOSITORY
+
+      # - name: "Deploy to Firebase Hosting"
+      #   run: firebase deploy --only hosting --project rentality-demo-test --debug
+      #   env:
+      #     FIREBASE_CLI_EXPERIMENTS: webframeworks
+      #     GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
