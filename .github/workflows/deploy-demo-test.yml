@@ -128,6 +128,9 @@ jobs:
       #   with:
       #     project_id: 'rentality-demo-test'
 
+      - name: "Debug WIF attributes"
+        run: echo $GITHUB_REPOSITORY
+
       - name: "Deploy to Firebase Hosting"
         run: firebase deploy --only hosting --project rentality-demo-test --debug
         env:
