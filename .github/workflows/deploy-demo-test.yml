@@ -14,10 +14,10 @@ jobs:
       name: Demo Test
 
     steps:
-      # - name: "Checkout main"
-      #   uses: actions/checkout@v4
-      - name: "Checkout Nextjs Repo"
-        uses: actions/checkout@master
+      - name: "Checkout main"
+        uses: actions/checkout@v4
+      # - name: "Checkout Nextjs Repo"
+        # uses: actions/checkout@master
         
       - name: "Checkout Contracts Repo"
         uses: actions/checkout@v4
@@ -110,8 +110,8 @@ jobs:
         run: rm -rf demo-rentality-web3-contracts
 
       - name: "Fix for Firebase deployment"
-        run: npm install firebase-frameworks && npm install firebase-tools
-        # run: npm install -g firebase-tools firebase-frameworks
+        # run: npm install firebase-frameworks && npm install firebase-tools
+        run: npm install -g firebase-tools firebase-frameworks
 
       # - name: "Deploy to Firebase Demo"
       #   uses: FirebaseExtended/action-hosting-deploy@v0
