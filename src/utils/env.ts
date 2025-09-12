@@ -27,6 +27,7 @@ export const env = createEnv({
     INDEXER_URL_5611: z.string().url().optional(),
     INDEXER_URL_8453: z.string().url(),
     INDEXER_URL_84532: z.string().url(),
+    INDEXER_URL_204: z.string().url(),
     INDEXER_URL_11155111: z.string().url().optional(),
     INDEXER_URL_11155420: z.string().url().optional(),
 

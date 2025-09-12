@@ -10,6 +10,8 @@ export default function getIndexerUrlFromEnv(chainId: number) {
       return env.INDEXER_URL_8453;
     case 84532:
       return env.INDEXER_URL_84532;
+    case 204:
+      return env.INDEXER_URL_204;
     case 11155111:
       return env.INDEXER_URL_11155111;
     case 11155420:
