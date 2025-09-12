@@ -242,7 +242,7 @@ const useAdminPanelInfo = () => {
       carId: BigInt(carId),
       startDateTime: getBlockchainTimeFromDate(moment().toDate()),
       endDateTime: getBlockchainTimeFromDate(moment().add(3, "days").toDate()),
-      currencyType: ETH_DEFAULT_ADDRESS,
+      currencyType: "0xE4aB69C077896252FAFBD49EFD26B5D171A32410",
       pickUpInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
       returnInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
     };

@@ -18,6 +18,8 @@ import { getErc20ContractWithPaymentsAddress } from "@/abis";
 import { IERC20Contract } from "@/features/blockchain/models/IErc20";
 import { formatCurrencyWithSigner } from "@/utils/formatCurrency";
 import approve from "@/utils/approveERC20";
+import findBestPool from "@/utils/findBestPool";
+import { never } from "zod";
 
 const useCreateTripRequest = () => {
   const ethereumInfo = useEthereum();
@@ -114,14 +116,7 @@ const useCreateTripRequest = () => {
           return Err(new Error("ERROR"));
         }
 
-        const tripRequest: ContractCreateTripRequestWithDelivery = {
-          carId: BigInt(carId),
-          startDateTime: startUnixTime,
-          endDateTime: endUnixTime,
-          currencyType: userCurrency.currency,
-          pickUpInfo: pickupLocationResult.value,
-          returnInfo: returnLocationResult.value,
-        };
+    
     
         if (
           !(await isUserHasEnoughFunds(ethereumInfo.signer,  paymentsResult.value.totalPrice, {
@@ -133,10 +128,31 @@ const useCreateTripRequest = () => {
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
         let value =  paymentsResult.value.totalPrice;
-        if (userCurrency.currency !== ETH_DEFAULT_ADDRESS) {
-          await approve(userCurrency.currency, ethereumInfo.signer, BigInt(value));
-          value = BigInt(0);
+        // if (userCurrency.currency !== ETH_DEFAULT_ADDRESS) {
+        //   await approve(userCurrency.currency, ethereumInfo.signer, BigInt(value));
+        //   value = BigInt(0);
+        // }
+        let quoteResult = await findBestPool("0xE4aB69C077896252FAFBD49EFD26B5D171A32410", ETH_DEFAULT_ADDRESS, value, ethereumInfo.signer)
+        if(!quoteResult) {
+         logger.error("Fail to get quote.")
+          return Err(new Error("Fail to get quote"));
         }
+        console.log("VALUE: ", value)
+        console.log("AMOUNT IN: ",quoteResult.amountIn )
+        await approve("0xE4aB69C077896252FAFBD49EFD26B5D171A32410", ethereumInfo.signer, quoteResult.amountIn);
+        value = BigInt(0);
+
+   
+        const tripRequest: ContractCreateTripRequestWithDelivery = {
+          carId: BigInt(carId),
+          startDateTime: startUnixTime,
+          endDateTime: endUnixTime,
+          currencyType: "0xE4aB69C077896252FAFBD49EFD26B5D171A32410",
+          pickUpInfo: pickupLocationResult.value,
+          returnInfo: returnLocationResult.value,
+          amountIn: quoteResult.amountIn,
+          fee: BigInt(quoteResult.fee)
+        };
         const result = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, promoCode, {
           value,
         });
@@ -156,16 +172,8 @@ const useCreateTripRequest = () => {
           return Err(new Error("ERROR"));
         }
 
-        const tripRequest: ContractCreateTripRequestWithDelivery = {
-          carId: BigInt(carId),
-          startDateTime: startUnixTime,
-          endDateTime: endUnixTime,
-          currencyType: ETH_DEFAULT_ADDRESS,
-          pickUpInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
-          returnInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
-        };
+    
 
-  
         if (
           !(await isUserHasEnoughFunds(ethereumInfo.signer, paymentsResult.value.totalPrice, {
             currency: userCurrency.currency,
@@ -177,10 +185,31 @@ const useCreateTripRequest = () => {
         }
 
         let value = paymentsResult.value.totalPrice;
-        if (userCurrency.currency !== ETH_DEFAULT_ADDRESS) {
-          const tx = await approve(userCurrency.currency, ethereumInfo.signer, BigInt(paymentsResult.value.totalPrice));
-          value = BigInt(0);
+        // if (userCurrency.currency !== ETH_DEFAULT_ADDRESS) {
+        //   const tx = await approve(userCurrency.currency, ethereumInfo.signer, BigInt(paymentsResult.value.totalPrice));
+        //   value = BigInt(0);
+        // }
+        let quoteResult = await findBestPool("0xE4aB69C077896252FAFBD49EFD26B5D171A32410", ETH_DEFAULT_ADDRESS, value, ethereumInfo.signer)
+        if(!quoteResult) {
+         logger.error("Fail to get quote.")
+          return Err(new Error("Fail to get quote"));
         }
+        console.log("VALUEVALUE: ", value)
+        console.log("AMOUNT IN: ",quoteResult.amountIn )
+        await approve("0xE4aB69C077896252FAFBD49EFD26B5D171A32410", ethereumInfo.signer, quoteResult.amountIn);
+        value = BigInt(0);
+
+        const tripRequest: ContractCreateTripRequestWithDelivery = {
+          carId: BigInt(carId),
+          startDateTime: startUnixTime,
+          endDateTime: endUnixTime,
+          currencyType: "0xE4aB69C077896252FAFBD49EFD26B5D171A32410",
+          pickUpInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
+          returnInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
+          amountIn: quoteResult.amountIn,
+          fee: BigInt(quoteResult.fee)
+        };
+
         const result = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, promoCode, {
           value,
         });
