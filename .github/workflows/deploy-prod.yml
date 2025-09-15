@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: Rentality-xyz/Rentality-demo-contracts
-          ref: "main"
+          ref: "release/mainnet/main"
           sparse-checkout: |
             contracts
             scripts
