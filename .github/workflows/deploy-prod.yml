@@ -12,7 +12,10 @@ jobs:
     steps:
       - name: "Checkout Nextjs Repo"
         uses: actions/checkout@master
-      
+
+      - name: Debug ref value
+        run: echo "Ref is [${{ github.ref }}] / contracts repo ref=[prod]"
+  
       - name: "Checkout Contracts Repo"
         uses: actions/checkout@v5
         with:
