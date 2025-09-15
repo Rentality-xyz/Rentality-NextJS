@@ -13,10 +13,10 @@ jobs:
       - name: "Checkout Nextjs Repo"
         uses: actions/checkout@master
       - name: "Checkout Contracts Repo"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: Rentality-xyz/Rentality-demo-contracts
-          ref: "prod"
+          ref: prod
           # fetch-depth: 0 
           sparse-checkout: |
             contracts
