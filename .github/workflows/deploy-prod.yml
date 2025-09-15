@@ -15,24 +15,24 @@ jobs:
     steps:
       - name: "Checkout Nextjs Repo"
         uses: actions/checkout@master
-      - name: "Print full ref 1"
-        run: echo ${{ github.ref }}  
-      - name: "Checkout Contracts Repo"
-        uses: actions/checkout@v5
-        with:
-          repository: Rentality-xyz/Rentality-demo-contracts
-          ref: prod
-          # fetch-depth: 0 
-          sparse-checkout: |
-            contracts
-            scripts
-            src
-          path: "demo-rentality-web3-contracts"
-          token: ${{ secrets.GITHUB_TOKEN }}
-          # token: ${{ secrets.RENTALITY_PAT }}
+      # - name: "Print full ref 1"
+      #   run: echo ${{ github.ref }}  
+      # - name: "Checkout Contracts Repo"
+      #   uses: actions/checkout@v5
+      #   with:
+      #     repository: Rentality-xyz/Rentality-demo-contracts
+      #     ref: prod
+      #     # fetch-depth: 0 
+      #     sparse-checkout: |
+      #       contracts
+      #       scripts
+      #       src
+      #     path: "demo-rentality-web3-contracts"
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     # token: ${{ secrets.RENTALITY_PAT }}
 
-      - name: "Print full ref 2"
-        run: echo ${{ github.ref }}
+      # - name: "Print full ref 2"
+      #   run: echo ${{ github.ref }}
       
       - name: "Setup Node"
         uses: actions/setup-node@v4
