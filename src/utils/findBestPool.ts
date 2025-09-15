@@ -37,6 +37,7 @@ export default async function findBestPool(tokenIn: string, tokenOut: string, am
             let sqrtPriceX96 = slot0.sqrtPriceX96;
             const price = (Number(sqrtPriceX96) ** 2 / 2 ** 192);
             const liquidity = await pool.liquidity();
+            console.log("liquidity:", liquidity);
             sqrtPriceX96 = sqrtPriceX96 * BigInt(105) / BigInt(100);
 
             let quoteResult = await quote(tokenIn, tokenOut, signer, amountOut, fee, sqrtPriceX96)
