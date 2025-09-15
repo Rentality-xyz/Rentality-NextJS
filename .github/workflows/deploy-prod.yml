@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: "Checkout Nextjs Repo"
         uses: actions/checkout@master
+      - name: Print full ref 1
+        run: echo ${{ github.ref }}  
       - name: "Checkout Contracts Repo"
         uses: actions/checkout@v5
         with:
@@ -25,7 +27,10 @@ jobs:
           path: "demo-rentality-web3-contracts"
           token: ${{ secrets.GITHUB_TOKEN }}
           # token: ${{ secrets.RENTALITY_PAT }}
-          
+
+      - name: Print full ref 2
+        run: echo ${{ github.ref }}
+      
       - name: "Setup Node"
         uses: actions/setup-node@v4
         with:
