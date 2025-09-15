@@ -1,11 +1,8 @@
 name: Build And Deploy to Prod
 
-# on:
-#   release:
-#     types: [published, edited]
-
 on:
-  workflow_dispatch: 
+  release:
+    types: [published, edited]
 
 jobs:
   build_and_deploy_production:
@@ -15,9 +12,7 @@ jobs:
     steps:
       - name: "Checkout Nextjs Repo"
         uses: actions/checkout@master
-        
-      # - name: Debug ref value
-      #   run: echo "Ref is [${{ github.ref }}] / contracts repo ref=[prod]"
+      
       - name: "Checkout Contracts Repo"
         uses: actions/checkout@v5
         with:
@@ -30,13 +25,6 @@ jobs:
             src
           path: "demo-rentality-web3-contracts"
           token: ${{ secrets.GITHUB_TOKEN }}
-          # token: ${{ secrets.RENTALITY_PAT }}
-      # - name: Check current branch
-      #   run: git -C demo-rentality-web3-contracts branch -a
-
-
-      - name: "Print full ref 2"
-        run: echo ${{ github.ref }}
       
       - name: "Setup Node"
         uses: actions/setup-node@v4
