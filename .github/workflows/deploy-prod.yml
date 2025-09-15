@@ -17,13 +17,15 @@ jobs:
         with:
           repository: Rentality-xyz/Rentality-demo-contracts
           ref: "prod"
-          fetch-depth: 0 
+          # fetch-depth: 0 
           sparse-checkout: |
             contracts
             scripts
             src
           path: "demo-rentality-web3-contracts"
-          token: ${{ secrets.RENTALITY_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # token: ${{ secrets.RENTALITY_PAT }}
+          
       - name: "Setup Node"
         uses: actions/setup-node@v4
         with:
