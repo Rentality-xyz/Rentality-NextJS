@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: "Checkout Nextjs Repo"
         uses: actions/checkout@master
-      - name: Print full ref 1
+      - name: "Print full ref 1"
         run: echo ${{ github.ref }}  
       - name: "Checkout Contracts Repo"
         uses: actions/checkout@v5
@@ -28,7 +28,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           # token: ${{ secrets.RENTALITY_PAT }}
 
-      - name: Print full ref 2
+      - name: "Print full ref 2"
         run: echo ${{ github.ref }}
       
       - name: "Setup Node"
