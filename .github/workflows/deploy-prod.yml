@@ -3,7 +3,6 @@ name: Build And Deploy to Prod
 on:
   release:
     types: [published, edited]
-  workflow_dispatch:
 
 jobs:
   build_and_deploy_production:
