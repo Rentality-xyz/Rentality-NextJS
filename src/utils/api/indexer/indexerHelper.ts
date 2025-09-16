@@ -84,7 +84,8 @@ export function getSearchCarQuery(searchCarParams: ContractSearchCarParams, star
           insuranceCarInfo {
            required,
            priceInUsdCents  
-          }
+          },
+          engineParams
           user {
             user {
               name

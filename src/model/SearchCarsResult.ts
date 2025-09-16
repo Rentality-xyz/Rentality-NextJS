@@ -79,6 +79,10 @@ export type SearchCarInfo = {
   dimoTokenId: number;
   currency: UserCurrencyDTO;
   priceInCurrency: number;
+  salesTax: number,
+  governmentTax: number,
+  pricePer10PercentFuel: number,
+  tripDiscounts: TripDiscountsFormValues
 };
 
 export type SearchCarInfoDTO = Omit<SearchCarInfo, "engineType"> & { engineType: number };

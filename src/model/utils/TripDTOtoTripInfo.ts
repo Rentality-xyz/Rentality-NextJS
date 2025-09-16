@@ -9,6 +9,7 @@ import { addSpacesBeforeUpperCase } from "@/utils/spaceBeforeUpperCase";
 import { camelToTitleCase } from "@/utils/camelToTitleCase";
 import { UTC_TIME_ZONE_ID } from "@/utils/constants";
 import { calculateDaysByBlockchainLogic } from "@/utils/date";
+import { isUnlimitedMiles } from "../HostCarInfo";
 
 export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetailsConfirmed?: boolean) => {
   const metaData = parseMetaData(await getMetaDataFromIpfs(tripDTO.metadataURI));
@@ -24,7 +25,8 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
   );
   var overmileValue = endOdometr - startOdometr - milesIncludedPerDay * tripDays;
   overmileValue = overmileValue > 0 ? overmileValue : 0;
-  const overmilePrice =
+  const overmilePrice = 
+    isUnlimitedMiles(tripDTO.trip.milesIncludedPerDay) ? 0 : 
     Math.ceil(Number(tripDTO.trip.pricePerDayInUsdCents) / Number(tripDTO.trip.milesIncludedPerDay)) / 100;
   const tankVolumeInGal = Number(metaData.tankVolumeInGal);
 

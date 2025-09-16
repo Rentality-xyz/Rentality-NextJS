@@ -70,6 +70,7 @@ export interface QueryDeliveryPrice {
     locationInfo: QueryLocationInfo;
     trips: QueryTrips[];
     dimoTokenId: string;
+    engineParams: string[];
   }
   
   export interface GetCarInfosResponse {

@@ -20,7 +20,7 @@ export function getEthersContractProxy<T extends IEthersContract>(contract: T): 
           const result = await originalMethod.apply(target, args);
 
           if (isContractTransactionResponse(result)) {
-            await result.wait();
+            await result.wait(4); //block confirmation
             return Ok(true);
           }
           return Ok(result);

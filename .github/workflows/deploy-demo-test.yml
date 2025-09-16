@@ -1,19 +1,18 @@
 name: Build And Deploy to Demo Test
 
 on:
-  workflow_run:
-    workflows: ["Build And Deploy to Demo"]
-    types:
-      - completed
-
+  workflow_dispatch: 
+      
 jobs:
-  build_and_deploy_demo:
+  build_and_deploy_demo_test:
     runs-on: ubuntu-latest
     environment:
       name: Demo Test
+
     steps:
       - name: "Checkout Nextjs Repo"
         uses: actions/checkout@master
+        
       - name: "Checkout Contracts Repo"
         uses: actions/checkout@v4
         with:
@@ -24,10 +23,13 @@ jobs:
             scripts
             src
           path: "demo-rentality-web3-contracts"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: "Setup Node"
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+
       - name: "Generate environment"
         uses: SpicyPizza/create-envfile@v2.0
         with:
@@ -94,17 +96,22 @@ jobs:
           ENVKEY_API_AUTH_TOKEN: ${{ secrets.API_AUTH_TOKEN }}
           ENVKEY_BASE_URL: ${{ vars.BASE_URL }}
           ENVKEY_FB_SERVICE_ACCOUNT: ${{ secrets.FB_SERVICE_ACCOUNT }}
+
       - name: "Build Rentality App"
         run: make build
+
       - name: "Remove Contracts Repo"
         run: rm -rf demo-rentality-web3-contracts
+
       - name: "Fix for Firebase deployment"
         run: npm install firebase-frameworks && npm install firebase-tools
+
       - name: "Deploy to Firebase Demo"
         uses: FirebaseExtended/action-hosting-deploy@v0
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
         with:
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_RENTALITY_NEXTJS }}"
+          # firebaseToolsVersion: v13.33.0
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_RENTALITY_NEXTJS_TEST }}"
           projectId: rentality-demo-test
           channelId: live

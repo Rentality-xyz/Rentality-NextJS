@@ -7,6 +7,7 @@ import {
   ContractLocationInfo,
   ContractSearchCarsWithDistanceDTO,
   ContractSearchCarWithDistance,
+  EngineType,
 } from "@/model/blockchain/schemas";
 import { emptyContractLocationInfo, validateContractSearchCarWithDistance } from "@/model/blockchain/schemas_utils";
 import { getIpfsURIs, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
@@ -311,6 +312,15 @@ async function formatSearchAvailableCarsContractResponse(
       const tripDays = Number(i.car.tripDays);
       const pricePerDay = Number(i.car.pricePerDayInUsdCents) / 100;
       const totalPriceWithHostDiscount = Number(i.car.totalPriceWithDiscount) / 100;
+      const salesTax = Number(i.car.taxesInfo.find((i) => i.name.includes("sale"))?.value ?? 0) / 100;
+      const governmentTax =
+        Number(i.car.taxesInfo.find((i) => i.name.includes("government"))?.value ?? 0) / 100;
+        const tankVolumeInGal =
+        i.car.engineType === EngineType.PETROL ? Number(i.car.engineParams[0]) : 0;
+            const pricePer10PercentFuel =
+            i.car.engineType === EngineType.PETROL
+                  ? (Number(i.car.fuelPrice) * tankVolumeInGal) / 1000
+                  : Number(i.car.fuelPrice) / 1000;
 
       let item: SearchCarInfoDTO = {
         carId: Number(i.car.carId),
@@ -367,7 +377,15 @@ async function formatSearchAvailableCarsContractResponse(
           name: i.car.hostCurrency.name,
           initialized: i.car.hostCurrency.initialized,
         },
-        priceInCurrency:  Number(priceInCurrency)
+        priceInCurrency:  Number(priceInCurrency),
+        salesTax,
+        governmentTax,
+        pricePer10PercentFuel,
+        tripDiscounts: {
+          discount3DaysAndMoreInPercents: Number(i.car.carDiscounts.threeDaysDiscount) / 10_000,
+          discount7DaysAndMoreInPercents: Number(i.car.carDiscounts.sevenDaysDiscount) / 10_000,
+          discount30DaysAndMoreInPercents: Number(i.car.carDiscounts.thirtyDaysDiscount) / 10_000,
+        },
       };
       return item;
     })

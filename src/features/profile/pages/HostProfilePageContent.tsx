@@ -11,6 +11,8 @@ import useSaveDeliveryPrices from "@/hooks/host/useSaveDeliveryPrices";
 import useSaveTripDiscounts from "@/hooks/host/useSaveTripDiscounts";
 import UserCurrency from "../components/UserCurrency";
 import useFetchUserCurrency from "@/hooks/host/useFetchUserCurrency";
+import InsuranceRules from "@/components/host/InsuranceRule";
+import useFetchHostInsuranceRule from "@/hooks/host/useFetchHostInsuranceRule";
 
 function HostProfilePageContent() {
   const { isLoading } = useFetchUserProfile();
@@ -19,18 +21,20 @@ function HostProfilePageContent() {
   const { isLoading: isLoadingDiscounts, data: savedTripsDiscounts } = useFetchTripDiscounts();
   const { mutateAsync: saveTripDiscounts } = useSaveTripDiscounts();
   const { isLoading: isLoadingUserCurrency, data: userCurrency } = useFetchUserCurrency();
+  const { isLoading: isLoadingHostInsuranceRule, data: hostInsuranceRule } = useFetchHostInsuranceRule();
 
   const { t } = useTranslation();
   return (
     <>
       <PageTitle title={t("profile.title")} />
-      <RntSuspense isLoading={isLoading || isLoadingDiscounts || isLoadingDeliveryPrices || isLoadingUserCurrency}>
+      <RntSuspense isLoading={isLoading || isLoadingDiscounts || isLoadingDeliveryPrices || isLoadingUserCurrency || isLoadingHostInsuranceRule}>
         <UserProfileInfo />
         <hr />
-        <div className="flex flex-col min-[560px]:flex-row min-[560px]:gap-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
           <TripDiscountsForm savedTripsDiscounts={savedTripsDiscounts} saveTripsDiscounts={saveTripDiscounts} />
           <DeliveryPriceForm savedDeliveryPrices={savedDeliveryPrices} saveDeliveryPrices={saveDeliveryPrices} />
           <UserCurrency userCurrency={userCurrency} />
+          <InsuranceRules hostInsuranceRule={hostInsuranceRule} />
         </div>
       </RntSuspense>
     </>
