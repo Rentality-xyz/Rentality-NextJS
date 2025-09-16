@@ -301,6 +301,14 @@ export type ContractCurrency = {
   name: string;
 };
 
+export type ContractAllowedCurrencyDTO = {
+  decimals: bigint;
+  name: string;
+  symbol: string;
+  tokenAddress: string;
+}
+
+
 export type ContractTripReceiptDTO = {
   totalDayPriceInUsdCents: bigint;
   totalTripDays: bigint;

@@ -242,9 +242,11 @@ const useAdminPanelInfo = () => {
       carId: BigInt(carId),
       startDateTime: getBlockchainTimeFromDate(moment().toDate()),
       endDateTime: getBlockchainTimeFromDate(moment().add(3, "days").toDate()),
-      currencyType: "0xE4aB69C077896252FAFBD49EFD26B5D171A32410",
+      currencyType: ETH_DEFAULT_ADDRESS,
       pickUpInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
       returnInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
+      amountIn: BigInt(0),
+      fee: BigInt(0)
     };
 
     const result = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, EMPTY_PROMOCODE, {

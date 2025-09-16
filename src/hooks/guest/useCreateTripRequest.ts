@@ -4,7 +4,7 @@ import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { ContractCreateTripRequestWithDelivery, ContractLocationInfo } from "@/model/blockchain/schemas";
 import { isEmpty } from "@/utils/string";
-import { EMPTY_PROMOCODE, ETH_DEFAULT_ADDRESS } from "@/utils/constants";
+import { EMPTY_PROMOCODE, ETH_DEFAULT_ADDRESS, WETH_ADDRESS } from "@/utils/constants";
 import { getSignedLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
@@ -13,13 +13,9 @@ import { formatEther } from "viem";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { logger } from "@/utils/logger";
 import { UserCurrencyDTO } from "@/model/SearchCarsResult";
-import { Signer } from "ethers";
-import { getErc20ContractWithPaymentsAddress } from "@/abis";
-import { IERC20Contract } from "@/features/blockchain/models/IErc20";
-import { formatCurrencyWithSigner } from "@/utils/formatCurrency";
 import approve from "@/utils/approveERC20";
 import findBestPool from "@/utils/findBestPool";
-import { never } from "zod";
+
 
 const useCreateTripRequest = () => {
   const ethereumInfo = useEthereum();
@@ -32,7 +28,7 @@ const useCreateTripRequest = () => {
     promoCode: string,
     userCurrency: UserCurrencyDTO
   ): Promise<Result<boolean, Error>> {
-    let paymentCurrency = "0xB24DaDAe370Ff7C9492FA0d1DE99FdfF019Ca46B";
+    let paymentCurrency = "0xE4aB69C077896252FAFBD49EFD26B5D171A32410";
     if (!ethereumInfo) {
       logger.error("createTripRequest error: ethereumInfo is null");
       return Err(new Error("ERROR"));
@@ -118,7 +114,8 @@ const useCreateTripRequest = () => {
         }
 
     
-    
+        let amountIn = 0;
+        let fee = 0;
         if (
           !(await isUserHasEnoughFunds(ethereumInfo.signer,  paymentsResult.value.totalPrice, {
             currency: userCurrency.currency,
@@ -134,27 +131,32 @@ const useCreateTripRequest = () => {
           value = BigInt(0);
         }
         else if (userCurrency.currency !== paymentCurrency) {
-        let quoteResult = await findBestPool(paymentCurrency, ETH_DEFAULT_ADDRESS, value, ethereumInfo.signer)
+        const tokenTo = userCurrency.currency === ETH_DEFAULT_ADDRESS ? WETH_ADDRESS : userCurrency.currency;
+        let quoteResult = await findBestPool(paymentCurrency, tokenTo, value, ethereumInfo.signer)
         if(!quoteResult) {
          logger.error("Fail to get quote.")
           return Err(new Error("Fail to get quote"));
         }
-        console.log("VALUE: ", value)
-        console.log("AMOUNT IN: ",quoteResult.amountIn )
-      
-        await approve(tokenIn, ethereumInfo.signer, quoteResult.amountIn);
+      if (paymentCurrency !== ETH_DEFAULT_ADDRESS) {
+        await approve(paymentCurrency, ethereumInfo.signer, quoteResult.amountIn);
         value = BigInt(0);
+      }
+      else {
+        value = quoteResult.amountIn
+      }
+        amountIn = quoteResult.amountIn;
+        fee = quoteResult.fee;
 
       }
         const tripRequest: ContractCreateTripRequestWithDelivery = {
           carId: BigInt(carId),
           startDateTime: startUnixTime,
           endDateTime: endUnixTime,
-          currencyType: tokenIn,
+          currencyType: paymentCurrency,
           pickUpInfo: pickupLocationResult.value,
           returnInfo: returnLocationResult.value,
-          amountIn: quoteResult.amountIn,
-          fee: BigInt(quoteResult.fee)
+          amountIn: BigInt(amountIn),
+          fee: BigInt(fee)
         };
         const result = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, promoCode, {
           value,
@@ -189,31 +191,40 @@ const useCreateTripRequest = () => {
         }
 
         let value = paymentsResult.value.totalPrice;
-        // if (userCurrency.currency !== ETH_DEFAULT_ADDRESS) {
-        //   const tx = await approve(userCurrency.currency, ethereumInfo.signer, BigInt(paymentsResult.value.totalPrice));
-        //   value = BigInt(0);
-        // }
-        let quoteResult = await findBestPool(tokenIn, ETH_DEFAULT_ADDRESS, value, ethereumInfo.signer)
-        if(!quoteResult) {
-         logger.error("Fail to get quote.")
-          return Err(new Error("Fail to get quote"));
+        let amountIn = 0;
+        let fee = 0;
+        if (userCurrency.currency !== ETH_DEFAULT_ADDRESS && userCurrency.currency === paymentCurrency) {
+          const tx = await approve(userCurrency.currency, ethereumInfo.signer, BigInt(paymentsResult.value.totalPrice));
+          value = BigInt(0);
         }
-        console.log("VALUEVALUE: ", value)
-        console.log("AMOUNT IN: ",quoteResult.amountIn )
-        await approve(tokenIn, ethereumInfo.signer, quoteResult.amountIn);
-        value = BigInt(0);
-
+        else if (userCurrency.currency !== paymentCurrency) {
+          const tokenTo = userCurrency.currency === ETH_DEFAULT_ADDRESS ? WETH_ADDRESS : userCurrency.currency;
+          let quoteResult = await findBestPool(paymentCurrency, tokenTo, value, ethereumInfo.signer)
+          if(!quoteResult) {
+           logger.error("Fail to get quote.")
+            return Err(new Error("Fail to get quote"));
+          }
+        if (paymentCurrency !== ETH_DEFAULT_ADDRESS) {
+          await approve(paymentCurrency, ethereumInfo.signer, quoteResult.amountIn);
+          value = BigInt(0);
+        }
+        else {
+          value = quoteResult.amountIn
+        }
+          amountIn = quoteResult.amountIn;
+          fee = quoteResult.fee;
+  
+        }
         const tripRequest: ContractCreateTripRequestWithDelivery = {
           carId: BigInt(carId),
           startDateTime: startUnixTime,
           endDateTime: endUnixTime,
-          currencyType: tokenIn,
+          currencyType: paymentCurrency,
           pickUpInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
           returnInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
-          amountIn: quoteResult.amountIn,
-          fee: BigInt(quoteResult.fee)
+          amountIn: BigInt(amountIn),
+          fee: BigInt(fee)
         };
-
         const result = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, promoCode, {
           value,
         });

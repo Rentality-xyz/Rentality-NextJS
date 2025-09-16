@@ -14,7 +14,7 @@ export default async function quote(tokenIn: string, tokenOut: string, signer: S
 
 const quote = await quoter.quoteExactOutputSingle.staticCall({
     tokenIn,
-    tokenOut: "0x4200000000000000000000000000000000000006",
+    tokenOut: tokenOut,
     fee: fee,
     amount,
     sqrtPriceLimitX96: sqrtPrice
