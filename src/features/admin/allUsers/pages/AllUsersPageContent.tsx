@@ -31,7 +31,7 @@ function AllUsersPageContent() {
 
   return (
     <>
-      <PageTitle title={t("all_trips_table.page_title")} />
+      <PageTitle title={t("admin_all_users.page_title")} />
       <div className="mt-5 flex flex-col gap-4 rounded-2xl bg-rentality-bg p-4 pb-8">
         <AllUsersFilters defaultFilters={defaultFilters} onApply={handleApplyFilters} />
         <PaginationWrapper
