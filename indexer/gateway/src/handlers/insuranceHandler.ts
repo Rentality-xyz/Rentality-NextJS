@@ -8,12 +8,12 @@ export function handleUserInsurance(event: RentalityEvent): void {
     let insuranceInfo = contract.try_getGuestInsurance(event.params.from)
     
     if (insuranceInfo.reverted) {
-        log.warning("getInsuranceInfo reverted for user: {}", [event.params.from.toString()]);
+        log.warning("getInsuranceInfo reverted for user: {}", [event.params.from.toHexString()]);
         return;
     } 
-    let guestInsuranceInfo = GuestInsurancesEntity.load(event.params.from.toString());
+    let guestInsuranceInfo = GuestInsurancesEntity.load(event.params.from.toHexString());
     if( guestInsuranceInfo == null) {
-        guestInsuranceInfo = new GuestInsurancesEntity(event.params.from.toString());
+        guestInsuranceInfo = new GuestInsurancesEntity(event.params.from.toHexString());
     }
     const insuranceIDs: string[] = [];
     for (let i = 0; i < insuranceInfo.value.length; i++) {
