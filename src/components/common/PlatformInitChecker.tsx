@@ -6,6 +6,7 @@ import { PLATFORM_INIT_TIMEOUT } from "@/utils/constants";
 import { useRouter } from "next/navigation";
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import PlatformInitOffline from "@/components/common/PlatformInitOffline";
+import PlatformInitError from "@/components/common/PlatformInitError";
 
 interface PlatformInitCheckerProps {
   children: React.ReactNode;
@@ -18,6 +19,7 @@ function PlatformInitChecker({ children }: PlatformInitCheckerProps) {
   const { isLoadingAuth, isAuthenticated } = useAuth();
   const [timerExpired, setTimerExpired] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
+  const [isPlatformInitError, setPlatformInitError] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -48,9 +50,13 @@ function PlatformInitChecker({ children }: PlatformInitCheckerProps) {
       isOnline &&
       isPlatformLoading(isLoadingAuth, isAuthenticated, ethereumInfo, rentalityContracts)
     ) {
-      router.push("/platform_init_error");
+      setPlatformInitError(true);
     }
   }, [timerExpired, isLoadingAuth, isAuthenticated, ethereumInfo, rentalityContracts, router, isOnline]);
+
+  if (isPlatformInitError) {
+    return <PlatformInitError/>;
+  }
 
   if (!isOnline && isPlatformLoading(isLoadingAuth, isAuthenticated, ethereumInfo, rentalityContracts)) {
     return <PlatformInitOffline />;
