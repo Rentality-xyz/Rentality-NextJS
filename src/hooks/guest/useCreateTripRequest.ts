@@ -26,9 +26,10 @@ const useCreateTripRequest = () => {
     searchCarRequest: SearchCarRequest,
     timeZoneId: string,
     promoCode: string,
-    userCurrency: UserCurrencyDTO
+    userCurrency: UserCurrencyDTO,
+    paymentCurrency: string = userCurrency.currency,
   ): Promise<Result<boolean, Error>> {
-    let paymentCurrency = "0xE4aB69C077896252FAFBD49EFD26B5D171A32410";
+
     if (!ethereumInfo) {
       logger.error("createTripRequest error: ethereumInfo is null");
       return Err(new Error("ERROR"));
