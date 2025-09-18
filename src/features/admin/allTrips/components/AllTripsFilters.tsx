@@ -70,7 +70,7 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
           />
           <RntInput
             className="w-60"
-            inputClassName="pr-4 mt-1 pb-1 z-10 focus:outline-none focus:ring-0"
+            inputClassName="pr-4 mt-1 pb-1 focus:outline-none focus:ring-0"
             labelClassName="pl-4"
             id="dateFrom"
             isTransparentStyle={true}
@@ -86,7 +86,7 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
           />
           <RntInput
             className="w-60"
-            inputClassName="pr-4 mt-1 pb-1 z-10 focus:outline-none focus:ring-0"
+            inputClassName="pr-4 mt-1 pb-1 focus:outline-none focus:ring-0"
             labelClassName="pl-4"
             id="dateTo"
             isTransparentStyle={true}
