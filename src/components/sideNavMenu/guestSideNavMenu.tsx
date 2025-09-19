@@ -57,7 +57,6 @@ function GuestNavMenu() {
   const bookedLastVisitedDateTime = getPageLastVisitedDateTime("guest_trips_booked");
   const historyLastVisitedDateTime = getPageLastVisitedDateTime("guest_trips_history");
   const claimsLastVisitedDateTime = getPageLastVisitedDateTime("guest_claims");
-  const messagesLastVisitedDateTime = getPageLastVisitedDateTime("guest_messages");
   const notificationsLastVisitedDateTime = getPageLastVisitedDateTime("guest_notifications");
 
   const bookedNotificationCount = notifications.filter(
@@ -70,7 +69,7 @@ function GuestNavMenu() {
     (n) => n.type === NotificationType.Claim && n.datestamp > claimsLastVisitedDateTime
   ).length;
   const messagesNotificationCount = chatInfos.filter(
-    (ci) => ci.messages.filter((m) => m.datestamp > messagesLastVisitedDateTime).length > 0
+    (ci) => !ci.isSeen
   ).length;
   const notificationsNotificationCount = notifications.filter(
     (n) => n.datestamp > notificationsLastVisitedDateTime
