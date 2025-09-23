@@ -17,6 +17,8 @@ services:
       retries: 10
 
   graph-node:
+    environment:
+      GRAPH_ETHEREUM_CLEANUP_BLOCKS: true
     build:
       context: .
       dockerfile: Dockerfile.graph-node

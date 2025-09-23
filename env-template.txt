@@ -89,6 +89,6 @@ INDEXER_URL_84532="<indexer API url for chain 84532>"
 INDEXER_URL_8453="<indexer API url for chain 8453>"
 INDEXER_URL_5611="<indexer API url for chain 5611>"
 INDEXER_URL_204="<indexer API url for chain 204>"
-
+  
 API_AUTH_TOKEN="<Rentality API token>"
 BASE_URL="<Base URL (ex demo.rentality.io)>"
