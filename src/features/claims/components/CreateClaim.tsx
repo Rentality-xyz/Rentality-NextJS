@@ -67,6 +67,7 @@ export default function CreateClaim() {
       amountInUsd: 0,
       isChecked: false,
       localFileUrls: [],
+      toInsurance: false
     },
     resolver: zodResolver(createClaimFormSchema),
   });
