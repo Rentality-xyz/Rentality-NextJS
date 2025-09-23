@@ -78,7 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     eas.connect(provider);
     const attestation = await eas.getAttestation(uid);
 
-    res.status(200).json({ ok: true, result: attestation.revocable });
+    res.status(200).json({ ok: true, isVerified: attestation.revocable });
   } catch (err: any) {
     logger.error("Coinbase verification: unhandled error", err);
     res.status(500).json({ ok: false, error: "Internal error" });
