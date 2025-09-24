@@ -62,10 +62,9 @@ export default function RntCarModelSelect({
       value={value}
       disabled={isReadOnly}
       placeholder={promptText}
-      onChange={function (e) {
-        const newValue: string = e.target.value;
-        const newID: string = modelsList[e.target.selectedIndex]?.id || "";
-        if (onModelSelect && !isEmpty(newValue)) onModelSelect(newID, newValue);
+      onValueChange={function (value, selectedIndex) {
+        const newID: string = selectedIndex ? modelsList[selectedIndex]?.id : "" || "";
+        if (onModelSelect && !isEmpty(value)) onModelSelect(newID, value);
       }}
     >
       {modelsList.map((carModelsListElement, index) => (

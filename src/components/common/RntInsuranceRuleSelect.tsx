@@ -49,7 +49,7 @@ export default function RntInsuranceRuleSelect({
       disabled={isReadOnly}
       placeholder={promptText}
       onChange={(e) => {
-        const selectedValue = e.target.value;
+        const selectedValue = e.toString();
         const selected = filteredInsuranceRules.find((c) => c.partToInsurance === BigInt(selectedValue));
         if (selected && onRuleSelect && selectedValue !== "") {
           onRuleSelect(selected.partToInsurance, selected.insuranceId);

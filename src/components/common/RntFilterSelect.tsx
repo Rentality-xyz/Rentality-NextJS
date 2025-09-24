@@ -13,7 +13,8 @@ interface RntFilterSelectContextType {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   containerRef: React.RefObject<HTMLDivElement>;
-  onValueChange?: (value: string) => void;
+  options: { value: string; text: string }[];
+  onValueChange?: (value: string, selectedIndex?: number) => void;
 }
 
 const RntFilterSelectContext = React.createContext<RntFilterSelectContextType | undefined>(undefined);
@@ -26,7 +27,7 @@ interface RntFilterSelectProps extends React.ComponentPropsWithoutRef<"div"> {
   validationError?: string;
   isTransparentStyle?: boolean;
   value?: string;
-  onValueChange?: (value: string) => void;
+  onValueChange?: (value: string, selectedIndex?: number) => void;
   placeholder?: string;
   disabled?: boolean;
   id?: string;
@@ -69,24 +70,27 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
     const containerRef = useRef<HTMLDivElement>(null);
     const selectRef = useRef<HTMLDivElement>(null);
 
+    const options = React.useMemo(() => {
+      const list: { value: string; text: string }[] = [];
+      React.Children.forEach(children, (child) => {
+        if (React.isValidElement(child) && child.props?.value != null) {
+          list.push({
+            value: String(child.props.value),
+            text: extractTextFromReactNode(child.props.children),
+          });
+        }
+      });
+      return list;
+    }, [children]);
+
     useEffect(() => {
       if (value === undefined) {
         setSelected(undefined);
         return;
       }
-      let found: { value: string; text: string } | undefined = undefined;
-      React.Children.forEach(children, (child) => {
-        if (!found && React.isValidElement(child) && String(child.props.value) === String(value)) {
-          found = {
-            value: String(child.props.value),
-            text: extractTextFromReactNode(child.props.children),
-          };
-        }
-      });
-      setSelected(
-        found ?? (value !== "" ? { value: String(value), text: String(value) } : undefined)
-      );
-    }, [value, children]);
+      const found = options.find((o) => String(o.value) === String(value));
+      setSelected(found ?? (value !== "" ? { value: String(value), text: String(value) } : undefined));
+    }, [value, options]);
 
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
@@ -104,7 +108,7 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
 
     return (
       <RntFilterSelectContext.Provider
-        value={{ selected, setSelected, isOpen, setIsOpen, containerRef: selectRef, onValueChange }}
+        value={{ selected, setSelected, isOpen, setIsOpen, containerRef: selectRef, options, onValueChange }}
       >
         <div className={containerCn} ref={containerRef} {...rest}>
           {!isEmpty(label) && (
@@ -193,8 +197,9 @@ const Option = forwardRef<HTMLDivElement, OptionProps>(({ value, children, class
   const context = React.useContext(RntFilterSelectContext);
   if (!context) throw new Error("RntFilterSelect.Option must be used within a RntFilterSelect");
 
-  const { selected, setSelected, setIsOpen, onValueChange } = context;
+  const { selected, setSelected, setIsOpen, onValueChange, options } = context;
   const isSelected = selected?.value === value;
+  const selectedIndex = React.useMemo(() => options.findIndex((o) => o.value === String(value)), [options, value]);
 
   return (
     <div
@@ -204,8 +209,9 @@ const Option = forwardRef<HTMLDivElement, OptionProps>(({ value, children, class
         "flex w-full cursor-pointer flex-row items-center gap-2 px-4 transition-colors hover:bg-gray-600 active:bg-rentality-additional-light"
       )}
       onClick={() => {
-        setSelected({ value, text: extractTextFromReactNode(children) });
-        onValueChange?.(value);
+        const text = extractTextFromReactNode(children);
+        setSelected({ value, text });
+        onValueChange?.(value, selectedIndex >= 0 ? selectedIndex : undefined);
         setIsOpen(false);
       }}
       role="button"
@@ -220,6 +226,6 @@ const Option = forwardRef<HTMLDivElement, OptionProps>(({ value, children, class
 });
 
 Option.displayName = "FilterSelect.Option";
-const RntFilterSelect = Object.assign(RntFilterSelectComponent, { Option: Option });
+const RntFilterSelect = Object.assign(RntFilterSelectComponent, { Option });
 
 export default RntFilterSelect;

@@ -49,12 +49,12 @@ export default function RntCarYearSelect({
       isTransparentStyle={isTransparentStyle}
       className={className}
       label={label}
-      value={value}
+      value={value.toString()}
       validationError={validationError}
       disabled={readOnly || false}
       placeholder={promptText}
-      onChange={function (e) {
-        const newValue = e.target.value;
+      onValueChange={function (e) {
+        const newValue = e;
         if (onYearSelect) onYearSelect(parseInt(newValue));
       }}
     >

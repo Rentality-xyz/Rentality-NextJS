@@ -75,7 +75,7 @@ function TransactionHistoryFilters({ defaultFilters, onApply }: TransactionHisto
           onChange={(e) => {
             setFilters((prev) => ({
               ...prev,
-              status: e.target.value !== "none" ? BigInt(e.target.value) : undefined,
+              status: e.toString() !== "none" ? BigInt(e.toString()) : undefined,
             }));
           }}
         >

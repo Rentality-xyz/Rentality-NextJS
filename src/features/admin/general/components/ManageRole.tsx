@@ -60,7 +60,7 @@ function ManageRole() {
           label="Grant/Revoke"
           value={manageRoleState.action}
           onChange={(e) => {
-            setManageRoleState((prev) => ({ ...prev, action: e.target.value as "grand" | "revoke" }));
+            setManageRoleState((prev) => ({ ...prev, action: e.toString() as "grand" | "revoke" }));
           }}
         >
           <RntFilterSelect.Option value={"revoke"}>Revoke</RntFilterSelect.Option>
@@ -73,7 +73,7 @@ function ManageRole() {
           label="Role"
           value={manageRoleState.role.toString()}
           onChange={(e) => {
-            setManageRoleState((prev) => ({ ...prev, role: BigInt(e.target.value) }));
+            setManageRoleState((prev) => ({ ...prev, role: BigInt(e.toString()) }));
           }}
         >
           <RntFilterSelect.Option value={Role.Guest.toString()}>Guest</RntFilterSelect.Option>

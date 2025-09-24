@@ -35,7 +35,7 @@ export default function AllowedActionsHost({
                 disabled={tripInfo.allowedActions[0].readonly}
                 value={inputParams[index]}
                 onChange={(e) => {
-                  const newValue = e.target.value;
+                  const newValue = e.toString();
                   if (isEmpty(newValue)) {
                     return;
                   }

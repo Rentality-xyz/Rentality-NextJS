@@ -65,7 +65,7 @@ function AddClaimForm({ addClaimType, isLoading = false }: AddClaimFormProps) {
               <label className="font-medium text-sm">{t_att("applicable_to")}</label>
               <RntFilterSelect
                 value={String(claimUser)}
-                onChange={(e) => setClaimUser(Number(e.target.value))}
+                onChange={(e) => setClaimUser(Number(e))}
                 className="w-full"
               >
                 {claimTypeOptions.map(({ id, labelKey }) => (

@@ -44,8 +44,8 @@ function AllUsersFilters({ defaultFilters, onApply }: AllUsersFiltersProps) {
           <RntFilterSelect
             value={String(filters.claimTypes)}
             onChange={(e) => {
-              if (e.target.value === "") return
-              const selectedId = Number(e.target.value) as ClaimUsers;
+              if (e.toString() === "") return
+              const selectedId = Number(e.toString()) as ClaimUsers;
               setFilters((prev) => ({
                 ...prev,
                 claimTypes: selectedId,

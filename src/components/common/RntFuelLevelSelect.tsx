@@ -11,14 +11,13 @@ const RntFuelLevelSelect = forwardRef<HTMLSelectElement, RntFuelLevelSelectProps
     return (
       <RntFilterSelect
         isTransparentStyle={true}
-        value={value}
-        onChange={(e) => {
-          const newValue = Number(e.target.value);
+        value={value?.toString()}
+        onValueChange={(e, selectedIndex) => {
+          const newValue = Number(e);
           if (Number.isFinite(newValue)) {
             onLevelChange(newValue);
           }
         }}
-        {...rest}
       >
         <RntFilterSelect.Option value="0">0%</RntFilterSelect.Option>
         <RntFilterSelect.Option value="0.1">10%</RntFilterSelect.Option>

@@ -105,8 +105,9 @@ function InvestPageContent({}: InvestContentProps) {
         className="btn_input_border-gradient w-60 justify-center bg-transparent text-lg text-rentality-secondary"
         id="invest_filter"
         value={selectedFilter ? selectedFilter.text : (localizedFilters.options[0]?.text ?? "")}
-        onChange={(e) => {
-          const selectedOption = localizedFilters.options[e.target.selectedIndex];
+        onValueChange={(e,s) => {
+          if(!s) return;
+          const selectedOption = localizedFilters.options[s];
           if (selectedOption) {
             setSelectedFilter(selectedOption);
           }

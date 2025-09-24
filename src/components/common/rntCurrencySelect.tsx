@@ -49,7 +49,7 @@ export default function RntCurrencySelect({
       disabled={isReadOnly}
       placeholder={promptText}
       onChange={(e) => {
-        const selectedValue = e.target.value;
+        const selectedValue = e.toString();
         const selected = filteredCurrencies.find((c) => c.name === selectedValue);
         if (selected && onCurrencySelect) {
           onCurrencySelect(selected.currency, selected.name);

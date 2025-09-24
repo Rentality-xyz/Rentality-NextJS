@@ -377,8 +377,9 @@ export default function SearchAndFilters({
             id="sort"
             placeholder={t_comp("sort_by")}
             value={sortBy ? sortBy.text : ""}
-            onChange={(e) => {
-              const selectedOption = sortFilter.options[e.target.selectedIndex];
+            onValueChange={(e, s) => {
+              if (!s) return;
+              const selectedOption = sortFilter.options[s];
               if (selectedOption) {
                 setSortBy(selectedOption);
               }
