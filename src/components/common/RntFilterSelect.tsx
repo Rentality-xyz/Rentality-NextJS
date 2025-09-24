@@ -112,11 +112,15 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
         setIsOpen((prev) => !prev);
       }
     };
-
+    const mounted = useRef(false);
     useEffect(() => {
       if (!hiddenSelectRef.current) return;
       hiddenSelectRef.current.value = selected?.value ?? "";
-      hiddenSelectRef.current.dispatchEvent(new Event("change", { bubbles: true }));
+      if (mounted.current) {
+        hiddenSelectRef.current.dispatchEvent(new Event("change", { bubbles: true }));
+      } else {
+        mounted.current = true;
+      }
     }, [selected?.value]);
 
     return (
