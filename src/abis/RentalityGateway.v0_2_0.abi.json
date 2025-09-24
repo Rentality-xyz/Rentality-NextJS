@@ -439,7 +439,9 @@
                 },
                 { "type": "bytes", "name": "signature" }
               ]
-            }
+            },
+            { "type": "uint256", "name": "amountIn" },
+            { "type": "uint24", "name": "fee" }
           ]
         },
         { "type": "string", "name": "promoCode" }
@@ -618,6 +620,26 @@
     },
     {
       "type": "function",
+      "name": "getAvailableCurrency",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "tuple[]",
+          "name": "",
+          "components": [
+            { "type": "uint8", "name": "decimals" },
+            { "type": "string", "name": "name" },
+            { "type": "string", "name": "symbol" },
+            { "type": "address", "name": "tokenAddress" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
       "name": "getCarDetails",
       "constant": true,
       "stateMutability": "view",
@@ -771,7 +793,9 @@
             { "type": "string", "name": "carMetadataUrl" },
             { "type": "uint64", "name": "startDateTime" },
             { "type": "uint64", "name": "endDateTime" },
-            { "type": "string", "name": "timeZoneId" }
+            { "type": "string", "name": "timeZoneId" },
+            { "type": "string", "name": "guestNickname" },
+            { "type": "string", "name": "hostNickname" }
           ]
         }
       ]
@@ -959,6 +983,15 @@
           ]
         }
       ]
+    },
+    {
+      "type": "function",
+      "name": "getHostInsuranceBalance",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [{ "type": "uint256", "name": "" }]
     },
     {
       "type": "function",
@@ -1507,7 +1540,10 @@
                 { "type": "string", "name": "name" },
                 { "type": "bool", "name": "initialized" }
               ]
-            }
+            },
+            { "type": "string", "name": "guestNickName" },
+            { "type": "string", "name": "hostNickName" },
+            { "type": "uint256", "name": "paidToInsuranceInUsdCents" }
           ]
         }
       ]
@@ -1722,7 +1758,10 @@
                 { "type": "string", "name": "name" },
                 { "type": "bool", "name": "initialized" }
               ]
-            }
+            },
+            { "type": "string", "name": "guestNickName" },
+            { "type": "string", "name": "hostNickName" },
+            { "type": "uint256", "name": "paidToInsuranceInUsdCents" }
           ]
         }
       ]
@@ -2052,27 +2091,6 @@
     },
     {
       "type": "function",
-      "name": "setCivicKYCInfo",
-      "constant": false,
-      "payable": false,
-      "inputs": [
-        { "type": "address", "name": "user" },
-        {
-          "type": "tuple",
-          "name": "civicKycInfo",
-          "components": [
-            { "type": "string", "name": "fullName" },
-            { "type": "string", "name": "licenseNumber" },
-            { "type": "uint64", "name": "expirationDate" },
-            { "type": "string", "name": "issueCountry" },
-            { "type": "string", "name": "email" }
-          ]
-        }
-      ],
-      "outputs": []
-    },
-    {
-      "type": "function",
       "name": "setEmail",
       "constant": false,
       "payable": false,
@@ -2103,26 +2121,6 @@
         { "type": "string", "name": "email" },
         { "type": "bytes", "name": "TCSignature" },
         { "type": "bytes4", "name": "hash" }
-      ],
-      "outputs": []
-    },
-    {
-      "type": "function",
-      "name": "setMyCivicKYCInfo",
-      "constant": false,
-      "payable": false,
-      "inputs": [
-        {
-          "type": "tuple",
-          "name": "civicKycInfo",
-          "components": [
-            { "type": "string", "name": "fullName" },
-            { "type": "string", "name": "licenseNumber" },
-            { "type": "uint64", "name": "expirationDate" },
-            { "type": "string", "name": "issueCountry" },
-            { "type": "string", "name": "email" }
-          ]
-        }
       ],
       "outputs": []
     },
