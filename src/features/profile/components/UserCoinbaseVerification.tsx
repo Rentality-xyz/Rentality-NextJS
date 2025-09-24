@@ -17,16 +17,16 @@ function UserCoinbaseVerification() {
   return (
     <RntSuspense isLoading={isLoading}>
       <div className="pl-[16px] text-lg">
-        <strong>{"KYC Onchain verification"}</strong>
+        <strong>{t("profile.kyc_onchain_verification")}</strong>
       </div>
       <DotStatus
         containerClassName=""
         color={isVerified ? "success" : "error"}
-        text={isVerified ? "Your wallet address is verified" : "Your wallet address is not verified"}
+        text={isVerified ? t("profile.wallet_verified") : t("profile.wallet_not_verified")}
       />
       {!isVerified && (
         <RntButton className="lg:w-60" onClick={handleVerifyClick}>
-          {t("profile.verify") + " by Coinbase"}
+          {t("profile.verify_by_coinbase")}
         </RntButton>
       )}
     </RntSuspense>
