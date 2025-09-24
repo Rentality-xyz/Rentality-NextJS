@@ -144,10 +144,10 @@ export default function AddHostInsurance({}: AddHostInsuranceProps) {
                       label="Trip:"
                       placeholder="Select trip"
                       disabled={trips.length === 0}
-                      value={field.value}
+                      value={field.value.toString()}
                       onChange={(e) => {
-                        logger.info(`RntSelect onChange ${e.target.value}`);
-                        const value = Number(e.target.value)
+                        logger.info(`RntSelect onChange ${e}`);
+                        const value = Number(e)
                         if (value !== 0) {
                           field.onChange(value);
                         }

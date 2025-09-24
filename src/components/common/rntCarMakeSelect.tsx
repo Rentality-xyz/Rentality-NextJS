@@ -57,9 +57,9 @@ export default function RntCarMakeSelect({
       value={value}
       disabled={isReadOnly}
       placeholder={promptText}
-      onChange={function (e) {
-        const newValue: string = e.target.value;
-        const newID: string = makesList[e.target.selectedIndex]?.id || "";
+      onValueChange={function (newValue, s) {
+        if (!s) return;
+        const newID: string = makesList[s]?.id || "";
         if (onMakeSelect && !isEmpty(newValue) && !isEmpty(newID)) onMakeSelect(newID, newValue);
       }}
     >

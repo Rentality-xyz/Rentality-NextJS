@@ -110,7 +110,7 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
             onChange={(e) => {
               setFilters((prev) => ({
                 ...prev,
-                status: BigInt(e.target.value),
+                status: BigInt(e.toString()),
               }));
             }}
           >
@@ -133,7 +133,7 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
             onChange={(e) => {
               setFilters((prev) => ({
                 ...prev,
-                paymentStatus: BigInt(e.target.value),
+                paymentStatus: BigInt(e.toString()),
               }));
             }}
           >
