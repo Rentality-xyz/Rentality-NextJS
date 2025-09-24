@@ -245,6 +245,8 @@ const useAdminPanelInfo = () => {
       currencyType: ETH_DEFAULT_ADDRESS,
       pickUpInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
       returnInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
+      amountIn: BigInt(0),
+      fee: BigInt(0)
     };
 
     const result = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, EMPTY_PROMOCODE, {

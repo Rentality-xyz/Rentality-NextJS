@@ -89,7 +89,7 @@ export default function ClaimHistory({ claims }: Props) {
   async function handlePayClaim(claimId: number, currency: string) {
     showInfo(t("common.info.sign"));
 
-    const result = await payClaim({ claimId, currency });
+    const result = await payClaim({ claimId, currency, isAdmin: false });
 
     hideSnackbars();
 
@@ -183,7 +183,7 @@ export default function ClaimHistory({ claims }: Props) {
                           <RntButton
                             className="h-8 min-h-[38px] w-24"
                             onClick={() => {
-                              payClaim({ claimId: claim.claimId, currency: claim.currency.currency });
+                              payClaim({ claimId: claim.claimId, currency: claim.currency.currency, isAdmin: true });
                             }}
                           >
                             {t_history("pay")}

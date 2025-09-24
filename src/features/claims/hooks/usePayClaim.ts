@@ -15,7 +15,7 @@ const usePayClaim = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (params: { claimId: number; currency: string }): Promise<Result<boolean, Error>> => {
+    mutationFn: async (params: { claimId: number; currency: string, isAdmin: boolean }): Promise<Result<boolean, Error>> => {
       if (!rentalityContracts || !ethereumInfo) {
         logger.error("payClaim error: Missing required contracts or ethereum info");
         //return Err(new Error("Missing required contracts or ethereum info"));
@@ -30,15 +30,18 @@ const usePayClaim = () => {
         if (!calculateClaimValueResult.ok) {
           return Err(new Error("ERROR"));
         }
-
-        if (!(await isUserHasEnoughFunds(ethereumInfo.signer, calculateClaimValueResult.value))) {
+        
+        if (!params.isAdmin && !(await isUserHasEnoughFunds(ethereumInfo.signer, calculateClaimValueResult.value))) {
           logger.error("payClaim error: user don't have enough funds");
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }
         let value = calculateClaimValueResult.value;
-        if (currency !== ETH_DEFAULT_ADDRESS) {
+        if (!params.isAdmin && currency !== ETH_DEFAULT_ADDRESS) {
           await approve(currency, ethereumInfo.signer, BigInt(calculateClaimValueResult.value));
           value = BigInt(0);
+        }
+        else if(params.isAdmin) {
+          value = BigInt(0)
         }
 
         const result = await rentalityContracts.gateway.payClaim(BigInt(claimId), {

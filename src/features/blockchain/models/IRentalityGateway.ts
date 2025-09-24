@@ -32,6 +32,7 @@ import {
   ContractSearchCarsWithDistanceDTO,
   ContractClaimV2,
   ContractHostInsuranceRule,
+  ContractAllowedCurrencyDTO,
 } from "@/model/blockchain/schemas";
 import { ContractTransactionResponse } from "ethers";
 import { IEthersContract } from "./IEtherContract";
@@ -168,7 +169,7 @@ export interface IRentalityGatewayContract extends IEthersContract {
   getUniqCarsBrand(): Promise<string[]>;
   getUniqModelsByBrand(brand: string): Promise<string[]>;
   getTotalCarsAmount(): Promise<bigint>;
-
+  getAvailableCurrency(): Promise<ContractAllowedCurrencyDTO[]>;
   /// GENERAL functions
   address: string;
 

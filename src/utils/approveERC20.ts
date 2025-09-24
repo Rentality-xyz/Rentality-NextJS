@@ -12,5 +12,5 @@ export default async function approve(currency: string, signer: Signer, amount: 
   if (allowance === amount) return;
 
   const tx = await erc20.approve(rentalityPayments, BigInt(amount));
-  await tx.wait();
+  await tx.wait(2);
 }

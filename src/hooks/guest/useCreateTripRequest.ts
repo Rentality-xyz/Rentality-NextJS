@@ -4,7 +4,7 @@ import { getBlockchainTimeFromDate } from "@/utils/formInput";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { ContractCreateTripRequestWithDelivery, ContractLocationInfo } from "@/model/blockchain/schemas";
 import { isEmpty } from "@/utils/string";
-import { EMPTY_PROMOCODE, ETH_DEFAULT_ADDRESS } from "@/utils/constants";
+import { EMPTY_PROMOCODE, ETH_DEFAULT_ADDRESS, WETH_ADDRESS } from "@/utils/constants";
 import { getSignedLocationInfo, mapLocationInfoToContractLocationInfo } from "@/utils/location";
 import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
@@ -12,12 +12,10 @@ import { Err, Ok, Result } from "@/model/utils/result";
 import { formatEther } from "viem";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { logger } from "@/utils/logger";
-import { UserCurrencyDTO } from "@/model/SearchCarsResult";
-import { Signer } from "ethers";
-import { getErc20ContractWithPaymentsAddress } from "@/abis";
-import { IERC20Contract } from "@/features/blockchain/models/IErc20";
-import { formatCurrencyWithSigner } from "@/utils/formatCurrency";
+import { SearchCarInfo, UserCurrencyDTO } from "@/model/SearchCarsResult";
 import approve from "@/utils/approveERC20";
+import findBestPool from "@/utils/findBestPool";
+
 
 const useCreateTripRequest = () => {
   const ethereumInfo = useEthereum();
@@ -28,8 +26,10 @@ const useCreateTripRequest = () => {
     searchCarRequest: SearchCarRequest,
     timeZoneId: string,
     promoCode: string,
-    userCurrency: UserCurrencyDTO
+    userCurrency: UserCurrencyDTO,
+    paymentCurrency: string = userCurrency.currency,
   ): Promise<Result<boolean, Error>> {
+
     if (!ethereumInfo) {
       logger.error("createTripRequest error: ethereumInfo is null");
       return Err(new Error("ERROR"));
@@ -114,35 +114,50 @@ const useCreateTripRequest = () => {
           return Err(new Error("ERROR"));
         }
 
+    
+        let amountIn = 0;
+        let fee = 0;
+ 
+        let value =  paymentsResult.value.totalPrice;
+        if (userCurrency.currency !== ETH_DEFAULT_ADDRESS && userCurrency.currency === paymentCurrency) {
+          await approve(userCurrency.currency, ethereumInfo.signer, BigInt(value));
+          value = BigInt(0);
+        }
+        else if (userCurrency.currency !== paymentCurrency) {
+        const tokenTo = userCurrency.currency === ETH_DEFAULT_ADDRESS ? WETH_ADDRESS : userCurrency.currency;
+        let quoteResult = await findBestPool(paymentCurrency, tokenTo, value, ethereumInfo.signer)
+        if(!quoteResult) {
+         logger.error("Fail to get quote.")
+          return Err(new Error("Fail to get quote"));
+        }
+      if (paymentCurrency !== ETH_DEFAULT_ADDRESS) {
+        await approve(paymentCurrency, ethereumInfo.signer, quoteResult.amountIn);
+        value = BigInt(0);
+      }
+      else {
+        value = quoteResult.amountIn
+      }
+        amountIn = quoteResult.amountIn;
+        fee = quoteResult.fee;
+
+      }
         const tripRequest: ContractCreateTripRequestWithDelivery = {
           carId: BigInt(carId),
           startDateTime: startUnixTime,
           endDateTime: endUnixTime,
-          currencyType: userCurrency.currency,
+          currencyType: paymentCurrency,
           pickUpInfo: pickupLocationResult.value,
           returnInfo: returnLocationResult.value,
+          amountIn: BigInt(amountIn),
+          fee: BigInt(fee)
         };
-    
-        if (
-          !(await isUserHasEnoughFunds(ethereumInfo.signer,  paymentsResult.value.totalPrice, {
-            currency: userCurrency.currency,
-            name: userCurrency.name,
-          }))
-        ) {
-          logger.error("createTripRequest error: user don't have enough funds");
-          return Err(new Error("NOT_ENOUGH_FUNDS"));
-        }
-        let value =  paymentsResult.value.totalPrice;
-        if (userCurrency.currency !== ETH_DEFAULT_ADDRESS) {
-          await approve(userCurrency.currency, ethereumInfo.signer, BigInt(value));
-          value = BigInt(0);
-        }
         const result = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, promoCode, {
           value,
         });
         if (!result.ok) {
           return Err(new Error("ERROR"));
         }
+      
       } else {
         const paymentsResult = await rentalityContracts.gateway.calculatePaymentsWithDelivery(
           BigInt(carId),
@@ -156,31 +171,42 @@ const useCreateTripRequest = () => {
           return Err(new Error("ERROR"));
         }
 
+    
+        let value = paymentsResult.value.totalPrice;
+        let amountIn = 0;
+        let fee = 0;
+        if (userCurrency.currency !== ETH_DEFAULT_ADDRESS && userCurrency.currency === paymentCurrency) {
+          const tx = await approve(userCurrency.currency, ethereumInfo.signer, BigInt(paymentsResult.value.totalPrice));
+          value = BigInt(0);
+        }
+        else if (userCurrency.currency !== paymentCurrency) {
+          const tokenTo = userCurrency.currency === ETH_DEFAULT_ADDRESS ? WETH_ADDRESS : userCurrency.currency;
+          let quoteResult = await findBestPool(paymentCurrency, tokenTo, value, ethereumInfo.signer)
+          if(!quoteResult) {
+           logger.error("Fail to get quote.")
+            return Err(new Error("Fail to get quote"));
+          }
+        if (paymentCurrency !== ETH_DEFAULT_ADDRESS) {
+          await approve(paymentCurrency, ethereumInfo.signer, quoteResult.amountIn);
+          value = BigInt(0);
+        }
+        else {
+          value = quoteResult.amountIn
+        }
+          amountIn = quoteResult.amountIn;
+          fee = quoteResult.fee;
+  
+        }
         const tripRequest: ContractCreateTripRequestWithDelivery = {
           carId: BigInt(carId),
           startDateTime: startUnixTime,
           endDateTime: endUnixTime,
-          currencyType: ETH_DEFAULT_ADDRESS,
+          currencyType: paymentCurrency,
           pickUpInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
           returnInfo: { locationInfo: emptyContractLocationInfo, signature: "0x" },
+          amountIn: BigInt(amountIn),
+          fee: BigInt(fee)
         };
-
-  
-        if (
-          !(await isUserHasEnoughFunds(ethereumInfo.signer, paymentsResult.value.totalPrice, {
-            currency: userCurrency.currency,
-            name: userCurrency.name,
-          }))
-        ) {
-          logger.error("createTripRequest error: user don't have enough funds");
-          return Err(new Error("NOT_ENOUGH_FUNDS"));
-        }
-
-        let value = paymentsResult.value.totalPrice;
-        if (userCurrency.currency !== ETH_DEFAULT_ADDRESS) {
-          const tx = await approve(userCurrency.currency, ethereumInfo.signer, BigInt(paymentsResult.value.totalPrice));
-          value = BigInt(0);
-        }
         const result = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, promoCode, {
           value,
         });
@@ -195,7 +221,6 @@ const useCreateTripRequest = () => {
       return Err(new Error("ERROR"));
     }
   }
-
   return { createTripRequest } as const;
 };
 
