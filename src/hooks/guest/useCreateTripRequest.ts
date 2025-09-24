@@ -117,15 +117,7 @@ const useCreateTripRequest = () => {
     
         let amountIn = 0;
         let fee = 0;
-        if (
-          !(await isUserHasEnoughFunds(ethereumInfo.signer,  paymentsResult.value.totalPrice, {
-            currency: userCurrency.currency,
-            name: userCurrency.name,
-          }))
-        ) {
-          logger.error("createTripRequest error: user don't have enough funds");
-          return Err(new Error("NOT_ENOUGH_FUNDS"));
-        }
+ 
         let value =  paymentsResult.value.totalPrice;
         if (userCurrency.currency !== ETH_DEFAULT_ADDRESS && userCurrency.currency === paymentCurrency) {
           await approve(userCurrency.currency, ethereumInfo.signer, BigInt(value));
@@ -180,17 +172,6 @@ const useCreateTripRequest = () => {
         }
 
     
-
-        if (
-          !(await isUserHasEnoughFunds(ethereumInfo.signer, paymentsResult.value.totalPrice, {
-            currency: userCurrency.currency,
-            name: userCurrency.name,
-          }))
-        ) {
-          logger.error("createTripRequest error: user don't have enough funds");
-          return Err(new Error("NOT_ENOUGH_FUNDS"));
-        }
-
         let value = paymentsResult.value.totalPrice;
         let amountIn = 0;
         let fee = 0;

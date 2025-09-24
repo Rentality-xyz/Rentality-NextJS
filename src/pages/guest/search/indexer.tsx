@@ -98,7 +98,8 @@ function Search() {
       return;
     }
 
-    if (ethereumInfo && !(await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency))) {
+
+    if (ethereumInfo && await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency)!) {
       const currenciesResult = await rentalityContracts.gateway.getAvailableCurrency();
       if (!currenciesResult.ok || currenciesResult.value.length === 0) {
         showError(t("search_page.errors.available_cur_error"));

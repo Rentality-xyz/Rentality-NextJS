@@ -99,10 +99,16 @@ function Search() {
     }
     if (!rentalityContracts) {
       return;
-    }
+    }   
 
-    if (ethereumInfo && !(await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency))) {
+    if (ethereumInfo && await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency)!) {
       const currenciesResult = await rentalityContracts.gateway.getAvailableCurrency();
+      console.log("CURRENCYCURRENCY: ", currenciesResult)
+      if (!currenciesResult.ok || currenciesResult.value.length === 0) {
+        showError(t("search_page.errors.available_cur_error"));
+        return;
+      }
+   
       if (!currenciesResult.ok || currenciesResult.value.length === 0) {
         showError(t("search_page.errors.available_cur_error"));
         return;
