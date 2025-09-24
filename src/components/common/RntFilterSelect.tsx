@@ -13,17 +13,23 @@ interface RntFilterSelectContextType {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   containerRef: React.RefObject<HTMLDivElement>;
+  onValueChange?: (value: string) => void;
 }
 
 const RntFilterSelectContext = React.createContext<RntFilterSelectContextType | undefined>(undefined);
 
-interface RntFilterSelectProps extends React.ComponentPropsWithoutRef<"select"> {
+interface RntFilterSelectProps extends React.ComponentPropsWithoutRef<"div"> {
   containerClassName?: string;
   labelClassName?: string;
   label?: string;
   validationClassName?: string;
   validationError?: string;
   isTransparentStyle?: boolean;
+  value?: string;
+  onValueChange?: (value: string) => void;
+  placeholder?: string;
+  disabled?: boolean;
+  id?: string;
 }
 
 const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps>(
@@ -41,6 +47,7 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
       id,
       placeholder,
       value,
+      onValueChange,
       ...rest
     },
     ref
@@ -60,41 +67,25 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
     const [selected, setSelected] = useState<{ value: string; text: string } | undefined>(undefined);
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
-    const hiddenSelectRef = useRef<HTMLSelectElement>(null);
     const selectRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-      if (value !== "") {
-        setIsOpen(false);
-      }
-    }, [value]);
 
     useEffect(() => {
       if (value === undefined) {
         setSelected(undefined);
         return;
       }
-
-      if (typeof value === "string" || (typeof value === "number" && !isNaN(value))) {
-        let isFound = false;
-
-        React.Children.forEach(children, (child) => {
-          if (!isFound && React.isValidElement(child) && child.props.value === value?.toString()) {
-            setSelected({
-              value: child.props.value,
-              text: extractTextFromReactNode(child.props.children),
-            });
-            isFound = true;
-          }
-        });
-
-        if (!isFound) {
-          setSelected({
-            value: value.toString(),
-            text: value.toString(),
-          });
+      let found: { value: string; text: string } | undefined = undefined;
+      React.Children.forEach(children, (child) => {
+        if (!found && React.isValidElement(child) && String(child.props.value) === String(value)) {
+          found = {
+            value: String(child.props.value),
+            text: extractTextFromReactNode(child.props.children),
+          };
         }
-      }
+      });
+      setSelected(
+        found ?? (value !== "" ? { value: String(value), text: String(value) } : undefined)
+      );
     }, [value, children]);
 
     useEffect(() => {
@@ -108,32 +99,14 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
     }, []);
 
     const toggleDropdown = () => {
-      if (!disabled) {
-        setIsOpen((prev) => !prev);
-      }
+      if (!disabled) setIsOpen((prev) => !prev);
     };
 
-    useEffect(() => {
-      if (!hiddenSelectRef.current) return;
-      hiddenSelectRef.current.value = selected?.value ?? "";
-      hiddenSelectRef.current.dispatchEvent(new Event("change", { bubbles: true }));
-    }, [selected?.value]);
-
     return (
-      <RntFilterSelectContext.Provider value={{ selected, setSelected, isOpen, setIsOpen, containerRef: selectRef }}>
-        <div className={containerCn} ref={containerRef}>
-          {/* hidden select element */}
-          <select value={selected?.value ?? ""} ref={hiddenSelectRef} hidden {...rest}>
-            {React.Children.map(children, (child) =>
-              React.isValidElement(child) ? (
-                <option value={child.props.value} key={child.props.key}>
-                  {child.props.children}
-              </option>
-              ) : null
-
-            )}
-          </select>
-
+      <RntFilterSelectContext.Provider
+        value={{ selected, setSelected, isOpen, setIsOpen, containerRef: selectRef, onValueChange }}
+      >
+        <div className={containerCn} ref={containerRef} {...rest}>
           {!isEmpty(label) && (
             <label className={labelCn} htmlFor={id}>
               {label}
@@ -180,7 +153,6 @@ function DropdownPortal({ children }: { children?: React.ReactNode }) {
 
   useEffect(() => {
     if (!containerRef.current) return;
-
     const rect = containerRef.current.getBoundingClientRect();
     setPosition({
       top: rect.bottom + window.scrollY,
@@ -203,7 +175,6 @@ function DropdownPortal({ children }: { children?: React.ReactNode }) {
       style={{
         top: `${position.top + 8}px`,
         left: `${position.left}px`,
-        // width: `${position.width}px`,
         minWidth: `${position.width}px`,
         maxHeight: `${dropdownHeight}px`,
       }}
@@ -222,7 +193,7 @@ const Option = forwardRef<HTMLDivElement, OptionProps>(({ value, children, class
   const context = React.useContext(RntFilterSelectContext);
   if (!context) throw new Error("RntFilterSelect.Option must be used within a RntFilterSelect");
 
-  const { selected, setSelected, setIsOpen } = context;
+  const { selected, setSelected, setIsOpen, onValueChange } = context;
   const isSelected = selected?.value === value;
 
   return (
@@ -234,14 +205,13 @@ const Option = forwardRef<HTMLDivElement, OptionProps>(({ value, children, class
       )}
       onClick={() => {
         setSelected({ value, text: extractTextFromReactNode(children) });
+        onValueChange?.(value);
         setIsOpen(false);
       }}
       role="button"
       {...rest}
     >
-      <div
-        className={`flex h-4 w-4 items-center justify-center rounded-full border-2 border-rentality-additional-tint bg-transparent transition-all`}
-      >
+      <div className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-rentality-additional-tint bg-transparent transition-all">
         {isSelected && <div className="h-2 w-2 rounded-full bg-rentality-additional-tint"></div>}
       </div>
       <span>{children}</span>

@@ -555,9 +555,9 @@ export default function CarEditForm({
                   value={field.value}
                   disabled={!isFormEnabled}
                   placeholder="Please select"
-                  onChange={(e) => {
-                    field.onChange(e);
-                    if (e.target.value === ENGINE_TYPE_ELECTRIC_STRING) {
+                  onValueChange={(val) => {
+                    field.onChange(val);
+                    if (val === ENGINE_TYPE_ELECTRIC_STRING) {
                       setValue("transmission", TRANSMISSION_AUTOMATIC_STRING);
                     }
                   }}
@@ -1022,10 +1022,10 @@ export default function CarEditForm({
                   isTransparentStyle={true}
                   label={t_car("time_buffer")}
                   disabled={!isFormEnabled}
-                  value={field.value ?? 0}
+                  value={(field.value ?? 0).toString()}
                   validationError={errors.timeBufferBetweenTripsInMin?.message?.toString()}
-                  onChange={(e) => {
-                    field.onChange(Number(e.target.value));
+                  onChange={(val) => {
+                    field.onChange(Number(val));
                   }}
                 >
                   <RntFilterSelect.Option key="time-buffer-1" value="0">
@@ -1068,8 +1068,8 @@ export default function CarEditForm({
                   label={t_car("listing_status")}
                   value={field.value ? "listed" : "unlisted"}
                   disabled={!isFormEnabled}
-                  onChange={(e) => {
-                    field.onChange(e.target.value === "listed");
+                  onValueChange={(e) => {
+                    field.onChange(e === "listed");
                   }}
                 >
                   <RntFilterSelect.Option key="listing-status-1" value={"listed"}>
