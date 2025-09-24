@@ -100,10 +100,9 @@ function Search() {
     if (!rentalityContracts) {
       return;
     }   
-    console.log("TOTAL PRICE",totalPrice * 1e18 )
 
     const hasFounds = ethereumInfo && await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency);
-    console.log("HAS FOUNDs: ", hasFounds)
+  
     if (!hasFounds) {
       const currenciesResult = await rentalityContracts.gateway.getAvailableCurrency();
       if (!currenciesResult.ok || currenciesResult.value.length === 0) {
