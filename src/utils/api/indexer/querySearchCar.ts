@@ -14,8 +14,8 @@ export interface MappedSearchQuery extends QueryCarInfo  {
     distance: number,
 }
 
-export async function querySearchCar(searchParams: ContractSearchCarParams, startDateTime: number, endDateTime: number) {
-    const graphUrl = createGraphUrl()
+export async function querySearchCar(searchParams: ContractSearchCarParams, startDateTime: number, endDateTime: number, chainId: number) {
+    const graphUrl = createGraphUrl(chainId)
     
     if(graphUrl === null)
         return null 

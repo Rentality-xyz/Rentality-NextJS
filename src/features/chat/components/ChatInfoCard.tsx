@@ -28,7 +28,7 @@ export default function ChatInfoCard({
     isSelected ? "rnt-card-selected" : ""
   }`;
   const otherPhotoUrl = isHost ? chatInfo.guestPhotoUrl : chatInfo.hostPhotoUrl;
-  const otherName = isHost ? chatInfo.guestName : chatInfo.hostName;
+  const otherName = isHost ? chatInfo.gustNickname : chatInfo.hostNickname;
 
   let statusBgColor = getTripStatusBgColorFromStatus(chatInfo.tripStatus);
   const statusClassName = cn("px-2 text-rnt-temp-status-text", statusBgColor);
