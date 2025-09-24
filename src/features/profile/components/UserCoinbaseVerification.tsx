@@ -3,7 +3,6 @@ import RntSuspense from "@/components/common/rntSuspense";
 import RntButton from "@/components/common/rntButton";
 import useCoinbaseVerification from "@/features/profile/hooks/useCoinbaseVerification";
 import DotStatus from "@/components/dotStatus";
-import { isEmpty } from "@/utils/string";
 
 const COINBASE_VERIFICATION_LINK = "https://www.coinbase.com/setup/";
 
