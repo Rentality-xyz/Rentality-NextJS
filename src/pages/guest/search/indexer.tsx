@@ -98,8 +98,8 @@ function Search() {
       return;
     }
 
-
-    if (ethereumInfo && await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency)!) {
+    const hasFounds = ethereumInfo && await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency);
+    if (!hasFounds) {
       const currenciesResult = await rentalityContracts.gateway.getAvailableCurrency();
       if (!currenciesResult.ok || currenciesResult.value.length === 0) {
         showError(t("search_page.errors.available_cur_error"));
@@ -162,7 +162,7 @@ function Search() {
       searchCarRequest
     }
     const jsonString = JSON.stringify(data, (_key, value) =>
-      typeof value === "bigint" ? value.toString() : value
+      typeof value === "bigint" ? `${value}n` : value
     );
 
     const uint8array = new TextEncoder().encode(jsonString);
@@ -243,7 +243,7 @@ function Search() {
                     <CarSearchItem
                       key={value.carId}
                       searchInfo={value}
-                      handleRentCarRequest={createTripWithPromo}
+                      handleRentCarRequest={() => createTripWithPromo(value, value.priceInCurrency)}
                       disableButton={requestSending}
                       isSelected={value.highlighted}
                       setSelected={setHighlightedCar}

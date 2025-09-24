@@ -12,7 +12,7 @@ import { Err, Ok, Result } from "@/model/utils/result";
 import { formatEther } from "viem";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { logger } from "@/utils/logger";
-import { UserCurrencyDTO } from "@/model/SearchCarsResult";
+import { SearchCarInfo, UserCurrencyDTO } from "@/model/SearchCarsResult";
 import approve from "@/utils/approveERC20";
 import findBestPool from "@/utils/findBestPool";
 
@@ -221,7 +221,6 @@ const useCreateTripRequest = () => {
       return Err(new Error("ERROR"));
     }
   }
-
   return { createTripRequest } as const;
 };
 

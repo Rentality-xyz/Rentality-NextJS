@@ -101,9 +101,9 @@ export default function Header() {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsSelectedHost(event.target.checked);
     if (event.target.checked) {
-      window.location.href = "/host";
+      router.push("/host");
     } else {
-      window.location.href = "/guest";
+      router.push("/guest");
     }
   };
 

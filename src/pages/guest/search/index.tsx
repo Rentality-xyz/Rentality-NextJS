@@ -100,10 +100,12 @@ function Search() {
     if (!rentalityContracts) {
       return;
     }   
+    console.log("TOTAL PRICE",totalPrice * 1e18 )
 
-    if (ethereumInfo && await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency)!) {
+    const hasFounds = ethereumInfo && await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency);
+    console.log("HAS FOUNDs: ", hasFounds)
+    if (!hasFounds) {
       const currenciesResult = await rentalityContracts.gateway.getAvailableCurrency();
-      console.log("CURRENCYCURRENCY: ", currenciesResult)
       if (!currenciesResult.ok || currenciesResult.value.length === 0) {
         showError(t("search_page.errors.available_cur_error"));
         return;
@@ -242,12 +244,13 @@ function Search() {
             </div>
             {searchResult?.carInfos?.length > 0 ? (
               searchResult.carInfos.map((value: SearchCarInfo) => {
+
                 return (
                   <div key={value.carId} id={`car-${value.carId}`}>
                     <CarSearchItem
                       key={value.carId}
                       searchInfo={value}
-                      handleRentCarRequest={createTripWithPromo}
+                      handleRentCarRequest={() => createTripWithPromo(value, value.priceInCurrency)}
                       disableButton={requestSending}
                       isSelected={value.highlighted}
                       setSelected={setHighlightedCar}
