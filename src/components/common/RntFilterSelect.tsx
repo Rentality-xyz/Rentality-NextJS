@@ -141,9 +141,7 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
           )}
           <div ref={selectRef}>
             <div className={selectCn} id={id} ref={ref} onClick={toggleDropdown}>
-              <span className="overflow-hidden truncate whitespace-nowrap text-center">
-                {selected?.text || placeholder}
-              </span>
+              {selected?.text || placeholder}
               <Image
                 src={
                   disabled
