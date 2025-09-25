@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/utils";
 import * as React from "react";
 import { createPortal } from "react-dom";
@@ -83,7 +83,7 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
       }
     }, [value]);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
       if (value === undefined) {
         setSelected(undefined);
         return;
