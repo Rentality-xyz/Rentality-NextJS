@@ -19,6 +19,9 @@ import RentalityUserServiceJSON_ADDRESSES from "./RentalityUserService.v0_2_0.ad
 import RentalityPaymentsServiceJSON_ABI from "./RentalityPaymentService.v0_2_0.abi.json";
 import RentalityPaymentsServiceJSON_ADDRESSES from "./RentalityPaymentService.v0_2_0.addresses.json";
 import ERC20JSON_ABI from "./ERC20.abi.json";
+import CoinbaseAttestationJSON_ABI from "./CoinbaseAttestation.abi.json"
+import CoinbaseAttestationContractJSON_ADDRESSES from "./CoinbaseAttestationContract.addresses.json"
+import CoinbaseAttestationSchemaJSON_ADDRESSES from "./CoinbaseAttestationSchema.addresses.json"
 import { Contract, Signer } from "ethers";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { logger } from "@/utils/logger";
@@ -67,6 +70,14 @@ const rentalityContracts = {
     addresses: RentalityPaymentsServiceJSON_ADDRESSES.addresses,
     abi: RentalityPaymentsServiceJSON_ABI.abi,
   },
+  coinbaseContractService: {
+    addresses: CoinbaseAttestationContractJSON_ADDRESSES.addresses,
+    abi: CoinbaseAttestationJSON_ABI.abi,
+  },
+  coinbaseSchemaService: {
+    addresses: CoinbaseAttestationSchemaJSON_ADDRESSES.addresses,
+    abi: CoinbaseAttestationJSON_ABI.abi,
+  }
 };
 
 export async function getEtherContractWithSigner(contract: keyof typeof rentalityContracts, signer: Signer) {
