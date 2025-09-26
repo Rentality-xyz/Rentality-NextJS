@@ -352,7 +352,7 @@
     "pass_verification": "Please, pass driver license verification",
     "user_data_load_automatically": "After successful verification, you user data will be loaded automatically",
     "verified_user_data": "Verified user data",
-    "kyc_onchain_verification": "KYC Onchain verification",
+    "kyc_onchain_verification": "Coinbase onchain verification",
     "wallet_verified": "Your wallet address is verified",
     "wallet_not_verified": "Your wallet address is not verified",
     "verify_by_coinbase": "Verify by Coinbase",
