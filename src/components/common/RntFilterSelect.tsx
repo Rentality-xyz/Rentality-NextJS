@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/utils";
 import * as React from "react";
 import { createPortal } from "react-dom";
@@ -57,7 +57,21 @@ const RntFilterSelectComponent = forwardRef<HTMLDivElement, RntFilterSelectProps
       !isTransparentStyle && disabled && "bg-transparent",
       isTransparentStyle && !disabled && "btn_input_border-gradient"
     );
-    const [selected, setSelected] = useState<{ value: string; text: string } | undefined>(undefined);
+
+    const initialSelected = useMemo(() => {
+      const init = value ?? (rest as any)?.defaultValue;
+      if (init === undefined || init === null || init === "") return undefined;
+      const s = String(init);
+      let text: string | undefined;
+      React.Children.forEach(children, (child) => {
+        if (!text && React.isValidElement(child) && String(child.props.value) === s) {
+          text = extractTextFromReactNode(child.props.children);
+        }
+      });
+      return { value: s, text: text ?? s };
+    }, []);
+
+    const [selected, setSelected] = useState<{ value: string; text: string } | undefined>(initialSelected);
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const hiddenSelectRef = useRef<HTMLSelectElement>(null);
