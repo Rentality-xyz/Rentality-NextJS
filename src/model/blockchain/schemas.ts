@@ -99,6 +99,8 @@ export type ContractCreateTripRequestWithDelivery = {
   currencyType: string;
   pickUpInfo: ContractSignedLocationInfo;
   returnInfo: ContractSignedLocationInfo;
+  amountIn: bigint;
+  fee: bigint;
 };
 
 export type ContractTransactionInfo = {
@@ -298,6 +300,14 @@ export type ContractCurrency = {
   currency: string;
   name: string;
 };
+
+export type ContractAllowedCurrencyDTO = {
+  decimals: bigint;
+  name: string;
+  symbol: string;
+  tokenAddress: string;
+}
+
 
 export type ContractTripReceiptDTO = {
   totalDayPriceInUsdCents: bigint;

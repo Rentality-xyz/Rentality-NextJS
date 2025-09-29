@@ -20,7 +20,7 @@ function HostInsuranceClaimsPageContent() {
   const onPay = async (claimId: number, currency: string) => {
     showInfo(t("common.info.sign"));
 
-    const result = await payClaim({ claimId, currency });
+    const result = await payClaim({ claimId, currency, isAdmin: true });
 
     hideSnackbars();
 
