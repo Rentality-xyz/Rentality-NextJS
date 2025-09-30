@@ -14,6 +14,12 @@ const useSearchCars = () => {
   const [searchResult, setSearchResult] = useState<SearchCarsResult>(emptySearchCarsResult);
   const [sortBy, setSortBy] = useState<LocalizedFilterOption<SearchSortFilterValueKey> | undefined>(undefined);
 
+  const toCache = (obj: unknown): string =>
+    JSON.stringify(obj, (_k, v) => (typeof v === "bigint" ? `${v}n` : v));
+
+  const fromCache = <T = any,>(s: string): T =>
+    JSON.parse(s, (_k, v) => (typeof v === "string" && /^\d+n$/.test(v) ? BigInt(v.slice(0, -1)) : v));
+
   const searchAvailableCars = async (request: SearchCarRequest, filters: SearchCarFilters) => {
     try {
       setIsLoading(true);
@@ -60,6 +66,17 @@ const useSearchCars = () => {
         url.searchParams.append("pricePerDayInUsdFrom", filters.pricePerDayInUsdFrom.toString());
       if (filters.pricePerDayInUsdTo)
         url.searchParams.append("pricePerDayInUsdTo", filters.pricePerDayInUsdTo.toString());
+
+      const cacheKey = "car-search:" + url.searchParams;
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) {
+        try {
+          const cachedResult = fromCache<SearchCarsResult>(cached);
+          setSearchResult(cachedResult);
+          setIsLoading(false);
+          return true;
+        } catch {}
+      }
 
       const apiResponse = await fetch(url);
 
@@ -114,7 +131,7 @@ const useSearchCars = () => {
               ? sortByDailyPriceDes
               : sortByDailyPriceAsc;
 
-      setSearchResult({
+      const result: SearchCarsResult = {
         searchCarRequest: request,
         searchCarFilters: filters,
         carInfos: availableCarsData
@@ -125,7 +142,15 @@ const useSearchCars = () => {
           }))
           .sort(sortLogic),
         filterLimits: publicSearchCarsResponse.filterLimits,
-      });
+      };
+
+      setSearchResult(result);
+      try {
+        sessionStorage.setItem(cacheKey, toCache(result));
+      } catch (error) {
+        logger.error("cache data error:" + error);
+      }
+
       return true;
     } catch (error) {
       logger.error("updateData error:" + error);
