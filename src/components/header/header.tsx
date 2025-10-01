@@ -20,6 +20,7 @@ import ClaimMyPointsHeaderButton from "@/features/referralProgram/components/Cla
 import { isMobileAppRentality } from "@/utils/devicePlatform";
 import { copyToClipboard } from "@/utils/clipboard";
 import ClaimMyPointsMobileButton from "@/features/referralProgram/components/ClaimMyPointsMobileButton";
+import HostInsuranceBalanceHeader from "@/features/insurance/components/HostInsuranceBalanceHeader";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 72,
@@ -136,6 +137,7 @@ export default function Header() {
       <div className="flex items-center max-lg:w-full max-lg:justify-between">
         <HeaderLogo />
         <ClaimMyPointsHeaderButton />
+        <HostInsuranceBalanceHeader />
         <div className="flex min-w-[20px] items-center lg:hidden">
           {isBurgerMenuShown && (
             <div id="burger-menu-wrapper" className="fixed left-0 top-[49px] z-[100] h-full w-full overflow-auto bg-rentality-bg-left-sidebar">
