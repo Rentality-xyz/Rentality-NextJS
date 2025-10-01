@@ -161,8 +161,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     res.status(500).json({ error: "rentality is null" });
     return;
   }
-  const totalCars = await rentality.getTotalCarsAmount();
-  const startPoint = totalCars > 100 ? BigInt(totalCars - BigInt(100)) : BigInt(0);
 
   const { contractDateFromUTC, contractDateToUTC, contractSearchCarParams } = formatSearchAvailableCarsContractRequest(
     searchCarRequest,
@@ -191,14 +189,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         : searchCarRequest.deliveryInfo.returnLocation.locationInfo.longitude.toFixed(6),
     };
 
-    const query = await querySearchCar(contractSearchCarParams, Number(contractDateFromUTC), Number(contractDateToUTC))
+    const query = await querySearchCar(contractSearchCarParams, Number(contractDateFromUTC), Number(contractDateToUTC), chainIdNumber)
     if(query === null) {
       logger.error("Search car: Fail to get query")
       return;
     }
     mappedQuery = mapSearchQuery(query, Number(contractDateFromUTC), Number(contractDateToUTC), pickUpInfo,returnInfo, contractSearchCarParams.userLocation)
   } else {
-    const query = await querySearchCar(contractSearchCarParams, Number(contractDateFromUTC), Number(contractDateToUTC))
+    const query = await querySearchCar(contractSearchCarParams, Number(contractDateFromUTC), Number(contractDateToUTC), chainIdNumber)
     if(query === null) {
       logger.error("Search car: Fail to get query")
       return;
