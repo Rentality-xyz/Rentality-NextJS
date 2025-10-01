@@ -57,7 +57,7 @@ function Search() {
     searchAvailableCars(searchCarRequest, searchCarFilters);
   }, []);
 
-  async function createTripWithPromo(carInfo: SearchCarInfo, promoCode?: string) {
+  async function createTripWithPromo(carInfo: SearchCarInfo, totalPrice: number, promoCode?: string) {
     if (!isAuthenticated) {
       const action = (
         <>

@@ -25,6 +25,9 @@ import useFetchGuestGeneralInsurance from "@/features/insurance/hooks/useFetchGu
 import useBlockchainNetworkCheck from "@/features/blockchain/hooks/useBlockchainNetworkCheck";
 import getNetworkName from "@/model/utils/NetworkName";
 import bs58 from 'bs58';
+import { isUserHasEnoughFunds } from "@/utils/wallet";
+import { SelectCurrencyDialogForm } from "@/components/createTrip/SelectCurrencyDialogForm";
+import { useRentality } from "@/contexts/rentalityContext";
 
 function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -33,7 +36,7 @@ function Search() {
   const { createTripRequest } = useCreateTripRequest();
 
   const [requestSending, setRequestSending] = useState<boolean>(false);
-  const { showDialog, hideDialogs } = useRntDialogs();
+  const { showDialog, hideDialogs, showCustomDialog } = useRntDialogs();
   const { showInfo, showError, showSuccess, hideSnackbars } = useRntSnackbars();
   const userInfo = useUserInfo();
   const router = useRouter();
@@ -42,6 +45,7 @@ function Search() {
   const { isLoading: isLoadingInsurance, data: guestInsurance } = useFetchGuestGeneralInsurance();
   useBlockchainNetworkCheck();
   const { t } = useTranslation();
+  const { rentalityContracts } = useRentality();
 
   const handleSearchClick = async (request: SearchCarRequest) => {
     updateSearchParams(request, searchCarFilters);
@@ -57,7 +61,7 @@ function Search() {
     searchAvailableCars(searchCarRequest, searchCarFilters);
   }, []);
 
-  async function createTripWithPromo(carInfo: SearchCarInfo, promoCode?: string) {
+  async function createTripWithPromo(carInfo: SearchCarInfo, totalPrice: number, promoCode?: string) {
     if (!isAuthenticated) {
       const action = (
         <>
@@ -90,6 +94,32 @@ function Search() {
       return;
     }
 
+    if (!rentalityContracts) {
+      return;
+    }
+
+    const hasFounds = ethereumInfo && await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency);
+    if (!hasFounds) {
+      const currenciesResult = await rentalityContracts.gateway.getAvailableCurrency();
+      if (!currenciesResult.ok || currenciesResult.value.length === 0) {
+        showError(t("search_page.errors.available_cur_error"));
+        return;
+      }
+
+      showCustomDialog(
+        <SelectCurrencyDialogForm
+          currencies={currenciesResult.value}
+          createTripHandler={(paymentCurrency) => { createTip(paymentCurrency, promoCode, carInfo)}}
+          hideDialogHandler={hideDialogs}
+        />
+      );
+      return;
+    }
+
+    await createTip(carInfo.currency.currency, promoCode, carInfo);
+  }
+
+  const createTip = async (paymentCurrency: string, promoCode: string | undefined, carInfo: SearchCarInfo) => {
     setRequestSending(true);
 
     showInfo(t("common.info.sign"));
@@ -100,7 +130,8 @@ function Search() {
       searchResult.searchCarRequest,
       carInfo.timeZoneId,
       promoCode,
-      carInfo.currency
+      carInfo.currency,
+      paymentCurrency
     );
 
     hideDialogs();
@@ -121,7 +152,7 @@ function Search() {
         showError(t("search_page.errors.request"));
       }
     }
-  }
+  };
 
   const getRequestDetailsLink = (carInfo: SearchCarInfo) => {
 
@@ -212,7 +243,7 @@ function Search() {
                     <CarSearchItem
                       key={value.carId}
                       searchInfo={value}
-                      handleRentCarRequest={createTripWithPromo}
+                      handleRentCarRequest={() => createTripWithPromo(value, value.priceInCurrency)}
                       disableButton={requestSending}
                       isSelected={value.highlighted}
                       setSelected={setHighlightedCar}

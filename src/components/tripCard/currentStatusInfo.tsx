@@ -238,7 +238,7 @@ function CurrentStatusInfo({
         <div className="mt-2 flex flex-col gap-4 sm:flex-row md:flex-col">
           {(tripInfo.status === TripStatus.CheckedInByHost || tripInfo.status === TripStatus.Started) && isHost ? (
             <RntButton
-              className="w-full px-4"
+              className="w-full px-4 h-12 xl:h-auto 2xl:h-12"
               onClick={() => {
                 showModifyTripDialog();
               }}

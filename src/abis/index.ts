@@ -18,15 +18,20 @@ import RentalityUserServiceJSON_ABI from "./RentalityUserService.v0_2_0.abi.json
 import RentalityUserServiceJSON_ADDRESSES from "./RentalityUserService.v0_2_0.addresses.json";
 import RentalityPaymentsServiceJSON_ABI from "./RentalityPaymentService.v0_2_0.abi.json";
 import RentalityPaymentsServiceJSON_ADDRESSES from "./RentalityPaymentService.v0_2_0.addresses.json";
+import QuoterV2JSON_ADDRESSES from "./QuoterV2.addresses.json";
+import QuoterV2JSON_ABI from "./QuoterV2.abi.json";
+import UNISWAPFACTORYJSON_ADDRESSES from "./UniswapFactory.addresses.json";
+import UNISWAPFACTORYJSON_ABI from "./UniswapFactory.abi.json";
+
 import ERC20JSON_ABI from "./ERC20.abi.json";
 import CoinbaseAttestationJSON_ABI from "./CoinbaseAttestation.abi.json"
 import CoinbaseAttestationContractJSON_ADDRESSES from "./CoinbaseAttestationContract.addresses.json"
 import CoinbaseAttestationSchemaJSON_ADDRESSES from "./CoinbaseAttestationSchema.addresses.json"
-import { Contract, Signer } from "ethers";
+import { Contract, ethers, Signer } from "ethers";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { logger } from "@/utils/logger";
-import { IERC20Contract } from "@/features/blockchain/models/IErc20";
 
+import { IQuoterV2, IQuoterV2Contract } from "@/features/blockchain/models/IQuoter";
 export const SMARTCONTRACT_VERSION = "v0_2_0";
 
 const rentalityContracts = {
@@ -120,9 +125,46 @@ export async function getErc20ContractWithPaymentsAddress(address: string, signe
     return null;
   }
   return {
-    erc20: new Contract(address, ERC20JSON_ABI.abi, signer) as unknown as IERC20Contract,
+    erc20: new Contract(address, ERC20JSON_ABI.abi, signer),
     rentalityPayments: selectedChain.address,
   };
+}
+
+export async function getQuoterContract(signer: Signer) {
+  const chainId = Number((await signer.provider?.getNetwork())?.chainId);
+  if (!getExistBlockchainList().find((i) => i.chainId === chainId)) {
+    logger.error(`getEtherContract error: Chain id ${chainId} is not supported`);
+    return null;
+  }
+  const quoterAddress = QuoterV2JSON_ADDRESSES.addresses.find((i) => i.chainId === chainId);
+
+
+  if (!quoterAddress) {
+    logger.error(`getEtherContract error: quoter address for chainId ${chainId} is not found`);
+    return null;
+  }
+  return {
+    quoter: new ethers.Contract(quoterAddress.address, QuoterV2JSON_ABI.abi, signer),
+  };
+}
+
+export async function getUniswapFactory(signer: Signer) {
+  const chainId = Number((await signer.provider?.getNetwork())?.chainId);
+  if (!getExistBlockchainList().find((i) => i.chainId === chainId)) {
+    logger.error(`getEtherContract error: Chain id ${chainId} is not supported`);
+    return null;
+  }
+  const uniswapAddress = UNISWAPFACTORYJSON_ADDRESSES.addresses.find((i) => i.chainId === chainId);
+
+
+  if (!uniswapAddress) {
+    logger.error(`getEtherContract error: quoter address for chainId ${chainId} is not found`);
+    return null;
+  }
+  return {
+    factory: new ethers.Contract(uniswapAddress.address, UNISWAPFACTORYJSON_ABI.abi, signer),
+  };
+
 }
 
 export function hasContractForChainId(chainId: number) {

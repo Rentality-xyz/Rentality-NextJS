@@ -66,7 +66,9 @@
       "date_to": "Please enter 'Date to'",
       "date_eq": "'Date to' must be greater than 'Date from'",
       "request": "Your create trip request failed. Please make sure you entered trip details right and try again",
-      "own_car": "You cannot book your own car"
+      "own_car": "You cannot book your own car",
+      "no_money": "You don't have enough money, but you can pay in another currency",
+      "available_cur_error": "No available currencies found"
     },
     "info": {
       "cars_available": "car(s) available",
@@ -833,7 +835,8 @@
     "trip_photos_see_all": "See all",
     "trip_photos_upload_trip_photo": "Upload a trip photo",
     "export_to_excel": "Export to Excel",
-    "total": "Total:"
+    "total": "Total:",
+    "pay": "Pay"
   },
   "become_host": {
     "title": "Become a host",
