@@ -31,7 +31,6 @@ import { Contract, ethers, Signer } from "ethers";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { logger } from "@/utils/logger";
 
-import { IQuoterV2, IQuoterV2Contract } from "@/features/blockchain/models/IQuoter";
 export const SMARTCONTRACT_VERSION = "v0_2_0";
 
 const rentalityContracts = {
