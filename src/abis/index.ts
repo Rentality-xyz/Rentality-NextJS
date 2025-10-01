@@ -24,11 +24,12 @@ import UNISWAPFACTORYJSON_ADDRESSES from "./UniswapFactory.addresses.json";
 import UNISWAPFACTORYJSON_ABI from "./UniswapFactory.abi.json";
 
 import ERC20JSON_ABI from "./ERC20.abi.json";
+import CoinbaseAttestationJSON_ABI from "./CoinbaseAttestation.abi.json"
+import CoinbaseAttestationContractJSON_ADDRESSES from "./CoinbaseAttestationContract.addresses.json"
+import CoinbaseAttestationSchemaJSON_ADDRESSES from "./CoinbaseAttestationSchema.addresses.json"
 import { Contract, ethers, Signer } from "ethers";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { logger } from "@/utils/logger";
-import { IERC20Contract } from "@/features/blockchain/models/IErc20";
-import { IQuoterV2, IQuoterV2Contract } from "@/features/blockchain/models/IQuoter";
 
 export const SMARTCONTRACT_VERSION = "v0_2_0";
 
@@ -73,6 +74,14 @@ const rentalityContracts = {
     addresses: RentalityPaymentsServiceJSON_ADDRESSES.addresses,
     abi: RentalityPaymentsServiceJSON_ABI.abi,
   },
+  coinbaseContractService: {
+    addresses: CoinbaseAttestationContractJSON_ADDRESSES.addresses,
+    abi: CoinbaseAttestationJSON_ABI.abi,
+  },
+  coinbaseSchemaService: {
+    addresses: CoinbaseAttestationSchemaJSON_ADDRESSES.addresses,
+    abi: CoinbaseAttestationJSON_ABI.abi,
+  }
 };
 
 export async function getEtherContractWithSigner(contract: keyof typeof rentalityContracts, signer: Signer) {
@@ -154,7 +163,7 @@ export async function getUniswapFactory(signer: Signer) {
   return {
     factory: new ethers.Contract(uniswapAddress.address, UNISWAPFACTORYJSON_ABI.abi, signer),
   };
-  
+
 }
 
 export function hasContractForChainId(chainId: number) {
