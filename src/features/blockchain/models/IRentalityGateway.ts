@@ -145,6 +145,7 @@ export interface IRentalityGatewayContract extends IEthersContract {
   getHostInsuranceClaims(): Promise<ContractFullClaimInfo[]>;
   setHostInsurance(insuranceId: bigint): Promise<ContractTransactionResponse>;
   getHostInsuranceRule(host: string): Promise<ContractHostInsuranceRule>;
+  getHostInsuranceBalance(): Promise<Number>;
   getAllInsuranceRules(): Promise<ContractHostInsuranceRule[]>;
   // CHAT functions
   getChatInfoFor(host: boolean): Promise<ContractChatInfo[]>;

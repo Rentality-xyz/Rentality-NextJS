@@ -388,6 +388,7 @@
     "trip_earnings": "Trip earnings",
     "cancellation_fee": "Cancellation fee",
     "reimbursements": "Reimbursements",
+    "paid_to_insurance": "Paid to insurance",
     "insurance_fee": "Insurance fee",
     "rentality_fee": "Rentality fee",
     "taxes": "Taxes",
@@ -901,6 +902,7 @@
     "points": "points",
     "copy": "Copy",
     "copied": "Referral link copied! \uD83C\uDF89 Share it with friends and earn rewards!",
+    "insurance_balance": "Insurance balance:",
     "referral_program": {
       "set_kyc": "Save profile",
       "pass_civic": "Get KYC Pass",
