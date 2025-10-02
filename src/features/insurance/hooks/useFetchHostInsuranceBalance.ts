@@ -34,7 +34,7 @@ async function fetchHostInsuranceBalance(rentalityContracts: IRentalityContracts
     throw new Error(result.error.message);
   }
 
-  return Number(result.value) / 100;
+  return Number(result.value) / 10**18;
 }
 
 export default useFetchHostInsuranceBalance;
