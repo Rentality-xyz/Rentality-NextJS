@@ -137,7 +137,7 @@ export default function Header() {
       <div className="flex items-center max-lg:w-full max-lg:justify-between">
         <HeaderLogo />
         <ClaimMyPointsHeaderButton />
-        <HostInsuranceBalanceHeader />
+        {isHost(userMode) && (<HostInsuranceBalanceHeader />)}
         <div className="flex min-w-[20px] items-center lg:hidden">
           {isBurgerMenuShown && (
             <div id="burger-menu-wrapper" className="fixed left-0 top-[49px] z-[100] h-full w-full overflow-auto bg-rentality-bg-left-sidebar">
