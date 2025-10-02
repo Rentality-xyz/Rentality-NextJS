@@ -23,6 +23,8 @@ import useSaveTripDiscounts from "@/hooks/host/useSaveTripDiscounts";
 import useFetchMyListings from "@/hooks/host/useFetchMyListings";
 import useSaveNewCar from "@/hooks/host/useSaveNewCar";
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
+import { errors } from "jose";
+import { Result } from "arg";
 
 function BecomeHost() {
   return (
@@ -58,6 +60,8 @@ function BecomeHostContent() {
     isCarListeded: false,
     isDiscountsAndPriceSaved: false,
   });
+
+  const [isCarListenedNow, setIsCarListenedNow] = useState(false);
 
   const handleClickBlockConnectWallet = () => {
     if (!becomeHostSteps.isWalletConnected) {
@@ -100,8 +104,8 @@ function BecomeHostContent() {
   };
   useEffect(() => {
     if (isLoadingMyListings) return;
-    setBecomeHostSteps((prev) => ({ ...prev, isCarListeded: myListings.length > 0 }));
-  }, [myListings, isLoadingMyListings]);
+    setBecomeHostSteps((prev) => ({ ...prev, isCarListeded: isCarListenedNow || myListings.length > 0 }));
+  }, [myListings, isLoadingMyListings, isCarListenedNow]);
 
   const [openBlockDiscountsAndPrice, toggleOpenBlockDiscountsAndPrice] = useToggleState(false);
   const handleClickOpenBlockDiscountsAndPrice = () => {
@@ -180,7 +184,13 @@ function BecomeHostContent() {
             title={t("become_host.listing_car")}
           >
             <div className="ml-10 mt-4">
-              <AddCarBecomeHost />
+              <AddCarBecomeHost
+                onCarListed={(ok) => {
+                  if (ok) {
+                    setIsCarListenedNow(true);
+                  }
+                }}
+              />
             </div>
           </BecomeHostStep>
 
@@ -301,7 +311,9 @@ function BecomeHostStep({
   );
 }
 
-function AddCarBecomeHost() {
+function AddCarBecomeHost(
+  { onCarListed }: { onCarListed: (ok: boolean) => void }
+) {
   const { mutateAsync: saveNewCar } = useSaveNewCar();
   const { t } = useTranslation();
 
@@ -311,7 +323,9 @@ function AddCarBecomeHost() {
         editMode="newCar"
         isFromBecomeHost={true}
         saveCarInfo={async (hostCarInfo) => {
-          return await saveNewCar(hostCarInfo);
+          const result =  await saveNewCar(hostCarInfo);
+          onCarListed(result.ok)
+          return result
         }}
         t={t}
       />
