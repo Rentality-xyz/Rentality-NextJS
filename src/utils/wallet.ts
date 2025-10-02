@@ -27,10 +27,9 @@ export async function isUserHasEnoughFunds(
     const { erc20 } = erc20ContractResult;
     const decimals = await erc20.decimals();
     userBalance = await erc20.balanceOf(userAddress);
-    valueToCheckInCurrency = userBalance * Math.pow(10, decimals)
+    valueToCheckInCurrency = Number(valueToCheck) * Math.pow(10, Number(decimals))
   }
 
- 
   return userBalance >= valueToCheckInCurrency;
 }
 
