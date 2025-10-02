@@ -8,17 +8,54 @@ import { logger } from "@/utils/logger";
 import { LocalizedFilterOption } from "@/model/filters";
 import { SearchSortFilterValueKey } from "@/features/search/models/filters";
 
+const CACHE_TTL_MS = 15 * 60 * 1000;
+
 const useSearchCars = () => {
   const ethereumInfo = useEthereum();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [searchResult, setSearchResult] = useState<SearchCarsResult>(emptySearchCarsResult);
   const [sortBy, setSortBy] = useState<LocalizedFilterOption<SearchSortFilterValueKey> | undefined>(undefined);
 
-  const toCache = (obj: unknown): string =>
-    JSON.stringify(obj, (_k, v) => (typeof v === "bigint" ? `${v}n` : v));
+  function setCache(key: string, searchCarsResult: SearchCarsResult) {
+    try {
+      const bigIntReplacer = (_k: string, v: unknown) =>
+        typeof v === "bigint" ? `${v}n"`.slice(0, -1) + "n" : v;
 
-  const fromCache = <T = any,>(s: string): T =>
-    JSON.parse(s, (_k, v) => (typeof v === "string" && /^\d+n$/.test(v) ? BigInt(v.slice(0, -1)) : v));
+      const payload = { ts: Date.now(), data: searchCarsResult };
+      sessionStorage.setItem(key, JSON.stringify(payload, bigIntReplacer));
+    } catch (error) {
+      logger.error("cache set error: ", error);
+    }
+  }
+
+  function getCache(key: string): SearchCarsResult | null {
+    const raw = sessionStorage.getItem(key);
+    if (!raw) return null;
+
+    try {
+      const bigIntReplacer = (_k: string, v: unknown) =>
+        typeof v === "string" && /^\d+n$/.test(v) ? BigInt(v.slice(0, -1)) : v;
+
+      const parsed = JSON.parse(raw, bigIntReplacer) as { ts?: number; data?: SearchCarsResult };
+
+      if (typeof parsed.ts !== "number" || parsed.data === undefined) {
+        sessionStorage.removeItem(key);
+        return null;
+      }
+
+      if (Date.now() - parsed.ts > CACHE_TTL_MS) {
+        sessionStorage.removeItem(key);
+        return null;
+      }
+
+      return parsed.data;
+    } catch (error) {
+      sessionStorage.removeItem(key);
+      logger.error("cache parse error: ", error);
+      return null;
+    }
+  }
+
 
   const searchAvailableCars = async (request: SearchCarRequest, filters: SearchCarFilters) => {
     try {
@@ -67,15 +104,11 @@ const useSearchCars = () => {
       if (filters.pricePerDayInUsdTo)
         url.searchParams.append("pricePerDayInUsdTo", filters.pricePerDayInUsdTo.toString());
 
-      const cacheKey = "car-search:" + url.searchParams;
-      const cached = sessionStorage.getItem(cacheKey);
+      const cacheKey = "car-search:" + url.toString();
+      const cached = getCache(cacheKey);
       if (cached) {
-        try {
-          const cachedResult = fromCache<SearchCarsResult>(cached);
-          setSearchResult(cachedResult);
-          setIsLoading(false);
-          return true;
-        } catch {}
+        applyResult(cached, cacheKey, true);
+        return true;
       }
 
       const apiResponse = await fetch(url);
@@ -144,12 +177,7 @@ const useSearchCars = () => {
         filterLimits: publicSearchCarsResponse.filterLimits,
       };
 
-      setSearchResult(result);
-      try {
-        sessionStorage.setItem(cacheKey, toCache(result));
-      } catch (error) {
-        logger.error("cache data error:" + error);
-      }
+      applyResult(result, cacheKey);
 
       return true;
     } catch (error) {
@@ -159,6 +187,13 @@ const useSearchCars = () => {
       setIsLoading(false);
     }
   };
+
+  function applyResult(result: SearchCarsResult, cacheKey: string, isFromCache: boolean = false) {
+    setSearchResult(result);
+    if (!isFromCache) {
+      setCache(cacheKey, result);
+    }
+  }
 
   useEffect(() => {
     if (!sortBy) return;
