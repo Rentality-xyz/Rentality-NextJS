@@ -23,8 +23,6 @@ import useSaveTripDiscounts from "@/hooks/host/useSaveTripDiscounts";
 import useFetchMyListings from "@/hooks/host/useFetchMyListings";
 import useSaveNewCar from "@/hooks/host/useSaveNewCar";
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
-import { errors } from "jose";
-import { Result } from "arg";
 
 function BecomeHost() {
   return (
