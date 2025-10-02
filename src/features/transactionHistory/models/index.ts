@@ -17,4 +17,5 @@ export type TransactionHistoryInfo = {
   insuranceFeeInUsd: number;
   rentalityFee: number;
   taxes: number;
+  paidToInsurance: number;
 };

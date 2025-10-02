@@ -4,9 +4,10 @@ import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { useQuery } from "@tanstack/react-query";
 import { InsuranceType } from "@/model/blockchain/schemas";
 import { getIpfsURI } from "@/utils/ipfsUtils";
+import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 
 export const HOST_INSURANCE_BALANCE_QUERY_KEY = "HostInsuranceBalance";
-type QueryData = Number;
+type QueryData = number;
 const INITIAL_DATA = 0.0;
 
 const useFetchHostInsuranceBalance = () => {
@@ -33,7 +34,7 @@ async function fetchHostInsuranceBalance(rentalityContracts: IRentalityContracts
     throw new Error(result.error.message);
   }
 
-  return result.value;
+  return Number(result.value) / 100;
 }
 
 export default useFetchHostInsuranceBalance;
