@@ -11,28 +11,26 @@ export async function isUserHasEnoughFunds(
 ) {
   const userAddress = await signer.getAddress();
   let userBalance;
+  let valueToCheckInCurrency
   if (currency.currency === ETH_DEFAULT_ADDRESS) {
     userBalance = await signer.provider?.getBalance(userAddress);
+    if (userBalance == undefined) {
+      logger.error("checkWalletBalance error: getBalance return undefined");
+      return false;
+    }
+    valueToCheckInCurrency = Number(valueToCheck) * 1e18
   } else {
     const erc20ContractResult = await getErc20ContractWithPaymentsAddress(currency.currency, signer);
     if (!erc20ContractResult) {
       throw Error("Erc20 contract not found");
     }
     const { erc20 } = erc20ContractResult;
+    const decimals = await erc20.decimals();
     userBalance = await erc20.balanceOf(userAddress);
+    valueToCheckInCurrency = Number(valueToCheck) * Math.pow(10, Number(decimals))
   }
 
-  if (userBalance == undefined) {
-    logger.error("checkWalletBalance error: getBalance return undefined");
-    return false;
-  }
-
-  const userBalanceEth = Number(formatEther(userBalance));
-  logger.debug(
-    `userAddress: ${userAddress} has balance ${userBalance} ${currency.name} or ${userBalance} ${currency.name}`
-  );
-
-  return userBalance >= valueToCheck;
+  return userBalance >= valueToCheckInCurrency;
 }
 
 export const ZERO_4_BYTES_HASH = zeroPadBytes("0x00", 4);

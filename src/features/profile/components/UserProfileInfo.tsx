@@ -1,8 +1,8 @@
 import RntSuspense from "@/components/common/rntSuspense";
 import UserCommonInformationForm from "./UserCommonInformationForm";
-import UserDriverLicenseVerification from "./UserDriverLicenseVerification";
 import useFetchUserProfile from "@/features/profile/hooks/useFetchUserProfile";
 import useSaveUserProfile from "@/features/profile/hooks/useSaveUserProfile";
+import UserCoinbaseVerification from "@/features/profile/components/UserCoinbaseVerification";
 
 function UserProfileInfo() {
   const { isLoading, data: userProfile } = useFetchUserProfile();
@@ -11,8 +11,8 @@ function UserProfileInfo() {
     <RntSuspense isLoading={isLoading}>
       <div className="my-1 flex flex-col gap-4 lg:my-8">
         <UserCommonInformationForm userProfile={userProfile} saveUserProfile={saveUserProfile} />
-        {/*<hr />*/}
-        {/*<UserDriverLicenseVerification />*/}
+        <hr />
+        <UserCoinbaseVerification />
       </div>
     </RntSuspense>
   );
