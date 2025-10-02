@@ -195,13 +195,8 @@ function AdminPanelPageContent() {
       <ScrollingHorizontally className="mt-6">
         <div className="flex flex-none gap-4">
           <RntInformationTile
-            amount={adminContractInfo.platformBalance.toFixed(2) + " ETH"}
-            label="Platform contract balance"
-          />
-          <RntInformationTile
             amount={adminContractInfo.paymentBalance.toFixed(2) + " ETH"}
             label="Payment contract balance"
-            variant={"indigo"}
           />
         </div>
       </ScrollingHorizontally>
