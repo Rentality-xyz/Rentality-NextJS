@@ -28,5 +28,5 @@ export type ChatInfo = {
 
   messages: ChatMessage[];
   hostNickname: string;
-  gustNickname: string;
+  guestNickname: string;
 };

@@ -169,7 +169,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
                   carLicenceNumber: metaData.licensePlate,
 
                   messages: [],
-                  gustNickname: ci.guestNickname,
+                  guestNickname: ci.guestNickname,
                   hostNickname: ci.hostNickname
                 };
                 return item;
@@ -251,7 +251,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
               carTitle: `${tripInfo.brand} ${tripInfo.model} ${tripInfo.yearOfProduction}`,
               carLicenceNumber: metaData.licensePlate,
               hostNickname: tripInfo.hostNickName,
-              gustNickname: tripInfo.hostNickName,
+              guestNickname: tripInfo.guestNickName,
 
               messages: [],
             },
