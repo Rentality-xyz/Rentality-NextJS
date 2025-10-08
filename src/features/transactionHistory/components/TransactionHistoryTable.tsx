@@ -77,6 +77,7 @@ function TransactionHistoryTable({ isLoading, data, isHost }: TransactionHistory
             <th className={headerSpanClassName}>{t_th("trip_earnings")}</th>
             <th className={headerSpanClassName}>{t_th("cancellation_fee")}</th>
             <th className={headerSpanClassName}>{t_th("reimbursements")}</th>
+            <th className={headerSpanClassName}>{t_th("paid_to_insurance")}</th>
             <th className={headerSpanClassName}>{t_th("insurance_fee")}</th>
             <th className={headerSpanClassName}>{t_th("rentality_fee")}</th>
             <th className={headerSpanClassName}>{t_th("taxes")}</th>
@@ -104,6 +105,7 @@ function TransactionHistoryTable({ isLoading, data, isHost }: TransactionHistory
                 <td className={rowSpanClassName}>${displayMoneyWith2Digits(transaction.tripEarnings)}</td>
                 <td className={rowSpanClassName}>${displayMoneyWith2Digits(transaction.cancellationFee)}</td>
                 <td className={rowSpanClassName}>${displayMoneyWith2Digits(transaction.reimbursements)}</td>
+                <td className={rowSpanClassName}>${displayMoneyWith2Digits(transaction.paidToInsurance)}</td>
                 <td className={rowSpanClassName}>${displayMoneyWith2Digits(transaction.insuranceFeeInUsd)}</td>
                 <td className={rowSpanClassName}>${displayMoneyWith2Digits(transaction.rentalityFee)}</td>
                 <td className={rowSpanClassName}>${displayMoneyWith2Digits(transaction.taxes)}</td>

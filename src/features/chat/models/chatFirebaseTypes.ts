@@ -25,6 +25,7 @@ export class ChatId {
   }
 
   static parse(value: string): ChatId | null {
+    if(!value) return null;
     const data = value.split("_");
     if (data.length !== 4) return null;
     return new ChatId(data[0], data[1], data[2], data[3]);
