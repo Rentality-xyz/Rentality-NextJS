@@ -2,6 +2,7 @@ import { ContractSearchCarParams } from "@/model/blockchain/schemas";
 import { env } from 'process';
 import { isEmpty } from '@/utils/string';
 import { logger } from '@/utils/logger';
+import getIndexerUrlFromEnv from "./indexerUrl";
 
 export function getSearchCarQuery(searchCarParams: ContractSearchCarParams, startDateTime: number, endDateTime: number) {
   const variables: Record<string, any> = {
@@ -138,8 +139,8 @@ export function getSearchCarQuery(searchCarParams: ContractSearchCarParams, star
     variables
   };
 }
-export function createGraphUrl() {
-    const baseUrl = env.INDEXER_API_URL
+export function createGraphUrl(chainId: number) {
+    const baseUrl = getIndexerUrlFromEnv(chainId)
     if(isEmpty(baseUrl)) {
     logger.error("Create graph url: Failt to get indexer url")
     return null

@@ -170,6 +170,8 @@ export type ContractTripDTO = {
   dimoTokenId: bigint;
   taxesData: ContractTaxValue[];
   currency: ContractUserCurrencyDTO;
+  guestNickName: string;
+  hostNickName: string;
 };
 
 export type ContractChatInfo = {
@@ -188,6 +190,8 @@ export type ContractChatInfo = {
   startDateTime: bigint;
   endDateTime: bigint;
   timeZoneId: string;
+  guestNickname: string;
+  hostNickname: string;
 };
 
 export type ContractChatKeyPair = {
