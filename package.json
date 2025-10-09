@@ -19,6 +19,7 @@
     "@dimo-network/login-with-dimo": "^0.0.14",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@ethereum-attestation-service/eas-sdk": "^2.9.1-beta.1",
     "@googlemaps/markerclusterer": "^2.5.3",
     "@hookform/resolvers": "^3.6.0",
     "@hotjar/browser": "^1.0.9",

@@ -481,7 +481,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
                 ci.hostAddress,
                 ci.guestAddress
               );
-              const existUserChat = userChats.find((uc) => uc.chatId.toString() === chatId.toString());
+              const existUserChat = userChats.find((uc) => uc.chatId?.toString() === chatId.toString());
 
               if (!existUserChat) return ci;
 

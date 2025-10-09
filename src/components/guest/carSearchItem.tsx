@@ -38,7 +38,7 @@ export default function CarSearchItem({
   endDateTimeStringFormat,
 }: {
   searchInfo: SearchCarInfo;
-  handleRentCarRequest: (carInfo: SearchCarInfo, PromoCode?: string) => void;
+  handleRentCarRequest: (carInfo: SearchCarInfo, totalPrice: number, PromoCode?: string) => void;
   disableButton: boolean;
   isSelected: boolean;
   setSelected: (carID: number) => void;
@@ -72,6 +72,14 @@ export default function CarSearchItem({
   const { register, handleSubmit } = useForm<EnterPromoFormValues>({
     resolver: zodResolver(enterPromoFormSchema),
   });
+
+  const totalPrice = state.status === "SUCCESS"
+    ? getPromoPrice(getDiscountablePriceFromCarInfo(searchInfo), state.promo.value) +
+    (state.promo.value !== 100
+      ? getNotDiscountablePrice(insurancePriceTotal, searchInfo.securityDeposit)
+      : 0)
+    : getDiscountablePriceFromCarInfo(searchInfo) +
+    getNotDiscountablePrice(insurancePriceTotal, searchInfo.securityDeposit)
 
   async function onFormSubmit(formData: EnterPromoFormValues) {
     dispatch({ type: PromoActionType.LOADING });
@@ -264,7 +272,7 @@ export default function CarSearchItem({
           />
           <RntButton
             className="w-full text-base max-sm:mt-4 sm:w-[65%]"
-            onClick={() => handleRentCarRequest(searchInfo, state.status === "SUCCESS" ? state.promo.code : undefined)}
+            onClick={() => handleRentCarRequest(searchInfo, totalPrice, state.status === "SUCCESS" ? state.promo.code : undefined)}
             disabled={disableButton || state.status === "LOADING"}
           >
             {state.status === "SUCCESS"
