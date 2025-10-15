@@ -1,4 +1,4 @@
-import { getEtherContractWithSigner } from "../abis";
+import { getEtherContractWithSigner, getEtherContractWithProvider } from "../abis";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useEthereum } from "./web3/ethereumContext";
 import { useRouter } from "next/router";
@@ -22,6 +22,8 @@ import {
   IRentalityAiDamageAnalyzeContract,
 } from "@/features/blockchain/models/IRentalityAiDamageAnalyze";
 import { logger } from "@/utils/logger";
+import { JsonRpcProvider } from "ethers";
+import { IRentalitySenderContract } from "@/features/blockchain/models/IRentalitySender";
 
 export interface IRentalityContracts {
   gateway: IRentalityGateway;
@@ -50,6 +52,9 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
 
   const isAdmin = router.route.startsWith("/admin");
 
+  const isDefaultNetwork = ethereumInfo?.chainId.toString() === process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID!.toString();
+
+
   useEffect(() => {
     const getRentalityContacts = async () => {
       if (ethereumInfo === undefined) {
@@ -61,67 +66,90 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         return;
       }
 
-      const rentalityGateway = (await getEtherContractWithSigner(
-        "gateway",
-        ethereumInfo.signer
-      )) as unknown as IRentalityGatewayContract;
-      if (!rentalityGateway) {
-        logger.error("getRentalityContact error: rentalityGateway is null");
-        setRentalityContracts(null);
-        return;
-      }
+      try {
+        const rentalityGatewayWrite = isDefaultNetwork ? (await getEtherContractWithSigner(
+          "gateway",
+          ethereumInfo.signer
+        )) as unknown as IRentalityGatewayContract :
+        (await getEtherContractWithSigner(
+          "sender",
+          ethereumInfo.signer
+        )) as unknown as IRentalitySenderContract;
 
-      const rentalityReferralPogram = (await getEtherContractWithSigner(
-        "refferalPogram",
-        ethereumInfo.signer
-      )) as unknown as IRentalityReferralProgramContract;
-      if (!rentalityReferralPogram) {
-        logger.error("getRentalityContact error: rentalityReferralProgram is null");
-        setRentalityContracts(null);
-        return;
-      }
 
-      const investment = (await getEtherContractWithSigner(
-        "investService",
-        ethereumInfo.signer
-      )) as unknown as IRentalityInvestmentContract;
-      if (!investment) {
-        logger.error("getRentalityContact error: investment is null");
-        setRentalityContracts(null);
-        return;
-      }
+        const rentalityReferralProgramWrite = (await getEtherContractWithSigner(
+          "refferalPogram",
+          ethereumInfo.signer
+        )) as unknown as IRentalityReferralProgramContract;
 
-      const currencyConverter = (await getEtherContractWithSigner(
-        "currencyConverter",
-        ethereumInfo.signer
-      )) as unknown as IRentalityCurrencyConverterContract;
-      if (!rentalityReferralPogram) {
-        logger.error("getRentalityContact error: rentalityReferralProgram is null");
-        setRentalityContracts(null);
-        return;
-      }
+        const investmentWrite = (await getEtherContractWithSigner(
+          "investService",
+          ethereumInfo.signer
+        )) as unknown as IRentalityInvestmentContract;
 
-      const rentalityAiDamageAnalyze = (await getEtherContractWithSigner(
-        "aiDamageAnalyze",
-        ethereumInfo.signer
-      )) as unknown as IRentalityAiDamageAnalyzeContract;
-      if (!rentalityAiDamageAnalyze) {
-        logger.error("getRentalityContact error: rentalityAiDamageAnalyze is null");
-        setRentalityContracts(null);
-        return;
-      }
+        const currencyConverterWrite = (await getEtherContractWithSigner(
+          "currencyConverter",
+          ethereumInfo.signer
+        )) as unknown as IRentalityCurrencyConverterContract;
 
-      setRentalityContracts({
-        gateway: getEthersContractProxy(rentalityGateway),
-        referralProgram: getEthersContractProxy(rentalityReferralPogram),
-        investment: getEthersContractProxy(investment),
-        currencyConverter: getEthersContractProxy(currencyConverter),
-        aiDamageAnalyze: getEthersContractProxy(rentalityAiDamageAnalyze),
-      });
+        const rentalityAiDamageAnalyzeWrite = (await getEtherContractWithSigner(
+          "aiDamageAnalyze",
+          ethereumInfo.signer
+        )) as unknown as IRentalityAiDamageAnalyzeContract;
+
+        let rentalityGatewayRead = rentalityGatewayWrite;
+        let rentalityReferralProgramRead = rentalityReferralProgramWrite;
+        let investmentRead = investmentWrite;
+        let currencyConverterRead = currencyConverterWrite;
+        let rentalityAiDamageAnalyzeRead = rentalityAiDamageAnalyzeWrite;
+
+        if (!isDefaultNetwork) {
+          const defaultProvider = await getDefaultNetworkProvider();
+          
+          rentalityGatewayRead = (await getEtherContractWithProvider(
+            "gateway",
+            defaultProvider
+          )) as unknown as IRentalityGatewayContract;
+
+          rentalityReferralProgramRead = (await getEtherContractWithProvider(
+            "refferalPogram",
+            defaultProvider
+          )) as unknown as IRentalityReferralProgramContract;
+
+          investmentRead = (await getEtherContractWithProvider(
+            "investService",
+            defaultProvider
+          )) as unknown as IRentalityInvestmentContract;
+
+          currencyConverterRead = (await getEtherContractWithProvider(
+            "currencyConverter",
+            defaultProvider
+          )) as unknown as IRentalityCurrencyConverterContract;
+
+          rentalityAiDamageAnalyzeRead = (await getEtherContractWithProvider(
+            "aiDamageAnalyze",
+            defaultProvider
+          )) as unknown as IRentalityAiDamageAnalyzeContract;
+        }
+
+        const senderAddress = await ethereumInfo.signer.getAddress();
+        console.log("WRITE CONTRACT ",  rentalityGatewayWrite)
+        setRentalityContracts({
+          gateway: getEthersContractProxy(rentalityGatewayWrite, rentalityGatewayRead,  senderAddress, isDefaultNetwork),
+          referralProgram: getEthersContractProxy(rentalityReferralProgramWrite, rentalityReferralProgramRead, senderAddress, isDefaultNetwork),
+          investment: getEthersContractProxy(investmentWrite, investmentRead, senderAddress, isDefaultNetwork),
+          currencyConverter: getEthersContractProxy(currencyConverterWrite, currencyConverterRead, senderAddress, isDefaultNetwork),
+          aiDamageAnalyze: getEthersContractProxy(rentalityAiDamageAnalyzeWrite, rentalityAiDamageAnalyzeRead, senderAddress, isDefaultNetwork),
+        });
+
+      } catch (error) {
+        logger.error("getRentalityContact error:", error);
+        setRentalityContracts(null);
+      }
     };
 
     getRentalityContacts();
-  }, [ethereumInfo]);
+  }, [ethereumInfo, isDefaultNetwork]);
 
   useEffect(() => {
     const getRentalityAdminContacts = async () => {
@@ -144,7 +172,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         return;
       }
 
-      setRentalityAdmin(getEthersContractProxy(rentalityAdmin));
+      setRentalityAdmin(getEthersContractProxy(rentalityAdmin, rentalityAdmin,  await ethereumInfo.signer.getAddress(), true));
     };
 
     getRentalityAdminContacts();
@@ -175,4 +203,8 @@ export function useRentalityAdmin() {
     throw new Error("useRentalityAdmin must be used within a RentalityAdminProvider");
   }
   return context;
+}
+
+async function getDefaultNetworkProvider() {
+  return new JsonRpcProvider(process.env.NEXT_PUBLIC_DEFAULT_RPC_URL);
 }
