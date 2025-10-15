@@ -351,6 +351,7 @@ const emptyContractTripDTO: ContractTripDTO = {
   hostPhoneNumber: "",
   insurancesInfo: [],
   paidForInsuranceInUsdCents: BigInt(0),
+  paidToInsuranceInUsdCents: BigInt(0),
   guestDrivingLicenseIssueCountry: "",
   promoDiscount: BigInt(0),
   dimoTokenId: BigInt(0),

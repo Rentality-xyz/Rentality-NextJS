@@ -77,6 +77,6 @@ export function mapContractTripDTOToTransactionHistoryInfo(tripDto: ContractTrip
     insuranceFeeInUsd: Number(tripDto.paidForInsuranceInUsdCents) / 100,
     rentalityFee: Number(tripDto.trip.transactionInfo.rentalityFee) / 100,
     taxes: totalTax,
-    paidToInsurance: Number(tripDto.paidForInsuranceInUsdCents) / 100,
+    paidToInsurance: Number(tripDto.paidToInsuranceInUsdCents) / 100,
   };
 }
