@@ -73,9 +73,10 @@
     "info": {
       "cars_available": "car(s) available",
       "no_cars": "No cars were found for your request",
-      "launched_miami": "We've launched in Miami, Florida",
-      "soon_other_locations": "Coming soon in other locations",
-      "changing_request": "Try changing you request location",
+      "no_cars_in_state": "No cars in {{state}} yet",
+      "try_another_location": "Try another location or remove filters — we’ll show nearby options",
+      "own_car": "Own a car in {{state}}? List it on Rentality and earn when you’re not using it",
+      "list_your_car": "List your car",
       "does_not_support_selected_network": "Rentality does not support network selected in your crypto wallet",
       "switch_network": "Switch network"
     },
