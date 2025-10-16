@@ -32,6 +32,7 @@ import RntFilterSelect from "@/components/common/RntFilterSelect";
 import { ContractAllowedCurrencyDTO } from "@/model/blockchain/schemas";
 import { flushSync } from "react-dom";
 import { SelectCurrencyDialogForm } from "@/components/createTrip/SelectCurrencyDialogForm";
+import RntButton from "@/components/common/rntButton";
 
 function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -264,11 +265,16 @@ function Search() {
               })
             ) : (
               <div>
-                <div className="flex max-w-screen-xl flex-col border border-gray-600 p-2 text-center font-['Montserrat',Arial,sans-serif] text-white">
-                  {/*{t_page("info.no_cars")}*/}
-                  <p className="text-3xl">{t("search_page.info.launched_miami")}</p>
-                  <p className="mt-4 text-2xl text-rentality-secondary">{t("search_page.info.soon_other_locations")}</p>
-                  <p className="mt-4 text-base">{t("search_page.info.changing_request")}</p>
+                <div className="flex max-w-screen-xl flex-col border border-gray-600 p-2 text-center font-['Montserrat',Arial,sans-serif] text-white items-center">
+                  <p className="text-3xl">{t("search_page.info.no_cars_in_state", {state: searchCarRequest.searchLocation.state})}</p>
+                  <p className="mt-4 text-2xl text-rentality-secondary">{t("search_page.info.try_another_location")}</p>
+                  <p className="mt-4 text-base">{t("search_page.info.own_car", {state: searchCarRequest.searchLocation.state})}</p>
+                  <RntButton
+                    className="mt-4 mb-4"
+                    onClick={() => {router.push("/host/become_host")}}
+                  >
+                    {t("search_page.info.list_your_car")}
+                  </RntButton>
                 </div>
                 <Image src={"/images/map_not_found_cars.png"} width={2912} height={1632} alt="" className="mt-2" />
               </div>
