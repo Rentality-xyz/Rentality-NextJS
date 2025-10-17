@@ -81,6 +81,7 @@ export default function CarSearchItem({
     : getDiscountablePriceFromCarInfo(searchInfo) +
     getNotDiscountablePrice(insurancePriceTotal, searchInfo.securityDeposit)
 
+
   async function onFormSubmit(formData: EnterPromoFormValues) {
     dispatch({ type: PromoActionType.LOADING });
 

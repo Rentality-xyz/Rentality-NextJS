@@ -63,6 +63,7 @@ function Search() {
   }, []);
 
   async function createTripWithPromo(carInfo: SearchCarInfo, totalPrice: number, promoCode?: string) {
+    console.log("PRICEPRICEPRICE:", totalPrice)
     if (!isAuthenticated) {
       const action = (
         <>
@@ -244,7 +245,7 @@ function Search() {
                     <CarSearchItem
                       key={value.carId}
                       searchInfo={value}
-                      handleRentCarRequest={() => createTripWithPromo(value, value.priceInCurrency)}
+                      handleRentCarRequest={() => createTripWithPromo(value, value.totalPriceInCurrency)}
                       disableButton={requestSending}
                       isSelected={value.highlighted}
                       setSelected={setHighlightedCar}

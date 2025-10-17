@@ -102,6 +102,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
         const governmentTax =
           Number(availableCarDTO.taxes.find((i) => i.name.includes("government"))?.value ?? 0) / 100;
 
+
         const selectedCarDetails: SearchCarInfoDetails = {
           carId: Number(availableCarDTO.carId),
           ownerAddress: availableCarDTO.host.toString(),
@@ -172,7 +173,8 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
             name: availableCarDTO.hostCurrency.name,
             initialized: availableCarDTO.hostCurrency.initialized,
           },
-          priceInCurrency: 0
+          priceInCurrency: 0,
+          totalPriceInCurrency: 0,
         };
         setCarInfo(selectedCarDetails);
 
