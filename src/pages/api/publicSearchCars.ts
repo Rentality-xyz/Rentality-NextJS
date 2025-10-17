@@ -302,6 +302,12 @@ async function formatSearchAvailableCarsContractResponse(
       const totalCents = BigInt(i.car.pricePerDayInUsdCents) * BigInt(i.car.tripDays);
       let priceInCurrency = 
      (Number(totalCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate);
+     const totalPriceInCents = BigInt(i.car.pricePerDayInUsdCents) * BigInt(i.car.tripDays) + BigInt(i.car.taxes) + BigInt(i.car.securityDepositPerTripInUsdCents);
+
+     console.log("TOTAL CENTS: ", totalPriceInCents);
+     console.log("CARINFO: ", i.car.brand + " " + i.car.model);
+     let totalPriceInCurrency = 
+    (Number(totalPriceInCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate);
       
       // try {
       //   isCarDetailsConfirmed = await rentality.isCarDetailsConfirmed(i.car.carId);
@@ -378,6 +384,7 @@ async function formatSearchAvailableCarsContractResponse(
           initialized: i.car.hostCurrency.initialized,
         },
         priceInCurrency:  Number(priceInCurrency),
+        totalPriceInCurrency: Number(totalPriceInCurrency),
         salesTax,
         governmentTax,
         pricePer10PercentFuel,
