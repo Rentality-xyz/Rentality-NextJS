@@ -165,6 +165,7 @@ export type ContractTripDTO = {
   hostPhoneNumber: string;
   insurancesInfo: ContractInsuranceInfo[];
   paidForInsuranceInUsdCents: bigint;
+  paidToInsuranceInUsdCents: bigint;
   guestDrivingLicenseIssueCountry: string;
   promoDiscount: bigint;
   dimoTokenId: bigint;

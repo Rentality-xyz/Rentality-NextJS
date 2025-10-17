@@ -21,6 +21,7 @@ import { isMobileAppRentality } from "@/utils/devicePlatform";
 import { copyToClipboard } from "@/utils/clipboard";
 import ClaimMyPointsMobileButton from "@/features/referralProgram/components/ClaimMyPointsMobileButton";
 import HostInsuranceBalanceHeader from "@/features/insurance/components/HostInsuranceBalanceHeader";
+import HostInsuranceBalanceMobile from "@/features/insurance/components/HostInsuranceBalanceMobile";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 72,
@@ -187,6 +188,7 @@ export default function Header() {
                       <span className="ml-3 text-sm">{`${(ethereumInfo?.walletBalance ?? 0).toFixed(4)} ETH`}</span>
                     </div>
                   </div>
+                  <HostInsuranceBalanceMobile />
                   <Link
                     className="mb-3 flex cursor-pointer items-center hover:underline"
                     href={`https://basescan.org/address/${ethereumInfo?.walletAddress ?? ""}`}

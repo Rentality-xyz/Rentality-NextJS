@@ -25,6 +25,12 @@ export const displayMoneyWith2Digits = (value: number | undefined, undefinedText
   return value.toFixed(2);
 };
 
+export const displayMoneyWithNDigits = (value: number | undefined,digits: number, undefinedText?: string) => {
+  if (value === undefined && undefinedText !== undefined) return undefinedText;
+  if (value === undefined) return Number(0).toFixed(digits);
+  return value.toFixed(digits);
+};
+
 export const displayMoneyWith2DigitsOrNa = (value: number | undefined) => {
   return displayMoneyWith2Digits(value, "N/A");
 };
