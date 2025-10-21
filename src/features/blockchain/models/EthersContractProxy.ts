@@ -26,16 +26,15 @@ export function getEthersContractProxy<T extends IEthersContract, S extends IEth
 
           const contractToUse = isReadFunction ? readContract : writeContract;
 
-          debugData(contractToUse, key.toString(), args);
           let result;
           if (!isReadFunction && !isDefaultNetwork) {
             const fnName = key.toString();
             const capitalizedFnName = fnName.charAt(0).toUpperCase() + fnName.slice(1);
             const quote = "quote" + capitalizedFnName;
 
-            const quoteMethod = Reflect.get(target, quote, receiver);
+            let quoteMethod = Reflect.get(target, quote, receiver);
 
-            const originalMethod = Reflect.get(writeContract, key, receiver);
+            let originalMethod = Reflect.get(writeContract, key, receiver);
 
             if (typeof originalMethod !== "function") {
               return originalMethod;
@@ -47,15 +46,24 @@ export function getEthersContractProxy<T extends IEthersContract, S extends IEth
             let quoteResult
 
             if(functionFragment && functionFragment.payable && args[args.length - 1].value) {
+              const value = args[args.length - 1].value;
               quoteResult = await quoteMethod.apply(contractToUse,[
                 args[args.length - 1].value,
                 ...args.slice(0, args.length - 1)
               ]);
+              args = [(readContract as unknown as ethers.Contract).interface.encodeFunctionData(fnName, args.slice(0, args.length - 1))];
+              args = [value,...args,{value: quoteResult}];
+              const fnSignature = `${originalMethod.name}(uint256,bytes)`;
+              originalMethod = Reflect.get(writeContract, fnSignature, receiver);
+              
+              if (typeof originalMethod !== "function") {
+                return originalMethod;
+              }
             }
             else {
+          
               quoteResult = await await quoteMethod.apply(writeContract, args);
 
-              console.log("QUOTE RESULT ", quoteResult)
               args = [...args, {value: quoteResult}];
             }
             result = await originalMethod.apply(writeContract, args);
@@ -72,8 +80,10 @@ export function getEthersContractProxy<T extends IEthersContract, S extends IEth
                 from: senderAddress
               });
              }
-             else 
-          result = await originalMethod.apply(contractToUse, args);
+             else {
+              debugData(writeContract, key.toString(), args);
+              result = await originalMethod.apply(contractToUse, args);
+        }
           }
 
           if (isContractTransactionResponse(result)) {
@@ -83,6 +93,7 @@ export function getEthersContractProxy<T extends IEthersContract, S extends IEth
           return Ok(result);
         } catch (error) {
           logger.error(`${key.toString()} proxy function error:`, error);
+          
           return Err(error);
         }
       };

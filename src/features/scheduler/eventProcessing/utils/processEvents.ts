@@ -6,13 +6,14 @@ import { getBlockCountForSearch } from "@/model/blockchain/blockchainList";
 import { cacheDbInfo, loginWithPassword, readDocFromFirebaseDb, saveDocToFirebaseDb } from "@/utils/firebase";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { RentalityEvent } from "../models";
-import { getEtherContractWithSigner } from "@/abis";
+import { getEtherContractWithProvider, getEtherContractWithSigner } from "@/abis";
 import { isEventLog } from "@/utils/ether";
 import { EventType } from "@/model/blockchain/schemas";
 import UserService from "./userService";
 import EmailService from "./emailService";
 import { env } from "@/utils/env";
 import FirebasePushService from "@/features/scheduler/eventProcessing/utils/firebasePushService";
+import getDefaultProvider from "@/utils/api/defaultProviderUrl";
 
 export async function processEvents(
   chainId: number,
@@ -169,11 +170,9 @@ async function getEvents(chainId: number, fromBlock: number, toBlock: number): P
       return Err(new Error(`API URL for chain id ${chainId} was not set`));
     }
 
-    const provider = new JsonRpcProvider(providerApiUrl);
-    const randomSigner = Wallet.createRandom();
+    const provider = getDefaultProvider()
 
-    const signerWithProvider = randomSigner.connect(provider);
-    const notificationService = await getEtherContractWithSigner("notificationService", signerWithProvider);
+    const notificationService = await getEtherContractWithProvider("notificationService", provider);
     if (!notificationService) {
       logger.error("getEvents error: notificationService is null");
       return Err(new Error("getEvents error: notificationService is null"));

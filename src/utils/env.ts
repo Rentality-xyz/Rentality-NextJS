@@ -95,10 +95,11 @@ export const env = createEnv({
     NEXT_PUBLIC_AI_DAMAGE_ANALYZE_BASE_URL: z.string().min(1),
     NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SID: z.string().min(1),
     NEXT_PUBLIC_AI_DAMAGE_ANALYZE_ACCOUNT_SECRETKEY: z.string().min(1),
+    NEXT_PUBLIC_DEFAULT_RPC_URL: z.string().url(),
 
     NEXT_PUBLIC_NODE_ENV: unionOfLiterals(NODE_ENVS).default("development"),
     NEXT_PUBLIC_MIN_CONSOLE_LOG_LEVEL: unionOfLiterals(LOG_LEVELS).default("trace"),
-    NEXT_PUBLIC_MIN_EXTERNAL_LOG_LEVEL: unionOfLiterals(LOG_LEVELS).default("info"),
+    NEXT_PUBLIC_MIN_EXTERNAL_LOG_LEVEL: unionOfLiterals(LOG_LEVELS).default("info")
   },
 
   // If you're using Next.js < 13.4.4, you'll need to specify the runtimeEnv manually
@@ -148,6 +149,7 @@ export const env = createEnv({
     NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
     NEXT_PUBLIC_MIN_CONSOLE_LOG_LEVEL: process.env.NEXT_PUBLIC_MIN_CONSOLE_LOG_LEVEL,
     NEXT_PUBLIC_MIN_EXTERNAL_LOG_LEVEL: process.env.NEXT_PUBLIC_MIN_EXTERNAL_LOG_LEVEL,
+    NEXT_PUBLIC_DEFAULT_RPC_URL: process.env.NEXT_PUBLIC_DEFAULT_RPC_URL
   },
   // For Next.js >= 13.4.4, you only need to destructure client variables:
   //    experimental__runtimeEnv: {

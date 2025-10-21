@@ -36,13 +36,11 @@ async function fetchPlatformFee(ethereumInfo: EthereumInfo | null | undefined) {
     logger.error("getRentalityContact error: rentalityAdmin is null");
     throw Err(new Error("Missing required contract"));
   }
-  const admin = getEthersContractProxy(rentalityAdmin);
+  const admin = rentalityAdmin;
 
   const result = await admin.getPlatformFeeInPPM();
-  if (!result.ok) {
-    throw new Error(result.error.message);
-  }
-  return Number(result.value) / 10000;
+
+  return Number(result) / 10000;
 }
 
 export default useFetchPlatformPercentage;

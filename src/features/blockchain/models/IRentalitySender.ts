@@ -38,6 +38,8 @@ import { ContractTransactionResponse } from "ethers";
 import { IEthersContract } from "./IEtherContract";
 import { ContractResultWrapper } from "../types";
 
+export interface IRentalitySender extends ContractResultWrapper<IRentalitySenderContract> {}
+
 export interface IRentalitySenderContract extends IEthersContract {
     /// USER PROFILE functions
     setKYCInfo(
@@ -139,9 +141,9 @@ export interface IRentalitySenderContract extends IEthersContract {
   
     /// GUEST functions
     createTripRequestWithDelivery(
-      request: ContractCreateTripRequestWithDelivery,
-      promoCode: string,
-      value: object
+        valueAmount: bigint,
+        encodedFunctionDataWithSelector: string,
+        value: object
     ): Promise<ContractTransactionResponse>;
     quoteCreateTripRequestWithDelivery(
       value: bigint,

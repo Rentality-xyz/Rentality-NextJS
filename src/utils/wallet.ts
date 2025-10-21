@@ -30,6 +30,7 @@ export async function isUserHasEnoughFunds(
     valueToCheckInCurrency = Number(valueToCheck) * Math.pow(10, Number(decimals))
   }
 
+  console.log("USER BALANCE ", formatEther(userBalance))
   return userBalance >= valueToCheckInCurrency;
 }
 

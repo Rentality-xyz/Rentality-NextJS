@@ -13,7 +13,7 @@ import { emptyContractLocationInfo, validateContractSearchCarWithDistance } from
 import { getIpfsURIs, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { isEmpty } from "@/utils/string";
-import { Contract, JsonRpcProvider, Wallet } from "ethers";
+import { Contract, ethers, JsonRpcProvider, Wallet } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { env } from "@/utils/env";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
@@ -67,7 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     pickupLocation,
     returnLocation,
   } = req.query;
-  const chainIdNumber = Number(chainId) > 0 ? Number(chainId) : env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
+  const chainIdNumber = env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
 
   if (!chainIdNumber) {
     logger.error("API publicSearchCar error: chainId was not provided");
@@ -154,7 +154,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   );
 
   const provider = new JsonRpcProvider(providerApiUrl);
-  const wallet = new Wallet(privateKey, provider);
+  const wallet = ethers.Wallet.createRandom().connect(provider);
 
   const rentality = (await getEtherContractWithSigner("gateway", wallet)) as unknown as IRentalityGatewayContract;
 
@@ -212,6 +212,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       totalCars
     );
   }
+
   ///TODO: temporary, uncomment after fix
   // const getFilterInfoDto: ContractFilterInfoDTO = await rentality.getFilterInfo(BigInt(1));
 
