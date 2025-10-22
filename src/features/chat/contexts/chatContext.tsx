@@ -188,7 +188,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
   useEffect(() => {
     const getRentalityNotificationService = async () => {
       if (!ethereumInfo) return;
-      const defaultProvider = getDefaultProvider();
+      const defaultProvider = await getDefaultProvider();
       const notificationService = await getEtherContractWithProvider("notificationService", defaultProvider);
       if (!notificationService) {
         logger.error("getRentalityNotificationService error: notificationService is null");

@@ -187,7 +187,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
           return null;
         }
 
-        const provider = getDefaultProvider()
+        const provider = await getDefaultProvider()
 
         const notificationService = await getEtherContractWithProvider("notificationService", provider);
         if (!notificationService) {

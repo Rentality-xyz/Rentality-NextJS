@@ -170,7 +170,7 @@ async function getEvents(chainId: number, fromBlock: number, toBlock: number): P
       return Err(new Error(`API URL for chain id ${chainId} was not set`));
     }
 
-    const provider = getDefaultProvider()
+    const provider = await getDefaultProvider()
 
     const notificationService = await getEtherContractWithProvider("notificationService", provider);
     if (!notificationService) {

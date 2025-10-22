@@ -5,7 +5,7 @@ import { IEthersContract } from "./IEtherContract";
 import { logger } from "@/utils/logger";
 import { fn } from "moment";
 
-export function getEthersContractProxy<T extends IEthersContract, S extends IEthersContract>(
+export function getEthersCrassChainProxy<T extends IEthersContract, S extends IEthersContract>(
   writeContract: T, 
   readContract: S,
   senderAddress: string,
@@ -55,7 +55,7 @@ export function getEthersContractProxy<T extends IEthersContract, S extends IEth
               args = [value,...args,{value: quoteResult}];
               const fnSignature = `${originalMethod.name}(uint256,bytes)`;
               originalMethod = Reflect.get(writeContract, fnSignature, receiver);
-              
+
               if (typeof originalMethod !== "function") {
                 return originalMethod;
               }
@@ -94,6 +94,35 @@ export function getEthersContractProxy<T extends IEthersContract, S extends IEth
         } catch (error) {
           logger.error(`${key.toString()} proxy function error:`, error);
           
+          return Err(error);
+        }
+      };
+    },
+  }) as ContractResultWrapper<T>;
+}
+
+export function getEthersContractProxy<T extends IEthersContract>(contract: T): ContractResultWrapper<T> {
+  return new Proxy(contract, {
+    get(target, key, receiver) {
+      const originalMethod = Reflect.get(target, key, receiver);
+
+      if (typeof originalMethod !== "function") {
+        return originalMethod;
+      }
+
+      return async (...args: any[]) => {
+        try {
+          debugData(contract, key.toString(), args);
+
+          const result = await originalMethod.apply(target, args);
+
+          if (isContractTransactionResponse(result)) {
+            await result.wait(4); //block confirmation
+            return Ok(true);
+          }
+          return Ok(result);
+        } catch (error) {
+          logger.error(`${key.toString()} proxy function error:`, error);
           return Err(error);
         }
       };

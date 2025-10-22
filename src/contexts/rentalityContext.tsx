@@ -11,7 +11,7 @@ import {
   IRentalityAdminGatewayContract,
 } from "@/features/blockchain/models/IRentalityAdminGateway";
 import { IRentalityGateway, IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGateway";
-import { getEthersContractProxy } from "@/features/blockchain/models/EthersContractProxy";
+import { getEthersContractProxy, getEthersCrassChainProxy } from "@/features/blockchain/models/EthersContractProxy";
 import { IRentalityInvestment, IRentalityInvestmentContract } from "@/features/blockchain/models/IRentalityInvestment";
 import {
   IRentalityCurrencyConverter,
@@ -69,41 +69,64 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
 
       try {
 
-
-    
  
-          const defaultProvider = getDefaultProvider();
+          const defaultProvider = await getDefaultProvider();
           
          let rentalityGatewayRead = (await getEtherContractWithProvider(
             "gateway",
             defaultProvider
           )) as unknown as IRentalityGatewayContract;
 
-         let rentalityReferralProgramRead = (await getEtherContractWithProvider(
+          let rentalityReferralProgram;
+          let investment;
+          let currencyConverter;
+          let rentalityAiDamageAnalyze;
+          if(!isDefaultNetwork) { 
+
+          rentalityReferralProgram = (await getEtherContractWithProvider(
             "refferalPogram",
             defaultProvider
           )) as unknown as IRentalityReferralProgramContract;
 
-         let investmentRead = (await getEtherContractWithProvider(
+          investment = (await getEtherContractWithProvider(
             "investService",
             defaultProvider
           )) as unknown as IRentalityInvestmentContract;
 
-         let currencyConverterRead = (await getEtherContractWithProvider(
+          currencyConverter = (await getEtherContractWithProvider(
             "currencyConverter",
             defaultProvider
           )) as unknown as IRentalityCurrencyConverterContract;
 
-         let rentalityAiDamageAnalyzeRead = (await getEtherContractWithProvider(
+          rentalityAiDamageAnalyze = (await getEtherContractWithProvider(
             "aiDamageAnalyze",
             defaultProvider
           )) as unknown as IRentalityAiDamageAnalyzeContract;
+        }
+        else {
+          rentalityReferralProgram = (await getEtherContractWithSigner(
+            "refferalPogram",
+            ethereumInfo.signer
+          )) as unknown as IRentalityReferralProgramContract;
 
-          let rentalityGatewayWrite;
-        let rentalityReferralProgramWrite = rentalityReferralProgramRead;
-        let investmentWrite = investmentRead;
-        let currencyConverterWrite =currencyConverterRead;
-        let rentalityAiDamageAnalyzeWrite = rentalityAiDamageAnalyzeRead;
+          investment = (await getEtherContractWithSigner(
+            "investService",
+            ethereumInfo.signer
+          )) as unknown as IRentalityInvestmentContract;
+
+          currencyConverter = (await getEtherContractWithSigner(
+            "currencyConverter",
+            ethereumInfo.signer
+          )) as unknown as IRentalityCurrencyConverterContract;
+
+          rentalityAiDamageAnalyze = (await getEtherContractWithSigner(
+            "aiDamageAnalyze",
+            ethereumInfo.signer
+          )) as unknown as IRentalityAiDamageAnalyzeContract;
+
+        }
+
+        let rentalityGatewayWrite;
         
          rentalityGatewayWrite = isDefaultNetwork ? (await getEtherContractWithSigner(
           "gateway",
@@ -116,11 +139,12 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
 
         const senderAddress = await ethereumInfo.signer.getAddress();
         setRentalityContracts({
-          gateway: getEthersContractProxy(rentalityGatewayWrite, rentalityGatewayRead,  senderAddress, isDefaultNetwork),
-          referralProgram: getEthersContractProxy(rentalityReferralProgramWrite, rentalityReferralProgramRead, senderAddress, isDefaultNetwork),
-          investment: getEthersContractProxy(investmentWrite, investmentRead, senderAddress, isDefaultNetwork),
-          currencyConverter: getEthersContractProxy(currencyConverterWrite, currencyConverterRead, senderAddress, isDefaultNetwork),
-          aiDamageAnalyze: getEthersContractProxy(rentalityAiDamageAnalyzeWrite, rentalityAiDamageAnalyzeRead, senderAddress, isDefaultNetwork),
+          gateway: isDefaultNetwork ? getEthersContractProxy(rentalityGatewayWrite) :
+           getEthersCrassChainProxy(rentalityGatewayWrite, rentalityGatewayRead, senderAddress, isDefaultNetwork),
+          referralProgram: getEthersContractProxy(rentalityReferralProgram),
+          investment: getEthersContractProxy(investment),
+          currencyConverter: getEthersContractProxy(currencyConverter),
+          aiDamageAnalyze: getEthersContractProxy(rentalityAiDamageAnalyze),
         });
 
       } catch (error) {
@@ -158,7 +182,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         return;
       }
 
-      setRentalityAdmin(getEthersContractProxy(rentalityAdmin, rentalityAdmin,  await ethereumInfo.signer.getAddress(), true));
+      setRentalityAdmin(getEthersContractProxy(rentalityAdmin));
     };
 
     getRentalityAdminContacts();
