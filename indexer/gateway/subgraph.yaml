@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: RentalityNotificationService
-    network: base
+    network: base-sepolia
     source:
-      address: "0x37E1950eE1BCC531478fb0507476505AC0a5fAaf"
+      address: "0x6538488EAD213996727D1f4eC9738c3C92141180"
       abi: RentalityNotificationService
-      startBlock: 34834826 
+      startBlock: 32674535 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
