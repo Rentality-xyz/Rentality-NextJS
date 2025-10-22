@@ -11,7 +11,7 @@ export function getIpfsHashFromUrl(pinataURI: string) {
 function getIpfsURIfromPinata(pinataURI: string) {
   const fileHash = getIpfsHashFromUrl(pinataURI);
   if (isEmpty(fileHash)) return "";
-  return "https://ipfs.io/ipfs/" + fileHash;
+  return "https://gateway.pinata.cloud/ipfs/" + fileHash;
 }
 
 export function getIpfsURIfromAkave(pinataURI: string) {
@@ -37,39 +37,44 @@ export function getPinataGatewayURIfromPinata(pinataURI: string) {
   return "https://ivory-specific-mink-961.mypinata.cloud/ipfs/" + fileHash;
 }
 
+const IPFS_GATEWAYS = [
+  'https://ipfs.io/ipfs/',
+  'https://cloudflare-ipfs.com/ipfs/',
+  'https://dweb.link/ipfs/',
+  'https://gateway.pinata.cloud/ipfs/',
+];
+
 export async function getMetaDataFromIpfs(tokenURI: string) {
-  //let ipfsURI = getPinataGatewayURIfromPinata(tokenURI);
-  let ipfsURI = getIpfsURIfromPinata(tokenURI);
-  //let ipfsURI = getIpfsURIfromAkave(tokenURI);
-  if (!ipfsURI) return "";
+  const ipfsHash = getIpfsHashFromUrl(tokenURI);
+  if (!ipfsHash) {
+    logger.error("Invalid tokenURI or no IPFS hash found:", tokenURI);
+    return {};
+  }
 
-  try {
-    const response = await fetch(ipfsURI, {
-      headers: {
-        Accept: "application/json",
-      },
-    });
-    return await response.json();
-  } catch (error) {
-    logger.error("load metadata from akave gateway error:", error);
-
-    ipfsURI = getIpfsURIfromPinata(tokenURI);
+  for (const gateway of IPFS_GATEWAYS) {
+    const url = gateway + ipfsHash;
     try {
-      logger.info("try fetch " + ipfsURI);
-
-      const response = await fetch(ipfsURI, {
-        headers: {
-          Accept: "application/json",
-        },
+      logger.info(`Fetching metadata from ${url}`);
+      const response = await fetch(url, {
+        headers: { Accept: "application/json" },
       });
-      return await response.json();
+
+      if (!response.ok) {
+        logger.warn(`Gateway ${gateway} returned status ${response.status}`);
+        continue;
+      }
+
+      const data = await response.json();
+      return data;
     } catch (error) {
-      logger.error("load metadata from IPFS error:", error);
+      logger.warn(`Error fetching from ${gateway}: ${error}`);
+      // continue to next gateway
     }
   }
+
+  logger.error("All IPFS gateways failed for:", tokenURI);
   return {};
 }
-
 const META_KEY_VIN_NUMBER = "VIN number";
 const META_KEY_LICENSE_PLATE = "License plate";
 const META_KEY_LICENSE_STATE = "License state";
