@@ -1,8 +1,8 @@
 import CarSearchItem from "@/components/guest/carSearchItem";
-import useSearchCars from "@/hooks/guest/useSearchCars";
+import useSearchCars from "@/hooks/guest/useSearchCarIndexer";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
-import { SearchCarInfo, UserCurrencyDTO } from "@/model/SearchCarsResult";
+import { SearchCarInfo } from "@/model/SearchCarsResult";
 import { useRntDialogs, useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useUserInfo } from "@/contexts/userInfoContext";
 import { isEmpty } from "@/utils/string";
@@ -24,14 +24,10 @@ import { EMPTY_PROMOCODE } from "@/utils/constants";
 import useFetchGuestGeneralInsurance from "@/features/insurance/hooks/useFetchGuestGeneralInsurance";
 import useBlockchainNetworkCheck from "@/features/blockchain/hooks/useBlockchainNetworkCheck";
 import getNetworkName from "@/model/utils/NetworkName";
-import bs58 from "bs58";
+import bs58 from 'bs58';
 import { isUserHasEnoughFunds } from "@/utils/wallet";
-import RntSelect from "@/components/common/rntSelect";
-import { useRentality } from "@/contexts/rentalityContext";
-import RntFilterSelect from "@/components/common/RntFilterSelect";
-import { ContractAllowedCurrencyDTO } from "@/model/blockchain/schemas";
-import { flushSync } from "react-dom";
 import { SelectCurrencyDialogForm } from "@/components/createTrip/SelectCurrencyDialogForm";
+import { useRentality } from "@/contexts/rentalityContext";
 import RntButton from "@/components/common/rntButton";
 
 function Search() {
@@ -39,7 +35,6 @@ function Search() {
 
   const [isLoading, searchAvailableCars, searchResult, sortBy, setSortBy, setSearchResult] = useSearchCars();
   const { createTripRequest } = useCreateTripRequest();
-  const { rentalityContracts } = useRentality();
 
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const { showDialog, hideDialogs, showCustomDialog } = useRntDialogs();
@@ -51,6 +46,7 @@ function Search() {
   const { isLoading: isLoadingInsurance, data: guestInsurance } = useFetchGuestGeneralInsurance();
   useBlockchainNetworkCheck();
   const { t } = useTranslation();
+  const { rentalityContracts } = useRentality();
 
   const handleSearchClick = async (request: SearchCarRequest) => {
     updateSearchParams(request, searchCarFilters);
@@ -67,6 +63,7 @@ function Search() {
   }, []);
 
   async function createTripWithPromo(carInfo: SearchCarInfo, totalPrice: number, promoCode?: string) {
+    console.log("PRICEPRICEPRICE:", totalPrice)
     if (!isAuthenticated) {
       const action = (
         <>
@@ -98,19 +95,14 @@ function Search() {
       showError(t("search_page.errors.own_car"));
       return;
     }
+
     if (!rentalityContracts) {
       return;
-    }   
+    }
 
     const hasFounds = ethereumInfo && await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency);
-  
     if (!hasFounds) {
       const currenciesResult = await rentalityContracts.gateway.getAvailableCurrency();
-      if (!currenciesResult.ok || currenciesResult.value.length === 0) {
-        showError(t("search_page.errors.available_cur_error"));
-        return;
-      }
-   
       if (!currenciesResult.ok || currenciesResult.value.length === 0) {
         showError(t("search_page.errors.available_cur_error"));
         return;
@@ -165,19 +157,23 @@ function Search() {
   };
 
   const getRequestDetailsLink = (carInfo: SearchCarInfo) => {
+
     const data = {
       carInfo,
       searchCarFilters,
-      searchCarRequest,
-    };
-    const jsonString = JSON.stringify(data, (_key, value) => (typeof value === "bigint" ? value.toString() : value));
+      searchCarRequest
+    }
+    const jsonString = JSON.stringify(data, (_key, value) =>
+      typeof value === "bigint" ? `${value}n` : value
+    );
 
     const uint8array = new TextEncoder().encode(jsonString);
-
+    
     const encoded = bs58.encode(uint8array);
-
+    
     return `/guest/createTrip?data=${encoded}`;
   };
+
   const setHighlightedCar = useCallback(
     (carID: number) => {
       setSearchResult((prev) => {
@@ -244,7 +240,6 @@ function Search() {
             </div>
             {searchResult?.carInfos?.length > 0 ? (
               searchResult.carInfos.map((value: SearchCarInfo) => {
-
                 return (
                   <div key={value.carId} id={`car-${value.carId}`}>
                     <CarSearchItem
