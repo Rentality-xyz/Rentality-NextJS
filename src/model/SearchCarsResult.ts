@@ -79,6 +79,7 @@ export type SearchCarInfo = {
   dimoTokenId: number;
   currency: UserCurrencyDTO;
   priceInCurrency: number;
+  totalPriceInCurrency: number;
   salesTax: number,
   governmentTax: number,
   pricePer10PercentFuel: number,

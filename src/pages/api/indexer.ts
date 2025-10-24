@@ -301,6 +301,7 @@ async function formatSearchAvailableCarsQueryResponse(
             let priceInCurrency = 
            (Number(totalCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate);
             
+  
       
 
       const tripDays = i.tripDays;
@@ -319,6 +320,10 @@ async function formatSearchAvailableCarsQueryResponse(
                   ? (fuelPrice * tankVolumeInGal) / 1000
                   : fuelPrice / 1000;
 
+                  const totalPriceInCents = BigInt(i.pricePerDayInUsdCents) * BigInt(i.tripDays) + BigInt(salesTax + governmentTax) + BigInt(i.securityDepositPerTripInUsdCents);
+
+                  let totalPriceInCurrency = 
+                 (Number(totalPriceInCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate);
 
       let item: SearchCarInfoDTO = {
         carId: Number(i.carId),
@@ -372,7 +377,7 @@ async function formatSearchAvailableCarsQueryResponse(
         isCarDetailsConfirmed: isCarDetailsConfirmed,
         isTestCar: testWallets.includes(i.host),
         isInsuranceRequired: i.insuranceCarInfo.required,
-        insurancePerDayPriceInUsd: Number(i.insuranceCarInfo.priceInUsdCents),
+        insurancePerDayPriceInUsd: Number(i.insuranceCarInfo.priceInUsdCents) === 0 ? 0 : Number(i.insuranceCarInfo.priceInUsdCents) / 100,
         isGuestHasInsurance: false,
         distanceToUser: i.distance,
         dimoTokenId: Number(i.dimoTokenId),
@@ -390,10 +395,11 @@ async function formatSearchAvailableCarsQueryResponse(
           discount7DaysAndMoreInPercents: Number(i.user.user.discountPrice.sevenDaysDiscount) / 10_000,
           discount30DaysAndMoreInPercents: Number(i.user.user.discountPrice.thirtyDaysDiscount) / 10_000,
         },
+        totalPriceInCurrency: Number(totalPriceInCurrency),
       };
-
       return item;
     }));
+
 
     const filteredCars = cars.filter(
       (c): c is SearchCarInfoDTO => c !== null
