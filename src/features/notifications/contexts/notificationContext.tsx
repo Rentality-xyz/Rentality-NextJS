@@ -5,7 +5,7 @@ import {
   createCreateTripNotification,
   createTripChangedNotification,
 } from "@/model/NotificationInfo";
-import { getEtherContractWithSigner } from "@/abis";
+import { getEtherContractWithProvider, getEtherContractWithSigner } from "@/abis";
 import { isEventLog } from "@/utils/ether";
 import { bigIntReplacer } from "@/utils/json";
 import { hasValue } from "@/utils/arrays";
@@ -19,6 +19,7 @@ import { logger } from "@/utils/logger";
 import { fetchDefaultRpcUrl } from "../utils/fetchDefaultRpcUrl";
 import { isEmpty } from "@/utils/string";
 import { sleep } from "@/utils/sleep";
+import getDefaultProvider from "@/utils/api/defaultProviderUrl";
 
 export type NotificationContextInfo = {
   isLoading: boolean;
@@ -186,11 +187,9 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
           return null;
         }
 
-        const provider = new JsonRpcProvider(defaultRpcUrl);
-        const randomSigner = Wallet.createRandom();
+        const provider = await getDefaultProvider()
 
-        const signerWithProvider = randomSigner.connect(provider);
-        const notificationService = await getEtherContractWithSigner("notificationService", signerWithProvider);
+        const notificationService = await getEtherContractWithProvider("notificationService", provider);
         if (!notificationService) {
           logger.error("Notification context initialization error: notificationService is null");
           return false;

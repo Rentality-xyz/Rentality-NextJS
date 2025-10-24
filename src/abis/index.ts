@@ -18,6 +18,8 @@ import RentalityUserServiceJSON_ABI from "./RentalityUserService.v0_2_0.abi.json
 import RentalityUserServiceJSON_ADDRESSES from "./RentalityUserService.v0_2_0.addresses.json";
 import RentalityPaymentsServiceJSON_ABI from "./RentalityPaymentService.v0_2_0.abi.json";
 import RentalityPaymentsServiceJSON_ADDRESSES from "./RentalityPaymentService.v0_2_0.addresses.json";
+import RentalitySenderJSON_ABI from "./RentalitySender.v0_2_0.abi.json";
+import RentalitySenderJSON_ADDRESSES from "./RentalitySender.v0_2_0.addresses.json";
 import QuoterV2JSON_ADDRESSES from "./QuoterV2.addresses.json";
 import QuoterV2JSON_ABI from "./QuoterV2.abi.json";
 import UNISWAPFACTORYJSON_ADDRESSES from "./UniswapFactory.addresses.json";
@@ -27,7 +29,7 @@ import ERC20JSON_ABI from "./ERC20.abi.json";
 import CoinbaseAttestationJSON_ABI from "./CoinbaseAttestation.abi.json"
 import CoinbaseAttestationContractJSON_ADDRESSES from "./CoinbaseAttestationContract.addresses.json"
 import CoinbaseAttestationSchemaJSON_ADDRESSES from "./CoinbaseAttestationSchema.addresses.json"
-import { Contract, ethers, Signer } from "ethers";
+import { Contract, ethers, JsonRpcProvider, Signer } from "ethers";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { logger } from "@/utils/logger";
 
@@ -74,6 +76,10 @@ const rentalityContracts = {
     addresses: RentalityPaymentsServiceJSON_ADDRESSES.addresses,
     abi: RentalityPaymentsServiceJSON_ABI.abi,
   },
+  sender: {
+    addresses: RentalitySenderJSON_ADDRESSES.addresses,
+    abi: RentalitySenderJSON_ABI.abi,
+  },
   coinbaseContractService: {
     addresses: CoinbaseAttestationContractJSON_ADDRESSES.addresses,
     abi: CoinbaseAttestationJSON_ABI.abi,
@@ -104,6 +110,30 @@ export async function getEtherContractWithSigner(contract: keyof typeof rentalit
       return null;
     }
     const etherContract = new Contract(selectedChain.address, rentalityContracts[contract].abi, signer);
+    return etherContract;
+  } catch (error) {
+    logger.error("getEtherContract error:" + error);
+    return null;
+  }
+}
+
+export async function getEtherContractWithProvider(contract: keyof typeof rentalityContracts, provider: JsonRpcProvider) {
+  try {
+  
+
+    const chainId = Number((await provider.getNetwork())?.chainId);
+    if (!getExistBlockchainList().find((i) => i.chainId === chainId)) {
+      logger.error(`getEtherContract error: Chain id ${chainId} is not supported`);
+      return null;
+    }
+
+    const selectedChain = rentalityContracts[contract].addresses.find((i) => i.chainId === chainId);
+
+    if (!selectedChain) {
+      logger.error(`getEtherContract error: ${contract} address for chainId ${chainId} is not found`);
+      return null;
+    }
+    const etherContract = new Contract(selectedChain.address, rentalityContracts[contract].abi, provider);
     return etherContract;
   } catch (error) {
     logger.error("getEtherContract error:" + error);

@@ -63,7 +63,6 @@ function Search() {
   }, []);
 
   async function createTripWithPromo(carInfo: SearchCarInfo, totalPrice: number, promoCode?: string) {
-    console.log("PRICEPRICEPRICE:", totalPrice)
     if (!isAuthenticated) {
       const action = (
         <>

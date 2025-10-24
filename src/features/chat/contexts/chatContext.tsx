@@ -1,15 +1,16 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ChatInfo } from "@/model/ChatInfo";
-import { getEtherContractWithSigner } from "@/abis";
+import { getEtherContractWithProvider, getEtherContractWithSigner } from "@/abis";
 import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
 import { isEmpty } from "@/utils/string";
 import moment from "moment";
 import { ContractChatInfo, EventType, TripStatus } from "@/model/blockchain/schemas";
-import { Contract, Listener } from "ethers";
+import { Contract, JsonRpcApiProvider, JsonRpcProvider, Listener } from "ethers";
 import useUserMode from "@/hooks/useUserMode";
 import { Unsubscribe, doc, onSnapshot, setDoc } from "firebase/firestore";
 import { chatDbInfo, loginWithPassword } from "@/utils/firebase";
+
 import {
   ChatId,
   FirebaseUserChat,
@@ -25,6 +26,7 @@ import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { useNotification } from "@/features/notifications/contexts/notificationContext";
 import { logger } from "@/utils/logger";
 import { env } from "@/utils/env";
+import getDefaultProvider from "@/utils/api/defaultProviderUrl";
 
 export type ChatKeysContextInfo = {
   isLoading: boolean;
@@ -186,8 +188,8 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
   useEffect(() => {
     const getRentalityNotificationService = async () => {
       if (!ethereumInfo) return;
-
-      const notificationService = await getEtherContractWithSigner("notificationService", ethereumInfo.signer);
+      const defaultProvider = await getDefaultProvider();
+      const notificationService = await getEtherContractWithProvider("notificationService", defaultProvider);
       if (!notificationService) {
         logger.error("getRentalityNotificationService error: notificationService is null");
         return;
