@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import RntButton from "@/components/common/rntButton";
 import { logger } from "@/utils/logger";
-import { saveTripCarPhotos, UploadedUrlList } from "@/features/filestore/pinata/utils";
+import { saveTripCarPhotos, UploadedUrlList } from "@/features/filestore";
 
 const EXTERIOR_PHOTOS_COUNT_REQUIRED = 4;
 const INTERIOR_PHOTOS_COUNT_REQUIRED = 9;

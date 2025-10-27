@@ -5,7 +5,7 @@ import { logger } from "@/utils/logger";
 import { Err } from "@/model/utils/result";
 import { HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE } from "@/model/HostCarInfo";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeCode } from "@/model/EngineType";
-import { saveCarMetadata } from "@/features/filestore/pinata/utils";
+import { saveCarMetadata } from "@/features/filestore";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { ContractCreateCarRequest, ContractSignedLocationInfo } from "@/model/blockchain/schemas";
 import { mapLocationInfoToContractLocationInfo } from "@/utils/location";

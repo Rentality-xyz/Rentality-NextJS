@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRentality } from "./rentalityContext";
-import { getIpfsURI } from "@/utils/ipfsUtils";
+import { getFileURI } from "@/features/filestore/utils";
 import { useEthereum } from "./web3/ethereumContext";
 import { tryGetEnsName } from "@/utils/ether";
 
@@ -33,7 +33,7 @@ export const UserInfoProvider = ({ children }: { children?: React.ReactNode }) =
         ensName: await tryGetEnsName(ethereumInfo.provider, ethereumInfo.walletAddress),
         firstName: result.value.kyc.name,
         lastName: result.value.kyc.name,
-        profilePhotoUrl: getIpfsURI(result.value.kyc.profilePhoto),
+        profilePhotoUrl: getFileURI(result.value.kyc.profilePhoto),
         drivingLicense: result.value.kyc.licenseNumber,
       });
     };

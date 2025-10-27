@@ -14,7 +14,7 @@ import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
 import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 import { Result } from "@/model/utils/result";
-import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore/pinata/utils";
+import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 
 function TripAdditionalActions({

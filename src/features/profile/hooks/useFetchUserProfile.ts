@@ -1,4 +1,4 @@
-import { getIpfsURI } from "@/utils/ipfsUtils";
+import { getFileURI } from "@/features/filestore/utils";
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { useQuery } from "@tanstack/react-query";
@@ -45,7 +45,7 @@ async function fetchUserProfile(
     !isEmptySignature && (await checkSignature(ethereumInfo.walletAddress, ethereumInfo.provider, signature));
 
   const userProfile: UserProfile = {
-    profilePhotoUrl: getIpfsURI(result.value.kyc.profilePhoto),
+    profilePhotoUrl: getFileURI(result.value.kyc.profilePhoto),
     nickname: result.value.kyc.name,
     phoneNumber: formatPhoneNumber(result.value.kyc.mobilePhoneNumber),
     isPhoneNumberVerified: result.value.isPhoneVerified,

@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { CheckboxLight } from "@/components/common/rntCheckbox";
 import useDimo from "@/features/dimo/hooks/useDimo";
-import { getIpfsURI } from "@/utils/ipfsUtils";
+import { getFileURI } from "@/features/filestore/utils";
 import { env } from "@/utils/env";
 import useFetchMyListings from "@/hooks/host/useFetchMyListings";
 import { logger } from "@/utils/logger";
@@ -75,7 +75,7 @@ function Listings() {
     ...(onDimoOnly || []).map((dimoCar) => ({
       carId: dimoCar.definition.id,
       ownerAddress: "",
-      image: getIpfsURI(dimoCar.imageURI),
+      image: getFileURI(dimoCar.imageURI),
       brand: dimoCar.definition.make,
       model: dimoCar.definition.model,
       year: dimoCar.definition.year,

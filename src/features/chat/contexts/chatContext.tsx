@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ChatInfo } from "@/model/ChatInfo";
 import { getEtherContractWithSigner } from "@/abis";
-import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getFileURI, getMetaData, parseMetaData } from "@/features/filestore/utils";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
 import { isEmpty } from "@/utils/string";
 import moment from "moment";
@@ -140,7 +140,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
           ? []
           : await Promise.all(
               chatInfosViewSorted.map(async (ci: ContractChatInfo) => {
-                const metaData = parseMetaData(await getMetaDataFromIpfs(ci.carMetadataUrl));
+                const metaData = parseMetaData(await getMetaData(ci.carMetadataUrl));
                 const tripStatus = ci.tripStatus;
 
                 let item: ChatInfo = {
@@ -148,11 +148,11 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
                   guestAddress: ci.guestAddress,
                   guestName: ci.guestName,
-                  guestPhotoUrl: getIpfsURI(ci.guestPhotoUrl),
+                  guestPhotoUrl: getFileURI(ci.guestPhotoUrl),
 
                   hostAddress: ci.hostAddress,
                   hostName: ci.hostName,
-                  hostPhotoUrl: getIpfsURI(ci.hostPhotoUrl),
+                  hostPhotoUrl: getFileURI(ci.hostPhotoUrl),
 
                   tripTitle: `${tripStatus} trip with ${ci.hostName} ${ci.carBrand} ${ci.carModel}`,
                   startDateTime: getDateFromBlockchainTime(ci.startDateTime),
@@ -163,7 +163,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
                   isSeen: true,
                   seenAt: null,
 
-                  carPhotoUrl: getIpfsURI(metaData.mainImage),
+                  carPhotoUrl: getFileURI(metaData.mainImage),
                   tripStatus: tripStatus,
                   carTitle: `${ci.carBrand} ${ci.carModel} ${ci.carYearOfProduction}`,
                   carLicenceNumber: metaData.licensePlate,
@@ -216,7 +216,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
         if (!tripInfoResult.ok) return;
 
         const tripInfo = tripInfoResult.value;
-        const metaData = parseMetaData(await getMetaDataFromIpfs(tripInfoResult.value.metadataURI));
+        const metaData = parseMetaData(await getMetaData(tripInfoResult.value.metadataURI));
         const tripStatus = tripInfo.trip.status;
 
         setChatInfos((prev) => {
@@ -231,11 +231,11 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
 
               guestAddress: tripInfo.trip.guest,
               guestName: tripInfo.trip.guestName,
-              guestPhotoUrl: getIpfsURI(tripInfo.guestPhotoUrl),
+              guestPhotoUrl: getFileURI(tripInfo.guestPhotoUrl),
 
               hostAddress: tripInfo.trip.host,
               hostName: tripInfo.trip.hostName,
-              hostPhotoUrl: getIpfsURI(tripInfo.hostPhotoUrl),
+              hostPhotoUrl: getFileURI(tripInfo.hostPhotoUrl),
 
               tripTitle: `${tripStatus} trip with ${tripInfo.trip.hostName} ${tripInfo.brand} ${tripInfo.model}`,
               startDateTime: getDateFromBlockchainTime(tripInfo.trip.startDateTime),
@@ -246,7 +246,7 @@ export const FirebaseChatProvider = ({ children }: { children?: React.ReactNode 
               isSeen: true,
               seenAt: null,
 
-              carPhotoUrl: getIpfsURI(metaData.mainImage),
+              carPhotoUrl: getFileURI(metaData.mainImage),
               tripStatus: tripStatus,
               carTitle: `${tripInfo.brand} ${tripInfo.model} ${tripInfo.yearOfProduction}`,
               carLicenceNumber: metaData.licensePlate,

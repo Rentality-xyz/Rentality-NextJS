@@ -1,4 +1,4 @@
-import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getFileURI, getMetaData, parseMetaData } from "@/features/filestore/utils";
 import { ContractCarDetails, ContractCarInfo, ContractInsuranceCarInfo } from "../blockchain/schemas";
 import { HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE_TEXT } from "../HostCarInfo";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "../EngineType";
@@ -9,7 +9,7 @@ export const mapContractCarToCarDetails = async (
   carInfoDetails: ContractCarDetails,
   tokenURI: string
 ): Promise<HostCarInfo> => {
-  const metaData = parseMetaData(await getMetaDataFromIpfs(tokenURI));
+  const metaData = parseMetaData(await getMetaData(tokenURI));
 
   const price = Number(carInfo.pricePerDayInUsdCents) / 100;
   const securityDeposit = Number(carInfo.securityDepositPerTripInUsdCents) / 100;
@@ -23,7 +23,7 @@ export const mapContractCarToCarDetails = async (
   return {
     carId: Number(carInfo.carId),
     ownerAddress: carInfo.createdBy.toString(),
-    images: metaData.images.map((image, index) => ({ url: getIpfsURI(image), isPrimary: index === 0 })),
+    images: metaData.images.map((image, index) => ({ url: getFileURI(image), isPrimary: index === 0 })),
     vinNumber: carInfo.carVinNumber,
     brand: carInfo.brand,
     model: carInfo.model,

@@ -4,7 +4,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { InsuranceCaseDTO } from "@/model/InsuranceCase";
 import { createSecret } from "@/features/aiDamageAnalyze/api/createCase";
 import axios from "@/utils/cachedAxios";
-import { getMetaDataFromIpfs } from "@/utils/ipfsUtils";
+import { getMetaData } from "@/features/filestore/utils";
 import { logger } from "@/utils/logger";
 import { useState } from "react";
 import { CaseType } from "@/model/blockchain/schemas";
@@ -125,7 +125,7 @@ export default function useAiDamageAnalyze() {
             url: item.url,
           };
           if (item.url !== "") {
-            const metaData = await getMetaDataFromIpfs(item.url);
+            const metaData = await getMetaData(item.url);
 
             return {
               ...iCase,

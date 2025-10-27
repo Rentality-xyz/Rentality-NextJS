@@ -9,7 +9,7 @@ import { Err, Ok, Result, UnknownErr } from "@/model/utils/result";
 import { env } from "@/utils/env";
 import { isEmpty } from "@/utils/string";
 import { logger } from "@/utils/logger";
-import { getTripCarPhotos } from "@/features/filestore/pinata/utils";
+import { getTripCarPhotos } from "@/features/filestore";
 import { CaseType } from "@/model/blockchain/schemas";
 
 export type AnalyzeDamagesParams = {

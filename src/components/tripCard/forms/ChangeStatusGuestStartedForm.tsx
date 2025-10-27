@@ -17,7 +17,7 @@ import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import useUserMode from "@/hooks/useUserMode";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 import { Result } from "@/model/utils/result";
-import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore/pinata/utils";
+import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import { calculateDaysByBlockchainLogic } from "@/utils/date";
 

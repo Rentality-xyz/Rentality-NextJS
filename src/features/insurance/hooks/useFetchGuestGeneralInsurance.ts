@@ -2,7 +2,7 @@ import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { InsuranceType } from "@/model/blockchain/schemas";
 import { GuestGeneralInsurance } from "@/model/GuestInsurance";
-import { getIpfsURI } from "@/utils/ipfsUtils";
+import { getFileURI } from "@/features/filestore/utils/";
 import { useQuery } from "@tanstack/react-query";
 
 export const INSURANCE_GUEST_QUERY_KEY = "InsuranceGuest";
@@ -37,7 +37,7 @@ async function fetchGuestGeneralInsurance(rentalityContracts: IRentalityContract
     return INITIAL_DATA;
   }
 
-  return { photo: getIpfsURI(result.value[result.value.length - 1].photo) };
+  return { photo: getFileURI(result.value[result.value.length - 1].photo) };
 }
 
 export default useFetchGuestGeneralInsurance;

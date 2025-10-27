@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { INSURANCE_GUEST_QUERY_KEY } from "./useFetchGuestGeneralInsurance";
 import { INSURANCE_LIST_QUERY_KEY } from "./useFetchInsurances";
 import { logger } from "@/utils/logger";
-import { deleteFileByUrl, saveGeneralInsurancePhoto } from "@/features/filestore/pinata/utils";
+import { deleteFileByUrl, saveGeneralInsurancePhoto } from "@/features/filestore";
 import { isEmpty } from "@/utils/string";
 
 function useSaveGuestGeneralInsurance() {

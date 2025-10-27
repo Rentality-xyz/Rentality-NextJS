@@ -7,7 +7,7 @@ import { SearchCarRequest } from "@/model/SearchCarRequest";
 import { ContractLocationInfo, EngineType } from "@/model/blockchain/schemas";
 import { emptyContractLocationInfo, validateContractAvailableCarDTO } from "@/model/blockchain/schemas_utils";
 import { formatLocationInfoUpToCity } from "@/model/LocationInfo";
-import { getIpfsURIs, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getFileURIs, getMetaData, parseMetaData } from "@/features/filestore/utils";
 import { getMilesIncludedPerDayText } from "@/model/HostCarInfo";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { bigIntReplacer } from "@/utils/json";
@@ -92,7 +92,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
             ? (Number(availableCarDTO.fuelPrice) * tankVolumeInGal) / 1000
             : Number(availableCarDTO.fuelPrice) / 1000;
 
-        const metaData = parseMetaData(await getMetaDataFromIpfs(availableCarDTO.metadataURI));
+        const metaData = parseMetaData(await getMetaData(availableCarDTO.metadataURI));
         let isCarDetailsConfirmed = false;
 
         const tripDays = Number(availableCarDTO.tripDays);
@@ -106,7 +106,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
         const selectedCarDetails: SearchCarInfoDetails = {
           carId: Number(availableCarDTO.carId),
           ownerAddress: availableCarDTO.host.toString(),
-          images: getIpfsURIs(metaData.images),
+          images: getFileURIs(metaData.images),
           brand: availableCarDTO.brand,
           model: availableCarDTO.model,
           year: availableCarDTO.yearOfProduction.toString(),

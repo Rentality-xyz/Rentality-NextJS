@@ -1,5 +1,5 @@
 import { TripInfo, TripInfoShortDetails } from "@/model/TripInfo";
-import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getFileURI, getMetaData, parseMetaData } from "@/features/filestore/utils";
 import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { isEmpty } from "@/utils/string";
 import { ContractTripDTO, EngineType, InsuranceType, TripStatus } from "@/model/blockchain/schemas";
@@ -12,7 +12,7 @@ import { calculateDaysByBlockchainLogic } from "@/utils/date";
 import { isUnlimitedMiles } from "../HostCarInfo";
 
 export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetailsConfirmed?: boolean) => {
-  const metaData = parseMetaData(await getMetaDataFromIpfs(tripDTO.metadataURI));
+  const metaData = parseMetaData(await getMetaData(tripDTO.metadataURI));
   const timeZoneId = !isEmpty(tripDTO.timeZoneId) ? tripDTO.timeZoneId : UTC_TIME_ZONE_ID;
 
   const startOdometr = Number(tripDTO.trip.startParamLevels[1]);
@@ -72,7 +72,7 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
 
     carId: Number(tripDTO.trip.carId),
     carVinNumber: metaData.vinNumber,
-    image: getIpfsURI(metaData.mainImage),
+    image: getFileURI(metaData.mainImage),
     carDescription: metaData.description,
     carDoorsNumber: metaData.doorsNumber,
     carSeatsNumber: metaData.seatsNumber,

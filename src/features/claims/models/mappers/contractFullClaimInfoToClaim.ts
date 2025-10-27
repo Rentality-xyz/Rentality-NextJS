@@ -1,7 +1,7 @@
 import { ContractFullClaimInfo } from "@/model/blockchain/schemas";
 import { Claim, getClaimStatusTextFromStatus, getClaimTypeTextFromClaimType } from "..";
 import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
-import { getIpfsURI } from "@/utils/ipfsUtils";
+import { getFileURI } from "@/features/filestore/utils";
 
 export function contractFullClaimInfoToClaim(contractClaimInfo: ContractFullClaimInfo, isHost: boolean): Claim {
   return {
@@ -22,7 +22,7 @@ export function contractFullClaimInfoToClaim(contractClaimInfo: ContractFullClai
     hostPhoneNumber: formatPhoneNumber(contractClaimInfo.hostPhoneNumber),
     guestPhoneNumber: formatPhoneNumber(contractClaimInfo.guestPhoneNumber),
     isIncomingClaim: isHost !== contractClaimInfo.claim.isHostClaims,
-    fileUrls: contractClaimInfo.claim.photosUrl.split("|").map((url) => getIpfsURI(url)),
+    fileUrls: contractClaimInfo.claim.photosUrl.split("|").map((url) => getFileURI(url)),
     timeZoneId: contractClaimInfo.timeZoneId,
     currency: contractClaimInfo.currency,
   };

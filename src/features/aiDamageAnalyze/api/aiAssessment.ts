@@ -6,7 +6,7 @@ import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityAiDamageAnalyzeContract } from "@/features/blockchain/models/IRentalityAiDamageAnalyze";
 import { env } from "@/utils/env";
 import { logger } from "@/utils/logger";
-import { deleteFileByUrl, saveAiAssessment } from "@/features/filestore/pinata/utils";
+import { deleteFileByUrl, saveAiAssessment } from "@/features/filestore";
 import { isEmpty } from "@/utils/string";
 import { parseAiDamageAnalyzeCaseNumber } from "../utils";
 

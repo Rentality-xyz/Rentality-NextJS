@@ -7,7 +7,7 @@ import CarEditForm from "@/components/host/carEditForm/carEditForm";
 import { emptyHostCarInfo, HostCarInfo } from "@/model/HostCarInfo";
 import RntSuspense from "@/components/common/rntSuspense";
 import { isEmpty } from "@/utils/string";
-import { getIpfsURI } from "@/utils/ipfsUtils";
+import { getFileURI } from "@/features/filestore/utils";
 
 function StartHostingInvestmentPageContent() {
   const { t } = useTranslation();
@@ -38,7 +38,7 @@ function StartHostingInvestmentPageContent() {
       brand: investment.investment.investment.car.brand,
       model: investment.investment.investment.car.model,
       releaseYear: investment.investment.investment.car.yearOfProduction,
-      images: investment.metadata.images.map((image, index) => ({ url: getIpfsURI(image), isPrimary: index === 0 })),
+      images: investment.metadata.images.map((image, index) => ({ url: getFileURI(image), isPrimary: index === 0 })),
     });
     setIsLoading(false);
   }, [isLoadingInvestments, investments, hostCarInfo, investmentId]);

@@ -10,7 +10,7 @@ import { useDimoAuthState } from "@dimo-network/login-with-dimo";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MY_LISTINGS_QUERY_KEY } from "./useFetchMyListings";
 import { logger } from "@/utils/logger";
-import { deleteFilesByUrl, saveCarMetadata } from "@/features/filestore/pinata/utils";
+import { deleteFilesByUrl, saveCarMetadata } from "@/features/filestore";
 import { getDimoSignature } from "@/features/dimo/utils";
 import { REFERRAL_OWN_POINTS_QUERY_KEY } from "@/features/referralProgram/hooks/useFetchOwnReferralPoints";
 

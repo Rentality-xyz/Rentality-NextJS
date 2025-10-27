@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ImageCarouselDialog from "../createTrip/ImageCarouselDialog";
-import { GetPhotosForTripResponseType, getTripCarPhotos } from "@/features/filestore/pinata/utils";
+import { GetPhotosForTripResponseType, getTripCarPhotos } from "@/features/filestore";
 import SendPhotosToAi from "@/features/aiDamageAnalyze/components/SendPhotosToAi";
 
 const defaultCarouselState = {

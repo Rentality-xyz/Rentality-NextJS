@@ -1,5 +1,5 @@
 import { ContractSignedLocationInfo, EngineType } from "@/model/blockchain/schemas";
-import { CarMetadata } from "@/utils/ipfsUtils";
+import { CarMetadata } from "@/features/filestore/utils";
 
 export enum InvestStatus {
   Unknown,

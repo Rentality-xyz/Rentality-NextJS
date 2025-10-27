@@ -7,7 +7,7 @@ import CarPhotosUploadButton from "@/components/carPhotos/carPhotosUploadButton"
 import useFeatureFlags from "@/features/featureFlags/hooks/useFeatureFlags";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 import { Result } from "@/model/utils/result";
-import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore/pinata/utils";
+import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore";
 
 function GuestConfirmFinishForm({
   hostPhoneNumber,

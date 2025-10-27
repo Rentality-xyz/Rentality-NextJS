@@ -7,7 +7,7 @@ import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CLAIMS_LIST_QUERY_KEY } from "./useFetchClaims";
 import { logger } from "@/utils/logger";
-import { saveFilesForClaim } from "@/features/filestore/pinata/utils";
+import { saveFilesForClaim } from "@/features/filestore";
 
 const useCreateClaim = () => {
   const { rentalityContracts } = useRentality();

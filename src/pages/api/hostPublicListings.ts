@@ -5,7 +5,7 @@ import { ContractPublicHostCarDTO } from "@/model/blockchain/schemas";
 import { validateContractPublicHostCarDTO } from "@/model/blockchain/schemas_utils";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { env } from "@/utils/env";
-import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getFileURI, getMetaData, parseMetaData } from "@/features/filestore/utils";
 import { logger } from "@/utils/logger";
 import { isEmpty } from "@/utils/string";
 import { JsonRpcProvider, Provider, Wallet } from "ethers";
@@ -75,7 +75,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ? []
         : await Promise.all(
             hostPublicListingsView.map(async (hostCarDto) => {
-              const metaData = parseMetaData(await getMetaDataFromIpfs(hostCarDto.metadataURI));
+              const metaData = parseMetaData(await getMetaData(hostCarDto.metadataURI));
 
               const pricePerDay = Number(hostCarDto.pricePerDayInUsdCents) / 100;
               const securityDeposit = Number(hostCarDto.securityDepositPerTripInUsdCents) / 100;
@@ -84,7 +84,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               const item: BaseCarInfo = {
                 carId: Number(hostCarDto.carId),
                 ownerAddress: hostAddress,
-                image: getIpfsURI(metaData.mainImage),
+                image: getFileURI(metaData.mainImage),
                 brand: hostCarDto.brand,
                 model: hostCarDto.model,
                 year: hostCarDto.yearOfProduction.toString(),

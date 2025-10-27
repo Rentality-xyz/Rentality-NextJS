@@ -1,80 +1,29 @@
 import { HostCarInfo } from "@/model/HostCarInfo";
-import { isEmpty } from "./string";
 import { isUploadedCarImage, UploadedCarImage } from "@/model/FileToUpload";
-import { logger } from "./logger";
+import { isEmpty } from "@/utils/string";
+import { getFileURIFromPinata, getMetaDataFromIpfs } from "@/features/filestore/pinata/utils";
 
-export function getIpfsHashFromUrl(pinataURI: string) {
-  if (!pinataURI || pinataURI.length === 0) return "";
-  return pinataURI.split("/").pop() ?? "";
+export function getFileHashFromUrl(URI: string) {
+  if (!URI || URI.length === 0) return "";
+  return URI.split("/").pop() ?? "";
 }
 
-function getIpfsURIfromPinata(pinataURI: string) {
-  const fileHash = getIpfsHashFromUrl(pinataURI);
+export function getFileURI(URI: string) {
+  if (isEmpty(URI)) return "";
+  const fileHash = getFileHashFromUrl(URI);
   if (isEmpty(fileHash)) return "";
-  return "https://gateway.pinata.cloud/ipfs/" + fileHash;
+  return getFileURIFromPinata(fileHash);
 }
 
-export function getIpfsURIfromAkave(pinataURI: string) {
-  const fileHash = getIpfsHashFromUrl(pinataURI);
-  if (isEmpty(fileHash)) return "";
-  return "https://o3-rc1.akave.xyz/rnt-test-public-bucket-3/" + fileHash;
-}
-
-export function getIpfsURI(pinataURI: string) {
-  if (isEmpty(pinataURI)) return "";
-  return getIpfsURIfromPinata(pinataURI);
-}
-
-export function getIpfsURIs(pinataURI: string[]) {
+export function getFileURIs(pinataURI: string[]) {
   if (!pinataURI || pinataURI.length === 0) return [];
-  return pinataURI.map((uri) => getIpfsURIfromPinata(uri));
+  return pinataURI.map((uri) => getFileURI(uri));
 }
 
-export function getPinataGatewayURIfromPinata(pinataURI: string) {
-  if (isEmpty(pinataURI)) return "";
-  const fileHash = pinataURI.split("/").pop();
-  if (isEmpty(fileHash)) return "";
-  return "https://ivory-specific-mink-961.mypinata.cloud/ipfs/" + fileHash;
+export async function getMetaData(tokenURI: string) {
+    return getMetaDataFromIpfs(tokenURI);
 }
 
-const IPFS_GATEWAYS = [
-  'https://ipfs.io/ipfs/',
-  'https://cloudflare-ipfs.com/ipfs/',
-  'https://dweb.link/ipfs/',
-  'https://gateway.pinata.cloud/ipfs/',
-];
-
-export async function getMetaDataFromIpfs(tokenURI: string) {
-  const ipfsHash = getIpfsHashFromUrl(tokenURI);
-  if (!ipfsHash) {
-    logger.error("Invalid tokenURI or no IPFS hash found:", tokenURI);
-    return {};
-  }
-
-  for (const gateway of IPFS_GATEWAYS) {
-    const url = gateway + ipfsHash;
-    try {
-      logger.info(`Fetching metadata from ${url}`);
-      const response = await fetch(url, {
-        headers: { Accept: "application/json" },
-      });
-
-      if (!response.ok) {
-        logger.warn(`Gateway ${gateway} returned status ${response.status}`);
-        continue;
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      logger.warn(`Error fetching from ${gateway}: ${error}`);
-      // continue to next gateway
-    }
-  }
-
-  logger.error("All IPFS gateways failed for:", tokenURI);
-  return {};
-}
 const META_KEY_VIN_NUMBER = "VIN number";
 const META_KEY_LICENSE_PLATE = "License plate";
 const META_KEY_LICENSE_STATE = "License state";

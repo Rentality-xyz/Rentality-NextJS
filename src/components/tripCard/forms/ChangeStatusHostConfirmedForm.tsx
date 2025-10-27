@@ -17,7 +17,7 @@ import useDIMOCarData from "@/features/dimo/hooks/useDIMOCarData";
 import RntInputTransparent from "@/components/common/rntInputTransparent";
 import { FEATURE_FLAGS } from "@/features/featureFlags/utils";
 import { Result } from "@/model/utils/result";
-import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore/pinata/utils";
+import { deleteFilesByUrl, UploadedUrlList } from "@/features/filestore";
 
 interface ChangeStatusHostConfirmedFormProps {
   tripInfo: TripInfo;

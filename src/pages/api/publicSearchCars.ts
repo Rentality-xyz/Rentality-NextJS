@@ -10,7 +10,7 @@ import {
   EngineType,
 } from "@/model/blockchain/schemas";
 import { emptyContractLocationInfo, validateContractSearchCarWithDistance } from "@/model/blockchain/schemas_utils";
-import { getIpfsURIs, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getFileURIs, getMetaData, parseMetaData } from "@/features/filestore/utils";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { isEmpty } from "@/utils/string";
 import { Contract, JsonRpcProvider, Wallet } from "ethers";
@@ -277,7 +277,7 @@ async function formatSearchAvailableCarsContractResponse(
   const currencyConverter = new Contract(converterAddress.address, rentalityContracts.currencyConverter.abi, provider);
   const cars = await Promise.all(
     searchCarsViewsView.map(async (i: ContractSearchCarWithDistance) => {
-      const metaData = parseMetaData(await getMetaDataFromIpfs(i.car.metadataURI));
+      const metaData = parseMetaData(await getMetaData(i.car.metadataURI));
       let isCarDetailsConfirmed = false;
       if(!currencyHashSet.has(i.car.hostCurrency.currency)) {
         let tokenDecimals = 18;
@@ -331,7 +331,7 @@ async function formatSearchAvailableCarsContractResponse(
       let item: SearchCarInfoDTO = {
         carId: Number(i.car.carId),
         ownerAddress: i.car.host.toString(),
-        images: getIpfsURIs(metaData.images),
+        images: getFileURIs(metaData.images),
         brand: i.car.brand,
         model: i.car.model,
         year: i.car.yearOfProduction.toString(),

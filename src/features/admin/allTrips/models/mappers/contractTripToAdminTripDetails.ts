@@ -1,6 +1,6 @@
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { isEmpty } from "@/utils/string";
-import { getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getMetaData, parseMetaData } from "@/features/filestore/utils";
 import {
   AdminTripStatus,
   ContractAdminTripDTO,
@@ -92,7 +92,7 @@ export const mapContractAdminTripDTOToAdminTripDetails = async (
   const timeZoneId: string = !isEmpty(locationInfo.timeZoneId) ? locationInfo.timeZoneId : UTC_TIME_ZONE_ID;
   const hostLocation = formatLocationInfoUpToCity(locationInfo);
 
-  const metaData = parseMetaData(await getMetaDataFromIpfs(adminTripDto.carMetadataURI));
+  const metaData = parseMetaData(await getMetaData(adminTripDto.carMetadataURI));
   const plateNumber = metaData.licensePlate;
   const carDescription = `${metaData.brand} ${metaData.model} ${metaData.yearOfProduction}`;
   const adminTripStatus = getAdminStatusFromTrip(trip);

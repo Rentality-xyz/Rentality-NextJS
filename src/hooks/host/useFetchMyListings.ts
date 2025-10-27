@@ -2,7 +2,7 @@ import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { useQuery } from "@tanstack/react-query";
 import { BaseCarInfo } from "@/model/BaseCarInfo";
-import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getFileURI, getMetaData, parseMetaData } from "@/features/filestore/utils";
 import { validateContractCarInfoDTO } from "@/model/blockchain/schemas_utils";
 
 export const MY_LISTINGS_QUERY_KEY = "MyListings";
@@ -43,7 +43,7 @@ async function fetchMyListings(
   const myListingsData =
     (await Promise.all(
       result.value.map(async (carDto) => {
-        const metaData = parseMetaData(await getMetaDataFromIpfs(carDto.metadataURI));
+        const metaData = parseMetaData(await getMetaData(carDto.metadataURI));
 
         const pricePerDay = Number(carDto.carInfo.pricePerDayInUsdCents) / 100;
         const securityDeposit = Number(carDto.carInfo.securityDepositPerTripInUsdCents) / 100;
@@ -52,7 +52,7 @@ async function fetchMyListings(
         let item: BaseCarInfo = {
           carId: Number(carDto.carInfo.carId),
           ownerAddress: carDto.carInfo.createdBy.toString(),
-          image: getIpfsURI(metaData.mainImage),
+          image: getFileURI(metaData.mainImage),
           brand: carDto.carInfo.brand,
           model: carDto.carInfo.model,
           year: carDto.carInfo.yearOfProduction.toString(),

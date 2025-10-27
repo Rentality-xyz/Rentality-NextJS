@@ -9,7 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { INVESTMENTS_LIST_QUERY_KEY } from "./useFetchInvestments";
 import { logger } from "@/utils/logger";
-import { deleteFilesByUrl, saveCarMetadata } from "@/features/filestore/pinata/utils";
+import { deleteFilesByUrl, saveCarMetadata } from "@/features/filestore";
 import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 import { PlatformCarImage } from "@/model/FileToUpload";
 

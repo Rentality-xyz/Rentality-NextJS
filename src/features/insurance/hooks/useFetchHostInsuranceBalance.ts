@@ -3,7 +3,6 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { useQuery } from "@tanstack/react-query";
 import { InsuranceType } from "@/model/blockchain/schemas";
-import { getIpfsURI } from "@/utils/ipfsUtils";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 
 export const HOST_INSURANCE_BALANCE_QUERY_KEY = "HostInsuranceBalance";

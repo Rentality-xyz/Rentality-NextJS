@@ -1,17 +1,17 @@
 import { ContractCarDetails } from "@/model/blockchain/schemas";
 import { AdminCarDetails } from "..";
-import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getFileURI, getMetaData, parseMetaData } from "@/features/filestore/utils";
 
 export const mapContractCarToAdminCarDetails = async (
   car: ContractCarDetails,
   metadataURI: string
 ): Promise<AdminCarDetails> => {
-  const metaData = parseMetaData(await getMetaDataFromIpfs(metadataURI));
+  const metaData = parseMetaData(await getMetaData(metadataURI));
   const isUserAddressFull = car.locationInfo.userAddress.split(",").length > 3;
 
   return {
     carId: Number(car.carId),
-    carPhotoUrl: getIpfsURI(metaData.mainImage),
+    carPhotoUrl: getFileURI(metaData.mainImage),
     userAddress: car.locationInfo.userAddress,
     country: car.locationInfo.country,
     state: car.locationInfo.state,

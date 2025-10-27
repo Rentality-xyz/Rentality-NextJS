@@ -10,7 +10,7 @@ import { emptyContractLocationInfo } from "@/model/blockchain/schemas_utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MY_LISTINGS_QUERY_KEY } from "./useFetchMyListings";
 import { logger } from "@/utils/logger";
-import { deleteFilesByUrl, saveCarMetadata } from "@/features/filestore/pinata/utils";
+import { deleteFilesByUrl, saveCarMetadata } from "@/features/filestore";
 
 function useUpdateCar() {
   const { rentalityContracts } = useRentality();

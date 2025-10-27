@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { authOnDimo, tokenExchange } from "./helpers";
-import { getIpfsURI } from "@/utils/ipfsUtils";
+import { getFileURI } from "@/features/filestore/utils/";
 import { logger } from "@/utils/logger";
 
 export type DIMOSharedCarsResponse = {
@@ -95,7 +95,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           return null;
         }
       }
-      token.imageURI = getIpfsURI(token.imageURI);
+      token.imageURI = getFileURI(token.imageURI);
       return {
         ...token,
         vin,

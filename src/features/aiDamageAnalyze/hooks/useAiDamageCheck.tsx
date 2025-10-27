@@ -8,9 +8,9 @@ import { useEffect, useState } from "react";
 import { AnalyzeDamagesParams } from "../api/analyzeDamages";
 import { isEmpty } from "@/utils/string";
 import { bigIntReplacer } from "@/utils/json";
-import { getTripCarPhotos } from "@/features/filestore/pinata/utils";
+import { getTripCarPhotos } from "@/features/filestore";
 import { CaseType } from "@/model/blockchain/schemas";
-import { getIpfsURI } from "@/utils/ipfsUtils";
+import { getFileURI } from "@/features/filestore/utils";
 
 export type AiCheckStatus =
   | "loading"
@@ -99,7 +99,7 @@ async function fetchAiDamageCheck(
   const postTripCase = tripCasesResult.value.find((i) => i.caseType === CaseType.PostTrip);
   if (postTripCase) {
     if (!isEmpty(postTripCase.url)) {
-      setPostTripReportUrl(getIpfsURI(postTripCase.url));
+      setPostTripReportUrl(getFileURI(postTripCase.url));
       return { status: "post-trip analyzed successful", lastUpdated: new Date() };
     }
     return { status: "post-trip analyzing", lastUpdated: new Date() };
@@ -111,12 +111,12 @@ async function fetchAiDamageCheck(
   const preTripCase = tripCasesResult.value.find((i) => i.caseType === CaseType.PreTrip);
   if (preTripCase) {
     if (!isEmpty(preTripCase.url) && (tripCarPhotos.checkOutByGuest.length > 0 || tripCarPhotos.checkOutByHost.length > 0) && !postTripCase) {
-      setPreTripReportUrl(getIpfsURI(preTripCase.url));
+      setPreTripReportUrl(getFileURI(preTripCase.url));
       return {status: "ready to post-trip analyze", lastUpdated: new Date()}
 
     }
    else if (!isEmpty(preTripCase.url)) {
-      setPreTripReportUrl(getIpfsURI(preTripCase.url));
+      setPreTripReportUrl(getFileURI(preTripCase.url));
       return { status: "pre-trip checked", lastUpdated: new Date() };
     }
 

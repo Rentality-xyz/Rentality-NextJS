@@ -1,6 +1,6 @@
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
-import { getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtils";
+import { getMetaData, parseMetaData } from "@/features/filestore/utils";
 import { useQuery } from "@tanstack/react-query";
 import { InvestmentInfoWithMetadata } from "@/features/invest/models/investmentInfo";
 import { mapContractInvestmentDTOToInvestmentInfoWithMetadata } from "../models/mappers/contractInvestmentDTOtoInvestmentInfo";
@@ -37,7 +37,7 @@ async function fetchInvestments(
 
   return Promise.all(
     result.value.map(async (value) => {
-      const metadata = parseMetaData(await getMetaDataFromIpfs(value.investment.car.tokenUri));
+      const metadata = parseMetaData(await getMetaData(value.investment.car.tokenUri));
       return mapContractInvestmentDTOToInvestmentInfoWithMetadata(value, metadata, ethereumInfo.chainId);
     })
   );
