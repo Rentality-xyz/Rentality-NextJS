@@ -212,17 +212,15 @@ function BecomeHostContent() {
         </div>
 
         <div className="flex flex-col max-xl:mt-8">
-          <div className="relative ml-1 w-full overflow-hidden rounded-2xl pb-[65%]">
+          <div className="ml-1 rounded-2xl overflow-hidden" style={{ width: 628, height: 412 }}>
             <iframe
-              width="560"
-              height="315"
+              className="w-full h-full"
               src={TUTORIAL_YOUTUBE_URL}
-              title="YouTube video player"
+              title="Tutorial video"
               frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-            ></iframe>
+            />
           </div>
           <RntButton type="submit" className="mt-4 w-full">
             {t("become_host.btn_how_to_start")}
