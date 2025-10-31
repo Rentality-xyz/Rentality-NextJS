@@ -24,6 +24,8 @@ import useFetchMyListings from "@/hooks/host/useFetchMyListings";
 import useSaveNewCar from "@/hooks/host/useSaveNewCar";
 import CarEditForm from "@/components/host/carEditForm/carEditForm";
 
+const TUTORIAL_YOUTUBE_URL = "https://www.youtube.com/embed/CWu89sKcYVI?si=l2xEG3SWV0DC5KHe"
+
 function BecomeHost() {
   return (
     <CivicProvider>
@@ -130,12 +132,7 @@ function BecomeHostContent() {
     if (becomeHostSteps.isDiscountsAndPriceSaved) {
       toggleOpenBlockDiscountsAndPrice(false);
     }
-  }, [
-    becomeHostSteps,
-    toggleOpenBlockUserInfo,
-    toggleOpenBlockListingCar,
-    toggleOpenBlockDiscountsAndPrice,
-  ]);
+  }, [becomeHostSteps, toggleOpenBlockUserInfo, toggleOpenBlockListingCar, toggleOpenBlockDiscountsAndPrice]);
 
   const stepsPassed = Object.values(becomeHostSteps).filter((i) => i).length;
   const stepsTotal = Object.values(becomeHostSteps).length;
@@ -215,7 +212,18 @@ function BecomeHostContent() {
         </div>
 
         <div className="flex flex-col max-xl:mt-8">
-          <Image src={"/images/tutorial_video.png"} width={628} height={412} alt="Tutorial video" className="ml-1" />
+          <div className="relative ml-1 w-full overflow-hidden rounded-2xl pb-[65%]">
+            <iframe
+              width="560"
+              height="315"
+              src={TUTORIAL_YOUTUBE_URL}
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            ></iframe>
+          </div>
           <RntButton type="submit" className="mt-4 w-full">
             {t("become_host.btn_how_to_start")}
           </RntButton>
