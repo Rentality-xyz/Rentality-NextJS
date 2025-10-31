@@ -98,7 +98,7 @@ export const env = createEnv({
 
     NEXT_PUBLIC_NODE_ENV: unionOfLiterals(NODE_ENVS).default("development"),
     NEXT_PUBLIC_MIN_CONSOLE_LOG_LEVEL: unionOfLiterals(LOG_LEVELS).default("trace"),
-    NEXT_PUBLIC_MIN_EXTERNAL_LOG_LEVEL: unionOfLiterals(LOG_LEVELS).default("info"),
+    NEXT_PUBLIC_MIN_EXTERNAL_LOG_LEVEL: unionOfLiterals(LOG_LEVELS).default("info")
   },
 
   // If you're using Next.js < 13.4.4, you'll need to specify the runtimeEnv manually

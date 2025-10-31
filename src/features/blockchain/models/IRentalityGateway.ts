@@ -42,7 +42,7 @@ export interface IRentalityGateway extends ContractResultWrapper<IRentalityGatew
 
 export interface IRentalityGatewayContract extends IEthersContract {
   /// USER PROFILE functions
-  getMyFullKYCInfo(): Promise<ContractFullKYCInfoDTO>;
+  getMyFullKYCInfo(options?: object): Promise<ContractFullKYCInfoDTO>;
   setKYCInfo(
     nickName: string,
     mobilePhoneNumber: string,
