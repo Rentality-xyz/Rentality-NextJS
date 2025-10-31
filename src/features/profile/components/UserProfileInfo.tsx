@@ -12,7 +12,7 @@ function UserProfileInfo() {
       <div className="my-1 flex flex-col gap-4 lg:my-8">
         <UserCommonInformationForm userProfile={userProfile} saveUserProfile={saveUserProfile} />
         <hr />
-        <UserCoinbaseVerification />
+        {/* <UserCoinbaseVerification /> */}
       </div>
     </RntSuspense>
   );

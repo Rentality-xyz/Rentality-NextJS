@@ -11,7 +11,7 @@ export function getIpfsHashFromUrl(pinataURI: string) {
 function getIpfsURIfromPinata(pinataURI: string) {
   const fileHash = getIpfsHashFromUrl(pinataURI);
   if (isEmpty(fileHash)) return "";
-  return "https://gateway.pinata.cloud/ipfs/" + fileHash;
+  return "https://ipfs.io/ipfs/" + fileHash;
 }
 
 export function getIpfsURIfromAkave(pinataURI: string) {
@@ -54,7 +54,6 @@ export async function getMetaDataFromIpfs(tokenURI: string) {
   for (const gateway of IPFS_GATEWAYS) {
     const url = gateway + ipfsHash;
     try {
-      logger.info(`Fetching metadata from ${url}`);
       const response = await fetch(url, {
         headers: { Accept: "application/json" },
       });
