@@ -18,19 +18,19 @@ export async function isUserHasEnoughFunds(
       logger.error("checkWalletBalance error: getBalance return undefined");
       return false;
     }
-    valueToCheckInCurrency = Number(valueToCheck) * 1e18
   } else {
     const erc20ContractResult = await getErc20ContractWithPaymentsAddress(currency.currency, signer);
     if (!erc20ContractResult) {
       throw Error("Erc20 contract not found");
     }
     const { erc20 } = erc20ContractResult;
-    const decimals = await erc20.decimals();
     userBalance = await erc20.balanceOf(userAddress);
-    valueToCheckInCurrency = Number(valueToCheck) * Math.pow(10, Number(decimals))
-  }
 
-  return userBalance >= valueToCheckInCurrency;
+  }
+  console.log("USER BALANCE: ", userBalance)
+  console.log("valueToCheck: ", valueToCheck)
+
+  return userBalance >= valueToCheck;
 }
 
 export const ZERO_4_BYTES_HASH = zeroPadBytes("0x00", 4);

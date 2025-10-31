@@ -181,12 +181,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
       if (!rentalityContracts) return;
 
       try {
-        const defaultRpcUrl = await fetchDefaultRpcUrl(ethereumInfo.chainId);
-
-        if (isEmpty(defaultRpcUrl)) {
-          return null;
-        }
-
+   
         const provider = await getDefaultProvider()
 
         const notificationService = await getEtherContractWithProvider("notificationService", provider);
@@ -199,7 +194,8 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
         await sleep(5000);
 
         const toBlock = await ethereumInfo.provider.getBlockNumber();
-        const fromBlock = getFromBlock(ethereumInfo.chainId, toBlock);
+        // const fromBlock = getFromBlock(ethereumInfo.chainId, toBlock);
+        const fromBlock = toBlock - 9;
 
         const getTripsResult = await rentalityContracts.gateway.getTripsAs(isHost);
         const getMyClaimsResult = await rentalityContracts.gateway.getMyClaimsAs(isHost);

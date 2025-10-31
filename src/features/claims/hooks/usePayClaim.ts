@@ -31,6 +31,7 @@ const usePayClaim = () => {
           return Err(new Error("ERROR"));
         }
         
+        console.log("CALCUALTE VALUE BEFORE UPDATE: ", calculateClaimValueResult.value)
         if (!params.isAdmin && !(await isUserHasEnoughFunds(ethereumInfo.signer, calculateClaimValueResult.value))) {
           logger.error("payClaim error: user don't have enough funds");
           return Err(new Error("NOT_ENOUGH_FUNDS"));

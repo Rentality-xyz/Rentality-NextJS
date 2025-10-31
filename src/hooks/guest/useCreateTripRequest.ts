@@ -99,7 +99,12 @@ const useCreateTripRequest = () => {
           return Err(new Error("ERROR"));
         }
 
-        const pickupLocationResult = await getSignedLocationInfo(pickupLocationInfo, ethereumInfo.chainId);
+        const defaultChainId = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
+        if(!defaultChainId) {
+          console.error("Default chain id not found")
+          return Err(new Error("ERROR"));
+        }
+        const pickupLocationResult = await getSignedLocationInfo(pickupLocationInfo, Number.parseInt(defaultChainId));
         if (!pickupLocationResult.ok) {
           logger.error("Sign location error");
           return Err(new Error("ERROR"));
