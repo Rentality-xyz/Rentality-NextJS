@@ -20,6 +20,7 @@ function Home() {
 }
 
 function AuthenticatedHome() {
+
   const { isLoading, userRole, isHost } = useUserRole();
   const router = useRouter();
 
