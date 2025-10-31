@@ -60,6 +60,8 @@ function UserCommonInformationForm({
   const [verifiedPhoneNumber, setVerifiedPhoneNumber] = useState(userProfile.phoneNumber);
 
   useEffect(() => {
+    console.log("userProfile", userProfile.profilePhotoUrl);
+
     reset({
       profilePhotoUrl: userProfile.profilePhotoUrl,
       nickname: userProfile.nickname,

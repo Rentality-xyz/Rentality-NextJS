@@ -2,6 +2,7 @@ import { HostCarInfo } from "@/model/HostCarInfo";
 import { isUploadedCarImage, UploadedCarImage } from "@/model/FileToUpload";
 import { isEmpty } from "@/utils/string";
 import { getFileURIFromPinata, getMetaDataFromIpfs } from "@/features/filestore/pinata/utils";
+import { getFileURIFromAkave, getMetaDataFromAkave } from "@/features/filestore/akave/utils";
 
 export function getFileHashFromUrl(URI: string) {
   if (!URI || URI.length === 0) return "";
@@ -13,6 +14,7 @@ export function getFileURI(URI: string) {
   const fileHash = getFileHashFromUrl(URI);
   if (isEmpty(fileHash)) return "";
   return getFileURIFromPinata(fileHash);
+  // return getFileURIFromAkave(fileHash);
 }
 
 export function getFileURIs(pinataURI: string[]) {
@@ -22,6 +24,7 @@ export function getFileURIs(pinataURI: string[]) {
 
 export async function getMetaData(tokenURI: string) {
     return getMetaDataFromIpfs(tokenURI);
+    // return getMetaDataFromAkave(tokenURI);
 }
 
 const META_KEY_VIN_NUMBER = "VIN number";

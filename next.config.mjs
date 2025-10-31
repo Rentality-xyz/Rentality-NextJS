@@ -34,6 +34,12 @@ const nextConfig = {
         port: "",
         pathname: "/ipfs/**",
       },
+      {
+        protocol: "https",
+        hostname: "o3-rc3.akave.xyz",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };

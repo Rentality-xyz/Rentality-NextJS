@@ -10,14 +10,26 @@ import {
   uploadJSONToIPFS,
 } from "@/features/filestore/pinata";
 import { getFileHashFromUrl, getNftJSONFromCarInfo } from "@/features/filestore/utils";
+import {
+  deleteFileFromAkave,
+  getTripCarPhotosFromAkave,
+  uploadFileToAkave,
+  uploadJSONToAkave,
+} from "@/features/filestore/akave";
 
 export type UploadedUrl = { url: string };
 export type UploadedUrlList = { urls: string[] };
 
-export async function saveUserProfilePhoto(file: File, chainId: number, keyValues?: {}): Promise<Result<UploadedUrl>> {
-  const fileName = `${chainId}_RentalityProfileImage`;
-  return uploadFile(file, fileName, { ...keyValues, chainId: chainId });
+export async function saveUserProfilePhoto(
+  file: File,
+  chainId: number,
+  keyValues?: {}
+): Promise<Result<UploadedUrl>> {
+  const timestamp = Date.now();
+  const fileName = `${chainId}_RentalityProfileImage_${timestamp}`;
+  return uploadFile(file, fileName, { ...keyValues, chainId });
 }
+
 
 export async function saveFilesForClaim(
   files: File[],
@@ -26,9 +38,9 @@ export async function saveFilesForClaim(
   keyValues?: {}
 ): Promise<Result<UploadedUrlList>> {
   const savedUrls: string[] = [];
-
   for (const file of files.filter((i) => i)) {
-    const fileName = `${chainId}_RentalityClaimFile_${tripId}`;
+    const timestamp = Date.now();
+    const fileName = `${chainId}_RentalityClaimFile_${tripId}_${timestamp}`;
     const uploadResult = await uploadFile(file, fileName, { ...keyValues, chainId: chainId });
 
     if (!uploadResult.ok) {
@@ -52,7 +64,8 @@ export async function saveGeneralInsurancePhoto(
   chainId: number,
   keyValues?: {}
 ): Promise<Result<UploadedUrl>> {
-  const fileName = `${chainId}_RentalityGuestInsurance`;
+  const timestamp = Date.now();
+  const fileName = `${chainId}_RentalityGuestInsurance_${timestamp}`;
   return uploadFile(file, fileName, { ...keyValues, chainId: chainId });
 }
 
@@ -82,8 +95,8 @@ export async function saveCarMetadata(
       }
       continue;
     }
-
-    const fileName = `${chainId}_RentalityCarImage`;
+    const timestamp = Date.now();
+    const fileName = `${chainId}_RentalityCarImage_${timestamp}`;
     const uploadImageResult = await uploadFile(file.file, fileName, { ...keyValues, chainId: chainId });
 
     if (!uploadImageResult.ok) {
@@ -99,9 +112,9 @@ export async function saveCarMetadata(
     newUploadedUrls.push(uploadImageResult.value.url);
     carImagesToSaveInMetadata.push({ url: uploadImageResult.value.url, isPrimary: file.isPrimary });
   }
-
+  const timestamp = Date.now();
   const nftJSON = getNftJSONFromCarInfo({ ...carInfo, images: carImagesToSaveInMetadata });
-  const metadataFileName = `${chainId}_RentalityNFTMetadata`;
+  const metadataFileName = `${chainId}_RentalityNFTMetadata_${timestamp}`;
   const uploadMetadataResult = await uploadJSON(nftJSON, metadataFileName, { ...keyValues, chainId: chainId });
 
   if (!uploadMetadataResult.ok) {
@@ -138,7 +151,8 @@ export async function saveTripCarPhotos(
   const savedUrls: string[] = [];
 
   for (const file of files.filter((i) => i)) {
-    const fileName = `${chainId}_${uploadedBy}-${tripStatus}-Trip-${tripId}-Photo`;
+    const timestamp = Date.now();
+    const fileName = `${chainId}_${uploadedBy}-${tripStatus}-Trip-${tripId}-Photo-${timestamp}`;
     const uploadResult = await uploadFile(file, fileName, {
       ...keyValues,
       tripId: tripId,
@@ -164,7 +178,8 @@ export async function saveTripCarPhotos(
 }
 
 export async function saveAiAssessment(JSONBody: {}, chainId: number, keyValues?: {}): Promise<Result<UploadedUrl>> {
-  const fileName = `${chainId}_RentalityAiAssessment`;
+  const timestamp = Date.now();
+  const fileName = `${chainId}_RentalityAiAssessment_${timestamp}`;
   return uploadJSON(JSONBody, fileName, { ...keyValues, chainId: chainId });
 }
 
@@ -193,17 +208,21 @@ export async function deleteFilesByUrl(fileUrls: string[]): Promise<Result<boole
 
 
 export async function getTripCarPhotos(tripId: number): Promise<GetPhotosForTripResponseType> {
-  return await getTripCarPhotosFromIPFS(tripId);
+  // return await getTripCarPhotosFromIPFS(tripId);
+  return await getTripCarPhotosFromAkave(tripId);
 }
 
 async function uploadFile(file: File, fileName: string, keyValues?: {}): Promise<Result<UploadedUrl>> {
   return uploadFileToIPFS(file, fileName, keyValues);
+  // return uploadFileToAkave(file, fileName, keyValues);
 }
 
 async function deleteFile(hash: string): Promise<Result<boolean>> {
   return deleteFileFromIPFS(hash);
+  // return deleteFileFromAkave(hash);
 }
 
 async function uploadJSON(JSONBody: {}, fileName: string, keyValues?: {}): Promise<Result<UploadedUrl>> {
   return uploadJSONToIPFS(JSONBody, fileName, keyValues);
+  // return uploadJSONToAkave(JSONBody, fileName, keyValues);
 }
