@@ -11,6 +11,7 @@ export interface RntSelectProps extends React.ComponentPropsWithoutRef<"select">
   containerClassName?: string;
   label?: string;
   readOnly?: boolean;
+  placeholder?: string;
   validationClassName?: string;
   validationError?: string;
   isTransparentStyle?: boolean;
@@ -75,12 +76,16 @@ const RntSelect = forwardRef<HTMLSelectElement, RntSelectProps>(
             id={id}
             style={isTransparentStyle ? { backgroundColor: "transparent", paddingLeft: "0px" } : {}}
             disabled={readOnly}
-            placeholder={placeholder}
             onChange={(e) => onChangeHandler != null && onChangeHandler(e)}
             value={value}
             {...rest}
             ref={ref}
           >
+            {placeholder && (
+              <option value="" disabled hidden>
+                {placeholder}
+              </option>
+            )}
             {children}
           </select>
           {isTransparentStyle && <span className={`custom-arrow top-[70%] ${arrowStyle}`}></span>}
