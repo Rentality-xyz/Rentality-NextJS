@@ -216,6 +216,7 @@ function Search() {
     return <Loading />;
   }
 
+
   return (
     <div className="flex flex-col" title="Search">
       <SearchAndFilters
@@ -239,6 +240,8 @@ function Search() {
             </div>
             {searchResult?.carInfos?.length > 0 ? (
               searchResult.carInfos.map((value: SearchCarInfo) => {
+                const volswagens = searchResult?.carInfos?.filter(c=>c.brand.toLowerCase() === 'volkswagen')
+                console.log("VOLKSVAGEN: ", volswagens)
                 return (
                   <div key={value.carId} id={`car-${value.carId}`}>
                     <CarSearchItem

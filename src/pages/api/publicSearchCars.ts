@@ -305,8 +305,6 @@ async function formatSearchAvailableCarsContractResponse(
      (Number(totalCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate);
      const totalPriceInCents = BigInt(i.car.pricePerDayInUsdCents) * BigInt(i.car.tripDays) + BigInt(i.car.taxes) + BigInt(i.car.securityDepositPerTripInUsdCents);
 
-     console.log("TOTAL CENTS: ", totalPriceInCents);
-     console.log("CARINFO: ", i.car.brand + " " + i.car.model);
      let totalPriceInCurrency = 
     (Number(totalPriceInCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate);
       
