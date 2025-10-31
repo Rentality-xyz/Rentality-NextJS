@@ -11,6 +11,7 @@ export interface RntSelectProps extends React.ComponentPropsWithoutRef<"select">
   containerClassName?: string;
   label?: string;
   readOnly?: boolean;
+  placeholder?: string;
   validationClassName?: string;
   validationError?: string;
   isTransparentStyle?: boolean;
