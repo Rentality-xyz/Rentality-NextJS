@@ -240,8 +240,6 @@ function Search() {
             </div>
             {searchResult?.carInfos?.length > 0 ? (
               searchResult.carInfos.map((value: SearchCarInfo) => {
-                const volswagens = searchResult?.carInfos?.filter(c=>c.brand.toLowerCase() === 'volkswagen')
-                console.log("VOLKSVAGEN: ", volswagens)
                 return (
                   <div key={value.carId} id={`car-${value.carId}`}>
                     <CarSearchItem
@@ -253,7 +251,7 @@ function Search() {
                       setSelected={setHighlightedCar}
                       getRequestDetailsLink={() => getRequestDetailsLink(value)}
                       isGuestHasInsurance={!isLoadingInsurance && !isEmpty(guestInsurance.photo)}
-                      isYourOwnCar={userInfo?.address === value.ownerAddress}
+                      isYourOwnCar={userInfo?.address.toLowerCase() === value.ownerAddress.toLowerCase()}
                       startDateTimeStringFormat={searchResult.searchCarRequest.dateFromInDateTimeStringFormat}
                       endDateTimeStringFormat={searchResult.searchCarRequest.dateToInDateTimeStringFormat}
                     />

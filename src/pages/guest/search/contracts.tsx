@@ -244,7 +244,7 @@ function Search() {
             </div>
             {searchResult?.carInfos?.length > 0 ? (
               searchResult.carInfos.map((value: SearchCarInfo) => {
-
+              
                 return (
                   <div key={value.carId} id={`car-${value.carId}`}>
                     <CarSearchItem
