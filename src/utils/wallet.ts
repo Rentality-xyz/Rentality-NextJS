@@ -27,8 +27,7 @@ export async function isUserHasEnoughFunds(
     userBalance = await erc20.balanceOf(userAddress);
 
   }
-  console.log("USER BALANCE: ", userBalance)
-  console.log("valueToCheck: ", valueToCheck)
+
 
   return userBalance >= valueToCheck;
 }
