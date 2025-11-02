@@ -274,6 +274,7 @@ async function formatSearchAvailableCarsContractResponse(
     logger.error(`formatSearchAvailableCarsContractResponse error: currencyConverter address for chainId ${chainId} is not found`);
     return null;
   }
+  let tokenDecimals = 18;
   const provider = new JsonRpcProvider(getProviderApiUrlFromEnv(chainId));
   const currencyConverter = new Contract(converterAddress.address, rentalityContracts.currencyConverter.abi, provider);
   const cars = await Promise.all(
@@ -281,7 +282,7 @@ async function formatSearchAvailableCarsContractResponse(
       const metaData = parseMetaData(await getMetaDataFromIpfs(i.car.metadataURI));
       let isCarDetailsConfirmed = false;
       if(!currencyHashSet.has(i.car.hostCurrency.currency)) {
-        let tokenDecimals = 18;
+       
         if(i.car.hostCurrency.currency !== ETH_DEFAULT_ADDRESS) {
           const erc20 = new Contract(i.car.hostCurrency.currency, ERC20JSON_ABI.abi,provider)
           tokenDecimals = await erc20.decimals();
@@ -305,10 +306,8 @@ async function formatSearchAvailableCarsContractResponse(
      (Number(totalCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate);
      const totalPriceInCents = BigInt(i.car.pricePerDayInUsdCents) * BigInt(i.car.tripDays) + BigInt(i.car.taxes) + BigInt(i.car.securityDepositPerTripInUsdCents);
 
-     console.log("TOTAL CENTS: ", totalPriceInCents);
-     console.log("CARINFO: ", i.car.brand + " " + i.car.model);
      let totalPriceInCurrency = 
-    (Number(totalPriceInCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate);
+    (Number(totalPriceInCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate) * Math.pow(10, Number(tokenDecimals));
       
       // try {
       //   isCarDetailsConfirmed = await rentality.isCarDetailsConfirmed(i.car.carId);

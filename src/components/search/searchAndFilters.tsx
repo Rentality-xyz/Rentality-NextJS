@@ -61,6 +61,7 @@ export default function SearchAndFilters({
 
   const { existedMakes, existedModels, setSelectedMake: setSelectedExistedMake } = useFetchExistPlatformCars();
 
+
   const t_comp = (element: string) => {
     return t("search_and_filters." + element);
   };
@@ -296,7 +297,7 @@ export default function SearchAndFilters({
               setSelectedExistedMake(newMake);
             }}
             filter={(i) => {
-              return existedMakes.length === 0 || existedMakes.includes(i.name);
+              return existedMakes.length === 0 || existedMakes.some((make) => make.toLowerCase() === i.name.toLowerCase());
             }}
           />
         </div>
@@ -317,7 +318,7 @@ export default function SearchAndFilters({
               });
             }}
             filter={(i) => {
-              return existedModels.length === 0 || existedModels.includes(i.name);
+              return existedModels.length === 0 || existedModels.some((models) => models.toLowerCase() === i.name.toLowerCase());
             }}
           />
         </div>

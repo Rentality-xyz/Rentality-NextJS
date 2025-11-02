@@ -216,6 +216,7 @@ function Search() {
     return <Loading />;
   }
 
+
   return (
     <div className="flex flex-col" title="Search">
       <SearchAndFilters
@@ -250,7 +251,7 @@ function Search() {
                       setSelected={setHighlightedCar}
                       getRequestDetailsLink={() => getRequestDetailsLink(value)}
                       isGuestHasInsurance={!isLoadingInsurance && !isEmpty(guestInsurance.photo)}
-                      isYourOwnCar={userInfo?.address === value.ownerAddress}
+                      isYourOwnCar={userInfo?.address.toLowerCase() === value.ownerAddress.toLowerCase()}
                       startDateTimeStringFormat={searchResult.searchCarRequest.dateFromInDateTimeStringFormat}
                       endDateTimeStringFormat={searchResult.searchCarRequest.dateToInDateTimeStringFormat}
                     />
