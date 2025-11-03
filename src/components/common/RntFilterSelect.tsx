@@ -21,6 +21,7 @@ interface RntFilterSelectProps extends React.ComponentPropsWithoutRef<"select"> 
   containerClassName?: string;
   labelClassName?: string;
   label?: string;
+  placeholder?: string,
   validationClassName?: string;
   validationError?: string;
   isTransparentStyle?: boolean;
