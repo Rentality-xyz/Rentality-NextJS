@@ -222,9 +222,6 @@ function BecomeHostContent() {
               allowFullScreen
             />
           </div>
-          <RntButton type="submit" className="mt-4 w-full">
-            {t("become_host.btn_how_to_start")}
-          </RntButton>
         </div>
       </div>
     </>
