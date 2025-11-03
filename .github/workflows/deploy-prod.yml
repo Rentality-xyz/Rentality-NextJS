@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: "Checkout Nextjs Repo"
         uses: actions/checkout@master
-  
+
       - name: "Checkout Contracts Repo"
         uses: actions/checkout@v4
         with:
@@ -24,7 +24,7 @@ jobs:
             src
           path: "demo-rentality-web3-contracts"
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: "Setup Node"
         uses: actions/setup-node@v4
         with:
@@ -107,7 +107,7 @@ jobs:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
         with:
           # TODO TEMP FIX. DELETE AFTER FIX https://github.com/firebase/firebase-tools/issues/8378#issuecomment-2759502243
-          # firebaseToolsVersion: v13.33.0
+          firebaseToolsVersion: v13.33.0
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_RENTALITY_NEXTJS_PRD }}"
           projectId: rentality-app-428806
           channelId: live
