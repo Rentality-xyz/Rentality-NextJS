@@ -4,7 +4,7 @@ import { isEmpty } from "@/utils/string";
 import { HostCarInfo } from "@/model/HostCarInfo";
 import { PlatformCarImage, UploadedCarImage } from "@/model/FileToUpload";
 import {
-  deleteFileFromIPFS,
+  deleteFileFromIPFS, getFileURIFromPinata, getMetaDataFromIpfs,
   getTripCarPhotosFromIPFS,
   uploadFileToIPFS,
   uploadJSONToIPFS,
@@ -16,6 +16,7 @@ import {
   uploadFileToAkave,
   uploadJSONToAkave,
 } from "@/features/filestore/akave";
+import { env } from "@/utils/env";
 
 export type UploadedUrl = { url: string };
 export type UploadedUrlList = { urls: string[] };
@@ -205,6 +206,7 @@ export async function deleteFilesByUrl(fileUrls: string[]): Promise<Result<boole
   return errors.length === 0 ? Ok(true) : Err(errors);
 }
 
+
 export function getFileURIs(uri: string[]) {
   if (!uri || uri.length === 0) return [];
   return uri.map((curUri) => getFileURI(curUri));
@@ -215,8 +217,12 @@ export function getFileURI(URI: string) {
   const fileHash = getFileHashFromUrl(URI);
   if (isEmpty(fileHash)) return "";
 
-  // return getFileURIFromPinata(fileHash);
-  return getFileURIFromAkave(fileHash);
+
+  if (URI.includes("akave")) {
+    return getFileURIFromAkave(fileHash);
+  }
+  return getFileURIFromPinata(fileHash);
+
 }
 
 export async function getMetaData(tokenURI: string) {
@@ -224,26 +230,37 @@ export async function getMetaData(tokenURI: string) {
   const fileHash = getFileHashFromUrl(tokenURI);
   if (isEmpty(fileHash)) return "";
 
-  // return getMetaDataFromIpfs(fileHash);
-  return getMetaDataFromAkave(fileHash);
+  if (tokenURI.includes("akave")) {
+    return getMetaDataFromAkave(fileHash);
+  }
+  return getMetaDataFromIpfs(fileHash);
 }
 
 export async function getTripCarPhotos(tripId: number): Promise<GetPhotosForTripResponseType> {
-  // return await getTripCarPhotosFromIPFS(tripId);
-  return await getTripCarPhotosFromAkave(tripId);
+  switch (env.NEXT_PUBLIC_FILESTORE_NAME.toLowerCase()) {
+    case "akave": return await getTripCarPhotosFromAkave(tripId);
+    default: return await getTripCarPhotosFromIPFS(tripId);
+  }
 }
 
 async function uploadFile(file: File, fileName: string, keyValues?: {}): Promise<Result<UploadedUrl>> {
-  // return uploadFileToIPFS(file, fileName, keyValues);
-  return uploadFileToAkave(file, fileName, keyValues);
+  switch (env.NEXT_PUBLIC_FILESTORE_NAME.toLowerCase()) {
+    case "akave": return await uploadFileToAkave(file, fileName, keyValues);
+    default: return await uploadFileToIPFS(file, fileName, keyValues);
+  }
 }
 
 async function deleteFile(hash: string): Promise<Result<boolean>> {
-  // return deleteFileFromIPFS(hash);
-  return deleteFileFromAkave(hash);
+  switch (env.NEXT_PUBLIC_FILESTORE_NAME.toLowerCase()) {
+    case "akave": return await deleteFileFromAkave(hash);
+    default: return await deleteFileFromIPFS(hash);
+  }
 }
 
 async function uploadJSON(JSONBody: {}, fileName: string, keyValues?: {}): Promise<Result<UploadedUrl>> {
-  // return uploadJSONToIPFS(JSONBody, fileName, keyValues);
-  return uploadJSONToAkave(JSONBody, fileName, keyValues);
+  switch (env.NEXT_PUBLIC_FILESTORE_NAME.toLowerCase()) {
+    case "akave": return await uploadJSONToAkave(JSONBody, fileName, keyValues);
+    default: return await uploadJSONToIPFS(JSONBody, fileName, keyValues);
+  }
 }
+

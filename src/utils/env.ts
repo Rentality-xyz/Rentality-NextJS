@@ -52,6 +52,7 @@ export const env = createEnv({
     BASE_URL: z.string(),
 
     FB_SERVICE_ACCOUNT: z.string(),
+
   },
   client: {
     NEXT_PUBLIC_INCLUDE_MAINNETS: booleanEnvType(),
@@ -99,6 +100,14 @@ export const env = createEnv({
     NEXT_PUBLIC_NODE_ENV: unionOfLiterals(NODE_ENVS).default("development"),
     NEXT_PUBLIC_MIN_CONSOLE_LOG_LEVEL: unionOfLiterals(LOG_LEVELS).default("trace"),
     NEXT_PUBLIC_MIN_EXTERNAL_LOG_LEVEL: unionOfLiterals(LOG_LEVELS).default("info"),
+
+    NEXT_PUBLIC_AKAVE_ENDPOINT: z.string().min(1),
+    NEXT_PUBLIC_AKAVE_REGION: z.string().min(1),
+    NEXT_PUBLIC_AKAVE_BUCKET: z.string().min(1),
+    NEXT_PUBLIC_AKAVE_ACCESS_KEY_ID: z.string().min(1),
+    NEXT_PUBLIC_AKAVE_SECRET_ACCESS_KEY: z.string().min(1),
+
+    NEXT_PUBLIC_FILESTORE_NAME: z.string(),
   },
 
   // If you're using Next.js < 13.4.4, you'll need to specify the runtimeEnv manually
@@ -148,6 +157,14 @@ export const env = createEnv({
     NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
     NEXT_PUBLIC_MIN_CONSOLE_LOG_LEVEL: process.env.NEXT_PUBLIC_MIN_CONSOLE_LOG_LEVEL,
     NEXT_PUBLIC_MIN_EXTERNAL_LOG_LEVEL: process.env.NEXT_PUBLIC_MIN_EXTERNAL_LOG_LEVEL,
+
+    NEXT_PUBLIC_AKAVE_ENDPOINT: process.env.NEXT_PUBLIC_AKAVE_ENDPOINT,
+    NEXT_PUBLIC_AKAVE_REGION: process.env.NEXT_PUBLIC_AKAVE_REGION,
+    NEXT_PUBLIC_AKAVE_BUCKET: process.env.NEXT_PUBLIC_AKAVE_BUCKET,
+    NEXT_PUBLIC_AKAVE_ACCESS_KEY_ID: process.env.NEXT_PUBLIC_AKAVE_ACCESS_KEY_ID,
+    NEXT_PUBLIC_AKAVE_SECRET_ACCESS_KEY: process.env.NEXT_PUBLIC_AKAVE_SECRET_ACCESS_KEY,
+
+    NEXT_PUBLIC_FILESTORE_NAME: process.env.NEXT_PUBLIC_FILESTORE_NAME,
   },
   // For Next.js >= 13.4.4, you only need to destructure client variables:
   //    experimental__runtimeEnv: {

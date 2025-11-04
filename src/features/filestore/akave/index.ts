@@ -9,15 +9,11 @@ import { env } from "@/utils/env";
 import { logger } from "@/utils/logger";
 import { GetPhotosForTripResponseType } from "@/features/filestore";
 
-// // ====== CONFIG ======
-// const AKAVE_ENDPOINT = env.NEXT_PUBLIC_AKAVE_ENDPOINT ?? "https://o3-rc3.akave.xyz";
-// const AKAVE_REGION = env.NEXT_PUBLIC_AKAVE_REGION ?? "akave-network";
-// const AKAVE_BUCKET = env.NEXT_PUBLIC_AKAVE_BUCKET ?? "rentality-test-bucket";
-// const AKAVE_ACCESS_KEY_ID = env.NEXT_PUBLIC_AKAVE_ACCESS_KEY_ID!;
-// const AKAVE_SECRET_ACCESS_KEY = env.NEXT_PUBLIC_AKAVE_SECRET_ACCESS_KEY!;
-// const AKAVE_PUBLIC_BASE_URL =
-//   env.NEXT_PUBLIC_AKAVE_PUBLIC_BASE_URL ?? `https://o3-rc3.akave.xyz/${AKAVE_BUCKET}/`;
-
+const AKAVE_ENDPOINT = env.NEXT_PUBLIC_AKAVE_ENDPOINT
+const AKAVE_REGION = env.NEXT_PUBLIC_AKAVE_REGION;
+const AKAVE_BUCKET = env.NEXT_PUBLIC_AKAVE_BUCKET;
+const AKAVE_ACCESS_KEY_ID = env.NEXT_PUBLIC_AKAVE_ACCESS_KEY_ID;
+const AKAVE_SECRET_ACCESS_KEY = env.NEXT_PUBLIC_AKAVE_SECRET_ACCESS_KEY
 
 const AKAVE_PUBLIC_BASE_URL = `${AKAVE_ENDPOINT}/${AKAVE_BUCKET}/`;
 
