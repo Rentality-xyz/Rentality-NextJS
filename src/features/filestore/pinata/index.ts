@@ -155,7 +155,7 @@ export async function uploadJSONToIPFS(JSONBody: {}, fileName: string, keyValues
 }
 
 export function getFileURIFromPinata(fileHash: string) {
-  return "https://gateway.pinata.cloud/ipfs/" + fileHash;
+  return "https://ipfs.io/ipfs/" + fileHash;
 }
 
 const IPFS_GATEWAYS = [
