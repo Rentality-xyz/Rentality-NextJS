@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { CheckboxLight } from "@/components/common/rntCheckbox";
 import useDimo from "@/features/dimo/hooks/useDimo";
-import { getFileURI } from "@/features/filestore/utils";
+import { getFileURI } from "@/features/filestore";
 import { env } from "@/utils/env";
 import useFetchMyListings from "@/hooks/host/useFetchMyListings";
 import { logger } from "@/utils/logger";

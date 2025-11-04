@@ -7,7 +7,7 @@ import CarEditForm from "@/components/host/carEditForm/carEditForm";
 import { emptyHostCarInfo, HostCarInfo } from "@/model/HostCarInfo";
 import RntSuspense from "@/components/common/rntSuspense";
 import { isEmpty } from "@/utils/string";
-import { getFileURI } from "@/features/filestore/utils";
+import { getFileURI } from "@/features/filestore";
 
 function StartHostingInvestmentPageContent() {
   const { t } = useTranslation();

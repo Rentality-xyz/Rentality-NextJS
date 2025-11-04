@@ -1,6 +1,7 @@
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { isEmpty } from "@/utils/string";
-import { getMetaData, parseMetaData } from "@/features/filestore/utils";
+import { getMetaData } from "@/features/filestore";
+import { parseMetaData } from "@/features/filestore/utils";
 import {
   AdminTripStatus,
   ContractAdminTripDTO,

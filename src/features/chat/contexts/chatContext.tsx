@@ -1,7 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ChatInfo } from "@/model/ChatInfo";
 import { getEtherContractWithSigner } from "@/abis";
-import { getFileURI, getMetaData, parseMetaData } from "@/features/filestore/utils";
+import { getFileURI, getMetaData } from "@/features/filestore";
+import { parseMetaData } from "@/features/filestore/utils";
 import { getDateFromBlockchainTime } from "@/utils/formInput";
 import { isEmpty } from "@/utils/string";
 import moment from "moment";

@@ -1,6 +1,7 @@
 import { ContractCarDetails } from "@/model/blockchain/schemas";
 import { AdminCarDetails } from "..";
-import { getFileURI, getMetaData, parseMetaData } from "@/features/filestore/utils";
+import { getFileURI, getMetaData } from "@/features/filestore";
+import { parseMetaData } from "@/features/filestore/utils";
 
 export const mapContractCarToAdminCarDetails = async (
   car: ContractCarDetails,

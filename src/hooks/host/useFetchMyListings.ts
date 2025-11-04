@@ -2,7 +2,8 @@ import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { useQuery } from "@tanstack/react-query";
 import { BaseCarInfo } from "@/model/BaseCarInfo";
-import { getFileURI, getMetaData, parseMetaData } from "@/features/filestore/utils";
+import { getFileURI, getMetaData } from "@/features/filestore";
+import { parseMetaData } from "@/features/filestore/utils";
 import { validateContractCarInfoDTO } from "@/model/blockchain/schemas_utils";
 
 export const MY_LISTINGS_QUERY_KEY = "MyListings";

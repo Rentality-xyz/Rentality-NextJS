@@ -1,4 +1,5 @@
-import { getFileURI, getMetaData, parseMetaData } from "@/features/filestore/utils";
+import { parseMetaData } from "@/features/filestore/utils";
+import { getFileURI, getMetaData } from "@/features/filestore";
 import { ContractCarDetails, ContractCarInfo, ContractInsuranceCarInfo } from "../blockchain/schemas";
 import { HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE_TEXT } from "../HostCarInfo";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "../EngineType";

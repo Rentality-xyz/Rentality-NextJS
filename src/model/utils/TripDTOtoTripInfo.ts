@@ -1,5 +1,6 @@
 import { TripInfo, TripInfoShortDetails } from "@/model/TripInfo";
-import { getFileURI, getMetaData, parseMetaData } from "@/features/filestore/utils";
+import { parseMetaData } from "@/features/filestore/utils";
+import { getFileURI, getMetaData } from "@/features/filestore";
 import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { isEmpty } from "@/utils/string";
 import { ContractTripDTO, EngineType, InsuranceType, TripStatus } from "@/model/blockchain/schemas";

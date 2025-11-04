@@ -1,6 +1,7 @@
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
-import { getMetaData, parseMetaData } from "@/features/filestore/utils";
+import { parseMetaData } from "@/features/filestore/utils";
+import { getMetaData } from "@/features/filestore";
 import { useQuery } from "@tanstack/react-query";
 import { InvestmentInfoWithMetadata } from "@/features/invest/models/investmentInfo";
 import { mapContractInvestmentDTOToInvestmentInfoWithMetadata } from "../models/mappers/contractInvestmentDTOtoInvestmentInfo";

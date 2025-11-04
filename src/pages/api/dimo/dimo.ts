@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { authOnDimo, tokenExchange } from "./helpers";
-import { getFileURI } from "@/features/filestore/utils/";
+import { getFileURI } from "@/features/filestore/";
 import { logger } from "@/utils/logger";
 
 export type DIMOSharedCarsResponse = {

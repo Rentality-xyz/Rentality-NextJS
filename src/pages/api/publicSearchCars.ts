@@ -10,7 +10,8 @@ import {
   EngineType,
 } from "@/model/blockchain/schemas";
 import { emptyContractLocationInfo, validateContractSearchCarWithDistance } from "@/model/blockchain/schemas_utils";
-import { getFileURIs, getMetaData, parseMetaData } from "@/features/filestore/utils";
+import { getFileURIs, getMetaData } from "@/features/filestore";
+import { parseMetaData } from "@/features/filestore/utils";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { isEmpty } from "@/utils/string";
 import { Contract, JsonRpcProvider, Wallet } from "ethers";

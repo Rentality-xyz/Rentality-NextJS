@@ -1,4 +1,4 @@
-import { getFileURI } from "@/features/filestore/utils";
+import { getFileURI } from "@/features/filestore";
 import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { formatPhoneNumber, getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { useQuery } from "@tanstack/react-query";

@@ -8,7 +8,6 @@ import { Err, Ok, Result } from "@/model/utils/result";
 import { env } from "@/utils/env";
 import { logger } from "@/utils/logger";
 import { GetPhotosForTripResponseType } from "@/features/filestore";
-import { getFileURIFromAkave } from "@/features/filestore/akave/utils";
 
 // // ====== CONFIG ======
 // const AKAVE_ENDPOINT = env.NEXT_PUBLIC_AKAVE_ENDPOINT ?? "https://o3-rc3.akave.xyz";
@@ -20,6 +19,7 @@ import { getFileURIFromAkave } from "@/features/filestore/akave/utils";
 //   env.NEXT_PUBLIC_AKAVE_PUBLIC_BASE_URL ?? `https://o3-rc3.akave.xyz/${AKAVE_BUCKET}/`;
 
 
+const AKAVE_PUBLIC_BASE_URL = `${AKAVE_ENDPOINT}/${AKAVE_BUCKET}/`;
 
 const s3 = new S3Client({
   region: AKAVE_REGION,
@@ -243,6 +243,30 @@ export async function uploadJSONToAkave(
   } catch (error: any) {
     logger.error(error);
     return error instanceof Error ? Err(error) : Err(new Error(String(error)));
+  }
+}
+
+export function getFileURIFromAkave(fileHash: string) {
+  return "https://o3-rc3.akave.xyz/rentality-test-bucket/" + fileHash;
+}
+
+export async function getMetaDataFromAkave(hash: string): Promise<Record<string, unknown>> {
+  if (!hash) {
+    logger.error("Empty Akave hash");
+    return {};
+  }
+  const url = getFileURIFromAkave(hash);
+  try {
+    logger.info(`Fetching metadata from ${url}`);
+    const response = await fetch(url, { headers: { Accept: "application/json" } });
+    if (!response.ok) {
+      logger.warn(`Akave returned status ${response.status}`);
+      return {};
+    }
+    return (await response.json()) as Record<string, unknown>;
+  } catch (error) {
+    logger.warn(`Error fetching from Akave: ${String(error)}`);
+    return {};
   }
 }
 

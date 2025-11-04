@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRentality } from "./rentalityContext";
-import { getFileURI } from "@/features/filestore/utils";
+import { getFileURI } from "@/features/filestore";
 import { useEthereum } from "./web3/ethereumContext";
 import { tryGetEnsName } from "@/utils/ether";
 

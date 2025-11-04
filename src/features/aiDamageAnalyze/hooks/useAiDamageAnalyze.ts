@@ -4,7 +4,7 @@ import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { InsuranceCaseDTO } from "@/model/InsuranceCase";
 import { createSecret } from "@/features/aiDamageAnalyze/api/createCase";
 import axios from "@/utils/cachedAxios";
-import { getMetaData } from "@/features/filestore/utils";
+import { getMetaData } from "@/features/filestore";
 import { logger } from "@/utils/logger";
 import { useState } from "react";
 import { CaseType } from "@/model/blockchain/schemas";

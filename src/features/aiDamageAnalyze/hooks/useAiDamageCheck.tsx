@@ -10,7 +10,7 @@ import { isEmpty } from "@/utils/string";
 import { bigIntReplacer } from "@/utils/json";
 import { getTripCarPhotos } from "@/features/filestore";
 import { CaseType } from "@/model/blockchain/schemas";
-import { getFileURI } from "@/features/filestore/utils";
+import { getFileURI } from "@/features/filestore";
 
 export type AiCheckStatus =
   | "loading"

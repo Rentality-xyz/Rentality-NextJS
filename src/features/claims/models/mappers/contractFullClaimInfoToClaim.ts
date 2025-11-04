@@ -1,7 +1,7 @@
 import { ContractFullClaimInfo } from "@/model/blockchain/schemas";
 import { Claim, getClaimStatusTextFromStatus, getClaimTypeTextFromClaimType } from "..";
 import { formatPhoneNumber, getDateFromBlockchainTime } from "@/utils/formInput";
-import { getFileURI } from "@/features/filestore/utils";
+import { getFileURI } from "@/features/filestore";
 
 export function contractFullClaimInfoToClaim(contractClaimInfo: ContractFullClaimInfo, isHost: boolean): Claim {
   return {

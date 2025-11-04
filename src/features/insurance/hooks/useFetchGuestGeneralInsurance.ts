@@ -2,7 +2,7 @@ import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { InsuranceType } from "@/model/blockchain/schemas";
 import { GuestGeneralInsurance } from "@/model/GuestInsurance";
-import { getFileURI } from "@/features/filestore/utils/";
+import { getFileURI } from "@/features/filestore/";
 import { useQuery } from "@tanstack/react-query";
 
 export const INSURANCE_GUEST_QUERY_KEY = "InsuranceGuest";

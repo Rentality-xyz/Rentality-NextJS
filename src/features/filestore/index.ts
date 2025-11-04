@@ -11,7 +11,7 @@ import {
 } from "@/features/filestore/pinata";
 import { getFileHashFromUrl, getNftJSONFromCarInfo } from "@/features/filestore/utils";
 import {
-  deleteFileFromAkave,
+  deleteFileFromAkave, getFileURIFromAkave, getMetaDataFromAkave,
   getTripCarPhotosFromAkave,
   uploadFileToAkave,
   uploadJSONToAkave,
@@ -205,7 +205,28 @@ export async function deleteFilesByUrl(fileUrls: string[]): Promise<Result<boole
   return errors.length === 0 ? Ok(true) : Err(errors);
 }
 
+export function getFileURIs(uri: string[]) {
+  if (!uri || uri.length === 0) return [];
+  return uri.map((curUri) => getFileURI(curUri));
+}
 
+export function getFileURI(URI: string) {
+  if (isEmpty(URI)) return "";
+  const fileHash = getFileHashFromUrl(URI);
+  if (isEmpty(fileHash)) return "";
+
+  // return getFileURIFromPinata(fileHash);
+  return getFileURIFromAkave(fileHash);
+}
+
+export async function getMetaData(tokenURI: string) {
+  if (isEmpty(tokenURI)) return "";
+  const fileHash = getFileHashFromUrl(tokenURI);
+  if (isEmpty(fileHash)) return "";
+
+  // return getMetaDataFromIpfs(fileHash);
+  return getMetaDataFromAkave(fileHash);
+}
 
 export async function getTripCarPhotos(tripId: number): Promise<GetPhotosForTripResponseType> {
   // return await getTripCarPhotosFromIPFS(tripId);
