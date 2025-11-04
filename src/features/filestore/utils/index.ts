@@ -13,8 +13,8 @@ export function getFileURI(URI: string) {
   if (isEmpty(URI)) return "";
   const fileHash = getFileHashFromUrl(URI);
   if (isEmpty(fileHash)) return "";
-  return getFileURIFromPinata(fileHash);
-  // return getFileURIFromAkave(fileHash);
+  // return getFileURIFromPinata(fileHash);
+  return getFileURIFromAkave(fileHash);
 }
 
 export function getFileURIs(pinataURI: string[]) {

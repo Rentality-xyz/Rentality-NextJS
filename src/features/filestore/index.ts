@@ -213,16 +213,16 @@ export async function getTripCarPhotos(tripId: number): Promise<GetPhotosForTrip
 }
 
 async function uploadFile(file: File, fileName: string, keyValues?: {}): Promise<Result<UploadedUrl>> {
-  return uploadFileToIPFS(file, fileName, keyValues);
-  // return uploadFileToAkave(file, fileName, keyValues);
+  // return uploadFileToIPFS(file, fileName, keyValues);
+  return uploadFileToAkave(file, fileName, keyValues);
 }
 
 async function deleteFile(hash: string): Promise<Result<boolean>> {
-  return deleteFileFromIPFS(hash);
-  // return deleteFileFromAkave(hash);
+  // return deleteFileFromIPFS(hash);
+  return deleteFileFromAkave(hash);
 }
 
 async function uploadJSON(JSONBody: {}, fileName: string, keyValues?: {}): Promise<Result<UploadedUrl>> {
-  return uploadJSONToIPFS(JSONBody, fileName, keyValues);
-  // return uploadJSONToAkave(JSONBody, fileName, keyValues);
+  // return uploadJSONToIPFS(JSONBody, fileName, keyValues);
+  return uploadJSONToAkave(JSONBody, fileName, keyValues);
 }
