@@ -108,6 +108,7 @@ export const env = createEnv({
     NEXT_PUBLIC_AKAVE_SECRET_ACCESS_KEY: z.string().min(1),
 
     NEXT_PUBLIC_FILESTORE_NAME: z.string(),
+
   },
 
   // If you're using Next.js < 13.4.4, you'll need to specify the runtimeEnv manually

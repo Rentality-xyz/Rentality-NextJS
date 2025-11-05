@@ -14,7 +14,7 @@ import { getFileURIs, getMetaData } from "@/features/filestore";
 import { parseMetaData } from "@/features/filestore/utils";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { isEmpty } from "@/utils/string";
-import { Contract, JsonRpcProvider, Wallet } from "ethers";
+import { Contract, ethers, JsonRpcProvider, Wallet } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { env } from "@/utils/env";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
@@ -68,7 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     pickupLocation,
     returnLocation,
   } = req.query;
-  const chainIdNumber = Number(chainId) > 0 ? Number(chainId) : env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
+  const chainIdNumber = env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
 
   if (!chainIdNumber) {
     logger.error("API publicSearchCar error: chainId was not provided");
@@ -155,7 +155,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   );
 
   const provider = new JsonRpcProvider(providerApiUrl);
-  const wallet = new Wallet(privateKey, provider);
+  const wallet = ethers.Wallet.createRandom().connect(provider);
 
   const rentality = (await getEtherContractWithSigner("gateway", wallet)) as unknown as IRentalityGatewayContract;
 
@@ -213,6 +213,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       totalCars
     );
   }
+
   ///TODO: temporary, uncomment after fix
   // const getFilterInfoDto: ContractFilterInfoDTO = await rentality.getFilterInfo(BigInt(1));
 
@@ -274,6 +275,7 @@ async function formatSearchAvailableCarsContractResponse(
     logger.error(`formatSearchAvailableCarsContractResponse error: currencyConverter address for chainId ${chainId} is not found`);
     return null;
   }
+  let tokenDecimals = 18;
   const provider = new JsonRpcProvider(getProviderApiUrlFromEnv(chainId));
   const currencyConverter = new Contract(converterAddress.address, rentalityContracts.currencyConverter.abi, provider);
   const cars = await Promise.all(
@@ -281,7 +283,7 @@ async function formatSearchAvailableCarsContractResponse(
       const metaData = parseMetaData(await getMetaData(i.car.metadataURI));
       let isCarDetailsConfirmed = false;
       if(!currencyHashSet.has(i.car.hostCurrency.currency)) {
-        let tokenDecimals = 18;
+       
         if(i.car.hostCurrency.currency !== ETH_DEFAULT_ADDRESS) {
           const erc20 = new Contract(i.car.hostCurrency.currency, ERC20JSON_ABI.abi,provider)
           tokenDecimals = await erc20.decimals();
@@ -305,10 +307,8 @@ async function formatSearchAvailableCarsContractResponse(
      (Number(totalCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate);
      const totalPriceInCents = BigInt(i.car.pricePerDayInUsdCents) * BigInt(i.car.tripDays) + BigInt(i.car.taxes) + BigInt(i.car.securityDepositPerTripInUsdCents);
 
-     console.log("TOTAL CENTS: ", totalPriceInCents);
-     console.log("CARINFO: ", i.car.brand + " " + i.car.model);
      let totalPriceInCurrency = 
-    (Number(totalPriceInCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate);
+    (Number(totalPriceInCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate) * Math.pow(10, Number(tokenDecimals));
       
       // try {
       //   isCarDetailsConfirmed = await rentality.isCarDetailsConfirmed(i.car.carId);

@@ -3,6 +3,103 @@ import { ContractTransactionResponse, ethers } from "ethers";
 import { Err, Ok } from "@/model/utils/result";
 import { IEthersContract } from "./IEtherContract";
 import { logger } from "@/utils/logger";
+import { fn } from "moment";
+
+export function getEthersCrassChainProxy<T extends IEthersContract, S extends IEthersContract>(
+  writeContract: T, 
+  readContract: S,
+  senderAddress: string,
+  isDefaultNetwork: boolean
+): ContractResultWrapper<T> {
+  return new Proxy(writeContract, {
+    get(target, key, receiver) {
+    
+  
+      return async (...args: any[]) => {
+        try {
+          const contractInterface = (readContract as unknown as ethers.Contract).interface;
+          const functionFragment = contractInterface.getFunction(key.toString());
+          
+          const isReadFunction = functionFragment && 
+            (functionFragment.stateMutability === "view" || 
+             functionFragment.stateMutability === "pure");
+
+          const contractToUse = isReadFunction ? readContract : writeContract;
+
+          let result;
+          if (!isReadFunction && !isDefaultNetwork) {
+            const fnName = key.toString();
+            const capitalizedFnName = fnName.charAt(0).toUpperCase() + fnName.slice(1);
+            const quote = "quote" + capitalizedFnName;
+
+            let quoteMethod = Reflect.get(target, quote, receiver);
+
+            let originalMethod = Reflect.get(writeContract, key, receiver);
+
+            if (typeof originalMethod !== "function") {
+              return originalMethod;
+            }
+            
+            if (typeof quoteMethod !== "function") {
+              throw new Error(`Quote function '${quote}' is not a function. Type: ${typeof quoteMethod}`);
+            }
+            let quoteResult
+
+            if(functionFragment && functionFragment.payable && args[args.length - 1].value) {
+              const value = args[args.length - 1].value;
+              quoteResult = await quoteMethod.apply(contractToUse,[
+                args[args.length - 1].value,
+                ...args.slice(0, args.length - 1)
+              ]);
+              args = [(readContract as unknown as ethers.Contract).interface.encodeFunctionData(fnName, args.slice(0, args.length - 1))];
+              args = [value,...args,{value: quoteResult}];
+              const fnSignature = `${originalMethod.name}(uint256,bytes)`;
+              originalMethod = Reflect.get(writeContract, fnSignature, receiver);
+
+              if (typeof originalMethod !== "function") {
+                return originalMethod;
+              }
+            }
+            else {
+          
+              quoteResult = await await quoteMethod.apply(writeContract, args);
+
+              args = [...args, {value: quoteResult}];
+            }
+            result = await originalMethod.apply(writeContract, args);
+
+          }
+          else {
+            const originalMethod = Reflect.get(readContract, key, receiver);
+
+            if (typeof originalMethod !== "function") {
+              return originalMethod;
+            }
+            if(isReadFunction) {
+              result = await (contractToUse as any)[key.toString()].staticCall(...args, {
+                from: senderAddress
+              });
+             }
+             else {
+              debugData(writeContract, key.toString(), args);
+              result = await originalMethod.apply(contractToUse, args);
+        }
+          }
+
+          if (isContractTransactionResponse(result)) {
+            await result.wait(4); // block confirmation
+            return Ok(true);
+          }
+          return Ok(result);
+        } catch (error) {
+          logger.error(`${key.toString()} proxy function error:`, error);
+          
+          return Err(error);
+        }
+      };
+    },
+  }) as ContractResultWrapper<T>;
+}
 
 export function getEthersContractProxy<T extends IEthersContract>(contract: T): ContractResultWrapper<T> {
   return new Proxy(contract, {

@@ -67,7 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     pickupLocation,
     returnLocation,
   } = req.query;
-  const chainIdNumber = Number(chainId) > 0 ? Number(chainId) : env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
+  const chainIdNumber = env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
 
   if (!chainIdNumber) {
     logger.error("API publicSearchCar error: chainId was not provided");
@@ -378,7 +378,7 @@ async function formatSearchAvailableCarsQueryResponse(
         isCarDetailsConfirmed: isCarDetailsConfirmed,
         isTestCar: testWallets.includes(i.host),
         isInsuranceRequired: i.insuranceCarInfo.required,
-        insurancePerDayPriceInUsd: Number(i.insuranceCarInfo.priceInUsdCents),
+        insurancePerDayPriceInUsd: Number(i.insuranceCarInfo.priceInUsdCents) === 0 ? 0 : Number(i.insuranceCarInfo.priceInUsdCents) / 100,
         isGuestHasInsurance: false,
         distanceToUser: i.distance,
         dimoTokenId: Number(i.dimoTokenId),
@@ -398,9 +398,9 @@ async function formatSearchAvailableCarsQueryResponse(
         },
         totalPriceInCurrency: Number(totalPriceInCurrency),
       };
-
       return item;
     }));
+
 
     const filteredCars = cars.filter(
       (c): c is SearchCarInfoDTO => c !== null
