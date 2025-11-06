@@ -51,7 +51,7 @@ function AllTripsFilters({ defaultFilters, onApply }: AllTripsFiltersProps) {
 
   return (
     <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} libraries={["places"]} language="en">
-      <ScrollingHorizontally>
+      <ScrollingHorizontally topLeftButton="top-[60px]" topRightButton="top-[60px]">
         <form className="flex items-end justify-between gap-4 fullHD:w-full" onSubmit={handleApplyClick}>
           <RntPlaceAutoComplete
             className="w-60"
