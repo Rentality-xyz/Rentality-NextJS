@@ -122,7 +122,7 @@ function AllUsersRntTable({ isLoading, data }: AllUsersRntTableProps) {
           placeholder={`Filter ${t_att("driving-license-number")}...`}
           value={(table.getColumn(t_att("driving-license-number"))?.getFilterValue() as string) ?? ""}
           onChange={(event) => table.getColumn(t_att("driving-license-number"))?.setFilterValue(event.target.value)}
-          wrapperClassName="w-60"
+          wrapperClassName="w-72"
         />
       </ScrollingHorizontally>
       <RntTable>

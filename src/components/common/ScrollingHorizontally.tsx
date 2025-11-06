@@ -3,12 +3,20 @@ import { cn } from "@/utils";
 import Image from "next/image";
 
 type ScrollingHorizontallyProps = {
-  className?: string | undefined;
+  className?: string;
+  topLeftButton?: string;
+  topRightButton?: string;
   children?: React.ReactNode;
   onScroll?: (event: React.UIEvent<HTMLDivElement>) => void;
 };
 
-export default function ScrollingHorizontally({ children, className, onScroll }: ScrollingHorizontallyProps) {
+export default function ScrollingHorizontally({
+  children,
+  className,
+  topLeftButton = "top-1/2",
+  topRightButton = "top-1/2",
+  onScroll,
+}: ScrollingHorizontallyProps) {
   const wrapperClassName = cn("relative", className);
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -61,7 +69,7 @@ export default function ScrollingHorizontally({ children, className, onScroll }:
       {showLeftArrow && (
         <button
           onClick={() => scrollByAmount(-200)} // Прокрутка влево
-          className="absolute left-[8px] top-1/2 z-10 w-10 -translate-y-1/2"
+          className={cn("absolute left-[8px] z-10 w-10 -translate-y-1/2", topLeftButton)}
         >
           <div className="btn_input_border-gradient h-full w-full">
             <Image src={"/images/icons/arrows/rntArrowLeft.svg"} width={121} height={121} alt="" />
@@ -73,7 +81,7 @@ export default function ScrollingHorizontally({ children, className, onScroll }:
       {showRightArrow && (
         <button
           onClick={() => scrollByAmount(200)} // Прокрутка вправо
-          className="absolute right-[8px] top-1/2 z-10 w-10 -translate-y-1/2"
+          className={cn("absolute right-[8px] z-10 w-10 -translate-y-1/2", topRightButton)}
         >
           <div className="btn_input_border-gradient h-full w-full">
             <Image src={"/images/icons/arrows/rntArrowRight.svg"} width={121} height={121} alt="" />
