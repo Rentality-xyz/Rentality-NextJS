@@ -146,7 +146,7 @@ export async function uploadFileToAkave(
     }
 
     const Body = await toByteBody(file);
-    console.log("goooo")
+
     await s3.send(
       new PutObjectCommand({
         Bucket: AKAVE_BUCKET,
@@ -158,9 +158,8 @@ export async function uploadFileToAkave(
         CacheControl: "public, max-age=31536000, immutable",
       })
     );
-      console.log("goooo222")
+
     const url = getFileURIFromAkave(key);
-      console.log(url)
     logger.debug("File uploaded successfully to Akave: ", url);
     return Ok({ url });
   } catch (error: any) {
