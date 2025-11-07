@@ -35,6 +35,12 @@ function useUpdateCar() {
           return Err(new Error("hostCarInfo is not valid"));
         }
 
+           const defaultChainId = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
+                        if(!defaultChainId) {
+                          console.error("Default chain id not found")
+                          return Err(new Error("ERROR"));
+                        }
+
         const engineParams: bigint[] = [];
         if (hostCarInfo.engineTypeText === ENGINE_TYPE_PETROL_STRING) {
           engineParams.push(BigInt(hostCarInfo.tankVolumeInGal));
@@ -51,7 +57,7 @@ function useUpdateCar() {
         if (hostCarInfo.isLocationEdited) {
           const locationResult = await getSignedLocationInfo(
             mapLocationInfoToContractLocationInfo(hostCarInfo.locationInfo),
-            ethereumInfo.chainId
+            Number(defaultChainId)
           );
           if (!locationResult.ok) {
             logger.error("updateCar error: Sign location error");
