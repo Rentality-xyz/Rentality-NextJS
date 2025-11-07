@@ -54,7 +54,7 @@ function useSaveNewCar() {
 
         const locationResult = await getSignedLocationInfo(
           mapLocationInfoToContractLocationInfo(hostCarInfo.locationInfo),
-          Number(defaultChainId)
+          Number.parseInt(defaultChainId)
         );
         if (!locationResult.ok) {
           logger.error("saveNewCar error: Sign location error");

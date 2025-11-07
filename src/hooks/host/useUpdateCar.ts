@@ -57,7 +57,7 @@ function useUpdateCar() {
         if (hostCarInfo.isLocationEdited) {
           const locationResult = await getSignedLocationInfo(
             mapLocationInfoToContractLocationInfo(hostCarInfo.locationInfo),
-            Number(defaultChainId)
+            Number.parseInt(defaultChainId)
           );
           if (!locationResult.ok) {
             logger.error("updateCar error: Sign location error");
