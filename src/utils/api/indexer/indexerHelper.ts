@@ -40,8 +40,8 @@ export function getSearchCarQuery(searchCarParams: ContractSearchCarParams, star
   `;
 
   const otherClauses = `
-    ${variables.brand !== undefined ? 'brand: $brand,' : ''}
-    ${variables.model !== undefined ? 'model: $model,' : ''}
+    ${variables.brand !== undefined ? 'brand_contains_nocase: $brand,' : ''}
+    ${variables.model !== undefined ? 'model_contains_nocase: $model,' : ''}
     ${variables.yearGt !== undefined ? 'yearOfProduction_gt: $yearGt,' : ''}
     ${variables.yearLt !== undefined ? 'yearOfProduction_lt: $yearLt,' : ''}
     ${variables.priceGte !== undefined ? 'pricePerDayInUsdCents_gte: $priceGte,' : ''}
