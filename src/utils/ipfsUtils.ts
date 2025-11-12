@@ -51,7 +51,11 @@ export async function getMetaDataFromIpfs(tokenURI: string) {
     return {};
   }
 
+  if(tokenURI.match('akave'))
+    return {}
+
   for (const gateway of IPFS_GATEWAYS) {
+
     const url = gateway + ipfsHash;
     try {
       const response = await fetch(url, {
