@@ -113,7 +113,7 @@ const useCreateTripRequest = () => {
         const returnLocationResult =
           returnLocationInfo.userAddress === pickupLocationInfo.userAddress
             ? pickupLocationResult
-            : await getSignedLocationInfo(returnLocationInfo, ethereumInfo.chainId);
+            : await getSignedLocationInfo(returnLocationInfo, Number.parseInt(defaultChainId));
         if (!returnLocationResult.ok) {
           logger.error("Sign location error");
           return Err(new Error("ERROR"));
