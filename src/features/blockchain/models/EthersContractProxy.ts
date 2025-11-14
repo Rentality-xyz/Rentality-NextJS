@@ -1,5 +1,5 @@
 import { ContractResultWrapper } from "../types";
-import { ContractTransactionResponse, ethers } from "ethers";
+import { ContractTransactionResponse, ethers, JsonRpcProvider } from "ethers";
 import { Err, Ok } from "@/model/utils/result";
 import { IEthersContract } from "./IEtherContract";
 import { logger } from "@/utils/logger";
@@ -9,7 +9,8 @@ export function getEthersCrassChainProxy<T extends IEthersContract, S extends IE
   writeContract: T, 
   readContract: S,
   senderAddress: string,
-  isDefaultNetwork: boolean
+  isDefaultNetwork: boolean,
+  provider: JsonRpcProvider
 ): ContractResultWrapper<T> {
   return new Proxy(writeContract, {
     get(target, key, receiver) {
@@ -28,10 +29,12 @@ export function getEthersCrassChainProxy<T extends IEthersContract, S extends IE
 
           let result;
           if (!isReadFunction && !isDefaultNetwork) {
+            // do quote in case of crasschain call
+            let argForSimulation = args;
+            let valueForSimulation = 0;
             const fnName = key.toString();
             const capitalizedFnName = fnName.charAt(0).toUpperCase() + fnName.slice(1);
             const quote = "quote" + capitalizedFnName;
-
             let quoteMethod = Reflect.get(target, quote, receiver);
 
             let originalMethod = Reflect.get(writeContract, key, receiver);
@@ -39,20 +42,25 @@ export function getEthersCrassChainProxy<T extends IEthersContract, S extends IE
             if (typeof originalMethod !== "function") {
               return originalMethod;
             }
+      
             
             if (typeof quoteMethod !== "function") {
               throw new Error(`Quote function '${quote}' is not a function. Type: ${typeof quoteMethod}`);
             }
-            let quoteResult
-
+            let quoteResult;
             if(functionFragment && functionFragment.payable && args[args.length - 1].value) {
+              // if function is payeble, we need to specify value for quote,
+              //  and encode the arguments for target chain
               const value = args[args.length - 1].value;
+              valueForSimulation = value;
               quoteResult = await quoteMethod.apply(contractToUse,[
                 args[args.length - 1].value,
                 ...args.slice(0, args.length - 1)
               ]);
+              argForSimulation = argForSimulation.slice(0, -1);
               args = [(readContract as unknown as ethers.Contract).interface.encodeFunctionData(fnName, args.slice(0, args.length - 1))];
               args = [value,...args,{value: quoteResult}];
+
               const fnSignature = `${originalMethod.name}(uint256,bytes)`;
               originalMethod = Reflect.get(writeContract, fnSignature, receiver);
 
@@ -61,13 +69,38 @@ export function getEthersCrassChainProxy<T extends IEthersContract, S extends IE
               }
             }
             else {
-          
               quoteResult = await await quoteMethod.apply(writeContract, args);
 
               args = [...args, {value: quoteResult}];
             }
-            result = await originalMethod.apply(writeContract, args);
 
+            const readAsContract = (readContract as unknown as ethers.Contract)
+            const contractAddress =  await readAsContract.getAddress()
+
+            const argmuments = readAsContract.interface.encodeFunctionData(key.toString(), argForSimulation)
+            try {
+              // simulate transction on target chain
+              await provider.send("eth_call", [
+              {
+                to: contractAddress,
+                from: senderAddress,
+                value: valueForSimulation.toString(),
+                data: argmuments,
+              },
+              "latest",
+              {
+                [senderAddress]: {
+                balance: ethers.parseEther("2").toString()
+              },
+              },
+            ]);
+          }
+          catch (error) {
+            logger.error(`${key.toString()} proxy function error:`, error);
+            
+            return Err(error);
+          }
+            result = await originalMethod.apply(writeContract, args);
           }
           else {
             const originalMethod = Reflect.get(readContract, key, receiver);

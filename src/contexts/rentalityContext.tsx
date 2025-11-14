@@ -140,7 +140,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         const senderAddress = await ethereumInfo.signer.getAddress();
         setRentalityContracts({
           gateway: isDefaultNetwork ? getEthersContractProxy(rentalityGatewayWrite) :
-           getEthersCrassChainProxy(rentalityGatewayWrite, rentalityGatewayRead, senderAddress, isDefaultNetwork),
+           getEthersCrassChainProxy(rentalityGatewayWrite, rentalityGatewayRead, senderAddress, isDefaultNetwork, defaultProvider),
           referralProgram: getEthersContractProxy(rentalityReferralProgram),
           investment: getEthersContractProxy(investment),
           currencyConverter: getEthersContractProxy(currencyConverter),

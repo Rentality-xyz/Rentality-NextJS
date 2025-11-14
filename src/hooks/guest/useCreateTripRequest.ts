@@ -212,6 +212,7 @@ const useCreateTripRequest = () => {
           amountIn: BigInt(amountIn),
           fee: BigInt(fee)
         };
+
         const result = await rentalityContracts.gateway.createTripRequestWithDelivery(tripRequest, promoCode, {
           value,
         });
