@@ -308,7 +308,7 @@ async function formatSearchAvailableCarsContractResponse(
 
      let totalPriceInCurrency = 
     (Number(totalPriceInCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate) * Math.pow(10, Number(tokenDecimals));
-      
+
       // try {
       //   isCarDetailsConfirmed = await rentality.isCarDetailsConfirmed(i.car.carId);
       // } catch (error) {
