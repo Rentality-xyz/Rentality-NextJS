@@ -322,8 +322,10 @@ async function formatSearchAvailableCarsQueryResponse(
 
                   const totalPriceInCents = BigInt(i.pricePerDayInUsdCents) * BigInt(i.tripDays) + BigInt(salesTax + governmentTax) + BigInt(i.securityDepositPerTripInUsdCents);
 
+
                   let totalPriceInCurrency = 
-                 (Number(totalPriceInCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate);
+                  (Number(totalPriceInCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate) * Math.pow(10, Number(currencyInfo?.tokenDecimals));
+
 
       let item: SearchCarInfoDTO = {
         carId: Number(i.carId),
