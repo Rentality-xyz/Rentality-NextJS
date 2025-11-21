@@ -120,6 +120,7 @@ function Search() {
       showError(t("common.add_fund_to_wallet", {
         network: getNetworkName(ethereumInfo),
       }));
+      return;
       }
         
 
