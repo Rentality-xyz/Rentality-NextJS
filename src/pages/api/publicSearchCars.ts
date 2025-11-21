@@ -279,6 +279,7 @@ async function formatSearchAvailableCarsContractResponse(
   const currencyConverter = new Contract(converterAddress.address, rentalityContracts.currencyConverter.abi, provider);
   const cars = await Promise.all(
     searchCarsViewsView.map(async (i: ContractSearchCarWithDistance) => {
+
       const metaData = parseMetaData(await getMetaDataFromIpfs(i.car.metadataURI));
       let isCarDetailsConfirmed = false;
       if(!currencyHashSet.has(i.car.hostCurrency.currency)) {
@@ -287,6 +288,10 @@ async function formatSearchAvailableCarsContractResponse(
           const erc20 = new Contract(i.car.hostCurrency.currency, ERC20JSON_ABI.abi,provider)
           tokenDecimals = await erc20.decimals();
         }
+        else {
+          tokenDecimals = 18;
+        }
+    
 
         const currencyRate = await currencyConverter.getFromUsdCentsLatest(
           i.car.hostCurrency.currency,
@@ -307,7 +312,8 @@ async function formatSearchAvailableCarsContractResponse(
      const totalPriceInCents = BigInt(i.car.pricePerDayInUsdCents) * BigInt(i.car.tripDays) + BigInt(i.car.taxes) + BigInt(i.car.securityDepositPerTripInUsdCents);
 
      let totalPriceInCurrency = 
-    (Number(totalPriceInCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate) * Math.pow(10, Number(tokenDecimals));
+    (Number(totalPriceInCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate) * Math.pow(10, Number(currencyInfo?.tokenDecimals));
+
       
       // try {
       //   isCarDetailsConfirmed = await rentality.isCarDetailsConfirmed(i.car.carId);

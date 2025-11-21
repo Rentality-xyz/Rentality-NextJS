@@ -29,6 +29,7 @@ import { isUserHasEnoughFunds } from "@/utils/wallet";
 import { SelectCurrencyDialogForm } from "@/components/createTrip/SelectCurrencyDialogForm";
 import { useRentality } from "@/contexts/rentalityContext";
 import RntButton from "@/components/common/rntButton";
+import { Err } from "@/model/utils/result";
 
 function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -46,7 +47,7 @@ function Search() {
   const { isLoading: isLoadingInsurance, data: guestInsurance } = useFetchGuestGeneralInsurance();
   useBlockchainNetworkCheck();
   const { t } = useTranslation();
-  const { rentalityContracts } = useRentality();
+  const { rentalityContracts, isDefaultNetwork } = useRentality();
 
   const handleSearchClick = async (request: SearchCarRequest) => {
     updateSearchParams(request, searchCarFilters);
@@ -98,9 +99,8 @@ function Search() {
     if (!rentalityContracts) {
       return;
     }
-
     const hasFounds = ethereumInfo && await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency);
-    if (!hasFounds) {
+    if (!hasFounds && isDefaultNetwork) {
       const currenciesResult = await rentalityContracts.gateway.getAvailableCurrency();
       if (!currenciesResult.ok || currenciesResult.value.length === 0) {
         showError(t("search_page.errors.available_cur_error"));
@@ -116,6 +116,12 @@ function Search() {
       );
       return;
     }
+    else if(!hasFounds) {
+      showError(t("common.add_fund_to_wallet", {
+        network: getNetworkName(ethereumInfo),
+      }));
+      }
+        
 
     await createTip(carInfo.currency.currency, promoCode, carInfo);
   }

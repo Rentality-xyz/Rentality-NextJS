@@ -39,7 +39,7 @@ function Search() {
 
   const [isLoading, searchAvailableCars, searchResult, sortBy, setSortBy, setSearchResult] = useSearchCars();
   const { createTripRequest } = useCreateTripRequest();
-  const { rentalityContracts } = useRentality();
+  const { rentalityContracts, isDefaultNetwork } = useRentality();
 
   const [requestSending, setRequestSending] = useState<boolean>(false);
   const { showDialog, hideDialogs, showCustomDialog } = useRntDialogs();
@@ -104,7 +104,7 @@ function Search() {
 
     const hasFounds = ethereumInfo && await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency);
   
-    if (!hasFounds) {
+    if (!hasFounds && isDefaultNetwork) {
       const currenciesResult = await rentalityContracts.gateway.getAvailableCurrency();
       if (!currenciesResult.ok || currenciesResult.value.length === 0) {
         showError(t("search_page.errors.available_cur_error"));
@@ -125,6 +125,12 @@ function Search() {
       );
       return;
     }
+      else if(!hasFounds) {
+        showError(t("common.add_fund_to_wallet", {
+          network: getNetworkName(ethereumInfo),
+        }));
+        return;
+        }
 
     await createTip(carInfo.currency.currency, promoCode, carInfo);
   }
