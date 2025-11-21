@@ -327,6 +327,7 @@ async function formatSearchAvailableCarsQueryResponse(
                   (Number(totalPriceInCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate) * Math.pow(10, Number(currencyInfo?.tokenDecimals));
 
 
+
       let item: SearchCarInfoDTO = {
         carId: Number(i.carId),
         ownerAddress: i.host,

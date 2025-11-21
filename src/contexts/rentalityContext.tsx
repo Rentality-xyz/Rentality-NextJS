@@ -36,6 +36,7 @@ export interface IRentalityContracts {
 
 interface RentalityContextType {
   rentalityContracts: IRentalityContracts | null | undefined;
+  isDefaultNetwork: boolean;
 }
 
 interface RentalityAdminContextType {
@@ -189,7 +190,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
   }, [ethereumInfo]);
 
   return (
-    <RentalityContext.Provider value={{ rentalityContracts }}>
+    <RentalityContext.Provider value={{ rentalityContracts, isDefaultNetwork }}>
       {isAdmin ? (
         <RentalityAdminContext.Provider value={{ admin: rentalityAdmin }}>{children}</RentalityAdminContext.Provider>
       ) : (
