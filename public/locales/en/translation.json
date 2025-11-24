@@ -68,7 +68,8 @@
       "request": "Your create trip request failed. Please make sure you entered trip details right and try again",
       "own_car": "You cannot book your own car",
       "no_money": "You don't have enough money, but you can pay in another currency",
-      "available_cur_error": "No available currencies found"
+      "available_cur_error": "No available currencies found",
+      "cross_chain_currency_error": "You cannot pay with the current token on the selected network for now. Please switch to another network to do so."
     },
     "info": {
       "cars_available": "car(s) available",

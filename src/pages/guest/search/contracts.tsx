@@ -20,12 +20,12 @@ import { APIProvider } from "@vis.gl/react-google-maps";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import Loading from "@/components/common/Loading";
 import RntSuspense from "@/components/common/rntSuspense";
-import { EMPTY_PROMOCODE } from "@/utils/constants";
+import { EMPTY_PROMOCODE, ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import useFetchGuestGeneralInsurance from "@/features/insurance/hooks/useFetchGuestGeneralInsurance";
 import useBlockchainNetworkCheck from "@/features/blockchain/hooks/useBlockchainNetworkCheck";
 import getNetworkName from "@/model/utils/NetworkName";
 import bs58 from "bs58";
-import { isUserHasEnoughFunds } from "@/utils/wallet";
+import { isUserHasEnoughFunds, isUserHasEnoughFundsCrassChain } from "@/utils/wallet";
 import RntSelect from "@/components/common/rntSelect";
 import { useRentality } from "@/contexts/rentalityContext";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
@@ -33,6 +33,9 @@ import { ContractAllowedCurrencyDTO } from "@/model/blockchain/schemas";
 import { flushSync } from "react-dom";
 import { SelectCurrencyDialogForm } from "@/components/createTrip/SelectCurrencyDialogForm";
 import RntButton from "@/components/common/rntButton";
+import getDefaultProvider from "@/utils/api/defaultProviderUrl";
+import { ethers } from "ethers";
+import { MulticallWrapper } from "ethers-multicall-provider";
 
 function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -100,9 +103,15 @@ function Search() {
     }
     if (!rentalityContracts) {
       return;
-    }   
-
-    const hasFounds = ethereumInfo && await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency);
+    }  
+    
+        
+    let hasFounds;
+    if (isDefaultNetwork) {
+      hasFounds = ethereumInfo && await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency);
+    } else {
+      hasFounds = ethereumInfo && await isUserHasEnoughFundsCrassChain(ethereumInfo.signer, totalPrice, carInfo.currency);
+    }
   
     if (!hasFounds && isDefaultNetwork) {
       const currenciesResult = await rentalityContracts.gateway.getAvailableCurrency();
@@ -116,9 +125,41 @@ function Search() {
         return;
       }
 
+
+            const abi = [
+              "function balanceOf(address owner) view returns (uint256)"
+            ];
+            const defaultProvider = await getDefaultProvider();
+            const multicallProvider = MulticallWrapper.wrap(defaultProvider);
+            const userAddress = await ethereumInfo!.signer.getAddress();
+            const balances = await Promise.all(
+                currenciesResult.value.map((currency) => {
+                  if (currency.tokenAddress === ETH_DEFAULT_ADDRESS) {
+                    return multicallProvider.getBalance(userAddress)
+                      .then((balance) => ({ 
+                        name: currency.name,
+                        decimals: currency.decimals,
+                        symbol: currency.symbol,
+                        tokenAddress: currency.tokenAddress,
+                        balance 
+                      }));
+                  }
+              
+                  const erc20 = new ethers.Contract(currency.tokenAddress, abi, multicallProvider);
+                  return erc20.balanceOf(userAddress)
+                    .then((balance) => ({ 
+                      name: currency.name,
+                      decimals: currency.decimals,
+                      symbol: currency.symbol,
+                      tokenAddress: currency.tokenAddress,
+                      balance 
+                    }));
+                })
+              );
+
       showCustomDialog(
         <SelectCurrencyDialogForm
-          currencies={currenciesResult.value}
+          currencies={balances}
           createTripHandler={(paymentCurrency) => { createTip(paymentCurrency, promoCode, carInfo)}}
           hideDialogHandler={hideDialogs}
         />
