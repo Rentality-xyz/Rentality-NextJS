@@ -32,6 +32,8 @@ import CoinbaseAttestationSchemaJSON_ADDRESSES from "./CoinbaseAttestationSchema
 import { Contract, ethers, JsonRpcProvider, Signer } from "ethers";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { logger } from "@/utils/logger";
+import { env } from "@/utils/env";
+import { Provider } from "react";
 
 export const SMARTCONTRACT_VERSION = "v0_2_0";
 
@@ -141,7 +143,10 @@ export async function getEtherContractWithProvider(contract: keyof typeof rental
   }
 }
 export async function getErc20ContractWithPaymentsAddress(address: string, signer: Signer) {
-  const chainId = Number((await signer.provider?.getNetwork())?.chainId);
+  let chainId = env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
+  if(!chainId) {
+  return null;
+  }
   if (!getExistBlockchainList().find((i) => i.chainId === chainId)) {
     logger.error(`getEtherContract error: Chain id ${chainId} is not supported`);
     return null;
@@ -159,8 +164,11 @@ export async function getErc20ContractWithPaymentsAddress(address: string, signe
   };
 }
 
-export async function getQuoterContract(signer: Signer) {
-  const chainId = Number((await signer.provider?.getNetwork())?.chainId);
+export async function getQuoterContract(signer: JsonRpcProvider | Signer) {
+  const chainId = env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
+  if(!chainId) {
+  return null;
+  }
   if (!getExistBlockchainList().find((i) => i.chainId === chainId)) {
     logger.error(`getEtherContract error: Chain id ${chainId} is not supported`);
     return null;
@@ -177,13 +185,16 @@ export async function getQuoterContract(signer: Signer) {
   };
 }
 
-export async function getUniswapFactory(signer: Signer) {
-  const chainId = Number((await signer.provider?.getNetwork())?.chainId);
+export async function getUniswapFactory(signer: JsonRpcProvider | Signer) {
+  const chainId = env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
+  if(!chainId) {
+  return null;
+  }
   if (!getExistBlockchainList().find((i) => i.chainId === chainId)) {
     logger.error(`getEtherContract error: Chain id ${chainId} is not supported`);
     return null;
   }
-  const uniswapAddress = UNISWAPFACTORYJSON_ADDRESSES.addresses.find((i) => i.chainId === chainId);
+  const uniswapAddress = UNISWAPFACTORYJSON_ADDRESSES.addresses.find((i) => i.chainId ===chainId);
 
 
   if (!uniswapAddress) {

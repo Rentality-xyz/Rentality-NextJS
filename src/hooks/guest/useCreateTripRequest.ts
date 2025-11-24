@@ -19,7 +19,7 @@ import findBestPool from "@/utils/findBestPool";
 
 const useCreateTripRequest = () => {
   const ethereumInfo = useEthereum();
-  const { rentalityContracts } = useRentality();
+  const { rentalityContracts, isDefaultNetwork } = useRentality();
 
   async function createTripRequest(
     carId: number,
@@ -135,6 +135,17 @@ const useCreateTripRequest = () => {
          logger.error("Fail to get quote.")
           return Err(new Error("Fail to get quote"));
         }
+        if(!defaultChainId) {
+        const userBalance = await ethereumInfo.signer.provider?.getBalance(await ethereumInfo.signer.getAddress());
+        if(userBalance === undefined) {
+          logger.error("Fail to get user balance ")
+          return Err(new Error("Fail to get user balance"));
+        }
+        if(userBalance < BigInt(formatEther(quoteResult.amountIn)) ) {
+          logger.error("User has not enough funds for transaction")
+          return Err(new Error("NOT_ENOUGH_FUNDS"));
+        }
+      }
       if (paymentCurrency !== ETH_DEFAULT_ADDRESS) {
         await approve(paymentCurrency, ethereumInfo.signer, quoteResult.amountIn);
         value = BigInt(0);
