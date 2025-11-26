@@ -14,16 +14,17 @@ export default function ClaimMyPointsHeaderButton() {
 
   return (
     <button
-      className="ml-[116px] hidden items-center rounded-md border border-gray-500 px-4 py-2 hover:border-gray-400 xl:flex"
+      className="group relative ml-[116px] hidden items-center rounded-md border border-gray-500 px-4 py-2 hover:border-gray-400 xl:flex"
       disabled={isLoading || isFetching || isClaiming || readyToClaim === 0}
       onClick={() => claimMyPoints()}
     >
-      <Image src={"/images/icons/ic_star_points_yellow.svg"} width={47} height={47} alt="" className="mr-2 h-7 w-7" />
-      <div className="ml-0.5 flex">
+      <Image src="/images/icons/ic_star_points_yellow.svg" width={47} height={47} alt="" className="mr-2 h-7 w-7" />
+
+      <div className="group-hover:text-ellipsis-none ml-0.5 min-w-0 flex-1 truncate whitespace-nowrap transition-all duration-200 group-hover:overflow-visible">
         {isClaiming ? (
-          <>{t("referrals_and_point.claiming")}</>
+          t("referrals_and_point.claiming")
         ) : isLoading || isFetching ? (
-          <>{t("referrals_and_point.loading")}</>
+          t("referrals_and_point.loading")
         ) : (
           <>
             {t("referrals_and_point.claim")}{" "}
