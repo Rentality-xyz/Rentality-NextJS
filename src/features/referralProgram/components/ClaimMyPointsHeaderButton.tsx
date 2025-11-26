@@ -4,6 +4,7 @@ import useClaimOwnReferralPoints from "../hooks/useClaimOwnReferralPoints";
 import useOwnReferralPointsSharedStore from "../hooks/useOwnReferralPointsSharedStore";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/contexts/auth/authContext";
 
 export default function ClaimMyPointsHeaderButton() {
   const { isLoading, isFetching } = useFetchOwnReferralPoints();
@@ -11,6 +12,7 @@ export default function ClaimMyPointsHeaderButton() {
   const { t } = useTranslation();
   const isClaiming = useOwnReferralPointsSharedStore((state) => state.isClaiming);
   const readyToClaim = useOwnReferralPointsSharedStore((state) => state.readyToClaim);
+  const { isAuthenticated } = useAuth();
 
   return (
     <button
@@ -28,7 +30,7 @@ export default function ClaimMyPointsHeaderButton() {
         ) : (
           <>
             {t("referrals_and_point.claim")}{" "}
-            <span className="px-1 font-semibold text-rentality-secondary">{readyToClaim.toString()}</span>{" "}
+            <span className="px-1 font-semibold text-rentality-secondary">{isAuthenticated ? readyToClaim.toString() : "0"}</span>{" "}
             {t("referrals_and_point.points")}
           </>
         )}
