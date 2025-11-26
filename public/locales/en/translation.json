@@ -116,7 +116,7 @@
     }
   },
   "create_trip": {
-    "pre_agreement_details": "Pre-agreement details",
+    "pre_agreement_details": "Pre-Terms",
     "new_search": "← New Search",
     "rent_for_n_days": "Rent for {{tripDays, number}} day(s)",
     "view_gallery": "View Gallery",
