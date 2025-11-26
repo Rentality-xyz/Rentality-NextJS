@@ -20,7 +20,7 @@ export default function ClaimMyPointsHeaderButton() {
     >
       <Image src="/images/icons/ic_star_points_yellow.svg" width={47} height={47} alt="" className="mr-2 h-7 w-7" />
 
-      <div className="ml-0.5 min-w-0 flex-1 truncate group-hover:flex group-hover:overflow-visible group-hover:whitespace-normal">
+      <div className="group-hover:text-ellipsis-none ml-0.5 min-w-0 flex-1 truncate whitespace-nowrap transition-all duration-200 group-hover:overflow-visible">
         {isClaiming ? (
           t("referrals_and_point.claiming")
         ) : isLoading || isFetching ? (
@@ -28,7 +28,7 @@ export default function ClaimMyPointsHeaderButton() {
         ) : (
           <>
             {t("referrals_and_point.claim")}{" "}
-            <span className="px-1 font-semibold text-rentality-secondary">11777000</span>{" "}
+            <span className="px-1 font-semibold text-rentality-secondary">{readyToClaim.toString()}</span>{" "}
             {t("referrals_and_point.points")}
           </>
         )}
