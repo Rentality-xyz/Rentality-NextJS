@@ -24,6 +24,7 @@ import RntInputTransparent from "@/components/common/rntInputTransparent";
 import { logger } from "@/utils/logger";
 import getNetworkName from "@/model/utils/NetworkName";
 import { DialogActions } from "@/utils/dialogActions";
+import Turnstile from "react-turnstile";
 
 function UserCommonInformationForm({
   userProfile,
@@ -58,6 +59,7 @@ function UserCommonInformationForm({
   const enteredEmail = watch("email");
 
   const [verifiedPhoneNumber, setVerifiedPhoneNumber] = useState(userProfile.phoneNumber);
+  const [token, setToken] = useState<string | null>(null)
 
   useEffect(() => {
     reset({
@@ -382,9 +384,18 @@ function UserCommonInformationForm({
             )}
           />
           {isCurrentPhoneNotVerified && (
+            <>
+            <Turnstile
+              sitekey=""
+              onVerify={(token) => {
+                setToken(token)
+              }}
+              theme="dark"
+            />
             <RntButton className="lg:w-60" onClick={sendSmsVerificationCode} disabled={isResendCodeTimerRunning}>
               {smsHash === undefined ? t("profile.verify") : t("profile.resend_code")}
             </RntButton>
+            </>
           )}
         </div>
 
