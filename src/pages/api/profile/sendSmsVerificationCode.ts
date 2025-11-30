@@ -53,9 +53,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     await client.messages.create({
-      body: `Your verification code: ${verificationCode}`,
-      from: "rentality",
-      to: phoneNumber,
+      from: 'whatsapp:+14155238886',
+      to: `whatsapp:${phoneNumber}`,
+      contentSid: 'HX229f5a04fd0510ce1b071852155d3e75',
+      contentVariables: `{"1":"${verificationCode}"}`,
     });
     logger.info("Sms verification code sent successfully");
     res.status(200).json({ hash, timestamp });

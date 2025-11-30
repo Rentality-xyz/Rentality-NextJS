@@ -98,5 +98,7 @@ jobs:
           ENVKEY_API_AUTH_TOKEN: ${{ secrets.API_AUTH_TOKEN }}
           ENVKEY_BASE_URL: ${{ vars.BASE_URL }}
           ENVKEY_FB_SERVICE_ACCOUNT: ${{ secrets.FB_SERVICE_ACCOUNT }}
+          ENVKEY_NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
+          ENVKEY_TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
       - name: "Build Rentality App"
         run: make build
