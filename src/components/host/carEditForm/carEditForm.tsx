@@ -440,7 +440,7 @@ export default function CarEditForm({
                     make_id={selectedMakeID}
                     model_id={selectedModelID}
                     readOnly={editMode !== "newCar" || !isFormEnabled}
-                    value={value ?? ""}
+                    value={value ?? 0}
                     onYearSelect={(newYear) => {
                       onChange(newYear);
                       setIsCarMetadataEdited(true);
