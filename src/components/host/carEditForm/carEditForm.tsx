@@ -484,7 +484,7 @@ export default function CarEditForm({
           render={({ field }) => (
             <>
               <CarAddPhoto
-                carImages={field.value}
+                carImages={field.value ?? []}
                 readOnly={!isFormEnabled}
                 onCarImagesChanged={(newValue) => {
                   field.onChange(newValue);
@@ -837,7 +837,7 @@ export default function CarEditForm({
             render={({ field }) => (
               <div className="flex flex-wrap items-center gap-4">
                 <MilesIncludedPerDay
-                  value={field.value}
+                  value={field.value ?? 0}
                   readOnly={!isFormEnabled}
                   onChange={field.onChange}
                   validationError={errors.milesIncludedPerDay?.message?.toString()}
@@ -992,7 +992,7 @@ export default function CarEditForm({
               control={control}
               render={({ field }) => (
                 <FullBatteryChargePrice
-                  value={field.value}
+                  value={field.value ?? 0}
                   readOnly={!isFormEnabled}
                   onChange={(newValue) => {
                     field.onChange(newValue);

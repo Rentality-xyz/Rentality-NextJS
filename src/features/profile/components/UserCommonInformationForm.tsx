@@ -94,7 +94,7 @@ function UserCommonInformationForm({
         return;
       }
 
-      if (!isEmpty(field.value) && field.value.startsWith("blob")) {
+      if (!isEmpty(field.value) && field.value?.startsWith("blob")) {
         logger.info("Revoking ObjectURL");
         URL.revokeObjectURL(field.value);
       }
