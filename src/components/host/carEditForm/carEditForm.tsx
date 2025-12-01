@@ -399,7 +399,7 @@ export default function CarEditForm({
                     label={t_car("model")}
                     make_id={selectedMakeID}
                     readOnly={editMode !== "newCar" || !isFormEnabled}
-                    value={value}
+                    value={value ?? ""}
                     onModelSelect={(newID: string, newModel) => {
                       onChange(newModel);
                       setSelectedModelID(newID);
