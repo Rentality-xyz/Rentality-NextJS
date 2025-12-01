@@ -328,7 +328,7 @@ export default function CarEditForm({
                     id="vinNumber"
                     className="lg:w-60"
                     label={t_car("vin_num")}
-                    value={value}
+                    value={value ?? ""}
                     isVINCheckOverriden={isVINCheckOverriden}
                     isVINVerified={isVINVerified}
                     placeholder="e.g. 4Y1SL65848Z411439"
@@ -358,7 +358,7 @@ export default function CarEditForm({
                     isTransparentStyle={true}
                     className="lg:min-w-[17ch]"
                     label={t_car("brand")}
-                    value={value}
+                    value={value ?? ""}
                     readOnly={!isFormEnabled || isVINVerified}
                     onMakeSelect={(newID, newMake) => {
                       onChange(newMake);
@@ -399,7 +399,7 @@ export default function CarEditForm({
                     label={t_car("model")}
                     make_id={selectedMakeID}
                     readOnly={editMode !== "newCar" || !isFormEnabled}
-                    value={value}
+                    value={value ?? ""}
                     onModelSelect={(newID: string, newModel) => {
                       onChange(newModel);
                       setSelectedModelID(newID);
@@ -440,7 +440,7 @@ export default function CarEditForm({
                     make_id={selectedMakeID}
                     model_id={selectedModelID}
                     readOnly={editMode !== "newCar" || !isFormEnabled}
-                    value={value}
+                    value={value ?? 0}
                     onYearSelect={(newYear) => {
                       onChange(newYear);
                       setIsCarMetadataEdited(true);
@@ -484,7 +484,7 @@ export default function CarEditForm({
           render={({ field }) => (
             <>
               <CarAddPhoto
-                carImages={field.value}
+                carImages={field.value ?? []}
                 readOnly={!isFormEnabled}
                 onCarImagesChanged={(newValue) => {
                   field.onChange(newValue);
@@ -837,7 +837,7 @@ export default function CarEditForm({
             render={({ field }) => (
               <div className="flex flex-wrap items-center gap-4">
                 <MilesIncludedPerDay
-                  value={field.value}
+                  value={field.value ?? 0}
                   readOnly={!isFormEnabled}
                   onChange={field.onChange}
                   validationError={errors.milesIncludedPerDay?.message?.toString()}
@@ -992,7 +992,7 @@ export default function CarEditForm({
               control={control}
               render={({ field }) => (
                 <FullBatteryChargePrice
-                  value={field.value}
+                  value={field.value ?? 0}
                   readOnly={!isFormEnabled}
                   onChange={(newValue) => {
                     field.onChange(newValue);

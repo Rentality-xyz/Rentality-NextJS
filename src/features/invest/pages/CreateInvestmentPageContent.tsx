@@ -161,7 +161,7 @@ function CreateInvestmentPageContent() {
                 isTransparentStyle={true}
                 className="lg:min-w-[17ch]"
                 label={t_car("brand")}
-                value={value}
+                value={value ?? ""}
                 onMakeSelect={(newID, newMake) => {
                   onChange(newMake);
                   setSelectedMakeID(newID);
@@ -181,7 +181,7 @@ function CreateInvestmentPageContent() {
                 className="lg:min-w-[15ch]"
                 label={t_car("model")}
                 make_id={selectedMakeID}
-                value={value}
+                value={value ?? ""}
                 onModelSelect={(newID: string, newModel) => {
                   onChange(newModel);
                   setSelectedModelID(newID);
@@ -202,7 +202,7 @@ function CreateInvestmentPageContent() {
                 label={t_car("release")}
                 make_id={selectedMakeID}
                 model_id={selectedModelID}
-                value={value}
+                value={value ?? 0}
                 onYearSelect={(newYear) => {
                   onChange(newYear);
                 }}
@@ -219,7 +219,7 @@ function CreateInvestmentPageContent() {
         render={({ field }) => (
           <>
             <CarAddPhoto
-              carImages={field.value}
+              carImages={field.value ?? []}
               readOnly={false}
               onCarImagesChanged={(newValue) => {
                 field.onChange(newValue);
