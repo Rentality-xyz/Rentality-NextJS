@@ -358,7 +358,7 @@ export default function CarEditForm({
                     isTransparentStyle={true}
                     className="lg:min-w-[17ch]"
                     label={t_car("brand")}
-                    value={value}
+                    value={value ?? ""}
                     readOnly={!isFormEnabled || isVINVerified}
                     onMakeSelect={(newID, newMake) => {
                       onChange(newMake);
