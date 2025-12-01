@@ -328,7 +328,7 @@ export default function CarEditForm({
                     id="vinNumber"
                     className="lg:w-60"
                     label={t_car("vin_num")}
-                    value={value}
+                    value={value ?? ""}
                     isVINCheckOverriden={isVINCheckOverriden}
                     isVINVerified={isVINVerified}
                     placeholder="e.g. 4Y1SL65848Z411439"
