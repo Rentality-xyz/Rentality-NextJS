@@ -839,7 +839,12 @@
     "trip_photos_upload_trip_photo": "Upload a trip photo",
     "export_to_excel": "Export to Excel",
     "total": "Total:",
-    "pay": "Pay"
+    "pay": "Pay",
+    "it_works_only_on_base" : {
+      "it_works_only_on_base" : "This functionality only works in the Base network.",
+      "want_to_change" : "Do you want to change the network?",
+      "change_network": "Change network"
+    }
   },
   "become_host": {
     "title": "Become a host",
