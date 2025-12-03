@@ -4,6 +4,8 @@ import React from "react";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { base, baseSepolia } from "wagmi/chains";
 import Image from "next/image";
+import { useRntSnackbars } from "@/contexts/rntDialogsContext";
+import { logger } from "@/utils/logger";
 
 type NetworkBaseGuardProps = {
   allowedChains?: number[];
@@ -13,13 +15,19 @@ type NetworkBaseGuardProps = {
 function NetworkBaseGuard({ allowedChains = [base.id, baseSepolia.id], children }: NetworkBaseGuardProps) {
 
   const { t } = useTranslation();
+  const { showError } = useRntSnackbars();
   const ethereumInfo = useEthereum();
   const chainId = ethereumInfo?.chainId;
 
   const isAllowed = chainId != null && allowedChains.includes(chainId);
 
   async function handleChangeClick() {
-    await ethereumInfo?.requestChainIdChange(base.id);
+    try {
+      await ethereumInfo?.requestChainIdChange(base.id);
+    } catch (err) {
+      logger.error("NetworkBaseGuard requestChainIdChange failed:", err);
+      showError(t("booked.network_base_guard.change_network_error"));
+    }
   }
 
   if (isAllowed) {
@@ -32,12 +40,12 @@ function NetworkBaseGuard({ allowedChains = [base.id, baseSepolia.id], children 
         <Image src={"/images/car_loading.png"} width={500} height={250} alt="" className="sm:hidden" />
         <div className="mt-6 flex items-center max-sm:justify-center">
           <Image src={"/images/icons/logo_base_white.png"} width={1200} height={1200} alt="" className="mr-2 w-5" />
-          <p className="text-xl">{t("common.it_works_only_on_base.it_works_only_on_base")}</p>
+          <p className="text-xl">{t("common.network_base_guard.it_works_only_on_base")}</p>
         </div>
-        <p className="mt-6 text-xl max-sm:text-center">{t("common.it_works_only_on_base.want_to_change")}</p>
+        <p className="mt-6 text-xl max-sm:text-center">{t("common.network_base_guard.want_to_change")}</p>
         <div className="mt-6 flex flex-col max-sm:items-center max-sm:justify-center">
           <RntButton className="w-56" onClick={handleChangeClick}>
-            {t("common.it_works_only_on_base.change_network")}
+            {t("common.network_base_guard.change_network")}
           </RntButton>
         </div>
       </div>
