@@ -1,5 +1,4 @@
 import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
-import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useMemo } from "react";
@@ -7,6 +6,7 @@ import { ContractReadyToClaimFromHash, RefferalProgram as ReferralProgram } from
 import { getReferralProgramDescriptionText } from "../utils";
 import { usePaginationState } from "@/hooks/pagination/usePaginationState";
 import { TFunction } from "i18next";
+import { getReferralReadContract } from "@/features/referralProgram/utils/getReferralReadContract";
 
 export type PointsFromYourReferralsInfo = {
   methodDescriptions: string;
@@ -19,7 +19,6 @@ export const REFERRAL_POINTS_FROM_YOUR_REFERRALS_QUERY_KEY = "ReferralPointsFrom
 
 function useFetchPointsFromYourReferrals(initialPage: number = 1, initialItemsPerPage: number = 10) {
   const ethereumInfo = useEthereum();
-  const { rentalityContracts } = useRentality();
   const { currentPage, itemsPerPage, updatePagination } = usePaginationState(initialPage, initialItemsPerPage);
   const { t } = useTranslation();
 
@@ -29,9 +28,10 @@ function useFetchPointsFromYourReferrals(initialPage: number = 1, initialItemsPe
     data: allDataWithReadyToClaim = { readyToClaim: 0, combinedData: [] },
     error,
   } = useQuery({
-    queryKey: [REFERRAL_POINTS_FROM_YOUR_REFERRALS_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
-    queryFn: async () => fetchPointsFromYourReferrals(rentalityContracts, ethereumInfo, t),
+    queryKey: [REFERRAL_POINTS_FROM_YOUR_REFERRALS_QUERY_KEY, ethereumInfo?.walletAddress],
+    queryFn: async () => fetchPointsFromYourReferrals(ethereumInfo, t),
     refetchOnWindowFocus: false,
+    enabled: Boolean(ethereumInfo?.walletAddress),
   });
 
   const totalPageCount = useMemo(() => {
@@ -66,15 +66,15 @@ function useFetchPointsFromYourReferrals(initialPage: number = 1, initialItemsPe
 }
 
 async function fetchPointsFromYourReferrals(
-  rentalityContracts: IRentalityContracts | null | undefined,
   ethereumInfo: EthereumInfo | null | undefined,
   t: TFunction
 ) {
-  if (!rentalityContracts || !ethereumInfo) {
+  if (!ethereumInfo || !ethereumInfo.walletAddress) {
     throw new Error("Contracts or wallet not initialized");
   }
 
-  const result = await rentalityContracts.referralProgram.getReadyToClaimFromRefferalHash(ethereumInfo.walletAddress);
+  const referralProgram = await getReferralReadContract();
+  const result = await referralProgram.getReadyToClaimFromRefferalHash(ethereumInfo.walletAddress);
 
   if (!result.ok) {
     throw new Error(result.error.message);

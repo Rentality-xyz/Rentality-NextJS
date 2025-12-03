@@ -2,11 +2,10 @@ import { RefferalProgram as ReferralProgram } from "@/model/blockchain/schemas";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { useTranslation } from "react-i18next";
 import { getReferralProgramDescriptionText } from "../utils";
-import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { usePaginationForListApi } from "@/hooks/pagination/usePaginationForListApi";
 import { TFunction } from "i18next";
-import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { UTC_TIME_ZONE_ID } from "@/utils/constants";
+import { getReferralReadContract } from "@/features/referralProgram/utils/getReferralReadContract";
 
 export type ReferralHistoryInfo = {
   points: number;
@@ -17,14 +16,12 @@ export type ReferralHistoryInfo = {
 export const REFERRAL_POINTS_HISTORY_QUERY_KEY = "ReferralPointsHistory";
 
 function useFetchPointsHistory(initialPage: number = 1, initialItemsPerPage: number = 10) {
-  const ethereumInfo = useEthereum();
-  const { rentalityContracts } = useRentality();
   const { t } = useTranslation();
 
   const queryResult = usePaginationForListApi<ReferralHistoryInfo>(
     {
-      queryKey: [REFERRAL_POINTS_HISTORY_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
-      queryFn: async () => fetchPointsHistory(rentalityContracts, t),
+      queryKey: [REFERRAL_POINTS_HISTORY_QUERY_KEY],
+      queryFn: async () => fetchPointsHistory(t),
       refetchOnWindowFocus: false,
     },
     initialPage,
@@ -34,12 +31,9 @@ function useFetchPointsHistory(initialPage: number = 1, initialItemsPerPage: num
   return queryResult;
 }
 
-async function fetchPointsHistory(rentalityContracts: IRentalityContracts | null | undefined, t: TFunction) {
-  if (!rentalityContracts) {
-    throw new Error("Contracts not initialized");
-  }
-
-  const result = await rentalityContracts.referralProgram.getPointsHistory();
+async function fetchPointsHistory(t: TFunction) {
+  const referralProgram = await getReferralReadContract();
+  const result = await referralProgram.getPointsHistory();
 
   if (!result.ok) {
     throw new Error(result.error.message);
