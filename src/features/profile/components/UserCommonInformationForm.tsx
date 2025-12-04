@@ -416,6 +416,7 @@ function UserCommonInformationForm({
             <>
               {!isTurnstileSuccess ? (
                 <Turnstile
+                  className="overflow-hidden h-[65px]"
                   sitekey={env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
                   onVerify={async (token) => {
                     const ok = await verifyTurnstileToken(token)
