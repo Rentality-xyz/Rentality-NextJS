@@ -81,7 +81,7 @@ const useStartHosting = () => {
           signedDimoTokenId: "0x",
         };
 
-        const result = await rentalityContracts.investment.claimAndCreatePool(investId, request);
+        const result = await rentalityContracts.gateway.claimAndCreatePool(investId, request);
 
         return result.ok ? result : Err(new Error("startHosting error: " + result.error));
       } catch (error) {

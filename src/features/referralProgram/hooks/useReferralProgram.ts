@@ -32,7 +32,7 @@ const useReferralProgram = () => {
         return null;
       }
 
-      const result = await rentalityContracts.referralProgram.getMyRefferalInfo();
+      const result = await rentalityContracts.gateway.getMyRefferalInfo();
       if (result.ok) {
         setHash(result.value.myHash !== ZERO_4_BYTES_HASH ? result.value.myHash : "");
         setUsedInviteHash(result.value.savedHash !== ZERO_4_BYTES_HASH ? result.value.savedHash : "");
@@ -51,7 +51,7 @@ const useReferralProgram = () => {
         return null;
       }
 
-      const result = await rentalityContracts.referralProgram.addressToPoints(ethereumInfo.walletAddress);
+      const result = await rentalityContracts.gateway.addressToPoints(ethereumInfo.walletAddress);
       if (result.ok) {
         setPoints(Number(result.value));
       }
@@ -82,7 +82,7 @@ const useReferralProgram = () => {
       setIsLoading(true);
       return null;
     }
-    const result = await rentalityContracts.referralProgram.getReadyToClaim(ethereumInfo.walletAddress);
+    const result = await rentalityContracts.gateway.getReadyToClaim(ethereumInfo.walletAddress);
     return result.ok ? result.value : null;
   }, [ethereumInfo, rentalityContracts]);
 
@@ -98,7 +98,7 @@ const useReferralProgram = () => {
       return null;
     }
 
-    const result = await rentalityContracts.referralProgram.getReadyToClaimFromRefferalHash(ethereumInfo.walletAddress);
+    const result = await rentalityContracts.gateway.getReadyToClaimFromRefferalHash(ethereumInfo.walletAddress);
     return result.ok ? result.value : null;
   };
 
@@ -113,7 +113,7 @@ const useReferralProgram = () => {
       setIsLoading(true);
       return null;
     }
-    const result = await rentalityContracts.referralProgram.claimRefferalPoints(ethereumInfo.walletAddress);
+    const result = await rentalityContracts.gateway.claimRefferalPoints(ethereumInfo.walletAddress);
     return result.ok ? result.value : null;
   };
 
@@ -123,7 +123,7 @@ const useReferralProgram = () => {
       setIsLoading(true);
       return null;
     }
-    const result = await rentalityContracts.referralProgram.getRefferalPointsInfo();
+    const result = await rentalityContracts.gateway.getRefferalPointsInfo();
     return result.ok ? result.value : null;
   }, [rentalityContracts]);
 
@@ -133,7 +133,7 @@ const useReferralProgram = () => {
       setIsLoading(true);
       return null;
     }
-    const result = await rentalityContracts.referralProgram.getPointsHistory();
+    const result = await rentalityContracts.gateway.getPointsHistory();
     return result.ok ? result.value : null;
   }, [rentalityContracts]);
 

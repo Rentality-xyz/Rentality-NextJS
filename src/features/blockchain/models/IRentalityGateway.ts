@@ -33,6 +33,12 @@ import {
   ContractClaimV2,
   ContractHostInsuranceRule,
   ContractAllowedCurrencyDTO,
+  ContractInvestmentDTO,
+  ContractRefferalHashDTO,
+  ContractAllRefferalInfoDTO,
+  ContractProgramHistory,
+  ContractReadyToClaimDTO,
+  ContractMyRefferalInfoDTO
 } from "@/model/blockchain/schemas";
 import { ContractTransactionResponse } from "ethers";
 import { IEthersContract } from "./IEtherContract";
@@ -179,6 +185,59 @@ export interface IRentalityGatewayContract extends IEthersContract {
 
   // AiDamageAnalyzee
   getAiDamageAnalyzeCaseRequest(tripId: bigint, caseType: CaseType): Promise<ContractAiDamageAnalyzeCaseRequestDTO>;
+
+
+  /// Investment 
+
+    claimAndCreatePool(
+      investId: number,
+      createCarRequest: ContractCreateCarRequest
+    ): Promise<ContractTransactionResponse>;
+  
+    getAllInvestments(): Promise<ContractInvestmentDTO[]>;
+  
+    invest(investId: number, amount: bigint, value: object): Promise<ContractTransactionResponse>;
+  
+    claimAllMy(investId: number): Promise<ContractTransactionResponse>;
+  
+    createCarInvestment(
+      car: {
+        inProgress: boolean;
+        car: ContractCreateCarRequest;
+        priceInCurrency: bigint;
+        creatorPercents: bigint;
+      },
+      name_: string,
+      currency: string
+    ): Promise<ContractTransactionResponse>;
+  
+    changeListingStatus(investId: bigint): Promise<ContractTransactionResponse>;
+
+
+    /// refProgram
+     // user points
+      addressToPoints(address: string): Promise<bigint>;
+      // user ref hash
+      referralHash(user: string): Promise<string>;
+      // when last time daily was claimed
+      getCarDailyClaimedTime(carId: number): Promise<bigint>;
+      // claim user points
+      claimPoints(user: string): Promise<ContractTransactionResponse>;
+      // get info about not claimed points
+      // info about not claimed points, from ref hash
+      getReadyToClaimFromRefferalHash(user: string): Promise<ContractRefferalHashDTO>;
+      // claim points from user ref hash
+      claimRefferalPoints(user: string): Promise<ContractTransactionResponse>;
+      // get full information about point, tears, e.t.c
+      getRefferalPointsInfo(): Promise<ContractAllRefferalInfoDTO>;
+      // get points reduces and increases
+      getPointsHistory(): Promise<ContractProgramHistory[]>;
+    
+      getReadyToClaim(user: string): Promise<ContractReadyToClaimDTO>;
+      getMyRefferalInfo(): Promise<ContractMyRefferalInfoDTO>;
+
+
+    ///
 
   // temporary is not working (reversed)
   // isCarDetailsConfirmed(carId: bigint): Promise<boolean>;
