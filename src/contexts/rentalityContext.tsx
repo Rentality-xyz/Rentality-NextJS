@@ -17,8 +17,6 @@ import {
   IRentalityAiDamageAnalyzeContract,
 } from "@/features/blockchain/models/IRentalityAiDamageAnalyze";
 import { logger } from "@/utils/logger";
-import { JsonRpcProvider } from "ethers";
-import { IRentalitySenderContract, IRentalitySender } from "@/features/blockchain/models/IRentalitySender";
 import getDefaultProvider from "@/utils/api/defaultProviderUrl";
 
 export interface IRentalityContracts {

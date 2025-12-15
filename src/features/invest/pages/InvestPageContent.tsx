@@ -96,7 +96,6 @@ function InvestPageContent({}: InvestContentProps) {
   }, [investments, selectedFilter]);
 
   return (
-    <NetworkBaseGuard>
       <div className="mt-8">
         {isInvestManager(userRole) && (
           <RntButton className="mb-6 flex w-60 items-center justify-center" onClick={handleCreateInvestClick}>
@@ -134,7 +133,6 @@ function InvestPageContent({}: InvestContentProps) {
           ))}
         </div>
       </div>
-    </NetworkBaseGuard>
   );
 }
 

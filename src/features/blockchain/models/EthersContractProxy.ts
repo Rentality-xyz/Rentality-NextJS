@@ -24,7 +24,6 @@ export function getEthersCrassChainProxy<T extends IEthersContract, S extends IE
           const isReadFunction = functionFragment && 
             (functionFragment.stateMutability === "view" || 
              functionFragment.stateMutability === "pure");
-
           const contractToUse = isReadFunction ? readContract : writeContract;
 
           let result;
@@ -36,7 +35,6 @@ export function getEthersCrassChainProxy<T extends IEthersContract, S extends IE
             const capitalizedFnName = fnName.charAt(0).toUpperCase() + fnName.slice(1);
             const quote = "quote" + capitalizedFnName;
             let quoteMethod = Reflect.get(target, quote, receiver);
-
             let originalMethod = Reflect.get(writeContract, key, receiver);
 
             if (typeof originalMethod !== "function") {
@@ -47,6 +45,7 @@ export function getEthersCrassChainProxy<T extends IEthersContract, S extends IE
             if (typeof quoteMethod !== "function") {
               throw new Error(`Quote function '${quote}' is not a function. Type: ${typeof quoteMethod}`);
             }
+            console.log("JHHHHHHHH 0.6")
             let quoteResult;
             if(functionFragment && functionFragment.payable && args[args.length - 1].value) {
               // if function is payeble, we need to specify value for quote,
@@ -60,7 +59,6 @@ export function getEthersCrassChainProxy<T extends IEthersContract, S extends IE
               argForSimulation = argForSimulation.slice(0, -1);
               args = [(readContract as unknown as ethers.Contract).interface.encodeFunctionData(fnName, args.slice(0, args.length - 1))];
               args = [value,...args,{value: quoteResult}];
-
               const fnSignature = `${originalMethod.name}(uint256,bytes)`;
               originalMethod = Reflect.get(writeContract, fnSignature, receiver);
 
