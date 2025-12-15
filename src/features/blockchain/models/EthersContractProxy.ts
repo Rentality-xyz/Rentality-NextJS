@@ -45,7 +45,6 @@ export function getEthersCrassChainProxy<T extends IEthersContract, S extends IE
             if (typeof quoteMethod !== "function") {
               throw new Error(`Quote function '${quote}' is not a function. Type: ${typeof quoteMethod}`);
             }
-            console.log("JHHHHHHHH 0.6")
             let quoteResult;
             if(functionFragment && functionFragment.payable && args[args.length - 1].value) {
               // if function is payeble, we need to specify value for quote,
