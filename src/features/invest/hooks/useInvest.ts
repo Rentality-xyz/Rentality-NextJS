@@ -19,7 +19,7 @@ const useInvest = () => {
       }
 
       try {
-        const result = await rentalityContracts.investment.invest(investId, BigInt(amount), {
+        const result = await rentalityContracts.gateway.invest(investId, BigInt(amount), {
           value: BigInt(amount),
         });
 

@@ -25,7 +25,7 @@ async function fetchReferralLinks(rentalityContracts: IRentalityContracts | null
     throw new Error("Contracts not initialized");
   }
 
-  const result = await rentalityContracts.referralProgram.getMyRefferalInfo();
+  const result = await rentalityContracts.gateway.getMyRefferalInfo();
 
   if (!result.ok) {
     throw new Error(result.error.message);

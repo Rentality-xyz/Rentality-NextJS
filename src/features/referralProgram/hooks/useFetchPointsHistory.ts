@@ -5,7 +5,7 @@ import { getReferralProgramDescriptionText } from "../utils";
 import { usePaginationForListApi } from "@/hooks/pagination/usePaginationForListApi";
 import { TFunction } from "i18next";
 import { UTC_TIME_ZONE_ID } from "@/utils/constants";
-import { getReferralReadContract } from "@/features/referralProgram/utils/getReferralReadContract";
+import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 
 export type ReferralHistoryInfo = {
   points: number;
@@ -17,11 +17,12 @@ export const REFERRAL_POINTS_HISTORY_QUERY_KEY = "ReferralPointsHistory";
 
 function useFetchPointsHistory(initialPage: number = 1, initialItemsPerPage: number = 10) {
   const { t } = useTranslation();
+   const rentality = useRentality()
 
   const queryResult = usePaginationForListApi<ReferralHistoryInfo>(
     {
-      queryKey: [REFERRAL_POINTS_HISTORY_QUERY_KEY],
-      queryFn: async () => fetchPointsHistory(t),
+      queryKey: [REFERRAL_POINTS_HISTORY_QUERY_KEY, rentality?.rentalityContracts],
+      queryFn: async () => fetchPointsHistory(t, rentality.rentalityContracts),
       refetchOnWindowFocus: false,
     },
     initialPage,
@@ -31,9 +32,12 @@ function useFetchPointsHistory(initialPage: number = 1, initialItemsPerPage: num
   return queryResult;
 }
 
-async function fetchPointsHistory(t: TFunction) {
-  const referralProgram = await getReferralReadContract();
-  const result = await referralProgram.getPointsHistory();
+async function fetchPointsHistory(t: TFunction, rentalityContracts: IRentalityContracts | undefined | null) {
+  if (!rentalityContracts) {
+    throw new Error("Contracts or wallet not initialized");
+  }
+
+  const result = await rentalityContracts.gateway.getPointsHistory();
 
   if (!result.ok) {
     throw new Error(result.error.message);

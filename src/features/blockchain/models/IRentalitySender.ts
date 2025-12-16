@@ -190,6 +190,57 @@ export interface IRentalitySenderContract extends IEthersContract {
     // DIMO functions
     saveDimoTokenIds(dimoTokenIds: bigint[], rentalityCarIds: bigint[], value: object): Promise<ContractTransactionResponse>;
     quoteSaveDimoTokenIds(dimoTokenIds: bigint[], rentalityCarIds: bigint[]): Promise<bigint>;
+
+
+     /// Investment 
+    
+        claimAndCreatePool(
+          investId: number,
+          createCarRequest: ContractCreateCarRequest
+        ): Promise<ContractTransactionResponse>;
+      
+      
+        invest(investId: number, amount: bigint, value: object): Promise<ContractTransactionResponse>;
+        quoteInvest(value: number, investId: number, amount: bigint): Promise<bigint>;
+      
+        claimAllMy(investId: number): Promise<ContractTransactionResponse>;
+        quoteClaimAllMy(investId: number): Promise<bigint>;
+      
+        createCarInvestment(
+          car: {
+            inProgress: boolean;
+            car: ContractCreateCarRequest;
+            priceInCurrency: bigint;
+            creatorPercents: bigint;
+          },
+          name_: string,
+          currency: string
+        ): Promise<ContractTransactionResponse>;
+        quoteCreateCarInvestment(
+          car: {
+            inProgress: boolean;
+            car: ContractCreateCarRequest;
+            priceInCurrency: bigint;
+            creatorPercents: bigint;
+          },
+          name_: string,
+          currency: string
+        ): Promise<bigint>;
+      
+        changeListingStatus(investId: bigint): Promise<ContractTransactionResponse>;
+        quoteChangeListingStatus(investId: bigint): Promise<bigint>;
+    
+    
+        /// refProgram
+          // claim user points
+          claimPoints(user: string): Promise<ContractTransactionResponse>;
+          quoteClaimPoints(user: string): Promise<bigint>;
+          // claim points from user ref hash
+          claimRefferalPoints(user: string): Promise<ContractTransactionResponse>;
+          quoteClaimRefferalPoints(user: string): Promise<bigint>;
+        
+    
+    
   
     /// GENERAL functions
     address: string;

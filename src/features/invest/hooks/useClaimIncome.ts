@@ -16,7 +16,7 @@ const useClaimIncome = () => {
       }
 
       try {
-        const result = await rentalityContracts.investment.claimAllMy(investId);
+        const result = await rentalityContracts.gateway.claimAllMy(investId);
 
         return result.ok ? result : Err(new Error("claimIncome error: " + result.error));
       } catch (error) {

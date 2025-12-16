@@ -19,7 +19,7 @@ const useChangeInvestmentListingStatus = () => {
         return Err(new Error("Missing required contracts or ethereum info"));
       }
       try {
-        const result = await rentalityContracts.investment.changeListingStatus(BigInt(investId));
+        const result = await rentalityContracts.gateway.changeListingStatus(BigInt(investId));
 
         return result.ok ? result : Err(new Error("useChangeInvestmentListingStatus error: " + result.error));
       } catch (error) {

@@ -14,7 +14,6 @@ export default function ReferralPageContent() {
   return (
     <>
       <PageTitle title={t("referrals_and_point.title")} />
-      <NetworkBaseGuard>
         <div className="mt-2 flex flex-col gap-4">
           <p className="ml-4">{t("referrals_and_point.collect_and_claim_points")}</p>
           <UserBalance />
@@ -29,7 +28,6 @@ export default function ReferralPageContent() {
             </div>
           </div>
         </div>
-      </NetworkBaseGuard>
     </>
   );
 }
