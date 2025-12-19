@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { IRentalityAdminGatewayContract } from "@/features/blockchain/models/IRentalityAdminGateway";
-import { getEtherContractWithSigner } from "@/abis";
+import { getEtherContractWithProvider, getEtherContractWithSigner } from "@/abis";
 import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
 import { logger } from "@/utils/logger";
 import { Err } from "@/model/utils/result";
 import { getEthersContractProxy } from "@/features/blockchain/models/EthersContractProxy";
+import getDefaultProvider from "@/utils/api/defaultProviderUrl";
 
 export const INVESTMENTS_LIST_QUERY_KEY = "PlatformFee";
 
@@ -27,9 +28,10 @@ async function fetchPlatformFee(ethereumInfo: EthereumInfo | null | undefined) {
     logger.error("createInvestCar error: Missing required contracts or ethereum info");
     throw Err(new Error("Missing required ethereum info"));
   }
-  const rentalityAdmin = (await getEtherContractWithSigner(
+  const defaultProvider = await getDefaultProvider();
+  const rentalityAdmin = (await getEtherContractWithProvider(
     "admin",
-    ethereumInfo.signer
+    defaultProvider
   )) as unknown as IRentalityAdminGatewayContract;
 
   if (!rentalityAdmin) {
