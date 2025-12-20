@@ -38,6 +38,7 @@ async function fetchPointsHistory(t: TFunction, rentalityContracts: IRentalityCo
   }
 
   const result = await rentalityContracts.gateway.getPointsHistory();
+  
 
   if (!result.ok) {
     throw new Error(result.error.message);
@@ -45,13 +46,13 @@ async function fetchPointsHistory(t: TFunction, rentalityContracts: IRentalityCo
 
   const data = result.value.map((historyDataDto) => {
     const isOneTime = historyDataDto.oneTime;
-
     const methodDescriptions =
       historyDataDto.method === ReferralProgram.FinishTripAsGuest
         ? isOneTime
           ? t("referrals_and_point.referral_program.finish_trip_as_guest_one_time")
           : t("referrals_and_point.referral_program.finish_trip_as_guest")
         : getReferralProgramDescriptionText(t, historyDataDto.method);
+     
 
     return {
       points: Number(historyDataDto.points),
