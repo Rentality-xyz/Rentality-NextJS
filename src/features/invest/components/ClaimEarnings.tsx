@@ -12,7 +12,6 @@ function ClaimEarnings({
   handleClaimIncome: (investId: number) => Promise<Result<boolean>>;
   t: (key: string) => string;
 }) {
-  console.log("myIncome", myIncome);
   return (
     <RntButton
       className="mx-auto mt-6 flex h-14 w-full items-center justify-center"
