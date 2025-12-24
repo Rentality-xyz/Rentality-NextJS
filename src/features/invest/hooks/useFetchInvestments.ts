@@ -31,6 +31,7 @@ async function fetchInvestments(
   }
 
   const result = await rentalityContracts.gateway.getAllInvestments();
+  
   if (!result.ok) {
     throw new Error(result.error.message);
   }

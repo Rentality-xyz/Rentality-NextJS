@@ -1,6 +1,7 @@
-import { getEtherContractWithSigner } from "@/abis";
+import { getEtherContractWithProvider, getEtherContractWithSigner } from "@/abis";
 import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
 import { IRentalityUserServiceContract } from "@/features/blockchain/models/IRentalityUserService";
+import getDefaultProvider from "@/utils/api/defaultProviderUrl";
 import { logger } from "@/utils/logger";
 import { useQuery } from "@tanstack/react-query";
 
@@ -38,9 +39,11 @@ async function fetchUserRole(ethereumInfo: EthereumInfo | null | undefined) {
     throw new Error("Wallet not initialized");
   }
 
-  const rentalityUserService = (await getEtherContractWithSigner(
+  const defaultProvider = await getDefaultProvider()
+  
+  const rentalityUserService = (await getEtherContractWithProvider(
     "userService",
-    ethereumInfo.signer
+    defaultProvider
   )) as unknown as IRentalityUserServiceContract;
 
   if (!rentalityUserService) {
