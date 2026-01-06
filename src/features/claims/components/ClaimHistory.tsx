@@ -35,7 +35,6 @@ const headerSpanClassName = "text-start px-2 font-light text-sm";
 const rowSpanClassName = "px-2 h-16";
 
 export default function ClaimHistory({ claims }: Props) {
-  console.log(claims.find(cancelClaim => cancelClaim.claimId === 120));
   const ethereumInfo = useEthereum();
   const { userMode, isHost } = useUserMode();
   const { mutateAsync: payClaim } = usePayClaim();
