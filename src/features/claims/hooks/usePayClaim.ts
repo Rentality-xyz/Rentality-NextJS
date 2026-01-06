@@ -31,7 +31,11 @@ const usePayClaim = () => {
           return Err(new Error("ERROR"));
         }
         
-        if (!params.isAdmin && !(await isUserHasEnoughFunds(ethereumInfo.signer, calculateClaimValueResult.value))) {
+        if (!params.isAdmin && !(await isUserHasEnoughFunds(
+          ethereumInfo.signer, calculateClaimValueResult.value, {
+          currency: currency,
+          name: 'erc20'
+        }))) {
           logger.error("payClaim error: user don't have enough funds");
           return Err(new Error("NOT_ENOUGH_FUNDS"));
         }

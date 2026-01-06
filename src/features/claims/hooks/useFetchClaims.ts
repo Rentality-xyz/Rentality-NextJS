@@ -27,10 +27,11 @@ async function fetchClaims(rentalityContracts: IRentalityContracts | null | unde
   }
 
   const result = await rentalityContracts.gateway.getMyClaimsAs(isHost);
-
+ 
   if (!result.ok) {
     throw result.error;
   }
+
 
   if (result.value.length > 0) {
     validateContractFullClaimInfo(result.value[0]);
