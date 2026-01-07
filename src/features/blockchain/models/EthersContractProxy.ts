@@ -3,7 +3,6 @@ import { ContractTransactionResponse, ethers, JsonRpcProvider } from "ethers";
 import { Err, Ok } from "@/model/utils/result";
 import { IEthersContract } from "./IEtherContract";
 import { logger } from "@/utils/logger";
-import { fn } from "moment";
 
 export function getEthersCrassChainProxy<T extends IEthersContract, S extends IEthersContract>(
   writeContract: T, 
@@ -18,7 +17,12 @@ export function getEthersCrassChainProxy<T extends IEthersContract, S extends IE
   
       return async (...args: any[]) => {
         try {
+          /// avoid proxying special properties
+          if (typeof key === 'symbol' || key === 'toJSON' || key === 'toString') {
+            return Reflect.get(target, key, receiver);
+          }
           const contractInterface = (readContract as unknown as ethers.Contract).interface;
+          
           const functionFragment = contractInterface.getFunction(key.toString());
           
           const isReadFunction = functionFragment && 
@@ -27,61 +31,52 @@ export function getEthersCrassChainProxy<T extends IEthersContract, S extends IE
           const contractToUse = isReadFunction ? readContract : writeContract;
 
           let result;
+          /// crosschain call simulation and quote
           if (!isReadFunction && !isDefaultNetwork) {
-            // do quote in case of crasschain call
-            let argForSimulation = args;
-            let valueForSimulation = 0;
-            const fnName = key.toString();
-            const capitalizedFnName = fnName.charAt(0).toUpperCase() + fnName.slice(1);
-            const quote = "quote" + capitalizedFnName;
-            let quoteMethod = Reflect.get(target, quote, receiver);
-            let originalMethod = Reflect.get(writeContract, key, receiver);
+            /// getValue from args if payable
+            const value = ( functionFragment && functionFragment.payable && args[args.length - 1].value)? args[args.length - 1].value : 0;
+            const argForSimulation = value > 0 ? args.slice(0, args.length - 1): args;
+            const readAsContract = (readContract as unknown as ethers.Contract)
 
-            if (typeof originalMethod !== "function") {
-              return originalMethod;
-            }
-      
-            
+            const argmuments = readAsContract.interface.encodeFunctionData(key.toString(), argForSimulation)
+            const contractAddress =  await readAsContract.getAddress()
+
+            let gasLimit = await provider.estimateGas({
+              to: contractAddress,
+              data: argmuments,
+              value
+            });
+            gasLimit = gasLimit * BigInt(120) / BigInt(100); // add 20% buffer
+
+            // do quote on sender contract
+            const quote = "quote";
+            let quoteMethod = Reflect.get(target, quote, receiver);
+          
             if (typeof quoteMethod !== "function") {
               throw new Error(`Quote function '${quote}' is not a function. Type: ${typeof quoteMethod}`);
             }
-            let quoteResult;
-            if(functionFragment && functionFragment.payable && args[args.length - 1].value) {
-              // if function is payeble, we need to specify value for quote,
-              //  and encode the arguments for target chain
-              const value = args[args.length - 1].value;
-              valueForSimulation = value;
-              quoteResult = await quoteMethod.apply(contractToUse,[
-                args[args.length - 1].value,
-                ...args.slice(0, args.length - 1)
+          
+            let quoteResult = await quoteMethod.apply(contractToUse,[
+                value,
+                gasLimit,
+                argmuments
               ]);
-              argForSimulation = argForSimulation.slice(0, -1);
-              args = [(readContract as unknown as ethers.Contract).interface.encodeFunctionData(fnName, args.slice(0, args.length - 1))];
-              args = [value,...args,{value: quoteResult}];
-              const fnSignature = `${originalMethod.name}(uint256,bytes)`;
-              originalMethod = Reflect.get(writeContract, fnSignature, receiver);
+
+              const fnSignature = `send(uint256, uint256 ,bytes)`;
+              let originalMethod = Reflect.get(writeContract, fnSignature, receiver);
 
               if (typeof originalMethod !== "function") {
                 return originalMethod;
               }
-            }
-            else {
-              quoteResult = await await quoteMethod.apply(writeContract, args);
+        
 
-              args = [...args, {value: quoteResult}];
-            }
-
-            const readAsContract = (readContract as unknown as ethers.Contract)
-            const contractAddress =  await readAsContract.getAddress()
-
-            const argmuments = readAsContract.interface.encodeFunctionData(key.toString(), argForSimulation)
             try {
               // simulate transction on target chain
               await provider.send("eth_call", [
               {
                 to: contractAddress,
                 from: senderAddress,
-                value: valueForSimulation.toString(),
+                value: Number(value),
                 data: argmuments,
               },
               "latest",
@@ -97,7 +92,13 @@ export function getEthersCrassChainProxy<T extends IEthersContract, S extends IE
             
             return Err(error);
           }
-            result = await originalMethod.apply(writeContract, args);
+          /// execute crosschain transaction
+            result = await originalMethod.apply(writeContract, [
+              value,
+              gasLimit,
+              argmuments,
+              {value: quoteResult},
+            ]);
           }
           else {
             const originalMethod = Reflect.get(readContract, key, receiver);
