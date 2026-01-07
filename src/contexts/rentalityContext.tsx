@@ -7,7 +7,7 @@ import {
   IRentalityAdminGatewayContract,
 } from "@/features/blockchain/models/IRentalityAdminGateway";
 import { IRentalityGateway, IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGateway";
-import { getEthersContractProxy, getEthersCrassChainProxy } from "@/features/blockchain/models/EthersContractProxy";
+import { getEthersContractProxy, getEtherscrossChainProxy } from "@/features/blockchain/models/EthersContractProxy";
 import {
   IRentalityCurrencyConverter,
   IRentalityCurrencyConverterContract,
@@ -111,7 +111,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         const senderAddress = await ethereumInfo.signer.getAddress();
         setRentalityContracts({
           gateway: isDefaultNetwork ? getEthersContractProxy(rentalityGatewayWrite) :
-           getEthersCrassChainProxy(rentalityGatewayWrite, rentalityGatewayRead, senderAddress, isDefaultNetwork, defaultProvider),
+           getEtherscrossChainProxy(rentalityGatewayWrite, rentalityGatewayRead, senderAddress, isDefaultNetwork, defaultProvider),
           currencyConverter: getEthersContractProxy(currencyConverter),
           aiDamageAnalyze: getEthersContractProxy(rentalityAiDamageAnalyze),
         });

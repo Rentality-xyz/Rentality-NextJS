@@ -4,7 +4,7 @@ import { Err, Ok } from "@/model/utils/result";
 import { IEthersContract } from "./IEtherContract";
 import { logger } from "@/utils/logger";
 
-export function getEthersCrassChainProxy<T extends IEthersContract, S extends IEthersContract>(
+export function getEtherscrossChainProxy<T extends IEthersContract, S extends IEthersContract>(
   writeContract: T, 
   readContract: S,
   senderAddress: string,
@@ -41,12 +41,21 @@ export function getEthersCrassChainProxy<T extends IEthersContract, S extends IE
             const argmuments = readAsContract.interface.encodeFunctionData(key.toString(), argForSimulation)
             const contractAddress =  await readAsContract.getAddress()
 
-            let gasLimit = await provider.estimateGas({
+          let gasLimit = await provider.send("eth_estimateGas", [
+            {
+              from: senderAddress,
               to: contractAddress,
               data: argmuments,
-              value
-            });
-            gasLimit = gasLimit * BigInt(120) / BigInt(100); // add 20% buffer
+              value: Number(value),
+            },
+            "latest",
+            {
+              [senderAddress]: {
+                balance: "0x3635C9ADC5DEA00000" // 1000 ETH
+              }
+            }
+          ]);
+            gasLimit = Math.floor(gasLimit * 120 / 100); // add 20% buffer
 
             // do quote on sender contract
             const quote = "quote";
@@ -69,7 +78,6 @@ export function getEthersCrassChainProxy<T extends IEthersContract, S extends IE
                 return originalMethod;
               }
         
-
             try {
               // simulate transction on target chain
               await provider.send("eth_call", [

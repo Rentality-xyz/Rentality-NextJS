@@ -32,7 +32,7 @@ export async function isUserHasEnoughFunds(
   return userBalance >= valueToCheck;
 }
 
-export async function isUserHasEnoughFundsCrassChain(
+export async function isUserHasEnoughFundscrossChain(
   signer: Signer,
   valueToCheck: number | bigint = MIN_ETH_ON_WALLET_FOR_TRANSACTION,
   currency = { currency: ETH_DEFAULT_ADDRESS, name: "ETH" }
