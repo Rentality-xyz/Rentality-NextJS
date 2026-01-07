@@ -3,6 +3,7 @@ import {
   NotificationInfo,
   createClaimCreatedChangedNotification,
   createCreateTripNotification,
+  createNotificationFromcrossChainMessage,
   createTripChangedNotification,
 } from "@/model/NotificationInfo";
 import { getEtherContractWithProvider, getEtherContractWithSigner } from "@/abis";
@@ -20,6 +21,7 @@ import { fetchDefaultRpcUrl } from "../utils/fetchDefaultRpcUrl";
 import { isEmpty } from "@/utils/string";
 import { sleep } from "@/utils/sleep";
 import getDefaultProvider from "@/utils/api/defaultProviderUrl";
+import { create } from "domain";
 
 export type NotificationContextInfo = {
   isLoading: boolean;
@@ -76,6 +78,10 @@ function getNotificationFromRentalityEvent(
 
         const claimEventDate = (await event.getBlock()).date ?? new Date();
         return createClaimCreatedChangedNotification(claimTripDTO, claimInfo, isHost, claimEventDate);
+        case EventType.crossChainMessage:
+        const messageStatus = BigInt(event.args[2]); 
+        const messageDate = (await event.getBlock()).date ?? new Date();
+        return createNotificationFromcrossChainMessage(messageStatus, messageDate);
     }
   };
 }
@@ -170,6 +176,18 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
             logger.error("rentalityEventListener error:" + error);
           }
           return;
+          case EventType.crossChainMessage:
+            const messageStatus = BigInt(args[2]); 
+            try {
+              const notification = await createNotificationFromcrossChainMessage(messageStatus, new Date());
+              if (!notification) return;
+
+              addNotifications([notification]);
+            } catch (error) {
+              logger.error("rentalityEventListener error:" + error);
+            }
+            return;
+      
       }
     },
     [rentalityContracts, isHost, addNotifications]

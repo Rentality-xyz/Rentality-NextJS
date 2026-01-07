@@ -1019,6 +1019,13 @@ export const CarUpdateStatus = {
   Burn: BigInt(2),
 };
 
+export type crossChainMessageType = bigint;
+export const crossChainMessageType = {
+  Fail: BigInt(0),
+  FailPayable: BigInt(1),
+  Success: BigInt(2)
+}
+
 export type EventType = bigint;
 export const EventType = {
   Car: BigInt(0),
@@ -1030,6 +1037,9 @@ export const EventType = {
   Discount: BigInt(6),
   Delivery: BigInt(7),
   Currency: BigInt(8),
+  AddClaimType: BigInt(9),// Admin event
+  SaveTripInsurance: BigInt(10),
+  crossChainMessage: BigInt(11),
 };
 
 export type EventCreator = bigint;

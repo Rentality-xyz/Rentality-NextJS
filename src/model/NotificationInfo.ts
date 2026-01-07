@@ -5,6 +5,8 @@ import { isEmpty } from "@/utils/string";
 import { displayMoneyFromCentsWith2Digits } from "@/utils/numericFormatters";
 import { UTC_TIME_ZONE_ID } from "@/utils/constants";
 import { calculateDaysByBlockchainLogic } from "@/utils/date";
+import { crossChainMessageType } from "./blockchain/schemas";
+import getDefaultProvider from "@/utils/api/defaultProviderUrl";
 
 export type NotificationInfo = {
   id: string;
@@ -19,6 +21,7 @@ export enum NotificationType {
   History,
   Message,
   Claim,
+  crossChain
 }
 
 export function createNotificationInfoFromTrip(
@@ -236,6 +239,32 @@ export function createNotificationInfoFromClaim(
       )}. If you don't respond in time, you may be unable to book again on Rentality.
       `,
   };
+}
+
+export async function createNotificationFromcrossChainMessage(
+  messageStatus: crossChainMessageType,
+  timestamp: Date,
+): Promise<NotificationInfo | undefined> { 
+  const defaultProvider = await getDefaultProvider();
+  const networkName = await defaultProvider.getNetwork().then(n => n.name);
+
+  const notificationId = `cross_chain_${messageStatus}`;
+  let message = "Your cross-chain transaction has passed, you now free to continue proccess on Rentality.";
+  switch (messageStatus) {
+    case crossChainMessageType.Fail: 
+    message = "Your cross-chain transaction has failed, please try again.";
+    break;
+    case crossChainMessageType.FailPayable: 
+    message = `Your cross-chain transaction has failed, your money was send to your wallet on ${networkName} chain.`;
+    break;
+  }
+      return {
+        id: notificationId,
+        type: NotificationType.crossChain,
+        title: `Cross-chain Message`,
+        datestamp: timestamp,
+        message
+      };
 }
 
 export async function createCreateTripNotification(

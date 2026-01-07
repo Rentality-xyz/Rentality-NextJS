@@ -25,7 +25,7 @@ import useFetchGuestGeneralInsurance from "@/features/insurance/hooks/useFetchGu
 import useBlockchainNetworkCheck from "@/features/blockchain/hooks/useBlockchainNetworkCheck";
 import getNetworkName from "@/model/utils/NetworkName";
 import bs58 from "bs58";
-import { isUserHasEnoughFunds, isUserHasEnoughFundsCrassChain } from "@/utils/wallet";
+import { isUserHasEnoughFunds, isUserHasEnoughFundscrossChain } from "@/utils/wallet";
 import RntSelect from "@/components/common/rntSelect";
 import { useRentality } from "@/contexts/rentalityContext";
 import RntFilterSelect from "@/components/common/RntFilterSelect";
@@ -110,7 +110,7 @@ function Search() {
     if (isDefaultNetwork) {
       hasFounds = ethereumInfo && await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency);
     } else {
-      hasFounds = ethereumInfo && await isUserHasEnoughFundsCrassChain(ethereumInfo.signer, totalPrice, carInfo.currency);
+      hasFounds = ethereumInfo && await isUserHasEnoughFundscrossChain(ethereumInfo.signer, totalPrice, carInfo.currency);
     }
   
     if (!hasFounds && isDefaultNetwork) {
