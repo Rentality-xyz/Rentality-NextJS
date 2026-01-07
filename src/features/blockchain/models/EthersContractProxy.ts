@@ -78,7 +78,6 @@ export function getEtherscrossChainProxy<T extends IEthersContract, S extends IE
                 return originalMethod;
               }
         
-console.log("SENDER ADDRESS", senderAddress);
             try {
               // simulate transction on target chain
               await provider.send("eth_call", [
