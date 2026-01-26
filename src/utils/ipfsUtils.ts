@@ -38,10 +38,10 @@ export function getPinataGatewayURIfromPinata(pinataURI: string) {
 }
 
 const IPFS_GATEWAYS = [
-  'https://ipfs.io/ipfs/',
-  'https://cloudflare-ipfs.com/ipfs/',
-  'https://dweb.link/ipfs/',
-  'https://gateway.pinata.cloud/ipfs/',
+  "https://ipfs.io/ipfs/",
+  "https://cloudflare-ipfs.com/ipfs/",
+  "https://dweb.link/ipfs/",
+  "https://gateway.pinata.cloud/ipfs/",
 ];
 
 export async function getMetaDataFromIpfs(tokenURI: string) {
@@ -51,11 +51,9 @@ export async function getMetaDataFromIpfs(tokenURI: string) {
     return {};
   }
 
-  if(tokenURI.match('akave'))
-    return {}
+  if (tokenURI.match("akave")) return {};
 
   for (const gateway of IPFS_GATEWAYS) {
-
     const url = gateway + ipfsHash;
     try {
       const response = await fetch(url, {
@@ -189,7 +187,7 @@ export function getNftJSONFromCarInfo({
 export function parseMetaData(meta: any) {
   return {
     mainImage: (meta.image as string) ?? "",
-    images: (meta.allImages as string[]) ?? [meta.image as string] ?? [],
+    images: Array.isArray(meta.allImages) ? meta.allImages : meta.image ? [meta.image] : [],
     name: (meta.name as string) ?? "",
     description: (meta.description as string) ?? "",
     vinNumber: meta.attributes?.find((x: any) => x.trait_type === META_KEY_VIN_NUMBER)?.value ?? "",
