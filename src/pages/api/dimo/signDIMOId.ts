@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { authOnDimo } from "./helpers";
+import { authOnDimo } from "@/lib/server/helpers";
 import { DIMOSharedCarsResponse } from "./dimo";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { isEmpty } from "@/utils/string";
@@ -24,7 +24,7 @@ function parseQuery(
   }
 
   if (Number.isNaN(dimoToken) || dimoToken === 0) {
-    return Err("'dimo token' is not provided or is not a number");
+    return Err("'server token' is not provided or is not a number");
   }
   const providerApiUrl = getProviderApiUrlFromEnv(chainId);
   if (!providerApiUrl) {
