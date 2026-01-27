@@ -25,9 +25,9 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
   );
   var overmileValue = endOdometr - startOdometr - milesIncludedPerDay * tripDays;
   overmileValue = overmileValue > 0 ? overmileValue : 0;
-  const overmilePrice = 
-    isUnlimitedMiles(tripDTO.trip.milesIncludedPerDay) ? 0 : 
-    Math.ceil(Number(tripDTO.trip.pricePerDayInUsdCents) / Number(tripDTO.trip.milesIncludedPerDay)) / 100;
+  const overmilePrice = isUnlimitedMiles(tripDTO.trip.milesIncludedPerDay)
+    ? 0
+    : Math.ceil(Number(tripDTO.trip.pricePerDayInUsdCents) / Number(tripDTO.trip.milesIncludedPerDay)) / 100;
   const tankVolumeInGal = Number(metaData.tankVolumeInGal);
 
   const insurancePerDayInUsd = Number(tripDTO.paidForInsuranceInUsdCents) / 100.0 / tripDays;
@@ -74,8 +74,8 @@ export const mapTripDTOtoTripInfo = async (tripDTO: ContractTripDTO, isCarDetail
     carVinNumber: metaData.vinNumber,
     image: getIpfsURI(metaData.mainImage),
     carDescription: metaData.description,
-    carDoorsNumber: metaData.doorsNumber,
-    carSeatsNumber: metaData.seatsNumber,
+    carDoorsNumber: Number(metaData.doorsNumber),
+    carSeatsNumber: Number(metaData.seatsNumber),
     carTransmission: metaData.transmission,
     carColor: metaData.color,
     brand: tripDTO.brand ?? metaData.brand,

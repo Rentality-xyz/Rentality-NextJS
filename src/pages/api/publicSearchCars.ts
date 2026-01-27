@@ -25,6 +25,7 @@ import { logger } from "@/utils/logger";
 import { formatSearchAvailableCarsContractRequest } from "@/utils/searchMapper";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import ERC20JSON_ABI from "../../abis/ERC20.abi.json";
+import { toTransmissionType } from "@/model/Transmission";
 
 export type PublicSearchCarsResponse =
   | {
@@ -225,7 +226,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   //   minCarYear: Number(getFilterInfoDto.minCarYearOfProduction),
   //   maxCarPrice: Number(getFilterInfoDto.maxCarPrice) / 100,
   // };
-  if(availableCarsData === null) {
+  if (availableCarsData === null) {
     res.status(500).json({ error: "Something went wrong! Please wait a few minutes and try again" });
     return;
   }
@@ -266,12 +267,15 @@ async function formatSearchAvailableCarsContractResponse(
   validateContractSearchCarWithDistance(searchCarsViewsView[0]);
 
   const testWallets = env.TEST_WALLETS_ADDRESSES?.split(",") ?? [];
-  const currencyHashSet = new Map<string, { currency: string; rate: bigint, decimals: number, tokenDecimals: number }>();
-  const converterAddress = rentalityContracts.currencyConverter.addresses.find(
-    (i) => i.chainId === chainId
-  );
+  const currencyHashSet = new Map<
+    string,
+    { currency: string; rate: bigint; decimals: number; tokenDecimals: number }
+  >();
+  const converterAddress = rentalityContracts.currencyConverter.addresses.find((i) => i.chainId === chainId);
   if (!converterAddress) {
-    logger.error(`formatSearchAvailableCarsContractResponse error: currencyConverter address for chainId ${chainId} is not found`);
+    logger.error(
+      `formatSearchAvailableCarsContractResponse error: currencyConverter address for chainId ${chainId} is not found`
+    );
     return null;
   }
   let tokenDecimals = 18;
@@ -279,24 +283,20 @@ async function formatSearchAvailableCarsContractResponse(
   const currencyConverter = new Contract(converterAddress.address, rentalityContracts.currencyConverter.abi, provider);
   const cars = await Promise.all(
     searchCarsViewsView.map(async (i: ContractSearchCarWithDistance) => {
-
       const metaData = parseMetaData(await getMetaDataFromIpfs(i.car.metadataURI));
       let isCarDetailsConfirmed = false;
-      if(!currencyHashSet.has(i.car.hostCurrency.currency)) {
-       
-        if(i.car.hostCurrency.currency !== ETH_DEFAULT_ADDRESS) {
-          const erc20 = new Contract(i.car.hostCurrency.currency, ERC20JSON_ABI.abi,provider)
+      if (!currencyHashSet.has(i.car.hostCurrency.currency)) {
+        if (i.car.hostCurrency.currency !== ETH_DEFAULT_ADDRESS) {
+          const erc20 = new Contract(i.car.hostCurrency.currency, ERC20JSON_ABI.abi, provider);
           tokenDecimals = await erc20.decimals();
-        }
-        else {
+        } else {
           tokenDecimals = 18;
         }
-    
 
         const currencyRate = await currencyConverter.getFromUsdCentsLatest(
           i.car.hostCurrency.currency,
-          BigInt(i.car.pricePerDayInUsdCents * BigInt(i.car.tripDays)),
-        )
+          BigInt(i.car.pricePerDayInUsdCents * BigInt(i.car.tripDays))
+        );
         currencyHashSet.set(i.car.hostCurrency.currency, {
           currency: i.car.hostCurrency.currency,
           rate: BigInt(currencyRate[1]),
@@ -305,16 +305,18 @@ async function formatSearchAvailableCarsContractResponse(
         });
       }
       let currencyInfo = currencyHashSet.get(i.car.hostCurrency.currency);
-      
+
       const totalCents = BigInt(i.car.pricePerDayInUsdCents) * BigInt(i.car.tripDays);
-      let priceInCurrency = 
-     (Number(totalCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate);
-     const totalPriceInCents = BigInt(i.car.pricePerDayInUsdCents) * BigInt(i.car.tripDays) + BigInt(i.car.taxes) + BigInt(i.car.securityDepositPerTripInUsdCents);
+      let priceInCurrency = (Number(totalCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate);
+      const totalPriceInCents =
+        BigInt(i.car.pricePerDayInUsdCents) * BigInt(i.car.tripDays) +
+        BigInt(i.car.taxes) +
+        BigInt(i.car.securityDepositPerTripInUsdCents);
 
-     let totalPriceInCurrency = 
-    (Number(totalPriceInCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate) * Math.pow(10, Number(currencyInfo?.tokenDecimals));
+      let totalPriceInCurrency =
+        ((Number(totalPriceInCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate)) *
+        Math.pow(10, Number(currencyInfo?.tokenDecimals));
 
-      
       // try {
       //   isCarDetailsConfirmed = await rentality.isCarDetailsConfirmed(i.car.carId);
       // } catch (error) {
@@ -325,14 +327,12 @@ async function formatSearchAvailableCarsContractResponse(
       const pricePerDay = Number(i.car.pricePerDayInUsdCents) / 100;
       const totalPriceWithHostDiscount = Number(i.car.totalPriceWithDiscount) / 100;
       const salesTax = Number(i.car.taxesInfo.find((i) => i.name.includes("sale"))?.value ?? 0) / 100;
-      const governmentTax =
-        Number(i.car.taxesInfo.find((i) => i.name.includes("government"))?.value ?? 0) / 100;
-        const tankVolumeInGal =
-        i.car.engineType === EngineType.PETROL ? Number(i.car.engineParams[0]) : 0;
-            const pricePer10PercentFuel =
-            i.car.engineType === EngineType.PETROL
-                  ? (Number(i.car.fuelPrice) * tankVolumeInGal) / 1000
-                  : Number(i.car.fuelPrice) / 1000;
+      const governmentTax = Number(i.car.taxesInfo.find((i) => i.name.includes("government"))?.value ?? 0) / 100;
+      const tankVolumeInGal = i.car.engineType === EngineType.PETROL ? Number(i.car.engineParams[0]) : 0;
+      const pricePer10PercentFuel =
+        i.car.engineType === EngineType.PETROL
+          ? (Number(i.car.fuelPrice) * tankVolumeInGal) / 1000
+          : Number(i.car.fuelPrice) / 1000;
 
       let item: SearchCarInfoDTO = {
         carId: Number(i.car.carId),
@@ -343,7 +343,7 @@ async function formatSearchAvailableCarsContractResponse(
         year: i.car.yearOfProduction.toString(),
         doorsNumber: Number(metaData.doorsNumber),
         seatsNumber: Number(metaData.seatsNumber),
-        transmission: metaData.transmission,
+        transmission: toTransmissionType(metaData.transmission),
         engineType: Number(i.car.engineType),
         carDescription: metaData.description,
         color: metaData.color,
@@ -389,7 +389,7 @@ async function formatSearchAvailableCarsContractResponse(
           name: i.car.hostCurrency.name,
           initialized: i.car.hostCurrency.initialized,
         },
-        priceInCurrency:  Number(priceInCurrency),
+        priceInCurrency: Number(priceInCurrency),
         totalPriceInCurrency: Number(totalPriceInCurrency),
         salesTax,
         governmentTax,

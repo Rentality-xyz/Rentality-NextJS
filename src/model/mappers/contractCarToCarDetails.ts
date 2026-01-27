@@ -2,7 +2,7 @@ import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtil
 import { ContractCarDetails, ContractCarInfo, ContractInsuranceCarInfo } from "../blockchain/schemas";
 import { HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE_TEXT } from "../HostCarInfo";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "../EngineType";
-import { TRANSMISSION_AUTOMATIC_STRING, TRANSMISSION_MANUAL_STRING, TransmissionType } from "@/model/Transmission";
+import { toTransmissionType } from "@/model/Transmission";
 
 export const mapContractCarToCarDetails = async (
   carInfo: ContractCarInfo,
@@ -25,9 +25,6 @@ export const mapContractCarToCarDetails = async (
     const n = Number.parseInt(v, 10);
     return Number.isFinite(n) ? n : fallback;
   };
-
-  const toTransmissionType = (v: string): TransmissionType =>
-    v === TRANSMISSION_MANUAL_STRING ? TRANSMISSION_MANUAL_STRING : TRANSMISSION_AUTOMATIC_STRING;
 
   return {
     carId: Number(carInfo.carId),

@@ -25,6 +25,7 @@ import { MappedSearchQuery, mapSearchQuery, querySearchCar } from "@/utils/api/i
 import rentalityContracts, { getEtherContractWithSigner } from "@/abis";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import ERC20JSON_ABI from "../../abis/ERC20.abi.json";
+import { toTransmissionType } from "@/model/Transmission";
 export type PublicSearchCarsResponse =
   | {
       availableCarsData: SearchCarInfoDTO[];
@@ -358,7 +359,7 @@ async function formatSearchAvailableCarsQueryResponse(
         year: i.yearOfProduction.toString(),
         doorsNumber: Number(metaData.doorsNumber),
         seatsNumber: Number(metaData.seatsNumber),
-        transmission: metaData.transmission,
+        transmission: toTransmissionType(metaData.transmission),
         engineType: Number(i.engineType),
         carDescription: metaData.description,
         color: metaData.color,

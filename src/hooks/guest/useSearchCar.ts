@@ -14,6 +14,7 @@ import { bigIntReplacer } from "@/utils/json";
 import { getTimeZoneIdByAddress } from "@/utils/timezone";
 import { formatSearchAvailableCarsContractRequest } from "@/utils/searchMapper";
 import { logger } from "@/utils/logger";
+import { toTransmissionType } from "@/model/Transmission";
 
 const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
   const ethereumInfo = useEthereum();
@@ -102,7 +103,6 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
         const governmentTax =
           Number(availableCarDTO.taxes.find((i) => i.name.includes("government"))?.value ?? 0) / 100;
 
-
         const selectedCarDetails: SearchCarInfoDetails = {
           carId: Number(availableCarDTO.carId),
           ownerAddress: availableCarDTO.host.toString(),
@@ -112,7 +112,7 @@ const useSearchCar = (searchCarRequest: SearchCarRequest, carId?: number) => {
           year: availableCarDTO.yearOfProduction.toString(),
           doorsNumber: Number(metaData.doorsNumber),
           seatsNumber: Number(metaData.seatsNumber),
-          transmission: metaData.transmission,
+          transmission: toTransmissionType(metaData.transmission),
           engineType: availableCarDTO.engineType,
           carDescription: metaData.description,
           color: metaData.color,
