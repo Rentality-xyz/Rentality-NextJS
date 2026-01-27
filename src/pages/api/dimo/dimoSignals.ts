@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { authOnDimo, tokenExchange } from "@/lib/server/helpers";
+import { authOnDimo, tokenExchange } from "@/server/dimo/helpers";
 
 function kmToMiles(km: number) {
   const miles = km * 0.621371;

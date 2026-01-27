@@ -86,7 +86,7 @@ function generateXAuthorization() {
   const SECRET_KEY = env.API_AI_DAMAGE_ANALYZE_SECRET;
   if (!SECRET_KEY) {
     logger.error("ai assessment error: secret key was not set");
-    throw new Error("Internal server error: Key");
+    throw new Error("Internal dimo error: Key");
   }
 
   return crypto.createHmac("sha256", SECRET_KEY).digest("hex");

@@ -54,7 +54,7 @@ export default function ListingItem({
               <div className="flex flex-col items-center rounded-3xl border border-[#FFFFFF05] bg-[#FFFFFF03] p-2.5">
                 <Image src={"/images/img_found_on_dimo.svg"} width={208} height={35} alt="" className="" />
                 <p className="mt-2 text-base font-medium text-[#FFFFFF70]">
-                  {t("server.token_id")} {carInfo.dimoTokenId}
+                  {t("dimo.token_id")} {carInfo.dimoTokenId}
                 </p>
                 <RntButton
                   className="mt-4 h-[40px] w-full px-4 text-lg"
@@ -68,7 +68,7 @@ export default function ListingItem({
                     }
                   }}
                 >
-                  {isDimoOnly ? t("server.create_car") : t("server.sync_with_dimo")}
+                  {isDimoOnly ? t("dimo.create_car") : t("dimo.sync_with_dimo")}
                 </RntButton>
               </div>
             </div>

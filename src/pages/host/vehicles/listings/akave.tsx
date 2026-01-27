@@ -53,7 +53,7 @@ function Listings() {
 
   if (!clientId || !apiKey || !domain) {
     logger.error("DIMO .env is not set");
-    return <div>{"server env not set"}</div>;
+    return <div>{"dimo env not set"}</div>;
   }
 
   initializeDimoSDK({
@@ -64,7 +64,7 @@ function Listings() {
 
   const handleSaveDimoTokens = async (dimoTokens: number[], carIds: number[]) => {
     if (!rentalityContracts) {
-      logger.error("Save server tokens id error: Rentality contract is null");
+      logger.error("Save dimo tokens id error: Rentality contract is null");
       return;
     }
     await rentalityContracts.gateway.saveDimoTokenIds(

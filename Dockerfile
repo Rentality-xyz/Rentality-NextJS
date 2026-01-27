@@ -3,7 +3,7 @@ FROM node:20-bullseye-slim AS base
 RUN apt-get update && \
  apt-get install --no-install-recommends -y \
  build-essential
-RUN apt clean && rm -rf /var/lib/apt/lists/*
+RUN apt clean && rm -rf /var/server/apt/lists/*
 
 FROM base AS nextjs
 

@@ -59,7 +59,7 @@ async function processBlockchainEventsHandler(req: NextApiRequest, res: NextApiR
   } catch (error) {
     logger.error("processBlockchainEventsHandler error: Unexpected error:", error);
     return res.status(500).json({
-      error: "Internal server error",
+      error: "Internal dimo error",
     });
   }
 }
