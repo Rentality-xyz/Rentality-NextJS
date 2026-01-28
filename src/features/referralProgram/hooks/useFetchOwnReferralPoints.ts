@@ -1,4 +1,3 @@
-import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { EthereumInfo, useEthereum } from "@/contexts/web3/ethereumContext";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -6,19 +5,20 @@ import { AllOwnPointsInfo } from "../models";
 import { getAllPoints } from "../utils";
 import useOwnReferralPointsSharedStore from "./useOwnReferralPointsSharedStore";
 import { TFunction } from "i18next";
+import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 
 export const REFERRAL_OWN_POINTS_QUERY_KEY = "ReferralOwnPoints";
 type QueryData = { allPoints: AllOwnPointsInfo | null };
 
 function useFetchOwnReferralPoints() {
   const ethereumInfo = useEthereum();
-  const { rentalityContracts } = useRentality();
+  const rentality = useRentality()
   const setReadyToClaim = useOwnReferralPointsSharedStore((state) => state.setReadyToClaim);
   const { t } = useTranslation();
 
   const queryResult = useQuery<QueryData>({
-    queryKey: [REFERRAL_OWN_POINTS_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
-    queryFn: async () => fetchOwnReferralPoints(rentalityContracts, ethereumInfo, setReadyToClaim, t),
+    queryKey: [REFERRAL_OWN_POINTS_QUERY_KEY, ethereumInfo?.walletAddress, rentality?.rentalityContracts],
+    queryFn: async () => fetchOwnReferralPoints(ethereumInfo, setReadyToClaim, t, rentality.rentalityContracts),
   });
 
   const data = queryResult.data ?? { allPoints: null };
@@ -26,19 +26,19 @@ function useFetchOwnReferralPoints() {
 }
 
 async function fetchOwnReferralPoints(
-  rentalityContracts: IRentalityContracts | null | undefined,
   ethereumInfo: EthereumInfo | null | undefined,
   setReadyToClaim: (value: number) => void,
-  t: TFunction
+  t: TFunction,
+  rentalityContract: IRentalityContracts | null | undefined,
 ) {
-  if (!rentalityContracts || !ethereumInfo) {
+  if (!ethereumInfo || !ethereumInfo.walletAddress || !rentalityContract) {
     throw new Error("Contracts or wallet not initialized");
   }
 
   const [getReadyToClaimResult, getRefferalPointsInfoResult, getPointsHistoryResult] = await Promise.all([
-    rentalityContracts.referralProgram.getReadyToClaim(ethereumInfo.walletAddress),
-    rentalityContracts.referralProgram.getRefferalPointsInfo(),
-    rentalityContracts.referralProgram.getPointsHistory(),
+    rentalityContract.gateway.getReadyToClaim(ethereumInfo.walletAddress),
+    rentalityContract.gateway.getRefferalPointsInfo(),
+    rentalityContract.gateway.getPointsHistory(),
   ]);
 
   if (!getReadyToClaimResult.ok) {

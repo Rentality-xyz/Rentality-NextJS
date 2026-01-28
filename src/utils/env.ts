@@ -53,6 +53,9 @@ export const env = createEnv({
 
     FB_SERVICE_ACCOUNT: z.string(),
 
+    TURNSTILE_SECRET_KEY: z.string(),
+
+
   },
   client: {
     NEXT_PUBLIC_INCLUDE_MAINNETS: booleanEnvType(),
@@ -99,6 +102,9 @@ export const env = createEnv({
 
     NEXT_PUBLIC_NODE_ENV: unionOfLiterals(NODE_ENVS).default("development"),
     NEXT_PUBLIC_MIN_CONSOLE_LOG_LEVEL: unionOfLiterals(LOG_LEVELS).default("trace"),
+    NEXT_PUBLIC_MIN_EXTERNAL_LOG_LEVEL: unionOfLiterals(LOG_LEVELS).default("info"),
+
+    NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string()
     NEXT_PUBLIC_MIN_EXTERNAL_LOG_LEVEL: unionOfLiterals(LOG_LEVELS).default("info"),
 
     NEXT_PUBLIC_AKAVE_ENDPOINT: z.string().min(1),
@@ -158,6 +164,8 @@ export const env = createEnv({
     NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
     NEXT_PUBLIC_MIN_CONSOLE_LOG_LEVEL: process.env.NEXT_PUBLIC_MIN_CONSOLE_LOG_LEVEL,
     NEXT_PUBLIC_MIN_EXTERNAL_LOG_LEVEL: process.env.NEXT_PUBLIC_MIN_EXTERNAL_LOG_LEVEL,
+
+    NEXT_PUBLIC_TURNSTILE_SITE_KEY: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
 
     NEXT_PUBLIC_AKAVE_ENDPOINT: process.env.NEXT_PUBLIC_AKAVE_ENDPOINT,
     NEXT_PUBLIC_AKAVE_REGION: process.env.NEXT_PUBLIC_AKAVE_REGION,

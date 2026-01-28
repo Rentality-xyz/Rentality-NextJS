@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { authOnDimo, tokenExchange } from "./helpers";
+import { authOnDimo, tokenExchange } from "@/server/dimo/helpers";
 import { getFileURI } from "@/features/filestore/";
 import { logger } from "@/utils/logger";
 

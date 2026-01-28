@@ -32,5 +32,33 @@ export async function isUserHasEnoughFunds(
   return userBalance >= valueToCheck;
 }
 
+export async function isUserHasEnoughFundscrossChain(
+  signer: Signer,
+  valueToCheck: number | bigint = MIN_ETH_ON_WALLET_FOR_TRANSACTION,
+  currency = { currency: ETH_DEFAULT_ADDRESS, name: "ETH" }
+) {
+  const userAddress = await signer.getAddress();
+  let userBalance;
+  let valueToCheckInCurrency
+  if (currency.currency === ETH_DEFAULT_ADDRESS) {
+    userBalance = await signer.provider?.getBalance(userAddress);
+    if (userBalance == undefined) {
+      logger.error("checkWalletBalance error: getBalance return undefined");
+      return false;
+    }
+    return userBalance >= valueToCheck;
+  } else {
+
+    const ethBalance = await signer.provider?.getBalance(userAddress);
+    if (ethBalance === undefined) {
+      logger.error("checkWalletBalance error: getBalance return undefined");
+      return false;
+    }
+    return ethBalance >= MIN_ETH_ON_WALLET_FOR_TRANSACTION;
+
+  }
+
+}
+
 export const ZERO_4_BYTES_HASH = zeroPadBytes("0x00", 4);
 export const ZERO_HASH = zeroPadBytes("0x", 4);

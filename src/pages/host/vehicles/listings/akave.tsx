@@ -4,18 +4,14 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import RntSuspense from "@/components/common/rntSuspense";
 import { initializeDimoSDK, LoginWithDimo, ShareVehiclesWithDimo } from "@dimo-network/login-with-dimo";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRentality } from "@/contexts/rentalityContext";
 import { CheckboxLight } from "@/components/common/rntCheckbox";
 import useDimo from "@/features/dimo/hooks/useDimo";
-import { getFileURI } from "@/features/filestore";
+import { getIpfsURI, getIpfsURIfromAkave } from "@/utils/ipfsUtils";
 import { env } from "@/utils/env";
 import useFetchMyListings from "@/hooks/host/useFetchMyListings";
 import { logger } from "@/utils/logger";
-
-type ShareSuccessArg = Parameters<NonNullable<React.ComponentProps<typeof ShareVehiclesWithDimo>["onSuccess"]>>[0];
-
-type ShareErrorArg = Parameters<NonNullable<React.ComponentProps<typeof ShareVehiclesWithDimo>["onError"]>>[0];
 
 function Listings() {
   const { isLoading: isLoadingMyListings, data: myListings } = useFetchMyListings();
@@ -79,7 +75,7 @@ function Listings() {
     ...(onDimoOnly || []).map((dimoCar) => ({
       carId: dimoCar.definition.id,
       ownerAddress: "",
-      image: getFileURI(dimoCar.imageURI),
+      image: getIpfsURI(dimoCar.imageURI),
       brand: dimoCar.definition.make,
       model: dimoCar.definition.model,
       year: dimoCar.definition.year,
@@ -93,6 +89,11 @@ function Listings() {
       dimoTokenId: dimoCar.tokenId,
     })),
   ];
+
+  const akaveCombinedListings = combinedListings.map((li) => ({
+    ...li,
+    image: getIpfsURIfromAkave(li.image),
+  }));
 
   return (
     <>
@@ -109,15 +110,15 @@ function Listings() {
           {isAuthenticated ? (
             <ShareVehiclesWithDimo
               mode="popup"
-              onSuccess={(authData: ShareSuccessArg) => logger.info("Success:", authData)}
-              onError={(error: ShareErrorArg) => logger.error("Error:", error)}
+              onSuccess={(authData) => logger.info("Success:", authData)}
+              onError={(error) => logger.error("Error:", error)}
               permissionTemplateId={"1"}
             />
           ) : (
             <LoginWithDimo
               mode="popup"
-              onSuccess={(authData: ShareSuccessArg) => logger.info("Success:", authData)}
-              onError={(error: ShareErrorArg) => logger.error("Error:", error)}
+              onSuccess={(authData) => logger.info("Success:", authData)}
+              onError={(error) => logger.error("Error:", error)}
               permissionTemplateId={"1"}
             />
           )}
@@ -134,14 +135,14 @@ function Listings() {
 
       <RntSuspense isLoading={isLoadingMyListings || (isLoadingDimo && isAuthenticated)}>
         <div className="my-4 grid grid-cols-1 gap-4 xl:grid-cols-2 2xl:grid-cols-3 min-[1660px]:grid-cols-4">
-          {combinedListings.length === 0 && (
+          {akaveCombinedListings.length === 0 && (
             <div className="mt-5 flex max-w-screen-xl flex-wrap justify-between text-center">
               {t("vehicles.no_listed_cars")}
             </div>
           )}
 
-          {combinedListings.length > 0 &&
-            combinedListings.map((value) => {
+          {akaveCombinedListings.length > 0 &&
+            akaveCombinedListings.map((value) => {
               const vehicle = onDimoOnly?.find((car) => car.vin === value.vinNumber);
               const carForSync = onRentalityAndDimoNotSyncMapped?.find((car) => car.carId === value.carId);
               const isDimoOnly = onDimoOnly?.some((car) => car.vin === value.vinNumber);

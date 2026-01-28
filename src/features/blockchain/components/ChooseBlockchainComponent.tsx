@@ -4,10 +4,12 @@ import { ElementRef, useEffect, useRef, useState } from "react";
 import { assertIsNode } from "@/utils/react";
 import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
+import { useAuth } from "@/contexts/auth/authContext";
 
 export default function ChooseBlockchainComponent() {
   const classBtn: string = "w-full text-base font-semibold text-white normal-case font-['Montserrat',Arial,sans-serif]";
 
+  const { isAuthenticated } = useAuth();
   const [isShowComponentList, setIsShowComponentList] = useState(false);
   const [selectedChainId, setSelectedChainId] = useState(-1);
   const ethereumInfo = useEthereum();
@@ -36,7 +38,14 @@ export default function ChooseBlockchainComponent() {
     };
 
     getChainId();
-  }, [ethereumInfo, selectedChainId]);
+  }, [ethereumInfo, selectedChainId, isAuthenticated]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setSelectedChainId(-1);
+      return;
+    }
+  }, [isAuthenticated]);
 
   const handleOnScroll = (event: Event) => {
     if (event.target === document || event.target === document.documentElement || event.target === document.body) {

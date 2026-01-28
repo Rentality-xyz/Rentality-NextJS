@@ -217,7 +217,7 @@ export default function CreateClaim() {
         control={control}
         render={({ field }) => (
           <ClaimAddPhoto
-            filesToUpload={field.value}
+            filesToUpload={field.value ?? []}
             setFilesToUpload={(newValue) => {
               field.onChange(newValue);
             }}

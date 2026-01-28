@@ -21,6 +21,7 @@ import getNetworkName from "@/model/utils/NetworkName";
 import { useRntSnackbars } from "@/contexts/rntDialogsContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isUserHasEnoughFunds } from "@/utils/wallet";
+import NetworkBaseGuard from "@/components/common/NetworkBaseGuard";
 
 type InvestContentProps = {};
 
@@ -95,43 +96,43 @@ function InvestPageContent({}: InvestContentProps) {
   }, [investments, selectedFilter]);
 
   return (
-    <div className="mt-8">
-      {isInvestManager(userRole) && (
-        <RntButton className="mb-6 flex w-60 items-center justify-center" onClick={handleCreateInvestClick}>
-          {t("invest.btn_create_investment")}
-        </RntButton>
-      )}
-      <RntFilterSelect
-        className="btn_input_border-gradient w-60 justify-center bg-transparent text-lg text-rentality-secondary"
-        id="invest_filter"
-        value={selectedFilter ? selectedFilter.text : (localizedFilters.options[0]?.text ?? "")}
-        onChange={(e) => {
-          const selectedOption = localizedFilters.options[e.target.selectedIndex];
-          if (selectedOption) {
-            setSelectedFilter(selectedOption);
-          }
-        }}
-      >
-        {localizedFilters.options.map(({ key, text }) => (
-          <RntFilterSelect.Option key={key} value={text}>
-            {text}
-          </RntFilterSelect.Option>
-        ))}
-      </RntFilterSelect>
-      <div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-2">
-        {filteredInvestments.map((value) => (
-          <InvestCar
-            isHost={isInvestManager(userRole)}
-            key={value.investment.investmentId}
-            searchInfo={value}
-            handleInvest={(amount, investId) => handleInvest(amount, investId)}
-            isPendingInvesting={isPendingInvesting(value.investment.investmentId)}
-            handleStartHosting={handleStartHosting}
-            handleClaimIncome={handleClaimIncome}
-          />
-        ))}
+      <div className="mt-8">
+        {isInvestManager(userRole) && (
+          <RntButton className="mb-6 flex w-60 items-center justify-center" onClick={handleCreateInvestClick}>
+            {t("invest.btn_create_investment")}
+          </RntButton>
+        )}
+        <RntFilterSelect
+          className="btn_input_border-gradient w-60 justify-center bg-transparent text-lg text-rentality-secondary"
+          id="invest_filter"
+          value={selectedFilter ? selectedFilter.text : (localizedFilters.options[0]?.text ?? "")}
+          onChange={(e) => {
+            const selectedOption = localizedFilters.options[e.target.selectedIndex];
+            if (selectedOption) {
+              setSelectedFilter(selectedOption);
+            }
+          }}
+        >
+          {localizedFilters.options.map(({ key, text }) => (
+            <RntFilterSelect.Option key={key} value={text}>
+              {text}
+            </RntFilterSelect.Option>
+          ))}
+        </RntFilterSelect>
+        <div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-2">
+          {filteredInvestments.map((value) => (
+            <InvestCar
+              isHost={isInvestManager(userRole)}
+              key={value.investment.investmentId}
+              searchInfo={value}
+              handleInvest={(amount, investId) => handleInvest(amount, investId)}
+              isPendingInvesting={isPendingInvesting(value.investment.investmentId)}
+              handleStartHosting={handleStartHosting}
+              handleClaimIncome={handleClaimIncome}
+            />
+          ))}
+        </div>
       </div>
-    </div>
   );
 }
 

@@ -98,6 +98,7 @@ function GuestNavMenu() {
           notificationCount={historyNotificationCount}
           selectedMenuHref={selectedMenuHref}
         />
+  
       </SideNavMenuGroup>
       <SideNavMenuGroup title={t_nav("inbox")}>
         <SideNavMenuItem

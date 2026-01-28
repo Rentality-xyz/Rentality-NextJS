@@ -2,11 +2,10 @@ import { RefferalProgram as ReferralProgram } from "@/model/blockchain/schemas";
 import { getDateFromBlockchainTimeWithTZ } from "@/utils/formInput";
 import { useTranslation } from "react-i18next";
 import { getReferralProgramDescriptionText } from "../utils";
-import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 import { usePaginationForListApi } from "@/hooks/pagination/usePaginationForListApi";
 import { TFunction } from "i18next";
-import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { UTC_TIME_ZONE_ID } from "@/utils/constants";
+import { IRentalityContracts, useRentality } from "@/contexts/rentalityContext";
 
 export type ReferralHistoryInfo = {
   points: number;
@@ -17,14 +16,13 @@ export type ReferralHistoryInfo = {
 export const REFERRAL_POINTS_HISTORY_QUERY_KEY = "ReferralPointsHistory";
 
 function useFetchPointsHistory(initialPage: number = 1, initialItemsPerPage: number = 10) {
-  const ethereumInfo = useEthereum();
-  const { rentalityContracts } = useRentality();
   const { t } = useTranslation();
+   const rentality = useRentality()
 
   const queryResult = usePaginationForListApi<ReferralHistoryInfo>(
     {
-      queryKey: [REFERRAL_POINTS_HISTORY_QUERY_KEY, rentalityContracts, ethereumInfo?.walletAddress],
-      queryFn: async () => fetchPointsHistory(rentalityContracts, t),
+      queryKey: [REFERRAL_POINTS_HISTORY_QUERY_KEY, rentality?.rentalityContracts],
+      queryFn: async () => fetchPointsHistory(t, rentality.rentalityContracts),
       refetchOnWindowFocus: false,
     },
     initialPage,
@@ -34,12 +32,13 @@ function useFetchPointsHistory(initialPage: number = 1, initialItemsPerPage: num
   return queryResult;
 }
 
-async function fetchPointsHistory(rentalityContracts: IRentalityContracts | null | undefined, t: TFunction) {
+async function fetchPointsHistory(t: TFunction, rentalityContracts: IRentalityContracts | undefined | null) {
   if (!rentalityContracts) {
-    throw new Error("Contracts not initialized");
+    throw new Error("Contracts or wallet not initialized");
   }
 
-  const result = await rentalityContracts.referralProgram.getPointsHistory();
+  const result = await rentalityContracts.gateway.getPointsHistory();
+  
 
   if (!result.ok) {
     throw new Error(result.error.message);
@@ -47,13 +46,13 @@ async function fetchPointsHistory(rentalityContracts: IRentalityContracts | null
 
   const data = result.value.map((historyDataDto) => {
     const isOneTime = historyDataDto.oneTime;
-
     const methodDescriptions =
       historyDataDto.method === ReferralProgram.FinishTripAsGuest
         ? isOneTime
           ? t("referrals_and_point.referral_program.finish_trip_as_guest_one_time")
           : t("referrals_and_point.referral_program.finish_trip_as_guest")
         : getReferralProgramDescriptionText(t, historyDataDto.method);
+     
 
     return {
       points: Number(historyDataDto.points),

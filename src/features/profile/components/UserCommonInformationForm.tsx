@@ -24,6 +24,8 @@ import RntInputTransparent from "@/components/common/rntInputTransparent";
 import { logger } from "@/utils/logger";
 import getNetworkName from "@/model/utils/NetworkName";
 import { DialogActions } from "@/utils/dialogActions";
+import Turnstile from "react-turnstile";
+import { env } from "@/utils/env";
 
 function UserCommonInformationForm({
   userProfile,
@@ -59,6 +61,8 @@ function UserCommonInformationForm({
 
   const [verifiedPhoneNumber, setVerifiedPhoneNumber] = useState(userProfile.phoneNumber);
 
+  const [isTurnstileSuccess, setIsTurnstileSuccess] = useState<boolean>(false)
+
   useEffect(() => {
     console.log("userProfile", userProfile.profilePhotoUrl);
 
@@ -92,7 +96,7 @@ function UserCommonInformationForm({
         return;
       }
 
-      if (!isEmpty(field.value) && field.value.startsWith("blob")) {
+      if (!isEmpty(field.value) && field.value?.startsWith("blob")) {
         logger.info("Revoking ObjectURL");
         URL.revokeObjectURL(field.value);
       }
@@ -303,6 +307,33 @@ function UserCommonInformationForm({
     }
   }
 
+  async function verifyTurnstileToken(token: string | null) {
+    try {
+      if (!token) return false;
+
+      const response = await fetch("/api/profile/checkTurnstile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token: token,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        logger.error("verifyTurnstileToken error: " + result.error);
+        return false;
+      }
+
+      return true;
+
+    } catch (error) {
+      logger.error("verifyTurnstileToken error:" + error);
+      return false;
+    }
+  }
+
   return (
     <form className="flex flex-col gap-4 lg:my-8" onSubmit={handleSubmit(async (data) => await onFormSubmit(data))}>
       <Controller
@@ -384,9 +415,33 @@ function UserCommonInformationForm({
             )}
           />
           {isCurrentPhoneNotVerified && (
-            <RntButton className="lg:w-60" onClick={sendSmsVerificationCode} disabled={isResendCodeTimerRunning}>
-              {smsHash === undefined ? t("profile.verify") : t("profile.resend_code")}
-            </RntButton>
+            <>
+              {!isTurnstileSuccess ? (
+                <Turnstile
+                  className="overflow-hidden h-[65px]"
+                  sitekey={env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+                  onVerify={async (token) => {
+                    const ok = await verifyTurnstileToken(token)
+                    setIsTurnstileSuccess(ok)
+                  }}
+                  onExpire={() => {
+                    setIsTurnstileSuccess(false)
+                  }}
+                  onError={() => {
+                    setIsTurnstileSuccess(false)
+                  }}
+                  theme="dark"
+                />
+              ) : (
+                <RntButton
+                  className="lg:w-60"
+                  onClick={sendSmsVerificationCode}
+                  disabled={isResendCodeTimerRunning}
+                >
+                  {smsHash === undefined ? t("profile.verify") : t("profile.resend_code")}
+                </RntButton>
+              )}
+            </>
           )}
         </div>
 

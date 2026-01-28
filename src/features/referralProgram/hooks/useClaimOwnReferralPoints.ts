@@ -23,7 +23,7 @@ function useClaimOwnReferralPoints() {
           return Err(new Error("Missing required contracts or ethereum info"));
         }
 
-        const result = await rentalityContracts.referralProgram.claimPoints(ethereumInfo.walletAddress);
+        const result = await rentalityContracts.gateway.claimPoints(ethereumInfo.walletAddress);
 
         return result.ok ? result : Err(new Error("claimMyPoints error: " + result.error));
       } catch (error) {

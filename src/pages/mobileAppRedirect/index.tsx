@@ -49,4 +49,6 @@ function MobileAppRedirect() {
   );
 }
 
+MobileAppRedirect.allowAnonymousAccess = true;
+
 export default MobileAppRedirect;

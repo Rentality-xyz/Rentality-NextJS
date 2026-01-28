@@ -9,12 +9,14 @@ import {
   LEGAL_TERMS_NAME,
 } from "@/utils/constants";
 
-enum ELegalMatters {
-  TERMS = LEGAL_TERMS_NAME,
-  CANCELLATION = LEGAL_CANCELLATION_NAME,
-  PROHIBITEDUSES = LEGAL_PROHIBITEDUSES_NAME,
-  PRIVACY = LEGAL_PRIVACY_NAME,
-}
+export const ELegalMatters = {
+  TERMS: LEGAL_TERMS_NAME,
+  CANCELLATION: LEGAL_CANCELLATION_NAME,
+  PROHIBITEDUSES: LEGAL_PROHIBITEDUSES_NAME,
+  PRIVACY: LEGAL_PRIVACY_NAME,
+} as const;
+
+export type ELegalMatters = (typeof ELegalMatters)[keyof typeof ELegalMatters];
 
 function LegalContent() {
   const { t } = useTranslation();

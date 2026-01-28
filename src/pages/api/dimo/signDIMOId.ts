@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { authOnDimo } from "./helpers";
+import { authOnDimo } from "@/server/dimo/helpers";
 import { DIMOSharedCarsResponse } from "./dimo";
 import { Err, Ok, Result } from "@/model/utils/result";
 import { isEmpty } from "@/utils/string";

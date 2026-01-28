@@ -68,7 +68,8 @@
       "request": "Your create trip request failed. Please make sure you entered trip details right and try again",
       "own_car": "You cannot book your own car",
       "no_money": "You don't have enough money, but you can pay in another currency",
-      "available_cur_error": "No available currencies found"
+      "available_cur_error": "No available currencies found",
+      "cross_chain_currency_error": "You cannot pay with the current token on the selected network for now. Please switch to another network to do so."
     },
     "info": {
       "cars_available": "car(s) available",
@@ -115,7 +116,7 @@
     }
   },
   "create_trip": {
-    "pre_agreement_details": "Pre-agreement details",
+    "pre_agreement_details": "Pre-Terms",
     "new_search": "← New Search",
     "rent_for_n_days": "Rent for {{tripDays, number}} day(s)",
     "view_gallery": "View Gallery",
@@ -838,7 +839,13 @@
     "trip_photos_upload_trip_photo": "Upload a trip photo",
     "export_to_excel": "Export to Excel",
     "total": "Total:",
-    "pay": "Pay"
+    "pay": "Pay",
+    "network_base_guard" : {
+      "it_works_only_on_base" : "This functionality only works in the Base network.",
+      "want_to_change" : "Do you want to change the network?",
+      "change_network": "Change network",
+      "change_network_error": "Failed to switch network. Try again or change it manually"
+    }
   },
   "become_host": {
     "title": "Become a host",

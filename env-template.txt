@@ -93,6 +93,9 @@ INDEXER_URL_204="<indexer API url for chain 204>"
 API_AUTH_TOKEN="<Rentality API token>"
 BASE_URL="<Base URL (ex demo.rentality.io)>"
 
+NEXT_PUBLIC_TURNSTILE_SITE_KEY="<TURNSTILE_SITE_KEY>"
+TURNSTILE_SECRET_KEY="<TURNSTILE_SECRET_KEY>"
+
 NEXT_PUBLIC_AKAVE_ENDPOINT = "https://o3-rc3.akave.xyz";
 NEXT_PUBLIC_AKAVE_REGION = "akave-network";
 NEXT_PUBLIC_AKAVE_BUCKET = "<akave bucket name>";

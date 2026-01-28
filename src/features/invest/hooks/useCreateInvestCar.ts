@@ -105,7 +105,7 @@ function useCreateInvestCar() {
           inProgress: true,
         };
 
-        const result = await rentalityContracts.investment.createCarInvestment(
+        const result = await rentalityContracts.gateway.createCarInvestment(
           createInvestRequest,
           nftName,
           ETH_DEFAULT_ADDRESS

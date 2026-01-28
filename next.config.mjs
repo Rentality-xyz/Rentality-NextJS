@@ -42,6 +42,15 @@ const nextConfig = {
       },
     ],
   },
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      "@solana-program/system": false,
+      "@solana-program/token": false,
+      "@solana/kit": false,
+    };
+    return config;
+  },
 };
 
 export default nextConfig;

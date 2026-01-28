@@ -17,7 +17,7 @@ function ClaimEarnings({
       className="mx-auto mt-6 flex h-14 w-full items-center justify-center"
       onClick={() => handleClaimIncome(investmentId)}
     >
-      {t("invest.btn_claim_earnings")} ${myIncome.toFixed(2)}
+      {t("invest.btn_claim_earnings")} ETH: {myIncome.toFixed(6)}
     </RntButton>
   );
 }

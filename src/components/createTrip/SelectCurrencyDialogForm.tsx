@@ -4,18 +4,21 @@ import RntFilterSelect from "@/components/common/RntFilterSelect";
 import { DialogActions } from "@/utils/dialogActions";
 import React, { useState } from "react";
 import { ContractAllowedCurrencyDTO } from "@/model/blockchain/schemas";
+import { ethers } from "ethers";
+
+type ContractAllowedCurrencyDTOWithBalance = ContractAllowedCurrencyDTO & { balance: bigint; };
 
 export function SelectCurrencyDialogForm({
   currencies,
   hideDialogHandler,
   createTripHandler,
 }: {
-  currencies: ContractAllowedCurrencyDTO[];
+  currencies: ContractAllowedCurrencyDTOWithBalance[];
   hideDialogHandler: () => void;
   createTripHandler: (paymentCurrency: string) => void;
 }) {
   const { t } = useTranslation();
-  const [selectedCurrency, setSelectedCurrency] = useState<ContractAllowedCurrencyDTO>(currencies[0]);
+  const [selectedCurrency, setSelectedCurrency] = useState<ContractAllowedCurrencyDTOWithBalance>(currencies[0]);
 
   return (
     <div className="mx-auto w-full max-w-md px-6 py-5 text-center">
@@ -25,7 +28,7 @@ export function SelectCurrencyDialogForm({
         id="select_currency"
         className="w-full justify-center bg-transparent pl-0 text-lg text-rentality-secondary"
         isTransparentStyle
-        value={selectedCurrency?.name}
+        value={`${selectedCurrency?.name} (${Number.parseFloat(ethers.formatUnits(selectedCurrency?.balance, selectedCurrency?.decimals)).toFixed(4)})`}
         placeholder={selectedCurrency?.name}
         onChange={(e) => {
           const selected = currencies.find((c) => c.name === e.target.value);

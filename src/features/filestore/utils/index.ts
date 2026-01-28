@@ -1,5 +1,63 @@
 import { HostCarInfo } from "@/model/HostCarInfo";
 import { isUploadedCarImage, UploadedCarImage } from "@/model/FileToUpload";
+import { logger } from "./logger";
+
+export function getIpfsHashFromUrl(pinataURI: string) {
+  if (!pinataURI || pinataURI.length === 0) return "";
+  return pinataURI.split("/").pop() ?? "";
+}
+
+function getIpfsURIfromPinata(pinataURI: string) {
+  const fileHash = getIpfsHashFromUrl(pinataURI);
+  if (isEmpty(fileHash)) return "";
+  return "https://ipfs.io/ipfs/" + fileHash;
+}
+
+export function getIpfsURIfromAkave(pinataURI: string) {
+  const fileHash = getIpfsHashFromUrl(pinataURI);
+  if (isEmpty(fileHash)) return "";
+  return "https://o3-rc1.akave.xyz/rnt-test-public-bucket-3/" + fileHash;
+}
+
+export function getIpfsURI(pinataURI: string) {
+  if (isEmpty(pinataURI)) return "";
+  return getIpfsURIfromPinata(pinataURI);
+}
+
+export function getIpfsURIs(pinataURI: string[]) {
+  if (!pinataURI || pinataURI.length === 0) return [];
+  return pinataURI.map((uri) => getIpfsURIfromPinata(uri));
+}
+
+export function getPinataGatewayURIfromPinata(pinataURI: string) {
+  if (isEmpty(pinataURI)) return "";
+  const fileHash = pinataURI.split("/").pop();
+  if (isEmpty(fileHash)) return "";
+  return "https://ivory-specific-mink-961.mypinata.cloud/ipfs/" + fileHash;
+}
+
+const IPFS_GATEWAYS = [
+  "https://ipfs.io/ipfs/",
+  "https://cloudflare-ipfs.com/ipfs/",
+  "https://dweb.link/ipfs/",
+  "https://gateway.pinata.cloud/ipfs/",
+];
+
+export async function getMetaDataFromIpfs(tokenURI: string) {
+  const ipfsHash = getIpfsHashFromUrl(tokenURI);
+  if (!ipfsHash) {
+    logger.error("Invalid tokenURI or no IPFS hash found:", tokenURI);
+    return {};
+  }
+
+  if (tokenURI.match("akave")) return {};
+
+  for (const gateway of IPFS_GATEWAYS) {
+    const url = gateway + ipfsHash;
+    try {
+      const response = await fetch(url, {
+        headers: { Accept: "application/json" },
+      });
 
 export function getFileHashFromUrl(URI: string) {
   if (!URI || URI.length === 0) return "";
@@ -114,26 +172,68 @@ export function getNftJSONFromCarInfo({
   };
 }
 
-export function parseMetaData(meta: any) {
+type MetaAttribute = {
+  trait_type?: string;
+  value?: string;
+};
+
+type RawMetaData = {
+  image?: unknown;
+  allImages?: unknown;
+  name?: unknown;
+  description?: unknown;
+  attributes?: MetaAttribute[];
+};
+
+export interface ParsedMetaData {
+  mainImage: string;
+  images: string[];
+  name: string;
+  description: string;
+  vinNumber: string;
+  licensePlate: string;
+  licenseState: string;
+  brand: string;
+  model: string;
+  yearOfProduction: string;
+  bodyType: string;
+  color: string;
+  doorsNumber: string;
+  seatsNumber: string;
+  trunkSize: string;
+  transmission: string;
+  wheelDrive: string;
+  tankVolumeInGal: string;
+}
+
+export function parseMetaData(meta: unknown): ParsedMetaData {
+  const data = meta as RawMetaData;
+
+  const getAttr = (key: string, fallback = "") => data.attributes?.find((a) => a.trait_type === key)?.value ?? fallback;
+
   return {
-    mainImage: (meta.image as string) ?? "",
-    images: (meta.allImages as string[]) ?? [meta.image as string] ?? [],
-    name: (meta.name as string) ?? "",
-    description: (meta.description as string) ?? "",
-    vinNumber: meta.attributes?.find((x: any) => x.trait_type === META_KEY_VIN_NUMBER)?.value ?? "",
-    licensePlate: meta.attributes?.find((x: any) => x.trait_type === META_KEY_LICENSE_PLATE)?.value ?? "",
-    licenseState: meta.attributes?.find((x: any) => x.trait_type === META_KEY_LICENSE_STATE)?.value ?? "",
-    brand: meta.attributes?.find((x: any) => x.trait_type === META_KEY_BRAND)?.value ?? "",
-    model: meta.attributes?.find((x: any) => x.trait_type === META_KEY_MODEL)?.value ?? "",
-    yearOfProduction: meta.attributes?.find((x: any) => x.trait_type === META_KEY_RELEASE_YEAR)?.value ?? "0",
-    bodyType: meta.attributes?.find((x: any) => x.trait_type === META_KEY_BODY_TYPE)?.value ?? "",
-    color: meta.attributes?.find((x: any) => x.trait_type === META_KEY_COLOR)?.value ?? "",
-    doorsNumber: meta.attributes?.find((x: any) => x.trait_type === META_KEY_DOORS_NUMBER)?.value ?? "0",
-    seatsNumber: meta.attributes?.find((x: any) => x.trait_type === META_KEY_SEATS_NUMBER)?.value ?? "0",
-    trunkSize: meta.attributes?.find((x: any) => x.trait_type === META_KEY_TRUNK_SIZE)?.value ?? "0",
-    transmission: meta.attributes?.find((x: any) => x.trait_type === META_KEY_TRANSMISSION)?.value ?? "",
-    wheelDrive: meta.attributes?.find((x: any) => x.trait_type === META_KEY_WHEEL_DRIVE)?.value ?? "",
-    tankVolumeInGal: meta.attributes?.find((x: any) => x.trait_type === META_KEY_TANK_VOLUME_GAL)?.value ?? "0",
+    mainImage: typeof data.image === "string" ? data.image : "",
+    images: Array.isArray(data.allImages)
+      ? data.allImages.filter((x): x is string => typeof x === "string")
+      : typeof data.image === "string"
+        ? [data.image]
+        : [],
+    name: typeof data.name === "string" ? data.name : "",
+    description: typeof data.description === "string" ? data.description : "",
+    vinNumber: getAttr(META_KEY_VIN_NUMBER),
+    licensePlate: getAttr(META_KEY_LICENSE_PLATE),
+    licenseState: getAttr(META_KEY_LICENSE_STATE),
+    brand: getAttr(META_KEY_BRAND),
+    model: getAttr(META_KEY_MODEL),
+    yearOfProduction: getAttr(META_KEY_RELEASE_YEAR, "0"),
+    bodyType: getAttr(META_KEY_BODY_TYPE),
+    color: getAttr(META_KEY_COLOR),
+    doorsNumber: getAttr(META_KEY_DOORS_NUMBER, "0"),
+    seatsNumber: getAttr(META_KEY_SEATS_NUMBER, "0"),
+    trunkSize: getAttr(META_KEY_TRUNK_SIZE, "0"),
+    transmission: getAttr(META_KEY_TRANSMISSION),
+    wheelDrive: getAttr(META_KEY_WHEEL_DRIVE),
+    tankVolumeInGal: getAttr(META_KEY_TANK_VOLUME_GAL, "0"),
   };
 }
 

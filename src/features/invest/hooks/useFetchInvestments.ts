@@ -31,7 +31,8 @@ async function fetchInvestments(
     throw new Error("Contracts or wallet not initialized");
   }
 
-  const result = await rentalityContracts.investment.getAllInvestments();
+  const result = await rentalityContracts.gateway.getAllInvestments();
+  
   if (!result.ok) {
     throw new Error(result.error.message);
   }

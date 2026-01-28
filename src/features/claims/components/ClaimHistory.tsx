@@ -183,7 +183,7 @@ export default function ClaimHistory({ claims }: Props) {
                           <RntButton
                             className="h-8 min-h-[38px] w-24"
                             onClick={() => {
-                              payClaim({ claimId: claim.claimId, currency: claim.currency.currency, isAdmin: true });
+                             handlePayClaim(claim.claimId, claim.currency.currency);
                             }}
                           >
                             {t_history("pay")}
