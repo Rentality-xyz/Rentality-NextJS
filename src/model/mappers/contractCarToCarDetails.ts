@@ -2,6 +2,7 @@ import { getIpfsURI, getMetaDataFromIpfs, parseMetaData } from "@/utils/ipfsUtil
 import { ContractCarDetails, ContractCarInfo, ContractInsuranceCarInfo } from "../blockchain/schemas";
 import { HostCarInfo, isUnlimitedMiles, UNLIMITED_MILES_VALUE_TEXT } from "../HostCarInfo";
 import { ENGINE_TYPE_ELECTRIC_STRING, ENGINE_TYPE_PETROL_STRING, getEngineTypeString } from "../EngineType";
+import { toTransmissionType } from "@/model/Transmission";
 
 export const mapContractCarToCarDetails = async (
   carInfo: ContractCarInfo,
@@ -20,6 +21,11 @@ export const mapContractCarToCarDetails = async (
   const fullBatteryChargePrice =
     engineTypeString === ENGINE_TYPE_ELECTRIC_STRING ? Number(carInfo.engineParams[0]) / 100 : 0;
 
+  const toInt = (v: string, fallback = 0) => {
+    const n = Number.parseInt(v, 10);
+    return Number.isFinite(n) ? n : fallback;
+  };
+
   return {
     carId: Number(carInfo.carId),
     ownerAddress: carInfo.createdBy.toString(),
@@ -31,11 +37,11 @@ export const mapContractCarToCarDetails = async (
     name: metaData.name,
     licensePlate: metaData.licensePlate,
     licenseState: metaData.licenseState,
-    seatsNumber: metaData.seatsNumber,
-    doorsNumber: metaData.doorsNumber,
+    seatsNumber: toInt(metaData.seatsNumber),
+    doorsNumber: toInt(metaData.doorsNumber),
     tankVolumeInGal: tankVolumeInGal,
     wheelDrive: metaData.wheelDrive,
-    transmission: metaData.transmission,
+    transmission: toTransmissionType(metaData.transmission),
     trunkSize: metaData.trunkSize,
     color: metaData.color,
     bodyType: metaData.bodyType,

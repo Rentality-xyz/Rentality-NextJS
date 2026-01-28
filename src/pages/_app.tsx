@@ -1,5 +1,4 @@
 import "@/styles/globals.css";
-import "@coinbase/onchainkit/tailwind.css";
 // should be here for downloading 'locales/* '
 import "../utils/i18n";
 import type { AppProps } from "next/app";

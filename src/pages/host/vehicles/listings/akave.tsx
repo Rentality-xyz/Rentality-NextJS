@@ -13,6 +13,10 @@ import { env } from "@/utils/env";
 import useFetchMyListings from "@/hooks/host/useFetchMyListings";
 import { logger } from "@/utils/logger";
 
+type ShareSuccessArg = Parameters<NonNullable<React.ComponentProps<typeof ShareVehiclesWithDimo>["onSuccess"]>>[0];
+
+type ShareErrorArg = Parameters<NonNullable<React.ComponentProps<typeof ShareVehiclesWithDimo>["onError"]>>[0];
+
 function Listings() {
   const { isLoading: isLoadingMyListings, data: myListings } = useFetchMyListings();
   const router = useRouter();
@@ -110,15 +114,15 @@ function Listings() {
           {isAuthenticated ? (
             <ShareVehiclesWithDimo
               mode="popup"
-              onSuccess={(authData) => logger.info("Success:", authData)}
-              onError={(error) => logger.error("Error:", error)}
+              onSuccess={(authData: ShareSuccessArg) => logger.info("Success:", authData)}
+              onError={(error: ShareErrorArg) => logger.error("Error:", error)}
               permissionTemplateId={"1"}
             />
           ) : (
             <LoginWithDimo
               mode="popup"
-              onSuccess={(authData) => logger.info("Success:", authData)}
-              onError={(error) => logger.error("Error:", error)}
+              onSuccess={(authData: ShareSuccessArg) => logger.info("Success:", authData)}
+              onError={(error: ShareErrorArg) => logger.error("Error:", error)}
               permissionTemplateId={"1"}
             />
           )}
