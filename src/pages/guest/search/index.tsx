@@ -24,7 +24,7 @@ import { EMPTY_PROMOCODE, ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import useFetchGuestGeneralInsurance from "@/features/insurance/hooks/useFetchGuestGeneralInsurance";
 import useBlockchainNetworkCheck from "@/features/blockchain/hooks/useBlockchainNetworkCheck";
 import getNetworkName from "@/model/utils/NetworkName";
-import bs58 from 'bs58';
+import bs58 from "bs58";
 import { isUserHasEnoughFunds, isUserHasEnoughFundscrossChain } from "@/utils/wallet";
 import { SelectCurrencyDialogForm } from "@/components/createTrip/SelectCurrencyDialogForm";
 import { useRentality } from "@/contexts/rentalityContext";
@@ -101,71 +101,69 @@ function Search() {
     if (!rentalityContracts) {
       return;
     }
-        
+
     let hasFounds;
     let paymentCurrency = carInfo.currency.currency;
     if (isDefaultNetwork) {
-      hasFounds = ethereumInfo && await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency);
+      hasFounds = ethereumInfo && (await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency));
     } else {
-      hasFounds = ethereumInfo && await isUserHasEnoughFundscrossChain(ethereumInfo.signer, totalPrice, carInfo.currency);
+      hasFounds =
+        ethereumInfo && (await isUserHasEnoughFundscrossChain(ethereumInfo.signer, totalPrice, carInfo.currency));
       paymentCurrency = ETH_DEFAULT_ADDRESS;
     }
     if (!hasFounds && isDefaultNetwork) {
       const currenciesResult = await rentalityContracts.gateway.getAvailableCurrency();
-    
+
       if (!currenciesResult.ok || currenciesResult.value.length === 0) {
         showError(t("search_page.errors.available_cur_error"));
         return;
       }
 
-      const abi = [
-        "function balanceOf(address owner) view returns (uint256)"
-      ];
+      const abi = ["function balanceOf(address owner) view returns (uint256)"];
       const defaultProvider = await getDefaultProvider();
       const multicallProvider = MulticallWrapper.wrap(defaultProvider);
       const userAddress = await ethereumInfo!.signer.getAddress();
       const balances = await Promise.all(
-          currenciesResult.value.map((currency) => {
-            if (currency.tokenAddress === ETH_DEFAULT_ADDRESS) {
-              return multicallProvider.getBalance(userAddress)
-                .then((balance) => ({ 
-                  name: currency.name,
-                  decimals: currency.decimals,
-                  symbol: currency.symbol,
-                  tokenAddress: currency.tokenAddress,
-                  balance 
-                }));
-            }
-        
-            const erc20 = new ethers.Contract(currency.tokenAddress, abi, multicallProvider);
-            return erc20.balanceOf(userAddress)
-              .then((balance) => ({ 
-                name: currency.name,
-                decimals: currency.decimals,
-                symbol: currency.symbol,
-                tokenAddress: currency.tokenAddress,
-                balance 
-              }));
-          })
-        );
-      
+        currenciesResult.value.map((currency) => {
+          if (currency.tokenAddress === ETH_DEFAULT_ADDRESS) {
+            return multicallProvider.getBalance(userAddress).then((balance) => ({
+              name: currency.name,
+              decimals: currency.decimals,
+              symbol: currency.symbol,
+              tokenAddress: currency.tokenAddress,
+              balance,
+            }));
+          }
+
+          const erc20 = new ethers.Contract(currency.tokenAddress, abi, multicallProvider);
+          return erc20.balanceOf(userAddress).then((balance) => ({
+            name: currency.name,
+            decimals: currency.decimals,
+            symbol: currency.symbol,
+            tokenAddress: currency.tokenAddress,
+            balance,
+          }));
+        })
+      );
 
       showCustomDialog(
         <SelectCurrencyDialogForm
           currencies={balances}
-          createTripHandler={(paymentCurrency) => { createTip(paymentCurrency, promoCode, carInfo)}}
+          createTripHandler={(paymentCurrency) => {
+            createTip(paymentCurrency, promoCode, carInfo);
+          }}
           hideDialogHandler={hideDialogs}
         />
       );
       return;
-    }
-    else if(!hasFounds) {
-      showError(t("common.add_fund_to_wallet", {
-        network: getNetworkName(ethereumInfo),
-      }));
+    } else if (!hasFounds) {
+      showError(
+        t("common.add_fund_to_wallet", {
+          network: getNetworkName(ethereumInfo),
+        })
+      );
       return;
-      }
-        
+    }
 
     await createTip(paymentCurrency, promoCode, carInfo);
   }
@@ -206,20 +204,17 @@ function Search() {
   };
 
   const getRequestDetailsLink = (carInfo: SearchCarInfo) => {
-
     const data = {
       carInfo,
       searchCarFilters,
-      searchCarRequest
-    }
-    const jsonString = JSON.stringify(data, (_key, value) =>
-      typeof value === "bigint" ? `${value}n` : value
-    );
+      searchCarRequest,
+    };
+    const jsonString = JSON.stringify(data, (_key, value) => (typeof value === "bigint" ? `${value}n` : value));
 
     const uint8array = new TextEncoder().encode(jsonString);
-    
+
     const encoded = bs58.encode(uint8array);
-    
+
     return `/guest/createTrip?data=${encoded}`;
   };
 
@@ -266,7 +261,6 @@ function Search() {
     return <Loading />;
   }
 
-
   return (
     <div className="flex flex-col" title="Search">
       <SearchAndFilters
@@ -289,7 +283,7 @@ function Search() {
               {searchResult?.carInfos?.length ?? 0} {t("search_page.info.cars_available")}
             </div>
             {searchResult?.carInfos?.length > 0 ? (
-              searchResult.carInfos.map((value: SearchCarInfo) => {
+              searchResult.carInfos.slice(0, 10).map((value: SearchCarInfo) => {
                 return (
                   <div key={value.carId} id={`car-${value.carId}`}>
                     <CarSearchItem
@@ -310,13 +304,19 @@ function Search() {
               })
             ) : (
               <div>
-                <div className="flex max-w-screen-xl flex-col border border-gray-600 p-2 text-center font-['Montserrat',Arial,sans-serif] text-white items-center">
-                  <p className="text-3xl">{t("search_page.info.no_cars_in_state", {state: searchCarRequest.searchLocation.state})}</p>
+                <div className="flex max-w-screen-xl flex-col items-center border border-gray-600 p-2 text-center font-['Montserrat',Arial,sans-serif] text-white">
+                  <p className="text-3xl">
+                    {t("search_page.info.no_cars_in_state", { state: searchCarRequest.searchLocation.state })}
+                  </p>
                   <p className="mt-4 text-2xl text-rentality-secondary">{t("search_page.info.try_another_location")}</p>
-                  <p className="mt-4 text-base">{t("search_page.info.own_car", {state: searchCarRequest.searchLocation.state})}</p>
+                  <p className="mt-4 text-base">
+                    {t("search_page.info.own_car", { state: searchCarRequest.searchLocation.state })}
+                  </p>
                   <RntButton
-                    className="mt-4 mb-4"
-                    onClick={() => {router.push("/host/become_host")}}
+                    className="mb-4 mt-4"
+                    onClick={() => {
+                      router.push("/host/become_host");
+                    }}
                   >
                     {t("search_page.info.list_your_car")}
                   </RntButton>
