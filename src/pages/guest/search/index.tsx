@@ -261,6 +261,8 @@ function Search() {
     return <Loading />;
   }
 
+  console.log("count cars " + searchResult?.carInfos?.length);
+
   return (
     <div className="flex flex-col" title="Search">
       <SearchAndFilters
@@ -283,7 +285,7 @@ function Search() {
               {searchResult?.carInfos?.length ?? 0} {t("search_page.info.cars_available")}
             </div>
             {searchResult?.carInfos?.length > 0 ? (
-              searchResult.carInfos.slice(0, 10).map((value: SearchCarInfo) => {
+              searchResult.carInfos.map((value: SearchCarInfo) => {
                 return (
                   <div key={value.carId} id={`car-${value.carId}`}>
                     <CarSearchItem
@@ -327,33 +329,33 @@ function Search() {
           </RntSuspense>
           {}
         </div>
-        <div className="my-4 max-2xl:mb-8 2xl:w-5/12 fullHD:w-6/12">
-          <CarSearchMap
-            searchResult={searchResult}
-            setSelected={(carID: number) => {
-              setHighlightedCar(carID);
-              sortCars(carID);
-            }}
-            isExpanded={isExpanded}
-            defaultCenter={
-              searchCarRequest.searchLocation.latitude &&
-              searchCarRequest.searchLocation.longitude &&
-              searchCarRequest.searchLocation.latitude > 0 &&
-              searchCarRequest.searchLocation.longitude > 0
-                ? { lat: searchCarRequest.searchLocation.latitude, lng: searchCarRequest.searchLocation.longitude }
-                : null
-            }
-          />
-          <div className="absolute left-1/2 flex -translate-x-1/2 cursor-pointer 2xl:hidden" onClick={handleArrowClick}>
-            <Image
-              src={"/images/icons/ic_map_mobile.png"}
-              width={100}
-              height={100}
-              alt=""
-              className={`h-[48px] w-[48px]`}
-            />
-          </div>
-        </div>
+        {/*<div className="my-4 max-2xl:mb-8 2xl:w-5/12 fullHD:w-6/12">*/}
+        {/*  <CarSearchMap*/}
+        {/*    searchResult={searchResult}*/}
+        {/*    setSelected={(carID: number) => {*/}
+        {/*      setHighlightedCar(carID);*/}
+        {/*      sortCars(carID);*/}
+        {/*    }}*/}
+        {/*    isExpanded={isExpanded}*/}
+        {/*    defaultCenter={*/}
+        {/*      searchCarRequest.searchLocation.latitude &&*/}
+        {/*      searchCarRequest.searchLocation.longitude &&*/}
+        {/*      searchCarRequest.searchLocation.latitude > 0 &&*/}
+        {/*      searchCarRequest.searchLocation.longitude > 0*/}
+        {/*        ? { lat: searchCarRequest.searchLocation.latitude, lng: searchCarRequest.searchLocation.longitude }*/}
+        {/*        : null*/}
+        {/*    }*/}
+        {/*  />*/}
+        {/*  <div className="absolute left-1/2 flex -translate-x-1/2 cursor-pointer 2xl:hidden" onClick={handleArrowClick}>*/}
+        {/*    <Image*/}
+        {/*      src={"/images/icons/ic_map_mobile.png"}*/}
+        {/*      width={100}*/}
+        {/*      height={100}*/}
+        {/*      alt=""*/}
+        {/*      className={`h-[48px] w-[48px]`}*/}
+        {/*    />*/}
+        {/*  </div>*/}
+        {/*</div>*/}
       </div>
     </div>
   );
