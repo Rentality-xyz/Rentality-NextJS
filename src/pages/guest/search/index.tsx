@@ -61,9 +61,10 @@ function Search() {
     searchAvailableCars(searchCarRequest, filters);
   };
 
-  useEffect(() => {
-    searchAvailableCars(searchCarRequest, searchCarFilters);
-  }, []);
+  //TODO
+  // useEffect(() => {
+  //   searchAvailableCars(searchCarRequest, searchCarFilters);
+  // }, []);
 
   async function createTripWithPromo(carInfo: SearchCarInfo, totalPrice: number, promoCode?: string) {
     if (!isAuthenticated) {
@@ -329,6 +330,7 @@ function Search() {
           </RntSuspense>
           {}
         </div>
+        //TODO
         {/*<div className="my-4 max-2xl:mb-8 2xl:w-5/12 fullHD:w-6/12">*/}
         {/*  <CarSearchMap*/}
         {/*    searchResult={searchResult}*/}
