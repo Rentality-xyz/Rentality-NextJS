@@ -61,7 +61,6 @@ function Search() {
     searchAvailableCars(searchCarRequest, filters);
   };
 
-  //TODO
   // useEffect(() => {
   //   searchAvailableCars(searchCarRequest, searchCarFilters);
   // }, []);
@@ -330,7 +329,6 @@ function Search() {
           </RntSuspense>
           {}
         </div>
-        //TODO
         {/*<div className="my-4 max-2xl:mb-8 2xl:w-5/12 fullHD:w-6/12">*/}
         {/*  <CarSearchMap*/}
         {/*    searchResult={searchResult}*/}
