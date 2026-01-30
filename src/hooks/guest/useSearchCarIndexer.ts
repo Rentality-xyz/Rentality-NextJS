@@ -126,7 +126,7 @@ const useSearchCars = () => {
       //     .sort(sortLogic),
       //   filterLimits: publicSearchCarsResponse.filterLimits,
       // });
-      //TODO
+
       const MAX_CARS = 5;
 
       const mappedAndSortedCars = availableCarsData
@@ -144,7 +144,7 @@ const useSearchCars = () => {
         carInfos: mappedAndSortedCars,
         filterLimits: publicSearchCarsResponse.filterLimits,
       });
-      //TODO
+
       return true;
     } catch (error) {
       logger.error("updateData error:" + error);
