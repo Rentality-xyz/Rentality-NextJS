@@ -282,7 +282,10 @@ async function formatSearchAvailableCarsQueryResponse(
   if (mappedSearchQuery.length === 0) return [];
 
   const testWallets = env.TEST_WALLETS_ADDRESSES?.split(",") ?? [];
-
+  const currencyHashSet = new Map<
+        string,
+        { currency: string; rate: bigint; decimals: number; tokenDecimals: number }
+      >();
   const cars = await Promise.all(
     mappedSearchQuery.map(async (i: MappedSearchQuery) => {
       const metaData = parseMetaData(await getMetaDataFromIpfs(i.tokenURI));
@@ -301,10 +304,7 @@ async function formatSearchAvailableCarsQueryResponse(
         rentalityContracts.currencyConverter.abi,
         provider
       );
-      const currencyHashSet = new Map<
-        string,
-        { currency: string; rate: bigint; decimals: number; tokenDecimals: number }
-      >();
+  
 
       if (!currencyHashSet.has(i.user.user.userCurrency.currency)) {
         let tokenDecimals = 18;
