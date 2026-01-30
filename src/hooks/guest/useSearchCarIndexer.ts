@@ -114,18 +114,37 @@ const useSearchCars = () => {
               ? sortByDailyPriceDes
               : sortByDailyPriceAsc;
 
+      // setSearchResult({
+      //   searchCarRequest: request,
+      //   searchCarFilters: filters,
+      //   carInfos: availableCarsData
+      //     .map((i) => ({
+      //       ...i,
+      //       engineType: BigInt(i.engineType),
+      //       dimoTokenId: Number(i.dimoTokenId),
+      //     }))
+      //     .sort(sortLogic),
+      //   filterLimits: publicSearchCarsResponse.filterLimits,
+      // });
+      //TODO
+      const MAX_CARS = 5;
+
+      const mappedAndSortedCars = availableCarsData
+        .map((i) => ({
+          ...i,
+          engineType: BigInt(i.engineType),
+          dimoTokenId: Number(i.dimoTokenId),
+        }))
+        .sort(sortLogic)
+        .slice(0, MAX_CARS);
+
       setSearchResult({
         searchCarRequest: request,
         searchCarFilters: filters,
-        carInfos: availableCarsData
-          .map((i) => ({
-            ...i,
-            engineType: BigInt(i.engineType),
-            dimoTokenId: Number(i.dimoTokenId),
-          }))
-          .sort(sortLogic),
+        carInfos: mappedAndSortedCars,
         filterLimits: publicSearchCarsResponse.filterLimits,
       });
+      //TODO
       return true;
     } catch (error) {
       logger.error("updateData error:" + error);
