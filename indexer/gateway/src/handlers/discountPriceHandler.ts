@@ -40,7 +40,7 @@ function handleUserDiscountPrice(event: RentalityEvent): void {
         log.error("User profile not found for user: {}", [event.params.from.toHexString()]);
         return;
       }
-      user.deliveryPrice = userDiscount.id;
+      user.discountPrice = userDiscount.id;
       user.save()
   
   userDiscount.save();
