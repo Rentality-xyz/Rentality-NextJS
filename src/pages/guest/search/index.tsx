@@ -36,7 +36,7 @@ import { ethers } from "ethers";
 function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
 
-  const [isLoading, searchAvailableCars, searchResult, sortBy, setSortBy, setSearchResult, loadMore, hasMore] =
+  const [isLoading, searchAvailableCars, searchResult, sortBy, setSortBy, setSearchResult, loadMore, hasMore, allCars] =
     useSearchCars();
   const { createTripRequest } = useCreateTripRequest();
 
@@ -307,8 +307,15 @@ function Search() {
                 })}
 
                 {hasMore && (
-                  <div className="my-6 flex justify-center">
-                    <RntButton onClick={loadMore}>{t("common.load_more_cars")}</RntButton>
+                  <div className="my-6 flex flex-col items-center gap-2">
+                    <div className="text-center text-sm text-gray-400">
+                      {t("search_page.showing_cars", {
+                        shown: searchResult.carInfos.length,
+                        total: allCars.length,
+                      })}
+                    </div>
+
+                    <RntButton onClick={loadMore}>{t("search_page.load_more_cars")}</RntButton>
                   </div>
                 )}
               </>

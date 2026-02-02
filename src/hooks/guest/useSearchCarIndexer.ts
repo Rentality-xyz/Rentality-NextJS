@@ -186,6 +186,7 @@ const useSearchCars = () => {
     setSearchResult,
     loadMore,
     allCars.length > visibleCount, // hasMore
+    allCars,
   ] as const;
 };
 
