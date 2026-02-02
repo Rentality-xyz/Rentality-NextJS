@@ -87,19 +87,31 @@ const useSearchCars = () => {
 
       const availableCarsData = publicSearchCarsResponse.availableCarsData;
 
-      for (const carInfoI of availableCarsData) {
-        for (const carInfoJ of availableCarsData) {
-          if (
-            carInfoI.carId == carInfoJ.carId &&
-            carInfoJ.location.lat == carInfoJ.location.lat &&
-            carInfoJ.location.lng == carInfoJ.location.lng
-          ) {
-            //update the position of the coincident marker by applying a small multipler to its coordinates
-            carInfoI.location.lat += (Math.random() - 0.5) / 4000; // * (Math.random() * (max - min) + min);
-            carInfoI.location.lng += (Math.random() - 0.5) / 4000; // * (Math.random() * (max - min) + min);
-          }
+      const seen = new Set<string>();
+
+      for (const car of availableCarsData) {
+        const key = `${car.carId}-${car.location.lat}-${car.location.lng}`;
+        if (seen.has(key)) {
+          car.location.lat += (Math.random() - 0.5) / 4000;
+          car.location.lng += (Math.random() - 0.5) / 4000;
+        } else {
+          seen.add(key);
         }
       }
+
+      // for (const carInfoI of availableCarsData) {
+      //   for (const carInfoJ of availableCarsData) {
+      //     if (
+      //       carInfoI.carId == carInfoJ.carId &&
+      //       carInfoJ.location.lat == carInfoJ.location.lat &&
+      //       carInfoJ.location.lng == carInfoJ.location.lng
+      //     ) {
+      //       //update the position of the coincident marker by applying a small multipler to its coordinates
+      //       carInfoI.location.lat += (Math.random() - 0.5) / 4000; // * (Math.random() * (max - min) + min);
+      //       carInfoI.location.lng += (Math.random() - 0.5) / 4000; // * (Math.random() * (max - min) + min);
+      //     }
+      //   }
+      // }
 
       if (availableCarsData.length > 0) {
         availableCarsData[0].highlighted = true;
@@ -114,20 +126,7 @@ const useSearchCars = () => {
               ? sortByDailyPriceDes
               : sortByDailyPriceAsc;
 
-      // setSearchResult({
-      //   searchCarRequest: request,
-      //   searchCarFilters: filters,
-      //   carInfos: availableCarsData
-      //     .map((i) => ({
-      //       ...i,
-      //       engineType: BigInt(i.engineType),
-      //       dimoTokenId: Number(i.dimoTokenId),
-      //     }))
-      //     .sort(sortLogic),
-      //   filterLimits: publicSearchCarsResponse.filterLimits,
-      // });
-
-      const MAX_CARS = 5;
+      const MAX_CARS = 95;
 
       const mappedAndSortedCars = availableCarsData
         .map((i) => ({

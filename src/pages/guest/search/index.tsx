@@ -61,9 +61,9 @@ function Search() {
     searchAvailableCars(searchCarRequest, filters);
   };
 
-  // useEffect(() => {
-  //   searchAvailableCars(searchCarRequest, searchCarFilters);
-  // }, []);
+  useEffect(() => {
+    searchAvailableCars(searchCarRequest, searchCarFilters);
+  }, []);
 
   async function createTripWithPromo(carInfo: SearchCarInfo, totalPrice: number, promoCode?: string) {
     if (!isAuthenticated) {
@@ -329,33 +329,33 @@ function Search() {
           </RntSuspense>
           {}
         </div>
-        {/*<div className="my-4 max-2xl:mb-8 2xl:w-5/12 fullHD:w-6/12">*/}
-        {/*  <CarSearchMap*/}
-        {/*    searchResult={searchResult}*/}
-        {/*    setSelected={(carID: number) => {*/}
-        {/*      setHighlightedCar(carID);*/}
-        {/*      sortCars(carID);*/}
-        {/*    }}*/}
-        {/*    isExpanded={isExpanded}*/}
-        {/*    defaultCenter={*/}
-        {/*      searchCarRequest.searchLocation.latitude &&*/}
-        {/*      searchCarRequest.searchLocation.longitude &&*/}
-        {/*      searchCarRequest.searchLocation.latitude > 0 &&*/}
-        {/*      searchCarRequest.searchLocation.longitude > 0*/}
-        {/*        ? { lat: searchCarRequest.searchLocation.latitude, lng: searchCarRequest.searchLocation.longitude }*/}
-        {/*        : null*/}
-        {/*    }*/}
-        {/*  />*/}
-        {/*  <div className="absolute left-1/2 flex -translate-x-1/2 cursor-pointer 2xl:hidden" onClick={handleArrowClick}>*/}
-        {/*    <Image*/}
-        {/*      src={"/images/icons/ic_map_mobile.png"}*/}
-        {/*      width={100}*/}
-        {/*      height={100}*/}
-        {/*      alt=""*/}
-        {/*      className={`h-[48px] w-[48px]`}*/}
-        {/*    />*/}
-        {/*  </div>*/}
-        {/*</div>*/}
+        <div className="my-4 max-2xl:mb-8 2xl:w-5/12 fullHD:w-6/12">
+          <CarSearchMap
+            searchResult={searchResult}
+            setSelected={(carID: number) => {
+              setHighlightedCar(carID);
+              sortCars(carID);
+            }}
+            isExpanded={isExpanded}
+            defaultCenter={
+              searchCarRequest.searchLocation.latitude &&
+              searchCarRequest.searchLocation.longitude &&
+              searchCarRequest.searchLocation.latitude > 0 &&
+              searchCarRequest.searchLocation.longitude > 0
+                ? { lat: searchCarRequest.searchLocation.latitude, lng: searchCarRequest.searchLocation.longitude }
+                : null
+            }
+          />
+          <div className="absolute left-1/2 flex -translate-x-1/2 cursor-pointer 2xl:hidden" onClick={handleArrowClick}>
+            <Image
+              src={"/images/icons/ic_map_mobile.png"}
+              width={100}
+              height={100}
+              alt=""
+              className={`h-[48px] w-[48px]`}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
