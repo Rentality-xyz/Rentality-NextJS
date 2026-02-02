@@ -845,7 +845,8 @@
       "want_to_change" : "Do you want to change the network?",
       "change_network": "Change network",
       "change_network_error": "Failed to switch network. Try again or change it manually"
-    }
+    },
+    "load_more_cars": "Load more cars"
   },
   "become_host": {
     "title": "Become a host",

@@ -36,7 +36,8 @@ import { ethers } from "ethers";
 function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
 
-  const [isLoading, searchAvailableCars, searchResult, sortBy, setSortBy, setSearchResult] = useSearchCars();
+  const [isLoading, searchAvailableCars, searchResult, sortBy, setSortBy, setSearchResult, loadMore, hasMore] =
+    useSearchCars();
   const { createTripRequest } = useCreateTripRequest();
 
   const [requestSending, setRequestSending] = useState<boolean>(false);
@@ -285,25 +286,32 @@ function Search() {
               {searchResult?.carInfos?.length ?? 0} {t("search_page.info.cars_available")}
             </div>
             {searchResult?.carInfos?.length > 0 ? (
-              searchResult.carInfos.map((value: SearchCarInfo) => {
-                return (
-                  <div key={value.carId} id={`car-${value.carId}`}>
-                    <CarSearchItem
-                      key={value.carId}
-                      searchInfo={value}
-                      handleRentCarRequest={() => createTripWithPromo(value, value.totalPriceInCurrency)}
-                      disableButton={requestSending}
-                      isSelected={value.highlighted}
-                      setSelected={setHighlightedCar}
-                      getRequestDetailsLink={() => getRequestDetailsLink(value)}
-                      isGuestHasInsurance={!isLoadingInsurance && !isEmpty(guestInsurance.photo)}
-                      isYourOwnCar={userInfo?.address.toLowerCase() === value.ownerAddress.toLowerCase()}
-                      startDateTimeStringFormat={searchResult.searchCarRequest.dateFromInDateTimeStringFormat}
-                      endDateTimeStringFormat={searchResult.searchCarRequest.dateToInDateTimeStringFormat}
-                    />
+              <>
+                {searchResult.carInfos.map((value: SearchCarInfo) => {
+                  return (
+                    <div key={value.carId} id={`car-${value.carId}`}>
+                      <CarSearchItem
+                        searchInfo={value}
+                        handleRentCarRequest={() => createTripWithPromo(value, value.totalPriceInCurrency)}
+                        disableButton={requestSending}
+                        isSelected={value.highlighted}
+                        setSelected={setHighlightedCar}
+                        getRequestDetailsLink={() => getRequestDetailsLink(value)}
+                        isGuestHasInsurance={!isLoadingInsurance && !isEmpty(guestInsurance.photo)}
+                        isYourOwnCar={userInfo?.address.toLowerCase() === value.ownerAddress.toLowerCase()}
+                        startDateTimeStringFormat={searchResult.searchCarRequest.dateFromInDateTimeStringFormat}
+                        endDateTimeStringFormat={searchResult.searchCarRequest.dateToInDateTimeStringFormat}
+                      />
+                    </div>
+                  );
+                })}
+
+                {hasMore && (
+                  <div className="my-6 flex justify-center">
+                    <RntButton onClick={loadMore}>{t("common.load_more_cars")}</RntButton>
                   </div>
-                );
-              })
+                )}
+              </>
             ) : (
               <div>
                 <div className="flex max-w-screen-xl flex-col items-center border border-gray-600 p-2 text-center font-['Montserrat',Arial,sans-serif] text-white">

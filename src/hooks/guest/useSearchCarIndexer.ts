@@ -14,6 +14,23 @@ const useSearchCars = () => {
   const [searchResult, setSearchResult] = useState<SearchCarsResult>(emptySearchCarsResult);
   const [sortBy, setSortBy] = useState<LocalizedFilterOption<SearchSortFilterValueKey> | undefined>(undefined);
 
+  const PAGE_SIZE = 10;
+  const [allCars, setAllCars] = useState<SearchCarInfo[]>([]);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+
+  const loadMore = () => {
+    setVisibleCount((prev) => {
+      const next = prev + PAGE_SIZE;
+
+      setSearchResult((current) => ({
+        ...current,
+        carInfos: allCars.slice(0, next),
+      }));
+
+      return next;
+    });
+  };
+
   const searchAvailableCars = async (request: SearchCarRequest, filters: SearchCarFilters) => {
     try {
       setIsLoading(true);
@@ -99,20 +116,6 @@ const useSearchCars = () => {
         }
       }
 
-      // for (const carInfoI of availableCarsData) {
-      //   for (const carInfoJ of availableCarsData) {
-      //     if (
-      //       carInfoI.carId == carInfoJ.carId &&
-      //       carInfoJ.location.lat == carInfoJ.location.lat &&
-      //       carInfoJ.location.lng == carInfoJ.location.lng
-      //     ) {
-      //       //update the position of the coincident marker by applying a small multipler to its coordinates
-      //       carInfoI.location.lat += (Math.random() - 0.5) / 4000; // * (Math.random() * (max - min) + min);
-      //       carInfoI.location.lng += (Math.random() - 0.5) / 4000; // * (Math.random() * (max - min) + min);
-      //     }
-      //   }
-      // }
-
       if (availableCarsData.length > 0) {
         availableCarsData[0].highlighted = true;
       }
@@ -126,21 +129,21 @@ const useSearchCars = () => {
               ? sortByDailyPriceDes
               : sortByDailyPriceAsc;
 
-      const MAX_CARS = 95;
-
       const mappedAndSortedCars = availableCarsData
         .map((i) => ({
           ...i,
           engineType: BigInt(i.engineType),
           dimoTokenId: Number(i.dimoTokenId),
         }))
-        .sort(sortLogic)
-        .slice(0, MAX_CARS);
+        .sort(sortLogic);
+
+      setAllCars(mappedAndSortedCars);
+      setVisibleCount(PAGE_SIZE);
 
       setSearchResult({
         searchCarRequest: request,
         searchCarFilters: filters,
-        carInfos: mappedAndSortedCars,
+        carInfos: mappedAndSortedCars.slice(0, PAGE_SIZE),
         filterLimits: publicSearchCarsResponse.filterLimits,
       });
 
@@ -174,7 +177,16 @@ const useSearchCars = () => {
     });
   }, [sortBy]);
 
-  return [isLoading, searchAvailableCars, searchResult, sortBy, setSortBy, setSearchResult] as const;
+  return [
+    isLoading,
+    searchAvailableCars,
+    searchResult,
+    sortBy,
+    setSortBy,
+    setSearchResult,
+    loadMore,
+    allCars.length > visibleCount, // hasMore
+  ] as const;
 };
 
 function noSort(a: SearchCarInfo, b: SearchCarInfo) {
