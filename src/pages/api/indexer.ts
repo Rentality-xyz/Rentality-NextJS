@@ -26,6 +26,7 @@ import rentalityContracts, { getEtherContractWithSigner } from "@/abis";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import ERC20JSON_ABI from "../../abis/ERC20.abi.json";
 import { toTransmissionType } from "@/model/Transmission";
+import { call } from "viem/actions";
 export type PublicSearchCarsResponse =
   | {
       availableCarsData: SearchCarInfoDTO[];
@@ -282,10 +283,41 @@ async function formatSearchAvailableCarsQueryResponse(
   if (mappedSearchQuery.length === 0) return [];
 
   const testWallets = env.TEST_WALLETS_ADDRESSES?.split(",") ?? [];
+  const provider = new JsonRpcProvider(getProviderApiUrlFromEnv(chainId));
+  const converterAddress = rentalityContracts.currencyConverter.addresses.find((c) => c.chainId === chainId);
+  if (!converterAddress) throw new Error(`CurrencyConverter not found for chainId ${chainId}`);
+  const currencyConverter = new Contract(converterAddress.address, rentalityContracts.currencyConverter.abi, provider);
+
+
+  const uniqueCurrencies = Array.from(
+    new Set(
+      mappedSearchQuery.map((i) => i.user.user.userCurrency.currency.toLowerCase())
+    )
+  );
+
   const currencyHashSet = new Map<
-        string,
-        { currency: string; rate: bigint; decimals: number; tokenDecimals: number }
-      >();
+  string,
+  { currency: string; rate: bigint; decimals: number; tokenDecimals: number }
+>();
+
+  await Promise.all(
+    uniqueCurrencies.map(async (currency) => {
+      let tokenDecimals = 18;
+
+      if (currency !== ETH_DEFAULT_ADDRESS.toLowerCase()) {
+        const erc20 = new Contract(currency, ERC20JSON_ABI.abi, provider);
+        tokenDecimals = await erc20.decimals();
+      }
+
+      const currencyRate = await currencyConverter.getFromUsdCentsLatest(currency, BigInt(1));
+      currencyHashSet.set(currency, {
+        currency,
+        rate: BigInt(currencyRate[1]),
+        decimals: Number(currencyRate[2]),
+        tokenDecimals,
+      });
+    })
+  );
   const cars = await Promise.all(
     mappedSearchQuery.map(async (i: MappedSearchQuery) => {
       const metaData = parseMetaData(await getMetaDataFromIpfs(i.tokenURI));
@@ -298,32 +330,7 @@ async function formatSearchAvailableCarsQueryResponse(
         );
         return null;
       }
-      const provider = new JsonRpcProvider(getProviderApiUrlFromEnv(chainId));
-      const currencyConverter = new Contract(
-        converterAddress.address,
-        rentalityContracts.currencyConverter.abi,
-        provider
-      );
-  
 
-      if (!currencyHashSet.has(i.user.user.userCurrency.currency)) {
-        let tokenDecimals = 18;
-        if (i.user.user.userCurrency.currency !== ETH_DEFAULT_ADDRESS) {
-          const erc20 = new Contract(i.user.user.userCurrency.currency, ERC20JSON_ABI.abi, provider);
-          tokenDecimals = await erc20.decimals();
-        }
-
-        const currencyRate = await currencyConverter.getFromUsdCentsLatest(
-          i.user.user.userCurrency.currency,
-          BigInt(BigInt(i.pricePerDayInUsdCents) * BigInt(i.tripDays))
-        );
-        currencyHashSet.set(i.user.user.userCurrency.currency, {
-          currency: i.user.user.userCurrency.currency,
-          rate: BigInt(currencyRate[1]),
-          decimals: Number(currencyRate[2]),
-          tokenDecimals,
-        });
-      }
       let currencyInfo = currencyHashSet.get(i.user.user.userCurrency.currency);
 
       const totalCents = BigInt(i.pricePerDayInUsdCents) * BigInt(i.tripDays);
@@ -428,7 +435,6 @@ async function formatSearchAvailableCarsQueryResponse(
   );
 
   const filteredCars = cars.filter((c): c is SearchCarInfoDTO => c !== null);
-
   if (allSupportedBlockchainList.find((bch) => !bch.isTestnet && bch.chainId === chainId) !== undefined) {
     filteredCars.sort((a, b) => sortByTestWallet(a, b));
   }
