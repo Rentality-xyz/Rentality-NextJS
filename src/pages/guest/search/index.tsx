@@ -175,7 +175,7 @@ function Search() {
       rentalityContracts,
       ethereumInfo,
       userInfo?.address,
-      searchResult?.searchCarRequest, // якщо використовується всередині
+      searchResult?.searchCarRequest,
     ]
   );
 
@@ -237,20 +237,6 @@ function Search() {
   const setHighlightedCar = useCallback((carID: number) => {
     setSelectedCarId(carID);
   }, []);
-
-  // const setHighlightedCar = useCallback(
-  //   (carID: number) => {
-  //     setSearchResult((prev) => {
-  //       const newSearchResult = { ...prev };
-  //
-  //       newSearchResult.carInfos.forEach((item: SearchCarInfo) => {
-  //         item.highlighted = item.carId == carID;
-  //       });
-  //       return newSearchResult;
-  //     });
-  //   },
-  //   [setSearchResult]
-  // );
 
   const sortCars = useCallback(
     (selectedCarId: number) => {

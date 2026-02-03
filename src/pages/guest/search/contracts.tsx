@@ -69,112 +69,120 @@ function Search() {
     searchAvailableCars(searchCarRequest, searchCarFilters);
   }, []);
 
-  async function createTripWithPromo(carInfo: SearchCarInfo, totalPrice: number, promoCode?: string) {
-    if (!isAuthenticated) {
-      const action = (
-        <>
-          {DialogActions.Button(t("common.info.login"), () => {
-            hideDialogs();
-            login();
-          })}
-          {/*{DialogActions.Cancel(hideDialogs)}*/}
-        </>
-      );
-      showDialog(t("common.info.connect_wallet"), action);
-      return;
-    }
-
-    if (isEmpty(searchResult.searchCarRequest.dateFromInDateTimeStringFormat)) {
-      showError(t("search_page.errors.date_from"));
-      return;
-    }
-    if (isEmpty(searchResult.searchCarRequest.dateToInDateTimeStringFormat)) {
-      showError(t("search_page.errors.date_to"));
-      return;
-    }
-
-    if (carInfo.tripDays < 0) {
-      showError(t("search_page.errors.date_eq"));
-      return;
-    }
-    if (carInfo.ownerAddress === userInfo?.address) {
-      showError(t("search_page.errors.own_car"));
-      return;
-    }
-    if (!rentalityContracts) {
-      return;
-    }  
-    
-        
-    let hasFounds;
-    if (isDefaultNetwork) {
-      hasFounds = ethereumInfo && await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency);
-    } else {
-      hasFounds = ethereumInfo && await isUserHasEnoughFundscrossChain(ethereumInfo.signer, totalPrice, carInfo.currency);
-    }
-  
-    if (!hasFounds && isDefaultNetwork) {
-      const currenciesResult = await rentalityContracts.gateway.getAvailableCurrency();
-      if (!currenciesResult.ok || currenciesResult.value.length === 0) {
-        showError(t("search_page.errors.available_cur_error"));
-        return;
-      }
-   
-      if (!currenciesResult.ok || currenciesResult.value.length === 0) {
-        showError(t("search_page.errors.available_cur_error"));
+  const createTripWithPromo = useCallback(
+    async (carInfo: SearchCarInfo, totalPrice: number, promoCode?: string) => {
+      if (!isAuthenticated) {
+        const action = (
+          <>
+            {DialogActions.Button(t("common.info.login"), () => {
+              hideDialogs();
+              login();
+            })}
+            {/*{DialogActions.Cancel(hideDialogs)}*/}
+          </>
+        );
+        showDialog(t("common.info.connect_wallet"), action);
         return;
       }
 
-
-            const abi = [
-              "function balanceOf(address owner) view returns (uint256)"
-            ];
-            const defaultProvider = await getDefaultProvider();
-            const multicallProvider = MulticallWrapper.wrap(defaultProvider);
-            const userAddress = await ethereumInfo!.signer.getAddress();
-            const balances = await Promise.all(
-                currenciesResult.value.map((currency) => {
-                  if (currency.tokenAddress === ETH_DEFAULT_ADDRESS) {
-                    return multicallProvider.getBalance(userAddress)
-                      .then((balance) => ({ 
-                        name: currency.name,
-                        decimals: currency.decimals,
-                        symbol: currency.symbol,
-                        tokenAddress: currency.tokenAddress,
-                        balance 
-                      }));
-                  }
-              
-                  const erc20 = new ethers.Contract(currency.tokenAddress, abi, multicallProvider);
-                  return erc20.balanceOf(userAddress)
-                    .then((balance) => ({ 
-                      name: currency.name,
-                      decimals: currency.decimals,
-                      symbol: currency.symbol,
-                      tokenAddress: currency.tokenAddress,
-                      balance 
-                    }));
-                })
-              );
-
-      showCustomDialog(
-        <SelectCurrencyDialogForm
-          currencies={balances}
-          createTripHandler={(paymentCurrency) => { createTip(paymentCurrency, promoCode, carInfo)}}
-          hideDialogHandler={hideDialogs}
-        />
-      );
-      return;
-    }
-      else if(!hasFounds) {
-        showError(t("common.add_fund_to_wallet", {
-          network: getNetworkName(ethereumInfo),
-        }));
+      if (isEmpty(searchResult.searchCarRequest.dateFromInDateTimeStringFormat)) {
+        showError(t("search_page.errors.date_from"));
         return;
+      }
+      if (isEmpty(searchResult.searchCarRequest.dateToInDateTimeStringFormat)) {
+        showError(t("search_page.errors.date_to"));
+        return;
+      }
+
+      if (carInfo.tripDays < 0) {
+        showError(t("search_page.errors.date_eq"));
+        return;
+      }
+      if (carInfo.ownerAddress === userInfo?.address) {
+        showError(t("search_page.errors.own_car"));
+        return;
+      }
+      if (!rentalityContracts) {
+        return;
+      }
+
+      let hasFounds;
+      if (isDefaultNetwork) {
+        hasFounds = ethereumInfo && (await isUserHasEnoughFunds(ethereumInfo.signer, totalPrice, carInfo.currency));
+      } else {
+        hasFounds =
+          ethereumInfo && (await isUserHasEnoughFundscrossChain(ethereumInfo.signer, totalPrice, carInfo.currency));
+      }
+
+      if (!hasFounds && isDefaultNetwork) {
+        const currenciesResult = await rentalityContracts.gateway.getAvailableCurrency();
+        if (!currenciesResult.ok || currenciesResult.value.length === 0) {
+          showError(t("search_page.errors.available_cur_error"));
+          return;
         }
 
-    await createTip(carInfo.currency.currency, promoCode, carInfo);
-  }
+        if (!currenciesResult.ok || currenciesResult.value.length === 0) {
+          showError(t("search_page.errors.available_cur_error"));
+          return;
+        }
+
+        const abi = ["function balanceOf(address owner) view returns (uint256)"];
+        const defaultProvider = await getDefaultProvider();
+        const multicallProvider = MulticallWrapper.wrap(defaultProvider);
+        const userAddress = await ethereumInfo!.signer.getAddress();
+        const balances = await Promise.all(
+          currenciesResult.value.map((currency) => {
+            if (currency.tokenAddress === ETH_DEFAULT_ADDRESS) {
+              return multicallProvider.getBalance(userAddress).then((balance) => ({
+                name: currency.name,
+                decimals: currency.decimals,
+                symbol: currency.symbol,
+                tokenAddress: currency.tokenAddress,
+                balance,
+              }));
+            }
+
+            const erc20 = new ethers.Contract(currency.tokenAddress, abi, multicallProvider);
+            return erc20.balanceOf(userAddress).then((balance) => ({
+              name: currency.name,
+              decimals: currency.decimals,
+              symbol: currency.symbol,
+              tokenAddress: currency.tokenAddress,
+              balance,
+            }));
+          })
+        );
+
+        showCustomDialog(
+          <SelectCurrencyDialogForm
+            currencies={balances}
+            createTripHandler={(paymentCurrency) => {
+              createTip(paymentCurrency, promoCode, carInfo);
+            }}
+            hideDialogHandler={hideDialogs}
+          />
+        );
+        return;
+      } else if (!hasFounds) {
+        showError(
+          t("common.add_fund_to_wallet", {
+            network: getNetworkName(ethereumInfo),
+          })
+        );
+        return;
+      }
+
+      await createTip(carInfo.currency.currency, promoCode, carInfo);
+    },
+    [
+      isAuthenticated,
+      isDefaultNetwork,
+      rentalityContracts,
+      ethereumInfo,
+      userInfo?.address,
+      searchResult?.searchCarRequest,
+    ]
+  );
 
   const createTip = async (paymentCurrency: string, promoCode: string | undefined, carInfo: SearchCarInfo) => {
     setRequestSending(true);
@@ -225,19 +233,12 @@ function Search() {
 
     return `/guest/createTrip?data=${encoded}`;
   };
-  const setHighlightedCar = useCallback(
-    (carID: number) => {
-      setSearchResult((prev) => {
-        const newSearchResult = { ...prev };
 
-        newSearchResult.carInfos.forEach((item: SearchCarInfo) => {
-          item.highlighted = item.carId == carID;
-        });
-        return newSearchResult;
-      });
-    },
-    [setSearchResult]
-  );
+  const [selectedCarId, setSelectedCarId] = useState<number | null>(null);
+
+  const setHighlightedCar = useCallback((carID: number) => {
+    setSelectedCarId(carID);
+  }, []);
 
   const sortCars = useCallback(
     (selectedCarId: number) => {
@@ -291,17 +292,16 @@ function Search() {
             </div>
             {searchResult?.carInfos?.length > 0 ? (
               searchResult.carInfos.map((value: SearchCarInfo) => {
-              
                 return (
                   <div key={value.carId} id={`car-${value.carId}`}>
                     <CarSearchItem
                       key={value.carId}
                       searchInfo={value}
-                      handleRentCarRequest={() => createTripWithPromo(value, value.totalPriceInCurrency)}
+                      handleRentCarRequest={createTripWithPromo}
                       disableButton={requestSending}
-                      isSelected={value.highlighted}
+                      isSelected={value.carId === selectedCarId}
                       setSelected={setHighlightedCar}
-                      getRequestDetailsLink={() => getRequestDetailsLink(value)}
+                      requestDetailsLink={getRequestDetailsLink(value)}
                       isGuestHasInsurance={!isLoadingInsurance && !isEmpty(guestInsurance.photo)}
                       isYourOwnCar={userInfo?.address === value.ownerAddress}
                       startDateTimeStringFormat={searchResult.searchCarRequest.dateFromInDateTimeStringFormat}
@@ -312,13 +312,19 @@ function Search() {
               })
             ) : (
               <div>
-                <div className="flex max-w-screen-xl flex-col border border-gray-600 p-2 text-center font-['Montserrat',Arial,sans-serif] text-white items-center">
-                  <p className="text-3xl">{t("search_page.info.no_cars_in_state", {state: searchCarRequest.searchLocation.state})}</p>
+                <div className="flex max-w-screen-xl flex-col items-center border border-gray-600 p-2 text-center font-['Montserrat',Arial,sans-serif] text-white">
+                  <p className="text-3xl">
+                    {t("search_page.info.no_cars_in_state", { state: searchCarRequest.searchLocation.state })}
+                  </p>
                   <p className="mt-4 text-2xl text-rentality-secondary">{t("search_page.info.try_another_location")}</p>
-                  <p className="mt-4 text-base">{t("search_page.info.own_car", {state: searchCarRequest.searchLocation.state})}</p>
+                  <p className="mt-4 text-base">
+                    {t("search_page.info.own_car", { state: searchCarRequest.searchLocation.state })}
+                  </p>
                   <RntButton
-                    className="mt-4 mb-4"
-                    onClick={() => {router.push("/host/become_host")}}
+                    className="mb-4 mt-4"
+                    onClick={() => {
+                      router.push("/host/become_host");
+                    }}
                   >
                     {t("search_page.info.list_your_car")}
                   </RntButton>
