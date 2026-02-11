@@ -1,82 +1,35 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { useLogin, useLogout, usePrivy, useWallets } from "@privy-io/react-auth";
-import { logger } from "@/utils/logger";
+import React, { createContext, useContext, useMemo } from "react";
+import { useSyncExternalStore } from "react";
+import { getAuthSnapshot, subscribeAuth } from "./authStore";
+import { openPrivyLogin, openPrivyLogout } from "../web3/privyController";
 
-interface useAuthInterface {
+type AuthApi = {
   isLoadingAuth: boolean;
   isAuthenticated: boolean;
-
   login: () => void;
   logout: () => Promise<void>;
-}
+};
 
-const AuthContext = createContext<useAuthInterface | undefined>(undefined);
+const AuthContext = createContext<AuthApi | null>(null);
 
 export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth outside CoreAuthProvider");
+  return ctx;
 }
 
-export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
-  const { connectWallet, ready, authenticated } = usePrivy();
-  const { wallets, ready: walletsReady } = useWallets();
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const snap = useSyncExternalStore(subscribeAuth, getAuthSnapshot, getAuthSnapshot);
 
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isLoadingAuth, setIsLoadingAuth] = useState<boolean>(true);
-
-  const { login } = useLogin();
-
-  const { logout } = useLogout({
-    onSuccess: () => {
-      logger.info("Privy callback authContext.tsx. useLogout.onSuccess");
-    },
-  });
-
-  const customLogin = useCallback(() => {
-    if (authenticated && wallets.length === 0) {
-      connectWallet();
-      return;
-    }
-    login();
-  }, [authenticated, wallets, connectWallet, login]);
-
-  useEffect(() => {
-    const isAuth = ready && walletsReady && authenticated && wallets.length > 0;
-    setIsAuthenticated(isAuth);
-    setIsLoadingAuth(!ready || !walletsReady);
-  }, [ready, walletsReady, authenticated, wallets]);
-
-  // useEffect(() => {
-  //   logger.info(`AuthProvider usePrivy.ready has changed to ${ready}`);
-  // }, [ready]);
-  // useEffect(() => {
-  //   logger.info(`AuthProvider usePrivy.authenticated has changed to ${authenticated}`);
-  // }, [authenticated]);
-  // useEffect(() => {
-  //   logger.info(`AuthProvider useWallets.ready has changed to ${walletsReady}`);
-  // }, [walletsReady]);
-  // useEffect(() => {
-  //   logger.info(`AuthProvider wallets has changed to ${JSON.stringify(wallets, bigIntReplacer, 2)}`);
-  // }, [wallets]);
-  // useEffect(() => {
-  //   logger.info(`AuthProvider isLoadingAuth has changed to ${isLoadingAuth}`);
-  // }, [isLoadingAuth]);
-  // useEffect(() => {
-  //   logger.info(`AuthProvider isAuthenticated has changed to ${isAuthenticated}`);
-  // }, [isAuthenticated]);
-
-  const value = useMemo(
+  const value = useMemo<AuthApi>(
     () => ({
-      isLoadingAuth: isLoadingAuth,
-      isAuthenticated: isAuthenticated,
-      login: customLogin,
-      logout: logout,
+      isLoadingAuth: snap.isLoadingAuth,
+      isAuthenticated: snap.isAuthenticated,
+      login: () => openPrivyLogin(),
+      logout: async () => openPrivyLogout(),
     }),
-    [isLoadingAuth, isAuthenticated, customLogin, logout]
+    [snap.isLoadingAuth, snap.isAuthenticated]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
+}

@@ -24,6 +24,11 @@ import WalletConnectChecker from "@/components/common/WalletConnectChecker";
 import { NextComponentType, NextPage, NextPageContext } from "next";
 import dynamic from "next/dynamic";
 import TechnicalWork from "@/pages/technical_work";
+import PrivyRoot from "@/contexts/web3/PrivyBridge";
+
+// const PrivyRoot = dynamic(() => import("@/contexts/auth/PrivyRoot"), {
+//   ssr: false,
+// });
 
 const DimoAuthProvider = dynamic(() => import("@dimo-network/login-with-dimo").then((mod) => mod.DimoAuthProvider), {
   ssr: false,
