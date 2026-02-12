@@ -4,11 +4,18 @@ import { setAuthSnapshot } from "../auth/authStore";
 import { registerPrivyLogin, registerPrivyLogout } from "./privyController";
 
 export default function PrivyBridge() {
-  const { ready, authenticated, connectWallet } = usePrivy();
+  const { ready, authenticated, connectWallet, user } = usePrivy();
   const { wallets, ready: walletsReady } = useWallets();
 
   const { login } = useLogin();
   const { logout } = useLogout();
+
+  useEffect(() => {
+    console.log("ddi: ANDROID PRIVY DEBUG");
+    console.log("ddi: ready:", ready);
+    console.log("ddi: authenticated:", authenticated);
+    console.log("ddi: user:", user);
+  }, [ready, authenticated, user]);
 
   useEffect(() => {
     registerPrivyLogin(() => {
