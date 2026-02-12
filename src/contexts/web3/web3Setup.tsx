@@ -7,6 +7,7 @@ import PrivyBridge from "@/contexts/web3/PrivyBridge";
 export const Web3Setup = ({ children }: { children?: React.ReactNode }) => {
   return (
     <PrivyProvider>
+      <PrivyBridge />
       <AuthProvider>
         <EthereumProvider>{children}</EthereumProvider>
       </AuthProvider>
