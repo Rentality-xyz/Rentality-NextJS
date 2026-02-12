@@ -1,8 +1,7 @@
 import { SearchCarInfo } from "@/model/SearchCarsResult";
 import RntButton from "../common/rntButton";
 import { Avatar } from "@mui/material";
-import { useState, useEffect } from "react";
-import React, { useMemo, useReducer } from "react";
+import React, { useState, useEffect, useMemo, useReducer } from "react";
 import { displayMoneyWith2Digits } from "@/utils/numericFormatters";
 import { getEngineTypeIcon, getEngineTypeString } from "@/model/EngineType";
 import Image from "next/image";
@@ -25,7 +24,7 @@ type TFunction = (key: string, options?: { [key: string]: any }) => string;
 
 const ccsDivider = "max-md:hidden absolute top-1/2 h-[80%] w-px translate-y-[-50%] bg-gray-500";
 
-export default function CarSearchItem({
+function CarSearchItem({
   searchInfo,
   handleRentCarRequest,
   disableButton,
@@ -33,7 +32,7 @@ export default function CarSearchItem({
   setSelected,
   isGuestHasInsurance,
   isYourOwnCar,
-  getRequestDetailsLink,
+  requestDetailsLink,
   startDateTimeStringFormat,
   endDateTimeStringFormat,
 }: {
@@ -44,11 +43,12 @@ export default function CarSearchItem({
   setSelected: (carID: number) => void;
   isGuestHasInsurance: boolean;
   isYourOwnCar: boolean;
-  getRequestDetailsLink: (carId: number) => string;
+  requestDetailsLink: string;
   startDateTimeStringFormat: string;
   endDateTimeStringFormat: string;
 }) {
-  const [requestDetailsLink, setRequestDetailsLink] = useState<string>("");
+  console.log("render car", searchInfo.carId);
+
   const { t } = useTranslation();
 
   const t_comp: TFunction = (name, options) => {
@@ -60,10 +60,6 @@ export default function CarSearchItem({
     return isSelected ? classNames + " border-2" : classNames;
   }, [isSelected]);
 
-  useEffect(() => {
-    setRequestDetailsLink(getRequestDetailsLink(searchInfo.carId));
-  }, [getRequestDetailsLink, searchInfo]);
-
   const isDisplayInsurance = searchInfo.isInsuranceRequired && !isGuestHasInsurance;
   const insurancePriceTotal = isDisplayInsurance ? searchInfo.insurancePerDayPriceInUsd * searchInfo.tripDays : 0;
 
@@ -73,14 +69,12 @@ export default function CarSearchItem({
     resolver: zodResolver(enterPromoFormSchema),
   });
 
-  const totalPrice = state.status === "SUCCESS"
-    ? getPromoPrice(getDiscountablePriceFromCarInfo(searchInfo), state.promo.value) +
-    (state.promo.value !== 100
-      ? getNotDiscountablePrice(insurancePriceTotal, searchInfo.securityDeposit)
-      : 0)
-    : getDiscountablePriceFromCarInfo(searchInfo) +
-    getNotDiscountablePrice(insurancePriceTotal, searchInfo.securityDeposit)
-
+  const totalPrice =
+    state.status === "SUCCESS"
+      ? getPromoPrice(getDiscountablePriceFromCarInfo(searchInfo), state.promo.value) +
+        (state.promo.value !== 100 ? getNotDiscountablePrice(insurancePriceTotal, searchInfo.securityDeposit) : 0)
+      : getDiscountablePriceFromCarInfo(searchInfo) +
+        getNotDiscountablePrice(insurancePriceTotal, searchInfo.securityDeposit);
 
   async function onFormSubmit(formData: EnterPromoFormValues) {
     dispatch({ type: PromoActionType.LOADING });
@@ -191,7 +185,6 @@ export default function CarSearchItem({
                 <span className="ml-8">{searchInfo.priceInCurrency.toFixed(4)}</span>
               </div>
 
-
               {isDisplayInsurance && <p className="mt-2 text-rentality-secondary">{t_comp("insurance_required")}</p>}
               <div className={cn("right-[10px] fullHD:right-[22px]", ccsDivider)}></div>
             </div>
@@ -273,7 +266,9 @@ export default function CarSearchItem({
           />
           <RntButton
             className="w-full text-base max-sm:mt-4 sm:w-[65%]"
-            onClick={() => handleRentCarRequest(searchInfo, totalPrice, state.status === "SUCCESS" ? state.promo.code : undefined)}
+            onClick={() =>
+              handleRentCarRequest(searchInfo, totalPrice, state.status === "SUCCESS" ? state.promo.code : undefined)
+            }
             disabled={disableButton || state.status === "LOADING"}
           >
             {state.status === "SUCCESS"
@@ -298,3 +293,5 @@ export default function CarSearchItem({
     </div>
   );
 }
+
+export default React.memo(CarSearchItem);

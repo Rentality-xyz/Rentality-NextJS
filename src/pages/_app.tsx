@@ -10,7 +10,7 @@ import { RentalityProvider } from "@/contexts/rentalityContext";
 import { RntDialogsProvider } from "@/contexts/rntDialogsContext";
 import { NotificationProvider } from "@/features/notifications/contexts/notificationContext";
 import { useRouter } from "next/router";
-import { ReactElement, ReactNode, useEffect } from "react";
+import React, { ReactElement, ReactNode, useEffect } from "react";
 import { base } from "wagmi/chains";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -24,6 +24,7 @@ import WalletConnectChecker from "@/components/common/WalletConnectChecker";
 import { NextComponentType, NextPage, NextPageContext } from "next";
 import dynamic from "next/dynamic";
 import TechnicalWork from "@/pages/technical_work";
+import PrivyBridge from "@/contexts/web3/PrivyBridge";
 
 const DimoAuthProvider = dynamic(() => import("@dimo-network/login-with-dimo").then((mod) => mod.DimoAuthProvider), {
   ssr: false,
@@ -65,7 +66,6 @@ export default function App({ Component, pageProps }: CustomAppProps) {
               <UserInfoProvider>
                 <WagmiProvider config={wagmiConfig}>
                   <QueryClientProvider client={queryClient}>
-                    {/* @ts-ignore */}
                     <OnchainKitProvider apiKey={env.NEXT_PUBLIC_COINBASE_API_KEY} chain={base}>
                       <NotificationProvider isHost={isHost}>
                         <FirebaseChatProvider>

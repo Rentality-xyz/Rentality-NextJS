@@ -26,6 +26,7 @@ import useBlockchainNetworkCheck from "@/features/blockchain/hooks/useBlockchain
 import getNetworkName from "@/model/utils/NetworkName";
 import { getIpfsHashFromUrl, getIpfsURIfromAkave } from "@/utils/ipfsUtils";
 import RntButton from "@/components/common/rntButton";
+import bs58 from "bs58";
 
 function Search() {
   const { searchCarRequest, searchCarFilters, updateSearchParams } = useCarSearchParams();
@@ -58,92 +59,98 @@ function Search() {
     searchAvailableCars(searchCarRequest, searchCarFilters);
   }, []);
 
-  async function createTripWithPromo(carInfo: SearchCarInfo, totalPrice: number, promoCode?: string) {
-    if (!isAuthenticated) {
-      const action = (
-        <>
-          {DialogActions.Button(t("common.info.login"), () => {
-            hideDialogs();
-            login();
-          })}
-          {/*{DialogActions.Cancel(hideDialogs)}*/}
-        </>
-      );
-      showDialog(t("common.info.connect_wallet"), action);
-      return;
-    }
-
-    if (isEmpty(searchResult.searchCarRequest.dateFromInDateTimeStringFormat)) {
-      showError(t("search_page.errors.date_from"));
-      return;
-    }
-    if (isEmpty(searchResult.searchCarRequest.dateToInDateTimeStringFormat)) {
-      showError(t("search_page.errors.date_to"));
-      return;
-    }
-
-    if (carInfo.tripDays < 0) {
-      showError(t("search_page.errors.date_eq"));
-      return;
-    }
-    if (carInfo.ownerAddress === userInfo?.address) {
-      showError(t("search_page.errors.own_car"));
-      return;
-    }
-
-    setRequestSending(true);
-
-    showInfo(t("common.info.sign"));
-
-    promoCode = !isEmpty(promoCode) ? promoCode! : EMPTY_PROMOCODE;
-    const result = await createTripRequest(
-      carInfo.carId,
-      searchResult.searchCarRequest,
-      carInfo.timeZoneId,
-      promoCode,
-      carInfo.currency
-    );
-
-    hideDialogs();
-    hideSnackbars();
-    setRequestSending(false);
-
-    if (result.ok) {
-      showSuccess(t("search_page.car_search_item.booked"));
-      router.push("/guest/trips");
-    } else {
-      if (result.error.message === "NOT_ENOUGH_FUNDS") {
-        showError(
-          t("common.add_fund_to_wallet", {
-            network: getNetworkName(ethereumInfo),
-          })
+  const createTripWithPromo = useCallback(
+    async (carInfo: SearchCarInfo, totalPrice: number, promoCode?: string) => {
+      if (!isAuthenticated) {
+        const action = (
+          <>
+            {DialogActions.Button(t("common.info.login"), () => {
+              hideDialogs();
+              login();
+            })}
+            {/*{DialogActions.Cancel(hideDialogs)}*/}
+          </>
         );
-      } else {
-        showError(t("search_page.errors.request"));
+        showDialog(t("common.info.connect_wallet"), action);
+        return;
       }
-    }
-  }
+
+      if (isEmpty(searchResult.searchCarRequest.dateFromInDateTimeStringFormat)) {
+        showError(t("search_page.errors.date_from"));
+        return;
+      }
+      if (isEmpty(searchResult.searchCarRequest.dateToInDateTimeStringFormat)) {
+        showError(t("search_page.errors.date_to"));
+        return;
+      }
+
+      if (carInfo.tripDays < 0) {
+        showError(t("search_page.errors.date_eq"));
+        return;
+      }
+      if (carInfo.ownerAddress === userInfo?.address) {
+        showError(t("search_page.errors.own_car"));
+        return;
+      }
+
+      setRequestSending(true);
+
+      showInfo(t("common.info.sign"));
+
+      promoCode = !isEmpty(promoCode) ? promoCode! : EMPTY_PROMOCODE;
+      const result = await createTripRequest(
+        carInfo.carId,
+        searchResult.searchCarRequest,
+        carInfo.timeZoneId,
+        promoCode,
+        carInfo.currency
+      );
+
+      hideDialogs();
+      hideSnackbars();
+      setRequestSending(false);
+
+      if (result.ok) {
+        showSuccess(t("search_page.car_search_item.booked"));
+        router.push("/guest/trips");
+      } else {
+        if (result.error.message === "NOT_ENOUGH_FUNDS") {
+          showError(
+            t("common.add_fund_to_wallet", {
+              network: getNetworkName(ethereumInfo),
+            })
+          );
+        } else {
+          showError(t("search_page.errors.request"));
+        }
+      }
+    },
+    [isAuthenticated, ethereumInfo, userInfo?.address, searchResult?.searchCarRequest]
+  );
 
   const getRequestDetailsLink = useCallback(
-    (carId: number) => {
-      return `/guest/createTrip?${createQueryString(searchCarRequest, searchCarFilters, carId)}`;
+    (carInfo: SearchCarInfo) => {
+      const data = {
+        carInfo,
+        searchCarFilters,
+        searchCarRequest,
+      };
+      const jsonString = JSON.stringify(data, (_key, value) => (typeof value === "bigint" ? `${value}n` : value));
+
+      const uint8array = new TextEncoder().encode(jsonString);
+
+      const encoded = bs58.encode(uint8array);
+
+      return `/guest/createTrip?data=${encoded}`;
     },
-    [searchCarRequest, searchCarFilters]
+    [searchCarFilters, searchCarRequest]
   );
 
-  const setHighlightedCar = useCallback(
-    (carID: number) => {
-      setSearchResult((prev) => {
-        const newSearchResult = { ...prev };
+  const [selectedCarId, setSelectedCarId] = useState<number | null>(null);
 
-        newSearchResult.carInfos.forEach((item: SearchCarInfo) => {
-          item.highlighted = item.carId == carID;
-        });
-        return newSearchResult;
-      });
-    },
-    [setSearchResult]
-  );
+  const setHighlightedCar = useCallback((carID: number) => {
+    setSelectedCarId(carID);
+  }, []);
 
   const sortCars = useCallback(
     (selectedCarId: number) => {
@@ -215,9 +222,9 @@ function Search() {
                       searchInfo={value}
                       handleRentCarRequest={createTripWithPromo}
                       disableButton={requestSending}
-                      isSelected={value.highlighted}
+                      isSelected={value.carId === selectedCarId}
                       setSelected={setHighlightedCar}
-                      getRequestDetailsLink={getRequestDetailsLink}
+                      requestDetailsLink={getRequestDetailsLink(value)}
                       isGuestHasInsurance={!isLoadingInsurance && !isEmpty(guestInsurance.photo)}
                       isYourOwnCar={userInfo?.address === value.ownerAddress}
                       startDateTimeStringFormat={searchResult.searchCarRequest.dateFromInDateTimeStringFormat}
@@ -228,13 +235,19 @@ function Search() {
               })
             ) : (
               <div>
-                <div className="flex max-w-screen-xl flex-col border border-gray-600 p-2 text-center font-['Montserrat',Arial,sans-serif] text-white items-center">
-                  <p className="text-3xl">{t("search_page.info.no_cars_in_state", {state: searchCarRequest.searchLocation.state})}</p>
+                <div className="flex max-w-screen-xl flex-col items-center border border-gray-600 p-2 text-center font-['Montserrat',Arial,sans-serif] text-white">
+                  <p className="text-3xl">
+                    {t("search_page.info.no_cars_in_state", { state: searchCarRequest.searchLocation.state })}
+                  </p>
                   <p className="mt-4 text-2xl text-rentality-secondary">{t("search_page.info.try_another_location")}</p>
-                  <p className="mt-4 text-base">{t("search_page.info.own_car", {state: searchCarRequest.searchLocation.state})}</p>
+                  <p className="mt-4 text-base">
+                    {t("search_page.info.own_car", { state: searchCarRequest.searchLocation.state })}
+                  </p>
                   <RntButton
-                    className="mt-4 mb-4"
-                    onClick={() => {router.push("/host/become_host")}}
+                    className="mb-4 mt-4"
+                    onClick={() => {
+                      router.push("/host/become_host");
+                    }}
                   >
                     {t("search_page.info.list_your_car")}
                   </RntButton>
