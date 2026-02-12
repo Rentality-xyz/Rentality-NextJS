@@ -18,14 +18,22 @@ function useBlockchainNetworkCheck() {
       return;
     }
     const selectedChainId = Number.parseInt(wallets[0]?.chainId?.slice(7) ?? "0");
+    console.log("ddi: selectedChainId=" + selectedChainId);
+
     const isSelectedSupportedChainId =
       selectedChainId > 0 && getExistBlockchainList().find((chain) => chain.chainId === selectedChainId) !== undefined;
+
+    console.log("ddi: isSelectedSupportedChainId=" + isSelectedSupportedChainId);
+
+    console.log("ddi: ANDROID CHECK wallets:", wallets);
+    console.log("ddi: ANDROID CHECK chainId raw:", wallets?.[0]?.chainId);
+    console.log("ddi: ANDROID CHECK parsed:", Number.parseInt(wallets?.[0]?.chainId?.slice(7) ?? "0"));
 
     if (!isSelectedSupportedChainId && isAuthenticated) {
       showCustomDialog(
         <SwitchChainDialog
           handleSwitchChain={async (chainId) => {
-            await wallets[0].switchChain(chainId);
+            // await wallets[0].switchChain(chainId);
           }}
           handleCloseDialog={hideDialogs}
           chainId={defaultChainId}

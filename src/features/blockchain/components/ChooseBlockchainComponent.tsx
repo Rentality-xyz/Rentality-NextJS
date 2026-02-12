@@ -29,7 +29,7 @@ export default function ChooseBlockchainComponent() {
   useEffect(() => {
     const getChainId = async () => {
       if (!ethereumInfo) return;
-
+      console.log("ddi: ANDROID ethereumInfo.chainId:", ethereumInfo?.chainId);
       const chainId = ethereumInfo.chainId;
 
       if (selectedChainId !== chainId) {
