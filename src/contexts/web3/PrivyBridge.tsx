@@ -43,18 +43,5 @@ export default function PrivyBridge() {
     });
   }, [ready, walletsReady, authenticated, wallets]);
 
-  useEffect(() => {
-    if (!ready || !authenticated || wallets.length === 0) return;
-
-    const desiredChainId = Number(env.NEXT_PUBLIC_DEFAULT_CHAIN_ID);
-    const currentChainId = Number(wallets[0].chainId.split(":")[1]);
-
-    if (currentChainId !== desiredChainId) {
-      wallets[0].switchChain(desiredChainId).catch(() => {
-        console.log("ANDROID: switchChain failed");
-      });
-    }
-  }, [ready, authenticated, wallets]);
-
   return null;
 }
