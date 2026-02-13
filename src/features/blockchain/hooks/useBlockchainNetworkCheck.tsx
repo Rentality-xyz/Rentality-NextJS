@@ -18,10 +18,11 @@ function useBlockchainNetworkCheck() {
       return;
     }
     const selectedChainId = Number.parseInt(wallets[0]?.chainId?.slice(7) ?? "0");
+
     const isSelectedSupportedChainId =
       selectedChainId > 0 && getExistBlockchainList().find((chain) => chain.chainId === selectedChainId) !== undefined;
 
-    if (!isSelectedSupportedChainId && isAuthenticated) {
+    if (!isSelectedSupportedChainId && wallets.length > 0) {
       showCustomDialog(
         <SwitchChainDialog
           handleSwitchChain={async (chainId) => {
