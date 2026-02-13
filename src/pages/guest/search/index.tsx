@@ -288,7 +288,7 @@ function Search() {
             fallback={<div className="pl-[18px]">{t("common.info.loading")}</div>}
           >
             <div className="text-l pl-[18px] font-bold">
-              {searchResult?.carInfos?.length ?? 0} {t("search_page.info.cars_available")}
+              {allCars?.length ?? 0} {t("search_page.info.cars_available")}
             </div>
             {searchResult?.carInfos?.length > 0 ? (
               <>
@@ -315,8 +315,8 @@ function Search() {
                   <div className="my-6 flex flex-col items-center gap-2">
                     <div className="text-center text-sm text-gray-400">
                       {t("search_page.showing_cars", {
-                        shown: searchResult.carInfos.length,
-                        total: allCars.length,
+                        shown: searchResult?.carInfos?.length ?? 0,
+                        total: allCars?.length ?? 0,
                       })}
                     </div>
 
