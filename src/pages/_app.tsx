@@ -64,27 +64,25 @@ export default function App({ Component, pageProps }: CustomAppProps) {
           <RentalityProvider>
             <DimoAuthProvider>
               <UserInfoProvider>
-                <WagmiProvider config={wagmiConfig}>
-                  <QueryClientProvider client={queryClient}>
-                    <OnchainKitProvider apiKey={env.NEXT_PUBLIC_COINBASE_API_KEY} chain={base}>
-                      <NotificationProvider isHost={isHost}>
-                        <FirebaseChatProvider>
-                          <AppContextProvider>
-                            <RntDialogsProvider>
-                              <PlatformInitChecker>
-                                <WalletConnectChecker allowAnonymousAccess={allowAnonymousAccess}>
-                                  <Layout>
-                                    <Component {...pageProps} />
-                                  </Layout>
-                                </WalletConnectChecker>
-                              </PlatformInitChecker>
-                            </RntDialogsProvider>
-                          </AppContextProvider>
-                        </FirebaseChatProvider>
-                      </NotificationProvider>
-                    </OnchainKitProvider>
-                  </QueryClientProvider>
-                </WagmiProvider>
+                <QueryClientProvider client={queryClient}>
+                  <OnchainKitProvider apiKey={env.NEXT_PUBLIC_COINBASE_API_KEY} chain={base}>
+                    <NotificationProvider isHost={isHost}>
+                      <FirebaseChatProvider>
+                        <AppContextProvider>
+                          <RntDialogsProvider>
+                            <PlatformInitChecker>
+                              <WalletConnectChecker allowAnonymousAccess={allowAnonymousAccess}>
+                                <Layout>
+                                  <Component {...pageProps} />
+                                </Layout>
+                              </WalletConnectChecker>
+                            </PlatformInitChecker>
+                          </RntDialogsProvider>
+                        </AppContextProvider>
+                      </FirebaseChatProvider>
+                    </NotificationProvider>
+                  </OnchainKitProvider>
+                </QueryClientProvider>
               </UserInfoProvider>
             </DimoAuthProvider>
           </RentalityProvider>
