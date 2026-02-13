@@ -12,13 +12,6 @@ export default function PrivyBridge() {
   const { logout } = useLogout();
 
   useEffect(() => {
-    console.log("ddi: ANDROID PRIVY DEBUG");
-    console.log("ddi: ready:", ready);
-    console.log("ddi: authenticated:", authenticated);
-    console.log("ddi: user:", user);
-  }, [ready, authenticated, user]);
-
-  useEffect(() => {
     registerPrivyLogin(() => {
       if (authenticated && wallets.length === 0) {
         connectWallet();
