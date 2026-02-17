@@ -91,8 +91,27 @@ function CreateInvestmentPageContent() {
   };
 
   const handleHostPercentsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setHostPercentage(value === "" ? "" : Number.parseInt(value));
+    let value = e.target.value;
+
+    // дозволяємо тільки цифри
+    if (!/^\d*$/.test(value)) {
+      return;
+    }
+
+    // якщо пусте — дозволяємо очистити поле
+    if (value === "") {
+      setHostPercentage("");
+      return;
+    }
+
+    const numericValue = parseInt(value, 10);
+
+    // якщо більше 80 — не дозволяємо
+    if (numericValue > 80) {
+      return;
+    }
+
+    setHostPercentage(numericValue.toString());
   };
 
   useEffect(() => {
@@ -115,14 +134,25 @@ function CreateInvestmentPageContent() {
             label={"Car price in ETH"}
             placeholder="0"
             type="number"
+            onKeyDown={(e) => {
+              if (e.key === "-" || e.key === "." || e.key === "e") {
+                e.preventDefault();
+              }
+            }}
             value={carPrice}
             onChange={handleInputCarPriceChange}
           />
 
           <RntInputTransparent
-            className="lg:w-60"
+            className="no-spin lg:w-60"
             label={"Host percentage"}
             placeholder="0"
+            type="number"
+            onKeyDown={(e) => {
+              if (e.key === "-" || e.key === "." || e.key === "e") {
+                e.preventDefault();
+              }
+            }}
             value={hostPercentage}
             onChange={handleHostPercentsChange}
           />
