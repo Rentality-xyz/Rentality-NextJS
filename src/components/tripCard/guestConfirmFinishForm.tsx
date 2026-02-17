@@ -84,6 +84,7 @@ function GuestConfirmFinishForm({
         <>
           {noFilesUploadedError && <div>{t("common.photos_required")}</div>}
           <CarPhotosUploadButton
+            wrapperClassName={"w-full"}
             ref={carPhotosUploadButtonRef}
             isHost={false}
             isStart={false}
