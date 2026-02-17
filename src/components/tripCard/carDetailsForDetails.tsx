@@ -40,8 +40,8 @@ function СarDetailsForDetails({ tripInfo, isHost, t }: { tripInfo: TripInfo; is
       </div>
       <div className="flex flex-row justify-between">
         <UserAvatarWithName
-          photoUrl={tripInfo.host.photoUrl}
-          userName={tripInfo.host.name}
+          photoUrl={tripInfo.guest.photoUrl}
+          userName={tripInfo.guest.name}
           label={isHost ? "YOUR GUEST" : "HOSTED BY"}
         />
       </div>
