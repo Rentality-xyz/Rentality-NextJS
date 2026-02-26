@@ -11,12 +11,17 @@ import { t } from "i18next";
 import { useRntDialogs } from "@/contexts/rntDialogsContext";
 import CookieBanner from "@/components/common/CookieBanner";
 import { useNativePushToken } from "@/features/pushNotifications/useNativePushToken";
+import useBlockchainNetworkCheck from "@/features/blockchain/hooks/useBlockchainNetworkCheck";
+import { useChainInvalidateQueries } from "@/hooks/useChainInvalidateQueries";
 
 export default function Layout({ children }: { children?: React.ReactNode }) {
   const { isBurgerMenuShown, isFilterOnSearchPageShown } = useAppContext();
   const { userMode, isHost, isAdmin } = useUserMode();
 
   useNativePushToken();
+
+  useChainInvalidateQueries();
+  useBlockchainNetworkCheck();
 
   useEffect(() => {
     const body = document.body;
