@@ -92,8 +92,12 @@ export function getEtherscrossChainProxy<T extends IEthersContract, S extends IE
                 },
               ]);
             } catch (error) {
-              logger.error(`${key.toString()} proxy function error:`, error);
+              if (isUserRejected(error)) {
+                logger.debug(`${key.toString()} rejected by user`);
+                return;
+              }
 
+              logger.error(`${key.toString()} proxy function error:`, error);
               return Err(error);
             }
             /// execute crosschain transaction
@@ -120,8 +124,13 @@ export function getEtherscrossChainProxy<T extends IEthersContract, S extends IE
           }
           return Ok(result);
         } catch (error) {
-          logger.error(`${key.toString()} proxy function error:`, error);
+          let message;
+          if (isUserRejected(error)) {
+            logger.debug(`${key.toString()} rejected by user`);
+            return;
+          }
 
+          logger.error(`${key.toString()} proxy function error:`, error);
           return Err(error);
         }
       };
@@ -150,6 +159,11 @@ export function getEthersContractProxy<T extends IEthersContract>(contract: T): 
           }
           return Ok(result);
         } catch (error) {
+          if (isUserRejected(error)) {
+            logger.debug(`${key.toString()} rejected by user`);
+            return;
+          }
+
           logger.error(`${key.toString()} proxy function error:`, error);
           return Err(error);
         }
@@ -176,4 +190,8 @@ function debugData<T>(contract: T, fnName: string, args: any[]) {
 
   const encodedData = contractInterface.encodeFunctionData(fnName, fnArgs);
   logger.debug(`${fnName} proxy function called with encoded transaction data:`, encodedData);
+}
+
+function isUserRejected(error: any): boolean {
+  return error?.code === 4001 || error?.code === "ACTION_REJECTED" || error?.shortMessage?.includes("user rejected");
 }
