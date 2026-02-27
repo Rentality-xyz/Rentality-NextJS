@@ -1,8 +1,6 @@
 import { BrowserProvider, Signer } from "ethers";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { getExistBlockchainList } from "@/model/blockchain/blockchainList";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
-import { useRouter } from "next/navigation";
 import { formatEther } from "viem";
 import { logger } from "@/utils/logger";
 
@@ -28,36 +26,24 @@ export function useEthereum() {
 export const EthereumProvider = ({ children }: { children?: React.ReactNode }) => {
   const { ready, authenticated } = usePrivy();
   const { wallets, ready: walletsReady } = useWallets();
-  const router = useRouter();
   const [ethereumInfo, setEthereumInfo] = useState<EthereumInfo | null | undefined>(undefined);
-  const [isReloadPageRequested, setIsReloadPageRequested] = useState<boolean>(false);
   const isInitiating = useRef(false);
   useEffect(() => {
     const requestChainIdChange = async (chainId: number) => {
-      logger.info("requestChainIdChange: " + chainId);
+      if (!wallets[0]) return false;
 
-      if (!wallets[0]) {
-        logger.error("requestChainIdChange error: wallets list is empty");
-        return false;
+      const currentChainId = Number.parseInt(wallets[0]?.chainId?.slice(7) ?? "0");
+
+      // 🔥 ГОЛОВНЕ — не викликати switch якщо мережа вже правильна
+      if (currentChainId === chainId) {
+        return true;
       }
 
       try {
-        const selectedBlockchain = getExistBlockchainList().find((i) => i.chainId == chainId);
-
-        if (!selectedBlockchain) {
-          logger.error(`requestChainIdChange error: chain id ${chainId} is not supported`);
-          return false;
-        }
-
-        const currentChainId = Number(wallets[0].chainId.split(":")[1]);
-        logger.info(`currentChainId: ${currentChainId}`);
-
-        if (currentChainId !== chainId) {
-          await wallets[0].switchChain(chainId);
-        }
+        await wallets[0].switchChain(chainId);
         return true;
       } catch (error) {
-        logger.error("requestChainIdChange error:" + error);
+        console.error("switchChain error:", error);
         return false;
       }
     };
@@ -84,16 +70,18 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
             : (await etherv6Provider.getNetwork()).name;
 
         const currentWalletAddress = wallets[0].address;
-        const currentWalletBalanceInWeth = await etherv6Provider.getBalance(currentWalletAddress);
-        const currentWalletBalanceInEth = currentWalletBalanceInWeth
-          ? parseFloat(formatEther(currentWalletBalanceInWeth))
-          : 0;
+
+        let currentWalletBalanceInEth = 0;
+        try {
+          const currentWalletBalanceInWeth = await etherv6Provider.getBalance(currentWalletAddress);
+          currentWalletBalanceInEth = currentWalletBalanceInWeth
+            ? parseFloat(formatEther(currentWalletBalanceInWeth))
+            : 0;
+        } catch (e) {
+          logger.warn("getBalance failed (mobile/wc). continue with 0", e);
+        }
 
         setEthereumInfo((prev) => {
-          if (prev !== undefined && prev !== null) {
-            setIsReloadPageRequested(prev.chainId !== currentChainId);
-          }
-
           return {
             provider: etherv6Provider,
             signer: signer,
@@ -119,14 +107,6 @@ export const EthereumProvider = ({ children }: { children?: React.ReactNode }) =
       setEthereumInfo(null);
     }
   }, [authenticated, ethereumInfo, ready]);
-
-  useEffect(() => {
-    if (!isReloadPageRequested) return;
-
-    setIsReloadPageRequested(false);
-    router.refresh();
-    logger.info("reloading the page");
-  }, [router, isReloadPageRequested]);
 
   return <EthereumContext.Provider value={ethereumInfo}>{children}</EthereumContext.Provider>;
 };

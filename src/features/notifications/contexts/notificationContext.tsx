@@ -17,11 +17,8 @@ import { useAuth } from "@/contexts/auth/authContext";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { useRentality } from "@/contexts/rentalityContext";
 import { logger } from "@/utils/logger";
-import { fetchDefaultRpcUrl } from "../utils/fetchDefaultRpcUrl";
-import { isEmpty } from "@/utils/string";
 import { sleep } from "@/utils/sleep";
 import getDefaultProvider from "@/utils/api/defaultProviderUrl";
-import { create } from "domain";
 
 export type NotificationContextInfo = {
   isLoading: boolean;
@@ -78,8 +75,8 @@ function getNotificationFromRentalityEvent(
 
         const claimEventDate = (await event.getBlock()).date ?? new Date();
         return createClaimCreatedChangedNotification(claimTripDTO, claimInfo, isHost, claimEventDate);
-        case EventType.crossChainMessage:
-        const messageStatus = BigInt(event.args[2]); 
+      case EventType.crossChainMessage:
+        const messageStatus = BigInt(event.args[2]);
         const messageDate = (await event.getBlock()).date ?? new Date();
         return createNotificationFromcrossChainMessage(messageStatus, messageDate);
     }
@@ -176,18 +173,17 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
             logger.error("rentalityEventListener error:" + error);
           }
           return;
-          case EventType.crossChainMessage:
-            const messageStatus = BigInt(args[2]); 
-            try {
-              const notification = await createNotificationFromcrossChainMessage(messageStatus, new Date());
-              if (!notification) return;
+        case EventType.crossChainMessage:
+          const messageStatus = BigInt(args[2]);
+          try {
+            const notification = await createNotificationFromcrossChainMessage(messageStatus, new Date());
+            if (!notification) return;
 
-              addNotifications([notification]);
-            } catch (error) {
-              logger.error("rentalityEventListener error:" + error);
-            }
-            return;
-      
+            addNotifications([notification]);
+          } catch (error) {
+            logger.error("rentalityEventListener error:" + error);
+          }
+          return;
       }
     },
     [rentalityContracts, isHost, addNotifications]
@@ -199,8 +195,7 @@ export const NotificationProvider = ({ isHost, children }: { isHost: boolean; ch
       if (!rentalityContracts) return;
 
       try {
-   
-        const provider = await getDefaultProvider()
+        const provider = await getDefaultProvider();
 
         const notificationService = await getEtherContractWithProvider("notificationService", provider);
         if (!notificationService) {

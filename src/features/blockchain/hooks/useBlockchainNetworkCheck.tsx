@@ -22,6 +22,12 @@ function useBlockchainNetworkCheck() {
     const isSelectedSupportedChainId =
       selectedChainId > 0 && getExistBlockchainList().find((chain) => chain.chainId === selectedChainId) !== undefined;
 
+    // якщо мережа ок — закриваємо діалог
+    if (isSelectedSupportedChainId) {
+      hideDialogs();
+      return;
+    }
+
     if (!isSelectedSupportedChainId && wallets.length > 0) {
       showCustomDialog(
         <SwitchChainDialog

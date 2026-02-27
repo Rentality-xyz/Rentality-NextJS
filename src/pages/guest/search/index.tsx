@@ -48,7 +48,7 @@ function Search() {
   const { isLoadingAuth, isAuthenticated, login } = useAuth();
   const ethereumInfo = useEthereum();
   const { isLoading: isLoadingInsurance, data: guestInsurance } = useFetchGuestGeneralInsurance();
-  useBlockchainNetworkCheck();
+  // useBlockchainNetworkCheck();
   const { t } = useTranslation();
   const { rentalityContracts, isDefaultNetwork } = useRentality();
 
