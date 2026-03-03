@@ -86,10 +86,17 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
 
   useEffect(() => {
     const handleFocus = async () => {
+      // даємо WebView трохи часу "прокинутись"
+      await new Promise((r) => setTimeout(r, 400));
+
       try {
         await window.ethereum?.request({ method: "eth_chainId" });
       } catch {
-        window.location.reload();
+        // 🔥 тут не reload, а м’яке відновлення
+        try {
+          window.dispatchEvent(new Event("visibilitychange"));
+          window.dispatchEvent(new Event("focus"));
+        } catch {}
       }
     };
 

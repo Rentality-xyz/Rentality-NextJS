@@ -47,8 +47,6 @@ function CarSearchItem({
   startDateTimeStringFormat: string;
   endDateTimeStringFormat: string;
 }) {
-  console.log("render car", searchInfo.carId);
-
   const { t } = useTranslation();
 
   const t_comp: TFunction = (name, options) => {
