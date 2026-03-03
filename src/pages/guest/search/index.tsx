@@ -267,8 +267,6 @@ function Search() {
     return <Loading />;
   }
 
-  console.log("count cars " + searchResult?.carInfos?.length);
-
   return (
     <div className="flex flex-col" title="Search">
       <SearchAndFilters
