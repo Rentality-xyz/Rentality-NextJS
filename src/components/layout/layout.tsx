@@ -84,6 +84,19 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
     };
   }, []);
 
+  useEffect(() => {
+    const handleFocus = async () => {
+      try {
+        await window.ethereum?.request({ method: "eth_chainId" });
+      } catch {
+        window.location.reload();
+      }
+    };
+
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, []);
+
   return (
     <>
       <Header />
