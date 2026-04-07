@@ -18,47 +18,34 @@ import {
   Chain,
 } from "viem/chains";
 
-const localhostGanache = defineChain({
+const localhostHardhat = defineChain({
   id: 1_337,
-  name: "Localhost Ganache",
+  name: "Localhost Hardhat",
   nativeCurrency: {
     decimals: 18,
     name: "Ether",
     symbol: "ETH",
   },
   rpcUrls: {
-    default: { http: ["http://127.0.0.1:7545"] },
+    default: { http: ["http://127.0.0.1:8545"] },
   },
   testnet: true,
 });
 
 export const allSupportedBlockchainList: BlockchainBaseInfo[] = [
-  //Ethereum
   { ...getBlockchainInfoFromViem(mainnet), shortName: "Ethereum", logo: "chainLogoEthereum.svg" },
   { ...getBlockchainInfoFromViem(sepolia), shortName: "Sepolia", logo: "chainLogoEthereum.svg" },
-
-  //Polygon
   { ...getBlockchainInfoFromViem(polygon), shortName: "Polygon", logo: "chainLogoPolygon.svg" },
   { ...getBlockchainInfoFromViem(polygonMumbai), shortName: "Mumbai", logo: "chainLogoPolygon.svg" },
-
-  //Base
   { ...getBlockchainInfoFromViem(base), shortName: "Base", logo: "chainLogoBase.svg" },
   { ...getBlockchainInfoFromViem(baseSepolia), shortName: "Base Seposia", logo: "chainLogoBase.svg" },
-
-  //Optimism
   { ...getBlockchainInfoFromViem(optimism), shortName: "OP Mainnet", logo: "chainLogoOptimism.svg" },
   { ...getBlockchainInfoFromViem(optimismSepolia), shortName: "Optimism Sepolia", logo: "chainLogoOptimism.svg" },
-
-  //Fuse
   { ...getBlockchainInfoFromViem(fuse), shortName: "Fuse", logo: "chainLogoFuse.svg" },
   { ...getBlockchainInfoFromViem(fuseSparknet), shortName: "Fuse Sparknet", logo: "chainLogoFuse.svg" },
-
-  //OpBNB
   { ...getBlockchainInfoFromViem(opBNB), shortName: "opBNB", logo: "chainLogoOpBNB.svg" },
   { ...getBlockchainInfoFromViem(opBNBTestnet), shortName: "opBNB Testnet", logo: "chainLogoOpBNB.svg" },
-
-  //Localhost
-  { ...getBlockchainInfoFromViem(localhostGanache), shortName: "Ganache", logo: "chainLogoGanache.svg" },
+  { ...getBlockchainInfoFromViem(localhostHardhat), shortName: "Hardhat", logo: "chainLogoGanache.svg" },
 ];
 
 export function getExistBlockchainList(): BlockchainBaseInfo[] {
