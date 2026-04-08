@@ -18,4 +18,4 @@ CMD ["graph-node", \
     "--ethereum-rpc", "base:https://base.gateway.tenderly.co/", \
     "--ethereum-rpc", "opBNB-testnet:https://opbnb-testnet.g.alchemy.com/v2/vjS4hgV33RrHIi5pdkd1u", \
     "--ethereum-rpc", "opBNB:https://opbnb-mainnet.g.alchemy.com/v2/NJbEDHTkxxkRhJ6FALFOJ", \
-    "--ipfs", "http://host.docker.internal:5001"]
+    "--ipfs", "http://ipfs:5001"]
