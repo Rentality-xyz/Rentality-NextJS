@@ -3,7 +3,7 @@ import { env } from "../../env";
 export default function getIndexerUrlFromEnv(chainId: number) {
   switch (chainId) {
     case 1337:
-      return env.INDEXER_URL_84532;
+      return env.INDEXER_URL_1337;
     case 5611:
       return env.INDEXER_URL_5611;
     case 8453:
