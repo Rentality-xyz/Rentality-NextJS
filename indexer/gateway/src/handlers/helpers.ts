@@ -3,17 +3,17 @@ import {RentalityEvent,RentalityGateway} from "../../generated/RentalityNotifica
 import { RentalityUserService } from "../../generated/RentalityNotificationService/RentalityUserService";
 import { RentalityTripService } from "../../generated/RentalityNotificationService/RentalityTripService";
 export function getRentalityGateway(): RentalityGateway {
-    let contract = RentalityGateway.bind(Address.fromString("0xCf261b0275870d924d65d67beB9E88Ebd8deE693"));
+    let contract = RentalityGateway.bind(Address.fromString("0x36b58F5C1969B7b6591D752ea6F5486D069010AB"));
     return contract;
   }
 
   export function getRentalityTripsService(): RentalityTripService {
-    let contract = RentalityTripService.bind(Address.fromString("0xE400654d8310EA37953DB7A59E0C80F70Fea39F8"));
+    let contract = RentalityTripService.bind(Address.fromString("0x4c5859f0F772848b2D91F1D83E2Fe57935348029"));
     return contract;
   }
 
   export function getUserService(): RentalityUserService {
-    let contract = RentalityUserService.bind(Address.fromString("0x11027b8F9fD26381AF60E75E3175A5A46C0386e8"));
+    let contract = RentalityUserService.bind(Address.fromString("0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"));
     return contract;
 }
   
