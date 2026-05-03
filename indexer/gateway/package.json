@@ -2,6 +2,10 @@
   "name": "gateway",
   "license": "UNLICENSED",
   "scripts": {
+    "sync-localhost-addresses": "node scripts/syncLocalhostAddresses.js",
+    "precodegen": "npm run sync-localhost-addresses",
+    "prebuild": "npm run sync-localhost-addresses",
+    "predeploy-local": "npm run sync-localhost-addresses",
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ gateway",

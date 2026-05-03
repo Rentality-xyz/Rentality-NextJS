@@ -2,18 +2,19 @@ import { Address, log } from "@graphprotocol/graph-ts";
 import {RentalityEvent,RentalityGateway} from "../../generated/RentalityNotificationService/RentalityGateway";
 import { RentalityUserService } from "../../generated/RentalityNotificationService/RentalityUserService";
 import { RentalityTripService } from "../../generated/RentalityNotificationService/RentalityTripService";
+import { RENTALITY_GATEWAY_ADDRESS, RENTALITY_TRIP_SERVICE_ADDRESS, RENTALITY_USER_SERVICE_ADDRESS } from "./generatedLocalhostAddresses";
 export function getRentalityGateway(): RentalityGateway {
-    let contract = RentalityGateway.bind(Address.fromString("0x36b58F5C1969B7b6591D752ea6F5486D069010AB"));
+    let contract = RentalityGateway.bind(Address.fromString(RENTALITY_GATEWAY_ADDRESS));
     return contract;
   }
 
   export function getRentalityTripsService(): RentalityTripService {
-    let contract = RentalityTripService.bind(Address.fromString("0x4c5859f0F772848b2D91F1D83E2Fe57935348029"));
+    let contract = RentalityTripService.bind(Address.fromString(RENTALITY_TRIP_SERVICE_ADDRESS));
     return contract;
   }
 
   export function getUserService(): RentalityUserService {
-    let contract = RentalityUserService.bind(Address.fromString("0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"));
+    let contract = RentalityUserService.bind(Address.fromString(RENTALITY_USER_SERVICE_ADDRESS));
     return contract;
 }
   
