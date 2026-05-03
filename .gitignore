@@ -51,3 +51,10 @@ docker/env.nextjs
 .firebasebackup/
 firebase-debug.log
 filterRepo.txt
+
+# Generated local deploy artifacts
+/src/abis/*.abi.json
+/src/abis/*.addresses.json
+/indexer/gateway/subgraph.yaml
+/indexer/gateway/src/handlers/generatedLocalhostAddresses.ts
+/indexer/gateway/out/
