@@ -1,5 +1,6 @@
 import { Address, bigInt, ethereum, log } from "@graphprotocol/graph-ts"
-import {RentalityEvent,RentalityGateway} from "../../generated/RentalityNotificationService/RentalityGateway";
+import { RentalityGateway } from "../../generated/RentalityNotificationService/RentalityGateway";
+import { RentalityEvent } from "../../generated/RentalityNotificationService/RentalityNotificationService";
 import { CarInfo, CarTrip, LocationInfo, PaymentInfoEntity, TripEntity } from "../../generated/schema"
 import { getRentalityGateway, getRentalityTripsService, notImplemented } from "./helpers"
 
@@ -29,7 +30,7 @@ export function handleTripCreationEvent(event: RentalityEvent): void {
       } 
 
       if(newTrip) {
-        const carIdStr = tripDTOResult.value.carId.toString();
+        const carIdStr = tripDTOResult.value.booking.resourceId.toString();
         let carTrip = CarTrip.load(carIdStr);
         if (!carTrip) {
           carTrip = new CarTrip(carIdStr);
@@ -44,20 +45,20 @@ export function handleTripCreationEvent(event: RentalityEvent): void {
     }
       
    let tripDTO = tripDTOResult.value;
-    entity.tripId = tripDTO.tripId
-    entity.carId = tripDTO.carId
+    entity.tripId = tripDTO.booking.id
+    entity.carId = tripDTO.booking.resourceId
     entity.status = tripDTO.status
-    entity.guest = tripDTO.guest.toHexString()
-    entity.host = tripDTO.host.toHexString()
+    entity.guest = tripDTO.booking.customer.toHexString()
+    entity.host = tripDTO.booking.provider.toHexString()
     entity.guestName = tripDTO.guestName
     entity.hostName = tripDTO.hostName
     entity.pricePerDayInUsdCents = tripDTO.pricePerDayInUsdCents
-    entity.startDateTime = tripDTO.startDateTime
-    entity.endDateTime = tripDTO.endDateTime
+    entity.startDateTime = tripDTO.booking.startDateTime
+    entity.endDateTime = tripDTO.booking.endDateTime
     entity.engineType = tripDTO.engineType
     entity.milesIncludedPerDay = tripDTO.milesIncludedPerDay
     entity.fuelPrice = tripDTO.fuelPrice
-    entity.createdDateTime = tripDTO.createdDateTime
+    entity.createdDateTime = tripDTO.booking.createdAt
     entity.approvedDateTime = tripDTO.approvedDateTime
     entity.rejectedDateTime = tripDTO.rejectedDateTime
     entity.guestInsuranceCompanyName = tripDTO.guestInsuranceCompanyName
@@ -72,7 +73,7 @@ export function handleTripCreationEvent(event: RentalityEvent): void {
     entity.pickUpHash = tripDTO.pickUpHash
     entity.returnHash = tripDTO.returnHash
     entity.tripFinishedBy = tripDTO.tripFinishedBy.toHexString()
-    entity.tripFinishedByHost = tripDTO.tripFinishedBy.toHexString() == tripDTO.host.toHexString()
+    entity.tripFinishedByHost = tripDTO.tripFinishedBy.toHexString() == tripDTO.booking.provider.toHexString()
   
   
     let paymentEntity = new PaymentInfoEntity(tripIdStr)

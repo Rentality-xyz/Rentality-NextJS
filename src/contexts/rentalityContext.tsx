@@ -8,6 +8,7 @@ import {
 } from "@/features/blockchain/models/IRentalityAdminGateway";
 import { IRentalityGateway, IRentalityGatewayContract } from "@/features/blockchain/models/IRentalityGateway";
 import { getEthersContractProxy, getEtherscrossChainProxy } from "@/features/blockchain/models/EthersContractProxy";
+import { withAdminReadResultMapper, withGatewayReadResultMapper } from "@/features/blockchain/models/GatewayReadResultMapper";
 import {
   IRentalityCurrencyConverter,
   IRentalityCurrencyConverterContract,
@@ -103,12 +104,14 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         const senderAddress = await ethereumInfo.signer.getAddress();
 
         setRentalityContracts({
-          gateway: getEtherscrossChainProxy(
-            gatewayWrite,
-            gatewayRead,
-            senderAddress,
-            isDefaultNetwork,
-            defaultProvider
+          gateway: withGatewayReadResultMapper(
+            getEtherscrossChainProxy(
+              gatewayWrite,
+              gatewayRead,
+              senderAddress,
+              isDefaultNetwork,
+              defaultProvider
+            )
           ),
 
           currencyConverter: getEthersContractProxy(currencyConverterRead),
@@ -151,7 +154,7 @@ export const RentalityProvider = ({ children }: { children?: React.ReactNode }) 
         return;
       }
 
-      setRentalityAdmin(getEthersContractProxy(rentalityAdmin));
+      setRentalityAdmin(withAdminReadResultMapper(getEthersContractProxy(rentalityAdmin)));
     };
 
     getRentalityAdminContacts();

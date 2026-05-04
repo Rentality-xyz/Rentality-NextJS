@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SearchCarInfo, SearchCarsResult, emptySearchCarsResult } from "@/model/SearchCarsResult";
+import { SearchCarInfo, SearchCarsResult, createEmptySearchCarsResult } from "@/model/SearchCarsResult";
 import { useEthereum } from "@/contexts/web3/ethereumContext";
 import { isEmpty } from "@/utils/string";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
@@ -11,7 +11,7 @@ import { SearchSortFilterValueKey } from "@/features/search/models/filters";
 const useSearchCars = () => {
   const ethereumInfo = useEthereum();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [searchResult, setSearchResult] = useState<SearchCarsResult>(emptySearchCarsResult);
+  const [searchResult, setSearchResult] = useState<SearchCarsResult>(() => createEmptySearchCarsResult());
   const [sortBy, setSortBy] = useState<LocalizedFilterOption<SearchSortFilterValueKey> | undefined>(undefined);
 
   const PAGE_SIZE = 10;

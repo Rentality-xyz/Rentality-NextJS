@@ -1,5 +1,6 @@
 import { Address, log } from "@graphprotocol/graph-ts";
-import {RentalityEvent,RentalityGateway} from "../../generated/RentalityNotificationService/RentalityGateway";
+import { RentalityGateway } from "../../generated/RentalityNotificationService/RentalityGateway";
+import { RentalityEvent } from "../../generated/RentalityNotificationService/RentalityNotificationService";
 import { RentalityUserService } from "../../generated/RentalityNotificationService/RentalityUserService";
 import { RentalityTripService } from "../../generated/RentalityNotificationService/RentalityTripService";
 import { RENTALITY_GATEWAY_ADDRESS, RENTALITY_TRIP_SERVICE_ADDRESS, RENTALITY_USER_SERVICE_ADDRESS } from "./generatedLocalhostAddresses";

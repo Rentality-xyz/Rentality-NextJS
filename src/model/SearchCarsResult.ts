@@ -1,6 +1,6 @@
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
 import { emptyLocationInfo } from "./LocationInfo";
-import { DEFAULT_SEARCH_DATE_FROM, DEFAULT_SEARCH_DATE_TO } from "@/utils/constants";
+import { getDefaultSearchDateFrom, getDefaultSearchDateTo } from "@/utils/constants";
 import { dateToHtmlDateTimeFormat } from "@/utils/datetimeFormatters";
 import { EngineType } from "./blockchain/schemas";
 import { TransmissionType } from "./Transmission";
@@ -95,20 +95,22 @@ export type SearchCarInfoDetails = SearchCarInfo & {
   governmentTax: number;
 };
 
-const emptySearchCarRequest: SearchCarRequest = {
+export const createEmptySearchCarRequest = (): SearchCarRequest => ({
   searchLocation: emptyLocationInfo,
-  dateFromInDateTimeStringFormat: dateToHtmlDateTimeFormat(DEFAULT_SEARCH_DATE_FROM),
-  dateToInDateTimeStringFormat: dateToHtmlDateTimeFormat(DEFAULT_SEARCH_DATE_TO),
+  dateFromInDateTimeStringFormat: dateToHtmlDateTimeFormat(getDefaultSearchDateFrom()),
+  dateToInDateTimeStringFormat: dateToHtmlDateTimeFormat(getDefaultSearchDateTo()),
   isDeliveryToGuest: false,
   deliveryInfo: {
     pickupLocation: { isHostHomeLocation: true },
     returnLocation: { isHostHomeLocation: true },
   },
-};
+});
 
-export const emptySearchCarsResult: SearchCarsResult = {
-  searchCarRequest: emptySearchCarRequest,
+export const createEmptySearchCarsResult = (): SearchCarsResult => ({
+  searchCarRequest: createEmptySearchCarRequest(),
   searchCarFilters: {},
   carInfos: [],
   filterLimits: { minCarYear: Number.NEGATIVE_INFINITY, maxCarPrice: Number.POSITIVE_INFINITY },
-};
+});
+
+export const emptySearchCarsResult: SearchCarsResult = createEmptySearchCarsResult();

@@ -1,6 +1,7 @@
 import { Address, bigInt, ethereum, log } from "@graphprotocol/graph-ts"
 import { CarInfo, CarTrip, CarUser, InsuranceCarInfo, LocationInfo, TaxesEntity, TripEntity, UserCurrencyDTOEntity, UserProfileEntity } from "../../generated/schema"
-import {RentalityEvent, RentalityGateway__getCarDetailsResultCarDetailsLocationInfoStruct} from "../../generated/RentalityNotificationService/RentalityGateway";
+import { RentalityGateway__getCarDetailsResultValue0LocationInfoStruct } from "../../generated/RentalityNotificationService/RentalityGateway";
+import { RentalityEvent } from "../../generated/RentalityNotificationService/RentalityNotificationService";
 import { getRentalityGateway, notImplemented, TaxesLocationType } from "./helpers";
 import { DEFAULT_CURRENCY } from "./userCurrencyHandler";
 
@@ -35,20 +36,20 @@ function handleUpdateCarEvent(event: RentalityEvent): void {
 
   let carInfo = carInfoResult.value;
 
-  entity.pricePerDayInUsdCents = carInfo.carInfo.pricePerDayInUsdCents;
-  entity.securityDepositPerTripInUsdCents = carInfo.carInfo.securityDepositPerTripInUsdCents;
-  entity.milesIncludedPerDay = carInfo.carInfo.milesIncludedPerDay;
-  entity.engineParams = carInfo.carInfo.engineParams;
-  entity.engineType = carInfo.carInfo.engineType;
-  entity.timeBufferBetweenTripsInSec = carInfo.carInfo.timeBufferBetweenTripsInSec;
+  entity.pricePerDayInUsdCents = carInfo.carInfo.car.pricePerDayInUsdCents;
+  entity.securityDepositPerTripInUsdCents = carInfo.carInfo.car.securityDepositPerTripInUsdCents;
+  entity.milesIncludedPerDay = carInfo.carInfo.car.milesIncludedPerDay;
+  entity.engineParams = carInfo.carInfo.car.engineParams;
+  entity.engineType = carInfo.carInfo.car.engineType;
+  entity.timeBufferBetweenTripsInSec = carInfo.carInfo.car.timeBufferBetweenTripsInSec;
 
-  entity.locationHash = carInfo.carInfo.locationHash;
-  entity.timeZoneId = carInfo.carInfo.timeZoneId;
-  entity.currentlyListed = carInfo.carInfo.currentlyListed;;
+  entity.locationHash = carInfo.carInfo.car.locationHash;
+  entity.timeZoneId = carInfo.carInfo.car.timeZoneId;
+  entity.currentlyListed = carInfo.carInfo.car.currentlyListed;
 
   const carIdStr = event.params.id.toString();
-  if (entity.user._id == DEFAULT_CURRENCY) {
-    if(UserProfileEntity.load(carInfo.carInfo.createdBy.toHexString()) != null) {
+  if (entity.host == DEFAULT_CURRENCY) {
+    if(UserProfileEntity.load(carInfo.carInfo.asset.owner.toHexString()) != null) {
       let carUser = CarUser.load(DEFAULT_CURRENCY);
     
       if(carUser != null) {
@@ -62,10 +63,10 @@ function handleUpdateCarEvent(event: RentalityEvent): void {
        carUser.save();
       }
     }
-    let hostCars = CarUser.load(carInfo.carInfo.createdBy.toHexString());
+    let hostCars = CarUser.load(carInfo.carInfo.asset.owner.toHexString());
     if (hostCars == null) {
-      hostCars = new CarUser(carInfo.carInfo.createdBy.toHexString());
-      hostCars.user = carInfo.carInfo.createdBy.toHexString();
+      hostCars = new CarUser(carInfo.carInfo.asset.owner.toHexString());
+      hostCars.user = carInfo.carInfo.asset.owner.toHexString();
       hostCars.cars = [];
     }
     const hCars = hostCars.cars;
@@ -76,7 +77,7 @@ function handleUpdateCarEvent(event: RentalityEvent): void {
 
   }
 
-  const locationId = carInfo.carInfo.locationHash.toHexString();
+  const locationId = carInfo.carInfo.car.locationHash.toHexString();
   let location = LocationInfo.load(locationId);
 
   if (location == null) {
@@ -97,11 +98,11 @@ function handleUpdateCarEvent(event: RentalityEvent): void {
     newLocation.userAddress = carDetails.locationInfo.userAddress;
     newLocation.save();
   }
-  if(entity.createdBy.toHexString() == DEFAULT_CURRENCY) {
-    if(UserProfileEntity.load(carInfo.carInfo.createdBy.toHexString()) != null) {
-      entity.host = carInfo.carInfo.createdBy.toHexString();
+  if(entity.host == DEFAULT_CURRENCY) {
+    if(UserProfileEntity.load(carInfo.carInfo.asset.owner.toHexString()) != null) {
+      entity.host = carInfo.carInfo.asset.owner.toHexString();
     }
-    }
+  }
 
   const carInsuranceEntity = InsuranceCarInfo.load(
     event.params.id.toString()
@@ -129,8 +130,8 @@ function handleCarCreationEvent(event: RentalityEvent): void {
   } 
   let carInfo = carInfoResult.value;
 
-    let userStr = carInfo.carInfo.createdBy.toHexString();
-    let isEmptyUser = UserProfileEntity.load(carInfo.carInfo.createdBy.toHexString()) == null;
+    let userStr = carInfo.carInfo.asset.owner.toHexString();
+    let isEmptyUser = UserProfileEntity.load(carInfo.carInfo.asset.owner.toHexString()) == null;
 
       if (isEmptyUser) {
         userStr = DEFAULT_CURRENCY;
@@ -148,27 +149,27 @@ function handleCarCreationEvent(event: RentalityEvent): void {
     carUser.save();
     
  
-  entity.brand = carInfo.carInfo.brand
-  entity.model = carInfo.carInfo.model
-  entity.yearOfProduction = carInfo.carInfo.yearOfProduction
-  entity.carVinNumber = carInfo.carInfo.carVinNumber
-  entity.carVinNumberHash = carInfo.carInfo.carVinNumberHash
-  entity.createdBy = carInfo.carInfo.createdBy
-  entity.currentlyListed = carInfo.carInfo.currentlyListed
+  entity.brand = carInfo.carInfo.car.brand
+  entity.model = carInfo.carInfo.car.model
+  entity.yearOfProduction = carInfo.carInfo.car.yearOfProduction
+  entity.carVinNumber = carInfo.carInfo.car.carVinNumber
+  entity.carVinNumberHash = carInfo.carInfo.car.carVinNumberHash
+  entity.createdBy = carInfo.carInfo.asset.owner
+  entity.currentlyListed = carInfo.carInfo.car.currentlyListed
   entity.carId = event.params.id
-  entity.engineType = carInfo.carInfo.engineType
-  entity.engineParams = carInfo.carInfo.engineParams
-  entity.milesIncludedPerDay = carInfo.carInfo.milesIncludedPerDay
-  entity.locationHash = carInfo.carInfo.locationHash
-  entity.timeBufferBetweenTripsInSec = carInfo.carInfo.timeBufferBetweenTripsInSec
+  entity.engineType = carInfo.carInfo.car.engineType
+  entity.engineParams = carInfo.carInfo.car.engineParams
+  entity.milesIncludedPerDay = carInfo.carInfo.car.milesIncludedPerDay
+  entity.locationHash = carInfo.carInfo.car.locationHash
+  entity.timeBufferBetweenTripsInSec = carInfo.carInfo.car.timeBufferBetweenTripsInSec
   entity.tokenURI = carInfo.carMetadataURI
-  entity.pricePerDayInUsdCents = carInfo.carInfo.pricePerDayInUsdCents
-  entity.securityDepositPerTripInUsdCents = carInfo.carInfo.securityDepositPerTripInUsdCents
-  entity.geoVerified = true;
-  entity.timeZoneId = carInfo.carInfo.timeZoneId
-  entity.insuranceIncluded = carInfo.carInfo.insuranceIncluded
+  entity.pricePerDayInUsdCents = carInfo.carInfo.car.pricePerDayInUsdCents
+  entity.securityDepositPerTripInUsdCents = carInfo.carInfo.car.securityDepositPerTripInUsdCents
+  entity.geoVerified = carInfo.carInfo.car.geoVerified;
+  entity.timeZoneId = carInfo.carInfo.car.timeZoneId
+  entity.insuranceIncluded = carInfo.carInfo.car.insuranceIncluded
   entity.burned = false;
-  entity.host = carInfo.carInfo.createdBy.toHexString()
+  entity.host = carInfo.carInfo.asset.owner.toHexString()
 
  
 
@@ -187,12 +188,12 @@ function handleCarCreationEvent(event: RentalityEvent): void {
     return;
   }
   entity.taxes = taxesToSave;
-  entity.locationInfo = carInfo.carInfo.locationHash.toHexString()
+  entity.locationInfo = carInfo.carInfo.car.locationHash.toHexString()
   
-  const location = LocationInfo.load(carInfo.carInfo.locationHash.toHexString())
+  const location = LocationInfo.load(carInfo.carInfo.car.locationHash.toHexString())
 
   if(location == null) {
-    const newLocation = new LocationInfo(carInfo.carInfo.locationHash.toHexString())
+    const newLocation = new LocationInfo(carInfo.carInfo.car.locationHash.toHexString())
  
     newLocation.latitude = carDetails.locationInfo.latitude
     newLocation.longitude = carDetails.locationInfo.longitude
@@ -214,14 +215,14 @@ function handleCarCreationEvent(event: RentalityEvent): void {
   carInsuranceEntity.save();
 
   entity.insuranceCarInfo = carInsuranceEntity.id;
-  entity.locationInfo = carInfo.carInfo.locationHash.toHexString()
+  entity.locationInfo = carInfo.carInfo.car.locationHash.toHexString()
   entity.dimoTokenId = carDetails.dimoTokenId;
   entity.save()
 
 
 }
 
-const getTaxId = (location: RentalityGateway__getCarDetailsResultCarDetailsLocationInfoStruct): string | null => {
+const getTaxId = (location: RentalityGateway__getCarDetailsResultValue0LocationInfoStruct): string | null => {
         let taxes = TaxesEntity.load(location.country + TaxesLocationType.Country.toString())
         taxes = taxes || TaxesEntity.load(location.state + TaxesLocationType.State.toString());
         taxes = taxes || TaxesEntity.load(location.city + TaxesLocationType.City.toString());

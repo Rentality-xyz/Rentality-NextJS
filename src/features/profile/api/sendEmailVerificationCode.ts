@@ -10,6 +10,7 @@ import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityAdminGatewayContract } from "@/features/blockchain/models/IRentalityAdminGateway";
 import { JsonRpcProvider, Wallet } from "ethers";
 import { getEthersContractProxy } from "@/features/blockchain/models/EthersContractProxy";
+import { withAdminReadResultMapper } from "@/features/blockchain/models/GatewayReadResultMapper";
 import { getEmailVerificationHash } from "../utils/emailVerificationCode";
 import { getEmailVerificationMessageTemplate } from "../utils/emailTemplates";
 import EmailService from "@/features/scheduler/eventProcessing/utils/emailService";
@@ -136,7 +137,7 @@ async function getUserInfo(walletAddress: string, chainId: number): Promise<Resu
     return Err(new Error("rentalityAdmin is null"));
   }
 
-  const adminProxy = getEthersContractProxy(rentalityAdmin);
+  const adminProxy = withAdminReadResultMapper(getEthersContractProxy(rentalityAdmin));
 
   return adminProxy.getUserFullKYCInfo(walletAddress);
 }

@@ -85,14 +85,19 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    const isEmbeddedWebView =
+      /wv|WebView/i.test(window.navigator.userAgent) || "ReactNativeWebView" in window;
+
+    if (!isEmbeddedWebView || typeof window.ethereum?.request !== "function") {
+      return;
+    }
+
     const handleFocus = async () => {
-      // даємо WebView трохи часу "прокинутись"
       await new Promise((r) => setTimeout(r, 400));
 
       try {
-        await window.ethereum?.request({ method: "eth_chainId" });
+        await window.ethereum.request({ method: "eth_chainId" });
       } catch {
-        // 🔥 тут не reload, а м’яке відновлення
         try {
           window.dispatchEvent(new Event("visibilitychange"));
           window.dispatchEvent(new Event("focus"));

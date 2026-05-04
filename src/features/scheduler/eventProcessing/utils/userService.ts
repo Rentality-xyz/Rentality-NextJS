@@ -3,6 +3,8 @@ import { Err, Ok, Result, UnknownErr } from "@/model/utils/result";
 import { UserInfo } from "../models";
 import { getEtherContractWithSigner } from "@/abis";
 import { IRentalityAdminGatewayContract } from "@/features/blockchain/models/IRentalityAdminGateway";
+import { getEthersContractProxy } from "@/features/blockchain/models/EthersContractProxy";
+import { withAdminReadResultMapper } from "@/features/blockchain/models/GatewayReadResultMapper";
 import { isEmpty } from "@/utils/string";
 import getProviderApiUrlFromEnv from "@/utils/api/providerApiUrl";
 import { env } from "@/utils/env";
@@ -86,16 +88,22 @@ class UserService {
         return Err(new Error("loadUsers error: rentalityAdmin is null"));
       }
 
+      const rentalityAdminProxy = withAdminReadResultMapper(getEthersContractProxy(rentalityAdmin));
+
       let currentPage = 1;
       const itemsPerPage = 1000;
       let totalPage = 1;
 
       do {
-        const adminKYCInfosDTO = await rentalityAdmin.getPlatformUsersInfo(BigInt(currentPage), BigInt(itemsPerPage));
-        if (!adminKYCInfosDTO) {
-          return Err(new Error("loadUsers error: adminKYCInfosDTO return null"));
+        const adminKYCInfosDTOResult = await rentalityAdminProxy.getPlatformUsersInfo(
+          BigInt(currentPage),
+          BigInt(itemsPerPage)
+        );
+        if (!adminKYCInfosDTOResult?.ok) {
+          return Err(adminKYCInfosDTOResult?.error ?? new Error("loadUsers error: adminKYCInfosDTO return null"));
         }
 
+        const adminKYCInfosDTO = adminKYCInfosDTOResult.value;
         totalPage = Number(adminKYCInfosDTO.totalPageCount);
 
         for (const userData of adminKYCInfosDTO.kycInfos) {

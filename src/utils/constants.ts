@@ -34,8 +34,16 @@ export const DEFAULT_SEARCH_LOCATION: LocationInfo = {
   longitude: -80.229458,
   timeZoneId: "America/New_York",
 };
-export const DEFAULT_SEARCH_DATE_FROM = moment({ hour: 9 }).add(1, "day").toDate();
-export const DEFAULT_SEARCH_DATE_TO = moment({ hour: 9 }).add(4, "day").toDate();
+
+function createDefaultSearchDate(daysToAdd: number) {
+  return moment().startOf("day").add(daysToAdd, "day").hour(9).minute(0).second(0).millisecond(0).toDate();
+}
+
+export const getDefaultSearchDateFrom = () => createDefaultSearchDate(1);
+export const getDefaultSearchDateTo = () => createDefaultSearchDate(4);
+
+export const DEFAULT_SEARCH_DATE_FROM = getDefaultSearchDateFrom();
+export const DEFAULT_SEARCH_DATE_TO = getDefaultSearchDateTo();
 export const DEFAULT_MIN_FILTER_YEAR = 1900;
 export const DEFAULT_MAX_FILTER_PRICE = 10000;
 

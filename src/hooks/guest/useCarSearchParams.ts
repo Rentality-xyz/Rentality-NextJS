@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { isEmpty } from "@/utils/string";
-import { DEFAULT_SEARCH_DATE_FROM, DEFAULT_SEARCH_DATE_TO, DEFAULT_SEARCH_LOCATION } from "@/utils/constants";
+import { DEFAULT_SEARCH_LOCATION, getDefaultSearchDateFrom, getDefaultSearchDateTo } from "@/utils/constants";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { emptyLocationInfo, LocationInfo } from "@/model/LocationInfo";
 import { SearchCarFilters, SearchCarRequest } from "@/model/SearchCarRequest";
@@ -50,8 +50,8 @@ export default function useCarSearchParams() {
   const searchCarRequest: SearchCarRequest = useMemo(() => {
     return {
       searchLocation: paramAddressToLocationInfo(address, DEFAULT_SEARCH_LOCATION),
-      dateFromInDateTimeStringFormat: !isEmpty(from) ? from : dateToHtmlDateTimeFormat(DEFAULT_SEARCH_DATE_FROM),
-      dateToInDateTimeStringFormat: !isEmpty(to) ? to : dateToHtmlDateTimeFormat(DEFAULT_SEARCH_DATE_TO),
+      dateFromInDateTimeStringFormat: !isEmpty(from) ? from : dateToHtmlDateTimeFormat(getDefaultSearchDateFrom()),
+      dateToInDateTimeStringFormat: !isEmpty(to) ? to : dateToHtmlDateTimeFormat(getDefaultSearchDateTo()),
       isDeliveryToGuest: isDelivery,
       deliveryInfo: {
         pickupLocation:

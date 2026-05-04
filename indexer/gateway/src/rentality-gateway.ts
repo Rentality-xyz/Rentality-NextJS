@@ -4,7 +4,7 @@ import { handleCarEvents } from "./handlers/carHandlers";
 import { handleTripEvents } from "./handlers/tripHandlers";
 import { notImplemented } from "./handlers/helpers";
 import { hanldeDeliveryEvents } from "./handlers/deliveryPriceHandler";
-import {RentalityEvent} from "../generated/RentalityNotificationService/RentalityGateway";
+import { RentalityEvent } from "../generated/RentalityNotificationService/RentalityNotificationService";
 import { handleUserEvent } from "./handlers/userHandler";
 import { hanldeDiscountEvents } from "./handlers/discountPriceHandler";
 import { handlerCurrencyEvent } from "./handlers/userCurrencyHandler";
