@@ -25,8 +25,8 @@ dataSources:
       abis:
         - name: RentalityNotificationService
           file: ./abis/RentalityNotificationService.json
-        - name: RentalityGateway
-          file: ./abis/RentalityGateway.json
+        - name: CarGatewayRead
+          file: ./abis/CarGatewayRead.json
         - name: RentalityTripService
           file: ./abis/RentalityTripService.json
         - name: RentalityUserService

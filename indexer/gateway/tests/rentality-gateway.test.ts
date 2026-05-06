@@ -8,7 +8,7 @@ import {
 } from "matchstick-as/assembly/index"
 import { BigInt, Address } from "@graphprotocol/graph-ts"
 import { RentalityEvent } from "../generated/schema"
-import { RentalityEvent as RentalityEventEvent } from "../generated/RentalityGateway/RentalityGateway"
+import { RentalityEvent as RentalityEventEvent } from "../generated/RentalityNotificationService/RentalityNotificationService"
 import { handleRentalityEvent } from "../src/rentality-gateway"
 import { createRentalityEventEvent } from "./rentality-gateway-utils"
 

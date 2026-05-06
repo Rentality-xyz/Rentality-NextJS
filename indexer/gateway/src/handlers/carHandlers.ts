@@ -1,8 +1,8 @@
 import { Address, bigInt, ethereum, log } from "@graphprotocol/graph-ts"
 import { CarInfo, CarTrip, CarUser, InsuranceCarInfo, LocationInfo, TaxesEntity, TripEntity, UserCurrencyDTOEntity, UserProfileEntity } from "../../generated/schema"
-import { RentalityGateway__getCarDetailsResultValue0LocationInfoStruct } from "../../generated/RentalityNotificationService/RentalityGateway";
+import { CarGatewayRead__getCarDetailsResultValue0LocationInfoStruct } from "../../generated/RentalityNotificationService/CarGatewayRead";
 import { RentalityEvent } from "../../generated/RentalityNotificationService/RentalityNotificationService";
-import { getRentalityGateway, notImplemented, TaxesLocationType } from "./helpers";
+import { getCarGatewayRead, notImplemented, TaxesLocationType } from "./helpers";
 import { DEFAULT_CURRENCY } from "./userCurrencyHandler";
 
 
@@ -27,7 +27,7 @@ function handleUpdateCarEvent(event: RentalityEvent): void {
     return;
   }
 
-  let contract = getRentalityGateway();
+  let contract = getCarGatewayRead();
   let carInfoResult = contract.try_getCarInfoById(event.params.id);
   if (carInfoResult.reverted) {
     log.warning("getCarInfoById reverted for carId: {}", [event.params.id.toString()]);
@@ -83,9 +83,9 @@ function handleUpdateCarEvent(event: RentalityEvent): void {
   if (location == null) {
     const newLocation = new LocationInfo(locationId);
     const carDetailsResult = contract.try_getCarDetails(event.params.id)
-  if(carDetailsResult == null) {
-    log.error("Car craetion error: can not get carDetails",[]);
-    return
+  if(carDetailsResult.reverted) {
+    log.error("Car creation error: can not get carDetails for carId: {}", [event.params.id.toString()]);
+    return;
     }
     const carDetails = carDetailsResult.value
 
@@ -122,7 +122,7 @@ function handleCarCreationEvent(event: RentalityEvent): void {
   let entity = new CarInfo(
     carIdStr
   )
-  let contract = getRentalityGateway();
+  let contract = getCarGatewayRead();
   let carInfoResult = contract.try_getCarInfoById(event.params.id);
   if (carInfoResult.reverted) {
     log.warning("getCarInfoById reverted for carId: {}", [carIdStr]);
@@ -174,9 +174,9 @@ function handleCarCreationEvent(event: RentalityEvent): void {
  
 
   const carDetailsResult = contract.try_getCarDetails(event.params.id)
-  if(carDetailsResult == null) {
-    log.error("Car craetion error: can not get carDetails",[]);
-    return
+  if(carDetailsResult.reverted) {
+    log.error("Car creation error: can not get carDetails for carId: {}", [event.params.id.toString()]);
+    return;
     }
     const carDetails = carDetailsResult.value
 
@@ -185,9 +185,9 @@ function handleCarCreationEvent(event: RentalityEvent): void {
 
   if (taxesToSave == null) {
     log.warning("No tax rules found for carId: {}", [event.params.id.toString()]);
-    return;
+  } else {
+    entity.taxes = taxesToSave;
   }
-  entity.taxes = taxesToSave;
   entity.locationInfo = carInfo.carInfo.car.locationHash.toHexString()
   
   const location = LocationInfo.load(carInfo.carInfo.car.locationHash.toHexString())
@@ -222,7 +222,7 @@ function handleCarCreationEvent(event: RentalityEvent): void {
 
 }
 
-const getTaxId = (location: RentalityGateway__getCarDetailsResultValue0LocationInfoStruct): string | null => {
+const getTaxId = (location: CarGatewayRead__getCarDetailsResultValue0LocationInfoStruct): string | null => {
         let taxes = TaxesEntity.load(location.country + TaxesLocationType.Country.toString())
         taxes = taxes || TaxesEntity.load(location.state + TaxesLocationType.State.toString());
         taxes = taxes || TaxesEntity.load(location.city + TaxesLocationType.City.toString());

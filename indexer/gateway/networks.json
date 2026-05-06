@@ -1,6 +1,6 @@
 {
   "base": {
-    "RentalityGateway": {
+    "CarGatewayRead": {
       "address": "0xCf261b0275870d924d65d67beB9E88Ebd8deE693",
       "startBlock": 26718122
     }

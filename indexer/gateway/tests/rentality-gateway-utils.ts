@@ -1,6 +1,6 @@
 import { newMockEvent } from "matchstick-as"
 import { ethereum, BigInt, Address } from "@graphprotocol/graph-ts"
-import { RentalityEvent } from "../generated/RentalityGateway/RentalityGateway"
+import { RentalityEvent } from "../generated/RentalityNotificationService/RentalityNotificationService"
 
 export function createRentalityEventEvent(
   eType: i32,

@@ -1,10 +1,10 @@
 import { Address, bigInt, ethereum, log } from "@graphprotocol/graph-ts"
 import { CarInfo, GuestInsurancesEntity, InsuranceCarInfo, InsuranceInfoEntity, LocationInfo, TripEntity } from "../../generated/schema"
 import { RentalityEvent } from "../../generated/RentalityNotificationService/RentalityNotificationService";
-import { getRentalityGateway, notImplemented } from "./helpers";
+import { getCarGatewayRead, notImplemented } from "./helpers";
 
 export function handleUserInsurance(event: RentalityEvent): void {
-    let contract = getRentalityGateway();
+    let contract = getCarGatewayRead();
     let insuranceInfo = contract.try_getGuestInsurance(event.params.from)
     
     if (insuranceInfo.reverted) {

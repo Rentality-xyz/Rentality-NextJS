@@ -1,6 +1,6 @@
 import { Address, bigInt, ethereum, log } from "@graphprotocol/graph-ts"
 import { CarInfo, DeliveryPricesEntity, LocationInfo, PaymentInfoEntity, TripEntity, UserProfileEntity } from "../../generated/schema"
-import { getRentalityGateway, notImplemented } from "./helpers"
+import { getCarGatewayRead, notImplemented } from "./helpers"
 import { RentalityEvent } from "../../generated/RentalityNotificationService/RentalityNotificationService";
 export const DEFAULT_DELIVERY_PRICE = '0x0000000000000000000000000000000000000000';
 export function hanldeDeliveryEvents(event: RentalityEvent): void {
@@ -17,7 +17,7 @@ export function hanldeDeliveryEvents(event: RentalityEvent): void {
 
 function handleUserDeliveryPrice(event: RentalityEvent): void {
 
-  let contract = getRentalityGateway();
+  let contract = getCarGatewayRead();
   let delivertPrices = contract.try_getUserDeliveryPrices(event.params.from)
 
   if (delivertPrices.reverted) {
@@ -36,17 +36,17 @@ function handleUserDeliveryPrice(event: RentalityEvent): void {
     let user = UserProfileEntity.load(event.params.from.toHexString());
     if (user == null) {
       log.error("User profile not found for user: {}", [event.params.from.toHexString()]);
-      return;
+    } else {
+      user.deliveryPrice = userDeliveryPriceEntity.id;
+      user.save()
     }
-    user.deliveryPrice = userDeliveryPriceEntity.id;
-    user.save()
   
   userDeliveryPriceEntity.save();
 }
 
 function handleAdminDeliveryPrice(event: RentalityEvent): void {
 
-    let contract = getRentalityGateway();
+    let contract = getCarGatewayRead();
     let delivertPrices = contract.try_getUserDeliveryPrices(Address.fromString(DEFAULT_DELIVERY_PRICE))
   
     if (delivertPrices.reverted) {

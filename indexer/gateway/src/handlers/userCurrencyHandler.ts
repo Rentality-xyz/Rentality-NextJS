@@ -1,6 +1,6 @@
 import { Address, bigInt, ethereum, log } from "@graphprotocol/graph-ts"
 import { BaseDiscountEntity, CarInfo, CarUser, DeliveryPricesEntity, LocationInfo, PaymentInfoEntity, TripEntity, UserCurrencyDTOEntity, UserProfileEntity } from "../../generated/schema"
-import { getRentalityGateway, notImplemented } from "./helpers"
+import { getCarGatewayRead, notImplemented } from "./helpers"
 import { RentalityEvent } from "../../generated/RentalityNotificationService/RentalityNotificationService";
 export const DEFAULT_CURRENCY = '0x0000000000000000000000000000000000000000';
 
@@ -18,7 +18,7 @@ export function handlerCurrencyEvent(event: RentalityEvent): void {
 
 function handleUserCurrency(event: RentalityEvent): void {
 
-  let contract = getRentalityGateway();
+  let contract = getCarGatewayRead();
   let userCurrency = contract.try_getUserCurrency(event.params.from)
 
   if (userCurrency.reverted) {
@@ -37,10 +37,10 @@ function handleUserCurrency(event: RentalityEvent): void {
   let user = UserProfileEntity.load(event.params.from.toHexString());
   if (user == null) {
     log.error("User profile not found for user: {}", [event.params.from.toHexString()]);
-    return;
+  } else {
+    user.userCurrency = userCurrencyEntity.id;
+    user.save()
   }
-  user.userCurrency = userCurrencyEntity.id;
-  user.save()
 
 
   userCurrencyEntity.save();
@@ -49,7 +49,7 @@ function handleUserCurrency(event: RentalityEvent): void {
 function handleAdminCurrency(event: RentalityEvent): void {
 
   
-    let contract = getRentalityGateway();
+    let contract = getCarGatewayRead();
     let userCurrency = contract.try_getUserCurrency(Address.fromString(DEFAULT_CURRENCY))
   
     if (userCurrency.reverted) {

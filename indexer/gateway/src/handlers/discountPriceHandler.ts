@@ -1,6 +1,6 @@
 import { Address, bigInt, ethereum, log } from "@graphprotocol/graph-ts"
 import { BaseDiscountEntity, CarInfo, DeliveryPricesEntity, LocationInfo, PaymentInfoEntity, TripEntity, UserProfileEntity } from "../../generated/schema"
-import { getRentalityGateway, notImplemented } from "./helpers"
+import { getCarGatewayRead, notImplemented } from "./helpers"
 import { RentalityEvent } from "../../generated/RentalityNotificationService/RentalityNotificationService";
 export const DEFAULT_DISCOUNT_PRICE: string = '0x0000000000000000000000000000000000000000';
 
@@ -18,7 +18,7 @@ export function hanldeDiscountEvents(event: RentalityEvent): void {
 
 function handleUserDiscountPrice(event: RentalityEvent): void {
 
-  let contract = getRentalityGateway();
+  let contract = getCarGatewayRead();
   let discountPrices = contract.try_getDiscount(event.params.from)
 
   if (discountPrices.reverted) {
@@ -38,10 +38,10 @@ function handleUserDiscountPrice(event: RentalityEvent): void {
     let user = UserProfileEntity.load(event.params.from.toHexString());
       if (user == null) {
         log.error("User profile not found for user: {}", [event.params.from.toHexString()]);
-        return;
+      } else {
+        user.discountPrice = userDiscount.id;
+        user.save()
       }
-      user.discountPrice = userDiscount.id;
-      user.save()
   
   userDiscount.save();
 }
@@ -49,7 +49,7 @@ function handleUserDiscountPrice(event: RentalityEvent): void {
 function handleAdminDiscountPrice(event: RentalityEvent): void {
 
   
-    let contract = getRentalityGateway();
+    let contract = getCarGatewayRead();
     let discountPrices = contract.try_getDiscount(Address.fromString(DEFAULT_DISCOUNT_PRICE))
   
     if (discountPrices.reverted) {

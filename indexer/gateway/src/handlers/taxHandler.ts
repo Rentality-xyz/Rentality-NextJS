@@ -1,6 +1,6 @@
 import { Address, bigInt, ethereum, log } from "@graphprotocol/graph-ts"
 import { CarInfo, DeliveryPricesEntity, LocationInfo, PaymentInfoEntity, TaxesEntity, TaxValueEntity, TripEntity } from "../../generated/schema"
-import { getRentalityGateway, notImplemented } from "./helpers"
+import { getCarGatewayRead, notImplemented } from "./helpers"
 import { RentalityEvent } from "../../generated/RentalityNotificationService/RentalityNotificationService";
 
 export function handleTaxesEvent(event: RentalityEvent): void {
@@ -14,7 +14,7 @@ export function handleTaxesEvent(event: RentalityEvent): void {
 
 function handleTaxes(event: RentalityEvent): void {
 
-  let contract = getRentalityGateway();
+  let contract = getCarGatewayRead();
   let taxesInfo = contract.try_getTaxesInfoById(event.params.id)
 
   if (taxesInfo.reverted) {

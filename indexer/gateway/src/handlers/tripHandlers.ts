@@ -1,8 +1,7 @@
 import { Address, bigInt, ethereum, log } from "@graphprotocol/graph-ts"
-import { RentalityGateway } from "../../generated/RentalityNotificationService/RentalityGateway";
 import { RentalityEvent } from "../../generated/RentalityNotificationService/RentalityNotificationService";
 import { CarInfo, CarTrip, LocationInfo, PaymentInfoEntity, TripEntity } from "../../generated/schema"
-import { getRentalityGateway, getRentalityTripsService, notImplemented } from "./helpers"
+import { getCarGatewayRead, getRentalityTripsService, notImplemented } from "./helpers"
 
 
 export function handleTripEvents(event: RentalityEvent): void {
