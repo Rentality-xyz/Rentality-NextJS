@@ -244,7 +244,10 @@ async function getPIIByLink(
       responseType: "arraybuffer",
     })
     .then(function (response) {
-      return Ok({ data: response.data, mimeType: response.headers["content-type"].toString() });
+      return Ok({
+        data: response.data,
+        mimeType: response.headers["content-type"]?.toString() ?? "application/octet-stream",
+      });
     })
     .catch((error) => {
       logger.error("getPIIByLink error", error);
