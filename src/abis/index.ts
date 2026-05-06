@@ -1,5 +1,5 @@
-import RentalityGatewayJSON_ABI from "./RentalityGateway.v0_2_0.abi.json";
-import RentalityGatewayJSON_ADDRESSES from "./RentalityGateway.v0_2_0.addresses.json";
+import AppGatewayJSON_ABI from "./base-sepolia-newmodel/AppGateway.v0_2_0.abi.json";
+import AppGatewayJSON_ADDRESSES from "./base-sepolia-newmodel/AppGateway.v0_2_0.addresses.json";
 import RentalityAdminGatewayJSON_ABI from "./RentalityAdminGateway.v0_2_0.abi.json";
 import RentalityAdminGatewayJSON_ADDRESSES from "./RentalityAdminGateway.v0_2_0.addresses.json";
 import RentalityInvestServiceJSON_ADDRESSES from "./RentalityInvestment.v0_2_0.addresses.json";
@@ -39,8 +39,8 @@ export const SMARTCONTRACT_VERSION = "v0_2_0";
 
 const rentalityContracts = {
   gateway: {
-    addresses: RentalityGatewayJSON_ADDRESSES.addresses,
-    abi: RentalityGatewayJSON_ABI.abi,
+    addresses: AppGatewayJSON_ADDRESSES.addresses,
+    abi: AppGatewayJSON_ABI.abi,
   },
   admin: {
     addresses: RentalityAdminGatewayJSON_ADDRESSES.addresses,
