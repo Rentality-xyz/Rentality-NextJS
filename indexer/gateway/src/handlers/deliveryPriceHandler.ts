@@ -1,6 +1,6 @@
 import { Address, bigInt, ethereum, log } from "@graphprotocol/graph-ts"
 import { CarInfo, DeliveryPricesEntity, LocationInfo, PaymentInfoEntity, TripEntity, UserProfileEntity } from "../../generated/schema"
-import { getCarGatewayRead, notImplemented } from "./helpers"
+import { getAppGateway, notImplemented } from "./helpers"
 import { RentalityEvent } from "../../generated/RentalityNotificationService/RentalityNotificationService";
 export const DEFAULT_DELIVERY_PRICE = '0x0000000000000000000000000000000000000000';
 export function hanldeDeliveryEvents(event: RentalityEvent): void {
@@ -17,7 +17,7 @@ export function hanldeDeliveryEvents(event: RentalityEvent): void {
 
 function handleUserDeliveryPrice(event: RentalityEvent): void {
 
-  let contract = getCarGatewayRead();
+  let contract = getAppGateway();
   let delivertPrices = contract.try_getUserDeliveryPrices(event.params.from)
 
   if (delivertPrices.reverted) {
@@ -46,7 +46,7 @@ function handleUserDeliveryPrice(event: RentalityEvent): void {
 
 function handleAdminDeliveryPrice(event: RentalityEvent): void {
 
-    let contract = getCarGatewayRead();
+    let contract = getAppGateway();
     let delivertPrices = contract.try_getUserDeliveryPrices(Address.fromString(DEFAULT_DELIVERY_PRICE))
   
     if (delivertPrices.reverted) {

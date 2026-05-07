@@ -21,12 +21,26 @@ import { IRentalityGatewayContract } from "@/features/blockchain/models/IRentali
 import { getTimeZoneIdFromGoogleByLocation } from "@/utils/timezone";
 import { logger } from "@/utils/logger";
 import { formatSearchAvailableCarsContractRequest } from "@/utils/searchMapper";
-import { MappedSearchQuery, mapSearchQuery, querySearchCar } from "@/utils/api/indexer/querySearchCar";
+import {
+  INDEXED_DEFAULT_DELIVERY_PRICE,
+  INDEXED_DEFAULT_DISCOUNT_PRICE,
+  INDEXED_DEFAULT_TAXES,
+  MappedSearchQuery,
+  mapSearchQuery,
+  querySearchCar,
+} from "@/utils/api/indexer/querySearchCar";
+import { QueryDeliveryPrice, QueryDiscountPrice, QueryTaxes, QueryUserCurrency } from "@/utils/api/indexer/schemas";
 import rentalityContracts, { getEtherContractWithSigner } from "@/abis";
 import { ETH_DEFAULT_ADDRESS } from "@/utils/constants";
 import ERC20JSON_ABI from "../../abis/ERC20.abi.json";
 import { toTransmissionType } from "@/model/Transmission";
 import { call } from "viem/actions";
+
+const INDEXED_DEFAULT_USER_CURRENCY: QueryUserCurrency = {
+  currency: ETH_DEFAULT_ADDRESS,
+  name: "ETH",
+  initialized: true,
+};
 export type PublicSearchCarsResponse =
   | {
       availableCarsData: SearchCarInfoDTO[];
@@ -230,16 +244,54 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     );
   }
 
-  const getFilterInfoDto: ContractFilterInfoDTO = await rentality.getFilterInfo(BigInt(1));
-
   const availableCarsData = await formatSearchAvailableCarsQueryResponse(chainIdNumber, mappedQuery);
-
-  const filterLimits = {
-    minCarYear: Number(getFilterInfoDto.minCarYearOfProduction),
-    maxCarPrice: Number(getFilterInfoDto.maxCarPrice) / 100,
-  };
+  const filterLimits = await getSearchFilterLimits(rentality, mappedQuery);
 
   res.status(200).json({ availableCarsData, filterLimits });
+}
+
+async function getSearchFilterLimits(
+  rentality: IRentalityGatewayContract,
+  mappedSearchQuery: MappedSearchQuery[]
+): Promise<FilterLimits> {
+  try {
+    const getFilterInfoDto: ContractFilterInfoDTO = await rentality.getFilterInfo(BigInt(1));
+    return {
+      minCarYear: Number(getFilterInfoDto.minCarYearOfProduction),
+      maxCarPrice: Number(getFilterInfoDto.maxCarPrice) / 100,
+    };
+  } catch (error) {
+    logger.warn("Search car: getFilterInfo reverted, using indexed car data for filter limits", error);
+    return getIndexedSearchFilterLimits(mappedSearchQuery);
+  }
+}
+
+function getIndexedSearchFilterLimits(mappedSearchQuery: MappedSearchQuery[]): FilterLimits {
+  const years = mappedSearchQuery.map((car) => Number(car.yearOfProduction)).filter(Number.isFinite);
+  const prices = mappedSearchQuery
+    .map((car) => Number(car.pricePerDayInUsdCents) / 100)
+    .filter(Number.isFinite);
+
+  return {
+    minCarYear: years.length > 0 ? Math.min(...years) : 1900,
+    maxCarPrice: prices.length > 0 ? Math.max(...prices) : 10000,
+  };
+}
+
+function getIndexedDeliveryPrice(car: MappedSearchQuery): QueryDeliveryPrice {
+  return car.user.user.deliveryPrice ?? INDEXED_DEFAULT_DELIVERY_PRICE;
+}
+
+function getIndexedDiscountPrice(car: MappedSearchQuery): QueryDiscountPrice {
+  return car.user.user.discountPrice ?? INDEXED_DEFAULT_DISCOUNT_PRICE;
+}
+
+function getIndexedTaxes(car: MappedSearchQuery): QueryTaxes {
+  return car.taxes ?? INDEXED_DEFAULT_TAXES;
+}
+
+function getIndexedUserCurrency(car: MappedSearchQuery): QueryUserCurrency {
+  return car.user.user.userCurrency ?? INDEXED_DEFAULT_USER_CURRENCY;
 }
 
 function getTotalDiscount(pricePerDay: number, tripDays: number, totalPriceWithHostDiscount: number) {
@@ -291,7 +343,7 @@ async function formatSearchAvailableCarsQueryResponse(
 
   const uniqueCurrencies = Array.from(
     new Set(
-      mappedSearchQuery.map((i) => i.user.user.userCurrency.currency.toLowerCase())
+      mappedSearchQuery.map((i) => getIndexedUserCurrency(i).currency.toLowerCase())
     )
   );
 
@@ -322,6 +374,10 @@ async function formatSearchAvailableCarsQueryResponse(
     mappedSearchQuery.map(async (i: MappedSearchQuery) => {
       const metaData = parseMetaData(await getMetaDataFromIpfs(i.tokenURI));
       let isCarDetailsConfirmed = false;
+      const deliveryPrice = getIndexedDeliveryPrice(i);
+      const discountPrice = getIndexedDiscountPrice(i);
+      const taxes = getIndexedTaxes(i);
+      const userCurrency = getIndexedUserCurrency(i);
 
       const converterAddress = rentalityContracts.currencyConverter.addresses.find((i) => i.chainId === chainId);
       if (!converterAddress) {
@@ -331,7 +387,7 @@ async function formatSearchAvailableCarsQueryResponse(
         return null;
       }
 
-      let currencyInfo = currencyHashSet.get(i.user.user.userCurrency.currency);
+      let currencyInfo = currencyHashSet.get(userCurrency.currency.toLowerCase());
 
       const totalCents = BigInt(i.pricePerDayInUsdCents) * BigInt(i.tripDays);
       let priceInCurrency = (Number(totalCents) * 10 ** (currencyInfo!.decimals - 2)) / Number(currencyInfo!.rate);
@@ -340,8 +396,8 @@ async function formatSearchAvailableCarsQueryResponse(
       const pricePerDay = Number(i.pricePerDayInUsdCents) / 100;
       const totalPriceWithHostDiscount = i.priceWithDiscount / 100;
 
-      const salesTax = Number(i.taxes.taxesData.find((i) => i.tType.includes("sale"))?.value ?? 0) / 100;
-      const governmentTax = Number(i.taxes.taxesData.find((i) => i.tType.includes("government"))?.value ?? 0) / 100;
+      const salesTax = Number(taxes.taxesData.find((i) => i.tType.includes("sale"))?.value ?? 0) / 100;
+      const governmentTax = Number(taxes.taxesData.find((i) => i.tType.includes("government"))?.value ?? 0) / 100;
       const tankVolumeInGal = BigInt(i.engineType) === EngineType.PETROL ? Number(i.engineParams[0]) : 0;
       const fuelPrice =
         BigInt(i.engineType) === EngineType.PETROL ? Number(i.engineParams[1]) : Number(i.engineParams[0]);
@@ -392,8 +448,8 @@ async function formatSearchAvailableCarsQueryResponse(
         totalDiscount: getTotalDiscount(pricePerDay, tripDays, totalPriceWithHostDiscount),
         hostHomeLocation: formatLocationInfoUpToCity(i.locationInfo),
         deliveryPrices: {
-          from1To25milesPrice: Number(i.user.user.deliveryPrice.underTwentyFiveMilesInUsdCents),
-          over25MilesPrice: Number(i.user.user.deliveryPrice.aboveTwentyFiveMilesInUsdCents),
+          from1To25milesPrice: Number(deliveryPrice.underTwentyFiveMilesInUsdCents),
+          over25MilesPrice: Number(deliveryPrice.aboveTwentyFiveMilesInUsdCents),
         },
         isInsuranceIncluded: i.insuranceIncluded,
         deliveryDetails: {
@@ -415,18 +471,18 @@ async function formatSearchAvailableCarsQueryResponse(
         distanceToUser: i.distance,
         dimoTokenId: Number(i.dimoTokenId),
         currency: {
-          currency: i.user.user.userCurrency.currency,
-          name: i.user.user.userCurrency.name,
-          initialized: i.user.user.userCurrency.initialized,
+          currency: userCurrency.currency,
+          name: userCurrency.name,
+          initialized: userCurrency.initialized,
         },
         priceInCurrency: Number(priceInCurrency),
         salesTax,
         governmentTax,
         pricePer10PercentFuel,
         tripDiscounts: {
-          discount3DaysAndMoreInPercents: Number(i.user.user.discountPrice.threeDaysDiscount) / 10_000,
-          discount7DaysAndMoreInPercents: Number(i.user.user.discountPrice.sevenDaysDiscount) / 10_000,
-          discount30DaysAndMoreInPercents: Number(i.user.user.discountPrice.thirtyDaysDiscount) / 10_000,
+          discount3DaysAndMoreInPercents: Number(discountPrice.threeDaysDiscount) / 10_000,
+          discount7DaysAndMoreInPercents: Number(discountPrice.sevenDaysDiscount) / 10_000,
+          discount30DaysAndMoreInPercents: Number(discountPrice.thirtyDaysDiscount) / 10_000,
         },
         totalPriceInCurrency: Number(totalPriceInCurrency),
       };

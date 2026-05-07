@@ -1,12 +1,18 @@
 import { Address, log } from "@graphprotocol/graph-ts";
+import { AppGateway } from "../../generated/RentalityNotificationService/AppGateway";
 import { CarGatewayRead } from "../../generated/RentalityNotificationService/CarGatewayRead";
 import { RentalityEvent } from "../../generated/RentalityNotificationService/RentalityNotificationService";
 import { RentalityUserService } from "../../generated/RentalityNotificationService/RentalityUserService";
 import { RentalityTripService } from "../../generated/RentalityNotificationService/RentalityTripService";
-import { CAR_GATEWAY_READ_ADDRESS, RENTALITY_TRIP_SERVICE_ADDRESS, RENTALITY_USER_SERVICE_ADDRESS } from "./generatedLocalhostAddresses";
+import { APP_GATEWAY_ADDRESS, CAR_GATEWAY_READ_ADDRESS, RENTALITY_TRIP_SERVICE_ADDRESS, RENTALITY_USER_SERVICE_ADDRESS } from "./generatedLocalhostAddresses";
 
 export function getCarGatewayRead(): CarGatewayRead {
   let contract = CarGatewayRead.bind(Address.fromString(CAR_GATEWAY_READ_ADDRESS));
+  return contract;
+}
+
+export function getAppGateway(): AppGateway {
+  let contract = AppGateway.bind(Address.fromString(APP_GATEWAY_ADDRESS));
   return contract;
 }
 

@@ -78,26 +78,13 @@ function handleUpdateCarEvent(event: RentalityEvent): void {
   }
 
   const locationId = carInfo.carInfo.car.locationHash.toHexString();
-  let location = LocationInfo.load(locationId);
-
-  if (location == null) {
-    const newLocation = new LocationInfo(locationId);
-    const carDetailsResult = contract.try_getCarDetails(event.params.id)
+  const carDetailsResult = contract.try_getCarDetails(event.params.id)
   if(carDetailsResult.reverted) {
     log.error("Car creation error: can not get carDetails for carId: {}", [event.params.id.toString()]);
     return;
     }
     const carDetails = carDetailsResult.value
-
-    newLocation.latitude = carDetails.locationInfo.latitude;
-    newLocation.longitude = carDetails.locationInfo.longitude;
-    newLocation.city = carDetails.locationInfo.city;
-    newLocation.country = carDetails.locationInfo.country;
-    newLocation.state = carDetails.locationInfo.state;
-    newLocation.timeZoneId = carDetails.locationInfo.timeZoneId;
-    newLocation.userAddress = carDetails.locationInfo.userAddress;
-    newLocation.save();
-  }
+  upsertLocationInfo(locationId, carDetails.locationInfo);
   if(entity.host == DEFAULT_CURRENCY) {
     if(UserProfileEntity.load(carInfo.carInfo.asset.owner.toHexString()) != null) {
       entity.host = carInfo.carInfo.asset.owner.toHexString();
@@ -190,21 +177,7 @@ function handleCarCreationEvent(event: RentalityEvent): void {
   }
   entity.locationInfo = carInfo.carInfo.car.locationHash.toHexString()
   
-  const location = LocationInfo.load(carInfo.carInfo.car.locationHash.toHexString())
-
-  if(location == null) {
-    const newLocation = new LocationInfo(carInfo.carInfo.car.locationHash.toHexString())
- 
-    newLocation.latitude = carDetails.locationInfo.latitude
-    newLocation.longitude = carDetails.locationInfo.longitude
-    newLocation.city = carDetails.locationInfo.city
-    newLocation.country = carDetails.locationInfo.country
-    newLocation.state = carDetails.locationInfo.state
-    newLocation.timeZoneId = carDetails.locationInfo.timeZoneId
-    newLocation.userAddress = carDetails.locationInfo.userAddress
-
-    newLocation.save()
-  }
+  upsertLocationInfo(carInfo.carInfo.car.locationHash.toHexString(), carDetails.locationInfo);
 
 
   const carInsuranceEntity = new InsuranceCarInfo(
@@ -228,6 +201,24 @@ const getTaxId = (location: CarGatewayRead__getCarDetailsResultValue0LocationInf
         taxes = taxes || TaxesEntity.load(location.city + TaxesLocationType.City.toString());
         return taxes ? taxes.id : null;
   };
+  function upsertLocationInfo(
+    locationId: string,
+    locationInfo: CarGatewayRead__getCarDetailsResultValue0LocationInfoStruct
+  ): void {
+    let location = LocationInfo.load(locationId);
+    if (location == null) {
+      location = new LocationInfo(locationId);
+    }
+
+    location.latitude = locationInfo.latitude;
+    location.longitude = locationInfo.longitude;
+    location.city = locationInfo.city;
+    location.country = locationInfo.country;
+    location.state = locationInfo.state;
+    location.timeZoneId = locationInfo.timeZoneId;
+    location.userAddress = locationInfo.userAddress;
+    location.save();
+  }
   function isMatchingCar(a: string, b: string): bool {
     return a == b;
   }

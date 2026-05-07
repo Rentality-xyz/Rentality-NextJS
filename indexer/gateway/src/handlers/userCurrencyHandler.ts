@@ -1,6 +1,6 @@
 import { Address, bigInt, ethereum, log } from "@graphprotocol/graph-ts"
 import { BaseDiscountEntity, CarInfo, CarUser, DeliveryPricesEntity, LocationInfo, PaymentInfoEntity, TripEntity, UserCurrencyDTOEntity, UserProfileEntity } from "../../generated/schema"
-import { getCarGatewayRead, notImplemented } from "./helpers"
+import { getAppGateway, notImplemented } from "./helpers"
 import { RentalityEvent } from "../../generated/RentalityNotificationService/RentalityNotificationService";
 export const DEFAULT_CURRENCY = '0x0000000000000000000000000000000000000000';
 
@@ -18,7 +18,7 @@ export function handlerCurrencyEvent(event: RentalityEvent): void {
 
 function handleUserCurrency(event: RentalityEvent): void {
 
-  let contract = getCarGatewayRead();
+  let contract = getAppGateway();
   let userCurrency = contract.try_getUserCurrency(event.params.from)
 
   if (userCurrency.reverted) {
@@ -49,7 +49,7 @@ function handleUserCurrency(event: RentalityEvent): void {
 function handleAdminCurrency(event: RentalityEvent): void {
 
   
-    let contract = getCarGatewayRead();
+    let contract = getAppGateway();
     let userCurrency = contract.try_getUserCurrency(Address.fromString(DEFAULT_CURRENCY))
   
     if (userCurrency.reverted) {

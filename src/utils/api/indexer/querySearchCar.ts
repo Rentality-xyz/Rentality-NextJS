@@ -5,7 +5,7 @@ import {
 } from "@/model/blockchain/schemas";
 import { ApolloClient, InMemoryCache, gql, HttpLink } from "@apollo/client";
 import { createGraphUrl, getSearchCarQuery } from "./indexerHelper";
-import { GetCarInfosResponse, QueryCarInfo } from "./schemas";
+import { GetCarInfosResponse, QueryCarInfo, QueryDeliveryPrice, QueryDiscountPrice, QueryTaxes } from "./schemas";
 import {
   calculateDeliveryPrice,
   calculateDistance,
@@ -14,6 +14,21 @@ import {
   calculateTotalTripDays,
 } from "@/utils/computeSearch";
 import carDetails from "@/components/tripCard/carDetails";
+
+export const INDEXED_DEFAULT_DELIVERY_PRICE: QueryDeliveryPrice = {
+  underTwentyFiveMilesInUsdCents: "0",
+  aboveTwentyFiveMilesInUsdCents: "0",
+};
+
+export const INDEXED_DEFAULT_DISCOUNT_PRICE: QueryDiscountPrice = {
+  sevenDaysDiscount: 0,
+  thirtyDaysDiscount: 0,
+  threeDaysDiscount: 0,
+};
+
+export const INDEXED_DEFAULT_TAXES: QueryTaxes = {
+  taxesData: [],
+};
 export interface MappedSearchQuery extends QueryCarInfo {
   tripDays: number;
   priceWithDiscount: number;
@@ -62,10 +77,13 @@ export function mapSearchQuery(
     .filter((c) => (c.trips.length > 0 && c.trips[0].trips.length === 0) || c.trips.length === 0)
     .map((c) => {
       const tripDays = calculateTotalTripDays(startDateTime, endDateTime);
+      const discountPrice = c.user.user.discountPrice ?? INDEXED_DEFAULT_DISCOUNT_PRICE;
+      const deliveryPrice = c.user.user.deliveryPrice ?? INDEXED_DEFAULT_DELIVERY_PRICE;
+      const taxesData = c.taxes ?? INDEXED_DEFAULT_TAXES;
       const priceWithDiscount = calculateSumWithDiscount(
         tripDays,
         Number.parseInt(c.pricePerDayInUsdCents),
-        c.user.user.discountPrice
+        discountPrice
       );
       const pricePerDayWithDiscount = priceWithDiscount / tripDays;
       const { pickUp, dropOf } = calculateDeliveryPrice(
@@ -73,9 +91,9 @@ export function mapSearchQuery(
         returnLocation,
         c.locationInfo.latitude,
         c.locationInfo.longitude,
-        c.user.user.deliveryPrice
+        deliveryPrice
       );
-      const taxes = calculateTaxes(tripDays, pricePerDayWithDiscount + pickUp + dropOf, c.taxes);
+      const taxes = calculateTaxes(tripDays, pricePerDayWithDiscount + pickUp + dropOf, taxesData);
       const distance = calculateDistance(
         c.locationInfo.latitude,
         c.locationInfo.longitude,
